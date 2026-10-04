@@ -47,7 +47,8 @@ export const tokens = stylex.defineVars({
   radius: 'var(--radius)',
   controlRadius: 'calc(var(--radius) - 2px)',
   cardRadius: 'calc(var(--radius) + 4px)',
-  focusRingShadow: '0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)',
+  focusRingShadow:
+    '0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)',
   destructiveRingShadow:
     '0 0 0 3px color-mix(in oklab, var(--destructive) 20%, transparent)',
   shadowSm: '0 1px 2px rgb(0 0 0 / 0.05)',

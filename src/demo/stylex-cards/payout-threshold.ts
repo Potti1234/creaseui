@@ -1,13 +1,13 @@
-import { Match as M, Option, Schema as S } from 'effect';
-import type { Update } from 'foldkit';
-import { Command, Subscription } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
-import { modifyFields } from 'foldkit/struct';
+import { Match as M, Option, Schema as S } from 'effect'
+import type { Update } from 'foldkit'
+import { Command, Subscription } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import { modifyFields } from 'foldkit/struct'
 import * as stylex from '@stylexjs/stylex'
 
-import * as Icon from '@/demo/icon-preview';
-import { button } from '@/stylex/button';
+import * as Icon from '@/demo/icon-preview'
+import { button } from '@/stylex/button'
 import {
   card,
   cardAction,
@@ -16,20 +16,38 @@ import {
   cardFooter,
   cardHeader,
   cardTitle,
-} from '@/stylex/card';
-import { field, fieldDescription, fieldGroup, fieldLabel } from '@/stylex/field';
-import * as Select from '@/stylex/select';
-import * as Slider from '@/stylex/slider';
-import { textarea } from '@/stylex/textarea';
+} from '@/stylex/card'
+import { field, fieldDescription, fieldGroup, fieldLabel } from '@/stylex/field'
+import * as Select from '@/stylex/select'
+import * as Slider from '@/stylex/slider'
+import { textarea } from '@/stylex/textarea'
 import { className } from '@/stylex/style'
 
 const styles = stylex.create({
   action: { display: 'grid', width: '100%' },
-  amount: { fontSize: '1.5rem', fontVariantNumeric: 'tabular-nums', fontWeight: 600, lineHeight: '2rem', },
-  between: { alignItems: 'center', display: 'flex', justifyContent: 'space-between' },
+  amount: {
+    fontSize: '1.5rem',
+    fontVariantNumeric: 'tabular-nums',
+    fontWeight: 600,
+    lineHeight: '2rem',
+  },
+  between: {
+    alignItems: 'center',
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
   full: { width: '100%' },
-  icon: { display: 'inline-flex', flexShrink: 0, height: '1rem', width: '1rem' },
-  labelRow: { alignItems: 'baseline', display: 'flex', justifyContent: 'space-between' },
+  icon: {
+    display: 'inline-flex',
+    flexShrink: 0,
+    height: '1rem',
+    width: '1rem',
+  },
+  labelRow: {
+    alignItems: 'baseline',
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
   notes: { minHeight: '6.25rem' },
   srOnly: {
     overflow: 'hidden',
@@ -46,7 +64,7 @@ const currencies = [
   { value: 'eur', label: 'EUR — Euro' },
   { value: 'gbp', label: 'GBP — British Pound' },
   { value: 'jpy', label: 'JPY — Japanese Yen' },
-] as const;
+] as const
 
 export const Model = S.Struct({
   currency: Select.Model,
@@ -54,69 +72,76 @@ export const Model = S.Struct({
   amount: Slider.Model,
   amountValue: S.Number,
   notes: S.String,
-});
-export type Model = typeof Model.Type;
-
-
-
+})
+export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
   GotCurrencyMessage: {
-  message: Select.Message,
-},
+    message: Select.Message,
+  },
   GotAmountMessage: {
-  message: Slider.Message,
-},
+    message: Slider.Message,
+  },
   UpdatedNotes: { value: S.String },
-});
-export type Message = typeof Message.Type;
+})
+export type Message = typeof Message.Type
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
       GotCurrencyMessage: ({ message: childMessage }) => {
-        const { model: currency, commands: currencyCommands__, outMessage: currencyOut__ } = Select.update(
-          model.currency,
-          childMessage,
-        )
+        const {
+          model: currency,
+          commands: currencyCommands__,
+          outMessage: currencyOut__,
+        } = Select.update(model.currency, childMessage)
         const commands = currencyCommands__ ?? []
         const maybeSelection = Option.fromNullishOr(currencyOut__)
-        return { model: modifyFields(model, {
+        return {
+          model: modifyFields(model, {
             currency: () => currency,
-            selectedCurrency: (current) =>
+            selectedCurrency: current =>
               Option.match(maybeSelection, {
                 onNone: () => current,
-                onSome: (selection) =>
+                onSome: selection =>
                   selection._tag === 'Selected' ? selection.value : current,
               }),
-          }), commands: Command.mapMessages(commands, (next) =>
+          }),
+          commands: Command.mapMessages(commands, next =>
             Message.GotCurrencyMessage({ message: next }),
-          ) };
+          ),
+        }
       },
       GotAmountMessage: ({ message: childMessage }) => {
-        const { model: amount, commands: amountCommands__, outMessage: amountOut__ } = Slider.update(
-          model.amount,
-          childMessage,
-        )
+        const {
+          model: amount,
+          commands: amountCommands__,
+          outMessage: amountOut__,
+        } = Slider.update(model.amount, childMessage)
         const commands = amountCommands__ ?? []
         const maybeChange = Option.fromNullishOr(amountOut__)
-        return { model: modifyFields(model, {
+        return {
+          model: modifyFields(model, {
             amount: () => amount,
-            amountValue: (current) =>
+            amountValue: current =>
               Option.match(maybeChange, {
                 onNone: () => current,
-                onSome: (change) => change.value,
+                onSome: change => change.value,
               }),
-          }), commands: Command.mapMessages(commands, (next) =>
+          }),
+          commands: Command.mapMessages(commands, next =>
             Message.GotAmountMessage({ message: next }),
-          ) };
+          ),
+        }
       },
-      UpdatedNotes: ({ value }) => ({ model: modifyFields(model, { notes: () => value }) }),
+      UpdatedNotes: ({ value }) => ({
+        model: modifyFields(model, { notes: () => value }),
+      }),
     }),
-  );
+  )
 
 export const init = (): Model => ({
   currency: Select.init({
@@ -132,7 +157,7 @@ export const init = (): Model => ({
   }),
   amountValue: 2500,
   notes: '',
-});
+})
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
   return card<Message>(
@@ -159,7 +184,10 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                         size: 'icon',
                         children: [
                           Icon.icon('x', { class: className(styles.icon) }, h),
-                          h.span([h.Class(className(styles.srOnly))], ['Close Payout Threshold']),
+                          h.span(
+                            [h.Class(className(styles.srOnly))],
+                            ['Close Payout Threshold'],
+                          ),
                         ],
                       },
                       h,
@@ -194,11 +222,11 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                               maybeSelectedValue: Option.some(
                                 model.selectedCurrency,
                               ),
-                              toParentMessage: (message) =>
+                              toParentMessage: message =>
                                 Message.GotCurrencyMessage({ message }),
                               items: currencies,
-                              itemToValue: (currency) => currency.value,
-                              itemToLabel: (currency) => currency.label,
+                              itemToValue: currency => currency.value,
+                              itemToLabel: currency => currency.label,
                               triggerLayoutStyle: styles.full,
                             },
                             h,
@@ -221,9 +249,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                                 h,
                               ),
                               h.span(
-                                [
-                                  h.Class(className(styles.amount)),
-                                ],
+                                [h.Class(className(styles.amount))],
                                 [`$${model.amountValue.toFixed(2)}`],
                               ),
                             ],
@@ -232,7 +258,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                             {
                               model: model.amount,
                               value: model.amountValue,
-                              toParentMessage: (message) =>
+                              toParentMessage: message =>
                                 Message.GotAmountMessage({ message }),
                               ariaLabel: 'Minimum Payout Amount',
                             },
@@ -266,7 +292,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                             {
                               id: 'payout-threshold-notes',
                               value: model.notes,
-                              onInput: (value) => Message.UpdatedNotes({ value }),
+                              onInput: value => Message.UpdatedNotes({ value }),
                               placeholder:
                                 'Add any notes for this payout configuration...',
                               layoutStyle: styles.notes,
@@ -288,9 +314,10 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
         cardFooter(
           {
             children: [
-              h.div([h.Class(className(styles.action))], [
-                button({ children: ['Save Threshold'] }, h),
-              ]),
+              h.div(
+                [h.Class(className(styles.action))],
+                [button({ children: ['Save Threshold'] }, h)],
+              ),
             ],
           },
           h,
@@ -298,8 +325,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 // SUBSCRIPTIONS — slider drag needs document-level pointer subscriptions.
 
@@ -308,10 +335,10 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
     payoutAmountPointer: Slider.subscriptions.dragPointer,
     payoutAmountEscape: Slider.subscriptions.dragEscape,
   })<Model, Message>({
-    toChildModel: (model) => model.amount,
-    toParentMessage: (message) => Message.GotAmountMessage({ message }),
+    toChildModel: model => model.amount,
+    toParentMessage: message => Message.GotAmountMessage({ message }),
   }),
-);
+)
 
 /*
 Stateful? yes.

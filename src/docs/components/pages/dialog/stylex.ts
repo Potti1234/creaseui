@@ -1,19 +1,19 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   dialogFixtures,
   dialogLorem,
   dialogRtlFields,
   dialogShareUrl,
-} from '@/docs/components/pages/dialog/shared';
-import * as Button from '@/stylex/button';
-import * as Dialog from '@/stylex/dialog';
-import * as Field from '@/stylex/field';
-import * as Input from '@/stylex/input';
-import { className } from '@/stylex/style';
+} from '@/docs/components/pages/dialog/shared'
+import * as Button from '@/stylex/button'
+import * as Dialog from '@/stylex/dialog'
+import * as Field from '@/stylex/field'
+import * as Input from '@/stylex/input'
+import { className } from '@/stylex/style'
 
 const styles = stylex.create({
   action: {
@@ -23,7 +23,8 @@ const styles = stylex.create({
     borderWidth: '1px',
     paddingBlock: '0.5rem',
     paddingInline: '1rem',
-    fontSize: '0.875rem', lineHeight: '1.25rem',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
   },
   confirm: {
     borderColor: 'var(--primary)',
@@ -39,13 +40,15 @@ const styles = stylex.create({
     overflowY: 'auto',
   },
   lorem: { lineHeight: 'normal', marginBlockEnd: '1rem' },
-  fieldGrid: { gap: '1rem', display: 'grid', },
-  shareRow: { gap: '0.5rem', alignItems: 'center', display: 'flex', },
-  shareCol: { gap: '0.5rem',
- display: 'grid',
- flexBasis: '0%',
- flexGrow: '1',
- flexShrink: '1', },
+  fieldGrid: { gap: '1rem', display: 'grid' },
+  shareRow: { gap: '0.5rem', alignItems: 'center', display: 'flex' },
+  shareCol: {
+    gap: '0.5rem',
+    display: 'grid',
+    flexBasis: '0%',
+    flexGrow: '1',
+    flexShrink: '1',
+  },
   srOnly: {
     margin: '-1px',
     padding: 0,
@@ -58,17 +61,20 @@ const styles = stylex.create({
     width: '1px',
   },
   copy: { fontSize: '0.875rem', lineHeight: '1.25rem' },
-});
+})
 
-type PreviewModel = { name: string; username: string };
+type PreviewModel = { name: string; username: string }
 
 const scrollableContent = <Msg>(h: HtmlBuilder<Msg>): Html =>
   h.div(
     [h.Class(className(styles.scrollArea))],
     Array.from({ length: 10 }).map((_, index) =>
-      h.p([h.Key(String(index)), h.Class(className(styles.lorem))], [dialogLorem]),
+      h.p(
+        [h.Key(String(index)), h.Class(className(styles.lorem))],
+        [dialogLorem],
+      ),
     ),
-  );
+  )
 
 const fieldRow = <Msg>(
   exampleIndex: number,
@@ -84,7 +90,9 @@ const fieldRow = <Msg>(
         Field.fieldLabel(
           {
             for: `docs-dialog-${String(exampleIndex)}-${field.id}`,
-            children: [rtl ? field.label : field.id === 'name-1' ? 'Name' : 'Username'],
+            children: [
+              rtl ? field.label : field.id === 'name-1' ? 'Name' : 'Username',
+            ],
           },
           h,
         ),
@@ -113,7 +121,7 @@ const fieldRow = <Msg>(
       ],
     },
     h,
-  );
+  )
 
 const profileFields = <Msg>(
   exampleIndex: number,
@@ -129,9 +137,9 @@ const profileFields = <Msg>(
       ),
     },
     h,
-  );
+  )
 
-type Slots<Msg> = Parameters<NonNullable<Dialog.DialogProps<Msg>['footer']>>[0];
+type Slots<Msg> = Parameters<NonNullable<Dialog.DialogProps<Msg>['footer']>>[0]
 
 const outlineAction = <Msg>(
   slots: Slots<Msg>,
@@ -147,7 +155,7 @@ const outlineAction = <Msg>(
       h.Class(className(styles.action)),
     ],
     [label],
-  );
+  )
 
 const primaryAction = <Msg>(
   slots: Slots<Msg>,
@@ -161,7 +169,7 @@ const primaryAction = <Msg>(
       h.Class(className(styles.action, styles.confirm)),
     ],
     [label],
-  );
+  )
 
 export const dialogStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
@@ -169,17 +177,19 @@ export const dialogStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ) => {
-  const fixture = dialogFixtures[exampleIndex] ?? dialogFixtures[0]!;
-  const preview = model as PreviewModel & { dialog: Dialog.Model };
+  const fixture = dialogFixtures[exampleIndex] ?? dialogFixtures[0]!
+  const preview = model as PreviewModel & { dialog: Dialog.Model }
   const shared = {
     model: preview.dialog,
     toParentMessage: (message: Dialog.Message): Msg =>
-      onMessageJson(JSON.stringify({ _tag: 'GotDialogPreviewMessage', message })),
+      onMessageJson(
+        JSON.stringify({ _tag: 'GotDialogPreviewMessage', message }),
+      ),
     title: fixture.dialogTitle,
     ...(fixture.dialogDescription === undefined
       ? {}
       : { description: fixture.dialogDescription }),
-  };
+  }
   const trigger = Button.button(
     {
       variant: fixture.triggerVariant,
@@ -187,67 +197,84 @@ export const dialogStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
       children: [fixture.triggerLabel],
     },
     h,
-  );
-  let dialog: Html;
+  )
+  let dialog: Html
   switch (fixture.kind) {
     case 'profile':
       dialog = Dialog.dialog(
         {
           ...shared,
           layoutStyle: styles.compact,
-          content: () => [profileFields(exampleIndex, preview, onMessageJson, h, false)],
+          content: () => [
+            profileFields(exampleIndex, preview, onMessageJson, h, false),
+          ],
           footer: slots => [
             outlineAction(slots, 'Cancel', true, h),
             primaryAction(slots, 'Save changes', h),
           ],
         },
         h,
-      );
-      break;
+      )
+      break
     case 'compact':
       dialog = Dialog.dialog(
         {
           ...shared,
           layoutStyle: styles.compact,
           content: () => [
-            h.p([h.Class(className(styles.copy))], ['Dialog content remains ordinary Foldkit Html.']),
+            h.p(
+              [h.Class(className(styles.copy))],
+              ['Dialog content remains ordinary Foldkit Html.'],
+            ),
           ],
-          footer: slots => [outlineAction(slots, 'Back', true, h), primaryAction(slots, 'Confirm', h)],
+          footer: slots => [
+            outlineAction(slots, 'Back', true, h),
+            primaryAction(slots, 'Confirm', h),
+          ],
         },
         h,
-      );
-      break;
+      )
+      break
     case 'share':
       dialog = Dialog.dialog(
         {
           ...shared,
           layoutStyle: styles.shareWidth,
           content: () => [
-            h.div([h.Class(className(styles.shareRow))], [
-              h.div([h.Class(className(styles.shareCol))], [
-                h.label(
-                  [h.For(`docs-dialog-${String(exampleIndex)}-link`), h.Class(className(styles.srOnly))],
-                  ['Link'],
+            h.div(
+              [h.Class(className(styles.shareRow))],
+              [
+                h.div(
+                  [h.Class(className(styles.shareCol))],
+                  [
+                    h.label(
+                      [
+                        h.For(`docs-dialog-${String(exampleIndex)}-link`),
+                        h.Class(className(styles.srOnly)),
+                      ],
+                      ['Link'],
+                    ),
+                    Input.input(
+                      {
+                        id: `docs-dialog-${String(exampleIndex)}-link`,
+                        value: dialogShareUrl,
+                        isReadOnly: true,
+                      },
+                      h,
+                    ),
+                  ],
                 ),
-                Input.input(
-                  {
-                    id: `docs-dialog-${String(exampleIndex)}-link`,
-                    value: dialogShareUrl,
-                    isReadOnly: true,
-                  },
-                  h,
-                ),
-              ]),
-            ]),
+              ],
+            ),
           ],
           footer: slots => [outlineAction(slots, 'Close', false, h)],
         },
         h,
-      );
-      break;
+      )
+      break
     case 'noClose':
-      dialog = Dialog.dialog({ ...shared, showCloseButton: false }, h);
-      break;
+      dialog = Dialog.dialog({ ...shared, showCloseButton: false }, h)
+      break
     case 'sticky':
       dialog = Dialog.dialog(
         {
@@ -256,53 +283,61 @@ export const dialogStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           footer: slots => [outlineAction(slots, 'Close', false, h)],
         },
         h,
-      );
-      break;
+      )
+      break
     case 'scroll':
-      dialog = Dialog.dialog({ ...shared, content: () => [scrollableContent(h)] }, h);
-      break;
+      dialog = Dialog.dialog(
+        { ...shared, content: () => [scrollableContent(h)] },
+        h,
+      )
+      break
     case 'rtl':
       dialog = Dialog.dialog(
         {
           ...shared,
           layoutStyle: styles.compact,
           layout: parts => [
-            h.div([h.Dir('rtl'), h.Class(className(styles.fieldGrid))], [
-              parts.header({
-                children: [
-                  parts.title({ children: [fixture.dialogTitle] }),
-                  parts.description({ children: [fixture.dialogDescription ?? ''] }),
-                ],
-              }),
-              profileFields(exampleIndex, preview, onMessageJson, h, true),
-              parts.footer({
-                children: [
-                  h.button(
-                    [
-                      ...parts.closeButtonAttributes,
-                      ...parts.initialFocusAttributes(),
-                      h.Type('button'),
-                      h.Class(className(styles.action)),
-                    ],
-                    ['إلغاء'],
-                  ),
-                  h.button(
-                    [
-                      ...parts.closeButtonAttributes,
-                      h.Type('button'),
-                      h.Class(className(styles.action, styles.confirm)),
-                    ],
-                    ['حفظ التغييرات'],
-                  ),
-                ],
-              }),
-              parts.close({}),
-            ]),
+            h.div(
+              [h.Dir('rtl'), h.Class(className(styles.fieldGrid))],
+              [
+                parts.header({
+                  children: [
+                    parts.title({ children: [fixture.dialogTitle] }),
+                    parts.description({
+                      children: [fixture.dialogDescription ?? ''],
+                    }),
+                  ],
+                }),
+                profileFields(exampleIndex, preview, onMessageJson, h, true),
+                parts.footer({
+                  children: [
+                    h.button(
+                      [
+                        ...parts.closeButtonAttributes,
+                        ...parts.initialFocusAttributes(),
+                        h.Type('button'),
+                        h.Class(className(styles.action)),
+                      ],
+                      ['إلغاء'],
+                    ),
+                    h.button(
+                      [
+                        ...parts.closeButtonAttributes,
+                        h.Type('button'),
+                        h.Class(className(styles.action, styles.confirm)),
+                      ],
+                      ['حفظ التغييرات'],
+                    ),
+                  ],
+                }),
+                parts.close({}),
+              ],
+            ),
           ],
         },
         h,
-      );
-      break;
+      )
+      break
   }
-  return h.div([], [trigger, dialog]);
-};
+  return h.div([], [trigger, dialog])
+}

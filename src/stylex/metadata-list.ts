@@ -1,12 +1,12 @@
-import * as stylex from '@stylexjs/stylex';
-import type { StaticStyles } from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { StaticStyles } from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Behavior from '@/lib/metadata-list';
-import type { ComponentLayoutStyle } from './contracts';
-import { interactionTokens } from './interaction-tokens.stylex.const';
-import { className } from './style';
-import { tokens } from './tokens.stylex';
+import * as Behavior from '@/lib/metadata-list'
+import type { ComponentLayoutStyle } from './contracts'
+import { interactionTokens } from './interaction-tokens.stylex.const'
+import { className } from './style'
+import { tokens } from './tokens.stylex'
 
 export {
   Model,
@@ -14,28 +14,28 @@ export {
   init,
   update,
   resolveLayout,
-} from '@/lib/metadata-list';
+} from '@/lib/metadata-list'
 export type {
   MetadataListColumns,
   MetadataListLabelConfig,
   MetadataListOrientation,
-} from '@/lib/metadata-list';
+} from '@/lib/metadata-list'
 
 /* Ported from Meta Astryx MetadataList.tsx + MetadataListItem.tsx —
    StyleX renderer. See src/ui/metadata-list.ts for the contract notes. */
 
 export type MetadataListProps<Msg> = Readonly<{
-  model: Behavior.Model;
-  toParentMessage: (message: Behavior.Message) => Msg;
-  id: string;
-  columns?: Behavior.MetadataListColumns;
-  label?: Behavior.MetadataListLabelConfig;
-  maxNumOfItems?: number;
-  orientation?: Behavior.MetadataListOrientation;
-  title?: Html | string;
-  children?: ReadonlyArray<Html | string>;
-  layoutStyle?: ComponentLayoutStyle;
-}>;
+  model: Behavior.Model
+  toParentMessage: (message: Behavior.Message) => Msg
+  id: string
+  columns?: Behavior.MetadataListColumns
+  label?: Behavior.MetadataListLabelConfig
+  maxNumOfItems?: number
+  orientation?: Behavior.MetadataListOrientation
+  title?: Html | string
+  children?: ReadonlyArray<Html | string>
+  layoutStyle?: ComponentLayoutStyle
+}>
 
 const styles = stylex.create({
   root: {
@@ -91,7 +91,7 @@ const styles = stylex.create({
     lineHeight: '1.25rem',
     textAlign: 'start',
   },
-});
+})
 
 /* astryx drops the pointer cursor when disabled — this toggle is never
    rendered disabled, so cursorAction alone covers it. */
@@ -106,21 +106,20 @@ const GRID_STYLE: Readonly<
   'grid-multi': styles.gridMulti,
   'grid-stacked-single': styles.gridStackedSingle,
   'grid-stacked-multi': styles.gridStackedMulti,
-};
+}
 
 export const metadataList = <Msg>(
   props: MetadataListProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const { model, toParentMessage, id, title, children } = props;
-  const layout = Behavior.resolveLayout(props);
-  const isHorizontal = layout.kind === 'horizontal';
-  const items = children ?? [];
-  const effectiveMax = isHorizontal ? undefined : props.maxNumOfItems;
-  const isExceedMax =
-    effectiveMax !== undefined && items.length > effectiveMax;
+  const { model, toParentMessage, id, title, children } = props
+  const layout = Behavior.resolveLayout(props)
+  const isHorizontal = layout.kind === 'horizontal'
+  const items = children ?? []
+  const effectiveMax = isHorizontal ? undefined : props.maxNumOfItems
+  const isExceedMax = effectiveMax !== undefined && items.length > effectiveMax
   const visibleItems =
-    isExceedMax && !model.isOpen ? items.slice(0, effectiveMax) : items;
+    isExceedMax && !model.isOpen ? items.slice(0, effectiveMax) : items
 
   return h.div(
     [
@@ -175,8 +174,8 @@ export const metadataList = <Msg>(
           ]
         : []),
     ],
-  );
-};
+  )
+}
 
 const itemStyles = stylex.create({
   label: {
@@ -234,21 +233,21 @@ const itemStyles = stylex.create({
     display: 'inline-flex',
     flexShrink: 0,
   },
-});
+})
 
 export type MetadataListItemProps = Readonly<{
-  label: Html | string;
-  icon?: Html;
-  stacked?: boolean;
-  children?: ReadonlyArray<Html | string>;
-  layoutStyle?: ComponentLayoutStyle;
-}>;
+  label: Html | string
+  icon?: Html
+  stacked?: boolean
+  children?: ReadonlyArray<Html | string>
+  layoutStyle?: ComponentLayoutStyle
+}>
 
 export const metadataListItem = <Msg>(
   props: MetadataListItemProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const { label, icon, children } = props;
+  const { label, icon, children } = props
   const labelContent: ReadonlyArray<Html | string> = [
     ...(icon === undefined
       ? []
@@ -263,7 +262,7 @@ export const metadataListItem = <Msg>(
           ),
         ]),
     label,
-  ];
+  ]
 
   if (props.stacked === true) {
     return h.div(
@@ -273,11 +272,12 @@ export const metadataListItem = <Msg>(
       ],
       [
         h.dt([h.Class(className(itemStyles.stackedLabel))], [...labelContent]),
-        h.dd([h.Class(className(itemStyles.stackedValue))], [
-          ...(children ?? []),
-        ]),
+        h.dd(
+          [h.Class(className(itemStyles.stackedValue))],
+          [...(children ?? [])],
+        ),
       ],
-    );
+    )
   }
 
   /* display:contents wrapper stands in for astryx's fragment — the dt/dd
@@ -291,5 +291,5 @@ export const metadataListItem = <Msg>(
       h.dt([h.Class(className(itemStyles.label))], [...labelContent]),
       h.dd([h.Class(className(itemStyles.value))], [...(children ?? [])]),
     ],
-  );
-};
+  )
+}

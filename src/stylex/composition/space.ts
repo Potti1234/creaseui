@@ -50,7 +50,9 @@ const styles = stylex.create({
   rowGapXxl: { rowGap: compositionTokens.spaceXxl },
 })
 
-export const gapStyles = (value: ResponsiveSpaceToken | undefined): ReadonlyArray<StaticStyles> => {
+export const gapStyles = (
+  value: ResponsiveSpaceToken | undefined,
+): ReadonlyArray<StaticStyles> => {
   if (value === undefined) return []
   const map = {
     createBoard: styles.gapCreateBoard,
@@ -65,7 +67,9 @@ export const gapStyles = (value: ResponsiveSpaceToken | undefined): ReadonlyArra
   return [map[value]]
 }
 
-export const paddingStyles = (value: ResponsiveSpaceToken | undefined): ReadonlyArray<StaticStyles> => {
+export const paddingStyles = (
+  value: ResponsiveSpaceToken | undefined,
+): ReadonlyArray<StaticStyles> => {
   if (value === undefined) return []
   const map = {
     createBoard: styles.paddingCreateBoard,
@@ -80,21 +84,34 @@ export const paddingStyles = (value: ResponsiveSpaceToken | undefined): Readonly
   return [map[value]]
 }
 
-export const rowGapStyle = (value: SpaceToken | undefined): ReadonlyArray<StaticStyles> => {
+export const rowGapStyle = (
+  value: SpaceToken | undefined,
+): ReadonlyArray<StaticStyles> => {
   if (value === undefined) return []
   const map = {
-    lg: styles.rowGapLg, md: styles.rowGapMd, none: styles.rowGapNone,
-    sm: styles.rowGapSm, xl: styles.rowGapXl, xs: styles.rowGapXs, xxl: styles.rowGapXxl,
+    lg: styles.rowGapLg,
+    md: styles.rowGapMd,
+    none: styles.rowGapNone,
+    sm: styles.rowGapSm,
+    xl: styles.rowGapXl,
+    xs: styles.rowGapXs,
+    xxl: styles.rowGapXxl,
   }
   return [map[value]]
 }
 
-export const columnGapStyle = (value: SpaceToken | undefined): ReadonlyArray<StaticStyles> => {
+export const columnGapStyle = (
+  value: SpaceToken | undefined,
+): ReadonlyArray<StaticStyles> => {
   if (value === undefined) return []
   const map = {
-    lg: styles.columnGapLg, md: styles.columnGapMd, none: styles.columnGapNone,
-    sm: styles.columnGapSm, xl: styles.columnGapXl, xs: styles.columnGapXs, xxl: styles.columnGapXxl,
+    lg: styles.columnGapLg,
+    md: styles.columnGapMd,
+    none: styles.columnGapNone,
+    sm: styles.columnGapSm,
+    xl: styles.columnGapXl,
+    xs: styles.columnGapXs,
+    xxl: styles.columnGapXxl,
   }
   return [map[value]]
 }
-

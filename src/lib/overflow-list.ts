@@ -1,8 +1,8 @@
-import { Effect, Queue, Schema as S, Stream } from 'effect';
-import type { Update } from 'foldkit';
-import type { Attribute, Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
-import * as Mount from 'foldkit/mount';
+import { Effect, Queue, Schema as S, Stream } from 'effect'
+import type { Update } from 'foldkit'
+import type { Attribute, Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import * as Mount from 'foldkit/mount'
 
 /* Ported from Meta Astryx OverflowList.tsx + hooks/useOverflow.ts +
    hooks/computeOverflow.ts — a horizontal list that measures its items in a
@@ -10,8 +10,8 @@ import * as Mount from 'foldkit/mount';
    that don't fit behind an overflow indicator. The pure fit/clamp/row-packing
    math below is verbatim computeOverflow. */
 
-export const SPACING_STEPS = [0, 0.5, 1, 1.5, 2, 3, 4, 5, 6, 8, 10] as const;
-export type SpacingStep = (typeof SPACING_STEPS)[number];
+export const SPACING_STEPS = [0, 0.5, 1, 1.5, 2, 3, 4, 5, 6, 8, 10] as const
+export type SpacingStep = (typeof SPACING_STEPS)[number]
 
 export const spacingToPx: Readonly<Record<SpacingStep, number>> = {
   0: 0,
@@ -25,33 +25,33 @@ export const spacingToPx: Readonly<Record<SpacingStep, number>> = {
   6: 24,
   8: 32,
   10: 40,
-};
+}
 
-export type CollapseFrom = 'start' | 'end';
-export type OverflowBehavior = 'observeSelf' | 'observeParent';
+export type CollapseFrom = 'start' | 'end'
+export type OverflowBehavior = 'observeSelf' | 'observeParent'
 
 // =============================================================================
 // computeOverflow — verbatim port of astryx's pure helper
 // =============================================================================
 
 export type ComputeOverflowInput = Readonly<{
-  widths: ReadonlyArray<number>;
-  gap: number;
-  availableWidth: number;
-  indicatorWidth: number;
-  minVisibleItems: number;
-  maxVisibleItems?: number;
-  maxRows?: number;
-  collapseFrom: CollapseFrom;
-}>;
+  widths: ReadonlyArray<number>
+  gap: number
+  availableWidth: number
+  indicatorWidth: number
+  minVisibleItems: number
+  maxVisibleItems?: number
+  maxRows?: number
+  collapseFrom: CollapseFrom
+}>
 
 export type ComputeOverflowResult = Readonly<{
-  visibleCount: number;
-  rows: number;
-}>;
+  visibleCount: number
+  rows: number
+}>
 
 const clamp = (value: number, min: number, max: number): number =>
-  Math.max(Math.min(value, max), min);
+  Math.max(Math.min(value, max), min)
 
 const resolveBounds = (
   itemCount: number,
@@ -61,9 +61,12 @@ const resolveBounds = (
   floor: Math.max(0, Math.min(minVisibleItems, itemCount)),
   ceiling: Math.max(
     0,
-    Math.min(maxVisibleItems === undefined ? itemCount : maxVisibleItems, itemCount),
+    Math.min(
+      maxVisibleItems === undefined ? itemCount : maxVisibleItems,
+      itemCount,
+    ),
   ),
-});
+})
 
 /* Single-line greedy fit: admits items until the next wouldn't fit, reserving
    indicator space for every non-final admitted item. */
@@ -75,27 +78,27 @@ const computeSingleLineFit = (
   floor: number,
   ceiling: number,
 ): number => {
-  let totalWidth = 0;
-  let count = 0;
+  let totalWidth = 0
+  let count = 0
   for (let i = 0; i < orderedWidths.length; i++) {
     if (count >= ceiling) {
-      break;
+      break
     }
-    const itemWidth = orderedWidths[i] ?? 0;
-    const gapWidth = i > 0 ? gap : 0;
-    const candidateWidth = totalWidth + itemWidth + gapWidth;
-    const isLastItem = i === orderedWidths.length - 1;
+    const itemWidth = orderedWidths[i] ?? 0
+    const gapWidth = i > 0 ? gap : 0
+    const candidateWidth = totalWidth + itemWidth + gapWidth
+    const isLastItem = i === orderedWidths.length - 1
     const reservedWidth = isLastItem
       ? 0
-      : indicatorWidth + (count > 0 || indicatorWidth > 0 ? gap : 0);
+      : indicatorWidth + (count > 0 || indicatorWidth > 0 ? gap : 0)
     if (candidateWidth + reservedWidth > availableWidth && count >= floor) {
-      break;
+      break
     }
-    totalWidth = candidateWidth;
-    count++;
+    totalWidth = candidateWidth
+    count++
   }
-  return count;
-};
+  return count
+}
 
 /* Pack items into rows of `availableWidth`, reserving indicator space on the
    last allowed row. */
@@ -106,37 +109,38 @@ const packRows = (
   indicatorReserve: number,
   maxRows: number,
 ): Readonly<{ placed: number; rows: number }> => {
-  let placed = 0;
-  let row = 1;
-  let rowWidth = 0;
+  let placed = 0
+  let row = 1
+  let rowWidth = 0
   for (let i = 0; i < orderedWidths.length; i++) {
-    const w = orderedWidths[i] ?? 0;
-    const isFirstInRow = rowWidth === 0;
-    const candidate = isFirstInRow ? w : rowWidth + gap + w;
-    const onLastRow = row === maxRows;
-    const reserve = onLastRow && indicatorReserve > 0 ? indicatorReserve + gap : 0;
+    const w = orderedWidths[i] ?? 0
+    const isFirstInRow = rowWidth === 0
+    const candidate = isFirstInRow ? w : rowWidth + gap + w
+    const onLastRow = row === maxRows
+    const reserve =
+      onLastRow && indicatorReserve > 0 ? indicatorReserve + gap : 0
     if (candidate + reserve <= availableWidth) {
-      rowWidth = candidate;
-      placed++;
-      continue;
+      rowWidth = candidate
+      placed++
+      continue
     }
     if (isFirstInRow) {
       if (onLastRow && reserve > 0) {
-        break;
+        break
       }
-      rowWidth = candidate;
-      placed++;
-      continue;
+      rowWidth = candidate
+      placed++
+      continue
     }
     if (row >= maxRows) {
-      break;
+      break
     }
-    row++;
-    rowWidth = 0;
-    i--;
+    row++
+    rowWidth = 0
+    i--
   }
-  return { placed, rows: row };
-};
+  return { placed, rows: row }
+}
 
 const countRows = (
   orderedWidths: ReadonlyArray<number>,
@@ -144,23 +148,23 @@ const countRows = (
   availableWidth: number,
 ): number => {
   if (orderedWidths.length === 0) {
-    return 0;
+    return 0
   }
-  let rows = 1;
-  let rowWidth = 0;
+  let rows = 1
+  let rowWidth = 0
   for (let i = 0; i < orderedWidths.length; i++) {
-    const w = orderedWidths[i] ?? 0;
-    const isFirstInRow = rowWidth === 0;
-    const candidate = isFirstInRow ? w : rowWidth + gap + w;
+    const w = orderedWidths[i] ?? 0
+    const isFirstInRow = rowWidth === 0
+    const candidate = isFirstInRow ? w : rowWidth + gap + w
     if (candidate <= availableWidth || isFirstInRow) {
-      rowWidth = candidate;
+      rowWidth = candidate
     } else {
-      rows++;
-      rowWidth = w;
+      rows++
+      rowWidth = w
     }
   }
-  return rows;
-};
+  return rows
+}
 
 const computeMultiRowFit = (
   orderedWidths: ReadonlyArray<number>,
@@ -169,13 +173,13 @@ const computeMultiRowFit = (
   indicatorWidth: number,
   maxRows: number,
 ): Readonly<{ count: number; rows: number }> => {
-  const n = orderedWidths.length;
+  const n = orderedWidths.length
   if (n === 0) {
-    return { count: 0, rows: 0 };
+    return { count: 0, rows: 0 }
   }
-  const packAll = packRows(orderedWidths, gap, availableWidth, 0, maxRows);
+  const packAll = packRows(orderedWidths, gap, availableWidth, 0, maxRows)
   if (packAll.placed === n) {
-    return { count: n, rows: packAll.rows };
+    return { count: n, rows: packAll.rows }
   }
   const packWithIndicator = packRows(
     orderedWidths,
@@ -183,11 +187,11 @@ const computeMultiRowFit = (
     availableWidth,
     indicatorWidth,
     maxRows,
-  );
-  const count = packWithIndicator.placed;
-  const rows = countRows(orderedWidths.slice(0, count), gap, availableWidth);
-  return { count, rows: Math.max(count > 0 ? 1 : 0, rows) };
-};
+  )
+  const count = packWithIndicator.placed
+  const rows = countRows(orderedWidths.slice(0, count), gap, availableWidth)
+  return { count, rows: Math.max(count > 0 ? 1 : 0, rows) }
+}
 
 export const computeOverflow = (
   input: ComputeOverflowInput,
@@ -201,19 +205,19 @@ export const computeOverflow = (
     maxVisibleItems,
     maxRows,
     collapseFrom,
-  } = input;
-  const itemCount = widths.length;
+  } = input
+  const itemCount = widths.length
   if (itemCount === 0) {
-    return { visibleCount: 0, rows: 0 };
+    return { visibleCount: 0, rows: 0 }
   }
   const { floor, ceiling } = resolveBounds(
     itemCount,
     minVisibleItems,
     maxVisibleItems,
-  );
+  )
   const orderedWidths =
-    collapseFrom === 'end' ? [...widths] : [...widths].reverse();
-  const multiRow = maxRows !== undefined && maxRows > 1;
+    collapseFrom === 'end' ? [...widths] : [...widths].reverse()
+  const multiRow = maxRows !== undefined && maxRows > 1
   if (!multiRow) {
     const fitCount = computeSingleLineFit(
       orderedWidths,
@@ -222,9 +226,9 @@ export const computeOverflow = (
       indicatorWidth,
       floor,
       ceiling,
-    );
-    const visibleCount = clamp(fitCount, floor, ceiling);
-    return { visibleCount, rows: visibleCount > 0 ? 1 : 0 };
+    )
+    const visibleCount = clamp(fitCount, floor, ceiling)
+    return { visibleCount, rows: visibleCount > 0 ? 1 : 0 }
   }
   const { count, rows } = computeMultiRowFit(
     orderedWidths,
@@ -232,18 +236,17 @@ export const computeOverflow = (
     availableWidth,
     indicatorWidth,
     maxRows,
-  );
-  const visibleCount = clamp(count, floor, ceiling);
+  )
+  const visibleCount = clamp(count, floor, ceiling)
   const resolvedRows =
     visibleCount === count
       ? rows
-      : countRows(
-          orderedWidths.slice(0, visibleCount),
-          gap,
-          availableWidth,
-        );
-  return { visibleCount, rows: visibleCount > 0 ? Math.max(1, resolvedRows) : 0 };
-};
+      : countRows(orderedWidths.slice(0, visibleCount), gap, availableWidth)
+  return {
+    visibleCount,
+    rows: visibleCount > 0 ? Math.max(1, resolvedRows) : 0,
+  }
+}
 
 // =============================================================================
 // Model / Update
@@ -259,8 +262,8 @@ export const Model = S.Struct({
       OverflowChanged only fires when the set actually changes (astryx's
       report-key contract). */
   hiddenIndices: S.Array(S.Number),
-});
-export type Model = typeof Model.Type;
+})
+export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
   Measured: {
@@ -268,48 +271,50 @@ export const Message = defineMessageUnion({
     rows: S.Number,
     rowHeight: S.Number,
   },
-});
-export type Message = typeof Message.Type;
+})
+export type Message = typeof Message.Type
 
 export const OutMessage = defineMessageUnion({
   OverflowChanged: { hiddenIndices: S.Array(S.Number) },
-});
-export type OutMessage = typeof OutMessage.Type;
+})
+export type OutMessage = typeof OutMessage.Type
 
 /** Optimistic pre-measurement state: everything visible (astryx initializes
    visibleCount to itemCount; the first measurement corrects it). */
-export const init = (config: Readonly<{
-  itemCount: number;
-  collapseFrom?: CollapseFrom;
-}>): Model => ({
+export const init = (
+  config: Readonly<{
+    itemCount: number
+    collapseFrom?: CollapseFrom
+  }>,
+): Model => ({
   itemCount: config.itemCount,
   collapseFrom: config.collapseFrom ?? 'end',
   visibleCount: config.itemCount,
   rows: 1,
   rowHeight: 0,
   hiddenIndices: [],
-});
+})
 
 export const collapsedIndices = (
   itemCount: number,
   visibleCount: number,
   collapseFrom: CollapseFrom,
 ): ReadonlyArray<number> => {
-  const hidden = itemCount - visibleCount;
+  const hidden = itemCount - visibleCount
   if (hidden <= 0) {
-    return [];
+    return []
   }
-  const indices: Array<number> = [];
+  const indices: Array<number> = []
   for (let i = 0; i < hidden; i++) {
-    indices.push(collapseFrom === 'end' ? itemCount - hidden + i : i);
+    indices.push(collapseFrom === 'end' ? itemCount - hidden + i : i)
   }
-  return indices;
-};
+  return indices
+}
 
 const sameIndices = (
   a: ReadonlyArray<number>,
   b: ReadonlyArray<number>,
-): boolean => a.length === b.length && a.every((v, i) => v === b[i]);
+): boolean => a.length === b.length && a.every((v, i) => v === b[i])
 
 export const update = (
   model: Model,
@@ -321,8 +326,8 @@ export const update = (
         model.itemCount,
         message.visibleCount,
         model.collapseFrom,
-      );
-      const changed = !sameIndices(hiddenIndices, model.hiddenIndices);
+      )
+      const changed = !sameIndices(hiddenIndices, model.hiddenIndices)
       return {
         model: {
           ...model,
@@ -334,59 +339,59 @@ export const update = (
         ...(changed
           ? { outMessage: OutMessage.OverflowChanged({ hiddenIndices }) }
           : {}),
-      };
+      }
     }
   }
-};
+}
 
 // =============================================================================
 // Mount — ResizeObserver-driven measurement (port of useOverflow)
 // =============================================================================
 
-const MEASURE_SELECTOR = '[data-overflow-measure]';
-const VISIBLE_SELECTOR = '[data-overflow-visible]';
+const MEASURE_SELECTOR = '[data-overflow-measure]'
+const VISIBLE_SELECTOR = '[data-overflow-visible]'
 
 const calculate = (
   measure: HTMLElement,
   container: HTMLElement,
   config: Readonly<{
-    itemCount: number;
-    gap: number;
-    minVisibleItems: number;
-    maxVisibleItems?: number;
-    maxRows?: number;
-    collapseFrom: CollapseFrom;
-    observeParent: boolean;
+    itemCount: number
+    gap: number
+    minVisibleItems: number
+    maxVisibleItems?: number
+    maxRows?: number
+    collapseFrom: CollapseFrom
+    observeParent: boolean
   }>,
 ): Readonly<{ visibleCount: number; rows: number; rowHeight: number }> => {
-  let availableWidth: number;
+  let availableWidth: number
   if (config.observeParent && container.parentElement !== null) {
-    const parent = container.parentElement;
-    const parentStyle = getComputedStyle(parent);
+    const parent = container.parentElement
+    const parentStyle = getComputedStyle(parent)
     availableWidth =
       parent.clientWidth -
       Number.parseFloat(parentStyle.paddingLeft) -
-      Number.parseFloat(parentStyle.paddingRight);
+      Number.parseFloat(parentStyle.paddingRight)
   } else {
-    availableWidth = container.offsetWidth;
+    availableWidth = container.offsetWidth
   }
 
-  const allChildren = Array.from(measure.children) as Array<HTMLElement>;
-  const hasIndicator = allChildren.length > config.itemCount;
+  const allChildren = Array.from(measure.children) as Array<HTMLElement>
+  const hasIndicator = allChildren.length > config.itemCount
   const children = hasIndicator
     ? allChildren.slice(0, config.itemCount)
-    : allChildren;
+    : allChildren
   const indicatorWidth = hasIndicator
     ? (allChildren[allChildren.length - 1]?.offsetWidth ?? 0)
-    : 0;
+    : 0
   if (children.length === 0) {
-    return { visibleCount: 0, rows: 0, rowHeight: 0 };
+    return { visibleCount: 0, rows: 0, rowHeight: 0 }
   }
-  const widths = children.map((child) => child.offsetWidth);
+  const widths = children.map(child => child.offsetWidth)
   const rowHeight = children.reduce(
     (max, child) => Math.max(max, child.offsetHeight),
     0,
-  );
+  )
   const { visibleCount, rows } = computeOverflow({
     widths,
     gap: config.gap,
@@ -398,9 +403,9 @@ const calculate = (
       : { maxVisibleItems: config.maxVisibleItems }),
     ...(config.maxRows === undefined ? {} : { maxRows: config.maxRows }),
     collapseFrom: config.collapseFrom,
-  });
-  return { visibleCount, rows, rowHeight };
-};
+  })
+  return { visibleCount, rows, rowHeight }
+}
 
 export const ObserveOverflow = Mount.defineStream('ObserveOverflow', {
   args: {
@@ -423,13 +428,13 @@ export const ObserveOverflow = Mount.defineStream('ObserveOverflow', {
     collapseFrom,
     behavior,
   }) =>
-    Stream.callback<typeof Message.Measured.Type>((queue) =>
+    Stream.callback<typeof Message.Measured.Type>(queue =>
       Effect.gen(function* () {
         /* The mount element wraps the measure + visible containers. */
-        const measure = element.querySelector<HTMLElement>(MEASURE_SELECTOR);
-        const container = element.querySelector<HTMLElement>(VISIBLE_SELECTOR);
+        const measure = element.querySelector<HTMLElement>(MEASURE_SELECTOR)
+        const container = element.querySelector<HTMLElement>(VISIBLE_SELECTOR)
         if (measure === null || container === null) {
-          return yield* Effect.never;
+          return yield* Effect.never
         }
         const config = {
           itemCount,
@@ -439,47 +444,47 @@ export const ObserveOverflow = Mount.defineStream('ObserveOverflow', {
           observeParent: behavior === 'observeParent',
           ...(maxVisibleItems === undefined ? {} : { maxVisibleItems }),
           ...(maxRows === undefined ? {} : { maxRows }),
-        };
+        }
         const run = (): void => {
           const { visibleCount, rows, rowHeight } = calculate(
             measure,
             container,
             config,
-          );
+          )
           Queue.offerUnsafe(
             queue,
             Message.Measured({ visibleCount, rows, rowHeight }),
-          );
-        };
+          )
+        }
         yield* Effect.acquireRelease(
           Effect.sync(() => {
-            const observer = new ResizeObserver(run);
-            observer.observe(measure);
+            const observer = new ResizeObserver(run)
+            observer.observe(measure)
             observer.observe(
               config.observeParent && container.parentElement !== null
                 ? container.parentElement
                 : container,
-            );
-            run();
-            return observer;
+            )
+            run()
+            return observer
           }),
-          (observer) => Effect.sync(() => observer.disconnect()),
-        );
-        return yield* Effect.never;
+          observer => Effect.sync(() => observer.disconnect()),
+        )
+        return yield* Effect.never
       }),
     ),
-});
+})
 
 export const observeOverflowAttributes = <Msg>(
   h: HtmlBuilder<Msg>,
   props: Readonly<{
-    itemCount: number;
-    gapPx: number;
-    minVisibleItems: number;
-    maxVisibleItems?: number;
-    maxRows?: number;
-    collapseFrom: CollapseFrom;
-    behavior: OverflowBehavior;
+    itemCount: number
+    gapPx: number
+    minVisibleItems: number
+    maxVisibleItems?: number
+    maxRows?: number
+    collapseFrom: CollapseFrom
+    behavior: OverflowBehavior
   }>,
   onMeasured: (message: typeof Message.Measured.Type) => Msg,
 ): ReadonlyArray<Attribute<Msg>> => [
@@ -497,8 +502,8 @@ export const observeOverflowAttributes = <Msg>(
       onMeasured,
     ),
   ),
-];
+]
 
 /** One overflow item handed to `overflowRenderer`: the hidden child plus its
    original index (astryx's OverflowItem). */
-export type OverflowListItem = Readonly<{ item: Html | string; index: number }>;
+export type OverflowListItem = Readonly<{ item: Html | string; index: number }>

@@ -1,27 +1,27 @@
-import { Option, Schema as S } from 'effect';
-import { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import { Option, Schema as S } from 'effect'
+import { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-import { definePreviewProgram } from '@/docs/components/pages/authored-page';
+import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
   radioGroupFixtures,
   type RadioGroupFixture,
-} from '@/docs/components/pages/radio-group/shared';
-import * as Field from '@/ui/field';
-import * as RadioGroup from '@/ui/radio-group';
+} from '@/docs/components/pages/radio-group/shared'
+import * as Field from '@/ui/field'
+import * as RadioGroup from '@/ui/radio-group'
 
 const PreviewModel = S.Struct({
   _docsPage: S.Literal('radio-group'),
   value: S.String,
   radioGroup: RadioGroup.Model,
-});
-type PreviewModel = typeof PreviewModel.Type;
+})
+type PreviewModel = typeof PreviewModel.Type
 
 const PreviewMessage = defineMessageUnion({
-  'GotDocsRadioGroupMessage': { message: RadioGroup.Message },
-});
-type PreviewMessage = typeof PreviewMessage.Type;
+  GotDocsRadioGroupMessage: { message: RadioGroup.Message },
+})
+type PreviewMessage = typeof PreviewMessage.Type
 
 const group = (
   fixture: RadioGroupFixture,
@@ -41,7 +41,7 @@ const group = (
       options: fixture.options,
     },
     h,
-  );
+  )
 
 export const radioGroupTailwindPreviewProgram = definePreviewProgram<
   PreviewModel,
@@ -50,21 +50,21 @@ export const radioGroupTailwindPreviewProgram = definePreviewProgram<
   Model: PreviewModel,
   Message: PreviewMessage,
   init: index => {
-    const fixture = radioGroupFixtures[index] ?? radioGroupFixtures[0];
+    const fixture = radioGroupFixtures[index] ?? radioGroupFixtures[0]
     return {
       _docsPage: 'radio-group',
       value: fixture.selected,
       radioGroup: RadioGroup.init({ id: `docs-radio-${String(index)}` }),
-    };
+    }
   },
   update: (model, message) => {
     const {
       model: radioGroup,
       commands: radioGroupCommands__,
       outMessage: radioGroupOut__,
-    } = RadioGroup.update(model.radioGroup, message.message);
-    const commands = radioGroupCommands__ ?? [];
-    const maybeSelection = Option.fromNullishOr(radioGroupOut__);
+    } = RadioGroup.update(model.radioGroup, message.message)
+    const commands = radioGroupCommands__ ?? []
+    const maybeSelection = Option.fromNullishOr(radioGroupOut__)
     return {
       model: {
         ...model,
@@ -75,11 +75,12 @@ export const radioGroupTailwindPreviewProgram = definePreviewProgram<
         }),
       },
       commands: Command.mapMessages(commands, child =>
-        PreviewMessage['GotDocsRadioGroupMessage']({ message: child })),
-    };
+        PreviewMessage['GotDocsRadioGroupMessage']({ message: child }),
+      ),
+    }
   },
   view: (index, model, h) => {
-    const fixture = radioGroupFixtures[index] ?? radioGroupFixtures[0];
+    const fixture = radioGroupFixtures[index] ?? radioGroupFixtures[0]
     if (fixture.kind === 'fieldset') {
       return Field.fieldSet(
         {
@@ -94,8 +95,8 @@ export const radioGroupTailwindPreviewProgram = definePreviewProgram<
           ],
         },
         h,
-      );
+      )
     }
-    return group(fixture, model, h);
+    return group(fixture, model, h)
   },
-});
+})

@@ -1,6 +1,6 @@
-import { authoredPage } from '@/docs/components/pages/authored-page';
-import { dateInputExamples } from '@/docs/components/pages/date-input/shared';
-import { dateInputTailwindPreviewProgram } from '@/docs/components/pages/date-input/tailwind';
+import { authoredPage } from '@/docs/components/pages/authored-page'
+import { dateInputExamples } from '@/docs/components/pages/date-input/shared'
+import { dateInputTailwindPreviewProgram } from '@/docs/components/pages/date-input/tailwind'
 
 export const dateInputPage = authoredPage({
   slug: 'date-input',
@@ -20,9 +20,18 @@ export const dateInputPage = authoredPage({
     accessibility:
       'The input is a combobox: aria-haspopup=dialog, aria-expanded tracks the popover, and the calendar grid keeps grid semantics. Blur or Enter commits pending text; invalid input marks the field and announces "Invalid date" through a live region. The clear button is labelled and stays out of the tab order so Enter-to-submit forms are not interrupted.',
     keyboard: [
-      ['Type', 'Parses a freeform date — ISO, month-name, or numeric — and commits immediately when it resolves.'],
-      ['ArrowDown / Click', 'Opens the calendar while focus stays in the input.'],
-      ['Enter', 'Commits pending text; unparseable input marks the field invalid.'],
+      [
+        'Type',
+        'Parses a freeform date — ISO, month-name, or numeric — and commits immediately when it resolves.',
+      ],
+      [
+        'ArrowDown / Click',
+        'Opens the calendar while focus stays in the input.',
+      ],
+      [
+        'Enter',
+        'Commits pending text; unparseable input marks the field invalid.',
+      ],
       ['Escape', 'Closes the calendar and returns focus to the input.'],
       ['Clear button', 'Clears the value and emits ChangedValue(none).'],
     ],
@@ -31,4 +40,4 @@ export const dateInputPage = authoredPage({
     examples: dateInputExamples('tailwind'),
     stylexExamples: dateInputExamples('stylex'),
   },
-});
+})

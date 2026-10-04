@@ -1,8 +1,8 @@
-import { type VariantProps, cva } from 'class-variance-authority';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import { type VariantProps, cva } from 'class-variance-authority'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { cn } from '@/lib/utils';
-import { buttonVariants } from '@/ui/button';
+import { cn } from '@/lib/utils'
+import { buttonVariants } from '@/ui/button'
 
 export const attachmentVariants = cva(
   'group/attachment relative flex w-fit max-w-full min-w-0 shrink-0 flex-wrap rounded-xl border bg-card text-card-foreground transition-colors focus-within:ring-1 focus-within:ring-ring/50 has-[>a,>button]:hover:bg-muted/50 data-[state=error]:border-destructive/30 data-[state=idle]:border-dashed',
@@ -21,27 +21,31 @@ export const attachmentVariants = cva(
     },
     defaultVariants: { size: 'default', orientation: 'horizontal' },
   },
-);
+)
 
 type ChildrenProps = Readonly<{
-  children: ReadonlyArray<Html | string>;
-  class?: string;
-}>;
+  children: ReadonlyArray<Html | string>
+  class?: string
+}>
 export type AttachmentState =
-  'idle' | 'uploading' | 'processing' | 'error' | 'done';
+  | 'idle'
+  | 'uploading'
+  | 'processing'
+  | 'error'
+  | 'done'
 
 export const attachment = <Msg>(
   props: ChildrenProps &
     Readonly<{
-      state?: AttachmentState;
-      size?: VariantProps<typeof attachmentVariants>['size'];
-      orientation?: VariantProps<typeof attachmentVariants>['orientation'];
+      state?: AttachmentState
+      size?: VariantProps<typeof attachmentVariants>['size']
+      orientation?: VariantProps<typeof attachmentVariants>['orientation']
     }>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const state = props.state ?? 'done';
-  const size = props.size ?? 'default';
-  const orientation = props.orientation ?? 'horizontal';
+  const state = props.state ?? 'done'
+  const size = props.size ?? 'default'
+  const orientation = props.orientation ?? 'horizontal'
   return h.div(
     [
       h.DataAttribute('slot', 'attachment'),
@@ -51,14 +55,14 @@ export const attachment = <Msg>(
       h.Class(cn(attachmentVariants({ size, orientation }), props.class)),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 export const attachmentMedia = <Msg>(
   props: ChildrenProps & Readonly<{ variant?: 'icon' | 'image' }>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const variant = props.variant ?? 'icon';
+  const variant = props.variant ?? 'icon'
   return h.div(
     [
       h.DataAttribute('slot', 'attachment-media'),
@@ -73,8 +77,8 @@ export const attachmentMedia = <Msg>(
       ),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 const attachmentPart = <Msg>(
   slot: string,
@@ -85,8 +89,8 @@ const attachmentPart = <Msg>(
   return h.div(
     [h.DataAttribute('slot', slot), h.Class(cn(base, props.class))],
     [...props.children],
-  );
-};
+  )
+}
 export const attachmentContent = <Msg>(
   props: ChildrenProps,
   h: HtmlBuilder<Msg>,
@@ -96,7 +100,7 @@ export const attachmentContent = <Msg>(
     'max-w-full min-w-0 flex-1 leading-tight group-data-[orientation=vertical]/attachment:px-1',
     props,
     h,
-  );
+  )
 export const attachmentActions = <Msg>(
   props: ChildrenProps,
   h: HtmlBuilder<Msg>,
@@ -106,13 +110,13 @@ export const attachmentActions = <Msg>(
     'relative z-20 flex shrink-0 items-center group-data-[orientation=vertical]/attachment:absolute group-data-[orientation=vertical]/attachment:top-3 group-data-[orientation=vertical]/attachment:right-3 group-data-[orientation=vertical]/attachment:gap-1',
     props,
     h,
-  );
+  )
 export const attachmentAction = <Msg>(
   props: Readonly<{
-    onClick: Msg;
-    label: string;
-    children: ReadonlyArray<Html | string>;
-    class?: string;
+    onClick: Msg
+    label: string
+    children: ReadonlyArray<Html | string>
+    class?: string
   }>,
   h: HtmlBuilder<Msg>,
 ): Html =>
@@ -123,14 +127,11 @@ export const attachmentAction = <Msg>(
       h.DataAttribute('slot', 'attachment-action'),
       h.AriaLabel(props.label),
       h.Class(
-        cn(
-          buttonVariants({ variant: 'ghost', size: 'icon-xs' }),
-          props.class,
-        ),
+        cn(buttonVariants({ variant: 'ghost', size: 'icon-xs' }), props.class),
       ),
     ],
     [...props.children],
-  );
+  )
 export const attachmentGroup = <Msg>(
   props: ChildrenProps,
   h: HtmlBuilder<Msg>,
@@ -140,7 +141,7 @@ export const attachmentGroup = <Msg>(
     'flex min-w-0 snap-x snap-mandatory scroll-px-1 gap-3 overflow-x-auto overscroll-x-contain py-1 *:data-[slot=attachment]:flex-none *:data-[slot=attachment]:snap-start',
     props,
     h,
-  );
+  )
 
 export const attachmentTitle = <Msg>(
   props: ChildrenProps,
@@ -152,8 +153,8 @@ export const attachmentTitle = <Msg>(
       h.Class(cn('block max-w-full min-w-0 truncate font-medium', props.class)),
     ],
     [...props.children],
-  );
-};
+  )
+}
 export const attachmentDescription = <Msg>(
   props: ChildrenProps,
   h: HtmlBuilder<Msg>,
@@ -169,8 +170,8 @@ export const attachmentDescription = <Msg>(
       ),
     ],
     [...props.children],
-  );
-};
+  )
+}
 export const attachmentTrigger = <Msg>(
   props: Readonly<{ onClick: Msg; label: string; class?: string }>,
   h: HtmlBuilder<Msg>,
@@ -189,5 +190,5 @@ export const attachmentTrigger = <Msg>(
       ),
     ],
     [],
-  );
-};
+  )
+}

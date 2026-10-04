@@ -1,105 +1,105 @@
-import type { DocsExample } from '@/docs/components/page-definition';
+import type { DocsExample } from '@/docs/components/page-definition'
 import {
   foldkitApplication,
   staticComponentApplication,
-} from '@/docs/components/pages/authored-page';
+} from '@/docs/components/pages/authored-page'
 
 /** Renderer-neutral fixture shapes — menu-item/heading `icon` is a lucide
     name decorated per renderer (Icon.icon), `logoIcon` is the NavIcon glyph
     (`logoPlain` drops the circular tile, matching astryx's bare AppIcon), and
     `endContent` decorates Button/Icon per renderer. */
 export type TopNavFixtureMenuItem = Readonly<{
-  title: string;
-  description?: string;
-  icon?: string;
-  href?: string;
-}>;
+  title: string
+  description?: string
+  icon?: string
+  href?: string
+}>
 
 export type TopNavFixtureFeaturedCard = Readonly<{
-  title: string;
-  description?: string;
-  image?: string;
-  imageAlt?: string;
-  linkLabel?: string;
-  linkHref?: string;
-}>;
+  title: string
+  description?: string
+  image?: string
+  imageAlt?: string
+  linkLabel?: string
+  linkHref?: string
+}>
 
 export type TopNavFixtureEntry =
   | Readonly<{
-      kind: 'item';
-      label: string;
-      href?: string;
-      icon?: string;
-      isSelected?: boolean;
-      isDisabled?: boolean;
-      onSelect?: boolean;
+      kind: 'item'
+      label: string
+      href?: string
+      icon?: string
+      isSelected?: boolean
+      isDisabled?: boolean
+      onSelect?: boolean
     }>
   | Readonly<{
-      kind: 'menu';
-      label: string;
-      items: ReadonlyArray<TopNavFixtureMenuItem>;
+      kind: 'menu'
+      label: string
+      items: ReadonlyArray<TopNavFixtureMenuItem>
     }>
   | Readonly<{
-      kind: 'megaMenu';
-      label: string;
-      items: ReadonlyArray<TopNavFixtureMenuItem>;
-      featured?: TopNavFixtureFeaturedCard;
-    }>;
+      kind: 'megaMenu'
+      label: string
+      items: ReadonlyArray<TopNavFixtureMenuItem>
+      featured?: TopNavFixtureFeaturedCard
+    }>
 
 export type TopNavFixtureHeading = Readonly<{
-  heading?: string;
+  heading?: string
   /** Lucide name; wrapped in the NavIcon circle unless `logoPlain`. */
-  logoIcon?: string;
-  logoPlain?: boolean;
-  headingHref?: string;
-  superheading?: string;
-  subheading?: string;
-  menu?: ReadonlyArray<string>;
-}>;
+  logoIcon?: string
+  logoPlain?: boolean
+  headingHref?: string
+  superheading?: string
+  subheading?: string
+  menu?: ReadonlyArray<string>
+}>
 
 export type TopNavFixtureEndItem =
   | Readonly<{ kind: 'ghostIcon'; label: string; icon: string }>
   | Readonly<{ kind: 'ghost'; label: string }>
   | Readonly<{ kind: 'primary'; label: string }>
-  | Readonly<{ kind: 'icon'; icon: string }>;
+  | Readonly<{ kind: 'icon'; icon: string }>
 
 export type TopNavFixtureNav = Readonly<{
-  label?: string;
-  heading?: TopNavFixtureHeading;
-  startItems?: ReadonlyArray<TopNavFixtureEntry>;
-  centerItems?: ReadonlyArray<TopNavFixtureEntry>;
-  endContent?: ReadonlyArray<TopNavFixtureEndItem>;
+  label?: string
+  heading?: TopNavFixtureHeading
+  startItems?: ReadonlyArray<TopNavFixtureEntry>
+  centerItems?: ReadonlyArray<TopNavFixtureEntry>
+  endContent?: ReadonlyArray<TopNavFixtureEndItem>
   /** astryx `style={{ width: 600 }}` on the example root. */
-  width600?: boolean;
-}>;
+  width600?: boolean
+}>
 
 export type TopNavFixtureMegaItem = Readonly<{
-  title: string;
-  description?: string;
-  icon?: string;
-  href?: string;
-}>;
+  title: string
+  description?: string
+  icon?: string
+  href?: string
+}>
 
 export type TopNavFixture = Readonly<
   | {
-      title: string;
-      description?: string;
-      kind: 'navs';
-      navs: ReadonlyArray<TopNavFixtureNav>;
+      title: string
+      description?: string
+      kind: 'navs'
+      navs: ReadonlyArray<TopNavFixtureNav>
     }
   | {
-      title: string;
-      description?: string;
-      kind: 'megaItems';
-      megaItems: ReadonlyArray<TopNavFixtureMegaItem>;
+      title: string
+      description?: string
+      kind: 'megaItems'
+      megaItems: ReadonlyArray<TopNavFixtureMegaItem>
     }
   | {
-      title: string;
-      description?: string;
-      kind: 'featuredCard';
-      featuredCard: TopNavFixtureFeaturedCard;
+      title: string
+      description?: string
+      kind: 'featuredCard'
+      featuredCard: TopNavFixtureFeaturedCard
     }
->;
+>
 
 export const topNavFixtures: Readonly<
   [TopNavFixture, ...Array<TopNavFixture>]
@@ -238,8 +238,7 @@ export const topNavFixtures: Readonly<
             items: [
               {
                 title: 'Analytics',
-                description:
-                  'Track and analyze user behavior across your apps',
+                description: 'Track and analyze user behavior across your apps',
                 icon: 'chart-no-axes-combined',
                 href: '#analytics',
               },
@@ -270,8 +269,7 @@ export const topNavFixtures: Readonly<
             ],
             featured: {
               title: "What's new in v4.0",
-              description:
-                'AI-powered analytics and real-time collaboration.',
+              description: 'AI-powered analytics and real-time collaboration.',
               image: '/template-assets/light-working-horizontal-1.png',
               imageAlt: 'Team collaboration',
               linkLabel: 'Read the announcement',
@@ -667,13 +665,11 @@ export const topNavFixtures: Readonly<
             ],
           },
         ],
-        endContent: [
-          { kind: 'ghostIcon', label: 'Search', icon: 'search' },
-        ],
+        endContent: [{ kind: 'ghostIcon', label: 'Search', icon: 'search' }],
       },
     ],
   },
-];
+]
 
 // ---------------------------------------------------------------------------
 // Fixture introspection (which decorations the generated code needs)
@@ -695,91 +691,84 @@ const navUsesIcon = (nav: TopNavFixtureNav): boolean =>
   ) ||
   (nav.endContent ?? []).some(
     item => item.kind === 'ghostIcon' || item.kind === 'icon',
-  );
+  )
 
 const fixtureNeedsIcon = (fixture: TopNavFixture): boolean =>
   fixture.kind === 'megaItems'
     ? fixture.megaItems.some(item => item.icon !== undefined)
-    : fixture.kind === 'navs' && fixture.navs.some(navUsesIcon);
+    : fixture.kind === 'navs' && fixture.navs.some(navUsesIcon)
 
 const fixtureNeedsButton = (fixture: TopNavFixture): boolean =>
   fixture.kind === 'navs' &&
   fixture.navs.some(nav =>
     (nav.endContent ?? []).some(item => item.kind !== 'icon'),
-  );
+  )
 
 // ---------------------------------------------------------------------------
 // Generated example source
 // ---------------------------------------------------------------------------
 
 const quote = (value: string): string =>
-  `'${value.replaceAll('\\', '\\\\').replaceAll("'", "\\'")}'`;
+  `'${value.replaceAll('\\', '\\\\').replaceAll("'", "\\'")}'`
 
-
-const menuItemSource = (
-  item: TopNavFixtureMenuItem,
-): string => {
-  const fields: Array<string> = [`title: ${quote(item.title)}`];
+const menuItemSource = (item: TopNavFixtureMenuItem): string => {
+  const fields: Array<string> = [`title: ${quote(item.title)}`]
   if (item.description !== undefined) {
-    fields.push(`description: ${quote(item.description)}`);
+    fields.push(`description: ${quote(item.description)}`)
   }
   if (item.icon !== undefined) {
-    fields.push(`icon: Icon.icon(${quote(item.icon)}, { class: 'size-5' }, h)`);
+    fields.push(`icon: Icon.icon(${quote(item.icon)}, { class: 'size-5' }, h)`)
   }
   if (item.href !== undefined) {
-    fields.push(`href: ${quote(item.href)}`);
+    fields.push(`href: ${quote(item.href)}`)
   }
-  return `{ ${fields.join(', ')} }`;
-};
+  return `{ ${fields.join(', ')} }`
+}
 
-const featuredCardSource = (
-  card: TopNavFixtureFeaturedCard,
-): string => {
-  const fields: Array<string> = [`title: ${quote(card.title)}`];
+const featuredCardSource = (card: TopNavFixtureFeaturedCard): string => {
+  const fields: Array<string> = [`title: ${quote(card.title)}`]
   if (card.description !== undefined) {
-    fields.push(`description: ${quote(card.description)}`);
+    fields.push(`description: ${quote(card.description)}`)
   }
   if (card.image !== undefined) {
-    fields.push(`image: ${quote(card.image)}`);
+    fields.push(`image: ${quote(card.image)}`)
   }
   if (card.imageAlt !== undefined) {
-    fields.push(`imageAlt: ${quote(card.imageAlt)}`);
+    fields.push(`imageAlt: ${quote(card.imageAlt)}`)
   }
   if (card.linkLabel !== undefined) {
-    fields.push(`linkLabel: ${quote(card.linkLabel)}`);
+    fields.push(`linkLabel: ${quote(card.linkLabel)}`)
   }
   if (card.linkHref !== undefined) {
-    fields.push(`linkHref: ${quote(card.linkHref)}`);
+    fields.push(`linkHref: ${quote(card.linkHref)}`)
   }
-  return `{ ${fields.join(', ')} }`;
-};
+  return `{ ${fields.join(', ')} }`
+}
 
-const entrySource = (
-  entry: TopNavFixtureEntry,
-): string => {
+const entrySource = (entry: TopNavFixtureEntry): string => {
   if (entry.kind === 'item') {
-    const fields: Array<string> = [`label: ${quote(entry.label)}`];
+    const fields: Array<string> = [`label: ${quote(entry.label)}`]
     if (entry.icon !== undefined) {
-      fields.push(`icon: ${quote(entry.icon)}`);
+      fields.push(`icon: ${quote(entry.icon)}`)
     }
     if (entry.isSelected === true) {
-      fields.push('isSelected: true');
+      fields.push('isSelected: true')
     }
     if (entry.isDisabled === true) {
-      fields.push('isDisabled: true');
+      fields.push('isDisabled: true')
     }
     if (entry.href !== undefined) {
-      fields.push(`href: ${quote(entry.href)}`);
+      fields.push(`href: ${quote(entry.href)}`)
     }
     if (entry.onSelect === true) {
-      fields.push('onSelect: true');
+      fields.push('onSelect: true')
     }
-    return `{ ${fields.join(', ')} }`;
+    return `{ ${fields.join(', ')} }`
   }
   if (entry.kind === 'menu') {
     return `{ kind: 'menu', label: ${quote(entry.label)}, items: [${entry.items
       .map(item => menuItemSource(item))
-      .join(', ')}] }`;
+      .join(', ')}] }`
   }
   return `{ kind: 'megaMenu', label: ${quote(entry.label)}, items: [${entry.items
     .map(item => menuItemSource(item))
@@ -787,95 +776,91 @@ const entrySource = (
     entry.featured === undefined
       ? ''
       : `, featured: ${featuredCardSource(entry.featured)}`
-  } }`;
-};
+  } }`
+}
 
-const endItemSource = (
-  item: TopNavFixtureEndItem,
-): string => {
+const endItemSource = (item: TopNavFixtureEndItem): string => {
   switch (item.kind) {
     case 'ghostIcon':
-      return `Button.button({ variant: 'ghost', size: 'icon-sm', ariaLabel: ${quote(item.label)}, children: [Icon.icon('${item.icon}', { class: 'size-4' }, h)] }, h)`;
+      return `Button.button({ variant: 'ghost', size: 'icon-sm', ariaLabel: ${quote(item.label)}, children: [Icon.icon('${item.icon}', { class: 'size-4' }, h)] }, h)`
     case 'ghost':
-      return `Button.button({ variant: 'ghost', children: [${quote(item.label)}] }, h)`;
+      return `Button.button({ variant: 'ghost', children: [${quote(item.label)}] }, h)`
     case 'primary':
-      return `Button.button({ children: [${quote(item.label)}] }, h)`;
+      return `Button.button({ children: [${quote(item.label)}] }, h)`
     case 'icon':
-      return `Icon.icon('${item.icon}', { class: 'size-5' }, h)`;
+      return `Icon.icon('${item.icon}', { class: 'size-5' }, h)`
   }
-};
+}
 
-const headingSource = (
-  heading: TopNavFixtureHeading,
-): string => {
-  const fields: Array<string> = [];
+const headingSource = (heading: TopNavFixtureHeading): string => {
+  const fields: Array<string> = []
   if (heading.heading !== undefined) {
-    fields.push(`heading: ${quote(heading.heading)}`);
+    fields.push(`heading: ${quote(heading.heading)}`)
   }
   if (heading.logoIcon !== undefined) {
-    const glyph = `Icon.icon('${heading.logoIcon}', { class: 'size-4' }, h)`;
-    const logo = heading.logoPlain === true
-      ? `Icon.icon('${heading.logoIcon}', { class: 'size-5' }, h)`
-      : `h.span([h.Class('flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground')], [${glyph}])`;
-    fields.push(`logo: ${logo}`);
+    const glyph = `Icon.icon('${heading.logoIcon}', { class: 'size-4' }, h)`
+    const logo =
+      heading.logoPlain === true
+        ? `Icon.icon('${heading.logoIcon}', { class: 'size-5' }, h)`
+        : `h.span([h.Class('flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground')], [${glyph}])`
+    fields.push(`logo: ${logo}`)
   }
   if (heading.headingHref !== undefined) {
-    fields.push(`headingHref: ${quote(heading.headingHref)}`);
+    fields.push(`headingHref: ${quote(heading.headingHref)}`)
   }
   if (heading.superheading !== undefined) {
-    fields.push(`superheading: ${quote(heading.superheading)}`);
+    fields.push(`superheading: ${quote(heading.superheading)}`)
   }
   if (heading.subheading !== undefined) {
-    fields.push(`subheading: ${quote(heading.subheading)}`);
+    fields.push(`subheading: ${quote(heading.subheading)}`)
   }
   if (heading.menu !== undefined) {
     fields.push(
       `menu: [${heading.menu
         .map(label => `{ label: ${quote(label)}, href: '#' }`)
         .join(', ')}]`,
-    );
+    )
   }
-  return `{ ${fields.join(', ')} }`;
-};
+  return `{ ${fields.join(', ')} }`
+}
 
-const viewInputsSource = (
-  nav: TopNavFixtureNav,
-  isStyleX: boolean,
-): string => {
-  const fields: Array<string> = [`label: ${quote(nav.label ?? 'Top navigation')}`];
+const viewInputsSource = (nav: TopNavFixtureNav, isStyleX: boolean): string => {
+  const fields: Array<string> = [
+    `label: ${quote(nav.label ?? 'Top navigation')}`,
+  ]
   if (nav.heading !== undefined) {
-    fields.push(`heading: ${headingSource(nav.heading)}`);
+    fields.push(`heading: ${headingSource(nav.heading)}`)
   }
   if (nav.startItems !== undefined) {
     fields.push(
       `startItems: [${nav.startItems
         .map(entry => entrySource(entry))
         .join(', ')}]`,
-    );
+    )
   }
   if (nav.centerItems !== undefined) {
     fields.push(
       `centerItems: [${nav.centerItems
         .map(entry => entrySource(entry))
         .join(', ')}]`,
-    );
+    )
   }
   if (nav.endContent !== undefined) {
     fields.push(
       `endContent: h.div([h.Class('flex items-center gap-1')], [${nav.endContent
         .map(item => endItemSource(item))
         .join(', ')}])`,
-    );
+    )
   }
   if (nav.width600 === true) {
     fields.push(
       isStyleX
         ? `layoutStyle: styles.navWidth600`
         : `class: 'w-150 max-w-full'`,
-    );
+    )
   }
-  return `{ ${fields.join(', ')} }`;
-};
+  return `{ ${fields.join(', ')} }`
+}
 
 const submodelSource = (
   modelField: string,
@@ -888,7 +873,7 @@ const submodelSource = (
         view: TopNav.view,
         viewInputs: ${viewInputsSource(nav, isStyleX)},
         toParentMessage: message => Message['${messageTag}']({ message }),
-      })`;
+      })`
 
 const applySource = (
   modelField: string,
@@ -901,45 +886,40 @@ const applySource = (
       ? Option.some(result.outMessage.itemTitle)
       : model.maybeSelectedId;
   return { model: { ...model, ${modelField}: result.model, maybeSelectedId }, commands };
-};`;
+};`
 
-const navSource = (
-  index: number,
-  renderer: 'tailwind' | 'stylex',
-): string => {
-  const fixture = topNavFixtures[index] ?? topNavFixtures[0];
+const navSource = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+  const fixture = topNavFixtures[index] ?? topNavFixtures[0]
   if (fixture.kind !== 'navs') {
-    return '';
+    return ''
   }
-  const isStyleX = renderer === 'stylex';
-  const ui = isStyleX ? 'stylex' : 'ui';
-  const multi = fixture.navs.length > 1;
-  const fields = fixture.navs.map((_nav, i) => `nav${i}`);
-  const tags = fixture.navs.map((_nav, i) => `GotTopNav${i}Message`);
-  const needsIcon = fixtureNeedsIcon(fixture);
-  const needsButton = fixtureNeedsButton(fixture);
+  const isStyleX = renderer === 'stylex'
+  const ui = isStyleX ? 'stylex' : 'ui'
+  const multi = fixture.navs.length > 1
+  const fields = fixture.navs.map((_nav, i) => `nav${i}`)
+  const tags = fixture.navs.map((_nav, i) => `GotTopNav${i}Message`)
+  const needsIcon = fixtureNeedsIcon(fixture)
+  const needsButton = fixtureNeedsButton(fixture)
 
-  const modelFields = fields
-    .map(field => `${field}: TopNav.Model`)
-    .join(', ');
+  const modelFields = fields.map(field => `${field}: TopNav.Model`).join(', ')
   const initFields = fixture.navs
     .map(
       (_nav, i) =>
         `${fields[i]}: TopNav.init({ id: 'docs-top-nav-${index}-${i}' })`,
     )
-    .join(', ');
+    .join(', ')
 
   const navsSource = fixture.navs
     .map((nav, i) => submodelSource(fields[i]!, tags[i]!, nav, isStyleX))
-    .join(',\n    ');
+    .join(',\n    ')
 
   const bodyWrapper = multi
     ? `h.div([h.Class('flex flex-col gap-6')], [
       ${navsSource},
     ])`
-    : navsSource;
+    : navsSource
 
-  const needsWidth600 = fixture.navs.some(nav => nav.width600 === true);
+  const needsWidth600 = fixture.navs.some(nav => nav.width600 === true)
   const stylexStyles =
     isStyleX && needsWidth600
       ? `import * as stylex from '@stylexjs/stylex'
@@ -947,7 +927,7 @@ const navSource = (
 const styles = stylex.create({
   navWidth600: { maxWidth: '100%', width: '600px' },
 })`
-      : '';
+      : ''
 
   return foldkitApplication({
     title: `TopNav — ${fixture.title}`,
@@ -984,36 +964,34 @@ ${tags
     ${bodyWrapper},
   ]),
 })`,
-  });
-};
+  })
+}
 
-const megaItemCallSource = (
-  item: TopNavFixtureMegaItem,
-): string => {
-  const fields: Array<string> = [`title: ${quote(item.title)}`];
+const megaItemCallSource = (item: TopNavFixtureMegaItem): string => {
+  const fields: Array<string> = [`title: ${quote(item.title)}`]
   if (item.description !== undefined) {
-    fields.push(`description: ${quote(item.description)}`);
+    fields.push(`description: ${quote(item.description)}`)
   }
   if (item.icon !== undefined) {
-    fields.push(`icon: Icon.icon(${quote(item.icon)}, { class: 'size-5' }, h)`);
+    fields.push(`icon: Icon.icon(${quote(item.icon)}, { class: 'size-5' }, h)`)
   }
   if (item.href !== undefined) {
-    fields.push(`href: ${quote(item.href)}`);
+    fields.push(`href: ${quote(item.href)}`)
   }
-  return `TopNav.topNavMegaMenuItem({ ${fields.join(', ')} }, undefined, h)`;
-};
+  return `TopNav.topNavMegaMenuItem({ ${fields.join(', ')} }, undefined, h)`
+}
 
 const standaloneSource = (
   index: number,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const fixture = topNavFixtures[index] ?? topNavFixtures[0];
+  const fixture = topNavFixtures[index] ?? topNavFixtures[0]
   if (fixture.kind === 'navs') {
-    return '';
+    return ''
   }
-  const isStyleX = renderer === 'stylex';
-  const ui = isStyleX ? 'stylex' : 'ui';
-  const needsIcon = fixtureNeedsIcon(fixture);
+  const isStyleX = renderer === 'stylex'
+  const ui = isStyleX ? 'stylex' : 'ui'
+  const needsIcon = fixtureNeedsIcon(fixture)
   const viewBody =
     fixture.kind === 'megaItems'
       ? `h.div([h.Class('grid grid-cols-2 gap-2')], [
@@ -1021,28 +999,27 @@ const standaloneSource = (
       ])`
       : `TopNav.topNavMegaMenuFeaturedCard(${featuredCardSource(
           fixture.featuredCard,
-        )}, h)`;
+        )}, h)`
   return staticComponentApplication({
     componentName: 'TopNav',
     componentSlug: 'top-nav',
     renderer,
-    exampleName: fixture.title.replaceAll('Top Nav ', 'TopNav').replaceAll(' ', ''),
+    exampleName: fixture.title
+      .replaceAll('Top Nav ', 'TopNav')
+      .replaceAll(' ', ''),
     ...(needsIcon
       ? { componentImports: `import * as Icon from '@/lib/icon'` }
       : {}),
     viewBody,
-  });
-};
+  })
+}
 
-const source = (
-  index: number,
-  renderer: 'tailwind' | 'stylex',
-): string => {
-  const fixture = topNavFixtures[index] ?? topNavFixtures[0];
+const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+  const fixture = topNavFixtures[index] ?? topNavFixtures[0]
   return fixture.kind === 'navs'
     ? navSource(index, renderer)
-    : standaloneSource(index, renderer);
-};
+    : standaloneSource(index, renderer)
+}
 
 export const topNavExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -1054,4 +1031,4 @@ export const topNavExamples = (
       ? {}
       : { description: fixture.description }),
     code: source(index, renderer),
-  }));
+  }))

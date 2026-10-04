@@ -1,10 +1,10 @@
 import type { Update } from 'foldkit'
-import { Schema as S } from 'effect';
-import type { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import { Schema as S } from 'effect'
+import type { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-import { button } from '@/ui/button';
+import { button } from '@/ui/button'
 import {
   card,
   cardContent,
@@ -12,9 +12,9 @@ import {
   cardFooter,
   cardHeader,
   cardTitle,
-} from '@/ui/card';
-import * as Checkbox from '@/ui/checkbox';
-import { fieldGroup } from '@/ui/field';
+} from '@/ui/card'
+import * as Checkbox from '@/ui/checkbox'
+import { fieldGroup } from '@/ui/field'
 
 const notifications = [
   {
@@ -37,15 +37,15 @@ const notifications = [
     label: 'Market updates',
     description: 'Daily portfolio summary and price alerts.',
   },
-] as const;
+] as const
 
 export const Model = S.Struct({
   transactions: S.Boolean,
   security: S.Boolean,
   goals: S.Boolean,
   market: S.Boolean,
-});
-export type Model = typeof Model.Type;
+})
+export type Model = typeof Model.Type
 
 export const NotificationTarget = S.Literals([
   'all',
@@ -53,49 +53,51 @@ export const NotificationTarget = S.Literals([
   'security',
   'goals',
   'market',
-]);
-export type NotificationTarget = typeof NotificationTarget.Type;
+])
+export type NotificationTarget = typeof NotificationTarget.Type
 export const ToggledNotification = defineMessageUnion({
   ToggledNotification: {
-  target: NotificationTarget,
-  isChecked: S.Boolean,
-},
-});
-export const Message = ToggledNotification;
-export type Message = typeof Message.Type;
+    target: NotificationTarget,
+    isChecked: S.Boolean,
+  },
+})
+export const Message = ToggledNotification
+export type Message = typeof Message.Type
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 
 const childStates = (model: Model): ReadonlyArray<boolean> => [
   model.transactions,
   model.security,
   model.goals,
   model.market,
-];
+]
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   if (message.target === 'all') {
-    return { model: {
+    return {
+      model: {
         transactions: message.isChecked,
         security: message.isChecked,
         goals: message.isChecked,
         market: message.isChecked,
-      } };
+      },
+    }
   }
-  return { model: { ...model, [message.target]: message.isChecked } };
-};
+  return { model: { ...model, [message.target]: message.isChecked } }
+}
 
 export const init = (): Model => ({
   transactions: true,
   security: true,
   goals: false,
   market: false,
-});
+})
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
-  const states = childStates(model);
-  const allChecked = states.every(Boolean);
-  const someChecked = states.some(Boolean) && !allChecked;
+  const states = childStates(model)
+  const allChecked = states.every(Boolean)
+  const someChecked = states.some(Boolean) && !allChecked
 
   return card<Message>(
     {
@@ -125,19 +127,22 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                       {
                         id: 'notification-settings-all',
                         isChecked: allChecked,
-                        onToggle: (isChecked) =>
-                          ToggledNotification.ToggledNotification({ target: 'all', isChecked }),
+                        onToggle: isChecked =>
+                          ToggledNotification.ToggledNotification({
+                            target: 'all',
+                            isChecked,
+                          }),
                         label: 'Select all',
                         isIndeterminate: someChecked,
                       },
                       h,
                     ),
-                    ...notifications.map((notification) =>
+                    ...notifications.map(notification =>
                       Checkbox.checkbox(
                         {
                           id: `notification-settings-${notification.key}`,
                           isChecked: model[notification.key],
-                          onToggle: (isChecked) =>
+                          onToggle: isChecked =>
                             ToggledNotification.ToggledNotification({
                               target: notification.key,
                               isChecked,
@@ -167,8 +172,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 /*
 Stateful? yes.

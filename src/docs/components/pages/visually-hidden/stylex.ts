@@ -1,25 +1,29 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   type VisuallyHiddenFixture,
   vhActions,
   vhItems,
   visuallyHiddenFixtures,
   vhStats,
-} from '@/docs/components/pages/visually-hidden/shared';
-import { icon } from '@/lib/icon';
-import { className } from '@/stylex/style';
-import * as Badge from '@/stylex/badge';
-import * as Button from '@/stylex/button';
-import * as Stack from '@/stylex/stack';
-import * as VisuallyHidden from '@/stylex/visually-hidden';
+} from '@/docs/components/pages/visually-hidden/shared'
+import { icon } from '@/lib/icon'
+import { className } from '@/stylex/style'
+import * as Badge from '@/stylex/badge'
+import * as Button from '@/stylex/button'
+import * as Stack from '@/stylex/stack'
+import * as VisuallyHidden from '@/stylex/visually-hidden'
 
 const styles = stylex.create({
-  supporting: { color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1rem' },
+  supporting: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.75rem',
+    lineHeight: '1rem',
+  },
   body: { fontSize: '0.875rem', lineHeight: '1.25rem' },
-  bodyBold: { fontSize: '0.875rem', fontWeight: 700, lineHeight: '1.25rem', },
+  bodyBold: { fontSize: '0.875rem', fontWeight: 700, lineHeight: '1.25rem' },
   display: { fontSize: '1.8125rem', fontWeight: 400, lineHeight: '1.2414' },
   smallIcon: {
     color: 'var(--muted-foreground)',
@@ -52,28 +56,29 @@ const styles = stylex.create({
     flexDirection: 'column',
   },
   iconBtn4: { flexShrink: 0, height: '1rem', width: '1rem' },
-});
+})
 
-const COLUMNS = ['Backlog', 'In progress', 'Done'] as const;
+const COLUMNS = ['Backlog', 'In progress', 'Done'] as const
 
 type PreviewModel = Readonly<{
-  column: number;
-}>;
+  column: number
+}>
 
 const supporting = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class(className(styles.supporting))], [text]);
+  h.p([h.Class(className(styles.supporting))], [text])
 const body = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class(className(styles.body))], [text]);
+  h.p([h.Class(className(styles.body))], [text])
 const display = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class(className(styles.display))], [text]);
+  h.p([h.Class(className(styles.display))], [text])
 
 const mutedCard = <Msg>(
   children: ReadonlyArray<Html | string>,
   h: HtmlBuilder<Msg>,
 ): Html =>
-  h.div([h.Class(className(styles.mutedCard))], [
-    h.div([h.Class(className(styles.mutedCardContent))], [...children]),
-  ]);
+  h.div(
+    [h.Class(className(styles.mutedCard))],
+    [h.div([h.Class(className(styles.mutedCardContent))], [...children])],
+  )
 
 const showcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Stack.vStack(
@@ -105,7 +110,13 @@ const showcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
                                   variant: 'ghost',
                                   size: 'icon',
                                   ariaLabel: action.label,
-                                  children: [icon(action.icon, { class: className(styles.iconBtn4) }, h)],
+                                  children: [
+                                    icon(
+                                      action.icon,
+                                      { class: className(styles.iconBtn4) },
+                                      h,
+                                    ),
+                                  ],
                                 },
                                 h,
                               ),
@@ -173,14 +184,14 @@ const showcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ],
     },
     h,
-  );
+  )
 
 const liveRegionView = <Msg>(
   model: PreviewModel,
   onMessageJson: (json: string) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const current = COLUMNS[model.column] ?? COLUMNS[0];
+  const current = COLUMNS[model.column] ?? COLUMNS[0]
   return Stack.vStack(
     {
       gap: 4,
@@ -199,16 +210,17 @@ const liveRegionView = <Msg>(
                 {
                   variant: 'secondary',
                   children: ['Move task'],
-                  onClick: onMessageJson(
-                    JSON.stringify({ _tag: 'MovedTask' }),
-                  ),
+                  onClick: onMessageJson(JSON.stringify({ _tag: 'MovedTask' })),
                 },
                 h,
               ),
-              h.p([h.Class(className(styles.body))], [
-                'Task is in ',
-                h.span([h.Class(className(styles.bodyBold))], [current]),
-              ]),
+              h.p(
+                [h.Class(className(styles.body))],
+                [
+                  'Task is in ',
+                  h.span([h.Class(className(styles.bodyBold))], [current]),
+                ],
+              ),
             ],
           },
           h,
@@ -224,8 +236,8 @@ const liveRegionView = <Msg>(
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const headingView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Stack.vStack(
@@ -277,7 +289,7 @@ const headingView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ],
     },
     h,
-  );
+  )
 
 const supplementaryView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Stack.hStack(
@@ -299,9 +311,7 @@ const supplementaryView = <Msg>(h: HtmlBuilder<Msg>): Html =>
                       vAlign: 'center',
                       children: [
                         icon(
-                          stat.direction === 'up'
-                            ? 'arrow-up'
-                            : 'arrow-down',
+                          stat.direction === 'up' ? 'arrow-up' : 'arrow-down',
                           {
                             class: className(
                               stat.direction === 'up'
@@ -337,7 +347,7 @@ const supplementaryView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ),
     },
     h,
-  );
+  )
 
 const viewFor = <Msg>(
   fixture: VisuallyHiddenFixture,
@@ -347,15 +357,15 @@ const viewFor = <Msg>(
 ): Html => {
   switch (fixture.kind) {
     case 'showcase':
-      return showcaseView(h);
+      return showcaseView(h)
     case 'liveRegion':
-      return liveRegionView(model, onMessageJson, h);
+      return liveRegionView(model, onMessageJson, h)
     case 'heading':
-      return headingView(h);
+      return headingView(h)
     case 'supplementary':
-      return supplementaryView(h);
+      return supplementaryView(h)
   }
-};
+}
 
 export const visuallyHiddenStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
@@ -368,4 +378,4 @@ export const visuallyHiddenStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
     model as PreviewModel,
     onMessageJson,
     h,
-  );
+  )

@@ -1,36 +1,36 @@
 import type { ComponentLayoutStyle } from './contracts'
 
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as DropdownMenu from './dropdown-menu';
+import * as DropdownMenu from './dropdown-menu'
 
-export const Model = DropdownMenu.Model;
-export type Model = DropdownMenu.Model;
-export const Message = DropdownMenu.Message;
-export type Message = DropdownMenu.Message;
+export const Model = DropdownMenu.Model
+export type Model = DropdownMenu.Model
+export const Message = DropdownMenu.Message
+export type Message = DropdownMenu.Message
 export type OutMessage<Item extends string = string> =
-  DropdownMenu.OutMessage<Item>;
-export const init = DropdownMenu.init;
-export const create = DropdownMenu.create;
-export const update = DropdownMenu.update;
-export const open = DropdownMenu.open;
-export const openAt = DropdownMenu.openAt;
-export const close = DropdownMenu.close;
-export const selectItem = DropdownMenu.selectItem;
+  DropdownMenu.OutMessage<Item>
+export const init = DropdownMenu.init
+export const create = DropdownMenu.create
+export const update = DropdownMenu.update
+export const open = DropdownMenu.open
+export const openAt = DropdownMenu.openAt
+export const close = DropdownMenu.close
+export const selectItem = DropdownMenu.selectItem
 
 export type ContextMenuItemConfig<Item extends string = string> =
-  DropdownMenu.DropdownMenuItemConfig<Item>;
+  DropdownMenu.DropdownMenuItemConfig<Item>
 
 export type ContextMenuProps<Item extends string, Msg> = Readonly<{
-  model: Model;
-  toParentMessage: (message: Message) => Msg;
-  trigger: Html | string;
-  items: ReadonlyArray<Item>;
-  itemToConfig: (item: Item) => ContextMenuItemConfig<Item>;
-  ariaLabel?: string;
-  layoutStyle?: ComponentLayoutStyle;
-  direction?: 'ltr' | 'rtl';
-}>;
+  model: Model
+  toParentMessage: (message: Message) => Msg
+  trigger: Html | string
+  items: ReadonlyArray<Item>
+  itemToConfig: (item: Item) => ContextMenuItemConfig<Item>
+  ariaLabel?: string
+  layoutStyle?: ComponentLayoutStyle
+  direction?: 'ltr' | 'rtl'
+}>
 
 export const contextMenu = <Item extends string, Msg>(
   props: ContextMenuProps<Item, Msg>,
@@ -51,4 +51,4 @@ export const contextMenu = <Item extends string, Msg>(
       ...(props.ariaLabel === undefined ? {} : { ariaLabel: props.ariaLabel }),
     },
     h,
-  );
+  )

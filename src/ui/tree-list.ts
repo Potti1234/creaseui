@@ -1,13 +1,13 @@
 /* Ported from Meta Astryx TreeList (packages/core/src/TreeList/) — examples
    and visual spec adapted to Crease UI tokens. */
 
-import { Option } from 'effect';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineView } from 'foldkit/submodel';
+import { Option } from 'effect'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineView } from 'foldkit/submodel'
 
-import * as Icon from '@/lib/icon';
-import * as TreeListBehavior from '@/lib/tree-list';
-import { cn } from '@/lib/utils';
+import * as Icon from '@/lib/icon'
+import * as TreeListBehavior from '@/lib/tree-list'
+import { cn } from '@/lib/utils'
 
 export {
   Message,
@@ -20,7 +20,7 @@ export {
   tabbableId,
   update,
   visibleItems,
-} from '@/lib/tree-list';
+} from '@/lib/tree-list'
 export type {
   InitConfig,
   TreeListDensity,
@@ -28,18 +28,19 @@ export type {
   UpdateReturn,
   TreeListVariant,
   VisibleItem,
-} from '@/lib/tree-list';
+} from '@/lib/tree-list'
 
-const DENSITY_CLASS: Readonly<Record<TreeListBehavior.TreeListDensity, string>> =
-  {
-    compact: 'py-1',
-    balanced: 'py-2',
-    spacious: 'py-3',
-  };
+const DENSITY_CLASS: Readonly<
+  Record<TreeListBehavior.TreeListDensity, string>
+> = {
+  compact: 'py-1',
+  balanced: 'py-2',
+  spacious: 'py-3',
+}
 
 // spacing-4 (16px) chevron column + spacing-2 (8px) gap — the fixed reserve a
 // leaf adds under an expandable ancestor's caret.
-const CHEVRON_COLUMN = '16px + 8px';
+const CHEVRON_COLUMN = '16px + 8px'
 
 const indentStyle = (
   level: number,
@@ -48,17 +49,17 @@ const indentStyle = (
   '--_tree-indent': reservesChevronColumn
     ? `calc(${String(level)} * var(--tree-list-indent) + ${CHEVRON_COLUMN})`
     : `calc(${String(level)} * var(--tree-list-indent))`,
-});
+})
 
 type RenderContext<Msg> = Readonly<{
-  model: TreeListBehavior.Model;
-  toMessage: (message: TreeListBehavior.Message) => Msg;
-  density: TreeListBehavior.TreeListDensity;
-  variant: TreeListBehavior.TreeListVariant;
-  hasExpandableItems: boolean;
-  tabbable: string | undefined;
-  h: HtmlBuilder<Msg>;
-}>;
+  model: TreeListBehavior.Model
+  toMessage: (message: TreeListBehavior.Message) => Msg
+  density: TreeListBehavior.TreeListDensity
+  variant: TreeListBehavior.TreeListVariant
+  hasExpandableItems: boolean
+  tabbable: string | undefined
+  h: HtmlBuilder<Msg>
+}>
 
 const branchContainers = <Msg>(
   ancestorsIsLast: ReadonlyArray<boolean>,
@@ -66,7 +67,7 @@ const branchContainers = <Msg>(
   level: number,
   h: HtmlBuilder<Msg>,
 ): Array<Html> => {
-  const containers: Array<Html> = [];
+  const containers: Array<Html> = []
   ancestorsIsLast.forEach((ancestorIsLast, ancestorLevel) => {
     // The row's own connector column (nestedLevel - 1) renders below.
     if (!ancestorIsLast && ancestorLevel !== level - 1) {
@@ -90,9 +91,9 @@ const branchContainers = <Msg>(
             ),
           ],
         ),
-      );
+      )
     }
-  });
+  })
   if (level > 0) {
     containers.push(
       h.div(
@@ -118,10 +119,10 @@ const branchContainers = <Msg>(
           ),
         ],
       ),
-    );
+    )
   }
-  return containers;
-};
+  return containers
+}
 
 const renderItem = <Msg>(
   ctx: RenderContext<Msg>,
@@ -132,18 +133,18 @@ const renderItem = <Msg>(
   ancestorsIsLast: ReadonlyArray<boolean>,
   isLast: boolean,
 ): Html => {
-  const { h, model } = ctx;
-  const children = TreeListBehavior.hasChildren(item);
-  const expanded = children && TreeListBehavior.isItemExpanded(item, model);
-  const disabled = item.isDisabled === true;
-  const actionable = TreeListBehavior.isItemActionable(item);
+  const { h, model } = ctx
+  const children = TreeListBehavior.hasChildren(item)
+  const expanded = children && TreeListBehavior.isItemExpanded(item, model)
+  const disabled = item.isDisabled === true
+  const actionable = TreeListBehavior.isItemActionable(item)
   // astryx: interactive styling when the row has an action, or is a parent
   // whose row click toggles (onClick == null && hasChildren).
-  const interactive = actionable || children;
-  const domId = TreeListBehavior.itemDomId(model.id, item.id);
-  const labelId = TreeListBehavior.itemLabelDomId(model.id, item.id);
-  const descriptionId = TreeListBehavior.itemDescriptionDomId(model.id, item.id);
-  const reservesChevronColumn = ctx.hasExpandableItems && !children;
+  const interactive = actionable || children
+  const domId = TreeListBehavior.itemDomId(model.id, item.id)
+  const labelId = TreeListBehavior.itemLabelDomId(model.id, item.id)
+  const descriptionId = TreeListBehavior.itemDescriptionDomId(model.id, item.id)
+  const reservesChevronColumn = ctx.hasExpandableItems && !children
 
   const chevron = children
     ? h.button(
@@ -182,13 +183,10 @@ const renderItem = <Msg>(
           ),
         ],
       )
-    : null;
+    : null
 
   const labelAndDescription: Array<Html> = [
-    h.span(
-      [h.Id(labelId), h.Class('text-foreground')],
-      [item.label as Html],
-    ),
+    h.span([h.Id(labelId), h.Class('text-foreground')], [item.label as Html]),
     ...(item.description === undefined
       ? []
       : [
@@ -197,7 +195,7 @@ const renderItem = <Msg>(
             [item.description],
           ),
         ]),
-  ];
+  ]
 
   const content: Html =
     item.href !== undefined
@@ -248,7 +246,7 @@ const renderItem = <Msg>(
         : h.span(
             [h.Class('flex min-w-0 flex-1 flex-col text-start')],
             labelAndDescription,
-          );
+          )
 
   const handleRowClick: Array<ReturnType<HtmlBuilder<Msg>['OnClick']>> =
     !disabled && interactive
@@ -266,7 +264,7 @@ const renderItem = <Msg>(
             ),
           ),
         ]
-      : [];
+      : []
 
   return h.li(
     [
@@ -366,18 +364,18 @@ const renderItem = <Msg>(
           ]
         : []),
     ],
-  );
-};
+  )
+}
 
 export type ViewInputs = Readonly<{
-  items: ReadonlyArray<TreeListBehavior.TreeListItemData>;
-  density?: TreeListBehavior.TreeListDensity;
-  variant?: TreeListBehavior.TreeListVariant;
-  header?: Html;
-  ariaLabel?: string;
-  direction?: 'ltr' | 'rtl';
-  class?: string;
-}>;
+  items: ReadonlyArray<TreeListBehavior.TreeListItemData>
+  density?: TreeListBehavior.TreeListDensity
+  variant?: TreeListBehavior.TreeListVariant
+  header?: Html
+  ariaLabel?: string
+  direction?: 'ltr' | 'rtl'
+  class?: string
+}>
 
 const render = <Msg>(
   model: TreeListBehavior.Model,
@@ -385,15 +383,15 @@ const render = <Msg>(
   toMessage: (message: TreeListBehavior.Message) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const variant = viewInputs.variant ?? 'lineGuides';
-  const density = viewInputs.density ?? 'balanced';
-  const direction = viewInputs.direction ?? 'ltr';
-  const headerId = `${model.id}-header`;
+  const variant = viewInputs.variant ?? 'lineGuides'
+  const density = viewInputs.density ?? 'balanced'
+  const direction = viewInputs.direction ?? 'ltr'
+  const headerId = `${model.id}-header`
   // Equivalent to "any expandable item anywhere": an expandable descendant
   // forces its ancestors expandable — so checking roots suffices.
   const hasExpandableItems = viewInputs.items.some(
     item => item.children !== undefined && item.children.length > 0,
-  );
+  )
   const ctx: RenderContext<Msg> = {
     model,
     toMessage,
@@ -402,7 +400,7 @@ const render = <Msg>(
     hasExpandableItems,
     tabbable: TreeListBehavior.tabbableId(viewInputs.items, model),
     h,
-  };
+  }
 
   return h.div(
     [
@@ -422,7 +420,7 @@ const render = <Msg>(
           key,
           modifiers,
           direction,
-        );
+        )
         switch (intent._tag) {
           case 'move':
             return Option.some(
@@ -431,35 +429,32 @@ const render = <Msg>(
                   id: intent.id,
                 }),
               ),
-            );
+            )
           case 'toggle': {
             const item = (function find(
               list: ReadonlyArray<TreeListBehavior.TreeListItemData>,
             ): TreeListBehavior.TreeListItemData | undefined {
               for (const entry of list) {
                 if (entry.id === intent.id) {
-                  return entry;
+                  return entry
                 }
-                const found = find(entry.children ?? []);
+                const found = find(entry.children ?? [])
                 if (found !== undefined) {
-                  return found;
+                  return found
                 }
               }
-              return undefined;
-            })(viewInputs.items);
+              return undefined
+            })(viewInputs.items)
             return item === undefined
               ? Option.none()
               : Option.some(
                   toMessage(
                     TreeListBehavior.Message.ToggledTreeListItem({
                       id: intent.id,
-                      isExpanded: !TreeListBehavior.isItemExpanded(
-                        item,
-                        model,
-                      ),
+                      isExpanded: !TreeListBehavior.isItemExpanded(item, model),
                     }),
                   ),
-                );
+                )
           }
           case 'activate':
             return Option.some(
@@ -468,7 +463,7 @@ const render = <Msg>(
                   id: intent.id,
                 }),
               ),
-            );
+            )
           case 'typeahead':
             return Option.some(
               toMessage(
@@ -477,9 +472,9 @@ const render = <Msg>(
                   matchedId: intent.matchedId,
                 }),
               ),
-            );
+            )
           case 'none':
-            return Option.none();
+            return Option.none()
         }
       }),
     ],
@@ -510,24 +505,24 @@ const render = <Msg>(
         ),
       ),
     ],
-  );
-};
+  )
+}
 
 /** Canonical stateful view. Embed with `h.submodel`. */
 export const view = defineView<
   TreeListBehavior.Model,
   TreeListBehavior.Message,
   ViewInputs
->((model, viewInputs, h) => render(model, viewInputs, (message) => message, h));
+>((model, viewInputs, h) => render(model, viewInputs, message => message, h))
 
 /** Compatibility helper. New code should use `h.submodel`. */
 export type TreeListProps<Msg> = ViewInputs &
   Readonly<{
-    model: TreeListBehavior.Model;
-    toParentMessage: (message: TreeListBehavior.Message) => Msg;
-  }>;
+    model: TreeListBehavior.Model
+    toParentMessage: (message: TreeListBehavior.Message) => Msg
+  }>
 
 export const treeList = <Msg>(
   props: TreeListProps<Msg>,
   h: HtmlBuilder<Msg>,
-): Html => render(props.model, props, props.toParentMessage, h);
+): Html => render(props.model, props, props.toParentMessage, h)

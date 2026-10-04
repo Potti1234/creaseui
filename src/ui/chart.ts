@@ -1,42 +1,49 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { cn } from '@/lib/utils';
-import * as ECharts from '@/lib/echarts';
+import { cn } from '@/lib/utils'
+import * as ECharts from '@/lib/echarts'
 
-export type EChartProps<Msg> = Omit<ECharts.ChartProps<Msg>, 'accessibleAlternative'> & Readonly<{ accessibleAlternative: Html }>;
-export type ChartMessage = ECharts.ChartMessage;
-export type ChartTheme = ECharts.ChartTheme;
-export type OptionBuilder = ECharts.OptionBuilder;
-export const ChartMessage = ECharts.ChartMessage;
-export const SyncChart = ECharts.SyncChart;
-export const areaGradient = ECharts.areaGradient;
-export const categoryAxis = ECharts.categoryAxis;
-export const colorWithOpacity = ECharts.colorWithOpacity;
-export const compactGrid = ECharts.compactGrid;
-export const registerChart = ECharts.registerChart;
-export const shadcnLegend = ECharts.shadcnLegend;
-export const shadcnTooltip = ECharts.shadcnTooltip;
-export const valueAxis = ECharts.valueAxis;
-export const eChart = <Msg>(props: EChartProps<Msg>, h: HtmlBuilder<Msg>): Html => ECharts.chart(props, h);
+export type EChartProps<Msg> = Omit<
+  ECharts.ChartProps<Msg>,
+  'accessibleAlternative'
+> &
+  Readonly<{ accessibleAlternative: Html }>
+export type ChartMessage = ECharts.ChartMessage
+export type ChartTheme = ECharts.ChartTheme
+export type OptionBuilder = ECharts.OptionBuilder
+export const ChartMessage = ECharts.ChartMessage
+export const SyncChart = ECharts.SyncChart
+export const areaGradient = ECharts.areaGradient
+export const categoryAxis = ECharts.categoryAxis
+export const colorWithOpacity = ECharts.colorWithOpacity
+export const compactGrid = ECharts.compactGrid
+export const registerChart = ECharts.registerChart
+export const shadcnLegend = ECharts.shadcnLegend
+export const shadcnTooltip = ECharts.shadcnTooltip
+export const valueAxis = ECharts.valueAxis
+export const eChart = <Msg>(
+  props: EChartProps<Msg>,
+  h: HtmlBuilder<Msg>,
+): Html => ECharts.chart(props, h)
 
 /* Framework-native chart composition. The small SVG renderers below remain
    dependency-free; `chartContainer`, legend, and tooltip provide the shared
    configuration/composition surface used by richer chart adapters. */
 
 export type ChartSeriesConfig = Readonly<{
-  label?: Html | string;
-  color?: string;
-  icon?: Html;
-}>;
+  label?: Html | string
+  color?: string
+  icon?: Html
+}>
 
-export type ChartConfig = Readonly<Record<string, ChartSeriesConfig>>;
+export type ChartConfig = Readonly<Record<string, ChartSeriesConfig>>
 
 export type ChartContainerProps = Readonly<{
-  config: ChartConfig;
-  children: ReadonlyArray<Html | string>;
-  class?: string;
-  ariaLabel?: string;
-}>;
+  config: ChartConfig
+  children: ReadonlyArray<Html | string>
+  class?: string
+  ariaLabel?: string
+}>
 
 export const chartContainer = <Msg>(
   props: ChartContainerProps,
@@ -48,7 +55,7 @@ export const chartContainer = <Msg>(
         ? result
         : { ...result, [`--color-${key}`]: series.color },
     {},
-  );
+  )
   return h.div(
     [
       h.DataAttribute('slot', 'chart'),
@@ -58,14 +65,14 @@ export const chartContainer = <Msg>(
       h.Style(variables),
     ],
     props.children,
-  );
-};
+  )
+}
 
 export type ChartLegendProps = Readonly<{
-  config: ChartConfig;
-  series?: ReadonlyArray<string>;
-  class?: string;
-}>;
+  config: ChartConfig
+  series?: ReadonlyArray<string>
+  class?: string
+}>
 
 export const chartLegend = <Msg>(
   props: ChartLegendProps,
@@ -77,7 +84,7 @@ export const chartLegend = <Msg>(
         ? result
         : { ...result, [`--color-${key}`]: series.color },
     {},
-  );
+  )
   return h.div(
     [
       h.DataAttribute('slot', 'chart-legend'),
@@ -86,8 +93,8 @@ export const chartLegend = <Msg>(
       ),
       h.Style(variables),
     ],
-    (props.series ?? Object.keys(props.config)).flatMap((key) => {
-      const series = props.config[key];
+    (props.series ?? Object.keys(props.config)).flatMap(key => {
+      const series = props.config[key]
       return series === undefined
         ? []
         : [
@@ -105,19 +112,19 @@ export const chartLegend = <Msg>(
                 series.label ?? key,
               ],
             ),
-          ];
+          ]
     }),
-  );
-};
+  )
+}
 
-export type ChartTooltipItem = Readonly<{ key: string; value: Html | string }>;
+export type ChartTooltipItem = Readonly<{ key: string; value: Html | string }>
 
 export const chartTooltipContent = <Msg>(
   props: Readonly<{
-    config: ChartConfig;
-    label?: Html | string;
-    items: ReadonlyArray<ChartTooltipItem>;
-    class?: string;
+    config: ChartConfig
+    label?: Html | string
+    items: ReadonlyArray<ChartTooltipItem>
+    class?: string
   }>,
   h: HtmlBuilder<Msg>,
 ): Html => {
@@ -135,7 +142,7 @@ export const chartTooltipContent = <Msg>(
       ...(props.label === undefined
         ? []
         : [h.div([h.Class('font-medium')], [props.label])]),
-      ...props.items.map((item) =>
+      ...props.items.map(item =>
         h.div(
           [h.Class('flex items-center gap-2')],
           [
@@ -162,40 +169,40 @@ export const chartTooltipContent = <Msg>(
         ),
       ),
     ],
-  );
-};
+  )
+}
 
-const finite = (value: number): number => (Number.isFinite(value) ? value : 0);
+const finite = (value: number): number => (Number.isFinite(value) ? value : 0)
 
 export type BarChartDatum = Readonly<{
-  label: string;
-  value: number;
-}>;
+  label: string
+  value: number
+}>
 
 export type BarChartProps = Readonly<{
-  data: ReadonlyArray<BarChartDatum>;
-  class?: string;
-  showXAxisLabels?: boolean;
-  isCompact?: boolean;
-}>;
+  data: ReadonlyArray<BarChartDatum>
+  class?: string
+  showXAxisLabels?: boolean
+  isCompact?: boolean
+}>
 
 export const barChart = <Msg>(
   props: BarChartProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const showXAxisLabels = props.showXAxisLabels ?? true;
-  const isCompact = props.isCompact ?? false;
-  const chartWidth = isCompact ? 320 : 100;
-  const chartHeight = isCompact ? 80 : 60;
-  const plotBottom = isCompact ? 58 : showXAxisLabels ? 48 : 56;
-  const plotHeight = isCompact ? 48 : plotBottom - 4;
-  const count = Math.max(props.data.length, 1);
-  const slotWidth = chartWidth / count;
+  const showXAxisLabels = props.showXAxisLabels ?? true
+  const isCompact = props.isCompact ?? false
+  const chartWidth = isCompact ? 320 : 100
+  const chartHeight = isCompact ? 80 : 60
+  const plotBottom = isCompact ? 58 : showXAxisLabels ? 48 : 56
+  const plotHeight = isCompact ? 48 : plotBottom - 4
+  const count = Math.max(props.data.length, 1)
+  const slotWidth = chartWidth / count
   const barWidth = Math.max(
     0.5,
     Math.min(isCompact ? 16 : 10, slotWidth * 0.64),
-  );
-  const maximum = Math.max(0, ...props.data.map((item) => finite(item.value)));
+  )
+  const maximum = Math.max(0, ...props.data.map(item => finite(item.value)))
 
   return h.svg(
     [
@@ -208,9 +215,9 @@ export const barChart = <Msg>(
     ],
     [
       ...props.data.map((item, index) => {
-        const value = Math.max(0, finite(item.value));
-        const height = maximum === 0 ? 0 : (value / maximum) * plotHeight;
-        const x = index * slotWidth + (slotWidth - barWidth) / 2;
+        const value = Math.max(0, finite(item.value))
+        const height = maximum === 0 ? 0 : (value / maximum) * plotHeight
+        const x = index * slotWidth + (slotWidth - barWidth) / 2
 
         return h.rect(
           [
@@ -222,7 +229,7 @@ export const barChart = <Msg>(
             h.Fill('var(--chart-2)'),
           ],
           [],
-        );
+        )
       }),
       ...(showXAxisLabels
         ? props.data.map((item, index) =>
@@ -239,60 +246,60 @@ export const barChart = <Msg>(
           )
         : []),
     ],
-  );
-};
+  )
+}
 
 export type AreaChartProps = Readonly<{
-  data: ReadonlyArray<number>;
-  class?: string;
-}>;
+  data: ReadonlyArray<number>
+  class?: string
+}>
 
-type Point = Readonly<{ x: number; y: number }>;
+type Point = Readonly<{ x: number; y: number }>
 
 const areaPoints = (data: ReadonlyArray<number>): ReadonlyArray<Point> => {
-  const values = data.map(finite);
+  const values = data.map(finite)
 
   if (values.length === 0) {
-    return [];
+    return []
   }
 
-  const minimum = Math.min(...values);
-  const maximum = Math.max(...values);
-  const range = maximum - minimum;
-  const denominator = Math.max(values.length - 1, 1);
+  const minimum = Math.min(...values)
+  const maximum = Math.max(...values)
+  const range = maximum - minimum
+  const denominator = Math.max(values.length - 1, 1)
 
   return values.map((value, index) => ({
     x: (index / denominator) * 100,
     y: range === 0 ? 25 : 15 + ((maximum - value) / range) * 20,
-  }));
-};
+  }))
+}
 
 const smoothPath = (points: ReadonlyArray<Point>): string => {
-  const first = points[0];
+  const first = points[0]
 
   if (first === undefined) {
-    return '';
+    return ''
   }
 
   return points.slice(1).reduce((path, point, index) => {
-    const previous = points[index] ?? first;
-    const midpoint = (previous.x + point.x) / 2;
-    return `${path} C ${midpoint} ${previous.y}, ${midpoint} ${point.y}, ${point.x} ${point.y}`;
-  }, `M ${first.x} ${first.y}`);
-};
+    const previous = points[index] ?? first
+    const midpoint = (previous.x + point.x) / 2
+    return `${path} C ${midpoint} ${previous.y}, ${midpoint} ${point.y}, ${point.x} ${point.y}`
+  }, `M ${first.x} ${first.y}`)
+}
 
 export const areaChart = <Msg>(
   props: AreaChartProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const points = areaPoints(props.data);
-  const linePath = smoothPath(points);
-  const first = points[0];
-  const last = points[points.length - 1];
+  const points = areaPoints(props.data)
+  const linePath = smoothPath(points)
+  const first = points[0]
+  const last = points[points.length - 1]
   const fillPath =
     first === undefined || last === undefined
       ? ''
-      : `${linePath} L ${last.x} 50 L ${first.x} 50 Z`;
+      : `${linePath} L ${last.x} 50 L ${first.x} 50 Z`
 
   return h.svg(
     [
@@ -336,7 +343,7 @@ export const areaChart = <Msg>(
           ),
         ],
       ),
-      ...[14, 25, 36].map((y) =>
+      ...[14, 25, 36].map(y =>
         h.line(
           [
             h.X1('0'),
@@ -368,61 +375,61 @@ export const areaChart = <Msg>(
             ),
           ]),
     ],
-  );
-};
+  )
+}
 
 export type InteractiveAreaChartDatum = Readonly<{
-  label: string;
-  desktop: number;
-  mobile: number;
-}>;
+  label: string
+  desktop: number
+  mobile: number
+}>
 
 export type InteractiveAreaChartProps = Readonly<{
-  data: ReadonlyArray<InteractiveAreaChartDatum>;
-  ariaLabel?: string;
-  class?: string;
-}>;
+  data: ReadonlyArray<InteractiveAreaChartDatum>
+  ariaLabel?: string
+  class?: string
+}>
 
 const interactivePoints = (
   values: ReadonlyArray<number>,
   maximum: number,
 ): ReadonlyArray<Point> => {
-  const denominator = Math.max(values.length - 1, 1);
+  const denominator = Math.max(values.length - 1, 1)
   return values.map((value, index) => ({
     x: 48 + (index / denominator) * 648,
     y: 18 + ((maximum - Math.max(0, finite(value))) / maximum) * 202,
-  }));
-};
+  }))
+}
 
 const areaFillPath = (points: ReadonlyArray<Point>): string => {
-  const first = points[0];
-  const last = points[points.length - 1];
+  const first = points[0]
+  const last = points[points.length - 1]
   return first === undefined || last === undefined
     ? ''
-    : `${smoothPath(points)} L ${last.x} 220 L ${first.x} 220 Z`;
-};
+    : `${smoothPath(points)} L ${last.x} 220 L ${first.x} 220 Z`
+}
 
 export const interactiveAreaChart = <Msg>(
   props: InteractiveAreaChartProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const values = props.data.flatMap((datum) => [
+  const values = props.data.flatMap(datum => [
     finite(datum.desktop),
     finite(datum.mobile),
-  ]);
-  const rawMaximum = Math.max(1, ...values);
-  const maximum = Math.ceil(rawMaximum / 100) * 100;
+  ])
+  const rawMaximum = Math.max(1, ...values)
+  const maximum = Math.ceil(rawMaximum / 100) * 100
   const desktopPoints = interactivePoints(
-    props.data.map((datum) => datum.desktop),
+    props.data.map(datum => datum.desktop),
     maximum,
-  );
+  )
   const mobilePoints = interactivePoints(
-    props.data.map((datum) => datum.mobile),
+    props.data.map(datum => datum.mobile),
     maximum,
-  );
-  const desktopLine = smoothPath(desktopPoints);
-  const mobileLine = smoothPath(mobilePoints);
-  const labelStep = Math.max(1, Math.ceil(props.data.length / 6));
+  )
+  const desktopLine = smoothPath(desktopPoints)
+  const mobileLine = smoothPath(mobilePoints)
+  const labelStep = Math.max(1, Math.ceil(props.data.length / 6))
 
   return h.svg(
     [
@@ -438,63 +445,168 @@ export const interactiveAreaChart = <Msg>(
         [],
         [
           h.linearGradient(
-            [h.Id('foldkit-desktop-gradient'), h.X1('0'), h.Y1('0'), h.X2('0'), h.Y2('1')],
             [
-              h.stop([h.Offset('0%'), h.StopColor('var(--chart-1)'), h.StopOpacity('0.32')], []),
-              h.stop([h.Offset('100%'), h.StopColor('var(--chart-1)'), h.StopOpacity('0.02')], []),
+              h.Id('foldkit-desktop-gradient'),
+              h.X1('0'),
+              h.Y1('0'),
+              h.X2('0'),
+              h.Y2('1'),
+            ],
+            [
+              h.stop(
+                [
+                  h.Offset('0%'),
+                  h.StopColor('var(--chart-1)'),
+                  h.StopOpacity('0.32'),
+                ],
+                [],
+              ),
+              h.stop(
+                [
+                  h.Offset('100%'),
+                  h.StopColor('var(--chart-1)'),
+                  h.StopOpacity('0.02'),
+                ],
+                [],
+              ),
             ],
           ),
           h.linearGradient(
-            [h.Id('foldkit-mobile-gradient'), h.X1('0'), h.Y1('0'), h.X2('0'), h.Y2('1')],
             [
-              h.stop([h.Offset('0%'), h.StopColor('var(--chart-2)'), h.StopOpacity('0.26')], []),
-              h.stop([h.Offset('100%'), h.StopColor('var(--chart-2)'), h.StopOpacity('0.02')], []),
+              h.Id('foldkit-mobile-gradient'),
+              h.X1('0'),
+              h.Y1('0'),
+              h.X2('0'),
+              h.Y2('1'),
+            ],
+            [
+              h.stop(
+                [
+                  h.Offset('0%'),
+                  h.StopColor('var(--chart-2)'),
+                  h.StopOpacity('0.26'),
+                ],
+                [],
+              ),
+              h.stop(
+                [
+                  h.Offset('100%'),
+                  h.StopColor('var(--chart-2)'),
+                  h.StopOpacity('0.02'),
+                ],
+                [],
+              ),
             ],
           ),
         ],
       ),
-      ...[0, 0.25, 0.5, 0.75, 1].flatMap((ratio) => {
-        const y = 18 + ratio * 202;
-        const label = Math.round(maximum * (1 - ratio));
+      ...[0, 0.25, 0.5, 0.75, 1].flatMap(ratio => {
+        const y = 18 + ratio * 202
+        const label = Math.round(maximum * (1 - ratio))
         return [
-          h.line([h.X1('48'), h.Y1(String(y)), h.X2('696'), h.Y2(String(y)), h.Stroke('var(--border)'), h.StrokeDasharray('3 4'), h.StrokeWidth('1')], []),
-          h.text([h.X('38'), h.Y(String(y + 4)), h.TextAnchor('end'), h.Fill('var(--muted-foreground)'), h.FontSize('10')], [String(label)]),
-        ];
+          h.line(
+            [
+              h.X1('48'),
+              h.Y1(String(y)),
+              h.X2('696'),
+              h.Y2(String(y)),
+              h.Stroke('var(--border)'),
+              h.StrokeDasharray('3 4'),
+              h.StrokeWidth('1'),
+            ],
+            [],
+          ),
+          h.text(
+            [
+              h.X('38'),
+              h.Y(String(y + 4)),
+              h.TextAnchor('end'),
+              h.Fill('var(--muted-foreground)'),
+              h.FontSize('10'),
+            ],
+            [String(label)],
+          ),
+        ]
       }),
       ...props.data.flatMap((datum, index) =>
         index % labelStep === 0 || index === props.data.length - 1
-          ? [h.text([h.X(String(desktopPoints[index]?.x ?? 48)), h.Y('248'), h.TextAnchor('middle'), h.Fill('var(--muted-foreground)'), h.FontSize('10')], [datum.label])]
+          ? [
+              h.text(
+                [
+                  h.X(String(desktopPoints[index]?.x ?? 48)),
+                  h.Y('248'),
+                  h.TextAnchor('middle'),
+                  h.Fill('var(--muted-foreground)'),
+                  h.FontSize('10'),
+                ],
+                [datum.label],
+              ),
+            ]
           : [],
       ),
       ...(desktopLine === ''
         ? []
         : [
-            h.path([h.D(areaFillPath(desktopPoints)), h.Fill('url(#foldkit-desktop-gradient)')], []),
-            h.path([h.D(areaFillPath(mobilePoints)), h.Fill('url(#foldkit-mobile-gradient)')], []),
-            h.path([h.D(desktopLine), h.Fill('none'), h.Stroke('var(--chart-1)'), h.StrokeWidth('2.5'), h.StrokeLinecap('round'), h.StrokeLinejoin('round'), h.VectorEffect('non-scaling-stroke')], []),
-            h.path([h.D(mobileLine), h.Fill('none'), h.Stroke('var(--chart-2)'), h.StrokeWidth('2.5'), h.StrokeLinecap('round'), h.StrokeLinejoin('round'), h.VectorEffect('non-scaling-stroke')], []),
+            h.path(
+              [
+                h.D(areaFillPath(desktopPoints)),
+                h.Fill('url(#foldkit-desktop-gradient)'),
+              ],
+              [],
+            ),
+            h.path(
+              [
+                h.D(areaFillPath(mobilePoints)),
+                h.Fill('url(#foldkit-mobile-gradient)'),
+              ],
+              [],
+            ),
+            h.path(
+              [
+                h.D(desktopLine),
+                h.Fill('none'),
+                h.Stroke('var(--chart-1)'),
+                h.StrokeWidth('2.5'),
+                h.StrokeLinecap('round'),
+                h.StrokeLinejoin('round'),
+                h.VectorEffect('non-scaling-stroke'),
+              ],
+              [],
+            ),
+            h.path(
+              [
+                h.D(mobileLine),
+                h.Fill('none'),
+                h.Stroke('var(--chart-2)'),
+                h.StrokeWidth('2.5'),
+                h.StrokeLinecap('round'),
+                h.StrokeLinejoin('round'),
+                h.VectorEffect('non-scaling-stroke'),
+              ],
+              [],
+            ),
           ]),
     ],
-  );
-};
+  )
+}
 
 export type DonutChartProps = Readonly<{
-  value: number;
-  max: number;
-  label?: string;
-  sublabel?: string;
-  class?: string;
-}>;
+  value: number
+  max: number
+  label?: string
+  sublabel?: string
+  class?: string
+}>
 
 export const donutChart = <Msg>(
   props: DonutChartProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const maximum = finite(props.max);
+  const maximum = finite(props.max)
   const ratio =
-    maximum <= 0 ? 0 : Math.min(1, Math.max(0, finite(props.value) / maximum));
-  const circumference = 2 * Math.PI * 42;
-  const dash = ratio * circumference;
+    maximum <= 0 ? 0 : Math.min(1, Math.max(0, finite(props.value) / maximum))
+  const circumference = 2 * Math.PI * 42
+  const dash = ratio * circumference
 
   return h.svg(
     [
@@ -566,5 +678,5 @@ export const donutChart = <Msg>(
             ),
           ]),
     ],
-  );
-};
+  )
+}

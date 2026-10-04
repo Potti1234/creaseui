@@ -9,10 +9,16 @@ describe('Alert announcement policy', () => {
   })
 
   it('maps non-urgent updates to polite status semantics', () => {
-    assert.deepEqual(alertSemantics('status'), { role: 'status', live: 'polite' })
+    assert.deepEqual(alertSemantics('status'), {
+      role: 'status',
+      live: 'polite',
+    })
   })
 
   it('reserves assertive alert semantics for urgent updates', () => {
-    assert.deepEqual(alertSemantics('alert'), { role: 'alert', live: 'assertive' })
+    assert.deepEqual(alertSemantics('alert'), {
+      role: 'alert',
+      live: 'assertive',
+    })
   })
 })

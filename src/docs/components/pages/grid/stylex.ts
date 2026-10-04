@@ -1,7 +1,7 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   type GridFixture,
   gridFixtures,
@@ -9,26 +9,30 @@ import {
   gridMetrics,
   gridStats,
   gridTeams,
-} from '@/docs/components/pages/grid/shared';
-import type { ComponentLayoutStyle } from '@/stylex/contracts';
-import { className } from '@/stylex/style';
-import * as Card from '@/stylex/card';
-import * as Grid from '@/stylex/grid';
-import * as Resizable from '@/stylex/resizable';
-import * as Stack from '@/stylex/stack';
+} from '@/docs/components/pages/grid/shared'
+import type { ComponentLayoutStyle } from '@/stylex/contracts'
+import { className } from '@/stylex/style'
+import * as Card from '@/stylex/card'
+import * as Grid from '@/stylex/grid'
+import * as Resizable from '@/stylex/resizable'
+import * as Stack from '@/stylex/stack'
 
 // The Tailwind Card carries `shadow-sm`, whose serialized value includes the
 // theme's base ring/border shadows — overriding tokens.shadowCard verbatim so
 // both renderers produce the identical box-shadow.
 const CARD_SHADOW =
-  'rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.1) 0px 1px 2px -1px';
+  'rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.1) 0px 1px 2px -1px'
 
 const styles = stylex.create({
-  label: { fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem', },
+  label: { fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem' },
   supporting: { fontSize: '0.75rem', lineHeight: '1rem' },
-  body: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
+  body: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+  },
   cardShadow: { boxShadow: CARD_SHADOW },
-  tallCard: { boxShadow: CARD_SHADOW, height: '5rem', },
+  tallCard: { boxShadow: CARD_SHADOW, height: '5rem' },
   featuredCard: {
     borderColor: 'oklch(0.917 0.08 205.041)',
     backgroundColor: 'oklch(0.984 0.019 200.873)',
@@ -43,14 +47,19 @@ const styles = stylex.create({
     maxWidth: '31.25rem',
     width: '100%',
   },
-  gridPanel: { padding: '1rem', overflow: 'auto', height: '100%', },
+  gridPanel: { padding: '1rem', overflow: 'auto', height: '100%' },
   filler: { height: '100%' },
-  group: { borderRadius: 'var(--radius-lg)', borderWidth: 0, height: '100%', width: '100%', },
-});
+  group: {
+    borderRadius: 'var(--radius-lg)',
+    borderWidth: 0,
+    height: '100%',
+    width: '100%',
+  },
+})
 
 type PreviewModel = Readonly<{
-  resizable: Resizable.Model;
-}>;
+  resizable: Resizable.Model
+}>
 
 const msg = <Msg>(
   onMessageJson: (json: string) => Msg,
@@ -58,14 +67,14 @@ const msg = <Msg>(
 ): Msg =>
   onMessageJson(
     JSON.stringify({ _tag: 'GotResizablePreviewMessage', ...fields }),
-  );
+  )
 
 const label = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class(className(styles.label))], [text]);
+  h.p([h.Class(className(styles.label))], [text])
 const supporting = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class(className(styles.supporting))], [text]);
+  h.p([h.Class(className(styles.supporting))], [text])
 const body = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class(className(styles.body))], [text]);
+  h.p([h.Class(className(styles.body))], [text])
 
 const card = <Msg>(
   children: ReadonlyArray<Html | string>,
@@ -78,7 +87,7 @@ const card = <Msg>(
       children: [Card.cardContent({ children: [...children] }, h)],
     },
     h,
-  );
+  )
 
 const tallCard = <Msg>(
   children: ReadonlyArray<Html | string>,
@@ -91,7 +100,7 @@ const tallCard = <Msg>(
       children: [Card.cardContent({ children: [...children] }, h)],
     },
     h,
-  );
+  )
 
 const featuredCard = <Msg>(
   children: ReadonlyArray<Html | string>,
@@ -104,7 +113,7 @@ const featuredCard = <Msg>(
       children: [Card.cardContent({ children: [...children] }, h)],
     },
     h,
-  );
+  )
 
 const showcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Grid.grid(
@@ -117,7 +126,7 @@ const showcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ),
     },
     h,
-  );
+  )
 
 const spanningView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Grid.grid(
@@ -185,7 +194,7 @@ const spanningView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ],
     },
     h,
-  );
+  )
 
 const autoFitView = <Msg>(
   model: PreviewModel,
@@ -207,33 +216,39 @@ const autoFitView = <Msg>(
             withHandle: true,
             ariaLabel: 'Resize grid',
             layoutStyle: styles.group as ComponentLayoutStyle,
-            first: h.div([h.Class(className(styles.gridPanel))], [
-              Grid.grid(
-                {
-                  columns: { minWidth: 180, repeat: 'fit' },
-                  gap: 4,
-                  width: '100%',
-                  children: gridTeams.map(team =>
-                    card(
-                      [
-                        Stack.vStack(
-                          {
-                            gap: 1,
-                            children: [
-                              label(team.name, h),
-                              supporting(`${String(team.members)} members`, h),
-                            ],
-                          },
-                          h,
-                        ),
-                      ],
-                      h,
+            first: h.div(
+              [h.Class(className(styles.gridPanel))],
+              [
+                Grid.grid(
+                  {
+                    columns: { minWidth: 180, repeat: 'fit' },
+                    gap: 4,
+                    width: '100%',
+                    children: gridTeams.map(team =>
+                      card(
+                        [
+                          Stack.vStack(
+                            {
+                              gap: 1,
+                              children: [
+                                label(team.name, h),
+                                supporting(
+                                  `${String(team.members)} members`,
+                                  h,
+                                ),
+                              ],
+                            },
+                            h,
+                          ),
+                        ],
+                        h,
+                      ),
                     ),
-                  ),
-                },
-                h,
-              ),
-            ]),
+                  },
+                  h,
+                ),
+              ],
+            ),
             second: h.div([h.Class(className(styles.filler))], []),
           },
           h,
@@ -241,7 +256,7 @@ const autoFitView = <Msg>(
       ],
     },
     h,
-  );
+  )
 
 const dashboardView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Grid.grid(
@@ -271,10 +286,7 @@ const dashboardView = <Msg>(h: HtmlBuilder<Msg>): Html =>
           h,
         ),
         ...gridMetrics.map(metric =>
-          card(
-            [supporting(metric.label, h), label(metric.value, h)],
-            h,
-          ),
+          card([supporting(metric.label, h), label(metric.value, h)], h),
         ),
         Grid.gridSpan(
           {
@@ -294,7 +306,7 @@ const dashboardView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ],
     },
     h,
-  );
+  )
 
 const galleryView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Grid.grid(
@@ -309,7 +321,10 @@ const galleryView = <Msg>(h: HtmlBuilder<Msg>): Html =>
             Stack.vStack(
               {
                 gap: 1,
-                children: [label(item.title, h), supporting(item.description, h)],
+                children: [
+                  label(item.title, h),
+                  supporting(item.description, h),
+                ],
               },
               h,
             ),
@@ -319,7 +334,7 @@ const galleryView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ),
     },
     h,
-  );
+  )
 
 const spanColumnsView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Grid.grid(
@@ -347,7 +362,7 @@ const spanColumnsView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ],
     },
     h,
-  );
+  )
 
 const spanShowcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Grid.grid(
@@ -364,10 +379,7 @@ const spanShowcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
           h,
         ),
         tallCard([body('1 col', h)], h),
-        Grid.gridSpan(
-          { rows: 2, children: [card([body('1 col', h)], h)] },
-          h,
-        ),
+        Grid.gridSpan({ rows: 2, children: [card([body('1 col', h)], h)] }, h),
         Grid.gridSpan(
           {
             columns: 3,
@@ -386,7 +398,7 @@ const spanShowcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ],
     },
     h,
-  );
+  )
 
 const viewFor = <Msg>(
   fixture: GridFixture,
@@ -396,21 +408,21 @@ const viewFor = <Msg>(
 ): Html => {
   switch (fixture.kind) {
     case 'showcase':
-      return showcaseView(h);
+      return showcaseView(h)
     case 'spanning':
-      return spanningView(h);
+      return spanningView(h)
     case 'autoFit':
-      return autoFitView(model, onMessageJson, h);
+      return autoFitView(model, onMessageJson, h)
     case 'dashboard':
-      return dashboardView(h);
+      return dashboardView(h)
     case 'gallery':
-      return galleryView(h);
+      return galleryView(h)
     case 'spanColumns':
-      return spanColumnsView(h);
+      return spanColumnsView(h)
     case 'spanShowcase':
-      return spanShowcaseView(h);
+      return spanShowcaseView(h)
   }
-};
+}
 
 export const gridStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
@@ -423,4 +435,4 @@ export const gridStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
     model as PreviewModel,
     onMessageJson,
     h,
-  );
+  )

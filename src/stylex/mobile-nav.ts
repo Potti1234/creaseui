@@ -1,18 +1,18 @@
 /* Ported from Meta Astryx MobileNav + MobileNavToggle (packages/core/src/MobileNav/) — examples and visual spec adapted to Crease UI tokens. */
 
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { Dialog as DialogPrimitive } from '@foldkit/ui';
+import { Dialog as DialogPrimitive } from '@foldkit/ui'
 
-import * as Icon from '@/lib/icon';
-import * as MobileNavBehavior from '@/lib/mobile-nav';
-import type { ComponentLayoutStyle } from './contracts';
-import { foundationTokens } from './foundations-tokens.stylex';
-import { interactionTokens } from './interaction-tokens.stylex.const';
-import { overlayStyles } from './overlay-tokens.stylex';
-import { className } from './style';
-import { tokens } from './tokens.stylex';
+import * as Icon from '@/lib/icon'
+import * as MobileNavBehavior from '@/lib/mobile-nav'
+import type { ComponentLayoutStyle } from './contracts'
+import { foundationTokens } from './foundations-tokens.stylex'
+import { interactionTokens } from './interaction-tokens.stylex.const'
+import { overlayStyles } from './overlay-tokens.stylex'
+import { className } from './style'
+import { tokens } from './tokens.stylex'
 
 const styles = stylex.create({
   close: {
@@ -161,28 +161,28 @@ const styles = stylex.create({
   },
 })
 
-export const Model = MobileNavBehavior.Model;
-export type Model = typeof Model.Type;
-export const Message = MobileNavBehavior.Message;
-export type Message = typeof Message.Type;
-export const OutMessage = MobileNavBehavior.OutMessage;
-export type OutMessage = typeof OutMessage.Type;
-export type { MobileNavSide, ResolvedSide } from '@/lib/mobile-nav';
+export const Model = MobileNavBehavior.Model
+export type Model = typeof Model.Type
+export const Message = MobileNavBehavior.Message
+export type Message = typeof Message.Type
+export const OutMessage = MobileNavBehavior.OutMessage
+export type OutMessage = typeof OutMessage.Type
+export type { MobileNavSide, ResolvedSide } from '@/lib/mobile-nav'
 
-export const init = MobileNavBehavior.init;
-export const update = MobileNavBehavior.update;
-export const open = MobileNavBehavior.open;
-export const close = MobileNavBehavior.close;
+export const init = MobileNavBehavior.init
+export const update = MobileNavBehavior.update
+export const open = MobileNavBehavior.open
+export const close = MobileNavBehavior.close
 
 export type MobileNavProps<Msg> = Readonly<{
-  model: Model;
-  toParentMessage: (message: Message) => Msg;
-  content: Html;
-  title?: string;
-  label?: string;
-  width?: number;
-  layoutStyle?: ComponentLayoutStyle;
-}>;
+  model: Model
+  toParentMessage: (message: Message) => Msg
+  content: Html
+  title?: string
+  label?: string
+  width?: number
+  layoutStyle?: ComponentLayoutStyle
+}>
 
 /** The mobile navigation drawer — a full-viewport dialog whose panel anchors
     to the resolved edge ('auto' follows the toggle's viewport side). */
@@ -190,11 +190,11 @@ export const mobileNav = <Msg>(
   props: MobileNavProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const model = props.model;
-  const send = props.toParentMessage;
-  const side = model.resolvedSide;
-  const width = props.width ?? 320;
-  const label = props.label ?? props.title ?? 'Navigation';
+  const model = props.model
+  const send = props.toParentMessage
+  const side = model.resolvedSide
+  const width = props.width ?? 320
+  const label = props.label ?? props.title ?? 'Navigation'
 
   return h.submodel({
     slotId: model.dialog.id,
@@ -208,18 +208,14 @@ export const mobileNav = <Msg>(
         closeButton,
         isVisible,
       }: DialogPrimitive.RenderInfo) => {
-        const hd = h;
+        const hd = h
         return hd.dialog(
           [
             ...dialogAttributes,
             hd.DataAttribute('slot', 'mobile-nav'),
             hd.AriaLabel(label),
             hd.Class(
-              className(
-                overlayStyles.dialog,
-                styles.dialog,
-                props.layoutStyle,
-              ),
+              className(overlayStyles.dialog, styles.dialog, props.layoutStyle),
             ),
           ],
           isVisible
@@ -265,9 +261,7 @@ export const mobileNav = <Msg>(
                           ? [
                               hd.span(
                                 [
-                                  hd.Id(
-                                    DialogPrimitive.titleId(model.dialog),
-                                  ),
+                                  hd.Id(DialogPrimitive.titleId(model.dialog)),
                                   hd.Class(className(styles.srOnly)),
                                 ],
                                 [label],
@@ -276,13 +270,8 @@ export const mobileNav = <Msg>(
                           : [
                               hd.h2(
                                 [
-                                  hd.Id(
-                                    DialogPrimitive.titleId(model.dialog),
-                                  ),
-                                  hd.DataAttribute(
-                                    'slot',
-                                    'mobile-nav-title',
-                                  ),
+                                  hd.Id(DialogPrimitive.titleId(model.dialog)),
+                                  hd.DataAttribute('slot', 'mobile-nav-title'),
                                   hd.Class(className(styles.headerTitle)),
                                 ],
                                 [props.title],
@@ -313,21 +302,21 @@ export const mobileNav = <Msg>(
                 ),
               ]
             : [],
-        );
+        )
       },
     },
     toParentMessage: message =>
       send(Message.GotMobileNavDialogMessage({ message })),
-  });
-};
+  })
+}
 
 export type MobileNavToggleProps<Msg> = Readonly<{
-  controls: string;
-  isExpanded: boolean;
-  message: Msg;
-  label?: string;
-  layoutStyle?: ComponentLayoutStyle;
-}>;
+  controls: string
+  isExpanded: boolean
+  message: Msg
+  label?: string
+  layoutStyle?: ComponentLayoutStyle
+}>
 
 /** The hamburger button that opens a MobileNav. `controls` is the nav's
     dialog id; `isExpanded` mirrors `model.dialog.isOpen`. */
@@ -346,4 +335,4 @@ export const mobileNavToggle = <Msg>(
       h.Class(className(styles.toggle, props.layoutStyle)),
     ],
     [Icon.menu({ class: className(styles.toggleIcon) }, h)],
-  );
+  )

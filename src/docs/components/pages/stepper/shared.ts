@@ -1,34 +1,34 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type StepperFixtureStep = Readonly<{
-  label: string;
-  description?: string;
-  status?: 'accent' | 'success' | 'warning' | 'error';
-  isOptional?: boolean;
-  indicator?: 'number' | 'auto' | 'none' | 'icon';
-  icon?: string;
-  content?: 'form' | 'review' | 'deploy';
-}>;
+  label: string
+  description?: string
+  status?: 'accent' | 'success' | 'warning' | 'error'
+  isOptional?: boolean
+  indicator?: 'number' | 'auto' | 'none' | 'icon'
+  icon?: string
+  content?: 'form' | 'review' | 'deploy'
+}>
 
 export type StepperFixturePanel = Readonly<{
-  id: string;
-  heading?: string;
-  orientation?: 'horizontal' | 'vertical';
-  indicatorPosition?: 'separated' | 'on-track';
-  minimumStepWidth?: number;
-  collapsedVariant?: 'withLabelAndControls';
-  steps: ReadonlyArray<StepperFixtureStep>;
-}>;
+  id: string
+  heading?: string
+  orientation?: 'horizontal' | 'vertical'
+  indicatorPosition?: 'separated' | 'on-track'
+  minimumStepWidth?: number
+  collapsedVariant?: 'withLabelAndControls'
+  steps: ReadonlyArray<StepperFixtureStep>
+}>
 
 export type StepperFixture = Readonly<{
-  title: string;
-  description?: string;
-  heroOnly?: boolean;
-  width?: number;
-  activeStep: number;
-  panels: ReadonlyArray<StepperFixturePanel>;
-}>;
+  title: string
+  description?: string
+  heroOnly?: boolean
+  width?: number
+  activeStep: number
+  panels: ReadonlyArray<StepperFixturePanel>
+}>
 
 const checkoutSteps: ReadonlyArray<StepperFixtureStep> = [
   { label: 'Cart' },
@@ -36,7 +36,7 @@ const checkoutSteps: ReadonlyArray<StepperFixtureStep> = [
   { label: 'Payment' },
   { label: 'Review' },
   { label: 'Confirm' },
-];
+]
 
 const indicatorModeSteps = (
   indicator: StepperFixtureStep['indicator'],
@@ -49,9 +49,11 @@ const indicatorModeSteps = (
       : indicator === 'icon'
         ? { indicator: 'icon' as const, icon: icons?.[index] ?? 'info' }
         : { indicator }),
-  }));
+  }))
 
-export const stepperFixtures: Readonly<[StepperFixture, ...Array<StepperFixture>]> = [
+export const stepperFixtures: Readonly<
+  [StepperFixture, ...Array<StepperFixture>]
+> = [
   {
     title: 'Stepper — Checkout Progress',
     heroOnly: true,
@@ -93,7 +95,12 @@ export const stepperFixtures: Readonly<[StepperFixture, ...Array<StepperFixture>
         id: 'custom',
         heading: 'Custom icon',
         orientation: 'vertical',
-        steps: indicatorModeSteps('icon', ['info', 'search', 'wrench', 'check']),
+        steps: indicatorModeSteps('icon', [
+          'info',
+          'search',
+          'wrench',
+          'check',
+        ]),
       },
     ],
   },
@@ -130,9 +137,18 @@ export const stepperFixtures: Readonly<[StepperFixture, ...Array<StepperFixture>
         orientation: 'vertical',
         indicatorPosition: 'on-track',
         steps: [
-          { label: 'Create workspace', description: 'Name and configure your workspace' },
-          { label: 'Invite team members', description: 'Add collaborators by email' },
-          { label: 'Set up integrations', description: 'Connect Slack, GitHub, Jira' },
+          {
+            label: 'Create workspace',
+            description: 'Name and configure your workspace',
+          },
+          {
+            label: 'Invite team members',
+            description: 'Add collaborators by email',
+          },
+          {
+            label: 'Set up integrations',
+            description: 'Connect Slack, GitHub, Jira',
+          },
           { label: 'Import data', description: 'Bring in existing projects' },
           { label: 'Launch', description: 'Go live with your team' },
         ],
@@ -150,11 +166,31 @@ export const stepperFixtures: Readonly<[StepperFixture, ...Array<StepperFixture>
         id: 'status',
         orientation: 'vertical',
         steps: [
-          { label: 'Email verified', description: 'you@example.com', status: 'success' },
-          { label: 'Phone verified', description: '+1 (555) 012-3456', status: 'success' },
-          { label: 'Identity document', description: 'Passport upload failed', status: 'error' },
-          { label: 'Address verification', description: 'Pending review', status: 'accent' },
-          { label: 'Background check', description: 'Skipped', isOptional: true },
+          {
+            label: 'Email verified',
+            description: 'you@example.com',
+            status: 'success',
+          },
+          {
+            label: 'Phone verified',
+            description: '+1 (555) 012-3456',
+            status: 'success',
+          },
+          {
+            label: 'Identity document',
+            description: 'Passport upload failed',
+            status: 'error',
+          },
+          {
+            label: 'Address verification',
+            description: 'Pending review',
+            status: 'accent',
+          },
+          {
+            label: 'Background check',
+            description: 'Skipped',
+            isOptional: true,
+          },
           { label: 'Account activated' },
         ],
       },
@@ -215,74 +251,129 @@ export const stepperFixtures: Readonly<[StepperFixture, ...Array<StepperFixture>
       },
     ],
   },
-];
+]
 
 const stepEmit = (step: StepperFixtureStep): string => `        {
-          label: '${step.label}',${step.description !== undefined ? `
-          description: '${step.description}',` : ''}${step.status !== undefined ? `
-          status: '${step.status}',` : ''}${step.isOptional === true ? `
-          isOptional: true,` : ''}${step.indicator !== undefined && step.indicator !== 'auto' && step.indicator !== 'icon' ? `
-          indicator: '${step.indicator}',` : ''}${step.indicator === 'icon' ? `
-          indicator: Icon.icon('${step.icon ?? 'info'}', {}, h),` : ''}
-        }`;
+          label: '${step.label}',${
+            step.description !== undefined
+              ? `
+          description: '${step.description}',`
+              : ''
+          }${
+            step.status !== undefined
+              ? `
+          status: '${step.status}',`
+              : ''
+          }${
+            step.isOptional === true
+              ? `
+          isOptional: true,`
+              : ''
+          }${
+            step.indicator !== undefined &&
+            step.indicator !== 'auto' &&
+            step.indicator !== 'icon'
+              ? `
+          indicator: '${step.indicator}',`
+              : ''
+          }${
+            step.indicator === 'icon'
+              ? `
+          indicator: Icon.icon('${step.icon ?? 'info'}', {}, h),`
+              : ''
+          }
+        }`
 
-const panelEmit = (panel: StepperFixturePanel, index: number): string => `      Stepper.stepper({
+const panelEmit = (
+  panel: StepperFixturePanel,
+  index: number,
+): string => `      Stepper.stepper({
         model: model.controls[${index}]!,
         toParentMessage: message => GotStepperMessage({ message }),
         activeStep: model.activeStep,
         steps: [
 ${panel.steps.map(stepEmit).join(',\n')},
-        ],${panel.orientation === 'vertical' ? `
-        orientation: 'vertical',` : ''}${panel.indicatorPosition === 'on-track' ? `
-        indicatorPosition: 'on-track',` : ''}${panel.minimumStepWidth !== undefined ? `
-        minimumStepWidth: ${panel.minimumStepWidth},` : ''}${panel.collapsedVariant !== undefined ? `
-        collapsedVariant: '${panel.collapsedVariant}',` : ''}
+        ],${
+          panel.orientation === 'vertical'
+            ? `
+        orientation: 'vertical',`
+            : ''
+        }${
+          panel.indicatorPosition === 'on-track'
+            ? `
+        indicatorPosition: 'on-track',`
+            : ''
+        }${
+          panel.minimumStepWidth !== undefined
+            ? `
+        minimumStepWidth: ${panel.minimumStepWidth},`
+            : ''
+        }${
+          panel.collapsedVariant !== undefined
+            ? `
+        collapsedVariant: '${panel.collapsedVariant}',`
+            : ''
+        }
         hasStepButtons: true,
-      }, h)`;
+      }, h)`
 
 const emitSource = (fixture: StepperFixture, isStyleX: boolean): string => {
-  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '');
-  const lib = isStyleX ? 'stylex' : 'ui';
+  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
+  const lib = isStyleX ? 'stylex' : 'ui'
   const usesIcon = fixture.panels.some(panel =>
-    panel.steps.some(step => step.indicator === 'icon'));
-  const panelCount = fixture.panels.length;
+    panel.steps.some(step => step.indicator === 'icon'),
+  )
+  const panelCount = fixture.panels.length
   const panelCalls = fixture.panels
     .map((panel, index) => {
-      const call = panelEmit(panel, index);
+      const call = panelEmit(panel, index)
       return panel.heading !== undefined
         ? `      h.div([h.Class(${isStyleX ? 'className(styles.panel)' : `'w-[220px]'`})], [
         h.p([h.Class(${isStyleX ? 'className(styles.panelHeading)' : `'text-sm font-medium'`})], ['${panel.heading}']),
 ${call},
       ])`
-        : call;
+        : call
     })
-    .join(',\n');
-  const viewInner = panelCount > 1
-    ? `    h.div([h.Class(${isStyleX ? 'className(styles.panelRow)' : `'flex flex-wrap gap-12'`})], [
+    .join(',\n')
+  const viewInner =
+    panelCount > 1
+      ? `    h.div([h.Class(${isStyleX ? 'className(styles.panelRow)' : `'flex flex-wrap gap-12'`})], [
 ${panelCalls},
     ])`
-    : fixture.width !== undefined
-      ? `    h.div([h.Class(${isStyleX ? 'className(styles.frame)' : `'w-[${fixture.width}px]'`})], [
+      : fixture.width !== undefined
+        ? `    h.div([h.Class(${isStyleX ? 'className(styles.frame)' : `'w-[${fixture.width}px]'`})], [
 ${panelCalls},
     ])`
-      : panelCalls;
+        : panelCalls
   return foldkitApplication({
     title: `${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { taggedStruct } from 'foldkit/schema'
-${isStyleX ? `import * as stylex from '@stylexjs/stylex'
+${
+  isStyleX
+    ? `import * as stylex from '@stylexjs/stylex'
 import { className } from '@/stylex/style'
-` : ''}${usesIcon ? `import * as Icon from '@/lib/icon'
-` : ''}import * as Stepper from '@/${lib}/stepper'
-${isStyleX ? `const styles = stylex.create({
+`
+    : ''
+}${
+      usesIcon
+        ? `import * as Icon from '@/lib/icon'
+`
+        : ''
+    }import * as Stepper from '@/${lib}/stepper'
+${
+  isStyleX
+    ? `const styles = stylex.create({
   frame: { width: '${fixture.width ?? 640}px' },
   panelRow: { display: 'flex', flexWrap: 'wrap', gap: '3rem' },
   panel: { width: '220px' },
   panelHeading: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500 },
 })
-` : ''}`,
+`
+    : ''
+}`,
     model: `export const Model = S.Struct({
   controls: S.Array(Stepper.Model),
   activeStep: S.Number,
@@ -332,8 +423,8 @@ export type Message = typeof Message.Type`,
 ${viewInner},
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const stepperExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -345,4 +436,4 @@ export const stepperExamples = (
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitSource(fixture, renderer === 'stylex'),
-  }));
+  }))

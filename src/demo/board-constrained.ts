@@ -27,14 +27,19 @@ const options = <Value extends string>(
       data: { 'primitive-control': label.toLowerCase().replaceAll(' ', '-') },
       children: [
         text(
-          { as: 'span', children: [label], tone: 'secondary', variant: 'caption' },
+          {
+            as: 'span',
+            children: [label],
+            tone: 'secondary',
+            variant: 'caption',
+          },
           h,
         ),
         ToggleGroup.toggleGroup<Message, Value>(
           {
             ariaLabel: `${label} options`,
             arrangement: 'wrapped',
-            items: values.map((item) => ({
+            items: values.map(item => ({
               children: [item.replace(/([A-Z])/gu, ' $1').trim()],
               value: item,
             })),
@@ -51,8 +56,10 @@ const options = <Value extends string>(
   )
 
 const boardSpace = (
-  value: Model['primitiveInspector']['boxPadding'] | Model['primitiveInspector']['stackGap'],
-): ResponsiveSpaceToken => value === 'responsive' ? 'createBoard' : value
+  value:
+    | Model['primitiveInspector']['boxPadding']
+    | Model['primitiveInspector']['stackGap'],
+): ResponsiveSpaceToken => (value === 'responsive' ? 'createBoard' : value)
 
 const primitiveInspector = (model: Model, h: HtmlBuilder<Message>): Html => {
   const settings = model.primitiveInspector
@@ -65,11 +72,20 @@ const primitiveInspector = (model: Model, h: HtmlBuilder<Message>): Html => {
           {
             gap: 'xs',
             children: [
-              text({ as: 'h2', children: ['Primitive inspector'], variant: 'headingSm' }, h),
+              text(
+                {
+                  as: 'h2',
+                  children: ['Primitive inspector'],
+                  variant: 'headingSm',
+                },
+                h,
+              ),
               text(
                 {
                   as: 'p',
-                  children: ['Change one constrained prop and watch the real board.'],
+                  children: [
+                    'Change one constrained prop and watch the real board.',
+                  ],
                   tone: 'secondary',
                   variant: 'caption',
                 },
@@ -79,18 +95,48 @@ const primitiveInspector = (model: Model, h: HtmlBuilder<Message>): Html => {
           },
           h,
         ),
-        options('Canvas padding (Box)', settings.boxPadding, ['responsive', 'none', 'sm', 'md', 'xl'], (value) =>
-          BoardStyleX.Message.ChangedPrimitiveBoxPadding({ value }), h),
-        options('Canvas surface (Box)', settings.boxSurface, ['card', 'muted', 'section'], (value) =>
-          BoardStyleX.Message.ChangedPrimitiveBoxSurface({ value }), h),
-        options('Card spacing (Stack)', settings.stackGap, ['responsive', 'sm', 'md', 'xl'], (value) =>
-          BoardStyleX.Message.ChangedPrimitiveStackGap({ value }), h),
-        options('Board alignment (Inline)', settings.inlineJustify, ['start', 'center', 'end', 'between'], (value) =>
-          BoardStyleX.Message.ChangedPrimitiveInlineJustify({ value }), h),
-        options('Split layout (Grid)', settings.gridColumns, ['one', 'two'], (value) =>
-          BoardStyleX.Message.ChangedPrimitiveGridColumns({ value }), h),
-        options('Board text scale (Text)', settings.textVariant, ['inherit', 'caption', 'headingSm', 'headingMd'], (value) =>
-          BoardStyleX.Message.ChangedPrimitiveTextVariant({ value }), h),
+        options(
+          'Canvas padding (Box)',
+          settings.boxPadding,
+          ['responsive', 'none', 'sm', 'md', 'xl'],
+          value => BoardStyleX.Message.ChangedPrimitiveBoxPadding({ value }),
+          h,
+        ),
+        options(
+          'Canvas surface (Box)',
+          settings.boxSurface,
+          ['card', 'muted', 'section'],
+          value => BoardStyleX.Message.ChangedPrimitiveBoxSurface({ value }),
+          h,
+        ),
+        options(
+          'Card spacing (Stack)',
+          settings.stackGap,
+          ['responsive', 'sm', 'md', 'xl'],
+          value => BoardStyleX.Message.ChangedPrimitiveStackGap({ value }),
+          h,
+        ),
+        options(
+          'Board alignment (Inline)',
+          settings.inlineJustify,
+          ['start', 'center', 'end', 'between'],
+          value => BoardStyleX.Message.ChangedPrimitiveInlineJustify({ value }),
+          h,
+        ),
+        options(
+          'Split layout (Grid)',
+          settings.gridColumns,
+          ['one', 'two'],
+          value => BoardStyleX.Message.ChangedPrimitiveGridColumns({ value }),
+          h,
+        ),
+        options(
+          'Board text scale (Text)',
+          settings.textVariant,
+          ['inherit', 'caption', 'headingSm', 'headingMd'],
+          value => BoardStyleX.Message.ChangedPrimitiveTextVariant({ value }),
+          h,
+        ),
       ],
     },
     h,
@@ -109,7 +155,7 @@ const column = (
       gridColumn: specification.span === 2 ? 'span2' : 'auto',
       padding: 'xs',
       rendering: 'deferred',
-      children: specification.items.map((item) =>
+      children: specification.items.map(item =>
         BoardStyleX.isBoardSplit(item)
           ? grid(
               {
@@ -117,7 +163,7 @@ const column = (
                 columns: settings.gridColumns,
                 data: { 'primitive-grid': '' },
                 gap: boardSpace(settings.stackGap),
-                children: item.columns.map((items) =>
+                children: item.columns.map(items =>
                   stack(
                     {
                       gap: boardSpace(settings.stackGap),
@@ -166,7 +212,9 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                           'icon-library': model.preset.iconLibrary,
                           'primitive-box': '',
                         },
-                        padding: boardSpace(model.primitiveInspector.boxPadding),
+                        padding: boardSpace(
+                          model.primitiveInspector.boxPadding,
+                        ),
                         slot: 'capture-target',
                         surface: model.primitiveInspector.boxSurface,
                         width: 'createBoard',
@@ -180,12 +228,19 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                                     align: 'start',
                                     columns: 'createBoard',
                                     data: { 'primitive-board-grid': '' },
-                                    gap: boardSpace(model.primitiveInspector.stackGap),
+                                    gap: boardSpace(
+                                      model.primitiveInspector.stackGap,
+                                    ),
                                     width: 'full',
                                     children: [
                                       BoardStyleX.boardSpriteDefinitions(h),
-                                      ...BoardStyleX.boardColumns(model, h).map((specification) =>
-                                        column(specification, model.primitiveInspector, h),
+                                      ...BoardStyleX.boardColumns(model, h).map(
+                                        specification =>
+                                          column(
+                                            specification,
+                                            model.primitiveInspector,
+                                            h,
+                                          ),
                                       ),
                                     ],
                                   },

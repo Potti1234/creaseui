@@ -1,38 +1,38 @@
-import * as S from 'effect/Schema';
-import { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import * as S from 'effect/Schema'
+import { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-import { definePreviewProgram } from '@/docs/components/pages/authored-page';
+import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
   messageFixtures,
   specFor,
   type BubblePart,
   type MessagePart,
   type MessageSpec,
-} from '@/docs/components/pages/message/shared';
-import * as Attachment from '@/ui/attachment';
-import * as Avatar from '@/ui/avatar';
-import * as Bubble from '@/ui/bubble';
-import * as Button from '@/ui/button';
-import * as Icon from '@/lib/icon';
-import * as Marker from '@/ui/marker';
-import * as Message from '@/ui/message';
+} from '@/docs/components/pages/message/shared'
+import * as Attachment from '@/ui/attachment'
+import * as Avatar from '@/ui/avatar'
+import * as Bubble from '@/ui/bubble'
+import * as Button from '@/ui/button'
+import * as Icon from '@/lib/icon'
+import * as Marker from '@/ui/marker'
+import * as Message from '@/ui/message'
 
 const MessagePreviewModel = S.Struct({
   _docsPage: S.Literal('message'),
-});
-type MessagePreviewModel = S.Schema.Type<typeof MessagePreviewModel>;
+})
+type MessagePreviewModel = S.Schema.Type<typeof MessagePreviewModel>
 
 const MessagePreviewMessage = defineMessageUnion({
   ClickedAction: {},
-});
-type MessagePreviewMessage = typeof MessagePreviewMessage.Type;
+})
+type MessagePreviewMessage = typeof MessagePreviewMessage.Type
 
-type H = HtmlBuilder<MessagePreviewMessage>;
+type H = HtmlBuilder<MessagePreviewMessage>
 
 const ATTACHMENT_IMAGE_URL =
-  'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=900&auto=format&fit=crop&q=80';
+  'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=900&auto=format&fit=crop&q=80'
 
 const bubble = (part: BubblePart, h: H): Html =>
   Bubble.bubble(
@@ -44,24 +44,27 @@ const bubble = (part: BubblePart, h: H): Html =>
           ? []
           : [
               Bubble.bubbleReactions(
-                { ariaLabel: 'Reactions: thumbs up', children: [part.reactions] },
+                {
+                  ariaLabel: 'Reactions: thumbs up',
+                  children: [part.reactions],
+                },
                 h,
               ),
             ]),
       ],
     },
     h,
-  );
+  )
 
 const part = (part: MessagePart, h: H): Html => {
   switch (part.type) {
     case 'bubble':
-      return bubble(part, h);
+      return bubble(part, h)
     case 'bubble-group':
       return Bubble.bubbleGroup(
         { children: part.bubbles.map(b => bubble(b, h)) },
         h,
-      );
+      )
     case 'attachment-image':
       return Attachment.attachment(
         {
@@ -79,7 +82,7 @@ const part = (part: MessagePart, h: H): Html => {
           ],
         },
         h,
-      );
+      )
     case 'attachment-file':
       return Attachment.attachment(
         {
@@ -121,26 +124,26 @@ const part = (part: MessagePart, h: H): Html => {
           ],
         },
         h,
-      );
+      )
   }
-};
+}
 
 const footer = (spec: MessageSpec, h: H): Html | undefined => {
   if (spec.footer === 'Read Yesterday') {
     return Message.messageFooter(
       {
         children: [
-          h.div([h.Class('flex items-center gap-1')], [
-            'Read ',
-            h.span([h.Class('font-normal')], ['Yesterday']),
-          ]),
+          h.div(
+            [h.Class('flex items-center gap-1')],
+            ['Read ', h.span([h.Class('font-normal')], ['Yesterday'])],
+          ),
         ],
       },
       h,
-    );
+    )
   }
   if (spec.footer !== undefined) {
-    return Message.messageFooter({ children: [spec.footer] }, h);
+    return Message.messageFooter({ children: [spec.footer] }, h)
   }
   if (spec.footerActions === 'copyLikeDislike') {
     const btn = (icon: string, label: string): Html =>
@@ -153,7 +156,7 @@ const footer = (spec: MessageSpec, h: H): Html | undefined => {
           children: [Icon.icon(icon, {}, h)],
         },
         h,
-      );
+      )
     return Message.messageFooter(
       {
         children: [
@@ -163,7 +166,7 @@ const footer = (spec: MessageSpec, h: H): Html | undefined => {
         ],
       },
       h,
-    );
+    )
   }
   if (spec.footerActions === 'failedRetry') {
     return Message.messageFooter(
@@ -183,13 +186,13 @@ const footer = (spec: MessageSpec, h: H): Html | undefined => {
         ],
       },
       h,
-    );
+    )
   }
-  return undefined;
-};
+  return undefined
+}
 
 const message = (spec: MessageSpec, h: H): Html => {
-  const foot = footer(spec, h);
+  const foot = footer(spec, h)
   return Message.message(
     {
       ...(spec.align === 'end' ? { align: 'end' as const } : {}),
@@ -227,12 +230,7 @@ const message = (spec: MessageSpec, h: H): Html => {
             children: [
               ...(spec.header === undefined
                 ? []
-                : [
-                    Message.messageHeader(
-                      { children: [spec.header] },
-                      h,
-                    ),
-                  ]),
+                : [Message.messageHeader({ children: [spec.header] }, h)]),
               ...spec.parts.map(p => part(p, h)),
               ...(foot === undefined ? [] : [foot]),
             ],
@@ -242,8 +240,8 @@ const message = (spec: MessageSpec, h: H): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 export const messageTailwindPreviewProgram = definePreviewProgram<
   MessagePreviewModel,
@@ -254,39 +252,42 @@ export const messageTailwindPreviewProgram = definePreviewProgram<
   init: () => ({ _docsPage: 'message' }),
   update: model => ({ model, commands: [] }),
   view: (index, _model, h) => {
-    const fixture = messageFixtures[index] ?? messageFixtures[0];
-    const spec = specFor(fixture.kind);
+    const fixture = messageFixtures[index] ?? messageFixtures[0]
+    const spec = specFor(fixture.kind)
     const gap =
       fixture.kind === 'demo' || fixture.kind === 'group'
         ? 'flex w-full max-w-sm flex-col gap-6 py-12'
-        : 'flex w-full max-w-sm flex-col gap-8 py-12';
-    const messages = spec.map(m => message(m, h));
-    return h.div([h.Class(gap)], [
-      ...(fixture.kind === 'group'
-        ? [Message.messageGroup({ children: messages }, h)]
-        : messages),
-      ...(fixture.kind === 'demo'
-        ? [
-            Marker.marker(
-              {
-                purpose: 'status',
-                children: [
-                  Marker.markerContent(
-                    {
-                      shimmer: true,
-                      children: [
-                        h.span([h.Class('font-medium')], ['Oliver']),
-                        ' is typing...',
-                      ],
-                    },
-                    h,
-                  ),
-                ],
-              },
-              h,
-            ),
-          ]
-        : []),
-    ]);
+        : 'flex w-full max-w-sm flex-col gap-8 py-12'
+    const messages = spec.map(m => message(m, h))
+    return h.div(
+      [h.Class(gap)],
+      [
+        ...(fixture.kind === 'group'
+          ? [Message.messageGroup({ children: messages }, h)]
+          : messages),
+        ...(fixture.kind === 'demo'
+          ? [
+              Marker.marker(
+                {
+                  purpose: 'status',
+                  children: [
+                    Marker.markerContent(
+                      {
+                        shimmer: true,
+                        children: [
+                          h.span([h.Class('font-medium')], ['Oliver']),
+                          ' is typing...',
+                        ],
+                      },
+                      h,
+                    ),
+                  ],
+                },
+                h,
+              ),
+            ]
+          : []),
+      ],
+    )
   },
-});
+})

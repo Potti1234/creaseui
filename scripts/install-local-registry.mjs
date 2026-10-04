@@ -7,7 +7,9 @@ const root = process.cwd()
 const [consumerArgument, ...requestedItems] = process.argv.slice(2)
 
 if (consumerArgument === undefined || requestedItems.length === 0) {
-  console.error('Usage: npm run registry:install-local -- <consumer-path> <item...>')
+  console.error(
+    'Usage: npm run registry:install-local -- <consumer-path> <item...>',
+  )
   process.exitCode = 1
   process.exit()
 }
@@ -33,7 +35,11 @@ const run = (command, args, cwd) =>
     )
   })
 
-await run(npx, ['--yes', 'shadcn@latest', 'build', 'registry.json', '--output', '.registry'], root)
+await run(
+  npx,
+  ['--yes', 'shadcn@latest', 'build', 'registry.json', '--output', '.registry'],
+  root,
+)
 
 const server = createServer((request, response) => {
   const name = request.url?.match(/^\/([a-z0-9-]+)\.json$/)?.[1]
@@ -44,12 +50,14 @@ const server = createServer((request, response) => {
 
   try {
     const item = JSON.parse(readFileSync(join(output, `${name}.json`), 'utf8'))
-    item.registryDependencies = (item.registryDependencies ?? []).map(dependency => {
-      const dependencyName = dependency.match(/\/([^/#]+)(?:#.*)?$/)?.[1]
-      return dependencyName === undefined
-        ? dependency
-        : `http://127.0.0.1:${server.address().port}/${dependencyName}.json`
-    })
+    item.registryDependencies = (item.registryDependencies ?? []).map(
+      dependency => {
+        const dependencyName = dependency.match(/\/([^/#]+)(?:#.*)?$/)?.[1]
+        return dependencyName === undefined
+          ? dependency
+          : `http://127.0.0.1:${server.address().port}/${dependencyName}.json`
+      },
+    )
     response.writeHead(200, { 'content-type': 'application/json' })
     response.end(JSON.stringify(item))
   } catch {

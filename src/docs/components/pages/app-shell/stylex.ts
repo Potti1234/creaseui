@@ -1,22 +1,22 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   type AppShellFixture,
   appShellFixtures,
-} from '@/docs/components/pages/app-shell/shared';
-import { icon } from '@/lib/icon';
-import { className } from '@/stylex/style';
-import * as Alert from '@/stylex/alert';
-import * as AppShell from '@/stylex/app-shell';
-import * as Stack from '@/stylex/stack';
+} from '@/docs/components/pages/app-shell/shared'
+import { icon } from '@/lib/icon'
+import { className } from '@/stylex/style'
+import * as Alert from '@/stylex/alert'
+import * as AppShell from '@/stylex/app-shell'
+import * as Stack from '@/stylex/stack'
 
 const styles = stylex.create({
   fill: { height: '100%', minHeight: 0, width: '100%' },
-  heading: { fontSize: '1.125rem', fontWeight: 600, lineHeight: '1.75rem', },
+  heading: { fontSize: '1.125rem', fontWeight: 600, lineHeight: '1.75rem' },
   body: { fontSize: '0.875rem', lineHeight: '1.25rem' },
-  logoLink: { gap: '0.5rem', alignItems: 'center', display: 'flex', },
+  logoLink: { gap: '0.5rem', alignItems: 'center', display: 'flex' },
   logoChip: {
     borderRadius: '0.5rem',
     alignItems: 'center',
@@ -28,7 +28,7 @@ const styles = stylex.create({
     width: '1.5rem',
   },
   logoIcon: { height: '1rem', width: '1rem' },
-  logoText: { fontSize: '0.875rem', fontWeight: 600, lineHeight: '1.25rem', },
+  logoText: { fontSize: '0.875rem', fontWeight: 600, lineHeight: '1.25rem' },
   sideNav: {
     padding: '0.5rem',
     gap: '0.25rem',
@@ -42,7 +42,7 @@ const styles = stylex.create({
     color: 'var(--muted-foreground)',
     fontSize: '0.75rem',
     fontWeight: 500,
- lineHeight: '1rem',
+    lineHeight: '1rem',
     paddingBlockEnd: '0.25rem',
   },
   navItem: {
@@ -52,7 +52,8 @@ const styles = stylex.create({
     alignItems: 'center',
     color: 'var(--muted-foreground)',
     display: 'flex',
-    fontSize: '0.875rem', lineHeight: '1.25rem',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
     height: '1.5rem',
   },
   navItemSelected: {
@@ -64,7 +65,7 @@ const styles = stylex.create({
     display: 'flex',
     fontSize: '0.875rem',
     fontWeight: 500,
- lineHeight: '1.25rem',
+    lineHeight: '1.25rem',
     height: '1.5rem',
   },
   navItemIcon: { height: '1rem', width: '1rem' },
@@ -75,13 +76,14 @@ const styles = stylex.create({
     display: 'flex',
     height: '3rem',
   },
-  topNavItems: { gap: '0.25rem', alignItems: 'center', display: 'flex', },
+  topNavItems: { gap: '0.25rem', alignItems: 'center', display: 'flex' },
   topNavItem: {
     borderRadius: '0.5rem',
     paddingBlock: '0.25rem',
     paddingInline: '0.5rem',
     color: 'var(--muted-foreground)',
-    fontSize: '0.875rem', lineHeight: '1.25rem',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
   },
   topNavItemSelected: {
     borderRadius: '0.5rem',
@@ -89,17 +91,21 @@ const styles = stylex.create({
     paddingInline: '0.5rem',
     fontSize: '0.875rem',
     fontWeight: 500,
- lineHeight: '1.25rem',
+    lineHeight: '1.25rem',
   },
-});
+})
 
 const navLogo = <Msg>(h: HtmlBuilder<Msg>): Html =>
-  h.a([h.Href('#'), h.Class(className(styles.logoLink))], [
-    h.span([h.Class(className(styles.logoChip))], [
-      icon('box', { class: className(styles.logoIcon) }, h),
-    ]),
-    h.span([h.Class(className(styles.logoText))], ['App Shell']),
-  ]);
+  h.a(
+    [h.Href('#'), h.Class(className(styles.logoLink))],
+    [
+      h.span(
+        [h.Class(className(styles.logoChip))],
+        [icon('box', { class: className(styles.logoIcon) }, h)],
+      ),
+      h.span([h.Class(className(styles.logoText))], ['App Shell']),
+    ],
+  )
 
 const sideNavItem = <Msg>(
   label: string,
@@ -110,19 +116,20 @@ const sideNavItem = <Msg>(
   h.a(
     [
       h.Href('#'),
-      h.Class(
-        className(selected ? styles.navItemSelected : styles.navItem),
-      ),
+      h.Class(className(selected ? styles.navItemSelected : styles.navItem)),
     ],
     [icon(iconName, { class: className(styles.navItemIcon) }, h), label],
-  );
+  )
 
 const sideNavFor = <Msg>(
   kind: AppShellFixture['kind'],
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const withHeader = kind === 'showcase' || kind === 'sideNav';
-  const sections: ReadonlyArray<{ title: string | undefined; items: ReadonlyArray<Html> }> =
+  const withHeader = kind === 'showcase' || kind === 'sideNav'
+  const sections: ReadonlyArray<{
+    title: string | undefined
+    items: ReadonlyArray<Html>
+  }> =
     kind === 'showcase'
       ? [
           {
@@ -151,29 +158,33 @@ const sideNavFor = <Msg>(
               sideNavItem('Settings', 'settings', false, h),
             ],
           },
-        ];
-  return h.nav([h.Class(className(styles.sideNav))], [
-    ...(withHeader ? [navLogo(h)] : []),
-    ...sections.map(section =>
-      Stack.vStack(
-        {
-          gap: 0.5,
-          children: [
-            ...(section.title === undefined
-              ? []
-              : [
-                  h.div([h.Class(className(styles.navSectionTitle))], [
-                    section.title,
+        ]
+  return h.nav(
+    [h.Class(className(styles.sideNav))],
+    [
+      ...(withHeader ? [navLogo(h)] : []),
+      ...sections.map(section =>
+        Stack.vStack(
+          {
+            gap: 0.5,
+            children: [
+              ...(section.title === undefined
+                ? []
+                : [
+                    h.div(
+                      [h.Class(className(styles.navSectionTitle))],
+                      [section.title],
+                    ),
                   ]),
-                ]),
-            ...section.items,
-          ],
-        },
-        h,
+              ...section.items,
+            ],
+          },
+          h,
+        ),
       ),
-    ),
-  ]);
-};
+    ],
+  )
+}
 
 const topNav = <Msg>(h: HtmlBuilder<Msg>): Html => {
   const topNavItem = (label: string, selected: boolean): Html =>
@@ -181,25 +192,26 @@ const topNav = <Msg>(h: HtmlBuilder<Msg>): Html => {
       [
         h.Href('#'),
         h.Class(
-          className(
-            selected ? styles.topNavItemSelected : styles.topNavItem,
-          ),
+          className(selected ? styles.topNavItemSelected : styles.topNavItem),
         ),
       ],
       [label],
-    );
+    )
   return h.nav(
     [h.AriaLabel('Main navigation'), h.Class(className(styles.topNav))],
     [
       navLogo(h),
-      h.div([h.Class(className(styles.topNavItems))], [
-        topNavItem('Home', true),
-        topNavItem('Products', false),
-        topNavItem('Docs', false),
-      ]),
+      h.div(
+        [h.Class(className(styles.topNavItems))],
+        [
+          topNavItem('Home', true),
+          topNavItem('Products', false),
+          topNavItem('Docs', false),
+        ],
+      ),
     ],
-  );
-};
+  )
+}
 
 const pageContent = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Stack.vStack(
@@ -207,13 +219,16 @@ const pageContent = <Msg>(h: HtmlBuilder<Msg>): Html =>
       gap: 4,
       children: [
         h.h3([h.Class(className(styles.heading))], ['Page Content']),
-        h.p([h.Class(className(styles.body))], [
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.',
-        ]),
+        h.p(
+          [h.Class(className(styles.body))],
+          [
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.',
+          ],
+        ),
       ],
     },
     h,
-  );
+  )
 
 const banner = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Alert.alert(
@@ -237,18 +252,18 @@ const banner = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ],
     },
     h,
-  );
+  )
 
 const viewFor = <Msg>(fixture: AppShellFixture, h: HtmlBuilder<Msg>): Html => {
   const hasTop =
     fixture.kind === 'topNav' ||
     fixture.kind === 'topAndSide' ||
-    fixture.kind === 'withBanner';
+    fixture.kind === 'withBanner'
   const hasSide =
     fixture.kind === 'showcase' ||
     fixture.kind === 'sideNav' ||
     fixture.kind === 'topAndSide' ||
-    fixture.kind === 'withBanner';
+    fixture.kind === 'withBanner'
   return AppShell.appShell(
     {
       contentPadding: 6,
@@ -259,12 +274,12 @@ const viewFor = <Msg>(fixture: AppShellFixture, h: HtmlBuilder<Msg>): Html => {
       children: [pageContent(h)],
     },
     h,
-  );
-};
+  )
+}
 
 export const appShellStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   _model: unknown,
   _onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
-) => viewFor(appShellFixtures[exampleIndex] ?? appShellFixtures[0], h);
+) => viewFor(appShellFixtures[exampleIndex] ?? appShellFixtures[0], h)

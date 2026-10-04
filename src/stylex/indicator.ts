@@ -1,12 +1,12 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Icon from '@/lib/icon';
-import type { ComponentLayoutStyle } from './contracts';
-import { foundationTokens } from './foundations-tokens.stylex';
-import { interactionTokens } from './interaction-tokens.stylex.const';
-import { className } from './style';
-import { tokens } from './tokens.stylex';
+import * as Icon from '@/lib/icon'
+import type { ComponentLayoutStyle } from './contracts'
+import { foundationTokens } from './foundations-tokens.stylex'
+import { interactionTokens } from './interaction-tokens.stylex.const'
+import { className } from './style'
+import { tokens } from './tokens.stylex'
 
 /* Ported from Meta Astryx Indicator (packages/core/src/Indicator/) — examples
    and visual spec adapted to Crease UI tokens. Astryx scopes hover tints to a
@@ -84,17 +84,16 @@ const base = stylex.create({
     borderRadius: foundationTokens.radiusFull,
     backgroundColor: tokens.primaryForeground,
   },
-});
+})
 
-export type IndicatorState = 'unchecked' | 'checked' | 'indeterminate';
+export type IndicatorState = 'unchecked' | 'checked' | 'indeterminate'
 /** `sm` renders a 20px control, `md` a 24px control. */
-export type IndicatorSize = 'sm' | 'md';
+export type IndicatorSize = 'sm' | 'md'
 
-const isCheckedState = (state: IndicatorState): boolean =>
-  state === 'checked';
+const isCheckedState = (state: IndicatorState): boolean => state === 'checked'
 
 const isCheckedOrIndeterminate = (state: IndicatorState): boolean =>
-  state !== 'unchecked';
+  state !== 'unchecked'
 
 const checkmark = <Msg>(
   state: IndicatorState,
@@ -127,24 +126,24 @@ const checkmark = <Msg>(
         [],
       ),
     ],
-  );
+  )
 
 export type CheckIndicatorProps = Readonly<{
-  state: 'unchecked' | 'checked';
-  size?: IndicatorSize;
-  isDisabled?: boolean;
+  state: 'unchecked' | 'checked'
+  size?: IndicatorSize
+  isDisabled?: boolean
   /** Replacement content rendered in the mark's slot (e.g. a busy spinner). */
-  children?: ReadonlyArray<Html>;
+  children?: ReadonlyArray<Html>
   /** Parent-layout positioning only. */
-  layoutStyle?: ComponentLayoutStyle;
-}>;
+  layoutStyle?: ComponentLayoutStyle
+}>
 
 /** The default single-selection mark: a checkmark when chosen, nothing when not. */
 export const checkIndicator = <Msg>(
   props: CheckIndicatorProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const isChecked = props.state === 'checked';
+  const isChecked = props.state === 'checked'
   if (props.children !== undefined && props.children.length > 0) {
     return h.span(
       [
@@ -158,10 +157,10 @@ export const checkIndicator = <Msg>(
         ),
       ],
       [...props.children],
-    );
+    )
   }
   if (!isChecked) {
-    return h.empty;
+    return h.empty
   }
   return Icon.check(
     {
@@ -172,27 +171,27 @@ export const checkIndicator = <Msg>(
       ),
     },
     h,
-  );
-};
+  )
+}
 
 export type CheckboxIndicatorProps = Readonly<{
-  state: IndicatorState;
-  size?: IndicatorSize;
-  isDisabled?: boolean;
+  state: IndicatorState
+  size?: IndicatorSize
+  isDisabled?: boolean
   /** Replacement content rendered inside the box (e.g. a busy spinner). */
-  children?: ReadonlyArray<Html>;
+  children?: ReadonlyArray<Html>
   /** Parent-layout positioning only. */
-  layoutStyle?: ComponentLayoutStyle;
-}>;
+  layoutStyle?: ComponentLayoutStyle
+}>
 
 /** The default checkbox visual: a square box with a checkmark or an indeterminate bar. */
 export const checkboxIndicator = <Msg>(
   props: CheckboxIndicatorProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const size = props.size ?? 'md';
-  const isDisabled = props.isDisabled === true;
-  const checked = isCheckedOrIndeterminate(props.state);
+  const size = props.size ?? 'md'
+  const isDisabled = props.isDisabled === true
+  const checked = isCheckedOrIndeterminate(props.state)
   return h.span(
     [
       h.AriaHidden(true),
@@ -231,28 +230,28 @@ export const checkboxIndicator = <Msg>(
             [],
           ),
         ],
-  );
-};
+  )
+}
 
 export type RadioIndicatorProps = Readonly<{
   /** A radio has no partial state; anything other than unchecked reads as selected. */
-  state: IndicatorState;
-  size?: IndicatorSize;
-  isDisabled?: boolean;
+  state: IndicatorState
+  size?: IndicatorSize
+  isDisabled?: boolean
   /** Replacement content rendered inside the circle (e.g. a busy spinner). */
-  children?: ReadonlyArray<Html>;
+  children?: ReadonlyArray<Html>
   /** Parent-layout positioning only. */
-  layoutStyle?: ComponentLayoutStyle;
-}>;
+  layoutStyle?: ComponentLayoutStyle
+}>
 
 /** The default radio visual: a circle with a filled inner dot when selected. */
 export const radioIndicator = <Msg>(
   props: RadioIndicatorProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const size = props.size ?? 'md';
-  const isChecked = props.state !== 'unchecked';
-  const isDisabled = props.isDisabled === true;
+  const size = props.size ?? 'md'
+  const isChecked = props.state !== 'unchecked'
+  const isDisabled = props.isDisabled === true
   return h.span(
     [
       h.AriaHidden(true),
@@ -279,11 +278,13 @@ export const radioIndicator = <Msg>(
             h.span(
               [
                 h.DataAttribute('slot', 'radio-indicator-dot'),
-                h.Class(className(base.dot, size === 'sm' ? base.dotSm : base.dotMd)),
+                h.Class(
+                  className(base.dot, size === 'sm' ? base.dotSm : base.dotMd),
+                ),
               ],
               [],
             ),
           ]
         : [],
-  );
-};
+  )
+}

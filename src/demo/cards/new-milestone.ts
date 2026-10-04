@@ -1,10 +1,10 @@
 import type { Update } from 'foldkit'
-import { Match as M, Schema as S } from 'effect';
-import type { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import { Match as M, Schema as S } from 'effect'
+import type { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-import { button } from '@/ui/button';
+import { button } from '@/ui/button'
 import {
   card,
   cardContent,
@@ -12,48 +12,51 @@ import {
   cardFooter,
   cardHeader,
   cardTitle,
-} from '@/ui/card';
-import { field, fieldGroup, fieldLabel } from '@/ui/field';
-import { input } from '@/ui/input';
+} from '@/ui/card'
+import { field, fieldGroup, fieldLabel } from '@/ui/field'
+import { input } from '@/ui/input'
 
 export const Model = S.Struct({
   goalName: S.String,
   targetAmount: S.String,
   targetDate: S.String,
-});
-export type Model = typeof Model.Type;
-
-
-
+})
+export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
   UpdatedGoalName: { value: S.String },
   UpdatedTargetAmount: {
-  value: S.String,
-},
+    value: S.String,
+  },
   UpdatedTargetDate: {
-  value: S.String,
-},
-});
-export type Message = typeof Message.Type;
+    value: S.String,
+  },
+})
+export type Message = typeof Message.Type
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 
 export const init = (): Model => ({
   goalName: '',
   targetAmount: '$15,000',
   targetDate: 'Dec 2025',
-});
+})
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      UpdatedGoalName: ({ value }) => ({ model: { ...model, goalName: value } }),
-      UpdatedTargetAmount: ({ value }) => ({ model: { ...model, targetAmount: value } }),
-      UpdatedTargetDate: ({ value }) => ({ model: { ...model, targetDate: value } }),
+      UpdatedGoalName: ({ value }) => ({
+        model: { ...model, goalName: value },
+      }),
+      UpdatedTargetAmount: ({ value }) => ({
+        model: { ...model, targetAmount: value },
+      }),
+      UpdatedTargetDate: ({ value }) => ({
+        model: { ...model, targetDate: value },
+      }),
     }),
-  );
+  )
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
   return card(
@@ -95,7 +98,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                             {
                               id: 'goal-name',
                               value: model.goalName,
-                              onInput: (value) => Message.UpdatedGoalName({ value }),
+                              onInput: value =>
+                                Message.UpdatedGoalName({ value }),
                               placeholder: 'e.g. New Car, Home Downpayment',
                             },
                             h,
@@ -121,7 +125,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                                 {
                                   id: 'target-amount',
                                   value: model.targetAmount,
-                                  onInput: (value) =>
+                                  onInput: value =>
                                     Message.UpdatedTargetAmount({ value }),
                                 },
                                 h,
@@ -144,7 +148,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                                 {
                                   id: 'target-date',
                                   value: model.targetDate,
-                                  onInput: (value) =>
+                                  onInput: value =>
                                     Message.UpdatedTargetDate({ value }),
                                 },
                                 h,
@@ -183,8 +187,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 /*
 Minimal wiring:

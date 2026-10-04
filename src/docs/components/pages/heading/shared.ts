@@ -1,17 +1,17 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { staticComponentApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 export type HeadingExampleKind =
   | 'showcase'
   | 'truncation'
   | 'pageHierarchy'
-  | 'cardGrid';
+  | 'cardGrid'
 
 export type HeadingFixture = Readonly<{
-  title: string;
-  description?: string;
-  kind: HeadingExampleKind;
-}>;
+  title: string
+  description?: string
+  kind: HeadingExampleKind
+}>
 
 /* Example set ported from Meta Astryx
    packages/cli/assets/templates/blocks/components/Heading/*.tsx — same demos,
@@ -42,19 +42,16 @@ export const headingFixtures: Readonly<
       'Responsive card grid with truncated headings and descriptions for uniform layout',
     kind: 'cardGrid',
   },
-];
+]
 
-const viewBody = (
-  fixture: HeadingFixture,
-  isStyleX: boolean,
-): string => {
+const viewBody = (fixture: HeadingFixture, isStyleX: boolean): string => {
   const stack = (items: string, style: string) =>
     `h.div(
       [h.Class(${style})],
       [
         ${items},
       ],
-    )`;
+    )`
 
   switch (fixture.kind) {
     case 'showcase':
@@ -65,8 +62,10 @@ const viewBody = (
               `Heading.heading({ level: ${level}, children: ['Heading Level ${level}'] }, h)`,
           )
           .join(',\n        '),
-        isStyleX ? 'className(styles.column)' : "'flex flex-col gap-2 items-start'",
-      );
+        isStyleX
+          ? 'className(styles.column)'
+          : "'flex flex-col gap-2 items-start'",
+      )
     case 'truncation':
       return stack(
         `h.div(
@@ -82,7 +81,7 @@ const viewBody = (
           ],
         )`,
         isStyleX ? 'className(styles.demoColumn)' : "'flex flex-col gap-6'",
-      );
+      )
     case 'pageHierarchy':
       return stack(
         `h.div(
@@ -115,7 +114,7 @@ const viewBody = (
         isStyleX
           ? 'className(styles.pageColumn)'
           : "'flex flex-col gap-6 w-full max-w-100'",
-      );
+      )
     case 'cardGrid':
       return `Card.card(
       { children: [
@@ -129,56 +128,53 @@ const viewBody = (
             ],
           ),
         ] }, h),
-      ]${isStyleX ? ', layoutStyle: styles.card' : ", class: 'w-75'"} }, h)`;
+      ]${isStyleX ? ', layoutStyle: styles.card' : ", class: 'w-75'"} }, h)`
   }
-};
+}
 
 const stylexStyles = (fixture: HeadingFixture): string => {
   switch (fixture.kind) {
     case 'showcase':
-      return "column: { alignItems: 'flex-start', display: 'flex', flexDirection: 'column', gap: '0.5rem' }";
+      return "column: { alignItems: 'flex-start', display: 'flex', flexDirection: 'column', gap: '0.5rem' }"
     case 'truncation':
       return [
         "demoColumn: { display: 'flex', flexDirection: 'column', gap: '1.5rem' }",
         "box: { borderColor: 'var(--border)', borderStyle: 'solid', borderWidth: '1px', padding: '0.75rem', width: '300px' }",
-      ].join(',\n  ');
+      ].join(',\n  ')
     case 'pageHierarchy':
-      return "pageColumn: { display: 'flex', flexDirection: 'column', gap: '1.5rem', maxWidth: '400px', width: '100%' }";
+      return "pageColumn: { display: 'flex', flexDirection: 'column', gap: '1.5rem', maxWidth: '400px', width: '100%' }"
     case 'cardGrid':
       return [
         "column: { display: 'flex', flexDirection: 'column', gap: '0.5rem' }",
         "card: { width: '300px' }",
-      ].join(',\n  ');
+      ].join(',\n  ')
   }
-};
+}
 
-const source = (
-  index: number,
-  renderer: 'tailwind' | 'stylex',
-): string => {
-  const fixture = headingFixtures[index] ?? headingFixtures[0];
-  const isStyleX = renderer === 'stylex';
-  const base = isStyleX ? 'stylex' : 'ui';
-  const imports: string[] = [];
+const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+  const fixture = headingFixtures[index] ?? headingFixtures[0]
+  const isStyleX = renderer === 'stylex'
+  const base = isStyleX ? 'stylex' : 'ui'
+  const imports: string[] = []
   if (isStyleX) {
     imports.push(
       `import * as stylex from '@stylexjs/stylex'`,
       `import { className } from '@/stylex/style'`,
-    );
+    )
   }
   if (fixture.kind === 'pageHierarchy' || fixture.kind === 'cardGrid') {
-    imports.push(`import * as Text from '@/${base}/text'`);
+    imports.push(`import * as Text from '@/${base}/text'`)
   }
   if (fixture.kind === 'cardGrid') {
-    imports.push(`import * as Card from '@/${base}/card'`);
+    imports.push(`import * as Card from '@/${base}/card'`)
   }
-  const styles = stylexStyles(fixture);
+  const styles = stylexStyles(fixture)
   const componentImports = [
     ...imports,
     ...(isStyleX && styles !== ''
       ? [``, `const styles = stylex.create({\n  ${styles}\n})`]
       : []),
-  ].join('\n');
+  ].join('\n')
   return staticComponentApplication({
     componentName: 'Heading',
     componentSlug: 'heading',
@@ -186,8 +182,8 @@ const source = (
     exampleName: fixture.title,
     ...(componentImports === '' ? {} : { componentImports }),
     viewBody: viewBody(fixture, isStyleX),
-  });
-};
+  })
+}
 
 export const headingExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -198,4 +194,4 @@ export const headingExamples = (
       ? {}
       : { description: fixture.description }),
     code: source(index, renderer),
-  }));
+  }))

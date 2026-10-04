@@ -1,6 +1,6 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { Disclosure as DisclosurePrimitive } from '@foldkit/ui';
+import { Disclosure as DisclosurePrimitive } from '@foldkit/ui'
 
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
@@ -12,7 +12,14 @@ const styles = stylex.create({
   content: { overflow: 'hidden' },
   root: { display: 'block' },
   trigger: { cursor: interactionTokens.cursorAction },
-  sidebarTrigger: { padding: '0.5rem', alignItems: 'center', display: 'flex', textAlign: 'left', minHeight: '2rem', width: '100%', },
+  sidebarTrigger: {
+    padding: '0.5rem',
+    alignItems: 'center',
+    display: 'flex',
+    textAlign: 'left',
+    minHeight: '2rem',
+    width: '100%',
+  },
 })
 
 const isStaticStyle = (value: unknown): value is StaticStyles =>
@@ -24,18 +31,18 @@ const cn = (...values: ReadonlyArray<unknown>): string =>
    animatePanel keeps the content mounted and smoothly transitions its height. */
 
 export type CollapsibleProps<Msg> = Readonly<{
-  id: string;
-  isOpen: boolean;
-  onToggle: (isOpen: boolean) => Msg;
-  trigger: Html | string;
-  content: Html | string;
-  isDisabled?: boolean;
-  ariaLabel?: string;
-  variant?: 'default' | 'sidebar';
-  layoutStyle?: ComponentLayoutStyle;
-  triggerLayoutStyle?: ComponentLayoutStyle;
-  contentLayoutStyle?: ComponentLayoutStyle;
-}>;
+  id: string
+  isOpen: boolean
+  onToggle: (isOpen: boolean) => Msg
+  trigger: Html | string
+  content: Html | string
+  isDisabled?: boolean
+  ariaLabel?: string
+  variant?: 'default' | 'sidebar'
+  layoutStyle?: ComponentLayoutStyle
+  triggerLayoutStyle?: ComponentLayoutStyle
+  contentLayoutStyle?: ComponentLayoutStyle
+}>
 
 export const collapsible = <Msg>(
   props: CollapsibleProps<Msg>,
@@ -62,7 +69,13 @@ export const collapsible = <Msg>(
                 ...button,
                 h.Type('button'),
                 h.DataAttribute('slot', 'collapsible-trigger'),
-                h.Class(cn(styles.trigger, props.variant === 'sidebar' && styles.sidebarTrigger, props.triggerLayoutStyle)),
+                h.Class(
+                  cn(
+                    styles.trigger,
+                    props.variant === 'sidebar' && styles.sidebarTrigger,
+                    props.triggerLayoutStyle,
+                  ),
+                ),
               ],
               [props.trigger],
             ),
@@ -77,12 +90,12 @@ export const collapsible = <Msg>(
               ),
             ),
           ],
-        );
+        )
       },
     },
     h,
-  );
-};
+  )
+}
 
 /*
 Minimal wiring:
@@ -98,4 +111,3 @@ collapsible({
   content: detailsView,
 })
 */
-

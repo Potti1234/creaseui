@@ -6,17 +6,23 @@ import * as MetadataList from '../src/lib/metadata-list.ts'
 test('update toggles the collapsed state', () => {
   const initial = MetadataList.init()
   assert.equal(initial.isOpen, false)
-  const open__ = MetadataList.update(initial, MetadataList.Message.ToggledShowAll())
+  const open__ = MetadataList.update(
+    initial,
+    MetadataList.Message.ToggledShowAll(),
+  )
   assert.equal(open__.model.isOpen, true)
-  const closed__ = MetadataList.update(open__.model, MetadataList.Message.ToggledShowAll())
+  const closed__ = MetadataList.update(
+    open__.model,
+    MetadataList.Message.ToggledShowAll(),
+  )
   assert.equal(closed__.model.isOpen, false)
 })
 
 test('horizontal orientation always stacks labels on top', () => {
-  assert.deepEqual(
-    MetadataList.resolveLayout({ orientation: 'horizontal' }),
-    { kind: 'horizontal', isStacked: true },
-  )
+  assert.deepEqual(MetadataList.resolveLayout({ orientation: 'horizontal' }), {
+    kind: 'horizontal',
+    isStacked: true,
+  })
   // astryx stacks whenever labelPosition is 'top' OR orientation is 'horizontal'
   assert.equal(
     MetadataList.resolveLayout({
@@ -36,10 +42,16 @@ test('multi-column defaults to top labels; single-column to start labels', () =>
     kind: 'grid-single',
     isStacked: false,
   })
-  assert.deepEqual(MetadataList.resolveLayout({ columns: 'single', label: { position: 'top' } }), {
-    kind: 'grid-stacked-single',
-    isStacked: true,
-  })
+  assert.deepEqual(
+    MetadataList.resolveLayout({
+      columns: 'single',
+      label: { position: 'top' },
+    }),
+    {
+      kind: 'grid-stacked-single',
+      isStacked: true,
+    },
+  )
 })
 
 test('numeric columns and label widths resolve to grid templates', () => {

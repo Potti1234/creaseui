@@ -15,7 +15,10 @@ export type IconProps = Readonly<{
   size?: 'sm' | 'md'
 }>
 
-export const icon = <Message>(props: IconProps, h: HtmlBuilder<Message>): Html =>
+export const icon = <Message>(
+  props: IconProps,
+  h: HtmlBuilder<Message>,
+): Html =>
   Icon.icon(
     props.name,
     {
@@ -24,4 +27,3 @@ export const icon = <Message>(props: IconProps, h: HtmlBuilder<Message>): Html =
     },
     h,
   )
-

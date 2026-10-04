@@ -29,7 +29,7 @@ Status (foldkit 0.163):
 ## Popover
 
 - **`side: 'right'` overflows at 390px.**
-  Anchor flip/shift clips against the *document* instead of the viewport
+  Anchor flip/shift clips against the _document_ instead of the viewport
   and lacks a crossAxis shift, so a right-side popover still overflows
   the right edge on a narrow viewport.
 

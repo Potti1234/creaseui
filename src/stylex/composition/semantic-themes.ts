@@ -13,7 +13,10 @@ export const compactSemanticTheme = stylex.createTheme(semanticSystemTheme, {
   regionSpacious: '1rem',
 })
 
-export const comfortableSemanticTheme = stylex.createTheme(semanticSystemTheme, {})
+export const comfortableSemanticTheme = stylex.createTheme(
+  semanticSystemTheme,
+  {},
+)
 
 export const expressiveSemanticTheme = stylex.createTheme(semanticSystemTheme, {
   durationFast: '180ms',
@@ -25,4 +28,3 @@ export const expressiveSemanticTheme = stylex.createTheme(semanticSystemTheme, {
   regionCompact: '0.75rem',
   regionSpacious: '2rem',
 })
-

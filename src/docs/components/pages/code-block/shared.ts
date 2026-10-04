@@ -1,5 +1,5 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type CodeBlockExampleKind =
   | 'showcase'
@@ -7,25 +7,25 @@ export type CodeBlockExampleKind =
   | 'highlighted'
   | 'jsonConfig'
   | 'scrollable'
-  | 'terminal';
+  | 'terminal'
 
 export type CodeBlockSpec = Readonly<{
-  id: string;
-  code: string;
-  language?: 'bash' | 'json' | 'typescript';
-  title?: string;
-  hasLineNumbers?: boolean;
-  hasCopyButton?: boolean;
-  highlightLines?: ReadonlyArray<number>;
-  maxHeight?: number;
-}>;
+  id: string
+  code: string
+  language?: 'bash' | 'json' | 'typescript'
+  title?: string
+  hasLineNumbers?: boolean
+  hasCopyButton?: boolean
+  highlightLines?: ReadonlyArray<number>
+  maxHeight?: number
+}>
 
 export type CodeBlockFixture = Readonly<{
-  title: string;
-  description?: string;
-  kind: CodeBlockExampleKind;
-  blocks: ReadonlyArray<CodeBlockSpec>;
-}>;
+  title: string
+  description?: string
+  kind: CodeBlockExampleKind
+  blocks: ReadonlyArray<CodeBlockSpec>
+}>
 
 /* Example set ported from Meta Astryx
    packages/cli/assets/templates/blocks/components/CodeBlock/*.tsx — same
@@ -43,7 +43,7 @@ export function useUser(id: string) {
   }, [id]);
 
   return user;
-}`;
+}`
 
 export const HIGHLIGHT_CODE = `interface User {
   id: string;
@@ -56,7 +56,7 @@ export function useUser(id: string) {
     fetchUser(id).then(setUser);
   }, [id]);
   return user;
-}`;
+}`
 
 export const JSON_CODE = `{
   "name": "@astryxdesign/core",
@@ -69,16 +69,16 @@ export const JSON_CODE = `{
     "build": "tsup",
     "test": "vitest"
   }
-}`;
+}`
 
 export const SCROLLABLE_CODE = Array.from(
   { length: 50 },
   (_, i) => `const line${String(i + 1)} = ${String(i + 1)};`,
-).join('\n');
+).join('\n')
 
 export const TERMINAL_CODE = `$ astryx init --features agents
 ✓ AI agent docs installed → AGENTS.md
-$ pnpm astryx component CodeBlock --dense`;
+$ pnpm astryx component CodeBlock --dense`
 
 export const codeBlockFixtures: Readonly<
   [CodeBlockFixture, ...Array<CodeBlockFixture>]
@@ -177,80 +177,82 @@ export const codeBlockFixtures: Readonly<
       },
     ],
   },
-];
+]
 
 const blockCall = (block: CodeBlockSpec, isStyleX: boolean): string => {
   const props: string[] = [
     `model: model.codeBlocks['${block.id}'] ?? CodeBlock.init()`,
     `toParentMessage: message => GotCodeBlockMessage({ id: '${block.id}', message })`,
     `code: CODE_${block.id === 'scrollable' ? 'SCROLLABLE' : block.id.toUpperCase()}`,
-  ];
+  ]
   if (block.language !== undefined) {
-    props.push(`language: '${block.language}'`);
+    props.push(`language: '${block.language}'`)
   }
   if (block.title !== undefined) {
-    props.push(`title: '${block.title}'`);
+    props.push(`title: '${block.title}'`)
   }
   if (block.hasLineNumbers === true) {
-    props.push('hasLineNumbers: true');
+    props.push('hasLineNumbers: true')
   }
   if (block.hasCopyButton === true) {
-    props.push('hasCopyButton: true');
+    props.push('hasCopyButton: true')
   }
   if (block.highlightLines !== undefined) {
-    props.push(`highlightLines: [${block.highlightLines.join(', ')}]`);
+    props.push(`highlightLines: [${block.highlightLines.join(', ')}]`)
   }
   if (block.maxHeight !== undefined) {
-    props.push(`maxHeight: ${String(block.maxHeight)}`);
+    props.push(`maxHeight: ${String(block.maxHeight)}`)
   }
   if (isStyleX) {
-    props.push('layoutStyle: styles.block');
+    props.push('layoutStyle: styles.block')
   } else {
-    props.push("class: 'w-full'");
+    props.push("class: 'w-full'")
   }
-  return `CodeBlock.codeBlock({\n      ${props.join(',\n      ')}\n    }, h)`;
-};
+  return `CodeBlock.codeBlock({\n      ${props.join(',\n      ')}\n    }, h)`
+}
 
 const codeConsts = (fixture: CodeBlockFixture): string =>
   fixture.blocks
     .map(block => {
-      const name = `CODE_${block.id === 'scrollable' ? 'SCROLLABLE' : block.id.toUpperCase()}`;
+      const name = `CODE_${block.id === 'scrollable' ? 'SCROLLABLE' : block.id.toUpperCase()}`
       if (block.id === 'scrollable') {
-        return `const ${name} = Array.from(\n  { length: 50 },\n  (_, i) => \`const line\${i + 1} = \${i + 1};\`,\n).join('\\n')`;
+        return `const ${name} = Array.from(\n  { length: 50 },\n  (_, i) => \`const line\${i + 1} = \${i + 1};\`,\n).join('\\n')`
       }
-      return `const ${name} = ${JSON.stringify(block.code)}`;
+      return `const ${name} = ${JSON.stringify(block.code)}`
     })
-    .join('\n\n');
+    .join('\n\n')
 
 const emitBody = (fixture: CodeBlockFixture, isStyleX: boolean): string => {
   const calls = fixture.blocks
     .map(block => blockCall(block, isStyleX))
-    .join(',\n    ');
+    .join(',\n    ')
   if (fixture.blocks.length === 1) {
-    return `    ${calls}`;
+    return `    ${calls}`
   }
-  const wrap = isStyleX ? 'className(styles.column)' : "'flex flex-col gap-4 w-full max-w-100'";
+  const wrap = isStyleX
+    ? 'className(styles.column)'
+    : "'flex flex-col gap-4 w-full max-w-100'"
   return `    h.div(
       [h.Class(${wrap})],
       [
     ${calls}
       ],
-    )`;
-};
+    )`
+}
 
 const emitApplication = (
   fixture: CodeBlockFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const isStyleX = renderer === 'stylex';
-  const base = isStyleX ? 'stylex' : 'ui';
+  const isStyleX = renderer === 'stylex'
+  const base = isStyleX ? 'stylex' : 'ui'
   const stylesBlock = isStyleX
     ? `\n\nconst styles = stylex.create({${
-      fixture.blocks.length > 1
-        ? "\n  column: { display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '400px', width: '100%' },"
-        : ''
-    }\n  block: { width: '100%' },\n})`
-    : '';
+        fixture.blocks.length > 1
+          ? "\n  column: { display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '400px', width: '100%' },"
+          : ''
+      }\n  block: { width: '100%' },\n})`
+    : ''
   return foldkitApplication({
     title: `CodeBlock — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
@@ -308,8 +310,8 @@ ${fixture.blocks
 ${emitBody(fixture, isStyleX)}
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const codeBlockExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -320,4 +322,4 @@ export const codeBlockExamples = (
       ? {}
       : { description: fixture.description }),
     code: emitApplication(fixture, renderer),
-  }));
+  }))

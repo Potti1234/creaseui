@@ -1,47 +1,52 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   stepperFixtures,
   type StepperFixturePanel,
   type StepperFixtureStep,
-} from '@/docs/components/pages/stepper/shared';
-import * as Icon from '@/lib/icon';
-import * as Stepper from '@/stylex/stepper';
-import { alert, alertDescription, alertTitle } from '@/stylex/alert';
-import { badge } from '@/stylex/badge';
-import { button } from '@/stylex/button';
-import { card, cardContent } from '@/stylex/card';
-import { input } from '@/stylex/input';
-import { className } from '@/stylex/style';
-import { tokens } from '../../../../stylex/tokens.stylex';
+} from '@/docs/components/pages/stepper/shared'
+import * as Icon from '@/lib/icon'
+import * as Stepper from '@/stylex/stepper'
+import { alert, alertDescription, alertTitle } from '@/stylex/alert'
+import { badge } from '@/stylex/badge'
+import { button } from '@/stylex/button'
+import { card, cardContent } from '@/stylex/card'
+import { input } from '@/stylex/input'
+import { className } from '@/stylex/style'
+import { tokens } from '../../../../stylex/tokens.stylex'
 
 const styles = stylex.create({
   frame400: { width: '400px' },
-  panelRow: { gap: '3rem', display: 'flex', flexWrap: 'wrap', },
+  panelRow: { gap: '3rem', display: 'flex', flexWrap: 'wrap' },
   panel: { width: '220px' },
   panelHeading: {
     marginInline: 0,
     fontSize: '0.875rem',
     fontWeight: 500,
- lineHeight: '1.25rem',
+    lineHeight: '1.25rem',
     marginBlockEnd: '0.5rem',
     marginBlockStart: 0,
   },
-  column: { gap: '0.75rem', display: 'flex', flexDirection: 'column', },
-  row: { gap: '0.75rem', display: 'flex', },
-  rowSm: { gap: '0.5rem', display: 'flex', },
+  column: { gap: '0.75rem', display: 'flex', flexDirection: 'column' },
+  row: { gap: '0.75rem', display: 'flex' },
+  rowSm: { gap: '0.5rem', display: 'flex' },
   fullWidth: { width: '100%' },
-  cardStack: { gap: '0.5rem', display: 'flex', flexDirection: 'column', },
-  cardTitleRow: { gap: '0.5rem', alignItems: 'center', display: 'flex', },
-  cardLabel: { fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem', },
-  cardMeta: { margin: 0, color: tokens.mutedForeground, fontSize: '0.75rem', lineHeight: '1rem', },
-});
+  cardStack: { gap: '0.5rem', display: 'flex', flexDirection: 'column' },
+  cardTitleRow: { gap: '0.5rem', alignItems: 'center', display: 'flex' },
+  cardLabel: { fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem' },
+  cardMeta: {
+    margin: 0,
+    color: tokens.mutedForeground,
+    fontSize: '0.75rem',
+    lineHeight: '1rem',
+  },
+})
 
 interface PreviewShape {
-  readonly controls: ReadonlyArray<Stepper.Model>;
-  readonly activeStep: number;
+  readonly controls: ReadonlyArray<Stepper.Model>
+  readonly activeStep: number
 }
 
 const contentFor = <Msg>(
@@ -51,117 +56,171 @@ const contentFor = <Msg>(
 ): Html => {
   switch (kind) {
     case 'form':
-      return h.div([h.Class(className(styles.column))], [
-        h.div([h.Class(className(styles.row))], [
-          input<Msg>(
-            { id: 'project-name', label: 'Project name', placeholder: 'My awesome project', value: '', layoutStyle: styles.fullWidth },
-            h,
+      return h.div(
+        [h.Class(className(styles.column))],
+        [
+          h.div(
+            [h.Class(className(styles.row))],
+            [
+              input<Msg>(
+                {
+                  id: 'project-name',
+                  label: 'Project name',
+                  placeholder: 'My awesome project',
+                  value: '',
+                  layoutStyle: styles.fullWidth,
+                },
+                h,
+              ),
+              input<Msg>(
+                {
+                  id: 'repo-url',
+                  label: 'Repository URL',
+                  placeholder: 'https://github.com/...',
+                  value: '',
+                  layoutStyle: styles.fullWidth,
+                },
+                h,
+              ),
+            ],
           ),
-          input<Msg>(
-            { id: 'repo-url', label: 'Repository URL', placeholder: 'https://github.com/...', value: '', layoutStyle: styles.fullWidth },
-            h,
+          h.div(
+            [],
+            [
+              button<Msg>(
+                {
+                  variant: 'default',
+                  onClick: toParent(Stepper.Message.ClickedStep({ step: 1 })),
+                  children: ['Continue'],
+                },
+                h,
+              ),
+            ],
           ),
-        ]),
-        h.div([], [
-          button<Msg>(
-            {
-              variant: 'default',
-              onClick: toParent(Stepper.Message.ClickedStep({ step: 1 })),
-              children: ['Continue'],
-            },
-            h,
-          ),
-        ]),
-      ]);
+        ],
+      )
     case 'review':
-      return h.div([h.Class(className(styles.column))], [
-        card<Msg>(
-          {
-            size: 'sm',
-            children: [
-              cardContent(
+      return h.div(
+        [h.Class(className(styles.column))],
+        [
+          card<Msg>(
+            {
+              size: 'sm',
+              children: [
+                cardContent(
+                  {
+                    children: [
+                      h.div(
+                        [h.Class(className(styles.cardStack))],
+                        [
+                          h.div(
+                            [h.Class(className(styles.cardTitleRow))],
+                            [
+                              h.span(
+                                [h.Class(className(styles.cardLabel))],
+                                ['Next.js 15'],
+                              ),
+                              badge<Msg>(
+                                {
+                                  variant: 'secondary',
+                                  children: ['Detected'],
+                                },
+                                h,
+                              ),
+                            ],
+                          ),
+                          h.p(
+                            [h.Class(className(styles.cardMeta))],
+                            [
+                              'Build command ',
+                              h.code([], ['next build']),
+                              ' · Output ',
+                              h.code([], ['.next']),
+                              ' · Node 20',
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  },
+                  h,
+                ),
+              ],
+            },
+            h,
+          ),
+          h.div(
+            [h.Class(className(styles.rowSm))],
+            [
+              button<Msg>(
                 {
-                  children: [
-                    h.div([h.Class(className(styles.cardStack))], [
-                      h.div([h.Class(className(styles.cardTitleRow))], [
-                        h.span([h.Class(className(styles.cardLabel))], ['Next.js 15']),
-                        badge<Msg>({ variant: 'secondary', children: ['Detected'] }, h),
-                      ]),
-                      h.p([h.Class(className(styles.cardMeta))], [
-                        'Build command ',
-                        h.code([], ['next build']),
-                        ' · Output ',
-                        h.code([], ['.next']),
-                        ' · Node 20',
-                      ]),
-                    ]),
-                  ],
+                  variant: 'secondary',
+                  onClick: toParent(Stepper.Message.ClickedStep({ step: 0 })),
+                  children: ['Back'],
+                },
+                h,
+              ),
+              button<Msg>(
+                {
+                  variant: 'default',
+                  onClick: toParent(Stepper.Message.ClickedStep({ step: 2 })),
+                  children: ['Looks right'],
                 },
                 h,
               ),
             ],
-          },
-          h,
-        ),
-        h.div([h.Class(className(styles.rowSm))], [
-          button<Msg>(
-            {
-              variant: 'secondary',
-              onClick: toParent(Stepper.Message.ClickedStep({ step: 0 })),
-              children: ['Back'],
-            },
-            h,
           ),
-          button<Msg>(
-            {
-              variant: 'default',
-              onClick: toParent(Stepper.Message.ClickedStep({ step: 2 })),
-              children: ['Looks right'],
-            },
-            h,
-          ),
-        ]),
-      ]);
+        ],
+      )
     case 'deploy':
-      return h.div([h.Class(className(styles.column))], [
-        alert<Msg>(
-          {
-            announcement: 'static',
-            children: [
-              alertTitle({ children: ['First deploy takes a few minutes'] }, h),
-              alertDescription(
+      return h.div(
+        [h.Class(className(styles.column))],
+        [
+          alert<Msg>(
+            {
+              announcement: 'static',
+              children: [
+                alertTitle(
+                  { children: ['First deploy takes a few minutes'] },
+                  h,
+                ),
+                alertDescription(
+                  {
+                    children: [
+                      'Later deploys reuse the build cache and finish in under a minute.',
+                    ],
+                  },
+                  h,
+                ),
+              ],
+            },
+            h,
+          ),
+          h.div(
+            [h.Class(className(styles.rowSm))],
+            [
+              button<Msg>(
                 {
-                  children: [
-                    'Later deploys reuse the build cache and finish in under a minute.',
-                  ],
+                  variant: 'secondary',
+                  onClick: toParent(Stepper.Message.ClickedStep({ step: 1 })),
+                  children: ['Back'],
+                },
+                h,
+              ),
+              button<Msg>(
+                {
+                  variant: 'default',
+                  onClick: toParent(Stepper.Message.ClickedStep({ step: 3 })),
+                  children: ['Deploy now'],
                 },
                 h,
               ),
             ],
-          },
-          h,
-        ),
-        h.div([h.Class(className(styles.rowSm))], [
-          button<Msg>(
-            {
-              variant: 'secondary',
-              onClick: toParent(Stepper.Message.ClickedStep({ step: 1 })),
-              children: ['Back'],
-            },
-            h,
           ),
-          button<Msg>(
-            {
-              variant: 'default',
-              onClick: toParent(Stepper.Message.ClickedStep({ step: 3 })),
-              children: ['Deploy now'],
-            },
-            h,
-          ),
-        ]),
-      ]);
+        ],
+      )
   }
-};
+}
 
 const stepConfig = <Msg>(
   step: StepperFixtureStep,
@@ -180,7 +239,7 @@ const stepConfig = <Msg>(
   ...(step.content !== undefined
     ? { content: contentFor(step.content, toParent, h) }
     : {}),
-});
+})
 
 const panelNode = <Msg>(
   panel: StepperFixturePanel,
@@ -193,12 +252,17 @@ const panelNode = <Msg>(
     {
       model:
         model.controls[panelIndex] ??
-        Stepper.init({ id: `panel-${panelIndex}`, activeStep: model.activeStep }),
+        Stepper.init({
+          id: `panel-${panelIndex}`,
+          activeStep: model.activeStep,
+        }),
       toParentMessage: toParent,
       activeStep: model.activeStep,
       steps: panel.steps.map(step => stepConfig(step, toParent, h)),
       hasStepButtons: true,
-      ...(panel.orientation !== undefined ? { orientation: panel.orientation } : {}),
+      ...(panel.orientation !== undefined
+        ? { orientation: panel.orientation }
+        : {}),
       ...(panel.indicatorPosition !== undefined
         ? { indicatorPosition: panel.indicatorPosition }
         : {}),
@@ -210,7 +274,7 @@ const panelNode = <Msg>(
         : {}),
     },
     h,
-  );
+  )
 
 export const stepperStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
@@ -218,28 +282,29 @@ export const stepperStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ) => {
-  const preview = model as PreviewShape;
-  const fixture = stepperFixtures[exampleIndex] ?? stepperFixtures[0];
+  const preview = model as PreviewShape
+  const fixture = stepperFixtures[exampleIndex] ?? stepperFixtures[0]
   const toParent = (message: Stepper.Message): Msg =>
-    onMessageJson(
-      JSON.stringify({ _tag: 'GotStepperPreviewMessage', message }),
-    );
+    onMessageJson(JSON.stringify({ _tag: 'GotStepperPreviewMessage', message }))
   const panels = fixture.panels.map((panel, panelIndex) =>
     panel.heading === undefined
       ? panelNode(panel, panelIndex, preview, toParent, h)
-      : h.div([h.Class(className(styles.panel))], [
-          h.p([h.Class(className(styles.panelHeading))], [panel.heading]),
-          panelNode(panel, panelIndex, preview, toParent, h),
-        ]),
-  );
+      : h.div(
+          [h.Class(className(styles.panel))],
+          [
+            h.p([h.Class(className(styles.panelHeading))], [panel.heading]),
+            panelNode(panel, panelIndex, preview, toParent, h),
+          ],
+        ),
+  )
   const inner: Html =
     fixture.panels.length > 1
       ? h.div([h.Class(className(styles.panelRow))], panels)
-      : panels[0] ?? h.empty;
+      : (panels[0] ?? h.empty)
   return fixture.width === undefined
     ? inner
     : h.div(
         [h.Class(fixture.width === 400 ? className(styles.frame400) : '')],
         [inner],
-      );
-};
+      )
+}

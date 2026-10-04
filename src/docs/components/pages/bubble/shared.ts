@@ -1,8 +1,8 @@
-import type { DocsExample } from '@/docs/components/page-definition';
+import type { DocsExample } from '@/docs/components/page-definition'
 import {
   foldkitApplication,
   staticComponentApplication,
-} from '@/docs/components/pages/authored-page';
+} from '@/docs/components/pages/authored-page'
 
 export type BubbleVariantSpec =
   | 'default'
@@ -11,42 +11,42 @@ export type BubbleVariantSpec =
   | 'tinted'
   | 'outline'
   | 'ghost'
-  | 'destructive';
+  | 'destructive'
 
 export type BubbleReactionsSpec =
   | Readonly<{
-      kind: 'emoji';
-      side?: 'top';
-      align?: 'start' | 'end';
-      items: ReadonlyArray<string>;
-      ariaLabel?: string;
+      kind: 'emoji'
+      side?: 'top'
+      align?: 'start' | 'end'
+      items: ReadonlyArray<string>
+      ariaLabel?: string
     }>
   | Readonly<{ kind: 'action'; label: string; clickedLabel: string }>
   | Readonly<{ kind: 'tooltip'; icon: string; content: string }>
   | Readonly<{
-      kind: 'popover';
-      icon: string;
-      title: string;
-      description: string;
-    }>;
+      kind: 'popover'
+      icon: string
+      title: string
+      description: string
+    }>
 
 export type BubbleSpec = Readonly<{
-  variant?: BubbleVariantSpec;
-  align?: 'start' | 'end';
+  variant?: BubbleVariantSpec
+  align?: 'start' | 'end'
   /** Body text; multiple entries render as a whitespace-pre-line body. */
-  text: ReadonlyArray<string>;
+  text: ReadonlyArray<string>
   /** Render the content element as a button that dispatches ClickedOption (upstream asChild). */
-  onClick?: boolean;
+  onClick?: boolean
   /** Long body collapsed behind a Show more/less toggle. */
-  collapsible?: boolean;
-  reactions?: BubbleReactionsSpec;
-}>;
+  collapsible?: boolean
+  reactions?: BubbleReactionsSpec
+}>
 
 export type BubbleCluster = Readonly<{
   /** Wrap the bubbles in Bubble.bubbleGroup (upstream BubbleGroup). */
-  grouped?: boolean;
-  bubbles: ReadonlyArray<BubbleSpec>;
-}>;
+  grouped?: boolean
+  bubbles: ReadonlyArray<BubbleSpec>
+}>
 
 export type BubbleFixture = Readonly<{
   kind:
@@ -58,30 +58,30 @@ export type BubbleFixture = Readonly<{
     | 'reactions'
     | 'collapsible'
     | 'tooltip'
-    | 'popover';
-  title: string;
-  description: string;
+    | 'popover'
+  title: string
+  description: string
   /** Rendered only as the page hero, not as a named example section. */
-  heroOnly?: boolean;
+  heroOnly?: boolean
   /** Upstream column gap: `gap-4`, `gap-8`, or `gap-12`. */
-  gap: '4' | '8' | '12';
-  clusters: ReadonlyArray<BubbleCluster>;
-}>;
+  gap: '4' | '8' | '12'
+  clusters: ReadonlyArray<BubbleCluster>
+}>
 
-const B = (spec: BubbleSpec): BubbleSpec => spec;
+const B = (spec: BubbleSpec): BubbleSpec => spec
 
 export const COLLAPSIBLE_TEXT = [
   'The accessibility review found two focus states that were visually too subtle in dark mode.',
   'I checked the dialog, menu, and drawer paths because each one renders focusable controls inside a layered surface.',
   'The dialog and drawer are fine. The menu needs the hover and focus tokens split so keyboard focus stays visible when the pointer is not involved.',
-  "I also recommend keeping the change in the style file instead of the primitive so the other themes can choose their own focus treatment later.",
-];
+  'I also recommend keeping the change in the style file instead of the primitive so the other themes can choose their own focus treatment later.',
+]
 
 const GHOST_TEXT = [
   'Ghost bubbles work for assistant text, markdown, and other content that should not be framed.',
   'This is perfect for assistant messages that should not have a frame and can take the full width of the container. You can also render code in it.',
   'Ghost bubbles are full width and can take the full width of the container.',
-];
+]
 
 export const bubbleFixtures: Readonly<
   [BubbleFixture, ...Array<BubbleFixture>]
@@ -111,7 +111,11 @@ export const bubbleFixtures: Readonly<
           }),
         ],
       },
-      { bubbles: [B({ align: 'end', text: ['Sure. Hit me with your best demo.'] })] },
+      {
+        bubbles: [
+          B({ align: 'end', text: ['Sure. Hit me with your best demo.'] }),
+        ],
+      },
       {
         bubbles: [
           B({
@@ -132,13 +136,18 @@ export const bubbleFixtures: Readonly<
   {
     kind: 'variants',
     title: 'Variants',
-    description: 'Every bubble variant: primary, secondary, muted, tinted, outline, destructive, and ghost.',
+    description:
+      'Every bubble variant: primary, secondary, muted, tinted, outline, destructive, and ghost.',
     gap: '12',
     clusters: [
       { bubbles: [B({ text: ['This is the default primary bubble.'] })] },
       {
         bubbles: [
-          B({ variant: 'secondary', align: 'end', text: ['This is the secondary variant.'] }),
+          B({
+            variant: 'secondary',
+            align: 'end',
+            text: ['This is the secondary variant.'],
+          }),
         ],
       },
       {
@@ -167,14 +176,25 @@ export const bubbleFixtures: Readonly<
           }),
         ],
       },
-      { bubbles: [B({ variant: 'outline', text: ['We can also use an outlined variant.'] })] },
+      {
+        bubbles: [
+          B({
+            variant: 'outline',
+            text: ['We can also use an outlined variant.'],
+          }),
+        ],
+      },
       {
         bubbles: [
           B({
             variant: 'destructive',
             align: 'end',
             text: ['Or a destructive variant with a reaction.'],
-            reactions: { kind: 'emoji', items: ['🔥'], ariaLabel: 'Reaction: fire' },
+            reactions: {
+              kind: 'emoji',
+              items: ['🔥'],
+              ariaLabel: 'Reaction: fire',
+            },
           }),
         ],
       },
@@ -215,7 +235,11 @@ export const bubbleFixtures: Readonly<
     description: 'BubbleGroup tightens consecutive same-side messages.',
     gap: '8',
     clusters: [
-      { bubbles: [B({ variant: 'muted', text: ["Can you tell me what's the issue?"] })] },
+      {
+        bubbles: [
+          B({ variant: 'muted', text: ["Can you tell me what's the issue?"] }),
+        ],
+      },
       {
         grouped: true,
         bubbles: [
@@ -248,14 +272,22 @@ export const bubbleFixtures: Readonly<
   {
     kind: 'linkButton',
     title: 'Links and Buttons',
-    description: 'BubbleContent can render as an interactive element for suggested replies.',
+    description:
+      'BubbleContent can render as an interactive element for suggested replies.',
     gap: '8',
     clusters: [
-      { bubbles: [B({ variant: 'muted', text: ['How can I help you today?'] })] },
+      {
+        bubbles: [B({ variant: 'muted', text: ['How can I help you today?'] })],
+      },
       {
         grouped: true,
         bubbles: [
-          B({ variant: 'tinted', align: 'end', onClick: true, text: ['I forgot my password'] }),
+          B({
+            variant: 'tinted',
+            align: 'end',
+            onClick: true,
+            text: ['I forgot my password'],
+          }),
           B({
             variant: 'tinted',
             align: 'end',
@@ -275,7 +307,8 @@ export const bubbleFixtures: Readonly<
   {
     kind: 'reactions',
     title: 'Reactions',
-    description: 'BubbleReactions pins emoji chips or action buttons to a bubble.',
+    description:
+      'BubbleReactions pins emoji chips or action buttons to a bubble.',
     gap: '12',
     clusters: [
       {
@@ -330,7 +363,11 @@ export const bubbleFixtures: Readonly<
           B({
             variant: 'destructive',
             text: ['Are you sure I can run this command?'],
-            reactions: { kind: 'action', label: 'Yes, run it', clickedLabel: '✓ Ran it' },
+            reactions: {
+              kind: 'action',
+              label: 'Yes, run it',
+              clickedLabel: '✓ Ran it',
+            },
           }),
         ],
       },
@@ -342,10 +379,17 @@ export const bubbleFixtures: Readonly<
     description: 'A long message collapses behind a Show more toggle.',
     gap: '8',
     clusters: [
-      { bubbles: [B({ variant: 'muted', text: ['How can I help you today?'] })] },
+      {
+        bubbles: [B({ variant: 'muted', text: ['How can I help you today?'] })],
+      },
       {
         bubbles: [
-          B({ variant: 'muted', align: 'end', collapsible: true, text: COLLAPSIBLE_TEXT }),
+          B({
+            variant: 'muted',
+            align: 'end',
+            collapsible: true,
+            text: COLLAPSIBLE_TEXT,
+          }),
         ],
       },
     ],
@@ -353,10 +397,18 @@ export const bubbleFixtures: Readonly<
   {
     kind: 'tooltip',
     title: 'Tooltip',
-    description: 'A reactions row can host a tooltip button like a read receipt.',
+    description:
+      'A reactions row can host a tooltip button like a read receipt.',
     gap: '4',
     clusters: [
-      { bubbles: [B({ variant: 'secondary', text: ['Did you remove the stale route?'] })] },
+      {
+        bubbles: [
+          B({
+            variant: 'secondary',
+            text: ['Did you remove the stale route?'],
+          }),
+        ],
+      },
       {
         bubbles: [
           B({
@@ -388,30 +440,31 @@ export const bubbleFixtures: Readonly<
               kind: 'popover',
               icon: 'info',
               title: 'Command failed with exit code 1',
-              description: 'ENOENT: no such file or directory, open pnpm-lock.yaml',
+              description:
+                'ENOENT: no such file or directory, open pnpm-lock.yaml',
             },
           }),
         ],
       },
     ],
   },
-];
+]
 
 const esc = (value: string): string =>
-  value.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+  value.replace(/\\/g, '\\\\').replace(/'/g, "\\'")
 
 const needsCollapsible = (fixture: BubbleFixture): boolean =>
   fixture.clusters.some(cluster =>
     cluster.bubbles.some(bubble => bubble.collapsible === true),
-  );
+  )
 const needsTooltip = (fixture: BubbleFixture): boolean =>
   fixture.clusters.some(cluster =>
     cluster.bubbles.some(bubble => bubble.reactions?.kind === 'tooltip'),
-  );
+  )
 const needsPopover = (fixture: BubbleFixture): boolean =>
   fixture.clusters.some(cluster =>
     cluster.bubbles.some(bubble => bubble.reactions?.kind === 'popover'),
-  );
+  )
 const usesIcon = (fixture: BubbleFixture): boolean =>
   needsCollapsible(fixture) ||
   fixture.clusters.some(cluster =>
@@ -420,7 +473,7 @@ const usesIcon = (fixture: BubbleFixture): boolean =>
         bubble.reactions?.kind === 'tooltip' ||
         bubble.reactions?.kind === 'popover',
     ),
-  );
+  )
 
 const textExprSource = (
   text: ReadonlyArray<string>,
@@ -428,17 +481,17 @@ const textExprSource = (
 ): string =>
   text.length === 1
     ? `'${esc(text[0] ?? '')}'`
-    : `h.div([h.Class(${renderer === 'stylex' ? 'className(styles.preLine)' : `'whitespace-pre-line'`})], ['${text.map(esc).join('\\n\\n')}'])`;
+    : `h.div([h.Class(${renderer === 'stylex' ? 'className(styles.preLine)' : `'whitespace-pre-line'`})], ['${text.map(esc).join('\\n\\n')}'])`
 
 const collapsibleBodySource = (renderer: 'tailwind' | 'stylex'): string => {
   const chevronClass =
     renderer === 'stylex'
       ? `{ class: className(styles.chevron) }`
-      : `{ class: 'size-4' }`;
+      : `{ class: 'size-4' }`
   const triggerClass =
     renderer === 'stylex'
       ? 'className(styles.triggerLink)'
-      : `'inline-flex items-center gap-1 p-0 text-muted-foreground underline-offset-4 hover:underline'`;
+      : `'inline-flex items-center gap-1 p-0 text-muted-foreground underline-offset-4 hover:underline'`
   return `h.div([], [model.open ? reportText : \`\${reportText.slice(0, 180)}...\`]),
             h.button(
               [
@@ -451,8 +504,8 @@ const collapsibleBodySource = (renderer: 'tailwind' | 'stylex'): string => {
                 model.open ? 'Show less' : 'Show more',
                 Icon.icon('chevron-down', ${chevronClass}, h),
               ],
-            ),`;
-};
+            ),`
+}
 
 const contentSource = (
   bubble: BubbleSpec,
@@ -461,17 +514,17 @@ const contentSource = (
   const variantProp =
     renderer === 'stylex'
       ? ` variant: '${bubble.variant ?? 'default'}' as const,`
-      : '';
+      : ''
   const onClick =
     bubble.onClick === true
       ? `\n          onClick: Message['ClickedOption']({ label: '${esc(bubble.text[0] ?? '')}' }),`
-      : '';
+      : ''
   return `Bubble.bubbleContent({${variantProp}${onClick}
           children: [
             ${bubble.collapsible === true ? collapsibleBodySource(renderer) : textExprSource(bubble.text, renderer)}
           ],
-        }, h)`;
-};
+        }, h)`
+}
 
 const reactionsSource = (
   reactions: BubbleReactionsSpec,
@@ -479,21 +532,21 @@ const reactionsSource = (
 ): string => {
   switch (reactions.kind) {
     case 'emoji': {
-      const side = reactions.side === 'top' ? `\n          side: 'top',` : '';
+      const side = reactions.side === 'top' ? `\n          side: 'top',` : ''
       const align =
         reactions.align !== undefined && reactions.align !== 'end'
           ? `\n          align: '${reactions.align}',`
-          : '';
+          : ''
       const aria =
         reactions.ariaLabel === undefined
           ? ''
-          : `\n          ariaLabel: '${esc(reactions.ariaLabel)}',`;
+          : `\n          ariaLabel: '${esc(reactions.ariaLabel)}',`
       const items = reactions.items
         .map(item => `h.span([], ['${esc(item)}'])`)
-        .join(', ');
+        .join(', ')
       return `Bubble.bubbleReactions({${side}${align}${aria}
           children: [${items}],
-        }, h)`;
+        }, h)`
     }
     case 'action':
       return `Bubble.bubbleReactions({
@@ -505,14 +558,14 @@ const reactionsSource = (
               children: [model.ranIt ? '${esc(reactions.clickedLabel)}' : '${esc(reactions.label)}'],
             }, h),
           ],
-        }, h)`;
+        }, h)`
     case 'tooltip': {
       const iconClass =
-        renderer === 'stylex' ? `{ class: className(styles.icon) }` : '{}';
+        renderer === 'stylex' ? `{ class: className(styles.icon) }` : '{}'
       const triggerProps =
         renderer === 'stylex'
           ? `triggerLayoutStyle: styles.iconTrigger,`
-          : `triggerClass: 'flex size-6 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground',`;
+          : `triggerClass: 'flex size-6 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground',`
       return `Bubble.bubbleReactions({${renderer === 'stylex' ? '' : ` class: 'p-0',`}
           children: [
             Tooltip.tooltip({
@@ -525,25 +578,29 @@ const reactionsSource = (
               ariaLabel: 'Read receipt',
             }, h),
           ],
-        }, h)`;
+        }, h)`
     }
     case 'popover': {
       const iconClass =
         renderer === 'stylex'
           ? `{ class: className(styles.icon), ariaLabel: 'Show error details' }`
-          : `{ class: 'size-3.5', ariaLabel: 'Show error details' }`;
+          : `{ class: 'size-3.5', ariaLabel: 'Show error details' }`
       const triggerProps =
         renderer === 'stylex'
           ? `triggerLayoutStyle: styles.iconTrigger,`
-          : `triggerClass: 'inline-flex size-6 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground aria-expanded:text-destructive',`;
+          : `triggerClass: 'inline-flex size-6 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground aria-expanded:text-destructive',`
       const titleClass =
-        renderer === 'stylex' ? 'className(styles.popoverTitle)' : `'text-sm font-medium'`;
+        renderer === 'stylex'
+          ? 'className(styles.popoverTitle)'
+          : `'text-sm font-medium'`
       const descClass =
         renderer === 'stylex'
           ? 'className(styles.popoverCopy)'
-          : `'text-sm text-muted-foreground'`;
+          : `'text-sm text-muted-foreground'`
       const contentClass =
-        renderer === 'stylex' ? 'className(styles.popoverContent)' : `'grid gap-1'`;
+        renderer === 'stylex'
+          ? 'className(styles.popoverContent)'
+          : `'grid gap-1'`
       return `Bubble.bubbleReactions({
           children: [
             Popover.popover({
@@ -558,10 +615,10 @@ const reactionsSource = (
               ]),
             }, h),
           ],
-        }, h)`;
+        }, h)`
     }
   }
-};
+}
 
 const bubbleSource = (
   bubble: BubbleSpec,
@@ -570,19 +627,19 @@ const bubbleSource = (
   const variantProp =
     bubble.variant === undefined || bubble.variant === 'default'
       ? ''
-      : `\n        variant: '${bubble.variant}',`;
+      : `\n        variant: '${bubble.variant}',`
   const alignProp =
-    bubble.align === undefined ? '' : `\n        align: '${bubble.align}',`;
+    bubble.align === undefined ? '' : `\n        align: '${bubble.align}',`
   const reactions =
     bubble.reactions === undefined
       ? ''
-      : `,\n        ${reactionsSource(bubble.reactions, renderer)}`;
+      : `,\n        ${reactionsSource(bubble.reactions, renderer)}`
   return `Bubble.bubble({${variantProp}${alignProp}
         children: [
           ${contentSource(bubble, renderer)}${reactions}
         ],
-      }, h)`;
-};
+      }, h)`
+}
 
 const clusterSource = (
   cluster: BubbleCluster,
@@ -598,7 +655,7 @@ const clusterSource = (
       }, h)`
     : cluster.bubbles
         .map(bubble => `      ${bubbleSource(bubble, renderer)}`)
-        .join(',\n');
+        .join(',\n')
 
 const viewBodySource = (
   fixture: BubbleFixture,
@@ -606,118 +663,131 @@ const viewBodySource = (
 ): string => {
   const children = fixture.clusters
     .map(cluster => `      ${clusterSource(cluster, renderer)}`)
-    .join(',\n');
+    .join(',\n')
   const feedback =
     fixture.kind === 'linkButton'
       ? `,\n      ...(model.lastClicked === undefined\n        ? []\n        : [\n            h.p(\n              [h.Class('text-sm text-muted-foreground')],\n              [\`You clicked: \${model.lastClicked}\`],\n            ),\n          ])`
-      : '';
+      : ''
   const frameClass =
     renderer === 'stylex'
       ? 'className(styles.column)'
-      : `'flex w-full max-w-sm flex-col gap-${fixture.gap} py-12'`;
+      : `'flex w-full max-w-sm flex-col gap-${fixture.gap} py-12'`
   return `h.div([h.Class(${frameClass})], [
 ${children}${feedback}
-    ])`;
-};
+    ])`
+}
 
 const stylexStylesSource = (fixture: BubbleFixture): string => {
   const parts: Array<string> = [
     `\n  column: { display: 'flex', flexDirection: 'column', gap: '${fixture.gap === '4' ? '1rem' : fixture.gap === '8' ? '2rem' : '3rem'}', maxWidth: '24rem', paddingBlock: '3rem', width: '100%' },`,
-  ];
+  ]
   if (fixture.clusters.some(c => c.bubbles.some(b => b.text.length > 1)))
-    parts.push(`\n  preLine: { whiteSpace: 'pre-line' },`);
+    parts.push(`\n  preLine: { whiteSpace: 'pre-line' },`)
   if (needsCollapsible(fixture)) {
     parts.push(
       `\n  chevron: { fontSize: '1rem', lineHeight: '1.5rem' },`,
       `\n  triggerLink: { alignItems: 'center', color: 'var(--muted-foreground)', display: 'inline-flex', gap: '0.25rem', padding: 0 },`,
-    );
+    )
   }
   if (needsTooltip(fixture) || needsPopover(fixture)) {
     parts.push(
       `\n  icon: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },`,
       `\n  iconTrigger: { height: '1.5rem', width: '1.5rem' },`,
-    );
+    )
   }
   if (needsPopover(fixture)) {
     parts.push(
       `\n  popoverContent: { display: 'grid', gap: '0.25rem' },`,
       `\n  popoverTitle: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500 },`,
       `\n  popoverCopy: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },`,
-    );
+    )
   }
   return `const styles = stylex.create({${parts.join('')}
 })
 
-`;
-};
+`
+}
 
 const componentImports = (
   fixture: BubbleFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const ui = renderer === 'stylex' ? 'stylex' : 'ui';
-  const lines: Array<string> = [];
+  const ui = renderer === 'stylex' ? 'stylex' : 'ui'
+  const lines: Array<string> = []
   if (renderer === 'stylex')
     lines.push(`import * as stylex from '@stylexjs/stylex'
 import { className } from '@/stylex/style'
 
-${stylexStylesSource(fixture)}`);
-  if (fixture.clusters.some(c => c.bubbles.some(b => b.reactions?.kind === 'action')))
-    lines.push(`import * as Button from '@/${ui}/button'`);
-  if (usesIcon(fixture)) lines.push(`import * as Icon from '@/lib/icon'`);
-  if (needsPopover(fixture)) lines.push(`import * as Popover from '@/${ui}/popover'`);
-  if (needsTooltip(fixture)) lines.push(`import * as Tooltip from '@/${ui}/tooltip'`);
-  return lines.join('\n');
-};
+${stylexStylesSource(fixture)}`)
+  if (
+    fixture.clusters.some(c =>
+      c.bubbles.some(b => b.reactions?.kind === 'action'),
+    )
+  )
+    lines.push(`import * as Button from '@/${ui}/button'`)
+  if (usesIcon(fixture)) lines.push(`import * as Icon from '@/lib/icon'`)
+  if (needsPopover(fixture))
+    lines.push(`import * as Popover from '@/${ui}/popover'`)
+  if (needsTooltip(fixture))
+    lines.push(`import * as Tooltip from '@/${ui}/tooltip'`)
+  return lines.join('\n')
+}
 
 const isDynamicFixture = (fixture: BubbleFixture): boolean =>
   fixture.kind === 'linkButton' ||
   fixture.kind === 'reactions' ||
   fixture.kind === 'collapsible' ||
   fixture.kind === 'tooltip' ||
-  fixture.kind === 'popover';
+  fixture.kind === 'popover'
 
 const modelFields = (fixture: BubbleFixture): string[] => {
-  const fields: Array<string> = [];
-  if (fixture.kind === 'linkButton') fields.push(`  lastClicked: S.UndefinedOr(S.String),`);
-  if (fixture.kind === 'reactions') fields.push(`  ranIt: S.Boolean,`);
-  if (needsCollapsible(fixture)) fields.push(`  open: S.Boolean,`);
-  if (needsTooltip(fixture)) fields.push(`  tooltip: Tooltip.Model,`);
-  if (needsPopover(fixture)) fields.push(`  popover: Popover.Model,`);
-  return fields;
-};
+  const fields: Array<string> = []
+  if (fixture.kind === 'linkButton')
+    fields.push(`  lastClicked: S.UndefinedOr(S.String),`)
+  if (fixture.kind === 'reactions') fields.push(`  ranIt: S.Boolean,`)
+  if (needsCollapsible(fixture)) fields.push(`  open: S.Boolean,`)
+  if (needsTooltip(fixture)) fields.push(`  tooltip: Tooltip.Model,`)
+  if (needsPopover(fixture)) fields.push(`  popover: Popover.Model,`)
+  return fields
+}
 
 const messageFields = (fixture: BubbleFixture): string[] => {
-  const messages: Array<string> = [];
-  if (fixture.kind === 'linkButton') messages.push(`  ClickedOption: { label: S.String },`);
-  if (fixture.kind === 'reactions') messages.push(`  ClickedRunIt: {},`);
-  if (needsCollapsible(fixture)) messages.push(`  ToggledCollapsible: { isOpen: S.Boolean },`);
-  if (needsTooltip(fixture)) messages.push(`  GotTooltipMessage: { message: Tooltip.Message },`);
-  if (needsPopover(fixture)) messages.push(`  GotPopoverMessage: { message: Popover.Message },`);
-  return messages;
-};
+  const messages: Array<string> = []
+  if (fixture.kind === 'linkButton')
+    messages.push(`  ClickedOption: { label: S.String },`)
+  if (fixture.kind === 'reactions') messages.push(`  ClickedRunIt: {},`)
+  if (needsCollapsible(fixture))
+    messages.push(`  ToggledCollapsible: { isOpen: S.Boolean },`)
+  if (needsTooltip(fixture))
+    messages.push(`  GotTooltipMessage: { message: Tooltip.Message },`)
+  if (needsPopover(fixture))
+    messages.push(`  GotPopoverMessage: { message: Popover.Message },`)
+  return messages
+}
 
 const initFields = (fixture: BubbleFixture): string[] => {
-  const fields: Array<string> = [];
-  if (fixture.kind === 'linkButton') fields.push(`lastClicked: undefined`);
-  if (fixture.kind === 'reactions') fields.push(`ranIt: false`);
-  if (needsCollapsible(fixture)) fields.push(`open: false`);
-  if (needsTooltip(fixture)) fields.push(`tooltip: Tooltip.init({ id: 'bubble-tooltip' })`);
-  if (needsPopover(fixture)) fields.push(`popover: Popover.init({ id: 'bubble-popover' })`);
-  return fields;
-};
+  const fields: Array<string> = []
+  if (fixture.kind === 'linkButton') fields.push(`lastClicked: undefined`)
+  if (fixture.kind === 'reactions') fields.push(`ranIt: false`)
+  if (needsCollapsible(fixture)) fields.push(`open: false`)
+  if (needsTooltip(fixture))
+    fields.push(`tooltip: Tooltip.init({ id: 'bubble-tooltip' })`)
+  if (needsPopover(fixture))
+    fields.push(`popover: Popover.init({ id: 'bubble-popover' })`)
+  return fields
+}
 
 const updateCases = (fixture: BubbleFixture): string[] => {
-  const cases: Array<string> = [];
+  const cases: Array<string> = []
   if (fixture.kind === 'linkButton')
     cases.push(`    case 'ClickedOption':
-      return { model: { ...model, lastClicked: message.label } }`);
+      return { model: { ...model, lastClicked: message.label } }`)
   if (fixture.kind === 'reactions')
     cases.push(`    case 'ClickedRunIt':
-      return { model: { ...model, ranIt: true } }`);
+      return { model: { ...model, ranIt: true } }`)
   if (needsCollapsible(fixture))
     cases.push(`    case 'ToggledCollapsible':
-      return { model: { ...model, open: message.isOpen } }`);
+      return { model: { ...model, open: message.isOpen } }`)
   if (needsTooltip(fixture))
     cases.push(`    case 'GotTooltipMessage': {
       const result = Tooltip.update(model.tooltip, message.message)
@@ -728,7 +798,7 @@ const updateCases = (fixture: BubbleFixture): string[] => {
           next => Message['GotTooltipMessage']({ message: next }),
         ),
       }
-    }`);
+    }`)
   if (needsPopover(fixture))
     cases.push(`    case 'GotPopoverMessage': {
       const result = Popover.update(model.popover, message.message)
@@ -739,9 +809,9 @@ const updateCases = (fixture: BubbleFixture): string[] => {
           next => Message['GotPopoverMessage']({ message: next }),
         ),
       }
-    }`);
-  return cases;
-};
+    }`)
+  return cases
+}
 
 const dynamicSource = (
   fixture: BubbleFixture,
@@ -749,7 +819,7 @@ const dynamicSource = (
 ): string => {
   const consts = needsCollapsible(fixture)
     ? `const reportText = '${COLLAPSIBLE_TEXT.map(esc).join('\\n\\n')}'\n\n`
-    : '';
+    : ''
   return foldkitApplication({
     title: `Bubble — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
@@ -785,8 +855,8 @@ ${updateCases(fixture).join('\n')}
     ${viewBodySource(fixture, renderer)},
   ]),
 })`,
-  });
-};
+  })
+}
 
 const source = (
   fixture: BubbleFixture,
@@ -801,13 +871,14 @@ const source = (
         exampleName: fixture.title,
         componentImports: componentImports(fixture, renderer),
         viewBody: viewBodySource(fixture, renderer),
-      });
+      })
 
 export const bubbleExamples = (
   renderer: 'tailwind' | 'stylex',
-): ReadonlyArray<DocsExample> => bubbleFixtures.map(fixture => ({
-  title: fixture.title,
-  description: fixture.description,
-  ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
-  code: source(fixture, renderer),
-}));
+): ReadonlyArray<DocsExample> =>
+  bubbleFixtures.map(fixture => ({
+    title: fixture.title,
+    description: fixture.description,
+    ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
+    code: source(fixture, renderer),
+  }))

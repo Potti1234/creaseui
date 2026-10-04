@@ -1,19 +1,19 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export interface TabsCardSpec {
-  readonly title: string;
-  readonly description: string;
-  readonly text: string;
+  readonly title: string
+  readonly description: string
+  readonly text: string
 }
 
 export interface TabsTabSpec {
-  readonly value: string;
-  readonly label: string;
-  readonly content: string;
-  readonly isDisabled?: boolean;
-  readonly icon?: string;
-  readonly card?: TabsCardSpec;
+  readonly value: string
+  readonly label: string
+  readonly content: string
+  readonly isDisabled?: boolean
+  readonly icon?: string
+  readonly card?: TabsCardSpec
 }
 
 export type TabsKind =
@@ -23,19 +23,19 @@ export type TabsKind =
   | 'disabled'
   | 'icons'
   | 'rtl'
-  | 'manual';
+  | 'manual'
 
 export interface TabsFixture {
-  readonly title: string;
-  readonly description?: string;
-  readonly heroOnly?: boolean;
-  readonly kind: TabsKind;
-  readonly ariaLabel: string;
-  readonly tabs: ReadonlyArray<TabsTabSpec>;
-  readonly variant?: 'line';
-  readonly orientation?: 'vertical';
-  readonly manual?: boolean;
-  readonly rtl?: boolean;
+  readonly title: string
+  readonly description?: string
+  readonly heroOnly?: boolean
+  readonly kind: TabsKind
+  readonly ariaLabel: string
+  readonly tabs: ReadonlyArray<TabsTabSpec>
+  readonly variant?: 'line'
+  readonly orientation?: 'vertical'
+  readonly manual?: boolean
+  readonly rtl?: boolean
 }
 
 export const overviewTabs: ReadonlyArray<TabsTabSpec> = [
@@ -83,7 +83,7 @@ export const overviewTabs: ReadonlyArray<TabsTabSpec> = [
       text: 'Configure notifications, security, and themes.',
     },
   },
-];
+]
 
 export const rtlTabs: ReadonlyArray<TabsTabSpec> = [
   {
@@ -130,7 +130,7 @@ export const rtlTabs: ReadonlyArray<TabsTabSpec> = [
       text: 'تكوين الإشعارات والأمان والسمات.',
     },
   },
-];
+]
 
 export const tabsFixtures: Readonly<[TabsFixture, ...Array<TabsFixture>]> = [
   {
@@ -142,7 +142,8 @@ export const tabsFixtures: Readonly<[TabsFixture, ...Array<TabsFixture>]> = [
   },
   {
     title: 'Line',
-    description: 'The line variant renders an underline selection for section-level navigation.',
+    description:
+      'The line variant renders an underline selection for section-level navigation.',
     kind: 'line',
     ariaLabel: 'Project sections',
     variant: 'line',
@@ -154,7 +155,8 @@ export const tabsFixtures: Readonly<[TabsFixture, ...Array<TabsFixture>]> = [
   },
   {
     title: 'Vertical',
-    description: 'Vertical orientation stacks the tab list for settings-style layouts.',
+    description:
+      'Vertical orientation stacks the tab list for settings-style layouts.',
     kind: 'vertical',
     ariaLabel: 'Account settings',
     orientation: 'vertical',
@@ -166,7 +168,8 @@ export const tabsFixtures: Readonly<[TabsFixture, ...Array<TabsFixture>]> = [
   },
   {
     title: 'Disabled',
-    description: 'Disabled tabs are skipped by click and roving keyboard focus.',
+    description:
+      'Disabled tabs are skipped by click and roving keyboard focus.',
     kind: 'disabled',
     ariaLabel: 'Home sections',
     tabs: [
@@ -186,7 +189,8 @@ export const tabsFixtures: Readonly<[TabsFixture, ...Array<TabsFixture>]> = [
   },
   {
     title: 'RTL',
-    description: 'Horizontal tab order and arrow direction mirror in right-to-left contexts.',
+    description:
+      'Horizontal tab order and arrow direction mirror in right-to-left contexts.',
     kind: 'rtl',
     ariaLabel: 'نظرة عامة على المشروع',
     rtl: true,
@@ -194,19 +198,33 @@ export const tabsFixtures: Readonly<[TabsFixture, ...Array<TabsFixture>]> = [
   },
   {
     title: 'Manual with disabled tab',
-    description: 'Manual activation moves focus without changing the parent-owned value until Enter or Space; disabled tabs are skipped.',
+    description:
+      'Manual activation moves focus without changing the parent-owned value until Enter or Space; disabled tabs are skipped.',
     kind: 'manual',
     ariaLabel: 'Settings',
     manual: true,
     tabs: [
-      { value: 'account', label: 'Account', content: 'Manage your profile details.' },
-      { value: 'security', label: 'Security', content: 'Review passwords and sessions.', isDisabled: true },
-      { value: 'billing', label: 'Billing', content: 'Update invoices and payment methods.' },
+      {
+        value: 'account',
+        label: 'Account',
+        content: 'Manage your profile details.',
+      },
+      {
+        value: 'security',
+        label: 'Security',
+        content: 'Review passwords and sessions.',
+        isDisabled: true,
+      },
+      {
+        value: 'billing',
+        label: 'Billing',
+        content: 'Update invoices and payment methods.',
+      },
     ],
   },
-];
+]
 
-const esc = (value: string): string => value.replace(/'/g, "\\'");
+const esc = (value: string): string => value.replace(/'/g, "\\'")
 
 const cardContent = (
   card: TabsCardSpec,
@@ -215,15 +233,15 @@ const cardContent = (
 ): string => {
   const contentText = isStyleX
     ? `h.span([h.Class(stylex.props(styles.cardText).className ?? '')], ['${esc(card.text)}'])`
-    : `'${esc(card.text)}'`;
+    : `'${esc(card.text)}'`
   return `Card.card({ children: [
 ${indent}  Card.cardHeader({ children: [
 ${indent}    Card.cardTitle({ children: ['${esc(card.title)}'] }, h),
 ${indent}    Card.cardDescription({ children: ['${esc(card.description)}'] }, h),
 ${indent}  ] }, h),
 ${indent}  Card.cardContent({ ${isStyleX ? '' : "class: 'text-sm text-muted-foreground', "}children: [${contentText}] }, h),
-${indent}] }, h)`;
-};
+${indent}] }, h)`
+}
 
 const tabEntry = (
   tab: TabsTabSpec,
@@ -233,26 +251,28 @@ const tabEntry = (
   const label =
     tab.icon === undefined
       ? `'${esc(tab.label)}'`
-      : `h.span([], [Icon.icon('${tab.icon}', ${isStyleX ? '{}' : "{ class: 'size-4' }"}, h), '${esc(tab.label)}'])`;
+      : `h.span([], [Icon.icon('${tab.icon}', ${isStyleX ? '{}' : "{ class: 'size-4' }"}, h), '${esc(tab.label)}'])`
   const content =
-    tab.card === undefined ? `'${esc(tab.content)}'` : cardContent(tab.card, isStyleX, `${indent}  `);
-  return `${indent}{ value: '${tab.value}', label: ${label}, content: ${content}${tab.isDisabled === true ? ', isDisabled: true' : ''} },`;
-};
+    tab.card === undefined
+      ? `'${esc(tab.content)}'`
+      : cardContent(tab.card, isStyleX, `${indent}  `)
+  return `${indent}{ value: '${tab.value}', label: ${label}, content: ${content}${tab.isDisabled === true ? ', isDisabled: true' : ''} },`
+}
 
 const emitSource = (
   fixture: TabsFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const isStyleX = renderer === 'stylex';
-  const base = isStyleX ? 'stylex' : 'ui';
-  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '');
-  const usesCard = fixture.tabs.some(tab => tab.card !== undefined);
-  const usesIcon = fixture.tabs.some(tab => tab.icon !== undefined);
-  const values = fixture.tabs.map(tab => `'${tab.value}'`).join(', ');
+  const isStyleX = renderer === 'stylex'
+  const base = isStyleX ? 'stylex' : 'ui'
+  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
+  const usesCard = fixture.tabs.some(tab => tab.card !== undefined)
+  const usesIcon = fixture.tabs.some(tab => tab.icon !== undefined)
+  const values = fixture.tabs.map(tab => `'${tab.value}'`).join(', ')
   const sxBlock =
     isStyleX && usesCard
       ? `\nconst styles = stylex.create({\n  cardText: { fontSize: '0.875rem', lineHeight: '1.25rem', color: 'var(--muted-foreground)' },\n  demoWidth: { width: '25rem' },\n})`
-      : '';
+      : ''
   return foldkitApplication({
     title: `Tabs — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
@@ -309,8 +329,8 @@ ${fixture.tabs.map(tab => tabEntry(tab, isStyleX, '        ')).join('\n')}
     }, h),
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const tabsExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -322,4 +342,4 @@ export const tabsExamples = (
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitSource(fixture, renderer),
-  }));
+  }))

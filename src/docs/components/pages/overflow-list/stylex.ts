@@ -1,22 +1,27 @@
-import { Option } from 'effect';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import * as stylex from '@stylexjs/stylex';
+import { Option } from 'effect'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import * as stylex from '@stylexjs/stylex'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   badgeToneVariant,
   itemLabels,
   overflowListFixtures,
   type OverflowListFixture,
-} from '@/docs/components/pages/overflow-list/shared';
-import * as Badge from '@/stylex/badge';
-import * as Button from '@/stylex/button';
-import * as MoreMenu from '@/stylex/more-menu';
-import * as OverflowList from '@/stylex/overflow-list';
-import { className } from '@/stylex/style';
+} from '@/docs/components/pages/overflow-list/shared'
+import * as Badge from '@/stylex/badge'
+import * as Button from '@/stylex/button'
+import * as MoreMenu from '@/stylex/more-menu'
+import * as OverflowList from '@/stylex/overflow-list'
+import { className } from '@/stylex/style'
 
 const styles = stylex.create({
-  frame: { gap: '0.75rem', display: 'grid', justifyItems: 'center', width: '100%', },
+  frame: {
+    gap: '0.75rem',
+    display: 'grid',
+    justifyItems: 'center',
+    width: '100%',
+  },
   framed: {
     padding: '0.5rem',
     borderColor: 'var(--border)',
@@ -53,10 +58,14 @@ const styles = stylex.create({
     fontSize: '0.875rem',
     lineHeight: '1.25rem',
   },
-  indicatorLabel: { fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem', },
-});
+  indicatorLabel: {
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    lineHeight: '1.25rem',
+  },
+})
 
-type PreviewMessageCarrier<Msg> = (messageJson: string) => Msg;
+type PreviewMessageCarrier<Msg> = (messageJson: string) => Msg
 
 const renderItems = <Msg>(
   fixture: OverflowListFixture,
@@ -81,7 +90,7 @@ const renderItems = <Msg>(
           },
           h,
         ),
-  );
+  )
 
 const renderIndicator = <Msg>(
   fixture: OverflowListFixture,
@@ -89,7 +98,7 @@ const renderIndicator = <Msg>(
   onMessageJson: PreviewMessageCarrier<Msg>,
   h: HtmlBuilder<Msg>,
 ): ((items: ReadonlyArray<OverflowList.OverflowListItem>) => Html) => {
-  const labels = itemLabels(fixture);
+  const labels = itemLabels(fixture)
   switch (fixture.indicator) {
     case 'moreButton':
       return overflowItems =>
@@ -100,13 +109,13 @@ const renderIndicator = <Msg>(
             children: [`+${String(overflowItems.length)} more`],
           },
           h,
-        );
+        )
     case 'badge':
       return overflowItems =>
         Badge.badge(
           { variant: 'ghost', children: [`+${String(overflowItems.length)}`] },
           h,
-        );
+        )
     case 'moreMenu':
       return overflowItems =>
         MoreMenu.moreMenu(
@@ -116,17 +125,18 @@ const renderIndicator = <Msg>(
               onMessageJson(
                 JSON.stringify({ _tag: 'GotMenuMessage', message }),
               ),
-            icon: h.span([h.Class(className(styles.indicatorLabel))], [
-              `+${String(overflowItems.length)}`,
-            ]),
+            icon: h.span(
+              [h.Class(className(styles.indicatorLabel))],
+              [`+${String(overflowItems.length)}`],
+            ),
             items: overflowItems.map(({ index }) => ({
               label: labels[index] ?? '',
             })),
           },
           h,
-        );
+        )
   }
-};
+}
 
 const frame = <Msg>(
   fixture: OverflowListFixture,
@@ -141,7 +151,7 @@ const frame = <Msg>(
           h.Style({ maxWidth: `${String(fixture.container.maxWidth)}px` }),
         ],
         [inner],
-      );
+      )
     case 'center':
       return h.div(
         [
@@ -149,7 +159,7 @@ const frame = <Msg>(
           h.Style({ width: `${String(fixture.container.width)}px` }),
         ],
         [h.div([h.Class(className(styles.card))], [inner])],
-      );
+      )
     case 'card':
       return h.div(
         [
@@ -161,9 +171,9 @@ const frame = <Msg>(
           }),
         ],
         [inner],
-      );
+      )
   }
-};
+}
 
 export const overflowListStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
@@ -171,49 +181,57 @@ export const overflowListStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ) => {
-  const fixture = overflowListFixtures[exampleIndex] ?? overflowListFixtures[0];
+  const fixture = overflowListFixtures[exampleIndex] ?? overflowListFixtures[0]
   const previewModel = model as {
-    list: OverflowList.Model;
-    menu: MoreMenu.Model;
-    hiddenCount: number;
-  };
-  return h.div([h.Class(className(styles.frame))], [
-    frame(
-      fixture,
-      OverflowList.overflowList(
-        {
-          model: previewModel.list,
-          toParentMessage: message =>
-            onMessageJson(
-              JSON.stringify({ _tag: 'GotListMessage', message }),
+    list: OverflowList.Model
+    menu: MoreMenu.Model
+    hiddenCount: number
+  }
+  return h.div(
+    [h.Class(className(styles.frame))],
+    [
+      frame(
+        fixture,
+        OverflowList.overflowList(
+          {
+            model: previewModel.list,
+            toParentMessage: message =>
+              onMessageJson(
+                JSON.stringify({ _tag: 'GotListMessage', message }),
+              ),
+            gap: fixture.gap,
+            ...(fixture.maxVisibleItems === undefined
+              ? {}
+              : { maxVisibleItems: fixture.maxVisibleItems }),
+            ...(fixture.maxRows === undefined
+              ? {}
+              : { maxRows: fixture.maxRows }),
+            ...(fixture.collapseFrom === undefined
+              ? {}
+              : { collapseFrom: fixture.collapseFrom }),
+            ...(fixture.container.kind === 'card'
+              ? { behavior: 'observeParent' as const }
+              : {}),
+            overflowRenderer: renderIndicator(
+              fixture,
+              previewModel.menu,
+              onMessageJson,
+              h,
             ),
-          gap: fixture.gap,
-          ...(fixture.maxVisibleItems === undefined
-            ? {}
-            : { maxVisibleItems: fixture.maxVisibleItems }),
-          ...(fixture.maxRows === undefined ? {} : { maxRows: fixture.maxRows }),
-          ...(fixture.collapseFrom === undefined
-            ? {}
-            : { collapseFrom: fixture.collapseFrom }),
-          ...(fixture.container.kind === 'card'
-            ? { behavior: 'observeParent' as const }
-            : {}),
-          overflowRenderer: renderIndicator(
-            fixture,
-            previewModel.menu,
-            onMessageJson,
-            h,
-          ),
-          children: renderItems(fixture, h),
-        },
+            children: renderItems(fixture, h),
+          },
+          h,
+        ),
         h,
       ),
-      h,
-    ),
-    h.p([h.Role('status'), h.Class(className(styles.status))], [
-      previewModel.hiddenCount === 0
-        ? 'Everything fits.'
-        : `${String(previewModel.hiddenCount)} item(s) collapsed.`,
-    ]),
-  ]);
-};
+      h.p(
+        [h.Role('status'), h.Class(className(styles.status))],
+        [
+          previewModel.hiddenCount === 0
+            ? 'Everything fits.'
+            : `${String(previewModel.hiddenCount)} item(s) collapsed.`,
+        ],
+      ),
+    ],
+  )
+}

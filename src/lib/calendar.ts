@@ -22,14 +22,15 @@ const isDisabled = (
   model: CalendarPrimitive.Model,
   date: Calendar.CalendarDate,
 ): boolean =>
-  Option.exists(model.maybeMinDate, (min) => Calendar.isBefore(date, min)) ||
-  Option.exists(model.maybeMaxDate, (max) => Calendar.isAfter(date, max)) ||
+  Option.exists(model.maybeMinDate, min => Calendar.isBefore(date, min)) ||
+  Option.exists(model.maybeMaxDate, max => Calendar.isAfter(date, max)) ||
   model.disabledDaysOfWeek.includes(Calendar.dayOfWeek(date)) ||
   model.disabledDates.some(Calendar.isEqual(date))
 
 const fallbackFocus = (model: CalendarPrimitive.Model): Calendar.CalendarDate =>
   Option.getOrElse(model.maybeFocusedDate, () =>
-    Calendar.make(model.viewYear, model.viewMonth, 1))
+    Calendar.make(model.viewYear, model.viewMonth, 1),
+  )
 
 /** Home/End jump to the week's edge day, but when that edge day is disabled
  *  the primitive's directional skip can spill the cursor into the adjacent
@@ -46,8 +47,8 @@ const weekEdgeTarget = (
       : Calendar.endOfWeek(focused, model.locale.firstDayOfWeek)
   const step = edge === 'start' ? 1 : -1
   return pipe(
-    Array.makeBy(7, (index) => Calendar.addDays(edgeDate, index * step)),
-    Array.findFirst((date) => !isDisabled(model, date)),
+    Array.makeBy(7, index => Calendar.addDays(edgeDate, index * step)),
+    Array.findFirst(date => !isDisabled(model, date)),
   )
 }
 
@@ -62,17 +63,26 @@ export const update = (
     message._tag === 'PressedKeyOnGrid' &&
     (message.key === 'Home' || message.key === 'End')
   ) {
-    const target = weekEdgeTarget(model, message.key === 'Home' ? 'start' : 'end')
+    const target = weekEdgeTarget(
+      model,
+      message.key === 'Home' ? 'start' : 'end',
+    )
     if (Option.isSome(target)) {
       const nextModel = CalendarPrimitive.focusDate(model, target.value)
       const crossedMonth =
-        target.value.year !== model.viewYear || target.value.month !== model.viewMonth
-      return { model: nextModel, ...(crossedMonth
-          ? { outMessage: CalendarPrimitive.OutMessage.ChangedViewMonth({
+        target.value.year !== model.viewYear ||
+        target.value.month !== model.viewMonth
+      return {
+        model: nextModel,
+        ...(crossedMonth
+          ? {
+              outMessage: CalendarPrimitive.OutMessage.ChangedViewMonth({
                 year: target.value.year,
                 month: target.value.month,
-              }) }
-          : {}) }
+              }),
+            }
+          : {}),
+      }
     }
   }
   return CalendarPrimitive.update(model, message)
@@ -85,13 +95,18 @@ export type CalendarRange = Readonly<{
 
 export type RangePosition = 'outside' | 'single' | 'start' | 'middle' | 'end'
 
-const ordinal = (date: Calendar.CalendarDate): number => date.year * 10_000 + date.month * 100 + date.day
+const ordinal = (date: Calendar.CalendarDate): number =>
+  date.year * 10_000 + date.month * 100 + date.day
 
-export const normalizeRange = (range: CalendarRange): CalendarRange => ordinal(range.start) <= ordinal(range.end)
-  ? range
-  : { start: range.end, end: range.start }
+export const normalizeRange = (range: CalendarRange): CalendarRange =>
+  ordinal(range.start) <= ordinal(range.end)
+    ? range
+    : { start: range.end, end: range.start }
 
-export const rangePosition = (date: Calendar.CalendarDate, range: CalendarRange | undefined): RangePosition => {
+export const rangePosition = (
+  date: Calendar.CalendarDate,
+  range: CalendarRange | undefined,
+): RangePosition => {
   if (range === undefined) return 'outside'
   const normalized = normalizeRange(range)
   const value = ordinal(date)
@@ -105,5 +120,7 @@ export const rangePosition = (date: Calendar.CalendarDate, range: CalendarRange 
 }
 
 /** Convert an instant at the application boundary; Calendar itself stays zone-free. */
-export const dateInTimeZone = (instant: Date, timeZone: string): Calendar.CalendarDate =>
-  Calendar.fromDateInZone(instant, timeZone)
+export const dateInTimeZone = (
+  instant: Date,
+  timeZone: string,
+): Calendar.CalendarDate => Calendar.fromDateInZone(instant, timeZone)

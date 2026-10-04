@@ -1,24 +1,30 @@
-import { Progress as ProgressPrimitive } from '@foldkit/ui';
-import type { Attribute, Html, HtmlBuilder } from 'foldkit/html';
+import { Progress as ProgressPrimitive } from '@foldkit/ui'
+import type { Attribute, Html, HtmlBuilder } from 'foldkit/html'
 
-import { normalizeProgress } from '@/lib/progress';
-import { cn } from '@/lib/utils';
+import { normalizeProgress } from '@/lib/progress'
+import { cn } from '@/lib/utils'
 
 export type ProgressProps = Readonly<{
   /** `null` renders an indeterminate progress indicator. */
-  value: number | null;
-  max?: number;
-  ariaLabel?: string;
-  valueText?: string;
-  id?: string;
-  direction?: 'ltr' | 'rtl';
-  class?: string;
-}>;
+  value: number | null
+  max?: number
+  ariaLabel?: string
+  valueText?: string
+  id?: string
+  direction?: 'ltr' | 'rtl'
+  class?: string
+}>
 
 // The primitive stamps Base UI state attrs (`data-state` loading/complete,
 // `data-indeterminate`, `data-value`/`min`/`max`); crease carries a single
 // `data-state` hook in its own vocabulary ('indeterminate' | 'determinate').
-const PRIMITIVE_DATA_KEYS = new Set(['state', 'indeterminate', 'value', 'min', 'max']);
+const PRIMITIVE_DATA_KEYS = new Set([
+  'state',
+  'indeterminate',
+  'value',
+  'min',
+  'max',
+])
 
 const keepProgressAttribute = <Msg>(
   attr: Attribute<Msg>,
@@ -28,14 +34,14 @@ const keepProgressAttribute = <Msg>(
   // keeps both optional, so drop them when the caller supplied neither.
   !(attr._tag === 'Id' && !hasId) &&
   !(attr._tag === 'AriaLabelledBy' && !hasId) &&
-  !(attr._tag === 'DataAttribute' && PRIMITIVE_DATA_KEYS.has(attr.key));
+  !(attr._tag === 'DataAttribute' && PRIMITIVE_DATA_KEYS.has(attr.key))
 
 export const progress = <Msg>(
   props: ProgressProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const normalized = normalizeProgress(props.value, props.max);
-  const hasId = props.id !== undefined;
+  const normalized = normalizeProgress(props.value, props.max)
+  const hasId = props.id !== undefined
 
   return ProgressPrimitive.view(
     {
@@ -47,7 +53,7 @@ export const progress = <Msg>(
       toView: ({ progress: progressAttrs }) =>
         h.div(
           [
-            ...progressAttrs.filter((attr) => keepProgressAttribute(attr, hasId)),
+            ...progressAttrs.filter(attr => keepProgressAttribute(attr, hasId)),
             ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
             h.DataAttribute('state', normalized.state),
             h.DataAttribute('slot', 'progress'),
@@ -62,7 +68,9 @@ export const progress = <Msg>(
             h.div(
               [
                 h.DataAttribute('slot', 'progress-indicator'),
-                h.Class('h-full w-full flex-1 bg-primary transition-all motion-reduce:transition-none'),
+                h.Class(
+                  'h-full w-full flex-1 bg-primary transition-all motion-reduce:transition-none',
+                ),
                 h.Style({
                   transform:
                     normalized.percentage === null
@@ -83,5 +91,5 @@ export const progress = <Msg>(
         ),
     },
     h,
-  );
-};
+  )
+}

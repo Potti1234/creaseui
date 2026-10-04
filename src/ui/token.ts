@@ -1,7 +1,7 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Icon from '@/lib/icon';
-import { cn } from '@/lib/utils';
+import * as Icon from '@/lib/icon'
+import { cn } from '@/lib/utils'
 
 /* Ported from Meta Astryx Token (packages/core/src/Token/Token.tsx) — examples
    and visual spec adapted to Crease UI tokens. The 11 astryx color names are
@@ -22,14 +22,14 @@ export type TokenColor =
   | 'cyan'
   | 'blue'
   | 'purple'
-  | 'pink';
-export type TokenSize = 'sm' | 'md' | 'lg';
+  | 'pink'
+export type TokenSize = 'sm' | 'md' | 'lg'
 
 const SIZE_CLASS: Readonly<Record<TokenSize, string>> = {
   sm: 'h-5',
   md: 'h-6',
   lg: 'h-7',
-};
+}
 
 const COLOR_CLASS: Readonly<Record<TokenColor, string>> = {
   default: 'bg-muted text-foreground',
@@ -51,53 +51,56 @@ const COLOR_CLASS: Readonly<Record<TokenColor, string>> = {
   purple: 'bg-chart-3/15 text-chart-3',
   /* PORT-NOTE: crease has no pink token; a deeper destructive tint stands in. */
   pink: 'bg-destructive/15 text-destructive',
-};
+}
 
 const BASE_CLASS =
-  'inline-flex max-w-full items-center gap-1 overflow-hidden rounded-[4px] px-2 py-0 text-xs leading-5 font-medium whitespace-nowrap no-underline';
-const LABEL_CLASS = 'min-w-0 truncate';
+  'inline-flex max-w-full items-center gap-1 overflow-hidden rounded-[4px] px-2 py-0 text-xs leading-5 font-medium whitespace-nowrap no-underline'
+const LABEL_CLASS = 'min-w-0 truncate'
 const REMOVE_BUTTON_CLASS =
-  'relative inline-flex size-4 -me-1 shrink-0 cursor-pointer items-center justify-center rounded-full p-0 text-current focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ring';
-const DISABLED_CLASS = 'pointer-events-none cursor-default opacity-50';
+  'relative inline-flex size-4 -me-1 shrink-0 cursor-pointer items-center justify-center rounded-full p-0 text-current focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ring'
+const DISABLED_CLASS = 'pointer-events-none cursor-default opacity-50'
 /* astryx tints the chip background 5% on hover / 10% on press via a
    background-image overlay; brightness gives the same perceptual darken. */
 const INTERACTIVE_CLASS =
-  'cursor-pointer transition-[filter] duration-150 ease-in-out motion-reduce:transition-none hover:brightness-95 active:brightness-90';
+  'cursor-pointer transition-[filter] duration-150 ease-in-out motion-reduce:transition-none hover:brightness-95 active:brightness-90'
 
 export type TokenProps<Msg> = Readonly<{
   /** Text shown inside the token. */
-  label: string;
+  label: string
   /** Semantic colorway; 'default' is the neutral gray chip. */
-  color?: TokenColor;
+  color?: TokenColor
   /** Chip height: sm 20px, md 24px, lg 28px. */
-  size?: TokenSize;
+  size?: TokenSize
   /** Leading glyph, e.g. `h => Icon.tag({ class: 'size-3' }, h)`. */
-  icon?: <M>(h: HtmlBuilder<M>) => Html;
+  icon?: <M>(h: HtmlBuilder<M>) => Html
   /** Trailing content such as a count badge, rendered before the remove button. */
-  endContent?: ReadonlyArray<Html>;
+  endContent?: ReadonlyArray<Html>
   /** Hides the label visually; the label still becomes the aria-label. */
-  isLabelHidden?: boolean;
+  isLabelHidden?: boolean
   /** Link target — renders the token as an anchor. */
-  href?: string;
+  href?: string
   /** Message sent on activate; makes the token a clickable button. */
-  onClick?: Msg;
+  onClick?: Msg
   /** Message sent from the trailing remove affordance. */
-  onRemove?: Msg;
+  onRemove?: Msg
   /** Muted look and blocks all interaction. */
-  isDisabled?: boolean;
+  isDisabled?: boolean
   /** Extra accessible description (aria-description). */
-  description?: string;
-  class?: string;
-}>;
+  description?: string
+  class?: string
+}>
 
-export const token = <Msg>(props: TokenProps<Msg>, h: HtmlBuilder<Msg>): Html => {
-  const size = props.size ?? 'md';
-  const color = props.color ?? 'default';
-  const isDisabled = props.isDisabled === true;
-  const isLink = props.href !== undefined && !isDisabled;
-  const isClickable = props.onClick !== undefined && !isDisabled && !isLink;
-  const hasRemove = props.onRemove !== undefined && !isDisabled;
-  const isInteractive = isLink || isClickable;
+export const token = <Msg>(
+  props: TokenProps<Msg>,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const size = props.size ?? 'md'
+  const color = props.color ?? 'default'
+  const isDisabled = props.isDisabled === true
+  const isLink = props.href !== undefined && !isDisabled
+  const isClickable = props.onClick !== undefined && !isDisabled && !isLink
+  const hasRemove = props.onRemove !== undefined && !isDisabled
+  const isInteractive = isLink || isClickable
 
   const baseClass = cn(
     BASE_CLASS,
@@ -106,21 +109,19 @@ export const token = <Msg>(props: TokenProps<Msg>, h: HtmlBuilder<Msg>): Html =>
     isInteractive && INTERACTIVE_CLASS,
     isDisabled && DISABLED_CLASS,
     props.class,
-  );
+  )
 
   const labelChildren: ReadonlyArray<Html> = [
     h.span(
-      [
-        h.Class(cn(LABEL_CLASS, props.isLabelHidden === true && 'sr-only')),
-      ],
+      [h.Class(cn(LABEL_CLASS, props.isLabelHidden === true && 'sr-only'))],
       [props.label],
     ),
-  ];
+  ]
   const contentChildren: ReadonlyArray<Html> = [
     ...(props.icon === undefined ? [] : [props.icon(h)]),
     ...labelChildren,
     ...(props.endContent === undefined ? [] : [...props.endContent]),
-  ];
+  ]
 
   const removeButton = hasRemove
     ? h.button(
@@ -132,7 +133,7 @@ export const token = <Msg>(props: TokenProps<Msg>, h: HtmlBuilder<Msg>): Html =>
         ],
         [Icon.x({ class: 'size-3' }, h)],
       )
-    : h.empty;
+    : h.empty
 
   const sharedAttrs = [
     h.DataAttribute('slot', 'token'),
@@ -140,8 +141,10 @@ export const token = <Msg>(props: TokenProps<Msg>, h: HtmlBuilder<Msg>): Html =>
     h.DataAttribute('size', size),
     ...(isDisabled ? [h.DataAttribute('disabled', 'true')] : []),
     ...(props.isLabelHidden === true ? [h.AriaLabel(props.label)] : []),
-    ...(props.description === undefined ? [] : [h.AriaDescription(props.description)]),
-  ];
+    ...(props.description === undefined
+      ? []
+      : [h.AriaDescription(props.description)]),
+  ]
 
   if (isLink && hasRemove) {
     /* astryx TokenLink: the anchor and remove button are siblings so the
@@ -152,20 +155,22 @@ export const token = <Msg>(props: TokenProps<Msg>, h: HtmlBuilder<Msg>): Html =>
         h.a(
           [
             h.Href(props.href as string),
-            h.Class('inline-flex min-w-0 flex-1 items-center gap-1 no-underline text-inherit'),
+            h.Class(
+              'inline-flex min-w-0 flex-1 items-center gap-1 no-underline text-inherit',
+            ),
           ],
           contentChildren,
         ),
         removeButton,
       ],
-    );
+    )
   }
 
   if (isLink) {
     return h.a(
       [...sharedAttrs, h.Href(props.href as string), h.Class(baseClass)],
       [...contentChildren],
-    );
+    )
   }
 
   if (isClickable) {
@@ -185,11 +190,11 @@ export const token = <Msg>(props: TokenProps<Msg>, h: HtmlBuilder<Msg>): Html =>
           contentChildren,
         ),
       ],
-    );
+    )
   }
 
   return h.span(
     [...sharedAttrs, h.Class(baseClass)],
     [...contentChildren, removeButton],
-  );
-};
+  )
+}

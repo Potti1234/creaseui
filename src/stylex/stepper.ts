@@ -191,17 +191,18 @@ const styles = stylex.create({
       },
       inset: 0,
       borderRadius: 'inherit',
-      transition: 'transform var(--stepper-seg-duration,0s) linear var(--stepper-seg-delay,0s)',
+      transition:
+        'transform var(--stepper-seg-duration,0s) linear var(--stepper-seg-delay,0s)',
       backgroundColor: tokens.primary,
       content: '""',
       position: 'absolute',
     },
   },
   connectorFillV: {
-    '::before': { transform: 'scaleY(1)', transformOrigin: 'center top', },
+    '::before': { transform: 'scaleY(1)', transformOrigin: 'center top' },
   },
   connectorEmptyV: {
-    '::before': { transform: 'scaleY(0)', transformOrigin: 'center top', },
+    '::before': { transform: 'scaleY(0)', transformOrigin: 'center top' },
   },
   connectorFillH: {
     '::before': {
@@ -258,14 +259,39 @@ const styles = stylex.create({
     height: '1rem',
     width: '1rem',
   },
-  numberCompleted: { backgroundColor: tokens.primary, color: tokens.primaryForeground },
-  numberInProgress: { backgroundColor: tokens.primary, color: tokens.primaryForeground },
-  numberNotStarted: { backgroundColor: tokens.muted, color: tokens.mutedForeground },
-  numberDisabled: { backgroundColor: tokens.muted, color: tokens.mutedForeground, opacity: 0.5 },
-  numberAccent: { backgroundColor: tokens.primary, color: tokens.primaryForeground },
-  numberSuccess: { backgroundColor: tokens.alertSuccess, color: tokens.statusPlateInk },
-  numberWarning: { backgroundColor: tokens.alertWarning, color: tokens.statusWarningInk },
-  numberError: { backgroundColor: tokens.destructive, color: tokens.destructiveForeground },
+  numberCompleted: {
+    backgroundColor: tokens.primary,
+    color: tokens.primaryForeground,
+  },
+  numberInProgress: {
+    backgroundColor: tokens.primary,
+    color: tokens.primaryForeground,
+  },
+  numberNotStarted: {
+    backgroundColor: tokens.muted,
+    color: tokens.mutedForeground,
+  },
+  numberDisabled: {
+    backgroundColor: tokens.muted,
+    color: tokens.mutedForeground,
+    opacity: 0.5,
+  },
+  numberAccent: {
+    backgroundColor: tokens.primary,
+    color: tokens.primaryForeground,
+  },
+  numberSuccess: {
+    backgroundColor: tokens.alertSuccess,
+    color: tokens.statusPlateInk,
+  },
+  numberWarning: {
+    backgroundColor: tokens.alertWarning,
+    color: tokens.statusWarningInk,
+  },
+  numberError: {
+    backgroundColor: tokens.destructive,
+    color: tokens.destructiveForeground,
+  },
   label: {
     overflow: 'hidden',
     color: tokens.foreground,
@@ -279,7 +305,11 @@ const styles = stylex.create({
   labelInProgress: { fontWeight: 600 },
   labelNotStarted: { color: tokens.mutedForeground },
   labelDisabled: { color: tokens.mutedForeground },
-  optionalText: { color: tokens.mutedForeground, fontSize: '0.875rem', lineHeight: '1.25rem' },
+  optionalText: {
+    color: tokens.mutedForeground,
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+  },
   description: {
     color: tokens.mutedForeground,
     display: 'block',
@@ -295,10 +325,16 @@ const styles = stylex.create({
     borderWidth: 0,
     alignItems: 'stretch',
     appearance: 'none',
-    backgroundColor: { default: 'transparent', ':hover': foundationTokens.foregroundSoft },
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': foundationTokens.foregroundSoft,
+    },
     boxSizing: 'border-box',
     color: 'inherit',
-    cursor: { default: interactionTokens.cursorAction, ':is(:disabled,[aria-disabled="true"])': interactionTokens.cursorDefault },
+    cursor: {
+      default: interactionTokens.cursorAction,
+      ':is(:disabled,[aria-disabled="true"])': interactionTokens.cursorDefault,
+    },
     display: 'flex',
     flexDirection: 'column',
     fontFamily: 'inherit',
@@ -353,10 +389,12 @@ const styles = stylex.create({
     flexShrink: 0,
     width: '0.25rem',
   },
-  otSegFlexV: { flexBasis: '0%',
- flexGrow: '1',
- flexShrink: '1',
- minHeight: '0.5rem', },
+  otSegFlexV: {
+    flexBasis: '0%',
+    flexGrow: '1',
+    flexShrink: '1',
+    minHeight: '0.5rem',
+  },
   otSegGapLeadV: { clipPath: `inset(0 0 ${CONNECTOR_CLIP_EXPR} 0)` },
   otSegGapRailV: { clipPath: `inset(${CONNECTOR_CLIP_EXPR} 0 0 0)` },
   otSegGapLeadH: { clipPath: `inset(0 ${CONNECTOR_CLIP_EXPR} 0 0)` },
@@ -456,7 +494,9 @@ const iconTintStyle = (
   if (status === 'success') return styles.iconSuccess
   if (status === 'warning') return styles.iconWarning
   if (status === 'error') return styles.iconError
-  return progress === 'not-started' ? styles.iconNotStarted : styles.iconInProgress
+  return progress === 'not-started'
+    ? styles.iconNotStarted
+    : styles.iconInProgress
 }
 
 const numberBadgeStyle = (
@@ -475,7 +515,10 @@ const numberBadgeStyle = (
   return styles.numberNotStarted
 }
 
-export const stepper = <Msg>(props: StepperProps<Msg>, h: HtmlBuilder<Msg>): Html => {
+export const stepper = <Msg>(
+  props: StepperProps<Msg>,
+  h: HtmlBuilder<Msg>,
+): Html => {
   const orientation = props.orientation ?? 'horizontal'
   const isHorizontal = orientation === 'horizontal'
   const isOnTrack = (props.indicatorPosition ?? 'separated') === 'on-track'
@@ -524,7 +567,8 @@ export const stepper = <Msg>(props: StepperProps<Msg>, h: HtmlBuilder<Msg>): Htm
   ): Html => {
     const indicatorProp = step.indicator ?? 'auto'
     const custom = typeof indicatorProp === 'string' ? undefined : indicatorProp
-    const indicatorMode = typeof indicatorProp === 'string' ? indicatorProp : 'auto'
+    const indicatorMode =
+      typeof indicatorProp === 'string' ? indicatorProp : 'auto'
     if (indicatorMode === 'none') return h.empty
     const isDisabled = step.isDisabled === true
     const statusGlyph = statusGlyphIcon(step, isActive, indicatorMode, custom)
@@ -537,7 +581,12 @@ export const stepper = <Msg>(props: StepperProps<Msg>, h: HtmlBuilder<Msg>): Htm
       return h.div(
         [
           h.AriaHidden(true),
-          h.Class(className(styles.numberBadge, numberBadgeStyle(progress, step.status, isDisabled))),
+          h.Class(
+            className(
+              styles.numberBadge,
+              numberBadgeStyle(progress, step.status, isDisabled),
+            ),
+          ),
         ],
         [String(index + 1)],
       )
@@ -560,7 +609,12 @@ export const stepper = <Msg>(props: StepperProps<Msg>, h: HtmlBuilder<Msg>): Htm
         h.Class(
           className(
             styles.icon,
-            iconTintStyle(progress, step.status, isDisabled, statusGlyph !== null),
+            iconTintStyle(
+              progress,
+              step.status,
+              isDisabled,
+              statusGlyph !== null,
+            ),
           ),
         ),
       ],
@@ -581,7 +635,9 @@ export const stepper = <Msg>(props: StepperProps<Msg>, h: HtmlBuilder<Msg>): Htm
           ? styles.labelInProgress
           : null
 
-  const optionalNodes = (step: StepperStep<Msg>): ReadonlyArray<Html | string> =>
+  const optionalNodes = (
+    step: StepperStep<Msg>,
+  ): ReadonlyArray<Html | string> =>
     step.isOptional === true
       ? [
           h.span([h.Class(className(styles.optionalText))], ['•']),
@@ -602,9 +658,15 @@ export const stepper = <Msg>(props: StepperProps<Msg>, h: HtmlBuilder<Msg>): Htm
     h.div(
       [h.Class(className(styles.iconLabelRow))],
       [
-        ...(compact && isOnTrack ? [] : [indicatorNode(step, index, progress, isActive)]),
+        ...(compact && isOnTrack
+          ? []
+          : [indicatorNode(step, index, progress, isActive)]),
         h.span(
-          [h.Class(className(styles.label, labelStyle(step, progress, isActive)))],
+          [
+            h.Class(
+              className(styles.label, labelStyle(step, progress, isActive)),
+            ),
+          ],
           [step.label],
         ),
         statusTextNode(statusText),
@@ -625,10 +687,18 @@ export const stepper = <Msg>(props: StepperProps<Msg>, h: HtmlBuilder<Msg>): Htm
               paddingInlineStart: hasIndicator ? '24px' : '0px',
             }),
           ],
-          [h.span([h.Class(className(styles.description))], [step.description])],
+          [
+            h.span(
+              [h.Class(className(styles.description))],
+              [step.description],
+            ),
+          ],
         )
 
-  const compactNameNode = (step: StepperStep<Msg>, statusText: string | null): ReadonlyArray<Html> =>
+  const compactNameNode = (
+    step: StepperStep<Msg>,
+    statusText: string | null,
+  ): ReadonlyArray<Html> =>
     compact ? [srOnly(step.label), statusTextNode(statusText)] : []
 
   const interactiveWrap = (
@@ -639,8 +709,7 @@ export const stepper = <Msg>(props: StepperProps<Msg>, h: HtmlBuilder<Msg>): Htm
     extraAttrs: ReadonlyArray<ReturnType<typeof h.Style>>,
     children: ReadonlyArray<Html | string>,
   ): Html => {
-    const isClickable =
-      step.isDisabled !== true && hasStepButtons && !compact
+    const isClickable = step.isDisabled !== true && hasStepButtons && !compact
     if (!isClickable) {
       return h.div(
         [h.Class(className(...extraStyles)), ...extraAttrs],
@@ -653,18 +722,22 @@ export const stepper = <Msg>(props: StepperProps<Msg>, h: HtmlBuilder<Msg>): Htm
         h.AriaLabel(stepAriaLabel(index, step.label, statusText)),
         h.Class(className(styles.interactive, ...extraStyles)),
         ...extraAttrs,
-        h.OnClick(
-          props.toParentMessage(Message.ClickedStep({ step: index })),
-        ),
+        h.OnClick(props.toParentMessage(Message.ClickedStep({ step: index }))),
       ],
       children,
     )
   }
 
-  const liAttrs = (step: StepperStep<Msg>, progress: StepperProgress, isActive: boolean) => [
+  const liAttrs = (
+    step: StepperStep<Msg>,
+    progress: StepperProgress,
+    isActive: boolean,
+  ) => [
     h.DataAttribute('slot', 'step'),
     h.DataAttribute('progress', progress),
-    ...(step.status === undefined ? [] : [h.DataAttribute('status', step.status)]),
+    ...(step.status === undefined
+      ? []
+      : [h.DataAttribute('status', step.status)]),
     ...(isActive ? [h.AriaCurrent('step')] : []),
   ]
 
@@ -674,7 +747,9 @@ export const stepper = <Msg>(props: StepperProps<Msg>, h: HtmlBuilder<Msg>): Htm
     const isActive = progress === 'in-progress'
     const statusText = stepStatusText(step.status, progress)
     const indicatorProp = step.indicator ?? 'auto'
-    const hasIndicator = !(typeof indicatorProp === 'string' && indicatorProp === 'none')
+    const hasIndicator = !(
+      typeof indicatorProp === 'string' && indicatorProp === 'none'
+    )
     const isBarFilled = progress !== 'not-started'
     const barTiming = timing(index - 1, 0, 1)
 
@@ -686,21 +761,40 @@ export const stepper = <Msg>(props: StepperProps<Msg>, h: HtmlBuilder<Msg>): Htm
         : OT_ARRIVAL_SHARE_VERTICAL
       const leavingShare = 1 - arrivalShare
       const hasContentSeg = !isHorizontal && step.content !== undefined
-      const railShare = leavingShare * (hasContentSeg ? OT_RAIL_SHARE_OF_LEAVING : 1)
+      const railShare =
+        leavingShare * (hasContentSeg ? OT_RAIL_SHARE_OF_LEAVING : 1)
       const contentShare = leavingShare - railShare
       const beforeTiming = timing(index - 1, leavingShare, arrivalShare)
       const railTiming = timing(index, 0, railShare)
       const contentTiming = timing(index, railShare, contentShare)
-      const fillStyle = isHorizontal ? styles.connectorFillH : styles.connectorFillV
-      const emptyStyle = isHorizontal ? styles.connectorEmptyH : styles.connectorEmptyV
-      const segGapLead = isHorizontal ? styles.otSegGapLeadH : styles.otSegGapLeadV
-      const segGapRail = isHorizontal ? styles.otSegGapRailH : styles.otSegGapRailV
+      const fillStyle = isHorizontal
+        ? styles.connectorFillH
+        : styles.connectorFillV
+      const emptyStyle = isHorizontal
+        ? styles.connectorEmptyH
+        : styles.connectorEmptyV
+      const segGapLead = isHorizontal
+        ? styles.otSegGapLeadH
+        : styles.otSegGapLeadV
+      const segGapRail = isHorizontal
+        ? styles.otSegGapRailH
+        : styles.otSegGapRailV
 
       const labelLineNode = h.div(
-        [h.Class(className(isHorizontal ? styles.otLabelRowCenter : styles.otLabelRowStart))],
+        [
+          h.Class(
+            className(
+              isHorizontal ? styles.otLabelRowCenter : styles.otLabelRowStart,
+            ),
+          ),
+        ],
         [
           h.span(
-            [h.Class(className(styles.label, labelStyle(step, progress, isActive)))],
+            [
+              h.Class(
+                className(styles.label, labelStyle(step, progress, isActive)),
+              ),
+            ],
             [step.label],
           ),
           statusTextNode(statusText),
@@ -829,7 +923,10 @@ export const stepper = <Msg>(props: StepperProps<Msg>, h: HtmlBuilder<Msg>): Htm
           ),
         ]
         return h.li(
-          [...liAttrs(step, progress, isActive), h.Class(className(styles.otVerticalRoot))],
+          [
+            ...liAttrs(step, progress, isActive),
+            h.Class(className(styles.otVerticalRoot)),
+          ],
           [
             interactiveWrap(
               step,
@@ -906,7 +1003,10 @@ export const stepper = <Msg>(props: StepperProps<Msg>, h: HtmlBuilder<Msg>): Htm
             ]),
       ]
       return h.li(
-        [...liAttrs(step, progress, isActive), h.Class(className(styles.otHorizontalRoot))],
+        [
+          ...liAttrs(step, progress, isActive),
+          h.Class(className(styles.otHorizontalRoot)),
+        ],
         [
           interactiveWrap(
             step,
@@ -937,9 +1037,7 @@ export const stepper = <Msg>(props: StepperProps<Msg>, h: HtmlBuilder<Msg>): Htm
         : [
             h.div(
               [
-                h.Class(
-                  className(styles.stepContent),
-                ),
+                h.Class(className(styles.stepContent)),
                 h.Style({
                   paddingInlineStart: `calc(${inlinePad}px + ${hasIndicator ? 24 : 0}px)`,
                   paddingInlineEnd: `${inlinePad}px`,
@@ -952,7 +1050,10 @@ export const stepper = <Msg>(props: StepperProps<Msg>, h: HtmlBuilder<Msg>): Htm
 
     if (!isHorizontal) {
       return h.li(
-        [...liAttrs(step, progress, isActive), h.Class(className(styles.verticalRoot))],
+        [
+          ...liAttrs(step, progress, isActive),
+          h.Class(className(styles.verticalRoot)),
+        ],
         [
           h.div(
             [
@@ -992,7 +1093,10 @@ export const stepper = <Msg>(props: StepperProps<Msg>, h: HtmlBuilder<Msg>): Htm
 
     // separated horizontal
     return h.li(
-      [...liAttrs(step, progress, isActive), h.Class(className(styles.horizontalStep))],
+      [
+        ...liAttrs(step, progress, isActive),
+        h.Class(className(styles.horizontalStep)),
+      ],
       [
         h.div(
           [
@@ -1057,9 +1161,15 @@ export const stepper = <Msg>(props: StepperProps<Msg>, h: HtmlBuilder<Msg>): Htm
         ...(target === undefined
           ? {}
           : {
-              onClick: props.toParentMessage(Message.ClickedStep({ step: target })),
+              onClick: props.toParentMessage(
+                Message.ClickedStep({ step: target }),
+              ),
             }),
-        leadingIcon: Icon.icon(delta === -1 ? 'chevron-left' : 'chevron-right', { class: className(styles.iconSvg) }, h),
+        leadingIcon: Icon.icon(
+          delta === -1 ? 'chevron-left' : 'chevron-right',
+          { class: className(styles.iconSvg) },
+          h,
+        ),
         children: [],
       },
       h,
@@ -1081,7 +1191,12 @@ export const stepper = <Msg>(props: StepperProps<Msg>, h: HtmlBuilder<Msg>): Htm
         iconLabelNode(active, activeStep, progress, true, statusText),
         ...(active.description === undefined
           ? []
-          : [h.span([h.Class(className(styles.description))], [active.description])]),
+          : [
+              h.span(
+                [h.Class(className(styles.description))],
+                [active.description],
+              ),
+            ]),
       ],
     )
   }
@@ -1104,7 +1219,9 @@ export const stepper = <Msg>(props: StepperProps<Msg>, h: HtmlBuilder<Msg>): Htm
           : isOnTrack
             ? styles.verticalOnTrack
             : styles.vertical,
-        ...(!isHorizontal && props.layoutStyle !== undefined ? [props.layoutStyle] : []),
+        ...(!isHorizontal && props.layoutStyle !== undefined
+          ? [props.layoutStyle]
+          : []),
       ),
     ),
   ]

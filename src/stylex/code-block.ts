@@ -1,9 +1,9 @@
-import * as stylex from '@stylexjs/stylex';
-import type { StaticStyles } from '@stylexjs/stylex';
-import { Option } from 'effect';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { StaticStyles } from '@stylexjs/stylex'
+import { Option } from 'effect'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Icon from '@/lib/icon';
+import * as Icon from '@/lib/icon'
 import {
   codeLines,
   flatTokensToLines,
@@ -14,33 +14,33 @@ import {
   type SyntaxToken,
   type TokenLine,
   update,
-} from '@/lib/code-block';
-import * as Button from './button';
+} from '@/lib/code-block'
+import * as Button from './button'
 
-import type { ComponentLayoutStyle } from './contracts';
-import { foundationTokens } from './foundations-tokens.stylex';
-import { interactionTokens } from './interaction-tokens.stylex.const';
-import { className } from './style';
-import { complexTokens } from './complex-tokens.stylex';
-import { tokens } from './tokens.stylex';
+import type { ComponentLayoutStyle } from './contracts'
+import { foundationTokens } from './foundations-tokens.stylex'
+import { interactionTokens } from './interaction-tokens.stylex.const'
+import { className } from './style'
+import { complexTokens } from './complex-tokens.stylex'
+import { tokens } from './tokens.stylex'
 
 /* Ported from Meta Astryx CodeBlock (packages/core/src/CodeBlock/CodeBlock.tsx)
    — examples and visual spec adapted to Crease UI tokens. Syntax highlighting
    uses the span renderer (astryx's Safari/no-Highlight-API fallback path);
    `highlightMode` and `syntaxTheme` are not ported — see PORT-NOTEs below. */
 
-export { init, Model, Message, update };
-export type { SyntaxToken, TokenLine };
-export { codeLines, tokenize, flatTokensToLines };
+export { init, Model, Message, update }
+export type { SyntaxToken, TokenLine }
+export { codeLines, tokenize, flatTokensToLines }
 
 export type CustomTokenizer = (
   code: string,
   language: string,
-) => ReadonlyArray<{ type: string; start: number; end: number }>;
+) => ReadonlyArray<{ type: string; start: number; end: number }>
 
-export type CodeBlockSize = 'sm' | 'md';
+export type CodeBlockSize = 'sm' | 'md'
 
-export type CodeBlockContainer = 'card' | 'section';
+export type CodeBlockContainer = 'card' | 'section'
 
 /* astryx syntax token types → Crease UI chart/semantic colors, mirroring
    tokenColorClass in src/ui/code-block.ts (text-chart-N utilities). */
@@ -58,12 +58,12 @@ const tokenColorStyles = stylex.create({
   attribute: { color: complexTokens.chart2 },
   tag: { color: tokens.destructive },
   punctuation: { color: tokens.mutedForeground },
-});
+})
 
 const tokenStyleFor = (type: string): StaticStyles =>
   type in tokenColorStyles
     ? tokenColorStyles[type as keyof typeof tokenColorStyles]
-    : tokenColorStyles.variable;
+    : tokenColorStyles.variable
 
 const styles = stylex.create({
   root: {
@@ -150,7 +150,8 @@ const styles = stylex.create({
     alignItems: 'center',
     color: tokens.mutedForeground,
     display: 'flex',
-    fontFamily: 'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
+    fontFamily:
+      'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
     fontSize: '0.75rem',
     fontWeight: 500,
     lineHeight: 1.6667,
@@ -208,16 +209,19 @@ const styles = stylex.create({
     flexBasis: '0%',
     flexGrow: '1',
     flexShrink: '1',
-    fontFamily: 'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
+    fontFamily:
+      'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
     tabSize: 2,
     whiteSpace: 'pre',
     wordBreak: 'normal',
   },
   codeSm: {
-    fontSize: '0.75rem', lineHeight: '1rem',
+    fontSize: '0.75rem',
+    lineHeight: '1rem',
   },
   codeMd: {
-    fontSize: '0.875rem', lineHeight: '1.25rem',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
   },
   codeWrapped: {
     overflowWrap: 'break-word',
@@ -230,8 +234,7 @@ const styles = stylex.create({
       insetBlock: 0,
       backgroundColor: tokens.border,
       content: '""',
-      insetInlineStart:
-        'calc(1rem + var(--_codeblock-gutter-width) + 0.75rem)',
+      insetInlineStart: 'calc(1rem + var(--_codeblock-gutter-width) + 0.75rem)',
       pointerEvents: 'none',
       position: 'absolute',
       width: '1px',
@@ -248,7 +251,8 @@ const styles = stylex.create({
       alignSelf: 'start',
       color: tokens.mutedForeground,
       content: 'attr(data-line)',
-      fontFamily: 'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
+      fontFamily:
+        'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
       gridColumnStart: '1',
       textAlign: 'end',
       userSelect: 'none',
@@ -271,7 +275,7 @@ const styles = stylex.create({
     top: '0.5rem',
   },
   copyButtonInk: { color: tokens.mutedForeground },
-});
+})
 
 const buildSpanLine = <Msg>(
   lineText: string,
@@ -279,15 +283,15 @@ const buildSpanLine = <Msg>(
   h: HtmlBuilder<Msg>,
 ): ReadonlyArray<Html | string> => {
   if (tokensList.length === 0) {
-    return [lineText === '' ? '​' : lineText];
+    return [lineText === '' ? '​' : lineText]
   }
-  const parts: Array<Html | string> = [];
-  let cursor = 0;
+  const parts: Array<Html | string> = []
+  let cursor = 0
   for (const token of tokensList) {
     if (token.start > cursor) {
-      parts.push(lineText.slice(cursor, token.start));
+      parts.push(lineText.slice(cursor, token.start))
     }
-    const end = Math.min(token.end, lineText.length);
+    const end = Math.min(token.end, lineText.length)
     parts.push(
       h.span(
         [
@@ -297,67 +301,67 @@ const buildSpanLine = <Msg>(
         ],
         [lineText.slice(token.start, end)],
       ),
-    );
-    cursor = end;
+    )
+    cursor = end
   }
   if (cursor < lineText.length) {
-    parts.push(lineText.slice(cursor));
+    parts.push(lineText.slice(cursor))
   }
-  return parts;
-};
+  return parts
+}
 
 export type CodeBlockProps<Msg> = Readonly<{
   /** The CodeBlock submodel state (see `init`/`update` in `@/lib/code-block`). */
-  model: Model;
-  toParentMessage: (message: Message) => Msg;
-  code: string;
-  language?: string;
-  title?: string;
-  hasLanguageLabel?: boolean;
-  hasLineNumbers?: boolean;
-  highlightLines?: ReadonlyArray<number>;
-  hasCopyButton?: boolean;
-  isWrapped?: boolean;
-  maxHeight?: number | string;
-  isCollapsible?: boolean;
-  collapsibleThreshold?: number;
-  size?: CodeBlockSize;
-  width?: string;
-  container?: CodeBlockContainer;
-  tokenizer?: CustomTokenizer;
-  layoutStyle?: ComponentLayoutStyle;
-}>;
+  model: Model
+  toParentMessage: (message: Message) => Msg
+  code: string
+  language?: string
+  title?: string
+  hasLanguageLabel?: boolean
+  hasLineNumbers?: boolean
+  highlightLines?: ReadonlyArray<number>
+  hasCopyButton?: boolean
+  isWrapped?: boolean
+  maxHeight?: number | string
+  isCollapsible?: boolean
+  collapsibleThreshold?: number
+  size?: CodeBlockSize
+  width?: string
+  container?: CodeBlockContainer
+  tokenizer?: CustomTokenizer
+  layoutStyle?: ComponentLayoutStyle
+}>
 
 export const codeBlock = <Msg>(
   props: CodeBlockProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const language = props.language ?? 'plaintext';
-  const hasLanguageLabel = props.hasLanguageLabel ?? true;
-  const hasLineNumbers = props.hasLineNumbers ?? false;
-  const hasCopyButton = props.hasCopyButton ?? true;
-  const isWrapped = props.isWrapped ?? false;
-  const isCollapsible = props.isCollapsible ?? false;
-  const collapsibleThreshold = props.collapsibleThreshold ?? 10;
-  const size = props.size ?? 'md';
-  const container = props.container ?? 'card';
-  const widthProp = props.width ?? 'fit-content';
+  const language = props.language ?? 'plaintext'
+  const hasLanguageLabel = props.hasLanguageLabel ?? true
+  const hasLineNumbers = props.hasLineNumbers ?? false
+  const hasCopyButton = props.hasCopyButton ?? true
+  const isWrapped = props.isWrapped ?? false
+  const isCollapsible = props.isCollapsible ?? false
+  const collapsibleThreshold = props.collapsibleThreshold ?? 10
+  const size = props.size ?? 'md'
+  const container = props.container ?? 'card'
+  const widthProp = props.width ?? 'fit-content'
 
-  const lines = codeLines(props.code);
+  const lines = codeLines(props.code)
   const tokenLines: ReadonlyArray<TokenLine> =
     props.tokenizer === undefined
       ? tokenize(props.code, language)
-      : flatTokensToLines(props.tokenizer(props.code, language), props.code);
+      : flatTokensToLines(props.tokenizer(props.code, language), props.code)
   const highlightSet =
-    props.highlightLines === undefined ? null : new Set(props.highlightLines);
-  const isCopied = props.model.copiedCode === props.code;
-  const isCollapsed = props.model.isCollapsed;
-  const canCollapse = isCollapsible && lines.length >= collapsibleThreshold;
-  const maxLineDigits = String(lines.length).length;
+    props.highlightLines === undefined ? null : new Set(props.highlightLines)
+  const isCopied = props.model.copiedCode === props.code
+  const isCollapsed = props.model.isCollapsed
+  const canCollapse = isCollapsible && lines.length >= collapsibleThreshold
+  const maxLineDigits = String(lines.length).length
   const languageLabel =
-    hasLanguageLabel && language !== 'plaintext' ? language : null;
-  const showHeader = props.title !== undefined || languageLabel !== null;
-  const regionId = `codeblock-${props.title ?? languageLabel ?? 'region'}-${lines.length}`;
+    hasLanguageLabel && language !== 'plaintext' ? language : null
+  const showHeader = props.title !== undefined || languageLabel !== null
+  const regionId = `codeblock-${props.title ?? languageLabel ?? 'region'}-${lines.length}`
 
   const copyButtonEl = hasCopyButton
     ? Button.button(
@@ -377,14 +381,11 @@ export const codeBlock = <Msg>(
         },
         h,
       )
-    : null;
+    : null
   const copyButton =
     copyButtonEl === null || showHeader
       ? copyButtonEl
-      : h.span(
-          [h.Class(className(styles.copyButtonFloating))],
-          [copyButtonEl],
-        );
+      : h.span([h.Class(className(styles.copyButtonFloating))], [copyButtonEl])
 
   const header = showHeader
     ? h.div(
@@ -440,9 +441,7 @@ export const codeBlock = <Msg>(
                               {
                                 class: className(
                                   styles.chevronIcon,
-                                  !isCollapsed
-                                    ? styles.chevronExpanded
-                                    : null,
+                                  !isCollapsed ? styles.chevronExpanded : null,
                                 ),
                               },
                               h,
@@ -463,7 +462,7 @@ export const codeBlock = <Msg>(
           ...(copyButton === null ? [] : [copyButton]),
         ],
       )
-    : null;
+    : null
 
   const codeBody = h.div(
     [
@@ -531,9 +530,10 @@ export const codeBlock = <Msg>(
                     : []),
                 ],
                 [
-                  h.span([h.Class(className(styles.lineContent))], [
-                    ...buildSpanLine(line, tokenLines[index] ?? [], h),
-                  ]),
+                  h.span(
+                    [h.Class(className(styles.lineContent))],
+                    [...buildSpanLine(line, tokenLines[index] ?? [], h)],
+                  ),
                 ],
               ),
             ),
@@ -541,7 +541,7 @@ export const codeBlock = <Msg>(
         ],
       ),
     ],
-  );
+  )
 
   return h.pre(
     [
@@ -584,5 +584,5 @@ export const codeBlock = <Msg>(
         : codeBody,
       ...(!showHeader && copyButton !== null ? [copyButton] : []),
     ],
-  );
-};
+  )
+}

@@ -16,19 +16,31 @@ import {
 describe('shadcn preset compatibility', () => {
   it('decodes current official create presets', () => {
     assert.deepEqual(Option.getOrThrow(decodePreset('b27GcrRo')), {
-      menuColor: 'default', menuAccent: 'subtle', radius: 'default',
-      font: 'inter', iconLibrary: 'lucide', theme: 'neutral',
-      baseColor: 'neutral', style: 'rhea', chartColor: 'neutral',
+      menuColor: 'default',
+      menuAccent: 'subtle',
+      radius: 'default',
+      font: 'inter',
+      iconLibrary: 'lucide',
+      theme: 'neutral',
+      baseColor: 'neutral',
+      style: 'rhea',
+      chartColor: 'neutral',
       fontHeading: 'inherit',
     })
-    assert.equal(encodePreset(Option.getOrThrow(decodePreset('b4xFeBLg4O'))), 'b4xFeBLg4O')
+    assert.equal(
+      encodePreset(Option.getOrThrow(decodePreset('b4xFeBLg4O'))),
+      'b4xFeBLg4O',
+    )
   })
 
   it('accepts codes, CLI flags, and shadcn create URLs', () => {
     const expected = decodePreset('b4xFeBLg4O')
     assert.deepEqual(parsePresetInput('b4xFeBLg4O'), expected)
     assert.deepEqual(parsePresetInput('--preset b4xFeBLg4O'), expected)
-    assert.deepEqual(parsePresetInput('https://ui.shadcn.com/create?preset=b4xFeBLg4O'), expected)
+    assert.deepEqual(
+      parsePresetInput('https://ui.shadcn.com/create?preset=b4xFeBLg4O'),
+      expected,
+    )
     assert.equal(Option.isNone(parsePresetInput('not-a-preset')), true)
   })
 
@@ -55,7 +67,13 @@ describe('shadcn preset compatibility', () => {
   })
 
   it('selects a real icon registry adapter', () => {
-    for (const iconLibrary of ['lucide', 'hugeicons', 'tabler', 'phosphor', 'remixicon']) {
+    for (const iconLibrary of [
+      'lucide',
+      'hugeicons',
+      'tabler',
+      'phosphor',
+      'remixicon',
+    ]) {
       const manifest = presetManifest({ ...DEFAULT_CONFIG, iconLibrary })
       assert.ok(
         manifest.registryDependencies.includes(

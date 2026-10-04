@@ -94,7 +94,7 @@ export const renderErrorSummary = <Msg>(
         ? [
             h.OnMount({
               name: `focus-form-error-summary-${props.id}`,
-              f: (element) => {
+              f: element => {
                 if (element instanceof HTMLElement) element.focus()
                 return Stream.empty
               },
@@ -115,35 +115,38 @@ export const renderErrorSummary = <Msg>(
       ),
       h.ul(
         [h.DataAttribute('slot', 'form-error-summary-list'), ...visual.list],
-        props.errors.map((error) =>
-          h.li([], [
-            h.a(
-              props.onErrorLink === undefined
-                ? [
-                    h.Href(`#${error.controlId}`),
-                    h.DataAttribute('slot', 'form-error-summary-link'),
-                    ...visual.link,
-                  ]
-                : [
-                    h.Tabindex(0),
-                    h.Role('link'),
-                    h.OnClick(props.onErrorLink(error.controlId), {
-                      focusSelector: `#${error.controlId}`,
-                    }),
-                    h.OnKeyDownFocus((key) =>
-                      key === 'Enter' && props.onErrorLink !== undefined
-                        ? Option.some({
-                            focusSelector: `#${error.controlId}`,
-                            message: props.onErrorLink(error.controlId),
-                          })
-                        : Option.none(),
-                    ),
-                    h.DataAttribute('slot', 'form-error-summary-link'),
-                    ...visual.link,
-                  ],
-              [error.message],
-            ),
-          ]),
+        props.errors.map(error =>
+          h.li(
+            [],
+            [
+              h.a(
+                props.onErrorLink === undefined
+                  ? [
+                      h.Href(`#${error.controlId}`),
+                      h.DataAttribute('slot', 'form-error-summary-link'),
+                      ...visual.link,
+                    ]
+                  : [
+                      h.Tabindex(0),
+                      h.Role('link'),
+                      h.OnClick(props.onErrorLink(error.controlId), {
+                        focusSelector: `#${error.controlId}`,
+                      }),
+                      h.OnKeyDownFocus(key =>
+                        key === 'Enter' && props.onErrorLink !== undefined
+                          ? Option.some({
+                              focusSelector: `#${error.controlId}`,
+                              message: props.onErrorLink(error.controlId),
+                            })
+                          : Option.none(),
+                      ),
+                      h.DataAttribute('slot', 'form-error-summary-link'),
+                      ...visual.link,
+                    ],
+                [error.message],
+              ),
+            ],
+          ),
         ),
       ),
     ],

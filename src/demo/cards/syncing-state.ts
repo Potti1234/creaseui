@@ -1,7 +1,7 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { button } from '@/ui/button';
-import { card, cardContent } from '@/ui/card';
+import { button } from '@/ui/button'
+import { card, cardContent } from '@/ui/card'
 import {
   empty,
   emptyContent,
@@ -9,8 +9,8 @@ import {
   emptyHeader,
   emptyMedia,
   emptyTitle,
-} from '@/ui/empty';
-import { spinner } from '@/ui/spinner';
+} from '@/ui/empty'
+import { spinner } from '@/ui/spinner'
 
 export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
   card(
@@ -72,6 +72,6 @@ export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ],
     },
     h,
-  );
+  )
 
 // Card summary: stateful? no. Submodels wired: none. PORT NOTEs: none.

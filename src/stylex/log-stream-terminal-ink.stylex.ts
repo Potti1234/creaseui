@@ -1,4 +1,4 @@
-import * as stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex'
 
 /* Level inks that exist only on the terminal surface (astryx TERM palette). */
 export const logStreamTerminalInk = stylex.defineVars({
@@ -12,4 +12,4 @@ export const logStreamTerminalInk = stylex.defineVars({
   textBright: '#e8e8ea',
   textDim: '#8b8b94',
   warn: '#f2c00b',
-});
+})

@@ -1,29 +1,29 @@
-import type { DocsExample } from '@/docs/components/page-definition';
+import type { DocsExample } from '@/docs/components/page-definition'
 import {
   controlledStringApplication,
   foldkitApplication,
-} from '@/docs/components/pages/authored-page';
-import type { CardVariant } from '@/lib/card-surface';
+} from '@/docs/components/pages/authored-page'
+import type { CardVariant } from '@/lib/card-surface'
 
 export type SelectablePlan = Readonly<{
-  id: string;
-  name: string;
-  price?: string;
-  desc?: string;
-}>;
+  id: string
+  name: string
+  price?: string
+  desc?: string
+}>
 
 export type SelectableTag = Readonly<{
-  id: string;
-  name: string;
-  variant: CardVariant;
-}>;
+  id: string
+  name: string
+  variant: CardVariant
+}>
 
 export type SelectableCardFixture = Readonly<{
-  title: string;
-  description: string;
-  kind: 'plans' | 'elevated' | 'multi';
-  initialSelected: ReadonlyArray<string>;
-}>;
+  title: string
+  description: string
+  kind: 'plans' | 'elevated' | 'multi'
+  initialSelected: ReadonlyArray<string>
+}>
 
 /* Example set ported from Meta Astryx
    packages/cli/assets/templates/blocks/components/Card/SelectableCard*.tsx —
@@ -52,7 +52,7 @@ export const selectableCardFixtures: Readonly<
     kind: 'multi',
     initialSelected: ['react', 'typescript'],
   },
-];
+]
 
 export const selectableCardPlans: ReadonlyArray<SelectablePlan> = [
   { id: 'basic', name: 'Basic', price: '$9/mo', desc: 'For individuals' },
@@ -63,12 +63,12 @@ export const selectableCardPlans: ReadonlyArray<SelectablePlan> = [
     price: '$99/mo',
     desc: 'For organizations',
   },
-];
+]
 
 export const selectableCardElevatedPlans: ReadonlyArray<SelectablePlan> = [
   { id: 'starter', name: 'Starter' },
   { id: 'pro', name: 'Pro' },
-];
+]
 
 export const selectableCardTags: ReadonlyArray<SelectableTag> = [
   { id: 'react', name: 'React', variant: 'blue' },
@@ -77,10 +77,10 @@ export const selectableCardTags: ReadonlyArray<SelectableTag> = [
   { id: 'python', name: 'Python', variant: 'yellow' },
   { id: 'rust', name: 'Rust', variant: 'orange' },
   { id: 'go', name: 'Go', variant: 'teal' },
-];
+]
 
 const ui = (renderer: 'tailwind' | 'stylex'): string =>
-  renderer === 'stylex' ? 'stylex' : 'ui';
+  renderer === 'stylex' ? 'stylex' : 'ui'
 
 const cls = (
   renderer: 'tailwind' | 'stylex',
@@ -89,7 +89,7 @@ const cls = (
 ): string =>
   renderer === 'tailwind'
     ? `h.Class('${tailwindValue}')`
-    : `h.Class(stylex.props(styles.${styleKey}).className ?? '')`;
+    : `h.Class(stylex.props(styles.${styleKey}).className ?? '')`
 
 const STYLEX_STYLES = {
   row: `{ display: 'flex', gap: '0.75rem' }`,
@@ -100,11 +100,11 @@ const STYLEX_STYLES = {
   price: `{ fontSize: '1.125rem', lineHeight: '1.75rem', fontWeight: 600 }`,
   bodyBold: `{ fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 700 }`,
   supporting: `{ fontSize: '0.75rem', lineHeight: '1rem', color: 'var(--muted-foreground)' }`,
-} as const;
-type StylexStyleKey = keyof typeof STYLEX_STYLES;
+} as const
+type StylexStyleKey = keyof typeof STYLEX_STYLES
 
 const stylexImports = (keys: ReadonlyArray<StylexStyleKey>): string =>
-  `import * as stylex from '@stylexjs/stylex'\n\nconst styles = stylex.create({\n${keys.map(k => `  ${k}: ${STYLEX_STYLES[k]},`).join('\n')}\n})`;
+  `import * as stylex from '@stylexjs/stylex'\n\nconst styles = stylex.create({\n${keys.map(k => `  ${k}: ${STYLEX_STYLES[k]},`).join('\n')}\n})`
 
 const planCardSource = (
   renderer: 'tailwind' | 'stylex',
@@ -115,22 +115,26 @@ const planCardSource = (
           onChange: SelectedPlan({ value: plan.id }),
           ${elevated ? `elevation: 'low',` : `width: '11.25rem',`}
           children: [
-            ${elevated ? `h.p([${cls(renderer, 'text-sm font-bold', 'bodyBold')}], [plan.name]),
-            h.p([${cls(renderer, 'text-xs text-muted-foreground', 'supporting')}], ['The resting shadow stays put — the selection ring layers on top.']),` : `h.div([${cls(renderer, 'flex flex-col gap-1', 'stack1')}], [
+            ${
+              elevated
+                ? `h.p([${cls(renderer, 'text-sm font-bold', 'bodyBold')}], [plan.name]),
+            h.p([${cls(renderer, 'text-xs text-muted-foreground', 'supporting')}], ['The resting shadow stays put — the selection ring layers on top.']),`
+                : `h.div([${cls(renderer, 'flex flex-col gap-1', 'stack1')}], [
               h.h4([${cls(renderer, 'scroll-m-20 text-xl font-semibold tracking-tight', 'heading')}], [plan.name]),
               h.p([${cls(renderer, 'text-lg font-semibold', 'price')}], [plan.price ?? '']),
               h.p([${cls(renderer, 'text-xs text-muted-foreground', 'supporting')}], [plan.desc ?? '']),
-            ]),`}
+            ]),`
+            }
           ],
-        }, h)`;
+        }, h)`
 
 const singleSelectSource = (
   index: number,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const fixture = selectableCardFixtures[index] ?? selectableCardFixtures[0];
-  const elevated = fixture.kind === 'elevated';
-  const plans = elevated ? selectableCardElevatedPlans : selectableCardPlans;
+  const fixture = selectableCardFixtures[index] ?? selectableCardFixtures[0]
+  const elevated = fixture.kind === 'elevated'
+  const plans = elevated ? selectableCardElevatedPlans : selectableCardPlans
   const componentImports = [
     `const plans = ${JSON.stringify(plans)}`,
     ...(renderer === 'stylex'
@@ -142,7 +146,7 @@ const singleSelectSource = (
           ),
         ]
       : []),
-  ].join('\n');
+  ].join('\n')
   return controlledStringApplication({
     componentName: 'SelectableCard',
     componentSlug: 'selectable-card',
@@ -158,16 +162,15 @@ const singleSelectSource = (
       ${planCardSource(renderer, elevated)},
     ),
   )`,
-  });
-};
+  })
+}
 
 const multiSource = (renderer: 'tailwind' | 'stylex'): string => {
-  const fixture =
-    selectableCardFixtures[2] ?? selectableCardFixtures[0];
+  const fixture = selectableCardFixtures[2] ?? selectableCardFixtures[0]
   const componentImports = [
     `const tags = ${JSON.stringify(selectableCardTags)} as const`,
     ...(renderer === 'stylex' ? [stylexImports(['grid3', 'bodyBold'])] : []),
-  ].join('\n');
+  ].join('\n')
   return foldkitApplication({
     title: `SelectableCard — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
@@ -218,15 +221,15 @@ export type Message = typeof Message.Type`,
     ),
   ]),
 })`,
-  });
-};
+  })
+}
 
 const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
-  const fixture = selectableCardFixtures[index] ?? selectableCardFixtures[0];
+  const fixture = selectableCardFixtures[index] ?? selectableCardFixtures[0]
   return fixture.kind === 'multi'
     ? multiSource(renderer)
-    : singleSelectSource(index, renderer);
-};
+    : singleSelectSource(index, renderer)
+}
 
 export const selectableCardExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -235,4 +238,4 @@ export const selectableCardExamples = (
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
-  }));
+  }))

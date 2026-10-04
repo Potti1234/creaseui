@@ -1,65 +1,65 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   checkboxField,
   menubarFixtures,
   menubarSpecs,
   radioField,
   type MarkerSpecItem,
-} from '@/docs/components/pages/menubar/shared';
-import * as Icon from '@/lib/icon';
-import type * as DropdownMenu from '@/stylex/dropdown-menu';
-import * as Menubar from '@/stylex/menubar';
-import { className } from '@/stylex/style';
+} from '@/docs/components/pages/menubar/shared'
+import * as Icon from '@/lib/icon'
+import type * as DropdownMenu from '@/stylex/dropdown-menu'
+import * as Menubar from '@/stylex/menubar'
+import { className } from '@/stylex/style'
 
 const styles = stylex.create({
   menubar: { width: '18rem' },
   content44: { width: '11rem' },
   content64: { width: '16rem' },
-});
+})
 
-const sx = (style: stylex.StaticStyles): string => className(style);
+const sx = (style: stylex.StaticStyles): string => className(style)
 
 interface MenubarPreviewShape {
-  readonly file: DropdownMenu.Model;
-  readonly edit: DropdownMenu.Model;
-  readonly view: DropdownMenu.Model;
-  readonly profiles: DropdownMenu.Model;
-  readonly format: DropdownMenu.Model;
-  readonly theme: DropdownMenu.Model;
-  readonly more: DropdownMenu.Model;
-  readonly menubar: Menubar.Model;
-  readonly checkedBookmarksBar: boolean;
-  readonly checkedFullUrls: boolean;
-  readonly checkedStrikethrough: boolean;
-  readonly checkedCode: boolean;
-  readonly checkedSuperscript: boolean;
-  readonly radioUser: string;
-  readonly radioTheme: string;
+  readonly file: DropdownMenu.Model
+  readonly edit: DropdownMenu.Model
+  readonly view: DropdownMenu.Model
+  readonly profiles: DropdownMenu.Model
+  readonly format: DropdownMenu.Model
+  readonly theme: DropdownMenu.Model
+  readonly more: DropdownMenu.Model
+  readonly menubar: Menubar.Model
+  readonly checkedBookmarksBar: boolean
+  readonly checkedFullUrls: boolean
+  readonly checkedStrikethrough: boolean
+  readonly checkedCode: boolean
+  readonly checkedSuperscript: boolean
+  readonly radioUser: string
+  readonly radioTheme: string
 }
 
 const send = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   tag: string,
   fields?: Readonly<Record<string, unknown>>,
-): Msg => onMessageJson(JSON.stringify({ _tag: tag, ...(fields ?? {}) }));
+): Msg => onMessageJson(JSON.stringify({ _tag: tag, ...(fields ?? {}) }))
 
 const checkedValue = (
   item: MarkerSpecItem,
   model: MenubarPreviewShape,
 ): boolean => {
-  const field = checkboxField[item.id];
+  const field = checkboxField[item.id]
   if (item.kind === 'checkbox' && field !== undefined) {
-    return model[field];
+    return model[field]
   }
-  const rfield = radioField[item.id];
+  const rfield = radioField[item.id]
   if (item.kind === 'radio' && rfield !== undefined) {
-    return model[rfield] === item.id;
+    return model[rfield] === item.id
   }
-  return false;
-};
+  return false
+}
 
 const configFor = <Msg>(
   item: MarkerSpecItem,
@@ -93,7 +93,7 @@ const configFor = <Msg>(
             ),
         },
       }),
-});
+})
 
 const menubarSxView = <Msg>(
   index: number,
@@ -101,54 +101,57 @@ const menubarSxView = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const fixture = menubarFixtures[index] ?? menubarFixtures[0];
-  const spec = menubarSpecs[fixture.kind];
-  return h.div([h.Class('flex flex-col items-center')], [
-    Menubar.menubar<string, Msg>({
-      model: model.menubar,
-      toParentMessage: message =>
-        send(onMessageJson, 'GotMenubarMessage', { message }),
-      ariaLabel: 'Application menu',
-      layoutStyle: styles.menubar,
-      ...(fixture.direction === 'rtl' ? { direction: 'rtl' as const } : {}),
-      menus: spec.map(menu => ({
-        id: `sx-menu-${menu.target}-${String(index)}`,
-        label: menu.label,
-        model: model[menu.target],
-        ...(menu.contentWidth === undefined
-          ? {}
-          : {
-              contentLayoutStyle:
-                menu.contentWidth === '11rem'
-                  ? styles.content44
-                  : styles.content64,
-            }),
-        toParentMessage: (message: DropdownMenu.Message) =>
-          send(onMessageJson, 'GotMenuMessage', { target: menu.target, message }),
-        items: menu.items.map(item => item.id),
-        itemToConfig: item =>
-          configFor(
-            menu.items.find(candidate => candidate.id === item) ?? {
-              id: item,
-              label: item,
-            },
-            model,
-            h,
-          ),
-      })),
-    }, h),
-  ]);
-};
+  const fixture = menubarFixtures[index] ?? menubarFixtures[0]
+  const spec = menubarSpecs[fixture.kind]
+  return h.div(
+    [h.Class('flex flex-col items-center')],
+    [
+      Menubar.menubar<string, Msg>(
+        {
+          model: model.menubar,
+          toParentMessage: message =>
+            send(onMessageJson, 'GotMenubarMessage', { message }),
+          ariaLabel: 'Application menu',
+          layoutStyle: styles.menubar,
+          ...(fixture.direction === 'rtl' ? { direction: 'rtl' as const } : {}),
+          menus: spec.map(menu => ({
+            id: `sx-menu-${menu.target}-${String(index)}`,
+            label: menu.label,
+            model: model[menu.target],
+            ...(menu.contentWidth === undefined
+              ? {}
+              : {
+                  contentLayoutStyle:
+                    menu.contentWidth === '11rem'
+                      ? styles.content44
+                      : styles.content64,
+                }),
+            toParentMessage: (message: DropdownMenu.Message) =>
+              send(onMessageJson, 'GotMenuMessage', {
+                target: menu.target,
+                message,
+              }),
+            items: menu.items.map(item => item.id),
+            itemToConfig: item =>
+              configFor(
+                menu.items.find(candidate => candidate.id === item) ?? {
+                  id: item,
+                  label: item,
+                },
+                model,
+                h,
+              ),
+          })),
+        },
+        h,
+      ),
+    ],
+  )
+}
 
 export const menubarStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
-) =>
-  menubarSxView(
-    exampleIndex,
-    model as MenubarPreviewShape,
-    onMessageJson,
-    h,
-  );
+) => menubarSxView(exampleIndex, model as MenubarPreviewShape, onMessageJson, h)

@@ -1,20 +1,20 @@
-import { Option } from "effect";
+import { Option } from 'effect'
 
-import type { Html, HtmlBuilder } from "foldkit/html";
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import {
   Calendar as CalendarPrimitive,
   DatePicker as DatePickerPrimitive,
   Popover as PopoverPrimitive,
-} from "@foldkit/ui";
+} from '@foldkit/ui'
 
-import * as Icon from "@/lib/icon";
+import * as Icon from '@/lib/icon'
 import {
   type SharedDateFormat,
   dateFromISO,
   dateToISO,
   formatSharedDate,
-} from "@/lib/date-parse";
+} from '@/lib/date-parse'
 import {
   type DateTime,
   Message,
@@ -24,14 +24,14 @@ import {
   reflect,
   reflectConstraints,
   update,
-} from "@/lib/date-time-input";
+} from '@/lib/date-time-input'
 import {
   formatDisplayTime12h,
   formatDisplayTime24h,
   formatISOTime,
-} from "@/lib/time-parse";
-import { cn } from "@/lib/utils";
-import { calendarView } from "@/ui/calendar";
+} from '@/lib/time-parse'
+import { cn } from '@/lib/utils'
+import { calendarView } from '@/ui/calendar'
 
 /* Ported from Meta Astryx DateTimeInput (packages/core/src/DateTimeInput/)
    — examples and visual spec adapted to Crease UI tokens.
@@ -57,208 +57,208 @@ export {
   reflect,
   reflectConstraints,
   update,
-};
+}
 
-export { dateFromISO, dateToISO } from "@/lib/date-parse";
+export { dateFromISO, dateToISO } from '@/lib/date-parse'
 export {
   formatDisplayTime12h,
   formatDisplayTime24h,
   formatISOTime,
-} from "@/lib/time-parse";
-export type { SharedDateFormat };
+} from '@/lib/time-parse'
+export type { SharedDateFormat }
 
-const FIELD_CLASS = "grid gap-2";
+const FIELD_CLASS = 'grid gap-2'
 
 const LABEL_CLASS =
-  "flex items-center gap-2 text-sm leading-none font-medium select-none";
+  'flex items-center gap-2 text-sm leading-none font-medium select-none'
 
-const OPTIONAL_CLASS = "font-normal text-muted-foreground";
+const OPTIONAL_CLASS = 'font-normal text-muted-foreground'
 
-const DESCRIPTION_CLASS = "text-muted-foreground text-sm";
+const DESCRIPTION_CLASS = 'text-muted-foreground text-sm'
 
 /** astryx `styles.row` — flex wrap so each segment can grow onto its own
  *  full-width row; both wrappers share the 196px basis. */
-const ROW_CLASS = "flex flex-wrap gap-2";
+const ROW_CLASS = 'flex flex-wrap gap-2'
 
 const WRAPPER_CLASS =
-  "relative flex min-w-0 flex-1 basis-49 items-center gap-2 rounded-md border border-input bg-transparent dark:bg-input/30 py-1 px-2 shadow-xs transition-[color,box-shadow] outline-none hover:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--input)_30%,transparent)] focus-within:border-ring focus-within:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--ring)_50%,transparent)] aria-disabled:cursor-not-allowed aria-disabled:opacity-50 data-[invalid=true]:border-destructive dark:data-[invalid=true]:focus-within:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--destructive)_40%,transparent)] data-[invalid=true]:focus-within:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--destructive)_20%,transparent)]";
+  'relative flex min-w-0 flex-1 basis-49 items-center gap-2 rounded-md border border-input bg-transparent dark:bg-input/30 py-1 px-2 shadow-xs transition-[color,box-shadow] outline-none hover:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--input)_30%,transparent)] focus-within:border-ring focus-within:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--ring)_50%,transparent)] aria-disabled:cursor-not-allowed aria-disabled:opacity-50 data-[invalid=true]:border-destructive dark:data-[invalid=true]:focus-within:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--destructive)_40%,transparent)] data-[invalid=true]:focus-within:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--destructive)_20%,transparent)]'
 
 const WRAPPER_STATUS_CLASS: Readonly<
-  Record<"error" | "warning" | "success", string>
+  Record<'error' | 'warning' | 'success', string>
 > = {
-  error: "border-destructive",
-  warning: "border-chart-4",
-  success: "border-chart-2",
-};
+  error: 'border-destructive',
+  warning: 'border-chart-4',
+  success: 'border-chart-2',
+}
 
-const WRAPPER_SIZE_CLASS: Readonly<Record<"sm" | "md" | "lg", string>> = {
-  sm: "h-7",
-  md: "h-8",
-  lg: "h-9",
-};
+const WRAPPER_SIZE_CLASS: Readonly<Record<'sm' | 'md' | 'lg', string>> = {
+  sm: 'h-7',
+  md: 'h-8',
+  lg: 'h-9',
+}
 
 const ICON_BUTTON_CLASS =
-  "inline-flex size-6 shrink-0 items-center justify-center rounded-sm text-muted-foreground outline-hidden transition-colors hover:bg-accent hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50 [&>svg]:size-4";
+  'inline-flex size-6 shrink-0 items-center justify-center rounded-sm text-muted-foreground outline-hidden transition-colors hover:bg-accent hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50 [&>svg]:size-4'
 
-const ICON_CLASS = "inline-flex shrink-0 items-center justify-center";
+const ICON_CLASS = 'inline-flex shrink-0 items-center justify-center'
 
 const INPUT_CLASS =
-  "block min-w-0 flex-1 bg-transparent font-(inherit) text-sm text-foreground outline-hidden placeholder:text-muted-foreground disabled:cursor-not-allowed data-[invalid=true]:text-muted-foreground";
+  'block min-w-0 flex-1 bg-transparent font-(inherit) text-sm text-foreground outline-hidden placeholder:text-muted-foreground disabled:cursor-not-allowed data-[invalid=true]:text-muted-foreground'
 
 const CLEAR_BUTTON_CLASS =
-  "inline-flex size-5 shrink-0 items-center justify-center rounded-sm text-muted-foreground outline-hidden transition-colors hover:bg-accent hover:text-foreground [&>svg]:size-3.5";
+  'inline-flex size-5 shrink-0 items-center justify-center rounded-sm text-muted-foreground outline-hidden transition-colors hover:bg-accent hover:text-foreground [&>svg]:size-3.5'
 
 const SPINNER_CLASS =
-  "inline-flex shrink-0 animate-spin items-center justify-center text-muted-foreground [&>svg]:size-4";
+  'inline-flex shrink-0 animate-spin items-center justify-center text-muted-foreground [&>svg]:size-4'
 
 const STATUS_ICON_CLASS: Readonly<
-  Record<"error" | "warning" | "success", string>
+  Record<'error' | 'warning' | 'success', string>
 > = {
-  error: "inline-flex shrink-0 items-center text-destructive [&>svg]:size-4",
-  warning: "inline-flex shrink-0 items-center text-chart-4 [&>svg]:size-4",
-  success: "inline-flex shrink-0 items-center text-chart-2 [&>svg]:size-4",
-};
+  error: 'inline-flex shrink-0 items-center text-destructive [&>svg]:size-4',
+  warning: 'inline-flex shrink-0 items-center text-chart-4 [&>svg]:size-4',
+  success: 'inline-flex shrink-0 items-center text-chart-2 [&>svg]:size-4',
+}
 
 const STATUS_MESSAGE_CLASS: Readonly<
-  Record<"error" | "warning" | "success", string>
+  Record<'error' | 'warning' | 'success', string>
 > = {
-  error: "text-sm text-destructive",
-  warning: "text-sm text-chart-4",
-  success: "text-sm text-chart-2",
-};
+  error: 'text-sm text-destructive',
+  warning: 'text-sm text-chart-4',
+  success: 'text-sm text-chart-2',
+}
 
 const PANEL_CLASS =
-  "z-50 w-auto rounded-md border bg-popover p-0 text-popover-foreground shadow-md outline-hidden";
+  'z-50 w-auto rounded-md border bg-popover p-0 text-popover-foreground shadow-md outline-hidden'
 
-const BACKDROP_CLASS = "fixed inset-0 z-40";
+const BACKDROP_CLASS = 'fixed inset-0 z-40'
 
 /** astryx `styles.timeListbox` — capped height, per-option padding mirrors
  *  the selector/typeahead dropdown lists. */
-const TIME_LISTBOX_CLASS = "box-border max-h-75 min-w-40 overflow-y-auto p-1";
+const TIME_LISTBOX_CLASS = 'box-border max-h-75 min-w-40 overflow-y-auto p-1'
 
 const TIME_OPTION_CLASS =
-  "box-border flex w-full items-center rounded-sm px-2 py-1.5 text-start text-sm text-foreground aria-selected:font-medium hover:bg-accent";
+  'box-border flex w-full items-center rounded-sm px-2 py-1.5 text-start text-sm text-foreground aria-selected:font-medium hover:bg-accent'
 
-const TIME_OPTION_SIZE_CLASS: Readonly<Record<"sm" | "md" | "lg", string>> = {
-  sm: "py-1 px-2",
-  md: "",
-  lg: "py-2",
-};
+const TIME_OPTION_SIZE_CLASS: Readonly<Record<'sm' | 'md' | 'lg', string>> = {
+  sm: 'py-1 px-2',
+  md: '',
+  lg: 'py-2',
+}
 
 export type DateTimeInputStatus = Readonly<{
-  type: "error" | "warning" | "success";
-  message?: string;
-}>;
+  type: 'error' | 'warning' | 'success'
+  message?: string
+}>
 
 export type DateTimeInputProps<Msg> = Readonly<{
-  model: Model;
-  toParentMessage: (message: Message) => Msg;
-  label: string;
-  isLabelHidden?: boolean;
-  description?: string;
-  isOptional?: boolean;
-  isRequired?: boolean;
-  isDisabled?: boolean;
+  model: Model
+  toParentMessage: (message: Message) => Msg
+  label: string
+  isLabelHidden?: boolean
+  description?: string
+  isOptional?: boolean
+  isRequired?: boolean
+  isDisabled?: boolean
   /** Astryx shows it as a focus ring tooltip; accepted but not rendered. */
-  disabledMessage?: string;
-  isReadOnly?: boolean;
-  status?: DateTimeInputStatus;
-  statusVariant?: "attached" | "detached" | "tooltip";
+  disabledMessage?: string
+  isReadOnly?: boolean
+  status?: DateTimeInputStatus
+  statusVariant?: 'attached' | 'detached' | 'tooltip'
   /** Astryx shows it as a label tooltip; accepted but not rendered. */
-  labelTooltip?: string;
-  width?: number;
-  size?: "sm" | "md" | "lg";
-  placeholder?: string;
-  timePlaceholder?: string;
-  timeLabel?: string;
-  format?: SharedDateFormat;
-  hasClear?: boolean;
-  isBusy?: boolean;
+  labelTooltip?: string
+  width?: number
+  size?: 'sm' | 'md' | 'lg'
+  placeholder?: string
+  timePlaceholder?: string
+  timeLabel?: string
+  format?: SharedDateFormat
+  hasClear?: boolean
+  isBusy?: boolean
   /** Minute cadence for the preset-time listbox; omit for a plain input. */
-  timeOptionInterval?: number;
+  timeOptionInterval?: number
   /** PORT NOTE: foldkit's calendar renders a single month; 2 is accepted for
    *  prop compatibility and clamps to one month. */
-  numberOfMonths?: 1 | 2;
+  numberOfMonths?: 1 | 2
   /** 0 = Sunday … 6 = Saturday; maps onto the calendar locale's
    *  firstDayOfWeek. Requires re-init or a matching calendarLocale. */
-  weekStartsOn?: number;
+  weekStartsOn?: number
   /** Name for the submitted hidden input ("YYYY-MM-DDTHH:MM[:SS]"). */
-  htmlName?: string;
-  class?: string;
-  direction?: "ltr" | "rtl";
-}>;
+  htmlName?: string
+  class?: string
+  direction?: 'ltr' | 'rtl'
+}>
 
 const statusIcon = <Msg>(
-  type: "error" | "warning" | "success",
+  type: 'error' | 'warning' | 'success',
   h: HtmlBuilder<Msg>,
 ): Html =>
   h.span(
     [h.Class(STATUS_ICON_CLASS[type]), h.AriaHidden(true)],
     [
-      type === "error"
-        ? Icon.octagonX({ class: "size-4" }, h)
-        : type === "warning"
-          ? Icon.triangleAlert({ class: "size-4" }, h)
-          : Icon.circleCheck({ class: "size-4" }, h),
+      type === 'error'
+        ? Icon.octagonX({ class: 'size-4' }, h)
+        : type === 'warning'
+          ? Icon.triangleAlert({ class: 'size-4' }, h)
+          : Icon.circleCheck({ class: 'size-4' }, h),
     ],
-  );
+  )
 
 export const dateTimeInput = <Msg>(
   props: DateTimeInputProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const model = props.model;
-  const toParent = props.toParentMessage;
+  const model = props.model
+  const toParent = props.toParentMessage
   const isEffectivelyDisabled =
-    props.isDisabled === true || props.isBusy === true;
+    props.isDisabled === true || props.isBusy === true
   const isInvalid =
-    props.status?.type === "error" ||
+    props.status?.type === 'error' ||
     model.isDateInputInvalid ||
-    model.isTimeInputInvalid;
+    model.isTimeInputInvalid
   const isDateInvalid =
-    model.isDateInputInvalid || props.status?.type === "error";
+    model.isDateInputInvalid || props.status?.type === 'error'
   const isTimeInvalid =
-    model.isTimeInputInvalid || props.status?.type === "error";
+    model.isTimeInputInvalid || props.status?.type === 'error'
 
-  const resolvedDateInputId = `${model.id}-date`;
-  const resolvedTimeInputId = `${model.id}-time`;
-  const labelId = `${model.id}-label`;
-  const descriptionId = `${model.id}-description`;
-  const statusMessageId = `${model.id}-status-message`;
+  const resolvedDateInputId = `${model.id}-date`
+  const resolvedTimeInputId = `${model.id}-time`
+  const labelId = `${model.id}-label`
+  const descriptionId = `${model.id}-description`
+  const statusMessageId = `${model.id}-status-message`
   const describedBy = [
     props.description === undefined ? undefined : descriptionId,
     props.status?.message === undefined ||
-    (props.statusVariant ?? "attached") === "tooltip"
+    (props.statusVariant ?? 'attached') === 'tooltip'
       ? undefined
       : statusMessageId,
     ...(model.isDateInputInvalid ? [`${model.id}-invalid-date`] : []),
     ...(model.isTimeInputInvalid ? [`${model.id}-invalid-time`] : []),
   ]
     .filter((id): id is string => id !== undefined)
-    .join(" ");
+    .join(' ')
 
-  const size = props.size ?? "md";
-  const today = model.datePicker.calendar.today;
+  const size = props.size ?? 'md'
+  const today = model.datePicker.calendar.today
   const dateText = Option.getOrElse(model.pendingDateInput, () =>
     Option.match(model.value, {
-      onNone: () => "",
-      onSome: (value) =>
-        formatSharedDate(value.date, props.format ?? "date", model.locale),
+      onNone: () => '',
+      onSome: value =>
+        formatSharedDate(value.date, props.format ?? 'date', model.locale),
     }),
-  );
+  )
   const timeText = Option.getOrElse(model.pendingTimeInput, () =>
     Option.match(model.value, {
-      onNone: () => "",
-      onSome: (value) =>
-        model.hourFormat === "12h"
+      onNone: () => '',
+      onSome: value =>
+        model.hourFormat === '12h'
           ? formatDisplayTime12h(value.time, model.hasSeconds)
           : formatDisplayTime24h(value.time, model.hasSeconds),
     }),
-  );
+  )
 
-  const resolvedTimeLabel = props.timeLabel ?? `${props.label} time`;
+  const resolvedTimeLabel = props.timeLabel ?? `${props.label} time`
   const resolvedTimePlaceholder =
-    props.timePlaceholder ?? (model.hourFormat === "12h" ? "h:mm AM" : "HH:mm");
+    props.timePlaceholder ?? (model.hourFormat === '12h' ? 'h:mm AM' : 'HH:mm')
 
   const timeOptions: ReadonlyArray<{ iso: string; label: string }> =
     props.timeOptionInterval === undefined || !model.hasTimeOptions
@@ -268,26 +268,26 @@ export const dateTimeInput = <Msg>(
             length: Math.floor((24 * 60) / props.timeOptionInterval),
           },
           (_, i) => i * props.timeOptionInterval!,
-        ).map((minutes) => {
+        ).map(minutes => {
           const time = {
             hour: Math.floor(minutes / 60),
             minute: minutes % 60,
             second: 0,
-          };
-          const iso = formatISOTime(time, false);
+          }
+          const iso = formatISOTime(time, false)
           return {
             iso,
             label:
-              model.hourFormat === "12h"
+              model.hourFormat === '12h'
                 ? formatDisplayTime12h(iso, false)
                 : formatDisplayTime24h(iso, false),
-          };
-        });
+          }
+        })
 
   const selectedTimeISO = Option.match(model.value, {
     onNone: () => undefined,
-    onSome: (value) => value.time,
-  });
+    onSome: value => value.time,
+  })
 
   const wrapperClass = (invalid: boolean) =>
     cn(
@@ -296,15 +296,15 @@ export const dateTimeInput = <Msg>(
       props.status === undefined
         ? undefined
         : WRAPPER_STATUS_CLASS[props.status.type],
-      invalid ? "data-[invalid=true]" : undefined,
-    );
+      invalid ? 'data-[invalid=true]' : undefined,
+    )
 
   const datePopoverView = h.submodel({
     slotId: model.datePicker.popover.id,
     model: model.datePicker.popover,
     view: PopoverPrimitive.view,
     viewInputs: {
-      anchor: { placement: "bottom-start", gap: 4 },
+      anchor: { placement: 'bottom-start', gap: 4 },
       focusSelector: '[role="grid"]',
       isDisabled: isEffectivelyDisabled,
       ariaLabelledBy: labelId,
@@ -317,8 +317,8 @@ export const dateTimeInput = <Msg>(
           [
             h.div(
               [
-                h.DataAttribute("slot", "date-time-input-date-segment"),
-                h.DataAttribute("invalid", String(isDateInvalid)),
+                h.DataAttribute('slot', 'date-time-input-date-segment'),
+                h.DataAttribute('invalid', String(isDateInvalid)),
                 ...(isEffectivelyDisabled ? [h.AriaDisabled(true)] : []),
                 h.Class(wrapperClass(isDateInvalid)),
               ],
@@ -326,32 +326,32 @@ export const dateTimeInput = <Msg>(
                 h.button(
                   [
                     ...button,
-                    h.DataAttribute("slot", "date-time-input-date-toggle"),
+                    h.DataAttribute('slot', 'date-time-input-date-toggle'),
                     h.AriaLabel(
                       model.datePicker.popover.isOpen
-                        ? "Close calendar"
-                        : "Open calendar",
+                        ? 'Close calendar'
+                        : 'Open calendar',
                     ),
                     h.Tabindex(-1),
                     ...(isEffectivelyDisabled ? [h.Disabled(true)] : []),
                     h.Class(ICON_BUTTON_CLASS),
                   ],
-                  [Icon.calendarIcon({ class: "size-4" }, h)],
+                  [Icon.calendarIcon({ class: 'size-4' }, h)],
                 ),
                 h.input([
                   h.Id(resolvedDateInputId),
-                  h.Type("text"),
-                  h.Role("combobox"),
-                  h.AriaHasPopup("dialog"),
+                  h.Type('text'),
+                  h.Role('combobox'),
+                  h.AriaHasPopup('dialog'),
                   h.AriaExpanded(model.datePicker.popover.isOpen),
                   ...(model.datePicker.popover.isOpen
                     ? [h.AriaControls(`${model.datePicker.popover.id}-panel`)]
                     : []),
-                  h.AriaAutocomplete("none"),
+                  h.AriaAutocomplete('none'),
                   h.Value(dateText),
-                  h.Placeholder(props.placeholder ?? "Select a date"),
+                  h.Placeholder(props.placeholder ?? 'Select a date'),
                   h.AriaLabelledBy(labelId),
-                  ...(describedBy === ""
+                  ...(describedBy === ''
                     ? []
                     : [h.AriaDescribedBy(describedBy)]),
                   ...(props.isRequired === true ? [h.AriaRequired(true)] : []),
@@ -359,7 +359,7 @@ export const dateTimeInput = <Msg>(
                   ...(props.isBusy === true ? [h.AriaBusy(true)] : []),
                   ...(isEffectivelyDisabled ? [h.Disabled(true)] : []),
                   ...(props.isReadOnly === true ? [h.Readonly(true)] : []),
-                  h.OnInput((value) =>
+                  h.OnInput(value =>
                     toParent(Message.UpdatedDateInputValue({ value })),
                   ),
                   h.OnFocus(toParent(Message.FocusedDateInput())),
@@ -374,7 +374,7 @@ export const dateTimeInput = <Msg>(
                     ),
                   ),
                   h.Class(INPUT_CLASS),
-                  h.DataAttribute("invalid", String(isDateInvalid)),
+                  h.DataAttribute('invalid', String(isDateInvalid)),
                 ]),
                 ...(props.hasClear === true &&
                 Option.isSome(model.value) &&
@@ -382,13 +382,13 @@ export const dateTimeInput = <Msg>(
                   ? [
                       h.button(
                         [
-                          h.Type("button"),
+                          h.Type('button'),
                           h.Tabindex(-1),
                           h.AriaLabel(`Clear ${props.label}`),
                           h.OnClick(toParent(Message.ClearedInput())),
                           h.Class(CLEAR_BUTTON_CLASS),
                         ],
-                        [Icon.x({ class: "size-3.5" }, h)],
+                        [Icon.x({ class: 'size-3.5' }, h)],
                       ),
                     ]
                   : []),
@@ -396,7 +396,7 @@ export const dateTimeInput = <Msg>(
                   ? [
                       h.span(
                         [h.AriaHidden(true), h.Class(SPINNER_CLASS)],
-                        [Icon.loaderCircle({ class: "size-4" }, h)],
+                        [Icon.loaderCircle({ class: 'size-4' }, h)],
                       ),
                     ]
                   : []),
@@ -411,7 +411,7 @@ export const dateTimeInput = <Msg>(
                   h.div(
                     [
                       ...panel,
-                      h.DataAttribute("slot", "date-time-input-content"),
+                      h.DataAttribute('slot', 'date-time-input-content'),
                       h.Class(PANEL_CLASS),
                     ],
                     [
@@ -422,9 +422,9 @@ export const dateTimeInput = <Msg>(
                         viewInputs: {
                           maybeSelectedDate: Option.map(
                             model.value,
-                            (value) => value.date,
+                            value => value.date,
                           ),
-                          toView: (attributes) =>
+                          toView: attributes =>
                             calendarView(
                               attributes,
                               {
@@ -435,7 +435,7 @@ export const dateTimeInput = <Msg>(
                               h,
                             ),
                         },
-                        toParentMessage: (message) =>
+                        toParentMessage: message =>
                           toParent(
                             Message.GotDatePickerMessage({
                               message:
@@ -452,7 +452,7 @@ export const dateTimeInput = <Msg>(
           ],
         ),
     },
-    toParentMessage: (message) =>
+    toParentMessage: message =>
       toParent(
         Message.GotDatePickerMessage({
           message: DatePickerPrimitive.Message.GotPopoverMessage({
@@ -460,14 +460,14 @@ export const dateTimeInput = <Msg>(
           }),
         }),
       ),
-  });
+  })
 
   const timeHalf = h.submodel({
     slotId: model.timePopover.id,
     model: model.timePopover,
     view: PopoverPrimitive.view,
     viewInputs: {
-      anchor: { placement: "bottom-start", gap: 4 },
+      anchor: { placement: 'bottom-start', gap: 4 },
       focusSelector: '[role="listbox"]',
       isDisabled: isEffectivelyDisabled,
       ariaLabel: resolvedTimeLabel,
@@ -479,7 +479,7 @@ export const dateTimeInput = <Msg>(
           [
             h.div(
               [
-                h.DataAttribute("slot", "date-time-input-time-segment"),
+                h.DataAttribute('slot', 'date-time-input-time-segment'),
                 /* The popover's anchor mount positions the panel against
                    `${id}-button`; the time half has no dedicated button
                    element (the input keeps the combobox role), so the
@@ -489,32 +489,32 @@ export const dateTimeInput = <Msg>(
                 ...(model.hasTimeOptions
                   ? [h.Id(`${model.timePopover.id}-button`)]
                   : []),
-                h.DataAttribute("invalid", String(isTimeInvalid)),
+                h.DataAttribute('invalid', String(isTimeInvalid)),
                 ...(isEffectivelyDisabled ? [h.AriaDisabled(true)] : []),
                 h.Class(wrapperClass(isTimeInvalid)),
               ],
               [
                 h.span(
                   [h.AriaHidden(true), h.Class(ICON_CLASS)],
-                  [Icon.clock({ class: "size-4 text-muted-foreground" }, h)],
+                  [Icon.clock({ class: 'size-4 text-muted-foreground' }, h)],
                 ),
                 h.input([
                   h.Id(resolvedTimeInputId),
-                  h.Type("text"),
+                  h.Type('text'),
                   h.Value(timeText),
                   h.Placeholder(resolvedTimePlaceholder),
                   h.AriaLabel(resolvedTimeLabel),
                   ...(model.hasTimeOptions
                     ? [
-                        h.Role("combobox"),
+                        h.Role('combobox'),
                         h.AriaExpanded(model.timePopover.isOpen),
-                        h.AriaAutocomplete("list"),
+                        h.AriaAutocomplete('list'),
                         ...(model.timePopover.isOpen
                           ? [h.AriaControls(`${model.timePopover.id}-panel`)]
                           : []),
                       ]
                     : []),
-                  ...(describedBy === ""
+                  ...(describedBy === ''
                     ? []
                     : [h.AriaDescribedBy(describedBy)]),
                   ...(props.isRequired === true ? [h.AriaRequired(true)] : []),
@@ -522,7 +522,7 @@ export const dateTimeInput = <Msg>(
                   ...(props.isBusy === true ? [h.AriaBusy(true)] : []),
                   ...(isEffectivelyDisabled ? [h.Disabled(true)] : []),
                   ...(props.isReadOnly === true ? [h.Readonly(true)] : []),
-                  h.OnInput((value) =>
+                  h.OnInput(value =>
                     toParent(Message.UpdatedTimeInputValue({ value })),
                   ),
                   h.OnFocus(toParent(Message.FocusedTimeInput())),
@@ -537,7 +537,7 @@ export const dateTimeInput = <Msg>(
                     ),
                   ),
                   h.Class(INPUT_CLASS),
-                  h.DataAttribute("invalid", String(isTimeInvalid)),
+                  h.DataAttribute('invalid', String(isTimeInvalid)),
                 ]),
               ],
             ),
@@ -547,20 +547,20 @@ export const dateTimeInput = <Msg>(
                   h.div(
                     [
                       ...panel,
-                      h.DataAttribute("slot", "date-time-input-time-listbox"),
+                      h.DataAttribute('slot', 'date-time-input-time-listbox'),
                       h.Class(PANEL_CLASS),
                     ],
                     [
                       h.div(
                         [
-                          h.Role("listbox"),
+                          h.Role('listbox'),
                           h.AriaLabel(`${resolvedTimeLabel} options`),
                           h.Class(TIME_LISTBOX_CLASS),
                         ],
-                        timeOptions.map((option) =>
+                        timeOptions.map(option =>
                           h.div(
                             [
-                              h.Role("option"),
+                              h.Role('option'),
                               h.AriaSelected(option.iso === selectedTimeISO),
                               h.Tabindex(-1),
                               h.OnClick(
@@ -588,19 +588,19 @@ export const dateTimeInput = <Msg>(
           ],
         ),
     },
-    toParentMessage: (message) =>
+    toParentMessage: message =>
       toParent(Message.GotTimePopoverMessage({ message })),
-  });
+  })
 
   const field = h.div(
     [
-      h.DataAttribute("slot", "field"),
-      h.Role("group"),
-      h.DataAttribute("invalid", String(isInvalid)),
+      h.DataAttribute('slot', 'field'),
+      h.Role('group'),
+      h.DataAttribute('invalid', String(isInvalid)),
       h.Class(
         cn(
           FIELD_CLASS,
-          props.width !== undefined ? "w-full" : "w-fit",
+          props.width !== undefined ? 'w-full' : 'w-fit',
           props.class,
         ),
       ),
@@ -613,21 +613,21 @@ export const dateTimeInput = <Msg>(
       h.label(
         [
           h.Id(labelId),
-          h.DataAttribute("slot", "field-label"),
+          h.DataAttribute('slot', 'field-label'),
           h.Class(
             cn(
               LABEL_CLASS,
-              props.isLabelHidden === true ? "sr-only" : undefined,
+              props.isLabelHidden === true ? 'sr-only' : undefined,
             ),
           ),
         ],
         [
           props.label,
           ...(props.isRequired === true
-            ? [h.span([h.AriaHidden(true), h.Class("text-destructive")], ["*"])]
+            ? [h.span([h.AriaHidden(true), h.Class('text-destructive')], ['*'])]
             : []),
           ...(props.isOptional === true
-            ? [h.span([h.Class(OPTIONAL_CLASS)], [" (optional)"])]
+            ? [h.span([h.Class(OPTIONAL_CLASS)], [' (optional)'])]
             : []),
         ],
       ),
@@ -641,13 +641,13 @@ export const dateTimeInput = <Msg>(
             ),
           ]),
       ...(props.status?.message === undefined ||
-      (props.statusVariant ?? "attached") === "tooltip"
+      (props.statusVariant ?? 'attached') === 'tooltip'
         ? []
         : [
             h.div(
               [
                 h.Id(statusMessageId),
-                h.Role("status"),
+                h.Role('status'),
                 h.Class(STATUS_MESSAGE_CLASS[props.status.type]),
               ],
               [props.status.message],
@@ -658,10 +658,10 @@ export const dateTimeInput = <Msg>(
             h.div(
               [
                 h.Id(`${model.id}-invalid-date`),
-                h.Role("alert"),
-                h.Class("sr-only"),
+                h.Role('alert'),
+                h.Class('sr-only'),
               ],
-              ["Invalid date"],
+              ['Invalid date'],
             ),
           ]
         : []),
@@ -670,10 +670,10 @@ export const dateTimeInput = <Msg>(
             h.div(
               [
                 h.Id(`${model.id}-invalid-time`),
-                h.Role("alert"),
-                h.Class("sr-only"),
+                h.Role('alert'),
+                h.Class('sr-only'),
               ],
-              ["Invalid time"],
+              ['Invalid time'],
             ),
           ]
         : []),
@@ -681,18 +681,18 @@ export const dateTimeInput = <Msg>(
         ? []
         : [
             h.input([
-              h.Type("hidden"),
+              h.Type('hidden'),
               h.Name(props.htmlName),
               h.Value(
                 Option.match(model.value, {
-                  onNone: () => "",
-                  onSome: (value) => `${dateToISO(value.date)}T${value.time}`,
+                  onNone: () => '',
+                  onSome: value => `${dateToISO(value.date)}T${value.time}`,
                 }),
               ),
             ]),
           ]),
     ],
-  );
+  )
 
-  return field;
-};
+  return field
+}

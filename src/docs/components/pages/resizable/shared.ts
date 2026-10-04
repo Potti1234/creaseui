@@ -1,5 +1,5 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export const resizableFixtures = [
   {
@@ -38,9 +38,9 @@ export const resizableFixtures = [
     second: 'اثنان',
     third: 'ثلاثة',
   },
-] as const;
+] as const
 
-export type ResizableFixture = (typeof resizableFixtures)[number];
+export type ResizableFixture = (typeof resizableFixtures)[number]
 
 const STYLES_BLOCK = `
 const styles = stylex.create({
@@ -49,32 +49,36 @@ const styles = stylex.create({
   panel: { alignItems: 'center', display: 'flex', height: '100%', justifyContent: 'center', padding: '1.5rem', width: '100%' },
   label: { fontWeight: 600 },
 })
-`;
+`
 
 const singleSource = (
   fixture: {
-    title: string;
-    direction: string;
-    withHandle: boolean;
-    initialSize: number;
-    ariaLabel: string;
-    first: string;
-    second: string;
+    title: string
+    direction: string
+    withHandle: boolean
+    initialSize: number
+    ariaLabel: string
+    first: string
+    second: string
   },
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const isStyleX = renderer === 'stylex';
-  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '');
+  const isStyleX = renderer === 'stylex'
+  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
   return foldkitApplication({
     title: `Resizable — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { taggedStruct } from 'foldkit/schema'
-${isStyleX ? `
+${
+  isStyleX
+    ? `
 import * as stylex from '@stylexjs/stylex'
 import { className } from '@/stylex/style'
-` : ''}
+`
+    : ''
+}
 import * as Resizable from '@/${isStyleX ? 'stylex' : 'ui'}/resizable'${isStyleX ? STYLES_BLOCK : ''}`,
     model: `export const Model = S.Struct({ panels: Resizable.Model })
 export type Model = typeof Model.Type`,
@@ -113,33 +117,37 @@ export type Message = typeof Message.Type`,
     }, h),
   ]),
 })`,
-  });
-};
+  })
+}
 
 const nestedSource = (
   fixture: {
-    title: string;
-    rtl: boolean;
-    first: string;
-    second: string;
-    third: string;
+    title: string
+    rtl: boolean
+    first: string
+    second: string
+    third: string
   },
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const isStyleX = renderer === 'stylex';
-  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '');
+  const isStyleX = renderer === 'stylex'
+  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
   const panelEmit = (label: string): string =>
-    `h.div([h.Class(${isStyleX ? 'className(styles.panel, styles.label)' : "'flex size-full items-center justify-center p-6 font-semibold'"})], ['${label}'])`;
+    `h.div([h.Class(${isStyleX ? 'className(styles.panel, styles.label)' : "'flex size-full items-center justify-center p-6 font-semibold'"})], ['${label}'])`
   return foldkitApplication({
     title: `Resizable — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { taggedStruct } from 'foldkit/schema'
-${isStyleX ? `
+${
+  isStyleX
+    ? `
 import * as stylex from '@stylexjs/stylex'
 import { className } from '@/stylex/style'
-` : ''}
+`
+    : ''
+}
 import * as Resizable from '@/${isStyleX ? 'stylex' : 'ui'}/resizable'${isStyleX ? STYLES_BLOCK : ''}`,
     model: `export const Model = S.Struct({
   outer: Resizable.GroupModel,
@@ -181,8 +189,12 @@ export type Message = typeof Message.Type`,
     Resizable.resizableGroup({
       model: model.outer,
       toParentMessage: message => GotOuterMessage({ message }),
-      direction: 'horizontal',${fixture.rtl ? `
-      rtl: true,` : ''}
+      direction: 'horizontal',${
+        fixture.rtl
+          ? `
+      rtl: true,`
+          : ''
+      }
       extent: 448,
       withHandles: true,
       ${isStyleX ? 'layoutStyle: styles.group' : "class: 'h-52 w-full max-w-md'"},
@@ -191,8 +203,12 @@ export type Message = typeof Message.Type`,
         Resizable.resizableGroup({
           model: model.inner,
           toParentMessage: message => GotInnerMessage({ message }),
-          direction: 'vertical',${fixture.rtl ? `
-          rtl: true,` : ''}
+          direction: 'vertical',${
+            fixture.rtl
+              ? `
+          rtl: true,`
+              : ''
+          }
           extent: 208,
           withHandles: true,
           panels: [
@@ -204,8 +220,8 @@ export type Message = typeof Message.Type`,
     }, h),
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const resizableExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -216,4 +232,4 @@ export const resizableExamples = (
       fixture.kind === 'single'
         ? singleSource(fixture, renderer)
         : nestedSource(fixture, renderer),
-  }));
+  }))

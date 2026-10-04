@@ -1,14 +1,14 @@
-import type { HtmlBuilder } from 'foldkit/html';
+import type { HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   nativeSelectFixtures,
   nativeSelectSpecs,
-} from '@/docs/components/pages/native-select/shared';
-import * as NativeSelect from '@/stylex/native-select';
+} from '@/docs/components/pages/native-select/shared'
+import * as NativeSelect from '@/stylex/native-select'
 
 interface NativeSelectPreviewShape {
-  readonly value: string;
+  readonly value: string
 }
 
 export const nativeSelectStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
@@ -17,9 +17,9 @@ export const nativeSelectStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ) => {
-  const shape = model as NativeSelectPreviewShape;
-  const fixture = nativeSelectFixtures[exampleIndex] ?? nativeSelectFixtures[0];
-  const spec = nativeSelectSpecs[fixture.kind];
+  const shape = model as NativeSelectPreviewShape
+  const fixture = nativeSelectFixtures[exampleIndex] ?? nativeSelectFixtures[0]
+  const spec = nativeSelectSpecs[fixture.kind]
   return NativeSelect.nativeSelect(
     {
       id: `docs-native-select-sx-${String(exampleIndex)}`,
@@ -33,5 +33,5 @@ export const nativeSelectStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
       ...(spec.direction === undefined ? {} : { direction: spec.direction }),
     },
     h,
-  );
-};
+  )
+}

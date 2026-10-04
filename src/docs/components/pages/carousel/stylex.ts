@@ -1,18 +1,23 @@
-import * as stylex from '@stylexjs/stylex';
-import Autoplay from 'embla-carousel-autoplay';
-import type { HtmlBuilder } from 'foldkit/html';
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import * as stylex from '@stylexjs/stylex'
+import Autoplay from 'embla-carousel-autoplay'
+import type { HtmlBuilder } from 'foldkit/html'
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   carouselFixtures,
   type CarouselFixture,
-} from '@/docs/components/pages/carousel/shared';
-import * as Card from '@/stylex/card';
-import type { ComponentLayoutStyle } from '@/stylex/contracts';
-import * as Carousel from '@/stylex/carousel';
-import { className } from '@/stylex/style';
+} from '@/docs/components/pages/carousel/shared'
+import * as Card from '@/stylex/card'
+import type { ComponentLayoutStyle } from '@/stylex/contracts'
+import * as Carousel from '@/stylex/carousel'
+import { className } from '@/stylex/style'
 
 const styles = stylex.create({
-  wrap: { marginLeft: 'auto', marginRight: 'auto', maxWidth: '20rem', width: '100%' },
+  wrap: {
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    maxWidth: '20rem',
+    width: '100%',
+  },
   carousel: { width: '100%' },
   cardContent: {
     padding: '1.5rem',
@@ -22,16 +27,17 @@ const styles = stylex.create({
     fontSize: '2.25rem',
     fontWeight: 600,
     justifyContent: 'center',
- lineHeight: '2.5rem',
+    lineHeight: '2.5rem',
   },
   slidePadding: { padding: '0.5rem' },
   apiStatus: {
     paddingBlock: '0.5rem',
     color: 'var(--muted-foreground)',
-    fontSize: '0.875rem', lineHeight: '1.25rem',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
     textAlign: 'center',
   },
-});
+})
 
 const fixtureOf = (index: number): CarouselFixture =>
   carouselFixtures[index] ?? {
@@ -40,16 +46,16 @@ const fixtureOf = (index: number): CarouselFixture =>
     count: 5,
     label: 'Featured projects',
     itemSize: 'full',
-  };
+  }
 
 const itemSizeOf = (
   fixture: CarouselFixture,
 ): number | ((index: number) => number) => {
   if (fixture.itemSize === 'first-half')
-    return index => (index === 0 ? 50 : 33.34);
-  if (fixture.itemSize === 'third') return 33.34;
-  return 100;
-};
+    return index => (index === 0 ? 50 : 33.34)
+  if (fixture.itemSize === 'third') return 33.34
+  return 100
+}
 
 export const carouselStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   index: number,
@@ -57,8 +63,8 @@ export const carouselStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ) => {
-  const fixture = fixtureOf(index);
-  const preview = model as { carousel: Carousel.Model };
+  const fixture = fixtureOf(index)
+  const preview = model as { carousel: Carousel.Model }
   const cards = Array.from({ length: fixture.count }, (_, i) => {
     const card = Card.card(
       {
@@ -73,11 +79,11 @@ export const carouselStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         ],
       },
       h,
-    );
+    )
     return fixture.padded === true
       ? h.div([h.Class(className(styles.slidePadding))], [card])
-      : card;
-  });
+      : card
+  })
   const carousel = Carousel.carousel(
     {
       model: preview.carousel,
@@ -100,21 +106,24 @@ export const carouselStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
       items: cards,
     },
     h,
-  );
+  )
   const children =
     fixture.status === true
       ? [
           carousel,
-          h.p([h.Class(className(styles.apiStatus))], [
-            `Slide ${preview.carousel.index + 1} of ${preview.carousel.count}`,
-          ]),
+          h.p(
+            [h.Class(className(styles.apiStatus))],
+            [
+              `Slide ${preview.carousel.index + 1} of ${preview.carousel.count}`,
+            ],
+          ),
         ]
-      : [carousel];
+      : [carousel]
   return h.div(
     [
       h.Class(className(styles.wrap)),
       ...(fixture.direction === 'rtl' ? [h.Dir('rtl')] : []),
     ],
     children,
-  );
-};
+  )
+}

@@ -1,18 +1,18 @@
 /* Ported from Meta Astryx Lightbox (packages/core/src/Lightbox/Lightbox.tsx) — examples and visual spec adapted to Crease UI tokens. */
 
-import { Option } from 'effect';
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import { Option } from 'effect'
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { Dialog as DialogPrimitive } from '@foldkit/ui';
+import { Dialog as DialogPrimitive } from '@foldkit/ui'
 
-import * as Icon from '@/lib/icon';
-import * as LightboxBehavior from '@/lib/lightbox';
-import type { ComponentLayoutStyle } from './contracts';
-import { foundationTokens } from './foundations-tokens.stylex';
-import { interactionTokens } from './interaction-tokens.stylex.const';
-import { className } from './style';
-import { tokens } from './tokens.stylex';
+import * as Icon from '@/lib/icon'
+import * as LightboxBehavior from '@/lib/lightbox'
+import type { ComponentLayoutStyle } from './contracts'
+import { foundationTokens } from './foundations-tokens.stylex'
+import { interactionTokens } from './interaction-tokens.stylex.const'
+import { className } from './style'
+import { tokens } from './tokens.stylex'
 
 /* astryx renders its controls over the dark scrim with on-dark tokens;
    Crease UI has no on-dark tokens yet — statusPlateInk (~white) and backdrop
@@ -176,49 +176,49 @@ const styles = stylex.create({
   },
 })
 
-export const Model = LightboxBehavior.Model;
-export type Model = typeof Model.Type;
-export const Message = LightboxBehavior.Message;
-export type Message = typeof Message.Type;
-export const OutMessage = LightboxBehavior.OutMessage;
-export type OutMessage = typeof OutMessage.Type;
+export const Model = LightboxBehavior.Model
+export type Model = typeof Model.Type
+export const Message = LightboxBehavior.Message
+export type Message = typeof Message.Type
+export const OutMessage = LightboxBehavior.OutMessage
+export type OutMessage = typeof OutMessage.Type
 
-export const init = LightboxBehavior.init;
-export const update = LightboxBehavior.update;
-export const open = LightboxBehavior.open;
-export const close = LightboxBehavior.close;
+export const init = LightboxBehavior.init
+export const update = LightboxBehavior.update
+export const open = LightboxBehavior.open
+export const close = LightboxBehavior.close
 
-export const KEYBOARD_PAN_STEP = LightboxBehavior.KEYBOARD_PAN_STEP;
+export const KEYBOARD_PAN_STEP = LightboxBehavior.KEYBOARD_PAN_STEP
 
 export type LightboxMedia = Readonly<{
-  src: string;
-  alt: string;
-  caption?: string;
-  type?: 'image' | 'video';
-}>;
+  src: string
+  alt: string
+  caption?: string
+  type?: 'image' | 'video'
+}>
 
 export type LightboxProps<Msg> = Readonly<{
-  model: Model;
-  toParentMessage: (message: Message) => Msg;
-  media: LightboxMedia | ReadonlyArray<LightboxMedia>;
-  hasZoom?: boolean;
-  hasAutoPlay?: boolean;
-  layoutStyle?: ComponentLayoutStyle;
-}>;
+  model: Model
+  toParentMessage: (message: Message) => Msg
+  media: LightboxMedia | ReadonlyArray<LightboxMedia>
+  hasZoom?: boolean
+  hasAutoPlay?: boolean
+  layoutStyle?: ComponentLayoutStyle
+}>
 
 const clampIndex = (count: number, index: number): number =>
-  Math.min(Math.max(0, index), Math.max(0, count - 1));
+  Math.min(Math.max(0, index), Math.max(0, count - 1))
 
 const mediaView = <Msg>(
   props: LightboxProps<Msg>,
   item: LightboxMedia,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const model = props.model;
-  const send = props.toParentMessage;
-  const zoomable = (props.hasZoom ?? false) && item.type !== 'video';
-  const isZoomed = model.zoom > 1;
-  const isPanning = Option.isSome(model.panAnchor);
+  const model = props.model
+  const send = props.toParentMessage
+  const zoomable = (props.hasZoom ?? false) && item.type !== 'video'
+  const isZoomed = model.zoom > 1
+  const isPanning = Option.isSome(model.panAnchor)
 
   if (item.type === 'video') {
     return h.video(
@@ -238,10 +238,10 @@ const mediaView = <Msg>(
         h.Class(className(styles.video)),
       ],
       [],
-    );
+    )
   }
 
-  const transform = `translate(${String(model.panX)}px, ${String(model.panY)}px) scale(${String(model.zoom)})`;
+  const transform = `translate(${String(model.panX)}px, ${String(model.panY)}px) scale(${String(model.zoom)})`
 
   return h.div(
     [
@@ -282,38 +282,38 @@ const mediaView = <Msg>(
       ),
     ],
     [
-      h.img(
-        [
-          h.Src(item.src),
-          h.Alt(item.alt),
-          h.Draggable(false),
-          h.DataAttribute('slot', 'lightbox-media'),
-          h.Style({
-            transform,
-            transitionProperty: isPanning ? 'none' : 'transform',
-            transitionDuration: '200ms',
-            transitionTimingFunction: 'ease-out',
-          }),
-          h.Class(className(styles.media)),
-        ]),
+      h.img([
+        h.Src(item.src),
+        h.Alt(item.alt),
+        h.Draggable(false),
+        h.DataAttribute('slot', 'lightbox-media'),
+        h.Style({
+          transform,
+          transitionProperty: isPanning ? 'none' : 'transform',
+          transitionDuration: '200ms',
+          transitionTimingFunction: 'ease-out',
+        }),
+        h.Class(className(styles.media)),
+      ]),
     ],
-  );
-};
+  )
+}
 
 export const lightbox = <Msg>(
   props: LightboxProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const model = props.model;
-  const send = props.toParentMessage;
+  const model = props.model
+  const send = props.toParentMessage
   const items: ReadonlyArray<LightboxMedia> = Array.isArray(props.media)
     ? props.media
-    : [props.media];
-  const count = items.length;
-  const index = clampIndex(count, model.index);
-  const item = items[index] ?? items[0];
-  const zoomable = (props.hasZoom ?? false) && item !== undefined && item.type !== 'video';
-  const isZoomed = model.zoom > 1 && zoomable;
+    : [props.media]
+  const count = items.length
+  const index = clampIndex(count, model.index)
+  const item = items[index] ?? items[0]
+  const zoomable =
+    (props.hasZoom ?? false) && item !== undefined && item.type !== 'video'
+  const isZoomed = model.zoom > 1 && zoomable
 
   return h.submodel({
     slotId: model.dialog.id,
@@ -327,38 +327,52 @@ export const lightbox = <Msg>(
         closeButton,
         isVisible,
       }: DialogPrimitive.RenderInfo) => {
-        const hd = h;
-        const panAnchored = Option.isSome(model.panAnchor);
+        const hd = h
+        const panAnchored = Option.isSome(model.panAnchor)
         return hd.dialog(
           [
             ...dialogAttributes,
             hd.DataAttribute('slot', 'lightbox'),
             hd.Class(className(styles.dialog, props.layoutStyle)),
             hd.OnKeyDownPreventDefault(key => {
-              if (key === 'Escape') return Option.none();
+              if (key === 'Escape') return Option.none()
               if (key === '+' || key === '=') {
-                return zoomable ? Option.some(send(Message.ZoomedIn())) : Option.none();
+                return zoomable
+                  ? Option.some(send(Message.ZoomedIn()))
+                  : Option.none()
               }
               if (key === '-' || key === '_') {
-                return zoomable ? Option.some(send(Message.ZoomedOut())) : Option.none();
+                return zoomable
+                  ? Option.some(send(Message.ZoomedOut()))
+                  : Option.none()
               }
               if (isZoomed) {
                 switch (key) {
                   case 'ArrowLeft':
-                    return Option.some(send(Message.PannedBy({ dx: KEYBOARD_PAN_STEP, dy: 0 })));
+                    return Option.some(
+                      send(Message.PannedBy({ dx: KEYBOARD_PAN_STEP, dy: 0 })),
+                    )
                   case 'ArrowRight':
-                    return Option.some(send(Message.PannedBy({ dx: -KEYBOARD_PAN_STEP, dy: 0 })));
+                    return Option.some(
+                      send(Message.PannedBy({ dx: -KEYBOARD_PAN_STEP, dy: 0 })),
+                    )
                   case 'ArrowUp':
-                    return Option.some(send(Message.PannedBy({ dx: 0, dy: KEYBOARD_PAN_STEP })));
+                    return Option.some(
+                      send(Message.PannedBy({ dx: 0, dy: KEYBOARD_PAN_STEP })),
+                    )
                   case 'ArrowDown':
-                    return Option.some(send(Message.PannedBy({ dx: 0, dy: -KEYBOARD_PAN_STEP })));
+                    return Option.some(
+                      send(Message.PannedBy({ dx: 0, dy: -KEYBOARD_PAN_STEP })),
+                    )
                   default:
-                    return Option.none();
+                    return Option.none()
                 }
               }
-              if (key === 'ArrowLeft') return Option.some(send(Message.NavigatedPrevious()));
-              if (key === 'ArrowRight') return Option.some(send(Message.NavigatedNext()));
-              return Option.none();
+              if (key === 'ArrowLeft')
+                return Option.some(send(Message.NavigatedPrevious()))
+              if (key === 'ArrowRight')
+                return Option.some(send(Message.NavigatedNext()))
+              return Option.none()
             }),
           ],
           isVisible && item !== undefined
@@ -376,14 +390,20 @@ export const lightbox = <Msg>(
                     hd.Class(className(styles.container)),
                     hd.OnPointerMove((screenX, screenY) =>
                       panAnchored
-                        ? Option.some(send(Message.MovedPan({ x: screenX, y: screenY })))
+                        ? Option.some(
+                            send(Message.MovedPan({ x: screenX, y: screenY })),
+                          )
                         : Option.none(),
                     ),
                     hd.OnPointerUp(() =>
-                      panAnchored ? Option.some(send(Message.EndedPan())) : Option.none(),
+                      panAnchored
+                        ? Option.some(send(Message.EndedPan()))
+                        : Option.none(),
                     ),
                     hd.OnPointerLeave(() =>
-                      panAnchored ? Option.some(send(Message.CancelledPan())) : Option.none(),
+                      panAnchored
+                        ? Option.some(send(Message.CancelledPan()))
+                        : Option.none(),
                     ),
                   ],
                   [
@@ -431,10 +451,20 @@ export const lightbox = <Msg>(
                               hd.Disabled(index <= 0),
                               hd.OnClick(send(Message.NavigatedPrevious())),
                               hd.AriaLabel('Previous image'),
-                              hd.Class(className(styles.controlButton, styles.navPrevious)),
+                              hd.Class(
+                                className(
+                                  styles.controlButton,
+                                  styles.navPrevious,
+                                ),
+                              ),
                               hd.DataAttribute('slot', 'lightbox-previous'),
                             ],
-                            [Icon.chevronLeft({ class: className(styles.icon) }, h)],
+                            [
+                              Icon.chevronLeft(
+                                { class: className(styles.icon) },
+                                h,
+                              ),
+                            ],
                           ),
                           hd.button(
                             [
@@ -442,10 +472,17 @@ export const lightbox = <Msg>(
                               hd.Disabled(index >= count - 1),
                               hd.OnClick(send(Message.NavigatedNext())),
                               hd.AriaLabel('Next image'),
-                              hd.Class(className(styles.controlButton, styles.navNext)),
+                              hd.Class(
+                                className(styles.controlButton, styles.navNext),
+                              ),
                               hd.DataAttribute('slot', 'lightbox-next'),
                             ],
-                            [Icon.chevronRight({ class: className(styles.icon) }, h)],
+                            [
+                              Icon.chevronRight(
+                                { class: className(styles.icon) },
+                                h,
+                              ),
+                            ],
                           ),
                         ]
                       : []),
@@ -462,9 +499,10 @@ export const lightbox = <Msg>(
                 ),
               ]
             : [],
-        );
+        )
       },
     },
-    toParentMessage: message => send(Message.GotLightboxDialogMessage({ message })),
-  });
-};
+    toParentMessage: message =>
+      send(Message.GotLightboxDialogMessage({ message })),
+  })
+}

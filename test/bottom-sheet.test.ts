@@ -39,7 +39,12 @@ test('scrimOpacityForOffset stays full through working stops and thins onto the 
   assert.equal(BottomSheet.scrimOpacityForOffset(0, detents, 1000, peek), 1)
   assert.equal(BottomSheet.scrimOpacityForOffset(400, detents, 1000, peek), 1)
 
-  const mid = BottomSheet.scrimOpacityForOffset((400 + 704) / 2, detents, 1000, peek)
+  const mid = BottomSheet.scrimOpacityForOffset(
+    (400 + 704) / 2,
+    detents,
+    1000,
+    peek,
+  )
   assert.ok(mid < 1)
   assert.ok(mid > BottomSheet.MIN_PEEK_SCRIM_OPACITY)
 
@@ -72,11 +77,20 @@ test('openSheet marks the requested sheet active and keeps the previous', () => 
     ],
   })
   const first = BottomSheet.openSheet(switcher, 'one').model
-  assert.equal(first.activeSheetId._tag === 'Some' && first.activeSheetId.value, 'one')
+  assert.equal(
+    first.activeSheetId._tag === 'Some' && first.activeSheetId.value,
+    'one',
+  )
 
   const second = BottomSheet.openSheet(first, 'two').model
-  assert.equal(second.activeSheetId._tag === 'Some' && second.activeSheetId.value, 'two')
-  assert.equal(second.previousSheetId._tag === 'Some' && second.previousSheetId.value, 'one')
+  assert.equal(
+    second.activeSheetId._tag === 'Some' && second.activeSheetId.value,
+    'two',
+  )
+  assert.equal(
+    second.previousSheetId._tag === 'Some' && second.previousSheetId.value,
+    'one',
+  )
 })
 
 test('a required sheet refuses dismiss', () => {

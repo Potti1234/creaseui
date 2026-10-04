@@ -1,6 +1,6 @@
-import { authoredPage } from '@/docs/components/pages/authored-page';
-import { visuallyHiddenExamples } from '@/docs/components/pages/visually-hidden/shared';
-import { visuallyHiddenTailwindPreviewProgram } from '@/docs/components/pages/visually-hidden/tailwind';
+import { authoredPage } from '@/docs/components/pages/authored-page'
+import { visuallyHiddenExamples } from '@/docs/components/pages/visually-hidden/shared'
+import { visuallyHiddenTailwindPreviewProgram } from '@/docs/components/pages/visually-hidden/tailwind'
 
 export const visuallyHiddenPage = authoredPage({
   slug: 'visually-hidden',
@@ -22,4 +22,4 @@ export const visuallyHiddenPage = authoredPage({
     examples: visuallyHiddenExamples('tailwind'),
     stylexExamples: visuallyHiddenExamples('stylex'),
   },
-});
+})

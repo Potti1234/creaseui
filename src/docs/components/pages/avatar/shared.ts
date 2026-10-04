@@ -1,29 +1,29 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type AvatarItemSpec = Readonly<{
   /** Stable key for the avatar's lifecycle model entry. */
-  key: string;
-  src: string;
-  alt: string;
-  fallback: string;
-  size?: 'sm' | 'lg';
-  badge?: 'green' | 'icon';
+  key: string
+  src: string
+  alt: string
+  fallback: string
+  size?: 'sm' | 'lg'
+  badge?: 'green' | 'icon'
   /** Where upstream applies `grayscale`: the image (demo/basic) or the avatar root (badge-icon). */
-  grayscale?: 'image' | 'avatar';
-}>;
+  grayscale?: 'image' | 'avatar'
+}>
 
 export type AvatarClusterSpec = Readonly<{
   /** Wrap the items in Avatar.avatarGroup (upstream AvatarGroup). */
-  grouped?: boolean;
+  grouped?: boolean
   /** `class="grayscale"` on the AvatarGroup element. */
-  grayscale?: boolean;
+  grayscale?: boolean
   /** AvatarGroupCount text (e.g. '+3'). */
-  count?: string;
+  count?: string
   /** AvatarGroupCount containing a plus icon. */
-  countIcon?: boolean;
-  items: ReadonlyArray<AvatarItemSpec>;
-}>;
+  countIcon?: boolean
+  items: ReadonlyArray<AvatarItemSpec>
+}>
 
 export type AvatarFixture = Readonly<{
   kind:
@@ -36,52 +36,56 @@ export type AvatarFixture = Readonly<{
     | 'groupCountIcon'
     | 'sizes'
     | 'dropdown'
-    | 'rtl';
-  title: string;
-  description: string;
+    | 'rtl'
+  title: string
+  description: string
   /** Rendered only as the page hero, not as a named example section. */
-  heroOnly?: boolean;
+  heroOnly?: boolean
   /** Outer frame: upstream 'flex flex-row flex-wrap gap-6 md:gap-12' row, the sizes row, or loose clusters. */
-  frame: 'hero' | 'sizesRow' | 'plain';
+  frame: 'hero' | 'sizesRow' | 'plain'
   /** dir="rtl" on the frame (upstream RTL example). */
-  rtl?: boolean;
+  rtl?: boolean
   /** Dropdown example: menu items rendered by the avatar trigger. */
-  menuItems?: ReadonlyArray<Readonly<{ label: string; destructive?: boolean }>>;
-  clusters: ReadonlyArray<AvatarClusterSpec>;
-}>;
+  menuItems?: ReadonlyArray<Readonly<{ label: string; destructive?: boolean }>>
+  clusters: ReadonlyArray<AvatarClusterSpec>
+}>
 
 const SHADCN: AvatarItemSpec = {
   key: 'shadcn',
   src: 'https://github.com/shadcn.png',
   alt: '@shadcn',
   fallback: 'CN',
-};
+}
 const MAXLEITER: AvatarItemSpec = {
   key: 'maxleiter',
   src: 'https://github.com/maxleiter.png',
   alt: '@maxleiter',
   fallback: 'LR',
-};
+}
 const EVILRABBIT: AvatarItemSpec = {
   key: 'evilrabbit',
   src: 'https://github.com/evilrabbit.png',
   alt: '@evilrabbit',
   fallback: 'ER',
-};
+}
 const PRANATHIP: AvatarItemSpec = {
   key: 'pranathip',
   src: 'https://github.com/pranathip.png',
   alt: '@pranathip',
   fallback: 'PP',
-};
+}
 
-const GROUP_TRIO: ReadonlyArray<AvatarItemSpec> = [SHADCN, MAXLEITER, EVILRABBIT];
+const GROUP_TRIO: ReadonlyArray<AvatarItemSpec> = [
+  SHADCN,
+  MAXLEITER,
+  EVILRABBIT,
+]
 
 const demoClusters = (count: string): ReadonlyArray<AvatarClusterSpec> => [
   { items: [{ ...SHADCN, grayscale: 'image' }] },
   { items: [{ ...EVILRABBIT, badge: 'green' }] },
   { grouped: true, grayscale: true, count, items: GROUP_TRIO },
-];
+]
 
 export const avatarFixtures: Readonly<
   [AvatarFixture, ...Array<AvatarFixture>]
@@ -113,7 +117,9 @@ export const avatarFixtures: Readonly<
     title: 'Badge with Icon',
     description: 'AvatarBadge can also carry an icon.',
     frame: 'plain',
-    clusters: [{ items: [{ ...PRANATHIP, badge: 'icon', grayscale: 'avatar' }] }],
+    clusters: [
+      { items: [{ ...PRANATHIP, badge: 'icon', grayscale: 'avatar' }] },
+    ],
   },
   {
     kind: 'group',
@@ -127,14 +133,18 @@ export const avatarFixtures: Readonly<
     title: 'Avatar Group Count',
     description: 'AvatarGroupCount trails the group with an overflow count.',
     frame: 'plain',
-    clusters: [{ grouped: true, grayscale: true, count: '+3', items: GROUP_TRIO }],
+    clusters: [
+      { grouped: true, grayscale: true, count: '+3', items: GROUP_TRIO },
+    ],
   },
   {
     kind: 'groupCountIcon',
     title: 'Avatar Group with Icon',
     description: 'The group count can carry an icon instead of a number.',
     frame: 'plain',
-    clusters: [{ grouped: true, grayscale: true, countIcon: true, items: GROUP_TRIO }],
+    clusters: [
+      { grouped: true, grayscale: true, countIcon: true, items: GROUP_TRIO },
+    ],
   },
   {
     kind: 'sizes',
@@ -143,11 +153,7 @@ export const avatarFixtures: Readonly<
     frame: 'sizesRow',
     clusters: [
       {
-        items: [
-          { ...SHADCN, size: 'sm' },
-          SHADCN,
-          { ...SHADCN, size: 'lg' },
-        ],
+        items: [{ ...SHADCN, size: 'sm' }, SHADCN, { ...SHADCN, size: 'lg' }],
       },
     ],
   },
@@ -172,33 +178,33 @@ export const avatarFixtures: Readonly<
     rtl: true,
     clusters: demoClusters('+٣'),
   },
-];
+]
 
 const esc = (value: string): string =>
-  value.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+  value.replace(/\\/g, '\\\\').replace(/'/g, "\\'")
 
 const allItems = (fixture: AvatarFixture): ReadonlyArray<AvatarItemSpec> =>
-  fixture.clusters.flatMap(cluster => cluster.items);
+  fixture.clusters.flatMap(cluster => cluster.items)
 
 const needsMenu = (fixture: AvatarFixture): boolean =>
-  fixture.menuItems !== undefined;
+  fixture.menuItems !== undefined
 const needsBadgeIcon = (fixture: AvatarFixture): boolean =>
-  allItems(fixture).some(item => item.badge === 'icon');
+  allItems(fixture).some(item => item.badge === 'icon')
 const needsCountIcon = (fixture: AvatarFixture): boolean =>
-  fixture.clusters.some(cluster => cluster.countIcon === true);
+  fixture.clusters.some(cluster => cluster.countIcon === true)
 const needsIcon = (fixture: AvatarFixture): boolean =>
-  needsBadgeIcon(fixture) || needsCountIcon(fixture);
+  needsBadgeIcon(fixture) || needsCountIcon(fixture)
 
 const badgeSource = (
   item: AvatarItemSpec,
   renderer: 'tailwind' | 'stylex',
 ): string => {
   if (item.badge === 'green')
-    return `\n        Avatar.avatarBadge({ ${renderer === 'stylex' ? `tone: 'success'` : `class: 'bg-green-600 dark:bg-green-800'`} }, h),`;
+    return `\n        Avatar.avatarBadge({ ${renderer === 'stylex' ? `tone: 'success'` : `class: 'bg-green-600 dark:bg-green-800'`} }, h),`
   if (item.badge === 'icon')
-    return `\n        Avatar.avatarBadge({ children: [Icon.icon('plus', ${renderer === 'stylex' ? `{ class: stylex.props(styles.badgeIcon).className ?? '' }` : '{}'}, h)] }, h),`;
-  return '';
-};
+    return `\n        Avatar.avatarBadge({ children: [Icon.icon('plus', ${renderer === 'stylex' ? `{ class: stylex.props(styles.badgeIcon).className ?? '' }` : '{}'}, h)] }, h),`
+  return ''
+}
 
 const itemCallSource = (
   item: AvatarItemSpec,
@@ -207,23 +213,23 @@ const itemCallSource = (
   renderer: 'tailwind' | 'stylex',
 ): string => {
   const sizeProp =
-    item.size === undefined ? '' : `\n      size: '${item.size}',`;
+    item.size === undefined ? '' : `\n      size: '${item.size}',`
   const avatarGrayscale =
     item.grayscale === 'avatar'
       ? renderer === 'stylex'
         ? `\n      grayscale: true,`
         : `\n      class: 'grayscale',`
-      : '';
+      : ''
   const imageGrayscale =
     item.grayscale === 'image'
       ? renderer === 'stylex'
         ? `\n          grayscale: true,`
         : `\n          class: 'grayscale',`
-      : '';
+      : ''
   const groupProps =
     renderer === 'stylex' && grouped
       ? `\n      ring: true,${overlap ? '\n      overlap: true,' : ''}`
-      : '';
+      : ''
   return `Avatar.avatar({${sizeProp}${avatarGrayscale}${groupProps}
       children: [
         Avatar.avatarImage({
@@ -238,19 +244,19 @@ const itemCallSource = (
           children: ['${item.fallback}'],
         }, h),${badgeSource(item, renderer)}
       ],
-    }, h)`;
-};
+    }, h)`
+}
 
 const countSource = (
   cluster: AvatarClusterSpec,
   renderer: 'tailwind' | 'stylex',
 ): string => {
   if (cluster.count !== undefined)
-    return `\n        Avatar.avatarGroupCount({ children: ['${cluster.count}'] }, h),`;
+    return `\n        Avatar.avatarGroupCount({ children: ['${cluster.count}'] }, h),`
   if (cluster.countIcon === true)
-    return `\n        Avatar.avatarGroupCount({ children: [Icon.icon('plus', ${renderer === 'stylex' ? `{ class: stylex.props(styles.countIcon).className ?? '' }` : '{}'}, h)] }, h),`;
-  return '';
-};
+    return `\n        Avatar.avatarGroupCount({ children: [Icon.icon('plus', ${renderer === 'stylex' ? `{ class: stylex.props(styles.countIcon).className ?? '' }` : '{}'}, h)] }, h),`
+  return ''
+}
 
 const clusterSource = (
   fixture: AvatarFixture,
@@ -258,27 +264,26 @@ const clusterSource = (
   renderer: 'tailwind' | 'stylex',
 ): string => {
   if (cluster.grouped === true) {
-    const hasCount =
-      cluster.count !== undefined || cluster.countIcon === true;
+    const hasCount = cluster.count !== undefined || cluster.countIcon === true
     const items = cluster.items
       .map(
         (item, index) =>
           `\n        ${itemCallSource(item, index < cluster.items.length - 1 || hasCount, true, renderer)},`,
       )
-      .join('');
+      .join('')
     const grayscale =
       cluster.grayscale === true
         ? renderer === 'stylex'
           ? `\n      grayscale: true,`
           : `\n      class: 'grayscale',`
-        : '';
+        : ''
     return `Avatar.avatarGroup({${grayscale}
       children: [${items}${countSource(cluster, renderer)}
       ],
-    }, h)`;
+    }, h)`
   }
-  const item = cluster.items[0];
-  if (item === undefined) return '';
+  const item = cluster.items[0]
+  if (item === undefined) return ''
   if (needsMenu(fixture)) {
     const image = `Avatar.avatarImage({
           src: '${item.src}',
@@ -286,15 +291,15 @@ const clusterSource = (
           model: avatarModel(model, '${item.key}'),
           toParentMessage: message =>
             Message['GotAvatarMessage']({ key: '${item.key}', message }),
-        }, h)`;
+        }, h)`
     const fallback = `Avatar.avatarFallback({
           model: avatarModel(model, '${item.key}'),
           children: ['${item.fallback}'],
-        }, h)`;
+        }, h)`
     const triggerProps =
       renderer === 'stylex'
         ? `\n      triggerLayoutStyle: styles.avatarTrigger as ComponentLayoutStyle,`
-        : `\n      triggerClass: 'rounded-full',`;
+        : `\n      triggerClass: 'rounded-full',`
     return `DropdownMenu.dropdownMenu({
       model: model.menu,
       toParentMessage: message => Message['GotMenuMessage']({ message }),
@@ -309,12 +314,12 @@ const clusterSource = (
         item === 'Log out'
           ? { label: item, group: 'account', separatorBefore: true, variant: 'destructive' as const }
           : { label: item, group: 'main' },
-    }, h)`;
+    }, h)`
   }
   return cluster.items
     .map(entry => itemCallSource(entry, false, false, renderer))
-    .join(',\n      ');
-};
+    .join(',\n      ')
+}
 
 const bodySource = (
   fixture: AvatarFixture,
@@ -322,54 +327,54 @@ const bodySource = (
 ): string => {
   const clusters = fixture.clusters
     .map(cluster => `      ${clusterSource(fixture, cluster, renderer)}`)
-    .join(',\n');
-  if (fixture.frame === 'plain') return clusters;
+    .join(',\n')
+  if (fixture.frame === 'plain') return clusters
   const frameAttr =
     renderer === 'stylex'
-      ? `[h.Class(stylex.props(${fixture.frame === 'sizesRow' ? 'styles.sizesRow' : 'styles.hero'}).className ?? '')${fixture.rtl === true ? ', h.Dir(\'rtl\')' : ''}]`
-      : `[h.Class('${fixture.frame === 'sizesRow' ? 'flex flex-wrap items-center gap-2 grayscale' : 'flex flex-row flex-wrap items-center gap-6 md:gap-12'}')${fixture.rtl === true ? `, h.Dir('rtl')` : ''}]`;
+      ? `[h.Class(stylex.props(${fixture.frame === 'sizesRow' ? 'styles.sizesRow' : 'styles.hero'}).className ?? '')${fixture.rtl === true ? ", h.Dir('rtl')" : ''}]`
+      : `[h.Class('${fixture.frame === 'sizesRow' ? 'flex flex-wrap items-center gap-2 grayscale' : 'flex flex-row flex-wrap items-center gap-6 md:gap-12'}')${fixture.rtl === true ? `, h.Dir('rtl')` : ''}]`
   return `h.div(${frameAttr}, [
 ${clusters}
-    ])`;
-};
+    ])`
+}
 
 const stylexStylesSource = (fixture: AvatarFixture): string => {
   const hero =
     fixture.frame === 'hero'
       ? `\n  hero: { alignItems: 'center', display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: { default: '1.5rem', '@media (min-width: 768px)': '3rem' } },`
-      : '';
+      : ''
   const sizesRow =
     fixture.frame === 'sizesRow'
       ? `\n  sizesRow: { alignItems: 'center', display: 'flex', filter: 'grayscale(100%)', flexWrap: 'wrap', gap: '0.5rem' },`
-      : '';
+      : ''
   const badgeIcon = needsBadgeIcon(fixture)
     ? `\n  badgeIcon: { height: '0.5rem', width: '0.5rem' },`
-    : '';
+    : ''
   const countIcon = needsCountIcon(fixture)
     ? `\n  countIcon: { height: '1rem', width: '1rem' },`
-    : '';
+    : ''
   const avatarTrigger = needsMenu(fixture)
     ? `\n  avatarTrigger: { borderRadius: '50%' },`
-    : '';
+    : ''
   return `const styles = stylex.create({${hero}${sizesRow}${badgeIcon}${countIcon}${avatarTrigger}
 })
 
-`;
-};
+`
+}
 
 const componentImports = (
   fixture: AvatarFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const ui = renderer === 'stylex' ? 'stylex' : 'ui';
+  const ui = renderer === 'stylex' ? 'stylex' : 'ui'
   const stylexBits =
     renderer === 'stylex'
       ? `import * as stylex from '@stylexjs/stylex'
 
 ${stylexStylesSource(fixture)}`
-      : '';
-  return `${stylexBits}import * as Avatar from '@/${ui}/avatar'${needsMenu(fixture) ? `\nimport * as DropdownMenu from '@/${ui}/dropdown-menu'` : ''}${needsIcon(fixture) ? `\nimport * as Icon from '@/lib/icon'` : ''}${renderer === 'stylex' && needsMenu(fixture) ? `\nimport type { ComponentLayoutStyle } from '@/stylex/contracts'` : ''}`;
-};
+      : ''
+  return `${stylexBits}import * as Avatar from '@/${ui}/avatar'${needsMenu(fixture) ? `\nimport * as DropdownMenu from '@/${ui}/dropdown-menu'` : ''}${needsIcon(fixture) ? `\nimport * as Icon from '@/lib/icon'` : ''}${renderer === 'stylex' && needsMenu(fixture) ? `\nimport type { ComponentLayoutStyle } from '@/stylex/contracts'` : ''}`
+}
 
 const source = (
   fixture: AvatarFixture,
@@ -383,15 +388,23 @@ import { type Document, type HtmlBuilder } from 'foldkit/html'
 
 ${componentImports(fixture, renderer)}`,
     model: `export const Model = S.Struct({
-  avatars: S.Record(S.String, Avatar.Model),${needsMenu(fixture) ? `
-  menu: DropdownMenu.Model,` : ''}
+  avatars: S.Record(S.String, Avatar.Model),${
+    needsMenu(fixture)
+      ? `
+  menu: DropdownMenu.Model,`
+      : ''
+  }
 })
 export type Model = typeof Model.Type`,
     messages: `import { defineMessageUnion } from 'foldkit/message'
 
 export const Message = defineMessageUnion({
-  GotAvatarMessage: { key: S.String, message: Avatar.Message },${needsMenu(fixture) ? `
-  GotMenuMessage: { message: DropdownMenu.Message },` : ''}
+  GotAvatarMessage: { key: S.String, message: Avatar.Message },${
+    needsMenu(fixture)
+      ? `
+  GotMenuMessage: { message: DropdownMenu.Message },`
+      : ''
+  }
 });
 export type Message = typeof Message.Type`,
     init: `export const init = (): Update.Return<Model, Message> => ({
@@ -413,7 +426,9 @@ export type Message = typeof Message.Type`,
           },
         },
       }
-    }${needsMenu(fixture) ? `
+    }${
+      needsMenu(fixture)
+        ? `
     case 'GotMenuMessage': {
       const result = DropdownMenu.update(model.menu, message.message)
       return {
@@ -423,27 +438,34 @@ export type Message = typeof Message.Type`,
           next => Message['GotMenuMessage']({ message: next }),
         ),
       }
-    }` : ''}
+    }`
+        : ''
+    }
   }
 }`,
     view: `const avatarModel = (model: Model, key: string): Avatar.Model =>
   model.avatars[key] ?? Avatar.init()
-${needsMenu(fixture) ? `
+${
+  needsMenu(fixture)
+    ? `
 const menuItems = ['Profile', 'Billing', 'Settings', 'Log out'] as const
-` : ''}
+`
+    : ''
+}
 export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Avatar — ${fixture.title}',
   body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
     ${bodySource(fixture, renderer)},
   ]),
 })`,
-  });
+  })
 
 export const avatarExamples = (
   renderer: 'tailwind' | 'stylex',
-): ReadonlyArray<DocsExample> => avatarFixtures.map(fixture => ({
-  title: fixture.title,
-  description: fixture.description,
-  ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
-  code: source(fixture, renderer),
-}));
+): ReadonlyArray<DocsExample> =>
+  avatarFixtures.map(fixture => ({
+    title: fixture.title,
+    description: fixture.description,
+    ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
+    code: source(fixture, renderer),
+  }))

@@ -6,7 +6,10 @@ import * as Dom from 'foldkit/dom'
 import * as Calendar from 'foldkit/calendar'
 import { defineMessageUnion } from 'foldkit/message'
 
-import { Calendar as CalendarPrimitive, Popover as PopoverPrimitive } from '@foldkit/ui'
+import {
+  Calendar as CalendarPrimitive,
+  Popover as PopoverPrimitive,
+} from '@foldkit/ui'
 
 import { normalizeRange } from '@/lib/calendar'
 
@@ -131,14 +134,14 @@ export const isDateSelectable = (
 ): boolean =>
   !Option.match(model.baseMinDate, {
     onNone: () => false,
-    onSome: (min) => ordinal(date) < ordinal(min),
+    onSome: min => ordinal(date) < ordinal(min),
   }) &&
   !Option.match(model.baseMaxDate, {
     onNone: () => false,
-    onSome: (max) => ordinal(date) > ordinal(max),
+    onSome: max => ordinal(date) > ordinal(max),
   }) &&
   !model.baseDisabledDaysOfWeek.includes(Calendar.dayOfWeek(date)) &&
-  !model.baseDisabledDates.some((disabled) => ordinal(disabled) === ordinal(date))
+  !model.baseDisabledDates.some(disabled => ordinal(disabled) === ordinal(date))
 
 /** Inclusive day count spanned by a normalized range — astryx counts both
  *  endpoints, so a one-day range spans 1. */
@@ -148,7 +151,7 @@ export const rangeSpan = (range: Range): number =>
 export const isRangeCommittable = (model: Model, range: Range): boolean =>
   Option.match(model.maxRangeSpan, {
     onNone: () => true,
-    onSome: (max) => rangeSpan(range) <= max,
+    onSome: max => rangeSpan(range) <= max,
   }) && rangeSpan(range) >= model.minRangeSpan
 
 /** Whether a preset stays committable: astryx keeps out-of-window presets
@@ -169,27 +172,27 @@ const applyPendingWindow = (
     onNone: () =>
       pipe(
         model.calendar,
-        (calendar) =>
+        calendar =>
           CalendarPrimitive.reflectMinDate(calendar, model.baseMinDate),
-        (calendar) =>
+        calendar =>
           CalendarPrimitive.reflectMaxDate(calendar, model.baseMaxDate),
-        (calendar) =>
+        calendar =>
           CalendarPrimitive.reflectDisabledDates(
             calendar,
             model.baseDisabledDates,
           ),
       ),
-    onSome: (start) => {
+    onSome: start => {
       /* astryx only clamps the window when maxRangeSpan is set: reachable days
          sit within span-1 of the anchor in either direction. With no cap,
          only the base min/max bounds apply — every other day stays pickable. */
       const effectiveMin = Option.match(model.maxRangeSpan, {
         onNone: () => model.baseMinDate,
-        onSome: (span) => {
+        onSome: span => {
           const windowMin = Calendar.subtractDays(start, span - 1)
           return Option.match(model.baseMinDate, {
             onNone: () => Option.some(windowMin),
-            onSome: (base) =>
+            onSome: base =>
               Option.some(
                 ordinal(windowMin) > ordinal(base) ? windowMin : base,
               ),
@@ -198,11 +201,11 @@ const applyPendingWindow = (
       })
       const effectiveMax = Option.match(model.maxRangeSpan, {
         onNone: () => model.baseMaxDate,
-        onSome: (span) => {
+        onSome: span => {
           const windowMax = Calendar.addDays(start, span - 1)
           return Option.match(model.baseMaxDate, {
             onNone: () => Option.some(windowMax),
-            onSome: (base) =>
+            onSome: base =>
               Option.some(
                 ordinal(windowMax) < ordinal(base) ? windowMax : base,
               ),
@@ -220,9 +223,9 @@ const applyPendingWindow = (
       }
       return pipe(
         model.calendar,
-        (calendar) => CalendarPrimitive.reflectMinDate(calendar, effectiveMin),
-        (calendar) => CalendarPrimitive.reflectMaxDate(calendar, effectiveMax),
-        (calendar) =>
+        calendar => CalendarPrimitive.reflectMinDate(calendar, effectiveMin),
+        calendar => CalendarPrimitive.reflectMaxDate(calendar, effectiveMax),
+        calendar =>
           CalendarPrimitive.reflectDisabledDates(calendar, [
             ...model.baseDisabledDates,
             ...interior,
@@ -233,7 +236,10 @@ const applyPendingWindow = (
 
 const beginPending = (model: Model, date: Calendar.CalendarDate): Model => {
   const pending = { ...model, pendingStart: Option.some(date) }
-  return { ...pending, calendar: applyPendingWindow(pending, pending.pendingStart) }
+  return {
+    ...pending,
+    calendar: applyPendingWindow(pending, pending.pendingStart),
+  }
 }
 
 const clearPending = (model: Model): Model => {
@@ -241,10 +247,7 @@ const clearPending = (model: Model): Model => {
   return { ...cleared, calendar: applyPendingWindow(cleared, Option.none()) }
 }
 
-const commitRange = (
-  model: Model,
-  range: Range,
-): UpdateReturn => {
+const commitRange = (model: Model, range: Range): UpdateReturn => {
   const normalized = normalizeRange(range)
   const closed = clearPending({
     ...model,
@@ -261,7 +264,7 @@ const commitRange = (
       popover: result.model,
       calendar: CalendarPrimitive.dropToDays(closed.calendar),
     },
-    commands: Command.mapMessages(result.commands ?? [], (message) =>
+    commands: Command.mapMessages(result.commands ?? [], message =>
       Message.GotPopoverMessage({ message }),
     ),
     outMessage: OutMessage.ChangedValue({ value: Option.some(normalized) }),
@@ -283,7 +286,7 @@ const liftCalendar = (
   ...(result.commands === undefined
     ? {}
     : {
-        commands: Command.mapMessages(result.commands, (message) =>
+        commands: Command.mapMessages(result.commands, message =>
           Message.GotCalendarMessage({ message }),
         ),
       }),
@@ -297,7 +300,7 @@ const liftPopover = (
   ...(result.commands === undefined
     ? {}
     : {
-        commands: Command.mapMessages(result.commands, (message) =>
+        commands: Command.mapMessages(result.commands, message =>
           Message.GotPopoverMessage({ message }),
         ),
       }),
@@ -321,7 +324,7 @@ export const update = (model: Model, message: Message): UpdateReturn => {
           const pending = beginPending(lifted.model, date)
           return { ...lifted, model: pending }
         },
-        onSome: (start) => {
+        onSome: start => {
           const lifted = liftCalendar(model, result)
           if (ordinal(start) === ordinal(date) && model.minRangeSpan > 1) {
             // astryx cancels the in-progress selection when re-clicking the
@@ -398,7 +401,7 @@ export const reflect = (
         clearPending({ ...model, value: maybeValue }),
         Option.none(),
       ),
-    onSome: (range) =>
+    onSome: range =>
       CalendarPrimitive.focusDate(
         applyPendingWindow(
           clearPending({ ...model, value: maybeValue }),
@@ -423,9 +426,13 @@ export const reflectConstraints = (
   const rebased: Model = {
     ...model,
     baseMinDate:
-      constraints.minDate === undefined ? model.baseMinDate : constraints.minDate,
+      constraints.minDate === undefined
+        ? model.baseMinDate
+        : constraints.minDate,
     baseMaxDate:
-      constraints.maxDate === undefined ? model.baseMaxDate : constraints.maxDate,
+      constraints.maxDate === undefined
+        ? model.baseMaxDate
+        : constraints.maxDate,
     baseDisabledDates:
       constraints.disabledDates === undefined
         ? model.baseDisabledDates
@@ -439,7 +446,7 @@ export const reflectConstraints = (
     ...rebased,
     calendar: pipe(
       applyPendingWindow(rebased, rebased.pendingStart),
-      (calendar) =>
+      calendar =>
         constraints.disabledDaysOfWeek === undefined
           ? calendar
           : CalendarPrimitive.reflectDisabledDaysOfWeek(
@@ -459,7 +466,7 @@ export const formatRangeDisplay = (
 ): string =>
   Option.match(value, {
     onNone: () => '',
-    onSome: (range) => {
+    onSome: range => {
       const normalized = normalizeRange(range)
       const sameYear =
         normalized.start.year === normalized.end.year &&

@@ -85,13 +85,18 @@ export const renderButton = <Msg>(
           [
             ...primitiveAttributes,
             h.DataAttribute('slot', props.slot ?? 'button'),
-            h.DataAttribute('state', props.isLoading === true ? 'loading' : 'idle'),
+            h.DataAttribute(
+              'state',
+              props.isLoading === true ? 'loading' : 'idle',
+            ),
             ...(props.dataSize === undefined
               ? []
               : [h.DataAttribute('size', props.dataSize)]),
             ...(isDisabled ? [h.Disabled(true)] : []),
             ...(props.id === undefined ? [] : [h.Id(props.id)]),
-            ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
+            ...(props.ariaLabel === undefined
+              ? []
+              : [h.AriaLabel(props.ariaLabel)]),
             ...(props.name === undefined ? [] : [h.Name(props.name)]),
             ...(props.value === undefined ? [] : [h.Value(props.value)]),
             ...(props.form === undefined ? [] : [h.FormAttr(props.form)]),
@@ -116,7 +121,9 @@ export const renderButtonLink = <Msg>(
       ...(props.dataSize === undefined
         ? []
         : [h.DataAttribute('size', props.dataSize)]),
-      ...(props.target === undefined ? [] : [h.Attribute('target', props.target)]),
+      ...(props.target === undefined
+        ? []
+        : [h.Attribute('target', props.target)]),
       ...(props.target === '_blank' ? [h.Rel('noopener noreferrer')] : []),
       ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
       ...visualAttributes,

@@ -1,6 +1,6 @@
-import type { ChildAttribute, Html, HtmlBuilder } from 'foldkit/html';
+import type { ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 
-import { Dialog as DialogPrimitive } from '@foldkit/ui';
+import { Dialog as DialogPrimitive } from '@foldkit/ui'
 
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
@@ -8,7 +8,11 @@ import { overlayStyles } from './overlay-tokens.stylex'
 import type { ComponentLayoutStyle } from './contracts'
 import { className } from './style'
 import { tokens } from './tokens.stylex'
-import { type Message, type Model, Message as AlertDialogMessages } from '@/lib/alert-dialog'
+import {
+  type Message,
+  type Model,
+  Message as AlertDialogMessages,
+} from '@/lib/alert-dialog'
 export * from '@/lib/alert-dialog'
 
 const styles = stylex.create({
@@ -49,7 +53,12 @@ const styles = stylex.create({
     backgroundColor: tokens.softDestructiveSurface,
     color: tokens.destructive,
   },
-  content: { padding: '1.5rem', gap: '1rem', display: 'grid', maxWidth: '32rem', },
+  content: {
+    padding: '1.5rem',
+    gap: '1rem',
+    display: 'grid',
+    maxWidth: '32rem',
+  },
 })
 
 const isStaticStyle = (value: unknown): value is StaticStyles =>
@@ -80,32 +89,32 @@ const DESCRIPTION_CLASS = overlayStyles.description
 const MEDIA_CLASS = overlayStyles.media
 
 export type AlertDialogSlots = Readonly<{
-  closeButton: ReadonlyArray<ChildAttribute>;
-}>;
+  closeButton: ReadonlyArray<ChildAttribute>
+}>
 
 export type AlertDialogProps<Msg> = Readonly<{
-  model: Model;
-  toParentMessage: (message: Message) => Msg;
-  title: string;
-  description: string;
-  media?: ReadonlyArray<Html | string>;
-  mediaVariant?: 'muted' | 'destructive';
-  actionLabel: string;
-  cancelLabel?: string;
-  pendingLabel?: string;
-  isPending?: boolean;
-  size?: 'default' | 'sm';
-  actionVariant?: 'default' | 'destructive';
-  actionLayoutStyle?: ComponentLayoutStyle;
-  cancelLayoutStyle?: ComponentLayoutStyle;
-  layoutStyle?: ComponentLayoutStyle;
-}>;
+  model: Model
+  toParentMessage: (message: Message) => Msg
+  title: string
+  description: string
+  media?: ReadonlyArray<Html | string>
+  mediaVariant?: 'muted' | 'destructive'
+  actionLabel: string
+  cancelLabel?: string
+  pendingLabel?: string
+  isPending?: boolean
+  size?: 'default' | 'sm'
+  actionVariant?: 'default' | 'destructive'
+  actionLayoutStyle?: ComponentLayoutStyle
+  cancelLayoutStyle?: ComponentLayoutStyle
+  layoutStyle?: ComponentLayoutStyle
+}>
 
 export const alertDialog = <Msg>(
   props: AlertDialogProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const size = props.size ?? 'default';
+  const size = props.size ?? 'default'
 
   return h.submodel({
     slotId: props.model.id,
@@ -118,8 +127,8 @@ export const alertDialog = <Msg>(
         initialFocus,
         isVisible,
       }: DialogPrimitive.RenderInfo) => {
-        const hd = h;
-        const transitionState = props.model.animation.transitionState;
+        const hd = h
+        const transitionState = props.model.animation.transitionState
         const overlayAnimationAttributes =
           transitionState === 'EnterStart'
             ? [
@@ -143,7 +152,7 @@ export const alertDialog = <Msg>(
                       hd.DataAttribute('leave', ''),
                       hd.DataAttribute('transition', ''),
                     ]
-                  : [];
+                  : []
 
         return hd.dialog(
           [
@@ -168,7 +177,9 @@ export const alertDialog = <Msg>(
                     hd.Role('alertdialog'),
                     hd.DataAttribute('slot', 'alert-dialog-content'),
                     hd.DataAttribute('size', size),
-                    hd.Class(cn(overlayStyles.panel, CONTENT_CLASS, props.layoutStyle)),
+                    hd.Class(
+                      cn(overlayStyles.panel, CONTENT_CLASS, props.layoutStyle),
+                    ),
                   ],
                   [
                     hd.div(
@@ -186,7 +197,13 @@ export const alertDialog = <Msg>(
                                     'slot',
                                     'alert-dialog-media',
                                   ),
-                                  hd.Class(cn(MEDIA_CLASS, props.mediaVariant === 'destructive' && styles.mediaDestructive)),
+                                  hd.Class(
+                                    cn(
+                                      MEDIA_CLASS,
+                                      props.mediaVariant === 'destructive' &&
+                                        styles.mediaDestructive,
+                                    ),
+                                  ),
                                 ],
                                 [...props.media],
                               ),
@@ -202,7 +219,10 @@ export const alertDialog = <Msg>(
                         hd.p(
                           [
                             hd.Id(DialogPrimitive.descriptionId(props.model)),
-                            hd.DataAttribute('slot', 'alert-dialog-description'),
+                            hd.DataAttribute(
+                              'slot',
+                              'alert-dialog-description',
+                            ),
                             hd.Class(className(DESCRIPTION_CLASS)),
                           ],
                           [props.description],
@@ -218,34 +238,45 @@ export const alertDialog = <Msg>(
                         hd.button(
                           [
                             ...initialFocus,
-                            hd.OnClick(props.toParentMessage(AlertDialogMessages.RequestedAlertDialogCancel())),
+                            hd.OnClick(
+                              props.toParentMessage(
+                                AlertDialogMessages.RequestedAlertDialogCancel(),
+                              ),
+                            ),
                             hd.Type('button'),
                             hd.Disabled(props.isPending ?? false),
                             hd.DataAttribute('slot', 'alert-dialog-cancel'),
                             hd.Class(
-                              cn(
-                                styles.cancel,
-                                props.cancelLayoutStyle,
-                              ),
+                              cn(styles.cancel, props.cancelLayoutStyle),
                             ),
                           ],
                           [props.cancelLabel ?? 'Cancel'],
                         ),
                         hd.button(
                           [
-                            hd.OnClick(props.toParentMessage(AlertDialogMessages.RequestedAlertDialogConfirm())),
+                            hd.OnClick(
+                              props.toParentMessage(
+                                AlertDialogMessages.RequestedAlertDialogConfirm(),
+                              ),
+                            ),
                             hd.Type('button'),
                             hd.Disabled(props.isPending ?? false),
                             hd.AriaBusy(props.isPending ?? false),
                             hd.DataAttribute('slot', 'alert-dialog-action'),
                             hd.Class(
                               cn(
-                                props.actionVariant === 'destructive' ? styles.actionDestructive : styles.action,
+                                props.actionVariant === 'destructive'
+                                  ? styles.actionDestructive
+                                  : styles.action,
                                 props.actionLayoutStyle,
                               ),
                             ),
                           ],
-                          [props.isPending === true ? props.pendingLabel ?? props.actionLabel : props.actionLabel],
+                          [
+                            props.isPending === true
+                              ? (props.pendingLabel ?? props.actionLabel)
+                              : props.actionLabel,
+                          ],
                         ),
                       ],
                     ),
@@ -253,12 +284,15 @@ export const alertDialog = <Msg>(
                 ),
               ]
             : [],
-        );
+        )
       },
     },
-    toParentMessage: message => props.toParentMessage(AlertDialogMessages.GotAlertDialogPrimitiveMessage({ message })),
-  });
-};
+    toParentMessage: message =>
+      props.toParentMessage(
+        AlertDialogMessages.GotAlertDialogPrimitiveMessage({ message }),
+      ),
+  })
+}
 
 /*
 Minimal wiring:

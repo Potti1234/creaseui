@@ -1,45 +1,70 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type CommandFixture = Readonly<{
-  title: string;
-  description?: string;
-  heroOnly?: boolean;
-  kind: 'basic' | 'shortcuts' | 'groups' | 'scrollable' | 'rtl';
-}>;
+  title: string
+  description?: string
+  heroOnly?: boolean
+  kind: 'basic' | 'shortcuts' | 'groups' | 'scrollable' | 'rtl'
+}>
 
 export const commandFixtures: ReadonlyArray<CommandFixture> = [
   { title: 'Demo', heroOnly: true, kind: 'basic' },
-  { title: 'Basic', kind: 'basic', description: 'A dialog wraps the always-visible command palette; the parent owns the open state.' },
-  { title: 'Shortcuts', kind: 'shortcuts', description: 'Item configs carry icon content and a trailing shortcut hint.' },
-  { title: 'Groups', kind: 'groups', description: 'itemGroupKey plus groupToHeading render labeled, separated groups.' },
-  { title: 'Scrollable', kind: 'scrollable', description: 'Long item sets scroll inside the dialog while the input stays pinned.' },
-  { title: 'RTL', kind: 'rtl', description: 'A dir="rtl" wrapper mirrors the palette for localized commands.' },
-];
+  {
+    title: 'Basic',
+    kind: 'basic',
+    description:
+      'A dialog wraps the always-visible command palette; the parent owns the open state.',
+  },
+  {
+    title: 'Shortcuts',
+    kind: 'shortcuts',
+    description:
+      'Item configs carry icon content and a trailing shortcut hint.',
+  },
+  {
+    title: 'Groups',
+    kind: 'groups',
+    description:
+      'itemGroupKey plus groupToHeading render labeled, separated groups.',
+  },
+  {
+    title: 'Scrollable',
+    kind: 'scrollable',
+    description:
+      'Long item sets scroll inside the dialog while the input stays pinned.',
+  },
+  {
+    title: 'RTL',
+    kind: 'rtl',
+    description:
+      'A dir="rtl" wrapper mirrors the palette for localized commands.',
+  },
+]
 
 export type CommandItem = Readonly<{
-  value: string;
-  icon?: string;
-  shortcut?: string;
-  group: string;
-}>;
+  value: string
+  icon?: string
+  shortcut?: string
+  group: string
+}>
 
 export const commandBasicItems: ReadonlyArray<CommandItem> = [
   { value: 'Calendar', icon: 'calendar', group: 'Suggestions' },
   { value: 'Search Emoji', icon: 'smile', group: 'Suggestions' },
   { value: 'Calculator', icon: 'calculator', group: 'Suggestions' },
-];
+]
 
 export const commandShortcutItems: ReadonlyArray<CommandItem> = [
   { value: 'Profile', icon: 'user', shortcut: '⌘P', group: 'Settings' },
   { value: 'Billing', icon: 'credit-card', shortcut: '⌘B', group: 'Settings' },
   { value: 'Settings', icon: 'settings', shortcut: '⌘S', group: 'Settings' },
-];
+]
 
 export const commandGroupItems: ReadonlyArray<CommandItem> = [
   ...commandBasicItems,
   ...commandShortcutItems,
-];
+]
 
 export const commandScrollableItems: ReadonlyArray<CommandItem> = [
   { value: 'Home', icon: 'house', shortcut: '⌘H', group: 'Navigation' },
@@ -52,16 +77,21 @@ export const commandScrollableItems: ReadonlyArray<CommandItem> = [
   { value: 'Documents', icon: 'file-text', group: 'Navigation' },
   { value: 'Downloads', icon: 'download', group: 'Navigation' },
   { value: 'Trash', icon: 'trash-2', group: 'Navigation' },
-  { value: 'New Folder', icon: 'folder-plus', shortcut: '⌘⇧N', group: 'Actions' },
+  {
+    value: 'New Folder',
+    icon: 'folder-plus',
+    shortcut: '⌘⇧N',
+    group: 'Actions',
+  },
   { value: 'Copy Path', icon: 'clipboard', shortcut: '⌘⇧C', group: 'Actions' },
   { value: 'Paste', icon: 'clipboard-paste', shortcut: '⌘V', group: 'Actions' },
-];
+]
 
 export const commandRtlItems: ReadonlyArray<CommandItem> = [
   { value: 'التقويم', icon: 'calendar', group: 'اقتراحات' },
   { value: 'بحث عن إيموجي', icon: 'smile', group: 'اقتراحات' },
   { value: 'الآلة الحاسبة', icon: 'calculator', group: 'اقتراحات' },
-];
+]
 
 export const itemsForFixture = (
   fixture: CommandFixture,
@@ -74,26 +104,28 @@ export const itemsForFixture = (
         ? commandScrollableItems
         : fixture.kind === 'rtl'
           ? commandRtlItems
-          : commandBasicItems;
+          : commandBasicItems
 
 const itemsLiteral = (items: ReadonlyArray<CommandItem>): string => {
   const lines = items.map(
     item =>
       `  { value: '${item.value}'${item.icon === undefined ? '' : `, icon: '${item.icon}'`}${item.shortcut === undefined ? '' : `, shortcut: '${item.shortcut}'`}, group: '${item.group}' },`,
-  );
+  )
   return `type CommandItem = Readonly<{ value: string; icon?: string; shortcut?: string; group: string }>
-const commandItems: ReadonlyArray<CommandItem> = [\n${lines.join('\n')}\n]`;
-};
+const commandItems: ReadonlyArray<CommandItem> = [\n${lines.join('\n')}\n]`
+}
 
 const commandSource = (
   fixture: CommandFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const dir = renderer === 'stylex' ? 'stylex' : 'ui';
-  const items = itemsForFixture(fixture);
+  const dir = renderer === 'stylex' ? 'stylex' : 'ui'
+  const items = itemsForFixture(fixture)
   const placeholder =
-    fixture.kind === 'rtl' ? 'اكتب أمرًا أو ابحث...' : 'Type a command or search...';
-  const aria = fixture.kind === 'rtl' ? 'قائمة الأوامر' : 'Command menu';
+    fixture.kind === 'rtl'
+      ? 'اكتب أمرًا أو ابحث...'
+      : 'Type a command or search...'
+  const aria = fixture.kind === 'rtl' ? 'قائمة الأوامر' : 'Command menu'
   return foldkitApplication({
     title: `Command — ${fixture.title}`,
     imports: `import { Option, Schema as S } from 'effect'
@@ -158,7 +190,7 @@ export type Message = typeof Message.Type`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Command menu',
   body: h.main([], [
-    ${fixture.kind === 'rtl' ? "h.div([h.Dir('rtl')], [" : 'h.div([h.Class(\'flex flex-col gap-4\')], ['}
+    ${fixture.kind === 'rtl' ? "h.div([h.Dir('rtl')], [" : "h.div([h.Class('flex flex-col gap-4')], ["}
       Button.button({ variant: 'outline', onClick: OpenedMenu(), children: ['Open Menu'] }, h),
       Dialog.dialog({
         model: model.dialog,
@@ -192,8 +224,8 @@ export type Message = typeof Message.Type`,
     ]),
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const commandExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -205,4 +237,4 @@ export const commandExamples = (
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: commandSource(fixture, renderer),
-  }));
+  }))

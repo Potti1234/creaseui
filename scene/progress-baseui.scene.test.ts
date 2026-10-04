@@ -133,16 +133,19 @@ const verifyRenderer = (name: string, Progress: ProgressModule) => {
           {
             update,
             view: (model, h) =>
-              h.div([], [
-                h.button(
-                  [
-                    h.Type('button'),
-                    h.OnClick({ _tag: 'SetValue', value: 77 }),
-                  ],
-                  ['Set to 77'],
-                ),
-                Progress.progress({ value: model.value }, h),
-              ]),
+              h.div(
+                [],
+                [
+                  h.button(
+                    [
+                      h.Type('button'),
+                      h.OnClick({ _tag: 'SetValue', value: 77 }),
+                    ],
+                    ['Set to 77'],
+                  ),
+                  Progress.progress({ value: model.value }, h),
+                ],
+              ),
           },
           Scene.given(initialModel(50)),
           Scene.expect(progressbar).toHaveAttr('aria-valuenow', '50'),
@@ -162,30 +165,33 @@ const verifyRenderer = (name: string, Progress: ProgressModule) => {
           {
             update,
             view: (model, h) =>
-              h.div([], [
-                h.button(
-                  [
-                    h.Type('button'),
-                    h.OnClick({ _tag: 'SetValue', value: null }),
-                  ],
-                  ['To indeterminate'],
-                ),
-                h.button(
-                  [
-                    h.Type('button'),
-                    h.OnClick({ _tag: 'SetValue', value: 50 }),
-                  ],
-                  ['To 50'],
-                ),
-                h.button(
-                  [
-                    h.Type('button'),
-                    h.OnClick({ _tag: 'SetValue', value: 100 }),
-                  ],
-                  ['To 100'],
-                ),
-                Progress.progress({ value: model.value }, h),
-              ]),
+              h.div(
+                [],
+                [
+                  h.button(
+                    [
+                      h.Type('button'),
+                      h.OnClick({ _tag: 'SetValue', value: null }),
+                    ],
+                    ['To indeterminate'],
+                  ),
+                  h.button(
+                    [
+                      h.Type('button'),
+                      h.OnClick({ _tag: 'SetValue', value: 50 }),
+                    ],
+                    ['To 50'],
+                  ),
+                  h.button(
+                    [
+                      h.Type('button'),
+                      h.OnClick({ _tag: 'SetValue', value: 100 }),
+                    ],
+                    ['To 100'],
+                  ),
+                  Progress.progress({ value: model.value }, h),
+                ],
+              ),
           },
           Scene.given(initialModel(null)),
           Scene.expect(progressbar).toHaveAttr('data-state', 'indeterminate'),
@@ -295,9 +301,7 @@ const verifyRenderer = (name: string, Progress: ProgressModule) => {
     })
 
     describe('prop: format', () => {
-      it.todo(
-        'formats the value — creaseui has no format prop or Value part',
-      )
+      it.todo('formats the value — creaseui has no format prop or Value part')
       it.todo(
         'reflects format changes without lagging a commit — no format prop',
       )

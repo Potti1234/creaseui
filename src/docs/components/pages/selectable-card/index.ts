@@ -1,6 +1,6 @@
-import { authoredPage } from '@/docs/components/pages/authored-page';
-import { selectableCardExamples } from '@/docs/components/pages/selectable-card/shared';
-import { selectableCardTailwindPreviewProgram } from '@/docs/components/pages/selectable-card/tailwind';
+import { authoredPage } from '@/docs/components/pages/authored-page'
+import { selectableCardExamples } from '@/docs/components/pages/selectable-card/shared'
+import { selectableCardTailwindPreviewProgram } from '@/docs/components/pages/selectable-card/tailwind'
 
 export const selectableCardPage = authoredPage({
   slug: 'selectable-card',
@@ -16,10 +16,10 @@ export const selectableCardPage = authoredPage({
     apiHref:
       'https://github.com/facebook/astryx/blob/main/packages/core/src/SelectableCard/SelectableCard.tsx',
     styling:
-      'Selected cards draw an inset 2px ring in the variant\'s hue, which composes on top of `elevation` so a selected card keeps its shadow. Chromatic `variant`s ring in the matching chart color.',
+      "Selected cards draw an inset 2px ring in the variant's hue, which composes on top of `elevation` so a selected card keeps its shadow. Chromatic `variant`s ring in the matching chart color.",
     accessibility:
       'The required `label` names the hidden checkbox input. Space toggles it natively and Enter is wired as an additional toggle, matching astryx.',
     examples: selectableCardExamples('tailwind'),
     stylexExamples: selectableCardExamples('stylex'),
   },
-});
+})

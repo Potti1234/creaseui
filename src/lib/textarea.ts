@@ -1,5 +1,10 @@
 import { Textarea as TextareaPrimitive } from '@foldkit/ui'
-import type { Attribute, Html, HtmlBuilder, TextareaAttribute } from 'foldkit/html'
+import type {
+  Attribute,
+  Html,
+  HtmlBuilder,
+  TextareaAttribute,
+} from 'foldkit/html'
 
 export type ResizePolicy = 'none' | 'vertical' | 'horizontal' | 'both'
 export type WrapPolicy = 'soft' | 'hard' | 'off'
@@ -61,36 +66,43 @@ export const renderTextarea = <Msg>(
       isAutofocus: props.isAutofocus ?? false,
       ...(props.name === undefined ? {} : { name: props.name }),
       ...(props.rows === undefined ? {} : { rows: props.rows }),
-      ...(props.placeholder === undefined ? {} : { placeholder: props.placeholder }),
+      ...(props.placeholder === undefined
+        ? {}
+        : { placeholder: props.placeholder }),
       toView: ({ textarea: primitiveTextarea, label, description }) => {
-        const isInteractive = props.isDisabled !== true && props.isReadOnly !== true
+        const isInteractive =
+          props.isDisabled !== true && props.isReadOnly !== true
         const describedBy = descriptionIds(props)
         const textareaAttributes = primitiveTextarea.filter(
           (attribute): attribute is TextareaAttribute<Msg> =>
             attribute._tag !== 'AriaDescribedBy',
         )
-        const control = h.textarea(
-          [
-            ...textareaAttributes,
-            h.DataAttribute('slot', 'textarea'),
-            h.DataAttribute('resize', props.resize ?? 'vertical'),
-            ...(props.onChange === undefined || !isInteractive
-              ? []
-              : [h.OnChange(props.onChange)]),
-            ...(props.form === undefined ? [] : [h.FormAttr(props.form)]),
-            ...(props.wrap === undefined ? [] : [h.Wrap(props.wrap)]),
-            ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
-            ...(describedBy === undefined ? [] : [h.AriaDescribedBy(describedBy)]),
-            ...visual.textarea,
-          ],
-        )
+        const control = h.textarea([
+          ...textareaAttributes,
+          h.DataAttribute('slot', 'textarea'),
+          h.DataAttribute('resize', props.resize ?? 'vertical'),
+          ...(props.onChange === undefined || !isInteractive
+            ? []
+            : [h.OnChange(props.onChange)]),
+          ...(props.form === undefined ? [] : [h.FormAttr(props.form)]),
+          ...(props.wrap === undefined ? [] : [h.Wrap(props.wrap)]),
+          ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
+          ...(describedBy === undefined
+            ? []
+            : [h.AriaDescribedBy(describedBy)]),
+          ...visual.textarea,
+        ])
 
-        if (props.label === undefined && props.description === undefined) return control
+        if (props.label === undefined && props.description === undefined)
+          return control
 
         return h.div(
           [
             h.DataAttribute('slot', 'textarea-field'),
-            h.DataAttribute('state', props.isInvalid === true ? 'invalid' : 'valid'),
+            h.DataAttribute(
+              'state',
+              props.isInvalid === true ? 'invalid' : 'valid',
+            ),
             ...visual.field,
           ],
           [
@@ -98,7 +110,11 @@ export const renderTextarea = <Msg>(
               ? []
               : [
                   h.label(
-                    [h.DataAttribute('slot', 'textarea-label'), ...label, ...visual.label],
+                    [
+                      h.DataAttribute('slot', 'textarea-label'),
+                      ...label,
+                      ...visual.label,
+                    ],
                     [props.label],
                   ),
                 ]),

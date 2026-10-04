@@ -75,7 +75,10 @@ export type StatusDotProps = Readonly<{
   layoutStyle?: ComponentLayoutStyle
 }>
 
-export const statusDot = <Msg>(props: StatusDotProps, h: HtmlBuilder<Msg>): Html =>
+export const statusDot = <Msg>(
+  props: StatusDotProps,
+  h: HtmlBuilder<Msg>,
+): Html =>
   h.span(
     [
       h.Class(

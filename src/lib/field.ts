@@ -38,7 +38,7 @@ export const fieldErrorMessages = (
   errors: ReadonlyArray<FieldError> = [],
 ): ReadonlyArray<string> => [
   ...new Set(
-    errors.flatMap((error) =>
+    errors.flatMap(error =>
       error?.message === undefined ? [] : [error.message],
     ),
   ),
@@ -82,7 +82,7 @@ export const renderControlField = <Msg>(
         : [
             h.ul(
               [...visual.errorList],
-              messages.map((message) => h.li([], [message])),
+              messages.map(message => h.li([], [message])),
             ),
           ]
 

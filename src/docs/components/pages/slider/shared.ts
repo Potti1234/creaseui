@@ -1,24 +1,22 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type SliderInstance = Readonly<{
-  id: string;
-  values: ReadonlyArray<number>;
-  min: number;
-  max: number;
-  step: number;
-  orientation?: 'horizontal' | 'vertical';
-  direction?: 'ltr' | 'rtl';
-}>;
+  id: string
+  values: ReadonlyArray<number>
+  min: number
+  max: number
+  step: number
+  orientation?: 'horizontal' | 'vertical'
+  direction?: 'ltr' | 'rtl'
+}>
 
 export const sliderFixtures = [
   { title: 'Basic', kind: 'slider', initialValue: 75, isDisabled: false },
   {
     title: 'Range',
     kind: 'multi',
-    instances: [
-      { id: 'range', values: [25, 50], min: 0, max: 100, step: 5 },
-    ],
+    instances: [{ id: 'range', values: [25, 50], min: 0, max: 100, step: 5 }],
   },
   {
     title: 'Multiple Thumbs',
@@ -32,8 +30,22 @@ export const sliderFixtures = [
     kind: 'multi',
     vertical: true,
     instances: [
-      { id: 'v1', values: [50], min: 0, max: 100, step: 1, orientation: 'vertical' },
-      { id: 'v2', values: [25], min: 0, max: 100, step: 1, orientation: 'vertical' },
+      {
+        id: 'v1',
+        values: [50],
+        min: 0,
+        max: 100,
+        step: 1,
+        orientation: 'vertical',
+      },
+      {
+        id: 'v2',
+        values: [25],
+        min: 0,
+        max: 100,
+        step: 1,
+        orientation: 'vertical',
+      },
     ],
   },
   {
@@ -52,9 +64,9 @@ export const sliderFixtures = [
       { id: 'rtl', values: [75], min: 0, max: 100, step: 1, direction: 'rtl' },
     ],
   },
-] as const;
+] as const
 
-export type SliderFixture = (typeof sliderFixtures)[number];
+export type SliderFixture = (typeof sliderFixtures)[number]
 
 const STYLES_BLOCK = `
 const styles = stylex.create({
@@ -64,24 +76,28 @@ const styles = stylex.create({
   controlledRow: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem' },
   controlledValue: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
 })
-`;
+`
 
 const sliderSource = (
   fixture: { title: string; initialValue: number; isDisabled: boolean },
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const isStyleX = renderer === 'stylex';
-  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '');
+  const isStyleX = renderer === 'stylex'
+  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
   return foldkitApplication({
     title: `Slider — ${fixture.title}`,
     imports: `import { Option, Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { taggedStruct } from 'foldkit/schema'
-${isStyleX ? `
+${
+  isStyleX
+    ? `
 import * as stylex from '@stylexjs/stylex'
 import { className } from '@/stylex/style'
-` : ''}
+`
+    : ''
+}
 import * as Slider from '@/${isStyleX ? 'stylex' : 'ui'}/slider'${isStyleX ? STYLES_BLOCK : ''}`,
     model: `export const Model = S.Struct({
   slider: Slider.Model,
@@ -146,30 +162,42 @@ export type Message = typeof Message.Type`,
     ]),
   ]),
 })`,
-  });
-};
+  })
+}
 
 const multiSource = (
   fixture: {
-    title: string;
-    instances: ReadonlyArray<SliderInstance>;
-    vertical?: boolean;
-    controlled?: boolean;
+    title: string
+    instances: ReadonlyArray<SliderInstance>
+    vertical?: boolean
+    controlled?: boolean
   },
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const isStyleX = renderer === 'stylex';
-  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '');
+  const isStyleX = renderer === 'stylex'
+  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
   const sliderEmit = (instance: SliderInstance): string => `Slider.multiSlider({
         values: model.values['${instance.id}'] ?? [${instance.values.join(', ')}],
         min: ${String(instance.min)},
         max: ${String(instance.max)},
         step: ${String(instance.step)},
-        onInput: values => ChangedSliderValues({ id: '${instance.id}', values }),${instance.orientation === 'vertical' ? `
-        orientation: 'vertical',` : ''}${instance.direction === 'rtl' ? `
-        direction: 'rtl',` : ''}${isStyleX ? '' : `
-        class: '${instance.orientation === 'vertical' ? 'h-40' : 'w-full'}',`}
-      }, h)`;
+        onInput: values => ChangedSliderValues({ id: '${instance.id}', values }),${
+          instance.orientation === 'vertical'
+            ? `
+        orientation: 'vertical',`
+            : ''
+        }${
+          instance.direction === 'rtl'
+            ? `
+        direction: 'rtl',`
+            : ''
+        }${
+          isStyleX
+            ? ''
+            : `
+        class: '${instance.orientation === 'vertical' ? 'h-40' : 'w-full'}',`
+        }
+      }, h)`
   const wrapEmit = (inner: string): string =>
     fixture.vertical === true
       ? `h.div([h.Class(${isStyleX ? 'className(styles.verticalWrap)' : "'flex w-full max-w-xs items-center justify-center gap-6'"})], [
@@ -187,17 +215,21 @@ const multiSource = (
     ])`
         : `h.div([h.Class(${isStyleX ? 'className(styles.slider)' : "'w-full max-w-xs'"})], [
       ${inner},
-    ])`;
+    ])`
   return foldkitApplication({
     title: `Slider — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { taggedStruct } from 'foldkit/schema'
-${isStyleX ? `
+${
+  isStyleX
+    ? `
 import * as stylex from '@stylexjs/stylex'
 import { className } from '@/stylex/style'
-` : ''}
+`
+    : ''
+}
 import * as Slider from '@/${isStyleX ? 'stylex' : 'ui'}/slider'${isStyleX ? STYLES_BLOCK : ''}`,
     model: `export const Model = S.Struct({
   values: S.Record(S.String, S.Array(S.Number)),
@@ -236,8 +268,8 @@ ${fixture.instances.map(i => `      '${i.id}': [${i.values.join(', ')}],`).join(
     ${wrapEmit(fixture.instances.map(i => `      ${sliderEmit(i)}`).join(',\n'))},
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const sliderExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -248,4 +280,4 @@ export const sliderExamples = (
       fixture.kind === 'slider'
         ? sliderSource(fixture, renderer)
         : multiSource(fixture, renderer),
-  }));
+  }))

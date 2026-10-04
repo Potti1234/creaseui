@@ -9,15 +9,13 @@ const roots = [
   'src/demo/blocks-stylex',
 ]
 
-const files = roots.flatMap((root) => {
+const files = roots.flatMap(root => {
   const stat = fs.statSync(root)
   if (stat.isFile()) return [root]
   return fs
     .readdirSync(root, { recursive: true, withFileTypes: true })
-    .filter(
-      (entry) => entry.isFile() && /\.(?:css|ts|tsx)$/u.test(entry.name),
-    )
-    .map((entry) => path.join(entry.parentPath, entry.name))
+    .filter(entry => entry.isFile() && /\.(?:css|ts|tsx)$/u.test(entry.name))
+    .map(entry => path.join(entry.parentPath, entry.name))
 })
 
 const errors = []
@@ -30,12 +28,20 @@ for (const file of files) {
 
   lines.forEach((line, index) => {
     if (/eslint-disable(?!-next-line)/u.test(line)) {
-      errors.push(`${file}:${index + 1}: file-wide ESLint suppression is forbidden`)
+      errors.push(
+        `${file}:${index + 1}: file-wide ESLint suppression is forbidden`,
+      )
     }
     if (/oxlint-disable(?!-next-line)/u.test(line)) {
-      errors.push(`${file}:${index + 1}: file-wide Oxlint suppression is forbidden`)
+      errors.push(
+        `${file}:${index + 1}: file-wide Oxlint suppression is forbidden`,
+      )
     }
-    if (/(?:eslint|oxlint)-disable-next-line|@ts-(?:expect-error|ignore)/u.test(line)) {
+    if (
+      /(?:eslint|oxlint)-disable-next-line|@ts-(?:expect-error|ignore)/u.test(
+        line,
+      )
+    ) {
       suppressions.push({ file, line: index + 1 })
       if (!/-- reason: .{12,}/u.test(line)) {
         errors.push(
@@ -56,18 +62,22 @@ for (const file of files) {
       errors.push(`${file}: anchored overlays must use themedAnchor(...)`)
     }
     if (/portalToContainingRoot/u.test(source)) {
-      errors.push(`${file}: direct Foldkit portal access bypasses the theme boundary`)
+      errors.push(
+        `${file}: direct Foldkit portal access bypasses the theme boundary`,
+      )
     }
   }
 
-  for (const match of source.matchAll(/from\s+['"]([^'"]+\.module\.css)['"]/gu)) {
+  for (const match of source.matchAll(
+    /from\s+['"]([^'"]+\.module\.css)['"]/gu,
+  )) {
     fallbackImports.push({ file, specifier: match[1] })
   }
 }
 
 const manifestPath = 'src/stylex/fallbacks/manifest.json'
 const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'))
-const manifestFiles = new Set(manifest.fallbacks.map((entry) => entry.file))
+const manifestFiles = new Set(manifest.fallbacks.map(entry => entry.file))
 for (const fallback of fallbackImports) {
   const resolved = path
     .relative(

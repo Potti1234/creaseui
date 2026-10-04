@@ -1,29 +1,29 @@
-import * as stylex from '@stylexjs/stylex';
-import type { StaticStyles } from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { StaticStyles } from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Icon from '@/lib/icon';
+import * as Icon from '@/lib/icon'
 import {
   Message,
   codeBlockModel,
   parseMarkdownBlocks,
   sanitizeMarkdownUrl,
-} from '@/lib/markdown';
+} from '@/lib/markdown'
 import type {
   MarkdownBlock,
   MarkdownInline,
   MarkdownSource,
-
-  Model} from '@/lib/markdown';
-import { blockquote } from './blockquote';
-import { code } from './code';
-import { codeBlock } from './code-block';
-import type { ComponentLayoutStyle } from './contracts';
-import { heading } from './heading';
-import type { HeadingLevel } from './heading';
-import { list, listItem } from './list';
-import { foundationTokens } from './foundations-tokens.stylex';
-import { className } from './style';
+  Model,
+} from '@/lib/markdown'
+import { blockquote } from './blockquote'
+import { code } from './code'
+import { codeBlock } from './code-block'
+import type { ComponentLayoutStyle } from './contracts'
+import { heading } from './heading'
+import type { HeadingLevel } from './heading'
+import { list, listItem } from './list'
+import { foundationTokens } from './foundations-tokens.stylex'
+import { className } from './style'
 import {
   table,
   tableBody,
@@ -31,8 +31,8 @@ import {
   tableHead,
   tableHeader,
   tableRow,
-} from './table';
-import { tokens } from './tokens.stylex';
+} from './table'
+import { tokens } from './tokens.stylex'
 
 export {
   init,
@@ -42,7 +42,7 @@ export {
   parseMarkdownBlocks,
   parseMarkdownInline,
   sanitizeMarkdownUrl,
-} from '@/lib/markdown';
+} from '@/lib/markdown'
 export type {
   MarkdownBlock,
   MarkdownInline,
@@ -51,7 +51,7 @@ export type {
   MarkdownTableAlign,
   MarkdownTableCell,
   MarkdownTableRow,
-} from '@/lib/markdown';
+} from '@/lib/markdown'
 
 /* Ported from Meta Astryx Markdown (packages/core/src/Markdown/Markdown.tsx) —
    examples and visual spec adapted to Crease UI tokens. Supported subset:
@@ -62,29 +62,29 @@ export type {
    autolink, onLinkClick, nested list indentation. Task lists render a
    read-only checkbox visual (astrxy CheckboxList isReadOnly equivalent). */
 
-export type MarkdownDisplay = 'block' | 'inline';
-export type MarkdownDensity = 'default' | 'compact';
-export type MarkdownCitationStyle = 'label' | 'number';
-export type MarkdownContentAlign = 'start' | 'center';
+export type MarkdownDisplay = 'block' | 'inline'
+export type MarkdownDensity = 'default' | 'compact'
+export type MarkdownCitationStyle = 'label' | 'number'
+export type MarkdownContentAlign = 'start' | 'center'
 
 export type MarkdownProps<Msg> = Readonly<{
   /** Markdown submodel state (owns the per-fence CodeBlock models). */
-  model: Model;
-  toParentMessage: (message: Message) => Msg;
+  model: Model
+  toParentMessage: (message: Message) => Msg
   /** Markdown source string. */
-  children: string;
-  display?: MarkdownDisplay;
-  density?: MarkdownDensity;
+  children: string
+  display?: MarkdownDisplay
+  density?: MarkdownDensity
   /** The HTML level markdown `#` maps to (clamped at h6). */
-  headingLevelStart?: HeadingLevel;
+  headingLevelStart?: HeadingLevel
   /** Citation sources keyed by id; `[id]`/【id】 become chips. */
-  sources?: Record<string, MarkdownSource>;
-  citationStyle?: MarkdownCitationStyle;
+  sources?: Record<string, MarkdownSource>
+  citationStyle?: MarkdownCitationStyle
   /** Max width for prose content (headings, paragraphs, lists, quotes). */
-  contentWidth?: number | string;
-  contentAlign?: MarkdownContentAlign;
-  layoutStyle?: ComponentLayoutStyle;
-}>;
+  contentWidth?: number | string
+  contentAlign?: MarkdownContentAlign
+  layoutStyle?: ComponentLayoutStyle
+}>
 
 // ---------------------------------------------------------------------------
 // Styles — astryx block spacing uses :first-child/:last-child suppression
@@ -206,7 +206,7 @@ const styles = stylex.create({
     backgroundColor: tokens.primary,
     color: tokens.primaryForeground,
   },
-});
+})
 
 // ---------------------------------------------------------------------------
 // Block spacing — astryx getElementSpacing, both densities
@@ -285,7 +285,7 @@ const spacing = stylex.create({
     marginBlockEnd: { default: '0.5rem', ':last-child': 0 },
     marginBlockStart: { default: '0.5rem', ':first-child': 0 },
   },
-});
+})
 
 type SpacingKind =
   | 'headingMajor'
@@ -296,34 +296,34 @@ type SpacingKind =
   | 'list'
   | 'table'
   | 'hr'
-  | 'image';
+  | 'image'
 
 const spacingStyleFor = (
   kind: SpacingKind,
   density: MarkdownDensity,
 ): StaticStyles => {
-  const compact = density === 'compact';
+  const compact = density === 'compact'
   switch (kind) {
     case 'headingMajor':
-      return compact ? spacing.headingMajorCompact : spacing.headingMajorDefault;
+      return compact ? spacing.headingMajorCompact : spacing.headingMajorDefault
     case 'headingMinor':
-      return compact ? spacing.headingMinorCompact : spacing.headingMinorDefault;
+      return compact ? spacing.headingMinorCompact : spacing.headingMinorDefault
     case 'paragraph':
-      return compact ? spacing.paragraphCompact : spacing.paragraphDefault;
+      return compact ? spacing.paragraphCompact : spacing.paragraphDefault
     case 'codeblock':
-      return compact ? spacing.codeblockCompact : spacing.codeblockDefault;
+      return compact ? spacing.codeblockCompact : spacing.codeblockDefault
     case 'blockquote':
-      return compact ? spacing.blockquoteCompact : spacing.blockquoteDefault;
+      return compact ? spacing.blockquoteCompact : spacing.blockquoteDefault
     case 'list':
-      return compact ? spacing.listCompact : spacing.listDefault;
+      return compact ? spacing.listCompact : spacing.listDefault
     case 'table':
-      return compact ? spacing.tableCompact : spacing.tableDefault;
+      return compact ? spacing.tableCompact : spacing.tableDefault
     case 'hr':
-      return compact ? spacing.hrCompact : spacing.hrDefault;
+      return compact ? spacing.hrCompact : spacing.hrDefault
     case 'image':
-      return compact ? spacing.imageCompact : spacing.imageDefault;
+      return compact ? spacing.imageCompact : spacing.imageDefault
   }
-};
+}
 
 const spacingForBlock = (
   node: MarkdownBlock,
@@ -334,40 +334,40 @@ const spacingForBlock = (
       return spacingStyleFor(
         node.depth <= 3 ? 'headingMajor' : 'headingMinor',
         density,
-      );
+      )
     case 'paragraph':
-      return spacingStyleFor('paragraph', density);
+      return spacingStyleFor('paragraph', density)
     case 'code':
-      return spacingStyleFor('codeblock', density);
+      return spacingStyleFor('codeblock', density)
     case 'blockquote':
-      return spacingStyleFor('blockquote', density);
+      return spacingStyleFor('blockquote', density)
     case 'list':
-      return spacingStyleFor('list', density);
+      return spacingStyleFor('list', density)
     case 'table':
-      return spacingStyleFor('table', density);
+      return spacingStyleFor('table', density)
     case 'thematicBreak':
-      return spacingStyleFor('hr', density);
+      return spacingStyleFor('hr', density)
     case 'image':
-      return spacingStyleFor('image', density);
+      return spacingStyleFor('image', density)
   }
-};
+}
 
 // ---------------------------------------------------------------------------
 // Render context
 // ---------------------------------------------------------------------------
 
 type Ctx<Msg> = Readonly<{
-  density: MarkdownDensity;
-  headingLevelStart: HeadingLevel;
-  sources: Record<string, MarkdownSource> | undefined;
-  citationStyle: MarkdownCitationStyle;
-  citationNumbers: Map<string, number>;
-  contentWidth: number | string | undefined;
-  contentAlign: MarkdownContentAlign;
-  model: Model;
-  toParentMessage: (message: Message) => Msg;
-  nextCodeBlockIndex: () => number;
-}>;
+  density: MarkdownDensity
+  headingLevelStart: HeadingLevel
+  sources: Record<string, MarkdownSource> | undefined
+  citationStyle: MarkdownCitationStyle
+  citationNumbers: Map<string, number>
+  contentWidth: number | string | undefined
+  contentAlign: MarkdownContentAlign
+  model: Model
+  toParentMessage: (message: Message) => Msg
+  nextCodeBlockIndex: () => number
+}>
 
 /** Dynamic prose/block width — h.Style because the value is runtime data. */
 const widthAttrs = <Msg>(ctx: Ctx<Msg>, h: HtmlBuilder<Msg>) =>
@@ -381,7 +381,7 @@ const widthAttrs = <Msg>(ctx: Ctx<Msg>, h: HtmlBuilder<Msg>) =>
               : ctx.contentWidth,
           ...(ctx.contentAlign === 'center' ? { marginInline: 'auto' } : {}),
         }),
-      ];
+      ]
 
 // ---------------------------------------------------------------------------
 // Inline renderer
@@ -392,13 +392,13 @@ const renderCitation = <Msg>(
   ctx: Ctx<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const existing = ctx.citationNumbers.get(sourceId);
+  const existing = ctx.citationNumbers.get(sourceId)
   if (existing === undefined) {
-    ctx.citationNumbers.set(sourceId, ctx.citationNumbers.size + 1);
+    ctx.citationNumbers.set(sourceId, ctx.citationNumbers.size + 1)
   }
-  const num = existing ?? ctx.citationNumbers.size;
-  const source = ctx.sources?.[sourceId] ?? { title: sourceId };
-  const label = `Citation ${num}: ${source.title}`;
+  const num = existing ?? ctx.citationNumbers.size
+  const source = ctx.sources?.[sourceId] ?? { title: sourceId }
+  const label = `Citation ${num}: ${source.title}`
 
   if (ctx.citationStyle === 'number') {
     return source.url === undefined
@@ -417,12 +417,10 @@ const renderCitation = <Msg>(
             h.Href(source.url),
             h.Target('_blank'),
             h.Rel('noopener noreferrer'),
-            h.Class(
-              className(styles.citationNumber, styles.citationLink),
-            ),
+            h.Class(className(styles.citationNumber, styles.citationLink)),
           ],
           [String(num)],
-        );
+        )
   }
 
   const children: ReadonlyArray<Html | string> = [
@@ -436,7 +434,7 @@ const renderCitation = <Msg>(
           ]),
         ]),
     h.span([h.Class(className(styles.citationTitle))], [source.title]),
-  ];
+  ]
   return source.url === undefined
     ? h.span(
         [
@@ -456,8 +454,8 @@ const renderCitation = <Msg>(
           h.Class(className(styles.citationLabel, styles.citationLink)),
         ],
         children,
-      );
-};
+      )
+}
 
 const renderInline = <Msg>(
   node: MarkdownInline,
@@ -466,34 +464,32 @@ const renderInline = <Msg>(
 ): Html | string => {
   switch (node.type) {
     case 'text':
-      return node.value;
+      return node.value
     case 'strong':
       return h.strong(
         [h.Class(className(styles.bold))],
         node.children.map(child => renderInline(child, ctx, h)),
-      );
+      )
     case 'emphasis':
       return h.em(
         [],
         node.children.map(child => renderInline(child, ctx, h)),
-      );
+      )
     case 'delete':
       return h.del(
         [h.Class(className(styles.strikethrough))],
         node.children.map(child => renderInline(child, ctx, h)),
-      );
+      )
     case 'inlineCode':
-      return code({ children: [node.value], size: 'inherit' }, h);
+      return code({ children: [node.value], size: 'inherit' }, h)
     case 'link': {
-      const safeHref = sanitizeMarkdownUrl(node.url);
-      const children = node.children.map(child =>
-        renderInline(child, ctx, h),
-      );
+      const safeHref = sanitizeMarkdownUrl(node.url)
+      const children = node.children.map(child => renderInline(child, ctx, h))
       if (safeHref === null) {
-        return h.span([], children);
+        return h.span([], children)
       }
       const isExternal =
-        safeHref.startsWith('https://') || safeHref.startsWith('http://');
+        safeHref.startsWith('https://') || safeHref.startsWith('http://')
       return h.a(
         [
           h.DataAttribute('slot', 'markdown-link'),
@@ -504,31 +500,31 @@ const renderInline = <Msg>(
             : []),
         ],
         children,
-      );
+      )
     }
     case 'image': {
-      const safeSrc = sanitizeMarkdownUrl(node.url);
+      const safeSrc = sanitizeMarkdownUrl(node.url)
       if (safeSrc === null) {
-        return h.span([], [`[${node.alt}]`]);
+        return h.span([], [`[${node.alt}]`])
       }
       return h.img([
         h.Src(safeSrc),
         h.Alt(node.alt),
         h.Class(className(styles.image)),
-      ]);
+      ])
     }
     case 'citation':
       if (
         ctx.sources === undefined ||
         ctx.sources[node.sourceId] === undefined
       ) {
-        return h.span([], [`[${node.sourceId}]`]);
+        return h.span([], [`[${node.sourceId}]`])
       }
-      return renderCitation(node.sourceId, ctx, h);
+      return renderCitation(node.sourceId, ctx, h)
     case 'break':
-      return h.br([]);
+      return h.br([])
   }
-};
+}
 
 // ---------------------------------------------------------------------------
 // Block renderer
@@ -539,21 +535,18 @@ const taskMarker = <Msg>(checked: boolean, h: HtmlBuilder<Msg>): Html =>
     [
       h.AriaHidden(true),
       h.Class(
-        className(
-          styles.taskMarker,
-          checked ? styles.taskMarkerChecked : null,
-        ),
+        className(styles.taskMarker, checked ? styles.taskMarkerChecked : null),
       ),
     ],
     checked ? [Icon.check<Msg>({ class: 'size-3.5' }, h)] : [],
-  );
+  )
 
 const renderListItemLabel = <Msg>(
   children: ReadonlyArray<MarkdownBlock>,
   ctx: Ctx<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html | string => {
-  const first = children[0];
+  const first = children[0]
   if (
     children.length === 1 &&
     first !== undefined &&
@@ -562,29 +555,27 @@ const renderListItemLabel = <Msg>(
     return h.span(
       [],
       first.children.map(child => renderInline(child, ctx, h)),
-    );
+    )
   }
   return h.span(
     [],
-    children.map((child, index) =>
-      renderBlock(child, ctx, h),
-    ),
-  );
-};
+    children.map((child, index) => renderBlock(child, ctx, h)),
+  )
+}
 
 const renderBlock = <Msg>(
   node: MarkdownBlock,
   ctx: Ctx<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const nodeSpacing = spacingForBlock(node, ctx.density);
+  const nodeSpacing = spacingForBlock(node, ctx.density)
 
   switch (node.type) {
     case 'heading': {
       const level = Math.min(
         node.depth + ctx.headingLevelStart - 1,
         6,
-      ) as HeadingLevel;
+      ) as HeadingLevel
       const headingEl = heading(
         {
           level,
@@ -599,8 +590,8 @@ const renderBlock = <Msg>(
           children: node.children.map(child => renderInline(child, ctx, h)),
         },
         h,
-      );
-      return headingEl;
+      )
+      return headingEl
     }
     case 'paragraph':
       return h.div(
@@ -611,9 +602,9 @@ const renderBlock = <Msg>(
           ...widthAttrs(ctx, h),
         ],
         node.children.map(child => renderInline(child, ctx, h)),
-      );
+      )
     case 'code': {
-      const blockIndex = ctx.nextCodeBlockIndex();
+      const blockIndex = ctx.nextCodeBlockIndex()
       return h.div(
         [
           h.DataAttribute('slot', 'markdown-codeblock'),
@@ -638,7 +629,7 @@ const renderBlock = <Msg>(
             h,
           ),
         ],
-      );
+      )
     }
     case 'blockquote': {
       const quoteEl = blockquote(
@@ -650,13 +641,13 @@ const renderBlock = <Msg>(
           children: node.children.map(child => renderBlock(child, ctx, h)),
         },
         h,
-      );
-      return quoteEl;
+      )
+      return quoteEl
     }
     case 'list': {
       const isTaskList =
         node.children.length > 0 &&
-        node.children.every(item => item.checked !== null);
+        node.children.every(item => item.checked !== null)
       if (isTaskList) {
         return h.div(
           [
@@ -684,7 +675,7 @@ const renderBlock = <Msg>(
               h,
             ),
           ],
-        );
+        )
       }
       return h.div(
         [
@@ -715,16 +706,16 @@ const renderBlock = <Msg>(
             h,
           ),
         ],
-      );
+      )
     }
     case 'table': {
-      const [headerRow, ...rows] = node.children;
+      const [headerRow, ...rows] = node.children
       const alignStyle = (columnIndex: number): StaticStyles =>
         node.align[columnIndex] === 'center'
           ? styles.cellCenter
           : node.align[columnIndex] === 'right'
             ? styles.cellEnd
-            : styles.cellStart;
+            : styles.cellStart
       return h.div(
         [
           h.DataAttribute('slot', 'markdown-table'),
@@ -737,8 +728,7 @@ const renderBlock = <Msg>(
               children: [
                 tableHeader(
                   {
-                    layoutStyle:
-                      styles.theadBorderless as ComponentLayoutStyle,
+                    layoutStyle: styles.theadBorderless as ComponentLayoutStyle,
                     children: [
                       tableRow(
                         {
@@ -795,15 +785,15 @@ const renderBlock = <Msg>(
             h,
           ),
         ],
-      );
+      )
     }
     case 'thematicBreak':
       return h.hr([
         h.DataAttribute('slot', 'markdown-hr'),
         h.Class(className(styles.hr, nodeSpacing)),
-      ]);
+      ])
     case 'image': {
-      const safeSrc = sanitizeMarkdownUrl(node.url);
+      const safeSrc = sanitizeMarkdownUrl(node.url)
       return h.div(
         [
           h.DataAttribute('slot', 'markdown-image'),
@@ -818,10 +808,10 @@ const renderBlock = <Msg>(
                 h.Class(className(styles.image)),
               ]),
         ],
-      );
+      )
     }
   }
-};
+}
 
 // ---------------------------------------------------------------------------
 // Component
@@ -831,13 +821,13 @@ export const markdown = <Msg>(
   props: MarkdownProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const density = props.density ?? 'default';
+  const density = props.density ?? 'default'
   const sourceIds =
     props.sources === undefined
       ? undefined
-      : new Set(Object.keys(props.sources));
-  const blocks = parseMarkdownBlocks(props.children, sourceIds);
-  let codeBlockIndex = 0;
+      : new Set(Object.keys(props.sources))
+  const blocks = parseMarkdownBlocks(props.children, sourceIds)
+  let codeBlockIndex = 0
   const ctx: Ctx<Msg> = {
     density,
     headingLevelStart: props.headingLevelStart ?? 1,
@@ -849,17 +839,17 @@ export const markdown = <Msg>(
     model: props.model,
     toParentMessage: props.toParentMessage,
     nextCodeBlockIndex: () => {
-      const index = codeBlockIndex;
-      codeBlockIndex++;
-      return index;
+      const index = codeBlockIndex
+      codeBlockIndex++
+      return index
     },
-  };
-  const children = blocks.map(block => renderBlock(block, ctx, h));
+  }
+  const children = blocks.map(block => renderBlock(block, ctx, h))
   const attributes = [
     h.DataAttribute('slot', 'markdown'),
     h.Class(className(styles.root, props.layoutStyle)),
-  ];
+  ]
   return props.display === 'inline'
     ? h.span(attributes, children)
-    : h.div(attributes, children);
-};
+    : h.div(attributes, children)
+}

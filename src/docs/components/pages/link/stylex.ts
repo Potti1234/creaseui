@@ -1,14 +1,14 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   linkFixtures,
   type LinkFixture,
-} from '@/docs/components/pages/link/shared';
-import * as Link from '@/stylex/link';
-import { className } from '@/stylex/style';
-import * as Text from '@/stylex/text';
+} from '@/docs/components/pages/link/shared'
+import * as Link from '@/stylex/link'
+import { className } from '@/stylex/style'
+import * as Text from '@/stylex/text'
 
 const styles = stylex.create({
   column: {
@@ -17,15 +17,18 @@ const styles = stylex.create({
     display: 'flex',
     flexDirection: 'column',
   },
-});
+})
 
-const renderFixture = <Msg>(fixture: LinkFixture, h: HtmlBuilder<Msg>): Html => {
+const renderFixture = <Msg>(
+  fixture: LinkFixture,
+  h: HtmlBuilder<Msg>,
+): Html => {
   switch (fixture.kind) {
     case 'showcase':
       return Link.link(
         { href: '#', isStandalone: true, children: ['Documentation'] },
         h,
-      );
+      )
     case 'inline':
       return Text.text(
         {
@@ -38,7 +41,7 @@ const renderFixture = <Msg>(fixture: LinkFixture, h: HtmlBuilder<Msg>): Html => 
           ],
         },
         h,
-      );
+      )
     case 'external':
       return h.div(
         [h.Class(className(styles.column))],
@@ -60,7 +63,7 @@ const renderFixture = <Msg>(fixture: LinkFixture, h: HtmlBuilder<Msg>): Html => 
             h,
           ),
         ),
-      );
+      )
     case 'tooltips':
       return h.div(
         [h.Class(className(styles.column))],
@@ -82,13 +85,13 @@ const renderFixture = <Msg>(fixture: LinkFixture, h: HtmlBuilder<Msg>): Html => 
             h,
           ),
         ),
-      );
+      )
   }
-};
+}
 
 export const linkStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   _model: unknown,
   _onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
-) => renderFixture(linkFixtures[exampleIndex] ?? linkFixtures[0], h);
+) => renderFixture(linkFixtures[exampleIndex] ?? linkFixtures[0], h)

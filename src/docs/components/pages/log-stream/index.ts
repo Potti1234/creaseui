@@ -1,6 +1,6 @@
-import { authoredPage } from '@/docs/components/pages/authored-page';
-import { logStreamExamples } from '@/docs/components/pages/log-stream/shared';
-import { logStreamTailwindPreviewProgram } from '@/docs/components/pages/log-stream/tailwind';
+import { authoredPage } from '@/docs/components/pages/authored-page'
+import { logStreamExamples } from '@/docs/components/pages/log-stream/shared'
+import { logStreamTailwindPreviewProgram } from '@/docs/components/pages/log-stream/tailwind'
 
 export const logStreamPage = authoredPage({
   slug: 'log-stream',
@@ -22,4 +22,4 @@ export const logStreamPage = authoredPage({
     examples: logStreamExamples('tailwind'),
     stylexExamples: logStreamExamples('stylex'),
   },
-});
+})

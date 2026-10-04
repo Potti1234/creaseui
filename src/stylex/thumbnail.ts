@@ -1,13 +1,13 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Icon from '@/lib/icon';
-import { complexTokens } from './complex-tokens.stylex';
-import type { ComponentLayoutStyle } from './contracts';
-import { foundationTokens } from './foundations-tokens.stylex';
-import { interactionTokens } from './interaction-tokens.stylex.const';
-import { className } from './style';
-import { tokens } from './tokens.stylex';
+import * as Icon from '@/lib/icon'
+import { complexTokens } from './complex-tokens.stylex'
+import type { ComponentLayoutStyle } from './contracts'
+import { foundationTokens } from './foundations-tokens.stylex'
+import { interactionTokens } from './interaction-tokens.stylex.const'
+import { className } from './style'
+import { tokens } from './tokens.stylex'
 
 /* Ported from Meta Astryx Thumbnail (packages/core/src/Thumbnail/Thumbnail.tsx) —
    examples and visual spec adapted to Crease UI tokens. Two documented
@@ -22,7 +22,7 @@ import { tokens } from './tokens.stylex';
 const spinFrames = stylex.keyframes({
   '0%': { transform: 'rotate(0deg)' },
   '100%': { transform: 'rotate(360deg)' },
-});
+})
 
 const styles = stylex.create({
   container: {
@@ -155,36 +155,36 @@ const styles = stylex.create({
     opacity: 0.5,
     pointerEvents: 'none',
   },
-});
+})
 
-export type ThumbnailShowRemoveOn = 'always' | 'hover';
+export type ThumbnailShowRemoveOn = 'always' | 'hover'
 
 export type ThumbnailProps<Msg> = Readonly<{
   /** Image source. When omitted, the thumbnail shows its placeholder state. */
-  src?: string;
+  src?: string
   /** Alt text for the image. */
-  alt?: string;
+  alt?: string
   /** Human-readable name shown in tooltips and used in accessible labels. */
-  label?: string;
+  label?: string
   /** Renders the skeleton state, or an upload overlay when a src is present. */
-  isLoading?: boolean;
+  isLoading?: boolean
   /** Set from the `onError` message: the current src failed to load. */
-  isError?: boolean;
+  isError?: boolean
   /** Grays out the thumbnail and disables interactions. */
-  isDisabled?: boolean;
+  isDisabled?: boolean
   /** Message sent when the media is clicked; makes the thumbnail a button. */
-  onClick?: Msg;
+  onClick?: Msg
   /** Message sent when the remove button is clicked. */
-  onRemove?: Msg;
+  onRemove?: Msg
   /** Optional message emitted when the image fails to load (pair with `isError`). */
-  onError?: Msg;
+  onError?: Msg
   /** Optional message emitted when the image finishes loading. */
-  onLoad?: Msg;
+  onLoad?: Msg
   /** Controls whether the remove button is always visible or hover-revealed. */
-  showRemoveOn?: ThumbnailShowRemoveOn;
+  showRemoveOn?: ThumbnailShowRemoveOn
   /** Parent-layout positioning only. */
-  layoutStyle?: ComponentLayoutStyle;
-}>;
+  layoutStyle?: ComponentLayoutStyle
+}>
 
 const placeholderGlyph = <Msg>(h: HtmlBuilder<Msg>): Html =>
   h.svg(
@@ -205,44 +205,47 @@ const placeholderGlyph = <Msg>(h: HtmlBuilder<Msg>): Html =>
         [],
       ),
     ],
-  );
+  )
 
-const resolveAccessibleName = (props: { alt?: string; label?: string }): string =>
+const resolveAccessibleName = (props: {
+  alt?: string
+  label?: string
+}): string =>
   props.label !== undefined && props.alt !== undefined
     ? `${props.label} — ${props.alt}`
-    : (props.label ?? props.alt ?? 'Thumbnail');
+    : (props.label ?? props.alt ?? 'Thumbnail')
 
 export const thumbnail = <Msg>(
   props: ThumbnailProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const accessibleName = resolveAccessibleName(props);
-  const hasSrc = props.src !== undefined && props.src !== '';
-  const isLoading = props.isLoading === true;
-  const isDisabled = props.isDisabled === true;
-  const hasError = props.isError === true;
+  const accessibleName = resolveAccessibleName(props)
+  const hasSrc = props.src !== undefined && props.src !== ''
+  const isLoading = props.isLoading === true
+  const isDisabled = props.isDisabled === true
+  const hasError = props.isError === true
 
-  const showSkeleton = isLoading && !hasSrc;
-  const showImage = hasSrc && !showSkeleton && !hasError;
-  const showUploadOverlay = isLoading && hasSrc;
-  const showPlaceholder = (!isLoading && !hasSrc) || hasError;
-  const isInteractive = props.onClick !== undefined && !isDisabled && !isLoading;
-  const hasRemove = props.onRemove !== undefined && !isDisabled;
-  const showRemoveOnHover = (props.showRemoveOn ?? 'hover') === 'hover';
+  const showSkeleton = isLoading && !hasSrc
+  const showImage = hasSrc && !showSkeleton && !hasError
+  const showUploadOverlay = isLoading && hasSrc
+  const showPlaceholder = (!isLoading && !hasSrc) || hasError
+  const isInteractive = props.onClick !== undefined && !isDisabled && !isLoading
+  const hasRemove = props.onRemove !== undefined && !isDisabled
+  const showRemoveOnHover = (props.showRemoveOn ?? 'hover') === 'hover'
 
   const imageNode = showImage
-    ? h.img(
-        [
-          h.Src(props.src ?? ''),
-          h.Alt(props.alt ?? ''),
-          h.Class(className(styles.image)),
-          h.Loading('lazy'),
-          ...(props.alt === undefined || props.alt === '' ? [h.AriaHidden(true)] : []),
-          ...(props.onError === undefined ? [] : [h.OnError(props.onError)]),
-          ...(props.onLoad === undefined ? [] : [h.OnLoad(props.onLoad)]),
-        ],
-      )
-    : h.empty;
+    ? h.img([
+        h.Src(props.src ?? ''),
+        h.Alt(props.alt ?? ''),
+        h.Class(className(styles.image)),
+        h.Loading('lazy'),
+        ...(props.alt === undefined || props.alt === ''
+          ? [h.AriaHidden(true)]
+          : []),
+        ...(props.onError === undefined ? [] : [h.OnError(props.onError)]),
+        ...(props.onLoad === undefined ? [] : [h.OnLoad(props.onLoad)]),
+      ])
+    : h.empty
 
   const imageContent = isInteractive
     ? h.button(
@@ -254,7 +257,7 @@ export const thumbnail = <Msg>(
         ],
         [imageNode],
       )
-    : imageNode;
+    : imageNode
 
   return h.div(
     [
@@ -262,7 +265,11 @@ export const thumbnail = <Msg>(
       h.AriaLabel(accessibleName),
       h.DataAttribute('slot', 'thumbnail'),
       h.Class(
-        className(styles.container, isDisabled && styles.disabled, props.layoutStyle),
+        className(
+          styles.container,
+          isDisabled && styles.disabled,
+          props.layoutStyle,
+        ),
       ),
     ],
     [
@@ -270,10 +277,15 @@ export const thumbnail = <Msg>(
         [h.Class(className(styles.imageContainer))],
         [
           showPlaceholder
-            ? h.div([h.Class(className(styles.placeholder))], [placeholderGlyph(h)])
+            ? h.div(
+                [h.Class(className(styles.placeholder))],
+                [placeholderGlyph(h)],
+              )
             : h.empty,
           imageContent,
-          showImage ? h.div([h.Class(className(styles.insetBorder))], []) : h.empty,
+          showImage
+            ? h.div([h.Class(className(styles.insetBorder))], [])
+            : h.empty,
           showUploadOverlay
             ? h.div(
                 [
@@ -313,5 +325,5 @@ export const thumbnail = <Msg>(
           )
         : h.empty,
     ],
-  );
-};
+  )
+}

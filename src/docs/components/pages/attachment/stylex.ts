@@ -1,19 +1,19 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   attachmentFixtures,
   type AttachmentFixture,
   type AttachmentItemSpec,
   type AttachmentRowSpec,
-} from '@/docs/components/pages/attachment/shared';
-import * as Icon from '@/lib/icon';
-import * as Attachment from '@/stylex/attachment';
-import * as Dialog from '@/stylex/dialog';
-import * as Spinner from '@/stylex/spinner';
-import { className } from '@/stylex/style';
+} from '@/docs/components/pages/attachment/shared'
+import * as Icon from '@/lib/icon'
+import * as Attachment from '@/stylex/attachment'
+import * as Dialog from '@/stylex/dialog'
+import * as Spinner from '@/stylex/spinner'
+import { className } from '@/stylex/style'
 
 const styles = stylex.create({
   frame: {
@@ -45,13 +45,13 @@ const styles = stylex.create({
   mediaImg: { aspectRatio: '1', objectFit: 'cover', width: '100%' },
   mediaIcon: { height: '1rem', width: '1rem' },
   actionIcon: { flexShrink: 0, height: '0.75rem', width: '0.75rem' },
-});
+})
 
 type PreviewSnapshot = {
-  removed: ReadonlyArray<string>;
-  preview: Dialog.Model;
-  previewFor: string;
-};
+  removed: ReadonlyArray<string>
+  preview: Dialog.Model
+  previewFor: string
+}
 
 const itemView = <Msg>(
   row: AttachmentRowSpec,
@@ -163,14 +163,14 @@ const itemView = <Msg>(
       ],
     },
     h,
-  );
+  )
 
 const frameStyle = (fixture: AttachmentFixture) =>
   fixture.frame === 'plain'
     ? styles.framePlain
     : fixture.frame === 'gap-3'
       ? styles.frameLoose
-      : styles.frame;
+      : styles.frame
 
 export const attachmentStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
@@ -178,12 +178,12 @@ export const attachmentStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ) => {
-  const fixture = attachmentFixtures[exampleIndex] ?? attachmentFixtures[0];
-  const previewModel = model as PreviewSnapshot;
+  const fixture = attachmentFixtures[exampleIndex] ?? attachmentFixtures[0]
+  const previewModel = model as PreviewSnapshot
   const rows = fixture.rows.flatMap(row => {
     const visible = row.items.filter(
       item => !previewModel.removed.includes(item.name),
-    );
+    )
     return row.grouped === true
       ? [
           Attachment.attachmentGroup(
@@ -198,28 +198,31 @@ export const attachmentStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
             h,
           ),
         ]
-      : visible.map(item => itemView(row, item, onMessageJson, h));
-  });
-  return h.div([h.Class(className(frameStyle(fixture)))], [
-    ...rows,
-    ...(fixture.rows.some(row =>
-      row.items.some(item => item.triggerLabel !== undefined),
-    )
-      ? [
-          Dialog.dialog(
-            {
-              model: previewModel.preview,
-              toParentMessage: message =>
-                onMessageJson(
-                  JSON.stringify({ _tag: 'GotDialogMessage', message }),
-                ),
-              title: previewModel.previewFor,
-              description:
-                'The attachment trigger fills the card and opens the dialog, while the actions stay independently clickable above it.',
-            },
-            h,
-          ),
-        ]
-      : []),
-  ]);
-};
+      : visible.map(item => itemView(row, item, onMessageJson, h))
+  })
+  return h.div(
+    [h.Class(className(frameStyle(fixture)))],
+    [
+      ...rows,
+      ...(fixture.rows.some(row =>
+        row.items.some(item => item.triggerLabel !== undefined),
+      )
+        ? [
+            Dialog.dialog(
+              {
+                model: previewModel.preview,
+                toParentMessage: message =>
+                  onMessageJson(
+                    JSON.stringify({ _tag: 'GotDialogMessage', message }),
+                  ),
+                title: previewModel.previewFor,
+                description:
+                  'The attachment trigger fills the card and opens the dialog, while the actions stay independently clickable above it.',
+              },
+              h,
+            ),
+          ]
+        : []),
+    ],
+  )
+}

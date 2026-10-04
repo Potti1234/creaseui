@@ -47,13 +47,13 @@ The preset does not approximate icon families with stroke width alone. Each
 choice installs an adapter that preserves Crease's `@/lib/icon` API while
 replacing its SVG node data:
 
-| Choice | Registry item | Source data | License |
-| --- | --- | --- | --- |
-| Lucide | `icons-lucide` | `@iconify-json/lucide` | ISC |
-| Hugeicons | `icons-hugeicons` | `@iconify-json/hugeicons` | MIT |
-| Tabler Icons | `icons-tabler` | `@iconify-json/tabler` | MIT |
-| Phosphor Icons | `icons-phosphor` | `@iconify-json/ph` | MIT |
-| Remix Icon | `icons-remixicon` | `@iconify-json/ri` | Apache-2.0 |
+| Choice         | Registry item     | Source data               | License    |
+| -------------- | ----------------- | ------------------------- | ---------- |
+| Lucide         | `icons-lucide`    | `@iconify-json/lucide`    | ISC        |
+| Hugeicons      | `icons-hugeicons` | `@iconify-json/hugeicons` | MIT        |
+| Tabler Icons   | `icons-tabler`    | `@iconify-json/tabler`    | MIT        |
+| Phosphor Icons | `icons-phosphor`  | `@iconify-json/ph`        | MIT        |
+| Remix Icon     | `icons-remixicon` | `@iconify-json/ri`        | Apache-2.0 |
 
 The checked-in mapping keeps canonical component icon names stable across all
 families. `npm run icons:adapters` fails when generated adapters drift from the

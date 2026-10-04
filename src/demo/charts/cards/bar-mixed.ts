@@ -1,12 +1,12 @@
-import type { HtmlBuilder } from 'foldkit/html';
-import type { EChartsOption } from 'echarts/types/dist/shared';
+import type { HtmlBuilder } from 'foldkit/html'
+import type { EChartsOption } from 'echarts/types/dist/shared'
 
-import * as Chart from '@/lib/echarts';
-import { barTooltip, standardBarCard } from '@/demo/charts/cards/bar-default';
+import * as Chart from '@/lib/echarts'
+import { barTooltip, standardBarCard } from '@/demo/charts/cards/bar-default'
 
-const HOST_ID = 'chart-bar-mixed';
-const BROWSERS = ['Chrome', 'Safari', 'Firefox', 'Edge', 'Other'];
-const VALUES = [275, 200, 187, 173, 90];
+const HOST_ID = 'chart-bar-mixed'
+const BROWSERS = ['Chrome', 'Safari', 'Firefox', 'Edge', 'Other']
+const VALUES = [275, 200, 187, 173, 90]
 
 Chart.registerChart(HOST_ID, (theme): EChartsOption => {
   const colors = [
@@ -15,7 +15,7 @@ Chart.registerChart(HOST_ID, (theme): EChartsOption => {
     theme.chart3,
     theme.chart4,
     theme.chart5,
-  ];
+  ]
   return {
     grid: Chart.compactGrid({ left: 0 }),
     xAxis: {
@@ -50,8 +50,8 @@ Chart.registerChart(HOST_ID, (theme): EChartsOption => {
         })),
       },
     ],
-  };
-});
+  }
+})
 
 export const view = <Msg>(
   toMessage: (message: Chart.ChartMessage) => Msg,
@@ -65,4 +65,4 @@ export const view = <Msg>(
       toMessage,
     },
     h,
-  );
+  )

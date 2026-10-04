@@ -1,17 +1,39 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
-import { dataTableFixtures, payments, type Payment } from '@/docs/components/pages/data-table/shared';
-import type { ComponentLayoutStyle } from '@/stylex/contracts';
-import * as DataTable from '@/stylex/data-table';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import {
+  dataTableFixtures,
+  payments,
+  type Payment,
+} from '@/docs/components/pages/data-table/shared'
+import type { ComponentLayoutStyle } from '@/stylex/contracts'
+import * as DataTable from '@/stylex/data-table'
 
-const styles = stylex.create({ amount: { textAlign: 'right' } });
+const styles = stylex.create({ amount: { textAlign: 'right' } })
 
-const columns = (rtl: boolean): ReadonlyArray<DataTable.DataTableColumn<Payment>> => [
-  { key: 'status', header: rtl ? 'الحالة' : 'Status', cell: row => row.status, sortValue: row => row.status },
-  { key: 'email', header: rtl ? 'البريد الإلكتروني' : 'Email', cell: row => row.email, sortValue: row => row.email },
-  { key: 'amount', header: rtl ? 'المبلغ' : 'Amount', layoutStyle: styles.amount as ComponentLayoutStyle, cell: row => `$${row.amount.toFixed(2)}`, sortValue: row => row.amount },
-];
+const columns = (
+  rtl: boolean,
+): ReadonlyArray<DataTable.DataTableColumn<Payment>> => [
+  {
+    key: 'status',
+    header: rtl ? 'الحالة' : 'Status',
+    cell: row => row.status,
+    sortValue: row => row.status,
+  },
+  {
+    key: 'email',
+    header: rtl ? 'البريد الإلكتروني' : 'Email',
+    cell: row => row.email,
+    sortValue: row => row.email,
+  },
+  {
+    key: 'amount',
+    header: rtl ? 'المبلغ' : 'Amount',
+    layoutStyle: styles.amount as ComponentLayoutStyle,
+    cell: row => `$${row.amount.toFixed(2)}`,
+    sortValue: row => row.amount,
+  },
+]
 
 export const dataTableStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   index: number,
@@ -19,37 +41,36 @@ export const dataTableStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html | undefined => {
-  const fixture = dataTableFixtures[index];
-  if (fixture === undefined) return undefined;
-  const preview = model as { table: DataTable.Model };
-  return h.div(
-    fixture.rtl ? [h.Dir('rtl')] : [],
-    [
-      DataTable.dataTable(
-        {
-          id: `docs-data-table-${String(index)}`,
-          model: preview.table,
-          toParentMessage: message =>
-            onMessageJson(
-              JSON.stringify({ _tag: 'GotDataTablePreviewMessage', message }),
-            ),
-          rows: payments,
-          columns: columns(fixture.rtl),
-          rowKey: row => row.id,
-          ...(fixture.filter
-            ? {
-                filterText: (row: Payment) => `${row.status} ${row.email}`,
-                filterPlaceholder: fixture.rtl ? 'بحث في المدفوعات...' : 'Filter payments…',
-              }
-            : {}),
-          ...(fixture.server ? { mode: 'server' as const, rowCount: 42 } : {}),
-          enableRowSelection: true,
-          enableColumnVisibility: true,
-          pageSizeOptions: [5, 10, 20],
-          ariaLabel: fixture.rtl ? 'المدفوعات' : 'Payments',
-        },
-        h,
-      ),
-    ],
-  );
-};
+  const fixture = dataTableFixtures[index]
+  if (fixture === undefined) return undefined
+  const preview = model as { table: DataTable.Model }
+  return h.div(fixture.rtl ? [h.Dir('rtl')] : [], [
+    DataTable.dataTable(
+      {
+        id: `docs-data-table-${String(index)}`,
+        model: preview.table,
+        toParentMessage: message =>
+          onMessageJson(
+            JSON.stringify({ _tag: 'GotDataTablePreviewMessage', message }),
+          ),
+        rows: payments,
+        columns: columns(fixture.rtl),
+        rowKey: row => row.id,
+        ...(fixture.filter
+          ? {
+              filterText: (row: Payment) => `${row.status} ${row.email}`,
+              filterPlaceholder: fixture.rtl
+                ? 'بحث في المدفوعات...'
+                : 'Filter payments…',
+            }
+          : {}),
+        ...(fixture.server ? { mode: 'server' as const, rowCount: 42 } : {}),
+        enableRowSelection: true,
+        enableColumnVisibility: true,
+        pageSizeOptions: [5, 10, 20],
+        ariaLabel: fixture.rtl ? 'المدفوعات' : 'Payments',
+      },
+      h,
+    ),
+  ])
+}

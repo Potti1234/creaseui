@@ -1,17 +1,17 @@
-import * as stylex from '@stylexjs/stylex';
-import type { HtmlBuilder } from 'foldkit/html';
-import type { Html } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { HtmlBuilder } from 'foldkit/html'
+import type { Html } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   LONG_TEXT,
   textFixtures,
   type TextFixture,
   type TextRow,
-} from '@/docs/components/pages/text/shared';
-import * as Heading from '@/stylex/heading';
-import { className } from '@/stylex/style';
-import * as Text from '@/stylex/text';
+} from '@/docs/components/pages/text/shared'
+import * as Heading from '@/stylex/heading'
+import { className } from '@/stylex/style'
+import * as Text from '@/stylex/text'
 
 const styles = stylex.create({
   column: {
@@ -61,7 +61,7 @@ const styles = stylex.create({
     overflow: 'hidden',
     width: '200px',
   },
-});
+})
 
 const textRow = <Msg>(row: TextRow, h: HtmlBuilder<Msg>): Html =>
   Text.text(
@@ -82,7 +82,7 @@ const textRow = <Msg>(row: TextRow, h: HtmlBuilder<Msg>): Html =>
       children: [row.content],
     },
     h,
-  );
+  )
 
 const typesLabels = [
   'Body text',
@@ -92,7 +92,7 @@ const typesLabels = [
   'Code text',
   'Strikethrough',
   'Tabular numbers',
-];
+]
 
 const wrapBoxes: ReadonlyArray<
   readonly [string, 'wrap' | 'nowrap' | 'balance' | 'pretty', string, boolean]
@@ -121,7 +121,7 @@ const wrapBoxes: ReadonlyArray<
     'This text uses pretty wrap to avoid orphans at the end of paragraphs.',
     false,
   ],
-];
+]
 
 const renderFixture = <Msg>(
   fixture: TextFixture,
@@ -132,20 +132,20 @@ const renderFixture = <Msg>(
       return h.div(
         [h.Class(className(styles.columnTight))],
         fixture.rows.map(row => textRow(row, h)),
-      );
+      )
     case 'colors':
     case 'weight':
       return h.div(
         [h.Class(className(styles.column))],
         fixture.rows.map(row => textRow(row, h)),
-      );
+      )
     case 'headingLevels':
       return h.div(
         [h.Class(className(styles.column))],
         ([1, 2, 3, 4, 5, 6] as const).map(level =>
           Heading.heading({ level, children: [`Heading ${level}`] }, h),
         ),
-      );
+      )
     case 'inline':
       return Text.text(
         {
@@ -158,7 +158,7 @@ const renderFixture = <Msg>(
           ],
         },
         h,
-      );
+      )
     case 'types':
       return h.div(
         [h.Class(className(styles.column))],
@@ -178,7 +178,7 @@ const renderFixture = <Msg>(
             ],
           ),
         ),
-      );
+      )
     case 'truncation':
       return h.div(
         [h.Class(className(styles.demoColumn))],
@@ -213,7 +213,7 @@ const renderFixture = <Msg>(
             ],
           ),
         ),
-      );
+      )
     case 'wordBreak':
       return h.div(
         [h.Class(className(styles.demoColumnWide))],
@@ -277,7 +277,7 @@ const renderFixture = <Msg>(
             ],
           ),
         ],
-      );
+      )
     case 'wrap':
       return h.div(
         [h.Class(className(styles.demoColumnWide))],
@@ -311,13 +311,13 @@ const renderFixture = <Msg>(
             ],
           ),
         ),
-      );
+      )
   }
-};
+}
 
 export const textStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   _model: unknown,
   _onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
-) => renderFixture(textFixtures[exampleIndex] ?? textFixtures[0], h);
+) => renderFixture(textFixtures[exampleIndex] ?? textFixtures[0], h)

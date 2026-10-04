@@ -81,12 +81,22 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
-      ':hover:not(:is([data-checked], [aria-disabled="true"]))': foundationTokens.foregroundSoft,
+      ':hover:not(:is([data-checked], [aria-disabled="true"]))':
+        foundationTokens.foregroundSoft,
       ':is([data-checked])': tokens.background,
     },
-    boxShadow: { default: 'none', ':is([data-checked])': foundationTokens.shadowSm },
-    color: { default: tokens.mutedForeground, ':is([data-checked])': tokens.foreground },
-    cursor: { default: interactionTokens.cursorAction, ':is([aria-disabled="true"])': interactionTokens.cursorDefault },
+    boxShadow: {
+      default: 'none',
+      ':is([data-checked])': foundationTokens.shadowSm,
+    },
+    color: {
+      default: tokens.mutedForeground,
+      ':is([data-checked])': tokens.foreground,
+    },
+    cursor: {
+      default: interactionTokens.cursorAction,
+      ':is([aria-disabled="true"])': interactionTokens.cursorDefault,
+    },
     display: 'inline-flex',
     fontFamily: 'inherit',
     fontWeight: { default: 500, ':is([data-checked])': 600 },
@@ -135,17 +145,20 @@ const styles = stylex.create({
   },
   itemSizeSm: {
     paddingInline: '0.5rem',
-    fontSize: '0.75rem', lineHeight: '1rem',
+    fontSize: '0.75rem',
+    lineHeight: '1rem',
     height: '1.5rem',
   },
   itemSizeMd: {
     paddingInline: '0.75rem',
-    fontSize: '0.875rem', lineHeight: '1.25rem',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
     height: '1.75rem',
   },
   itemSizeLg: {
     paddingInline: '0.75rem',
-    fontSize: '0.875rem', lineHeight: '1.25rem',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
     height: '2rem',
   },
   iconSizeSm: { height: '0.875rem', width: '0.875rem' },
@@ -181,7 +194,7 @@ const renderSegmentedControl = <Value extends string, Msg>(
       selectedValue: Option.some(props.value),
       ariaLabel: props.ariaLabel,
       isDisabled,
-      options: props.options.map((option) => ({
+      options: props.options.map(option => ({
         value: option.value,
         ...(option.isDisabled === true ? { isDisabled: true } : {}),
       })),
@@ -192,7 +205,9 @@ const renderSegmentedControl = <Value extends string, Msg>(
         h.DataAttribute('slot', 'segmented-control'),
         h.DataAttribute('size', size),
         h.DataAttribute('layout', layout),
-        ...(isDisabled ? [h.AriaDisabled(true), h.DataAttribute('disabled', '')] : []),
+        ...(isDisabled
+          ? [h.AriaDisabled(true), h.DataAttribute('disabled', '')]
+          : []),
         h.Class(
           className(
             styles.group,
@@ -227,7 +242,10 @@ const renderSegmentedControl = <Value extends string, Msg>(
                   [
                     ht.DataAttribute('slot', 'segmented-control-item-icon'),
                     ht.Class(
-                      className(styles.itemIcon, ICON_SIZE_STYLE[size] as ComponentLayoutStyle),
+                      className(
+                        styles.itemIcon,
+                        ICON_SIZE_STYLE[size] as ComponentLayoutStyle,
+                      ),
                     ),
                   ],
                   [content.icon],
@@ -238,7 +256,9 @@ const renderSegmentedControl = <Value extends string, Msg>(
               ...option.labelAttributes,
               ht.Class(
                 className(
-                  content.isLabelHidden === true ? styles.itemLabelHidden : styles.itemLabel,
+                  content.isLabelHidden === true
+                    ? styles.itemLabelHidden
+                    : styles.itemLabel,
                 ),
               ),
             ],
@@ -259,7 +279,9 @@ export type SegmentedControlBundle<Value extends string> = Readonly<{
   ) => Html
 }>
 
-export const create = <Value extends string = string>(): SegmentedControlBundle<Value> => {
+export const create = <
+  Value extends string = string,
+>(): SegmentedControlBundle<Value> => {
   const behavior = createBehavior<Value>()
   return {
     update: behavior.update,

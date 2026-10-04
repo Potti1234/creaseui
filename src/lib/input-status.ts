@@ -20,11 +20,19 @@ export type InputStatus = Readonly<{
 export type FieldStatusVariant = 'attached' | 'detached' | 'tooltip'
 
 export const statusIconName = (type: InputStatusType): string =>
-  type === 'warning' ? 'triangle-alert' : type === 'error' ? 'octagon-x' : 'circle-check'
+  type === 'warning'
+    ? 'triangle-alert'
+    : type === 'error'
+      ? 'octagon-x'
+      : 'circle-check'
 
 /** Accessible name for the 'tooltip' variant's status icon button. */
 export const statusButtonLabel = (type: InputStatusType): string =>
-  type === 'warning' ? 'Warning details' : type === 'error' ? 'Error details' : 'Success details'
+  type === 'warning'
+    ? 'Warning details'
+    : type === 'error'
+      ? 'Error details'
+      : 'Success details'
 
 export type FieldStatusVisualAttributes<Msg> = Readonly<{
   root: (type: InputStatusType) => ReadonlyArray<Attribute<Msg>>
@@ -51,12 +59,17 @@ export const renderDetachedStatus = <Msg>(
     ],
     [
       h.span(
-        [h.DataAttribute('slot', 'field-status-icon'), h.Attribute('aria-hidden', 'true'), ...visual.icon],
+        [
+          h.DataAttribute('slot', 'field-status-icon'),
+          h.Attribute('aria-hidden', 'true'),
+          ...visual.icon,
+        ],
         [icon],
       ),
-      h.span([h.DataAttribute('slot', 'field-status-text'), ...visual.text], [
-        status.message ?? '',
-      ]),
+      h.span(
+        [h.DataAttribute('slot', 'field-status-text'), ...visual.text],
+        [status.message ?? ''],
+      ),
     ],
   )
 
@@ -79,8 +92,9 @@ export const renderAttachedStatus = <Msg>(
       ...visual.root(status.type),
     ],
     [
-      h.span([h.DataAttribute('slot', 'field-status-text'), ...visual.text], [
-        status.message ?? '',
-      ]),
+      h.span(
+        [h.DataAttribute('slot', 'field-status-text'), ...visual.text],
+        [status.message ?? ''],
+      ),
     ],
   )

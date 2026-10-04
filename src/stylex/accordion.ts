@@ -72,7 +72,8 @@ const styles = stylex.create({
   },
   panel: {
     overflow: 'hidden',
-    fontSize: '0.875rem', lineHeight: '1.25rem',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
   },
   trigger: {
     borderColor: {
@@ -100,7 +101,7 @@ const styles = stylex.create({
     fontSize: '0.875rem',
     fontWeight: 500,
     justifyContent: 'space-between',
- lineHeight: '1.25rem',
+    lineHeight: '1.25rem',
     opacity: { default: 1, ':disabled': 0.5 },
     outlineStyle: 'none',
     textAlign: 'left',
@@ -157,7 +158,7 @@ const render = <Msg>(
         {
           id: itemDomId(model.id, item.value),
           isOpen,
-          onToggle: (nextIsOpen) =>
+          onToggle: nextIsOpen =>
             toMessage(
               AccordionBehavior.Message.ToggledItem({
                 value: item.value,
@@ -192,7 +193,9 @@ const render = <Msg>(
                       [
                         ...button,
                         h.DataAttribute('slot', 'accordion-trigger'),
-                        h.Class(cn(styles.trigger, viewInputs.triggerLayoutStyle)),
+                        h.Class(
+                          cn(styles.trigger, viewInputs.triggerLayoutStyle),
+                        ),
                       ],
                       [
                         item.trigger,
@@ -213,7 +216,11 @@ const render = <Msg>(
                     ],
                     [
                       h.div(
-                        [h.Class(cn(styles.content, viewInputs.contentLayoutStyle))],
+                        [
+                          h.Class(
+                            cn(styles.content, viewInputs.contentLayoutStyle),
+                          ),
+                        ],
                         [item.content],
                       ),
                     ],
@@ -232,7 +239,7 @@ export const view = defineView<
   AccordionBehavior.Model,
   AccordionBehavior.Message,
   ViewInputs
->((model, viewInputs, h) => render(model, viewInputs, (message) => message, h))
+>((model, viewInputs, h) => render(model, viewInputs, message => message, h))
 
 /** @deprecated Embed `view` with `h.submodel`. */
 export type AccordionProps<Msg> = ViewInputs &

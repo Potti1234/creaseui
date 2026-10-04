@@ -8,8 +8,13 @@ import * as TailwindInput from '@/ui/input'
 type Model = Readonly<{ value: string }>
 type Message = Readonly<{ readonly _tag: 'ChangedInput'; value: string }>
 
-const ChangedInput = (value: string): Message => ({ _tag: 'ChangedInput', value })
-const update = (_model: Model, message: Message) => ({ model: { value: message.value } })
+const ChangedInput = (value: string): Message => ({
+  _tag: 'ChangedInput',
+  value,
+})
+const update = (_model: Model, message: Message) => ({
+  model: { value: message.value },
+})
 
 type InputModule = Readonly<{
   input: <Msg>(
@@ -86,9 +91,13 @@ const verifyRenderer = (name: string, Input: InputModule) => {
             ),
         },
         Scene.given({ value: 'crease-ui' }),
-        Scene.expect(Scene.label('Workspace')).not.toHaveAttr('aria-describedby'),
+        Scene.expect(Scene.label('Workspace')).not.toHaveAttr(
+          'aria-describedby',
+        ),
         Scene.expect(Scene.label('Workspace')).toHaveAttr('data-readonly'),
-        Scene.expect(Scene.selector('[data-slot="input-description"]')).toBeAbsent(),
+        Scene.expect(
+          Scene.selector('[data-slot="input-description"]'),
+        ).toBeAbsent(),
       )
     })
   })

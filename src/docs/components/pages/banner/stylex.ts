@@ -1,11 +1,11 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
-import { bannerFixtures } from '@/docs/components/pages/banner/shared';
-import * as Banner from '@/stylex/banner';
-import * as Button from '@/stylex/button';
-import { className } from '@/stylex/style';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import { bannerFixtures } from '@/docs/components/pages/banner/shared'
+import * as Banner from '@/stylex/banner'
+import * as Button from '@/stylex/button'
+import { className } from '@/stylex/style'
 
 const styles = stylex.create({
   frame: {
@@ -36,16 +36,25 @@ const styles = stylex.create({
     paddingInlineStart: '1.25rem',
   },
   detailLi: { marginBottom: '0.25rem' },
-});
+})
 
 const detailChildren = <Msg>(h: HtmlBuilder<Msg>): Html =>
-  h.div([h.Class(className(styles.detailStack))], [
-    h.p([h.Class(className(styles.detailText))], ['Changed settings:']),
-    h.ul([h.Class(className(styles.detailList))], [
-      h.li([h.Class(className(styles.detailLi))], ['Authentication method updated']),
-      h.li([], ['Rate limits modified']),
-    ]),
-  ]);
+  h.div(
+    [h.Class(className(styles.detailStack))],
+    [
+      h.p([h.Class(className(styles.detailText))], ['Changed settings:']),
+      h.ul(
+        [h.Class(className(styles.detailList))],
+        [
+          h.li(
+            [h.Class(className(styles.detailLi))],
+            ['Authentication method updated'],
+          ),
+          h.li([], ['Rate limits modified']),
+        ],
+      ),
+    ],
+  )
 
 export const bannerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
@@ -53,8 +62,8 @@ export const bannerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ) => {
-  const fixture = bannerFixtures[exampleIndex] ?? bannerFixtures[0];
-  const previewModel = model as { banners: ReadonlyArray<Banner.Model> };
+  const fixture = bannerFixtures[exampleIndex] ?? bannerFixtures[0]
+  const previewModel = model as { banners: ReadonlyArray<Banner.Model> }
   return h.div(
     [
       h.Class(className(styles.frame)),
@@ -63,9 +72,9 @@ export const bannerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         : [h.Style({ maxWidth: `${String(fixture.maxWidth)}px` })]),
     ],
     fixture.banners.map((spec, i) => {
-      const banner = previewModel.banners[i];
+      const banner = previewModel.banners[i]
       if (banner === undefined) {
-        return h.empty;
+        return h.empty
       }
       return Banner.banner(
         {
@@ -110,7 +119,7 @@ export const bannerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
             : {}),
         },
         h,
-      );
+      )
     }),
-  );
-};
+  )
+}

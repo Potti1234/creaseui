@@ -122,7 +122,9 @@ const anchor = stylex.create({
   link: {},
 })
 
-type _VariantMapIsExhaustive = Assert<HasExactlyKeys<typeof variants, BadgeVariant>>
+type _VariantMapIsExhaustive = Assert<
+  HasExactlyKeys<typeof variants, BadgeVariant>
+>
 
 export type BadgeProps = Readonly<{
   children: ReadonlyArray<Html | string>
@@ -145,7 +147,11 @@ export const badge = <Msg>(props: BadgeProps, h: HtmlBuilder<Msg>): Html => {
         ...(props.href === undefined ? [] : [anchor[variant]]),
         ...(props.iconInset === undefined
           ? []
-          : [props.iconInset === 'start' ? base.iconInsetStart : base.iconInsetEnd]),
+          : [
+              props.iconInset === 'start'
+                ? base.iconInsetStart
+                : base.iconInsetEnd,
+            ]),
         props.layoutStyle,
       ),
     ),

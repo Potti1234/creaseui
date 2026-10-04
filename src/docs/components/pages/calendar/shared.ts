@@ -1,19 +1,44 @@
-import { DatePart, type LocaleConfig } from 'foldkit/calendar';
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import { DatePart, type LocaleConfig } from 'foldkit/calendar'
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export const germanCalendarLocale: LocaleConfig = {
   firstDayOfWeek: 'Monday',
   monthNames: [
-    'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August',
-    'September', 'Oktober', 'November', 'Dezember',
+    'Januar',
+    'Februar',
+    'März',
+    'April',
+    'Mai',
+    'Juni',
+    'Juli',
+    'August',
+    'September',
+    'Oktober',
+    'November',
+    'Dezember',
   ],
   shortMonthNames: [
-    'Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt',
-    'Nov', 'Dez',
+    'Jan',
+    'Feb',
+    'Mär',
+    'Apr',
+    'Mai',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Okt',
+    'Nov',
+    'Dez',
   ],
   dayNames: [
-    'Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag',
+    'Sonntag',
+    'Montag',
+    'Dienstag',
+    'Mittwoch',
+    'Donnerstag',
+    'Freitag',
     'Samstag',
   ],
   shortDayNames: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
@@ -45,7 +70,7 @@ export const germanCalendarLocale: LocaleConfig = {
     DatePart.LiteralText({ text: ' ' }),
     DatePart.YearNumber(),
   ],
-};
+}
 
 const PRESETS = [
   { label: 'Today', days: 0 },
@@ -53,24 +78,24 @@ const PRESETS = [
   { label: 'In 3 days', days: 3 },
   { label: 'In a week', days: 7 },
   { label: 'In 2 weeks', days: 14 },
-] as const;
+] as const
 
-const BOOKED_DATES = [3, 12, 13, 14, 15] as const;
+const BOOKED_DATES = [3, 12, 13, 14, 15] as const
 
 export type CalendarFixture = Readonly<{
-  title: string;
-  description: string;
-  heroOnly?: boolean;
-  layout: 'single' | 'range' | 'presets' | 'time' | 'jalali';
-  bordered?: boolean;
-  card?: boolean;
-  weekNumbers?: boolean;
-  direction?: 'rtl';
-  roomy?: boolean;
-  sectionId?: string;
-  booked?: boolean;
-  localized?: boolean;
-}>;
+  title: string
+  description: string
+  heroOnly?: boolean
+  layout: 'single' | 'range' | 'presets' | 'time' | 'jalali'
+  bordered?: boolean
+  card?: boolean
+  weekNumbers?: boolean
+  direction?: 'rtl'
+  roomy?: boolean
+  sectionId?: string
+  booked?: boolean
+  localized?: boolean
+}>
 
 export const calendarFixtures: Readonly<Array<CalendarFixture>> = [
   {
@@ -150,41 +175,41 @@ export const calendarFixtures: Readonly<Array<CalendarFixture>> = [
     direction: 'rtl',
     localized: true,
   },
-];
+]
 
 const bookedDatesSource = `
     disabledDates: [${BOOKED_DATES.map(
       day => `{ year: 2026, month: 7, day: ${day} }`,
-    ).join(', ')}],`;
+    ).join(', ')}],`
 
 const calendarPropsSource = (
   f: CalendarFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const isSx = renderer === 'stylex';
+  const isSx = renderer === 'stylex'
   const parts: Array<string> = [
     `model: model.calendar`,
     `maybeSelectedDate: ${f.layout === 'range' ? 'Option.none()' : 'model.selectedDate'}`,
     `toParentMessage: message =>
               Message['GotCalendarMessage']({ message })`,
-  ];
+  ]
   if (f.layout === 'range')
-    parts.push(`range: { start: model.rangeStart, end: model.rangeEnd }`);
-  if (f.weekNumbers === true) parts.push('weekNumbers: true');
-  if (f.direction === 'rtl') parts.push(`direction: 'rtl'`);
+    parts.push(`range: { start: model.rangeStart, end: model.rangeEnd }`)
+  if (f.weekNumbers === true) parts.push('weekNumbers: true')
+  if (f.direction === 'rtl') parts.push(`direction: 'rtl'`)
   if (f.roomy === true)
     parts.push(
       isSx ? `size: 'comfortable'` : `class: '[--cell-size:--spacing(10)]'`,
-    );
-  return parts.join(',\n            ');
-};
+    )
+  return parts.join(',\n            ')
+}
 
 const calendarViewSource = (
   f: CalendarFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => `Calendar.calendar({
             ${calendarPropsSource(f, renderer)},
-          }, h)`;
+          }, h)`
 
 const borderedSource = (
   f: CalendarFixture,
@@ -194,12 +219,12 @@ const borderedSource = (
   const wrapped = `h.div(
           [h.Class(${renderer === 'stylex' ? 'className(styles.bordered)' : `'rounded-lg border w-fit'`})],
           [${inner}],
-        )`;
-  return wrapped;
-};
+        )`
+  return wrapped
+}
 
 const presetsSource = (renderer: 'tailwind' | 'stylex'): string => {
-  const isSx = renderer === 'stylex';
+  const isSx = renderer === 'stylex'
   return `Card.card({
           ${isSx ? 'layoutStyle: styles.cardFit,' : `class: 'mx-auto w-fit max-w-[300px]',`}
           size: 'sm',
@@ -224,17 +249,17 @@ const presetsSource = (renderer: 'tailwind' | 'stylex'): string => {
               ),
             }, h),
           ],
-        }, h)`;
-};
+        }, h)`
+}
 
 const timeFieldSource = (
   field: 'start' | 'end',
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const label = field === 'start' ? 'Start Time' : 'End Time';
-  const id = field === 'start' ? 'time-from' : 'time-to';
-  const msg = field === 'start' ? 'ChangedStartTime' : 'ChangedEndTime';
-  const modelField = field === 'start' ? 'startTime' : 'endTime';
+  const label = field === 'start' ? 'Start Time' : 'End Time'
+  const id = field === 'start' ? 'time-from' : 'time-to'
+  const msg = field === 'start' ? 'ChangedStartTime' : 'ChangedEndTime'
+  const modelField = field === 'start' ? 'startTime' : 'endTime'
   return `Field.field({
                   children: [
                     Field.fieldLabel({ for: '${id}', children: ['${label}'] }, h),
@@ -260,14 +285,14 @@ const timeFieldSource = (
                       ],
                     }, h),
                   ],
-                }, h)`;
-};
+                }, h)`
+}
 
 const timePickerSource = (
   f: CalendarFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const isSx = renderer === 'stylex';
+  const isSx = renderer === 'stylex'
   return `Card.card({
           ${isSx ? 'layoutStyle: styles.cardFit,' : `class: 'mx-auto w-fit',`}
           size: 'sm',
@@ -288,18 +313,18 @@ const timePickerSource = (
               ],
             }, h),
           ],
-        }, h)`;
-};
+        }, h)`
+}
 
 const viewBodySource = (
   fixture: CalendarFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  if (fixture.layout === 'presets') return presetsSource(renderer);
-  if (fixture.layout === 'time') return timePickerSource(fixture, renderer);
-  const calendar = calendarViewSource(fixture, renderer);
+  if (fixture.layout === 'presets') return presetsSource(renderer)
+  if (fixture.layout === 'time') return timePickerSource(fixture, renderer)
+  const calendar = calendarViewSource(fixture, renderer)
   if (fixture.card === true) {
-    const isSx = renderer === 'stylex';
+    const isSx = renderer === 'stylex'
     return `Card.card({
           ${isSx ? 'layoutStyle: styles.cardFit,' : `class: 'mx-auto w-fit p-0',`}
           children: [
@@ -307,21 +332,21 @@ const viewBodySource = (
               children: [${calendar}],
             }, h),
           ],
-        }, h)`;
+        }, h)`
   }
   return fixture.bordered === true
     ? borderedSource(fixture, renderer, calendar)
-    : calendar;
-};
+    : calendar
+}
 
 type Needs = Readonly<{
-  range: boolean;
-  presets: boolean;
-  time: boolean;
-  booked: boolean;
-  card: boolean;
-  localized: boolean;
-}>;
+  range: boolean
+  presets: boolean
+  time: boolean
+  booked: boolean
+  card: boolean
+  localized: boolean
+}>
 
 const needsFor = (f: CalendarFixture): Needs => ({
   range: f.layout === 'range',
@@ -330,54 +355,54 @@ const needsFor = (f: CalendarFixture): Needs => ({
   booked: f.booked === true,
   card: f.card === true,
   localized: f.localized === true,
-});
+})
 
 const componentImports = (
   needs: Needs,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const root = renderer === 'stylex' ? 'stylex' : 'ui';
-  const imports: Array<string> = [];
-  if (needs.card) imports.push(`import * as Card from '@/${root}/card'`);
-  if (needs.presets) imports.push(`import * as Button from '@/${root}/button'`);
+  const root = renderer === 'stylex' ? 'stylex' : 'ui'
+  const imports: Array<string> = []
+  if (needs.card) imports.push(`import * as Card from '@/${root}/card'`)
+  if (needs.presets) imports.push(`import * as Button from '@/${root}/button'`)
   if (needs.time) {
-    imports.push(`import * as Field from '@/${root}/field'`);
-    imports.push(`import * as InputGroup from '@/${root}/input-group'`);
-    imports.push(`import * as Icon from '@/lib/icon'`);
+    imports.push(`import * as Field from '@/${root}/field'`)
+    imports.push(`import * as InputGroup from '@/${root}/input-group'`)
+    imports.push(`import * as Icon from '@/lib/icon'`)
   }
   if (renderer === 'stylex')
     imports.push(
       `import * as stylex from '@stylexjs/stylex'`,
       `import { className } from '@/stylex/style'`,
-    );
-  return imports.join('\n');
-};
+    )
+  return imports.join('\n')
+}
 
 const stylesSource = (f: CalendarFixture): string => {
-  const parts: Array<string> = [];
+  const parts: Array<string> = []
   if (f.card === true)
-    parts.push(`  cardFit: { marginInline: 'auto', maxWidth: '18.75rem', width: 'fit-content' },`);
-  if (f.layout === 'presets')
-    parts.push(`  presetButton: { flexGrow: '1' },`);
+    parts.push(
+      `  cardFit: { marginInline: 'auto', maxWidth: '18.75rem', width: 'fit-content' },`,
+    )
+  if (f.layout === 'presets') parts.push(`  presetButton: { flexGrow: '1' },`)
   if (f.layout === 'time')
-    parts.push(`  icon: { height: '1rem', width: '1rem' },`);
+    parts.push(`  icon: { height: '1rem', width: '1rem' },`)
   if (f.bordered === true)
     parts.push(
       `  bordered: { borderColor: 'var(--border)', borderRadius: '0.5rem', borderStyle: 'solid', borderWidth: 1, width: 'fit-content' },`,
-    );
-  if (parts.length === 0) return '';
+    )
+  if (parts.length === 0) return ''
   return `
 const styles = stylex.create({
 ${parts.join('\n')}
-});`;
-};
-
+});`
+}
 
 const jalaliSource = (
   f: CalendarFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const isSx = renderer === 'stylex';
+  const isSx = renderer === 'stylex'
   const dayButton = isSx
     ? `const jalaliDayButton = (
   cell: JalaliCell,
@@ -437,7 +462,7 @@ const jalaliSource = (
     ],
     [faDigits(cell.day)],
   )
-}`;
+}`
 
   const dayNameCell = isSx
     ? `h.span([h.Class(cx(styles.dayName))], [dayName])`
@@ -448,7 +473,7 @@ const jalaliSource = (
                 ),
               ],
               [dayName],
-            )`;
+            )`
 
   return foldkitApplication({
     title: `Calendar — ${f.title}`,
@@ -470,7 +495,9 @@ import {
 } from '@/lib/jalali'
 
 // @/${isSx ? 'stylex' : 'ui'}/calendar is Gregorian-only — the Jalali grid
-// below implements the upstream Persian example via the conversion helpers.${isSx ? `
+// below implements the upstream Persian example via the conversion helpers.${
+      isSx
+        ? `
 import { className } from '@/stylex/style'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
@@ -527,7 +554,9 @@ const styles = stylex.create({
     color: 'var(--primary-foreground)',
   },
   icon: { height: '1rem', width: '1rem' },
-})` : ''}
+})`
+        : ''
+    }
 
 const JalaliDay = S.Struct({
   year: S.Int,
@@ -648,24 +677,25 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
     jalaliView(model, h),
   ]),
 })`,
-  });
-};
+  })
+}
 
-const source = (f: CalendarFixture, renderer: 'tailwind' | 'stylex'): string => {
-  if (f.layout === 'jalali') return jalaliSource(f, renderer);
-  const needs = needsFor(f);
-  const tag = f.title.replaceAll(/[^a-zA-Z0-9]/g, '');
+const source = (
+  f: CalendarFixture,
+  renderer: 'tailwind' | 'stylex',
+): string => {
+  if (f.layout === 'jalali') return jalaliSource(f, renderer)
+  const needs = needsFor(f)
+  const tag = f.title.replaceAll(/[^a-zA-Z0-9]/g, '')
   const modelFields = [
     `  calendar: Calendar.Model,`,
     f.layout === 'range'
       ? `  rangeStart: FoldkitCalendar.CalendarDate,\n  rangeEnd: FoldkitCalendar.CalendarDate,`
       : `  selectedDate: S.Option(FoldkitCalendar.CalendarDate),`,
-    needs.time
-      ? `  startTime: S.String,\n  endTime: S.String,`
-      : '',
+    needs.time ? `  startTime: S.String,\n  endTime: S.String,` : '',
   ]
     .filter(Boolean)
-    .join('\n');
+    .join('\n')
   const messageFields = [
     `  GotCalendarMessage: { message: Calendar.Message },`,
     needs.presets ? `  ClickedPreset: { days: S.Int },` : '',
@@ -674,7 +704,7 @@ const source = (f: CalendarFixture, renderer: 'tailwind' | 'stylex'): string => 
       : '',
   ]
     .filter(Boolean)
-    .join('\n');
+    .join('\n')
   const initFields = [
     `calendar: Calendar.init({
           id: 'docs-calendar',
@@ -688,7 +718,7 @@ const source = (f: CalendarFixture, renderer: 'tailwind' | 'stylex'): string => 
     needs.time ? `startTime: '10:30:00',\n        endTime: '12:30:00'` : '',
   ]
     .filter(Boolean)
-    .join(',\n        ');
+    .join(',\n        ')
   const updateCases = [
     `    case 'GotCalendarMessage': {
       const next = Calendar.update(model.calendar, message.message)
@@ -696,14 +726,18 @@ const source = (f: CalendarFixture, renderer: 'tailwind' | 'stylex'): string => 
       return {
         model: {
           ...model,
-          calendar: next.model,${f.layout === 'range' ? '' : `
+          calendar: next.model,${
+            f.layout === 'range'
+              ? ''
+              : `
           selectedDate: Option.match(maybeOutput, {
             onNone: () => model.selectedDate,
             onSome: output =>
               output._tag === 'SelectedDate'
                 ? Option.some(output.date)
                 : model.selectedDate,
-          }),`}
+          }),`
+          }
         },
         commands: Command.mapMessages(
           next.commands ?? [],
@@ -731,10 +765,10 @@ const source = (f: CalendarFixture, renderer: 'tailwind' | 'stylex'): string => 
       : '',
   ]
     .filter(Boolean)
-    .join('\n');
+    .join('\n')
   const localeDecl = needs.localized
     ? `const locale: FoldkitCalendar.LocaleConfig = ${JSON.stringify(germanCalendarLocale)}\n\n`
-    : '';
+    : ''
   const helpers = needs.presets
     ? `const today = { year: 2026, month: 7, day: 28 } as const
 const PRESETS = [
@@ -750,7 +784,7 @@ const addDays = (date: FoldkitCalendar.CalendarDate, days: number): FoldkitCalen
 }
 
 `
-    : '';
+    : ''
   return foldkitApplication({
     title: `Calendar — ${f.title}`,
     imports: `import { Option, Schema as S } from 'effect'
@@ -791,8 +825,8 @@ ${updateCases}
     ${viewBodySource(f, renderer)},
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const calendarExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -805,4 +839,4 @@ export const calendarExamples = (
       ? {}
       : { sectionId: fixture.sectionId }),
     code: source(fixture, renderer),
-  }));
+  }))

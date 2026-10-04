@@ -1,20 +1,20 @@
-import { type VariantProps, cva } from 'class-variance-authority';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import { type VariantProps, cva } from 'class-variance-authority'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { type ButtonProps, button } from '@/ui/button';
-import { cn } from '@/lib/utils';
+import { type ButtonProps, button } from '@/ui/button'
+import { cn } from '@/lib/utils'
 
 type SlotProps = Readonly<{
-  children: ReadonlyArray<Html | string>;
-  class?: string;
+  children: ReadonlyArray<Html | string>
+  class?: string
   /** Upstream demos restyle the group radius per example (`[--radius:...]`). */
-  radius?: 'xl' | 'full';
-}>;
+  radius?: 'xl' | 'full'
+}>
 
 const GROUP_RADIUS_CLASS = {
   xl: 'rounded-2xl',
   full: 'rounded-full',
-} as const;
+} as const
 
 export const inputGroup = <Msg>(
   props: SlotProps,
@@ -42,8 +42,8 @@ export const inputGroup = <Msg>(
       ),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 export const inputGroupAddonVariants = cva(
   "flex h-auto cursor-text items-center justify-center gap-2 py-1.5 text-sm font-medium text-muted-foreground select-none group-data-[disabled=true]/input-group:opacity-50 [&>kbd]:rounded-[calc(var(--radius)-5px)] [&>svg:not([class*='size-'])]:size-4",
@@ -64,24 +64,24 @@ export const inputGroupAddonVariants = cva(
       align: 'inline-start',
     },
   },
-);
+)
 
 export type InputGroupAddonVariants = VariantProps<
   typeof inputGroupAddonVariants
->;
+>
 
 export type InputGroupAddonProps<Msg = never> = SlotProps &
   Readonly<{
-    align?: InputGroupAddonVariants['align'];
-    focusControlId?: string;
-    onFocus?: Msg;
-  }>;
+    align?: InputGroupAddonVariants['align']
+    focusControlId?: string
+    onFocus?: Msg
+  }>
 
 export const inputGroupAddon = <Msg>(
   props: InputGroupAddonProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const align = props.align ?? 'inline-start';
+  const align = props.align ?? 'inline-start'
 
   return h.div(
     [
@@ -90,12 +90,16 @@ export const inputGroupAddon = <Msg>(
       h.DataAttribute('align', align),
       ...(props.focusControlId === undefined || props.onFocus === undefined
         ? []
-        : [h.OnClick(props.onFocus, { focusSelector: `#${props.focusControlId}` })]),
+        : [
+            h.OnClick(props.onFocus, {
+              focusSelector: `#${props.focusControlId}`,
+            }),
+          ]),
       h.Class(cn(inputGroupAddonVariants({ align }), props.class)),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 export const inputGroupButtonVariants = cva(
   'flex items-center gap-2 text-sm shadow-none',
@@ -113,20 +117,20 @@ export const inputGroupButtonVariants = cva(
       size: 'xs',
     },
   },
-);
+)
 
 export type InputGroupButtonVariants = VariantProps<
   typeof inputGroupButtonVariants
->;
+>
 
 export type InputGroupButtonProps<Msg> = Omit<
   ButtonProps<Msg>,
   'size' | 'class'
 > &
   Readonly<{
-    size?: InputGroupButtonVariants['size'];
-    class?: string;
-  }>;
+    size?: InputGroupButtonVariants['size']
+    class?: string
+  }>
 
 export const inputGroupButton = <Msg>(
   props: InputGroupButtonProps<Msg>,
@@ -150,8 +154,8 @@ export const inputGroupButton = <Msg>(
       ),
     },
     h,
-  );
-};
+  )
+}
 
 export const inputGroupText = <Msg>(
   props: SlotProps,
@@ -168,28 +172,28 @@ export const inputGroupText = <Msg>(
       ),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 const INPUT_CLASS =
-  'file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-8 w-full min-w-0 rounded-md border bg-transparent px-2.5 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive';
+  'file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-8 w-full min-w-0 rounded-md border bg-transparent px-2.5 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive'
 
 const INPUT_GROUP_CONTROL_CLASS =
-  'flex-1 rounded-none border-0 bg-transparent shadow-none focus-visible:ring-0 dark:bg-transparent';
+  'flex-1 rounded-none border-0 bg-transparent shadow-none focus-visible:ring-0 dark:bg-transparent'
 
 export type InputGroupInputProps<Msg> = Readonly<{
-  id: string;
-  value: string;
-  onInput: (value: string) => Msg;
-  onKeyDown?: (key: string) => Msg;
-  placeholder?: string;
-  type?: string;
-  name?: string;
-  isDisabled?: boolean;
-  isInvalid?: boolean;
-  ariaLabel?: string;
-  class?: string;
-}>;
+  id: string
+  value: string
+  onInput: (value: string) => Msg
+  onKeyDown?: (key: string) => Msg
+  placeholder?: string
+  type?: string
+  name?: string
+  isDisabled?: boolean
+  isInvalid?: boolean
+  ariaLabel?: string
+  class?: string
+}>
 
 export const inputGroupInput = <Msg>(
   props: InputGroupInputProps<Msg>,
@@ -215,20 +219,20 @@ export const inputGroupInput = <Msg>(
     ...((props.isInvalid ?? false) ? [h.AriaInvalid(true)] : []),
     h.DataAttribute('slot', 'input-group-control'),
     h.Class(cn(INPUT_CLASS, INPUT_GROUP_CONTROL_CLASS, props.class)),
-  ]);
-};
+  ])
+}
 
 export type InputGroupTextareaProps<Msg> = Readonly<{
-  id: string;
-  value: string;
-  onInput: (value: string) => Msg;
-  placeholder?: string;
-  name?: string;
-  isDisabled?: boolean;
-  isInvalid?: boolean;
-  ariaLabel?: string;
-  class?: string;
-}>;
+  id: string
+  value: string
+  onInput: (value: string) => Msg
+  placeholder?: string
+  name?: string
+  isDisabled?: boolean
+  isInvalid?: boolean
+  ariaLabel?: string
+  class?: string
+}>
 
 export const inputGroupTextarea = <Msg>(
   props: InputGroupTextareaProps<Msg>,
@@ -252,5 +256,5 @@ export const inputGroupTextarea = <Msg>(
         props.class,
       ),
     ),
-  ]);
-};
+  ])
+}

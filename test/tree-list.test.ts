@@ -1,11 +1,11 @@
-import assert from 'node:assert/strict';
-import { describe, it } from 'node:test';
+import assert from 'node:assert/strict'
+import { describe, it } from 'node:test'
 
-import { Option } from 'effect';
+import { Option } from 'effect'
 
-import * as TreeList from '../src/ui/tree-list.ts';
+import * as TreeList from '../src/ui/tree-list.ts'
 
-const MOD = { ctrlKey: false, metaKey: false, altKey: false };
+const MOD = { ctrlKey: false, metaKey: false, altKey: false }
 
 const items = [
   {
@@ -34,44 +34,47 @@ const items = [
   },
   { id: 'pkg', label: 'package.json', onSelect: true },
   { id: 'readme', label: 'README.md', isDisabled: true },
-];
+]
 
 const model = (overrides?: Partial<TreeList.Model>): TreeList.Model => ({
   ...TreeList.init({ id: 'tree' }),
   ...overrides,
-});
+})
 
 describe('TreeList visibility + expansion', () => {
   it('lists only items under expanded parents in DOM order', () => {
-    const m = model();
+    const m = model()
     assert.deepEqual(
       TreeList.visibleItems(items, m).map(i => i.id),
       ['src', 'components', 'app', 'public', 'pkg', 'readme'],
-    );
+    )
   })
 
   it('expands children after an override toggle', () => {
     const m = model({
       expandedOverrides: { public: true, src: false },
-    });
+    })
     assert.deepEqual(
       TreeList.visibleItems(items, m).map(i => i.id),
       ['src', 'public', 'favicon', 'index-html', 'pkg', 'readme'],
-    );
+    )
   })
 
   it('prefers overrides over the item isExpanded seed', () => {
     assert.equal(TreeList.isItemExpanded(items[0]!, model()), true)
     assert.equal(
-      TreeList.isItemExpanded(items[0]!, model({
-        expandedOverrides: { src: false },
-      })),
+      TreeList.isItemExpanded(
+        items[0]!,
+        model({
+          expandedOverrides: { src: false },
+        }),
+      ),
       false,
     )
   })
 
   it('update writes the resolved override from the view', () => {
-    const m = model();
+    const m = model()
     const op__ = TreeList.update(
       m,
       TreeList.Message.ToggledTreeListItem({ id: 'src', isExpanded: false }),
@@ -89,7 +92,7 @@ describe('TreeList tabbable seed', () => {
         label: 'root',
         children: [{ id: 'deep', label: 'deep', isSelected: true }],
       },
-    ];
+    ]
     assert.equal(TreeList.findInitialTabbableId(nested), 'deep')
   })
 
@@ -120,10 +123,10 @@ describe('TreeList tabbable seed', () => {
 describe('TreeList.resolveKey', () => {
   it('ArrowDown moves to the next visible enabled item and clamps', () => {
     const m = model({ focusedId: Option.some('app') })
-    assert.deepEqual(
-      TreeList.resolveKey(items, m, 'ArrowDown', MOD, 'ltr'),
-      { _tag: 'move', id: 'public' },
-    )
+    assert.deepEqual(TreeList.resolveKey(items, m, 'ArrowDown', MOD, 'ltr'), {
+      _tag: 'move',
+      id: 'public',
+    })
     // Skip disabled 'readme' at the end -> stay on 'pkg'.
     const atEnd = model({ focusedId: Option.some('pkg') })
     assert.deepEqual(
@@ -134,15 +137,15 @@ describe('TreeList.resolveKey', () => {
 
   it('ArrowUp mirrors ArrowDown', () => {
     const m = model({ focusedId: Option.some('public') })
-    assert.deepEqual(
-      TreeList.resolveKey(items, m, 'ArrowUp', MOD, 'ltr'),
-      { _tag: 'move', id: 'app' },
-    )
+    assert.deepEqual(TreeList.resolveKey(items, m, 'ArrowUp', MOD, 'ltr'), {
+      _tag: 'move',
+      id: 'app',
+    })
     const atTop = model({ focusedId: Option.some('src') })
-    assert.deepEqual(
-      TreeList.resolveKey(items, atTop, 'ArrowUp', MOD, 'ltr'),
-      { _tag: 'move', id: 'src' },
-    )
+    assert.deepEqual(TreeList.resolveKey(items, atTop, 'ArrowUp', MOD, 'ltr'), {
+      _tag: 'move',
+      id: 'src',
+    })
   })
 
   it('ArrowRight expands a collapsed branch, else moves to first child, else swallows', () => {
@@ -190,27 +193,27 @@ describe('TreeList.resolveKey', () => {
 
   it('Home/End move to the first/last visible enabled item', () => {
     const m = model({ focusedId: Option.some('app') })
-    assert.deepEqual(
-      TreeList.resolveKey(items, m, 'Home', MOD, 'ltr'),
-      { _tag: 'move', id: 'src' },
-    )
-    assert.deepEqual(
-      TreeList.resolveKey(items, m, 'End', MOD, 'ltr'),
-      { _tag: 'move', id: 'pkg' },
-    )
+    assert.deepEqual(TreeList.resolveKey(items, m, 'Home', MOD, 'ltr'), {
+      _tag: 'move',
+      id: 'src',
+    })
+    assert.deepEqual(TreeList.resolveKey(items, m, 'End', MOD, 'ltr'), {
+      _tag: 'move',
+      id: 'pkg',
+    })
   })
 
   it('Enter activates inner-action rows, toggles parents, and ignores disabled rows', () => {
     const leaf = model({ focusedId: Option.some('app') })
-    assert.deepEqual(
-      TreeList.resolveKey(items, leaf, 'Enter', MOD, 'ltr'),
-      { _tag: 'activate', id: 'app' },
-    )
+    assert.deepEqual(TreeList.resolveKey(items, leaf, 'Enter', MOD, 'ltr'), {
+      _tag: 'activate',
+      id: 'app',
+    })
     const parent = model({ focusedId: Option.some('src') })
-    assert.deepEqual(
-      TreeList.resolveKey(items, parent, ' ', MOD, 'ltr'),
-      { _tag: 'toggle', id: 'src' },
-    )
+    assert.deepEqual(TreeList.resolveKey(items, parent, ' ', MOD, 'ltr'), {
+      _tag: 'toggle',
+      id: 'src',
+    })
     const disabled = model({ focusedId: Option.some('readme') })
     assert.deepEqual(
       TreeList.resolveKey(items, disabled, 'Enter', MOD, 'ltr'),

@@ -1,8 +1,8 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Icon from '@/demo/icon-preview';
-import { card } from '@/stylex/card';
+import * as Icon from '@/demo/icon-preview'
+import { card } from '@/stylex/card'
 import {
   sidebar,
   sidebarContent,
@@ -14,27 +14,32 @@ import {
   sidebarMenuItem,
   sidebarProvider,
   sidebarSeparator,
-} from '@/stylex/sidebar';
-import { className } from '@/stylex/style';
+} from '@/stylex/sidebar'
+import { className } from '@/stylex/style'
 
 const styles = stylex.create({
-  content: { gap: 0, display: 'flex', flexDirection: 'column', },
-  grid: { gap: '1.5rem', alignItems: 'flex-start', display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', },
+  content: { gap: 0, display: 'flex', flexDirection: 'column' },
+  grid: {
+    gap: '1.5rem',
+    alignItems: 'flex-start',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+  },
   provider: { minHeight: 0 },
   separator: { width: 'auto' },
   sidebar: { width: '100%' },
-});
+})
 
 type NavItem = Readonly<{
-  label: string;
-  icon: string;
-  isActive?: boolean;
-}>;
+  label: string
+  icon: string
+  isActive?: boolean
+}>
 
 type NavGroup = Readonly<{
-  label: string;
-  items: ReadonlyArray<NavItem>;
-}>;
+  label: string
+  items: ReadonlyArray<NavItem>
+}>
 
 const OVERVIEW: ReadonlyArray<NavGroup> = [
   {
@@ -56,7 +61,7 @@ const OVERVIEW: ReadonlyArray<NavGroup> = [
       { label: 'Documents', icon: 'file-text' },
     ],
   },
-];
+]
 
 const ACCOUNT: ReadonlyArray<NavGroup> = [
   {
@@ -78,7 +83,7 @@ const ACCOUNT: ReadonlyArray<NavGroup> = [
       { label: 'Status', icon: 'activity' },
     ],
   },
-];
+]
 
 const navGroup = <Msg>(
   group: NavGroup,
@@ -95,7 +100,7 @@ const navGroup = <Msg>(
             children: [
               sidebarMenu(
                 {
-                  children: group.items.map((item) =>
+                  children: group.items.map(item =>
                     sidebarMenuItem(
                       {
                         children: [
@@ -124,7 +129,7 @@ const navGroup = <Msg>(
       ],
     },
     h,
-  );
+  )
 
 const navCard = <Msg>(
   groups: ReadonlyArray<NavGroup>,
@@ -144,17 +149,27 @@ const navCard = <Msg>(
                   surface: 'transparent',
                   layoutStyle: styles.sidebar,
                   children: [
-                    h.div([h.Class(className(styles.content))], [sidebarContent(
-                      {
-                        children: groups.flatMap((group, index) => [
-                          ...(index === 0
-                            ? []
-                            : [h.div([h.Class(className(styles.separator))], [sidebarSeparator({}, h)])]),
-                          navGroup(group, index, h),
-                        ]),
-                      },
-                      h,
-                    )]),
+                    h.div(
+                      [h.Class(className(styles.content))],
+                      [
+                        sidebarContent(
+                          {
+                            children: groups.flatMap((group, index) => [
+                              ...(index === 0
+                                ? []
+                                : [
+                                    h.div(
+                                      [h.Class(className(styles.separator))],
+                                      [sidebarSeparator({}, h)],
+                                    ),
+                                  ]),
+                              navGroup(group, index, h),
+                            ]),
+                          },
+                          h,
+                        ),
+                      ],
+                    ),
                   ],
                 },
                 h,
@@ -166,13 +181,13 @@ const navCard = <Msg>(
       ],
     },
     h,
-  );
+  )
 
 export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
   return h.div(
     [h.Class(className(styles.grid))],
     [navCard(OVERVIEW, h), navCard(ACCOUNT, h)],
-  );
-};
+  )
+}
 
 // Card summary: stateful? no. Submodels wired: none. PORT NOTEs: none.

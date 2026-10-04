@@ -1,13 +1,13 @@
 /* Ported from Meta Astryx SideNav (packages/core/src/SideNav/) — examples and visual spec adapted to Crease UI tokens. */
 
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineView } from 'foldkit/submodel';
-import { Option } from 'effect';
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineView } from 'foldkit/submodel'
+import { Option } from 'effect'
 
-import * as Icon from '@/lib/icon';
-import * as NavMenu from '@/lib/nav-menu';
-import * as SideNavLib from '@/lib/side-nav';
-import { cn } from '@/lib/utils';
+import * as Icon from '@/lib/icon'
+import * as NavMenu from '@/lib/nav-menu'
+import * as SideNavLib from '@/lib/side-nav'
+import { cn } from '@/lib/utils'
 
 export {
   Message,
@@ -20,128 +20,129 @@ export {
   menuFor,
   update,
   visibleWidth,
-} from '@/lib/side-nav';
-export type { InitConfig } from '@/lib/side-nav';
+} from '@/lib/side-nav'
+export type { InitConfig } from '@/lib/side-nav'
 
 // ---------------------------------------------------------------------------
 // Data shapes
 // ---------------------------------------------------------------------------
 
 export type SideNavItemData = Readonly<{
-  id: string;
-  label: string;
-  icon?: string;
+  id: string
+  label: string
+  icon?: string
   /** Icon shown instead of `icon` while the item is selected (astryx selectedIcon). */
-  selectedIcon?: string;
-  isSelected?: boolean;
-  isDisabled?: boolean;
-  href?: string;
+  selectedIcon?: string
+  isSelected?: boolean
+  isDisabled?: boolean
+  href?: string
   /** Invoked for items without href — emits SelectedSideNavItem. */
-  onSelect?: boolean;
-  endContent?: Html;
-  actions?: Html;
+  onSelect?: boolean
+  endContent?: Html
+  actions?: Html
   /** Nested items. Presence makes the item collapsible. */
-  children?: ReadonlyArray<SideNavItemData>;
-  defaultCollapsed?: boolean;
+  children?: ReadonlyArray<SideNavItemData>
+  defaultCollapsed?: boolean
   /** When false, a parent row with a primary action collapses its children
       directly instead of rendering a split expand toggle (astryx
       hasIndependentToggle). Defaults to true. */
-  independentToggle?: boolean;
-}>;
+  independentToggle?: boolean
+}>
 
 export type SideNavMenuItemData = Readonly<{
-  label: string;
-  href?: string;
-  onSelect?: boolean;
-  icon?: string;
-  isDisabled?: boolean;
-}>;
+  label: string
+  href?: string
+  onSelect?: boolean
+  icon?: string
+  isDisabled?: boolean
+}>
 
 export type SideNavHeadingData = Readonly<{
-  heading: string;
-  icon?: Html;
-  headingHref?: string;
-  superheading?: string;
-  superheadingHref?: string;
-  subheading?: string;
-  subheadingHref?: string;
-  headerEndContent?: Html;
-  menu?: ReadonlyArray<SideNavMenuItemData>;
-}>;
+  heading: string
+  icon?: Html
+  headingHref?: string
+  superheading?: string
+  superheadingHref?: string
+  subheading?: string
+  subheadingHref?: string
+  headerEndContent?: Html
+  menu?: ReadonlyArray<SideNavMenuItemData>
+}>
 
 export type SideNavSectionData = Readonly<{
-  title?: string;
-  subtitle?: string;
-  isHeaderHidden?: boolean;
-  endContent?: Html;
-  items: ReadonlyArray<SideNavItemData>;
-}>;
+  title?: string
+  subtitle?: string
+  isHeaderHidden?: boolean
+  endContent?: Html
+  items: ReadonlyArray<SideNavItemData>
+}>
 
 export type ViewInputs = Readonly<{
   /** Bare top-level items (astryx SideNav children outside a Section). */
-  items?: ReadonlyArray<SideNavItemData>;
-  sections?: ReadonlyArray<SideNavSectionData>;
-  heading?: SideNavHeadingData;
-  topContent?: Html;
-  footer?: Html;
+  items?: ReadonlyArray<SideNavItemData>
+  sections?: ReadonlyArray<SideNavSectionData>
+  heading?: SideNavHeadingData
+  topContent?: Html
+  footer?: Html
   /** Small icon cluster beside the collapse button (astryx footerIcons). */
-  footerIcons?: Html;
+  footerIcons?: Html
   /** Show the collapse affordance; requires the model to be collapsible. */
-  hasCollapseButton?: boolean;
+  hasCollapseButton?: boolean
   /** Render the collapse control inside the footer icon row — the astryx
       footerIcons={<SideNavCollapseButton/>} slot. */
-  footerCollapseButton?: boolean;
-  size?: 'sm' | 'md' | 'lg';
-  ariaLabel?: string;
-  direction?: 'ltr' | 'rtl';
-  class?: string;
-}>;
+  footerCollapseButton?: boolean
+  size?: 'sm' | 'md' | 'lg'
+  ariaLabel?: string
+  direction?: 'ltr' | 'rtl'
+  class?: string
+}>
 
 // ---------------------------------------------------------------------------
 // Classes (astryx navItemStyles: px-2 gap-2 radius-element, overlay-hover)
 // ---------------------------------------------------------------------------
 
 const NAV_CLASS =
-  'relative box-border flex h-full shrink-0 flex-col overflow-clip bg-muted/50 text-foreground outline-none transition-[width] duration-300 ease-out';
+  'relative box-border flex h-full shrink-0 flex-col overflow-clip bg-muted/50 text-foreground outline-none transition-[width] duration-300 ease-out'
 
 const ITEM_BASE =
-  'group/sidenav-item relative box-border flex w-full cursor-pointer items-center gap-2 rounded-md px-2 text-left text-sm text-foreground outline-none transition-colors duration-150 select-none';
+  'group/sidenav-item relative box-border flex w-full cursor-pointer items-center gap-2 rounded-md px-2 text-left text-sm text-foreground outline-none transition-colors duration-150 select-none'
 
 const ITEM_INTERACTIVE =
-  'hover:bg-accent focus-visible:bg-accent data-[selected]:bg-accent data-[selected]:font-medium data-[selected]:text-foreground data-[disabled]:pointer-events-none data-[disabled]:text-muted-foreground/50 data-[selected]:hover:bg-accent';
+  'hover:bg-accent focus-visible:bg-accent data-[selected]:bg-accent data-[selected]:font-medium data-[selected]:text-foreground data-[disabled]:pointer-events-none data-[disabled]:text-muted-foreground/50 data-[selected]:hover:bg-accent'
 
-const ITEM_ICON = 'size-4 shrink-0 text-muted-foreground';
+const ITEM_ICON = 'size-4 shrink-0 text-muted-foreground'
 
 const CHEVRON_CLASS =
-  'size-3.5 shrink-0 text-muted-foreground transition-transform duration-150 rtl:-scale-x-100';
+  'size-3.5 shrink-0 text-muted-foreground transition-transform duration-150 rtl:-scale-x-100'
 
 const EXPAND_TOGGLE_CLASS =
-  'flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-md text-muted-foreground outline-none transition-colors duration-150 hover:bg-accent hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50';
+  'flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-md text-muted-foreground outline-none transition-colors duration-150 hover:bg-accent hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50'
 
 const COLLAPSED_FLYOUT_CLASS =
-  'z-50 box-border flex max-h-[min(70vh,480px)] min-w-44 max-w-64 flex-col gap-0.5 overflow-y-auto rounded-lg border border-border bg-popover p-1 text-popover-foreground shadow-md outline-none';
+  'z-50 box-border flex max-h-[min(70vh,480px)] min-w-44 max-w-64 flex-col gap-0.5 overflow-y-auto rounded-lg border border-border bg-popover p-1 text-popover-foreground shadow-md outline-none'
 
 const FLYOUT_HEADER_CLASS =
-  'px-2 pt-1.5 pb-1 text-xs font-semibold text-muted-foreground';
+  'px-2 pt-1.5 pb-1 text-xs font-semibold text-muted-foreground'
 
 const FLYOUT_ITEM_CLASS =
-  'flex w-full cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none transition-colors duration-150 hover:bg-accent focus-visible:bg-accent data-[disabled]:pointer-events-none data-[disabled]:opacity-50';
+  'flex w-full cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none transition-colors duration-150 hover:bg-accent focus-visible:bg-accent data-[disabled]:pointer-events-none data-[disabled]:opacity-50'
 
 const SIZE_CLASS: Record<string, string> = {
   sm: 'h-7 text-sm',
   md: 'h-8 text-sm',
   lg: 'h-9 text-sm',
-};
+}
 
 const SECTION_TITLE_CLASS =
-  'truncate text-xs leading-4 font-semibold text-muted-foreground';
-const SECTION_SUBTITLE_CLASS = 'truncate text-xs leading-4 text-muted-foreground';
+  'truncate text-xs leading-4 font-semibold text-muted-foreground'
+const SECTION_SUBTITLE_CLASS =
+  'truncate text-xs leading-4 text-muted-foreground'
 
 const scrollableClass = (collapsed: boolean): string =>
   cn(
     'box-border flex min-h-0 flex-1 flex-col gap-1 overflow-x-hidden overflow-y-auto px-2 py-1',
     collapsed && 'items-center px-0',
-  );
+  )
 
 const railItemClass = (size: 'sm' | 'md' | 'lg'): string =>
   cn(
@@ -149,22 +150,22 @@ const railItemClass = (size: 'sm' | 'md' | 'lg'): string =>
     ITEM_INTERACTIVE,
     'size-8 shrink-0 justify-center gap-0 px-0',
     size === 'lg' && 'size-9',
-  );
+  )
 
 // ---------------------------------------------------------------------------
 // Anchor positioning (same CSS anchor contract as dropdown-menu)
 // ---------------------------------------------------------------------------
 
-type AnchorSide = 'top' | 'bottom' | 'start' | 'end';
+type AnchorSide = 'top' | 'bottom' | 'start' | 'end'
 
 const anchorPositionStyle = (
   anchorId: string,
   side: AnchorSide,
   options: Readonly<{ coverTrigger?: boolean; gap?: string }> = {},
 ): Record<string, string> => {
-  const gap = options.gap ?? '0.25rem';
-  const cover = options.coverTrigger === true;
-  const horizontal = side === 'start' || side === 'end';
+  const gap = options.gap ?? '0.25rem'
+  const cover = options.coverTrigger === true
+  const horizontal = side === 'start' || side === 'end'
   const sideInset =
     side === 'end'
       ? { left: cover ? 'anchor(left)' : `calc(anchor(right) + ${gap})` }
@@ -172,14 +173,14 @@ const anchorPositionStyle = (
         ? { right: cover ? 'anchor(right)' : `calc(anchor(left) + ${gap})` }
         : side === 'bottom'
           ? { top: cover ? 'anchor(top)' : `calc(anchor(bottom) + ${gap})` }
-          : { bottom: cover ? 'anchor(bottom)' : `calc(anchor(top) + ${gap})` };
+          : { bottom: cover ? 'anchor(bottom)' : `calc(anchor(top) + ${gap})` }
   const alignInset = horizontal
     ? { top: cover ? 'anchor(top)' : `calc(anchor(top) - ${gap})` }
     : {
         left: cover
           ? 'anchor(left)'
           : `min(anchor(left), calc(anchor(right) - 100%))`,
-      };
+      }
   return {
     position: 'fixed',
     positionAnchor: anchorId,
@@ -189,35 +190,33 @@ const anchorPositionStyle = (
     maxHeight: 'calc(100vh - 8px)',
     overflowY: 'auto',
     ...(cover ? {} : { width: 'max-content' }),
-  };
-};
+  }
+}
 
 // ---------------------------------------------------------------------------
 // View helpers
 // ---------------------------------------------------------------------------
 
 const sectionHeadingDomId = (navId: string, index: number): string =>
-  `${navId}-section-${index}-heading`;
+  `${navId}-section-${index}-heading`
 
 const itemDomId = (navId: string, itemId: string): string =>
-  `${navId}-item-${itemId}`;
+  `${navId}-item-${itemId}`
 
 const itemChildrenDomId = (navId: string, itemId: string): string =>
-  `${navId}-item-${itemId}-children`;
+  `${navId}-item-${itemId}-children`
 
-const iconFor = (
-  item: SideNavItemData,
-): string | undefined =>
+const iconFor = (item: SideNavItemData): string | undefined =>
   item.isSelected === true && item.selectedIcon !== undefined
     ? item.selectedIcon
-    : item.icon;
+    : item.icon
 
 const itemIsActionable = (item: SideNavItemData): boolean =>
-  item.href !== undefined || item.onSelect === true;
+  item.href !== undefined || item.onSelect === true
 
 /** astryx: items without icons render nothing in the collapsed rail. */
 const itemVisibleInRail = (item: SideNavItemData): boolean =>
-  iconFor(item) !== undefined;
+  iconFor(item) !== undefined
 
 const renderMenuItems = <Msg>(
   items: ReadonlyArray<SideNavMenuItemData>,
@@ -225,7 +224,7 @@ const renderMenuItems = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Html[] =>
   items.map(item => {
-    const disabled = item.isDisabled === true;
+    const disabled = item.isDisabled === true
     const attrs = [
       h.Class(FLYOUT_ITEM_CLASS),
       ...(disabled ? [h.DataAttribute('disabled', 'true')] : []),
@@ -239,13 +238,13 @@ const renderMenuItems = <Msg>(
             h.OnClick(emitMenu(NavMenu.Message.SelectedNavMenuItem())),
           ]
         : []),
-    ];
+    ]
     const children = [
       ...(item.icon === undefined
         ? []
         : [Icon.icon(item.icon, { class: ITEM_ICON }, h)]),
       h.span([h.Class('truncate')], [item.label]),
-    ];
+    ]
     return item.href === undefined || disabled
       ? h.button(
           [
@@ -257,8 +256,8 @@ const renderMenuItems = <Msg>(
           ],
           children,
         )
-      : h.a([h.Href(item.href), h.Role('menuitem'), ...attrs], children);
-  });
+      : h.a([h.Href(item.href), h.Role('menuitem'), ...attrs], children)
+  })
 
 const renderFlyoutItems = <Msg>(
   items: ReadonlyArray<SideNavItemData>,
@@ -266,7 +265,7 @@ const renderFlyoutItems = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Html[] =>
   items.map(item => {
-    const disabled = item.isDisabled === true;
+    const disabled = item.isDisabled === true
     const attrs = [
       h.Class(FLYOUT_ITEM_CLASS),
       ...(disabled
@@ -275,37 +274,37 @@ const renderFlyoutItems = <Msg>(
       ...(item.onSelect === true && !disabled
         ? [h.OnClick(emitMenu(NavMenu.Message.SelectedNavMenuItem()))]
         : []),
-    ];
+    ]
     const children = [
       h.span([h.Class('truncate')], [item.label]),
       ...(item.endContent === undefined ? [] : [item.endContent]),
-    ];
+    ]
     return item.href === undefined
       ? h.button([h.Type('button'), ...attrs], children)
-      : h.a([h.Href(item.href), ...attrs], children);
-  });
+      : h.a([h.Href(item.href), ...attrs], children)
+  })
 
 const flyoutPanel = <Msg>(
   model: SideNavLib.Model,
   key: string,
   anchorId: string,
   options: Readonly<{
-    side: AnchorSide;
-    coverTrigger?: boolean;
-    headerLabel?: string;
-    role?: 'menu' | 'listbox';
-    items: Html[];
+    side: AnchorSide
+    coverTrigger?: boolean
+    headerLabel?: string
+    role?: 'menu' | 'listbox'
+    items: Html[]
   }>,
   emit: (message: SideNavLib.Message) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html[] => {
-  const menu = SideNavLib.menuFor(model, key);
+  const menu = SideNavLib.menuFor(model, key)
   if (!NavMenu.isOpen(menu)) {
-    return [];
+    return []
   }
   const emitMenu = (message: NavMenu.Message): Msg =>
-    emit(SideNavLib.Message.GotSideNavMenuMessage({ key, message }));
-  const panelId = NavMenu.panelDomId(`${model.id}-${key}`);
+    emit(SideNavLib.Message.GotSideNavMenuMessage({ key, message }))
+  const panelId = NavMenu.panelDomId(`${model.id}-${key}`)
   return [
     h.div(
       [
@@ -324,17 +323,12 @@ const flyoutPanel = <Msg>(
       [
         ...(options.headerLabel === undefined
           ? []
-          : [
-              h.div(
-                [h.Class(FLYOUT_HEADER_CLASS)],
-                [options.headerLabel],
-              ),
-            ]),
+          : [h.div([h.Class(FLYOUT_HEADER_CLASS)], [options.headerLabel])]),
         ...options.items,
       ],
     ),
-  ];
-};
+  ]
+}
 
 // ---------------------------------------------------------------------------
 // Item rendering
@@ -349,27 +343,27 @@ const renderItem = <Msg>(
   h: HtmlBuilder<Msg>,
   direction: 'ltr' | 'rtl',
 ): Html => {
-  const collapsed = model.isCollapsed;
-  const hasChildren = item.children !== undefined && item.children.length > 0;
-  const isSelected = item.isSelected === true;
-  const isDisabled = item.isDisabled === true;
-  const icon = iconFor(item);
+  const collapsed = model.isCollapsed
+  const hasChildren = item.children !== undefined && item.children.length > 0
+  const isSelected = item.isSelected === true
+  const isDisabled = item.isDisabled === true
+  const icon = iconFor(item)
   const childrenCollapsed = SideNavLib.isItemCollapsed(
     model,
     item.id,
     item.defaultCollapsed ?? false,
-  );
+  )
 
   // Collapsed rail: icon-only rows, flyout for parents, tooltip text via title.
   if (collapsed) {
     if (!itemVisibleInRail(item)) {
-      return h.div([], []);
+      return h.div([], [])
     }
-    const key = SideNavLib.flyoutKey(item.id);
-    const menu = SideNavLib.menuFor(model, key);
-    const anchorId = `--${model.id}-${item.id}-anchor`;
+    const key = SideNavLib.flyoutKey(item.id)
+    const menu = SideNavLib.menuFor(model, key)
+    const anchorId = `--${model.id}-${item.id}-anchor`
     const emitMenu = (message: NavMenu.Message): Msg =>
-      emit(SideNavLib.Message.GotSideNavMenuMessage({ key, message }));
+      emit(SideNavLib.Message.GotSideNavMenuMessage({ key, message }))
     const triggerAttrs = [
       h.Id(NavMenu.triggerDomId(`${model.id}-${key}`)),
       h.Class(railItemClass(size)),
@@ -422,12 +416,12 @@ const renderItem = <Msg>(
                 ]
               : []),
           ]),
-    ];
-    const iconEl = Icon.icon(icon ?? 'file', { class: ITEM_ICON }, h);
+    ]
+    const iconEl = Icon.icon(icon ?? 'file', { class: ITEM_ICON }, h)
     const trigger =
       !hasChildren && item.href !== undefined && !isDisabled
         ? h.a([h.Href(item.href), ...triggerAttrs], [iconEl])
-        : h.button([h.Type('button'), ...triggerAttrs], [iconEl]);
+        : h.button([h.Type('button'), ...triggerAttrs], [iconEl])
     return h.div(
       [h.Class('relative flex flex-col items-center')],
       [
@@ -447,14 +441,14 @@ const renderItem = <Msg>(
             )
           : []),
       ],
-    );
+    )
   }
 
   // Expanded mode.
-  const isActionable = itemIsActionable(item);
+  const isActionable = itemIsActionable(item)
   const independentToggle =
-    hasChildren && isActionable && (item.independentToggle ?? true);
-  const childrenId = itemChildrenDomId(model.id, item.id);
+    hasChildren && isActionable && (item.independentToggle ?? true)
+  const childrenId = itemChildrenDomId(model.id, item.id)
 
   const primaryAttrs = [
     h.Class(cn(ITEM_BASE, ITEM_INTERACTIVE, SIZE_CLASS[size])),
@@ -464,12 +458,9 @@ const renderItem = <Msg>(
       : []),
     ...(isSelected ? [h.AriaCurrent('page')] : []),
     ...(hasChildren && !independentToggle
-      ? [
-          h.AriaExpanded(!childrenCollapsed),
-          h.AriaControls(childrenId),
-        ]
+      ? [h.AriaExpanded(!childrenCollapsed), h.AriaControls(childrenId)]
       : []),
-  ];
+  ]
   const onPrimaryPress: Option.Option<Msg> =
     hasChildren && !isActionable
       ? Option.some(
@@ -495,17 +486,14 @@ const renderItem = <Msg>(
                 SideNavLib.Message.PressedSideNavItemAction({ id: item.id }),
               ),
             )
-          : Option.none();
+          : Option.none()
 
-  const label = h.span(
-    [h.Class('min-w-0 flex-1 truncate')],
-    [item.label],
-  );
+  const label = h.span([h.Class('min-w-0 flex-1 truncate')], [item.label])
   const primaryChildren = [
     ...(icon === undefined ? [] : [Icon.icon(icon, { class: ITEM_ICON }, h)]),
     label,
     ...(item.endContent === undefined ? [] : [item.endContent]),
-  ];
+  ]
   const primary =
     item.href !== undefined && !isDisabled
       ? h.a(
@@ -530,9 +518,9 @@ const renderItem = <Msg>(
             }),
           ],
           primaryChildren,
-        );
+        )
 
-  const chevron = Icon.icon('chevron-right', { class: CHEVRON_CLASS }, h);
+  const chevron = Icon.icon('chevron-right', { class: CHEVRON_CLASS }, h)
   const expandToggle =
     independentToggle && !isDisabled
       ? h.button(
@@ -553,7 +541,7 @@ const renderItem = <Msg>(
           ],
           [chevron],
         )
-      : undefined;
+      : undefined
 
   const row =
     independentToggle || item.actions !== undefined
@@ -569,24 +557,20 @@ const renderItem = <Msg>(
             ...(item.actions === undefined ? [] : [item.actions]),
           ],
         )
-      : primary;
+      : primary
 
-  const indentPx = 8 + level * 24;
+  const indentPx = 8 + level * 24
   const childrenRegion =
     hasChildren && !childrenCollapsed
       ? h.div(
-          [
-            h.Id(childrenId),
-            h.Class('flex flex-col gap-0.5'),
-            h.Role('group'),
-          ],
+          [h.Id(childrenId), h.Class('flex flex-col gap-0.5'), h.Role('group')],
           (item.children ?? []).map(child =>
             renderItem(model, child, level + 1, size, emit, h, direction),
           ),
         )
       : hasChildren
         ? h.div([h.Id(childrenId), h.Class('hidden')], [])
-        : undefined;
+        : undefined
 
   return h.div(
     [
@@ -610,8 +594,8 @@ const renderItem = <Msg>(
       ),
       ...(childrenRegion === undefined ? [] : [childrenRegion]),
     ],
-  );
-};
+  )
+}
 
 // ---------------------------------------------------------------------------
 // Heading
@@ -623,13 +607,13 @@ const renderHeading = <Msg>(
   emit: (message: SideNavLib.Message) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const collapsed = model.isCollapsed;
-  const hasMenu = heading.menu !== undefined && heading.menu.length > 0;
-  const key = SideNavLib.HEADING_MENU_KEY;
-  const menu = SideNavLib.menuFor(model, key);
-  const anchorId = `--${model.id}-heading-anchor`;
+  const collapsed = model.isCollapsed
+  const hasMenu = heading.menu !== undefined && heading.menu.length > 0
+  const key = SideNavLib.HEADING_MENU_KEY
+  const menu = SideNavLib.menuFor(model, key)
+  const anchorId = `--${model.id}-heading-anchor`
   const emitMenu = (message: NavMenu.Message): Msg =>
-    emit(SideNavLib.Message.GotSideNavMenuMessage({ key, message }));
+    emit(SideNavLib.Message.GotSideNavMenuMessage({ key, message }))
 
   const iconEl =
     heading.icon === undefined
@@ -641,16 +625,12 @@ const renderHeading = <Msg>(
             ),
           ],
           [heading.icon],
-        );
+        )
 
   const headingText = h.span(
-    [
-      h.Class(
-        'truncate text-[17px] leading-6 font-semibold text-foreground',
-      ),
-    ],
+    [h.Class('truncate text-[17px] leading-6 font-semibold text-foreground')],
     [heading.heading],
-  );
+  )
 
   if (collapsed) {
     // Rail mode: icon only; menu (if any) still works on hover/click; label
@@ -664,7 +644,7 @@ const renderHeading = <Msg>(
             ),
           ]
         : [iconEl]),
-    ];
+    ]
     const triggerAttrs = [
       h.Id(NavMenu.triggerDomId(`${model.id}-${key}`)),
       h.Class(
@@ -700,11 +680,11 @@ const renderHeading = <Msg>(
             ),
           ]
         : []),
-    ];
+    ]
     const trigger =
       !hasMenu && heading.headingHref !== undefined
         ? h.a([h.Href(heading.headingHref), ...triggerAttrs], triggerChildren)
-        : h.button([h.Type('button'), ...triggerAttrs], triggerChildren);
+        : h.button([h.Type('button'), ...triggerAttrs], triggerChildren)
     return h.div(
       [h.Class('flex min-h-8 items-center justify-center py-1')],
       [
@@ -723,7 +703,7 @@ const renderHeading = <Msg>(
             )
           : []),
       ],
-    );
+    )
   }
 
   // Expanded header: [icon] + text column (+ optional menu trigger).
@@ -735,11 +715,7 @@ const renderHeading = <Msg>(
         : [
             heading.superheadingHref === undefined
               ? h.span(
-                  [
-                    h.Class(
-                      'truncate text-xs leading-4 text-muted-foreground',
-                    ),
-                  ],
+                  [h.Class('truncate text-xs leading-4 text-muted-foreground')],
                   [heading.superheading],
                 )
               : h.a(
@@ -768,11 +744,7 @@ const renderHeading = <Msg>(
         : [
             heading.subheadingHref === undefined
               ? h.span(
-                  [
-                    h.Class(
-                      'truncate text-xs leading-4 text-muted-foreground',
-                    ),
-                  ],
+                  [h.Class('truncate text-xs leading-4 text-muted-foreground')],
                   [heading.subheading],
                 )
               : h.a(
@@ -786,7 +758,7 @@ const renderHeading = <Msg>(
                 ),
           ]),
     ],
-  );
+  )
 
   const chevronButton =
     hasMenu && heading.headingHref !== undefined
@@ -799,9 +771,7 @@ const renderHeading = <Msg>(
             h.AriaHasPopup('menu'),
             h.AriaExpanded(NavMenu.isOpen(menu)),
             h.Style({ anchorName: anchorId } as Record<string, string>),
-            h.OnMouseEnter(
-              emitMenu(NavMenu.Message.EnteredNavMenuTrigger()),
-            ),
+            h.OnMouseEnter(emitMenu(NavMenu.Message.EnteredNavMenuTrigger())),
             h.OnMouseLeave(emitMenu(NavMenu.Message.LeftNavMenuTrigger())),
             h.OnPointerDown((_t, button, _x, _y, timeStamp) =>
               button === 0
@@ -835,12 +805,11 @@ const renderHeading = <Msg>(
             ),
           ],
         )
-      : undefined;
+      : undefined
 
   // No links anywhere: the whole header is the trigger (astryx's automatic
   // trigger boundary).
-  const wholeHeaderTrigger =
-    hasMenu && chevronButton === undefined;
+  const wholeHeaderTrigger = hasMenu && chevronButton === undefined
 
   const headerRow = h.div(
     [
@@ -859,9 +828,7 @@ const renderHeading = <Msg>(
             h.AriaHasPopup('menu'),
             h.AriaExpanded(NavMenu.isOpen(menu)),
             h.Style({ anchorName: anchorId } as Record<string, string>),
-            h.OnMouseEnter(
-              emitMenu(NavMenu.Message.EnteredNavMenuTrigger()),
-            ),
+            h.OnMouseEnter(emitMenu(NavMenu.Message.EnteredNavMenuTrigger())),
             h.OnMouseLeave(emitMenu(NavMenu.Message.LeftNavMenuTrigger())),
             h.OnPointerDown((_t, button, _x, _y, timeStamp) =>
               button === 0
@@ -892,7 +859,7 @@ const renderHeading = <Msg>(
         ? []
         : [heading.headerEndContent]),
     ],
-  );
+  )
 
   return h.div(
     [h.Class('flex flex-col gap-1 px-0 py-1')],
@@ -913,8 +880,8 @@ const renderHeading = <Msg>(
           )
         : []),
     ],
-  );
-};
+  )
+}
 
 // ---------------------------------------------------------------------------
 // Sections
@@ -929,8 +896,8 @@ const renderSection = <Msg>(
   h: HtmlBuilder<Msg>,
   direction: 'ltr' | 'rtl',
 ): Html => {
-  const collapsed = model.isCollapsed;
-  const headingId = sectionHeadingDomId(model.id, index);
+  const collapsed = model.isCollapsed
+  const headingId = sectionHeadingDomId(model.id, index)
   const header =
     section.title === undefined
       ? undefined
@@ -960,7 +927,7 @@ const renderSection = <Msg>(
             ),
             ...(section.endContent === undefined ? [] : [section.endContent]),
           ],
-        );
+        )
   return h.div(
     [
       h.Class('flex w-full flex-col'),
@@ -980,8 +947,8 @@ const renderSection = <Msg>(
         ),
       ),
     ],
-  );
-};
+  )
+}
 
 // ---------------------------------------------------------------------------
 // Collapse button + resize handle
@@ -998,7 +965,9 @@ const collapseButton = <Msg>(
       h.Class(
         'inline-flex size-7 cursor-pointer items-center justify-center rounded-md text-muted-foreground outline-none transition-colors duration-150 hover:bg-accent hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50',
       ),
-      h.AriaLabel(model.isCollapsed ? 'Expand navigation' : 'Collapse navigation'),
+      h.AriaLabel(
+        model.isCollapsed ? 'Expand navigation' : 'Collapse navigation',
+      ),
       h.AriaExpanded(!model.isCollapsed),
       h.OnClick(emit(SideNavLib.Message.ToggledSideNav())),
     ],
@@ -1016,7 +985,7 @@ const collapseButton = <Msg>(
         [Icon.icon('chevron-left', { class: 'size-4' }, h)],
       ),
     ],
-  );
+  )
 
 // ---------------------------------------------------------------------------
 // Main view
@@ -1028,17 +997,17 @@ const render = <Msg>(
   emit: (message: SideNavLib.Message) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const collapsed = model.isCollapsed;
-  const direction = viewInputs.direction ?? 'ltr';
-  const size = viewInputs.size ?? 'md';
+  const collapsed = model.isCollapsed
+  const direction = viewInputs.direction ?? 'ltr'
+  const size = viewInputs.size ?? 'md'
   const hasCollapseButton =
-    viewInputs.hasCollapseButton !== false && model.isCollapsible;
+    viewInputs.hasCollapseButton !== false && model.isCollapsible
   const footerCollapseButton =
-    viewInputs.footerCollapseButton === true && model.isCollapsible;
+    viewInputs.footerCollapseButton === true && model.isCollapsible
   const hasFooterRow =
     hasCollapseButton ||
     footerCollapseButton ||
-    viewInputs.footerIcons !== undefined;
+    viewInputs.footerIcons !== undefined
 
   const stickyTop =
     viewInputs.heading === undefined && viewInputs.topContent === undefined
@@ -1060,7 +1029,7 @@ const render = <Msg>(
               ? []
               : [viewInputs.topContent]),
           ],
-        );
+        )
 
   const scrollable = h.div(
     [h.Class(scrollableClass(collapsed))],
@@ -1086,7 +1055,7 @@ const render = <Msg>(
             ),
           ]),
     ],
-  );
+  )
 
   const stickyBottom =
     viewInputs.footer === undefined && !hasFooterRow
@@ -1116,7 +1085,9 @@ const render = <Msg>(
                       ),
                     ],
                     [
-                      ...(hasCollapseButton ? [collapseButton(model, emit, h)] : []),
+                      ...(hasCollapseButton
+                        ? [collapseButton(model, emit, h)]
+                        : []),
                       ...(viewInputs.footerIcons === undefined
                         ? []
                         : [viewInputs.footerIcons]),
@@ -1128,7 +1099,7 @@ const render = <Msg>(
                 ]
               : []),
           ],
-        );
+        )
 
   const resizeHandle = !model.isResizable
     ? undefined
@@ -1148,13 +1119,11 @@ const render = <Msg>(
           h.OnPointerDown((pointerType, button, _sx, screenX) =>
             button === 0 || pointerType !== 'mouse'
               ? Option.some(
-                  emit(
-                    SideNavLib.Message.StartedSideNavResize({ x: screenX }),
-                  ),
+                  emit(SideNavLib.Message.StartedSideNavResize({ x: screenX })),
                 )
               : Option.none(),
           ),
-          h.OnPointerMove((screenX) =>
+          h.OnPointerMove(screenX =>
             Option.isSome(model.drag)
               ? Option.some(
                   emit(
@@ -1170,7 +1139,7 @@ const render = <Msg>(
             Option.some(emit(SideNavLib.Message.EndedSideNavResize())),
           ),
           h.OnKeyDownPreventDefault(key => {
-            const step = 16;
+            const step = 16
             const delta =
               key === 'ArrowRight'
                 ? direction === 'rtl'
@@ -1180,18 +1149,16 @@ const render = <Msg>(
                   ? direction === 'rtl'
                     ? step
                     : -step
-                  : 0;
+                  : 0
             return delta === 0
               ? Option.none()
               : Option.some(
-                  emit(
-                    SideNavLib.Message.NudgedSideNavResize({ delta }),
-                  ),
-                );
+                  emit(SideNavLib.Message.NudgedSideNavResize({ delta })),
+                )
           }),
         ],
         [],
-      );
+      )
 
   return h.nav(
     [
@@ -1212,15 +1179,15 @@ const render = <Msg>(
       ...(stickyBottom === undefined ? [] : [stickyBottom]),
       ...(resizeHandle === undefined ? [] : [resizeHandle]),
     ],
-  );
-};
+  )
+}
 
 /** Canonical stateful view. Embed with `h.submodel`. */
 export const view = defineView<
   SideNavLib.Model,
   SideNavLib.Message,
   ViewInputs
->((model, viewInputs, h) => render(model, viewInputs, message => message, h));
+>((model, viewInputs, h) => render(model, viewInputs, message => message, h))
 
 /**
  * Compatibility helper for existing consumers. New code should use
@@ -1228,11 +1195,11 @@ export const view = defineView<
  */
 export type SideNavProps<Msg> = ViewInputs &
   Readonly<{
-    model: SideNavLib.Model;
-    toParentMessage: (message: SideNavLib.Message) => Msg;
-  }>;
+    model: SideNavLib.Model
+    toParentMessage: (message: SideNavLib.Message) => Msg
+  }>
 
 export const sideNav = <Msg>(
   props: SideNavProps<Msg>,
   h: HtmlBuilder<Msg>,
-): Html => render(props.model, props, props.toParentMessage, h);
+): Html => render(props.model, props, props.toParentMessage, h)

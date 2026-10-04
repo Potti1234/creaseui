@@ -1,10 +1,10 @@
-import * as stylex from '@stylexjs/stylex';
-import type { HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
-import { fieldStatusFixtures } from '@/docs/components/pages/field-status/shared';
-import * as FieldStatus from '@/stylex/field-status';
-import { className } from '@/stylex/style';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import { fieldStatusFixtures } from '@/docs/components/pages/field-status/shared'
+import * as FieldStatus from '@/stylex/field-status'
+import { className } from '@/stylex/style'
 
 const styles = stylex.create({
   stack: {
@@ -14,7 +14,7 @@ const styles = stylex.create({
     maxWidth: '28rem',
     width: '100%',
   },
-});
+})
 
 export const fieldStatusStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
@@ -22,17 +22,20 @@ export const fieldStatusStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   _onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ) => {
-  const fixture = fieldStatusFixtures[exampleIndex] ?? fieldStatusFixtures[0];
-  return h.div([h.Class(className(styles.stack))], [
-    ...fixture.items.map(item =>
-      FieldStatus.fieldStatus(
-        {
-          type: item.type,
-          message: item.message,
-          ...(item.variant === undefined ? {} : { variant: item.variant }),
-        },
-        h,
+  const fixture = fieldStatusFixtures[exampleIndex] ?? fieldStatusFixtures[0]
+  return h.div(
+    [h.Class(className(styles.stack))],
+    [
+      ...fixture.items.map(item =>
+        FieldStatus.fieldStatus(
+          {
+            type: item.type,
+            message: item.message,
+            ...(item.variant === undefined ? {} : { variant: item.variant }),
+          },
+          h,
+        ),
       ),
-    ),
-  ]);
-};
+    ],
+  )
+}

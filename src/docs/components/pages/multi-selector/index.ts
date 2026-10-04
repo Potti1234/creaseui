@@ -1,6 +1,6 @@
-import { authoredPage } from '@/docs/components/pages/authored-page';
-import { multiSelectorExamples } from '@/docs/components/pages/multi-selector/shared';
-import { multiSelectorTailwindPreviewProgram } from '@/docs/components/pages/multi-selector/tailwind';
+import { authoredPage } from '@/docs/components/pages/authored-page'
+import { multiSelectorExamples } from '@/docs/components/pages/multi-selector/shared'
+import { multiSelectorTailwindPreviewProgram } from '@/docs/components/pages/multi-selector/tailwind'
 
 export const multiSelectorPage = authoredPage({
   slug: 'multi-selector',
@@ -21,7 +21,10 @@ export const multiSelectorPage = authoredPage({
       'The trigger is a real button owning an anchored listbox — arrow keys navigate options and Enter toggles them. The select-all row exposes a tri-state checkbox, and the trigger keeps aria-invalid / described-by wiring for status messages.',
     keyboard: [
       ['Click / Enter / Space', 'Opens the anchored option panel.'],
-      ['ArrowUp / ArrowDown', 'Moves the active option without changing the selection.'],
+      [
+        'ArrowUp / ArrowDown',
+        'Moves the active option without changing the selection.',
+      ],
       ['Enter', 'Toggles the active option; the panel stays open.'],
       ['Type', 'Typeahead jumps to matching options while the panel is open.'],
       ['Escape', 'Closes the panel and returns focus to the trigger.'],
@@ -31,4 +34,4 @@ export const multiSelectorPage = authoredPage({
     examples: multiSelectorExamples('tailwind'),
     stylexExamples: multiSelectorExamples('stylex'),
   },
-});
+})

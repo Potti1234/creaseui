@@ -1,6 +1,6 @@
-import { authoredPage } from '@/docs/components/pages/authored-page';
-import { bottomSheetExamples } from '@/docs/components/pages/bottom-sheet/shared';
-import { bottomSheetTailwindPreviewProgram } from '@/docs/components/pages/bottom-sheet/tailwind';
+import { authoredPage } from '@/docs/components/pages/authored-page'
+import { bottomSheetExamples } from '@/docs/components/pages/bottom-sheet/shared'
+import { bottomSheetTailwindPreviewProgram } from '@/docs/components/pages/bottom-sheet/tailwind'
 
 export const bottomSheetPage = authoredPage({
   slug: 'bottom-sheet',
@@ -22,9 +22,12 @@ export const bottomSheetPage = authoredPage({
     keyboard: [
       ['Escape', 'Dismisses the sheet (unless its purpose is required).'],
       ['Tab', 'Cycles focus within the sheet while it is open.'],
-      ['Drag the handle', 'Snaps between detents; a fast flick can dismiss info sheets.'],
+      [
+        'Drag the handle',
+        'Snaps between detents; a fast flick can dismiss info sheets.',
+      ],
     ],
     examples: bottomSheetExamples('tailwind'),
     stylexExamples: bottomSheetExamples('stylex'),
   },
-});
+})

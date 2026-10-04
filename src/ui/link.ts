@@ -1,21 +1,21 @@
-import { type VariantProps, cva } from 'class-variance-authority';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import { type VariantProps, cva } from 'class-variance-authority'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Icon from '@/lib/icon';
-import { cn } from '@/lib/utils';
+import * as Icon from '@/lib/icon'
+import { cn } from '@/lib/utils'
 import type {
   TextColor,
   TextDisplay,
   TextSize,
   TextType,
   TextWeight,
-} from '@/ui/text';
-import { text } from '@/ui/text';
+} from '@/ui/text'
+import { text } from '@/ui/text'
 
 /* Ported from Meta Astryx Link (packages/core/src/Link/Link.tsx) — examples and
    visual spec adapted to Crease UI tokens. */
 
-const BLANK_TARGET_REL_TOKENS = ['noopener', 'noreferrer'] as const;
+const BLANK_TARGET_REL_TOKENS = ['noopener', 'noreferrer'] as const
 
 const computeTargetAndRel = (
   target: string | undefined,
@@ -25,16 +25,16 @@ const computeTargetAndRel = (
     return {
       ...(target === undefined ? {} : { target }),
       ...(rel === undefined ? {} : { rel }),
-    };
-  }
-  const tokens = rel?.split(/\s+/).filter(Boolean) ?? [];
-  for (const token of BLANK_TARGET_REL_TOKENS) {
-    if (!tokens.includes(token)) {
-      tokens.push(token);
     }
   }
-  return { target, rel: tokens.join(' ') };
-};
+  const tokens = rel?.split(/\s+/).filter(Boolean) ?? []
+  for (const token of BLANK_TARGET_REL_TOKENS) {
+    if (!tokens.includes(token)) {
+      tokens.push(token)
+    }
+  }
+  return { target, rel: tokens.join(' ') }
+}
 
 export const linkVariants = cva(
   'inline-flex items-center gap-0.5 [font:inherit] cursor-pointer transition-[color,text-decoration] duration-150 outline-none no-underline focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-ring focus-visible:outline-offset-[3px] aria-disabled:cursor-default',
@@ -61,46 +61,46 @@ export const linkVariants = cva(
       },
     },
   },
-);
+)
 
-export type LinkVariants = VariantProps<typeof linkVariants>;
+export type LinkVariants = VariantProps<typeof linkVariants>
 
 const hoverUnderline =
-  '[@media(hover:hover):where(&:hover:not(:disabled,[aria-disabled="true"]))]:underline';
+  '[@media(hover:hover):where(&:hover:not(:disabled,[aria-disabled="true"]))]:underline'
 
 export type LinkProps<Msg> = Readonly<{
-  children: ReadonlyArray<Html | string>;
-  href?: string;
-  label?: string;
-  hasUnderline?: boolean;
-  isDisabled?: boolean;
-  isExternalLink?: boolean;
-  newTabLabel?: string;
-  target?: string;
-  rel?: string;
-  download?: string;
-  onClick?: Msg;
-  tooltip?: string;
-  isStandalone?: boolean;
-  type?: TextType;
-  size?: TextSize;
-  weight?: TextWeight;
-  color?: TextColor;
-  display?: TextDisplay;
-  maxLines?: number;
-  class?: string;
-}>;
+  children: ReadonlyArray<Html | string>
+  href?: string
+  label?: string
+  hasUnderline?: boolean
+  isDisabled?: boolean
+  isExternalLink?: boolean
+  newTabLabel?: string
+  target?: string
+  rel?: string
+  download?: string
+  onClick?: Msg
+  tooltip?: string
+  isStandalone?: boolean
+  type?: TextType
+  size?: TextSize
+  weight?: TextWeight
+  color?: TextColor
+  display?: TextDisplay
+  maxLines?: number
+  class?: string
+}>
 
 export const link = <Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html => {
-  const color = props.color ?? 'accent';
-  const isDisabled = props.isDisabled ?? false;
-  const isExternalLink = props.isExternalLink ?? false;
-  const newTabLabel = props.newTabLabel ?? '(opens in new tab)';
+  const color = props.color ?? 'accent'
+  const isDisabled = props.isDisabled ?? false
+  const isExternalLink = props.isExternalLink ?? false
+  const newTabLabel = props.newTabLabel ?? '(opens in new tab)'
   const { target, rel } = computeTargetAndRel(
     isExternalLink ? '_blank' : props.target,
     props.rel,
-  );
-  const renderAsButton = props.href === undefined;
+  )
+  const renderAsButton = props.href === undefined
 
   const sharedContent = [
     text(
@@ -118,17 +118,10 @@ export const link = <Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html => {
     ...(isExternalLink && !renderAsButton
       ? [
           Icon.icon<Msg>('external-link', { class: 'size-2.5 shrink-0' }, h),
-          h.span(
-            [
-              h.Class(
-                'sr-only',
-              ),
-            ],
-            [newTabLabel],
-          ),
+          h.span([h.Class('sr-only')], [newTabLabel]),
         ]
       : []),
-  ];
+  ]
 
   const linkClass = cn(
     linkVariants({
@@ -139,7 +132,7 @@ export const link = <Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html => {
     }),
     props.hasUnderline === true ? undefined : hoverUnderline,
     props.class,
-  );
+  )
 
   if (renderAsButton) {
     return h.button(
@@ -162,7 +155,7 @@ export const link = <Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html => {
         ...(props.tooltip === undefined ? [] : [h.Title(props.tooltip)]),
       ],
       sharedContent,
-    );
+    )
   }
 
   if (isDisabled) {
@@ -177,7 +170,7 @@ export const link = <Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html => {
         ...(props.tooltip === undefined ? [] : [h.Title(props.tooltip)]),
       ],
       sharedContent,
-    );
+    )
   }
 
   return h.a(
@@ -194,5 +187,5 @@ export const link = <Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html => {
       ...(props.tooltip === undefined ? [] : [h.Title(props.tooltip)]),
     ],
     sharedContent,
-  );
-};
+  )
+}

@@ -25,8 +25,8 @@ export const isLocaleDayFirst = (locale = 'en'): boolean => {
   const parts = new Intl.DateTimeFormat(locale, {
     calendar: 'gregory',
   }).formatToParts(new Date(2000, 0, 15))
-  const dayIndex = parts.findIndex((part) => part.type === 'day')
-  const monthIndex = parts.findIndex((part) => part.type === 'month')
+  const dayIndex = parts.findIndex(part => part.type === 'day')
+  const monthIndex = parts.findIndex(part => part.type === 'month')
   return dayIndex < monthIndex
 }
 
@@ -111,24 +111,40 @@ export const parseDateInput = (
   // 1. ISO format first (YYYY-MM-DD) — always unambiguous
   const isoMatch = trimmed.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/)
   if (isoMatch) {
-    return tryCreate(Number(isoMatch[1]!), Number(isoMatch[2]!), Number(isoMatch[3]!))
+    return tryCreate(
+      Number(isoMatch[1]!),
+      Number(isoMatch[2]!),
+      Number(isoMatch[3]!),
+    )
   }
 
   // 2. Month-name formats with year: "January 25, 2026" or "Jan 25, 2026"
-  const monthFirstWithYear = trimmed.match(/^([A-Za-z]+)\s+(\d{1,2}),?\s+(\d{4})$/)
+  const monthFirstWithYear = trimmed.match(
+    /^([A-Za-z]+)\s+(\d{1,2}),?\s+(\d{4})$/,
+  )
   if (monthFirstWithYear) {
     const month = parseMonthName(monthFirstWithYear[1]!)
     if (Option.isSome(month)) {
-      return tryCreate(Number(monthFirstWithYear[3]!), month.value, Number(monthFirstWithYear[2]!))
+      return tryCreate(
+        Number(monthFirstWithYear[3]!),
+        month.value,
+        Number(monthFirstWithYear[2]!),
+      )
     }
   }
 
   // "25 January 2026" or "25 Jan 2026"
-  const dayFirstWithYear = trimmed.match(/^(\d{1,2})\s+([A-Za-z]+),?\s+(\d{4})$/)
+  const dayFirstWithYear = trimmed.match(
+    /^(\d{1,2})\s+([A-Za-z]+),?\s+(\d{4})$/,
+  )
   if (dayFirstWithYear) {
     const month = parseMonthName(dayFirstWithYear[2]!)
     if (Option.isSome(month)) {
-      return tryCreate(Number(dayFirstWithYear[3]!), month.value, Number(dayFirstWithYear[1]!))
+      return tryCreate(
+        Number(dayFirstWithYear[3]!),
+        month.value,
+        Number(dayFirstWithYear[1]!),
+      )
     }
   }
 
@@ -151,18 +167,30 @@ export const parseDateInput = (
 
   // 4. Numeric formats with separators (/, -, .) with year — separators
   //    must match
-  const numericWithYear = trimmed.match(/^(\d{1,2})([-/.])(\d{1,2})([-/.])(\d{4})$/)
+  const numericWithYear = trimmed.match(
+    /^(\d{1,2})([-/.])(\d{1,2})([-/.])(\d{4})$/,
+  )
   if (numericWithYear) {
     if (numericWithYear[2] !== numericWithYear[4]) {
       return Option.none()
     }
-    return parseNumericDate(Number(numericWithYear[1]!), Number(numericWithYear[3]!), Number(numericWithYear[5]!), locale)
+    return parseNumericDate(
+      Number(numericWithYear[1]!),
+      Number(numericWithYear[3]!),
+      Number(numericWithYear[5]!),
+      locale,
+    )
   }
 
   // 5. Numeric formats without year — defaults to current year
   const numericNoYear = trimmed.match(/^(\d{1,2})[-/.](\d{1,2})$/)
   if (numericNoYear) {
-    return parseNumericDate(Number(numericNoYear[1]!), Number(numericNoYear[2]!), currentYear, locale)
+    return parseNumericDate(
+      Number(numericNoYear[1]!),
+      Number(numericNoYear[2]!),
+      currentYear,
+      locale,
+    )
   }
 
   // 6. Fall back to native Date parsing. Bare numeric input is an
@@ -195,7 +223,12 @@ const SHARED_DATE_FORMAT_OPTIONS: Readonly<
 > = {
   date: { month: 'short', day: 'numeric', year: 'numeric' },
   date_long: { year: 'numeric', month: 'long', day: 'numeric' },
-  date_weekday: { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' },
+  date_weekday: {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  },
 }
 
 /** Renders a CalendarDate using one of the SharedDateFormat members — the

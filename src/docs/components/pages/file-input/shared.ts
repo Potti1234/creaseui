@@ -1,16 +1,16 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type FileInputFixture = Readonly<{
-  title: string;
-  description: string;
-  label: string;
-  width: number;
-  placeholder?: string;
-  helperText?: string;
-  accept?: string;
-  maxSize?: number;
-}>;
+  title: string
+  description: string
+  label: string
+  width: number
+  placeholder?: string
+  helperText?: string
+  accept?: string
+  maxSize?: number
+}>
 
 /* Example set ported from Meta Astryx
    packages/cli/assets/templates/blocks/components/FileInput/*.tsx —
@@ -35,16 +35,16 @@ export const fileInputFixtures: Readonly<
     maxSize: 5 * 1024 * 1024,
     width: 350,
   },
-];
+]
 
 const ui = (renderer: 'tailwind' | 'stylex'): string =>
-  renderer === 'stylex' ? 'stylex' : 'ui';
+  renderer === 'stylex' ? 'stylex' : 'ui'
 
 const initConfig = (fixture: FileInputFixture): string =>
-  `{ id: 'docs-file-input'${fixture.accept === undefined ? '' : `, accept: '${fixture.accept}'`}${fixture.maxSize === undefined ? '' : `, maxSize: ${fixture.maxSize}`} }`;
+  `{ id: 'docs-file-input'${fixture.accept === undefined ? '' : `, accept: '${fixture.accept}'`}${fixture.maxSize === undefined ? '' : `, maxSize: ${fixture.maxSize}`} }`
 
 const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
-  const fixture = fileInputFixtures[index] ?? fileInputFixtures[0];
+  const fixture = fileInputFixtures[index] ?? fileInputFixtures[0]
   return foldkitApplication({
     title: `FileInput — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
@@ -101,8 +101,8 @@ export type Message = typeof Message.Type`,
     ]),
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const fileInputExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -111,4 +111,4 @@ export const fileInputExamples = (
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
-  }));
+  }))

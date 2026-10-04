@@ -250,4 +250,3 @@ export const STYLEX_COMPONENT_NAMES = [
 ] as const
 
 export type StyleXComponentName = (typeof STYLEX_COMPONENT_NAMES)[number]
-

@@ -1,31 +1,31 @@
-import * as stylex from '@stylexjs/stylex';
-import { Match as M, Option, Schema as S } from 'effect';
-import type { Update } from 'foldkit';
-import { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
-import { modifyFields } from 'foldkit/struct';
+import * as stylex from '@stylexjs/stylex'
+import { Match as M, Option, Schema as S } from 'effect'
+import type { Update } from 'foldkit'
+import { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import { modifyFields } from 'foldkit/struct'
 
-import { areaChart } from '@/stylex/chart';
+import { areaChart } from '@/stylex/chart'
 import {
   card,
   cardContent,
   cardDescription,
   cardHeader,
   cardTitle,
-} from '@/stylex/card';
-import { field, fieldGroup, fieldLabel } from '@/stylex/field';
-import * as Select from '@/stylex/select';
-import { separator } from '@/stylex/separator';
-import { className } from '@/stylex/style';
+} from '@/stylex/card'
+import { field, fieldGroup, fieldLabel } from '@/stylex/field'
+import * as Select from '@/stylex/select'
+import { separator } from '@/stylex/separator'
+import { className } from '@/stylex/style'
 
 const styles = stylex.create({
   chart: { height: '12.5rem', width: '100%' },
-  content: { gap: '1rem', display: 'flex', flexDirection: 'column', },
+  content: { gap: '1rem', display: 'flex', flexDirection: 'column' },
   full: { width: '100%' },
-});
+})
 
-type Ticker = 'VOO' | 'VIG' | 'AAPL' | 'MSFT' | 'GOOGL' | 'AMZN' | 'TSLA';
+type Ticker = 'VOO' | 'VIG' | 'AAPL' | 'MSFT' | 'GOOGL' | 'AMZN' | 'TSLA'
 
 const tickers: ReadonlyArray<Ticker> = [
   'VOO',
@@ -35,7 +35,7 @@ const tickers: ReadonlyArray<Ticker> = [
   'GOOGL',
   'AMZN',
   'TSLA',
-];
+]
 
 const chartData: Readonly<
   Record<string, ReadonlyArray<Readonly<{ month: string; price: number }>>>
@@ -56,7 +56,7 @@ const chartData: Readonly<
     { month: 'May', price: 178 },
     { month: 'Jun', price: 215 },
   ],
-};
+}
 
 const defaultData = [
   { month: 'Jan', price: 100 },
@@ -65,25 +65,23 @@ const defaultData = [
   { month: 'Apr', price: 125 },
   { month: 'May', price: 108 },
   { month: 'Jun', price: 130 },
-];
-const TickerSelect = Select.create<Ticker>();
+]
+const TickerSelect = Select.create<Ticker>()
 
 export const Model = S.Struct({
   ticker: S.String,
   tickerSelect: Select.Model,
-});
-export type Model = typeof Model.Type;
-
-
+})
+export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
   GotTickerSelectMessage: {
-  message: Select.Message,
-},
-});
-export type Message = typeof Message.Type;
+    message: Select.Message,
+  },
+})
+export type Message = typeof Message.Type
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 
 export const init = (): Model => ({
   ticker: 'VOO',
@@ -91,37 +89,41 @@ export const init = (): Model => ({
     id: 'stock-performance-ticker',
     isAnimated: true,
   }),
-});
+})
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
       GotTickerSelectMessage: ({ message: selectMessage }) => {
-        const { model: tickerSelect, commands: tickerSelectCommands__, outMessage: tickerSelectOut__ } = TickerSelect.update(
-          model.tickerSelect,
-          selectMessage,
-        )
+        const {
+          model: tickerSelect,
+          commands: tickerSelectCommands__,
+          outMessage: tickerSelectOut__,
+        } = TickerSelect.update(model.tickerSelect, selectMessage)
         const commands = tickerSelectCommands__ ?? []
         const maybeOutMessage = Option.fromNullishOr(tickerSelectOut__)
         const ticker = Option.match(maybeOutMessage, {
           onNone: () => model.ticker,
-          onSome: (outMessage) =>
+          onSome: outMessage =>
             outMessage._tag === 'Selected' ? outMessage.value : model.ticker,
-        });
+        })
 
-        return { model: modifyFields(model, {
+        return {
+          model: modifyFields(model, {
             ticker: () => ticker,
             tickerSelect: () => tickerSelect,
-          }), commands: Command.mapMessages(commands, (childMessage) =>
+          }),
+          commands: Command.mapMessages(commands, childMessage =>
             Message.GotTickerSelectMessage({ message: childMessage }),
-          ) };
+          ),
+        }
       },
     }),
-  );
+  )
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
-  const data = chartData[model.ticker] ?? defaultData;
+  const data = chartData[model.ticker] ?? defaultData
 
   return card(
     {
@@ -138,53 +140,66 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
         cardContent(
           {
             children: [
-              h.div([h.Class(className(styles.content))], [
-              fieldGroup(
-                {
-                  children: [
-                    field(
-                      {
-                        children: [
-                          fieldLabel(
-                            {
-                              for: 'stock-performance-ticker',
-                              children: ['Ticker'],
-                            },
-                            h,
-                          ),
-                          h.div([h.Class(className(styles.full))], [TickerSelect.select<Ticker, Message>(
-                            {
-                              model: model.tickerSelect,
-                              maybeSelectedValue: Option.some(
-                                model.ticker as Ticker,
+              h.div(
+                [h.Class(className(styles.content))],
+                [
+                  fieldGroup(
+                    {
+                      children: [
+                        field(
+                          {
+                            children: [
+                              fieldLabel(
+                                {
+                                  for: 'stock-performance-ticker',
+                                  children: ['Ticker'],
+                                },
+                                h,
                               ),
-                              toParentMessage: (childMessage) =>
-                                Message.GotTickerSelectMessage({
-                                  message: childMessage,
-                                }),
-                              items: tickers,
-                              itemToValue: (ticker) => ticker,
-                              itemToLabel: (ticker) => ticker,
-                              ariaLabel: 'Ticker',
-                            },
-                            h,
-                          )]),
-                        ],
-                      },
-                      h,
-                    ),
-                  ],
-                },
-                h,
+                              h.div(
+                                [h.Class(className(styles.full))],
+                                [
+                                  TickerSelect.select<Ticker, Message>(
+                                    {
+                                      model: model.tickerSelect,
+                                      maybeSelectedValue: Option.some(
+                                        model.ticker as Ticker,
+                                      ),
+                                      toParentMessage: childMessage =>
+                                        Message.GotTickerSelectMessage({
+                                          message: childMessage,
+                                        }),
+                                      items: tickers,
+                                      itemToValue: ticker => ticker,
+                                      itemToLabel: ticker => ticker,
+                                      ariaLabel: 'Ticker',
+                                    },
+                                    h,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          },
+                          h,
+                        ),
+                      ],
+                    },
+                    h,
+                  ),
+                  separator({}, h),
+                  h.div(
+                    [h.Class(className(styles.chart))],
+                    [
+                      areaChart(
+                        {
+                          data: data.map(({ price }) => price),
+                        },
+                        h,
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              separator({}, h),
-              h.div([h.Class(className(styles.chart))], [areaChart(
-                {
-                  data: data.map(({ price }) => price),
-                },
-                h,
-              )]),
-              ]),
             ],
           },
           h,
@@ -192,12 +207,11 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 /*
   Parent wiring: nest Model from init(), wrap Message in the parent message,
   delegate to update(), map returned commands, and call view(nestedModel).
 */
 // Stateful: yes. Submodels: ticker Select. PORT NOTE: Recharts uses @/stylex/chart areaChart.
-

@@ -1,24 +1,24 @@
-import { Option, Schema as S } from 'effect';
-import { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import { Option, Schema as S } from 'effect'
+import { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-import { definePreviewProgram } from '@/docs/components/pages/authored-page';
+import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
   buttonGroupFixtures,
   type ButtonGroupFixture,
   type BgNode,
-} from '@/docs/components/pages/button-group/shared';
-import * as Button from '@/ui/button';
-import * as ButtonGroup from '@/ui/button-group';
-import * as DropdownMenu from '@/ui/dropdown-menu';
-import * as Icon from '@/lib/icon';
-import * as Input from '@/ui/input';
-import * as InputGroup from '@/ui/input-group';
-import * as Popover from '@/ui/popover';
-import * as Select from '@/ui/select';
-import * as Textarea from '@/ui/textarea';
-import * as Tooltip from '@/ui/tooltip';
+} from '@/docs/components/pages/button-group/shared'
+import * as Button from '@/ui/button'
+import * as ButtonGroup from '@/ui/button-group'
+import * as DropdownMenu from '@/ui/dropdown-menu'
+import * as Icon from '@/lib/icon'
+import * as Input from '@/ui/input'
+import * as InputGroup from '@/ui/input-group'
+import * as Popover from '@/ui/popover'
+import * as Select from '@/ui/select'
+import * as Textarea from '@/ui/textarea'
+import * as Tooltip from '@/ui/tooltip'
 
 const PreviewMessage = defineMessageUnion({
   GotMenuMessage: { message: DropdownMenu.Message },
@@ -30,8 +30,8 @@ const PreviewMessage = defineMessageUnion({
   ChangedMessage: { value: S.String },
   ChangedTask: { value: S.String },
   ToggledVoice: {},
-});
-type PreviewMessage = typeof PreviewMessage.Type;
+})
+type PreviewMessage = typeof PreviewMessage.Type
 
 const PreviewModel = S.Struct({
   _docsPage: S.Literal('button-group'),
@@ -46,14 +46,14 @@ const PreviewModel = S.Struct({
   maybeCurrency: S.Option(S.String),
   popover: Popover.Model,
   tooltip: Tooltip.Model,
-});
-type PreviewModel = typeof PreviewModel.Type;
+})
+type PreviewModel = typeof PreviewModel.Type
 
 const CURRENCIES = [
   { value: '$', label: 'US Dollar' },
   { value: '€', label: 'Euro' },
   { value: '£', label: 'British Pound' },
-];
+]
 
 const DEMO_ITEMS = [
   'mark-read',
@@ -63,7 +63,7 @@ const DEMO_ITEMS = [
   'add-list',
   'label-as',
   'trash',
-] as const;
+] as const
 const CONVERSATION_ITEMS = [
   'mute',
   'mark-read',
@@ -71,8 +71,8 @@ const CONVERSATION_ITEMS = [
   'block',
   'share',
   'delete',
-] as const;
-const LABEL_VALUES = ['personal', 'work', 'other'] as const;
+] as const
+const LABEL_VALUES = ['personal', 'work', 'other'] as const
 
 const demoLabels = (isRtl: boolean): Record<string, string> =>
   isRtl
@@ -99,7 +99,7 @@ const demoLabels = (isRtl: boolean): Record<string, string> =>
         personal: 'Personal',
         work: 'Work',
         other: 'Other',
-      };
+      }
 
 const DEMO_ICONS: Record<string, string> = {
   'mark-read': 'mail-check',
@@ -109,7 +109,7 @@ const DEMO_ICONS: Record<string, string> = {
   'add-list': 'list-filter',
   'label-as': 'tag',
   trash: 'trash-2',
-};
+}
 const CONVERSATION_ICONS: Record<string, string> = {
   mute: 'volume-off',
   'mark-read': 'check',
@@ -117,7 +117,7 @@ const CONVERSATION_ICONS: Record<string, string> = {
   block: 'user-round-x',
   share: 'share',
   delete: 'trash',
-};
+}
 
 const menuItemToConfig = (
   model: PreviewModel,
@@ -125,10 +125,10 @@ const menuItemToConfig = (
   isRtl: boolean,
   h: HtmlBuilder<PreviewMessage>,
 ): ((item: string) => DropdownMenu.DropdownMenuItemConfig<string>) => {
-  const labels = demoLabels(isRtl);
+  const labels = demoLabels(isRtl)
   return item => {
     if (menu === 'demo') {
-      const icon = DEMO_ICONS[item];
+      const icon = DEMO_ICONS[item]
       const base = {
         label: labels[item] ?? item,
         ...(icon === undefined
@@ -138,7 +138,7 @@ const menuItemToConfig = (
           ? { separatorBefore: true }
           : {}),
         ...(item === 'trash' ? { variant: 'destructive' as const } : {}),
-      };
+      }
       if (item === 'label-as')
         return {
           ...base,
@@ -151,10 +151,10 @@ const menuItemToConfig = (
               isChecked: Option.contains(model.label, sub),
             }),
           },
-        };
-      return base;
+        }
+      return base
     }
-    const icon = CONVERSATION_ICONS[item];
+    const icon = CONVERSATION_ICONS[item]
     return {
       label:
         (
@@ -173,9 +173,9 @@ const menuItemToConfig = (
       ...(item === 'delete'
         ? { variant: 'destructive' as const, separatorBefore: true }
         : {}),
-    };
-  };
-};
+    }
+  }
+}
 
 const FIELD_MESSAGE: Record<
   'query' | 'amount' | 'message' | 'task',
@@ -185,10 +185,10 @@ const FIELD_MESSAGE: Record<
   amount: value => PreviewMessage.ChangedAmount({ value }),
   message: value => PreviewMessage.ChangedMessage({ value }),
   task: value => PreviewMessage.ChangedTask({ value }),
-};
+}
 
 const fixtureKey = (fixture: ButtonGroupFixture): string =>
-  fixture.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  fixture.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')
 
 const nodeView = (
   model: PreviewModel,
@@ -196,7 +196,7 @@ const nodeView = (
   node: BgNode,
   h: HtmlBuilder<PreviewMessage>,
 ): Html => {
-  const isRtl = fixture.direction === 'rtl';
+  const isRtl = fixture.direction === 'rtl'
   switch (node.t) {
     case 'button':
       return Button.button(
@@ -212,9 +212,7 @@ const nodeView = (
               : [
                   Icon.icon(
                     node.icon,
-                    node.rtlRotate === true
-                      ? { class: 'rtl:rotate-180' }
-                      : {},
+                    node.rtlRotate === true ? { class: 'rtl:rotate-180' } : {},
                     h,
                   ),
                 ]),
@@ -222,9 +220,9 @@ const nodeView = (
           ],
         },
         h,
-      );
+      )
     case 'separator':
-      return ButtonGroup.buttonGroupSeparator({}, h);
+      return ButtonGroup.buttonGroupSeparator({}, h)
     case 'input':
       return Input.input(
         {
@@ -234,7 +232,7 @@ const nodeView = (
           placeholder: node.placeholder,
         },
         h,
-      );
+      )
     case 'inputGroup':
       return InputGroup.inputGroup(
         {
@@ -243,8 +241,7 @@ const nodeView = (
               {
                 id: `docs-button-group-${fixtureKey(fixture)}-message`,
                 value: model.message,
-                onInput: value =>
-                  PreviewMessage.ChangedMessage({ value }),
+                onInput: value => PreviewMessage.ChangedMessage({ value }),
                 placeholder: node.voiceToggle
                   ? model.voiceEnabled
                     ? 'Record and send audio...'
@@ -270,9 +267,7 @@ const nodeView = (
                             'inline-flex size-6 items-center justify-center rounded-[calc(var(--radius)-5px)] text-muted-foreground data-[active=true]:bg-orange-100 data-[active=true]:text-orange-700 dark:data-[active=true]:bg-orange-800 dark:data-[active=true]:text-orange-100',
                           ),
                         ],
-                        [
-                          Icon.icon('audio-lines', { class: 'size-3.5' }, h),
-                        ],
+                        [Icon.icon('audio-lines', { class: 'size-3.5' }, h)],
                       ),
                     ],
                   },
@@ -301,7 +296,7 @@ const nodeView = (
           ],
         },
         h,
-      );
+      )
     case 'select':
       return Select.select(
         {
@@ -316,7 +311,7 @@ const nodeView = (
           triggerClass: 'font-mono',
         },
         h,
-      );
+      )
     case 'dropdown':
       return DropdownMenu.dropdownMenu(
         {
@@ -344,50 +339,52 @@ const nodeView = (
           ...(isRtl ? { direction: 'rtl' as const } : {}),
         },
         h,
-      );
+      )
     case 'popover':
       return Popover.popover(
         {
           model: model.popover,
           toParentMessage: message =>
             PreviewMessage.GotPopoverMessage({ message }),
-          trigger: Icon.icon(
-            'chevron-down',
-            { ariaLabel: 'Open Popover' },
-            h,
-          ),
+          trigger: Icon.icon('chevron-down', { ariaLabel: 'Open Popover' }, h),
           triggerClass:
             'inline-flex size-9 items-center justify-center rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground',
           align: 'end',
-          content: h.div([h.Class('grid gap-3 text-sm')], [
-            h.div([h.Class('grid gap-1')], [
-              h.p(
-                [h.Class('text-sm font-medium')],
-                ['Start a new task with Copilot'],
+          content: h.div(
+            [h.Class('grid gap-3 text-sm')],
+            [
+              h.div(
+                [h.Class('grid gap-1')],
+                [
+                  h.p(
+                    [h.Class('text-sm font-medium')],
+                    ['Start a new task with Copilot'],
+                  ),
+                  h.p(
+                    [h.Class('text-sm text-muted-foreground')],
+                    ['Describe your task in natural language.'],
+                  ),
+                ],
+              ),
+              Textarea.textarea(
+                {
+                  id: `docs-button-group-${fixtureKey(fixture)}-task`,
+                  value: model.task,
+                  onInput: value => PreviewMessage.ChangedTask({ value }),
+                  placeholder: 'I need to...',
+                  class: 'resize-none',
+                },
+                h,
               ),
               h.p(
-                [h.Class('text-sm text-muted-foreground')],
-                ['Describe your task in natural language.'],
+                [h.Class('text-xs text-muted-foreground')],
+                ['Copilot will open a pull request for review.'],
               ),
-            ]),
-            Textarea.textarea(
-              {
-                id: `docs-button-group-${fixtureKey(fixture)}-task`,
-                value: model.task,
-                onInput: value => PreviewMessage.ChangedTask({ value }),
-                placeholder: 'I need to...',
-                class: 'resize-none',
-              },
-              h,
-            ),
-            h.p(
-              [h.Class('text-xs text-muted-foreground')],
-              ['Copilot will open a pull request for review.'],
-            ),
-          ]),
+            ],
+          ),
         },
         h,
-      );
+      )
     case 'group':
       return ButtonGroup.buttonGroup(
         {
@@ -397,14 +394,14 @@ const nodeView = (
           ...(node.rtlHidden === true ? { class: 'hidden sm:flex' } : {}),
         },
         h,
-      );
+      )
     case 'column':
       return h.div(
         [h.Class('flex flex-col items-start gap-8')],
         node.children.map(child => nodeView(model, fixture, child, h)),
-      );
+      )
   }
-};
+}
 
 const fixtureView = (
   fixture: ButtonGroupFixture,
@@ -412,8 +409,8 @@ const fixtureView = (
   h: HtmlBuilder<PreviewMessage>,
 ): Html => {
   const ungrouped =
-    fixture.nodes.length === 1 && fixture.nodes[0]?.t === 'column';
-  const [firstNode] = fixture.nodes;
+    fixture.nodes.length === 1 && fixture.nodes[0]?.t === 'column'
+  const [firstNode] = fixture.nodes
   const group =
     ungrouped && firstNode !== undefined
       ? nodeView(model, fixture, firstNode, h)
@@ -425,17 +422,17 @@ const fixtureView = (
             ...(fixture.ariaLabel === undefined
               ? {}
               : { ariaLabel: fixture.ariaLabel }),
-            ...(fixture.rounded === true ? { class: '[--radius:9999rem]' } : {}),
+            ...(fixture.rounded === true
+              ? { class: '[--radius:9999rem]' }
+              : {}),
             children: fixture.nodes.map(node =>
               nodeView(model, fixture, node, h),
             ),
           },
           h,
-        );
-  return fixture.direction === 'rtl'
-    ? h.div([h.Dir('rtl')], [group])
-    : group;
-};
+        )
+  return fixture.direction === 'rtl' ? h.div([h.Dir('rtl')], [group]) : group
+}
 
 export const buttonGroupTailwindPreviewProgram = definePreviewProgram<
   PreviewModel,
@@ -466,8 +463,8 @@ export const buttonGroupTailwindPreviewProgram = definePreviewProgram<
   update: (model, message) => {
     switch (message._tag) {
       case 'GotMenuMessage': {
-        const result = DropdownMenu.update(model.menu, message.message);
-        const maybeSelection = Option.fromNullishOr(result.outMessage);
+        const result = DropdownMenu.update(model.menu, message.message)
+        const maybeSelection = Option.fromNullishOr(result.outMessage)
         return {
           model: {
             ...model,
@@ -477,15 +474,14 @@ export const buttonGroupTailwindPreviewProgram = definePreviewProgram<
               onSome: selection => Option.some(selection.value),
             }),
           },
-          commands: Command.mapMessages(
-            result.commands ?? [],
-            next => PreviewMessage.GotMenuMessage({ message: next }),
+          commands: Command.mapMessages(result.commands ?? [], next =>
+            PreviewMessage.GotMenuMessage({ message: next }),
           ),
-        };
+        }
       }
       case 'GotSelectMessage': {
-        const result = Select.update(model.select, message.message);
-        const maybeSelection = Option.fromNullishOr(result.outMessage);
+        const result = Select.update(model.select, message.message)
+        const maybeSelection = Option.fromNullishOr(result.outMessage)
         return {
           model: {
             ...model,
@@ -498,42 +494,39 @@ export const buttonGroupTailwindPreviewProgram = definePreviewProgram<
                   : Option.none<string>(),
             }),
           },
-          commands: Command.mapMessages(
-            result.commands ?? [],
-            next => PreviewMessage.GotSelectMessage({ message: next }),
+          commands: Command.mapMessages(result.commands ?? [], next =>
+            PreviewMessage.GotSelectMessage({ message: next }),
           ),
-        };
+        }
       }
       case 'GotPopoverMessage': {
-        const result = Popover.update(model.popover, message.message);
+        const result = Popover.update(model.popover, message.message)
         return {
           model: { ...model, popover: result.model },
-          commands: Command.mapMessages(
-            result.commands ?? [],
-            next => PreviewMessage.GotPopoverMessage({ message: next }),
+          commands: Command.mapMessages(result.commands ?? [], next =>
+            PreviewMessage.GotPopoverMessage({ message: next }),
           ),
-        };
+        }
       }
       case 'GotTooltipMessage': {
-        const result = Tooltip.update(model.tooltip, message.message);
+        const result = Tooltip.update(model.tooltip, message.message)
         return {
           model: { ...model, tooltip: result.model },
-          commands: Command.mapMessages(
-            result.commands,
-            next => PreviewMessage.GotTooltipMessage({ message: next }),
+          commands: Command.mapMessages(result.commands, next =>
+            PreviewMessage.GotTooltipMessage({ message: next }),
           ),
-        };
+        }
       }
       case 'ChangedQuery':
-        return { model: { ...model, query: message.value } };
+        return { model: { ...model, query: message.value } }
       case 'ChangedAmount':
-        return { model: { ...model, amount: message.value } };
+        return { model: { ...model, amount: message.value } }
       case 'ChangedMessage':
-        return { model: { ...model, message: message.value } };
+        return { model: { ...model, message: message.value } }
       case 'ChangedTask':
-        return { model: { ...model, task: message.value } };
+        return { model: { ...model, task: message.value } }
       case 'ToggledVoice':
-        return { model: { ...model, voiceEnabled: !model.voiceEnabled } };
+        return { model: { ...model, voiceEnabled: !model.voiceEnabled } }
     }
   },
   view: (index, model, h) =>
@@ -542,4 +535,4 @@ export const buttonGroupTailwindPreviewProgram = definePreviewProgram<
       model,
       h,
     ),
-});
+})

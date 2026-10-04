@@ -1,8 +1,8 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { CHART_SECTIONS, type ChartSection, chartsPath } from '@/route';
+import { CHART_SECTIONS, type ChartSection, chartsPath } from '@/route'
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils'
 
 /* Shared chrome for the /charts/<section> pages, mirroring ui.shadcn.com/charts:
    hero heading + lead, pill subnav across the sections, then the section's grid
@@ -17,7 +17,7 @@ const SECTION_LABELS: Readonly<Record<ChartSection, string>> = {
   radar: 'Radar Charts',
   radial: 'Radial Charts',
   tooltip: 'Tooltip',
-};
+}
 
 export const chartsPageShell = <Msg>(
   activeSection: ChartSection,
@@ -56,7 +56,7 @@ export const chartsPageShell = <Msg>(
       ),
       h.div(
         [h.Class('flex flex-wrap items-center gap-1 border-b pb-2')],
-        CHART_SECTIONS.map((section) =>
+        CHART_SECTIONS.map(section =>
           h.a(
             [
               h.Href(chartsPath(section)),
@@ -82,5 +82,5 @@ export const chartsPageShell = <Msg>(
         [...cards],
       ),
     ],
-  );
-};
+  )
+}

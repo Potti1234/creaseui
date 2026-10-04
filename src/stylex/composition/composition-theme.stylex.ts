@@ -4,4 +4,3 @@ import * as stylex from '@stylexjs/stylex'
 export const compositionTheme = stylex.defineVars({
   canvas: 'var(--muted)',
 })
-

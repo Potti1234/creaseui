@@ -1,8 +1,8 @@
-import type { EChartsOption } from 'echarts/types/dist/shared';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { EChartsOption } from 'echarts/types/dist/shared'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Chart from '@/lib/echarts';
-import * as Icon from '@/lib/icon';
+import * as Chart from '@/lib/echarts'
+import * as Icon from '@/lib/icon'
 import {
   card,
   cardContent,
@@ -10,12 +10,12 @@ import {
   cardFooter,
   cardHeader,
   cardTitle,
-} from '@/ui/card';
+} from '@/ui/card'
 
-const HOST_ID = 'chart-radial-stacked';
-const MOBILE = 570;
-const DESKTOP = 1260;
-const TOTAL = MOBILE + DESKTOP;
+const HOST_ID = 'chart-radial-stacked'
+const MOBILE = 570
+const DESKTOP = 1260
+const TOTAL = MOBILE + DESKTOP
 
 Chart.registerChart(HOST_ID, (theme): EChartsOption => ({
   polar: {
@@ -97,7 +97,7 @@ Chart.registerChart(HOST_ID, (theme): EChartsOption => ({
       data: [1],
     },
   ],
-}));
+}))
 
 export const view = <Msg>(
   toMessage: (message: Chart.ChartMessage) => Msg,
@@ -157,5 +157,5 @@ export const view = <Msg>(
       ],
     },
     h,
-  );
-};
+  )
+}

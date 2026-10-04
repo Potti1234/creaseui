@@ -1,18 +1,23 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Icon from '@/lib/icon';
-import { cn } from '@/lib/utils';
-import * as Popover from '@/ui/popover';
+import * as Icon from '@/lib/icon'
+import { cn } from '@/lib/utils'
+import * as Popover from '@/ui/popover'
 
 type Slot = Readonly<{
-  class?: string;
-  children: ReadonlyArray<Html | string>;
-}>;
+  class?: string
+  children: ReadonlyArray<Html | string>
+}>
 
-export type NavigationMenuLayout = 'inline' | 'scroll' | 'responsive';
+export type NavigationMenuLayout = 'inline' | 'scroll' | 'responsive'
 
 export const navigationMenu = <Msg>(
-  props: Slot & Readonly<{ ariaLabel?: string; direction?: 'ltr' | 'rtl'; layout?: NavigationMenuLayout }>,
+  props: Slot &
+    Readonly<{
+      ariaLabel?: string
+      direction?: 'ltr' | 'rtl'
+      layout?: NavigationMenuLayout
+    }>,
   h: HtmlBuilder<Msg>,
 ): Html => {
   return h.nav(
@@ -29,8 +34,8 @@ export const navigationMenu = <Msg>(
       ),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 export const navigationMenuList = <Msg>(
   props: Slot & Readonly<{ layout?: NavigationMenuLayout }>,
@@ -48,8 +53,8 @@ export const navigationMenuList = <Msg>(
       ),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 export const navigationMenuItem = <Msg>(
   props: Slot,
@@ -61,8 +66,8 @@ export const navigationMenuItem = <Msg>(
       h.Class(props.class ?? ''),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 export const navigationMenuLink = <Msg>(
   props: Slot & Readonly<{ href: string; isActive?: boolean }>,
@@ -83,18 +88,18 @@ export const navigationMenuLink = <Msg>(
       ),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 export type NavigationMenuDisclosureProps<Msg> = Readonly<{
-  model: Popover.Model;
-  toParentMessage: (message: Popover.Message) => Msg;
-  label: string;
-  content: Html | string;
-  class?: string;
-  ariaLabel?: string;
-  pointerIntent?: 'press' | 'hover-and-press';
-}>;
+  model: Popover.Model
+  toParentMessage: (message: Popover.Message) => Msg
+  label: string
+  content: Html | string
+  class?: string
+  ariaLabel?: string
+  pointerIntent?: 'press' | 'hover-and-press'
+}>
 
 export const navigationMenuDisclosure = <Msg>(
   props: NavigationMenuDisclosureProps<Msg>,
@@ -135,5 +140,5 @@ export const navigationMenuDisclosure = <Msg>(
       focusSelector: 'a',
     },
     h,
-  );
-};
+  )
+}

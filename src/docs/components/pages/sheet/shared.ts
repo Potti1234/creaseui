@@ -1,40 +1,40 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
-export type SheetSide = 'top' | 'right' | 'bottom' | 'left';
+export type SheetSide = 'top' | 'right' | 'bottom' | 'left'
 
 export type SheetFieldSpec = Readonly<{
-  id: string;
-  label: string;
-  value: string;
-}>;
+  id: string
+  label: string
+  value: string
+}>
 
 export type SheetInstance = Readonly<{
-  id: string;
-  side: SheetSide;
-  trigger: string;
-  panelTitle: string;
-  panelDescription?: string;
-  fields?: ReadonlyArray<SheetFieldSpec>;
-  loremBody?: boolean;
-  footer?: Readonly<{ save: string; cancel: string }>;
-  showCloseButton?: boolean;
-  rtl?: boolean;
-}>;
+  id: string
+  side: SheetSide
+  trigger: string
+  panelTitle: string
+  panelDescription?: string
+  fields?: ReadonlyArray<SheetFieldSpec>
+  loremBody?: boolean
+  footer?: Readonly<{ save: string; cancel: string }>
+  showCloseButton?: boolean
+  rtl?: boolean
+}>
 
 export type SheetFixture = Readonly<{
-  title: string;
-  heroOnly?: boolean;
-  instances: ReadonlyArray<SheetInstance>;
-}>;
+  title: string
+  heroOnly?: boolean
+  instances: ReadonlyArray<SheetInstance>
+}>
 
 const profileFields: ReadonlyArray<SheetFieldSpec> = [
   { id: 'name', label: 'Name', value: 'Pedro Duarte' },
   { id: 'username', label: 'Username', value: '@peduarte' },
-];
+]
 
 const profileDescription =
-  "Make changes to your profile here. Click save when you're done.";
+  "Make changes to your profile here. Click save when you're done."
 
 export const sheetFixtures: Readonly<[SheetFixture, ...Array<SheetFixture>]> = [
   {
@@ -61,15 +61,13 @@ export const sheetFixtures: Readonly<[SheetFixture, ...Array<SheetFixture>]> = [
         { id: 'bottom', side: 'bottom', trigger: 'Bottom' },
         { id: 'left', side: 'left', trigger: 'Left' },
       ] as const
-    ).map(
-      (base): SheetInstance => ({
-        ...base,
-        panelTitle: 'Edit profile',
-        panelDescription: profileDescription,
-        loremBody: true,
-        footer: { save: 'Save changes', cancel: 'Cancel' },
-      }),
-    ),
+    ).map((base): SheetInstance => ({
+      ...base,
+      panelTitle: 'Edit profile',
+      panelDescription: profileDescription,
+      loremBody: true,
+      footer: { save: 'Save changes', cancel: 'Cancel' },
+    })),
   },
   {
     title: 'No Close Button',
@@ -104,11 +102,11 @@ export const sheetFixtures: Readonly<[SheetFixture, ...Array<SheetFixture>]> = [
       },
     ],
   },
-];
+]
 
-const LOREM_PARAGRAPHS = 10;
+const LOREM_PARAGRAPHS = 10
 
-const escape = (value: string): string => value.replaceAll(`'`, `\\'`);
+const escape = (value: string): string => value.replaceAll(`'`, `\\'`)
 
 const fieldEmit = (field: SheetFieldSpec, isStyleX: boolean): string =>
   `      h.div([h.Class(${isStyleX ? 'className(styles.field)' : "'grid gap-3'"})], [
@@ -118,23 +116,34 @@ const fieldEmit = (field: SheetFieldSpec, isStyleX: boolean): string =>
           value: model.values['${field.id}'] ?? '${escape(field.value)}',
           onInput: value => ChangedInput({ id: '${field.id}', value }),
         }, h),
-      ])`;
+      ])`
 
-const instanceViewEmit = (instance: SheetInstance, isStyleX: boolean): string => {
-  const contentLines: Array<string> = [];
-  const fieldsClass = isStyleX ? 'className(styles.fieldsWrap)' : "'grid flex-1 auto-rows-min gap-6 px-4'";
-  const loremClass = isStyleX ? 'className(styles.loremWrap)' : "'overflow-y-auto px-4'";
-  const paraClass = isStyleX ? 'className(styles.paragraph)' : "'mb-2 leading-relaxed'";
+const instanceViewEmit = (
+  instance: SheetInstance,
+  isStyleX: boolean,
+): string => {
+  const contentLines: Array<string> = []
+  const fieldsClass = isStyleX
+    ? 'className(styles.fieldsWrap)'
+    : "'grid flex-1 auto-rows-min gap-6 px-4'"
+  const loremClass = isStyleX
+    ? 'className(styles.loremWrap)'
+    : "'overflow-y-auto px-4'"
+  const paraClass = isStyleX
+    ? 'className(styles.paragraph)'
+    : "'mb-2 leading-relaxed'"
   if (instance.fields !== undefined) {
     contentLines.push(
       `    h.div([h.Class(${fieldsClass})], [
 ${instance.fields.map(field => fieldEmit(field, isStyleX)).join(',\n')}
-    ])`);
+    ])`,
+    )
   }
   if (instance.loremBody === true) {
     contentLines.push(
       `    h.div([h.Class(${loremClass})], LOREM.map(paragraph =>
-      h.p([h.Class(${paraClass})], [paragraph])))`);
+      h.p([h.Class(${paraClass})], [paragraph])))`,
+    )
   }
   const footerEmit =
     instance.footer === undefined
@@ -152,30 +161,50 @@ ${instance.fields.map(field => fieldEmit(field, isStyleX)).join(',\n')}
           h.Type('button'),
           h.Class(${isStyleX ? 'className(styles.footerCancel)' : "'rounded-md border px-4 py-2 text-sm'"}),
         ], ['${escape(instance.footer.cancel)}']),
-      ]`;
+      ]`
   return `    Sheet.sheet({
       model: model.sheets['${instance.id}'] ?? Sheet.init({ id: 'sheet-${instance.id}', isAnimated: true }),
       toParentMessage: message => GotSheetMessage({ id: '${instance.id}', message }),
       side: '${instance.side}',
-      title: '${escape(instance.panelTitle)}',${instance.panelDescription === undefined ? '' : `
-      description: '${escape(instance.panelDescription)}',`}${instance.showCloseButton === false ? `
-      showCloseButton: false,` : ''}${instance.rtl === true ? `
-      direction: 'rtl',` : ''}${contentLines.length === 0 ? '' : `
+      title: '${escape(instance.panelTitle)}',${
+        instance.panelDescription === undefined
+          ? ''
+          : `
+      description: '${escape(instance.panelDescription)}',`
+      }${
+        instance.showCloseButton === false
+          ? `
+      showCloseButton: false,`
+          : ''
+      }${
+        instance.rtl === true
+          ? `
+      direction: 'rtl',`
+          : ''
+      }${
+        contentLines.length === 0
+          ? ''
+          : `
       content: () => [
 ${contentLines.join(',\n')}
-      ]`}${footerEmit}
-    }, h)`;
-};
+      ]`
+      }${footerEmit}
+    }, h)`
+}
 
 const emitSource = (fixture: SheetFixture, isStyleX: boolean): string => {
-  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '');
-  const lib = isStyleX ? 'stylex' : 'ui';
-  const usesInput = fixture.instances.some(instance => instance.fields !== undefined);
-  const usesLorem = fixture.instances.some(instance => instance.loremBody === true);
-  const allFields = fixture.instances.flatMap(instance => instance.fields ?? []);
+  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
+  const lib = isStyleX ? 'stylex' : 'ui'
+  const usesInput = fixture.instances.some(
+    instance => instance.fields !== undefined,
+  )
+  const usesLorem = fixture.instances.some(
+    instance => instance.loremBody === true,
+  )
+  const allFields = fixture.instances.flatMap(instance => instance.fields ?? [])
   const fieldInit = allFields
     .map(field => `      '${field.id}': '${escape(field.value)}',`)
-    .join('\n');
+    .join('\n')
   return foldkitApplication({
     title: `Sheet — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
@@ -183,12 +212,22 @@ import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { taggedStruct } from 'foldkit/schema'
 
-${isStyleX ? `import * as stylex from '@stylexjs/stylex'
+${
+  isStyleX
+    ? `import * as stylex from '@stylexjs/stylex'
 import { className } from '@/stylex/style'
-` : ''}import * as Button from '@/${lib}/button'${usesInput ? `
+`
+    : ''
+}import * as Button from '@/${lib}/button'${
+      usesInput
+        ? `
 import * as Input from '@/${lib}/input'
-import * as Label from '@/${lib}/label'` : ''}
-import * as Sheet from '@/${lib}/sheet'${isStyleX ? `
+import * as Label from '@/${lib}/label'`
+        : ''
+    }
+import * as Sheet from '@/${lib}/sheet'${
+      isStyleX
+        ? `
 
 const styles = stylex.create({
   fieldsWrap: { display: 'grid', flexGrow: 1, gridAutoRows: 'min-content', gap: '1.5rem', paddingInline: '1rem' },
@@ -197,22 +236,36 @@ const styles = stylex.create({
   paragraph: { marginBottom: '0.5rem', lineHeight: 1.625 },
   footerSave: { borderRadius: '0.375rem', backgroundColor: 'var(--primary)', color: 'var(--primary-foreground)', paddingBlock: '0.5rem', paddingInline: '1rem', fontSize: '0.875rem', lineHeight: '1.25rem' },
   footerCancel: { borderRadius: '0.375rem', borderColor: 'var(--border)', borderStyle: 'solid', borderWidth: '1px', paddingBlock: '0.5rem', paddingInline: '1rem', fontSize: '0.875rem', lineHeight: '1.25rem' },
-})` : ''}${usesLorem ? `
+})`
+        : ''
+    }${
+      usesLorem
+        ? `
 
 const LOREM: ReadonlyArray<string> = Array.from({ length: ${LOREM_PARAGRAPHS} }, () =>
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.')` : ''}`,
+  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.')`
+        : ''
+    }`,
     model: `export const Model = S.Struct({
-  sheets: S.Record(S.String, Sheet.Model),${usesInput ? `
-  values: S.Record(S.String, S.String),` : ''}
+  sheets: S.Record(S.String, Sheet.Model),${
+    usesInput
+      ? `
+  values: S.Record(S.String, S.String),`
+      : ''
+  }
 })
 export type Model = typeof Model.Type`,
     messages: `export const ClickedOpen = taggedStruct('ClickedOpenSheet${tag}', {
   id: S.String,
 })
-${usesInput ? `export const ChangedInput = taggedStruct('ChangedInputSheet${tag}', {
+${
+  usesInput
+    ? `export const ChangedInput = taggedStruct('ChangedInputSheet${tag}', {
   id: S.String,
   value: S.String,
-})` : ''}
+})`
+    : ''
+}
 export const GotSheetMessage = taggedStruct('GotSheetMessage${tag}', {
   id: S.String,
   message: Sheet.Message,
@@ -223,10 +276,14 @@ export type Message = typeof Message.Type`,
   model: {
     sheets: {
 ${fixture.instances.map(instance => `      '${instance.id}': Sheet.init({ id: 'sheet-${instance.id}', isAnimated: true }),`).join('\n')}
-    },${usesInput ? `
+    },${
+      usesInput
+        ? `
     values: {
 ${fieldInit}
-    },` : ''}
+    },`
+        : ''
+    }
   },
 })`,
     update: `const mapSheet = (
@@ -257,14 +314,18 @@ export const update = (
       }
       return mapSheet(model, message.id, Sheet.open(sheet))
     }
-${usesInput ? `    case 'ChangedInputSheet${tag}':
+${
+  usesInput
+    ? `    case 'ChangedInputSheet${tag}':
       return {
         model: {
           ...model,
           values: { ...model.values, [message.id]: message.value },
         },
       }
-` : ''}    case 'GotSheetMessage${tag}': {
+`
+    : ''
+}    case 'GotSheetMessage${tag}': {
       const sheet = model.sheets[message.id]
       if (sheet === undefined) {
         return { model }
@@ -290,8 +351,8 @@ ${fixture.instances
 ${fixture.instances.map(instance => instanceViewEmit(instance, isStyleX)).join(',\n')}
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const sheetExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -300,4 +361,4 @@ export const sheetExamples = (
     title: fixture.title,
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitSource(fixture, renderer === 'stylex'),
-  }));
+  }))

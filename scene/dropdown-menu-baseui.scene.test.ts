@@ -76,7 +76,9 @@ const makeUpdate =
   ): { model: Model; outMessage?: TailwindMenu.OutMessage } => {
     switch (message._tag) {
       case 'RemoveItems':
-        return { model: { ...model, items: model.items.slice(0, message.count) } }
+        return {
+          model: { ...model, items: model.items.slice(0, message.count) },
+        }
       case 'GotMenu': {
         const result = Menu.update(model.menu, message.message)
         const selected = result.outMessage
@@ -84,7 +86,10 @@ const makeUpdate =
           return { model: { ...model, menu: result.model } }
         }
         const checked = CHECKBOX_ITEMS.has(selected.value)
-          ? { ...model.checked, [selected.value]: !(model.checked[selected.value] === true) }
+          ? {
+              ...model.checked,
+              [selected.value]: !(model.checked[selected.value] === true),
+            }
           : RADIO_ITEMS.has(selected.value)
             ? { ...model.checked, [selected.value]: true }
             : model.checked
@@ -133,7 +138,9 @@ const makeView =
         items: model.items,
         itemToConfig: configProvider(model),
         ariaLabel: 'Menu',
-        ...(options?.direction === undefined ? {} : { direction: options.direction }),
+        ...(options?.direction === undefined
+          ? {}
+          : { direction: options.direction }),
         ...(options?.openOnContextMenu === undefined
           ? {}
           : { openOnContextMenu: options.openOnContextMenu }),
@@ -261,22 +268,19 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
         )
       })
 
-      it.fails(
-        'has the data-popup-open and data-pressed attributes when the menu is open',
-        () => {
-          // DIVERGENCE (low): Base UI marks the open trigger with
-          // data-popup-open and data-pressed. creaseui only toggles
-          // aria-expanded; styling hooks use data-slot + aria-*.
-          Scene.scene(
-            { update, view },
-            givenStandard,
-            Scene.click(trigger),
-            Scene.expectHandled(),
-            Scene.expect(trigger).toHaveAttr('data-popup-open', ''),
-            Scene.expect(trigger).toHaveAttr('data-pressed', ''),
-          )
-        },
-      )
+      it.fails('has the data-popup-open and data-pressed attributes when the menu is open', () => {
+        // DIVERGENCE (low): Base UI marks the open trigger with
+        // data-popup-open and data-pressed. creaseui only toggles
+        // aria-expanded; styling hooks use data-slot + aria-*.
+        Scene.scene(
+          { update, view },
+          givenStandard,
+          Scene.click(trigger),
+          Scene.expectHandled(),
+          Scene.expect(trigger).toHaveAttr('data-popup-open', ''),
+          Scene.expect(trigger).toHaveAttr('data-pressed', ''),
+        )
+      })
 
       it('does not render aria-orientation on a vertical popup', () => {
         Scene.scene(
@@ -482,17 +486,12 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
         Scene.scene(
           {
             update,
-            view: makeView(
-              Menu,
-              () => item => ({
-                label: item,
-                ...(item === 'Cherry' ? { group: 'Citrus' } : {}),
-              }),
-            ),
+            view: makeView(Menu, () => item => ({
+              label: item,
+              ...(item === 'Cherry' ? { group: 'Citrus' } : {}),
+            })),
           },
-          Scene.given(
-            initialModel(Menu, ['Apple', 'Banana', 'Cherry']),
-          ),
+          Scene.given(initialModel(Menu, ['Apple', 'Banana', 'Cherry'])),
           Scene.click(trigger),
           Scene.expectHandled(),
           Scene.expect(Scene.role('separator')).toExist(),
@@ -616,25 +615,22 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
         )
       })
 
-      it.fails(
-        'changes the highlighted item with an accumulated multi-character query',
-        () => {
-          // DIVERGENCE (medium): Base UI accumulates keystrokes — "cd" still
-          // matches "Cd". creaseui queries each keystroke alone, so 'd' after
-          // 'c' matches nothing and the highlight stays put.
-          Scene.scene(
-            { update, view: typeaheadView },
-            Scene.given(initialModel(Menu, typeaheadItems)),
-            Scene.click(trigger),
-            Scene.expectHandled(),
-            Scene.keydown(rootMenu, 'c'),
-            Scene.expectHandled(),
-            Scene.keydown(rootMenu, 'd'),
-            Scene.expectIgnored(),
-            Scene.expect(menuItem('Cd')).toHaveAttr('data-active', 'true'),
-          )
-        },
-      )
+      it.fails('changes the highlighted item with an accumulated multi-character query', () => {
+        // DIVERGENCE (medium): Base UI accumulates keystrokes — "cd" still
+        // matches "Cd". creaseui queries each keystroke alone, so 'd' after
+        // 'c' matches nothing and the highlight stays put.
+        Scene.scene(
+          { update, view: typeaheadView },
+          Scene.given(initialModel(Menu, typeaheadItems)),
+          Scene.click(trigger),
+          Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'c'),
+          Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'd'),
+          Scene.expectIgnored(),
+          Scene.expect(menuItem('Cd')).toHaveAttr('data-active', 'true'),
+        )
+      })
 
       it('skips disabled items during text navigation', () => {
         Scene.scene(
@@ -698,68 +694,62 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
         )
       })
 
-      it.fails(
-        'matches "Item 2" after "Item " currently matches "Item 1"',
-        () => {
-          // DIVERGENCE (medium): Base UI accumulates pressed keys into a
-          // multi-character query and absorbs Space while typing. creaseui
-          // treats each keystroke as an independent single-char query and
-          // Space always activates, so the sequence selects an item mid-typing.
-          Scene.scene(
-            {
-              update,
-              view: makeView(Menu, () => item => ({ label: item })),
-            },
-            Scene.given(initialModel(Menu, ['Item 1', 'Item 2', 'Item 3'])),
-            Scene.click(trigger),
-            Scene.expectHandled(),
-            Scene.keydown(rootMenu, 'i'),
-            Scene.expectHandled(),
-            Scene.keydown(rootMenu, 't'),
-            Scene.expectIgnored(),
-            Scene.keydown(rootMenu, 'e'),
-            Scene.expectIgnored(),
-            Scene.keydown(rootMenu, 'm'),
-            Scene.expectIgnored(),
-            Scene.keydown(rootMenu, ' '),
-            Scene.expectHandled(),
-            Scene.keydown(rootMenu, '2'),
-            Scene.expectHandled(),
-            Scene.expect(menuItem('Item 2')).toHaveAttr('data-active', 'true'),
-            Scene.expect(rootMenu).toExist(),
-          )
-        },
-      )
+      it.fails('matches "Item 2" after "Item " currently matches "Item 1"', () => {
+        // DIVERGENCE (medium): Base UI accumulates pressed keys into a
+        // multi-character query and absorbs Space while typing. creaseui
+        // treats each keystroke as an independent single-char query and
+        // Space always activates, so the sequence selects an item mid-typing.
+        Scene.scene(
+          {
+            update,
+            view: makeView(Menu, () => item => ({ label: item })),
+          },
+          Scene.given(initialModel(Menu, ['Item 1', 'Item 2', 'Item 3'])),
+          Scene.click(trigger),
+          Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'i'),
+          Scene.expectHandled(),
+          Scene.keydown(rootMenu, 't'),
+          Scene.expectIgnored(),
+          Scene.keydown(rootMenu, 'e'),
+          Scene.expectIgnored(),
+          Scene.keydown(rootMenu, 'm'),
+          Scene.expectIgnored(),
+          Scene.keydown(rootMenu, ' '),
+          Scene.expectHandled(),
+          Scene.keydown(rootMenu, '2'),
+          Scene.expectHandled(),
+          Scene.expect(menuItem('Item 2')).toHaveAttr('data-active', 'true'),
+          Scene.expect(rootMenu).toExist(),
+        )
+      })
 
-      it.fails(
-        'does not trigger the onClick event when Space is pressed during text navigation',
-        () => {
-          // DIVERGENCE (medium): same accumulating-typeahead divergence — the
-          // Space inside "Item T" activates the highlighted item in creaseui.
-          Scene.scene(
-            {
-              update,
-              view: makeView(Menu, () => item => ({ label: item })),
-            },
-            Scene.given(
-              initialModel(Menu, ['Item One', 'Item Two', 'Item Three']),
-            ),
-            Scene.click(trigger),
-            Scene.expectHandled(),
-            Scene.keydown(rootMenu, 'i'),
-            Scene.expectHandled(),
-            Scene.keydown(rootMenu, 't'),
-            Scene.expectHandled(),
-            Scene.keydown(rootMenu, 'e'),
-            Scene.expectIgnored(),
-            Scene.keydown(rootMenu, 'm'),
-            Scene.expectIgnored(),
-            Scene.keydown(rootMenu, ' '),
-            Scene.expectHandled(),
-            Scene.expect(rootMenu).toExist(),
-          )
-        },
-      )
+      it.fails('does not trigger the onClick event when Space is pressed during text navigation', () => {
+        // DIVERGENCE (medium): same accumulating-typeahead divergence — the
+        // Space inside "Item T" activates the highlighted item in creaseui.
+        Scene.scene(
+          {
+            update,
+            view: makeView(Menu, () => item => ({ label: item })),
+          },
+          Scene.given(
+            initialModel(Menu, ['Item One', 'Item Two', 'Item Three']),
+          ),
+          Scene.click(trigger),
+          Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'i'),
+          Scene.expectHandled(),
+          Scene.keydown(rootMenu, 't'),
+          Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'e'),
+          Scene.expectIgnored(),
+          Scene.keydown(rootMenu, 'm'),
+          Scene.expectIgnored(),
+          Scene.keydown(rootMenu, ' '),
+          Scene.expectHandled(),
+          Scene.expect(rootMenu).toExist(),
+        )
+      })
 
       it.fails('navigate to options with diacritic characters', () => {
         // DIVERGENCE (medium): Base UI's accumulated query "bą" still matches
@@ -798,16 +788,16 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
         )
       })
 
-      it.fails(
-        'does not open a submenu when pressing Space during a typeahead session',
-        () => {
-          // DIVERGENCE (medium): Base UI absorbs Space while a typeahead query
-          // is in flight. creaseui has no typeahead session, so Space opens
-          // the highlighted submenu trigger immediately.
-          Scene.scene(
-            {
-              update,
-              view: makeView(Menu, () => item =>
+      it.fails('does not open a submenu when pressing Space during a typeahead session', () => {
+        // DIVERGENCE (medium): Base UI absorbs Space while a typeahead query
+        // is in flight. creaseui has no typeahead session, so Space opens
+        // the highlighted submenu trigger immediately.
+        Scene.scene(
+          {
+            update,
+            view: makeView(
+              Menu,
+              () => item =>
                 item === 'Add to Playlist'
                   ? {
                       label: item,
@@ -817,23 +807,22 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
                       },
                     }
                   : { label: item },
-              ),
-            },
-            Scene.given(initialModel(Menu, ['Add to Playlist'])),
-            Scene.click(trigger),
-            Scene.expectHandled(),
-            Scene.keydown(rootMenu, 'a'),
-            Scene.expectHandled(),
-            Scene.keydown(rootMenu, 'd'),
-            Scene.expectIgnored(),
-            Scene.keydown(rootMenu, 'd'),
-            Scene.expectIgnored(),
-            Scene.keydown(rootMenu, ' '),
-            Scene.expectHandled(),
-            Scene.expect(submenuPanel('Add to Playlist')).not.toExist(),
-          )
-        },
-      )
+            ),
+          },
+          Scene.given(initialModel(Menu, ['Add to Playlist'])),
+          Scene.click(trigger),
+          Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'a'),
+          Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'd'),
+          Scene.expectIgnored(),
+          Scene.keydown(rootMenu, 'd'),
+          Scene.expectIgnored(),
+          Scene.keydown(rootMenu, ' '),
+          Scene.expectHandled(),
+          Scene.expect(submenuPanel('Add to Playlist')).not.toExist(),
+        )
+      })
     })
 
     describe('user interaction: hover', () => {
@@ -901,7 +890,10 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
 
       it('opens the submenu with the ArrowLeft key (rtl)', () => {
         Scene.scene(
-          { update, view: makeView(Menu, standardConfig, { direction: 'rtl' }) },
+          {
+            update,
+            view: makeView(Menu, standardConfig, { direction: 'rtl' }),
+          },
           givenStandard,
           Scene.click(trigger),
           Scene.expectHandled(),
@@ -1031,17 +1023,19 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
         Scene.scene(
           {
             update,
-            view: makeView(Menu, () => item =>
-              item === 'More'
-                ? {
-                    label: item,
-                    isDisabled: true,
-                    submenu: {
-                      items: ['Nested'],
-                      itemToConfig: child => ({ label: child }),
-                    },
-                  }
-                : { label: item },
+            view: makeView(
+              Menu,
+              () => item =>
+                item === 'More'
+                  ? {
+                      label: item,
+                      isDisabled: true,
+                      submenu: {
+                        items: ['Nested'],
+                        itemToConfig: child => ({ label: child }),
+                      },
+                    }
+                  : { label: item },
             ),
           },
           Scene.given(initialModel(Menu, ['Item 1', 'More', 'Item 2'])),
@@ -1059,16 +1053,18 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
         Scene.scene(
           {
             update,
-            view: makeView(Menu, () => item =>
-              item === 'reports'
-                ? {
-                    label: 'Reports',
-                    submenu: {
-                      items: ['Monthly'],
-                      itemToConfig: child => ({ label: child }),
-                    },
-                  }
-                : { label: item },
+            view: makeView(
+              Menu,
+              () => item =>
+                item === 'reports'
+                  ? {
+                      label: 'Reports',
+                      submenu: {
+                        items: ['Monthly'],
+                        itemToConfig: child => ({ label: child }),
+                      },
+                    }
+                  : { label: item },
             ),
           },
           Scene.given(initialModel(Menu, ['home', 'reports', 'settings'])),
@@ -1080,31 +1076,28 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
         )
       })
 
-      it.fails(
-        'does not close the parent menu when the Escape key is pressed by default',
-        () => {
-          // DIVERGENCE (high): Base UI closes only the submenu on Escape
-          // (closeParentOnEsc=false by default). creaseui closes the entire
-          // tree on Escape from inside a submenu.
-          Scene.scene(
-            { update, view },
-            givenStandard,
-            Scene.click(trigger),
-            Scene.expectHandled(),
-            Scene.keydown(rootMenu, 'ArrowDown'),
-            Scene.expectHandled(),
-            Scene.keydown(rootMenu, 'ArrowDown'),
-            Scene.expectHandled(),
-            Scene.keydown(rootMenu, 'ArrowRight'),
-            Scene.expectHandled(),
-            Scene.expect(submenuPanel('Item 4')).toExist(),
-            Scene.keydown(rootMenu, 'Escape'),
-            Scene.expectHandled(),
-            Scene.expect(submenuPanel('Item 4')).not.toExist(),
-            Scene.expect(rootMenu).toExist(),
-          )
-        },
-      )
+      it.fails('does not close the parent menu when the Escape key is pressed by default', () => {
+        // DIVERGENCE (high): Base UI closes only the submenu on Escape
+        // (closeParentOnEsc=false by default). creaseui closes the entire
+        // tree on Escape from inside a submenu.
+        Scene.scene(
+          { update, view },
+          givenStandard,
+          Scene.click(trigger),
+          Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'ArrowDown'),
+          Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'ArrowDown'),
+          Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'ArrowRight'),
+          Scene.expectHandled(),
+          Scene.expect(submenuPanel('Item 4')).toExist(),
+          Scene.keydown(rootMenu, 'Escape'),
+          Scene.expectHandled(),
+          Scene.expect(submenuPanel('Item 4')).not.toExist(),
+          Scene.expect(rootMenu).toExist(),
+        )
+      })
 
       it('closes the whole tree on Escape from inside a submenu', () => {
         // Base UI: 'closes the parent menu when the Escape key is pressed if
@@ -1127,38 +1120,35 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
         )
       })
 
-      it.fails(
-        'opens a third-level submenu when its trigger is activated',
-        () => {
-          // DIVERGENCE (high): Base UI supports arbitrary nesting. creaseui
-          // renders exactly one submenu level — a nested submenu trigger gets
-          // aria-haspopup but no panel, and ArrowRight inside an open submenu
-          // falls through to typeahead (no match, no message).
-          Scene.scene(
-            { update, view },
-            givenStandard,
-            Scene.click(trigger),
-            Scene.expectHandled(),
-            Scene.keydown(rootMenu, 'ArrowDown'),
-            Scene.expectHandled(),
-            Scene.keydown(rootMenu, 'ArrowDown'),
-            Scene.expectHandled(),
-            Scene.keydown(rootMenu, 'ArrowRight'),
-            Scene.expectHandled(),
-            Scene.keydown(rootMenu, 'ArrowDown'),
-            Scene.expectHandled(),
-            Scene.keydown(rootMenu, 'ArrowDown'),
-            Scene.expectHandled(),
-            Scene.expect(menuItem('Item 4.3')).toHaveAttr(
-              'aria-haspopup',
-              'menu',
-            ),
-            Scene.keydown(rootMenu, 'ArrowRight'),
-            Scene.expectIgnored(),
-            Scene.expect(submenuPanel('Item 4.3')).toExist(),
-          )
-        },
-      )
+      it.fails('opens a third-level submenu when its trigger is activated', () => {
+        // DIVERGENCE (high): Base UI supports arbitrary nesting. creaseui
+        // renders exactly one submenu level — a nested submenu trigger gets
+        // aria-haspopup but no panel, and ArrowRight inside an open submenu
+        // falls through to typeahead (no match, no message).
+        Scene.scene(
+          { update, view },
+          givenStandard,
+          Scene.click(trigger),
+          Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'ArrowDown'),
+          Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'ArrowDown'),
+          Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'ArrowRight'),
+          Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'ArrowDown'),
+          Scene.expectHandled(),
+          Scene.keydown(rootMenu, 'ArrowDown'),
+          Scene.expectHandled(),
+          Scene.expect(menuItem('Item 4.3')).toHaveAttr(
+            'aria-haspopup',
+            'menu',
+          ),
+          Scene.keydown(rootMenu, 'ArrowRight'),
+          Scene.expectIgnored(),
+          Scene.expect(submenuPanel('Item 4.3')).toExist(),
+        )
+      })
     })
 
     describe('checkbox items', () => {
@@ -1277,34 +1267,31 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
           Scene.expect(checkboxItem('Disabled checkbox')).not.toHaveHandler(
             'click',
           ),
-          Scene.expect(
-            checkboxItem('Disabled checkbox'),
-          ).not.toHaveHandler('mouseenter'),
+          Scene.expect(checkboxItem('Disabled checkbox')).not.toHaveHandler(
+            'mouseenter',
+          ),
         )
       })
 
-      it.fails(
-        'does not close the menu when a checkbox item is activated by default',
-        () => {
-          // DIVERGENCE (high): Base UI keeps the menu open on checkbox-item
-          // activation (closeOnClick defaults to false for checkable items).
-          // creaseui emits Selected and closes for every item kind; Enter and
-          // Space behave identically.
-          Scene.scene(
-            { update, view: checkboxView },
-            givenCheckbox,
-            Scene.click(trigger),
-            Scene.expectHandled(),
-            Scene.click(checkboxItem('Notifications')),
-            Scene.expectHandled(),
-            Scene.expect(rootMenu).toExist(),
-            Scene.expect(checkboxItem('Notifications')).toHaveAttr(
-              'aria-checked',
-              'true',
-            ),
-          )
-        },
-      )
+      it.fails('does not close the menu when a checkbox item is activated by default', () => {
+        // DIVERGENCE (high): Base UI keeps the menu open on checkbox-item
+        // activation (closeOnClick defaults to false for checkable items).
+        // creaseui emits Selected and closes for every item kind; Enter and
+        // Space behave identically.
+        Scene.scene(
+          { update, view: checkboxView },
+          givenCheckbox,
+          Scene.click(trigger),
+          Scene.expectHandled(),
+          Scene.click(checkboxItem('Notifications')),
+          Scene.expectHandled(),
+          Scene.expect(rootMenu).toExist(),
+          Scene.expect(checkboxItem('Notifications')).toHaveAttr(
+            'aria-checked',
+            'true',
+          ),
+        )
+      })
 
       it.fails('emits data-checked and data-unchecked state attributes', () => {
         // DIVERGENCE (low): Base UI exposes checkable state through
@@ -1314,7 +1301,10 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
           givenCheckbox,
           Scene.click(trigger),
           Scene.expectHandled(),
-          Scene.expect(checkboxItem('Appearance')).toHaveAttr('data-checked', ''),
+          Scene.expect(checkboxItem('Appearance')).toHaveAttr(
+            'data-checked',
+            '',
+          ),
           Scene.expect(checkboxItem('Notifications')).toHaveAttr(
             'data-unchecked',
             '',
@@ -1395,21 +1385,18 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
         )
       })
 
-      it.fails(
-        'does not close the menu when a radio item is activated by default',
-        () => {
-          // DIVERGENCE (high): same closeOnClick divergence as checkbox items.
-          Scene.scene(
-            { update, view: radioView },
-            givenRadio,
-            Scene.click(trigger),
-            Scene.expectHandled(),
-            Scene.click(radioItem('Small')),
-            Scene.expectHandled(),
-            Scene.expect(rootMenu).toExist(),
-          )
-        },
-      )
+      it.fails('does not close the menu when a radio item is activated by default', () => {
+        // DIVERGENCE (high): same closeOnClick divergence as checkbox items.
+        Scene.scene(
+          { update, view: radioView },
+          givenRadio,
+          Scene.click(trigger),
+          Scene.expectHandled(),
+          Scene.click(radioItem('Small')),
+          Scene.expectHandled(),
+          Scene.expect(rootMenu).toExist(),
+        )
+      })
 
       it.todo(
         'RadioGroup container (role=group, aria-labelledby, group-level ' +
@@ -1419,10 +1406,10 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
     })
 
     describe('group labels', () => {
-      const groupedView = makeView(
-        Menu,
-        () => item => ({ label: item, group: 'Group 1' }),
-      )
+      const groupedView = makeView(Menu, () => item => ({
+        label: item,
+        group: 'Group 1',
+      }))
 
       it.fails('hides the group label from the accessibility tree', () => {
         // DIVERGENCE (low): Base UI renders Menu.GroupLabel with
@@ -1507,29 +1494,32 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
           {
             update,
             view: (model, h) =>
-              h.div([], [
-                h.button(
-                  [
-                    h.Type('button'),
-                    h.OnClick({ _tag: 'RemoveItems', count: 3 }),
-                  ],
-                  ['Remove items'],
-                ),
-                Menu.dropdownMenu(
-                  {
-                    model: model.menu,
-                    toParentMessage: message => ({
-                      _tag: 'GotMenu',
-                      message,
-                    }),
-                    trigger: 'Actions',
-                    items: model.items,
-                    itemToConfig: item => ({ label: item }),
-                    ariaLabel: 'Menu',
-                  },
-                  h,
-                ),
-              ]),
+              h.div(
+                [],
+                [
+                  h.button(
+                    [
+                      h.Type('button'),
+                      h.OnClick({ _tag: 'RemoveItems', count: 3 }),
+                    ],
+                    ['Remove items'],
+                  ),
+                  Menu.dropdownMenu(
+                    {
+                      model: model.menu,
+                      toParentMessage: message => ({
+                        _tag: 'GotMenu',
+                        message,
+                      }),
+                      trigger: 'Actions',
+                      items: model.items,
+                      itemToConfig: item => ({ label: item }),
+                      ariaLabel: 'Menu',
+                    },
+                    h,
+                  ),
+                ],
+              ),
           },
           givenStandard,
           Scene.click(trigger),

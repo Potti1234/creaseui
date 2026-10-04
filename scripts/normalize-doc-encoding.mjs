@@ -8,15 +8,36 @@ const textExtensions = new Set(['.ts', '.md', '.json', '.css', '.html', '.svg'])
 const suspicious = /(?:Ã.|Â.|â.|ð.|Ø.|Ù.|ï.)/u
 
 const windows1252 = new Map([
-  ['€', 0x80], ['‚', 0x82], ['ƒ', 0x83], ['„', 0x84], ['…', 0x85],
-  ['†', 0x86], ['‡', 0x87], ['ˆ', 0x88], ['‰', 0x89], ['Š', 0x8a],
-  ['‹', 0x8b], ['Œ', 0x8c], ['Ž', 0x8e], ['‘', 0x91], ['’', 0x92],
-  ['“', 0x93], ['”', 0x94], ['•', 0x95], ['–', 0x96], ['—', 0x97],
-  ['˜', 0x98], ['™', 0x99], ['š', 0x9a], ['›', 0x9b], ['œ', 0x9c],
-  ['ž', 0x9e], ['Ÿ', 0x9f],
+  ['€', 0x80],
+  ['‚', 0x82],
+  ['ƒ', 0x83],
+  ['„', 0x84],
+  ['…', 0x85],
+  ['†', 0x86],
+  ['‡', 0x87],
+  ['ˆ', 0x88],
+  ['‰', 0x89],
+  ['Š', 0x8a],
+  ['‹', 0x8b],
+  ['Œ', 0x8c],
+  ['Ž', 0x8e],
+  ['‘', 0x91],
+  ['’', 0x92],
+  ['“', 0x93],
+  ['”', 0x94],
+  ['•', 0x95],
+  ['–', 0x96],
+  ['—', 0x97],
+  ['˜', 0x98],
+  ['™', 0x99],
+  ['š', 0x9a],
+  ['›', 0x9b],
+  ['œ', 0x9c],
+  ['ž', 0x9e],
+  ['Ÿ', 0x9f],
 ])
 
-const encodeWindows1252 = (value) => {
+const encodeWindows1252 = value => {
   const bytes = []
   for (const character of value) {
     const codePoint = character.codePointAt(0)
@@ -27,7 +48,7 @@ const encodeWindows1252 = (value) => {
   return Buffer.from(bytes)
 }
 
-const repairLine = (line) => {
+const repairLine = line => {
   if (!suspicious.test(line)) return line
   const bytes = encodeWindows1252(line)
   if (bytes === undefined) return line
@@ -36,21 +57,18 @@ const repairLine = (line) => {
   return suspicious.test(repaired) ? line : repaired
 }
 
-const walk = async (directory) => {
+const walk = async directory => {
   const entries = await readdir(directory, { withFileTypes: true })
   const files = []
   for (const entry of entries) {
     const path = join(directory, entry.name)
-    if (entry.isDirectory()) files.push(...await walk(path))
+    if (entry.isDirectory()) files.push(...(await walk(path)))
     else if (textExtensions.has(extname(entry.name))) files.push(path)
   }
   return files
 }
 
-const files = [
-  ...rootFiles,
-  ...(await Promise.all(roots.map(walk))).flat(),
-]
+const files = [...rootFiles, ...(await Promise.all(roots.map(walk))).flat()]
 const write = process.argv.includes('--write')
 const failures = []
 

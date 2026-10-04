@@ -1,5 +1,5 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type ToolbarFixtureKind =
   | 'threeSlot'
@@ -7,17 +7,19 @@ export type ToolbarFixtureKind =
   | 'sizes'
   | 'tabs'
   | 'bulk'
-  | 'filter';
+  | 'filter'
 
 export type ToolbarFixture = Readonly<{
-  title: string;
-  description?: string;
-  heroOnly?: boolean;
-  kind: ToolbarFixtureKind;
-  width: number;
-}>;
+  title: string
+  description?: string
+  heroOnly?: boolean
+  kind: ToolbarFixtureKind
+  width: number
+}>
 
-export const toolbarFixtures: Readonly<[ToolbarFixture, ...Array<ToolbarFixture>]> = [
+export const toolbarFixtures: Readonly<
+  [ToolbarFixture, ...Array<ToolbarFixture>]
+> = [
   {
     title: 'Toolbar — Three Slot',
     heroOnly: true,
@@ -59,15 +61,17 @@ export const toolbarFixtures: Readonly<[ToolbarFixture, ...Array<ToolbarFixture>
     kind: 'filter',
     width: 760,
   },
-];
+]
 
-export type FilterField = 'status' | 'priority' | 'customer';
+export type FilterField = 'status' | 'priority' | 'customer'
 
-export const FILTER_FIELDS: ReadonlyArray<Readonly<{
-  key: FilterField;
-  label: string;
-  options: ReadonlyArray<string>;
-}>> = [
+export const FILTER_FIELDS: ReadonlyArray<
+  Readonly<{
+    key: FilterField
+    label: string
+    options: ReadonlyArray<string>
+  }>
+> = [
   {
     key: 'status',
     label: 'Status',
@@ -84,15 +88,15 @@ export const FILTER_FIELDS: ReadonlyArray<Readonly<{
       'Harborview Hotel',
     ],
   },
-];
+]
 
 export type Job = Readonly<{
-  id: string;
-  job: string;
-  customer: string;
-  status: string;
-  priority: string;
-}>;
+  id: string
+  job: string
+  customer: string
+  status: string
+  priority: string
+}>
 
 export const JOBS: ReadonlyArray<Job> = [
   {
@@ -130,9 +134,11 @@ export const JOBS: ReadonlyArray<Job> = [
     status: 'Completed',
     priority: 'Low',
   },
-];
+]
 
-const SIMPLE_BODY: Readonly<Record<'threeSlot' | 'cardHeader' | 'sizes' | 'tabs' | 'bulk', string>> = {
+const SIMPLE_BODY: Readonly<
+  Record<'threeSlot' | 'cardHeader' | 'sizes' | 'tabs' | 'bulk', string>
+> = {
   threeSlot: `Toolbar.toolbar({
       label: 'Document toolbar',
       dividers: ['bottom'],
@@ -240,7 +246,7 @@ const SIMPLE_BODY: Readonly<Record<'threeSlot' | 'cardHeader' | 'sizes' | 'tabs'
         Button.button({ variant: 'ghost', size: 'sm', onClick: ClickedDeselectAll(), children: ['Deselect all'] }, h),
       ],
     }, h)`,
-};
+}
 
 const filterBody = (isStyleX: boolean): string => `Toolbar.toolbar({
       label: 'Job filters',
@@ -254,15 +260,15 @@ const filterBody = (isStyleX: boolean): string => `Toolbar.toolbar({
         h.span([h.Class('text-muted-foreground text-xs')], [\`\${resultsFor(model).length} of \${JOBS.length}\`]),
         Button.button({ variant: 'link', size: 'sm', onClick: ClickedClearFilters(), children: ['Clear all'] }, h),
       ],
-    }, h)`;
+    }, h)`
 
 const emitSource = (fixture: ToolbarFixture, isStyleX: boolean): string => {
-  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '');
-  const lib = isStyleX ? 'stylex' : 'ui';
-  const hasTabs = fixture.kind === 'tabs';
-  const hasBulk = fixture.kind === 'bulk';
-  const hasFilter = fixture.kind === 'filter';
-  const hasState = hasTabs || hasBulk || hasFilter;
+  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
+  const lib = isStyleX ? 'stylex' : 'ui'
+  const hasTabs = fixture.kind === 'tabs'
+  const hasBulk = fixture.kind === 'bulk'
+  const hasFilter = fixture.kind === 'filter'
+  const hasState = hasTabs || hasBulk || hasFilter
 
   const filterDecls = hasFilter
     ? `type Job = Readonly<{ id: string; job: string; customer: string; status: string; priority: string }>
@@ -278,64 +284,97 @@ const PRIORITY_OPTIONS: ReadonlyArray<Readonly<{ value: string; label: string }>
 ]
 
 `
-    : '';
+    : ''
 
   const modelDecl = hasState
-    ? `${filterDecls}export const Model = S.Struct({${hasTabs ? `
+    ? `${filterDecls}export const Model = S.Struct({${
+        hasTabs
+          ? `
   tabs: Tabs.Model,
-  selectedTab: S.String,` : ''}${hasBulk ? `
-  selectedRows: S.Array(S.String),` : ''}${hasFilter ? `
+  selectedTab: S.String,`
+          : ''
+      }${
+        hasBulk
+          ? `
+  selectedRows: S.Array(S.String),`
+          : ''
+      }${
+        hasFilter
+          ? `
   search: S.String,
   status: S.String,
   priority: S.String,
-  customer: S.String,` : ''}
+  customer: S.String,`
+          : ''
+      }
 })
 export type Model = typeof Model.Type`
     : `export const Model = S.Struct({})
-export type Model = typeof Model.Type`;
+export type Model = typeof Model.Type`
 
   const messageDecls = [
     `export const GotToolbarMessage = taggedStruct('GotToolbarMessage${tag}', {
   message: Toolbar.Message,
 })`,
     ...(hasTabs
-      ? [`export const GotTabsMessage = taggedStruct('GotTabsMessage${tag}', {
+      ? [
+          `export const GotTabsMessage = taggedStruct('GotTabsMessage${tag}', {
   message: Tabs.Message,
-})`]
+})`,
+        ]
       : []),
     ...(hasBulk
-      ? [`export const ClickedDeselectAll = taggedStruct('ClickedDeselectAll${tag}', {})`]
+      ? [
+          `export const ClickedDeselectAll = taggedStruct('ClickedDeselectAll${tag}', {})`,
+        ]
       : []),
     ...(hasFilter
-      ? [`export const ChangedSearch = taggedStruct('ChangedSearch${tag}', { value: S.String })
+      ? [
+          `export const ChangedSearch = taggedStruct('ChangedSearch${tag}', { value: S.String })
 export const ChangedClause = taggedStruct('ChangedClause${tag}', { field: S.String, value: S.String })
-export const ClickedClearFilters = taggedStruct('ClickedClearFilters${tag}', {})`]
+export const ClickedClearFilters = taggedStruct('ClickedClearFilters${tag}', {})`,
+        ]
       : []),
-  ];
+  ]
   const unionVariants = [
     'GotToolbarMessage',
     ...(hasTabs ? ['GotTabsMessage'] : []),
     ...(hasBulk ? ['ClickedDeselectAll'] : []),
-    ...(hasFilter ? ['ChangedSearch', 'ChangedClause', 'ClickedClearFilters'] : []),
-  ];
+    ...(hasFilter
+      ? ['ChangedSearch', 'ChangedClause', 'ClickedClearFilters']
+      : []),
+  ]
 
   const initDecl = `export const init = (): Update.Return<Model, Message> => ({
-  model: {${hasTabs ? `
+  model: {${
+    hasTabs
+      ? `
     tabs: Tabs.init({ id: 'docs-toolbar-tabs' }),
-    selectedTab: 'overview',` : ''}${hasBulk ? `
-    selectedRows: ['1', '3', '5'],` : ''}${hasFilter ? `
+    selectedTab: 'overview',`
+      : ''
+  }${
+    hasBulk
+      ? `
+    selectedRows: ['1', '3', '5'],`
+      : ''
+  }${
+    hasFilter
+      ? `
     search: '',
     status: '',
     priority: '',
-    customer: '',` : ''}
+    customer: '',`
+      : ''
+  }
   },
-})`;
+})`
 
   const updateCases = [
     `    case 'GotToolbarMessage${tag}':
       return { model }`,
     ...(hasTabs
-      ? [`    case 'GotTabsMessage${tag}': {
+      ? [
+          `    case 'GotTabsMessage${tag}': {
       const next = Tabs.update(model.tabs, message.message)
       const selection = next.outMessage?._tag === 'Selected' ? next.outMessage.value : undefined
       return {
@@ -346,29 +385,34 @@ export const ClickedClearFilters = taggedStruct('ClickedClearFilters${tag}', {})
         },
         commands: Command.mapMessages(next.commands ?? [], m => GotTabsMessage({ message: m })),
       }
-    }`]
+    }`,
+        ]
       : []),
     ...(hasBulk
-      ? [`    case 'ClickedDeselectAll${tag}':
-      return { model: { ...model, selectedRows: [] } }`]
+      ? [
+          `    case 'ClickedDeselectAll${tag}':
+      return { model: { ...model, selectedRows: [] } }`,
+        ]
       : []),
     ...(hasFilter
-      ? [`    case 'ChangedSearch${tag}':
+      ? [
+          `    case 'ChangedSearch${tag}':
       return { model: { ...model, search: message.value } }
     case 'ChangedClause${tag}':
       return { model: { ...model, [message.field]: message.value } }
     case 'ClickedClearFilters${tag}':
-      return { model: { ...model, search: '', status: '', priority: '', customer: '' } }`]
+      return { model: { ...model, search: '', status: '', priority: '', customer: '' } }`,
+        ]
       : []),
-  ];
+  ]
 
   const toolbarBody =
-    fixture.kind === 'filter' ? filterBody(isStyleX) : SIMPLE_BODY[fixture.kind];
+    fixture.kind === 'filter' ? filterBody(isStyleX) : SIMPLE_BODY[fixture.kind]
 
   const toolbarCalls: string =
     fixture.kind === 'sizes'
       ? `h.div([h.Class('flex w-[500px] flex-col gap-4')], [\n${SIMPLE_BODY.sizes}\n    ])`
-      : `${fixture.kind === 'threeSlot' || fixture.kind === 'cardHeader' || fixture.kind === 'tabs' ? `h.div([h.Class('w-[${fixture.width}px]')], [\n` : ''}${toolbarBody}${fixture.kind === 'threeSlot' || fixture.kind === 'cardHeader' || fixture.kind === 'tabs' ? '\n    ])' : ''}`;
+      : `${fixture.kind === 'threeSlot' || fixture.kind === 'cardHeader' || fixture.kind === 'tabs' ? `h.div([h.Class('w-[${fixture.width}px]')], [\n` : ''}${toolbarBody}${fixture.kind === 'threeSlot' || fixture.kind === 'cardHeader' || fixture.kind === 'tabs' ? '\n    ])' : ''}`
 
   return foldkitApplication({
     title: fixture.title,
@@ -379,13 +423,29 @@ import { taggedStruct } from 'foldkit/schema'
 import * as Icon from '@/lib/icon'
 import * as Toolbar from '@/${lib}/toolbar'
 import * as Button from '@/${lib}/button'
-${hasTabs ? `import * as Tabs from '@/${lib}/tabs'
-` : ''}${hasBulk ? `import * as Badge from '@/${lib}/badge'
-` : ''}${hasFilter ? `import * as Input from '@/${lib}/input'
+${
+  hasTabs
+    ? `import * as Tabs from '@/${lib}/tabs'
+`
+    : ''
+}${
+      hasBulk
+        ? `import * as Badge from '@/${lib}/badge'
+`
+        : ''
+    }${
+      hasFilter
+        ? `import * as Input from '@/${lib}/input'
 import * as NativeSelect from '@/${lib}/native-select'
-` : ''}${hasFilter && isStyleX ? `import * as stylex from '@stylexjs/stylex'
+`
+        : ''
+    }${
+      hasFilter && isStyleX
+        ? `import * as stylex from '@stylexjs/stylex'
 const styles = stylex.create({ searchInput: { width: '10rem' } })
-` : ''}`,
+`
+        : ''
+    }`,
     model: modelDecl,
     messages: `${messageDecls.join('\n')}
 export const Message = S.Union([${unionVariants.join(', ')}])
@@ -399,7 +459,9 @@ export type Message = typeof Message.Type`,
 ${updateCases.join('\n')}
   }
 }`,
-    view: `${hasFilter ? `const resultsFor = (model: Model): ReadonlyArray<Job> =>
+    view: `${
+      hasFilter
+        ? `const resultsFor = (model: Model): ReadonlyArray<Job> =>
   JOBS.filter(
     job =>
       (model.search === '' ||
@@ -410,14 +472,16 @@ ${updateCases.join('\n')}
       (model.priority === '' || job.priority === model.priority),
   )
 
-` : ''}export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+`
+        : ''
+    }export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: '${fixture.title}',
   body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
     ${toolbarCalls},
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const toolbarExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -429,4 +493,4 @@ export const toolbarExamples = (
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitSource(fixture, renderer === 'stylex'),
-  }));
+  }))

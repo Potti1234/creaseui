@@ -1,47 +1,92 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication, staticComponentApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import {
+  foldkitApplication,
+  staticComponentApplication,
+} from '@/docs/components/pages/authored-page'
 
 export const paginationFixtures = [
-  { title: 'Addressable pages', description: 'The router-owned page generates real URLs and a finite current neighborhood.', kind: 'link', page: 6, siblingCount: 1 },
-  { title: 'In-place results', description: 'A parent Message updates results without pretending the action is a link.', kind: 'action', page: 2, siblingCount: 1 },
-  { title: 'Compact neighborhood', description: 'Zero siblings preserves boundaries and the current page for narrow layouts.', kind: 'link', page: 6, siblingCount: 0 },
-  { title: 'Disabled boundary', description: 'At page one, Previous is disabled and removed from sequential keyboard focus.', kind: 'action', page: 1, siblingCount: 1 },
+  {
+    title: 'Addressable pages',
+    description:
+      'The router-owned page generates real URLs and a finite current neighborhood.',
+    kind: 'link',
+    page: 6,
+    siblingCount: 1,
+  },
+  {
+    title: 'In-place results',
+    description:
+      'A parent Message updates results without pretending the action is a link.',
+    kind: 'action',
+    page: 2,
+    siblingCount: 1,
+  },
+  {
+    title: 'Compact neighborhood',
+    description:
+      'Zero siblings preserves boundaries and the current page for narrow layouts.',
+    kind: 'link',
+    page: 6,
+    siblingCount: 0,
+  },
+  {
+    title: 'Disabled boundary',
+    description:
+      'At page one, Previous is disabled and removed from sequential keyboard focus.',
+    kind: 'action',
+    page: 1,
+    siblingCount: 1,
+  },
   { title: 'Simple', kind: 'simple' },
   { title: 'Icons Only', kind: 'icons' },
   { title: 'RTL', kind: 'rtl' },
-] as const;
+] as const
 
-const linkSource = (fixture: { title: string; siblingCount: number }, renderer: 'tailwind' | 'stylex'): string => staticComponentApplication({ componentName: 'Pagination', componentSlug: 'pagination', renderer, exampleName: fixture.title, viewBody: `Pagination.paginationPages({
+const linkSource = (
+  fixture: { title: string; siblingCount: number },
+  renderer: 'tailwind' | 'stylex',
+): string =>
+  staticComponentApplication({
+    componentName: 'Pagination',
+    componentSlug: 'pagination',
+    renderer,
+    exampleName: fixture.title,
+    viewBody: `Pagination.paginationPages({
   page: 6,
   totalPages: 12,
   siblingCount: ${fixture.siblingCount},
   boundaryCount: 1,
   navigation: { kind: 'link', href: page => \`/invoices?page=\${page}\` },
   ariaLabel: 'Invoice pages',
-}, h)` });
-const actionSource = (fixture: { title: string; page: number }, renderer: 'tailwind' | 'stylex'): string => foldkitApplication({
-  title: `Pagination — ${fixture.title}`,
-  imports: `import { Schema as S } from 'effect'
+}, h)`,
+  })
+const actionSource = (
+  fixture: { title: string; page: number },
+  renderer: 'tailwind' | 'stylex',
+): string =>
+  foldkitApplication({
+    title: `Pagination — ${fixture.title}`,
+    imports: `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
 import * as Pagination from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/pagination'`,
-  model: `export const Model = S.Struct({ page: S.Number })
+    model: `export const Model = S.Struct({ page: S.Number })
 export type Model = typeof Model.Type`,
-  messages: `import { defineMessageUnion } from 'foldkit/message'
+    messages: `import { defineMessageUnion } from 'foldkit/message'
 
 export const Message = defineMessageUnion({
   ChangedPage: { page: S.Number },
 });
 export type Message = typeof Message.Type`,
-  init: `export const init = (): Update.Return<Model, Message> => ({ model: { page: ${fixture.page} } })`,
-  update: `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
+    init: `export const init = (): Update.Return<Model, Message> => ({ model: { page: ${fixture.page} } })`,
+    update: `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
     case 'ChangedPage': return { model: { ...model, page: message.page } }
   }
 }`,
-  view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+    view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Pagination — ${fixture.title}',
   body: h.main([], [Pagination.paginationPages({
     page: model.page,
@@ -50,15 +95,18 @@ export type Message = typeof Message.Type`,
     ariaLabel: 'Search result pages',
   }, h)]),
 })`,
-});
-const numberedItems = (pages: ReadonlyArray<number>, activePage: number): string =>
+  })
+const numberedItems = (
+  pages: ReadonlyArray<number>,
+  activePage: number,
+): string =>
   pages
     .map(
       page => `    Pagination.paginationItem({ children: [
       Pagination.paginationLink({ href: '#'${page === activePage ? ', isActive: true' : ''}, children: ['${page}'] }, h),
     ] }, h)`,
     )
-    .join(',\n');
+    .join(',\n')
 
 const simpleSource = (renderer: 'tailwind' | 'stylex'): string =>
   staticComponentApplication({
@@ -71,7 +119,7 @@ const simpleSource = (renderer: 'tailwind' | 'stylex'): string =>
 ${numberedItems([1, 2, 3, 4, 5], 2)}
   ] }, h),
 ] }, h)`,
-  });
+  })
 
 const rtlSource = (renderer: 'tailwind' | 'stylex'): string =>
   staticComponentApplication({
@@ -93,19 +141,23 @@ ${numberedItems([1, 2, 3], 2)},
     ] }, h),
   ] }, h),
 ] }, h)`,
-  });
+  })
 
 const iconsOnlySource = (renderer: 'tailwind' | 'stylex'): string => {
-  const isStyleX = renderer === 'stylex';
+  const isStyleX = renderer === 'stylex'
   return foldkitApplication({
     title: 'Pagination — Icons Only',
     imports: `import { Option, Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { taggedStruct } from 'foldkit/schema'
-${isStyleX ? `import * as stylex from '@stylexjs/stylex'
+${
+  isStyleX
+    ? `import * as stylex from '@stylexjs/stylex'
 import { className } from '@/stylex/style'
-` : ''}import * as Field from '@/${isStyleX ? 'stylex' : 'ui'}/field'
+`
+    : ''
+}import * as Field from '@/${isStyleX ? 'stylex' : 'ui'}/field'
 import * as Pagination from '@/${isStyleX ? 'stylex' : 'ui'}/pagination'
 import * as Select from '@/${isStyleX ? 'stylex' : 'ui'}/select'
 
@@ -115,14 +167,18 @@ const items = [
   { value: '50', label: '50' },
   { value: '100', label: '100' },
 ] as const
-${isStyleX ? `
+${
+  isStyleX
+    ? `
 const styles = stylex.create({
   row: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' },
   field: { width: 'fit-content' },
   trigger: { width: '5rem' },
   pagination: { marginInline: 0, width: 'auto' },
 })
-` : ''}`,
+`
+    : ''
+}`,
     model: `const RowsSelect = Select.create<string>()
 export const Model = S.Struct({
   select: Select.Model,
@@ -196,19 +252,23 @@ export type Message = typeof Message.Type`,
     ]),
   ]),
 })`,
-  });
-};
+  })
+}
 
-export const paginationExamples = (renderer: 'tailwind' | 'stylex'): ReadonlyArray<DocsExample> => paginationFixtures.map(fixture => ({
-  title: fixture.title,
-  ...('description' in fixture ? { description: fixture.description } : {}),
-  code: fixture.kind === 'link'
-    ? linkSource(fixture, renderer)
-    : fixture.kind === 'action'
-      ? actionSource(fixture, renderer)
-      : fixture.kind === 'simple'
-        ? simpleSource(renderer)
-        : fixture.kind === 'icons'
-          ? iconsOnlySource(renderer)
-          : rtlSource(renderer),
-}));
+export const paginationExamples = (
+  renderer: 'tailwind' | 'stylex',
+): ReadonlyArray<DocsExample> =>
+  paginationFixtures.map(fixture => ({
+    title: fixture.title,
+    ...('description' in fixture ? { description: fixture.description } : {}),
+    code:
+      fixture.kind === 'link'
+        ? linkSource(fixture, renderer)
+        : fixture.kind === 'action'
+          ? actionSource(fixture, renderer)
+          : fixture.kind === 'simple'
+            ? simpleSource(renderer)
+            : fixture.kind === 'icons'
+              ? iconsOnlySource(renderer)
+              : rtlSource(renderer),
+  }))

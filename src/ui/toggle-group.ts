@@ -22,7 +22,10 @@ export type ToggleGroupItem<Value extends string = string> = Readonly<{
   class?: string
 }>
 
-type SingleSelection<Value extends string> = Readonly<{ value: Value; values?: never }>
+type SingleSelection<Value extends string> = Readonly<{
+  value: Value
+  values?: never
+}>
 type MultipleSelection<Value extends string> = Readonly<{
   value?: never
   values: ReadonlyArray<Value>
@@ -39,7 +42,8 @@ export type ToggleGroupProps<Value extends string, Msg> = Readonly<{
   variant?: ToggleVariants['variant']
   size?: ToggleVariants['size']
   class?: string
-}> & (SingleSelection<Value> | MultipleSelection<Value>)
+}> &
+  (SingleSelection<Value> | MultipleSelection<Value>)
 
 type LegacyToggleGroupProps<Value extends string, Msg> = Readonly<{
   items: ReadonlyArray<ToggleGroupItem<Value>>
@@ -51,7 +55,8 @@ type LegacyToggleGroupProps<Value extends string, Msg> = Readonly<{
   variant?: ToggleVariants['variant']
   size?: ToggleVariants['size']
   class?: string
-}> & (SingleSelection<Value> | MultipleSelection<Value>)
+}> &
+  (SingleSelection<Value> | MultipleSelection<Value>)
 
 const GROUP_CLASS =
   'group/toggle-group flex w-fit items-center gap-0 rounded-md data-[variant=outline]:shadow-xs data-[arrangement=wrapped]:flex-wrap data-[arrangement=wrapped]:gap-1 data-[orientation=vertical]:flex-col data-[orientation=vertical]:items-stretch'
@@ -94,7 +99,9 @@ const renderToggleGroup = <Value extends string, Msg>(
       item: () => [],
     },
     (item, ht) => {
-      const content = props.items.find((candidate) => candidate.value === item.value)
+      const content = props.items.find(
+        candidate => candidate.value === item.value,
+      )
       return content === undefined
         ? ht.empty
         : ht.button(
@@ -104,9 +111,19 @@ const renderToggleGroup = <Value extends string, Msg>(
               ht.DataAttribute('variant', variant),
               ht.DataAttribute('size', size),
               ht.AriaPressed(item.isPressed ? 'true' : 'false'),
-              ...(props.direction === undefined ? [] : [ht.Dir(props.direction)]),
-              ...(content.ariaLabel === undefined ? [] : [ht.AriaLabel(content.ariaLabel)]),
-              ht.Class(cn(toggleVariants({ variant, size }), vertical ? ITEM_CLASS_VERTICAL : ITEM_CLASS, content.class)),
+              ...(props.direction === undefined
+                ? []
+                : [ht.Dir(props.direction)]),
+              ...(content.ariaLabel === undefined
+                ? []
+                : [ht.AriaLabel(content.ariaLabel)]),
+              ht.Class(
+                cn(
+                  toggleVariants({ variant, size }),
+                  vertical ? ITEM_CLASS_VERTICAL : ITEM_CLASS,
+                  content.class,
+                ),
+              ),
             ],
             [...content.children],
           )
@@ -123,7 +140,8 @@ const renderLegacyToggleGroup = <Value extends string, Msg>(
   const size = props.size ?? 'default'
   const arrangement = props.arrangement ?? 'joined'
   const vertical = props.orientation === 'vertical'
-  const selectedValues: ReadonlyArray<Value> = props.values === undefined ? [props.value] : props.values
+  const selectedValues: ReadonlyArray<Value> =
+    props.values === undefined ? [props.value] : props.values
   return h.div(
     [
       h.Role('group'),
@@ -136,29 +154,44 @@ const renderLegacyToggleGroup = <Value extends string, Msg>(
       h.DataAttribute('orientation', vertical ? 'vertical' : 'horizontal'),
       h.Class(cn(GROUP_CLASS, props.class)),
     ],
-    props.items.map((item) => h.button(
-      [
-        h.Type('button'),
-        h.OnClick(props.onToggle(item.value)),
-        h.Disabled(item.isDisabled ?? false),
-        h.AriaPressed(selectedValues.includes(item.value) ? 'true' : 'false'),
-        ...(item.ariaLabel === undefined ? [] : [h.AriaLabel(item.ariaLabel)]),
-        h.DataAttribute('slot', 'toggle-group-item'),
-        h.DataAttribute('variant', variant),
-        h.DataAttribute('size', size),
-        h.Class(cn(toggleVariants({ variant, size }), vertical ? ITEM_CLASS_VERTICAL : ITEM_CLASS, item.class)),
-      ],
-      [...item.children],
-    )),
+    props.items.map(item =>
+      h.button(
+        [
+          h.Type('button'),
+          h.OnClick(props.onToggle(item.value)),
+          h.Disabled(item.isDisabled ?? false),
+          h.AriaPressed(selectedValues.includes(item.value) ? 'true' : 'false'),
+          ...(item.ariaLabel === undefined
+            ? []
+            : [h.AriaLabel(item.ariaLabel)]),
+          h.DataAttribute('slot', 'toggle-group-item'),
+          h.DataAttribute('variant', variant),
+          h.DataAttribute('size', size),
+          h.Class(
+            cn(
+              toggleVariants({ variant, size }),
+              vertical ? ITEM_CLASS_VERTICAL : ITEM_CLASS,
+              item.class,
+            ),
+          ),
+        ],
+        [...item.children],
+      ),
+    ),
   )
 }
 
 export type ToggleGroupBundle<Value extends string> = Readonly<{
   update: BehaviorBundle<Value>['update']
-  toggleGroup: <Msg>(props: ToggleGroupProps<Value, Msg>, h: HtmlBuilder<Msg>) => Html
+  toggleGroup: <Msg>(
+    props: ToggleGroupProps<Value, Msg>,
+    h: HtmlBuilder<Msg>,
+  ) => Html
 }>
 
-export const create = <Value extends string = string>(): ToggleGroupBundle<Value> => {
+export const create = <
+  Value extends string = string,
+>(): ToggleGroupBundle<Value> => {
   const behavior = createBehavior<Value>()
   return {
     update: behavior.update,

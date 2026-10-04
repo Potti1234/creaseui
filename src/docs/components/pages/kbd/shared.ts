@@ -1,5 +1,5 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type KbdKind =
   | 'demo'
@@ -7,13 +7,13 @@ export type KbdKind =
   | 'button'
   | 'tooltip'
   | 'inputGroup'
-  | 'rtl';
+  | 'rtl'
 
 export interface KbdFixture {
-  readonly title: string;
-  readonly description?: string;
-  readonly heroOnly?: boolean;
-  readonly kind: KbdKind;
+  readonly title: string
+  readonly description?: string
+  readonly heroOnly?: boolean
+  readonly kind: KbdKind
 }
 
 export const kbdFixtures: Readonly<[KbdFixture, ...Array<KbdFixture>]> = [
@@ -41,96 +41,109 @@ export const kbdFixtures: Readonly<[KbdFixture, ...Array<KbdFixture>]> = [
     kind: 'inputGroup',
   },
   { title: 'RTL', kind: 'rtl' },
-];
+]
 
-const sq = (value: string): string => value.replaceAll("'", "\\'");
+const sq = (value: string): string => value.replaceAll("'", "\\'")
 
 const kindUsesButton = (kind: KbdKind): boolean =>
-  kind === 'button' || kind === 'tooltip';
-const kindUsesButtonGroup = (kind: KbdKind): boolean => kind === 'tooltip';
-const kindUsesIcon = (kind: KbdKind): boolean => kind === 'inputGroup';
-const kindUsesInputGroup = (kind: KbdKind): boolean => kind === 'inputGroup';
-const kindUsesTooltip = (kind: KbdKind): boolean => kind === 'tooltip';
-const kindUsesInput = (kind: KbdKind): boolean => kind === 'inputGroup';
+  kind === 'button' || kind === 'tooltip'
+const kindUsesButtonGroup = (kind: KbdKind): boolean => kind === 'tooltip'
+const kindUsesIcon = (kind: KbdKind): boolean => kind === 'inputGroup'
+const kindUsesInputGroup = (kind: KbdKind): boolean => kind === 'inputGroup'
+const kindUsesTooltip = (kind: KbdKind): boolean => kind === 'tooltip'
+const kindUsesInput = (kind: KbdKind): boolean => kind === 'inputGroup'
 
 const emitImports = (fixture: KbdFixture, isStyleX: boolean): string => {
-  const base = isStyleX ? 'stylex' : 'ui';
+  const base = isStyleX ? 'stylex' : 'ui'
   const parts: Array<string> = [
     "import { Command, Runtime, Subscription, Update } from 'foldkit'",
     "import { type Document, type HtmlBuilder } from 'foldkit/html'",
     "import { defineMessageUnion } from 'foldkit/message'",
-  ];
+  ]
   if (isStyleX) {
-    parts.push('', "import * as stylex from '@stylexjs/stylex'");
+    parts.push('', "import * as stylex from '@stylexjs/stylex'")
   }
   if (kindUsesButton(fixture.kind)) {
-    parts.push(`import * as Button from '@/${base}/button'`);
+    parts.push(`import * as Button from '@/${base}/button'`)
   }
   if (kindUsesButtonGroup(fixture.kind)) {
-    parts.push(`import * as ButtonGroup from '@/${base}/button-group'`);
+    parts.push(`import * as ButtonGroup from '@/${base}/button-group'`)
   }
   if (kindUsesIcon(fixture.kind)) {
-    parts.push(`import * as Icon from '@/lib/icon'`);
+    parts.push(`import * as Icon from '@/lib/icon'`)
   }
   if (kindUsesInputGroup(fixture.kind)) {
-    parts.push(`import * as InputGroup from '@/${base}/input-group'`);
+    parts.push(`import * as InputGroup from '@/${base}/input-group'`)
   }
-  parts.push(`import * as Kbd from '@/${base}/kbd'`);
+  parts.push(`import * as Kbd from '@/${base}/kbd'`)
   if (isStyleX) {
-    parts.push(`import { tokens } from '@/stylex/tokens.stylex'`);
+    parts.push(`import { tokens } from '@/stylex/tokens.stylex'`)
   }
   if (kindUsesTooltip(fixture.kind)) {
-    parts.push(`import * as Tooltip from '@/${base}/tooltip'`);
+    parts.push(`import * as Tooltip from '@/${base}/tooltip'`)
   }
-  return parts.join('\n');
-};
+  return parts.join('\n')
+}
 
 const emitStyles = (fixture: KbdFixture): string => {
-  const extras: Array<string> = [];
-  if (fixture.kind === 'demo' || fixture.kind === 'group' || fixture.kind === 'button') {
-    extras.push("  stack: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' },");
+  const extras: Array<string> = []
+  if (
+    fixture.kind === 'demo' ||
+    fixture.kind === 'group' ||
+    fixture.kind === 'button'
+  ) {
+    extras.push(
+      "  stack: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' },",
+    )
   }
   if (fixture.kind === 'group') {
-    extras.push("  muted: { color: tokens.mutedForeground },");
+    extras.push('  muted: { color: tokens.mutedForeground },')
   }
   if (fixture.kind === 'tooltip') {
-    extras.push("  row: { display: 'flex', flexWrap: 'wrap', gap: '1rem' },");
-    extras.push("  tooltipContent: { display: 'inline-flex', alignItems: 'center', gap: '0.25rem' },");
+    extras.push("  row: { display: 'flex', flexWrap: 'wrap', gap: '1rem' },")
+    extras.push(
+      "  tooltipContent: { display: 'inline-flex', alignItems: 'center', gap: '0.25rem' },",
+    )
   }
   if (fixture.kind === 'inputGroup') {
-    extras.push("  stack: { display: 'flex', flexDirection: 'column', gap: '1.5rem', width: '100%', maxWidth: '20rem' },");
+    extras.push(
+      "  stack: { display: 'flex', flexDirection: 'column', gap: '1.5rem', width: '100%', maxWidth: '20rem' },",
+    )
   }
   if (fixture.kind === 'rtl') {
-    extras.push("  rtlStack: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' },");
+    extras.push(
+      "  rtlStack: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' },",
+    )
   }
-  return extras.join('\n');
-};
+  return extras.join('\n')
+}
 
 const emitModel = (fixture: KbdFixture): string => {
-  const fields: Array<string> = [];
+  const fields: Array<string> = []
   if (kindUsesInput(fixture.kind)) {
-    fields.push('  search: S.String,');
+    fields.push('  search: S.String,')
   }
   if (kindUsesTooltip(fixture.kind)) {
-    fields.push('  tooltipA: Tooltip.Model,');
-    fields.push('  tooltipB: Tooltip.Model,');
+    fields.push('  tooltipA: Tooltip.Model,')
+    fields.push('  tooltipB: Tooltip.Model,')
   }
-  const struct = fields.length === 0
-    ? 'export const Model = S.Struct({})'
-    : `export const Model = S.Struct({\n${fields.join('\n')}\n})`;
-  return `${struct}\nexport type Model = typeof Model.Type`;
-};
+  const struct =
+    fields.length === 0
+      ? 'export const Model = S.Struct({})'
+      : `export const Model = S.Struct({\n${fields.join('\n')}\n})`
+  return `${struct}\nexport type Model = typeof Model.Type`
+}
 
 const emitMessages = (fixture: KbdFixture): string => {
-  const fields: Array<string> = [];
+  const fields: Array<string> = []
   if (kindUsesInput(fixture.kind)) {
-    fields.push('  ChangedSearch: { value: S.String },');
+    fields.push('  ChangedSearch: { value: S.String },')
   }
   if (kindUsesTooltip(fixture.kind)) {
     fields.push(
       '  GotTooltipAMessage: { message: Tooltip.Message },',
       '  GotTooltipBMessage: { message: Tooltip.Message },',
-    );
+    )
   }
   if (fields.length === 0) {
     return `import { taggedStruct } from 'foldkit/schema'
@@ -138,33 +151,33 @@ const emitMessages = (fixture: KbdFixture): string => {
 // closed Message schema so the program boundary remains explicit.
 export const NoOp = taggedStruct('NoOpKbd${fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')}');
 export const Message = S.Union([NoOp])
-export type Message = typeof Message.Type`;
+export type Message = typeof Message.Type`
   }
   return `export const Message = defineMessageUnion({
 ${fields.join('\n')}
 })
-export type Message = typeof Message.Type`;
-};
+export type Message = typeof Message.Type`
+}
 
 const emitInit = (fixture: KbdFixture): string => {
-  const fields: Array<string> = [];
+  const fields: Array<string> = []
   if (kindUsesInput(fixture.kind)) {
-    fields.push("search: ''");
+    fields.push("search: ''")
   }
   if (kindUsesTooltip(fixture.kind)) {
     fields.push(
       "tooltipA: Tooltip.init({ id: 'kbd-tooltip-a', showDelay: 400, closeDelay: 100 })",
       "tooltipB: Tooltip.init({ id: 'kbd-tooltip-b', showDelay: 400, closeDelay: 100 })",
-    );
+    )
   }
-  return `export const init = (): Update.Return<Model, Message> => ({ model: { ${fields.join(', ')} } })`;
-};
+  return `export const init = (): Update.Return<Model, Message> => ({ model: { ${fields.join(', ')} } })`
+}
 
 const emitUpdate = (fixture: KbdFixture): string => {
-  const entries: Array<string> = [];
+  const entries: Array<string> = []
   if (kindUsesInput(fixture.kind)) {
     entries.push(`    case 'ChangedSearch':
-      return { model: { ...model, search: message.value }, commands: [] }`);
+      return { model: { ...model, search: message.value }, commands: [] }`)
   }
   if (kindUsesTooltip(fixture.kind)) {
     entries.push(
@@ -184,24 +197,24 @@ const emitUpdate = (fixture: KbdFixture): string => {
         commands: Command.mapMessages(commands, next => Message.GotTooltipBMessage({ message: next })),
       }
     }`,
-    );
+    )
   }
   if (entries.length === 0) {
     return `export const update = (
   model: Model,
   _message: Message,
-): Update.Return<Model, Message> => ({ model: model })`;
+): Update.Return<Model, Message> => ({ model: model })`
   }
   return `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
 ${entries.join('\n')}
   }
-}`;
-};
+}`
+}
 
 const emitBody = (fixture: KbdFixture, isStyleX: boolean): string => {
   const cls = (twClass: string, sxName: string): string =>
-    isStyleX ? `stylex.props(styles.${sxName}).className ?? ''` : `'${twClass}'`;
+    isStyleX ? `stylex.props(styles.${sxName}).className ?? ''` : `'${twClass}'`
   switch (fixture.kind) {
     case 'demo':
       return `    h.div([h.Class(${cls('flex flex-col items-center gap-4', 'stack')})], [
@@ -220,7 +233,7 @@ const emitBody = (fixture: KbdFixture, isStyleX: boolean): string => {
           Kbd.kbd({ children: ['B'] }, h),
         ],
       }, h),
-    ]),`;
+    ]),`
     case 'group':
       return `    h.div([h.Class(${cls('flex flex-col items-center gap-4', 'stack')})], [
       h.p([h.Class(${cls('text-sm text-muted-foreground', 'muted')})], [
@@ -233,7 +246,7 @@ const emitBody = (fixture: KbdFixture, isStyleX: boolean): string => {
         }, h),
         ' to open the command palette',
       ]),
-    ]),`;
+    ]),`
     case 'button':
       return `    h.div([h.Class(${cls('flex flex-col items-center gap-4', 'stack')})], [
       Button.button({
@@ -247,7 +260,7 @@ const emitBody = (fixture: KbdFixture, isStyleX: boolean): string => {
           }, h),
         ],
       }, h),
-    ]),`;
+    ]),`
     case 'tooltip':
       return `    h.div([h.Class(${cls('flex flex-wrap gap-4', 'row')})], [
       ButtonGroup.buttonGroup({
@@ -286,7 +299,7 @@ const emitBody = (fixture: KbdFixture, isStyleX: boolean): string => {
           }, h),
         ],
       }, h),
-    ]),`;
+    ]),`
     case 'inputGroup':
       return `    h.div([h.Class(${cls('flex w-full max-w-xs flex-col gap-6', 'stack')})], [
       InputGroup.inputGroup({
@@ -310,7 +323,7 @@ const emitBody = (fixture: KbdFixture, isStyleX: boolean): string => {
           }, h),
         ],
       }, h),
-    ]),`;
+    ]),`
     case 'rtl':
       return `    h.div(
       [
@@ -334,24 +347,31 @@ const emitBody = (fixture: KbdFixture, isStyleX: boolean): string => {
           ],
         }, h),
       ],
-    ),`;
+    ),`
   }
-};
+}
 
-const emitApplication = (fixture: KbdFixture, renderer: 'tailwind' | 'stylex'): string => {
-  const isStyleX = renderer === 'stylex';
-  const stylesBlock = isStyleX ? emitStyles(fixture) : '';
+const emitApplication = (
+  fixture: KbdFixture,
+  renderer: 'tailwind' | 'stylex',
+): string => {
+  const isStyleX = renderer === 'stylex'
+  const stylesBlock = isStyleX ? emitStyles(fixture) : ''
   const bodyStart = isStyleX
     ? `h.main([h.Class(stylex.props(styles.page).className ?? '')], [`
-    : `h.main([h.Class('flex min-h-screen items-center justify-center p-4')], [`;
+    : `h.main([h.Class('flex min-h-screen items-center justify-center p-4')], [`
   const pageStyle = isStyleX
     ? `const styles = stylex.create({
-  page: { display: 'flex', minHeight: '100vh', alignItems: 'center', justifyContent: 'center', padding: '1rem' },${stylesBlock === '' ? '' : `
-${stylesBlock}`}
+  page: { display: 'flex', minHeight: '100vh', alignItems: 'center', justifyContent: 'center', padding: '1rem' },${
+    stylesBlock === ''
+      ? ''
+      : `
+${stylesBlock}`
+  }
 })
 
 `
-    : '';
+    : ''
   return foldkitApplication({
     title: `Kbd — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'\n${emitImports(fixture, isStyleX)}\n\n${pageStyle}`,
@@ -365,8 +385,8 @@ ${stylesBlock}`}
     ${emitBody(fixture, isStyleX)}
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const kbdExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -378,4 +398,4 @@ export const kbdExamples = (
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer),
-  }));
+  }))

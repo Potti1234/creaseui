@@ -5,8 +5,20 @@ import { interactionTokens } from '../interaction-tokens.stylex.const'
 import { tokens } from '../tokens.stylex'
 
 export const styles = stylex.create({
-  root: { gap: '1rem', display: 'flex', flexDirection: 'column', minWidth: 0, width: '100%', },
-  toolbar: { gap: '0.75rem', alignItems: 'center', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', },
+  root: {
+    gap: '1rem',
+    display: 'flex',
+    flexDirection: 'column',
+    minWidth: 0,
+    width: '100%',
+  },
+  toolbar: {
+    gap: '0.75rem',
+    alignItems: 'center',
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
   filter: {
     borderColor: { default: tokens.input, ':focus-visible': tokens.ring },
     borderRadius: tokens.controlRadius,
@@ -14,14 +26,22 @@ export const styles = stylex.create({
     borderWidth: 1,
     paddingInline: '0.75rem',
     backgroundColor: tokens.transparent,
-    boxShadow: { default: tokens.shadowSm, ':focus-visible': tokens.focusRingShadow },
+    boxShadow: {
+      default: tokens.shadowSm,
+      ':focus-visible': tokens.focusRingShadow,
+    },
     fontSize: '0.875rem',
     outlineStyle: 'none',
     height: '2.5rem',
     maxWidth: '24rem',
     width: '100%',
   },
-  summary: { color: tokens.mutedForeground, fontSize: '0.8125rem', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' },
+  summary: {
+    color: tokens.mutedForeground,
+    fontSize: '0.8125rem',
+    fontVariantNumeric: 'tabular-nums',
+    whiteSpace: 'nowrap',
+  },
   shell: {
     borderColor: tokens.border,
     borderRadius: tokens.cardRadius,
@@ -60,19 +80,28 @@ export const styles = stylex.create({
     color: { default: tokens.mutedForeground, ':hover': tokens.foreground },
     cursor: interactionTokens.cursorAction,
     display: 'inline-flex',
-    outlineColor: { default: tokens.transparent, ':focus-visible': tokens.ring },
+    outlineColor: {
+      default: tokens.transparent,
+      ':focus-visible': tokens.ring,
+    },
     outlineStyle: { default: 'none', ':focus-visible': 'solid' },
     outlineWidth: { default: 0, ':focus-visible': 2 },
-    transform: { default: 'scale(1)', ':active': interactionTokens.pressTransformTactile },
+    transform: {
+      default: 'scale(1)',
+      ':active': interactionTokens.pressTransformTactile,
+    },
     transitionDuration: interactionTokens.motionFast,
     transitionProperty: 'color, transform',
     minHeight: '2.5rem',
   },
   sortIcon: { height: '0.875rem', width: '0.875rem' },
-  viewport: { overscrollBehavior: 'contain', height: '26rem', },
+  viewport: { overscrollBehavior: 'contain', height: '26rem' },
   row: {
     alignItems: 'center',
-    backgroundColor: { default: tokens.transparent, ':hover': complexTokens.mutedSurface },
+    backgroundColor: {
+      default: tokens.transparent,
+      ':hover': complexTokens.mutedSurface,
+    },
     display: 'grid',
     transitionDuration: interactionTokens.motionFast,
     transitionProperty: 'background-color',
@@ -82,9 +111,21 @@ export const styles = stylex.create({
     height: '100%',
   },
   rowSelected: { backgroundColor: complexTokens.mutedSurface },
-  cell: { overflow: 'hidden', paddingInline: '0.75rem', fontSize: '0.8125rem', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: 0, },
+  cell: {
+    overflow: 'hidden',
+    paddingInline: '0.75rem',
+    fontSize: '0.8125rem',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    minWidth: 0,
+  },
   numeric: { fontVariantNumeric: 'tabular-nums' },
-  selectionCell: { padding: 0, alignItems: 'center', display: 'flex', justifyContent: 'center', },
+  selectionCell: {
+    padding: 0,
+    alignItems: 'center',
+    display: 'flex',
+    justifyContent: 'center',
+  },
   selectionButton: {
     padding: 0,
     borderWidth: 0,
@@ -108,8 +149,17 @@ export const styles = stylex.create({
     height: '1rem',
     width: '1rem',
   },
-  selectionBoxChecked: { borderColor: tokens.primary, backgroundColor: tokens.primary, },
+  selectionBoxChecked: {
+    borderColor: tokens.primary,
+    backgroundColor: tokens.primary,
+  },
   selectionIcon: { height: '0.75rem', width: '0.75rem' },
-  empty: { alignItems: 'center', color: tokens.mutedForeground, display: 'flex', fontSize: '0.875rem', justifyContent: 'center', height: '8rem', },
+  empty: {
+    alignItems: 'center',
+    color: tokens.mutedForeground,
+    display: 'flex',
+    fontSize: '0.875rem',
+    justifyContent: 'center',
+    height: '8rem',
+  },
 })
-

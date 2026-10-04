@@ -1,35 +1,33 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { staticComponentApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 export type ListExampleKind =
   | 'showcase'
   | 'basic'
   | 'bulleted'
   | 'messageList'
-  | 'ordered';
+  | 'ordered'
 
 export type ListItemSpec = Readonly<{
-  label: string;
-  description?: string;
-  initials?: string;
-  badge?: string;
-}>;
+  label: string
+  description?: string
+  initials?: string
+  badge?: string
+}>
 
 export type ListFixture = Readonly<{
-  title: string;
-  description?: string;
-  kind: ListExampleKind;
-  listStyle?: 'none' | 'disc' | 'decimal';
-  hasDividers?: boolean;
-  items: ReadonlyArray<ListItemSpec>;
-}>;
+  title: string
+  description?: string
+  kind: ListExampleKind
+  listStyle?: 'none' | 'disc' | 'decimal'
+  hasDividers?: boolean
+  items: ReadonlyArray<ListItemSpec>
+}>
 
 /* Example set ported from Meta Astryx
    packages/cli/assets/templates/blocks/components/List/*.tsx — same demos,
    same labels and copy. */
-export const listFixtures: Readonly<
-  [ListFixture, ...Array<ListFixture>]
-> = [
+export const listFixtures: Readonly<[ListFixture, ...Array<ListFixture>]> = [
   {
     title: 'List',
     description: 'Simple list of settings with labels and descriptions.',
@@ -104,36 +102,34 @@ export const listFixtures: Readonly<
       { label: 'Start building', description: 'Use components in your app' },
     ],
   },
-];
+]
 
 const itemSource = (item: ListItemSpec): string => {
-  const props: string[] = [`label: '${item.label.replace(/'/g, "\\'")}'`];
+  const props: string[] = [`label: '${item.label.replace(/'/g, "\\'")}'`]
   if (item.description !== undefined) {
-    props.push(`description: '${item.description.replace(/'/g, "\\'")}'`);
+    props.push(`description: '${item.description.replace(/'/g, "\\'")}'`)
   }
   if (item.initials !== undefined) {
     props.push(
       `startContent: Avatar.avatar({ children: [Avatar.avatarFallback({ children: ['${item.initials}'] }, h)] }, h)`,
       'onClick: NoOp()',
-    );
+    )
   }
   if (item.badge !== undefined) {
-    props.push(
-      `endContent: Badge.badge({ children: ['${item.badge}'] }, h)`,
-    );
+    props.push(`endContent: Badge.badge({ children: ['${item.badge}'] }, h)`)
   }
-  return `List.listItem({\n        ${props.join(',\n        ')}\n      }, h)`;
-};
+  return `List.listItem({\n        ${props.join(',\n        ')}\n      }, h)`
+}
 
 const viewBody = (fixture: ListFixture): string => {
-  const listProps: string[] = [];
+  const listProps: string[] = []
   if (fixture.listStyle !== undefined) {
-    listProps.push(`listStyle: '${fixture.listStyle}'`);
+    listProps.push(`listStyle: '${fixture.listStyle}'`)
   }
   if (fixture.hasDividers === true) {
-    listProps.push('hasDividers: true');
+    listProps.push('hasDividers: true')
   }
-  const items = fixture.items.map(itemSource).join(',\n      ');
+  const items = fixture.items.map(itemSource).join(',\n      ')
   return `List.list(
       {
         children: [
@@ -141,30 +137,28 @@ const viewBody = (fixture: ListFixture): string => {
         ]${listProps.length === 0 ? '' : `,\n        ${listProps.join(',\n        ')}`}
       },
       h,
-    )`;
-};
+    )`
+}
 
 const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
-  const fixture = listFixtures[index] ?? listFixtures[0];
-  const base = renderer === 'stylex' ? 'stylex' : 'ui';
-  const imports: string[] = [];
+  const fixture = listFixtures[index] ?? listFixtures[0]
+  const base = renderer === 'stylex' ? 'stylex' : 'ui'
+  const imports: string[] = []
   if (fixture.kind === 'messageList') {
     imports.push(
       `import * as Avatar from '@/${base}/avatar'`,
       `import * as Badge from '@/${base}/badge'`,
-    );
+    )
   }
   return staticComponentApplication({
     componentName: 'List',
     componentSlug: 'list',
     renderer,
     exampleName: fixture.title,
-    ...(imports.length === 0
-      ? {}
-      : { componentImports: imports.join('\n') }),
+    ...(imports.length === 0 ? {} : { componentImports: imports.join('\n') }),
     viewBody: viewBody(fixture),
-  });
-};
+  })
+}
 
 export const listExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -175,4 +169,4 @@ export const listExamples = (
       ? {}
       : { description: fixture.description }),
     code: source(index, renderer),
-  }));
+  }))

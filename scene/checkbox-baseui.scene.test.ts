@@ -39,27 +39,36 @@ const initialModel = (checked = false): Model => ({
 const update = (model: Model, message: Message): { model: Model } => {
   switch (message._tag) {
     case 'Toggled':
-      return { model: { ...model, checked: message.checked, lastToggle: message.checked } }
+      return {
+        model: {
+          ...model,
+          checked: message.checked,
+          lastToggle: message.checked,
+        },
+      }
     case 'SetChecked':
       return { model: { ...model, checked: message.checked } }
   }
 }
 
 type CheckboxModule = Readonly<{
-  checkbox: <Msg>(props: {
-    id: string
-    isChecked: boolean
-    onToggle: (checked: boolean) => Msg
-    label?: Html | string
-    description?: Html | string
-    isDisabled?: boolean
-    isReadOnly?: boolean
-    isInvalid?: boolean
-    isIndeterminate?: boolean
-    name?: string
-    value?: string
-    class?: string
-  }, h: HtmlBuilder<Msg>) => Html
+  checkbox: <Msg>(
+    props: {
+      id: string
+      isChecked: boolean
+      onToggle: (checked: boolean) => Msg
+      label?: Html | string
+      description?: Html | string
+      isDisabled?: boolean
+      isReadOnly?: boolean
+      isInvalid?: boolean
+      isIndeterminate?: boolean
+      name?: string
+      value?: string
+      class?: string
+    },
+    h: HtmlBuilder<Msg>,
+  ) => Html
 }>
 
 const checkboxControl = Scene.role('checkbox', { name: 'Accept terms' })
@@ -178,24 +187,30 @@ const verifyRenderer = (name: string, Checkbox: CheckboxModule) => {
           {
             update,
             view: (model, h) =>
-              h.div([], [
-                h.button(
-                  [
-                    h.Type('button'),
-                    h.OnClick({ _tag: 'SetChecked', checked: !model.checked }),
-                  ],
-                  ['Toggle'],
-                ),
-                Checkbox.checkbox(
-                  {
-                    id: 'terms',
-                    isChecked: model.checked,
-                    onToggle: checked => ({ _tag: 'Toggled', checked }),
-                    label: 'Accept terms',
-                  },
-                  h,
-                ),
-              ]),
+              h.div(
+                [],
+                [
+                  h.button(
+                    [
+                      h.Type('button'),
+                      h.OnClick({
+                        _tag: 'SetChecked',
+                        checked: !model.checked,
+                      }),
+                    ],
+                    ['Toggle'],
+                  ),
+                  Checkbox.checkbox(
+                    {
+                      id: 'terms',
+                      isChecked: model.checked,
+                      onToggle: checked => ({ _tag: 'Toggled', checked }),
+                      label: 'Accept terms',
+                    },
+                    h,
+                  ),
+                ],
+              ),
           },
           Scene.given(initialModel()),
           Scene.expect(checkboxControl).toHaveAttr('aria-checked', 'false'),
@@ -336,7 +351,9 @@ const verifyRenderer = (name: string, Checkbox: CheckboxModule) => {
           // Neither control nor label carry interaction handlers.
           Scene.expect(checkboxControl).not.toHaveHandler('click'),
           Scene.expect(checkboxControl).not.toHaveHandler('keyup'),
-          Scene.expect(Scene.selector('#terms-label')).not.toHaveHandler('click'),
+          Scene.expect(Scene.selector('#terms-label')).not.toHaveHandler(
+            'click',
+          ),
           Scene.expect(checkboxControl).toHaveAttr('aria-checked', 'false'),
         )
       })
@@ -364,17 +381,18 @@ const verifyRenderer = (name: string, Checkbox: CheckboxModule) => {
     })
 
     describe('prop: indeterminate', () => {
-      const indeterminateView = (Checkbox: CheckboxModule) => (model: Model, h: HtmlBuilder<Message>) =>
-        Checkbox.checkbox(
-          {
-            id: 'selection',
-            isChecked: model.checked,
-            onToggle: checked => ({ _tag: 'Toggled', checked }),
-            label: 'Accept terms',
-            isIndeterminate: true,
-          },
-          h,
-        )
+      const indeterminateView =
+        (Checkbox: CheckboxModule) => (model: Model, h: HtmlBuilder<Message>) =>
+          Checkbox.checkbox(
+            {
+              id: 'selection',
+              isChecked: model.checked,
+              onToggle: checked => ({ _tag: 'Toggled', checked }),
+              label: 'Accept terms',
+              isIndeterminate: true,
+            },
+            h,
+          )
 
       it('sets aria-checked to "mixed" and marks the control data-indeterminate', () => {
         Scene.scene(

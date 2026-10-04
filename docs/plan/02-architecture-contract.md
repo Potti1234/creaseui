@@ -259,4 +259,3 @@ slot and state contract.
 - raw Radix selectors without equivalent Foldkit state;
 - a stateful label in metadata without a branded Submodel view or explicit recipe
   classification.
-

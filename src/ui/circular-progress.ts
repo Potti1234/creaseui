@@ -1,21 +1,31 @@
-import { Progress as ProgressPrimitive } from '@foldkit/ui';
-import type { Attribute, Html, HtmlBuilder } from 'foldkit/html';
+import { Progress as ProgressPrimitive } from '@foldkit/ui'
+import type { Attribute, Html, HtmlBuilder } from 'foldkit/html'
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils'
 
 /* Ported from Meta Astryx CircularProgress (packages/lab/src/CircularProgress/CircularProgress.tsx) —
    examples and visual spec adapted to Crease UI tokens. The indeterminate
    dash/rotation keyframes live in src/styles.css as
    @keyframes circular-progress-rotate / circular-progress-dash. */
 
-export type CircularProgressVariant = 'accent' | 'success' | 'warning' | 'error' | 'neutral';
-export type CircularProgressSize = 'sm' | 'md' | 'lg';
+export type CircularProgressVariant =
+  | 'accent'
+  | 'success'
+  | 'warning'
+  | 'error'
+  | 'neutral'
+export type CircularProgressSize = 'sm' | 'md' | 'lg'
 
-const SIZE_CONFIG: Readonly<Record<CircularProgressSize, Readonly<{ diameter: number; strokeWidth: number }>>> = {
+const SIZE_CONFIG: Readonly<
+  Record<
+    CircularProgressSize,
+    Readonly<{ diameter: number; strokeWidth: number }>
+  >
+> = {
   sm: { diameter: 32, strokeWidth: 3 },
   md: { diameter: 48, strokeWidth: 4 },
   lg: { diameter: 64, strokeWidth: 5 },
-};
+}
 
 const FILL_VARIANT_CLASS: Readonly<Record<CircularProgressVariant, string>> = {
   accent: 'stroke-primary',
@@ -23,7 +33,7 @@ const FILL_VARIANT_CLASS: Readonly<Record<CircularProgressVariant, string>> = {
   warning: 'stroke-chart-4',
   error: 'stroke-destructive',
   neutral: 'stroke-muted-foreground',
-};
+}
 
 const TRACK_VARIANT_CLASS: Readonly<Record<CircularProgressVariant, string>> = {
   accent: 'stroke-primary/20',
@@ -31,72 +41,75 @@ const TRACK_VARIANT_CLASS: Readonly<Record<CircularProgressVariant, string>> = {
   warning: 'stroke-chart-4/20',
   error: 'stroke-destructive/20',
   neutral: 'stroke-muted',
-};
+}
 
 export type CircularProgressProps = Readonly<{
   /** Current value. Ignored when isIndeterminate is true. */
-  value?: number;
+  value?: number
   /** Maximum value. */
-  max?: number;
+  max?: number
   /** Accessible label for the progress indicator. Required for a11y. */
-  label: string;
+  label: string
   /** When true (default), the label is visually hidden but stays accessible. */
-  isLabelHidden?: boolean;
+  isLabelHidden?: boolean
   /** Shows the formatted value in the center of the ring. */
-  hasValueLabel?: boolean;
+  hasValueLabel?: boolean
   /** Custom formatter for the value label; defaults to a percentage string. */
-  formatValueLabel?: (value: number, max: number) => string;
+  formatValueLabel?: (value: number, max: number) => string
   /** Center content; takes precedence over hasValueLabel. */
-  children?: ReadonlyArray<Html>;
-  size?: CircularProgressSize;
-  variant?: CircularProgressVariant;
+  children?: ReadonlyArray<Html>
+  size?: CircularProgressSize
+  variant?: CircularProgressVariant
   /** Animated spinning indicator for unknown progress. */
-  isIndeterminate?: boolean;
+  isIndeterminate?: boolean
   /** Grays out the ring and text for canceled or inactive operations. */
-  isDisabled?: boolean;
+  isDisabled?: boolean
   /** Element id used to wire the label's aria-labelledby relationship. */
-  id?: string;
-  class?: string;
-}>;
+  id?: string
+  class?: string
+}>
 
 const defaultFormatValueLabel = (value: number, max: number): string =>
-  `${max > 0 ? Math.round((value / max) * 100) : 0}%`;
+  `${max > 0 ? Math.round((value / max) * 100) : 0}%`
 
 export const circularProgress = <Msg>(
   props: CircularProgressProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const size = props.size ?? 'md';
-  const variant = props.variant ?? 'accent';
-  const isIndeterminate = props.isIndeterminate === true;
-  const isDisabled = props.isDisabled === true;
-  const { diameter, strokeWidth } = SIZE_CONFIG[size];
-  const radius = (diameter - strokeWidth) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const center = diameter / 2;
+  const size = props.size ?? 'md'
+  const variant = props.variant ?? 'accent'
+  const isIndeterminate = props.isIndeterminate === true
+  const isDisabled = props.isDisabled === true
+  const { diameter, strokeWidth } = SIZE_CONFIG[size]
+  const radius = (diameter - strokeWidth) / 2
+  const circumference = 2 * Math.PI * radius
+  const center = diameter / 2
 
-  const rawValue = props.value ?? 0;
-  const safeValue = Number.isFinite(rawValue) ? rawValue : 0;
-  const rawMax = props.max ?? 100;
-  const safeMax = Number.isFinite(rawMax) ? rawMax : 0;
-  const clampedValue = Math.min(Math.max(0, safeValue), safeMax);
-  const percentage = safeMax > 0 ? clampedValue / safeMax : 0;
-  const dashoffset = circumference * (1 - percentage);
-  const formatValueLabel = props.formatValueLabel ?? defaultFormatValueLabel;
-  const valueText = formatValueLabel(clampedValue, safeMax);
+  const rawValue = props.value ?? 0
+  const safeValue = Number.isFinite(rawValue) ? rawValue : 0
+  const rawMax = props.max ?? 100
+  const safeMax = Number.isFinite(rawMax) ? rawMax : 0
+  const clampedValue = Math.min(Math.max(0, safeValue), safeMax)
+  const percentage = safeMax > 0 ? clampedValue / safeMax : 0
+  const dashoffset = circumference * (1 - percentage)
+  const formatValueLabel = props.formatValueLabel ?? defaultFormatValueLabel
+  const valueText = formatValueLabel(clampedValue, safeMax)
 
-  const showLabel = props.isLabelHidden !== true;
-  const showValueLabel = props.hasValueLabel === true && !isIndeterminate;
-  const hasCenterContent = props.children !== undefined && props.children.length > 0;
-  const labelId = props.id === undefined ? undefined : ProgressPrimitive.labelId(props.id);
+  const showLabel = props.isLabelHidden !== true
+  const showValueLabel = props.hasValueLabel === true && !isIndeterminate
+  const hasCenterContent =
+    props.children !== undefined && props.children.length > 0
+  const labelId =
+    props.id === undefined ? undefined : ProgressPrimitive.labelId(props.id)
 
-  const fillVariant = isDisabled ? 'neutral' : variant;
-  const trackVariant = isDisabled ? 'neutral' : variant;
+  const fillVariant = isDisabled ? 'neutral' : variant
+  const trackVariant = isDisabled ? 'neutral' : variant
 
   // The root div already owns the element id; the svg carries the
   // progressbar semantics, so drop the duplicated Id attribute.
-  const svgProgressAttributes = (attrs: ReadonlyArray<Attribute<Msg>>): ReadonlyArray<Attribute<Msg>> =>
-    attrs.filter((attr) => attr._tag !== 'Id');
+  const svgProgressAttributes = (
+    attrs: ReadonlyArray<Attribute<Msg>>,
+  ): ReadonlyArray<Attribute<Msg>> => attrs.filter(attr => attr._tag !== 'Id')
 
   const svgAttrs = (attrs: ReadonlyArray<Attribute<Msg>>) => [
     ...svgProgressAttributes(attrs),
@@ -108,7 +121,7 @@ export const circularProgress = <Msg>(
         ? 'block animate-[circular-progress-rotate_2s_linear_infinite] motion-reduce:animate-[circular-progress-rotate_4s_linear_infinite]'
         : 'block -rotate-90',
     ),
-  ];
+  ]
 
   const trackCircle = h.circle(
     [
@@ -121,7 +134,7 @@ export const circularProgress = <Msg>(
       h.StrokeWidth(String(strokeWidth)),
     ],
     [],
-  );
+  )
 
   const fillCircle = isIndeterminate
     ? h.circle(
@@ -163,14 +176,17 @@ export const circularProgress = <Msg>(
           h.StrokeDashoffset(String(dashoffset)),
         ],
         [],
-      );
+      )
 
   return h.div(
     [
       h.DataAttribute('slot', 'circular-progress'),
       h.DataAttribute('variant', variant),
       h.DataAttribute('size', size),
-      h.DataAttribute('state', isIndeterminate ? 'indeterminate' : 'determinate'),
+      h.DataAttribute(
+        'state',
+        isIndeterminate ? 'indeterminate' : 'determinate',
+      ),
       h.Class(
         cn(
           'relative inline-flex shrink-0 items-center justify-center',
@@ -215,7 +231,11 @@ export const circularProgress = <Msg>(
           ...(hasCenterContent || showValueLabel
             ? [
                 h.div(
-                  [h.Class('pointer-events-none absolute inset-0 flex items-center justify-center')],
+                  [
+                    h.Class(
+                      'pointer-events-none absolute inset-0 flex items-center justify-center',
+                    ),
+                  ],
                   hasCenterContent
                     ? [...(props.children ?? [])]
                     : [
@@ -237,5 +257,5 @@ export const circularProgress = <Msg>(
         ],
       ),
     ],
-  );
-};
+  )
+}

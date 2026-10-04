@@ -18,10 +18,16 @@ test('next advances until the last step, then completes', () => {
   assert.equal(one.model.activeStepIndex, 1)
   assert.equal(one.outMessage, undefined)
 
-  const two = Tour.update(one.model, Tour.Message.RequestedNext({ stepCount: 3 }))
+  const two = Tour.update(
+    one.model,
+    Tour.Message.RequestedNext({ stepCount: 3 }),
+  )
   assert.equal(two.model.activeStepIndex, 2)
 
-  const done = Tour.update(two.model, Tour.Message.RequestedNext({ stepCount: 3 }))
+  const done = Tour.update(
+    two.model,
+    Tour.Message.RequestedNext({ stepCount: 3 }),
+  )
   assert.equal(done.model.activeStepIndex, 2)
   if (done.outMessage?._tag === 'DismissedTour') {
     assert.equal(done.outMessage.source, 'complete')
@@ -49,9 +55,18 @@ test('previous stays at zero and dismiss reports its source', () => {
 test('step changes clear the measured target rect', () => {
   const model = {
     ...Tour.activate(Tour.init()).model,
-    targetRect: Option.some({ top: 1, left: 2, width: 3, height: 4, borderRadius: '4px' }),
+    targetRect: Option.some({
+      top: 1,
+      left: 2,
+      width: 3,
+      height: 4,
+      borderRadius: '4px',
+    }),
   }
-  const advanced = Tour.update(model, Tour.Message.RequestedNext({ stepCount: 3 })).model
+  const advanced = Tour.update(
+    model,
+    Tour.Message.RequestedNext({ stepCount: 3 }),
+  ).model
   assert.equal(Option.isNone(advanced.targetRect), true)
 })
 

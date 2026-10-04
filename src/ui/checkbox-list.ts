@@ -40,21 +40,24 @@ const itemVisuals = <Msg>(
 ): CheckboxListItemVisualAttributes<Msg> => {
   const size = density === 'compact' ? 'sm' : 'md'
   return {
-    root: (state) => [
+    root: state => [
       h.Class(
         cn(
           'group/item relative flex items-center gap-2 px-2 text-sm',
           densityPadding[density],
           density === 'spacious' && 'px-3',
           'rounded-lg',
-          state.isInteractive && 'cursor-pointer transition-colors duration-150',
+          state.isInteractive &&
+            'cursor-pointer transition-colors duration-150',
           state.isInteractive && !state.checked && 'hover:bg-accent',
-          state.checked && !state.isDisabled && 'bg-primary/20 hover:bg-primary/25',
+          state.checked &&
+            !state.isDisabled &&
+            'bg-primary/20 hover:bg-primary/25',
           state.isDisabled && 'pointer-events-none',
         ),
       ),
     ],
-    control: (state) => [
+    control: state => [
       h.Class(
         cn(
           'relative flex shrink-0 items-center justify-center rounded-[4px] border outline-none transition-[background-color,border-color,box-shadow] duration-150',
@@ -115,7 +118,10 @@ const checkIndicator = <Msg>(
   }
   return Icon.check(
     {
-      class: cn(size === 'sm' ? 'size-3' : 'size-4', state.checked ? '' : 'opacity-0'),
+      class: cn(
+        size === 'sm' ? 'size-3' : 'size-4',
+        state.checked ? '' : 'opacity-0',
+      ),
     },
     h,
   )
@@ -157,7 +163,7 @@ export const checkboxList = <Msg>(
   const visuals = itemVisuals(density, props.isDisabled === true, h)
   const visualWithDividers: CheckboxListItemVisualAttributes<Msg> = {
     ...visuals,
-    root: (state) => [
+    root: state => [
       ...visuals.root(state),
       h.Class(
         cn(
@@ -194,7 +200,7 @@ export const checkboxList = <Msg>(
       ],
       divider: [h.Class('mx-2 h-px bg-border')],
       status: {
-        root: (type) => [
+        root: type => [
           h.Class(
             cn(
               'mt-1 flex items-start gap-1 rounded-lg p-2 text-xs leading-5',
@@ -221,7 +227,11 @@ export const checkboxList = <Msg>(
           isReadOnly: props.isReadOnly,
         },
       ),
-    Icon.icon(statusIconName(props.status?.type ?? 'error'), { class: 'size-3' }, h),
+    Icon.icon(
+      statusIconName(props.status?.type ?? 'error'),
+      { class: 'size-3' },
+      h,
+    ),
     h,
   )
 }

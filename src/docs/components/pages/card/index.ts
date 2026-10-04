@@ -1,6 +1,6 @@
-import { authoredPage } from '@/docs/components/pages/authored-page';
-import { cardExamples } from '@/docs/components/pages/card/shared';
-import { cardTailwindPreviewProgram } from '@/docs/components/pages/card/tailwind';
+import { authoredPage } from '@/docs/components/pages/authored-page'
+import { cardExamples } from '@/docs/components/pages/card/shared'
+import { cardTailwindPreviewProgram } from '@/docs/components/pages/card/tailwind'
 
 export const cardPage = authoredPage({
   slug: 'card',
@@ -23,4 +23,4 @@ export const cardPage = authoredPage({
     examples: cardExamples('tailwind'),
     stylexExamples: cardExamples('stylex'),
   },
-});
+})

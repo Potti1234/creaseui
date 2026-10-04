@@ -1,43 +1,43 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type OverflowItemSpec =
   | Readonly<{
-      kind: 'button';
-      label: string;
+      kind: 'button'
+      label: string
       /** astryx variant="primary" → crease 'default'; otherwise 'secondary'. */
-      variant?: 'primary' | 'destructive';
+      variant?: 'primary' | 'destructive'
     }>
   | Readonly<{
-      kind: 'badge';
-      label: string;
+      kind: 'badge'
+      label: string
       /** astryx badge tone — mapped to the nearest crease badge variant. */
-      tone: 'info' | 'success' | 'warning' | 'neutral' | 'error';
-    }>;
+      tone: 'info' | 'success' | 'warning' | 'neutral' | 'error'
+    }>
 
 export type OverflowContainerSpec =
   | Readonly<{ kind: 'frame'; maxWidth: number; dashed: boolean }>
   | Readonly<{
-      kind: 'card';
-      width: number;
-      minWidth?: number;
-      resizable: boolean;
+      kind: 'card'
+      width: number
+      minWidth?: number
+      resizable: boolean
     }>
-  | Readonly<{ kind: 'center'; width: number }>;
+  | Readonly<{ kind: 'center'; width: number }>
 
-export type OverflowIndicatorKind = 'moreButton' | 'moreMenu' | 'badge';
+export type OverflowIndicatorKind = 'moreButton' | 'moreMenu' | 'badge'
 
 export type OverflowListFixture = Readonly<{
-  title: string;
-  description: string;
-  items: ReadonlyArray<OverflowItemSpec>;
-  gap: 1 | 2;
-  maxVisibleItems?: number;
-  maxRows?: number;
-  collapseFrom?: 'start';
-  container: OverflowContainerSpec;
-  indicator: OverflowIndicatorKind;
-}>;
+  title: string
+  description: string
+  items: ReadonlyArray<OverflowItemSpec>
+  gap: 1 | 2
+  maxVisibleItems?: number
+  maxRows?: number
+  collapseFrom?: 'start'
+  container: OverflowContainerSpec
+  indicator: OverflowIndicatorKind
+}>
 
 /* Example set ported from Meta Astryx
    packages/cli/assets/templates/blocks/components/OverflowList/*.tsx +
@@ -148,58 +148,59 @@ export const overflowListFixtures: Readonly<
       { kind: 'button', label: 'Delete', variant: 'destructive' },
     ],
   },
-];
+]
 
 export const badgeToneVariant = (
   tone: 'info' | 'success' | 'warning' | 'neutral' | 'error',
 ): 'default' | 'secondary' | 'outline' | 'ghost' | 'destructive' => {
   switch (tone) {
     case 'info':
-      return 'default';
+      return 'default'
     case 'success':
-      return 'secondary';
+      return 'secondary'
     case 'warning':
-      return 'outline';
+      return 'outline'
     case 'neutral':
-      return 'ghost';
+      return 'ghost'
     case 'error':
-      return 'destructive';
+      return 'destructive'
   }
-};
+}
 
-export const itemLabels = (fixture: OverflowListFixture): ReadonlyArray<string> =>
-  fixture.items.map(item => item.label);
+export const itemLabels = (
+  fixture: OverflowListFixture,
+): ReadonlyArray<string> => fixture.items.map(item => item.label)
 
 // ---------- generated example source ----------
 
 const itemSource = (item: OverflowItemSpec): string => {
   if (item.kind === 'badge') {
-    return `Badge.badge({ variant: '${badgeToneVariant(item.tone)}', children: ['${item.label}'] }, h)`;
+    return `Badge.badge({ variant: '${badgeToneVariant(item.tone)}', children: ['${item.label}'] }, h)`
   }
   const variant =
     item.variant === 'primary'
       ? `'default'`
       : item.variant === 'destructive'
         ? `'destructive'`
-        : `'secondary'`;
-  return `Button.button({ variant: ${variant}, size: 'sm', children: ['${item.label}'] }, h)`;
-};
+        : `'secondary'`
+  return `Button.button({ variant: ${variant}, size: 'sm', children: ['${item.label}'] }, h)`
+}
 
 const indicatorSource = (fixture: OverflowListFixture): string => {
   switch (fixture.indicator) {
     case 'moreButton':
-      return `overflowRenderer: overflowItems => Button.button({ variant: 'ghost', size: 'sm', children: [\`+\${overflowItems.length} more\`] }, h)`;
+      return `overflowRenderer: overflowItems => Button.button({ variant: 'ghost', size: 'sm', children: [\`+\${overflowItems.length} more\`] }, h)`
     case 'badge':
-      return `overflowRenderer: overflowItems => Badge.badge({ variant: 'ghost', children: [\`+\${overflowItems.length}\`] }, h)`;
+      return `overflowRenderer: overflowItems => Badge.badge({ variant: 'ghost', children: [\`+\${overflowItems.length}\`] }, h)`
     case 'moreMenu':
       return `overflowRenderer: overflowItems => MoreMenu.moreMenu({
       model: model.menu,
       toParentMessage: message => GotMenuMessage({ message }),
       icon: h.span([h.Class('text-sm font-medium')], [\`+\${overflowItems.length}\`]),
       items: overflowItems.map(({ index }) => ({ label: items[index] ?? '' })),
-    }, h)`;
+    }, h)`
   }
-};
+}
 
 const containerSource = (
   fixture: OverflowListFixture,
@@ -209,13 +210,13 @@ const containerSource = (
     case 'frame':
       return `h.div([h.Class('rounded-md border border-dashed border-border p-2'), h.Style({ maxWidth: '${String(fixture.container.maxWidth)}px' })], [
       ${inner},
-    ])`;
+    ])`
     case 'center':
       return `h.div([h.Class('mx-auto flex justify-center'), h.Style({ width: '${String(fixture.container.width)}px' })], [
       h.div([h.Class('w-full rounded-lg border bg-card p-2')], [
         ${inner},
       ]),
-    ])`;
+    ])`
     case 'card':
       return `h.div([
       h.Class('rounded-lg border bg-card p-2'),
@@ -228,16 +229,18 @@ const containerSource = (
       }),
     ], [
       ${inner},
-    ])`;
+    ])`
   }
-};
+}
 
 const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
-  const fixture = overflowListFixtures[index] ?? overflowListFixtures[0];
-  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '');
-  const uiDir = renderer === 'stylex' ? 'stylex' : 'ui';
-  const usesBadge = fixture.items.some(item => item.kind === 'badge') || fixture.indicator === 'badge';
-  const usesMenu = fixture.indicator === 'moreMenu';
+  const fixture = overflowListFixtures[index] ?? overflowListFixtures[0]
+  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
+  const uiDir = renderer === 'stylex' ? 'stylex' : 'ui'
+  const usesBadge =
+    fixture.items.some(item => item.kind === 'badge') ||
+    fixture.indicator === 'badge'
+  const usesMenu = fixture.indicator === 'moreMenu'
   const listArgs = [
     'model: model.list',
     'toParentMessage: message => GotListMessage({ message })',
@@ -251,12 +254,10 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
     ...(fixture.collapseFrom === undefined
       ? []
       : [`collapseFrom: '${fixture.collapseFrom}'`]),
-    ...(fixture.container.kind === 'card'
-      ? [`behavior: 'observeParent'`]
-      : []),
+    ...(fixture.container.kind === 'card' ? [`behavior: 'observeParent'`] : []),
     indicatorSource(fixture),
     `children: [\n        ${fixture.items.map(itemSource).join(',\n        ')},\n      ]`,
-  ].join(',\n      ');
+  ].join(',\n      ')
   return foldkitApplication({
     title: `Overflow List — ${fixture.title}`,
     imports: `import { Option, Schema as S } from 'effect'
@@ -266,18 +267,16 @@ import { type Document, type HtmlBuilder } from 'foldkit/html'
 ${usesBadge ? `import * as Badge from '@/${uiDir}/badge'\n` : ''}import * as Button from '@/${uiDir}/button'${usesMenu ? `\nimport * as MoreMenu from '@/${uiDir}/more-menu'` : ''}
 import * as OverflowList from '@/${uiDir}/overflow-list'`,
     model: `export const Model = S.Struct({
-  list: OverflowList.Model,${
-    usesMenu ? '\n  menu: MoreMenu.Model,' : ''
-  }
+  list: OverflowList.Model,${usesMenu ? '\n  menu: MoreMenu.Model,' : ''}
   hiddenCount: S.Number,
 })
 export type Model = typeof Model.Type`,
     messages: `import { taggedStruct } from 'foldkit/schema'
 export const GotListMessage = taggedStruct('GotOverflowListMessage${tag}', { message: OverflowList.Message });${
-    usesMenu
-      ? `\nexport const GotMenuMessage = taggedStruct('GotOverflowMenuMessage${tag}', { message: MoreMenu.Message });`
-      : ''
-  }
+      usesMenu
+        ? `\nexport const GotMenuMessage = taggedStruct('GotOverflowMenuMessage${tag}', { message: MoreMenu.Message });`
+        : ''
+    }
 export const Message = S.Union([GotListMessage${usesMenu ? ', GotMenuMessage' : ''}])
 export type Message = typeof Message.Type`,
     init: `const items = ${JSON.stringify(itemLabels(fixture))} as ReadonlyArray<string>
@@ -285,10 +284,10 @@ export type Message = typeof Message.Type`,
 export const init = (): Update.Return<Model, Message> => ({
   model: {
     list: OverflowList.init({ itemCount: items.length${fixture.collapseFrom === undefined ? '' : `, collapseFrom: '${fixture.collapseFrom}'`} }),${
-    usesMenu
-      ? `\n    menu: MoreMenu.init({ id: 'overflow-menu-${tag.toLowerCase()}', isAnimated: true }),`
-      : ''
-  }
+      usesMenu
+        ? `\n    menu: MoreMenu.init({ id: 'overflow-menu-${tag.toLowerCase()}', isAnimated: true }),`
+        : ''
+    }
     hiddenCount: 0,
   },
 })`,
@@ -311,14 +310,14 @@ export const init = (): Update.Return<Model, Message> => ({
         },
       };
     }${
-    usesMenu
-      ? `
+      usesMenu
+        ? `
     case 'GotOverflowMenuMessage${tag}': {
       const menuOp__ = MoreMenu.update(model.menu, message.message);
       return { model: { ...model, menu: menuOp__.model } };
     }`
-      : ''
-  }
+        : ''
+    }
   }
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
@@ -332,8 +331,8 @@ export const init = (): Update.Return<Model, Message> => ({
     )},
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const overflowListExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -343,4 +342,4 @@ export const overflowListExamples = (
     keepIdsCanonical: index === 0,
     description: fixture.description,
     code: source(index, renderer),
-  }));
+  }))

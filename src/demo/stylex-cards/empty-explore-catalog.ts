@@ -1,8 +1,8 @@
-import type { Html, HtmlBuilder } from "foldkit/html";
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Icon from "@/demo/icon-preview";
-import { button } from "@/stylex/button";
-import { card, cardContent } from "@/stylex/card";
+import * as Icon from '@/demo/icon-preview'
+import { button } from '@/stylex/button'
+import { card, cardContent } from '@/stylex/card'
 import {
   empty,
   emptyContent,
@@ -10,7 +10,7 @@ import {
   emptyHeader,
   emptyMedia,
   emptyTitle,
-} from "@/stylex/empty";
+} from '@/stylex/empty'
 
 export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
   card(
@@ -20,43 +20,41 @@ export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
           {
             children: [
               empty(
-                    {
-                      children: [
-                        emptyMedia(
-                          {
-                            variant: "icon",
-                            children: [Icon.icon("audio-lines", {}, h)],
-                          },
-                          h,
-                        ),
-                        emptyHeader(
-                          {
-                            children: [
-                              emptyTitle({ children: ["Explore Catalog"] }, h),
-                              emptyDescription(
-                                {
-                                  children: [
-                                    "Check your ISRC codes, metadata, and visual assets before going live.",
-                                  ],
-                                },
-                                h,
-                              ),
-                            ],
-                          },
-                          h,
-                        ),
-                        emptyContent(
-                          {
-                            children: [
-                              button({ children: ["View Catalog"] }, h),
-                            ],
-                          },
-                          h,
-                        ),
-                      ],
-                    },
-                    h,
-                  ),
+                {
+                  children: [
+                    emptyMedia(
+                      {
+                        variant: 'icon',
+                        children: [Icon.icon('audio-lines', {}, h)],
+                      },
+                      h,
+                    ),
+                    emptyHeader(
+                      {
+                        children: [
+                          emptyTitle({ children: ['Explore Catalog'] }, h),
+                          emptyDescription(
+                            {
+                              children: [
+                                'Check your ISRC codes, metadata, and visual assets before going live.',
+                              ],
+                            },
+                            h,
+                          ),
+                        ],
+                      },
+                      h,
+                    ),
+                    emptyContent(
+                      {
+                        children: [button({ children: ['View Catalog'] }, h)],
+                      },
+                      h,
+                    ),
+                  ],
+                },
+                h,
+              ),
             ],
           },
           h,
@@ -64,6 +62,6 @@ export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ],
     },
     h,
-  );
+  )
 
 // Card summary: stateful? no. Submodels wired: none. PORT NOTEs: none.

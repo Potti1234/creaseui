@@ -1,23 +1,23 @@
-import { Schema as S } from 'effect';
-import type { HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import { Schema as S } from 'effect'
+import type { HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-import { definePreviewProgram } from '@/docs/components/pages/authored-page';
+import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
   type BadgeItem,
   badgeFixtures,
   badgeTailwindPaletteClass,
-} from '@/docs/components/pages/badge/shared';
-import * as Icon from '@/lib/icon';
-import * as Badge from '@/ui/badge';
-import * as Spinner from '@/ui/spinner';
+} from '@/docs/components/pages/badge/shared'
+import * as Icon from '@/lib/icon'
+import * as Badge from '@/ui/badge'
+import * as Spinner from '@/ui/spinner'
 
 const InteractedWithBadgePreview = defineMessageUnion({
   InteractedWithBadgePreview: {},
-});
-type InteractedWithBadgePreview = typeof InteractedWithBadgePreview.Type;
-const BadgePreviewModel = S.Struct({ _docsPage: S.Literal('badge') });
-type BadgePreviewModel = typeof BadgePreviewModel.Type;
+})
+type InteractedWithBadgePreview = typeof InteractedWithBadgePreview.Type
+const BadgePreviewModel = S.Struct({ _docsPage: S.Literal('badge') })
+type BadgePreviewModel = typeof BadgePreviewModel.Type
 
 const badgeItem = <Msg>(item: BadgeItem, h: HtmlBuilder<Msg>) =>
   Badge.badge(
@@ -27,7 +27,6 @@ const badgeItem = <Msg>(item: BadgeItem, h: HtmlBuilder<Msg>) =>
       ...(item.palette === undefined
         ? {}
         : {
-             
             class: badgeTailwindPaletteClass[item.palette],
           }),
       children: [
@@ -69,7 +68,7 @@ const badgeItem = <Msg>(item: BadgeItem, h: HtmlBuilder<Msg>) =>
       ],
     },
     h,
-  );
+  )
 
 export const badgeTailwindPreviewProgram = definePreviewProgram<
   BadgePreviewModel,
@@ -80,7 +79,7 @@ export const badgeTailwindPreviewProgram = definePreviewProgram<
   init: () => ({ _docsPage: 'badge' }),
   update: model => ({ model: model }),
   view: (index, _model, h) => {
-    const fixture = badgeFixtures[index] ?? badgeFixtures[0];
+    const fixture = badgeFixtures[index] ?? badgeFixtures[0]
     return h.div(
       [
         h.Class(
@@ -91,6 +90,6 @@ export const badgeTailwindPreviewProgram = definePreviewProgram<
         ...(fixture.direction === 'rtl' ? [h.Dir('rtl')] : []),
       ],
       fixture.items.map(item => badgeItem(item, h)),
-    );
+    )
   },
-});
+})

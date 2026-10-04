@@ -73,7 +73,7 @@ const styles = stylex.create({
   labelIndicator: {
     fontSize: '0.75rem',
     fontWeight: 400,
- lineHeight: '1rem',
+    lineHeight: '1rem',
   },
   description: {
     color: tokens.mutedForeground,
@@ -356,362 +356,377 @@ const ids = (id: string) => ({
   required: `${id}-required`,
 })
 
-const view = defineView<Model, Message, FileInputViewInputs>((model, props, h) => {
-  const fieldIds = ids(props.id)
-  const mode = props.mode ?? 'input'
-  const isDropzone = mode === 'dropzone'
-  const files = props.value ?? []
-  const hasFiles = files.length > 0
-  const fileNames = hasFiles ? files.map(file => file.name).join(', ') : null
-  const status =
-    props.status ??
-    (Option.isSome(model.validationError)
-      ? {
-          type: 'error' as const,
-          message: Option.getOrThrow(model.validationError),
-        }
-      : undefined)
-  const labelText = typeof props.label === 'string' ? props.label : 'file'
-  const conveysRequired = props.isRequired === true && props.isOptional !== true
+const view = defineView<Model, Message, FileInputViewInputs>(
+  (model, props, h) => {
+    const fieldIds = ids(props.id)
+    const mode = props.mode ?? 'input'
+    const isDropzone = mode === 'dropzone'
+    const files = props.value ?? []
+    const hasFiles = files.length > 0
+    const fileNames = hasFiles ? files.map(file => file.name).join(', ') : null
+    const status =
+      props.status ??
+      (Option.isSome(model.validationError)
+        ? {
+            type: 'error' as const,
+            message: Option.getOrThrow(model.validationError),
+          }
+        : undefined)
+    const labelText = typeof props.label === 'string' ? props.label : 'file'
+    const conveysRequired =
+      props.isRequired === true && props.isOptional !== true
 
-  const describedBy =
-    [
-      props.description === undefined ? null : fieldIds.description,
-      status?.message !== undefined && props.statusVariant !== 'tooltip'
-        ? fieldIds.status
-        : null,
-      conveysRequired ? fieldIds.required : null,
-    ]
-      .filter(Boolean)
-      .join(' ') || undefined
-
-  const fieldLabel = h.label(
-    [
-      h.For(`${model.fileDrop.id}`),
-      h.Id(fieldIds.label),
-      h.DataAttribute('slot', 'file-input-label'),
-      h.Class(
-        className(
-          styles.label,
-          props.isLabelHidden === true && styles.srOnly,
-          props.isDisabled === true && styles.labelDisabled,
-        ),
-      ),
-    ],
-    [
-      props.label,
-      ...(props.isOptional === true
-        ? [
-            h.span(
-              [
-                h.Attribute('aria-hidden', 'true'),
-                h.Class(className(styles.labelIndicator)),
-              ],
-              [' ∙ Optional'],
-            ),
-          ]
-        : []),
-      ...(conveysRequired
-        ? [
-            h.span(
-              [
-                h.Attribute('aria-hidden', 'true'),
-                h.Class(className(styles.labelIndicator)),
-              ],
-              [' ∙ Required'],
-            ),
-          ]
-        : []),
-    ],
-  )
-
-  const statusIcon =
-    status !== undefined && props.statusVariant === 'tooltip'
-      ? h.button(
-          [
-            h.Type('button'),
-            h.AriaLabel(statusButtonLabel(status.type)),
-            h.Title(status.message ?? ''),
-            h.OnClick(Message.Noop(), {
-              defaultAction: 'Prevent',
-              propagation: 'Stop',
-            }),
-            h.DataAttribute('slot', 'file-input-status-icon'),
-            h.Class(className(styles.statusIconButton)),
-          ],
-          [
-            Icon.icon(statusIconName(status.type), {
-              class: className(
-                styles.statusIconMd,
-                status.type === 'error' && styles.statusIconError,
-                status.type === 'warning' && styles.statusIconWarning,
-                status.type === 'success' && styles.statusIconSuccess,
-              ),
-              ariaLabel: statusButtonLabel(status.type),
-            }, h),
-          ],
-        )
-      : undefined
-
-  const trigger = h.span(
-    [
-      h.Class(className(styles.triggerWrapper)),
-      h.DataAttribute('slot', 'file-input-trigger-wrapper'),
-    ],
-    [
-      h.button(
-        [
-          h.Type('button'),
-          h.Tabindex(props.isDisabled === true ? -1 : 0),
-          h.AriaLabel(
-            hasFiles && fileNames !== null
-              ? `${labelText}, ${fileNames}`
-              : labelText,
-          ),
-          h.AriaBusy(props.isLoading === true),
-          h.AriaInvalid(status?.type === 'error'),
-          ...(describedBy === undefined ? [] : [h.AriaDescribedBy(describedBy)]),
-          h.OnClick(Message.TriggerClicked(), { propagation: 'Stop' }),
-        ],
-        [],
-      ),
-    ],
-  )
-
-  const clearButton =
-    hasFiles && props.isDisabled !== true && props.isLoading !== true
-      ? h.button(
-          [
-            h.Type('button'),
-            h.Tabindex(-1),
-            h.AriaLabel(`Clear ${labelText}`),
-            h.OnClick(Message.ClearRequested(), {
-              defaultAction: 'Prevent',
-              propagation: 'Stop',
-            }),
-            h.DataAttribute('slot', 'file-input-clear'),
-            h.Class(className(styles.clearButton)),
-          ],
-          [Icon.x({ class: className(styles.iconXs) }, h)],
-        )
-      : undefined
-
-  const dropzoneContent =
-    props.isLoading === true
-      ? [
-          Icon.loaderCircle({
-            class: className(styles.spinner, styles.iconMd),
-          }, h),
-        ]
-      : hasFiles
-        ? [
-            h.div(
-              [
-                h.DataAttribute('slot', 'file-input-names'),
-                h.Class(className(styles.namesDropzone)),
-              ],
-              [fileNames ?? ''],
-            ),
-          ]
-        : [
-            Icon.arrowUp({ class: className(styles.iconMd) }, h),
-            h.span(
-              [
-                h.DataAttribute('slot', 'file-input-placeholder'),
-                h.Class(className(styles.placeholderText)),
-              ],
-              [
-                model.fileDrop.isDragOver
-                  ? (props.dropHint ?? 'Drop files here')
-                  : (props.placeholder ??
-                    (model.isMultiple ? 'Choose files' : 'Choose file')),
-              ],
-            ),
-          ]
-
-  const compactContent =
-    props.isLoading === true
-      ? [
-          h.span(
-            [
-              h.DataAttribute('slot', 'file-input-names'),
-              h.Class(
-                className(
-                  hasFiles ? styles.namesCompact : styles.placeholderText,
-                  styles.placeholderCompact,
-                ),
-              ),
-            ],
-            [fileNames ?? props.placeholder ?? 'Choose file'],
-          ),
-          Icon.loaderCircle({
-            class: className(styles.spinner, styles.iconSm),
-          }, h),
-        ]
-      : [
-          Icon.arrowUp({ class: className(styles.iconSm) }, h),
-          h.span(
-            [
-              h.DataAttribute('slot', 'file-input-placeholder'),
-              h.Class(
-                className(
-                  hasFiles ? styles.namesCompact : styles.placeholderText,
-                  styles.placeholderCompact,
-                ),
-              ),
-            ],
-            [
-              fileNames ??
-                props.placeholder ??
-                (model.isMultiple ? 'Choose files' : 'Choose file'),
-            ],
-          ),
-        ]
-
-  const toView = (attributes: FileDrop.FileDropAttributes): Html =>
-    h.div(
+    const describedBy =
       [
-        ...attributes.root,
-        h.DataAttribute('slot', 'file-input-dropzone'),
-        h.DataAttribute('mode', mode),
-        h.OnClick(Message.TriggerClicked()),
+        props.description === undefined ? null : fieldIds.description,
+        status?.message !== undefined && props.statusVariant !== 'tooltip'
+          ? fieldIds.status
+          : null,
+        conveysRequired ? fieldIds.required : null,
+      ]
+        .filter(Boolean)
+        .join(' ') || undefined
+
+    const fieldLabel = h.label(
+      [
+        h.For(`${model.fileDrop.id}`),
+        h.Id(fieldIds.label),
+        h.DataAttribute('slot', 'file-input-label'),
         h.Class(
           className(
-            styles.container,
-            isDropzone ? styles.dropzone : styles.compact,
-            props.isDisabled === true
-              ? styles.containerDisabled
-              : status !== undefined &&
-                (status.type === 'error'
-                  ? styles.borderError
-                  : status.type === 'warning'
-                    ? styles.borderWarning
-                    : styles.borderSuccess),
-            isDropzone && model.fileDrop.isDragOver && styles.dropzoneActive,
+            styles.label,
+            props.isLabelHidden === true && styles.srOnly,
+            props.isDisabled === true && styles.labelDisabled,
           ),
         ),
       ],
       [
-        trigger,
-        h.input([
-          ...attributes.input,
-          h.AriaHidden(true),
-          h.Tabindex(-1),
-          ...(props.name === undefined ? [] : [h.Name(props.name)]),
-        ]),
-        ...(isDropzone ? dropzoneContent : compactContent),
-        ...(statusIcon === undefined ? [] : [statusIcon]),
-        ...(clearButton === undefined ? [] : [clearButton]),
+        props.label,
+        ...(props.isOptional === true
+          ? [
+              h.span(
+                [
+                  h.Attribute('aria-hidden', 'true'),
+                  h.Class(className(styles.labelIndicator)),
+                ],
+                [' ∙ Optional'],
+              ),
+            ]
+          : []),
+        ...(conveysRequired
+          ? [
+              h.span(
+                [
+                  h.Attribute('aria-hidden', 'true'),
+                  h.Class(className(styles.labelIndicator)),
+                ],
+                [' ∙ Required'],
+              ),
+            ]
+          : []),
       ],
     )
 
-  const dropzone = h.submodel({
-    slotId: `${model.id}-file-drop`,
-    model: model.fileDrop,
-    view: FileDrop.view,
-    viewInputs: {
-      toView,
-      ...(Option.isSome(model.accept)
-        ? {
-            accept: Option.getOrThrow(model.accept)
-              .split(',')
-              .map(entry => entry.trim()),
-          }
-        : {}),
-      multiple: model.isMultiple,
-      isDisabled: props.isDisabled === true,
-    },
-    toParentMessage: (message: FileDrop.Message) =>
-      Message.GotFileDropMessage({ message }),
-  })
-
-  const statusLayer =
-    status?.message === undefined || props.statusVariant === 'tooltip'
-      ? []
-      : [
-          props.statusVariant === 'detached'
-            ? renderDetachedStatus(
-                status,
+    const statusIcon =
+      status !== undefined && props.statusVariant === 'tooltip'
+        ? h.button(
+            [
+              h.Type('button'),
+              h.AriaLabel(statusButtonLabel(status.type)),
+              h.Title(status.message ?? ''),
+              h.OnClick(Message.Noop(), {
+                defaultAction: 'Prevent',
+                propagation: 'Stop',
+              }),
+              h.DataAttribute('slot', 'file-input-status-icon'),
+              h.Class(className(styles.statusIconButton)),
+            ],
+            [
+              Icon.icon(
+                statusIconName(status.type),
                 {
-                  root: type => [
-                    h.Class(
-                      className(
-                        styles.statusDetached,
-                        type === 'error' && styles.statusError,
-                        type === 'warning' && styles.statusWarning,
-                        type === 'success' && styles.statusSuccess,
-                      ),
-                    ),
-                  ],
-                  icon: [h.Class(className(styles.statusIconRow))],
-                  text: [h.Class(className(styles.statusText))],
-                },
-                Icon.icon(
-                  statusIconName(status.type),
-                  { class: className(styles.iconXs) },
-                  h,
-                ),
-                h,
-                fieldIds.status,
-              )
-            : renderAttachedStatus(
-                status,
-                {
-                  root: type => [
-                    h.Class(
-                      className(
-                        styles.statusAttached,
-                        type === 'error' && styles.statusError,
-                        type === 'warning' && styles.statusWarning,
-                        type === 'success' && styles.statusSuccess,
-                      ),
-                    ),
-                  ],
-                  icon: [],
-                  text: [h.Class(className(styles.statusText))],
+                  class: className(
+                    styles.statusIconMd,
+                    status.type === 'error' && styles.statusIconError,
+                    status.type === 'warning' && styles.statusIconWarning,
+                    status.type === 'success' && styles.statusIconSuccess,
+                  ),
+                  ariaLabel: statusButtonLabel(status.type),
                 },
                 h,
-                fieldIds.status,
               ),
-        ]
+            ],
+          )
+        : undefined
 
-  return h.div(
-    [
-      h.DataAttribute('slot', 'file-input'),
-      h.Class(className(styles.field, props.layoutStyle)),
-    ],
-    [
-      fieldLabel,
-      ...(props.description === undefined
-        ? []
-        : [
-            h.p(
-              [
-                h.Id(fieldIds.description),
-                h.DataAttribute('slot', 'file-input-description'),
-                h.Class(className(styles.description)),
-              ],
-              [props.description],
+    const trigger = h.span(
+      [
+        h.Class(className(styles.triggerWrapper)),
+        h.DataAttribute('slot', 'file-input-trigger-wrapper'),
+      ],
+      [
+        h.button(
+          [
+            h.Type('button'),
+            h.Tabindex(props.isDisabled === true ? -1 : 0),
+            h.AriaLabel(
+              hasFiles && fileNames !== null
+                ? `${labelText}, ${fileNames}`
+                : labelText,
             ),
-          ]),
-      h.div(
-        [
-          h.DataAttribute('slot', 'file-input-status-wrapper'),
-          h.Class(className(styles.statusWrapper)),
-        ],
-        [dropzone, ...statusLayer],
-      ),
-      ...(conveysRequired
+            h.AriaBusy(props.isLoading === true),
+            h.AriaInvalid(status?.type === 'error'),
+            ...(describedBy === undefined
+              ? []
+              : [h.AriaDescribedBy(describedBy)]),
+            h.OnClick(Message.TriggerClicked(), { propagation: 'Stop' }),
+          ],
+          [],
+        ),
+      ],
+    )
+
+    const clearButton =
+      hasFiles && props.isDisabled !== true && props.isLoading !== true
+        ? h.button(
+            [
+              h.Type('button'),
+              h.Tabindex(-1),
+              h.AriaLabel(`Clear ${labelText}`),
+              h.OnClick(Message.ClearRequested(), {
+                defaultAction: 'Prevent',
+                propagation: 'Stop',
+              }),
+              h.DataAttribute('slot', 'file-input-clear'),
+              h.Class(className(styles.clearButton)),
+            ],
+            [Icon.x({ class: className(styles.iconXs) }, h)],
+          )
+        : undefined
+
+    const dropzoneContent =
+      props.isLoading === true
         ? [
-            h.span(
-              [h.Id(fieldIds.required), h.Class(className(styles.srOnly))],
-              ['Required'],
+            Icon.loaderCircle(
+              {
+                class: className(styles.spinner, styles.iconMd),
+              },
+              h,
             ),
           ]
-        : []),
-    ],
-  )
-})
+        : hasFiles
+          ? [
+              h.div(
+                [
+                  h.DataAttribute('slot', 'file-input-names'),
+                  h.Class(className(styles.namesDropzone)),
+                ],
+                [fileNames ?? ''],
+              ),
+            ]
+          : [
+              Icon.arrowUp({ class: className(styles.iconMd) }, h),
+              h.span(
+                [
+                  h.DataAttribute('slot', 'file-input-placeholder'),
+                  h.Class(className(styles.placeholderText)),
+                ],
+                [
+                  model.fileDrop.isDragOver
+                    ? (props.dropHint ?? 'Drop files here')
+                    : (props.placeholder ??
+                      (model.isMultiple ? 'Choose files' : 'Choose file')),
+                ],
+              ),
+            ]
+
+    const compactContent =
+      props.isLoading === true
+        ? [
+            h.span(
+              [
+                h.DataAttribute('slot', 'file-input-names'),
+                h.Class(
+                  className(
+                    hasFiles ? styles.namesCompact : styles.placeholderText,
+                    styles.placeholderCompact,
+                  ),
+                ),
+              ],
+              [fileNames ?? props.placeholder ?? 'Choose file'],
+            ),
+            Icon.loaderCircle(
+              {
+                class: className(styles.spinner, styles.iconSm),
+              },
+              h,
+            ),
+          ]
+        : [
+            Icon.arrowUp({ class: className(styles.iconSm) }, h),
+            h.span(
+              [
+                h.DataAttribute('slot', 'file-input-placeholder'),
+                h.Class(
+                  className(
+                    hasFiles ? styles.namesCompact : styles.placeholderText,
+                    styles.placeholderCompact,
+                  ),
+                ),
+              ],
+              [
+                fileNames ??
+                  props.placeholder ??
+                  (model.isMultiple ? 'Choose files' : 'Choose file'),
+              ],
+            ),
+          ]
+
+    const toView = (attributes: FileDrop.FileDropAttributes): Html =>
+      h.div(
+        [
+          ...attributes.root,
+          h.DataAttribute('slot', 'file-input-dropzone'),
+          h.DataAttribute('mode', mode),
+          h.OnClick(Message.TriggerClicked()),
+          h.Class(
+            className(
+              styles.container,
+              isDropzone ? styles.dropzone : styles.compact,
+              props.isDisabled === true
+                ? styles.containerDisabled
+                : status !== undefined &&
+                    (status.type === 'error'
+                      ? styles.borderError
+                      : status.type === 'warning'
+                        ? styles.borderWarning
+                        : styles.borderSuccess),
+              isDropzone && model.fileDrop.isDragOver && styles.dropzoneActive,
+            ),
+          ),
+        ],
+        [
+          trigger,
+          h.input([
+            ...attributes.input,
+            h.AriaHidden(true),
+            h.Tabindex(-1),
+            ...(props.name === undefined ? [] : [h.Name(props.name)]),
+          ]),
+          ...(isDropzone ? dropzoneContent : compactContent),
+          ...(statusIcon === undefined ? [] : [statusIcon]),
+          ...(clearButton === undefined ? [] : [clearButton]),
+        ],
+      )
+
+    const dropzone = h.submodel({
+      slotId: `${model.id}-file-drop`,
+      model: model.fileDrop,
+      view: FileDrop.view,
+      viewInputs: {
+        toView,
+        ...(Option.isSome(model.accept)
+          ? {
+              accept: Option.getOrThrow(model.accept)
+                .split(',')
+                .map(entry => entry.trim()),
+            }
+          : {}),
+        multiple: model.isMultiple,
+        isDisabled: props.isDisabled === true,
+      },
+      toParentMessage: (message: FileDrop.Message) =>
+        Message.GotFileDropMessage({ message }),
+    })
+
+    const statusLayer =
+      status?.message === undefined || props.statusVariant === 'tooltip'
+        ? []
+        : [
+            props.statusVariant === 'detached'
+              ? renderDetachedStatus(
+                  status,
+                  {
+                    root: type => [
+                      h.Class(
+                        className(
+                          styles.statusDetached,
+                          type === 'error' && styles.statusError,
+                          type === 'warning' && styles.statusWarning,
+                          type === 'success' && styles.statusSuccess,
+                        ),
+                      ),
+                    ],
+                    icon: [h.Class(className(styles.statusIconRow))],
+                    text: [h.Class(className(styles.statusText))],
+                  },
+                  Icon.icon(
+                    statusIconName(status.type),
+                    { class: className(styles.iconXs) },
+                    h,
+                  ),
+                  h,
+                  fieldIds.status,
+                )
+              : renderAttachedStatus(
+                  status,
+                  {
+                    root: type => [
+                      h.Class(
+                        className(
+                          styles.statusAttached,
+                          type === 'error' && styles.statusError,
+                          type === 'warning' && styles.statusWarning,
+                          type === 'success' && styles.statusSuccess,
+                        ),
+                      ),
+                    ],
+                    icon: [],
+                    text: [h.Class(className(styles.statusText))],
+                  },
+                  h,
+                  fieldIds.status,
+                ),
+          ]
+
+    return h.div(
+      [
+        h.DataAttribute('slot', 'file-input'),
+        h.Class(className(styles.field, props.layoutStyle)),
+      ],
+      [
+        fieldLabel,
+        ...(props.description === undefined
+          ? []
+          : [
+              h.p(
+                [
+                  h.Id(fieldIds.description),
+                  h.DataAttribute('slot', 'file-input-description'),
+                  h.Class(className(styles.description)),
+                ],
+                [props.description],
+              ),
+            ]),
+        h.div(
+          [
+            h.DataAttribute('slot', 'file-input-status-wrapper'),
+            h.Class(className(styles.statusWrapper)),
+          ],
+          [dropzone, ...statusLayer],
+        ),
+        ...(conveysRequired
+          ? [
+              h.span(
+                [h.Id(fieldIds.required), h.Class(className(styles.srOnly))],
+                ['Required'],
+              ),
+            ]
+          : []),
+      ],
+    )
+  },
+)
 
 export const fileInput = <Msg>(
   props: FileInputProps<Msg>,

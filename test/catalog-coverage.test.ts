@@ -39,12 +39,23 @@ const presetRegistry = JSON.parse(
 }
 const componentPage = readFileSync('src/docs/component-page.ts', 'utf8')
 const catalog = readFileSync('src/docs/components/catalog.ts', 'utf8')
-const roadmap = JSON.parse(readFileSync('docs/component-roadmap.json', 'utf8')) as {
-  documentation: { complete: ReadonlyArray<string>; next: ReadonlyArray<string> }
+const roadmap = JSON.parse(
+  readFileSync('docs/component-roadmap.json', 'utf8'),
+) as {
+  documentation: {
+    complete: ReadonlyArray<string>
+    next: ReadonlyArray<string>
+  }
   fidelity: ReadonlyArray<{ component: string; priority: string; gap: string }>
-  missing: ReadonlyArray<{ component: string; priority: string; strategy: string }>
+  missing: ReadonlyArray<{
+    component: string
+    priority: string
+    strategy: string
+  }>
 }
-const compatibility = JSON.parse(readFileSync('compatibility.json', 'utf8')) as {
+const compatibility = JSON.parse(
+  readFileSync('compatibility.json', 'utf8'),
+) as {
   effect: string
   foldkit: string
   foldkitUi: string
@@ -52,7 +63,9 @@ const compatibility = JSON.parse(readFileSync('compatibility.json', 'utf8')) as 
 const packageJson = JSON.parse(readFileSync('package.json', 'utf8')) as {
   dependencies: Readonly<Record<string, string>>
 }
-const docsIndex = JSON.parse(readFileSync('public/docs-index.json', 'utf8')) as {
+const docsIndex = JSON.parse(
+  readFileSync('public/docs-index.json', 'utf8'),
+) as {
   componentCount: number
   components: ReadonlyArray<{
     slug: string
@@ -61,9 +74,13 @@ const docsIndex = JSON.parse(readFileSync('public/docs-index.json', 'utf8')) as 
   }>
 }
 
-const componentBlock = componentPage.match(/export const COMPONENTS = \[([\s\S]*?)\] as const/)?.[1] ?? ''
-const documentedSlugs = Array.from(componentBlock.matchAll(/'([^']+)'/g), match =>
-  (match[1] ?? '').toLowerCase().replaceAll(' ', '-'),
+const componentBlock =
+  componentPage.match(
+    /export const COMPONENTS = \[([\s\S]*?)\] as const/,
+  )?.[1] ?? ''
+const documentedSlugs = Array.from(
+  componentBlock.matchAll(/'([^']+)'/g),
+  match => (match[1] ?? '').toLowerCase().replaceAll(' ', '-'),
 ).sort()
 const registrySlugs = registry.items
   .filter(item => item.type === 'registry:ui')
@@ -71,13 +88,17 @@ const registrySlugs = registry.items
   .sort()
 
 describe('component catalog coverage', () => {
-  it('keeps every migrated page\'s renderer examples in parity', () => {
+  it("keeps every migrated page's renderer examples in parity", () => {
     for (const page of Object.values(authoredPages)) {
       const stylexExamples = page.definition.stylexExamples
       if (stylexExamples === undefined) continue
 
       assert.equal(
-        rendererExamplesAreInParity(page.slug, page.definition.examples, stylexExamples),
+        rendererExamplesAreInParity(
+          page.slug,
+          page.definition.examples,
+          stylexExamples,
+        ),
         true,
         `${page.slug} renderer examples drifted`,
       )
@@ -92,9 +113,15 @@ describe('component catalog coverage', () => {
     const generatedCatalog = readFileSync('docs/component-catalog.md', 'utf8')
 
     for (const item of registry.items) {
-      assert.match(generatedCatalog, new RegExp(`Potti1234/creaseui/${item.name}\\x60`))
+      assert.match(
+        generatedCatalog,
+        new RegExp(`Potti1234/creaseui/${item.name}\\x60`),
+      )
     }
-    assert.match(generatedCatalog, /\| Category \| State \| Additional requirements \|/)
+    assert.match(
+      generatedCatalog,
+      /\| Category \| State \| Additional requirements \|/,
+    )
     assert.match(generatedCatalog, /\| Stateful \|/)
     assert.match(generatedCatalog, /\| Stateless \|/)
   })
@@ -102,11 +129,17 @@ describe('component catalog coverage', () => {
   it('points every registry item at an existing source file and matching target', () => {
     for (const item of registry.items) {
       assert.ok(item.title.trim(), `${item.name} is missing a title`)
-      assert.ok(item.description.trim(), `${item.name} is missing a description`)
+      assert.ok(
+        item.description.trim(),
+        `${item.name} is missing a description`,
+      )
       assert.ok(item.files.length > 0, `${item.name} has no files`)
 
       for (const file of item.files) {
-        assert.ok(existsSync(`src/ui/${file.path}`), `${item.name}: missing ${file.path}`)
+        assert.ok(
+          existsSync(`src/ui/${file.path}`),
+          `${item.name}: missing ${file.path}`,
+        )
         assert.equal(
           basename(file.target),
           basename(file.path),
@@ -117,11 +150,18 @@ describe('component catalog coverage', () => {
   })
 
   it('does not replace framework versions in consumer applications', () => {
-    const frameworkPackages = ['@effect/platform-browser', '@foldkit/ui', 'effect', 'foldkit']
+    const frameworkPackages = [
+      '@effect/platform-browser',
+      '@foldkit/ui',
+      'effect',
+      'foldkit',
+    ]
     const pinnedFrameworkDependencies = registry.items.flatMap(item =>
       (item.dependencies ?? []).filter(dependency =>
-        frameworkPackages.some(packageName =>
-          dependency === packageName || dependency.startsWith(`${packageName}@`),
+        frameworkPackages.some(
+          packageName =>
+            dependency === packageName ||
+            dependency.startsWith(`${packageName}@`),
         ),
       ),
     )
@@ -160,7 +200,10 @@ describe('component catalog coverage', () => {
 
   it('documents reproducible and local-checkout registry installation', () => {
     const registryGuide = readFileSync('docs/registry.md', 'utf8')
-    const localInstaller = readFileSync('scripts/install-local-registry.mjs', 'utf8')
+    const localInstaller = readFileSync(
+      'scripts/install-local-registry.mjs',
+      'utf8',
+    )
 
     assert.match(registryGuide, /button#v0\.1\.0/)
     assert.match(registryGuide, /registry:install-local/)
@@ -169,7 +212,10 @@ describe('component catalog coverage', () => {
   })
 
   it('contains no documentation placeholder copy', () => {
-    assert.doesNotMatch(catalog, /being verified|representative .* composition/i)
+    assert.doesNotMatch(
+      catalog,
+      /being verified|representative .* composition/i,
+    )
   })
 
   it('documents Foldkit architecture instead of assigning state to every component', () => {
@@ -195,10 +241,22 @@ describe('component catalog coverage', () => {
           '// VIEW',
           '// RUNTIME',
         ]) {
-          assert.match(example.code, new RegExp(section), `${page.slug}/${example.title}`)
+          assert.match(
+            example.code,
+            new RegExp(section),
+            `${page.slug}/${example.title}`,
+          )
         }
-        assert.match(example.code, /Runtime\.makeApplication/, `${page.slug}/${example.title}`)
-        assert.doesNotMatch(example.code, /\bviewConfig\b/, `${page.slug}/${example.title}`)
+        assert.match(
+          example.code,
+          /Runtime\.makeApplication/,
+          `${page.slug}/${example.title}`,
+        )
+        assert.doesNotMatch(
+          example.code,
+          /\bviewConfig\b/,
+          `${page.slug}/${example.title}`,
+        )
       }
     }
   })
@@ -206,21 +264,40 @@ describe('component catalog coverage', () => {
   it('shows concrete Foldkit source instead of prose or markup placeholders', () => {
     for (const [slug, page] of Object.entries(authoredPages)) {
       for (const example of page.definition.examples) {
-        assert.doesNotMatch(example.code, /Basic [A-Za-z]+ example/i, `${slug}/${example.title}`)
-        assert.doesNotMatch(example.code, /\.\.\.\s*[,})\]]/, `${slug}/${example.title}`)
-        assert.doesNotMatch(example.code, /<\/?(?:Direction|div|fieldset|legend)\b/, `${slug}/${example.title}`)
+        assert.doesNotMatch(
+          example.code,
+          /Basic [A-Za-z]+ example/i,
+          `${slug}/${example.title}`,
+        )
+        assert.doesNotMatch(
+          example.code,
+          /\.\.\.\s*[,})\]]/,
+          `${slug}/${example.title}`,
+        )
+        assert.doesNotMatch(
+          example.code,
+          /<\/?(?:Direction|div|fieldset|legend)\b/,
+          `${slug}/${example.title}`,
+        )
       }
     }
   })
 
   it('publishes searchable and LLM-readable API metadata', () => {
     assert.equal(docsIndex.componentCount, registrySlugs.length)
-    assert.deepEqual(docsIndex.components.map(component => component.slug).sort(), registrySlugs)
-    assert.ok(docsIndex.components.every(component => component.examples.length >= 2))
+    assert.deepEqual(
+      docsIndex.components.map(component => component.slug).sort(),
+      registrySlugs,
+    )
+    assert.ok(
+      docsIndex.components.every(component => component.examples.length >= 2),
+    )
     assert.ok(docsIndex.components.every(component => component.api.length > 0))
     assert.ok(
       docsIndex.components.every(component =>
-        component.api.every(entry => entry.name && entry.kind && entry.signature),
+        component.api.every(
+          entry => entry.name && entry.kind && entry.signature,
+        ),
       ),
     )
     const llms = readFileSync('public/llms.txt', 'utf8')
@@ -239,17 +316,22 @@ describe('component catalog coverage', () => {
     const chart = initCatalog('chart')
     assert.deepEqual(
       chart.examples,
-      Array.from({ length: authoredPages['chart']!.definition.examples.length + 1 }, () => ({
-        _docsPage: 'chart',
-        variant: 'month',
-        activeChart: 'desktop',
-      })),
+      Array.from(
+        { length: authoredPages['chart']!.definition.examples.length + 1 },
+        () => ({
+          _docsPage: 'chart',
+          variant: 'month',
+          activeChart: 'desktop',
+        }),
+      ),
     )
     assert.ok(!('dialog' in (chart.examples[0] ?? {})))
     for (const page of Object.values(authoredPages)) {
       if (page.previewMode !== 'static') continue
       assert.ok(
-        page.definition.examples.every(example => example.staticPreview !== undefined),
+        page.definition.examples.every(
+          example => example.staticPreview !== undefined,
+        ),
         `${page.slug} must author every static preview`,
       )
     }
@@ -270,7 +352,9 @@ describe('component catalog coverage', () => {
   })
 
   it('does not allow definitions to exceed the allocated example state capacity', () => {
-    const capacity = Number(catalog.match(/EXAMPLE_STATE_COUNT = (\d+)/)?.[1] ?? 0)
+    const capacity = Number(
+      catalog.match(/EXAMPLE_STATE_COUNT = (\d+)/)?.[1] ?? 0,
+    )
     assert.ok(capacity > 0, 'catalog example state capacity is not declared')
 
     for (const slug of documentedSlugs) {
@@ -285,14 +369,24 @@ describe('component catalog coverage', () => {
   it('decodes the routed preview envelope at the catalog boundary', () => {
     const message = GotExampleMessage({
       index: 0,
-      message: { _tag: 'RoutedDocsPreviewMessage', messageJson: JSON.stringify({ _tag: 'GotDropdownPreviewMessage', message: { _tag: 'Opened' } }) },
+      message: {
+        _tag: 'RoutedDocsPreviewMessage',
+        messageJson: JSON.stringify({
+          _tag: 'GotDropdownPreviewMessage',
+          message: { _tag: 'Opened' },
+        }),
+      },
     })
     assert.deepEqual(S.decodeUnknownSync(CatalogMessage)(message), message)
   })
 
   it('tracks documentation and fidelity status explicitly', () => {
     assert.ok(roadmap.documentation.complete.length > 0)
-    assert.ok(roadmap.fidelity.every(item => item.component && item.priority && item.gap))
+    assert.ok(
+      roadmap.fidelity.every(
+        item => item.component && item.priority && item.gap,
+      ),
+    )
     assert.deepEqual(roadmap.missing, [])
   })
 })

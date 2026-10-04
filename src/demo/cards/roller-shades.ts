@@ -1,8 +1,8 @@
-import { Match as M, Option, Schema as S } from 'effect';
-import type { Update } from 'foldkit';
-import { Command, Subscription } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import { Match as M, Option, Schema as S } from 'effect'
+import type { Update } from 'foldkit'
+import { Command, Subscription } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
 import {
   card,
@@ -11,27 +11,25 @@ import {
   cardFooter,
   cardHeader,
   cardTitle,
-} from '@/ui/card';
-import * as Slider from '@/ui/slider';
-import { toggleGroup } from '@/ui/toggle-group';
+} from '@/ui/card'
+import * as Slider from '@/ui/slider'
+import { toggleGroup } from '@/ui/toggle-group'
 
 export const Model = S.Struct({
   position: Slider.Model,
   positionValue: S.Number,
-});
-export type Model = typeof Model.Type;
-
-
+})
+export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
   GotPositionMessage: {
-  message: Slider.Message,
-},
+    message: Slider.Message,
+  },
   SelectedPreset: { value: S.String },
-});
-export type Message = typeof Message.Type;
+})
+export type Message = typeof Message.Type
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 
 export const init = (): Model => ({
   position: Slider.init({
@@ -41,29 +39,33 @@ export const init = (): Model => ({
     step: 1,
   }),
   positionValue: 50,
-});
+})
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
       GotPositionMessage: ({ message: childMessage }) => {
-        const { model: position, commands: positionCommands__, outMessage: positionOut__ } = Slider.update(
-          model.position,
-          childMessage,
-        )
+        const {
+          model: position,
+          commands: positionCommands__,
+          outMessage: positionOut__,
+        } = Slider.update(model.position, childMessage)
         const commands = positionCommands__ ?? []
         const maybeChange = Option.fromNullishOr(positionOut__)
-        return { model: {
+        return {
+          model: {
             ...model,
             position,
             positionValue: Option.match(maybeChange, {
               onNone: () => model.positionValue,
-              onSome: (change) => change.value,
+              onSome: change => change.value,
             }),
-          }, commands: Command.mapMessages(commands, (next) =>
+          },
+          commands: Command.mapMessages(commands, next =>
             Message.GotPositionMessage({ message: next }),
-          ) };
+          ),
+        }
       },
       SelectedPreset: ({ value }) => {
         const position =
@@ -73,17 +75,19 @@ export const update = (model: Model, message: Message): UpdateReturn =>
               ? 50
               : value === 'closed'
                 ? 100
-                : undefined;
+                : undefined
 
         return position === undefined
-          ? ({ model: model })
-          : { model: {
+          ? { model: model }
+          : {
+              model: {
                 ...model,
                 positionValue: position,
-              }, };
+              },
+            }
       },
     }),
-  );
+  )
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
   const preset =
@@ -91,7 +95,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       ? 'open'
       : model.positionValue >= 90
         ? 'closed'
-        : 'half';
+        : 'half'
 
   return card(
     {
@@ -142,7 +146,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                     {
                       model: model.position,
                       value: model.positionValue,
-                      toParentMessage: (message) =>
+                      toParentMessage: message =>
                         Message.GotPositionMessage({ message }),
                       ariaLabel: 'Shade position',
                       class: 'flex-1',
@@ -170,7 +174,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
               toggleGroup(
                 {
                   value: preset,
-                  onToggle: (value) => Message.SelectedPreset({ value }),
+                  onToggle: value => Message.SelectedPreset({ value }),
                   variant: 'outline',
                   class: 'w-full gap-1',
                   items: [
@@ -200,8 +204,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 /*
 Minimal wiring:
@@ -218,7 +222,7 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
     shadePositionPointer: Slider.subscriptions.dragPointer,
     shadePositionEscape: Slider.subscriptions.dragEscape,
   })<Model, Message>({
-    toChildModel: (model) => model.position,
-    toParentMessage: (message) => Message.GotPositionMessage({ message }),
+    toChildModel: model => model.position,
+    toParentMessage: message => Message.GotPositionMessage({ message }),
   }),
-);
+)

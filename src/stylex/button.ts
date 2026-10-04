@@ -56,7 +56,8 @@ const base = stylex.create({
       default: interactionTokens.motionFast,
       '@media (prefers-reduced-motion: reduce)': interactionTokens.motionNone,
     },
-    transitionProperty: 'background-color, color, border-color, box-shadow, transform',
+    transitionProperty:
+      'background-color, color, border-color, box-shadow, transform',
     transitionTimingFunction: interactionTokens.easingStandard,
     userSelect: 'none',
     whiteSpace: 'nowrap',
@@ -191,7 +192,9 @@ const shape = stylex.create({
   rounded: { borderRadius: foundationTokens.radiusFull },
 })
 
-type _VariantMapIsExhaustive = Assert<HasExactlyKeys<typeof variants, ButtonVariant>>
+type _VariantMapIsExhaustive = Assert<
+  HasExactlyKeys<typeof variants, ButtonVariant>
+>
 type _SizeMapIsExhaustive = Assert<HasExactlyKeys<typeof sizes, ButtonSize>>
 
 const iconInsetFor = (size: ButtonSize, inset: 'start' | 'end') => {
@@ -205,29 +208,36 @@ const iconInsetFor = (size: ButtonSize, inset: 'start' | 'end') => {
       : iconInset.endRoomy
 }
 
-export type ButtonProps<Msg> = ButtonBehaviorProps<Msg> & Readonly<{
-  variant?: ButtonVariant
-  size?: ButtonSize
-  /** Edge-icon padding compensation matching has-data-[icon=inline-*]. */
-  iconInset?: 'start' | 'end'
-  /** Fully rounded pill shape (upstream `rounded-full`). */
-  rounded?: boolean
-  /** Parent-layout positioning only. Add visual choices as named variants. */
-  layoutStyle?: ComponentLayoutStyle
-}>
+export type ButtonProps<Msg> = ButtonBehaviorProps<Msg> &
+  Readonly<{
+    variant?: ButtonVariant
+    size?: ButtonSize
+    /** Edge-icon padding compensation matching has-data-[icon=inline-*]. */
+    iconInset?: 'start' | 'end'
+    /** Fully rounded pill shape (upstream `rounded-full`). */
+    rounded?: boolean
+    /** Parent-layout positioning only. Add visual choices as named variants. */
+    layoutStyle?: ComponentLayoutStyle
+  }>
 
 /** The full visual recipe for embedding the button look on another element
    (e.g. a DropdownMenu trigger). Prefer `button()` in normal use. */
 export const buttonVisualStyles = ({
   variant = 'default',
   size = 'default',
-}: Readonly<{ variant?: ButtonVariant; size?: ButtonSize }> = {}): ReadonlyArray<StaticStyles> => [
+}: Readonly<{
+  variant?: ButtonVariant
+  size?: ButtonSize
+}> = {}): ReadonlyArray<StaticStyles> => [
   base.root,
   variants[variant],
   sizes[size],
 ]
 
-export const button = <Msg>(props: ButtonProps<Msg>, h: HtmlBuilder<Msg>): Html => {
+export const button = <Msg>(
+  props: ButtonProps<Msg>,
+  h: HtmlBuilder<Msg>,
+): Html => {
   const variant = props.variant ?? 'default'
   const size = props.size ?? 'default'
   return renderButton(
@@ -235,21 +245,37 @@ export const button = <Msg>(props: ButtonProps<Msg>, h: HtmlBuilder<Msg>): Html 
     [
       h.DataAttribute('variant', variant),
       ...(props.dataSize === undefined ? [h.DataAttribute('size', size)] : []),
-      h.Class(className(base.root, joinStyles.join, variants[variant], sizes[size], (props.isDisabled === true || props.isLoading === true) && base.disabled, props.rounded === true && shape.rounded, ...(props.iconInset === undefined ? [] : [iconInsetFor(size, props.iconInset)]), props.layoutStyle))],
+      h.Class(
+        className(
+          base.root,
+          joinStyles.join,
+          variants[variant],
+          sizes[size],
+          (props.isDisabled === true || props.isLoading === true) &&
+            base.disabled,
+          props.rounded === true && shape.rounded,
+          ...(props.iconInset === undefined
+            ? []
+            : [iconInsetFor(size, props.iconInset)]),
+          props.layoutStyle,
+        ),
+      ),
+    ],
     h,
   )
 }
 
-export type ButtonLinkProps = ButtonLinkBehaviorProps & Readonly<{
-  variant?: ButtonVariant
-  size?: ButtonSize
-  /** Edge-icon padding compensation matching has-data-[icon=inline-*]. */
-  iconInset?: 'start' | 'end'
-  /** Fully rounded pill shape (upstream `rounded-full`). */
-  rounded?: boolean
-  /** Parent-layout positioning only. Add visual choices as named variants. */
-  layoutStyle?: ComponentLayoutStyle
-}>
+export type ButtonLinkProps = ButtonLinkBehaviorProps &
+  Readonly<{
+    variant?: ButtonVariant
+    size?: ButtonSize
+    /** Edge-icon padding compensation matching has-data-[icon=inline-*]. */
+    iconInset?: 'start' | 'end'
+    /** Fully rounded pill shape (upstream `rounded-full`). */
+    rounded?: boolean
+    /** Parent-layout positioning only. Add visual choices as named variants. */
+    layoutStyle?: ComponentLayoutStyle
+  }>
 
 export const buttonLink = <Msg>(
   props: ButtonLinkProps,
@@ -262,7 +288,20 @@ export const buttonLink = <Msg>(
     [
       h.DataAttribute('variant', variant),
       ...(props.dataSize === undefined ? [h.DataAttribute('size', size)] : []),
-      h.Class(className(base.root, joinStyles.join, variants[variant], sizes[size], props.rounded === true && shape.rounded, ...(props.iconInset === undefined ? [] : [iconInsetFor(size, props.iconInset)]), props.layoutStyle))],
+      h.Class(
+        className(
+          base.root,
+          joinStyles.join,
+          variants[variant],
+          sizes[size],
+          props.rounded === true && shape.rounded,
+          ...(props.iconInset === undefined
+            ? []
+            : [iconInsetFor(size, props.iconInset)]),
+          props.layoutStyle,
+        ),
+      ),
+    ],
     h,
   )
 }

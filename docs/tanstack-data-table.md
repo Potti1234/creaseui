@@ -12,15 +12,15 @@ HTML. StyleX owns all visual styling.
 
 ## Source map
 
-| Concern | Source |
-| --- | --- |
-| Public column and table props, TanStack adapter, rendered view | `src/stylex/tanstack/data-table.ts` |
-| Serializable model, messages, reducer, layout snapshots | `src/lib/tanstack-table-state.ts` |
-| StyleX layout, pinned layers, controls, panels | `src/stylex/tanstack/data-table.stylex.ts` |
-| Opaque pinned-surface tokens | `src/stylex/complex-tokens.stylex.ts` |
-| Complete, filter, expandable, and virtual examples | `src/demo/blocks-stylex/tanstack-table-page.ts` |
-| Reducer and implementation regression tests | `test/tanstack-table.test.ts` |
-| Browser playground | `/blocks-stylex/table` |
+| Concern                                                        | Source                                          |
+| -------------------------------------------------------------- | ----------------------------------------------- |
+| Public column and table props, TanStack adapter, rendered view | `src/stylex/tanstack/data-table.ts`             |
+| Serializable model, messages, reducer, layout snapshots        | `src/lib/tanstack-table-state.ts`               |
+| StyleX layout, pinned layers, controls, panels                 | `src/stylex/tanstack/data-table.stylex.ts`      |
+| Opaque pinned-surface tokens                                   | `src/stylex/complex-tokens.stylex.ts`           |
+| Complete, filter, expandable, and virtual examples             | `src/demo/blocks-stylex/tanstack-table-page.ts` |
+| Reducer and implementation regression tests                    | `test/tanstack-table.test.ts`                   |
+| Browser playground                                             | `/blocks-stylex/table`                          |
 
 ## Feature inventory
 
@@ -93,24 +93,24 @@ message, as the table playground does with `GotTanStackMessage`.
 
 `TanStackDataTableColumn<Data, Message>` defines one data column.
 
-| Property | Required | Behavior |
-| --- | --- | --- |
-| `id` | yes | Stable identity used by sorting, filters, widths, visibility, ordering, pinning, and persistence. Must be unique. |
-| `header` | yes | Visible header label and basis for accessible filter labels and automatic width estimation. |
-| `value(row)` | yes | Raw sort/filter value and fallback cell text. Return `string` or `number`. |
-| `cell(row, h)` | no | Custom rendered cell. If omitted, `value` is stringified. |
-| `aggregate(value)` | no | Reserved metadata; the current rendered table does not group or aggregate rows. |
-| `canGroup` | no | Reserved metadata; grouping controls are not currently rendered. |
-| `canHide` | no | Currently affects automatic width allowance only. It does not yet disable the layout menu's visibility button. |
-| `canSort` | no | Defaults to `true`. `false` removes header sorting behavior and its sort icon. |
-| `size` | no | Explicit initial width when `defaultSize` is absent. |
-| `defaultSize` | no | Preferred explicit initial width. Takes precedence over `size`. |
-| `minSize` | no | Minimum for the initial width and TanStack column definition. Direct drag resizing is globally clamped to 60–960 px. |
-| `headerTooltip` | no | Adds a titled, accessible information icon beside the label. |
-| `sticky` | no | Marks the column as pinned when the layout menu is reset. Initial pinning still comes from the model. |
-| `filterValue(row)` | no | Alternate raw value used only for filtering. Useful when `value` is formatted. |
-| `filterable` | no | Set to `false` to suppress a configured filter control. |
-| `filter` | no | Enables one of the four typed filter panels described below. |
+| Property           | Required | Behavior                                                                                                             |
+| ------------------ | -------- | -------------------------------------------------------------------------------------------------------------------- |
+| `id`               | yes      | Stable identity used by sorting, filters, widths, visibility, ordering, pinning, and persistence. Must be unique.    |
+| `header`           | yes      | Visible header label and basis for accessible filter labels and automatic width estimation.                          |
+| `value(row)`       | yes      | Raw sort/filter value and fallback cell text. Return `string` or `number`.                                           |
+| `cell(row, h)`     | no       | Custom rendered cell. If omitted, `value` is stringified.                                                            |
+| `aggregate(value)` | no       | Reserved metadata; the current rendered table does not group or aggregate rows.                                      |
+| `canGroup`         | no       | Reserved metadata; grouping controls are not currently rendered.                                                     |
+| `canHide`          | no       | Currently affects automatic width allowance only. It does not yet disable the layout menu's visibility button.       |
+| `canSort`          | no       | Defaults to `true`. `false` removes header sorting behavior and its sort icon.                                       |
+| `size`             | no       | Explicit initial width when `defaultSize` is absent.                                                                 |
+| `defaultSize`      | no       | Preferred explicit initial width. Takes precedence over `size`.                                                      |
+| `minSize`          | no       | Minimum for the initial width and TanStack column definition. Direct drag resizing is globally clamped to 60–960 px. |
+| `headerTooltip`    | no       | Adds a titled, accessible information icon beside the label.                                                         |
+| `sticky`           | no       | Marks the column as pinned when the layout menu is reset. Initial pinning still comes from the model.                |
+| `filterValue(row)` | no       | Alternate raw value used only for filtering. Useful when `value` is formatted.                                       |
+| `filterable`       | no       | Set to `false` to suppress a configured filter control.                                                              |
+| `filter`           | no       | Enables one of the four typed filter panels described below.                                                         |
 
 Example:
 
@@ -159,27 +159,27 @@ const columns: ReadonlyArray<TanStackDataTableColumn<Task, Message>> = [
 
 ### Active props
 
-| Property | Required/default | Behavior |
-| --- | --- | --- |
-| `ariaLabel` | required | Accessible name on the element with `role="table"`. It also participates in the scroll subscription identity when no `storageKey` exists. |
-| `columns` | required | Column definitions. |
-| `model` | required | Current serializable `State.Model`. |
-| `rows` | required | Dataset passed to TanStack. Filtering, sorting, and pagination operate on this array. |
-| `rowKey` | required | Stable row identity. |
-| `toParentMessage` | required | Maps every table message into the owning application's message type. |
-| `emptyText` | `Keine Daten gefunden` | Text rendered when the current row model is empty. |
-| `pageSizeOptions` | none | Enables editable page-size UI and supplies its suggested choices. Positive custom values can also be committed with Enter. |
-| `enableRowSelection` | `true` | Controls the selection prefix and select-all behavior. |
-| `allSelectableRowIds` | filtered row IDs | Explicit scope for select-all and selected-count calculations. |
-| `enableExpandableRows` | `false` | Adds an expand prefix and expandable detail rows. |
-| `expandedContent` | fallback text | Renders content below an expanded row. |
-| `onRowClick` | none | Emits a custom message when a data cell is clicked. Without it, expandable tables toggle expansion. |
-| `isLoading` | `false` | Replaces the scroller with a status indicator. |
-| `loadingText` | `Wird geladen…` | Loading label. |
-| `stretchColumns` | `false` | Makes only the last visible column `minmax(currentWidth, 1fr)`. Earlier columns keep exact widths. |
-| `storageKey` | none | Enables resize handles, the modified/reset rail, and a persistent-table footer. It names behavior but does not itself read or write storage. |
-| `footerContent` | none | Content inserted at the left of the footer. |
-| `pagination` | derived from filtered rows | Supplies `totalCount` and optional `hasMore` metadata for page labels/buttons. The actual rows are still paginated locally. |
+| Property               | Required/default           | Behavior                                                                                                                                     |
+| ---------------------- | -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ariaLabel`            | required                   | Accessible name on the element with `role="table"`. It also participates in the scroll subscription identity when no `storageKey` exists.    |
+| `columns`              | required                   | Column definitions.                                                                                                                          |
+| `model`                | required                   | Current serializable `State.Model`.                                                                                                          |
+| `rows`                 | required                   | Dataset passed to TanStack. Filtering, sorting, and pagination operate on this array.                                                        |
+| `rowKey`               | required                   | Stable row identity.                                                                                                                         |
+| `toParentMessage`      | required                   | Maps every table message into the owning application's message type.                                                                         |
+| `emptyText`            | `Keine Daten gefunden`     | Text rendered when the current row model is empty.                                                                                           |
+| `pageSizeOptions`      | none                       | Enables editable page-size UI and supplies its suggested choices. Positive custom values can also be committed with Enter.                   |
+| `enableRowSelection`   | `true`                     | Controls the selection prefix and select-all behavior.                                                                                       |
+| `allSelectableRowIds`  | filtered row IDs           | Explicit scope for select-all and selected-count calculations.                                                                               |
+| `enableExpandableRows` | `false`                    | Adds an expand prefix and expandable detail rows.                                                                                            |
+| `expandedContent`      | fallback text              | Renders content below an expanded row.                                                                                                       |
+| `onRowClick`           | none                       | Emits a custom message when a data cell is clicked. Without it, expandable tables toggle expansion.                                          |
+| `isLoading`            | `false`                    | Replaces the scroller with a status indicator.                                                                                               |
+| `loadingText`          | `Wird geladen…`            | Loading label.                                                                                                                               |
+| `stretchColumns`       | `false`                    | Makes only the last visible column `minmax(currentWidth, 1fr)`. Earlier columns keep exact widths.                                           |
+| `storageKey`           | none                       | Enables resize handles, the modified/reset rail, and a persistent-table footer. It names behavior but does not itself read or write storage. |
+| `footerContent`        | none                       | Content inserted at the left of the footer.                                                                                                  |
+| `pagination`           | derived from filtered rows | Supplies `totalCount` and optional `hasMore` metadata for page labels/buttons. The actual rows are still paginated locally.                  |
 
 ### Declared but currently inactive props
 
@@ -350,15 +350,15 @@ must hide every scrolling element underneath them.
 
 The current StyleX layers are:
 
-| Layer | z-index | Purpose |
-| --- | ---: | --- |
-| Pinned body cells | 10 | Cover horizontally scrolling body content. |
-| Pinned selection/expand body prefixes | 20 | Stay above other pinned body cells. |
-| Sticky header row | 20 | Keeps the header above rows. |
-| Resize handles | 35 | Remain usable in ordinary headers. |
-| Pinned data headers | 50 | Cover unpinned header labels, filter triggers, and resize handles. |
-| Pinned selection/expand header prefixes | 55 | Cover all other header cells. |
-| Open filter panels | 60 | Render as intentional overlays until dismissal or scrolling. |
+| Layer                                   | z-index | Purpose                                                            |
+| --------------------------------------- | ------: | ------------------------------------------------------------------ |
+| Pinned body cells                       |      10 | Cover horizontally scrolling body content.                         |
+| Pinned selection/expand body prefixes   |      20 | Stay above other pinned body cells.                                |
+| Sticky header row                       |      20 | Keeps the header above rows.                                       |
+| Resize handles                          |      35 | Remain usable in ordinary headers.                                 |
+| Pinned data headers                     |      50 | Cover unpinned header labels, filter triggers, and resize handles. |
+| Pinned selection/expand header prefixes |      55 | Cover all other header cells.                                      |
+| Open filter panels                      |      60 | Render as intentional overlays until dismissal or scrolling.       |
 
 Pinned header and body surfaces use opaque theme tokens. Selected and expanded
 pinned cells also use opaque variants; translucent accent colors would allow
@@ -432,12 +432,12 @@ empty.
 
 The reset messages intentionally have different scopes:
 
-| Message | Reset scope |
-| --- | --- |
-| `ResetColumnWidths` | All explicit widths and the legacy `titleWidth`. |
-| `ResetTableLayout` | Visibility, order, pinning, widths, and `titleWidth`. |
-| `ResetTableView` | Sorting, page index, filters, widths, and open filter UI. It does not reset order, visibility, or pinning. |
-| `ResetTable` | Returns to `init()` defaults while preserving the current layout version. Custom initialization options are not replayed. |
+| Message             | Reset scope                                                                                                               |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `ResetColumnWidths` | All explicit widths and the legacy `titleWidth`.                                                                          |
+| `ResetTableLayout`  | Visibility, order, pinning, widths, and `titleWidth`.                                                                     |
+| `ResetTableView`    | Sorting, page index, filters, widths, and open filter UI. It does not reset order, visibility, or pinning.                |
+| `ResetTable`        | Returns to `init()` defaults while preserving the current layout version. Custom initialization options are not replayed. |
 
 The left modified rail appears only for active filters or committed width
 changes. Order, visibility, and pin changes are reset from the column layout
@@ -466,15 +466,15 @@ All fields are Effect schemas and the complete model is JSON-serializable.
 
 ## Message groups
 
-| Group | Messages |
-| --- | --- |
-| Filtering | `ChangedColumnFilter`, `ClearedColumnFilter`, `ClearedColumnFilters`, draft/operator/date messages, apply/clear popover messages |
-| Sorting and paging | `ChangedSorting`, `ChangedPage`, `ChangedPageSize`, page-size draft/commit messages |
-| Selection and expansion | `ToggledRow`, `ToggledRows`, `ToggledExpanded` |
-| Layout | `ToggledColumn`, `MovedColumn`, `ToggledColumnPin`, `RestoredTableLayout`, reset messages |
-| Sizing | `ResizedColumn`, `StartedColumnResize`, `DraggedColumnResize`, `EndedColumnResize`, `ResetColumnWidths` |
-| Overlay lifecycle | filter/layout/menu toggles and `ClosedTableOverlays` |
-| Reserved/legacy | global/status filter, grouping, row pinning, density, and title-width messages |
+| Group                   | Messages                                                                                                                         |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Filtering               | `ChangedColumnFilter`, `ClearedColumnFilter`, `ClearedColumnFilters`, draft/operator/date messages, apply/clear popover messages |
+| Sorting and paging      | `ChangedSorting`, `ChangedPage`, `ChangedPageSize`, page-size draft/commit messages                                              |
+| Selection and expansion | `ToggledRow`, `ToggledRows`, `ToggledExpanded`                                                                                   |
+| Layout                  | `ToggledColumn`, `MovedColumn`, `ToggledColumnPin`, `RestoredTableLayout`, reset messages                                        |
+| Sizing                  | `ResizedColumn`, `StartedColumnResize`, `DraggedColumnResize`, `EndedColumnResize`, `ResetColumnWidths`                          |
+| Overlay lifecycle       | filter/layout/menu toggles and `ClosedTableOverlays`                                                                             |
+| Reserved/legacy         | global/status filter, grouping, row pinning, density, and title-width messages                                                   |
 
 ## Accessibility behavior
 
@@ -512,16 +512,16 @@ All fields are Effect schemas and the complete model is JSON-serializable.
 The following problems were found through repeated browser interaction and are
 now explicit invariants:
 
-| Previous failure | Current invariant |
-| --- | --- |
-| Resize separators extended outside the header. | Every handle is absolutely bounded by the full header height. |
-| The reset rail appeared immediately during the first drag. | Modified width state is evaluated from committed values until pointer release. |
-| Starting a later resize hid an existing reset rail. | Other committed width changes remain part of the modified calculation during a drag. |
-| Resizing one or several columns lost neighboring widths. | Widths are stored by column ID and the grid template is rebuilt for every visible column. |
-| Resized layouts were not durable. | Parents persist the layout snapshot after resize completion. |
-| Narrow columns caused row borders to stop early. | Grid and row-group widths are `max-content` with `min-width: 100%`; only the final column stretches. |
-| Scrolling content showed through the pinned selection gutter. | Pinned prefix cells fill the left padding and use opaque selected/expanded surfaces. |
-| Unpinned resize handles and filters appeared above pinned headers. | Pinned headers sit above normal controls, and scrolling closes open overlays. |
+| Previous failure                                                   | Current invariant                                                                                    |
+| ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| Resize separators extended outside the header.                     | Every handle is absolutely bounded by the full header height.                                        |
+| The reset rail appeared immediately during the first drag.         | Modified width state is evaluated from committed values until pointer release.                       |
+| Starting a later resize hid an existing reset rail.                | Other committed width changes remain part of the modified calculation during a drag.                 |
+| Resizing one or several columns lost neighboring widths.           | Widths are stored by column ID and the grid template is rebuilt for every visible column.            |
+| Resized layouts were not durable.                                  | Parents persist the layout snapshot after resize completion.                                         |
+| Narrow columns caused row borders to stop early.                   | Grid and row-group widths are `max-content` with `min-width: 100%`; only the final column stretches. |
+| Scrolling content showed through the pinned selection gutter.      | Pinned prefix cells fill the left padding and use opaque selected/expanded surfaces.                 |
+| Unpinned resize handles and filters appeared above pinned headers. | Pinned headers sit above normal controls, and scrolling closes open overlays.                        |
 
 ## Verification checklist
 
@@ -552,4 +552,3 @@ npm run build
 For the pinned-column interaction, use Playwright against
 `http://127.0.0.1:5173/blocks-stylex/table` and test real horizontal scrolling,
 not only static screenshots.
-

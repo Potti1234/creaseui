@@ -1,17 +1,17 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
-export type PopoverSide = 'top' | 'right' | 'bottom' | 'left';
-export type PopoverAlign = 'start' | 'center' | 'end';
+export type PopoverSide = 'top' | 'right' | 'bottom' | 'left'
+export type PopoverAlign = 'start' | 'center' | 'end'
 
 export type PopoverInstance = Readonly<{
-  id: string;
-  trigger: string;
-  side: PopoverSide;
-  align: PopoverAlign;
-  text: string;
-  rtl?: boolean;
-}>;
+  id: string
+  trigger: string
+  side: PopoverSide
+  align: PopoverAlign
+  text: string
+  rtl?: boolean
+}>
 
 export const popoverFixtures = [
   { title: 'Basic', kind: 'basic' },
@@ -19,22 +19,42 @@ export const popoverFixtures = [
     title: 'Align',
     kind: 'align',
     instances: [
-      { id: 'start', trigger: 'Start', side: 'bottom', align: 'start', text: 'Aligned to start' },
-      { id: 'center', trigger: 'Center', side: 'bottom', align: 'center', text: 'Aligned to center' },
-      { id: 'end', trigger: 'End', side: 'bottom', align: 'end', text: 'Aligned to end' },
+      {
+        id: 'start',
+        trigger: 'Start',
+        side: 'bottom',
+        align: 'start',
+        text: 'Aligned to start',
+      },
+      {
+        id: 'center',
+        trigger: 'Center',
+        side: 'bottom',
+        align: 'center',
+        text: 'Aligned to center',
+      },
+      {
+        id: 'end',
+        trigger: 'End',
+        side: 'bottom',
+        align: 'end',
+        text: 'Aligned to end',
+      },
     ],
   },
   { title: 'With Form', kind: 'form' },
   {
     title: 'Interactive content',
-    description: 'A bottom-start panel whose child update and effect commands are delegated by the parent.',
+    description:
+      'A bottom-start panel whose child update and effect commands are delegated by the parent.',
     kind: 'legacy',
     side: 'bottom',
     align: 'start',
   },
   {
     title: 'Right aligned',
-    description: 'Placement is an input to the same complete submodel integration.',
+    description:
+      'Placement is an input to the same complete submodel integration.',
     kind: 'legacy',
     side: 'right',
     align: 'center',
@@ -43,24 +63,52 @@ export const popoverFixtures = [
     title: 'RTL',
     kind: 'rtl',
     instances: [
-      { id: 'left', trigger: 'يسار', side: 'left', align: 'center', text: 'left', rtl: true },
-      { id: 'top', trigger: 'أعلى', side: 'top', align: 'center', text: 'top', rtl: true },
-      { id: 'bottom', trigger: 'أسفل', side: 'bottom', align: 'center', text: 'bottom', rtl: true },
-      { id: 'right', trigger: 'يمين', side: 'right', align: 'center', text: 'right', rtl: true },
+      {
+        id: 'left',
+        trigger: 'يسار',
+        side: 'left',
+        align: 'center',
+        text: 'left',
+        rtl: true,
+      },
+      {
+        id: 'top',
+        trigger: 'أعلى',
+        side: 'top',
+        align: 'center',
+        text: 'top',
+        rtl: true,
+      },
+      {
+        id: 'bottom',
+        trigger: 'أسفل',
+        side: 'bottom',
+        align: 'center',
+        text: 'bottom',
+        rtl: true,
+      },
+      {
+        id: 'right',
+        trigger: 'يمين',
+        side: 'right',
+        align: 'center',
+        text: 'right',
+        rtl: true,
+      },
     ],
   },
-] as const;
+] as const
 
-export type PopoverFixture = (typeof popoverFixtures)[number];
+export type PopoverFixture = (typeof popoverFixtures)[number]
 
-const escape = (value: string): string => value.replaceAll(`'`, `\\'`);
+const escape = (value: string): string => value.replaceAll(`'`, `\\'`)
 
 const legacySource = (
   fixture: { title: string; side: string; align: string },
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '');
-  const isStyleX = renderer === 'stylex';
+  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
+  const isStyleX = renderer === 'stylex'
   return foldkitApplication({
     title: `Popover — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
@@ -95,16 +143,16 @@ export type Message = typeof Message.Type`,
       ${isStyleX ? 'triggerLayoutStyle: styles.trigger as ComponentLayoutStyle,' : "triggerClass: 'rounded-md border px-4 py-2 text-sm font-medium',"}
       side: '${fixture.side}',
       align: '${fixture.align}',
-      content: h.div([h.Class(${isStyleX ? "className(styles.content)" : "'grid gap-2'"})], [
-        h.h4([h.Class(${isStyleX ? "className(styles.heading)" : "'font-medium'"})], ['Dimensions']),
-        h.p([h.Class(${isStyleX ? "className(styles.copy)" : "'text-sm text-muted-foreground'"})], ['Set the dimensions for the layer.']),
-        h.input([h.Type('number'), h.AriaLabel('Width'), h.Class(${isStyleX ? "className(styles.input)" : "'rounded-md border px-3 py-2'"})]),
+      content: h.div([h.Class(${isStyleX ? 'className(styles.content)' : "'grid gap-2'"})], [
+        h.h4([h.Class(${isStyleX ? 'className(styles.heading)' : "'font-medium'"})], ['Dimensions']),
+        h.p([h.Class(${isStyleX ? 'className(styles.copy)' : "'text-sm text-muted-foreground'"})], ['Set the dimensions for the layer.']),
+        h.input([h.Type('number'), h.AriaLabel('Width'), h.Class(${isStyleX ? 'className(styles.input)' : "'rounded-md border px-3 py-2'"})]),
       ]),
     }, h),
   ]),
 })`,
-  });
-};
+  })
+}
 
 const STYLES_BLOCK = `
 const styles = stylex.create({
@@ -120,21 +168,25 @@ const styles = stylex.create({
   fieldGroup: { display: 'grid', gap: '1rem' },
   labelHalf: { width: '50%' },
 })
-`;
+`
 
 const basicSource = (renderer: 'tailwind' | 'stylex'): string => {
-  const isStyleX = renderer === 'stylex';
+  const isStyleX = renderer === 'stylex'
   return foldkitApplication({
     title: 'Popover — Basic',
     imports: `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { taggedStruct } from 'foldkit/schema'
-${isStyleX ? `
+${
+  isStyleX
+    ? `
 import * as stylex from '@stylexjs/stylex'
 import type { ComponentLayoutStyle } from '@/stylex/contracts'
 import { className } from '@/stylex/style'
-` : ''}
+`
+    : ''
+}
 import * as Popover from '@/${isStyleX ? 'stylex' : 'ui'}/popover'${isStyleX ? STYLES_BLOCK : ''}`,
     model: `export const Model = S.Struct({ popover: Popover.Model })
 export type Model = typeof Model.Type`,
@@ -178,43 +230,56 @@ export type Message = typeof Message.Type`,
     }, h),
   ]),
 })`,
-  });
-};
+  })
+}
 
 const multiSource = (
   fixture: { title: string; instances: ReadonlyArray<PopoverInstance> },
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const isStyleX = renderer === 'stylex';
-  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '');
-  const headerEmit = (text: string, rtl: boolean): string => `h.div([h.Class(${isStyleX ? 'className(styles.content)' : "'grid gap-2'"})], [
+  const isStyleX = renderer === 'stylex'
+  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
+  const headerEmit = (
+    text: string,
+    rtl: boolean,
+  ): string => `h.div([h.Class(${isStyleX ? 'className(styles.content)' : "'grid gap-2'"})], [
           h.h4([h.Class(${isStyleX ? 'className(styles.heading)' : "'font-medium'"})], ['${rtl ? 'الأبعاد' : 'Dimensions'}']),
           h.p([h.Class(${isStyleX ? 'className(styles.copy)' : "'text-sm text-muted-foreground'"})], ['${rtl ? 'تعيين الأبعاد للطبقة.' : text}']),
-        ])`;
-  const popoverEmit = (instance: PopoverInstance): string => `    Popover.popover({
+        ])`
+  const popoverEmit = (
+    instance: PopoverInstance,
+  ): string => `    Popover.popover({
       model: model.popovers['${instance.id}'] ?? Popover.init({ id: 'popover-${instance.id}', isAnimated: true, contentFocus: true }),
       toParentMessage: message => GotPopoverMessage({ id: '${instance.id}', message }),
       trigger: '${escape(instance.trigger)}',
       ${isStyleX ? 'triggerLayoutStyle: styles.triggerSm as ComponentLayoutStyle,' : "triggerClass: 'rounded-md border px-3 py-1.5 text-sm',"}
       side: '${instance.side}',
-      align: '${instance.align}',${instance.rtl === true ? `
+      align: '${instance.align}',${
+        instance.rtl === true
+          ? `
       direction: 'rtl',
       ${isStyleX ? 'layoutStyle: styles.panel,' : "class: 'w-40',"}
-      content: ${headerEmit(instance.text, true)},` : `
+      content: ${headerEmit(instance.text, true)},`
+          : `
       ${isStyleX ? 'layoutStyle: styles.panel,' : "class: 'w-40',"}
-      content: '${escape(instance.text)}',`}
-    }, h)`;
+      content: '${escape(instance.text)}',`
+      }
+    }, h)`
   return foldkitApplication({
     title: `Popover — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { taggedStruct } from 'foldkit/schema'
-${isStyleX ? `
+${
+  isStyleX
+    ? `
 import * as stylex from '@stylexjs/stylex'
 import type { ComponentLayoutStyle } from '@/stylex/contracts'
 import { className } from '@/stylex/style'
-` : ''}
+`
+    : ''
+}
 import * as Popover from '@/${isStyleX ? 'stylex' : 'ui'}/popover'${isStyleX ? STYLES_BLOCK : ''}`,
     model: `export const Model = S.Struct({
   popovers: S.Record(S.String, Popover.Model),
@@ -271,30 +336,38 @@ ${fixture.instances.map(popoverEmit).join(',\n')}
     ]),
   ]),
 })`,
-  });
-};
+  })
+}
 
 const formSource = (renderer: 'tailwind' | 'stylex'): string => {
-  const isStyleX = renderer === 'stylex';
-  const fieldEmit = (id: string, label: string, value: string): string => `          Field.field({ orientation: 'horizontal', children: [
-            Field.fieldLabel({ for: '${id}', children: ['${label}']${isStyleX ? ", layoutStyle: styles.labelHalf" : ", class: 'w-1/2'"} }, h),
+  const isStyleX = renderer === 'stylex'
+  const fieldEmit = (
+    id: string,
+    label: string,
+    value: string,
+  ): string => `          Field.field({ orientation: 'horizontal', children: [
+            Field.fieldLabel({ for: '${id}', children: ['${label}']${isStyleX ? ', layoutStyle: styles.labelHalf' : ", class: 'w-1/2'"} }, h),
             Input.input({
               id: '${id}',
               value: model.values['${id}'] ?? '${value}',
               onInput: value => ChangedFieldInput({ id: '${id}', value }),
             }, h),
-          ] }, h)`;
+          ] }, h)`
   return foldkitApplication({
     title: 'Popover — With Form',
     imports: `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { taggedStruct } from 'foldkit/schema'
-${isStyleX ? `
+${
+  isStyleX
+    ? `
 import * as stylex from '@stylexjs/stylex'
 import type { ComponentLayoutStyle } from '@/stylex/contracts'
 import { className } from '@/stylex/style'
-` : ''}
+`
+    : ''
+}
 import * as Field from '@/${isStyleX ? 'stylex' : 'ui'}/field'
 import * as Input from '@/${isStyleX ? 'stylex' : 'ui'}/input'
 import * as Popover from '@/${isStyleX ? 'stylex' : 'ui'}/popover'${isStyleX ? STYLES_BLOCK : ''}`,
@@ -364,19 +437,21 @@ ${fieldEmit('height', 'Height', '25px')},
     }, h),
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const popoverExamples = (
   renderer: 'tailwind' | 'stylex',
-): ReadonlyArray<DocsExample> => popoverFixtures.map(fixture => ({
-  title: fixture.title,
-  ...('description' in fixture ? { description: fixture.description } : {}),
-  code: fixture.kind === 'legacy'
-    ? legacySource(fixture, renderer)
-    : fixture.kind === 'basic'
-      ? basicSource(renderer)
-      : fixture.kind === 'form'
-        ? formSource(renderer)
-        : multiSource(fixture, renderer),
-}));
+): ReadonlyArray<DocsExample> =>
+  popoverFixtures.map(fixture => ({
+    title: fixture.title,
+    ...('description' in fixture ? { description: fixture.description } : {}),
+    code:
+      fixture.kind === 'legacy'
+        ? legacySource(fixture, renderer)
+        : fixture.kind === 'basic'
+          ? basicSource(renderer)
+          : fixture.kind === 'form'
+            ? formSource(renderer)
+            : multiSource(fixture, renderer),
+  }))

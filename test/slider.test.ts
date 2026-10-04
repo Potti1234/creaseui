@@ -12,7 +12,11 @@ describe('Slider range policy', () => {
   it('orders bounds and replaces invalid steps', () => {
     assert.deepEqual(normalizeRange(100, 0, 5), { min: 0, max: 100, step: 5 })
     assert.deepEqual(normalizeRange(0, 10, 0), { min: 0, max: 10, step: 1 })
-    assert.deepEqual(normalizeRange(0, 10, Number.NaN), { min: 0, max: 10, step: 1 })
+    assert.deepEqual(normalizeRange(0, 10, Number.NaN), {
+      min: 0,
+      max: 10,
+      step: 1,
+    })
   })
 
   it('snaps fractional values without floating-point residue', () => {

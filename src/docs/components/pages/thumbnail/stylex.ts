@@ -1,27 +1,37 @@
-import * as stylex from '@stylexjs/stylex';
-import type { HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   thumbnailFixtures,
   type ThumbnailItem,
-} from '@/docs/components/pages/thumbnail/shared';
-import { className } from '@/stylex/style';
-import { tokens } from '../../../../stylex/tokens.stylex';
-import * as Thumbnail from '@/stylex/thumbnail';
+} from '@/docs/components/pages/thumbnail/shared'
+import { className } from '@/stylex/style'
+import { tokens } from '../../../../stylex/tokens.stylex'
+import * as Thumbnail from '@/stylex/thumbnail'
 
 const styles = stylex.create({
-  column: { gap: '1rem', display: 'flex', flexDirection: 'column', },
-  section: { gap: '0.25rem', display: 'flex', flexDirection: 'column', },
-  row: { gap: '0.75rem', alignItems: 'flex-end', display: 'flex', flexWrap: 'wrap', },
-  rowCenter: { gap: '0.75rem', alignItems: 'center', display: 'flex', },
-  item: { gap: '0.25rem', alignItems: 'center', display: 'flex', flexDirection: 'column', },
+  column: { gap: '1rem', display: 'flex', flexDirection: 'column' },
+  section: { gap: '0.25rem', display: 'flex', flexDirection: 'column' },
+  row: {
+    gap: '0.75rem',
+    alignItems: 'flex-end',
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  rowCenter: { gap: '0.75rem', alignItems: 'center', display: 'flex' },
+  item: {
+    gap: '0.25rem',
+    alignItems: 'center',
+    display: 'flex',
+    flexDirection: 'column',
+  },
   caption: {
     color: tokens.mutedForeground,
     fontSize: '0.75rem',
     lineHeight: '1rem',
   },
-});
+})
 
 const itemView = <Msg>(item: ThumbnailItem, noop: Msg, h: HtmlBuilder<Msg>) =>
   Thumbnail.thumbnail(
@@ -33,10 +43,12 @@ const itemView = <Msg>(item: ThumbnailItem, noop: Msg, h: HtmlBuilder<Msg>) =>
       ...(item.isDisabled === true ? { isDisabled: true } : {}),
       ...(item.hasRemove === true ? { onRemove: noop } : {}),
       ...(item.hasClick === true ? { onClick: noop } : {}),
-      ...(item.showRemoveOn === 'always' ? { showRemoveOn: 'always' as const } : {}),
+      ...(item.showRemoveOn === 'always'
+        ? { showRemoveOn: 'always' as const }
+        : {}),
     },
     h,
-  );
+  )
 
 export const thumbnailStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
@@ -44,26 +56,32 @@ export const thumbnailStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ) => {
-  const fixture = thumbnailFixtures[exampleIndex] ?? thumbnailFixtures[0];
+  const fixture = thumbnailFixtures[exampleIndex] ?? thumbnailFixtures[0]
   const noop = onMessageJson(
     JSON.stringify({ _tag: 'InteractedWithThumbnailPreview' }),
-  );
+  )
   const caption = (text: string) =>
-    h.span([h.Class(className(styles.caption))], [text]);
+    h.span([h.Class(className(styles.caption))], [text])
   const itemBlock = (item: ThumbnailItem) =>
     item.caption === undefined
       ? itemView(item, noop, h)
       : h.div(
           [h.Class(className(styles.item))],
           [itemView(item, noop, h), caption(item.caption)],
-        );
+        )
   if (fixture.layout === 'single')
-    return itemView(fixture.items[0] ?? { label: '' }, noop, h);
+    return itemView(fixture.items[0] ?? { label: '' }, noop, h)
   if (fixture.layout === 'sections') {
     const sections = [
-      { label: fixture.items[0]?.caption ?? 'Enabled', items: fixture.items.slice(0, 2) },
-      { label: fixture.items[2]?.caption ?? 'Disabled', items: fixture.items.slice(2) },
-    ];
+      {
+        label: fixture.items[0]?.caption ?? 'Enabled',
+        items: fixture.items.slice(0, 2),
+      },
+      {
+        label: fixture.items[2]?.caption ?? 'Disabled',
+        items: fixture.items.slice(2),
+      },
+    ]
     return h.div(
       [h.Class(className(styles.column))],
       sections.map(section =>
@@ -78,7 +96,7 @@ export const thumbnailStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           ],
         ),
       ),
-    );
+    )
   }
   return h.div(
     [h.Class(className(styles.column))],
@@ -89,5 +107,5 @@ export const thumbnailStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         fixture.items.map(item => itemBlock(item)),
       ),
     ],
-  );
-};
+  )
+}

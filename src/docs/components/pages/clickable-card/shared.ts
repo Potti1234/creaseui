@@ -1,13 +1,13 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { staticComponentApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 export type ClickableCardFixture = Readonly<{
-  title: string;
-  description: string;
-  label: string;
-  elevation?: 'med';
-  kind: 'settings' | 'report' | 'product';
-}>;
+  title: string
+  description: string
+  label: string
+  elevation?: 'med'
+  kind: 'settings' | 'report' | 'product'
+}>
 
 /* Example set ported from Meta Astryx
    packages/cli/assets/templates/blocks/components/Card/ClickableCard*.tsx —
@@ -37,10 +37,10 @@ export const clickableCardFixtures: Readonly<
     label: 'Product',
     kind: 'product',
   },
-];
+]
 
 const ui = (renderer: 'tailwind' | 'stylex'): string =>
-  renderer === 'stylex' ? 'stylex' : 'ui';
+  renderer === 'stylex' ? 'stylex' : 'ui'
 
 const cls = (
   renderer: 'tailwind' | 'stylex',
@@ -49,7 +49,7 @@ const cls = (
 ): string =>
   renderer === 'tailwind'
     ? `h.Class('${tailwindValue}')`
-    : `h.Class(stylex.props(styles.${styleKey}).className ?? '')`;
+    : `h.Class(stylex.props(styles.${styleKey}).className ?? '')`
 
 const STYLEX_STYLES = {
   stack2: `{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }`,
@@ -57,11 +57,11 @@ const STYLEX_STYLES = {
   stack1: `{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }`,
   heading: `{ fontSize: '1.25rem', lineHeight: '1.75rem', fontWeight: 600, letterSpacing: '-0.01em' }`,
   body: `{ fontSize: '0.875rem', lineHeight: '1.25rem', color: 'var(--muted-foreground)' }`,
-} as const;
-type StylexStyleKey = keyof typeof STYLEX_STYLES;
+} as const
+type StylexStyleKey = keyof typeof STYLEX_STYLES
 
 const stylexImports = (keys: ReadonlyArray<StylexStyleKey>): string =>
-  `import * as stylex from '@stylexjs/stylex'\n\nconst styles = stylex.create({\n${keys.map(k => `  ${k}: ${STYLEX_STYLES[k]},`).join('\n')}\n})`;
+  `import * as stylex from '@stylexjs/stylex'\n\nconst styles = stylex.create({\n${keys.map(k => `  ${k}: ${STYLEX_STYLES[k]},`).join('\n')}\n})`
 
 const textBlock = (
   renderer: 'tailwind' | 'stylex',
@@ -70,7 +70,7 @@ const textBlock = (
 ): string => `h.div([${cls(renderer, 'flex flex-col gap-2', 'stack2')}], [
         h.h4([${cls(renderer, 'scroll-m-20 text-xl font-semibold tracking-tight', 'heading')}], ['${heading}']),
         h.p([${cls(renderer, 'text-sm text-muted-foreground', 'body')}], ['${body}']),
-      ])`;
+      ])`
 
 const bodySource = (
   fixture: ClickableCardFixture,
@@ -82,13 +82,13 @@ const bodySource = (
         renderer,
         'Settings',
         'Click anywhere on this card to navigate. Nested buttons and links work independently.',
-      );
+      )
     case 'report':
       return textBlock(
         renderer,
         'Quarterly report',
         'A raised shadow signals the whole card is clickable, lifting it above the surrounding content.',
-      );
+      )
     case 'product':
       return `h.div([${cls(renderer, 'flex flex-col gap-3', 'stack3')}], [
         h.div([${cls(renderer, 'flex flex-col gap-1', 'stack1')}], [
@@ -96,27 +96,29 @@ const bodySource = (
           h.p([${cls(renderer, 'text-sm text-muted-foreground', 'body')}], ['$79.99']),
         ]),
         Button.button({ variant: 'default', children: ['Add to cart'] }, h),
-      ])`;
+      ])`
   }
-};
+}
 
 const styleKeysFor = (
   kind: ClickableCardFixture['kind'],
 ): ReadonlyArray<StylexStyleKey> =>
   kind === 'product'
     ? ['stack3', 'stack1', 'heading', 'body']
-    : ['stack2', 'heading', 'body'];
+    : ['stack2', 'heading', 'body']
 
 const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
-  const fixture = clickableCardFixtures[index] ?? clickableCardFixtures[0];
+  const fixture = clickableCardFixtures[index] ?? clickableCardFixtures[0]
   const componentImports = [
     ...(fixture.kind === 'product'
       ? [`import * as Button from '@/${ui(renderer)}/button'`]
       : []),
-    ...(renderer === 'stylex' ? [stylexImports(styleKeysFor(fixture.kind))] : []),
+    ...(renderer === 'stylex'
+      ? [stylexImports(styleKeysFor(fixture.kind))]
+      : []),
   ]
     .filter(Boolean)
-    .join('\n');
+    .join('\n')
   return staticComponentApplication({
     componentName: 'ClickableCard',
     componentSlug: 'clickable-card',
@@ -131,8 +133,8 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
         ${bodySource(fixture, renderer)},
       ],
     }, h)`,
-  });
-};
+  })
+}
 
 export const clickableCardExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -141,4 +143,4 @@ export const clickableCardExamples = (
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
-  }));
+  }))

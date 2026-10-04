@@ -87,7 +87,8 @@ const getMillisecondsUntilNextChange = (
     return Math.min(startTime - now + ONE_SECOND_MS, MAX_TIMEOUT_MS)
   }
   const precision =
-    format === 'elapsed' && elapsedMilliseconds >= ONE_HOUR_SECONDS * ONE_SECOND_MS
+    format === 'elapsed' &&
+    elapsedMilliseconds >= ONE_HOUR_SECONDS * ONE_SECOND_MS
       ? ONE_MINUTE_MS
       : ONE_SECOND_MS
   return precision - (elapsedMilliseconds % precision)
@@ -147,11 +148,11 @@ export const update = (model: Model, message: Message): UpdateReturn => {
   }
 }
 
-export const subscriptions = Subscription.make<Model, Message>()((entry) => ({
+export const subscriptions = Subscription.make<Model, Message>()(entry => ({
   tick: entry(
     { waitMs: S.Number, tickId: S.String },
     {
-      modelToDependencies: (model) => ({
+      modelToDependencies: model => ({
         waitMs: getMillisecondsUntilNextChange(
           model.nowMs,
           model.startTimeMs,
@@ -194,7 +195,10 @@ export type TimerProps<Msg> = Readonly<{
   layoutStyle?: ComponentLayoutStyle
 }>
 
-export const timer = <Msg>(props: TimerProps<Msg>, h: HtmlBuilder<Msg>): Html => {
+export const timer = <Msg>(
+  props: TimerProps<Msg>,
+  h: HtmlBuilder<Msg>,
+): Html => {
   const presentation = getPresentation(
     getElapsedMilliseconds(props.model.nowMs, props.model.startTimeMs),
     props.model.format,
@@ -208,7 +212,9 @@ export const timer = <Msg>(props: TimerProps<Msg>, h: HtmlBuilder<Msg>): Html =>
         className(
           styles.time,
           ...astryxTextStylex({
-            ...(props.type === undefined ? { type: 'supporting' as const } : { type: props.type }),
+            ...(props.type === undefined
+              ? { type: 'supporting' as const }
+              : { type: props.type }),
             ...(props.size === undefined ? {} : { size: props.size }),
             color: props.color ?? 'secondary',
             ...(props.weight === undefined ? {} : { weight: props.weight }),

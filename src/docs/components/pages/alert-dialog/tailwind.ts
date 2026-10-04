@@ -1,17 +1,17 @@
-import { Effect, Option, Schema as S } from 'effect';
-import type { Update } from 'foldkit';
-import { Command } from 'foldkit';
-import { defineMessageUnion } from 'foldkit/message';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import { Effect, Option, Schema as S } from 'effect'
+import type { Update } from 'foldkit'
+import { Command } from 'foldkit'
+import { defineMessageUnion } from 'foldkit/message'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { definePreviewProgram } from '@/docs/components/pages/authored-page';
+import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
   alertDialogFixtures,
   type AlertDialogFixture,
-} from '@/docs/components/pages/alert-dialog/shared';
-import * as Icon from '@/lib/icon';
-import * as AlertDialog from '@/ui/alert-dialog';
-import * as Button from '@/ui/button';
+} from '@/docs/components/pages/alert-dialog/shared'
+import * as Icon from '@/lib/icon'
+import * as AlertDialog from '@/ui/alert-dialog'
+import * as Button from '@/ui/button'
 
 const PreviewMessage = defineMessageUnion({
   OpenedAlertDialog: {},
@@ -19,8 +19,8 @@ const PreviewMessage = defineMessageUnion({
   CompletedAlertDialogAction: {},
   GotAlertDialogMessage: { message: AlertDialog.Message },
   GotAlertDialogSmallMessage: { message: AlertDialog.Message },
-});
-type PreviewMessage = typeof PreviewMessage.Type;
+})
+type PreviewMessage = typeof PreviewMessage.Type
 
 const PreviewModel = S.Struct({
   _docsPage: S.Literal('alert-dialog'),
@@ -28,19 +28,19 @@ const PreviewModel = S.Struct({
   dialogSmall: AlertDialog.Model,
   status: S.Literals(['idle', 'pending', 'complete']),
   asyncFlow: S.Boolean,
-});
-type PreviewModel = typeof PreviewModel.Type;
+})
+type PreviewModel = typeof PreviewModel.Type
 
 const FinishAction = Command.define('FinishAlertDialogAction', {
   messages: [PreviewMessage['CompletedAlertDialogAction']],
   execute: Effect.sleep('350 millis').pipe(
     Effect.as(PreviewMessage['CompletedAlertDialogAction']()),
   ),
-});
+})
 
 type PreviewCommands = NonNullable<
   Update.Return<PreviewModel, PreviewMessage>['commands']
->;
+>
 
 const applyDialogClose = (
   model: PreviewModel,
@@ -49,7 +49,7 @@ const applyDialogClose = (
   tag: 'GotAlertDialogMessage' | 'GotAlertDialogSmallMessage',
   commands: PreviewCommands,
 ): Update.Return<PreviewModel, PreviewMessage> => {
-  const closed = AlertDialog.close(dialogModel);
+  const closed = AlertDialog.close(dialogModel)
   return {
     model: { ...model, [field]: closed.model },
     commands: [
@@ -58,8 +58,8 @@ const applyDialogClose = (
         PreviewMessage[tag]({ message }),
       ),
     ],
-  };
-};
+  }
+}
 
 const applyDialog = (
   model: PreviewModel,
@@ -69,10 +69,10 @@ const applyDialog = (
 ): Update.Return<PreviewModel, PreviewMessage> => {
   const commands = Command.mapMessages(result.commands ?? [], message =>
     PreviewMessage[tag]({ message }),
-  );
-  const out = Option.fromNullishOr(result.outMessage);
+  )
+  const out = Option.fromNullishOr(result.outMessage)
   if (Option.isNone(out)) {
-    return { model: { ...model, [field]: result.model }, commands };
+    return { model: { ...model, [field]: result.model }, commands }
   }
   if (out.value._tag === 'ConfirmedAlertDialog') {
     return model.asyncFlow
@@ -80,10 +80,13 @@ const applyDialog = (
           model: { ...model, [field]: result.model, status: 'pending' },
           commands: [...commands, FinishAction()],
         }
-      : applyDialogClose(model, field, result.model, tag, commands);
+      : applyDialogClose(model, field, result.model, tag, commands)
   }
-  return { model: { ...model, [field]: result.model, status: 'idle' }, commands };
-};
+  return {
+    model: { ...model, [field]: result.model, status: 'idle' },
+    commands,
+  }
+}
 
 const dialogView = (
   spec: AlertDialogFixture['dialogs'][number],
@@ -122,7 +125,7 @@ const dialogView = (
           }),
     },
     h,
-  );
+  )
 
 const fixtureView = (
   fixture: AlertDialogFixture,
@@ -149,28 +152,37 @@ const fixtureView = (
       model,
       h,
     ),
-  ]);
+  ])
   if (fixture.kind === 'rtl') {
     return h.div(
-      [h.Dir('rtl'), h.Class('flex flex-wrap items-center justify-center gap-3')],
+      [
+        h.Dir('rtl'),
+        h.Class('flex flex-wrap items-center justify-center gap-3'),
+      ],
       children,
-    );
+    )
   }
-  return h.div([h.Class('grid justify-items-center gap-3')], [
-    ...children,
-    ...(fixture.async === undefined
-      ? []
-      : [
-          h.p([h.Role('status'), h.Class('text-sm text-muted-foreground')], [
-            model.status === 'complete'
-              ? fixture.async.completeLabel
-              : model.status === 'pending'
-                ? 'Working…'
-                : 'No action taken.',
+  return h.div(
+    [h.Class('grid justify-items-center gap-3')],
+    [
+      ...children,
+      ...(fixture.async === undefined
+        ? []
+        : [
+            h.p(
+              [h.Role('status'), h.Class('text-sm text-muted-foreground')],
+              [
+                model.status === 'complete'
+                  ? fixture.async.completeLabel
+                  : model.status === 'pending'
+                    ? 'Working…'
+                    : 'No action taken.',
+              ],
+            ),
           ]),
-        ]),
-  ]);
-};
+    ],
+  )
+}
 
 export const alertDialogTailwindPreviewProgram = definePreviewProgram<
   PreviewModel,
@@ -199,14 +211,14 @@ export const alertDialogTailwindPreviewProgram = definePreviewProgram<
           'dialog',
           AlertDialog.open(model.dialog),
           'GotAlertDialogMessage',
-        );
+        )
       case 'OpenedAlertDialogSmall':
         return applyDialog(
           model,
           'dialogSmall',
           AlertDialog.open(model.dialogSmall),
           'GotAlertDialogSmallMessage',
-        );
+        )
       case 'CompletedAlertDialogAction':
         return applyDialogClose(
           { ...model, status: 'complete' },
@@ -214,23 +226,23 @@ export const alertDialogTailwindPreviewProgram = definePreviewProgram<
           model.dialog,
           'GotAlertDialogMessage',
           [],
-        );
+        )
       case 'GotAlertDialogMessage':
         return applyDialog(
           model,
           'dialog',
           AlertDialog.update(model.dialog, message.message),
           'GotAlertDialogMessage',
-        );
+        )
       case 'GotAlertDialogSmallMessage':
         return applyDialog(
           model,
           'dialogSmall',
           AlertDialog.update(model.dialogSmall, message.message),
           'GotAlertDialogSmallMessage',
-        );
+        )
     }
   },
   view: (index, model, h) =>
     fixtureView(alertDialogFixtures[index] ?? alertDialogFixtures[0], model, h),
-});
+})

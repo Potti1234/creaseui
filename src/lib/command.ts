@@ -9,7 +9,7 @@ export const filterCommandItems = <Item>(
 ): ReadonlyArray<Item> => {
   const query = normalizeCommandQuery(queryValue)
   if (query === '' || queryValue === restingInputValue) return items
-  return items.filter((item) =>
+  return items.filter(item =>
     normalizeCommandQuery(itemToSearchText(item)).includes(query),
   )
 }

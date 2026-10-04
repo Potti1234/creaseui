@@ -57,7 +57,9 @@ const panel = Scene.selector('#hc-content')
 const anchorMount = { name: 'AnchorTooltip' }
 
 const pendingWaitVersion = (
-  commands: ReadonlyArray<Readonly<{ name: string; args?: Record<string, unknown> }>>,
+  commands: ReadonlyArray<
+    Readonly<{ name: string; args?: Record<string, unknown> }>
+  >,
   name: string,
 ): number => {
   const pending = commands.find(command => command.name === name)
@@ -73,7 +75,10 @@ const showTimerFires = (simulation: Scene.SceneSimulation<Model, Message>) =>
   Scene.Command.resolve(
     HoverCardBehavior.WaitBeforeShowing,
     HoverCardBehavior.Message.CompletedWaitBeforeShowingHoverCard({
-      version: pendingWaitVersion(simulation.commands, 'WaitBeforeShowingHoverCard'),
+      version: pendingWaitVersion(
+        simulation.commands,
+        'WaitBeforeShowingHoverCard',
+      ),
     }),
   )(simulation)
 
@@ -82,12 +87,18 @@ const closeTimerFires = (simulation: Scene.SceneSimulation<Model, Message>) =>
   Scene.Command.resolve(
     HoverCardBehavior.WaitBeforeClosing,
     HoverCardBehavior.Message.CompletedWaitBeforeClosingHoverCard({
-      version: pendingWaitVersion(simulation.commands, 'WaitBeforeClosingHoverCard'),
+      version: pendingWaitVersion(
+        simulation.commands,
+        'WaitBeforeClosingHoverCard',
+      ),
     }),
   )(simulation)
 
 const anchorResolved = () =>
-  Scene.Mount.resolve(anchorMount, HoverCardBehavior.Message.CompletedHoverCardAnchor())
+  Scene.Mount.resolve(
+    anchorMount,
+    HoverCardBehavior.Message.CompletedHoverCardAnchor(),
+  )
 
 const anchorEnded = () => Scene.Mount.expectEnded(anchorMount)
 
@@ -290,21 +301,18 @@ const verifyRenderer = (name: string, HoverCard: HoverCardModule) => {
 
       // DIVERGENCE: same as the externally-opened case — Base UI keeps a
       // defaultOpen popup open across hover-out; creaseui schedules a close.
-      it.fails(
-        'does not close after hovering out of a popup opened without trigger hover',
-        () => {
-          Scene.scene(
-            { update, view },
-            Scene.given(init({ isOpen: true })),
-            anchorResolved(),
-            Scene.hover(card),
-            Scene.expectHandled(),
-            Scene.Subscription.emit(HoverCardBehavior.Message.LeftHoverCard()),
-            closeTimerFires,
-            Scene.expect(panel).toExist(),
-          )
-        },
-      )
+      it.fails('does not close after hovering out of a popup opened without trigger hover', () => {
+        Scene.scene(
+          { update, view },
+          Scene.given(init({ isOpen: true })),
+          anchorResolved(),
+          Scene.hover(card),
+          Scene.expectHandled(),
+          Scene.Subscription.emit(HoverCardBehavior.Message.LeftHoverCard()),
+          closeTimerFires,
+          Scene.expect(panel).toExist(),
+        )
+      })
     })
 
     describe('prop: delay', () => {
@@ -424,11 +432,17 @@ const verifyRenderer = (name: string, HoverCard: HoverCardModule) => {
         switch (message._tag) {
           case 'Parent': {
             const next = update(model.parent, message.message)
-            return { model: { ...model, parent: next.model }, commands: next.commands }
+            return {
+              model: { ...model, parent: next.model },
+              commands: next.commands,
+            }
           }
           case 'Child': {
             const next = update(model.child, message.message)
-            return { model: { ...model, child: next.model }, commands: next.commands }
+            return {
+              model: { ...model, child: next.model },
+              commands: next.commands,
+            }
           }
           case 'Noop':
             return { model }
@@ -438,32 +452,41 @@ const verifyRenderer = (name: string, HoverCard: HoverCardModule) => {
       const nestedView =
         (HoverCard: HoverCardModule) =>
         (model: NestedModel, h: HtmlBuilder<NestedMessage>) =>
-          h.div([], [
-            h.button(
-              [h.Type('button'), h.OnClick({ _tag: 'Noop' })],
-              ['Outside'],
-            ),
-            HoverCard.hoverCard(
-              {
-                model: model.parent,
-                toParentMessage: (message): NestedMessage => ({ _tag: 'Parent', message }),
-                trigger: 'Parent link',
-                content: HoverCard.hoverCard(
-                  {
-                    model: model.child,
-                    toParentMessage: (message): NestedMessage => ({ _tag: 'Child', message }),
-                    trigger: 'Child link',
-                    content: h.button(
-                      [h.Type('button'), h.OnClick({ _tag: 'Noop' })],
-                      ['Inside child popup'],
-                    ),
-                  },
-                  h,
-                ),
-              },
-              h,
-            ),
-          ])
+          h.div(
+            [],
+            [
+              h.button(
+                [h.Type('button'), h.OnClick({ _tag: 'Noop' })],
+                ['Outside'],
+              ),
+              HoverCard.hoverCard(
+                {
+                  model: model.parent,
+                  toParentMessage: (message): NestedMessage => ({
+                    _tag: 'Parent',
+                    message,
+                  }),
+                  trigger: 'Parent link',
+                  content: HoverCard.hoverCard(
+                    {
+                      model: model.child,
+                      toParentMessage: (message): NestedMessage => ({
+                        _tag: 'Child',
+                        message,
+                      }),
+                      trigger: 'Child link',
+                      content: h.button(
+                        [h.Type('button'), h.OnClick({ _tag: 'Noop' })],
+                        ['Inside child popup'],
+                      ),
+                    },
+                    h,
+                  ),
+                },
+                h,
+              ),
+            ],
+          )
 
       const nestedInit = (child?: Partial<Model>): NestedModel => ({
         parent: init({ isOpen: true, id: 'parent' }),
@@ -502,12 +525,22 @@ const verifyRenderer = (name: string, HoverCard: HoverCardModule) => {
       it('keeps the parent preview card open when press starts in nested popup and ends outside', () => {
         Scene.scene(
           { update: nestedUpdate, view: nestedView(HoverCard) },
-          Scene.given(
-            nestedInit({ isOpen: true }),
-          ),
+          Scene.given(nestedInit({ isOpen: true })),
           Scene.Mount.resolveAll(
-            [anchorMount, { _tag: 'Parent', message: HoverCardBehavior.Message.CompletedHoverCardAnchor() }],
-            [anchorMount, { _tag: 'Child', message: HoverCardBehavior.Message.CompletedHoverCardAnchor() }],
+            [
+              anchorMount,
+              {
+                _tag: 'Parent',
+                message: HoverCardBehavior.Message.CompletedHoverCardAnchor(),
+              },
+            ],
+            [
+              anchorMount,
+              {
+                _tag: 'Child',
+                message: HoverCardBehavior.Message.CompletedHoverCardAnchor(),
+              },
+            ],
           ),
           Scene.expect(parentPanel).toExist(),
           Scene.expect(childPanel).toExist(),
@@ -555,7 +588,9 @@ const verifyRenderer = (name: string, HoverCard: HoverCardModule) => {
             HoverCardBehavior.WaitBeforeClosing,
             // Stale version: models a close timer that outlived its wait
             // (e.g. the pointer re-entered and bumped closeVersion).
-            HoverCardBehavior.Message.CompletedWaitBeforeClosingHoverCard({ version: -1 }),
+            HoverCardBehavior.Message.CompletedWaitBeforeClosingHoverCard({
+              version: -1,
+            }),
           ),
           Scene.expect(panel).toExist(),
           // A real leave still closes it.

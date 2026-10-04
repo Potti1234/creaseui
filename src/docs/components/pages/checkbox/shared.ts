@@ -1,47 +1,133 @@
-import type { DocsExample } from '@/docs/components/page-definition';
+import type { DocsExample } from '@/docs/components/page-definition'
 import {
   controlledBooleanApplication,
   foldkitApplication,
-} from '@/docs/components/pages/authored-page';
+} from '@/docs/components/pages/authored-page'
 
 export const checkboxGroupItems = [
   { id: 'disks', label: 'Hard disks', initial: true },
   { id: 'external', label: 'External disks', initial: true },
   { id: 'drives', label: 'CDs/DVDs/iPods', initial: false },
   { id: 'servers', label: 'Connected servers', initial: false },
-] as const;
-export type CheckboxGroupItemId = (typeof checkboxGroupItems)[number]['id'];
+] as const
+export type CheckboxGroupItemId = (typeof checkboxGroupItems)[number]['id']
 
 export const checkboxTableRows = [
-  { id: '1', name: 'Sarah Chen', email: 'sarah.chen@example.com', role: 'Admin' },
-  { id: '2', name: 'Marcus Rodriguez', email: 'marcus.rodriguez@example.com', role: 'User' },
-  { id: '3', name: 'Priya Patel', email: 'priya.patel@example.com', role: 'User' },
-  { id: '4', name: 'David Kim', email: 'david.kim@example.com', role: 'Editor' },
-] as const;
+  {
+    id: '1',
+    name: 'Sarah Chen',
+    email: 'sarah.chen@example.com',
+    role: 'Admin',
+  },
+  {
+    id: '2',
+    name: 'Marcus Rodriguez',
+    email: 'marcus.rodriguez@example.com',
+    role: 'User',
+  },
+  {
+    id: '3',
+    name: 'Priya Patel',
+    email: 'priya.patel@example.com',
+    role: 'User',
+  },
+  {
+    id: '4',
+    name: 'David Kim',
+    email: 'david.kim@example.com',
+    role: 'Editor',
+  },
+] as const
 
 export type CheckboxFixture = Readonly<{
-  title: string;
-  description?: string;
-  heroOnly?: boolean;
-  kind: 'single' | 'group' | 'table';
-  label: string;
-  checked?: boolean;
-  config?: string;
-  rtl?: boolean;
-}>;
+  title: string
+  description?: string
+  heroOnly?: boolean
+  kind: 'single' | 'group' | 'table'
+  label: string
+  checked?: boolean
+  config?: string
+  rtl?: boolean
+}>
 
 export const checkboxFixtures: ReadonlyArray<CheckboxFixture> = [
-  { title: 'Demo', heroOnly: true, kind: 'single', label: 'Accept terms and conditions' },
-  { title: 'Invalid State', kind: 'single', label: 'Accept terms and conditions', config: 'isInvalid: true,', description: 'aria-invalid styling marks the box without blocking toggles.' },
-  { title: 'Basic', kind: 'single', label: 'Accept terms and conditions', description: 'Model the checked value explicitly and update it from the toggle fact.' },
-  { title: 'Description', kind: 'single', label: 'Accept terms and conditions', checked: true, config: `description: 'By clicking this checkbox, you agree to the terms and conditions.',`, description: 'The description prop links the explanation through aria-describedby.' },
-  { title: 'Disabled', kind: 'single', label: 'Enable notifications', config: 'isDisabled: true,', description: 'Disabled state remains visible and labeled but cannot dispatch a toggle Message.' },
-  { title: 'Group', kind: 'group', label: '', description: 'A fieldSet groups related toggles under one legend and description.' },
-  { title: 'Table', kind: 'table', label: '', description: 'A select-all header checkbox toggles every row; row state is a serializable id array.' },
-  { title: 'RTL', kind: 'single', label: 'Accept terms and conditions', rtl: true, description: 'Right-to-left direction renders inside a dir="rtl" container.' },
-  { title: 'Indeterminate', kind: 'single', label: 'Select all components', config: 'isIndeterminate: true,', description: 'Use indeterminate for a parent choice whose children contain mixed values.' },
-  { title: 'Read only', kind: 'single', label: 'Account verified', checked: true, config: `isReadOnly: true,\n  description: 'This status is supplied by your identity provider.',`, description: 'Use read-only when the state remains relevant information but cannot be changed here.' },
-];
+  {
+    title: 'Demo',
+    heroOnly: true,
+    kind: 'single',
+    label: 'Accept terms and conditions',
+  },
+  {
+    title: 'Invalid State',
+    kind: 'single',
+    label: 'Accept terms and conditions',
+    config: 'isInvalid: true,',
+    description: 'aria-invalid styling marks the box without blocking toggles.',
+  },
+  {
+    title: 'Basic',
+    kind: 'single',
+    label: 'Accept terms and conditions',
+    description:
+      'Model the checked value explicitly and update it from the toggle fact.',
+  },
+  {
+    title: 'Description',
+    kind: 'single',
+    label: 'Accept terms and conditions',
+    checked: true,
+    config: `description: 'By clicking this checkbox, you agree to the terms and conditions.',`,
+    description:
+      'The description prop links the explanation through aria-describedby.',
+  },
+  {
+    title: 'Disabled',
+    kind: 'single',
+    label: 'Enable notifications',
+    config: 'isDisabled: true,',
+    description:
+      'Disabled state remains visible and labeled but cannot dispatch a toggle Message.',
+  },
+  {
+    title: 'Group',
+    kind: 'group',
+    label: '',
+    description:
+      'A fieldSet groups related toggles under one legend and description.',
+  },
+  {
+    title: 'Table',
+    kind: 'table',
+    label: '',
+    description:
+      'A select-all header checkbox toggles every row; row state is a serializable id array.',
+  },
+  {
+    title: 'RTL',
+    kind: 'single',
+    label: 'Accept terms and conditions',
+    rtl: true,
+    description:
+      'Right-to-left direction renders inside a dir="rtl" container.',
+  },
+  {
+    title: 'Indeterminate',
+    kind: 'single',
+    label: 'Select all components',
+    config: 'isIndeterminate: true,',
+    description:
+      'Use indeterminate for a parent choice whose children contain mixed values.',
+  },
+  {
+    title: 'Read only',
+    kind: 'single',
+    label: 'Account verified',
+    checked: true,
+    config: `isReadOnly: true,\n  description: 'This status is supplied by your identity provider.',`,
+    description:
+      'Use read-only when the state remains relevant information but cannot be changed here.',
+  },
+]
 
 const singleSource = (
   fixture: CheckboxFixture,
@@ -65,7 +151,7 @@ const singleSource = (
   value: 'accepted',
   ${fixture.config ?? ''}
 }, h)${fixture.rtl === true ? '])' : ''},`,
-  });
+  })
 
 const groupSource = (renderer: 'tailwind' | 'stylex'): string =>
   foldkitApplication({
@@ -117,7 +203,7 @@ export type Message = typeof Message.Type`,
     ] }, h),
   ]),
 })`,
-  });
+  })
 
 const tableSource = (renderer: 'tailwind' | 'stylex'): string =>
   foldkitApplication({
@@ -183,7 +269,7 @@ export type Message = typeof Message.Type`,
     ] }, h),
   ]),
 })`,
-  });
+  })
 
 export const checkboxExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -200,4 +286,4 @@ export const checkboxExamples = (
         : fixture.kind === 'table'
           ? tableSource(renderer)
           : singleSource(fixture, renderer),
-  }));
+  }))

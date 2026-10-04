@@ -56,12 +56,17 @@ const styles = stylex.create({
       default: '100%',
       '@container field-group (min-width: 28rem)': {
         default: null,
-        ':where([data-slot="field"][data-orientation="responsive"] > *)': 'auto',
+        ':where([data-slot="field"][data-orientation="responsive"] > *)':
+          'auto',
       },
     },
     '::placeholder': { color: tokens.mutedForeground },
   },
-  disabled: { cursor: interactionTokens.cursorDisabled, opacity: 0.5, pointerEvents: 'none' },
+  disabled: {
+    cursor: interactionTokens.cursorDisabled,
+    opacity: 0.5,
+    pointerEvents: 'none',
+  },
   invalid: {
     borderColor: tokens.destructive,
   },
@@ -72,12 +77,13 @@ const styles = stylex.create({
   },
 })
 
-export type InputProps<Msg> = InputBehaviorProps<Msg> & Readonly<{
-  /** Parent-layout positioning only. Add visual choices as named variants. */
-  layoutStyle?: ComponentLayoutStyle
-  /** Control-level overrides for composite inputs (e.g. icon inset padding). */
-  inputStyle?: StaticStyles
-}>
+export type InputProps<Msg> = InputBehaviorProps<Msg> &
+  Readonly<{
+    /** Parent-layout positioning only. Add visual choices as named variants. */
+    layoutStyle?: ComponentLayoutStyle
+    /** Control-level overrides for composite inputs (e.g. icon inset padding). */
+    inputStyle?: StaticStyles
+  }>
 
 export const input = <Msg>(props: InputProps<Msg>, h: HtmlBuilder<Msg>): Html =>
   renderInput(
@@ -102,4 +108,3 @@ export const input = <Msg>(props: InputProps<Msg>, h: HtmlBuilder<Msg>): Html =>
     },
     h,
   )
-

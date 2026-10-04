@@ -1,26 +1,26 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type SelectItem = Readonly<{
-  value: string;
-  label: string;
-  group?: string;
-  isDisabled?: boolean;
-}>;
+  value: string
+  label: string
+  group?: string
+  isDisabled?: boolean
+}>
 
 export type SelectFixture = Readonly<{
-  title: string;
-  description?: string;
-  heroOnly?: boolean;
-  kind: 'basic' | 'invalid' | 'alignItem';
-  placeholder: string;
-  items: ReadonlyArray<SelectItem>;
-  groups: boolean;
-  triggerClass?: string;
-  triggerWidthStylex?: string;
-  isDisabled?: boolean;
-  rtl?: boolean;
-}>;
+  title: string
+  description?: string
+  heroOnly?: boolean
+  kind: 'basic' | 'invalid' | 'alignItem'
+  placeholder: string
+  items: ReadonlyArray<SelectItem>
+  groups: boolean
+  triggerClass?: string
+  triggerWidthStylex?: string
+  isDisabled?: boolean
+  rtl?: boolean
+}>
 
 export const fruitItems: ReadonlyArray<SelectItem> = [
   { value: 'apple', label: 'Apple', group: 'Fruits' },
@@ -28,7 +28,7 @@ export const fruitItems: ReadonlyArray<SelectItem> = [
   { value: 'blueberry', label: 'Blueberry', group: 'Fruits' },
   { value: 'grapes', label: 'Grapes', group: 'Fruits' },
   { value: 'pineapple', label: 'Pineapple', group: 'Fruits' },
-];
+]
 
 const groupedItems: ReadonlyArray<SelectItem> = [
   { value: 'apple', label: 'Apple', group: 'Fruits' },
@@ -37,10 +37,13 @@ const groupedItems: ReadonlyArray<SelectItem> = [
   { value: 'carrot', label: 'Carrot', group: 'Vegetables' },
   { value: 'broccoli', label: 'Broccoli', group: 'Vegetables' },
   { value: 'spinach', label: 'Spinach', group: 'Vegetables' },
-];
+]
 
-const tz = (group: string, items: ReadonlyArray<readonly [string, string]>): ReadonlyArray<SelectItem> =>
-  items.map(([value, label]) => ({ value, label, group }));
+const tz = (
+  group: string,
+  items: ReadonlyArray<readonly [string, string]>,
+): ReadonlyArray<SelectItem> =>
+  items.map(([value, label]) => ({ value, label, group }))
 
 export const timezoneItems: ReadonlyArray<SelectItem> = [
   ...tz('North America', [
@@ -80,7 +83,7 @@ export const timezoneItems: ReadonlyArray<SelectItem> = [
     ['brt', 'Brasilia Time'],
     ['clt', 'Chile Standard Time'],
   ]),
-];
+]
 
 const rtlItems: ReadonlyArray<SelectItem> = [
   { value: 'apple', label: 'تفاح', group: 'الفواكه' },
@@ -91,7 +94,7 @@ const rtlItems: ReadonlyArray<SelectItem> = [
   { value: 'carrot', label: 'جزر', group: 'الخضروات' },
   { value: 'broccoli', label: 'بروكلي', group: 'الخضروات' },
   { value: 'spinach', label: 'سبانخ', group: 'الخضروات' },
-];
+]
 
 const alignItems: ReadonlyArray<SelectItem> = [
   { value: 'apple', label: 'Apple' },
@@ -99,11 +102,13 @@ const alignItems: ReadonlyArray<SelectItem> = [
   { value: 'blueberry', label: 'Blueberry' },
   { value: 'grapes', label: 'Grapes' },
   { value: 'pineapple', label: 'Pineapple' },
-];
+]
 
-const wide = 'w-full max-w-48';
+const wide = 'w-full max-w-48'
 
-export const selectFixtures: Readonly<[SelectFixture, ...Array<SelectFixture>]> = [
+export const selectFixtures: Readonly<
+  [SelectFixture, ...Array<SelectFixture>]
+> = [
   {
     title: 'Basic',
     heroOnly: true,
@@ -150,7 +155,8 @@ export const selectFixtures: Readonly<[SelectFixture, ...Array<SelectFixture>]> 
     kind: 'basic',
     placeholder: 'Select a fruit',
     items: fruitItems.map(item =>
-      item.value === 'grapes' ? { ...item, isDisabled: true } : item),
+      item.value === 'grapes' ? { ...item, isDisabled: true } : item,
+    ),
     groups: true,
     triggerClass: wide,
     triggerWidthStylex: 'triggerWide',
@@ -181,7 +187,7 @@ export const selectFixtures: Readonly<[SelectFixture, ...Array<SelectFixture>]> 
     triggerWidthStylex: 'triggerSmall',
     rtl: true,
   },
-];
+]
 
 const itemsSource = (items: ReadonlyArray<SelectItem>): string =>
   `const items: ReadonlyArray<{
@@ -196,14 +202,11 @@ ${items
       `  { value: '${item.value}', label: '${item.label}'${item.group === undefined ? '' : `, group: '${item.group}'`}${item.isDisabled === true ? ', isDisabled: true' : ''} }`,
   )
   .join(',\n')},
-] as const`;
+] as const`
 
-const emitSource = (
-  fixture: SelectFixture,
-  isStyleX: boolean,
-): string => {
-  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '');
-  const lib = isStyleX ? 'stylex' : 'ui';
+const emitSource = (fixture: SelectFixture, isStyleX: boolean): string => {
+  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
+  const lib = isStyleX ? 'stylex' : 'ui'
   const selectCall = `ExampleSelect.select({
     model: model.select,
     maybeSelectedValue: model.maybeSelected,
@@ -215,17 +218,38 @@ const emitSource = (
     itemToLabel: item => item.label,
     itemToConfig: item => ({
       isDisabled: item.isDisabled ?? false,
-    }),${fixture.groups ? `
+    }),${
+      fixture.groups
+        ? `
     itemGroupKey: item => item.group ?? '',
-    groupToHeading: group => group,` : ''}${fixture.isDisabled === true ? `
-    isDisabled: true,` : ''}${fixture.kind === 'invalid' ? `
-    isInvalid: true,` : ''}${fixture.rtl === true ? `
-    direction: 'rtl',` : ''}
-    ${isStyleX ? `triggerLayoutStyle: styles.${fixture.triggerWidthStylex ?? 'triggerWide'},` : `triggerClass: '${fixture.triggerClass ?? wide}',`}${fixture.kind === 'alignItem' ? `
-    position: model.alignItem ? 'item-aligned' : 'popper',` : ''}
-  }, h)`;
-  const body = fixture.kind === 'alignItem'
-    ? `    Field.fieldGroup({ children: [
+    groupToHeading: group => group,`
+        : ''
+    }${
+      fixture.isDisabled === true
+        ? `
+    isDisabled: true,`
+        : ''
+    }${
+      fixture.kind === 'invalid'
+        ? `
+    isInvalid: true,`
+        : ''
+    }${
+      fixture.rtl === true
+        ? `
+    direction: 'rtl',`
+        : ''
+    }
+    ${isStyleX ? `triggerLayoutStyle: styles.${fixture.triggerWidthStylex ?? 'triggerWide'},` : `triggerClass: '${fixture.triggerClass ?? wide}',`}${
+      fixture.kind === 'alignItem'
+        ? `
+    position: model.alignItem ? 'item-aligned' : 'popper',`
+        : ''
+    }
+  }, h)`
+  const body =
+    fixture.kind === 'alignItem'
+      ? `    Field.fieldGroup({ children: [
       Field.field({
         children: [
           Switch.switch({
@@ -243,8 +267,8 @@ const emitSource = (
         ],
       }, h),
     ] }, h)`
-    : fixture.kind === 'invalid'
-    ? `    Field.field({
+      : fixture.kind === 'invalid'
+        ? `    Field.field({
       isInvalid: true,
       children: [
         Field.fieldLabel({ children: ['Fruit'] }, h),
@@ -252,46 +276,74 @@ const emitSource = (
         Field.fieldError({ children: ['Please select a fruit.'] }, h),
       ],
     }, h)`
-    : `    ${selectCall}`;
+        : `    ${selectCall}`
   return foldkitApplication({
     title: `Select — ${fixture.title}`,
     imports: `import { Option, Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { taggedStruct } from 'foldkit/schema'
-${isStyleX ? `import * as stylex from '@stylexjs/stylex'
-` : ''}import * as Select from '@/${lib}/select'${fixture.kind === 'invalid' ? `
-import * as Field from '@/${lib}/field'` : ''}${fixture.kind === 'alignItem' ? `
+${
+  isStyleX
+    ? `import * as stylex from '@stylexjs/stylex'
+`
+    : ''
+}import * as Select from '@/${lib}/select'${
+      fixture.kind === 'invalid'
+        ? `
+import * as Field from '@/${lib}/field'`
+        : ''
+    }${
+      fixture.kind === 'alignItem'
+        ? `
 import * as Field from '@/${lib}/field'
-import * as Switch from '@/${lib}/switch'` : ''}
+import * as Switch from '@/${lib}/switch'`
+        : ''
+    }
 ${itemsSource(fixture.items)}
-${isStyleX ? `const styles = stylex.create({
+${
+  isStyleX
+    ? `const styles = stylex.create({
   triggerWide: { width: '100%', maxWidth: '12rem' },
   triggerWider: { width: '100%', maxWidth: '16rem' },
   triggerSmall: { width: '8rem' },
 })
-` : ''}`,
+`
+    : ''
+}`,
     model: `const ExampleSelect = Select.create<string>()
 export const Model = S.Struct({
   select: Select.Model,
-  maybeSelected: S.Option(S.String),${fixture.kind === 'alignItem' ? `
-  alignItem: S.Boolean,` : ''}
+  maybeSelected: S.Option(S.String),${
+    fixture.kind === 'alignItem'
+      ? `
+  alignItem: S.Boolean,`
+      : ''
+  }
 })
 export type Model = typeof Model.Type`,
     messages: `export const GotSelectMessage = taggedStruct('GotSelectMessage${tag}', {
   message: Select.Message,
-})${fixture.kind === 'alignItem' ? `
+})${
+      fixture.kind === 'alignItem'
+        ? `
 export const ChangedAlignItem = taggedStruct('ChangedAlignItem${tag}', {
   isChecked: S.Boolean,
 })
-export const Message = S.Union([GotSelectMessage, ChangedAlignItem])` : `
-export const Message = S.Union([GotSelectMessage])`}
+export const Message = S.Union([GotSelectMessage, ChangedAlignItem])`
+        : `
+export const Message = S.Union([GotSelectMessage])`
+    }
 export type Message = typeof Message.Type`,
     init: `export const init = (): Update.Return<Model, Message> => ({
   model: {
     select: Select.init({ id: 'select-${tag}' }),
-    maybeSelected: ${fixture.kind === 'alignItem' ? `Option.some('banana'),` : `Option.none(),`}${fixture.kind === 'alignItem' ? `
-    alignItem: true,` : ''}
+    maybeSelected: ${fixture.kind === 'alignItem' ? `Option.some('banana'),` : `Option.none(),`}${
+      fixture.kind === 'alignItem'
+        ? `
+    alignItem: true,`
+        : ''
+    }
   },
 })`,
     update: `export const update = (
@@ -317,9 +369,13 @@ export type Message = typeof Message.Type`,
         commands: Command.mapMessages(commands, next =>
           GotSelectMessage({ message: next })),
       }
-    }${fixture.kind === 'alignItem' ? `
+    }${
+      fixture.kind === 'alignItem'
+        ? `
     case 'ChangedAlignItem${tag}':
-      return { model: { ...model, alignItem: message.isChecked } }` : ''}
+      return { model: { ...model, alignItem: message.isChecked } }`
+        : ''
+    }
   }
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
@@ -328,15 +384,17 @@ export type Message = typeof Message.Type`,
 ${body},
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const selectExamples = (
   renderer: 'tailwind' | 'stylex',
 ): ReadonlyArray<DocsExample> =>
   selectFixtures.map(fixture => ({
     title: fixture.title,
-    ...(fixture.description === undefined ? {} : { description: fixture.description }),
+    ...(fixture.description === undefined
+      ? {}
+      : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitSource(fixture, renderer === 'stylex'),
-  }));
+  }))

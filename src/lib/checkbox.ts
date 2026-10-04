@@ -48,7 +48,7 @@ export const renderCheckbox = <Msg>(
             h.button(
               [
                 ...checkbox.filter(
-                  (attribute) =>
+                  attribute =>
                     props.description !== undefined ||
                     attribute._tag !== 'AriaDescribedBy',
                 ),
@@ -59,21 +59,36 @@ export const renderCheckbox = <Msg>(
               ],
               [
                 h.span(
-                  [h.DataAttribute('slot', 'checkbox-indicator'), ...visual.indicator],
+                  [
+                    h.DataAttribute('slot', 'checkbox-indicator'),
+                    ...visual.indicator,
+                  ],
                   [indicator],
                 ),
               ],
             ),
             ...(props.label === undefined && props.description === undefined
               ? []
-              : [h.div([...visual.text], [
-                  ...(props.label === undefined
-                    ? []
-                    : [h.label([...label, ...visual.label], [props.label])]),
-                  ...(props.description === undefined
-                    ? []
-                    : [h.p([...description, ...visual.description], [props.description])]),
-                ])]),
+              : [
+                  h.div(
+                    [...visual.text],
+                    [
+                      ...(props.label === undefined
+                        ? []
+                        : [
+                            h.label([...label, ...visual.label], [props.label]),
+                          ]),
+                      ...(props.description === undefined
+                        ? []
+                        : [
+                            h.p(
+                              [...description, ...visual.description],
+                              [props.description],
+                            ),
+                          ]),
+                    ],
+                  ),
+                ]),
             ...(props.name === undefined ? [] : [h.input([...hiddenInput])]),
           ],
         ),

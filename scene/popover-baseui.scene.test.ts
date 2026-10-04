@@ -87,7 +87,9 @@ const initialModel = (
 }
 
 const mapCommands = (
-  commands: ReadonlyArray<Command.Command<PopoverPrimitive.Message>> | undefined,
+  commands:
+    | ReadonlyArray<Command.Command<PopoverPrimitive.Message>>
+    | undefined,
 ): ReadonlyArray<Command.Command<Message>> =>
   Command.mapMessages(commands ?? [], (nextMessage): Message => ({
     _tag: 'GotPopoverMessage',
@@ -136,7 +138,10 @@ const panel = Scene.selector('[data-slot="popover-content"]')
 const backdrop = Scene.selector('[data-slot="popover-backdrop"]')
 
 const resolvePanelMounts = Scene.Mount.resolveAll(
-  [PopoverPrimitive.AnchorPopover, PopoverPrimitive.Message.CompletedAnchorPopover()],
+  [
+    PopoverPrimitive.AnchorPopover,
+    PopoverPrimitive.Message.CompletedAnchorPopover(),
+  ],
   [
     PopoverPrimitive.PortalPopoverBackdrop,
     PopoverPrimitive.Message.CompletedPortalPopoverBackdrop(),
@@ -151,7 +156,9 @@ const resolveFocusButton = Scene.Command.resolveAllExact([
 /* foldkit 0.164's Animation commands carry a `generation` arg that the result
    Messages must echo back. Read it off the pending Command. */
 const pendingAnimationGeneration = (
-  commands: ReadonlyArray<Readonly<{ name: string; args?: Record<string, unknown> }>>,
+  commands: ReadonlyArray<
+    Readonly<{ name: string; args?: Record<string, unknown> }>
+  >,
   name?: string,
 ): number => {
   const pending = commands.find(
@@ -196,12 +203,21 @@ const endedPanelMounts = () => [
 
 const resolveModalOpenCommands = Scene.Command.resolveAllExact(
   [PopoverPrimitive.LockScroll, PopoverPrimitive.Message.CompletedLockScroll()],
-  [PopoverPrimitive.InertOthers, PopoverPrimitive.Message.CompletedInertOthers()],
+  [
+    PopoverPrimitive.InertOthers,
+    PopoverPrimitive.Message.CompletedInertOthers(),
+  ],
 )
 
 const resolveModalCloseCommands = Scene.Command.resolveAllExact(
-  [PopoverPrimitive.FocusButton, PopoverPrimitive.Message.CompletedFocusButton()],
-  [PopoverPrimitive.UnlockScroll, PopoverPrimitive.Message.CompletedUnlockScroll()],
+  [
+    PopoverPrimitive.FocusButton,
+    PopoverPrimitive.Message.CompletedFocusButton(),
+  ],
+  [
+    PopoverPrimitive.UnlockScroll,
+    PopoverPrimitive.Message.CompletedUnlockScroll(),
+  ],
   [
     PopoverPrimitive.RestoreInert,
     PopoverPrimitive.Message.CompletedRestoreInert(),
@@ -238,35 +254,35 @@ type ViewOptions = Readonly<{
 
 const makeView =
   (Module: PopoverModule, options: ViewOptions = {}) =>
-    (model: Model, h: HtmlBuilder<Message>): Html =>
-      Module.popover(
-        {
-          model: model.popover,
-          toParentMessage: (message): Message => ({
-            _tag: 'GotPopoverMessage',
-            message,
-          }),
-          trigger: 'Toggle',
-          content: options.closeButton
-            ? h.button(
-                [
-                  h.Type('button'),
-                  h.OnClick({
-                    _tag: 'GotPopoverMessage',
-                    message: PopoverPrimitive.Message.RequestedClose(),
-                  }),
-                ],
-                'Close',
-              )
-            : 'Content',
-          ...(options.side === undefined ? {} : { side: options.side }),
-          ...(options.align === undefined ? {} : { align: options.align }),
-          ...(options.focusSelector === undefined
-            ? {}
-            : { focusSelector: options.focusSelector }),
-        },
-        h,
-      )
+  (model: Model, h: HtmlBuilder<Message>): Html =>
+    Module.popover(
+      {
+        model: model.popover,
+        toParentMessage: (message): Message => ({
+          _tag: 'GotPopoverMessage',
+          message,
+        }),
+        trigger: 'Toggle',
+        content: options.closeButton
+          ? h.button(
+              [
+                h.Type('button'),
+                h.OnClick({
+                  _tag: 'GotPopoverMessage',
+                  message: PopoverPrimitive.Message.RequestedClose(),
+                }),
+              ],
+              'Close',
+            )
+          : 'Content',
+        ...(options.side === undefined ? {} : { side: options.side }),
+        ...(options.align === undefined ? {} : { align: options.align }),
+        ...(options.focusSelector === undefined
+          ? {}
+          : { focusSelector: options.focusSelector }),
+      },
+      h,
+    )
 
 const verifyRenderer = (rendererName: string, Module: PopoverModule): void => {
   describe(rendererName, () => {
@@ -662,7 +678,10 @@ const verifyRenderer = (rendererName: string, Module: PopoverModule): void => {
                 PopoverPrimitive.init({ id: customId, isAnimated: false }),
               ).model,
             }),
-            Scene.expect(trigger).toHaveAttr('aria-controls', `${customId}-panel`),
+            Scene.expect(trigger).toHaveAttr(
+              'aria-controls',
+              `${customId}-panel`,
+            ),
             Scene.expect(panel).toHaveId(`${customId}-panel`),
             resolvePanelMounts,
           )
@@ -716,7 +735,7 @@ const verifyRenderer = (rendererName: string, Module: PopoverModule): void => {
             // animation reports it has settled.
             Scene.expect(panel).toExist(),
             Scene.expect(panel).toHaveAttr('data-leave', ''),
-            (simulation) =>
+            simulation =>
               Scene.Command.resolve(
                 Animation.WaitForPaint,
                 Animation.Message.CompletedWaitForPaint({
@@ -724,7 +743,7 @@ const verifyRenderer = (rendererName: string, Module: PopoverModule): void => {
                 }),
               )(simulation),
             Scene.expect(panel).toExist(),
-            (simulation) =>
+            simulation =>
               Scene.Command.resolve(
                 PopoverPrimitive.DetectMovementOrAnimationEnd,
                 PopoverPrimitive.Message.GotAnimationMessage({
@@ -761,20 +780,17 @@ const verifyRenderer = (rendererName: string, Module: PopoverModule): void => {
         // DIVERGENCE: Base UI marks the press-opened trigger with
         // data-popup-open and data-pressed; creaseui marks the open trigger
         // with data-open only, regardless of the opening pointer type.
-        it.fails(
-          'should have the data-popup-open and data-pressed attributes when open by clicking',
-          () => {
-            Scene.scene(
-              { update, view: makeView(Module) },
-              Scene.given(initialModel()),
-              Scene.click(trigger),
-              Scene.expectHandled(),
-              resolvePanelMounts,
-              Scene.expect(trigger).toHaveAttr('data-popup-open', ''),
-              Scene.expect(trigger).toHaveAttr('data-pressed', ''),
-            )
-          },
-        )
+        it.fails('should have the data-popup-open and data-pressed attributes when open by clicking', () => {
+          Scene.scene(
+            { update, view: makeView(Module) },
+            Scene.given(initialModel()),
+            Scene.click(trigger),
+            Scene.expectHandled(),
+            resolvePanelMounts,
+            Scene.expect(trigger).toHaveAttr('data-popup-open', ''),
+            Scene.expect(trigger).toHaveAttr('data-pressed', ''),
+          )
+        })
 
         it('marks the open trigger with data-open', () => {
           Scene.scene(

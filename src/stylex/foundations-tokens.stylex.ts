@@ -10,7 +10,8 @@ export const foundationTokens = stylex.defineVars({
   foregroundMuted: 'color-mix(in oklab, var(--foreground) 60%, transparent)',
   foregroundSoft: 'color-mix(in oklab, var(--foreground) 10%, transparent)',
   ringSoft: 'color-mix(in oklab, var(--ring) 50%, transparent)',
-  destructiveRingSoft: 'color-mix(in oklab, var(--destructive) 20%, transparent)',
+  destructiveRingSoft:
+    'color-mix(in oklab, var(--destructive) 20%, transparent)',
   inputDark: 'color-mix(in oklab, var(--input) 30%, transparent)',
   mutedSoft: 'color-mix(in oklab, var(--muted) 50%, transparent)',
   shadowXs: '0 1px 2px rgb(0 0 0 / 0.05)',
@@ -31,14 +32,17 @@ export const foundationTokens = stylex.defineVars({
   white: 'rgb(255 255 255)',
   shadowSm: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
   shadowMd: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
-  shadowXl: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
+  shadowXl:
+    '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
   ringShadow1: '0 0 0 1px color-mix(in oklab, var(--ring) 50%, transparent)',
   cardRing3: '0 0 0 3px var(--card)',
   ringShadow4: '0 0 0 4px color-mix(in oklab, var(--ring) 50%, transparent)',
   overlay40: 'rgb(0 0 0 / 0.4)',
   overlay50: 'rgb(0 0 0 / 0.5)',
-  mutedForeground50: 'color-mix(in oklab, var(--muted-foreground) 50%, transparent)',
-  mutedForeground60: 'color-mix(in oklab, var(--muted-foreground) 60%, transparent)',
+  mutedForeground50:
+    'color-mix(in oklab, var(--muted-foreground) 50%, transparent)',
+  mutedForeground60:
+    'color-mix(in oklab, var(--muted-foreground) 60%, transparent)',
   foregroundFaint: 'color-mix(in oklab, var(--foreground) 5%, transparent)',
   primaryFaint: 'color-mix(in oklab, var(--primary) 5%, transparent)',
   primarySoft20: 'color-mix(in oklab, var(--primary) 20%, transparent)',
@@ -48,4 +52,3 @@ export const foundationTokens = stylex.defineVars({
   nativeOptionSurface: 'Canvas',
   nativeOptionInk: 'CanvasText',
 })
-

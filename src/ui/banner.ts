@@ -1,24 +1,18 @@
-import type { Attribute, Html, HtmlBuilder } from 'foldkit/html';
+import type { Attribute, Html, HtmlBuilder } from 'foldkit/html'
 
-import { Disclosure as DisclosurePrimitive } from '@foldkit/ui';
+import { Disclosure as DisclosurePrimitive } from '@foldkit/ui'
 
-import * as BannerBehavior from '@/lib/banner';
-import * as Icon from '@/lib/icon';
-import { buttonVariants } from '@/ui/button';
-import { cn } from '@/lib/utils';
+import * as BannerBehavior from '@/lib/banner'
+import * as Icon from '@/lib/icon'
+import { buttonVariants } from '@/ui/button'
+import { cn } from '@/lib/utils'
 
-export {
-  Model,
-  Message,
-  OutMessage,
-  init,
-  update,
-} from '@/lib/banner';
+export { Model, Message, OutMessage, init, update } from '@/lib/banner'
 export type {
   BannerContainer,
   BannerElevation,
   BannerStatus,
-} from '@/lib/banner';
+} from '@/lib/banner'
 
 /* Ported from Meta Astryx Banner.tsx — page-level status notice: tinted
    status header (icon + title + description + actions), optional bordered
@@ -26,32 +20,32 @@ export type {
    a focus handoff back to the element focused before the banner. */
 
 export type BannerProps<Msg> = Readonly<{
-  model: BannerBehavior.Model;
-  toParentMessage: (message: BannerBehavior.Message) => Msg;
+  model: BannerBehavior.Model
+  toParentMessage: (message: BannerBehavior.Message) => Msg
   /** Status type controlling the icon, tint, and ARIA role. */
-  status: BannerBehavior.BannerStatus;
+  status: BannerBehavior.BannerStatus
   /** Stable id — anchors the disclosure's aria-controls link. */
-  id: string;
-  title: Html | string;
-  description?: Html | string;
+  id: string
+  title: Html | string
+  description?: Html | string
   /** Overrides the default status icon. */
-  icon?: Html;
+  icon?: Html
   /** Shows the dismiss button; the banner always hides itself. */
-  isDismissable?: boolean;
+  isDismissable?: boolean
   /** Accessible name for the dismiss button (default "Dismiss {title}"). */
-  dismissLabel?: string;
+  dismissLabel?: string
   /** Action content rendered in the header end area. */
-  endContent?: ReadonlyArray<Html | string>;
+  endContent?: ReadonlyArray<Html | string>
   /** @default 'card' */
-  container?: BannerBehavior.BannerContainer;
+  container?: BannerBehavior.BannerContainer
   /** Resting shadow depth. @default 'none' */
-  elevation?: BannerBehavior.BannerElevation;
+  elevation?: BannerBehavior.BannerElevation
   /** Content area behind an expand/collapse toggle (starts closed).
       Pass false to pin children open with no toggle. @default true */
-  isCollapsible?: boolean;
-  children?: ReadonlyArray<Html | string>;
-  class?: string;
-}>;
+  isCollapsible?: boolean
+  children?: ReadonlyArray<Html | string>
+  class?: string
+}>
 
 const STATUS_HEADER_TINT: Readonly<
   Record<BannerBehavior.BannerStatus, string>
@@ -63,7 +57,7 @@ const STATUS_HEADER_TINT: Readonly<
   warning: 'bg-chart-4/20',
   error: 'bg-destructive/20',
   success: 'bg-chart-2/20',
-};
+}
 
 const ELEVATION: Readonly<Record<BannerBehavior.BannerElevation, string>> = {
   none: 'shadow-none',
@@ -71,14 +65,14 @@ const ELEVATION: Readonly<Record<BannerBehavior.BannerElevation, string>> = {
   low: '[--_banner-elevation:0_1px_1px_rgb(0_0_0/0.1),0_2px_8px_rgb(0_0_0/0.2)] shadow-[var(--_banner-elevation)]',
   med: '[--_banner-elevation:0_1px_2px_rgb(0_0_0/0.1),0_2px_12px_rgb(0_0_0/0.2)] shadow-[var(--_banner-elevation)]',
   high: '[--_banner-elevation:0_2px_2px_rgb(0_0_0/0.1),0_8px_24px_rgb(0_0_0/0.2)] shadow-[var(--_banner-elevation)]',
-};
+}
 
-const GHOST_ICON_CLASS = buttonVariants({ variant: 'ghost', size: 'icon-sm' });
+const GHOST_ICON_CLASS = buttonVariants({ variant: 'ghost', size: 'icon-sm' })
 
 type DisclosureAttrs<Msg> = Readonly<{
-  button: ReadonlyArray<Attribute<Msg>>;
-  panel: ReadonlyArray<Attribute<Msg>>;
-}>;
+  button: ReadonlyArray<Attribute<Msg>>
+  panel: ReadonlyArray<Attribute<Msg>>
+}>
 
 const render = <Msg>(
   props: BannerProps<Msg>,
@@ -100,18 +94,17 @@ const render = <Msg>(
     container = 'card',
     elevation = 'none',
     children,
-  } = props;
+  } = props
   const showEndArea =
     (endContent !== undefined && endContent.length > 0) ||
     isDismissable ||
-    hasToggle;
+    hasToggle
   const isSingleLine =
     description === undefined &&
-    ((endContent !== undefined && endContent.length > 0) || isDismissable);
-  const isCard = container === 'card';
+    ((endContent !== undefined && endContent.length > 0) || isDismissable)
+  const isCard = container === 'card'
   const dismissName =
-    dismissLabel ??
-    (typeof title === 'string' ? `Dismiss ${title}` : 'Dismiss');
+    dismissLabel ?? (typeof title === 'string' ? `Dismiss ${title}` : 'Dismiss')
 
   return h.div(
     [
@@ -153,12 +146,16 @@ const render = <Msg>(
             ],
             [
               icon ??
-                Icon.icon(BannerBehavior.STATUS_ICON[status], {
-                  class: cn(
-                    'size-5',
-                    BannerBehavior.STATUS_TEXT_CLASS[status],
-                  ),
-                }, h),
+                Icon.icon(
+                  BannerBehavior.STATUS_ICON[status],
+                  {
+                    class: cn(
+                      'size-5',
+                      BannerBehavior.STATUS_TEXT_CLASS[status],
+                    ),
+                  },
+                  h,
+                ),
             ],
           ),
           h.div(
@@ -186,9 +183,7 @@ const render = <Msg>(
                     h.div(
                       [
                         h.DataAttribute('slot', 'banner-description'),
-                        h.Class(
-                          'text-xs text-muted-foreground wrap-anywhere',
-                        ),
+                        h.Class('text-xs text-muted-foreground wrap-anywhere'),
                       ],
                       [description],
                     ),
@@ -214,12 +209,16 @@ const render = <Msg>(
                               h.Class(cn(GHOST_ICON_CLASS)),
                             ],
                             [
-                              Icon.icon('chevron-down', {
-                                class: cn(
-                                  'size-4 transition-transform duration-150',
-                                  model.isOpen && 'rotate-180',
-                                ),
-                              }, h),
+                              Icon.icon(
+                                'chevron-down',
+                                {
+                                  class: cn(
+                                    'size-4 transition-transform duration-150',
+                                    model.isOpen && 'rotate-180',
+                                  ),
+                                },
+                                h,
+                              ),
                             ],
                           ),
                         ]
@@ -238,9 +237,7 @@ const render = <Msg>(
                                 ),
                               ),
                             ],
-                            [
-                              Icon.icon('x', { class: 'size-4' }, h),
-                            ],
+                            [Icon.icon('x', { class: 'size-4' }, h)],
                           ),
                         ]
                       : []),
@@ -268,25 +265,24 @@ const render = <Msg>(
           ]
         : []),
     ],
-  );
-};
+  )
+}
 
 export const banner = <Msg>(
   props: BannerProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const { model, toParentMessage } = props;
+  const { model, toParentMessage } = props
   if (model.isDismissed) {
-    return h.empty;
+    return h.empty
   }
-  const isCollapsible = props.isCollapsible !== false;
-  const hasChildren =
-    props.children !== undefined && props.children.length > 0;
-  const hasToggle = isCollapsible && hasChildren;
-  const showContent = hasChildren && (!isCollapsible || model.isOpen);
+  const isCollapsible = props.isCollapsible !== false
+  const hasChildren = props.children !== undefined && props.children.length > 0
+  const hasToggle = isCollapsible && hasChildren
+  const showContent = hasChildren && (!isCollapsible || model.isOpen)
 
   if (!hasToggle) {
-    return render(props, showContent, false, undefined, h);
+    return render(props, showContent, false, undefined, h)
   }
   return DisclosurePrimitive.view(
     {
@@ -298,5 +294,5 @@ export const banner = <Msg>(
         render(props, showContent, true, { button, panel }, h),
     },
     h,
-  );
-};
+  )
+}

@@ -1,5 +1,5 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type InputGroupKind =
   | 'demo'
@@ -12,16 +12,18 @@ export type InputGroupKind =
   | 'spinner'
   | 'textarea'
   | 'custom'
-  | 'rtl';
+  | 'rtl'
 
 export interface InputGroupFixture {
-  readonly title: string;
-  readonly description?: string;
-  readonly heroOnly?: boolean;
-  readonly kind: InputGroupKind;
+  readonly title: string
+  readonly description?: string
+  readonly heroOnly?: boolean
+  readonly kind: InputGroupKind
 }
 
-export const inputGroupFixtures: Readonly<[InputGroupFixture, ...Array<InputGroupFixture>]> = [
+export const inputGroupFixtures: Readonly<
+  [InputGroupFixture, ...Array<InputGroupFixture>]
+> = [
   { title: 'Basic', heroOnly: true, kind: 'demo' },
   {
     title: 'Align',
@@ -43,7 +45,7 @@ export const inputGroupFixtures: Readonly<[InputGroupFixture, ...Array<InputGrou
     kind: 'custom',
   },
   { title: 'RTL', kind: 'rtl' },
-];
+]
 
 /* Arabic copy, verbatim from upstream input-group-rtl.tsx. */
 export const inputGroupRtlCopy = {
@@ -57,23 +59,23 @@ export const inputGroupRtlCopy = {
   characterCount: '٠/٢٨٠',
   post: 'نشر',
   textareaDescription: 'تذييل موضع أسفل منطقة النص.',
-} as const;
+} as const
 
-const sq = (value: string): string => value.replaceAll("'", "\\'");
+const sq = (value: string): string => value.replaceAll("'", "\\'")
 
 const kindUsesField = (kind: InputGroupKind): boolean =>
-  kind === 'align' || kind === 'rtl';
-const kindUsesPopover = (kind: InputGroupKind): boolean => kind === 'button';
-const kindUsesDropdown = (kind: InputGroupKind): boolean => kind === 'dropdown';
+  kind === 'align' || kind === 'rtl'
+const kindUsesPopover = (kind: InputGroupKind): boolean => kind === 'button'
+const kindUsesDropdown = (kind: InputGroupKind): boolean => kind === 'dropdown'
 const kindUsesSpinner = (kind: InputGroupKind): boolean =>
-  kind === 'spinner' || kind === 'rtl';
-const kindUsesKbd = (kind: InputGroupKind): boolean => kind === 'kbd';
+  kind === 'spinner' || kind === 'rtl'
+const kindUsesKbd = (kind: InputGroupKind): boolean => kind === 'kbd'
 const kindUsesTextarea = (kind: InputGroupKind): boolean =>
   kind === 'align' ||
   kind === 'text' ||
   kind === 'textarea' ||
   kind === 'custom' ||
-  kind === 'rtl';
+  kind === 'rtl'
 const kindUsesIcon = (kind: InputGroupKind): boolean =>
   kind === 'demo' ||
   kind === 'align' ||
@@ -82,42 +84,42 @@ const kindUsesIcon = (kind: InputGroupKind): boolean =>
   kind === 'kbd' ||
   kind === 'dropdown' ||
   kind === 'textarea' ||
-  kind === 'rtl';
+  kind === 'rtl'
 
 const emitImports = (fixture: InputGroupFixture, isStyleX: boolean): string => {
-  const base = isStyleX ? 'stylex' : 'ui';
+  const base = isStyleX ? 'stylex' : 'ui'
   const parts: Array<string> = [
     "import { Command, Runtime, Subscription, Update } from 'foldkit'",
     "import { type Document, type HtmlBuilder } from 'foldkit/html'",
     "import { defineMessageUnion } from 'foldkit/message'",
-  ];
+  ]
   if (isStyleX) {
-    parts.push('', "import * as stylex from '@stylexjs/stylex'");
+    parts.push('', "import * as stylex from '@stylexjs/stylex'")
   }
   if (kindUsesDropdown(fixture.kind)) {
-    parts.push(`import * as DropdownMenu from '@/${base}/dropdown-menu'`);
+    parts.push(`import * as DropdownMenu from '@/${base}/dropdown-menu'`)
   }
   if (kindUsesField(fixture.kind)) {
-    parts.push(`import * as Field from '@/${base}/field'`);
+    parts.push(`import * as Field from '@/${base}/field'`)
   }
-  parts.push(`import * as InputGroup from '@/${base}/input-group'`);
+  parts.push(`import * as InputGroup from '@/${base}/input-group'`)
   if (kindUsesKbd(fixture.kind)) {
-    parts.push(`import * as Kbd from '@/${base}/kbd'`);
+    parts.push(`import * as Kbd from '@/${base}/kbd'`)
   }
   if (kindUsesPopover(fixture.kind)) {
-    parts.push(`import * as Popover from '@/${base}/popover'`);
+    parts.push(`import * as Popover from '@/${base}/popover'`)
   }
   if (kindUsesSpinner(fixture.kind)) {
-    parts.push(`import * as Spinner from '@/${base}/spinner'`);
+    parts.push(`import * as Spinner from '@/${base}/spinner'`)
   }
   if (kindUsesIcon(fixture.kind)) {
-    parts.push("import * as Icon from '@/lib/icon'");
+    parts.push("import * as Icon from '@/lib/icon'")
   }
-  return parts.join('\n');
-};
+  return parts.join('\n')
+}
 
 const emitStyles = (fixture: InputGroupFixture): string => {
-  const extras: Array<string> = [];
+  const extras: Array<string> = []
   if (
     fixture.kind === 'icon' ||
     fixture.kind === 'text' ||
@@ -127,63 +129,63 @@ const emitStyles = (fixture: InputGroupFixture): string => {
   ) {
     extras.push(
       "  stack: { display: 'grid', width: '100%', maxWidth: '24rem', gap: '1.5rem' },",
-    );
+    )
   }
   if (fixture.kind === 'dropdown' || fixture.kind === 'spinner') {
     extras.push(
       "  stack: { display: 'grid', width: '100%', maxWidth: '24rem', gap: '1rem' },",
-    );
+    )
   }
   if (fixture.kind === 'textarea') {
     extras.push(
       "  stack: { display: 'grid', width: '100%', maxWidth: '28rem', gap: '1rem' },",
-    );
+    )
   }
   if (fixture.kind === 'demo' || fixture.kind === 'kbd') {
-    extras.push('  group: { maxWidth: \'20rem\' },');
+    extras.push("  group: { maxWidth: '20rem' },")
   }
   if (fixture.kind === 'align') {
     extras.push(
       "  stack: { display: 'grid', width: '100%', maxWidth: '24rem', gap: '2.5rem' },",
-      "  monoText: { fontFamily: 'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace)' },",
-    );
+      '  monoText: { fontFamily: \'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)\' },',
+    )
   }
   if (fixture.kind === 'textarea') {
-    extras.push("  codeArea: { minHeight: '200px' },");
+    extras.push("  codeArea: { minHeight: '200px' },")
   }
   if (fixture.kind === 'text') {
-    extras.push("  textXs: { fontSize: '0.75rem', lineHeight: '1rem' },");
+    extras.push("  textXs: { fontSize: '0.75rem', lineHeight: '1rem' },")
   }
   if (fixture.kind === 'button' || fixture.kind === 'custom') {
-    extras.push("  push: { marginInlineStart: 'auto' },");
+    extras.push("  push: { marginInlineStart: 'auto' },")
   }
   if (fixture.kind === 'align' || fixture.kind === 'textarea') {
-    extras.push("  push: { marginInlineStart: 'auto' },");
+    extras.push("  push: { marginInlineStart: 'auto' },")
   }
   if (fixture.kind === 'rtl') {
-    extras.push("  push: { marginInlineStart: 'auto' },");
+    extras.push("  push: { marginInlineStart: 'auto' },")
   }
   if (fixture.kind === 'button') {
     extras.push(
       "  iconButton: { display: 'flex', alignItems: 'center', justifyContent: 'center', width: '1.5rem', height: '1.5rem', borderRadius: 'calc(var(--radius) - 5px)', color: 'var(--muted-foreground)' },",
       "  popoverContent: { display: 'flex', flexDirection: 'column', gap: '0.25rem', borderRadius: '0.75rem', fontSize: '0.875rem', lineHeight: '1.25rem' },",
-      "  popoverTitle: { fontWeight: 500 },",
+      '  popoverTitle: { fontWeight: 500 },',
       "  favorite: { fill: 'var(--primary)', stroke: 'var(--primary)' },",
-    );
+    )
   }
 
   if (fixture.kind === 'custom') {
     extras.push(
       "  customArea: { display: 'flex', fieldSizing: 'content', minHeight: '4rem', width: '100%', resize: 'none', borderRadius: '0.375rem', backgroundColor: 'transparent', paddingInline: '0.75rem', paddingBlock: '0.625rem', fontSize: '1rem', lineHeight: '1.5rem', outlineStyle: 'none' },",
-    );
+    )
   }
   return `
 
 const styles = stylex.create({
 ${extras.join('\n')}
   page: { display: 'flex', minHeight: '100vh', alignItems: 'center', justifyContent: 'center', padding: '2rem' },
-})`;
-};
+})`
+}
 
 const emitModel = (fixture: InputGroupFixture): string => {
   if (kindUsesDropdown(fixture.kind)) {
@@ -191,7 +193,7 @@ const emitModel = (fixture: InputGroupFixture): string => {
   values: S.Record(S.String, S.String),
   dropdowns: S.Array(DropdownMenu.Model),
 })
-export type Model = typeof Model.Type`;
+export type Model = typeof Model.Type`
   }
   if (kindUsesPopover(fixture.kind)) {
     return `export const Model = S.Struct({
@@ -200,11 +202,11 @@ export type Model = typeof Model.Type`;
   isFavorite: S.Boolean,
   isCopied: S.Boolean,
 })
-export type Model = typeof Model.Type`;
+export type Model = typeof Model.Type`
   }
   return `export const Model = S.Struct({ values: S.Record(S.String, S.String) })
-export type Model = typeof Model.Type`;
-};
+export type Model = typeof Model.Type`
+}
 
 const emitMessages = (fixture: InputGroupFixture): string => {
   if (kindUsesDropdown(fixture.kind)) {
@@ -212,7 +214,7 @@ const emitMessages = (fixture: InputGroupFixture): string => {
   ChangedInputValue: { field: S.String, value: S.String },
   GotDropdownMessage: { index: S.Number, message: DropdownMenu.Message },
 })
-export type Message = typeof Message.Type`;
+export type Message = typeof Message.Type`
   }
   if (kindUsesPopover(fixture.kind)) {
     return `export const Message = defineMessageUnion({
@@ -223,13 +225,13 @@ export type Message = typeof Message.Type`;
   CompletedCopy: {},
   CompletedWaitBeforeClearingCopy: {},
 })
-export type Message = typeof Message.Type`;
+export type Message = typeof Message.Type`
   }
   return `export const Message = defineMessageUnion({
   ChangedInputValue: { field: S.String, value: S.String },
 })
-export type Message = typeof Message.Type`;
-};
+export type Message = typeof Message.Type`
+}
 
 const emitInit = (fixture: InputGroupFixture): string => {
   if (kindUsesDropdown(fixture.kind)) {
@@ -241,7 +243,7 @@ const emitInit = (fixture: InputGroupFixture): string => {
       DropdownMenu.init({ id: 'search-menu', isAnimated: false }),
     ],
   },
-})`;
+})`
   }
   if (kindUsesPopover(fixture.kind)) {
     return `export const init = (): Update.Return<Model, Message> => ({
@@ -251,10 +253,10 @@ const emitInit = (fixture: InputGroupFixture): string => {
     isFavorite: false,
     isCopied: false,
   },
-})`;
+})`
   }
-  return `export const init = (): Update.Return<Model, Message> => ({ model: { values: {} } })`;
-};
+  return `export const init = (): Update.Return<Model, Message> => ({ model: { values: {} } })`
+}
 
 const emitUpdate = (fixture: InputGroupFixture): string => {
   if (kindUsesDropdown(fixture.kind)) {
@@ -276,7 +278,7 @@ const emitUpdate = (fixture: InputGroupFixture): string => {
       }
     }
   }
-}`;
+}`
   }
   if (kindUsesPopover(fixture.kind)) {
     return `const CopyUrl = Command.define('CopyDocsUrl', {
@@ -313,15 +315,15 @@ export const update = (model: Model, message: Message): Update.Return<Model, Mes
     case 'CompletedWaitBeforeClearingCopy':
       return { model: { ...model, isCopied: false } }
   }
-}`;
+}`
   }
   return `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
     case 'ChangedInputValue':
       return { model: { ...model, values: { ...model.values, [message.field]: message.value } } }
   }
-}`;
-};
+}`
+}
 
 /* Emitted builders shared across kinds. */
 const emitInput = (key: string, id: string, extras: string = ''): string =>
@@ -329,36 +331,40 @@ const emitInput = (key: string, id: string, extras: string = ''): string =>
         id: '${id}',
         value: model.values['${key}'] ?? '',
         onInput: value => Message.ChangedInputValue({ field: '${key}', value }),${extras}
-      }, h)`;
+      }, h)`
 
 const emitTextarea = (key: string, id: string, extras: string = ''): string =>
   `InputGroup.inputGroupTextarea({
         id: '${id}',
         value: model.values['${key}'] ?? '',
         onInput: value => Message.ChangedInputValue({ field: '${key}', value }),${extras}
-      }, h)`;
+      }, h)`
 
-const wrapStack = (isStyleX: boolean, gap: 'grid max-w' | string, children: ReadonlyArray<string>): string =>
+const wrapStack = (
+  isStyleX: boolean,
+  gap: 'grid max-w' | string,
+  children: ReadonlyArray<string>,
+): string =>
   isStyleX
     ? `h.div([h.Class(stylex.props(styles.stack).className ?? '')], [
 ${children.map(child => `      ${child}`).join(',\n')},
     ])`
     : `h.div([h.Class('${gap}')], [
 ${children.map(child => `      ${child}`).join(',\n')},
-    ])`;
+    ])`
 
 const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
   const label = (forId: string, text: string): string =>
-    `Field.fieldLabel({ for: '${forId}', children: ['${sq(text)}'] }, h)`;
+    `Field.fieldLabel({ for: '${forId}', children: ['${sq(text)}'] }, h)`
   const desc = (text: string): string =>
-    `Field.fieldDescription({ children: ['${sq(text)}'] }, h)`;
+    `Field.fieldDescription({ children: ['${sq(text)}'] }, h)`
   const wrap = (cls: string, sxStyle: string): string =>
-    isStyleX ? `stylex.props(${sxStyle}).className ?? ''` : `'${cls}'`;
+    isStyleX ? `stylex.props(${sxStyle}).className ?? ''` : `'${cls}'`
 
   switch (fixture.kind) {
     case 'demo':
       return `    InputGroup.inputGroup({
-      ${isStyleX ? "layoutStyle: styles.group" : "class: 'max-w-xs'"},
+      ${isStyleX ? 'layoutStyle: styles.group' : "class: 'max-w-xs'"},
       children: [
         ${emitInput('demo', 'input-group-demo', "\n        placeholder: 'Search...',")},
         InputGroup.inputGroupAddon({
@@ -366,7 +372,7 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
         }, h),
         InputGroup.inputGroupAddon({ align: 'inline-end', children: ['12 results'] }, h),
       ],
-    }, h)`;
+    }, h)`
     case 'align': {
       const inlineStart = `Field.field({
           children: [
@@ -382,7 +388,7 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
             }, h),
             ${desc('Icon positioned at the start.')},
           ],
-        }, h)`;
+        }, h)`
       const inlineEnd = `Field.field({
           children: [
             ${label('inline-end-input', 'Input')},
@@ -397,7 +403,7 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
             }, h),
             ${desc('Icon positioned at the end.')},
           ],
-        }, h)`;
+        }, h)`
       const blockStart = `Field.fieldGroup({
           children: [
             Field.field({
@@ -420,7 +426,7 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
                 ${label('block-start-textarea', 'Textarea')},
                 InputGroup.inputGroup({
                   children: [
-                    ${emitTextarea('alignBlockTextarea', 'block-start-textarea', `\n                  placeholder: "console.log('Hello, world!');",${isStyleX ? "\n                  mono: true," : "\n                  class: 'font-mono text-sm',"}`)},
+                    ${emitTextarea('alignBlockTextarea', 'block-start-textarea', `\n                  placeholder: "console.log('Hello, world!');",${isStyleX ? '\n                  mono: true,' : "\n                  class: 'font-mono text-sm',"}`)},
                     InputGroup.inputGroupAddon({
                       align: 'block-start',
                       children: [
@@ -435,7 +441,7 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
               ],
             }, h),
           ],
-        }, h)`;
+        }, h)`
       const blockEnd = `Field.fieldGroup({
           children: [
             Field.field({
@@ -472,8 +478,8 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
               ],
             }, h),
           ],
-        }, h)`;
-      return `    ${wrapStack(isStyleX, 'grid w-full max-w-sm gap-10', [inlineStart, inlineEnd, blockStart, blockEnd])}`;
+        }, h)`
+      return `    ${wrapStack(isStyleX, 'grid w-full max-w-sm gap-10', [inlineStart, inlineEnd, blockStart, blockEnd])}`
     }
     case 'icon': {
       const search = `InputGroup.inputGroup({
@@ -481,20 +487,20 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
             ${emitInput('iconSearch', 'icon-search', "\n            placeholder: 'Search...',")},
             InputGroup.inputGroupAddon({ children: [Icon.icon('search', {}, h)] }, h),
           ],
-        }, h)`;
+        }, h)`
       const mail = `InputGroup.inputGroup({
           children: [
             ${emitInput('iconEmail', 'icon-email', "\n            type: 'email',\n            placeholder: 'Enter your email',")},
             InputGroup.inputGroupAddon({ children: [Icon.icon('mail', {}, h)] }, h),
           ],
-        }, h)`;
+        }, h)`
       const card = `InputGroup.inputGroup({
           children: [
             ${emitInput('iconCard', 'icon-card', "\n            placeholder: 'Card number',")},
             InputGroup.inputGroupAddon({ children: [Icon.icon('credit-card', {}, h)] }, h),
             InputGroup.inputGroupAddon({ align: 'inline-end', children: [Icon.icon('check', {}, h)] }, h),
           ],
-        }, h)`;
+        }, h)`
       const cardEnd = `InputGroup.inputGroup({
           children: [
             ${emitInput('iconCardStar', 'icon-card-star', "\n            placeholder: 'Card number',")},
@@ -503,8 +509,8 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
               children: [Icon.icon('star', {}, h), Icon.icon('info', {}, h)],
             }, h),
           ],
-        }, h)`;
-      return `    ${wrapStack(isStyleX, 'grid w-full max-w-sm gap-6', [search, mail, card, cardEnd])}`;
+        }, h)`
+      return `    ${wrapStack(isStyleX, 'grid w-full max-w-sm gap-6', [search, mail, card, cardEnd])}`
     }
     case 'text': {
       const amount = `InputGroup.inputGroup({
@@ -513,20 +519,20 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
             ${emitInput('textAmount', 'text-amount', "\n            placeholder: '0.00',")},
             InputGroup.inputGroupAddon({ align: 'inline-end', children: [InputGroup.inputGroupText({ children: ['USD'] }, h)] }, h),
           ],
-        }, h)`;
+        }, h)`
       const domain = `InputGroup.inputGroup({
           children: [
             InputGroup.inputGroupAddon({ children: [InputGroup.inputGroupText({ children: ['https://'] }, h)] }, h),
             ${emitInput('textDomain', 'text-domain', "\n            placeholder: 'example.com',")},
             InputGroup.inputGroupAddon({ align: 'inline-end', children: [InputGroup.inputGroupText({ children: ['.com'] }, h)] }, h),
           ],
-        }, h)`;
+        }, h)`
       const username = `InputGroup.inputGroup({
           children: [
             ${emitInput('textUsername', 'text-username', "\n            placeholder: 'Enter your username',")},
             InputGroup.inputGroupAddon({ align: 'inline-end', children: [InputGroup.inputGroupText({ children: ['@company.com'] }, h)] }, h),
           ],
-        }, h)`;
+        }, h)`
       const message = `InputGroup.inputGroup({
           children: [
             ${emitTextarea('textMessage', 'text-message', "\n            placeholder: 'Enter your message',")},
@@ -535,8 +541,8 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
               children: [InputGroup.inputGroupText({ children: [h.span([h.Class(${wrap('text-xs text-muted-foreground', 'styles.textXs')})], ['120 characters left'])] }, h)],
             }, h),
           ],
-        }, h)`;
-      return `    ${wrapStack(isStyleX, 'grid w-full max-w-sm gap-6', [amount, domain, username, message])}`;
+        }, h)`
+      return `    ${wrapStack(isStyleX, 'grid w-full max-w-sm gap-6', [amount, domain, username, message])}`
     }
     case 'button': {
       const copyGroup = `InputGroup.inputGroup({
@@ -554,16 +560,18 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
               ],
             }, h),
           ],
-        }, h)`;
+        }, h)`
       const secureGroup = `InputGroup.inputGroup({
           ${isStyleX ? "radius: 'full'" : "radius: 'full'"},
           children: [
             Popover.popover({
               model: model.popover,
               toParentMessage: message => Message.GotPopoverMessage({ message }),
-              ${isStyleX
-                ? "trigger: h.span([h.Class(stylex.props(styles.iconButton).className ?? '')], [Icon.icon('info', {}, h)]),"
-                : "trigger: Icon.icon('info', {}, h),\n              triggerClass: 'flex size-6 items-center justify-center rounded-[calc(var(--radius)-5px)] text-muted-foreground hover:bg-accent/50',"}
+              ${
+                isStyleX
+                  ? "trigger: h.span([h.Class(stylex.props(styles.iconButton).className ?? '')], [Icon.icon('info', {}, h)]),"
+                  : "trigger: Icon.icon('info', {}, h),\n              triggerClass: 'flex size-6 items-center justify-center rounded-[calc(var(--radius)-5px)] text-muted-foreground hover:bg-accent/50',"
+              }
               align: 'start',
               content: h.div([h.Class(${isStyleX ? "stylex.props(styles.popoverContent).className ?? ''" : "'flex flex-col gap-1 text-sm'"})], [
                 h.p([h.Class(${isStyleX ? "stylex.props(styles.popoverTitle).className ?? ''" : "'font-medium'"})], ['Your connection is not secure.']),
@@ -571,7 +579,7 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
               ]),
             }, h),
             InputGroup.inputGroupAddon({ children: ['https://'] }, h),
-            ${emitInput('buttonSecure', 'button-secure', "")},
+            ${emitInput('buttonSecure', 'button-secure', '')},
             InputGroup.inputGroupAddon({
               align: 'inline-end',
               children: [
@@ -583,7 +591,7 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
               ],
             }, h),
           ],
-        }, h)`;
+        }, h)`
       const searchGroup = `InputGroup.inputGroup({
           children: [
             ${emitInput('buttonSearch', 'button-search', "\n            placeholder: 'Type to search...',")},
@@ -592,25 +600,25 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
               children: [InputGroup.inputGroupButton({ variant: 'secondary', children: ['Search'] }, h)],
             }, h),
           ],
-        }, h)`;
-      return `    ${wrapStack(isStyleX, 'grid w-full max-w-sm gap-6', [copyGroup, secureGroup, searchGroup])}`;
+        }, h)`
+      return `    ${wrapStack(isStyleX, 'grid w-full max-w-sm gap-6', [copyGroup, secureGroup, searchGroup])}`
     }
     case 'kbd':
       return `    InputGroup.inputGroup({
-      ${isStyleX ? "layoutStyle: styles.group" : "class: 'max-w-sm'"},
+      ${isStyleX ? 'layoutStyle: styles.group' : "class: 'max-w-sm'"},
       children: [
         ${emitInput('kbd', 'kbd-search', "\n        placeholder: 'Search...',")},
         InputGroup.inputGroupAddon({ children: [Icon.icon('search', {}, h)] }, h),
         InputGroup.inputGroupAddon({ align: 'inline-end', children: [Kbd.kbd({ children: ['⌘K'] }, h)] }, h),
       ],
-    }, h)`;
+    }, h)`
     case 'dropdown': {
       const iconTriggerProps = isStyleX
         ? "triggerButtonVariant: 'ghost',\n                  triggerButtonSize: 'icon-xs',"
-        : "triggerClass: 'flex size-6 items-center justify-center rounded-[calc(var(--radius)-5px)] text-muted-foreground hover:bg-accent/50',";
+        : "triggerClass: 'flex size-6 items-center justify-center rounded-[calc(var(--radius)-5px)] text-muted-foreground hover:bg-accent/50',"
       const textTriggerProps = isStyleX
         ? "triggerButtonVariant: 'ghost',\n                  triggerButtonSize: 'xs',"
-        : "triggerClass: 'flex h-6 items-center gap-1 rounded-[calc(var(--radius)-5px)] px-1.5 text-xs text-muted-foreground hover:bg-accent/50',";
+        : "triggerClass: 'flex h-6 items-center gap-1 rounded-[calc(var(--radius)-5px)] px-1.5 text-xs text-muted-foreground hover:bg-accent/50',"
       const fileGroup = `InputGroup.inputGroup({
           children: [
             ${emitInput('dropdownFile', 'dropdown-file', "\n            placeholder: 'Enter file name',")},
@@ -630,7 +638,7 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
               ],
             }, h),
           ],
-        }, h)`;
+        }, h)`
       const queryGroup = `InputGroup.inputGroup({
           ${isStyleX ? "radius: 'xl'" : "radius: 'xl'"},
           children: [
@@ -651,8 +659,8 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
               ],
             }, h),
           ],
-        }, h)`;
-      return `    ${wrapStack(isStyleX, 'grid w-full max-w-sm gap-4', [fileGroup, queryGroup])}`;
+        }, h)`
+      return `    ${wrapStack(isStyleX, 'grid w-full max-w-sm gap-4', [fileGroup, queryGroup])}`
     }
     case 'spinner': {
       const searching = `InputGroup.inputGroup({
@@ -660,13 +668,13 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
             ${emitInput('spinnerSearch', 'spinner-search', "\n            placeholder: 'Searching...',")},
             InputGroup.inputGroupAddon({ align: 'inline-end', children: [Spinner.spinner({ isDecorative: true }, h)] }, h),
           ],
-        }, h)`;
+        }, h)`
       const processing = `InputGroup.inputGroup({
           children: [
             ${emitInput('spinnerProcessing', 'spinner-processing', "\n            placeholder: 'Processing...',")},
             InputGroup.inputGroupAddon({ children: [Spinner.spinner({ isDecorative: true }, h)] }, h),
           ],
-        }, h)`;
+        }, h)`
       const saving = `InputGroup.inputGroup({
           children: [
             ${emitInput('spinnerSaving', 'spinner-saving', "\n            placeholder: 'Saving changes...',")},
@@ -675,7 +683,7 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
               children: [InputGroup.inputGroupText({ children: ['Saving...'] }, h), Spinner.spinner({ isDecorative: true }, h)],
             }, h),
           ],
-        }, h)`;
+        }, h)`
       const refreshing = `InputGroup.inputGroup({
           children: [
             ${emitInput('spinnerRefresh', 'spinner-refresh', "\n            placeholder: 'Refreshing data...',")},
@@ -685,8 +693,8 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
               children: [InputGroup.inputGroupText({ children: ['Please wait...'] }, h)],
             }, h),
           ],
-        }, h)`;
-      return `    ${wrapStack(isStyleX, 'grid w-full max-w-sm gap-4', [searching, processing, saving, refreshing])}`;
+        }, h)`
+      return `    ${wrapStack(isStyleX, 'grid w-full max-w-sm gap-4', [searching, processing, saving, refreshing])}`
     }
     case 'textarea':
       return `    ${wrapStack(isStyleX, 'grid w-full max-w-md gap-4', [
@@ -710,7 +718,7 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
             }, h),
           ],
         }, h)`,
-      ])}`;
+      ])}`
     case 'custom':
       return `    ${wrapStack(isStyleX, 'grid w-full max-w-sm gap-6', [
         `InputGroup.inputGroup({
@@ -728,22 +736,22 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
             }, h),
           ],
         }, h)`,
-      ])}`;
+      ])}`
     case 'rtl': {
-      const t = inputGroupRtlCopy;
+      const t = inputGroupRtlCopy
       const search = `InputGroup.inputGroup({
             children: [
               ${emitInput('rtlSearch', 'rtl-search', `\n              placeholder: '${t.placeholder}',`)},
               InputGroup.inputGroupAddon({ children: [Icon.icon('search', {}, h)] }, h),
               InputGroup.inputGroupAddon({ align: 'inline-end', children: ['${t.results}'] }, h),
             ],
-          }, h)`;
+          }, h)`
       const searching = `InputGroup.inputGroup({
             children: [
               ${emitInput('rtlSearching', 'rtl-searching', `\n              placeholder: '${t.searching}',`)},
               InputGroup.inputGroupAddon({ align: 'inline-end', children: [Spinner.spinner({ isDecorative: true }, h)] }, h),
             ],
-          }, h)`;
+          }, h)`
       const saving = `InputGroup.inputGroup({
             children: [
               ${emitInput('rtlSaving', 'rtl-saving', `\n              placeholder: '${t.savingChanges}',`)},
@@ -752,7 +760,7 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
                 children: [InputGroup.inputGroupText({ children: ['${t.saving}'] }, h), Spinner.spinner({ isDecorative: true }, h)],
               }, h),
             ],
-          }, h)`;
+          }, h)`
       const comment = `Field.fieldGroup({
             children: [
               Field.field({
@@ -774,28 +782,32 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
                 ],
               }, h),
             ],
-          }, h)`;
+          }, h)`
       return `    h.div([h.Dir('rtl'), h.Class(${wrap('grid w-full max-w-sm gap-6', 'styles.stack')})], [
           ${[search, searching, saving, comment].join(',\n')},
-        ])`;
+        ])`
     }
   }
-};
+}
 
-const emitApplication = (fixture: InputGroupFixture, isStyleX: boolean): string => {
+const emitApplication = (
+  fixture: InputGroupFixture,
+  isStyleX: boolean,
+): string => {
   const effectImports = (() => {
-    if (kindUsesPopover(fixture.kind)) return "import { Effect, Schema as S } from 'effect'";
-    return "import { Schema as S } from 'effect'";
-  })();
+    if (kindUsesPopover(fixture.kind))
+      return "import { Effect, Schema as S } from 'effect'"
+    return "import { Schema as S } from 'effect'"
+  })()
   const consts = (() => {
     if (kindUsesDropdown(fixture.kind)) {
       return `
 
 const FILE_MENU_ITEMS = ['Settings', 'Copy path', 'Open location'] as const
-const SEARCH_MENU_ITEMS = ['Documentation', 'Blog Posts', 'Changelog'] as const`;
+const SEARCH_MENU_ITEMS = ['Documentation', 'Blog Posts', 'Changelog'] as const`
     }
-    return '';
-  })();
+    return ''
+  })()
   return foldkitApplication({
     title: `Input Group — ${fixture.title}`,
     imports: `${effectImports}
@@ -810,14 +822,17 @@ ${emitImports(fixture, isStyleX)}${isStyleX ? emitStyles(fixture) : ''}${consts}
 ${emitBody(fixture, isStyleX)}
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const inputGroupExamples = (
   renderer: 'tailwind' | 'stylex',
-): ReadonlyArray<DocsExample> => inputGroupFixtures.map(fixture => ({
-  title: fixture.title,
-  ...(fixture.description === undefined ? {} : { description: fixture.description }),
-  ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
-  code: emitApplication(fixture, renderer === 'stylex'),
-}));
+): ReadonlyArray<DocsExample> =>
+  inputGroupFixtures.map(fixture => ({
+    title: fixture.title,
+    ...(fixture.description === undefined
+      ? {}
+      : { description: fixture.description }),
+    ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
+    code: emitApplication(fixture, renderer === 'stylex'),
+  }))

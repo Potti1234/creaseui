@@ -80,44 +80,53 @@ const initialModel = (
 type SliderModule = Readonly<{
   init: typeof TailwindSlider.init
   update: typeof TailwindSlider.update
-  slider: <Msg>(props: {
-    model: TailwindSlider.Model
-    value: number
-    toParentMessage: (message: TailwindSlider.Message) => Msg
-    label?: string
-    ariaLabel?: string
-    formatValue?: (value: number) => string
-    isDisabled?: boolean
-    isReadOnly?: boolean
-    name?: string
-  }, h: HtmlBuilder<Msg>) => Html
-  rangeSlider: <Msg>(props: {
-    values: readonly [number, number]
-    min: number
-    max: number
-    step?: number
-    onInput: (values: readonly [number, number]) => Msg
-    orientation?: 'horizontal' | 'vertical'
-    direction?: 'ltr' | 'rtl'
-    ariaLabels?: readonly [string, string]
-    formatValue?: (value: number, index: 0 | 1) => string
-    isDisabled?: boolean
-    isReadOnly?: boolean
-    name?: string
-  }, h: HtmlBuilder<Msg>) => Html
-  multiSlider: <Msg>(props: {
-    values: readonly number[]
-    min: number
-    max: number
-    step?: number
-    onInput: (values: readonly number[]) => Msg
-    orientation?: 'horizontal' | 'vertical'
-    direction?: 'ltr' | 'rtl'
-    ariaLabels?: readonly string[]
-    isDisabled?: boolean
-    isReadOnly?: boolean
-    name?: string
-  }, h: HtmlBuilder<Msg>) => Html
+  slider: <Msg>(
+    props: {
+      model: TailwindSlider.Model
+      value: number
+      toParentMessage: (message: TailwindSlider.Message) => Msg
+      label?: string
+      ariaLabel?: string
+      formatValue?: (value: number) => string
+      isDisabled?: boolean
+      isReadOnly?: boolean
+      name?: string
+    },
+    h: HtmlBuilder<Msg>,
+  ) => Html
+  rangeSlider: <Msg>(
+    props: {
+      values: readonly [number, number]
+      min: number
+      max: number
+      step?: number
+      onInput: (values: readonly [number, number]) => Msg
+      orientation?: 'horizontal' | 'vertical'
+      direction?: 'ltr' | 'rtl'
+      ariaLabels?: readonly [string, string]
+      formatValue?: (value: number, index: 0 | 1) => string
+      isDisabled?: boolean
+      isReadOnly?: boolean
+      name?: string
+    },
+    h: HtmlBuilder<Msg>,
+  ) => Html
+  multiSlider: <Msg>(
+    props: {
+      values: readonly number[]
+      min: number
+      max: number
+      step?: number
+      onInput: (values: readonly number[]) => Msg
+      orientation?: 'horizontal' | 'vertical'
+      direction?: 'ltr' | 'rtl'
+      ariaLabels?: readonly string[]
+      isDisabled?: boolean
+      isReadOnly?: boolean
+      name?: string
+    },
+    h: HtmlBuilder<Msg>,
+  ) => Html
 }>
 
 const rootEl = Scene.selector('[data-slot="slider"]')
@@ -143,12 +152,15 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
           model: {
             ...model,
             slider: result.model,
-            value: result.outMessage === undefined ? model.value : result.outMessage.value,
+            value:
+              result.outMessage === undefined
+                ? model.value
+                : result.outMessage.value,
           },
-          commands: Command.mapMessages(
-            result.commands,
-            child => ({ _tag: 'GotSliderMessage' as const, message: child }),
-          ),
+          commands: Command.mapMessages(result.commands, child => ({
+            _tag: 'GotSliderMessage' as const,
+            message: child,
+          })),
         }
       }
       case 'SetValue':
@@ -156,20 +168,24 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
       case 'SetRangeValues':
         return { model: { ...model, values: message.values }, commands: [] }
       case 'SetMultiValues':
-        return { model: { ...model, multiValues: message.values }, commands: [] }
+        return {
+          model: { ...model, multiValues: message.values },
+          commands: [],
+        }
     }
   }
 
-  const sliderView = (
-    overrides?: Readonly<{
-      label?: string
-      ariaLabel?: string
-      formatValue?: (value: number) => string
-      isDisabled?: boolean
-      isReadOnly?: boolean
-      name?: string
-    }>,
-  ) =>
+  const sliderView =
+    (
+      overrides?: Readonly<{
+        label?: string
+        ariaLabel?: string
+        formatValue?: (value: number) => string
+        isDisabled?: boolean
+        isReadOnly?: boolean
+        name?: string
+      }>,
+    ) =>
     (model: Model, h: HtmlBuilder<Message>): Html =>
       Slider.slider(
         {
@@ -181,20 +197,21 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
         h,
       )
 
-  const rangeView = (
-    props: Readonly<{
-      min: number
-      max: number
-      step?: number
-      orientation?: 'horizontal' | 'vertical'
-      direction?: 'ltr' | 'rtl'
-      ariaLabels?: readonly [string, string]
-      formatValue?: (value: number, index: 0 | 1) => string
-      isDisabled?: boolean
-      isReadOnly?: boolean
-      name?: string
-    }>,
-  ) =>
+  const rangeView =
+    (
+      props: Readonly<{
+        min: number
+        max: number
+        step?: number
+        orientation?: 'horizontal' | 'vertical'
+        direction?: 'ltr' | 'rtl'
+        ariaLabels?: readonly [string, string]
+        formatValue?: (value: number, index: 0 | 1) => string
+        isDisabled?: boolean
+        isReadOnly?: boolean
+        name?: string
+      }>,
+    ) =>
     (model: Model, h: HtmlBuilder<Message>): Html =>
       Slider.rangeSlider(
         {
@@ -205,14 +222,15 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
         h,
       )
 
-  const multiView = (
-    props: Readonly<{
-      min: number
-      max: number
-      step?: number
-      ariaLabels?: readonly string[]
-    }>,
-  ) =>
+  const multiView =
+    (
+      props: Readonly<{
+        min: number
+        max: number
+        step?: number
+        ariaLabels?: readonly string[]
+      }>,
+    ) =>
     (model: Model, h: HtmlBuilder<Message>): Html =>
       Slider.multiSlider(
         {
@@ -290,7 +308,10 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
         Scene.scene(
           { update, view: rangeView({ min: 0, max: 100 }) },
           Scene.given(initialModel(id, { values: [44, 50] })),
-          Scene.expect(lowerInput).toHaveAttr('aria-valuetext', '44 start range'),
+          Scene.expect(lowerInput).toHaveAttr(
+            'aria-valuetext',
+            '44 start range',
+          ),
           Scene.expect(upperInput).toHaveAttr('aria-valuetext', '50 end range'),
         )
       })
@@ -346,7 +367,10 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
             }),
           },
           Scene.given(initialModel(id, { values: [44, 50] })),
-          Scene.expect(lowerInput).toHaveAttr('aria-valuetext', '44 start range'),
+          Scene.expect(lowerInput).toHaveAttr(
+            'aria-valuetext',
+            '44 start range',
+          ),
           Scene.expect(upperInput).toHaveAttr('aria-valuetext', '50 end range'),
         )
       })
@@ -355,7 +379,10 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
     describe('prop: orientation', () => {
       it('sets the data-orientation attribute', () => {
         Scene.scene(
-          { update, view: rangeView({ min: 0, max: 100, orientation: 'vertical' }) },
+          {
+            update,
+            view: rangeView({ min: 0, max: 100, orientation: 'vertical' }),
+          },
           Scene.given(initialModel(id)),
           Scene.expect(rootEl).toHaveAttr('data-orientation', 'vertical'),
           Scene.expect(rootEl).toHaveAttr('data-slot', 'slider'),
@@ -367,7 +394,10 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
       // slider's thumb always reports "horizontal").
       it.fails('sets the aria-orientation attribute on range thumbs', () => {
         Scene.scene(
-          { update, view: rangeView({ min: 0, max: 100, orientation: 'vertical' }) },
+          {
+            update,
+            view: rangeView({ min: 0, max: 100, orientation: 'vertical' }),
+          },
           Scene.given(initialModel(id)),
           Scene.expect(lowerInput).toHaveAttr('aria-orientation', 'vertical'),
         )
@@ -382,7 +412,10 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
     describe('prop: disabled', () => {
       it('should render data-disabled on all subcomponents and remove interactions', () => {
         Scene.scene(
-          { update, view: sliderView({ ariaLabel: 'Volume', isDisabled: true }) },
+          {
+            update,
+            view: sliderView({ ariaLabel: 'Volume', isDisabled: true }),
+          },
           Scene.given(initialModel(id)),
           Scene.expect(rootEl).toHaveAttr('data-disabled', ''),
           Scene.expect(trackEl).toHaveAttr('data-disabled', ''),
@@ -423,7 +456,10 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
     describe('prop: readOnly', () => {
       it('keeps a11y attributes but removes interaction handlers', () => {
         Scene.scene(
-          { update, view: sliderView({ ariaLabel: 'Volume', isReadOnly: true }) },
+          {
+            update,
+            view: sliderView({ ariaLabel: 'Volume', isReadOnly: true }),
+          },
           Scene.given(initialModel(id)),
           Scene.expect(thumbEl).toHaveAttr('aria-readonly', 'true'),
           Scene.expect(rootEl).toHaveAttr('data-readonly', ''),
@@ -524,7 +560,9 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
       it('should use min as the step origin', () => {
         Scene.scene(
           { update, view: sliderView({ ariaLabel: 'Volume' }) },
-          Scene.given(initialModel(id, { value: 22, min: 20, max: 40, step: 10 })),
+          Scene.given(
+            initialModel(id, { value: 22, min: 20, max: 40, step: 10 }),
+          ),
           Scene.keydown(thumbEl, 'ArrowRight'),
           Scene.expectHandled(),
           Scene.expect(thumbEl).toHaveAttr('aria-valuenow', '30'),
@@ -854,24 +892,30 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
           {
             update,
             view: (model, h) =>
-              h.div([], [
-                h.button(
-                  [
-                    h.Type('button'),
-                    h.OnClick({ _tag: 'SetValue', value: 70 }),
-                  ],
-                  ['Set to 70'],
-                ),
-                Slider.slider(
-                  {
-                    model: model.slider,
-                    value: model.value,
-                    toParentMessage: message => ({ _tag: 'GotSliderMessage', message }),
-                    ariaLabel: 'Volume',
-                  },
-                  h,
-                ),
-              ]),
+              h.div(
+                [],
+                [
+                  h.button(
+                    [
+                      h.Type('button'),
+                      h.OnClick({ _tag: 'SetValue', value: 70 }),
+                    ],
+                    ['Set to 70'],
+                  ),
+                  Slider.slider(
+                    {
+                      model: model.slider,
+                      value: model.value,
+                      toParentMessage: message => ({
+                        _tag: 'GotSliderMessage',
+                        message,
+                      }),
+                      ariaLabel: 'Volume',
+                    },
+                    h,
+                  ),
+                ],
+              ),
           },
           Scene.given(initialModel(id)),
           Scene.expect(thumbEl).toHaveAttr('aria-valuenow', '50'),
@@ -1025,9 +1069,13 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
           Scene.given(initialModel(id, { multiValues: [20, 50, 80] })),
           Scene.type(Scene.role('slider', { name: 'Value 2' }), '90'),
           Scene.expectHandled(),
-          Scene.expect(Scene.role('slider', { name: 'Value 2' })).toHaveValue('80'),
+          Scene.expect(Scene.role('slider', { name: 'Value 2' })).toHaveValue(
+            '80',
+          ),
           Scene.type(Scene.role('slider', { name: 'Value 2' }), '5'),
-          Scene.expect(Scene.role('slider', { name: 'Value 2' })).toHaveValue('20'),
+          Scene.expect(Scene.role('slider', { name: 'Value 2' })).toHaveValue(
+            '20',
+          ),
         )
       })
 
@@ -1036,7 +1084,9 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
           { update, view: multiView({ min: 0, max: 100 }) },
           Scene.given(initialModel(id, { multiValues: [30] })),
           Scene.expectAll(allThumbs).toHaveCount(1),
-          Scene.expect(Scene.role('slider', { name: 'Value 1' })).toHaveValue('30'),
+          Scene.expect(Scene.role('slider', { name: 'Value 1' })).toHaveValue(
+            '30',
+          ),
           Scene.expect(rangeEl).toHaveStyle('left', '0%'),
           Scene.expect(rangeEl).toHaveStyle('right', '70%'),
         )

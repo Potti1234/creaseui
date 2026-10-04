@@ -1,8 +1,8 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { staticComponentApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 export type TokenItem = Readonly<{
-  label: string;
+  label: string
   color?:
     | 'default'
     | 'red'
@@ -14,42 +14,56 @@ export type TokenItem = Readonly<{
     | 'blue'
     | 'purple'
     | 'pink'
-    | 'gray';
-  size?: 'sm' | 'md' | 'lg';
-  icon?: 'user' | 'star' | 'tag' | 'shield-check';
-  endContent?: string;
-  isDisabled?: boolean;
-  hasClick?: boolean;
-  hasRemove?: boolean;
-}>;
+    | 'gray'
+  size?: 'sm' | 'md' | 'lg'
+  icon?: 'user' | 'star' | 'tag' | 'shield-check'
+  endContent?: string
+  isDisabled?: boolean
+  hasClick?: boolean
+  hasRemove?: boolean
+}>
 
 export type TokenSection = Readonly<{
-  label: string;
-  items: ReadonlyArray<TokenItem>;
-}>;
+  label: string
+  items: ReadonlyArray<TokenItem>
+}>
 
 export type TokenFixture = Readonly<{
-  title: string;
-  description: string;
-  heading?: string;
-  sections: ReadonlyArray<TokenSection>;
-}>;
+  title: string
+  description: string
+  heading?: string
+  sections: ReadonlyArray<TokenSection>
+}>
 
 const ALL_COLORS: ReadonlyArray<NonNullable<TokenItem['color']>> = [
-  'default', 'red', 'orange', 'yellow', 'green', 'teal', 'cyan', 'blue', 'purple', 'pink', 'gray',
-];
+  'default',
+  'red',
+  'orange',
+  'yellow',
+  'green',
+  'teal',
+  'cyan',
+  'blue',
+  'purple',
+  'pink',
+  'gray',
+]
 
 const colorItems = (isDisabled: boolean): ReadonlyArray<TokenItem> =>
   ALL_COLORS.map(color => ({
-    label: color === 'default' ? 'Default' : color.charAt(0).toUpperCase() + color.slice(1),
+    label:
+      color === 'default'
+        ? 'Default'
+        : color.charAt(0).toUpperCase() + color.slice(1),
     color,
     ...(isDisabled ? { isDisabled: true } : {}),
-  }));
+  }))
 
 export const tokenFixtures: Readonly<[TokenFixture, ...Array<TokenFixture>]> = [
   {
     title: 'Token',
-    description: 'A compact pill for a selected entity: label, optional icon, color, and remove affordance.',
+    description:
+      'A compact pill for a selected entity: label, optional icon, color, and remove affordance.',
     sections: [
       {
         label: '',
@@ -63,7 +77,8 @@ export const tokenFixtures: Readonly<[TokenFixture, ...Array<TokenFixture>]> = [
   },
   {
     title: 'Token — Clickable',
-    description: 'Interactive tokens that respond to clicks. Use for toggleable filters or tokens that open a detail view when selected.',
+    description:
+      'Interactive tokens that respond to clicks. Use for toggleable filters or tokens that open a detail view when selected.',
     heading: 'Click a token to view details',
     sections: [
       {
@@ -79,7 +94,8 @@ export const tokenFixtures: Readonly<[TokenFixture, ...Array<TokenFixture>]> = [
   },
   {
     title: 'Token — Colors',
-    description: 'All 11 color variants in default and disabled states. Use color to categorize entities or convey status at a glance.',
+    description:
+      'All 11 color variants in default and disabled states. Use color to categorize entities or convey status at a glance.',
     sections: [
       { label: 'Default', items: colorItems(false) },
       { label: 'Disabled', items: colorItems(true) },
@@ -87,7 +103,8 @@ export const tokenFixtures: Readonly<[TokenFixture, ...Array<TokenFixture>]> = [
   },
   {
     title: 'Token — End Content',
-    description: 'Tokens with trailing content like a count badge or status indicator after the label. Use for notification counts, item quantities, or compact status info.',
+    description:
+      'Tokens with trailing content like a count badge or status indicator after the label. Use for notification counts, item quantities, or compact status info.',
     heading: 'Trailing badges for counts or status',
     sections: [
       {
@@ -102,7 +119,8 @@ export const tokenFixtures: Readonly<[TokenFixture, ...Array<TokenFixture>]> = [
   },
   {
     title: 'Token — Icon',
-    description: 'Tokens with a leading icon that identifies the entity type. Use when the icon helps users recognize the token category faster, like a user icon for people or a tag icon for labels.',
+    description:
+      'Tokens with a leading icon that identifies the entity type. Use when the icon helps users recognize the token category faster, like a user icon for people or a tag icon for labels.',
     heading: 'Icons identify the token category',
     sections: [
       {
@@ -118,7 +136,8 @@ export const tokenFixtures: Readonly<[TokenFixture, ...Array<TokenFixture>]> = [
   },
   {
     title: 'Token — Removable',
-    description: 'Tokens with a dismiss button for selections the user can undo. Use in multi-select fields, active filters, or any list of user-chosen items.',
+    description:
+      'Tokens with a dismiss button for selections the user can undo. Use in multi-select fields, active filters, or any list of user-chosen items.',
     sections: [
       {
         label: 'Active filters',
@@ -138,37 +157,41 @@ export const tokenFixtures: Readonly<[TokenFixture, ...Array<TokenFixture>]> = [
       },
     ],
   },
-];
+]
 
-const iconSource = (name: NonNullable<TokenItem['icon']>, isStyleX: boolean): string =>
+const iconSource = (
+  name: NonNullable<TokenItem['icon']>,
+  isStyleX: boolean,
+): string =>
   isStyleX
     ? `(h) => Icon.icon('${name}', { class: className(styles.iconSm) }, h)`
-    : `(h) => Icon.icon('${name}', { class: 'size-3' }, h)`;
+    : `(h) => Icon.icon('${name}', { class: 'size-3' }, h)`
 
 const itemSource = (item: TokenItem, isStyleX: boolean): string => {
-  const icon = item.icon === undefined
-    ? []
-    : [
-        `icon: ${iconSource(item.icon, isStyleX)}`,
-      ];
+  const icon =
+    item.icon === undefined ? [] : [`icon: ${iconSource(item.icon, isStyleX)}`]
   const props = [
     `label: '${item.label}'`,
-    ...(item.color === undefined || item.color === 'default' ? [] : [`color: '${item.color}'`]),
+    ...(item.color === undefined || item.color === 'default'
+      ? []
+      : [`color: '${item.color}'`]),
     ...(item.size === undefined ? [] : [`size: '${item.size}'`]),
     ...icon,
     ...(item.endContent === undefined
       ? []
-      : [`endContent: [Badge.badge({ variant: 'secondary', children: ['${item.endContent}'] }, h)]`]),
+      : [
+          `endContent: [Badge.badge({ variant: 'secondary', children: ['${item.endContent}'] }, h)]`,
+        ]),
     ...(item.isDisabled === true ? ['isDisabled: true'] : []),
     ...(item.hasClick === true ? ['onClick: NoOp()'] : []),
     ...(item.hasRemove === true ? ['onRemove: NoOp()'] : []),
-  ];
-  return `Token.token({ ${props.join(', ')} }, h)`;
-};
+  ]
+  return `Token.token({ ${props.join(', ')} }, h)`
+}
 
 const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
-  const fixture = tokenFixtures[index] ?? tokenFixtures[0];
-  const isStyleX = renderer === 'stylex';
+  const fixture = tokenFixtures[index] ?? tokenFixtures[0]
+  const isStyleX = renderer === 'stylex'
   const componentImports = [
     `import * as Icon from '@/lib/icon'`,
     isStyleX ? `import { className } from '@/stylex/style'` : '',
@@ -180,7 +203,7 @@ const styles = stylex.create({ column: { display: 'flex', flexDirection: 'column
       : '',
   ]
     .filter(Boolean)
-    .join('\n');
+    .join('\n')
 
   const sections = fixture.sections
     .map(
@@ -197,10 +220,10 @@ const styles = stylex.create({ column: { display: 'flex', flexDirection: 'column
         ],
       )`,
     )
-    .join(',\n        ');
+    .join(',\n        ')
 
   const singleSection =
-    fixture.sections.length === 1 ? fixture.sections[0] : undefined;
+    fixture.sections.length === 1 ? fixture.sections[0] : undefined
   const viewBody =
     singleSection !== undefined && singleSection.label === ''
       ? `h.div(
@@ -214,7 +237,7 @@ const styles = stylex.create({ column: { display: 'flex', flexDirection: 'column
       [
         ${sections},
       ],
-    )`;
+    )`
 
   return staticComponentApplication({
     componentName: 'Token',
@@ -223,8 +246,8 @@ const styles = stylex.create({ column: { display: 'flex', flexDirection: 'column
     exampleName: fixture.title,
     componentImports,
     viewBody,
-  });
-};
+  })
+}
 
 export const tokenExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -233,4 +256,4 @@ export const tokenExamples = (
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
-  }));
+  }))

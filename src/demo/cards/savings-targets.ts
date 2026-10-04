@@ -1,11 +1,11 @@
 import type { Update } from 'foldkit'
-import { Match as M, Schema as S } from 'effect';
-import type { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
-import { modifyFields } from 'foldkit/struct';
+import { Match as M, Schema as S } from 'effect'
+import type { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import { modifyFields } from 'foldkit/struct'
 
-import { button } from '@/ui/button';
+import { button } from '@/ui/button'
 import {
   card,
   cardAction,
@@ -14,54 +14,55 @@ import {
   cardFooter,
   cardHeader,
   cardTitle,
-} from '@/ui/card';
-import { field, fieldDescription, fieldGroup, fieldLabel } from '@/ui/field';
+} from '@/ui/card'
+import { field, fieldDescription, fieldGroup, fieldLabel } from '@/ui/field'
 import {
   inputGroup,
   inputGroupAddon,
   inputGroupInput,
   inputGroupText,
-} from '@/ui/input-group';
+} from '@/ui/input-group'
 import {
   item,
   itemContent,
   itemDescription,
   itemFooter,
   itemGroup,
-} from '@/ui/item';
-import { nativeSelect } from '@/ui/native-select';
-import { progress } from '@/ui/progress';
+} from '@/ui/item'
+import { nativeSelect } from '@/ui/native-select'
+import { progress } from '@/ui/progress'
 
 export const Model = S.Struct({
   amount: S.String,
   orderType: S.String,
-});
-export type Model = typeof Model.Type;
-
-
-
+})
+export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
   UpdatedAmount: { value: S.String },
   UpdatedOrderType: { value: S.String },
-});
-export type Message = typeof Message.Type;
+})
+export type Message = typeof Message.Type
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 
 export const init = (): Model => ({
   amount: '1,000.00',
   orderType: 'market',
-});
+})
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      UpdatedAmount: ({ value }) => ({ model: modifyFields(model, { amount: () => value }) }),
-      UpdatedOrderType: ({ value }) => ({ model: modifyFields(model, { orderType: () => value }) }),
+      UpdatedAmount: ({ value }) => ({
+        model: modifyFields(model, { amount: () => value }),
+      }),
+      UpdatedOrderType: ({ value }) => ({
+        model: modifyFields(model, { orderType: () => value }),
+      }),
     }),
-  );
+  )
 
 const target = (
   title: string,
@@ -111,8 +112,8 @@ const target = (
       ],
     },
     h,
-  );
-};
+  )
+}
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
   return h.div(
@@ -230,7 +231,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                                       {
                                         id: 'savings-targets-invest-amount',
                                         value: model.amount,
-                                        onInput: (value) =>
+                                        onInput: value =>
                                           Message.UpdatedAmount({ value }),
                                       },
                                       h,
@@ -257,7 +258,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                                 {
                                   id: 'savings-targets-invest-type',
                                   value: model.orderType,
-                                  onChange: (value) =>
+                                  onChange: value =>
                                     Message.UpdatedOrderType({ value }),
                                   options: [
                                     { value: 'market', label: 'Market Order' },
@@ -349,8 +350,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
         h,
       ),
     ],
-  );
-};
+  )
+}
 
 /*
   Parent wiring: nest Model from init(), wrap Message in the parent message,

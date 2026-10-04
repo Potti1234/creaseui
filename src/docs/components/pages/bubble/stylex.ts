@@ -1,8 +1,8 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   bubbleFixtures,
   COLLAPSIBLE_TEXT,
@@ -10,15 +10,15 @@ import {
   type BubbleFixture,
   type BubbleReactionsSpec,
   type BubbleSpec,
-} from '@/docs/components/pages/bubble/shared';
-import * as Icon from '@/lib/icon';
-import * as Bubble from '@/stylex/bubble';
-import * as Button from '@/stylex/button';
-import * as Popover from '@/stylex/popover';
-import * as Tooltip from '@/stylex/tooltip';
-import type { ComponentLayoutStyle } from '@/stylex/contracts';
-import { foundationTokens } from '../../../../stylex/foundations-tokens.stylex';
-import { className } from '@/stylex/style';
+} from '@/docs/components/pages/bubble/shared'
+import * as Icon from '@/lib/icon'
+import * as Bubble from '@/stylex/bubble'
+import * as Button from '@/stylex/button'
+import * as Popover from '@/stylex/popover'
+import * as Tooltip from '@/stylex/tooltip'
+import type { ComponentLayoutStyle } from '@/stylex/contracts'
+import { foundationTokens } from '../../../../stylex/foundations-tokens.stylex'
+import { className } from '@/stylex/style'
 
 const styles = stylex.create({
   column4: {
@@ -54,12 +54,19 @@ const styles = stylex.create({
     color: 'var(--muted-foreground)',
     display: 'inline-flex',
   },
-  icon: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
+  icon: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+  },
   iconTrigger: {
     borderRadius: foundationTokens.radiusMd,
     alignItems: 'center',
     backgroundColor: { default: null, ':hover': 'var(--accent)' },
-    color: { default: 'var(--muted-foreground)', ':hover': 'var(--accent-foreground)' },
+    color: {
+      default: 'var(--muted-foreground)',
+      ':hover': 'var(--accent-foreground)',
+    },
     display: 'flex',
     justifyContent: 'center',
     height: '1.5rem',
@@ -80,19 +87,31 @@ const styles = stylex.create({
     width: '1.5rem',
   },
   reactionsFlat: { paddingBlock: 0, paddingInline: 0 },
-  popoverContent: { gap: '0.25rem', display: 'grid', },
-  popoverTitle: { fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem', },
-  popoverCopy: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
-  feedback: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
-});
+  popoverContent: { gap: '0.25rem', display: 'grid' },
+  popoverTitle: {
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    lineHeight: '1.25rem',
+  },
+  popoverCopy: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+  },
+  feedback: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+  },
+})
 
 type PreviewSnapshot = Readonly<{
-  lastClicked?: string;
-  ranIt: boolean;
-  open: boolean;
-  tooltip: Tooltip.Model;
-  popover: Popover.Model;
-}>;
+  lastClicked?: string
+  ranIt: boolean
+  open: boolean
+  tooltip: Tooltip.Model
+  popover: Popover.Model
+}>
 
 const reactionsView = <Msg>(
   model: PreviewSnapshot,
@@ -114,7 +133,7 @@ const reactionsView = <Msg>(
           children: reactions.items.map(item => h.span([], [item])),
         },
         h,
-      );
+      )
     case 'action':
       return Bubble.bubbleReactions(
         {
@@ -135,7 +154,7 @@ const reactionsView = <Msg>(
           ],
         },
         h,
-      );
+      )
     case 'tooltip':
       return Bubble.bubbleReactions(
         {
@@ -158,7 +177,7 @@ const reactionsView = <Msg>(
           ],
         },
         h,
-      );
+      )
     case 'popover':
       return Bubble.bubbleReactions(
         {
@@ -178,7 +197,8 @@ const reactionsView = <Msg>(
                   },
                   h,
                 ),
-                triggerLayoutStyle: styles.iconTriggerPopover as ComponentLayoutStyle,
+                triggerLayoutStyle:
+                  styles.iconTriggerPopover as ComponentLayoutStyle,
                 content: h.div(
                   [h.Class(className(styles.popoverContent))],
                   [
@@ -198,9 +218,9 @@ const reactionsView = <Msg>(
           ],
         },
         h,
-      );
+      )
   }
-};
+}
 
 const contentView = <Msg>(
   model: PreviewSnapshot,
@@ -267,7 +287,7 @@ const contentView = <Msg>(
       ],
     },
     h,
-  );
+  )
 
 const bubbleView = <Msg>(
   model: PreviewSnapshot,
@@ -289,7 +309,7 @@ const bubbleView = <Msg>(
       ],
     },
     h,
-  );
+  )
 
 const clusterView = <Msg>(
   model: PreviewSnapshot,
@@ -306,16 +326,16 @@ const clusterView = <Msg>(
         },
         h,
       )
-    : (cluster.bubbles[0] === undefined
-        ? h.empty
-        : cluster.bubbles.length === 1
-          ? bubbleView(model, cluster.bubbles[0], onMessageJson, h)
-          : h.div(
-              [],
-              cluster.bubbles.map(bubble =>
-                bubbleView(model, bubble, onMessageJson, h),
-              ),
-            ));
+    : cluster.bubbles[0] === undefined
+      ? h.empty
+      : cluster.bubbles.length === 1
+        ? bubbleView(model, cluster.bubbles[0], onMessageJson, h)
+        : h.div(
+            [],
+            cluster.bubbles.map(bubble =>
+              bubbleView(model, bubble, onMessageJson, h),
+            ),
+          )
 
 export const bubbleStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
@@ -323,8 +343,8 @@ export const bubbleStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ) => {
-  const fixture = bubbleFixtures[exampleIndex] ?? bubbleFixtures[0];
-  const previewModel = model as PreviewSnapshot;
+  const fixture = bubbleFixtures[exampleIndex] ?? bubbleFixtures[0]
+  const previewModel = model as PreviewSnapshot
   return h.div(
     [
       h.Class(
@@ -351,5 +371,5 @@ export const bubbleStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           ]
         : []),
     ],
-  );
-};
+  )
+}

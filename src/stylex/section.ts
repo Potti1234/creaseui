@@ -1,9 +1,9 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { ComponentLayoutStyle } from './contracts';
-import { className } from './style';
-import { tokens } from './tokens.stylex';
+import type { ComponentLayoutStyle } from './contracts'
+import { className } from './style'
+import { tokens } from './tokens.stylex'
 
 /* Ported from Meta Astryx Section/Section.tsx — a padded page section with
    surface variants and edge dividers. The astryx outer/inner wrapper pair
@@ -15,7 +15,7 @@ const variantStyles = stylex.create({
   section: { backgroundColor: tokens.card },
   transparent: { backgroundColor: 'transparent' },
   muted: { backgroundColor: tokens.muted },
-});
+})
 
 const dividerStyles = stylex.create({
   top: {
@@ -38,7 +38,7 @@ const dividerStyles = stylex.create({
     borderInlineEndStyle: 'solid',
     borderInlineEndWidth: 1,
   },
-});
+})
 
 const paddingInlineStartStyles = stylex.create({
   0: { paddingInlineStart: '0px' },
@@ -52,7 +52,7 @@ const paddingInlineStartStyles = stylex.create({
   6: { paddingInlineStart: '1.5rem' },
   8: { paddingInlineStart: '2rem' },
   10: { paddingInlineStart: '2.5rem' },
-});
+})
 
 const paddingInlineEndStyles = stylex.create({
   0: { paddingInlineEnd: '0px' },
@@ -66,7 +66,7 @@ const paddingInlineEndStyles = stylex.create({
   6: { paddingInlineEnd: '1.5rem' },
   8: { paddingInlineEnd: '2rem' },
   10: { paddingInlineEnd: '2.5rem' },
-});
+})
 
 const paddingBlockStartStyles = stylex.create({
   0: { paddingBlockStart: '0px' },
@@ -80,7 +80,7 @@ const paddingBlockStartStyles = stylex.create({
   6: { paddingBlockStart: '1.5rem' },
   8: { paddingBlockStart: '2rem' },
   10: { paddingBlockStart: '2.5rem' },
-});
+})
 
 const paddingBlockEndStyles = stylex.create({
   0: { paddingBlockEnd: '0px' },
@@ -94,49 +94,48 @@ const paddingBlockEndStyles = stylex.create({
   6: { paddingBlockEnd: '1.5rem' },
   8: { paddingBlockEnd: '2rem' },
   10: { paddingBlockEnd: '2.5rem' },
-});
+})
 
-export type SectionVariant = keyof typeof variantStyles;
-export type SectionDivider = keyof typeof dividerStyles;
-export type SectionSpacing = keyof typeof paddingInlineStartStyles;
-export type SectionSizeValue = number | string;
+export type SectionVariant = keyof typeof variantStyles
+export type SectionDivider = keyof typeof dividerStyles
+export type SectionSpacing = keyof typeof paddingInlineStartStyles
+export type SectionSizeValue = number | string
 
 export type SectionProps = Readonly<{
-  variant?: SectionVariant;
-  dividers?: ReadonlyArray<SectionDivider>;
+  variant?: SectionVariant
+  dividers?: ReadonlyArray<SectionDivider>
   /** Inner padding on all sides (spacing steps of 4px). Defaults to 4. */
-  padding?: SectionSpacing;
-  paddingInline?: SectionSpacing;
-  paddingInlineStart?: SectionSpacing;
-  paddingInlineEnd?: SectionSpacing;
-  paddingBlock?: SectionSpacing;
-  paddingBlockStart?: SectionSpacing;
-  paddingBlockEnd?: SectionSpacing;
-  width?: SectionSizeValue;
-  height?: SectionSizeValue;
-  maxWidth?: SectionSizeValue;
-  minHeight?: SectionSizeValue;
-  children?: ReadonlyArray<Html | string>;
-  layoutStyle?: ComponentLayoutStyle;
-}>;
+  padding?: SectionSpacing
+  paddingInline?: SectionSpacing
+  paddingInlineStart?: SectionSpacing
+  paddingInlineEnd?: SectionSpacing
+  paddingBlock?: SectionSpacing
+  paddingBlockStart?: SectionSpacing
+  paddingBlockEnd?: SectionSpacing
+  width?: SectionSizeValue
+  height?: SectionSizeValue
+  maxWidth?: SectionSizeValue
+  minHeight?: SectionSizeValue
+  children?: ReadonlyArray<Html | string>
+  layoutStyle?: ComponentLayoutStyle
+}>
 
 const sizeValue = (value: SectionSizeValue): string =>
-  typeof value === 'number' ? `${value}px` : value;
+  typeof value === 'number' ? `${value}px` : value
 
 export const section = <Msg>(
   props: SectionProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const variant = props.variant ?? 'section';
-  const padding = props.padding ?? 4;
+  const variant = props.variant ?? 'section'
+  const padding = props.padding ?? 4
   const paddingInlineStart =
-    props.paddingInlineStart ?? props.paddingInline ?? padding;
+    props.paddingInlineStart ?? props.paddingInline ?? padding
   const paddingInlineEnd =
-    props.paddingInlineEnd ?? props.paddingInline ?? padding;
+    props.paddingInlineEnd ?? props.paddingInline ?? padding
   const paddingBlockStart =
-    props.paddingBlockStart ?? props.paddingBlock ?? padding;
-  const paddingBlockEnd =
-    props.paddingBlockEnd ?? props.paddingBlock ?? padding;
+    props.paddingBlockStart ?? props.paddingBlock ?? padding
+  const paddingBlockEnd = props.paddingBlockEnd ?? props.paddingBlock ?? padding
   const sizing: Record<string, string> = {
     ...(props.width === undefined ? {} : { width: sizeValue(props.width) }),
     ...(props.height === undefined ? {} : { height: sizeValue(props.height) }),
@@ -146,7 +145,7 @@ export const section = <Msg>(
     ...(props.minHeight === undefined
       ? {}
       : { minHeight: sizeValue(props.minHeight) }),
-  };
+  }
   return h.section(
     [
       h.DataAttribute('slot', 'section'),
@@ -165,5 +164,5 @@ export const section = <Msg>(
       ...(Object.keys(sizing).length > 0 ? [h.Style(sizing)] : []),
     ],
     [...(props.children ?? [])],
-  );
-};
+  )
+}

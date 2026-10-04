@@ -1,17 +1,22 @@
-import * as stylex from '@stylexjs/stylex';
-import type { HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   circularProgressFixtures,
   type CircularProgressItem,
-} from '@/docs/components/pages/circular-progress/shared';
-import { className } from '@/stylex/style';
-import * as CircularProgress from '@/stylex/circular-progress';
+} from '@/docs/components/pages/circular-progress/shared'
+import { className } from '@/stylex/style'
+import * as CircularProgress from '@/stylex/circular-progress'
 
 const styles = stylex.create({
-  row: { gap: '1.5rem', alignItems: 'center', display: 'flex', flexWrap: 'wrap', },
-});
+  row: {
+    gap: '1.5rem',
+    alignItems: 'center',
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+})
 
 const itemView = <Msg>(item: CircularProgressItem, h: HtmlBuilder<Msg>) =>
   CircularProgress.circularProgress(
@@ -27,26 +32,34 @@ const itemView = <Msg>(item: CircularProgressItem, h: HtmlBuilder<Msg>) =>
         : { hasValueLabel: item.hasValueLabel }),
       ...(item.formatValueLabel === undefined
         ? {}
-        : { formatValueLabel: (value: number, max: number) => `${value}/${max}` }),
+        : {
+            formatValueLabel: (value: number, max: number) => `${value}/${max}`,
+          }),
       ...(item.isDisabled === undefined ? {} : { isDisabled: item.isDisabled }),
       ...(item.isIndeterminate === undefined
         ? {}
         : { isIndeterminate: item.isIndeterminate }),
     },
     h,
-  );
+  )
 
-export const circularProgressStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const circularProgressStyleXPreview: StyleXExamplePreviewProvider = <
+  Msg,
+>(
   exampleIndex: number,
   _model: unknown,
   _onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ) => {
-  const fixture = circularProgressFixtures[exampleIndex] ?? circularProgressFixtures[0];
+  const fixture =
+    circularProgressFixtures[exampleIndex] ?? circularProgressFixtures[0]
   return fixture.layout === 'row'
     ? h.div(
         [h.Class(className(styles.row))],
         fixture.items.map(item => itemView(item, h)),
       )
-    : h.div([], fixture.items.map(item => itemView(item, h)));
-};
+    : h.div(
+        [],
+        fixture.items.map(item => itemView(item, h)),
+      )
+}

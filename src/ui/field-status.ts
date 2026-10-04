@@ -1,7 +1,7 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Icon from '@/lib/icon';
-import { cn } from '@/lib/utils';
+import * as Icon from '@/lib/icon'
+import { cn } from '@/lib/utils'
 
 /* Ported from Meta Astryx FieldStatus.tsx — the status message shown under
    form controls. The `attached` variant overlaps the control above (inside
@@ -12,25 +12,25 @@ import { cn } from '@/lib/utils';
    primitive, so this port renders the message statically.
    PORT-NOTE: announce + entry animation need live-region/motion primitives. */
 
-export type FieldStatusType = 'warning' | 'error' | 'success';
+export type FieldStatusType = 'warning' | 'error' | 'success'
 
-export type FieldStatusVariant = 'attached' | 'detached';
+export type FieldStatusVariant = 'attached' | 'detached'
 
 export type FieldStatusProps = Readonly<{
-  type: FieldStatusType;
-  message: string;
+  type: FieldStatusType
+  message: string
   /** @default 'attached' */
-  variant?: FieldStatusVariant;
+  variant?: FieldStatusVariant
   /** Stable id — inputs reference it via aria-describedby. */
-  id?: string;
-  class?: string;
-}>;
+  id?: string
+  class?: string
+}>
 
 const STATUS_ICON: Readonly<Record<FieldStatusType, string>> = {
   warning: 'triangle-alert',
   error: 'circle-alert',
   success: 'circle-check',
-};
+}
 
 /* astryx warning/error/success-muted fills over the same status text colors;
    crease pairs the 20% hue tint with the chart/destructive status hues.
@@ -40,13 +40,13 @@ const STATUS_COLOR: Readonly<Record<FieldStatusType, string>> = {
   warning: 'bg-chart-4/20 text-chart-4',
   error: 'bg-destructive/20 text-destructive',
   success: 'bg-chart-2/20 text-chart-2',
-};
+}
 
 export const fieldStatus = <Msg>(
   props: FieldStatusProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const variant = props.variant ?? 'attached';
+  const variant = props.variant ?? 'attached'
   return h.div(
     [
       h.DataAttribute('slot', 'field-status'),
@@ -78,14 +78,12 @@ export const fieldStatus = <Msg>(
                   /* centers the glyph within the first text-line box */
                   h.Class('inline-flex h-4 shrink-0 items-center'),
                 ],
-                [
-                  Icon.icon(STATUS_ICON[props.type], { class: 'size-4' }, h),
-                ],
+                [Icon.icon(STATUS_ICON[props.type], { class: 'size-4' }, h)],
               ),
               h.span([], [props.message]),
             ],
           ),
         ]
       : [props.message],
-  );
-};
+  )
+}

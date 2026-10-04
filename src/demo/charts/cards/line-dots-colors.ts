@@ -1,8 +1,8 @@
-import type { EChartsOption } from 'echarts/types/dist/shared';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { EChartsOption } from 'echarts/types/dist/shared'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Chart from '@/lib/echarts';
-import * as Icon from '@/lib/icon';
+import * as Chart from '@/lib/echarts'
+import * as Icon from '@/lib/icon'
 import {
   card,
   cardContent,
@@ -10,11 +10,11 @@ import {
   cardFooter,
   cardHeader,
   cardTitle,
-} from '@/ui/card';
+} from '@/ui/card'
 
-const HOST_ID = 'chart-line-dots-colors';
+const HOST_ID = 'chart-line-dots-colors'
 
-const BROWSERS = ['chrome', 'safari', 'firefox', 'edge', 'other'];
+const BROWSERS = ['chrome', 'safari', 'firefox', 'edge', 'other']
 
 Chart.registerChart(HOST_ID, (theme): EChartsOption => ({
   grid: Chart.compactGrid({ top: 24, left: 24, right: 24 }),
@@ -43,7 +43,7 @@ Chart.registerChart(HOST_ID, (theme): EChartsOption => ({
       ],
     },
   ],
-}));
+}))
 
 export const view = <Msg>(
   toMessage: (message: Chart.ChartMessage) => Msg,
@@ -99,5 +99,5 @@ export const view = <Msg>(
       ],
     },
     h,
-  );
-};
+  )
+}

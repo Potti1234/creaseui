@@ -1,13 +1,13 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Icon from '@/lib/icon';
-import { complexTokens } from './complex-tokens.stylex';
-import type { ComponentLayoutStyle } from './contracts';
-import { foundationTokens } from './foundations-tokens.stylex';
-import { interactionTokens } from './interaction-tokens.stylex.const';
-import { className } from './style';
-import { tokens } from './tokens.stylex';
+import * as Icon from '@/lib/icon'
+import { complexTokens } from './complex-tokens.stylex'
+import type { ComponentLayoutStyle } from './contracts'
+import { foundationTokens } from './foundations-tokens.stylex'
+import { interactionTokens } from './interaction-tokens.stylex.const'
+import { className } from './style'
+import { tokens } from './tokens.stylex'
 
 /* Ported from Meta Astryx Token (packages/core/src/Token/Token.tsx) — examples
    and visual spec adapted to Crease UI tokens. The 11 astryx color names are
@@ -113,20 +113,23 @@ const styles = stylex.create({
     width: '1rem',
   },
   iconXsm: { fontSize: '0.75rem' },
-});
+})
 
 const colorDefault = stylex.create({
   root: { backgroundColor: foundationTokens.muted, color: tokens.foreground },
-});
+})
 const colorGray = stylex.create({
-  root: { backgroundColor: foundationTokens.muted, color: tokens.mutedForeground },
-});
+  root: {
+    backgroundColor: foundationTokens.muted,
+    color: tokens.mutedForeground,
+  },
+})
 const colorRed = stylex.create({
   root: {
     backgroundColor: foundationTokens.destructiveSoft,
     color: tokens.destructive,
   },
-});
+})
 /* PORT-NOTE: needs tint tokens for chart hues — chromatic backgrounds are
    emulated with a solid gradient over the chart custom property. */
 const colorOrange = stylex.create({
@@ -134,49 +137,49 @@ const colorOrange = stylex.create({
     backgroundColor: complexTokens.chart1Soft10,
     color: complexTokens.chart1,
   },
-});
+})
 const colorYellow = stylex.create({
   root: {
     backgroundColor: complexTokens.chart4Soft15,
     color: complexTokens.chart5,
   },
-});
+})
 const colorGreen = stylex.create({
   root: {
     backgroundColor: complexTokens.chart2Soft10,
     color: tokens.alertSuccess,
   },
-});
+})
 const colorTeal = stylex.create({
   root: {
     backgroundColor: complexTokens.chart2Soft15,
     color: complexTokens.chart2,
   },
-});
+})
 const colorCyan = stylex.create({
   root: {
     backgroundColor: complexTokens.chart2Soft25,
     color: complexTokens.chart2,
   },
-});
+})
 const colorBlue = stylex.create({
   root: {
     backgroundColor: complexTokens.chart3Soft10,
     color: complexTokens.chart3,
   },
-});
+})
 const colorPurple = stylex.create({
   root: {
     backgroundColor: complexTokens.chart3Soft15,
     color: complexTokens.chart3,
   },
-});
+})
 const colorPink = stylex.create({
   root: {
     backgroundColor: complexTokens.destructiveSoft15,
     color: tokens.destructive,
   },
-});
+})
 
 export type TokenColor =
   | 'default'
@@ -189,8 +192,8 @@ export type TokenColor =
   | 'cyan'
   | 'blue'
   | 'purple'
-  | 'pink';
-export type TokenSize = 'sm' | 'md' | 'lg';
+  | 'pink'
+export type TokenSize = 'sm' | 'md' | 'lg'
 
 const COLOR_STYLE = {
   default: colorDefault.root,
@@ -204,43 +207,46 @@ const COLOR_STYLE = {
   blue: colorBlue.root,
   purple: colorPurple.root,
   pink: colorPink.root,
-} as const;
+} as const
 
 export type TokenProps<Msg> = Readonly<{
   /** Text shown inside the token. */
-  label: string;
+  label: string
   /** Semantic colorway; 'default' is the neutral gray chip. */
-  color?: TokenColor;
+  color?: TokenColor
   /** Chip height: sm 20px, md 24px, lg 28px. */
-  size?: TokenSize;
+  size?: TokenSize
   /** Leading glyph, e.g. `h => Icon.tag({ class: className(styles.iconXsm) }, h)`. */
-  icon?: <M>(h: HtmlBuilder<M>) => Html;
+  icon?: <M>(h: HtmlBuilder<M>) => Html
   /** Trailing content such as a count badge, rendered before the remove button. */
-  endContent?: ReadonlyArray<Html>;
+  endContent?: ReadonlyArray<Html>
   /** Hides the label visually; the label still becomes the aria-label. */
-  isLabelHidden?: boolean;
+  isLabelHidden?: boolean
   /** Link target — renders the token as an anchor. */
-  href?: string;
+  href?: string
   /** Message sent on activate; makes the token a clickable button. */
-  onClick?: Msg;
+  onClick?: Msg
   /** Message sent from the trailing remove affordance. */
-  onRemove?: Msg;
+  onRemove?: Msg
   /** Muted look and blocks all interaction. */
-  isDisabled?: boolean;
+  isDisabled?: boolean
   /** Extra accessible description (aria-description). */
-  description?: string;
+  description?: string
   /** Parent-layout positioning only. */
-  layoutStyle?: ComponentLayoutStyle;
-}>;
+  layoutStyle?: ComponentLayoutStyle
+}>
 
-export const token = <Msg>(props: TokenProps<Msg>, h: HtmlBuilder<Msg>): Html => {
-  const size = props.size ?? 'md';
-  const color = props.color ?? 'default';
-  const isDisabled = props.isDisabled === true;
-  const isLink = props.href !== undefined && !isDisabled;
-  const isClickable = props.onClick !== undefined && !isDisabled && !isLink;
-  const hasRemove = props.onRemove !== undefined && !isDisabled;
-  const isInteractive = isLink || isClickable;
+export const token = <Msg>(
+  props: TokenProps<Msg>,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const size = props.size ?? 'md'
+  const color = props.color ?? 'default'
+  const isDisabled = props.isDisabled === true
+  const isLink = props.href !== undefined && !isDisabled
+  const isClickable = props.onClick !== undefined && !isDisabled && !isLink
+  const hasRemove = props.onRemove !== undefined && !isDisabled
+  const isInteractive = isLink || isClickable
 
   const baseStyles = [
     styles.base,
@@ -248,23 +254,26 @@ export const token = <Msg>(props: TokenProps<Msg>, h: HtmlBuilder<Msg>): Html =>
     COLOR_STYLE[color],
     isInteractive && styles.interactive,
     isDisabled && styles.disabled,
-  ] as const;
+  ] as const
 
   const labelChildren: ReadonlyArray<Html> = [
     h.span(
       [
         h.Class(
-          className(styles.label, props.isLabelHidden === true && styles.srOnly),
+          className(
+            styles.label,
+            props.isLabelHidden === true && styles.srOnly,
+          ),
         ),
       ],
       [props.label],
     ),
-  ];
+  ]
   const contentChildren: ReadonlyArray<Html> = [
     ...(props.icon === undefined ? [] : [props.icon(h)]),
     ...labelChildren,
     ...(props.endContent === undefined ? [] : [...props.endContent]),
-  ];
+  ]
 
   const removeButton = hasRemove
     ? h.button(
@@ -276,7 +285,7 @@ export const token = <Msg>(props: TokenProps<Msg>, h: HtmlBuilder<Msg>): Html =>
         ],
         [Icon.x({ class: className(styles.iconXsm) }, h)],
       )
-    : h.empty;
+    : h.empty
 
   const sharedAttrs = [
     h.DataAttribute('slot', 'token'),
@@ -284,8 +293,10 @@ export const token = <Msg>(props: TokenProps<Msg>, h: HtmlBuilder<Msg>): Html =>
     h.DataAttribute('size', size),
     ...(isDisabled ? [h.DataAttribute('disabled', 'true')] : []),
     ...(props.isLabelHidden === true ? [h.AriaLabel(props.label)] : []),
-    ...(props.description === undefined ? [] : [h.AriaDescription(props.description)]),
-  ];
+    ...(props.description === undefined
+      ? []
+      : [h.AriaDescription(props.description)]),
+  ]
 
   if (isLink && hasRemove) {
     /* astryx TokenLink: the anchor and remove button are siblings so the
@@ -299,21 +310,29 @@ export const token = <Msg>(props: TokenProps<Msg>, h: HtmlBuilder<Msg>): Html =>
         ),
         removeButton,
       ],
-    );
+    )
   }
 
   if (isLink) {
     return h.a(
-      [...sharedAttrs, h.Href(props.href as string), h.Class(className(...baseStyles, props.layoutStyle))],
+      [
+        ...sharedAttrs,
+        h.Href(props.href as string),
+        h.Class(className(...baseStyles, props.layoutStyle)),
+      ],
       [...contentChildren],
-    );
+    )
   }
 
   if (isClickable) {
     /* astryx TokenClickable: a span shell whose click region is a reset
        inline button around the content, so a token stays valid in text. */
     return h.span(
-      [...sharedAttrs, h.Class(className(...baseStyles, props.layoutStyle)), h.OnClick(props.onClick as Msg)],
+      [
+        ...sharedAttrs,
+        h.Class(className(...baseStyles, props.layoutStyle)),
+        h.OnClick(props.onClick as Msg),
+      ],
       [
         h.button(
           [
@@ -324,11 +343,11 @@ export const token = <Msg>(props: TokenProps<Msg>, h: HtmlBuilder<Msg>): Html =>
           contentChildren,
         ),
       ],
-    );
+    )
   }
 
   return h.span(
     [...sharedAttrs, h.Class(className(...baseStyles, props.layoutStyle))],
     [...contentChildren, removeButton],
-  );
-};
+  )
+}

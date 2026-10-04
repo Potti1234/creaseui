@@ -1,15 +1,15 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   headingFixtures,
   type HeadingFixture,
-} from '@/docs/components/pages/heading/shared';
-import * as Card from '@/stylex/card';
-import * as Heading from '@/stylex/heading';
-import { className } from '@/stylex/style';
-import * as Text from '@/stylex/text';
+} from '@/docs/components/pages/heading/shared'
+import * as Card from '@/stylex/card'
+import * as Heading from '@/stylex/heading'
+import { className } from '@/stylex/style'
+import * as Text from '@/stylex/text'
 
 const styles = stylex.create({
   column: {
@@ -45,7 +45,7 @@ const styles = stylex.create({
   card: {
     width: '300px',
   },
-});
+})
 
 const renderFixture = <Msg>(
   fixture: HeadingFixture,
@@ -56,12 +56,9 @@ const renderFixture = <Msg>(
       return h.div(
         [h.Class(className(styles.column))],
         ([1, 2, 3, 4, 5, 6] as const).map(level =>
-          Heading.heading(
-            { level, children: [`Heading Level ${level}`] },
-            h,
-          ),
+          Heading.heading({ level, children: [`Heading Level ${level}`] }, h),
         ),
-      );
+      )
     case 'truncation':
       return h.div(
         [h.Class(className(styles.demoColumn))],
@@ -97,7 +94,7 @@ const renderFixture = <Msg>(
             ],
           ),
         ],
-      );
+      )
     case 'pageHierarchy':
       return h.div(
         [h.Class(className(styles.pageColumn))],
@@ -122,17 +119,12 @@ const renderFixture = <Msg>(
           h.div(
             [],
             [
-              Heading.heading(
-                { level: 2, children: ['Recent Activity'] },
-                h,
-              ),
+              Heading.heading({ level: 2, children: ['Recent Activity'] }, h),
               Text.text(
                 {
                   type: 'body',
                   display: 'block',
-                  children: [
-                    "Here's what's been happening in your workspace.",
-                  ],
+                  children: ["Here's what's been happening in your workspace."],
                 },
                 h,
               ),
@@ -159,7 +151,7 @@ const renderFixture = <Msg>(
             ],
           ),
         ],
-      );
+      )
     case 'cardGrid':
       return Card.card(
         {
@@ -203,13 +195,13 @@ const renderFixture = <Msg>(
           ],
         },
         h,
-      );
+      )
   }
-};
+}
 
 export const headingStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   _model: unknown,
   _onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
-) => renderFixture(headingFixtures[exampleIndex] ?? headingFixtures[0], h);
+) => renderFixture(headingFixtures[exampleIndex] ?? headingFixtures[0], h)

@@ -1,22 +1,22 @@
-import { Schema as S } from 'effect';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import { Schema as S } from 'effect'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-import { definePreviewProgram } from '@/docs/components/pages/authored-page';
+import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
   headingFixtures,
   type HeadingFixture,
-} from '@/docs/components/pages/heading/shared';
-import * as Card from '@/ui/card';
-import * as Heading from '@/ui/heading';
-import * as Text from '@/ui/text';
+} from '@/docs/components/pages/heading/shared'
+import * as Card from '@/ui/card'
+import * as Heading from '@/ui/heading'
+import * as Text from '@/ui/text'
 
 const InteractedWithHeadingPreview = defineMessageUnion({
   InteractedWithHeadingPreview: {},
-});
-type InteractedWithHeadingPreview = typeof InteractedWithHeadingPreview.Type;
-const HeadingPreviewModel = S.Struct({ _docsPage: S.Literal('heading') });
-type HeadingPreviewModel = typeof HeadingPreviewModel.Type;
+})
+type InteractedWithHeadingPreview = typeof InteractedWithHeadingPreview.Type
+const HeadingPreviewModel = S.Struct({ _docsPage: S.Literal('heading') })
+type HeadingPreviewModel = typeof HeadingPreviewModel.Type
 
 const renderFixture = <Msg>(
   fixture: HeadingFixture,
@@ -27,12 +27,9 @@ const renderFixture = <Msg>(
       return h.div(
         [h.Class('flex flex-col gap-2 items-start')],
         ([1, 2, 3, 4, 5, 6] as const).map(level =>
-          Heading.heading(
-            { level, children: [`Heading Level ${level}`] },
-            h,
-          ),
+          Heading.heading({ level, children: [`Heading Level ${level}`] }, h),
         ),
-      );
+      )
     case 'truncation':
       return h.div(
         [h.Class('flex flex-col gap-6')],
@@ -68,7 +65,7 @@ const renderFixture = <Msg>(
             ],
           ),
         ],
-      );
+      )
     case 'pageHierarchy':
       return h.div(
         [h.Class('flex flex-col gap-6 w-full max-w-100')],
@@ -93,17 +90,12 @@ const renderFixture = <Msg>(
           h.div(
             [],
             [
-              Heading.heading(
-                { level: 2, children: ['Recent Activity'] },
-                h,
-              ),
+              Heading.heading({ level: 2, children: ['Recent Activity'] }, h),
               Text.text(
                 {
                   type: 'body',
                   display: 'block',
-                  children: [
-                    "Here's what's been happening in your workspace.",
-                  ],
+                  children: ["Here's what's been happening in your workspace."],
                 },
                 h,
               ),
@@ -130,7 +122,7 @@ const renderFixture = <Msg>(
             ],
           ),
         ],
-      );
+      )
     case 'cardGrid':
       return Card.card(
         {
@@ -174,9 +166,9 @@ const renderFixture = <Msg>(
           ],
         },
         h,
-      );
+      )
   }
-};
+}
 
 export const headingTailwindPreviewProgram = definePreviewProgram<
   HeadingPreviewModel,
@@ -188,4 +180,4 @@ export const headingTailwindPreviewProgram = definePreviewProgram<
   update: model => ({ model: model }),
   view: (index, _model, h) =>
     renderFixture(headingFixtures[index] ?? headingFixtures[0], h),
-});
+})

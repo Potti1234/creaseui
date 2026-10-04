@@ -1,13 +1,13 @@
-﻿import { type VariantProps, cva } from 'class-variance-authority';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+﻿import { type VariantProps, cva } from 'class-variance-authority'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils'
 import {
   type ButtonBehaviorProps,
   type ButtonLinkBehaviorProps,
   renderButton,
   renderButtonLink,
-} from '@/lib/button';
+} from '@/lib/button'
 
 /* Ported from shadcn/ui button.tsx. The cva config is copied verbatim except:
    - `disabled:` variants became `data-[disabled]:` + `aria-disabled:` because
@@ -18,8 +18,7 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default:
-          'bg-primary text-primary-foreground hover:bg-primary/80',
+        default: 'bg-primary text-primary-foreground hover:bg-primary/80',
         outline:
           'border-border bg-background shadow-xs hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50',
         secondary:
@@ -49,22 +48,23 @@ export const buttonVariants = cva(
       size: 'default',
     },
   },
-);
+)
 
-export type ButtonVariants = VariantProps<typeof buttonVariants>;
+export type ButtonVariants = VariantProps<typeof buttonVariants>
 
-export type ButtonProps<Msg> = ButtonBehaviorProps<Msg> & Readonly<{
-  variant?: ButtonVariants['variant'];
-  size?: ButtonVariants['size'];
-  class?: string;
-}>;
+export type ButtonProps<Msg> = ButtonBehaviorProps<Msg> &
+  Readonly<{
+    variant?: ButtonVariants['variant']
+    size?: ButtonVariants['size']
+    class?: string
+  }>
 
 export const button = <Msg>(
   props: ButtonProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const variant = props.variant ?? 'default';
-  const size = props.size ?? 'default';
+  const variant = props.variant ?? 'default'
+  const size = props.size ?? 'default'
   return renderButton(
     props,
     [
@@ -73,21 +73,22 @@ export const button = <Msg>(
       h.Class(cn(buttonVariants({ variant, size }), props.class)),
     ],
     h,
-  );
-};
+  )
+}
 
-export type ButtonLinkProps = ButtonLinkBehaviorProps & Readonly<{
-  variant?: ButtonVariants['variant'];
-  size?: ButtonVariants['size'];
-  class?: string;
-}>;
+export type ButtonLinkProps = ButtonLinkBehaviorProps &
+  Readonly<{
+    variant?: ButtonVariants['variant']
+    size?: ButtonVariants['size']
+    class?: string
+  }>
 
 export const buttonLink = <Msg>(
   props: ButtonLinkProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const variant = props.variant ?? 'default';
-  const size = props.size ?? 'default';
+  const variant = props.variant ?? 'default'
+  const size = props.size ?? 'default'
   return renderButtonLink(
     props,
     [
@@ -96,5 +97,5 @@ export const buttonLink = <Msg>(
       h.Class(cn(buttonVariants({ variant, size }), props.class)),
     ],
     h,
-  );
-};
+  )
+}

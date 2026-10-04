@@ -1,12 +1,12 @@
-import * as stylex from '@stylexjs/stylex';
-import type { StaticStyles } from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { StaticStyles } from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { ComponentLayoutStyle } from './contracts';
-import { foundationTokens } from './foundations-tokens.stylex';
-import { interactionTokens } from './interaction-tokens.stylex.const';
-import { className } from './style';
-import { tokens } from './tokens.stylex';
+import type { ComponentLayoutStyle } from './contracts'
+import { foundationTokens } from './foundations-tokens.stylex'
+import { interactionTokens } from './interaction-tokens.stylex.const'
+import { className } from './style'
+import { tokens } from './tokens.stylex'
 
 /* Ported from Meta Astryx List + ListItem (packages/core/src/List/List.tsx,
    ListItem.tsx, Item/Item.tsx) — examples and visual spec adapted to Crease
@@ -15,11 +15,11 @@ import { tokens } from './tokens.stylex';
    `listStyle`, `hasDividers`, and `edgeCompensation` explicitly (defaults
    match astryx's context defaults — pass the same values to each item). */
 
-export type ListDensity = 'compact' | 'balanced' | 'spacious';
+export type ListDensity = 'compact' | 'balanced' | 'spacious'
 
-export type ListMarkerStyle = 'none' | 'disc' | 'decimal' | 'circle';
+export type ListMarkerStyle = 'none' | 'disc' | 'decimal' | 'circle'
 
-export type ListEdgeCompensation = 'inline';
+export type ListEdgeCompensation = 'inline'
 
 const styles = stylex.create({
   root: {
@@ -209,7 +209,7 @@ const styles = stylex.create({
   disabledContent: {
     opacity: 0.5,
   },
-});
+})
 
 const densityStyles = stylex.create({
   compact: {
@@ -221,34 +221,34 @@ const densityStyles = stylex.create({
   spacious: {
     paddingBlock: '0.75rem',
   },
-});
+})
 
 const densityInsetInline: Record<ListDensity, string> = {
   compact: '8px',
   balanced: '8px',
   spacious: '12px',
-};
+}
 
 export type ListProps = Readonly<{
-  children: ReadonlyArray<Html>;
-  density?: ListDensity;
-  hasDividers?: boolean;
-  edgeCompensation?: ListEdgeCompensation;
+  children: ReadonlyArray<Html>
+  density?: ListDensity
+  hasDividers?: boolean
+  edgeCompensation?: ListEdgeCompensation
   /** Header content rendered above the list, associated via aria-labelledby. */
-  header?: Html | string;
+  header?: Html | string
   /** List marker style. `'decimal'` renders an `<ol>`; others render `<ul>`. */
-  listStyle?: ListMarkerStyle;
+  listStyle?: ListMarkerStyle
   /** Starting number for `listStyle: 'decimal'` lists. */
-  start?: number;
-  layoutStyle?: ComponentLayoutStyle;
-}>;
+  start?: number
+  layoutStyle?: ComponentLayoutStyle
+}>
 
 export const list = <Msg>(props: ListProps, h: HtmlBuilder<Msg>): Html => {
-  const listStyle = props.listStyle ?? 'none';
-  const hasDividers = props.hasDividers ?? false;
-  const start = props.start ?? 1;
-  const isOrdered = listStyle === 'decimal';
-  const headerId = 'list-header';
+  const listStyle = props.listStyle ?? 'none'
+  const hasDividers = props.hasDividers ?? false
+  const start = props.start ?? 1
+  const isOrdered = listStyle === 'decimal'
+  const headerId = 'list-header'
 
   const attributes = [
     h.DataAttribute('slot', 'list'),
@@ -270,22 +270,26 @@ export const list = <Msg>(props: ListProps, h: HtmlBuilder<Msg>): Html => {
           }),
         ]
       : []),
-  ];
+  ]
 
   const listElement = isOrdered
     ? h.ol(attributes, [...props.children])
-    : h.ul(attributes, [...props.children]);
+    : h.ul(attributes, [...props.children])
 
   if (props.header === undefined) {
-    return listElement;
+    return listElement
   }
-  return h.div([h.Class(className(styles.root))], [
-    h.div([h.Id(headerId), h.Class(className(styles.header))], [
-      props.header,
-    ]),
-    listElement,
-  ]);
-};
+  return h.div(
+    [h.Class(className(styles.root))],
+    [
+      h.div(
+        [h.Id(headerId), h.Class(className(styles.header))],
+        [props.header],
+      ),
+      listElement,
+    ],
+  )
+}
 
 const markerElement = <Msg>(
   listStyle: ListMarkerStyle,
@@ -296,47 +300,47 @@ const markerElement = <Msg>(
       return h.span(
         [h.AriaHidden(true), h.Class(className(styles.markerContainer))],
         [h.span([h.Class(className(styles.markerDot))], [])],
-      );
+      )
     case 'circle':
       return h.span(
         [h.AriaHidden(true), h.Class(className(styles.markerContainer))],
         [h.span([h.Class(className(styles.markerCircle))], [])],
-      );
+      )
     case 'decimal':
       return h.span(
         [h.AriaHidden(true), h.Class(className(styles.markerNumber))],
         [],
-      );
+      )
     case 'none':
-      return null;
+      return null
   }
-};
+}
 
 export type ListItemProps<Msg> = Readonly<{
   /** Primary label. A plain string truncates to one line. */
-  label: Html | string;
+  label: Html | string
   /** Secondary description under the label; strings truncate to one line. */
-  description?: Html | string;
+  description?: Html | string
   /** Content rendered before the item (icon, avatar, checkbox). */
-  startContent?: Html;
+  startContent?: Html
   /** Content rendered after the item (badge, action, chevron). */
-  endContent?: Html;
-  onClick?: Msg;
-  href?: string;
-  target?: '_blank' | '_self';
-  rel?: string;
-  isDisabled?: boolean;
-  isSelected?: boolean;
+  endContent?: Html
+  onClick?: Msg
+  href?: string
+  target?: '_blank' | '_self'
+  rel?: string
+  isDisabled?: boolean
+  isSelected?: boolean
   /** Density — pass the parent list's `density` (default `'balanced'`). */
-  density?: ListDensity;
+  density?: ListDensity
   /** Marker style — pass the parent list's `listStyle` (default `'none'`). */
-  listStyle?: ListMarkerStyle;
+  listStyle?: ListMarkerStyle
   /** Dividers — pass the parent list's `hasDividers` (default `false`). */
-  hasDividers?: boolean;
+  hasDividers?: boolean
   /** Edge compensation — pass the parent list's `edgeCompensation`. */
-  edgeCompensation?: ListEdgeCompensation;
-  layoutStyle?: ComponentLayoutStyle;
-}>;
+  edgeCompensation?: ListEdgeCompensation
+  layoutStyle?: ComponentLayoutStyle
+}>
 
 const labelOrDescription = <Msg>(
   content: Html | string,
@@ -346,28 +350,23 @@ const labelOrDescription = <Msg>(
 ): ReadonlyArray<Html | string> =>
   typeof content === 'string'
     ? [h.span([h.Class(className(style, truncate))], [content])]
-    : [h.span([h.Class(className(style))], [content])];
+    : [h.span([h.Class(className(style))], [content])]
 
 export const listItem = <Msg>(
   props: ListItemProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const density = props.density ?? 'balanced';
-  const listStyle = props.listStyle ?? 'none';
-  const hasDividers = props.hasDividers ?? false;
-  const isDisabled = props.isDisabled ?? false;
-  const isSelected = props.isSelected ?? false;
-  const isInteractive = props.onClick !== undefined || props.href !== undefined;
+  const density = props.density ?? 'balanced'
+  const listStyle = props.listStyle ?? 'none'
+  const hasDividers = props.hasDividers ?? false
+  const isDisabled = props.isDisabled ?? false
+  const isSelected = props.isSelected ?? false
+  const isInteractive = props.onClick !== undefined || props.href !== undefined
 
-  const marker = markerElement(listStyle, h);
+  const marker = markerElement(listStyle, h)
 
   const labelDescription: ReadonlyArray<Html | string> = [
-    ...labelOrDescription(
-      props.label,
-      styles.label,
-      styles.labelTruncate,
-      h,
-    ),
+    ...labelOrDescription(props.label, styles.label, styles.labelTruncate, h),
     ...(props.description === undefined
       ? []
       : labelOrDescription(
@@ -376,7 +375,7 @@ export const listItem = <Msg>(
           styles.labelTruncate,
           h,
         )),
-  ];
+  ]
 
   const contentElement: Html =
     props.href !== undefined
@@ -384,9 +383,7 @@ export const listItem = <Msg>(
           [
             h.DataAttribute('slot', 'list-item-anchor'),
             h.Href(props.href),
-            ...(props.target === undefined
-              ? []
-              : [h.Target(props.target)]),
+            ...(props.target === undefined ? [] : [h.Target(props.target)]),
             ...(props.target === '_blank'
               ? [h.Rel(`${props.rel ?? ''} noopener noreferrer`.trim())]
               : props.rel === undefined
@@ -429,7 +426,7 @@ export const listItem = <Msg>(
               ),
             ],
             [...labelDescription],
-          );
+          )
 
   return h.li(
     [
@@ -489,5 +486,5 @@ export const listItem = <Msg>(
             ),
           ]),
     ],
-  );
-};
+  )
+}

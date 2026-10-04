@@ -1,35 +1,35 @@
-import type { DocsExample } from '@/docs/components/page-definition';
+import type { DocsExample } from '@/docs/components/page-definition'
 import {
   foldkitApplication,
   staticComponentApplication,
-} from '@/docs/components/pages/authored-page';
+} from '@/docs/components/pages/authored-page'
 
 // ---------- node model ----------
 
 type BgButton = Readonly<{
-  t: 'button';
-  label?: string;
-  icon?: string;
-  size?: 'sm' | 'lg' | 'icon' | 'icon-sm' | 'icon-lg';
-  variant?: 'outline' | 'secondary';
-  ariaLabel?: string;
-  rtlRotate?: boolean;
-}>;
+  t: 'button'
+  label?: string
+  icon?: string
+  size?: 'sm' | 'lg' | 'icon' | 'icon-sm' | 'icon-lg'
+  variant?: 'outline' | 'secondary'
+  ariaLabel?: string
+  rtlRotate?: boolean
+}>
 type BgGroup = Readonly<{
-  t: 'group';
-  children: ReadonlyArray<BgNode>;
-  rtlHidden?: boolean;
-}>;
+  t: 'group'
+  children: ReadonlyArray<BgNode>
+  rtlHidden?: boolean
+}>
 type BgColumn = Readonly<{
-  t: 'column';
-  children: ReadonlyArray<BgNode>;
-}>;
+  t: 'column'
+  children: ReadonlyArray<BgNode>
+}>
 type BgInput = Readonly<{
-  t: 'input';
-  field: 'query' | 'amount' | 'message';
-  placeholder: string;
-  isDisabled?: boolean;
-}>;
+  t: 'input'
+  field: 'query' | 'amount' | 'message'
+  placeholder: string
+  isDisabled?: boolean
+}>
 export type BgNode =
   | BgButton
   | BgGroup
@@ -39,7 +39,7 @@ export type BgNode =
   | Readonly<{ t: 'inputGroup'; voiceToggle: boolean }>
   | Readonly<{ t: 'select' }>
   | Readonly<{ t: 'dropdown'; menu: 'demo' | 'conversation' }>
-  | Readonly<{ t: 'popover' }>;
+  | Readonly<{ t: 'popover' }>
 
 export type ButtonGroupFixture = Readonly<{
   kind:
@@ -54,22 +54,45 @@ export type ButtonGroupFixture = Readonly<{
     | 'dropdown'
     | 'select'
     | 'popover'
-    | 'rtl';
-  title: string;
-  description: string;
-  heroOnly?: boolean;
-  orientation?: 'vertical';
-  ariaLabel?: string;
-  direction?: 'rtl';
-  rounded?: boolean;
-  nodes: ReadonlyArray<BgNode>;
-}>;
+    | 'rtl'
+  title: string
+  description: string
+  heroOnly?: boolean
+  orientation?: 'vertical'
+  ariaLabel?: string
+  direction?: 'rtl'
+  rounded?: boolean
+  nodes: ReadonlyArray<BgNode>
+}>
 
 // ---------- fixture data (mirrors shadcn-ui/ui v4 radix examples) ----------
 
-const DEMO_MENU_LABELS = ['Mark as Read', 'Archive', 'Snooze', 'Add to Calendar', 'Add to List', 'Label As...', 'Trash'] as const;
-const DEMO_MENU_AR_LABELS = ['وضع علامة كمقروء', 'أرشفة', 'تأجيل', 'إضافة إلى التقويم', 'إضافة إلى القائمة', 'تصنيف كـ...', 'سلة المهملات'] as const;
-const CONVERSATION_MENU_LABELS = ['Mute Conversation', 'Mark as Read', 'Report Conversation', 'Block User', 'Share Conversation', 'Delete Conversation'] as const;
+const DEMO_MENU_LABELS = [
+  'Mark as Read',
+  'Archive',
+  'Snooze',
+  'Add to Calendar',
+  'Add to List',
+  'Label As...',
+  'Trash',
+] as const
+const DEMO_MENU_AR_LABELS = [
+  'وضع علامة كمقروء',
+  'أرشفة',
+  'تأجيل',
+  'إضافة إلى التقويم',
+  'إضافة إلى القائمة',
+  'تصنيف كـ...',
+  'سلة المهملات',
+] as const
+const CONVERSATION_MENU_LABELS = [
+  'Mute Conversation',
+  'Mark as Read',
+  'Report Conversation',
+  'Block User',
+  'Share Conversation',
+  'Delete Conversation',
+] as const
 
 export const buttonGroupFixtures: Readonly<Array<ButtonGroupFixture>> = [
   {
@@ -83,7 +106,14 @@ export const buttonGroupFixtures: Readonly<Array<ButtonGroupFixture>> = [
         t: 'group',
         rtlHidden: true,
         children: [
-          { t: 'button', icon: 'arrow-left', size: 'icon', variant: 'outline', ariaLabel: 'Go Back', rtlRotate: true },
+          {
+            t: 'button',
+            icon: 'arrow-left',
+            size: 'icon',
+            variant: 'outline',
+            ariaLabel: 'Go Back',
+            rtlRotate: true,
+          },
         ],
       },
       {
@@ -128,7 +158,12 @@ export const buttonGroupFixtures: Readonly<Array<ButtonGroupFixture>> = [
               { t: 'button', label: 'Small', variant: 'outline', size: 'sm' },
               { t: 'button', label: 'Button', variant: 'outline', size: 'sm' },
               { t: 'button', label: 'Group', variant: 'outline', size: 'sm' },
-              { t: 'button', icon: 'plus', variant: 'outline', size: 'icon-sm' },
+              {
+                t: 'button',
+                icon: 'plus',
+                variant: 'outline',
+                size: 'icon-sm',
+              },
             ],
           },
           {
@@ -146,7 +181,12 @@ export const buttonGroupFixtures: Readonly<Array<ButtonGroupFixture>> = [
               { t: 'button', label: 'Large', variant: 'outline', size: 'lg' },
               { t: 'button', label: 'Button', variant: 'outline', size: 'lg' },
               { t: 'button', label: 'Group', variant: 'outline', size: 'lg' },
-              { t: 'button', icon: 'plus', variant: 'outline', size: 'icon-lg' },
+              {
+                t: 'button',
+                icon: 'plus',
+                variant: 'outline',
+                size: 'icon-lg',
+              },
             ],
           },
         ],
@@ -224,8 +264,7 @@ export const buttonGroupFixtures: Readonly<Array<ButtonGroupFixture>> = [
   {
     kind: 'dropdown',
     title: 'Dropdown Menu',
-    description:
-      'Create a split button group with a DropdownMenu component.',
+    description: 'Create a split button group with a DropdownMenu component.',
     nodes: [
       { t: 'button', label: 'Follow', variant: 'outline' },
       { t: 'dropdown', menu: 'conversation' },
@@ -246,7 +285,13 @@ export const buttonGroupFixtures: Readonly<Array<ButtonGroupFixture>> = [
       {
         t: 'group',
         children: [
-          { t: 'button', icon: 'arrow-right', variant: 'outline', size: 'icon', ariaLabel: 'Send' },
+          {
+            t: 'button',
+            icon: 'arrow-right',
+            variant: 'outline',
+            size: 'icon',
+            ariaLabel: 'Send',
+          },
         ],
       },
     ],
@@ -272,7 +317,14 @@ export const buttonGroupFixtures: Readonly<Array<ButtonGroupFixture>> = [
         t: 'group',
         rtlHidden: true,
         children: [
-          { t: 'button', icon: 'arrow-left', size: 'icon', variant: 'outline', ariaLabel: 'العودة', rtlRotate: true },
+          {
+            t: 'button',
+            icon: 'arrow-left',
+            size: 'icon',
+            variant: 'outline',
+            ariaLabel: 'العودة',
+            rtlRotate: true,
+          },
         ],
       },
       {
@@ -291,99 +343,106 @@ export const buttonGroupFixtures: Readonly<Array<ButtonGroupFixture>> = [
       },
     ],
   },
-];
+]
 
 // ---------- capability helpers ----------
 
 const nodeNeeds = (
   nodes: ReadonlyArray<BgNode>,
 ): Readonly<{
-  menu?: 'demo' | 'conversation';
-  inputs: Array<InputField>;
-  select: boolean;
-  popover: boolean;
-  tooltip: boolean;
-  voice: boolean;
-  icons: boolean;
+  menu?: 'demo' | 'conversation'
+  inputs: Array<InputField>
+  select: boolean
+  popover: boolean
+  tooltip: boolean
+  voice: boolean
+  icons: boolean
 }> => {
   const needs: {
-    menu?: 'demo' | 'conversation';
-    inputs: Array<InputField>;
-    select: boolean;
-    popover: boolean;
-    tooltip: boolean;
-    voice: boolean;
-    icons: boolean;
-  } = { inputs: [], select: false, popover: false, tooltip: false, voice: false, icons: false };
+    menu?: 'demo' | 'conversation'
+    inputs: Array<InputField>
+    select: boolean
+    popover: boolean
+    tooltip: boolean
+    voice: boolean
+    icons: boolean
+  } = {
+    inputs: [],
+    select: false,
+    popover: false,
+    tooltip: false,
+    voice: false,
+    icons: false,
+  }
   const visit = (node: BgNode): void => {
     switch (node.t) {
       case 'button':
-        if (node.icon !== undefined) needs.icons = true;
-        return;
+        if (node.icon !== undefined) needs.icons = true
+        return
       case 'group':
       case 'column':
-        node.children.forEach(visit);
-        return;
+        node.children.forEach(visit)
+        return
       case 'separator':
-        return;
+        return
       case 'input':
-        needs.inputs.push(node.field);
-        return;
+        needs.inputs.push(node.field)
+        return
       case 'inputGroup':
-        needs.inputs.push('message');
-        needs.tooltip = true;
-        needs.icons = true;
-        needs.voice = needs.voice || node.voiceToggle;
-        return;
+        needs.inputs.push('message')
+        needs.tooltip = true
+        needs.icons = true
+        needs.voice = needs.voice || node.voiceToggle
+        return
       case 'select':
-        needs.select = true;
-        return;
+        needs.select = true
+        return
       case 'dropdown':
-        needs.menu = node.menu;
-        needs.icons = true;
-        return;
+        needs.menu = node.menu
+        needs.icons = true
+        return
       case 'popover':
-        needs.popover = true;
-        needs.inputs.push('task');
-        needs.icons = true;
-        return;
+        needs.popover = true
+        needs.inputs.push('task')
+        needs.icons = true
+        return
     }
-  };
-  nodes.forEach(visit);
-  return needs;
-};
+  }
+  nodes.forEach(visit)
+  return needs
+}
 
 // ---------- emitted source ----------
 
 const esc = (value: string): string =>
-  value.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+  value.replace(/\\/g, '\\\\').replace(/'/g, "\\'")
 
 const CURRENCIES = [
   { value: '$', label: 'US Dollar' },
   { value: '€', label: 'Euro' },
   { value: '£', label: 'British Pound' },
-];
+]
 
-type InputField = 'query' | 'amount' | 'message' | 'task';
+type InputField = 'query' | 'amount' | 'message' | 'task'
 const FIELD_MESSAGE: Record<InputField, string> = {
   query: 'ChangedQuery',
   amount: 'ChangedAmount',
   message: 'ChangedMessage',
   task: 'ChangedTask',
-};
+}
 
 const itemToConfigBody = (
   menu: 'demo' | 'conversation',
   fixture: ButtonGroupFixture,
 ): string => {
-  const isRtl = fixture.direction === 'rtl';
+  const isRtl = fixture.direction === 'rtl'
   if (menu === 'demo') {
-    const labels = isRtl ? DEMO_MENU_AR_LABELS : DEMO_MENU_LABELS;
+    const labels = isRtl ? DEMO_MENU_AR_LABELS : DEMO_MENU_LABELS
     const [markRead, archive, snooze, addCalendar, addList, labelAs, trash] =
-      labels;
+      labels
     const [personal, work, other] = isRtl
       ? (['شخصي', 'عمل', 'آخر'] as const)
-      : (['Personal', 'Work', 'Other'] as const);
+      : (['Personal', 'Work', 'Other'] as const)
     return `    const label = ({
       'mark-read': '${esc(markRead ?? '')}',
       archive: '${esc(archive ?? '')}',
@@ -431,7 +490,7 @@ const itemToConfigBody = (
         ? { separatorBefore: true }
         : {}),
       ...(item === 'trash' ? { variant: 'destructive' as const } : {}),
-    }`;
+    }`
   }
   return `    const label = ({
       mute: 'Mute Conversation',
@@ -457,8 +516,8 @@ const itemToConfigBody = (
       ...(item === 'delete'
         ? { variant: 'destructive' as const, separatorBefore: true }
         : {}),
-    }`;
-};
+    }`
+}
 
 const itemsSource = (menu: 'demo' | 'conversation'): string =>
   menu === 'demo'
@@ -471,19 +530,19 @@ const itemsSource = (menu: 'demo' | 'conversation'): string =>
   'label-as',
   'trash',
 ]`
-    : `['mute', 'mark-read', 'report', 'block', 'share', 'delete']`;
+    : `['mute', 'mark-read', 'report', 'block', 'share', 'delete']`
 
 const buttonSource = (node: BgButton, isRtl: boolean): string => {
   const iconClass =
-    node.rtlRotate === true ? `{ class: 'rtl:rotate-180' }` : '{}';
-  const children: Array<string> = [];
+    node.rtlRotate === true ? `{ class: 'rtl:rotate-180' }` : '{}'
+  const children: Array<string> = []
   if (node.icon !== undefined)
-    children.push(`Icon.icon('${node.icon}', ${iconClass}, h)`);
-  if (node.label !== undefined) children.push(`'${esc(node.label)}'`);
+    children.push(`Icon.icon('${node.icon}', ${iconClass}, h)`)
+  if (node.label !== undefined) children.push(`'${esc(node.label)}'`)
   return `Button.button({
           ${node.variant === undefined ? '' : `variant: '${node.variant}', `}${node.size === undefined ? '' : `size: '${node.size}', `}${node.ariaLabel === undefined ? '' : `ariaLabel: '${esc(node.ariaLabel)}', `}children: [${children.join(', ')}],
-        }, h)`;
-};
+        }, h)`
+}
 
 const inputSource = (node: BgInput): string =>
   `Input.input({
@@ -491,13 +550,13 @@ const inputSource = (node: BgInput): string =>
           value: model.${node.field},
           onInput: value => Message['${FIELD_MESSAGE[node.field]}']({ value }),
           placeholder: '${esc(node.placeholder)}',
-        }, h)`;
+        }, h)`
 
 const inputGroupSource = (
   voiceToggle: boolean,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const isSx = renderer === 'stylex';
+  const isSx = renderer === 'stylex'
   const addon = voiceToggle
     ? `InputGroup.inputGroupAddon({
             align: 'inline-end',
@@ -508,9 +567,9 @@ const inputGroupSource = (
                   h.AriaPressed(model.voiceEnabled ? 'true' : 'false'),
                   h.DataAttribute('active', String(model.voiceEnabled)),
                   h.OnClick(Message.ToggledVoice()),
-                  h.Class(${isSx ? "className(styles.voiceButton)" : "'inline-flex size-6 items-center justify-center rounded-[calc(var(--radius)-5px)] text-muted-foreground data-[active=true]:bg-orange-100 data-[active=true]:text-orange-700 dark:data-[active=true]:bg-orange-800 dark:data-[active=true]:text-orange-100'"}),
+                  h.Class(${isSx ? 'className(styles.voiceButton)' : "'inline-flex size-6 items-center justify-center rounded-[calc(var(--radius)-5px)] text-muted-foreground data-[active=true]:bg-orange-100 data-[active=true]:text-orange-700 dark:data-[active=true]:bg-orange-800 dark:data-[active=true]:text-orange-100'"}),
                 ],
-                [Icon.icon('audio-lines', ${isSx ? "{ class: className(styles.captionIcon) }" : "{ class: 'size-3.5' }"}, h)],
+                [Icon.icon('audio-lines', ${isSx ? '{ class: className(styles.captionIcon) }' : "{ class: 'size-3.5' }"}, h)],
               ),
             ],
           }, h)`
@@ -520,12 +579,12 @@ const inputGroupSource = (
               Message['GotTooltipMessage']({ message }),
             trigger: InputGroup.inputGroupAddon({
               align: 'inline-end',
-              children: [Icon.icon('audio-lines', ${isSx ? "{ class: className(styles.captionIcon) }" : "{ class: 'size-3.5' }"}, h)],
+              children: [Icon.icon('audio-lines', ${isSx ? '{ class: className(styles.captionIcon) }' : "{ class: 'size-3.5' }"}, h)],
             }, h),
             ${isSx ? '' : "triggerClass: 'text-muted-foreground',"}
             content: 'Voice Mode',
             ariaLabel: 'Voice Mode',
-          }, h)`;
+          }, h)`
   return `InputGroup.inputGroup({
         children: [
           InputGroup.inputGroupInput({
@@ -542,8 +601,8 @@ const inputGroupSource = (
           }, h),
           ${addon},
         ],
-      }, h)`;
-};
+      }, h)`
+}
 
 const selectSource = (renderer: 'tailwind' | 'stylex'): string =>
   `Select.select({
@@ -556,25 +615,25 @@ const selectSource = (renderer: 'tailwind' | 'stylex'): string =>
           itemToLabel: item => \`\${item.value} \${item.label}\`,
           ariaLabel: 'Currency',
           ${renderer === 'stylex' ? '' : `triggerClass: 'font-mono',`}
-        }, h)`;
+        }, h)`
 
 const dropdownSource = (
   node: Readonly<{ t: 'dropdown'; menu: 'demo' | 'conversation' }>,
   fixture: ButtonGroupFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const isRtl = fixture.direction === 'rtl';
+  const isRtl = fixture.direction === 'rtl'
   const trigger =
     node.menu === 'demo'
       ? `Icon.icon('ellipsis', { ariaLabel: ${isRtl ? "'مزيد من الخيارات'" : "'More Options'"} }, h)`
-      : `Icon.icon('chevron-down', { ariaLabel: 'Options' }, h)`;
+      : `Icon.icon('chevron-down', { ariaLabel: 'Options' }, h)`
   const triggerStyling =
     renderer === 'stylex'
       ? `triggerButtonVariant: 'outline',
           triggerButtonSize: ${node.menu === 'demo' ? "'icon'" : "'default'"},`
       : node.menu === 'demo'
         ? `triggerClass: 'inline-flex size-9 items-center justify-center rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground',`
-        : `triggerClass: 'inline-flex h-9 items-center justify-center rounded-md border border-input bg-background px-3 hover:bg-accent hover:text-accent-foreground',`;
+        : `triggerClass: 'inline-flex h-9 items-center justify-center rounded-md border border-input bg-background px-3 hover:bg-accent hover:text-accent-foreground',`
   return `DropdownMenu.dropdownMenu({
           model: model.menu,
           toParentMessage: message =>
@@ -586,8 +645,8 @@ const dropdownSource = (
 ${itemToConfigBody(node.menu, fixture)}
           },
           align: 'end',${isRtl ? `\n          direction: 'rtl',` : ''}
-        }, h)`;
-};
+        }, h)`
+}
 
 const popoverSource = (renderer: 'tailwind' | 'stylex'): string =>
   `Popover.popover({
@@ -611,7 +670,7 @@ const popoverSource = (renderer: 'tailwind' | 'stylex'): string =>
             }, h),
             h.p([h.Class(${renderer === 'stylex' ? 'className(styles.popoverCopy)' : `'text-xs text-muted-foreground'`})], ['Copilot will open a pull request for review.']),
           ]),
-        }, h)`;
+        }, h)`
 
 const nodeSource = (
   node: BgNode,
@@ -619,88 +678,96 @@ const nodeSource = (
   renderer: 'tailwind' | 'stylex',
   depth = 2,
 ): string => {
-  const isSx = renderer === 'stylex';
-  const pad = '  '.repeat(depth);
+  const isSx = renderer === 'stylex'
+  const pad = '  '.repeat(depth)
   switch (node.t) {
     case 'button':
-      return `${pad}${buttonSource(node, fixture.direction === 'rtl')}`;
+      return `${pad}${buttonSource(node, fixture.direction === 'rtl')}`
     case 'separator':
-      return `${pad}ButtonGroup.buttonGroupSeparator({}, h)`;
+      return `${pad}ButtonGroup.buttonGroupSeparator({}, h)`
     case 'input':
-      return `${pad}${inputSource(node)}`;
+      return `${pad}${inputSource(node)}`
     case 'inputGroup':
-      return `${pad}${inputGroupSource(node.voiceToggle, renderer)}`;
+      return `${pad}${inputGroupSource(node.voiceToggle, renderer)}`
     case 'select':
-      return `${pad}${selectSource(renderer)}`;
+      return `${pad}${selectSource(renderer)}`
     case 'dropdown':
-      return `${pad}${dropdownSource(node, fixture, renderer)}`;
+      return `${pad}${dropdownSource(node, fixture, renderer)}`
     case 'popover':
-      return `${pad}${popoverSource(renderer)}`;
+      return `${pad}${popoverSource(renderer)}`
     case 'column':
       return `${pad}h.div([h.Class(${isSx ? 'className(styles.stack)' : `'flex flex-col items-start gap-8'`})], [
 ${node.children.map(child => nodeSource(child, fixture, renderer, depth + 1)).join(',\n')},
-${pad}])`;
+${pad}])`
     case 'group':
       return `${pad}ButtonGroup.buttonGroup({
 ${pad}  children: [
 ${node.children.map(child => nodeSource(child, fixture, renderer, depth + 1)).join(',\n')},
 ${pad}  ],${node.rtlHidden === true && !isSx ? `\n${pad}  class: 'hidden sm:flex',` : ''}
-${pad}}, h)`;
+${pad}}, h)`
   }
-};
+}
 
 const viewBodySource = (
   fixture: ButtonGroupFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const isSx = renderer === 'stylex';
+  const isSx = renderer === 'stylex'
   const groupProps = [
     fixture.orientation === 'vertical' ? `orientation: 'vertical',` : '',
-    fixture.ariaLabel === undefined ? '' : `ariaLabel: '${esc(fixture.ariaLabel)}',`,
+    fixture.ariaLabel === undefined
+      ? ''
+      : `ariaLabel: '${esc(fixture.ariaLabel)}',`,
     fixture.rounded === true && renderer !== 'stylex'
       ? `class: '[--radius:9999rem]',`
       : '',
   ]
     .filter(Boolean)
-    .join('\n    ');
+    .join('\n    ')
   const dirWrap =
     fixture.direction === 'rtl'
       ? `h.div([h.Dir('rtl')], [\n    GROUP\n  ])`
-      : 'GROUP';
+      : 'GROUP'
   const ungrouped =
-    fixture.nodes.length === 1 && fixture.nodes[0]?.t === 'column';
+    fixture.nodes.length === 1 && fixture.nodes[0]?.t === 'column'
   const group = ungrouped
-    ? fixture.nodes.map(node => nodeSource(node, fixture, renderer, 2)).join(',\n')
+    ? fixture.nodes
+        .map(node => nodeSource(node, fixture, renderer, 2))
+        .join(',\n')
     : `ButtonGroup.buttonGroup({
     ${groupProps}
     children: [
 ${fixture.nodes.map(node => nodeSource(node, fixture, renderer, 3)).join(',\n')},
     ],
-  }, h)`;
-  return dirWrap.replace('GROUP', group);
-};
+  }, h)`
+  return dirWrap.replace('GROUP', group)
+}
 
 const stylexStylesSource = (fixture: ButtonGroupFixture): string => {
-  const needs = nodeNeeds(fixture.nodes);
-  const parts: Array<string> = [];
-  const needsStack = fixture.nodes.some(node => node.t === 'column');
+  const needs = nodeNeeds(fixture.nodes)
+  const parts: Array<string> = []
+  const needsStack = fixture.nodes.some(node => node.t === 'column')
   if (needsStack)
-    parts.push(`  stack: { alignItems: 'flex-start', display: 'flex', flexDirection: 'column', gap: '2rem' },`);
+    parts.push(
+      `  stack: { alignItems: 'flex-start', display: 'flex', flexDirection: 'column', gap: '2rem' },`,
+    )
 
   if (needs.voice)
     parts.push(
       `  voiceButton: { alignItems: 'center', borderRadius: foundationTokens.radiusSm, color: 'var(--muted-foreground)', display: 'inline-flex', height: '1.5rem', justifyContent: 'center', width: '1.5rem' },`,
       `  captionIcon: { fontSize: '0.875rem', lineHeight: '1.25rem' },`,
-    );
+    )
   if (!needs.voice && needs.tooltip)
-    parts.push(`  captionIcon: { fontSize: '0.875rem', lineHeight: '1.25rem' },`);
+    parts.push(
+      `  captionIcon: { fontSize: '0.875rem', lineHeight: '1.25rem' },`,
+    )
   if (needs.popover)
     parts.push(
       `  popoverBody: { display: 'grid', fontSize: '0.875rem', lineHeight: '1.25rem', gap: '0.75rem' },`,
       `  popoverHead: { display: 'grid', gap: '0.25rem' },`,
       `  popoverTitle: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500 },`,
       `  popoverCopy: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },`,
-    );
+    )
   return parts.length === 0
     ? ''
     : `import * as stylex from '@stylexjs/stylex'
@@ -711,79 +778,95 @@ const styles = stylex.create({
 ${parts.join('\n')}
 })
 
-`;
-};
+`
+}
 
 const componentImports = (
   fixture: ButtonGroupFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const needs = nodeNeeds(fixture.nodes);
-  const ui = renderer === 'stylex' ? 'stylex' : 'ui';
-  const lines: Array<string> = [];
-  const sxStyles = renderer === 'stylex' ? stylexStylesSource(fixture) : '';
-  if (sxStyles !== '') lines.push(sxStyles.trimEnd());
-  lines.push(`import * as Button from '@/${ui}/button'`);
-  if (needs.icons) lines.push(`import * as Icon from '@/lib/icon'`);
-  if (needs.inputs.length > 0) lines.push(`import * as Input from '@/${ui}/input'`);
-  if (fixture.nodes.some(n => n.t === 'group' && n.children.some(c => c.t === 'inputGroup')))
-    lines.push(`import * as InputGroup from '@/${ui}/input-group'`);
-  if (needs.select) lines.push(`import * as Select from '@/${ui}/select'`);
-  if (needs.menu !== undefined) lines.push(`import * as DropdownMenu from '@/${ui}/dropdown-menu'`);
-  if (needs.popover) lines.push(`import * as Popover from '@/${ui}/popover'`);
-  if (needs.popover) lines.push(`import * as Textarea from '@/${ui}/textarea'`);
-  if (needs.tooltip) lines.push(`import * as Tooltip from '@/${ui}/tooltip'`);
-  return lines.join('\n');
-};
+  const needs = nodeNeeds(fixture.nodes)
+  const ui = renderer === 'stylex' ? 'stylex' : 'ui'
+  const lines: Array<string> = []
+  const sxStyles = renderer === 'stylex' ? stylexStylesSource(fixture) : ''
+  if (sxStyles !== '') lines.push(sxStyles.trimEnd())
+  lines.push(`import * as Button from '@/${ui}/button'`)
+  if (needs.icons) lines.push(`import * as Icon from '@/lib/icon'`)
+  if (needs.inputs.length > 0)
+    lines.push(`import * as Input from '@/${ui}/input'`)
+  if (
+    fixture.nodes.some(
+      n => n.t === 'group' && n.children.some(c => c.t === 'inputGroup'),
+    )
+  )
+    lines.push(`import * as InputGroup from '@/${ui}/input-group'`)
+  if (needs.select) lines.push(`import * as Select from '@/${ui}/select'`)
+  if (needs.menu !== undefined)
+    lines.push(`import * as DropdownMenu from '@/${ui}/dropdown-menu'`)
+  if (needs.popover) lines.push(`import * as Popover from '@/${ui}/popover'`)
+  if (needs.popover) lines.push(`import * as Textarea from '@/${ui}/textarea'`)
+  if (needs.tooltip) lines.push(`import * as Tooltip from '@/${ui}/tooltip'`)
+  return lines.join('\n')
+}
 
 const modelFields = (needs: ReturnType<typeof nodeNeeds>): Array<string> => {
-  const fields: Array<string> = [];
-  if (needs.menu !== undefined) fields.push(`  menu: DropdownMenu.Model,`);
-  if (needs.menu === 'demo') fields.push(`  label: S.Option(S.String),`);
-  needs.inputs.forEach(field => fields.push(`  ${field}: S.String,`));
-  if (needs.voice) fields.push(`  voiceEnabled: S.Boolean,`);
+  const fields: Array<string> = []
+  if (needs.menu !== undefined) fields.push(`  menu: DropdownMenu.Model,`)
+  if (needs.menu === 'demo') fields.push(`  label: S.Option(S.String),`)
+  needs.inputs.forEach(field => fields.push(`  ${field}: S.String,`))
+  if (needs.voice) fields.push(`  voiceEnabled: S.Boolean,`)
   if (needs.select) {
-    fields.push(`  select: Select.Model,`);
-    fields.push(`  maybeCurrency: S.Option(S.String),`);
+    fields.push(`  select: Select.Model,`)
+    fields.push(`  maybeCurrency: S.Option(S.String),`)
   }
-  if (needs.popover) fields.push(`  popover: Popover.Model,`);
-  if (needs.tooltip) fields.push(`  tooltip: Tooltip.Model,`);
-  return fields;
-};
+  if (needs.popover) fields.push(`  popover: Popover.Model,`)
+  if (needs.tooltip) fields.push(`  tooltip: Tooltip.Model,`)
+  return fields
+}
 
 const messageFields = (needs: ReturnType<typeof nodeNeeds>): Array<string> => {
-  const messages: Array<string> = [];
-  if (needs.menu !== undefined) messages.push(`  GotMenuMessage: { message: DropdownMenu.Message },`);
+  const messages: Array<string> = []
+  if (needs.menu !== undefined)
+    messages.push(`  GotMenuMessage: { message: DropdownMenu.Message },`)
   needs.inputs.forEach(field => {
-    const name = FIELD_MESSAGE[field];
-    if (messages.every(m => !m.includes(name))) messages.push(`  ${name}: { value: S.String },`);
-  });
-  if (needs.voice) messages.push(`  ToggledVoice: {},`);
-  if (needs.select) messages.push(`  GotSelectMessage: { message: Select.Message },`);
-  if (needs.popover) messages.push(`  GotPopoverMessage: { message: Popover.Message },`);
-  if (needs.tooltip) messages.push(`  GotTooltipMessage: { message: Tooltip.Message },`);
-  return messages;
-};
+    const name = FIELD_MESSAGE[field]
+    if (messages.every(m => !m.includes(name)))
+      messages.push(`  ${name}: { value: S.String },`)
+  })
+  if (needs.voice) messages.push(`  ToggledVoice: {},`)
+  if (needs.select)
+    messages.push(`  GotSelectMessage: { message: Select.Message },`)
+  if (needs.popover)
+    messages.push(`  GotPopoverMessage: { message: Popover.Message },`)
+  if (needs.tooltip)
+    messages.push(`  GotTooltipMessage: { message: Tooltip.Message },`)
+  return messages
+}
 
-const initFields = (
-  needs: ReturnType<typeof nodeNeeds>,
-): Array<string> => {
-  const fields: Array<string> = [];
-  if (needs.menu !== undefined) fields.push(`menu: DropdownMenu.init({ id: 'actions-menu', isAnimated: true })`);
-  if (needs.menu === 'demo') fields.push(`label: Option.some('personal')`);
-  needs.inputs.forEach(field => fields.push(`${field}: ''`));
-  if (needs.voice) fields.push(`voiceEnabled: false`);
+const initFields = (needs: ReturnType<typeof nodeNeeds>): Array<string> => {
+  const fields: Array<string> = []
+  if (needs.menu !== undefined)
+    fields.push(
+      `menu: DropdownMenu.init({ id: 'actions-menu', isAnimated: true })`,
+    )
+  if (needs.menu === 'demo') fields.push(`label: Option.some('personal')`)
+  needs.inputs.forEach(field => fields.push(`${field}: ''`))
+  if (needs.voice) fields.push(`voiceEnabled: false`)
   if (needs.select) {
-    fields.push(`select: Select.init({ id: 'currency-select', isAnimated: true })`);
-    fields.push(`maybeCurrency: Option.some('$')`);
+    fields.push(
+      `select: Select.init({ id: 'currency-select', isAnimated: true })`,
+    )
+    fields.push(`maybeCurrency: Option.some('$')`)
   }
-  if (needs.popover) fields.push(`popover: Popover.init({ id: 'copilot-popover' })`);
-  if (needs.tooltip) fields.push(`tooltip: Tooltip.init({ id: 'voice-tooltip' })`);
-  return fields;
-};
+  if (needs.popover)
+    fields.push(`popover: Popover.init({ id: 'copilot-popover' })`)
+  if (needs.tooltip)
+    fields.push(`tooltip: Tooltip.init({ id: 'voice-tooltip' })`)
+  return fields
+}
 
 const updateCases = (needs: ReturnType<typeof nodeNeeds>): Array<string> => {
-  const cases: Array<string> = [];
+  const cases: Array<string> = []
   if (needs.menu !== undefined)
     cases.push(`    case 'GotMenuMessage': {
       const result = DropdownMenu.update(model.menu, message.message)
@@ -792,25 +875,29 @@ const updateCases = (needs: ReturnType<typeof nodeNeeds>): Array<string> => {
         model: {
           ...model,
           menu: result.model,
-          ${needs.menu === 'demo' ? `label: Option.match(maybeSelection, {
+          ${
+            needs.menu === 'demo'
+              ? `label: Option.match(maybeSelection, {
             onNone: () => model.label,
             onSome: selection => Option.some(selection.value),
-          }),` : ''}
+          }),`
+              : ''
+          }
         },
         commands: Command.mapMessages(
           result.commands ?? [],
           next => Message['GotMenuMessage']({ message: next }),
         ),
       }
-    }`);
+    }`)
   needs.inputs.forEach(field => {
-    const name = FIELD_MESSAGE[field];
+    const name = FIELD_MESSAGE[field]
     cases.push(`    case '${name}':
-      return { model: { ...model, ${field}: message.value } }`);
-  });
+      return { model: { ...model, ${field}: message.value } }`)
+  })
   if (needs.voice)
     cases.push(`    case 'ToggledVoice':
-      return { model: { ...model, voiceEnabled: !model.voiceEnabled } }`);
+      return { model: { ...model, voiceEnabled: !model.voiceEnabled } }`)
   if (needs.select)
     cases.push(`    case 'GotSelectMessage': {
       const result = Select.update(model.select, message.message)
@@ -832,7 +919,7 @@ const updateCases = (needs: ReturnType<typeof nodeNeeds>): Array<string> => {
           next => Message['GotSelectMessage']({ message: next }),
         ),
       }
-    }`);
+    }`)
   if (needs.popover)
     cases.push(`    case 'GotPopoverMessage': {
       const result = Popover.update(model.popover, message.message)
@@ -843,7 +930,7 @@ const updateCases = (needs: ReturnType<typeof nodeNeeds>): Array<string> => {
           next => Message['GotPopoverMessage']({ message: next }),
         ),
       }
-    }`);
+    }`)
   if (needs.tooltip)
     cases.push(`    case 'GotTooltipMessage': {
       const result = Tooltip.update(model.tooltip, message.message)
@@ -854,12 +941,12 @@ const updateCases = (needs: ReturnType<typeof nodeNeeds>): Array<string> => {
           next => Message['GotTooltipMessage']({ message: next }),
         ),
       }
-    }`);
-  return cases;
-};
+    }`)
+  return cases
+}
 
 const isDynamic = (fixture: ButtonGroupFixture): boolean => {
-  const needs = nodeNeeds(fixture.nodes);
+  const needs = nodeNeeds(fixture.nodes)
   return (
     needs.menu !== undefined ||
     needs.inputs.length > 0 ||
@@ -867,26 +954,26 @@ const isDynamic = (fixture: ButtonGroupFixture): boolean => {
     needs.popover ||
     needs.tooltip ||
     needs.voice
-  );
-};
+  )
+}
 
 const dynamicSource = (
   fixture: ButtonGroupFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const needs = nodeNeeds(fixture.nodes);
-  const consts: Array<string> = [];
+  const needs = nodeNeeds(fixture.nodes)
+  const consts: Array<string> = []
   if (needs.menu !== undefined) {
-    consts.push(`const ITEMS = ${itemsSource(needs.menu)}`);
-    consts.push('');
+    consts.push(`const ITEMS = ${itemsSource(needs.menu)}`)
+    consts.push('')
   }
   if (needs.select) {
     consts.push(`const CURRENCIES = [
   { value: '$', label: 'US Dollar' },
   { value: '€', label: 'Euro' },
   { value: '£', label: 'British Pound' },
-]`);
-    consts.push('');
+]`)
+    consts.push('')
   }
   return foldkitApplication({
     title: `Button Group — ${fixture.title}`,
@@ -923,8 +1010,8 @@ ${updateCases(needs).join('\n')}
     ${viewBodySource(fixture, renderer)},
   ]),
 })`,
-  });
-};
+  })
+}
 
 const source = (
   fixture: ButtonGroupFixture,
@@ -939,13 +1026,14 @@ const source = (
         exampleName: fixture.title,
         componentImports: componentImports(fixture, renderer),
         viewBody: viewBodySource(fixture, renderer),
-      });
+      })
 
 export const buttonGroupExamples = (
   renderer: 'tailwind' | 'stylex',
-): ReadonlyArray<DocsExample> => buttonGroupFixtures.map(fixture => ({
-  title: fixture.title,
-  description: fixture.description,
-  ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
-  code: source(fixture, renderer),
-}));
+): ReadonlyArray<DocsExample> =>
+  buttonGroupFixtures.map(fixture => ({
+    title: fixture.title,
+    description: fixture.description,
+    ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
+    code: source(fixture, renderer),
+  }))

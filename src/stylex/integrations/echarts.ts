@@ -23,7 +23,13 @@ export const shadcnTooltip = ECharts.shadcnTooltip
 export const SyncChart = ECharts.SyncChart
 export const valueAxis = ECharts.valueAxis
 
-export type EChartSize = 'default' | 'compact' | 'dashboard' | 'spark' | 'square' | 'wide'
+export type EChartSize =
+  | 'default'
+  | 'compact'
+  | 'dashboard'
+  | 'spark'
+  | 'square'
+  | 'wide'
 
 export type EChartProps<Message> = Readonly<{
   ariaLabel: string
@@ -52,8 +58,23 @@ const styles = stylex.create({
     width: '100%',
   },
   alternative: { marginTop: '0.75rem' },
-  alternativeHidden: { overflow: 'hidden', clip: 'rect(0, 0, 0, 0)', clipPath: 'inset(50%)', position: 'absolute', whiteSpace: 'nowrap', height: '1px', width: '1px', },
-  status: { alignItems: 'center', color: tokens.mutedForeground, display: 'flex', fontSize: '0.875rem', justifyContent: 'center', lineHeight: '1.25rem', },
+  alternativeHidden: {
+    overflow: 'hidden',
+    clip: 'rect(0, 0, 0, 0)',
+    clipPath: 'inset(50%)',
+    position: 'absolute',
+    whiteSpace: 'nowrap',
+    height: '1px',
+    width: '1px',
+  },
+  status: {
+    alignItems: 'center',
+    color: tokens.mutedForeground,
+    display: 'flex',
+    fontSize: '0.875rem',
+    justifyContent: 'center',
+    lineHeight: '1.25rem',
+  },
   spark: {
     height: '3.5rem',
   },
@@ -77,24 +98,79 @@ const sizeStyles = {
   wide: styles.wide,
 } as const
 
-export const eChart = <Message>(props: EChartProps<Message>, h: HtmlBuilder<Message>): Html => {
+export const eChart = <Message>(
+  props: EChartProps<Message>,
+  h: HtmlBuilder<Message>,
+): Html => {
   const state = props.state ?? 'ready'
-  const statusText = props.statusText ?? (state === 'loading' ? 'Loading chart…' : state === 'empty' ? 'No chart data available.' : state === 'error' ? 'Chart could not be loaded.' : '')
-  return h.div([h.DataAttribute('slot', 'echart-region')], [
-    ...(state === 'ready' ? [h.div(
+  const statusText =
+    props.statusText ??
+    (state === 'loading'
+      ? 'Loading chart…'
+      : state === 'empty'
+        ? 'No chart data available.'
+        : state === 'error'
+          ? 'Chart could not be loaded.'
+          : '')
+  return h.div(
+    [h.DataAttribute('slot', 'echart-region')],
     [
-      h.DataAttribute('slot', 'echart'),
-      h.DataAttribute('size', props.size ?? 'default'),
-      h.Role('img'),
-      h.AriaLabel(props.ariaLabel),
-      h.Class(className(styles.host, sizeStyles[props.size ?? 'default'], props.layoutStyle)),
-      h.OnMount(Mount.mapMessage(
-        ECharts.MountChart({ hostId: props.hostId, variant: props.variant ?? '' }),
-        props.toMessage,
-      )),
+      ...(state === 'ready'
+        ? [
+            h.div(
+              [
+                h.DataAttribute('slot', 'echart'),
+                h.DataAttribute('size', props.size ?? 'default'),
+                h.Role('img'),
+                h.AriaLabel(props.ariaLabel),
+                h.Class(
+                  className(
+                    styles.host,
+                    sizeStyles[props.size ?? 'default'],
+                    props.layoutStyle,
+                  ),
+                ),
+                h.OnMount(
+                  Mount.mapMessage(
+                    ECharts.MountChart({
+                      hostId: props.hostId,
+                      variant: props.variant ?? '',
+                    }),
+                    props.toMessage,
+                  ),
+                ),
+              ],
+              [],
+            ),
+          ]
+        : [
+            h.p(
+              [
+                h.DataAttribute('slot', `echart-${state}`),
+                h.Role(state === 'error' ? 'alert' : 'status'),
+                ...(state === 'loading' ? [h.AriaBusy(true)] : []),
+                h.Class(
+                  className(
+                    styles.host,
+                    styles.status,
+                    sizeStyles[props.size ?? 'default'],
+                  ),
+                ),
+              ],
+              [statusText],
+            ),
+          ]),
+      h.div(
+        [
+          h.DataAttribute('slot', 'echart-accessible-alternative'),
+          h.Class(
+            className(
+              state === 'ready' ? styles.alternativeHidden : styles.alternative,
+            ),
+          ),
+        ],
+        [props.accessibleAlternative],
+      ),
     ],
-    [],
-    )] : [h.p([h.DataAttribute('slot', `echart-${state}`), h.Role(state === 'error' ? 'alert' : 'status'), ...(state === 'loading' ? [h.AriaBusy(true)] : []), h.Class(className(styles.host, styles.status, sizeStyles[props.size ?? 'default']))], [statusText])]),
-    h.div([h.DataAttribute('slot', 'echart-accessible-alternative'), h.Class(className(state === 'ready' ? styles.alternativeHidden : styles.alternative))], [props.accessibleAlternative]),
-  ])
+  )
 }

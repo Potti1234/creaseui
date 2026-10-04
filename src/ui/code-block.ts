@@ -1,7 +1,7 @@
-import { Option } from 'effect';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import { Option } from 'effect'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Icon from '@/lib/icon';
+import * as Icon from '@/lib/icon'
 import {
   codeLines,
   flatTokensToLines,
@@ -12,49 +12,49 @@ import {
   type SyntaxToken,
   type TokenLine,
   update,
-} from '@/lib/code-block';
-import { cn } from '@/lib/utils';
-import * as Button from '@/ui/button';
+} from '@/lib/code-block'
+import { cn } from '@/lib/utils'
+import * as Button from '@/ui/button'
 
 /* Ported from Meta Astryx CodeBlock (packages/core/src/CodeBlock/CodeBlock.tsx)
    — examples and visual spec adapted to Crease UI tokens. Syntax highlighting
    uses the span renderer (astryx's Safari/no-Highlight-API fallback path);
    `highlightMode` and `syntaxTheme` are not ported — see PORT-NOTEs below. */
 
-export { init, Model, Message, update };
-export type { SyntaxToken, TokenLine };
-export { codeLines, tokenize, flatTokensToLines };
+export { init, Model, Message, update }
+export type { SyntaxToken, TokenLine }
+export { codeLines, tokenize, flatTokensToLines }
 
-export type CodeBlockSize = 'sm' | 'md';
+export type CodeBlockSize = 'sm' | 'md'
 
-export type CodeBlockContainer = 'card' | 'section';
+export type CodeBlockContainer = 'card' | 'section'
 
 export type CustomTokenizer = (
   code: string,
   language: string,
-) => ReadonlyArray<{ type: string; start: number; end: number }>;
+) => ReadonlyArray<{ type: string; start: number; end: number }>
 
 export type CodeBlockProps<Msg> = Readonly<{
   /** The CodeBlock submodel state (see `init`/`update` in `@/lib/code-block`). */
-  model: Model;
-  toParentMessage: (message: Message) => Msg;
-  code: string;
-  language?: string;
-  title?: string;
-  hasLanguageLabel?: boolean;
-  hasLineNumbers?: boolean;
-  highlightLines?: ReadonlyArray<number>;
-  hasCopyButton?: boolean;
-  isWrapped?: boolean;
-  maxHeight?: number | string;
-  isCollapsible?: boolean;
-  collapsibleThreshold?: number;
-  size?: CodeBlockSize;
-  width?: string;
-  container?: CodeBlockContainer;
-  tokenizer?: CustomTokenizer;
-  class?: string;
-}>;
+  model: Model
+  toParentMessage: (message: Message) => Msg
+  code: string
+  language?: string
+  title?: string
+  hasLanguageLabel?: boolean
+  hasLineNumbers?: boolean
+  highlightLines?: ReadonlyArray<number>
+  hasCopyButton?: boolean
+  isWrapped?: boolean
+  maxHeight?: number | string
+  isCollapsible?: boolean
+  collapsibleThreshold?: number
+  size?: CodeBlockSize
+  width?: string
+  container?: CodeBlockContainer
+  tokenizer?: CustomTokenizer
+  class?: string
+}>
 
 /* astryx syntax token types → Crease UI chart/semantic colors. astryx uses a
    dedicated 11-hue syntax palette (accent/green/gray/orange/blue/purple/…);
@@ -73,7 +73,7 @@ const tokenColorClass: Record<string, string> = {
   attribute: 'text-chart-2',
   tag: 'text-destructive',
   punctuation: 'text-muted-foreground',
-};
+}
 
 const buildSpanLine = <Msg>(
   lineText: string,
@@ -81,15 +81,15 @@ const buildSpanLine = <Msg>(
   h: HtmlBuilder<Msg>,
 ): ReadonlyArray<Html | string> => {
   if (tokens.length === 0) {
-    return [lineText === '' ? '​' : lineText];
+    return [lineText === '' ? '​' : lineText]
   }
-  const parts: Array<Html | string> = [];
-  let cursor = 0;
+  const parts: Array<Html | string> = []
+  let cursor = 0
   for (const token of tokens) {
     if (token.start > cursor) {
-      parts.push(lineText.slice(cursor, token.start));
+      parts.push(lineText.slice(cursor, token.start))
     }
-    const end = Math.min(token.end, lineText.length);
+    const end = Math.min(token.end, lineText.length)
     parts.push(
       h.span(
         [
@@ -99,45 +99,45 @@ const buildSpanLine = <Msg>(
         ],
         [lineText.slice(token.start, end)],
       ),
-    );
-    cursor = end;
+    )
+    cursor = end
   }
   if (cursor < lineText.length) {
-    parts.push(lineText.slice(cursor));
+    parts.push(lineText.slice(cursor))
   }
-  return parts;
-};
+  return parts
+}
 
 export const codeBlock = <Msg>(
   props: CodeBlockProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const language = props.language ?? 'plaintext';
-  const hasLanguageLabel = props.hasLanguageLabel ?? true;
-  const hasLineNumbers = props.hasLineNumbers ?? false;
-  const hasCopyButton = props.hasCopyButton ?? true;
-  const isWrapped = props.isWrapped ?? false;
-  const isCollapsible = props.isCollapsible ?? false;
-  const collapsibleThreshold = props.collapsibleThreshold ?? 10;
-  const size = props.size ?? 'md';
-  const container = props.container ?? 'card';
-  const widthProp = props.width ?? 'fit-content';
+  const language = props.language ?? 'plaintext'
+  const hasLanguageLabel = props.hasLanguageLabel ?? true
+  const hasLineNumbers = props.hasLineNumbers ?? false
+  const hasCopyButton = props.hasCopyButton ?? true
+  const isWrapped = props.isWrapped ?? false
+  const isCollapsible = props.isCollapsible ?? false
+  const collapsibleThreshold = props.collapsibleThreshold ?? 10
+  const size = props.size ?? 'md'
+  const container = props.container ?? 'card'
+  const widthProp = props.width ?? 'fit-content'
 
-  const lines = codeLines(props.code);
+  const lines = codeLines(props.code)
   const tokenLines: ReadonlyArray<TokenLine> =
     props.tokenizer === undefined
       ? tokenize(props.code, language)
-      : flatTokensToLines(props.tokenizer(props.code, language), props.code);
+      : flatTokensToLines(props.tokenizer(props.code, language), props.code)
   const highlightSet =
-    props.highlightLines === undefined ? null : new Set(props.highlightLines);
-  const isCopied = props.model.copiedCode === props.code;
-  const isCollapsed = props.model.isCollapsed;
-  const canCollapse = isCollapsible && lines.length >= collapsibleThreshold;
-  const maxLineDigits = String(lines.length).length;
+    props.highlightLines === undefined ? null : new Set(props.highlightLines)
+  const isCopied = props.model.copiedCode === props.code
+  const isCollapsed = props.model.isCollapsed
+  const canCollapse = isCollapsible && lines.length >= collapsibleThreshold
+  const maxLineDigits = String(lines.length).length
   const languageLabel =
-    hasLanguageLabel && language !== 'plaintext' ? language : null;
-  const showHeader = props.title !== undefined || languageLabel !== null;
-  const regionId = `codeblock-${props.title ?? languageLabel ?? 'region'}-${lines.length}`;
+    hasLanguageLabel && language !== 'plaintext' ? language : null
+  const showHeader = props.title !== undefined || languageLabel !== null
+  const regionId = `codeblock-${props.title ?? languageLabel ?? 'region'}-${lines.length}`
 
   const copyButton = hasCopyButton
     ? Button.button(
@@ -160,7 +160,7 @@ export const codeBlock = <Msg>(
         },
         h,
       )
-    : null;
+    : null
 
   const header = showHeader
     ? h.div(
@@ -245,7 +245,7 @@ export const codeBlock = <Msg>(
           ...(copyButton === null ? [] : [copyButton]),
         ],
       )
-    : null;
+    : null
 
   const codeBody = h.div(
     [
@@ -269,10 +269,7 @@ export const codeBlock = <Msg>(
       h.div(
         [
           h.Class(
-            cn(
-              'flex min-w-fit',
-              showHeader && !hasLineNumbers && '-mt-2',
-            ),
+            cn('flex min-w-fit', showHeader && !hasLineNumbers && '-mt-2'),
           ),
         ],
         [
@@ -316,9 +313,10 @@ export const codeBlock = <Msg>(
                     : []),
                 ],
                 [
-                  h.span([h.Class('min-w-0')], [
-                    ...buildSpanLine(line, tokenLines[index] ?? [], h),
-                  ]),
+                  h.span(
+                    [h.Class('min-w-0')],
+                    [...buildSpanLine(line, tokenLines[index] ?? [], h)],
+                  ),
                 ],
               ),
             ),
@@ -326,7 +324,7 @@ export const codeBlock = <Msg>(
         ],
       ),
     ],
-  );
+  )
 
   return h.pre(
     [
@@ -366,12 +364,10 @@ export const codeBlock = <Msg>(
               ),
               h.Inert(isCollapsed),
             ],
-            [
-              h.div([h.Class('overflow-hidden min-h-0')], [codeBody]),
-            ],
+            [h.div([h.Class('overflow-hidden min-h-0')], [codeBody])],
           )
         : codeBody,
       ...(!showHeader && copyButton !== null ? [copyButton] : []),
     ],
-  );
-};
+  )
+}

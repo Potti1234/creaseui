@@ -66,19 +66,25 @@ const verifyRenderer = (name: string, Direction: DirectionModule) => {
           {
             update,
             view: (model, h) =>
-              h.div([], [
-                h.button(
-                  [
-                    h.Type('button'),
-                    h.OnClick({ _tag: 'SetDirection', direction: 'ltr' }),
-                  ],
-                  ['Switch to LTR'],
-                ),
-                Direction.direction(
-                  { direction: model.direction, children: ['Direction probe'] },
-                  h,
-                ),
-              ]),
+              h.div(
+                [],
+                [
+                  h.button(
+                    [
+                      h.Type('button'),
+                      h.OnClick({ _tag: 'SetDirection', direction: 'ltr' }),
+                    ],
+                    ['Switch to LTR'],
+                  ),
+                  Direction.direction(
+                    {
+                      direction: model.direction,
+                      children: ['Direction probe'],
+                    },
+                    h,
+                  ),
+                ],
+              ),
           },
           Scene.given(initialModel('rtl')),
           Scene.expect(wrapper).toHaveAttr('dir', 'rtl'),

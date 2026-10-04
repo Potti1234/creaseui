@@ -260,4 +260,3 @@ not be omitted.
 - [ ] All applicable quality evidence exists.
 - [ ] Registry installation works in a clean consumer.
 - [ ] Upgrade diff preserves local source ownership.
-

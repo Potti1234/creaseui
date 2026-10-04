@@ -1,8 +1,8 @@
-import type { EChartsOption } from 'echarts/types/dist/shared';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { EChartsOption } from 'echarts/types/dist/shared'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Chart from '@/lib/echarts';
-import * as Icon from '@/lib/icon';
+import * as Chart from '@/lib/echarts'
+import * as Icon from '@/lib/icon'
 import {
   card,
   cardContent,
@@ -10,9 +10,9 @@ import {
   cardFooter,
   cardHeader,
   cardTitle,
-} from '@/ui/card';
+} from '@/ui/card'
 
-const HOST_ID = 'chart-radial-shape';
+const HOST_ID = 'chart-radial-shape'
 
 Chart.registerChart(HOST_ID, (theme): EChartsOption => ({
   polar: {
@@ -75,7 +75,7 @@ Chart.registerChart(HOST_ID, (theme): EChartsOption => ({
       data: [1],
     },
   ],
-}));
+}))
 
 export const view = <Msg>(
   toMessage: (message: Chart.ChartMessage) => Msg,
@@ -134,8 +134,8 @@ export const view = <Msg>(
       ],
     },
     h,
-  );
-};
+  )
+}
 
 // PORT NOTE: Recharts' sector shape is approximated with a polar bar spanning
 // the same start/end angles because ECharts does not expose Recharts sectors.

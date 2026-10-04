@@ -1,22 +1,22 @@
-import { Option, Schema as S } from 'effect';
-import { Command } from 'foldkit';
-import * as FoldkitCalendar from 'foldkit/calendar';
-import type { HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import { Option, Schema as S } from 'effect'
+import { Command } from 'foldkit'
+import * as FoldkitCalendar from 'foldkit/calendar'
+import type { HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-import { definePreviewProgram } from '@/docs/components/pages/authored-page';
+import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
   arabicCalendarLocale,
   datePickerFixtures,
   type DatePickerFixtureKind,
-} from '@/docs/components/pages/date-picker/shared';
-import * as Calendar from '@/ui/calendar';
-import * as DatePicker from '@/ui/date-picker';
-import * as Field from '@/ui/field';
-import * as Icon from '@/lib/icon';
-import * as Input from '@/ui/input';
-import * as InputGroup from '@/ui/input-group';
-import * as Popover from '@/ui/popover';
+} from '@/docs/components/pages/date-picker/shared'
+import * as Calendar from '@/ui/calendar'
+import * as DatePicker from '@/ui/date-picker'
+import * as Field from '@/ui/field'
+import * as Icon from '@/lib/icon'
+import * as Input from '@/ui/input'
+import * as InputGroup from '@/ui/input-group'
+import * as Popover from '@/ui/popover'
 
 const Message = defineMessageUnion({
   GotDatePickerMessage: { message: DatePicker.Message },
@@ -25,8 +25,8 @@ const Message = defineMessageUnion({
   ChangedInput: { value: S.String },
   PressedKeyInInput: { key: S.String },
   ChangedTime: { value: S.String },
-});
-type Message = typeof Message.Type;
+})
+type Message = typeof Message.Type
 
 const Model = S.Struct({
   _docsPage: S.Literal('date-picker'),
@@ -39,43 +39,69 @@ const Model = S.Struct({
   rangeEnd: S.Option(FoldkitCalendar.CalendarDate),
   inputValue: S.String,
   timeValue: S.String,
-});
-type Model = typeof Model.Type;
+})
+type Model = typeof Model.Type
 
 const MONTH_NAMES = [
-  'January', 'February', 'March', 'April', 'May', 'June', 'July',
-  'August', 'September', 'October', 'November', 'December',
-];
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+]
 const SHORT_MONTH_NAMES = [
-  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-];
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+]
 
 const formatDisplay = (date: FoldkitCalendar.CalendarDate): string =>
-  `${MONTH_NAMES[date.month - 1]} ${String(date.day).padStart(2, '0')}, ${date.year}`;
+  `${MONTH_NAMES[date.month - 1]} ${String(date.day).padStart(2, '0')}, ${date.year}`
 const formatCompact = (date: FoldkitCalendar.CalendarDate): string =>
-  `${SHORT_MONTH_NAMES[date.month - 1]} ${String(date.day).padStart(2, '0')}, ${date.year}`;
+  `${SHORT_MONTH_NAMES[date.month - 1]} ${String(date.day).padStart(2, '0')}, ${date.year}`
 const formatUs = (date: FoldkitCalendar.CalendarDate): string =>
-  `${date.month}/${date.day}/${date.year}`;
+  `${date.month}/${date.day}/${date.year}`
 const formatArabic = (date: FoldkitCalendar.CalendarDate): string =>
-  `${arabicCalendarLocale.monthNames[date.month - 1]} ${date.day}، ${date.year}`;
+  `${arabicCalendarLocale.monthNames[date.month - 1]} ${date.day}، ${date.year}`
 
 const parseInputDate = (
   value: string,
 ): Option.Option<FoldkitCalendar.CalendarDate> => {
-  const parsed = new Date(value);
+  const parsed = new Date(value)
   return Number.isNaN(parsed.getTime())
     ? Option.none()
     : Option.some({
         year: parsed.getFullYear(),
         month: parsed.getMonth() + 1,
         day: parsed.getDate(),
-      });
-};
+      })
+}
 
 const WEEKDAYS = [
-  'sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday',
-];
+  'sunday',
+  'monday',
+  'tuesday',
+  'wednesday',
+  'thursday',
+  'friday',
+  'saturday',
+]
 const WEEKDAY_INDEX: Readonly<Record<string, number>> = {
   Sunday: 0,
   Monday: 1,
@@ -84,45 +110,45 @@ const WEEKDAY_INDEX: Readonly<Record<string, number>> = {
   Thursday: 4,
   Friday: 5,
   Saturday: 6,
-};
+}
 
 const parseNaturalDate = (
   value: string,
   today: FoldkitCalendar.CalendarDate,
 ): Option.Option<FoldkitCalendar.CalendarDate> => {
-  const text = value.trim().toLowerCase();
-  if (text === 'today') return Option.some(today);
-  if (text === 'tomorrow') return Option.some(FoldkitCalendar.addDays(today, 1));
+  const text = value.trim().toLowerCase()
+  if (text === 'today') return Option.some(today)
+  if (text === 'tomorrow') return Option.some(FoldkitCalendar.addDays(today, 1))
   if (text === 'yesterday')
-    return Option.some(FoldkitCalendar.addDays(today, -1));
+    return Option.some(FoldkitCalendar.addDays(today, -1))
   if (text === 'next week')
-    return Option.some(FoldkitCalendar.addDays(today, 7));
+    return Option.some(FoldkitCalendar.addDays(today, 7))
   if (text === 'next month')
-    return Option.some(FoldkitCalendar.addMonths(today, 1));
-  const inMatch = /^in (\d+) (day|week|month)s?$/.exec(text);
+    return Option.some(FoldkitCalendar.addMonths(today, 1))
+  const inMatch = /^in (\d+) (day|week|month)s?$/.exec(text)
   if (inMatch !== null) {
-    const n = Number(inMatch[1]);
-    const unit = inMatch[2];
+    const n = Number(inMatch[1])
+    const unit = inMatch[2]
     return Option.some(
       unit === 'day'
         ? FoldkitCalendar.addDays(today, n)
         : unit === 'week'
           ? FoldkitCalendar.addDays(today, n * 7)
           : FoldkitCalendar.addMonths(today, n),
-    );
+    )
   }
-  const nextMatch = /^next (\w+)$/.exec(text);
-  const nextName = nextMatch?.[1] ?? '';
+  const nextMatch = /^next (\w+)$/.exec(text)
+  const nextName = nextMatch?.[1] ?? ''
   if (nextMatch !== null && WEEKDAYS.includes(nextName)) {
     const target =
-      WEEKDAY_INDEX[nextName[0]!.toUpperCase() + nextName.slice(1)] ?? 0;
-    const current = WEEKDAY_INDEX[FoldkitCalendar.dayOfWeek(today)] ?? 0;
+      WEEKDAY_INDEX[nextName[0]!.toUpperCase() + nextName.slice(1)] ?? 0
+    const current = WEEKDAY_INDEX[FoldkitCalendar.dayOfWeek(today)] ?? 0
     return Option.some(
       FoldkitCalendar.addDays(today, ((target - current + 6) % 7) + 1),
-    );
+    )
   }
-  return Option.none();
-};
+  return Option.none()
+}
 
 const initPicker = (
   id: string,
@@ -135,7 +161,7 @@ const initPicker = (
     isAnimated: true,
     ...(isRtl ? { locale: arabicCalendarLocale } : {}),
     ...(initialViewDate === undefined ? {} : { initialViewDate }),
-  });
+  })
 
 export const datePickerTailwindPreviewProgram = definePreviewProgram<
   Model,
@@ -144,18 +170,22 @@ export const datePickerTailwindPreviewProgram = definePreviewProgram<
   Model,
   Message,
   init: index => {
-    const fixture = datePickerFixtures[index] ?? datePickerFixtures[0]!;
-    const kind: DatePickerFixtureKind = fixture.kind;
-    const today = FoldkitCalendar.fromDateInZone(new Date(), 'UTC');
-    const inputDate = { year: 2025, month: 6, day: 1 };
-    const naturalDate = FoldkitCalendar.addDays(today, 2);
+    const fixture = datePickerFixtures[index] ?? datePickerFixtures[0]!
+    const kind: DatePickerFixtureKind = fixture.kind
+    const today = FoldkitCalendar.fromDateInZone(new Date(), 'UTC')
+    const inputDate = { year: 2025, month: 6, day: 1 }
+    const naturalDate = FoldkitCalendar.addDays(today, 2)
     return {
       _docsPage: 'date-picker',
       kind,
       datePicker: initPicker(
         `docs-date-picker-${index}`,
         kind === 'rtl',
-        kind === 'input' ? inputDate : kind === 'natural' ? naturalDate : undefined,
+        kind === 'input'
+          ? inputDate
+          : kind === 'natural'
+            ? naturalDate
+            : undefined,
       ),
       calendar: Calendar.init({
         id: `docs-calendar-${index}`,
@@ -198,15 +228,15 @@ export const datePickerTailwindPreviewProgram = definePreviewProgram<
             ? 'In 2 days'
             : '',
       timeValue: '10:30:00',
-    };
+    }
   },
   update: (model, message) => {
     switch (message._tag) {
       case 'GotDatePickerMessage': {
-        const next = (model.kind === 'rtl'
-          ? DatePicker.updateForRtl
-          : DatePicker.update)(model.datePicker, message.message);
-        const maybeOut = Option.fromNullishOr(next.outMessage);
+        const next = (
+          model.kind === 'rtl' ? DatePicker.updateForRtl : DatePicker.update
+        )(model.datePicker, message.message)
+        const maybeOut = Option.fromNullishOr(next.outMessage)
         const selectedDate = Option.match(maybeOut, {
           onNone: () => model.selectedDate,
           onSome: out =>
@@ -215,7 +245,7 @@ export const datePickerTailwindPreviewProgram = definePreviewProgram<
               : out._tag === 'ClearedDate'
                 ? Option.none()
                 : model.selectedDate,
-        });
+        })
         const inputValue =
           model.kind === 'input' || model.kind === 'natural'
             ? Option.match(Option.fromNullishOr(next.outMessage), {
@@ -225,30 +255,30 @@ export const datePickerTailwindPreviewProgram = definePreviewProgram<
                     ? formatDisplay(out.date)
                     : model.inputValue,
               })
-            : model.inputValue;
+            : model.inputValue
         return {
           model: { ...model, datePicker: next.model, selectedDate, inputValue },
           commands: Command.mapMessages(next.commands ?? [], child =>
             Message.GotDatePickerMessage({ message: child }),
           ),
-        };
+        }
       }
       case 'GotCalendarMessage': {
-        const next = Calendar.update(model.calendar, message.message);
-        const out = Option.fromNullishOr(next.outMessage);
+        const next = Calendar.update(model.calendar, message.message)
+        const out = Option.fromNullishOr(next.outMessage)
         const maybeDate = Option.match(out, {
           onNone: () => Option.none(),
           onSome: value =>
             value._tag === 'SelectedDate'
               ? Option.some(value.date)
               : Option.none(),
-        });
+        })
         const base = {
           model: { ...model, calendar: next.model },
           commands: Command.mapMessages(next.commands ?? [], child =>
             Message.GotCalendarMessage({ message: child }),
           ),
-        };
+        }
         return Option.match(maybeDate, {
           onNone: () => base,
           onSome: date => {
@@ -275,10 +305,10 @@ export const datePickerTailwindPreviewProgram = definePreviewProgram<
                       rangeEnd: Option.none<FoldkitCalendar.CalendarDate>(),
                     }),
                   }),
-              });
-              return { ...base, model: { ...base.model, ...range } };
+              })
+              return { ...base, model: { ...base.model, ...range } }
             }
-            const closed = Popover.close(model.popover);
+            const closed = Popover.close(model.popover)
             return {
               ...base,
               model: {
@@ -293,25 +323,25 @@ export const datePickerTailwindPreviewProgram = definePreviewProgram<
                   Message.GotPopoverMessage({ message: child }),
                 ),
               ],
-            };
+            }
           },
-        });
+        })
       }
       case 'GotPopoverMessage': {
-        const next = Popover.update(model.popover, message.message);
+        const next = Popover.update(model.popover, message.message)
         return {
           model: { ...model, popover: next.model },
           commands: Command.mapMessages(next.commands ?? [], child =>
             Message.GotPopoverMessage({ message: child }),
           ),
-        };
+        }
       }
       case 'ChangedInput': {
-        const today = FoldkitCalendar.fromDateInZone(new Date(), 'UTC');
+        const today = FoldkitCalendar.fromDateInZone(new Date(), 'UTC')
         const parsed =
           model.kind === 'natural'
             ? parseNaturalDate(message.value, today)
-            : parseInputDate(message.value);
+            : parseInputDate(message.value)
         return {
           model: Option.match(parsed, {
             onNone: () => ({ ...model, inputValue: message.value }),
@@ -323,79 +353,87 @@ export const datePickerTailwindPreviewProgram = definePreviewProgram<
             }),
           }),
           commands: [],
-        };
+        }
       }
       case 'PressedKeyInInput': {
-        if (message.key !== 'ArrowDown') return { model, commands: [] };
-        const next = DatePicker.open(model.datePicker);
+        if (message.key !== 'ArrowDown') return { model, commands: [] }
+        const next = DatePicker.open(model.datePicker)
         return {
           model: { ...model, datePicker: next.model },
           commands: Command.mapMessages(next.commands ?? [], child =>
             Message.GotDatePickerMessage({ message: child }),
           ),
-        };
+        }
       }
       case 'ChangedTime':
-        return { model: { ...model, timeValue: message.value }, commands: [] };
+        return { model: { ...model, timeValue: message.value }, commands: [] }
     }
   },
   view: (index, model, h) => {
-    const fixture = datePickerFixtures[index] ?? datePickerFixtures[0]!;
-    const kind = fixture.kind;
-    if (kind === 'range') return rangeView(model, h);
+    const fixture = datePickerFixtures[index] ?? datePickerFixtures[0]!
+    const kind = fixture.kind
+    if (kind === 'range') return rangeView(model, h)
     if (kind === 'input' || kind === 'natural')
-      return inputLikeView(kind, model, h);
-    return pickerView(kind, model, h);
+      return inputLikeView(kind, model, h)
+    return pickerView(kind, model, h)
   },
-});
+})
 
-const chevronTriggerContent = (
-  placeholder: string,
-  format: (date: FoldkitCalendar.CalendarDate) => string,
-) =>
-(
-  maybeDate: Option.Option<FoldkitCalendar.CalendarDate>,
-  h: HtmlBuilder<Message>,
-) =>
-  h.span([h.Class('flex w-full items-center justify-between')], [
+const chevronTriggerContent =
+  (
+    placeholder: string,
+    format: (date: FoldkitCalendar.CalendarDate) => string,
+  ) =>
+  (
+    maybeDate: Option.Option<FoldkitCalendar.CalendarDate>,
+    h: HtmlBuilder<Message>,
+  ) =>
+    h.span(
+      [h.Class('flex w-full items-center justify-between')],
+      [
+        Option.match(maybeDate, {
+          onNone: () => h.span([], [placeholder]),
+          onSome: date => h.span([], [format(date)]),
+        }),
+        Icon.chevronDown({ class: 'size-4 opacity-50' }, h),
+      ],
+    )
+
+const textTriggerContent =
+  (
+    placeholder: string,
+    format: (date: FoldkitCalendar.CalendarDate) => string,
+  ) =>
+  (
+    maybeDate: Option.Option<FoldkitCalendar.CalendarDate>,
+    h: HtmlBuilder<Message>,
+  ) =>
     Option.match(maybeDate, {
       onNone: () => h.span([], [placeholder]),
       onSome: date => h.span([], [format(date)]),
-    }),
-    Icon.chevronDown({ class: 'size-4 opacity-50' }, h),
-  ]);
-
-const textTriggerContent = (
-  placeholder: string,
-  format: (date: FoldkitCalendar.CalendarDate) => string,
-) =>
-(
-  maybeDate: Option.Option<FoldkitCalendar.CalendarDate>,
-  h: HtmlBuilder<Message>,
-) =>
-  Option.match(maybeDate, {
-    onNone: () => h.span([], [placeholder]),
-    onSome: date => h.span([], [format(date)]),
-  });
+    })
 
 const pickerView = (
   kind: DatePickerFixtureKind,
   model: Model,
   h: HtmlBuilder<Message>,
 ) => {
-  const isRtl = kind === 'rtl';
-  const withChevron = kind === 'demo' || kind === 'time' || isRtl;
+  const isRtl = kind === 'rtl'
+  const withChevron = kind === 'demo' || kind === 'time' || isRtl
   const placeholder =
     kind === 'demo' || kind === 'basic'
       ? 'Pick a date'
       : isRtl
         ? 'اختر تاريخًا'
-        : 'Select date';
-  const format = kind === 'dob' ? formatUs : isRtl ? formatArabic : formatDisplay;
-  const triggerContent = (maybeDate: Option.Option<FoldkitCalendar.CalendarDate>) =>
+        : 'Select date'
+  const format =
+    kind === 'dob' ? formatUs : isRtl ? formatArabic : formatDisplay
+  const triggerContent = (
+    maybeDate: Option.Option<FoldkitCalendar.CalendarDate>,
+  ) =>
     withChevron
       ? chevronTriggerContent(placeholder, format)(maybeDate, h)
-      : textTriggerContent(placeholder, format)(maybeDate, h);
+      : textTriggerContent(placeholder, format)(maybeDate, h)
 
   const picker = DatePicker.datePicker(
     {
@@ -409,7 +447,7 @@ const pickerView = (
       ...(isRtl ? { direction: 'rtl' as const } : {}),
     },
     h,
-  );
+  )
 
   if (kind === 'time') {
     return Field.fieldGroup(
@@ -454,15 +492,12 @@ const pickerView = (
         ],
       },
       h,
-    );
+    )
   }
-  if (kind === 'demo') return h.div([], [picker]);
-  const labelText = kind === 'basic' ? 'Date' : 'Date of birth';
+  if (kind === 'demo') return h.div([], [picker])
+  const labelText = kind === 'basic' ? 'Date' : 'Date of birth'
   if (isRtl) {
-    return h.div(
-      [h.Dir('rtl'), h.Class('mx-auto w-44')],
-      [picker],
-    );
+    return h.div([h.Dir('rtl'), h.Class('mx-auto w-44')], [picker])
   }
   return Field.field(
     {
@@ -473,8 +508,8 @@ const pickerView = (
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const rangeView = (model: Model, h: HtmlBuilder<Message>) => {
   const rangeOption = Option.match(model.rangeStart, {
@@ -484,7 +519,7 @@ const rangeView = (model: Model, h: HtmlBuilder<Message>) => {
         onNone: () => Option.some({ start, end: start }),
         onSome: end => Option.some({ start, end }),
       }),
-  });
+  })
   const rangeText = Option.match(model.rangeStart, {
     onNone: () => 'Pick a date',
     onSome: start =>
@@ -492,7 +527,7 @@ const rangeView = (model: Model, h: HtmlBuilder<Message>) => {
         onNone: () => formatCompact(start),
         onSome: end => `${formatCompact(start)} - ${formatCompact(end)}`,
       }),
-  });
+  })
   return Field.field(
     {
       class: 'mx-auto w-60',
@@ -504,13 +539,12 @@ const rangeView = (model: Model, h: HtmlBuilder<Message>) => {
         Popover.popover(
           {
             model: model.popover,
-            toParentMessage: message =>
-              Message.GotPopoverMessage({ message }),
+            toParentMessage: message => Message.GotPopoverMessage({ message }),
             align: 'start',
-            trigger: h.span([h.Class('flex items-center gap-2')], [
-              Icon.calendarIcon({ class: 'size-4' }, h),
-              rangeText,
-            ]),
+            trigger: h.span(
+              [h.Class('flex items-center gap-2')],
+              [Icon.calendarIcon({ class: 'size-4' }, h), rangeText],
+            ),
             triggerClass:
               'inline-flex h-8 w-60 items-center justify-start gap-2 whitespace-nowrap rounded-md border border-input bg-background px-2.5 text-sm font-normal shadow-xs',
             content: Calendar.calendar(
@@ -532,15 +566,15 @@ const rangeView = (model: Model, h: HtmlBuilder<Message>) => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const inputLikeView = (
   kind: 'input' | 'natural',
   model: Model,
   h: HtmlBuilder<Message>,
 ) => {
-  const isNatural = kind === 'natural';
+  const isNatural = kind === 'natural'
   return Field.field(
     {
       class: isNatural ? 'mx-auto max-w-xs' : 'mx-auto w-48',
@@ -579,10 +613,13 @@ const inputLikeView = (
                           Message.GotDatePickerMessage({ message }),
                         ariaLabel: 'Select date',
                         triggerContent: () =>
-                          h.span([h.Class('flex items-center')], [
-                            Icon.calendarIcon({ class: 'size-4' }, h),
-                            h.span([h.Class('sr-only')], ['Select date']),
-                          ]),
+                          h.span(
+                            [h.Class('flex items-center')],
+                            [
+                              Icon.calendarIcon({ class: 'size-4' }, h),
+                              h.span([h.Class('sr-only')], ['Select date']),
+                            ],
+                          ),
                         triggerClass:
                           'inline-flex h-5 w-5 items-center justify-center rounded-sm',
                       },
@@ -599,5 +636,5 @@ const inputLikeView = (
       ],
     },
     h,
-  );
-};
+  )
+}

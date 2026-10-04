@@ -96,12 +96,18 @@ describe('Markdown inline parser', () => {
   })
 
   it('renders citations only when the source id is known', () => {
-    const withSources = Markdown.parseMarkdownInline('a [src-1]', new Set(['src-1']))
+    const withSources = Markdown.parseMarkdownInline(
+      'a [src-1]',
+      new Set(['src-1']),
+    )
     assert.equal(withSources[1]?.type, 'citation')
     if (withSources[1]?.type === 'citation') {
       assert.equal(withSources[1].sourceId, 'src-1')
     }
-    const withoutSources = Markdown.parseMarkdownInline('a [src-9]', new Set(['src-1']))
+    const withoutSources = Markdown.parseMarkdownInline(
+      'a [src-9]',
+      new Set(['src-1']),
+    )
     assert.ok(withoutSources.every(node => node.type === 'text'))
   })
 })

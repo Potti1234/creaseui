@@ -1,16 +1,16 @@
-import * as stylex from '@stylexjs/stylex';
-import type { HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
-import { progressFixtures } from '@/docs/components/pages/progress/shared';
-import * as Field from '@/stylex/field';
-import * as Progress from '@/stylex/progress';
-import * as Slider from '@/stylex/slider';
-import { className } from '@/stylex/style';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import { progressFixtures } from '@/docs/components/pages/progress/shared'
+import * as Field from '@/stylex/field'
+import * as Progress from '@/stylex/progress'
+import * as Slider from '@/stylex/slider'
+import { className } from '@/stylex/style'
 
 const styles = stylex.create({
   track60: { width: '60%' },
-  wide: { maxWidth: '24rem', width: '100%', },
+  wide: { maxWidth: '24rem', width: '100%' },
   specimenWide: { maxWidth: '28rem', width: '100%' },
   specimenNarrow: { width: '6rem' },
   pushEnd: { marginInlineStart: 'auto' },
@@ -21,12 +21,12 @@ const styles = stylex.create({
     maxWidth: '24rem',
     width: '100%',
   },
-});
+})
 
 interface ProgressPreviewShape {
-  readonly value: number;
-  readonly controlledValue: number;
-  readonly slider: Slider.Model;
+  readonly value: number
+  readonly controlledValue: number
+  readonly slider: Slider.Model
 }
 
 const labelField = <Msg>(
@@ -61,7 +61,7 @@ const labelField = <Msg>(
       ],
     },
     h,
-  );
+  )
 
 export const progressStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
@@ -69,39 +69,42 @@ export const progressStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ) => {
-  const shape = model as ProgressPreviewShape;
-  const fixture = progressFixtures[exampleIndex] ?? progressFixtures[0];
+  const shape = model as ProgressPreviewShape
+  const fixture = progressFixtures[exampleIndex] ?? progressFixtures[0]
   switch (fixture.kind) {
     case 'demo':
       return Progress.progress(
         { value: shape.value, layoutStyle: styles.track60 },
         h,
-      );
+      )
     case 'label':
-      return labelField('Upload progress', '66%', undefined, h);
+      return labelField('Upload progress', '66%', undefined, h)
     case 'controlled':
-      return h.div([h.Class(className(styles.stack))], [
-        Progress.progress({ value: shape.controlledValue }, h),
-        Slider.slider(
-          {
-            model: shape.slider,
-            value: shape.controlledValue,
-            toParentMessage: message =>
-              onMessageJson(
-                JSON.stringify({
-                  _tag: 'GotProgressSliderMessage',
-                  message,
-                }),
-              ),
-          },
-          h,
-        ),
-      ]);
+      return h.div(
+        [h.Class(className(styles.stack))],
+        [
+          Progress.progress({ value: shape.controlledValue }, h),
+          Slider.slider(
+            {
+              model: shape.slider,
+              value: shape.controlledValue,
+              toParentMessage: message =>
+                onMessageJson(
+                  JSON.stringify({
+                    _tag: 'GotProgressSliderMessage',
+                    message,
+                  }),
+                ),
+            },
+            h,
+          ),
+        ],
+      )
     case 'rtl':
-      return labelField('تقدم الرفع', '٦٦%', 'rtl', h);
+      return labelField('تقدم الرفع', '٦٦%', 'rtl', h)
     case 'specimen': {
-      const specimen = fixture.specimen;
-      if (specimen === undefined) return h.div([], []);
+      const specimen = fixture.specimen
+      if (specimen === undefined) return h.div([], [])
       return Progress.progress(
         {
           value: specimen.value,
@@ -114,7 +117,7 @@ export const progressStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
               : styles.specimenWide,
         },
         h,
-      );
+      )
     }
   }
-};
+}

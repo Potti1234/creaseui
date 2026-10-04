@@ -70,7 +70,7 @@ const styles = stylex.create({
   labelIndicator: {
     fontSize: '0.75rem',
     fontWeight: 400,
- lineHeight: '1rem',
+    lineHeight: '1rem',
   },
   description: {
     color: tokens.mutedForeground,
@@ -101,7 +101,8 @@ const styles = stylex.create({
     paddingInline: '0.5rem',
     alignItems: 'center',
     display: 'flex',
-    fontSize: '0.875rem', lineHeight: '1.25rem',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
     position: 'relative',
   },
   itemCompact: {
@@ -306,14 +307,12 @@ const itemVisuals = <Msg>(
 ): CheckboxListItemVisualAttributes<Msg> => {
   const size = density === 'compact' ? 'sm' : 'md'
   return {
-    root: (state) => [
+    root: state => [
       h.Class(
         className(
           styles.itemRoot,
           densityStyle[density],
-          state.isInteractive &&
-            !state.checked &&
-            styles.itemInteractive,
+          state.isInteractive && !state.checked && styles.itemInteractive,
           state.isInteractive &&
             state.checked &&
             !state.isDisabled &&
@@ -322,7 +321,7 @@ const itemVisuals = <Msg>(
         ),
       ),
     ],
-    control: (state) => [
+    control: state => [
       h.Class(
         className(
           styles.controlBase,
@@ -336,7 +335,10 @@ const itemVisuals = <Msg>(
     ],
     content: [
       h.Class(
-        className(styles.itemContent, isDisabledContext && styles.contentDisabled),
+        className(
+          styles.itemContent,
+          isDisabledContext && styles.contentDisabled,
+        ),
       ),
     ],
     label: [h.Class(className(styles.itemLabel))],
@@ -416,7 +418,7 @@ export const checkboxList = <Msg>(
   const visuals = itemVisuals(density, props.isDisabled === true, h)
   const visualWithDividers: CheckboxListItemVisualAttributes<Msg> = {
     ...visuals,
-    root: (state) => [
+    root: state => [
       ...visuals.root(state),
       h.Class(className(props.hasDividers === true && styles.itemDivided)),
     ],
@@ -425,9 +427,7 @@ export const checkboxList = <Msg>(
   return renderCheckboxList(
     props,
     {
-      field: [
-        h.Class(className(styles.field, props.layoutStyle)),
-      ],
+      field: [h.Class(className(styles.field, props.layoutStyle))],
       label: [
         h.Class(
           className(
@@ -441,11 +441,16 @@ export const checkboxList = <Msg>(
       description: [h.Class(className(styles.description))],
       group: [],
       list: [
-        h.Class(className(styles.list, props.hasDividers === true ? styles.listFlush : styles.listGap)),
+        h.Class(
+          className(
+            styles.list,
+            props.hasDividers === true ? styles.listFlush : styles.listGap,
+          ),
+        ),
       ],
       divider: [h.Class(className(styles.divider))],
       status: {
-        root: (type) => [
+        root: type => [
           h.Class(
             className(
               styles.statusRoot,

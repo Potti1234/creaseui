@@ -1,20 +1,20 @@
 /* Ported from Meta Astryx TreeList (packages/core/src/TreeList/) — StyleX
    renderer; visual spec adapted to Crease UI tokens. */
 
-import { Option } from 'effect';
-import * as stylex from '@stylexjs/stylex';
-import type { StaticStyles } from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineView } from 'foldkit/submodel';
+import { Option } from 'effect'
+import * as stylex from '@stylexjs/stylex'
+import type { StaticStyles } from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineView } from 'foldkit/submodel'
 
-import * as Icon from '@/lib/icon';
-import * as TreeListBehavior from '@/lib/tree-list';
-import type { ComponentLayoutStyle } from './contracts';
-import { foundationTokens } from './foundations-tokens.stylex';
-import { interactionTokens } from './interaction-tokens.stylex.const';
-import { treeItemScope } from './tree-list.markers.stylex';
-import { className } from './style';
-import { tokens } from './tokens.stylex';
+import * as Icon from '@/lib/icon'
+import * as TreeListBehavior from '@/lib/tree-list'
+import type { ComponentLayoutStyle } from './contracts'
+import { foundationTokens } from './foundations-tokens.stylex'
+import { interactionTokens } from './interaction-tokens.stylex.const'
+import { treeItemScope } from './tree-list.markers.stylex'
+import { className } from './style'
+import { tokens } from './tokens.stylex'
 
 export {
   Message,
@@ -27,7 +27,7 @@ export {
   tabbableId,
   update,
   visibleItems,
-} from '@/lib/tree-list';
+} from '@/lib/tree-list'
 export type {
   InitConfig,
   TreeListDensity,
@@ -35,7 +35,7 @@ export type {
   UpdateReturn,
   TreeListVariant,
   VisibleItem,
-} from '@/lib/tree-list';
+} from '@/lib/tree-list'
 
 const styles = stylex.create({
   root: {
@@ -106,7 +106,8 @@ const styles = stylex.create({
     },
     boxShadow: {
       default: 'none',
-      [stylex.when.ancestor(':focus-visible', treeItemScope)]: tokens.focusRingShadow,
+      [stylex.when.ancestor(':focus-visible', treeItemScope)]:
+        tokens.focusRingShadow,
       ':has(:focus-visible)': tokens.focusRingShadow,
     },
     cursor: interactionTokens.cursorAction,
@@ -213,7 +214,7 @@ const styles = stylex.create({
       ':is([dir="rtl"] *)': 'scaleX(-1) rotate(0deg)',
     },
   },
-});
+})
 
 const densityStyles = stylex.create({
   compact: {
@@ -225,9 +226,9 @@ const densityStyles = stylex.create({
   spacious: {
     paddingBlock: '0.75rem',
   },
-});
+})
 
-const CHEVRON_COLUMN = '16px + 8px';
+const CHEVRON_COLUMN = '16px + 8px'
 
 const indentStyle = (
   level: number,
@@ -236,17 +237,17 @@ const indentStyle = (
   '--_tree-indent': reservesChevronColumn
     ? `calc(${String(level)} * var(--tree-list-indent) + ${CHEVRON_COLUMN})`
     : `calc(${String(level)} * var(--tree-list-indent))`,
-});
+})
 
 type RenderContext<Msg> = Readonly<{
-  model: TreeListBehavior.Model;
-  toMessage: (message: TreeListBehavior.Message) => Msg;
-  density: TreeListBehavior.TreeListDensity;
-  variant: TreeListBehavior.TreeListVariant;
-  hasExpandableItems: boolean;
-  tabbable: string | undefined;
-  h: HtmlBuilder<Msg>;
-}>;
+  model: TreeListBehavior.Model
+  toMessage: (message: TreeListBehavior.Message) => Msg
+  density: TreeListBehavior.TreeListDensity
+  variant: TreeListBehavior.TreeListVariant
+  hasExpandableItems: boolean
+  tabbable: string | undefined
+  h: HtmlBuilder<Msg>
+}>
 
 const branchContainers = <Msg>(
   ancestorsIsLast: ReadonlyArray<boolean>,
@@ -254,7 +255,7 @@ const branchContainers = <Msg>(
   level: number,
   h: HtmlBuilder<Msg>,
 ): Array<Html> => {
-  const containers: Array<Html> = [];
+  const containers: Array<Html> = []
   ancestorsIsLast.forEach((ancestorIsLast, ancestorLevel) => {
     if (!ancestorIsLast && ancestorLevel !== level - 1) {
       containers.push(
@@ -267,18 +268,14 @@ const branchContainers = <Msg>(
           ],
           [
             h.div(
-              [
-                h.Class(
-                  className(styles.verticalLine, styles.verticalFull),
-                ),
-              ],
+              [h.Class(className(styles.verticalLine, styles.verticalFull))],
               [],
             ),
           ],
         ),
-      );
+      )
     }
-  });
+  })
   if (level > 0) {
     containers.push(
       h.div(
@@ -302,10 +299,10 @@ const branchContainers = <Msg>(
           ),
         ],
       ),
-    );
+    )
   }
-  return containers;
-};
+  return containers
+}
 
 const renderItem = <Msg>(
   ctx: RenderContext<Msg>,
@@ -316,16 +313,16 @@ const renderItem = <Msg>(
   ancestorsIsLast: ReadonlyArray<boolean>,
   isLast: boolean,
 ): Html => {
-  const { h, model } = ctx;
-  const children = TreeListBehavior.hasChildren(item);
-  const expanded = children && TreeListBehavior.isItemExpanded(item, model);
-  const disabled = item.isDisabled === true;
-  const actionable = TreeListBehavior.isItemActionable(item);
-  const interactive = actionable || children;
-  const domId = TreeListBehavior.itemDomId(model.id, item.id);
-  const labelId = TreeListBehavior.itemLabelDomId(model.id, item.id);
-  const descriptionId = TreeListBehavior.itemDescriptionDomId(model.id, item.id);
-  const reservesChevronColumn = ctx.hasExpandableItems && !children;
+  const { h, model } = ctx
+  const children = TreeListBehavior.hasChildren(item)
+  const expanded = children && TreeListBehavior.isItemExpanded(item, model)
+  const disabled = item.isDisabled === true
+  const actionable = TreeListBehavior.isItemActionable(item)
+  const interactive = actionable || children
+  const domId = TreeListBehavior.itemDomId(model.id, item.id)
+  const labelId = TreeListBehavior.itemLabelDomId(model.id, item.id)
+  const descriptionId = TreeListBehavior.itemDescriptionDomId(model.id, item.id)
+  const reservesChevronColumn = ctx.hasExpandableItems && !children
 
   const chevron = children
     ? h.button(
@@ -353,16 +350,14 @@ const renderItem = <Msg>(
             {
               class: className(
                 styles.chevronSvg,
-                expanded
-                  ? styles.chevronExpanded
-                  : styles.chevronCollapsed,
+                expanded ? styles.chevronExpanded : styles.chevronCollapsed,
               ),
             },
             h,
           ),
         ],
       )
-    : null;
+    : null
 
   const labelAndDescription: Array<Html> = [
     h.span(
@@ -377,7 +372,7 @@ const renderItem = <Msg>(
             [item.description],
           ),
         ]),
-  ];
+  ]
 
   const content: Html =
     item.href !== undefined
@@ -421,10 +416,7 @@ const renderItem = <Msg>(
             ],
             labelAndDescription,
           )
-        : h.span(
-            [h.Class(className(styles.content))],
-            labelAndDescription,
-          );
+        : h.span([h.Class(className(styles.content))], labelAndDescription)
 
   const handleRowClick: Array<ReturnType<HtmlBuilder<Msg>['OnClick']>> =
     !disabled && interactive
@@ -442,7 +434,7 @@ const renderItem = <Msg>(
             ),
           ),
         ]
-      : [];
+      : []
 
   return h.li(
     [
@@ -543,18 +535,18 @@ const renderItem = <Msg>(
           ]
         : []),
     ],
-  );
-};
+  )
+}
 
 export type ViewInputs = Readonly<{
-  items: ReadonlyArray<TreeListBehavior.TreeListItemData>;
-  density?: TreeListBehavior.TreeListDensity;
-  variant?: TreeListBehavior.TreeListVariant;
-  header?: Html;
-  ariaLabel?: string;
-  direction?: 'ltr' | 'rtl';
-  layoutStyle?: ComponentLayoutStyle;
-}>;
+  items: ReadonlyArray<TreeListBehavior.TreeListItemData>
+  density?: TreeListBehavior.TreeListDensity
+  variant?: TreeListBehavior.TreeListVariant
+  header?: Html
+  ariaLabel?: string
+  direction?: 'ltr' | 'rtl'
+  layoutStyle?: ComponentLayoutStyle
+}>
 
 const render = <Msg>(
   model: TreeListBehavior.Model,
@@ -562,13 +554,13 @@ const render = <Msg>(
   toMessage: (message: TreeListBehavior.Message) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const variant = viewInputs.variant ?? 'lineGuides';
-  const density = viewInputs.density ?? 'balanced';
-  const direction = viewInputs.direction ?? 'ltr';
-  const headerId = `${model.id}-header`;
+  const variant = viewInputs.variant ?? 'lineGuides'
+  const density = viewInputs.density ?? 'balanced'
+  const direction = viewInputs.direction ?? 'ltr'
+  const headerId = `${model.id}-header`
   const hasExpandableItems = viewInputs.items.some(
     item => item.children !== undefined && item.children.length > 0,
-  );
+  )
   const ctx: RenderContext<Msg> = {
     model,
     toMessage,
@@ -577,7 +569,7 @@ const render = <Msg>(
     hasExpandableItems,
     tabbable: TreeListBehavior.tabbableId(viewInputs.items, model),
     h,
-  };
+  }
 
   const findItem = (
     list: ReadonlyArray<TreeListBehavior.TreeListItemData>,
@@ -585,15 +577,15 @@ const render = <Msg>(
   ): TreeListBehavior.TreeListItemData | undefined => {
     for (const entry of list) {
       if (entry.id === id) {
-        return entry;
+        return entry
       }
-      const found = findItem(entry.children ?? [], id);
+      const found = findItem(entry.children ?? [], id)
       if (found !== undefined) {
-        return found;
+        return found
       }
     }
-    return undefined;
-  };
+    return undefined
+  }
 
   return h.div(
     [
@@ -613,7 +605,7 @@ const render = <Msg>(
           key,
           modifiers,
           direction,
-        );
+        )
         switch (intent._tag) {
           case 'move':
             return Option.some(
@@ -622,22 +614,19 @@ const render = <Msg>(
                   id: intent.id,
                 }),
               ),
-            );
+            )
           case 'toggle': {
-            const item = findItem(viewInputs.items, intent.id);
+            const item = findItem(viewInputs.items, intent.id)
             return item === undefined
               ? Option.none()
               : Option.some(
                   toMessage(
                     TreeListBehavior.Message.ToggledTreeListItem({
                       id: intent.id,
-                      isExpanded: !TreeListBehavior.isItemExpanded(
-                        item,
-                        model,
-                      ),
+                      isExpanded: !TreeListBehavior.isItemExpanded(item, model),
                     }),
                   ),
-                );
+                )
           }
           case 'activate':
             return Option.some(
@@ -646,7 +635,7 @@ const render = <Msg>(
                   id: intent.id,
                 }),
               ),
-            );
+            )
           case 'typeahead':
             return Option.some(
               toMessage(
@@ -655,9 +644,9 @@ const render = <Msg>(
                   matchedId: intent.matchedId,
                 }),
               ),
-            );
+            )
           case 'none':
-            return Option.none();
+            return Option.none()
         }
       }),
     ],
@@ -693,24 +682,24 @@ const render = <Msg>(
         ),
       ),
     ],
-  );
-};
+  )
+}
 
 /** Canonical stateful view. Embed with `h.submodel`. */
 export const view = defineView<
   TreeListBehavior.Model,
   TreeListBehavior.Message,
   ViewInputs
->((model, viewInputs, h) => render(model, viewInputs, (message) => message, h));
+>((model, viewInputs, h) => render(model, viewInputs, message => message, h))
 
 /** Compatibility helper. New code should use `h.submodel`. */
 export type TreeListProps<Msg> = ViewInputs &
   Readonly<{
-    model: TreeListBehavior.Model;
-    toParentMessage: (message: TreeListBehavior.Message) => Msg;
-  }>;
+    model: TreeListBehavior.Model
+    toParentMessage: (message: TreeListBehavior.Message) => Msg
+  }>
 
 export const treeList = <Msg>(
   props: TreeListProps<Msg>,
   h: HtmlBuilder<Msg>,
-): Html => render(props.model, props, props.toParentMessage, h);
+): Html => render(props.model, props, props.toParentMessage, h)

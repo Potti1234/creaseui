@@ -1,11 +1,11 @@
 import type { Update } from 'foldkit'
-import { Match as M, Schema as S } from 'effect';
-import type { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
-import { modifyFields } from 'foldkit/struct';
+import { Match as M, Schema as S } from 'effect'
+import type { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import { modifyFields } from 'foldkit/struct'
 
-import * as Icon from '@/lib/icon';
+import * as Icon from '@/lib/icon'
 import {
   breadcrumb,
   breadcrumbItem,
@@ -13,9 +13,9 @@ import {
   breadcrumbList,
   breadcrumbPage,
   breadcrumbSeparator,
-} from '@/ui/breadcrumb';
-import * as Collapsible from '@/ui/collapsible';
-import { separator } from '@/ui/separator';
+} from '@/ui/breadcrumb'
+import * as Collapsible from '@/ui/collapsible'
+import { separator } from '@/ui/separator'
 import {
   sidebar,
   sidebarContent,
@@ -32,14 +32,14 @@ import {
   sidebarProvider,
   sidebarRail,
   sidebarTrigger,
-} from '@/ui/sidebar';
+} from '@/ui/sidebar'
 
 type Change = Readonly<{
-  file: string;
-  state: string;
-}>;
+  file: string
+  state: string
+}>
 
-type TreeItem = string | ReadonlyArray<TreeItem>;
+type TreeItem = string | ReadonlyArray<TreeItem>
 
 export const data = {
   changes: [
@@ -73,29 +73,29 @@ export const data = {
     'package.json',
     'README.md',
   ] satisfies ReadonlyArray<TreeItem>,
-};
+}
 
 type FolderEntry = Readonly<{
-  path: string;
-  isOpen: boolean;
-}>;
+  path: string
+  isOpen: boolean
+}>
 
 const folderEntries = (
   items: ReadonlyArray<TreeItem>,
   parentPath = '',
 ): ReadonlyArray<FolderEntry> =>
-  items.flatMap((item) => {
+  items.flatMap(item => {
     if (typeof item === 'string') {
-      return [];
+      return []
     }
 
-    const [name, ...children] = item;
+    const [name, ...children] = item
 
     if (typeof name !== 'string' || children.length === 0) {
-      return [];
+      return []
     }
 
-    const path = parentPath === '' ? name : `${parentPath}/${name}`;
+    const path = parentPath === '' ? name : `${parentPath}/${name}`
 
     return [
       {
@@ -103,37 +103,35 @@ const folderEntries = (
         isOpen: name === 'components' || name === 'ui',
       },
       ...folderEntries(children, path),
-    ];
-  });
+    ]
+  })
 
 // MODEL
 
 export const Model = S.Struct({
-  isMobileOpen: S.Boolean, isSidebarOpen: S.Boolean,
+  isMobileOpen: S.Boolean,
+  isSidebarOpen: S.Boolean,
   folders: S.Record(S.String, S.Boolean),
-});
-export type Model = typeof Model.Type;
+})
+export type Model = typeof Model.Type
 
 // MESSAGE
-
-
-
-
 
 export const Message = defineMessageUnion({
   ToggledMobileSidebar: {},
   ToggledSidebar: {},
   ToggledFolder: {
-  path: S.String,
-  isOpen: S.Boolean,
-},
-});
-export type Message = typeof Message.Type;
+    path: S.String,
+    isOpen: S.Boolean,
+  },
+})
+export type Message = typeof Message.Type
 
 // INIT
 
 export const init = (): Model => ({
-  isMobileOpen: false, isSidebarOpen: true,
+  isMobileOpen: false,
+  isSidebarOpen: true,
   folders: folderEntries(data.tree).reduce<Readonly<Record<string, boolean>>>(
     (models, entry) => ({
       ...models,
@@ -141,31 +139,37 @@ export const init = (): Model => ({
     }),
     {},
   ),
-});
+})
 
 // UPDATE
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      ToggledMobileSidebar: () => ({ model: modifyFields(model, {isMobileOpen: current => !current}) }),
-      ToggledSidebar: () => ({ model: modifyFields(model, { isSidebarOpen: (current) => !current }) }),
+      ToggledMobileSidebar: () => ({
+        model: modifyFields(model, { isMobileOpen: current => !current }),
+      }),
+      ToggledSidebar: () => ({
+        model: modifyFields(model, { isSidebarOpen: current => !current }),
+      }),
       ToggledFolder: ({ path, isOpen }) => {
         if (model.folders[path] === undefined) {
-          return { model: model };
+          return { model: model }
         }
-        return { model: modifyFields(model, {
-            folders: (folders) => ({
+        return {
+          model: modifyFields(model, {
+            folders: folders => ({
               ...folders,
               [path]: isOpen,
             }),
-          }) };
+          }),
+        }
       },
     }),
-  );
+  )
 
 // VIEW
 
@@ -175,11 +179,11 @@ const treeItem = (
   folders: Readonly<Record<string, boolean>>,
   h: HtmlBuilder<Message>,
 ): Html => {
-  const parts = typeof item === 'string' ? [item] : item;
-  const [name, ...children] = parts;
+  const parts = typeof item === 'string' ? [item] : item
+  const [name, ...children] = parts
 
   if (typeof name !== 'string') {
-    return h.div([], []);
+    return h.div([], [])
   }
 
   if (children.length === 0) {
@@ -190,14 +194,14 @@ const treeItem = (
         children: [Icon.icon('file', {}, h), name],
       },
       h,
-    );
+    )
   }
 
-  const path = parentPath === '' ? name : `${parentPath}/${name}`;
-  const isOpen = folders[path];
+  const path = parentPath === '' ? name : `${parentPath}/${name}`
+  const isOpen = folders[path]
 
   if (isOpen === undefined) {
-    return h.div([], []);
+    return h.div([], [])
   }
 
   return sidebarMenuItem(
@@ -207,7 +211,7 @@ const treeItem = (
           {
             id: `sidebar-11-tree-${path.replace(/[/.]/g, '-')}`,
             isOpen,
-            onToggle: (nextIsOpen) =>
+            onToggle: nextIsOpen =>
               Message.ToggledFolder({ path, isOpen: nextIsOpen }),
             class: 'group/collapsible',
             triggerClass: sidebarMenuButtonVariants(),
@@ -228,7 +232,7 @@ const treeItem = (
             ),
             content: sidebarMenuSub(
               {
-                children: children.map((child) =>
+                children: children.map(child =>
                   treeItem(child, path, folders, h),
                 ),
               },
@@ -240,8 +244,8 @@ const treeItem = (
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const changes = (h: HtmlBuilder<Message>): Html => {
   return sidebarGroup(
@@ -253,7 +257,7 @@ const changes = (h: HtmlBuilder<Message>): Html => {
             children: [
               sidebarMenu(
                 {
-                  children: data.changes.map((item) =>
+                  children: data.changes.map(item =>
                     sidebarMenuItem(
                       {
                         children: [
@@ -279,8 +283,8 @@ const changes = (h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const files = (
   folders: Readonly<Record<string, boolean>>,
@@ -295,7 +299,7 @@ const files = (
             children: [
               sidebarMenu(
                 {
-                  children: data.tree.map((item) =>
+                  children: data.tree.map(item =>
                     treeItem(item, '', folders, h),
                   ),
                 },
@@ -308,14 +312,16 @@ const files = (
       ],
     },
     h,
-  );
+  )
 
 const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
-  const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
+  const state = model.isSidebarOpen ? 'expanded' : 'collapsed'
 
   return sidebar<Message>(
     {
-      isMobileOpen: model.isMobileOpen, onMobileDismiss: Message.ToggledMobileSidebar(), state,
+      isMobileOpen: model.isMobileOpen,
+      onMobileDismiss: Message.ToggledMobileSidebar(),
+      state,
       children: [
         sidebarContent(
           {
@@ -327,8 +333,8 @@ const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const pageContent = (h: HtmlBuilder<Message>): Html => {
   return sidebarInset(
@@ -339,7 +345,8 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
           [
             sidebarTrigger(
               {
-                onMobileClick: Message.ToggledMobileSidebar(), onClick: Message.ToggledSidebar(),
+                onMobileClick: Message.ToggledMobileSidebar(),
+                onClick: Message.ToggledSidebar(),
                 class: '-ml-1',
               },
               h,
@@ -436,11 +443,11 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
-  const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
+  const state = model.isSidebarOpen ? 'expanded' : 'collapsed'
 
   return sidebarProvider<Message>(
     {
@@ -448,8 +455,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       children: [appSidebar(model, h), pageContent(h)],
     },
     h,
-  );
-};
+  )
+}
 
 /* Minimal interactive wiring:
    const model = init()

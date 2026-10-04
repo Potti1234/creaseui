@@ -1,33 +1,39 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type CheckboxListFixtureItem = Readonly<{
-  label: string;
-  value: string;
-  description?: string;
-  endContent?: Readonly<{ variant: 'default' | 'secondary' | 'outline'; label: string }>;
-}>;
+  label: string
+  value: string
+  description?: string
+  endContent?: Readonly<{
+    variant: 'default' | 'secondary' | 'outline'
+    label: string
+  }>
+}>
 
 export type CheckboxListFixture = Readonly<{
-  kind: 'showcase' | 'selectAll' | 'endContent';
-  title: string;
-  description: string;
-  label: string;
-  helperText?: string;
-  initialValue: ReadonlyArray<string>;
-  hasDividers?: boolean;
-  items: ReadonlyArray<CheckboxListFixtureItem>;
-}>;
+  kind: 'showcase' | 'selectAll' | 'endContent'
+  title: string
+  description: string
+  label: string
+  helperText?: string
+  initialValue: ReadonlyArray<string>
+  hasDividers?: boolean
+  items: ReadonlyArray<CheckboxListFixtureItem>
+}>
 
 /* Example set ported from Meta Astryx
    packages/cli/assets/templates/blocks/components/CheckboxList/*.tsx —
    same demos, same labels. */
-export const checkboxListDocuments: ReadonlyArray<{ id: string; label: string }> = [
+export const checkboxListDocuments: ReadonlyArray<{
+  id: string
+  label: string
+}> = [
   { id: 'transactions', label: 'Transaction history' },
   { id: 'statements', label: 'Account statements' },
   { id: 'tax', label: 'Tax documents' },
   { id: 'invoices', label: 'Invoices' },
-];
+]
 
 export const checkboxListFixtures: Readonly<
   [CheckboxListFixture, ...Array<CheckboxListFixture>]
@@ -41,9 +47,21 @@ export const checkboxListFixtures: Readonly<
     initialValue: ['email'],
     hasDividers: true,
     items: [
-      { label: 'Email', value: 'email', description: 'Weekly digest every Monday' },
-      { label: 'Push notification', value: 'push', description: 'Instant alerts on your device' },
-      { label: 'SMS', value: 'sms', description: 'Standard messaging rates apply' },
+      {
+        label: 'Email',
+        value: 'email',
+        description: 'Weekly digest every Monday',
+      },
+      {
+        label: 'Push notification',
+        value: 'push',
+        description: 'Instant alerts on your device',
+      },
+      {
+        label: 'SMS',
+        value: 'sms',
+        description: 'Standard messaging rates apply',
+      },
     ],
   },
   {
@@ -53,7 +71,10 @@ export const checkboxListFixtures: Readonly<
       'A "select all" toggle at the top of a checkbox list that switches to an indeterminate dash when only some items are checked, useful for bulk actions like exporting documents or assigning permissions where users often want everything at once.',
     label: 'Include in export',
     initialValue: ['transactions'],
-    items: checkboxListDocuments.map(doc => ({ label: doc.label, value: doc.id })),
+    items: checkboxListDocuments.map(doc => ({
+      label: doc.label,
+      value: doc.id,
+    })),
   },
   {
     kind: 'endContent',
@@ -84,10 +105,10 @@ export const checkboxListFixtures: Readonly<
       },
     ],
   },
-];
+]
 
 const ui = (renderer: 'tailwind' | 'stylex'): string =>
-  renderer === 'stylex' ? 'stylex' : 'ui';
+  renderer === 'stylex' ? 'stylex' : 'ui'
 
 const itemsSource = (
   fixture: CheckboxListFixture,
@@ -129,7 +150,7 @@ const items = ({
         }),
     })),
   ]
-}`;
+}`
   }
   return `const items = ({
   selected,
@@ -144,15 +165,15 @@ ${fixture.items
   },`,
   )
   .join('\n')}
-]`;
-};
+]`
+}
 
 const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
-  const fixture = checkboxListFixtures[index] ?? checkboxListFixtures[0];
-  const isEndContent = fixture.kind === 'endContent';
+  const fixture = checkboxListFixtures[index] ?? checkboxListFixtures[0]
+  const isEndContent = fixture.kind === 'endContent'
   const extraImports = isEndContent
     ? `\nimport * as Badge from '@/${ui(renderer)}/badge'`
-    : '';
+    : ''
   return foldkitApplication({
     title: `CheckboxList — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
@@ -192,8 +213,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
     ),
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const checkboxListExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -202,4 +223,4 @@ export const checkboxListExamples = (
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
-  }));
+  }))

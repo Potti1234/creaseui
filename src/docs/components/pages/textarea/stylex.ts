@@ -1,12 +1,12 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
-import { textareaFixtures } from '@/docs/components/pages/textarea/shared';
-import * as Button from '@/stylex/button';
-import * as Field from '@/stylex/field';
-import { className } from '@/stylex/style';
-import * as Textarea from '@/stylex/textarea';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import { textareaFixtures } from '@/docs/components/pages/textarea/shared'
+import * as Button from '@/stylex/button'
+import * as Field from '@/stylex/field'
+import { className } from '@/stylex/style'
+import * as Textarea from '@/stylex/textarea'
 
 const styles = stylex.create({
   wide: {
@@ -24,10 +24,10 @@ const styles = stylex.create({
     maxWidth: '28rem',
     width: '100%',
   },
-});
+})
 
 interface TextareaPreviewShape {
-  readonly values: Readonly<Record<string, string>>;
+  readonly values: Readonly<Record<string, string>>
 }
 
 const ta = <Msg>(
@@ -48,7 +48,7 @@ const ta = <Msg>(
       ...(extra ?? {}),
     },
     h,
-  );
+  )
 
 export const textareaStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
@@ -56,13 +56,13 @@ export const textareaStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ) => {
-  const shape = model as TextareaPreviewShape;
-  const fixture = textareaFixtures[exampleIndex] ?? textareaFixtures[0];
+  const shape = model as TextareaPreviewShape
+  const fixture = textareaFixtures[exampleIndex] ?? textareaFixtures[0]
   switch (fixture.kind) {
     case 'demo':
       return ta('textarea-demo', shape, onMessageJson, h, {
         placeholder: 'Type your message here.',
-      });
+      })
     case 'field':
       return Field.field(
         {
@@ -81,7 +81,7 @@ export const textareaStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           ],
         },
         h,
-      );
+      )
     case 'disabled':
       return Field.field(
         {
@@ -98,7 +98,7 @@ export const textareaStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           ],
         },
         h,
-      );
+      )
     case 'invalid':
       return Field.field(
         {
@@ -119,14 +119,17 @@ export const textareaStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           ],
         },
         h,
-      );
+      )
     case 'button':
-      return h.div([h.Class(className(styles.stack))], [
-        ta('textarea-button', shape, onMessageJson, h, {
-          placeholder: 'Type your message here.',
-        }),
-        Button.button({ children: ['Send message'] }, h),
-      ]);
+      return h.div(
+        [h.Class(className(styles.stack))],
+        [
+          ta('textarea-button', shape, onMessageJson, h, {
+            placeholder: 'Type your message here.',
+          }),
+          Button.button({ children: ['Send message'] }, h),
+        ],
+      )
     case 'rtl':
       return Field.field(
         {
@@ -146,19 +149,22 @@ export const textareaStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           ],
         },
         h,
-      );
+      )
     case 'formResize':
-      return h.div([h.Class(className(styles.stackWide))], [
-        h.form([h.Id('textarea-profile')], []),
-        ta('profile-notes', shape, onMessageJson, h, {
-          label: 'Deployment notes',
-          name: 'notes',
-          form: 'textarea-profile',
-          rows: 5,
-          wrap: 'hard',
-          resize: 'none',
-          isReadOnly: true,
-        }),
-      ]);
+      return h.div(
+        [h.Class(className(styles.stackWide))],
+        [
+          h.form([h.Id('textarea-profile')], []),
+          ta('profile-notes', shape, onMessageJson, h, {
+            label: 'Deployment notes',
+            name: 'notes',
+            form: 'textarea-profile',
+            rows: 5,
+            wrap: 'hard',
+            resize: 'none',
+            isReadOnly: true,
+          }),
+        ],
+      )
   }
-};
+}

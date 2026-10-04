@@ -1,0 +1,25 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "printWidth": 80,
+  "tabWidth": 2,
+  "semi": false,
+  "singleQuote": true,
+  "arrowParens": "avoid",
+  "trailingComma": "all",
+  "endOfLine": "lf",
+  "embeddedLanguageFormatting": "off",
+  "sortPackageJson": false,
+  "ignorePatterns": [
+    ".registry-validation/**",
+    "registry/icons/**",
+    "registry.json",
+    "src/ui/registry.json",
+    "src/lib/icon-nodes.ts",
+    "src/docs/generated-component-api.ts",
+    "public/docs-index.json",
+    "docs/api-reference.md",
+    "docs/component-catalog.md",
+    "docs/component-parity.json",
+    "docs/stylex-adoption.json"
+  ]
+}

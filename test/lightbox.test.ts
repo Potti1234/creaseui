@@ -17,7 +17,10 @@ test('gallery navigation clamps at bounds and resets zoom', () => {
   assert.equal(next.zoom, 1)
 
   const first = Lightbox.init({ id: 'lb', mediaCount: 4 })
-  const prev = Lightbox.update(first, Lightbox.Message.NavigatedPrevious()).model
+  const prev = Lightbox.update(
+    first,
+    Lightbox.Message.NavigatedPrevious(),
+  ).model
   assert.equal(prev.index, 0)
 
   const atEnd = { ...first, index: 3 }
@@ -27,20 +30,35 @@ test('gallery navigation clamps at bounds and resets zoom', () => {
 
 test('WentToIndex clamps to the media range', () => {
   const model = make()
-  const low = Lightbox.update(model, Lightbox.Message.WentToIndex({ index: -2 })).model
+  const low = Lightbox.update(
+    model,
+    Lightbox.Message.WentToIndex({ index: -2 }),
+  ).model
   assert.equal(low.index, 0)
-  const high = Lightbox.update(model, Lightbox.Message.WentToIndex({ index: 99 })).model
+  const high = Lightbox.update(
+    model,
+    Lightbox.Message.WentToIndex({ index: 99 }),
+  ).model
   assert.equal(high.index, 3)
 })
 
 test('pan anchors translate deltas while unzoomed pans no-op', () => {
   const model = make()
-  const idle = Lightbox.update(model, Lightbox.Message.StartedPan({ x: 10, y: 10 })).model
+  const idle = Lightbox.update(
+    model,
+    Lightbox.Message.StartedPan({ x: 10, y: 10 }),
+  ).model
   assert.equal(idle.panAnchor._tag, 'None')
 
   const zoomed = { ...model, zoom: Lightbox.ZOOMED_SCALE }
-  const started = Lightbox.update(zoomed, Lightbox.Message.StartedPan({ x: 100, y: 100 })).model
-  const moved = Lightbox.update(started, Lightbox.Message.MovedPan({ x: 130, y: 90 })).model
+  const started = Lightbox.update(
+    zoomed,
+    Lightbox.Message.StartedPan({ x: 100, y: 100 }),
+  ).model
+  const moved = Lightbox.update(
+    started,
+    Lightbox.Message.MovedPan({ x: 130, y: 90 }),
+  ).model
   assert.equal(moved.panX, 30)
   assert.equal(moved.panY, -10)
 

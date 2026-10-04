@@ -1,29 +1,29 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type MoreMenuItemSpec = Readonly<{
-  type?: 'action';
-  label: string;
-  icon?: 'copy' | 'pencil' | 'share' | 'trash-2';
-  variant?: 'destructive';
-}>;
+  type?: 'action'
+  label: string
+  icon?: 'copy' | 'pencil' | 'share' | 'trash-2'
+  variant?: 'destructive'
+}>
 
 export type MoreMenuOptionSpec =
   | MoreMenuItemSpec
   | Readonly<{ type: 'divider' }>
   | Readonly<{
-      type: 'section';
-      title: string;
-      items: ReadonlyArray<MoreMenuItemSpec>;
-    }>;
+      type: 'section'
+      title: string
+      items: ReadonlyArray<MoreMenuItemSpec>
+    }>
 
 export type MoreMenuFixture = Readonly<{
-  title: string;
-  description: string;
-  variant?: 'secondary';
-  label?: string;
-  options: ReadonlyArray<MoreMenuOptionSpec>;
-}>;
+  title: string
+  description: string
+  variant?: 'secondary'
+  label?: string
+  options: ReadonlyArray<MoreMenuOptionSpec>
+}>
 
 /* Example set ported from Meta Astryx
    packages/cli/assets/templates/blocks/components/MoreMenu/*.tsx + *.doc.mjs.
@@ -58,8 +58,7 @@ export const moreMenuFixtures: Readonly<
   },
   {
     title: 'MoreMenu — With Sections',
-    description:
-      'A three-dot menu with actions organized into labeled groups.',
+    description: 'A three-dot menu with actions organized into labeled groups.',
     variant: 'secondary',
     label: 'Document actions',
     options: [
@@ -78,7 +77,7 @@ export const moreMenuFixtures: Readonly<
       },
     ],
   },
-];
+]
 
 /** Builds the MoreMenuOption list for a fixture; makeIcon is renderer-owned. */
 export const fixtureOptions = <IconHtml>(
@@ -88,16 +87,16 @@ export const fixtureOptions = <IconHtml>(
   | Readonly<{ label: string; icon?: IconHtml; variant?: 'destructive' }>
   | Readonly<{ type: 'divider' }>
   | Readonly<{
-      type: 'section';
-      title: string;
+      type: 'section'
+      title: string
       items: ReadonlyArray<
         Readonly<{ label: string; icon?: IconHtml; variant?: 'destructive' }>
-      >;
+      >
     }>
 > =>
   fixture.options.map(option => {
     if (option.type === 'divider') {
-      return { type: 'divider' } as const;
+      return { type: 'divider' } as const
     }
     if (option.type === 'section') {
       return {
@@ -110,7 +109,7 @@ export const fixtureOptions = <IconHtml>(
             ? { variant: 'destructive' as const }
             : {}),
         })),
-      };
+      }
     }
     return {
       label: option.label,
@@ -118,14 +117,14 @@ export const fixtureOptions = <IconHtml>(
       ...(option.variant === 'destructive'
         ? { variant: 'destructive' as const }
         : {}),
-    };
-  });
+    }
+  })
 
 // ---------- generated example source ----------
 
 const optionSource = (option: MoreMenuOptionSpec): string => {
   if (option.type === 'divider') {
-    return `{ type: 'divider' }`;
+    return `{ type: 'divider' }`
   }
   if (option.type === 'section') {
     return `{
@@ -134,26 +133,26 @@ const optionSource = (option: MoreMenuOptionSpec): string => {
       items: [
         ${option.items.map(itemSource).join(',\n        ')},
       ],
-    }`;
+    }`
   }
-  return itemSource(option);
-};
+  return itemSource(option)
+}
 
 const itemSource = (item: MoreMenuItemSpec): string => {
-  const fields: Array<string> = [`label: '${item.label}'`];
+  const fields: Array<string> = [`label: '${item.label}'`]
   if (item.icon !== undefined) {
-    fields.push(`icon: Icon.icon('${item.icon}', { class: 'size-4' }, h)`);
+    fields.push(`icon: Icon.icon('${item.icon}', { class: 'size-4' }, h)`)
   }
   if (item.variant === 'destructive') {
-    fields.push(`variant: 'destructive'`);
+    fields.push(`variant: 'destructive'`)
   }
-  return `{ ${fields.join(', ')} }`;
-};
+  return `{ ${fields.join(', ')} }`
+}
 
 const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
-  const fixture = moreMenuFixtures[index] ?? moreMenuFixtures[0];
-  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '');
-  const uiDir = renderer === 'stylex' ? 'stylex' : 'ui';
+  const fixture = moreMenuFixtures[index] ?? moreMenuFixtures[0]
+  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
+  const uiDir = renderer === 'stylex' ? 'stylex' : 'ui'
   const usesIcons = fixture.options.some(
     option =>
       (option.type === 'section' &&
@@ -161,7 +160,7 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
       (option.type !== 'divider' &&
         option.type !== 'section' &&
         option.icon !== undefined),
-  );
+  )
   return foldkitApplication({
     title: `More Menu — ${fixture.title}`,
     imports: `import { Option, Schema as S } from 'effect'
@@ -223,8 +222,8 @@ export type Message = typeof Message.Type`,
     ]),
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const moreMenuExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -234,4 +233,4 @@ export const moreMenuExamples = (
     keepIdsCanonical: index === 0,
     description: fixture.description,
     code: source(index, renderer),
-  }));
+  }))

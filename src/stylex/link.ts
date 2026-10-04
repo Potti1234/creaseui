@@ -1,26 +1,26 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Icon from '@/lib/icon';
+import * as Icon from '@/lib/icon'
 
-import type { ComponentLayoutStyle } from './contracts';
-import { foundationTokens } from './foundations-tokens.stylex';
-import { interactionTokens } from './interaction-tokens.stylex.const';
-import { className } from './style';
+import type { ComponentLayoutStyle } from './contracts'
+import { foundationTokens } from './foundations-tokens.stylex'
+import { interactionTokens } from './interaction-tokens.stylex.const'
+import { className } from './style'
 import type {
   TextColor,
   TextDisplay,
   TextSize,
   TextType,
   TextWeight,
-} from './text';
-import { text } from './text';
-import { tokens } from './tokens.stylex';
+} from './text'
+import { text } from './text'
+import { tokens } from './tokens.stylex'
 
 /* Ported from Meta Astryx Link (packages/core/src/Link/Link.tsx) — examples and
    visual spec adapted to Crease UI tokens. */
 
-const BLANK_TARGET_REL_TOKENS = ['noopener', 'noreferrer'] as const;
+const BLANK_TARGET_REL_TOKENS = ['noopener', 'noreferrer'] as const
 
 const computeTargetAndRel = (
   target: string | undefined,
@@ -30,16 +30,16 @@ const computeTargetAndRel = (
     return {
       ...(target === undefined ? {} : { target }),
       ...(rel === undefined ? {} : { rel }),
-    };
-  }
-  const tokens = rel?.split(/\s+/).filter(Boolean) ?? [];
-  for (const token of BLANK_TARGET_REL_TOKENS) {
-    if (!tokens.includes(token)) {
-      tokens.push(token);
     }
   }
-  return { target, rel: tokens.join(' ') };
-};
+  const tokens = rel?.split(/\s+/).filter(Boolean) ?? []
+  for (const token of BLANK_TARGET_REL_TOKENS) {
+    if (!tokens.includes(token)) {
+      tokens.push(token)
+    }
+  }
+  return { target, rel: tokens.join(' ') }
+}
 
 const styles = stylex.create({
   base: {
@@ -117,7 +117,7 @@ const styles = stylex.create({
     height: '1px',
     width: '1px',
   },
-});
+})
 
 const linkColorStyles = stylex.create({
   primary: {
@@ -154,41 +154,41 @@ const linkColorStyles = stylex.create({
   inherit: {
     color: 'currentColor',
   },
-});
+})
 
 export type LinkProps<Msg> = Readonly<{
-  children: ReadonlyArray<Html | string>;
-  href?: string;
-  label?: string;
-  hasUnderline?: boolean;
-  isDisabled?: boolean;
-  isExternalLink?: boolean;
-  newTabLabel?: string;
-  target?: string;
-  rel?: string;
-  download?: string;
-  onClick?: Msg;
-  tooltip?: string;
-  isStandalone?: boolean;
-  type?: TextType;
-  size?: TextSize;
-  weight?: TextWeight;
-  color?: TextColor;
-  display?: TextDisplay;
-  maxLines?: number;
-  layoutStyle?: ComponentLayoutStyle;
-}>;
+  children: ReadonlyArray<Html | string>
+  href?: string
+  label?: string
+  hasUnderline?: boolean
+  isDisabled?: boolean
+  isExternalLink?: boolean
+  newTabLabel?: string
+  target?: string
+  rel?: string
+  download?: string
+  onClick?: Msg
+  tooltip?: string
+  isStandalone?: boolean
+  type?: TextType
+  size?: TextSize
+  weight?: TextWeight
+  color?: TextColor
+  display?: TextDisplay
+  maxLines?: number
+  layoutStyle?: ComponentLayoutStyle
+}>
 
 export const link = <Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html => {
-  const color = props.color ?? 'accent';
-  const isDisabled = props.isDisabled ?? false;
-  const isExternalLink = props.isExternalLink ?? false;
-  const newTabLabel = props.newTabLabel ?? '(opens in new tab)';
+  const color = props.color ?? 'accent'
+  const isDisabled = props.isDisabled ?? false
+  const isExternalLink = props.isExternalLink ?? false
+  const newTabLabel = props.newTabLabel ?? '(opens in new tab)'
   const { target, rel } = computeTargetAndRel(
     isExternalLink ? '_blank' : props.target,
     props.rel,
-  );
-  const renderAsButton = props.href === undefined;
+  )
+  const renderAsButton = props.href === undefined
 
   const sharedContent = [
     text(
@@ -219,7 +219,7 @@ export const link = <Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html => {
           ),
         ]
       : []),
-  ];
+  ]
 
   const sharedStyles = [
     styles.base,
@@ -227,7 +227,7 @@ export const link = <Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html => {
     styles.focusVisible,
     ...(isDisabled ? [styles.disabled] : []),
     ...(props.hasUnderline === true ? [styles.hasUnderline] : []),
-  ];
+  ]
 
   if (renderAsButton) {
     return h.button(
@@ -251,7 +251,7 @@ export const link = <Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html => {
         ...(props.tooltip === undefined ? [] : [h.Title(props.tooltip)]),
       ],
       sharedContent,
-    );
+    )
   }
 
   if (isDisabled) {
@@ -266,7 +266,7 @@ export const link = <Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html => {
         ...(props.tooltip === undefined ? [] : [h.Title(props.tooltip)]),
       ],
       sharedContent,
-    );
+    )
   }
 
   return h.a(
@@ -285,5 +285,5 @@ export const link = <Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html => {
       ...(props.tooltip === undefined ? [] : [h.Title(props.tooltip)]),
     ],
     sharedContent,
-  );
-};
+  )
+}

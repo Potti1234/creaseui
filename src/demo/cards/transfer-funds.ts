@@ -1,12 +1,12 @@
-import { Match as M, Option, Schema as S } from 'effect';
-import type { Update } from 'foldkit';
-import { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
-import { modifyFields } from 'foldkit/struct';
+import { Match as M, Option, Schema as S } from 'effect'
+import type { Update } from 'foldkit'
+import { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import { modifyFields } from 'foldkit/struct'
 
-import * as Icon from '@/demo/icon-preview';
-import { button } from '@/ui/button';
+import * as Icon from '@/demo/icon-preview'
+import { button } from '@/ui/button'
 import {
   card,
   cardAction,
@@ -15,17 +15,17 @@ import {
   cardFooter,
   cardHeader,
   cardTitle,
-} from '@/ui/card';
-import { field, fieldGroup, fieldLabel } from '@/ui/field';
+} from '@/ui/card'
+import { field, fieldGroup, fieldLabel } from '@/ui/field'
 import {
   inputGroup,
   inputGroupAddon,
   inputGroupInput,
   inputGroupText,
-} from '@/ui/input-group';
-import { item, itemContent } from '@/ui/item';
-import * as Select from '@/ui/select';
-import { separator } from '@/ui/separator';
+} from '@/ui/input-group'
+import { item, itemContent } from '@/ui/item'
+import * as Select from '@/ui/select'
+import { separator } from '@/ui/separator'
 
 const fromAccounts = [
   {
@@ -36,7 +36,7 @@ const fromAccounts = [
     value: 'business',
     label: 'Business (··7731) — $8,920.00',
   },
-] as const;
+] as const
 
 const toAccounts = [
   {
@@ -47,7 +47,7 @@ const toAccounts = [
     value: 'investment',
     label: 'Investment (··3349) — $18,200.00',
   },
-] as const;
+] as const
 
 export const Model = S.Struct({
   amount: S.String,
@@ -55,70 +55,77 @@ export const Model = S.Struct({
   selectedFromAccount: S.String,
   toAccount: Select.Model,
   selectedToAccount: S.String,
-});
-export type Model = typeof Model.Type;
-
-
-
+})
+export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
   UpdatedAmount: { value: S.String },
   GotFromAccountMessage: {
-  message: Select.Message,
-},
+    message: Select.Message,
+  },
   GotToAccountMessage: {
-  message: Select.Message,
-},
-});
-export type Message = typeof Message.Type;
+    message: Select.Message,
+  },
+})
+export type Message = typeof Message.Type
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      UpdatedAmount: ({ value }) => ({ model: modifyFields(model, { amount: () => value }) }),
+      UpdatedAmount: ({ value }) => ({
+        model: modifyFields(model, { amount: () => value }),
+      }),
       GotFromAccountMessage: ({ message: childMessage }) => {
-        const { model: fromAccount, commands: fromAccountCommands__, outMessage: fromAccountOut__ } = Select.update(
-          model.fromAccount,
-          childMessage,
-        )
+        const {
+          model: fromAccount,
+          commands: fromAccountCommands__,
+          outMessage: fromAccountOut__,
+        } = Select.update(model.fromAccount, childMessage)
         const commands = fromAccountCommands__ ?? []
         const maybeSelection = Option.fromNullishOr(fromAccountOut__)
-        return { model: modifyFields(model, {
+        return {
+          model: modifyFields(model, {
             fromAccount: () => fromAccount,
-            selectedFromAccount: (current) =>
+            selectedFromAccount: current =>
               Option.match(maybeSelection, {
                 onNone: () => current,
-                onSome: (selection) =>
+                onSome: selection =>
                   selection._tag === 'Selected' ? selection.value : current,
               }),
-          }), commands: Command.mapMessages(commands, (next) =>
+          }),
+          commands: Command.mapMessages(commands, next =>
             Message.GotFromAccountMessage({ message: next }),
-          ) };
+          ),
+        }
       },
       GotToAccountMessage: ({ message: childMessage }) => {
-        const { model: toAccount, commands: toAccountCommands__, outMessage: toAccountOut__ } = Select.update(
-          model.toAccount,
-          childMessage,
-        )
+        const {
+          model: toAccount,
+          commands: toAccountCommands__,
+          outMessage: toAccountOut__,
+        } = Select.update(model.toAccount, childMessage)
         const commands = toAccountCommands__ ?? []
         const maybeSelection = Option.fromNullishOr(toAccountOut__)
-        return { model: modifyFields(model, {
+        return {
+          model: modifyFields(model, {
             toAccount: () => toAccount,
-            selectedToAccount: (current) =>
+            selectedToAccount: current =>
               Option.match(maybeSelection, {
                 onNone: () => current,
-                onSome: (selection) =>
+                onSome: selection =>
                   selection._tag === 'Selected' ? selection.value : current,
               }),
-          }), commands: Command.mapMessages(commands, (next) =>
+          }),
+          commands: Command.mapMessages(commands, next =>
             Message.GotToAccountMessage({ message: next }),
-          ) };
+          ),
+        }
       },
     }),
-  );
+  )
 
 export const init = (): Model => ({
   amount: '1,200.00',
@@ -132,7 +139,7 @@ export const init = (): Model => ({
     isAnimated: true,
   }),
   selectedToAccount: 'savings',
-});
+})
 
 const summaryRow = (
   label: string,
@@ -162,8 +169,8 @@ const summaryRow = (
         [value],
       ),
     ],
-  );
-};
+  )
+}
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
   card<Message>(
@@ -231,7 +238,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                                   {
                                     id: 'transfer-funds-amount',
                                     value: model.amount,
-                                    onInput: (value) =>
+                                    onInput: value =>
                                       Message.UpdatedAmount({ value }),
                                   },
                                   h,
@@ -260,11 +267,11 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                               maybeSelectedValue: Option.some(
                                 model.selectedFromAccount,
                               ),
-                              toParentMessage: (message) =>
+                              toParentMessage: message =>
                                 Message.GotFromAccountMessage({ message }),
                               items: fromAccounts,
-                              itemToValue: (account) => account.value,
-                              itemToLabel: (account) => account.label,
+                              itemToValue: account => account.value,
+                              itemToLabel: account => account.label,
                               triggerClass: 'w-full',
                             },
                             h,
@@ -289,11 +296,11 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                               maybeSelectedValue: Option.some(
                                 model.selectedToAccount,
                               ),
-                              toParentMessage: (message) =>
+                              toParentMessage: message =>
                                 Message.GotToAccountMessage({ message }),
                               items: toAccounts,
-                              itemToValue: (account) => account.value,
-                              itemToLabel: (account) => account.label,
+                              itemToValue: account => account.value,
+                              itemToLabel: account => account.label,
                               triggerClass: 'w-full',
                             },
                             h,
@@ -358,7 +365,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
       ],
     },
     h,
-  );
+  )
 
 /*
 Stateful? yes.

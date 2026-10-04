@@ -1,11 +1,11 @@
-import { Option } from 'effect';
-import * as stylex from '@stylexjs/stylex';
-import type { HtmlBuilder } from 'foldkit/html';
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import { Option } from 'effect'
+import * as stylex from '@stylexjs/stylex'
+import type { HtmlBuilder } from 'foldkit/html'
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   calendarFixtures,
   type CalendarFixture,
-} from '@/docs/components/pages/calendar/shared';
+} from '@/docs/components/pages/calendar/shared'
 import {
   FA_DAY_NAMES,
   FA_MONTH_NAMES,
@@ -13,33 +13,36 @@ import {
   jalaliMonthCells,
   type JalaliCell,
   type JalaliDate,
-} from '@/lib/jalali';
-import * as Button from '@/stylex/button';
-import * as Calendar from '@/stylex/calendar';
-import * as Card from '@/stylex/card';
-import * as Field from '@/stylex/field';
-import * as Icon from '@/lib/icon';
-import * as InputGroup from '@/stylex/input-group';
-import type { ComponentLayoutStyle } from '@/stylex/contracts';
-import { className } from '@/stylex/style';
-import { tokens } from '../../../../stylex/tokens.stylex';
+} from '@/lib/jalali'
+import * as Button from '@/stylex/button'
+import * as Calendar from '@/stylex/calendar'
+import * as Card from '@/stylex/card'
+import * as Field from '@/stylex/field'
+import * as Icon from '@/lib/icon'
+import * as InputGroup from '@/stylex/input-group'
+import type { ComponentLayoutStyle } from '@/stylex/contracts'
+import { className } from '@/stylex/style'
+import { tokens } from '../../../../stylex/tokens.stylex'
 
 const styles = stylex.create({
   cardFit: {
     marginInline: 'auto',
-    boxShadow: 'rgb(0 0 0 / 0.1) 0px 1px 3px 0px, rgb(0 0 0 / 0.1) 0px 1px 2px -1px',
+    boxShadow:
+      'rgb(0 0 0 / 0.1) 0px 1px 3px 0px, rgb(0 0 0 / 0.1) 0px 1px 2px -1px',
     maxWidth: '18.75rem',
     width: 'fit-content',
   },
   cardFitBare: {
     marginInline: 'auto',
-    boxShadow: 'rgb(0 0 0 / 0.1) 0px 1px 3px 0px, rgb(0 0 0 / 0.1) 0px 1px 2px -1px',
+    boxShadow:
+      'rgb(0 0 0 / 0.1) 0px 1px 3px 0px, rgb(0 0 0 / 0.1) 0px 1px 2px -1px',
     width: 'fit-content',
   },
   cardFitFlush: {
     marginInline: 'auto',
     paddingBlock: 0,
-    boxShadow: 'rgb(0 0 0 / 0.1) 0px 1px 3px 0px, rgb(0 0 0 / 0.1) 0px 1px 2px -1px',
+    boxShadow:
+      'rgb(0 0 0 / 0.1) 0px 1px 3px 0px, rgb(0 0 0 / 0.1) 0px 1px 2px -1px',
     width: 'fit-content',
   },
   calendarInCard: {
@@ -73,7 +76,13 @@ const styles = stylex.create({
     borderTopWidth: 1,
     paddingTop: 'var(--card-spacing,1.5rem)',
   },
-  presetButton: { borderRadius: '0.5rem', backgroundClip: 'padding-box', flexBasis: '0%', flexGrow: '1', flexShrink: 1, },
+  presetButton: {
+    borderRadius: '0.5rem',
+    backgroundClip: 'padding-box',
+    flexBasis: '0%',
+    flexGrow: '1',
+    flexShrink: 1,
+  },
   bordered: {
     borderColor: tokens.border,
     borderRadius: '0.625rem',
@@ -96,7 +105,7 @@ const styles = stylex.create({
     display: 'flex',
     justifyContent: 'space-between',
   },
-  jalaliTitle: { fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem', },
+  jalaliTitle: { fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem' },
   jalaliGrid: {
     gap: 0,
     display: 'grid',
@@ -137,29 +146,29 @@ const styles = stylex.create({
     backgroundColor: tokens.primary,
     color: tokens.primaryForeground,
   },
-});
+})
 
 type PreviewModel = Readonly<{
-  calendar: Calendar.Model;
+  calendar: Calendar.Model
   selectedDate: Parameters<
     typeof Calendar.calendar<never>
-  >[0]['maybeSelectedDate'];
-  rangeStart: { year: number; month: number; day: number };
-  rangeEnd: { year: number; month: number; day: number };
-  startTime: string;
-  endTime: string;
-  jalaliViewYear: number;
-  jalaliViewMonth: number;
-  jalaliDay: Option.Option<JalaliDate>;
-  jalaliToday: JalaliDate;
-}>;
+  >[0]['maybeSelectedDate']
+  rangeStart: { year: number; month: number; day: number }
+  rangeEnd: { year: number; month: number; day: number }
+  startTime: string
+  endTime: string
+  jalaliViewYear: number
+  jalaliViewMonth: number
+  jalaliDay: Option.Option<JalaliDate>
+  jalaliToday: JalaliDate
+}>
 
 const fixtureOf = (index: number): CalendarFixture =>
   calendarFixtures[index] ?? {
     title: 'Demo',
     description: '',
     layout: 'single',
-  };
+  }
 
 const PRESETS = [
   { label: 'Today', days: 0 },
@@ -167,7 +176,7 @@ const PRESETS = [
   { label: 'In 3 days', days: 3 },
   { label: 'In a week', days: 7 },
   { label: 'In 2 weeks', days: 14 },
-] as const;
+] as const
 
 const calendarView = <Msg>(
   fixture: CalendarFixture,
@@ -196,7 +205,7 @@ const calendarView = <Msg>(
       ...(fixture.roomy === true ? { size: 'comfortable' as const } : {}),
     },
     h,
-  );
+  )
 
 const timeFieldView = <Msg>(
   field: 'start' | 'end',
@@ -266,10 +275,10 @@ const timeFieldView = <Msg>(
       ],
     },
     h,
-  );
+  )
 
 const isSameJalaliDay = (a: JalaliDate, b: JalaliDate): boolean =>
-  a.year === b.year && a.month === b.month && a.day === b.day;
+  a.year === b.year && a.month === b.month && a.day === b.day
 
 const jalaliDayButton = <Msg>(
   cell: JalaliCell,
@@ -279,8 +288,8 @@ const jalaliDayButton = <Msg>(
 ) => {
   const selected =
     Option.isSome(preview.jalaliDay) &&
-    isSameJalaliDay(preview.jalaliDay.value, cell);
-  const today = isSameJalaliDay(preview.jalaliToday, cell);
+    isSameJalaliDay(preview.jalaliDay.value, cell)
+  const today = isSameJalaliDay(preview.jalaliToday, cell)
   return h.button(
     [
       h.Type('button'),
@@ -303,8 +312,8 @@ const jalaliDayButton = <Msg>(
       ),
     ],
     [faDigits(cell.day)],
-  );
-};
+  )
+}
 
 const jalaliView = <Msg>(
   preview: PreviewModel,
@@ -314,46 +323,51 @@ const jalaliView = <Msg>(
   const cells = jalaliMonthCells(
     preview.jalaliViewYear,
     preview.jalaliViewMonth,
-  );
+  )
   return h.div(
     [h.Dir('rtl'), h.Class(className(styles.jalaliContainer))],
     [
-      h.div([h.Class(className(styles.jalaliHeader))], [
-        Button.button(
-          {
-            variant: 'ghost',
-            size: 'icon',
-            layoutStyle: styles.jalaliNavButton as ComponentLayoutStyle,
-            ariaLabel: 'Previous month',
-            onClick: onMessageJson(
-              JSON.stringify({ _tag: 'PressedJalaliPreviousMonth' }),
-            ),
-            children: [
-              Icon.chevronRight({ class: className(styles.navIcon) }, h),
+      h.div(
+        [h.Class(className(styles.jalaliHeader))],
+        [
+          Button.button(
+            {
+              variant: 'ghost',
+              size: 'icon',
+              layoutStyle: styles.jalaliNavButton as ComponentLayoutStyle,
+              ariaLabel: 'Previous month',
+              onClick: onMessageJson(
+                JSON.stringify({ _tag: 'PressedJalaliPreviousMonth' }),
+              ),
+              children: [
+                Icon.chevronRight({ class: className(styles.navIcon) }, h),
+              ],
+            },
+            h,
+          ),
+          h.span(
+            [h.Class(className(styles.jalaliTitle))],
+            [
+              `${FA_MONTH_NAMES[preview.jalaliViewMonth - 1] ?? ''} ${faDigits(preview.jalaliViewYear)}`,
             ],
-          },
-          h,
-        ),
-        h.span(
-          [h.Class(className(styles.jalaliTitle))],
-          [
-            `${FA_MONTH_NAMES[preview.jalaliViewMonth - 1] ?? ''} ${faDigits(preview.jalaliViewYear)}`,
-          ],
-        ),
-        Button.button(
-          {
-            variant: 'ghost',
-            size: 'icon',
-            layoutStyle: styles.jalaliNavButton as ComponentLayoutStyle,
-            ariaLabel: 'Next month',
-            onClick: onMessageJson(
-              JSON.stringify({ _tag: 'PressedJalaliNextMonth' }),
-            ),
-            children: [Icon.chevronLeft({ class: className(styles.navIcon) }, h)],
-          },
-          h,
-        ),
-      ]),
+          ),
+          Button.button(
+            {
+              variant: 'ghost',
+              size: 'icon',
+              layoutStyle: styles.jalaliNavButton as ComponentLayoutStyle,
+              ariaLabel: 'Next month',
+              onClick: onMessageJson(
+                JSON.stringify({ _tag: 'PressedJalaliNextMonth' }),
+              ),
+              children: [
+                Icon.chevronLeft({ class: className(styles.navIcon) }, h),
+              ],
+            },
+            h,
+          ),
+        ],
+      ),
       h.div(
         [h.Class(className(styles.jalaliGrid))],
         [
@@ -366,8 +380,8 @@ const jalaliView = <Msg>(
         ],
       ),
     ],
-  );
-};
+  )
+}
 
 export const calendarStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   index: number,
@@ -375,11 +389,10 @@ export const calendarStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ) => {
-  const fixture = fixtureOf(index);
-  const preview = model as PreviewModel;
+  const fixture = fixtureOf(index)
+  const preview = model as PreviewModel
 
-  if (fixture.layout === 'jalali')
-    return jalaliView(preview, onMessageJson, h);
+  if (fixture.layout === 'jalali') return jalaliView(preview, onMessageJson, h)
 
   if (fixture.layout === 'presets')
     return Card.card(
@@ -417,7 +430,7 @@ export const calendarStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         ],
       },
       h,
-    );
+    )
 
   if (fixture.layout === 'time')
     return Card.card(
@@ -449,23 +462,21 @@ export const calendarStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         ],
       },
       h,
-    );
+    )
 
-  const calendar = calendarView(fixture, preview, onMessageJson, h);
+  const calendar = calendarView(fixture, preview, onMessageJson, h)
 
   if (fixture.card === true)
     return Card.card(
       {
         layoutStyle: styles.cardFitFlush as ComponentLayoutStyle,
-        children: [
-          Card.cardContent({ children: [calendar] }, h),
-        ],
+        children: [Card.cardContent({ children: [calendar] }, h)],
       },
       h,
-    );
+    )
 
   if (fixture.bordered === true)
-    return h.div([h.Class(className(styles.bordered))], [calendar]);
+    return h.div([h.Class(className(styles.bordered))], [calendar])
 
-  return calendar;
-};
+  return calendar
+}

@@ -1,23 +1,25 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { staticComponentApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 export type StatusDotItem = Readonly<{
-  label: string;
-  variant: 'success' | 'warning' | 'error' | 'accent' | 'neutral';
-  pulsing?: boolean;
-}>;
+  label: string
+  variant: 'success' | 'warning' | 'error' | 'accent' | 'neutral'
+  pulsing?: boolean
+}>
 
 export type StatusDotFixture = Readonly<{
-  title: string;
-  description: string;
-  layout: 'row' | 'list';
-  items: ReadonlyArray<StatusDotItem>;
-}>;
+  title: string
+  description: string
+  layout: 'row' | 'list'
+  items: ReadonlyArray<StatusDotItem>
+}>
 
 /* Example set ported from Meta Astryx
    packages/cli/assets/templates/blocks/components/StatusDot/*.tsx — same
    demos, same labels. */
-export const statusDotFixtures: Readonly<[StatusDotFixture, ...Array<StatusDotFixture>]> = [
+export const statusDotFixtures: Readonly<
+  [StatusDotFixture, ...Array<StatusDotFixture>]
+> = [
   {
     title: 'Status Dot',
     description: 'A positive status dot indicator.',
@@ -44,7 +46,8 @@ export const statusDotFixtures: Readonly<[StatusDotFixture, ...Array<StatusDotFi
   },
   {
     title: 'StatusDot — Pulsing',
-    description: 'Animated pulsing dots for live, processing, and error states.',
+    description:
+      'Animated pulsing dots for live, processing, and error states.',
     layout: 'row',
     items: [
       { variant: 'success', label: 'Live', pulsing: true },
@@ -56,7 +59,8 @@ export const statusDotFixtures: Readonly<[StatusDotFixture, ...Array<StatusDotFi
   },
   {
     title: 'StatusDot — Status Indicators',
-    description: 'Labeled status dot list for presence indicators like online, away, and offline.',
+    description:
+      'Labeled status dot list for presence indicators like online, away, and offline.',
     layout: 'list',
     items: [
       { variant: 'success', label: 'Online' },
@@ -65,19 +69,19 @@ export const statusDotFixtures: Readonly<[StatusDotFixture, ...Array<StatusDotFi
       { variant: 'neutral', label: 'Unknown' },
     ],
   },
-];
+]
 
 const itemSource = (item: StatusDotItem): string => {
-  const props = [`variant: '${item.variant}'`, `label: '${item.label}'`];
+  const props = [`variant: '${item.variant}'`, `label: '${item.label}'`]
   if (item.pulsing === true) {
-    props.push('pulsing: true');
+    props.push('pulsing: true')
   }
-  return `StatusDot.statusDot({ ${props.join(', ')} }, h)`;
-};
+  return `StatusDot.statusDot({ ${props.join(', ')} }, h)`
+}
 
 const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
-  const fixture = statusDotFixtures[index] ?? statusDotFixtures[0];
-  const isStyleX = renderer === 'stylex';
+  const fixture = statusDotFixtures[index] ?? statusDotFixtures[0]
+  const isStyleX = renderer === 'stylex'
   /* `import * as StatusDot` is auto-emitted by staticComponentApplication. */
   const componentImports = [
     isStyleX
@@ -89,7 +93,7 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
       : '',
   ]
     .filter(Boolean)
-    .join('\n');
+    .join('\n')
   const items =
     fixture.layout === 'list'
       ? fixture.items
@@ -104,8 +108,8 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
         )`,
           )
           .join(',\n        ')
-      : fixture.items.map(item => itemSource(item)).join(',\n        ');
-  const wrap = fixture.layout === 'list' ? 'list' : 'wrap';
+      : fixture.items.map(item => itemSource(item)).join(',\n        ')
+  const wrap = fixture.layout === 'list' ? 'list' : 'wrap'
   const viewBody = isStyleX
     ? `h.div(
       [h.Class(stylex.props(styles.${wrap}).className ?? '')],
@@ -118,7 +122,7 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
       [
         ${items},
       ],
-    )`;
+    )`
   return staticComponentApplication({
     componentName: 'StatusDot',
     componentSlug: 'status-dot',
@@ -126,8 +130,8 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
     exampleName: fixture.title,
     componentImports,
     viewBody,
-  });
-};
+  })
+}
 
 export const statusDotExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -136,4 +140,4 @@ export const statusDotExamples = (
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
-  }));
+  }))

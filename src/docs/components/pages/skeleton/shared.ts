@@ -1,5 +1,5 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type SkeletonKind =
   | 'demo'
@@ -8,16 +8,18 @@ export type SkeletonKind =
   | 'text'
   | 'form'
   | 'table'
-  | 'rtl';
+  | 'rtl'
 
 export interface SkeletonFixture {
-  readonly title: string;
-  readonly description?: string;
-  readonly heroOnly?: boolean;
-  readonly kind: SkeletonKind;
+  readonly title: string
+  readonly description?: string
+  readonly heroOnly?: boolean
+  readonly kind: SkeletonKind
 }
 
-export const skeletonFixtures: Readonly<[SkeletonFixture, ...Array<SkeletonFixture>]> = [
+export const skeletonFixtures: Readonly<
+  [SkeletonFixture, ...Array<SkeletonFixture>]
+> = [
   { title: 'Basic', heroOnly: true, kind: 'demo' },
   {
     title: 'Avatar',
@@ -46,32 +48,31 @@ export const skeletonFixtures: Readonly<[SkeletonFixture, ...Array<SkeletonFixtu
   },
   {
     title: 'RTL',
-    description: 'Skeleton compositions render mirrored in right-to-left contexts.',
+    description:
+      'Skeleton compositions render mirrored in right-to-left contexts.',
     kind: 'rtl',
   },
-];
+]
 
 const emitMarkup = (kind: SkeletonKind, isStyleX: boolean): string => {
   const sk = (styleName: string, tw: string, shape?: string): string =>
     isStyleX
       ? `Skeleton.skeleton({ ${shape === undefined ? '' : `shape: '${shape}', `}layoutStyle: styles.${styleName} }, h)`
-      : `Skeleton.skeleton({ ${shape === undefined ? '' : `shape: '${shape}', `}class: '${tw}' }, h)`;
+      : `Skeleton.skeleton({ ${shape === undefined ? '' : `shape: '${shape}', `}class: '${tw}' }, h)`
   const cls = (tw: string, styleName: string): string =>
-    isStyleX
-      ? `h.Class(className(styles.${styleName}))`
-      : `h.Class('${tw}')`;
+    isStyleX ? `h.Class(className(styles.${styleName}))` : `h.Class('${tw}')`
 
   switch (kind) {
     case 'demo':
     case 'rtl': {
-      const dir = kind === 'rtl' ? `, h.Dir('rtl')` : '';
+      const dir = kind === 'rtl' ? `, h.Dir('rtl')` : ''
       return `    h.div([${cls('flex items-center gap-4', 'row')}${dir}], [
       ${sk('circleLg', 'h-12 w-12 rounded-full', 'circle')},
       h.div([${cls('space-y-2', 'lines')}], [
         ${sk('lineWide', 'h-4 w-62.5')},
         ${sk('lineMid', 'h-4 w-50')},
       ]),
-    ])`;
+    ])`
     }
     case 'avatar':
       return `    h.div([${cls('flex w-fit items-center gap-4', 'avatarRow')}], [
@@ -80,7 +81,7 @@ const emitMarkup = (kind: SkeletonKind, isStyleX: boolean): string => {
         ${sk('line150', 'h-4 w-37.5')},
         ${sk('line100', 'h-4 w-25')},
       ]),
-    ])`;
+    ])`
     case 'card':
       return `    Card.card({${isStyleX ? ' layoutStyle: styles.card,' : ` class: 'w-full max-w-xs',`}
       children: [
@@ -96,13 +97,13 @@ const emitMarkup = (kind: SkeletonKind, isStyleX: boolean): string => {
           ],
         }, h),
       ],
-    }, h)`;
+    }, h)`
     case 'text':
       return `    h.div([${cls('flex w-full max-w-xs flex-col gap-2', 'textStack')}], [
       ${sk('lineFull', 'h-4 w-full')},
       ${sk('lineFull', 'h-4 w-full')},
       ${sk('lineThreeQuarters', 'h-4 w-3/4')},
-    ])`;
+    ])`
     case 'form':
       return `    h.div([${cls('flex w-full max-w-xs flex-col gap-7', 'formStack')}], [
       h.div([${cls('flex flex-col gap-3', 'fieldStack')}], [
@@ -114,7 +115,7 @@ const emitMarkup = (kind: SkeletonKind, isStyleX: boolean): string => {
         ${sk('inputFull', 'h-8 w-full')},
       ]),
       ${sk('buttonBar', 'h-8 w-24')},
-    ])`;
+    ])`
     case 'table': {
       const rows = [0, 1, 2, 3, 4]
         .map(
@@ -124,11 +125,11 @@ const emitMarkup = (kind: SkeletonKind, isStyleX: boolean): string => {
         ${sk('cellW20', 'h-4 w-20')},
       ])`,
         )
-        .join(',\n');
-      return `    h.div([${cls('flex w-full max-w-sm flex-col gap-2', 'tableStack')}], [\n${rows}\n    ])`;
+        .join(',\n')
+      return `    h.div([${cls('flex w-full max-w-sm flex-col gap-2', 'tableStack')}], [\n${rows}\n    ])`
     }
   }
-};
+}
 
 const emitStyles = (kind: SkeletonKind): string => {
   switch (kind) {
@@ -138,53 +139,51 @@ const emitStyles = (kind: SkeletonKind): string => {
   circleLg: { height: '3rem', width: '3rem' },
   lines: { display: 'grid', gap: '0.5rem' },
   lineWide: { height: '1rem', width: '15.625rem' },
-  lineMid: { height: '1rem', width: '12.5rem' },`;
+  lineMid: { height: '1rem', width: '12.5rem' },`
     case 'avatar':
       return `  avatarRow: { display: 'flex', alignItems: 'center', gap: '1rem', width: 'fit-content' },
   circleSm: { height: '2.5rem', width: '2.5rem', flexShrink: 0 },
   lines: { display: 'grid', gap: '0.5rem' },
   line150: { height: '1rem', width: '9.375rem' },
-  line100: { height: '1rem', width: '6.25rem' },`;
+  line100: { height: '1rem', width: '6.25rem' },`
     case 'card':
       return `  card: { width: '100%', maxWidth: '20rem' },
   lineTwoThirds: { height: '1rem', width: '66.666667%' },
   lineHalf: { height: '1rem', width: '50%' },
-  media: { aspectRatio: '16 / 9', width: '100%' },`;
+  media: { aspectRatio: '16 / 9', width: '100%' },`
     case 'text':
       return `  textStack: { display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%', maxWidth: '20rem' },
   lineFull: { height: '1rem', width: '100%' },
-  lineThreeQuarters: { height: '1rem', width: '75%' },`;
+  lineThreeQuarters: { height: '1rem', width: '75%' },`
     case 'form':
       return `  formStack: { display: 'flex', flexDirection: 'column', gap: '1.75rem', width: '100%', maxWidth: '20rem' },
   fieldStack: { display: 'flex', flexDirection: 'column', gap: '0.75rem' },
   labelA: { height: '1rem', width: '5rem' },
   labelB: { height: '1rem', width: '6rem' },
   inputFull: { height: '2rem', width: '100%' },
-  buttonBar: { height: '2rem', width: '6rem' },`;
+  buttonBar: { height: '2rem', width: '6rem' },`
     case 'table':
       return `  tableStack: { display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%', maxWidth: '24rem' },
   tableRow: { display: 'flex', gap: '1rem' },
   cellGrow: { height: '1rem', flexGrow: 1 },
   cellW24: { height: '1rem', width: '6rem' },
-  cellW20: { height: '1rem', width: '5rem' },`;
+  cellW20: { height: '1rem', width: '5rem' },`
   }
-};
+}
 
 const emitApplication = (
   fixture: SkeletonFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const isStyleX = renderer === 'stylex';
-  const base = isStyleX ? 'stylex' : 'ui';
+  const isStyleX = renderer === 'stylex'
+  const base = isStyleX ? 'stylex' : 'ui'
   const cardImport =
-    fixture.kind === 'card'
-      ? `\nimport * as Card from '@/${base}/card'`
-      : '';
+    fixture.kind === 'card' ? `\nimport * as Card from '@/${base}/card'` : ''
   const stylesBlock = isStyleX
     ? `\n\nconst styles = stylex.create({
 ${emitStyles(fixture.kind)}
 })`
-    : '';
+    : ''
   return foldkitApplication({
     title: `Skeleton — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
@@ -206,8 +205,8 @@ export type Message = typeof Message.Type`,
 ${emitMarkup(fixture.kind, isStyleX)}
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const skeletonExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -219,4 +218,4 @@ export const skeletonExamples = (
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer),
-  }));
+  }))

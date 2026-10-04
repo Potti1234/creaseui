@@ -44,7 +44,7 @@ docs pages against `shadcn/ui` v4 (`/docs/components/base/*`).
    input-otp group, field (`data-disabled` style hook on all parts,
    fieldset `aria-labelledby`, nested-fieldset inheritance, validity-while-
    disabled).
-4. **Keyboard behavior.** Accordion toggles on Space *keydown* instead of
+4. **Keyboard behavior.** Accordion toggles on Space _keydown_ instead of
    keyup; combobox opens on focus, doesn't move caret on Home/End, no
    PageUp/PageDown, no highlight reset past last option; select doesn't
    focus the selected item on open, wraps focus at list edges, no
@@ -83,36 +83,36 @@ docs pages against `shadcn/ui` v4 (`/docs/components/base/*`).
 
 ## Notable expected-fail highlights per component
 
-| Component | Key divergences |
-|---|---|
-| accordion | Space-on-keydown; panel `role=region`/`aria-labelledby`; `data-panel-open`; native disabled |
-| alert-dialog | `aria-describedby`, `aria-labelledby` on alertdialog element |
-| avatar | image kept unmounted until load; AT hidden on error/src-change; `<span>` root |
-| button | `renderButton` link lacks `role=button`; aria-disabled vs native |
-| collapsible | native disabled + tab-order removal; `data-panel-open`; `data-closed`/`hidden` |
-| combobox | no open-on-focus; caret Home/End; PageUp/Down; clear-on-empty; Empty mount; readOnly `aria-autocomplete` |
-| context-menu | opens via keyboard; backdrop contextmenu block; `data-popup-open` |
-| dialog | popup `role=presentation` |
-| drawer | `aria-describedby` |
-| dropdown-menu | submenu click/third-level; disabled-item nav+typeahead; multi-char/diacritic typeahead; Escape scope; `data-checked`; group label a11y; modal backdrop |
-| field | `data-disabled` on all parts; invalid-while-disabled; fieldset `aria-labelledby`; nested disable |
-| form | `novalidate` not set |
-| hover-card | reopen-after-Escape; externally-opened hover-out; `data-popup-open` |
-| input-otp | `data-complete` root+slots; `data-filled`/`data-focused`; disabled guards |
-| menubar | open-on-focus/arrow; submenu click; closeOnClick semantics; `data-has-submenu-open` |
-| navigation-menu | close-previous on trigger switch; `data-popup-open` |
-| popover | `role=dialog`; `data-popup-open`/`data-pressed`/`data-open`; modal backdrop |
-| progress | formatted `aria-valuetext`; indeterminate text; complete-at-max |
-| radio-group | arrow-select; RTL flip; group `aria-disabled` |
-| scroll-area | non-overflow viewport tabIndex |
-| select | `role=combobox` trigger; focus-selected-on-open; edge wrap; closed-trigger typeahead; native disabled; `aria-readonly`; hidden-input id; `data-placeholder` |
-| slider | range-thumb `aria-valuenow`/`aria-valuetext`/`aria-orientation`; Shift/PageUp largeStep; tiny-step precision; value clamping; `data-index` |
-| switch | stray `value` attr; `data-unchecked` on control+thumb |
-| tabs | `aria-orientation` default; panel `data-index`; no onValueChange on re-activate; disabled-tab focus-not-activate |
-| toast | `timeout=0`; dismissAll messages; live-region attrs; `role=dialog`; labelled/describedby; Escape close; order |
-| toggle | native `disabled` vs `aria-disabled` |
-| toggle-group | `aria-disabled="false"`; `data-multiple`; RTL+vertical DOM order; `data-pressed` |
-| tooltip | close-on-disable; pointer-events positioner; post-delay click; `data-popup-open`; resolved-side mirroring |
+| Component       | Key divergences                                                                                                                                             |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| accordion       | Space-on-keydown; panel `role=region`/`aria-labelledby`; `data-panel-open`; native disabled                                                                 |
+| alert-dialog    | `aria-describedby`, `aria-labelledby` on alertdialog element                                                                                                |
+| avatar          | image kept unmounted until load; AT hidden on error/src-change; `<span>` root                                                                               |
+| button          | `renderButton` link lacks `role=button`; aria-disabled vs native                                                                                            |
+| collapsible     | native disabled + tab-order removal; `data-panel-open`; `data-closed`/`hidden`                                                                              |
+| combobox        | no open-on-focus; caret Home/End; PageUp/Down; clear-on-empty; Empty mount; readOnly `aria-autocomplete`                                                    |
+| context-menu    | opens via keyboard; backdrop contextmenu block; `data-popup-open`                                                                                           |
+| dialog          | popup `role=presentation`                                                                                                                                   |
+| drawer          | `aria-describedby`                                                                                                                                          |
+| dropdown-menu   | submenu click/third-level; disabled-item nav+typeahead; multi-char/diacritic typeahead; Escape scope; `data-checked`; group label a11y; modal backdrop      |
+| field           | `data-disabled` on all parts; invalid-while-disabled; fieldset `aria-labelledby`; nested disable                                                            |
+| form            | `novalidate` not set                                                                                                                                        |
+| hover-card      | reopen-after-Escape; externally-opened hover-out; `data-popup-open`                                                                                         |
+| input-otp       | `data-complete` root+slots; `data-filled`/`data-focused`; disabled guards                                                                                   |
+| menubar         | open-on-focus/arrow; submenu click; closeOnClick semantics; `data-has-submenu-open`                                                                         |
+| navigation-menu | close-previous on trigger switch; `data-popup-open`                                                                                                         |
+| popover         | `role=dialog`; `data-popup-open`/`data-pressed`/`data-open`; modal backdrop                                                                                 |
+| progress        | formatted `aria-valuetext`; indeterminate text; complete-at-max                                                                                             |
+| radio-group     | arrow-select; RTL flip; group `aria-disabled`                                                                                                               |
+| scroll-area     | non-overflow viewport tabIndex                                                                                                                              |
+| select          | `role=combobox` trigger; focus-selected-on-open; edge wrap; closed-trigger typeahead; native disabled; `aria-readonly`; hidden-input id; `data-placeholder` |
+| slider          | range-thumb `aria-valuenow`/`aria-valuetext`/`aria-orientation`; Shift/PageUp largeStep; tiny-step precision; value clamping; `data-index`                  |
+| switch          | stray `value` attr; `data-unchecked` on control+thumb                                                                                                       |
+| tabs            | `aria-orientation` default; panel `data-index`; no onValueChange on re-activate; disabled-tab focus-not-activate                                            |
+| toast           | `timeout=0`; dismissAll messages; live-region attrs; `role=dialog`; labelled/describedby; Escape close; order                                               |
+| toggle          | native `disabled` vs `aria-disabled`                                                                                                                        |
+| toggle-group    | `aria-disabled="false"`; `data-multiple`; RTL+vertical DOM order; `data-pressed`                                                                            |
+| tooltip         | close-on-disable; pointer-events positioner; post-delay click; `data-popup-open`; resolved-side mirroring                                                   |
 
 ## Visual comparison (vs shadcn v4 `base` variant docs)
 
@@ -149,7 +149,7 @@ Root cause: `src/docs/components/catalog.ts` lifts **every** page's
 preview-program subscriptions for all example slots with no `when` gate,
 and `GotExampleMessage` carries no slug — so the drawer page's
 `window resize` subscription (`ChangedViewport`) emitted on **every** docs
-page and was fed to the *current* page's preview program. On the button
+page and was fed to the _current_ page's preview program. On the button
 page, `update` read `message.message` (a `GotMenuMessage` field that a
 `ChangedViewport` doesn't have) → `DropdownMenu.update(model.menu,
 undefined)` → `undefined._tag` crash.

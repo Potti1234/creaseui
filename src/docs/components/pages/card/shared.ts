@@ -1,18 +1,16 @@
-import type { DocsExample } from '@/docs/components/page-definition';
+import type { DocsExample } from '@/docs/components/page-definition'
 import {
   foldkitApplication,
   staticComponentApplication,
-} from '@/docs/components/pages/authored-page';
+} from '@/docs/components/pages/authored-page'
 
 export type CardFixture = Readonly<{
-  title: string;
-  description: string;
-  kind: 'login' | 'small' | 'spacing' | 'edge' | 'image' | 'rtl';
-}>;
+  title: string
+  description: string
+  kind: 'login' | 'small' | 'spacing' | 'edge' | 'image' | 'rtl'
+}>
 
-export const cardFixtures: Readonly<
-  [CardFixture, ...Array<CardFixture>]
-> = [
+export const cardFixtures: Readonly<[CardFixture, ...Array<CardFixture>]> = [
   {
     title: 'Basic',
     description:
@@ -39,7 +37,8 @@ export const cardFixtures: Readonly<
   },
   {
     title: 'Image',
-    description: 'Add an image before the card header to create a card with an image.',
+    description:
+      'Add an image before the card header to create a card with an image.',
     kind: 'image',
   },
   {
@@ -48,9 +47,9 @@ export const cardFixtures: Readonly<
       'The card layout mirrors automatically for right-to-left languages when `dir="rtl"` is set.',
     kind: 'rtl',
   },
-];
+]
 
-const IMAGE_URL = 'https://avatar.vercel.sh/shadcn1';
+const IMAGE_URL = 'https://avatar.vercel.sh/shadcn1'
 
 export const cardRtlCopy = {
   title: 'تسجيل الدخول إلى حسابك',
@@ -61,10 +60,10 @@ export const cardRtlCopy = {
   forgot: 'نسيت كلمة المرور؟',
   login: 'تسجيل الدخول',
   google: 'تسجيل الدخول باستخدام Google',
-} as const;
+} as const
 
 const ui = (renderer: 'tailwind' | 'stylex'): string =>
-  renderer === 'stylex' ? 'stylex' : 'ui';
+  renderer === 'stylex' ? 'stylex' : 'ui'
 
 const cls = (
   renderer: 'tailwind' | 'stylex',
@@ -73,14 +72,16 @@ const cls = (
 ): string =>
   renderer === 'tailwind'
     ? `h.Class('${tailwindValue}')`
-    : `h.Class(stylex.props(${styleKeys.map(k => `styles.${k}`).join(', ')}).className ?? '')`;
+    : `h.Class(stylex.props(${styleKeys.map(k => `styles.${k}`).join(', ')}).className ?? '')`
 
 const prop = (
   renderer: 'tailwind' | 'stylex',
   tailwindValue: string,
   styleKey: string,
 ): string =>
-  renderer === 'tailwind' ? `class: '${tailwindValue}'` : `layoutStyle: styles.${styleKey}`;
+  renderer === 'tailwind'
+    ? `class: '${tailwindValue}'`
+    : `layoutStyle: styles.${styleKey}`
 
 const STYLEX_STYLES = {
   frame: `{ maxWidth: '24rem', width: '100%' }`,
@@ -102,29 +103,51 @@ const STYLEX_STYLES = {
   imageWrap: `{ position: 'relative', marginInline: 'auto', maxWidth: '24rem', width: '100%' }`,
   overlay: `{ position: 'absolute', inset: 0, zIndex: 30, aspectRatio: '16 / 9', backgroundColor: 'color-mix(in oklab, var(--color-black, #000) 35%, transparent)' }`,
   cover: `{ position: 'relative', zIndex: 20, aspectRatio: '16 / 9', width: '100%', objectFit: 'cover', filter: 'grayscale(100%) brightness(0.6)' }`,
-} as const;
-type StylexStyleKey = keyof typeof STYLEX_STYLES;
+} as const
+type StylexStyleKey = keyof typeof STYLEX_STYLES
 
 const stylexImports = (keys: ReadonlyArray<StylexStyleKey>): string =>
-  `import * as stylex from '@stylexjs/stylex'\nimport type { ComponentLayoutStyle } from '@/stylex/contracts'\n\nconst styles = stylex.create({\n${keys.map(k => `  ${k}: ${STYLEX_STYLES[k]},`).join('\n')}\n})`;
+  `import * as stylex from '@stylexjs/stylex'\nimport type { ComponentLayoutStyle } from '@/stylex/contracts'\n\nconst styles = stylex.create({\n${keys.map(k => `  ${k}: ${STYLEX_STYLES[k]},`).join('\n')}\n})`
 
-const styleKeysFor = (kind: CardFixture['kind']): ReadonlyArray<StylexStyleKey> => {
-  const login: ReadonlyArray<StylexStyleKey> = ['frame', 'fieldGrid', 'fieldRow', 'link', 'footerCol', 'wFull'];
+const styleKeysFor = (
+  kind: CardFixture['kind'],
+): ReadonlyArray<StylexStyleKey> => {
+  const login: ReadonlyArray<StylexStyleKey> = [
+    'frame',
+    'fieldGrid',
+    'fieldRow',
+    'link',
+    'footerCol',
+    'wFull',
+  ]
   switch (kind) {
-    case 'spacing': return ['loginWrap', ...login];
-    case 'small': return ['smallCard', 'list', 'li', 'liIcon', 'liMarker', 'footerCol', 'wFull'];
-    case 'edge': return ['edgeCard', 'edgeContent', 'edgeScroll', 'edgeFooterInner'];
-    case 'image': return ['imageWrap', 'overlay', 'cover', 'wFull'];
-    default: return login;
+    case 'spacing':
+      return ['loginWrap', ...login]
+    case 'small':
+      return [
+        'smallCard',
+        'list',
+        'li',
+        'liIcon',
+        'liMarker',
+        'footerCol',
+        'wFull',
+      ]
+    case 'edge':
+      return ['edgeCard', 'edgeContent', 'edgeScroll', 'edgeFooterInner']
+    case 'image':
+      return ['imageWrap', 'overlay', 'cover', 'wFull']
+    default:
+      return login
   }
-};
+}
 
 /** Source for the login card content (Basic, Spacing, RTL fixtures). */
 const loginCardSource = (
   opts: Readonly<{
-    rtl: boolean;
-    spacingVar?: 'none' | 'static' | 'dynamic';
-    renderer: 'tailwind' | 'stylex';
+    rtl: boolean
+    spacingVar?: 'none' | 'static' | 'dynamic'
+    renderer: 'tailwind' | 'stylex'
   }>,
 ): string => {
   const copy = opts.rtl
@@ -147,17 +170,15 @@ const loginCardSource = (
         forgot: 'Forgot your password?',
         login: 'Login',
         google: 'Login with Google',
-      };
+      }
   const spacingPart =
-    opts.spacingVar === 'static'
-      ? ' [--card-spacing:--spacing(4)]'
-      : '';
+    opts.spacingVar === 'static' ? ' [--card-spacing:--spacing(4)]' : ''
   const cardClass =
     opts.renderer === 'tailwind'
       ? opts.spacingVar === 'dynamic'
         ? `class: \`w-full max-w-sm [--card-spacing:--spacing(\${model.spacing})]\`,`
         : `class: 'w-full max-w-sm${spacingPart}',`
-      : `layoutStyle: styles.frame,`;
+      : `layoutStyle: styles.frame,`
   const inputBlock = (
     id: string,
     label: string,
@@ -172,7 +193,7 @@ const loginCardSource = (
               : `Label.label({ for: '${id}', children: ['${label}'] }, h),`
           }
           Input.input({ id: '${id}', type: '${opts2.type}', value: model.${id === 'card-email' ? 'email' : 'password'}, onInput: value => Changed${id === 'card-email' ? 'Email' : 'Password'}({ value }),${opts2.placeholder === undefined ? '' : ` placeholder: '${opts2.placeholder}',`} }, h),
-        ])`;
+        ])`
 
   return `Card.card({
   ${cardClass}
@@ -188,20 +209,24 @@ const loginCardSource = (
       ${inputBlock('card-email', copy.email, { type: 'email', placeholder: 'm@example.com' })},
       ${inputBlock('card-password', copy.password, { type: 'password', row: 'split' })},
     ] }, h),
-    ${opts.renderer === 'tailwind'
-      ? `Card.cardFooter({ class: 'flex-col gap-2', children: [
+    ${
+      opts.renderer === 'tailwind'
+        ? `Card.cardFooter({ class: 'flex-col gap-2', children: [
       Button.button({ class: 'w-full', children: ['${copy.login}'] }, h),
       Button.button({ variant: 'outline', class: 'w-full', children: ['${copy.google}'] }, h),
     ] }, h)`
-      : `Card.cardFooter({ layoutStyle: styles.footerCol as ComponentLayoutStyle, children: [
+        : `Card.cardFooter({ layoutStyle: styles.footerCol as ComponentLayoutStyle, children: [
       Button.button({ layoutStyle: styles.wFull, children: ['${copy.login}'] }, h),
       Button.button({ variant: 'outline', layoutStyle: styles.wFull, children: ['${copy.google}'] }, h),
-    ] }, h)`}
+    ] }, h)`
+    }
   ],
-}, h)`;
-};
+}, h)`
+}
 
-const smallCardSource = (renderer: 'tailwind' | 'stylex'): string => `Card.card({
+const smallCardSource = (
+  renderer: 'tailwind' | 'stylex',
+): string => `Card.card({
   size: 'sm',
   ${renderer === 'tailwind' ? `class: 'mx-auto w-full max-w-xs',` : `layoutStyle: styles.smallCard,`}
   children: [
@@ -225,17 +250,19 @@ const smallCardSource = (renderer: 'tailwind' | 'stylex'): string => `Card.card(
         ]),
       ]),
     ] }, h),
-    ${renderer === 'tailwind'
-      ? `Card.cardFooter({ class: 'flex-col gap-2', children: [
+    ${
+      renderer === 'tailwind'
+        ? `Card.cardFooter({ class: 'flex-col gap-2', children: [
       Button.button({ size: 'sm', class: 'w-full', children: ['Set up scheduled reports'] }, h),
       Button.button({ variant: 'outline', size: 'sm', class: 'w-full', children: ["See what's new"] }, h),
     ] }, h)`
-      : `Card.cardFooter({ layoutStyle: styles.footerCol as ComponentLayoutStyle, children: [
+        : `Card.cardFooter({ layoutStyle: styles.footerCol as ComponentLayoutStyle, children: [
       Button.button({ size: 'sm', layoutStyle: styles.wFull, children: ['Set up scheduled reports'] }, h),
       Button.button({ variant: 'outline', size: 'sm', layoutStyle: styles.wFull, children: ["See what's new"] }, h),
-    ] }, h)`}
+    ] }, h)`
+    }
   ],
-}, h)`;
+}, h)`
 
 const edgeCardSource = (renderer: 'tailwind' | 'stylex'): string => `Card.card({
   ${renderer === 'tailwind' ? `class: 'mx-auto w-full max-w-sm',` : `layoutStyle: styles.edgeCard,`}
@@ -252,22 +279,28 @@ const edgeCardSource = (renderer: 'tailwind' | 'stylex'): string => `Card.card({
         h.p([], ["By continuing, you agree to keep your account credentials secure and to follow your organization's acceptable use policies."]),
       ]),
     ] }, h),
-    ${renderer === 'tailwind'
-      ? `Card.cardFooter({ class: 'justify-end gap-2', children: [
+    ${
+      renderer === 'tailwind'
+        ? `Card.cardFooter({ class: 'justify-end gap-2', children: [
       Button.button({ variant: 'outline', children: ['Decline'] }, h),
       Button.button({ children: ['Accept'] }, h),
     ] }, h)`
-      : `Card.cardFooter({ layoutStyle: styles.edgeFooterInner as ComponentLayoutStyle, children: [
+        : `Card.cardFooter({ layoutStyle: styles.edgeFooterInner as ComponentLayoutStyle, children: [
       Button.button({ variant: 'outline', children: ['Decline'] }, h),
       Button.button({ children: ['Accept'] }, h),
-    ] }, h)`},
+    ] }, h)`
+    },
   ],
-}, h)`;
+}, h)`
 
 const imageCardSource = (renderer: 'tailwind' | 'stylex'): string => {
   const cardExpr = `Card.card({
-  ${renderer === 'tailwind' ? `class: 'relative mx-auto w-full max-w-sm pt-0',` : `density: 'flush',
-  layoutStyle: styles.imageWrap as ComponentLayoutStyle,`}
+  ${
+    renderer === 'tailwind'
+      ? `class: 'relative mx-auto w-full max-w-sm pt-0',`
+      : `density: 'flush',
+  layoutStyle: styles.imageWrap as ComponentLayoutStyle,`
+  }
   children: [
     h.div([${cls(renderer, 'absolute inset-0 z-30 aspect-video bg-black/35', 'overlay')}]),
     h.img([
@@ -286,9 +319,9 @@ const imageCardSource = (renderer: 'tailwind' | 'stylex'): string => {
       Button.button({ ${prop(renderer, 'w-full', 'wFull')}, children: ['View Event'] }, h),
     ] }, h),
   ],
-}, h)`;
-  return cardExpr;
-};
+}, h)`
+  return cardExpr
+}
 
 const fixtureImports = (
   fixture: CardFixture,
@@ -298,29 +331,41 @@ const fixtureImports = (
     `import * as Button from '@/${ui(renderer)}/button'`,
     `import * as Input from '@/${ui(renderer)}/input'`,
     `import * as Label from '@/${ui(renderer)}/label'`,
-  ];
+  ]
   const stylesImport =
-    renderer === 'stylex' ? `\n${stylexImports(styleKeysFor(fixture.kind))}` : '';
+    renderer === 'stylex'
+      ? `\n${stylexImports(styleKeysFor(fixture.kind))}`
+      : ''
   switch (fixture.kind) {
     case 'small':
-      return [`import * as Icon from '@/lib/icon'`, `import * as Button from '@/${ui(renderer)}/button'`].join('\n') + stylesImport;
+      return (
+        [
+          `import * as Icon from '@/lib/icon'`,
+          `import * as Button from '@/${ui(renderer)}/button'`,
+        ].join('\n') + stylesImport
+      )
     case 'edge':
-      return `import * as Button from '@/${ui(renderer)}/button'` + stylesImport;
+      return `import * as Button from '@/${ui(renderer)}/button'` + stylesImport
     case 'image':
-      return [`import * as Badge from '@/${ui(renderer)}/badge'`, `import * as Button from '@/${ui(renderer)}/button'`].join('\n') + stylesImport;
+      return (
+        [
+          `import * as Badge from '@/${ui(renderer)}/badge'`,
+          `import * as Button from '@/${ui(renderer)}/button'`,
+        ].join('\n') + stylesImport
+      )
     default:
-      return base.join('\n') + stylesImport;
+      return base.join('\n') + stylesImport
   }
-};
+}
 
 const loginModel = `export const Model = S.Struct({ email: S.String, password: S.String })
-export type Model = typeof Model.Type`;
+export type Model = typeof Model.Type`
 const loginMessages = `import { taggedStruct } from 'foldkit/schema'
 export const ChangedEmail = taggedStruct('ChangedEmail', { value: S.String })
 export const ChangedPassword = taggedStruct('ChangedPassword', { value: S.String })
 export const Message = S.Union([ChangedEmail, ChangedPassword])
-export type Message = typeof Message.Type`;
-const loginInit = `export const init = (): Update.Return<Model, Message> => ({ model: { email: '', password: '' } })`;
+export type Message = typeof Message.Type`
+const loginInit = `export const init = (): Update.Return<Model, Message> => ({ model: { email: '', password: '' } })`
 const loginUpdate = `export const update = (
   model: Model,
   message: Message,
@@ -331,9 +376,11 @@ const loginUpdate = `export const update = (
     case 'ChangedPassword':
       return { model: { ...model, password: message.value } }
   }
-}`;
+}`
 
-const viewWrapper = (body: string): string => `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+const viewWrapper = (
+  body: string,
+): string => `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Card — Login',
   body: h.main(
     [h.Class('flex min-h-screen items-center justify-center p-8')],
@@ -341,20 +388,17 @@ const viewWrapper = (body: string): string => `export const view = (model: Model
       ${body.split('\n').join('\n      ')}
     ],
   ),
-})`;
+})`
 
-const source = (
-  index: number,
-  renderer: 'tailwind' | 'stylex',
-): string => {
-  const fixture = cardFixtures[index] ?? cardFixtures[0];
+const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+  const fixture = cardFixtures[index] ?? cardFixtures[0]
   const imports = [
     `import { Schema as S } from 'effect'`,
     `import { Command, Runtime, Subscription, Update } from 'foldkit'`,
     `import { type Document, type HtmlBuilder } from 'foldkit/html'`,
     `import * as Card from '@/${ui(renderer)}/card'`,
     fixtureImports(fixture, renderer),
-  ].join('\n');
+  ].join('\n')
 
   switch (fixture.kind) {
     case 'login':
@@ -368,10 +412,16 @@ const source = (
         update: loginUpdate,
         view: viewWrapper(
           `h.div(${fixture.kind === 'rtl' ? (renderer === 'stylex' ? `[h.Dir('rtl'), ${cls(renderer, '', 'frame')}]` : `[h.Dir('rtl'), h.Class('w-full max-w-sm')]`) : `[]`}, [
-        ${loginCardSource({ rtl: fixture.kind === 'rtl', spacingVar: 'none', renderer }).split('\n').join('\n        ')},
+        ${loginCardSource({
+          rtl: fixture.kind === 'rtl',
+          spacingVar: 'none',
+          renderer,
+        })
+          .split('\n')
+          .join('\n        ')},
       ])`,
         ),
-      });
+      })
     case 'spacing': {
       return foldkitApplication({
         title: 'Card — Spacing',
@@ -456,17 +506,22 @@ export const update = (
         }, h),
         ${
           renderer === 'tailwind'
-            ? loginCardSource({ rtl: false, spacingVar: 'dynamic', renderer }).split('\n').join('\n        ')
-            : loginCardSource({ rtl: false, spacingVar: 'none', renderer }).replace(
-                'layoutStyle: styles.frame,',
-                'layoutStyle: styles.frame,\n  spacing: `\${Number(model.spacing) * 4}px`,',
-              ).split('\n').join('\n        ')
+            ? loginCardSource({ rtl: false, spacingVar: 'dynamic', renderer })
+                .split('\n')
+                .join('\n        ')
+            : loginCardSource({ rtl: false, spacingVar: 'none', renderer })
+                .replace(
+                  'layoutStyle: styles.frame,',
+                  'layoutStyle: styles.frame,\n  spacing: `\${Number(model.spacing) * 4}px`,',
+                )
+                .split('\n')
+                .join('\n        ')
         },
       ]),
     ],
   ),
 })`,
-      });
+      })
     }
     case 'small':
       return staticComponentApplication({
@@ -476,7 +531,7 @@ export const update = (
         exampleName: fixture.title,
         componentImports: fixtureImports(fixture, renderer),
         viewBody: smallCardSource(renderer),
-      });
+      })
     case 'edge':
       return staticComponentApplication({
         componentName: 'Card',
@@ -485,7 +540,7 @@ export const update = (
         exampleName: fixture.title,
         componentImports: fixtureImports(fixture, renderer),
         viewBody: edgeCardSource(renderer),
-      });
+      })
     case 'image':
       return staticComponentApplication({
         componentName: 'Card',
@@ -494,14 +549,15 @@ export const update = (
         exampleName: fixture.title,
         componentImports: fixtureImports(fixture, renderer),
         viewBody: imageCardSource(renderer),
-      });
+      })
   }
-};
+}
 
 export const cardExamples = (
   renderer: 'tailwind' | 'stylex',
-): ReadonlyArray<DocsExample> => cardFixtures.map((fixture, index) => ({
-  title: fixture.title,
-  description: fixture.description,
-  code: source(index, renderer),
-}));
+): ReadonlyArray<DocsExample> =>
+  cardFixtures.map((fixture, index) => ({
+    title: fixture.title,
+    description: fixture.description,
+    code: source(index, renderer),
+  }))

@@ -15,11 +15,11 @@ const constrainedAst = ts.createSourceFile(
 
 const walk = (node: ts.Node, visit: (candidate: ts.Node) => void): void => {
   visit(node)
-  ts.forEachChild(node, (child) => walk(child, visit))
+  ts.forEachChild(node, child => walk(child, visit))
 }
 
 const primitiveNames = ['box', 'grid', 'inline', 'stack', 'text'] as const
-const propFiles = primitiveNames.map((name) => ({
+const propFiles = primitiveNames.map(name => ({
   name,
   file: `src/stylex/composition/${name}.ts`,
 }))
@@ -38,15 +38,21 @@ describe('constrained StyleX composition', () => {
 
     for (const { file, name } of propFiles) {
       const source = readFileSync(file, 'utf8')
-      const ast = ts.createSourceFile(file, source, ts.ScriptTarget.Latest, true)
+      const ast = ts.createSourceFile(
+        file,
+        source,
+        ts.ScriptTarget.Latest,
+        true,
+      )
       const props = `${name[0]!.toUpperCase()}${name.slice(1)}Props`
       let found = false
 
-      walk(ast, (node) => {
+      walk(ast, node => {
         if (!ts.isTypeAliasDeclaration(node) || node.name.text !== props) return
         found = true
-        walk(node.type, (member) => {
-          if (!ts.isPropertySignature(member) || member.name === undefined) return
+        walk(node.type, member => {
+          if (!ts.isPropertySignature(member) || member.name === undefined)
+            return
           const property = member.name.getText(ast).replaceAll(/["']/gu, '')
           assert.equal(
             forbidden.has(property),
@@ -65,19 +71,30 @@ describe('constrained StyleX composition', () => {
     const calledPrimitives = new Set<string>()
     const rawLayoutCalls: string[] = []
     const forbiddenBuilders = new Set([
-      'article', 'aside', 'div', 'footer', 'header', 'li', 'main', 'nav',
-      'ol', 'section', 'ul', 'Class', 'Style',
+      'article',
+      'aside',
+      'div',
+      'footer',
+      'header',
+      'li',
+      'main',
+      'nav',
+      'ol',
+      'section',
+      'ul',
+      'Class',
+      'Style',
     ])
 
-    walk(constrainedAst, (node) => {
+    walk(constrainedAst, node => {
       if (
         ts.isImportDeclaration(node) &&
         ts.isStringLiteral(node.moduleSpecifier)
       ) {
         assert.notEqual(node.moduleSpecifier.text, '@stylexjs/stylex')
         if (node.moduleSpecifier.text === '@/stylex/composition') {
-          for (const element of node.importClause?.namedBindings !== undefined &&
-          ts.isNamedImports(node.importClause.namedBindings)
+          for (const element of node.importClause?.namedBindings !==
+            undefined && ts.isNamedImports(node.importClause.namedBindings)
             ? node.importClause.namedBindings.elements
             : []) {
             importedPrimitives.add(element.name.text)
@@ -86,7 +103,12 @@ describe('constrained StyleX composition', () => {
       }
 
       if (!ts.isCallExpression(node)) return
-      if (ts.isIdentifier(node.expression) && primitiveNames.includes(node.expression.text as typeof primitiveNames[number])) {
+      if (
+        ts.isIdentifier(node.expression) &&
+        primitiveNames.includes(
+          node.expression.text as (typeof primitiveNames)[number],
+        )
+      ) {
         calledPrimitives.add(node.expression.text)
       }
       if (
@@ -99,8 +121,20 @@ describe('constrained StyleX composition', () => {
       }
     })
 
-    assert.deepEqual([...importedPrimitives].sort(), ['box', 'grid', 'inline', 'stack', 'text'])
-    assert.deepEqual([...calledPrimitives].sort(), ['box', 'grid', 'inline', 'stack', 'text'])
+    assert.deepEqual([...importedPrimitives].sort(), [
+      'box',
+      'grid',
+      'inline',
+      'stack',
+      'text',
+    ])
+    assert.deepEqual([...calledPrimitives].sort(), [
+      'box',
+      'grid',
+      'inline',
+      'stack',
+      'text',
+    ])
     assert.deepEqual(rawLayoutCalls, [])
   })
 
@@ -117,6 +151,9 @@ describe('constrained StyleX composition', () => {
     const grid = readFileSync('src/stylex/composition/grid.ts', 'utf8')
     assert.match(grid, /min-width: 700px\) and \(max-width: 1099px/u)
     assert.match(grid, /min-width: 1100px/u)
-    assert.match(grid, /columnsTwo: \{ gridTemplateColumns: \{ default: 'minmax\(0, 1fr\)', '@media \(min-width: 700px\)'/u)
+    assert.match(
+      grid,
+      /columnsTwo:\s*\{\s*gridTemplateColumns:\s*\{\s*default: 'minmax\(0, 1fr\)',\s*'@media \(min-width: 700px\)'/u,
+    )
   })
 })

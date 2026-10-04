@@ -1,21 +1,21 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils'
 
 export type ScrollAreaProps = Readonly<{
-  class?: string;
-  children: ReadonlyArray<Html | string>;
-  orientation?: 'vertical' | 'horizontal' | 'both';
-  direction?: 'ltr' | 'rtl';
-  ariaLabel?: string;
-  tabIndex?: number;
-}>;
+  class?: string
+  children: ReadonlyArray<Html | string>
+  orientation?: 'vertical' | 'horizontal' | 'both'
+  direction?: 'ltr' | 'rtl'
+  ariaLabel?: string
+  tabIndex?: number
+}>
 
 export const scrollArea = <Msg>(
   props: ScrollAreaProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const orientation = props.orientation ?? 'both';
+  const orientation = props.orientation ?? 'both'
 
   return h.div(
     [
@@ -37,5 +37,5 @@ export const scrollArea = <Msg>(
       ),
     ],
     [...props.children],
-  );
-};
+  )
+}

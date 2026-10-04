@@ -1,21 +1,25 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { staticComponentApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 export type StatItem = Readonly<{
-  label: string;
-  value: string;
-  delta?: Readonly<{ value: string; direction: 'up' | 'down' | 'flat'; sentiment?: 'positive' | 'negative' | 'neutral' }>;
-  description?: string;
-  size?: 'sm' | 'md' | 'lg';
-  withMedia?: boolean;
-}>;
+  label: string
+  value: string
+  delta?: Readonly<{
+    value: string
+    direction: 'up' | 'down' | 'flat'
+    sentiment?: 'positive' | 'negative' | 'neutral'
+  }>
+  description?: string
+  size?: 'sm' | 'md' | 'lg'
+  withMedia?: boolean
+}>
 
 export type StatFixture = Readonly<{
-  title: string;
-  description: string;
-  layout: 'cards' | 'row' | 'single';
-  items: ReadonlyArray<StatItem>;
-}>;
+  title: string
+  description: string
+  layout: 'cards' | 'row' | 'single'
+  items: ReadonlyArray<StatItem>
+}>
 
 /* Example set ported from Meta Astryx Stat stories
    (packages/lab/src/Stat/Stat.stories.tsx — Showcase, Sizes, WithMedia):
@@ -51,9 +55,24 @@ export const statFixtures: Readonly<[StatFixture, ...Array<StatFixture>]> = [
     description: 'The value font scales across small, medium, and large.',
     layout: 'row',
     items: [
-      { label: 'Deploys', value: '128', delta: { value: '+6', direction: 'up' }, size: 'sm' },
-      { label: 'Deploys', value: '128', delta: { value: '+6', direction: 'up' }, size: 'md' },
-      { label: 'Deploys', value: '128', delta: { value: '+6', direction: 'up' }, size: 'lg' },
+      {
+        label: 'Deploys',
+        value: '128',
+        delta: { value: '+6', direction: 'up' },
+        size: 'sm',
+      },
+      {
+        label: 'Deploys',
+        value: '128',
+        delta: { value: '+6', direction: 'up' },
+        size: 'md',
+      },
+      {
+        label: 'Deploys',
+        value: '128',
+        delta: { value: '+6', direction: 'up' },
+        size: 'lg',
+      },
     ],
   },
   {
@@ -70,32 +89,36 @@ export const statFixtures: Readonly<[StatFixture, ...Array<StatFixture>]> = [
       },
     ],
   },
-];
+]
 
-const sparklineSource = (isStyleX: boolean): string => `const sparklineSvg = (h: HtmlBuilder<Message>) =>
+const sparklineSource = (
+  isStyleX: boolean,
+): string => `const sparklineSvg = (h: HtmlBuilder<Message>) =>
           h.svg(
             [h.ViewBox('0 0 160 36'), h.Role('img'), h.AriaLabel('Rising trend'), h.Class(${isStyleX ? "stylex.props(styles.sparkline).className ?? ''" : "'h-9 w-full text-primary'"}), h.Style({ display: 'block' })],
             [h.polyline([h.Points('0,28 24,26 48,30 72,18 96,20 120,10 160,8'), h.Fill('none'), h.Stroke('currentColor'), h.StrokeWidth('3'), h.StrokeLinecap('round'), h.StrokeLinejoin('round')], [])],
-          )`;
+          )`
 
 const deltaSource = (delta: NonNullable<StatItem['delta']>): string => {
-  const props = [`value: '${delta.value}'`, `direction: '${delta.direction}'`];
-  if (delta.sentiment !== undefined) props.push(`sentiment: '${delta.sentiment}'`);
-  return `{ ${props.join(', ')} }`;
-};
+  const props = [`value: '${delta.value}'`, `direction: '${delta.direction}'`]
+  if (delta.sentiment !== undefined)
+    props.push(`sentiment: '${delta.sentiment}'`)
+  return `{ ${props.join(', ')} }`
+}
 
 const statSource = (item: StatItem): string => {
-  const props = [`label: '${item.label}'`, `value: '${item.value}'`];
-  if (item.delta !== undefined) props.push(`delta: ${deltaSource(item.delta)}`);
-  if (item.description !== undefined) props.push(`description: '${item.description}'`);
-  if (item.size !== undefined) props.push(`size: '${item.size}'`);
-  if (item.withMedia === true) props.push(`media: [sparklineSvg(h)]`);
-  return `Stat.stat({ ${props.join(', ')} }, h)`;
-};
+  const props = [`label: '${item.label}'`, `value: '${item.value}'`]
+  if (item.delta !== undefined) props.push(`delta: ${deltaSource(item.delta)}`)
+  if (item.description !== undefined)
+    props.push(`description: '${item.description}'`)
+  if (item.size !== undefined) props.push(`size: '${item.size}'`)
+  if (item.withMedia === true) props.push(`media: [sparklineSvg(h)]`)
+  return `Stat.stat({ ${props.join(', ')} }, h)`
+}
 
 const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
-  const fixture = statFixtures[index] ?? statFixtures[0];
-  const isStyleX = renderer === 'stylex';
+  const fixture = statFixtures[index] ?? statFixtures[0]
+  const isStyleX = renderer === 'stylex'
   const componentImports = [
     `import * as Card from '@/${isStyleX ? 'stylex' : 'ui'}/card'`,
     isStyleX
@@ -106,10 +129,10 @@ const styles = stylex.create({ grid: { display: 'grid', gridTemplateColumns: 're
     sparklineSource(isStyleX),
   ]
     .filter(Boolean)
-    .join('\n\n');
+    .join('\n\n')
 
   const cardWrap = (body: string) =>
-    `Card.card({ children: [Card.cardContent({ children: [${body}] }, h)] }, h)`;
+    `Card.card({ children: [Card.cardContent({ children: [${body}] }, h)] }, h)`
 
   const viewBody =
     fixture.layout === 'cards'
@@ -126,7 +149,9 @@ const styles = stylex.create({ grid: { display: 'grid', gridTemplateColumns: 're
         ${fixture.items.map(item => statSource(item)).join(',\n        ')},
       ],
     )`
-        : cardWrap(fixture.items.map(item => statSource(item)).join(',\n          '));
+        : cardWrap(
+            fixture.items.map(item => statSource(item)).join(',\n          '),
+          )
 
   return staticComponentApplication({
     componentName: 'Stat',
@@ -135,8 +160,8 @@ const styles = stylex.create({ grid: { display: 'grid', gridTemplateColumns: 're
     exampleName: fixture.title,
     componentImports,
     viewBody,
-  });
-};
+  })
+}
 
 export const statExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -145,4 +170,4 @@ export const statExamples = (
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
-  }));
+  }))

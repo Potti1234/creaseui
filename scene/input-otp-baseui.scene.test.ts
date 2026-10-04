@@ -44,8 +44,7 @@ type Model = Readonly<{
 }>
 
 type Message = Readonly<
-  | { _tag: 'ChangedOtp'; value: string }
-  | { _tag: 'SetValue'; value: string }
+  { _tag: 'ChangedOtp'; value: string } | { _tag: 'SetValue'; value: string }
 >
 
 const ChangedOtp = (value: string): Message => ({ _tag: 'ChangedOtp', value })
@@ -198,7 +197,9 @@ const verifyRenderer = (name: string, InputOtp: InputOtpModule) => {
                   value: model.value,
                   onInput: ChangedOtp,
                   separator: index =>
-                    index === 2 ? InputOtp.inputOtpSeparator(h) : h.span([], []),
+                    index === 2
+                      ? InputOtp.inputOtpSeparator(h)
+                      : h.span([], []),
                 },
                 h,
               ),
@@ -219,19 +220,22 @@ const verifyRenderer = (name: string, InputOtp: InputOtpModule) => {
           {
             update,
             view: (model, h) =>
-              h.div([], [
-                h.button(
-                  [
-                    h.Type('button'),
-                    h.OnClick({ _tag: 'SetValue', value: '654321' }),
-                  ],
-                  ['Apply value'],
-                ),
-                InputOtp.inputOtp(
-                  { id: 'otp', value: model.value, onInput: ChangedOtp },
-                  h,
-                ),
-              ]),
+              h.div(
+                [],
+                [
+                  h.button(
+                    [
+                      h.Type('button'),
+                      h.OnClick({ _tag: 'SetValue', value: '654321' }),
+                    ],
+                    ['Apply value'],
+                  ),
+                  InputOtp.inputOtp(
+                    { id: 'otp', value: model.value, onInput: ChangedOtp },
+                    h,
+                  ),
+                ],
+              ),
           },
           Scene.given(initialModel('123456')),
           Scene.expect(otpInput).toHaveValue('123456'),
@@ -364,25 +368,28 @@ const verifyRenderer = (name: string, InputOtp: InputOtpModule) => {
           {
             update,
             view: (model, h) =>
-              h.div([], [
-                InputOtp.inputOtp(
-                  {
-                    id: 'otp-default',
-                    value: model.value,
-                    onInput: ChangedOtp,
-                  },
-                  h,
-                ),
-                InputOtp.inputOtp(
-                  {
-                    id: 'otp-text',
-                    value: model.value,
-                    onInput: ChangedOtp,
-                    inputMode: 'text',
-                  },
-                  h,
-                ),
-              ]),
+              h.div(
+                [],
+                [
+                  InputOtp.inputOtp(
+                    {
+                      id: 'otp-default',
+                      value: model.value,
+                      onInput: ChangedOtp,
+                    },
+                    h,
+                  ),
+                  InputOtp.inputOtp(
+                    {
+                      id: 'otp-text',
+                      value: model.value,
+                      onInput: ChangedOtp,
+                      inputMode: 'text',
+                    },
+                    h,
+                  ),
+                ],
+              ),
           },
           Scene.given(initialModel()),
           Scene.expect(
@@ -473,21 +480,24 @@ const verifyRenderer = (name: string, InputOtp: InputOtpModule) => {
           {
             update,
             view: (model, h) =>
-              h.div([], [
-                InputOtp.inputOtp(
-                  { id: 'otp-a', value: model.value, onInput: ChangedOtp },
-                  h,
-                ),
-                InputOtp.inputOtp(
-                  {
-                    id: 'otp-b',
-                    value: model.value,
-                    onInput: ChangedOtp,
-                    ariaLabel: 'Verification code',
-                  },
-                  h,
-                ),
-              ]),
+              h.div(
+                [],
+                [
+                  InputOtp.inputOtp(
+                    { id: 'otp-a', value: model.value, onInput: ChangedOtp },
+                    h,
+                  ),
+                  InputOtp.inputOtp(
+                    {
+                      id: 'otp-b',
+                      value: model.value,
+                      onInput: ChangedOtp,
+                      ariaLabel: 'Verification code',
+                    },
+                    h,
+                  ),
+                ],
+              ),
           },
           Scene.given(initialModel()),
           Scene.expect(

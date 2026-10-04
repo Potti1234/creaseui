@@ -56,7 +56,8 @@ export const joinStyles = stylex.create({
   triggerFit: {
     width: {
       default: null,
-      ':where([data-slot="button-group"] > [data-slot="select-trigger"])': 'fit-content',
+      ':where([data-slot="button-group"] > [data-slot="select-trigger"])':
+        'fit-content',
     },
   },
   // has-[select[aria-hidden=true]:last-child]:[&>[data-slot=select-trigger]:last-of-type]:rounded-r-md

@@ -18,13 +18,13 @@ library. It is how you build your component library."). Never cute, never busy.
 Paper-and-ink neutrals (aligned with the shadcn token scale the product ships), plus one
 accent that nods to foldkit's green without copying it:
 
-| Role | Value | Notes |
-| --- | --- | --- |
-| Paper | `oklch(0.985 0.002 95)` | warm off-white, page + logo field |
-| Ink | `oklch(0.155 0.005 270)` | near-black, text + dark logo |
-| Graphite | `oklch(0.556 0 0)` | muted text (= shadcn muted-foreground) |
-| Crease shade | `oklch(0.90 0.004 95)` | the darker plane of a fold |
-| Fold green (accent) | `oklch(0.62 0.15 145)` | sparingly: links, highlights, the accent edge of a fold |
+| Role                | Value                    | Notes                                                   |
+| ------------------- | ------------------------ | ------------------------------------------------------- |
+| Paper               | `oklch(0.985 0.002 95)`  | warm off-white, page + logo field                       |
+| Ink                 | `oklch(0.155 0.005 270)` | near-black, text + dark logo                            |
+| Graphite            | `oklch(0.556 0 0)`       | muted text (= shadcn muted-foreground)                  |
+| Crease shade        | `oklch(0.90 0.004 95)`   | the darker plane of a fold                              |
+| Fold green (accent) | `oklch(0.62 0.15 145)`   | sparingly: links, highlights, the accent edge of a fold |
 
 Rule: any illustration is 90% neutrals; green appears on at most one folded plane.
 

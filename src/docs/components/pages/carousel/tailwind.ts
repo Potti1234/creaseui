@@ -1,25 +1,25 @@
-import { Schema as S } from 'effect';
-import { defineMessageUnion } from 'foldkit/message';
-import Autoplay from 'embla-carousel-autoplay';
-import type { HtmlBuilder } from 'foldkit/html';
-import { definePreviewProgram } from '@/docs/components/pages/authored-page';
+import { Schema as S } from 'effect'
+import { defineMessageUnion } from 'foldkit/message'
+import Autoplay from 'embla-carousel-autoplay'
+import type { HtmlBuilder } from 'foldkit/html'
+import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
   carouselFixtures,
   type CarouselFixture,
-} from '@/docs/components/pages/carousel/shared';
-import * as Card from '@/ui/card';
-import * as Carousel from '@/ui/carousel';
+} from '@/docs/components/pages/carousel/shared'
+import * as Card from '@/ui/card'
+import * as Carousel from '@/ui/carousel'
 
 const Message = defineMessageUnion({
   GotCarouselPreviewMessage: { message: Carousel.Message },
-});
-type Message = typeof Message.Type;
+})
+type Message = typeof Message.Type
 
 const Model = S.Struct({
   _docsPage: S.Literal('carousel'),
   carousel: Carousel.Model,
-});
-type Model = typeof Model.Type;
+})
+type Model = typeof Model.Type
 
 const fixtureOf = (index: number): CarouselFixture =>
   carouselFixtures[index] ?? {
@@ -28,18 +28,22 @@ const fixtureOf = (index: number): CarouselFixture =>
     count: 5,
     label: 'Featured projects',
     itemSize: 'full',
-  };
+  }
 
 const itemSizeOf = (
   fixture: CarouselFixture,
 ): number | ((index: number) => number) => {
   if (fixture.itemSize === 'first-half')
-    return index => (index === 0 ? 50 : 33.34);
-  if (fixture.itemSize === 'third') return 33.34;
-  return 100;
-};
+    return index => (index === 0 ? 50 : 33.34)
+  if (fixture.itemSize === 'third') return 33.34
+  return 100
+}
 
-const slideView = (fixture: CarouselFixture, index: number, h: HtmlBuilder<Message>) => {
+const slideView = (
+  fixture: CarouselFixture,
+  index: number,
+  h: HtmlBuilder<Message>,
+) => {
   const card = Card.card(
     {
       children: [
@@ -54,11 +58,9 @@ const slideView = (fixture: CarouselFixture, index: number, h: HtmlBuilder<Messa
       ],
     },
     h,
-  );
-  return fixture.padded === true
-    ? h.div([h.Class('p-2')], [card])
-    : card;
-};
+  )
+  return fixture.padded === true ? h.div([h.Class('p-2')], [card]) : card
+}
 
 const carouselView = (
   fixture: CarouselFixture,
@@ -87,7 +89,7 @@ const carouselView = (
       ),
     },
     h,
-  );
+  )
 
 export const carouselTailwindPreviewProgram = definePreviewProgram<
   Model,
@@ -96,11 +98,11 @@ export const carouselTailwindPreviewProgram = definePreviewProgram<
   Model,
   Message,
   init: index => {
-    const fixture = fixtureOf(index);
+    const fixture = fixtureOf(index)
     return {
       _docsPage: 'carousel',
       carousel: Carousel.init(`docs-carousel-${String(index)}`, fixture.count),
-    };
+    }
   },
   update: (model, message) => ({
     model: {
@@ -109,8 +111,8 @@ export const carouselTailwindPreviewProgram = definePreviewProgram<
     },
   }),
   view: (index, model, h) => {
-    const fixture = fixtureOf(index);
-    const carousel = carouselView(fixture, model, h);
+    const fixture = fixtureOf(index)
+    const carousel = carouselView(fixture, model, h)
     const children =
       fixture.status === true
         ? [
@@ -120,13 +122,13 @@ export const carouselTailwindPreviewProgram = definePreviewProgram<
               [`Slide ${model.carousel.index + 1} of ${model.carousel.count}`],
             ),
           ]
-        : [carousel];
+        : [carousel]
     return h.div(
       [
         h.Class('mx-auto w-full max-w-xs'),
         ...(fixture.direction === 'rtl' ? [h.Dir('rtl')] : []),
       ],
       children,
-    );
+    )
   },
-});
+})

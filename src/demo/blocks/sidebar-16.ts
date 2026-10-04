@@ -1,12 +1,12 @@
-import { Match as M, Schema as S } from 'effect';
-import type { Update } from 'foldkit';
-import { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
-import { modifyFields } from 'foldkit/struct';
+import { Match as M, Schema as S } from 'effect'
+import type { Update } from 'foldkit'
+import { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import { modifyFields } from 'foldkit/struct'
 
-import * as Icon from '@/lib/icon';
-import { avatar, avatarFallback } from '@/ui/avatar';
+import * as Icon from '@/lib/icon'
+import { avatar, avatarFallback } from '@/ui/avatar'
 import {
   breadcrumb,
   breadcrumbItem,
@@ -14,10 +14,10 @@ import {
   breadcrumbList,
   breadcrumbPage,
   breadcrumbSeparator,
-} from '@/ui/breadcrumb';
-import * as Collapsible from '@/ui/collapsible';
-import * as DropdownMenu from '@/ui/dropdown-menu';
-import { separator } from '@/ui/separator';
+} from '@/ui/breadcrumb'
+import * as Collapsible from '@/ui/collapsible'
+import * as DropdownMenu from '@/ui/dropdown-menu'
+import { separator } from '@/ui/separator'
 import {
   sidebar,
   sidebarContent,
@@ -38,7 +38,7 @@ import {
   sidebarMenuSubItem,
   sidebarProvider,
   sidebarTrigger,
-} from '@/ui/sidebar';
+} from '@/ui/sidebar'
 
 const data = {
   user: {
@@ -100,85 +100,90 @@ const data = {
     { name: 'Sales & Marketing', url: '#', icon: 'chart-pie' },
     { name: 'Travel', url: '#', icon: 'map' },
   ],
-};
+}
 
-type UserItem = 'upgrade' | 'account' | 'billing' | 'notifications' | 'log-out';
+type UserItem = 'upgrade' | 'account' | 'billing' | 'notifications' | 'log-out'
 const USER_ITEMS: ReadonlyArray<UserItem> = [
   'upgrade',
   'account',
   'billing',
   'notifications',
   'log-out',
-];
-const UserMenu = DropdownMenu.create<UserItem>();
+]
+const UserMenu = DropdownMenu.create<UserItem>()
 
 export const Model = S.Struct({
-  isMobileOpen: S.Boolean, isSidebarOpen: S.Boolean,
+  isMobileOpen: S.Boolean,
+  isSidebarOpen: S.Boolean,
   search: S.String,
   navMainOpen: S.Array(S.Boolean),
   userMenu: DropdownMenu.Model,
-});
-export type Model = typeof Model.Type;
-
-
-
-
-
+})
+export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
   ToggledMobileSidebar: {},
   ToggledSidebar: {},
   ChangedSearch: { value: S.String },
   ToggledNavMain: {
-  index: S.Number,
-  isOpen: S.Boolean,
-},
+    index: S.Number,
+    isOpen: S.Boolean,
+  },
   GotUserMenuMessage: {
-  message: DropdownMenu.Message,
-},
-});
-export type Message = typeof Message.Type;
+    message: DropdownMenu.Message,
+  },
+})
+export type Message = typeof Message.Type
 
 export const init = (): Model => ({
-  isMobileOpen: false, isSidebarOpen: true,
+  isMobileOpen: false,
+  isSidebarOpen: true,
   search: '',
-  navMainOpen: data.navMain.map((item) => item.isActive ?? false),
+  navMainOpen: data.navMain.map(item => item.isActive ?? false),
   userMenu: DropdownMenu.init({
     id: 'sidebar-16-user-menu',
     isAnimated: true,
   }),
-});
+})
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      ToggledMobileSidebar: () => ({ model: modifyFields(model, {isMobileOpen: current => !current}) }),
-      ToggledSidebar: () => ({ model: modifyFields(model, { isSidebarOpen: (current) => !current }) }),
-      ChangedSearch: ({ value }) => ({ model: modifyFields(model, { search: () => value }) }),
+      ToggledMobileSidebar: () => ({
+        model: modifyFields(model, { isMobileOpen: current => !current }),
+      }),
+      ToggledSidebar: () => ({
+        model: modifyFields(model, { isSidebarOpen: current => !current }),
+      }),
+      ChangedSearch: ({ value }) => ({
+        model: modifyFields(model, { search: () => value }),
+      }),
       ToggledNavMain: ({ index, isOpen }) => {
-        if (model.navMainOpen[index] === undefined) return { model: model };
-        return { model: modifyFields(model, {
-            navMainOpen: (items) =>
+        if (model.navMainOpen[index] === undefined) return { model: model }
+        return {
+          model: modifyFields(model, {
+            navMainOpen: items =>
               items.map((open, itemIndex) =>
                 itemIndex === index ? isOpen : open,
               ),
-          }) };
+          }),
+        }
       },
       GotUserMenuMessage: ({ message: childMessage }) => {
-        const userMenuOp__ = UserMenu.update(
-          model.userMenu,
-          childMessage,
-        );
-    const userMenu = userMenuOp__.model;
-    const commands = userMenuOp__.commands ?? [];;
-        return { model: modifyFields(model, { userMenu: () => userMenu }), commands: Command.mapMessages(commands, (next) =>
+        const userMenuOp__ = UserMenu.update(model.userMenu, childMessage)
+        const userMenu = userMenuOp__.model
+        const commands = userMenuOp__.commands ?? []
+        return {
+          model: modifyFields(model, { userMenu: () => userMenu }),
+          commands: Command.mapMessages(commands, next =>
             Message.GotUserMenuMessage({ message: next }),
-          ) };
+          ),
+        }
       },
     }),
-  );
+  )
 
 const navMain = (
   openStates: ReadonlyArray<boolean>,
@@ -191,8 +196,8 @@ const navMain = (
         sidebarMenu(
           {
             children: data.navMain.flatMap((item, index) => {
-              const isOpen = openStates[index];
-              if (isOpen === undefined) return [];
+              const isOpen = openStates[index]
+              if (isOpen === undefined) return []
               return [
                 sidebarMenuItem(
                   {
@@ -201,8 +206,11 @@ const navMain = (
                         {
                           id: `sidebar-16-nav-main-${index}`,
                           isOpen,
-                          onToggle: (nextIsOpen) =>
-                            Message.ToggledNavMain({ index, isOpen: nextIsOpen }),
+                          onToggle: nextIsOpen =>
+                            Message.ToggledNavMain({
+                              index,
+                              isOpen: nextIsOpen,
+                            }),
                           trigger: h.span(
                             [h.Class('contents')],
                             [
@@ -225,7 +233,7 @@ const navMain = (
                           triggerClass: sidebarMenuButtonVariants(),
                           content: sidebarMenuSub(
                             {
-                              children: item.items.map((subItem) =>
+                              children: item.items.map(subItem =>
                                 sidebarMenuSubItem(
                                   {
                                     children: [
@@ -251,7 +259,7 @@ const navMain = (
                   },
                   h,
                 ),
-              ];
+              ]
             }),
           },
           h,
@@ -259,7 +267,7 @@ const navMain = (
       ],
     },
     h,
-  );
+  )
 
 const navProjects = (h: HtmlBuilder<Message>): Html => {
   return sidebarGroup(
@@ -270,7 +278,7 @@ const navProjects = (h: HtmlBuilder<Message>): Html => {
         sidebarMenu(
           {
             children: [
-              ...data.projects.map((project) =>
+              ...data.projects.map(project =>
                 sidebarMenuItem(
                   {
                     children: [
@@ -319,8 +327,8 @@ const navProjects = (h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const navSecondary = (h: HtmlBuilder<Message>): Html =>
   sidebarGroup<Message>(
@@ -332,7 +340,7 @@ const navSecondary = (h: HtmlBuilder<Message>): Html =>
             children: [
               sidebarMenu(
                 {
-                  children: data.navSecondary.map((item) =>
+                  children: data.navSecondary.map(item =>
                     sidebarMenuItem(
                       {
                         children: [
@@ -362,7 +370,7 @@ const navSecondary = (h: HtmlBuilder<Message>): Html =>
       ],
     },
     h,
-  );
+  )
 
 const userSummary = (h: HtmlBuilder<Message>): Html => {
   return h.span(
@@ -385,8 +393,8 @@ const userSummary = (h: HtmlBuilder<Message>): Html => {
         ],
       ),
     ],
-  );
-};
+  )
+}
 
 const navUser = (model: DropdownMenu.Model, h: HtmlBuilder<Message>): Html => {
   return sidebarMenu(
@@ -398,7 +406,8 @@ const navUser = (model: DropdownMenu.Model, h: HtmlBuilder<Message>): Html => {
               DropdownMenu.dropdownMenu<UserItem, Message>(
                 {
                   model,
-                  toParentMessage: (message) => Message.GotUserMenuMessage({ message }),
+                  toParentMessage: message =>
+                    Message.GotUserMenuMessage({ message }),
                   trigger: h.span(
                     [h.Class('contents')],
                     [
@@ -412,7 +421,7 @@ const navUser = (model: DropdownMenu.Model, h: HtmlBuilder<Message>): Html => {
                       'data-[open]:bg-sidebar-accent data-[open]:text-sidebar-accent-foreground',
                   }),
                   items: USER_ITEMS,
-                  itemToConfig: (item) =>
+                  itemToConfig: item =>
                     M.value(item).pipe(
                       M.withReturnType<DropdownMenu.DropdownMenuItemConfig>(),
                       M.when('upgrade', () => ({
@@ -455,14 +464,16 @@ const navUser = (model: DropdownMenu.Model, h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
-  const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
+  const state = model.isSidebarOpen ? 'expanded' : 'collapsed'
   return sidebar<Message>(
     {
-      isMobileOpen: model.isMobileOpen, onMobileDismiss: Message.ToggledMobileSidebar(), state,
+      isMobileOpen: model.isMobileOpen,
+      onMobileDismiss: Message.ToggledMobileSidebar(),
+      state,
       collapsible: 'icon',
       class: 'top-(--header-height) h-[calc(100svh-var(--header-height))]!',
       children: [
@@ -541,8 +552,8 @@ const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const searchForm = (value: string, h: HtmlBuilder<Message>): Html => {
   return h.form(
@@ -556,7 +567,7 @@ const searchForm = (value: string, h: HtmlBuilder<Message>): Html => {
             {
               id: 'sidebar-16-search',
               value,
-              onInput: (next) => Message.ChangedSearch({ value: next }),
+              onInput: next => Message.ChangedSearch({ value: next }),
               placeholder: 'Type to search...',
               class: 'h-8 pl-7',
             },
@@ -572,8 +583,8 @@ const searchForm = (value: string, h: HtmlBuilder<Message>): Html => {
         ],
       ),
     ],
-  );
-};
+  )
+}
 
 const siteHeader = (model: Model, h: HtmlBuilder<Message>): Html => {
   return h.header(
@@ -588,7 +599,8 @@ const siteHeader = (model: Model, h: HtmlBuilder<Message>): Html => {
         [
           sidebarTrigger(
             {
-              onMobileClick: Message.ToggledMobileSidebar(), onClick: Message.ToggledSidebar(),
+              onMobileClick: Message.ToggledMobileSidebar(),
+              onClick: Message.ToggledSidebar(),
               class: 'size-8',
             },
             h,
@@ -642,8 +654,8 @@ const siteHeader = (model: Model, h: HtmlBuilder<Message>): Html => {
         ],
       ),
     ],
-  );
-};
+  )
+}
 
 const pageContent = (h: HtmlBuilder<Message>): Html => {
   return sidebarInset(
@@ -671,11 +683,11 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
-  const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
+  const state = model.isSidebarOpen ? 'expanded' : 'collapsed'
   return h.div(
     [h.Class('[--header-height:calc(--spacing(14))]')],
     [
@@ -694,8 +706,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
         h,
       ),
     ],
-  );
-};
+  )
+}
 
 // PORT NOTE: Avatar images are not bundled, so the source image uses its CN
 // fallback. Per-project action menus use the accepted static ellipsis action.

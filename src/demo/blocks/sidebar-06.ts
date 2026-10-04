@@ -1,11 +1,11 @@
-import { Match as M, Schema as S } from 'effect';
-import type { Update } from 'foldkit';
-import { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
-import { modifyFields } from 'foldkit/struct';
+import { Match as M, Schema as S } from 'effect'
+import type { Update } from 'foldkit'
+import { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import { modifyFields } from 'foldkit/struct'
 
-import * as Icon from '@/lib/icon';
+import * as Icon from '@/lib/icon'
 import {
   breadcrumb,
   breadcrumbItem,
@@ -13,17 +13,17 @@ import {
   breadcrumbList,
   breadcrumbPage,
   breadcrumbSeparator,
-} from '@/ui/breadcrumb';
-import { button } from '@/ui/button';
+} from '@/ui/breadcrumb'
+import { button } from '@/ui/button'
 import {
   card,
   cardContent,
   cardDescription,
   cardHeader,
   cardTitle,
-} from '@/ui/card';
-import * as DropdownMenu from '@/ui/dropdown-menu';
-import { separator } from '@/ui/separator';
+} from '@/ui/card'
+import * as DropdownMenu from '@/ui/dropdown-menu'
+import { separator } from '@/ui/separator'
 import {
   sidebar,
   sidebarContent,
@@ -39,19 +39,19 @@ import {
   sidebarProvider,
   sidebarRail,
   sidebarTrigger,
-} from '@/ui/sidebar';
+} from '@/ui/sidebar'
 
 type NavItem = Readonly<{
-  title: string;
-  url: string;
-  isActive?: boolean;
-}>;
+  title: string
+  url: string
+  isActive?: boolean
+}>
 
 type NavSection = Readonly<{
-  title: string;
-  url: string;
-  items: ReadonlyArray<NavItem>;
-}>;
+  title: string
+  url: string
+  items: ReadonlyArray<NavItem>
+}>
 
 // Sample data copied from the source block.
 const data = {
@@ -106,81 +106,86 @@ const data = {
       ],
     },
   ] satisfies ReadonlyArray<NavSection>,
-};
+}
 
-const SectionMenu = DropdownMenu.create<string>();
+const SectionMenu = DropdownMenu.create<string>()
 
 // MODEL
 
 export const Model = S.Struct({
-  isMobileOpen: S.Boolean, isSidebarOpen: S.Boolean,
+  isMobileOpen: S.Boolean,
+  isSidebarOpen: S.Boolean,
   sectionMenus: S.Array(DropdownMenu.Model),
-});
-export type Model = typeof Model.Type;
+})
+export type Model = typeof Model.Type
 
 // MESSAGE
-
-
-
-
 
 export const Message = defineMessageUnion({
   ToggledMobileSidebar: {},
   ToggledSidebar: {},
   GotSectionMenuMessage: {
-  index: S.Number,
-  message: DropdownMenu.Message,
-},
-});
-export type Message = typeof Message.Type;
+    index: S.Number,
+    message: DropdownMenu.Message,
+  },
+})
+export type Message = typeof Message.Type
 
 // INIT
 
 export const init = (): Model => ({
-  isMobileOpen: false, isSidebarOpen: true,
+  isMobileOpen: false,
+  isSidebarOpen: true,
   sectionMenus: data.navMain.map((_, index) =>
     DropdownMenu.init({
       id: `sidebar-06-section-menu-${index}`,
       isAnimated: true,
     }),
   ),
-});
+})
 
 // UPDATE
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      ToggledMobileSidebar: () => ({ model: modifyFields(model, {isMobileOpen: current => !current}) }),
-      ToggledSidebar: () => ({ model: modifyFields(model, { isSidebarOpen: (current) => !current }) }),
+      ToggledMobileSidebar: () => ({
+        model: modifyFields(model, { isMobileOpen: current => !current }),
+      }),
+      ToggledSidebar: () => ({
+        model: modifyFields(model, { isSidebarOpen: current => !current }),
+      }),
       GotSectionMenuMessage: ({ index, message: childMessage }) => {
-        const current = model.sectionMenus[index];
+        const current = model.sectionMenus[index]
 
         if (current === undefined) {
-          return { model: model };
+          return { model: model }
         }
 
-        const nextOp__ = SectionMenu.update(current, childMessage);
-    const next = nextOp__.model;
-    const commands = nextOp__.commands ?? [];;
+        const nextOp__ = SectionMenu.update(current, childMessage)
+        const next = nextOp__.model
+        const commands = nextOp__.commands ?? []
 
-        return { model: modifyFields(model, {
-            sectionMenus: (menus) =>
+        return {
+          model: modifyFields(model, {
+            sectionMenus: menus =>
               menus.map((menu, menuIndex) =>
                 menuIndex === index ? next : menu,
               ),
-          }), commands: Command.mapMessages(commands, (nextMessage) =>
+          }),
+          commands: Command.mapMessages(commands, nextMessage =>
             Message.GotSectionMenuMessage({
               index,
               message: nextMessage,
             }),
-          ) };
+          ),
+        }
       },
     }),
-  );
+  )
 
 // VIEW
 
@@ -194,10 +199,10 @@ const navMain = (
         sidebarMenu(
           {
             children: data.navMain.flatMap((item, index) => {
-              const model = models[index];
+              const model = models[index]
 
               if (model === undefined) {
-                return [];
+                return []
               }
 
               return [
@@ -207,7 +212,7 @@ const navMain = (
                       DropdownMenu.dropdownMenu<string, Message>(
                         {
                           model,
-                          toParentMessage: (message) =>
+                          toParentMessage: message =>
                             Message.GotSectionMenuMessage({ index, message }),
                           trigger: h.span(
                             [h.Class('contents')],
@@ -225,8 +230,8 @@ const navMain = (
                             class:
                               'data-[open]:bg-sidebar-accent data-[open]:text-sidebar-accent-foreground',
                           }),
-                          items: item.items.map((subItem) => subItem.title),
-                          itemToConfig: (title) => ({ label: title }),
+                          items: item.items.map(subItem => subItem.title),
+                          itemToConfig: title => ({ label: title }),
                           side: 'right',
                           align: 'start',
                           ariaLabel: `${item.title} submenu`,
@@ -237,7 +242,7 @@ const navMain = (
                   },
                   h,
                 ),
-              ];
+              ]
             }),
           },
           h,
@@ -245,8 +250,8 @@ const navMain = (
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const sidebarOptInForm = (h: HtmlBuilder<Message>): Html => {
   return card(
@@ -314,15 +319,17 @@ const sidebarOptInForm = (h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
-  const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
+  const state = model.isSidebarOpen ? 'expanded' : 'collapsed'
 
   return sidebar(
     {
-      isMobileOpen: model.isMobileOpen, onMobileDismiss: Message.ToggledMobileSidebar(), state,
+      isMobileOpen: model.isMobileOpen,
+      onMobileDismiss: Message.ToggledMobileSidebar(),
+      state,
       children: [
         sidebarHeader(
           {
@@ -398,8 +405,8 @@ const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const pageContent = (h: HtmlBuilder<Message>): Html => {
   return sidebarInset(
@@ -410,7 +417,8 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
           [
             sidebarTrigger(
               {
-                onMobileClick: Message.ToggledMobileSidebar(), onClick: Message.ToggledSidebar(),
+                onMobileClick: Message.ToggledMobileSidebar(),
+                onClick: Message.ToggledSidebar(),
                 class: '-ml-1',
               },
               h,
@@ -491,11 +499,11 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
-  const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
+  const state = model.isSidebarOpen ? 'expanded' : 'collapsed'
 
   return sidebarProvider<Message>(
     {
@@ -503,8 +511,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       children: [appSidebar(model, h), pageContent(h)],
     },
     h,
-  );
-};
+  )
+}
 
 /* Minimal interactive wiring:
    const model = init()

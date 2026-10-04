@@ -1,9 +1,9 @@
-import type { EChartsOption } from 'echarts/types/dist/shared';
-import type { TooltipComponentFormatterCallbackParams } from 'echarts/types/src/export/option.js';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { EChartsOption } from 'echarts/types/dist/shared'
+import type { TooltipComponentFormatterCallbackParams } from 'echarts/types/src/export/option.js'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Chart from '@/lib/echarts';
-import * as Icon from '@/lib/icon';
+import * as Chart from '@/lib/echarts'
+import * as Icon from '@/lib/icon'
 import {
   card,
   cardContent,
@@ -11,30 +11,30 @@ import {
   cardFooter,
   cardHeader,
   cardTitle,
-} from '@/ui/card';
+} from '@/ui/card'
 
-const HOST_ID = 'chart-bar-default';
+const HOST_ID = 'chart-bar-default'
 
-export const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June'];
-export const DESKTOP = [186, 305, 237, 73, 209, 214];
+export const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June']
+export const DESKTOP = [186, 305, 237, 73, 209, 214]
 
 export const barTooltip = (
   theme: Chart.ChartTheme,
   config: Readonly<{
-    hideLabel?: boolean;
-    indicator?: 'square' | 'line' | 'dashed' | 'none';
+    hideLabel?: boolean
+    indicator?: 'square' | 'line' | 'dashed' | 'none'
   }> = {},
 ): NonNullable<EChartsOption['tooltip']> => ({
   ...Chart.shadcnTooltip(theme),
   formatter: (params: TooltipComponentFormatterCallbackParams) => {
-    const rows = Array.isArray(params) ? params : [params];
-    const heading = config.hideLabel ? '' : (rows[0]?.name ?? '');
+    const rows = Array.isArray(params) ? params : [params]
+    const heading = config.hideLabel ? '' : (rows[0]?.name ?? '')
     const headingHtml = heading
       ? `<div style="font-weight:500;margin-bottom:4px;color:var(--foreground)">${heading}</div>`
-      : '';
+      : ''
     const body = rows
-      .map((row) => {
-        const color = typeof row.color === 'string' ? row.color : theme.chart1;
+      .map(row => {
+        const color = typeof row.color === 'string' ? row.color : theme.chart1
         const indicator =
           config.indicator === 'none'
             ? ''
@@ -42,22 +42,22 @@ export const barTooltip = (
               ? `<span style="width:3px;height:18px;border-radius:2px;background:${color};flex-shrink:0"></span>`
               : config.indicator === 'dashed'
                 ? `<span style="width:10px;height:0;border-top:2px dashed ${color};flex-shrink:0"></span>`
-                : `<span style="width:10px;height:10px;border-radius:2.5px;background:${color};flex-shrink:0"></span>`;
+                : `<span style="width:10px;height:10px;border-radius:2.5px;background:${color};flex-shrink:0"></span>`
         return `<div style="display:flex;align-items:center;gap:6px;min-width:8rem">
           ${indicator}<span style="color:var(--muted-foreground)">${row.seriesName ?? row.name}</span>
           <span style="margin-left:auto;font-variant-numeric:tabular-nums;font-weight:500;color:var(--foreground)">${typeof row.value === 'number' || typeof row.value === 'string' ? row.value : ''}</span>
-        </div>`;
+        </div>`
       })
-      .join('');
-    return `${headingHtml}${body}`;
+      .join('')
+    return `${headingHtml}${body}`
   },
-});
+})
 
 Chart.registerChart(HOST_ID, (theme): EChartsOption => ({
   grid: Chart.compactGrid(),
   xAxis: Chart.categoryAxis(
     theme,
-    MONTHS.map((month) => month.slice(0, 3)),
+    MONTHS.map(month => month.slice(0, 3)),
     { boundaryGap: true },
   ),
   yAxis: Chart.valueAxis(theme),
@@ -70,14 +70,14 @@ Chart.registerChart(HOST_ID, (theme): EChartsOption => ({
       data: [...DESKTOP],
     },
   ],
-}));
+}))
 
 export const standardBarCard = <Msg>(
   props: Readonly<{
-    hostId: string;
-    title: string;
-    ariaLabel: string;
-    toMessage: (message: Chart.ChartMessage) => Msg;
+    hostId: string
+    title: string
+    ariaLabel: string
+    toMessage: (message: Chart.ChartMessage) => Msg
   }>,
   h: HtmlBuilder<Msg>,
 ): Html => {
@@ -130,8 +130,8 @@ export const standardBarCard = <Msg>(
       ],
     },
     h,
-  );
-};
+  )
+}
 
 export const view = <Msg>(
   toMessage: (message: Chart.ChartMessage) => Msg,
@@ -146,4 +146,4 @@ export const view = <Msg>(
       toMessage,
     },
     h,
-  );
+  )

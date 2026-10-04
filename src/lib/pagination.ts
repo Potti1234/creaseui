@@ -20,19 +20,34 @@ export const normalizePagination = (config: PaginationRangeConfig) => {
   }
 }
 
-export const paginationItems = (config: PaginationRangeConfig): ReadonlyArray<PaginationItem> => {
-  const { page, totalPages, siblingCount, boundaryCount } = normalizePagination(config)
+export const paginationItems = (
+  config: PaginationRangeConfig,
+): ReadonlyArray<PaginationItem> => {
+  const { page, totalPages, siblingCount, boundaryCount } =
+    normalizePagination(config)
   const pages = new Set<number>()
   for (let value = 1; value <= boundaryCount; value += 1) pages.add(value)
-  for (let value = Math.max(1, totalPages - boundaryCount + 1); value <= totalPages; value += 1) pages.add(value)
-  for (let value = Math.max(1, page - siblingCount); value <= Math.min(totalPages, page + siblingCount); value += 1) pages.add(value)
+  for (
+    let value = Math.max(1, totalPages - boundaryCount + 1);
+    value <= totalPages;
+    value += 1
+  )
+    pages.add(value)
+  for (
+    let value = Math.max(1, page - siblingCount);
+    value <= Math.min(totalPages, page + siblingCount);
+    value += 1
+  )
+    pages.add(value)
 
   const sorted = [...pages].sort((left, right) => left - right)
   const items: Array<PaginationItem> = []
   sorted.forEach((value, index) => {
     const previous = sorted[index - 1]
-    if (previous !== undefined && value - previous === 2) items.push(previous + 1)
-    else if (previous !== undefined && value - previous > 2) items.push(previous < page ? 'start-ellipsis' : 'end-ellipsis')
+    if (previous !== undefined && value - previous === 2)
+      items.push(previous + 1)
+    else if (previous !== undefined && value - previous > 2)
+      items.push(previous < page ? 'start-ellipsis' : 'end-ellipsis')
     items.push(value)
   })
   return items
@@ -48,7 +63,8 @@ export type ActionNavigation<Msg> = Readonly<{
   onNavigate: (page: number) => Msg
 }>
 
-export type PaginationRecipeProps<Msg> = PaginationRangeConfig & Readonly<{
-  navigation: LinkNavigation | ActionNavigation<Msg>
-  ariaLabel?: string
-}>
+export type PaginationRecipeProps<Msg> = PaginationRangeConfig &
+  Readonly<{
+    navigation: LinkNavigation | ActionNavigation<Msg>
+    ariaLabel?: string
+  }>

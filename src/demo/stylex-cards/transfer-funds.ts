@@ -1,13 +1,13 @@
-import * as stylex from '@stylexjs/stylex';
-import { Match as M, Option, Schema as S } from 'effect';
-import type { Update } from 'foldkit';
-import { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
-import { modifyFields } from 'foldkit/struct';
+import * as stylex from '@stylexjs/stylex'
+import { Match as M, Option, Schema as S } from 'effect'
+import type { Update } from 'foldkit'
+import { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import { modifyFields } from 'foldkit/struct'
 
-import * as Icon from '@/demo/icon-preview';
-import { button } from '@/stylex/button';
+import * as Icon from '@/demo/icon-preview'
+import { button } from '@/stylex/button'
 import {
   card,
   cardAction,
@@ -16,32 +16,68 @@ import {
   cardFooter,
   cardHeader,
   cardTitle,
-} from '@/stylex/card';
-import { field, fieldGroup, fieldLabel } from '@/stylex/field';
+} from '@/stylex/card'
+import { field, fieldGroup, fieldLabel } from '@/stylex/field'
 import {
   inputGroup,
   inputGroupAddon,
   inputGroupInput,
   inputGroupText,
-} from '@/stylex/input-group';
-import { item, itemContent, itemGroup } from '@/stylex/item';
-import * as Select from '@/stylex/select';
-import { separator } from '@/stylex/separator';
-import { className } from '@/stylex/style';
-import { tokens } from '../../stylex/tokens.stylex';
+} from '@/stylex/input-group'
+import { item, itemContent, itemGroup } from '@/stylex/item'
+import * as Select from '@/stylex/select'
+import { separator } from '@/stylex/separator'
+import { className } from '@/stylex/style'
+import { tokens } from '../../stylex/tokens.stylex'
 
 const styles = stylex.create({
   button: { width: '100%' },
-  fields: { gap: '1.3125rem', display: 'flex', flexDirection: 'column', },
-  itemContent: { gap: '0.75rem', display: 'flex', flexDirection: 'column', width: '100%', },
-  itemStack: { alignItems: 'stretch', display: 'flex', flexDirection: 'column', width: '100%' },
-  mutedLabel: { color: tokens.mutedForeground, fontSize: '0.875rem', lineHeight: '1.25rem' },
-  row: { alignItems: 'center', display: 'flex', justifyContent: 'space-between' },
-  totalLabel: { fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem', },
-  totalValue: { fontSize: '0.875rem', fontVariantNumeric: 'tabular-nums', fontWeight: 600, lineHeight: '1.25rem', },
-  value: { fontSize: '0.875rem', fontVariantNumeric: 'tabular-nums', fontWeight: 500, lineHeight: '1.25rem', },
-  visuallyHidden: { overflow: 'hidden', clip: 'rect(0 0 0 0)', clipPath: 'inset(50%)', position: 'absolute', whiteSpace: 'nowrap', height: '1px', width: '1px', },
-});
+  fields: { gap: '1.3125rem', display: 'flex', flexDirection: 'column' },
+  itemContent: {
+    gap: '0.75rem',
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+  },
+  itemStack: {
+    alignItems: 'stretch',
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+  },
+  mutedLabel: {
+    color: tokens.mutedForeground,
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+  },
+  row: {
+    alignItems: 'center',
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
+  totalLabel: { fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem' },
+  totalValue: {
+    fontSize: '0.875rem',
+    fontVariantNumeric: 'tabular-nums',
+    fontWeight: 600,
+    lineHeight: '1.25rem',
+  },
+  value: {
+    fontSize: '0.875rem',
+    fontVariantNumeric: 'tabular-nums',
+    fontWeight: 500,
+    lineHeight: '1.25rem',
+  },
+  visuallyHidden: {
+    overflow: 'hidden',
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    position: 'absolute',
+    whiteSpace: 'nowrap',
+    height: '1px',
+    width: '1px',
+  },
+})
 
 const fromAccounts = [
   {
@@ -52,7 +88,7 @@ const fromAccounts = [
     value: 'business',
     label: 'Business (··7731) — $8,920.00',
   },
-] as const;
+] as const
 
 const toAccounts = [
   {
@@ -63,7 +99,7 @@ const toAccounts = [
     value: 'investment',
     label: 'Investment (··3349) — $18,200.00',
   },
-] as const;
+] as const
 
 export const Model = S.Struct({
   amount: S.String,
@@ -71,70 +107,77 @@ export const Model = S.Struct({
   selectedFromAccount: S.String,
   toAccount: Select.Model,
   selectedToAccount: S.String,
-});
-export type Model = typeof Model.Type;
-
-
-
+})
+export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
   UpdatedAmount: { value: S.String },
   GotFromAccountMessage: {
-  message: Select.Message,
-},
+    message: Select.Message,
+  },
   GotToAccountMessage: {
-  message: Select.Message,
-},
-});
-export type Message = typeof Message.Type;
+    message: Select.Message,
+  },
+})
+export type Message = typeof Message.Type
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      UpdatedAmount: ({ value }) => ({ model: modifyFields(model, { amount: () => value }) }),
+      UpdatedAmount: ({ value }) => ({
+        model: modifyFields(model, { amount: () => value }),
+      }),
       GotFromAccountMessage: ({ message: childMessage }) => {
-        const { model: fromAccount, commands: fromAccountCommands__, outMessage: fromAccountOut__ } = Select.update(
-          model.fromAccount,
-          childMessage,
-        )
+        const {
+          model: fromAccount,
+          commands: fromAccountCommands__,
+          outMessage: fromAccountOut__,
+        } = Select.update(model.fromAccount, childMessage)
         const commands = fromAccountCommands__ ?? []
         const maybeSelection = Option.fromNullishOr(fromAccountOut__)
-        return { model: modifyFields(model, {
+        return {
+          model: modifyFields(model, {
             fromAccount: () => fromAccount,
-            selectedFromAccount: (current) =>
+            selectedFromAccount: current =>
               Option.match(maybeSelection, {
                 onNone: () => current,
-                onSome: (selection) =>
+                onSome: selection =>
                   selection._tag === 'Selected' ? selection.value : current,
               }),
-          }), commands: Command.mapMessages(commands, (next) =>
+          }),
+          commands: Command.mapMessages(commands, next =>
             Message.GotFromAccountMessage({ message: next }),
-          ) };
+          ),
+        }
       },
       GotToAccountMessage: ({ message: childMessage }) => {
-        const { model: toAccount, commands: toAccountCommands__, outMessage: toAccountOut__ } = Select.update(
-          model.toAccount,
-          childMessage,
-        )
+        const {
+          model: toAccount,
+          commands: toAccountCommands__,
+          outMessage: toAccountOut__,
+        } = Select.update(model.toAccount, childMessage)
         const commands = toAccountCommands__ ?? []
         const maybeSelection = Option.fromNullishOr(toAccountOut__)
-        return { model: modifyFields(model, {
+        return {
+          model: modifyFields(model, {
             toAccount: () => toAccount,
-            selectedToAccount: (current) =>
+            selectedToAccount: current =>
               Option.match(maybeSelection, {
                 onNone: () => current,
-                onSome: (selection) =>
+                onSome: selection =>
                   selection._tag === 'Selected' ? selection.value : current,
               }),
-          }), commands: Command.mapMessages(commands, (next) =>
+          }),
+          commands: Command.mapMessages(commands, next =>
             Message.GotToAccountMessage({ message: next }),
-          ) };
+          ),
+        }
       },
     }),
-  );
+  )
 
 export const init = (): Model => ({
   amount: '1,200.00',
@@ -148,7 +191,7 @@ export const init = (): Model => ({
     isAnimated: true,
   }),
   selectedToAccount: 'savings',
-});
+})
 
 const summaryRow = (
   label: string,
@@ -160,20 +203,16 @@ const summaryRow = (
     [h.Class(className(styles.row))],
     [
       h.span(
-        [
-          h.Class(className(isTotal ? styles.totalLabel : styles.mutedLabel)),
-        ],
+        [h.Class(className(isTotal ? styles.totalLabel : styles.mutedLabel))],
         [label],
       ),
       h.span(
-        [
-          h.Class(className(isTotal ? styles.totalValue : styles.value)),
-        ],
+        [h.Class(className(isTotal ? styles.totalValue : styles.value))],
         [value],
       ),
     ],
-  );
-};
+  )
+}
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
   card<Message>(
@@ -217,149 +256,173 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
         cardContent(
           {
             children: [
-              h.div([h.Class(className(styles.fields))], [fieldGroup(
-                {
-                  children: [
-                    field(
-                      {
-                        children: [
-                          fieldLabel(
-                            {
-                              for: 'transfer-funds-amount',
-                              children: ['Amount to Transfer'],
-                            },
-                            h,
-                          ),
-                          inputGroup(
-                            {
-                              children: [
-                                inputGroupAddon(
-                                  {
-                                    children: [
-                                      inputGroupText({ children: ['$'] }, h),
-                                    ],
-                                  },
-                                  h,
-                                ),
-                                inputGroupInput(
-                                  {
-                                    id: 'transfer-funds-amount',
-                                    value: model.amount,
-                                    onInput: (value) =>
-                                      Message.UpdatedAmount({ value }),
-                                  },
-                                  h,
-                                ),
-                              ],
-                            },
-                            h,
-                          ),
-                        ],
-                      },
-                      h,
-                    ),
-                    field(
-                      {
-                        children: [
-                          fieldLabel(
-                            {
-                              for: 'transfer-funds-from-account',
-                              children: ['From Account'],
-                            },
-                            h,
-                          ),
-                          Select.select(
-                            {
-                              model: model.fromAccount,
-                              maybeSelectedValue: Option.some(
-                                model.selectedFromAccount,
-                              ),
-                              toParentMessage: (message) =>
-                                Message.GotFromAccountMessage({ message }),
-                              items: fromAccounts,
-                              itemToValue: (account) => account.value,
-                              itemToLabel: (account) => account.label,
-                            },
-                            h,
-                          ),
-                        ],
-                      },
-                      h,
-                    ),
-                    field(
-                      {
-                        children: [
-                          fieldLabel(
-                            {
-                              for: 'transfer-funds-to-account',
-                              children: ['To Account'],
-                            },
-                            h,
-                          ),
-                          Select.select(
-                            {
-                              model: model.toAccount,
-                              maybeSelectedValue: Option.some(
-                                model.selectedToAccount,
-                              ),
-                              toParentMessage: (message) =>
-                                Message.GotToAccountMessage({ message }),
-                              items: toAccounts,
-                              itemToValue: (account) => account.value,
-                              itemToLabel: (account) => account.label,
-                            },
-                            h,
-                          ),
-                        ],
-                      },
-                      h,
-                    ),
-                    itemGroup(
-                      {
-                        children: [item(
+              h.div(
+                [h.Class(className(styles.fields))],
+                [
+                  fieldGroup(
+                    {
+                      children: [
+                        field(
                           {
-                            variant: 'muted',
                             children: [
-                              h.div([h.Class(className(styles.itemStack))], [
-                              itemContent(
-                            {
-                              children: [
-                                h.div([h.Class(className(styles.itemContent))], [
-                                summaryRow(
-                                  'Estimated arrival',
-                                  'Today, Apr 14',
-                                  false,
-                                  h,
-                                ),]),
-                                separator({}, h),
-                                summaryRow(
-                                  'Transaction fee',
-                                  '$0.00',
-                                  false,
-                                  h,
-                                ),
-                                separator({}, h),
-                                summaryRow(
-                                  'Total amount',
-                                  '$1,200.00',
-                                  true,
-                                  h,
-                                ),
-                              ],
-                            },
-                            h,
-                              ),]),
+                              fieldLabel(
+                                {
+                                  for: 'transfer-funds-amount',
+                                  children: ['Amount to Transfer'],
+                                },
+                                h,
+                              ),
+                              inputGroup(
+                                {
+                                  children: [
+                                    inputGroupAddon(
+                                      {
+                                        children: [
+                                          inputGroupText(
+                                            { children: ['$'] },
+                                            h,
+                                          ),
+                                        ],
+                                      },
+                                      h,
+                                    ),
+                                    inputGroupInput(
+                                      {
+                                        id: 'transfer-funds-amount',
+                                        value: model.amount,
+                                        onInput: value =>
+                                          Message.UpdatedAmount({ value }),
+                                      },
+                                      h,
+                                    ),
+                                  ],
+                                },
+                                h,
+                              ),
                             ],
                           },
                           h,
-                        )],
-                      },
-                      h,
-                    ),
-                  ],
-                },
-                h,
-              )]),
+                        ),
+                        field(
+                          {
+                            children: [
+                              fieldLabel(
+                                {
+                                  for: 'transfer-funds-from-account',
+                                  children: ['From Account'],
+                                },
+                                h,
+                              ),
+                              Select.select(
+                                {
+                                  model: model.fromAccount,
+                                  maybeSelectedValue: Option.some(
+                                    model.selectedFromAccount,
+                                  ),
+                                  toParentMessage: message =>
+                                    Message.GotFromAccountMessage({ message }),
+                                  items: fromAccounts,
+                                  itemToValue: account => account.value,
+                                  itemToLabel: account => account.label,
+                                },
+                                h,
+                              ),
+                            ],
+                          },
+                          h,
+                        ),
+                        field(
+                          {
+                            children: [
+                              fieldLabel(
+                                {
+                                  for: 'transfer-funds-to-account',
+                                  children: ['To Account'],
+                                },
+                                h,
+                              ),
+                              Select.select(
+                                {
+                                  model: model.toAccount,
+                                  maybeSelectedValue: Option.some(
+                                    model.selectedToAccount,
+                                  ),
+                                  toParentMessage: message =>
+                                    Message.GotToAccountMessage({ message }),
+                                  items: toAccounts,
+                                  itemToValue: account => account.value,
+                                  itemToLabel: account => account.label,
+                                },
+                                h,
+                              ),
+                            ],
+                          },
+                          h,
+                        ),
+                        itemGroup(
+                          {
+                            children: [
+                              item(
+                                {
+                                  variant: 'muted',
+                                  children: [
+                                    h.div(
+                                      [h.Class(className(styles.itemStack))],
+                                      [
+                                        itemContent(
+                                          {
+                                            children: [
+                                              h.div(
+                                                [
+                                                  h.Class(
+                                                    className(
+                                                      styles.itemContent,
+                                                    ),
+                                                  ),
+                                                ],
+                                                [
+                                                  summaryRow(
+                                                    'Estimated arrival',
+                                                    'Today, Apr 14',
+                                                    false,
+                                                    h,
+                                                  ),
+                                                ],
+                                              ),
+                                              separator({}, h),
+                                              summaryRow(
+                                                'Transaction fee',
+                                                '$0.00',
+                                                false,
+                                                h,
+                                              ),
+                                              separator({}, h),
+                                              summaryRow(
+                                                'Total amount',
+                                                '$1,200.00',
+                                                true,
+                                                h,
+                                              ),
+                                            ],
+                                          },
+                                          h,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                },
+                                h,
+                              ),
+                            ],
+                          },
+                          h,
+                        ),
+                      ],
+                    },
+                    h,
+                  ),
+                ],
+              ),
             ],
           },
           h,
@@ -367,7 +430,10 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
         cardFooter(
           {
             children: [
-              button({ layoutStyle: styles.button, children: ['Confirm Transfer'] }, h),
+              button(
+                { layoutStyle: styles.button, children: ['Confirm Transfer'] },
+                h,
+              ),
             ],
           },
           h,
@@ -375,7 +441,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
       ],
     },
     h,
-  );
+  )
 
 /*
 Stateful? yes.

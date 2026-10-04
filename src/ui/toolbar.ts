@@ -2,7 +2,11 @@
 
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { focusToolbarItemsMount, Message, TOOLBAR_EDGE_COMP_ATTR } from '@/lib/toolbar'
+import {
+  focusToolbarItemsMount,
+  Message,
+  TOOLBAR_EDGE_COMP_ATTR,
+} from '@/lib/toolbar'
 import { cn } from '@/lib/utils'
 
 /* PORT-NOTE: needs token 'containerPaddingInline' = 16px — the inline padding
@@ -80,7 +84,10 @@ const SLOT_BASE = 'flex items-center'
 const EDGE_COMP =
   'has-[>[data-crease-edge-comp]:first-child]:-ms-2 has-[>[data-crease-edge-comp]:last-child]:-me-2'
 
-export const toolbar = <Msg>(props: ToolbarProps<Msg>, h: HtmlBuilder<Msg>): Html => {
+export const toolbar = <Msg>(
+  props: ToolbarProps<Msg>,
+  h: HtmlBuilder<Msg>,
+): Html => {
   const orientation = props.orientation ?? 'horizontal'
   const variant = props.variant ?? 'transparent'
   const gap = props.gap ?? 1
@@ -106,25 +113,37 @@ export const toolbar = <Msg>(props: ToolbarProps<Msg>, h: HtmlBuilder<Msg>): Htm
   const inner = hasCenterContent
     ? [
         slot(props.startContent ?? [], 'min-w-0', true),
-        slot(props.centerContent, 'min-w-0 justify-center overflow-hidden', false),
+        slot(
+          props.centerContent,
+          'min-w-0 justify-center overflow-hidden',
+          false,
+        ),
         slot(props.endContent ?? [], 'min-w-0 justify-end', true),
       ]
     : [
         ...(hasStartContent
-          ? [slot(props.startContent, cn('min-w-0', !hasEndContent && 'flex-1'), true)]
+          ? [
+              slot(
+                props.startContent,
+                cn('min-w-0', !hasEndContent && 'flex-1'),
+                true,
+              ),
+            ]
           : []),
         ...(hasEndContent
-          ? [slot(props.endContent, cn('min-w-0 justify-end', !hasStartContent && 'ms-auto'), true)]
+          ? [
+              slot(
+                props.endContent,
+                cn('min-w-0 justify-end', !hasStartContent && 'ms-auto'),
+                true,
+              ),
+            ]
           : []),
       ]
 
   const mountAttrs =
     hasKeyboardNavigation && props.toParentMessage !== undefined
-      ? [
-          h.OnMount(
-            focusToolbarItemsMount(props.toParentMessage, orientation),
-          ),
-        ]
+      ? [h.OnMount(focusToolbarItemsMount(props.toParentMessage, orientation))]
       : []
 
   return h.div(
@@ -132,7 +151,12 @@ export const toolbar = <Msg>(props: ToolbarProps<Msg>, h: HtmlBuilder<Msg>): Htm
       h.DataAttribute('slot', 'toolbar-section'),
       h.DataAttribute('size', size),
       h.Class(
-        cn('border-border py-2 px-4', VARIANT_CLASS[variant], ...dividerClasses, props.class),
+        cn(
+          'border-border py-2 px-4',
+          VARIANT_CLASS[variant],
+          ...dividerClasses,
+          props.class,
+        ),
       ),
     ],
     [

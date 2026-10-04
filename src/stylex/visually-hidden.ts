@@ -1,7 +1,7 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { className } from './style';
+import { className } from './style'
 
 /* Ported from Meta Astryx VisuallyHidden/VisuallyHidden.tsx — the canonical
    "visually hidden" clip block. Uses `clip: rect(...)` (not clip-path) for
@@ -25,7 +25,7 @@ const styles = stylex.create({
     height: 1,
     width: 1,
   },
-});
+})
 
 export type VisuallyHiddenElement =
   | 'article'
@@ -51,19 +51,19 @@ export type VisuallyHiddenElement =
   | 'small'
   | 'span'
   | 'strong'
-  | 'ul';
+  | 'ul'
 
 export type VisuallyHiddenProps = Readonly<{
   /** HTML tag to render as. Defaults to 'span'. */
-  as?: VisuallyHiddenElement;
+  as?: VisuallyHiddenElement
   /** Optional live-region politeness for announced updates. */
-  ariaLive?: 'polite' | 'assertive' | 'off';
+  ariaLive?: 'polite' | 'assertive' | 'off'
   /** Optional ARIA role for the hidden element. */
-  role?: string;
+  role?: string
   /** Optional element id. */
-  id?: string;
-  children: ReadonlyArray<Html | string>;
-}>;
+  id?: string
+  children: ReadonlyArray<Html | string>
+}>
 
 export const visuallyHidden = <Msg>(
   props: VisuallyHiddenProps,
@@ -78,4 +78,4 @@ export const visuallyHidden = <Msg>(
       ...(props.id === undefined ? [] : [h.Id(props.id)]),
     ],
     [...props.children],
-  );
+  )

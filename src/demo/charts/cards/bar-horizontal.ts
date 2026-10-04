@@ -1,15 +1,15 @@
-import type { HtmlBuilder } from 'foldkit/html';
-import type { EChartsOption } from 'echarts/types/dist/shared';
+import type { HtmlBuilder } from 'foldkit/html'
+import type { EChartsOption } from 'echarts/types/dist/shared'
 
-import * as Chart from '@/lib/echarts';
+import * as Chart from '@/lib/echarts'
 import {
   DESKTOP,
   MONTHS,
   barTooltip,
   standardBarCard,
-} from '@/demo/charts/cards/bar-default';
+} from '@/demo/charts/cards/bar-default'
 
-const HOST_ID = 'chart-bar-horizontal';
+const HOST_ID = 'chart-bar-horizontal'
 
 Chart.registerChart(HOST_ID, (theme): EChartsOption => ({
   grid: Chart.compactGrid({ left: 0 }),
@@ -22,7 +22,7 @@ Chart.registerChart(HOST_ID, (theme): EChartsOption => ({
   },
   yAxis: {
     type: 'category',
-    data: MONTHS.map((month) => month.slice(0, 3)),
+    data: MONTHS.map(month => month.slice(0, 3)),
     inverse: true,
     axisLine: { show: false },
     axisTick: { show: false },
@@ -42,7 +42,7 @@ Chart.registerChart(HOST_ID, (theme): EChartsOption => ({
       data: [...DESKTOP],
     },
   ],
-}));
+}))
 
 export const view = <Msg>(
   toMessage: (message: Chart.ChartMessage) => Msg,
@@ -57,4 +57,4 @@ export const view = <Msg>(
       toMessage,
     },
     h,
-  );
+  )

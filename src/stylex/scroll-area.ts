@@ -17,8 +17,14 @@ export type ScrollAreaProps = Readonly<{
 const styles = stylex.create({
   base: {
     borderRadius: 'inherit',
-    boxShadow: { default: tokens.shadowNone, ':focus-visible': tokens.focusRingShadow },
-    outlineColor: { default: tokens.transparent, ':focus-visible': tokens.ring },
+    boxShadow: {
+      default: tokens.shadowNone,
+      ':focus-visible': tokens.focusRingShadow,
+    },
+    outlineColor: {
+      default: tokens.transparent,
+      ':focus-visible': tokens.ring,
+    },
     outlineStyle: { default: 'none', ':focus-visible': 'solid' },
     outlineWidth: { default: 0, ':focus-visible': 1 },
     position: 'relative',
@@ -33,7 +39,10 @@ const styles = stylex.create({
   vertical: { overflowX: 'hidden', overflowY: 'auto' },
 })
 
-export const scrollArea = <Msg>(props: ScrollAreaProps, h: HtmlBuilder<Msg>): Html => {
+export const scrollArea = <Msg>(
+  props: ScrollAreaProps,
+  h: HtmlBuilder<Msg>,
+): Html => {
   const orientation = props.orientation ?? 'both'
   return h.div(
     [
@@ -47,4 +56,3 @@ export const scrollArea = <Msg>(props: ScrollAreaProps, h: HtmlBuilder<Msg>): Ht
     [...props.children],
   )
 }
-

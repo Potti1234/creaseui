@@ -1,5 +1,5 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type MessageScrollerKind =
   | 'anchoring'
@@ -11,13 +11,13 @@ export type MessageScrollerKind =
   | 'animation'
   | 'commands'
   | 'visibility'
-  | 'scrollable';
+  | 'scrollable'
 
 export type MessageScrollerFixture = Readonly<{
-  title: string;
-  description: string;
-  kind: MessageScrollerKind;
-}>;
+  title: string
+  description: string
+  kind: MessageScrollerKind
+}>
 
 export const messageScrollerFixtures: ReadonlyArray<MessageScrollerFixture> = [
   {
@@ -64,8 +64,7 @@ export const messageScrollerFixtures: ReadonlyArray<MessageScrollerFixture> = [
   },
   {
     title: 'Jumping to Messages',
-    description:
-      'A Command scrolls the viewport to a specific message by id.',
+    description: 'A Command scrolls the viewport to a specific message by id.',
     kind: 'commands',
   },
   {
@@ -80,7 +79,7 @@ export const messageScrollerFixtures: ReadonlyArray<MessageScrollerFixture> = [
       'The measured scroll metrics and follow state render as live indicators.',
     kind: 'scrollable',
   },
-];
+]
 
 const CHAT_SCHEMA = `const ChatMessage = S.Struct({
   id: S.Int,
@@ -116,7 +115,7 @@ const CHAT: Array<ChatMessage> = [
     role: 'assistant',
     text: 'Write the resolved theme to localStorage on every change.',
   },
-]`;
+]`
 
 const SEND_CHAT = `const SEND_CHAT = [
   { role: 'user', text: 'Thanks — that covers it.' },
@@ -124,7 +123,7 @@ const SEND_CHAT = `const SEND_CHAT = [
     role: 'assistant',
     text: 'Anytime — and for next time: the changelog lives under docs/releases, the migration guide covers the Button tokens, and the theme snippet is in the README. Ping me if the upgrade surfaces anything odd.',
   },
-] as const`;
+] as const`
 
 const MEMBER_CHAT = `const MEMBER_CHAT = [
   { role: 'marker', text: 'Priya joined the chat' },
@@ -132,14 +131,14 @@ const MEMBER_CHAT = `const MEMBER_CHAT = [
     role: 'assistant',
     text: 'Welcome, Priya — quick recap: we are shipping the release tomorrow, the Button size tokens were renamed, listbox typing is now strict, and RTL support is on by default in the calendar. The full notes are pinned above.',
   },
-] as const`;
+] as const`
 
 const HISTORY_CHAT = `const HISTORY_CHAT: Array<ChatMessage> = [
   { id: -4, role: 'assistant', text: 'Earlier context: kicking things off.' },
   { id: -3, role: 'user', text: 'Did anyone open the RFC yet?' },
   { id: -2, role: 'assistant', text: 'Yes — review comments are in.' },
   { id: -1, role: 'marker', text: 'History loaded' },
-]`;
+]`
 
 const STREAM_CHUNKS_SRC = `const STREAM_CHUNKS = [
   'Streaming',
@@ -148,7 +147,7 @@ const STREAM_CHUNKS_SRC = `const STREAM_CHUNKS = [
   ' chunk',
   ' by',
   ' chunk…',
-] as const`;
+] as const`
 
 const EXTRA_DATA: Partial<Record<MessageScrollerKind, string>> = {
   anchoring: SEND_CHAT,
@@ -157,7 +156,7 @@ const EXTRA_DATA: Partial<Record<MessageScrollerKind, string>> = {
   streaming: STREAM_CHUNKS_SRC,
   'load-history': HISTORY_CHAT,
   animation: SEND_CHAT,
-};
+}
 
 const STYLE_SOURCE = `import * as stylex from '@stylexjs/stylex'
 import { className } from '@/stylex/style'
@@ -207,26 +206,28 @@ const styles = stylex.create({
   },
   rowEntering: { opacity: 0, transform: 'translateY(0.5rem)' },
   icon: { height: '1rem', width: '1rem' },
-})`;
+})`
 
 const rowSource = (kind: MessageScrollerKind, isSx: boolean): string => {
   const anchored =
     kind === 'group-chat'
       ? `message.role === 'marker'`
-      : `message.role === 'user'`;
-  const animClass = `\`transition-all duration-300 \${model.animatingIds.includes(message.id) ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'}\``;
+      : `message.role === 'user'`
+  const animClass = `\`transition-all duration-300 \${model.animatingIds.includes(message.id) ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'}\``
   const itemClass =
-    kind === 'animation' && !isSx ? `\n      class: ${animClass},` : '';
+    kind === 'animation' && !isSx ? `\n      class: ${animClass},` : ''
   const markerRow = isSx
     ? `h.div([h.Class(cx(styles.marker))], [message.text])`
-    : `h.div([h.Class('text-center text-xs text-muted-foreground')], [message.text])`;
+    : `h.div([h.Class('text-center text-xs text-muted-foreground')], [message.text])`
   return `const chatRow = (model: Model, message: ChatMessage, h: HtmlBuilder<Message>) =>
   MessageScroller.messageScrollerItem(
     {
       messageId: \`msg-\${String(message.id)}\`,
       scrollAnchor: ${anchored},${itemClass}
       children: [
-        ${kind === 'animation' && isSx ? `h.div(
+        ${
+          kind === 'animation' && isSx
+            ? `h.div(
           [
             model.animatingIds.includes(message.id)
               ? h.Class(cx(styles.row, styles.rowEntering))
@@ -245,7 +246,8 @@ const rowSource = (kind: MessageScrollerKind, isSx: boolean): string => {
                   h,
                 ),
           ],
-        ),` : `message.role === 'marker'
+        ),`
+            : `message.role === 'marker'
           ? ${markerRow}
           : Bubble.bubble(
               {
@@ -255,12 +257,13 @@ const rowSource = (kind: MessageScrollerKind, isSx: boolean): string => {
                 ],
               },
               h,
-            ),`}
+            ),`
+        }
       ],
     },
     h,
-  )`;
-};
+  )`
+}
 
 const toolbarButton = (
   label: string,
@@ -275,43 +278,51 @@ const toolbarButton = (
             children: ['${label}'],
           },
           h,
-        )`;
+        )`
 
 const toolbarSource = (kind: MessageScrollerKind, isSx: boolean): string => {
   const wrap = (inner: string): string =>
     `h.div([h.Class(${isSx ? 'cx(styles.toolbar)' : `'flex flex-wrap gap-2'`})], [
         ${inner}
-      ]),`;
+      ]),`
   switch (kind) {
     case 'anchoring':
     case 'previous-context':
-      return wrap(toolbarButton('Send message', 'Message.PressedSend()', isSx));
+      return wrap(toolbarButton('Send message', 'Message.PressedSend()', isSx))
     case 'group-chat':
       return wrap(
-        toolbarButton('Marcus joins the chat', 'Message.PressedAddMember()', isSx),
-      );
+        toolbarButton(
+          'Marcus joins the chat',
+          'Message.PressedAddMember()',
+          isSx,
+        ),
+      )
     case 'streaming':
       return wrap(
         toolbarButton('Start streaming', 'Message.PressedStartStream()', isSx),
-      );
+      )
     case 'load-history':
       return wrap(
-        toolbarButton('Load earlier messages', 'Message.PressedLoadHistory()', isSx),
-      );
+        toolbarButton(
+          'Load earlier messages',
+          'Message.PressedLoadHistory()',
+          isSx,
+        ),
+      )
     case 'animation':
-      return wrap(toolbarButton('Send message', 'Message.PressedSend()', isSx));
+      return wrap(toolbarButton('Send message', 'Message.PressedSend()', isSx))
     case 'commands':
       return wrap(
         `${toolbarButton('Jump to first question', 'Message.PressedJumpTo({ id: 2 })', isSx)},
         ${toolbarButton('Jump to the RTL answer', 'Message.PressedJumpTo({ id: 8 })', isSx)},
         ${toolbarButton('Jump to the last turn', 'Message.PressedJumpTo({ id: 10 })', isSx)}`,
-      );
+      )
     case 'opening-position':
     case 'visibility':
     case 'scrollable':
-      return '';
+      return ''
   }
-};
+}
 
 const headerSource = (kind: MessageScrollerKind, isSx: boolean): string => {
   if (kind === 'visibility')
@@ -319,7 +330,7 @@ const headerSource = (kind: MessageScrollerKind, isSx: boolean): string => {
         model.visibleIds.length === 0
           ? 'Nothing in view'
           : \`In view: \${model.visibleIds.map(id => \`msg-\${String(id)}\`).join(', ')}\`,
-      ]),`;
+      ]),`
   if (kind === 'streaming')
     return `h.p([h.Class(${isSx ? 'cx(styles.following)' : `'text-xs text-muted-foreground'`})], [
         model.scroller.isFollowing
@@ -327,7 +338,7 @@ const headerSource = (kind: MessageScrollerKind, isSx: boolean): string => {
           : model.scroller.hasNewMessages
             ? 'New messages below — jump to the end'
             : 'Not following',
-      ]),`;
+      ]),`
   if (kind === 'scrollable')
     return `h.div([h.Class(${isSx ? 'cx(styles.metrics)' : `'grid grid-cols-2 gap-x-3 gap-y-0.5 text-xs text-muted-foreground'`})], [
         h.span([], [\`scrollTop: \${String(Math.round(model.scroller.scrollTop))}px\`]),
@@ -342,9 +353,9 @@ const headerSource = (kind: MessageScrollerKind, isSx: boolean): string => {
             ? 'New messages below'
             : 'No pending messages',
         ]),
-      ]),`;
-  return '';
-};
+      ]),`
+  return ''
+}
 
 const COMMANDS: Partial<Record<MessageScrollerKind, string>> = {
   anchoring: `const ScrollToAnchor = Command.define('ScrollChatToAnchor', {
@@ -601,7 +612,7 @@ const RestoreViewportAnchor = Command.define('RestoreViewportAnchor', {
       }),
     ),
 })`,
-};
+}
 
 const UPDATE_CASES: Record<MessageScrollerKind, string> = {
   anchoring: `    case 'PressedSend': {
@@ -796,7 +807,7 @@ const UPDATE_CASES: Record<MessageScrollerKind, string> = {
   visibility: `    case 'ObservedVisibility':
       return { model: { ...model, visibleIds: message.ids } }`,
   scrollable: '',
-};
+}
 
 const MODEL_FIELDS: Partial<Record<MessageScrollerKind, string>> = {
   streaming: `  streaming: S.Boolean,
@@ -806,8 +817,7 @@ const MODEL_FIELDS: Partial<Record<MessageScrollerKind, string>> = {
 `,
   visibility: `  visibleIds: S.Array(S.Int),
 `,
-
-};
+}
 
 const MODEL_INIT: Partial<Record<MessageScrollerKind, string>> = {
   streaming: `    streaming: false,
@@ -817,8 +827,7 @@ const MODEL_INIT: Partial<Record<MessageScrollerKind, string>> = {
 `,
   visibility: `    visibleIds: [],
 `,
-
-};
+}
 
 const MESSAGE_FIELDS: Partial<Record<MessageScrollerKind, string>> = {
   anchoring: `  PressedSend: {},
@@ -847,32 +856,36 @@ const MESSAGE_FIELDS: Partial<Record<MessageScrollerKind, string>> = {
 `,
   visibility: `  ObservedVisibility: { ids: S.Array(S.Int) },
 `,
-};
+}
 
 const source = (
   fixture: MessageScrollerFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const isSx = renderer === 'stylex';
-  const kind = fixture.kind;
-  const needsEffect = COMMANDS[kind] !== undefined;
-  const needsMount = kind === 'visibility';
+  const isSx = renderer === 'stylex'
+  const kind = fixture.kind
+  const needsEffect = COMMANDS[kind] !== undefined
+  const needsMount = kind === 'visibility'
   const imports = `import { ${needsEffect || needsMount ? 'Effect, ' : ''}${needsMount ? 'Queue, ' : ''}Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-${needsMount ? `import * as Mount from 'foldkit/mount'
+${
+  needsMount
+    ? `import * as Mount from 'foldkit/mount'
 import { Stream } from 'effect'
-` : ''}
+`
+    : ''
+}
 import * as Bubble from '@/${isSx ? 'stylex' : 'ui'}/bubble'
 import * as Button from '@/${isSx ? 'stylex' : 'ui'}/button'
 import * as MessageScroller from '@/${isSx ? 'stylex' : 'ui'}/message-scroller'
 ${isSx ? `\n${STYLE_SOURCE}` : ''}
-${CHAT_SCHEMA}${EXTRA_DATA[kind] === undefined ? '' : `\n${EXTRA_DATA[kind]}`}`;
+${CHAT_SCHEMA}${EXTRA_DATA[kind] === undefined ? '' : `\n${EXTRA_DATA[kind]}`}`
 
-  const toolbar = toolbarSource(kind, isSx);
-  const header = headerSource(kind, isSx);
-  const updateCases = UPDATE_CASES[kind];
+  const toolbar = toolbarSource(kind, isSx)
+  const header = headerSource(kind, isSx)
+  const updateCases = UPDATE_CASES[kind]
   const gotScrollerCase =
     kind === 'opening-position'
       ? ''
@@ -886,7 +899,7 @@ ${CHAT_SCHEMA}${EXTRA_DATA[kind] === undefined ? '' : `\n${EXTRA_DATA[kind]}`}`;
         ),
       }
     }
-`;
+`
   return foldkitApplication({
     title: `Message Scroller — ${fixture.title}`,
     imports,
@@ -917,7 +930,9 @@ ${gotScrollerCase}${updateCases === '' ? '' : `${updateCases}\n`}  }
     view: `${rowSource(kind, isSx)}
 
 const scrollerFrame = (model: Model, h: HtmlBuilder<Message>) =>
-  ${kind === 'visibility' ? `h.div(
+  ${
+    kind === 'visibility'
+      ? `h.div(
     [
       h.OnMount(
         Mount.mapMessage(ObserveVisibleMessages(), message => message),
@@ -926,7 +941,9 @@ const scrollerFrame = (model: Model, h: HtmlBuilder<Message>) =>
     [
       ${frameInner(isSx)},
     ],
-  )` : frameInner(isSx)}
+  )`
+      : frameInner(isSx)
+  }
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Message Scroller — ${fixture.title}',
@@ -937,8 +954,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
     ]),
   ]),
 })`,
-  });
-};
+  })
+}
 
 const frameInner = (isSx: boolean): string => `h.div(
         [h.Class(${isSx ? 'cx(styles.frame)' : `'relative h-72 w-full rounded-md border'`})],
@@ -973,7 +990,7 @@ const frameInner = (isSx: boolean): string => `h.div(
             ),
           ] }, h),
         ],
-      )`;
+      )`
 
 export const messageScrollerExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -982,4 +999,4 @@ export const messageScrollerExamples = (
     title: fixture.title,
     description: fixture.description,
     code: source(fixture, renderer),
-  }));
+  }))

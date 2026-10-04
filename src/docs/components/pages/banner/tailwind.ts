@@ -1,30 +1,36 @@
-import { Schema as S } from 'effect';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import { Schema as S } from 'effect'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-import { definePreviewProgram } from '@/docs/components/pages/authored-page';
-import { bannerFixtures } from '@/docs/components/pages/banner/shared';
-import * as Banner from '@/ui/banner';
-import * as Button from '@/ui/button';
+import { definePreviewProgram } from '@/docs/components/pages/authored-page'
+import { bannerFixtures } from '@/docs/components/pages/banner/shared'
+import * as Banner from '@/ui/banner'
+import * as Button from '@/ui/button'
 
 const GotBannerMessage = defineMessageUnion({
   GotBannerMessage: { index: S.Number, message: Banner.Message },
-});
-type GotBannerMessage = typeof GotBannerMessage.Type;
+})
+type GotBannerMessage = typeof GotBannerMessage.Type
 const BannerPreviewModel = S.Struct({
   _docsPage: S.Literal('banner'),
   banners: S.Array(Banner.Model),
-});
-type BannerPreviewModel = typeof BannerPreviewModel.Type;
+})
+type BannerPreviewModel = typeof BannerPreviewModel.Type
 
 const detailChildren = <Msg>(h: HtmlBuilder<Msg>): Html =>
-  h.div([h.Class('flex flex-col gap-2')], [
-    h.p([h.Class('text-sm text-muted-foreground')], ['Changed settings:']),
-    h.ul([h.Class('list-disc space-y-1 pl-5 text-sm')], [
-      h.li([], ['Authentication method updated']),
-      h.li([], ['Rate limits modified']),
-    ]),
-  ]);
+  h.div(
+    [h.Class('flex flex-col gap-2')],
+    [
+      h.p([h.Class('text-sm text-muted-foreground')], ['Changed settings:']),
+      h.ul(
+        [h.Class('list-disc space-y-1 pl-5 text-sm')],
+        [
+          h.li([], ['Authentication method updated']),
+          h.li([], ['Rate limits modified']),
+        ],
+      ),
+    ],
+  )
 
 export const bannerTailwindPreviewProgram = definePreviewProgram<
   BannerPreviewModel,
@@ -33,17 +39,15 @@ export const bannerTailwindPreviewProgram = definePreviewProgram<
   Model: BannerPreviewModel,
   Message: GotBannerMessage,
   init: index => {
-    const fixture = bannerFixtures[index] ?? bannerFixtures[0];
+    const fixture = bannerFixtures[index] ?? bannerFixtures[0]
     return {
       _docsPage: 'banner',
       banners: fixture.banners.map(banner =>
         Banner.init({
-          ...(banner.defaultIsOpen === true
-            ? { defaultIsOpen: true }
-            : {}),
+          ...(banner.defaultIsOpen === true ? { defaultIsOpen: true } : {}),
         }),
       ),
-    };
+    }
   },
   update: (model, message) => ({
     model: {
@@ -56,7 +60,7 @@ export const bannerTailwindPreviewProgram = definePreviewProgram<
     },
   }),
   view: (index, model, h) => {
-    const fixture = bannerFixtures[index] ?? bannerFixtures[0];
+    const fixture = bannerFixtures[index] ?? bannerFixtures[0]
     return h.div(
       [
         h.Class('mx-auto flex w-full max-w-3xl flex-col gap-3'),
@@ -65,9 +69,9 @@ export const bannerTailwindPreviewProgram = definePreviewProgram<
           : [h.Style({ maxWidth: `${String(fixture.maxWidth)}px` })]),
       ],
       fixture.banners.map((spec, i) => {
-        const banner = model.banners[i];
+        const banner = model.banners[i]
         if (banner === undefined) {
-          return h.empty;
+          return h.empty
         }
         return Banner.banner(
           {
@@ -106,8 +110,8 @@ export const bannerTailwindPreviewProgram = definePreviewProgram<
               : {}),
           },
           h,
-        );
+        )
       }),
-    );
+    )
   },
-});
+})

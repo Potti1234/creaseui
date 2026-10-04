@@ -1,27 +1,27 @@
-import { Schema as S } from 'effect';
-import type { Update } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import { Schema as S } from 'effect'
+import type { Update } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { definePreviewProgram } from '@/docs/components/pages/authored-page';
+import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
   toggleFixtures,
   type ToggleItem,
-} from '@/docs/components/pages/toggle/shared';
-import { taggedStruct } from 'foldkit/schema';
-import * as Icon from '@/lib/icon';
-import * as Toggle from '@/ui/toggle';
+} from '@/docs/components/pages/toggle/shared'
+import { taggedStruct } from 'foldkit/schema'
+import * as Icon from '@/lib/icon'
+import * as Toggle from '@/ui/toggle'
 
 const PreviewModel = S.Struct({
   _docsPage: S.Literal('toggle'),
   states: S.Record(S.String, S.Boolean),
-});
-type PreviewModel = typeof PreviewModel.Type;
+})
+type PreviewModel = typeof PreviewModel.Type
 
 const ToggledPreview = taggedStruct('ToggledTogglePreview', {
   id: S.String,
-});
-type PreviewMessage = typeof ToggledPreview.Type;
-const PreviewMessage = S.Union([ToggledPreview]);
+})
+type PreviewMessage = typeof ToggledPreview.Type
+const PreviewMessage = S.Union([ToggledPreview])
 
 const itemToggle = (
   item: ToggleItem,
@@ -43,7 +43,7 @@ const itemToggle = (
           : [Icon.icon(item.icon, {}, h), item.label],
     },
     h,
-  );
+  )
 
 export const toggleTailwindPreviewProgram = definePreviewProgram<
   PreviewModel,
@@ -52,13 +52,11 @@ export const toggleTailwindPreviewProgram = definePreviewProgram<
   Model: PreviewModel,
   Message: PreviewMessage,
   init: index => {
-    const fixture = toggleFixtures[index] ?? toggleFixtures[0];
+    const fixture = toggleFixtures[index] ?? toggleFixtures[0]
     return {
       _docsPage: 'toggle',
-      states: Object.fromEntries(
-        fixture.items.map(item => [item.key, false]),
-      ),
-    };
+      states: Object.fromEntries(fixture.items.map(item => [item.key, false])),
+    }
   },
   update: (model, message): Update.Return<PreviewModel, PreviewMessage> => {
     switch (message._tag) {
@@ -71,18 +69,15 @@ export const toggleTailwindPreviewProgram = definePreviewProgram<
               [message.id]: !(model.states[message.id] ?? false),
             },
           },
-        };
+        }
     }
   },
   view: (index, model, h) => {
-    const fixture = toggleFixtures[index] ?? toggleFixtures[0];
-    const toggles = fixture.items.map(item => itemToggle(item, model, h));
+    const fixture = toggleFixtures[index] ?? toggleFixtures[0]
+    const toggles = fixture.items.map(item => itemToggle(item, model, h))
     if (fixture.kind === 'single') {
-      return toggles[0] ?? h.div([], []);
+      return toggles[0] ?? h.div([], [])
     }
-    return h.div(
-      [h.Class('flex flex-wrap items-center gap-2')],
-      toggles,
-    );
+    return h.div([h.Class('flex flex-wrap items-center gap-2')], toggles)
   },
-});
+})

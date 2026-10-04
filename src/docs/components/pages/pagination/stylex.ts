@@ -1,13 +1,13 @@
-import type { Option } from 'effect';
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Option } from 'effect'
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
-import { paginationFixtures } from '@/docs/components/pages/pagination/shared';
-import * as Field from '@/stylex/field';
-import * as Pagination from '@/stylex/pagination';
-import * as Select from '@/stylex/select';
-import { className } from '@/stylex/style';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import { paginationFixtures } from '@/docs/components/pages/pagination/shared'
+import * as Field from '@/stylex/field'
+import * as Pagination from '@/stylex/pagination'
+import * as Select from '@/stylex/select'
+import { className } from '@/stylex/style'
 
 const styles = stylex.create({
   row: {
@@ -19,19 +19,19 @@ const styles = stylex.create({
   field: { width: 'fit-content' },
   trigger: { width: '5rem' },
   pagination: { marginInline: 0, width: 'auto' },
-});
+})
 
 const rowsItems = [
   { value: '10', label: '10' },
   { value: '25', label: '25' },
   { value: '50', label: '50' },
   { value: '100', label: '100' },
-] as const;
+] as const
 
 interface PreviewShape {
-  readonly page: number;
-  readonly select: Select.Model;
-  readonly rowsPerPage: Option.Option<string>;
+  readonly page: number
+  readonly select: Select.Model
+  readonly rowsPerPage: Option.Option<string>
 }
 
 const numberedItems = <Msg>(
@@ -54,7 +54,8 @@ const numberedItems = <Msg>(
         ],
       },
       h,
-    ));
+    ),
+  )
 
 const iconsOnlyView = <Msg>(
   model: PreviewShape,
@@ -127,7 +128,7 @@ const iconsOnlyView = <Msg>(
         h,
       ),
     ],
-  );
+  )
 
 export const paginationStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   index: number,
@@ -135,8 +136,8 @@ export const paginationStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const preview = model as PreviewShape;
-  const fixture = paginationFixtures[index] ?? paginationFixtures[0];
+  const preview = model as PreviewShape
+  const fixture = paginationFixtures[index] ?? paginationFixtures[0]
   switch (fixture.kind) {
     case 'action':
       return Pagination.paginationPages(
@@ -153,7 +154,7 @@ export const paginationStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           ariaLabel: 'Search result pages',
         },
         h,
-      );
+      )
     case 'link':
       return Pagination.paginationPages(
         {
@@ -165,7 +166,7 @@ export const paginationStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           ariaLabel: 'Invoice pages',
         },
         h,
-      );
+      )
     case 'simple':
       return Pagination.pagination(
         {
@@ -178,9 +179,9 @@ export const paginationStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           ],
         },
         h,
-      );
+      )
     case 'icons':
-      return iconsOnlyView(preview, onMessageJson, h);
+      return iconsOnlyView(preview, onMessageJson, h)
     case 'rtl':
       return Pagination.pagination(
         {
@@ -224,6 +225,6 @@ export const paginationStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           ],
         },
         h,
-      );
+      )
   }
-};
+}

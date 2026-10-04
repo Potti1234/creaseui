@@ -20,7 +20,9 @@ const catalog = JSON.parse(
   ),
 )
 const adapterNames = Object.keys(
-  JSON.parse(readFileSync(join(root, 'scripts', 'icon-adapter-map.json'), 'utf8')),
+  JSON.parse(
+    readFileSync(join(root, 'scripts', 'icon-adapter-map.json'), 'utf8'),
+  ),
 )
 const referencedIconNames = sourcePaths.flatMap(path => {
   const sourceFile = ts.createSourceFile(
@@ -39,10 +41,15 @@ const referencedIconNames = sourcePaths.flatMap(path => {
     if (ts.isCallExpression(node)) {
       const callee = node.expression
       const isIconCall =
-        (ts.isIdentifier(callee) && (callee.text === 'icon' || callee.text === 'named')) ||
+        (ts.isIdentifier(callee) &&
+          (callee.text === 'icon' || callee.text === 'named')) ||
         (ts.isPropertyAccessExpression(callee) && callee.name.text === 'icon')
       const firstArgument = node.arguments[0]
-      if (isIconCall && firstArgument !== undefined && ts.isStringLiteralLike(firstArgument)) {
+      if (
+        isIconCall &&
+        firstArgument !== undefined &&
+        ts.isStringLiteralLike(firstArgument)
+      ) {
         names.push(firstArgument.text)
       }
     }
@@ -54,13 +61,13 @@ const referencedIconNames = sourcePaths.flatMap(path => {
 const requestedIconNames = Array.from(
   new Set([...adapterNames, ...referencedIconNames]),
 ).sort()
-const missingIconNames = requestedIconNames.filter(name => catalog[name] === undefined)
+const missingIconNames = requestedIconNames.filter(
+  name => catalog[name] === undefined,
+)
 if (missingIconNames.length > 0) {
   throw new Error(`Unknown Lucide icon names: ${missingIconNames.join(', ')}`)
 }
-const names = Array.from(
-  new Set(requestedIconNames),
-)
+const names = Array.from(new Set(requestedIconNames))
 const selectedNodes = Object.fromEntries(
   names.map(name => {
     const node = catalog[name]

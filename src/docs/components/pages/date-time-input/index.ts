@@ -1,6 +1,6 @@
-import { authoredPage } from '@/docs/components/pages/authored-page';
-import { dateTimeInputExamples } from '@/docs/components/pages/date-time-input/shared';
-import { dateTimeInputTailwindPreviewProgram } from '@/docs/components/pages/date-time-input/tailwind';
+import { authoredPage } from '@/docs/components/pages/authored-page'
+import { dateTimeInputExamples } from '@/docs/components/pages/date-time-input/shared'
+import { dateTimeInputTailwindPreviewProgram } from '@/docs/components/pages/date-time-input/tailwind'
 
 export const dateTimeInputPage = authoredPage({
   slug: 'date-time-input',
@@ -12,7 +12,7 @@ export const dateTimeInputPage = authoredPage({
     description:
       'A combined date and time picker: a typed date input with a calendar popover beside a typed time input.',
     architecture:
-      'Date Time Input is a foldkit submodel owning one {date, time} value, the date half\'s typed text + embedded DatePicker, the time half\'s typed text + optional preset-time Popover, and per-half invalid flags. A commit only emits ChangedValue once both halves exist — a date pick with no time fills from the wall clock and clamps same-day min/max bounds.',
+      "Date Time Input is a foldkit submodel owning one {date, time} value, the date half's typed text + embedded DatePicker, the time half's typed text + optional preset-time Popover, and per-half invalid flags. A commit only emits ChangedValue once both halves exist — a date pick with no time fills from the wall clock and clamps same-day min/max bounds.",
     apiHref:
       'https://github.com/facebook/astryx/blob/main/packages/core/src/DateTimeInput/DateTimeInput.tsx',
     styling:
@@ -21,9 +21,18 @@ export const dateTimeInputPage = authoredPage({
       'The date input is a combobox with aria-haspopup=dialog; the time input gains combobox semantics only when timeOptionInterval opts the listbox in. Each half has its own assertive live region announcing rejected typed input, and the label stays a single accessible name over the pair.',
     keyboard: [
       ['Trigger button or Alt+Down', 'Opens the calendar popover.'],
-      ['Calendar day click', 'Commits the date (filling time if empty) and closes.'],
-      ['ArrowUp / ArrowDown (time half)', 'Steps the committed time by timeIncrementMinutes.'],
-      ['Enter / Tab / blur', 'Commits typed text; invalid entries revert and mark the half.'],
+      [
+        'Calendar day click',
+        'Commits the date (filling time if empty) and closes.',
+      ],
+      [
+        'ArrowUp / ArrowDown (time half)',
+        'Steps the committed time by timeIncrementMinutes.',
+      ],
+      [
+        'Enter / Tab / blur',
+        'Commits typed text; invalid entries revert and mark the half.',
+      ],
       ['Escape', 'Closes the open popover without committing.'],
     ],
     composition:
@@ -31,4 +40,4 @@ export const dateTimeInputPage = authoredPage({
     examples: dateTimeInputExamples('tailwind'),
     stylexExamples: dateTimeInputExamples('stylex'),
   },
-});
+})

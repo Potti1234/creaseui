@@ -1,20 +1,25 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   sideNavFixtures,
   type SideNavFixtureHeading,
   type SideNavFixtureItem,
   type SideNavFixtureNav,
-} from '@/docs/components/pages/side-nav/shared';
-import * as Icon from '@/lib/icon';
-import * as Badge from '@/stylex/badge';
-import * as SideNav from '@/stylex/side-nav';
-import { className } from '@/stylex/style';
+} from '@/docs/components/pages/side-nav/shared'
+import * as Icon from '@/lib/icon'
+import * as Badge from '@/stylex/badge'
+import * as SideNav from '@/stylex/side-nav'
+import { className } from '@/stylex/style'
 
 const styles = stylex.create({
-  wrap: { gap: '1.5rem', alignItems: 'flex-start', display: 'flex', height: '24rem', },
+  wrap: {
+    gap: '1.5rem',
+    alignItems: 'flex-start',
+    display: 'flex',
+    height: '24rem',
+  },
   navWrap: { height: '24rem' },
   itemIcon: { height: '0.875rem', width: '0.875rem' },
   headingIconTile: {
@@ -31,7 +36,8 @@ const styles = stylex.create({
   endText: {
     color: 'var(--muted-foreground)',
     flexShrink: 0,
-    fontSize: '0.75rem', lineHeight: '1rem',
+    fontSize: '0.75rem',
+    lineHeight: '1rem',
   },
   endMenu: {
     padding: 0,
@@ -51,7 +57,7 @@ const styles = stylex.create({
     height: '1.25rem',
     width: '1.25rem',
   },
-});
+})
 
 const decorateItems = <Msg>(
   items: ReadonlyArray<SideNavFixtureItem>,
@@ -95,7 +101,7 @@ const decorateItems = <Msg>(
     ...(item.children === undefined
       ? {}
       : { children: decorateItems(item.children, h) }),
-  }));
+  }))
 
 const decorateHeading = <Msg>(
   heading: SideNavFixtureHeading,
@@ -130,7 +136,7 @@ const decorateHeading = <Msg>(
     : {
         menu: heading.menu.map(label => ({ label, href: '#' })),
       }),
-});
+})
 
 export const sideNavStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
@@ -138,11 +144,11 @@ export const sideNavStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const fixture = sideNavFixtures[exampleIndex] ?? sideNavFixtures[0];
-  const navs = (model as { navs: Record<string, SideNav.Model> }).navs;
+  const fixture = sideNavFixtures[exampleIndex] ?? sideNavFixtures[0]
+  const navs = (model as { navs: Record<string, SideNav.Model> }).navs
   const navViews = fixture.navs.map((nav: SideNavFixtureNav, index) => {
-    const key = `nav-${String(index)}`;
-    const navModel = navs[key] ?? SideNav.init({ id: key });
+    const key = `nav-${String(index)}`
+    const navModel = navs[key] ?? SideNav.init({ id: key })
     return h.submodel({
       slotId: `docs-stylex-side-nav-${String(index)}`,
       model: navModel,
@@ -183,11 +189,14 @@ export const sideNavStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
             message,
           }),
         ),
-    });
-  });
-  return h.div([h.Class('w-full max-w-xl')], [
-    fixture.navs.length > 1
-      ? h.div([h.Class(className(styles.wrap))], navViews)
-      : h.div([h.Class(className(styles.navWrap))], navViews),
-  ]);
-};
+    })
+  })
+  return h.div(
+    [h.Class('w-full max-w-xl')],
+    [
+      fixture.navs.length > 1
+        ? h.div([h.Class(className(styles.wrap))], navViews)
+        : h.div([h.Class(className(styles.navWrap))], navViews),
+    ],
+  )
+}

@@ -1,5 +1,5 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type MarkerKind =
   | 'demo'
@@ -9,16 +9,18 @@ export type MarkerKind =
   | 'separator'
   | 'border'
   | 'icon'
-  | 'linksAndButtons';
+  | 'linksAndButtons'
 
 export interface MarkerFixture {
-  readonly title: string;
-  readonly description?: string;
-  readonly heroOnly?: boolean;
-  readonly kind: MarkerKind;
+  readonly title: string
+  readonly description?: string
+  readonly heroOnly?: boolean
+  readonly kind: MarkerKind
 }
 
-export const markerFixtures: Readonly<[MarkerFixture, ...Array<MarkerFixture>]> = [
+export const markerFixtures: Readonly<
+  [MarkerFixture, ...Array<MarkerFixture>]
+> = [
   { title: 'Basic', heroOnly: true, kind: 'demo' },
   {
     title: 'Variants',
@@ -27,22 +29,26 @@ export const markerFixtures: Readonly<[MarkerFixture, ...Array<MarkerFixture>]> 
   },
   {
     title: 'Status',
-    description: 'Use role="status" with a spinner icon for live activity updates.',
+    description:
+      'Use role="status" with a spinner icon for live activity updates.',
     kind: 'status',
   },
   {
     title: 'Shimmer',
-    description: 'Apply the shimmer style to marker content while work is in progress.',
+    description:
+      'Apply the shimmer style to marker content while work is in progress.',
     kind: 'shimmer',
   },
   {
     title: 'Separator',
-    description: 'Separate groups in a timeline with a centered textual marker.',
+    description:
+      'Separate groups in a timeline with a centered textual marker.',
     kind: 'separator',
   },
   {
     title: 'Border',
-    description: 'Use a border marker as a compact heading between adjacent regions.',
+    description:
+      'Use a border marker as a compact heading between adjacent regions.',
     kind: 'border',
   },
   {
@@ -52,51 +58,52 @@ export const markerFixtures: Readonly<[MarkerFixture, ...Array<MarkerFixture>]> 
   },
   {
     title: 'Links and Buttons',
-    description: 'Render the marker as a link or button for interactive timeline entries.',
+    description:
+      'Render the marker as a link or button for interactive timeline entries.',
     kind: 'linksAndButtons',
   },
-];
+]
 
-const sq = (value: string): string => value.replaceAll("'", "\\'");
+const sq = (value: string): string => value.replaceAll("'", "\\'")
 
 const kindUsesIcon = (kind: MarkerKind): boolean =>
   kind === 'demo' ||
   kind === 'status' ||
   kind === 'border' ||
   kind === 'icon' ||
-  kind === 'linksAndButtons';
+  kind === 'linksAndButtons'
 const kindUsesSpinner = (kind: MarkerKind): boolean =>
-  kind === 'demo' || kind === 'status';
-const kindUsesSonner = (kind: MarkerKind): boolean => kind === 'linksAndButtons';
+  kind === 'demo' || kind === 'status'
+const kindUsesSonner = (kind: MarkerKind): boolean => kind === 'linksAndButtons'
 
 const emitImports = (fixture: MarkerFixture, isStyleX: boolean): string => {
-  const base = isStyleX ? 'stylex' : 'ui';
+  const base = isStyleX ? 'stylex' : 'ui'
   const parts: Array<string> = [
     "import { Command, Runtime, Subscription, Update } from 'foldkit'",
     "import { type Document, type HtmlBuilder } from 'foldkit/html'",
     "import { defineMessageUnion } from 'foldkit/message'",
-  ];
+  ]
   if (isStyleX) {
-    parts.push('', "import * as stylex from '@stylexjs/stylex'");
+    parts.push('', "import * as stylex from '@stylexjs/stylex'")
   }
   if (kindUsesIcon(fixture.kind)) {
-    parts.push(`import * as Icon from '@/lib/icon'`);
+    parts.push(`import * as Icon from '@/lib/icon'`)
   }
-  parts.push(`import * as Marker from '@/${base}/marker'`);
+  parts.push(`import * as Marker from '@/${base}/marker'`)
   if (kindUsesSonner(fixture.kind)) {
-    parts.push(`import * as Sonner from '@/${base}/sonner'`);
+    parts.push(`import * as Sonner from '@/${base}/sonner'`)
   }
   if (kindUsesSpinner(fixture.kind)) {
-    parts.push(`import * as Spinner from '@/${base}/spinner'`);
+    parts.push(`import * as Spinner from '@/${base}/spinner'`)
   }
   if (isStyleX) {
-    parts.push(`import { tokens } from '@/stylex/tokens.stylex'`);
+    parts.push(`import { tokens } from '@/stylex/tokens.stylex'`)
   }
-  return parts.join('\n');
-};
+  return parts.join('\n')
+}
 
 const emitStyles = (fixture: MarkerFixture): string => {
-  const extras: Array<string> = [];
+  const extras: Array<string> = []
   switch (fixture.kind) {
     case 'demo':
     case 'variants':
@@ -106,40 +113,41 @@ const emitStyles = (fixture: MarkerFixture): string => {
     case 'linksAndButtons':
       extras.push(
         "  stack: { display: 'flex', flexDirection: 'column', gap: '2rem', width: '100%', maxWidth: '24rem', paddingTop: '3rem', paddingBottom: '3rem' },",
-      );
-      break;
+      )
+      break
     case 'border':
       extras.push(
         "  stack: { display: 'flex', flexDirection: 'column', gap: '0.75rem', width: '100%', maxWidth: '24rem', paddingTop: '3rem', paddingBottom: '3rem' },",
-      );
-      break;
+      )
+      break
     case 'icon':
       extras.push(
         "  stack: { display: 'flex', flexDirection: 'column', gap: '3rem', width: '100%', maxWidth: '24rem', paddingTop: '3rem', paddingBottom: '3rem' },",
-      );
-      break;
+      )
+      break
   }
-  return extras.join('\n');
-};
+  return extras.join('\n')
+}
 
 const emitModel = (fixture: MarkerFixture): string => {
-  const fields: Array<string> = [];
+  const fields: Array<string> = []
   if (kindUsesSonner(fixture.kind)) {
-    fields.push('  notifications: Sonner.Model,');
+    fields.push('  notifications: Sonner.Model,')
   }
-  const struct = fields.length === 0
-    ? 'export const Model = S.Struct({})'
-    : `export const Model = S.Struct({\n${fields.join('\n')}\n})`;
-  return `${struct}\nexport type Model = typeof Model.Type`;
-};
+  const struct =
+    fields.length === 0
+      ? 'export const Model = S.Struct({})'
+      : `export const Model = S.Struct({\n${fields.join('\n')}\n})`
+  return `${struct}\nexport type Model = typeof Model.Type`
+}
 
 const emitMessages = (fixture: MarkerFixture): string => {
-  const fields: Array<string> = [];
+  const fields: Array<string> = []
   if (kindUsesSonner(fixture.kind)) {
     fields.push(
       '  ClickedRevert: {},',
       '  GotSonnerMessage: { message: S.Union([Sonner.Message, Sonner.ActivatedToastAction]) },',
-    );
+    )
   }
   if (fields.length === 0) {
     return `import { taggedStruct } from 'foldkit/schema'
@@ -147,24 +155,24 @@ const emitMessages = (fixture: MarkerFixture): string => {
 // closed Message schema so the program boundary remains explicit.
 export const NoOp = taggedStruct('NoOpMarker${fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')}');
 export const Message = S.Union([NoOp])
-export type Message = typeof Message.Type`;
+export type Message = typeof Message.Type`
   }
   return `export const Message = defineMessageUnion({
 ${fields.join('\n')}
 })
-export type Message = typeof Message.Type`;
-};
+export type Message = typeof Message.Type`
+}
 
 const emitInit = (fixture: MarkerFixture): string => {
-  const fields: Array<string> = [];
+  const fields: Array<string> = []
   if (kindUsesSonner(fixture.kind)) {
-    fields.push("notifications: Sonner.init({ id: 'marker-notifications' })");
+    fields.push("notifications: Sonner.init({ id: 'marker-notifications' })")
   }
-  return `export const init = (): Update.Return<Model, Message> => ({ model: { ${fields.join(', ')} } })`;
-};
+  return `export const init = (): Update.Return<Model, Message> => ({ model: { ${fields.join(', ')} } })`
+}
 
 const emitUpdate = (fixture: MarkerFixture): string => {
-  const entries: Array<string> = [];
+  const entries: Array<string> = []
   if (kindUsesSonner(fixture.kind)) {
     entries.push(
       `    case 'ClickedRevert': {
@@ -182,30 +190,30 @@ const emitUpdate = (fixture: MarkerFixture): string => {
         commands: Command.mapMessages(commands, next => Message.GotSonnerMessage({ message: next })),
       }
     }`,
-    );
+    )
   }
   if (entries.length === 0) {
     return `export const update = (
   model: Model,
   _message: Message,
-): Update.Return<Model, Message> => ({ model: model })`;
+): Update.Return<Model, Message> => ({ model: model })`
   }
   return `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
 ${entries.join('\n')}
   }
-}`;
-};
+}`
+}
 
 const emitBody = (fixture: MarkerFixture, isStyleX: boolean): string => {
   const cls = (twClass: string, sxName: string): string =>
-    isStyleX ? `stylex.props(styles.${sxName}).className ?? ''` : `'${twClass}'`;
-  const stack = cls('flex w-full max-w-sm flex-col gap-8 py-12', 'stack');
+    isStyleX ? `stylex.props(styles.${sxName}).className ?? ''` : `'${twClass}'`
+  const stack = cls('flex w-full max-w-sm flex-col gap-8 py-12', 'stack')
   const icon = (name: string): string =>
-    `Marker.markerIcon({ children: [Icon.icon('${name}', {}, h)] }, h)`;
+    `Marker.markerIcon({ children: [Icon.icon('${name}', {}, h)] }, h)`
   const content = (text: string, shimmer = false): string =>
-    `Marker.markerContent({ ${shimmer ? 'shimmer: true, ' : ''}children: ['${text}'] }, h)`;
-  const spinner = `Spinner.spinner({ size: 'sm', isDecorative: true }, h)`;
+    `Marker.markerContent({ ${shimmer ? 'shimmer: true, ' : ''}children: ['${text}'] }, h)`
+  const spinner = `Spinner.spinner({ size: 'sm', isDecorative: true }, h)`
   switch (fixture.kind) {
     case 'demo':
       return `    h.div([h.Class(${stack})], [
@@ -232,7 +240,7 @@ const emitBody = (fixture: MarkerFixture, isStyleX: boolean): string => {
           ${content('Explored 4 files')},
         ],
       }, h),
-    ]),`;
+    ]),`
     case 'variants':
       return `    h.div([h.Class(${stack})], [
       Marker.marker({
@@ -246,7 +254,7 @@ const emitBody = (fixture: MarkerFixture, isStyleX: boolean): string => {
         variant: 'border',
         children: [${content('A border marker for row boundaries.')}],
       }, h),
-    ]),`;
+    ]),`
     case 'status':
       return `    h.div([h.Class(${stack})], [
       Marker.marker({
@@ -264,7 +272,7 @@ const emitBody = (fixture: MarkerFixture, isStyleX: boolean): string => {
           ${content('Running tests')},
         ],
       }, h),
-    ]),`;
+    ]),`
     case 'shimmer':
       return `    h.div([h.Class(${stack})], [
       Marker.marker({
@@ -276,7 +284,7 @@ const emitBody = (fixture: MarkerFixture, isStyleX: boolean): string => {
         purpose: 'status',
         children: [${content('Reading 4 files', true)}],
       }, h),
-    ]),`;
+    ]),`
     case 'separator':
       return `    h.div([h.Class(${stack})], [
       Marker.marker({
@@ -291,7 +299,7 @@ const emitBody = (fixture: MarkerFixture, isStyleX: boolean): string => {
         variant: 'separator',
         children: [${content('Conversation compacted')}],
       }, h),
-    ]),`;
+    ]),`
     case 'border':
       return `    h.div([h.Class(${cls('flex w-full max-w-sm flex-col gap-3 py-12', 'stack')})], [
       Marker.marker({
@@ -315,7 +323,7 @@ const emitBody = (fixture: MarkerFixture, isStyleX: boolean): string => {
           ${content('Opened implementation notes')},
         ],
       }, h),
-    ]),`;
+    ]),`
     case 'icon':
       return `    h.div([h.Class(${cls('flex w-full max-w-sm flex-col gap-12 py-12', 'stack')})], [
       Marker.marker({
@@ -338,7 +346,7 @@ const emitBody = (fixture: MarkerFixture, isStyleX: boolean): string => {
           ${content('Syncing completed')},
         ],
       }, h),
-    ]),`;
+    ]),`
     case 'linksAndButtons':
       return `    h.div([h.Class(${stack})], [
       Marker.marker({
@@ -361,24 +369,31 @@ const emitBody = (fixture: MarkerFixture, isStyleX: boolean): string => {
         model: model.notifications,
         toParentMessage: message => Message.GotSonnerMessage({ message }),
       }, h),
-    ]),`;
+    ]),`
   }
-};
+}
 
-const emitApplication = (fixture: MarkerFixture, renderer: 'tailwind' | 'stylex'): string => {
-  const isStyleX = renderer === 'stylex';
-  const stylesBlock = isStyleX ? emitStyles(fixture) : '';
+const emitApplication = (
+  fixture: MarkerFixture,
+  renderer: 'tailwind' | 'stylex',
+): string => {
+  const isStyleX = renderer === 'stylex'
+  const stylesBlock = isStyleX ? emitStyles(fixture) : ''
   const bodyStart = isStyleX
     ? `h.main([h.Class(stylex.props(styles.page).className ?? '')], [`
-    : `h.main([h.Class('flex min-h-screen items-center justify-center p-4')], [`;
+    : `h.main([h.Class('flex min-h-screen items-center justify-center p-4')], [`
   const pageStyle = isStyleX
     ? `const styles = stylex.create({
-  page: { display: 'flex', minHeight: '100vh', alignItems: 'center', justifyContent: 'center', padding: '1rem' },${stylesBlock === '' ? '' : `
-${stylesBlock}`}
+  page: { display: 'flex', minHeight: '100vh', alignItems: 'center', justifyContent: 'center', padding: '1rem' },${
+    stylesBlock === ''
+      ? ''
+      : `
+${stylesBlock}`
+  }
 })
 
 `
-    : '';
+    : ''
   return foldkitApplication({
     title: `Marker — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'\n${emitImports(fixture, isStyleX)}\n\n${pageStyle}`,
@@ -392,8 +407,8 @@ ${stylesBlock}`}
     ${emitBody(fixture, isStyleX)}
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const markerExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -405,4 +420,4 @@ export const markerExamples = (
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer),
-  }));
+  }))

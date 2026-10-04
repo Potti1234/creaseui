@@ -83,7 +83,7 @@ const renderSegmentedControl = <Value extends string, Msg>(
       selectedValue: Option.some(props.value),
       ariaLabel: props.ariaLabel,
       isDisabled,
-      options: props.options.map((option) => ({
+      options: props.options.map(option => ({
         value: option.value,
         ...(option.isDisabled === true ? { isDisabled: true } : {}),
       })),
@@ -94,7 +94,9 @@ const renderSegmentedControl = <Value extends string, Msg>(
         h.DataAttribute('slot', 'segmented-control'),
         h.DataAttribute('size', size),
         h.DataAttribute('layout', layout),
-        ...(isDisabled ? [h.AriaDisabled(true), h.DataAttribute('disabled', '')] : []),
+        ...(isDisabled
+          ? [h.AriaDisabled(true), h.DataAttribute('disabled', '')]
+          : []),
         h.Class(cn(GROUP_CLASS, props.class)),
       ],
     },
@@ -152,7 +154,9 @@ export type SegmentedControlBundle<Value extends string> = Readonly<{
   ) => Html
 }>
 
-export const create = <Value extends string = string>(): SegmentedControlBundle<Value> => {
+export const create = <
+  Value extends string = string,
+>(): SegmentedControlBundle<Value> => {
   const behavior = createBehavior<Value>()
   return {
     update: behavior.update,

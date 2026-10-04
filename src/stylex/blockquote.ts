@@ -1,9 +1,9 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { ComponentLayoutStyle } from './contracts';
-import { className } from './style';
-import { tokens } from './tokens.stylex';
+import type { ComponentLayoutStyle } from './contracts'
+import { className } from './style'
+import { tokens } from './tokens.stylex'
 
 /* Ported from Meta Astryx Blockquote (packages/core/src/Blockquote/Blockquote.tsx)
    — examples and visual spec adapted to Crease UI tokens. */
@@ -28,13 +28,13 @@ const styles = stylex.create({
     lineHeight: 1.6667,
     marginBlockStart: '0.5rem',
   },
-});
+})
 
 export type BlockquoteProps = Readonly<{
-  children: ReadonlyArray<Html | string>;
-  cite?: string;
-  layoutStyle?: ComponentLayoutStyle;
-}>;
+  children: ReadonlyArray<Html | string>
+  cite?: string
+  layoutStyle?: ComponentLayoutStyle
+}>
 
 export const blockquote = <Msg>(
   props: BlockquoteProps,
@@ -59,4 +59,4 @@ export const blockquote = <Msg>(
             ),
           ]),
     ],
-  );
+  )

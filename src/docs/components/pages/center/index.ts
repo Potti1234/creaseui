@@ -1,11 +1,11 @@
-import { authoredPage } from '@/docs/components/pages/authored-page';
-import { centerExamples } from '@/docs/components/pages/center/shared';
-import { centerTailwindPreviews } from '@/docs/components/pages/center/tailwind';
+import { authoredPage } from '@/docs/components/pages/authored-page'
+import { centerExamples } from '@/docs/components/pages/center/shared'
+import { centerTailwindPreviews } from '@/docs/components/pages/center/tailwind'
 
 const tailwindExamples = centerExamples('tailwind').map((example, index) => ({
   ...example,
   staticPreview: (centerTailwindPreviews[index] ?? centerTailwindPreviews[0])!,
-}));
+}))
 
 export const centerPage = authoredPage({
   slug: 'center',
@@ -27,4 +27,4 @@ export const centerPage = authoredPage({
     examples: tailwindExamples,
     stylexExamples: centerExamples('stylex'),
   },
-});
+})

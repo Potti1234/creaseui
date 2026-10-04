@@ -7,10 +7,10 @@ latest commit on `main`. After releases begin, the current minor line receives
 security fixes; older minor lines receive fixes only when explicitly listed
 here.
 
-| Version | Supported |
-| --- | --- |
-| `main` / latest `0.x` | Yes |
-| Older `0.x` lines | No |
+| Version               | Supported |
+| --------------------- | --------- |
+| `main` / latest `0.x` | Yes       |
+| Older `0.x` lines     | No        |
 
 ## Reporting a vulnerability
 

@@ -1,30 +1,30 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
-import { transferListFixtures } from '@/docs/components/pages/transfer-list/shared';
-import * as TransferList from '@/stylex/transfer-list';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import { transferListFixtures } from '@/docs/components/pages/transfer-list/shared'
+import * as TransferList from '@/stylex/transfer-list'
 
 interface PreviewOption {
-  readonly value: string;
-  readonly label: string;
-  readonly description?: string | undefined;
-  readonly group?: string | undefined;
-  readonly isTransferDisabled?: boolean | undefined;
-  readonly isReorderDisabled?: boolean | undefined;
-  readonly disabledMessage?: string | undefined;
+  readonly value: string
+  readonly label: string
+  readonly description?: string | undefined
+  readonly group?: string | undefined
+  readonly isTransferDisabled?: boolean | undefined
+  readonly isReorderDisabled?: boolean | undefined
+  readonly disabledMessage?: string | undefined
 }
 
 interface PreviewShape {
-  readonly list: TransferList.Model;
-  readonly list2: TransferList.Model;
-  readonly options: ReadonlyArray<PreviewOption>;
-  readonly isReorderable: boolean;
+  readonly list: TransferList.Model
+  readonly list2: TransferList.Model
+  readonly options: ReadonlyArray<PreviewOption>
+  readonly isReorderable: boolean
 }
 
 const cleanOptions = (
   rows: ReadonlyArray<PreviewOption>,
 ): ReadonlyArray<TransferList.TransferListOption> =>
-  rows.map((row) => ({
+  rows.map(row => ({
     value: row.value,
     label: row.label,
     ...(row.description === undefined ? {} : { description: row.description }),
@@ -38,7 +38,7 @@ const cleanOptions = (
     ...(row.disabledMessage === undefined
       ? {}
       : { disabledMessage: row.disabledMessage }),
-  }));
+  }))
 
 export const transferListStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   index: number,
@@ -46,13 +46,13 @@ export const transferListStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const preview = model as PreviewShape;
-  const fixture = transferListFixtures[index] ?? transferListFixtures[0];
-  const options = cleanOptions(preview.options);
+  const preview = model as PreviewShape
+  const fixture = transferListFixtures[index] ?? transferListFixtures[0]
+  const options = cleanOptions(preview.options)
   const toList = (message: TransferList.Message): Msg =>
-    onMessageJson(JSON.stringify({ _tag: 'GotListMessage', message }));
+    onMessageJson(JSON.stringify({ _tag: 'GotListMessage', message }))
   const toList2 = (message: TransferList.Message): Msg =>
-    onMessageJson(JSON.stringify({ _tag: 'GotList2Message', message }));
+    onMessageJson(JSON.stringify({ _tag: 'GotList2Message', message }))
   const first = TransferList.transferList(
     {
       model: preview.list,
@@ -83,29 +83,32 @@ export const transferListStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         : { noResultsText: fixture.noResultsText }),
     },
     h,
-  );
+  )
   if (fixture.layout !== 'empty-pair') {
-    return first;
+    return first
   }
-  return h.div([h.Class('flex flex-col gap-6')], [
-    first,
-    h.hr([h.Class('border-border')]),
-    TransferList.transferList(
-      {
-        model: preview.list2,
-        toParentMessage: toList2,
-        label: 'Report fields',
-        description:
-          'A query that matches nothing replaces both panels with the no-results copy.',
-        options,
-        selectedLabel: 'In report',
-        availableLabel: 'Available',
-        hasSearch: true,
-        searchLabel: 'Search report fields',
-        searchPlaceholder: 'Try a term that matches nothing',
-        noResultsText: 'No field matches that search.',
-      },
-      h,
-    ),
-  ]);
-};
+  return h.div(
+    [h.Class('flex flex-col gap-6')],
+    [
+      first,
+      h.hr([h.Class('border-border')]),
+      TransferList.transferList(
+        {
+          model: preview.list2,
+          toParentMessage: toList2,
+          label: 'Report fields',
+          description:
+            'A query that matches nothing replaces both panels with the no-results copy.',
+          options,
+          selectedLabel: 'In report',
+          availableLabel: 'Available',
+          hasSearch: true,
+          searchLabel: 'Search report fields',
+          searchPlaceholder: 'Try a term that matches nothing',
+          noResultsText: 'No field matches that search.',
+        },
+        h,
+      ),
+    ],
+  )
+}

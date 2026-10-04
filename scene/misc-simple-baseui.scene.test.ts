@@ -52,8 +52,7 @@ type Model = Readonly<{
 }>
 
 type Message = Readonly<
-  | { _tag: 'Typed'; value: string }
-  | { _tag: 'Changed'; value: string }
+  { _tag: 'Typed'; value: string } | { _tag: 'Changed'; value: string }
 >
 
 const initialModel = (value = ''): Model => ({ value })
@@ -134,7 +133,10 @@ type MiscModule = Readonly<{
   separator: <Msg>(props: SeparatorProps, h: HtmlBuilder<Msg>) => Html
   input: <Msg>(props: InputProps<Msg>, h: HtmlBuilder<Msg>) => Html
   label: <Msg>(props: LabelProps, h: HtmlBuilder<Msg>) => Html
-  nativeSelect: <Msg>(props: NativeSelectProps<Msg>, h: HtmlBuilder<Msg>) => Html
+  nativeSelect: <Msg>(
+    props: NativeSelectProps<Msg>,
+    h: HtmlBuilder<Msg>,
+  ) => Html
 }>
 
 /**
@@ -156,15 +158,18 @@ const inputEl = Scene.selector('[data-slot="input"]')
 const selectEl = Scene.selector('[data-slot="native-select"]')
 const combobox = Scene.role('combobox')
 
-const verifyRenderer = (name: string, Module: MiscModule, custom: CustomStyling) => {
+const verifyRenderer = (
+  name: string,
+  Module: MiscModule,
+  custom: CustomStyling,
+) => {
   describe(`${name} misc-simple (Base UI port)`, () => {
     describe('Separator', () => {
       it('renders a div with the separator role', () => {
         Scene.scene(
           {
             update,
-            view: (_model, h) =>
-              Module.separator({ decorative: false }, h),
+            view: (_model, h) => Module.separator({ decorative: false }, h),
           },
           Scene.given(initialModel()),
           Scene.expect(separatorRole).toExist(),
@@ -187,7 +192,10 @@ const verifyRenderer = (name: string, Module: MiscModule, custom: CustomStyling)
           Scene.expect(separatorRole).not.toExist(),
           Scene.expect(separatorEl).toHaveAttr('role', 'none'),
           Scene.expect(separatorEl).not.toHaveAttr('aria-orientation'),
-          Scene.expect(separatorEl).toHaveAttr('data-orientation', 'horizontal'),
+          Scene.expect(separatorEl).toHaveAttr(
+            'data-orientation',
+            'horizontal',
+          ),
         )
       })
 
@@ -209,11 +217,20 @@ const verifyRenderer = (name: string, Module: MiscModule, custom: CustomStyling)
             {
               update,
               view: (_model, h) =>
-                Module.separator({ orientation: 'horizontal', decorative: false }, h),
+                Module.separator(
+                  { orientation: 'horizontal', decorative: false },
+                  h,
+                ),
             },
             Scene.given(initialModel()),
-            Scene.expect(separatorEl).toHaveAttr('aria-orientation', 'horizontal'),
-            Scene.expect(separatorEl).toHaveAttr('data-orientation', 'horizontal'),
+            Scene.expect(separatorEl).toHaveAttr(
+              'aria-orientation',
+              'horizontal',
+            ),
+            Scene.expect(separatorEl).toHaveAttr(
+              'data-orientation',
+              'horizontal',
+            ),
           )
         })
 
@@ -222,11 +239,20 @@ const verifyRenderer = (name: string, Module: MiscModule, custom: CustomStyling)
             {
               update,
               view: (_model, h) =>
-                Module.separator({ orientation: 'vertical', decorative: false }, h),
+                Module.separator(
+                  { orientation: 'vertical', decorative: false },
+                  h,
+                ),
             },
             Scene.given(initialModel()),
-            Scene.expect(separatorEl).toHaveAttr('aria-orientation', 'vertical'),
-            Scene.expect(separatorEl).toHaveAttr('data-orientation', 'vertical'),
+            Scene.expect(separatorEl).toHaveAttr(
+              'aria-orientation',
+              'vertical',
+            ),
+            Scene.expect(separatorEl).toHaveAttr(
+              'data-orientation',
+              'vertical',
+            ),
           )
         })
       })
@@ -317,7 +343,10 @@ const verifyRenderer = (name: string, Module: MiscModule, custom: CustomStyling)
             },
             Scene.given(initialModel()),
             Scene.expect(Scene.label('Email')).toExist(),
-            Scene.expect(Scene.selector('label')).toHaveAttr('htmlFor', 'field-email'),
+            Scene.expect(Scene.selector('label')).toHaveAttr(
+              'htmlFor',
+              'field-email',
+            ),
             Scene.expect(inputEl).toHaveAccessibleName('Email'),
           )
         })
@@ -343,9 +372,9 @@ const verifyRenderer = (name: string, Module: MiscModule, custom: CustomStyling)
               'aria-describedby',
               'field-email-description',
             ),
-            Scene.expect(Scene.selector('[data-slot="input-description"]')).toHaveId(
-              'field-email-description',
-            ),
+            Scene.expect(
+              Scene.selector('[data-slot="input-description"]'),
+            ).toHaveId('field-email-description'),
             Scene.expect(inputEl).toHaveAccessibleDescription(
               'We never share your email.',
             ),
@@ -369,7 +398,9 @@ const verifyRenderer = (name: string, Module: MiscModule, custom: CustomStyling)
             },
             Scene.given(initialModel()),
             Scene.expect(inputEl).not.toHaveAttr('aria-describedby'),
-            Scene.expect(Scene.selector('[data-slot="input-description"]')).toBeAbsent(),
+            Scene.expect(
+              Scene.selector('[data-slot="input-description"]'),
+            ).toBeAbsent(),
           )
         })
       })
@@ -496,10 +527,9 @@ const verifyRenderer = (name: string, Module: MiscModule, custom: CustomStyling)
             Scene.given(initialModel()),
             Scene.expect(inputEl).toHaveAttr('aria-invalid', 'true'),
             Scene.expect(inputEl).toHaveAttr('data-invalid', ''),
-            Scene.expect(Scene.selector('[data-slot="input-field"]')).toHaveAttr(
-              'data-state',
-              'invalid',
-            ),
+            Scene.expect(
+              Scene.selector('[data-slot="input-field"]'),
+            ).toHaveAttr('data-state', 'invalid'),
           )
         })
       })
@@ -543,10 +573,22 @@ const verifyRenderer = (name: string, Module: MiscModule, custom: CustomStyling)
               Module.label({ for: 'field-email', children: ['Email'] }, h),
           },
           Scene.given(initialModel()),
-          Scene.expect(Scene.selector('label')).toHaveAttr('htmlFor', 'field-email'),
-          Scene.expect(Scene.selector('label')).toHaveAttr('data-slot', 'label'),
-          Scene.expect(Scene.selector('label')).toHaveAttr('data-required', 'false'),
-          Scene.expect(Scene.selector('label')).toHaveAttr('data-disabled', 'false'),
+          Scene.expect(Scene.selector('label')).toHaveAttr(
+            'htmlFor',
+            'field-email',
+          ),
+          Scene.expect(Scene.selector('label')).toHaveAttr(
+            'data-slot',
+            'label',
+          ),
+          Scene.expect(Scene.selector('label')).toHaveAttr(
+            'data-required',
+            'false',
+          ),
+          Scene.expect(Scene.selector('label')).toHaveAttr(
+            'data-disabled',
+            'false',
+          ),
         )
       })
 
@@ -558,8 +600,14 @@ const verifyRenderer = (name: string, Module: MiscModule, custom: CustomStyling)
               Module.label({ isRequired: true, children: ['Email'] }, h),
           },
           Scene.given(initialModel()),
-          Scene.expect(Scene.selector('label')).toHaveAttr('data-required', 'true'),
-          Scene.expect(Scene.selector('label span')).toHaveAttr('aria-hidden', 'true'),
+          Scene.expect(Scene.selector('label')).toHaveAttr(
+            'data-required',
+            'true',
+          ),
+          Scene.expect(Scene.selector('label span')).toHaveAttr(
+            'aria-hidden',
+            'true',
+          ),
           Scene.expect(Scene.selector('label span')).toHaveText('*'),
         )
       })
@@ -572,8 +620,14 @@ const verifyRenderer = (name: string, Module: MiscModule, custom: CustomStyling)
               Module.label({ isDisabled: true, children: ['Email'] }, h),
           },
           Scene.given(initialModel()),
-          Scene.expect(Scene.selector('label')).toHaveAttr('data-disabled', 'true'),
-          Scene.expect(Scene.selector('label')).toHaveAttr('aria-disabled', 'true'),
+          Scene.expect(Scene.selector('label')).toHaveAttr(
+            'data-disabled',
+            'true',
+          ),
+          Scene.expect(Scene.selector('label')).toHaveAttr(
+            'aria-disabled',
+            'true',
+          ),
         )
       })
 
@@ -585,7 +639,9 @@ const verifyRenderer = (name: string, Module: MiscModule, custom: CustomStyling)
               Module.label({ children: ['Email'], ...custom.props }, h),
           },
           Scene.given(initialModel()),
-          Scene.expect(Scene.selector('label')).toHaveClass(custom.expectedClass),
+          Scene.expect(Scene.selector('label')).toHaveClass(
+            custom.expectedClass,
+          ),
         )
       })
 
@@ -618,7 +674,9 @@ const verifyRenderer = (name: string, Module: MiscModule, custom: CustomStyling)
           },
           Scene.given(initialModel('apple')),
           Scene.expect(combobox).toExist(),
-          Scene.expect(Scene.selector('[data-slot="native-select-icon"]')).toExist(),
+          Scene.expect(
+            Scene.selector('[data-slot="native-select-icon"]'),
+          ).toExist(),
           Scene.expectAll(Scene.all.role('option')).toHaveCount(2),
           Scene.expect(Scene.role('option', { name: 'Pear' })).toExist(),
         )
@@ -649,9 +707,14 @@ const verifyRenderer = (name: string, Module: MiscModule, custom: CustomStyling)
               ),
           },
           Scene.given(initialModel('lemon')),
-          Scene.expect(Scene.selector('optgroup')).toHaveAttr('label', 'Citrus'),
+          Scene.expect(Scene.selector('optgroup')).toHaveAttr(
+            'label',
+            'Citrus',
+          ),
           Scene.expectAll(Scene.all.role('option')).toHaveCount(2),
-          Scene.expect(Scene.role('option', { name: 'Lime' })).toHaveAttr('disabled'),
+          Scene.expect(Scene.role('option', { name: 'Lime' })).toHaveAttr(
+            'disabled',
+          ),
         )
       })
 
@@ -859,7 +922,10 @@ const verifyRenderer = (name: string, Module: MiscModule, custom: CustomStyling)
             },
             Scene.given(initialModel('apple')),
             Scene.expect(Scene.label('Fruit')).toExist(),
-            Scene.expect(Scene.selector('label')).toHaveAttr('htmlFor', 'fruit'),
+            Scene.expect(Scene.selector('label')).toHaveAttr(
+              'htmlFor',
+              'fruit',
+            ),
             Scene.expect(selectEl).toHaveAccessibleName('Fruit'),
           )
         })
@@ -882,9 +948,14 @@ const verifyRenderer = (name: string, Module: MiscModule, custom: CustomStyling)
                 ),
             },
             Scene.given(initialModel('apple')),
-            Scene.expect(selectEl).toHaveAttr('aria-describedby', 'fruit-description'),
+            Scene.expect(selectEl).toHaveAttr(
+              'aria-describedby',
+              'fruit-description',
+            ),
             Scene.expect(Scene.selector('#fruit-description')).toExist(),
-            Scene.expect(selectEl).toHaveAccessibleDescription('Pick your favorite.'),
+            Scene.expect(selectEl).toHaveAccessibleDescription(
+              'Pick your favorite.',
+            ),
           )
         })
       })
@@ -899,24 +970,32 @@ const verifyRenderer = (name: string, Module: MiscModule, custom: CustomStyling)
 
 const stylexCustomStyle = stylex.create({ custom: { marginTop: '1rem' } })
 
-verifyRenderer('Tailwind', {
-  separator: TailwindSeparator.separator,
-  input: TailwindInput.input,
-  label: TailwindLabel.label,
-  nativeSelect: TailwindNativeSelect.nativeSelect,
-}, {
-  props: { class: 'creaseui-custom' },
-  expectedClass: 'creaseui-custom',
-  nativeSelectTarget: 'native-select',
-})
+verifyRenderer(
+  'Tailwind',
+  {
+    separator: TailwindSeparator.separator,
+    input: TailwindInput.input,
+    label: TailwindLabel.label,
+    nativeSelect: TailwindNativeSelect.nativeSelect,
+  },
+  {
+    props: { class: 'creaseui-custom' },
+    expectedClass: 'creaseui-custom',
+    nativeSelectTarget: 'native-select',
+  },
+)
 
-verifyRenderer('StyleX', {
-  separator: StyleXSeparator.separator,
-  input: StyleXInput.input,
-  label: StyleXLabel.label,
-  nativeSelect: StyleXNativeSelect.nativeSelect,
-}, {
-  props: { layoutStyle: stylexCustomStyle.custom },
-  expectedClass: stylexClassName(stylexCustomStyle.custom),
-  nativeSelectTarget: 'native-select-wrapper',
-})
+verifyRenderer(
+  'StyleX',
+  {
+    separator: StyleXSeparator.separator,
+    input: StyleXInput.input,
+    label: StyleXLabel.label,
+    nativeSelect: StyleXNativeSelect.nativeSelect,
+  },
+  {
+    props: { layoutStyle: stylexCustomStyle.custom },
+    expectedClass: stylexClassName(stylexCustomStyle.custom),
+    nativeSelectTarget: 'native-select-wrapper',
+  },
+)

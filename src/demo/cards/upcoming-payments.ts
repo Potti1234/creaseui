@@ -1,27 +1,27 @@
-import { Match as M, Option, Schema as S } from 'effect';
-import type { Update } from 'foldkit';
-import { Command } from 'foldkit';
-import * as FoldkitCalendar from 'foldkit/calendar';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
-import { modifyFields } from 'foldkit/struct';
+import { Match as M, Option, Schema as S } from 'effect'
+import type { Update } from 'foldkit'
+import { Command } from 'foldkit'
+import * as FoldkitCalendar from 'foldkit/calendar'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import { modifyFields } from 'foldkit/struct'
 
-import { badge } from '@/ui/badge';
-import * as Calendar from '@/ui/calendar';
+import { badge } from '@/ui/badge'
+import * as Calendar from '@/ui/calendar'
 import {
   card,
   cardContent,
   cardDescription,
   cardHeader,
   cardTitle,
-} from '@/ui/card';
+} from '@/ui/card'
 import {
   item,
   itemContent,
   itemDescription,
   itemGroup,
   itemTitle,
-} from '@/ui/item';
+} from '@/ui/item'
 
 const payments = [
   {
@@ -39,59 +39,62 @@ const payments = [
     date: 'Apr 22, 2024',
     amount: '$186.00',
   },
-] as const;
+] as const
 
 export const Model = S.Struct({
   calendar: Calendar.Model,
   selectedDate: S.Option(FoldkitCalendar.CalendarDate),
-});
-export type Model = typeof Model.Type;
-
+})
+export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
   GotCalendarMessage: {
-  message: Calendar.Message,
-},
-});
-export type Message = typeof Message.Type;
+    message: Calendar.Message,
+  },
+})
+export type Message = typeof Message.Type
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
       GotCalendarMessage: ({ message: childMessage }) => {
-        const { model: calendar, commands: calendarCommands__, outMessage: calendarOut__ } = Calendar.update(
-          model.calendar,
-          childMessage,
-        )
+        const {
+          model: calendar,
+          commands: calendarCommands__,
+          outMessage: calendarOut__,
+        } = Calendar.update(model.calendar, childMessage)
         const commands = calendarCommands__ ?? []
         const maybeSelection = Option.fromNullishOr(calendarOut__)
-        return { model: modifyFields(model, {
+        return {
+          model: modifyFields(model, {
             calendar: () => calendar,
-            selectedDate: (current) =>
+            selectedDate: current =>
               Option.match(maybeSelection, {
                 onNone: () => current,
-                onSome: (selection) =>
+                onSome: selection =>
                   selection._tag === 'SelectedDate'
                     ? Option.some(selection.date)
                     : current,
               }),
-          }), commands: Command.mapMessages(commands, (next) =>
+          }),
+          commands: Command.mapMessages(commands, next =>
             Message.GotCalendarMessage({ message: next }),
-          ) };
+          ),
+        }
       },
     }),
-  );
+  )
 
 export const init = (): Model => {
-  const now = new Date();
+  const now = new Date()
   const today = {
     year: now.getFullYear(),
     month: now.getMonth() + 1,
     day: now.getDate(),
-  };
+  }
 
   return {
     calendar: Calendar.init({
@@ -100,8 +103,8 @@ export const init = (): Model => {
       initialViewDate: today,
     }),
     selectedDate: Option.some(today),
-  };
-};
+  }
+}
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
   card<Message>(
@@ -134,7 +137,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                       {
                         model: model.calendar,
                         maybeSelectedDate: model.selectedDate,
-                        toParentMessage: (message) =>
+                        toParentMessage: message =>
                           Message.GotCalendarMessage({ message }),
                         class:
                           'w-full [--cell-size:--spacing(8)] md:[--cell-size:--spacing(10)] [&_[role=row]:last-child:has(>[data-outside-month]:first-child):has(>[data-outside-month]:last-child)]:hidden',
@@ -148,7 +151,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
               itemGroup(
                 {
                   class: 'w-full',
-                  children: payments.map((payment) =>
+                  children: payments.map(payment =>
                     item(
                       {
                         variant: 'muted',
@@ -187,7 +190,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
       ],
     },
     h,
-  );
+  )
 
 /*
 Stateful? yes.

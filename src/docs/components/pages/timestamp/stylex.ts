@@ -1,21 +1,21 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
-import type { ComponentLayoutStyle } from '@/stylex/contracts';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ComponentLayoutStyle } from '@/stylex/contracts'
 import {
   timestampFixtures,
   type TimestampFixture,
   type TimestampStampSpec,
-} from '@/docs/components/pages/timestamp/shared';
-import { className } from '@/stylex/style';
-import * as Timestamp from '@/stylex/timestamp';
+} from '@/docs/components/pages/timestamp/shared'
+import { className } from '@/stylex/style'
+import * as Timestamp from '@/stylex/timestamp'
 
 const styles = stylex.create({
-  page: { gap: '1rem', display: 'flex', flexDirection: 'column', },
-  section: { gap: '0.25rem', display: 'flex', flexDirection: 'column', },
-  row: { gap: '1rem', alignItems: 'center', display: 'flex', },
-  column: { gap: '0.5rem', display: 'flex', flexDirection: 'column', },
+  page: { gap: '1rem', display: 'flex', flexDirection: 'column' },
+  section: { gap: '0.25rem', display: 'flex', flexDirection: 'column' },
+  row: { gap: '1rem', alignItems: 'center', display: 'flex' },
+  column: { gap: '0.5rem', display: 'flex', flexDirection: 'column' },
   supporting: {
     color: 'var(--muted-foreground)',
     fontSize: '0.75rem',
@@ -25,10 +25,10 @@ const styles = stylex.create({
     color: 'color-mix(in oklab, var(--muted-foreground) 60%, transparent)',
     opacity: 1,
   },
-});
+})
 
 interface PreviewShape {
-  readonly stamps: ReadonlyArray<Timestamp.Model>;
+  readonly stamps: ReadonlyArray<Timestamp.Model>
 }
 
 const stampView = <Msg>(
@@ -41,7 +41,7 @@ const stampView = <Msg>(
   Timestamp.timestamp(
     {
       model,
-      toParentMessage: (message) =>
+      toParentMessage: message =>
         onMessageJson(
           JSON.stringify({
             _tag: 'GotTimestampMessage',
@@ -60,7 +60,7 @@ const stampView = <Msg>(
         : { tooltipEntries: stamp.tooltipEntries }),
     },
     h,
-  );
+  )
 
 const timestampView = <Msg>(
   fixture: TimestampFixture,
@@ -68,16 +68,16 @@ const timestampView = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  let stampIndex = 0;
-  const sections = fixture.sections.map((section) => {
-    const stamps = section.stamps.map((stamp) => {
-      const stampModel = model.stamps[stampIndex];
-      const index = stampIndex;
-      stampIndex += 1;
+  let stampIndex = 0
+  const sections = fixture.sections.map(section => {
+    const stamps = section.stamps.map(stamp => {
+      const stampModel = model.stamps[stampIndex]
+      const index = stampIndex
+      stampIndex += 1
       return stampModel === undefined
         ? h.empty
-        : stampView(stamp, stampModel, index, onMessageJson, h);
-    });
+        : stampView(stamp, stampModel, index, onMessageJson, h)
+    })
     const group = h.div(
       [
         h.Class(
@@ -87,16 +87,19 @@ const timestampView = <Msg>(
         ),
       ],
       stamps,
-    );
+    )
     return section.label === undefined
       ? group
-      : h.div([h.Class(className(styles.section))], [
-          h.span([h.Class(className(styles.supporting))], [section.label]),
-          group,
-        ]);
-  });
-  return h.div([h.Class(className(styles.page))], sections);
-};
+      : h.div(
+          [h.Class(className(styles.section))],
+          [
+            h.span([h.Class(className(styles.supporting))], [section.label]),
+            group,
+          ],
+        )
+  })
+  return h.div([h.Class(className(styles.page))], sections)
+}
 
 export const timestampStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   index: number,
@@ -104,7 +107,7 @@ export const timestampStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const preview = model as PreviewShape;
-  const fixture = timestampFixtures[index] ?? timestampFixtures[0];
-  return timestampView(fixture, preview, onMessageJson, h);
-};
+  const preview = model as PreviewShape
+  const fixture = timestampFixtures[index] ?? timestampFixtures[0]
+  return timestampView(fixture, preview, onMessageJson, h)
+}

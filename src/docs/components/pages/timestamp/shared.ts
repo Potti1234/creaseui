@@ -1,35 +1,32 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
-import type { AstryxTextColor, AstryxTextType } from '@/lib/astryx-text';
-import type {
-  TimestampFormat,
-  TimestampTooltipEntry,
-} from '@/ui/timestamp';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
+import type { AstryxTextColor, AstryxTextType } from '@/lib/astryx-text'
+import type { TimestampFormat, TimestampTooltipEntry } from '@/ui/timestamp'
 
 export type TimestampStampSpec = Readonly<{
   /** ISO string, or `secondsAgo: n` for a value relative to init time. */
-  value: string | Readonly<{ secondsAgo: number }>;
-  format?: TimestampFormat;
-  type?: AstryxTextType;
-  color?: AstryxTextColor;
-  isTimezoneShown?: boolean;
-  tooltipEntries?: ReadonlyArray<TimestampTooltipEntry>;
-}>;
+  value: string | Readonly<{ secondsAgo: number }>
+  format?: TimestampFormat
+  type?: AstryxTextType
+  color?: AstryxTextColor
+  isTimezoneShown?: boolean
+  tooltipEntries?: ReadonlyArray<TimestampTooltipEntry>
+}>
 
 export type TimestampSection = Readonly<{
   /** Section caption; omit for an unlabeled group. */
-  label?: string;
-  direction: 'horizontal' | 'vertical';
-  stamps: ReadonlyArray<TimestampStampSpec>;
-}>;
+  label?: string
+  direction: 'horizontal' | 'vertical'
+  stamps: ReadonlyArray<TimestampStampSpec>
+}>
 
 export type TimestampFixture = Readonly<{
-  title: string;
-  description: string;
-  sections: ReadonlyArray<TimestampSection>;
-}>;
+  title: string
+  description: string
+  sections: ReadonlyArray<TimestampSection>
+}>
 
-const DEMO_DATE = '2026-02-19T17:00:00Z';
+const DEMO_DATE = '2026-02-19T17:00:00Z'
 
 /* Example set ported from Meta Astryx
    packages/cli/assets/templates/blocks/components/Timestamp/*.tsx —
@@ -41,7 +38,8 @@ export const timestampFixtures: Readonly<
 > = [
   {
     title: 'Timestamp',
-    description: 'The default auto format picks relative or absolute text for one fixed instant.',
+    description:
+      'The default auto format picks relative or absolute text for one fixed instant.',
     sections: [
       {
         direction: 'horizontal',
@@ -51,7 +49,8 @@ export const timestampFixtures: Readonly<
   },
   {
     title: 'Timestamp — Auto',
-    description: 'Auto format that shows relative time for recent dates and switches to the full date for older ones. The default choice for most use cases.',
+    description:
+      'Auto format that shows relative time for recent dates and switches to the full date for older ones. The default choice for most use cases.',
     sections: [
       {
         label: 'Recent — renders as relative',
@@ -74,7 +73,8 @@ export const timestampFixtures: Readonly<
   },
   {
     title: 'Timestamp — Colors',
-    description: 'Timestamp rendered in each available color variant: primary, secondary, disabled, and active.',
+    description:
+      'Timestamp rendered in each available color variant: primary, secondary, disabled, and active.',
     sections: [
       {
         label: 'Primary',
@@ -100,7 +100,8 @@ export const timestampFixtures: Readonly<
   },
   {
     title: 'Timestamp — Formats',
-    description: 'All display formats side by side: date, date_time, time, and their system equivalents. Use date and date_time for user-facing UI, system variants for logs and dev tools.',
+    description:
+      'All display formats side by side: date, date_time, time, and their system equivalents. Use date and date_time for user-facing UI, system variants for logs and dev tools.',
     sections: [
       {
         label: 'User-facing formats',
@@ -117,16 +118,32 @@ export const timestampFixtures: Readonly<
         label: 'System formats (logs and dev tools)',
         direction: 'horizontal',
         stamps: [
-          { value: DEMO_DATE, format: 'system_date', type: 'code', color: 'primary' },
-          { value: DEMO_DATE, format: 'system_date_time', type: 'code', color: 'primary' },
-          { value: DEMO_DATE, format: 'system_time', type: 'code', color: 'primary' },
+          {
+            value: DEMO_DATE,
+            format: 'system_date',
+            type: 'code',
+            color: 'primary',
+          },
+          {
+            value: DEMO_DATE,
+            format: 'system_date_time',
+            type: 'code',
+            color: 'primary',
+          },
+          {
+            value: DEMO_DATE,
+            format: 'system_time',
+            type: 'code',
+            color: 'primary',
+          },
         ],
       },
     ],
   },
   {
     title: 'Timestamp — Relative',
-    description: 'Relative time labels from seconds to months ago, with hover tooltips showing the full date. Use in feeds, comment threads, and activity logs.',
+    description:
+      'Relative time labels from seconds to months ago, with hover tooltips showing the full date. Use in feeds, comment threads, and activity logs.',
     sections: [
       {
         label: 'Relative timestamps (hover for full date)',
@@ -135,16 +152,29 @@ export const timestampFixtures: Readonly<
           { value: { secondsAgo: 5 }, format: 'relative', color: 'primary' },
           { value: { secondsAgo: 120 }, format: 'relative', color: 'primary' },
           { value: { secondsAgo: 3600 }, format: 'relative', color: 'primary' },
-          { value: { secondsAgo: 86400 }, format: 'relative', color: 'primary' },
-          { value: { secondsAgo: 259200 }, format: 'relative', color: 'primary' },
-          { value: { secondsAgo: 7776000 }, format: 'relative', color: 'primary' },
+          {
+            value: { secondsAgo: 86400 },
+            format: 'relative',
+            color: 'primary',
+          },
+          {
+            value: { secondsAgo: 259200 },
+            format: 'relative',
+            color: 'primary',
+          },
+          {
+            value: { secondsAgo: 7776000 },
+            format: 'relative',
+            color: 'primary',
+          },
         ],
       },
     ],
   },
   {
     title: 'Timestamp — Timezone',
-    description: 'Timestamps with the timezone abbreviation appended. Enable isTimezoneShown for audiences across time zones, like audit logs or team calendars.',
+    description:
+      'Timestamps with the timezone abbreviation appended. Enable isTimezoneShown for audiences across time zones, like audit logs or team calendars.',
     sections: [
       {
         label: 'User-facing with timezone',
@@ -165,18 +195,30 @@ export const timestampFixtures: Readonly<
         ],
       },
       {
-        label: 'System formats stay machine-readable — never suffixed with a zone',
+        label:
+          'System formats stay machine-readable — never suffixed with a zone',
         direction: 'horizontal',
         stamps: [
-          { value: DEMO_DATE, format: 'system_date_time', type: 'code', color: 'primary' },
-          { value: DEMO_DATE, format: 'system_time', type: 'code', color: 'primary' },
+          {
+            value: DEMO_DATE,
+            format: 'system_date_time',
+            type: 'code',
+            color: 'primary',
+          },
+          {
+            value: DEMO_DATE,
+            format: 'system_time',
+            type: 'code',
+            color: 'primary',
+          },
         ],
       },
     ],
   },
   {
     title: 'Timestamp — Tooltip time zones',
-    description: "Hover tooltips that show one instant across several time zones or formats. Use tooltipEntries when readers must compare zones, like an incident log carrying both the reader's time and the event's origin zone.",
+    description:
+      "Hover tooltips that show one instant across several time zones or formats. Use tooltipEntries when readers must compare zones, like an incident log carrying both the reader's time and the event's origin zone.",
     sections: [
       {
         label: 'Local + UTC — hover to compare',
@@ -229,22 +271,22 @@ export const timestampFixtures: Readonly<
       },
     ],
   },
-];
+]
 
 export const timestampValueLiteral = (
   spec: TimestampStampSpec['value'],
 ): string =>
   typeof spec === 'string'
     ? `'${spec}'`
-    : `Date.now() - ${String(spec.secondsAgo * 1000)}`;
+    : `Date.now() - ${String(spec.secondsAgo * 1000)}`
 
 export const timestampStampConfig = (spec: TimestampStampSpec): string => {
   const fields = [
     `value: ${timestampValueLiteral(spec.value)}`,
     ...(spec.format === undefined ? [] : [`format: '${spec.format}' as const`]),
-  ];
-  return `{ ${fields.join(', ')} }`;
-};
+  ]
+  return `{ ${fields.join(', ')} }`
+}
 
 export const timestampViewCall = (
   spec: TimestampStampSpec,
@@ -263,69 +305,69 @@ export const timestampViewCall = (
       : [
           `tooltipEntries: ${JSON.stringify(spec.tooltipEntries).replace(/"/g, "'")}`,
         ]),
-  ];
+  ]
   return `Timestamp.timestamp(
           {
             ${props.join(',\n            ')},
           },
           h,
-        )`;
-};
+        )`
+}
 
 const timestampSource = (
   fixture: TimestampFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const isStyleX = renderer === 'stylex';
+  const isStyleX = renderer === 'stylex'
 
-  let stampIndex = 0;
-  const sectionBodies = fixture.sections.map((section) => {
+  let stampIndex = 0
+  const sectionBodies = fixture.sections.map(section => {
     const calls = section.stamps
-      .map((stamp) => {
-        const call = timestampViewCall(stamp, stampIndex);
-        stampIndex += 1;
-        return call;
+      .map(stamp => {
+        const call = timestampViewCall(stamp, stampIndex)
+        stampIndex += 1
+        return call
       })
-      .join(',\n            ');
+      .join(',\n            ')
     const rowClass = isStyleX
       ? `className(${
-          section.direction === 'horizontal'
-            ? 'styles.row'
-            : 'styles.column'
+          section.direction === 'horizontal' ? 'styles.row' : 'styles.column'
         })`
       : `'${
           section.direction === 'horizontal'
             ? 'flex items-center gap-4'
             : 'flex flex-col gap-2'
-        }'`;
+        }'`
     const inner = `h.div(
             [h.Class(${rowClass})],
             [
               ${calls},
             ],
-          )`;
+          )`
     if (section.label === undefined) {
-      return inner;
+      return inner
     }
     const labelClass = isStyleX
       ? 'className(styles.supporting)'
-      : `'text-xs leading-5 text-muted-foreground'`;
+      : `'text-xs leading-5 text-muted-foreground'`
     const sectionClass = isStyleX
       ? 'className(styles.section)'
-      : `'flex flex-col gap-1'`;
+      : `'flex flex-col gap-1'`
     return `h.div(
           [h.Class(${sectionClass})],
           [
             h.span([h.Class(${labelClass})], ['${section.label.replace(/'/g, "\\'")}']),
             ${inner},
           ],
-        )`;
-  });
-  const pageClass = isStyleX ? 'className(styles.page)' : `'flex flex-col gap-4'`;
+        )`
+  })
+  const pageClass = isStyleX
+    ? 'className(styles.page)'
+    : `'flex flex-col gap-4'`
 
-  const stampInits = fixture.sections.flatMap((section) =>
-    section.stamps.map((stamp) => timestampStampConfig(stamp)),
-  );
+  const stampInits = fixture.sections.flatMap(section =>
+    section.stamps.map(stamp => timestampStampConfig(stamp)),
+  )
 
   return foldkitApplication({
     title: fixture.title,
@@ -401,14 +443,14 @@ export type Message = typeof Message.Type`,
     ],
   ),
 })`,
-  });
-};
+  })
+}
 
 export const timestampExamples = (
   renderer: 'tailwind' | 'stylex',
 ): ReadonlyArray<DocsExample> =>
-  timestampFixtures.map((fixture) => ({
+  timestampFixtures.map(fixture => ({
     title: fixture.title,
     description: fixture.description,
     code: timestampSource(fixture, renderer),
-  }));
+  }))

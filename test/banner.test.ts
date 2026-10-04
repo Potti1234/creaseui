@@ -23,6 +23,9 @@ test('toggling content flips isOpen without emitting an out message', () => {
   const open__ = Banner.update(closed, Banner.Message.ToggledContent())
   assert.equal(open__.model.isOpen, true)
   assert.equal(open__.outMessage, undefined)
-  const closedAgain__ = Banner.update(open__.model, Banner.Message.ToggledContent())
+  const closedAgain__ = Banner.update(
+    open__.model,
+    Banner.Message.ToggledContent(),
+  )
   assert.equal(closedAgain__.model.isOpen, false)
 })

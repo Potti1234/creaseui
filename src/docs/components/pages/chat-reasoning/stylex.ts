@@ -1,14 +1,14 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   chatReasoningFixtures,
   type ChatReasoningFixture,
-} from '@/docs/components/pages/chat-reasoning/shared';
-import * as ChatReasoning from '@/stylex/chat-reasoning';
-import * as Message from '@/stylex/message';
-import { className } from '@/stylex/style';
+} from '@/docs/components/pages/chat-reasoning/shared'
+import * as ChatReasoning from '@/stylex/chat-reasoning'
+import * as Message from '@/stylex/message'
+import { className } from '@/stylex/style'
 
 const styles = stylex.create({
   page: {
@@ -26,10 +26,10 @@ const styles = stylex.create({
     fontSize: '0.875rem',
     lineHeight: '1.5rem',
   },
-});
+})
 
 interface PreviewShape {
-  readonly reasoning: ChatReasoning.Model;
+  readonly reasoning: ChatReasoning.Model
 }
 
 const reasoningView = <Msg>(
@@ -51,7 +51,7 @@ const reasoningView = <Msg>(
       children: [...fixture.content],
     },
     h,
-  );
+  )
 
 export const chatReasoningStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   index: number,
@@ -59,31 +59,38 @@ export const chatReasoningStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const preview = model as PreviewShape;
-  const fixture = chatReasoningFixtures[index] ?? chatReasoningFixtures[0];
+  const preview = model as PreviewShape
+  const fixture = chatReasoningFixtures[index] ?? chatReasoningFixtures[0]
   if (fixture.kind === 'inMessage') {
-    return h.div([h.Class(className(styles.page))], [
-      Message.message(
-        {
-          children: [
-            Message.messageContent(
-              {
-                children: [
-                  reasoningView(fixture, preview, onMessageJson, h),
-                  h.p([h.Class(className(styles.reply))], [
-                    'There are 42 valid planting arrangements over 3 years.',
-                  ]),
-                ],
-              },
-              h,
-            ),
-          ],
-        },
-        h,
-      ),
-    ]);
+    return h.div(
+      [h.Class(className(styles.page))],
+      [
+        Message.message(
+          {
+            children: [
+              Message.messageContent(
+                {
+                  children: [
+                    reasoningView(fixture, preview, onMessageJson, h),
+                    h.p(
+                      [h.Class(className(styles.reply))],
+                      [
+                        'There are 42 valid planting arrangements over 3 years.',
+                      ],
+                    ),
+                  ],
+                },
+                h,
+              ),
+            ],
+          },
+          h,
+        ),
+      ],
+    )
   }
-  return h.div([h.Class(className(styles.column))], [
-    reasoningView(fixture, preview, onMessageJson, h),
-  ]);
-};
+  return h.div(
+    [h.Class(className(styles.column))],
+    [reasoningView(fixture, preview, onMessageJson, h)],
+  )
+}

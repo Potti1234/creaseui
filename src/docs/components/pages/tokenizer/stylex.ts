@@ -1,14 +1,14 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import * as stylex from '@stylexjs/stylex';
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import * as stylex from '@stylexjs/stylex'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   SKILLS,
   USERS,
   tokenizerFixtures,
-} from '@/docs/components/pages/tokenizer/shared';
-import * as Tokenizer from '@/stylex/tokenizer';
-import { className } from '@/stylex/style';
+} from '@/docs/components/pages/tokenizer/shared'
+import * as Tokenizer from '@/stylex/tokenizer'
+import { className } from '@/stylex/style'
 
 const styles = stylex.create({
   stack: {
@@ -18,7 +18,11 @@ const styles = stylex.create({
     minWidth: '15rem',
     width: '100%',
   },
-  supporting: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
+  supporting: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+  },
   button: {
     borderRadius: 'calc(var(--radius) - 2px)',
     borderWidth: 0,
@@ -29,13 +33,13 @@ const styles = stylex.create({
     cursor: 'pointer',
     fontSize: '0.875rem',
     fontWeight: 500,
- lineHeight: '1.25rem',
+    lineHeight: '1.25rem',
   },
-});
+})
 
 type Preview = Readonly<{
-  tokenizers: ReadonlyArray<Tokenizer.Model>;
-}>;
+  tokenizers: ReadonlyArray<Tokenizer.Model>
+}>
 
 export const tokenizerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   index: number,
@@ -43,9 +47,9 @@ export const tokenizerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html | undefined => {
-  const fixture = tokenizerFixtures[index];
-  if (fixture === undefined) return undefined;
-  const preview = model as Preview;
+  const fixture = tokenizerFixtures[index]
+  if (fixture === undefined) return undefined
+  const preview = model as Preview
 
   const tokenizerAt = (
     slot: number,
@@ -54,7 +58,7 @@ export const tokenizerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
     Tokenizer.tokenizer(
       {
         model: preview.tokenizers[slot]!,
-        toParentMessage: (message) =>
+        toParentMessage: message =>
           onMessageJson(
             JSON.stringify({
               _tag: 'GotTokenizerMessage',
@@ -65,12 +69,12 @@ export const tokenizerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         ...props,
       },
       h,
-    );
+    )
 
   const stack = (children: ReadonlyArray<Html>): Html =>
-    h.div([h.Class(className(styles.stack))], [...children]);
+    h.div([h.Class(className(styles.stack))], [...children])
   const supporting = (text: string): Html =>
-    h.p([h.Class(className(styles.supporting))], [text]);
+    h.p([h.Class(className(styles.supporting))], [text])
 
   switch (fixture.kind) {
     case 'showcase':
@@ -81,7 +85,7 @@ export const tokenizerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           items: [],
           width: 400,
         }),
-      ]);
+      ])
     case 'clear':
       return stack([
         supporting('Clear-all button appears when tokens are selected'),
@@ -92,7 +96,7 @@ export const tokenizerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           hasClear: true,
           width: 400,
         }),
-      ]);
+      ])
     case 'creatable':
       return stack([
         supporting('Free-text only'),
@@ -112,7 +116,7 @@ export const tokenizerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           hasEntriesOnFocus: true,
           width: 400,
         }),
-      ]);
+      ])
     case 'endContent':
       return stack([
         supporting('Action button in the end slot'),
@@ -126,7 +130,7 @@ export const tokenizerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           ),
           width: 400,
         }),
-      ]);
+      ])
     case 'icon':
       return stack([
         supporting('Leading icon reinforces the search affordance'),
@@ -137,7 +141,7 @@ export const tokenizerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           hasStartIcon: true,
           width: 400,
         }),
-      ]);
+      ])
     case 'maxEntries':
       return stack([
         supporting(
@@ -151,7 +155,7 @@ export const tokenizerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           maxEntries: 3,
           width: 400,
         }),
-      ]);
+      ])
     case 'overflow':
       return stack([
         supporting('Inline overflow — content shifts down on expand'),
@@ -170,7 +174,7 @@ export const tokenizerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           tokenOverflowBehavior: 'unfocusedLayer',
           width: 400,
         }),
-      ]);
+      ])
     case 'states':
       return stack(
         [
@@ -210,8 +214,8 @@ export const tokenizerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
             width: 400,
           }),
         ),
-      );
+      )
     default:
-      return stack([]);
+      return stack([])
   }
-};
+}

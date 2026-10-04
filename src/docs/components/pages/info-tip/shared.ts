@@ -1,28 +1,30 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 // InfoTip ships no blocks under packages/cli/assets/templates/blocks — the
 // fixtures below derive from InfoTip.doc.mjs (@example usage, prop table,
 // best practices) and the behaviors exercised by InfoTip.test.tsx.
 
 export interface InfoTipSpec {
-  readonly id: string;
-  readonly content: string;
-  readonly label?: string;
-  readonly size?: 'xsm' | 'sm' | 'md' | 'lg';
+  readonly id: string
+  readonly content: string
+  readonly label?: string
+  readonly size?: 'xsm' | 'sm' | 'md' | 'lg'
 }
 
-export type InfoTipKind = 'basic' | 'sizes' | 'label' | 'context';
+export type InfoTipKind = 'basic' | 'sizes' | 'label' | 'context'
 
 export interface InfoTipFixture {
-  readonly title: string;
-  readonly description?: string;
-  readonly heroOnly?: boolean;
-  readonly kind: InfoTipKind;
-  readonly tips: ReadonlyArray<InfoTipSpec>;
+  readonly title: string
+  readonly description?: string
+  readonly heroOnly?: boolean
+  readonly kind: InfoTipKind
+  readonly tips: ReadonlyArray<InfoTipSpec>
 }
 
-export const infoTipFixtures: Readonly<[InfoTipFixture, ...Array<InfoTipFixture>]> = [
+export const infoTipFixtures: Readonly<
+  [InfoTipFixture, ...Array<InfoTipFixture>]
+> = [
   {
     title: 'Basic',
     heroOnly: true,
@@ -72,9 +74,9 @@ export const infoTipFixtures: Readonly<[InfoTipFixture, ...Array<InfoTipFixture>
       },
     ],
   },
-];
+]
 
-const esc = (value: string): string => value.replace(/'/g, "\\'");
+const esc = (value: string): string => value.replace(/'/g, "\\'")
 
 const tipCall = (
   tip: InfoTipSpec,
@@ -84,36 +86,36 @@ const tipCall = (
   const optional = [
     tip.label === undefined ? '' : `    label: '${esc(tip.label)}',\n`,
     tip.size === undefined ? '' : `    size: '${tip.size}',\n`,
-  ].join('');
+  ].join('')
   return `${indent}InfoTip.infoTip({
     model: model.tips['${tip.id}'] ?? InfoTip.init({ id: '${tip.id}' }),
     toParentMessage: message => GotInfoTipMessage({ id: '${tip.id}', message }),
     content: '${esc(tip.content)}',
-${optional}  }, h)`;
-};
+${optional}  }, h)`
+}
 
 const emitBody = (fixture: InfoTipFixture, isStyleX: boolean): string => {
   const rowClass = isStyleX
     ? 'className(styles.row)'
-    : "'flex flex-wrap items-center gap-4'";
+    : "'flex flex-wrap items-center gap-4'"
   const inlineClass = isStyleX
     ? 'className(styles.inline)'
-    : "'flex items-center gap-1.5'";
+    : "'flex items-center gap-1.5'"
   const labelClass = isStyleX
     ? 'className(styles.label)'
-    : "'text-sm font-medium'";
-  const textClass = isStyleX ? 'className(styles.text)' : "'text-sm'";
+    : "'text-sm font-medium'"
+  const textClass = isStyleX ? 'className(styles.text)' : "'text-sm'"
 
   switch (fixture.kind) {
     case 'sizes':
       return `  h.div([h.Class(${rowClass})], [
 ${fixture.tips.map(tip => tipCall(tip, isStyleX, '    ')).join(',\n')}
-  ])`;
+  ])`
     case 'label':
       return `  h.div([h.Class(${inlineClass})], [
     h.span([h.Class(${textClass})], ['Active sessions']),
 ${tipCall(fixture.tips[0]!, isStyleX, '    ')},
-  ])`;
+  ])`
     case 'context':
       return `  h.div([h.Class(${isStyleX ? 'className(styles.column)' : "'flex flex-col gap-1.5'"})], [
     h.div([h.Class(${inlineClass})], [
@@ -121,22 +123,22 @@ ${tipCall(fixture.tips[0]!, isStyleX, '    ')},
 ${tipCall(fixture.tips[0]!, isStyleX, '      ')},
     ]),
     Input.input({ id: 'access-level', value: '', placeholder: 'Editor', ${isStyleX ? 'layoutStyle: styles.input' : "class: 'w-56'"} }, h),
-  ])`;
+  ])`
     case 'basic':
     default:
       return `  h.div([h.Class(${inlineClass})], [
     h.span([h.Class(${textClass})], ['Access level']),
 ${tipCall(fixture.tips[0]!, isStyleX, '    ')},
-  ])`;
+  ])`
   }
-};
+}
 
 const emitApplication = (
   fixture: InfoTipFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const isStyleX = renderer === 'stylex';
-  const base = isStyleX ? 'stylex' : 'ui';
+  const isStyleX = renderer === 'stylex'
+  const base = isStyleX ? 'stylex' : 'ui'
   const stylesBlock = isStyleX
     ? `\n\nconst styles = stylex.create({
   row: { alignItems: 'center', display: 'flex', flexWrap: 'wrap', gap: '1rem' },
@@ -146,7 +148,7 @@ const emitApplication = (
   text: { fontSize: '0.875rem', lineHeight: '1.25rem' },
   input: { width: '14rem' },
 })`
-    : '';
+    : ''
   return foldkitApplication({
     title: `Info Tip — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
@@ -205,12 +207,16 @@ ${fixture.tips
 ${emitBody(fixture, isStyleX)}
   ]),
 })`,
-  });
-};
+  })
+}
 
-export const infoTipExamples = (renderer: 'tailwind' | 'stylex'): ReadonlyArray<DocsExample> =>
+export const infoTipExamples = (
+  renderer: 'tailwind' | 'stylex',
+): ReadonlyArray<DocsExample> =>
   infoTipFixtures.map(fixture => ({
     title: fixture.title,
-    ...(fixture.description === undefined ? {} : { description: fixture.description }),
+    ...(fixture.description === undefined
+      ? {}
+      : { description: fixture.description }),
     code: emitApplication(fixture, renderer),
-  }));
+  }))

@@ -1,15 +1,15 @@
-import { Option } from 'effect';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import * as stylex from '@stylexjs/stylex';
+import { Option } from 'effect'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import * as stylex from '@stylexjs/stylex'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
-import { dateInputFixtures } from '@/docs/components/pages/date-input/shared';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import { dateInputFixtures } from '@/docs/components/pages/date-input/shared'
 import {
   FORMAT_EXAMPLES,
   VALIDATION_FIELDS,
-} from '@/docs/components/pages/date-input/tailwind';
-import * as DateInput from '@/stylex/date-input';
-import { className } from '@/stylex/style';
+} from '@/docs/components/pages/date-input/tailwind'
+import * as DateInput from '@/stylex/date-input'
+import { className } from '@/stylex/style'
 
 const styles = stylex.create({
   stack: {
@@ -19,13 +19,17 @@ const styles = stylex.create({
     minWidth: '15rem',
     width: '100%',
   },
-  supporting: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
-});
+  supporting: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+  },
+})
 
 type Preview = Readonly<{
-  inputs: ReadonlyArray<DateInput.Model>;
-  windowLabel: string;
-}>;
+  inputs: ReadonlyArray<DateInput.Model>
+  windowLabel: string
+}>
 
 export const dateInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   index: number,
@@ -33,9 +37,9 @@ export const dateInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html | undefined => {
-  const fixture = dateInputFixtures[index];
-  if (fixture === undefined) return undefined;
-  const preview = model as Preview;
+  const fixture = dateInputFixtures[index]
+  if (fixture === undefined) return undefined
+  const preview = model as Preview
 
   const inputAt = (
     slot: number,
@@ -44,7 +48,7 @@ export const dateInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
     DateInput.dateInput(
       {
         model: preview.inputs[slot]!,
-        toParentMessage: (message) =>
+        toParentMessage: message =>
           onMessageJson(
             JSON.stringify({
               _tag: 'GotDateInputMessage',
@@ -55,23 +59,23 @@ export const dateInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         ...props,
       },
       h,
-    );
+    )
 
   const stack = (children: ReadonlyArray<Html>): Html =>
-    h.div([h.Class(className(styles.stack))], [...children]);
+    h.div([h.Class(className(styles.stack))], [...children])
 
   const supporting = (text: string): Html =>
-    h.p([h.Class(className(styles.supporting))], [text]);
+    h.p([h.Class(className(styles.supporting))], [text])
 
-  const firstValue = preview.inputs[0]?.value ?? Option.none();
+  const firstValue = preview.inputs[0]?.value ?? Option.none()
   const selectedText = Option.match(firstValue, {
     onNone: () => 'No date selected',
-    onSome: (date) => `Selected: ${DateInput.dateToISO(date)}`,
-  });
+    onSome: date => `Selected: ${DateInput.dateToISO(date)}`,
+  })
   const bookedText = Option.match(firstValue, {
     onNone: () => 'Pick a date in the available range',
-    onSome: (date) => `Booked: ${DateInput.dateToISO(date)}`,
-  });
+    onSome: date => `Booked: ${DateInput.dateToISO(date)}`,
+  })
 
   switch (fixture.astryxExample) {
     case 'DateInputClearable':
@@ -83,7 +87,7 @@ export const dateInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           placeholder: 'Select a date',
           hasClear: true,
         }),
-      ]);
+      ])
     case 'DateInputDateRange':
       return stack([
         supporting(bookedText),
@@ -93,14 +97,16 @@ export const dateInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           placeholder: 'Select a booking date',
           presentation: 'adaptive-bottom-sheet',
         }),
-      ]);
+      ])
     case 'DateInputFormats':
       return stack([
-        supporting('The same committed date, displayed with different formats.'),
+        supporting(
+          'The same committed date, displayed with different formats.',
+        ),
         ...FORMAT_EXAMPLES.map((entry, i) =>
           inputAt(i, { label: entry.label, format: entry.format }),
         ),
-      ]);
+      ])
     case 'DateInputWithDescription':
       return stack([
         supporting('Helper text explains what the field expects'),
@@ -109,13 +115,13 @@ export const dateInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           description: 'Your subscription begins on this date',
           placeholder: 'Select a start date',
         }),
-      ]);
+      ])
     case 'DateInputWithValidation':
       return stack(
         VALIDATION_FIELDS.map((field, i) =>
           inputAt(i, { label: field.label, status: field.status }),
         ),
-      );
+      )
     default:
       return stack([
         inputAt(0, {
@@ -123,6 +129,6 @@ export const dateInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           placeholder: 'Select a date',
           hasClear: true,
         }),
-      ]);
+      ])
   }
-};
+}

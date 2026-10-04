@@ -16,44 +16,116 @@ type Message =
 
 const update = (model: Model, message: Message) =>
   message._tag === 'ChangedEmail'
-    ? { model: { ...model, email: message.value } } as const
-    : { model: { ...model, submitted: true } } as const
+    ? ({ model: { ...model, email: message.value } } as const)
+    : ({ model: { ...model, submitted: true } } as const)
 
 type FormModule = Readonly<{
-  form: <Msg>(props: { ariaLabel: string; onSubmit: Msg; children: ReadonlyArray<Html | string> }, h: HtmlBuilder<Msg>) => Html
-  errorSummary: <Msg>(props: { id: string; title: string; errors: ReadonlyArray<{ controlId: string; message: string }>; isAutofocus?: boolean }, h: HtmlBuilder<Msg>) => Html
+  form: <Msg>(
+    props: {
+      ariaLabel: string
+      onSubmit: Msg
+      children: ReadonlyArray<Html | string>
+    },
+    h: HtmlBuilder<Msg>,
+  ) => Html
+  errorSummary: <Msg>(
+    props: {
+      id: string
+      title: string
+      errors: ReadonlyArray<{ controlId: string; message: string }>
+      isAutofocus?: boolean
+    },
+    h: HtmlBuilder<Msg>,
+  ) => Html
 }>
 type InputModule = Readonly<{
-  input: <Msg>(props: { id: string; name: string; autocomplete: string; type: string; value: string; onInput: (value: string) => Msg }, h: HtmlBuilder<Msg>) => Html
+  input: <Msg>(
+    props: {
+      id: string
+      name: string
+      autocomplete: string
+      type: string
+      value: string
+      onInput: (value: string) => Msg
+    },
+    h: HtmlBuilder<Msg>,
+  ) => Html
 }>
 type ButtonModule = Readonly<{
-  button: <Msg>(props: { type: 'submit'; children: ReadonlyArray<string> }, h: HtmlBuilder<Msg>) => Html
+  button: <Msg>(
+    props: { type: 'submit'; children: ReadonlyArray<string> },
+    h: HtmlBuilder<Msg>,
+  ) => Html
 }>
 
-const verifyRenderer = (name: string, Form: FormModule, Input: InputModule, Button: ButtonModule) => {
+const verifyRenderer = (
+  name: string,
+  Form: FormModule,
+  Input: InputModule,
+  Button: ButtonModule,
+) => {
   describe(`${name} Form scene`, () => {
     it('uses native controls and reveals a linked focus target after submission', () => {
       Scene.scene(
         {
           update,
-          view: (model, h) => Form.form({
-            ariaLabel: 'Account sign in',
-            onSubmit: { _tag: 'Submitted' },
-            children: [
-              ...(model.submitted ? [Form.errorSummary({ id: 'sign-in-errors', title: 'Fix the following error', errors: [{ controlId: 'sign-in-email', message: 'Enter your email.' }], isAutofocus: true }, h)] : []),
-              Input.input({ id: 'sign-in-email', name: 'email', autocomplete: 'email', type: 'email', value: model.email, onInput: value => ({ _tag: 'ChangedEmail', value }) }, h),
-              Button.button({ type: 'submit', children: ['Sign in'] }, h),
-            ],
-          }, h),
+          view: (model, h) =>
+            Form.form(
+              {
+                ariaLabel: 'Account sign in',
+                onSubmit: { _tag: 'Submitted' },
+                children: [
+                  ...(model.submitted
+                    ? [
+                        Form.errorSummary(
+                          {
+                            id: 'sign-in-errors',
+                            title: 'Fix the following error',
+                            errors: [
+                              {
+                                controlId: 'sign-in-email',
+                                message: 'Enter your email.',
+                              },
+                            ],
+                            isAutofocus: true,
+                          },
+                          h,
+                        ),
+                      ]
+                    : []),
+                  Input.input(
+                    {
+                      id: 'sign-in-email',
+                      name: 'email',
+                      autocomplete: 'email',
+                      type: 'email',
+                      value: model.email,
+                      onInput: value => ({ _tag: 'ChangedEmail', value }),
+                    },
+                    h,
+                  ),
+                  Button.button({ type: 'submit', children: ['Sign in'] }, h),
+                ],
+              },
+              h,
+            ),
         },
         Scene.given({ email: '', submitted: false }),
         Scene.expect(Scene.role('form', { name: 'Account sign in' })).toExist(),
         Scene.submit(Scene.role('form', { name: 'Account sign in' })),
         Scene.expectHandled(),
-        Scene.Mount.expectHas({ name: 'focus-form-error-summary-sign-in-errors' }),
-        Scene.Mount.resolve({ name: 'focus-form-error-summary-sign-in-errors' }, { _tag: 'Submitted' }),
+        Scene.Mount.expectHas({
+          name: 'focus-form-error-summary-sign-in-errors',
+        }),
+        Scene.Mount.resolve(
+          { name: 'focus-form-error-summary-sign-in-errors' },
+          { _tag: 'Submitted' },
+        ),
         Scene.expect(Scene.role('alert')).toHaveId('sign-in-errors'),
-        Scene.expect(Scene.text('Enter your email.')).toHaveAttr('href', '#sign-in-email'),
+        Scene.expect(Scene.text('Enter your email.')).toHaveAttr(
+          'href',
+          '#sign-in-email',
+        ),
       )
     })
   })

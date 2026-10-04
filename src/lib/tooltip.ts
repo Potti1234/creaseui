@@ -15,30 +15,23 @@ export const Model = S.Struct({
 })
 export type Model = typeof Model.Type
 
-
-
-
-
-
 export const Message = defineMessageUnion({
-  'EnteredTooltipTrigger': {},
-  'LeftTooltipTrigger': {},
-  'FocusedTooltipTrigger': {},
-  'BlurredTooltipTrigger': {},
-  'PressedEscapeOnTooltip': {},
-  'PressedPointerOnTooltipTrigger': { pointerType: S.String },
-  'CompletedTooltipAnchor': {},
-  'CompletedWaitBeforeShowingTooltip': { version: S.Number },
-  'CompletedWaitBeforeClosingTooltip': { version: S.Number },
-});
+  EnteredTooltipTrigger: {},
+  LeftTooltipTrigger: {},
+  FocusedTooltipTrigger: {},
+  BlurredTooltipTrigger: {},
+  PressedEscapeOnTooltip: {},
+  PressedPointerOnTooltipTrigger: { pointerType: S.String },
+  CompletedTooltipAnchor: {},
+  CompletedWaitBeforeShowingTooltip: { version: S.Number },
+  CompletedWaitBeforeClosingTooltip: { version: S.Number },
+})
 export type Message = typeof Message.Type
 
-
-
 export const OutMessage = defineMessageUnion({
-  'ShownTooltip': {},
-  'HiddenTooltip': {},
-});
+  ShownTooltip: {},
+  HiddenTooltip: {},
+})
 export type OutMessage = typeof OutMessage.Type
 
 export type InitConfig = Readonly<{
@@ -47,7 +40,8 @@ export type InitConfig = Readonly<{
   closeDelay?: Duration.Input
 }>
 
-const millis = (input: Duration.Input): number => Math.max(0, Duration.toMillis(input))
+const millis = (input: Duration.Input): number =>
+  Math.max(0, Duration.toMillis(input))
 
 export const init = (config: InitConfig): Model => ({
   ...TooltipPrimitive.init({
@@ -61,9 +55,10 @@ export const init = (config: InitConfig): Model => ({
 export const WaitBeforeShowing = Command.define('WaitBeforeShowingTooltip', {
   args: { delayMs: S.Number, version: S.Number },
   messages: [Message['CompletedWaitBeforeShowingTooltip']],
-  execute: ({ delayMs, version }) => Effect.sleep(`${delayMs} millis`).pipe(
-    Effect.as(Message['CompletedWaitBeforeShowingTooltip']({ version })),
-  ),
+  execute: ({ delayMs, version }) =>
+    Effect.sleep(`${delayMs} millis`).pipe(
+      Effect.as(Message['CompletedWaitBeforeShowingTooltip']({ version })),
+    ),
 })
 
 /* The upstream Tooltip has no close delay; crease keeps its close-wait
@@ -71,44 +66,67 @@ export const WaitBeforeShowing = Command.define('WaitBeforeShowingTooltip', {
 export const WaitBeforeClosing = Command.define('WaitBeforeClosingTooltip', {
   args: { delayMs: S.Number, version: S.Number },
   messages: [Message['CompletedWaitBeforeClosingTooltip']],
-  execute: ({ delayMs, version }) => Effect.sleep(`${delayMs} millis`).pipe(
-    Effect.as(Message['CompletedWaitBeforeClosingTooltip']({ version })),
-  ),
+  execute: ({ delayMs, version }) =>
+    Effect.sleep(`${delayMs} millis`).pipe(
+      Effect.as(Message['CompletedWaitBeforeClosingTooltip']({ version })),
+    ),
 })
 
 const toPrimitiveMessage = (message: Message): TooltipPrimitive.Message => {
   switch (message._tag) {
-    case 'EnteredTooltipTrigger': return TooltipPrimitive.Message.EnteredTrigger()
-    case 'LeftTooltipTrigger': return TooltipPrimitive.Message.LeftTrigger()
-    case 'FocusedTooltipTrigger': return TooltipPrimitive.Message.FocusedTrigger()
-    case 'BlurredTooltipTrigger': return TooltipPrimitive.Message.BlurredTrigger()
-    case 'PressedEscapeOnTooltip': return TooltipPrimitive.Message.PressedEscape()
+    case 'EnteredTooltipTrigger':
+      return TooltipPrimitive.Message.EnteredTrigger()
+    case 'LeftTooltipTrigger':
+      return TooltipPrimitive.Message.LeftTrigger()
+    case 'FocusedTooltipTrigger':
+      return TooltipPrimitive.Message.FocusedTrigger()
+    case 'BlurredTooltipTrigger':
+      return TooltipPrimitive.Message.BlurredTrigger()
+    case 'PressedEscapeOnTooltip':
+      return TooltipPrimitive.Message.PressedEscape()
     case 'PressedPointerOnTooltipTrigger':
       // Crease suppresses a pointer-induced focus for every pointer type
       // (Base UI focus-visible parity). Upstream only treats 'mouse' that
       // way, so the adapter remaps before the primitive records it.
-      return TooltipPrimitive.Message.PressedPointerOnTrigger({ pointerType: 'mouse' })
-    case 'CompletedTooltipAnchor': return TooltipPrimitive.Message.CompletedAnchorTooltip()
+      return TooltipPrimitive.Message.PressedPointerOnTrigger({
+        pointerType: 'mouse',
+      })
+    case 'CompletedTooltipAnchor':
+      return TooltipPrimitive.Message.CompletedAnchorTooltip()
     case 'CompletedWaitBeforeShowingTooltip':
-      return TooltipPrimitive.Message.CompletedWaitBeforeShowing({ version: message.version })
+      return TooltipPrimitive.Message.CompletedWaitBeforeShowing({
+        version: message.version,
+      })
     // Handled crease-side; the primitive never sees a closing completion.
     case 'CompletedWaitBeforeClosingTooltip':
-      return TooltipPrimitive.Message.CompletedWaitBeforeShowing({ version: -1 })
+      return TooltipPrimitive.Message.CompletedWaitBeforeShowing({
+        version: -1,
+      })
   }
 }
 
 const fromPrimitiveMessage = (message: TooltipPrimitive.Message): Message => {
   switch (message._tag) {
     case 'CompletedWaitBeforeShowing':
-      return Message.CompletedWaitBeforeShowingTooltip({ version: message.version })
-    case 'CompletedAnchorTooltip': return Message.CompletedTooltipAnchor()
-    case 'EnteredTrigger': return Message.EnteredTooltipTrigger()
-    case 'LeftTrigger': return Message.LeftTooltipTrigger()
-    case 'FocusedTrigger': return Message.FocusedTooltipTrigger()
-    case 'BlurredTrigger': return Message.BlurredTooltipTrigger()
-    case 'PressedEscape': return Message.PressedEscapeOnTooltip()
+      return Message.CompletedWaitBeforeShowingTooltip({
+        version: message.version,
+      })
+    case 'CompletedAnchorTooltip':
+      return Message.CompletedTooltipAnchor()
+    case 'EnteredTrigger':
+      return Message.EnteredTooltipTrigger()
+    case 'LeftTrigger':
+      return Message.LeftTooltipTrigger()
+    case 'FocusedTrigger':
+      return Message.FocusedTooltipTrigger()
+    case 'BlurredTrigger':
+      return Message.BlurredTooltipTrigger()
+    case 'PressedEscape':
+      return Message.PressedEscapeOnTooltip()
     case 'PressedPointerOnTrigger':
-      return Message.PressedPointerOnTooltipTrigger({ pointerType: message.pointerType })
+      return Message.PressedPointerOnTooltipTrigger({
+        pointerType: message.pointerType,
+      })
   }
 }
 
@@ -120,19 +138,34 @@ type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>
 /* Primitive Commands are re-expressed with crease names/args so callers and
    tests keep resolving `WaitBeforeShowingTooltip`/`WaitBeforeClosingTooltip`. */
 const mapCommands = (
-  commands: ReadonlyArray<Command.Command<TooltipPrimitive.Message>> | undefined,
+  commands:
+    | ReadonlyArray<Command.Command<TooltipPrimitive.Message>>
+    | undefined,
 ): ReadonlyArray<Command.Command<Message>> =>
   (commands ?? []).map(command => {
-    const args = command.args as { delay?: Duration.Duration, version?: number } | undefined
-    if (command.name === 'WaitBeforeShowing' && args?.delay !== undefined && args.version !== undefined) {
-      return WaitBeforeShowing({ delayMs: Duration.toMillis(args.delay), version: args.version })
+    const args = command.args as
+      | { delay?: Duration.Duration; version?: number }
+      | undefined
+    if (
+      command.name === 'WaitBeforeShowing' &&
+      args?.delay !== undefined &&
+      args.version !== undefined
+    ) {
+      return WaitBeforeShowing({
+        delayMs: Duration.toMillis(args.delay),
+        version: args.version,
+      })
     }
     return Command.mapMessage(command, fromPrimitiveMessage)
   })
 
 const forward = (
   model: Model,
-  result: Update.ReturnWithOutMessage<TooltipPrimitive.Model, TooltipPrimitive.Message, TooltipPrimitive.OutMessage>,
+  result: Update.ReturnWithOutMessage<
+    TooltipPrimitive.Model,
+    TooltipPrimitive.Message,
+    TooltipPrimitive.OutMessage
+  >,
   pendingCloseVersion: number,
 ): UpdateReturn => ({
   model: {
@@ -149,8 +182,13 @@ const forward = (
 export const update = (model: Model, message: Message): UpdateReturn => {
   if (message._tag === 'CompletedWaitBeforeClosingTooltip') {
     return message.version === model.pendingCloseVersion &&
-      model.isOpen && !model.isHovered && !model.isFocused
-      ? { model: { ...model, isOpen: false }, outMessage: OutMessage.HiddenTooltip() }
+      model.isOpen &&
+      !model.isHovered &&
+      !model.isFocused
+      ? {
+          model: { ...model, isOpen: false },
+          outMessage: OutMessage.HiddenTooltip(),
+        }
       : { model }
   }
   const result = TooltipPrimitive.update(model, toPrimitiveMessage(message))
@@ -171,26 +209,45 @@ export const update = (model: Model, message: Message): UpdateReturn => {
     message._tag === 'PressedEscapeOnTooltip' ||
     message._tag === 'LeftTooltipTrigger' ||
     message._tag === 'BlurredTooltipTrigger'
-  const pendingCloseVersion = model.pendingCloseVersion + (invalidatesClose ? 1 : 0)
+  const pendingCloseVersion =
+    model.pendingCloseVersion + (invalidatesClose ? 1 : 0)
   /* The primitive closes instantly on disengage; crease delays the visible
      close by `closeDelayMs`, keeping the tooltip open while the wait arms. */
   if (
-    (message._tag === 'LeftTooltipTrigger' || message._tag === 'BlurredTooltipTrigger') &&
-    model.isOpen && !adjusted.model.isOpen && model.closeDelayMs > 0
+    (message._tag === 'LeftTooltipTrigger' ||
+      message._tag === 'BlurredTooltipTrigger') &&
+    model.isOpen &&
+    !adjusted.model.isOpen &&
+    model.closeDelayMs > 0
   ) {
     return {
-      model: { ...adjusted.model, isOpen: true, closeDelayMs: model.closeDelayMs, pendingCloseVersion },
+      model: {
+        ...adjusted.model,
+        isOpen: true,
+        closeDelayMs: model.closeDelayMs,
+        pendingCloseVersion,
+      },
       commands: [
         ...mapCommands(adjusted.commands),
-        WaitBeforeClosing({ delayMs: model.closeDelayMs, version: pendingCloseVersion }),
+        WaitBeforeClosing({
+          delayMs: model.closeDelayMs,
+          version: pendingCloseVersion,
+        }),
       ],
     }
   }
   return forward(model, adjusted, pendingCloseVersion)
 }
 
-export const reflectShowDelay = (model: Model, showDelay: Duration.Input): Model =>
-  ({ ...model, ...TooltipPrimitive.reflectShowDelay(model, showDelay) })
+export const reflectShowDelay = (
+  model: Model,
+  showDelay: Duration.Input,
+): Model => ({
+  ...model,
+  ...TooltipPrimitive.reflectShowDelay(model, showDelay),
+})
 
-export const reflectCloseDelay = (model: Model, closeDelay: Duration.Input): Model =>
-  ({ ...model, closeDelayMs: millis(closeDelay) })
+export const reflectCloseDelay = (
+  model: Model,
+  closeDelay: Duration.Input,
+): Model => ({ ...model, closeDelayMs: millis(closeDelay) })

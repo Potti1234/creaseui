@@ -1,22 +1,22 @@
-import { Schema as S } from 'effect';
-import { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import { Schema as S } from 'effect'
+import { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-import { definePreviewProgram } from '@/docs/components/pages/authored-page';
+import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
   FILTER_FIELDS,
   JOBS,
   toolbarFixtures,
   type FilterField,
   type Job,
-} from '@/docs/components/pages/toolbar/shared';
-import * as Icon from '@/lib/icon';
-import { badge } from '@/ui/badge';
-import { button } from '@/ui/button';
-import { checkbox } from '@/ui/checkbox';
-import { input } from '@/ui/input';
-import { nativeSelect } from '@/ui/native-select';
+} from '@/docs/components/pages/toolbar/shared'
+import * as Icon from '@/lib/icon'
+import { badge } from '@/ui/badge'
+import { button } from '@/ui/button'
+import { checkbox } from '@/ui/checkbox'
+import { input } from '@/ui/input'
+import { nativeSelect } from '@/ui/native-select'
 import {
   table,
   tableBody,
@@ -24,9 +24,9 @@ import {
   tableHead,
   tableHeader,
   tableRow,
-} from '@/ui/table';
-import * as Tabs from '@/ui/tabs';
-import * as Toolbar from '@/ui/toolbar';
+} from '@/ui/table'
+import * as Tabs from '@/ui/tabs'
+import * as Toolbar from '@/ui/toolbar'
 
 const PreviewMessage = defineMessageUnion({
   GotToolbarMessage: { message: Toolbar.Message },
@@ -34,10 +34,13 @@ const PreviewMessage = defineMessageUnion({
   ToggledJobRow: { id: S.String, isChecked: S.Boolean },
   ClickedDeselectAll: {},
   ChangedSearch: { value: S.String },
-  ChangedClause: { field: S.Literals(['status', 'priority', 'customer']), value: S.String },
+  ChangedClause: {
+    field: S.Literals(['status', 'priority', 'customer']),
+    value: S.String,
+  },
   ClickedClearFilters: {},
-});
-type PreviewMessage = typeof PreviewMessage.Type;
+})
+type PreviewMessage = typeof PreviewMessage.Type
 
 const PreviewModel = S.Struct({
   _docsPage: S.Literal('toolbar'),
@@ -48,11 +51,11 @@ const PreviewModel = S.Struct({
   status: S.String,
   priority: S.String,
   customer: S.String,
-});
-type PreviewModel = typeof PreviewModel.Type;
+})
+type PreviewModel = typeof PreviewModel.Type
 
 const heading = (text: string, h: HtmlBuilder<PreviewMessage>): Html =>
-  h.h4([h.Class('text-base font-medium')], [text]);
+  h.h4([h.Class('text-base font-medium')], [text])
 
 const ghostIconButton = (
   name: string,
@@ -60,21 +63,18 @@ const ghostIconButton = (
   h: HtmlBuilder<PreviewMessage>,
   edgeComp = false,
 ): Html =>
-  h.div(
-    edgeComp ? [h.DataAttribute('crease-edge-comp', '')] : [],
-    [
-      button<PreviewMessage>(
-        {
-          variant: 'ghost',
-          size: 'icon-sm',
-          ariaLabel,
-          leadingIcon: Icon.icon(name, {}, h),
-          children: [],
-        },
-        h,
-      ),
-    ],
-  );
+  h.div(edgeComp ? [h.DataAttribute('crease-edge-comp', '')] : [], [
+    button<PreviewMessage>(
+      {
+        variant: 'ghost',
+        size: 'icon-sm',
+        ariaLabel,
+        leadingIcon: Icon.icon(name, {}, h),
+        children: [],
+      },
+      h,
+    ),
+  ])
 
 const jobsTable = (
   rows: ReadonlyArray<Job>,
@@ -92,7 +92,7 @@ const jobsTable = (
                 {
                   children: [
                     ...(withSelection
-                      ? [tableHead({ children: [''] , class: 'w-8' }, h)]
+                      ? [tableHead({ children: [''], class: 'w-8' }, h)]
                       : []),
                     tableHead({ children: ['Job'] }, h),
                     tableHead({ children: ['Customer'] }, h),
@@ -120,9 +120,14 @@ const jobsTable = (
                                 checkbox<PreviewMessage>(
                                   {
                                     id: `row-${job.id}`,
-                                    isChecked: model.selectedRows.includes(job.id),
+                                    isChecked: model.selectedRows.includes(
+                                      job.id,
+                                    ),
                                     onToggle: isChecked =>
-                                      PreviewMessage.ToggledJobRow({ id: job.id, isChecked }),
+                                      PreviewMessage.ToggledJobRow({
+                                        id: job.id,
+                                        isChecked,
+                                      }),
                                     label: `Select ${job.job}`,
                                   },
                                   h,
@@ -148,10 +153,10 @@ const jobsTable = (
       ],
     },
     h,
-  );
+  )
 
 const filterRows = (model: PreviewModel): ReadonlyArray<Job> => {
-  const query = model.search.trim().toLowerCase();
+  const query = model.search.trim().toLowerCase()
   return JOBS.filter(
     row =>
       (query === '' ||
@@ -159,8 +164,8 @@ const filterRows = (model: PreviewModel): ReadonlyArray<Job> => {
       FILTER_FIELDS.every(
         field => model[field.key] === '' || row[field.key] === model[field.key],
       ),
-  );
-};
+  )
+}
 
 const bodyFor = (
   fixture: (typeof toolbarFixtures)[number],
@@ -168,7 +173,7 @@ const bodyFor = (
   h: HtmlBuilder<PreviewMessage>,
 ): Html => {
   const toolbarMessage = (message: Toolbar.Message): PreviewMessage =>
-    PreviewMessage.GotToolbarMessage({ message });
+    PreviewMessage.GotToolbarMessage({ message })
 
   switch (fixture.kind) {
     case 'threeSlot':
@@ -197,7 +202,7 @@ const bodyFor = (
           ),
           h.div([h.Class('h-40 p-4')], []),
         ],
-      );
+      )
     case 'cardHeader':
       return h.div(
         [h.Class('w-125 rounded-xl border bg-card')],
@@ -227,7 +232,7 @@ const bodyFor = (
           ),
           h.div([h.Class('h-32 p-4')], []),
         ],
-      );
+      )
     case 'sizes':
       return h.div(
         [h.Class('flex w-125 flex-col gap-4')],
@@ -238,31 +243,34 @@ const bodyFor = (
             ['lg', 'Large'],
           ] as const
         ).map(([size, label]) =>
-          h.div([h.Class('rounded-xl border bg-card')], [
-            Toolbar.toolbar<PreviewMessage>(
-              {
-                label: `${label} toolbar`,
-                size,
-                toParentMessage: toolbarMessage,
-                startContent: [heading(label, h)],
-                endContent: [
-                  ghostIconButton('funnel', 'Filter', h, true),
-                  button<PreviewMessage>(
-                    {
-                      variant: 'default',
-                      size: size === 'sm' ? 'sm' : 'default',
-                      leadingIcon: Icon.icon('plus', {}, h),
-                      children: ['Add'],
-                    },
-                    h,
-                  ),
-                ],
-              },
-              h,
-            ),
-          ]),
+          h.div(
+            [h.Class('rounded-xl border bg-card')],
+            [
+              Toolbar.toolbar<PreviewMessage>(
+                {
+                  label: `${label} toolbar`,
+                  size,
+                  toParentMessage: toolbarMessage,
+                  startContent: [heading(label, h)],
+                  endContent: [
+                    ghostIconButton('funnel', 'Filter', h, true),
+                    button<PreviewMessage>(
+                      {
+                        variant: 'default',
+                        size: size === 'sm' ? 'sm' : 'default',
+                        leadingIcon: Icon.icon('plus', {}, h),
+                        children: ['Add'],
+                      },
+                      h,
+                    ),
+                  ],
+                },
+                h,
+              ),
+            ],
+          ),
         ),
-      );
+      )
     case 'tabs':
       return h.div(
         [h.Class('w-150 rounded-xl border bg-card')],
@@ -273,23 +281,30 @@ const bodyFor = (
               dividers: ['bottom'],
               toParentMessage: toolbarMessage,
               startContent: [
-                h.div([h.DataAttribute('crease-edge-comp', '')], [
-                  Tabs.tabs<PreviewMessage>(
-                    {
-                      model: model.tabs,
-                      selectedValue: model.selectedTab,
-                      toParentMessage: message =>
-                        PreviewMessage.GotTabsMessage({ message }),
-                      tabs: [
-                        { value: 'overview', label: 'Overview', content: '' },
-                        { value: 'analytics', label: 'Analytics', content: '' },
-                        { value: 'settings', label: 'Settings', content: '' },
-                      ],
-                      listClass: 'border-b-0',
-                    },
-                    h,
-                  ),
-                ]),
+                h.div(
+                  [h.DataAttribute('crease-edge-comp', '')],
+                  [
+                    Tabs.tabs<PreviewMessage>(
+                      {
+                        model: model.tabs,
+                        selectedValue: model.selectedTab,
+                        toParentMessage: message =>
+                          PreviewMessage.GotTabsMessage({ message }),
+                        tabs: [
+                          { value: 'overview', label: 'Overview', content: '' },
+                          {
+                            value: 'analytics',
+                            label: 'Analytics',
+                            content: '',
+                          },
+                          { value: 'settings', label: 'Settings', content: '' },
+                        ],
+                        listClass: 'border-b-0',
+                      },
+                      h,
+                    ),
+                  ],
+                ),
               ],
               endContent: [
                 button<PreviewMessage>(
@@ -308,145 +323,151 @@ const bodyFor = (
           ),
           h.div([h.Class('h-32 p-4')], []),
         ],
-      );
+      )
     case 'bulk':
-      return h.div([h.Class('w-160')], [
-        ...(model.selectedRows.length === 0
-          ? []
-          : [
-              Toolbar.toolbar<PreviewMessage>(
-                {
-                  label: 'Bulk actions',
-                  size: 'sm',
-                  variant: 'muted',
-                  dividers: ['bottom'],
-                  toParentMessage: toolbarMessage,
-                  startContent: [
-                    badge<PreviewMessage>(
-                      {
-                        variant: 'secondary',
-                        children: [`${model.selectedRows.length} selected`],
-                      },
-                      h,
-                    ),
-                    ghostIconButton('trash-2', 'Delete', h),
-                    ghostIconButton('archive', 'Archive', h),
-                  ],
-                  endContent: [
-                    button<PreviewMessage>(
-                      {
-                        variant: 'ghost',
-                        size: 'sm',
-                        onClick: PreviewMessage.ClickedDeselectAll(),
-                        children: ['Deselect all'],
-                      },
-                      h,
-                    ),
-                  ],
-                },
-                h,
-              ),
-            ]),
-        h.div([h.Class('rounded-b-xl border border-t-0 bg-card')], [
-          jobsTable(JOBS, model, true, h),
-        ]),
-      ]);
-    case 'filter': {
-      const results = filterRows(model);
-      const hasFilters =
-        model.search !== '' ||
-        model.status !== '' ||
-        model.priority !== '' ||
-        model.customer !== '';
-      return h.div([h.Class('w-190 rounded-xl border bg-card')], [
-        Toolbar.toolbar<PreviewMessage>(
-          {
-            label: 'Job filters',
-            size: 'sm',
-            dividers: ['bottom'],
-            toParentMessage: toolbarMessage,
-            startContent: [
-              input<PreviewMessage>(
-                {
-                  id: 'filter-search',
-                  label: 'Search jobs',
-                  placeholder: 'Search',
-                  value: model.search,
-                  onInput: value =>
-                    PreviewMessage.ChangedSearch({ value }),
-                  class: 'w-40',
-                },
-                h,
-              ),
-              ...FILTER_FIELDS.map(field =>
-                nativeSelect<PreviewMessage>(
+      return h.div(
+        [h.Class('w-160')],
+        [
+          ...(model.selectedRows.length === 0
+            ? []
+            : [
+                Toolbar.toolbar<PreviewMessage>(
                   {
-                    id: `filter-${field.key}`,
-                    label: field.label,
-                    value: model[field.key],
-                    onChange: value =>
-                      PreviewMessage.ChangedClause({
-                        field: field.key as FilterField,
-                        value,
-                      }),
+                    label: 'Bulk actions',
                     size: 'sm',
-                    options: [
-                      { value: '', label: field.label },
-                      ...field.options.map(option => ({
-                        value: option,
-                        label: option,
-                      })),
+                    variant: 'muted',
+                    dividers: ['bottom'],
+                    toParentMessage: toolbarMessage,
+                    startContent: [
+                      badge<PreviewMessage>(
+                        {
+                          variant: 'secondary',
+                          children: [`${model.selectedRows.length} selected`],
+                        },
+                        h,
+                      ),
+                      ghostIconButton('trash-2', 'Delete', h),
+                      ghostIconButton('archive', 'Archive', h),
+                    ],
+                    endContent: [
+                      button<PreviewMessage>(
+                        {
+                          variant: 'ghost',
+                          size: 'sm',
+                          onClick: PreviewMessage.ClickedDeselectAll(),
+                          children: ['Deselect all'],
+                        },
+                        h,
+                      ),
                     ],
                   },
                   h,
                 ),
-              ),
-              h.span(
-                [h.Class('text-muted-foreground text-xs whitespace-nowrap')],
-                [`${results.length} of ${JOBS.length}`],
-              ),
-              ...(hasFilters
-                ? [
-                    button<PreviewMessage>(
-                      {
-                        variant: 'link',
-                        size: 'sm',
-                        onClick: PreviewMessage.ClickedClearFilters(),
-                        children: ['Clear all'],
-                      },
-                      h,
-                    ),
-                  ]
-                : []),
-            ],
-            endContent: [ghostIconButton('columns-3-cog', 'View options', h)],
-          },
-          h,
-        ),
-        results.length === 0
-          ? h.div(
-              [h.Class('flex flex-col items-center gap-3 p-8 text-center')],
-              [
-                h.p(
-                  [h.Class('text-sm font-medium')],
-                  ['No jobs match these filters'],
-                ),
-                button<PreviewMessage>(
+              ]),
+          h.div(
+            [h.Class('rounded-b-xl border border-t-0 bg-card')],
+            [jobsTable(JOBS, model, true, h)],
+          ),
+        ],
+      )
+    case 'filter': {
+      const results = filterRows(model)
+      const hasFilters =
+        model.search !== '' ||
+        model.status !== '' ||
+        model.priority !== '' ||
+        model.customer !== ''
+      return h.div(
+        [h.Class('w-190 rounded-xl border bg-card')],
+        [
+          Toolbar.toolbar<PreviewMessage>(
+            {
+              label: 'Job filters',
+              size: 'sm',
+              dividers: ['bottom'],
+              toParentMessage: toolbarMessage,
+              startContent: [
+                input<PreviewMessage>(
                   {
-                    variant: 'secondary',
-                    size: 'sm',
-                    onClick: PreviewMessage.ClickedClearFilters(),
-                    children: ['Clear all'],
+                    id: 'filter-search',
+                    label: 'Search jobs',
+                    placeholder: 'Search',
+                    value: model.search,
+                    onInput: value => PreviewMessage.ChangedSearch({ value }),
+                    class: 'w-40',
                   },
                   h,
                 ),
+                ...FILTER_FIELDS.map(field =>
+                  nativeSelect<PreviewMessage>(
+                    {
+                      id: `filter-${field.key}`,
+                      label: field.label,
+                      value: model[field.key],
+                      onChange: value =>
+                        PreviewMessage.ChangedClause({
+                          field: field.key as FilterField,
+                          value,
+                        }),
+                      size: 'sm',
+                      options: [
+                        { value: '', label: field.label },
+                        ...field.options.map(option => ({
+                          value: option,
+                          label: option,
+                        })),
+                      ],
+                    },
+                    h,
+                  ),
+                ),
+                h.span(
+                  [h.Class('text-muted-foreground text-xs whitespace-nowrap')],
+                  [`${results.length} of ${JOBS.length}`],
+                ),
+                ...(hasFilters
+                  ? [
+                      button<PreviewMessage>(
+                        {
+                          variant: 'link',
+                          size: 'sm',
+                          onClick: PreviewMessage.ClickedClearFilters(),
+                          children: ['Clear all'],
+                        },
+                        h,
+                      ),
+                    ]
+                  : []),
               ],
-            )
-          : jobsTable(results, model, false, h),
-      ]);
+              endContent: [ghostIconButton('columns-3-cog', 'View options', h)],
+            },
+            h,
+          ),
+          results.length === 0
+            ? h.div(
+                [h.Class('flex flex-col items-center gap-3 p-8 text-center')],
+                [
+                  h.p(
+                    [h.Class('text-sm font-medium')],
+                    ['No jobs match these filters'],
+                  ),
+                  button<PreviewMessage>(
+                    {
+                      variant: 'secondary',
+                      size: 'sm',
+                      onClick: PreviewMessage.ClickedClearFilters(),
+                      children: ['Clear all'],
+                    },
+                    h,
+                  ),
+                ],
+              )
+            : jobsTable(results, model, false, h),
+        ],
+      )
     }
   }
-};
+}
 
 export const toolbarTailwindPreviewProgram = definePreviewProgram<
   PreviewModel,
@@ -455,7 +476,7 @@ export const toolbarTailwindPreviewProgram = definePreviewProgram<
   Model: PreviewModel,
   Message: PreviewMessage,
   init: index => {
-    const fixture = toolbarFixtures[index] ?? toolbarFixtures[0];
+    const fixture = toolbarFixtures[index] ?? toolbarFixtures[0]
     return {
       _docsPage: 'toolbar',
       tabs: Tabs.init({ id: `docs-toolbar-tabs-${index}` }),
@@ -466,18 +487,18 @@ export const toolbarTailwindPreviewProgram = definePreviewProgram<
       status: '',
       priority: '',
       customer: '',
-    };
+    }
   },
   update: (model, message) => {
     switch (message._tag) {
       case 'GotToolbarMessage':
-        return { model };
+        return { model }
       case 'GotTabsMessage': {
-        const next = Tabs.update(model.tabs, message.message);
+        const next = Tabs.update(model.tabs, message.message)
         const selection =
           next.outMessage?._tag === 'Selected'
             ? next.outMessage.value
-            : undefined;
+            : undefined
         return {
           model: {
             ...model,
@@ -487,7 +508,7 @@ export const toolbarTailwindPreviewProgram = definePreviewProgram<
           commands: Command.mapMessages(next.commands ?? [], nextMessage =>
             PreviewMessage.GotTabsMessage({ message: nextMessage }),
           ),
-        };
+        }
       }
       case 'ToggledJobRow':
         return {
@@ -497,15 +518,15 @@ export const toolbarTailwindPreviewProgram = definePreviewProgram<
               ? [...model.selectedRows, message.id]
               : model.selectedRows.filter(id => id !== message.id),
           },
-        };
+        }
       case 'ClickedDeselectAll':
-        return { model: { ...model, selectedRows: [] } };
+        return { model: { ...model, selectedRows: [] } }
       case 'ChangedSearch':
-        return { model: { ...model, search: message.value } };
+        return { model: { ...model, search: message.value } }
       case 'ChangedClause':
         return {
           model: { ...model, [message.field]: message.value },
-        };
+        }
       case 'ClickedClearFilters':
         return {
           model: {
@@ -515,11 +536,11 @@ export const toolbarTailwindPreviewProgram = definePreviewProgram<
             priority: '',
             customer: '',
           },
-        };
+        }
     }
   },
   view: (index, model, h) => {
-    const fixture = toolbarFixtures[index] ?? toolbarFixtures[0];
-    return bodyFor(fixture, model, h);
+    const fixture = toolbarFixtures[index] ?? toolbarFixtures[0]
+    return bodyFor(fixture, model, h)
   },
-});
+})

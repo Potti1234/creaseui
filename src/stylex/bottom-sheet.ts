@@ -1,24 +1,24 @@
 /* Ported from Meta Astryx BottomSheet (packages/core/src/BottomSheet/) — examples and visual spec adapted to Crease UI tokens. */
 
-import * as stylex from '@stylexjs/stylex';
-import { Option } from 'effect';
-import * as Mount from 'foldkit/mount';
-import type { Attribute, Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import { Option } from 'effect'
+import * as Mount from 'foldkit/mount'
+import type { Attribute, Html, HtmlBuilder } from 'foldkit/html'
 
-import { Dialog as DialogPrimitive } from '@foldkit/ui';
+import { Dialog as DialogPrimitive } from '@foldkit/ui'
 
-import * as SheetBehavior from '@/lib/bottom-sheet';
+import * as SheetBehavior from '@/lib/bottom-sheet'
 import type {
   BottomSheetSnapPoint,
   SheetHeight,
   SheetPurpose,
-} from '@/lib/bottom-sheet';
-import type { ComponentLayoutStyle } from './contracts';
-import { foundationTokens } from './foundations-tokens.stylex';
-import { interactionTokens } from './interaction-tokens.stylex.const';
-import { overlayStyles } from './overlay-tokens.stylex';
-import { className } from './style';
-import { tokens } from './tokens.stylex';
+} from '@/lib/bottom-sheet'
+import type { ComponentLayoutStyle } from './contracts'
+import { foundationTokens } from './foundations-tokens.stylex'
+import { interactionTokens } from './interaction-tokens.stylex.const'
+import { overlayStyles } from './overlay-tokens.stylex'
+import { className } from './style'
+import { tokens } from './tokens.stylex'
 
 /* astryx exits the sheet on an accelerate curve (cubic-bezier(0.3,0,0.6,0.6));
    Crease UI has no accelerate token, so the exit curve is applied via the
@@ -50,7 +50,8 @@ const styles = stylex.create({
   },
   handle: {
     alignItems: 'center',
-    backgroundImage: 'linear-gradient(to bottom, var(--background) 60%, transparent)',
+    backgroundImage:
+      'linear-gradient(to bottom, var(--background) 60%, transparent)',
     cursor: interactionTokens.cursorResizeVertical,
     display: 'flex',
     insetBlockStart: 0,
@@ -154,33 +155,37 @@ const styles = stylex.create({
   },
 })
 
-export const Model = SheetBehavior.Model;
-export type Model = typeof Model.Type;
-export const Message = SheetBehavior.Message;
-export type Message = typeof Message.Type;
-export const OutMessage = SheetBehavior.OutMessage;
-export type OutMessage = typeof OutMessage.Type;
-export const SwitcherModel = SheetBehavior.SwitcherModel;
-export type SwitcherModel = typeof SwitcherModel.Type;
-export const SwitcherMessage = SheetBehavior.SwitcherMessage;
-export type SwitcherMessage = typeof SwitcherMessage.Type;
-export const SwitcherOutMessage = SheetBehavior.SwitcherOutMessage;
-export type SwitcherOutMessage = typeof SwitcherOutMessage.Type;
-export const SheetState = SheetBehavior.SheetState;
-export type SheetState = typeof SheetState.Type;
-export type { BottomSheetSnapPoint, SheetHeight, SheetPurpose } from '@/lib/bottom-sheet';
+export const Model = SheetBehavior.Model
+export type Model = typeof Model.Type
+export const Message = SheetBehavior.Message
+export type Message = typeof Message.Type
+export const OutMessage = SheetBehavior.OutMessage
+export type OutMessage = typeof OutMessage.Type
+export const SwitcherModel = SheetBehavior.SwitcherModel
+export type SwitcherModel = typeof SwitcherModel.Type
+export const SwitcherMessage = SheetBehavior.SwitcherMessage
+export type SwitcherMessage = typeof SwitcherMessage.Type
+export const SwitcherOutMessage = SheetBehavior.SwitcherOutMessage
+export type SwitcherOutMessage = typeof SwitcherOutMessage.Type
+export const SheetState = SheetBehavior.SheetState
+export type SheetState = typeof SheetState.Type
+export type {
+  BottomSheetSnapPoint,
+  SheetHeight,
+  SheetPurpose,
+} from '@/lib/bottom-sheet'
 
-export const init = SheetBehavior.init;
-export const update = SheetBehavior.update;
-export const open = SheetBehavior.open;
-export const close = SheetBehavior.close;
-export const initSwitcher = SheetBehavior.initSwitcher;
-export const updateSwitcher = SheetBehavior.updateSwitcher;
-export const openSheet = SheetBehavior.openSheet;
-export const closeSwitcher = SheetBehavior.closeSwitcher;
+export const init = SheetBehavior.init
+export const update = SheetBehavior.update
+export const open = SheetBehavior.open
+export const close = SheetBehavior.close
+export const initSwitcher = SheetBehavior.initSwitcher
+export const updateSwitcher = SheetBehavior.updateSwitcher
+export const openSheet = SheetBehavior.openSheet
+export const closeSwitcher = SheetBehavior.closeSwitcher
 
-export const OVERSCROLL_PADDING = SheetBehavior.OVERSCROLL_PADDING;
-export const HEIGHT_BUDGETS = SheetBehavior.HEIGHT_BUDGETS;
+export const OVERSCROLL_PADDING = SheetBehavior.OVERSCROLL_PADDING
+export const HEIGHT_BUDGETS = SheetBehavior.HEIGHT_BUDGETS
 
 const budgetCss = (height: SheetHeight): string =>
   height === 'hug'
@@ -193,10 +198,10 @@ const budgetCss = (height: SheetHeight): string =>
           ? `${String(height)}px`
           : height.endsWith('%')
             ? `${String(height.slice(0, -1))}dvh`
-            : height;
+            : height
 
 const viewportHeight = (): number =>
-  typeof window === 'undefined' ? 0 : window.innerHeight;
+  typeof window === 'undefined' ? 0 : window.innerHeight
 
 const detentsFor = (
   sheetHeight: number,
@@ -205,38 +210,38 @@ const detentsFor = (
   SheetBehavior.computeDetentOffsets(
     sheetHeight,
     SheetBehavior.resolveSnapPoints(snapPoints, viewportHeight()),
-  );
+  )
 
 const gestureLayoutOffset = (g: SheetBehavior.GestureState): number =>
   g.dragPhase === 'Dragging'
     ? g.dragOffset < g.settledOffset
       ? 0
       : g.settledLayoutOffset
-    : g.settledLayoutOffset;
+    : g.settledLayoutOffset
 
 const sheetTransform = (
   g: SheetBehavior.GestureState,
   isLeaving: boolean,
   isExiting: boolean,
 ): string | undefined => {
-  if (isLeaving) return undefined;
-  if (isExiting) return 'translateY(100%)';
-  const dragging = g.dragPhase === 'Dragging';
-  const activeOffset = dragging ? g.dragOffset : g.settledOffset;
-  const lift = dragging ? g.dragLift : 0;
-  const translate = activeOffset - gestureLayoutOffset(g) - lift;
+  if (isLeaving) return undefined
+  if (isExiting) return 'translateY(100%)'
+  const dragging = g.dragPhase === 'Dragging'
+  const activeOffset = dragging ? g.dragOffset : g.settledOffset
+  const lift = dragging ? g.dragLift : 0
+  const translate = activeOffset - gestureLayoutOffset(g) - lift
   return translate !== 0 || g.dragPhase !== 'Idle'
     ? `translateY(${String(translate)}px)`
-    : undefined;
-};
+    : undefined
+}
 
 const sheetHeightStyle = (
   g: SheetBehavior.GestureState,
   height: SheetHeight,
 ): Record<string, string> => {
-  const layoutOffset = gestureLayoutOffset(g);
+  const layoutOffset = gestureLayoutOffset(g)
   if (layoutOffset > 0 && g.sheetHeight > 0) {
-    return { height: `${String(g.sheetHeight - layoutOffset)}px` };
+    return { height: `${String(g.sheetHeight - layoutOffset)}px` }
   }
   return height === 'hug'
     ? {
@@ -245,8 +250,8 @@ const sheetHeightStyle = (
       }
     : {
         height: `calc(${budgetCss(height)} + ${String(OVERSCROLL_PADDING)}px)`,
-      };
-};
+      }
+}
 
 const panelStyle = (
   g: SheetBehavior.GestureState,
@@ -254,7 +259,7 @@ const panelStyle = (
   isLeaving: boolean,
   isExiting: boolean,
 ): Record<string, string> => {
-  const transform = sheetTransform(g, isLeaving, isExiting);
+  const transform = sheetTransform(g, isLeaving, isExiting)
   return {
     ...sheetHeightStyle(g, height),
     paddingBlockEnd: `calc(env(safe-area-inset-bottom, 0px) + ${String(OVERSCROLL_PADDING)}px)`,
@@ -264,8 +269,8 @@ const panelStyle = (
     ...(isLeaving || isExiting
       ? { transitionTimingFunction: 'cubic-bezier(0.3, 0, 0.6, 0.6)' }
       : {}),
-  };
-};
+  }
+}
 
 /** The tap-to-drag promotion guard: a pointerdown on the handle drags
     immediately; one on the body arms a drag only when the body is scrolled to
@@ -273,20 +278,20 @@ const panelStyle = (
 export const isSheetDragCandidate = (
   target: unknown,
 ): false | 'handle' | 'arm' => {
-  if (!(target instanceof HTMLElement)) return false;
+  if (!(target instanceof HTMLElement)) return false
   if (target.closest('[data-slot="bottom-sheet-handle"]') !== null)
-    return 'handle';
-  const body = target.closest('[data-slot="bottom-sheet-body"]');
-  if (body !== null && body.scrollTop <= 0) return 'arm';
-  return false;
-};
+    return 'handle'
+  const body = target.closest('[data-slot="bottom-sheet-body"]')
+  if (body !== null && body.scrollTop <= 0) return 'arm'
+  return false
+}
 
 export type SheetDragDispatch<Msg> = Readonly<{
-  started: (frame: { y: number; timeStamp: number; armOnly: boolean }) => Msg;
-  dragged: (frame: { y: number; timeStamp: number; detents: number[] }) => Msg;
-  ended: (frame: { y: number; timeStamp: number; detents: number[] }) => Msg;
-  cancelled: (detents: number[]) => Msg;
-}>;
+  started: (frame: { y: number; timeStamp: number; armOnly: boolean }) => Msg
+  dragged: (frame: { y: number; timeStamp: number; detents: number[] }) => Msg
+  ended: (frame: { y: number; timeStamp: number; detents: number[] }) => Msg
+  cancelled: (detents: number[]) => Msg
+}>
 
 const dragStartAttribute = <Msg>(
   dispatch: SheetDragDispatch<Msg>,
@@ -294,14 +299,14 @@ const dragStartAttribute = <Msg>(
 ): Attribute<Msg> =>
   h.OnPointerDown(
     (_pointerType, button, _sx, sy, timeStamp, _cx, _cy, _pid, target) => {
-      if (button !== 0) return Option.none();
-      const candidate = isSheetDragCandidate(target);
-      if (candidate === false) return Option.none();
+      if (button !== 0) return Option.none()
+      const candidate = isSheetDragCandidate(target)
+      if (candidate === false) return Option.none()
       return Option.some(
         dispatch.started({ y: sy, timeStamp, armOnly: candidate === 'arm' }),
-      );
+      )
     },
-  );
+  )
 
 const dragTrackingAttributes = <Msg>(
   dispatch: SheetDragDispatch<Msg>,
@@ -331,7 +336,7 @@ const dragTrackingAttributes = <Msg>(
         ),
         h.OnPointerLeave(() => Option.some(dispatch.cancelled([...detents]))),
       ]
-    : [];
+    : []
 
 const panelBody = <Msg>(
   content: Html,
@@ -354,7 +359,10 @@ const panelBody = <Msg>(
     ],
   ),
   h.div(
-    [h.DataAttribute('slot', 'bottom-sheet-body'), h.Class(className(styles.body))],
+    [
+      h.DataAttribute('slot', 'bottom-sheet-body'),
+      h.Class(className(styles.body)),
+    ],
     [
       h.div(
         [
@@ -365,15 +373,15 @@ const panelBody = <Msg>(
       ),
     ],
   ),
-];
+]
 
 export type BottomSheetProps<Msg> = Readonly<{
-  model: Model;
-  toParentMessage: (message: Message) => Msg;
-  label: string;
-  content: Html;
-  layoutStyle?: ComponentLayoutStyle;
-}>;
+  model: Model
+  toParentMessage: (message: Message) => Msg
+  label: string
+  content: Html
+  layoutStyle?: ComponentLayoutStyle
+}>
 
 /** A swipe-down sheet with astryx detent snapping, magnetic drags, flick and
     overshoot dismissal, and scrim opacity coupled to the drag offset. */
@@ -381,31 +389,32 @@ export const bottomSheet = <Msg>(
   props: BottomSheetProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const model = props.model;
-  const send = props.toParentMessage;
-  const g = model.gesture;
-  const detents = detentsFor(g.sheetHeight, model.snapPoints);
-  const peek = SheetBehavior.peekOffsetFor(detents, g.sheetHeight);
-  const maxOffset = detents[detents.length - 1] ?? 0;
+  const model = props.model
+  const send = props.toParentMessage
+  const g = model.gesture
+  const detents = detentsFor(g.sheetHeight, model.snapPoints)
+  const peek = SheetBehavior.peekOffsetFor(detents, g.sheetHeight)
+  const maxOffset = detents[detents.length - 1] ?? 0
   const dismissOffset =
     maxOffset +
     SheetBehavior.visibleHeightForOffset(g.sheetHeight, maxOffset) *
-      SheetBehavior.DISMISS_OVERSHOOT_RATIO;
-  const activeOffset = g.dragPhase === 'Dragging' ? g.dragOffset : g.settledOffset;
+      SheetBehavior.DISMISS_OVERSHOOT_RATIO
+  const activeOffset =
+    g.dragPhase === 'Dragging' ? g.dragOffset : g.settledOffset
   const scrimOpacity = SheetBehavior.scrimOpacityForOffset(
     activeOffset,
     detents,
     dismissOffset,
     peek,
-  );
-  const swiping = g.dragPhase !== 'Idle';
+  )
+  const swiping = g.dragPhase !== 'Idle'
 
   const dispatch: SheetDragDispatch<Msg> = {
     started: frame => send(Message.StartedSheetDrag(frame)),
     dragged: frame => send(Message.DraggedSheet(frame)),
     ended: frame => send(Message.EndedSheetDrag(frame)),
     cancelled: ds => send(Message.CancelledSheetDrag({ detents: ds })),
-  };
+  }
 
   if (!model.hasScrim) {
     return h.div(
@@ -436,7 +445,7 @@ export const bottomSheet = <Msg>(
             ),
           ]
         : [],
-    );
+    )
   }
 
   return h.submodel({
@@ -450,20 +459,16 @@ export const bottomSheet = <Msg>(
         panel: panelAttributes,
         isVisible,
       }: DialogPrimitive.RenderInfo) => {
-        const hd = h;
+        const hd = h
         const leaving =
           model.dialog.animation.transitionState === 'LeaveStart' ||
-          model.dialog.animation.transitionState === 'LeaveAnimating';
+          model.dialog.animation.transitionState === 'LeaveAnimating'
         return hd.dialog(
           [
             ...dialogAttributes,
             hd.DataAttribute('slot', 'bottom-sheet'),
             hd.Class(
-              className(
-                overlayStyles.dialog,
-                styles.dialog,
-                props.layoutStyle,
-              ),
+              className(overlayStyles.dialog, styles.dialog, props.layoutStyle),
             ),
             ...(model.purpose === 'required' ? [hd.Role('alertdialog')] : []),
             ...dragTrackingAttributes(dispatch, detents, swiping, hd),
@@ -513,47 +518,47 @@ export const bottomSheet = <Msg>(
                 ),
               ]
             : [],
-        );
+        )
       },
     },
     toParentMessage: message =>
       send(Message.GotBottomSheetDialogMessage({ message })),
-  });
-};
+  })
+}
 
 // ——— Switcher
 
 export type SwitcherSheetContent = Readonly<{
-  id: string;
-  content: Html;
-}>;
+  id: string
+  content: Html
+}>
 
 export type BottomSheetSwitcherProps<Msg> = Readonly<{
-  model: SwitcherModel;
-  toParentMessage: (message: SwitcherMessage) => Msg;
-  sheets: ReadonlyArray<SwitcherSheetContent>;
-  layoutStyle?: ComponentLayoutStyle;
-}>;
+  model: SwitcherModel
+  toParentMessage: (message: SwitcherMessage) => Msg
+  sheets: ReadonlyArray<SwitcherSheetContent>
+  layoutStyle?: ComponentLayoutStyle
+}>
 
 const switcherScrimOpacity = (sheet: SheetState): number => {
-  const detents = detentsFor(sheet.gesture.sheetHeight, sheet.snapPoints);
-  const peek = SheetBehavior.peekOffsetFor(detents, sheet.gesture.sheetHeight);
-  const maxOffset = detents[detents.length - 1] ?? 0;
+  const detents = detentsFor(sheet.gesture.sheetHeight, sheet.snapPoints)
+  const peek = SheetBehavior.peekOffsetFor(detents, sheet.gesture.sheetHeight)
+  const maxOffset = detents[detents.length - 1] ?? 0
   const dismissOffset =
     maxOffset +
     SheetBehavior.visibleHeightForOffset(sheet.gesture.sheetHeight, maxOffset) *
-      SheetBehavior.DISMISS_OVERSHOOT_RATIO;
+      SheetBehavior.DISMISS_OVERSHOOT_RATIO
   const activeOffset =
     sheet.gesture.dragPhase === 'Dragging'
       ? sheet.gesture.dragOffset
-      : sheet.gesture.settledOffset;
+      : sheet.gesture.settledOffset
   return SheetBehavior.scrimOpacityForOffset(
     activeOffset,
     detents,
     dismissOffset,
     peek,
-  );
-};
+  )
+}
 
 const switcherDispatch = <Msg>(
   send: (message: SwitcherMessage) => Msg,
@@ -562,7 +567,7 @@ const switcherDispatch = <Msg>(
   dragged: frame => send(SwitcherMessage.DraggedSheet(frame)),
   ended: frame => send(SwitcherMessage.EndedSheetDrag(frame)),
   cancelled: ds => send(SwitcherMessage.CancelledSheetDrag({ detents: ds })),
-});
+})
 
 /** One shared dialog hosting several sheets; requesting a sheet slides it in
     over the currently mounted one, which is retained covered and then fades
@@ -571,19 +576,19 @@ export const bottomSheetSwitcher = <Msg>(
   props: BottomSheetSwitcherProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const model = props.model;
-  const send = props.toParentMessage;
-  const activeId = Option.getOrUndefined(model.activeSheetId);
-  const previousId = Option.getOrUndefined(model.previousSheetId);
+  const model = props.model
+  const send = props.toParentMessage
+  const activeId = Option.getOrUndefined(model.activeSheetId)
+  const previousId = Option.getOrUndefined(model.previousSheetId)
   const activeSheet =
-    activeId === undefined ? undefined : model.sheets[activeId];
+    activeId === undefined ? undefined : model.sheets[activeId]
   const swiping =
-    activeSheet !== undefined && activeSheet.gesture.dragPhase !== 'Idle';
-  const dispatch = switcherDispatch(send);
+    activeSheet !== undefined && activeSheet.gesture.dragPhase !== 'Idle'
+  const dispatch = switcherDispatch(send)
   const activeDetents =
     activeSheet === undefined
       ? [0]
-      : detentsFor(activeSheet.gesture.sheetHeight, activeSheet.snapPoints);
+      : detentsFor(activeSheet.gesture.sheetHeight, activeSheet.snapPoints)
 
   return h.submodel({
     slotId: model.dialog.id,
@@ -596,17 +601,17 @@ export const bottomSheetSwitcher = <Msg>(
         panel: panelAttributes,
         isVisible,
       }: DialogPrimitive.RenderInfo) => {
-        const hd = h;
+        const hd = h
         const leaving =
           model.dialog.animation.transitionState === 'LeaveStart' ||
-          model.dialog.animation.transitionState === 'LeaveAnimating';
+          model.dialog.animation.transitionState === 'LeaveAnimating'
 
         const renderSheet = (
           spec: SwitcherSheetContent,
           hidden: boolean,
         ): Html | undefined => {
-          const sheet = model.sheets[spec.id];
-          if (sheet === undefined) return undefined;
+          const sheet = model.sheets[spec.id]
+          if (sheet === undefined) return undefined
           return hd.keyed('div')(
             `sheet-${spec.id}-${hidden ? 'retained' : 'active'}`,
             [
@@ -620,9 +625,7 @@ export const bottomSheetSwitcher = <Msg>(
                   message => send(message),
                 ),
               ),
-              hd.Style(
-                panelStyle(sheet.gesture, sheet.height, leaving, false),
-              ),
+              hd.Style(panelStyle(sheet.gesture, sheet.height, leaving, false)),
               hd.Class(
                 className(
                   styles.sheet,
@@ -633,19 +636,15 @@ export const bottomSheetSwitcher = <Msg>(
               dragStartAttribute(dispatch, hd),
             ],
             panelBody(spec.content, hd),
-          );
-        };
+          )
+        }
 
         return hd.dialog(
           [
             ...dialogAttributes,
             hd.DataAttribute('slot', 'bottom-sheet-switcher'),
             hd.Class(
-              className(
-                overlayStyles.dialog,
-                styles.dialog,
-                props.layoutStyle,
-              ),
+              className(overlayStyles.dialog, styles.dialog, props.layoutStyle),
             ),
             ...dragTrackingAttributes(dispatch, activeDetents, swiping, hd),
           ],
@@ -689,10 +688,10 @@ export const bottomSheetSwitcher = <Msg>(
                 ),
               ]
             : [],
-        );
+        )
       },
     },
     toParentMessage: message =>
       send(SwitcherMessage.GotSwitcherDialogMessage({ message })),
-  });
-};
+  })
+}

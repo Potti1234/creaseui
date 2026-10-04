@@ -1,12 +1,12 @@
-import { Match as M, Option, Schema as S } from 'effect';
-import type { Update } from 'foldkit';
-import { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
-import { modifyFields } from 'foldkit/struct';
+import { Match as M, Option, Schema as S } from 'effect'
+import type { Update } from 'foldkit'
+import { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import { modifyFields } from 'foldkit/struct'
 
-import * as Icon from '@/lib/icon';
-import { avatar, avatarFallback } from '@/ui/avatar';
+import * as Icon from '@/lib/icon'
+import { avatar, avatarFallback } from '@/ui/avatar'
 import {
   breadcrumb,
   breadcrumbItem,
@@ -14,10 +14,10 @@ import {
   breadcrumbList,
   breadcrumbPage,
   breadcrumbSeparator,
-} from '@/ui/breadcrumb';
-import * as Collapsible from '@/ui/collapsible';
-import * as DropdownMenu from '@/ui/dropdown-menu';
-import { separator } from '@/ui/separator';
+} from '@/ui/breadcrumb'
+import * as Collapsible from '@/ui/collapsible'
+import * as DropdownMenu from '@/ui/dropdown-menu'
+import { separator } from '@/ui/separator'
 import {
   sidebar,
   sidebarContent,
@@ -37,32 +37,32 @@ import {
   sidebarProvider,
   sidebarRail,
   sidebarTrigger,
-} from '@/ui/sidebar';
+} from '@/ui/sidebar'
 
 type Team = Readonly<{
-  name: string;
-  logo: string;
-  plan: string;
-}>;
+  name: string
+  logo: string
+  plan: string
+}>
 
 type NavMainItem = Readonly<{
-  title: string;
-  url: string;
-  icon: string;
-  isActive?: boolean;
+  title: string
+  url: string
+  icon: string
+  isActive?: boolean
   items: ReadonlyArray<
     Readonly<{
-      title: string;
-      url: string;
+      title: string
+      url: string
     }>
-  >;
-}>;
+  >
+}>
 
 type Project = Readonly<{
-  name: string;
-  url: string;
-  icon: string;
-}>;
+  name: string
+  url: string
+  icon: string
+}>
 
 // Sample data copied from the source block; icon components become their
 // equivalent lucide-static names for foldkit's icon renderer.
@@ -139,18 +139,22 @@ export const data = {
     { name: 'Sales & Marketing', url: '#', icon: 'chart-pie' },
     { name: 'Travel', url: '#', icon: 'map' },
   ] satisfies ReadonlyArray<Project>,
-};
+}
 
-type TeamMenuItem = 'team-0' | 'team-1' | 'team-2' | 'add-team';
+type TeamMenuItem = 'team-0' | 'team-1' | 'team-2' | 'add-team'
 type UserMenuItem =
-  'upgrade' | 'account' | 'billing' | 'notifications' | 'log-out';
+  | 'upgrade'
+  | 'account'
+  | 'billing'
+  | 'notifications'
+  | 'log-out'
 
 const TEAM_MENU_ITEMS: ReadonlyArray<TeamMenuItem> = [
   'team-0',
   'team-1',
   'team-2',
   'add-team',
-];
+]
 
 const USER_MENU_ITEMS: ReadonlyArray<UserMenuItem> = [
   'upgrade',
@@ -158,52 +162,48 @@ const USER_MENU_ITEMS: ReadonlyArray<UserMenuItem> = [
   'billing',
   'notifications',
   'log-out',
-];
+]
 
-const TeamMenu = DropdownMenu.create<TeamMenuItem>();
-const UserMenu = DropdownMenu.create<UserMenuItem>();
+const TeamMenu = DropdownMenu.create<TeamMenuItem>()
+const UserMenu = DropdownMenu.create<UserMenuItem>()
 
 // MODEL
 
 export const Model = S.Struct({
-  isMobileOpen: S.Boolean, isSidebarOpen: S.Boolean,
+  isMobileOpen: S.Boolean,
+  isSidebarOpen: S.Boolean,
   activeTeamIndex: S.Number,
   navMainOpen: S.Array(S.Boolean),
   teamMenu: DropdownMenu.Model,
   userMenu: DropdownMenu.Model,
-});
-export type Model = typeof Model.Type;
+})
+export type Model = typeof Model.Type
 
 // MESSAGE
-
-
-
-
-
-
 
 export const Message = defineMessageUnion({
   ToggledMobileSidebar: {},
   ToggledSidebar: {},
   ToggledNavMain: {
-  index: S.Number,
-  isOpen: S.Boolean,
-},
+    index: S.Number,
+    isOpen: S.Boolean,
+  },
   GotTeamMenuMessage: {
-  message: DropdownMenu.Message,
-},
+    message: DropdownMenu.Message,
+  },
   GotUserMenuMessage: {
-  message: DropdownMenu.Message,
-},
-});
-export type Message = typeof Message.Type;
+    message: DropdownMenu.Message,
+  },
+})
+export type Message = typeof Message.Type
 
 // INIT
 
 export const init = (): Model => ({
-  isMobileOpen: false, isSidebarOpen: true,
+  isMobileOpen: false,
+  isSidebarOpen: true,
   activeTeamIndex: 0,
-  navMainOpen: data.navMain.map((item) => item.isActive ?? false),
+  navMainOpen: data.navMain.map(item => item.isActive ?? false),
   teamMenu: DropdownMenu.init({
     id: 'sidebar-07-team-switcher',
     isAnimated: true,
@@ -212,37 +212,40 @@ export const init = (): Model => ({
     id: 'sidebar-07-user-menu',
     isAnimated: true,
   }),
-});
+})
 
 // UPDATE
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      ToggledMobileSidebar: () => ({ model: modifyFields(model, {isMobileOpen: current => !current}) }),
-      ToggledSidebar: () => ({ model: modifyFields(model, { isSidebarOpen: (current) => !current }) }),
+      ToggledMobileSidebar: () => ({
+        model: modifyFields(model, { isMobileOpen: current => !current }),
+      }),
+      ToggledSidebar: () => ({
+        model: modifyFields(model, { isSidebarOpen: current => !current }),
+      }),
       ToggledNavMain: ({ index, isOpen }) => {
         if (model.navMainOpen[index] === undefined) {
-          return { model: model };
+          return { model: model }
         }
-        return { model: modifyFields(model, {
-            navMainOpen: (items) =>
+        return {
+          model: modifyFields(model, {
+            navMainOpen: items =>
               items.map((open, itemIndex) =>
                 itemIndex === index ? isOpen : open,
               ),
-          }) };
+          }),
+        }
       },
       GotTeamMenuMessage: ({ message: childMessage }) => {
-        const teamMenuOp__ = TeamMenu.update(
-          model.teamMenu,
-          childMessage,
-        );
-    const teamMenu = teamMenuOp__.model;
-    const commands = teamMenuOp__.commands ?? [];
-    const maybeSelection = Option.fromNullishOr(teamMenuOp__.outMessage);;
+        const teamMenuOp__ = TeamMenu.update(model.teamMenu, childMessage)
+        const teamMenu = teamMenuOp__.model
+        const commands = teamMenuOp__.commands ?? []
+        const maybeSelection = Option.fromNullishOr(teamMenuOp__.outMessage)
         const activeTeamIndex = Option.match(maybeSelection, {
           onNone: () => model.activeTeamIndex,
           onSome: ({ value }) =>
@@ -253,29 +256,32 @@ export const update = (model: Model, message: Message): UpdateReturn =>
                 : value === 'team-2'
                   ? 2
                   : model.activeTeamIndex,
-        });
+        })
 
-        return { model: modifyFields(model, {
+        return {
+          model: modifyFields(model, {
             teamMenu: () => teamMenu,
             activeTeamIndex: () => activeTeamIndex,
-          }), commands: Command.mapMessages(commands, (nextMessage) =>
+          }),
+          commands: Command.mapMessages(commands, nextMessage =>
             Message.GotTeamMenuMessage({ message: nextMessage }),
-          ) };
+          ),
+        }
       },
       GotUserMenuMessage: ({ message: childMessage }) => {
-        const userMenuOp__ = UserMenu.update(
-          model.userMenu,
-          childMessage,
-        );
-    const userMenu = userMenuOp__.model;
-    const commands = userMenuOp__.commands ?? [];;
+        const userMenuOp__ = UserMenu.update(model.userMenu, childMessage)
+        const userMenu = userMenuOp__.model
+        const commands = userMenuOp__.commands ?? []
 
-        return { model: modifyFields(model, { userMenu: () => userMenu }), commands: Command.mapMessages(commands, (nextMessage) =>
+        return {
+          model: modifyFields(model, { userMenu: () => userMenu }),
+          commands: Command.mapMessages(commands, nextMessage =>
             Message.GotUserMenuMessage({ message: nextMessage }),
-          ) };
+          ),
+        }
       },
     }),
-  );
+  )
 
 // VIEW
 
@@ -283,13 +289,13 @@ const teamLogo = (
   team: Team,
   className: string,
   h: HtmlBuilder<Message>,
-): Html => Icon.icon<Message>(team.logo, { class: className }, h);
+): Html => Icon.icon<Message>(team.logo, { class: className }, h)
 
 const teamSwitcher = (model: Model, h: HtmlBuilder<Message>): Html => {
-  const activeTeam = data.teams[model.activeTeamIndex] ?? data.teams[0];
+  const activeTeam = data.teams[model.activeTeamIndex] ?? data.teams[0]
 
   if (activeTeam === undefined) {
-    return h.div([], []);
+    return h.div([], [])
   }
 
   const trigger = h.span(
@@ -312,7 +318,7 @@ const teamSwitcher = (model: Model, h: HtmlBuilder<Message>): Html => {
       ),
       Icon.chevronsUpDown({ class: 'ml-auto size-4 shrink-0' }, h),
     ],
-  );
+  )
 
   return sidebarMenu(
     {
@@ -323,7 +329,8 @@ const teamSwitcher = (model: Model, h: HtmlBuilder<Message>): Html => {
               DropdownMenu.dropdownMenu<TeamMenuItem, Message>(
                 {
                   model: model.teamMenu,
-                  toParentMessage: (message) => Message.GotTeamMenuMessage({ message }),
+                  toParentMessage: message =>
+                    Message.GotTeamMenuMessage({ message }),
                   trigger,
                   triggerClass: sidebarMenuButtonVariants({
                     size: 'lg',
@@ -331,7 +338,7 @@ const teamSwitcher = (model: Model, h: HtmlBuilder<Message>): Html => {
                       'data-[open]:bg-sidebar-accent data-[open]:text-sidebar-accent-foreground',
                   }),
                   items: TEAM_MENU_ITEMS,
-                  itemToConfig: (item) => {
+                  itemToConfig: item => {
                     if (item === 'add-team') {
                       return {
                         label: h.span(
@@ -347,12 +354,12 @@ const teamSwitcher = (model: Model, h: HtmlBuilder<Message>): Html => {
                           [Icon.plus({ class: 'size-4' }, h)],
                         ),
                         group: '',
-                      };
+                      }
                     }
 
                     const teamIndex =
-                      item === 'team-0' ? 0 : item === 'team-1' ? 1 : 2;
-                    const team = data.teams[teamIndex];
+                      item === 'team-0' ? 0 : item === 'team-1' ? 1 : 2
+                    const team = data.teams[teamIndex]
 
                     return {
                       label: team?.name ?? '',
@@ -370,7 +377,7 @@ const teamSwitcher = (model: Model, h: HtmlBuilder<Message>): Html => {
                           }),
                       shortcut: `⌘${teamIndex + 1}`,
                       group: 'Teams',
-                    };
+                    }
                   },
                   side: 'right',
                   align: 'start',
@@ -385,8 +392,8 @@ const teamSwitcher = (model: Model, h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const navMain = (
   openStates: ReadonlyArray<boolean>,
@@ -399,10 +406,10 @@ const navMain = (
         sidebarMenu(
           {
             children: data.navMain.flatMap((item, index) => {
-              const isOpen = openStates[index];
+              const isOpen = openStates[index]
 
               if (isOpen === undefined) {
-                return [];
+                return []
               }
 
               const trigger = h.span(
@@ -419,10 +426,10 @@ const navMain = (
                     h,
                   ),
                 ],
-              );
+              )
               const content = sidebarMenuSub<Message>(
                 {
-                  children: item.items.map((subItem) =>
+                  children: item.items.map(subItem =>
                     sidebarMenuSubItem(
                       {
                         children: [
@@ -440,7 +447,7 @@ const navMain = (
                   ),
                 },
                 h,
-              );
+              )
 
               // The shared Collapsible owns the actual trigger button. Applying
               // SidebarMenuButton's exported variants avoids nested buttons while
@@ -453,8 +460,11 @@ const navMain = (
                         {
                           id: `sidebar-07-nav-main-${index}`,
                           isOpen,
-                          onToggle: (nextIsOpen) =>
-                            Message.ToggledNavMain({ index, isOpen: nextIsOpen }),
+                          onToggle: nextIsOpen =>
+                            Message.ToggledNavMain({
+                              index,
+                              isOpen: nextIsOpen,
+                            }),
                           class: 'group/collapsible',
                           trigger,
                           triggerClass: sidebarMenuButtonVariants(),
@@ -466,7 +476,7 @@ const navMain = (
                   },
                   h,
                 ),
-              ];
+              ]
             }),
           },
           h,
@@ -474,7 +484,7 @@ const navMain = (
       ],
     },
     h,
-  );
+  )
 
 const navProjects = (h: HtmlBuilder<Message>): Html => {
   return sidebarGroup(
@@ -485,7 +495,7 @@ const navProjects = (h: HtmlBuilder<Message>): Html => {
         sidebarMenu(
           {
             children: [
-              ...data.projects.map((project) =>
+              ...data.projects.map(project =>
                 sidebarMenuItem(
                   {
                     children: [
@@ -543,8 +553,8 @@ const navProjects = (h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const userSummary = (h: HtmlBuilder<Message>): Html => {
   return h.span(
@@ -573,14 +583,14 @@ const userSummary = (h: HtmlBuilder<Message>): Html => {
         ],
       ),
     ],
-  );
-};
+  )
+}
 
 const navUser = (model: DropdownMenu.Model, h: HtmlBuilder<Message>): Html => {
   const trigger = h.span(
     [h.Class('contents')],
     [userSummary(h), Icon.chevronsUpDown({ class: 'ml-auto size-4' }, h)],
-  );
+  )
 
   return sidebarMenu(
     {
@@ -591,7 +601,8 @@ const navUser = (model: DropdownMenu.Model, h: HtmlBuilder<Message>): Html => {
               DropdownMenu.dropdownMenu<UserMenuItem, Message>(
                 {
                   model,
-                  toParentMessage: (message) => Message.GotUserMenuMessage({ message }),
+                  toParentMessage: message =>
+                    Message.GotUserMenuMessage({ message }),
                   trigger,
                   triggerClass: sidebarMenuButtonVariants({
                     size: 'lg',
@@ -599,7 +610,7 @@ const navUser = (model: DropdownMenu.Model, h: HtmlBuilder<Message>): Html => {
                       'data-[open]:bg-sidebar-accent data-[open]:text-sidebar-accent-foreground',
                   }),
                   items: USER_MENU_ITEMS,
-                  itemToConfig: (item) =>
+                  itemToConfig: item =>
                     M.value(item).pipe(
                       M.withReturnType<DropdownMenu.DropdownMenuItemConfig>(),
                       M.when('upgrade', () => ({
@@ -642,15 +653,17 @@ const navUser = (model: DropdownMenu.Model, h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
-  const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
+  const state = model.isSidebarOpen ? 'expanded' : 'collapsed'
 
   return sidebar<Message>(
     {
-      isMobileOpen: model.isMobileOpen, onMobileDismiss: Message.ToggledMobileSidebar(), state,
+      isMobileOpen: model.isMobileOpen,
+      onMobileDismiss: Message.ToggledMobileSidebar(),
+      state,
       collapsible: 'icon',
       children: [
         sidebarHeader({ children: [teamSwitcher(model, h)] }, h),
@@ -665,8 +678,8 @@ const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const pageContent = (h: HtmlBuilder<Message>): Html => {
   return sidebarInset(
@@ -684,7 +697,8 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
               [
                 sidebarTrigger(
                   {
-                    onMobileClick: Message.ToggledMobileSidebar(), onClick: Message.ToggledSidebar(),
+                    onMobileClick: Message.ToggledMobileSidebar(),
+                    onClick: Message.ToggledSidebar(),
                     class: '-ml-1',
                   },
                   h,
@@ -772,11 +786,11 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
-  const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
+  const state = model.isSidebarOpen ? 'expanded' : 'collapsed'
 
   return sidebarProvider<Message>(
     {
@@ -784,8 +798,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       children: [appSidebar(model, h), pageContent(h)],
     },
     h,
-  );
-};
+  )
+}
 
 // PORT NOTE: Avatar files are not bundled, so the source image is represented
 // by its CN fallback. The dropdown wrapper cannot render the source's rich

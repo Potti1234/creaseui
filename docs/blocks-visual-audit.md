@@ -16,27 +16,27 @@ Screenshots were visually reviewed for layout, alignment, missing icons, chart
 sizing and containment. Browser assertions cover page overflow, missing icons,
 chart canvas dimensions, login input state and mobile sidebar dismissal.
 
-| Blocks | Review result |
-| --- | --- |
-| dashboard-01 | Responsive metrics, bounded chart, usable document table |
-| astryx-executive-summary | Charts stack on mobile; insight rail follows content |
-| astryx-cohort-funnel | Funnel, chart and retention table remain readable |
-| astryx-project-status | Progress, trend and workstream sections retain hierarchy |
-| astryx-service-monitoring | Charts stack; alert rail follows content |
-| astryx-incident-console | Dense table scrolls locally on narrow screens |
-| chart-analytics-dashboard | All six chart families render with bounded dimensions |
-| sidebar-01, sidebar-02, sidebar-03, sidebar-04 | Documentation navigation and mobile drawers checked |
-| sidebar-05, sidebar-06 | Disclosure and popover navigation checked |
-| sidebar-07, sidebar-08 | Application navigation, collapsed state and action spacing checked |
-| sidebar-09 | Mail navigation icons, list and narrow layout checked |
-| sidebar-10 | Workspace navigation, truncation and page action popover checked |
-| sidebar-11 | File tree indentation and icons checked |
-| sidebar-12 | Calendar selection and five-column preview on mobile checked |
-| sidebar-13 | Dialog spacing, focus, Escape, closing and reopening checked |
-| sidebar-14 | Right-side navigation and mobile drawer checked |
-| sidebar-15 | Dual sidebars, calendar and narrow layout checked |
-| sidebar-16 | Sticky header and sidebar offset checked |
-| login-03, login-04 | Mobile padding, input state and brand artwork checked |
+| Blocks                                         | Review result                                                      |
+| ---------------------------------------------- | ------------------------------------------------------------------ |
+| dashboard-01                                   | Responsive metrics, bounded chart, usable document table           |
+| astryx-executive-summary                       | Charts stack on mobile; insight rail follows content               |
+| astryx-cohort-funnel                           | Funnel, chart and retention table remain readable                  |
+| astryx-project-status                          | Progress, trend and workstream sections retain hierarchy           |
+| astryx-service-monitoring                      | Charts stack; alert rail follows content                           |
+| astryx-incident-console                        | Dense table scrolls locally on narrow screens                      |
+| chart-analytics-dashboard                      | All six chart families render with bounded dimensions              |
+| sidebar-01, sidebar-02, sidebar-03, sidebar-04 | Documentation navigation and mobile drawers checked                |
+| sidebar-05, sidebar-06                         | Disclosure and popover navigation checked                          |
+| sidebar-07, sidebar-08                         | Application navigation, collapsed state and action spacing checked |
+| sidebar-09                                     | Mail navigation icons, list and narrow layout checked              |
+| sidebar-10                                     | Workspace navigation, truncation and page action popover checked   |
+| sidebar-11                                     | File tree indentation and icons checked                            |
+| sidebar-12                                     | Calendar selection and five-column preview on mobile checked       |
+| sidebar-13                                     | Dialog spacing, focus, Escape, closing and reopening checked       |
+| sidebar-14                                     | Right-side navigation and mobile drawer checked                    |
+| sidebar-15                                     | Dual sidebars, calendar and narrow layout checked                  |
+| sidebar-16                                     | Sticky header and sidebar offset checked                           |
+| login-03, login-04                             | Mobile padding, input state and brand artwork checked              |
 
 ## Corrections
 

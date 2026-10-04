@@ -1,22 +1,22 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type MetadataListItemSpec = Readonly<{
-  label: string;
+  label: string
   /** Plain-text value. */
-  value?: string;
+  value?: string
   /** Renders the value as a row of chip badges (astryx Token + HStack). */
-  tokens?: ReadonlyArray<string>;
-}>;
+  tokens?: ReadonlyArray<string>
+}>
 
 export type MetadataListFixture = Readonly<{
-  title: string;
-  description: string;
-  columns?: 'multi';
-  orientation?: 'horizontal';
-  maxNumOfItems?: number;
-  items: ReadonlyArray<MetadataListItemSpec>;
-}>;
+  title: string
+  description: string
+  columns?: 'multi'
+  orientation?: 'horizontal'
+  maxNumOfItems?: number
+  items: ReadonlyArray<MetadataListItemSpec>
+}>
 
 /* Example set ported from Meta Astryx
    packages/cli/assets/templates/blocks/components/MetadataList/*.tsx +
@@ -80,7 +80,7 @@ export const metadataListFixtures: Readonly<
       { label: 'Priority', value: 'Tier 1' },
     ],
   },
-];
+]
 
 // ---------- generated example source ----------
 
@@ -90,41 +90,40 @@ const itemSource = (item: MetadataListItemSpec): string => {
       ? `'${item.value ?? ''}'`
       : `h.div([h.Class('flex items-center gap-1')], [
           ${item.tokens
-            .map(token => `Badge.badge({ variant: 'secondary', children: ['${token}'] }, h)`)
+            .map(
+              token =>
+                `Badge.badge({ variant: 'secondary', children: ['${token}'] }, h)`,
+            )
             .join(',\n          ')},
-        ])`;
+        ])`
   return `MetadataList.metadataListItem({ label: '${item.label}', stacked: layout.isStacked, children: [
         ${children},
-      ] }, h)`;
-};
+      ] }, h)`
+}
 
 const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
-  const fixture = metadataListFixtures[index] ?? metadataListFixtures[0];
-  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '');
-  const uiDir = renderer === 'stylex' ? 'stylex' : 'ui';
-  const usesBadge = fixture.items.some(item => item.tokens !== undefined);
+  const fixture = metadataListFixtures[index] ?? metadataListFixtures[0]
+  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
+  const uiDir = renderer === 'stylex' ? 'stylex' : 'ui'
+  const usesBadge = fixture.items.some(item => item.tokens !== undefined)
   const listArgs = [
     'model: model.list',
     'toParentMessage: message => GotListMessage({ message })',
     `id: 'metadata-list-${tag.toLowerCase()}'`,
-    ...(fixture.columns === undefined
-      ? []
-      : [`columns: '${fixture.columns}'`]),
+    ...(fixture.columns === undefined ? [] : [`columns: '${fixture.columns}'`]),
     ...(fixture.orientation === undefined
       ? []
       : [`orientation: '${fixture.orientation}'`]),
     ...(fixture.maxNumOfItems === undefined
       ? []
       : [`maxNumOfItems: ${String(fixture.maxNumOfItems)}`]),
-  ].join(',\n      ');
+  ].join(',\n      ')
   const layoutArgs = [
-    ...(fixture.columns === undefined
-      ? []
-      : [`columns: '${fixture.columns}'`]),
+    ...(fixture.columns === undefined ? [] : [`columns: '${fixture.columns}'`]),
     ...(fixture.orientation === undefined
       ? []
       : [`orientation: '${fixture.orientation}'`]),
-  ].join(', ');
+  ].join(', ')
   return foldkitApplication({
     title: `Metadata List — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
@@ -168,8 +167,8 @@ export type Message = typeof Message.Type`,
     ]),
   };
 }`,
-  });
-};
+  })
+}
 
 export const metadataListExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -178,4 +177,4 @@ export const metadataListExamples = (
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
-  }));
+  }))

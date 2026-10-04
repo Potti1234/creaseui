@@ -1,8 +1,8 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { card, cardContent, cardFooter } from '@/ui/card';
-import { donutChart } from '@/ui/chart';
-import { separator } from '@/ui/separator';
+import { card, cardContent, cardFooter } from '@/ui/card'
+import { donutChart } from '@/ui/chart'
+import { separator } from '@/ui/separator'
 
 export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
   const detail = (label: string, value: string, className: string): Html =>
@@ -12,7 +12,7 @@ export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
         h.span([h.Class('text-sm text-muted-foreground')], [label]),
         h.span([h.Class(className)], [value]),
       ],
-    );
+    )
 
   return card(
     {
@@ -62,7 +62,7 @@ export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 // Stateful: no. Submodels: none. PORT NOTE: Recharts PieChart is rendered with @/ui/chart donutChart.

@@ -470,28 +470,31 @@ const verifyRenderer = (name: string, Tooltip: TooltipModule) => {
           {
             update,
             view: (model, h) =>
-              h.div([], [
-                h.button(
-                  [
-                    h.Type('button'),
-                    h.OnClick({ _tag: 'SetDisabled', disabled: true }),
-                  ],
-                  ['Disable'],
-                ),
-                Tooltip.tooltip(
-                  {
-                    model: model.tip,
-                    toParentMessage: message => ({
-                      _tag: 'GotTooltip',
-                      message,
-                    }),
-                    trigger: 'Toggle',
-                    content: 'Content',
-                    isDisabled: model.isDisabled,
-                  },
-                  h,
-                ),
-              ]),
+              h.div(
+                [],
+                [
+                  h.button(
+                    [
+                      h.Type('button'),
+                      h.OnClick({ _tag: 'SetDisabled', disabled: true }),
+                    ],
+                    ['Disable'],
+                  ),
+                  Tooltip.tooltip(
+                    {
+                      model: model.tip,
+                      toParentMessage: message => ({
+                        _tag: 'GotTooltip',
+                        message,
+                      }),
+                      trigger: 'Toggle',
+                      content: 'Content',
+                      isDisabled: model.isDisabled,
+                    },
+                    h,
+                  ),
+                ],
+              ),
           },
           Scene.given(initialModel({ isOpen: true })),
           Scene.expect(tooltipPopup).toExist(),
@@ -553,19 +556,16 @@ const verifyRenderer = (name: string, Tooltip: TooltipModule) => {
       // DIVERGENCE: Base UI's default (disableHoverablePopup = false) leaves
       // the positioner hoverable so the pointer can travel onto the popup.
       // creaseui bakes pointer-events: none into the panel unconditionally.
-      it.fails(
-        'does not apply pointer-events: none to the positioner when `disableHoverablePopup = false`',
-        () => {
-          Scene.scene(
-            { update, view: tooltipView(Tooltip) },
-            Scene.given(initialModel()),
-            Scene.focus(trigger),
-            Scene.expectHandled(),
-            Scene.Mount.resolve(anchorMount, anchored()),
-            Scene.expect(panel).not.toHaveStyle('pointer-events', 'none'),
-          )
-        },
-      )
+      it.fails('does not apply pointer-events: none to the positioner when `disableHoverablePopup = false`', () => {
+        Scene.scene(
+          { update, view: tooltipView(Tooltip) },
+          Scene.given(initialModel()),
+          Scene.focus(trigger),
+          Scene.expectHandled(),
+          Scene.Mount.resolve(anchorMount, anchored()),
+          Scene.expect(panel).not.toHaveStyle('pointer-events', 'none'),
+        )
+      })
     })
 
     describe('dismissal', () => {
@@ -637,22 +637,19 @@ const verifyRenderer = (name: string, Tooltip: TooltipModule) => {
       // DIVERGENCE: Base UI's trigger closeOnClick (default true) closes an
       // open tooltip on press. creaseui uses pointerdown only as a
       // pointer-focus marker — it never closes the tooltip.
-      it.fails(
-        'should close when the trigger is clicked after delay duration',
-        () => {
-          Scene.scene(
-            { update, view: tooltipView(Tooltip) },
-            Scene.given(initialModel()),
-            Scene.focus(trigger),
-            Scene.expectHandled(),
-            Scene.Mount.resolve(anchorMount, anchored()),
-            // creaseui wires no click handler; pointerdown is its press path.
-            Scene.pointerDown(trigger),
-            Scene.expectHandled(),
-            Scene.expect(panel).toBeAbsent(),
-          )
-        },
-      )
+      it.fails('should close when the trigger is clicked after delay duration', () => {
+        Scene.scene(
+          { update, view: tooltipView(Tooltip) },
+          Scene.given(initialModel()),
+          Scene.focus(trigger),
+          Scene.expectHandled(),
+          Scene.Mount.resolve(anchorMount, anchored()),
+          // creaseui wires no click handler; pointerdown is its press path.
+          Scene.pointerDown(trigger),
+          Scene.expectHandled(),
+          Scene.expect(panel).toBeAbsent(),
+        )
+      })
 
       it.todo(
         'should not open when the trigger was clicked before delay ' +
@@ -717,7 +714,10 @@ const verifyRenderer = (name: string, Tooltip: TooltipModule) => {
 
       it('forwards aria-label to the trigger', () => {
         Scene.scene(
-          { update, view: tooltipView(Tooltip, { ariaLabel: 'Toggle action' }) },
+          {
+            update,
+            view: tooltipView(Tooltip, { ariaLabel: 'Toggle action' }),
+          },
           Scene.given(initialModel()),
           Scene.expect(trigger).toHaveAccessibleName('Toggle action'),
         )

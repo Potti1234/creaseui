@@ -1,15 +1,15 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   typographyArticle,
   typographyArticleAr,
   typographyFixtures,
   type TypographyFixture,
-} from '@/docs/components/pages/typography/shared';
-import { className } from '@/stylex/style';
-import * as Typography from '@/stylex/typography';
+} from '@/docs/components/pages/typography/shared'
+import { className } from '@/stylex/style'
+import * as Typography from '@/stylex/typography'
 
 const styles = stylex.create({
   article: { maxWidth: '42rem', width: '100%' },
@@ -54,32 +54,47 @@ const styles = stylex.create({
     textDecorationLine: 'underline',
     textUnderlineOffset: '4px',
   },
-});
+})
 
-type Article = typeof typographyArticle;
+type Article = typeof typographyArticle
 
-const FIRST_FIXTURE: TypographyFixture = { title: 'Basic', kind: 'article' };
+const FIRST_FIXTURE: TypographyFixture = { title: 'Basic', kind: 'article' }
 
 const tableView = <Msg>(a: Article, h: HtmlBuilder<Msg>): Html =>
-  h.div([h.Class(className(styles.tableWrap))], [
-    h.table([h.Class(className(styles.table))], [
-      h.thead([], [
-        h.tr([h.Class(className(styles.tr))], [
-          h.th([h.Class(className(styles.th))], [a.treasury]),
-          h.th([h.Class(className(styles.th))], [a.happiness]),
-        ]),
-      ]),
-      h.tbody(
-        [],
-        a.rows.map(([left, right]) =>
-          h.tr([h.Class(className(styles.tr))], [
-            h.td([h.Class(className(styles.td))], [left]),
-            h.td([h.Class(className(styles.td))], [right]),
-          ]),
-        ),
+  h.div(
+    [h.Class(className(styles.tableWrap))],
+    [
+      h.table(
+        [h.Class(className(styles.table))],
+        [
+          h.thead(
+            [],
+            [
+              h.tr(
+                [h.Class(className(styles.tr))],
+                [
+                  h.th([h.Class(className(styles.th))], [a.treasury]),
+                  h.th([h.Class(className(styles.th))], [a.happiness]),
+                ],
+              ),
+            ],
+          ),
+          h.tbody(
+            [],
+            a.rows.map(([left, right]) =>
+              h.tr(
+                [h.Class(className(styles.tr))],
+                [
+                  h.td([h.Class(className(styles.td))], [left]),
+                  h.td([h.Class(className(styles.td))], [right]),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
-    ]),
-  ]);
+    ],
+  )
 
 const articleView = <Msg>(
   a: Article,
@@ -123,7 +138,7 @@ const articleView = <Msg>(
       Typography.typographyP({ children: [a.realized] }, h),
       Typography.typographyP({ children: [a.moral] }, h),
     ],
-  );
+  )
 
 const fixtureView = <Msg>(
   fixture: TypographyFixture,
@@ -134,10 +149,10 @@ const fixtureView = <Msg>(
       fixture.rtl === true ? typographyArticleAr : typographyArticle,
       fixture.rtl === true,
       h,
-    );
+    )
   }
   if (fixture.kind === 'table') {
-    return tableView(typographyArticle, h);
+    return tableView(typographyArticle, h)
   }
   if (fixture.kind === 'list') {
     return h.ul(
@@ -145,39 +160,38 @@ const fixtureView = <Msg>(
       typographyArticle.list.map(item =>
         h.li([h.Class(className(styles.listItem))], [item]),
       ),
-    );
+    )
   }
-  const children = fixture.children ?? [''];
+  const children = fixture.children ?? ['']
   switch (fixture.component) {
     case 'typographyH1':
-      return Typography.typographyH1({ children: [...children] }, h);
+      return Typography.typographyH1({ children: [...children] }, h)
     case 'typographyH2':
-      return Typography.typographyH2({ children: [...children] }, h);
+      return Typography.typographyH2({ children: [...children] }, h)
     case 'typographyH3':
-      return Typography.typographyH3({ children: [...children] }, h);
+      return Typography.typographyH3({ children: [...children] }, h)
     case 'typographyH4':
-      return Typography.typographyH4({ children: [...children] }, h);
+      return Typography.typographyH4({ children: [...children] }, h)
     case 'typographyBlockquote':
-      return Typography.typographyBlockquote({ children: [...children] }, h);
+      return Typography.typographyBlockquote({ children: [...children] }, h)
     case 'typographyInlineCode':
-      return Typography.typographyInlineCode({ children: [...children] }, h);
+      return Typography.typographyInlineCode({ children: [...children] }, h)
     case 'typographyLead':
-      return Typography.typographyLead({ children: [...children] }, h);
+      return Typography.typographyLead({ children: [...children] }, h)
     case 'typographyLarge':
-      return Typography.typographyLarge({ children: [...children] }, h);
+      return Typography.typographyLarge({ children: [...children] }, h)
     case 'typographySmall':
-      return Typography.typographySmall({ children: [...children] }, h);
+      return Typography.typographySmall({ children: [...children] }, h)
     case 'typographyMuted':
-      return Typography.typographyMuted({ children: [...children] }, h);
+      return Typography.typographyMuted({ children: [...children] }, h)
     default:
-      return Typography.typographyP({ children: [...children] }, h);
+      return Typography.typographyP({ children: [...children] }, h)
   }
-};
+}
 
 export const typographyStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   _model: unknown,
   _onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
-): Html =>
-  fixtureView(typographyFixtures[exampleIndex] ?? FIRST_FIXTURE, h);
+): Html => fixtureView(typographyFixtures[exampleIndex] ?? FIRST_FIXTURE, h)

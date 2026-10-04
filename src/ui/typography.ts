@@ -1,11 +1,11 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils'
 
 type TextProps = Readonly<{
-  children: ReadonlyArray<Html | string>;
-  class?: string;
-}>;
+  children: ReadonlyArray<Html | string>
+  class?: string
+}>
 
 export const typographyH1 = <Msg>(
   props: TextProps,
@@ -22,8 +22,8 @@ export const typographyH1 = <Msg>(
       ),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 export const typographyH2 = <Msg>(
   props: TextProps,
@@ -40,8 +40,8 @@ export const typographyH2 = <Msg>(
       ),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 export const typographyH3 = <Msg>(
   props: TextProps,
@@ -55,8 +55,8 @@ export const typographyH3 = <Msg>(
       ),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 export const typographyH4 = <Msg>(
   props: TextProps,
@@ -70,8 +70,8 @@ export const typographyH4 = <Msg>(
       ),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 export const typographyP = <Msg>(
   props: TextProps,
@@ -83,8 +83,8 @@ export const typographyP = <Msg>(
       h.Class(cn('leading-7 [&:not(:first-child)]:mt-6', props.class)),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 export const typographyBlockquote = <Msg>(
   props: TextProps,
@@ -96,8 +96,8 @@ export const typographyBlockquote = <Msg>(
       h.Class(cn('mt-6 border-l-2 pl-6 italic', props.class)),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 export const typographyInlineCode = <Msg>(
   props: TextProps,
@@ -114,8 +114,8 @@ export const typographyInlineCode = <Msg>(
       ),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 export const typographyLead = <Msg>(
   props: TextProps,
@@ -127,8 +127,8 @@ export const typographyLead = <Msg>(
       h.Class(cn('text-xl text-muted-foreground', props.class)),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 export const typographyLarge = <Msg>(
   props: TextProps,
@@ -140,8 +140,8 @@ export const typographyLarge = <Msg>(
       h.Class(cn('text-lg font-semibold', props.class)),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 export const typographySmall = <Msg>(
   props: TextProps,
@@ -153,8 +153,8 @@ export const typographySmall = <Msg>(
       h.Class(cn('text-sm leading-none font-medium', props.class)),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 export const typographyMuted = <Msg>(
   props: TextProps,
@@ -166,5 +166,5 @@ export const typographyMuted = <Msg>(
       h.Class(cn('text-sm text-muted-foreground', props.class)),
     ],
     [...props.children],
-  );
-};
+  )
+}

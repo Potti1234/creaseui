@@ -1,15 +1,15 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils'
 
 /* Ported from Meta Astryx Grid/Grid.tsx + GridSpan.tsx — CSS Grid layout
    primitive. The astryx spacing scale (1 step = 4px) maps 1:1 onto Tailwind's
    spacing scale; column templates and spans are runtime values, so they emit
    inline styles rather than classes. */
 
-export type GridAlignment = 'start' | 'center' | 'end' | 'stretch';
-export type GridSpacing = 0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10;
-export type GridSizeValue = number | string;
+export type GridAlignment = 'start' | 'center' | 'end' | 'stretch'
+export type GridSpacing = 0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10
+export type GridSizeValue = number | string
 export type GridElement =
   | 'article'
   | 'aside'
@@ -23,7 +23,7 @@ export type GridElement =
   | 'nav'
   | 'ol'
   | 'section'
-  | 'ul';
+  | 'ul'
 
 /**
  * Column configuration.
@@ -37,24 +37,24 @@ export type GridElement =
 export type GridColumns =
   | number
   | Readonly<{
-      minWidth: number;
-      max?: number;
-      repeat?: 'fill' | 'fit';
-    }>;
+      minWidth: number
+      max?: number
+      repeat?: 'fill' | 'fit'
+    }>
 
 const alignClasses: Record<GridAlignment, string> = {
   start: 'items-start',
   center: 'items-center',
   end: 'items-end',
   stretch: 'items-stretch',
-};
+}
 
 const justifyClasses: Record<GridAlignment, string> = {
   start: 'justify-items-start',
   center: 'justify-items-center',
   end: 'justify-items-end',
   stretch: 'justify-items-stretch',
-};
+}
 
 const gapClasses: Record<GridSpacing, string> = {
   0: 'gap-0',
@@ -68,7 +68,7 @@ const gapClasses: Record<GridSpacing, string> = {
   6: 'gap-6',
   8: 'gap-8',
   10: 'gap-10',
-};
+}
 
 const rowGapClasses: Record<GridSpacing, string> = {
   0: 'gap-y-0',
@@ -82,7 +82,7 @@ const rowGapClasses: Record<GridSpacing, string> = {
   6: 'gap-y-6',
   8: 'gap-y-8',
   10: 'gap-y-10',
-};
+}
 
 const columnGapClasses: Record<GridSpacing, string> = {
   0: 'gap-x-0',
@@ -96,10 +96,10 @@ const columnGapClasses: Record<GridSpacing, string> = {
   6: 'gap-x-6',
   8: 'gap-x-8',
   10: 'gap-x-10',
-};
+}
 
 const sizeValue = (value: GridSizeValue): string =>
-  typeof value === 'number' ? `${value}px` : value;
+  typeof value === 'number' ? `${value}px` : value
 
 const spacingRem: Record<GridSpacing, string> = {
   0: '0px',
@@ -113,7 +113,7 @@ const spacingRem: Record<GridSpacing, string> = {
   6: '1.5rem',
   8: '2rem',
   10: '2.5rem',
-};
+}
 
 /* Ported from astryx buildCappedTemplate: cap the column count on the track
    min — each track is at least perColumn = (100% - (max-1)*gap)/max, so more
@@ -133,14 +133,14 @@ const buildCappedTemplate = (
       ? spacingRem[columnGap]
       : gap !== undefined
         ? spacingRem[gap]
-        : undefined;
+        : undefined
   const perColumn =
     gapValue === undefined
       ? `calc(100% / ${String(maxCols)})`
-      : `calc((100% - ${String(maxCols - 1)} * ${gapValue}) / ${String(maxCols)})`;
-  const trackMin = `min(100%, max(${String(minWidth)}px, ${perColumn}))`;
-  return `repeat(${repeatMode}, minmax(${trackMin}, 1fr))`;
-};
+      : `calc((100% - ${String(maxCols - 1)} * ${gapValue}) / ${String(maxCols)})`
+  const trackMin = `min(100%, max(${String(minWidth)}px, ${perColumn}))`
+  return `repeat(${repeatMode}, minmax(${trackMin}, 1fr))`
+}
 
 const gridTemplateColumns = (
   columns: GridColumns | undefined,
@@ -148,10 +148,10 @@ const gridTemplateColumns = (
   columnGap: GridSpacing | undefined,
 ): string => {
   if (typeof columns === 'number' && columns > 0) {
-    return `repeat(${String(columns)}, 1fr)`;
+    return `repeat(${String(columns)}, 1fr)`
   }
   if (typeof columns === 'object') {
-    const repeatMode = columns.repeat === 'fit' ? 'auto-fit' : 'auto-fill';
+    const repeatMode = columns.repeat === 'fit' ? 'auto-fit' : 'auto-fill'
     if (columns.max !== undefined && columns.max > 0) {
       return buildCappedTemplate(
         columns.minWidth,
@@ -159,41 +159,41 @@ const gridTemplateColumns = (
         repeatMode,
         gap,
         columnGap,
-      );
+      )
     }
-    return `repeat(${repeatMode}, minmax(${String(columns.minWidth)}px, 1fr))`;
+    return `repeat(${repeatMode}, minmax(${String(columns.minWidth)}px, 1fr))`
   }
-  return '1fr';
-};
+  return '1fr'
+}
 
 export type GridProps = Readonly<{
   /** Column configuration — a fixed count or a responsive min-width rule. */
-  columns?: GridColumns;
+  columns?: GridColumns
   /** Height of each implicit row track in pixels (grid-auto-rows). */
-  rowHeight?: number;
+  rowHeight?: number
   /** Spacing between all grid items (astryx spacing steps; 1 step = 4px). */
-  gap?: GridSpacing;
+  gap?: GridSpacing
   /** Spacing between rows; overrides `gap` on the row axis. */
-  rowGap?: GridSpacing;
+  rowGap?: GridSpacing
   /** Spacing between columns; overrides `gap` on the column axis. */
-  columnGap?: GridSpacing;
+  columnGap?: GridSpacing
   /** Vertical alignment of grid items (align-items). Default 'stretch'. */
-  align?: GridAlignment;
+  align?: GridAlignment
   /** Horizontal alignment of grid items (justify-items). Default 'stretch'. */
-  justify?: GridAlignment;
+  justify?: GridAlignment
   /** Container width; numbers are pixels. */
-  width?: GridSizeValue;
+  width?: GridSizeValue
   /** Container height; numbers are pixels. */
-  height?: GridSizeValue;
+  height?: GridSizeValue
   /** Container max-width; numbers are pixels. */
-  maxWidth?: GridSizeValue;
+  maxWidth?: GridSizeValue
   /** Container min-height; numbers are pixels. */
-  minHeight?: GridSizeValue;
+  minHeight?: GridSizeValue
   /** The element to render. */
-  as?: GridElement;
-  children?: ReadonlyArray<Html | string>;
-  class?: string;
-}>;
+  as?: GridElement
+  children?: ReadonlyArray<Html | string>
+  class?: string
+}>
 
 export const grid = <Msg>(props: GridProps, h: HtmlBuilder<Msg>): Html => {
   const style: Record<string, string> = {
@@ -213,7 +213,7 @@ export const grid = <Msg>(props: GridProps, h: HtmlBuilder<Msg>): Html => {
     ...(props.minHeight === undefined
       ? {}
       : { minHeight: sizeValue(props.minHeight) }),
-  };
+  }
   const attributes = [
     h.DataAttribute('slot', 'grid'),
     h.Class(
@@ -230,22 +230,22 @@ export const grid = <Msg>(props: GridProps, h: HtmlBuilder<Msg>): Html => {
       ),
     ),
     h.Style(style),
-  ];
-  const children = [...(props.children ?? [])];
-  const element = props.as ?? 'div';
-  return h[element](attributes, children);
-};
+  ]
+  const children = [...(props.children ?? [])]
+  const element = props.as ?? 'div'
+  return h[element](attributes, children)
+}
 
 export type GridSpanProps = Readonly<{
   /** Columns to span — a number (`grid-column: span N`) or 'full' (1 / -1). */
-  columns?: number | 'full';
+  columns?: number | 'full'
   /** Rows to span (`grid-row: span N`). */
-  rows?: number;
+  rows?: number
   /** The element to render. */
-  as?: GridElement;
-  children?: ReadonlyArray<Html | string>;
-  class?: string;
-}>;
+  as?: GridElement
+  children?: ReadonlyArray<Html | string>
+  class?: string
+}>
 
 export const gridSpan = <Msg>(
   props: GridSpanProps,
@@ -256,12 +256,14 @@ export const gridSpan = <Msg>(
       ? {}
       : {
           gridColumn:
-            props.columns === 'full' ? '1 / -1' : `span ${String(props.columns)}`,
+            props.columns === 'full'
+              ? '1 / -1'
+              : `span ${String(props.columns)}`,
         }),
     ...(props.rows === undefined
       ? {}
       : { gridRow: `span ${String(props.rows)}` }),
-  };
+  }
   const attributes = [
     h.DataAttribute('slot', 'grid-span'),
     h.Class(
@@ -272,8 +274,8 @@ export const gridSpan = <Msg>(
       ),
     ),
     ...(Object.keys(style).length > 0 ? [h.Style(style)] : []),
-  ];
-  const children = [...(props.children ?? [])];
-  const element = props.as ?? 'div';
-  return h[element](attributes, children);
-};
+  ]
+  const children = [...(props.children ?? [])]
+  const element = props.as ?? 'div'
+  return h[element](attributes, children)
+}

@@ -39,13 +39,7 @@ import { interactionTokens } from './interaction-tokens.stylex.const'
 import { className } from './style'
 import { tokens } from './tokens.stylex'
 
-export {
-  init,
-  Model,
-  Message,
-  OutMessage,
-  update,
-} from '@/lib/time-input'
+export { init, Model, Message, OutMessage, update } from '@/lib/time-input'
 export type { TimeValue } from '@/lib/time-input'
 export type { InputStatus } from '@/lib/input-status'
 
@@ -76,7 +70,7 @@ const styles = stylex.create({
   labelIndicator: {
     fontSize: '0.75rem',
     fontWeight: 400,
- lineHeight: '1rem',
+    lineHeight: '1rem',
   },
   description: {
     color: tokens.mutedForeground,
@@ -364,323 +358,331 @@ const nowTime = (hasSeconds: boolean): string => {
   return `${pad2(now.getHours())}:${pad2(now.getMinutes())}${hasSeconds ? `:${pad2(now.getSeconds())}` : ''}`
 }
 
-const view = defineView<Model, Message, TimeInputViewInputs>((model, props, h) => {
-  const fieldIds = ids(props.id)
-  const size = props.size ?? 'md'
-  const value = props.value === '' ? undefined : (props.value ?? undefined)
-  const pending = Option.getOrUndefined(model.pendingInput)
-  const pendingIsInvalid =
-    pending !== undefined &&
-    pending.trim() !== '' &&
-    Option.isNone(
-      resolveTimeDraft(pending, {
-        includeSeconds: props.hasSeconds === true,
-        min: props.min,
-        max: props.max,
-      }),
-    )
-  const isInvalid = props.status?.type === 'error' || pendingIsInvalid
-  const commit = commitResolution(props, model)
-  const includeSeconds = props.hasSeconds === true
-  const hourFormat = props.hourFormat ?? '12h'
-
-  const describedBy =
-    [
-      props.description === undefined ? null : fieldIds.description,
-      props.status?.message !== undefined && props.statusVariant !== 'tooltip'
-        ? fieldIds.status
-        : null,
-    ]
-      .filter(Boolean)
-      .join(' ') || undefined
-
-  const displayPlaceholder =
-    model.isFocused && value === undefined && pending === undefined
-      ? `e.g., ${hourFormat === '24h' ? '14:30' : '2:30 PM'}${includeSeconds ? (hourFormat === '24h' ? ':45' : ':30') : ''}`
-      : props.placeholder
-
-  const fieldLabel = h.label(
-    [
-      h.For(fieldIds.input),
-      h.Id(fieldIds.label),
-      h.DataAttribute('slot', 'time-input-label'),
-      h.Class(
-        className(
-          styles.label,
-          props.isLabelHidden === true && styles.srOnly,
-          props.isDisabled === true && styles.labelDisabled,
-        ),
-      ),
-    ],
-    [
-      props.label,
-      ...(props.isOptional === true
-        ? [
-            h.span(
-              [
-                h.Attribute('aria-hidden', 'true'),
-                h.Class(className(styles.labelIndicator)),
-              ],
-              [' ∙ Optional'],
-            ),
-          ]
-        : []),
-      ...(props.isRequired === true && props.isOptional !== true
-        ? [
-            h.span(
-              [
-                h.Attribute('aria-hidden', 'true'),
-                h.Class(className(styles.labelIndicator)),
-              ],
-              [' ∙ Required'],
-            ),
-          ]
-        : []),
-    ],
-  )
-
-  const clockIcon = h.span(
-    [
-      h.DataAttribute('slot', 'time-input-icon'),
-      h.Class(className(styles.icon)),
-    ],
-    [Icon.clock({ class: className(styles.iconMd) }, h)],
-  )
-
-  const stepValue = (direction: 1 | -1): string | null => {
-    const base = value ?? nowTime(includeSeconds)
-    const next = adjustTime(base, direction * (props.increment ?? 1))
-    return next !== null && isTimeInRange(next, props.min, props.max)
-      ? next
-      : null
-  }
-
-  const input = h.input([
-    h.Id(fieldIds.input),
-    h.Type('text'),
-    h.Attribute('inputmode', 'numeric'),
-    h.Attribute('autocomplete', props.autocomplete ?? 'off'),
-    h.Attribute('spellcheck', 'false'),
-    h.Value(displayValue(props, model)),
-    ...(displayPlaceholder === undefined
-      ? []
-      : [h.Placeholder(displayPlaceholder)]),
-    h.AriaLabelledBy(fieldIds.label),
-    ...(props['aria-label'] === undefined
-      ? []
-      : [h.AriaLabel(props['aria-label'])]),
-    ...(describedBy === undefined ? [] : [h.AriaDescribedBy(describedBy)]),
-    h.AriaInvalid(isInvalid),
-    h.AriaRequired(props.isRequired === true && props.isOptional !== true),
-    h.AriaBusy(props.isLoading === true),
-    h.Disabled(props.isDisabled === true),
-    h.Readonly(props.isReadOnly === true),
-    ...(props.name === undefined ? [] : [h.Name(props.name)]),
-    ...(props.isAutofocus === true ? [h.Autofocus(true)] : []),
-    h.DataAttribute('slot', 'time-input-input'),
-    h.Class(
-      className(
-        styles.input,
-        props.isDisabled === true && styles.inputDisabled,
-        pendingIsInvalid && styles.inputInvalid,
-      ),
-    ),
-    h.OnFocus(Message.FocusGained()),
-    h.OnBlur(Message.CommitDecided({ resolution: commitResolutionOf(commit) })),
-    h.OnInput(text =>
-      Message.DraftEdited({
-        text,
-        resolved: resolveTimeDraft(text, {
-          includeSeconds,
+const view = defineView<Model, Message, TimeInputViewInputs>(
+  (model, props, h) => {
+    const fieldIds = ids(props.id)
+    const size = props.size ?? 'md'
+    const value = props.value === '' ? undefined : (props.value ?? undefined)
+    const pending = Option.getOrUndefined(model.pendingInput)
+    const pendingIsInvalid =
+      pending !== undefined &&
+      pending.trim() !== '' &&
+      Option.isNone(
+        resolveTimeDraft(pending, {
+          includeSeconds: props.hasSeconds === true,
           min: props.min,
           max: props.max,
         }),
-      }),
-    ),
-    ...(props.isDisabled === true || props.isReadOnly === true
-      ? []
-      : [
-          h.OnKeyDownPreventDefault(key => {
-            if (key === 'ArrowUp' || key === 'ArrowDown') {
-              const next = stepValue(key === 'ArrowUp' ? 1 : -1)
-              return next === null
-                ? Option.none()
-                : Option.some(Message.Stepped({ value: next }))
-            }
-            return Option.none()
-          }),
-        ]),
-  ])
+      )
+    const isInvalid = props.status?.type === 'error' || pendingIsInvalid
+    const commit = commitResolution(props, model)
+    const includeSeconds = props.hasSeconds === true
+    const hourFormat = props.hourFormat ?? '12h'
 
-  const clearButton =
-    props.hasClear === true &&
-    value !== undefined &&
-    props.isDisabled !== true &&
-    props.isReadOnly !== true
-      ? h.button(
-          [
-            h.Type('button'),
-            h.Tabindex(-1),
-            h.AriaLabel(
-              `Clear ${typeof props.label === 'string' ? props.label : 'time'}`,
-            ),
-            h.OnClick(Message.ClearRequested(), {
-              propagation: 'Stop',
-              focusSelector: `#${fieldIds.input}`,
-            }),
-            h.DataAttribute('slot', 'time-input-clear'),
-            h.Class(className(styles.clearButton)),
-          ],
-          [Icon.x({ class: className(styles.iconSm) }, h)],
-        )
-      : undefined
+    const describedBy =
+      [
+        props.description === undefined ? null : fieldIds.description,
+        props.status?.message !== undefined && props.statusVariant !== 'tooltip'
+          ? fieldIds.status
+          : null,
+      ]
+        .filter(Boolean)
+        .join(' ') || undefined
 
-  const status = props.status
-  const statusIcon =
-    status !== undefined && props.statusVariant === 'tooltip'
-      ? h.button(
-          [
-            h.Type('button'),
-            h.AriaLabel(statusButtonLabel(status.type)),
-            h.Title(status.message ?? ''),
-            h.DataAttribute('slot', 'time-input-status-icon'),
-            h.Class(className(styles.statusIconButton)),
-          ],
-          [
-            Icon.icon(statusIconName(status.type), {
-              class: className(
-                styles.iconMd,
-                status.type === 'error' && styles.statusIconError,
-                status.type === 'warning' && styles.statusIconWarning,
-                status.type === 'success' && styles.statusIconSuccess,
+    const displayPlaceholder =
+      model.isFocused && value === undefined && pending === undefined
+        ? `e.g., ${hourFormat === '24h' ? '14:30' : '2:30 PM'}${includeSeconds ? (hourFormat === '24h' ? ':45' : ':30') : ''}`
+        : props.placeholder
+
+    const fieldLabel = h.label(
+      [
+        h.For(fieldIds.input),
+        h.Id(fieldIds.label),
+        h.DataAttribute('slot', 'time-input-label'),
+        h.Class(
+          className(
+            styles.label,
+            props.isLabelHidden === true && styles.srOnly,
+            props.isDisabled === true && styles.labelDisabled,
+          ),
+        ),
+      ],
+      [
+        props.label,
+        ...(props.isOptional === true
+          ? [
+              h.span(
+                [
+                  h.Attribute('aria-hidden', 'true'),
+                  h.Class(className(styles.labelIndicator)),
+                ],
+                [' ∙ Optional'],
               ),
-              ariaLabel: statusButtonLabel(status.type),
-            }, h),
-          ],
-        )
-      : undefined
+            ]
+          : []),
+        ...(props.isRequired === true && props.isOptional !== true
+          ? [
+              h.span(
+                [
+                  h.Attribute('aria-hidden', 'true'),
+                  h.Class(className(styles.labelIndicator)),
+                ],
+                [' ∙ Required'],
+              ),
+            ]
+          : []),
+      ],
+    )
 
-  const wrapper = h.div(
-    [
-      h.DataAttribute('slot', 'time-input-wrapper'),
+    const clockIcon = h.span(
+      [
+        h.DataAttribute('slot', 'time-input-icon'),
+        h.Class(className(styles.icon)),
+      ],
+      [Icon.clock({ class: className(styles.iconMd) }, h)],
+    )
+
+    const stepValue = (direction: 1 | -1): string | null => {
+      const base = value ?? nowTime(includeSeconds)
+      const next = adjustTime(base, direction * (props.increment ?? 1))
+      return next !== null && isTimeInRange(next, props.min, props.max)
+        ? next
+        : null
+    }
+
+    const input = h.input([
+      h.Id(fieldIds.input),
+      h.Type('text'),
+      h.Attribute('inputmode', 'numeric'),
+      h.Attribute('autocomplete', props.autocomplete ?? 'off'),
+      h.Attribute('spellcheck', 'false'),
+      h.Value(displayValue(props, model)),
+      ...(displayPlaceholder === undefined
+        ? []
+        : [h.Placeholder(displayPlaceholder)]),
+      h.AriaLabelledBy(fieldIds.label),
+      ...(props['aria-label'] === undefined
+        ? []
+        : [h.AriaLabel(props['aria-label'])]),
+      ...(describedBy === undefined ? [] : [h.AriaDescribedBy(describedBy)]),
+      h.AriaInvalid(isInvalid),
+      h.AriaRequired(props.isRequired === true && props.isOptional !== true),
+      h.AriaBusy(props.isLoading === true),
+      h.Disabled(props.isDisabled === true),
+      h.Readonly(props.isReadOnly === true),
+      ...(props.name === undefined ? [] : [h.Name(props.name)]),
+      ...(props.isAutofocus === true ? [h.Autofocus(true)] : []),
+      h.DataAttribute('slot', 'time-input-input'),
       h.Class(
         className(
-          styles.wrapper,
-          heightStyle[size],
-          props.isDisabled === true
-            ? styles.wrapperDisabled
-            : status === undefined
-              ? styles.wrapperIdle
-              : status.type === 'error'
-                ? styles.borderError
-                : status.type === 'warning'
-                  ? styles.borderWarning
-                  : styles.borderSuccess,
+          styles.input,
+          props.isDisabled === true && styles.inputDisabled,
+          pendingIsInvalid && styles.inputInvalid,
         ),
       ),
-    ],
-    [
-      clockIcon,
-      input,
-      ...(clearButton === undefined ? [] : [clearButton]),
-      ...(statusIcon === undefined ? [] : [statusIcon]),
-    ],
-  )
-
-  const statusLayer =
-    status?.message === undefined ||
-    status === undefined ||
-    props.statusVariant === 'tooltip'
-      ? []
-      : [
-          props.statusVariant === 'detached'
-            ? renderDetachedStatus(
-                status,
-                {
-                  root: type => [
-                    h.Class(
-                      className(
-                        styles.statusDetached,
-                        type === 'error' && styles.statusError,
-                        type === 'warning' && styles.statusWarning,
-                        type === 'success' && styles.statusSuccess,
-                      ),
-                    ),
-                  ],
-                  icon: [h.Class(className(styles.statusIconRow))],
-                  text: [h.Class(className(styles.statusText))],
-                },
-                Icon.icon(
-                  statusIconName(status.type),
-                  { class: className(styles.iconSm) },
-                  h,
-                ),
-                h,
-                fieldIds.status,
-              )
-            : renderAttachedStatus(
-                status,
-                {
-                  root: type => [
-                    h.Class(
-                      className(
-                        styles.statusAttached,
-                        attachedOverlap[size],
-                        type === 'error' && styles.statusError,
-                        type === 'warning' && styles.statusWarning,
-                        type === 'success' && styles.statusSuccess,
-                      ),
-                    ),
-                  ],
-                  icon: [],
-                  text: [h.Class(className(styles.statusText))],
-                },
-                h,
-                fieldIds.status,
-              ),
-        ]
-
-  return h.div(
-    [
-      h.DataAttribute('slot', 'time-input'),
-      h.Class(className(styles.field, props.layoutStyle)),
-    ],
-    [
-      fieldLabel,
-      ...(props.description === undefined
+      h.OnFocus(Message.FocusGained()),
+      h.OnBlur(
+        Message.CommitDecided({ resolution: commitResolutionOf(commit) }),
+      ),
+      h.OnInput(text =>
+        Message.DraftEdited({
+          text,
+          resolved: resolveTimeDraft(text, {
+            includeSeconds,
+            min: props.min,
+            max: props.max,
+          }),
+        }),
+      ),
+      ...(props.isDisabled === true || props.isReadOnly === true
         ? []
         : [
-            h.p(
-              [
-                h.Id(fieldIds.description),
-                h.DataAttribute('slot', 'time-input-description'),
-                h.Class(className(styles.description)),
-              ],
-              [props.description],
-            ),
+            h.OnKeyDownPreventDefault(key => {
+              if (key === 'ArrowUp' || key === 'ArrowDown') {
+                const next = stepValue(key === 'ArrowUp' ? 1 : -1)
+                return next === null
+                  ? Option.none()
+                  : Option.some(Message.Stepped({ value: next }))
+              }
+              return Option.none()
+            }),
           ]),
-      h.div(
-        [
-          h.DataAttribute('slot', 'time-input-status-wrapper'),
-          h.Class(className(styles.statusWrapper)),
-        ],
-        [wrapper, ...statusLayer],
-      ),
-      ...(pendingIsInvalid
-        ? [
-            h.div(
-              [
-                h.Class(className(styles.srOnly)),
-                h.Attribute('role', 'alert'),
-                h.AriaLive('assertive'),
-              ],
-              ['Invalid time'],
-            ),
+    ])
+
+    const clearButton =
+      props.hasClear === true &&
+      value !== undefined &&
+      props.isDisabled !== true &&
+      props.isReadOnly !== true
+        ? h.button(
+            [
+              h.Type('button'),
+              h.Tabindex(-1),
+              h.AriaLabel(
+                `Clear ${typeof props.label === 'string' ? props.label : 'time'}`,
+              ),
+              h.OnClick(Message.ClearRequested(), {
+                propagation: 'Stop',
+                focusSelector: `#${fieldIds.input}`,
+              }),
+              h.DataAttribute('slot', 'time-input-clear'),
+              h.Class(className(styles.clearButton)),
+            ],
+            [Icon.x({ class: className(styles.iconSm) }, h)],
+          )
+        : undefined
+
+    const status = props.status
+    const statusIcon =
+      status !== undefined && props.statusVariant === 'tooltip'
+        ? h.button(
+            [
+              h.Type('button'),
+              h.AriaLabel(statusButtonLabel(status.type)),
+              h.Title(status.message ?? ''),
+              h.DataAttribute('slot', 'time-input-status-icon'),
+              h.Class(className(styles.statusIconButton)),
+            ],
+            [
+              Icon.icon(
+                statusIconName(status.type),
+                {
+                  class: className(
+                    styles.iconMd,
+                    status.type === 'error' && styles.statusIconError,
+                    status.type === 'warning' && styles.statusIconWarning,
+                    status.type === 'success' && styles.statusIconSuccess,
+                  ),
+                  ariaLabel: statusButtonLabel(status.type),
+                },
+                h,
+              ),
+            ],
+          )
+        : undefined
+
+    const wrapper = h.div(
+      [
+        h.DataAttribute('slot', 'time-input-wrapper'),
+        h.Class(
+          className(
+            styles.wrapper,
+            heightStyle[size],
+            props.isDisabled === true
+              ? styles.wrapperDisabled
+              : status === undefined
+                ? styles.wrapperIdle
+                : status.type === 'error'
+                  ? styles.borderError
+                  : status.type === 'warning'
+                    ? styles.borderWarning
+                    : styles.borderSuccess,
+          ),
+        ),
+      ],
+      [
+        clockIcon,
+        input,
+        ...(clearButton === undefined ? [] : [clearButton]),
+        ...(statusIcon === undefined ? [] : [statusIcon]),
+      ],
+    )
+
+    const statusLayer =
+      status?.message === undefined ||
+      status === undefined ||
+      props.statusVariant === 'tooltip'
+        ? []
+        : [
+            props.statusVariant === 'detached'
+              ? renderDetachedStatus(
+                  status,
+                  {
+                    root: type => [
+                      h.Class(
+                        className(
+                          styles.statusDetached,
+                          type === 'error' && styles.statusError,
+                          type === 'warning' && styles.statusWarning,
+                          type === 'success' && styles.statusSuccess,
+                        ),
+                      ),
+                    ],
+                    icon: [h.Class(className(styles.statusIconRow))],
+                    text: [h.Class(className(styles.statusText))],
+                  },
+                  Icon.icon(
+                    statusIconName(status.type),
+                    { class: className(styles.iconSm) },
+                    h,
+                  ),
+                  h,
+                  fieldIds.status,
+                )
+              : renderAttachedStatus(
+                  status,
+                  {
+                    root: type => [
+                      h.Class(
+                        className(
+                          styles.statusAttached,
+                          attachedOverlap[size],
+                          type === 'error' && styles.statusError,
+                          type === 'warning' && styles.statusWarning,
+                          type === 'success' && styles.statusSuccess,
+                        ),
+                      ),
+                    ],
+                    icon: [],
+                    text: [h.Class(className(styles.statusText))],
+                  },
+                  h,
+                  fieldIds.status,
+                ),
           ]
-        : []),
-    ],
-  )
-})
+
+    return h.div(
+      [
+        h.DataAttribute('slot', 'time-input'),
+        h.Class(className(styles.field, props.layoutStyle)),
+      ],
+      [
+        fieldLabel,
+        ...(props.description === undefined
+          ? []
+          : [
+              h.p(
+                [
+                  h.Id(fieldIds.description),
+                  h.DataAttribute('slot', 'time-input-description'),
+                  h.Class(className(styles.description)),
+                ],
+                [props.description],
+              ),
+            ]),
+        h.div(
+          [
+            h.DataAttribute('slot', 'time-input-status-wrapper'),
+            h.Class(className(styles.statusWrapper)),
+          ],
+          [wrapper, ...statusLayer],
+        ),
+        ...(pendingIsInvalid
+          ? [
+              h.div(
+                [
+                  h.Class(className(styles.srOnly)),
+                  h.Attribute('role', 'alert'),
+                  h.AriaLive('assertive'),
+                ],
+                ['Invalid time'],
+              ),
+            ]
+          : []),
+      ],
+    )
+  },
+)
 
 export const timeInput = <Msg>(
   props: TimeInputProps<Msg>,

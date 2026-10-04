@@ -99,25 +99,22 @@ const verifyRenderer = (name: string, Button: ButtonModule) => {
       // elements such as render={<a href>}, so the link is still
       // getByRole('button'). creaseui's buttonLink renders a plain anchor
       // with the implicit link role and no button semantics.
-      it.fails(
-        'custom link element is exposed as a button (role=button on <a>)',
-        () => {
-          Scene.scene(
-            {
-              update,
-              view: (_model, h) =>
-                Button.buttonLink({ children: ['Go'], href: '#target' }, h),
-            },
-            Scene.given({ clicks: 0 }),
-            Scene.expect(Scene.role('link', { name: 'Go' })).toExist(),
-            Scene.expect(Scene.role('link', { name: 'Go' })).toHaveAttr(
-              'data-slot',
-              'button',
-            ),
-            Scene.expect(Scene.role('button', { name: 'Go' })).toExist(),
-          )
-        },
-      )
+      it.fails('custom link element is exposed as a button (role=button on <a>)', () => {
+        Scene.scene(
+          {
+            update,
+            view: (_model, h) =>
+              Button.buttonLink({ children: ['Go'], href: '#target' }, h),
+          },
+          Scene.given({ clicks: 0 }),
+          Scene.expect(Scene.role('link', { name: 'Go' })).toExist(),
+          Scene.expect(Scene.role('link', { name: 'Go' })).toHaveAttr(
+            'data-slot',
+            'button',
+          ),
+          Scene.expect(Scene.role('button', { name: 'Go' })).toExist(),
+        )
+      })
 
       it.todo(
         'custom link element: Space activates the link without scrolling the ' +
@@ -154,24 +151,21 @@ const verifyRenderer = (name: string, Button: ButtonModule) => {
       // native button — no aria-disabled and no tabindex (the element leaves
       // the tab order). creaseui also emits aria-disabled="true" and keeps
       // the foldkit primitive's unconditional tabindex="0".
-      it.fails(
-        'does not add aria-disabled or tabindex to a natively disabled button',
-        () => {
-          Scene.scene(
-            {
-              update,
-              view: (_model, h) =>
-                Button.button(
-                  { children: ['Save'], onClick: Clicked, isDisabled: true },
-                  h,
-                ),
-            },
-            Scene.given({ clicks: 0 }),
-            Scene.expect(saveButton).not.toHaveAttr('aria-disabled'),
-            Scene.expect(saveButton).not.toHaveAttr('tabIndex'),
-          )
-        },
-      )
+      it.fails('does not add aria-disabled or tabindex to a natively disabled button', () => {
+        Scene.scene(
+          {
+            update,
+            view: (_model, h) =>
+              Button.button(
+                { children: ['Save'], onClick: Clicked, isDisabled: true },
+                h,
+              ),
+          },
+          Scene.given({ clicks: 0 }),
+          Scene.expect(saveButton).not.toHaveAttr('aria-disabled'),
+          Scene.expect(saveButton).not.toHaveAttr('tabIndex'),
+        )
+      })
 
       it.todo(
         'is removed from the tab order when disabled ' +

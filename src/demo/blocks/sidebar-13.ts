@@ -1,11 +1,11 @@
-import { Match as M, Schema as S, Stream } from 'effect';
-import type { Update } from 'foldkit';
-import { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
-import { modifyFields } from 'foldkit/struct';
+import { Match as M, Schema as S, Stream } from 'effect'
+import type { Update } from 'foldkit'
+import { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import { modifyFields } from 'foldkit/struct'
 
-import * as Icon from '@/lib/icon';
+import * as Icon from '@/lib/icon'
 import {
   breadcrumb,
   breadcrumbItem,
@@ -13,9 +13,9 @@ import {
   breadcrumbList,
   breadcrumbPage,
   breadcrumbSeparator,
-} from '@/ui/breadcrumb';
-import { button } from '@/ui/button';
-import * as Dialog from '@/ui/dialog';
+} from '@/ui/breadcrumb'
+import { button } from '@/ui/button'
+import * as Dialog from '@/ui/dialog'
 import {
   sidebar,
   sidebarContent,
@@ -25,7 +25,7 @@ import {
   sidebarMenuButton,
   sidebarMenuItem,
   sidebarProvider,
-} from '@/ui/sidebar';
+} from '@/ui/sidebar'
 
 export const data = {
   nav: [
@@ -42,25 +42,22 @@ export const data = {
     { name: 'Privacy & visibility', icon: 'lock' },
     { name: 'Advanced', icon: 'settings' },
   ],
-};
+}
 
 export const Model = S.Struct({
   isSidebarOpen: S.Boolean,
   dialog: Dialog.Model,
-});
-export type Model = typeof Model.Type;
-
-
-
+})
+export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
   ToggledSidebar: {},
   OpenedSettings: {},
   GotDialogMessage: {
-  message: Dialog.Message,
-},
-});
-export type Message = typeof Message.Type;
+    message: Dialog.Message,
+  },
+})
+export type Message = typeof Message.Type
 
 export const init = (): Model => ({
   isSidebarOpen: true,
@@ -68,31 +65,44 @@ export const init = (): Model => ({
     id: 'sidebar-13-settings-dialog',
     isAnimated: true,
   }),
-});
+})
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      ToggledSidebar: () => ({ model: modifyFields(model, { isSidebarOpen: (current) => !current }) }),
+      ToggledSidebar: () => ({
+        model: modifyFields(model, { isSidebarOpen: current => !current }),
+      }),
       OpenedSettings: () => {
-        const { model: dialog, commands: dialogCommands__ } = Dialog.open(model.dialog)
+        const { model: dialog, commands: dialogCommands__ } = Dialog.open(
+          model.dialog,
+        )
         const commands = dialogCommands__ ?? []
-        return { model: modifyFields(model, { dialog: () => dialog }), commands: Command.mapMessages(commands, (next) =>
+        return {
+          model: modifyFields(model, { dialog: () => dialog }),
+          commands: Command.mapMessages(commands, next =>
             Message.GotDialogMessage({ message: next }),
-          ) };
+          ),
+        }
       },
       GotDialogMessage: ({ message: childMessage }) => {
-        const { model: dialog, commands: dialogCommands__ } = Dialog.update(model.dialog, childMessage)
+        const { model: dialog, commands: dialogCommands__ } = Dialog.update(
+          model.dialog,
+          childMessage,
+        )
         const commands = dialogCommands__ ?? []
-        return { model: modifyFields(model, { dialog: () => dialog }), commands: Command.mapMessages(commands, (next) =>
+        return {
+          model: modifyFields(model, { dialog: () => dialog }),
+          commands: Command.mapMessages(commands, next =>
             Message.GotDialogMessage({ message: next }),
-          ) };
+          ),
+        }
       },
     }),
-  );
+  )
 
 const settingsSidebar = (h: HtmlBuilder<Message>): Html =>
   sidebar(
@@ -112,7 +122,7 @@ const settingsSidebar = (h: HtmlBuilder<Message>): Html =>
                         children: [
                           sidebarMenu(
                             {
-                              children: data.nav.map((item) =>
+                              children: data.nav.map(item =>
                                 sidebarMenuItem(
                                   {
                                     children: [
@@ -151,7 +161,7 @@ const settingsSidebar = (h: HtmlBuilder<Message>): Html =>
       ],
     },
     h,
-  );
+  )
 
 const settingsMain = (h: HtmlBuilder<Message>): Html => {
   return h.main(
@@ -221,14 +231,14 @@ const settingsMain = (h: HtmlBuilder<Message>): Html => {
         ),
       ),
     ],
-  );
-};
+  )
+}
 
 const settingsDialog = (model: Dialog.Model, h: HtmlBuilder<Message>): Html =>
   Dialog.dialog<Message>(
     {
       model,
-      toParentMessage: (message) => Message.GotDialogMessage({ message }),
+      toParentMessage: message => Message.GotDialogMessage({ message }),
       title: 'Settings',
       description: 'Customize your settings here.',
       showCloseButton: true,
@@ -246,11 +256,17 @@ const settingsDialog = (model: Dialog.Model, h: HtmlBuilder<Message>): Html =>
       ],
     },
     h,
-  );
+  )
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
   return h.div(
-    [h.Class('flex h-svh items-center justify-center'), h.OnMount({ name: 'open-settings-preview', f: () => Stream.succeed(Message.OpenedSettings()) })],
+    [
+      h.Class('flex h-svh items-center justify-center'),
+      h.OnMount({
+        name: 'open-settings-preview',
+        f: () => Stream.succeed(Message.OpenedSettings()),
+      }),
+    ],
     [
       button(
         {
@@ -262,8 +278,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       ),
       settingsDialog(model.dialog, h),
     ],
-  );
-};
+  )
+}
 
 // PORT NOTE: The dialog wrapper supplies the native dialog framing and
 // accessible title/description. Unlike the source's visually hidden heading,

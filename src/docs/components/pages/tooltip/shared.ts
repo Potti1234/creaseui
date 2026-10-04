@@ -1,24 +1,24 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export interface TooltipTipSpec {
-  readonly id: string;
-  readonly label: string;
-  readonly side?: 'top' | 'right' | 'bottom' | 'left';
-  readonly isDisabled?: boolean;
-  readonly iconTrigger?: boolean;
-  readonly kbd?: string;
+  readonly id: string
+  readonly label: string
+  readonly side?: 'top' | 'right' | 'bottom' | 'left'
+  readonly isDisabled?: boolean
+  readonly iconTrigger?: boolean
+  readonly kbd?: string
 }
 
-export type TooltipKind = 'demo' | 'sides' | 'kbd' | 'disabled' | 'rtl';
+export type TooltipKind = 'demo' | 'sides' | 'kbd' | 'disabled' | 'rtl'
 
 export interface TooltipFixture {
-  readonly title: string;
-  readonly description?: string;
-  readonly heroOnly?: boolean;
-  readonly kind: TooltipKind;
-  readonly content: string;
-  readonly tips: ReadonlyArray<TooltipTipSpec>;
+  readonly title: string
+  readonly description?: string
+  readonly heroOnly?: boolean
+  readonly kind: TooltipKind
+  readonly content: string
+  readonly tips: ReadonlyArray<TooltipTipSpec>
 }
 
 const sideTips = (
@@ -29,9 +29,11 @@ const sideTips = (
     id: `${prefix}-${side}`,
     label: labels[index] ?? side,
     side,
-  }));
+  }))
 
-export const tooltipFixtures: Readonly<[TooltipFixture, ...Array<TooltipFixture>]> = [
+export const tooltipFixtures: Readonly<
+  [TooltipFixture, ...Array<TooltipFixture>]
+> = [
   {
     title: 'Basic',
     heroOnly: true,
@@ -51,14 +53,19 @@ export const tooltipFixtures: Readonly<[TooltipFixture, ...Array<TooltipFixture>
     description: 'Content composes with other primitives such as Kbd.',
     kind: 'kbd',
     content: 'Save Changes',
-    tips: [{ id: 'tip-save', label: '', side: 'top', iconTrigger: true, kbd: 'S' }],
+    tips: [
+      { id: 'tip-save', label: '', side: 'top', iconTrigger: true, kbd: 'S' },
+    ],
   },
   {
     title: 'Disabled Button',
-    description: 'A span trigger explains why the action is unavailable on hover.',
+    description:
+      'A span trigger explains why the action is unavailable on hover.',
     kind: 'disabled',
     content: 'This feature is currently unavailable',
-    tips: [{ id: 'tip-disabled', label: 'Disabled', side: 'top', isDisabled: true }],
+    tips: [
+      { id: 'tip-disabled', label: 'Disabled', side: 'top', isDisabled: true },
+    ],
   },
   {
     title: 'RTL',
@@ -67,9 +74,9 @@ export const tooltipFixtures: Readonly<[TooltipFixture, ...Array<TooltipFixture>
     content: 'إضافة إلى المكتبة',
     tips: sideTips(['يسار', 'أعلى', 'أسفل', 'يمين'], 'tip-rtl'),
   },
-];
+]
 
-const esc = (value: string): string => value.replace(/'/g, "\\'");
+const esc = (value: string): string => value.replace(/'/g, "\\'")
 
 const tipCall = (
   tip: TooltipTipSpec,
@@ -77,60 +84,69 @@ const tipCall = (
   isStyleX: boolean,
   indent: string,
 ): string => {
-  const trigger = tip.iconTrigger === true
-    ? "Icon.icon('save', {}, h)"
-    : `'${esc(tip.label)}'`;
-  const content = tip.kbd === undefined
-    ? `'${esc(fixture.content)}'`
-    : `h.span([], ['${esc(fixture.content)} ', Kbd.kbd({ children: ['${tip.kbd}'] }, h)])`;
+  const trigger =
+    tip.iconTrigger === true
+      ? "Icon.icon('save', {}, h)"
+      : `'${esc(tip.label)}'`
+  const content =
+    tip.kbd === undefined
+      ? `'${esc(fixture.content)}'`
+      : `h.span([], ['${esc(fixture.content)} ', Kbd.kbd({ children: ['${tip.kbd}'] }, h)])`
   const triggerClass = isStyleX
     ? tip.iconTrigger === true
       ? '    triggerLayoutStyle: styles.iconTrigger as ComponentLayoutStyle,'
       : '    triggerLayoutStyle: styles.trigger as ComponentLayoutStyle,'
     : tip.iconTrigger === true
       ? "    triggerClass: 'inline-flex size-9 items-center justify-center rounded-md border',"
-      : "    triggerClass: 'w-fit rounded-md border px-3 py-2 text-sm capitalize',";
+      : "    triggerClass: 'w-fit rounded-md border px-3 py-2 text-sm capitalize',"
   return `${indent}Tooltip.tooltip({
     model: model.tooltips['${tip.id}'] ?? Tooltip.init({ id: '${tip.id}' }),
     toParentMessage: message => GotTooltipMessage({ id: '${tip.id}', message }),
     trigger: ${trigger},
     content: ${content},
     side: '${tip.side ?? 'top'}',
-${tip.isDisabled === true ? '    isDisabled: true,\n' : ''}${triggerClass}\n  }, h)`;
-};
+${tip.isDisabled === true ? '    isDisabled: true,\n' : ''}${triggerClass}\n  }, h)`
+}
 
 const emitBody = (fixture: TooltipFixture, isStyleX: boolean): string => {
   if (fixture.kind === 'sides' || fixture.kind === 'rtl') {
     const wrapClass = isStyleX
       ? 'className(styles.row)'
-      : "'flex flex-wrap gap-2'";
-    const dir = fixture.kind === 'rtl' ? ', h.Dir(\'rtl\')' : '';
+      : "'flex flex-wrap gap-2'"
+    const dir = fixture.kind === 'rtl' ? ", h.Dir('rtl')" : ''
     return `  h.div([h.Class(${wrapClass})${dir}], [
 ${fixture.tips.map(tip => tipCall(tip, fixture, isStyleX, '    ')).join(',\n')}
-  ])`;
+  ])`
   }
-  const tip = fixture.tips[0];
-  return tipCall(tip === undefined ? { id: 'tip', label: 'Hover' } : tip, fixture, isStyleX, '  ');
-};
+  const tip = fixture.tips[0]
+  return tipCall(
+    tip === undefined ? { id: 'tip', label: 'Hover' } : tip,
+    fixture,
+    isStyleX,
+    '  ',
+  )
+}
 
 const emitApplication = (
   fixture: TooltipFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const isStyleX = renderer === 'stylex';
-  const base = isStyleX ? 'stylex' : 'ui';
-  const usesIcon = fixture.tips.some(tip => tip.iconTrigger === true);
-  const usesKbd = fixture.tips.some(tip => tip.kbd !== undefined);
-  const usesRow = fixture.kind === 'sides' || fixture.kind === 'rtl';
+  const isStyleX = renderer === 'stylex'
+  const base = isStyleX ? 'stylex' : 'ui'
+  const usesIcon = fixture.tips.some(tip => tip.iconTrigger === true)
+  const usesKbd = fixture.tips.some(tip => tip.kbd !== undefined)
+  const usesRow = fixture.kind === 'sides' || fixture.kind === 'rtl'
   const stylesBlock = isStyleX
     ? `\n\nconst styles = stylex.create({${
-      usesRow ? "\n  row: { display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }," : ''
-    }${
-      usesIcon
-        ? "\n  iconTrigger: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '2.25rem', height: '2.25rem', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--border)', borderRadius: 'var(--radius-md)' },"
-        : "\n  trigger: { width: 'fit-content', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--border)', borderRadius: 'var(--radius-md)', padding: '0.5rem 0.75rem', fontSize: '0.875rem', lineHeight: '1.25rem', textTransform: 'capitalize' },"
-    }\n})`
-    : '';
+        usesRow
+          ? "\n  row: { display: 'flex', flexWrap: 'wrap', gap: '0.5rem' },"
+          : ''
+      }${
+        usesIcon
+          ? "\n  iconTrigger: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '2.25rem', height: '2.25rem', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--border)', borderRadius: 'var(--radius-md)' },"
+          : "\n  trigger: { width: 'fit-content', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--border)', borderRadius: 'var(--radius-md)', padding: '0.5rem 0.75rem', fontSize: '0.875rem', lineHeight: '1.25rem', textTransform: 'capitalize' },"
+      }\n})`
+    : ''
   return foldkitApplication({
     title: `Tooltip — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
@@ -189,8 +205,8 @@ ${fixture.tips
 ${emitBody(fixture, isStyleX)}
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const tooltipExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -202,4 +218,4 @@ export const tooltipExamples = (
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer),
-  }));
+  }))

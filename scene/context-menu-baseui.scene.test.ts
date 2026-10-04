@@ -98,7 +98,9 @@ const nestedItemConfigs: Record<string, ItemConfig<string>> = {
     label: 'More tools',
     submenu: {
       items: ['deep-action'],
-      itemToConfig: item => ({ label: item === 'deep-action' ? 'Deep action' : item }),
+      itemToConfig: item => ({
+        label: item === 'deep-action' ? 'Deep action' : item,
+      }),
     },
   },
 }
@@ -314,12 +316,12 @@ const verifyRenderer = (name: string, ContextMenu: ContextMenuModule) => {
           Scene.expect(Scene.role('menuitem', { name: 'Copy' })).toHaveHandler(
             'click',
           ),
-          Scene.expect(Scene.role('menuitem', { name: 'Copy' })).not.toHaveHandler(
-            'mouseup',
-          ),
-          Scene.expect(Scene.role('menuitem', { name: 'Copy' })).not.toHaveHandler(
-            'pointerup',
-          ),
+          Scene.expect(
+            Scene.role('menuitem', { name: 'Copy' }),
+          ).not.toHaveHandler('mouseup'),
+          Scene.expect(
+            Scene.role('menuitem', { name: 'Copy' }),
+          ).not.toHaveHandler('pointerup'),
           Scene.expect(menu).toExist(),
         )
       })

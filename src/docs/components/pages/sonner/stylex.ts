@@ -1,23 +1,23 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   sonnerFixtures,
   type SonnerFixture,
-} from '@/docs/components/pages/sonner/shared';
-import * as Button from '@/stylex/button';
-import * as Sonner from '@/stylex/sonner';
-import { className } from '@/stylex/style';
+} from '@/docs/components/pages/sonner/shared'
+import * as Button from '@/stylex/button'
+import * as Sonner from '@/stylex/sonner'
+import { className } from '@/stylex/style'
 
 const styles = stylex.create({
-  wrap: { gap: '0.5rem', display: 'flex', flexWrap: 'wrap', },
+  wrap: { gap: '0.5rem', display: 'flex', flexWrap: 'wrap' },
   wrapCenter: { justifyContent: 'center' },
-});
+})
 
 interface PreviewShape {
-  readonly notifications: Sonner.Model;
-  readonly pendingPromiseId?: unknown;
+  readonly notifications: Sonner.Model
+  readonly pendingPromiseId?: unknown
 }
 
 export const sonnerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
@@ -26,12 +26,12 @@ export const sonnerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const preview = model as PreviewShape;
+  const preview = model as PreviewShape
   const fixture: SonnerFixture =
-    sonnerFixtures[exampleIndex] ?? sonnerFixtures[0];
+    sonnerFixtures[exampleIndex] ?? sonnerFixtures[0]
   const offset = sonnerFixtures
     .slice(0, exampleIndex)
-    .reduce((total, candidate) => total + candidate.buttons.length, 0);
+    .reduce((total, candidate) => total + candidate.buttons.length, 0)
   return h.div(
     [
       h.Class(
@@ -55,7 +55,8 @@ export const sonnerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
             children: [button.label],
           },
           h,
-        ))
+        ),
+      )
       .concat([
         Sonner.sonner(
           {
@@ -72,5 +73,5 @@ export const sonnerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           h,
         ),
       ]),
-  );
-};
+  )
+}

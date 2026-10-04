@@ -51,7 +51,10 @@ describe('Accordion behavior', () => {
     const op1__ = Accordion.update(
       initial,
       Accordion.Message.ToggledItem({ value: 'returns', isOpen: true }),
-    ); const model = op1__.model; const commands = op1__.commands ?? []; const maybeOutMessage = op1__.outMessage;
+    )
+    const model = op1__.model
+    const commands = op1__.commands ?? []
+    const maybeOutMessage = op1__.outMessage
 
     assert.deepEqual(model.value, ['returns'])
     assert.deepEqual(commands, [])
@@ -72,11 +75,13 @@ describe('Accordion behavior', () => {
     const op2__ = Accordion.update(
       initial,
       Accordion.Message.ToggledItem({ value: 'returns', isOpen: true }),
-    ); const opened = op2__.model;
+    )
+    const opened = op2__.model
     const op3__ = Accordion.update(
       opened,
       Accordion.Message.ToggledItem({ value: 'shipping', isOpen: false }),
-    ); const closed = op3__.model;
+    )
+    const closed = op3__.model
 
     assert.deepEqual(opened.value, ['shipping', 'returns'])
     assert.deepEqual(closed.value, ['returns'])
@@ -98,10 +103,7 @@ describe('Accordion behavior', () => {
       Accordion.init({
         id: 'legacy',
         type: 'multiple',
-        items: [
-          { value: 'shipping', isOpen: true },
-          { value: 'returns' },
-        ],
+        items: [{ value: 'shipping', isOpen: true }, { value: 'returns' }],
       }).value,
       ['shipping'],
     )

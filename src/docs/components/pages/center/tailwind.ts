@@ -1,14 +1,14 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import {
   type CenterFixture,
   centerFixtures,
-} from '@/docs/components/pages/center/shared';
-import { icon } from '@/lib/icon';
-import * as Button from '@/ui/button';
-import * as Card from '@/ui/card';
-import * as Center from '@/ui/center';
-import * as Stack from '@/ui/stack';
+} from '@/docs/components/pages/center/shared'
+import { icon } from '@/lib/icon'
+import * as Button from '@/ui/button'
+import * as Card from '@/ui/card'
+import * as Center from '@/ui/center'
+import * as Stack from '@/ui/stack'
 
 const showcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Center.center(
@@ -23,9 +23,10 @@ const showcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
             hAlign: 'center',
             children: [
               h.h4([h.Class('text-sm font-semibold')], ['Centered content']),
-              h.p([h.Class('text-sm text-muted-foreground')], [
-                'Horizontally and vertically aligned.',
-              ]),
+              h.p(
+                [h.Class('text-sm text-muted-foreground')],
+                ['Horizontally and vertically aligned.'],
+              ),
             ],
           },
           h,
@@ -33,7 +34,7 @@ const showcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ],
     },
     h,
-  );
+  )
 
 const horizontalView = <Msg>(h: HtmlBuilder<Msg>): Html => {
   const iconButton = (name: string, label: string): Html =>
@@ -45,7 +46,7 @@ const horizontalView = <Msg>(h: HtmlBuilder<Msg>): Html => {
         children: [icon(name, { class: 'size-4' }, h)],
       },
       h,
-    );
+    )
   return Card.card(
     {
       size: 'sm',
@@ -85,8 +86,8 @@ const horizontalView = <Msg>(h: HtmlBuilder<Msg>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const insideCardView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Card.card(
@@ -111,12 +112,14 @@ const insideCardView = <Msg>(h: HtmlBuilder<Msg>): Html =>
                             { class: 'size-6 text-muted-foreground' },
                             h,
                           ),
-                          h.p([h.Class('text-sm font-semibold')], [
-                            'No messages yet',
-                          ]),
-                          h.p([h.Class('text-xs text-muted-foreground')], [
-                            'Messages from your team will appear here.',
-                          ]),
+                          h.p(
+                            [h.Class('text-sm font-semibold')],
+                            ['No messages yet'],
+                          ),
+                          h.p(
+                            [h.Class('text-xs text-muted-foreground')],
+                            ['Messages from your team will appear here.'],
+                          ),
                         ],
                       },
                       h,
@@ -132,23 +135,23 @@ const insideCardView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ],
     },
     h,
-  );
+  )
 
 export type CenterStaticPreview = <Msg>(
   model: Readonly<Record<string, never>>,
   h: HtmlBuilder<Msg>,
-) => Html;
+) => Html
 
 const previewFor = (fixture: CenterFixture): CenterStaticPreview => {
   switch (fixture.kind) {
     case 'showcase':
-      return (_m, h) => showcaseView(h);
+      return (_m, h) => showcaseView(h)
     case 'horizontal':
-      return (_m, h) => horizontalView(h);
+      return (_m, h) => horizontalView(h)
     case 'insideCard':
-      return (_m, h) => insideCardView(h);
+      return (_m, h) => insideCardView(h)
   }
-};
+}
 
 export const centerTailwindPreviews: ReadonlyArray<CenterStaticPreview> =
-  centerFixtures.map(previewFor);
+  centerFixtures.map(previewFor)

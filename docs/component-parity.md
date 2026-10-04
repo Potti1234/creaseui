@@ -55,18 +55,18 @@ npm run parity:generate
 
 ## Adapted components
 
-| Component | Foldkit adaptation |
-| --- | --- |
-| Carousel | Pure controlled model with loop, keyboard, variable-size slides, and multi-slide stepping instead of Embla plugins. |
-| Chart | Framework-native SVG/ECharts composition with config, container, legend, and tooltip helpers instead of Recharts. |
-| Command | Searchable grouped command surface; global shortcut/dialog lifecycle remains application composition. |
-| Context Menu | Dropdown-based menu anchored from secondary pointer coordinates because Foldkit's context-menu event carries no coordinates. |
-| Menubar | Typed Dropdown Menu models with an explicit parent coordination seam for wrapping left/right navigation. |
-| Navigation Menu | Semantic navigation and Popover disclosure rather than Base UI's linked animated viewport. |
-| Resizable | Pure controlled group model with arbitrary panels and explicit measured extent rather than `react-resizable-panels`. |
-| Scroll Area | Visible, focusable native scrollbars with orientation control rather than custom scrollbar/thumb parts. |
-| Slider | Foldkit single-value primitive plus a controlled horizontal/vertical two-thumb range implementation. |
-| Tooltip | Foldkit floating anchor with collision-aware arrow styling rather than a separate Base UI Arrow part. |
+| Component       | Foldkit adaptation                                                                                                           |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Carousel        | Pure controlled model with loop, keyboard, variable-size slides, and multi-slide stepping instead of Embla plugins.          |
+| Chart           | Framework-native SVG/ECharts composition with config, container, legend, and tooltip helpers instead of Recharts.            |
+| Command         | Searchable grouped command surface; global shortcut/dialog lifecycle remains application composition.                        |
+| Context Menu    | Dropdown-based menu anchored from secondary pointer coordinates because Foldkit's context-menu event carries no coordinates. |
+| Menubar         | Typed Dropdown Menu models with an explicit parent coordination seam for wrapping left/right navigation.                     |
+| Navigation Menu | Semantic navigation and Popover disclosure rather than Base UI's linked animated viewport.                                   |
+| Resizable       | Pure controlled group model with arbitrary panels and explicit measured extent rather than `react-resizable-panels`.         |
+| Scroll Area     | Visible, focusable native scrollbars with orientation control rather than custom scrollbar/thumb parts.                      |
+| Slider          | Foldkit single-value primitive plus a controlled horizontal/vertical two-thumb range implementation.                         |
+| Tooltip         | Foldkit floating anchor with collision-aware arrow styling rather than a separate Base UI Arrow part.                        |
 
 These are intentional implementation choices, not missing components. Any future
 change that removes a listed capability must add an open fidelity item to the

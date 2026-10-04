@@ -1,10 +1,10 @@
-import type { Option } from 'effect';
-import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html';
+import type { Option } from 'effect'
+import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
 
-import { Combobox as ComboboxPrimitive } from '@foldkit/ui';
+import { Combobox as ComboboxPrimitive } from '@foldkit/ui'
 
-import { filterCommandItems } from '@/lib/command';
-import * as Icon from '@/lib/icon';
+import { filterCommandItems } from '@/lib/command'
+import * as Icon from '@/lib/icon'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import { overlayStyles } from './overlay-tokens.stylex'
@@ -14,7 +14,12 @@ import { className } from './style'
 
 const styles = stylex.create({
   contents: { display: 'contents' },
-  empty: { paddingBlock: '1.5rem', fontSize: '0.875rem', lineHeight: '1.25rem', textAlign: 'center', },
+  empty: {
+    paddingBlock: '1.5rem',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+    textAlign: 'center',
+  },
 })
 
 const isStaticStyle = (value: unknown): value is StaticStyles =>
@@ -37,16 +42,16 @@ const cn = (...values: ReadonlyArray<unknown>): string =>
    visually ordered before the input. Per-item attributes are not exposed;
    command-item is therefore placed on the inner content span. */
 
-export const Model = ComboboxPrimitive.Model;
-export type Model = typeof Model.Type;
-export const Message = ComboboxPrimitive.Message;
-export type Message = typeof Message.Type;
-export const OutMessage = ComboboxPrimitive.OutMessage;
+export const Model = ComboboxPrimitive.Model
+export type Model = typeof Model.Type
+export const Message = ComboboxPrimitive.Message
+export type Message = typeof Message.Type
+export const OutMessage = ComboboxPrimitive.OutMessage
 export type OutMessage<Item extends string = string> =
-  ComboboxPrimitive.OutMessage<Item>;
+  ComboboxPrimitive.OutMessage<Item>
 
-export const init = ComboboxPrimitive.init;
-export const update = ComboboxPrimitive.create<string>().update;
+export const init = ComboboxPrimitive.init
+export const update = ComboboxPrimitive.create<string>().update
 
 const ROOT_CLASS = overlayStyles.root
 
@@ -71,31 +76,31 @@ const SHORTCUT_CLASS = overlayStyles.shortcut
 const BACKDROP_CLASS = overlayStyles.backdrop
 
 export type CommandItemConfig = Readonly<{
-  content: Html | string;
-  searchText?: string;
-  shortcut?: Html | string;
-  layoutStyle?: ComponentLayoutStyle;
-  isDisabled?: boolean;
-}>;
+  content: Html | string
+  searchText?: string
+  shortcut?: Html | string
+  layoutStyle?: ComponentLayoutStyle
+  isDisabled?: boolean
+}>
 
 export type CommandProps<Item extends string, Msg> = Readonly<{
-  model: Model;
-  maybeSelectedValue: Option.Option<Item>;
-  restingInputValue: string;
-  toParentMessage: (message: Message) => Msg;
-  items: ReadonlyArray<Item>;
-  itemToConfig: (item: Item) => CommandItemConfig;
-  placeholder?: string;
-  ariaLabel?: string;
-  layoutStyle?: ComponentLayoutStyle;
-  itemGroupKey?: (item: Item, index: number) => string;
-  groupToHeading?: (groupKey: string) => Html | string | undefined;
-  status?: 'ready' | 'loading';
-  loadingContent?: Html | string;
-  emptyContent?: Html | string;
-  maxVisibleItems?: number;
-  moreResultsContent?: (visible: number, total: number) => Html | string;
-}>;
+  model: Model
+  maybeSelectedValue: Option.Option<Item>
+  restingInputValue: string
+  toParentMessage: (message: Message) => Msg
+  items: ReadonlyArray<Item>
+  itemToConfig: (item: Item) => CommandItemConfig
+  placeholder?: string
+  ariaLabel?: string
+  layoutStyle?: ComponentLayoutStyle
+  itemGroupKey?: (item: Item, index: number) => string
+  groupToHeading?: (groupKey: string) => Html | string | undefined
+  status?: 'ready' | 'loading'
+  loadingContent?: Html | string
+  emptyContent?: Html | string
+  maxVisibleItems?: number
+  moreResultsContent?: (visible: number, total: number) => Html | string
+}>
 
 export const commandGroupHeading = <Msg>(
   content: Html | string,
@@ -103,10 +108,13 @@ export const commandGroupHeading = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Html => {
   return h.span(
-    [h.DataAttribute('slot', 'command-group-heading'), h.Class(cn(layoutStyle))],
+    [
+      h.DataAttribute('slot', 'command-group-heading'),
+      h.Class(cn(layoutStyle)),
+    ],
     [content],
-  );
-};
+  )
+}
 
 export const commandShortcut = <Msg>(
   content: Html | string,
@@ -119,8 +127,8 @@ export const commandShortcut = <Msg>(
       h.Class(cn(SHORTCUT_CLASS, layoutStyle)),
     ],
     [content],
-  );
-};
+  )
+}
 
 export const commandSeparator = <Msg>(
   layoutStyle: ComponentLayoutStyle | undefined,
@@ -133,8 +141,8 @@ export const commandSeparator = <Msg>(
       h.Class(cn(SEPARATOR_CLASS, layoutStyle)),
     ],
     [],
-  );
-};
+  )
+}
 
 export const commandEmpty = <Msg>(
   content: Html | string,
@@ -147,24 +155,34 @@ export const commandEmpty = <Msg>(
       h.Class(cn(styles.empty, layoutStyle)),
     ],
     [content],
-  );
-};
+  )
+}
 
 const renderCommand = <Item extends string, Msg>(
   commandPrimitive: ComboboxPrimitive.Bundle<Item>,
   props: CommandProps<Item, Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const hc = h;
+  const hc = h
   const itemToSearchText = (item: Item): string => {
-    const config = props.itemToConfig(item);
+    const config = props.itemToConfig(item)
     return (
       config.searchText ??
       (typeof config.content === 'string' ? config.content : item)
-    );
-  };
-  const filteredItems = filterCommandItems(props.items, props.model.inputValue, props.restingInputValue, itemToSearchText);
-  const visibleItems = props.status === 'loading' ? [] : props.maxVisibleItems === undefined ? filteredItems : filteredItems.slice(0, Math.max(0, props.maxVisibleItems));
+    )
+  }
+  const filteredItems = filterCommandItems(
+    props.items,
+    props.model.inputValue,
+    props.restingInputValue,
+    itemToSearchText,
+  )
+  const visibleItems =
+    props.status === 'loading'
+      ? []
+      : props.maxVisibleItems === undefined
+        ? filteredItems
+        : filteredItems.slice(0, Math.max(0, props.maxVisibleItems))
 
   const control = h.submodel({
     slotId: props.model.id,
@@ -174,16 +192,19 @@ const renderCommand = <Item extends string, Msg>(
       maybeSelectedValue: props.maybeSelectedValue,
       restingInputValue: props.restingInputValue,
       items: visibleItems,
-      itemToValue: (item) => item,
+      itemToValue: item => item,
       itemToDisplayText: itemToSearchText,
-      isItemDisabled: (item) => props.itemToConfig(item).isDisabled ?? false,
-      itemToConfig: (item) => {
-        const config = props.itemToConfig(item);
+      isItemDisabled: item => props.itemToConfig(item).isDisabled ?? false,
+      itemToConfig: item => {
+        const config = props.itemToConfig(item)
 
         return {
           className: cn(ITEM_CLASS, config.layoutStyle),
           content: hc.span(
-            [hc.DataAttribute('slot', 'command-item'), hc.Class(className(styles.contents))],
+            [
+              hc.DataAttribute('slot', 'command-item'),
+              hc.Class(className(styles.contents)),
+            ],
             [
               config.content,
               ...(config.shortcut === undefined
@@ -191,7 +212,7 @@ const renderCommand = <Item extends string, Msg>(
                 : [commandShortcut(config.shortcut, undefined, h)]),
             ],
           ),
-        };
+        }
       },
       inputClassName: className(INPUT_CLASS),
       inputAttributes: childAttributes([
@@ -222,12 +243,12 @@ const renderCommand = <Item extends string, Msg>(
         : {
             itemGroupKey: props.itemGroupKey,
             groupToHeading: (groupKey: string) => {
-              const heading = props.groupToHeading?.(groupKey);
+              const heading = props.groupToHeading?.(groupKey)
               return heading === undefined
                 ? undefined
                 : {
                     content: commandGroupHeading(heading, undefined, h),
-                  };
+                  }
             },
             groupClassName: className(GROUP_CLASS),
             groupAttributes: childAttributes([
@@ -241,34 +262,58 @@ const renderCommand = <Item extends string, Msg>(
       ...(props.ariaLabel === undefined ? {} : { ariaLabel: props.ariaLabel }),
     },
     toParentMessage: props.toParentMessage,
-  });
+  })
 
-  const statusContent = props.status === 'loading'
-    ? props.loadingContent ?? 'Loading commands…'
-    : visibleItems.length === 0
-      ? props.emptyContent ?? 'No commands found.'
-      : visibleItems.length < filteredItems.length
-        ? props.moreResultsContent?.(visibleItems.length, filteredItems.length) ?? `Showing ${String(visibleItems.length)} of ${String(filteredItems.length)} commands. Refine your search for more.`
-        : undefined;
+  const statusContent =
+    props.status === 'loading'
+      ? (props.loadingContent ?? 'Loading commands…')
+      : visibleItems.length === 0
+        ? (props.emptyContent ?? 'No commands found.')
+        : visibleItems.length < filteredItems.length
+          ? (props.moreResultsContent?.(
+              visibleItems.length,
+              filteredItems.length,
+            ) ??
+            `Showing ${String(visibleItems.length)} of ${String(filteredItems.length)} commands. Refine your search for more.`)
+          : undefined
   return statusContent === undefined
     ? control
-    : h.div([h.DataAttribute('slot', 'command-state')], [control, h.div([h.Role('status'), h.AriaLive('polite'), h.Class(className(styles.empty))], [statusContent])]);
-};
+    : h.div(
+        [h.DataAttribute('slot', 'command-state')],
+        [
+          control,
+          h.div(
+            [
+              h.Role('status'),
+              h.AriaLive('polite'),
+              h.Class(className(styles.empty)),
+            ],
+            [statusContent],
+          ),
+        ],
+      )
+}
 
 export type CommandBundle<Item extends string> = Readonly<{
-  update: ComboboxPrimitive.Bundle<Item>['update'];
-  selectItem: ComboboxPrimitive.Bundle<Item>['selectItem'];
-  open: ComboboxPrimitive.Bundle<Item>['open'];
-  close: ComboboxPrimitive.Bundle<Item>['close'];
-  command: <Msg>(props: CommandProps<Item, Msg>, h: HtmlBuilder<Msg>) => Html;
-}>;
+  update: ComboboxPrimitive.Bundle<Item>['update']
+  selectItem: ComboboxPrimitive.Bundle<Item>['selectItem']
+  open: ComboboxPrimitive.Bundle<Item>['open']
+  close: ComboboxPrimitive.Bundle<Item>['close']
+  command: <Msg>(props: CommandProps<Item, Msg>, h: HtmlBuilder<Msg>) => Html
+}>
 export const create = <Item extends string = string>(): CommandBundle<Item> => {
-  const primitive = ComboboxPrimitive.create<Item>();
-  return { update: primitive.update, selectItem: primitive.selectItem, open: primitive.open, close: primitive.close, command: (props, h) => renderCommand(primitive, props, h) };
-};
-const StringCommand = create<string>();
-export const command = StringCommand.command;
-export const commandPalette = command;
+  const primitive = ComboboxPrimitive.create<Item>()
+  return {
+    update: primitive.update,
+    selectItem: primitive.selectItem,
+    open: primitive.open,
+    close: primitive.close,
+    command: (props, h) => renderCommand(primitive, props, h),
+  }
+}
+const StringCommand = create<string>()
+export const command = StringCommand.command
+export const commandPalette = command
 
 /*
    Minimal wiring:

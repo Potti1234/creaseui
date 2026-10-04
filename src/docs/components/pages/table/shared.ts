@@ -1,8 +1,8 @@
-import type { DocsExample } from '@/docs/components/page-definition';
+import type { DocsExample } from '@/docs/components/page-definition'
 import {
   foldkitApplication,
   staticComponentApplication,
-} from '@/docs/components/pages/authored-page';
+} from '@/docs/components/pages/authored-page'
 
 export type TableKind =
   | 'demo'
@@ -11,20 +11,21 @@ export type TableKind =
   | 'rtl'
   | 'inventory'
   | 'dense'
-  | 'empty';
+  | 'empty'
 
 export interface TableFixture {
-  readonly title: string;
-  readonly description?: string;
-  readonly heroOnly?: boolean;
-  readonly kind: TableKind;
+  readonly title: string
+  readonly description?: string
+  readonly heroOnly?: boolean
+  readonly kind: TableKind
 }
 
 export const tableFixtures: Readonly<[TableFixture, ...Array<TableFixture>]> = [
   { title: 'Basic', heroOnly: true, kind: 'demo' },
   {
     title: 'Footer',
-    description: 'Use a semantic footer for totals that summarize the body columns.',
+    description:
+      'Use a semantic footer for totals that summarize the body columns.',
     kind: 'footer',
   },
   {
@@ -44,17 +45,21 @@ export const tableFixtures: Readonly<[TableFixture, ...Array<TableFixture>]> = [
   },
   {
     title: 'Dense overflow',
-    description: 'Dense native cells remain inside a horizontally scrollable container on narrow screens.',
+    description:
+      'Dense native cells remain inside a horizontally scrollable container on narrow screens.',
     kind: 'dense',
   },
   {
     title: 'Empty body',
-    description: 'An empty collection stays a real table with one explanatory spanning cell.',
+    description:
+      'An empty collection stays a real table with one explanatory spanning cell.',
     kind: 'empty',
   },
-];
+]
 
-export const invoices: ReadonlyArray<readonly [string, string, string, string]> = [
+export const invoices: ReadonlyArray<
+  readonly [string, string, string, string]
+> = [
   ['INV001', 'Paid', '$250.00', 'Credit Card'],
   ['INV002', 'Pending', '$150.00', 'PayPal'],
   ['INV003', 'Unpaid', '$350.00', 'Bank Transfer'],
@@ -62,9 +67,11 @@ export const invoices: ReadonlyArray<readonly [string, string, string, string]> 
   ['INV005', 'Paid', '$550.00', 'PayPal'],
   ['INV006', 'Pending', '$200.00', 'Bank Transfer'],
   ['INV007', 'Unpaid', '$300.00', 'Credit Card'],
-];
+]
 
-export const rtlInvoices: ReadonlyArray<readonly [string, string, string, string]> = [
+export const rtlInvoices: ReadonlyArray<
+  readonly [string, string, string, string]
+> = [
   ['INV001', 'مدفوع', '$250.00', 'بطاقة ائتمانية'],
   ['INV002', 'قيد الانتظار', '$150.00', 'PayPal'],
   ['INV003', 'غير مدفوع', '$350.00', 'تحويل بنكي'],
@@ -72,55 +79,57 @@ export const rtlInvoices: ReadonlyArray<readonly [string, string, string, string
   ['INV005', 'مدفوع', '$550.00', 'PayPal'],
   ['INV006', 'قيد الانتظار', '$200.00', 'تحويل بنكي'],
   ['INV007', 'غير مدفوع', '$300.00', 'بطاقة ائتمانية'],
-];
+]
 
 export const actionRows: ReadonlyArray<readonly [string, string]> = [
   ['Wireless Mouse', '$29.99'],
   ['Mechanical Keyboard', '$129.99'],
   ['USB-C Hub', '$49.99'],
-];
+]
 
 export const tableRows = [
   ['Accordion', 'Stateful'],
   ['Button', 'Stateless'],
   ['Dialog', 'Stateful'],
-] as const;
+] as const
 
 const rightCell = (isStyleX: boolean, content: string): string =>
   isStyleX
     ? `h.span([h.Class(stylex.props(styles.right).className ?? '')], [${content}])`
-    : content;
+    : content
 
 const invoiceTable = (kind: TableKind, isStyleX: boolean): string => {
-  const rtl = kind === 'rtl';
-  const sourceRows = rtl ? 'rtlInvoices' : 'invoices';
+  const rtl = kind === 'rtl'
+  const sourceRows = rtl ? 'rtlInvoices' : 'invoices'
   const heads = rtl
     ? ['الفاتورة', 'الحالة', 'الطريقة', 'المبلغ']
-    : ['Invoice', 'Status', 'Method', 'Amount'];
-  const caption = rtl ? 'قائمة بفواتيرك الأخيرة.' : 'A list of your recent invoices.';
-  const total = rtl ? 'المجموع' : 'Total';
+    : ['Invoice', 'Status', 'Method', 'Amount']
+  const caption = rtl
+    ? 'قائمة بفواتيرك الأخيرة.'
+    : 'A list of your recent invoices.'
+  const total = rtl ? 'المجموع' : 'Total'
   const headCalls = [
     `Table.tableHead({ ${isStyleX ? 'layoutStyle: styles.invoiceHead, ' : "class: 'w-[100px]', "}children: ['${heads[0] ?? ''}'] }, h)`,
     `Table.tableHead({ children: ['${heads[1] ?? ''}'] }, h)`,
     `Table.tableHead({ children: ['${heads[2] ?? ''}'] }, h)`,
     `Table.tableHead({ ${isStyleX ? '' : "class: 'text-right', "}children: [${rightCell(isStyleX, `'${heads[3] ?? 'Amount'}'`)}] }, h)`,
-  ];
-  const rowSlice = kind === 'footer' ? `${sourceRows}.slice(0, 3)` : sourceRows;
+  ]
+  const rowSlice = kind === 'footer' ? `${sourceRows}.slice(0, 3)` : sourceRows
   const invoiceCell = (content: string): string =>
     isStyleX
       ? `h.span([h.Class(stylex.props(styles.medium).className ?? '')], [${content}])`
-      : content;
+      : content
   const bodyRows = `${rowSlice}.map(([invoice, status, amount, method]) =>
       Table.tableRow({ children: [
         Table.tableCell({ children: [${invoiceCell('invoice')}]${isStyleX ? '' : ", class: 'font-medium'"} }, h),
         Table.tableCell({ children: [status] }, h),
         Table.tableCell({ children: [method] }, h),
         Table.tableCell({ ${isStyleX ? '' : "class: 'text-right', "}children: [${rightCell(isStyleX, 'amount')}] }, h),
-      ] }, h))`;
+      ] }, h))`
   const footer = `Table.tableFooter({ children: [Table.tableRow({ children: [
     Table.tableCell({ colspan: 3, children: ['${total}'] }, h),
     Table.tableCell({ ${isStyleX ? '' : "class: 'text-right', "}children: [${rightCell(isStyleX, `'$2,500.00'`)}] }, h),
-  ] }, h)] }, h)`;
+  ] }, h)] }, h)`
   const table = `Table.table({ ${isStyleX ? 'layoutStyle: styles.table, ' : ''}children: [
     Table.tableCaption({ children: ['${caption}'] }, h),
     Table.tableHeader({ children: [Table.tableRow({ children: [
@@ -128,9 +137,9 @@ const invoiceTable = (kind: TableKind, isStyleX: boolean): string => {
     ] }, h)] }, h),
     Table.tableBody({ children: ${bodyRows} }, h),
     ${footer},
-  ] }, h)`;
-  return rtl ? `h.div([h.Dir('rtl')], [\n    ${table},\n  ])` : table;
-};
+  ] }, h)`
+  return rtl ? `h.div([h.Dir('rtl')], [\n    ${table},\n  ])` : table
+}
 
 const actionsTable = (isStyleX: boolean): string => {
   return `Table.table({ children: [
@@ -165,15 +174,15 @@ const actionsTable = (isStyleX: boolean): string => {
         ] }, h),
       ] }, h)
     ) }, h),
-  ] }, h)`;
-};
+  ] }, h)`
+}
 
 const staticBody = (kind: TableKind, isStyleX: boolean): string => {
   switch (kind) {
     case 'demo':
     case 'footer':
     case 'rtl':
-      return invoiceTable(kind, isStyleX);
+      return invoiceTable(kind, isStyleX)
     case 'inventory':
       return `Table.table({ ${isStyleX ? 'layoutStyle: styles.table, ' : "class: 'max-w-xl', "}children: [
     Table.tableCaption({ children: ['Foldkit ownership by component.'] }, h),
@@ -186,7 +195,7 @@ const staticBody = (kind: TableKind, isStyleX: boolean): string => {
         Table.tableHead({ scope: 'row', ${isStyleX ? '' : "class: 'font-medium', "}children: [${isStyleX ? `h.span([h.Class(stylex.props(styles.medium).className ?? '')], [name])` : 'name'}] }, h),
         Table.tableCell({ children: [state] }, h),
       ] }, h)) }, h),
-  ] }, h)`;
+  ] }, h)`
     case 'dense':
       return `Table.table({ ${isStyleX ? 'layoutStyle: styles.dense, ' : "class: 'min-w-[44rem] text-xs', "}children: [
     Table.tableCaption({ children: ['Deployment inventory with intentionally wide columns.'] }, h),
@@ -197,7 +206,7 @@ const staticBody = (kind: TableKind, isStyleX: boolean): string => {
       ...['Platform', 'Europe', 'Healthy', 'Today at 10:42'].map(value =>
         Table.tableCell({ ${isStyleX ? '' : "class: 'p-1', "}children: [value] }, h)),
     ] }, h)] }, h),
-  ] }, h)`;
+  ] }, h)`
     case 'empty':
       return `Table.table({ ${isStyleX ? 'layoutStyle: styles.table, ' : "class: 'max-w-xl', "}children: [
     Table.tableCaption({ children: ['Filtered component inventory.'] }, h),
@@ -208,11 +217,11 @@ const staticBody = (kind: TableKind, isStyleX: boolean): string => {
     Table.tableBody({ children: [Table.tableRow({ children: [
       Table.tableCell({ colspan: 2, ${isStyleX ? '' : "class: 'h-24 text-center text-muted-foreground', "}children: [${isStyleX ? `h.span([h.Class(stylex.props(styles.empty).className ?? '')], ['No components match this filter.'])` : `'No components match this filter.'`}] }, h),
     ] }, h)] }, h),
-  ] }, h)`;
+  ] }, h)`
     default:
-      return 'h.empty';
+      return 'h.empty'
   }
-};
+}
 
 const dataSource = (kind: TableKind): string => {
   switch (kind) {
@@ -221,54 +230,64 @@ const dataSource = (kind: TableKind): string => {
       return `
 const invoices: ReadonlyArray<readonly [string, string, string, string]> = [
 ${invoices.map(([i, s, a, m]) => `  ['${i}', '${s}', '${a}', '${m}'],`).join('\n')}
-]`;
+]`
     case 'rtl':
       return `
 const rtlInvoices: ReadonlyArray<readonly [string, string, string, string]> = [
 ${rtlInvoices.map(([i, s, a, m]) => `  ['${i}', '${s}', '${a}', '${m}'],`).join('\n')}
-]`;
+]`
     case 'inventory':
       return `
 const tableRows: ReadonlyArray<readonly [string, string]> = [
 ${tableRows.map(([n, s]) => `  ['${n}', '${s}'],`).join('\n')}
-]`;
+]`
     default:
-      return '';
+      return ''
   }
-};
+}
 
 const sxStyles = (fixture: TableFixture): string => {
-  const parts: Array<string> = [];
+  const parts: Array<string> = []
   if (fixture.kind !== 'dense' && fixture.kind !== 'actions') {
-    parts.push("  table: { maxWidth: '36rem' },");
+    parts.push("  table: { maxWidth: '36rem' },")
   }
   if (fixture.kind === 'dense') {
-    parts.push("  dense: { minWidth: '44rem' },");
+    parts.push("  dense: { minWidth: '44rem' },")
   }
-  if (fixture.kind === 'demo' || fixture.kind === 'footer' || fixture.kind === 'rtl') {
-    parts.push("  invoiceHead: { width: '6.25rem' },");
+  if (
+    fixture.kind === 'demo' ||
+    fixture.kind === 'footer' ||
+    fixture.kind === 'rtl'
+  ) {
+    parts.push("  invoiceHead: { width: '6.25rem' },")
   }
   if (fixture.kind !== 'dense' && fixture.kind !== 'empty') {
-    parts.push("  medium: { fontWeight: 500 },");
+    parts.push('  medium: { fontWeight: 500 },')
   }
   if (fixture.kind !== 'dense' && fixture.kind !== 'inventory') {
-    parts.push("  right: { display: 'block', textAlign: 'right' },");
+    parts.push("  right: { display: 'block', textAlign: 'right' },")
   }
   if (fixture.kind === 'actions') {
-    parts.push("  menuCell: { display: 'flex', justifyContent: 'flex-end' },");
-    parts.push("  iconTrigger: { width: '2rem', height: '2rem' },");
-    parts.push("  triggerContent: { display: 'inline-flex', alignItems: 'center' },");
-    parts.push("  srOnly: { position: 'absolute', width: '1px', height: '1px', padding: 0, margin: '-1px', overflow: 'hidden', clip: 'rect(0, 0, 0, 0)', whiteSpace: 'nowrap', borderWidth: 0 },");
+    parts.push("  menuCell: { display: 'flex', justifyContent: 'flex-end' },")
+    parts.push("  iconTrigger: { width: '2rem', height: '2rem' },")
+    parts.push(
+      "  triggerContent: { display: 'inline-flex', alignItems: 'center' },",
+    )
+    parts.push(
+      "  srOnly: { position: 'absolute', width: '1px', height: '1px', padding: 0, margin: '-1px', overflow: 'hidden', clip: 'rect(0, 0, 0, 0)', whiteSpace: 'nowrap', borderWidth: 0 },",
+    )
   }
   if (fixture.kind === 'empty') {
-    parts.push("  empty: { display: 'block', paddingBlock: '2rem', color: 'var(--muted-foreground)', textAlign: 'center' },");
+    parts.push(
+      "  empty: { display: 'block', paddingBlock: '2rem', color: 'var(--muted-foreground)', textAlign: 'center' },",
+    )
   }
   return `import * as stylex from '@stylexjs/stylex'
 
 const styles = stylex.create({
 ${parts.join('\n')}
-})`;
-};
+})`
+}
 
 const emitStatic = (
   fixture: TableFixture,
@@ -280,13 +299,14 @@ const emitStatic = (
     renderer,
     exampleName: fixture.title,
     componentImports:
-      (renderer === 'stylex' ? `${sxStyles(fixture)}` : '') + dataSource(fixture.kind),
+      (renderer === 'stylex' ? `${sxStyles(fixture)}` : '') +
+      dataSource(fixture.kind),
     viewBody: staticBody(fixture.kind, renderer === 'stylex'),
-  });
+  })
 
 const emitActions = (renderer: 'tailwind' | 'stylex'): string => {
-  const isStyleX = renderer === 'stylex';
-  const base = isStyleX ? 'stylex' : 'ui';
+  const isStyleX = renderer === 'stylex'
+  const base = isStyleX ? 'stylex' : 'ui'
   return foldkitApplication({
     title: 'Table — Actions',
     imports: `import { Schema as S } from 'effect'
@@ -352,8 +372,8 @@ ${actionsTable(isStyleX)
   .join('\n')},
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const tableExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -368,4 +388,4 @@ export const tableExamples = (
       fixture.kind === 'actions'
         ? emitActions(renderer)
         : emitStatic(fixture, renderer),
-  }));
+  }))

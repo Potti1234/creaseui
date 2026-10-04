@@ -1,28 +1,28 @@
-import { Option } from 'effect';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import { Option } from 'effect'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   buttonGroupFixtures,
   type ButtonGroupFixture,
   type BgNode,
-} from '@/docs/components/pages/button-group/shared';
-import * as Icon from '@/lib/icon';
-import * as Button from '@/stylex/button';
-import * as ButtonGroup from '@/stylex/button-group';
-import * as DropdownMenu from '@/stylex/dropdown-menu';
-import * as Input from '@/stylex/input';
-import * as InputGroup from '@/stylex/input-group';
-import * as Popover from '@/stylex/popover';
-import * as Select from '@/stylex/select';
-import * as Textarea from '@/stylex/textarea';
-import * as Tooltip from '@/stylex/tooltip';
-import type { ComponentLayoutStyle } from '@/stylex/contracts';
-import { foundationTokens } from '../../../../stylex/foundations-tokens.stylex';
-import { className } from '@/stylex/style';
-import { tokens } from '../../../../stylex/tokens.stylex';
+} from '@/docs/components/pages/button-group/shared'
+import * as Icon from '@/lib/icon'
+import * as Button from '@/stylex/button'
+import * as ButtonGroup from '@/stylex/button-group'
+import * as DropdownMenu from '@/stylex/dropdown-menu'
+import * as Input from '@/stylex/input'
+import * as InputGroup from '@/stylex/input-group'
+import * as Popover from '@/stylex/popover'
+import * as Select from '@/stylex/select'
+import * as Textarea from '@/stylex/textarea'
+import * as Tooltip from '@/stylex/tooltip'
+import type { ComponentLayoutStyle } from '@/stylex/contracts'
+import { foundationTokens } from '../../../../stylex/foundations-tokens.stylex'
+import { className } from '@/stylex/style'
+import { tokens } from '../../../../stylex/tokens.stylex'
 
 const styles = stylex.create({
   stack: {
@@ -41,20 +41,53 @@ const styles = stylex.create({
     width: '1.5rem',
   },
   iconSm: { fontSize: '0.875rem', lineHeight: '1.25rem' },
-  iconMd: { flexShrink: 0, pointerEvents: 'none', height: '1rem', width: '1rem', },
-  iconMdPlain: { height: '1rem', width: '1rem', },
-  iconMdRtl: { flexShrink: 0, pointerEvents: 'none', transform: 'rotate(180deg)', height: '1rem', width: '1rem', },
-  joinedHFirst: { borderBottomLeftRadius: 'var(--radius-md)', borderBottomRightRadius: 0, borderTopLeftRadius: 'var(--radius-md)', borderTopRightRadius: 0, },
-  joinedHLast: { borderBottomLeftRadius: 0, borderBottomRightRadius: 'var(--radius-md)', borderLeftWidth: 0, borderTopLeftRadius: 0, borderTopRightRadius: 'var(--radius-md)', },
+  iconMd: {
+    flexShrink: 0,
+    pointerEvents: 'none',
+    height: '1rem',
+    width: '1rem',
+  },
+  iconMdPlain: { height: '1rem', width: '1rem' },
+  iconMdRtl: {
+    flexShrink: 0,
+    pointerEvents: 'none',
+    transform: 'rotate(180deg)',
+    height: '1rem',
+    width: '1rem',
+  },
+  joinedHFirst: {
+    borderBottomLeftRadius: 'var(--radius-md)',
+    borderBottomRightRadius: 0,
+    borderTopLeftRadius: 'var(--radius-md)',
+    borderTopRightRadius: 0,
+  },
+  joinedHLast: {
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 'var(--radius-md)',
+    borderLeftWidth: 0,
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 'var(--radius-md)',
+  },
   joinedHMid: { borderRadius: 0, borderLeftWidth: 0 },
-  joinedVFirst: { borderBottomLeftRadius: 0, borderBottomRightRadius: 0, borderTopLeftRadius: 'var(--radius-md)', borderTopRightRadius: 'var(--radius-md)', },
-  joinedVLast: { borderBottomLeftRadius: 'var(--radius-md)', borderBottomRightRadius: 'var(--radius-md)', borderTopLeftRadius: 0, borderTopRightRadius: 0, borderTopWidth: 0, },
+  joinedVFirst: {
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+    borderTopLeftRadius: 'var(--radius-md)',
+    borderTopRightRadius: 'var(--radius-md)',
+  },
+  joinedVLast: {
+    borderBottomLeftRadius: 'var(--radius-md)',
+    borderBottomRightRadius: 'var(--radius-md)',
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
+    borderTopWidth: 0,
+  },
   joinedVMid: { borderRadius: 0, borderTopWidth: 0 },
   joinedSingle: { borderRadius: 'var(--radius-md)' },
-  inputFlex: { flexBasis: '0%',
- flexGrow: '1',
- flexShrink: '1', },
-  hiddenSmFlex: { display: { default: 'none', '@media (min-width: 40rem)': 'flex' } },
+  inputFlex: { flexBasis: '0%', flexGrow: '1', flexShrink: '1' },
+  hiddenSmFlex: {
+    display: { default: 'none', '@media (min-width: 40rem)': 'flex' },
+  },
   pillRadius: { '--radius': '9999rem', '--radius-md': 'calc(9999rem - 2px)' },
   dropdownIconTrigger: {
     borderColor: tokens.input,
@@ -84,7 +117,8 @@ const styles = stylex.create({
   selectTrigger: {
     boxShadow: foundationTokens.shadowXs,
     display: 'flex',
-    fontFamily: 'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
+    fontFamily:
+      'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
     whiteSpace: 'nowrap',
     height: '2rem',
     minHeight: 0,
@@ -95,36 +129,50 @@ const styles = stylex.create({
   inputGroupAddon: { order: 9999 },
   inputGroupAddonButton: { order: 9999, marginRight: '-0.45rem' },
   tooltipTrigger: { color: tokens.mutedForeground },
-  popoverBody: { gap: '0.75rem', display: 'grid', fontSize: '0.875rem', lineHeight: '1.25rem', },
-  popoverHead: { gap: '0.25rem', display: 'grid', },
-  popoverTitle: { fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem', },
-  popoverCopy: { color: tokens.mutedForeground, fontSize: '0.875rem', lineHeight: '1.25rem' },
+  popoverBody: {
+    gap: '0.75rem',
+    display: 'grid',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+  },
+  popoverHead: { gap: '0.25rem', display: 'grid' },
+  popoverTitle: {
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    lineHeight: '1.25rem',
+  },
+  popoverCopy: {
+    color: tokens.mutedForeground,
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+  },
   popoverFootnote: {
     color: tokens.mutedForeground,
-    fontSize: '0.75rem', lineHeight: '1rem',
+    fontSize: '0.75rem',
+    lineHeight: '1rem',
   },
   menuIcon: { fontSize: '1rem', lineHeight: '1.5rem' },
-});
+})
 
 type PreviewSnapshot = Readonly<{
-  menu: DropdownMenu.Model;
-  label: Option.Option<string>;
-  query: string;
-  amount: string;
-  message: string;
-  task: string;
-  voiceEnabled: boolean;
-  select: Select.Model;
-  maybeCurrency: Option.Option<string>;
-  popover: Popover.Model;
-  tooltip: Tooltip.Model;
-}>;
+  menu: DropdownMenu.Model
+  label: Option.Option<string>
+  query: string
+  amount: string
+  message: string
+  task: string
+  voiceEnabled: boolean
+  select: Select.Model
+  maybeCurrency: Option.Option<string>
+  popover: Popover.Model
+  tooltip: Tooltip.Model
+}>
 
 const CURRENCIES = [
   { value: '$', label: 'US Dollar' },
   { value: '€', label: 'Euro' },
   { value: '£', label: 'British Pound' },
-];
+]
 
 const DEMO_ITEMS = [
   'mark-read',
@@ -134,7 +182,7 @@ const DEMO_ITEMS = [
   'add-list',
   'label-as',
   'trash',
-];
+]
 const CONVERSATION_ITEMS = [
   'mute',
   'mark-read',
@@ -142,8 +190,8 @@ const CONVERSATION_ITEMS = [
   'block',
   'share',
   'delete',
-];
-const LABEL_VALUES = ['personal', 'work', 'other'];
+]
+const LABEL_VALUES = ['personal', 'work', 'other']
 
 const demoLabels = (isRtl: boolean): Record<string, string> =>
   isRtl
@@ -170,7 +218,7 @@ const demoLabels = (isRtl: boolean): Record<string, string> =>
         personal: 'Personal',
         work: 'Work',
         other: 'Other',
-      };
+      }
 
 const DEMO_ICONS: Record<string, string> = {
   'mark-read': 'mail-check',
@@ -180,7 +228,7 @@ const DEMO_ICONS: Record<string, string> = {
   'add-list': 'list-filter',
   'label-as': 'tag',
   trash: 'trash-2',
-};
+}
 const CONVERSATION_ICONS: Record<string, string> = {
   mute: 'volume-off',
   'mark-read': 'check',
@@ -188,7 +236,7 @@ const CONVERSATION_ICONS: Record<string, string> = {
   block: 'user-round-x',
   share: 'share',
   delete: 'trash',
-};
+}
 
 const menuItemToConfig = <Msg>(
   model: PreviewSnapshot,
@@ -196,20 +244,22 @@ const menuItemToConfig = <Msg>(
   isRtl: boolean,
   h: HtmlBuilder<Msg>,
 ): ((item: string) => DropdownMenu.DropdownMenuItemConfig<string>) => {
-  const labels = demoLabels(isRtl);
+  const labels = demoLabels(isRtl)
   return item => {
     if (menu === 'demo') {
-      const icon = DEMO_ICONS[item];
+      const icon = DEMO_ICONS[item]
       const base = {
         label: labels[item] ?? item,
         ...(icon === undefined
           ? {}
-          : { icon: Icon.icon(icon, { class: className(styles.menuIcon) }, h) }),
+          : {
+              icon: Icon.icon(icon, { class: className(styles.menuIcon) }, h),
+            }),
         ...(item === 'snooze' || item === 'trash'
           ? { separatorBefore: true }
           : {}),
         ...(item === 'trash' ? { variant: 'destructive' as const } : {}),
-      };
+      }
       if (item === 'label-as')
         return {
           ...base,
@@ -222,10 +272,10 @@ const menuItemToConfig = <Msg>(
               isChecked: Option.contains(model.label, sub),
             }),
           },
-        };
-      return base;
+        }
+      return base
     }
-    const icon = CONVERSATION_ICONS[item];
+    const icon = CONVERSATION_ICONS[item]
     return {
       label:
         (
@@ -244,35 +294,44 @@ const menuItemToConfig = <Msg>(
       ...(item === 'delete'
         ? { variant: 'destructive' as const, separatorBefore: true }
         : {}),
-    };
-  };
-};
+    }
+  }
+}
 
 const FIELD_TAG: Record<string, string> = {
   query: 'ChangedQuery',
   amount: 'ChangedAmount',
   message: 'ChangedMessage',
   task: 'ChangedTask',
-};
+}
 
 const fixtureKey = (fixture: ButtonGroupFixture): string =>
-  fixture.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  fixture.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')
 
-type JoinPosition = 'first' | 'middle' | 'last';
+type JoinPosition = 'first' | 'middle' | 'last'
 
 type GroupContext = Readonly<{
-  position?: JoinPosition | undefined;
-  orientation: 'horizontal' | 'vertical';
-}>;
+  position?: JoinPosition | undefined
+  orientation: 'horizontal' | 'vertical'
+}>
 
 const joinStyle = (ctx: GroupContext): ComponentLayoutStyle => {
-  if (ctx.position === undefined) return styles.joinedSingle as ComponentLayoutStyle;
+  if (ctx.position === undefined)
+    return styles.joinedSingle as ComponentLayoutStyle
   const map =
     ctx.orientation === 'vertical'
-      ? { first: styles.joinedVFirst, middle: styles.joinedVMid, last: styles.joinedVLast }
-      : { first: styles.joinedHFirst, middle: styles.joinedHMid, last: styles.joinedHLast };
-  return map[ctx.position] as ComponentLayoutStyle;
-};
+      ? {
+          first: styles.joinedVFirst,
+          middle: styles.joinedVMid,
+          last: styles.joinedVLast,
+        }
+      : {
+          first: styles.joinedHFirst,
+          middle: styles.joinedHMid,
+          last: styles.joinedHLast,
+        }
+  return map[ctx.position] as ComponentLayoutStyle
+}
 
 const childContext = (
   index: number,
@@ -288,7 +347,7 @@ const childContext = (
           ? 'last'
           : 'middle',
   orientation,
-});
+})
 
 const nodeView = <Msg>(
   model: PreviewSnapshot,
@@ -298,7 +357,7 @@ const nodeView = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const isRtl = fixture.direction === 'rtl';
+  const isRtl = fixture.direction === 'rtl'
   switch (node.t) {
     case 'button':
       return Button.button(
@@ -317,7 +376,9 @@ const nodeView = <Msg>(
                     node.icon,
                     {
                       class: className(
-                        fixture.direction === 'rtl' && node.rtlRotate === true ? styles.iconMdRtl : styles.iconMd,
+                        fixture.direction === 'rtl' && node.rtlRotate === true
+                          ? styles.iconMdRtl
+                          : styles.iconMd,
                       ),
                     },
                     h,
@@ -327,9 +388,9 @@ const nodeView = <Msg>(
           ],
         },
         h,
-      );
+      )
     case 'separator':
-      return ButtonGroup.buttonGroupSeparator({}, h);
+      return ButtonGroup.buttonGroupSeparator({}, h)
     case 'input':
       return Input.input(
         {
@@ -343,11 +404,14 @@ const nodeView = <Msg>(
           ...(ctx === undefined
             ? {}
             : {
-                layoutStyle: [joinStyle(ctx), styles.inputFlex] as ComponentLayoutStyle,
+                layoutStyle: [
+                  joinStyle(ctx),
+                  styles.inputFlex,
+                ] as ComponentLayoutStyle,
               }),
         },
         h,
-      );
+      )
     case 'inputGroup':
       return InputGroup.inputGroup(
         {
@@ -368,7 +432,9 @@ const nodeView = <Msg>(
                   : 'Send a message...',
                 ...(node.voiceToggle ? { isDisabled: model.voiceEnabled } : {}),
                 ariaLabel: 'Message',
-                layoutStyle: (node.voiceToggle ? styles.inputGroupInputEnd : styles.inputGroupInput) as ComponentLayoutStyle,
+                layoutStyle: (node.voiceToggle
+                  ? styles.inputGroupInputEnd
+                  : styles.inputGroupInput) as ComponentLayoutStyle,
               },
               h,
             ),
@@ -376,14 +442,19 @@ const nodeView = <Msg>(
               ? InputGroup.inputGroupAddon(
                   {
                     align: 'inline-end',
-                    layoutStyle: styles.inputGroupAddonButton as ComponentLayoutStyle,
+                    layoutStyle:
+                      styles.inputGroupAddonButton as ComponentLayoutStyle,
                     children: [
                       h.button(
                         [
                           h.Type('button'),
                           h.AriaPressed(model.voiceEnabled ? 'true' : 'false'),
                           h.DataAttribute('active', String(model.voiceEnabled)),
-                          h.OnClick(onMessageJson(JSON.stringify({ _tag: 'ToggledVoice' }))),
+                          h.OnClick(
+                            onMessageJson(
+                              JSON.stringify({ _tag: 'ToggledVoice' }),
+                            ),
+                          ),
                           h.Class(className(styles.voiceButton)),
                         ],
                         [
@@ -405,11 +476,13 @@ const nodeView = <Msg>(
                       onMessageJson(
                         JSON.stringify({ _tag: 'GotTooltipMessage', message }),
                       ),
-                    triggerLayoutStyle: styles.tooltipTrigger as ComponentLayoutStyle,
+                    triggerLayoutStyle:
+                      styles.tooltipTrigger as ComponentLayoutStyle,
                     trigger: InputGroup.inputGroupAddon(
                       {
                         align: 'inline-end',
-                        layoutStyle: styles.inputGroupAddon as ComponentLayoutStyle,
+                        layoutStyle:
+                          styles.inputGroupAddon as ComponentLayoutStyle,
                         children: [
                           Icon.icon(
                             'audio-lines',
@@ -428,7 +501,7 @@ const nodeView = <Msg>(
           ],
         },
         h,
-      );
+      )
     case 'select':
       return Select.select(
         {
@@ -445,15 +518,13 @@ const nodeView = <Msg>(
           triggerLayoutStyle: styles.selectTrigger as ComponentLayoutStyle,
         },
         h,
-      );
+      )
     case 'dropdown':
       return DropdownMenu.dropdownMenu(
         {
           model: model.menu,
           toParentMessage: message =>
-            onMessageJson(
-              JSON.stringify({ _tag: 'GotMenuMessage', message }),
-            ),
+            onMessageJson(JSON.stringify({ _tag: 'GotMenuMessage', message })),
           trigger:
             node.menu === 'demo'
               ? Icon.icon(
@@ -464,16 +535,24 @@ const nodeView = <Msg>(
                   },
                   h,
                 )
-              : Icon.icon('chevron-down', { ariaLabel: 'Options', class: className(styles.iconMdPlain) }, h),
-          triggerLayoutStyle:
-            (node.menu === 'demo' ? styles.dropdownIconTrigger : styles.dropdownTextTrigger) as ComponentLayoutStyle,
+              : Icon.icon(
+                  'chevron-down',
+                  {
+                    ariaLabel: 'Options',
+                    class: className(styles.iconMdPlain),
+                  },
+                  h,
+                ),
+          triggerLayoutStyle: (node.menu === 'demo'
+            ? styles.dropdownIconTrigger
+            : styles.dropdownTextTrigger) as ComponentLayoutStyle,
           items: node.menu === 'demo' ? DEMO_ITEMS : CONVERSATION_ITEMS,
           itemToConfig: menuItemToConfig(model, node.menu, isRtl, h),
           align: 'end',
           ...(isRtl ? { direction: 'rtl' as const } : {}),
         },
         h,
-      );
+      )
     case 'popover':
       return Popover.popover(
         {
@@ -487,40 +566,47 @@ const nodeView = <Msg>(
             { ariaLabel: 'Open Popover', class: className(styles.iconMdPlain) },
             h,
           ),
-          triggerLayoutStyle: styles.dropdownIconTrigger as ComponentLayoutStyle,
+          triggerLayoutStyle:
+            styles.dropdownIconTrigger as ComponentLayoutStyle,
           align: 'end',
-          content: h.div([h.Class(className(styles.popoverBody))], [
-            h.div([h.Class(className(styles.popoverHead))], [
-              h.p(
-                [h.Class(className(styles.popoverTitle))],
-                ['Start a new task with Copilot'],
-              ),
-              h.p(
-                [h.Class(className(styles.popoverCopy))],
-                ['Describe your task in natural language.'],
-              ),
-            ]),
-            Textarea.textarea(
-              {
-                id: `docs-button-group-${fixtureKey(fixture)}-task`,
-                value: model.task,
-                onInput: value =>
-                  onMessageJson(
-                    JSON.stringify({ _tag: 'ChangedTask', value }),
+          content: h.div(
+            [h.Class(className(styles.popoverBody))],
+            [
+              h.div(
+                [h.Class(className(styles.popoverHead))],
+                [
+                  h.p(
+                    [h.Class(className(styles.popoverTitle))],
+                    ['Start a new task with Copilot'],
                   ),
-                placeholder: 'I need to...',
-                resize: 'none',
-              },
-              h,
-            ),
-            h.p(
-              [h.Class(className(styles.popoverFootnote))],
-              ['Copilot will open a pull request for review.'],
-            ),
-          ]),
+                  h.p(
+                    [h.Class(className(styles.popoverCopy))],
+                    ['Describe your task in natural language.'],
+                  ),
+                ],
+              ),
+              Textarea.textarea(
+                {
+                  id: `docs-button-group-${fixtureKey(fixture)}-task`,
+                  value: model.task,
+                  onInput: value =>
+                    onMessageJson(
+                      JSON.stringify({ _tag: 'ChangedTask', value }),
+                    ),
+                  placeholder: 'I need to...',
+                  resize: 'none',
+                },
+                h,
+              ),
+              h.p(
+                [h.Class(className(styles.popoverFootnote))],
+                ['Copilot will open a pull request for review.'],
+              ),
+            ],
+          ),
         },
         h,
-      );
+      )
     case 'group':
       return ButtonGroup.buttonGroup(
         {
@@ -539,16 +625,16 @@ const nodeView = <Msg>(
           ),
         },
         h,
-      );
+      )
     case 'column':
       return h.div(
         [h.Class(className(styles.stack))],
         node.children.map(child =>
           nodeView(model, fixture, child, undefined, onMessageJson, h),
         ),
-      );
+      )
   }
-};
+}
 
 const fixtureView = <Msg>(
   fixture: ButtonGroupFixture,
@@ -557,8 +643,8 @@ const fixtureView = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Html => {
   const ungrouped =
-    fixture.nodes.length === 1 && fixture.nodes[0]?.t === 'column';
-  const [firstNode] = fixture.nodes;
+    fixture.nodes.length === 1 && fixture.nodes[0]?.t === 'column'
+  const [firstNode] = fixture.nodes
   const group =
     ungrouped && firstNode !== undefined
       ? nodeView(model, fixture, firstNode, undefined, onMessageJson, h)
@@ -581,7 +667,9 @@ const fixtureView = <Msg>(
                 childContext(
                   index,
                   fixture.nodes.length,
-                  fixture.orientation === 'vertical' ? 'vertical' : 'horizontal',
+                  fixture.orientation === 'vertical'
+                    ? 'vertical'
+                    : 'horizontal',
                 ),
                 onMessageJson,
                 h,
@@ -589,11 +677,9 @@ const fixtureView = <Msg>(
             ),
           },
           h,
-        );
-  return fixture.direction === 'rtl'
-    ? h.div([h.Dir('rtl')], [group])
-    : group;
-};
+        )
+  return fixture.direction === 'rtl' ? h.div([h.Dir('rtl')], [group]) : group
+}
 
 export const buttonGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
@@ -606,4 +692,4 @@ export const buttonGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
     model as PreviewSnapshot,
     onMessageJson,
     h,
-  );
+  )

@@ -10,7 +10,17 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["slug", "title", "description", "docs", "source", "install", "dependencies", "examples", "api"],
+        "required": [
+          "slug",
+          "title",
+          "description",
+          "docs",
+          "source",
+          "install",
+          "dependencies",
+          "examples",
+          "api"
+        ],
         "properties": {
           "slug": { "type": "string" },
           "title": { "type": "string" },

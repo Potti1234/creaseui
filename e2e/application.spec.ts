@@ -40,7 +40,10 @@ test('persists the selected color scheme', async ({ page }) => {
   const initialTheme = await themeToggle.getAttribute('aria-label')
 
   await themeToggle.click()
-  await expect(themeToggle).not.toHaveAttribute('aria-label', initialTheme ?? '')
+  await expect(themeToggle).not.toHaveAttribute(
+    'aria-label',
+    initialTheme ?? '',
+  )
 
   const storedTheme = await page.evaluate(() =>
     localStorage.getItem('creaseui-theme'),

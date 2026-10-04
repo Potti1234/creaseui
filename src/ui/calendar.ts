@@ -1,16 +1,16 @@
-﻿import type { Option } from 'effect';
-import { Match as M } from 'effect';
-import type * as FoldkitCalendar from 'foldkit/calendar';
-import type { ChildAttribute, Html, HtmlBuilder } from 'foldkit/html';
+﻿import type { Option } from 'effect'
+import { Match as M } from 'effect'
+import type * as FoldkitCalendar from 'foldkit/calendar'
+import type { ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 
-import { Calendar as CalendarPrimitive } from '@foldkit/ui';
+import { Calendar as CalendarPrimitive } from '@foldkit/ui'
 
-import * as CalendarBehavior from '@/lib/calendar';
-import * as Icon from '@/lib/icon';
-import { buttonVariants } from '@/ui/button';
-import { cn } from '@/lib/utils';
+import * as CalendarBehavior from '@/lib/calendar'
+import * as Icon from '@/lib/icon'
+import { buttonVariants } from '@/ui/button'
+import { cn } from '@/lib/utils'
 
-export * from '@/lib/calendar';
+export * from '@/lib/calendar'
 
 /* Ported from shadcn/ui calendar.tsx on top of foldkit's Calendar submodel.
 
@@ -21,95 +21,95 @@ export * from '@/lib/calendar';
    data-outside-month/data-disabled, so descendant button selectors are
    adapted to those attributes. */
 
-export const Model = CalendarPrimitive.Model;
-export type Model = typeof Model.Type;
-export const Message = CalendarPrimitive.Message;
-export type Message = typeof Message.Type;
-export const OutMessage = CalendarPrimitive.OutMessage;
-export type OutMessage = typeof OutMessage.Type;
+export const Model = CalendarPrimitive.Model
+export type Model = typeof Model.Type
+export const Message = CalendarPrimitive.Message
+export type Message = typeof Message.Type
+export const OutMessage = CalendarPrimitive.OutMessage
+export type OutMessage = typeof OutMessage.Type
 
-export const init = CalendarPrimitive.init;
-export const update = CalendarBehavior.update;
-export const selectDate = CalendarPrimitive.selectDate;
-export const focusDate = CalendarPrimitive.focusDate;
-export const reflectMinDate = CalendarPrimitive.reflectMinDate;
-export const reflectMaxDate = CalendarPrimitive.reflectMaxDate;
-export const reflectDisabledDates = CalendarPrimitive.reflectDisabledDates;
+export const init = CalendarPrimitive.init
+export const update = CalendarBehavior.update
+export const selectDate = CalendarPrimitive.selectDate
+export const focusDate = CalendarPrimitive.focusDate
+export const reflectMinDate = CalendarPrimitive.reflectMinDate
+export const reflectMaxDate = CalendarPrimitive.reflectMaxDate
+export const reflectDisabledDates = CalendarPrimitive.reflectDisabledDates
 export const reflectDisabledDaysOfWeek =
-  CalendarPrimitive.reflectDisabledDaysOfWeek;
-export const dropToDays = CalendarPrimitive.dropToDays;
+  CalendarPrimitive.reflectDisabledDaysOfWeek
+export const dropToDays = CalendarPrimitive.dropToDays
 
 const ROOT_CLASS =
-  'group/calendar bg-background p-3 [--cell-size:--spacing(8)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent w-fit';
+  'group/calendar bg-background p-3 [--cell-size:--spacing(8)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent w-fit'
 
-const MONTH_CLASS = 'relative flex w-full flex-col gap-4';
+const MONTH_CLASS = 'relative flex w-full flex-col gap-4'
 
 const NAV_CLASS =
-  'pointer-events-none absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1';
+  'pointer-events-none absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1'
 
 const NAV_BUTTON_CLASS = cn(
   'pointer-events-auto',
   buttonVariants({ variant: 'ghost', size: 'icon' }),
   'size-(--cell-size) p-0 select-none aria-disabled:opacity-50',
-);
+)
 
 const CAPTION_CLASS =
-  'flex h-(--cell-size) w-full items-center justify-center px-(--cell-size)';
+  'flex h-(--cell-size) w-full items-center justify-center px-(--cell-size)'
 
 const CAPTION_BUTTON_CLASS =
-  'flex h-8 items-center gap-1 rounded-md pr-1 pl-2 text-sm font-medium select-none [&>svg]:size-3.5 [&>svg]:text-muted-foreground';
+  'flex h-8 items-center gap-1 rounded-md pr-1 pl-2 text-sm font-medium select-none [&>svg]:size-3.5 [&>svg]:text-muted-foreground'
 
-const GRID_CLASS = 'w-full border-collapse outline-none';
+const GRID_CLASS = 'w-full border-collapse outline-none'
 
-const HEADER_ROW_CLASS = 'flex';
+const HEADER_ROW_CLASS = 'flex'
 
 const WEEKDAY_CLASS =
-  'flex size-(--cell-size) flex-1 items-center justify-center rounded-md text-[0.8rem] font-normal text-muted-foreground select-none';
+  'flex size-(--cell-size) flex-1 items-center justify-center rounded-md text-[0.8rem] font-normal text-muted-foreground select-none'
 
-const WEEK_CLASS = 'mt-2 flex w-full';
+const WEEK_CLASS = 'mt-2 flex w-full'
 
 const WEEK_NUMBER_CLASS =
-  'flex size-(--cell-size) flex-1 items-center justify-center text-[0.8rem] font-normal text-muted-foreground select-none';
+  'flex size-(--cell-size) flex-1 items-center justify-center text-[0.8rem] font-normal text-muted-foreground select-none'
 
 const isoWeekNumber = (date: FoldkitCalendar.CalendarDate): number => {
-  const utc = new Date(Date.UTC(date.year, date.month - 1, date.day));
-  utc.setUTCDate(utc.getUTCDate() - ((utc.getUTCDay() + 6) % 7) + 3);
-  const firstThursday = new Date(Date.UTC(utc.getUTCFullYear(), 0, 4));
+  const utc = new Date(Date.UTC(date.year, date.month - 1, date.day))
+  utc.setUTCDate(utc.getUTCDate() - ((utc.getUTCDay() + 6) % 7) + 3)
+  const firstThursday = new Date(Date.UTC(utc.getUTCFullYear(), 0, 4))
   firstThursday.setUTCDate(
     firstThursday.getUTCDate() - ((firstThursday.getUTCDay() + 6) % 7) + 3,
-  );
+  )
   return (
     1 +
     Math.round(
       (utc.getTime() - firstThursday.getTime()) / (7 * 24 * 60 * 60 * 1000),
     )
-  );
-};
+  )
+}
 
 const DAY_CELL_CLASS =
-  'group/day relative aspect-square size-(--cell-size) p-0 text-center select-none data-[today]:rounded-md data-[today]:bg-accent data-[today]:text-accent-foreground data-[outside-month]:text-muted-foreground data-[disabled]:text-muted-foreground data-[disabled]:opacity-50 data-[range=middle]:rounded-none data-[range=middle]:bg-accent data-[range=start]:rounded-l-md data-[range=start]:bg-accent data-[range=end]:rounded-r-md data-[range=end]:bg-accent data-[range=single]:rounded-md data-[range=single]:bg-accent';
+  'group/day relative aspect-square size-(--cell-size) p-0 text-center select-none data-[today]:rounded-md data-[today]:bg-accent data-[today]:text-accent-foreground data-[outside-month]:text-muted-foreground data-[disabled]:text-muted-foreground data-[disabled]:opacity-50 data-[range=middle]:rounded-none data-[range=middle]:bg-accent data-[range=start]:rounded-l-md data-[range=start]:bg-accent data-[range=end]:rounded-r-md data-[range=end]:bg-accent data-[range=single]:rounded-md data-[range=single]:bg-accent'
 
 const DAY_BUTTON_CLASS = cn(
   buttonVariants({ variant: 'ghost', size: 'icon' }),
   'flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 leading-none font-normal group-data-[focused]/day:relative group-data-[focused]/day:z-10 group-data-[focused]/day:border-ring group-data-[focused]/day:ring-[3px] group-data-[focused]/day:ring-ring/50 group-data-[selected]/day:bg-primary group-data-[selected]/day:text-primary-foreground group-data-[outside-month]/day:text-muted-foreground group-data-[disabled]/day:pointer-events-none group-data-[disabled]/day:opacity-50 dark:hover:text-accent-foreground',
-);
+)
 
-const PICKER_GRID_CLASS = 'grid grid-cols-3 gap-2 outline-none';
+const PICKER_GRID_CLASS = 'grid grid-cols-3 gap-2 outline-none'
 
 const PICKER_CELL_CLASS =
-  'group/cell flex h-(--cell-size) items-center justify-center rounded-md text-sm data-[today]:bg-accent data-[today]:text-accent-foreground data-[disabled]:text-muted-foreground data-[disabled]:opacity-50';
+  'group/cell flex h-(--cell-size) items-center justify-center rounded-md text-sm data-[today]:bg-accent data-[today]:text-accent-foreground data-[disabled]:text-muted-foreground data-[disabled]:opacity-50'
 
 const PICKER_BUTTON_CLASS = cn(
   buttonVariants({ variant: 'ghost' }),
   'h-(--cell-size) w-full px-2 font-normal group-data-[focused]/cell:relative group-data-[focused]/cell:z-10 group-data-[focused]/cell:border-ring group-data-[focused]/cell:ring-[3px] group-data-[focused]/cell:ring-ring/50 group-data-[selected]/cell:bg-primary group-data-[selected]/cell:text-primary-foreground group-data-[disabled]/cell:pointer-events-none group-data-[disabled]/cell:opacity-50',
-);
+)
 
 export type CalendarViewOptions = Readonly<{
-  class?: string;
-  direction?: 'ltr' | 'rtl';
-  range?: CalendarBehavior.CalendarRange;
-  weekNumbers?: boolean;
-}>;
+  class?: string
+  direction?: 'ltr' | 'rtl'
+  range?: CalendarBehavior.CalendarRange
+  weekNumbers?: boolean
+}>
 
 const navigationButton = <Msg>(
   attributes: ReadonlyArray<ChildAttribute>,
@@ -124,8 +124,8 @@ const navigationButton = <Msg>(
         ? Icon.chevronLeft({ class: 'size-4' }, h)
         : Icon.chevronRight({ class: 'size-4' }, h),
     ],
-  );
-};
+  )
+}
 
 const daysView = <Msg>(
   attributes: CalendarPrimitive.DaysModeAttributes,
@@ -146,8 +146,18 @@ const daysView = <Msg>(
           h.div(
             [h.Class(NAV_CLASS)],
             [
-              navigationButton(attributes.previousMonthButton, 'previous', options.direction === 'rtl', h),
-              navigationButton(attributes.nextMonthButton, 'next', options.direction === 'rtl', h),
+              navigationButton(
+                attributes.previousMonthButton,
+                'previous',
+                options.direction === 'rtl',
+                h,
+              ),
+              navigationButton(
+                attributes.nextMonthButton,
+                'next',
+                options.direction === 'rtl',
+                h,
+              ),
             ],
           ),
           h.div(
@@ -183,7 +193,7 @@ const daysView = <Msg>(
                         ),
                       ]
                     : []),
-                  ...attributes.columnHeaders.map((column) =>
+                  ...attributes.columnHeaders.map(column =>
                     h.div(
                       [...column.attributes, h.Class(WEEKDAY_CLASS)],
                       [column.name],
@@ -191,7 +201,7 @@ const daysView = <Msg>(
                   ),
                 ],
               ),
-              ...attributes.weeks.map((week) =>
+              ...attributes.weeks.map(week =>
                 h.div(
                   [...week.attributes, h.Class(WEEK_CLASS)],
                   [
@@ -200,10 +210,7 @@ const daysView = <Msg>(
                           h.div(
                             [
                               h.Class(WEEK_NUMBER_CLASS),
-                              h.DataAttribute(
-                                'slot',
-                                'calendar-week-number',
-                              ),
+                              h.DataAttribute('slot', 'calendar-week-number'),
                             ],
                             [
                               week.cells[0] === undefined
@@ -213,12 +220,25 @@ const daysView = <Msg>(
                           ),
                         ]
                       : []),
-                    ...week.cells.map((cell) =>
+                    ...week.cells.map(cell =>
                       h.div(
-                        [...cell.cellAttributes, h.DataAttribute('range', CalendarBehavior.rangePosition(cell.date, options.range)), h.Class(DAY_CELL_CLASS)],
+                        [
+                          ...cell.cellAttributes,
+                          h.DataAttribute(
+                            'range',
+                            CalendarBehavior.rangePosition(
+                              cell.date,
+                              options.range,
+                            ),
+                          ),
+                          h.Class(DAY_CELL_CLASS),
+                        ],
                         [
                           h.button(
-                            [...cell.buttonAttributes, h.Class(DAY_BUTTON_CLASS)],
+                            [
+                              ...cell.buttonAttributes,
+                              h.Class(DAY_BUTTON_CLASS),
+                            ],
                             [cell.label],
                           ),
                         ],
@@ -232,8 +252,8 @@ const daysView = <Msg>(
         ],
       ),
     ],
-  );
-};
+  )
+}
 
 const monthsView = <Msg>(
   attributes: CalendarPrimitive.MonthsModeAttributes,
@@ -269,7 +289,7 @@ const monthsView = <Msg>(
           ),
           h.div(
             [...attributes.grid, h.Class(PICKER_GRID_CLASS)],
-            attributes.cells.map((cell) =>
+            attributes.cells.map(cell =>
               h.div(
                 [...cell.cellAttributes, h.Class(PICKER_CELL_CLASS)],
                 [
@@ -284,8 +304,8 @@ const monthsView = <Msg>(
         ],
       ),
     ],
-  );
-};
+  )
+}
 
 const yearsView = <Msg>(
   attributes: CalendarPrimitive.YearsModeAttributes,
@@ -306,8 +326,18 @@ const yearsView = <Msg>(
           h.div(
             [h.Class(NAV_CLASS)],
             [
-              navigationButton(attributes.previousPageButton, 'previous', options.direction === 'rtl', h),
-              navigationButton(attributes.nextPageButton, 'next', options.direction === 'rtl', h),
+              navigationButton(
+                attributes.previousPageButton,
+                'previous',
+                options.direction === 'rtl',
+                h,
+              ),
+              navigationButton(
+                attributes.nextPageButton,
+                'next',
+                options.direction === 'rtl',
+                h,
+              ),
             ],
           ),
           h.div(
@@ -324,7 +354,7 @@ const yearsView = <Msg>(
           ),
           h.div(
             [...attributes.grid, h.Class(PICKER_GRID_CLASS)],
-            attributes.cells.map((cell) =>
+            attributes.cells.map(cell =>
               h.div(
                 [...cell.cellAttributes, h.Class(PICKER_CELL_CLASS)],
                 [
@@ -339,8 +369,8 @@ const yearsView = <Msg>(
         ],
       ),
     ],
-  );
-};
+  )
+}
 
 /** Shared renderer used by both the standalone Calendar and DatePicker. */
 export const calendarView = <Msg>(
@@ -351,27 +381,27 @@ export const calendarView = <Msg>(
   M.value(attributes).pipe(
     M.withReturnType<Html>(),
     M.tagsExhaustive({
-      Days: (days) => daysView(days, options, h),
-      Months: (months) => monthsView(months, options, h),
-      Years: (years) => yearsView(years, options, h),
+      Days: days => daysView(days, options, h),
+      Months: months => monthsView(months, options, h),
+      Years: years => yearsView(years, options, h),
     }),
-  );
+  )
 
 export type CalendarProps<Msg> = Readonly<{
-  model: Model;
-  maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>;
-  toParentMessage: (message: Message) => Msg;
-  class?: string;
-  direction?: 'ltr' | 'rtl';
-  range?: CalendarBehavior.CalendarRange;
-  weekNumbers?: boolean;
-  previousMonthLabel?: string;
-  nextMonthLabel?: string;
-  previousYearsPageLabel?: string;
-  nextYearsPageLabel?: string;
-  daysHeadingButtonLabel?: string;
-  monthsHeadingButtonLabel?: string;
-}>;
+  model: Model
+  maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>
+  toParentMessage: (message: Message) => Msg
+  class?: string
+  direction?: 'ltr' | 'rtl'
+  range?: CalendarBehavior.CalendarRange
+  weekNumbers?: boolean
+  previousMonthLabel?: string
+  nextMonthLabel?: string
+  previousYearsPageLabel?: string
+  nextYearsPageLabel?: string
+  daysHeadingButtonLabel?: string
+  monthsHeadingButtonLabel?: string
+}>
 
 export const calendar = <Msg>(
   props: CalendarProps<Msg>,
@@ -383,10 +413,19 @@ export const calendar = <Msg>(
     view: CalendarPrimitive.view,
     viewInputs: {
       maybeSelectedDate: props.maybeSelectedDate,
-      toView: (attributes) =>
+      toView: attributes =>
         calendarView(
           attributes,
-          { ...(props.class === undefined ? {} : { class: props.class }), ...(props.direction === undefined ? {} : { direction: props.direction }), ...(props.range === undefined ? {} : { range: props.range }), ...(props.weekNumbers === undefined ? {} : { weekNumbers: props.weekNumbers }) },
+          {
+            ...(props.class === undefined ? {} : { class: props.class }),
+            ...(props.direction === undefined
+              ? {}
+              : { direction: props.direction }),
+            ...(props.range === undefined ? {} : { range: props.range }),
+            ...(props.weekNumbers === undefined
+              ? {}
+              : { weekNumbers: props.weekNumbers }),
+          },
           h,
         ),
       ...(props.previousMonthLabel === undefined
@@ -414,8 +453,8 @@ export const calendar = <Msg>(
           ? CalendarBehavior.mirrorNavigationKeyForRtl(message)
           : message,
       ),
-  });
-};
+  })
+}
 
 /*
    Minimal wiring:

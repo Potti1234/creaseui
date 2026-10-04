@@ -1,12 +1,12 @@
-import { Match as M, Schema as S } from 'effect';
-import type { Update } from 'foldkit';
-import { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
-import { modifyFields } from 'foldkit/struct';
+import { Match as M, Schema as S } from 'effect'
+import type { Update } from 'foldkit'
+import { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import { modifyFields } from 'foldkit/struct'
 
-import * as Icon from '@/lib/icon';
-import { avatar, avatarFallback } from '@/ui/avatar';
+import * as Icon from '@/lib/icon'
+import { avatar, avatarFallback } from '@/ui/avatar'
 import {
   breadcrumb,
   breadcrumbItem,
@@ -14,9 +14,9 @@ import {
   breadcrumbList,
   breadcrumbPage,
   breadcrumbSeparator,
-} from '@/ui/breadcrumb';
-import * as DropdownMenu from '@/ui/dropdown-menu';
-import { separator } from '@/ui/separator';
+} from '@/ui/breadcrumb'
+import * as DropdownMenu from '@/ui/dropdown-menu'
+import { separator } from '@/ui/separator'
 import {
   sidebar,
   sidebarContent,
@@ -32,23 +32,23 @@ import {
   sidebarMenuButtonVariants,
   sidebarMenuItem,
   sidebarTrigger,
-} from '@/ui/sidebar';
-import * as Switch from '@/ui/switch';
+} from '@/ui/sidebar'
+import * as Switch from '@/ui/switch'
 
 type NavItem = Readonly<{
-  title: string;
-  url: string;
-  icon: string;
-  isActive: boolean;
-}>;
+  title: string
+  url: string
+  icon: string
+  isActive: boolean
+}>
 
 type Mail = Readonly<{
-  name: string;
-  email: string;
-  subject: string;
-  date: string;
-  teaser: string;
-}>;
+  name: string
+  email: string
+  subject: string
+  date: string
+  teaser: string
+}>
 
 export const data = {
   user: {
@@ -170,10 +170,14 @@ export const data = {
         "To celebrate our recent project success, I'd like to organize a team dinner.\nAre you available next Friday evening? Please let me know your preferences.",
     },
   ] satisfies ReadonlyArray<Mail>,
-};
+}
 
 type UserAction =
-  'upgrade' | 'account' | 'billing' | 'notifications' | 'log-out';
+  | 'upgrade'
+  | 'account'
+  | 'billing'
+  | 'notifications'
+  | 'log-out'
 
 const USER_ACTIONS: ReadonlyArray<UserAction> = [
   'upgrade',
@@ -181,82 +185,86 @@ const USER_ACTIONS: ReadonlyArray<UserAction> = [
   'billing',
   'notifications',
   'log-out',
-];
+]
 
-const UserMenu = DropdownMenu.create<UserAction>();
+const UserMenu = DropdownMenu.create<UserAction>()
 
 // MODEL
 
 export const Model = S.Struct({
-  isMobileOpen: S.Boolean, isSidebarOpen: S.Boolean,
+  isMobileOpen: S.Boolean,
+  isSidebarOpen: S.Boolean,
   activeNavIndex: S.Number,
   unreadOnly: S.Boolean,
   userMenu: DropdownMenu.Model,
-});
-export type Model = typeof Model.Type;
+})
+export type Model = typeof Model.Type
 
 // MESSAGE
-
-
-
-
-
-
 
 export const Message = defineMessageUnion({
   ToggledMobileSidebar: {},
   ToggledSidebar: {},
   SelectedNavItem: {
-  index: S.Number,
-},
+    index: S.Number,
+  },
   ToggledUnread: { isChecked: S.Boolean },
   GotUserMenuMessage: {
-  message: DropdownMenu.Message,
-},
-});
-export type Message = typeof Message.Type;
+    message: DropdownMenu.Message,
+  },
+})
+export type Message = typeof Message.Type
 
 // INIT
 
 export const init = (): Model => ({
-  isMobileOpen: false, isSidebarOpen: true,
+  isMobileOpen: false,
+  isSidebarOpen: true,
   activeNavIndex: 0,
   unreadOnly: false,
   userMenu: DropdownMenu.init({
     id: 'sidebar-09-user-menu',
     isAnimated: true,
   }),
-});
+})
 
 // UPDATE
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      ToggledMobileSidebar: () => ({ model: modifyFields(model, {isMobileOpen: current => !current}) }),
-      ToggledSidebar: () => ({ model: modifyFields(model, { isSidebarOpen: (current) => !current }) }),
-      SelectedNavItem: ({ index }) => ({ model: modifyFields(model, {
+      ToggledMobileSidebar: () => ({
+        model: modifyFields(model, { isMobileOpen: current => !current }),
+      }),
+      ToggledSidebar: () => ({
+        model: modifyFields(model, { isSidebarOpen: current => !current }),
+      }),
+      SelectedNavItem: ({ index }) => ({
+        model: modifyFields(model, {
           activeNavIndex: () => index,
           isSidebarOpen: () => true,
-        }) }),
-      ToggledUnread: ({ isChecked }) => ({ model: { ...model, unreadOnly: isChecked } }),
+        }),
+      }),
+      ToggledUnread: ({ isChecked }) => ({
+        model: { ...model, unreadOnly: isChecked },
+      }),
       GotUserMenuMessage: ({ message: childMessage }) => {
-        const userMenuOp__ = UserMenu.update(
-          model.userMenu,
-          childMessage,
-        );
-    const userMenu = userMenuOp__.model;
-    const commands = userMenuOp__.commands ?? [];;
+        const userMenuOp__ = UserMenu.update(model.userMenu, childMessage)
+        const userMenu = userMenuOp__.model
+        const commands = userMenuOp__.commands ?? []
 
-        return { model: modifyFields(model, { userMenu: () => userMenu }), commands: Command.mapMessages(commands, (nextMessage) =>
+        return {
+          model: modifyFields(model, { userMenu: () => userMenu }),
+          commands: Command.mapMessages(commands, nextMessage =>
             Message.GotUserMenuMessage({ message: nextMessage }),
-          ) };
+          ),
+        }
       },
     }),
-  );
+  )
 
 // VIEW
 
@@ -287,8 +295,8 @@ const userSummary = (h: HtmlBuilder<Message>): Html => {
         ],
       ),
     ],
-  );
-};
+  )
+}
 
 const userActionConfig = (
   action: UserAction,
@@ -322,7 +330,7 @@ const userActionConfig = (
       group: '',
     })),
     M.exhaustive,
-  );
+  )
 
 const navUser = (model: DropdownMenu.Model, h: HtmlBuilder<Message>): Html => {
   return sidebarMenu(
@@ -334,7 +342,8 @@ const navUser = (model: DropdownMenu.Model, h: HtmlBuilder<Message>): Html => {
               DropdownMenu.dropdownMenu<UserAction, Message>(
                 {
                   model,
-                  toParentMessage: (message) => Message.GotUserMenuMessage({ message }),
+                  toParentMessage: message =>
+                    Message.GotUserMenuMessage({ message }),
                   trigger: h.span(
                     [h.Class('contents')],
                     [
@@ -353,7 +362,7 @@ const navUser = (model: DropdownMenu.Model, h: HtmlBuilder<Message>): Html => {
                       'data-[open]:bg-sidebar-accent data-[open]:text-sidebar-accent-foreground md:h-8 md:p-0',
                   }),
                   items: USER_ACTIONS,
-                  itemToConfig: (action) => userActionConfig(action, h),
+                  itemToConfig: action => userActionConfig(action, h),
                   side: 'right',
                   align: 'end',
                   ariaLabel: 'User menu',
@@ -367,8 +376,8 @@ const navUser = (model: DropdownMenu.Model, h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const iconSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
   return sidebar(
@@ -456,7 +465,9 @@ const iconSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
                                     children: [
                                       sidebarMenuButton(
                                         {
-                                          onClick: Message.SelectedNavItem({ index }),
+                                          onClick: Message.SelectedNavItem({
+                                            index,
+                                          }),
                                           isActive:
                                             model.activeNavIndex === index,
                                           tooltip: item.title,
@@ -492,8 +503,8 @@ const iconSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const mailView = (mail: Mail, h: HtmlBuilder<Message>): Html => {
   return h.a(
@@ -517,11 +528,11 @@ const mailView = (mail: Mail, h: HtmlBuilder<Message>): Html => {
         [mail.teaser],
       ),
     ],
-  );
-};
+  )
+}
 
 const mailSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
-  const activeItem = data.navMain[model.activeNavIndex] ?? data.navMain[0];
+  const activeItem = data.navMain[model.activeNavIndex] ?? data.navMain[0]
 
   return sidebar(
     {
@@ -551,7 +562,8 @@ const mailSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
                         {
                           id: 'sidebar-09-unread-switch',
                           isChecked: model.unreadOnly,
-                          onToggle: (isChecked) => Message.ToggledUnread({ isChecked }),
+                          onToggle: isChecked =>
+                            Message.ToggledUnread({ isChecked }),
                           label: 'Toggle unread mail',
                           class: 'shadow-none',
                         },
@@ -581,7 +593,7 @@ const mailSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
                   children: [
                     sidebarGroupContent(
                       {
-                        children: data.mails.map((mail) => mailView(mail, h)),
+                        children: data.mails.map(mail => mailView(mail, h)),
                       },
                       h,
                     ),
@@ -596,22 +608,24 @@ const mailSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
-  const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
+  const state = model.isSidebarOpen ? 'expanded' : 'collapsed'
 
   return sidebar<Message>(
     {
-      isMobileOpen: model.isMobileOpen, onMobileDismiss: Message.ToggledMobileSidebar(), state,
+      isMobileOpen: model.isMobileOpen,
+      onMobileDismiss: Message.ToggledMobileSidebar(),
+      state,
       collapsible: 'icon',
       class: 'overflow-hidden *:data-[sidebar=sidebar]:flex-row',
       children: [iconSidebar(model, h), mailSidebar(model, h)],
     },
     h,
-  );
-};
+  )
+}
 
 const pageContent = (h: HtmlBuilder<Message>): Html => {
   return sidebarInset(
@@ -626,7 +640,8 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
           [
             sidebarTrigger(
               {
-                onMobileClick: Message.ToggledMobileSidebar(), onClick: Message.ToggledSidebar(),
+                onMobileClick: Message.ToggledMobileSidebar(),
+                onClick: Message.ToggledSidebar(),
                 class: '-ml-1',
               },
               h,
@@ -690,22 +705,22 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const blockSidebarProvider = (
   state: 'expanded' | 'collapsed',
   children: ReadonlyArray<Html>,
   h: HtmlBuilder<Message>,
 ): Html => {
-  return sidebarProvider({ state, width: '350px', children }, h);
-};
+  return sidebarProvider({ state, width: '350px', children }, h)
+}
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
-  const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
+  const state = model.isSidebarOpen ? 'expanded' : 'collapsed'
 
-  return blockSidebarProvider(state, [appSidebar(model, h), pageContent(h)], h);
-};
+  return blockSidebarProvider(state, [appSidebar(model, h), pageContent(h)], h)
+}
 
 // Preserve the source's 350px nested-sidebar width through the shared provider.
 // Mail ordering stays deterministic when a mailbox is selected.

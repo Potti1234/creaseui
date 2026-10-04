@@ -115,7 +115,7 @@ export const reflect = (
   isInputInvalid: false,
   datePicker: Option.match(maybeValue, {
     onNone: () => model.datePicker,
-    onSome: (date) => DatePickerPrimitive.focusDate(model.datePicker, date),
+    onSome: date => DatePickerPrimitive.focusDate(model.datePicker, date),
   }),
 })
 
@@ -133,22 +133,22 @@ export const reflectConstraints = (
   ...model,
   datePicker: pipe(
     model.datePicker,
-    (datePicker) =>
+    datePicker =>
       constraints.minDate === undefined
         ? datePicker
         : DatePickerPrimitive.reflectMinDate(datePicker, constraints.minDate),
-    (datePicker) =>
+    datePicker =>
       constraints.maxDate === undefined
         ? datePicker
         : DatePickerPrimitive.reflectMaxDate(datePicker, constraints.maxDate),
-    (datePicker) =>
+    datePicker =>
       constraints.disabledDates === undefined
         ? datePicker
         : DatePickerPrimitive.reflectDisabledDates(
             datePicker,
             constraints.disabledDates,
           ),
-    (datePicker) =>
+    datePicker =>
       constraints.disabledDaysOfWeek === undefined
         ? datePicker
         : DatePickerPrimitive.reflectDisabledDaysOfWeek(
@@ -168,11 +168,14 @@ export const FocusInput = Command.define('FocusDateInputInput', {
     ),
 })
 
-const isDateSelectable = (model: Model, date: Calendar.CalendarDate): boolean => {
+const isDateSelectable = (
+  model: Model,
+  date: Calendar.CalendarDate,
+): boolean => {
   const calendar = model.datePicker.calendar
   return !(
-    Option.exists(calendar.maybeMinDate, (min) => Calendar.isBefore(date, min)) ||
-    Option.exists(calendar.maybeMaxDate, (max) => Calendar.isAfter(date, max)) ||
+    Option.exists(calendar.maybeMinDate, min => Calendar.isBefore(date, min)) ||
+    Option.exists(calendar.maybeMaxDate, max => Calendar.isAfter(date, max)) ||
     calendar.disabledDaysOfWeek.includes(Calendar.dayOfWeek(date)) ||
     calendar.disabledDates.some(Calendar.isEqual(date))
   )
@@ -242,7 +245,7 @@ const liftDatePicker = (
   model: Model,
   result: ReturnType<typeof DatePickerPrimitive.update>,
 ): UpdateReturn => {
-  const commands = Command.mapMessages(result.commands ?? [], (message) =>
+  const commands = Command.mapMessages(result.commands ?? [], message =>
     Message.GotDatePickerMessage({ message }),
   )
   // astryx refocuses the input whenever the popover hides; foldkit returns

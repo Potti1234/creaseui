@@ -1,20 +1,24 @@
-﻿import type { Html, HtmlBuilder } from 'foldkit/html';
+﻿import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Icon from '@/lib/icon';
-import { cn } from '@/lib/utils';
-import { collapseBreadcrumbItems, type BreadcrumbTrailItem } from '@/lib/breadcrumb';
+import * as Icon from '@/lib/icon'
+import { cn } from '@/lib/utils'
+import {
+  collapseBreadcrumbItems,
+  type BreadcrumbTrailItem,
+} from '@/lib/breadcrumb'
 
-export * from '@/lib/breadcrumb';
+export * from '@/lib/breadcrumb'
 
 type Slot = Readonly<{
-  class?: string;
-  children: ReadonlyArray<Html | string>;
-}>;
+  class?: string
+  children: ReadonlyArray<Html | string>
+}>
 
-export type BreadcrumbProps = Slot & Readonly<{
-  ariaLabel?: string;
-  direction?: 'ltr' | 'rtl';
-}>;
+export type BreadcrumbProps = Slot &
+  Readonly<{
+    ariaLabel?: string
+    direction?: 'ltr' | 'rtl'
+  }>
 
 export const breadcrumb = <Msg>(
   props: BreadcrumbProps,
@@ -28,8 +32,8 @@ export const breadcrumb = <Msg>(
       h.Class(cn(props.class)),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 export const breadcrumbList = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => {
   return h.ol(
@@ -43,8 +47,8 @@ export const breadcrumbList = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => {
       ),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 export const breadcrumbItem = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => {
   return h.li(
@@ -53,13 +57,13 @@ export const breadcrumbItem = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => {
       h.Class(cn('inline-flex items-center gap-1.5', props.class)),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 export type BreadcrumbLinkProps = Slot &
   Readonly<{
-    href: string;
-  }>;
+    href: string
+  }>
 
 export const breadcrumbLink = <Msg>(
   props: BreadcrumbLinkProps,
@@ -72,8 +76,8 @@ export const breadcrumbLink = <Msg>(
       h.Class(cn('transition-colors hover:text-foreground', props.class)),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 export const breadcrumbPage = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => {
   return h.span(
@@ -83,14 +87,14 @@ export const breadcrumbPage = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => {
       h.Class(cn('font-normal text-foreground', props.class)),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 export type BreadcrumbSeparatorProps = Readonly<{
-  class?: string;
-  children?: ReadonlyArray<Html | string>;
-  direction?: 'ltr' | 'rtl';
-}>;
+  class?: string
+  children?: ReadonlyArray<Html | string>
+  direction?: 'ltr' | 'rtl'
+}>
 
 export const breadcrumbSeparator = <Msg>(
   props: BreadcrumbSeparatorProps = {},
@@ -101,42 +105,76 @@ export const breadcrumbSeparator = <Msg>(
       h.DataAttribute('slot', 'breadcrumb-separator'),
       h.Role('presentation'),
       h.AriaHidden(true),
-      h.Class(cn('[&>svg]:size-3.5', props.direction === 'rtl' && '[&>svg]:rotate-180', props.class)),
+      h.Class(
+        cn(
+          '[&>svg]:size-3.5',
+          props.direction === 'rtl' && '[&>svg]:rotate-180',
+          props.class,
+        ),
+      ),
     ],
     props.children === undefined
       ? [Icon.chevronRight<Msg>({}, h)]
       : [...props.children],
-  );
-};
+  )
+}
 
 export type BreadcrumbTrailProps = Readonly<{
-  items: ReadonlyArray<BreadcrumbTrailItem>;
-  maxItems?: number;
-  ariaLabel?: string;
-  direction?: 'ltr' | 'rtl';
-  separator?: ReadonlyArray<Html | string>;
-  class?: string;
-}>;
+  items: ReadonlyArray<BreadcrumbTrailItem>
+  maxItems?: number
+  ariaLabel?: string
+  direction?: 'ltr' | 'rtl'
+  separator?: ReadonlyArray<Html | string>
+  class?: string
+}>
 
-export const breadcrumbTrail = <Msg>(props: BreadcrumbTrailProps, h: HtmlBuilder<Msg>): Html => {
+export const breadcrumbTrail = <Msg>(
+  props: BreadcrumbTrailProps,
+  h: HtmlBuilder<Msg>,
+): Html => {
   const items = collapseBreadcrumbItems(props.items, props.maxItems)
   const children: Array<Html> = []
   items.forEach((item, index) => {
-    const content = item.kind === 'link'
-      ? breadcrumbLink({ href: item.href, children: [item.label] }, h)
-      : item.kind === 'page'
-        ? breadcrumbPage({ children: [item.label] }, h)
-        : breadcrumbEllipsis(item.label === undefined ? {} : { label: item.label }, h)
+    const content =
+      item.kind === 'link'
+        ? breadcrumbLink({ href: item.href, children: [item.label] }, h)
+        : item.kind === 'page'
+          ? breadcrumbPage({ children: [item.label] }, h)
+          : breadcrumbEllipsis(
+              item.label === undefined ? {} : { label: item.label },
+              h,
+            )
     children.push(breadcrumbItem({ children: [content] }, h))
-    if (index < items.length - 1) children.push(breadcrumbSeparator({ ...(props.separator === undefined ? {} : { children: props.separator }), ...(props.direction === undefined ? {} : { direction: props.direction }) }, h))
+    if (index < items.length - 1)
+      children.push(
+        breadcrumbSeparator(
+          {
+            ...(props.separator === undefined
+              ? {}
+              : { children: props.separator }),
+            ...(props.direction === undefined
+              ? {}
+              : { direction: props.direction }),
+          },
+          h,
+        ),
+      )
   })
-  return breadcrumb({ children: [breadcrumbList({ children }, h)], ...(props.ariaLabel === undefined ? {} : { ariaLabel: props.ariaLabel }), ...(props.direction === undefined ? {} : { direction: props.direction }), ...(props.class === undefined ? {} : { class: props.class }) }, h)
-};
+  return breadcrumb(
+    {
+      children: [breadcrumbList({ children }, h)],
+      ...(props.ariaLabel === undefined ? {} : { ariaLabel: props.ariaLabel }),
+      ...(props.direction === undefined ? {} : { direction: props.direction }),
+      ...(props.class === undefined ? {} : { class: props.class }),
+    },
+    h,
+  )
+}
 
 export type BreadcrumbEllipsisProps = Readonly<{
-  class?: string;
-  label?: string;
-}>;
+  class?: string
+  label?: string
+}>
 
 export const breadcrumbEllipsis = <Msg>(
   props: BreadcrumbEllipsisProps = {},
@@ -152,5 +190,5 @@ export const breadcrumbEllipsis = <Msg>(
       Icon.moreHorizontal<Msg>({ class: 'size-4' }, h),
       h.span([h.Class('sr-only')], [props.label ?? 'More levels']),
     ],
-  );
-};
+  )
+}

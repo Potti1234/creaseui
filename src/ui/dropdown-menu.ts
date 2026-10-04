@@ -1,13 +1,13 @@
 import type { Update } from 'foldkit'
-import { Option, Schema as S } from 'effect';
-import type { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import { Option, Schema as S } from 'effect'
+import type { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-import * as Icon from '@/lib/icon';
-import * as Behavior from '@/lib/dropdown-menu-behavior';
-import { cn } from '@/lib/utils';
-import { separator } from '@/ui/separator';
+import * as Icon from '@/lib/icon'
+import * as Behavior from '@/lib/dropdown-menu-behavior'
+import { cn } from '@/lib/utils'
+import { separator } from '@/ui/separator'
 
 export const Model = S.Struct({
   id: S.String,
@@ -18,18 +18,8 @@ export const Model = S.Struct({
   openSubmenuIndex: S.Option(S.Number),
   anchorX: S.Option(S.Number),
   anchorY: S.Option(S.Number),
-});
-export type Model = typeof Model.Type;
-
-
-
-
-
-
-
-
-
-
+})
+export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
   Opened: {},
@@ -40,25 +30,24 @@ export const Message = defineMessageUnion({
   ActivatedItem: { index: S.Number },
   OpenedSubmenu: { index: S.Number },
   ActivatedSubmenuItem: {
-  index: S.Number,
-},
+    index: S.Number,
+  },
   ClosedSubmenu: {},
   SelectedItem: {
-  item: S.String,
-  index: S.Number,
-},
-});
-export type Message = typeof Message.Type;
-
+    item: S.String,
+    index: S.Number,
+  },
+})
+export type Message = typeof Message.Type
 
 export const OutMessage = defineMessageUnion({
   Selected: { value: S.String, index: S.Number },
-});
+})
 export type OutMessage<Item extends string = string> = Readonly<{
-  _tag: 'Selected';
-  value: Item;
-  index: number;
-}>;
+  _tag: 'Selected'
+  value: Item
+  index: number
+}>
 
 export const init = (
   config: Readonly<{ id: string; isAnimated?: boolean; isModal?: boolean }>,
@@ -71,19 +60,31 @@ export const init = (
   openSubmenuIndex: Option.none(),
   anchorX: Option.none(),
   anchorY: Option.none(),
-});
+})
 
-type UpdateReturn<Item extends string> = Update.ReturnWithOutMessage<Model, Message, OutMessage<Item>>;
+type UpdateReturn<Item extends string> = Update.ReturnWithOutMessage<
+  Model,
+  Message,
+  OutMessage<Item>
+>
 
 const updateTyped = <Item extends string>(
   model: Model,
   message: Message,
 ): UpdateReturn<Item> => {
-  const result = Behavior.update(model, message);
-  return { model: result.model, ...(Option.isNone(result.selection) ? {} : {
-      outMessage: OutMessage.Selected({ value: result.selection.value.item, index: result.selection.value.index }) as OutMessage<Item>,
-    }) };
-};
+  const result = Behavior.update(model, message)
+  return {
+    model: result.model,
+    ...(Option.isNone(result.selection)
+      ? {}
+      : {
+          outMessage: OutMessage.Selected({
+            value: result.selection.value.item,
+            index: result.selection.value.index,
+          }) as OutMessage<Item>,
+        }),
+  }
+}
 
 export const create = <Item extends string = string>() => ({
   update: (model: Model, message: Message): UpdateReturn<Item> =>
@@ -96,63 +97,63 @@ export const create = <Item extends string = string>() => ({
     updateTyped<Item>(model, Message.Closed()),
   selectItem: (model: Model, item: Item, index: number): UpdateReturn<Item> =>
     updateTyped<Item>(model, Message.SelectedItem({ item, index })),
-});
+})
 
-export const update = create().update;
-export const open = create().open;
-export const openAt = create().openAt;
-export const close = create().close;
-export const selectItem = create().selectItem;
+export const update = create().update
+export const open = create().open
+export const openAt = create().openAt
+export const close = create().close
+export const selectItem = create().selectItem
 
 const CONTENT_CLASS =
-  'absolute z-50 min-w-[8rem] overflow-visible rounded-md border bg-popover p-1 text-popover-foreground shadow-md';
+  'absolute z-50 min-w-[8rem] overflow-visible rounded-md border bg-popover p-1 text-popover-foreground shadow-md'
 const ITEM_CLASS =
-  "relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[active=true]:bg-accent data-[active=true]:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4";
+  "relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[active=true]:bg-accent data-[active=true]:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
 const SUBMENU_PANEL_CLASS =
-  'z-50 min-w-[8rem] rounded-md border bg-popover p-1 text-popover-foreground shadow-lg';
+  'z-50 min-w-[8rem] rounded-md border bg-popover p-1 text-popover-foreground shadow-lg'
 
 export type DropdownMenuItemConfig<Item extends string = string> = Readonly<{
-  label: Html | string;
-  icon?: Html;
-  shortcut?: Html | string;
-  variant?: 'default' | 'destructive';
-  kind?: 'item' | 'checkbox' | 'radio';
-  isChecked?: boolean;
-  isInset?: boolean;
-  isDisabled?: boolean;
-  group?: string;
+  label: Html | string
+  icon?: Html
+  shortcut?: Html | string
+  variant?: 'default' | 'destructive'
+  kind?: 'item' | 'checkbox' | 'radio'
+  isChecked?: boolean
+  isInset?: boolean
+  isDisabled?: boolean
+  group?: string
   submenu?: Readonly<{
-    items: ReadonlyArray<Item>;
-    itemToConfig: (item: Item) => DropdownMenuItemConfig<Item>;
-  }>;
+    items: ReadonlyArray<Item>
+    itemToConfig: (item: Item) => DropdownMenuItemConfig<Item>
+  }>
   /** Render a separator above this item (upstream DropdownMenuSeparator). */
-  separatorBefore?: boolean;
-}>;
+  separatorBefore?: boolean
+}>
 
-export type DropdownMenuSide = 'top' | 'right' | 'bottom' | 'left';
-export type DropdownMenuAlign = 'start' | 'center' | 'end';
+export type DropdownMenuSide = 'top' | 'right' | 'bottom' | 'left'
+export type DropdownMenuAlign = 'start' | 'center' | 'end'
 
 export type DropdownMenuProps<Item extends string, Msg> = Readonly<{
-  model: Model;
-  toParentMessage: (message: Message) => Msg;
-  trigger: Html | string;
-  triggerClass?: string;
+  model: Model
+  toParentMessage: (message: Message) => Msg
+  trigger: Html | string
+  triggerClass?: string
   /** Anchor an action directly to its sidebar menu item. */
-  placement?: 'inline' | 'sidebarAction';
-  triggerTabindex?: number;
-  triggerRole?: string;
+  placement?: 'inline' | 'sidebarAction'
+  triggerTabindex?: number
+  triggerRole?: string
   /** aria-label on the trigger button — icon-only triggers need one. */
-  triggerAriaLabel?: string;
-  triggerIsDisabled?: boolean;
-  items: ReadonlyArray<Item>;
-  itemToConfig: (item: Item) => DropdownMenuItemConfig<Item>;
-  align?: DropdownMenuAlign;
-  side?: DropdownMenuSide;
-  ariaLabel?: string;
-  openOnContextMenu?: boolean;
-  direction?: 'ltr' | 'rtl';
-  contentClass?: string;
-}>;
+  triggerAriaLabel?: string
+  triggerIsDisabled?: boolean
+  items: ReadonlyArray<Item>
+  itemToConfig: (item: Item) => DropdownMenuItemConfig<Item>
+  align?: DropdownMenuAlign
+  side?: DropdownMenuSide
+  ariaLabel?: string
+  openOnContextMenu?: boolean
+  direction?: 'ltr' | 'rtl'
+  contentClass?: string
+}>
 
 const positionClass = (
   side: DropdownMenuSide,
@@ -163,7 +164,7 @@ const positionClass = (
     right: 'left-full ml-1',
     bottom: 'top-full mt-1',
     left: 'right-full mr-1',
-  }[side];
+  }[side]
   const alignClass =
     side === 'top' || side === 'bottom'
       ? {
@@ -173,9 +174,9 @@ const positionClass = (
         }[align]
       : { start: 'top-0', center: 'top-1/2 -translate-y-1/2', end: 'bottom-0' }[
           align
-        ];
-  return `${sideClass} ${alignClass}`;
-};
+        ]
+  return `${sideClass} ${alignClass}`
+}
 
 /** CSS anchor-positioned menu placement: anchors the panel to the trigger and
  * lets `position-try` flip sides when it would overflow the viewport. */
@@ -184,20 +185,32 @@ const anchorPositionStyle = (
   side: DropdownMenuSide,
   align: DropdownMenuAlign,
 ): Record<string, string> => {
-  const isBlock = side === 'top' || side === 'bottom';
+  const isBlock = side === 'top' || side === 'bottom'
   // Pin the matching edge for start/end alignment; an anchored box with a
   // single inset constraint stretches to the containing block, which flung
   // 'end' menus off-screen under translateX(-100%).
   const alignInset = isBlock
-    ? ({ start: { left: 'anchor(left)' }, center: { left: 'anchor(center)' }, end: { right: 'anchor(right)' } } as const)[align]
-    : ({ start: { top: 'anchor(top)' }, center: { top: 'anchor(center)' }, end: { bottom: 'anchor(bottom)' } } as const)[align];
+    ? (
+        {
+          start: { left: 'anchor(left)' },
+          center: { left: 'anchor(center)' },
+          end: { right: 'anchor(right)' },
+        } as const
+      )[align]
+    : (
+        {
+          start: { top: 'anchor(top)' },
+          center: { top: 'anchor(center)' },
+          end: { bottom: 'anchor(bottom)' },
+        } as const
+      )[align]
   const alignTransform =
     align === 'center'
       ? isBlock
         ? 'translateX(-50%)'
         : 'translateY(-50%)'
-      : undefined;
-  const gap = '0.25rem';
+      : undefined
+  const gap = '0.25rem'
   const sideInset =
     side === 'bottom'
       ? { top: `calc(anchor(bottom) + ${gap})` }
@@ -205,7 +218,7 @@ const anchorPositionStyle = (
         ? { bottom: `calc(anchor(top) + ${gap})` }
         : side === 'right'
           ? { left: `calc(anchor(right) + ${gap})` }
-          : { right: `calc(anchor(left) + ${gap})` };
+          : { right: `calc(anchor(left) + ${gap})` }
   return {
     position: 'fixed',
     positionAnchor: `--${id}-menu`,
@@ -218,8 +231,8 @@ const anchorPositionStyle = (
     positionTry: isBlock ? 'flip-block' : 'flip-inline',
     maxHeight: 'calc(100vh - 8px)',
     overflowY: 'auto',
-  };
-};
+  }
+}
 
 const menuKey = <Item extends string>(
   model: Model,
@@ -240,25 +253,28 @@ const menuKey = <Item extends string>(
           submenu: {
             items: config.submenu.items,
             itemToBehavior: (child: Item) =>
-              toBehavior(child, config.submenu?.itemToConfig(child) ?? { label: child }),
+              toBehavior(
+                child,
+                config.submenu?.itemToConfig(child) ?? { label: child },
+              ),
           },
         }),
-  });
+  })
   return Behavior.keyMessage(
     model,
     items,
-    (item) => toBehavior(item, itemToConfig(item)),
+    item => toBehavior(item, itemToConfig(item)),
     key,
     direction,
-  );
-};
+  )
+}
 
 export const dropdownMenu = <Item extends string, Msg>(
   props: DropdownMenuProps<Item, Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const anchorX = Option.getOrUndefined(props.model.anchorX);
-  const anchorY = Option.getOrUndefined(props.model.anchorY);
+  const anchorX = Option.getOrUndefined(props.model.anchorX)
+  const anchorY = Option.getOrUndefined(props.model.anchorY)
   const keyMessage = (key: string) => {
     const message = menuKey(
       props.model,
@@ -266,11 +282,11 @@ export const dropdownMenu = <Item extends string, Msg>(
       props.itemToConfig,
       key,
       props.direction,
-    );
+    )
     return message === undefined
       ? Option.none()
-      : Option.some(props.toParentMessage(message));
-  };
+      : Option.some(props.toParentMessage(message))
+  }
 
   const renderItem = (
     item: Item,
@@ -280,8 +296,8 @@ export const dropdownMenu = <Item extends string, Msg>(
   ): Html => {
     const active = isSubmenu
       ? props.model.activeSubmenuIndex === index - props.items.length
-      : props.model.activeIndex === index;
-    const checked = config.isChecked ?? false;
+      : props.model.activeIndex === index
+    const checked = config.isChecked ?? false
     const role =
       config.kind === 'checkbox'
         ? 'menuitemcheckbox'
@@ -289,7 +305,7 @@ export const dropdownMenu = <Item extends string, Msg>(
           ? 'menuitemradio'
           : config.submenu === undefined
             ? 'menuitem'
-            : 'menuitem';
+            : 'menuitem'
     return h.div(
       [
         h.Role(role),
@@ -330,7 +346,11 @@ export const dropdownMenu = <Item extends string, Msg>(
             ]),
         ...(config.isDisabled === true || config.submenu !== undefined
           ? []
-          : [h.OnClick(props.toParentMessage(Message.SelectedItem({ item, index })))]),
+          : [
+              h.OnClick(
+                props.toParentMessage(Message.SelectedItem({ item, index })),
+              ),
+            ]),
         h.Class(
           cn(
             ITEM_CLASS,
@@ -381,17 +401,17 @@ export const dropdownMenu = <Item extends string, Msg>(
           ? []
           : [Icon.chevronRight<Msg>({ class: 'ml-auto size-4' }, h)]),
       ],
-    );
-  };
+    )
+  }
 
-  const submenuPanels: Array<Html> = [];
+  const submenuPanels: Array<Html> = []
   props.items.forEach((item, index) => {
-    const config = props.itemToConfig(item);
+    const config = props.itemToConfig(item)
     if (
       config.submenu === undefined ||
       !Option.contains(props.model.openSubmenuIndex, index)
     )
-      return;
+      return
     submenuPanels.push(
       h.div(
         [
@@ -424,38 +444,42 @@ export const dropdownMenu = <Item extends string, Msg>(
           ),
         ),
       ),
-    );
-  });
+    )
+  })
 
-  const grouped: Array<Html> = [];
-  let previousGroup: string | undefined;
+  const grouped: Array<Html> = []
+  let previousGroup: string | undefined
   props.items.forEach((item, index) => {
-    const config = props.itemToConfig(item);
+    const config = props.itemToConfig(item)
     if (config.group !== previousGroup || config.separatorBefore === true) {
       if (grouped.length > 0)
-        grouped.push(
-          separator({ decorative: false, class: '-mx-1 my-1' }, h),
-        );
+        grouped.push(separator({ decorative: false, class: '-mx-1 my-1' }, h))
       if (config.group !== previousGroup && config.group !== undefined)
         grouped.push(
           h.div([h.Class('px-2 py-1.5 text-sm font-medium')], [config.group]),
-        );
-      previousGroup = config.group;
+        )
+      previousGroup = config.group
     }
-    grouped.push(renderItem(item, index, config));
-  });
+    grouped.push(renderItem(item, index, config))
+  })
 
   return h.div(
     [
       h.DataAttribute('slot', 'dropdown-menu'),
-      h.Class(props.placement === 'sidebarAction' ? 'contents' : 'relative inline-flex'),
+      h.Class(
+        props.placement === 'sidebarAction'
+          ? 'contents'
+          : 'relative inline-flex',
+      ),
       ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
     ],
     [
       h.button(
         [
           h.Type('button'),
-          ...(props.triggerRole === undefined ? [] : [h.Role(props.triggerRole)]),
+          ...(props.triggerRole === undefined
+            ? []
+            : [h.Role(props.triggerRole)]),
           ...(props.triggerAriaLabel === undefined
             ? []
             : [h.AriaLabel(props.triggerAriaLabel)]),
@@ -469,37 +493,41 @@ export const dropdownMenu = <Item extends string, Msg>(
           ...(props.triggerIsDisabled === true
             ? []
             : props.openOnContextMenu === true
-            ? [
-                h.OnContextMenu(props.toParentMessage(Message.OpenedFromContext())),
-                h.OnPointerDown(
-                  (
-                    _pointerType,
-                    button,
-                    _screenX,
-                    _screenY,
-                    _timeStamp,
-                    clientX,
-                    clientY,
-                  ) =>
-                    button === 2
-                      ? Option.some(
-                          props.toParentMessage(
-                            Message.AnchoredAt({ x: clientX, y: clientY }),
-                          ),
-                        )
-                      : Option.none(),
-                ),
-              ]
-            : [
-                h.OnClick(
-                  props.toParentMessage(
-                    props.model.isOpen ? Message.Closed() : Message.Opened(),
+              ? [
+                  h.OnContextMenu(
+                    props.toParentMessage(Message.OpenedFromContext()),
                   ),
-                ),
-              ]),
+                  h.OnPointerDown(
+                    (
+                      _pointerType,
+                      button,
+                      _screenX,
+                      _screenY,
+                      _timeStamp,
+                      clientX,
+                      clientY,
+                    ) =>
+                      button === 2
+                        ? Option.some(
+                            props.toParentMessage(
+                              Message.AnchoredAt({ x: clientX, y: clientY }),
+                            ),
+                          )
+                        : Option.none(),
+                  ),
+                ]
+              : [
+                  h.OnClick(
+                    props.toParentMessage(
+                      props.model.isOpen ? Message.Closed() : Message.Opened(),
+                    ),
+                  ),
+                ]),
           h.DataAttribute('slot', 'dropdown-menu-trigger'),
           h.Style({ anchorName: `--${props.model.id}-menu` }),
-          ...(props.triggerTabindex === undefined ? [] : [h.Tabindex(props.triggerTabindex)]),
+          ...(props.triggerTabindex === undefined
+            ? []
+            : [h.Tabindex(props.triggerTabindex)]),
           ...(props.triggerClass === undefined
             ? []
             : [h.Class(props.triggerClass)]),
@@ -514,15 +542,19 @@ export const dropdownMenu = <Item extends string, Msg>(
                 )
               : props.triggerIsDisabled === true
                 ? undefined
-              : props.openOnContextMenu === true &&
-                  (key === 'ContextMenu' || (key === 'F10' && modifiers.shiftKey))
-                ? Message.Opened()
-              : key === 'ArrowDown' || key === 'ArrowUp' || key === 'Enter' || key === ' '
-                ? Message.Opened()
-                : undefined;
+                : props.openOnContextMenu === true &&
+                    (key === 'ContextMenu' ||
+                      (key === 'F10' && modifiers.shiftKey))
+                  ? Message.Opened()
+                  : key === 'ArrowDown' ||
+                      key === 'ArrowUp' ||
+                      key === 'Enter' ||
+                      key === ' '
+                    ? Message.Opened()
+                    : undefined
             return message === undefined
               ? Option.none()
-              : Option.some(props.toParentMessage(message));
+              : Option.some(props.toParentMessage(message))
           }),
         ],
         [props.trigger],
@@ -585,5 +617,5 @@ export const dropdownMenu = <Item extends string, Msg>(
           ]
         : []),
     ],
-  );
-};
+  )
+}

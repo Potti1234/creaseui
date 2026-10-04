@@ -43,7 +43,9 @@ export const pascalCase = value =>
 export const createFoldkitTracker = (options = {}) => {
   const patterns = patternsOf(options, ['^@/ui(?:/|$)'])
   const ignored = (options.ignoreImports ?? []).map(regexp)
-  const ignoredExports = (options.ignoreExports ?? ['(?:Variants?|variants)$']).map(regexp)
+  const ignoredExports = (
+    options.ignoreExports ?? ['(?:Variants?|variants)$']
+  ).map(regexp)
   const bindings = new Map()
   const variables = new Map()
 
@@ -53,7 +55,8 @@ export const createFoldkitTracker = (options = {}) => {
       typeof source !== 'string' ||
       !patterns.some(pattern => pattern.test(source)) ||
       ignored.some(pattern => pattern.test(source))
-    ) return
+    )
+      return
 
     for (const specifier of node.specifiers) {
       if (specifier.type === 'ImportNamespaceSpecifier') {
@@ -116,7 +119,9 @@ export const createFoldkitTracker = (options = {}) => {
       node,
       properties,
       source: binding.source,
-      unreadableProps: argument.properties.some(property => property.type === 'SpreadElement'),
+      unreadableProps: argument.properties.some(
+        property => property.type === 'SpreadElement',
+      ),
     }
   }
 
@@ -127,8 +132,11 @@ const unwrap = node => {
   while (
     node !== null &&
     node !== undefined &&
-    ['TSAsExpression', 'TSNonNullExpression', 'TSSatisfiesExpression'].includes(node.type)
-  ) node = node.expression
+    ['TSAsExpression', 'TSNonNullExpression', 'TSSatisfiesExpression'].includes(
+      node.type,
+    )
+  )
+    node = node.expression
   return node
 }
 
@@ -142,7 +150,8 @@ export const resolveObject = (node, variables, seen = new Set()) => {
 
 export const staticValues = (node, variables, seen = new Set()) => {
   node = unwrap(node)
-  if (node === null || node === undefined) return { strings: [], unresolved: true }
+  if (node === null || node === undefined)
+    return { strings: [], unresolved: true }
   if (node.type === 'Literal') {
     return typeof node.value === 'string'
       ? { strings: [node.value], unresolved: false }
@@ -162,17 +171,25 @@ export const staticValues = (node, variables, seen = new Set()) => {
   }
   if (node.type === 'LogicalExpression') {
     return combine([
-      ...(node.operator === '&&' ? [] : [staticValues(node.left, variables, seen)]),
+      ...(node.operator === '&&'
+        ? []
+        : [staticValues(node.left, variables, seen)]),
       staticValues(node.right, variables, seen),
     ])
   }
   if (node.type === 'ArrayExpression') {
-    return combine(node.elements.filter(Boolean).map(element => staticValues(element, variables, seen)))
+    return combine(
+      node.elements
+        .filter(Boolean)
+        .map(element => staticValues(element, variables, seen)),
+    )
   }
   if (node.type === 'CallExpression') {
     const name = node.callee.type === 'Identifier' ? node.callee.name : null
     if (name !== null && DEFAULT_CLASS_HELPERS.has(name)) {
-      return combine(node.arguments.map(argument => staticValues(argument, variables, seen)))
+      return combine(
+        node.arguments.map(argument => staticValues(argument, variables, seen)),
+      )
     }
     return { strings: [], unresolved: true }
   }
@@ -199,14 +216,18 @@ export const isStaticStyleReference = (node, variables, seen = new Set()) => {
   if (node === null || node === undefined) return false
   if (node.type === 'MemberExpression') return true
   if (node.type === 'ConditionalExpression') {
-    return isStaticStyleReference(node.consequent, variables, seen) &&
+    return (
+      isStaticStyleReference(node.consequent, variables, seen) &&
       isStaticStyleReference(node.alternate, variables, seen)
+    )
   }
   if (node.type === 'LogicalExpression') {
     return isStaticStyleReference(node.right, variables, seen)
   }
   if (node.type === 'ArrayExpression') {
-    return node.elements.filter(Boolean).every(element => isStaticStyleReference(element, variables, seen))
+    return node.elements
+      .filter(Boolean)
+      .every(element => isStaticStyleReference(element, variables, seen))
   }
   if (node.type === 'Identifier') {
     if (node.name === 'undefined') return true
@@ -217,5 +238,7 @@ export const isStaticStyleReference = (node, variables, seen = new Set()) => {
     path.add(node.name)
     return isStaticStyleReference(next, variables, path)
   }
-  return node.type === 'Literal' && (node.value === false || node.value === null)
+  return (
+    node.type === 'Literal' && (node.value === false || node.value === null)
+  )
 }

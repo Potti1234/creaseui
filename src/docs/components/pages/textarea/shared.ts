@@ -1,5 +1,5 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type TextareaKind =
   | 'demo'
@@ -8,17 +8,19 @@ export type TextareaKind =
   | 'invalid'
   | 'button'
   | 'rtl'
-  | 'formResize';
+  | 'formResize'
 
 export interface TextareaFixture {
-  readonly title: string;
-  readonly description?: string;
-  readonly heroOnly?: boolean;
-  readonly kind: TextareaKind;
-  readonly textareaIds: ReadonlyArray<string>;
+  readonly title: string
+  readonly description?: string
+  readonly heroOnly?: boolean
+  readonly kind: TextareaKind
+  readonly textareaIds: ReadonlyArray<string>
 }
 
-export const textareaFixtures: Readonly<[TextareaFixture, ...Array<TextareaFixture>]> = [
+export const textareaFixtures: Readonly<
+  [TextareaFixture, ...Array<TextareaFixture>]
+> = [
   {
     title: 'Basic',
     heroOnly: true,
@@ -33,7 +35,8 @@ export const textareaFixtures: Readonly<[TextareaFixture, ...Array<TextareaFixtu
   },
   {
     title: 'Disabled',
-    description: 'Disabled state prevents editing without discarding controlled text.',
+    description:
+      'Disabled state prevents editing without discarding controlled text.',
     kind: 'disabled',
     textareaIds: ['textarea-disabled'],
   },
@@ -51,31 +54,35 @@ export const textareaFixtures: Readonly<[TextareaFixture, ...Array<TextareaFixtu
   },
   {
     title: 'RTL',
-    description: 'Label, placeholder and description mirror in right-to-left contexts.',
+    description:
+      'Label, placeholder and description mirror in right-to-left contexts.',
     kind: 'rtl',
     textareaIds: ['feedback'],
   },
   {
     title: 'Form And Resize',
-    description: 'Associate multiline content with a native form and fix the resize policy.',
+    description:
+      'Associate multiline content with a native form and fix the resize policy.',
     kind: 'formResize',
     textareaIds: ['profile-notes'],
   },
-];
+]
 
 const ta = (id: string, extra: string): string =>
   `Textarea.textarea({
       id: '${id}',
       value: model.values['${id}'] ?? '',
       onInput: value => Changed({ id: '${id}', value }),${extra}
-    }, h)`;
+    }, h)`
 
 const emitBody = (fixture: TextareaFixture, isStyleX: boolean): string => {
-  const wide = isStyleX ? 'layoutStyle: styles.wide' : "class: 'w-full max-w-xs'";
-  const stack = isStyleX ? 'className(styles.stack)' : "'grid w-full gap-2'";
+  const wide = isStyleX
+    ? 'layoutStyle: styles.wide'
+    : "class: 'w-full max-w-xs'"
+  const stack = isStyleX ? 'className(styles.stack)' : "'grid w-full gap-2'"
   switch (fixture.kind) {
     case 'demo':
-      return `  ${ta('textarea-demo', "\n      placeholder: 'Type your message here.',")}`;
+      return `  ${ta('textarea-demo', "\n      placeholder: 'Type your message here.',")}`
     case 'field':
       return `  Field.field({
     children: [
@@ -88,7 +95,7 @@ const emitBody = (fixture: TextareaFixture, isStyleX: boolean): string => {
       }, h),
       ${ta('textarea-message', "\n      placeholder: 'Type your message here.',")},
     ],
-  }, h)`;
+  }, h)`
     case 'disabled':
       return `  Field.field({
     isDisabled: true,
@@ -99,7 +106,7 @@ const emitBody = (fixture: TextareaFixture, isStyleX: boolean): string => {
       }, h),
       ${ta('textarea-disabled', "\n      placeholder: 'Type your message here.',\n      isDisabled: true,")},
     ],
-  }, h)`;
+  }, h)`
     case 'invalid':
       return `  Field.field({
     isInvalid: true,
@@ -113,12 +120,12 @@ const emitBody = (fixture: TextareaFixture, isStyleX: boolean): string => {
         children: ['Please enter a valid message.'],
       }, h),
     ],
-  }, h)`;
+  }, h)`
     case 'button':
       return `  h.div([h.Class(${stack})], [
     ${ta('textarea-button', "\n      placeholder: 'Type your message here.',")},
     Button.button({ children: ['Send message'] }, h),
-  ])`;
+  ])`
     case 'rtl':
       return `  Field.field({
     direction: 'rtl',
@@ -133,69 +140,78 @@ const emitBody = (fixture: TextareaFixture, isStyleX: boolean): string => {
         children: ['شاركنا أفكارك حول خدمتنا.'],
       }, h),
     ],
-  }, h)`;
+  }, h)`
     case 'formResize':
       return `  h.div([h.Class(${isStyleX ? 'className(styles.stack)' : "'grid w-full max-w-md gap-2'"})], [
     h.form([h.Id('textarea-profile')], []),
     ${ta('profile-notes', "\n      label: 'Deployment notes',\n      name: 'notes',\n      form: 'textarea-profile',\n      rows: 5,\n      wrap: 'hard',\n      resize: 'none',\n      isReadOnly: true,")},
-  ])`;
+  ])`
   }
-};
+}
 
 const emitImports = (fixture: TextareaFixture, isStyleX: boolean): string => {
-  const base = isStyleX ? 'stylex' : 'ui';
+  const base = isStyleX ? 'stylex' : 'ui'
   const parts = [
     `import { Schema as S } from 'effect'`,
     `import { Command, Runtime, Subscription, Update } from 'foldkit'`,
     `import { type Document, type HtmlBuilder } from 'foldkit/html'`,
     `import { taggedStruct } from 'foldkit/schema'`,
-  ];
+  ]
   if (isStyleX) {
-    parts.push(`import * as stylex from '@stylexjs/stylex'`);
+    parts.push(`import * as stylex from '@stylexjs/stylex'`)
   }
   if (fixture.kind === 'button') {
-    parts.push(`import * as Button from '@/${base}/button'`);
+    parts.push(`import * as Button from '@/${base}/button'`)
   }
-  if (fixture.kind === 'field' || fixture.kind === 'disabled'
-      || fixture.kind === 'invalid' || fixture.kind === 'rtl') {
-    parts.push(`import * as Field from '@/${base}/field'`);
+  if (
+    fixture.kind === 'field' ||
+    fixture.kind === 'disabled' ||
+    fixture.kind === 'invalid' ||
+    fixture.kind === 'rtl'
+  ) {
+    parts.push(`import * as Field from '@/${base}/field'`)
   }
-  parts.push(`import * as Textarea from '@/${base}/textarea'`);
+  parts.push(`import * as Textarea from '@/${base}/textarea'`)
   if (isStyleX) {
-    parts.push(`import { className } from '@/stylex/style'`);
+    parts.push(`import { className } from '@/stylex/style'`)
   }
-  return parts.join('\n');
-};
+  return parts.join('\n')
+}
 
 const emitStyles = (fixture: TextareaFixture): string => {
-  const lines: string[] = [];
+  const lines: string[] = []
   if (fixture.kind === 'rtl') {
-    lines.push(`  wide: { width: '100%', maxWidth: '20rem' },`);
+    lines.push(`  wide: { width: '100%', maxWidth: '20rem' },`)
   }
   if (fixture.kind === 'button') {
-    lines.push(`  stack: { display: 'grid', width: '100%', gap: '0.5rem' },`);
+    lines.push(`  stack: { display: 'grid', width: '100%', gap: '0.5rem' },`)
   }
   if (fixture.kind === 'formResize') {
-    lines.push(`  stack: { display: 'grid', width: '100%', maxWidth: '28rem', gap: '0.5rem' },`);
+    lines.push(
+      `  stack: { display: 'grid', width: '100%', maxWidth: '28rem', gap: '0.5rem' },`,
+    )
   }
-  return lines.join('\n');
-};
+  return lines.join('\n')
+}
 
 const emitInit = (fixture: TextareaFixture): string => {
   const entries = fixture.textareaIds
-    .map(id => `'${id}': ${fixture.kind === 'formResize' ? "'First line\\nSecond line'" : "''"}`)
-    .join(', ');
-  return `export const init = (): Update.Return<Model, Message> => ({ model: { values: { ${entries} } } })`;
-};
+    .map(
+      id =>
+        `'${id}': ${fixture.kind === 'formResize' ? "'First line\\nSecond line'" : "''"}`,
+    )
+    .join(', ')
+  return `export const init = (): Update.Return<Model, Message> => ({ model: { values: { ${entries} } } })`
+}
 
 const emitApplication = (
   fixture: TextareaFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const isStyleX = renderer === 'stylex';
+  const isStyleX = renderer === 'stylex'
   const stylesBlock = isStyleX
     ? `\n\nconst styles = stylex.create({\n${emitStyles(fixture)}\n})`
-    : '';
+    : ''
   return foldkitApplication({
     title: `Textarea — ${fixture.title}`,
     imports: `${emitImports(fixture, isStyleX)}${stylesBlock}`,
@@ -224,8 +240,8 @@ export type Message = typeof Message.Type`,
 ${emitBody(fixture, isStyleX)}
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const textareaExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -237,4 +253,4 @@ export const textareaExamples = (
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer),
-  }));
+  }))

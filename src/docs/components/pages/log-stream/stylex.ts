@@ -1,25 +1,25 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   logStreamFixtures,
   logStreamLiveScript,
   type LogFixtureEntry,
-} from '@/docs/components/pages/log-stream/shared';
-import * as Button from '@/stylex/button';
-import * as LogStream from '@/stylex/log-stream';
-import * as StatusDot from '@/stylex/status-dot';
+} from '@/docs/components/pages/log-stream/shared'
+import * as Button from '@/stylex/button'
+import * as LogStream from '@/stylex/log-stream'
+import * as StatusDot from '@/stylex/status-dot'
 
 interface PreviewShape {
-  readonly stream: LogStream.Model;
-  readonly entries: ReadonlyArray<LogFixtureEntry>;
+  readonly stream: LogStream.Model
+  readonly entries: ReadonlyArray<LogFixtureEntry>
 }
 
 const toEntries = (
   rows: ReadonlyArray<LogFixtureEntry>,
   h: HtmlBuilder<never>,
 ): ReadonlyArray<LogStream.LogEntry> =>
-  rows.map((row) => ({
+  rows.map(row => ({
     ...row,
     ...(row.detailText === undefined
       ? {}
@@ -33,7 +33,7 @@ const toEntries = (
             [row.detailText],
           ),
         }),
-  }));
+  }))
 
 export const logStreamStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   index: number,
@@ -41,12 +41,10 @@ export const logStreamStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const preview = model as PreviewShape;
-  const fixture = logStreamFixtures[index] ?? logStreamFixtures[0];
+  const preview = model as PreviewShape
+  const fixture = logStreamFixtures[index] ?? logStreamFixtures[0]
   const toStream = (message: LogStream.Message): Msg =>
-    onMessageJson(
-      JSON.stringify({ _tag: 'GotStreamMessage', message }),
-    );
+    onMessageJson(JSON.stringify({ _tag: 'GotStreamMessage', message }))
   const stream = LogStream.logStream(
     {
       model: preview.stream,
@@ -62,44 +60,51 @@ export const logStreamStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
             : 'Log results stream',
     },
     h,
-  );
+  )
   if (fixture.layout !== 'follow') {
-    return stream;
+    return stream
   }
-  const isFollowing = preview.stream.scroller.isFollowing;
-  const baseCount = fixture.entries.length;
-  return h.div([h.Class('flex flex-col gap-3')], [
-    h.div([h.Class('flex items-center gap-2')], [
-      StatusDot.statusDot(
-        {
-          variant: isFollowing ? 'success' : 'neutral',
-          label: isFollowing ? 'Following latest' : 'Not following',
-        },
-        h,
+  const isFollowing = preview.stream.scroller.isFollowing
+  const baseCount = fixture.entries.length
+  return h.div(
+    [h.Class('flex flex-col gap-3')],
+    [
+      h.div(
+        [h.Class('flex items-center gap-2')],
+        [
+          StatusDot.statusDot(
+            {
+              variant: isFollowing ? 'success' : 'neutral',
+              label: isFollowing ? 'Following latest' : 'Not following',
+            },
+            h,
+          ),
+          h.span(
+            [h.Class('flex-1 text-xs leading-5 text-muted-foreground')],
+            [`${String(preview.entries.length)} rows`],
+          ),
+          Button.button(
+            {
+              variant: 'secondary',
+              children: ['Append line'],
+              isDisabled:
+                preview.entries.length - baseCount >=
+                logStreamLiveScript.length,
+              onClick: onMessageJson(JSON.stringify({ _tag: 'ClickedAppend' })),
+            },
+            h,
+          ),
+          Button.button(
+            {
+              variant: 'ghost',
+              children: ['Reset'],
+              onClick: onMessageJson(JSON.stringify({ _tag: 'ClickedReset' })),
+            },
+            h,
+          ),
+        ],
       ),
-      h.span(
-        [h.Class('flex-1 text-xs leading-5 text-muted-foreground')],
-        [`${String(preview.entries.length)} rows`],
-      ),
-      Button.button(
-        {
-          variant: 'secondary',
-          children: ['Append line'],
-          isDisabled:
-            preview.entries.length - baseCount >= logStreamLiveScript.length,
-          onClick: onMessageJson(JSON.stringify({ _tag: 'ClickedAppend' })),
-        },
-        h,
-      ),
-      Button.button(
-        {
-          variant: 'ghost',
-          children: ['Reset'],
-          onClick: onMessageJson(JSON.stringify({ _tag: 'ClickedReset' })),
-        },
-        h,
-      ),
-    ]),
-    stream,
-  ]);
-};
+      stream,
+    ],
+  )
+}

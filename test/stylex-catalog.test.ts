@@ -47,14 +47,16 @@ const pascalCase = (name: string): string =>
     .join('')
 
 /** Styling implementation details may disappear when CVA is replaced by StyleX. */
-const intentionallyRemovedStylingExports = new Map<string, ReadonlySet<string>>([
-  ['badge', new Set(['BadgeVariants', 'badgeVariants'])],
-  ['button', new Set(['ButtonVariants', 'buttonVariants'])],
-  ['heading', new Set(['HeadingVariants', 'headingVariants'])],
-  ['link', new Set(['LinkVariants', 'linkVariants'])],
-  ['status-dot', new Set(['StatusDotVariants', 'statusDotVariants'])],
-  ['text', new Set(['TextVariants', 'textVariants'])],
-])
+const intentionallyRemovedStylingExports = new Map<string, ReadonlySet<string>>(
+  [
+    ['badge', new Set(['BadgeVariants', 'badgeVariants'])],
+    ['button', new Set(['ButtonVariants', 'buttonVariants'])],
+    ['heading', new Set(['HeadingVariants', 'headingVariants'])],
+    ['link', new Set(['LinkVariants', 'linkVariants'])],
+    ['status-dot', new Set(['StatusDotVariants', 'statusDotVariants'])],
+    ['text', new Set(['TextVariants', 'textVariants'])],
+  ],
+)
 
 /** Documented control-level escapes for composite components — not a
  *  theming surface; visual choices stay on named variants. */
@@ -73,9 +75,9 @@ const parse = (path: string): ts.SourceFile =>
 
 const isExported = (node: ts.Node): boolean =>
   ts.canHaveModifiers(node) &&
-  (ts.getModifiers(node)?.some(
-    modifier => modifier.kind === ts.SyntaxKind.ExportKeyword,
-  ) ??
+  (ts
+    .getModifiers(node)
+    ?.some(modifier => modifier.kind === ts.SyntaxKind.ExportKeyword) ??
     false)
 
 const bindingNames = (name: ts.BindingName): ReadonlyArray<string> => {
@@ -85,7 +87,10 @@ const bindingNames = (name: ts.BindingName): ReadonlyArray<string> => {
   )
 }
 
-const resolveModule = (sourceFile: ts.SourceFile, specifier: string): string | undefined => {
+const resolveModule = (
+  sourceFile: ts.SourceFile,
+  specifier: string,
+): string | undefined => {
   const unresolvedBase = specifier.startsWith('@/')
     ? resolve('src', specifier.slice(2))
     : specifier.startsWith('.')
@@ -108,15 +113,20 @@ const exportedNames = (
 
   for (const statement of sourceFile.statements) {
     if (ts.isExportDeclaration(statement)) {
-      if (statement.exportClause !== undefined && ts.isNamedExports(statement.exportClause)) {
-        for (const element of statement.exportClause.elements) names.add(element.name.text)
+      if (
+        statement.exportClause !== undefined &&
+        ts.isNamedExports(statement.exportClause)
+      ) {
+        for (const element of statement.exportClause.elements)
+          names.add(element.name.text)
       } else if (
         statement.moduleSpecifier !== undefined &&
         ts.isStringLiteral(statement.moduleSpecifier)
       ) {
         const target = resolveModule(sourceFile, statement.moduleSpecifier.text)
         if (target !== undefined) {
-          for (const name of exportedNames(parse(target), visited)) names.add(name)
+          for (const name of exportedNames(parse(target), visited))
+            names.add(name)
         }
       }
       continue
@@ -153,20 +163,26 @@ const localTypeDeclarations = (
     ts.InterfaceDeclaration | ts.TypeAliasDeclaration
   >()
   for (const statement of sourceFile.statements) {
-    if (ts.isInterfaceDeclaration(statement) || ts.isTypeAliasDeclaration(statement)) {
+    if (
+      ts.isInterfaceDeclaration(statement) ||
+      ts.isTypeAliasDeclaration(statement)
+    ) {
       declarations.set(statement.name.text, statement)
     }
   }
   return declarations
 }
 
-const publicTypeProperties = (sourceFile: ts.SourceFile): ReadonlyMap<string, ReadonlySet<string>> => {
+const publicTypeProperties = (
+  sourceFile: ts.SourceFile,
+): ReadonlyMap<string, ReadonlySet<string>> => {
   const result = new Map<string, ReadonlySet<string>>()
 
   for (const statement of sourceFile.statements) {
     if (
       !isExported(statement) ||
-      (!ts.isInterfaceDeclaration(statement) && !ts.isTypeAliasDeclaration(statement))
+      (!ts.isInterfaceDeclaration(statement) &&
+        !ts.isTypeAliasDeclaration(statement))
     ) {
       continue
     }
@@ -174,9 +190,10 @@ const publicTypeProperties = (sourceFile: ts.SourceFile): ReadonlyMap<string, Re
     const properties = new Set<string>()
     const visit = (node: ts.Node): void => {
       if (ts.isPropertySignature(node) && node.name !== undefined) {
-        const name = ts.isIdentifier(node.name) || ts.isStringLiteral(node.name)
-          ? node.name.text
-          : node.name.getText(sourceFile)
+        const name =
+          ts.isIdentifier(node.name) || ts.isStringLiteral(node.name)
+            ? node.name.text
+            : node.name.getText(sourceFile)
         properties.add(name)
       }
       ts.forEachChild(node, visit)
@@ -189,28 +206,44 @@ const publicTypeProperties = (sourceFile: ts.SourceFile): ReadonlyMap<string, Re
 }
 
 const migratedStylePropName = (name: string): string => {
-  if (name === 'class' || name === 'className' || name === 'style' || name === 'unsafeStyle') {
+  if (
+    name === 'class' ||
+    name === 'className' ||
+    name === 'style' ||
+    name === 'unsafeStyle'
+  ) {
     return 'layoutStyle'
   }
-  return name.endsWith('Class') ? `${name.slice(0, -'Class'.length)}LayoutStyle` : name
+  return name.endsWith('Class')
+    ? `${name.slice(0, -'Class'.length)}LayoutStyle`
+    : name
 }
 
-const publicStaticStyleEscapes = (sourceFile: ts.SourceFile): ReadonlyArray<string> => {
+const publicStaticStyleEscapes = (
+  sourceFile: ts.SourceFile,
+): ReadonlyArray<string> => {
   const findings: Array<string> = []
 
   for (const statement of sourceFile.statements) {
     if (
       !isExported(statement) ||
-      (!ts.isInterfaceDeclaration(statement) && !ts.isTypeAliasDeclaration(statement))
+      (!ts.isInterfaceDeclaration(statement) &&
+        !ts.isTypeAliasDeclaration(statement))
     ) {
       continue
     }
 
     const visit = (node: ts.Node): void => {
-      if (ts.isPropertySignature(node) && node.name !== undefined && node.type !== undefined) {
+      if (
+        ts.isPropertySignature(node) &&
+        node.name !== undefined &&
+        node.type !== undefined
+      ) {
         const type = node.type.getText(sourceFile)
         if (/\b(?:StaticStyles|StyleXStyles)\b/u.test(type)) {
-          findings.push(`${statement.name.text}.${node.name.getText(sourceFile)}`)
+          findings.push(
+            `${statement.name.text}.${node.name.getText(sourceFile)}`,
+          )
         }
       }
       ts.forEachChild(node, visit)
@@ -221,25 +254,30 @@ const publicStaticStyleEscapes = (sourceFile: ts.SourceFile): ReadonlyArray<stri
   return findings
 }
 
-const classStyleProp = /^(?:class|className|style|unsafeStyle|[a-z][A-Za-z]*Class)$/u
+const classStyleProp =
+  /^(?:class|className|style|unsafeStyle|[a-z][A-Za-z]*Class)$/u
 
 const isStringLike = (type: ts.TypeNode | undefined): boolean => {
   if (type === undefined) return false
   if (type.kind === ts.SyntaxKind.StringKeyword) return true
-  if (ts.isLiteralTypeNode(type) && ts.isStringLiteral(type.literal)) return true
+  if (ts.isLiteralTypeNode(type) && ts.isStringLiteral(type.literal))
+    return true
   return ts.isUnionTypeNode(type) && type.types.some(isStringLike)
 }
 
-const publicStringClassProps = (sourceFile: ts.SourceFile): ReadonlyArray<string> => {
+const publicStringClassProps = (
+  sourceFile: ts.SourceFile,
+): ReadonlyArray<string> => {
   const declarations = localTypeDeclarations(sourceFile)
   const findings = new Set<string>()
   const visited = new Set<string>()
 
   const inspect = (node: ts.Node, owner: string): void => {
     if (ts.isPropertySignature(node) && node.name !== undefined) {
-      const name = ts.isIdentifier(node.name) || ts.isStringLiteral(node.name)
-        ? node.name.text
-        : node.name.getText(sourceFile)
+      const name =
+        ts.isIdentifier(node.name) || ts.isStringLiteral(node.name)
+          ? node.name.text
+          : node.name.getText(sourceFile)
       if (classStyleProp.test(name) && isStringLike(node.type)) {
         findings.add(`${owner}.${name}`)
       }
@@ -261,13 +299,15 @@ const publicStringClassProps = (sourceFile: ts.SourceFile): ReadonlyArray<string
   for (const statement of sourceFile.statements) {
     if (
       isExported(statement) &&
-      (ts.isInterfaceDeclaration(statement) || ts.isTypeAliasDeclaration(statement))
+      (ts.isInterfaceDeclaration(statement) ||
+        ts.isTypeAliasDeclaration(statement))
     ) {
       inspect(statement, statement.name.text)
     }
 
     if (isExported(statement) && ts.isFunctionDeclaration(statement)) {
-      for (const parameter of statement.parameters) inspect(parameter, statement.name?.text ?? '<anonymous>')
+      for (const parameter of statement.parameters)
+        inspect(parameter, statement.name?.text ?? '<anonymous>')
     }
 
     if (isExported(statement) && ts.isVariableStatement(statement)) {
@@ -279,7 +319,8 @@ const publicStringClassProps = (sourceFile: ts.SourceFile): ReadonlyArray<string
           (ts.isArrowFunction(declaration.initializer) ||
             ts.isFunctionExpression(declaration.initializer))
         ) {
-          for (const parameter of declaration.initializer.parameters) inspect(parameter, owner)
+          for (const parameter of declaration.initializer.parameters)
+            inspect(parameter, owner)
         }
       }
     }
@@ -288,10 +329,14 @@ const publicStringClassProps = (sourceFile: ts.SourceFile): ReadonlyArray<string
   return [...findings].sort()
 }
 
-const styleBoundaryViolations = (sourceFile: ts.SourceFile): ReadonlyArray<string> => {
+const styleBoundaryViolations = (
+  sourceFile: ts.SourceFile,
+): ReadonlyArray<string> => {
   const findings: Array<string> = []
   const location = (node: ts.Node): string => {
-    const { line, character } = sourceFile.getLineAndCharacterOfPosition(node.getStart(sourceFile))
+    const { line, character } = sourceFile.getLineAndCharacterOfPosition(
+      node.getStart(sourceFile),
+    )
     return `${line + 1}:${character + 1}`
   }
 
@@ -314,7 +359,9 @@ const styleBoundaryViolations = (sourceFile: ts.SourceFile): ReadonlyArray<strin
       ) {
         node.arguments.forEach(argument => {
           if (ts.isStringLiteralLike(argument)) {
-            findings.push(`${location(argument)} string passed to ${node.expression.getText(sourceFile)}`)
+            findings.push(
+              `${location(argument)} string passed to ${node.expression.getText(sourceFile)}`,
+            )
           }
         })
       }
@@ -328,8 +375,10 @@ const styleBoundaryViolations = (sourceFile: ts.SourceFile): ReadonlyArray<strin
           argument !== undefined &&
           ts.isCallExpression(argument) &&
           ts.isIdentifier(argument.expression) &&
-          (argument.expression.text === 'className' || argument.expression.text === 'cn')
-        if (!isAdapterCall) findings.push(`${location(node)} Class bypasses StyleX adapter`)
+          (argument.expression.text === 'className' ||
+            argument.expression.text === 'cn')
+        if (!isAdapterCall)
+          findings.push(`${location(node)} Class bypasses StyleX adapter`)
       }
 
       if (
@@ -341,9 +390,12 @@ const styleBoundaryViolations = (sourceFile: ts.SourceFile): ReadonlyArray<strin
           argument !== undefined &&
           ts.isPropertyAccessExpression(argument) &&
           ts.isIdentifier(argument.expression) &&
-          (argument.expression.text === 'props' || argument.expression.text === 'p')
+          (argument.expression.text === 'props' ||
+            argument.expression.text === 'p')
         ) {
-          findings.push(`${location(node)} public prop passed directly to h.Style`)
+          findings.push(
+            `${location(node)} public prop passed directly to h.Style`,
+          )
         }
       }
 
@@ -377,13 +429,17 @@ describe('complete StyleX catalog', () => {
     const declaration = sourceFile.statements
       .filter(ts.isVariableStatement)
       .flatMap(statement => [...statement.declarationList.declarations])
-      .find(candidate =>
-        ts.isIdentifier(candidate.name) &&
-        candidate.name.text === 'STYLEX_COMPONENT_NAMES',
+      .find(
+        candidate =>
+          ts.isIdentifier(candidate.name) &&
+          candidate.name.text === 'STYLEX_COMPONENT_NAMES',
       )
 
     assert.ok(declaration?.initializer !== undefined)
-    assert.ok(ts.isAsExpression(declaration.initializer), 'tuple must use `as const`')
+    assert.ok(
+      ts.isAsExpression(declaration.initializer),
+      'tuple must use `as const`',
+    )
     assert.equal(declaration.initializer.type.getText(sourceFile), 'const')
 
     const tuple = declaration.initializer.expression
@@ -410,10 +466,12 @@ describe('complete StyleX catalog', () => {
         return []
       }
 
-      return [{
-        name: statement.exportClause.name.text,
-        specifier: statement.moduleSpecifier.text,
-      }]
+      return [
+        {
+          name: statement.exportClause.name.text,
+          specifier: statement.moduleSpecifier.text,
+        },
+      ]
     })
 
     assert.deepEqual(
@@ -460,9 +518,13 @@ describe('complete StyleX catalog', () => {
     for (const name of componentNames) {
       const uiExports = exportedNames(parse(`src/ui/${name}.ts`))
       const stylexExports = exportedNames(parse(`src/stylex/${name}.ts`))
-      const allowlist = intentionallyRemovedStylingExports.get(name) ?? new Set()
+      const allowlist =
+        intentionallyRemovedStylingExports.get(name) ?? new Set()
       const missing = [...uiExports]
-        .filter(exportName => !stylexExports.has(exportName) && !allowlist.has(exportName))
+        .filter(
+          exportName =>
+            !stylexExports.has(exportName) && !allowlist.has(exportName),
+        )
         .sort()
 
       if (missing.length > 0) gaps.push(`${name}: ${missing.join(', ')}`)
@@ -485,7 +547,8 @@ describe('complete StyleX catalog', () => {
           .map(migratedStylePropName)
           .filter(property => !stylexProperties.has(property))
           .sort()
-        if (missing.length > 0) gaps.push(`${name}.${typeName}: ${missing.join(', ')}`)
+        if (missing.length > 0)
+          gaps.push(`${name}.${typeName}: ${missing.join(', ')}`)
       }
     }
 
@@ -497,7 +560,8 @@ describe('complete StyleX catalog', () => {
 
     for (const name of componentNames) {
       const findings = publicStringClassProps(parse(`src/stylex/${name}.ts`))
-      if (findings.length > 0) violations.push(`${name}: ${findings.join(', ')}`)
+      if (findings.length > 0)
+        violations.push(`${name}: ${findings.join(', ')}`)
     }
 
     assert.deepEqual(
@@ -512,7 +576,8 @@ describe('complete StyleX catalog', () => {
 
     for (const name of componentNames) {
       const findings = styleBoundaryViolations(parse(`src/stylex/${name}.ts`))
-      if (findings.length > 0) violations.push(`${name}: ${findings.join(', ')}`)
+      if (findings.length > 0)
+        violations.push(`${name}: ${findings.join(', ')}`)
     }
 
     assert.deepEqual(
@@ -527,9 +592,11 @@ describe('complete StyleX catalog', () => {
 
     for (const name of componentNames) {
       const allowlist = sanctionedStaticStyleEscapes.get(name) ?? new Set()
-      const findings = publicStaticStyleEscapes(parse(`src/stylex/${name}.ts`))
-        .filter(finding => !allowlist.has(finding))
-      if (findings.length > 0) violations.push(`${name}: ${findings.join(', ')}`)
+      const findings = publicStaticStyleEscapes(
+        parse(`src/stylex/${name}.ts`),
+      ).filter(finding => !allowlist.has(finding))
+      if (findings.length > 0)
+        violations.push(`${name}: ${findings.join(', ')}`)
     }
 
     assert.deepEqual(

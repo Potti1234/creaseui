@@ -1,47 +1,47 @@
-import type { EmblaPluginType } from 'embla-carousel';
-import { Stream } from 'effect';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { EmblaPluginType } from 'embla-carousel'
+import { Stream } from 'effect'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as CarouselBehavior from '@/lib/carousel';
-import * as Icon from '@/lib/icon';
-import { cn } from '@/lib/utils';
+import * as CarouselBehavior from '@/lib/carousel'
+import * as Icon from '@/lib/icon'
+import { cn } from '@/lib/utils'
 
-export * from '@/lib/carousel';
+export * from '@/lib/carousel'
 
 export type CarouselProps<Msg> = Readonly<{
-  model: CarouselBehavior.Model;
-  toParentMessage: (message: CarouselBehavior.Message) => Msg;
-  items: ReadonlyArray<Html | string>;
-  ariaLabel?: string;
-  orientation?: 'horizontal' | 'vertical';
-  loop?: boolean;
+  model: CarouselBehavior.Model
+  toParentMessage: (message: CarouselBehavior.Message) => Msg
+  items: ReadonlyArray<Html | string>
+  ariaLabel?: string
+  orientation?: 'horizontal' | 'vertical'
+  loop?: boolean
   /** Additional Embla options. Component-level options take precedence. */
-  options?: CarouselBehavior.CarouselRuntimeOptions;
+  options?: CarouselBehavior.CarouselRuntimeOptions
   /** Embla plugins, such as Autoplay or Wheel Gestures. */
-  plugins?: ReadonlyArray<EmblaPluginType>;
+  plugins?: ReadonlyArray<EmblaPluginType>
   /** Number of slides advanced by the controls. */
-  slidesToScroll?: number;
+  slidesToScroll?: number
   /** Slide width/height as a percentage of the viewport; may vary per item. */
-  itemSize?: number | ((index: number) => number);
-  keyboardNavigation?: boolean;
-  previousLabel?: string;
-  nextLabel?: string;
-  class?: string;
-}>;
+  itemSize?: number | ((index: number) => number)
+  keyboardNavigation?: boolean
+  previousLabel?: string
+  nextLabel?: string
+  class?: string
+}>
 
 export const carousel = <Msg>(
   props: CarouselProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const vertical = props.orientation === 'vertical';
-  const count = Math.min(props.model.count, props.items.length);
-  const step = Math.max(1, Math.floor(props.slidesToScroll ?? 1));
+  const vertical = props.orientation === 'vertical'
+  const count = Math.min(props.model.count, props.items.length)
+  const step = Math.max(1, Math.floor(props.slidesToScroll ?? 1))
   const sizeAt = (index: number) =>
     clampPercent(
       typeof props.itemSize === 'function'
         ? props.itemSize(index)
         : (props.itemSize ?? 100),
-    );
+    )
   return h.section(
     [
       h.Role('region'),
@@ -63,7 +63,7 @@ export const carousel = <Msg>(
           h.Class(cn('overflow-hidden outline-none', vertical && 'h-full')),
           h.OnMount({
             name: `embla-carousel-${props.model.id}`,
-            f: (element) =>
+            f: element =>
               element instanceof HTMLElement
                 ? CarouselBehavior.mountCarousel({
                     viewport: element,
@@ -74,7 +74,9 @@ export const carousel = <Msg>(
                     initialIndex: props.model.index,
                     keyboardNavigation: props.keyboardNavigation !== false,
                     plugins: props.plugins ?? [],
-                    ...(props.options === undefined ? {} : { options: props.options }),
+                    ...(props.options === undefined
+                      ? {}
+                      : { options: props.options }),
                     toMessage: props.toParentMessage,
                   })
                 : Stream.empty,
@@ -86,9 +88,7 @@ export const carousel = <Msg>(
               h.Class(
                 cn(
                   'flex touch-pan-y',
-                  vertical
-                    ? '-mt-4 h-full flex-col touch-pan-x'
-                    : '-ml-4',
+                  vertical ? '-mt-4 h-full flex-col touch-pan-x' : '-ml-4',
                 ),
               ),
             ],
@@ -135,22 +135,22 @@ export const carousel = <Msg>(
         h,
       ),
     ],
-  );
-};
+  )
+}
 
 const clampPercent = (value: number): number =>
-  Math.max(1, Math.min(100, value));
+  Math.max(1, Math.min(100, value))
 
 const carouselButton = <Msg>(
   props: Readonly<{
-    direction: 'previous' | 'next';
-    isDisabled: boolean;
-    vertical: boolean;
-    label: string;
+    direction: 'previous' | 'next'
+    isDisabled: boolean
+    vertical: boolean
+    label: string
   }>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const previous = props.direction === 'previous';
+  const previous = props.direction === 'previous'
   return h.button(
     [
       h.Type('button'),
@@ -175,5 +175,5 @@ const carouselButton = <Msg>(
           : Icon.arrowRight<Msg>({ class: 'size-4' }, h),
       h.span([h.Class('sr-only')], [props.label]),
     ],
-  );
-};
+  )
+}

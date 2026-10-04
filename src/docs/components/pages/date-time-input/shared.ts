@@ -1,18 +1,18 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type DateTimeInputFixture = Readonly<{
-  title: string;
-  description?: string;
-  heroOnly?: boolean;
-  kind: 'single' | 'validation';
+  title: string
+  description?: string
+  heroOnly?: boolean
+  kind: 'single' | 'validation'
   /** Astrryx block id, kept for tracing against the source templates. */
-  astryxExample: string;
+  astryxExample: string
   /** Minutes between preset-time options; enables the time listbox. */
-  timeOptionInterval?: number;
+  timeOptionInterval?: number
   /** ISO date+time the field starts committed to. */
-  initialValue?: Readonly<{ date: string; time: string }>;
-}>;
+  initialValue?: Readonly<{ date: string; time: string }>
+}>
 
 export const dateTimeInputFixtures: ReadonlyArray<DateTimeInputFixture> = [
   {
@@ -45,7 +45,7 @@ export const dateTimeInputFixtures: ReadonlyArray<DateTimeInputFixture> = [
     description:
       'DateTimeInput with preset-time suggestions — the time half opens a listbox of half-hour options alongside typed entry.',
   },
-];
+]
 
 export const VALIDATION_FIELDS = [
   {
@@ -66,7 +66,7 @@ export const VALIDATION_FIELDS = [
     value: { date: '2026-03-10', time: '10:30' },
     status: { type: 'success', message: 'Time confirmed' },
   },
-] as const;
+] as const
 
 const imports = (renderer: 'tailwind' | 'stylex', extra: string): string =>
   `import { Option, Schema as S } from 'effect'
@@ -74,7 +74,7 @@ import { Command, Runtime, Subscription, Update } from 'foldkit'
 import * as Calendar from 'foldkit/calendar'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-import * as DateTimeInput from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/date-time-input'${extra}`;
+import * as DateTimeInput from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/date-time-input'${extra}`
 
 const stylexPreamble = `
 import * as stylex from '@stylexjs/stylex'
@@ -88,21 +88,24 @@ const styles = stylex.create({
     minWidth: '15rem',
     width: '100%',
   },
-})`;
+})`
 
 const stackClass = (isStyleX: boolean): string =>
   isStyleX
     ? `h.Class(className(styles.stack))`
-    : `h.Class('grid w-full min-w-[240px] max-w-[400px] gap-4')`;
+    : `h.Class('grid w-full min-w-[240px] max-w-[400px] gap-4')`
 
 const messages = (multiSlot: boolean): string =>
   `import { taggedStruct } from 'foldkit/schema'
 export const GotDateTimeInputMessage = taggedStruct('GotDateTimeInputMessage', { ${multiSlot ? 'slot: S.Number, ' : ''}message: DateTimeInput.Message });
 export const Message = S.Union([GotDateTimeInputMessage])
-export type Message = typeof Message.Type`;
+export type Message = typeof Message.Type`
 
-const singleSource = (fixture: DateTimeInputFixture, renderer: 'tailwind' | 'stylex'): string => {
-  const isStyleX = renderer === 'stylex';
+const singleSource = (
+  fixture: DateTimeInputFixture,
+  renderer: 'tailwind' | 'stylex',
+): string => {
+  const isStyleX = renderer === 'stylex'
   return foldkitApplication({
     title: `DateTimeInput — ${fixture.title}`,
     imports: imports(renderer, isStyleX ? stylexPreamble : ''),
@@ -111,20 +114,32 @@ const singleSource = (fixture: DateTimeInputFixture, renderer: 'tailwind' | 'sty
 })
 export type Model = typeof Model.Type
 
-const TODAY = Calendar.fromDateInZone(new Date(), 'UTC')${fixture.initialValue === undefined ? '' : `
+const TODAY = Calendar.fromDateInZone(new Date(), 'UTC')${
+      fixture.initialValue === undefined
+        ? ''
+        : `
 
-const INITIAL_DATE = DateTimeInput.dateFromISO('${fixture.initialValue.date}')`}`,
+const INITIAL_DATE = DateTimeInput.dateFromISO('${fixture.initialValue.date}')`
+    }`,
     messages: messages(false),
     init: `export const init = (): Update.Return<Model, Message> => ({
   model: {
     dateTimeInput: DateTimeInput.init({
       id: 'docs-date-time-input',
-      today: TODAY,${fixture.timeOptionInterval === undefined ? '' : `
-      hasTimeOptions: true,`}${fixture.initialValue === undefined ? '' : `
+      today: TODAY,${
+        fixture.timeOptionInterval === undefined
+          ? ''
+          : `
+      hasTimeOptions: true,`
+      }${
+        fixture.initialValue === undefined
+          ? ''
+          : `
       value: Option.match(INITIAL_DATE, {
         onNone: () => undefined,
         onSome: date => ({ date, time: '${fixture.initialValue!.time}' }),
-      }),`}
+      }),`
+      }
     }),
   },
 })`,
@@ -148,21 +163,28 @@ const INITIAL_DATE = DateTimeInput.dateFromISO('${fixture.initialValue.date}')`}
         toParentMessage: message => GotDateTimeInputMessage({ message }),
         label: 'Meeting time',
         placeholder: 'Select a date',
-        hasClear: true,${fixture.timeOptionInterval === undefined ? '' : `
-        timeOptionInterval: ${String(fixture.timeOptionInterval)},`}
+        hasClear: true,${
+          fixture.timeOptionInterval === undefined
+            ? ''
+            : `
+        timeOptionInterval: ${String(fixture.timeOptionInterval)},`
+        }
       }, h),
     ]),
   ]),
 })`,
-  });
-};
+  })
+}
 
-const validationSource = (fixture: DateTimeInputFixture, renderer: 'tailwind' | 'stylex'): string => {
-  const isStyleX = renderer === 'stylex';
+const validationSource = (
+  fixture: DateTimeInputFixture,
+  renderer: 'tailwind' | 'stylex',
+): string => {
+  const isStyleX = renderer === 'stylex'
   const fieldLines = VALIDATION_FIELDS.map(
-    (f) =>
+    f =>
       `  { label: '${f.label}', value: { date: '${f.value.date}', time: '${f.value.time}' }, status: { type: '${f.status.type}', message: '${f.status.message}' } },`,
-  ).join('\n');
+  ).join('\n')
   return foldkitApplication({
     title: `DateTimeInput — ${fixture.title}`,
     imports: imports(renderer, isStyleX ? stylexPreamble : ''),
@@ -225,13 +247,16 @@ ${fieldLines}
     ]),
   ]),
 })`,
-  });
-};
+  })
+}
 
-const dateTimeInputSource = (fixture: DateTimeInputFixture, renderer: 'tailwind' | 'stylex'): string =>
+const dateTimeInputSource = (
+  fixture: DateTimeInputFixture,
+  renderer: 'tailwind' | 'stylex',
+): string =>
   fixture.kind === 'validation'
     ? validationSource(fixture, renderer)
-    : singleSource(fixture, renderer);
+    : singleSource(fixture, renderer)
 
 export const dateTimeInputExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -244,4 +269,4 @@ export const dateTimeInputExamples = (
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: dateTimeInputSource(fixture, renderer),
-  }));
+  }))

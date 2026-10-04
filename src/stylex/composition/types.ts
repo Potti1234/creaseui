@@ -19,4 +19,3 @@ export type SpaceToken = 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl'
 export type ResponsiveSpaceToken = SpaceToken | 'createBoard'
 
 export type PrimitiveData = Readonly<Record<string, string>>
-

@@ -1,13 +1,13 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type TimerFixture = Readonly<{
-  title: string;
-  description: string;
-  layout: 'showcase' | 'formats' | 'inline' | 'typography';
+  title: string
+  description: string
+  layout: 'showcase' | 'formats' | 'inline' | 'typography'
   /** Milliseconds before now at which the timers started. */
-  offsetMs: number;
-}>;
+  offsetMs: number
+}>
 
 /* Example set ported from Meta Astryx
    packages/cli/assets/templates/blocks/components/Timer/*.tsx —
@@ -17,42 +17,48 @@ export type TimerFixture = Readonly<{
 export const timerFixtures: Readonly<[TimerFixture, ...Array<TimerFixture>]> = [
   {
     title: 'Timer',
-    description: 'A live processing readout with the same start time rendered in elapsed and clock formats.',
+    description:
+      'A live processing readout with the same start time rendered in elapsed and clock formats.',
     layout: 'showcase',
     offsetMs: 3_753_000,
   },
   {
     title: 'Timer — Formats',
-    description: 'Elapsed compact units and stopwatch clock notation shown from the same start time.',
+    description:
+      'Elapsed compact units and stopwatch clock notation shown from the same start time.',
     layout: 'formats',
     offsetMs: 3_753_000,
   },
   {
     title: 'Timer — Inline',
-    description: 'A Timer composed into status copy while inheriting the surrounding typography.',
+    description:
+      'A Timer composed into status copy while inheriting the surrounding typography.',
     layout: 'inline',
     offsetMs: 0,
   },
   {
     title: 'Timer — Typography',
-    description: 'Timer using its Timestamp-matched default typography and an emphasized override.',
+    description:
+      'Timer using its Timestamp-matched default typography and an emphasized override.',
     layout: 'typography',
     offsetMs: 128_000,
   },
-];
+]
 
 const timerSource = (
   fixture: TimerFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const isStyleX = renderer === 'stylex';
-  const hasClock = fixture.layout === 'showcase' || fixture.layout === 'formats';
+  const isStyleX = renderer === 'stylex'
+  const hasClock = fixture.layout === 'showcase' || fixture.layout === 'formats'
   const supporting = (text: string): string =>
     isStyleX
       ? `h.span([h.Class(className(styles.supporting))], ['${text}'])`
-      : `h.span([h.Class('text-xs leading-5 text-muted-foreground')], ['${text}'])`;
+      : `h.span([h.Class('text-xs leading-5 text-muted-foreground')], ['${text}'])`
   const cls = (twClasses: string, stylexKey: string): string =>
-    isStyleX ? `h.Class(className(styles.${stylexKey}))` : `h.Class('${twClasses}')`;
+    isStyleX
+      ? `h.Class(className(styles.${stylexKey}))`
+      : `h.Class('${twClasses}')`
 
   const emphasizedCall = (modelField: string): string => `Timer.timer(
             {
@@ -63,7 +69,7 @@ const timerSource = (
               weight: 'semibold',
             },
             h,
-          )`;
+          )`
 
   const viewBody = (() => {
     switch (fixture.layout) {
@@ -92,7 +98,7 @@ const timerSource = (
         ],
       ),
     ],
-  )`;
+  )`
       case 'formats':
         return `h.div(
     [${cls('flex flex-col gap-3', 'page')}],
@@ -112,7 +118,7 @@ const timerSource = (
         ],
       ),
     ],
-  )`;
+  )`
       case 'inline':
         return `h.p(
     [${cls('text-sm leading-5 text-foreground', 'body')}],
@@ -120,7 +126,7 @@ const timerSource = (
       'Processing for ',
       Timer.timer({ model: model.timer, type: 'inherit', color: 'inherit' }, h),
     ],
-  )`;
+  )`
       case 'typography':
         return `h.div(
     [${cls('flex flex-col gap-3', 'page')}],
@@ -130,9 +136,9 @@ const timerSource = (
       ${supporting('Emphasized')},
       ${emphasizedCall('timer')},
     ],
-  )`;
+  )`
     }
-  })();
+  })()
 
   return foldkitApplication({
     title: `Timer — ${fixture.title}`,
@@ -168,10 +174,14 @@ const styles = stylex.create({
 export type Model = typeof Model.Type`,
     messages: `export const GotTimerMessage = taggedStruct('GotTimerMessage', {
   message: Timer.Message,
-})${hasClock ? `
+})${
+      hasClock
+        ? `
 export const GotClockMessage = taggedStruct('GotClockMessage', {
   message: Timer.Message,
-})` : ''}
+})`
+        : ''
+    }
 export const Message = S.Union([GotTimerMessage${hasClock ? ', GotClockMessage' : ''}])
 export type Message = typeof Message.Type`,
     init: `export const init = (): Update.Return<Model, Message> => ({
@@ -179,12 +189,16 @@ export type Message = typeof Message.Type`,
     timer: Timer.init({
       id: 'timer',
       startTimeMs: Date.now() - ${String(fixture.offsetMs)},
-    }),${hasClock ? `
+    }),${
+      hasClock
+        ? `
     clock: Timer.init({
       id: 'clock',
       startTimeMs: Date.now() - ${String(fixture.offsetMs)},
       format: 'clock',
-    }),` : ''}
+    }),`
+        : ''
+    }
   },
 })`,
     update: `export const update = (
@@ -199,7 +213,9 @@ export type Message = typeof Message.Type`,
         commands: Command.mapMessages(next.commands ?? [], inner =>
           GotTimerMessage({ message: inner })),
       }
-    }${hasClock ? `
+    }${
+      hasClock
+        ? `
     case 'GotClockMessage': {
       const next = Timer.update(model.clock, message.message)
       return {
@@ -207,7 +223,9 @@ export type Message = typeof Message.Type`,
         commands: Command.mapMessages(next.commands ?? [], inner =>
           GotClockMessage({ message: inner })),
       }
-    }` : ''}
+    }`
+        : ''
+    }
   }
 }`,
     subscriptions: `export const subscriptions = Subscription.aggregate<Model, Message>()(
@@ -215,11 +233,15 @@ export type Message = typeof Message.Type`,
     timerTick: Subscription.lift(Timer.subscriptions)<Model, Message>({
       toChildModel: model => model.timer,
       toParentMessage: message => GotTimerMessage({ message }),
-    }).tick,${hasClock ? `
+    }).tick,${
+      hasClock
+        ? `
     clockTick: Subscription.lift(Timer.subscriptions)<Model, Message>({
       toChildModel: model => model.clock,
       toParentMessage: message => GotClockMessage({ message }),
-    }).tick,` : ''}
+    }).tick,`
+        : ''
+    }
   },
 )`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
@@ -231,8 +253,8 @@ export type Message = typeof Message.Type`,
     ],
   ),
 })`,
-  });
-};
+  })
+}
 
 export const timerExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -241,4 +263,4 @@ export const timerExamples = (
     title: fixture.title,
     description: fixture.description,
     code: timerSource(fixture, renderer),
-  }));
+  }))

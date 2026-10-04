@@ -1,8 +1,8 @@
-import type { DocsExample } from '@/docs/components/page-definition';
+import type { DocsExample } from '@/docs/components/page-definition'
 import {
   foldkitApplication,
   staticComponentApplication,
-} from '@/docs/components/pages/authored-page';
+} from '@/docs/components/pages/authored-page'
 
 export type BreadcrumbItemSpec =
   | Readonly<{ kind: 'link'; label: string; href: string }>
@@ -12,7 +12,7 @@ export type BreadcrumbItemSpec =
   /** Ellipsis inside a dropdown trigger (upstream hero demo). */
   | Readonly<{ kind: 'ellipsisMenu' }>
   /** Text label + chevron dropdown trigger (upstream Dropdown example). */
-  | Readonly<{ kind: 'dropdown'; label: string }>;
+  | Readonly<{ kind: 'dropdown'; label: string }>
 
 export type BreadcrumbFixture = Readonly<{
   kind:
@@ -22,22 +22,22 @@ export type BreadcrumbFixture = Readonly<{
     | 'dropdown'
     | 'collapsed'
     | 'link'
-    | 'rtl';
-  title: string;
-  description: string;
+    | 'rtl'
+  title: string
+  description: string
   /** Rendered only as the page hero, not as a named example section. */
-  heroOnly?: boolean;
+  heroOnly?: boolean
   /** Default chevron separator or a custom dot icon. */
-  separator: 'chevron' | 'dot';
+  separator: 'chevron' | 'dot'
   /** dir="rtl" breadcrumb + mirrored separators + rtl dropdown content. */
-  rtl?: boolean;
+  rtl?: boolean
   /** Items rendered by ellipsisMenu/dropdown triggers; presence enables the menu model. */
-  menuItems?: ReadonlyArray<string>;
-  items: ReadonlyArray<BreadcrumbItemSpec>;
-}>;
+  menuItems?: ReadonlyArray<string>
+  items: ReadonlyArray<BreadcrumbItemSpec>
+}>
 
-const MENU_ITEMS_EN = ['Documentation', 'Themes', 'GitHub'];
-const MENU_ITEMS_AR = ['التوثيق', 'السمات', 'جيت هاب'];
+const MENU_ITEMS_EN = ['Documentation', 'Themes', 'GitHub']
+const MENU_ITEMS_AR = ['التوثيق', 'السمات', 'جيت هاب']
 
 export const breadcrumbFixtures: Readonly<
   [BreadcrumbFixture, ...Array<BreadcrumbFixture>]
@@ -45,7 +45,8 @@ export const breadcrumbFixtures: Readonly<
   {
     kind: 'demo',
     title: 'Demo',
-    description: 'A breadcrumb trail with an ellipsis dropdown of collapsed levels.',
+    description:
+      'A breadcrumb trail with an ellipsis dropdown of collapsed levels.',
     heroOnly: true,
     separator: 'chevron',
     menuItems: MENU_ITEMS_EN,
@@ -70,7 +71,8 @@ export const breadcrumbFixtures: Readonly<
   {
     kind: 'separator',
     title: 'Custom separator',
-    description: 'Pass an icon as BreadcrumbSeparator children to replace the chevron.',
+    description:
+      'Pass an icon as BreadcrumbSeparator children to replace the chevron.',
     separator: 'dot',
     items: [
       { kind: 'link', label: 'Home', href: '/' },
@@ -81,7 +83,8 @@ export const breadcrumbFixtures: Readonly<
   {
     kind: 'dropdown',
     title: 'Dropdown',
-    description: 'A BreadcrumbItem can host a dropdown of sibling destinations.',
+    description:
+      'A BreadcrumbItem can host a dropdown of sibling destinations.',
     separator: 'dot',
     menuItems: MENU_ITEMS_EN,
     items: [
@@ -126,15 +129,15 @@ export const breadcrumbFixtures: Readonly<
       { kind: 'page', label: 'مسار التنقل' },
     ],
   },
-];
+]
 
 const esc = (value: string): string =>
-  value.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+  value.replace(/\\/g, '\\\\').replace(/'/g, "\\'")
 
 export const needsMenu = (fixture: BreadcrumbFixture): boolean =>
   fixture.items.some(
     item => item.kind === 'dropdown' || item.kind === 'ellipsisMenu',
-  );
+  )
 
 const menuCallSource = (
   item: BreadcrumbItemSpec,
@@ -152,14 +155,15 @@ const menuCallSource = (
         : `h.span(
               [h.Class('flex items-center gap-1')],
               ['${esc(item.kind === 'dropdown' ? item.label : '')}', Icon.icon('chevron-down', { class: 'size-3.5' }, h)],
-            )`;
+            )`
   const triggerProps =
     item.kind === 'ellipsisMenu'
       ? renderer === 'stylex'
         ? `\n            triggerButtonVariant: 'ghost',\n            triggerButtonSize: 'icon-sm',`
         : `\n            triggerClass: 'inline-flex size-8 items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground',`
-      : '';
-  const direction = fixture.rtl === true ? `\n            direction: 'rtl',` : '';
+      : ''
+  const direction =
+    fixture.rtl === true ? `\n            direction: 'rtl',` : ''
   return `DropdownMenu.dropdownMenu({
             model: model.menu,
             toParentMessage: message =>
@@ -167,8 +171,8 @@ const menuCallSource = (
             trigger: ${trigger},${triggerProps}
             items: menuItems,
             itemToConfig: item => ({ label: item }),${direction}
-          }, h)`;
-};
+          }, h)`
+}
 
 const itemContentSource = (
   item: BreadcrumbItemSpec,
@@ -180,34 +184,32 @@ const itemContentSource = (
       return `Breadcrumb.breadcrumbLink({
               href: '${esc(item.href)}',
               children: ['${esc(item.label)}'],
-            }, h)`;
+            }, h)`
     case 'page':
-      return `Breadcrumb.breadcrumbPage({ children: ['${esc(item.label)}'] }, h)`;
+      return `Breadcrumb.breadcrumbPage({ children: ['${esc(item.label)}'] }, h)`
     case 'ellipsis':
-      return `Breadcrumb.breadcrumbEllipsis({}, h)`;
+      return `Breadcrumb.breadcrumbEllipsis({}, h)`
     case 'ellipsisMenu':
     case 'dropdown':
-      return menuCallSource(item, fixture, renderer);
+      return menuCallSource(item, fixture, renderer)
   }
-};
+}
 
 const separatorSource = (
   fixture: BreadcrumbFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
   const children =
-    fixture.separator === 'dot'
-      ? `children: [Icon.icon('dot', {}, h)], `
-      : '';
-  const direction = fixture.rtl === true ? `direction: 'rtl', ` : '';
-  return `Breadcrumb.breadcrumbSeparator({ ${children}${direction}}, h)`;
-};
+    fixture.separator === 'dot' ? `children: [Icon.icon('dot', {}, h)], ` : ''
+  const direction = fixture.rtl === true ? `direction: 'rtl', ` : ''
+  return `Breadcrumb.breadcrumbSeparator({ ${children}${direction}}, h)`
+}
 
 const viewBodySource = (
   fixture: BreadcrumbFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const separator = separatorSource(fixture, renderer);
+  const separator = separatorSource(fixture, renderer)
   const children = fixture.items
     .map(
       item => `Breadcrumb.breadcrumbItem({
@@ -216,8 +218,8 @@ const viewBodySource = (
             ],
           }, h)`,
     )
-    .join(`,\n          ${separator},`);
-  const direction = fixture.rtl === true ? `\n      direction: 'rtl',` : '';
+    .join(`,\n          ${separator},`)
+  const direction = fixture.rtl === true ? `\n      direction: 'rtl',` : ''
   return `Breadcrumb.breadcrumb({${direction}
       children: [
         Breadcrumb.breadcrumbList({
@@ -226,12 +228,12 @@ const viewBodySource = (
           ],
         }, h),
       ],
-    }, h)`;
-};
+    }, h)`
+}
 
 const usesIcon = (fixture: BreadcrumbFixture): boolean =>
   fixture.separator === 'dot' ||
-  fixture.items.some(item => item.kind === 'dropdown');
+  fixture.items.some(item => item.kind === 'dropdown')
 
 const componentImports = (
   fixture: BreadcrumbFixture,
@@ -250,16 +252,16 @@ const styles = stylex.create({
 `
     : ''
 }`
-      : '';
-  return `${stylexBits}${needsMenu(fixture) ? `import * as DropdownMenu from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/dropdown-menu'\n` : ''}${usesIcon(fixture) ? `import * as Icon from '@/lib/icon'` : ''}`;
-};
+      : ''
+  return `${stylexBits}${needsMenu(fixture) ? `import * as DropdownMenu from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/dropdown-menu'\n` : ''}${usesIcon(fixture) ? `import * as Icon from '@/lib/icon'` : ''}`
+}
 
 const source = (
   fixture: BreadcrumbFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const viewBody = viewBodySource(fixture, renderer);
-  const imports = componentImports(fixture, renderer);
+  const viewBody = viewBodySource(fixture, renderer)
+  const imports = componentImports(fixture, renderer)
   if (!needsMenu(fixture)) {
     return staticComponentApplication({
       componentName: 'Breadcrumb',
@@ -268,11 +270,11 @@ const source = (
       exampleName: fixture.title,
       componentImports: imports,
       viewBody,
-    });
+    })
   }
   const menuItemsSource = (fixture.menuItems ?? [])
     .map(item => `'${esc(item)}'`)
-    .join(', ');
+    .join(', ')
   return foldkitApplication({
     title: `Breadcrumb — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
@@ -319,14 +321,15 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
     ${viewBody},
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const breadcrumbExamples = (
   renderer: 'tailwind' | 'stylex',
-): ReadonlyArray<DocsExample> => breadcrumbFixtures.map(fixture => ({
-  title: fixture.title,
-  description: fixture.description,
-  ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
-  code: source(fixture, renderer),
-}));
+): ReadonlyArray<DocsExample> =>
+  breadcrumbFixtures.map(fixture => ({
+    title: fixture.title,
+    description: fixture.description,
+    ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
+    code: source(fixture, renderer),
+  }))

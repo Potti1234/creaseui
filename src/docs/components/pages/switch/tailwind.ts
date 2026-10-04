@@ -1,26 +1,26 @@
-import { Schema as S } from 'effect';
-import type { Update } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import { Schema as S } from 'effect'
+import type { Update } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { definePreviewProgram } from '@/docs/components/pages/authored-page';
-import { switchFixtures } from '@/docs/components/pages/switch/shared';
-import { taggedStruct } from 'foldkit/schema';
-import * as Field from '@/ui/field';
-import * as Label from '@/ui/label';
-import * as Switch from '@/ui/switch';
+import { definePreviewProgram } from '@/docs/components/pages/authored-page'
+import { switchFixtures } from '@/docs/components/pages/switch/shared'
+import { taggedStruct } from 'foldkit/schema'
+import * as Field from '@/ui/field'
+import * as Label from '@/ui/label'
+import * as Switch from '@/ui/switch'
 
 const PreviewModel = S.Struct({
   _docsPage: S.Literal('switch'),
   states: S.Record(S.String, S.Boolean),
-});
-type PreviewModel = typeof PreviewModel.Type;
+})
+type PreviewModel = typeof PreviewModel.Type
 
 const ToggledPreview = taggedStruct('ToggledSwitchPreview', {
   id: S.String,
   isChecked: S.Boolean,
-});
-const PreviewMessage = S.Union([ToggledPreview]);
-type PreviewMessage = typeof PreviewMessage.Type;
+})
+const PreviewMessage = S.Union([ToggledPreview])
+type PreviewMessage = typeof PreviewMessage.Type
 
 const sw = (
   id: string,
@@ -36,7 +36,7 @@ const sw = (
       ...(extra ?? {}),
     },
     h,
-  );
+  )
 
 const descriptionField = (
   model: PreviewModel,
@@ -56,7 +56,10 @@ const descriptionField = (
             children: [
               Field.fieldLabel(
                 {
-                  for: direction === 'rtl' ? 'switch-focus-mode-rtl' : 'switch-focus-mode',
+                  for:
+                    direction === 'rtl'
+                      ? 'switch-focus-mode-rtl'
+                      : 'switch-focus-mode',
                   children:
                     direction === 'rtl'
                       ? ['المشاركة عبر الأجهزة']
@@ -70,10 +73,16 @@ const descriptionField = (
                 {
                   children:
                     direction === 'rtl'
-                      ? ['يتم مشاركة التركيز عبر الأجهزة، ويتم إيقاف تشغيله عند مغادرة التطبيق.']
+                      ? [
+                          'يتم مشاركة التركيز عبر الأجهزة، ويتم إيقاف تشغيله عند مغادرة التطبيق.',
+                        ]
                       : isInvalid
-                        ? ['You must accept the terms and conditions to continue.']
-                        : ['Focus is shared across devices, and turns off when you leave the app.'],
+                        ? [
+                            'You must accept the terms and conditions to continue.',
+                          ]
+                        : [
+                            'Focus is shared across devices, and turns off when you leave the app.',
+                          ],
                 },
                 h,
               ),
@@ -82,7 +91,11 @@ const descriptionField = (
           h,
         ),
         sw(
-          direction === 'rtl' ? 'switch-focus-mode-rtl' : isInvalid ? 'switch-terms' : 'switch-focus-mode',
+          direction === 'rtl'
+            ? 'switch-focus-mode-rtl'
+            : isInvalid
+              ? 'switch-terms'
+              : 'switch-focus-mode',
           model,
           h,
           {
@@ -93,7 +106,7 @@ const descriptionField = (
       ],
     },
     h,
-  );
+  )
 
 const choiceCard = (
   id: string,
@@ -127,7 +140,7 @@ const choiceCard = (
       ],
     },
     h,
-  );
+  )
 
 export const switchTailwindPreviewProgram = definePreviewProgram<
   PreviewModel,
@@ -136,13 +149,13 @@ export const switchTailwindPreviewProgram = definePreviewProgram<
   Model: PreviewModel,
   Message: PreviewMessage,
   init: index => {
-    const fixture = switchFixtures[index] ?? switchFixtures[0];
+    const fixture = switchFixtures[index] ?? switchFixtures[0]
     return {
       _docsPage: 'switch',
       states: Object.fromEntries(
         fixture.switchIds.map(id => [id, fixture.checkedIds.includes(id)]),
       ),
-    };
+    }
   },
   update: (model, message): Update.Return<PreviewModel, PreviewMessage> => {
     switch (message._tag) {
@@ -152,19 +165,25 @@ export const switchTailwindPreviewProgram = definePreviewProgram<
             ...model,
             states: { ...model.states, [message.id]: message.isChecked },
           },
-        };
+        }
     }
   },
   view: (index, model, h) => {
-    const fixture = switchFixtures[index] ?? switchFixtures[0];
+    const fixture = switchFixtures[index] ?? switchFixtures[0]
     switch (fixture.kind) {
       case 'demo':
-        return h.div([h.Class('flex items-center gap-2')], [
-          sw('airplane-mode', model, h),
-          Label.label({ for: 'airplane-mode', children: ['Airplane Mode'] }, h),
-        ]);
+        return h.div(
+          [h.Class('flex items-center gap-2')],
+          [
+            sw('airplane-mode', model, h),
+            Label.label(
+              { for: 'airplane-mode', children: ['Airplane Mode'] },
+              h,
+            ),
+          ],
+        )
       case 'description':
-        return descriptionField(model, h, undefined, false);
+        return descriptionField(model, h, undefined, false)
       case 'choiceCard':
         return Field.fieldGroup(
           {
@@ -187,7 +206,7 @@ export const switchTailwindPreviewProgram = definePreviewProgram<
             ],
           },
           h,
-        );
+        )
       case 'disabled':
         return Field.field(
           {
@@ -203,9 +222,9 @@ export const switchTailwindPreviewProgram = definePreviewProgram<
             ],
           },
           h,
-        );
+        )
       case 'invalid':
-        return descriptionField(model, h, undefined, true);
+        return descriptionField(model, h, undefined, true)
       case 'size':
         return Field.fieldGroup(
           {
@@ -216,7 +235,10 @@ export const switchTailwindPreviewProgram = definePreviewProgram<
                   orientation: 'horizontal',
                   children: [
                     sw('switch-size-sm', model, h, { size: 'sm' }),
-                    Field.fieldLabel({ for: 'switch-size-sm', children: ['Small'] }, h),
+                    Field.fieldLabel(
+                      { for: 'switch-size-sm', children: ['Small'] },
+                      h,
+                    ),
                   ],
                 },
                 h,
@@ -237,9 +259,9 @@ export const switchTailwindPreviewProgram = definePreviewProgram<
             ],
           },
           h,
-        );
+        )
       case 'rtl':
-        return descriptionField(model, h, 'rtl', false);
+        return descriptionField(model, h, 'rtl', false)
     }
   },
-});
+})

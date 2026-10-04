@@ -1,8 +1,8 @@
-import type { EChartsOption } from 'echarts/types/dist/shared';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { EChartsOption } from 'echarts/types/dist/shared'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Chart from '@/lib/echarts';
-import * as Icon from '@/lib/icon';
+import * as Chart from '@/lib/echarts'
+import * as Icon from '@/lib/icon'
 import {
   card,
   cardContent,
@@ -10,34 +10,34 @@ import {
   cardFooter,
   cardHeader,
   cardTitle,
-} from '@/ui/card';
+} from '@/ui/card'
 
-export const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June'];
-export const DESKTOP = [186, 305, 237, 73, 209, 214];
-export const SINGLE = [186, 305, 237, 273, 209, 214];
-export const MOBILE = [80, 200, 120, 190, 130, 140];
+export const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June']
+export const DESKTOP = [186, 305, 237, 73, 209, 214]
+export const SINGLE = [186, 305, 237, 273, 209, 214]
+export const MOBILE = [80, 200, 120, 190, 130, 140]
 
 export type RadarConfig = Readonly<{
-  desktop?: ReadonlyArray<number>;
-  mobile?: ReadonlyArray<number>;
-  dots?: boolean;
-  linesOnly?: boolean;
-  shape?: 'polygon' | 'circle';
-  splitLine?: boolean;
-  splitArea?: boolean;
-  axisLine?: boolean;
-  singleGrid?: boolean;
-  radiusLabels?: boolean;
-  customLabels?: boolean;
-  legend?: boolean;
-}>;
+  desktop?: ReadonlyArray<number>
+  mobile?: ReadonlyArray<number>
+  dots?: boolean
+  linesOnly?: boolean
+  shape?: 'polygon' | 'circle'
+  splitLine?: boolean
+  splitArea?: boolean
+  axisLine?: boolean
+  singleGrid?: boolean
+  radiusLabels?: boolean
+  customLabels?: boolean
+  legend?: boolean
+}>
 
 export const radarOption = (
   theme: Chart.ChartTheme,
   config: RadarConfig = {},
 ): EChartsOption => {
-  const desktop = config.desktop ?? SINGLE;
-  const mobile = config.mobile;
+  const desktop = config.desktop ?? SINGLE
+  const mobile = config.mobile
   const seriesData = [
     {
       name: 'Desktop',
@@ -77,7 +77,7 @@ export const radarOption = (
             symbolSize: 0,
           },
         ]),
-  ];
+  ]
 
   return {
     tooltip: Chart.shadcnTooltip(theme, { trigger: 'item' }),
@@ -123,15 +123,15 @@ export const radarOption = (
       axisNameGap: 8,
     },
     series: [{ type: 'radar', data: seriesData }],
-  };
-};
+  }
+}
 
 type RadarCardProps<Msg> = Readonly<{
-  hostId: string;
-  title: string;
-  toMessage: (message: Chart.ChartMessage) => Msg;
-  legend?: boolean;
-}>;
+  hostId: string
+  title: string
+  toMessage: (message: Chart.ChartMessage) => Msg
+  legend?: boolean
+}>
 
 export const radarCard = <Msg>(
   props: RadarCardProps<Msg>,
@@ -198,5 +198,5 @@ export const radarCard = <Msg>(
       ],
     },
     h,
-  );
-};
+  )
+}

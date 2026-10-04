@@ -1,17 +1,17 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
-export type Guest = Readonly<{ id: string; name: string; email: string }>;
+export type Guest = Readonly<{ id: string; name: string; email: string }>
 
 export type ListInputFixture = Readonly<{
-  title: string;
-  description: string;
-  initialGuests: ReadonlyArray<Guest>;
-  isReorderable?: boolean;
-  maxItems?: number;
-  hasFieldStatus?: boolean;
-  hasListStatus?: boolean;
-}>;
+  title: string
+  description: string
+  initialGuests: ReadonlyArray<Guest>
+  isReorderable?: boolean
+  maxItems?: number
+  hasFieldStatus?: boolean
+  hasListStatus?: boolean
+}>
 
 /* No Astryx example blocks exist for ListInput (packages/lab); these demos
    derive from ListInput.doc.mjs' "Controlled guest list" usage block and
@@ -40,24 +40,35 @@ export const listInputFixtures: Readonly<
     hasFieldStatus: true,
     hasListStatus: true,
   },
-];
+]
 
 const ui = (renderer: 'tailwind' | 'stylex'): string =>
-  renderer === 'stylex' ? 'stylex' : 'ui';
+  renderer === 'stylex' ? 'stylex' : 'ui'
 
 const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
-  const fixture = listInputFixtures[index] ?? listInputFixtures[0];
+  const fixture = listInputFixtures[index] ?? listInputFixtures[0]
   const guestLines = fixture.initialGuests
-    .map(guest => `    { id: '${guest.id}', name: '${guest.name}', email: '${guest.email}' },`)
-    .join('\n');
-  const extraProps = `${fixture.isReorderable === true ? '\n        isReorderable: true,' : ''}${fixture.maxItems === undefined ? '' : `\n        maxItems: ${fixture.maxItems},`}${fixture.hasFieldStatus === true ? `
+    .map(
+      guest =>
+        `    { id: '${guest.id}', name: '${guest.name}', email: '${guest.email}' },`,
+    )
+    .join('\n')
+  const extraProps = `${fixture.isReorderable === true ? '\n        isReorderable: true,' : ''}${fixture.maxItems === undefined ? '' : `\n        maxItems: ${fixture.maxItems},`}${
+    fixture.hasFieldStatus === true
+      ? `
         getFieldStatus: (guest, key) =>
           key === 'email' && guest.email === ''
             ? { type: 'error' as const, message: 'Enter an email address' }
-            : undefined,` : ''}${fixture.hasListStatus === true ? `
+            : undefined,`
+      : ''
+  }${
+    fixture.hasListStatus === true
+      ? `
         ...(model.guests.length === 0
           ? { status: { type: 'error' as const, message: 'Add at least one guest' } }
-          : {}),` : ''}`;
+          : {}),`
+      : ''
+  }`
   return foldkitApplication({
     title: `ListInput — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
@@ -171,8 +182,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
     ),
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const listInputExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -181,4 +192,4 @@ export const listInputExamples = (
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
-  }));
+  }))

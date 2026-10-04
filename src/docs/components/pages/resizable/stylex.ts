@@ -1,17 +1,17 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   resizableFixtures,
   type ResizableFixture,
-} from '@/docs/components/pages/resizable/shared';
-import * as Resizable from '@/stylex/resizable';
-import { className } from '@/stylex/style';
+} from '@/docs/components/pages/resizable/shared'
+import * as Resizable from '@/stylex/resizable'
+import { className } from '@/stylex/style'
 
 const styles = stylex.create({
-  group: { height: '13rem', maxWidth: '28rem', width: '100%', },
-  groupTall: { height: '16rem', maxWidth: '28rem', width: '100%', },
+  group: { height: '13rem', maxWidth: '28rem', width: '100%' },
+  groupTall: { height: '16rem', maxWidth: '28rem', width: '100%' },
   panel: {
     padding: '1.5rem',
     alignItems: 'center',
@@ -21,16 +21,16 @@ const styles = stylex.create({
     width: '100%',
   },
   label: { fontWeight: 600 },
-});
+})
 
 interface PreviewShape {
-  readonly panels: Resizable.Model;
-  readonly outer: Resizable.GroupModel;
-  readonly inner: Resizable.GroupModel;
+  readonly panels: Resizable.Model
+  readonly outer: Resizable.GroupModel
+  readonly inner: Resizable.GroupModel
 }
 
 const label = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.div([h.Class(className(styles.panel, styles.label))], [text]);
+  h.div([h.Class(className(styles.panel, styles.label))], [text])
 
 const singleView = <Msg>(
   fixture: Extract<ResizableFixture, { kind: 'single' }>,
@@ -42,9 +42,7 @@ const singleView = <Msg>(
     {
       model: model.panels,
       toParentMessage: message =>
-        onMessageJson(
-          JSON.stringify({ _tag: 'GotResizableMessage', message }),
-        ),
+        onMessageJson(JSON.stringify({ _tag: 'GotResizableMessage', message })),
       direction: fixture.direction,
       extent: 448,
       ...(fixture.withHandle ? { withHandle: true } : {}),
@@ -54,7 +52,7 @@ const singleView = <Msg>(
       second: label(fixture.second, h),
     },
     h,
-  );
+  )
 
 const nestedView = <Msg>(
   fixture: Extract<ResizableFixture, { kind: 'nested' }>,
@@ -94,7 +92,7 @@ const nestedView = <Msg>(
       ],
     },
     h,
-  );
+  )
 
 export const resizableStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   index: number,
@@ -102,9 +100,9 @@ export const resizableStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const preview = model as PreviewShape;
-  const fixture = resizableFixtures[index] ?? resizableFixtures[0];
+  const preview = model as PreviewShape
+  const fixture = resizableFixtures[index] ?? resizableFixtures[0]
   return fixture.kind === 'single'
     ? singleView(fixture, preview, onMessageJson, h)
-    : nestedView(fixture, preview, onMessageJson, h);
-};
+    : nestedView(fixture, preview, onMessageJson, h)
+}

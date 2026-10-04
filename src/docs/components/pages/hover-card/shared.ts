@@ -1,58 +1,70 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
-export type HoverCardKind = 'basic' | 'sides' | 'rtl';
+export type HoverCardKind = 'basic' | 'sides' | 'rtl'
 
 export interface HoverCardFixture {
-  readonly title: string;
-  readonly description?: string;
-  readonly heroOnly?: boolean;
-  readonly kind: HoverCardKind;
+  readonly title: string
+  readonly description?: string
+  readonly heroOnly?: boolean
+  readonly kind: HoverCardKind
 }
 
-export const hoverCardSides = ['left', 'top', 'bottom', 'right'] as const;
+export const hoverCardSides = ['left', 'top', 'bottom', 'right'] as const
 
-export const hoverCardRtlSides: Readonly<[
-  { side: (typeof hoverCardSides)[number]; label: string },
-  ...Array<{ side: (typeof hoverCardSides)[number]; label: string }>,
-]> = [
+export const hoverCardRtlSides: Readonly<
+  [
+    { side: (typeof hoverCardSides)[number]; label: string },
+    ...Array<{ side: (typeof hoverCardSides)[number]; label: string }>,
+  ]
+> = [
   { side: 'left', label: 'يسار' },
   { side: 'top', label: 'أعلى' },
   { side: 'bottom', label: 'أسفل' },
   { side: 'right', label: 'يمين' },
-];
+]
 
-export const hoverCardRtlCopy = { name: 'سماعات لاسلكية', price: '٩٩.٩٩ $' } as const;
+export const hoverCardRtlCopy = {
+  name: 'سماعات لاسلكية',
+  price: '٩٩.٩٩ $',
+} as const
 
-export const hoverCardFixtures: Readonly<[HoverCardFixture, ...Array<HoverCardFixture>]> = [
+export const hoverCardFixtures: Readonly<
+  [HoverCardFixture, ...Array<HoverCardFixture>]
+> = [
   { title: 'Basic', heroOnly: true, kind: 'basic' },
   { title: 'Sides', kind: 'sides' },
   { title: 'RTL', kind: 'rtl' },
-];
+]
 
-const emitSingle = (isStyleX: boolean): string => foldkitApplication({
-  title: 'Hover Card — Basic',
-  imports: `import { Schema as S } from 'effect'
+const emitSingle = (isStyleX: boolean): string =>
+  foldkitApplication({
+    title: 'Hover Card — Basic',
+    imports: `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 ${isStyleX ? "\nimport * as stylex from '@stylexjs/stylex'\n" : ''}
 import * as Button from '@/${isStyleX ? 'stylex' : 'ui'}/button'
-import * as HoverCard from '@/${isStyleX ? 'stylex' : 'ui'}/hover-card'${isStyleX ? `
+import * as HoverCard from '@/${isStyleX ? 'stylex' : 'ui'}/hover-card'${
+      isStyleX
+        ? `
 
 const styles = stylex.create({
   content: { display: 'flex', width: '16rem', flexDirection: 'column', gap: '0.125rem' },
   heading: { fontWeight: 600 },
   meta: { marginBlockStart: '0.25rem', fontSize: '0.75rem', lineHeight: '1rem', color: 'var(--muted-foreground)' },
-})` : ''}`,
-  model: `export const Model = S.Struct({ hoverCard: HoverCard.Model })
+})`
+        : ''
+    }`,
+    model: `export const Model = S.Struct({ hoverCard: HoverCard.Model })
 export type Model = typeof Model.Type`,
-  messages: `export const Message = defineMessageUnion({
+    messages: `export const Message = defineMessageUnion({
   GotHoverCardMessage: { message: HoverCard.Message },
 })
 export type Message = typeof Message.Type`,
-  init: `export const init = (): Update.Return<Model, Message> => ({ model: { hoverCard: HoverCard.init({ id: 'hover-card', showDelay: 10, closeDelay: 100 }) } })`,
-  update: `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
+    init: `export const init = (): Update.Return<Model, Message> => ({ model: { hoverCard: HoverCard.init({ id: 'hover-card', showDelay: 10, closeDelay: 100 }) } })`,
+    update: `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
     case 'GotHoverCardMessage': {
       const { model: hoverCard, commands: hoverCardCommands__ } = HoverCard.update(model.hoverCard, message.message)
@@ -61,7 +73,7 @@ export type Message = typeof Message.Type`,
     }
   }
 }`,
-  view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+    view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Hover Card — Basic',
   body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
     HoverCard.hoverCard({
@@ -77,27 +89,29 @@ export type Message = typeof Message.Type`,
     }, h),
   ]),
 })`,
-});
+  })
 
 const emitRow = (kind: 'sides' | 'rtl', isStyleX: boolean): string => {
-  const sidesDecl = kind === 'sides'
-    ? "const SIDES = ['left', 'top', 'bottom', 'right'] as const"
-    : `const SIDES = [
+  const sidesDecl =
+    kind === 'sides'
+      ? "const SIDES = ['left', 'top', 'bottom', 'right'] as const"
+      : `const SIDES = [
   { side: 'left', label: 'يسار' },
   { side: 'top', label: 'أعلى' },
   { side: 'bottom', label: 'أسفل' },
   { side: 'right', label: 'يمين' },
-] as const`;
-  const sideExpr = kind === 'sides' ? 'entry' : 'entry.side';
-  const card = kind === 'sides'
-    ? `content: h.div([h.Class(${isStyleX ? "stylex.props(styles.gapSm).className ?? ''" : "'flex flex-col gap-1'"})], [
+] as const`
+  const sideExpr = kind === 'sides' ? 'entry' : 'entry.side'
+  const card =
+    kind === 'sides'
+      ? `content: h.div([h.Class(${isStyleX ? "stylex.props(styles.gapSm).className ?? ''" : "'flex flex-col gap-1'"})], [
           h.h4([h.Class(${isStyleX ? "stylex.props(styles.heading).className ?? ''" : "'font-medium'"})], ['Hover Card']),
           h.p([], ['This hover card appears on the ' + entry + ' side of the trigger.']),
         ]),`
-    : `content: h.div([h.Dir('rtl'), h.Class(${isStyleX ? "stylex.props(styles.rtlContent).className ?? ''" : "'flex w-64 flex-col gap-1'"})], [
+      : `content: h.div([h.Dir('rtl'), h.Class(${isStyleX ? "stylex.props(styles.rtlContent).className ?? ''" : "'flex w-64 flex-col gap-1'"})], [
           h.div([h.Class(${isStyleX ? "stylex.props(styles.heading).className ?? ''" : "'font-semibold'"})], ['سماعات لاسلكية']),
           h.div([h.Class(${isStyleX ? "stylex.props(styles.muted).className ?? ''" : "'text-sm text-muted-foreground'"})], ['٩٩.٩٩ $']),
-        ]),`;
+        ]),`
   return foldkitApplication({
     title: `Hover Card — ${kind === 'sides' ? 'Sides' : 'RTL'}`,
     imports: `import { Schema as S } from 'effect'
@@ -106,7 +120,9 @@ import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 ${isStyleX ? "\nimport * as stylex from '@stylexjs/stylex'\n" : ''}
 import * as Button from '@/${isStyleX ? 'stylex' : 'ui'}/button'
-import * as HoverCard from '@/${isStyleX ? 'stylex' : 'ui'}/hover-card'${isStyleX ? `
+import * as HoverCard from '@/${isStyleX ? 'stylex' : 'ui'}/hover-card'${
+      isStyleX
+        ? `
 
 const styles = stylex.create({
   row: { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0.5rem' },
@@ -114,7 +130,9 @@ const styles = stylex.create({
   heading: { fontWeight: 500 },
   rtlContent: { display: 'flex', width: '16rem', flexDirection: 'column', gap: '0.25rem' },
   muted: { fontSize: '0.875rem', lineHeight: '1.25rem', color: 'var(--muted-foreground)' },
-})` : ''}
+})`
+        : ''
+    }
 
 ${sidesDecl}`,
     model: `export const Model = S.Struct({ hoverCards: S.Array(HoverCard.Model) })
@@ -150,16 +168,25 @@ export type Message = typeof Message.Type`,
       }, h))),
   ]),
 })`,
-  });
-};
+  })
+}
 
-const emitApplication = (fixture: HoverCardFixture, isStyleX: boolean): string =>
-  fixture.kind === 'basic' ? emitSingle(isStyleX) : emitRow(fixture.kind, isStyleX);
+const emitApplication = (
+  fixture: HoverCardFixture,
+  isStyleX: boolean,
+): string =>
+  fixture.kind === 'basic'
+    ? emitSingle(isStyleX)
+    : emitRow(fixture.kind, isStyleX)
 
-export const hoverCardExamples = (renderer: 'tailwind' | 'stylex'): ReadonlyArray<DocsExample> =>
+export const hoverCardExamples = (
+  renderer: 'tailwind' | 'stylex',
+): ReadonlyArray<DocsExample> =>
   hoverCardFixtures.map(fixture => ({
     title: fixture.title,
-    ...(fixture.description === undefined ? {} : { description: fixture.description }),
+    ...(fixture.description === undefined
+      ? {}
+      : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer === 'stylex'),
-  }));
+  }))

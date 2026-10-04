@@ -1,7 +1,7 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Icon from '@/demo/icon-preview';
-import { card } from '@/ui/card';
+import * as Icon from '@/demo/icon-preview'
+import { card } from '@/ui/card'
 import {
   sidebar,
   sidebarContent,
@@ -13,18 +13,18 @@ import {
   sidebarMenuItem,
   sidebarProvider,
   sidebarSeparator,
-} from '@/ui/sidebar';
+} from '@/ui/sidebar'
 
 type NavItem = Readonly<{
-  label: string;
-  icon: string;
-  isActive?: boolean;
-}>;
+  label: string
+  icon: string
+  isActive?: boolean
+}>
 
 type NavGroup = Readonly<{
-  label: string;
-  items: ReadonlyArray<NavItem>;
-}>;
+  label: string
+  items: ReadonlyArray<NavItem>
+}>
 
 const OVERVIEW: ReadonlyArray<NavGroup> = [
   {
@@ -46,7 +46,7 @@ const OVERVIEW: ReadonlyArray<NavGroup> = [
       { label: 'Documents', icon: 'file-text' },
     ],
   },
-];
+]
 
 const ACCOUNT: ReadonlyArray<NavGroup> = [
   {
@@ -68,7 +68,7 @@ const ACCOUNT: ReadonlyArray<NavGroup> = [
       { label: 'Status', icon: 'activity' },
     ],
   },
-];
+]
 
 const navGroup = <Msg>(
   group: NavGroup,
@@ -85,7 +85,7 @@ const navGroup = <Msg>(
             children: [
               sidebarMenu(
                 {
-                  children: group.items.map((item) =>
+                  children: group.items.map(item =>
                     sidebarMenuItem(
                       {
                         children: [
@@ -114,7 +114,7 @@ const navGroup = <Msg>(
       ],
     },
     h,
-  );
+  )
 
 const navCard = <Msg>(
   groups: ReadonlyArray<NavGroup>,
@@ -156,13 +156,13 @@ const navCard = <Msg>(
       ],
     },
     h,
-  );
+  )
 
 export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
   return h.div(
     [h.Class('grid grid-cols-2 items-start gap-6')],
     [navCard(OVERVIEW, h), navCard(ACCOUNT, h)],
-  );
-};
+  )
+}
 
 // Card summary: stateful? no. Submodels wired: none. PORT NOTEs: none.

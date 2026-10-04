@@ -1,9 +1,9 @@
-import type { PieSeriesOption } from 'echarts/charts';
-import type { EChartsOption } from 'echarts/types/dist/shared';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { PieSeriesOption } from 'echarts/charts'
+import type { EChartsOption } from 'echarts/types/dist/shared'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Chart from '@/lib/echarts';
-import * as Icon from '@/lib/icon';
+import * as Chart from '@/lib/echarts'
+import * as Icon from '@/lib/icon'
 import {
   card,
   cardContent,
@@ -11,13 +11,13 @@ import {
   cardFooter,
   cardHeader,
   cardTitle,
-} from '@/ui/card';
+} from '@/ui/card'
 
-export const BROWSER_NAMES = ['Chrome', 'Safari', 'Firefox', 'Edge', 'Other'];
-export const BROWSER_VALUES = [275, 200, 187, 173, 90];
-export const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May'];
-export const DESKTOP_VALUES = [186, 305, 237, 173, 209];
-export const MOBILE_VALUES = [80, 200, 120, 190, 130];
+export const BROWSER_NAMES = ['Chrome', 'Safari', 'Firefox', 'Edge', 'Other']
+export const BROWSER_VALUES = [275, 200, 187, 173, 90]
+export const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May']
+export const DESKTOP_VALUES = [186, 305, 237, 173, 209]
+export const MOBILE_VALUES = [80, 200, 120, 190, 130]
 
 const colors = (theme: Chart.ChartTheme): ReadonlyArray<string> => [
   theme.chart1,
@@ -25,29 +25,29 @@ const colors = (theme: Chart.ChartTheme): ReadonlyArray<string> => [
   theme.chart3,
   theme.chart4,
   theme.chart5,
-];
+]
 
 export type PieConfig = Readonly<{
-  names?: ReadonlyArray<string>;
-  values?: ReadonlyArray<number>;
-  donut?: boolean;
-  separator?: boolean;
-  label?: 'name' | 'value' | 'none';
-  labelInside?: boolean;
-  legend?: boolean;
-  centerValue?: string;
-  centerLabel?: string;
-  activeIndex?: number;
-}>;
+  names?: ReadonlyArray<string>
+  values?: ReadonlyArray<number>
+  donut?: boolean
+  separator?: boolean
+  label?: 'name' | 'value' | 'none'
+  labelInside?: boolean
+  legend?: boolean
+  centerValue?: string
+  centerLabel?: string
+  activeIndex?: number
+}>
 
 export const pieOption = (
   theme: Chart.ChartTheme,
   config: PieConfig = {},
 ): EChartsOption => {
-  const names = config.names ?? BROWSER_NAMES;
-  const values = config.values ?? BROWSER_VALUES;
-  const palette = colors(theme);
-  const activeIndex = config.activeIndex;
+  const names = config.names ?? BROWSER_NAMES
+  const values = config.values ?? BROWSER_VALUES
+  const palette = colors(theme)
+  const activeIndex = config.activeIndex
   const centerSeries: PieSeriesOption[] =
     config.centerValue === undefined
       ? []
@@ -86,7 +86,7 @@ export const pieOption = (
               },
             ],
           },
-        ];
+        ]
 
   return {
     tooltip: Chart.shadcnTooltip(theme, { trigger: 'item' }),
@@ -131,17 +131,17 @@ export const pieOption = (
       },
       ...centerSeries,
     ],
-  };
-};
+  }
+}
 
 export const stackedPieOption = (theme: Chart.ChartTheme): EChartsOption => {
-  const palette = colors(theme);
+  const palette = colors(theme)
   const data = (names: ReadonlyArray<string>, values: ReadonlyArray<number>) =>
     names.map((name, index) => ({
       name,
       value: values[index] ?? 0,
       itemStyle: { color: palette[index] ?? theme.chart1 },
-    }));
+    }))
 
   return {
     tooltip: Chart.shadcnTooltip(theme, { trigger: 'item' }),
@@ -163,17 +163,17 @@ export const stackedPieOption = (theme: Chart.ChartTheme): EChartsOption => {
         data: data(MONTH_NAMES, MOBILE_VALUES),
       },
     ],
-  };
-};
+  }
+}
 
 type PieCardProps<Msg> = Readonly<{
-  hostId: string;
-  title: string;
-  toMessage: (message: Chart.ChartMessage) => Msg;
-  footer?: boolean;
-  legend?: boolean;
-  class?: string;
-}>;
+  hostId: string
+  title: string
+  toMessage: (message: Chart.ChartMessage) => Msg
+  footer?: boolean
+  legend?: boolean
+  class?: string
+}>
 
 export const pieCard = <Msg>(
   props: PieCardProps<Msg>,
@@ -240,5 +240,5 @@ export const pieCard = <Msg>(
       ],
     },
     h,
-  );
-};
+  )
+}

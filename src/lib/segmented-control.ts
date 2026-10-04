@@ -15,20 +15,25 @@ export const Model = RadioGroupPrimitive.Model
 export type Model = typeof Model.Type
 export const Message = RadioGroupPrimitive.Message
 export type Message = typeof Message.Type
-export type OutMessage<Value extends string = string> = RadioGroupPrimitive.OutMessage<Value>
+export type OutMessage<Value extends string = string> =
+  RadioGroupPrimitive.OutMessage<Value>
 export const init = RadioGroupPrimitive.init
 
-export type SegmentedControlOptionState<Value extends string = string> = Readonly<{
-  value: Value
-  index: number
-  isSelected: boolean
-  isActive: boolean
-  isDisabled: boolean
-  attributes: ReadonlyArray<ChildAttribute>
-  labelAttributes: ReadonlyArray<ChildAttribute>
-}>
+export type SegmentedControlOptionState<Value extends string = string> =
+  Readonly<{
+    value: Value
+    index: number
+    isSelected: boolean
+    isActive: boolean
+    isDisabled: boolean
+    attributes: ReadonlyArray<ChildAttribute>
+    labelAttributes: ReadonlyArray<ChildAttribute>
+  }>
 
-export type SegmentedControlBehaviorProps<Value extends string, Msg> = Readonly<{
+export type SegmentedControlBehaviorProps<
+  Value extends string,
+  Msg,
+> = Readonly<{
   model: Model
   toParentMessage: (message: Message) => Msg
   selectedValue: Option.Option<Value>
@@ -46,7 +51,10 @@ const renderSegmentedControl = <Value extends string, Msg>(
   bundle: RadioGroupPrimitive.Bundle<Value>,
   props: SegmentedControlBehaviorProps<Value, Msg>,
   visual: SegmentedControlVisualAttributes<Msg>,
-  toItem: (option: SegmentedControlOptionState<Value>, h: HtmlBuilder<Msg>) => Html,
+  toItem: (
+    option: SegmentedControlOptionState<Value>,
+    h: HtmlBuilder<Msg>,
+  ) => Html,
   h: HtmlBuilder<Msg>,
 ): Html =>
   h.submodel({
@@ -55,20 +63,18 @@ const renderSegmentedControl = <Value extends string, Msg>(
     view: bundle.view,
     viewInputs: {
       selectedValue: props.selectedValue,
-      options: props.options.map((option) => option.value),
+      options: props.options.map(option => option.value),
       ariaLabel: props.ariaLabel,
       orientation: 'Horizontal',
       isDisabled: props.isDisabled ?? false,
-      isOptionDisabled: (_value, index) => props.options[index]?.isDisabled === true,
+      isOptionDisabled: (_value, index) =>
+        props.options[index]?.isDisabled === true,
       ...(props.name === undefined ? {} : { name: props.name }),
       toView: ({ group, options, hiddenInput }) =>
         h.div(
+          [...group, ...visual.group],
           [
-            ...group,
-            ...visual.group,
-          ],
-          [
-            ...options.map((option) =>
+            ...options.map(option =>
               toItem(
                 {
                   value: option.value,
@@ -94,7 +100,10 @@ export type Bundle<Value extends string> = Readonly<{
   render: <Msg>(
     props: SegmentedControlBehaviorProps<Value, Msg>,
     visual: SegmentedControlVisualAttributes<Msg>,
-    toItem: (option: SegmentedControlOptionState<Value>, h: HtmlBuilder<Msg>) => Html,
+    toItem: (
+      option: SegmentedControlOptionState<Value>,
+      h: HtmlBuilder<Msg>,
+    ) => Html,
     h: HtmlBuilder<Msg>,
   ) => Html
 }>
@@ -103,7 +112,8 @@ export const create = <Value extends string = string>(): Bundle<Value> => {
   const bundle = RadioGroupPrimitive.create<Value>()
   return {
     update: bundle.update,
-    render: (props, visual, toItem, h) => renderSegmentedControl(bundle, props, visual, toItem, h),
+    render: (props, visual, toItem, h) =>
+      renderSegmentedControl(bundle, props, visual, toItem, h),
   }
 }
 

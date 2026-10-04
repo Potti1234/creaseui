@@ -13,7 +13,12 @@ type Dimension =
   | 'documentation'
   | 'registry'
 
-type Status = 'verified' | 'partial' | 'adapted' | 'unverified' | 'not-applicable'
+type Status =
+  | 'verified'
+  | 'partial'
+  | 'adapted'
+  | 'unverified'
+  | 'not-applicable'
 
 const registry = readJson<{
   items: ReadonlyArray<{ name: string; type: string }>
@@ -45,7 +50,9 @@ describe('multidimensional component parity', () => {
       .filter(item => item.type === 'registry:ui')
       .map(item => item.name)
       .sort()
-    const contractNames = parity.components.map(component => component.component).sort()
+    const contractNames = parity.components
+      .map(component => component.component)
+      .sort()
 
     assert.deepEqual(contractNames, registryNames)
     assert.deepEqual(
@@ -127,7 +134,10 @@ describe('multidimensional component parity', () => {
     for (const component of parity.components) {
       assert.deepEqual(Object.keys(component.dimensions), dimensions)
       for (const status of Object.values(component.dimensions)) {
-        assert.ok(parity.statuses.includes(status), `${component.component}: ${status}`)
+        assert.ok(
+          parity.statuses.includes(status),
+          `${component.component}: ${status}`,
+        )
       }
       assert.ok(component.evidence.length >= 3)
     }
@@ -135,13 +145,28 @@ describe('multidimensional component parity', () => {
 
   it('keeps upstream provenance pinned and source blobs unique', () => {
     assert.equal(roadmap.verifiedAgainst.commit, upstream.commit)
-    assert.equal(new Set(upstream.files.map(file => file.path)).size, upstream.files.length)
+    assert.equal(
+      new Set(upstream.files.map(file => file.path)).size,
+      upstream.files.length,
+    )
     assert.ok(upstream.files.every(file => /^[0-9a-f]{40}$/u.test(file.sha)))
   })
 
   it('does not confuse inventory coverage with visual verification', () => {
-    assert.ok(parity.components.every(component => component.dimensions.visual === 'unverified'))
-    assert.ok(parity.components.some(component => component.dimensions.behavior === 'adapted'))
-    assert.ok(parity.components.some(component => component.dimensions.accessibility === 'verified'))
+    assert.ok(
+      parity.components.every(
+        component => component.dimensions.visual === 'unverified',
+      ),
+    )
+    assert.ok(
+      parity.components.some(
+        component => component.dimensions.behavior === 'adapted',
+      ),
+    )
+    assert.ok(
+      parity.components.some(
+        component => component.dimensions.accessibility === 'verified',
+      ),
+    )
   })
 })

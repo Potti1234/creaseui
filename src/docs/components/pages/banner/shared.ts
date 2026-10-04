@@ -1,29 +1,29 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
-import type { BannerStatus } from '@/lib/banner';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
+import type { BannerStatus } from '@/lib/banner'
 
 export type BannerSpec = Readonly<{
-  status: BannerStatus;
-  title: string;
-  description?: string;
+  status: BannerStatus
+  title: string
+  description?: string
   /** Renders a secondary sm Button inside endContent. */
-  endActionLabel?: string;
-  isDismissable?: boolean;
-  container?: 'section';
-  elevation?: 'med';
+  endActionLabel?: string
+  isDismissable?: boolean
+  container?: 'section'
+  elevation?: 'med'
   /** collapsible={{defaultIsOpen: true}} — banner starts expanded. */
-  defaultIsOpen?: boolean;
+  defaultIsOpen?: boolean
   /** Renders astryx's "Changed settings:" detail list as children. */
-  hasDetailChildren?: boolean;
-}>;
+  hasDetailChildren?: boolean
+}>
 
 export type BannerFixture = Readonly<{
-  title: string;
-  description: string;
-  banners: ReadonlyArray<BannerSpec>;
+  title: string
+  description: string
+  banners: ReadonlyArray<BannerSpec>
   /** astryx Showcase constrains the stack to 800px. */
-  maxWidth?: number;
-}>;
+  maxWidth?: number
+}>
 
 /* Example set ported from Meta Astryx
    packages/cli/assets/templates/blocks/components/Banner/*.tsx + *.doc.mjs —
@@ -67,8 +67,7 @@ export const bannerFixtures: Readonly<
       {
         status: 'success',
         title: 'Changes saved',
-        description:
-          'Your profile information has been updated successfully.',
+        description: 'Your profile information has been updated successfully.',
       },
       {
         status: 'warning',
@@ -180,14 +179,13 @@ export const bannerFixtures: Readonly<
       {
         status: 'info',
         title: 'Welcome to the new dashboard',
-        description:
-          'We have redesigned the layout based on your feedback.',
+        description: 'We have redesigned the layout based on your feedback.',
         container: 'section',
         endActionLabel: 'Take a tour',
       },
     ],
   },
-];
+]
 
 // ---------- generated example source ----------
 
@@ -197,7 +195,7 @@ const DETAIL_CHILDREN = `h.div([h.Class('flex flex-col gap-2')], [
             h.li([], ['Authentication method updated']),
             h.li([], ['Rate limits modified']),
           ]),
-        ])`;
+        ])`
 
 const bannerSource = (
   banner: BannerSpec,
@@ -228,23 +226,23 @@ const bannerSource = (
     ...(banner.hasDetailChildren === true
       ? [`children: [\n        ${DETAIL_CHILDREN},\n      ]`]
       : []),
-  ];
+  ]
   return `Banner.banner({
         ${args.join(',\n        ')},
-      }, h)`;
-};
+      }, h)`
+}
 
 const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
-  const fixture = bannerFixtures[index] ?? bannerFixtures[0];
-  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '');
-  const uiDir = renderer === 'stylex' ? 'stylex' : 'ui';
+  const fixture = bannerFixtures[index] ?? bannerFixtures[0]
+  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
+  const uiDir = renderer === 'stylex' ? 'stylex' : 'ui'
   const usesButton = fixture.banners.some(
     banner => banner.endActionLabel !== undefined,
-  );
+  )
   const stackAttrs =
     renderer === 'stylex'
       ? `[h.Class(stylex.props(styles.stack).className ?? '')${fixture.maxWidth === undefined ? '' : `, h.Style({ maxWidth: '${String(fixture.maxWidth)}px' })`}]`
-      : `[h.Class('flex flex-col gap-3')${fixture.maxWidth === undefined ? '' : `, h.Style({ maxWidth: '${String(fixture.maxWidth)}px' })`}]`;
+      : `[h.Class('flex flex-col gap-3')${fixture.maxWidth === undefined ? '' : `, h.Style({ maxWidth: '${String(fixture.maxWidth)}px' })`}]`
   return foldkitApplication({
     title: `Banner — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
@@ -297,8 +295,8 @@ export type Message = typeof Message.Type`,
     ]),
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const bannerExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -307,4 +305,4 @@ export const bannerExamples = (
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
-  }));
+  }))

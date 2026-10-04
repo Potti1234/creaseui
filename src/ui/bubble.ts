@@ -1,7 +1,7 @@
-import { type VariantProps, cva } from 'class-variance-authority';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import { type VariantProps, cva } from 'class-variance-authority'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils'
 
 export const bubbleVariants = cva(
   'group/bubble relative flex w-fit max-w-[80%] min-w-0 flex-col gap-1 group-data-[align=end]/message:self-end data-[align=end]:self-end data-[variant=ghost]:max-w-full',
@@ -25,14 +25,14 @@ export const bubbleVariants = cva(
     },
     defaultVariants: { variant: 'default' },
   },
-);
+)
 
-export type BubbleVariant = VariantProps<typeof bubbleVariants>['variant'];
+export type BubbleVariant = VariantProps<typeof bubbleVariants>['variant']
 
 type ChildrenProps = Readonly<{
-  children: ReadonlyArray<Html | string>;
-  class?: string;
-}>;
+  children: ReadonlyArray<Html | string>
+  class?: string
+}>
 
 export const bubbleGroup = <Msg>(
   props: ChildrenProps,
@@ -44,16 +44,16 @@ export const bubbleGroup = <Msg>(
       h.Class(cn('flex min-w-0 flex-col gap-2', props.class)),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 export const bubble = <Msg>(
   props: ChildrenProps &
     Readonly<{ variant?: BubbleVariant; align?: 'start' | 'end' }>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const variant = props.variant ?? 'default';
-  const align = props.align ?? 'start';
+  const variant = props.variant ?? 'default'
+  const align = props.align ?? 'start'
   return h.div(
     [
       h.DataAttribute('slot', 'bubble'),
@@ -62,15 +62,15 @@ export const bubble = <Msg>(
       h.Class(cn(bubbleVariants({ variant }), props.class)),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 export const bubbleContent = <Msg>(
   props: ChildrenProps & Readonly<{ onClick?: Msg }>,
   h: HtmlBuilder<Msg>,
 ): Html => {
   const base =
-    'w-fit max-w-full min-w-0 overflow-hidden rounded-xl border border-transparent px-3 py-2 text-sm leading-relaxed wrap-break-word group-data-[align=end]/bubble:self-end';
+    'w-fit max-w-full min-w-0 overflow-hidden rounded-xl border border-transparent px-3 py-2 text-sm leading-relaxed wrap-break-word group-data-[align=end]/bubble:self-end'
   return props.onClick === undefined
     ? h.div(
         [
@@ -87,20 +87,20 @@ export const bubbleContent = <Msg>(
           h.OnClick(props.onClick),
         ],
         [...props.children],
-      );
-};
+      )
+}
 
 export const bubbleReactions = <Msg>(
   props: ChildrenProps &
     Readonly<{
-      side?: 'top' | 'bottom';
-      align?: 'start' | 'end';
-      ariaLabel?: string;
+      side?: 'top' | 'bottom'
+      align?: 'start' | 'end'
+      ariaLabel?: string
     }>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const side = props.side ?? 'bottom';
-  const align = props.align ?? 'end';
+  const side = props.side ?? 'bottom'
+  const align = props.align ?? 'end'
   return h.div(
     [
       h.DataAttribute('slot', 'bubble-reactions'),
@@ -121,5 +121,5 @@ export const bubbleReactions = <Msg>(
       ),
     ],
     [...props.children],
-  );
-};
+  )
+}

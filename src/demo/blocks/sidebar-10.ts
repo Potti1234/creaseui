@@ -1,22 +1,22 @@
-import { Match as M, Option, Schema as S } from 'effect';
-import type { Update } from 'foldkit';
-import { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
-import { modifyFields } from 'foldkit/struct';
+import { Match as M, Option, Schema as S } from 'effect'
+import type { Update } from 'foldkit'
+import { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import { modifyFields } from 'foldkit/struct'
 
-import * as Icon from '@/lib/icon';
+import * as Icon from '@/lib/icon'
 import {
   breadcrumb,
   breadcrumbItem,
   breadcrumbList,
   breadcrumbPage,
-} from '@/ui/breadcrumb';
-import { buttonVariants } from '@/ui/button';
-import * as Collapsible from '@/ui/collapsible';
-import * as DropdownMenu from '@/ui/dropdown-menu';
-import * as Popover from '@/ui/popover';
-import { separator } from '@/ui/separator';
+} from '@/ui/breadcrumb'
+import { buttonVariants } from '@/ui/button'
+import * as Collapsible from '@/ui/collapsible'
+import * as DropdownMenu from '@/ui/dropdown-menu'
+import * as Popover from '@/ui/popover'
+import { separator } from '@/ui/separator'
 import {
   sidebar,
   sidebarContent,
@@ -35,39 +35,39 @@ import {
   sidebarProvider,
   sidebarRail,
   sidebarTrigger,
-} from '@/ui/sidebar';
+} from '@/ui/sidebar'
 
 type Team = Readonly<{
-  name: string;
-  logo: string;
-  plan: string;
-}>;
+  name: string
+  logo: string
+  plan: string
+}>
 
 type NavItem = Readonly<{
-  title: string;
-  url: string;
-  icon: string;
-  isActive?: boolean;
-  badge?: string;
-}>;
+  title: string
+  url: string
+  icon: string
+  isActive?: boolean
+  badge?: string
+}>
 
 type Favorite = Readonly<{
-  name: string;
-  url: string;
-  emoji: string;
-}>;
+  name: string
+  url: string
+  emoji: string
+}>
 
 type WorkspacePage = Readonly<{
-  name: string;
-  url: string;
-  emoji: string;
-}>;
+  name: string
+  url: string
+  emoji: string
+}>
 
 type Workspace = Readonly<{
-  name: string;
-  emoji: string;
-  pages: ReadonlyArray<WorkspacePage>;
-}>;
+  name: string
+  emoji: string
+  pages: ReadonlyArray<WorkspacePage>
+}>
 
 export const data = {
   teams: [
@@ -256,7 +256,7 @@ export const data = {
       ],
     },
   ] satisfies ReadonlyArray<Workspace>,
-};
+}
 
 const actionGroups = [
   [
@@ -280,72 +280,67 @@ const actionGroups = [
     { label: 'Import', icon: 'arrow-up' },
     { label: 'Export', icon: 'arrow-down' },
   ],
-] as const;
+] as const
 
-type TeamAction = 'team-0' | 'team-1' | 'team-2' | 'add-team';
-type FavoriteAction = 'remove' | 'copy-link' | 'open-tab' | 'delete';
+type TeamAction = 'team-0' | 'team-1' | 'team-2' | 'add-team'
+type FavoriteAction = 'remove' | 'copy-link' | 'open-tab' | 'delete'
 
 const TEAM_ACTIONS: ReadonlyArray<TeamAction> = [
   'team-0',
   'team-1',
   'team-2',
   'add-team',
-];
+]
 const FAVORITE_ACTIONS: ReadonlyArray<FavoriteAction> = [
   'remove',
   'copy-link',
   'open-tab',
   'delete',
-];
+]
 
-const TeamMenu = DropdownMenu.create<TeamAction>();
-const FavoriteMenu = DropdownMenu.create<FavoriteAction>();
+const TeamMenu = DropdownMenu.create<TeamAction>()
+const FavoriteMenu = DropdownMenu.create<FavoriteAction>()
 
 // MODEL
 
 export const Model = S.Struct({
-  isMobileOpen: S.Boolean, isSidebarOpen: S.Boolean,
+  isMobileOpen: S.Boolean,
+  isSidebarOpen: S.Boolean,
   activeTeamIndex: S.Number,
   teamMenu: DropdownMenu.Model,
   favoriteMenus: S.Array(DropdownMenu.Model),
   workspaceOpen: S.Array(S.Boolean),
   actionsPopover: Popover.Model,
-});
-export type Model = typeof Model.Type;
+})
+export type Model = typeof Model.Type
 
 // MESSAGE
-
-
-
-
-
-
-
 
 export const Message = defineMessageUnion({
   ToggledMobileSidebar: {},
   ToggledSidebar: {},
   GotTeamMenuMessage: {
-  message: DropdownMenu.Message,
-},
+    message: DropdownMenu.Message,
+  },
   GotFavoriteMenuMessage: {
-  index: S.Number,
-  message: DropdownMenu.Message,
-},
+    index: S.Number,
+    message: DropdownMenu.Message,
+  },
   ToggledWorkspace: {
-  index: S.Number,
-  isOpen: S.Boolean,
-},
+    index: S.Number,
+    isOpen: S.Boolean,
+  },
   GotActionsPopoverMessage: {
-  message: Popover.Message,
-},
-});
-export type Message = typeof Message.Type;
+    message: Popover.Message,
+  },
+})
+export type Message = typeof Message.Type
 
 // INIT
 
 export const init = (): Model => ({
-  isMobileOpen: false, isSidebarOpen: true,
+  isMobileOpen: false,
+  isSidebarOpen: true,
   activeTeamIndex: 0,
   teamMenu: DropdownMenu.init({
     id: 'sidebar-10-team-menu',
@@ -362,23 +357,28 @@ export const init = (): Model => ({
     id: 'sidebar-10-actions-popover',
     isAnimated: true,
   }),
-});
+})
 
 // UPDATE
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      ToggledMobileSidebar: () => ({ model: modifyFields(model, {isMobileOpen: current => !current}) }),
-      ToggledSidebar: () => ({ model: modifyFields(model, { isSidebarOpen: (current) => !current }) }),
+      ToggledMobileSidebar: () => ({
+        model: modifyFields(model, { isMobileOpen: current => !current }),
+      }),
+      ToggledSidebar: () => ({
+        model: modifyFields(model, { isSidebarOpen: current => !current }),
+      }),
       GotTeamMenuMessage: ({ message: childMessage }) => {
-        const { model: teamMenu, commands: teamMenuCommands__, outMessage: teamMenuOut__ } = TeamMenu.update(
-          model.teamMenu,
-          childMessage,
-        );
+        const {
+          model: teamMenu,
+          commands: teamMenuCommands__,
+          outMessage: teamMenuOut__,
+        } = TeamMenu.update(model.teamMenu, childMessage)
         const commands = teamMenuCommands__ ?? []
         const selection = Option.fromNullishOr(teamMenuOut__)
         const activeTeamIndex = Option.match(selection, {
@@ -391,66 +391,78 @@ export const update = (model: Model, message: Message): UpdateReturn =>
                 : value === 'team-2'
                   ? 2
                   : model.activeTeamIndex,
-        });
+        })
 
-        return { model: modifyFields(model, {
+        return {
+          model: modifyFields(model, {
             teamMenu: () => teamMenu,
             activeTeamIndex: () => activeTeamIndex,
-          }), commands: Command.mapMessages(commands, (nextMessage) =>
+          }),
+          commands: Command.mapMessages(commands, nextMessage =>
             Message.GotTeamMenuMessage({ message: nextMessage }),
-          ) };
+          ),
+        }
       },
       GotFavoriteMenuMessage: ({ index, message: childMessage }) => {
-        const current = model.favoriteMenus[index];
+        const current = model.favoriteMenus[index]
 
         if (current === undefined) {
-          return { model: model };
+          return { model: model }
         }
 
-        const { model: next, commands: nextCommands__ } = FavoriteMenu.update(current, childMessage);
+        const { model: next, commands: nextCommands__ } = FavoriteMenu.update(
+          current,
+          childMessage,
+        )
         const commands = nextCommands__ ?? []
 
-        return { model: modifyFields(model, {
-            favoriteMenus: (menus) =>
+        return {
+          model: modifyFields(model, {
+            favoriteMenus: menus =>
               menus.map((menu, menuIndex) =>
                 menuIndex === index ? next : menu,
               ),
-          }), commands: Command.mapMessages(commands, (nextMessage) =>
+          }),
+          commands: Command.mapMessages(commands, nextMessage =>
             Message.GotFavoriteMenuMessage({ index, message: nextMessage }),
-          ) };
+          ),
+        }
       },
       ToggledWorkspace: ({ index, isOpen }) => {
         if (model.workspaceOpen[index] === undefined) {
-          return { model: model };
+          return { model: model }
         }
-        return { model: modifyFields(model, {
-            workspaceOpen: (items) =>
+        return {
+          model: modifyFields(model, {
+            workspaceOpen: items =>
               items.map((open, itemIndex) =>
                 itemIndex === index ? isOpen : open,
               ),
-          }) };
+          }),
+        }
       },
       GotActionsPopoverMessage: ({ message: childMessage }) => {
-        const { model: actionsPopover, commands: actionsPopoverCommands__ } = Popover.update(
-          model.actionsPopover,
-          childMessage,
-        )
+        const { model: actionsPopover, commands: actionsPopoverCommands__ } =
+          Popover.update(model.actionsPopover, childMessage)
         const commands = actionsPopoverCommands__ ?? []
 
-        return { model: modifyFields(model, { actionsPopover: () => actionsPopover }), commands: Command.mapMessages(commands, (nextMessage) =>
+        return {
+          model: modifyFields(model, { actionsPopover: () => actionsPopover }),
+          commands: Command.mapMessages(commands, nextMessage =>
             Message.GotActionsPopoverMessage({ message: nextMessage }),
-          ) };
+          ),
+        }
       },
     }),
-  );
+  )
 
 // VIEW
 
 const teamSwitcher = (model: Model, h: HtmlBuilder<Message>): Html => {
-  const activeTeam = data.teams[model.activeTeamIndex] ?? data.teams[0];
+  const activeTeam = data.teams[model.activeTeamIndex] ?? data.teams[0]
 
   if (activeTeam === undefined) {
-    return h.div([], []);
+    return h.div([], [])
   }
 
   return sidebarMenu(
@@ -462,7 +474,8 @@ const teamSwitcher = (model: Model, h: HtmlBuilder<Message>): Html => {
               DropdownMenu.dropdownMenu<TeamAction, Message>(
                 {
                   model: model.teamMenu,
-                  toParentMessage: (message) => Message.GotTeamMenuMessage({ message }),
+                  toParentMessage: message =>
+                    Message.GotTeamMenuMessage({ message }),
                   trigger: h.span(
                     [h.Class('contents')],
                     [
@@ -498,7 +511,7 @@ const teamSwitcher = (model: Model, h: HtmlBuilder<Message>): Html => {
                     class: 'w-fit px-1.5',
                   }),
                   items: TEAM_ACTIONS,
-                  itemToConfig: (action) => {
+                  itemToConfig: action => {
                     if (action === 'add-team') {
                       return {
                         label: 'Add team',
@@ -511,12 +524,12 @@ const teamSwitcher = (model: Model, h: HtmlBuilder<Message>): Html => {
                           [Icon.plus({ class: 'size-4' }, h)],
                         ),
                         group: '',
-                      };
+                      }
                     }
 
                     const index =
-                      action === 'team-0' ? 0 : action === 'team-1' ? 1 : 2;
-                    const team = data.teams[index];
+                      action === 'team-0' ? 0 : action === 'team-1' ? 1 : 2
+                    const team = data.teams[index]
 
                     return {
                       label: team?.name ?? '',
@@ -538,7 +551,7 @@ const teamSwitcher = (model: Model, h: HtmlBuilder<Message>): Html => {
                       ),
                       shortcut: `⌘${index + 1}`,
                       group: 'Teams',
-                    };
+                    }
                   },
                   side: 'bottom',
                   align: 'start',
@@ -553,13 +566,13 @@ const teamSwitcher = (model: Model, h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const navMain = (h: HtmlBuilder<Message>): Html => {
   return sidebarMenu(
     {
-      children: data.navMain.map((item) =>
+      children: data.navMain.map(item =>
         sidebarMenuItem(
           {
             children: [
@@ -583,8 +596,8 @@ const navMain = (h: HtmlBuilder<Message>): Html => {
       ),
     },
     h,
-  );
-};
+  )
+}
 
 const favoriteActionConfig = (
   action: FavoriteAction,
@@ -631,10 +644,10 @@ const favoriteActionConfig = (
       group: '',
     })),
     M.exhaustive,
-  );
+  )
 
 const ROW_ACTION_CLASS =
-  'absolute top-1.5 right-1 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground ring-sidebar-ring outline-hidden transition-transform peer-hover/menu-button:text-sidebar-accent-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 after:absolute after:-inset-2 group-data-[collapsible=icon]:hidden group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[open]:opacity-100 md:opacity-0';
+  'absolute top-1.5 right-1 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground ring-sidebar-ring outline-hidden transition-transform peer-hover/menu-button:text-sidebar-accent-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 after:absolute after:-inset-2 group-data-[collapsible=icon]:hidden group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[open]:opacity-100 md:opacity-0'
 
 const navFavorites = (
   models: ReadonlyArray<DropdownMenu.Model>,
@@ -649,10 +662,10 @@ const navFavorites = (
           {
             children: [
               ...data.favorites.flatMap((item, index) => {
-                const model = models[index];
+                const model = models[index]
 
                 if (model === undefined) {
-                  return [];
+                  return []
                 }
 
                 return [
@@ -672,8 +685,11 @@ const navFavorites = (
                         DropdownMenu.dropdownMenu<FavoriteAction, Message>(
                           {
                             model,
-                            toParentMessage: (message) =>
-                              Message.GotFavoriteMenuMessage({ index, message }),
+                            toParentMessage: message =>
+                              Message.GotFavoriteMenuMessage({
+                                index,
+                                message,
+                              }),
                             trigger: h.span(
                               [h.Class('contents')],
                               [
@@ -684,7 +700,7 @@ const navFavorites = (
                             placement: 'sidebarAction',
                             triggerClass: ROW_ACTION_CLASS,
                             items: FAVORITE_ACTIONS,
-                            itemToConfig: (action) =>
+                            itemToConfig: action =>
                               favoriteActionConfig(action, h),
                             side: 'right',
                             align: 'start',
@@ -696,7 +712,7 @@ const navFavorites = (
                     },
                     h,
                   ),
-                ];
+                ]
               }),
               sidebarMenuItem(
                 {
@@ -722,8 +738,8 @@ const navFavorites = (
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const navWorkspaces = (
   openStates: ReadonlyArray<boolean>,
@@ -740,10 +756,10 @@ const navWorkspaces = (
                 {
                   children: [
                     ...data.workspaces.flatMap((workspace, index) => {
-                      const isOpen = openStates[index];
+                      const isOpen = openStates[index]
 
                       if (isOpen === undefined) {
-                        return [];
+                        return []
                       }
 
                       return [
@@ -754,7 +770,7 @@ const navWorkspaces = (
                                 {
                                   id: `sidebar-10-workspace-${index}`,
                                   isOpen,
-                                  onToggle: (nextIsOpen) =>
+                                  onToggle: nextIsOpen =>
                                     Message.ToggledWorkspace({
                                       index,
                                       isOpen: nextIsOpen,
@@ -778,7 +794,7 @@ const navWorkspaces = (
                                   ),
                                   content: sidebarMenuSub(
                                     {
-                                      children: workspace.pages.map((page) =>
+                                      children: workspace.pages.map(page =>
                                         sidebarMenuSubItem(
                                           {
                                             children: [
@@ -807,7 +823,7 @@ const navWorkspaces = (
                           },
                           h,
                         ),
-                      ];
+                      ]
                     }),
                     sidebarMenuItem(
                       {
@@ -837,8 +853,8 @@ const navWorkspaces = (
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const navSecondary = (h: HtmlBuilder<Message>): Html => {
   return sidebarGroup(
@@ -850,7 +866,7 @@ const navSecondary = (h: HtmlBuilder<Message>): Html => {
             children: [
               sidebarMenu(
                 {
-                  children: data.navSecondary.map((item) =>
+                  children: data.navSecondary.map(item =>
                     sidebarMenuItem(
                       {
                         children: [
@@ -879,8 +895,8 @@ const navSecondary = (h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const actionPopoverContent = (h: HtmlBuilder<Message>): Html =>
   sidebar<Message>(
@@ -890,7 +906,7 @@ const actionPopoverContent = (h: HtmlBuilder<Message>): Html =>
       children: [
         sidebarContent(
           {
-            children: actionGroups.map((group) =>
+            children: actionGroups.map(group =>
               sidebarGroup(
                 {
                   class: 'border-b last:border-none',
@@ -901,7 +917,7 @@ const actionPopoverContent = (h: HtmlBuilder<Message>): Html =>
                         children: [
                           sidebarMenu(
                             {
-                              children: group.map((item) =>
+                              children: group.map(item =>
                                 sidebarMenuItem(
                                   {
                                     children: [
@@ -937,7 +953,7 @@ const actionPopoverContent = (h: HtmlBuilder<Message>): Html =>
       ],
     },
     h,
-  );
+  )
 
 const navActions = (model: Popover.Model, h: HtmlBuilder<Message>): Html => {
   return h.div(
@@ -963,7 +979,8 @@ const navActions = (model: Popover.Model, h: HtmlBuilder<Message>): Html => {
       Popover.popover(
         {
           model,
-          toParentMessage: (message) => Message.GotActionsPopoverMessage({ message }),
+          toParentMessage: message =>
+            Message.GotActionsPopoverMessage({ message }),
           trigger: Icon.moreHorizontal({ class: 'size-4' }, h),
           triggerClass: buttonVariants({
             variant: 'ghost',
@@ -977,15 +994,17 @@ const navActions = (model: Popover.Model, h: HtmlBuilder<Message>): Html => {
         h,
       ),
     ],
-  );
-};
+  )
+}
 
 const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
-  const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
+  const state = model.isSidebarOpen ? 'expanded' : 'collapsed'
 
   return sidebar<Message>(
     {
-      isMobileOpen: model.isMobileOpen, onMobileDismiss: Message.ToggledMobileSidebar(), state,
+      isMobileOpen: model.isMobileOpen,
+      onMobileDismiss: Message.ToggledMobileSidebar(),
+      state,
       class: 'border-r-0',
       children: [
         sidebarHeader(
@@ -1008,8 +1027,8 @@ const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const pageContent = (model: Popover.Model, h: HtmlBuilder<Message>): Html => {
   return sidebarInset(
@@ -1021,7 +1040,13 @@ const pageContent = (model: Popover.Model, h: HtmlBuilder<Message>): Html => {
             h.div(
               [h.Class('flex flex-1 items-center gap-2 px-3')],
               [
-                sidebarTrigger({ onMobileClick: Message.ToggledMobileSidebar(), onClick: Message.ToggledSidebar() }, h),
+                sidebarTrigger(
+                  {
+                    onMobileClick: Message.ToggledMobileSidebar(),
+                    onClick: Message.ToggledSidebar(),
+                  },
+                  h,
+                ),
                 separator(
                   {
                     orientation: 'vertical',
@@ -1084,11 +1109,11 @@ const pageContent = (model: Popover.Model, h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
-  const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
+  const state = model.isSidebarOpen ? 'expanded' : 'collapsed'
 
   return sidebarProvider<Message>(
     {
@@ -1096,8 +1121,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       children: [appSidebar(model, h), pageContent(model.actionsPopover, h)],
     },
     h,
-  );
-};
+  )
+}
 
 // PORT NOTE: The source opens the actions popover from a React mount effect.
 // This port starts it closed so the modal foldkit backdrop does not block the

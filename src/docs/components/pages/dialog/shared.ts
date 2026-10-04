@@ -1,5 +1,5 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type DialogFixtureKind =
   | 'profile'
@@ -8,18 +8,18 @@ export type DialogFixtureKind =
   | 'noClose'
   | 'sticky'
   | 'scroll'
-  | 'rtl';
+  | 'rtl'
 
 export type DialogFixture = Readonly<{
-  title: string;
-  description?: string;
-  heroOnly?: boolean;
-  kind: DialogFixtureKind;
-  triggerLabel: string;
-  triggerVariant: 'default' | 'outline';
-  dialogTitle: string;
-  dialogDescription?: string;
-}>;
+  title: string
+  description?: string
+  heroOnly?: boolean
+  kind: DialogFixtureKind
+  triggerLabel: string
+  triggerVariant: 'default' | 'outline'
+  dialogTitle: string
+  dialogDescription?: string
+}>
 
 export const dialogFixtures: ReadonlyArray<DialogFixture> = [
   {
@@ -29,11 +29,13 @@ export const dialogFixtures: ReadonlyArray<DialogFixture> = [
     triggerLabel: 'Open Dialog',
     triggerVariant: 'outline',
     dialogTitle: 'Edit profile',
-    dialogDescription: "Make changes to your profile here. Click save when you're done.",
+    dialogDescription:
+      "Make changes to your profile here. Click save when you're done.",
   },
   {
     title: 'Compact confirmation',
-    description: 'A separate dialog instance owns a separate child Model and stable id.',
+    description:
+      'A separate dialog instance owns a separate child Model and stable id.',
     kind: 'compact',
     triggerLabel: 'Review change',
     triggerVariant: 'outline',
@@ -42,7 +44,8 @@ export const dialogFixtures: ReadonlyArray<DialogFixture> = [
   },
   {
     title: 'Custom Close Button',
-    description: 'Compose the footer with bound close attributes for a labeled dismiss action.',
+    description:
+      'Compose the footer with bound close attributes for a labeled dismiss action.',
     kind: 'share',
     triggerLabel: 'Share',
     triggerVariant: 'outline',
@@ -51,25 +54,30 @@ export const dialogFixtures: ReadonlyArray<DialogFixture> = [
   },
   {
     title: 'No Close Button',
-    description: 'showCloseButton hides the corner action while Escape and the backdrop still dismiss.',
+    description:
+      'showCloseButton hides the corner action while Escape and the backdrop still dismiss.',
     kind: 'noClose',
     triggerLabel: 'No Close Button',
     triggerVariant: 'outline',
     dialogTitle: 'No Close Button',
-    dialogDescription: "This dialog doesn't have a close button in the top-right corner.",
+    dialogDescription:
+      "This dialog doesn't have a close button in the top-right corner.",
   },
   {
     title: 'Sticky Footer',
-    description: 'Scrollable content keeps the footer actions visible while long copy scrolls.',
+    description:
+      'Scrollable content keeps the footer actions visible while long copy scrolls.',
     kind: 'sticky',
     triggerLabel: 'Sticky Footer',
     triggerVariant: 'outline',
     dialogTitle: 'Sticky Footer',
-    dialogDescription: 'This dialog has a sticky footer that stays visible while the content scrolls.',
+    dialogDescription:
+      'This dialog has a sticky footer that stays visible while the content scrolls.',
   },
   {
     title: 'Scrollable Content',
-    description: 'Overflowing content scrolls inside the panel instead of stretching it.',
+    description:
+      'Overflowing content scrolls inside the panel instead of stretching it.',
     kind: 'scroll',
     triggerLabel: 'Scrollable Content',
     triggerVariant: 'outline',
@@ -78,24 +86,26 @@ export const dialogFixtures: ReadonlyArray<DialogFixture> = [
   },
   {
     title: 'RTL',
-    description: 'A dir="rtl" layout override mirrors the panel for right-to-left copy.',
+    description:
+      'A dir="rtl" layout override mirrors the panel for right-to-left copy.',
     kind: 'rtl',
     triggerLabel: 'افتح الحوار',
     triggerVariant: 'outline',
     dialogTitle: 'تعديل الملف الشخصي',
-    dialogDescription: 'قم بإجراء تغييرات على ملفك الشخصي هنا. انقر على حفظ عند الانتهاء.',
+    dialogDescription:
+      'قم بإجراء تغييرات على ملفك الشخصي هنا. انقر على حفظ عند الانتهاء.',
   },
-];
+]
 
-export const dialogShareUrl = 'https://ui.shadcn.com/docs/installation';
+export const dialogShareUrl = 'https://ui.shadcn.com/docs/installation'
 
 export const dialogLorem =
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
+  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
 
 export const dialogRtlFields = [
   { id: 'name-1', label: 'الاسم', value: 'Pedro Duarte' },
   { id: 'username-1', label: 'اسم المستخدم', value: '@peduarte' },
-] as const;
+] as const
 
 const emitStyles = `const styles = stylex.create({
   action: { borderColor: 'var(--border)', borderRadius: '0.375rem', borderStyle: 'solid', borderWidth: '1px', paddingBlock: '0.5rem', paddingInline: '1rem', fontSize: '0.875rem', lineHeight: '1.25rem' },
@@ -109,11 +119,11 @@ const emitStyles = `const styles = stylex.create({
   shareCol: { display: 'grid', flex: '1 1 0%', gap: '0.5rem' },
   srOnly: { position: 'absolute', width: '1px', height: '1px', padding: 0, margin: '-1px', overflow: 'hidden', clip: 'rect(0, 0, 0, 0)', whiteSpace: 'nowrap', borderWidth: 0 },
   copy: { fontSize: '0.875rem', lineHeight: '1.25rem' },
-})`;
+})`
 
 const emitContent = (fixture: DialogFixture, isStyleX: boolean): string => {
   const cls = (tailwind: string, stylexRef: string) =>
-    isStyleX ? `className(${stylexRef})` : `'${tailwind}'`;
+    isStyleX ? `className(${stylexRef})` : `'${tailwind}'`
   switch (fixture.kind) {
     case 'profile':
       return `content: () => [
@@ -127,13 +137,13 @@ const emitContent = (fixture: DialogFixture, isStyleX: boolean): string => {
             Input.input({ id: 'username-1', value: model.username, onInput: value => ChangedUsername({ value }) }, h),
           ] }, h),
         ] }, h),
-      ],`;
+      ],`
     case 'compact':
       return `content: () => [
         h.p([h.Class(${cls('text-sm', 'styles.copy')})], [
           'Dialog content remains ordinary Foldkit Html.',
         ]),
-      ],`;
+      ],`
     case 'share':
       return `content: () => [
         h.div([h.Class(${cls('flex items-center gap-2', 'styles.shareRow')})], [
@@ -142,9 +152,9 @@ const emitContent = (fixture: DialogFixture, isStyleX: boolean): string => {
             Input.input({ id: 'link', value: '${dialogShareUrl}', isReadOnly: true }, h),
           ]),
         ]),
-      ],`;
+      ],`
     case 'noClose':
-      return '';
+      return ''
     case 'sticky':
     case 'scroll':
       return `content: () => [
@@ -156,15 +166,15 @@ const emitContent = (fixture: DialogFixture, isStyleX: boolean): string => {
             ]),
           ),
         ),
-      ],`;
+      ],`
     case 'rtl':
-      return '';
+      return ''
   }
-};
+}
 
 const emitFooter = (fixture: DialogFixture, isStyleX: boolean): string => {
   const cls = (tailwind: string, stylexRef: string) =>
-    isStyleX ? `className(${stylexRef})` : `'${tailwind}'`;
+    isStyleX ? `className(${stylexRef})` : `'${tailwind}'`
   switch (fixture.kind) {
     case 'profile':
       return `footer: slots => [
@@ -179,7 +189,7 @@ const emitFooter = (fixture: DialogFixture, isStyleX: boolean): string => {
           h.Type('button'),
           h.Class(${cls('rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground', 'styles.confirm')}),
         ], ['Save changes']),
-      ],`;
+      ],`
     case 'compact':
       return `footer: slots => [
         h.button([
@@ -193,7 +203,7 @@ const emitFooter = (fixture: DialogFixture, isStyleX: boolean): string => {
           h.Type('button'),
           h.Class(${cls('rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground', 'styles.confirm')}),
         ], ['Confirm']),
-      ],`;
+      ],`
     case 'share':
       return `footer: slots => [
         h.button([
@@ -201,7 +211,7 @@ const emitFooter = (fixture: DialogFixture, isStyleX: boolean): string => {
           h.Type('button'),
           h.Class(${cls('rounded-md border px-4 py-2 text-sm', 'styles.action')}),
         ], ['Close']),
-      ],`;
+      ],`
     case 'sticky':
       return `footer: slots => [
         h.button([
@@ -209,30 +219,34 @@ const emitFooter = (fixture: DialogFixture, isStyleX: boolean): string => {
           h.Type('button'),
           h.Class(${cls('rounded-md border px-4 py-2 text-sm', 'styles.action')}),
         ], ['Close']),
-      ],`;
+      ],`
     case 'noClose':
     case 'scroll':
     case 'rtl':
-      return '';
+      return ''
   }
-};
+}
 
 const emitMaxWidth = (fixture: DialogFixture, isStyleX: boolean): string => {
   switch (fixture.kind) {
     case 'profile':
     case 'compact':
     case 'rtl':
-      return isStyleX ? '      layoutStyle: styles.compact,\n' : "      class: 'sm:max-w-sm',\n";
+      return isStyleX
+        ? '      layoutStyle: styles.compact,\n'
+        : "      class: 'sm:max-w-sm',\n"
     case 'share':
-      return isStyleX ? '      layoutStyle: styles.shareWidth,\n' : "      class: 'sm:max-w-md',\n";
+      return isStyleX
+        ? '      layoutStyle: styles.shareWidth,\n'
+        : "      class: 'sm:max-w-md',\n"
     default:
-      return '';
+      return ''
   }
-};
+}
 
 const emitRtlLayout = (isStyleX: boolean): string => {
   const cls = (tailwind: string, stylexRef: string) =>
-    isStyleX ? `className(${stylexRef})` : `'${tailwind}'`;
+    isStyleX ? `className(${stylexRef})` : `'${tailwind}'`
   return `layout: parts => [
         h.div([h.Dir('rtl'), h.Class(${cls('grid gap-4', 'styles.fieldGrid')})], [
           parts.header({
@@ -268,22 +282,23 @@ const emitRtlLayout = (isStyleX: boolean): string => {
           }),
           parts.close({}),
         ]),
-      ],`;
-};
+      ],`
+}
 
-const hasInputs = (kind: DialogFixtureKind): boolean => kind === 'profile' || kind === 'rtl';
+const hasInputs = (kind: DialogFixtureKind): boolean =>
+  kind === 'profile' || kind === 'rtl'
 
-const sq = (value: string): string => value.replaceAll("'", "\\'");
+const sq = (value: string): string => value.replaceAll("'", "\\'")
 
 const dialogSource = (
   fixture: DialogFixture,
   _index: number,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '');
-  const isStyleX = renderer === 'stylex';
-  const inputs = hasInputs(fixture.kind);
-  const rtl = fixture.kind === 'rtl';
+  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
+  const isStyleX = renderer === 'stylex'
+  const inputs = hasInputs(fixture.kind)
+  const rtl = fixture.kind === 'rtl'
   return foldkitApplication({
     title: `Dialog — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
@@ -296,9 +311,13 @@ import * as Dialog from '@/${isStyleX ? 'stylex' : 'ui'}/dialog'${inputs || fixt
 export type Model = typeof Model.Type`,
     messages: `import { taggedStruct } from 'foldkit/schema'
 export const ClickedOpen = taggedStruct('ClickedOpen${tag}');
-export const GotDialogMessage = taggedStruct('GotDialogMessage${tag}', { message: Dialog.Message });${inputs ? `
+export const GotDialogMessage = taggedStruct('GotDialogMessage${tag}', { message: Dialog.Message });${
+      inputs
+        ? `
 export const ChangedName = taggedStruct('ChangedName${tag}', { value: S.String });
-export const ChangedUsername = taggedStruct('ChangedUsername${tag}', { value: S.String });` : ''}
+export const ChangedUsername = taggedStruct('ChangedUsername${tag}', { value: S.String });`
+        : ''
+    }
 export const Message = S.Union([ClickedOpen, GotDialogMessage${inputs ? ', ChangedName, ChangedUsername' : ''}])
 export type Message = typeof Message.Type`,
     init: `export const init = (): Update.Return<Model, Message> => ({ model: { dialog: Dialog.init({ id: 'dialog-${tag.toLowerCase()}', isAnimated: true })${inputs ? ", name: 'Pedro Duarte', username: '@peduarte'" : ''} } })`,
@@ -317,11 +336,15 @@ export const update = (
     case 'ClickedOpen${tag}':
       return mapDialog(model, Dialog.open(model.dialog))
     case 'GotDialogMessage${tag}':
-      return mapDialog(model, Dialog.update(model.dialog, message.message))${inputs ? `
+      return mapDialog(model, Dialog.update(model.dialog, message.message))${
+        inputs
+          ? `
     case 'ChangedName${tag}':
       return { model: { ...model, name: message.value } }
     case 'ChangedUsername${tag}':
-      return { model: { ...model, username: message.value } }` : ''}
+      return { model: { ...model, username: message.value } }`
+          : ''
+      }
   }
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
@@ -335,20 +358,25 @@ export const update = (
       model: model.dialog,
       toParentMessage: message => GotDialogMessage({ message }),
       title: '${sq(fixture.dialogTitle)}',${fixture.dialogDescription === undefined ? '' : `\n      description: '${sq(fixture.dialogDescription)}',`}
-${emitMaxWidth(fixture, isStyleX)}${fixture.kind === 'noClose' ? '      showCloseButton: false,\n' : ''}${rtl ? `      ${emitRtlLayout(isStyleX)}\n` : `      ${emitContent(fixture, isStyleX)}
-      ${emitFooter(fixture, isStyleX)}\n`}    }, h),
+${emitMaxWidth(fixture, isStyleX)}${fixture.kind === 'noClose' ? '      showCloseButton: false,\n' : ''}${
+      rtl
+        ? `      ${emitRtlLayout(isStyleX)}\n`
+        : `      ${emitContent(fixture, isStyleX)}
+      ${emitFooter(fixture, isStyleX)}\n`
+    }    }, h),
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const dialogExamples = (
   renderer: 'tailwind' | 'stylex',
-): ReadonlyArray<DocsExample> => dialogFixtures.map((fixture, index) => ({
-  title: fixture.title,
-  ...(fixture.description === undefined
-    ? {}
-    : { description: fixture.description }),
-  ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
-  code: dialogSource(fixture, index, renderer),
-}));
+): ReadonlyArray<DocsExample> =>
+  dialogFixtures.map((fixture, index) => ({
+    title: fixture.title,
+    ...(fixture.description === undefined
+      ? {}
+      : { description: fixture.description }),
+    ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
+    code: dialogSource(fixture, index, renderer),
+  }))

@@ -1,6 +1,6 @@
-import { authoredPage } from '@/docs/components/pages/authored-page';
-import { mobileNavExamples } from '@/docs/components/pages/mobile-nav/shared';
-import { mobileNavTailwindPreviewProgram } from '@/docs/components/pages/mobile-nav/tailwind';
+import { authoredPage } from '@/docs/components/pages/authored-page'
+import { mobileNavExamples } from '@/docs/components/pages/mobile-nav/shared'
+import { mobileNavTailwindPreviewProgram } from '@/docs/components/pages/mobile-nav/tailwind'
 
 export const mobileNavPage = authoredPage({
   slug: 'mobile-nav',
@@ -14,7 +14,7 @@ export const mobileNavPage = authoredPage({
     architecture:
       'MobileNav composes the Dialog submodel with a resolved side (' +
       "'start' | 'end' | 'auto'" +
-      '): auto inspects the toggle\'s viewport position at open time and slides in from the same edge. The toggle is a standalone button bound to the dialog by aria-controls.',
+      "): auto inspects the toggle's viewport position at open time and slides in from the same edge. The toggle is a standalone button bound to the dialog by aria-controls.",
     apiHref:
       'https://github.com/facebook/astryx/blob/main/packages/core/src/MobileNav/MobileNav.tsx',
     styling:
@@ -28,4 +28,4 @@ export const mobileNavPage = authoredPage({
     examples: mobileNavExamples('tailwind'),
     stylexExamples: mobileNavExamples('stylex'),
   },
-});
+})

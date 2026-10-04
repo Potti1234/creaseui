@@ -1,11 +1,11 @@
-import type { Update } from 'foldkit';
-import { Match as M, Schema as S } from 'effect';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
-import { modifyFields } from 'foldkit/struct';
+import type { Update } from 'foldkit'
+import { Match as M, Schema as S } from 'effect'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import { modifyFields } from 'foldkit/struct'
 
-import * as Icon from '@/demo/icon-preview';
-import { button } from '@/ui/button';
+import * as Icon from '@/demo/icon-preview'
+import { button } from '@/ui/button'
 import {
   card,
   cardContent,
@@ -13,30 +13,28 @@ import {
   cardFooter,
   cardHeader,
   cardTitle,
-} from '@/ui/card';
-import { field, fieldGroup, fieldLabel } from '@/ui/field';
-import { input } from '@/ui/input';
+} from '@/ui/card'
+import { field, fieldGroup, fieldLabel } from '@/ui/field'
+import { input } from '@/ui/input'
 import {
   itemContent,
   itemDescription,
   itemMedia,
   itemTitle,
   itemVariants,
-} from '@/ui/item';
+} from '@/ui/item'
 
 export const Model = S.Struct({
   email: S.String,
   password: S.String,
-});
-export type Model = typeof Model.Type;
-
-
+})
+export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
   UpdatedEmail: { value: S.String },
   UpdatedPassword: { value: S.String },
-});
-export type Message = typeof Message.Type;
+})
+export type Message = typeof Message.Type
 
 export const update = (
   model: Model,
@@ -45,15 +43,19 @@ export const update = (
   M.value(message).pipe(
     M.withReturnType<Update.Return<Model, Message>>(),
     M.tagsExhaustive({
-      UpdatedEmail: ({ value }) => ({ model: modifyFields(model, { email: () => value }) }),
-      UpdatedPassword: ({ value }) => ({ model: modifyFields(model, { password: () => value }) }),
+      UpdatedEmail: ({ value }) => ({
+        model: modifyFields(model, { email: () => value }),
+      }),
+      UpdatedPassword: ({ value }) => ({
+        model: modifyFields(model, { password: () => value }),
+      }),
     }),
-  );
+  )
 
 export const init = (): Model => ({
   email: 'artist@studio.inc',
   password: 'password123',
-});
+})
 
 const dangerZone = (h: HtmlBuilder<Message>): Html => {
   // PORT NOTE: src/ui/item.ts does not expose shadcn's asChild behavior,
@@ -93,8 +95,8 @@ const dangerZone = (h: HtmlBuilder<Message>): Html => {
       ),
       Icon.icon('arrow-right', { class: 'size-4' }, h),
     ],
-  );
-};
+  )
+}
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
   return card<Message>(
@@ -135,7 +137,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                               id: 'account-access-email',
                               type: 'email',
                               value: model.email,
-                              onInput: (value) => Message.UpdatedEmail({ value }),
+                              onInput: value => Message.UpdatedEmail({ value }),
                             },
                             h,
                           ),
@@ -172,7 +174,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                               id: 'account-access-password',
                               type: 'password',
                               value: model.password,
-                              onInput: (value) => Message.UpdatedPassword({ value }),
+                              onInput: value =>
+                                Message.UpdatedPassword({ value }),
                             },
                             h,
                           ),
@@ -210,8 +213,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 /*
 Stateful? yes.

@@ -1,30 +1,30 @@
-import { Option, Schema as S } from 'effect';
-import { Command } from 'foldkit';
-import { defineMessageUnion } from 'foldkit/message';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import { Option, Schema as S } from 'effect'
+import { Command } from 'foldkit'
+import { defineMessageUnion } from 'foldkit/message'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { definePreviewProgram } from '@/docs/components/pages/authored-page';
+import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
   accordionCardCopy,
   accordionFixtures,
   type AccordionFixture,
-} from '@/docs/components/pages/accordion/shared';
-import * as Accordion from '@/ui/accordion';
-import * as Card from '@/ui/card';
+} from '@/docs/components/pages/accordion/shared'
+import * as Accordion from '@/ui/accordion'
+import * as Card from '@/ui/card'
 
 const GotAccordionPreviewMessage = defineMessageUnion({
   GotAccordionPreviewMessage: {
     message: Accordion.Message,
   },
-});
-type GotAccordionPreviewMessage = typeof GotAccordionPreviewMessage.Type;
+})
+type GotAccordionPreviewMessage = typeof GotAccordionPreviewMessage.Type
 
 const AccordionPreviewModel = S.Struct({
   _docsPage: S.Literal('accordion'),
   accordion: Accordion.Model,
   maybeLastToggledValue: S.Option(S.String),
-});
-type AccordionPreviewModel = typeof AccordionPreviewModel.Type;
+})
+type AccordionPreviewModel = typeof AccordionPreviewModel.Type
 
 const fixtureViewInputs = (
   fixture: AccordionFixture,
@@ -33,7 +33,7 @@ const fixtureViewInputs = (
   ...(fixture.kind === 'borders'
     ? { class: 'rounded-lg border', itemClass: 'border-b px-4 last:border-b-0' }
     : {}),
-});
+})
 
 const fixtureView = <Msg>(
   fixture: AccordionFixture,
@@ -47,25 +47,36 @@ const fixtureView = <Msg>(
     view: Accordion.view,
     viewInputs: fixtureViewInputs(fixture),
     toParentMessage,
-  });
+  })
   switch (fixture.kind) {
     case 'card':
-      return Card.card({
-        class: 'w-full max-w-sm',
-        children: [
-          Card.cardHeader({ children: [
-            Card.cardTitle({ children: [accordionCardCopy.title] }, h),
-            Card.cardDescription({ children: [accordionCardCopy.description] }, h),
-          ] }, h),
-          Card.cardContent({ children: [submodel] }, h),
-        ],
-      }, h);
+      return Card.card(
+        {
+          class: 'w-full max-w-sm',
+          children: [
+            Card.cardHeader(
+              {
+                children: [
+                  Card.cardTitle({ children: [accordionCardCopy.title] }, h),
+                  Card.cardDescription(
+                    { children: [accordionCardCopy.description] },
+                    h,
+                  ),
+                ],
+              },
+              h,
+            ),
+            Card.cardContent({ children: [submodel] }, h),
+          ],
+        },
+        h,
+      )
     case 'rtl':
-      return h.div([h.Dir('rtl'), h.Class('w-full max-w-md')], [submodel]);
+      return h.div([h.Dir('rtl'), h.Class('w-full max-w-md')], [submodel])
     default:
-      return submodel;
+      return submodel
   }
-};
+}
 
 export const accordionTailwindPreviewProgram = definePreviewProgram<
   AccordionPreviewModel,
@@ -74,7 +85,7 @@ export const accordionTailwindPreviewProgram = definePreviewProgram<
   Model: AccordionPreviewModel,
   Message: GotAccordionPreviewMessage,
   init: index => {
-    const fixture = accordionFixtures[index] ?? accordionFixtures[0];
+    const fixture = accordionFixtures[index] ?? accordionFixtures[0]
     return {
       _docsPage: 'accordion',
       accordion: Accordion.init({
@@ -83,32 +94,42 @@ export const accordionTailwindPreviewProgram = definePreviewProgram<
         value: [...fixture.initialValue],
       }),
       maybeLastToggledValue: Option.none(),
-    };
+    }
   },
   update: (model, message) => {
-    const accordionOp__ = Accordion.update(
-      model.accordion,
-      message.message,
-    );
-    const accordion = accordionOp__.model;
-    const commands = accordionOp__.commands ?? [];
-    const maybeToggle = Option.fromNullishOr(accordionOp__.outMessage);;
-    return { model: {
+    const accordionOp__ = Accordion.update(model.accordion, message.message)
+    const accordion = accordionOp__.model
+    const commands = accordionOp__.commands ?? []
+    const maybeToggle = Option.fromNullishOr(accordionOp__.outMessage)
+    return {
+      model: {
         ...model,
         accordion,
         maybeLastToggledValue: Option.match(maybeToggle, {
           onNone: () => model.maybeLastToggledValue,
           onSome: changed => Option.some(changed.toggledValue),
         }),
-      }, commands: Command.mapMessages(commands, next =>
-        GotAccordionPreviewMessage.GotAccordionPreviewMessage({ message: next }),
-      ) };
+      },
+      commands: Command.mapMessages(commands, next =>
+        GotAccordionPreviewMessage.GotAccordionPreviewMessage({
+          message: next,
+        }),
+      ),
+    }
   },
   view: (index, model, h) => {
-    const fixture = accordionFixtures[index] ?? accordionFixtures[0];
-    return h.div([h.Class('w-full max-w-xl')], [
-      fixtureView(fixture, model.accordion, message =>
-        GotAccordionPreviewMessage.GotAccordionPreviewMessage({ message }), h),
-    ]);
+    const fixture = accordionFixtures[index] ?? accordionFixtures[0]
+    return h.div(
+      [h.Class('w-full max-w-xl')],
+      [
+        fixtureView(
+          fixture,
+          model.accordion,
+          message =>
+            GotAccordionPreviewMessage.GotAccordionPreviewMessage({ message }),
+          h,
+        ),
+      ],
+    )
   },
-});
+})

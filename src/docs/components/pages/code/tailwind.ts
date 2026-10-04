@@ -1,25 +1,29 @@
-import { Schema as S } from 'effect';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import { Schema as S } from 'effect'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-import { definePreviewProgram } from '@/docs/components/pages/authored-page';
+import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
   codeFixtures,
   type CodeFixture,
-} from '@/docs/components/pages/code/shared';
-import * as Code from '@/ui/code';
-import * as Heading from '@/ui/heading';
-import * as Text from '@/ui/text';
+} from '@/docs/components/pages/code/shared'
+import * as Code from '@/ui/code'
+import * as Heading from '@/ui/heading'
+import * as Text from '@/ui/text'
 
 const InteractedWithCodePreview = defineMessageUnion({
   InteractedWithCodePreview: {},
-});
-type InteractedWithCodePreview = typeof InteractedWithCodePreview.Type;
-const CodePreviewModel = S.Struct({ _docsPage: S.Literal('code') });
-type CodePreviewModel = typeof CodePreviewModel.Type;
+})
+type InteractedWithCodePreview = typeof InteractedWithCodePreview.Type
+const CodePreviewModel = S.Struct({ _docsPage: S.Literal('code') })
+type CodePreviewModel = typeof CodePreviewModel.Type
 
-const renderFixture = <Msg>(fixture: CodeFixture, h: HtmlBuilder<Msg>): Html => {
-  const inline = (content: string): Html => Code.code({ children: [content] }, h);
+const renderFixture = <Msg>(
+  fixture: CodeFixture,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const inline = (content: string): Html =>
+    Code.code({ children: [content] }, h)
   switch (fixture.kind) {
     case 'showcase':
       return h.div(
@@ -50,7 +54,7 @@ const renderFixture = <Msg>(fixture: CodeFixture, h: HtmlBuilder<Msg>): Html => 
             h,
           ),
         ],
-      );
+      )
     case 'inline':
       return Text.text(
         {
@@ -67,7 +71,7 @@ const renderFixture = <Msg>(fixture: CodeFixture, h: HtmlBuilder<Msg>): Html => 
           ],
         },
         h,
-      );
+      )
     case 'textSizes':
       return h.div(
         [h.Class('flex flex-col gap-4')],
@@ -112,7 +116,7 @@ const renderFixture = <Msg>(fixture: CodeFixture, h: HtmlBuilder<Msg>): Html => 
             h,
           ),
         ],
-      );
+      )
     case 'various':
       return h.div(
         [h.Class('flex flex-col gap-4')],
@@ -140,9 +144,9 @@ const renderFixture = <Msg>(fixture: CodeFixture, h: HtmlBuilder<Msg>): Html => 
             ],
           ),
         ),
-      );
+      )
   }
-};
+}
 
 export const codeTailwindPreviewProgram = definePreviewProgram<
   CodePreviewModel,
@@ -154,4 +158,4 @@ export const codeTailwindPreviewProgram = definePreviewProgram<
   update: model => ({ model: model }),
   view: (index, _model, h) =>
     renderFixture(codeFixtures[index] ?? codeFixtures[0], h),
-});
+})

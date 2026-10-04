@@ -1,6 +1,6 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils'
 
 /* Ported from Meta Astryx VisuallyHidden/VisuallyHidden.tsx — the canonical
    "visually hidden" clip block. `clip: rect(...)` (what Tailwind's `sr-only`
@@ -32,7 +32,7 @@ export type VisuallyHiddenElement =
   | 'span'
   | 'strong'
   | 'ul'
-  | 'ol';
+  | 'ol'
 
 export type VisuallyHiddenProps = Readonly<{
   /**
@@ -42,15 +42,15 @@ export type VisuallyHiddenProps = Readonly<{
    * not a visual one.
    * @default 'span'
    */
-  as?: VisuallyHiddenElement;
+  as?: VisuallyHiddenElement
   /** Optional live-region politeness for announced updates. */
-  ariaLive?: 'polite' | 'assertive' | 'off';
+  ariaLive?: 'polite' | 'assertive' | 'off'
   /** Optional ARIA role for the hidden element. */
-  role?: string;
+  role?: string
   /** Optional element id. */
-  id?: string;
-  children: ReadonlyArray<Html | string>;
-}>;
+  id?: string
+  children: ReadonlyArray<Html | string>
+}>
 
 export const visuallyHidden = <Msg>(
   props: VisuallyHiddenProps,
@@ -59,15 +59,11 @@ export const visuallyHidden = <Msg>(
   return h[props.as ?? 'span'](
     [
       h.DataAttribute('slot', 'visually-hidden'),
-      h.Class(
-        cn(
-          'sr-only top-0 start-0 pointer-events-none select-none',
-        ),
-      ),
+      h.Class(cn('sr-only top-0 start-0 pointer-events-none select-none')),
       ...(props.ariaLive === undefined ? [] : [h.AriaLive(props.ariaLive)]),
       ...(props.role === undefined ? [] : [h.Role(props.role)]),
       ...(props.id === undefined ? [] : [h.Id(props.id)]),
     ],
     [...props.children],
-  );
-};
+  )
+}

@@ -271,4 +271,3 @@ names and metadata until a namespace is available.
 - [ ] Upgrade preview detects a locally modified component.
 - [ ] No normal command overwrites local changes without explicit authorization.
 - [ ] Version drift between package, metadata, and docs fails CI.
-

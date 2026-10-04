@@ -1,20 +1,24 @@
-
-
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
-import type { PageDefinition } from '@/docs/components/page-definition';
-import type { ComponentKind } from '@/docs/components/page-definition';
-import type * as Sonner from '@/ui/sonner';
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
+import type { PageDefinition } from '@/docs/components/page-definition'
+import type { ComponentKind } from '@/docs/components/page-definition'
+import type * as Sonner from '@/ui/sonner'
 
 export type NotificationConfig = Readonly<{
-  slug: 'sonner' | 'toast';
-  title: 'Sonner' | 'Toast';
-  namespace: 'Sonner' | 'Toast';
-  description: string;
-  kind: ComponentKind;
-}>;
+  slug: 'sonner' | 'toast'
+  title: 'Sonner' | 'Toast'
+  namespace: 'Sonner' | 'Toast'
+  description: string
+  kind: ComponentKind
+}>
 
-const application = (config: NotificationConfig, example: string, variant: Sonner.Variant, sticky: boolean, renderer: 'tailwind' | 'stylex'): string => {
-  const factory = variant.toLowerCase();
+const application = (
+  config: NotificationConfig,
+  example: string,
+  variant: Sonner.Variant,
+  sticky: boolean,
+  renderer: 'tailwind' | 'stylex',
+): string => {
+  const factory = variant.toLowerCase()
   return foldkitApplication({
     title: `${config.title} — ${example}`,
     imports: `import { Option, Schema as S } from 'effect'
@@ -70,16 +74,39 @@ export const update = (model: Model, message: Message): Update.Return<Model, Mes
     }, h),
   ]),
 })`,
-  });
-};
+  })
+}
 
-export const notificationExamples = (config: NotificationConfig, renderer: 'tailwind' | 'stylex') => [
-  { title: 'Timed notification', description: 'Showing a non-sticky entry returns a delay Command that is mapped through the parent Message.', code: application(config, 'Timed notification', 'Success', false, renderer) },
-  { title: 'Sticky error', description: 'A sticky error remains until its action or dismiss control emits a typed parent-handled fact.', code: application(config, 'Sticky error', 'Error', true, renderer) },
-] as const;
+export const notificationExamples = (
+  config: NotificationConfig,
+  renderer: 'tailwind' | 'stylex',
+) =>
+  [
+    {
+      title: 'Timed notification',
+      description:
+        'Showing a non-sticky entry returns a delay Command that is mapped through the parent Message.',
+      code: application(
+        config,
+        'Timed notification',
+        'Success',
+        false,
+        renderer,
+      ),
+    },
+    {
+      title: 'Sticky error',
+      description:
+        'A sticky error remains until its action or dismiss control emits a typed parent-handled fact.',
+      code: application(config, 'Sticky error', 'Error', true, renderer),
+    },
+  ] as const
 
-export const notificationDefinition = (config: NotificationConfig): PageDefinition => ({
-  kind: config.kind, description: config.description,
+export const notificationDefinition = (
+  config: NotificationConfig,
+): PageDefinition => ({
+  kind: config.kind,
+  description: config.description,
   architecture: `${config.title} uses the canonical notification Model. show and updateToast issue versioned delay Commands; stale completions are ignored. ActivatedToast and DismissedToast OutMessages keep application consequences in the parent.`,
   usage: `const { model: notifications, commands = [] } = ${config.namespace}.show(
   model.notifications,
@@ -92,8 +119,13 @@ ${config.namespace}.${config.slug}({
 }, h)`,
   apiHref: 'https://foldkit.dev/guide/effects',
   composition: `Parent Model\n└── ${config.title} Model\n    ├── stable keyed entries\n    ├── variant + payload + duration\n    ├── optional action → parent Message\n    └── dismiss/timer Message + OutMessage`,
-  styling: 'The fixed viewport stacks keyed notifications. Prefer brief titles, useful descriptions, and one clear action; sticky notifications require an obvious dismissal route.',
-  accessibility: 'The viewport is a named polite live region. Error entries use alert while other variants use status. Actions and dismiss controls are real, labeled buttons.',
-  keyboard: [['Tab', 'Moves to an action or dismiss button in a visible notification.'], ['Enter / Space', 'Runs the focused action or dismisses the entry.']],
+  styling:
+    'The fixed viewport stacks keyed notifications. Prefer brief titles, useful descriptions, and one clear action; sticky notifications require an obvious dismissal route.',
+  accessibility:
+    'The viewport is a named polite live region. Error entries use alert while other variants use status. Actions and dismiss controls are real, labeled buttons.',
+  keyboard: [
+    ['Tab', 'Moves to an action or dismiss button in a visible notification.'],
+    ['Enter / Space', 'Runs the focused action or dismisses the entry.'],
+  ],
   examples: notificationExamples(config, 'tailwind'),
-});
+})

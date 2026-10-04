@@ -1,8 +1,8 @@
-import type { DocsExample } from '@/docs/components/page-definition';
+import type { DocsExample } from '@/docs/components/page-definition'
 import {
   foldkitApplication,
   staticComponentApplication,
-} from '@/docs/components/pages/authored-page';
+} from '@/docs/components/pages/authored-page'
 
 export type EmptyKind =
   | 'demo'
@@ -11,30 +11,33 @@ export type EmptyKind =
   | 'avatar'
   | 'avatarGroup'
   | 'inputGroup'
-  | 'rtl';
+  | 'rtl'
 
 export type EmptyFixture = Readonly<{
-  title: string;
-  description?: string;
-  heroOnly?: boolean;
-  kind: EmptyKind;
-}>;
+  title: string
+  description?: string
+  heroOnly?: boolean
+  kind: EmptyKind
+}>
 
 export const emptyFixtures: ReadonlyArray<EmptyFixture> = [
   { title: 'Create a project', heroOnly: true, kind: 'demo' },
   {
     title: 'Outline',
-    description: 'A dashed border turns the empty state into a drop-zone style surface.',
+    description:
+      'A dashed border turns the empty state into a drop-zone style surface.',
     kind: 'outline',
   },
   {
     title: 'Background',
-    description: 'A muted background keeps the empty state present without a border.',
+    description:
+      'A muted background keeps the empty state present without a border.',
     kind: 'background',
   },
   {
     title: 'Avatar',
-    description: 'EmptyMedia can hold a single Avatar to explain who the state belongs to.',
+    description:
+      'EmptyMedia can hold a single Avatar to explain who the state belongs to.',
     kind: 'avatar',
   },
   {
@@ -44,15 +47,17 @@ export const emptyFixtures: ReadonlyArray<EmptyFixture> = [
   },
   {
     title: 'InputGroup',
-    description: 'EmptyContent can host a search InputGroup with addons and a shortcut hint.',
+    description:
+      'EmptyContent can host a search InputGroup with addons and a shortcut hint.',
     kind: 'inputGroup',
   },
   {
     title: 'RTL',
-    description: 'Wrap the composition in dir="rtl" to mirror the layout for Arabic.',
+    description:
+      'Wrap the composition in dir="rtl" to mirror the layout for Arabic.',
     kind: 'rtl',
   },
-];
+]
 
 export const emptyRtlCopy = {
   title: 'لا توجد مشاريع بعد',
@@ -60,9 +65,9 @@ export const emptyRtlCopy = {
   create: 'إنشاء مشروع',
   import: 'استيراد مشروع',
   learnMore: 'تعرف على المزيد',
-} as const;
+} as const
 
-const sq = (value: string): string => value.replaceAll("'", "\\'");
+const sq = (value: string): string => value.replaceAll("'", "\\'")
 
 const emitStyles = `const styles = stylex.create({
   empty: { maxWidth: '36rem', width: '100%' },
@@ -94,26 +99,26 @@ const emitStyles = `const styles = stylex.create({
   },
   inputWidth: { width: '75%' },
   descWidth: { maxWidth: '20rem' },
-})`;
+})`
 
 const emitBody = (fixture: EmptyFixture, isStyleX: boolean): string => {
   const cls = (tailwind: string, stylexRef: string) =>
-    isStyleX ? `className(${stylexRef})` : `'${tailwind}'`;
+    isStyleX ? `className(${stylexRef})` : `'${tailwind}'`
   const emptyProps = isStyleX
     ? `layoutStyle: styles.empty,`
-    : `class: 'w-full max-w-xl',`;
+    : `class: 'w-full max-w-xl',`
   const media = (variant: 'icon' | 'default', children: string) =>
-    `Empty.emptyMedia({ variant: '${variant}', children: [${children}] }, h)`;
+    `Empty.emptyMedia({ variant: '${variant}', children: [${children}] }, h)`
   const header = (title: string, description: string, mediaCall: string) =>
     `Empty.emptyHeader({ children: [
         ${mediaCall},
         Empty.emptyTitle({ children: ['${sq(title)}'] }, h),
         Empty.emptyDescription({ children: ['${sq(description)}'] }, h),
-      ] }, h)`;
+      ] }, h)`
   const content = (children: string) =>
-    `Empty.emptyContent({ children: [${children}] }, h)`;
+    `Empty.emptyContent({ children: [${children}] }, h)`
   const button = (variant: string, label: string, extra?: string) =>
-    `Button.button({ variant: '${variant}', size: 'sm', onClick: NoOp(), children: [${extra === undefined ? '' : `${extra}, `}'${sq(label)}'] }, h)`;
+    `Button.button({ variant: '${variant}', size: 'sm', onClick: NoOp(), children: [${extra === undefined ? '' : `${extra}, `}'${sq(label)}'] }, h)`
   switch (fixture.kind) {
     case 'demo': {
       const inner = `Empty.empty({
@@ -133,8 +138,8 @@ const emitBody = (fixture: EmptyFixture, isStyleX: boolean): string => {
         h.Class(${cls('inline-flex items-center gap-1 text-sm text-muted-foreground underline-offset-4 hover:underline', 'styles.linkRow')}),
       ], ['Learn More', Icon.icon('arrow-up-right', {}, h)]),
     ],
-  }, h)`;
-      return inner;
+  }, h)`
+      return inner
     }
     case 'outline':
       return `${isStyleX ? `h.div([h.Class(className(styles.dashedBox))], [` : ''}Empty.empty({
@@ -147,7 +152,7 @@ const emitBody = (fixture: EmptyFixture, isStyleX: boolean): string => {
       )},
       ${content(button('outline', 'Upload Files'))},
     ],
-  }, h)${isStyleX ? '])' : ''}`;
+  }, h)${isStyleX ? '])' : ''}`
     case 'background':
       return `${isStyleX ? `h.div([h.Class(className(styles.backgroundBox))], [` : ''}Empty.empty({
     ${emptyProps}
@@ -159,7 +164,7 @@ const emitBody = (fixture: EmptyFixture, isStyleX: boolean): string => {
       )},
       ${content(`Button.button({ variant: 'outline', size: 'sm', onClick: NoOp(), children: [Icon.icon('refresh-ccw', {}, h), 'Refresh'] }, h)`)},
     ],
-  }, h)${isStyleX ? '])' : ''}`;
+  }, h)${isStyleX ? '])' : ''}`
     case 'avatar':
       return `Empty.empty({
     ${emptyProps}
@@ -177,7 +182,7 @@ const emitBody = (fixture: EmptyFixture, isStyleX: boolean): string => {
       )},
       ${content(button('default', 'Leave Message'))},
     ],
-  }, h)`;
+  }, h)`
     case 'avatarGroup':
       return `Empty.empty({
     ${emptyProps}
@@ -206,7 +211,7 @@ const emitBody = (fixture: EmptyFixture, isStyleX: boolean): string => {
       )},
       ${content(`Button.button({ variant: 'default', size: 'sm', onClick: NoOp(), children: [Icon.icon('plus', {}, h), 'Invite Members'] }, h)`)},
     ],
-  }, h)`;
+  }, h)`
     case 'inputGroup':
       return `Empty.empty({
     ${emptyProps}
@@ -226,7 +231,7 @@ const emitBody = (fixture: EmptyFixture, isStyleX: boolean): string => {
         ] }, h),
       ] }, h),
     ],
-  }, h)`;
+  }, h)`
     case 'rtl':
       return `h.div([h.Dir('rtl')], [
     Empty.empty({
@@ -247,24 +252,29 @@ const emitBody = (fixture: EmptyFixture, isStyleX: boolean): string => {
         ], ['${emptyRtlCopy.learnMore}', Icon.icon('arrow-up-right', {}, h)]),
       ],
     }, h),
-  ])`;
+  ])`
   }
-};
+}
 
 const emitImports = (fixture: EmptyFixture, isStyleX: boolean): string => {
-  const parts: string[] = [];
+  const parts: string[] = []
   if (fixture.kind === 'avatar' || fixture.kind === 'avatarGroup')
-    parts.push(`import * as Avatar from '@/${isStyleX ? 'stylex' : 'ui'}/avatar'`);
+    parts.push(
+      `import * as Avatar from '@/${isStyleX ? 'stylex' : 'ui'}/avatar'`,
+    )
   if (fixture.kind === 'inputGroup')
     parts.push(
       `import * as InputGroup from '@/${isStyleX ? 'stylex' : 'ui'}/input-group'\nimport * as Kbd from '@/${isStyleX ? 'stylex' : 'ui'}/kbd'`,
-    );
-  parts.push(`import * as Button from '@/${isStyleX ? 'stylex' : 'ui'}/button'`);
-  parts.push(`import * as Icon from '@/lib/icon'`);
-  return `${isStyleX ? `import * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\n\n${emitStyles}\n\n` : ''}${parts.join('\n')}`;
-};
+    )
+  parts.push(`import * as Button from '@/${isStyleX ? 'stylex' : 'ui'}/button'`)
+  parts.push(`import * as Icon from '@/lib/icon'`)
+  return `${isStyleX ? `import * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\n\n${emitStyles}\n\n` : ''}${parts.join('\n')}`
+}
 
-const emitInputGroupApplication = (fixture: EmptyFixture, isStyleX: boolean): string =>
+const emitInputGroupApplication = (
+  fixture: EmptyFixture,
+  isStyleX: boolean,
+): string =>
   foldkitApplication({
     title: `Empty — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
@@ -294,19 +304,21 @@ export type Message = typeof Message.Type`,
   title: 'Empty — ${fixture.title}',
   body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
 ${emitBody(fixture, isStyleX)
-      .split('\n')
-      .map(line => `    ${line}`)
-      .join('\n')}
+  .split('\n')
+  .map(line => `    ${line}`)
+  .join('\n')}
   ]),
 })`,
-  });
+  })
 
 export const emptyExamples = (
   renderer: 'tailwind' | 'stylex',
 ): ReadonlyArray<DocsExample> =>
   emptyFixtures.map(fixture => ({
     title: fixture.title,
-    ...(fixture.description === undefined ? {} : { description: fixture.description }),
+    ...(fixture.description === undefined
+      ? {}
+      : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code:
       fixture.kind === 'inputGroup'
@@ -319,4 +331,4 @@ export const emptyExamples = (
             componentImports: emitImports(fixture, renderer === 'stylex'),
             viewBody: emitBody(fixture, renderer === 'stylex'),
           }),
-  }));
+  }))

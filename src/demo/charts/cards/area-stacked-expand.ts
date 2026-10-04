@@ -1,8 +1,8 @@
-import type { EChartsOption } from 'echarts/types/dist/shared';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { EChartsOption } from 'echarts/types/dist/shared'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Chart from '@/lib/echarts';
-import * as Icon from '@/lib/icon';
+import * as Chart from '@/lib/echarts'
+import * as Icon from '@/lib/icon'
 import {
   card,
   cardContent,
@@ -10,11 +10,11 @@ import {
   cardFooter,
   cardHeader,
   cardTitle,
-} from '@/ui/card';
+} from '@/ui/card'
 
-const HOST_ID = 'chart-area-stacked-expand';
+const HOST_ID = 'chart-area-stacked-expand'
 
-const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June'];
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June']
 const RAW = [
   { desktop: 186, mobile: 80, other: 45 },
   { desktop: 305, mobile: 200, other: 100 },
@@ -22,18 +22,18 @@ const RAW = [
   { desktop: 73, mobile: 190, other: 50 },
   { desktop: 209, mobile: 130, other: 100 },
   { desktop: 214, mobile: 140, other: 160 },
-] as const;
+] as const
 
 const share = (
   row: (typeof RAW)[number],
   key: 'desktop' | 'mobile' | 'other',
-): number => row[key] / (row.desktop + row.mobile + row.other);
+): number => row[key] / (row.desktop + row.mobile + row.other)
 
 Chart.registerChart(HOST_ID, (theme): EChartsOption => ({
   grid: Chart.compactGrid({ top: 12 }),
   xAxis: Chart.categoryAxis(
     theme,
-    MONTHS.map((month) => month.slice(0, 3)),
+    MONTHS.map(month => month.slice(0, 3)),
   ),
   yAxis: {
     type: 'value',
@@ -48,7 +48,7 @@ Chart.registerChart(HOST_ID, (theme): EChartsOption => ({
   },
   tooltip: {
     ...Chart.shadcnTooltip(theme),
-    valueFormatter: (value) => `${Math.round(Number(value) * 100)}%`,
+    valueFormatter: value => `${Math.round(Number(value) * 100)}%`,
   },
   series: [
     {
@@ -60,7 +60,7 @@ Chart.registerChart(HOST_ID, (theme): EChartsOption => ({
       lineStyle: { width: 2, color: theme.chart3 },
       itemStyle: { color: theme.chart3 },
       areaStyle: { color: Chart.colorWithOpacity(theme.chart3, 0.1) },
-      data: RAW.map((row) => share(row, 'other')),
+      data: RAW.map(row => share(row, 'other')),
     },
     {
       name: 'Mobile',
@@ -71,7 +71,7 @@ Chart.registerChart(HOST_ID, (theme): EChartsOption => ({
       lineStyle: { width: 2, color: theme.chart2 },
       itemStyle: { color: theme.chart2 },
       areaStyle: { color: Chart.colorWithOpacity(theme.chart2, 0.4) },
-      data: RAW.map((row) => share(row, 'mobile')),
+      data: RAW.map(row => share(row, 'mobile')),
     },
     {
       name: 'Desktop',
@@ -82,10 +82,10 @@ Chart.registerChart(HOST_ID, (theme): EChartsOption => ({
       lineStyle: { width: 2, color: theme.chart1 },
       itemStyle: { color: theme.chart1 },
       areaStyle: { color: Chart.colorWithOpacity(theme.chart1, 0.4) },
-      data: RAW.map((row) => share(row, 'desktop')),
+      data: RAW.map(row => share(row, 'desktop')),
     },
   ],
-}));
+}))
 
 export const view = <Msg>(
   toMessage: (message: Chart.ChartMessage) => Msg,
@@ -167,5 +167,5 @@ export const view = <Msg>(
       ],
     },
     h,
-  );
-};
+  )
+}

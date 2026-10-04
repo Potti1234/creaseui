@@ -1,13 +1,14 @@
 name: Bug report
 description: Report a reproducible behavior, accessibility, visual, documentation, or registry problem.
-title: "[bug]: "
+title: '[bug]: '
 labels: [bug]
 body:
   - type: dropdown
     id: dimension
     attributes:
       label: Quality dimension
-      options: [Behavior, Accessibility, Visual, Composition, Documentation, Registry]
+      options:
+        [Behavior, Accessibility, Visual, Composition, Documentation, Registry]
     validations:
       required: true
   - type: input

@@ -1,6 +1,6 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { barChart } from '@/ui/chart';
+import { barChart } from '@/ui/chart'
 import {
   card,
   cardContent,
@@ -8,9 +8,9 @@ import {
   cardFooter,
   cardHeader,
   cardTitle,
-} from '@/ui/card';
-import { progress } from '@/ui/progress';
-import { separator } from '@/ui/separator';
+} from '@/ui/card'
+import { progress } from '@/ui/progress'
+import { separator } from '@/ui/separator'
 
 const chartData = [
   { label: '6a', value: 1.2 },
@@ -21,7 +21,7 @@ const chartData = [
   { label: '4p', value: 2.9 },
   { label: '6p', value: 3.8 },
   { label: '8p', value: 3.2 },
-] as const;
+] as const
 
 export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
   return card(
@@ -112,7 +112,7 @@ export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 // Stateful? no. Submodels wired: none. PORT NOTEs: Recharts replaced by @/ui/chart barChart.

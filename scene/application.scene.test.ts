@@ -30,7 +30,9 @@ describe('application scenes', () => {
       Scene.Mount.resolve(
         Chart.MountChart,
         Landing.Message.GotChartMessage({
-          message: Chart.ChartMessage.ChartMounted({ hostId: 'landing-hero-chart' }),
+          message: Chart.ChartMessage.ChartMounted({
+            hostId: 'landing-hero-chart',
+          }),
         }),
       ),
     )
@@ -41,9 +43,14 @@ describe('application scenes', () => {
       { update, view },
       Scene.given(modelAt('/blocks/sidebar')),
       Scene.expect(
-        Scene.role('heading', { level: 1, name: 'Building Blocks for Foldkit' }),
+        Scene.role('heading', {
+          level: 1,
+          name: 'Building Blocks for Foldkit',
+        }),
       ).toExist(),
-      Scene.expect(Scene.role('link', { name: 'Open dashboard-01 in Tailwind' })).toExist(),
+      Scene.expect(
+        Scene.role('link', { name: 'Open dashboard-01 in Tailwind' }),
+      ).toExist(),
     )
   })
 })

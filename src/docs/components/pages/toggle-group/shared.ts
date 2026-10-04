@@ -1,35 +1,35 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type TGItem = Readonly<{
-  value: string;
-  label?: string;
-  icon?: string;
-  ariaLabel: string;
-  isDisabled?: boolean;
-  weight?: 'light' | 'normal' | 'medium' | 'bold';
-}>;
+  value: string
+  label?: string
+  icon?: string
+  ariaLabel: string
+  isDisabled?: boolean
+  weight?: 'light' | 'normal' | 'medium' | 'bold'
+}>
 
 export type TGGroupSpec = Readonly<{
-  id: string;
-  ariaLabel: string;
-  items: ReadonlyArray<TGItem>;
-  multiple: boolean;
-  selected: ReadonlyArray<string>;
-  variant?: 'outline';
-  size?: 'sm' | 'lg';
-  arrangement?: 'wrapped';
-  orientation?: 'vertical';
-  rtl?: boolean;
-}>;
+  id: string
+  ariaLabel: string
+  items: ReadonlyArray<TGItem>
+  multiple: boolean
+  selected: ReadonlyArray<string>
+  variant?: 'outline'
+  size?: 'sm' | 'lg'
+  arrangement?: 'wrapped'
+  orientation?: 'vertical'
+  rtl?: boolean
+}>
 
 export type TGFixture = Readonly<{
-  title: string;
-  description?: string;
-  heroOnly?: boolean;
-  kind: 'default' | 'stack' | 'custom';
-  groups: ReadonlyArray<TGGroupSpec>;
-}>;
+  title: string
+  description?: string
+  heroOnly?: boolean
+  kind: 'default' | 'stack' | 'custom'
+  groups: ReadonlyArray<TGGroupSpec>
+}>
 
 const iconItem = (
   value: string,
@@ -41,30 +41,31 @@ const iconItem = (
   icon,
   ariaLabel: `Toggle ${label}`,
   ...(isDisabled === true ? { isDisabled: true } : {}),
-});
+})
 
 const formatItems: ReadonlyArray<TGItem> = [
   iconItem('bold', 'bold', 'bold'),
   iconItem('italic', 'italic', 'italic'),
   iconItem('underline', 'underline', 'strikethrough'),
-];
+]
 
-const directionItems = (
-  isDisabled?: boolean,
-): ReadonlyArray<TGItem> =>
+const directionItems = (isDisabled?: boolean): ReadonlyArray<TGItem> =>
   (['top', 'bottom', 'left', 'right'] as const).map(value => ({
     value,
     label: value[0]!.toUpperCase() + value.slice(1),
     ariaLabel: `Toggle ${value}`,
     ...(isDisabled === true ? { isDisabled: true } : {}),
-  }));
+  }))
 
-const weightItem = (value: TGItem['weight'] & string, label: string): TGItem => ({
+const weightItem = (
+  value: TGItem['weight'] & string,
+  label: string,
+): TGItem => ({
   value,
   label,
   ariaLabel: label,
   weight: value,
-});
+})
 
 export const toggleGroupFixtures: Readonly<[TGFixture, ...Array<TGFixture>]> = [
   {
@@ -213,9 +214,9 @@ export const toggleGroupFixtures: Readonly<[TGFixture, ...Array<TGFixture>]> = [
       },
     ],
   },
-];
+]
 
-const cap = (value: string): string => value[0]!.toUpperCase() + value.slice(1);
+const cap = (value: string): string => value[0]!.toUpperCase() + value.slice(1)
 
 const itemEmit = (item: TGItem, isStyleX: boolean): string => {
   const children =
@@ -235,17 +236,28 @@ const itemEmit = (item: TGItem, isStyleX: boolean): string => {
         h.span([h.Class('text-xs text-muted-foreground')], ['${item.label ?? ''}']),
       ]),
     ]`
-        : `children: ['${item.label ?? ''}']`;
+        : `children: ['${item.label ?? ''}']`
   return `      {
         value: '${item.value}',
-        ariaLabel: '${item.ariaLabel}',${item.isDisabled === true ? `
-        isDisabled: true,` : ''}${item.weight !== undefined && !isStyleX ? `
-        class: 'flex size-16 flex-col items-center justify-center rounded-xl',` : ''}
+        ariaLabel: '${item.ariaLabel}',${
+          item.isDisabled === true
+            ? `
+        isDisabled: true,`
+            : ''
+        }${
+          item.weight !== undefined && !isStyleX
+            ? `
+        class: 'flex size-16 flex-col items-center justify-center rounded-xl',`
+            : ''
+        }
         ${children},
-      }`;
-};
+      }`
+}
 
-const groupCallEmit = (group: TGGroupSpec, isStyleX: boolean): string => `ExampleGroup.toggleGroup({
+const groupCallEmit = (
+  group: TGGroupSpec,
+  isStyleX: boolean,
+): string => `ExampleGroup.toggleGroup({
       model: model.groups['${group.id}'] ?? ToggleGroup.init({ id: '${group.id}' }),
       toParentMessage: message =>
         GotToggleGroupMessage({ id: '${group.id}', message }),
@@ -253,22 +265,42 @@ const groupCallEmit = (group: TGGroupSpec, isStyleX: boolean): string => `Exampl
       ${group.multiple ? 'values' : 'value'}: ${group.multiple ? `model.selections['${group.id}'] ?? []` : `model.selections['${group.id}']?.[0] ?? '${group.selected[0] ?? ''}'`},
       items: [
 ${group.items.map(item => itemEmit(item, isStyleX)).join(',\n')},
-      ],${group.variant === 'outline' ? `
-      variant: 'outline',` : ''}${group.size !== undefined ? `
-      size: '${group.size}',` : ''}${group.arrangement === 'wrapped' ? `
-      arrangement: 'wrapped',` : ''}${group.orientation === 'vertical' ? `
-      orientation: 'vertical',` : ''}${group.rtl === true ? `
-      direction: 'rtl',` : ''}
-    }, h)`;
+      ],${
+        group.variant === 'outline'
+          ? `
+      variant: 'outline',`
+          : ''
+      }${
+        group.size !== undefined
+          ? `
+      size: '${group.size}',`
+          : ''
+      }${
+        group.arrangement === 'wrapped'
+          ? `
+      arrangement: 'wrapped',`
+          : ''
+      }${
+        group.orientation === 'vertical'
+          ? `
+      orientation: 'vertical',`
+          : ''
+      }${
+        group.rtl === true
+          ? `
+      direction: 'rtl',`
+          : ''
+      }
+    }, h)`
 
 const viewBodyEmit = (fixture: TGFixture, isStyleX: boolean): string => {
   if (fixture.kind === 'stack') {
     return `    h.div([h.Class(${isStyleX ? 'className(styles.stack)' : "'flex flex-col gap-4'"})], [
 ${fixture.groups.map(group => `      ${groupCallEmit(group, isStyleX)}`).join(',\n')},
-    ])`;
+    ])`
   }
   if (fixture.kind === 'custom') {
-    const group = fixture.groups[0]!;
+    const group = fixture.groups[0]!
     return `    Field.field({
       children: [
         Field.fieldLabel({ children: ['Font Weight'] }, h),
@@ -283,29 +315,44 @@ ${fixture.groups.map(group => `      ${groupCallEmit(group, isStyleX)}`).join(',
           ],
         }, h),
       ],
-    }, h)`;
+    }, h)`
   }
-  return `    ${groupCallEmit(fixture.groups[0]!, isStyleX)}`;
-};
+  return `    ${groupCallEmit(fixture.groups[0]!, isStyleX)}`
+}
 
 const emitSource = (fixture: TGFixture, isStyleX: boolean): string => {
-  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '');
-  const lib = isStyleX ? 'stylex' : 'ui';
+  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
+  const lib = isStyleX ? 'stylex' : 'ui'
   const usesIcon = fixture.groups.some(group =>
-    group.items.some(item => item.icon !== undefined));
-  const groupIds = fixture.groups.map(group => group.id);
+    group.items.some(item => item.icon !== undefined),
+  )
+  const groupIds = fixture.groups.map(group => group.id)
   return foldkitApplication({
     title: `Toggle Group — ${fixture.title}`,
     imports: `import { Option, Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { taggedStruct } from 'foldkit/schema'
-${isStyleX ? `import * as stylex from '@stylexjs/stylex'
+${
+  isStyleX
+    ? `import * as stylex from '@stylexjs/stylex'
 import { className } from '@/stylex/style'
-` : ''}${usesIcon ? `import * as Icon from '@/lib/icon'
-` : ''}import * as ToggleGroup from '@/${lib}/toggle-group'${fixture.kind === 'custom' ? `
-import * as Field from '@/${lib}/field'` : ''}
-${isStyleX ? `const styles = stylex.create({
+`
+    : ''
+}${
+      usesIcon
+        ? `import * as Icon from '@/lib/icon'
+`
+        : ''
+    }import * as ToggleGroup from '@/${lib}/toggle-group'${
+      fixture.kind === 'custom'
+        ? `
+import * as Field from '@/${lib}/field'`
+        : ''
+    }
+${
+  isStyleX
+    ? `const styles = stylex.create({
   stack: { display: 'flex', flexDirection: 'column', gap: '1rem' },
   weightItem: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '4rem', height: '4rem', borderRadius: '0.75rem' },
   weightLight: { fontSize: '1.5rem', lineHeight: 1, fontWeight: 300 },
@@ -315,7 +362,9 @@ ${isStyleX ? `const styles = stylex.create({
   weightLabel: { fontSize: '0.75rem', lineHeight: '1rem', color: 'var(--muted-foreground)' },
   inlineCode: { borderRadius: '0.375rem', backgroundColor: 'var(--muted)', paddingInline: '0.25rem', paddingBlock: '0.125rem', fontFamily: 'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)' },
 })
-` : ''}`,
+`
+    : ''
+}`,
     model: `const ExampleGroup = ToggleGroup.create<string>()
 export const Model = S.Struct({
   groups: S.Record(S.String, ToggleGroup.Model),
@@ -379,8 +428,8 @@ ${fixture.groups.map(group => `      '${group.id}': [${group.selected.map(value 
 ${viewBodyEmit(fixture, isStyleX)},
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const toggleGroupExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -392,4 +441,4 @@ export const toggleGroupExamples = (
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitSource(fixture, renderer === 'stylex'),
-  }));
+  }))

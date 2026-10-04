@@ -193,13 +193,16 @@ const statusIcon = <Msg>(
   type: 'error' | 'warning' | 'success',
   h: HtmlBuilder<Msg>,
 ): Html =>
-  h.span([h.Class(STATUS_ICON_CLASS[type]), h.AriaHidden(true)], [
-    type === 'error'
-      ? Icon.octagonX({ class: 'size-4' }, h)
-      : type === 'warning'
-        ? Icon.triangleAlert({ class: 'size-4' }, h)
-        : Icon.circleCheck({ class: 'size-4' }, h),
-  ])
+  h.span(
+    [h.Class(STATUS_ICON_CLASS[type]), h.AriaHidden(true)],
+    [
+      type === 'error'
+        ? Icon.octagonX({ class: 'size-4' }, h)
+        : type === 'warning'
+          ? Icon.triangleAlert({ class: 'size-4' }, h)
+          : Icon.circleCheck({ class: 'size-4' }, h),
+    ],
+  )
 
 const checkboxBox = (
   checked: boolean,
@@ -211,9 +214,10 @@ const checkboxBox = (
         [h.Class(CHECKBOX_INDETERMINATE_CLASS), h.AriaHidden(true)],
         [Icon.minus({ class: 'size-3' }, h)],
       )
-    : h.span([h.Class(CHECKBOX_BOX_CLASS), h.AriaHidden(true)], [
-        Icon.check({ class: 'size-3' }, h),
-      ])
+    : h.span(
+        [h.Class(CHECKBOX_BOX_CLASS), h.AriaHidden(true)],
+        [Icon.check({ class: 'size-3' }, h)],
+      )
 
 export const multiSelector = <Msg>(
   props: MultiSelectorProps<Msg>,
@@ -229,10 +233,10 @@ export const multiSelector = <Msg>(
 
   // Flatten sections for option lookup; groups surface via itemGroupKey.
   const flatOptions: ReadonlyArray<MultiSelectorOption> = props.options.flatMap(
-    (option) => (isSection(option) ? [...option.options] : [option]),
+    option => (isSection(option) ? [...option.options] : [option]),
   )
   const labelFor = (value: string): string =>
-    flatOptions.find((option) => option.value === value)?.label ?? value
+    flatOptions.find(option => option.value === value)?.label ?? value
 
   const labelId = `${model.id}-label`
   const descriptionId = `${model.id}-description`
@@ -247,10 +251,10 @@ export const multiSelector = <Msg>(
   const hasSelection = model.values.length > 0
   const allSelected =
     flatOptions.length > 0 &&
-    flatOptions.every((option) => model.values.includes(option.value))
+    flatOptions.every(option => model.values.includes(option.value))
   const someSelected =
     !allSelected &&
-    flatOptions.some((option) => model.values.includes(option.value))
+    flatOptions.some(option => model.values.includes(option.value))
 
   const labelView = props.isLabelHidden
     ? h.label(
@@ -298,9 +302,10 @@ export const multiSelector = <Msg>(
     [
       ...(props.hasStartIcon === true
         ? [
-            h.span([h.Class(TRIGGER_ICON_CLASS), h.AriaHidden(true)], [
-              Icon.search({ class: 'size-4' }, h),
-            ]),
+            h.span(
+              [h.Class(TRIGGER_ICON_CLASS), h.AriaHidden(true)],
+              [Icon.search({ class: 'size-4' }, h)],
+            ),
           ]
         : []),
       ...(triggerDisplay === 'badges' && hasSelection
@@ -310,7 +315,7 @@ export const multiSelector = <Msg>(
               [
                 ...labels
                   .slice(0, badgeMaxCount)
-                  .map((label) =>
+                  .map(label =>
                     h.span([h.Class(TRIGGER_BADGE_CLASS)], [label]),
                   ),
                 ...(labels.length > badgeMaxCount
@@ -350,17 +355,14 @@ export const multiSelector = <Msg>(
   const viewInputs: ListboxPrimitive.Multi.ViewInputs<string> = {
     items: [
       ...(props.hasSelectAll === true ? [SELECT_ALL_VALUE] : []),
-      ...flatOptions.map((option) => option.value),
+      ...flatOptions.map(option => option.value),
     ],
     itemToConfig: (value, context) =>
       value === SELECT_ALL_VALUE
         ? {
             className: ITEM_CLASS,
             content: h.span(
-              [
-                h.DataAttribute('slot', 'select-item'),
-                h.Class('contents'),
-              ],
+              [h.DataAttribute('slot', 'select-item'), h.Class('contents')],
               [
                 h.span(
                   [h.Class('flex items-center gap-2')],
@@ -395,10 +397,7 @@ export const multiSelector = <Msg>(
         : {
             className: ITEM_CLASS,
             content: h.span(
-              [
-                h.DataAttribute('slot', 'select-item'),
-                h.Class('contents'),
-              ],
+              [h.DataAttribute('slot', 'select-item'), h.Class('contents')],
               [
                 h.span(
                   [h.Class('flex items-center gap-2')],
@@ -414,16 +413,16 @@ export const multiSelector = <Msg>(
             ),
           },
     selectedValues: model.values,
-    itemToValue: (value) => value,
+    itemToValue: value => value,
     ...(props.options.some(isSection)
       ? {
-          itemGroupKey: (value) =>
+          itemGroupKey: value =>
             props.options
               .filter(isSection)
-              .find((section) =>
-                section.options.some((entry) => entry.value === value),
+              .find(section =>
+                section.options.some(entry => entry.value === value),
               )?.title ?? '',
-          groupToHeading: (groupKey) => ({
+          groupToHeading: groupKey => ({
             content: h.span([h.Class(GROUP_HEADING_CLASS)], [groupKey]),
             className: 'px-0 py-0',
           }),
@@ -469,16 +468,16 @@ export const multiSelector = <Msg>(
     buttonAttributes: childAttributes([
       h.DataAttribute('slot', 'multi-selector-trigger'),
       ...(props.isDisabled === true ? [h.AriaDisabled(true)] : []),
-      ...(props.isReadOnly === true
-        ? [h.DataAttribute('readonly', '')]
-        : []),
+      ...(props.isReadOnly === true ? [h.DataAttribute('readonly', '')] : []),
       ...(isInvalid ? [h.AriaInvalid(true)] : []),
       ...(describedBy.length === 0
         ? []
         : [h.AriaDescribedBy(describedBy.join(' '))]),
     ]),
     itemsClassName: CONTENT_CLASS,
-    itemsAttributes: childAttributes([h.DataAttribute('slot', 'select-content')]),
+    itemsAttributes: childAttributes([
+      h.DataAttribute('slot', 'select-content'),
+    ]),
     itemsScrollClassName: VIEWPORT_CLASS,
     backdropClassName: BACKDROP_CLASS,
     className: 'flex w-full flex-col',
@@ -499,7 +498,7 @@ export const multiSelector = <Msg>(
     model: model.listbox,
     view: listboxBundle.view,
     viewInputs,
-    toParentMessage: (message) =>
+    toParentMessage: message =>
       toParent(Message.GotListboxMessage({ message })),
   })
 

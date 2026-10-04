@@ -1,24 +1,26 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Icon from '@/lib/icon';
-import * as MessageScrollerBehavior from '@/lib/message-scroller';
-import { cn } from '@/lib/utils';
+import * as Icon from '@/lib/icon'
+import * as MessageScrollerBehavior from '@/lib/message-scroller'
+import { cn } from '@/lib/utils'
 
-export const Model = MessageScrollerBehavior.Model;
-export type Model = MessageScrollerBehavior.Model;
-export const Scrolled = MessageScrollerBehavior.Message.Scrolled;
-export const ObservedViewport = MessageScrollerBehavior.Message.ObservedMessageScrollerViewport;
-export const RequestedScroll = MessageScrollerBehavior.Message.RequestedScroll;
-export const CompletedMessageScrollerScrollTo = MessageScrollerBehavior.Message.CompletedMessageScrollerScrollTo;
-export const Message = MessageScrollerBehavior.Message;
-export type Message = MessageScrollerBehavior.Message;
-export const init = MessageScrollerBehavior.init;
-export const update = MessageScrollerBehavior.update;
+export const Model = MessageScrollerBehavior.Model
+export type Model = MessageScrollerBehavior.Model
+export const Scrolled = MessageScrollerBehavior.Message.Scrolled
+export const ObservedViewport =
+  MessageScrollerBehavior.Message.ObservedMessageScrollerViewport
+export const RequestedScroll = MessageScrollerBehavior.Message.RequestedScroll
+export const CompletedMessageScrollerScrollTo =
+  MessageScrollerBehavior.Message.CompletedMessageScrollerScrollTo
+export const Message = MessageScrollerBehavior.Message
+export type Message = MessageScrollerBehavior.Message
+export const init = MessageScrollerBehavior.init
+export const update = MessageScrollerBehavior.update
 
 type ChildrenProps = Readonly<{
-  children: ReadonlyArray<Html | string>;
-  class?: string;
-}>;
+  children: ReadonlyArray<Html | string>
+  class?: string
+}>
 
 export const messageScroller = <Msg>(
   props: ChildrenProps,
@@ -35,14 +37,14 @@ export const messageScroller = <Msg>(
       ),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 export const messageScrollerViewport = <Msg>(
   props: ChildrenProps &
     Readonly<{
-      model: Model;
-      toParentMessage: (message: Message) => Msg;
+      model: Model
+      toParentMessage: (message: Message) => Msg
     }>,
   h: HtmlBuilder<Msg>,
 ): Html => {
@@ -50,7 +52,13 @@ export const messageScrollerViewport = <Msg>(
     [
       h.Id(`${props.model.id}-viewport`),
       h.DataAttribute('slot', 'message-scroller-viewport'),
-      h.DataAttribute('pending-scroll', String(!props.model.isReady || props.model.pendingScrollVersion._tag === 'Some')),
+      h.DataAttribute(
+        'pending-scroll',
+        String(
+          !props.model.isReady ||
+            props.model.pendingScrollVersion._tag === 'Some',
+        ),
+      ),
       h.DataAttribute('following', String(props.model.isFollowing)),
       h.DataAttribute('new-messages', String(props.model.hasNewMessages)),
       h.Class(
@@ -62,8 +70,8 @@ export const messageScrollerViewport = <Msg>(
       h.OnMount(MessageScrollerBehavior.viewportMount(props.toParentMessage)),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 export const messageScrollerContent = <Msg>(
   props: ChildrenProps,
@@ -75,8 +83,8 @@ export const messageScrollerContent = <Msg>(
       h.Class(cn('flex h-max min-h-full flex-col gap-8', props.class)),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 export const messageScrollerItem = <Msg>(
   props: ChildrenProps &
@@ -100,25 +108,25 @@ export const messageScrollerItem = <Msg>(
       ),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 export const messageScrollerButton = <Msg>(
   props: Readonly<{
-    model: Model;
-    toParentMessage: (message: Message) => Msg;
-    direction?: 'start' | 'end';
-    class?: string;
+    model: Model
+    toParentMessage: (message: Message) => Msg
+    direction?: 'start' | 'end'
+    class?: string
   }>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const direction = props.direction ?? 'end';
-  const isAtStart = props.model.scrollTop <= 1;
+  const direction = props.direction ?? 'end'
+  const isAtStart = props.model.scrollTop <= 1
   const isAtEnd =
     props.model.scrollHeight === 0 ||
     props.model.scrollTop + props.model.clientHeight >=
-      props.model.scrollHeight - 1;
-  const isActive = direction === 'start' ? !isAtStart : !isAtEnd;
+      props.model.scrollHeight - 1
+  const isActive = direction === 'start' ? !isAtStart : !isAtEnd
 
   return h.button(
     [
@@ -143,5 +151,5 @@ export const messageScrollerButton = <Msg>(
         [direction === 'end' ? 'Scroll to end' : 'Scroll to start'],
       ),
     ],
-  );
-};
+  )
+}

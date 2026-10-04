@@ -1,25 +1,25 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
-import type { MarkdownSource } from '@/lib/markdown';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
+import type { MarkdownSource } from '@/lib/markdown'
 
 export type MarkdownExampleKind =
   | 'showcase'
   | 'rich'
   | 'table'
   | 'compact'
-  | 'cited';
+  | 'cited'
 
 export type MarkdownFixture = Readonly<{
-  title: string;
-  description?: string;
-  kind: MarkdownExampleKind;
-  content: string;
-  density?: 'default' | 'compact';
-  headingLevelStart?: number;
-  sources?: Readonly<Record<string, MarkdownSource>>;
-  contentWidth?: number;
-  contentAlign?: 'center';
-}>;
+  title: string
+  description?: string
+  kind: MarkdownExampleKind
+  content: string
+  density?: 'default' | 'compact'
+  headingLevelStart?: number
+  sources?: Readonly<Record<string, MarkdownSource>>
+  contentWidth?: number
+  contentAlign?: 'center'
+}>
 
 /* Example set ported from Meta Astryx
    packages/cli/assets/templates/blocks/components/Markdown/*.tsx — same
@@ -34,7 +34,7 @@ export const SHOWCASE_CONTENT = `## Formatting
 
 > A quoted passage with an accent border.
 
-[Documentation](https://github.com/facebook/astryx)`;
+[Documentation](https://github.com/facebook/astryx)`
 
 export const RICH_CONTENT = `# Rich Content
 
@@ -54,13 +54,13 @@ export function greet(name: string) {
 
 - [x] Parse headings
 - [x] Parse lists
-- [ ] Parse math`;
+- [ ] Parse math`
 
 export const TABLE_CONTENT = `| Feature | Astryx | shadcn/ui | MUI |
 | :-- | :-: | :-: | --: |
 | StyleX styling | Yes | No | No |
 | Runtime theme | Yes | Partial | Partial |
-| CLI blocks | Yes | Yes | No |`;
+| CLI blocks | Yes | Yes | No |`
 
 export const COMPACT_CONTENT = `## Summary
 
@@ -74,26 +74,42 @@ pnpm add @astryxdesign/core
 - Ships StyleX variants
 - Typed component APIs
 
-> Everything else is optional.`;
+> Everything else is optional.`
 
 export const CITED_CONTENT = `Tokyo is the capital of Japan [src-1]. It blends the ultramodern and the traditional [src-2]. Popular districts include Shibuya, Shinjuku, and Ginza [src-3].
 
-The city hosted the Olympics in 2021 [src-4]. The Shibuya crossing is one of the busiest intersections in the world [src-5].`;
+The city hosted the Olympics in 2021 [src-4]. The Shibuya crossing is one of the busiest intersections in the world [src-5].`
 
 export const CITED_SOURCES: Readonly<Record<string, MarkdownSource>> = {
-  'src-1': { title: 'Tokyo — Wikipedia', url: 'https://en.wikipedia.org/wiki/Tokyo' },
-  'src-2': { title: 'Japan Travel — Tokyo', url: 'https://www.japan.travel/en/destinations/kanto/tokyo/' },
-  'src-3': { title: 'Tokyo Neighbourhood Guide', url: 'https://www.timeout.com/tokyo' },
-  'src-4': { title: 'Tokyo 2020 Olympics', url: 'https://olympics.com/en/olympic-games/tokyo-2020' },
-  'src-5': { title: 'Shibuya Crossing', url: 'https://en.wikipedia.org/wiki/Shibuya_Crossing' },
-};
+  'src-1': {
+    title: 'Tokyo — Wikipedia',
+    url: 'https://en.wikipedia.org/wiki/Tokyo',
+  },
+  'src-2': {
+    title: 'Japan Travel — Tokyo',
+    url: 'https://www.japan.travel/en/destinations/kanto/tokyo/',
+  },
+  'src-3': {
+    title: 'Tokyo Neighbourhood Guide',
+    url: 'https://www.timeout.com/tokyo',
+  },
+  'src-4': {
+    title: 'Tokyo 2020 Olympics',
+    url: 'https://olympics.com/en/olympic-games/tokyo-2020',
+  },
+  'src-5': {
+    title: 'Shibuya Crossing',
+    url: 'https://en.wikipedia.org/wiki/Shibuya_Crossing',
+  },
+}
 
 export const markdownFixtures: Readonly<
   [MarkdownFixture, ...Array<MarkdownFixture>]
 > = [
   {
     title: 'Markdown',
-    description: 'Headings, lists, inline formatting, blockquotes, and links in one block of markdown.',
+    description:
+      'Headings, lists, inline formatting, blockquotes, and links in one block of markdown.',
     kind: 'showcase',
     content: SHOWCASE_CONTENT,
     contentWidth: 400,
@@ -133,7 +149,7 @@ export const markdownFixtures: Readonly<
     headingLevelStart: 3,
     sources: CITED_SOURCES,
   },
-];
+]
 
 const sourcesEmit = (
   sources: Readonly<Record<string, MarkdownSource>>,
@@ -144,38 +160,38 @@ ${Object.entries(sources)
       `  '${id}': { title: '${src.title.replace(/'/g, "\\'")}'${src.url === undefined ? '' : `, url: '${src.url}'`} },`,
   )
   .join('\n')}
-}`;
+}`
 
 const emitBody = (fixture: MarkdownFixture, isStyleX: boolean): string => {
   const props: string[] = [
     'model: model.markdown',
     'toParentMessage: message => GotMarkdownMessage({ message })',
     'children: CONTENT',
-  ];
+  ]
   if (fixture.density !== undefined) {
-    props.push(`density: '${fixture.density}'`);
+    props.push(`density: '${fixture.density}'`)
   }
   if (fixture.headingLevelStart !== undefined) {
-    props.push(`headingLevelStart: ${String(fixture.headingLevelStart)}`);
+    props.push(`headingLevelStart: ${String(fixture.headingLevelStart)}`)
   }
   if (fixture.sources !== undefined) {
-    props.push('sources: SOURCES');
+    props.push('sources: SOURCES')
   }
   if (fixture.contentWidth !== undefined) {
-    props.push(`contentWidth: ${String(fixture.contentWidth)}`);
+    props.push(`contentWidth: ${String(fixture.contentWidth)}`)
   }
   if (fixture.contentAlign !== undefined) {
-    props.push(`contentAlign: '${fixture.contentAlign}'`);
+    props.push(`contentAlign: '${fixture.contentAlign}'`)
   }
-  return `    Markdown.markdown({\n      ${props.join(',\n      ')}\n    }, h)`;
-};
+  return `    Markdown.markdown({\n      ${props.join(',\n      ')}\n    }, h)`
+}
 
 const emitApplication = (
   fixture: MarkdownFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const isStyleX = renderer === 'stylex';
-  const base = isStyleX ? 'stylex' : 'ui';
+  const isStyleX = renderer === 'stylex'
+  const base = isStyleX ? 'stylex' : 'ui'
   return foldkitApplication({
     title: `Markdown — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
@@ -220,8 +236,8 @@ export type Message = typeof Message.Type`,
 ${emitBody(fixture, isStyleX)}
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const markdownExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -232,4 +248,4 @@ export const markdownExamples = (
       ? {}
       : { description: fixture.description }),
     code: emitApplication(fixture, renderer),
-  }));
+  }))

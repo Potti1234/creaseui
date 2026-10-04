@@ -1,32 +1,32 @@
-import { Option, Schema as S } from 'effect';
-import { Command } from 'foldkit';
-import { defineMessageUnion } from 'foldkit/message';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import { Option, Schema as S } from 'effect'
+import { Command } from 'foldkit'
+import { defineMessageUnion } from 'foldkit/message'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { definePreviewProgram } from '@/docs/components/pages/authored-page';
+import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
   treeListFixtures,
   type TreeListFixture,
   type TreeListFixtureItem,
-} from '@/docs/components/pages/tree-list/shared';
-import * as Icon from '@/lib/icon';
-import * as Badge from '@/ui/badge';
-import * as TreeList from '@/ui/tree-list';
+} from '@/docs/components/pages/tree-list/shared'
+import * as Icon from '@/lib/icon'
+import * as Badge from '@/ui/badge'
+import * as TreeList from '@/ui/tree-list'
 
 const GotTreeListPreviewMessage = defineMessageUnion({
   GotTreeListPreviewMessage: {
     key: S.String,
     message: TreeList.Message,
   },
-});
-type GotTreeListPreviewMessage = typeof GotTreeListPreviewMessage.Type;
+})
+type GotTreeListPreviewMessage = typeof GotTreeListPreviewMessage.Type
 
 const TreeListPreviewModel = S.Struct({
   _docsPage: S.Literal('tree-list'),
   trees: S.Record(S.String, TreeList.Model),
   maybeSelectedId: S.Option(S.String),
-});
-type TreeListPreviewModel = typeof TreeListPreviewModel.Type;
+})
+type TreeListPreviewModel = typeof TreeListPreviewModel.Type
 
 const decorateItems = <Msg>(
   items: ReadonlyArray<TreeListFixtureItem>,
@@ -35,7 +35,9 @@ const decorateItems = <Msg>(
   items.map(item => ({
     id: item.id,
     label: item.label,
-    ...(item.description === undefined ? {} : { description: item.description }),
+    ...(item.description === undefined
+      ? {}
+      : { description: item.description }),
     ...(item.href === undefined ? {} : { href: item.href }),
     ...(item.onSelect === true ? { onSelect: true } : {}),
     ...(item.isSelected === true ? { isSelected: true } : {}),
@@ -54,7 +56,7 @@ const decorateItems = <Msg>(
     ...(item.children === undefined
       ? {}
       : { children: decorateItems(item.children, h) }),
-  }));
+  }))
 
 const treeView = <Msg>(
   tree: { variant: TreeList.TreeListVariant; caption?: string },
@@ -76,17 +78,20 @@ const treeView = <Msg>(
           message,
         }),
       ),
-  });
+  })
   return tree.caption === undefined
     ? submodel
-    : h.div([h.Class('flex flex-col gap-2')], [
-        h.div(
-          [h.Class('text-xs font-semibold text-muted-foreground')],
-          [tree.caption],
-        ),
-        submodel,
-      ]);
-};
+    : h.div(
+        [h.Class('flex flex-col gap-2')],
+        [
+          h.div(
+            [h.Class('text-xs font-semibold text-muted-foreground')],
+            [tree.caption],
+          ),
+          submodel,
+        ],
+      )
+}
 
 const fixtureView = <Msg>(
   fixture: TreeListFixture,
@@ -95,14 +100,14 @@ const fixtureView = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Html => {
   const trees = fixture.trees.map((tree, index) => {
-    const key = `tree-${String(index)}`;
-    const treeModel = model.trees[key] ?? TreeList.init({ id: key });
-    return treeView(tree, fixture.items, treeModel, index, toParentMessage, h);
-  });
+    const key = `tree-${String(index)}`
+    const treeModel = model.trees[key] ?? TreeList.init({ id: key })
+    return treeView(tree, fixture.items, treeModel, index, toParentMessage, h)
+  })
   return fixture.trees.length > 1
     ? h.div([h.Class('flex items-start gap-6')], trees)
-    : trees[0]!;
-};
+    : trees[0]!
+}
 
 export const treeListTailwindPreviewProgram = definePreviewProgram<
   TreeListPreviewModel,
@@ -111,7 +116,7 @@ export const treeListTailwindPreviewProgram = definePreviewProgram<
   Model: TreeListPreviewModel,
   Message: GotTreeListPreviewMessage,
   init: index => {
-    const fixture = treeListFixtures[index] ?? treeListFixtures[0];
+    const fixture = treeListFixtures[index] ?? treeListFixtures[0]
     return {
       _docsPage: 'tree-list',
       trees: Object.fromEntries(
@@ -121,16 +126,16 @@ export const treeListTailwindPreviewProgram = definePreviewProgram<
         ]),
       ),
       maybeSelectedId: Option.none(),
-    };
+    }
   },
   update: (model, message) => {
-    const tree = model.trees[message.key];
+    const tree = model.trees[message.key]
     if (tree === undefined) {
-      return { model };
+      return { model }
     }
-    const treeOp__ = TreeList.update(tree, message.message);
-    const commands = treeOp__.commands ?? [];
-    const maybeOut = Option.fromNullishOr(treeOp__.outMessage);
+    const treeOp__ = TreeList.update(tree, message.message)
+    const commands = treeOp__.commands ?? []
+    const maybeOut = Option.fromNullishOr(treeOp__.outMessage)
     return {
       model: {
         ...model,
@@ -146,12 +151,13 @@ export const treeListTailwindPreviewProgram = definePreviewProgram<
           message: next,
         }),
       ),
-    };
+    }
   },
   view: (index, model, h) => {
-    const fixture = treeListFixtures[index] ?? treeListFixtures[0];
-    return h.div([h.Class('w-full max-w-xl')], [
-      fixtureView(fixture, model, message => message, h),
-    ]);
+    const fixture = treeListFixtures[index] ?? treeListFixtures[0]
+    return h.div(
+      [h.Class('w-full max-w-xl')],
+      [fixtureView(fixture, model, message => message, h)],
+    )
   },
-});
+})

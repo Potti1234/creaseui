@@ -1,4 +1,4 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import {
   stackAlignmentRows,
@@ -7,23 +7,23 @@ import {
   stackShowcaseGroups,
   stackUsers,
   type StackFixture,
-} from '@/docs/components/pages/stack/shared';
-import * as Avatar from '@/ui/avatar';
-import * as Badge from '@/ui/badge';
-import * as Button from '@/ui/button';
-import * as Card from '@/ui/card';
-import * as Stack from '@/ui/stack';
+} from '@/docs/components/pages/stack/shared'
+import * as Avatar from '@/ui/avatar'
+import * as Badge from '@/ui/badge'
+import * as Button from '@/ui/button'
+import * as Card from '@/ui/card'
+import * as Stack from '@/ui/stack'
 
 export type StackStaticPreview = <Msg>(
   model: Readonly<Record<string, never>>,
   h: HtmlBuilder<Msg>,
-) => Html;
+) => Html
 
 const supporting = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class('text-xs text-muted-foreground')], [text]);
+  h.p([h.Class('text-xs text-muted-foreground')], [text])
 
 const badge = <Msg>(label: string, h: HtmlBuilder<Msg>): Html =>
-  Badge.badge({ variant: 'secondary', children: [label] }, h);
+  Badge.badge({ variant: 'secondary', children: [label] }, h)
 
 const cardLabel = <Msg>(label: string, h: HtmlBuilder<Msg>): Html =>
   Card.card(
@@ -32,7 +32,7 @@ const cardLabel = <Msg>(label: string, h: HtmlBuilder<Msg>): Html =>
       children: [Card.cardContent({ children: [supporting(label, h)] }, h)],
     },
     h,
-  );
+  )
 
 const directionsView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Stack.hStack(
@@ -66,7 +66,7 @@ const directionsView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ],
     },
     h,
-  );
+  )
 
 const alignmentView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Stack.stack(
@@ -124,7 +124,7 @@ const alignmentView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ),
     },
     h,
-  );
+  )
 
 const fillItemView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Stack.vStack(
@@ -198,7 +198,7 @@ const fillItemView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ),
     },
     h,
-  );
+  )
 
 const hBasicView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Stack.hStack(
@@ -212,7 +212,7 @@ const hBasicView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ],
     },
     h,
-  );
+  )
 
 const hShowcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Stack.vStack(
@@ -241,7 +241,7 @@ const hShowcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ),
     },
     h,
-  );
+  )
 
 const vBasicView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Stack.vStack(
@@ -249,16 +249,18 @@ const vBasicView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       gap: 3,
       children: [
         h.h5([h.Class('text-xs font-semibold')], ['Weekly Report']),
-        h.p([h.Class('text-sm text-muted-foreground')], [
-          'VStack arranges its children in a vertical column.',
-        ]),
-        h.p([h.Class('text-sm text-muted-foreground')], [
-          'The gap prop controls the spacing between each item.',
-        ]),
+        h.p(
+          [h.Class('text-sm text-muted-foreground')],
+          ['VStack arranges its children in a vertical column.'],
+        ),
+        h.p(
+          [h.Class('text-sm text-muted-foreground')],
+          ['The gap prop controls the spacing between each item.'],
+        ),
       ],
     },
     h,
-  );
+  )
 
 const vShowcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Stack.hStack(
@@ -289,7 +291,7 @@ const vShowcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ),
     },
     h,
-  );
+  )
 
 const itemFillView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Stack.hStack(
@@ -313,7 +315,7 @@ const itemFillView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ],
     },
     h,
-  );
+  )
 
 const itemShowcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Stack.hStack(
@@ -341,30 +343,30 @@ const itemShowcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ],
     },
     h,
-  );
+  )
 
 const previewFor = (fixture: StackFixture): StackStaticPreview => {
   switch (fixture.kind) {
     case 'directions':
-      return (_m, h) => directionsView(h);
+      return (_m, h) => directionsView(h)
     case 'alignment':
-      return (_m, h) => alignmentView(h);
+      return (_m, h) => alignmentView(h)
     case 'fillItem':
-      return (_m, h) => fillItemView(h);
+      return (_m, h) => fillItemView(h)
     case 'hBasic':
-      return (_m, h) => hBasicView(h);
+      return (_m, h) => hBasicView(h)
     case 'hShowcase':
-      return (_m, h) => hShowcaseView(h);
+      return (_m, h) => hShowcaseView(h)
     case 'vBasic':
-      return (_m, h) => vBasicView(h);
+      return (_m, h) => vBasicView(h)
     case 'vShowcase':
-      return (_m, h) => vShowcaseView(h);
+      return (_m, h) => vShowcaseView(h)
     case 'itemFill':
-      return (_m, h) => itemFillView(h);
+      return (_m, h) => itemFillView(h)
     case 'itemShowcase':
-      return (_m, h) => itemShowcaseView(h);
+      return (_m, h) => itemShowcaseView(h)
   }
-};
+}
 
 export const stackTailwindPreviews: ReadonlyArray<StackStaticPreview> =
-  stackFixtures.map(previewFor);
+  stackFixtures.map(previewFor)

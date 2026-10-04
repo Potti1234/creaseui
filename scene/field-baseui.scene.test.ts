@@ -111,7 +111,7 @@ type FieldModule = Readonly<{
     h: HtmlBuilder<Msg>,
   ) => Html
   fieldError: <Msg>(
-    props?: {
+    props: {
       children?: ReadonlyArray<Html | string>
       errors?: ReadonlyArray<FieldError>
     },
@@ -142,7 +142,11 @@ const control = Scene.role('textbox')
 const fieldset = Scene.selector('fieldset')
 const legend = Scene.selector('[data-slot="field-legend"]')
 
-const verifyRenderer = (name: string, Field: FieldModule, Input: InputModule) => {
+const verifyRenderer = (
+  name: string,
+  Field: FieldModule,
+  Input: InputModule,
+) => {
   const textControl = (parts: ControlFieldParts, h: HtmlBuilder<Message>) =>
     Input.input(
       {
@@ -183,19 +187,22 @@ const verifyRenderer = (name: string, Field: FieldModule, Input: InputModule) =>
           {
             update,
             view: (model, h) =>
-              h.div([], [
-                Field.controlField(
-                  { id: model.id, label: 'Name', toControl: textControl },
-                  h,
-                ),
-                h.button(
-                  [
-                    h.Type('button'),
-                    h.OnClick({ _tag: 'SetControlId', id: 'control-b' }),
-                  ],
-                  ['Change'],
-                ),
-              ]),
+              h.div(
+                [],
+                [
+                  Field.controlField(
+                    { id: model.id, label: 'Name', toControl: textControl },
+                    h,
+                  ),
+                  h.button(
+                    [
+                      h.Type('button'),
+                      h.OnClick({ _tag: 'SetControlId', id: 'control-b' }),
+                    ],
+                    ['Change'],
+                  ),
+                ],
+              ),
           },
           Scene.given(initialModel),
           Scene.expect(label).toHaveAttr('htmlFor', 'name'),
@@ -214,28 +221,31 @@ const verifyRenderer = (name: string, Field: FieldModule, Input: InputModule) =>
           {
             update,
             view: (model, h) =>
-              h.div([], [
-                Field.controlField(
-                  {
-                    id: 'name',
-                    label: 'Name',
-                    toControl: (parts, controlH) =>
-                      Input.input(
-                        {
-                          id: parts.controlId,
-                          value: '',
-                          placeholder: model.swapped ? 'Second' : 'First',
-                        },
-                        controlH,
-                      ),
-                  },
-                  h,
-                ),
-                h.button(
-                  [h.Type('button'), h.OnClick({ _tag: 'SwapControl' })],
-                  ['Swap'],
-                ),
-              ]),
+              h.div(
+                [],
+                [
+                  Field.controlField(
+                    {
+                      id: 'name',
+                      label: 'Name',
+                      toControl: (parts, controlH) =>
+                        Input.input(
+                          {
+                            id: parts.controlId,
+                            value: '',
+                            placeholder: model.swapped ? 'Second' : 'First',
+                          },
+                          controlH,
+                        ),
+                    },
+                    h,
+                  ),
+                  h.button(
+                    [h.Type('button'), h.OnClick({ _tag: 'SwapControl' })],
+                    ['Swap'],
+                  ),
+                ],
+              ),
           },
           Scene.given(initialModel),
           Scene.expect(control).toHaveAttr('placeholder', 'First'),
@@ -301,9 +311,9 @@ const verifyRenderer = (name: string, Field: FieldModule, Input: InputModule) =>
                       },
                       controlH,
                     ),
-              },
-              h,
-            ),
+                },
+                h,
+              ),
           },
           Scene.given(initialModel),
           Scene.expect(control).toHaveAttr(
@@ -519,34 +529,31 @@ const verifyRenderer = (name: string, Field: FieldModule, Input: InputModule) =>
       // constraint validation). creaseui never marks label/description and
       // the input primitive always emits aria-invalid when isInvalid is set,
       // regardless of disabled.
-      it.fails(
-        'keeps an explicitly invalid field marked invalid while disabled',
-        () => {
-          Scene.scene(
-            {
-              update,
-              view: (_model, h) =>
-                Field.controlField(
-                  {
-                    id: 'name',
-                    label: 'Name',
-                    description: 'Shown on your public profile.',
-                    toControl: textControl,
-                    isDisabled: true,
-                    isInvalid: true,
-                  },
-                  h,
-                ),
-            },
-            Scene.given(initialModel),
-            Scene.expect(fieldRoot).toHaveAttr('data-invalid'),
-            Scene.expect(control).toHaveAttr('data-invalid'),
-            Scene.expect(label).toHaveAttr('data-invalid'),
-            Scene.expect(description).toHaveAttr('data-invalid'),
-            Scene.expect(control).not.toHaveAttr('aria-invalid'),
-          )
-        },
-      )
+      it.fails('keeps an explicitly invalid field marked invalid while disabled', () => {
+        Scene.scene(
+          {
+            update,
+            view: (_model, h) =>
+              Field.controlField(
+                {
+                  id: 'name',
+                  label: 'Name',
+                  description: 'Shown on your public profile.',
+                  toControl: textControl,
+                  isDisabled: true,
+                  isInvalid: true,
+                },
+                h,
+              ),
+          },
+          Scene.given(initialModel),
+          Scene.expect(fieldRoot).toHaveAttr('data-invalid'),
+          Scene.expect(control).toHaveAttr('data-invalid'),
+          Scene.expect(label).toHaveAttr('data-invalid'),
+          Scene.expect(description).toHaveAttr('data-invalid'),
+          Scene.expect(control).not.toHaveAttr('aria-invalid'),
+        )
+      })
 
       it('keeps a disabled field with errors marked invalid', () => {
         Scene.scene(
@@ -623,10 +630,7 @@ const verifyRenderer = (name: string, Field: FieldModule, Input: InputModule) =>
           {
             update,
             view: (_model, h) =>
-              Field.fieldSet(
-                { isDisabled: true, children: [''] },
-                h,
-              ),
+              Field.fieldSet({ isDisabled: true, children: [''] }, h),
           },
           Scene.given(initialModel),
           Scene.expect(fieldset).toBeDisabled(),
@@ -640,43 +644,40 @@ const verifyRenderer = (name: string, Field: FieldModule, Input: InputModule) =>
       // attribute — descendants keep their own isDisabled=false and get no
       // disabled/data-disabled hooks (native DOM inheritance still covers
       // plain inputs in a real browser, which the DSL cannot observe).
-      it.fails(
-        'keeps nested fieldsets disabled when an ancestor fieldset is disabled',
-        () => {
-          Scene.scene(
-            {
-              update,
-              view: (_model, h) =>
-                Field.fieldSet(
-                  {
-                    isDisabled: true,
-                    children: [
-                      Field.fieldSet(
-                        {
-                          children: [
-                            Field.controlField(
-                              {
-                                id: 'name',
-                                label: 'Name',
-                                toControl: textControl,
-                              },
-                              h,
-                            ),
-                          ],
-                        },
-                        h,
-                      ),
-                    ],
-                  },
-                  h,
-                ),
-            },
-            Scene.given(initialModel),
-            Scene.expect(control).toBeDisabled(),
-            Scene.expect(fieldRoot).toHaveAttr('data-disabled', ''),
-          )
-        },
-      )
+      it.fails('keeps nested fieldsets disabled when an ancestor fieldset is disabled', () => {
+        Scene.scene(
+          {
+            update,
+            view: (_model, h) =>
+              Field.fieldSet(
+                {
+                  isDisabled: true,
+                  children: [
+                    Field.fieldSet(
+                      {
+                        children: [
+                          Field.controlField(
+                            {
+                              id: 'name',
+                              label: 'Name',
+                              toControl: textControl,
+                            },
+                            h,
+                          ),
+                        ],
+                      },
+                      h,
+                    ),
+                  ],
+                },
+                h,
+              ),
+          },
+          Scene.given(initialModel),
+          Scene.expect(control).toBeDisabled(),
+          Scene.expect(fieldRoot).toHaveAttr('data-disabled', ''),
+        )
+      })
 
       it.todo(
         'updates nested disabled precedence in both directions ' +
@@ -695,9 +696,7 @@ const verifyRenderer = (name: string, Field: FieldModule, Input: InputModule) =>
             view: (_model, h) =>
               Field.fieldSet(
                 {
-                  children: [
-                    Field.fieldLegend({ children: ['Legend'] }, h),
-                  ],
+                  children: [Field.fieldLegend({ children: ['Legend'] }, h)],
                 },
                 h,
               ),
@@ -725,8 +724,7 @@ const verifyRenderer = (name: string, Field: FieldModule, Input: InputModule) =>
         Scene.scene(
           {
             update,
-            view: (_model, h) =>
-              Field.fieldLegend({ children: ['Legend'] }, h),
+            view: (_model, h) => Field.fieldLegend({ children: ['Legend'] }, h),
           },
           Scene.given(initialModel),
           Scene.expect(legend).toExist(),

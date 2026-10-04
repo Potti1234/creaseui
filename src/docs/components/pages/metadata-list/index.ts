@@ -1,6 +1,6 @@
-import { authoredPage } from '@/docs/components/pages/authored-page';
-import { metadataListExamples } from '@/docs/components/pages/metadata-list/shared';
-import { metadataListTailwindPreviewProgram } from '@/docs/components/pages/metadata-list/tailwind';
+import { authoredPage } from '@/docs/components/pages/authored-page'
+import { metadataListExamples } from '@/docs/components/pages/metadata-list/shared'
+import { metadataListTailwindPreviewProgram } from '@/docs/components/pages/metadata-list/tailwind'
 
 export const metadataListPage = authoredPage({
   slug: 'metadata-list',
@@ -24,4 +24,4 @@ export const metadataListPage = authoredPage({
     examples: metadataListExamples('tailwind'),
     stylexExamples: metadataListExamples('stylex'),
   },
-});
+})

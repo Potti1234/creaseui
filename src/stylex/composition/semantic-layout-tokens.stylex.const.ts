@@ -11,4 +11,3 @@ export const semanticLayoutTokens = stylex.defineConsts({
   panelComfortable: '24rem',
   panelWide: '26rem',
 })
-

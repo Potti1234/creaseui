@@ -30,27 +30,28 @@ export const Model = S.Struct({
 export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
-  'GotLightboxDialogMessage': { message: Dialog.Message },
-  'NavigatedPrevious': {},
-  'NavigatedNext': {},
-  'WentToIndex': { index: S.Number },
-  'ToggledZoom': {},
-  'ZoomedIn': {},
-  'ZoomedOut': {},
-  'PannedBy': { dx: S.Number, dy: S.Number },
-  'StartedPan': { x: S.Number, y: S.Number },
-  'MovedPan': { x: S.Number, y: S.Number },
-  'EndedPan': {},
-  'CancelledPan': {},
-});
+  GotLightboxDialogMessage: { message: Dialog.Message },
+  NavigatedPrevious: {},
+  NavigatedNext: {},
+  WentToIndex: { index: S.Number },
+  ToggledZoom: {},
+  ZoomedIn: {},
+  ZoomedOut: {},
+  PannedBy: { dx: S.Number, dy: S.Number },
+  StartedPan: { x: S.Number, y: S.Number },
+  MovedPan: { x: S.Number, y: S.Number },
+  EndedPan: {},
+  CancelledPan: {},
+})
 export type Message = typeof Message.Type
 export const OutMessage = Dialog.OutMessage
 export type OutMessage = typeof OutMessage.Type
 
-export type InitConfig = Dialog.InitConfig & Readonly<{
-  mediaCount?: number;
-  index?: number;
-}>
+export type InitConfig = Dialog.InitConfig &
+  Readonly<{
+    mediaCount?: number
+    index?: number
+  }>
 
 export const init = (config: InitConfig): Model => ({
   dialog: Dialog.init(config),
@@ -64,12 +65,17 @@ export const init = (config: InitConfig): Model => ({
 
 type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>
 
-const mapDialogResult = (model: Model, result: ReturnType<typeof Dialog.update>): UpdateReturn => {
+const mapDialogResult = (
+  model: Model,
+  result: ReturnType<typeof Dialog.update>,
+): UpdateReturn => {
   const { model: dialog, commands: dialogCommands, outMessage } = result
   const commands = dialogCommands ?? []
   return {
     model: { ...model, dialog },
-    commands: Command.mapMessages(commands, message => Message['GotLightboxDialogMessage']({ message })),
+    commands: Command.mapMessages(commands, message =>
+      Message['GotLightboxDialogMessage']({ message }),
+    ),
     ...(outMessage === undefined ? {} : { outMessage }),
   }
 }
@@ -77,12 +83,21 @@ const mapDialogResult = (model: Model, result: ReturnType<typeof Dialog.update>)
 const clampIndex = (model: Model, index: number): number =>
   Math.min(Math.max(0, index), Math.max(0, model.mediaCount - 1))
 
-const restMedia = (model: Model): Model => ({ ...model, zoom: 1, panX: 0, panY: 0, panAnchor: Option.none() })
+const restMedia = (model: Model): Model => ({
+  ...model,
+  zoom: 1,
+  panX: 0,
+  panY: 0,
+  panAnchor: Option.none(),
+})
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
     case 'GotLightboxDialogMessage':
-      return mapDialogResult(model, Dialog.update(model.dialog, message.message))
+      return mapDialogResult(
+        model,
+        Dialog.update(model.dialog, message.message),
+      )
     case 'NavigatedPrevious': {
       if (model.index <= 0) return { model }
       return { model: restMedia({ ...model, index: model.index - 1 }) }
@@ -114,14 +129,25 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       return { model: restMedia(model) }
     case 'PannedBy': {
       if (model.zoom <= 1) return { model }
-      return { model: { ...model, panX: model.panX + message.dx, panY: model.panY + message.dy } }
+      return {
+        model: {
+          ...model,
+          panX: model.panX + message.dx,
+          panY: model.panY + message.dy,
+        },
+      }
     }
     case 'StartedPan': {
       if (model.zoom <= 1) return { model }
       return {
         model: {
           ...model,
-          panAnchor: Option.some({ x: message.x, y: message.y, panX: model.panX, panY: model.panY }),
+          panAnchor: Option.some({
+            x: message.x,
+            y: message.y,
+            panX: model.panX,
+            panY: model.panY,
+          }),
         },
       }
     }
@@ -144,7 +170,10 @@ export const update = (model: Model, message: Message): UpdateReturn => {
 
 export const open = (model: Model, index?: number): UpdateReturn =>
   mapDialogResult(
-    restMedia({ ...model, index: index === undefined ? model.index : clampIndex(model, index) }),
+    restMedia({
+      ...model,
+      index: index === undefined ? model.index : clampIndex(model, index),
+    }),
     Dialog.open(model.dialog),
   )
 

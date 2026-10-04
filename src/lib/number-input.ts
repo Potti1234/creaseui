@@ -21,9 +21,7 @@ export type ParsedNumberParts = Readonly<{
 }>
 
 /** Reads the decimal + grouping separators for the ambient locale. */
-export const localeSeparators = (
-  locale?: string,
-): ParsedNumberParts => {
+export const localeSeparators = (locale?: string): ParsedNumberParts => {
   const formatter = new Intl.NumberFormat(locale)
   let decimal = '.'
   let group = ','
@@ -76,10 +74,14 @@ export const parseLocaleNumber = (
 
   const { decimal, group } = localeSeparators(locale)
   const decimalCount = text.split(decimal).length - 1
-  const groupRegex = new RegExp(`${escapeRegExp(group)}(\\p{Nd}{3})(?!\\p{Nd})`, 'u')
+  const groupRegex = new RegExp(
+    `${escapeRegExp(group)}(\\p{Nd}{3})(?!\\p{Nd})`,
+    'u',
+  )
   const looksGrouped =
     group !== decimal &&
-    (groupRegex.test(text) || (SPACE_GROUPED_LOCALES.test(text) && /^\p{Nd}+$/u.test(text)))
+    (groupRegex.test(text) ||
+      (SPACE_GROUPED_LOCALES.test(text) && /^\p{Nd}+$/u.test(text)))
 
   if (looksGrouped) {
     text = text.replace(new RegExp(escapeRegExp(group), 'gu'), '')
@@ -92,8 +94,7 @@ export const parseLocaleNumber = (
     const [intPart = '', fracPart = ''] = text.split(decimal)
     const intDigits = intPart.replace(/\D/gu, '')
     const fracDigits = fracPart.replace(/\D/gu, '')
-    const intGrouped =
-      intDigits.length > 3 || /^0\p{Nd}/u.test(intDigits)
+    const intGrouped = intDigits.length > 3 || /^0\p{Nd}/u.test(intDigits)
     if (intGrouped && fracDigits.length === 3) {
       text = `${intDigits}${fracDigits}`
     } else {
@@ -187,7 +188,7 @@ export const getSteppedValue = (
   const current = options.value
   let next: number
   if (current === undefined) {
-    next = direction === 1 ? min ?? 0 : max ?? 0
+    next = direction === 1 ? (min ?? 0) : (max ?? 0)
     if (isIntegerOnly) {
       next = direction === 1 ? Math.ceil(next) : Math.floor(next)
     }
@@ -208,15 +209,28 @@ export const getSteppedValue = (
   next = Number(next.toFixed(precision))
   if (min !== undefined) next = Math.max(min, next)
   if (max !== undefined) next = Math.min(max, next)
-  return Number.isFinite(next) ? next : current ?? 0
+  return Number.isFinite(next) ? next : (current ?? 0)
 }
 
 export const canStep = (
   direction: 1 | -1,
-  options: Readonly<{ value: number | undefined; min?: number | undefined; max?: number | undefined }>,
+  options: Readonly<{
+    value: number | undefined
+    min?: number | undefined
+    max?: number | undefined
+  }>,
 ): boolean => {
-  if (direction > 0) return options.value === undefined || options.max === undefined || options.value < options.max
-  return options.value === undefined || options.min === undefined || options.value > options.min
+  if (direction > 0)
+    return (
+      options.value === undefined ||
+      options.max === undefined ||
+      options.value < options.max
+    )
+  return (
+    options.value === undefined ||
+    options.min === undefined ||
+    options.value > options.min
+  )
 }
 
 /* --- Submodel ----------------------------------------------------------- */
@@ -240,9 +254,12 @@ export const NumberInputCommitResolution = S.Union([
   S.TaggedStruct('clear', {}),
   S.TaggedStruct('revert', {}),
 ])
-export type NumberInputCommitResolution = typeof NumberInputCommitResolution.Type
+export type NumberInputCommitResolution =
+  typeof NumberInputCommitResolution.Type
 
-export const commitResolutionOf = (commit: NumberInputCommit): NumberInputCommitResolution =>
+export const commitResolutionOf = (
+  commit: NumberInputCommit,
+): NumberInputCommitResolution =>
   commit.kind === 'commit'
     ? { _tag: 'commit', value: commit.value, didClamp: commit.didClamp }
     : commit.kind === 'clear'
@@ -265,7 +282,11 @@ export const OutMessage = defineMessageUnion({
 })
 export type OutMessage = typeof OutMessage.Type
 
-export type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>
+export type UpdateReturn = Update.ReturnWithOutMessage<
+  Model,
+  Message,
+  OutMessage
+>
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
@@ -274,12 +295,18 @@ export const update = (model: Model, message: Message): UpdateReturn => {
     case 'DraftEdited':
       return { model: { ...model, pendingInput: Option.some(message.text) } }
     case 'CommitDecided': {
-      const settled = { ...model, pendingInput: Option.none(), isFocused: false }
+      const settled = {
+        ...model,
+        pendingInput: Option.none(),
+        isFocused: false,
+      }
       switch (message.resolution._tag) {
         case 'commit':
           return {
             model: settled,
-            outMessage: OutMessage.ChangedValue({ value: Option.some(message.resolution.value) }),
+            outMessage: OutMessage.ChangedValue({
+              value: Option.some(message.resolution.value),
+            }),
           }
         case 'clear':
           return {
@@ -293,7 +320,9 @@ export const update = (model: Model, message: Message): UpdateReturn => {
     case 'Stepped':
       return {
         model: { ...model, pendingInput: Option.none() },
-        outMessage: OutMessage.ChangedValue({ value: Option.some(message.value) }),
+        outMessage: OutMessage.ChangedValue({
+          value: Option.some(message.value),
+        }),
       }
     case 'ClearRequested':
       return {

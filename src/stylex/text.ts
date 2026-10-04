@@ -1,9 +1,9 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { ComponentLayoutStyle } from './contracts';
-import { className } from './style';
-import { tokens } from './tokens.stylex';
+import type { ComponentLayoutStyle } from './contracts'
+import { className } from './style'
+import { tokens } from './tokens.stylex'
 
 /* Ported from Meta Astryx Text (packages/core/src/Text/Text.tsx) — examples and
    visual spec adapted to Crease UI tokens. */
@@ -17,7 +17,7 @@ export type TextType =
   | 'display-1'
   | 'display-2'
   | 'display-3'
-  | 'inherit';
+  | 'inherit'
 
 export type TextSize =
   | '4xs'
@@ -30,7 +30,7 @@ export type TextSize =
   | 'xl'
   | '2xl'
   | '3xl'
-  | '4xl';
+  | '4xl'
 
 export type TextColor =
   | 'primary'
@@ -38,19 +38,19 @@ export type TextColor =
   | 'disabled'
   | 'placeholder'
   | 'accent'
-  | 'inherit';
+  | 'inherit'
 
-export type TextWeight = 'normal' | 'medium' | 'semibold' | 'bold';
+export type TextWeight = 'normal' | 'medium' | 'semibold' | 'bold'
 
-export type TextDisplay = 'inline' | 'block';
+export type TextDisplay = 'inline' | 'block'
 
-export type TextJustify = 'start' | 'center' | 'end';
+export type TextJustify = 'start' | 'center' | 'end'
 
-export type TextWordBreak = 'break-word' | 'break-all';
+export type TextWordBreak = 'break-word' | 'break-all'
 
-export type TextWrap = 'wrap' | 'nowrap' | 'balance' | 'pretty';
+export type TextWrap = 'wrap' | 'nowrap' | 'balance' | 'pretty'
 
-export type TextElement = 'span' | 'p' | 'div' | 'label' | 'h1' | 'h2' | 'h3';
+export type TextElement = 'span' | 'p' | 'div' | 'label' | 'h1' | 'h2' | 'h3'
 
 const typeStyles = stylex.create({
   body: {
@@ -72,7 +72,8 @@ const typeStyles = stylex.create({
     lineHeight: '1.25rem',
   },
   code: {
-    fontFamily: 'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
+    fontFamily:
+      'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
     fontSize: '0.875rem',
     lineHeight: '1.25rem',
   },
@@ -97,7 +98,7 @@ const typeStyles = stylex.create({
     fontWeight: 'inherit',
     lineHeight: 'inherit',
   },
-});
+})
 
 const colorStyles = stylex.create({
   primary: {
@@ -122,7 +123,7 @@ const colorStyles = stylex.create({
   inherit: {
     color: 'currentColor',
   },
-});
+})
 
 const sizeStyles = stylex.create({
   '4xs': {
@@ -138,19 +139,23 @@ const sizeStyles = stylex.create({
     fontSize: '0.625rem',
   },
   sm: {
-    fontSize: '0.75rem', lineHeight: '1rem',
+    fontSize: '0.75rem',
+    lineHeight: '1rem',
   },
   base: {
-    fontSize: '0.875rem', lineHeight: '1.25rem',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
   },
   lg: {
     fontSize: '1.0625rem',
   },
   xl: {
-    fontSize: '1.25rem', lineHeight: '1.75rem',
+    fontSize: '1.25rem',
+    lineHeight: '1.75rem',
   },
   '2xl': {
-    fontSize: '1.5rem', lineHeight: '2rem',
+    fontSize: '1.5rem',
+    lineHeight: '2rem',
   },
   '3xl': {
     fontSize: '1.8125rem',
@@ -158,7 +163,7 @@ const sizeStyles = stylex.create({
   '4xl': {
     fontSize: '2.1875rem',
   },
-});
+})
 
 const weightStyles = stylex.create({
   normal: {
@@ -173,7 +178,7 @@ const weightStyles = stylex.create({
   bold: {
     fontWeight: 700,
   },
-});
+})
 
 const displayStyles = stylex.create({
   inline: {
@@ -182,7 +187,7 @@ const displayStyles = stylex.create({
   block: {
     display: 'block',
   },
-});
+})
 
 const truncationStyles = stylex.create({
   singleLine: {
@@ -196,7 +201,7 @@ const truncationStyles = stylex.create({
     WebkitBoxOrient: 'vertical',
     display: '-webkit-box',
   },
-});
+})
 
 const wordBreakStyles = stylex.create({
   'break-word': {
@@ -206,7 +211,7 @@ const wordBreakStyles = stylex.create({
   'break-all': {
     wordBreak: 'break-all',
   },
-});
+})
 
 const textWrapStyles = stylex.create({
   wrap: {
@@ -221,7 +226,7 @@ const textWrapStyles = stylex.create({
   pretty: {
     textWrap: 'pretty',
   },
-});
+})
 
 const justifyStyles = stylex.create({
   center: {
@@ -230,7 +235,7 @@ const justifyStyles = stylex.create({
   end: {
     textAlign: 'end',
   },
-});
+})
 
 const decorationStyles = stylex.create({
   strikethrough: {
@@ -239,7 +244,7 @@ const decorationStyles = stylex.create({
   tabularNumbers: {
     fontVariantNumeric: 'tabular-nums',
   },
-});
+})
 
 const defaultColorByType: Record<TextType, TextColor> = {
   body: 'primary',
@@ -251,35 +256,37 @@ const defaultColorByType: Record<TextType, TextColor> = {
   'display-2': 'primary',
   'display-3': 'primary',
   inherit: 'inherit',
-};
+}
 
 export type TextProps = Readonly<{
-  children: ReadonlyArray<Html | string>;
-  type?: TextType;
-  size?: TextSize;
-  color?: TextColor;
-  weight?: TextWeight;
-  display?: TextDisplay;
-  maxLines?: number;
-  wordBreak?: TextWordBreak;
-  textWrap?: TextWrap;
-  justify?: TextJustify;
-  hasCapsize?: boolean;
-  hasStrikethrough?: boolean;
-  hasTabularNumbers?: boolean;
-  as?: TextElement;
-  layoutStyle?: ComponentLayoutStyle;
-}>;
+  children: ReadonlyArray<Html | string>
+  type?: TextType
+  size?: TextSize
+  color?: TextColor
+  weight?: TextWeight
+  display?: TextDisplay
+  maxLines?: number
+  wordBreak?: TextWordBreak
+  textWrap?: TextWrap
+  justify?: TextJustify
+  hasCapsize?: boolean
+  hasStrikethrough?: boolean
+  hasTabularNumbers?: boolean
+  as?: TextElement
+  layoutStyle?: ComponentLayoutStyle
+}>
 
 export const text = <Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html => {
-  const type = props.type ?? 'body';
-  const color = props.color ?? defaultColorByType[type];
-  const maxLines = props.maxLines ?? 0;
+  const type = props.type ?? 'body'
+  const color = props.color ?? defaultColorByType[type]
+  const maxLines = props.maxLines ?? 0
   const resolvedWordBreak =
-    props.wordBreak ?? (maxLines === 1 ? 'break-all' : 'break-word');
+    props.wordBreak ?? (maxLines === 1 ? 'break-all' : 'break-word')
   const resolvedDisplay =
-    maxLines > 0 || props.hasCapsize === true ? 'block' : (props.display ?? 'inline');
-  const justify = props.justify ?? 'start';
+    maxLines > 0 || props.hasCapsize === true
+      ? 'block'
+      : (props.display ?? 'inline')
+  const justify = props.justify ?? 'start'
 
   const attributes = [
     h.DataAttribute('slot', 'text'),
@@ -297,7 +304,9 @@ export const text = <Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html => {
             ? truncationStyles.multiLine
             : displayStyles[resolvedDisplay],
         ...(maxLines > 0 ? [wordBreakStyles[resolvedWordBreak]] : []),
-        ...(props.textWrap === undefined ? [] : [textWrapStyles[props.textWrap]]),
+        ...(props.textWrap === undefined
+          ? []
+          : [textWrapStyles[props.textWrap]]),
         ...(justify === 'start' ? [] : [justifyStyles[justify]]),
         ...(props.hasStrikethrough === true
           ? [decorationStyles.strikethrough]
@@ -312,23 +321,23 @@ export const text = <Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html => {
     ...(props.hasCapsize === true
       ? [h.Style({ textBoxEdge: 'cap alphabetic', textBoxTrim: 'trim-both' })]
       : []),
-  ];
+  ]
 
-  const element = props.as ?? 'span';
+  const element = props.as ?? 'span'
   switch (element) {
     case 'p':
-      return h.p(attributes, [...props.children]);
+      return h.p(attributes, [...props.children])
     case 'div':
-      return h.div(attributes, [...props.children]);
+      return h.div(attributes, [...props.children])
     case 'label':
-      return h.label(attributes, [...props.children]);
+      return h.label(attributes, [...props.children])
     case 'h1':
-      return h.h1(attributes, [...props.children]);
+      return h.h1(attributes, [...props.children])
     case 'h2':
-      return h.h2(attributes, [...props.children]);
+      return h.h2(attributes, [...props.children])
     case 'h3':
-      return h.h3(attributes, [...props.children]);
+      return h.h3(attributes, [...props.children])
     case 'span':
-      return h.span(attributes, [...props.children]);
+      return h.span(attributes, [...props.children])
   }
-};
+}

@@ -1,13 +1,13 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   VALIDATION_FIELDS,
   dateTimeInputFixtures,
-} from '@/docs/components/pages/date-time-input/shared';
-import * as DateTimeInput from '@/stylex/date-time-input';
-import { className } from '@/stylex/style';
+} from '@/docs/components/pages/date-time-input/shared'
+import * as DateTimeInput from '@/stylex/date-time-input'
+import { className } from '@/stylex/style'
 
 const styles = stylex.create({
   stack: {
@@ -17,11 +17,11 @@ const styles = stylex.create({
     minWidth: '15rem',
     width: '100%',
   },
-});
+})
 
 type Preview = Readonly<{
-  inputs: ReadonlyArray<DateTimeInput.Model>;
-}>;
+  inputs: ReadonlyArray<DateTimeInput.Model>
+}>
 
 export const dateTimeInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   index: number,
@@ -29,9 +29,9 @@ export const dateTimeInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html | undefined => {
-  const fixture = dateTimeInputFixtures[index];
-  if (fixture === undefined) return undefined;
-  const preview = model as Preview;
+  const fixture = dateTimeInputFixtures[index]
+  if (fixture === undefined) return undefined
+  const preview = model as Preview
 
   const inputAt = (
     slot: number,
@@ -43,7 +43,7 @@ export const dateTimeInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
     DateTimeInput.dateTimeInput(
       {
         model: preview.inputs[slot]!,
-        toParentMessage: (message) =>
+        toParentMessage: message =>
           onMessageJson(
             JSON.stringify({
               _tag: 'GotDateTimeInputMessage',
@@ -54,10 +54,10 @@ export const dateTimeInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         ...props,
       },
       h,
-    );
+    )
 
   const stack = (children: ReadonlyArray<Html>): Html =>
-    h.div([h.Class(className(styles.stack))], [...children]);
+    h.div([h.Class(className(styles.stack))], [...children])
 
   switch (fixture.astryxExample) {
     case 'DateTimeInputWithValidation':
@@ -65,7 +65,7 @@ export const dateTimeInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         VALIDATION_FIELDS.map((field, i) =>
           inputAt(i, { label: field.label, status: field.status }),
         ),
-      );
+      )
     default:
       return stack([
         inputAt(0, {
@@ -76,6 +76,6 @@ export const dateTimeInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
             ? {}
             : { timeOptionInterval: fixture.timeOptionInterval }),
         }),
-      ]);
+      ])
   }
-};
+}

@@ -1,20 +1,18 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { staticComponentApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
-export type LinkExampleKind = 'showcase' | 'inline' | 'external' | 'tooltips';
+export type LinkExampleKind = 'showcase' | 'inline' | 'external' | 'tooltips'
 
 export type LinkFixture = Readonly<{
-  title: string;
-  description?: string;
-  kind: LinkExampleKind;
-}>;
+  title: string
+  description?: string
+  kind: LinkExampleKind
+}>
 
 /* Example set ported from Meta Astryx
    packages/cli/assets/templates/blocks/components/Link/*.tsx — same demos,
    same labels and copy. */
-export const linkFixtures: Readonly<
-  [LinkFixture, ...Array<LinkFixture>]
-> = [
+export const linkFixtures: Readonly<[LinkFixture, ...Array<LinkFixture>]> = [
   {
     title: 'Link',
     description: 'Standalone link with accent styling',
@@ -35,19 +33,19 @@ export const linkFixtures: Readonly<
     description: 'Links with descriptive tooltips for enhanced context',
     kind: 'tooltips',
   },
-];
+]
 
 const externalLinks = [
   ['GitHub', 'https://github.com', false],
   ['MDN', 'https://developer.mozilla.org', false],
   ['React', 'https://react.dev', true],
-] as const;
+] as const
 
 const tooltipLinks = [
   ['Settings', '/settings', 'Manage your application preferences'],
   ['Profile', '/profile', 'View and edit your profile'],
   ['Help', '/help', 'Browse help articles and support'],
-] as const;
+] as const
 
 const viewBody = (fixture: LinkFixture, isStyleX: boolean): string => {
   const stack = (items: string) =>
@@ -56,11 +54,11 @@ const viewBody = (fixture: LinkFixture, isStyleX: boolean): string => {
       [
         ${items},
       ],
-    )`;
+    )`
 
   switch (fixture.kind) {
     case 'showcase':
-      return `Link.link({ href: '#', isStandalone: true, children: ['Documentation'] }, h)`;
+      return `Link.link({ href: '#', isStandalone: true, children: ['Documentation'] }, h)`
     case 'inline':
       return `Text.text(
       { type: 'body', display: 'block', children: [
@@ -69,7 +67,7 @@ const viewBody = (fixture: LinkFixture, isStyleX: boolean): string => {
         ' for installation steps.',
       ] },
       h,
-    )`;
+    )`
     case 'external':
       return stack(
         externalLinks
@@ -78,7 +76,7 @@ const viewBody = (fixture: LinkFixture, isStyleX: boolean): string => {
               `Link.link({ href: '${url}', isExternalLink: true, isStandalone: true${underlined ? ', hasUnderline: true' : ''}, children: ['${label}'] }, h)`,
           )
           .join(',\n        '),
-      );
+      )
     case 'tooltips':
       return stack(
         tooltipLinks
@@ -87,34 +85,34 @@ const viewBody = (fixture: LinkFixture, isStyleX: boolean): string => {
               `Link.link({ href: '${url}', isStandalone: true, tooltip: '${tip}'${index === 2 ? ", color: 'secondary'" : ''}, children: ['${label}'] }, h)`,
           )
           .join(',\n        '),
-      );
+      )
   }
-};
+}
 
 const stylexStyles =
-  "column: { alignItems: 'flex-start', display: 'flex', flexDirection: 'column', gap: '0.5rem' }";
+  "column: { alignItems: 'flex-start', display: 'flex', flexDirection: 'column', gap: '0.5rem' }"
 
 const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
-  const fixture = linkFixtures[index] ?? linkFixtures[0];
-  const isStyleX = renderer === 'stylex';
-  const base = isStyleX ? 'stylex' : 'ui';
-  const imports: string[] = [];
+  const fixture = linkFixtures[index] ?? linkFixtures[0]
+  const isStyleX = renderer === 'stylex'
+  const base = isStyleX ? 'stylex' : 'ui'
+  const imports: string[] = []
   if (isStyleX) {
     imports.push(
       `import * as stylex from '@stylexjs/stylex'`,
       `import { className } from '@/stylex/style'`,
-    );
+    )
   }
   if (fixture.kind === 'inline') {
-    imports.push(`import * as Text from '@/${base}/text'`);
+    imports.push(`import * as Text from '@/${base}/text'`)
   }
-  const needsStack = fixture.kind === 'external' || fixture.kind === 'tooltips';
+  const needsStack = fixture.kind === 'external' || fixture.kind === 'tooltips'
   const componentImports = [
     ...imports,
     ...(isStyleX && needsStack
       ? [``, `const styles = stylex.create({\n  ${stylexStyles}\n})`]
       : []),
-  ].join('\n');
+  ].join('\n')
   return staticComponentApplication({
     componentName: 'Link',
     componentSlug: 'link',
@@ -122,8 +120,8 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
     exampleName: fixture.title,
     ...(componentImports === '' ? {} : { componentImports }),
     viewBody: viewBody(fixture, isStyleX),
-  });
-};
+  })
+}
 
 export const linkExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -134,4 +132,4 @@ export const linkExamples = (
       ? {}
       : { description: fixture.description }),
     code: source(index, renderer),
-  }));
+  }))

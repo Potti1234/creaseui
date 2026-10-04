@@ -1,6 +1,6 @@
-import { authoredPage } from '@/docs/components/pages/authored-page';
-import { powerSearchExamples } from '@/docs/components/pages/power-search/shared';
-import { powerSearchTailwindPreviewProgram } from '@/docs/components/pages/power-search/tailwind';
+import { authoredPage } from '@/docs/components/pages/authored-page'
+import { powerSearchExamples } from '@/docs/components/pages/power-search/shared'
+import { powerSearchTailwindPreviewProgram } from '@/docs/components/pages/power-search/tailwind'
 
 export const powerSearchPage = authoredPage({
   slug: 'power-search',
@@ -27,4 +27,4 @@ export const powerSearchPage = authoredPage({
     examples: powerSearchExamples('tailwind'),
     stylexExamples: powerSearchExamples('stylex'),
   },
-});
+})

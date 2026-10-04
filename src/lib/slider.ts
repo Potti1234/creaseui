@@ -27,8 +27,12 @@ export const snapRangeValue = (
   value: number,
   range: NormalizedRange,
 ): number => {
-  const snapped = range.min + Math.round((value - range.min) / range.step) * range.step
-  const precision = Math.max(decimalPlaces(range.min), decimalPlaces(range.step))
+  const snapped =
+    range.min + Math.round((value - range.min) / range.step) * range.step
+  const precision = Math.max(
+    decimalPlaces(range.min),
+    decimalPlaces(range.step),
+  )
   return Number(clamp(snapped, range.min, range.max).toFixed(precision))
 }
 
@@ -57,7 +61,7 @@ export const normalizeMultiValues = (
   values: readonly number[],
   range: NormalizedRange,
 ): readonly number[] =>
-  values.map((value) => snapRangeValue(value, range)).sort((a, b) => a - b)
+  values.map(value => snapRangeValue(value, range)).sort((a, b) => a - b)
 
 export const updateMultiValue = (
   values: readonly number[],

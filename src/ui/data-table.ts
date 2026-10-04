@@ -1,55 +1,59 @@
-import { Option } from 'effect';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { Checkbox as CheckboxPrimitive } from '@foldkit/ui';
+import { Option } from 'effect'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { Checkbox as CheckboxPrimitive } from '@foldkit/ui'
 
-import { type Message, type Model, Message as DataTableStateMessages } from '@/lib/data-table-state';
-import { projectDataTable, type DataTableMode } from '@/lib/data-table-adapter';
-import * as Icon from '@/lib/icon';
-import { cn } from '@/lib/utils';
-import { buttonVariants } from '@/ui/button';
-import { input } from '@/ui/input';
-import * as Table from '@/ui/table';
+import {
+  type Message,
+  type Model,
+  Message as DataTableStateMessages,
+} from '@/lib/data-table-state'
+import { projectDataTable, type DataTableMode } from '@/lib/data-table-adapter'
+import * as Icon from '@/lib/icon'
+import { cn } from '@/lib/utils'
+import { buttonVariants } from '@/ui/button'
+import { input } from '@/ui/input'
+import * as Table from '@/ui/table'
 
-export * from '@/lib/data-table-state';
+export * from '@/lib/data-table-state'
 
 export type DataTableColumn<Row> = Readonly<{
-  key: string;
-  header: string;
-  cell: (row: Row) => Html | string;
-  sortValue?: (row: Row) => string | number;
-  isHideable?: boolean;
-  class?: string;
-}>;
+  key: string
+  header: string
+  cell: (row: Row) => Html | string
+  sortValue?: (row: Row) => string | number
+  isHideable?: boolean
+  class?: string
+}>
 
 export type DataTableProps<Row, Msg> = Readonly<{
-  model: Model;
-  toParentMessage: (message: Message) => Msg;
-  rows: ReadonlyArray<Row>;
-  columns: ReadonlyArray<DataTableColumn<Row>>;
-  rowKey: (row: Row) => string;
-  filterText?: (row: Row) => string;
-  filterPlaceholder?: string;
-  emptyText?: string;
-  ariaLabel?: string;
-  id?: string;
-  enableRowSelection?: boolean;
-  enableColumnVisibility?: boolean;
-  isRowSelectable?: (row: Row) => boolean;
-  rowSelectionLabel?: (row: Row) => string;
-  pageSizeOptions?: ReadonlyArray<number>;
-  mode?: DataTableMode;
-  rowCount?: number;
-  class?: string;
-}>;
+  model: Model
+  toParentMessage: (message: Message) => Msg
+  rows: ReadonlyArray<Row>
+  columns: ReadonlyArray<DataTableColumn<Row>>
+  rowKey: (row: Row) => string
+  filterText?: (row: Row) => string
+  filterPlaceholder?: string
+  emptyText?: string
+  ariaLabel?: string
+  id?: string
+  enableRowSelection?: boolean
+  enableColumnVisibility?: boolean
+  isRowSelectable?: (row: Row) => boolean
+  rowSelectionLabel?: (row: Row) => string
+  pageSizeOptions?: ReadonlyArray<number>
+  mode?: DataTableMode
+  rowCount?: number
+  class?: string
+}>
 
 const selectionControl = <Msg>(
   props: Readonly<{
-    id: string;
-    label: string;
-    isChecked: boolean;
-    isIndeterminate?: boolean;
-    isDisabled?: boolean;
-    onToggle: (isChecked: boolean) => Msg;
+    id: string
+    label: string
+    isChecked: boolean
+    isIndeterminate?: boolean
+    isDisabled?: boolean
+    onToggle: (isChecked: boolean) => Msg
   }>,
   h: HtmlBuilder<Msg>,
 ): Html =>
@@ -66,7 +70,9 @@ const selectionControl = <Msg>(
             ...checkbox,
             h.Type('button'),
             h.AriaLabel(props.label),
-            h.Class('inline-flex size-10 items-center justify-center bg-transparent disabled:opacity-50'),
+            h.Class(
+              'inline-flex size-10 items-center justify-center bg-transparent disabled:opacity-50',
+            ),
           ],
           [
             h.span(
@@ -87,43 +93,53 @@ const selectionControl = <Msg>(
         ),
     },
     h,
-  );
+  )
 
 export const dataTable = <Row, Msg>(
   props: DataTableProps<Row, Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const instanceId = props.id ?? `data-table-${(props.ariaLabel ?? 'rows').toLocaleLowerCase().replaceAll(/[^a-z0-9]+/g, '-')}`;
+  const instanceId =
+    props.id ??
+    `data-table-${(props.ariaLabel ?? 'rows').toLocaleLowerCase().replaceAll(/[^a-z0-9]+/g, '-')}`
   const projection = projectDataTable({
     columns: props.columns,
     ...(props.filterText === undefined ? {} : { filterText: props.filterText }),
-    ...(props.isRowSelectable === undefined ? {} : { isRowSelectable: props.isRowSelectable }),
+    ...(props.isRowSelectable === undefined
+      ? {}
+      : { isRowSelectable: props.isRowSelectable }),
     ...(props.mode === undefined ? {} : { mode: props.mode }),
     model: props.model,
     ...(props.rowCount === undefined ? {} : { rowCount: props.rowCount }),
     rowKey: props.rowKey,
     rows: props.rows,
-  });
-  const { filteredRowCount, page, pageCount, rows: visible, selectableRowKeys: selectableKeys, selectedRowCount: selectedCount } = projection;
-  const hiddenKeys = new Set(props.model.hiddenColumnKeys);
+  })
+  const {
+    filteredRowCount,
+    page,
+    pageCount,
+    rows: visible,
+    selectableRowKeys: selectableKeys,
+    selectedRowCount: selectedCount,
+  } = projection
+  const hiddenKeys = new Set(props.model.hiddenColumnKeys)
   const visibleColumns = props.columns.filter(
-    (column) => !hiddenKeys.has(column.key),
-  );
-  const selectedKeys = new Set(props.model.selectedRowKeys);
-  const selectedOnPage = selectableKeys.filter((key) => selectedKeys.has(key));
+    column => !hiddenKeys.has(column.key),
+  )
+  const selectedKeys = new Set(props.model.selectedRowKeys)
+  const selectedOnPage = selectableKeys.filter(key => selectedKeys.has(key))
   const allOnPageSelected =
-    selectableKeys.length > 0 && selectedOnPage.length === selectableKeys.length;
-  const someOnPageSelected =
-    selectedOnPage.length > 0 && !allOnPageSelected;
+    selectableKeys.length > 0 && selectedOnPage.length === selectableKeys.length
+  const someOnPageSelected = selectedOnPage.length > 0 && !allOnPageSelected
   const columnCount =
-    visibleColumns.length + (props.enableRowSelection === true ? 1 : 0);
+    visibleColumns.length + (props.enableRowSelection === true ? 1 : 0)
   const pageSizes = [
     ...new Set(
       [...(props.pageSizeOptions ?? [10, 20, 50]), props.model.pageSize].filter(
-        (size) => size > 0,
+        size => size > 0,
       ),
     ),
-  ].sort((left, right) => left - right);
+  ].sort((left, right) => left - right)
 
   return h.div(
     [
@@ -142,8 +158,10 @@ export const dataTable = <Row, Msg>(
                     id: `${instanceId}-filter`,
                     type: 'search',
                     value: props.model.filter,
-                    onInput: (value) =>
-                      props.toParentMessage(DataTableStateMessages.Filtered({ value })),
+                    onInput: value =>
+                      props.toParentMessage(
+                        DataTableStateMessages.Filtered({ value }),
+                      ),
                     placeholder: props.filterPlaceholder ?? 'Filter rows…',
                     ariaLabel: props.filterPlaceholder ?? 'Filter rows',
                     class: 'h-10 max-w-sm px-3 text-sm',
@@ -156,9 +174,13 @@ export const dataTable = <Row, Msg>(
                 h.div(
                   [
                     h.Class('relative ml-auto'),
-                    h.OnKeyDownPreventDefault((key) =>
+                    h.OnKeyDownPreventDefault(key =>
                       key === 'Escape' && props.model.columnsMenuOpen
-                        ? Option.some(props.toParentMessage(DataTableStateMessages.ClosedColumnsMenu()))
+                        ? Option.some(
+                            props.toParentMessage(
+                              DataTableStateMessages.ClosedColumnsMenu(),
+                            ),
+                          )
                         : Option.none(),
                     ),
                   ],
@@ -168,7 +190,11 @@ export const dataTable = <Row, Msg>(
                         h.Type('button'),
                         h.AriaExpanded(props.model.columnsMenuOpen),
                         h.AriaHasPopup('menu'),
-                        h.OnClick(props.toParentMessage(DataTableStateMessages.ToggledColumnsMenu())),
+                        h.OnClick(
+                          props.toParentMessage(
+                            DataTableStateMessages.ToggledColumnsMenu(),
+                          ),
+                        ),
                         h.Class(
                           cn(
                             buttonVariants({ variant: 'outline' }),
@@ -189,7 +215,11 @@ export const dataTable = <Row, Msg>(
                               h.Tabindex(-1),
                               h.AriaHidden(true),
                               h.Class('fixed inset-0 z-10 cursor-default'),
-                              h.OnClick(props.toParentMessage(DataTableStateMessages.ClosedColumnsMenu())),
+                              h.OnClick(
+                                props.toParentMessage(
+                                  DataTableStateMessages.ClosedColumnsMenu(),
+                                ),
+                              ),
                             ],
                             [],
                           ),
@@ -200,208 +230,251 @@ export const dataTable = <Row, Msg>(
                               ),
                             ],
                             props.columns
-                        .filter(
-                          (column) =>
-                            column.isHideable !== false &&
-                            column.header.trim() !== '',
-                        )
-                        .map((column) => {
-                          const isVisible = !hiddenKeys.has(column.key);
-                          return h.div(
-                            [h.Class('flex min-h-10 items-center gap-1 text-sm')],
-                            [
-                              selectionControl(
-                                {
-                                  id: `data-table-column-${column.key}`,
-                                  label: `${isVisible ? 'Hide' : 'Show'} ${column.header} column`,
-                                  isChecked: isVisible,
-                                  isDisabled:
-                                    isVisible && visibleColumns.length === 1,
-                                  onToggle: (nextVisible) =>
-                                    props.toParentMessage(
-                                      DataTableStateMessages.ToggledColumn({
-                                        key: column.key,
-                                        isVisible: nextVisible,
-                                      }),
+                              .filter(
+                                column =>
+                                  column.isHideable !== false &&
+                                  column.header.trim() !== '',
+                              )
+                              .map(column => {
+                                const isVisible = !hiddenKeys.has(column.key)
+                                return h.div(
+                                  [
+                                    h.Class(
+                                      'flex min-h-10 items-center gap-1 text-sm',
                                     ),
-                                },
-                                h,
-                              ),
-                              column.header,
-                            ],
-                          );
-                        }),
-                      ),
-                    ]
-                  : []),
-              ],
-            ),
-          ]
-        : []),
+                                  ],
+                                  [
+                                    selectionControl(
+                                      {
+                                        id: `data-table-column-${column.key}`,
+                                        label: `${isVisible ? 'Hide' : 'Show'} ${column.header} column`,
+                                        isChecked: isVisible,
+                                        isDisabled:
+                                          isVisible &&
+                                          visibleColumns.length === 1,
+                                        onToggle: nextVisible =>
+                                          props.toParentMessage(
+                                            DataTableStateMessages.ToggledColumn(
+                                              {
+                                                key: column.key,
+                                                isVisible: nextVisible,
+                                              },
+                                            ),
+                                          ),
+                                      },
+                                      h,
+                                    ),
+                                    column.header,
+                                  ],
+                                )
+                              }),
+                          ),
+                        ]
+                      : []),
+                  ],
+                ),
+              ]
+            : []),
         ],
       ),
       h.div(
         [h.Class('overflow-hidden rounded-md border')],
         [
-          Table.table({ class: 'w-full', children: [
-              Table.tableHeader({ children: [
-                  Table.tableRow({ children:
-                    [
-                      ...(props.enableRowSelection === true
-                        ? [
-                            h.th(
-                              [h.Scope('col'), h.Class('w-12 p-0 text-center')],
-                              [
-                                selectionControl(
-                                  {
-                                    id: `${instanceId}-select-page`,
-                                    label: allOnPageSelected
-                                      ? 'Deselect all rows on this page'
-                                      : 'Select all rows on this page',
-                                    isChecked: allOnPageSelected,
-                                    isIndeterminate: someOnPageSelected,
-                                    isDisabled: selectableKeys.length === 0,
-                                    onToggle: (isSelected) =>
-                                      props.toParentMessage(
-                                        DataTableStateMessages.ToggledRows({
-                                          keys: selectableKeys,
-                                          isSelected,
-                                        }),
+          Table.table(
+            {
+              class: 'w-full',
+              children: [
+                Table.tableHeader(
+                  {
+                    children: [
+                      Table.tableRow(
+                        {
+                          children: [
+                            ...(props.enableRowSelection === true
+                              ? [
+                                  h.th(
+                                    [
+                                      h.Scope('col'),
+                                      h.Class('w-12 p-0 text-center'),
+                                    ],
+                                    [
+                                      selectionControl(
+                                        {
+                                          id: `${instanceId}-select-page`,
+                                          label: allOnPageSelected
+                                            ? 'Deselect all rows on this page'
+                                            : 'Select all rows on this page',
+                                          isChecked: allOnPageSelected,
+                                          isIndeterminate: someOnPageSelected,
+                                          isDisabled:
+                                            selectableKeys.length === 0,
+                                          onToggle: isSelected =>
+                                            props.toParentMessage(
+                                              DataTableStateMessages.ToggledRows(
+                                                {
+                                                  keys: selectableKeys,
+                                                  isSelected,
+                                                },
+                                              ),
+                                            ),
+                                        },
+                                        h,
                                       ),
-                                  },
-                                  h,
+                                    ],
+                                  ),
+                                ]
+                              : []),
+                            ...visibleColumns.map(column =>
+                              h.th(
+                                [
+                                  h.Scope('col'),
+                                  ...(column.sortValue === undefined
+                                    ? []
+                                    : [
+                                        h.AriaSort(
+                                          props.model.sortKey === column.key
+                                            ? props.model.sortDirection
+                                            : 'none',
+                                        ),
+                                      ]),
+                                  h.Class(
+                                    cn(
+                                      'h-10 px-2 text-left align-middle font-medium text-foreground',
+                                      column.class,
+                                    ),
+                                  ),
+                                ],
+                                column.sortValue === undefined
+                                  ? [column.header]
+                                  : [
+                                      h.button(
+                                        [
+                                          h.Type('button'),
+                                          h.OnClick(
+                                            props.toParentMessage(
+                                              DataTableStateMessages.Sorted({
+                                                key: column.key,
+                                              }),
+                                            ),
+                                          ),
+                                          h.Class(
+                                            'inline-flex items-center gap-1 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                                          ),
+                                        ],
+                                        [
+                                          column.header,
+                                          Icon.chevronsUpDown<Msg>(
+                                            {
+                                              class:
+                                                'size-3.5 text-muted-foreground',
+                                            },
+                                            h,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                              ),
+                            ),
+                          ],
+                        },
+                        h,
+                      ),
+                    ],
+                  },
+                  h,
+                ),
+                Table.tableBody(
+                  {
+                    children:
+                      visible.length === 0
+                        ? [
+                            h.tr(
+                              [],
+                              [
+                                h.td(
+                                  [
+                                    h.Colspan(columnCount),
+                                    h.Class(
+                                      'h-24 text-center text-muted-foreground',
+                                    ),
+                                  ],
+                                  [props.emptyText ?? 'No results.'],
                                 ),
                               ],
                             ),
                           ]
-                        : []),
-                      ...visibleColumns.map((column) =>
-                      h.th(
-                        [
-                          h.Scope('col'),
-                          ...(column.sortValue === undefined
-                            ? []
-                            : [
-                                h.AriaSort(
-                                  props.model.sortKey === column.key
-                                    ? props.model.sortDirection
-                                    : 'none',
-                                ),
-                              ]),
-                          h.Class(
-                            cn(
-                              'h-10 px-2 text-left align-middle font-medium text-foreground',
-                              column.class,
-                            ),
-                          ),
-                        ],
-                        column.sortValue === undefined
-                          ? [column.header]
-                          : [
-                              h.button(
-                                [
-                                  h.Type('button'),
-                                  h.OnClick(
-                                    props.toParentMessage(
-                                      DataTableStateMessages.Sorted({ key: column.key }),
-                                    ),
-                                  ),
-                                  h.Class(
-                                    'inline-flex items-center gap-1 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring',
-                                  ),
-                                ],
-                                [
-                                  column.header,
-                                  Icon.chevronsUpDown<Msg>(
-                                    { class: 'size-3.5 text-muted-foreground' },
-                                    h,
-                                  ),
-                                ],
-                              ),
-                            ],
-                      ),
-                      ),
-                    ],
-                  }, h),
-                ] }, h),
-              Table.tableBody({ children: visible.length === 0
-                  ? [
-                      h.tr(
-                        [],
-                        [
-                          h.td(
-                            [
-                              h.Colspan(columnCount),
-                              h.Class('h-24 text-center text-muted-foreground'),
-                            ],
-                            [props.emptyText ?? 'No results.'],
-                          ),
-                        ],
-                      ),
-                    ]
-                  : visible.map((row) => {
-                      const key = props.rowKey(row);
-                      const isSelected = selectedKeys.has(key);
-                      const isSelectable = props.isRowSelectable?.(row) ?? true;
-                      return h.tr(
-                        [
-                          h.Key(key),
-                          ...(isSelected
-                            ? [h.DataAttribute('selected', '')]
-                            : []),
-                          h.Class(
-                            cn(
-                              'border-b transition-colors hover:bg-muted/50',
-                              isSelected && 'bg-muted/50',
-                            ),
-                          ),
-                        ],
-                        [
-                          ...(props.enableRowSelection === true
-                            ? [
-                                h.td(
-                                  [h.Class('w-12 p-0 text-center')],
-                                  [
-                                    selectionControl(
-                                      {
-                                        id: `${instanceId}-row-${key}`,
-                                        label:
-                                          props.rowSelectionLabel?.(row) ??
-                                          `Select row ${key}`,
-                                        isChecked: isSelected,
-                                        isDisabled: !isSelectable,
-                                        onToggle: (nextSelected) =>
-                                          props.toParentMessage(
-                                            DataTableStateMessages.ToggledRow({
-                                              key,
-                                              isSelected: nextSelected,
-                                            }),
-                                          ),
-                                      },
-                                      h,
-                                    ),
-                                  ],
-                                ),
-                              ]
-                            : []),
-                          ...visibleColumns.map((column) =>
-                            h.td(
+                        : visible.map(row => {
+                            const key = props.rowKey(row)
+                            const isSelected = selectedKeys.has(key)
+                            const isSelectable =
+                              props.isRowSelectable?.(row) ?? true
+                            return h.tr(
                               [
+                                h.Key(key),
+                                ...(isSelected
+                                  ? [h.DataAttribute('selected', '')]
+                                  : []),
                                 h.Class(
                                   cn(
-                                    'whitespace-nowrap p-3 align-middle',
-                                    column.class,
+                                    'border-b transition-colors hover:bg-muted/50',
+                                    isSelected && 'bg-muted/50',
                                   ),
                                 ),
                               ],
-                              [column.cell(row)],
-                            ),
-                          ),
-                        ],
-                      );
-                    }),
-              }, h),
-            ] }, h),
+                              [
+                                ...(props.enableRowSelection === true
+                                  ? [
+                                      h.td(
+                                        [h.Class('w-12 p-0 text-center')],
+                                        [
+                                          selectionControl(
+                                            {
+                                              id: `${instanceId}-row-${key}`,
+                                              label:
+                                                props.rowSelectionLabel?.(
+                                                  row,
+                                                ) ?? `Select row ${key}`,
+                                              isChecked: isSelected,
+                                              isDisabled: !isSelectable,
+                                              onToggle: nextSelected =>
+                                                props.toParentMessage(
+                                                  DataTableStateMessages.ToggledRow(
+                                                    {
+                                                      key,
+                                                      isSelected: nextSelected,
+                                                    },
+                                                  ),
+                                                ),
+                                            },
+                                            h,
+                                          ),
+                                        ],
+                                      ),
+                                    ]
+                                  : []),
+                                ...visibleColumns.map(column =>
+                                  h.td(
+                                    [
+                                      h.Class(
+                                        cn(
+                                          'whitespace-nowrap p-3 align-middle',
+                                          column.class,
+                                        ),
+                                      ),
+                                    ],
+                                    [column.cell(row)],
+                                  ),
+                                ),
+                              ],
+                            )
+                          }),
+                  },
+                  h,
+                ),
+              ],
+            },
+            h,
+          ),
         ],
       ),
       h.div(
@@ -429,14 +502,16 @@ export const dataTable = <Row, Msg>(
                 [
                   h.Id(`${instanceId}-page-size`),
                   h.Value(String(props.model.pageSize)),
-                  h.OnChange((value) =>
+                  h.OnChange(value =>
                     props.toParentMessage(
-                      DataTableStateMessages.ChangedPageSize({ pageSize: Number(value) }),
+                      DataTableStateMessages.ChangedPageSize({
+                        pageSize: Number(value),
+                      }),
                     ),
                   ),
                   h.Class('h-10 rounded-md border bg-background px-2 text-sm'),
                 ],
-                pageSizes.map((size) =>
+                pageSizes.map(size =>
                   h.option([h.Value(String(size))], [String(size)]),
                 ),
               ),
@@ -449,7 +524,11 @@ export const dataTable = <Row, Msg>(
                   h.Type('button'),
                   h.AriaLabel('First page'),
                   h.Disabled(page === 0),
-                  h.OnClick(props.toParentMessage(DataTableStateMessages.ChangedPage({ page: 0 }))),
+                  h.OnClick(
+                    props.toParentMessage(
+                      DataTableStateMessages.ChangedPage({ page: 0 }),
+                    ),
+                  ),
                   h.Class(
                     cn(
                       buttonVariants({ variant: 'outline' }),
@@ -464,7 +543,9 @@ export const dataTable = <Row, Msg>(
                   h.Type('button'),
                   h.Disabled(page === 0),
                   h.OnClick(
-                    props.toParentMessage(DataTableStateMessages.ChangedPage({ page: page - 1 })),
+                    props.toParentMessage(
+                      DataTableStateMessages.ChangedPage({ page: page - 1 }),
+                    ),
                   ),
                   h.Class(
                     cn(
@@ -480,7 +561,9 @@ export const dataTable = <Row, Msg>(
                   h.Type('button'),
                   h.Disabled(page >= pageCount - 1),
                   h.OnClick(
-                    props.toParentMessage(DataTableStateMessages.ChangedPage({ page: page + 1 })),
+                    props.toParentMessage(
+                      DataTableStateMessages.ChangedPage({ page: page + 1 }),
+                    ),
                   ),
                   h.Class(
                     cn(
@@ -498,7 +581,9 @@ export const dataTable = <Row, Msg>(
                   h.Disabled(page >= pageCount - 1),
                   h.OnClick(
                     props.toParentMessage(
-                      DataTableStateMessages.ChangedPage({ page: pageCount - 1 }),
+                      DataTableStateMessages.ChangedPage({
+                        page: pageCount - 1,
+                      }),
                     ),
                   ),
                   h.Class(
@@ -515,5 +600,5 @@ export const dataTable = <Row, Msg>(
         ],
       ),
     ],
-  );
-};
+  )
+}

@@ -8,7 +8,11 @@ import {
   tableRegion,
   toolbar,
 } from './semantic-layout'
-import type { Density, NarrowRegionBehavior, PrimitiveChildren } from './types-internal'
+import type {
+  Density,
+  NarrowRegionBehavior,
+  PrimitiveChildren,
+} from './types-internal'
 import { themeScope } from './theme'
 import type { SemanticThemeName } from './theme'
 
@@ -25,13 +29,37 @@ export type DashboardShellProps = Readonly<{
   theme?: SemanticThemeName | undefined
 }>
 
-export const dashboardShell = <Message>(props: DashboardShellProps, h: HtmlBuilder<Message>): Html =>
-  themeScope({ children: [appShell({
-    children: [pageLayout({ content: props.content, density: props.density, footer: props.footer, header: props.header }, h)],
-    data: { recipe: 'dashboard' },
-    navigation: props.navigation,
-    navigationWidth: props.navigationWidth,
-  }, h)], theme: props.theme }, h)
+export const dashboardShell = <Message>(
+  props: DashboardShellProps,
+  h: HtmlBuilder<Message>,
+): Html =>
+  themeScope(
+    {
+      children: [
+        appShell(
+          {
+            children: [
+              pageLayout(
+                {
+                  content: props.content,
+                  density: props.density,
+                  footer: props.footer,
+                  header: props.header,
+                },
+                h,
+              ),
+            ],
+            data: { recipe: 'dashboard' },
+            navigation: props.navigation,
+            navigationWidth: props.navigationWidth,
+          },
+          h,
+        ),
+      ],
+      theme: props.theme,
+    },
+    h,
+  )
 
 export type SettingsPageProps = Readonly<{
   actions?: PrimitiveChildren | undefined
@@ -42,10 +70,37 @@ export type SettingsPageProps = Readonly<{
   theme?: SemanticThemeName | undefined
 }>
 
-export const settingsPage = <Message>(props: SettingsPageProps, h: HtmlBuilder<Message>): Html => {
-  const content = [section({ children: [formLayout({ actions: props.actions, children: props.fields }, h)], description: props.description, heading: props.title }, h)]
-  const page = pageLayout({ content, contentWidth: 'form', data: { recipe: 'settings' } }, h)
-  return themeScope({ children: [props.navigation === undefined ? page : appShell({ children: [page], navigation: props.navigation }, h)], theme: props.theme }, h)
+export const settingsPage = <Message>(
+  props: SettingsPageProps,
+  h: HtmlBuilder<Message>,
+): Html => {
+  const content = [
+    section(
+      {
+        children: [
+          formLayout({ actions: props.actions, children: props.fields }, h),
+        ],
+        description: props.description,
+        heading: props.title,
+      },
+      h,
+    ),
+  ]
+  const page = pageLayout(
+    { content, contentWidth: 'form', data: { recipe: 'settings' } },
+    h,
+  )
+  return themeScope(
+    {
+      children: [
+        props.navigation === undefined
+          ? page
+          : appShell({ children: [page], navigation: props.navigation }, h),
+      ],
+      theme: props.theme,
+    },
+    h,
+  )
 }
 
 export type MasterDetailPageProps = Readonly<{
@@ -57,14 +112,30 @@ export type MasterDetailPageProps = Readonly<{
   theme?: SemanticThemeName | undefined
 }>
 
-export const masterDetailPage = <Message>(props: MasterDetailPageProps, h: HtmlBuilder<Message>): Html =>
-  themeScope({ children: [appShell({
-    auxiliary: props.detail,
-    children: [pageLayout({ content: props.master, header: props.header }, h)],
-    data: { recipe: 'master-detail' },
-    narrowAuxiliary: props.detailBehavior ?? 'overlay',
-    navigation: props.navigation,
-  }, h)], theme: props.theme }, h)
+export const masterDetailPage = <Message>(
+  props: MasterDetailPageProps,
+  h: HtmlBuilder<Message>,
+): Html =>
+  themeScope(
+    {
+      children: [
+        appShell(
+          {
+            auxiliary: props.detail,
+            children: [
+              pageLayout({ content: props.master, header: props.header }, h),
+            ],
+            data: { recipe: 'master-detail' },
+            narrowAuxiliary: props.detailBehavior ?? 'overlay',
+            navigation: props.navigation,
+          },
+          h,
+        ),
+      ],
+      theme: props.theme,
+    },
+    h,
+  )
 
 export type DataExplorerPageProps = Readonly<{
   actions?: PrimitiveChildren | undefined
@@ -76,16 +147,42 @@ export type DataExplorerPageProps = Readonly<{
   theme?: SemanticThemeName | undefined
 }>
 
-export const dataExplorerPage = <Message>(props: DataExplorerPageProps, h: HtmlBuilder<Message>): Html => {
-  const content = [tableRegion({
-    actions: props.actions,
-    children: props.table,
-    description: props.description,
-    heading: props.title,
-    toolbar: [toolbar({ children: props.filters, label: `${props.title} filters` }, h)],
-  }, h)]
-  const page = pageLayout({ content, data: { recipe: 'data-explorer' }, density: 'compact' }, h)
-  return themeScope({ children: [props.navigation === undefined ? page : appShell({ children: [page], navigation: props.navigation }, h)], theme: props.theme }, h)
+export const dataExplorerPage = <Message>(
+  props: DataExplorerPageProps,
+  h: HtmlBuilder<Message>,
+): Html => {
+  const content = [
+    tableRegion(
+      {
+        actions: props.actions,
+        children: props.table,
+        description: props.description,
+        heading: props.title,
+        toolbar: [
+          toolbar(
+            { children: props.filters, label: `${props.title} filters` },
+            h,
+          ),
+        ],
+      },
+      h,
+    ),
+  ]
+  const page = pageLayout(
+    { content, data: { recipe: 'data-explorer' }, density: 'compact' },
+    h,
+  )
+  return themeScope(
+    {
+      children: [
+        props.navigation === undefined
+          ? page
+          : appShell({ children: [page], navigation: props.navigation }, h),
+      ],
+      theme: props.theme,
+    },
+    h,
+  )
 }
 
 export type CommercePageProps = Readonly<{
@@ -95,11 +192,38 @@ export type CommercePageProps = Readonly<{
   theme?: SemanticThemeName | undefined
 }>
 
-export const commercePage = <Message>(props: CommercePageProps, h: HtmlBuilder<Message>): Html =>
-  themeScope({ children: [appShell({
-    auxiliary: props.cart,
-    children: [pageLayout({ content: [section({ children: props.products, density: 'spacious' }, h)], density: 'spacious', header: props.header }, h)],
-    data: { recipe: 'commerce' },
-    narrowAuxiliary: 'overlay',
-  }, h)], theme: props.theme }, h)
-
+export const commercePage = <Message>(
+  props: CommercePageProps,
+  h: HtmlBuilder<Message>,
+): Html =>
+  themeScope(
+    {
+      children: [
+        appShell(
+          {
+            auxiliary: props.cart,
+            children: [
+              pageLayout(
+                {
+                  content: [
+                    section(
+                      { children: props.products, density: 'spacious' },
+                      h,
+                    ),
+                  ],
+                  density: 'spacious',
+                  header: props.header,
+                },
+                h,
+              ),
+            ],
+            data: { recipe: 'commerce' },
+            narrowAuxiliary: 'overlay',
+          },
+          h,
+        ),
+      ],
+      theme: props.theme,
+    },
+    h,
+  )

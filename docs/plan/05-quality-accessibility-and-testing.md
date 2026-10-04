@@ -296,4 +296,3 @@ A component migration PR cannot merge unless:
 - public API changes include migration guidance;
 - quality statuses reflect evidence honestly;
 - unrelated repository changes are absent.
-

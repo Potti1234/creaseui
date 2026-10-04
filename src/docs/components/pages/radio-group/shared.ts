@@ -1,29 +1,29 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export interface RadioGroupOptionSpec {
-  readonly value: string;
-  readonly label: string;
-  readonly description?: string;
-  readonly isDisabled?: boolean;
-  readonly isInvalid?: boolean;
+  readonly value: string
+  readonly label: string
+  readonly description?: string
+  readonly isDisabled?: boolean
+  readonly isInvalid?: boolean
 }
 
-export type RadioGroupKind = 'group' | 'fieldset';
+export type RadioGroupKind = 'group' | 'fieldset'
 
 export interface RadioGroupFixture {
-  readonly title: string;
-  readonly description?: string;
-  readonly heroOnly?: boolean;
-  readonly kind: RadioGroupKind;
-  readonly selected: string;
-  readonly ariaLabel: string;
-  readonly width: 'fit' | 'sm' | 'xs';
-  readonly isReadOnly?: boolean;
-  readonly direction?: 'rtl';
-  readonly fieldLegend?: string;
-  readonly fieldDescription?: string;
-  readonly options: ReadonlyArray<RadioGroupOptionSpec>;
+  readonly title: string
+  readonly description?: string
+  readonly heroOnly?: boolean
+  readonly kind: RadioGroupKind
+  readonly selected: string
+  readonly ariaLabel: string
+  readonly width: 'fit' | 'sm' | 'xs'
+  readonly isReadOnly?: boolean
+  readonly direction?: 'rtl'
+  readonly fieldLegend?: string
+  readonly fieldDescription?: string
+  readonly options: ReadonlyArray<RadioGroupOptionSpec>
 }
 
 const densityOptions: ReadonlyArray<RadioGroupOptionSpec> = [
@@ -42,7 +42,7 @@ const densityOptions: ReadonlyArray<RadioGroupOptionSpec> = [
     label: 'Compact',
     description: 'Minimal spacing for dense layouts.',
   },
-];
+]
 
 export const radioGroupFixtures: Readonly<
   [RadioGroupFixture, ...Array<RadioGroupFixture>]
@@ -58,7 +58,8 @@ export const radioGroupFixtures: Readonly<
   },
   {
     title: 'Description',
-    description: 'Per-option descriptions explain the consequence of each choice.',
+    description:
+      'Per-option descriptions explain the consequence of each choice.',
     kind: 'group',
     selected: 'comfortable',
     ariaLabel: 'Density',
@@ -67,13 +68,18 @@ export const radioGroupFixtures: Readonly<
   },
   {
     title: 'Choice Card',
-    description: 'Carded rows with title and description for plan-style decisions.',
+    description:
+      'Carded rows with title and description for plan-style decisions.',
     kind: 'group',
     selected: 'plus',
     ariaLabel: 'Plan',
     width: 'sm',
     options: [
-      { value: 'plus', label: 'Plus', description: 'For individuals and small teams.' },
+      {
+        value: 'plus',
+        label: 'Plus',
+        description: 'For individuals and small teams.',
+      },
       { value: 'pro', label: 'Pro', description: 'For growing businesses.' },
       {
         value: 'enterprise',
@@ -84,7 +90,8 @@ export const radioGroupFixtures: Readonly<
   },
   {
     title: 'Fieldset',
-    description: 'FieldSet legend and description give the group shared context.',
+    description:
+      'FieldSet legend and description give the group shared context.',
     kind: 'fieldset',
     selected: 'monthly',
     ariaLabel: 'Subscription Plan',
@@ -112,7 +119,8 @@ export const radioGroupFixtures: Readonly<
   },
   {
     title: 'Invalid',
-    description: 'FieldSet validation state marks every option as needing correction.',
+    description:
+      'FieldSet validation state marks every option as needing correction.',
     kind: 'fieldset',
     selected: 'email',
     ariaLabel: 'Notification Preferences',
@@ -127,7 +135,8 @@ export const radioGroupFixtures: Readonly<
   },
   {
     title: 'Read Only',
-    description: 'Keep focus navigation while preventing the managed selection from changing.',
+    description:
+      'Keep focus navigation while preventing the managed selection from changing.',
     kind: 'group',
     selected: 'comfortable',
     ariaLabel: 'Density',
@@ -161,9 +170,9 @@ export const radioGroupFixtures: Readonly<
       },
     ],
   },
-];
+]
 
-const esc = (value: string): string => value.replace(/'/g, "\\'");
+const esc = (value: string): string => value.replace(/'/g, "\\'")
 
 const optionLiteral = (option: RadioGroupOptionSpec): string =>
   `{ value: '${option.value}', label: '${esc(option.label)}'${
@@ -172,7 +181,7 @@ const optionLiteral = (option: RadioGroupOptionSpec): string =>
       : `, description: '${esc(option.description)}'`
   }${option.isDisabled === true ? ', isDisabled: true' : ''}${
     option.isInvalid === true ? ', isInvalid: true' : ''
-  } }`;
+  } }`
 
 const emitGroup = (
   fixture: RadioGroupFixture,
@@ -186,7 +195,7 @@ const emitGroup = (
         : "    class: 'w-fit',"
       : isStyleX
         ? '    layoutStyle: styles.wide,'
-        : "    class: 'w-full max-w-sm',";
+        : "    class: 'w-full max-w-sm',"
   return `${indent}RadioGroup.radioGroup({
     model: model.radioGroup,
     selectedValue: Option.some(model.value),
@@ -196,14 +205,14 @@ ${fixture.direction === 'rtl' ? "    direction: 'rtl',\n" : ''}${fixture.isReadO
     options: [
 ${fixture.options.map(option => `      ${optionLiteral(option)},`).join('\n')}
     ],
-  }, h)`;
-};
+  }, h)`
+}
 
 const emitBody = (fixture: RadioGroupFixture, isStyleX: boolean): string => {
   if (fixture.kind === 'fieldset') {
     const fieldsetLayout = isStyleX
       ? '    layoutStyle: styles.wide,'
-      : "    class: 'w-full max-w-xs',";
+      : "    class: 'w-full max-w-xs',"
     return `  Field.fieldSet({
 ${fieldsetLayout}
     children: [
@@ -215,24 +224,24 @@ ${fieldsetLayout}
       }, h),
 ${emitGroup(fixture, isStyleX, '      ')},
     ],
-  }, h)`;
+  }, h)`
   }
-  return emitGroup(fixture, isStyleX, '  ');
-};
+  return emitGroup(fixture, isStyleX, '  ')
+}
 
 const emitApplication = (
   fixture: RadioGroupFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const isStyleX = renderer === 'stylex';
-  const base = isStyleX ? 'stylex' : 'ui';
-  const needsField = fixture.kind === 'fieldset';
+  const isStyleX = renderer === 'stylex'
+  const base = isStyleX ? 'stylex' : 'ui'
+  const needsField = fixture.kind === 'fieldset'
   const stylesBlock = isStyleX
     ? `\n\nconst styles = stylex.create({
   fit: { width: 'fit-content' },
   wide: { width: '100%', maxWidth: '${fixture.width === 'xs' ? '20rem' : '24rem'}' },
 })`
-    : '';
+    : ''
   return foldkitApplication({
     title: `Radio Group — ${fixture.title}`,
     imports: `import { Option, Schema as S } from 'effect'
@@ -285,8 +294,8 @@ export type Message = typeof Message.Type`,
 ${emitBody(fixture, isStyleX)}
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const radioGroupExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -298,4 +307,4 @@ export const radioGroupExamples = (
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer),
-  }));
+  }))

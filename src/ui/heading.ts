@@ -1,7 +1,7 @@
-import { type VariantProps, cva } from 'class-variance-authority';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import { type VariantProps, cva } from 'class-variance-authority'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils'
 import type {
   TextColor,
   TextDisplay,
@@ -9,15 +9,15 @@ import type {
   TextWeight,
   TextWordBreak,
   TextWrap,
-} from '@/ui/text';
-import { textVariants } from '@/ui/text';
+} from '@/ui/text'
+import { textVariants } from '@/ui/text'
 
 /* Ported from Meta Astryx Heading (packages/core/src/Heading/Heading.tsx) —
    examples and visual spec adapted to Crease UI tokens. */
 
-export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
+export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6
 
-export type HeadingType = 'display-1' | 'display-2' | 'display-3';
+export type HeadingType = 'display-1' | 'display-2' | 'display-3'
 
 export const headingVariants = cva('', {
   variants: {
@@ -30,35 +30,40 @@ export const headingVariants = cva('', {
       6: 'text-[0.625rem] leading-4 font-semibold',
     },
   },
-});
+})
 
-export type HeadingVariants = VariantProps<typeof headingVariants>;
+export type HeadingVariants = VariantProps<typeof headingVariants>
 
 export type HeadingProps = Readonly<{
-  children: ReadonlyArray<Html | string>;
-  level: HeadingLevel;
-  type?: HeadingType;
-  weight?: TextWeight;
-  accessibilityLevel?: HeadingLevel;
-  color?: TextColor;
-  display?: TextDisplay;
-  maxLines?: number;
-  wordBreak?: TextWordBreak;
-  textWrap?: TextWrap;
-  justify?: TextJustify;
-  hasCapsize?: boolean;
-  hasStrikethrough?: boolean;
-  class?: string;
-}>;
+  children: ReadonlyArray<Html | string>
+  level: HeadingLevel
+  type?: HeadingType
+  weight?: TextWeight
+  accessibilityLevel?: HeadingLevel
+  color?: TextColor
+  display?: TextDisplay
+  maxLines?: number
+  wordBreak?: TextWordBreak
+  textWrap?: TextWrap
+  justify?: TextJustify
+  hasCapsize?: boolean
+  hasStrikethrough?: boolean
+  class?: string
+}>
 
-export const heading = <Msg>(props: HeadingProps, h: HtmlBuilder<Msg>): Html => {
-  const color = props.color ?? 'primary';
-  const maxLines = props.maxLines ?? 0;
+export const heading = <Msg>(
+  props: HeadingProps,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const color = props.color ?? 'primary'
+  const maxLines = props.maxLines ?? 0
   const resolvedWordBreak =
-    props.wordBreak ?? (maxLines === 1 ? 'break-all' : 'break-word');
+    props.wordBreak ?? (maxLines === 1 ? 'break-all' : 'break-word')
   const resolvedDisplay =
-    maxLines > 0 || props.hasCapsize === true ? 'block' : (props.display ?? 'block');
-  const justify = props.justify ?? 'start';
+    maxLines > 0 || props.hasCapsize === true
+      ? 'block'
+      : (props.display ?? 'block')
+  const justify = props.justify ?? 'start'
 
   const attributes = [
     h.DataAttribute('slot', 'heading'),
@@ -74,7 +79,9 @@ export const heading = <Msg>(props: HeadingProps, h: HtmlBuilder<Msg>): Html => 
           ...(maxLines > 0 ? { wordBreak: resolvedWordBreak } : {}),
           ...(props.textWrap === undefined ? {} : { textWrap: props.textWrap }),
           ...(justify === 'start' ? {} : { justify }),
-          ...(props.hasStrikethrough === true ? { hasStrikethrough: true } : {}),
+          ...(props.hasStrikethrough === true
+            ? { hasStrikethrough: true }
+            : {}),
         }),
         props.type === undefined
           ? headingVariants({ level: props.level })
@@ -100,20 +107,20 @@ export const heading = <Msg>(props: HeadingProps, h: HtmlBuilder<Msg>): Html => 
     props.accessibilityLevel !== props.level
       ? [h.AriaLevel(props.accessibilityLevel)]
       : []),
-  ];
+  ]
 
   switch (props.level) {
     case 1:
-      return h.h1(attributes, [...props.children]);
+      return h.h1(attributes, [...props.children])
     case 2:
-      return h.h2(attributes, [...props.children]);
+      return h.h2(attributes, [...props.children])
     case 3:
-      return h.h3(attributes, [...props.children]);
+      return h.h3(attributes, [...props.children])
     case 4:
-      return h.h4(attributes, [...props.children]);
+      return h.h4(attributes, [...props.children])
     case 5:
-      return h.h5(attributes, [...props.children]);
+      return h.h5(attributes, [...props.children])
     case 6:
-      return h.h6(attributes, [...props.children]);
+      return h.h6(attributes, [...props.children])
   }
-};
+}

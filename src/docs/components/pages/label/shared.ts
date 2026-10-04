@@ -1,13 +1,13 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
-export type LabelKind = 'demo' | 'field' | 'rtl';
+export type LabelKind = 'demo' | 'field' | 'rtl'
 
 export interface LabelFixture {
-  readonly title: string;
-  readonly description?: string;
-  readonly heroOnly?: boolean;
-  readonly kind: LabelKind;
+  readonly title: string
+  readonly description?: string
+  readonly heroOnly?: boolean
+  readonly kind: LabelKind
 }
 
 export const labelFixtures: Readonly<[LabelFixture, ...Array<LabelFixture>]> = [
@@ -19,45 +19,60 @@ export const labelFixtures: Readonly<[LabelFixture, ...Array<LabelFixture>]> = [
     kind: 'field',
   },
   { title: 'RTL', kind: 'rtl' },
-];
+]
 
 /* Arabic copy, verbatim from upstream label-rtl.tsx. */
 export const labelRtlCopy = {
   label: 'قبول الشروط والأحكام',
-} as const;
+} as const
 
 export const labelMonths = [
-  '01', '02', '03', '04', '05', '06',
-  '07', '08', '09', '10', '11', '12',
-] as const;
+  '01',
+  '02',
+  '03',
+  '04',
+  '05',
+  '06',
+  '07',
+  '08',
+  '09',
+  '10',
+  '11',
+  '12',
+] as const
 export const labelYears = [
-  '2024', '2025', '2026', '2027', '2028', '2029',
-] as const;
+  '2024',
+  '2025',
+  '2026',
+  '2027',
+  '2028',
+  '2029',
+] as const
 
-const sq = (value: string): string => value.replaceAll("'", "\\'");
+const sq = (value: string): string => value.replaceAll("'", "\\'")
 
-const kindUsesField = (kind: LabelKind): boolean => kind === 'field';
+const kindUsesField = (kind: LabelKind): boolean => kind === 'field'
 const kindUsesCheckbox = (kind: LabelKind): boolean =>
-  kind === 'demo' || kind === 'field' || kind === 'rtl';
+  kind === 'demo' || kind === 'field' || kind === 'rtl'
 const kindUsesLabel = (kind: LabelKind): boolean =>
-  kind === 'demo' || kind === 'rtl';
-const kindUsesFieldComponents = (kind: LabelKind): boolean => kind === 'field';
+  kind === 'demo' || kind === 'rtl'
+const kindUsesFieldComponents = (kind: LabelKind): boolean => kind === 'field'
 
 const emitImports = (fixture: LabelFixture, isStyleX: boolean): string => {
-  const base = isStyleX ? 'stylex' : 'ui';
+  const base = isStyleX ? 'stylex' : 'ui'
   const parts: Array<string> = [
     "import { Command, Runtime, Subscription, Update } from 'foldkit'",
     "import { type Document, type HtmlBuilder } from 'foldkit/html'",
     "import { defineMessageUnion } from 'foldkit/message'",
-  ];
+  ]
   if (isStyleX) {
-    parts.push('', "import * as stylex from '@stylexjs/stylex'");
+    parts.push('', "import * as stylex from '@stylexjs/stylex'")
   }
   if (kindUsesField(fixture.kind)) {
-    parts.push(`import * as Button from '@/${base}/button'`);
+    parts.push(`import * as Button from '@/${base}/button'`)
   }
   if (kindUsesCheckbox(fixture.kind)) {
-    parts.push(`import * as Checkbox from '@/${base}/checkbox'`);
+    parts.push(`import * as Checkbox from '@/${base}/checkbox'`)
   }
   if (kindUsesField(fixture.kind)) {
     parts.push(
@@ -65,32 +80,32 @@ const emitImports = (fixture: LabelFixture, isStyleX: boolean): string => {
       `import * as Input from '@/${base}/input'`,
       `import * as Select from '@/${base}/select'`,
       `import * as Textarea from '@/${base}/textarea'`,
-    );
+    )
   }
   if (kindUsesLabel(fixture.kind)) {
-    parts.push(`import * as Label from '@/${base}/label'`);
+    parts.push(`import * as Label from '@/${base}/label'`)
   }
   if (fixture.kind === 'field') {
     parts.push(
       '',
       `// @/${base}/label wraps inside @/${base}/field — FieldLabel is Label`,
       `// applied to form fields; a bare Label import would be unused here.`,
-    );
+    )
   }
-  return parts.join('\n');
-};
+  return parts.join('\n')
+}
 
 const emitStyles = (fixture: LabelFixture): string => {
   if (fixture.kind === 'field') {
     return `  row: { display: 'flex', gap: '0.5rem' },
   formGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '1rem' },
-  wrapper: { width: '100%', maxWidth: '28rem' },`;
+  wrapper: { width: '100%', maxWidth: '28rem' },`
   }
   if (fixture.kind === 'demo' || fixture.kind === 'rtl') {
-    return `  row: { display: 'flex', gap: '0.5rem' },`;
+    return `  row: { display: 'flex', gap: '0.5rem' },`
   }
-  return '';
-};
+  return ''
+}
 
 const emitModel = (fixture: LabelFixture): string => {
   if (fixture.kind === 'field') {
@@ -105,16 +120,16 @@ const emitModel = (fixture: LabelFixture): string => {
   year: Select.Model,
   maybeYear: S.Option(S.String),
 })
-export type Model = typeof Model.Type`;
+export type Model = typeof Model.Type`
   }
   if (fixture.kind === 'demo' || fixture.kind === 'rtl') {
     return `export const Model = S.Struct({
   acceptedTerms: S.Boolean,
 })
-export type Model = typeof Model.Type`;
+export type Model = typeof Model.Type`
   }
-  return 'export const Model = S.Struct({})\nexport type Model = typeof Model.Type';
-};
+  return 'export const Model = S.Struct({})\nexport type Model = typeof Model.Type'
+}
 
 const emitMessages = (fixture: LabelFixture): string => {
   if (fixture.kind === 'field') {
@@ -127,19 +142,19 @@ const emitMessages = (fixture: LabelFixture): string => {
   GotMonthMessage: { message: Select.Message },
   GotYearMessage: { message: Select.Message },
 })
-export type Message = typeof Message.Type`;
+export type Message = typeof Message.Type`
   }
   if (fixture.kind === 'demo' || fixture.kind === 'rtl') {
     return `export const Message = defineMessageUnion({
   ToggledTerms: { isChecked: S.Boolean },
 })
-export type Message = typeof Message.Type`;
+export type Message = typeof Message.Type`
   }
   return `import { taggedStruct } from 'foldkit/schema'
 export const NoOp = taggedStruct('NoOpLabel${fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')}');
 export const Message = S.Union([NoOp])
-export type Message = typeof Message.Type`;
-};
+export type Message = typeof Message.Type`
+}
 
 const emitInit = (fixture: LabelFixture): string => {
   if (fixture.kind === 'field') {
@@ -155,13 +170,13 @@ const emitInit = (fixture: LabelFixture): string => {
     year: Select.init({ id: 'checkout-exp-year', isAnimated: true }),
     maybeYear: Option.none(),
   },
-})`;
+})`
   }
   if (fixture.kind === 'demo' || fixture.kind === 'rtl') {
-    return `export const init = (): Update.Return<Model, Message> => ({ model: { acceptedTerms: false } })`;
+    return `export const init = (): Update.Return<Model, Message> => ({ model: { acceptedTerms: false } })`
   }
-  return 'export const init = (): Update.Return<Model, Message> => ({ model: {} })';
-};
+  return 'export const init = (): Update.Return<Model, Message> => ({ model: {} })'
+}
 
 const emitUpdate = (fixture: LabelFixture): string => {
   if (fixture.kind === 'field') {
@@ -204,7 +219,7 @@ const emitUpdate = (fixture: LabelFixture): string => {
       }
     }
   }
-}`;
+}`
   }
   if (fixture.kind === 'demo' || fixture.kind === 'rtl') {
     return `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
@@ -212,27 +227,27 @@ const emitUpdate = (fixture: LabelFixture): string => {
     case 'ToggledTerms':
       return { model: { ...model, acceptedTerms: message.isChecked }, commands: [] }
   }
-}`;
+}`
   }
   return `export const update = (
   model: Model,
   _message: Message,
-): Update.Return<Model, Message> => ({ model: model })`;
-};
+): Update.Return<Model, Message> => ({ model: model })`
+}
 
 const emitData = (fixture: LabelFixture): string => {
   if (fixture.kind === 'field') {
     return `const months = ${JSON.stringify([...labelMonths])}
 const years = ${JSON.stringify([...labelYears])}
 
-`;
+`
   }
-  return '';
-};
+  return ''
+}
 
 const emitBody = (fixture: LabelFixture, isStyleX: boolean): string => {
   const cls = (twClass: string, sxName: string): string =>
-    isStyleX ? `stylex.props(styles.${sxName}).className ?? ''` : `'${twClass}'`;
+    isStyleX ? `stylex.props(styles.${sxName}).className ?? ''` : `'${twClass}'`
   switch (fixture.kind) {
     case 'demo':
       return `    h.div([h.Class(${cls('flex gap-2', 'row')})], [
@@ -245,7 +260,7 @@ const emitBody = (fixture: LabelFixture, isStyleX: boolean): string => {
         for: 'terms',
         children: ['Accept terms and conditions'],
       }, h),
-    ]),`;
+    ]),`
     case 'rtl':
       return `    h.div(
       [
@@ -263,7 +278,7 @@ const emitBody = (fixture: LabelFixture, isStyleX: boolean): string => {
           children: ['قبول الشروط والأحكام'],
         }, h),
       ],
-    ),`;
+    ),`
     case 'field':
       return `    h.div([h.Class(${cls('w-full max-w-md', 'wrapper')})], [
       h.form(
@@ -439,24 +454,26 @@ const emitBody = (fixture: LabelFixture, isStyleX: boolean): string => {
           }, h),
         ],
       ),
-    ]),`;
+    ]),`
   }
-};
+}
 
-const emitApplication = (fixture: LabelFixture, renderer: 'tailwind' | 'stylex'): string => {
-  const isStyleX = renderer === 'stylex';
-  const stylesBlock = isStyleX ? emitStyles(fixture) : '';
+const emitApplication = (
+  fixture: LabelFixture,
+  renderer: 'tailwind' | 'stylex',
+): string => {
+  const isStyleX = renderer === 'stylex'
+  const stylesBlock = isStyleX ? emitStyles(fixture) : ''
   const bodyStart = isStyleX
     ? `h.main([h.Class(stylex.props(styles.page).className ?? '')], [`
-    : `h.main([h.Class('flex min-h-screen items-center justify-center p-4')], [`;
+    : `h.main([h.Class('flex min-h-screen items-center justify-center p-4')], [`
   const pageStyle = isStyleX
     ? `const styles = stylex.create({
   page: { display: 'flex', minHeight: '100vh', alignItems: 'center', justifyContent: 'center', padding: '1rem' },${stylesBlock === '' ? '' : `\n${stylesBlock}`}
 })\n\n`
-    : '';
-  const optionImport = fixture.kind === 'field'
-    ? "import { Option } from 'effect'\n"
-    : '';
+    : ''
+  const optionImport =
+    fixture.kind === 'field' ? "import { Option } from 'effect'\n" : ''
   return foldkitApplication({
     title: `Label — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'\n${optionImport}${emitImports(fixture, isStyleX)}\n\n${pageStyle}${emitData(fixture)}`,
@@ -470,8 +487,8 @@ const emitApplication = (fixture: LabelFixture, renderer: 'tailwind' | 'stylex')
     ${emitBody(fixture, isStyleX)}
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const labelExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -483,4 +500,4 @@ export const labelExamples = (
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer),
-  }));
+  }))

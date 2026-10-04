@@ -1,5 +1,5 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { Option } from 'effect';
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { Option } from 'effect'
 
 import {
   cardSurfaceClass,
@@ -7,9 +7,9 @@ import {
   type CardElevation,
   type CardPadding,
   type CardVariant,
-} from '@/lib/card-surface';
-import { pressableAttributes } from '@/lib/clickable-card';
-import { cn } from '@/lib/utils';
+} from '@/lib/card-surface'
+import { pressableAttributes } from '@/lib/clickable-card'
+import { cn } from '@/lib/utils'
 
 /* Ported from Meta Astryx SelectableCard.tsx — a card that toggles between
    selected and unselected states. Selection is parent-owned (isSelected +
@@ -22,10 +22,10 @@ export type {
   CardElevation,
   CardPadding,
   CardVariant,
-} from '@/lib/card-surface';
-export { Message } from '@/lib/clickable-card';
+} from '@/lib/card-surface'
+export { Message } from '@/lib/clickable-card'
 
-const HOVER_GUARD = '[@media(hover:hover)]:';
+const HOVER_GUARD = '[@media(hover:hover)]:'
 
 /* astryx --color-border-{color} mapped to the nearest Crease UI token. */
 const SELECTED_RING: Readonly<Record<CardVariant, string>> = {
@@ -42,40 +42,40 @@ const SELECTED_RING: Readonly<Record<CardVariant, string>> = {
   red: '[--_card-ring:inset_0_0_0_2px_var(--destructive)] border-destructive',
   teal: '[--_card-ring:inset_0_0_0_2px_var(--chart-2)] border-chart-2',
   yellow: '[--_card-ring:inset_0_0_0_2px_var(--chart-4)] border-chart-4',
-};
+}
 
 export type SelectableCardProps<Msg> = Readonly<{
   /** Accessibility label for the card, applied to the hidden checkbox. */
-  label: string;
+  label: string
   /** Controlled selection state — the parent owns it. */
-  isSelected: boolean;
+  isSelected: boolean
   /** Message emitted when the card requests a toggle. */
-  onChange?: Msg;
-  isDisabled?: boolean;
-  children?: ReadonlyArray<Html | string>;
+  onChange?: Msg
+  isDisabled?: boolean
+  children?: ReadonlyArray<Html | string>
   /** Internal padding on the astryx spacing scale.
       @default 4 (16px) */
-  padding?: CardPadding;
+  padding?: CardPadding
   /** @default 'default' */
-  variant?: CardVariant;
+  variant?: CardVariant
   /** @default 'none' */
-  elevation?: CardElevation;
-  width?: string;
-  height?: string;
-  maxWidth?: string;
-  minHeight?: string;
-  class?: string;
-}>;
+  elevation?: CardElevation
+  width?: string
+  height?: string
+  maxWidth?: string
+  minHeight?: string
+  class?: string
+}>
 
 export const selectableCard = <Msg>(
   props: SelectableCardProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const variant = props.variant ?? 'default';
-  const elevation = props.elevation ?? 'none';
-  const padding = props.padding ?? 4;
-  const isDisabled = props.isDisabled === true;
-  const onChange = props.onChange;
+  const variant = props.variant ?? 'default'
+  const elevation = props.elevation ?? 'none'
+  const padding = props.padding ?? 4
+  const isDisabled = props.isDisabled === true
+  const onChange = props.onChange
 
   return h.div(
     [
@@ -105,7 +105,9 @@ export const selectableCard = <Msg>(
       ),
       ...(isDisabled ? [] : pressableAttributes(h, onChange)),
       ...(props.width === undefined ? [] : [h.Style({ width: props.width })]),
-      ...(props.height === undefined ? [] : [h.Style({ height: props.height })]),
+      ...(props.height === undefined
+        ? []
+        : [h.Style({ height: props.height })]),
       ...(props.maxWidth === undefined
         ? []
         : [h.Style({ maxWidth: props.maxWidth })]),
@@ -128,12 +130,12 @@ export const selectableCard = <Msg>(
               // Space toggles the checkbox natively; astryx adds Enter as an
               // extra toggle key — the mount stream's listeners do not cover
               // keydown, so it is wired here.
-              h.OnKeyDownPreventDefault((key) =>
+              h.OnKeyDownPreventDefault(key =>
                 key === 'Enter' ? Option.some(onChange) : Option.none(),
               ),
             ]),
       ]),
       ...(props.children ?? []),
     ],
-  );
-};
+  )
+}

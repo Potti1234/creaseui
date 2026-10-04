@@ -1,18 +1,18 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   galleryMedia,
   lightboxFixtures,
   mediaFor,
-} from '@/docs/components/pages/lightbox/shared';
-import type * as LightboxModel from '@/stylex/lightbox';
-import * as Button from '@/stylex/button';
-import type { ComponentLayoutStyle } from '@/stylex/contracts';
-import * as Lightbox from '@/stylex/lightbox';
-import { foundationTokens } from '../../../../stylex/foundations-tokens.stylex';
-import { className } from '@/stylex/style';
+} from '@/docs/components/pages/lightbox/shared'
+import type * as LightboxModel from '@/stylex/lightbox'
+import * as Button from '@/stylex/button'
+import type { ComponentLayoutStyle } from '@/stylex/contracts'
+import * as Lightbox from '@/stylex/lightbox'
+import { foundationTokens } from '../../../../stylex/foundations-tokens.stylex'
+import { className } from '@/stylex/style'
 
 const styles = stylex.create({
   thumb: {
@@ -37,14 +37,17 @@ const styles = stylex.create({
     height: '100%',
     width: '100%',
   },
-});
+})
 
 type PreviewModel = Readonly<{
-  lightbox: LightboxModel.Model;
-}>;
+  lightbox: LightboxModel.Model
+}>
 
-const msg = <Msg>(onMessageJson: (json: string) => Msg, tag: string, fields?: Record<string, unknown>): Msg =>
-  onMessageJson(JSON.stringify({ _tag: tag, ...fields }));
+const msg = <Msg>(
+  onMessageJson: (json: string) => Msg,
+  tag: string,
+  fields?: Record<string, unknown>,
+): Msg => onMessageJson(JSON.stringify({ _tag: tag, ...fields }))
 
 export const lightboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
@@ -52,9 +55,9 @@ export const lightboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html | undefined => {
-  const fixture = lightboxFixtures[exampleIndex];
-  if (fixture === undefined) return undefined;
-  const preview = model as PreviewModel;
+  const fixture = lightboxFixtures[exampleIndex]
+  if (fixture === undefined) return undefined
+  const preview = model as PreviewModel
   const trigger =
     fixture.kind === 'gallery'
       ? h.div(
@@ -64,7 +67,9 @@ export const lightboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
               [
                 h.Type('button'),
                 h.AriaLabel(item.alt),
-                h.OnClick(msg(onMessageJson, 'ClickedOpenLightboxAt', { index })),
+                h.OnClick(
+                  msg(onMessageJson, 'ClickedOpenLightboxAt', { index }),
+                ),
                 h.Class(className(styles.thumb)),
               ],
               [
@@ -85,8 +90,8 @@ export const lightboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
             children: [fixture.triggerLabel],
           },
           h,
-        );
-  const media = mediaFor(fixture.kind);
+        )
+  const media = mediaFor(fixture.kind)
   return h.div(
     [],
     [
@@ -103,5 +108,5 @@ export const lightboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         h,
       ),
     ],
-  );
-};
+  )
+}

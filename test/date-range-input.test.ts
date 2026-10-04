@@ -43,18 +43,12 @@ describe('DateRangeInput range policy', () => {
       minRangeSpan: 2,
       maxRangeSpan: 5,
     })
-    const threeDay = range(
-      Calendar.make(2026, 9, 1),
-      Calendar.make(2026, 9, 3),
-    )
+    const threeDay = range(Calendar.make(2026, 9, 1), Calendar.make(2026, 9, 3))
     const singleDay = range(
       Calendar.make(2026, 9, 1),
       Calendar.make(2026, 9, 1),
     )
-    const tenDay = range(
-      Calendar.make(2026, 9, 1),
-      Calendar.make(2026, 9, 10),
-    )
+    const tenDay = range(Calendar.make(2026, 9, 1), Calendar.make(2026, 9, 10))
     assert.equal(DateRangeInput.isRangeCommittable(model, threeDay), true)
     assert.equal(DateRangeInput.isRangeCommittable(model, singleDay), false)
     assert.equal(DateRangeInput.isRangeCommittable(model, tenDay), false)

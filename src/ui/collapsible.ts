@@ -1,24 +1,24 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { Disclosure as DisclosurePrimitive } from '@foldkit/ui';
+import { Disclosure as DisclosurePrimitive } from '@foldkit/ui'
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils'
 
 /* shadcn/ui Collapsible is a thin composition over foldkit Disclosure.
    animatePanel keeps the content mounted and smoothly transitions its height. */
 
 export type CollapsibleProps<Msg> = Readonly<{
-  id: string;
-  isOpen: boolean;
-  onToggle: (isOpen: boolean) => Msg;
-  trigger: Html | string;
-  content: Html | string;
-  isDisabled?: boolean;
-  ariaLabel?: string;
-  class?: string;
-  triggerClass?: string;
-  contentClass?: string;
-}>;
+  id: string
+  isOpen: boolean
+  onToggle: (isOpen: boolean) => Msg
+  trigger: Html | string
+  content: Html | string
+  isDisabled?: boolean
+  ariaLabel?: string
+  class?: string
+  triggerClass?: string
+  contentClass?: string
+}>
 
 export const collapsible = <Msg>(
   props: CollapsibleProps<Msg>,
@@ -64,12 +64,12 @@ export const collapsible = <Msg>(
               ),
             ),
           ],
-        );
+        )
       },
     },
     h,
-  );
-};
+  )
+}
 
 /*
 Minimal wiring:

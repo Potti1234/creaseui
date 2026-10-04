@@ -1,24 +1,27 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type ChatReasoningFixture = Readonly<{
-  title: string;
-  description: string;
-  kind: 'standalone' | 'inMessage';
-  label?: string;
-  duration?: string;
-  isStreaming?: boolean;
-  isExpanded?: boolean;
-  content: ReadonlyArray<string>;
-}>;
+  title: string
+  description: string
+  kind: 'standalone' | 'inMessage'
+  label?: string
+  duration?: string
+  isStreaming?: boolean
+  isExpanded?: boolean
+  content: ReadonlyArray<string>
+}>
 
 /* No astryx example blocks ship under ChatReasoning/ — the example set is
    derived from apps/storybook/stories/ChatReasoning.stories.tsx (Collapsed,
    Expanded, Streaming, CustomLabel, InMessage). */
-export const chatReasoningFixtures: Readonly<[ChatReasoningFixture, ...Array<ChatReasoningFixture>]> = [
+export const chatReasoningFixtures: Readonly<
+  [ChatReasoningFixture, ...Array<ChatReasoningFixture>]
+> = [
   {
     title: 'Chat Reasoning',
-    description: 'A compact collapsible reasoning trace that shows a single-line summary and expands to reveal the full thinking.',
+    description:
+      'A compact collapsible reasoning trace that shows a single-line summary and expands to reveal the full thinking.',
     kind: 'standalone',
     duration: '12s',
     content: [
@@ -27,7 +30,8 @@ export const chatReasoningFixtures: Readonly<[ChatReasoningFixture, ...Array<Cha
   },
   {
     title: 'Expanded',
-    description: 'Expand the reasoning panel to show the full chain of thought.',
+    description:
+      'Expand the reasoning panel to show the full chain of thought.',
     kind: 'standalone',
     duration: '8s',
     isExpanded: true,
@@ -41,7 +45,8 @@ export const chatReasoningFixtures: Readonly<[ChatReasoningFixture, ...Array<Cha
   },
   {
     title: 'Streaming',
-    description: 'While reasoning streams in, the label shimmers and duration and preview stay hidden.',
+    description:
+      'While reasoning streams in, the label shimmers and duration and preview stay hidden.',
     kind: 'standalone',
     isStreaming: true,
     content: ['Working through the combinatorial constraints...'],
@@ -56,17 +61,18 @@ export const chatReasoningFixtures: Readonly<[ChatReasoningFixture, ...Array<Cha
   },
   {
     title: 'In a Message',
-    description: 'Reasoning sits above the assistant response inside a chat message.',
+    description:
+      'Reasoning sits above the assistant response inside a chat message.',
     kind: 'inMessage',
     duration: '12s',
     content: ['Let me work through the constraints systematically...'],
   },
-];
+]
 
 const IMPORTS_TAILWIND = `import { Option, Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-import { taggedStruct } from 'foldkit/schema'`;
+import { taggedStruct } from 'foldkit/schema'`
 
 const IMPORTS_STYLEX = `import { Option, Schema as S } from 'effect'
 import * as stylex from '@stylexjs/stylex'
@@ -79,22 +85,27 @@ const styles = stylex.create({
   page: { display: 'flex', flexDirection: 'column', gap: '0.5rem', maxWidth: '36rem', width: '100%' },
   message: { display: 'flex', flexDirection: 'column', gap: '0.5rem' },
   reply: { color: 'var(--foreground)', fontSize: '0.875rem', lineHeight: '1.5rem' },
-})`;
+})`
 
 const reasoningSource = (
   fixture: ChatReasoningFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const isStyleX = renderer === 'stylex';
-  const componentModule = isStyleX ? '@/stylex/chat-reasoning' : '@/ui/chat-reasoning';
+  const isStyleX = renderer === 'stylex'
+  const componentModule = isStyleX
+    ? '@/stylex/chat-reasoning'
+    : '@/ui/chat-reasoning'
   const props: Array<string> = [
     'model: model.reasoning',
     'toParentMessage: message => GotChatReasoningMessage({ message })',
-  ];
-  if (fixture.label !== undefined) props.push(`label: '${fixture.label}'`);
-  if (fixture.duration !== undefined) props.push(`duration: '${fixture.duration}'`);
-  if (fixture.isStreaming === true) props.push('isStreaming: true');
-  const contentChildren = fixture.content.map(line => `'${line}'`).join(',\n          ');
+  ]
+  if (fixture.label !== undefined) props.push(`label: '${fixture.label}'`)
+  if (fixture.duration !== undefined)
+    props.push(`duration: '${fixture.duration}'`)
+  if (fixture.isStreaming === true) props.push('isStreaming: true')
+  const contentChildren = fixture.content
+    .map(line => `'${line}'`)
+    .join(',\n          ')
   const reasoningCall = `ChatReasoning.chatReasoning(
         {
           ${props.join(',\n          ')},
@@ -103,7 +114,7 @@ const reasoningSource = (
           ],
         },
         h,
-      )`;
+      )`
 
   const viewBody =
     fixture.kind === 'inMessage'
@@ -119,12 +130,12 @@ const reasoningSource = (
     ])`
       : `h.div(${isStyleX ? "[h.Class(stylex.props(styles.page).className ?? '')]" : "[h.Class('w-full max-w-xl')]"}, [
       ${reasoningCall},
-    ])`;
+    ])`
 
   const messageImports =
     fixture.kind === 'inMessage'
       ? `\nimport * as MessageBox from '@/${isStyleX ? 'stylex' : 'ui'}/message'`
-      : '';
+      : ''
 
   return foldkitApplication({
     title: `Chat Reasoning — ${fixture.title}`,
@@ -172,8 +183,8 @@ export type Message = typeof Message.Type`,
     ],
   ),
 })`,
-  });
-};
+  })
+}
 
 export const chatReasoningExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -183,4 +194,4 @@ export const chatReasoningExamples = (
     description: fixture.description,
     code: reasoningSource(fixture, renderer),
     ...(index === 0 ? {} : {}),
-  }));
+  }))

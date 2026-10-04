@@ -1,19 +1,19 @@
 /* Ported from Meta Astryx SideNav (packages/core/src/SideNav/) — StyleX
    renderer; visual spec adapted to Crease UI tokens. */
 
-import { Option } from 'effect';
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineView } from 'foldkit/submodel';
+import { Option } from 'effect'
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineView } from 'foldkit/submodel'
 
-import * as Icon from '@/lib/icon';
-import * as NavMenu from '@/lib/nav-menu';
-import * as SideNavLib from '@/lib/side-nav';
-import type { ComponentLayoutStyle } from './contracts';
-import { foundationTokens } from './foundations-tokens.stylex';
-import { interactionTokens } from './interaction-tokens.stylex.const';
-import { className } from './style';
-import { tokens } from './tokens.stylex';
+import * as Icon from '@/lib/icon'
+import * as NavMenu from '@/lib/nav-menu'
+import * as SideNavLib from '@/lib/side-nav'
+import type { ComponentLayoutStyle } from './contracts'
+import { foundationTokens } from './foundations-tokens.stylex'
+import { interactionTokens } from './interaction-tokens.stylex.const'
+import { className } from './style'
+import { tokens } from './tokens.stylex'
 
 export {
   Message,
@@ -26,52 +26,52 @@ export {
   menuFor,
   update,
   visibleWidth,
-} from '@/lib/side-nav';
-export type { InitConfig } from '@/lib/side-nav';
+} from '@/lib/side-nav'
+export type { InitConfig } from '@/lib/side-nav'
 
 export type SideNavItemData = Readonly<{
-  id: string;
-  label: string;
-  icon?: string;
-  selectedIcon?: string;
-  isSelected?: boolean;
-  isDisabled?: boolean;
-  href?: string;
-  onSelect?: boolean;
-  endContent?: Html;
-  actions?: Html;
-  children?: ReadonlyArray<SideNavItemData>;
-  defaultCollapsed?: boolean;
-  independentToggle?: boolean;
-}>;
+  id: string
+  label: string
+  icon?: string
+  selectedIcon?: string
+  isSelected?: boolean
+  isDisabled?: boolean
+  href?: string
+  onSelect?: boolean
+  endContent?: Html
+  actions?: Html
+  children?: ReadonlyArray<SideNavItemData>
+  defaultCollapsed?: boolean
+  independentToggle?: boolean
+}>
 
 export type SideNavMenuItemData = Readonly<{
-  label: string;
-  href?: string;
-  onSelect?: boolean;
-  icon?: string;
-  isDisabled?: boolean;
-}>;
+  label: string
+  href?: string
+  onSelect?: boolean
+  icon?: string
+  isDisabled?: boolean
+}>
 
 export type SideNavHeadingData = Readonly<{
-  heading: string;
-  icon?: Html;
-  headingHref?: string;
-  superheading?: string;
-  superheadingHref?: string;
-  subheading?: string;
-  subheadingHref?: string;
-  headerEndContent?: Html;
-  menu?: ReadonlyArray<SideNavMenuItemData>;
-}>;
+  heading: string
+  icon?: Html
+  headingHref?: string
+  superheading?: string
+  superheadingHref?: string
+  subheading?: string
+  subheadingHref?: string
+  headerEndContent?: Html
+  menu?: ReadonlyArray<SideNavMenuItemData>
+}>
 
 export type SideNavSectionData = Readonly<{
-  title?: string;
-  subtitle?: string;
-  isHeaderHidden?: boolean;
-  endContent?: Html;
-  items: ReadonlyArray<SideNavItemData>;
-}>;
+  title?: string
+  subtitle?: string
+  isHeaderHidden?: boolean
+  endContent?: Html
+  items: ReadonlyArray<SideNavItemData>
+}>
 
 const styles = stylex.create({
   nav: {
@@ -433,7 +433,7 @@ const styles = stylex.create({
     color: tokens.mutedForeground,
     fontSize: '0.75rem',
     fontWeight: 600,
- lineHeight: '1rem',
+    lineHeight: '1rem',
     paddingBlockEnd: '0.25rem',
     paddingBlockStart: '0.375rem',
   },
@@ -650,28 +650,28 @@ const styles = stylex.create({
   resizeHandleStart: {
     left: 0,
   },
-});
+})
 
 const SIZE_STYLES = {
   sm: styles.itemSm,
   md: styles.itemMd,
   lg: styles.itemLg,
-} as const;
+} as const
 
 // ---------------------------------------------------------------------------
 // Anchor positioning (same CSS anchor contract as the tailwind renderer)
 // ---------------------------------------------------------------------------
 
-type AnchorSide = 'top' | 'bottom' | 'start' | 'end';
+type AnchorSide = 'top' | 'bottom' | 'start' | 'end'
 
 const anchorPositionStyle = (
   anchorId: string,
   side: AnchorSide,
   options: Readonly<{ coverTrigger?: boolean; gap?: string }> = {},
 ): Record<string, string> => {
-  const gap = options.gap ?? '0.25rem';
-  const cover = options.coverTrigger === true;
-  const horizontal = side === 'start' || side === 'end';
+  const gap = options.gap ?? '0.25rem'
+  const cover = options.coverTrigger === true
+  const horizontal = side === 'start' || side === 'end'
   const sideInset =
     side === 'end'
       ? { left: cover ? 'anchor(left)' : `calc(anchor(right) + ${gap})` }
@@ -679,14 +679,14 @@ const anchorPositionStyle = (
         ? { right: cover ? 'anchor(right)' : `calc(anchor(left) + ${gap})` }
         : side === 'bottom'
           ? { top: cover ? 'anchor(top)' : `calc(anchor(bottom) + ${gap})` }
-          : { bottom: cover ? 'anchor(bottom)' : `calc(anchor(top) + ${gap})` };
+          : { bottom: cover ? 'anchor(bottom)' : `calc(anchor(top) + ${gap})` }
   const alignInset = horizontal
     ? { top: cover ? 'anchor(top)' : `calc(anchor(top) - ${gap})` }
     : {
         left: cover
           ? 'anchor(left)'
           : `min(anchor(left), calc(anchor(right) - 100%))`,
-      };
+      }
   return {
     position: 'fixed',
     positionAnchor: anchorId,
@@ -696,32 +696,32 @@ const anchorPositionStyle = (
     maxHeight: 'calc(100vh - 8px)',
     overflowY: 'auto',
     ...(cover ? {} : { width: 'max-content' }),
-  };
-};
+  }
+}
 
 // ---------------------------------------------------------------------------
 // View helpers
 // ---------------------------------------------------------------------------
 
 const sectionHeadingDomId = (navId: string, index: number): string =>
-  `${navId}-section-${index}-heading`;
+  `${navId}-section-${index}-heading`
 
 const itemDomId = (navId: string, itemId: string): string =>
-  `${navId}-item-${itemId}`;
+  `${navId}-item-${itemId}`
 
 const itemChildrenDomId = (navId: string, itemId: string): string =>
-  `${navId}-item-${itemId}-children`;
+  `${navId}-item-${itemId}-children`
 
 const iconFor = (item: SideNavItemData): string | undefined =>
   item.isSelected === true && item.selectedIcon !== undefined
     ? item.selectedIcon
-    : item.icon;
+    : item.icon
 
 const itemIsActionable = (item: SideNavItemData): boolean =>
-  item.href !== undefined || item.onSelect === true;
+  item.href !== undefined || item.onSelect === true
 
 const itemVisibleInRail = (item: SideNavItemData): boolean =>
-  iconFor(item) !== undefined;
+  iconFor(item) !== undefined
 
 const renderMenuItems = <Msg>(
   items: ReadonlyArray<SideNavMenuItemData>,
@@ -729,7 +729,7 @@ const renderMenuItems = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Html[] =>
   items.map(item => {
-    const disabled = item.isDisabled === true;
+    const disabled = item.isDisabled === true
     const attrs = [
       h.Class(
         className(
@@ -739,25 +739,25 @@ const renderMenuItems = <Msg>(
         ),
       ),
       ...(disabled ? [h.AriaDisabled(true)] : []),
-      ...(item.href === undefined ? [h.Role('menuitem'), h.Tabindex(-1)] : [h.Role('menuitem')]),
+      ...(item.href === undefined
+        ? [h.Role('menuitem'), h.Tabindex(-1)]
+        : [h.Role('menuitem')]),
       ...(item.onSelect === true && !disabled
         ? [h.OnClick(emitMenu(NavMenu.Message.SelectedNavMenuItem()))]
         : []),
-    ];
+    ]
     const children = [
       ...(item.icon === undefined
         ? []
-        : [
-            Icon.icon(item.icon, { class: className(styles.itemIcon) }, h),
-          ]),
+        : [Icon.icon(item.icon, { class: className(styles.itemIcon) }, h)]),
       h.span([h.Class(className(styles.flyoutLabel))], [item.label]),
-    ];
+    ]
     return item.href === undefined
       ? h.button([h.Type('button'), ...attrs], children)
       : disabled
         ? h.button([h.Type('button'), ...attrs], children)
-        : h.a([h.Href(item.href), ...attrs], children);
-  });
+        : h.a([h.Href(item.href), ...attrs], children)
+  })
 
 const renderFlyoutItems = <Msg>(
   items: ReadonlyArray<SideNavItemData>,
@@ -765,7 +765,7 @@ const renderFlyoutItems = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Html[] =>
   items.map(item => {
-    const disabled = item.isDisabled === true;
+    const disabled = item.isDisabled === true
     const attrs = [
       h.Class(
         className(
@@ -778,36 +778,36 @@ const renderFlyoutItems = <Msg>(
       ...(item.onSelect === true && !disabled
         ? [h.OnClick(emitMenu(NavMenu.Message.SelectedNavMenuItem()))]
         : []),
-    ];
+    ]
     const children = [
       h.span([h.Class(className(styles.flyoutLabel))], [item.label]),
       ...(item.endContent === undefined ? [] : [item.endContent]),
-    ];
+    ]
     return item.href === undefined
       ? h.button([h.Type('button'), ...attrs], children)
-      : h.a([h.Href(item.href), ...attrs], children);
-  });
+      : h.a([h.Href(item.href), ...attrs], children)
+  })
 
 const flyoutPanel = <Msg>(
   model: SideNavLib.Model,
   key: string,
   anchorId: string,
   options: Readonly<{
-    side: AnchorSide;
-    coverTrigger?: boolean;
-    headerLabel?: string;
-    items: Html[];
+    side: AnchorSide
+    coverTrigger?: boolean
+    headerLabel?: string
+    items: Html[]
   }>,
   emit: (message: SideNavLib.Message) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html[] => {
-  const menu = SideNavLib.menuFor(model, key);
+  const menu = SideNavLib.menuFor(model, key)
   if (!NavMenu.isOpen(menu)) {
-    return [];
+    return []
   }
   const emitMenu = (message: NavMenu.Message): Msg =>
-    emit(SideNavLib.Message.GotSideNavMenuMessage({ key, message }));
-  const panelId = NavMenu.panelDomId(`${model.id}-${key}`);
+    emit(SideNavLib.Message.GotSideNavMenuMessage({ key, message }))
+  const panelId = NavMenu.panelDomId(`${model.id}-${key}`)
   return [
     h.div(
       [
@@ -835,8 +835,8 @@ const flyoutPanel = <Msg>(
         ...options.items,
       ],
     ),
-  ];
-};
+  ]
+}
 
 const renderItem = <Msg>(
   model: SideNavLib.Model,
@@ -847,26 +847,26 @@ const renderItem = <Msg>(
   h: HtmlBuilder<Msg>,
   direction: 'ltr' | 'rtl',
 ): Html => {
-  const collapsed = model.isCollapsed;
-  const hasChildren = item.children !== undefined && item.children.length > 0;
-  const isSelected = item.isSelected === true;
-  const isDisabled = item.isDisabled === true;
-  const icon = iconFor(item);
+  const collapsed = model.isCollapsed
+  const hasChildren = item.children !== undefined && item.children.length > 0
+  const isSelected = item.isSelected === true
+  const isDisabled = item.isDisabled === true
+  const icon = iconFor(item)
   const childrenCollapsed = SideNavLib.isItemCollapsed(
     model,
     item.id,
     item.defaultCollapsed ?? false,
-  );
+  )
 
   if (collapsed) {
     if (!itemVisibleInRail(item)) {
-      return h.div([], []);
+      return h.div([], [])
     }
-    const key = SideNavLib.flyoutKey(item.id);
-    const menu = SideNavLib.menuFor(model, key);
-    const anchorId = `--${model.id}-${item.id}-anchor`;
+    const key = SideNavLib.flyoutKey(item.id)
+    const menu = SideNavLib.menuFor(model, key)
+    const anchorId = `--${model.id}-${item.id}-anchor`
     const emitMenu = (message: NavMenu.Message): Msg =>
-      emit(SideNavLib.Message.GotSideNavMenuMessage({ key, message }));
+      emit(SideNavLib.Message.GotSideNavMenuMessage({ key, message }))
     const triggerAttrs = [
       h.Id(NavMenu.triggerDomId(`${model.id}-${key}`)),
       h.Class(
@@ -890,9 +890,7 @@ const renderItem = <Msg>(
             h.AriaHasPopup('menu'),
             h.AriaExpanded(NavMenu.isOpen(menu)),
             h.AriaControls(NavMenu.panelDomId(`${model.id}-${key}`)),
-            h.OnMouseEnter(
-              emitMenu(NavMenu.Message.EnteredNavMenuTrigger()),
-            ),
+            h.OnMouseEnter(emitMenu(NavMenu.Message.EnteredNavMenuTrigger())),
             h.OnMouseLeave(emitMenu(NavMenu.Message.LeftNavMenuTrigger())),
             h.OnPointerDown((_type, button, _sx, _sy, timeStamp) =>
               button === 0 && !isDisabled
@@ -924,12 +922,16 @@ const renderItem = <Msg>(
               ),
             ]
           : []),
-    ];
-    const iconEl = Icon.icon(icon ?? 'file', { class: className(styles.itemIcon) }, h);
+    ]
+    const iconEl = Icon.icon(
+      icon ?? 'file',
+      { class: className(styles.itemIcon) },
+      h,
+    )
     const trigger =
       !hasChildren && item.href !== undefined && !isDisabled
         ? h.a([h.Href(item.href), ...triggerAttrs], [iconEl])
-        : h.button([h.Type('button'), ...triggerAttrs], [iconEl]);
+        : h.button([h.Type('button'), ...triggerAttrs], [iconEl])
     return h.div(
       [h.Class(className(styles.railColumn))],
       [
@@ -949,13 +951,13 @@ const renderItem = <Msg>(
             )
           : []),
       ],
-    );
+    )
   }
 
-  const isActionable = itemIsActionable(item);
+  const isActionable = itemIsActionable(item)
   const independentToggle =
-    hasChildren && isActionable && (item.independentToggle ?? true);
-  const childrenId = itemChildrenDomId(model.id, item.id);
+    hasChildren && isActionable && (item.independentToggle ?? true)
+  const childrenId = itemChildrenDomId(model.id, item.id)
 
   const onPrimaryPress: Option.Option<Msg> =
     hasChildren && !isActionable
@@ -982,19 +984,16 @@ const renderItem = <Msg>(
                 SideNavLib.Message.PressedSideNavItemAction({ id: item.id }),
               ),
             )
-          : Option.none();
+          : Option.none()
 
-  const label = h.span(
-    [h.Class(className(styles.itemLabel))],
-    [item.label],
-  );
+  const label = h.span([h.Class(className(styles.itemLabel))], [item.label])
   const primaryChildren = [
     ...(icon === undefined
       ? []
       : [Icon.icon(icon, { class: className(styles.itemIcon) }, h)]),
     label,
     ...(item.endContent === undefined ? [] : [item.endContent]),
-  ];
+  ]
   const primaryAttrs = [
     h.Class(
       className(
@@ -1017,7 +1016,7 @@ const renderItem = <Msg>(
       onNone: () => [],
       onSome: msg => [h.OnClick(msg)],
     }),
-  ];
+  ]
   const primary =
     item.href !== undefined && !isDisabled
       ? h.a([h.Href(item.href), ...primaryAttrs], primaryChildren)
@@ -1028,16 +1027,14 @@ const renderItem = <Msg>(
             ...primaryAttrs,
           ],
           primaryChildren,
-        );
+        )
 
   const expandToggle =
     independentToggle && !isDisabled
       ? h.button(
           [
             h.Type('button'),
-            h.Class(
-              className(styles.expandToggle, styles.expandToggleHover),
-            ),
+            h.Class(className(styles.expandToggle, styles.expandToggleHover)),
             h.AriaLabel(`Toggle ${item.label}`),
             h.AriaExpanded(!childrenCollapsed),
             h.AriaControls(childrenId),
@@ -1063,24 +1060,21 @@ const renderItem = <Msg>(
             ),
           ],
         )
-      : undefined;
+      : undefined
 
   const row =
     independentToggle || item.actions !== undefined
       ? h.div(
           [h.Class(className(styles.itemRowWrapper))],
           [
-            h.div(
-              [h.Class(className(styles.itemPrimaryCell))],
-              [primary],
-            ),
+            h.div([h.Class(className(styles.itemPrimaryCell))], [primary]),
             ...(expandToggle === undefined ? [] : [expandToggle]),
             ...(item.actions === undefined ? [] : [item.actions]),
           ],
         )
-      : primary;
+      : primary
 
-  const indentPx = 8 + level * 24;
+  const indentPx = 8 + level * 24
   const childrenRegion = hasChildren
     ? h.div(
         [
@@ -1099,7 +1093,7 @@ const renderItem = <Msg>(
               renderItem(model, child, level + 1, size, emit, h, direction),
             ),
       )
-    : undefined;
+    : undefined
 
   return h.div(
     [h.Id(itemDomId(model.id, item.id)), h.Class(className(styles.itemColumn))],
@@ -1107,16 +1101,14 @@ const renderItem = <Msg>(
       h.div(
         [
           h.Class(className(styles.itemIndent)),
-          h.Style(
-            level > 0 ? { paddingInlineStart: `${indentPx}px` } : {},
-          ),
+          h.Style(level > 0 ? { paddingInlineStart: `${indentPx}px` } : {}),
         ],
         [row],
       ),
       ...(childrenRegion === undefined ? [] : [childrenRegion]),
     ],
-  );
-};
+  )
+}
 
 const renderHeading = <Msg>(
   model: SideNavLib.Model,
@@ -1124,26 +1116,23 @@ const renderHeading = <Msg>(
   emit: (message: SideNavLib.Message) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const collapsed = model.isCollapsed;
-  const hasMenu = heading.menu !== undefined && heading.menu.length > 0;
-  const key = SideNavLib.HEADING_MENU_KEY;
-  const menu = SideNavLib.menuFor(model, key);
-  const anchorId = `--${model.id}-heading-anchor`;
+  const collapsed = model.isCollapsed
+  const hasMenu = heading.menu !== undefined && heading.menu.length > 0
+  const key = SideNavLib.HEADING_MENU_KEY
+  const menu = SideNavLib.menuFor(model, key)
+  const anchorId = `--${model.id}-heading-anchor`
   const emitMenu = (message: NavMenu.Message): Msg =>
-    emit(SideNavLib.Message.GotSideNavMenuMessage({ key, message }));
+    emit(SideNavLib.Message.GotSideNavMenuMessage({ key, message }))
 
   const iconEl =
     heading.icon === undefined
       ? undefined
-      : h.span(
-          [h.Class(className(styles.headingIcon))],
-          [heading.icon],
-        );
+      : h.span([h.Class(className(styles.headingIcon))], [heading.icon])
 
   const headingText = h.span(
     [h.Class(className(styles.headingTitle))],
     [heading.heading],
-  );
+  )
 
   if (collapsed) {
     const triggerChildren = [
@@ -1155,7 +1144,7 @@ const renderHeading = <Msg>(
             ),
           ]
         : [iconEl]),
-    ];
+    ]
     const triggerAttrs = [
       h.Id(NavMenu.triggerDomId(`${model.id}-${key}`)),
       h.Class(
@@ -1167,9 +1156,7 @@ const renderHeading = <Msg>(
             h.Style({ anchorName: anchorId }),
             h.AriaHasPopup('menu'),
             h.AriaExpanded(NavMenu.isOpen(menu)),
-            h.OnMouseEnter(
-              emitMenu(NavMenu.Message.EnteredNavMenuTrigger()),
-            ),
+            h.OnMouseEnter(emitMenu(NavMenu.Message.EnteredNavMenuTrigger())),
             h.OnMouseLeave(emitMenu(NavMenu.Message.LeftNavMenuTrigger())),
             h.OnPointerDown((_t, button, _x, _y, timeStamp) =>
               button === 0
@@ -1191,11 +1178,11 @@ const renderHeading = <Msg>(
             ),
           ]
         : []),
-    ];
+    ]
     const trigger =
       !hasMenu && heading.headingHref !== undefined
         ? h.a([h.Href(heading.headingHref), ...triggerAttrs], triggerChildren)
-        : h.button([h.Type('button'), ...triggerAttrs], triggerChildren);
+        : h.button([h.Type('button'), ...triggerAttrs], triggerChildren)
     return h.div(
       [h.Class(className(styles.headingRailWrap))],
       [
@@ -1214,7 +1201,7 @@ const renderHeading = <Msg>(
             )
           : []),
       ],
-    );
+    )
   }
 
   const textColumn = h.div(
@@ -1243,9 +1230,7 @@ const renderHeading = <Msg>(
         : h.a(
             [
               h.Href(heading.headingHref),
-              h.Class(
-                className(styles.headingTitle, styles.headingTitleLink),
-              ),
+              h.Class(className(styles.headingTitle, styles.headingTitleLink)),
             ],
             [heading.heading],
           ),
@@ -1268,7 +1253,7 @@ const renderHeading = <Msg>(
                 ),
           ]),
     ],
-  );
+  )
 
   const chevronButton =
     hasMenu && heading.headingHref !== undefined
@@ -1276,16 +1261,12 @@ const renderHeading = <Msg>(
           [
             h.Type('button'),
             h.Id(NavMenu.triggerDomId(`${model.id}-${key}`)),
-            h.Class(
-              className(styles.expandToggle, styles.expandToggleHover),
-            ),
+            h.Class(className(styles.expandToggle, styles.expandToggleHover)),
             h.AriaLabel('More options'),
             h.AriaHasPopup('menu'),
             h.AriaExpanded(NavMenu.isOpen(menu)),
             h.Style({ anchorName: anchorId }),
-            h.OnMouseEnter(
-              emitMenu(NavMenu.Message.EnteredNavMenuTrigger()),
-            ),
+            h.OnMouseEnter(emitMenu(NavMenu.Message.EnteredNavMenuTrigger())),
             h.OnMouseLeave(emitMenu(NavMenu.Message.LeftNavMenuTrigger())),
             h.OnPointerDown((_t, button, _x, _y, timeStamp) =>
               button === 0
@@ -1316,19 +1297,13 @@ const renderHeading = <Msg>(
                   ),
                 ),
               ],
-              [
-                Icon.icon(
-                  'chevron-down',
-                  { class: 'size-4' },
-                  h,
-                ),
-              ],
+              [Icon.icon('chevron-down', { class: 'size-4' }, h)],
             ),
           ],
         )
-      : undefined;
+      : undefined
 
-  const wholeHeaderTrigger = hasMenu && chevronButton === undefined;
+  const wholeHeaderTrigger = hasMenu && chevronButton === undefined
 
   const headerRow = h.div(
     [
@@ -1346,9 +1321,7 @@ const renderHeading = <Msg>(
             h.AriaHasPopup('menu'),
             h.AriaExpanded(NavMenu.isOpen(menu)),
             h.Style({ anchorName: anchorId }),
-            h.OnMouseEnter(
-              emitMenu(NavMenu.Message.EnteredNavMenuTrigger()),
-            ),
+            h.OnMouseEnter(emitMenu(NavMenu.Message.EnteredNavMenuTrigger())),
             h.OnMouseLeave(emitMenu(NavMenu.Message.LeftNavMenuTrigger())),
             h.OnPointerDown((_t, button, _x, _y, timeStamp) =>
               button === 0
@@ -1379,7 +1352,7 @@ const renderHeading = <Msg>(
         ? []
         : [heading.headerEndContent]),
     ],
-  );
+  )
 
   return h.div(
     [h.Class(className(styles.headingWrap))],
@@ -1400,8 +1373,8 @@ const renderHeading = <Msg>(
           )
         : []),
     ],
-  );
-};
+  )
+}
 
 const renderSection = <Msg>(
   model: SideNavLib.Model,
@@ -1412,9 +1385,9 @@ const renderSection = <Msg>(
   h: HtmlBuilder<Msg>,
   direction: 'ltr' | 'rtl',
 ): Html => {
-  const collapsed = model.isCollapsed;
-  const headingId = sectionHeadingDomId(model.id, index);
-  const headerHidden = collapsed || section.isHeaderHidden === true;
+  const collapsed = model.isCollapsed
+  const headingId = sectionHeadingDomId(model.id, index)
+  const headerHidden = collapsed || section.isHeaderHidden === true
   const header =
     section.title === undefined
       ? undefined
@@ -1449,7 +1422,7 @@ const renderSection = <Msg>(
             ),
             ...(section.endContent === undefined ? [] : [section.endContent]),
           ],
-        );
+        )
   return h.div(
     [
       h.Class(className(styles.section)),
@@ -1472,8 +1445,8 @@ const renderSection = <Msg>(
         ),
       ),
     ],
-  );
-};
+  )
+}
 
 const collapseButton = <Msg>(
   model: SideNavLib.Model,
@@ -1504,24 +1477,24 @@ const collapseButton = <Msg>(
         [Icon.icon('chevron-left', { class: 'size-4' }, h)],
       ),
     ],
-  );
+  )
 
 export type ViewInputs = Readonly<{
-  items?: ReadonlyArray<SideNavItemData>;
-  sections?: ReadonlyArray<SideNavSectionData>;
-  heading?: SideNavHeadingData;
-  topContent?: Html;
-  footer?: Html;
-  footerIcons?: Html;
-  hasCollapseButton?: boolean;
+  items?: ReadonlyArray<SideNavItemData>
+  sections?: ReadonlyArray<SideNavSectionData>
+  heading?: SideNavHeadingData
+  topContent?: Html
+  footer?: Html
+  footerIcons?: Html
+  hasCollapseButton?: boolean
   /** Render the collapse control inside the footer icon row — the astryx
       footerIcons={<SideNavCollapseButton/>} slot. */
-  footerCollapseButton?: boolean;
-  size?: 'sm' | 'md' | 'lg';
-  ariaLabel?: string;
-  direction?: 'ltr' | 'rtl';
-  layoutStyle?: ComponentLayoutStyle;
-}>;
+  footerCollapseButton?: boolean
+  size?: 'sm' | 'md' | 'lg'
+  ariaLabel?: string
+  direction?: 'ltr' | 'rtl'
+  layoutStyle?: ComponentLayoutStyle
+}>
 
 const render = <Msg>(
   model: SideNavLib.Model,
@@ -1529,17 +1502,17 @@ const render = <Msg>(
   emit: (message: SideNavLib.Message) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const collapsed = model.isCollapsed;
-  const direction = viewInputs.direction ?? 'ltr';
-  const size = viewInputs.size ?? 'md';
+  const collapsed = model.isCollapsed
+  const direction = viewInputs.direction ?? 'ltr'
+  const size = viewInputs.size ?? 'md'
   const hasCollapseButton =
-    viewInputs.hasCollapseButton !== false && model.isCollapsible;
+    viewInputs.hasCollapseButton !== false && model.isCollapsible
   const footerCollapseButton =
-    viewInputs.footerCollapseButton === true && model.isCollapsible;
+    viewInputs.footerCollapseButton === true && model.isCollapsible
   const hasFooterRow =
     hasCollapseButton ||
     footerCollapseButton ||
-    viewInputs.footerIcons !== undefined;
+    viewInputs.footerIcons !== undefined
 
   const stickyTop =
     viewInputs.heading === undefined && viewInputs.topContent === undefined
@@ -1561,15 +1534,12 @@ const render = <Msg>(
               ? []
               : [viewInputs.topContent]),
           ],
-        );
+        )
 
   const scrollable = h.div(
     [
       h.Class(
-        className(
-          styles.scrollable,
-          collapsed && styles.scrollableCollapsed,
-        ),
+        className(styles.scrollable, collapsed && styles.scrollableCollapsed),
       ),
     ],
     [
@@ -1594,7 +1564,7 @@ const render = <Msg>(
             ),
           ]),
     ],
-  );
+  )
 
   const stickyBottom =
     viewInputs.footer === undefined && !hasFooterRow
@@ -1638,7 +1608,7 @@ const render = <Msg>(
                 ]
               : []),
           ],
-        );
+        )
 
   const resizeHandle = !model.isResizable
     ? undefined
@@ -1660,9 +1630,7 @@ const render = <Msg>(
           h.OnPointerDown((pointerType, button, _sx, screenX) =>
             button === 0 || pointerType !== 'mouse'
               ? Option.some(
-                  emit(
-                    SideNavLib.Message.StartedSideNavResize({ x: screenX }),
-                  ),
+                  emit(SideNavLib.Message.StartedSideNavResize({ x: screenX })),
                 )
               : Option.none(),
           ),
@@ -1682,7 +1650,7 @@ const render = <Msg>(
             Option.some(emit(SideNavLib.Message.EndedSideNavResize())),
           ),
           h.OnKeyDownPreventDefault(key => {
-            const step = 16;
+            const step = 16
             const delta =
               key === 'ArrowRight'
                 ? direction === 'rtl'
@@ -1692,16 +1660,16 @@ const render = <Msg>(
                   ? direction === 'rtl'
                     ? step
                     : -step
-                  : 0;
+                  : 0
             return delta === 0
               ? Option.none()
               : Option.some(
                   emit(SideNavLib.Message.NudgedSideNavResize({ delta })),
-                );
+                )
           }),
         ],
         [],
-      );
+      )
 
   return h.nav(
     [
@@ -1722,24 +1690,24 @@ const render = <Msg>(
       ...(stickyBottom === undefined ? [] : [stickyBottom]),
       ...(resizeHandle === undefined ? [] : [resizeHandle]),
     ],
-  );
-};
+  )
+}
 
 /** Canonical stateful view. Embed with `h.submodel`. */
 export const view = defineView<
   SideNavLib.Model,
   SideNavLib.Message,
   ViewInputs
->((model, viewInputs, h) => render(model, viewInputs, message => message, h));
+>((model, viewInputs, h) => render(model, viewInputs, message => message, h))
 
 /** Compatibility helper. New code should use `h.submodel`. */
 export type SideNavProps<Msg> = ViewInputs &
   Readonly<{
-    model: SideNavLib.Model;
-    toParentMessage: (message: SideNavLib.Message) => Msg;
-  }>;
+    model: SideNavLib.Model
+    toParentMessage: (message: SideNavLib.Message) => Msg
+  }>
 
 export const sideNav = <Msg>(
   props: SideNavProps<Msg>,
   h: HtmlBuilder<Msg>,
-): Html => render(props.model, props, props.toParentMessage, h);
+): Html => render(props.model, props, props.toParentMessage, h)

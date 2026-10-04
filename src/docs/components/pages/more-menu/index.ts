@@ -1,6 +1,6 @@
-import { authoredPage } from '@/docs/components/pages/authored-page';
-import { moreMenuExamples } from '@/docs/components/pages/more-menu/shared';
-import { moreMenuTailwindPreviewProgram } from '@/docs/components/pages/more-menu/tailwind';
+import { authoredPage } from '@/docs/components/pages/authored-page'
+import { moreMenuExamples } from '@/docs/components/pages/more-menu/shared'
+import { moreMenuTailwindPreviewProgram } from '@/docs/components/pages/more-menu/tailwind'
 
 export const moreMenuPage = authoredPage({
   slug: 'more-menu',
@@ -9,8 +9,7 @@ export const moreMenuPage = authoredPage({
   previewProgram: moreMenuTailwindPreviewProgram,
   definition: {
     kind: 'submodel',
-    description:
-      'A three-dot overflow trigger that opens a menu of actions.',
+    description: 'A three-dot overflow trigger that opens a menu of actions.',
     architecture:
       'More Menu is a submodel wrapper over Dropdown Menu: it re-exports the same Model, Message, OutMessage, init, and update, flattens astryx-style action/divider/section options into menu items, and renders an icon-only ghost trigger.',
     apiHref:
@@ -18,7 +17,7 @@ export const moreMenuPage = authoredPage({
     composition:
       'Parent Model\n├── More Menu child Model (Dropdown Menu model)\n└── moreMenu view\n    ├── ellipsis icon trigger\n    └── items / dividers / labeled sections',
     styling:
-      'Trigger variants are the Button variants (`ghost` by default); sizes sm/md/lg map onto the icon button sizes. `variant: \'destructive\'` marks a dangerous item.',
+      "Trigger variants are the Button variants (`ghost` by default); sizes sm/md/lg map onto the icon button sizes. `variant: 'destructive'` marks a dangerous item.",
     accessibility:
       'The icon-only trigger always needs an accessible name — `label` defaults to "More options" and doubles as the menu\'s aria-label. Menu keyboard behavior is inherited from Dropdown Menu.',
     keyboard: [
@@ -29,4 +28,4 @@ export const moreMenuPage = authoredPage({
     examples: moreMenuExamples('tailwind'),
     stylexExamples: moreMenuExamples('stylex'),
   },
-});
+})

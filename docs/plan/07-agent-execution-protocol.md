@@ -218,4 +218,3 @@ The final handoff must lead with the achieved outcome and include:
 - known limitations and deferred work;
 - exact next recommended work item;
 - confirmation that unrelated worktree changes were preserved.
-

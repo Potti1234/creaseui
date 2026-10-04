@@ -1,11 +1,12 @@
-import { authoredPage } from '@/docs/components/pages/authored-page';
-import { sectionExamples } from '@/docs/components/pages/section/shared';
-import { sectionTailwindPreviews } from '@/docs/components/pages/section/tailwind';
+import { authoredPage } from '@/docs/components/pages/authored-page'
+import { sectionExamples } from '@/docs/components/pages/section/shared'
+import { sectionTailwindPreviews } from '@/docs/components/pages/section/tailwind'
 
 const tailwindExamples = sectionExamples('tailwind').map((example, index) => ({
   ...example,
-  staticPreview: (sectionTailwindPreviews[index] ?? sectionTailwindPreviews[0])!,
-}));
+  staticPreview: (sectionTailwindPreviews[index] ??
+    sectionTailwindPreviews[0])!,
+}))
 
 export const sectionPage = authoredPage({
   slug: 'section',
@@ -27,4 +28,4 @@ export const sectionPage = authoredPage({
     examples: tailwindExamples,
     stylexExamples: sectionExamples('stylex'),
   },
-});
+})

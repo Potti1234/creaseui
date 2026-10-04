@@ -11,8 +11,16 @@ const componentSources = componentFiles.map(file => ({
 describe('StyleX component authoring contract', () => {
   it('does not expose unrestricted styling escape hatches at call sites', () => {
     for (const { file, source } of componentSources) {
-      assert.doesNotMatch(source, /\b(?:style|class|className|unsafeStyle)\??\s*:/u, file)
-      assert.doesNotMatch(source, /props\.(?:style|class|className|unsafeStyle)\b/u, file)
+      assert.doesNotMatch(
+        source,
+        /\b(?:style|class|className|unsafeStyle)\??\s*:/u,
+        file,
+      )
+      assert.doesNotMatch(
+        source,
+        /props\.(?:style|class|className|unsafeStyle)\b/u,
+        file,
+      )
       assert.match(source, /layoutStyle\?: ComponentLayoutStyle/u, file)
     }
   })
@@ -47,7 +55,10 @@ describe('StyleX component authoring contract', () => {
     assert.doesNotMatch(accordion, /export const Model =/u)
     assert.doesNotMatch(accordion, /export const update =/u)
     assert.match(accordion, /defineView</u)
-    assert.doesNotMatch(viewInputs, /\b(?:style|class|className|unsafeStyle)\??\s*:/u)
+    assert.doesNotMatch(
+      viewInputs,
+      /\b(?:style|class|className|unsafeStyle)\??\s*:/u,
+    )
     assert.match(viewInputs, /layoutStyle\?: ComponentLayoutStyle/u)
   })
 
@@ -87,7 +98,7 @@ describe('StyleX component authoring contract', () => {
     const stylex = readFileSync('src/stylex/field.ts', 'utf8')
 
     assert.match(tailwind, /from '@\/lib\/field'/u)
-    assert.match(stylex, /from "@\/lib\/field"/u)
+    assert.match(stylex, /from ['"]@\/lib\/field['"]/u)
     assert.doesNotMatch(stylex, /from ['"]@\/ui\/field['"]/u)
     assert.match(stylex, /renderControlField\(/u)
   })
@@ -270,10 +281,16 @@ describe('StyleX component authoring contract', () => {
     assert.match(tailwind, /Listbox as ListboxPrimitive/u)
     assert.match(stylex, /Listbox as ListboxPrimitive/u)
     assert.doesNotMatch(stylex, /from ['"]@\/ui\/select['"]/u)
-    assert.match(tailwind, /export const create = <Value extends string/u)
-    assert.match(stylex, /export const create = <Value extends string/u)
-    assert.doesNotMatch(tailwind, /const listbox = ListboxPrimitive\.create\(\);/u)
-    assert.doesNotMatch(stylex, /const listbox = ListboxPrimitive\.create\(\);/u)
+    assert.match(tailwind, /export const create = <\s*Value extends string/u)
+    assert.match(stylex, /export const create = <\s*Value extends string/u)
+    assert.doesNotMatch(
+      tailwind,
+      /const listbox = ListboxPrimitive\.create\(\);/u,
+    )
+    assert.doesNotMatch(
+      stylex,
+      /const listbox = ListboxPrimitive\.create\(\);/u,
+    )
   })
 
   it('binds Combobox value types once and shares the canonical primitive behavior', () => {
@@ -283,10 +300,16 @@ describe('StyleX component authoring contract', () => {
     assert.match(tailwind, /Combobox as ComboboxPrimitive/u)
     assert.match(stylex, /Combobox as ComboboxPrimitive/u)
     assert.doesNotMatch(stylex, /from ['"]@\/ui\/combobox['"]/u)
-    assert.match(tailwind, /export const create = <Value extends string/u)
-    assert.match(stylex, /export const create = <Value extends string/u)
-    assert.doesNotMatch(tailwind, /const comboboxPrimitive = ComboboxPrimitive\.create<Value>\(\);/u)
-    assert.doesNotMatch(stylex, /const comboboxPrimitive = ComboboxPrimitive\.create<Value>\(\);/u)
+    assert.match(tailwind, /export const create = <\s*Value extends string/u)
+    assert.match(stylex, /export const create = <\s*Value extends string/u)
+    assert.doesNotMatch(
+      tailwind,
+      /const comboboxPrimitive = ComboboxPrimitive\.create<Value>\(\);/u,
+    )
+    assert.doesNotMatch(
+      stylex,
+      /const comboboxPrimitive = ComboboxPrimitive\.create<Value>\(\);/u,
+    )
   })
 
   it('keeps Dropdown Menu interaction policy in one skin-neutral module', () => {
@@ -311,11 +334,17 @@ describe('StyleX component authoring contract', () => {
 
     assert.match(tailwind, /Tabs as TabsPrimitive/u)
     assert.match(stylex, /Tabs as TabsPrimitive/u)
-    assert.match(tailwind, /export const create = <Value extends string/u)
-    assert.match(stylex, /export const create = <Value extends string/u)
+    assert.match(tailwind, /export const create = <\s*Value extends string/u)
+    assert.match(stylex, /export const create = <\s*Value extends string/u)
     assert.doesNotMatch(stylex, /from ['"]@\/ui\/tabs['"]/u)
-    assert.doesNotMatch(tailwind, /activationMode\?: TabsPrimitive\.ActivationMode/u)
-    assert.doesNotMatch(stylex, /activationMode\?: TabsPrimitive\.ActivationMode/u)
+    assert.doesNotMatch(
+      tailwind,
+      /activationMode\?: TabsPrimitive\.ActivationMode/u,
+    )
+    assert.doesNotMatch(
+      stylex,
+      /activationMode\?: TabsPrimitive\.ActivationMode/u,
+    )
   })
 
   it('keeps Toggle controlled on the canonical button primitive in both skins', () => {
@@ -339,8 +368,8 @@ describe('StyleX component authoring contract', () => {
     assert.match(behavior, /Tabs as TabsPrimitive/u)
     assert.match(tailwind, /@\/lib\/toggle-group/u)
     assert.match(stylex, /@\/lib\/toggle-group/u)
-    assert.match(tailwind, /export const create = <Value extends string/u)
-    assert.match(stylex, /export const create = <Value extends string/u)
+    assert.match(tailwind, /export const create = <\s*Value extends string/u)
+    assert.match(stylex, /export const create = <\s*Value extends string/u)
     assert.doesNotMatch(stylex, /from ['"]@\/ui\/toggle-group['"]/u)
     assert.match(tailwind, /selectedValues/u)
     assert.match(stylex, /selectedValues/u)
@@ -370,8 +399,14 @@ describe('StyleX component authoring contract', () => {
     assert.match(stylex, /@\/lib\/command/u)
     assert.match(tailwind, /export const create = <Item extends string/u)
     assert.match(stylex, /export const create = <Item extends string/u)
-    assert.doesNotMatch(tailwind, /const commandPrimitive = ComboboxPrimitive\.create<Item>\(\)/u)
-    assert.doesNotMatch(stylex, /const commandPrimitive = ComboboxPrimitive\.create<Item>\(\)/u)
+    assert.doesNotMatch(
+      tailwind,
+      /const commandPrimitive = ComboboxPrimitive\.create<Item>\(\)/u,
+    )
+    assert.doesNotMatch(
+      stylex,
+      /const commandPrimitive = ComboboxPrimitive\.create<Item>\(\)/u,
+    )
   })
 
   it('keeps Navigation Menu route-free and disclosures on Popover behavior', () => {
@@ -380,8 +415,14 @@ describe('StyleX component authoring contract', () => {
 
     assert.match(tailwind, /import \* as Popover/u)
     assert.match(stylex, /import \* as Popover/u)
-    assert.match(tailwind, /NavigationMenuLayout = 'inline' \| 'scroll' \| 'responsive'/u)
-    assert.match(stylex, /NavigationMenuLayout = 'inline' \| 'scroll' \| 'responsive'/u)
+    assert.match(
+      tailwind,
+      /NavigationMenuLayout = 'inline' \| 'scroll' \| 'responsive'/u,
+    )
+    assert.match(
+      stylex,
+      /NavigationMenuLayout = 'inline' \| 'scroll' \| 'responsive'/u,
+    )
     assert.match(tailwind, /Popover\.RequestedOpen/u)
     assert.match(stylex, /Popover\.RequestedOpen/u)
     assert.doesNotMatch(tailwind, /export const Model/u)
@@ -514,7 +555,9 @@ describe('StyleX component authoring contract', () => {
 
   it('keeps the public layout override deliberately narrow', () => {
     const contract = readFileSync('src/stylex/contracts.ts', 'utf8')
-    const properties = [...contract.matchAll(/^  \| '([^']+)'$/gmu)].map(match => match[1])
+    const properties = [...contract.matchAll(/^  \| '([^']+)'$/gmu)].map(
+      match => match[1],
+    )
 
     assert.deepEqual(properties, [
       'aspectRatio',
@@ -551,4 +594,3 @@ describe('StyleX component authoring contract', () => {
     ])
   })
 })
-

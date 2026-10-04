@@ -1,11 +1,11 @@
-import { Match as M, Schema as S } from 'effect';
-import type { Update } from 'foldkit';
-import { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
-import { modifyFields } from 'foldkit/struct';
+import { Match as M, Schema as S } from 'effect'
+import type { Update } from 'foldkit'
+import { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import { modifyFields } from 'foldkit/struct'
 
-import * as Icon from '@/demo/icon-preview';
+import * as Icon from '@/demo/icon-preview'
 import {
   breadcrumb,
   breadcrumbItem,
@@ -13,10 +13,10 @@ import {
   breadcrumbList,
   breadcrumbPage,
   breadcrumbSeparator,
-} from '@/ui/breadcrumb';
-import { buttonVariants } from '@/ui/button';
-import { card, cardContent, cardHeader } from '@/ui/card';
-import * as DropdownMenu from '@/ui/dropdown-menu';
+} from '@/ui/breadcrumb'
+import { buttonVariants } from '@/ui/button'
+import { card, cardContent, cardHeader } from '@/ui/card'
+import * as DropdownMenu from '@/ui/dropdown-menu'
 import {
   itemContent,
   itemDescription,
@@ -24,15 +24,15 @@ import {
   itemMedia,
   itemTitle,
   itemVariants,
-} from '@/ui/item';
+} from '@/ui/item'
 
-type MenuItem = 'profile' | 'statements' | 'documents';
+type MenuItem = 'profile' | 'statements' | 'documents'
 
 const menuItems: ReadonlyArray<MenuItem> = [
   'profile',
   'statements',
   'documents',
-];
+]
 
 const paymentItems = [
   {
@@ -55,44 +55,46 @@ const paymentItems = [
     title: 'Recurring card payments',
     description: 'Manage your repeated card transactions.',
   },
-] as const;
+] as const
 
 export const Model = S.Struct({
   menu: DropdownMenu.Model,
-});
-export type Model = typeof Model.Type;
-
+})
+export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
   GotMenuMessage: {
-  message: DropdownMenu.Message,
-},
-});
-export type Message = typeof Message.Type;
+    message: DropdownMenu.Message,
+  },
+})
+export type Message = typeof Message.Type
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
       GotMenuMessage: ({ message: childMessage }) => {
-        const menuOp__ = DropdownMenu.update(model.menu, childMessage);
-    const menu = menuOp__.model;
-    const commands = menuOp__.commands ?? [];;
-        return { model: modifyFields(model, { menu: () => menu }), commands: Command.mapMessages(commands, (next) =>
+        const menuOp__ = DropdownMenu.update(model.menu, childMessage)
+        const menu = menuOp__.model
+        const commands = menuOp__.commands ?? []
+        return {
+          model: modifyFields(model, { menu: () => menu }),
+          commands: Command.mapMessages(commands, next =>
             Message.GotMenuMessage({ message: next }),
-          ) };
+          ),
+        }
       },
     }),
-  );
+  )
 
 export const init = (): Model => ({
   menu: DropdownMenu.init({
     id: 'payments-account-options',
     isAnimated: true,
   }),
-});
+})
 
 const paymentLink = (
   icon: string,
@@ -135,8 +137,8 @@ const paymentLink = (
         h,
       ),
     ],
-  );
-};
+  )
+}
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
   const menuTrigger = h.span(
@@ -145,7 +147,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       Icon.moreHorizontal({}, h),
       h.span([h.Class('sr-only')], ['Account options']),
     ],
-  );
+  )
 
   return card<Message>(
     {
@@ -181,7 +183,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                                 DropdownMenu.dropdownMenu<MenuItem, Message>(
                                   {
                                     model: model.menu,
-                                    toParentMessage: (message) =>
+                                    toParentMessage: message =>
                                       Message.GotMenuMessage({ message }),
                                     trigger: menuTrigger,
                                     triggerClass: `${buttonVariants({
@@ -189,7 +191,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                                       size: 'icon',
                                     })} size-8`,
                                     items: menuItems,
-                                    itemToConfig: (item) => ({
+                                    itemToConfig: item => ({
                                       label:
                                         item === 'profile'
                                           ? 'Profile'
@@ -235,7 +237,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                 {
                   class: 'w-full',
                   children: paymentItems.map(
-                    (payment) =>
+                    payment =>
                       paymentLink(
                         payment.icon,
                         payment.title,
@@ -254,8 +256,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 /*
 Stateful? yes.

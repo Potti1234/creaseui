@@ -1,20 +1,20 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type CarouselFixture = Readonly<{
-  title: string;
-  description: string;
-  heroOnly?: boolean;
-  count: number;
-  label: string;
-  itemSize: 'full' | 'first-half' | 'third';
-  padded?: boolean;
-  orientation?: 'horizontal' | 'vertical';
-  loop?: boolean;
-  autoplay?: boolean;
-  status?: boolean;
-  direction?: 'rtl';
-}>;
+  title: string
+  description: string
+  heroOnly?: boolean
+  count: number
+  label: string
+  itemSize: 'full' | 'first-half' | 'third'
+  padded?: boolean
+  orientation?: 'horizontal' | 'vertical'
+  loop?: boolean
+  autoplay?: boolean
+  status?: boolean
+  direction?: 'rtl'
+}>
 
 export const carouselFixtures: Readonly<Array<CarouselFixture>> = [
   {
@@ -87,42 +87,42 @@ export const carouselFixtures: Readonly<Array<CarouselFixture>> = [
     itemSize: 'full',
     direction: 'rtl',
   },
-];
+]
 
 const itemSizeSource = (fixture: CarouselFixture): string => {
   if (fixture.itemSize === 'first-half')
-    return 'itemSize: index => (index === 0 ? 50 : 33.34),';
-  if (fixture.itemSize === 'third') return 'itemSize: 33.34,';
-  return '';
-};
+    return 'itemSize: index => (index === 0 ? 50 : 33.34),'
+  if (fixture.itemSize === 'third') return 'itemSize: 33.34,'
+  return ''
+}
 
 const slideSource = (
   fixture: CarouselFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const isSx = renderer === 'stylex';
+  const isSx = renderer === 'stylex'
   const card = `Card.card({
                 children: [
                   Card.cardContent({${
-                      isSx
-                        ? `
+                    isSx
+                      ? `
                     layoutStyle: styles.cardContent as ComponentLayoutStyle,`
-                        : `
+                      : `
                     class: 'flex aspect-square items-center justify-center p-6 text-4xl font-semibold',`
-                    }
+                  }
                     children: [String(index + 1)],
                   }, h),
                 ],
-              }, h)`;
-  if (fixture.padded !== true) return card;
+              }, h)`
+  if (fixture.padded !== true) return card
   return isSx
     ? `h.div([h.Class(className(styles.slidePadding))], [
               ${card},
             ])`
     : `h.div([h.Class('p-2')], [
               ${card},
-            ])`;
-};
+            ])`
+}
 
 const carouselPropsSource = (
   fixture: CarouselFixture,
@@ -133,23 +133,20 @@ const carouselPropsSource = (
     `toParentMessage: message =>
           Message['GotCarouselMessage']({ message }),`,
     `ariaLabel: '${fixture.label}',`,
-  ];
-  const size = itemSizeSource(fixture);
-  if (size) parts.push(size);
-  if (fixture.orientation === 'vertical')
-    parts.push(`orientation: 'vertical',`);
-  if (fixture.loop === true) parts.push('loop: true,');
+  ]
+  const size = itemSizeSource(fixture)
+  if (size) parts.push(size)
+  if (fixture.orientation === 'vertical') parts.push(`orientation: 'vertical',`)
+  if (fixture.loop === true) parts.push('loop: true,')
   if (fixture.autoplay === true)
-    parts.push(
-      `plugins: [Autoplay({ delay: 2000, stopOnInteraction: true })],`,
-    );
+    parts.push(`plugins: [Autoplay({ delay: 2000, stopOnInteraction: true })],`)
   parts.push(
     renderer === 'stylex'
       ? 'layoutStyle: styles.carousel,'
       : `class: 'w-full',`,
-  );
-  return parts.join('\n        ');
-};
+  )
+  return parts.join('\n        ')
+}
 
 const viewBodySource = (
   fixture: CarouselFixture,
@@ -160,14 +157,14 @@ const viewBodySource = (
         items: Array.from({ length: ${fixture.count} }, (_, index) =>
           ${slideSource(fixture, renderer)},
         ),
-      }, h)`;
+      }, h)`
   const body =
     fixture.direction === 'rtl'
       ? `h.div([h.Dir('rtl')], [
     ${carousel},
   ])`
-      : carousel;
-  if (fixture.status !== true) return body;
+      : carousel
+  if (fixture.status !== true) return body
   return `h.div(
     [h.Class(${renderer === 'stylex' ? 'className(styles.apiWrap)' : `'mx-auto max-w-xs'`})],
     [
@@ -177,30 +174,33 @@ const viewBodySource = (
         [\`Slide \${model.carousel.index + 1} of \${model.carousel.count}\`],
       ),
     ],
-  )`;
-};
+  )`
+}
 
 const stylexStylesSource = (fixture: CarouselFixture): string => {
-  const parts: Array<string> = [`  carousel: { width: '100%' },`];
+  const parts: Array<string> = [`  carousel: { width: '100%' },`]
   parts.push(
     `  cardContent: { alignItems: 'center', aspectRatio: '1/1', display: 'flex', fontSize: '2.25rem', lineHeight: '2.5rem', fontWeight: 600, justifyContent: 'center', padding: '1.5rem' },`,
-  );
+  )
   if (fixture.padded === true)
-    parts.push(`  slidePadding: { padding: '0.5rem' },`);
+    parts.push(`  slidePadding: { padding: '0.5rem' },`)
   if (fixture.status === true)
     parts.push(
       `  apiWrap: { marginInline: 'auto', maxWidth: '20rem', width: '100%' },`,
       `  apiStatus: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem', paddingBlock: '0.5rem', textAlign: 'center' },`,
-    );
+    )
   return `
 const styles = stylex.create({
 ${parts.join('\n')}
-});`;
-};
+});`
+}
 
-const source = (f: CarouselFixture, renderer: 'tailwind' | 'stylex'): string => {
-  const sx = renderer === 'stylex';
-  const tag = f.title.replaceAll(/[^a-zA-Z0-9]/g, '');
+const source = (
+  f: CarouselFixture,
+  renderer: 'tailwind' | 'stylex',
+): string => {
+  const sx = renderer === 'stylex'
+  const tag = f.title.replaceAll(/[^a-zA-Z0-9]/g, '')
   return foldkitApplication({
     title: `Carousel — ${f.title}`,
     imports: `import { Schema as S } from 'effect'
@@ -209,10 +209,14 @@ import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 ${f.autoplay === true ? `import Autoplay from 'embla-carousel-autoplay'\n` : ''}
 import * as Card from '@/${sx ? 'stylex' : 'ui'}/card'
-import * as Carousel from '@/${sx ? 'stylex' : 'ui'}/carousel'${sx ? `
+import * as Carousel from '@/${sx ? 'stylex' : 'ui'}/carousel'${
+      sx
+        ? `
 import * as stylex from '@stylexjs/stylex'
 import type { ComponentLayoutStyle } from '@/stylex/contracts'
-import { className } from '@/stylex/style'${stylexStylesSource(f)}` : ''}`,
+import { className } from '@/stylex/style'${stylexStylesSource(f)}`
+        : ''
+    }`,
     model: `export const Model = S.Struct({ carousel: Carousel.Model })
 export type Model = typeof Model.Type`,
     messages: `import { defineMessageUnion } from 'foldkit/message'
@@ -247,8 +251,8 @@ export type Message = typeof Message.Type`,
     ],
   ),
 })`,
-  });
-};
+  })
+}
 
 export const carouselExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -258,4 +262,4 @@ export const carouselExamples = (
     description: fixture.description,
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: source(fixture, renderer),
-  }));
+  }))

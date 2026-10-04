@@ -1,7 +1,7 @@
-import { type VariantProps, cva } from 'class-variance-authority';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import { type VariantProps, cva } from 'class-variance-authority'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils'
 
 /* Ported from Meta Astryx Text (packages/core/src/Text/Text.tsx) — examples and
    visual spec adapted to Crease UI tokens. */
@@ -15,7 +15,7 @@ export type TextType =
   | 'display-1'
   | 'display-2'
   | 'display-3'
-  | 'inherit';
+  | 'inherit'
 
 export type TextSize =
   | '4xs'
@@ -28,7 +28,7 @@ export type TextSize =
   | 'xl'
   | '2xl'
   | '3xl'
-  | '4xl';
+  | '4xl'
 
 export type TextColor =
   | 'primary'
@@ -36,19 +36,19 @@ export type TextColor =
   | 'disabled'
   | 'placeholder'
   | 'accent'
-  | 'inherit';
+  | 'inherit'
 
-export type TextWeight = 'normal' | 'medium' | 'semibold' | 'bold';
+export type TextWeight = 'normal' | 'medium' | 'semibold' | 'bold'
 
-export type TextDisplay = 'inline' | 'block';
+export type TextDisplay = 'inline' | 'block'
 
-export type TextJustify = 'start' | 'center' | 'end';
+export type TextJustify = 'start' | 'center' | 'end'
 
-export type TextWordBreak = 'break-word' | 'break-all';
+export type TextWordBreak = 'break-word' | 'break-all'
 
-export type TextWrap = 'wrap' | 'nowrap' | 'balance' | 'pretty';
+export type TextWrap = 'wrap' | 'nowrap' | 'balance' | 'pretty'
 
-export type TextElement = 'span' | 'p' | 'div' | 'label' | 'h1' | 'h2' | 'h3';
+export type TextElement = 'span' | 'p' | 'div' | 'label' | 'h1' | 'h2' | 'h3'
 
 export const textVariants = cva('', {
   variants: {
@@ -116,9 +116,9 @@ export const textVariants = cva('', {
       true: 'tabular-nums',
     },
   },
-});
+})
 
-export type TextVariants = VariantProps<typeof textVariants>;
+export type TextVariants = VariantProps<typeof textVariants>
 
 const defaultColorByType: Record<TextType, TextColor> = {
   body: 'primary',
@@ -130,35 +130,37 @@ const defaultColorByType: Record<TextType, TextColor> = {
   'display-2': 'primary',
   'display-3': 'primary',
   inherit: 'inherit',
-};
+}
 
 export type TextProps = Readonly<{
-  children: ReadonlyArray<Html | string>;
-  type?: TextType;
-  size?: TextSize;
-  color?: TextColor;
-  weight?: TextWeight;
-  display?: TextDisplay;
-  maxLines?: number;
-  wordBreak?: TextWordBreak;
-  textWrap?: TextWrap;
-  justify?: TextJustify;
-  hasCapsize?: boolean;
-  hasStrikethrough?: boolean;
-  hasTabularNumbers?: boolean;
-  as?: TextElement;
-  class?: string;
-}>;
+  children: ReadonlyArray<Html | string>
+  type?: TextType
+  size?: TextSize
+  color?: TextColor
+  weight?: TextWeight
+  display?: TextDisplay
+  maxLines?: number
+  wordBreak?: TextWordBreak
+  textWrap?: TextWrap
+  justify?: TextJustify
+  hasCapsize?: boolean
+  hasStrikethrough?: boolean
+  hasTabularNumbers?: boolean
+  as?: TextElement
+  class?: string
+}>
 
 export const text = <Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html => {
-  const type = props.type ?? 'body';
-  const color = props.color ?? defaultColorByType[type];
-  const maxLines = props.maxLines ?? 0;
+  const type = props.type ?? 'body'
+  const color = props.color ?? defaultColorByType[type]
+  const maxLines = props.maxLines ?? 0
   const resolvedWordBreak =
-    props.wordBreak ?? (maxLines === 1 ? 'break-all' : 'break-word');
+    props.wordBreak ?? (maxLines === 1 ? 'break-all' : 'break-word')
   const resolvedDisplay =
-    maxLines > 0 || props.hasCapsize === true ? 'block' : (props.display ?? 'inline');
-  const justify = props.justify ?? 'start';
+    maxLines > 0 || props.hasCapsize === true
+      ? 'block'
+      : (props.display ?? 'inline')
+  const justify = props.justify ?? 'start'
 
   const attributes = [
     h.DataAttribute('slot', 'text'),
@@ -175,8 +177,12 @@ export const text = <Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html => {
           ...(maxLines > 0 ? { wordBreak: resolvedWordBreak } : {}),
           ...(props.textWrap === undefined ? {} : { textWrap: props.textWrap }),
           ...(justify === 'start' ? {} : { justify }),
-          ...(props.hasStrikethrough === true ? { hasStrikethrough: true } : {}),
-          ...(props.hasTabularNumbers === true ? { hasTabularNumbers: true } : {}),
+          ...(props.hasStrikethrough === true
+            ? { hasStrikethrough: true }
+            : {}),
+          ...(props.hasTabularNumbers === true
+            ? { hasTabularNumbers: true }
+            : {}),
         }),
         maxLines === 1 && 'truncate',
         props.class,
@@ -195,23 +201,23 @@ export const text = <Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html => {
     ...(props.hasCapsize === true
       ? [h.Style({ textBoxEdge: 'cap alphabetic', textBoxTrim: 'trim-both' })]
       : []),
-  ];
+  ]
 
-  const element = props.as ?? 'span';
+  const element = props.as ?? 'span'
   switch (element) {
     case 'p':
-      return h.p(attributes, [...props.children]);
+      return h.p(attributes, [...props.children])
     case 'div':
-      return h.div(attributes, [...props.children]);
+      return h.div(attributes, [...props.children])
     case 'label':
-      return h.label(attributes, [...props.children]);
+      return h.label(attributes, [...props.children])
     case 'h1':
-      return h.h1(attributes, [...props.children]);
+      return h.h1(attributes, [...props.children])
     case 'h2':
-      return h.h2(attributes, [...props.children]);
+      return h.h2(attributes, [...props.children])
     case 'h3':
-      return h.h3(attributes, [...props.children]);
+      return h.h3(attributes, [...props.children])
     case 'span':
-      return h.span(attributes, [...props.children]);
+      return h.span(attributes, [...props.children])
   }
-};
+}

@@ -1,12 +1,15 @@
-import * as stylex from '@stylexjs/stylex';
-import type { HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
-import { statFixtures, type StatItem } from '@/docs/components/pages/stat/shared';
-import { className } from '@/stylex/style';
-import * as Card from '@/stylex/card';
-import * as Stat from '@/stylex/stat';
-import { tokens } from '../../../../stylex/tokens.stylex';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import {
+  statFixtures,
+  type StatItem,
+} from '@/docs/components/pages/stat/shared'
+import { className } from '@/stylex/style'
+import * as Card from '@/stylex/card'
+import * as Stat from '@/stylex/stat'
+import { tokens } from '../../../../stylex/tokens.stylex'
 
 const styles = stylex.create({
   grid: {
@@ -14,9 +17,14 @@ const styles = stylex.create({
     display: 'grid',
     gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
   },
-  row: { gap: '2rem', alignItems: 'flex-end', display: 'flex', },
-  sparkline: { color: tokens.primary, display: 'block', height: '2.25rem', width: '100%' },
-});
+  row: { gap: '2rem', alignItems: 'flex-end', display: 'flex' },
+  sparkline: {
+    color: tokens.primary,
+    display: 'block',
+    height: '2.25rem',
+    width: '100%',
+  },
+})
 
 const sparkline = <Msg>(h: HtmlBuilder<Msg>) =>
   h.svg(
@@ -39,7 +47,7 @@ const sparkline = <Msg>(h: HtmlBuilder<Msg>) =>
         [],
       ),
     ],
-  );
+  )
 
 const statView = <Msg>(item: StatItem, h: HtmlBuilder<Msg>) =>
   Stat.stat(
@@ -47,15 +55,20 @@ const statView = <Msg>(item: StatItem, h: HtmlBuilder<Msg>) =>
       label: item.label,
       value: item.value,
       ...(item.delta === undefined ? {} : { delta: item.delta }),
-      ...(item.description === undefined ? {} : { description: item.description }),
+      ...(item.description === undefined
+        ? {}
+        : { description: item.description }),
       ...(item.size === undefined ? {} : { size: item.size }),
       ...(item.withMedia === true ? { media: [sparkline(h)] } : {}),
     },
     h,
-  );
+  )
 
 const inCard = <Msg>(item: StatItem, h: HtmlBuilder<Msg>) =>
-  Card.card({ children: [Card.cardContent({ children: [statView(item, h)] }, h)] }, h);
+  Card.card(
+    { children: [Card.cardContent({ children: [statView(item, h)] }, h)] },
+    h,
+  )
 
 export const statStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
@@ -63,7 +76,7 @@ export const statStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   _onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ) => {
-  const fixture = statFixtures[exampleIndex] ?? statFixtures[0];
+  const fixture = statFixtures[exampleIndex] ?? statFixtures[0]
   return fixture.layout === 'cards'
     ? h.div(
         [h.Class(className(styles.grid))],
@@ -74,5 +87,5 @@ export const statStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           [h.Class(className(styles.row))],
           fixture.items.map(item => statView(item, h)),
         )
-      : inCard(fixture.items[0] ?? { label: '', value: '' }, h);
-};
+      : inCard(fixture.items[0] ?? { label: '', value: '' }, h)
+}

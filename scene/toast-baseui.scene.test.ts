@@ -106,14 +106,17 @@ type ToastUpdateReturn = ReturnType<typeof ToastBehavior.update>
 
 const foldToast = (model: Model, result: ToastUpdateReturn) => ({
   model: { ...model, toasts: result.model },
-  commands: Command.mapMessages(
-    result.commands ?? [],
-    (message): Message => ({ _tag: 'GotToastMessage', message }),
-  ),
+  commands: Command.mapMessages(result.commands ?? [], (message): Message => ({
+    _tag: 'GotToastMessage',
+    message,
+  })),
   outMessage: result.outMessage,
 })
 
-const update = (model: Model, message: Message): ReturnType<typeof foldToast> => {
+const update = (
+  model: Model,
+  message: Message,
+): ReturnType<typeof foldToast> => {
   switch (message._tag) {
     case 'ClickedAdd':
       return foldToast(model, ToastBehavior.show(model.toasts, message.input))
@@ -121,7 +124,10 @@ const update = (model: Model, message: Message): ReturnType<typeof foldToast> =>
       const first = model.toasts.entries[0]
       return first === undefined
         ? { model }
-        : foldToast(model, ToastBehavior.updateToast(model.toasts, first.id, message.input))
+        : foldToast(
+            model,
+            ToastBehavior.updateToast(model.toasts, first.id, message.input),
+          )
     }
     case 'ClickedDismissFirst': {
       const first = model.toasts.entries[0]
@@ -134,7 +140,10 @@ const update = (model: Model, message: Message): ReturnType<typeof foldToast> =>
     case 'ClickedDismissAll':
       return foldToast(model, ToastBehavior.dismissAll(model.toasts))
     case 'GotToastMessage':
-      return foldToast(model, ToastBehavior.update(model.toasts, message.message))
+      return foldToast(
+        model,
+        ToastBehavior.update(model.toasts, message.message),
+      )
   }
 }
 
@@ -183,8 +192,11 @@ const ZERO_TIMEOUT: ToastBehavior.ShowInput = ToastBehavior.plain({
   duration: '0 millis',
 })
 
-const triggerButton = <Msg>(label: string, message: Msg, h: HtmlBuilder<Msg>): Html =>
-  h.button([h.Type('button'), h.OnClick(message)], [label])
+const triggerButton = <Msg>(
+  label: string,
+  message: Msg,
+  h: HtmlBuilder<Msg>,
+): Html => h.button([h.Type('button'), h.OnClick(message)], [label])
 
 const makeView =
   (Toast: ToastModule, props?: { pausePolicy?: 'none' | 'pointer' }) =>
@@ -194,7 +206,11 @@ const makeView =
       [
         triggerButton('add', { _tag: 'ClickedAdd', input: DEFAULT }, h),
         triggerButton('add timed', { _tag: 'ClickedAdd', input: TIMED }, h),
-        triggerButton('add sticky', { _tag: 'ClickedAdd', input: STICKY_ERROR }, h),
+        triggerButton(
+          'add sticky',
+          { _tag: 'ClickedAdd', input: STICKY_ERROR },
+          h,
+        ),
         triggerButton(
           'add sticky info',
           { _tag: 'ClickedAdd', input: STICKY_INFO },
@@ -205,7 +221,11 @@ const makeView =
           { _tag: 'ClickedAdd', input: STICKY_UNDO },
           h,
         ),
-        triggerButton('add zero', { _tag: 'ClickedAdd', input: ZERO_TIMEOUT }, h),
+        triggerButton(
+          'add zero',
+          { _tag: 'ClickedAdd', input: ZERO_TIMEOUT },
+          h,
+        ),
         triggerButton(
           'add positioned sticky',
           { _tag: 'ClickedAdd', input: STICKY_POSITIONED },
@@ -244,7 +264,10 @@ const makeView =
 /** Rebuilds the Entry `show` produces so OutMessage assertions compare the
  *  full payload, not just the title. `Default` maps to the primitive's
  *  `Info` variant on the entry while the payload keeps the crease variant. */
-const entryOf = (id: string, input: ToastBehavior.ShowInput): ToastBehavior.Entry => ({
+const entryOf = (
+  id: string,
+  input: ToastBehavior.ShowInput,
+): ToastBehavior.Entry => ({
   id,
   variant: input.variant === 'Default' ? 'Info' : input.variant,
   animation: {
@@ -264,8 +287,12 @@ const entryOf = (id: string, input: ToastBehavior.ShowInput): ToastBehavior.Entr
   payload: {
     title: input.title,
     variant: input.variant,
-    ...(input.description === undefined ? {} : { description: input.description }),
-    ...(input.actionLabel === undefined ? {} : { actionLabel: input.actionLabel }),
+    ...(input.description === undefined
+      ? {}
+      : { description: input.description }),
+    ...(input.actionLabel === undefined
+      ? {}
+      : { actionLabel: input.actionLabel }),
     ...(input.position === undefined ? {} : { position: input.position }),
   },
 })
@@ -301,7 +328,10 @@ const seededModel = (
   },
 })
 
-const ANIMATION_COMMAND_NAMES = new Set(['WaitForPaint', 'WaitForAnimationSettled'])
+const ANIMATION_COMMAND_NAMES = new Set([
+  'WaitForPaint',
+  'WaitForAnimationSettled',
+])
 
 type AnySimulation<M, Msg, Out> = Scene.SceneSimulation<M, Msg, Out>
 
@@ -310,7 +340,9 @@ type AnySimulation<M, Msg, Out> = Scene.SceneSimulation<M, Msg, Out>
 const settleOneAnimation = <M, Msg, Out>(
   simulation: AnySimulation<M, Msg, Out>,
 ): AnySimulation<M, Msg, Out> => {
-  const pending = simulation.commands.find(command => ANIMATION_COMMAND_NAMES.has(command.name))
+  const pending = simulation.commands.find(command =>
+    ANIMATION_COMMAND_NAMES.has(command.name),
+  )
   const generation = pending?.args?.['generation']
   if (pending === undefined || typeof generation !== 'number') {
     throw new Error('Expected a pending animation Command, found none.')
@@ -318,18 +350,14 @@ const settleOneAnimation = <M, Msg, Out>(
   // resolveAll's ordered consumption handles multiple pending Commands that
   // share a name and args (e.g. two entries' leave paints after dismissAll).
   return pending.name === 'WaitForPaint'
-    ? Scene.Command.resolveAll(
-        [
-          AnimationPrimitive.WaitForPaint,
-          AnimationPrimitive.Message.CompletedWaitForPaint({ generation }),
-        ],
-      )(simulation)
-    : Scene.Command.resolveAll(
-        [
-          AnimationPrimitive.WaitForAnimationSettled,
-          AnimationPrimitive.Message.EndedAnimation({ generation }),
-        ],
-      )(simulation)
+    ? Scene.Command.resolveAll([
+        AnimationPrimitive.WaitForPaint,
+        AnimationPrimitive.Message.CompletedWaitForPaint({ generation }),
+      ])(simulation)
+    : Scene.Command.resolveAll([
+        AnimationPrimitive.WaitForAnimationSettled,
+        AnimationPrimitive.Message.EndedAnimation({ generation }),
+      ])(simulation)
 }
 
 /** Drains every pending animation Command — paint+settle pairs for any
@@ -339,7 +367,9 @@ const settleAllAnimations = <M, Msg, Out>(
   simulation: AnySimulation<M, Msg, Out>,
 ): AnySimulation<M, Msg, Out> => {
   let sim = simulation
-  while (sim.commands.some(command => ANIMATION_COMMAND_NAMES.has(command.name))) {
+  while (
+    sim.commands.some(command => ANIMATION_COMMAND_NAMES.has(command.name))
+  ) {
     sim = settleOneAnimation(sim)
   }
   return sim
@@ -349,7 +379,9 @@ const settleAllAnimations = <M, Msg, Out>(
  *  recorded timer version — the scene analogue of the timer firing. */
 const dismissTimerFires =
   (entryId: string) =>
-  <M, Msg, Out>(simulation: AnySimulation<M, Msg, Out>): AnySimulation<M, Msg, Out> => {
+  <M, Msg, Out>(
+    simulation: AnySimulation<M, Msg, Out>,
+  ): AnySimulation<M, Msg, Out> => {
     const pending = simulation.commands.find(
       command =>
         command.name === 'WaitBeforeDismissal' &&
@@ -357,7 +389,9 @@ const dismissTimerFires =
     )
     const version = pending?.args?.['version']
     if (typeof version !== 'number') {
-      throw new Error(`Expected a pending WaitBeforeDismissal for ${entryId}, found none.`)
+      throw new Error(
+        `Expected a pending WaitBeforeDismissal for ${entryId}, found none.`,
+      )
     }
     return Scene.Command.resolve(
       ToastPrimitive.WaitBeforeDismissal,
@@ -428,7 +462,10 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
       })
 
       it('keeps multiple toast models isolated when one updates', () => {
-        type DualModel = Readonly<{ a: ToastBehavior.Model; b: ToastBehavior.Model }>
+        type DualModel = Readonly<{
+          a: ToastBehavior.Model
+          b: ToastBehavior.Model
+        }>
         type DualMessage = Readonly<
           | { _tag: 'AddA' }
           | { _tag: 'DismissAllB' }
@@ -455,12 +492,21 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
             case 'DismissAllB':
               return fold('b')(model, ToastBehavior.dismissAll(model.b))
             case 'GotA':
-              return fold('a')(model, ToastBehavior.update(model.a, message.message))
+              return fold('a')(
+                model,
+                ToastBehavior.update(model.a, message.message),
+              )
             case 'GotB':
-              return fold('b')(model, ToastBehavior.update(model.b, message.message))
+              return fold('b')(
+                model,
+                ToastBehavior.update(model.b, message.message),
+              )
           }
         }
-        const dualView = (model: DualModel, h: HtmlBuilder<DualMessage>): Html =>
+        const dualView = (
+          model: DualModel,
+          h: HtmlBuilder<DualMessage>,
+        ): Html =>
           h.div(
             [],
             [
@@ -634,11 +680,10 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           // A completion for the superseded v0 timer is ignored.
           Scene.Subscription.emit({
             _tag: 'GotToastMessage',
-            message:
-              ToastPrimitive.Message.CompletedWaitBeforeDismissal({
-                entryId: 'toasts-entry-0',
-                version: 0,
-              }),
+            message: ToastPrimitive.Message.CompletedWaitBeforeDismissal({
+              entryId: 'toasts-entry-0',
+              version: 0,
+            }),
           }),
           Scene.expect(toastLocator).toExist(),
           Scene.expect(toastLocator).toContainText('Saved'),
@@ -780,11 +825,10 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           // paused entry stays rendered.
           Scene.Subscription.emit({
             _tag: 'GotToastMessage',
-            message:
-              ToastPrimitive.Message.CompletedWaitBeforeDismissal({
-                entryId: 'toasts-entry-0',
-                version: 0,
-              }),
+            message: ToastPrimitive.Message.CompletedWaitBeforeDismissal({
+              entryId: 'toasts-entry-0',
+              version: 0,
+            }),
           }),
           Scene.expect(toastLocator).toExist(),
         )
@@ -802,7 +846,9 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           // toHaveHandler below).
           Scene.Subscription.emit({
             _tag: 'GotToastMessage',
-            message: ToastPrimitive.Message.LeftEntry({ entryId: 'toasts-entry-0' }),
+            message: ToastPrimitive.Message.LeftEntry({
+              entryId: 'toasts-entry-0',
+            }),
           }),
           Scene.expect(toastLocator).toHaveAttr('data-paused', 'false'),
           Scene.expect(toastLocator).toHaveHandler('mouseleave'),
@@ -862,10 +908,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           Scene.given(initialModel()),
           Scene.expect(notificationsRegion).toExist(),
           Scene.expect(notificationsRegion).toHaveAttr('aria-live', 'polite'),
-          Scene.expect(notificationsRegion).toHaveAttr(
-            'data-slot',
-            'sonner',
-          ),
+          Scene.expect(notificationsRegion).toHaveAttr('data-slot', 'sonner'),
           Scene.expect(notificationsRegion).toHaveAttr(
             'data-position',
             'bottom-right',
@@ -911,9 +954,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
             ),
           ).toExist(),
           Scene.expect(
-            Scene.first(
-              Scene.filter(allToasts, { hasText: 'Still here' }),
-            ),
+            Scene.first(Scene.filter(allToasts, { hasText: 'Still here' })),
           ).toHaveAttr('data-variant', 'info'),
           Scene.expect(
             Scene.first(

@@ -34,29 +34,39 @@ const stylexPropLimits = {
   },
   animationDuration: {
     limit: [],
-    reason: 'Use a semantic motion token from interaction-tokens.stylex.const.ts.',
+    reason:
+      'Use a semantic motion token from interaction-tokens.stylex.const.ts.',
   },
   animationTimingFunction: {
     limit: [],
-    reason: 'Use a semantic easing token from interaction-tokens.stylex.const.ts.',
+    reason:
+      'Use a semantic easing token from interaction-tokens.stylex.const.ts.',
   },
   transitionDuration: {
     limit: [],
-    reason: 'Use a semantic motion token from interaction-tokens.stylex.const.ts.',
+    reason:
+      'Use a semantic motion token from interaction-tokens.stylex.const.ts.',
   },
   transitionTimingFunction: {
     limit: [],
-    reason: 'Use a semantic easing token from interaction-tokens.stylex.const.ts.',
+    reason:
+      'Use a semantic easing token from interaction-tokens.stylex.const.ts.',
   },
   cursor: {
     limit: [],
-    reason: 'Use a semantic cursor token from interaction-tokens.stylex.const.ts.',
+    reason:
+      'Use a semantic cursor token from interaction-tokens.stylex.const.ts.',
   },
 }
 
 export default tseslint.config(
   {
-    ignores: ['.registry/**', '.registry-validation/**', 'dist/**', 'node_modules/**'],
+    ignores: [
+      '.registry/**',
+      '.registry-validation/**',
+      'dist/**',
+      'node_modules/**',
+    ],
   },
   {
     files: ['**/*.{ts,tsx}'],
@@ -109,7 +119,10 @@ export default tseslint.config(
     ],
     severity: 'warn',
     contracts: [
-      { pattern: '(Content|Footer|Header|Group|Item|Panel|Row)$', allow: ['layout', 'spacing'] },
+      {
+        pattern: '(Content|Footer|Header|Group|Item|Panel|Row)$',
+        allow: ['layout', 'spacing'],
+      },
       { pattern: '^(Avatar|Icon)', allow: ['layout', 'size-*'] },
     ],
   }),

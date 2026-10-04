@@ -35,25 +35,25 @@ export const Model = S.Struct({
 export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
-  'RequestedNext': { stepCount: S.Number },
-  'RequestedPrevious': {},
-  'RequestedDismiss': { source: TourDismissSource },
-  'ObservedTargetRect': {
+  RequestedNext: { stepCount: S.Number },
+  RequestedPrevious: {},
+  RequestedDismiss: { source: TourDismissSource },
+  ObservedTargetRect: {
     top: S.Number,
     left: S.Number,
     width: S.Number,
     height: S.Number,
     borderRadius: S.String,
   },
-  'ObservedTargetLost': {},
-  'PressedOutsideCallout': {},
-  'CompletedTourAnchor': {},
-});
+  ObservedTargetLost: {},
+  PressedOutsideCallout: {},
+  CompletedTourAnchor: {},
+})
 export type Message = typeof Message.Type
 
 export const OutMessage = defineMessageUnion({
-  'DismissedTour': { source: TourDismissSource },
-});
+  DismissedTour: { source: TourDismissSource },
+})
 export type OutMessage = typeof OutMessage.Type
 
 export const init = (): Model => ({
@@ -68,7 +68,10 @@ export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
     case 'RequestedNext':
       if (model.activeStepIndex + 1 >= message.stepCount) {
-        return { model, outMessage: OutMessage.DismissedTour({ source: 'complete' }) }
+        return {
+          model,
+          outMessage: OutMessage.DismissedTour({ source: 'complete' }),
+        }
       }
       return {
         model: {
@@ -117,7 +120,12 @@ export const update = (model: Model, message: Message): UpdateReturn => {
 
 /** Marks the tour active at step 0. */
 export const activate = (model: Model): UpdateReturn => ({
-  model: { ...model, isActive: true, activeStepIndex: 0, targetRect: Option.none() },
+  model: {
+    ...model,
+    isActive: true,
+    activeStepIndex: 0,
+    targetRect: Option.none(),
+  },
 })
 
 export const deactivate = (model: Model): UpdateReturn => ({
@@ -129,7 +137,8 @@ const readTargetRect = (
 ):
   | typeof Message.ObservedTargetRect.Type
   | typeof Message.ObservedTargetLost.Type => {
-  const el = typeof document === 'undefined' ? null : document.getElementById(targetId)
+  const el =
+    typeof document === 'undefined' ? null : document.getElementById(targetId)
   if (el === null) return Message.ObservedTargetLost()
   const rect = el.getBoundingClientRect()
   const borderRadius =
@@ -159,7 +168,8 @@ export const ObserveTourTarget = Mount.defineStream('ObserveTourTarget', {
         yield* Effect.acquireRelease(
           Effect.sync(() => {
             if (typeof window === 'undefined') return undefined
-            const emit = () => Queue.offerUnsafe(queue, readTargetRect(targetId))
+            const emit = () =>
+              Queue.offerUnsafe(queue, readTargetRect(targetId))
             const el = document.getElementById(targetId)
             const resize = new ResizeObserver(emit)
             if (el !== null) resize.observe(el)
@@ -170,7 +180,8 @@ export const ObserveTourTarget = Mount.defineStream('ObserveTourTarget', {
           }),
           resource =>
             Effect.sync(() => {
-              if (resource === undefined || typeof window === 'undefined') return
+              if (resource === undefined || typeof window === 'undefined')
+                return
               window.removeEventListener('scroll', resource.emit)
               window.removeEventListener('resize', resource.emit)
               resource.resize.disconnect()
@@ -232,7 +243,8 @@ export const ObserveOutsidePress = Mount.defineStream('ObserveOutsidePress', {
           }),
           handler =>
             Effect.sync(() => {
-              if (handler === undefined || typeof document === 'undefined') return
+              if (handler === undefined || typeof document === 'undefined')
+                return
               document.removeEventListener('pointerdown', handler, true)
             }),
         )

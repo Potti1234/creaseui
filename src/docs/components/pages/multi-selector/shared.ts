@@ -1,10 +1,10 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type MultiSelectorFixture = Readonly<{
-  title: string;
-  description?: string;
-  heroOnly?: boolean;
+  title: string
+  description?: string
+  heroOnly?: boolean
   kind:
     | 'showcase'
     | 'searchable'
@@ -12,10 +12,10 @@ export type MultiSelectorFixture = Readonly<{
     | 'columns'
     | 'form'
     | 'ghostToolbar'
-    | 'bottomSheet';
+    | 'bottomSheet'
   /** Astrryx block id, kept for tracing against the source templates. */
-  astryxExample: string;
-}>;
+  astryxExample: string
+}>
 
 export const multiSelectorFixtures: ReadonlyArray<MultiSelectorFixture> = [
   {
@@ -49,8 +49,7 @@ export const multiSelectorFixtures: ReadonlyArray<MultiSelectorFixture> = [
     title: 'Form Composition',
     kind: 'form',
     astryxExample: 'MultiSelectorForm',
-    description:
-      'Two multi-selectors in a form with required/optional states.',
+    description: 'Two multi-selectors in a form with required/optional states.',
   },
   {
     title: 'Ghost Toolbar',
@@ -66,7 +65,7 @@ export const multiSelectorFixtures: ReadonlyArray<MultiSelectorFixture> = [
     description:
       'Keeps a multi-selection list open in a bottom sheet while choices are toggled.',
   },
-];
+]
 
 export const COLUMNS = [
   { value: 'name', label: 'Name' },
@@ -74,7 +73,7 @@ export const COLUMNS = [
   { value: 'role', label: 'Role' },
   { value: 'status', label: 'Status' },
   { value: 'created', label: 'Created' },
-] as const;
+] as const
 
 export const COUNTRIES = [
   { value: 'us', label: 'United States' },
@@ -87,7 +86,7 @@ export const COUNTRIES = [
   { value: 'br', label: 'Brazil' },
   { value: 'in', label: 'India' },
   { value: 'mx', label: 'Mexico' },
-] as const;
+] as const
 
 export const ALL_COLUMNS = [
   { value: 'name', label: 'Name' },
@@ -97,14 +96,14 @@ export const ALL_COLUMNS = [
   { value: 'created', label: 'Created' },
   { value: 'updated', label: 'Updated' },
   { value: 'actions', label: 'Actions' },
-] as const;
+] as const
 
 export const STATUSES = [
   { value: 'active', label: 'Active' },
   { value: 'inactive', label: 'Inactive' },
   { value: 'pending', label: 'Pending' },
   { value: 'archived', label: 'Archived' },
-] as const;
+] as const
 
 export const PERMISSIONS = [
   {
@@ -122,21 +121,21 @@ export const PERMISSIONS = [
       { value: 'write_comments', label: 'Write comments' },
     ],
   },
-] as const;
+] as const
 
 export const TEAMS = [
   { value: 'design', label: 'Design' },
   { value: 'engineering', label: 'Engineering' },
   { value: 'marketing', label: 'Marketing' },
   { value: 'operations', label: 'Operations' },
-] as const;
+] as const
 
 const imports = (renderer: 'tailwind' | 'stylex', extra: string): string =>
   `import { Option, Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-import * as MultiSelector from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/multi-selector'${extra}`;
+import * as MultiSelector from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/multi-selector'${extra}`
 
 const stylexPreamble = `
 import * as stylex from '@stylexjs/stylex'
@@ -163,27 +162,27 @@ const styles = stylex.create({
     paddingBlock: '0.375rem',
     paddingInline: '0.75rem',
   },
-})`;
+})`
 
 const stackClass = (isStyleX: boolean): string =>
   isStyleX
     ? `h.Class(className(styles.stack))`
-    : `h.Class('grid w-full max-w-[300px] min-w-[240px] gap-4')`;
+    : `h.Class('grid w-full max-w-[300px] min-w-[240px] gap-4')`
 
 const toolbarClass = (isStyleX: boolean): string =>
   isStyleX
     ? `h.Class(className(styles.toolbar))`
-    : `h.Class('flex items-center gap-2')`;
+    : `h.Class('flex items-center gap-2')`
 
 const buttonClass = (isStyleX: boolean): string =>
   isStyleX
     ? `h.Class(className(styles.button))`
-    : `h.Class('rounded-md px-3 py-1.5 text-sm font-medium text-foreground hover:bg-accent')`;
+    : `h.Class('rounded-md px-3 py-1.5 text-sm font-medium text-foreground hover:bg-accent')`
 
 const messages = `import { taggedStruct } from 'foldkit/schema'
 export const GotMultiSelectorMessage = taggedStruct('GotMultiSelectorMessage', { slot: S.Number, message: MultiSelector.Message });
 export const Message = S.Union([GotMultiSelectorMessage])
-export type Message = typeof Message.Type`;
+export type Message = typeof Message.Type`
 
 const update = `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
@@ -200,7 +199,7 @@ const update = `export const update = (model: Model, message: Message): Update.R
       }
     }
   }
-}`;
+}`
 
 const DATA_SNIPPET = `const COLUMNS = [
   { value: 'name', label: 'Name' },
@@ -263,19 +262,19 @@ const TEAMS = [
   { value: 'engineering', label: 'Engineering' },
   { value: 'marketing', label: 'Marketing' },
   { value: 'operations', label: 'Operations' },
-] as const`;
+] as const`
 
 const modelDecl = `export const Model = S.Struct({
   selectors: S.Array(MultiSelector.Model),
 })
 export type Model = typeof Model.Type
 
-${DATA_SNIPPET}`;
+${DATA_SNIPPET}`
 
 const callFor = (fixture: MultiSelectorFixture, isStyleX: boolean): string => {
   const base = (slot: number) =>
     `model: model.selectors[${String(slot)}]!,
-          toParentMessage: message => GotMultiSelectorMessage({ slot: ${String(slot)}, message }),`;
+          toParentMessage: message => GotMultiSelectorMessage({ slot: ${String(slot)}, message }),`
   switch (fixture.kind) {
     case 'showcase':
       return `MultiSelector.multiSelector({
@@ -283,7 +282,7 @@ const callFor = (fixture: MultiSelectorFixture, isStyleX: boolean): string => {
           label: 'Columns',
           options: [...COLUMNS],
           placeholder: 'Select columns...',
-        }, h)`;
+        }, h)`
     case 'searchable':
       return `MultiSelector.multiSelector({
           ${base(0)}
@@ -292,14 +291,14 @@ const callFor = (fixture: MultiSelectorFixture, isStyleX: boolean): string => {
           hasSearch: true,
           hasSelectAll: true,
           placeholder: 'Select countries...',
-        }, h)`;
+        }, h)`
     case 'sectioned':
       return `MultiSelector.multiSelector({
           ${base(0)}
           label: 'Permissions',
           options: [...PERMISSIONS],
           placeholder: 'Select permissions...',
-        }, h)`;
+        }, h)`
     case 'columns':
       return `MultiSelector.multiSelector({
           ${base(0)}
@@ -310,7 +309,7 @@ const callFor = (fixture: MultiSelectorFixture, isStyleX: boolean): string => {
           hasSearch: true,
           triggerDisplay: 'count',
           placeholder: 'Columns',
-        }, h)`;
+        }, h)`
     case 'bottomSheet':
       return `MultiSelector.multiSelector({
           ${base(0)}
@@ -319,7 +318,7 @@ const callFor = (fixture: MultiSelectorFixture, isStyleX: boolean): string => {
           hasSelectAll: true,
           presentation: 'bottom-sheet',
           placeholder: 'Choose teams',
-        }, h)`;
+        }, h)`
     case 'form':
       return `MultiSelector.multiSelector({
           ${base(0)}
@@ -338,7 +337,7 @@ const callFor = (fixture: MultiSelectorFixture, isStyleX: boolean): string => {
           isOptional: true,
           triggerDisplay: 'badges',
           placeholder: 'All statuses',
-        }, h)`;
+        }, h)`
     case 'ghostToolbar':
       return `h.div([${toolbarClass(isStyleX)}], [
           h.button([${buttonClass(isStyleX)}, h.Type('button')], ['Refresh']),
@@ -365,48 +364,52 @@ const callFor = (fixture: MultiSelectorFixture, isStyleX: boolean): string => {
             statusVariant: 'tooltip',
           }, h),
           h.button([${buttonClass(isStyleX)}, h.Type('button')], ['Export']),
-        ])`;
+        ])`
   }
-};
+}
 
 const initFor = (fixture: MultiSelectorFixture): string => {
-  const initCall = (
-    id: string,
-    values: string,
-    optionValues: string,
-  ): string =>
-    `MultiSelector.init({ id: '${id}', values: ${values}, optionValues: ${optionValues} })`;
+  const initCall = (id: string, values: string, optionValues: string): string =>
+    `MultiSelector.init({ id: '${id}', values: ${values}, optionValues: ${optionValues} })`
   switch (fixture.kind) {
     case 'columns':
       return initCall(
         'docs-multi-selector-0',
         `['name', 'email', 'role', 'status']`,
         `ALL_COLUMNS.map(o => o.value)`,
-      );
+      )
     case 'form':
-      return `${initCall('docs-multi-selector-0', `['name', 'email']`, `ALL_COLUMNS.slice(0, 5).map(o => o.value)`)}, ${initCall('docs-multi-selector-1', `[]`, `STATUSES.map(o => o.value)`)}`;
+      return `${initCall('docs-multi-selector-0', `['name', 'email']`, `ALL_COLUMNS.slice(0, 5).map(o => o.value)`)}, ${initCall('docs-multi-selector-1', `[]`, `STATUSES.map(o => o.value)`)}`
     case 'ghostToolbar':
-      return `${initCall('docs-multi-selector-0', `['name', 'email']`, `COLUMNS.map(o => o.value)`)}, ${initCall('docs-multi-selector-1', `['active']`, `STATUSES.map(o => o.value)`)}`;
+      return `${initCall('docs-multi-selector-0', `['name', 'email']`, `COLUMNS.map(o => o.value)`)}, ${initCall('docs-multi-selector-1', `['active']`, `STATUSES.map(o => o.value)`)}`
     case 'searchable':
-      return initCall('docs-multi-selector-0', `[]`, `COUNTRIES.map(o => o.value)`);
+      return initCall(
+        'docs-multi-selector-0',
+        `[]`,
+        `COUNTRIES.map(o => o.value)`,
+      )
     case 'sectioned':
       return initCall(
         'docs-multi-selector-0',
         `[]`,
         `PERMISSIONS.flatMap(s => s.options.map(o => o.value))`,
-      );
+      )
     case 'bottomSheet':
-      return initCall('docs-multi-selector-0', `[]`, `TEAMS.map(o => o.value)`);
+      return initCall('docs-multi-selector-0', `[]`, `TEAMS.map(o => o.value)`)
     default:
-      return initCall('docs-multi-selector-0', `[]`, `COLUMNS.map(o => o.value)`);
+      return initCall(
+        'docs-multi-selector-0',
+        `[]`,
+        `COLUMNS.map(o => o.value)`,
+      )
   }
-};
+}
 
 const multiSelectorSource = (
   fixture: MultiSelectorFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const isStyleX = renderer === 'stylex';
+  const isStyleX = renderer === 'stylex'
   return foldkitApplication({
     title: `MultiSelector — ${fixture.title}`,
     imports: imports(renderer, isStyleX ? stylexPreamble : ''),
@@ -426,8 +429,8 @@ const multiSelectorSource = (
     ]),
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const multiSelectorExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -439,4 +442,4 @@ export const multiSelectorExamples = (
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: multiSelectorSource(fixture, renderer),
-  }));
+  }))

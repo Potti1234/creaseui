@@ -31,10 +31,10 @@ a semantic token, or a constrained composition primitive.
 The package lives in `packages/lint` and exports one ESLint plugin plus three
 flat-config helpers:
 
-| Helper | Responsibility |
-| --- | --- |
-| `tailwind()` | Foldkit component ownership plus `@shadcn/lint` theme-token and arbitrary-value checks. |
-| `stylex()` | Foldkit StyleX component contracts plus the official `@stylexjs/eslint-plugin` rules. |
+| Helper                | Responsibility                                                                                          |
+| --------------------- | ------------------------------------------------------------------------------------------------------- |
+| `tailwind()`          | Foldkit component ownership plus `@shadcn/lint` theme-token and arbitrary-value checks.                 |
+| `stylex()`            | Foldkit StyleX component contracts plus the official `@stylexjs/eslint-plugin` rules.                   |
 | `constrainedStylex()` | A closed page-composition boundary with no raw StyleX calls, inline styles, or raw structural builders. |
 
 The Foldkit collector understands both named and namespace imports, resolves
@@ -53,19 +53,19 @@ Card.cardContent({ class: model.compact ? 'p-2' : 'p-4' }, h)
 
 ### Shared Foldkit rules
 
-| Rule | Contract |
-| --- | --- |
-| `crease/no-component-restyle` | Tailwind component calls accept only the categories or class patterns declared by their contract. Margin, dimensions, and positioning are parent layout; padding and gap remain component-owned spacing. |
-| `crease/require-static-class` | A component class must be statically readable, a same-file constant, or a finite conditional. Runtime-generated classes cannot be verified or reliably extracted by Tailwind. |
-| `crease/no-foldkit-inline-style` | Rejects `h.Style(...)` where a strict composition boundary opts into the rule. Dynamic component internals may keep reviewed adapters. |
+| Rule                             | Contract                                                                                                                                                                                                 |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `crease/no-component-restyle`    | Tailwind component calls accept only the categories or class patterns declared by their contract. Margin, dimensions, and positioning are parent layout; padding and gap remain component-owned spacing. |
+| `crease/require-static-class`    | A component class must be statically readable, a same-file constant, or a finite conditional. Runtime-generated classes cannot be verified or reliably extracted by Tailwind.                            |
+| `crease/no-foldkit-inline-style` | Rejects `h.Style(...)` where a strict composition boundary opts into the rule. Dynamic component internals may keep reviewed adapters.                                                                   |
 
 ### StyleX rules
 
-| Rule | Contract |
-| --- | --- |
-| `crease/stylex-component-contract` | A StyleX component cannot receive `class`; `layoutStyle` and `*LayoutStyle` values must be statically extracted StyleX references. |
-| `crease/no-stylex-escape` | Controls where direct `stylex.create()` and `stylex.props()` calls are allowed. Constrained pages allow neither. |
-| `crease/prefer-composition-primitives` | Constrained pages use `Box`, `Stack`, `Inline`, `Grid`, `Text`, or `Section` rather than raw layout builders. |
+| Rule                                   | Contract                                                                                                                           |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `crease/stylex-component-contract`     | A StyleX component cannot receive `class`; `layoutStyle` and `*LayoutStyle` values must be statically extracted StyleX references. |
+| `crease/no-stylex-escape`              | Controls where direct `stylex.create()` and `stylex.props()` calls are allowed. Constrained pages allow neither.                   |
+| `crease/prefer-composition-primitives` | Constrained pages use `Box`, `Stack`, `Inline`, `Grid`, `Text`, or `Section` rather than raw layout builders.                      |
 
 The StyleX preset also enables extension enforcement, selector validation,
 conflicting-property detection, unused-style detection, deterministic key

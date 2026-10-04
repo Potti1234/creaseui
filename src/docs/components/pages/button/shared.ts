@@ -1,8 +1,8 @@
-import type { DocsExample } from '@/docs/components/page-definition';
+import type { DocsExample } from '@/docs/components/page-definition'
 import {
   foldkitApplication,
   statelessComponentApplication,
-} from '@/docs/components/pages/authored-page';
+} from '@/docs/components/pages/authored-page'
 
 type ButtonVariant =
   | 'default'
@@ -10,7 +10,7 @@ type ButtonVariant =
   | 'destructive'
   | 'outline'
   | 'ghost'
-  | 'link';
+  | 'link'
 type ButtonSize =
   | 'xs'
   | 'sm'
@@ -18,43 +18,45 @@ type ButtonSize =
   | 'icon'
   | 'icon-xs'
   | 'icon-sm'
-  | 'icon-lg';
+  | 'icon-lg'
 
 export type ButtonItemSpec = Readonly<{
-  label?: string;
-  variant?: ButtonVariant;
-  size?: ButtonSize;
+  label?: string
+  variant?: ButtonVariant
+  size?: ButtonSize
   /** Lucide icon rendered inside the button content. */
-  icon?: string;
-  iconPosition?: 'start' | 'end';
+  icon?: string
+  iconPosition?: 'start' | 'end'
   /** Extra classes on the icon (e.g. `rtl:rotate-180`). */
-  iconClass?: string;
-  ariaLabel?: string;
-  isDisabled?: boolean;
-  spinner?: 'start' | 'end';
+  iconClass?: string
+  ariaLabel?: string
+  isDisabled?: boolean
+  spinner?: 'start' | 'end'
   /** rounded-full demo — class on tailwind, `rounded` prop on stylex. */
-  rounded?: boolean;
-}>;
+  rounded?: boolean
+}>
 
 export type ButtonFixture = Readonly<{
-  title: string;
-  description: string;
-  kind: 'items' | 'sizes' | 'link' | 'buttonGroup';
-  direction?: 'rtl';
-  items: ReadonlyArray<ButtonItemSpec>;
-}>;
+  title: string
+  description: string
+  kind: 'items' | 'sizes' | 'link' | 'buttonGroup'
+  direction?: 'rtl'
+  items: ReadonlyArray<ButtonItemSpec>
+}>
 
 /** Per-size columns for the upstream `button-size` example. */
-export const buttonSizeTiers: ReadonlyArray<Readonly<{
-  name: string;
-  size?: ButtonSize;
-  iconSize: ButtonSize;
-}>> = [
+export const buttonSizeTiers: ReadonlyArray<
+  Readonly<{
+    name: string
+    size?: ButtonSize
+    iconSize: ButtonSize
+  }>
+> = [
   { name: 'Extra Small', size: 'xs', iconSize: 'icon-xs' },
   { name: 'Small', size: 'sm', iconSize: 'icon-sm' },
   { name: 'Default', iconSize: 'icon' },
   { name: 'Large', size: 'lg', iconSize: 'icon-lg' },
-];
+]
 
 /** Menu item ids for the Button Group dropdown (mirrors upstream `button-group-demo`). */
 export const buttonGroupMenuItems = [
@@ -65,11 +67,11 @@ export const buttonGroupMenuItems = [
   'add-list',
   'label-as',
   'trash',
-] as const;
-export const buttonGroupLabelItems = ['personal', 'work', 'other'] as const;
+] as const
+export const buttonGroupLabelItems = ['personal', 'work', 'other'] as const
 export type ButtonGroupMenuItem =
   | (typeof buttonGroupMenuItems)[number]
-  | (typeof buttonGroupLabelItems)[number];
+  | (typeof buttonGroupLabelItems)[number]
 
 export const buttonGroupItemLabel = (
   item: (typeof buttonGroupMenuItems)[number],
@@ -82,7 +84,7 @@ export const buttonGroupItemLabel = (
     'add-list': 'Add to List',
     'label-as': 'Label As…',
     trash: 'Trash',
-  })[item];
+  })[item]
 
 export const buttonGroupItemIcon = (
   item: (typeof buttonGroupMenuItems)[number],
@@ -95,16 +97,23 @@ export const buttonGroupItemIcon = (
     'add-list': 'list-filter',
     'label-as': 'tag',
     trash: 'trash-2',
-  })[item];
+  })[item]
 
-export const buttonFixtures: Readonly<[ButtonFixture, ...Array<ButtonFixture>]> = [
+export const buttonFixtures: Readonly<
+  [ButtonFixture, ...Array<ButtonFixture>]
+> = [
   {
     title: 'Basic',
     description: 'The default button alongside an outline icon button.',
     kind: 'items',
     items: [
       { label: 'Button', variant: 'outline' },
-      { variant: 'outline', size: 'icon', icon: 'arrow-up', ariaLabel: 'Submit' },
+      {
+        variant: 'outline',
+        size: 'icon',
+        icon: 'arrow-up',
+        ariaLabel: 'Submit',
+      },
     ],
   },
   {
@@ -151,10 +160,16 @@ export const buttonFixtures: Readonly<[ButtonFixture, ...Array<ButtonFixture>]> 
   },
   {
     title: 'Icon',
-    description: 'An icon-only button — keep an aria-label for the action name.',
+    description:
+      'An icon-only button — keep an aria-label for the action name.',
     kind: 'items',
     items: [
-      { variant: 'outline', size: 'icon', icon: 'circle-fading-arrow-up', ariaLabel: 'Submit' },
+      {
+        variant: 'outline',
+        size: 'icon',
+        icon: 'circle-fading-arrow-up',
+        ariaLabel: 'Submit',
+      },
     ],
   },
   {
@@ -162,8 +177,18 @@ export const buttonFixtures: Readonly<[ButtonFixture, ...Array<ButtonFixture>]> 
     description: 'Leading and trailing icons inside button content.',
     kind: 'items',
     items: [
-      { label: 'New Branch', variant: 'outline', icon: 'git-branch', iconPosition: 'start' },
-      { label: 'Fork', variant: 'outline', icon: 'git-fork', iconPosition: 'end' },
+      {
+        label: 'New Branch',
+        variant: 'outline',
+        icon: 'git-branch',
+        iconPosition: 'start',
+      },
+      {
+        label: 'Fork',
+        variant: 'outline',
+        icon: 'git-fork',
+        iconPosition: 'end',
+      },
     ],
   },
   {
@@ -172,7 +197,13 @@ export const buttonFixtures: Readonly<[ButtonFixture, ...Array<ButtonFixture>]> 
     kind: 'items',
     items: [
       { label: 'Get Started', rounded: true },
-      { variant: 'outline', size: 'icon', icon: 'arrow-up', rounded: true, ariaLabel: 'Go up' },
+      {
+        variant: 'outline',
+        size: 'icon',
+        icon: 'arrow-up',
+        rounded: true,
+        ariaLabel: 'Go up',
+      },
     ],
   },
   {
@@ -180,8 +211,18 @@ export const buttonFixtures: Readonly<[ButtonFixture, ...Array<ButtonFixture>]> 
     description: 'Disabled buttons with a decorative loading spinner.',
     kind: 'items',
     items: [
-      { label: 'Generating', variant: 'outline', isDisabled: true, spinner: 'start' },
-      { label: 'Downloading', variant: 'secondary', isDisabled: true, spinner: 'start' },
+      {
+        label: 'Generating',
+        variant: 'outline',
+        isDisabled: true,
+        spinner: 'start',
+      },
+      {
+        label: 'Downloading',
+        variant: 'secondary',
+        isDisabled: true,
+        spinner: 'start',
+      },
     ],
   },
   {
@@ -204,54 +245,80 @@ export const buttonFixtures: Readonly<[ButtonFixture, ...Array<ButtonFixture>]> 
     items: [
       { label: 'زر', variant: 'outline' },
       { label: 'حذف', variant: 'destructive' },
-      { label: 'إرسال', variant: 'outline', icon: 'arrow-right', iconPosition: 'end', iconClass: 'rtl:rotate-180' },
+      {
+        label: 'إرسال',
+        variant: 'outline',
+        icon: 'arrow-right',
+        iconPosition: 'end',
+        iconClass: 'rtl:rotate-180',
+      },
       { variant: 'outline', size: 'icon', icon: 'plus', ariaLabel: 'Add' },
-      { label: 'جاري التحميل', variant: 'secondary', isDisabled: true, spinner: 'start' },
+      {
+        label: 'جاري التحميل',
+        variant: 'secondary',
+        isDisabled: true,
+        spinner: 'start',
+      },
     ],
   },
-];
+]
 
-const iconSource = (item: ButtonItemSpec, position: 'start' | 'end'): string => {
-  const opts: Array<string> = [`dataIcon: 'inline-${position}'`];
-  if (item.iconClass !== undefined) opts.push(`class: '${item.iconClass}'`);
-  return `Icon.icon('${item.icon ?? ''}', { ${opts.join(', ')} }, h)`;
-};
+const iconSource = (
+  item: ButtonItemSpec,
+  position: 'start' | 'end',
+): string => {
+  const opts: Array<string> = [`dataIcon: 'inline-${position}'`]
+  if (item.iconClass !== undefined) opts.push(`class: '${item.iconClass}'`)
+  return `Icon.icon('${item.icon ?? ''}', { ${opts.join(', ')} }, h)`
+}
 
 const spinnerSource = (position: 'start' | 'end'): string =>
-  `Spinner.spinner({ isDecorative: true, dataIcon: 'inline-${position}' }, h)`;
+  `Spinner.spinner({ isDecorative: true, dataIcon: 'inline-${position}' }, h)`
 
 const itemChildrenSource = (item: ButtonItemSpec): string => {
-  const children: Array<string> = [];
-  if (item.spinner === 'start') children.push(spinnerSource('start'));
+  const children: Array<string> = []
+  if (item.spinner === 'start') children.push(spinnerSource('start'))
   if (item.icon !== undefined && (item.iconPosition ?? 'start') === 'start')
-    children.push(iconSource(item, 'start'));
-  if (item.label !== undefined) children.push(`'${item.label}'`);
+    children.push(iconSource(item, 'start'))
+  if (item.label !== undefined) children.push(`'${item.label}'`)
   if (item.icon !== undefined && item.iconPosition === 'end')
-    children.push(iconSource(item, 'end'));
-  if (item.spinner === 'end') children.push(spinnerSource('end'));
-  return children.join(', ');
-};
+    children.push(iconSource(item, 'end'))
+  if (item.spinner === 'end') children.push(spinnerSource('end'))
+  return children.join(', ')
+}
 
-const needsIconImport = (item: ButtonItemSpec): boolean => item.icon !== undefined;
-const needsSpinnerImport = (item: ButtonItemSpec): boolean => item.spinner !== undefined;
+const needsIconImport = (item: ButtonItemSpec): boolean =>
+  item.icon !== undefined
+const needsSpinnerImport = (item: ButtonItemSpec): boolean =>
+  item.spinner !== undefined
 
 const itemSource = (
   item: ButtonItemSpec,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const props: Array<string> = [];
-  if (item.variant !== undefined) props.push(`variant: '${item.variant}'`);
-  if (item.size !== undefined) props.push(`size: '${item.size}'`);
+  const props: Array<string> = []
+  if (item.variant !== undefined) props.push(`variant: '${item.variant}'`)
+  if (item.size !== undefined) props.push(`size: '${item.size}'`)
   if (item.rounded === true)
-    props.push(renderer === 'tailwind' ? `class: 'rounded-full'` : 'rounded: true');
-  if (item.isDisabled === true) props.push('isDisabled: true');
-  if (item.ariaLabel !== undefined) props.push(`ariaLabel: '${item.ariaLabel}'`);
-  const inset = item.icon !== undefined ? item.iconPosition ?? 'start' : item.spinner;
-  if (renderer === 'stylex' && inset !== undefined && item.size !== 'icon' && item.size !== 'icon-xs' && item.size !== 'icon-sm' && item.size !== 'icon-lg')
-    props.push(`iconInset: '${inset}'`);
-  props.push(`children: [${itemChildrenSource(item)}]`);
-  return `Button.button({ ${props.join(', ')} }, h)`;
-};
+    props.push(
+      renderer === 'tailwind' ? `class: 'rounded-full'` : 'rounded: true',
+    )
+  if (item.isDisabled === true) props.push('isDisabled: true')
+  if (item.ariaLabel !== undefined) props.push(`ariaLabel: '${item.ariaLabel}'`)
+  const inset =
+    item.icon !== undefined ? (item.iconPosition ?? 'start') : item.spinner
+  if (
+    renderer === 'stylex' &&
+    inset !== undefined &&
+    item.size !== 'icon' &&
+    item.size !== 'icon-xs' &&
+    item.size !== 'icon-sm' &&
+    item.size !== 'icon-lg'
+  )
+    props.push(`iconInset: '${inset}'`)
+  props.push(`children: [${itemChildrenSource(item)}]`)
+  return `Button.button({ ${props.join(', ')} }, h)`
+}
 
 const itemsViewSource = (
   fixture: ButtonFixture & { kind: 'items' },
@@ -260,52 +327,63 @@ const itemsViewSource = (
   const classes =
     renderer === 'tailwind'
       ? `h.Class('flex flex-wrap items-center gap-2')`
-      : `h.Class(stylex.props(styles.row).className ?? '')`;
-  const items = fixture.items.map(item => `      ${itemSource(item, renderer)}`).join(',\n');
+      : `h.Class(stylex.props(styles.row).className ?? '')`
+  const items = fixture.items
+    .map(item => `      ${itemSource(item, renderer)}`)
+    .join(',\n')
   if (fixture.items.length === 1 && fixture.direction === undefined)
-    return itemSource(fixture.items[0] as ButtonItemSpec, renderer);
+    return itemSource(fixture.items[0] as ButtonItemSpec, renderer)
   return `h.div([${fixture.direction === 'rtl' ? `h.Dir('rtl'), ` : ''}${classes}], [
 ${items},
-    ])`;
-};
+    ])`
+}
 
 const sizesViewSource = (renderer: 'tailwind' | 'stylex'): string => {
   const tiers = buttonSizeTiers
     .map(tier => {
       const text = itemSource(
-        { label: tier.name, variant: 'outline', ...(tier.size === undefined ? {} : { size: tier.size }) },
+        {
+          label: tier.name,
+          variant: 'outline',
+          ...(tier.size === undefined ? {} : { size: tier.size }),
+        },
         renderer,
-      );
+      )
       const icon = itemSource(
-        { variant: 'outline', size: tier.iconSize, icon: 'arrow-up-right', ariaLabel: tier.name },
+        {
+          variant: 'outline',
+          size: tier.iconSize,
+          icon: 'arrow-up-right',
+          ariaLabel: tier.name,
+        },
         renderer,
-      );
+      )
       const groupClass =
         renderer === 'tailwind'
           ? `h.Class('flex items-start gap-2')`
-          : `h.Class(stylex.props(styles.group).className ?? '')`;
-      return `      h.div([${groupClass}], [\n        ${text},\n        ${icon},\n      ])`;
+          : `h.Class(stylex.props(styles.group).className ?? '')`
+      return `      h.div([${groupClass}], [\n        ${text},\n        ${icon},\n      ])`
     })
-    .join(',\n');
+    .join(',\n')
   const wrapClass =
     renderer === 'tailwind'
       ? `h.Class('flex flex-col items-start gap-8 sm:flex-row')`
-      : `h.Class(stylex.props(styles.tiers).className ?? '')`;
+      : `h.Class(stylex.props(styles.tiers).className ?? '')`
   return `h.div([${wrapClass}], [
 ${tiers},
-    ])`;
-};
+    ])`
+}
 
 const buttonGroupViewSource = (renderer: 'tailwind' | 'stylex'): string => {
   const iconBtn = (icon: string, label: string): string =>
-    `Button.button({ variant: 'outline', size: 'icon', ariaLabel: '${label}', children: [Icon.icon('${icon}', {}, h)] }, h)`;
+    `Button.button({ variant: 'outline', size: 'icon', ariaLabel: '${label}', children: [Icon.icon('${icon}', {}, h)] }, h)`
   const menuConfig =
     renderer === 'tailwind'
       ? `trigger: Icon.icon('ellipsis', {}, h),
       triggerClass: buttonVariants({ variant: 'outline', size: 'icon' }),`
       : `trigger: Icon.icon('ellipsis', {}, h),
       triggerButtonVariant: 'outline',
-      triggerButtonSize: 'icon',`;
+      triggerButtonSize: 'icon',`
   return `ButtonGroup.buttonGroup({ children: [
       ButtonGroup.buttonGroup({${renderer === 'tailwind' ? ` class: 'hidden sm:flex',` : ''} children: [
         ${iconBtn('arrow-left', 'Go Back')},
@@ -325,8 +403,8 @@ const buttonGroupViewSource = (renderer: 'tailwind' | 'stylex'): string => {
           itemToConfig: itemToMenuConfig(model.labelAs, h),
         }, h),
       ] }, h),
-    ] }, h)`;
-};
+    ] }, h)`
+}
 
 const buttonGroupModelSource = `export const Model = S.Struct({
   menu: DropdownMenu.Model,
@@ -346,20 +424,22 @@ export const menuItems = [
 export const labelItems = ['personal', 'work', 'other'] as const
 export type MenuItem =
   | (typeof menuItems)[number]
-  | (typeof labelItems)[number]`;
+  | (typeof labelItems)[number]`
 
 const buttonGroupImports = (renderer: 'tailwind' | 'stylex'): string => {
-  const mod = renderer === 'stylex' ? '@/stylex' : '@/ui';
+  const mod = renderer === 'stylex' ? '@/stylex' : '@/ui'
   return [
     `import * as Button from '${mod}/button'`,
     `import * as ButtonGroup from '${mod}/button-group'`,
     `import * as DropdownMenu from '${mod}/dropdown-menu'`,
     `import * as Icon from '@/lib/icon'`,
-    renderer === 'tailwind' ? `import { buttonVariants } from '${mod}/button'` : undefined,
+    renderer === 'tailwind'
+      ? `import { buttonVariants } from '${mod}/button'`
+      : undefined,
   ]
     .filter((line): line is string => line !== undefined)
-    .join('\n');
-};
+    .join('\n')
+}
 
 const buttonGroupApplication = (renderer: 'tailwind' | 'stylex'): string =>
   foldkitApplication({
@@ -451,7 +531,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
     ],
   ),
 })`,
-  });
+  })
 
 const exampleCode = (
   fixture: ButtonFixture,
@@ -465,14 +545,14 @@ const exampleCode = (
         renderer,
         exampleName: fixture.title,
         viewBody: `Button.buttonLink({ href: '/login', children: ['Login'] }, h)`,
-      });
+      })
     case 'buttonGroup':
-      return buttonGroupApplication(renderer);
+      return buttonGroupApplication(renderer)
     case 'sizes': {
       const imports =
         renderer === 'stylex'
           ? `import * as stylex from '@stylexjs/stylex'\nimport * as Icon from '@/lib/icon'\n\nconst styles = stylex.create({\n  tiers: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '2rem' },\n  group: { display: 'flex', alignItems: 'flex-start', gap: '0.5rem' },\n})`
-          : `import * as Icon from '@/lib/icon'`;
+          : `import * as Icon from '@/lib/icon'`
       return statelessComponentApplication({
         componentName: 'Button',
         componentSlug: 'button',
@@ -480,13 +560,17 @@ const exampleCode = (
         exampleName: fixture.title,
         componentImports: imports,
         viewBody: sizesViewSource(renderer),
-      });
+      })
     }
     case 'items': {
       const imports = [
-        ...(fixture.items.some(needsIconImport) ? [`import * as Icon from '@/lib/icon'`] : []),
+        ...(fixture.items.some(needsIconImport)
+          ? [`import * as Icon from '@/lib/icon'`]
+          : []),
         ...(fixture.items.some(needsSpinnerImport)
-          ? [`import * as Spinner from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/spinner'`]
+          ? [
+              `import * as Spinner from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/spinner'`,
+            ]
           : []),
         ...(renderer === 'stylex' && fixture.items.length > 1
           ? [
@@ -495,25 +579,24 @@ const exampleCode = (
               `const styles = stylex.create({\n  row: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '0.5rem' },\n})`,
             ]
           : []),
-      ].join('\n');
+      ].join('\n')
       return statelessComponentApplication({
         componentName: 'Button',
         componentSlug: 'button',
         renderer,
         exampleName: fixture.title,
         ...(imports === '' ? {} : { componentImports: imports }),
-        viewBody: itemsViewSource(
-          { ...fixture, kind: 'items' },
-          renderer,
-        ),
-      });
+        viewBody: itemsViewSource({ ...fixture, kind: 'items' }, renderer),
+      })
     }
   }
-};
+}
 
-export const buttonExamples = (renderer: 'tailwind' | 'stylex'): ReadonlyArray<DocsExample> =>
+export const buttonExamples = (
+  renderer: 'tailwind' | 'stylex',
+): ReadonlyArray<DocsExample> =>
   buttonFixtures.map(fixture => ({
     title: fixture.title,
     description: fixture.description,
     code: exampleCode(fixture, renderer),
-  }));
+  }))

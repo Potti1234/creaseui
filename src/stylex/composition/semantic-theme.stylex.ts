@@ -25,4 +25,3 @@ export const semanticSystemTheme = stylex.defineVars({
   typeSupportingLeading: '1.5',
   typeSupportingSize: '0.75rem',
 })
-

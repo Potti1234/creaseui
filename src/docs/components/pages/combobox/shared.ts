@@ -1,10 +1,10 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type ComboboxFixture = Readonly<{
-  title: string;
-  description?: string;
-  heroOnly?: boolean;
+  title: string
+  description?: string
+  heroOnly?: boolean
   kind:
     | 'frameworks'
     | 'clear'
@@ -13,25 +13,76 @@ export type ComboboxFixture = Readonly<{
     | 'rtl'
     | 'multiple'
     | 'autoHighlight'
-    | 'popup';
-  isInvalid?: boolean;
-  isDisabled?: boolean;
-}>;
+    | 'popup'
+  isInvalid?: boolean
+  isDisabled?: boolean
+}>
 
 export const comboboxFixtures: ReadonlyArray<ComboboxFixture> = [
   { title: 'Demo', heroOnly: true, kind: 'frameworks' },
   { title: 'Basic', kind: 'frameworks' },
-  { title: 'Multiple', kind: 'multiple', description: 'Combobox.createMulti keeps the popup open across picks; the parent toggles each selected value as removable chips.' },
-  { title: 'Clear Button', kind: 'clear', description: 'A ghost clear button routes a synthesized UpdatedInputValue through the child update and clears the owned selection.' },
-  { title: 'Groups', kind: 'groups', description: 'itemGroupKey plus groupToHeading render labeled, separated option groups.' },
-  { title: 'Custom Items', kind: 'custom', description: 'itemToConfig content composes rich option rows without changing selection semantics.' },
-  { title: 'Invalid', kind: 'frameworks', isInvalid: true, description: 'aria-invalid styling marks the input and wrapper.' },
-  { title: 'Disabled', kind: 'frameworks', isDisabled: true, description: 'The disabled state keeps the model intact while removing interaction.' },
-  { title: 'Auto Highlight', kind: 'autoHighlight', description: 'create({ autoHighlight: true }) pre-activates the first option on every open, like base-ui\'s autoHighlight.' },
-  { title: 'Popup', kind: 'popup', description: 'The input-wrapper suffix renders as a toggle button, matching the trigger-button combobox that opens a searchable popup.' },
-  { title: 'Input Group', kind: 'groups', description: 'The grouped timezone list composes inside an input-group layout.' },
-  { title: 'RTL', kind: 'rtl', description: 'direction rtl mirrors the input, list, and item layout for Arabic copy.' },
-];
+  {
+    title: 'Multiple',
+    kind: 'multiple',
+    description:
+      'Combobox.createMulti keeps the popup open across picks; the parent toggles each selected value as removable chips.',
+  },
+  {
+    title: 'Clear Button',
+    kind: 'clear',
+    description:
+      'A ghost clear button routes a synthesized UpdatedInputValue through the child update and clears the owned selection.',
+  },
+  {
+    title: 'Groups',
+    kind: 'groups',
+    description:
+      'itemGroupKey plus groupToHeading render labeled, separated option groups.',
+  },
+  {
+    title: 'Custom Items',
+    kind: 'custom',
+    description:
+      'itemToConfig content composes rich option rows without changing selection semantics.',
+  },
+  {
+    title: 'Invalid',
+    kind: 'frameworks',
+    isInvalid: true,
+    description: 'aria-invalid styling marks the input and wrapper.',
+  },
+  {
+    title: 'Disabled',
+    kind: 'frameworks',
+    isDisabled: true,
+    description:
+      'The disabled state keeps the model intact while removing interaction.',
+  },
+  {
+    title: 'Auto Highlight',
+    kind: 'autoHighlight',
+    description:
+      "create({ autoHighlight: true }) pre-activates the first option on every open, like base-ui's autoHighlight.",
+  },
+  {
+    title: 'Popup',
+    kind: 'popup',
+    description:
+      'The input-wrapper suffix renders as a toggle button, matching the trigger-button combobox that opens a searchable popup.',
+  },
+  {
+    title: 'Input Group',
+    kind: 'groups',
+    description:
+      'The grouped timezone list composes inside an input-group layout.',
+  },
+  {
+    title: 'RTL',
+    kind: 'rtl',
+    description:
+      'direction rtl mirrors the input, list, and item layout for Arabic copy.',
+  },
+]
 
 export const comboboxFrameworks = [
   { value: 'nextjs', label: 'Next.js' },
@@ -39,7 +90,7 @@ export const comboboxFrameworks = [
   { value: 'nuxt', label: 'Nuxt.js' },
   { value: 'remix', label: 'Remix' },
   { value: 'astro', label: 'Astro' },
-] as const;
+] as const
 
 export const comboboxTimezones = [
   { value: 'new-york', label: '(GMT-5) New York', group: 'Americas' },
@@ -60,15 +111,25 @@ export const comboboxTimezones = [
   { value: 'dubai', label: '(GMT+4) Dubai', group: 'Asia/Pacific' },
   { value: 'sydney', label: '(GMT+11) Sydney', group: 'Asia/Pacific' },
   { value: 'seoul', label: '(GMT+9) Seoul', group: 'Asia/Pacific' },
-] as const;
+] as const
 
 export const comboboxCountries = [
-  { code: 'ar', value: 'argentina', label: 'Argentina', continent: 'South America' },
+  {
+    code: 'ar',
+    value: 'argentina',
+    label: 'Argentina',
+    continent: 'South America',
+  },
   { code: 'au', value: 'australia', label: 'Australia', continent: 'Oceania' },
   { code: 'br', value: 'brazil', label: 'Brazil', continent: 'South America' },
   { code: 'ca', value: 'canada', label: 'Canada', continent: 'North America' },
   { code: 'cn', value: 'china', label: 'China', continent: 'Asia' },
-  { code: 'co', value: 'colombia', label: 'Colombia', continent: 'South America' },
+  {
+    code: 'co',
+    value: 'colombia',
+    label: 'Colombia',
+    continent: 'South America',
+  },
   { code: 'eg', value: 'egypt', label: 'Egypt', continent: 'Africa' },
   { code: 'fr', value: 'france', label: 'France', continent: 'Europe' },
   { code: 'de', value: 'germany', label: 'Germany', continent: 'Europe' },
@@ -76,16 +137,41 @@ export const comboboxCountries = [
   { code: 'jp', value: 'japan', label: 'Japan', continent: 'Asia' },
   { code: 'ke', value: 'kenya', label: 'Kenya', continent: 'Africa' },
   { code: 'mx', value: 'mexico', label: 'Mexico', continent: 'North America' },
-  { code: 'nz', value: 'new-zealand', label: 'New Zealand', continent: 'Oceania' },
+  {
+    code: 'nz',
+    value: 'new-zealand',
+    label: 'New Zealand',
+    continent: 'Oceania',
+  },
   { code: 'ng', value: 'nigeria', label: 'Nigeria', continent: 'Africa' },
-  { code: 'za', value: 'south-africa', label: 'South Africa', continent: 'Africa' },
+  {
+    code: 'za',
+    value: 'south-africa',
+    label: 'South Africa',
+    continent: 'Africa',
+  },
   { code: 'kr', value: 'south-korea', label: 'South Korea', continent: 'Asia' },
   { code: 'es', value: 'spain', label: 'Spain', continent: 'Europe' },
   { code: 'se', value: 'sweden', label: 'Sweden', continent: 'Europe' },
-  { code: 'ch', value: 'switzerland', label: 'Switzerland', continent: 'Europe' },
-  { code: 'gb', value: 'united-kingdom', label: 'United Kingdom', continent: 'Europe' },
-  { code: 'us', value: 'united-states', label: 'United States', continent: 'North America' },
-] as const;
+  {
+    code: 'ch',
+    value: 'switzerland',
+    label: 'Switzerland',
+    continent: 'Europe',
+  },
+  {
+    code: 'gb',
+    value: 'united-kingdom',
+    label: 'United Kingdom',
+    continent: 'Europe',
+  },
+  {
+    code: 'us',
+    value: 'united-states',
+    label: 'United States',
+    continent: 'North America',
+  },
+] as const
 
 export const comboboxRtlCategories = [
   { value: 'technology', label: 'التكنولوجيا' },
@@ -94,7 +180,7 @@ export const comboboxRtlCategories = [
   { value: 'marketing', label: 'التسويق' },
   { value: 'education', label: 'التعليم' },
   { value: 'health', label: 'الصحة' },
-] as const;
+] as const
 
 const itemsCode = (kind: ComboboxFixture['kind']): string => {
   if (kind === 'groups') {
@@ -105,7 +191,7 @@ const itemsCode = (kind: ComboboxFixture['kind']): string => {
   { value: 'paris', label: '(GMT+1) Paris', group: 'Europe' },
   { value: 'tokyo', label: '(GMT+9) Tokyo', group: 'Asia/Pacific' },
   { value: 'dubai', label: '(GMT+4) Dubai', group: 'Asia/Pacific' },
-]`;
+]`
   }
   if (kind === 'popup') {
     return `const countries = [
@@ -129,7 +215,7 @@ const itemsCode = (kind: ComboboxFixture['kind']): string => {
   { code: 'kr', value: 'south-korea', label: 'South Korea', continent: 'Asia' },
   { code: 'gb', value: 'united-kingdom', label: 'United Kingdom', continent: 'Europe' },
   { code: 'us', value: 'united-states', label: 'United States', continent: 'North America' },
-]`;
+]`
   }
   if (kind === 'custom') {
     return `const countries = [
@@ -139,7 +225,7 @@ const itemsCode = (kind: ComboboxFixture['kind']): string => {
   { code: 'de', value: 'germany', label: 'Germany', continent: 'Europe' },
   { code: 'jp', value: 'japan', label: 'Japan', continent: 'Asia' },
   { code: 'us', value: 'united-states', label: 'United States', continent: 'North America' },
-]`;
+]`
   }
   if (kind === 'rtl') {
     return `const categories = [
@@ -147,7 +233,7 @@ const itemsCode = (kind: ComboboxFixture['kind']): string => {
   { value: 'design', label: 'التصميم' },
   { value: 'business', label: 'الأعمال' },
   { value: 'marketing', label: 'التسويق' },
-]`;
+]`
   }
   return `const frameworks = [
   { value: 'nextjs', label: 'Next.js' },
@@ -155,8 +241,8 @@ const itemsCode = (kind: ComboboxFixture['kind']): string => {
   { value: 'nuxt', label: 'Nuxt.js' },
   { value: 'remix', label: 'Remix' },
   { value: 'astro', label: 'Astro' },
-]`;
-};
+]`
+}
 
 const itemsExpr = (kind: ComboboxFixture['kind']): string =>
   kind === 'groups'
@@ -165,15 +251,15 @@ const itemsExpr = (kind: ComboboxFixture['kind']): string =>
       ? 'countries'
       : kind === 'rtl'
         ? 'categories'
-        : 'frameworks';
+        : 'frameworks'
 
 const comboboxCall = (fixture: ComboboxFixture, isStyleX: boolean): string => {
-  const items = itemsExpr(fixture.kind);
-  const extra: string[] = [];
+  const items = itemsExpr(fixture.kind)
+  const extra: string[] = []
   if (fixture.kind === 'groups') {
     extra.push(
       `itemGroupKey: item => item.group,\n        groupToHeading: group => group,`,
-    );
+    )
   }
   if (fixture.kind === 'custom') {
     extra.push(
@@ -184,25 +270,27 @@ const comboboxCall = (fixture: ComboboxFixture, isStyleX: boolean): string => {
           ]),
           searchText: \`\${item.label} \${item.continent}\`,
         }),`,
-    );
+    )
   }
-  if (fixture.isInvalid === true) extra.push('isInvalid: true,');
-  if (fixture.isDisabled === true) extra.push('isDisabled: true,');
+  if (fixture.isInvalid === true) extra.push('isInvalid: true,')
+  if (fixture.isDisabled === true) extra.push('isDisabled: true,')
   if (fixture.kind === 'rtl') {
-    extra.push(`direction: 'rtl',`);
+    extra.push(`direction: 'rtl',`)
   }
   if (fixture.kind === 'popup') {
-    extra.push(isStyleX
-      ? `trigger: {
+    extra.push(
+      isStyleX
+        ? `trigger: {
           content: Icon.chevronsUpDown({ class: className(styles.chevron) }, h),
           ariaLabel: 'Toggle options',
           layoutStyle: styles.toggleButton,
         },`
-      : `trigger: {
+        : `trigger: {
           content: Icon.chevronsUpDown({ class: 'size-4 opacity-50' }, h),
           ariaLabel: 'Toggle options',
           class: 'size-6 shrink-0 self-center rounded-sm opacity-70',
-        },`);
+        },`,
+    )
   }
   const placeholder =
     fixture.kind === 'groups'
@@ -211,7 +299,7 @@ const comboboxCall = (fixture: ComboboxFixture, isStyleX: boolean): string => {
         ? 'Select country'
         : fixture.kind === 'rtl'
           ? 'أضف فئات'
-          : 'Select a framework';
+          : 'Select a framework'
   const aria =
     fixture.kind === 'groups'
       ? 'Timezone'
@@ -219,7 +307,7 @@ const comboboxCall = (fixture: ComboboxFixture, isStyleX: boolean): string => {
         ? 'Country'
         : fixture.kind === 'rtl'
           ? 'الفئات'
-          : 'Framework';
+          : 'Framework'
   return `${fixture.kind === 'autoHighlight' ? 'ExampleCombobox' : 'Combobox'}.combobox({
         model: model.combobox,
         maybeSelectedValue: model.maybeValue,
@@ -231,23 +319,28 @@ const comboboxCall = (fixture: ComboboxFixture, isStyleX: boolean): string => {
         placeholder: '${placeholder}',
         ariaLabel: '${aria}',
         ${extra.join('\n        ')}
-      }, h)`;
-};
+      }, h)`
+}
 
-const comboboxSource = (fixture: ComboboxFixture, renderer: 'tailwind' | 'stylex'): string => {
+const comboboxSource = (
+  fixture: ComboboxFixture,
+  renderer: 'tailwind' | 'stylex',
+): string => {
   if (fixture.kind === 'multiple') {
-    return multipleSource(fixture, renderer);
+    return multipleSource(fixture, renderer)
   }
-  const isStyleX = renderer === 'stylex';
-  const dir = isStyleX ? 'stylex' : 'ui';
-  const isClear = fixture.kind === 'clear';
-  const isAuto = fixture.kind === 'autoHighlight';
-  const isPopup = fixture.kind === 'popup';
-  const usesIcon = isClear || isPopup;
+  const isStyleX = renderer === 'stylex'
+  const dir = isStyleX ? 'stylex' : 'ui'
+  const isClear = fixture.kind === 'clear'
+  const isAuto = fixture.kind === 'autoHighlight'
+  const isPopup = fixture.kind === 'popup'
+  const usesIcon = isClear || isPopup
   const messages = `import { taggedStruct } from 'foldkit/schema'
 export const GotComboboxMessage = taggedStruct('GotComboboxMessage', { message: Combobox.Message });${isClear ? "\nexport const ClickedClear = taggedStruct('ClickedClear', {});" : ''}
 export const Message = S.Union([GotComboboxMessage${isClear ? ', ClickedClear' : ''}])
-export type Message = typeof Message.Type${isClear ? `
+export type Message = typeof Message.Type${
+    isClear
+      ? `
 
 const CloseComboboxAfterClear = Command.define('CloseComboboxAfterClear', {
   messages: [GotComboboxMessage],
@@ -259,7 +352,9 @@ const CloseComboboxAfterClear = Command.define('CloseComboboxAfterClear', {
       }),
     }),
   ),
-})` : ''}`;
+})`
+      : ''
+  }`
   const update = `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
     case 'GotComboboxMessage': {
@@ -273,7 +368,9 @@ const CloseComboboxAfterClear = Command.define('CloseComboboxAfterClear', {
         model: { ...model, combobox: next.model, maybeValue },
         commands: Command.mapMessages(next.commands ?? [], child => GotComboboxMessage({ message: child })),
       }
-    }${isClear ? `
+    }${
+      isClear
+        ? `
     case 'ClickedClear': {
       const next = Combobox.update(model.combobox, Combobox.Message.UpdatedInputValue({ value: '' }))
       return {
@@ -283,24 +380,30 @@ const CloseComboboxAfterClear = Command.define('CloseComboboxAfterClear', {
           CloseComboboxAfterClear(),
         ],
       }
-    }` : ''}
+    }`
+        : ''
+    }
   }
-}`;
+}`
   const view = `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: '${fixture.title}',
   body: h.main([], [
     h.div([h.Class('flex items-center gap-2')], [
-      ${comboboxCall(fixture, isStyleX)},${isClear ? `
+      ${comboboxCall(fixture, isStyleX)},${
+        isClear
+          ? `
       Button.button({
         variant: 'ghost',
         size: 'icon',
         ariaLabel: 'Clear selection',
         onClick: ClickedClear(),
         children: [Icon.icon('x', { class: 'size-4' }, h)],
-      }, h),` : ''}
+      }, h),`
+          : ''
+      }
     ]),
   ]),
-})`;
+})`
 
   return foldkitApplication({
     title: `Combobox — ${fixture.title}`,
@@ -308,11 +411,25 @@ const CloseComboboxAfterClear = Command.define('CloseComboboxAfterClear', {
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-${isStyleX && isPopup ? `import * as stylex from '@stylexjs/stylex'
+${
+  isStyleX && isPopup
+    ? `import * as stylex from '@stylexjs/stylex'
 import { className } from '@/stylex/style'
-` : ''}import * as Combobox from '@/${dir}/combobox'${isClear ? `
-import * as Button from '@/${dir}/button'` : ''}${usesIcon ? `
-import * as Icon from '@/lib/icon'` : ''}${isPopup && isStyleX ? `
+`
+    : ''
+}import * as Combobox from '@/${dir}/combobox'${
+      isClear
+        ? `
+import * as Button from '@/${dir}/button'`
+        : ''
+    }${
+      usesIcon
+        ? `
+import * as Icon from '@/lib/icon'`
+        : ''
+    }${
+      isPopup && isStyleX
+        ? `
 
 const styles = stylex.create({
   chevron: { height: '1rem', width: '1rem', opacity: 0.5 },
@@ -323,9 +440,15 @@ const styles = stylex.create({
     alignSelf: 'center',
     marginInlineEnd: '0.25rem',
   },
-})` : ''}`,
-    model: `${isAuto ? `const ExampleCombobox = Combobox.create<string>({ autoHighlight: true })
-` : ''}export const Model = S.Struct({
+})`
+        : ''
+    }`,
+    model: `${
+      isAuto
+        ? `const ExampleCombobox = Combobox.create<string>({ autoHighlight: true })
+`
+        : ''
+    }export const Model = S.Struct({
   combobox: Combobox.Model,
   maybeValue: S.Option(S.String),
 })
@@ -344,21 +467,28 @@ ${itemsCode(fixture.kind)}`,
 }`,
     update,
     view,
-  });
-};
+  })
+}
 
-const multipleSource = (fixture: ComboboxFixture, renderer: 'tailwind' | 'stylex'): string => {
-  const isStyleX = renderer === 'stylex';
-  const dir = isStyleX ? 'stylex' : 'ui';
+const multipleSource = (
+  fixture: ComboboxFixture,
+  renderer: 'tailwind' | 'stylex',
+): string => {
+  const isStyleX = renderer === 'stylex'
+  const dir = isStyleX ? 'stylex' : 'ui'
   return foldkitApplication({
     title: `Combobox — ${fixture.title}`,
     imports: `import { Option, Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-${isStyleX ? `import * as stylex from '@stylexjs/stylex'
+${
+  isStyleX
+    ? `import * as stylex from '@stylexjs/stylex'
 import { className } from '@/stylex/style'
-` : ''}import * as Combobox from '@/${dir}/combobox'
+`
+    : ''
+}import * as Combobox from '@/${dir}/combobox'
 import * as Icon from '@/lib/icon'
 
 const frameworks = [
@@ -367,7 +497,9 @@ const frameworks = [
   { value: 'nuxt', label: 'Nuxt.js' },
   { value: 'remix', label: 'Remix' },
   { value: 'astro', label: 'Astro' },
-]${isStyleX ? `
+]${
+      isStyleX
+        ? `
 
 const styles = stylex.create({
   chipsBox: {
@@ -401,7 +533,9 @@ const styles = stylex.create({
   },
   chipIcon: { height: '0.75rem', width: '0.75rem' },
   multiInput: { height: '1.75rem', minWidth: '4rem', flexGrow: 1 },
-})` : ''}`,
+})`
+        : ''
+    }`,
     model: `const ExampleMulti = Combobox.createMulti<string>({ autoHighlight: true })
 export const Model = S.Struct({
   multi: Combobox.MultiModel,
@@ -474,8 +608,8 @@ export type Message = typeof Message.Type`,
     ]),
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const comboboxExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -487,4 +621,4 @@ export const comboboxExamples = (
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: comboboxSource(fixture, renderer),
-  }));
+  }))

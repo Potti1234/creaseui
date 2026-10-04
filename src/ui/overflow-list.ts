@@ -1,7 +1,7 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Behavior from '@/lib/overflow-list';
-import { cn } from '@/lib/utils';
+import * as Behavior from '@/lib/overflow-list'
+import { cn } from '@/lib/utils'
 
 export {
   Model,
@@ -12,13 +12,13 @@ export {
   computeOverflow,
   spacingToPx,
   collapsedIndices,
-} from '@/lib/overflow-list';
+} from '@/lib/overflow-list'
 export type {
   CollapseFrom,
   OverflowBehavior,
   OverflowListItem,
   SpacingStep,
-} from '@/lib/overflow-list';
+} from '@/lib/overflow-list'
 
 /* Ported from Meta Astryx OverflowList.tsx — the render side. Two sibling
    containers under a display:contents wrapper (foldkit's fragment stand-in):
@@ -27,28 +27,28 @@ export type {
    live indicator. */
 
 export type OverflowListProps<Msg> = Readonly<{
-  model: Behavior.Model;
-  toParentMessage: (message: Behavior.Message) => Msg;
+  model: Behavior.Model
+  toParentMessage: (message: Behavior.Message) => Msg
   /** @default 2 — spacing-step gap between items. */
-  gap?: Behavior.SpacingStep;
+  gap?: Behavior.SpacingStep
   /** @default 0 — floor: always show at least this many items. */
-  minVisibleItems?: number;
+  minVisibleItems?: number
   /** Ceiling partner to minVisibleItems; extras collapse into the overflow. */
-  maxVisibleItems?: number;
+  maxVisibleItems?: number
   /** Wrap items across up to this many rows before collapsing the rest. */
-  maxRows?: number;
+  maxRows?: number
   /** @default 'end' — which end items collapse from. */
-  collapseFrom?: Behavior.CollapseFrom;
+  collapseFrom?: Behavior.CollapseFrom
   /** @default 'observeSelf' — 'observeParent' watches the parent width. */
-  behavior?: Behavior.OverflowBehavior;
+  behavior?: Behavior.OverflowBehavior
   /** Renders the overflow indicator over the collapsed items. Measured
       automatically in the hidden container. */
   overflowRenderer?: (
     overflowItems: ReadonlyArray<Behavior.OverflowListItem>,
-  ) => Html;
-  children?: ReadonlyArray<Html | string>;
-  class?: string;
-}>;
+  ) => Html
+  children?: ReadonlyArray<Html | string>
+  class?: string
+}>
 
 const GAP_CLASS: Readonly<Record<Behavior.SpacingStep, string>> = {
   0: 'gap-0',
@@ -62,7 +62,7 @@ const GAP_CLASS: Readonly<Record<Behavior.SpacingStep, string>> = {
   6: 'gap-6',
   8: 'gap-8',
   10: 'gap-10',
-};
+}
 
 export const overflowList = <Msg>(
   props: OverflowListProps<Msg>,
@@ -79,25 +79,25 @@ export const overflowList = <Msg>(
     behavior = 'observeSelf',
     overflowRenderer,
     children,
-  } = props;
-  const items = children ?? [];
-  const itemCount = items.length;
-  const gapPx = Behavior.spacingToPx[gap];
-  const isMultiRow = maxRows !== undefined && maxRows > 1;
-  const hasOverflow = model.visibleCount < itemCount;
-  const observeParent = behavior === 'observeParent';
+  } = props
+  const items = children ?? []
+  const itemCount = items.length
+  const gapPx = Behavior.spacingToPx[gap]
+  const isMultiRow = maxRows !== undefined && maxRows > 1
+  const hasOverflow = model.visibleCount < itemCount
+  const observeParent = behavior === 'observeParent'
 
   const allItems: ReadonlyArray<Behavior.OverflowListItem> = items.map(
     (item, index) => ({ item, index }),
-  );
+  )
   const visibleItems =
     collapseFrom === 'end'
       ? allItems.slice(0, model.visibleCount)
-      : allItems.slice(itemCount - model.visibleCount);
+      : allItems.slice(itemCount - model.visibleCount)
   const overflowItems =
     collapseFrom === 'end'
       ? allItems.slice(model.visibleCount)
-      : allItems.slice(0, itemCount - model.visibleCount);
+      : allItems.slice(0, itemCount - model.visibleCount)
 
   return h.div(
     [
@@ -113,7 +113,7 @@ export const overflowList = <Msg>(
           collapseFrom,
           behavior,
         },
-        (message) => toParentMessage(message),
+        message => toParentMessage(message),
       ),
     ],
     [
@@ -135,11 +135,7 @@ export const overflowList = <Msg>(
           ...items,
           ...(overflowRenderer === undefined
             ? []
-            : [
-                h.div([h.Class('inline-flex')], [
-                  overflowRenderer(allItems),
-                ]),
-              ]),
+            : [h.div([h.Class('inline-flex')], [overflowRenderer(allItems)])]),
         ],
       ),
       /* Visible row */
@@ -180,5 +176,5 @@ export const overflowList = <Msg>(
         ],
       ),
     ],
-  );
-};
+  )
+}

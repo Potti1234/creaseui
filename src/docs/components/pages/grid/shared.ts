@@ -1,8 +1,8 @@
-import type { DocsExample } from '@/docs/components/page-definition';
+import type { DocsExample } from '@/docs/components/page-definition'
 import {
   foldkitApplication,
   staticComponentApplication,
-} from '@/docs/components/pages/authored-page';
+} from '@/docs/components/pages/authored-page'
 
 /* Astryx Grid/GridSpan example blocks ported 1:1. astryx Card default →
    crease Card size 'sm' (16px padding); astryx Card variant="cyan" (tinted
@@ -12,8 +12,8 @@ import {
    panel becomes crease Resizable's percent two-panel group. */
 
 export type GridFixture = Readonly<{
-  title: string;
-  description?: string;
+  title: string
+  description?: string
   kind:
     | 'showcase'
     | 'spanning'
@@ -21,8 +21,8 @@ export type GridFixture = Readonly<{
     | 'dashboard'
     | 'gallery'
     | 'spanColumns'
-    | 'spanShowcase';
-}>;
+    | 'spanShowcase'
+}>
 
 export const gridFixtures: Readonly<[GridFixture, ...Array<GridFixture>]> = [
   {
@@ -47,7 +47,8 @@ export const gridFixtures: Readonly<[GridFixture, ...Array<GridFixture>]> = [
   },
   {
     title: 'Grid — Card Gallery',
-    description: 'Card gallery with responsive columns that maintain consistent widths',
+    description:
+      'Card gallery with responsive columns that maintain consistent widths',
     kind: 'gallery',
   },
   {
@@ -62,7 +63,7 @@ export const gridFixtures: Readonly<[GridFixture, ...Array<GridFixture>]> = [
       'GridSpan lets a grid item span multiple columns or rows within an Grid, enabling masonry-style and asymmetric layouts.',
     kind: 'spanShowcase',
   },
-];
+]
 
 export const gridStats: ReadonlyArray<{ label: string; value: string }> = [
   { label: 'Components', value: '54 available' },
@@ -72,7 +73,7 @@ export const gridStats: ReadonlyArray<{ label: string; value: string }> = [
   { label: 'Icons', value: '312 available' },
   { label: 'Patterns', value: '18 documented' },
   { label: 'Contributors', value: '42 active' },
-];
+]
 
 export const gridTeams: ReadonlyArray<{ name: string; members: number }> = [
   { name: 'Design Systems', members: 8 },
@@ -81,76 +82,79 @@ export const gridTeams: ReadonlyArray<{ name: string; members: number }> = [
   { name: 'Accessibility', members: 4 },
   { name: 'Performance', members: 7 },
   { name: 'Mobile Infrastructure', members: 9 },
-];
+]
 
 export const gridMetrics: ReadonlyArray<{ label: string; value: string }> = [
   { label: 'Revenue', value: '$48,290' },
   { label: 'Active Users', value: '12,841' },
   { label: 'Conversion', value: '3.2%' },
   { label: 'Avg Response', value: '245ms' },
-];
+]
 
 export const gridGalleryCards: ReadonlyArray<{
-  title: string;
-  description: string;
+  title: string
+  description: string
 }> = [
-  { title: 'Getting Started', description: 'Learn the basics of the platform.' },
+  {
+    title: 'Getting Started',
+    description: 'Learn the basics of the platform.',
+  },
   { title: 'Components', description: 'Browse the full component library.' },
   { title: 'Design Tokens', description: 'Colors, spacing, and typography.' },
   { title: 'Theming', description: 'Customize the look and feel.' },
   { title: 'Accessibility', description: 'Build inclusive experiences.' },
   { title: 'Patterns', description: 'Common UI composition patterns.' },
-];
+]
 
 /* Emitted text/card helpers. Child arguments are emitted raw, so callers pass
    a quoted literal ('1 col') or an expression (team.name). */
 
 const labelTw = (child: string): string =>
-  `h.p([h.Class('text-sm font-medium')], [${child}])`;
+  `h.p([h.Class('text-sm font-medium')], [${child}])`
 const labelSx = (child: string): string =>
-  `h.p([h.Class(stylex.props(styles.label).className ?? '')], [${child}])`;
+  `h.p([h.Class(stylex.props(styles.label).className ?? '')], [${child}])`
 const supportingTw = (child: string): string =>
-  `h.p([h.Class('text-xs')], [${child}])`;
+  `h.p([h.Class('text-xs')], [${child}])`
 const supportingSx = (child: string): string =>
-  `h.p([h.Class(stylex.props(styles.supporting).className ?? '')], [${child}])`;
+  `h.p([h.Class(stylex.props(styles.supporting).className ?? '')], [${child}])`
 const bodyTw = (child: string): string =>
-  `h.p([h.Class('text-sm text-muted-foreground')], [${child}])`;
+  `h.p([h.Class('text-sm text-muted-foreground')], [${child}])`
 const bodySx = (child: string): string =>
-  `h.p([h.Class(stylex.props(styles.body).className ?? '')], [${child}])`;
+  `h.p([h.Class(stylex.props(styles.body).className ?? '')], [${child}])`
 
 const cardTw = (children: string): string =>
   `Card.card({ size: 'sm', children: [
             Card.cardContent({ children: [
               ${children},
             ] }, h),
-          ] }, h)`;
-const cardSx = cardTw; // Card API is renderer-identical
+          ] }, h)`
+const cardSx = cardTw // Card API is renderer-identical
 
 const tallCardTw = (children: string): string =>
   `Card.card({ size: 'sm', class: 'h-20', children: [
               Card.cardContent({ children: [
                 ${children},
               ] }, h),
-            ] }, h)`;
+            ] }, h)`
 const tallCardSx = (children: string): string =>
   `Card.card({ size: 'sm', layoutStyle: styles.tallCard, children: [
               Card.cardContent({ children: [
                 ${children},
               ] }, h)],
-            }, h)`;
+            }, h)`
 
 const cyanCardTw = (children: string): string =>
   `Card.card({ size: 'sm', class: 'border-cyan-200 bg-cyan-50 dark:border-cyan-800 dark:bg-cyan-950/40', children: [
               Card.cardContent({ children: [
                 ${children},
               ] }, h),
-            ] }, h)`;
+            ] }, h)`
 const cyanCardSx = (children: string): string =>
   `h.div([h.Class(stylex.props(styles.featuredCard).className ?? '')], [
               Stack.vStack({ gap: 1, children: [
                 ${children},
               ] }, h),
-            ])`;
+            ])`
 
 const statsSource = `const STATS = [
   { label: 'Components', value: '54 available' },
@@ -160,7 +164,7 @@ const statsSource = `const STATS = [
   { label: 'Icons', value: '312 available' },
   { label: 'Patterns', value: '18 documented' },
   { label: 'Contributors', value: '42 active' },
-]`;
+]`
 
 const teamsSource = `const TEAMS = [
   { name: 'Design Systems', members: 8 },
@@ -169,14 +173,14 @@ const teamsSource = `const TEAMS = [
   { name: 'Accessibility', members: 4 },
   { name: 'Performance', members: 7 },
   { name: 'Mobile Infrastructure', members: 9 },
-]`;
+]`
 
 const metricsSource = `const METRICS = [
   { label: 'Revenue', value: '$48,290' },
   { label: 'Active Users', value: '12,841' },
   { label: 'Conversion', value: '3.2%' },
   { label: 'Avg Response', value: '245ms' },
-]`;
+]`
 
 const gallerySource = `const CARDS = [
   { title: 'Getting Started', description: 'Learn the basics of the platform.' },
@@ -185,10 +189,10 @@ const gallerySource = `const CARDS = [
   { title: 'Theming', description: 'Customize the look and feel.' },
   { title: 'Accessibility', description: 'Build inclusive experiences.' },
   { title: 'Patterns', description: 'Common UI composition patterns.' },
-]`;
+]`
 
 const emitShowcase = (renderer: 'tailwind' | 'stylex'): string => {
-  const card = renderer === 'tailwind' ? cardTw : cardSx;
+  const card = renderer === 'tailwind' ? cardTw : cardSx
   return `Grid.grid(
       { columns: 3, gap: 2, width: 400, children: [
         ...Array.from({ length: 12 }, (_, i) =>
@@ -196,46 +200,52 @@ const emitShowcase = (renderer: 'tailwind' | 'stylex'): string => {
         ),
       ] },
       h,
-    )`;
-};
+    )`
+}
 
 const emitSpanning = (renderer: 'tailwind' | 'stylex'): string => {
-  const label = renderer === 'tailwind' ? labelTw : labelSx;
-  const supporting = renderer === 'tailwind' ? supportingTw : supportingSx;
-  const card = renderer === 'tailwind' ? cardTw : cardSx;
-  const cyan = renderer === 'tailwind' ? cyanCardTw : cyanCardSx;
+  const label = renderer === 'tailwind' ? labelTw : labelSx
+  const supporting = renderer === 'tailwind' ? supportingTw : supportingSx
+  const card = renderer === 'tailwind' ? cardTw : cardSx
+  const cyan = renderer === 'tailwind' ? cyanCardTw : cyanCardSx
   const featured = `Stack.vStack({ gap: 1, children: [
                   ${label(`'Featured Release'`)},
                   ${supporting(`'Astryx 4.0 is now available with new layout primitives, refreshed tokens, and improved theming support across the system.'`)},
-                ] }, h)`;
+                ] }, h)`
   return `Grid.grid(
       { columns: 3, gap: 4, width: '100%', maxWidth: 500, children: [
         Grid.gridSpan({ rows: 2, children: [
-          ${renderer === 'tailwind' ? cyan(featured) : cyan(`${label(`'Featured Release'`)},
-                  ${supporting(`'Astryx 4.0 is now available with new layout primitives, refreshed tokens, and improved theming support across the system.'`)}`)},
+          ${
+            renderer === 'tailwind'
+              ? cyan(featured)
+              : cyan(`${label(`'Featured Release'`)},
+                  ${supporting(`'Astryx 4.0 is now available with new layout primitives, refreshed tokens, and improved theming support across the system.'`)}`)
+          },
         ] }, h),
         ...STATS.map(stat =>
           ${card(`${label('stat.label')},
               ${supporting('stat.value')}`)},
         ),
         Grid.gridSpan({ columns: 'full', children: [
-          ${renderer === 'tailwind'
-            ? cyan(`Stack.vStack({ gap: 1, children: [
+          ${
+            renderer === 'tailwind'
+              ? cyan(`Stack.vStack({ gap: 1, children: [
                   ${label(`'Community Showcase'`)},
                   ${supporting(`'See how teams are building with Astryx across the organization'`)},
                 ] }, h)`)
-            : cyan(`${label(`'Community Showcase'`)},
-                  ${supporting(`'See how teams are building with Astryx across the organization'`)}`)},
+              : cyan(`${label(`'Community Showcase'`)},
+                  ${supporting(`'See how teams are building with Astryx across the organization'`)}`)
+          },
         ] }, h),
       ] },
       h,
-    )`;
-};
+    )`
+}
 
 const emitDashboard = (renderer: 'tailwind' | 'stylex'): string => {
-  const label = renderer === 'tailwind' ? labelTw : labelSx;
-  const supporting = renderer === 'tailwind' ? supportingTw : supportingSx;
-  const card = renderer === 'tailwind' ? cardTw : cardSx;
+  const label = renderer === 'tailwind' ? labelTw : labelSx
+  const supporting = renderer === 'tailwind' ? supportingTw : supportingSx
+  const card = renderer === 'tailwind' ? cardTw : cardSx
   return `Grid.grid(
       { columns: 4, gap: 4, width: '100%', maxWidth: 500, children: [
         Grid.gridSpan({ columns: 2, rows: 2, children: [
@@ -252,13 +262,13 @@ const emitDashboard = (renderer: 'tailwind' | 'stylex'): string => {
         ] }, h),
       ] },
       h,
-    )`;
-};
+    )`
+}
 
 const emitGallery = (renderer: 'tailwind' | 'stylex'): string => {
-  const label = renderer === 'tailwind' ? labelTw : labelSx;
-  const supporting = renderer === 'tailwind' ? supportingTw : supportingSx;
-  const card = renderer === 'tailwind' ? cardTw : cardSx;
+  const label = renderer === 'tailwind' ? labelTw : labelSx
+  const supporting = renderer === 'tailwind' ? supportingTw : supportingSx
+  const card = renderer === 'tailwind' ? cardTw : cardSx
   return `Grid.grid(
       { columns: { minWidth: 180 }, gap: 5, width: '100%', maxWidth: 400, children: [
         ...CARDS.map(card =>
@@ -267,12 +277,12 @@ const emitGallery = (renderer: 'tailwind' | 'stylex'): string => {
         ),
       ] },
       h,
-    )`;
-};
+    )`
+}
 
 const emitSpanColumns = (renderer: 'tailwind' | 'stylex'): string => {
-  const body = renderer === 'tailwind' ? bodyTw : bodySx;
-  const tall = renderer === 'tailwind' ? tallCardTw : tallCardSx;
+  const body = renderer === 'tailwind' ? bodyTw : bodySx
+  const tall = renderer === 'tailwind' ? tallCardTw : tallCardSx
   return `Grid.grid(
       { columns: 3, gap: 3, width: 400, children: [
         Grid.gridSpan({ columns: 2, children: [
@@ -285,13 +295,13 @@ const emitSpanColumns = (renderer: 'tailwind' | 'stylex'): string => {
         ] }, h),
       ] },
       h,
-    )`;
-};
+    )`
+}
 
 const emitSpanShowcase = (renderer: 'tailwind' | 'stylex'): string => {
-  const body = renderer === 'tailwind' ? bodyTw : bodySx;
-  const tall = renderer === 'tailwind' ? tallCardTw : tallCardSx;
-  const card = renderer === 'tailwind' ? cardTw : cardSx;
+  const body = renderer === 'tailwind' ? bodyTw : bodySx
+  const tall = renderer === 'tailwind' ? tallCardTw : tallCardSx
+  const card = renderer === 'tailwind' ? cardTw : cardSx
   return `Grid.grid(
       { columns: 4, gap: 3, width: 400, children: [
         Grid.gridSpan({ columns: 3, children: [
@@ -310,25 +320,25 @@ const emitSpanShowcase = (renderer: 'tailwind' | 'stylex'): string => {
         ] }, h),
       ] },
       h,
-    )`;
-};
+    )`
+}
 
 /* The auto-fit demo is interactive (astryx uses useResizable), so it emits a
    complete foldkit application wiring crease Resizable's percent-based
    two-panel group — the grid lives in the first panel and reflows on drag. */
 const emitAutoFit = (renderer: 'tailwind' | 'stylex'): string => {
-  const mod = renderer === 'stylex' ? 'stylex' : 'ui';
-  const label = renderer === 'tailwind' ? labelTw : labelSx;
-  const supporting = renderer === 'tailwind' ? supportingTw : supportingSx;
-  const card = renderer === 'tailwind' ? cardTw : cardSx;
+  const mod = renderer === 'stylex' ? 'stylex' : 'ui'
+  const label = renderer === 'tailwind' ? labelTw : labelSx
+  const supporting = renderer === 'tailwind' ? supportingTw : supportingSx
+  const card = renderer === 'tailwind' ? cardTw : cardSx
   const panelAttrs =
     renderer === 'tailwind'
       ? `h.Class('h-full overflow-auto p-4')`
-      : `h.Class(stylex.props(styles.gridPanel).className ?? '')`;
+      : `h.Class(stylex.props(styles.gridPanel).className ?? '')`
   const groupProp =
     renderer === 'tailwind'
       ? `class: 'h-full w-full border-0'`
-      : `layoutStyle: styles.group`;
+      : `layoutStyle: styles.group`
   const resizableCall = `Resizable.resizable(
             {
               model: model.resizable,
@@ -355,7 +365,7 @@ const emitAutoFit = (renderer: 'tailwind' | 'stylex'): string => {
               }], []),
             },
             h,
-          )`;
+          )`
   const viewBody =
     renderer === 'tailwind'
       ? `Card.card({ class: 'h-[400px] w-full max-w-[500px] gap-0 overflow-hidden bg-muted p-0', children: [
@@ -363,7 +373,7 @@ const emitAutoFit = (renderer: 'tailwind' | 'stylex'): string => {
       ] }, h)`
       : `h.div([h.Class(stylex.props(styles.shell).className ?? '')], [
         ${resizableCall},
-      ])`;
+      ])`
   const view = `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Grid — Responsive Auto-Fit',
   body: h.main([${
@@ -373,7 +383,7 @@ const emitAutoFit = (renderer: 'tailwind' | 'stylex'): string => {
   }], [
     ${viewBody},
   ]),
-})`;
+})`
   const stylesSource =
     renderer === 'stylex'
       ? `import * as stylex from '@stylexjs/stylex'
@@ -400,7 +410,7 @@ const styles = stylex.create({
   label: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500 },
   supporting: { fontSize: '0.75rem', lineHeight: '1rem' },
 })`
-      : '';
+      : ''
   return foldkitApplication({
     title: 'Grid — Responsive Auto-Fit',
     imports: `import { Schema as S } from 'effect'
@@ -436,8 +446,8 @@ export type Message = typeof Message.Type`,
   }
 }`,
     view,
-  });
-};
+  })
+}
 
 const emitBody = (
   fixture: GridFixture,
@@ -445,45 +455,47 @@ const emitBody = (
 ): string => {
   switch (fixture.kind) {
     case 'showcase':
-      return emitShowcase(renderer);
+      return emitShowcase(renderer)
     case 'spanning':
-      return emitSpanning(renderer);
+      return emitSpanning(renderer)
     case 'dashboard':
-      return emitDashboard(renderer);
+      return emitDashboard(renderer)
     case 'gallery':
-      return emitGallery(renderer);
+      return emitGallery(renderer)
     case 'spanColumns':
-      return emitSpanColumns(renderer);
+      return emitSpanColumns(renderer)
     case 'spanShowcase':
-      return emitSpanShowcase(renderer);
+      return emitSpanShowcase(renderer)
     case 'autoFit':
-      return ''; // handled by emitAutoFit
+      return '' // handled by emitAutoFit
   }
-};
+}
 
-const usesCard = (kind: GridFixture['kind']): boolean => true; // every grid example tiles content in cards
+const usesCard = (kind: GridFixture['kind']): boolean => true // every grid example tiles content in cards
 const usesStack = (kind: GridFixture['kind']): boolean =>
-  kind === 'spanning' || kind === 'gallery';
-const usesResizable = (kind: GridFixture['kind']): boolean => kind === 'autoFit';
+  kind === 'spanning' || kind === 'gallery'
+const usesResizable = (kind: GridFixture['kind']): boolean => kind === 'autoFit'
 
 const extraSourceFor = (kind: GridFixture['kind']): string => {
   switch (kind) {
     case 'spanning':
-      return statsSource;
+      return statsSource
     case 'dashboard':
-      return metricsSource;
+      return metricsSource
     case 'gallery':
-      return gallerySource;
+      return gallerySource
     default:
-      return '';
+      return ''
   }
-};
+}
 
 const stylexStylesFor = (kind: GridFixture['kind']): string => {
-  const entries: Array<string> = [];
+  const entries: Array<string> = []
   if (kind === 'spanning' || kind === 'gallery' || kind === 'dashboard') {
-    entries.push(`  label: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500 }`);
-    entries.push(`  supporting: { fontSize: '0.75rem', lineHeight: '1rem' }`);
+    entries.push(
+      `  label: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500 }`,
+    )
+    entries.push(`  supporting: { fontSize: '0.75rem', lineHeight: '1rem' }`)
   }
   if (kind === 'spanning') {
     entries.push(`  featuredCard: {
@@ -493,26 +505,26 @@ const stylexStylesFor = (kind: GridFixture['kind']): string => {
     borderStyle: 'solid',
     borderWidth: 1,
     padding: '1rem',
-  }`);
+  }`)
   }
   if (kind === 'spanColumns' || kind === 'spanShowcase') {
-    entries.push(`  tallCard: { height: '5rem' }`);
+    entries.push(`  tallCard: { height: '5rem' }`)
     entries.push(
       `  body: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' }`,
-    );
+    )
   }
-  if (entries.length === 0) return '';
+  if (entries.length === 0) return ''
   return `import * as stylex from '@stylexjs/stylex'
 
 const styles = stylex.create({
 ${entries.join(',\n')},
-})`;
-};
+})`
+}
 
 const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
-  const fixture = gridFixtures[index] ?? gridFixtures[0];
-  if (fixture.kind === 'autoFit') return emitAutoFit(renderer);
-  const mod = renderer === 'stylex' ? 'stylex' : 'ui';
+  const fixture = gridFixtures[index] ?? gridFixtures[0]
+  if (fixture.kind === 'autoFit') return emitAutoFit(renderer)
+  const mod = renderer === 'stylex' ? 'stylex' : 'ui'
   const componentImports = [
     `import * as Card from '@/${mod}/card'`,
     usesStack(fixture.kind) ? `import * as Stack from '@/${mod}/stack'` : '',
@@ -520,7 +532,7 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
     renderer === 'stylex' ? stylexStylesFor(fixture.kind) : '',
   ]
     .filter(Boolean)
-    .join('\n');
+    .join('\n')
   return staticComponentApplication({
     componentName: 'Grid',
     componentSlug: 'grid',
@@ -528,8 +540,8 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
     exampleName: fixture.title,
     componentImports,
     viewBody: emitBody(fixture, renderer),
-  });
-};
+  })
+}
 
 export const gridExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -540,4 +552,4 @@ export const gridExamples = (
       ? {}
       : { description: fixture.description }),
     code: source(index, renderer),
-  }));
+  }))

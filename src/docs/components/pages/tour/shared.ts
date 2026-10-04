@@ -1,26 +1,28 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
-import type { TourStepSpec } from '@/ui/tour';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
+import type { TourStepSpec } from '@/ui/tour'
 
-export type TourKind = 'showcase' | 'lightweight' | 'placement';
+export type TourKind = 'showcase' | 'lightweight' | 'placement'
 
 export type TourFixture = Readonly<{
-  title: string;
-  description?: string;
-  kind: TourKind;
-  hasBackdrop: boolean;
-  isStepCountShown: boolean;
-  heroOnly?: boolean;
-  targets: ReadonlyArray<string>;
-  steps: ReadonlyArray<Readonly<{
-    id: string;
-    targetId: string;
-    heading: string;
-    body: string;
-    placement?: 'below' | 'above' | 'start' | 'end';
-    alignment?: 'start' | 'center' | 'end';
-  }>>;
-}>;
+  title: string
+  description?: string
+  kind: TourKind
+  hasBackdrop: boolean
+  isStepCountShown: boolean
+  heroOnly?: boolean
+  targets: ReadonlyArray<string>
+  steps: ReadonlyArray<
+    Readonly<{
+      id: string
+      targetId: string
+      heading: string
+      body: string
+      placement?: 'below' | 'above' | 'start' | 'end'
+      alignment?: 'start' | 'center' | 'end'
+    }>
+  >
+}>
 
 /* astryx ships no example blocks for Tour (lab component); these examples are
    derived from Tour.doc.mjs usage + Tour.test.tsx scenarios — flagged as
@@ -121,7 +123,7 @@ export const tourFixtures: ReadonlyArray<TourFixture> = [
       },
     ],
   },
-];
+]
 
 const emitStyles = `const styles = stylex.create({
   main: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
@@ -129,28 +131,30 @@ const emitStyles = `const styles = stylex.create({
   heading: { fontSize: '1.125rem', lineHeight: '1.75rem', fontWeight: 600 },
   body: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
   actions: { display: 'flex', flexWrap: 'wrap', gap: '0.5rem' },
-})`;
+})`
 
 const emitSteps = (fixture: TourFixture): string =>
   `[\n${fixture.steps
     .map(
-      step => `    { id: '${step.id}', targetId: '${step.targetId}', heading: '${step.heading}', content: '${step.body}'${step.placement === undefined ? '' : `, placement: '${step.placement}'`}${step.alignment === undefined ? '' : `, alignment: '${step.alignment}'`} },`,
+      step =>
+        `    { id: '${step.id}', targetId: '${step.targetId}', heading: '${step.heading}', content: '${step.body}'${step.placement === undefined ? '' : `, placement: '${step.placement}'`}${step.alignment === undefined ? '' : `, alignment: '${step.alignment}'`} },`,
     )
-    .join('\n')}\n  ]`;
+    .join('\n')}\n  ]`
 
 const emitView = (fixture: TourFixture, isStyleX: boolean): string => {
   const cls = (tailwind: string, stylexRef: string) =>
-    isStyleX ? `className(${stylexRef})` : `'${tailwind}'`;
+    isStyleX ? `className(${stylexRef})` : `'${tailwind}'`
   const buttons = fixture.targets
     .map((targetId, i) => {
-      const label = fixture.kind === 'showcase'
-        ? ['New project', 'Invite team', 'Reports'][i]!
-        : fixture.kind === 'lightweight'
-          ? ['Save', 'Share'][i]!
-          : ['Quick actions', 'Filters'][i]!;
-      return `    Button.button({ variant: 'outline', id: '${targetId}', children: ['${label}'] }, h)`;
+      const label =
+        fixture.kind === 'showcase'
+          ? ['New project', 'Invite team', 'Reports'][i]!
+          : fixture.kind === 'lightweight'
+            ? ['Save', 'Share'][i]!
+            : ['Quick actions', 'Filters'][i]!
+      return `    Button.button({ variant: 'outline', id: '${targetId}', children: ['${label}'] }, h)`
     })
-    .join(',\n');
+    .join(',\n')
   return `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Tour — ${fixture.title}',
   body: h.main([h.Class(${cls('flex min-h-screen items-center justify-center p-8', 'styles.main')})], [
@@ -170,13 +174,16 @@ ${buttons},
       isStepCountShown: ${fixture.isStepCountShown},
     }, h),
   ]),
-})`;
-};
+})`
+}
 
-const source = (fixture: TourFixture, renderer: 'tailwind' | 'stylex'): string => {
-  const isStyleX = renderer === 'stylex';
-  const u = isStyleX ? 'stylex' : 'ui';
-  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '');
+const source = (
+  fixture: TourFixture,
+  renderer: 'tailwind' | 'stylex',
+): string => {
+  const isStyleX = renderer === 'stylex'
+  const u = isStyleX ? 'stylex' : 'ui'
+  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
   return foldkitApplication({
     title: `Tour — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
@@ -212,17 +219,20 @@ export type Message = typeof Message.Type`,
   }
 }`,
     view: emitView(fixture, isStyleX),
-  });
-};
+  })
+}
 
 export const tourExamples = (
   renderer: 'tailwind' | 'stylex',
-): ReadonlyArray<DocsExample> => tourFixtures.map(fixture => ({
-  title: fixture.title,
-  ...(fixture.description === undefined ? {} : { description: fixture.description }),
-  ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
-  code: source(fixture, renderer),
-}));
+): ReadonlyArray<DocsExample> =>
+  tourFixtures.map(fixture => ({
+    title: fixture.title,
+    ...(fixture.description === undefined
+      ? {}
+      : { description: fixture.description }),
+    ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
+    code: source(fixture, renderer),
+  }))
 
 export const stepsFor = (fixture: TourFixture): ReadonlyArray<TourStepSpec> =>
   fixture.steps.map(step => ({
@@ -232,4 +242,4 @@ export const stepsFor = (fixture: TourFixture): ReadonlyArray<TourStepSpec> =>
     content: step.body,
     ...(step.placement === undefined ? {} : { placement: step.placement }),
     ...(step.alignment === undefined ? {} : { alignment: step.alignment }),
-  }));
+  }))

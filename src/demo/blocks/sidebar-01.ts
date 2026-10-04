@@ -1,11 +1,11 @@
-import { Match as M, Option, Schema as S } from 'effect';
-import type { Update } from 'foldkit';
-import { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
-import { modifyFields } from 'foldkit/struct';
+import { Match as M, Option, Schema as S } from 'effect'
+import type { Update } from 'foldkit'
+import { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import { modifyFields } from 'foldkit/struct'
 
-import * as Icon from '@/lib/icon';
+import * as Icon from '@/lib/icon'
 import {
   breadcrumb,
   breadcrumbItem,
@@ -13,9 +13,9 @@ import {
   breadcrumbList,
   breadcrumbPage,
   breadcrumbSeparator,
-} from '@/ui/breadcrumb';
-import * as DropdownMenu from '@/ui/dropdown-menu';
-import { separator } from '@/ui/separator';
+} from '@/ui/breadcrumb'
+import * as DropdownMenu from '@/ui/dropdown-menu'
+import { separator } from '@/ui/separator'
 import {
   sidebar,
   sidebarContent,
@@ -32,21 +32,21 @@ import {
   sidebarProvider,
   sidebarRail,
   sidebarTrigger,
-} from '@/ui/sidebar';
+} from '@/ui/sidebar'
 
-type Version = '1.0.1' | '1.1.0-alpha' | '2.0.0-beta1';
+type Version = '1.0.1' | '1.1.0-alpha' | '2.0.0-beta1'
 
 type NavItem = Readonly<{
-  title: string;
-  url: string;
-  isActive?: boolean;
-}>;
+  title: string
+  url: string
+  isActive?: boolean
+}>
 
 type NavGroup = Readonly<{
-  title: string;
-  url: string;
-  items: ReadonlyArray<NavItem>;
-}>;
+  title: string
+  url: string
+  items: ReadonlyArray<NavItem>
+}>
 
 // This is sample data copied from the source block.
 export const data = {
@@ -106,77 +106,82 @@ export const data = {
       ],
     },
   ] satisfies ReadonlyArray<NavGroup>,
-};
+}
 
-const VersionMenu = DropdownMenu.create<Version>();
+const VersionMenu = DropdownMenu.create<Version>()
 
 // MODEL
 
 export const Model = S.Struct({
-  isMobileOpen: S.Boolean, isSidebarOpen: S.Boolean,
+  isMobileOpen: S.Boolean,
+  isSidebarOpen: S.Boolean,
   selectedVersion: S.String,
   versionMenu: DropdownMenu.Model,
-});
-export type Model = typeof Model.Type;
+})
+export type Model = typeof Model.Type
 
 // MESSAGE
-
-
-
-
 
 export const Message = defineMessageUnion({
   ToggledMobileSidebar: {},
   ToggledSidebar: {},
   GotVersionMenuMessage: {
-  message: DropdownMenu.Message,
-},
-});
-export type Message = typeof Message.Type;
+    message: DropdownMenu.Message,
+  },
+})
+export type Message = typeof Message.Type
 
 // INIT
 
 export const init = (): Model => ({
-  isMobileOpen: false, isSidebarOpen: true,
+  isMobileOpen: false,
+  isSidebarOpen: true,
   selectedVersion: data.versions[0] ?? '1.0.1',
   versionMenu: DropdownMenu.init({
     id: 'sidebar-01-version-switcher',
     isAnimated: true,
   }),
-});
+})
 
 // UPDATE
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      ToggledMobileSidebar: () => ({ model: modifyFields(model, {isMobileOpen: current => !current}) }),
-      ToggledSidebar: () => ({ model: modifyFields(model, { isSidebarOpen: (current) => !current }) }),
+      ToggledMobileSidebar: () => ({
+        model: modifyFields(model, { isMobileOpen: current => !current }),
+      }),
+      ToggledSidebar: () => ({
+        model: modifyFields(model, { isSidebarOpen: current => !current }),
+      }),
       GotVersionMenuMessage: ({ message: childMessage }) => {
         const versionMenuOp__ = VersionMenu.update(
           model.versionMenu,
           childMessage,
-        );
-    const versionMenu = versionMenuOp__.model;
-    const commands = versionMenuOp__.commands ?? [];
-    const maybeSelection = Option.fromNullishOr(versionMenuOp__.outMessage);;
+        )
+        const versionMenu = versionMenuOp__.model
+        const commands = versionMenuOp__.commands ?? []
+        const maybeSelection = Option.fromNullishOr(versionMenuOp__.outMessage)
         const selectedVersion = Option.match(maybeSelection, {
           onNone: () => model.selectedVersion,
           onSome: ({ value }) => value,
-        });
+        })
 
-        return { model: modifyFields(model, {
+        return {
+          model: modifyFields(model, {
             versionMenu: () => versionMenu,
             selectedVersion: () => selectedVersion,
-          }), commands: Command.mapMessages(commands, (nextMessage) =>
+          }),
+          commands: Command.mapMessages(commands, nextMessage =>
             Message.GotVersionMenuMessage({ message: nextMessage }),
-          ) };
+          ),
+        }
       },
     }),
-  );
+  )
 
 // VIEW
 
@@ -201,7 +206,7 @@ const versionSwitcher = (model: Model, h: HtmlBuilder<Message>): Html => {
       ),
       Icon.chevronsUpDown({ class: 'ml-auto size-4' }, h),
     ],
-  );
+  )
 
   return sidebarMenu(
     {
@@ -212,7 +217,7 @@ const versionSwitcher = (model: Model, h: HtmlBuilder<Message>): Html => {
               DropdownMenu.dropdownMenu<Version, Message>(
                 {
                   model: model.versionMenu,
-                  toParentMessage: (message) =>
+                  toParentMessage: message =>
                     Message.GotVersionMenuMessage({ message }),
                   trigger,
                   triggerClass: sidebarMenuButtonVariants({
@@ -221,7 +226,7 @@ const versionSwitcher = (model: Model, h: HtmlBuilder<Message>): Html => {
                       'data-[open]:bg-sidebar-accent data-[open]:text-sidebar-accent-foreground',
                   }),
                   items: data.versions,
-                  itemToConfig: (version) => ({
+                  itemToConfig: version => ({
                     label: h.span(
                       [h.Class('contents')],
                       [
@@ -244,8 +249,8 @@ const versionSwitcher = (model: Model, h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const searchForm = (h: HtmlBuilder<Message>): Html => {
   return h.form(
@@ -287,13 +292,13 @@ const searchForm = (h: HtmlBuilder<Message>): Html => {
         h,
       ),
     ],
-  );
-};
+  )
+}
 
 const navMain = (h: HtmlBuilder<Message>): Html =>
   sidebarContent<Message>(
     {
-      children: data.navMain.map((group) =>
+      children: data.navMain.map(group =>
         sidebarGroup(
           {
             children: [
@@ -303,7 +308,7 @@ const navMain = (h: HtmlBuilder<Message>): Html =>
                   children: [
                     sidebarMenu(
                       {
-                        children: group.items.map((item) =>
+                        children: group.items.map(item =>
                           sidebarMenuItem(
                             {
                               children: [
@@ -334,14 +339,16 @@ const navMain = (h: HtmlBuilder<Message>): Html =>
       ),
     },
     h,
-  );
+  )
 
 const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
-  const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
+  const state = model.isSidebarOpen ? 'expanded' : 'collapsed'
 
   return sidebar<Message>(
     {
-      isMobileOpen: model.isMobileOpen, onMobileDismiss: Message.ToggledMobileSidebar(), state,
+      isMobileOpen: model.isMobileOpen,
+      onMobileDismiss: Message.ToggledMobileSidebar(),
+      state,
       children: [
         sidebarHeader(
           {
@@ -354,8 +361,8 @@ const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const pageContent = (h: HtmlBuilder<Message>): Html => {
   return sidebarInset(
@@ -364,7 +371,14 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
         h.header(
           [h.Class('flex h-16 shrink-0 items-center gap-2 border-b px-4')],
           [
-            sidebarTrigger({ onMobileClick: Message.ToggledMobileSidebar(), onClick: Message.ToggledSidebar(), class: '-ml-1' }, h),
+            sidebarTrigger(
+              {
+                onMobileClick: Message.ToggledMobileSidebar(),
+                onClick: Message.ToggledSidebar(),
+                class: '-ml-1',
+              },
+              h,
+            ),
             separator(
               {
                 orientation: 'vertical',
@@ -439,11 +453,11 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
-  const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
+  const state = model.isSidebarOpen ? 'expanded' : 'collapsed'
 
   return sidebarProvider<Message>(
     {
@@ -451,8 +465,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       children: [appSidebar(model, h), pageContent(h)],
     },
     h,
-  );
-};
+  )
+}
 
 // PORT NOTE: foldkit Menu owns panel width through anchor positioning, so the
 // source's Radix-only trigger-width CSS variable is not available.

@@ -23,10 +23,10 @@ export const Model = S.Struct({
 })
 export type Model = typeof Model.Type
 
-export const init = (config: {
-  id: string
-  isExpanded?: boolean
-}): Model => ({ id: config.id, isExpanded: config.isExpanded ?? false })
+export const init = (config: { id: string; isExpanded?: boolean }): Model => ({
+  id: config.id,
+  isExpanded: config.isExpanded ?? false,
+})
 
 export const Message = defineMessageUnion({
   ToggledChatReasoning: {},
@@ -111,12 +111,14 @@ const styles = stylex.create({
   disabledInk: {
     color: foundationTokens.mutedForeground50,
     flexShrink: 0,
-    fontSize: '0.75rem', lineHeight: '1rem',
+    fontSize: '0.75rem',
+    lineHeight: '1rem',
   },
   disabledInkNowrap: {
     color: foundationTokens.mutedForeground50,
     flexShrink: 0,
-    fontSize: '0.75rem', lineHeight: '1.25rem',
+    fontSize: '0.75rem',
+    lineHeight: '1.25rem',
     whiteSpace: 'nowrap',
   },
   preview: {
@@ -153,7 +155,8 @@ const styles = stylex.create({
     animationName: shimmerSweep,
     animationTimingFunction: interactionTokens.easingLinear,
     backgroundClip: 'text',
-    backgroundImage: 'linear-gradient(calc(90deg + 20deg), currentColor calc(50% - (3ch + 40px)), color-mix(in oklch, oklch(from currentColor l c h / calc(alpha * 0.2)), currentColor 50%) calc(50% - (3ch + 40px) * 0.5), oklch(from currentColor l c h / calc(alpha * 0.2)) 50%, color-mix(in oklch, oklch(from currentColor l c h / calc(alpha * 0.2)), currentColor 50%) calc(50% + (3ch + 40px) * 0.5), currentColor calc(50% + (3ch + 40px)))',
+    backgroundImage:
+      'linear-gradient(calc(90deg + 20deg), currentColor calc(50% - (3ch + 40px)), color-mix(in oklch, oklch(from currentColor l c h / calc(alpha * 0.2)), currentColor 50%) calc(50% - (3ch + 40px) * 0.5), oklch(from currentColor l c h / calc(alpha * 0.2)) 50%, color-mix(in oklch, oklch(from currentColor l c h / calc(alpha * 0.2)), currentColor 50%) calc(50% + (3ch + 40px) * 0.5), currentColor calc(50% + (3ch + 40px)))',
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'calc(200% + (3ch + 40px) * 2) 100%',
   },
@@ -261,9 +264,11 @@ export const chatReasoning = <Msg>(
           h.AriaExpanded(isExpanded),
           h.Attribute('aria-controls', contentId),
           h.OnClick(props.toParentMessage(Message.ToggledChatReasoning())),
-          h.OnKeyDownPreventDefault((key) =>
+          h.OnKeyDownPreventDefault(key =>
             key === 'Enter' || key === ' '
-              ? Option.some(props.toParentMessage(Message.ToggledChatReasoning()))
+              ? Option.some(
+                  props.toParentMessage(Message.ToggledChatReasoning()),
+                )
               : Option.none(),
           ),
           h.Class(className(styles.header)),
@@ -287,7 +292,10 @@ export const chatReasoning = <Msg>(
               ...(props.duration !== undefined && !isStreaming
                 ? [
                     h.span(
-                      [h.Class(className(styles.disabledInk)), h.AriaHidden(true)],
+                      [
+                        h.Class(className(styles.disabledInk)),
+                        h.AriaHidden(true),
+                      ],
                       ['·'],
                     ),
                     h.span(
@@ -299,13 +307,13 @@ export const chatReasoning = <Msg>(
               ...(!isExpanded && previewText !== undefined && !isStreaming
                 ? [
                     h.span(
-                      [h.Class(className(styles.disabledInk)), h.AriaHidden(true)],
+                      [
+                        h.Class(className(styles.disabledInk)),
+                        h.AriaHidden(true),
+                      ],
                       ['—'],
                     ),
-                    h.span(
-                      [h.Class(className(styles.preview))],
-                      [previewText],
-                    ),
+                    h.span([h.Class(className(styles.preview))], [previewText]),
                   ]
                 : []),
             ],
@@ -335,12 +343,15 @@ export const chatReasoning = <Msg>(
           ),
         ],
         [
-          h.div([h.Class(className(styles.contentInner))], [
-            h.div(
-              [h.Class(className(styles.contentPadding))],
-              [...props.children],
-            ),
-          ]),
+          h.div(
+            [h.Class(className(styles.contentInner))],
+            [
+              h.div(
+                [h.Class(className(styles.contentPadding))],
+                [...props.children],
+              ),
+            ],
+          ),
         ],
       ),
     ],

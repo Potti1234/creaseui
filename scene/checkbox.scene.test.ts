@@ -9,17 +9,20 @@ type Model = Readonly<{ checked: boolean }>
 type Message = Readonly<{ _tag: 'Toggled'; checked: boolean }>
 
 type CheckboxModule = Readonly<{
-  checkbox: <Msg>(props: {
-    id: string
-    isChecked: boolean
-    onToggle: (checked: boolean) => Msg
-    label: string
-    description?: string
-    isReadOnly?: boolean
-    isIndeterminate?: boolean
-    name?: string
-    value?: string
-  }, h: HtmlBuilder<Msg>) => Html
+  checkbox: <Msg>(
+    props: {
+      id: string
+      isChecked: boolean
+      onToggle: (checked: boolean) => Msg
+      label: string
+      description?: string
+      isReadOnly?: boolean
+      isIndeterminate?: boolean
+      name?: string
+      value?: string
+    },
+    h: HtmlBuilder<Msg>,
+  ) => Html
 }>
 
 const verifyRenderer = (name: string, Checkbox: CheckboxModule) => {
@@ -27,22 +30,42 @@ const verifyRenderer = (name: string, Checkbox: CheckboxModule) => {
     it('keeps checked state parent-owned and exposes native form metadata', () => {
       Scene.scene(
         {
-          update: (_model: Model, message: Message) => ({ model: { checked: message.checked } }),
-          view: (model, h) => Checkbox.checkbox({
-            id: 'terms', isChecked: model.checked,
-            onToggle: checked => ({ _tag: 'Toggled', checked }),
-            label: 'Accept terms', description: 'Required to continue.',
-            name: 'terms', value: 'accepted',
-          }, h),
+          update: (_model: Model, message: Message) => ({
+            model: { checked: message.checked },
+          }),
+          view: (model, h) =>
+            Checkbox.checkbox(
+              {
+                id: 'terms',
+                isChecked: model.checked,
+                onToggle: checked => ({ _tag: 'Toggled', checked }),
+                label: 'Accept terms',
+                description: 'Required to continue.',
+                name: 'terms',
+                value: 'accepted',
+              },
+              h,
+            ),
         },
         Scene.given({ checked: false }),
-        Scene.expect(Scene.role('checkbox', { name: 'Accept terms' })).not.toBeChecked(),
-        Scene.expect(Scene.role('checkbox', { name: 'Accept terms' })).toHaveAccessibleDescription('Required to continue.'),
-        Scene.expect(Scene.selector('input[type="hidden"]')).toHaveAttr('name', 'terms'),
+        Scene.expect(
+          Scene.role('checkbox', { name: 'Accept terms' }),
+        ).not.toBeChecked(),
+        Scene.expect(
+          Scene.role('checkbox', { name: 'Accept terms' }),
+        ).toHaveAccessibleDescription('Required to continue.'),
+        Scene.expect(Scene.selector('input[type="hidden"]')).toHaveAttr(
+          'name',
+          'terms',
+        ),
         Scene.click(Scene.role('checkbox', { name: 'Accept terms' })),
         Scene.expectHandled(),
-        Scene.expect(Scene.role('checkbox', { name: 'Accept terms' })).toBeChecked(),
-        Scene.expect(Scene.selector('input[type="hidden"]')).toHaveValue('accepted'),
+        Scene.expect(
+          Scene.role('checkbox', { name: 'Accept terms' }),
+        ).toBeChecked(),
+        Scene.expect(Scene.selector('input[type="hidden"]')).toHaveValue(
+          'accepted',
+        ),
       )
     })
 
@@ -50,15 +73,26 @@ const verifyRenderer = (name: string, Checkbox: CheckboxModule) => {
       Scene.scene(
         {
           update: (model: Model) => ({ model: model }),
-          view: (model, h) => Checkbox.checkbox({
-            id: 'selection', isChecked: model.checked,
-            onToggle: checked => ({ _tag: 'Toggled', checked }),
-            label: 'Select all', isIndeterminate: true, isReadOnly: true,
-          }, h),
+          view: (model, h) =>
+            Checkbox.checkbox(
+              {
+                id: 'selection',
+                isChecked: model.checked,
+                onToggle: checked => ({ _tag: 'Toggled', checked }),
+                label: 'Select all',
+                isIndeterminate: true,
+                isReadOnly: true,
+              },
+              h,
+            ),
         },
         Scene.given({ checked: false }),
-        Scene.expect(Scene.role('checkbox', { name: 'Select all', checked: 'mixed' })).toHaveAttr('aria-readonly', 'true'),
-        Scene.expect(Scene.role('checkbox', { name: 'Select all' })).not.toHaveHandler('OnClick'),
+        Scene.expect(
+          Scene.role('checkbox', { name: 'Select all', checked: 'mixed' }),
+        ).toHaveAttr('aria-readonly', 'true'),
+        Scene.expect(
+          Scene.role('checkbox', { name: 'Select all' }),
+        ).not.toHaveHandler('OnClick'),
       )
     })
   })

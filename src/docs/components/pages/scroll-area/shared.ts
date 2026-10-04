@@ -1,22 +1,25 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { staticComponentApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 export const scrollAreaTags = Array.from(
   { length: 50 },
   (_, index) => `v1.2.0-beta.${String(50 - index)}`,
-);
+)
 export const scrollAreaItems = Array.from(
   { length: 8 },
   (_, index) => `Component ${String(index + 1)}`,
-);
+)
 
 export const scrollAreaFixtures = [
   { title: 'Basic', kind: 'tags', rtl: false, heading: 'Tags' },
   { title: 'Horizontal', kind: 'horizontal', rtl: false },
   { title: 'RTL', kind: 'tags', rtl: true, heading: 'العلامات' },
-] as const;
+] as const
 
-const tagsBody = (fixture: { rtl: boolean; heading: string }, renderer: 'tailwind' | 'stylex'): string =>
+const tagsBody = (
+  fixture: { rtl: boolean; heading: string },
+  renderer: 'tailwind' | 'stylex',
+): string =>
   renderer === 'tailwind'
     ? `ScrollArea.scrollArea({
   orientation: 'vertical',
@@ -48,7 +51,7 @@ const tagsBody = (fixture: { rtl: boolean; heading: string }, renderer: 'tailwin
     ]),
     ],
   }, h),
-])`;
+])`
 
 const horizontalBody = (renderer: 'tailwind' | 'stylex'): string =>
   renderer === 'tailwind'
@@ -72,13 +75,15 @@ const horizontalBody = (renderer: 'tailwind' | 'stylex'): string =>
     )),
     ],
   }, h),
-])`;
+])`
 
 const body = (
   fixture: (typeof scrollAreaFixtures)[number],
   renderer: 'tailwind' | 'stylex',
 ): string =>
-  fixture.kind === 'tags' ? tagsBody(fixture, renderer) : horizontalBody(renderer);
+  fixture.kind === 'tags'
+    ? tagsBody(fixture, renderer)
+    : horizontalBody(renderer)
 
 const styleImports = `import * as stylex from '@stylexjs/stylex'
 import { className } from '@/stylex/style'
@@ -91,7 +96,7 @@ const styles = stylex.create({
   horizontalFrame: { width: '20rem', borderColor: 'var(--border)', borderRadius: '0.375rem', borderStyle: 'solid', borderWidth: 1, overflow: 'hidden', padding: '1rem' },
   horizontalContent: { display: 'flex', gap: '0.75rem', width: 'max-content' },
   pill: { borderRadius: '0.375rem', paddingBlock: '0.5rem', paddingInline: '0.75rem', backgroundColor: 'var(--muted)', fontSize: '0.875rem', lineHeight: '1.25rem' },
-})`;
+})`
 
 export const scrollAreaExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -109,4 +114,4 @@ const scrollAreaTags = Array.from({ length: 50 }, (_, index) => \`v1.2.0-beta.\$
 const scrollAreaItems = Array.from({ length: 8 }, (_, index) => \`Component \${String(index + 1)}\`)${renderer === 'stylex' ? `\n${styleImports}` : ''}`,
       viewBody: body(fixture, renderer),
     }),
-  }));
+  }))

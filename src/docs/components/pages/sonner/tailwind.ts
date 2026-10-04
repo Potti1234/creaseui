@@ -1,54 +1,56 @@
-import { Effect, Option, Schema as S } from 'effect';
-import { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import { Effect, Option, Schema as S } from 'effect'
+import { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-import { definePreviewProgram } from '@/docs/components/pages/authored-page';
+import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
   sonnerFixtures,
   toastTitle,
   type SonnerButtonSpec,
   type SonnerFixture,
-} from '@/docs/components/pages/sonner/shared';
-import * as Button from '@/ui/button';
-import * as Sonner from '@/ui/sonner';
+} from '@/docs/components/pages/sonner/shared'
+import * as Button from '@/ui/button'
+import * as Sonner from '@/ui/sonner'
 
 const GotSonnerPreviewMessage = defineMessageUnion({
   ClickedSonnerButton: { index: S.Number },
   CompletedPromiseToast: {},
-  GotSonnerPreviewMessage: { message: S.Union([Sonner.Message, Sonner.ActivatedToastAction]) },
-});
-type PreviewMessage = typeof GotSonnerPreviewMessage.Type;
+  GotSonnerPreviewMessage: {
+    message: S.Union([Sonner.Message, Sonner.ActivatedToastAction]),
+  },
+})
+type PreviewMessage = typeof GotSonnerPreviewMessage.Type
 
 const PreviewModel = S.Struct({
   _docsPage: S.Literal('sonner'),
   notifications: Sonner.Model,
   pendingPromiseId: S.Option(S.String),
-});
-type PreviewModel = typeof PreviewModel.Type;
+})
+type PreviewModel = typeof PreviewModel.Type
 
 const variantFactory = (
   button: SonnerButtonSpec,
 ): ((input: Sonner.ToastInput) => Sonner.ShowInput) => {
   switch (button.variant) {
     case 'default':
-      return Sonner.plain;
+      return Sonner.plain
     case 'success':
-      return Sonner.success;
+      return Sonner.success
     case 'info':
-      return Sonner.info;
+      return Sonner.info
     case 'warning':
-      return Sonner.warning;
+      return Sonner.warning
     case 'error':
-      return Sonner.error;
+      return Sonner.error
     case 'promise':
-      return Sonner.info;
+      return Sonner.info
   }
-};
+}
 
 const showInputFor = (button: SonnerButtonSpec): Sonner.ShowInput => {
   if (button.variant === 'promise') {
-    return Sonner.info({ title: 'Loading...', sticky: true });
+    return Sonner.info({ title: 'Loading...', sticky: true })
   }
   return variantFactory(button)({
     title: toastTitle(button.variant),
@@ -58,38 +60,43 @@ const showInputFor = (button: SonnerButtonSpec): Sonner.ShowInput => {
     ...(button.actionLabel === undefined
       ? {}
       : { actionLabel: button.actionLabel }),
-    ...(button.position === undefined
-      ? {}
-      : { position: button.position }),
-  });
-};
+    ...(button.position === undefined ? {} : { position: button.position }),
+  })
+}
 
 const ResolvePromise = Command.define('ResolveSonnerPromise', {
   messages: [GotSonnerPreviewMessage.CompletedPromiseToast],
   execute: Effect.sleep('1200 millis').pipe(
     Effect.as(GotSonnerPreviewMessage.CompletedPromiseToast()),
   ),
-});
+})
 
 const mapSonner = (
   model: PreviewModel,
   result: ReturnType<typeof Sonner.update>,
-): { model: PreviewModel; commands: ReadonlyArray<Command.Command<PreviewMessage>> } => ({
+): {
+  model: PreviewModel
+  commands: ReadonlyArray<Command.Command<PreviewMessage>>
+} => ({
   model: { ...model, notifications: result.model },
   commands: Command.mapMessages(result.commands ?? [], next =>
-    GotSonnerPreviewMessage.GotSonnerPreviewMessage({ message: next })),
-});
+    GotSonnerPreviewMessage.GotSonnerPreviewMessage({ message: next }),
+  ),
+})
 
 const buttonView = (
   button: SonnerButtonSpec,
   index: number,
   h: HtmlBuilder<PreviewMessage>,
 ): Html =>
-  Button.button({
-    onClick: GotSonnerPreviewMessage.ClickedSonnerButton({ index }),
-    variant: 'outline',
-    children: [button.label],
-  }, h);
+  Button.button(
+    {
+      onClick: GotSonnerPreviewMessage.ClickedSonnerButton({ index }),
+      variant: 'outline',
+      children: [button.label],
+    },
+    h,
+  )
 
 const fixtureView = (
   fixture: SonnerFixture,
@@ -99,7 +106,7 @@ const fixtureView = (
 ): Html => {
   const offset = sonnerFixtures
     .slice(0, fixtureIndex)
-    .reduce((total, candidate) => total + candidate.buttons.length, 0);
+    .reduce((total, candidate) => total + candidate.buttons.length, 0)
   return h.div(
     [
       h.Class(
@@ -111,15 +118,18 @@ const fixtureView = (
     fixture.buttons
       .map((button, index) => buttonView(button, offset + index, h))
       .concat([
-        Sonner.sonner({
-          model: model.notifications,
-          toParentMessage: message =>
-            GotSonnerPreviewMessage.GotSonnerPreviewMessage({ message }),
-          ariaLabel: 'Sonner notifications',
-        }, h),
+        Sonner.sonner(
+          {
+            model: model.notifications,
+            toParentMessage: message =>
+              GotSonnerPreviewMessage.GotSonnerPreviewMessage({ message }),
+            ariaLabel: 'Sonner notifications',
+          },
+          h,
+        ),
       ]),
-  );
-};
+  )
+}
 
 export const sonnerTailwindPreviewProgram = definePreviewProgram<
   PreviewModel,
@@ -137,20 +147,17 @@ export const sonnerTailwindPreviewProgram = definePreviewProgram<
       case 'ClickedSonnerButton': {
         const button = sonnerFixtures
           .flatMap(fixture => fixture.buttons)
-          .at(message.index);
+          .at(message.index)
         if (button === undefined) {
-          return { model };
+          return { model }
         }
-        const result = Sonner.show(
-          model.notifications,
-          showInputFor(button),
-        );
-        const mapped = mapSonner(model, result);
-        const commands = mapped.commands ?? [];
+        const result = Sonner.show(model.notifications, showInputFor(button))
+        const mapped = mapSonner(model, result)
+        const commands = mapped.commands ?? []
         if (button.variant !== 'promise') {
-          return mapped;
+          return mapped
         }
-        const next = mapped.model;
+        const next = mapped.model
         return {
           model: {
             ...next,
@@ -159,7 +166,7 @@ export const sonnerTailwindPreviewProgram = definePreviewProgram<
             ),
           },
           commands: [...commands, ResolvePromise()],
-        };
+        }
       }
       case 'CompletedPromiseToast':
         return Option.match(model.pendingPromiseId, {
@@ -174,14 +181,14 @@ export const sonnerTailwindPreviewProgram = definePreviewProgram<
                 duration: '4 seconds',
               }),
             ),
-        });
+        })
       case 'GotSonnerPreviewMessage':
         return mapSonner(
           model,
           Sonner.update(model.notifications, message.message),
-        );
+        )
     }
   },
   view: (index, model, h) =>
     fixtureView(sonnerFixtures[index] ?? sonnerFixtures[0], index, model, h),
-});
+})

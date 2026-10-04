@@ -5,7 +5,12 @@ import { className } from '../style'
 import { tokens } from '../tokens.stylex'
 import { primitiveAttributes, primitiveElement } from './element'
 import { columnGapStyle } from './space'
-import type { LayoutElement, PrimitiveChildren, PrimitiveData, SpaceToken } from './types'
+import type {
+  LayoutElement,
+  PrimitiveChildren,
+  PrimitiveData,
+  SpaceToken,
+} from './types'
 
 export type InlineProps = Readonly<{
   align?: 'start' | 'center' | 'end' | 'stretch'
@@ -46,15 +51,66 @@ const styles = stylex.create({
   wrap: { flexWrap: 'wrap' },
 })
 
-export const inline = <Message>(props: InlineProps, h: HtmlBuilder<Message>): Html => {
-  const align = props.align === undefined ? [] : [{ center: styles.alignCenter, end: styles.alignEnd, start: styles.alignStart, stretch: styles.alignStretch }[props.align]]
-  const justify = props.justify === undefined ? [] : [{ between: styles.justifyBetween, center: styles.justifyCenter, end: styles.justifyEnd, start: styles.justifyStart }[props.justify]]
-  const minWidth = props.minWidth === undefined ? [] : [{ maxContent: styles.minWidthMaxContent, none: styles.minWidthNone }[props.minWidth]]
-  const width = props.width === undefined ? [] : [{ auto: styles.widthAuto, full: styles.widthFull }[props.width]]
+export const inline = <Message>(
+  props: InlineProps,
+  h: HtmlBuilder<Message>,
+): Html => {
+  const align =
+    props.align === undefined
+      ? []
+      : [
+          {
+            center: styles.alignCenter,
+            end: styles.alignEnd,
+            start: styles.alignStart,
+            stretch: styles.alignStretch,
+          }[props.align],
+        ]
+  const justify =
+    props.justify === undefined
+      ? []
+      : [
+          {
+            between: styles.justifyBetween,
+            center: styles.justifyCenter,
+            end: styles.justifyEnd,
+            start: styles.justifyStart,
+          }[props.justify],
+        ]
+  const minWidth =
+    props.minWidth === undefined
+      ? []
+      : [
+          { maxContent: styles.minWidthMaxContent, none: styles.minWidthNone }[
+            props.minWidth
+          ],
+        ]
+  const width =
+    props.width === undefined
+      ? []
+      : [{ auto: styles.widthAuto, full: styles.widthFull }[props.width]]
   const variant = props.variant === 'sectionTabs' ? [styles.sectionTabs] : []
   return primitiveElement(
     props.as ?? 'div',
-    primitiveAttributes(className(styles.base, ...variant, ...align, ...justify, ...minWidth, ...width, props.wrap === undefined ? [] : props.wrap ? styles.wrap : styles.noWrap, ...columnGapStyle(props.gap)), props.slot, props.data, h),
+    primitiveAttributes(
+      className(
+        styles.base,
+        ...variant,
+        ...align,
+        ...justify,
+        ...minWidth,
+        ...width,
+        props.wrap === undefined
+          ? []
+          : props.wrap
+            ? styles.wrap
+            : styles.noWrap,
+        ...columnGapStyle(props.gap),
+      ),
+      props.slot,
+      props.data,
+      h,
+    ),
     props.children,
     h,
   )

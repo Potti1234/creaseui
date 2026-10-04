@@ -1,7 +1,10 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
-import { collapseBreadcrumbItems, type BreadcrumbTrailItem } from '../src/lib/breadcrumb.ts'
+import {
+  collapseBreadcrumbItems,
+  type BreadcrumbTrailItem,
+} from '../src/lib/breadcrumb.ts'
 
 const items: ReadonlyArray<BreadcrumbTrailItem> = [
   { kind: 'link', label: 'Home', href: '/' },
@@ -26,7 +29,11 @@ describe('Breadcrumb trail policy', () => {
   })
 
   it('respects an explicitly authored ellipsis', () => {
-    const authored: ReadonlyArray<BreadcrumbTrailItem> = [items[0]!, { kind: 'ellipsis' }, items[4]!]
+    const authored: ReadonlyArray<BreadcrumbTrailItem> = [
+      items[0]!,
+      { kind: 'ellipsis' },
+      items[4]!,
+    ]
     assert.equal(collapseBreadcrumbItems(authored, 3), authored)
   })
 })

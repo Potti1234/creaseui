@@ -1,5 +1,5 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type SwitchKind =
   | 'demo'
@@ -8,18 +8,20 @@ export type SwitchKind =
   | 'disabled'
   | 'invalid'
   | 'size'
-  | 'rtl';
+  | 'rtl'
 
 export interface SwitchFixture {
-  readonly title: string;
-  readonly description?: string;
-  readonly heroOnly?: boolean;
-  readonly kind: SwitchKind;
-  readonly switchIds: ReadonlyArray<string>;
-  readonly checkedIds: ReadonlyArray<string>;
+  readonly title: string
+  readonly description?: string
+  readonly heroOnly?: boolean
+  readonly kind: SwitchKind
+  readonly switchIds: ReadonlyArray<string>
+  readonly checkedIds: ReadonlyArray<string>
 }
 
-export const switchFixtures: Readonly<[SwitchFixture, ...Array<SwitchFixture>]> = [
+export const switchFixtures: Readonly<
+  [SwitchFixture, ...Array<SwitchFixture>]
+> = [
   {
     title: 'Basic',
     heroOnly: true,
@@ -29,21 +31,24 @@ export const switchFixtures: Readonly<[SwitchFixture, ...Array<SwitchFixture>]> 
   },
   {
     title: 'Description',
-    description: 'Pair the control with explanatory copy inside a horizontal Field.',
+    description:
+      'Pair the control with explanatory copy inside a horizontal Field.',
     kind: 'description',
     switchIds: ['switch-focus-mode'],
     checkedIds: [],
   },
   {
     title: 'Choice Card',
-    description: 'Wrap each Field in a FieldLabel to make the whole card clickable.',
+    description:
+      'Wrap each Field in a FieldLabel to make the whole card clickable.',
     kind: 'choiceCard',
     switchIds: ['switch-share', 'switch-notifications'],
     checkedIds: ['switch-notifications'],
   },
   {
     title: 'Disabled',
-    description: 'Disabled state prevents activation while keeping the row readable.',
+    description:
+      'Disabled state prevents activation while keeping the row readable.',
     kind: 'disabled',
     switchIds: ['switch-disabled-unchecked'],
     checkedIds: [],
@@ -64,22 +69,23 @@ export const switchFixtures: Readonly<[SwitchFixture, ...Array<SwitchFixture>]> 
   },
   {
     title: 'RTL',
-    description: 'Label, description and thumb travel mirror in right-to-left contexts.',
+    description:
+      'Label, description and thumb travel mirror in right-to-left contexts.',
     kind: 'rtl',
     switchIds: ['switch-focus-mode-rtl'],
     checkedIds: [],
   },
-];
+]
 
 const sw = (id: string, extra: string): string =>
   `Switch.switchControl({
       id: '${id}',
       isChecked: model.states['${id}'] ?? false,
       onToggle: isChecked => Toggled({ id: '${id}', isChecked }),${extra}
-    }, h)`;
+    }, h)`
 
 const emitBody = (fixture: SwitchFixture, isStyleX: boolean): string => {
-  const row = isStyleX ? 'className(styles.row)' : "'flex items-center gap-2'";
+  const row = isStyleX ? 'className(styles.row)' : "'flex items-center gap-2'"
   switch (fixture.kind) {
     case 'demo':
       return `  h.div([h.Class(${row})], [
@@ -88,7 +94,7 @@ const emitBody = (fixture: SwitchFixture, isStyleX: boolean): string => {
       for: 'airplane-mode',
       children: ['Airplane Mode'],
     }, h),
-  ])`;
+  ])`
     case 'description':
       return `  Field.field({
     orientation: 'horizontal',
@@ -105,9 +111,13 @@ const emitBody = (fixture: SwitchFixture, isStyleX: boolean): string => {
       ] }, h),
       ${sw('switch-focus-mode', '')},
     ],
-  }, h)`;
+  }, h)`
     case 'choiceCard': {
-      const card = (id: string, titleText: string, descText: string) => `Field.fieldLabel({
+      const card = (
+        id: string,
+        titleText: string,
+        descText: string,
+      ) => `Field.fieldLabel({
       for: '${id}',
       children: [
         Field.field({
@@ -123,14 +133,14 @@ const emitBody = (fixture: SwitchFixture, isStyleX: boolean): string => {
           ],
         }, h),
       ],
-    }, h)`;
+    }, h)`
       return `  Field.fieldGroup({
     ${isStyleX ? 'layoutStyle: styles.wide' : "class: 'w-full max-w-sm'"},
     children: [
       ${card('switch-share', 'Share across devices', 'Focus is shared across devices, and turns off when you leave the app.')},
       ${card('switch-notifications', 'Enable notifications', 'Receive notifications when focus mode is enabled or disabled.')},
     ],
-  }, h)`;
+  }, h)`
     }
     case 'disabled':
       return `  Field.field({
@@ -144,7 +154,7 @@ const emitBody = (fixture: SwitchFixture, isStyleX: boolean): string => {
         children: ['Disabled'],
       }, h),
     ],
-  }, h)`;
+  }, h)`
     case 'invalid':
       return `  Field.field({
     orientation: 'horizontal',
@@ -162,9 +172,13 @@ const emitBody = (fixture: SwitchFixture, isStyleX: boolean): string => {
       ] }, h),
       ${sw('switch-terms', '\n      isInvalid: true,')},
     ],
-  }, h)`;
+  }, h)`
     case 'size': {
-      const sizeField = (id: string, size: string, labelText: string) => `Field.field({
+      const sizeField = (
+        id: string,
+        size: string,
+        labelText: string,
+      ) => `Field.field({
       orientation: 'horizontal',
       children: [
         ${sw(id, `\n        size: '${size}',`)},
@@ -173,14 +187,14 @@ const emitBody = (fixture: SwitchFixture, isStyleX: boolean): string => {
           children: ['${labelText}'],
         }, h),
       ],
-    }, h)`;
+    }, h)`
       return `  Field.fieldGroup({
     ${isStyleX ? 'layoutStyle: styles.narrow' : "class: 'w-40'"},
     children: [
       ${sizeField('switch-size-sm', 'sm', 'Small')},
       ${sizeField('switch-size-default', 'default', 'Default')},
     ],
-  }, h)`;
+  }, h)`
     }
     case 'rtl':
       return `  Field.field({
@@ -199,63 +213,69 @@ const emitBody = (fixture: SwitchFixture, isStyleX: boolean): string => {
       ] }, h),
       ${sw('switch-focus-mode-rtl', "\n      direction: 'rtl',")},
     ],
-  }, h)`;
+  }, h)`
   }
-};
+}
 
 const emitImports = (fixture: SwitchFixture, isStyleX: boolean): string => {
-  const base = isStyleX ? 'stylex' : 'ui';
+  const base = isStyleX ? 'stylex' : 'ui'
   const parts = [
     `import { Schema as S } from 'effect'`,
     `import { Command, Runtime, Subscription, Update } from 'foldkit'`,
     `import { type Document, type HtmlBuilder } from 'foldkit/html'`,
     `import { taggedStruct } from 'foldkit/schema'`,
-  ];
+  ]
   if (isStyleX) {
-    parts.push(`import * as stylex from '@stylexjs/stylex'`);
+    parts.push(`import * as stylex from '@stylexjs/stylex'`)
   }
   if (fixture.kind !== 'demo') {
-    parts.push(`import * as Field from '@/${base}/field'`);
+    parts.push(`import * as Field from '@/${base}/field'`)
   }
-  parts.push(`import * as Switch from '@/${base}/switch'`);
+  parts.push(`import * as Switch from '@/${base}/switch'`)
   if (fixture.kind === 'demo') {
-    parts.push(`import * as Label from '@/${base}/label'`);
+    parts.push(`import * as Label from '@/${base}/label'`)
   }
   if (isStyleX) {
-    parts.push(`import { className } from '@/stylex/style'`);
+    parts.push(`import { className } from '@/stylex/style'`)
   }
-  return parts.join('\n');
-};
+  return parts.join('\n')
+}
 
 const emitStyles = (fixture: SwitchFixture): string => {
-  const lines: string[] = [];
+  const lines: string[] = []
   if (fixture.kind === 'demo') {
-    lines.push(`  row: { display: 'flex', alignItems: 'center', gap: '0.5rem' },`);
+    lines.push(
+      `  row: { display: 'flex', alignItems: 'center', gap: '0.5rem' },`,
+    )
   }
-  if (fixture.kind === 'description' || fixture.kind === 'choiceCard'
-      || fixture.kind === 'invalid' || fixture.kind === 'rtl') {
-    lines.push(`  wide: { width: '100%', maxWidth: '24rem' },`);
+  if (
+    fixture.kind === 'description' ||
+    fixture.kind === 'choiceCard' ||
+    fixture.kind === 'invalid' ||
+    fixture.kind === 'rtl'
+  ) {
+    lines.push(`  wide: { width: '100%', maxWidth: '24rem' },`)
   }
   if (fixture.kind === 'disabled') {
-    lines.push(`  fit: { width: 'fit-content' },`);
+    lines.push(`  fit: { width: 'fit-content' },`)
   }
   if (fixture.kind === 'size') {
-    lines.push(`  narrow: { width: '10rem' },`);
+    lines.push(`  narrow: { width: '10rem' },`)
   }
-  return lines.join('\n');
-};
+  return lines.join('\n')
+}
 
 const emitApplication = (
   fixture: SwitchFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const isStyleX = renderer === 'stylex';
+  const isStyleX = renderer === 'stylex'
   const stylesBlock = isStyleX
     ? `\n\nconst styles = stylex.create({\n${emitStyles(fixture)}\n})`
-    : '';
+    : ''
   const initEntries = fixture.switchIds
     .map(id => `'${id}': ${fixture.checkedIds.includes(id)}`)
-    .join(', ');
+    .join(', ')
   return foldkitApplication({
     title: `Switch — ${fixture.title}`,
     imports: `${emitImports(fixture, isStyleX)}${stylesBlock}`,
@@ -284,8 +304,8 @@ export type Message = typeof Message.Type`,
 ${emitBody(fixture, isStyleX)}
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const switchExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -297,4 +317,4 @@ export const switchExamples = (
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer),
-  }));
+  }))

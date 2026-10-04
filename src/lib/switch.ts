@@ -51,7 +51,7 @@ export const renderSwitch = <Msg>(
               [
                 h.Id(`${props.id}-control`),
                 ...button.filter(
-                  (attribute) =>
+                  attribute =>
                     props.description !== undefined ||
                     attribute._tag !== 'AriaDescribedBy',
                 ),
@@ -60,17 +60,37 @@ export const renderSwitch = <Msg>(
                 ...((props.isInvalid ?? false) ? [h.AriaInvalid(true)] : []),
                 ...visual.control,
               ],
-              [h.span([h.DataAttribute('slot', 'switch-thumb'), ...visual.thumb], [])],
+              [
+                h.span(
+                  [h.DataAttribute('slot', 'switch-thumb'), ...visual.thumb],
+                  [],
+                ),
+              ],
             ),
             ...(props.label === undefined
               ? []
               : [
-                  h.div([...visual.text], [
-                    h.label([h.For(`${props.id}-control`), ...label, ...visual.label], [props.label]),
-                    ...(props.description === undefined
-                      ? []
-                      : [h.p([...description, ...visual.description], [props.description])]),
-                  ]),
+                  h.div(
+                    [...visual.text],
+                    [
+                      h.label(
+                        [
+                          h.For(`${props.id}-control`),
+                          ...label,
+                          ...visual.label,
+                        ],
+                        [props.label],
+                      ),
+                      ...(props.description === undefined
+                        ? []
+                        : [
+                            h.p(
+                              [...description, ...visual.description],
+                              [props.description],
+                            ),
+                          ]),
+                    ],
+                  ),
                 ]),
             ...(props.name === undefined ? [] : [h.input([...hiddenInput])]),
           ],

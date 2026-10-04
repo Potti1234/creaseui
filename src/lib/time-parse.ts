@@ -6,7 +6,11 @@ import { Option } from 'effect'
    optional dots, "1430"/"143000" numeric forms, colon-separated forms,
    midnight wrap-around on adjust. */
 
-export type ParsedTime = Readonly<{ hour: number; minute: number; second: number }>
+export type ParsedTime = Readonly<{
+  hour: number
+  minute: number
+  second: number
+}>
 
 export const parseISOTime = (time: string): Option.Option<ParsedTime> => {
   if (!time) {
@@ -180,10 +184,7 @@ export const parseTimeInput = (
       second <= 59
     ) {
       return Option.some(
-        formatISOTime(
-          { hour: hour24, minute, second },
-          includeSeconds,
-        ),
+        formatISOTime({ hour: hour24, minute, second }, includeSeconds),
       )
     }
     return Option.none()
@@ -217,9 +218,7 @@ export const parseTimeInput = (
       return Option.none()
     }
 
-    return Option.some(
-      formatISOTime({ hour, minute, second }, includeSeconds),
-    )
+    return Option.some(formatISOTime({ hour, minute, second }, includeSeconds))
   }
 
   return Option.none()
@@ -308,7 +307,8 @@ export const adjustTime = (
     return time
   }
   const totalMinutes =
-    ((parsed.hour * 60 + parsed.minute + deltaMinutes) % (24 * 60) + 24 * 60) %
+    (((parsed.hour * 60 + parsed.minute + deltaMinutes) % (24 * 60)) +
+      24 * 60) %
     (24 * 60)
   return formatISOTime(
     {

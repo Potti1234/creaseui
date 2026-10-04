@@ -1,25 +1,36 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
-export type NativeSelectKind = 'demo' | 'groups' | 'disabled' | 'invalid' | 'rtl';
+export type NativeSelectKind =
+  | 'demo'
+  | 'groups'
+  | 'disabled'
+  | 'invalid'
+  | 'rtl'
 
 export interface NativeSelectFixture {
-  readonly title: string;
-  readonly description?: string;
-  readonly heroOnly?: boolean;
-  readonly kind: NativeSelectKind;
+  readonly title: string
+  readonly description?: string
+  readonly heroOnly?: boolean
+  readonly kind: NativeSelectKind
 }
 
 export interface NativeSelectSpec {
-  readonly placeholder: string;
-  readonly options: ReadonlyArray<{ readonly value: string; readonly label: string }>;
+  readonly placeholder: string
+  readonly options: ReadonlyArray<{
+    readonly value: string
+    readonly label: string
+  }>
   readonly groups?: ReadonlyArray<{
-    readonly label: string;
-    readonly options: ReadonlyArray<{ readonly value: string; readonly label: string }>;
-  }>;
-  readonly isDisabled?: boolean;
-  readonly isInvalid?: boolean;
-  readonly direction?: 'ltr' | 'rtl';
+    readonly label: string
+    readonly options: ReadonlyArray<{
+      readonly value: string
+      readonly label: string
+    }>
+  }>
+  readonly isDisabled?: boolean
+  readonly isInvalid?: boolean
+  readonly direction?: 'ltr' | 'rtl'
 }
 
 const statusSpec: NativeSelectSpec = {
@@ -30,7 +41,7 @@ const statusSpec: NativeSelectSpec = {
     { value: 'done', label: 'Done' },
     { value: 'cancelled', label: 'Cancelled' },
   ],
-};
+}
 
 export const nativeSelectSpecs: Record<NativeSelectKind, NativeSelectSpec> = {
   demo: statusSpec,
@@ -92,23 +103,28 @@ export const nativeSelectSpecs: Record<NativeSelectKind, NativeSelectSpec> = {
     ],
     direction: 'rtl',
   },
-};
+}
 
-export const nativeSelectFixtures: Readonly<[NativeSelectFixture, ...Array<NativeSelectFixture>]> = [
+export const nativeSelectFixtures: Readonly<
+  [NativeSelectFixture, ...Array<NativeSelectFixture>]
+> = [
   { title: 'Basic', heroOnly: true, kind: 'demo' },
   {
     title: 'Groups',
-    description: 'Use optgroups when category labels help users scan a longer menu.',
+    description:
+      'Use optgroups when category labels help users scan a longer menu.',
     kind: 'groups',
   },
   {
     title: 'Disabled',
-    description: 'Disable the control when the selection is not currently editable.',
+    description:
+      'Disable the control when the selection is not currently editable.',
     kind: 'disabled',
   },
   {
     title: 'Invalid',
-    description: 'Flag the control when the current selection fails validation.',
+    description:
+      'Flag the control when the current selection fails validation.',
     kind: 'invalid',
   },
   {
@@ -116,38 +132,45 @@ export const nativeSelectFixtures: Readonly<[NativeSelectFixture, ...Array<Nativ
     description: 'Render the control right-to-left with localized option text.',
     kind: 'rtl',
   },
-];
+]
 
-const sq = (value: string): string => value.replaceAll("'", "\\'");
+const sq = (value: string): string => value.replaceAll("'", "\\'")
 
 const emitBody = (fixture: NativeSelectFixture, isStyleX: boolean): string => {
-  const spec = nativeSelectSpecs[fixture.kind];
+  const spec = nativeSelectSpecs[fixture.kind]
   const options = spec.options
     .map(option => `{ value: '${option.value}', label: '${sq(option.label)}' }`)
-    .join(', ');
+    .join(', ')
   const groups = (spec.groups ?? [])
     .map(
       group =>
         `{ label: '${sq(group.label)}', options: [${group.options
-          .map(option => `{ value: '${option.value}', label: '${sq(option.label)}' }`)
+          .map(
+            option =>
+              `{ value: '${option.value}', label: '${sq(option.label)}' }`,
+          )
           .join(', ')}] }`,
     )
-    .join(', ');
-  const flags = `${spec.isDisabled === true ? '\n    isDisabled: true,' : ''}${spec.isInvalid === true ? '\n    isInvalid: true,' : ''}${spec.direction === undefined ? '' : `\n    direction: '${spec.direction}',`}`;
+    .join(', ')
+  const flags = `${spec.isDisabled === true ? '\n    isDisabled: true,' : ''}${spec.isInvalid === true ? '\n    isInvalid: true,' : ''}${spec.direction === undefined ? '' : `\n    direction: '${spec.direction}',`}`
   return `  NativeSelect.nativeSelect({
     id: 'native-select-example',
     value: model.value,
     onChange: value => Message.ChangedValue({ value }),
-    options: [{ value: '', label: '${sq(spec.placeholder)}' }${options === '' ? '' : `, ${options}`}],${groups === '' ? '' : `
-    groups: [${groups}],`}${flags}
-  }, h)`;
-};
+    options: [{ value: '', label: '${sq(spec.placeholder)}' }${options === '' ? '' : `, ${options}`}],${
+      groups === ''
+        ? ''
+        : `
+    groups: [${groups}],`
+    }${flags}
+  }, h)`
+}
 
 const emitApplication = (
   fixture: NativeSelectFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const isStyleX = renderer === 'stylex';
+  const isStyleX = renderer === 'stylex'
   return foldkitApplication({
     title: `Native Select — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
@@ -175,8 +198,8 @@ export type Message = typeof Message.Type`,
 ${emitBody(fixture, isStyleX)}
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const nativeSelectExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -188,4 +211,4 @@ export const nativeSelectExamples = (
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer),
-  }));
+  }))

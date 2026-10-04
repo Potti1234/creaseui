@@ -1,18 +1,21 @@
-import { Schema as S } from 'effect';
-import type { HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import { Schema as S } from 'effect'
+import type { HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-import { definePreviewProgram } from '@/docs/components/pages/authored-page';
-import { statFixtures, type StatItem } from '@/docs/components/pages/stat/shared';
-import * as Card from '@/ui/card';
-import * as Stat from '@/ui/stat';
+import { definePreviewProgram } from '@/docs/components/pages/authored-page'
+import {
+  statFixtures,
+  type StatItem,
+} from '@/docs/components/pages/stat/shared'
+import * as Card from '@/ui/card'
+import * as Stat from '@/ui/stat'
 
 const InteractedWithStatPreview = defineMessageUnion({
   InteractedWithStatPreview: {},
-});
-type InteractedWithStatPreview = typeof InteractedWithStatPreview.Type;
-const StatPreviewModel = S.Struct({ _docsPage: S.Literal('stat') });
-type StatPreviewModel = typeof StatPreviewModel.Type;
+})
+type InteractedWithStatPreview = typeof InteractedWithStatPreview.Type
+const StatPreviewModel = S.Struct({ _docsPage: S.Literal('stat') })
+type StatPreviewModel = typeof StatPreviewModel.Type
 
 const sparkline = <Msg>(h: HtmlBuilder<Msg>) =>
   h.svg(
@@ -36,7 +39,7 @@ const sparkline = <Msg>(h: HtmlBuilder<Msg>) =>
         [],
       ),
     ],
-  );
+  )
 
 const statView = <Msg>(item: StatItem, h: HtmlBuilder<Msg>) =>
   Stat.stat(
@@ -44,15 +47,20 @@ const statView = <Msg>(item: StatItem, h: HtmlBuilder<Msg>) =>
       label: item.label,
       value: item.value,
       ...(item.delta === undefined ? {} : { delta: item.delta }),
-      ...(item.description === undefined ? {} : { description: item.description }),
+      ...(item.description === undefined
+        ? {}
+        : { description: item.description }),
       ...(item.size === undefined ? {} : { size: item.size }),
       ...(item.withMedia === true ? { media: [sparkline(h)] } : {}),
     },
     h,
-  );
+  )
 
 const inCard = <Msg>(item: StatItem, h: HtmlBuilder<Msg>) =>
-  Card.card({ children: [Card.cardContent({ children: [statView(item, h)] }, h)] }, h);
+  Card.card(
+    { children: [Card.cardContent({ children: [statView(item, h)] }, h)] },
+    h,
+  )
 
 export const statTailwindPreviewProgram = definePreviewProgram<
   StatPreviewModel,
@@ -63,7 +71,7 @@ export const statTailwindPreviewProgram = definePreviewProgram<
   init: () => ({ _docsPage: 'stat' }),
   update: model => ({ model: model }),
   view: (index, _model, h) => {
-    const fixture = statFixtures[index] ?? statFixtures[0];
+    const fixture = statFixtures[index] ?? statFixtures[0]
     return fixture.layout === 'cards'
       ? h.div(
           [h.Class('grid grid-cols-3 gap-4')],
@@ -74,6 +82,6 @@ export const statTailwindPreviewProgram = definePreviewProgram<
             [h.Class('flex items-end gap-8')],
             fixture.items.map(item => statView(item, h)),
           )
-        : inCard(fixture.items[0] ?? { label: '', value: '' }, h);
+        : inCard(fixture.items[0] ?? { label: '', value: '' }, h)
   },
-});
+})

@@ -57,7 +57,11 @@ type Message = Readonly<
 
 const gotMenu =
   (target: MenuId) =>
-  (message: Behavior.MenuMessage): Message => ({ _tag: 'GotMenuMessage', target, message })
+  (message: Behavior.MenuMessage): Message => ({
+    _tag: 'GotMenuMessage',
+    target,
+    message,
+  })
 
 const gotMenubar = (message: MenubarBehavior.Message): Message => ({
   _tag: 'GotMenubarMessage',
@@ -85,11 +89,16 @@ const update = (
   switch (message._tag) {
     case 'GotMenuMessage': {
       const op = Behavior.update(model[message.target], message.message)
-      const selected = Option.isSome(op.selection) ? op.selection.value.item : undefined
+      const selected = Option.isSome(op.selection)
+        ? op.selection.value.item
+        : undefined
       return {
         model: {
           ...model,
-          layout: selected === 'single' || selected === 'two' ? selected : model.layout,
+          layout:
+            selected === 'single' || selected === 'two'
+              ? selected
+              : model.layout,
           file:
             message.target === 'file'
               ? op.model
@@ -107,15 +116,25 @@ const update = (
     }
     case 'GotMenubarMessage': {
       const op = MenubarBehavior.update(model.menubar, message.message)
-      const index = op.outMessage === undefined ? op.model.activeIndex : op.outMessage.index
+      const index =
+        op.outMessage === undefined ? op.model.activeIndex : op.outMessage.index
       const target = MENU_IDS[index] ?? 'file'
       return {
         model: {
           ...model,
           menubar: op.model,
-          file: Behavior.update(model.file, target === 'file' ? openMessage : closeMessage).model,
-          edit: Behavior.update(model.edit, target === 'edit' ? openMessage : closeMessage).model,
-          view: Behavior.update(model.view, target === 'view' ? openMessage : closeMessage).model,
+          file: Behavior.update(
+            model.file,
+            target === 'file' ? openMessage : closeMessage,
+          ).model,
+          edit: Behavior.update(
+            model.edit,
+            target === 'edit' ? openMessage : closeMessage,
+          ).model,
+          view: Behavior.update(
+            model.view,
+            target === 'view' ? openMessage : closeMessage,
+          ).model,
         },
         commands: Command.mapMessages(op.commands ?? [], gotMenubar),
       }
@@ -146,16 +165,27 @@ const itemToConfig =
   (item: string): TailwindDropdownMenu.DropdownMenuItemConfig<string> => {
     switch (item) {
       case 'share':
-        return { label: 'Share', submenu: { items: SHARE_ITEMS, itemToConfig: itemToConfig(model) } }
+        return {
+          label: 'Share',
+          submenu: { items: SHARE_ITEMS, itemToConfig: itemToConfig(model) },
+        }
       case 'layout':
         return {
           label: 'Layout',
           submenu: { items: LAYOUT_ITEMS, itemToConfig: itemToConfig(model) },
         }
       case 'single':
-        return { label: 'Single column', kind: 'radio', isChecked: model.layout === 'single' }
+        return {
+          label: 'Single column',
+          kind: 'radio',
+          isChecked: model.layout === 'single',
+        }
       case 'two':
-        return { label: 'Two columns', kind: 'radio', isChecked: model.layout === 'two' }
+        return {
+          label: 'Two columns',
+          kind: 'radio',
+          isChecked: model.layout === 'two',
+        }
       case 'disabled-item':
         return { label: 'Disabled item', isDisabled: true }
       default:
@@ -263,7 +293,10 @@ const verifyRenderer = (name: string, Menubar: MenubarModule) => {
           Scene.expectHandled(),
           Scene.expect(fileMenu).toExist(),
           Scene.expect(fileTrigger).toHaveAttr('aria-expanded', 'true'),
-          Scene.expect(fileTrigger).toHaveAttr('aria-controls', 'menu-file-content'),
+          Scene.expect(fileTrigger).toHaveAttr(
+            'aria-controls',
+            'menu-file-content',
+          ),
           Scene.click(fileTrigger),
           Scene.expectHandled(),
           Scene.expect(fileMenu).toBeAbsent(),
@@ -688,20 +721,33 @@ const verifyRenderer = (name: string, Menubar: MenubarModule) => {
       })
 
       describe('when loopFocus == false', () => {
-        it.todo('should stay on the last item when navigating beyond it — no loopFocus prop')
-        it.todo('should stay on the first item when navigating before it — no loopFocus prop')
+        it.todo(
+          'should stay on the last item when navigating beyond it — no loopFocus prop',
+        )
+        it.todo(
+          'should stay on the first item when navigating before it — no loopFocus prop',
+        )
       })
     })
 
     describe('prop: disabled', () => {
-      it.todo('disables child menus when menubar is disabled — no menubar disabled prop')
-      it.todo('keeps the menubar reachable when the first trigger is disabled — no per-trigger disabled')
-      it.todo('disables menu items while the menubar is disabled — no menubar disabled prop')
+      it.todo(
+        'disables child menus when menubar is disabled — no menubar disabled prop',
+      )
+      it.todo(
+        'keeps the menubar reachable when the first trigger is disabled — no per-trigger disabled',
+      )
+      it.todo(
+        'disables menu items while the menubar is disabled — no menubar disabled prop',
+      )
 
       // Item-level `isDisabled` is the ported portion of the disabled suite.
       it('a disabled menu item is inert and skipped by arrow navigation', () => {
         Scene.scene(
-          { update, view: fixtureView({ fileItems: ['open', 'disabled-item', 'save'] }) },
+          {
+            update,
+            view: fixtureView({ fileItems: ['open', 'disabled-item', 'save'] }),
+          },
           Scene.given(initialModel()),
           Scene.click(fileTrigger),
           Scene.expectHandled(),
@@ -711,7 +757,10 @@ const verifyRenderer = (name: string, Menubar: MenubarModule) => {
           Scene.keydown(fileMenu, 'ArrowDown'),
           Scene.expectHandled(),
           Scene.expect(item('Save')).toHaveAttr('data-active', 'true'),
-          Scene.expect(item('Disabled item')).toHaveAttr('data-active', 'false'),
+          Scene.expect(item('Disabled item')).toHaveAttr(
+            'data-active',
+            'false',
+          ),
         )
       })
     })

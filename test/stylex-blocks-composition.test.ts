@@ -5,22 +5,46 @@ import ts from 'typescript'
 
 const file = 'src/demo/blocks-stylex/featured-page.ts'
 const source = readFileSync(file, 'utf8')
-const ast = ts.createSourceFile(file, source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS)
+const ast = ts.createSourceFile(
+  file,
+  source,
+  ts.ScriptTarget.Latest,
+  true,
+  ts.ScriptKind.TS,
+)
 
 const walk = (node: ts.Node, visit: (candidate: ts.Node) => void): void => {
   visit(node)
-  ts.forEachChild(node, (child) => walk(child, visit))
+  ts.forEachChild(node, child => walk(child, visit))
 }
 
 describe('featured StyleX blocks composition', () => {
   it('renders dashboard and login blocks; full sidebars live in the sidebar renderer', () => {
-    const names = [...source.matchAll(/name: '(dashboard-01|sidebar-07|sidebar-03|login-03|login-04)'/gu)].map((match) => match[1])
+    const names = [
+      ...source.matchAll(
+        /name: '(dashboard-01|sidebar-07|sidebar-03|login-03|login-04)'/gu,
+      ),
+    ].map(match => match[1])
     assert.deepEqual(names, ['dashboard-01', 'login-03', 'login-04'])
   })
 
   it('adds eleven Astryx-inspired constrained block identifiers in order', () => {
-    const names = [...source.matchAll(/name: '(astryx-[^']+)'/gu)].map((match) => match[1])
-    assert.deepEqual(names, ['astryx-executive-summary', 'astryx-cohort-funnel', 'astryx-project-status', 'astryx-service-monitoring', 'astryx-incident-console', 'astryx-kanban-board', 'astryx-inbox-table', 'astryx-order-detail', 'astryx-checkout-form', 'astryx-data-dashboard', 'astryx-card-grid'])
+    const names = [...source.matchAll(/name: '(astryx-[^']+)'/gu)].map(
+      match => match[1],
+    )
+    assert.deepEqual(names, [
+      'astryx-executive-summary',
+      'astryx-cohort-funnel',
+      'astryx-project-status',
+      'astryx-service-monitoring',
+      'astryx-incident-console',
+      'astryx-kanban-board',
+      'astryx-inbox-table',
+      'astryx-order-detail',
+      'astryx-checkout-form',
+      'astryx-data-dashboard',
+      'astryx-card-grid',
+    ])
   })
 
   it('adds a real Apache ECharts analytics dashboard block', () => {
@@ -30,10 +54,27 @@ describe('featured StyleX blocks composition', () => {
 
   it('contains no page-local styling or raw layout element escape hatch', () => {
     const forbiddenCalls: string[] = []
-    const forbiddenBuilders = new Set(['article', 'aside', 'div', 'footer', 'header', 'li', 'main', 'nav', 'ol', 'section', 'ul', 'Class', 'Style'])
+    const forbiddenBuilders = new Set([
+      'article',
+      'aside',
+      'div',
+      'footer',
+      'header',
+      'li',
+      'main',
+      'nav',
+      'ol',
+      'section',
+      'ul',
+      'Class',
+      'Style',
+    ])
 
-    walk(ast, (node) => {
-      if (ts.isImportDeclaration(node) && ts.isStringLiteral(node.moduleSpecifier)) {
+    walk(ast, node => {
+      if (
+        ts.isImportDeclaration(node) &&
+        ts.isStringLiteral(node.moduleSpecifier)
+      ) {
         assert.notEqual(node.moduleSpecifier.text, '@stylexjs/stylex')
       }
       if (
@@ -48,7 +89,10 @@ describe('featured StyleX blocks composition', () => {
     })
 
     assert.deepEqual(forbiddenCalls, [])
-    assert.doesNotMatch(source, /\b(?:className|layoutStyle|stylex\.create|cn)\b/u)
+    assert.doesNotMatch(
+      source,
+      /\b(?:className|layoutStyle|stylex\.create|cn)\b/u,
+    )
   })
 
   it('uses all five closed composition primitives', () => {
@@ -67,6 +111,9 @@ describe('featured StyleX blocks composition', () => {
       iconSource.indexOf('export const icon'),
     )
     assert.match(iconSource, /size\?: 'sm' \| 'md'/u)
-    assert.doesNotMatch(iconProps, /class\??:|layoutStyle|StaticStyles|StyleXStyles/u)
+    assert.doesNotMatch(
+      iconProps,
+      /class\??:|layoutStyle|StaticStyles|StyleXStyles/u,
+    )
   })
 })

@@ -10,4 +10,3 @@ import type { StaticStyles } from '@stylexjs/stylex'
  */
 export const className = (...styles: ReadonlyArray<StaticStyles>): string =>
   stylex.props(...styles).className ?? ''
-

@@ -1,23 +1,23 @@
-import type { AlertAnnouncement, AlertSeverity } from '@/lib/alert';
-import type { DocsExample } from '@/docs/components/page-definition';
-import { staticComponentApplication } from '@/docs/components/pages/authored-page';
+import type { AlertAnnouncement, AlertSeverity } from '@/lib/alert'
+import type { DocsExample } from '@/docs/components/page-definition'
+import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 export type AlertPreviewAlert = Readonly<{
-  severity: AlertSeverity;
-  announcement: AlertAnnouncement;
-  icon: string;
-  title: string;
-  description: string;
-  actionLabel?: string;
-}>;
+  severity: AlertSeverity
+  announcement: AlertAnnouncement
+  icon: string
+  title: string
+  description: string
+  actionLabel?: string
+}>
 
 export type AlertFixture = Readonly<{
-  title: string;
-  description: string;
-  direction?: 'rtl';
-  colors?: string;
-  alerts: ReadonlyArray<AlertPreviewAlert>;
-}>;
+  title: string
+  description: string
+  direction?: 'rtl'
+  colors?: string
+  alerts: ReadonlyArray<AlertPreviewAlert>
+}>
 
 export const alertFixtures: Readonly<[AlertFixture, ...Array<AlertFixture>]> = [
   {
@@ -36,7 +36,8 @@ export const alertFixtures: Readonly<[AlertFixture, ...Array<AlertFixture>]> = [
   },
   {
     title: 'Destructive',
-    description: 'severity: "error" with assertive announcement policy for urgent failures.',
+    description:
+      'severity: "error" with assertive announcement policy for urgent failures.',
     alerts: [
       {
         severity: 'error',
@@ -64,7 +65,8 @@ export const alertFixtures: Readonly<[AlertFixture, ...Array<AlertFixture>]> = [
   },
   {
     title: 'Custom Colors',
-    description: 'Customize the alert colors with classes on the Alert component.',
+    description:
+      'Customize the alert colors with classes on the Alert component.',
     colors:
       'border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-50',
     alerts: [
@@ -80,7 +82,8 @@ export const alertFixtures: Readonly<[AlertFixture, ...Array<AlertFixture>]> = [
   },
   {
     title: 'RTL',
-    description: 'dir="rtl" mirrors icon and content for right-to-left layouts.',
+    description:
+      'dir="rtl" mirrors icon and content for right-to-left layouts.',
     direction: 'rtl',
     alerts: [
       {
@@ -101,28 +104,31 @@ export const alertFixtures: Readonly<[AlertFixture, ...Array<AlertFixture>]> = [
       },
     ],
   },
-];
+]
 
 const alertSource = (
   item: AlertPreviewAlert,
   colors: string | undefined,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const actionClass = renderer === 'stylex'
-    ? `stylex.props(styles.action).className ?? ''`
-    : `'col-start-2 mt-2'`;
-  const action = item.actionLabel === undefined
-    ? ''
-    : `
-    h.div([h.Class(${actionClass})], [
-      Button.button({ size: 'sm', children: ['${item.actionLabel}'] }, h),
-    ]),`;
-  const classLine = renderer === 'stylex'
-    ? ''
-    : colors === undefined
+  const actionClass =
+    renderer === 'stylex'
+      ? `stylex.props(styles.action).className ?? ''`
+      : `'col-start-2 mt-2'`
+  const action =
+    item.actionLabel === undefined
       ? ''
       : `
-    class: '${colors}',`;
+    h.div([h.Class(${actionClass})], [
+      Button.button({ size: 'sm', children: ['${item.actionLabel}'] }, h),
+    ]),`
+  const classLine =
+    renderer === 'stylex'
+      ? ''
+      : colors === undefined
+        ? ''
+        : `
+    class: '${colors}',`
   return `Alert.alert({
     severity: '${item.severity}',
     announcement: '${item.announcement}',${classLine}
@@ -131,31 +137,42 @@ const alertSource = (
       Alert.alertTitle({ children: ['${item.title}'] }, h),
       Alert.alertDescription({ children: ['${item.description}'] }, h),${action}
     ],
-  }, h)`;
-};
+  }, h)`
+}
 
 const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
-  const fixture = alertFixtures[index] ?? alertFixtures[0];
-  const usesAction = fixture.alerts.some(item => item.actionLabel !== undefined);
+  const fixture = alertFixtures[index] ?? alertFixtures[0]
+  const usesAction = fixture.alerts.some(item => item.actionLabel !== undefined)
   const componentImports = [
     `import * as Icon from '@/lib/icon'`,
-    ...(usesAction ? [`import * as Button from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/button'`] : []),
-    ...(renderer === 'stylex' ? [`import * as stylex from '@stylexjs/stylex'`] : []),
-  ].join('\n');
-  const styles = renderer === 'stylex'
-    ? `\nconst styles = stylex.create({ wrap: { display: 'grid', gap: '1rem', maxWidth: '28rem', width: '100%' }, action: { gridColumnStart: 2, marginTop: '0.5rem' } })\n`
-    : '';
-  const inner = fixture.alerts.map(item => alertSource(item, fixture.colors, renderer)).join(',\n      ');
-  const dirAttr = fixture.direction === 'rtl' ? `h.Dir('${fixture.direction}'), ` : '';
-  const wrapClass = renderer === 'stylex'
-    ? `h.Class(stylex.props(styles.wrap).className ?? '')`
-    : `h.Class('grid w-full max-w-md gap-4')`;
+    ...(usesAction
+      ? [
+          `import * as Button from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/button'`,
+        ]
+      : []),
+    ...(renderer === 'stylex'
+      ? [`import * as stylex from '@stylexjs/stylex'`]
+      : []),
+  ].join('\n')
+  const styles =
+    renderer === 'stylex'
+      ? `\nconst styles = stylex.create({ wrap: { display: 'grid', gap: '1rem', maxWidth: '28rem', width: '100%' }, action: { gridColumnStart: 2, marginTop: '0.5rem' } })\n`
+      : ''
+  const inner = fixture.alerts
+    .map(item => alertSource(item, fixture.colors, renderer))
+    .join(',\n      ')
+  const dirAttr =
+    fixture.direction === 'rtl' ? `h.Dir('${fixture.direction}'), ` : ''
+  const wrapClass =
+    renderer === 'stylex'
+      ? `h.Class(stylex.props(styles.wrap).className ?? '')`
+      : `h.Class('grid w-full max-w-md gap-4')`
   const viewBody = `h.div(
       [${dirAttr}${wrapClass}],
       [
         ${inner},
       ],
-    )`;
+    )`
   return staticComponentApplication({
     componentName: 'Alert',
     componentSlug: 'alert',
@@ -163,13 +180,14 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
     exampleName: fixture.title,
     componentImports: `${componentImports}${styles}`,
     viewBody,
-  });
-};
+  })
+}
 
 export const alertExamples = (
   renderer: 'tailwind' | 'stylex',
-): ReadonlyArray<DocsExample> => alertFixtures.map((fixture, index) => ({
-  title: fixture.title,
-  description: fixture.description,
-  code: source(index, renderer),
-}));
+): ReadonlyArray<DocsExample> =>
+  alertFixtures.map((fixture, index) => ({
+    title: fixture.title,
+    description: fixture.description,
+    code: source(index, renderer),
+  }))

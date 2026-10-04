@@ -27,7 +27,13 @@ export const OutMessage = defineMessageUnion({
 })
 export type OutMessage = typeof OutMessage.Type
 
-export const init = ({ id, activeStep }: { id: string; activeStep: number }): Model => ({
+export const init = ({
+  id,
+  activeStep,
+}: {
+  id: string
+  activeStep: number
+}): Model => ({
   id,
   maybeRootWidth: Option.none(),
   seenStep: activeStep,
@@ -106,8 +112,15 @@ export const rootMount = <Msg>(toParentMessage: (message: Message) => Msg) =>
 
 export type StepperProgress = 'completed' | 'in-progress' | 'not-started'
 
-export const progressFor = (index: number, activeStep: number): StepperProgress =>
-  index === activeStep ? 'in-progress' : index < activeStep ? 'completed' : 'not-started'
+export const progressFor = (
+  index: number,
+  activeStep: number,
+): StepperProgress =>
+  index === activeStep
+    ? 'in-progress'
+    : index < activeStep
+      ? 'completed'
+      : 'not-started'
 
 /** One step's slice of the animated span, in CSS <time> units. */
 export type StepperTiming = Readonly<{ duration: string; delay: string }>

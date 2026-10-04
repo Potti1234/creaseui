@@ -11,7 +11,7 @@ export type AstryxTextType =
   | 'display-1'
   | 'display-2'
   | 'display-3'
-  | 'inherit';
+  | 'inherit'
 
 export type AstryxTextSize =
   | '4xs'
@@ -24,7 +24,7 @@ export type AstryxTextSize =
   | 'xl'
   | '2xl'
   | '3xl'
-  | '4xl';
+  | '4xl'
 
 export type AstryxTextColor =
   | 'primary'
@@ -32,9 +32,9 @@ export type AstryxTextColor =
   | 'disabled'
   | 'placeholder'
   | 'accent'
-  | 'inherit';
+  | 'inherit'
 
-export type AstryxTextWeight = 'normal' | 'medium' | 'semibold' | 'bold';
+export type AstryxTextWeight = 'normal' | 'medium' | 'semibold' | 'bold'
 
 /* --text-* presets: font size + line height + weight per semantic type. */
 const TYPE_CLASSES: Record<AstryxTextType, string> = {
@@ -47,7 +47,7 @@ const TYPE_CLASSES: Record<AstryxTextType, string> = {
   'display-2': 'text-[35px] leading-[44px] font-normal',
   'display-3': 'text-[29px] leading-[36px] font-normal',
   inherit: 'text-[inherit] leading-[inherit] font-[inherit]',
-};
+}
 
 /* astryx's size override changes only the font size — the type's line height
    stays — so each step uses an arbitrary px class rather than a named scale
@@ -64,7 +64,7 @@ const SIZE_CLASSES: Record<AstryxTextSize, string> = {
   '2xl': 'text-[24px]',
   '3xl': 'text-[29px]',
   '4xl': 'text-[35px]',
-};
+}
 
 const COLOR_CLASSES: Record<AstryxTextColor, string> = {
   primary: 'text-foreground',
@@ -75,34 +75,34 @@ const COLOR_CLASSES: Record<AstryxTextColor, string> = {
   placeholder: 'text-muted-foreground/70',
   accent: 'text-primary',
   inherit: 'text-inherit',
-};
+}
 
 const WEIGHT_CLASSES: Record<AstryxTextWeight, string> = {
   normal: 'font-normal',
   medium: 'font-medium',
   semibold: 'font-semibold',
   bold: 'font-bold',
-};
+}
 
 export const astryxTextClasses = (config: {
-  type?: AstryxTextType;
-  size?: AstryxTextSize;
-  color?: AstryxTextColor;
-  weight?: AstryxTextWeight;
+  type?: AstryxTextType
+  size?: AstryxTextSize
+  color?: AstryxTextColor
+  weight?: AstryxTextWeight
 }): string => {
-  const type = config.type ?? 'body';
-  const color = config.color ?? 'primary';
+  const type = config.type ?? 'body'
+  const color = config.color ?? 'primary'
   if (type === 'inherit') {
     return [
       TYPE_CLASSES.inherit,
       ...(config.color === undefined ? [] : [COLOR_CLASSES[color]]),
       ...(config.weight === undefined ? [] : [WEIGHT_CLASSES[config.weight]]),
-    ].join(' ');
+    ].join(' ')
   }
   return [
     TYPE_CLASSES[type],
     ...(config.size === undefined ? [] : [SIZE_CLASSES[config.size]]),
     COLOR_CLASSES[color],
     ...(config.weight === undefined ? [] : [WEIGHT_CLASSES[config.weight]]),
-  ].join(' ');
-};
+  ].join(' ')
+}

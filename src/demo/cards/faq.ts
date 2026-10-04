@@ -1,19 +1,19 @@
-import { Match as M, Option, Schema as S } from 'effect';
-import type { Update } from 'foldkit';
-import { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
-import { modifyFields } from 'foldkit/struct';
+import { Match as M, Option, Schema as S } from 'effect'
+import type { Update } from 'foldkit'
+import { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import { modifyFields } from 'foldkit/struct'
 
-import * as Accordion from '@/ui/accordion';
-import { button } from '@/ui/button';
-import { card, cardContent, cardFooter } from '@/ui/card';
-import * as Tabs from '@/ui/tabs';
+import * as Accordion from '@/ui/accordion'
+import { button } from '@/ui/button'
+import { card, cardContent, cardFooter } from '@/ui/card'
+import * as Tabs from '@/ui/tabs'
 
 type Question = Readonly<{
-  q: string;
-  a: string;
-}>;
+  q: string
+  a: string
+}>
 
 const GENERAL_QUESTIONS: ReadonlyArray<Question> = [
   {
@@ -28,7 +28,7 @@ const GENERAL_QUESTIONS: ReadonlyArray<Question> = [
     q: 'Can I export my data for tax purposes?',
     a: 'Yes. Navigate to Reports > Tax Export to download a CSV or PDF summary of your transactions, dividends, and capital gains for any tax year.',
   },
-];
+]
 
 const BILLING_QUESTIONS: ReadonlyArray<Question> = [
   {
@@ -43,7 +43,7 @@ const BILLING_QUESTIONS: ReadonlyArray<Question> = [
     q: 'Do you offer a free trial?',
     a: 'Yes. All new accounts start with a 14-day Pro trial. No credit card required.',
   },
-];
+]
 
 const GOALS_QUESTIONS: ReadonlyArray<Question> = [
   {
@@ -58,7 +58,7 @@ const GOALS_QUESTIONS: ReadonlyArray<Question> = [
     q: 'How are monthly contributions calculated?',
     a: 'We divide the remaining amount by the number of months until your target date, adjusted for your current savings rate and any auto-transfer schedules.',
   },
-];
+]
 
 export const Model = S.Struct({
   tabs: Tabs.Model,
@@ -66,97 +66,101 @@ export const Model = S.Struct({
   general: Accordion.Model,
   billing: Accordion.Model,
   goals: Accordion.Model,
-});
-export type Model = typeof Model.Type;
-
-
-
-
-
+})
+export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
   GotTabsMessage: {
-  message: Tabs.Message,
-},
+    message: Tabs.Message,
+  },
   GotGeneralMessage: {
-  message: Accordion.Message,
-},
+    message: Accordion.Message,
+  },
   GotBillingMessage: {
-  message: Accordion.Message,
-},
+    message: Accordion.Message,
+  },
   GotGoalsMessage: {
-  message: Accordion.Message,
-},
-});
-export type Message = typeof Message.Type;
+    message: Accordion.Message,
+  },
+})
+export type Message = typeof Message.Type
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
       GotTabsMessage: ({ message: tabsMessage }) => {
-        const { model: tabs, commands: tabsCommands__, outMessage: tabsOut__ } = Tabs.update(
-          model.tabs,
-          tabsMessage,
-        )
+        const {
+          model: tabs,
+          commands: tabsCommands__,
+          outMessage: tabsOut__,
+        } = Tabs.update(model.tabs, tabsMessage)
         const commands = tabsCommands__ ?? []
         const maybeSelection = Option.fromNullishOr(tabsOut__)
 
-        return { model: modifyFields(model, {
+        return {
+          model: modifyFields(model, {
             tabs: () => tabs,
-            selectedTab: (current) =>
+            selectedTab: current =>
               Option.match(maybeSelection, {
                 onNone: () => current,
-                onSome: (selection) => selection.value,
+                onSome: selection => selection.value,
               }),
-          }), commands: Command.mapMessages(commands, (nextMessage) =>
+          }),
+          commands: Command.mapMessages(commands, nextMessage =>
             Message.GotTabsMessage({ message: nextMessage }),
-          ) };
+          ),
+        }
       },
       GotGeneralMessage: ({ message: accordionMessage }) => {
-        const { model: general, commands: generalCommands__ } = Accordion.update(
-          model.general,
-          accordionMessage,
-        );
+        const { model: general, commands: generalCommands__ } =
+          Accordion.update(model.general, accordionMessage)
         const commands = generalCommands__ ?? []
 
-        return { model: modifyFields(model, { general: () => general }), commands: Command.mapMessages(commands, (nextMessage) =>
+        return {
+          model: modifyFields(model, { general: () => general }),
+          commands: Command.mapMessages(commands, nextMessage =>
             Message.GotGeneralMessage({ message: nextMessage }),
-          ) };
+          ),
+        }
       },
       GotBillingMessage: ({ message: accordionMessage }) => {
-        const { model: billing, commands: billingCommands__ } = Accordion.update(
-          model.billing,
-          accordionMessage,
-        );
+        const { model: billing, commands: billingCommands__ } =
+          Accordion.update(model.billing, accordionMessage)
         const commands = billingCommands__ ?? []
 
-        return { model: modifyFields(model, { billing: () => billing }), commands: Command.mapMessages(commands, (nextMessage) =>
+        return {
+          model: modifyFields(model, { billing: () => billing }),
+          commands: Command.mapMessages(commands, nextMessage =>
             Message.GotBillingMessage({ message: nextMessage }),
-          ) };
+          ),
+        }
       },
       GotGoalsMessage: ({ message: accordionMessage }) => {
         const { model: goals, commands: goalsCommands__ } = Accordion.update(
           model.goals,
           accordionMessage,
-        );
+        )
         const commands = goalsCommands__ ?? []
 
-        return { model: modifyFields(model, { goals: () => goals }), commands: Command.mapMessages(commands, (nextMessage) =>
+        return {
+          model: modifyFields(model, { goals: () => goals }),
+          commands: Command.mapMessages(commands, nextMessage =>
             Message.GotGoalsMessage({ message: nextMessage }),
-          ) };
+          ),
+        }
       },
     }),
-  );
+  )
 
 const accordionInit = (id: string): Accordion.Model =>
   Accordion.init({
     id,
     type: 'single',
     value: ['item-0'],
-  });
+  })
 
 export const init = (): Model => ({
   tabs: Tabs.init({ id: 'faq-tabs' }),
@@ -164,7 +168,7 @@ export const init = (): Model => ({
   general: accordionInit('faq-general'),
   billing: accordionInit('faq-billing'),
   goals: accordionInit('faq-goals'),
-});
+})
 
 const questionList = (
   model: Accordion.Model,
@@ -184,7 +188,7 @@ const questionList = (
       })),
     },
     toParentMessage,
-  });
+  })
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
   card<Message>(
@@ -197,7 +201,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                 {
                   model: model.tabs,
                   selectedValue: model.selectedTab,
-                  toParentMessage: (message) => Message.GotTabsMessage({ message }),
+                  toParentMessage: message =>
+                    Message.GotTabsMessage({ message }),
                   listClass: 'w-full',
                   triggerClass: 'flex-1',
                   tabs: [
@@ -207,7 +212,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                       content: questionList(
                         model.general,
                         GENERAL_QUESTIONS,
-                        (message) => Message.GotGeneralMessage({ message }),
+                        message => Message.GotGeneralMessage({ message }),
                         h,
                       ),
                     },
@@ -217,7 +222,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                       content: questionList(
                         model.billing,
                         BILLING_QUESTIONS,
-                        (message) => Message.GotBillingMessage({ message }),
+                        message => Message.GotBillingMessage({ message }),
                         h,
                       ),
                     },
@@ -227,7 +232,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                       content: questionList(
                         model.goals,
                         GOALS_QUESTIONS,
-                        (message) => Message.GotGoalsMessage({ message }),
+                        message => Message.GotGoalsMessage({ message }),
                         h,
                       ),
                     },
@@ -261,6 +266,6 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
       ],
     },
     h,
-  );
+  )
 
 // Card summary: stateful? yes. Submodels wired: Tabs and three Accordions. PORT NOTEs: none.

@@ -1,14 +1,14 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   toggleFixtures,
   type ToggleItem,
-} from '@/docs/components/pages/toggle/shared';
-import * as Icon from '@/lib/icon';
-import { className } from '@/stylex/style';
-import * as Toggle from '@/stylex/toggle';
+} from '@/docs/components/pages/toggle/shared'
+import * as Icon from '@/lib/icon'
+import { className } from '@/stylex/style'
+import * as Toggle from '@/stylex/toggle'
 
 const styles = stylex.create({
   row: {
@@ -17,11 +17,16 @@ const styles = stylex.create({
     display: 'flex',
     flexWrap: 'wrap',
   },
-  iconMd: { flexShrink: 0, pointerEvents: 'none', height: '1rem', width: '1rem', },
-});
+  iconMd: {
+    flexShrink: 0,
+    pointerEvents: 'none',
+    height: '1rem',
+    width: '1rem',
+  },
+})
 
 interface TogglePreviewShape {
-  readonly states: Readonly<Record<string, boolean>>;
+  readonly states: Readonly<Record<string, boolean>>
 }
 
 const itemToggle = <Msg>(
@@ -44,10 +49,13 @@ const itemToggle = <Msg>(
       children:
         item.icon === undefined
           ? [item.label]
-          : [Icon.icon(item.icon, { class: className(styles.iconMd) }, h), item.label],
+          : [
+              Icon.icon(item.icon, { class: className(styles.iconMd) }, h),
+              item.label,
+            ],
     },
     h,
-  );
+  )
 
 export const toggleStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
@@ -55,13 +63,13 @@ export const toggleStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ) => {
-  const shape = model as TogglePreviewShape;
-  const fixture = toggleFixtures[exampleIndex] ?? toggleFixtures[0];
+  const shape = model as TogglePreviewShape
+  const fixture = toggleFixtures[exampleIndex] ?? toggleFixtures[0]
   const toggles = fixture.items.map(item =>
     itemToggle(item, shape, onMessageJson, h),
-  );
+  )
   if (fixture.kind === 'single') {
-    return toggles[0] ?? h.div([], []);
+    return toggles[0] ?? h.div([], [])
   }
-  return h.div([h.Class(className(styles.row))], toggles);
-};
+  return h.div([h.Class(className(styles.row))], toggles)
+}

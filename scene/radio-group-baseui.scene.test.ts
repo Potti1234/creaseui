@@ -84,41 +84,39 @@ const defaultOptions: ReadonlyArray<RadioGroupOption> = [
   { value: 'c', label: 'Option C' },
 ]
 
-const updateFor =
-  (Radio: RadioModule) =>
-  (model: Model, message: Message) => {
-    switch (message._tag) {
-      case 'GotRadio': {
-        const result = Radio.update(model.radio, message.message)
-        const outMessage = result.outMessage
-        return {
-          model: {
-            ...model,
-            radio: result.model,
-            value:
-              outMessage === undefined
-                ? model.value
-                : Option.some(outMessage.value),
-          },
-          commands: Command.mapMessages(
-            result.commands,
-            child => ({ _tag: 'GotRadio' as const, message: child }),
-          ),
-        }
+const updateFor = (Radio: RadioModule) => (model: Model, message: Message) => {
+  switch (message._tag) {
+    case 'GotRadio': {
+      const result = Radio.update(model.radio, message.message)
+      const outMessage = result.outMessage
+      return {
+        model: {
+          ...model,
+          radio: result.model,
+          value:
+            outMessage === undefined
+              ? model.value
+              : Option.some(outMessage.value),
+        },
+        commands: Command.mapMessages(result.commands, child => ({
+          _tag: 'GotRadio' as const,
+          message: child,
+        })),
       }
-      case 'SetValue':
-        return { model: { ...model, value: message.value } }
-      case 'RemoveOption':
-        return {
-          model: {
-            ...model,
-            options: model.options.filter(
-              option => option.value !== message.value,
-            ),
-          },
-        }
     }
+    case 'SetValue':
+      return { model: { ...model, value: message.value } }
+    case 'RemoveOption':
+      return {
+        model: {
+          ...model,
+          options: model.options.filter(
+            option => option.value !== message.value,
+          ),
+        },
+      }
   }
+}
 
 const groupView =
   (Radio: RadioModule, extra: ExtraGroupProps = {}) =>
@@ -181,7 +179,9 @@ const verifyRenderer = (name: string, Radio: RadioModule) => {
         Scene.scene(
           { update, view: view() },
           Scene.given(initialModel(Radio)),
-          Scene.expect(radioByName('Option A')).toHaveAccessibleName('Option A'),
+          Scene.expect(radioByName('Option A')).toHaveAccessibleName(
+            'Option A',
+          ),
           Scene.expect(radioByName('Option A')).toHaveAttr(
             'aria-labelledby',
             'density-group-option-0-label',
@@ -337,9 +337,7 @@ const verifyRenderer = (name: string, Radio: RadioModule) => {
         // committing a selection.
         Scene.scene(
           { update, view: view({ isReadOnly: true }) },
-          Scene.given(
-            initialModel(Radio, { value: Option.some('a') }),
-          ),
+          Scene.given(initialModel(Radio, { value: Option.some('a') })),
           Scene.expect(radioByName('Option A')).toBeChecked(),
           Scene.keydown(radioByName('Option A'), 'ArrowDown'),
           Scene.expectHandled(),
@@ -398,19 +396,22 @@ const verifyRenderer = (name: string, Radio: RadioModule) => {
           {
             update,
             view: (model, h) =>
-              h.div([], [
-                h.button(
-                  [
-                    h.Type('button'),
-                    h.OnClick({
-                      _tag: 'SetValue',
-                      value: Option.some('b'),
-                    }),
-                  ],
-                  ['Choose B'],
-                ),
-                groupView(Radio)(model, h),
-              ]),
+              h.div(
+                [],
+                [
+                  h.button(
+                    [
+                      h.Type('button'),
+                      h.OnClick({
+                        _tag: 'SetValue',
+                        value: Option.some('b'),
+                      }),
+                    ],
+                    ['Choose B'],
+                  ),
+                  groupView(Radio)(model, h),
+                ],
+              ),
           },
           Scene.given(initialModel(Radio)),
           Scene.expect(radioByName('Option B')).toHaveAttr(
@@ -584,25 +585,22 @@ const verifyRenderer = (name: string, Radio: RadioModule) => {
       // already-focused radio as a no-op (no selection). foldkit resolves the
       // index back to the sole enabled option and selects it anyway.
       // Severity: low.
-      it.fails(
-        'does not select when arrow navigation lands on the only enabled radio',
-        () => {
-          Scene.scene(
-            { update, view: view() },
-            Scene.given(
-              initialModel(Radio, {
-                options: [
-                  { value: 'a', label: 'Option A' },
-                  { value: 'b', label: 'Option B', isDisabled: true },
-                ],
-              }),
-            ),
-            Scene.keydown(radioByName('Option A'), 'ArrowDown'),
-            Scene.expectHandled(),
-            Scene.expect(radioByName('Option A')).not.toBeChecked(),
-          )
-        },
-      )
+      it.fails('does not select when arrow navigation lands on the only enabled radio', () => {
+        Scene.scene(
+          { update, view: view() },
+          Scene.given(
+            initialModel(Radio, {
+              options: [
+                { value: 'a', label: 'Option A' },
+                { value: 'b', label: 'Option B', isDisabled: true },
+              ],
+            }),
+          ),
+          Scene.keydown(radioByName('Option A'), 'ArrowDown'),
+          Scene.expectHandled(),
+          Scene.expect(radioByName('Option A')).not.toBeChecked(),
+        )
+      })
 
       // DIVERGENCE: Base UI responds to all four arrow keys regardless of
       // orientation; foldkit gates the axis by the orientation prop, so
@@ -622,7 +620,10 @@ const verifyRenderer = (name: string, Radio: RadioModule) => {
       // ArrowLeft still moves to the previous option. Severity: medium.
       it.fails('flips horizontal arrows in RTL', () => {
         Scene.scene(
-          { update, view: view({ direction: 'rtl', orientation: 'Horizontal' }) },
+          {
+            update,
+            view: view({ direction: 'rtl', orientation: 'Horizontal' }),
+          },
           Scene.given(initialModel(Radio, { value: Option.some('a') })),
           Scene.expect(group).toHaveAttr('dir', 'rtl'),
           Scene.keydown(radioByName('Option A'), 'ArrowLeft'),
@@ -641,20 +642,21 @@ const verifyRenderer = (name: string, Radio: RadioModule) => {
           {
             update,
             view: (model, h) =>
-              h.div([], [
-                h.button(
-                  [
-                    h.Type('button'),
-                    h.OnClick({ _tag: 'RemoveOption', value: 'c' }),
-                  ],
-                  ['Remove last'],
-                ),
-                groupView(Radio, { isReadOnly: true })(model, h),
-              ]),
+              h.div(
+                [],
+                [
+                  h.button(
+                    [
+                      h.Type('button'),
+                      h.OnClick({ _tag: 'RemoveOption', value: 'c' }),
+                    ],
+                    ['Remove last'],
+                  ),
+                  groupView(Radio, { isReadOnly: true })(model, h),
+                ],
+              ),
           },
-          Scene.given(
-            initialModel(Radio, { value: Option.some('b') }),
-          ),
+          Scene.given(initialModel(Radio, { value: Option.some('b') })),
           Scene.keydown(radioByName('Option B'), 'ArrowDown'),
           Scene.expectHandled(),
           focusAck,
@@ -783,13 +785,19 @@ const verifyRenderer = (name: string, Radio: RadioModule) => {
         Scene.scene(
           { update, view: view() },
           Scene.given(initialModel(Radio)),
-          Scene.expect(radioByName('Option A')).not.toHaveAttr('data-unchecked'),
+          Scene.expect(radioByName('Option A')).not.toHaveAttr(
+            'data-unchecked',
+          ),
           Scene.expect(Scene.nth(indicators, 0)).not.toHaveAttr(
             'data-unchecked',
           ),
           Scene.expect(Scene.nth(indicators, 0)).not.toHaveAttr('data-checked'),
-          Scene.expect(Scene.nth(indicators, 0)).not.toHaveAttr('data-disabled'),
-          Scene.expect(Scene.nth(indicators, 0)).not.toHaveAttr('data-readonly'),
+          Scene.expect(Scene.nth(indicators, 0)).not.toHaveAttr(
+            'data-disabled',
+          ),
+          Scene.expect(Scene.nth(indicators, 0)).not.toHaveAttr(
+            'data-readonly',
+          ),
         )
       })
 

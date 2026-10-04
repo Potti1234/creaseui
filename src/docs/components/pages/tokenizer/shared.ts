@@ -1,10 +1,10 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type TokenizerFixture = Readonly<{
-  title: string;
-  description?: string;
-  heroOnly?: boolean;
+  title: string
+  description?: string
+  heroOnly?: boolean
   kind:
     | 'showcase'
     | 'clear'
@@ -13,10 +13,10 @@ export type TokenizerFixture = Readonly<{
     | 'icon'
     | 'maxEntries'
     | 'overflow'
-    | 'states';
+    | 'states'
   /** Astrryx block id, kept for tracing against the source templates. */
-  astryxExample: string;
-}>;
+  astryxExample: string
+}>
 
 export const tokenizerFixtures: ReadonlyArray<TokenizerFixture> = [
   {
@@ -75,7 +75,7 @@ export const tokenizerFixtures: ReadonlyArray<TokenizerFixture> = [
     description:
       'Tokenizer in disabled, error, warning, and success states. Use to communicate validation feedback or lock a selection from editing.',
   },
-];
+]
 
 export const USERS = [
   { id: '1', label: 'Alice Johnson' },
@@ -84,7 +84,7 @@ export const USERS = [
   { id: '4', label: 'Diana Prince' },
   { id: '5', label: 'Eve Williams' },
   { id: '6', label: 'Frank Miller' },
-] as const;
+] as const
 
 export const SKILLS = [
   { id: '1', label: 'React' },
@@ -95,19 +95,19 @@ export const SKILLS = [
   { id: '6', label: 'Rust' },
   { id: '7', label: 'Go' },
   { id: '8', label: 'Swift' },
-] as const;
+] as const
 
 export const TAGS = [
   { id: '1', label: 'Design' },
   { id: '2', label: 'Engineering' },
-] as const;
+] as const
 
 const imports = (renderer: 'tailwind' | 'stylex', extra: string): string =>
   `import { Option, Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-import * as Tokenizer from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/tokenizer'${extra}`;
+import * as Tokenizer from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/tokenizer'${extra}`
 
 const stylexPreamble = `
 import * as stylex from '@stylexjs/stylex'
@@ -133,27 +133,27 @@ const styles = stylex.create({
     paddingBlock: '0.25rem',
     paddingInline: '0.5rem',
   },
-})`;
+})`
 
 const stackClass = (isStyleX: boolean): string =>
   isStyleX
     ? `h.Class(className(styles.stack))`
-    : `h.Class('grid w-full max-w-[400px] min-w-[240px] gap-4')`;
+    : `h.Class('grid w-full max-w-[400px] min-w-[240px] gap-4')`
 
 const supportingClass = (isStyleX: boolean): string =>
   isStyleX
     ? `h.Class(className(styles.supporting))`
-    : `h.Class('text-muted-foreground text-sm')`;
+    : `h.Class('text-muted-foreground text-sm')`
 
 const buttonClass = (isStyleX: boolean): string =>
   isStyleX
     ? `h.Class(className(styles.button))`
-    : `h.Class('rounded-md bg-primary px-2 py-1 text-sm font-medium text-primary-foreground')`;
+    : `h.Class('rounded-md bg-primary px-2 py-1 text-sm font-medium text-primary-foreground')`
 
 const messages = `import { taggedStruct } from 'foldkit/schema'
 export const GotTokenizerMessage = taggedStruct('GotTokenizerMessage', { slot: S.Number, message: Tokenizer.Message });
 export const Message = S.Union([GotTokenizerMessage])
-export type Message = typeof Message.Type`;
+export type Message = typeof Message.Type`
 
 const update = `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
@@ -170,7 +170,7 @@ const update = `export const update = (model: Model, message: Message): Update.R
       }
     }
   }
-}`;
+}`
 
 const ITEMS_SNIPPET = `const USERS = [
   { id: '1', label: 'Alice Johnson' },
@@ -195,35 +195,38 @@ const SKILLS = [
 const TAGS = [
   { id: '1', label: 'Design' },
   { id: '2', label: 'Engineering' },
-] as const`;
+] as const`
 
 const modelDecl = `export const Model = S.Struct({
   tokenizers: S.Array(Tokenizer.Model),
 })
 export type Model = typeof Model.Type
 
-${ITEMS_SNIPPET}`;
+${ITEMS_SNIPPET}`
 
-const singleSource = (fixture: TokenizerFixture, renderer: 'tailwind' | 'stylex'): string => {
-  const isStyleX = renderer === 'stylex';
+const singleSource = (
+  fixture: TokenizerFixture,
+  renderer: 'tailwind' | 'stylex',
+): string => {
+  const isStyleX = renderer === 'stylex'
   const initLines = (() => {
     switch (fixture.kind) {
       case 'showcase':
-        return `Tokenizer.init({ id: 'docs-tokenizer-0', tokens: [...TAGS] })`;
+        return `Tokenizer.init({ id: 'docs-tokenizer-0', tokens: [...TAGS] })`
       case 'clear':
-        return `Tokenizer.init({ id: 'docs-tokenizer-0', tokens: [USERS[0]!, USERS[1]!], items: [...USERS] })`;
+        return `Tokenizer.init({ id: 'docs-tokenizer-0', tokens: [USERS[0]!, USERS[1]!], items: [...USERS] })`
       case 'icon':
-        return `Tokenizer.init({ id: 'docs-tokenizer-0', tokens: [USERS[0]!, USERS[2]!], items: [...USERS] })`;
+        return `Tokenizer.init({ id: 'docs-tokenizer-0', tokens: [USERS[0]!, USERS[2]!], items: [...USERS] })`
       case 'endContent':
-        return `Tokenizer.init({ id: 'docs-tokenizer-0', tokens: [USERS[0]!, USERS[2]!], items: [...USERS] })`;
+        return `Tokenizer.init({ id: 'docs-tokenizer-0', tokens: [USERS[0]!, USERS[2]!], items: [...USERS] })`
       case 'maxEntries':
-        return `Tokenizer.init({ id: 'docs-tokenizer-0', tokens: [SKILLS[0]!, SKILLS[1]!], items: [...SKILLS], maxEntries: 3 })`;
+        return `Tokenizer.init({ id: 'docs-tokenizer-0', tokens: [SKILLS[0]!, SKILLS[1]!], items: [...SKILLS], maxEntries: 3 })`
       case 'overflow':
-        return `Tokenizer.init({ id: 'docs-tokenizer-0', tokens: [...USERS], items: [...USERS] }), Tokenizer.init({ id: 'docs-tokenizer-1', tokens: [...USERS], items: [...USERS] })`;
+        return `Tokenizer.init({ id: 'docs-tokenizer-0', tokens: [...USERS], items: [...USERS] }), Tokenizer.init({ id: 'docs-tokenizer-1', tokens: [...USERS], items: [...USERS] })`
       default:
-        return `Tokenizer.init({ id: 'docs-tokenizer-0', items: [...USERS] })`;
+        return `Tokenizer.init({ id: 'docs-tokenizer-0', items: [...USERS] })`
     }
-  })();
+  })()
 
   const callFor = (kind: TokenizerFixture['kind']): string => {
     switch (kind) {
@@ -235,7 +238,7 @@ const singleSource = (fixture: TokenizerFixture, renderer: 'tailwind' | 'stylex'
           placeholder: 'Search...',
           items: [],
           width: 400,
-        }, h)`;
+        }, h)`
       case 'clear':
         return `Tokenizer.tokenizer({
           model: model.tokenizers[0]!,
@@ -245,7 +248,7 @@ const singleSource = (fixture: TokenizerFixture, renderer: 'tailwind' | 'stylex'
           items: [...USERS],
           hasClear: true,
           width: 400,
-        }, h)`;
+        }, h)`
       case 'icon':
         return `Tokenizer.tokenizer({
           model: model.tokenizers[0]!,
@@ -255,7 +258,7 @@ const singleSource = (fixture: TokenizerFixture, renderer: 'tailwind' | 'stylex'
           items: [...USERS],
           hasStartIcon: true,
           width: 400,
-        }, h)`;
+        }, h)`
       case 'endContent':
         return `Tokenizer.tokenizer({
           model: model.tokenizers[0]!,
@@ -265,7 +268,7 @@ const singleSource = (fixture: TokenizerFixture, renderer: 'tailwind' | 'stylex'
           items: [...USERS],
           endContent: h.button([${buttonClass(isStyleX)}, h.Type('button')], ['Apply']),
           width: 400,
-        }, h)`;
+        }, h)`
       case 'maxEntries':
         return `Tokenizer.tokenizer({
           model: model.tokenizers[0]!,
@@ -276,7 +279,7 @@ const singleSource = (fixture: TokenizerFixture, renderer: 'tailwind' | 'stylex'
           items: [...SKILLS],
           maxEntries: 3,
           width: 400,
-        }, h)`;
+        }, h)`
       case 'overflow':
         return `Tokenizer.tokenizer({
           model: model.tokenizers[0]!,
@@ -295,30 +298,30 @@ const singleSource = (fixture: TokenizerFixture, renderer: 'tailwind' | 'stylex'
           items: [...USERS],
           tokenOverflowBehavior: 'unfocusedLayer',
           width: 400,
-        }, h)`;
+        }, h)`
       default:
-        return '';
+        return ''
     }
-  };
+  }
 
   const supporting = (kind: TokenizerFixture['kind']): string => {
     switch (kind) {
       case 'clear':
-        return `'Clear-all button appears when tokens are selected'`;
+        return `'Clear-all button appears when tokens are selected'`
       case 'icon':
-        return `'Leading icon reinforces the search affordance'`;
+        return `'Leading icon reinforces the search affordance'`
       case 'endContent':
-        return `'Action button in the end slot'`;
+        return `'Action button in the end slot'`
       case 'maxEntries':
-        return `\`Limited to 3 selections — \${String(3 - model.tokenizers[0]!.tokens.length)} remaining\``;
+        return `\`Limited to 3 selections — \${String(3 - model.tokenizers[0]!.tokens.length)} remaining\``
       case 'overflow':
-        return `'Inline overflow — content shifts down on expand'`;
+        return `'Inline overflow — content shifts down on expand'`
       default:
-        return '';
+        return ''
     }
-  };
+  }
 
-  const note = supporting(fixture.kind);
+  const note = supporting(fixture.kind)
   return foldkitApplication({
     title: `Tokenizer — ${fixture.title}`,
     imports: imports(renderer, isStyleX ? stylexPreamble : ''),
@@ -333,17 +336,24 @@ const singleSource = (fixture: TokenizerFixture, renderer: 'tailwind' | 'stylex'
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Tokenizer — ${fixture.title}',
   body: h.main([h.Class('flex min-h-screen items-start justify-center p-8')], [
-    h.div([${stackClass(isStyleX)}], [${note === '' ? '' : `
-      h.p([${supportingClass(isStyleX)}], [${note}]),`}
+    h.div([${stackClass(isStyleX)}], [${
+      note === ''
+        ? ''
+        : `
+      h.p([${supportingClass(isStyleX)}], [${note}]),`
+    }
       ${callFor(fixture.kind)},
     ]),
   ]),
 })`,
-  });
-};
+  })
+}
 
-const creatableSource = (fixture: TokenizerFixture, renderer: 'tailwind' | 'stylex'): string => {
-  const isStyleX = renderer === 'stylex';
+const creatableSource = (
+  fixture: TokenizerFixture,
+  renderer: 'tailwind' | 'stylex',
+): string => {
+  const isStyleX = renderer === 'stylex'
   return foldkitApplication({
     title: `Tokenizer — ${fixture.title}`,
     imports: imports(renderer, isStyleX ? stylexPreamble : ''),
@@ -386,11 +396,14 @@ const creatableSource = (fixture: TokenizerFixture, renderer: 'tailwind' | 'styl
     ]),
   ]),
 })`,
-  });
-};
+  })
+}
 
-const statesSource = (fixture: TokenizerFixture, renderer: 'tailwind' | 'stylex'): string => {
-  const isStyleX = renderer === 'stylex';
+const statesSource = (
+  fixture: TokenizerFixture,
+  renderer: 'tailwind' | 'stylex',
+): string => {
+  const isStyleX = renderer === 'stylex'
   return foldkitApplication({
     title: `Tokenizer — ${fixture.title}`,
     imports: imports(renderer, isStyleX ? stylexPreamble : ''),
@@ -435,19 +448,22 @@ const FIELDS = [
     ]),
   ]),
 })`,
-  });
-};
+  })
+}
 
-const tokenizerSource = (fixture: TokenizerFixture, renderer: 'tailwind' | 'stylex'): string => {
+const tokenizerSource = (
+  fixture: TokenizerFixture,
+  renderer: 'tailwind' | 'stylex',
+): string => {
   switch (fixture.kind) {
     case 'creatable':
-      return creatableSource(fixture, renderer);
+      return creatableSource(fixture, renderer)
     case 'states':
-      return statesSource(fixture, renderer);
+      return statesSource(fixture, renderer)
     default:
-      return singleSource(fixture, renderer);
+      return singleSource(fixture, renderer)
   }
-};
+}
 
 export const tokenizerExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -459,4 +475,4 @@ export const tokenizerExamples = (
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: tokenizerSource(fixture, renderer),
-  }));
+  }))

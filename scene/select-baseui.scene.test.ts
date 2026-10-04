@@ -101,15 +101,17 @@ const makeUpdate = (Select: SelectModule) => {
               onSome: selected => Option.some(selected.value),
             }),
           },
-          commands: Command.mapMessages(
-            next.commands ?? [],
-            message => ({ _tag: 'GotSelect' as const, message }),
-          ),
+          commands: Command.mapMessages(next.commands ?? [], message => ({
+            _tag: 'GotSelect' as const,
+            message,
+          })),
           outMessage: next.outMessage,
         }
       }
       case 'SetSelected':
-        return { model: { ...model, maybeSelected: Option.some(message.value) } }
+        return {
+          model: { ...model, maybeSelected: Option.some(message.value) },
+        }
     }
   }
   return update
@@ -120,7 +122,11 @@ const initModel = (Select: SelectModule, id: string): Model => ({
   maybeSelected: Option.none(),
 })
 
-const selectedModel = (Select: SelectModule, id: string, value: string): Model => ({
+const selectedModel = (
+  Select: SelectModule,
+  id: string,
+  value: string,
+): Model => ({
   select: Select.init({ id }),
   maybeSelected: Option.some(value),
 })
@@ -227,7 +233,10 @@ const verifyRenderer = (name: string, Select: SelectModule) => {
           {
             model: model.select,
             maybeSelectedValue: model.maybeSelected,
-            toParentMessage: message => ({ _tag: 'GotSelect' as const, message }),
+            toParentMessage: message => ({
+              _tag: 'GotSelect' as const,
+              message,
+            }),
             items: ['one', 'two', 'three'],
             itemToValue: item => item,
             itemToLabel: item => item,
@@ -284,7 +293,10 @@ const verifyRenderer = (name: string, Select: SelectModule) => {
           Scene.keydown(trigger, 'ArrowDown'),
           Scene.expectHandled(),
           ...resolveOpenedPopup(),
-          Scene.expect(listbox).toHaveAttr('aria-activedescendant', 'fruit-item-0'),
+          Scene.expect(listbox).toHaveAttr(
+            'aria-activedescendant',
+            'fruit-item-0',
+          ),
           Scene.expect(option('one')).toHaveAttr('data-active', ''),
         )
       })
@@ -305,7 +317,9 @@ const verifyRenderer = (name: string, Select: SelectModule) => {
         Scene.scene(
           { update, view: view({ ariaLabel: 'Pick a fruit' }) },
           Scene.given(initModel(Select, 'fruit')),
-          Scene.expect(Scene.role('button', { name: 'Pick a fruit' })).toExist(),
+          Scene.expect(
+            Scene.role('button', { name: 'Pick a fruit' }),
+          ).toExist(),
           Scene.expect(trigger).toHaveAttr('aria-label', 'Pick a fruit'),
         )
       })
@@ -315,23 +329,26 @@ const verifyRenderer = (name: string, Select: SelectModule) => {
           {
             update,
             view: (model: Model, h: HtmlBuilder<Message>): Html =>
-              h.div([], [
-                h.label([h.For('fruit-button')], ['Fruit']),
-                Select.select(
-                  {
-                    model: model.select,
-                    maybeSelectedValue: model.maybeSelected,
-                    toParentMessage: message => ({
-                      _tag: 'GotSelect' as const,
-                      message,
-                    }),
-                    items: ['one', 'two', 'three'],
-                    itemToValue: item => item,
-                    itemToLabel: item => item,
-                  },
-                  h,
-                ),
-              ]),
+              h.div(
+                [],
+                [
+                  h.label([h.For('fruit-button')], ['Fruit']),
+                  Select.select(
+                    {
+                      model: model.select,
+                      maybeSelectedValue: model.maybeSelected,
+                      toParentMessage: message => ({
+                        _tag: 'GotSelect' as const,
+                        message,
+                      }),
+                      items: ['one', 'two', 'three'],
+                      itemToValue: item => item,
+                      itemToLabel: item => item,
+                    },
+                    h,
+                  ),
+                ],
+              ),
           },
           Scene.given(initModel(Select, 'fruit')),
           Scene.expect(Scene.role('button', { name: 'Fruit' })).toExist(),
@@ -364,29 +381,32 @@ const verifyRenderer = (name: string, Select: SelectModule) => {
           {
             update,
             view: (model: Model, h: HtmlBuilder<Message>): Html =>
-              h.div([], [
-                h.button(
-                  [
-                    h.Type('button'),
-                    h.OnClick({ _tag: 'SetSelected', value: 'three' }),
-                  ],
-                  ['Set three'],
-                ),
-                Select.select(
-                  {
-                    model: model.select,
-                    maybeSelectedValue: model.maybeSelected,
-                    toParentMessage: message => ({
-                      _tag: 'GotSelect' as const,
-                      message,
-                    }),
-                    items: ['one', 'two', 'three'],
-                    itemToValue: item => item,
-                    itemToLabel: item => item,
-                  },
-                  h,
-                ),
-              ]),
+              h.div(
+                [],
+                [
+                  h.button(
+                    [
+                      h.Type('button'),
+                      h.OnClick({ _tag: 'SetSelected', value: 'three' }),
+                    ],
+                    ['Set three'],
+                  ),
+                  Select.select(
+                    {
+                      model: model.select,
+                      maybeSelectedValue: model.maybeSelected,
+                      toParentMessage: message => ({
+                        _tag: 'GotSelect' as const,
+                        message,
+                      }),
+                      items: ['one', 'two', 'three'],
+                      itemToValue: item => item,
+                      itemToLabel: item => item,
+                    },
+                    h,
+                  ),
+                ],
+              ),
           },
           Scene.given(initModel(Select, 'fruit')),
           Scene.expect(trigger).toContainText(''),
@@ -625,7 +645,10 @@ const verifyRenderer = (name: string, Select: SelectModule) => {
           Scene.expectHandled(),
           ...resolveOpenedPopup(),
           Scene.expect(option('three')).toHaveAttr('data-active', ''),
-          Scene.expect(listbox).toHaveAttr('aria-activedescendant', 'fruit-item-2'),
+          Scene.expect(listbox).toHaveAttr(
+            'aria-activedescendant',
+            'fruit-item-2',
+          ),
         )
       })
 
@@ -653,7 +676,10 @@ const verifyRenderer = (name: string, Select: SelectModule) => {
           resolveScrollIntoView(),
           Scene.expect(option('two')).toHaveAttr('data-active', ''),
           Scene.expect(option('one')).not.toHaveAttr('data-active'),
-          Scene.expect(listbox).toHaveAttr('aria-activedescendant', 'fruit-item-1'),
+          Scene.expect(listbox).toHaveAttr(
+            'aria-activedescendant',
+            'fruit-item-1',
+          ),
           Scene.keydown(listbox, 'ArrowDown'),
           Scene.expectHandled(),
           resolveScrollIntoView(),
@@ -695,7 +721,12 @@ const verifyRenderer = (name: string, Select: SelectModule) => {
 
       it('skips disabled items while navigating', () => {
         Scene.scene(
-          { update, view: view({ itemToConfig: item => ({ isDisabled: item === 'two' }) }) },
+          {
+            update,
+            view: view({
+              itemToConfig: item => ({ isDisabled: item === 'two' }),
+            }),
+          },
           Scene.given(initModel(Select, 'fruit')),
           Scene.keydown(trigger, 'ArrowDown'),
           Scene.expectHandled(),
@@ -724,7 +755,10 @@ const verifyRenderer = (name: string, Select: SelectModule) => {
           resolveScrollIntoView(),
           Scene.keydown(listbox, 'Enter'),
           Scene.expectHandled(),
-          Scene.Command.expectHas({ name: 'ClickItem', args: { id: 'fruit', index: 1 } }),
+          Scene.Command.expectHas({
+            name: 'ClickItem',
+            args: { id: 'fruit', index: 1 },
+          }),
           Scene.Command.resolve(
             ListboxPrimitive.ClickItem,
             ListboxPrimitive.Message.CompletedClickItem(),
@@ -764,7 +798,12 @@ const verifyRenderer = (name: string, Select: SelectModule) => {
 
       it('should not select a disabled item', () => {
         Scene.scene(
-          { update, view: view({ itemToConfig: item => ({ isDisabled: item === 'two' }) }) },
+          {
+            update,
+            view: view({
+              itemToConfig: item => ({ isDisabled: item === 'two' }),
+            }),
+          },
           Scene.given(initModel(Select, 'fruit')),
           Scene.click(trigger),
           Scene.expectHandled(),
@@ -803,8 +842,7 @@ const verifyRenderer = (name: string, Select: SelectModule) => {
     })
 
     describe('typeahead', () => {
-      const searchView = () =>
-        view({ items: ['apple', 'apricot', 'banana'] })
+      const searchView = () => view({ items: ['apple', 'apricot', 'banana'] })
 
       it('moves the highlight with typeahead while the popup is open', () => {
         Scene.scene(
@@ -818,7 +856,10 @@ const verifyRenderer = (name: string, Select: SelectModule) => {
             ListboxPrimitive.Message.CompletedDelayClearSearch({ version: 1 }),
           ),
           Scene.expect(option('banana')).toHaveAttr('data-active', ''),
-          Scene.expect(listbox).toHaveAttr('aria-activedescendant', 'fruit-item-2'),
+          Scene.expect(listbox).toHaveAttr(
+            'aria-activedescendant',
+            'fruit-item-2',
+          ),
           Scene.expectNoOutMessage(),
         )
       })
@@ -890,24 +931,21 @@ const verifyRenderer = (name: string, Select: SelectModule) => {
         )
       })
 
-      it.fails(
-        'skips disabled items and commits the next match via typeahead on a closed trigger',
-        () => {
-          Scene.scene(
-            {
-              update,
-              view: view({
-                items: ['apple', 'orange', 'one'],
-                itemToConfig: item => ({ isDisabled: item === 'one' }),
-                name: 'fruit',
-              }),
-            },
-            Scene.given(initModel(Select, 'fruit')),
-            Scene.keydown(trigger, 'o'),
-            Scene.expect(hiddenInput).toHaveValue('orange'),
-          )
-        },
-      )
+      it.fails('skips disabled items and commits the next match via typeahead on a closed trigger', () => {
+        Scene.scene(
+          {
+            update,
+            view: view({
+              items: ['apple', 'orange', 'one'],
+              itemToConfig: item => ({ isDisabled: item === 'one' }),
+              name: 'fruit',
+            }),
+          },
+          Scene.given(initModel(Select, 'fruit')),
+          Scene.keydown(trigger, 'o'),
+          Scene.expect(hiddenInput).toHaveValue('orange'),
+        )
+      })
 
       it('commits nothing when the only typeahead match is disabled (closed trigger)', () => {
         // Outcome parity: foldkit ignores closed-trigger typeahead entirely,
@@ -1178,7 +1216,9 @@ const verifyRenderer = (name: string, Select: SelectModule) => {
           Scene.given(openModel(Select, 'fruit')),
           ...resolveOpenMounts(),
           Scene.expectAll(Scene.all.role('separator')).toHaveCount(1),
-          Scene.expect(Scene.selector('[data-slot="select-separator"]')).toExist(),
+          Scene.expect(
+            Scene.selector('[data-slot="select-separator"]'),
+          ).toExist(),
         )
       })
     })
@@ -1207,7 +1247,10 @@ const verifyRenderer = (name: string, Select: SelectModule) => {
           {
             model: model.select,
             maybeSelectedValue: model.maybeSelected,
-            toParentMessage: message => ({ _tag: 'GotSelect' as const, message }),
+            toParentMessage: message => ({
+              _tag: 'GotSelect' as const,
+              message,
+            }),
             items: [
               { value: 'v1', label: 'Label One' },
               { value: 'v2', label: 'Label Two' },

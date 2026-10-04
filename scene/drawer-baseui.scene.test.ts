@@ -75,9 +75,7 @@ const mapDrawer = (
     _tag: 'GotDrawerMessage' as const,
     message,
   })),
-  ...(result.outMessage === undefined
-    ? {}
-    : { outMessage: result.outMessage }),
+  ...(result.outMessage === undefined ? {} : { outMessage: result.outMessage }),
 })
 
 const update = (model: Model, message: Message) => {
@@ -169,38 +167,35 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
     h: HtmlBuilder<Message>,
     direction?: 'top' | 'right' | 'bottom' | 'left',
   ) =>
-    h.div([], [
-      h.button(
-        [h.Type('button'), h.OnClick({ _tag: 'ClickedOpen' })],
-        ['Open drawer'],
-      ),
-      Drawer.drawer(
-        {
-          model: model.drawer,
-          toParentMessage: message => ({
-            _tag: 'GotDrawerMessage' as const,
-            message,
-          }),
-          title: 'Move goal',
-          description: 'Set your daily activity goal.',
-          direction,
-          footer: slots => [
-            h.button([...slots.closeButton], ['Cancel']),
-          ],
-        },
-        h,
-      ),
-    ])
+    h.div(
+      [],
+      [
+        h.button(
+          [h.Type('button'), h.OnClick({ _tag: 'ClickedOpen' })],
+          ['Open drawer'],
+        ),
+        Drawer.drawer(
+          {
+            model: model.drawer,
+            toParentMessage: message => ({
+              _tag: 'GotDrawerMessage' as const,
+              message,
+            }),
+            title: 'Move goal',
+            description: 'Set your daily activity goal.',
+            direction,
+            footer: slots => [h.button([...slots.closeButton], ['Cancel'])],
+          },
+          h,
+        ),
+      ],
+    )
 
   const openModel = (id: string): Model => ({
     drawer: DrawerBehavior.open(DrawerBehavior.init({ id })).model,
   })
 
-  const draggingModel = (
-    id: string,
-    offset: number,
-    timeStamp = 60,
-  ): Model => {
+  const draggingModel = (id: string, offset: number, timeStamp = 60): Model => {
     const started = DrawerBehavior.update(
       openModel(id).drawer,
       DrawerBehavior.Message.StartedDrawerDrag({

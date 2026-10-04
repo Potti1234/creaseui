@@ -14,7 +14,10 @@ export type AspectRatioProps = Readonly<{
   children: ReadonlyArray<Html | string>
 }>
 
-export const aspectRatio = <Msg>(props: AspectRatioProps, h: HtmlBuilder<Msg>): Html =>
+export const aspectRatio = <Msg>(
+  props: AspectRatioProps,
+  h: HtmlBuilder<Msg>,
+): Html =>
   h.div(
     [
       h.DataAttribute('slot', 'aspect-ratio'),
@@ -23,4 +26,3 @@ export const aspectRatio = <Msg>(props: AspectRatioProps, h: HtmlBuilder<Msg>): 
     ],
     [...props.children],
   )
-

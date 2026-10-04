@@ -568,24 +568,24 @@ before stopping it.
 
 ## 9. Source of truth index
 
-| Concern | Source of truth |
-| --- | --- |
-| Logical commits | [`COMMIT_JOURNAL.md`](COMMIT_JOURNAL.md) |
-| Architecture | [`docs/architecture.md`](docs/architecture.md) |
-| Getting started | [`docs/getting-started.md`](docs/getting-started.md) |
-| Registry installation | [`docs/registry.md`](docs/registry.md) |
-| Preset compiler | [`docs/create-presets.md`](docs/create-presets.md) |
-| Human parity policy | [`docs/component-parity.md`](docs/component-parity.md) |
-| Machine parity | [`docs/component-parity.json`](docs/component-parity.json) |
-| Upstream pin/hashes | [`docs/upstream-shadcn.json`](docs/upstream-shadcn.json) |
-| Component roadmap | [`docs/component-roadmap.json`](docs/component-roadmap.json) |
-| API inventory | [`docs/api-reference.md`](docs/api-reference.md) |
-| Machine discovery | [`public/docs-index.json`](public/docs-index.json) |
-| LLM discovery | [`public/llms.txt`](public/llms.txt) |
-| Maintenance | [`docs/maintenance.md`](docs/maintenance.md) |
-| Releases | [`docs/releasing.md`](docs/releasing.md) |
-| Security | [`SECURITY.md`](SECURITY.md) |
-| Third-party licenses | [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) |
+| Concern               | Source of truth                                              |
+| --------------------- | ------------------------------------------------------------ |
+| Logical commits       | [`COMMIT_JOURNAL.md`](COMMIT_JOURNAL.md)                     |
+| Architecture          | [`docs/architecture.md`](docs/architecture.md)               |
+| Getting started       | [`docs/getting-started.md`](docs/getting-started.md)         |
+| Registry installation | [`docs/registry.md`](docs/registry.md)                       |
+| Preset compiler       | [`docs/create-presets.md`](docs/create-presets.md)           |
+| Human parity policy   | [`docs/component-parity.md`](docs/component-parity.md)       |
+| Machine parity        | [`docs/component-parity.json`](docs/component-parity.json)   |
+| Upstream pin/hashes   | [`docs/upstream-shadcn.json`](docs/upstream-shadcn.json)     |
+| Component roadmap     | [`docs/component-roadmap.json`](docs/component-roadmap.json) |
+| API inventory         | [`docs/api-reference.md`](docs/api-reference.md)             |
+| Machine discovery     | [`public/docs-index.json`](public/docs-index.json)           |
+| LLM discovery         | [`public/llms.txt`](public/llms.txt)                         |
+| Maintenance           | [`docs/maintenance.md`](docs/maintenance.md)                 |
+| Releases              | [`docs/releasing.md`](docs/releasing.md)                     |
+| Security              | [`SECURITY.md`](SECURITY.md)                                 |
+| Third-party licenses  | [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)           |
 
 This document describes the state of the repository at the end of the quality
 initiative. For exact per-file staging boundaries and historical verification,

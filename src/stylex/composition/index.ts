@@ -75,4 +75,3 @@ export type {
   ResponsiveSpaceToken,
   SpaceToken,
 } from './types'
-

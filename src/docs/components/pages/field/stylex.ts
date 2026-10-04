@@ -1,8 +1,8 @@
-import { Option } from 'effect';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import * as stylex from '@stylexjs/stylex';
+import { Option } from 'effect'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import * as stylex from '@stylexjs/stylex'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   type FieldFixture,
   fieldDepartments,
@@ -10,31 +10,39 @@ import {
   fieldMonths,
   fieldRtlCopy,
   fieldYears,
-} from '@/docs/components/pages/field/shared';
-import * as Button from '@/stylex/button';
-import * as Checkbox from '@/stylex/checkbox';
-import * as Field from '@/stylex/field';
-import * as Input from '@/stylex/input';
-import * as RadioGroup from '@/stylex/radio-group';
-import * as Select from '@/stylex/select';
-import * as Slider from '@/stylex/slider';
-import * as Switch from '@/stylex/switch';
-import * as Textarea from '@/stylex/textarea';
-import { className } from '@/stylex/style';
-import type { ComponentLayoutStyle } from '@/stylex/contracts';
+} from '@/docs/components/pages/field/shared'
+import * as Button from '@/stylex/button'
+import * as Checkbox from '@/stylex/checkbox'
+import * as Field from '@/stylex/field'
+import * as Input from '@/stylex/input'
+import * as RadioGroup from '@/stylex/radio-group'
+import * as Select from '@/stylex/select'
+import * as Slider from '@/stylex/slider'
+import * as Switch from '@/stylex/switch'
+import * as Textarea from '@/stylex/textarea'
+import { className } from '@/stylex/style'
+import type { ComponentLayoutStyle } from '@/stylex/contracts'
 
 const styles = stylex.create({
   page: { maxWidth: '28rem', width: '100%' },
   pageXs: { maxWidth: '20rem', width: '100%' },
   pageSm: { maxWidth: '24rem', width: '100%' },
   pageLg: { maxWidth: '32rem', width: '100%' },
-  grid3: { gap: '1rem', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', },
-  grid2: { gap: '1rem', display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', },
+  grid3: {
+    gap: '1rem',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, 1fr)',
+  },
+  grid2: {
+    gap: '1rem',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+  },
   gapSm: { gap: '0.75rem' },
   fitWidth: { width: 'fit-content' },
   valueSpan: { fontVariantNumeric: 'tabular-nums', fontWeight: 500 },
   sliderTop: { marginBlockStart: '0.5rem', width: '100%' },
-});
+})
 
 type TextKey =
   | 'name'
@@ -47,7 +55,7 @@ type TextKey =
   | 'city'
   | 'zip'
   | 'profileName'
-  | 'comments';
+  | 'comments'
 type CheckKey =
   | 'sameAsShipping'
   | 'hardDisks'
@@ -58,55 +66,69 @@ type CheckKey =
   | 'push'
   | 'pushTasks'
   | 'emailTasks'
-  | 'mfa';
+  | 'mfa'
 
 type FieldPreviewModel = Readonly<
   Record<TextKey, string> &
     Record<CheckKey, boolean> & {
-      monthSelect: Select.Model;
-      yearSelect: Select.Model;
-      departmentSelect: Select.Model;
-      month: Option.Option<string>;
-      year: Option.Option<string>;
-      department: Option.Option<string>;
-      planRadio: RadioGroup.Model;
-      environmentRadio: RadioGroup.Model;
-      plan: string;
-      environment: string;
-      price: readonly [number, number];
+      monthSelect: Select.Model
+      yearSelect: Select.Model
+      departmentSelect: Select.Model
+      month: Option.Option<string>
+      year: Option.Option<string>
+      department: Option.Option<string>
+      planRadio: RadioGroup.Model
+      environmentRadio: RadioGroup.Model
+      plan: string
+      environment: string
+      price: readonly [number, number]
     }
->;
+>
 
 const toMsg = <Msg>(onMessageJson: (json: string) => Msg) => ({
   text: (field: TextKey, value: string): Msg =>
     onMessageJson(JSON.stringify({ _tag: 'ChangedFieldText', field, value })),
   check: (field: CheckKey, isChecked: boolean): Msg =>
-    onMessageJson(JSON.stringify({ _tag: 'ToggledFieldCheck', field, isChecked })),
+    onMessageJson(
+      JSON.stringify({ _tag: 'ToggledFieldCheck', field, isChecked }),
+    ),
   price: (values: readonly [number, number]): Msg =>
-    onMessageJson(JSON.stringify({ _tag: 'ChangedFieldPrice', values: [values[0], values[1]] })),
+    onMessageJson(
+      JSON.stringify({
+        _tag: 'ChangedFieldPrice',
+        values: [values[0], values[1]],
+      }),
+    ),
   select: (which: string, message: Select.Message): Msg =>
-    onMessageJson(JSON.stringify({ _tag: 'GotFieldSelectMessage', which, message })),
+    onMessageJson(
+      JSON.stringify({ _tag: 'GotFieldSelectMessage', which, message }),
+    ),
   radio: (which: string, message: RadioGroup.Message): Msg =>
-    onMessageJson(JSON.stringify({ _tag: 'GotFieldRadioMessage', which, message })),
-});
+    onMessageJson(
+      JSON.stringify({ _tag: 'GotFieldRadioMessage', which, message }),
+    ),
+})
 
-type Helpers<Msg> = ReturnType<typeof toMsg<Msg>>;
+type Helpers<Msg> = ReturnType<typeof toMsg<Msg>>
 
-const fieldLabel = <Msg>(forId: string, label: string, h: HtmlBuilder<Msg>): Html =>
-  Field.fieldLabel({ for: forId, children: [label] }, h);
+const fieldLabel = <Msg>(
+  forId: string,
+  label: string,
+  h: HtmlBuilder<Msg>,
+): Html => Field.fieldLabel({ for: forId, children: [label] }, h)
 
 const textField = <Msg>(
   model: FieldPreviewModel,
   msg: Helpers<Msg>,
   h: HtmlBuilder<Msg>,
   opts: Readonly<{
-    id: string;
-    label: string;
-    field: TextKey;
-    placeholder?: string;
-    description?: string;
-    type?: 'text' | 'password';
-    descriptionFirst?: boolean;
+    id: string
+    label: string
+    field: TextKey
+    placeholder?: string
+    description?: string
+    type?: 'text' | 'password'
+    descriptionFirst?: boolean
   }>,
 ): Html =>
   Field.field(
@@ -121,7 +143,9 @@ const textField = <Msg>(
             id: opts.id,
             value: model[opts.field],
             onInput: value => msg.text(opts.field, value),
-            ...(opts.placeholder === undefined ? {} : { placeholder: opts.placeholder }),
+            ...(opts.placeholder === undefined
+              ? {}
+              : { placeholder: opts.placeholder }),
             ...(opts.type === undefined ? {} : { type: opts.type }),
           },
           h,
@@ -132,17 +156,17 @@ const textField = <Msg>(
       ],
     },
     h,
-  );
+  )
 
 const checkRow = <Msg>(
   model: FieldPreviewModel,
   msg: Helpers<Msg>,
   h: HtmlBuilder<Msg>,
   opts: Readonly<{
-    id: string;
-    field: CheckKey;
-    label: string;
-    isDisabled?: boolean;
+    id: string
+    field: CheckKey
+    label: string
+    isDisabled?: boolean
   }>,
 ): Html =>
   Field.field(
@@ -162,7 +186,7 @@ const checkRow = <Msg>(
       ],
     },
     h,
-  );
+  )
 
 const selectControl = <Msg>(
   model: FieldPreviewModel,
@@ -192,7 +216,7 @@ const selectControl = <Msg>(
       ...(direction === undefined ? {} : { direction }),
     },
     h,
-  );
+  )
 
 const paymentFields = <Msg>(
   model: FieldPreviewModel,
@@ -200,18 +224,22 @@ const paymentFields = <Msg>(
   h: HtmlBuilder<Msg>,
   rtl: boolean,
 ): Html => {
-  const copy = rtl ? fieldRtlCopy : undefined;
+  const copy = rtl ? fieldRtlCopy : undefined
   return Field.fieldGroup(
     {
       children: [
         Field.fieldSet(
           {
             children: [
-              Field.fieldLegend({ children: [copy?.paymentMethod ?? 'Payment Method'] }, h),
+              Field.fieldLegend(
+                { children: [copy?.paymentMethod ?? 'Payment Method'] },
+                h,
+              ),
               Field.fieldDescription(
                 {
                   children: [
-                    copy?.secureTransactions ?? 'All transactions are secure and encrypted',
+                    copy?.secureTransactions ??
+                      'All transactions are secure and encrypted',
                   ],
                 },
                 h,
@@ -231,34 +259,62 @@ const paymentFields = <Msg>(
                       field: 'cardNumber',
                       placeholder: '1234 5678 9012 3456',
                       description:
-                        copy?.cardNumberDescription ?? 'Enter your 16-digit card number',
+                        copy?.cardNumberDescription ??
+                        'Enter your 16-digit card number',
                     }),
-                    h.div([h.Class(className(styles.grid3))], [
-                      Field.field(
-                        {
-                          children: [
-                            Field.fieldLabel({ children: [copy?.month ?? 'Month'] }, h),
-                            selectControl(model, msg, 'month', fieldMonths, 'MM', 'Month', rtl ? 'rtl' : undefined, h),
-                          ],
-                        },
-                        h,
-                      ),
-                      Field.field(
-                        {
-                          children: [
-                            Field.fieldLabel({ children: [copy?.year ?? 'Year'] }, h),
-                            selectControl(model, msg, 'year', fieldYears, 'YYYY', 'Year', rtl ? 'rtl' : undefined, h),
-                          ],
-                        },
-                        h,
-                      ),
-                      textField(model, msg, h, {
-                        id: `docs-field-${rtl ? 'rtl' : 'demo'}-cvv`,
-                        label: 'CVV',
-                        field: 'cvv',
-                        placeholder: '123',
-                      }),
-                    ]),
+                    h.div(
+                      [h.Class(className(styles.grid3))],
+                      [
+                        Field.field(
+                          {
+                            children: [
+                              Field.fieldLabel(
+                                { children: [copy?.month ?? 'Month'] },
+                                h,
+                              ),
+                              selectControl(
+                                model,
+                                msg,
+                                'month',
+                                fieldMonths,
+                                'MM',
+                                'Month',
+                                rtl ? 'rtl' : undefined,
+                                h,
+                              ),
+                            ],
+                          },
+                          h,
+                        ),
+                        Field.field(
+                          {
+                            children: [
+                              Field.fieldLabel(
+                                { children: [copy?.year ?? 'Year'] },
+                                h,
+                              ),
+                              selectControl(
+                                model,
+                                msg,
+                                'year',
+                                fieldYears,
+                                'YYYY',
+                                'Year',
+                                rtl ? 'rtl' : undefined,
+                                h,
+                              ),
+                            ],
+                          },
+                          h,
+                        ),
+                        textField(model, msg, h, {
+                          id: `docs-field-${rtl ? 'rtl' : 'demo'}-cvv`,
+                          label: 'CVV',
+                          field: 'cvv',
+                          placeholder: '123',
+                        }),
+                      ],
+                    ),
                   ],
                 },
                 h,
@@ -271,7 +327,10 @@ const paymentFields = <Msg>(
         Field.fieldSet(
           {
             children: [
-              Field.fieldLegend({ children: [copy?.billingAddress ?? 'Billing Address'] }, h),
+              Field.fieldLegend(
+                { children: [copy?.billingAddress ?? 'Billing Address'] },
+                h,
+              ),
               Field.fieldDescription(
                 {
                   children: [
@@ -317,7 +376,8 @@ const paymentFields = <Msg>(
                               value: model.comments,
                               onInput: value => msg.text('comments', value),
                               placeholder:
-                                copy?.commentsPlaceholder ?? 'Add any additional comments',
+                                copy?.commentsPlaceholder ??
+                                'Add any additional comments',
                               resize: 'none',
                             },
                             h,
@@ -338,9 +398,16 @@ const paymentFields = <Msg>(
           {
             orientation: 'horizontal',
             children: [
-              Button.button({ children: [copy?.submit ?? 'Submit'], type: 'submit' }, h),
               Button.button(
-                { variant: 'outline', type: 'button', children: [copy?.cancel ?? 'Cancel'] },
+                { children: [copy?.submit ?? 'Submit'], type: 'submit' },
+                h,
+              ),
+              Button.button(
+                {
+                  variant: 'outline',
+                  type: 'button',
+                  children: [copy?.cancel ?? 'Cancel'],
+                },
                 h,
               ),
             ],
@@ -350,8 +417,8 @@ const paymentFields = <Msg>(
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const fieldView = <Msg>(
   fixture: FieldFixture,
@@ -361,7 +428,10 @@ const fieldView = <Msg>(
 ): Html => {
   switch (fixture.kind) {
     case 'demo':
-      return h.div([h.Class(className(styles.page))], [paymentFields(model, msg, h, false)]);
+      return h.div(
+        [h.Class(className(styles.page))],
+        [paymentFields(model, msg, h, false)],
+      )
     case 'input':
       return Field.fieldSet(
         {
@@ -393,7 +463,7 @@ const fieldView = <Msg>(
           ],
         },
         h,
-      );
+      )
     case 'textarea':
       return Field.fieldSet(
         {
@@ -417,7 +487,11 @@ const fieldView = <Msg>(
                           h,
                         ),
                         Field.fieldDescription(
-                          { children: ['Share your thoughts about our service.'] },
+                          {
+                            children: [
+                              'Share your thoughts about our service.',
+                            ],
+                          },
                           h,
                         ),
                       ],
@@ -431,14 +505,23 @@ const fieldView = <Msg>(
           ],
         },
         h,
-      );
+      )
     case 'select':
       return Field.field(
         {
           layoutStyle: styles.pageXs,
           children: [
             Field.fieldLabel({ children: ['Department'] }, h),
-            selectControl(model, msg, 'department', fieldDepartments, 'Choose department', 'Department', undefined, h),
+            selectControl(
+              model,
+              msg,
+              'department',
+              fieldDepartments,
+              'Choose department',
+              'Department',
+              undefined,
+              h,
+            ),
             Field.fieldDescription(
               { children: ['Select your department or area of work.'] },
               h,
@@ -446,9 +529,9 @@ const fieldView = <Msg>(
           ],
         },
         h,
-      );
+      )
     case 'slider': {
-      const [lo, hi] = model.price;
+      const [lo, hi] = model.price
       return Field.field(
         {
           layoutStyle: styles.pageXs,
@@ -461,9 +544,15 @@ const fieldView = <Msg>(
                     [],
                     [
                       'Set your budget range ($',
-                      h.span([h.Class(className(styles.valueSpan))], [String(lo)]),
+                      h.span(
+                        [h.Class(className(styles.valueSpan))],
+                        [String(lo)],
+                      ),
                       ' - ',
-                      h.span([h.Class(className(styles.valueSpan))], [String(hi)]),
+                      h.span(
+                        [h.Class(className(styles.valueSpan))],
+                        [String(hi)],
+                      ),
                       ').',
                     ],
                   ),
@@ -486,7 +575,7 @@ const fieldView = <Msg>(
           ],
         },
         h,
-      );
+      )
     }
     case 'fieldset':
       return Field.fieldSet(
@@ -507,20 +596,23 @@ const fieldView = <Msg>(
                     field: 'street',
                     placeholder: '123 Main St',
                   }),
-                  h.div([h.Class(className(styles.grid2))], [
-                    textField(model, msg, h, {
-                      id: 'docs-field-city',
-                      label: 'City',
-                      field: 'city',
-                      placeholder: 'New York',
-                    }),
-                    textField(model, msg, h, {
-                      id: 'docs-field-zip',
-                      label: 'Postal Code',
-                      field: 'zip',
-                      placeholder: '90502',
-                    }),
-                  ]),
+                  h.div(
+                    [h.Class(className(styles.grid2))],
+                    [
+                      textField(model, msg, h, {
+                        id: 'docs-field-city',
+                        label: 'City',
+                        field: 'city',
+                        placeholder: 'New York',
+                      }),
+                      textField(model, msg, h, {
+                        id: 'docs-field-zip',
+                        label: 'Postal Code',
+                        field: 'zip',
+                        placeholder: '90502',
+                      }),
+                    ],
+                  ),
                 ],
               },
               h,
@@ -528,7 +620,7 @@ const fieldView = <Msg>(
           ],
         },
         h,
-      );
+      )
     case 'checkbox':
       return Field.fieldGroup(
         {
@@ -538,21 +630,44 @@ const fieldView = <Msg>(
               {
                 children: [
                   Field.fieldLegend(
-                    { variant: 'label', children: ['Show these items on the desktop'] },
+                    {
+                      variant: 'label',
+                      children: ['Show these items on the desktop'],
+                    },
                     h,
                   ),
                   Field.fieldDescription(
-                    { children: ['Select the items you want to show on the desktop.'] },
+                    {
+                      children: [
+                        'Select the items you want to show on the desktop.',
+                      ],
+                    },
                     h,
                   ),
                   Field.fieldGroup(
                     {
                       layoutStyle: styles.gapSm as ComponentLayoutStyle,
                       children: [
-                        checkRow(model, msg, h, { id: 'docs-field-hard-disks', field: 'hardDisks', label: 'Hard disks' }),
-                        checkRow(model, msg, h, { id: 'docs-field-external-disks', field: 'externalDisks', label: 'External disks' }),
-                        checkRow(model, msg, h, { id: 'docs-field-cds', field: 'cdsDvds', label: 'CDs, DVDs, and iPods' }),
-                        checkRow(model, msg, h, { id: 'docs-field-servers', field: 'connectedServers', label: 'Connected servers' }),
+                        checkRow(model, msg, h, {
+                          id: 'docs-field-hard-disks',
+                          field: 'hardDisks',
+                          label: 'Hard disks',
+                        }),
+                        checkRow(model, msg, h, {
+                          id: 'docs-field-external-disks',
+                          field: 'externalDisks',
+                          label: 'External disks',
+                        }),
+                        checkRow(model, msg, h, {
+                          id: 'docs-field-cds',
+                          field: 'cdsDvds',
+                          label: 'CDs, DVDs, and iPods',
+                        }),
+                        checkRow(model, msg, h, {
+                          id: 'docs-field-servers',
+                          field: 'connectedServers',
+                          label: 'Connected servers',
+                        }),
                       ],
                     },
                     h,
@@ -570,7 +685,8 @@ const fieldView = <Msg>(
                     {
                       id: 'docs-field-sync',
                       isChecked: model.syncFolders,
-                      onToggle: isChecked => msg.check('syncFolders', isChecked),
+                      onToggle: isChecked =>
+                        msg.check('syncFolders', isChecked),
                       label: 'Sync Desktop & Documents folders',
                       description:
                         'Your Desktop & Documents folders are being synced with iCloud Drive. You can access them from other devices.',
@@ -584,15 +700,22 @@ const fieldView = <Msg>(
           ],
         },
         h,
-      );
+      )
     case 'radio':
       return Field.fieldSet(
         {
           layoutStyle: styles.pageXs,
           children: [
-            Field.fieldLegend({ variant: 'label', children: ['Subscription Plan'] }, h),
+            Field.fieldLegend(
+              { variant: 'label', children: ['Subscription Plan'] },
+              h,
+            ),
             Field.fieldDescription(
-              { children: ['Yearly and lifetime plans offer significant savings.'] },
+              {
+                children: [
+                  'Yearly and lifetime plans offer significant savings.',
+                ],
+              },
               h,
             ),
             RadioGroup.radioGroup(
@@ -613,7 +736,7 @@ const fieldView = <Msg>(
           ],
         },
         h,
-      );
+      )
     case 'switch':
       return Field.field(
         {
@@ -632,7 +755,7 @@ const fieldView = <Msg>(
           ],
         },
         h,
-      );
+      )
     case 'choiceCard':
       return Field.fieldGroup(
         {
@@ -641,16 +764,24 @@ const fieldView = <Msg>(
             Field.fieldSet(
               {
                 children: [
-                  Field.fieldLegend({ variant: 'label', children: ['Compute Environment'] }, h),
+                  Field.fieldLegend(
+                    { variant: 'label', children: ['Compute Environment'] },
+                    h,
+                  ),
                   Field.fieldDescription(
-                    { children: ['Select the compute environment for your cluster.'] },
+                    {
+                      children: [
+                        'Select the compute environment for your cluster.',
+                      ],
+                    },
                     h,
                   ),
                   RadioGroup.radioGroup(
                     {
                       model: model.environmentRadio,
                       selectedValue: Option.some(model.environment),
-                      toParentMessage: message => msg.radio('environment', message),
+                      toParentMessage: message =>
+                        msg.radio('environment', message),
                       ariaLabel: 'Compute Environment',
                       name: 'environment',
                       options: [
@@ -675,7 +806,7 @@ const fieldView = <Msg>(
           ],
         },
         h,
-      );
+      )
     case 'group':
       return Field.fieldGroup(
         {
@@ -755,72 +886,97 @@ const fieldView = <Msg>(
           ],
         },
         h,
-      );
+      )
     case 'rtl':
-      return h.div([h.Dir('rtl'), h.Class(className(styles.page))], [paymentFields(model, msg, h, true)]);
+      return h.div(
+        [h.Dir('rtl'), h.Class(className(styles.page))],
+        [paymentFields(model, msg, h, true)],
+      )
     case 'responsive':
-      return h.div([h.Class(className(styles.pageLg))], [
-        Field.fieldSet(
-          {
-            children: [
-              Field.fieldLegend({ children: ['Profile'] }, h),
-              Field.fieldDescription({ children: ['Fill in your profile information.'] }, h),
-              Field.fieldGroup(
-                {
-                  children: [
-                    Field.field(
-                      {
-                        orientation: 'responsive',
-                        children: [
-                          Field.fieldContent(
-                            {
-                              children: [
-                                fieldLabel('docs-field-profile-name', 'Name', h),
-                                Field.fieldDescription(
-                                  { children: ['Provide your full name for identification'] },
-                                  h,
-                                ),
-                              ],
-                            },
-                            h,
-                          ),
-                          Input.input(
-                            {
-                              id: 'docs-field-profile-name',
-                              value: model.profileName,
-                              onInput: value => msg.text('profileName', value),
-                              placeholder: 'Evil Rabbit',
-                            },
-                            h,
-                          ),
-                        ],
-                      },
-                      h,
-                    ),
-                    Field.field(
-                      {
-                        orientation: 'responsive',
-                        children: [
-                          Button.button({ type: 'submit', children: ['Submit'] }, h),
-                          Button.button(
-                            { variant: 'outline', type: 'button', children: ['Cancel'] },
-                            h,
-                          ),
-                        ],
-                      },
-                      h,
-                    ),
-                  ],
-                },
-                h,
-              ),
-            ],
-          },
-          h,
-        ),
-      ]);
+      return h.div(
+        [h.Class(className(styles.pageLg))],
+        [
+          Field.fieldSet(
+            {
+              children: [
+                Field.fieldLegend({ children: ['Profile'] }, h),
+                Field.fieldDescription(
+                  { children: ['Fill in your profile information.'] },
+                  h,
+                ),
+                Field.fieldGroup(
+                  {
+                    children: [
+                      Field.field(
+                        {
+                          orientation: 'responsive',
+                          children: [
+                            Field.fieldContent(
+                              {
+                                children: [
+                                  fieldLabel(
+                                    'docs-field-profile-name',
+                                    'Name',
+                                    h,
+                                  ),
+                                  Field.fieldDescription(
+                                    {
+                                      children: [
+                                        'Provide your full name for identification',
+                                      ],
+                                    },
+                                    h,
+                                  ),
+                                ],
+                              },
+                              h,
+                            ),
+                            Input.input(
+                              {
+                                id: 'docs-field-profile-name',
+                                value: model.profileName,
+                                onInput: value =>
+                                  msg.text('profileName', value),
+                                placeholder: 'Evil Rabbit',
+                              },
+                              h,
+                            ),
+                          ],
+                        },
+                        h,
+                      ),
+                      Field.field(
+                        {
+                          orientation: 'responsive',
+                          children: [
+                            Button.button(
+                              { type: 'submit', children: ['Submit'] },
+                              h,
+                            ),
+                            Button.button(
+                              {
+                                variant: 'outline',
+                                type: 'button',
+                                children: ['Cancel'],
+                              },
+                              h,
+                            ),
+                          ],
+                        },
+                        h,
+                      ),
+                    ],
+                  },
+                  h,
+                ),
+              ],
+            },
+            h,
+          ),
+        ],
+      )
   }
-};
+}
 
 export const fieldStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   index: number,
@@ -828,7 +984,7 @@ export const fieldStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html | undefined => {
-  const fixture = fieldFixtures[index];
-  if (fixture === undefined) return undefined;
-  return fieldView(fixture, model as FieldPreviewModel, toMsg(onMessageJson), h);
-};
+  const fixture = fieldFixtures[index]
+  if (fixture === undefined) return undefined
+  return fieldView(fixture, model as FieldPreviewModel, toMsg(onMessageJson), h)
+}

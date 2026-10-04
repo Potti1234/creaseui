@@ -1,6 +1,6 @@
-import { authoredPage } from '@/docs/components/pages/authored-page';
-import { clickableCardExamples } from '@/docs/components/pages/clickable-card/shared';
-import { clickableCardTailwindPreviewProgram } from '@/docs/components/pages/clickable-card/tailwind';
+import { authoredPage } from '@/docs/components/pages/authored-page'
+import { clickableCardExamples } from '@/docs/components/pages/clickable-card/shared'
+import { clickableCardTailwindPreviewProgram } from '@/docs/components/pages/clickable-card/tailwind'
 
 export const clickableCardPage = authoredPage({
   slug: 'clickable-card',
@@ -22,4 +22,4 @@ export const clickableCardPage = authoredPage({
     examples: clickableCardExamples('tailwind'),
     stylexExamples: clickableCardExamples('stylex'),
   },
-});
+})

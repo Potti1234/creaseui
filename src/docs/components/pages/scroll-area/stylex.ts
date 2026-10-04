@@ -1,15 +1,15 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   scrollAreaFixtures,
   scrollAreaItems,
   scrollAreaTags,
-} from '@/docs/components/pages/scroll-area/shared';
-import * as ScrollArea from '@/stylex/scroll-area';
-import * as Separator from '@/stylex/separator';
-import { className } from '@/stylex/style';
+} from '@/docs/components/pages/scroll-area/shared'
+import * as ScrollArea from '@/stylex/scroll-area'
+import * as Separator from '@/stylex/separator'
+import { className } from '@/stylex/style'
 
 const styles = stylex.create({
   tagsFrame: {
@@ -49,9 +49,10 @@ const styles = stylex.create({
     paddingBlock: '0.5rem',
     paddingInline: '0.75rem',
     backgroundColor: 'var(--muted)',
-    fontSize: '0.875rem', lineHeight: '1.25rem',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
   },
-});
+})
 
 export const scrollAreaStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   index: number,
@@ -59,50 +60,62 @@ export const scrollAreaStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   _onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const fixture = scrollAreaFixtures[index] ?? scrollAreaFixtures[0];
+  const fixture = scrollAreaFixtures[index] ?? scrollAreaFixtures[0]
   return fixture.kind === 'tags'
-    ? h.div([h.Class(className(styles.tagsFrame))], [
-        ScrollArea.scrollArea(
-          {
-            orientation: 'vertical',
-            ...(fixture.rtl ? { direction: 'rtl' as const } : {}),
-            ariaLabel: 'Version tags',
-            children: [
-            h.div([h.Class(className(styles.tagsContent))], [
-              h.h4(
-                [h.Class(className(styles.tagsHeading))],
-                [fixture.heading],
-              ),
-              ...scrollAreaTags.map(tag =>
-                h.div([], [
-                  h.div([h.Class(className(styles.tag))], [tag]),
-                  Separator.separator(
-                    { layoutStyle: styles.separator },
-                    h,
-                  ),
-                ]),
-              ),
-            ]),
-          ],
-          },
-          h,
-        ),
-      ])
-    : h.div([h.Class(className(styles.horizontalFrame))], [
-        ScrollArea.scrollArea(
-          {
-            orientation: 'horizontal',
-            ariaLabel: 'Component versions',
-            children: [
-              h.div(
-                [h.Class(className(styles.horizontalContent))],
-                scrollAreaItems.map(item =>
-                  h.span([h.Class(className(styles.pill))], [item]),
+    ? h.div(
+        [h.Class(className(styles.tagsFrame))],
+        [
+          ScrollArea.scrollArea(
+            {
+              orientation: 'vertical',
+              ...(fixture.rtl ? { direction: 'rtl' as const } : {}),
+              ariaLabel: 'Version tags',
+              children: [
+                h.div(
+                  [h.Class(className(styles.tagsContent))],
+                  [
+                    h.h4(
+                      [h.Class(className(styles.tagsHeading))],
+                      [fixture.heading],
+                    ),
+                    ...scrollAreaTags.map(tag =>
+                      h.div(
+                        [],
+                        [
+                          h.div([h.Class(className(styles.tag))], [tag]),
+                          Separator.separator(
+                            { layoutStyle: styles.separator },
+                            h,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          },
-          h,
-        ),
-      ]);
-};
+              ],
+            },
+            h,
+          ),
+        ],
+      )
+    : h.div(
+        [h.Class(className(styles.horizontalFrame))],
+        [
+          ScrollArea.scrollArea(
+            {
+              orientation: 'horizontal',
+              ariaLabel: 'Component versions',
+              children: [
+                h.div(
+                  [h.Class(className(styles.horizontalContent))],
+                  scrollAreaItems.map(item =>
+                    h.span([h.Class(className(styles.pill))], [item]),
+                  ),
+                ),
+              ],
+            },
+            h,
+          ),
+        ],
+      )
+}

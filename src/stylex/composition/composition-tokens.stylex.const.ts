@@ -16,5 +16,3 @@ export const compositionTokens = stylex.defineConsts({
   spaceXs: '0.25rem',
   spaceXxl: '3rem',
 })
-
-

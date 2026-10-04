@@ -10,11 +10,12 @@ the same.
 ## What to write
 
 Create `scene/<comp>-baseui.scene.test.ts` — a vitest suite using the
-`foldkit/scene` DSL — covering every *applicable* case from the Base UI
+`foldkit/scene` DSL — covering every _applicable_ case from the Base UI
 suite(s) under `~/repos/base-ui/packages/react/src/<suite>/**/*.test.tsx`
 (clone `https://github.com/mui/base-ui.git` — public).
 
 Follow the worked example `scene/checkbox-baseui.scene.test.ts`:
+
 - A `verifyRenderer(name, Module)` helper running the same suite against
   BOTH the Tailwind (`@/ui/<comp>`) and StyleX (`@/stylex/<comp>`) exports.
   If a component only exists in one skin, test only that one and note why.
@@ -89,6 +90,7 @@ all with a `.not.` variant.
 ## What to port vs skip
 
 Port (write a real test):
+
 - Roles, `aria-*` attributes, accessible names/descriptions, `data-*` hooks
 - Interaction → message dispatch (click, keydown nav, focus, submit)
 - Controlled state driven through the model; initial-state props
@@ -98,6 +100,7 @@ Port (write a real test):
   Escape close, Tab/typeahead WHEN the component wires keydown handlers
 
 Skip — record in the file's header comment and in your findings report:
+
 - React internals: refs, contexts, StrictMode, React 17, suspense
 - `render=` prop / element-substitution cases (foldkit fixes the element)
 - Event-object payloads, `eventDetails.cancel()`, modifier reporting
@@ -110,11 +113,12 @@ Skip — record in the file's header comment and in your findings report:
 ## Divergence handling
 
 When creaseui observably differs from a Base UI expectation:
+
 - Assert the **Base UI expectation** and mark the test `it.fails('…')`
   (vitest inverts it: green now, goes red-and-fails if creaseui is fixed).
   Prefix a `// DIVERGENCE:` comment describing both behaviors.
 - If the capability is simply absent (not a bug), use `it.todo('… creaseui
-  has no X')`.
+has no X')`.
 - If creaseui intentionally differs (documented design), assert the actual
   behavior with a `// DIVERGENCE (intentional):` comment.
 

@@ -1,8 +1,8 @@
-import { Schema as S } from 'effect';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import { Schema as S } from 'effect'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-import { definePreviewProgram } from '@/docs/components/pages/authored-page';
+import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
   type GridFixture,
   gridFixtures,
@@ -10,39 +10,45 @@ import {
   gridMetrics,
   gridStats,
   gridTeams,
-} from '@/docs/components/pages/grid/shared';
-import * as Card from '@/ui/card';
-import * as Grid from '@/ui/grid';
-import * as Resizable from '@/ui/resizable';
-import * as Stack from '@/ui/stack';
+} from '@/docs/components/pages/grid/shared'
+import * as Card from '@/ui/card'
+import * as Grid from '@/ui/grid'
+import * as Resizable from '@/ui/resizable'
+import * as Stack from '@/ui/stack'
 
 const GridPreviewMessageUnion = defineMessageUnion({
   GotResizablePreviewMessage: { message: Resizable.Message },
-});
-type GridPreviewMessage = typeof GridPreviewMessageUnion.Type;
+})
+type GridPreviewMessage = typeof GridPreviewMessageUnion.Type
 const GridPreviewModel = S.Struct({
   _docsPage: S.Literal('grid'),
   resizable: Resizable.Model,
-});
-type GridPreviewModel = typeof GridPreviewModel.Type;
+})
+type GridPreviewModel = typeof GridPreviewModel.Type
 
 const label = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class('text-sm font-medium')], [text]);
+  h.p([h.Class('text-sm font-medium')], [text])
 const supporting = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class('text-xs')], [text]);
+  h.p([h.Class('text-xs')], [text])
 const body = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class('text-sm text-muted-foreground')], [text]);
+  h.p([h.Class('text-sm text-muted-foreground')], [text])
 
-const card = <Msg>(children: ReadonlyArray<Html | string>, h: HtmlBuilder<Msg>): Html =>
+const card = <Msg>(
+  children: ReadonlyArray<Html | string>,
+  h: HtmlBuilder<Msg>,
+): Html =>
   Card.card(
     {
       size: 'sm',
       children: [Card.cardContent({ children: [...children] }, h)],
     },
     h,
-  );
+  )
 
-const tallCard = <Msg>(children: ReadonlyArray<Html | string>, h: HtmlBuilder<Msg>): Html =>
+const tallCard = <Msg>(
+  children: ReadonlyArray<Html | string>,
+  h: HtmlBuilder<Msg>,
+): Html =>
   Card.card(
     {
       size: 'sm',
@@ -50,17 +56,21 @@ const tallCard = <Msg>(children: ReadonlyArray<Html | string>, h: HtmlBuilder<Ms
       children: [Card.cardContent({ children: [...children] }, h)],
     },
     h,
-  );
+  )
 
-const cyanCard = <Msg>(children: ReadonlyArray<Html | string>, h: HtmlBuilder<Msg>): Html =>
+const cyanCard = <Msg>(
+  children: ReadonlyArray<Html | string>,
+  h: HtmlBuilder<Msg>,
+): Html =>
   Card.card(
     {
       size: 'sm',
-      class: 'border-cyan-200 bg-cyan-50 dark:border-cyan-800 dark:bg-cyan-950/40',
+      class:
+        'border-cyan-200 bg-cyan-50 dark:border-cyan-800 dark:bg-cyan-950/40',
       children: [Card.cardContent({ children: [...children] }, h)],
     },
     h,
-  );
+  )
 
 const showcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Grid.grid(
@@ -73,7 +83,7 @@ const showcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ),
     },
     h,
-  );
+  )
 
 const spanningView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Grid.grid(
@@ -141,7 +151,7 @@ const spanningView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ],
     },
     h,
-  );
+  )
 
 const autoFitView = (
   model: GridPreviewModel,
@@ -164,33 +174,39 @@ const autoFitView = (
             withHandle: true,
             ariaLabel: 'Resize grid',
             class: 'h-full w-full border-0',
-            first: h.div([h.Class('h-full overflow-auto p-4')], [
-              Grid.grid(
-                {
-                  columns: { minWidth: 180, repeat: 'fit' },
-                  gap: 4,
-                  width: '100%',
-                  children: gridTeams.map(team =>
-                    card(
-                      [
-                        Stack.vStack(
-                          {
-                            gap: 1,
-                            children: [
-                              label(team.name, h),
-                              supporting(`${String(team.members)} members`, h),
-                            ],
-                          },
-                          h,
-                        ),
-                      ],
-                      h,
+            first: h.div(
+              [h.Class('h-full overflow-auto p-4')],
+              [
+                Grid.grid(
+                  {
+                    columns: { minWidth: 180, repeat: 'fit' },
+                    gap: 4,
+                    width: '100%',
+                    children: gridTeams.map(team =>
+                      card(
+                        [
+                          Stack.vStack(
+                            {
+                              gap: 1,
+                              children: [
+                                label(team.name, h),
+                                supporting(
+                                  `${String(team.members)} members`,
+                                  h,
+                                ),
+                              ],
+                            },
+                            h,
+                          ),
+                        ],
+                        h,
+                      ),
                     ),
-                  ),
-                },
-                h,
-              ),
-            ]),
+                  },
+                  h,
+                ),
+              ],
+            ),
             second: h.div([h.Class('h-full')], []),
           },
           h,
@@ -198,7 +214,7 @@ const autoFitView = (
       ],
     },
     h,
-  );
+  )
 
 const dashboardView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Grid.grid(
@@ -228,10 +244,7 @@ const dashboardView = <Msg>(h: HtmlBuilder<Msg>): Html =>
           h,
         ),
         ...gridMetrics.map(metric =>
-          card(
-            [supporting(metric.label, h), label(metric.value, h)],
-            h,
-          ),
+          card([supporting(metric.label, h), label(metric.value, h)], h),
         ),
         Grid.gridSpan(
           {
@@ -251,7 +264,7 @@ const dashboardView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ],
     },
     h,
-  );
+  )
 
 const galleryView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Grid.grid(
@@ -279,7 +292,7 @@ const galleryView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ),
     },
     h,
-  );
+  )
 
 const spanColumnsView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Grid.grid(
@@ -307,7 +320,7 @@ const spanColumnsView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ],
     },
     h,
-  );
+  )
 
 const spanShowcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Grid.grid(
@@ -324,10 +337,7 @@ const spanShowcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
           h,
         ),
         tallCard([body('1 col', h)], h),
-        Grid.gridSpan(
-          { rows: 2, children: [card([body('1 col', h)], h)] },
-          h,
-        ),
+        Grid.gridSpan({ rows: 2, children: [card([body('1 col', h)], h)] }, h),
         Grid.gridSpan(
           {
             columns: 3,
@@ -346,7 +356,7 @@ const spanShowcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ],
     },
     h,
-  );
+  )
 
 const viewFor = (
   fixture: GridFixture,
@@ -355,21 +365,21 @@ const viewFor = (
 ): Html => {
   switch (fixture.kind) {
     case 'showcase':
-      return showcaseView(h);
+      return showcaseView(h)
     case 'spanning':
-      return spanningView(h);
+      return spanningView(h)
     case 'autoFit':
-      return autoFitView(model, h);
+      return autoFitView(model, h)
     case 'dashboard':
-      return dashboardView(h);
+      return dashboardView(h)
     case 'gallery':
-      return galleryView(h);
+      return galleryView(h)
     case 'spanColumns':
-      return spanColumnsView(h);
+      return spanColumnsView(h)
     case 'spanShowcase':
-      return spanShowcaseView(h);
+      return spanShowcaseView(h)
   }
-};
+}
 
 export const gridTailwindPreviewProgram = definePreviewProgram<
   GridPreviewModel,
@@ -389,11 +399,11 @@ export const gridTailwindPreviewProgram = definePreviewProgram<
             ...model,
             resizable: Resizable.update(model.resizable, message.message),
           },
-        };
+        }
     }
   },
   view: (index, model, h) => {
-    const fixture = gridFixtures[index] ?? gridFixtures[0];
-    return viewFor(fixture, model, h);
+    const fixture = gridFixtures[index] ?? gridFixtures[0]
+    return viewFor(fixture, model, h)
   },
-});
+})

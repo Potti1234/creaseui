@@ -66,7 +66,11 @@ export type ListInputProps<T, Msg> = Readonly<{
   itemName?: string
   status?: InputStatus
   getItemStatus?: (item: T, index: number) => InputStatus | undefined
-  getFieldStatus?: (item: T, columnKey: string, index: number) => InputStatus | undefined
+  getFieldStatus?: (
+    item: T,
+    columnKey: string,
+    index: number,
+  ) => InputStatus | undefined
   isReorderable?: boolean
   isDisabled?: boolean
   isLoading?: boolean
@@ -101,14 +105,24 @@ type ViewInputs = Readonly<{
   columns: ReadonlyArray<{
     key: string
     header: string
-    width?: Readonly<{ type: 'pixel' | 'proportional'; value: number }> | undefined
+    width?:
+      | Readonly<{ type: 'pixel' | 'proportional'; value: number }>
+      | undefined
   }>
   renderInput: (context: CellContext) => Html
   toParentMessage: (message: Message) => unknown
   getItemKey: (item: unknown) => string | number
   createItem: () => unknown
-  getItemStatus?: ((item: unknown, index: number) => InputStatus | undefined) | undefined
-  getFieldStatus?: ((item: unknown, columnKey: string, index: number) => InputStatus | undefined) | undefined
+  getItemStatus?:
+    | ((item: unknown, index: number) => InputStatus | undefined)
+    | undefined
+  getFieldStatus?:
+    | ((
+        item: unknown,
+        columnKey: string,
+        index: number,
+      ) => InputStatus | undefined)
+    | undefined
   itemName?: string | undefined
   description?: Html | string | undefined
   status?: InputStatus | undefined
@@ -137,10 +151,13 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
   const fieldIds = ids(props.id)
   const itemName = props.itemName ?? 'item'
   const total = props.value.length
-  const mutationsDisabled = props.isDisabled === true || props.isLoading === true
+  const mutationsDisabled =
+    props.isDisabled === true || props.isLoading === true
   const showReorderColumn = props.isReorderable === true
   const showRemoveColumn = true
-  const columnTracks = props.columns.map(column => resolveColumnTrack(column.width)).join(' ')
+  const columnTracks = props.columns
+    .map(column => resolveColumnTrack(column.width))
+    .join(' ')
 
   const rowColumns = showReorderColumn
     ? showRemoveColumn
@@ -189,7 +206,10 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
       ...(props.isOptional === true
         ? [
             h.span(
-              [h.Attribute('aria-hidden', 'true'), h.Class('text-xs font-normal')],
+              [
+                h.Attribute('aria-hidden', 'true'),
+                h.Class('text-xs font-normal'),
+              ],
               [' ∙ Optional'],
             ),
           ]
@@ -197,7 +217,10 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
       ...(props.isRequired === true && props.isOptional !== true
         ? [
             h.span(
-              [h.Attribute('aria-hidden', 'true'), h.Class('text-xs font-normal')],
+              [
+                h.Attribute('aria-hidden', 'true'),
+                h.Class('text-xs font-normal'),
+              ],
               [' ∙ Required'],
             ),
           ]
@@ -230,11 +253,12 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
           )
         }
         if (reorder === undefined) return Option.none()
-        const toIndex = Math.max(0, Math.min(reorder.previewIndex + delta, total - 1))
-        if (toIndex === reorder.previewIndex) return Option.none()
-        return Option.some(
-          Message.GrabPreviewed({ toIndex, itemName, total }),
+        const toIndex = Math.max(
+          0,
+          Math.min(reorder.previewIndex + delta, total - 1),
         )
+        if (toIndex === reorder.previewIndex) return Option.none()
+        return Option.some(Message.GrabPreviewed({ toIndex, itemName, total }))
       }
       if (key === ' ' || key === 'Enter') {
         return Option.some(
@@ -328,7 +352,11 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
     })
 
     const removeCell = h.div(
-      [h.Class('flex min-h-8 items-center justify-center self-end @max-[640px]:col-[2] @max-[640px]:row-[1]')],
+      [
+        h.Class(
+          'flex min-h-8 items-center justify-center self-end @max-[640px]:col-[2] @max-[640px]:row-[1]',
+        ),
+      ],
       [
         h.button(
           [
@@ -357,7 +385,11 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
 
     const reorderCell = showReorderColumn
       ? h.div(
-          [h.Class('flex min-h-8 items-center justify-center self-end @max-[640px]:col-[3] @max-[640px]:row-[1]')],
+          [
+            h.Class(
+              'flex min-h-8 items-center justify-center self-end @max-[640px]:col-[3] @max-[640px]:row-[1]',
+            ),
+          ],
           [
             h.button(
               [
@@ -374,9 +406,7 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
                   ),
                 ),
                 handleKeyDown(itemKey, index),
-                ...(isActiveReorder
-                  ? [h.OnBlur(Message.GrabCancelled())]
-                  : []),
+                ...(isActiveReorder ? [h.OnBlur(Message.GrabCancelled())] : []),
               ],
               [Icon.gripVertical({ class: 'size-4' }, h)],
             ),
@@ -389,7 +419,9 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
         h.AriaPosinset(index + 1),
         h.AriaSetsize(total),
         h.AriaInvalid(itemStatus?.type === 'error'),
-        ...(itemStatusId === undefined ? [] : [h.AriaDescribedBy(itemStatusId)]),
+        ...(itemStatusId === undefined
+          ? []
+          : [h.AriaDescribedBy(itemStatusId)]),
         h.DataAttribute('slot', 'list-input-item'),
         h.DataAttribute('list-input-motion-key', `item:${itemKey}`),
         h.Class('relative flex min-w-0 flex-col'),
@@ -437,7 +469,11 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
                   renderDetachedStatus(
                     itemStatus,
                     statusVisual,
-                    Icon.icon(statusIconName(itemStatus.type), { class: 'size-3' }, h),
+                    Icon.icon(
+                      statusIconName(itemStatus.type),
+                      { class: 'size-3' },
+                      h,
+                    ),
                     h,
                     itemStatusId,
                   ),
@@ -471,8 +507,7 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
     ],
   )
 
-  const hasReachedMax =
-    props.maxItems !== undefined && total >= props.maxItems
+  const hasReachedMax = props.maxItems !== undefined && total >= props.maxItems
   const addRow = h.div(
     [
       h.Class('mt-2 grid items-center gap-x-1'),
@@ -579,10 +614,7 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
           ...(showReorderColumn
             ? [
                 h.div(
-                  [
-                    h.Id(fieldIds.instructions),
-                    h.Class('sr-only'),
-                  ],
+                  [h.Id(fieldIds.instructions), h.Class('sr-only')],
                   [
                     'Use Arrow Up or Arrow Down to move this item one position. Press Space or Enter to pick it up for extended keyboard reordering.',
                   ],
@@ -623,9 +655,9 @@ export const listInput = <T, Msg>(
         width: column.width,
       })),
       renderInput: context =>
-        props.columns.find(column => column.key === context.columnKey)
-          ?.renderInput(context as ListInputRenderContext<T, Msg>) ??
-        h.empty,
+        props.columns
+          .find(column => column.key === context.columnKey)
+          ?.renderInput(context as ListInputRenderContext<T, Msg>) ?? h.empty,
       toParentMessage: props.toParentMessage,
       getItemKey: props.getItemKey as (item: unknown) => string | number,
       createItem: props.createItem as () => unknown,

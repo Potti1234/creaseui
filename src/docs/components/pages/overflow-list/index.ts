@@ -1,6 +1,6 @@
-import { authoredPage } from '@/docs/components/pages/authored-page';
-import { overflowListExamples } from '@/docs/components/pages/overflow-list/shared';
-import { overflowListTailwindPreviewProgram } from '@/docs/components/pages/overflow-list/tailwind';
+import { authoredPage } from '@/docs/components/pages/authored-page'
+import { overflowListExamples } from '@/docs/components/pages/overflow-list/shared'
+import { overflowListTailwindPreviewProgram } from '@/docs/components/pages/overflow-list/tailwind'
 
 export const overflowListPage = authoredPage({
   slug: 'overflow-list',
@@ -24,4 +24,4 @@ export const overflowListPage = authoredPage({
     examples: overflowListExamples('tailwind'),
     stylexExamples: overflowListExamples('stylex'),
   },
-});
+})

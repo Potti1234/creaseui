@@ -1,14 +1,14 @@
-import * as stylex from '@stylexjs/stylex';
-import { Option } from 'effect';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import { Option } from 'effect'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   radioGroupFixtures,
   type RadioGroupFixture,
-} from '@/docs/components/pages/radio-group/shared';
-import * as Field from '@/stylex/field';
-import * as RadioGroup from '@/stylex/radio-group';
+} from '@/docs/components/pages/radio-group/shared'
+import * as Field from '@/stylex/field'
+import * as RadioGroup from '@/stylex/radio-group'
 
 const styles = stylex.create({
   fit: {
@@ -25,12 +25,12 @@ const styles = stylex.create({
   descOffset: {
     marginTop: '-0.375rem',
   },
-});
+})
 
 type PreviewModel = Readonly<{
-  value: string;
-  radioGroup: RadioGroup.Model;
-}>;
+  value: string
+  radioGroup: RadioGroup.Model
+}>
 
 const group = <Msg>(
   fixture: RadioGroupFixture,
@@ -53,7 +53,7 @@ const group = <Msg>(
       options: fixture.options,
     },
     h,
-  );
+  )
 
 export const radioGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
@@ -61,8 +61,8 @@ export const radioGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ) => {
-  const previewModel = model as PreviewModel;
-  const fixture = radioGroupFixtures[exampleIndex] ?? radioGroupFixtures[0];
+  const previewModel = model as PreviewModel
+  const fixture = radioGroupFixtures[exampleIndex] ?? radioGroupFixtures[0]
   if (fixture.kind === 'fieldset') {
     return Field.fieldSet(
       {
@@ -80,7 +80,7 @@ export const radioGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         ],
       },
       h,
-    );
+    )
   }
-  return group(fixture, previewModel, onMessageJson, h);
-};
+  return group(fixture, previewModel, onMessageJson, h)
+}

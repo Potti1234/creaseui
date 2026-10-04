@@ -1,24 +1,24 @@
-import type { EChartsOption } from 'echarts/types/dist/shared';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { EChartsOption } from 'echarts/types/dist/shared'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Chart from '@/lib/echarts';
+import * as Chart from '@/lib/echarts'
 import {
   card,
   cardContent,
   cardDescription,
   cardHeader,
   cardTitle,
-} from '@/ui/card';
+} from '@/ui/card'
 
-export const HOST_ID = 'chart-line-interactive';
+export const HOST_ID = 'chart-line-interactive'
 
-export type ActiveChart = 'desktop' | 'mobile';
+export type ActiveChart = 'desktop' | 'mobile'
 
 type ChartDatum = Readonly<{
-  date: string;
-  desktop: number;
-  mobile: number;
-}>;
+  date: string
+  desktop: number
+  mobile: number
+}>
 
 const CHART_DATA: ReadonlyArray<ChartDatum> = [
   { date: '2024-04-01', desktop: 222, mobile: 150 },
@@ -112,19 +112,19 @@ const CHART_DATA: ReadonlyArray<ChartDatum> = [
   { date: '2024-06-28', desktop: 149, mobile: 200 },
   { date: '2024-06-29', desktop: 103, mobile: 160 },
   { date: '2024-06-30', desktop: 446, mobile: 400 },
-];
+]
 
 const labels: Readonly<Record<ActiveChart, string>> = {
   desktop: 'Desktop',
   mobile: 'Mobile',
-};
+}
 
-const ACTIVE_CHARTS: ReadonlyArray<ActiveChart> = ['desktop', 'mobile'];
+const ACTIVE_CHARTS: ReadonlyArray<ActiveChart> = ['desktop', 'mobile']
 
 const totals: Readonly<Record<ActiveChart, number>> = {
   desktop: CHART_DATA.reduce((total, datum) => total + datum.desktop, 0),
   mobile: CHART_DATA.reduce((total, datum) => total + datum.mobile, 0),
-};
+}
 
 const formatDate = (
   value: string,
@@ -133,19 +133,19 @@ const formatDate = (
   new Date(value).toLocaleDateString('en-US', {
     ...options,
     timeZone: 'UTC',
-  });
+  })
 
-const fullDates = CHART_DATA.map((datum) =>
+const fullDates = CHART_DATA.map(datum =>
   formatDate(datum.date, {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
   }),
-);
+)
 
 Chart.registerChart(HOST_ID, (theme, variant): EChartsOption => {
-  const activeChart: ActiveChart = variant === 'mobile' ? 'mobile' : 'desktop';
-  const color = activeChart === 'desktop' ? theme.chart1 : theme.chart2;
+  const activeChart: ActiveChart = variant === 'mobile' ? 'mobile' : 'desktop'
+  const color = activeChart === 'desktop' ? theme.chart1 : theme.chart2
 
   return {
     grid: Chart.compactGrid(),
@@ -161,7 +161,7 @@ Chart.registerChart(HOST_ID, (theme, variant): EChartsOption => {
         fontFamily: theme.fontFamily,
         margin: 10,
         hideOverlap: true,
-        formatter: (value) => value.replace(/, \d{4}$/, ''),
+        formatter: value => value.replace(/, \d{4}$/, ''),
       },
     },
     yAxis: Chart.valueAxis(theme),
@@ -174,17 +174,17 @@ Chart.registerChart(HOST_ID, (theme, variant): EChartsOption => {
         showSymbol: false,
         lineStyle: { width: 2, color },
         itemStyle: { color },
-        data: CHART_DATA.map((datum) => datum[activeChart]),
+        data: CHART_DATA.map(datum => datum[activeChart]),
       },
     ],
-  };
-});
+  }
+})
 
 export type ViewProps<Msg> = Readonly<{
-  activeChart: ActiveChart;
-  onSelect: (activeChart: ActiveChart) => Msg;
-  toMessage: (message: Chart.ChartMessage) => Msg;
-}>;
+  activeChart: ActiveChart
+  onSelect: (activeChart: ActiveChart) => Msg
+  toMessage: (message: Chart.ChartMessage) => Msg
+}>
 
 export const view = <Msg>(props: ViewProps<Msg>, h: HtmlBuilder<Msg>): Html => {
   return card(
@@ -215,7 +215,7 @@ export const view = <Msg>(props: ViewProps<Msg>, h: HtmlBuilder<Msg>): Html => {
               ),
               h.div(
                 [h.Class('flex')],
-                ACTIVE_CHARTS.map((activeChart) =>
+                ACTIVE_CHARTS.map(activeChart =>
                   h.button(
                     [
                       h.Type('button'),
@@ -266,8 +266,8 @@ export const view = <Msg>(props: ViewProps<Msg>, h: HtmlBuilder<Msg>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 /* Usage:
    - Store `activeChart: "desktop" | "mobile"` in the parent Model.

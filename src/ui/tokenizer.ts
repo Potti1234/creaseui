@@ -70,9 +70,7 @@ const WRAPPER_STATUS_CLASS: Readonly<
   success: 'border-chart-2',
 }
 
-const WRAPPER_MIN_HEIGHT_CLASS: Readonly<
-  Record<'sm' | 'md' | 'lg', string>
-> = {
+const WRAPPER_MIN_HEIGHT_CLASS: Readonly<Record<'sm' | 'md' | 'lg', string>> = {
   sm: 'min-h-7',
   md: 'min-h-8',
   lg: 'min-h-9',
@@ -203,13 +201,16 @@ const statusIcon = <Msg>(
   type: 'error' | 'warning' | 'success',
   h: HtmlBuilder<Msg>,
 ): Html =>
-  h.span([h.Class(STATUS_ICON_CLASS[type]), h.AriaHidden(true)], [
-    type === 'error'
-      ? Icon.octagonX({ class: 'size-4' }, h)
-      : type === 'warning'
-        ? Icon.triangleAlert({ class: 'size-4' }, h)
-        : Icon.circleCheck({ class: 'size-4' }, h),
-  ])
+  h.span(
+    [h.Class(STATUS_ICON_CLASS[type]), h.AriaHidden(true)],
+    [
+      type === 'error'
+        ? Icon.octagonX({ class: 'size-4' }, h)
+        : type === 'warning'
+          ? Icon.triangleAlert({ class: 'size-4' }, h)
+          : Icon.circleCheck({ class: 'size-4' }, h),
+    ],
+  )
 
 const tokenChip = <Msg>(
   token: Token,
@@ -219,22 +220,25 @@ const tokenChip = <Msg>(
   toParent: (message: Message) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html =>
-  h.span([h.Class(cn(TOKEN_CLASS, TOKEN_SIZE_CLASS[size]))], [
-    h.span([h.Class(TOKEN_LABEL_CLASS)], [token.label]),
-    h.button(
-      [
-        h.Type('button'),
-        h.Tabindex(-1),
-        h.Class(TOKEN_REMOVE_CLASS),
-        h.AriaLabel(`Remove ${token.label}`),
-        h.DataAttribute('slot', 'tokenizer-token-remove'),
-        ...(isDisabled
-          ? [h.Disabled(true)]
-          : [h.OnClick(toParent(Message.RemovedToken({ index })))]),
-      ],
-      [Icon.x({ class: 'size-3' }, h)],
-    ),
-  ])
+  h.span(
+    [h.Class(cn(TOKEN_CLASS, TOKEN_SIZE_CLASS[size]))],
+    [
+      h.span([h.Class(TOKEN_LABEL_CLASS)], [token.label]),
+      h.button(
+        [
+          h.Type('button'),
+          h.Tabindex(-1),
+          h.Class(TOKEN_REMOVE_CLASS),
+          h.AriaLabel(`Remove ${token.label}`),
+          h.DataAttribute('slot', 'tokenizer-token-remove'),
+          ...(isDisabled
+            ? [h.Disabled(true)]
+            : [h.OnClick(toParent(Message.RemovedToken({ index })))]),
+        ],
+        [Icon.x({ class: 'size-3' }, h)],
+      ),
+    ],
+  )
 
 export const tokenizer = <Msg>(
   props: TokenizerProps<Msg>,
@@ -245,10 +249,8 @@ export const tokenizer = <Msg>(
   const size = props.size ?? 'md'
   const isDisabled = props.isDisabled === true
   const items = props.items ?? []
-  const maxEntries =
-    props.maxEntries ?? Option.getOrUndefined(model.maxEntries)
-  const isAtMax =
-    maxEntries !== undefined && model.tokens.length >= maxEntries
+  const maxEntries = props.maxEntries ?? Option.getOrUndefined(model.maxEntries)
+  const isAtMax = maxEntries !== undefined && model.tokens.length >= maxEntries
 
   const statusVariant = props.statusVariant ?? 'attached'
   const isInvalid =
@@ -298,37 +300,37 @@ export const tokenizer = <Msg>(
   const trimmedQuery = model.combobox.inputValue.trim()
   const query = trimmedQuery.toLocaleLowerCase()
   const matchedItems = items.filter(
-    (item) =>
-      query === '' || item.label.toLocaleLowerCase().includes(query),
+    item => query === '' || item.label.toLocaleLowerCase().includes(query),
   )
   const createId =
     props.hasCreate === true &&
     trimmedQuery !== '' &&
     !isAtMax &&
-    !model.tokens.some((t) => t.id === trimmedQuery) &&
+    !model.tokens.some(t => t.id === trimmedQuery) &&
     !matchedItems.some(
-      (item) => item.label.toLocaleLowerCase() === trimmedQuery.toLocaleLowerCase(),
+      item =>
+        item.label.toLocaleLowerCase() === trimmedQuery.toLocaleLowerCase(),
     )
       ? `${CREATE_ID_PREFIX}${trimmedQuery}`
       : undefined
   const values = [
-    ...matchedItems.map((item) => item.id),
+    ...matchedItems.map(item => item.id),
     ...(createId === undefined ? [] : [createId]),
   ]
 
   const viewInputs: ComboboxPrimitive.Multi.ViewInputs<string> = {
     items: values,
     restingInputValue: '',
-    selectedValues: model.tokens.map((t) => t.id),
-    itemToValue: (value) => value,
-    itemToDisplayText: (value) => {
+    selectedValues: model.tokens.map(t => t.id),
+    itemToValue: value => value,
+    itemToDisplayText: value => {
       if (value.startsWith(CREATE_ID_PREFIX)) {
         return `Create "${value.slice(CREATE_ID_PREFIX.length)}"`
       }
-      const found = items.find((item) => item.id === value)
+      const found = items.find(item => item.id === value)
       return found?.label ?? model.itemLabels[value] ?? value
     },
-    itemToConfig: (value) => ({
+    itemToConfig: value => ({
       className: cn(
         value.startsWith(CREATE_ID_PREFIX) ? CREATE_ITEM_CLASS : ITEM_CLASS,
       ),
@@ -340,12 +342,13 @@ export const tokenizer = <Msg>(
             [
               value.startsWith(CREATE_ID_PREFIX)
                 ? `Create "${value.slice(CREATE_ID_PREFIX.length)}"`
-                : (items.find((item) => item.id === value)?.label ?? value),
+                : (items.find(item => item.id === value)?.label ?? value),
             ],
           ),
-          h.span([h.Class(INDICATOR_CLASS)], [
-            Icon.check({ class: 'size-4' }, h),
-          ]),
+          h.span(
+            [h.Class(INDICATOR_CLASS)],
+            [Icon.check({ class: 'size-4' }, h)],
+          ),
         ],
       ),
     }),
@@ -365,7 +368,9 @@ export const tokenizer = <Msg>(
     itemsAttributes: childAttributes([h.DataAttribute('slot', 'command-list')]),
     itemsScrollClassName: LIST_CLASS,
     backdropClassName: BACKDROP_CLASS,
-    backdropAttributes: childAttributes([h.DataAttribute('slot', 'combobox-backdrop')]),
+    backdropAttributes: childAttributes([
+      h.DataAttribute('slot', 'combobox-backdrop'),
+    ]),
     className: 'contents',
     attributes: childAttributes([
       h.DataAttribute('slot', 'command'),
@@ -376,9 +381,7 @@ export const tokenizer = <Msg>(
     isReadOnly: props.isReadOnly ?? false,
     isInvalid,
     ariaLabelledBy: labelId,
-    ...(props.htmlName === undefined
-      ? {}
-      : { formName: props.htmlName }),
+    ...(props.htmlName === undefined ? {} : { formName: props.htmlName }),
   }
 
   const comboboxView = h.submodel({
@@ -386,7 +389,7 @@ export const tokenizer = <Msg>(
     model: model.combobox,
     view: comboboxPrimitive.view,
     viewInputs,
-    toParentMessage: (message) =>
+    toParentMessage: message =>
       toParent(Message.GotComboboxMessage({ message })),
   })
 
@@ -480,18 +483,12 @@ export const tokenizer = <Msg>(
       labelView,
       isLayerExpanded
         ? h.div(
-            [
-              h.Class('relative'),
-              h.DataAttribute('slot', 'tokenizer-layer'),
-            ],
+            [h.Class('relative'), h.DataAttribute('slot', 'tokenizer-layer')],
             [
               // Height placeholder keeps the field's row height while the
               // expanded wrapper overlays it (astryx unfocusedLayer).
               h.div(
-                [
-                  h.Class(TRUNCATED_SIZE_CLASS[size]),
-                  h.AriaHidden(true),
-                ],
+                [h.Class(TRUNCATED_SIZE_CLASS[size]), h.AriaHidden(true)],
                 [],
               ),
               wrapper,

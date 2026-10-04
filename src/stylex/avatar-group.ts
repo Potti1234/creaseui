@@ -1,12 +1,12 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { complexTokens } from './complex-tokens.stylex';
-import type { ComponentLayoutStyle } from './contracts';
-import { foundationTokens } from './foundations-tokens.stylex';
-import { interactionTokens } from './interaction-tokens.stylex.const';
-import { className } from './style';
-import { tokens } from './tokens.stylex';
+import { complexTokens } from './complex-tokens.stylex'
+import type { ComponentLayoutStyle } from './contracts'
+import { foundationTokens } from './foundations-tokens.stylex'
+import { interactionTokens } from './interaction-tokens.stylex.const'
+import { className } from './style'
+import { tokens } from './tokens.stylex'
 
 /* Ported from Meta Astryx AvatarGroup (packages/core/src/AvatarGroup/) and
    Avatar/AvatarStatusDot.tsx — examples and visual spec adapted to Crease UI
@@ -18,20 +18,20 @@ import { tokens } from './tokens.stylex';
    `ring: true` for the surface ring — see the docs page). The roving-tabindex
    list focus and translated overflow label are not ported. */
 
-export type AvatarGroupSize = 'sm' | 'md' | 'lg' | number;
+export type AvatarGroupSize = 'sm' | 'md' | 'lg' | number
 
 const AVATAR_SIZE_PX: Readonly<Record<'sm' | 'md' | 'lg', number>> = {
   sm: 24,
   md: 32,
   lg: 40,
-};
+}
 
-const OVERLAP_RATIO = 0.25;
+const OVERLAP_RATIO = 0.25
 
 const resolveAvatarSize = (size: AvatarGroupSize | undefined): number =>
-  typeof size === 'number' ? size : AVATAR_SIZE_PX[size ?? 'md'];
+  typeof size === 'number' ? size : AVATAR_SIZE_PX[size ?? 'md']
 
-export type AvatarShape = 'circle' | 'rounded' | 'square';
+export type AvatarShape = 'circle' | 'rounded' | 'square'
 
 const styles = stylex.create({
   group: {
@@ -73,20 +73,26 @@ const styles = stylex.create({
     justifyContent: 'center',
   },
   dotRound: { borderRadius: '50%' },
-  dotSuccess: { backgroundColor: tokens.alertSuccess, color: tokens.background },
-  dotNeutral: { backgroundColor: tokens.background, color: tokens.mutedForeground },
+  dotSuccess: {
+    backgroundColor: tokens.alertSuccess,
+    color: tokens.background,
+  },
+  dotNeutral: {
+    backgroundColor: tokens.background,
+    color: tokens.mutedForeground,
+  },
   dotError: { backgroundColor: tokens.destructive, color: tokens.background },
-});
+})
 
 export type AvatarGroupProps = Readonly<{
   /** Accessible name for the group; defaults to "Avatar group". */
-  ariaLabel?: string;
+  ariaLabel?: string
   /** Shared avatar size used to compute the 25% overlap. Defaults to 'md'. */
-  avatarSize?: AvatarGroupSize;
-  children: ReadonlyArray<Html>;
+  avatarSize?: AvatarGroupSize
+  children: ReadonlyArray<Html>
   /** Parent-layout positioning only. */
-  layoutStyle?: ComponentLayoutStyle;
-}>;
+  layoutStyle?: ComponentLayoutStyle
+}>
 
 /**
  * Groups avatars with a 25% overlap. Children read the inherited
@@ -97,8 +103,8 @@ export const avatarGroup = <Msg>(
   props: AvatarGroupProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const size = resolveAvatarSize(props.avatarSize);
-  const overlap = Math.round(size * OVERLAP_RATIO);
+  const size = resolveAvatarSize(props.avatarSize)
+  const overlap = Math.round(size * OVERLAP_RATIO)
   return h.div(
     [
       h.Role('group'),
@@ -111,43 +117,43 @@ export const avatarGroup = <Msg>(
       }),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 export type AvatarGroupOverflowProps<Msg> = Readonly<{
   /** Number of hidden avatars; rendered as "+N" when no children are given. */
-  count?: number;
+  count?: number
   /** Shared avatar size (px or named); the overflow chip is size + 4px to span the ring. */
-  avatarSize?: AvatarGroupSize;
+  avatarSize?: AvatarGroupSize
   /** Matches the group members' avatar shape. */
-  shape?: AvatarShape;
+  shape?: AvatarShape
   /** Custom content replacing the "+N" label. */
-  children?: ReadonlyArray<Html>;
+  children?: ReadonlyArray<Html>
   /** When set, the overflow renders as a button. */
-  onClick?: Msg;
+  onClick?: Msg
   /** Accessible label override; defaults to "N more". */
-  ariaLabel?: string;
+  ariaLabel?: string
   /** Parent-layout positioning only. */
-  layoutStyle?: ComponentLayoutStyle;
-}>;
+  layoutStyle?: ComponentLayoutStyle
+}>
 
 /** The "+N" chip at the end of an avatar group. */
 export const avatarGroupOverflow = <Msg>(
   props: AvatarGroupOverflowProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const size = resolveAvatarSize(props.avatarSize);
-  const shape = props.shape ?? 'circle';
-  const count = props.count ?? 0;
-  const chipSize = size + 4;
-  const fontSize = Math.max(12, Math.round(size * 0.35));
+  const size = resolveAvatarSize(props.avatarSize)
+  const shape = props.shape ?? 'circle'
+  const count = props.count ?? 0
+  const chipSize = size + 4
+  const fontSize = Math.max(12, Math.round(size * 0.35))
   const ariaLabel =
     props.ariaLabel ??
-    (props.children === undefined && count > 0 ? `${count} more` : undefined);
+    (props.children === undefined && count > 0 ? `${count} more` : undefined)
   const content =
     props.children !== undefined
       ? [...props.children]
-      : [count > 0 ? `+${count}` : ''];
+      : [count > 0 ? `+${count}` : '']
 
   const sharedAttrs = [
     h.DataAttribute('slot', 'avatar-group-overflow'),
@@ -170,7 +176,7 @@ export const avatarGroupOverflow = <Msg>(
       lineHeight: '1',
       marginInlineStart: 'var(--avatar-group-overlap)',
     }),
-  ];
+  ]
 
   return props.onClick === undefined
     ? h.span(sharedAttrs, content)
@@ -183,35 +189,42 @@ export const avatarGroupOverflow = <Msg>(
           h.OnClick(props.onClick),
         ],
         content,
-      );
-};
+      )
+}
 
-export type AvatarStatusDotVariant = 'success' | 'neutral' | 'error';
-export type AvatarStatusDotSize = 'xsm' | 'sm' | 'md' | 'lg' | 'xl' | number;
+export type AvatarStatusDotVariant = 'success' | 'neutral' | 'error'
+export type AvatarStatusDotSize = 'xsm' | 'sm' | 'md' | 'lg' | 'xl' | number
 
-type DotTier = Readonly<{ dot: number; border: number; icon: number; stroke: number }>;
+type DotTier = Readonly<{
+  dot: number
+  border: number
+  icon: number
+  stroke: number
+}>
 
-const DOT_TIER_SMALL: DotTier = { dot: 10, border: 1, icon: 0, stroke: 1 };
-const DOT_TIER_MEDIUM: DotTier = { dot: 20, border: 2, icon: 12, stroke: 1.5 };
-const DOT_TIER_LARGE: DotTier = { dot: 32, border: 4, icon: 18, stroke: 2 };
+const DOT_TIER_SMALL: DotTier = { dot: 10, border: 1, icon: 0, stroke: 1 }
+const DOT_TIER_MEDIUM: DotTier = { dot: 20, border: 2, icon: 12, stroke: 1.5 }
+const DOT_TIER_LARGE: DotTier = { dot: 32, border: 4, icon: 18, stroke: 2 }
 
-const ASTRYX_AVATAR_SIZE_PX: Readonly<Record<'xsm' | 'sm' | 'md' | 'lg' | 'xl', number>> = {
+const ASTRYX_AVATAR_SIZE_PX: Readonly<
+  Record<'xsm' | 'sm' | 'md' | 'lg' | 'xl', number>
+> = {
   xsm: 20,
   sm: 24,
   md: 36,
   lg: 48,
   xl: 128,
-};
+}
 
 const resolveStatusDotSize = (size: AvatarStatusDotSize | undefined): number =>
-  typeof size === 'number' ? size : ASTRYX_AVATAR_SIZE_PX[size ?? 'md'];
+  typeof size === 'number' ? size : ASTRYX_AVATAR_SIZE_PX[size ?? 'md']
 
 const dotTier = (avatarSize: number): DotTier =>
   avatarSize <= 36
     ? DOT_TIER_SMALL
     : avatarSize <= 72
       ? DOT_TIER_MEDIUM
-      : DOT_TIER_LARGE;
+      : DOT_TIER_LARGE
 
 const statusDotGlyph = <Msg>(
   variant: AvatarStatusDotVariant,
@@ -219,13 +232,18 @@ const statusDotGlyph = <Msg>(
   strokeWidth: number,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const center = field / 2;
-  const radius = (field - strokeWidth) / 2;
-  const spanStart = (field * (1 - 0.75)) / 2 + strokeWidth / 2;
-  const spanEnd = (field * (1 + 0.75)) / 2 - strokeWidth / 2;
+  const center = field / 2
+  const radius = (field - strokeWidth) / 2
+  const spanStart = (field * (1 - 0.75)) / 2 + strokeWidth / 2
+  const spanEnd = (field * (1 + 0.75)) / 2 - strokeWidth / 2
   const children =
     variant === 'neutral'
-      ? [h.circle([h.Cx(String(center)), h.Cy(String(center)), h.R(String(radius))], [])]
+      ? [
+          h.circle(
+            [h.Cx(String(center)), h.Cy(String(center)), h.R(String(radius))],
+            [],
+          ),
+        ]
       : variant === 'error'
         ? [
             h.line(
@@ -238,7 +256,7 @@ const statusDotGlyph = <Msg>(
               [],
             ),
           ]
-        : [];
+        : []
   return h.svg(
     [
       h.AriaHidden(true),
@@ -251,40 +269,40 @@ const statusDotGlyph = <Msg>(
       h.StrokeLinecap('round'),
     ],
     children,
-  );
-};
+  )
+}
 
 export type AvatarStatusDotProps = Readonly<{
   /** Semantic tone: success (online), neutral (offline), error (busy). */
-  variant: AvatarStatusDotVariant;
+  variant: AvatarStatusDotVariant
   /** Driving avatar's size — picks the dot diameter tier (10/20/32px). */
-  avatarSize?: AvatarStatusDotSize;
+  avatarSize?: AvatarStatusDotSize
   /** Accessible label for the status; omit for a decorative dot. */
-  label?: string;
+  label?: string
   /** Custom glyph replacing the default (ignored at the smallest tier; icons render at 1em). */
-  icon?: <M>(h: HtmlBuilder<M>) => Html;
+  icon?: <M>(h: HtmlBuilder<M>) => Html
   /** Parent-layout positioning only. */
-  layoutStyle?: ComponentLayoutStyle;
-}>;
+  layoutStyle?: ComponentLayoutStyle
+}>
 
 /** Status badge dot for the corner of an avatar (online/offline/busy). */
 export const avatarStatusDot = <Msg>(
   props: AvatarStatusDotProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const avatarSize = resolveStatusDotSize(props.avatarSize);
-  const tier = dotTier(avatarSize);
-  const field = tier.dot - tier.border * 2;
-  const useIcon = props.icon !== undefined && tier.icon > 0;
+  const avatarSize = resolveStatusDotSize(props.avatarSize)
+  const tier = dotTier(avatarSize)
+  const field = tier.dot - tier.border * 2
+  const useIcon = props.icon !== undefined && tier.icon > 0
   const variantStyle =
     props.variant === 'success'
       ? styles.dotSuccess
       : props.variant === 'neutral'
         ? styles.dotNeutral
-        : styles.dotError;
+        : styles.dotError
   const content = useIcon
     ? [props.icon?.(h) ?? h.empty]
-    : [statusDotGlyph(props.variant, field, tier.stroke, h)];
+    : [statusDotGlyph(props.variant, field, tier.stroke, h)]
 
   return h.div(
     [
@@ -293,7 +311,9 @@ export const avatarStatusDot = <Msg>(
       ...(props.label === undefined
         ? [h.AriaHidden(true)]
         : [h.Role('img'), h.AriaLabel(props.label)]),
-      h.Class(className(styles.dot, styles.dotRound, variantStyle, props.layoutStyle)),
+      h.Class(
+        className(styles.dot, styles.dotRound, variantStyle, props.layoutStyle),
+      ),
       h.Style({
         width: `${tier.dot}px`,
         height: `${tier.dot}px`,
@@ -302,5 +322,5 @@ export const avatarStatusDot = <Msg>(
       }),
     ],
     content,
-  );
-};
+  )
+}

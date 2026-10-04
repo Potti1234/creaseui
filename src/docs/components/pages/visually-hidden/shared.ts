@@ -1,8 +1,8 @@
-import type { DocsExample } from '@/docs/components/page-definition';
+import type { DocsExample } from '@/docs/components/page-definition'
 import {
   foldkitApplication,
   staticComponentApplication,
-} from '@/docs/components/pages/authored-page';
+} from '@/docs/components/pages/authored-page'
 
 /* Astryx VisuallyHidden example blocks ported 1:1. astryx Card variant="muted"
    (borderless muted surface) → bg-muted + transparent border + no shadow in
@@ -11,12 +11,14 @@ import {
    example's useState cycle becomes a foldkit application. */
 
 export type VisuallyHiddenFixture = Readonly<{
-  title: string;
-  description?: string;
-  kind: 'showcase' | 'liveRegion' | 'heading' | 'supplementary';
-}>;
+  title: string
+  description?: string
+  kind: 'showcase' | 'liveRegion' | 'heading' | 'supplementary'
+}>
 
-export const visuallyHiddenFixtures: Readonly<[VisuallyHiddenFixture, ...Array<VisuallyHiddenFixture>]> = [
+export const visuallyHiddenFixtures: Readonly<
+  [VisuallyHiddenFixture, ...Array<VisuallyHiddenFixture>]
+> = [
   {
     title: 'VisuallyHidden',
     kind: 'showcase',
@@ -39,100 +41,101 @@ export const visuallyHiddenFixtures: Readonly<[VisuallyHiddenFixture, ...Array<V
       'Add screen-reader-only context to terse visual data, like spelling out what a trend arrow means.',
     kind: 'supplementary',
   },
-];
+]
 
 export const vhActions: ReadonlyArray<{ label: string; icon: string }> = [
   { label: 'Download', icon: 'download' },
   { label: 'Share', icon: 'share' },
   { label: 'Delete', icon: 'trash-2' },
-];
+]
 
 export const vhItems: ReadonlyArray<{
-  name: string;
-  status: string;
-  variant: 'success' | 'error';
+  name: string
+  status: string
+  variant: 'success' | 'error'
 }> = [
   { name: 'astryx-core', status: 'Passing', variant: 'success' },
   { name: 'astryx-charts', status: 'Failing', variant: 'error' },
   { name: 'astryx-cli', status: 'Passing', variant: 'success' },
-];
+]
 
 export const vhStats: ReadonlyArray<{
-  label: string;
-  value: string;
-  delta: string;
-  direction: 'up' | 'down';
+  label: string
+  value: string
+  delta: string
+  direction: 'up' | 'down'
 }> = [
   { label: 'Revenue', value: '$48.2k', delta: '+12%', direction: 'up' },
   { label: 'Churn', value: '2.1%', delta: '-4%', direction: 'down' },
-];
+]
 
 const actionsSource = `const ACTIONS = [
   { label: 'Download', icon: 'download' },
   { label: 'Share', icon: 'share' },
   { label: 'Delete', icon: 'trash-2' },
-] as const`;
+] as const`
 
 const itemsSource = `const ITEMS = [
   { name: 'astryx-core', status: 'Passing', variant: 'secondary' },
   { name: 'astryx-charts', status: 'Failing', variant: 'destructive' },
   { name: 'astryx-cli', status: 'Passing', variant: 'secondary' },
-] as const`;
+] as const`
 
 const statsSource = `const STATS = [
   { label: 'Revenue', value: '$48.2k', delta: '+12%', direction: 'up' },
   { label: 'Churn', value: '2.1%', delta: '-4%', direction: 'down' },
-] as const`;
+] as const`
 
-const columnsSource = `const COLUMNS = ['Backlog', 'In progress', 'Done'] as const`;
+const columnsSource = `const COLUMNS = ['Backlog', 'In progress', 'Done'] as const`
 
 const supportingTw = (child: string): string =>
-  `h.p([h.Class('text-xs text-muted-foreground')], [${child}])`;
+  `h.p([h.Class('text-xs text-muted-foreground')], [${child}])`
 const supportingSx = (child: string): string =>
-  `h.p([h.Class(stylex.props(styles.supporting).className ?? '')], [${child}])`;
+  `h.p([h.Class(stylex.props(styles.supporting).className ?? '')], [${child}])`
 const bodyTw = (child: string): string =>
-  `h.p([h.Class('text-sm')], [${child}])`;
+  `h.p([h.Class('text-sm')], [${child}])`
 const bodySx = (child: string): string =>
-  `h.p([h.Class(stylex.props(styles.body).className ?? '')], [${child}])`;
+  `h.p([h.Class(stylex.props(styles.body).className ?? '')], [${child}])`
 const displayTw = (child: string): string =>
-  `h.p([h.Class('text-[29px] leading-9 font-normal')], [${child}])`;
+  `h.p([h.Class('text-[29px] leading-9 font-normal')], [${child}])`
 const displaySx = (child: string): string =>
-  `h.p([h.Class(stylex.props(styles.display).className ?? '')], [${child}])`;
+  `h.p([h.Class(stylex.props(styles.display).className ?? '')], [${child}])`
 
 const mutedCardTw = (children: string): string =>
   `Card.card({ size: 'sm', class: 'bg-muted border-transparent shadow-none', children: [
             Card.cardContent({ children: [
               ${children},
             ] }, h),
-          ] }, h)`;
+          ] }, h)`
 const mutedCardSx = (children: string): string =>
   `h.div([h.Class(stylex.props(styles.mutedCard).className ?? '')], [
             ${children},
-          ])`;
+          ])`
 
 const emitShowcase = (renderer: 'tailwind' | 'stylex'): string => {
-  const supporting = renderer === 'tailwind' ? supportingTw : supportingSx;
-  const body = renderer === 'tailwind' ? bodyTw : bodySx;
-  const card = renderer === 'tailwind' ? mutedCardTw : mutedCardSx;
+  const supporting = renderer === 'tailwind' ? supportingTw : supportingSx
+  const body = renderer === 'tailwind' ? bodyTw : bodySx
+  const card = renderer === 'tailwind' ? mutedCardTw : mutedCardSx
   const speaker =
     renderer === 'tailwind'
       ? `icon('volume-2', { class: 'size-4 text-muted-foreground' }, h)`
-      : `icon('volume-2', { class: stylex.props(styles.smallIcon).className ?? '' }, h)`;
-  const iconButton = renderer === 'tailwind'
-    ? `Stack.hStack({ gap: 2, children: [
+      : `icon('volume-2', { class: stylex.props(styles.smallIcon).className ?? '' }, h)`
+  const iconButton =
+    renderer === 'tailwind'
+      ? `Stack.hStack({ gap: 2, children: [
                 ...ACTIONS.map(action =>
                   Button.button({ variant: 'ghost', size: 'icon', ariaLabel: action.label, children: [
                     icon(action.icon, { class: 'size-4' }, h),
                   ] }, h),
                 ),
               ] }, h)`
-    : `Stack.hStack({ gap: 2, children: [
+      : `Stack.hStack({ gap: 2, children: [
                 ...ACTIONS.map(action =>
                   Button.button({ variant: 'ghost', size: 'icon', ariaLabel: action.label, children: [
                     icon(action.icon, {}, h),
                   ] }, h),
                 ),
-              ] }, h)`;
+              ] }, h)`
   return `Stack.vStack({ gap: 5, hAlign: 'center', children: [
         Stack.hStack({ gap: 6, vAlign: 'stretch', wrap: 'wrap', hAlign: 'center', children: [
           ${card(`Stack.vStack({ gap: 4, hAlign: 'center', children: [
@@ -156,12 +159,12 @@ const emitShowcase = (renderer: 'tailwind' | 'stylex'): string => {
           { as: 'div', ariaLive: 'polite', children: ['Actions available: Download, Share, Delete.'] },
           h,
         ),
-      ] }, h)`;
-};
+      ] }, h)`
+}
 
 const emitLiveRegion = (renderer: 'tailwind' | 'stylex'): string => {
-  const mod = renderer === 'stylex' ? 'stylex' : 'ui';
-  const supporting = renderer === 'tailwind' ? supportingTw : supportingSx;
+  const mod = renderer === 'stylex' ? 'stylex' : 'ui'
+  const supporting = renderer === 'tailwind' ? supportingTw : supportingSx
   const stylesSource =
     renderer === 'stylex'
       ? `import * as stylex from '@stylexjs/stylex'
@@ -179,7 +182,7 @@ const styles = stylex.create({
   body: { fontSize: '0.875rem', lineHeight: '1.25rem' },
   bodyBold: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 700 },
 })`
-      : '';
+      : ''
   const bodyMarkup =
     renderer === 'tailwind'
       ? `h.p([h.Class('text-sm')], [
@@ -189,11 +192,11 @@ const styles = stylex.create({
       : `h.p([h.Class(stylex.props(styles.body).className ?? '')], [
                 'Task is in ',
                 h.span([h.Class(stylex.props(styles.bodyBold).className ?? '')], [COLUMNS[model.column] ?? '']),
-              ])`;
+              ])`
   const wrapClass =
     renderer === 'tailwind'
       ? `h.Class('flex min-h-screen flex-col items-start justify-center p-8')`
-      : `h.Class(stylex.props(styles.shellWrap).className ?? '')`;
+      : `h.Class(stylex.props(styles.shellWrap).className ?? '')`
   return foldkitApplication({
     title: 'VisuallyHidden — Live Region',
     imports: `import { Schema as S } from 'effect'
@@ -242,13 +245,13 @@ export type Message = typeof Message.Type`,
     ] }, h),
   ]),
 })`,
-  });
-};
+  })
+}
 
 const emitHeading = (renderer: 'tailwind' | 'stylex'): string => {
-  const supporting = renderer === 'tailwind' ? supportingTw : supportingSx;
-  const body = renderer === 'tailwind' ? bodyTw : bodySx;
-  const card = renderer === 'tailwind' ? mutedCardTw : mutedCardSx;
+  const supporting = renderer === 'tailwind' ? supportingTw : supportingSx
+  const body = renderer === 'tailwind' ? bodyTw : bodySx
+  const card = renderer === 'tailwind' ? mutedCardTw : mutedCardSx
   return `Stack.vStack({ gap: 3, hAlign: 'start', children: [
         ${supporting(`'The layout makes this group obvious to sighted users. A hidden heading gives screen-reader users the same landmark to jump to.'`)},
         /* No visible heading is needed here, but AT users navigate by heading. */
@@ -261,18 +264,18 @@ const emitHeading = (renderer: 'tailwind' | 'stylex'): string => {
               ] }, h)`)},
           ),
         ] }, h),
-      ] }, h)`;
-};
+      ] }, h)`
+}
 
 const emitSupplementary = (renderer: 'tailwind' | 'stylex'): string => {
-  const supporting = renderer === 'tailwind' ? supportingTw : supportingSx;
-  const body = renderer === 'tailwind' ? bodyTw : bodySx;
-  const display = renderer === 'tailwind' ? displayTw : displaySx;
-  const card = renderer === 'tailwind' ? mutedCardTw : mutedCardSx;
+  const supporting = renderer === 'tailwind' ? supportingTw : supportingSx
+  const body = renderer === 'tailwind' ? bodyTw : bodySx
+  const display = renderer === 'tailwind' ? displayTw : displaySx
+  const card = renderer === 'tailwind' ? mutedCardTw : mutedCardSx
   const arrowIcon =
     renderer === 'tailwind'
       ? `icon(stat.direction === 'up' ? 'arrow-up' : 'arrow-down', { class: stat.direction === 'up' ? 'size-4 text-accent-foreground' : 'size-4 text-muted-foreground' }, h)`
-      : `icon(stat.direction === 'up' ? 'arrow-up' : 'arrow-down', { class: stat.direction === 'up' ? stylex.props(styles.upIcon).className ?? '' : stylex.props(styles.smallIcon).className ?? '' }, h)`;
+      : `icon(stat.direction === 'up' ? 'arrow-up' : 'arrow-down', { class: stat.direction === 'up' ? stylex.props(styles.upIcon).className ?? '' : stylex.props(styles.smallIcon).className ?? '' }, h)`
   return `Stack.hStack({ gap: 4, wrap: 'wrap', children: [
         ...STATS.map(stat =>
           ${card(`Stack.vStack({ gap: 1, children: [
@@ -289,8 +292,8 @@ const emitSupplementary = (renderer: 'tailwind' | 'stylex'): string => {
               ] }, h),
             ] }, h)`)},
         ),
-      ] }, h)`;
-};
+      ] }, h)`
+}
 
 const emitBody = (
   fixture: VisuallyHiddenFixture,
@@ -298,15 +301,15 @@ const emitBody = (
 ): string => {
   switch (fixture.kind) {
     case 'showcase':
-      return emitShowcase(renderer);
+      return emitShowcase(renderer)
     case 'heading':
-      return emitHeading(renderer);
+      return emitHeading(renderer)
     case 'supplementary':
-      return emitSupplementary(renderer);
+      return emitSupplementary(renderer)
     case 'liveRegion':
-      return '';
+      return ''
   }
-};
+}
 
 const stylexStylesFor = (kind: VisuallyHiddenFixture['kind']): string => {
   const entries: Array<string> = [
@@ -317,41 +320,45 @@ const stylexStylesFor = (kind: VisuallyHiddenFixture['kind']): string => {
     height: '1rem',
     width: '1rem',
   }`,
-  ];
+  ]
   if (kind === 'supplementary') {
     entries.push(
       `  display: { fontSize: '1.8125rem', fontWeight: 400, lineHeight: '1.2414' }`,
-    );
+    )
     entries.push(
       `  upIcon: { color: 'var(--accent-foreground)', height: '1rem', width: '1rem' }`,
-    );
+    )
   }
   if (kind !== 'liveRegion') {
     entries.push(`  mutedCard: {
     backgroundColor: 'var(--muted)',
     borderRadius: '0.75rem',
     padding: '1rem',
-  }`);
+  }`)
   }
   return `import * as stylex from '@stylexjs/stylex'
 
 const styles = stylex.create({
 ${entries.join(',\n')},
-})`;
-};
+})`
+}
 
 const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
-  const fixture = visuallyHiddenFixtures[index] ?? visuallyHiddenFixtures[0];
-  if (fixture.kind === 'liveRegion') return emitLiveRegion(renderer);
-  const mod = renderer === 'stylex' ? 'stylex' : 'ui';
+  const fixture = visuallyHiddenFixtures[index] ?? visuallyHiddenFixtures[0]
+  if (fixture.kind === 'liveRegion') return emitLiveRegion(renderer)
+  const mod = renderer === 'stylex' ? 'stylex' : 'ui'
   const componentImports = [
     `import * as Stack from '@/${mod}/stack'`,
     fixture.kind === 'heading' ? `import * as Badge from '@/${mod}/badge'` : '',
-    fixture.kind === 'showcase' ? `import * as Button from '@/${mod}/button'` : '',
+    fixture.kind === 'showcase'
+      ? `import * as Button from '@/${mod}/button'`
+      : '',
     fixture.kind === 'showcase' || fixture.kind === 'supplementary'
       ? `import { icon } from '@/lib/icon'`
       : '',
-    fixture.kind === 'showcase' || fixture.kind === 'heading' || fixture.kind === 'supplementary'
+    fixture.kind === 'showcase' ||
+    fixture.kind === 'heading' ||
+    fixture.kind === 'supplementary'
       ? `import * as Card from '@/${mod}/card'`
       : '',
     fixture.kind === 'showcase'
@@ -364,7 +371,7 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
     renderer === 'stylex' ? stylexStylesFor(fixture.kind) : '',
   ]
     .filter(Boolean)
-    .join('\n');
+    .join('\n')
   return staticComponentApplication({
     componentName: 'VisuallyHidden',
     componentSlug: 'visually-hidden',
@@ -372,8 +379,8 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
     exampleName: fixture.title,
     componentImports,
     viewBody: emitBody(fixture, renderer),
-  });
-};
+  })
+}
 
 export const visuallyHiddenExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -384,4 +391,4 @@ export const visuallyHiddenExamples = (
       ? {}
       : { description: fixture.description }),
     code: source(index, renderer),
-  }));
+  }))

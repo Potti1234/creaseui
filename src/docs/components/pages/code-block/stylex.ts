@@ -1,20 +1,20 @@
-import * as stylex from '@stylexjs/stylex';
-import { Schema as S } from 'effect';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import * as stylex from '@stylexjs/stylex'
+import { Schema as S } from 'effect'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   codeBlockFixtures,
   type CodeBlockFixture,
-} from '@/docs/components/pages/code-block/shared';
-import * as CodeBlock from '@/stylex/code-block';
-import { className } from '@/stylex/style';
+} from '@/docs/components/pages/code-block/shared'
+import * as CodeBlock from '@/stylex/code-block'
+import { className } from '@/stylex/style'
 
 const Message = defineMessageUnion({
   GotCodeBlockMessage: { id: S.String, message: CodeBlock.Message },
-});
-const { GotCodeBlockMessage } = Message;
+})
+const { GotCodeBlockMessage } = Message
 
 const styles = stylex.create({
   column: {
@@ -27,11 +27,11 @@ const styles = stylex.create({
   block: {
     width: '100%',
   },
-});
+})
 
 type PreviewModel = Readonly<{
-  codeBlocks: Readonly<Record<string, CodeBlock.Model>>;
-}>;
+  codeBlocks: Readonly<Record<string, CodeBlock.Model>>
+}>
 
 const renderFixture = <Msg>(
   fixture: CodeBlockFixture,
@@ -53,22 +53,20 @@ const renderFixture = <Msg>(
         ...(spec.highlightLines === undefined
           ? {}
           : { highlightLines: spec.highlightLines }),
-        ...(spec.maxHeight === undefined
-          ? {}
-          : { maxHeight: spec.maxHeight }),
+        ...(spec.maxHeight === undefined ? {} : { maxHeight: spec.maxHeight }),
         layoutStyle: styles.block,
       },
       h,
-    );
+    )
 
   if (fixture.blocks.length === 1 && fixture.blocks[0] !== undefined) {
-    return block(fixture.blocks[0].id, fixture.blocks[0]);
+    return block(fixture.blocks[0].id, fixture.blocks[0])
   }
   return h.div(
     [h.Class(className(styles.column))],
     fixture.blocks.map(spec => block(spec.id, spec)),
-  );
-};
+  )
+}
 
 export const codeBlockStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
@@ -81,4 +79,4 @@ export const codeBlockStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
     model as PreviewModel,
     onMessageJson,
     h,
-  );
+  )

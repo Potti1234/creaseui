@@ -22,25 +22,21 @@ export const Model = S.Struct({
 })
 export type Model = typeof Model.Type
 
-
-
 export const Message = defineMessageUnion({
   ToggledItem: {
-  value: S.String,
-  isOpen: S.Boolean,
-},
-});
+    value: S.String,
+    isOpen: S.Boolean,
+  },
+})
 export type Message = typeof Message.Type
-
-
 
 export const OutMessage = defineMessageUnion({
   ChangedValue: {
-  value: S.Array(S.String),
-  toggledValue: S.String,
-  isOpen: S.Boolean,
-},
-});
+    value: S.Array(S.String),
+    toggledValue: S.String,
+    isOpen: S.Boolean,
+  },
+})
 export type OutMessage = typeof OutMessage.Type
 
 /** @deprecated Prefer `InitConfig.value`. Retained for registry compatibility. */
@@ -78,8 +74,8 @@ export const init = (config: InitConfig): Model => {
   const initialValue =
     config.value ??
     config.items
-      ?.filter((item) => item.isOpen === true)
-      .map((item) => item.value) ??
+      ?.filter(item => item.isOpen === true)
+      .map(item => item.value) ??
     []
 
   return {
@@ -98,18 +94,25 @@ export const reflect = (model: Model, value: ReadonlyArray<string>): Model => ({
   value: [...normalizeValue(model.type, value)],
 })
 
-export type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>
+export type UpdateReturn = Update.ReturnWithOutMessage<
+  Model,
+  Message,
+  OutMessage
+>
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   const value = message.isOpen
     ? model.type === 'single'
       ? [message.value]
       : [...normalizeValue('multiple', [...model.value, message.value])]
-    : model.value.filter((currentValue) => currentValue !== message.value)
+    : model.value.filter(currentValue => currentValue !== message.value)
 
-  return { model: { ...model, value }, outMessage: OutMessage.ChangedValue({
-        value,
-        toggledValue: message.value,
-        isOpen: message.isOpen,
-      }), }
+  return {
+    model: { ...model, value },
+    outMessage: OutMessage.ChangedValue({
+      value,
+      toggledValue: message.value,
+      isOpen: message.isOpen,
+    }),
+  }
 }

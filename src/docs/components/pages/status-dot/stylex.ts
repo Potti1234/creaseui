@@ -1,16 +1,19 @@
-import * as stylex from '@stylexjs/stylex';
-import type { HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
-import { statusDotFixtures, type StatusDotItem } from '@/docs/components/pages/status-dot/shared';
-import { className } from '@/stylex/style';
-import * as StatusDot from '@/stylex/status-dot';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import {
+  statusDotFixtures,
+  type StatusDotItem,
+} from '@/docs/components/pages/status-dot/shared'
+import { className } from '@/stylex/style'
+import * as StatusDot from '@/stylex/status-dot'
 
 const styles = stylex.create({
-  row: { gap: '0.5rem', alignItems: 'center', display: 'flex', },
-  list: { gap: '0.5rem', display: 'flex', flexDirection: 'column', },
+  row: { gap: '0.5rem', alignItems: 'center', display: 'flex' },
+  list: { gap: '0.5rem', display: 'flex', flexDirection: 'column' },
   label: { fontSize: '0.875rem', lineHeight: '1.25rem' },
-});
+})
 
 const statusDotItem = <Msg>(item: StatusDotItem, h: HtmlBuilder<Msg>) =>
   StatusDot.statusDot(
@@ -20,7 +23,7 @@ const statusDotItem = <Msg>(item: StatusDotItem, h: HtmlBuilder<Msg>) =>
       ...(item.pulsing === undefined ? {} : { pulsing: item.pulsing }),
     },
     h,
-  );
+  )
 
 export const statusDotStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
@@ -28,7 +31,7 @@ export const statusDotStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   _onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ) => {
-  const fixture = statusDotFixtures[exampleIndex] ?? statusDotFixtures[0];
+  const fixture = statusDotFixtures[exampleIndex] ?? statusDotFixtures[0]
   return fixture.layout === 'list'
     ? h.div(
         [h.Class(className(styles.list))],
@@ -45,5 +48,5 @@ export const statusDotStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
     : h.div(
         [h.Class(className(styles.row))],
         fixture.items.map(item => statusDotItem(item, h)),
-      );
-};
+      )
+}

@@ -33,7 +33,10 @@ export const formatISOTime = (
 
 export const formatDisplayTime = (
   value: string,
-  options: Readonly<{ hourFormat: '12h' | '24h'; hasSeconds?: boolean | undefined }>,
+  options: Readonly<{
+    hourFormat: '12h' | '24h'
+    hasSeconds?: boolean | undefined
+  }>,
 ): string => {
   const parsed = parseISOTime(value)
   if (parsed === null) return value
@@ -118,10 +121,13 @@ export const isTimeInRange = (
   (max === undefined || compareTime(value, max) <= 0)
 
 /** Shifts a time by `delta` minutes, wrapping inside the 24h day. */
-export const adjustTime = (value: TimeValue, delta: number): TimeValue | null => {
+export const adjustTime = (
+  value: TimeValue,
+  delta: number,
+): TimeValue | null => {
   const parsed = parseISOTime(value)
   if (parsed === null) return null
-  const minutes = ((parsed.minutes + delta) % 1440 + 1440) % 1440
+  const minutes = (((parsed.minutes + delta) % 1440) + 1440) % 1440
   return formatISOTime(minutes, parsed.seconds, parsed.seconds > 0)
 }
 
@@ -190,7 +196,9 @@ export const TimeInputCommitResolution = S.Union([
 ])
 export type TimeInputCommitResolution = typeof TimeInputCommitResolution.Type
 
-export const commitResolutionOf = (commit: TimeInputCommit): TimeInputCommitResolution =>
+export const commitResolutionOf = (
+  commit: TimeInputCommit,
+): TimeInputCommitResolution =>
   commit.kind === 'commit'
     ? { _tag: 'commit', value: commit.value }
     : commit.kind === 'clear'
@@ -213,7 +221,11 @@ export const OutMessage = defineMessageUnion({
 })
 export type OutMessage = typeof OutMessage.Type
 
-export type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>
+export type UpdateReturn = Update.ReturnWithOutMessage<
+  Model,
+  Message,
+  OutMessage
+>
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
@@ -232,7 +244,11 @@ export const update = (model: Model, message: Message): UpdateReturn => {
           }
     }
     case 'CommitDecided': {
-      const settled = { ...model, pendingInput: Option.none(), isFocused: false }
+      const settled = {
+        ...model,
+        pendingInput: Option.none(),
+        isFocused: false,
+      }
       switch (message.resolution._tag) {
         case 'commit':
           return {

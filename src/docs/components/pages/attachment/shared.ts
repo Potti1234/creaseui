@@ -1,49 +1,49 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type AttachmentItemSpec = Readonly<{
-  name: string;
-  meta?: string;
-  icon?: string;
-  spinner?: boolean;
-  src?: string;
-  alt?: string;
-  state?: 'idle' | 'uploading' | 'processing' | 'error' | 'done';
-  size?: 'default' | 'sm' | 'xs';
-  orientation?: 'vertical';
-  actions: ReadonlyArray<Readonly<{ icon: string; label: string }>>;
-  triggerLabel?: string;
-}>;
+  name: string
+  meta?: string
+  icon?: string
+  spinner?: boolean
+  src?: string
+  alt?: string
+  state?: 'idle' | 'uploading' | 'processing' | 'error' | 'done'
+  size?: 'default' | 'sm' | 'xs'
+  orientation?: 'vertical'
+  actions: ReadonlyArray<Readonly<{ icon: string; label: string }>>
+  triggerLabel?: string
+}>
 
 export type AttachmentRowSpec = Readonly<{
   /** Const name used for the row's item array in generated code. */
-  name: string;
+  name: string
   /** Wrap the row's items in Attachment.attachmentGroup. */
-  grouped?: boolean;
+  grouped?: boolean
   /** Width class applied to each item in a grouped row (e.g. 'w-64'). */
-  itemWidth?: string;
+  itemWidth?: string
   /** Class on the group element itself ('w-full' when set). */
-  groupFullWidth?: boolean;
-  items: ReadonlyArray<AttachmentItemSpec>;
-}>;
+  groupFullWidth?: boolean
+  items: ReadonlyArray<AttachmentItemSpec>
+}>
 
 export type AttachmentFixture = Readonly<{
-  kind: 'demo' | 'image' | 'states' | 'sizes' | 'group' | 'trigger';
-  title: string;
-  description: string;
+  kind: 'demo' | 'image' | 'states' | 'sizes' | 'group' | 'trigger'
+  title: string
+  description: string
   /** Rendered only as the page hero, not as a named example section. */
-  heroOnly?: boolean;
+  heroOnly?: boolean
   /** Outer frame: flex column lists vs plain centered column. */
-  frame: 'gap-2' | 'gap-3' | 'plain';
-  rows: Readonly<[AttachmentRowSpec, ...Array<AttachmentRowSpec>]>;
-}>;
+  frame: 'gap-2' | 'gap-3' | 'plain'
+  rows: Readonly<[AttachmentRowSpec, ...Array<AttachmentRowSpec>]>
+}>
 
 const WORKSPACE_SRC =
-  'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=900&auto=format&fit=crop&q=80';
+  'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=900&auto=format&fit=crop&q=80'
 const DESK_SRC =
-  'https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=900&auto=format&fit=crop&q=80';
+  'https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=900&auto=format&fit=crop&q=80'
 const OFFICE_SRC =
-  'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=900&auto=format&fit=crop&q=80';
+  'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=900&auto=format&fit=crop&q=80'
 
 export const attachmentFixtures: Readonly<
   [AttachmentFixture, ...Array<AttachmentFixture>]
@@ -51,7 +51,8 @@ export const attachmentFixtures: Readonly<
   {
     kind: 'demo',
     title: 'Demo',
-    description: 'A file list combining a vertical image strip with standalone uploads.',
+    description:
+      'A file list combining a vertical image strip with standalone uploads.',
     heroOnly: true,
     frame: 'gap-3',
     rows: [
@@ -59,16 +60,48 @@ export const attachmentFixtures: Readonly<
         name: 'images',
         grouped: true,
         items: [
-          { name: 'workspace.png', meta: 'PNG · 820 KB', src: WORKSPACE_SRC, alt: 'Workspace', orientation: 'vertical', actions: [] },
-          { name: 'desk-reference.jpg', meta: 'JPG · 1.1 MB', src: DESK_SRC, alt: 'Desk', orientation: 'vertical', actions: [] },
-          { name: 'office-reference.jpg', meta: 'JPG · 940 KB', src: OFFICE_SRC, alt: 'Office', orientation: 'vertical', actions: [] },
+          {
+            name: 'workspace.png',
+            meta: 'PNG · 820 KB',
+            src: WORKSPACE_SRC,
+            alt: 'Workspace',
+            orientation: 'vertical',
+            actions: [],
+          },
+          {
+            name: 'desk-reference.jpg',
+            meta: 'JPG · 1.1 MB',
+            src: DESK_SRC,
+            alt: 'Desk',
+            orientation: 'vertical',
+            actions: [],
+          },
+          {
+            name: 'office-reference.jpg',
+            meta: 'JPG · 940 KB',
+            src: OFFICE_SRC,
+            alt: 'Office',
+            orientation: 'vertical',
+            actions: [],
+          },
         ],
       },
       {
         name: 'files',
         items: [
-          { name: 'sales-dashboard.pdf', meta: 'Uploading · 64%', spinner: true, state: 'uploading', actions: [{ icon: 'x', label: 'Cancel upload' }] },
-          { name: 'message-renderer.tsx', meta: 'TypeScript · 12 KB', icon: 'file-code', actions: [{ icon: 'x', label: 'Remove message-renderer.tsx' }] },
+          {
+            name: 'sales-dashboard.pdf',
+            meta: 'Uploading · 64%',
+            spinner: true,
+            state: 'uploading',
+            actions: [{ icon: 'x', label: 'Cancel upload' }],
+          },
+          {
+            name: 'message-renderer.tsx',
+            meta: 'TypeScript · 12 KB',
+            icon: 'file-code',
+            actions: [{ icon: 'x', label: 'Remove message-renderer.tsx' }],
+          },
         ],
       },
     ],
@@ -76,7 +109,8 @@ export const attachmentFixtures: Readonly<
   {
     kind: 'image',
     title: 'Image',
-    description: 'Media attachments can render an image preview and still expose remove actions and a fill trigger.',
+    description:
+      'Media attachments can render an image preview and still expose remove actions and a fill trigger.',
     frame: 'plain',
     rows: [
       {
@@ -84,9 +118,33 @@ export const attachmentFixtures: Readonly<
         grouped: true,
         groupFullWidth: true,
         items: [
-          { name: 'workspace.png', meta: 'PNG · 820 KB', src: WORKSPACE_SRC, alt: 'Workspace', orientation: 'vertical', actions: [{ icon: 'x', label: 'Remove workspace.png' }], triggerLabel: 'Open workspace.png' },
-          { name: 'desk-reference.jpg', meta: 'JPG · 1.1 MB', src: DESK_SRC, alt: 'Desk', orientation: 'vertical', actions: [{ icon: 'x', label: 'Remove desk-reference.jpg' }], triggerLabel: 'Open desk-reference.jpg' },
-          { name: 'office-reference.jpg', meta: 'JPG · 940 KB', src: OFFICE_SRC, alt: 'Office', orientation: 'vertical', actions: [{ icon: 'x', label: 'Remove office-reference.jpg' }], triggerLabel: 'Open office-reference.jpg' },
+          {
+            name: 'workspace.png',
+            meta: 'PNG · 820 KB',
+            src: WORKSPACE_SRC,
+            alt: 'Workspace',
+            orientation: 'vertical',
+            actions: [{ icon: 'x', label: 'Remove workspace.png' }],
+            triggerLabel: 'Open workspace.png',
+          },
+          {
+            name: 'desk-reference.jpg',
+            meta: 'JPG · 1.1 MB',
+            src: DESK_SRC,
+            alt: 'Desk',
+            orientation: 'vertical',
+            actions: [{ icon: 'x', label: 'Remove desk-reference.jpg' }],
+            triggerLabel: 'Open desk-reference.jpg',
+          },
+          {
+            name: 'office-reference.jpg',
+            meta: 'JPG · 940 KB',
+            src: OFFICE_SRC,
+            alt: 'Office',
+            orientation: 'vertical',
+            actions: [{ icon: 'x', label: 'Remove office-reference.jpg' }],
+            triggerLabel: 'Open office-reference.jpg',
+          },
         ],
       },
     ],
@@ -94,15 +152,34 @@ export const attachmentFixtures: Readonly<
   {
     kind: 'states',
     title: 'States',
-    description: 'Render upload lifecycle as domain data: idle, uploading, processing, error, and done.',
+    description:
+      'Render upload lifecycle as domain data: idle, uploading, processing, error, and done.',
     frame: 'gap-2',
     rows: [
       {
         name: 'items',
         items: [
-          { name: 'selected-file.pdf', meta: 'Ready to upload', icon: 'clock', state: 'idle', actions: [{ icon: 'x', label: 'Remove selected-file.pdf' }] },
-          { name: 'design-system.zip', meta: 'Uploading · 64%', spinner: true, state: 'uploading', actions: [{ icon: 'x', label: 'Cancel upload' }] },
-          { name: 'market-research.pdf', meta: 'Processing document', icon: 'file-text', state: 'processing', actions: [{ icon: 'x', label: 'Remove market-research.pdf' }] },
+          {
+            name: 'selected-file.pdf',
+            meta: 'Ready to upload',
+            icon: 'clock',
+            state: 'idle',
+            actions: [{ icon: 'x', label: 'Remove selected-file.pdf' }],
+          },
+          {
+            name: 'design-system.zip',
+            meta: 'Uploading · 64%',
+            spinner: true,
+            state: 'uploading',
+            actions: [{ icon: 'x', label: 'Cancel upload' }],
+          },
+          {
+            name: 'market-research.pdf',
+            meta: 'Processing document',
+            icon: 'file-text',
+            state: 'processing',
+            actions: [{ icon: 'x', label: 'Remove market-research.pdf' }],
+          },
           {
             name: 'financial-model.xlsx',
             meta: 'Upload failed. Try again.',
@@ -113,7 +190,13 @@ export const attachmentFixtures: Readonly<
               { icon: 'x', label: 'Remove financial-model.xlsx' },
             ],
           },
-          { name: 'uploaded-report.pdf', meta: 'Uploaded · 1.8 MB', icon: 'check', state: 'done', actions: [{ icon: 'x', label: 'Remove uploaded-report.pdf' }] },
+          {
+            name: 'uploaded-report.pdf',
+            meta: 'Uploaded · 1.8 MB',
+            icon: 'check',
+            state: 'done',
+            actions: [{ icon: 'x', label: 'Remove uploaded-report.pdf' }],
+          },
         ],
       },
     ],
@@ -127,9 +210,26 @@ export const attachmentFixtures: Readonly<
       {
         name: 'items',
         items: [
-          { name: 'Default attachment', meta: 'PDF · 2.4 MB', icon: 'file-text', size: 'default', actions: [] },
-          { name: 'Small attachment', meta: 'PDF · 2.4 MB', icon: 'file-text', size: 'sm', actions: [] },
-          { name: 'Extra small attachment', icon: 'file-text', size: 'xs', actions: [] },
+          {
+            name: 'Default attachment',
+            meta: 'PDF · 2.4 MB',
+            icon: 'file-text',
+            size: 'default',
+            actions: [],
+          },
+          {
+            name: 'Small attachment',
+            meta: 'PDF · 2.4 MB',
+            icon: 'file-text',
+            size: 'sm',
+            actions: [],
+          },
+          {
+            name: 'Extra small attachment',
+            icon: 'file-text',
+            size: 'xs',
+            actions: [],
+          },
         ],
       },
     ],
@@ -137,7 +237,8 @@ export const attachmentFixtures: Readonly<
   {
     kind: 'group',
     title: 'Group',
-    description: 'AttachmentGroup lays out attachments in a horizontally scrollable snap row.',
+    description:
+      'AttachmentGroup lays out attachments in a horizontally scrollable snap row.',
     frame: 'plain',
     rows: [
       {
@@ -146,10 +247,30 @@ export const attachmentFixtures: Readonly<
         groupFullWidth: true,
         itemWidth: 'w-64',
         items: [
-          { name: 'briefing-notes.pdf', meta: 'PDF · 1.4 MB', icon: 'file-text', actions: [{ icon: 'x', label: 'Remove briefing-notes.pdf' }] },
-          { name: 'workspace.png', meta: 'PNG · 820 KB', src: WORKSPACE_SRC, actions: [{ icon: 'x', label: 'Remove workspace.png' }] },
-          { name: 'customers.csv', meta: 'CSV · 18 KB', icon: 'table', actions: [{ icon: 'x', label: 'Remove customers.csv' }] },
-          { name: 'renderer.tsx', meta: 'TSX · 12 KB', icon: 'file-code', actions: [{ icon: 'x', label: 'Remove renderer.tsx' }] },
+          {
+            name: 'briefing-notes.pdf',
+            meta: 'PDF · 1.4 MB',
+            icon: 'file-text',
+            actions: [{ icon: 'x', label: 'Remove briefing-notes.pdf' }],
+          },
+          {
+            name: 'workspace.png',
+            meta: 'PNG · 820 KB',
+            src: WORKSPACE_SRC,
+            actions: [{ icon: 'x', label: 'Remove workspace.png' }],
+          },
+          {
+            name: 'customers.csv',
+            meta: 'CSV · 18 KB',
+            icon: 'table',
+            actions: [{ icon: 'x', label: 'Remove customers.csv' }],
+          },
+          {
+            name: 'renderer.tsx',
+            meta: 'TSX · 12 KB',
+            icon: 'file-code',
+            actions: [{ icon: 'x', label: 'Remove renderer.tsx' }],
+          },
         ],
       },
     ],
@@ -157,7 +278,8 @@ export const attachmentFixtures: Readonly<
   {
     kind: 'trigger',
     title: 'Trigger',
-    description: 'The attachment trigger fills the card and opens the preview dialog, while the actions stay independently clickable above it.',
+    description:
+      'The attachment trigger fills the card and opens the preview dialog, while the actions stay independently clickable above it.',
     frame: 'plain',
     rows: [
       {
@@ -177,45 +299,52 @@ export const attachmentFixtures: Readonly<
       },
     ],
   },
-];
+]
 
 const esc = (value: string): string =>
-  value.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+  value.replace(/\\/g, '\\\\').replace(/'/g, "\\'")
 
-const allItems = (fixture: AttachmentFixture): ReadonlyArray<AttachmentItemSpec> =>
-  fixture.rows.flatMap(row => row.items);
+const allItems = (
+  fixture: AttachmentFixture,
+): ReadonlyArray<AttachmentItemSpec> => fixture.rows.flatMap(row => row.items)
 
 const needsRemove = (fixture: AttachmentFixture): boolean =>
   allItems(fixture).some(item =>
-    item.actions.some(action => action.icon !== 'refresh-cw' && action.icon !== 'copy'),
-  );
+    item.actions.some(
+      action => action.icon !== 'refresh-cw' && action.icon !== 'copy',
+    ),
+  )
 const needsRetry = (fixture: AttachmentFixture): boolean =>
-  allItems(fixture).some(item => item.actions.some(action => action.icon === 'refresh-cw'));
+  allItems(fixture).some(item =>
+    item.actions.some(action => action.icon === 'refresh-cw'),
+  )
 const needsCopy = (fixture: AttachmentFixture): boolean =>
-  allItems(fixture).some(item => item.actions.some(action => action.icon === 'copy'));
+  allItems(fixture).some(item =>
+    item.actions.some(action => action.icon === 'copy'),
+  )
 const needsDialog = (fixture: AttachmentFixture): boolean =>
-  allItems(fixture).some(item => item.triggerLabel !== undefined);
+  allItems(fixture).some(item => item.triggerLabel !== undefined)
 const needsSpinner = (fixture: AttachmentFixture): boolean =>
-  allItems(fixture).some(item => item.spinner === true);
+  allItems(fixture).some(item => item.spinner === true)
 const needsIcon = (fixture: AttachmentFixture): boolean =>
   allItems(fixture).some(
     item =>
       item.icon !== undefined ||
       item.actions.length > 0 ||
       (item.src === undefined && item.spinner !== true),
-  );
+  )
 const needsAnySrc = (fixture: AttachmentFixture): boolean =>
-  allItems(fixture).some(item => item.src !== undefined);
+  allItems(fixture).some(item => item.src !== undefined)
 const needsState = (fixture: AttachmentFixture): boolean =>
-  allItems(fixture).some(item => item.state !== undefined);
+  allItems(fixture).some(item => item.state !== undefined)
 const needsSize = (fixture: AttachmentFixture): boolean =>
-  allItems(fixture).some(item => item.size !== undefined);
+  allItems(fixture).some(item => item.size !== undefined)
 const needsOrientation = (fixture: AttachmentFixture): boolean =>
-  allItems(fixture).some(item => item.orientation !== undefined);
+  allItems(fixture).some(item => item.orientation !== undefined)
 const needsMeta = (fixture: AttachmentFixture): boolean =>
-  allItems(fixture).some(item => item.meta !== undefined);
+  allItems(fixture).some(item => item.meta !== undefined)
 const needsActions = (fixture: AttachmentFixture): boolean =>
-  allItems(fixture).some(item => item.actions.length > 0);
+  allItems(fixture).some(item => item.actions.length > 0)
 
 const itemsConstSource = (fixture: AttachmentFixture): string =>
   `type ItemSpec = Readonly<{
@@ -239,12 +368,17 @@ ${fixture.rows
         .map(
           item =>
             `  { name: '${esc(item.name)}'${item.meta === undefined ? '' : `, meta: '${esc(item.meta)}'`}${item.icon === undefined ? '' : `, icon: '${item.icon}'`}${item.spinner === true ? `, spinner: true` : ''}${item.src === undefined ? '' : `, src: '${item.src}'`}${item.alt === undefined ? '' : `, alt: '${esc(item.alt)}'`}${item.state === undefined ? '' : `, state: '${item.state}' as const`}${item.size === undefined ? '' : `, size: '${item.size}' as const`}${item.orientation === undefined ? '' : `, orientation: '${item.orientation}' as const`}, actions: [${item.actions
-              .map(action => `{ icon: '${action.icon}', label: '${esc(action.label)}' }`)
-              .join(', ')}]${item.triggerLabel === undefined ? '' : `, triggerLabel: '${esc(item.triggerLabel)}'`} },`,
+              .map(
+                action =>
+                  `{ icon: '${action.icon}', label: '${esc(action.label)}' }`,
+              )
+              .join(
+                ', ',
+              )}]${item.triggerLabel === undefined ? '' : `, triggerLabel: '${esc(item.triggerLabel)}'`} },`,
         )
         .join('\n')}\n]`,
   )
-  .join('\n\n')}`;
+  .join('\n\n')}`
 
 const mediaChildrenSource = (
   fixture: AttachmentFixture,
@@ -253,27 +387,27 @@ const mediaChildrenSource = (
   const iconFallback =
     renderer === 'stylex'
       ? `Icon.icon(item.icon ?? 'file', { class: stylex.props(styles.mediaIcon).className ?? '' }, h)`
-      : `Icon.icon(item.icon ?? 'file', {}, h)`;
+      : `Icon.icon(item.icon ?? 'file', {}, h)`
   const imgSource =
     renderer === 'stylex'
       ? `h.img([h.Src(item.src), h.Alt(item.name), h.Class(stylex.props(styles.mediaImg).className ?? '')])`
-      : `h.img([h.Src(item.src), h.Alt(item.name)])`;
+      : `h.img([h.Src(item.src), h.Alt(item.name)])`
   const imgOrIcon = needsAnySrc(fixture)
     ? `item.src !== undefined\n            ? ${imgSource}\n            : ${iconFallback}`
-    : iconFallback;
+    : iconFallback
   return needsSpinner(fixture)
     ? `item.spinner === true\n          ? Spinner.spinner({ size: 'md' as const, isDecorative: true }, h)\n          : ${imgOrIcon}`
-    : imgOrIcon;
-};
+    : imgOrIcon
+}
 
 const actionOnClickSource = (fixture: AttachmentFixture): string => {
-  const retry = needsRetry(fixture);
-  const copy = needsCopy(fixture);
+  const retry = needsRetry(fixture)
+  const copy = needsCopy(fixture)
   const tail = needsRemove(fixture)
     ? `Message['ClickedRemove']({ name: item.name })`
-    : `Message['ClickedPreview']({ name: item.name })`;
-  return `${retry ? `action.icon === 'refresh-cw' ? Message['ClickedRetry']({ name: item.name }) : ` : ''}${copy ? `action.icon === 'copy' ? Message['ClickedCopy']({ name: item.name }) : ` : ''}${tail}`;
-};
+    : `Message['ClickedPreview']({ name: item.name })`
+  return `${retry ? `action.icon === 'refresh-cw' ? Message['ClickedRetry']({ name: item.name }) : ` : ''}${copy ? `action.icon === 'copy' ? Message['ClickedCopy']({ name: item.name }) : ` : ''}${tail}`
+}
 
 const itemChildrenSource = (
   fixture: AttachmentFixture,
@@ -283,18 +417,30 @@ const itemChildrenSource = (
         ${mediaChildrenSource(fixture, renderer)},
       ] }, h),
       Attachment.attachmentContent({ children: [
-        Attachment.attachmentTitle({ children: [item.name] }, h),${needsMeta(fixture) ? `
-        ...(item.meta === undefined ? [] : [Attachment.attachmentDescription({ children: [item.meta] }, h)]),` : ''}
-      ] }, h),${needsActions(fixture) ? `
+        Attachment.attachmentTitle({ children: [item.name] }, h),${
+          needsMeta(fixture)
+            ? `
+        ...(item.meta === undefined ? [] : [Attachment.attachmentDescription({ children: [item.meta] }, h)]),`
+            : ''
+        }
+      ] }, h),${
+        needsActions(fixture)
+          ? `
       ...(item.actions.length === 0 ? [] : [Attachment.attachmentActions({ children: item.actions.map(action =>
         Attachment.attachmentAction({
           onClick: ${actionOnClickSource(fixture)},
           label: action.label,
           children: [Icon.icon(action.icon, ${renderer === 'stylex' ? `{ class: stylex.props(styles.actionIcon).className ?? '' }` : '{}'}, h)],
         }, h),
-      ) }, h)]),` : ''}${needsDialog(fixture) ? `
-      ...(item.triggerLabel === undefined ? [] : [Attachment.attachmentTrigger({ onClick: Message['ClickedPreview']({ name: item.name }), label: item.triggerLabel }, h)]),` : ''}
-    ]`;
+      ) }, h)]),`
+          : ''
+      }${
+        needsDialog(fixture)
+          ? `
+      ...(item.triggerLabel === undefined ? [] : [Attachment.attachmentTrigger({ onClick: Message['ClickedPreview']({ name: item.name }), label: item.triggerLabel }, h)]),`
+          : ''
+      }
+    ]`
 
 const attachmentCallSource = (
   fixture: AttachmentFixture,
@@ -310,14 +456,26 @@ const attachmentCallSource = (
           : `class: '${row.itemWidth}',`
       : renderer === 'stylex'
         ? `layoutStyle: styles.fullWidth,`
-        : `class: 'w-full',`;
-  return `Attachment.attachment({${needsState(fixture) ? `
-      state: item.state ?? 'done',` : ''}${needsSize(fixture) ? `
-      size: item.size ?? 'default',` : ''}${needsOrientation(fixture) ? `
-      orientation: item.orientation ?? 'horizontal',` : ''}${widthProp}
+        : `class: 'w-full',`
+  return `Attachment.attachment({${
+    needsState(fixture)
+      ? `
+      state: item.state ?? 'done',`
+      : ''
+  }${
+    needsSize(fixture)
+      ? `
+      size: item.size ?? 'default',`
+      : ''
+  }${
+    needsOrientation(fixture)
+      ? `
+      orientation: item.orientation ?? 'horizontal',`
+      : ''
+  }${widthProp}
       children: ${itemChildrenSource(fixture, renderer)},
-    }, h)`;
-};
+    }, h)`
+}
 
 const rowSource = (
   fixture: AttachmentFixture,
@@ -326,13 +484,13 @@ const rowSource = (
 ): string => {
   const filtered = needsRemove(fixture)
     ? `${row.name}.filter(item => !model.removed.includes(item.name))`
-    : row.name;
-  const mapBody = `${filtered}.map(item =>\n    ${attachmentCallSource(fixture, row, renderer)},\n  )`;
+    : row.name
+  const mapBody = `${filtered}.map(item =>\n    ${attachmentCallSource(fixture, row, renderer)},\n  )`
   if (row.grouped === true) {
-    return `Attachment.attachmentGroup({${row.groupFullWidth === true ? (renderer === 'stylex' ? ' layoutStyle: styles.fullWidth,' : ` class: 'w-full',`) : ''} children: ${mapBody} }, h)`;
+    return `Attachment.attachmentGroup({${row.groupFullWidth === true ? (renderer === 'stylex' ? ' layoutStyle: styles.fullWidth,' : ` class: 'w-full',`) : ''} children: ${mapBody} }, h)`
   }
-  return `...${mapBody}`;
-};
+  return `...${mapBody}`
+}
 
 const bodySource = (
   fixture: AttachmentFixture,
@@ -341,66 +499,74 @@ const bodySource = (
   const frameAttr =
     renderer === 'stylex'
       ? `[h.Class(stylex.props(styles.frame).className ?? '')]`
-      : `[h.Class('${fixture.frame === 'plain' ? 'mx-auto w-full max-w-sm py-12' : `mx-auto flex w-full max-w-sm flex-col ${fixture.frame} py-12`}')]`;
-  const rows = fixture.rows.map(row => `    ${rowSource(fixture, row, renderer)},`);
+      : `[h.Class('${fixture.frame === 'plain' ? 'mx-auto w-full max-w-sm py-12' : `mx-auto flex w-full max-w-sm flex-col ${fixture.frame} py-12`}')]`
+  const rows = fixture.rows.map(
+    row => `    ${rowSource(fixture, row, renderer)},`,
+  )
   return `h.div(${frameAttr}, [
 ${rows.join('\n')}
-    ])${needsDialog(fixture) ? `,
+    ])${
+      needsDialog(fixture)
+        ? `,
     Dialog.dialog({
       model: model.preview,
       toParentMessage: message => Message['GotDialogMessage']({ message }),
       title: model.previewFor,
       description: 'The attachment trigger fills the card and opens the dialog, while the actions stay independently clickable above it.',
-    }, h)` : ''}`;
-};
+    }, h)`
+        : ''
+    }`
+}
 
 const stylexStylesSource = (fixture: AttachmentFixture): string => {
   const frameDecl =
     fixture.frame === 'plain'
       ? `  frame: { marginInline: 'auto', maxWidth: '24rem', paddingBlock: '3rem', width: '100%' },`
-      : `  frame: { display: 'flex', flexDirection: 'column', gap: '${fixture.frame === 'gap-3' ? '0.75rem' : '0.5rem'}', marginInline: 'auto', maxWidth: '24rem', paddingBlock: '3rem', width: '100%' },`;
-  const fullWidth =
-    fixture.rows.some(row => row.grouped !== true || row.groupFullWidth === true)
-      ? `\n  fullWidth: { width: '100%' },`
-      : '';
+      : `  frame: { display: 'flex', flexDirection: 'column', gap: '${fixture.frame === 'gap-3' ? '0.75rem' : '0.5rem'}', marginInline: 'auto', maxWidth: '24rem', paddingBlock: '3rem', width: '100%' },`
+  const fullWidth = fixture.rows.some(
+    row => row.grouped !== true || row.groupFullWidth === true,
+  )
+    ? `\n  fullWidth: { width: '100%' },`
+    : ''
   const itemWidth = fixture.rows.some(row => row.itemWidth !== undefined)
     ? `\n  itemWidth: { width: '16rem' },`
-    : '';
+    : ''
   const mediaImg = needsAnySrc(fixture)
     ? `\n  mediaImg: { aspectRatio: '1', objectFit: 'cover', width: '100%' },`
-    : '';
-  const mediaIcon = `\n  mediaIcon: { height: '1rem', width: '1rem' },`;
+    : ''
+  const mediaIcon = `\n  mediaIcon: { height: '1rem', width: '1rem' },`
   const actionIcon = needsActions(fixture)
     ? `\n  actionIcon: { flexShrink: 0, height: '0.75rem', width: '0.75rem' },`
-    : '';
+    : ''
   return `const styles = stylex.create({
 ${frameDecl}${fullWidth}${itemWidth}${mediaImg}${mediaIcon}${actionIcon}
 })
 
-`;
-};
+`
+}
 
 const componentImports = (
   fixture: AttachmentFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const ui = renderer === 'stylex' ? 'stylex' : 'ui';
+  const ui = renderer === 'stylex' ? 'stylex' : 'ui'
   const stylexBits =
     renderer === 'stylex'
       ? `import * as stylex from '@stylexjs/stylex'
 
 ${stylexStylesSource(fixture)}`
-      : '';
-  return `${stylexBits}import * as Attachment from '@/${ui}/attachment'${needsIcon(fixture) ? `\nimport * as Icon from '@/lib/icon'` : ''}${needsSpinner(fixture) ? `\nimport * as Spinner from '@/${ui}/spinner'` : ''}${needsDialog(fixture) ? `\nimport * as Dialog from '@/${ui}/dialog'` : ''}`;
-};
+      : ''
+  return `${stylexBits}import * as Attachment from '@/${ui}/attachment'${needsIcon(fixture) ? `\nimport * as Icon from '@/lib/icon'` : ''}${needsSpinner(fixture) ? `\nimport * as Spinner from '@/${ui}/spinner'` : ''}${needsDialog(fixture) ? `\nimport * as Dialog from '@/${ui}/dialog'` : ''}`
+}
 
 const source = (
   fixture: AttachmentFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const dialog = needsDialog(fixture);
-  const removed = needsRemove(fixture);
-  const interactive = removed || needsRetry(fixture) || needsCopy(fixture) || dialog;
+  const dialog = needsDialog(fixture)
+  const removed = needsRemove(fixture)
+  const interactive =
+    removed || needsRetry(fixture) || needsCopy(fixture) || dialog
   return foldkitApplication({
     title: `Attachment — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
@@ -416,12 +582,28 @@ export type Model = typeof Model.Type`,
     messages: interactive
       ? `import { defineMessageUnion } from 'foldkit/message'
 
-export const Message = defineMessageUnion({${removed ? `
-  ClickedRemove: { name: S.String },` : ''}${needsRetry(fixture) ? `
-  ClickedRetry: { name: S.String },` : ''}${needsCopy(fixture) ? `
-  ClickedCopy: { name: S.String },` : ''}${dialog ? `
+export const Message = defineMessageUnion({${
+          removed
+            ? `
+  ClickedRemove: { name: S.String },`
+            : ''
+        }${
+          needsRetry(fixture)
+            ? `
+  ClickedRetry: { name: S.String },`
+            : ''
+        }${
+          needsCopy(fixture)
+            ? `
+  ClickedCopy: { name: S.String },`
+            : ''
+        }${
+          dialog
+            ? `
   ClickedPreview: { name: S.String },
-  GotDialogMessage: { message: Dialog.Message },` : ''}
+  GotDialogMessage: { message: Dialog.Message },`
+            : ''
+        }
 });
 export type Message = typeof Message.Type`
       : `import { taggedStruct } from 'foldkit/schema'
@@ -434,7 +616,9 @@ export type Message = typeof Message.Type`,
       ? `export const init = (): Update.Return<Model, Message> => ({ model: { ${removed ? 'removed: []' : '_: undefined'}${dialog ? `, preview: Dialog.init({ id: 'attachment-preview', isAnimated: true }), previewFor: ''` : ''} } })`
       : `export const init = (): Update.Return<Model, Message> => ({ model: {} })`,
     update: interactive
-      ? `${dialog ? `const mapDialog = (
+      ? `${
+          dialog
+            ? `const mapDialog = (
   model: Model,
   result: ReturnType<typeof Dialog.update>,
 ): Update.Return<Model, Message> => ({
@@ -442,20 +626,38 @@ export type Message = typeof Message.Type`,
   commands: Command.mapMessages(result.commands, next => Message['GotDialogMessage']({ message: next })),
 })
 
-` : ''}export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
-  switch (message._tag) {${removed ? `
+`
+            : ''
+        }export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
+  switch (message._tag) {${
+    removed
+      ? `
     case 'ClickedRemove':
-      return { model: { ...model, removed: [...model.removed, message.name] } }` : ''}${needsRetry(fixture) ? `
+      return { model: { ...model, removed: [...model.removed, message.name] } }`
+      : ''
+  }${
+    needsRetry(fixture)
+      ? `
     case 'ClickedRetry':
-      return { model: { ...model, removed: model.removed.filter(name => name !== message.name) } }` : ''}${needsCopy(fixture) ? `
+      return { model: { ...model, removed: model.removed.filter(name => name !== message.name) } }`
+      : ''
+  }${
+    needsCopy(fixture)
+      ? `
     case 'ClickedCopy':
-      return { model }` : ''}${dialog ? `
+      return { model }`
+      : ''
+  }${
+    dialog
+      ? `
     case 'ClickedPreview': {
       const opened = Dialog.open(model.preview)
       return mapDialog({ ...model, previewFor: message.name }, opened)
     }
     case 'GotDialogMessage':
-      return mapDialog(model, Dialog.update(model.preview, message.message))` : ''}
+      return mapDialog(model, Dialog.update(model.preview, message.message))`
+      : ''
+  }
   }
 }`
       : `export const update = (model: Model, _message: Message): Update.Return<Model, Message> => ({ model: model })`,
@@ -467,14 +669,15 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
     ${bodySource(fixture, renderer)},
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const attachmentExamples = (
   renderer: 'tailwind' | 'stylex',
-): ReadonlyArray<DocsExample> => attachmentFixtures.map(fixture => ({
-  title: fixture.title,
-  description: fixture.description,
-  ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
-  code: source(fixture, renderer),
-}));
+): ReadonlyArray<DocsExample> =>
+  attachmentFixtures.map(fixture => ({
+    title: fixture.title,
+    description: fixture.description,
+    ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
+    code: source(fixture, renderer),
+  }))

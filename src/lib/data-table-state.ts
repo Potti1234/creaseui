@@ -13,16 +13,6 @@ export const Model = S.Struct({
 })
 export type Model = typeof Model.Type
 
-
-
-
-
-
-
-
-
-
-
 export const Message = defineMessageUnion({
   Filtered: { value: S.String },
   Sorted: { key: S.String },
@@ -34,7 +24,7 @@ export const Message = defineMessageUnion({
   ClearedSelection: {},
   ToggledColumnsMenu: {},
   ClosedColumnsMenu: {},
-});
+})
 export type Message = typeof Message.Type
 
 export const init = (pageSize = 10): Model => ({
@@ -55,7 +45,7 @@ const withMembership = (
 ): ReadonlyArray<string> =>
   included
     ? [...new Set([...values, key])]
-    : values.filter((value) => value !== key)
+    : values.filter(value => value !== key)
 
 export const update = (model: Model, message: Message): Model => {
   switch (message._tag) {
@@ -63,18 +53,48 @@ export const update = (model: Model, message: Message): Model => {
       return { ...model, filter: message.value, page: 0 }
     case 'Sorted':
       return model.sortKey === message.key
-        ? { ...model, sortDirection: model.sortDirection === 'ascending' ? 'descending' : 'ascending', page: 0 }
-        : { ...model, sortKey: message.key, sortDirection: 'ascending', page: 0 }
+        ? {
+            ...model,
+            sortDirection:
+              model.sortDirection === 'ascending' ? 'descending' : 'ascending',
+            page: 0,
+          }
+        : {
+            ...model,
+            sortKey: message.key,
+            sortDirection: 'ascending',
+            page: 0,
+          }
     case 'ChangedPage':
       return { ...model, page: Math.max(0, message.page) }
     case 'ChangedPageSize':
       return { ...model, page: 0, pageSize: Math.max(1, message.pageSize) }
     case 'ToggledRow':
-      return { ...model, selectedRowKeys: withMembership(model.selectedRowKeys, message.key, message.isSelected) }
+      return {
+        ...model,
+        selectedRowKeys: withMembership(
+          model.selectedRowKeys,
+          message.key,
+          message.isSelected,
+        ),
+      }
     case 'ToggledRows':
-      return { ...model, selectedRowKeys: message.keys.reduce((keys, key) => withMembership(keys, key, message.isSelected), model.selectedRowKeys) }
+      return {
+        ...model,
+        selectedRowKeys: message.keys.reduce(
+          (keys, key) => withMembership(keys, key, message.isSelected),
+          model.selectedRowKeys,
+        ),
+      }
     case 'ToggledColumn':
-      return { ...model, hiddenColumnKeys: withMembership(model.hiddenColumnKeys, message.key, !message.isVisible) }
+      return {
+        ...model,
+        hiddenColumnKeys: withMembership(
+          model.hiddenColumnKeys,
+          message.key,
+          !message.isVisible,
+        ),
+      }
     case 'ClearedSelection':
       return { ...model, selectedRowKeys: [] }
     case 'ToggledColumnsMenu':
@@ -83,4 +103,3 @@ export const update = (model: Model, message: Message): Model => {
       return { ...model, columnsMenuOpen: false }
   }
 }
-

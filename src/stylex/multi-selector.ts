@@ -71,8 +71,16 @@ const styles = stylex.create({
     width: 1,
   },
   requiredMark: { color: tokens.destructive },
-  optional: { color: tokens.mutedForeground, fontSize: '0.875rem', lineHeight: '1.25rem' },
-  description: { color: tokens.mutedForeground, fontSize: '0.875rem', lineHeight: '1.25rem' },
+  optional: {
+    color: tokens.mutedForeground,
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+  },
+  description: {
+    color: tokens.mutedForeground,
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+  },
   trigger: {
     borderColor: {
       default: tokens.input,
@@ -96,7 +104,7 @@ const styles = stylex.create({
     display: 'flex',
     fontSize: '0.875rem',
     justifyContent: 'space-between',
- lineHeight: '1.25rem',
+    lineHeight: '1.25rem',
     outlineStyle: 'none',
     transitionDuration: interactionTokens.motionFast,
     transitionProperty: 'color, box-shadow',
@@ -136,7 +144,7 @@ const styles = stylex.create({
     fontSize: '0.875rem',
     fontWeight: 500,
     justifyContent: 'space-between',
- lineHeight: '1.25rem',
+    lineHeight: '1.25rem',
     outlineStyle: 'none',
     transform: {
       default: 'scale(1)',
@@ -192,7 +200,7 @@ const styles = stylex.create({
     flexShrink: 0,
     fontSize: '0.75rem',
     fontWeight: 500,
- lineHeight: '1rem',
+    lineHeight: '1rem',
     height: '1.25rem',
   },
   triggerOverflow: {
@@ -200,7 +208,7 @@ const styles = stylex.create({
     flexShrink: 0,
     fontSize: '0.875rem',
     fontWeight: 500,
- lineHeight: '1.25rem',
+    lineHeight: '1.25rem',
   },
   triggerIcon: {
     alignItems: 'center',
@@ -267,7 +275,8 @@ const styles = stylex.create({
     alignItems: 'center',
     cursor: interactionTokens.cursorDefault,
     display: 'flex',
-    fontSize: '0.875rem', lineHeight: '1.25rem',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
     outlineStyle: 'none',
     paddingInlineEnd: '2rem',
     paddingInlineStart: '0.5rem',
@@ -275,10 +284,13 @@ const styles = stylex.create({
     userSelect: 'none',
     width: '100%',
   },
-  itemActive: { backgroundColor: tokens.accent, color: tokens.accentForeground },
+  itemActive: {
+    backgroundColor: tokens.accent,
+    color: tokens.accentForeground,
+  },
   itemDisabled: { opacity: 0.5, pointerEvents: 'none' },
   itemContent: { display: 'contents' },
-  itemRow: { gap: '0.5rem', alignItems: 'center', display: 'flex', },
+  itemRow: { gap: '0.5rem', alignItems: 'center', display: 'flex' },
   checkboxBox: {
     borderColor: tokens.input,
     borderRadius: foundationTokens.radiusSm,
@@ -315,7 +327,8 @@ const styles = stylex.create({
     paddingBlock: '0.375rem',
     paddingInline: '0.5rem',
     color: tokens.mutedForeground,
-    fontSize: '0.75rem', lineHeight: '1rem',
+    fontSize: '0.75rem',
+    lineHeight: '1rem',
   },
   statusError: {
     color: tokens.destructive,
@@ -332,9 +345,21 @@ const styles = stylex.create({
     display: 'inline-flex',
     flexShrink: 0,
   },
-  statusMessageError: { color: tokens.destructive, fontSize: '0.875rem', lineHeight: '1.25rem' },
-  statusMessageWarning: { color: tokens.alertWarning, fontSize: '0.875rem', lineHeight: '1.25rem' },
-  statusMessageSuccess: { color: tokens.alertSuccess, fontSize: '0.875rem', lineHeight: '1.25rem' },
+  statusMessageError: {
+    color: tokens.destructive,
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+  },
+  statusMessageWarning: {
+    color: tokens.alertWarning,
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+  },
+  statusMessageSuccess: {
+    color: tokens.alertSuccess,
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+  },
 })
 
 const STATUS_STYLE = {
@@ -441,12 +466,20 @@ const checkboxBox = <Msg>(
     ],
     [
       checked || indeterminate
-        ? Icon.icon(checked ? 'check' : 'minus', {
-            class: className(styles.checkboxIcon),
-          }, h)
-        : Icon.icon('check', {
-            class: className(styles.checkboxIconHidden),
-          }, h),
+        ? Icon.icon(
+            checked ? 'check' : 'minus',
+            {
+              class: className(styles.checkboxIcon),
+            },
+            h,
+          )
+        : Icon.icon(
+            'check',
+            {
+              class: className(styles.checkboxIconHidden),
+            },
+            h,
+          ),
     ],
   )
 
@@ -463,10 +496,10 @@ export const multiSelector = <Msg>(
     props.status?.type === 'error' && statusVariant !== 'detached'
 
   const flatOptions: ReadonlyArray<MultiSelectorOption> = props.options.flatMap(
-    (option) => (isSection(option) ? [...option.options] : [option]),
+    option => (isSection(option) ? [...option.options] : [option]),
   )
   const labelFor = (value: string): string =>
-    flatOptions.find((option) => option.value === value)?.label ?? value
+    flatOptions.find(option => option.value === value)?.label ?? value
 
   const labelId = `${model.id}-label`
   const descriptionId = `${model.id}-description`
@@ -481,10 +514,10 @@ export const multiSelector = <Msg>(
   const hasSelection = model.values.length > 0
   const allSelected =
     flatOptions.length > 0 &&
-    flatOptions.every((option) => model.values.includes(option.value))
+    flatOptions.every(option => model.values.includes(option.value))
   const someSelected =
     !allSelected &&
-    flatOptions.some((option) => model.values.includes(option.value))
+    flatOptions.some(option => model.values.includes(option.value))
 
   const labelView = props.isLabelHidden
     ? h.label(
@@ -546,7 +579,7 @@ export const multiSelector = <Msg>(
               [
                 ...labels
                   .slice(0, badgeMaxCount)
-                  .map((label) =>
+                  .map(label =>
                     h.span([h.Class(className(styles.triggerBadge))], [label]),
                   ),
                 ...(labels.length > badgeMaxCount
@@ -586,7 +619,7 @@ export const multiSelector = <Msg>(
   const viewInputs: ListboxPrimitive.Multi.ViewInputs<string> = {
     items: [
       ...(props.hasSelectAll === true ? [SELECT_ALL_VALUE] : []),
-      ...flatOptions.map((option) => option.value),
+      ...flatOptions.map(option => option.value),
     ],
     itemToConfig: (value, context) =>
       value === SELECT_ALL_VALUE
@@ -626,25 +659,22 @@ export const multiSelector = <Msg>(
               [
                 h.span(
                   [h.Class(className(styles.itemRow))],
-                  [
-                    checkboxBox(context.isSelected, false, h),
-                    labelFor(value),
-                  ],
+                  [checkboxBox(context.isSelected, false, h), labelFor(value)],
                 ),
               ],
             ),
           },
     selectedValues: model.values,
-    itemToValue: (value) => value,
+    itemToValue: value => value,
     ...(props.options.some(isSection)
       ? {
-          itemGroupKey: (value) =>
+          itemGroupKey: value =>
             props.options
               .filter(isSection)
-              .find((section) =>
-                section.options.some((entry) => entry.value === value),
+              .find(section =>
+                section.options.some(entry => entry.value === value),
               )?.title ?? '',
-          groupToHeading: (groupKey) => ({
+          groupToHeading: groupKey => ({
             content: h.span(
               [h.Class(className(styles.groupHeading))],
               [groupKey],
@@ -667,9 +697,7 @@ export const multiSelector = <Msg>(
                   propagation: 'Stop',
                 }),
               ],
-              [
-                Icon.icon('x', { class: className(styles.clearIconSize) }, h),
-              ],
+              [Icon.icon('x', { class: className(styles.clearIconSize) }, h)],
             )
           : hasStatusIcon && statusType !== undefined
             ? statusIcon(statusType, h)
@@ -680,9 +708,13 @@ export const multiSelector = <Msg>(
                   h.DataAttribute('open', String(model.listbox.isOpen)),
                 ],
                 [
-                  Icon.icon('chevron-down', {
-                    class: className(styles.iconSize),
-                  }, h),
+                  Icon.icon(
+                    'chevron-down',
+                    {
+                      class: className(styles.iconSize),
+                    },
+                    h,
+                  ),
                 ],
               ),
       ],
@@ -706,9 +738,7 @@ export const multiSelector = <Msg>(
     buttonAttributes: childAttributes([
       h.DataAttribute('slot', 'multi-selector-trigger'),
       ...(props.isDisabled === true ? [h.AriaDisabled(true)] : []),
-      ...(props.isReadOnly === true
-        ? [h.DataAttribute('readonly', '')]
-        : []),
+      ...(props.isReadOnly === true ? [h.DataAttribute('readonly', '')] : []),
       ...(isInvalid ? [h.AriaInvalid(true)] : []),
       ...(describedBy.length === 0
         ? []
@@ -738,7 +768,7 @@ export const multiSelector = <Msg>(
     model: model.listbox,
     view: listboxBundle.view,
     viewInputs,
-    toParentMessage: (message) =>
+    toParentMessage: message =>
       toParent(Message.GotListboxMessage({ message })),
   })
 
@@ -756,10 +786,7 @@ export const multiSelector = <Msg>(
         ? []
         : [
             h.p(
-              [
-                h.Id(descriptionId),
-                h.Class(className(styles.description)),
-              ],
+              [h.Id(descriptionId), h.Class(className(styles.description))],
               [props.description],
             ),
           ]),

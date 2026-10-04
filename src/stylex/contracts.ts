@@ -85,14 +85,12 @@ export const BADGE_VARIANTS = [
 export type BadgeVariant = (typeof BADGE_VARIANTS)[number]
 
 /** Fails typechecking when a style map and its public union drift apart. */
-export type HasExactlyKeys<
-  Actual,
-  Expected extends PropertyKey,
-> = Exclude<keyof Actual, Expected> extends never
-  ? Exclude<Expected, keyof Actual> extends never
-    ? true
+export type HasExactlyKeys<Actual, Expected extends PropertyKey> =
+  Exclude<keyof Actual, Expected> extends never
+    ? Exclude<Expected, keyof Actual> extends never
+      ? true
+      : false
     : false
-  : false
 
 export type Assert<T extends true> = T
 
@@ -104,10 +102,7 @@ type _RejectedVisualStyle = Readonly<{
   backgroundColor: StyleXClassNameFor<'backgroundColor', 'red'>
 }>
 
-type _RejectedInlineLayoutStyle = Readonly<[
-  _AcceptedLayoutStyle,
-  InlineStyles,
-]>
+type _RejectedInlineLayoutStyle = Readonly<[_AcceptedLayoutStyle, InlineStyles]>
 
 // Compile-time contract tests. A StyleX upgrade cannot silently widen this API.
 type _LayoutPropertyIsAccepted = Assert<
@@ -119,4 +114,3 @@ type _VisualPropertyIsRejected = Assert<
 type _InlineLayoutStyleIsRejected = Assert<
   _RejectedInlineLayoutStyle extends ComponentLayoutStyle ? false : true
 >
-

@@ -1,23 +1,23 @@
-import { Schema as S } from 'effect';
-import type { HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import { Schema as S } from 'effect'
+import type { HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-import { definePreviewProgram } from '@/docs/components/pages/authored-page';
+import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
   circularProgressFixtures,
   type CircularProgressItem,
-} from '@/docs/components/pages/circular-progress/shared';
-import * as CircularProgress from '@/ui/circular-progress';
+} from '@/docs/components/pages/circular-progress/shared'
+import * as CircularProgress from '@/ui/circular-progress'
 
 const InteractedWithCircularProgressPreview = defineMessageUnion({
   InteractedWithCircularProgressPreview: {},
-});
+})
 type InteractedWithCircularProgressPreview =
-  typeof InteractedWithCircularProgressPreview.Type;
+  typeof InteractedWithCircularProgressPreview.Type
 const CircularProgressPreviewModel = S.Struct({
   _docsPage: S.Literal('circular-progress'),
-});
-type CircularProgressPreviewModel = typeof CircularProgressPreviewModel.Type;
+})
+type CircularProgressPreviewModel = typeof CircularProgressPreviewModel.Type
 
 const itemView = <Msg>(item: CircularProgressItem, h: HtmlBuilder<Msg>) =>
   CircularProgress.circularProgress(
@@ -33,14 +33,16 @@ const itemView = <Msg>(item: CircularProgressItem, h: HtmlBuilder<Msg>) =>
         : { hasValueLabel: item.hasValueLabel }),
       ...(item.formatValueLabel === undefined
         ? {}
-        : { formatValueLabel: (value: number, max: number) => `${value}/${max}` }),
+        : {
+            formatValueLabel: (value: number, max: number) => `${value}/${max}`,
+          }),
       ...(item.isDisabled === undefined ? {} : { isDisabled: item.isDisabled }),
       ...(item.isIndeterminate === undefined
         ? {}
         : { isIndeterminate: item.isIndeterminate }),
     },
     h,
-  );
+  )
 
 export const circularProgressTailwindPreviewProgram = definePreviewProgram<
   CircularProgressPreviewModel,
@@ -51,12 +53,16 @@ export const circularProgressTailwindPreviewProgram = definePreviewProgram<
   init: () => ({ _docsPage: 'circular-progress' }),
   update: model => ({ model: model }),
   view: (index, _model, h) => {
-    const fixture = circularProgressFixtures[index] ?? circularProgressFixtures[0];
+    const fixture =
+      circularProgressFixtures[index] ?? circularProgressFixtures[0]
     return fixture.layout === 'row'
       ? h.div(
           [h.Class('flex flex-wrap items-center gap-6')],
           fixture.items.map(item => itemView(item, h)),
         )
-      : h.div([], fixture.items.map(item => itemView(item, h)));
+      : h.div(
+          [],
+          fixture.items.map(item => itemView(item, h)),
+        )
   },
-});
+})

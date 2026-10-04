@@ -1,28 +1,28 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Chart from '@/lib/echarts';
+import * as Chart from '@/lib/echarts'
 import {
   card,
   cardContent,
   cardDescription,
   cardHeader,
   cardTitle,
-} from '@/ui/card';
-import { nativeSelect } from '@/ui/native-select';
+} from '@/ui/card'
+import { nativeSelect } from '@/ui/native-select'
 
-import { DESKTOP_VALUES, MONTH_NAMES, pieOption } from './pie-shared';
+import { DESKTOP_VALUES, MONTH_NAMES, pieOption } from './pie-shared'
 
-export const HOST_ID = 'chart-pie-interactive';
-export const MONTHS = MONTH_NAMES.map((month) => ({
+export const HOST_ID = 'chart-pie-interactive'
+export const MONTHS = MONTH_NAMES.map(month => ({
   value: month.toLowerCase(),
   label: month,
-}));
+}))
 
 Chart.registerChart(HOST_ID, (theme, variant) => {
   const activeIndex = Math.max(
     0,
-    MONTHS.findIndex((month) => month.value === variant),
-  );
+    MONTHS.findIndex(month => month.value === variant),
+  )
 
   return pieOption(theme, {
     names: MONTH_NAMES,
@@ -35,14 +35,14 @@ Chart.registerChart(HOST_ID, (theme, variant) => {
       0
     ).toLocaleString(),
     centerLabel: 'Visitors',
-  });
-});
+  })
+})
 
 type Props<Msg> = Readonly<{
-  activeMonth: string;
-  onMonthChange: (month: string) => Msg;
-  toMessage: (message: Chart.ChartMessage) => Msg;
-}>;
+  activeMonth: string
+  onMonthChange: (month: string) => Msg
+  toMessage: (message: Chart.ChartMessage) => Msg
+}>
 
 export const view = <Msg>(props: Props<Msg>, h: HtmlBuilder<Msg>): Html => {
   return card(
@@ -95,8 +95,8 @@ export const view = <Msg>(props: Props<Msg>, h: HtmlBuilder<Msg>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 /*
   Page wiring: store activeMonth in the page Model; on selection update the

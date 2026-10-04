@@ -1,7 +1,7 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import * as stylex from '@stylexjs/stylex';
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import * as stylex from '@stylexjs/stylex'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   ALL_COLUMNS,
   COLUMNS,
@@ -10,9 +10,9 @@ import {
   STATUSES,
   TEAMS,
   multiSelectorFixtures,
-} from '@/docs/components/pages/multi-selector/shared';
-import * as MultiSelector from '@/stylex/multi-selector';
-import { className } from '@/stylex/style';
+} from '@/docs/components/pages/multi-selector/shared'
+import * as MultiSelector from '@/stylex/multi-selector'
+import { className } from '@/stylex/style'
 
 const styles = stylex.create({
   stack: {
@@ -22,7 +22,7 @@ const styles = stylex.create({
     minWidth: '15rem',
     width: '100%',
   },
-  toolbar: { gap: '0.5rem', alignItems: 'center', display: 'flex', },
+  toolbar: { gap: '0.5rem', alignItems: 'center', display: 'flex' },
   button: {
     borderRadius: 'calc(var(--radius) - 2px)',
     borderWidth: 0,
@@ -33,13 +33,13 @@ const styles = stylex.create({
     cursor: 'pointer',
     fontSize: '0.875rem',
     fontWeight: 500,
- lineHeight: '1.25rem',
+    lineHeight: '1.25rem',
   },
-});
+})
 
 type Preview = Readonly<{
-  selectors: ReadonlyArray<MultiSelector.Model>;
-}>;
+  selectors: ReadonlyArray<MultiSelector.Model>
+}>
 
 export const multiSelectorStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   index: number,
@@ -47,9 +47,9 @@ export const multiSelectorStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html | undefined => {
-  const fixture = multiSelectorFixtures[index];
-  if (fixture === undefined) return undefined;
-  const preview = model as Preview;
+  const fixture = multiSelectorFixtures[index]
+  if (fixture === undefined) return undefined
+  const preview = model as Preview
 
   const selectorAt = (
     slot: number,
@@ -62,7 +62,7 @@ export const multiSelectorStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
     MultiSelector.multiSelector(
       {
         model: preview.selectors[slot]!,
-        toParentMessage: (message) =>
+        toParentMessage: message =>
           onMessageJson(
             JSON.stringify({
               _tag: 'GotMultiSelectorMessage',
@@ -74,20 +74,18 @@ export const multiSelectorStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         ...props,
       },
       h,
-    );
+    )
 
   const stack = (children: ReadonlyArray<Html>): Html =>
-    h.div([h.Class(className(styles.stack))], [...children]);
+    h.div([h.Class(className(styles.stack))], [...children])
 
   switch (fixture.kind) {
     case 'showcase':
       return stack([
-        selectorAt(
-          0,
-          { label: 'Columns', placeholder: 'Select columns...' },
-          [...COLUMNS],
-        ),
-      ]);
+        selectorAt(0, { label: 'Columns', placeholder: 'Select columns...' }, [
+          ...COLUMNS,
+        ]),
+      ])
     case 'searchable':
       return stack([
         selectorAt(
@@ -100,7 +98,7 @@ export const multiSelectorStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           },
           [...COUNTRIES],
         ),
-      ]);
+      ])
     case 'sectioned':
       return stack([
         selectorAt(
@@ -108,7 +106,7 @@ export const multiSelectorStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           { label: 'Permissions', placeholder: 'Select permissions...' },
           [...PERMISSIONS],
         ),
-      ]);
+      ])
     case 'columns':
       return stack([
         selectorAt(
@@ -123,7 +121,7 @@ export const multiSelectorStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           },
           [...ALL_COLUMNS],
         ),
-      ]);
+      ])
     case 'form':
       return stack([
         selectorAt(
@@ -148,7 +146,7 @@ export const multiSelectorStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           },
           [...STATUSES],
         ),
-      ]);
+      ])
     case 'ghostToolbar':
       return h.div(
         [h.Class(className(styles.toolbar))],
@@ -189,7 +187,7 @@ export const multiSelectorStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
             ['Export'],
           ),
         ],
-      );
+      )
     case 'bottomSheet':
       return stack([
         selectorAt(
@@ -202,8 +200,8 @@ export const multiSelectorStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           },
           [...TEAMS],
         ),
-      ]);
+      ])
     default:
-      return stack([]);
+      return stack([])
   }
-};
+}

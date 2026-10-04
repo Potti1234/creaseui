@@ -5,7 +5,8 @@ export const Model = TabsPrimitive.Model
 export type Model = typeof Model.Type
 export const Message = TabsPrimitive.Message
 export type Message = typeof Message.Type
-export type OutMessage<Value extends string = string> = TabsPrimitive.OutMessage<Value>
+export type OutMessage<Value extends string = string> =
+  TabsPrimitive.OutMessage<Value>
 
 export const init = (config: Readonly<{ id: string }>): Model =>
   TabsPrimitive.init({ id: config.id, activationMode: 'Manual' })
@@ -41,8 +42,10 @@ export type ToggleGroupVisualAttributes<Msg> = Readonly<{
 
 const childAttributeTag = (attribute: ChildAttribute): string | undefined => {
   const value = attribute.attribute
-  return typeof value === 'object' && value !== null && '_tag' in value &&
-      typeof value._tag === 'string'
+  return typeof value === 'object' &&
+    value !== null &&
+    '_tag' in value &&
+    typeof value._tag === 'string'
     ? value._tag
     : undefined
 }
@@ -56,11 +59,18 @@ const renderToggleGroup = <Value extends string, Msg>(
   toItem: (item: ToggleGroupItemState<Value>, h: HtmlBuilder<Msg>) => Html,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const orderedItems = props.direction === 'rtl' ? [...props.items].reverse() : props.items
-  const firstEnabled = orderedItems.find((item) => item.isDisabled !== true)?.value
-  const focusedValue = orderedItems.find(
-    (item) => item.isDisabled !== true && props.selectedValues.includes(item.value),
-  )?.value ?? firstEnabled ?? orderedItems[0]?.value
+  const orderedItems =
+    props.direction === 'rtl' ? [...props.items].reverse() : props.items
+  const firstEnabled = orderedItems.find(
+    item => item.isDisabled !== true,
+  )?.value
+  const focusedValue =
+    orderedItems.find(
+      item =>
+        item.isDisabled !== true && props.selectedValues.includes(item.value),
+    )?.value ??
+    firstEnabled ??
+    orderedItems[0]?.value
 
   if (focusedValue === undefined) {
     return h.div(
@@ -74,12 +84,12 @@ const renderToggleGroup = <Value extends string, Msg>(
     model: props.model,
     view: bundle.view,
     viewInputs: {
-      tabs: orderedItems.map((item) => item.value),
+      tabs: orderedItems.map(item => item.value),
       selectedValue: focusedValue,
       ariaLabel: props.ariaLabel,
       orientation: props.orientation === 'vertical' ? 'Vertical' : 'Horizontal',
-      isTabDisabled: (value) =>
-        props.items.find((item) => item.value === value)?.isDisabled === true,
+      isTabDisabled: value =>
+        props.items.find(item => item.value === value)?.isDisabled === true,
       toView: ({ tabs }) =>
         h.div(
           [
@@ -90,8 +100,8 @@ const renderToggleGroup = <Value extends string, Msg>(
               : [h.Dir(props.direction === 'rtl' ? 'ltr' : props.direction)]),
             ...visual.group,
           ],
-          tabs.flatMap((tab) => {
-            const config = props.items.find((item) => item.value === tab.value)
+          tabs.flatMap(tab => {
+            const config = props.items.find(item => item.value === tab.value)
             if (config === undefined) return []
             const state: ToggleGroupItemState<Value> = {
               value: tab.value,
@@ -100,7 +110,8 @@ const renderToggleGroup = <Value extends string, Msg>(
               isFocused: tab.isFocused,
               isDisabled: tab.isDisabled,
               attributes: tab.tab.filter(
-                (attribute) => !tabOnlyAttributes.has(childAttributeTag(attribute) ?? ''),
+                attribute =>
+                  !tabOnlyAttributes.has(childAttributeTag(attribute) ?? ''),
               ),
             }
             return [toItem(state, h)]
@@ -125,7 +136,8 @@ export const create = <Value extends string = string>(): Bundle<Value> => {
   const bundle = TabsPrimitive.create<Value>()
   return {
     update: bundle.update,
-    render: (props, visual, toItem, h) => renderToggleGroup(bundle, props, visual, toItem, h),
+    render: (props, visual, toItem, h) =>
+      renderToggleGroup(bundle, props, visual, toItem, h),
   }
 }
 

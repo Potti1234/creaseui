@@ -1,7 +1,7 @@
-import { Effect, Schema as S } from 'effect';
-import { Command } from 'foldkit';
-import type { Update } from 'foldkit';
-import { defineMessageUnion } from 'foldkit/message';
+import { Effect, Schema as S } from 'effect'
+import { Command } from 'foldkit'
+import type { Update } from 'foldkit'
+import { defineMessageUnion } from 'foldkit/message'
 
 /* Ported from Meta Astryx CodeBlock (packages/core/src/CodeBlock/CodeBlock.tsx,
    tokenizer.ts) — per-language regex tokenizer and the copy/collapse state
@@ -13,39 +13,39 @@ import { defineMessageUnion } from 'foldkit/message';
 // Tokenizer (packages/core/src/CodeBlock/tokenizer.ts, sync subset)
 // ---------------------------------------------------------------------------
 
-export type SyntaxToken = Readonly<{ type: string; start: number; end: number }>;
+export type SyntaxToken = Readonly<{ type: string; start: number; end: number }>
 
 /** Per-line tokens with line-relative offsets (0 = start of line). */
-export type TokenLine = ReadonlyArray<SyntaxToken>;
+export type TokenLine = ReadonlyArray<SyntaxToken>
 
-type LangPattern = Readonly<{ type: string; regex: RegExp; anchored: RegExp }>;
+type LangPattern = Readonly<{ type: string; regex: RegExp; anchored: RegExp }>
 
 type LangDef = Readonly<{
-  patterns: ReadonlyArray<LangPattern>;
+  patterns: ReadonlyArray<LangPattern>
   /** Token type matching the element's default text color (skipped in output). */
-  defaultType: string;
-}>;
+  defaultType: string
+}>
 
-const langCache = new Map<string, LangDef | null>();
+const langCache = new Map<string, LangDef | null>()
 
 const JS_KEYWORDS =
-  /\b(const|let|var|function|class|if|else|for|while|return|import|export|from|default|async|await|try|catch|throw|new|typeof|instanceof|interface|type|enum|extends|implements|switch|case|break|continue|do|in|of|void|null|undefined|true|false|this|super|yield|delete|static|public|private|protected|readonly|abstract|as|is|keyof|declare|module|namespace|require)\b/;
+  /\b(const|let|var|function|class|if|else|for|while|return|import|export|from|default|async|await|try|catch|throw|new|typeof|instanceof|interface|type|enum|extends|implements|switch|case|break|continue|do|in|of|void|null|undefined|true|false|this|super|yield|delete|static|public|private|protected|readonly|abstract|as|is|keyof|declare|module|namespace|require)\b/
 
 const PYTHON_KEYWORDS =
-  /\b(def|class|if|elif|else|for|while|return|import|from|as|with|try|except|raise|True|False|None|and|or|not|in|is|lambda|yield|async|await|pass|break|continue|del|global|nonlocal|assert|finally|print|self|cls)\b/;
+  /\b(def|class|if|elif|else|for|while|return|import|from|as|with|try|except|raise|True|False|None|and|or|not|in|is|lambda|yield|async|await|pass|break|continue|del|global|nonlocal|assert|finally|print|self|cls)\b/
 
 const BASH_KEYWORDS =
-  /\b(if|then|else|elif|fi|for|do|done|while|until|case|esac|function|in|select|return|exit|local|export|source|alias|unalias|readonly|shift|eval|exec|set|unset|trap|wait|read|echo|printf|test|true|false)\b/;
+  /\b(if|then|else|elif|fi|for|do|done|while|until|case|esac|function|in|select|return|exit|local|export|source|alias|unalias|readonly|shift|eval|exec|set|unset|trap|wait|read|echo|printf|test|true|false)\b/
 
-const CSS_KEYWORDS = /\b(important|inherit|initial|unset|revert|auto|none)\b/;
+const CSS_KEYWORDS = /\b(important|inherit|initial|unset|revert|auto|none)\b/
 
 const PHP_KEYWORDS =
-  /\b(function|class|if|else|elseif|for|foreach|while|return|echo|public|private|protected|static|new|try|catch|throw|namespace|use|require|require_once|include|include_once|extends|implements|interface|abstract|final|const|var|true|false|null|array|isset|unset|empty|list|match|enum|switch|case|break|continue|do|yield|fn)\b/;
+  /\b(function|class|if|else|elseif|for|foreach|while|return|echo|public|private|protected|static|new|try|catch|throw|namespace|use|require|require_once|include|include_once|extends|implements|interface|abstract|final|const|var|true|false|null|array|isset|unset|empty|list|match|enum|switch|case|break|continue|do|yield|fn)\b/
 
 const HACK_KEYWORDS =
-  /\b(function|class|if|else|for|foreach|while|return|echo|public|private|protected|static|new|try|catch|throw|namespace|use|require|include|extends|implements|interface|abstract|final|const|shape|vec|dict|keyset|async|await|concurrent|enum|type|newtype|tuple|inout)\b/;
+  /\b(function|class|if|else|for|foreach|while|return|echo|public|private|protected|static|new|try|catch|throw|namespace|use|require|include|extends|implements|interface|abstract|final|const|shape|vec|dict|keyset|async|await|concurrent|enum|type|newtype|tuple|inout)\b/
 
-type RawPattern = Readonly<{ type: string; regex: RegExp }>;
+type RawPattern = Readonly<{ type: string; regex: RegExp }>
 
 const buildLanguagePatterns = (
   lang: string,
@@ -77,7 +77,7 @@ const buildLanguagePatterns = (
           { type: 'punctuation', regex: /[{}()[\];,.]/ },
           { type: 'variable', regex: /\b[a-zA-Z_$][\w$]*\b/ },
         ],
-      };
+      }
 
     case 'json':
       return {
@@ -89,7 +89,7 @@ const buildLanguagePatterns = (
           { type: 'constant', regex: /\b(true|false|null)\b/ },
           { type: 'punctuation', regex: /[{}()[\]:,]/ },
         ],
-      };
+      }
 
     case 'html':
     case 'xml':
@@ -107,7 +107,7 @@ const buildLanguagePatterns = (
           { type: 'attribute', regex: /\b[a-zA-Z_:][\w:.-]*(?=\s*=)/ },
           { type: 'operator', regex: /=/ },
         ],
-      };
+      }
 
     case 'css':
     case 'scss':
@@ -135,7 +135,7 @@ const buildLanguagePatterns = (
           { type: 'punctuation', regex: /[{}()[\];:,]/ },
           { type: 'operator', regex: /[+~>*=|^$]/ },
         ],
-      };
+      }
 
     case 'python':
     case 'py':
@@ -161,7 +161,7 @@ const buildLanguagePatterns = (
           { type: 'punctuation', regex: /[{}()[\];,.]/ },
           { type: 'variable', regex: /\b[a-zA-Z_][\w]*\b/ },
         ],
-      };
+      }
 
     case 'bash':
     case 'sh':
@@ -182,7 +182,7 @@ const buildLanguagePatterns = (
           { type: 'operator', regex: /[|&<>;!]+/ },
           { type: 'punctuation', regex: /[{}()[\]]/ },
         ],
-      };
+      }
 
     case 'php':
       return {
@@ -203,7 +203,7 @@ const buildLanguagePatterns = (
           { type: 'constant', regex: /@[\w]+/ },
           { type: 'punctuation', regex: /[{}()[\];,.]/ },
         ],
-      };
+      }
 
     case 'hack':
       return {
@@ -224,7 +224,7 @@ const buildLanguagePatterns = (
           { type: 'constant', regex: /<<[\w]+/ },
           { type: 'punctuation', regex: /[{}()[\];,.]/ },
         ],
-      };
+      }
 
     case 'yaml':
     case 'yml':
@@ -245,7 +245,7 @@ const buildLanguagePatterns = (
           { type: 'punctuation', regex: /[{}()[\],]/ },
           { type: 'variable', regex: /\b[a-zA-Z_][\w]*\b/ },
         ],
-      };
+      }
 
     case 'markdown':
     case 'md':
@@ -264,35 +264,35 @@ const buildLanguagePatterns = (
           { type: 'operator', regex: /^\s*[-*+]\s/m },
           { type: 'number', regex: /^\s*\d+\.\s/m },
         ],
-      };
+      }
 
     default:
-      return null;
+      return null
   }
-};
+}
 
 const buildLanguage = (lang: string): LangDef | null => {
-  const cached = langCache.get(lang);
+  const cached = langCache.get(lang)
   if (cached !== undefined) {
-    return cached;
+    return cached
   }
-  const raw = buildLanguagePatterns(lang);
+  const raw = buildLanguagePatterns(lang)
   const def =
     raw === null
       ? null
       : {
           defaultType: raw.defaultType,
           patterns: raw.patterns.map(pattern => {
-            const flags = pattern.regex.flags.replace(/[gy]/g, '') + 'y';
+            const flags = pattern.regex.flags.replace(/[gy]/g, '') + 'y'
             return {
               ...pattern,
               anchored: new RegExp(pattern.regex.source, flags),
-            };
+            }
           }),
-        };
-  langCache.set(lang, def);
-  return def;
-};
+        }
+  langCache.set(lang, def)
+  return def
+}
 
 const tokenizeLine = (
   code: string,
@@ -300,16 +300,16 @@ const tokenizeLine = (
   lineStart: number,
   lineEnd: number,
 ): SyntaxToken[] => {
-  const tokens: SyntaxToken[] = [];
-  let pos = lineStart;
-  const limit = Math.min(lineEnd, code.length);
+  const tokens: SyntaxToken[] = []
+  let pos = lineStart
+  const limit = Math.min(lineEnd, code.length)
 
   while (pos < limit) {
-    let matched = false;
+    let matched = false
 
     for (const pattern of langDef.patterns) {
-      pattern.anchored.lastIndex = pos;
-      const match = pattern.anchored.exec(code);
+      pattern.anchored.lastIndex = pos
+      const match = pattern.anchored.exec(code)
 
       if (match && match.index === pos && match[0].length > 0) {
         if (pattern.type !== langDef.defaultType) {
@@ -317,21 +317,21 @@ const tokenizeLine = (
             type: pattern.type,
             start: pos - lineStart,
             end: pos - lineStart + match[0].length,
-          });
+          })
         }
-        pos += match[0].length;
-        matched = true;
-        break;
+        pos += match[0].length
+        matched = true
+        break
       }
     }
 
     if (!matched) {
-      pos++;
+      pos++
     }
   }
 
-  return tokens;
-};
+  return tokens
+}
 
 /**
  * Tokenizes a code string into per-line token arrays with line-relative
@@ -339,23 +339,23 @@ const tokenizeLine = (
  * the element's base color renders them.
  */
 export const tokenize = (code: string, language: string): TokenLine[] => {
-  const langDef = buildLanguage(language);
+  const langDef = buildLanguage(language)
   if (!langDef) {
-    return [];
+    return []
   }
 
-  const result: TokenLine[] = [];
-  let lineStart = 0;
+  const result: TokenLine[] = []
+  let lineStart = 0
 
   for (let i = 0; i <= code.length; i++) {
     if (i === code.length || code[i] === '\n') {
-      result.push(tokenizeLine(code, langDef, lineStart, i));
-      lineStart = i + 1;
+      result.push(tokenizeLine(code, langDef, lineStart, i))
+      lineStart = i + 1
     }
   }
 
-  return result;
-};
+  return result
+}
 
 /**
  * Converts flat tokens with absolute offsets into per-line tokens
@@ -366,48 +366,48 @@ export const flatTokensToLines = (
   tokens: ReadonlyArray<{ type: string; start: number; end: number }>,
   code: string,
 ): TokenLine[] => {
-  const lineStarts: number[] = [0];
+  const lineStarts: number[] = [0]
   for (let i = 0; i < code.length; i++) {
     if (code[i] === '\n') {
-      lineStarts.push(i + 1);
+      lineStarts.push(i + 1)
     }
   }
 
   const result: SyntaxToken[][] = Array.from(
     { length: lineStarts.length },
     () => [],
-  );
-  let lineIdx = 0;
+  )
+  let lineIdx = 0
 
   for (const token of tokens) {
     while (
       lineIdx < lineStarts.length - 1 &&
       token.start >= (lineStarts[lineIdx + 1] ?? Number.MAX_SAFE_INTEGER)
     ) {
-      lineIdx++;
+      lineIdx++
     }
-    const lineStart = lineStarts[lineIdx] ?? 0;
-    (result[lineIdx] ?? []).push({
+    const lineStart = lineStarts[lineIdx] ?? 0
+    ;(result[lineIdx] ?? []).push({
       type: token.type,
       start: token.start - lineStart,
       end: token.end - lineStart,
-    });
+    })
   }
 
-  return result;
-};
+  return result
+}
 
 /**
  * The line list astryx renders: split on newlines, dropping a single trailing
  * empty line produced by a final `\n`.
  */
 export const codeLines = (code: string): ReadonlyArray<string> => {
-  const lines = code.split('\n');
+  const lines = code.split('\n')
   if (lines.length > 1 && lines[lines.length - 1] === '') {
-    lines.pop();
+    lines.pop()
   }
-  return lines;
-};
+  return lines
+}
 
 // ---------------------------------------------------------------------------
 // Submodel — copy feedback + collapse state
@@ -417,21 +417,21 @@ export const Model = S.Struct({
   /** The last code payload copied to the clipboard, cleared after ~2s. */
   copiedCode: S.NullOr(S.String),
   isCollapsed: S.Boolean,
-});
-export type Model = typeof Model.Type;
+})
+export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
   ClickedCopyCode: { code: S.String },
   CompletedCopyCode: { code: S.String },
   CompletedWaitBeforeClearingCodeBlockCopyFeedback: { code: S.String },
   ToggledCollapse: {},
-});
-export type Message = typeof Message.Type;
+})
+export type Message = typeof Message.Type
 
 export const init = (config?: Readonly<{ isCollapsed?: boolean }>): Model => ({
   copiedCode: null,
   isCollapsed: config?.isCollapsed ?? false,
-});
+})
 
 const CopyCodeToClipboard = Command.define('CopyCodeBlockCode', {
   args: { code: S.String },
@@ -440,7 +440,7 @@ const CopyCodeToClipboard = Command.define('CopyCodeBlockCode', {
     Effect.promise(() => navigator.clipboard.writeText(code)).pipe(
       Effect.as(Message.CompletedCopyCode({ code })),
     ),
-});
+})
 
 const WaitBeforeClearingCopyFeedback = Command.define(
   'WaitBeforeClearingCodeBlockCopyFeedback',
@@ -454,9 +454,9 @@ const WaitBeforeClearingCopyFeedback = Command.define(
         ),
       ),
   },
-);
+)
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
@@ -464,20 +464,21 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       return {
         model: model,
         commands: [CopyCodeToClipboard({ code: message.code })],
-      };
+      }
     case 'CompletedCopyCode':
       return {
         model: { ...model, copiedCode: message.code },
         commands: [WaitBeforeClearingCopyFeedback({ code: message.code })],
-      };
+      }
     case 'CompletedWaitBeforeClearingCodeBlockCopyFeedback':
       return {
         model: {
           ...model,
-          copiedCode: model.copiedCode === message.code ? null : model.copiedCode,
+          copiedCode:
+            model.copiedCode === message.code ? null : model.copiedCode,
         },
-      };
+      }
     case 'ToggledCollapse':
-      return { model: { ...model, isCollapsed: !model.isCollapsed } };
+      return { model: { ...model, isCollapsed: !model.isCollapsed } }
   }
-};
+}

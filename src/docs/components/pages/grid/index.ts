@@ -1,6 +1,6 @@
-import { authoredPage } from '@/docs/components/pages/authored-page';
-import { gridExamples } from '@/docs/components/pages/grid/shared';
-import { gridTailwindPreviewProgram } from '@/docs/components/pages/grid/tailwind';
+import { authoredPage } from '@/docs/components/pages/authored-page'
+import { gridExamples } from '@/docs/components/pages/grid/shared'
+import { gridTailwindPreviewProgram } from '@/docs/components/pages/grid/tailwind'
 
 export const gridPage = authoredPage({
   slug: 'grid',
@@ -22,4 +22,4 @@ export const gridPage = authoredPage({
     examples: gridExamples('tailwind'),
     stylexExamples: gridExamples('stylex'),
   },
-});
+})

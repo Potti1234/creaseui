@@ -1,20 +1,20 @@
-import { Schema as S } from 'effect';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import { Schema as S } from 'effect'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   listFixtures,
   type ListFixture,
   type ListItemSpec,
-} from '@/docs/components/pages/list/shared';
-import * as Avatar from '@/stylex/avatar';
-import * as Badge from '@/stylex/badge';
-import * as List from '@/stylex/list';
+} from '@/docs/components/pages/list/shared'
+import * as Avatar from '@/stylex/avatar'
+import * as Badge from '@/stylex/badge'
+import * as List from '@/stylex/list'
 
 const InteractedWithListPreview = defineMessageUnion({
   InteractedWithListPreview: {},
-});
+})
 
 const item = <Msg>(
   spec: ListItemSpec,
@@ -49,7 +49,7 @@ const item = <Msg>(
         : { endContent: Badge.badge({ children: [spec.badge] }, h) }),
     },
     h,
-  );
+  )
 
 const renderFixture = <Msg>(
   fixture: ListFixture,
@@ -65,7 +65,7 @@ const renderFixture = <Msg>(
       ...(fixture.hasDividers === true ? { hasDividers: true } : {}),
     },
     h,
-  );
+  )
 
 export const listStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
@@ -73,4 +73,4 @@ export const listStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ) =>
-  renderFixture(listFixtures[exampleIndex] ?? listFixtures[0], onMessageJson, h);
+  renderFixture(listFixtures[exampleIndex] ?? listFixtures[0], onMessageJson, h)

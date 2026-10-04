@@ -1,9 +1,9 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Behavior from '@/lib/overflow-list';
-import type { ComponentLayoutStyle } from './contracts';
-import { className } from './style';
+import * as Behavior from '@/lib/overflow-list'
+import type { ComponentLayoutStyle } from './contracts'
+import { className } from './style'
 
 export {
   Model,
@@ -14,32 +14,32 @@ export {
   computeOverflow,
   spacingToPx,
   collapsedIndices,
-} from '@/lib/overflow-list';
+} from '@/lib/overflow-list'
 export type {
   CollapseFrom,
   OverflowBehavior,
   OverflowListItem,
   SpacingStep,
-} from '@/lib/overflow-list';
+} from '@/lib/overflow-list'
 
 /* Ported from Meta Astryx OverflowList.tsx — StyleX renderer.
    See src/ui/overflow-list.ts for the port contract. */
 
 export type OverflowListProps<Msg> = Readonly<{
-  model: Behavior.Model;
-  toParentMessage: (message: Behavior.Message) => Msg;
-  gap?: Behavior.SpacingStep;
-  minVisibleItems?: number;
-  maxVisibleItems?: number;
-  maxRows?: number;
-  collapseFrom?: Behavior.CollapseFrom;
-  behavior?: Behavior.OverflowBehavior;
+  model: Behavior.Model
+  toParentMessage: (message: Behavior.Message) => Msg
+  gap?: Behavior.SpacingStep
+  minVisibleItems?: number
+  maxVisibleItems?: number
+  maxRows?: number
+  collapseFrom?: Behavior.CollapseFrom
+  behavior?: Behavior.OverflowBehavior
   overflowRenderer?: (
     overflowItems: ReadonlyArray<Behavior.OverflowListItem>,
-  ) => Html;
-  children?: ReadonlyArray<Html | string>;
-  layoutStyle?: ComponentLayoutStyle;
-}>;
+  ) => Html
+  children?: ReadonlyArray<Html | string>
+  layoutStyle?: ComponentLayoutStyle
+}>
 
 const styles = stylex.create({
   fragment: {
@@ -76,7 +76,7 @@ const styles = stylex.create({
   measureIndicator: {
     display: 'inline-flex',
   },
-});
+})
 
 export const overflowList = <Msg>(
   props: OverflowListProps<Msg>,
@@ -93,27 +93,27 @@ export const overflowList = <Msg>(
     behavior = 'observeSelf',
     overflowRenderer,
     children,
-  } = props;
-  const items = children ?? [];
-  const itemCount = items.length;
-  const gapPx = Behavior.spacingToPx[gap];
-  const isMultiRow = maxRows !== undefined && maxRows > 1;
-  const hasOverflow = model.visibleCount < itemCount;
-  const observeParent = behavior === 'observeParent';
+  } = props
+  const items = children ?? []
+  const itemCount = items.length
+  const gapPx = Behavior.spacingToPx[gap]
+  const isMultiRow = maxRows !== undefined && maxRows > 1
+  const hasOverflow = model.visibleCount < itemCount
+  const observeParent = behavior === 'observeParent'
 
   const allItems: ReadonlyArray<Behavior.OverflowListItem> = items.map(
     (item, index) => ({ item, index }),
-  );
+  )
   const visibleItems =
     collapseFrom === 'end'
       ? allItems.slice(0, model.visibleCount)
-      : allItems.slice(itemCount - model.visibleCount);
+      : allItems.slice(itemCount - model.visibleCount)
   const overflowItems =
     collapseFrom === 'end'
       ? allItems.slice(model.visibleCount)
-      : allItems.slice(0, itemCount - model.visibleCount);
+      : allItems.slice(0, itemCount - model.visibleCount)
 
-  const gapStyle = { gap: `${String(gapPx)}px` };
+  const gapStyle = { gap: `${String(gapPx)}px` }
 
   return h.div(
     [
@@ -129,7 +129,7 @@ export const overflowList = <Msg>(
           collapseFrom,
           behavior,
         },
-        (message) => toParentMessage(message),
+        message => toParentMessage(message),
       ),
     ],
     [
@@ -146,9 +146,10 @@ export const overflowList = <Msg>(
           ...(overflowRenderer === undefined
             ? []
             : [
-                h.div([h.Class(className(styles.measureIndicator))], [
-                  overflowRenderer(allItems),
-                ]),
+                h.div(
+                  [h.Class(className(styles.measureIndicator))],
+                  [overflowRenderer(allItems)],
+                ),
               ]),
         ],
       ),
@@ -187,5 +188,5 @@ export const overflowList = <Msg>(
         ],
       ),
     ],
-  );
-};
+  )
+}

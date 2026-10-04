@@ -17,7 +17,12 @@ const exportedNames = (path: string): ReadonlyArray<string> => {
     const modifiers = ts.canHaveModifiers(statement)
       ? ts.getModifiers(statement)
       : undefined
-    if (!modifiers?.some(modifier => modifier.kind === ts.SyntaxKind.ExportKeyword)) continue
+    if (
+      !modifiers?.some(
+        modifier => modifier.kind === ts.SyntaxKind.ExportKeyword,
+      )
+    )
+      continue
 
     if (
       ts.isFunctionDeclaration(statement) ||
@@ -72,7 +77,11 @@ describe('StyleX Create demonstration', () => {
       assert.doesNotMatch(source, /@\/ui\//u, path)
       assert.doesNotMatch(source, /@\/demo\/cards\//u, path)
       assert.doesNotMatch(source, /\bh\.Class\(\s*['"`]/u, path)
-      assert.doesNotMatch(source, /class-variance-authority|@\/lib\/utils/u, path)
+      assert.doesNotMatch(
+        source,
+        /class-variance-authority|@\/lib\/utils/u,
+        path,
+      )
     }
   })
 })

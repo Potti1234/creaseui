@@ -42,7 +42,9 @@ export type InputVisualAttributes<Msg> = Readonly<{
   description: ReadonlyArray<Attribute<Msg>>
 }>
 
-const descriptionIds = <Msg>(props: InputBehaviorProps<Msg>): string | undefined => {
+const descriptionIds = <Msg>(
+  props: InputBehaviorProps<Msg>,
+): string | undefined => {
   const ids = [
     ...(props.description === undefined
       ? []
@@ -69,12 +71,15 @@ export const renderInput = <Msg>(
       isAutofocus: props.isAutofocus ?? false,
       type: props.type ?? 'text',
       ...(props.name === undefined ? {} : { name: props.name }),
-      ...(props.placeholder === undefined ? {} : { placeholder: props.placeholder }),
+      ...(props.placeholder === undefined
+        ? {}
+        : { placeholder: props.placeholder }),
       toView: ({ input: primitiveInput, label, description }) => {
-        const isInteractive = props.isDisabled !== true && props.isReadOnly !== true
+        const isInteractive =
+          props.isDisabled !== true && props.isReadOnly !== true
         const describedBy = descriptionIds(props)
         const inputAttributes = primitiveInput.filter(
-          (attribute) => attribute._tag !== 'AriaDescribedBy',
+          attribute => attribute._tag !== 'AriaDescribedBy',
         )
         const control = h.input([
           ...inputAttributes,
@@ -82,26 +87,36 @@ export const renderInput = <Msg>(
           ...(props.onChange === undefined || !isInteractive
             ? []
             : [h.OnChange(props.onChange)]),
-          ...(props.isRequired === true ? [h.Required(true), h.AriaRequired(true)] : []),
+          ...(props.isRequired === true
+            ? [h.Required(true), h.AriaRequired(true)]
+            : []),
           ...(props.form === undefined ? [] : [h.FormAttr(props.form)]),
           ...(props.autocomplete === undefined
             ? []
             : [h.Autocomplete(props.autocomplete)]),
-          ...(props.inputMode === undefined ? [] : [h.InputMode(props.inputMode)]),
+          ...(props.inputMode === undefined
+            ? []
+            : [h.InputMode(props.inputMode)]),
           ...(props.role === undefined ? [] : [h.Role(props.role)]),
           ...(props.ariaLabel === undefined
             ? []
             : [h.AriaLabel(props.ariaLabel)]),
-          ...(describedBy === undefined ? [] : [h.AriaDescribedBy(describedBy)]),
+          ...(describedBy === undefined
+            ? []
+            : [h.AriaDescribedBy(describedBy)]),
           ...visual.input,
         ])
 
-        if (props.label === undefined && props.description === undefined) return control
+        if (props.label === undefined && props.description === undefined)
+          return control
 
         return h.div(
           [
             h.DataAttribute('slot', 'input-field'),
-            h.DataAttribute('state', props.isInvalid === true ? 'invalid' : 'valid'),
+            h.DataAttribute(
+              'state',
+              props.isInvalid === true ? 'invalid' : 'valid',
+            ),
             ...visual.field,
           ],
           [
@@ -109,7 +124,11 @@ export const renderInput = <Msg>(
               ? []
               : [
                   h.label(
-                    [h.DataAttribute('slot', 'input-label'), ...label, ...visual.label],
+                    [
+                      h.DataAttribute('slot', 'input-label'),
+                      ...label,
+                      ...visual.label,
+                    ],
                     [props.label],
                   ),
                 ]),

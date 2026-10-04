@@ -1,15 +1,15 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   codeFixtures,
   type CodeFixture,
-} from '@/docs/components/pages/code/shared';
-import * as Code from '@/stylex/code';
-import * as Heading from '@/stylex/heading';
-import { className } from '@/stylex/style';
-import * as Text from '@/stylex/text';
+} from '@/docs/components/pages/code/shared'
+import * as Code from '@/stylex/code'
+import * as Heading from '@/stylex/heading'
+import { className } from '@/stylex/style'
+import * as Text from '@/stylex/text'
 
 const styles = stylex.create({
   column: {
@@ -21,10 +21,14 @@ const styles = stylex.create({
     display: 'flex',
     flexDirection: 'column',
   },
-});
+})
 
-const renderFixture = <Msg>(fixture: CodeFixture, h: HtmlBuilder<Msg>): Html => {
-  const inline = (content: string): Html => Code.code({ children: [content] }, h);
+const renderFixture = <Msg>(
+  fixture: CodeFixture,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const inline = (content: string): Html =>
+    Code.code({ children: [content] }, h)
   switch (fixture.kind) {
     case 'showcase':
       return h.div(
@@ -55,7 +59,7 @@ const renderFixture = <Msg>(fixture: CodeFixture, h: HtmlBuilder<Msg>): Html => 
             h,
           ),
         ],
-      );
+      )
     case 'inline':
       return Text.text(
         {
@@ -72,7 +76,7 @@ const renderFixture = <Msg>(fixture: CodeFixture, h: HtmlBuilder<Msg>): Html => 
           ],
         },
         h,
-      );
+      )
     case 'textSizes':
       return h.div(
         [h.Class(className(styles.column))],
@@ -117,7 +121,7 @@ const renderFixture = <Msg>(fixture: CodeFixture, h: HtmlBuilder<Msg>): Html => 
             h,
           ),
         ],
-      );
+      )
     case 'various':
       return h.div(
         [h.Class(className(styles.column))],
@@ -145,13 +149,13 @@ const renderFixture = <Msg>(fixture: CodeFixture, h: HtmlBuilder<Msg>): Html => 
             ],
           ),
         ),
-      );
+      )
   }
-};
+}
 
 export const codeStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   _model: unknown,
   _onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
-) => renderFixture(codeFixtures[exampleIndex] ?? codeFixtures[0], h);
+) => renderFixture(codeFixtures[exampleIndex] ?? codeFixtures[0], h)

@@ -16,9 +16,6 @@ describe('ChatReasoning', () => {
       ChatReasoning.Message.ToggledChatReasoning(),
     )
     assert.equal(next.model.isExpanded, false)
-    assert.equal(
-      next.outMessage?._tag,
-      'ChangedChatReasoningExpansion',
-    )
+    assert.equal(next.outMessage?._tag, 'ChangedChatReasoningExpansion')
   })
 })

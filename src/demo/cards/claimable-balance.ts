@@ -1,6 +1,6 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { badge } from '@/ui/badge';
+import { badge } from '@/ui/badge'
 import {
   card,
   cardContent,
@@ -8,9 +8,9 @@ import {
   cardFooter,
   cardHeader,
   cardTitle,
-} from '@/ui/card';
-import { item, itemContent } from '@/ui/item';
-import { separator } from '@/ui/separator';
+} from '@/ui/card'
+import { item, itemContent } from '@/ui/item'
+import { separator } from '@/ui/separator'
 
 export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
   return card(
@@ -125,7 +125,7 @@ export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 // Stateful: no. Submodels: none. PORT NOTEs: none.

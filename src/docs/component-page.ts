@@ -1,13 +1,16 @@
-import { Stream } from 'effect';
-import { Mount, Subscription } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import { Stream } from 'effect'
+import { Mount, Subscription } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as CodeFile from '@/lib/code-file';
-import * as Icon from '@/lib/icon';
-import { cn } from '@/lib/utils';
-import { componentDocsPath } from '@/route';
-import type { ApiEntry } from '@/docs/generated-component-api';
-import type { ComponentKind, DocsSection } from '@/docs/components/page-definition';
+import * as CodeFile from '@/lib/code-file'
+import * as Icon from '@/lib/icon'
+import { cn } from '@/lib/utils'
+import { componentDocsPath } from '@/route'
+import type { ApiEntry } from '@/docs/generated-component-api'
+import type {
+  ComponentKind,
+  DocsSection,
+} from '@/docs/components/page-definition'
 
 export const COMPONENTS = [
   'Accordion',
@@ -130,31 +133,31 @@ export const COMPONENTS = [
   'Tree List',
   'Typography',
   'Visually Hidden',
-] as const;
+] as const
 
 export const toSlug = (name: string): string =>
-  name.toLowerCase().replaceAll(' ', '-');
+  name.toLowerCase().replaceAll(' ', '-')
 
 export const componentTitle = (slug: string): string | undefined =>
-  COMPONENTS.find((name) => toSlug(name) === slug);
+  COMPONENTS.find(name => toSlug(name) === slug)
 
 export type ExampleConfig<Msg> = Readonly<{
-  title: string;
+  title: string
   /** DOM anchor id override; defaults to the title slug. Needed when two
      sections share a title. */
-  sectionId?: string;
-  description?: string;
-  preview: Html;
-  code: string;
-  onCopy: Msg;
-  isCopied: boolean;
-  previewClass?: string;
-  dark: boolean;
-  codeFileMessage: (message: CodeFile.Message) => Msg;
-}>;
+  sectionId?: string
+  description?: string
+  preview: Html
+  code: string
+  onCopy: Msg
+  isCopied: boolean
+  previewClass?: string
+  dark: boolean
+  codeFileMessage: (message: CodeFile.Message) => Msg
+}>
 
 const codeKey = (code: string): number =>
-  [...code].reduce((hash, char) => (hash * 33 + char.charCodeAt(0)) | 0, 5381);
+  [...code].reduce((hash, char) => (hash * 33 + char.charCodeAt(0)) | 0, 5381)
 
 export const codeBlock = <Msg>(
   code: string,
@@ -171,9 +174,12 @@ export const codeBlock = <Msg>(
       ),
     ],
     [
-      h.keyed('div')(`codeview-${fileName}-${dark}-${codeKey(code)}`,
+      h.keyed('div')(
+        `codeview-${fileName}-${dark}-${codeKey(code)}`,
         [
-          h.Class('min-w-0 max-w-full overflow-x-auto font-mono text-[13px] leading-6'),
+          h.Class(
+            'min-w-0 max-w-full overflow-x-auto font-mono text-[13px] leading-6',
+          ),
           h.OnMount(
             Mount.mapMessage(
               CodeFile.MountCodeFile({
@@ -213,8 +219,8 @@ export const codeBlock = <Msg>(
             ),
           ]),
     ],
-  );
-};
+  )
+}
 
 const heading = <Msg>(
   id: string,
@@ -237,8 +243,8 @@ const heading = <Msg>(
         ['#'],
       ),
     ],
-  );
-};
+  )
+}
 
 export const example = <Msg>(
   config: ExampleConfig<Msg>,
@@ -280,17 +286,17 @@ export const example = <Msg>(
         h,
       ),
     ],
-  );
-};
+  )
+}
 
 export type HeroExampleConfig<Msg> = Omit<ExampleConfig<Msg>, 'description'> &
   Readonly<{
     /** heroOnly examples have no named twin to collide with — keep ids
         canonical so Foldkit's id-driven Commands still find the element. */
-    keepIdsCanonical?: boolean;
-  }>;
+    keepIdsCanonical?: boolean
+  }>
 
-const HERO_ID_SUFFIX = '-hero';
+const HERO_ID_SUFFIX = '-hero'
 const HERO_ID_REF_ATTRIBUTES = [
   'for',
   'form',
@@ -304,7 +310,7 @@ const HERO_ID_REF_ATTRIBUTES = [
   'aria-errormessage',
   'aria-owns',
   'aria-flowto',
-] as const;
+] as const
 
 /** Heading-less copy of the first example, rendered directly under the page
     header like shadcn's unnamed top preview. The hero and the named section
@@ -321,40 +327,42 @@ export const hero = <Msg>(
       h.OnMount({
         name: `docs-hero-${toSlug(config.title)}`,
         f: element => {
-          if (!(element instanceof HTMLElement)) return Stream.empty;
-          const scopedIds = new Set<string>();
-          if (config.keepIdsCanonical === true) return Stream.empty;
+          if (!(element instanceof HTMLElement)) return Stream.empty
+          const scopedIds = new Set<string>()
+          if (config.keepIdsCanonical === true) return Stream.empty
           element.querySelectorAll<HTMLElement>('[id]').forEach(node => {
-            if (node.id.length > 0) scopedIds.add(node.id);
-          });
+            if (node.id.length > 0) scopedIds.add(node.id)
+          })
           scopedIds.forEach(id => {
-            const node = element.querySelector<HTMLElement>(`#${CSS.escape(id)}`);
+            const node = element.querySelector<HTMLElement>(
+              `#${CSS.escape(id)}`,
+            )
             if (node !== null && !id.endsWith(HERO_ID_SUFFIX)) {
-              node.id = `${id}${HERO_ID_SUFFIX}`;
+              node.id = `${id}${HERO_ID_SUFFIX}`
             }
-          });
+          })
           HERO_ID_REF_ATTRIBUTES.forEach(attribute => {
             element
               .querySelectorAll<HTMLElement>(`[${attribute}]`)
               .forEach(node => {
-                const value = node.getAttribute(attribute);
-                if (value === null) return;
+                const value = node.getAttribute(attribute)
+                if (value === null) return
                 const rewritten = value
                   .split(/\s+/)
                   .map(token =>
                     scopedIds.has(token) ? `${token}${HERO_ID_SUFFIX}` : token,
                   )
-                  .join(' ');
-                if (rewritten !== value) node.setAttribute(attribute, rewritten);
-              });
-          });
-          return Stream.empty;
+                  .join(' ')
+                if (rewritten !== value) node.setAttribute(attribute, rewritten)
+              })
+          })
+          return Stream.empty
         },
       }),
     ],
     [exampleCard(config, `hero-${toSlug(config.title)}`, config.title, h)],
-  );
-};
+  )
+}
 
 const exampleCard = <Msg>(
   config: HeroExampleConfig<Msg>,
@@ -363,182 +371,182 @@ const exampleCard = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Html => {
   return h.div(
-        [h.Class('overflow-hidden rounded-lg border bg-background')],
+    [h.Class('overflow-hidden rounded-lg border bg-background')],
+    [
+      h.div(
         [
+          h.Class(
+            cn(
+              'flex min-h-64 items-center justify-center p-6 sm:p-10',
+              config.previewClass,
+            ),
+          ),
+        ],
+        [config.preview],
+      ),
+      h.div(
+        [h.Class('relative border-t bg-muted/35')],
+        [
+          h.input([
+            h.Id(`example-code-${idBase}`),
+            h.Type('checkbox'),
+            h.Class('peer sr-only'),
+          ]),
           h.div(
             [
               h.Class(
-                cn(
-                  'flex min-h-64 items-center justify-center p-6 sm:p-10',
-                  config.previewClass,
-                ),
+                'relative max-h-[7.25rem] overflow-hidden pb-11 [mask-image:linear-gradient(to_bottom,black_35%,transparent_100%)] peer-checked:max-h-none peer-checked:[mask-image:none]',
               ),
             ],
-            [config.preview],
-          ),
-          h.div(
-            [h.Class('relative border-t bg-muted/35')],
             [
-              h.input([
-                h.Id(`example-code-${idBase}`),
-                h.Type('checkbox'),
-                h.Class('peer sr-only'),
-              ]),
-              h.div(
+              h.keyed('div')(
+                `example-codeview-${idBase}-${config.dark}-${codeKey(config.code)}`,
                 [
                   h.Class(
-                    'relative max-h-[7.25rem] overflow-hidden pb-11 [mask-image:linear-gradient(to_bottom,black_35%,transparent_100%)] peer-checked:max-h-none peer-checked:[mask-image:none]',
+                    'min-w-0 max-w-full overflow-x-auto font-mono text-[13px] leading-6',
+                  ),
+                  h.OnMount(
+                    Mount.mapMessage(
+                      CodeFile.MountCodeFile({
+                        fileName: 'example.ts',
+                        contents: config.code,
+                        dark: config.dark,
+                        lineNumbers: false,
+                      }),
+                      config.codeFileMessage,
+                    ),
+                  ),
+                ],
+                [],
+              ),
+              h.button(
+                [
+                  h.Type('button'),
+                  h.OnClick(config.onCopy),
+                  h.AriaLabel(
+                    config.isCopied
+                      ? `${copyLabelTitle} example code copied`
+                      : `Copy ${copyLabelTitle} example code`,
+                  ),
+                  h.Title(config.isCopied ? 'Copied' : 'Copy code'),
+                  h.Class(
+                    cn(
+                      'absolute top-2.5 right-2.5 inline-flex size-10 items-center justify-center rounded-md outline-none transition-[color,background-color,transform] hover:bg-background focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-[0.96]',
+                      config.isCopied
+                        ? 'text-emerald-600 dark:text-emerald-400'
+                        : 'text-muted-foreground hover:text-foreground',
+                    ),
                   ),
                 ],
                 [
-                  h.keyed('div')(
-                    `example-codeview-${idBase}-${config.dark}-${codeKey(config.code)}`,
-                    [
-                      h.Class(
-                        'min-w-0 max-w-full overflow-x-auto font-mono text-[13px] leading-6',
-                      ),
-                      h.OnMount(
-                        Mount.mapMessage(
-                          CodeFile.MountCodeFile({
-                            fileName: 'example.ts',
-                            contents: config.code,
-                            dark: config.dark,
-                            lineNumbers: false,
-                          }),
-                          config.codeFileMessage,
-                        ),
-                      ),
-                    ],
-                    [],
-                  ),
-                  h.button(
-                    [
-                      h.Type('button'),
-                      h.OnClick(config.onCopy),
-                      h.AriaLabel(
+                  Icon.icon<Msg>(
+                    'copy',
+                    {
+                      class: cn(
+                        'absolute size-4 transition-[scale,opacity,filter] duration-200 ease-[cubic-bezier(0.2,0,0,1)]',
                         config.isCopied
-                          ? `${copyLabelTitle} example code copied`
-                          : `Copy ${copyLabelTitle} example code`,
+                          ? 'scale-25 opacity-0 blur-[4px]'
+                          : 'scale-100 opacity-100 blur-0',
                       ),
-                      h.Title(config.isCopied ? 'Copied' : 'Copy code'),
-                      h.Class(
-                        cn(
-                          'absolute top-2.5 right-2.5 inline-flex size-10 items-center justify-center rounded-md outline-none transition-[color,background-color,transform] hover:bg-background focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-[0.96]',
-                          config.isCopied
-                            ? 'text-emerald-600 dark:text-emerald-400'
-                            : 'text-muted-foreground hover:text-foreground',
-                        ),
+                    },
+                    h,
+                  ),
+                  Icon.icon<Msg>(
+                    'check',
+                    {
+                      class: cn(
+                        'absolute size-4 transition-[scale,opacity,filter] duration-200 ease-[cubic-bezier(0.2,0,0,1)]',
+                        config.isCopied
+                          ? 'scale-100 opacity-100 blur-0'
+                          : 'scale-25 opacity-0 blur-[4px]',
                       ),
-                    ],
-                    [
-                      Icon.icon<Msg>(
-                        'copy',
-                        {
-                          class: cn(
-                            'absolute size-4 transition-[scale,opacity,filter] duration-200 ease-[cubic-bezier(0.2,0,0,1)]',
-                            config.isCopied
-                              ? 'scale-25 opacity-0 blur-[4px]'
-                              : 'scale-100 opacity-100 blur-0',
-                          ),
-                        },
-                        h,
-                      ),
-                      Icon.icon<Msg>(
-                        'check',
-                        {
-                          class: cn(
-                            'absolute size-4 transition-[scale,opacity,filter] duration-200 ease-[cubic-bezier(0.2,0,0,1)]',
-                            config.isCopied
-                              ? 'scale-100 opacity-100 blur-0'
-                              : 'scale-25 opacity-0 blur-[4px]',
-                          ),
-                        },
-                        h,
-                      ),
-                    ],
+                    },
+                    h,
                   ),
                 ],
               ),
-              h.label(
-                [
-                  h.For(`example-code-${idBase}`),
-                  h.Class(
-                    'absolute bottom-2.5 left-1/2 z-10 flex min-h-10 -translate-x-1/2 cursor-pointer items-center gap-2 rounded-md border bg-background px-3 text-sm font-medium text-foreground shadow-xs outline-none transition-[color,background-color,transform] hover:bg-accent active:scale-[0.96] peer-checked:[&_.hide-code-label]:inline peer-checked:[&_.view-code-label]:hidden peer-focus-visible:ring-3 peer-focus-visible:ring-ring/50',
-                  ),
-                ],
-                [
-                  Icon.codeXml<Msg>({ class: 'size-4' }, h),
-                  h.span([h.Class('view-code-label')], ['View Code']),
-                  h.span([h.Class('hide-code-label hidden')], ['Hide Code']),
-                ],
+            ],
+          ),
+          h.label(
+            [
+              h.For(`example-code-${idBase}`),
+              h.Class(
+                'absolute bottom-2.5 left-1/2 z-10 flex min-h-10 -translate-x-1/2 cursor-pointer items-center gap-2 rounded-md border bg-background px-3 text-sm font-medium text-foreground shadow-xs outline-none transition-[color,background-color,transform] hover:bg-accent active:scale-[0.96] peer-checked:[&_.hide-code-label]:inline peer-checked:[&_.view-code-label]:hidden peer-focus-visible:ring-3 peer-focus-visible:ring-ring/50',
               ),
+            ],
+            [
+              Icon.codeXml<Msg>({ class: 'size-4' }, h),
+              h.span([h.Class('view-code-label')], ['View Code']),
+              h.span([h.Class('hide-code-label hidden')], ['Hide Code']),
             ],
           ),
         ],
-      );
-};
+      ),
+    ],
+  )
+}
 
 export type ComponentPageConfig<Msg> = Readonly<{
-  name: string;
-  description: string;
-  kind: ComponentKind;
-  architecture: string;
-  installation: string;
-  usage: string;
-  sections?: ReadonlyArray<DocsSection>;
-  styling?: string;
-  accessibility?: string;
-  keyboard?: ReadonlyArray<readonly [key: string, behavior: string]>;
-  examples: ReadonlyArray<Html>;
+  name: string
+  description: string
+  kind: ComponentKind
+  architecture: string
+  installation: string
+  usage: string
+  sections?: ReadonlyArray<DocsSection>
+  styling?: string
+  accessibility?: string
+  keyboard?: ReadonlyArray<readonly [key: string, behavior: string]>
+  examples: ReadonlyArray<Html>
   /** Heading-less duplicate of the first example, rendered under the header. */
-  heroExample?: Html;
-  apiHref: string;
-  composition?: string;
-  exampleTitles?: ReadonlyArray<readonly [id: string, title: string]>;
-  copiedCode?: string | null;
-  onCopyCode?: (code: string) => Msg;
-  dark?: boolean;
-  codeFileMessage: (message: CodeFile.Message) => Msg;
-  sourceHref?: string;
-  apiDescription?: string;
-  apiEntries: ReadonlyArray<ApiEntry>;
-  sidebarScrolled: Msg;
-  renderer: 'tailwind' | 'stylex';
-  onRendererChange: (renderer: 'tailwind' | 'stylex') => Msg;
-}>;
+  heroExample?: Html
+  apiHref: string
+  composition?: string
+  exampleTitles?: ReadonlyArray<readonly [id: string, title: string]>
+  copiedCode?: string | null
+  onCopyCode?: (code: string) => Msg
+  dark?: boolean
+  codeFileMessage: (message: CodeFile.Message) => Msg
+  sourceHref?: string
+  apiDescription?: string
+  apiEntries: ReadonlyArray<ApiEntry>
+  sidebarScrolled: Msg
+  renderer: 'tailwind' | 'stylex'
+  onRendererChange: (renderer: 'tailwind' | 'stylex') => Msg
+}>
 
-const SIDEBAR_SCROLL_KEY = 'creaseui-docs-sidebar-scroll';
+const SIDEBAR_SCROLL_KEY = 'creaseui-docs-sidebar-scroll'
 
 const apiPurpose = (entry: ApiEntry): string => {
   switch (entry.name) {
     case 'Model':
-      return 'State owned by the component and stored in the parent model.';
+      return 'State owned by the component and stored in the parent model.'
     case 'Message':
-      return 'Child events delegated through the parent update loop.';
+      return 'Child events delegated through the parent update loop.'
     case 'OutMessage':
-      return 'Typed events emitted for the parent domain to interpret.';
+      return 'Typed events emitted for the parent domain to interpret.'
     case 'init':
-      return 'Creates the initial component model.';
+      return 'Creates the initial component model.'
     case 'update':
-      return 'Applies a child message and returns state, commands, and optional output.';
+      return 'Applies a child message and returns state, commands, and optional output.'
     case 'view':
-      return 'Submodel view embedded with h.submodel.';
+      return 'Submodel view embedded with h.submodel.'
     default:
       return entry.kind === 'function'
         ? 'Public operation or render helper.'
         : entry.kind === 'type'
           ? 'Public configuration or data contract.'
-          : 'Public schema, message constructor, or compatibility export.';
+          : 'Public schema, message constructor, or compatibility export.'
   }
-};
+}
 
 export const componentPage = <Msg>(
   config: ComponentPageConfig<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
   const navItem = (name: string): Html => {
-    const slug = toSlug(name);
-    const isCurrent = name === config.name;
+    const slug = toSlug(name)
+    const isCurrent = name === config.name
 
     return h.li(
       [],
@@ -559,18 +567,18 @@ export const componentPage = <Msg>(
           [name],
         ),
       ],
-    );
-  };
+    )
+  }
 
-  const currentIndex = COMPONENTS.findIndex((name) => name === config.name);
-  const previous = currentIndex > 0 ? COMPONENTS[currentIndex - 1] : undefined;
-  const next = currentIndex >= 0 ? COMPONENTS[currentIndex + 1] : undefined;
+  const currentIndex = COMPONENTS.findIndex(name => name === config.name)
+  const previous = currentIndex > 0 ? COMPONENTS[currentIndex - 1] : undefined
+  const next = currentIndex >= 0 ? COMPONENTS[currentIndex + 1] : undefined
   const toc: ReadonlyArray<readonly [string, string]> = [
     ['architecture', 'Architecture'],
     ['installation', 'Installation'],
     ['usage', 'Usage'],
     ...(config.sections ?? []).map(
-      (section) => [section.id, section.title] as const,
+      section => [section.id, section.title] as const,
     ),
     ...(config.composition === undefined
       ? []
@@ -584,7 +592,7 @@ export const componentPage = <Msg>(
       ? []
       : [['accessibility', 'Accessibility'] as const]),
     ['api-reference', 'API Reference'],
-  ];
+  ]
   const copy = (code: string, label: string) =>
     config.onCopyCode === undefined
       ? undefined
@@ -592,7 +600,7 @@ export const componentPage = <Msg>(
           onCopy: config.onCopyCode(code),
           isCopied: config.copiedCode === code,
           label,
-        };
+        }
 
   return h.div(
     [
@@ -629,14 +637,14 @@ export const componentPage = <Msg>(
           ),
           h.OnMount({
             name: 'docs-sidebar-scroll',
-            f: (element) => {
-              if (!(element instanceof HTMLElement)) return Stream.empty;
+            f: element => {
+              if (!(element instanceof HTMLElement)) return Stream.empty
 
               const savedScrollTop = Number(
                 sessionStorage.getItem(SIDEBAR_SCROLL_KEY),
-              );
+              )
               if (Number.isFinite(savedScrollTop))
-                element.scrollTop = savedScrollTop;
+                element.scrollTop = savedScrollTop
 
               return Subscription.fromEvent<HTMLElement, 'scroll', Msg>({
                 target: element,
@@ -646,10 +654,10 @@ export const componentPage = <Msg>(
                   sessionStorage.setItem(
                     SIDEBAR_SCROLL_KEY,
                     String(element.scrollTop),
-                  );
-                  return config.sidebarScrolled;
+                  )
+                  return config.sidebarScrolled
                 },
-              });
+              })
             },
           }),
         ],
@@ -722,9 +730,11 @@ export const componentPage = <Msg>(
                         [
                           h.Role('group'),
                           h.AriaLabel('Preview styling engine'),
-                          h.Class('mr-2 inline-flex rounded-md border bg-muted/30 p-0.5'),
+                          h.Class(
+                            'mr-2 inline-flex rounded-md border bg-muted/30 p-0.5',
+                          ),
                         ],
-                        (['tailwind', 'stylex'] as const).map((renderer) =>
+                        (['tailwind', 'stylex'] as const).map(renderer =>
                           h.button(
                             [
                               h.Type('button'),
@@ -763,11 +773,16 @@ export const componentPage = <Msg>(
                         [h.Class('text-xs text-muted-foreground')],
                         ['Installed as source'],
                       ),
-                      h.span([h.AriaHidden(true), h.Class('text-border')], ['·']),
+                      h.span(
+                        [h.AriaHidden(true), h.Class('text-border')],
+                        ['·'],
+                      ),
                       h.a(
                         [
                           h.Href(config.apiHref),
-                          h.Class('text-xs font-medium underline underline-offset-4'),
+                          h.Class(
+                            'text-xs font-medium underline underline-offset-4',
+                          ),
                         ],
                         ['Foldkit reference'],
                       ),
@@ -777,7 +792,9 @@ export const componentPage = <Msg>(
                             h.a(
                               [
                                 h.Href(config.sourceHref),
-                                h.Class('text-xs font-medium underline underline-offset-4'),
+                                h.Class(
+                                  'text-xs font-medium underline underline-offset-4',
+                                ),
                               ],
                               ['Source'],
                             ),
@@ -790,24 +807,41 @@ export const componentPage = <Msg>(
               h.section(
                 [
                   h.Id('architecture'),
-                  h.Class('scroll-mt-24 border-y bg-muted/25 px-5 py-5 sm:px-6'),
+                  h.Class(
+                    'scroll-mt-24 border-y bg-muted/25 px-5 py-5 sm:px-6',
+                  ),
                 ],
                 [
                   h.div(
-                    [h.Class('flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between')],
+                    [
+                      h.Class(
+                        'flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between',
+                      ),
+                    ],
                     [
                       h.div(
                         [h.Class('space-y-1')],
                         [
-                          h.h2([h.Class('text-sm font-semibold')], ['How it fits Foldkit']),
+                          h.h2(
+                            [h.Class('text-sm font-semibold')],
+                            ['How it fits Foldkit'],
+                          ),
                           h.p(
-                            [h.Class('max-w-[70ch] text-sm leading-6 text-muted-foreground')],
+                            [
+                              h.Class(
+                                'max-w-[70ch] text-sm leading-6 text-muted-foreground',
+                              ),
+                            ],
                             [config.architecture],
                           ),
                         ],
                       ),
                       h.span(
-                        [h.Class('shrink-0 font-mono text-xs text-muted-foreground')],
+                        [
+                          h.Class(
+                            'shrink-0 font-mono text-xs text-muted-foreground',
+                          ),
+                        ],
                         [config.kind],
                       ),
                     ],
@@ -859,13 +893,17 @@ export const componentPage = <Msg>(
                   ),
                 ],
               ),
-              ...(config.sections ?? []).map((section) =>
+              ...(config.sections ?? []).map(section =>
                 h.section(
                   [h.Id(section.id), h.Class('scroll-mt-24 space-y-4')],
                   [
                     heading<Msg>(section.id, section.title, '', h),
                     h.p(
-                      [h.Class('max-w-[70ch] text-sm leading-6 text-muted-foreground')],
+                      [
+                        h.Class(
+                          'max-w-[70ch] text-sm leading-6 text-muted-foreground',
+                        ),
+                      ],
                       [section.description],
                     ),
                     ...(section.code === undefined
@@ -910,7 +948,11 @@ export const componentPage = <Msg>(
                       [
                         heading<Msg>('styling', 'Styling', '', h),
                         h.p(
-                          [h.Class('max-w-[70ch] text-sm leading-6 text-muted-foreground')],
+                          [
+                            h.Class(
+                              'max-w-[70ch] text-sm leading-6 text-muted-foreground',
+                            ),
+                          ],
                           [config.styling],
                         ),
                       ],
@@ -920,17 +962,35 @@ export const componentPage = <Msg>(
                 ? []
                 : [
                     h.section(
-                      [h.Id('keyboard-interaction'), h.Class('scroll-mt-24 space-y-3')],
                       [
-                        heading<Msg>('keyboard-interaction', 'Keyboard interaction', '', h),
+                        h.Id('keyboard-interaction'),
+                        h.Class('scroll-mt-24 space-y-3'),
+                      ],
+                      [
+                        heading<Msg>(
+                          'keyboard-interaction',
+                          'Keyboard interaction',
+                          '',
+                          h,
+                        ),
                         h.dl(
                           [h.Class('divide-y rounded-lg border')],
                           config.keyboard.map(([key, behavior]) =>
                             h.div(
-                              [h.Class('grid gap-1 px-4 py-3 sm:grid-cols-[10rem_1fr]')],
                               [
-                                h.dt([h.Class('font-mono text-xs font-medium')], [key]),
-                                h.dd([h.Class('text-sm text-muted-foreground')], [behavior]),
+                                h.Class(
+                                  'grid gap-1 px-4 py-3 sm:grid-cols-[10rem_1fr]',
+                                ),
+                              ],
+                              [
+                                h.dt(
+                                  [h.Class('font-mono text-xs font-medium')],
+                                  [key],
+                                ),
+                                h.dd(
+                                  [h.Class('text-sm text-muted-foreground')],
+                                  [behavior],
+                                ),
                               ],
                             ),
                           ),
@@ -942,11 +1002,18 @@ export const componentPage = <Msg>(
                 ? []
                 : [
                     h.section(
-                      [h.Id('accessibility'), h.Class('scroll-mt-24 space-y-3')],
+                      [
+                        h.Id('accessibility'),
+                        h.Class('scroll-mt-24 space-y-3'),
+                      ],
                       [
                         heading<Msg>('accessibility', 'Accessibility', '', h),
                         h.p(
-                          [h.Class('max-w-[70ch] text-sm leading-6 text-muted-foreground')],
+                          [
+                            h.Class(
+                              'max-w-[70ch] text-sm leading-6 text-muted-foreground',
+                            ),
+                          ],
                           [config.accessibility],
                         ),
                       ],
@@ -989,39 +1056,70 @@ export const componentPage = <Msg>(
                           h.thead(
                             [h.Class('border-b bg-muted/45')],
                             [
-                              h.tr([], [
-                                h.th([h.Class('px-4 py-3 font-medium')], ['Export']),
-                                h.th([h.Class('px-4 py-3 font-medium')], ['Kind']),
-                                h.th([h.Class('px-4 py-3 font-medium')], ['Signature']),
-                                h.th([h.Class('px-4 py-3 font-medium')], ['Purpose']),
-                              ]),
+                              h.tr(
+                                [],
+                                [
+                                  h.th(
+                                    [h.Class('px-4 py-3 font-medium')],
+                                    ['Export'],
+                                  ),
+                                  h.th(
+                                    [h.Class('px-4 py-3 font-medium')],
+                                    ['Kind'],
+                                  ),
+                                  h.th(
+                                    [h.Class('px-4 py-3 font-medium')],
+                                    ['Signature'],
+                                  ),
+                                  h.th(
+                                    [h.Class('px-4 py-3 font-medium')],
+                                    ['Purpose'],
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
                           h.tbody(
                             [],
-                            config.apiEntries.map((entry) =>
+                            config.apiEntries.map(entry =>
                               h.tr(
                                 [h.Class('border-b last:border-0')],
                                 [
                                   h.td(
-                                    [h.Class('px-4 py-3 align-top font-mono text-xs font-medium')],
+                                    [
+                                      h.Class(
+                                        'px-4 py-3 align-top font-mono text-xs font-medium',
+                                      ),
+                                    ],
                                     [entry.name],
                                   ),
                                   h.td(
-                                    [h.Class('px-4 py-3 align-top text-muted-foreground')],
+                                    [
+                                      h.Class(
+                                        'px-4 py-3 align-top text-muted-foreground',
+                                      ),
+                                    ],
                                     [entry.kind],
                                   ),
                                   h.td(
                                     [h.Class('px-4 py-3 align-top')],
                                     [
                                       h.code(
-                                        [h.Class('whitespace-normal break-words font-mono text-xs leading-5')],
+                                        [
+                                          h.Class(
+                                            'whitespace-normal break-words font-mono text-xs leading-5',
+                                          ),
+                                        ],
                                         [entry.signature],
                                       ),
                                     ],
                                   ),
                                   h.td(
-                                    [h.Class('max-w-xs px-4 py-3 align-top text-muted-foreground')],
+                                    [
+                                      h.Class(
+                                        'max-w-xs px-4 py-3 align-top text-muted-foreground',
+                                      ),
+                                    ],
                                     [apiPurpose(entry)],
                                   ),
                                 ],
@@ -1128,5 +1226,5 @@ export const componentPage = <Msg>(
         ],
       ),
     ],
-  );
-};
+  )
+}

@@ -7,7 +7,9 @@ import ts from 'typescript'
 const projectPath = resolve('tsconfig.json')
 const configFile = ts.readConfigFile(projectPath, ts.sys.readFile)
 if (configFile.error !== undefined) {
-  throw new Error(ts.flattenDiagnosticMessageText(configFile.error.messageText, '\n'))
+  throw new Error(
+    ts.flattenDiagnosticMessageText(configFile.error.messageText, '\n'),
+  )
 }
 
 const parsed = ts.parseJsonConfigFileContent(
@@ -28,21 +30,22 @@ const componentNames = new Set(
 const isStyleContractName = name =>
   name === 'layoutStyle' || name.endsWith('LayoutStyle')
 
-const sourceFiles = program
-  .getSourceFiles()
-  .filter(sourceFile => {
-    const path = sourceFile.fileName.replaceAll('\\', '/')
-    const fileName = path.slice(path.lastIndexOf('/') + 1).replace(/\.ts$/u, '')
-    return path.includes('/src/stylex/') && componentNames.has(fileName)
-  })
+const sourceFiles = program.getSourceFiles().filter(sourceFile => {
+  const path = sourceFile.fileName.replaceAll('\\', '/')
+  const fileName = path.slice(path.lastIndexOf('/') + 1).replace(/\.ts$/u, '')
+  return path.includes('/src/stylex/') && componentNames.has(fileName)
+})
 
 const location = (sourceFile, node) => {
-  const position = sourceFile.getLineAndCharacterOfPosition(node.getStart(sourceFile))
+  const position = sourceFile.getLineAndCharacterOfPosition(
+    node.getStart(sourceFile),
+  )
   return `${sourceFile.fileName.replaceAll('\\', '/')}:${position.line + 1}:${position.character + 1}`
 }
 
 const functionName = node => {
-  if (node.name !== undefined && ts.isIdentifier(node.name)) return node.name.text
+  if (node.name !== undefined && ts.isIdentifier(node.name))
+    return node.name.text
   if (
     (ts.isArrowFunction(node) || ts.isFunctionExpression(node)) &&
     ts.isVariableDeclaration(node.parent) &&
@@ -55,15 +58,25 @@ const functionName = node => {
 
 const isExportedFunction = node => {
   if (ts.isFunctionDeclaration(node)) {
-    return ts.getModifiers(node)?.some(modifier => modifier.kind === ts.SyntaxKind.ExportKeyword) ?? false
+    return (
+      ts
+        .getModifiers(node)
+        ?.some(modifier => modifier.kind === ts.SyntaxKind.ExportKeyword) ??
+      false
+    )
   }
   if (
     (ts.isArrowFunction(node) || ts.isFunctionExpression(node)) &&
     ts.isVariableDeclaration(node.parent)
   ) {
     const statement = node.parent.parent.parent
-    return ts.isVariableStatement(statement) &&
-      (ts.getModifiers(statement)?.some(modifier => modifier.kind === ts.SyntaxKind.ExportKeyword) ?? false)
+    return (
+      ts.isVariableStatement(statement) &&
+      (ts
+        .getModifiers(statement)
+        ?.some(modifier => modifier.kind === ts.SyntaxKind.ExportKeyword) ??
+        false)
+    )
   }
   return false
 }
@@ -72,16 +85,21 @@ const styleProperties = parameter => {
   const type = checker.getTypeAtLocation(parameter)
   return checker.getPropertiesOfType(type).filter(symbol => {
     if (!isStyleContractName(symbol.name)) return false
-    return symbol.declarations?.some(declaration =>
-      ts.isPropertySignature(declaration) &&
-      declaration.type?.getText().includes('ComponentLayoutStyle'),
-    ) ?? false
+    return (
+      symbol.declarations?.some(
+        declaration =>
+          ts.isPropertySignature(declaration) &&
+          declaration.type?.getText().includes('ComponentLayoutStyle'),
+      ) ?? false
+    )
   })
 }
 
 const directCallArgument = (call, descendant) =>
-  call.arguments.findIndex(argument =>
-    descendant.getStart() >= argument.getStart() && descendant.getEnd() <= argument.getEnd(),
+  call.arguments.findIndex(
+    argument =>
+      descendant.getStart() >= argument.getStart() &&
+      descendant.getEnd() <= argument.getEnd(),
   )
 
 const adapterCall = access => {
@@ -89,7 +107,10 @@ const adapterCall = access => {
   while (current !== undefined) {
     if (ts.isCallExpression(current)) {
       const called = current.expression
-      if (ts.isIdentifier(called) && (called.text === 'className' || called.text === 'cn')) {
+      if (
+        ts.isIdentifier(called) &&
+        (called.text === 'className' || called.text === 'cn')
+      ) {
         return current
       }
     }
@@ -104,9 +125,10 @@ const forwardedCall = (access, propertyName) => {
   let current = access.parent
   while (current !== undefined) {
     if (ts.isPropertyAssignment(current)) {
-      forwardedName = ts.isIdentifier(current.name) || ts.isStringLiteral(current.name)
-        ? current.name.text
-        : propertyName
+      forwardedName =
+        ts.isIdentifier(current.name) || ts.isStringLiteral(current.name)
+          ? current.name.text
+          : propertyName
     }
     if (ts.isCallExpression(current)) {
       const argumentIndex = directCallArgument(current, access)
@@ -114,10 +136,17 @@ const forwardedCall = (access, propertyName) => {
       const signature = checker.getResolvedSignature(current)
       const targetParameter = signature?.parameters[argumentIndex]
       if (targetParameter === undefined) return undefined
-      const declaration = targetParameter.valueDeclaration ?? targetParameter.declarations?.[0]
+      const declaration =
+        targetParameter.valueDeclaration ?? targetParameter.declarations?.[0]
       if (declaration === undefined) return undefined
-      const targetType = checker.getTypeOfSymbolAtLocation(targetParameter, declaration)
-      const targetProperty = checker.getPropertyOfType(targetType, forwardedName)
+      const targetType = checker.getTypeOfSymbolAtLocation(
+        targetParameter,
+        declaration,
+      )
+      const targetProperty = checker.getPropertyOfType(
+        targetType,
+        forwardedName,
+      )
       return targetProperty === undefined ? undefined : current
     }
     if (ts.isFunctionLike(current)) return undefined
@@ -130,7 +159,8 @@ const wholeParameterForwarded = (body, parameter, propertyName) => {
   let forwarded = false
   const visit = node => {
     if (forwarded) return
-    const isParameterReference = ts.isIdentifier(node) &&
+    const isParameterReference =
+      ts.isIdentifier(node) &&
       node.text === parameter.name.text &&
       node !== parameter.name
     if (isParameterReference) {
@@ -141,10 +171,18 @@ const wholeParameterForwarded = (body, parameter, propertyName) => {
           if (argumentIndex >= 0) {
             const signature = checker.getResolvedSignature(current)
             const targetParameter = signature?.parameters[argumentIndex]
-            const declaration = targetParameter?.valueDeclaration ?? targetParameter?.declarations?.[0]
+            const declaration =
+              targetParameter?.valueDeclaration ??
+              targetParameter?.declarations?.[0]
             if (targetParameter !== undefined && declaration !== undefined) {
-              const targetType = checker.getTypeOfSymbolAtLocation(targetParameter, declaration)
-              if (checker.getPropertyOfType(targetType, propertyName) !== undefined) {
+              const targetType = checker.getTypeOfSymbolAtLocation(
+                targetParameter,
+                declaration,
+              )
+              if (
+                checker.getPropertyOfType(targetType, propertyName) !==
+                undefined
+              ) {
                 forwarded = true
                 return
               }
@@ -168,7 +206,11 @@ let forwardedProperties = 0
 
 for (const sourceFile of sourceFiles) {
   const visit = node => {
-    if (!ts.isFunctionLike(node) || node.body === undefined || !isExportedFunction(node)) {
+    if (
+      !ts.isFunctionLike(node) ||
+      node.body === undefined ||
+      !isExportedFunction(node)
+    ) {
       ts.forEachChild(node, visit)
       return
     }
@@ -205,8 +247,16 @@ for (const sourceFile of sourceFiles) {
           return call === undefined ? [] : [{ access, call }]
         })
 
-        const wholeForwarded = wholeParameterForwarded(node.body, parameter, property.name)
-        if (materialized.length === 0 && forwarded.length === 0 && !wholeForwarded) {
+        const wholeForwarded = wholeParameterForwarded(
+          node.body,
+          parameter,
+          property.name,
+        )
+        if (
+          materialized.length === 0 &&
+          forwarded.length === 0 &&
+          !wholeForwarded
+        ) {
           errors.push(
             `${location(sourceFile, parameter)} ${functionName(node)} declares ${property.name} but does not materialize or forward it`,
           )
@@ -232,15 +282,18 @@ for (const sourceFile of sourceFiles) {
 }
 
 if (errors.length > 0) {
-  console.error(`StyleX contract-flow check failed (${errors.length}):\n${errors.map(error => `- ${error}`).join('\n')}`)
+  console.error(
+    `StyleX contract-flow check failed (${errors.length}):\n${errors.map(error => `- ${error}`).join('\n')}`,
+  )
   process.exitCode = 1
 } else {
-  console.log(JSON.stringify({
-    checkedFiles: sourceFiles.length,
-    checkedFunctions,
-    checkedProperties,
-    forwardedProperties,
-    materializedProperties,
-  }))
+  console.log(
+    JSON.stringify({
+      checkedFiles: sourceFiles.length,
+      checkedFunctions,
+      checkedProperties,
+      forwardedProperties,
+      materializedProperties,
+    }),
+  )
 }
-

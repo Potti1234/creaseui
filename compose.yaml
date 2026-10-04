@@ -5,11 +5,10 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     expose:
-      - "80"
+      - '80'
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--spider", "http://127.0.0.1/"]
+      test: ['CMD', 'wget', '--quiet', '--spider', 'http://127.0.0.1/']
       interval: 30s
       timeout: 5s
       retries: 3
       start_period: 10s
-

@@ -1,12 +1,12 @@
-import { Match as M, Option, Schema as S } from 'effect';
-import type { Update } from 'foldkit';
-import { Command, Subscription } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
-import { modifyFields } from 'foldkit/struct';
+import { Match as M, Option, Schema as S } from 'effect'
+import type { Update } from 'foldkit'
+import { Command, Subscription } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import { modifyFields } from 'foldkit/struct'
 
-import * as Icon from '@/demo/icon-preview';
-import { button } from '@/ui/button';
+import * as Icon from '@/demo/icon-preview'
+import { button } from '@/ui/button'
 import {
   card,
   cardAction,
@@ -15,18 +15,18 @@ import {
   cardFooter,
   cardHeader,
   cardTitle,
-} from '@/ui/card';
-import { field, fieldDescription, fieldGroup, fieldLabel } from '@/ui/field';
-import * as Select from '@/ui/select';
-import * as Slider from '@/ui/slider';
-import { textarea } from '@/ui/textarea';
+} from '@/ui/card'
+import { field, fieldDescription, fieldGroup, fieldLabel } from '@/ui/field'
+import * as Select from '@/ui/select'
+import * as Slider from '@/ui/slider'
+import { textarea } from '@/ui/textarea'
 
 const currencies = [
   { value: 'usd', label: 'USD — United States Dollar' },
   { value: 'eur', label: 'EUR — Euro' },
   { value: 'gbp', label: 'GBP — British Pound' },
   { value: 'jpy', label: 'JPY — Japanese Yen' },
-] as const;
+] as const
 
 export const Model = S.Struct({
   currency: Select.Model,
@@ -34,69 +34,76 @@ export const Model = S.Struct({
   amount: Slider.Model,
   amountValue: S.Number,
   notes: S.String,
-});
-export type Model = typeof Model.Type;
-
-
-
+})
+export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
   GotCurrencyMessage: {
-  message: Select.Message,
-},
+    message: Select.Message,
+  },
   GotAmountMessage: {
-  message: Slider.Message,
-},
+    message: Slider.Message,
+  },
   UpdatedNotes: { value: S.String },
-});
-export type Message = typeof Message.Type;
+})
+export type Message = typeof Message.Type
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
       GotCurrencyMessage: ({ message: childMessage }) => {
-        const { model: currency, commands: currencyCommands__, outMessage: currencyOut__ } = Select.update(
-          model.currency,
-          childMessage,
-        )
+        const {
+          model: currency,
+          commands: currencyCommands__,
+          outMessage: currencyOut__,
+        } = Select.update(model.currency, childMessage)
         const commands = currencyCommands__ ?? []
         const maybeSelection = Option.fromNullishOr(currencyOut__)
-        return { model: modifyFields(model, {
+        return {
+          model: modifyFields(model, {
             currency: () => currency,
-            selectedCurrency: (current) =>
+            selectedCurrency: current =>
               Option.match(maybeSelection, {
                 onNone: () => current,
-                onSome: (selection) =>
+                onSome: selection =>
                   selection._tag === 'Selected' ? selection.value : current,
               }),
-          }), commands: Command.mapMessages(commands, (next) =>
+          }),
+          commands: Command.mapMessages(commands, next =>
             Message.GotCurrencyMessage({ message: next }),
-          ) };
+          ),
+        }
       },
       GotAmountMessage: ({ message: childMessage }) => {
-        const { model: amount, commands: amountCommands__, outMessage: amountOut__ } = Slider.update(
-          model.amount,
-          childMessage,
-        )
+        const {
+          model: amount,
+          commands: amountCommands__,
+          outMessage: amountOut__,
+        } = Slider.update(model.amount, childMessage)
         const commands = amountCommands__ ?? []
         const maybeChange = Option.fromNullishOr(amountOut__)
-        return { model: modifyFields(model, {
+        return {
+          model: modifyFields(model, {
             amount: () => amount,
-            amountValue: (current) =>
+            amountValue: current =>
               Option.match(maybeChange, {
                 onNone: () => current,
-                onSome: (change) => change.value,
+                onSome: change => change.value,
               }),
-          }), commands: Command.mapMessages(commands, (next) =>
+          }),
+          commands: Command.mapMessages(commands, next =>
             Message.GotAmountMessage({ message: next }),
-          ) };
+          ),
+        }
       },
-      UpdatedNotes: ({ value }) => ({ model: modifyFields(model, { notes: () => value }) }),
+      UpdatedNotes: ({ value }) => ({
+        model: modifyFields(model, { notes: () => value }),
+      }),
     }),
-  );
+  )
 
 export const init = (): Model => ({
   currency: Select.init({
@@ -112,7 +119,7 @@ export const init = (): Model => ({
   }),
   amountValue: 2500,
   notes: '',
-});
+})
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
   return card<Message>(
@@ -172,11 +179,11 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                               maybeSelectedValue: Option.some(
                                 model.selectedCurrency,
                               ),
-                              toParentMessage: (message) =>
+                              toParentMessage: message =>
                                 Message.GotCurrencyMessage({ message }),
                               items: currencies,
-                              itemToValue: (currency) => currency.value,
-                              itemToLabel: (currency) => currency.label,
+                              itemToValue: currency => currency.value,
+                              itemToLabel: currency => currency.label,
                               triggerClass: 'w-full',
                             },
                             h,
@@ -212,7 +219,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                             {
                               model: model.amount,
                               value: model.amountValue,
-                              toParentMessage: (message) =>
+                              toParentMessage: message =>
                                 Message.GotAmountMessage({ message }),
                               ariaLabel: 'Minimum Payout Amount',
                             },
@@ -246,7 +253,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                             {
                               id: 'payout-threshold-notes',
                               value: model.notes,
-                              onInput: (value) => Message.UpdatedNotes({ value }),
+                              onInput: value => Message.UpdatedNotes({ value }),
                               placeholder:
                                 'Add any notes for this payout configuration...',
                               class: 'min-h-[100px]',
@@ -276,8 +283,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 // SUBSCRIPTIONS — slider drag needs document-level pointer subscriptions.
 
@@ -286,10 +293,10 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
     payoutAmountPointer: Slider.subscriptions.dragPointer,
     payoutAmountEscape: Slider.subscriptions.dragEscape,
   })<Model, Message>({
-    toChildModel: (model) => model.amount,
-    toParentMessage: (message) => Message.GotAmountMessage({ message }),
+    toChildModel: model => model.amount,
+    toParentMessage: message => Message.GotAmountMessage({ message }),
   }),
-);
+)
 
 /*
 Stateful? yes.

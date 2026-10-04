@@ -1,25 +1,25 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { staticComponentApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 import type {
   TextColor,
   TextType,
   TextWeight,
   TextWordBreak,
   TextWrap,
-} from '@/ui/text';
+} from '@/ui/text'
 
 export type TextRow = Readonly<{
-  type?: TextType;
-  color?: TextColor;
-  weight?: TextWeight;
-  display?: 'inline' | 'block';
-  maxLines?: number;
-  wordBreak?: TextWordBreak;
-  textWrap?: TextWrap;
-  hasStrikethrough?: boolean;
-  hasTabularNumbers?: boolean;
-  content: string;
-}>;
+  type?: TextType
+  color?: TextColor
+  weight?: TextWeight
+  display?: 'inline' | 'block'
+  maxLines?: number
+  wordBreak?: TextWordBreak
+  textWrap?: TextWrap
+  hasStrikethrough?: boolean
+  hasTabularNumbers?: boolean
+  content: string
+}>
 
 export type TextExampleKind =
   | 'showcase'
@@ -30,24 +30,22 @@ export type TextExampleKind =
   | 'weight'
   | 'truncation'
   | 'wordBreak'
-  | 'wrap';
+  | 'wrap'
 
 export type TextFixture = Readonly<{
-  title: string;
-  description?: string;
-  kind: TextExampleKind;
-  rows: ReadonlyArray<TextRow>;
-}>;
+  title: string
+  description?: string
+  kind: TextExampleKind
+  rows: ReadonlyArray<TextRow>
+}>
 
 /* Example set ported from Meta Astryx
    packages/cli/assets/templates/blocks/components/Text/*.tsx — same demos,
    same labels and copy. */
 export const LONG_TEXT =
-  'The design system provides a consistent set of typography tokens, spacing scales, and color palettes that ensure every surface in the product feels cohesive regardless of which team built it.';
+  'The design system provides a consistent set of typography tokens, spacing scales, and color palettes that ensure every surface in the product feels cohesive regardless of which team built it.'
 
-export const textFixtures: Readonly<
-  [TextFixture, ...Array<TextFixture>]
-> = [
+export const textFixtures: Readonly<[TextFixture, ...Array<TextFixture>]> = [
   {
     title: 'Text',
     description:
@@ -122,7 +120,10 @@ export const textFixtures: Readonly<
         type: 'large',
         content: 'Large text for introductions and callouts',
       },
-      { type: 'label', content: 'Label text for form fields and section titles' },
+      {
+        type: 'label',
+        content: 'Label text for form fields and section titles',
+      },
       {
         type: 'supporting',
         content: 'Supporting text for captions and metadata',
@@ -148,7 +149,12 @@ export const textFixtures: Readonly<
     rows: [
       { type: 'body', weight: 'normal', display: 'block', content: 'Normal' },
       { type: 'body', weight: 'medium', display: 'block', content: 'Medium' },
-      { type: 'body', weight: 'semibold', display: 'block', content: 'Semibold' },
+      {
+        type: 'body',
+        weight: 'semibold',
+        display: 'block',
+        content: 'Semibold',
+      },
       { type: 'body', weight: 'bold', display: 'block', content: 'Bold' },
     ],
   },
@@ -177,48 +183,48 @@ export const textFixtures: Readonly<
     kind: 'wrap',
     rows: [],
   },
-];
+]
 
 const rowPropsSource = (row: TextRow): string => {
-  const props: string[] = [];
+  const props: string[] = []
   if (row.type !== undefined) {
-    props.push(`type: '${row.type}'`);
+    props.push(`type: '${row.type}'`)
   }
   if (row.color !== undefined) {
-    props.push(`color: '${row.color}'`);
+    props.push(`color: '${row.color}'`)
   }
   if (row.weight !== undefined) {
-    props.push(`weight: '${row.weight}'`);
+    props.push(`weight: '${row.weight}'`)
   }
   if (row.display !== undefined) {
-    props.push(`display: '${row.display}'`);
+    props.push(`display: '${row.display}'`)
   }
   if (row.maxLines !== undefined) {
-    props.push(`maxLines: ${String(row.maxLines)}`);
+    props.push(`maxLines: ${String(row.maxLines)}`)
   }
   if (row.wordBreak !== undefined) {
-    props.push(`wordBreak: '${row.wordBreak}'`);
+    props.push(`wordBreak: '${row.wordBreak}'`)
   }
   if (row.textWrap !== undefined) {
-    props.push(`textWrap: '${row.textWrap}'`);
+    props.push(`textWrap: '${row.textWrap}'`)
   }
   if (row.hasStrikethrough === true) {
-    props.push('hasStrikethrough: true');
+    props.push('hasStrikethrough: true')
   }
   if (row.hasTabularNumbers === true) {
-    props.push('hasTabularNumbers: true');
+    props.push('hasTabularNumbers: true')
   }
-  return props.join(', ');
-};
+  return props.join(', ')
+}
 
 export const textRowCall = (row: TextRow, isStyleX: boolean): string => {
-  const props = rowPropsSource(row);
-  const children = `'${row.content}'`;
-  void isStyleX;
+  const props = rowPropsSource(row)
+  const children = `'${row.content}'`
+  void isStyleX
   return props === ''
     ? `Text.text({ children: [${children}] }, h)`
-    : `Text.text({ ${props}, children: [${children}] }, h)`;
-};
+    : `Text.text({ ${props}, children: [${children}] }, h)`
+}
 
 const typesLabels = [
   'Body text',
@@ -228,7 +234,7 @@ const typesLabels = [
   'Code text',
   'Strikethrough',
   'Tabular numbers',
-];
+]
 
 const viewBody = (
   fixture: TextFixture,
@@ -237,26 +243,26 @@ const viewBody = (
 ): string => {
   const wrapClass = isStyleX
     ? 'className(styles.column)'
-    : "'flex flex-col gap-3'";
+    : "'flex flex-col gap-3'"
   const stack = (items: string, gap: '2' | '3' = '3') =>
     `h.div(
       [h.Class(${isStyleX ? `className(${gap === '2' ? 'styles.columnTight' : 'styles.column'})` : `'flex flex-col gap-${gap}'`})],
       [
         ${items},
       ],
-    )`;
+    )`
 
   switch (fixture.kind) {
     case 'showcase':
       return stack(
         fixture.rows.map(row => textRowCall(row, isStyleX)).join(',\n        '),
         '2',
-      );
+      )
     case 'colors':
     case 'weight':
       return stack(
         fixture.rows.map(row => textRowCall(row, isStyleX)).join(',\n        '),
-      );
+      )
     case 'headingLevels':
       return stack(
         [1, 2, 3, 4, 5, 6]
@@ -265,7 +271,7 @@ const viewBody = (
               `Heading.heading({ level: ${level}, children: ['Heading ${level}'] }, h)`,
           )
           .join(',\n        '),
-      );
+      )
     case 'inline':
       return `Text.text(
       { type: 'body', display: 'block', children: [
@@ -274,22 +280,22 @@ const viewBody = (
         ' and shared across every surface.',
       ] },
       h,
-    )`;
+    )`
     case 'types':
       return stack(
         fixture.rows
           .map((row, rowIndex) => {
-            const label = typesLabels[rowIndex] ?? '';
+            const label = typesLabels[rowIndex] ?? ''
             return `h.div(
           [h.Class(${isStyleX ? 'className(styles.rowGroup)' : "'flex flex-col'"})],
           [
             Text.text({ type: 'supporting', color: 'secondary', children: ['${label}'] }, h),
             ${textRowCall({ ...row, display: 'block' }, isStyleX)},
           ],
-        )`;
+        )`
           })
           .join(',\n        '),
-      );
+      )
     case 'truncation':
       return `h.div(
       [h.Class(${isStyleX ? 'className(styles.demoColumn)' : "'flex flex-col gap-4 max-w-75'"})],
@@ -311,7 +317,7 @@ const viewBody = (
           )
           .join(',\n        ')},
       ],
-    )`;
+    )`
     case 'wordBreak':
       return `h.div(
       [h.Class(${isStyleX ? 'className(styles.demoColumnWide)' : "'flex flex-col gap-4 max-w-100'"})],
@@ -341,7 +347,7 @@ const viewBody = (
           ],
         ),
       ],
-    )`;
+    )`
     case 'wrap':
       return `h.div(
       [h.Class(${isStyleX ? 'className(styles.demoColumnWide)' : "'flex flex-col gap-4 max-w-100'"})],
@@ -390,14 +396,14 @@ const viewBody = (
           )
           .join(',\n        ')},
       ],
-    )`;
+    )`
   }
-};
+}
 
 const stylexStyles = (fixture: TextFixture): string => {
-  const parts: string[] = [];
+  const parts: string[] = []
   if (fixture.kind === 'types') {
-    parts.push("rowGroup: { display: 'flex', flexDirection: 'column' }");
+    parts.push("rowGroup: { display: 'flex', flexDirection: 'column' }")
   }
   if (
     fixture.kind === 'showcase' ||
@@ -408,61 +414,58 @@ const stylexStyles = (fixture: TextFixture): string => {
   ) {
     parts.push(
       "column: { display: 'flex', flexDirection: 'column', gap: '0.75rem' }",
-    );
+    )
   }
   if (fixture.kind === 'showcase') {
     parts.push(
       "columnTight: { display: 'flex', flexDirection: 'column', gap: '0.5rem' }",
-    );
+    )
   }
   if (fixture.kind === 'truncation') {
     parts.push(
       "demoColumn: { display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '300px' }",
       "box: { borderColor: 'var(--border)', borderStyle: 'solid', borderWidth: '1px', padding: '0.5rem' }",
-    );
+    )
   }
   if (fixture.kind === 'wordBreak' || fixture.kind === 'wrap') {
     parts.push(
       "demoColumnWide: { display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '400px' }",
       "boxNarrow: { borderColor: 'var(--border)', borderStyle: 'solid', borderWidth: '1px', padding: '0.5rem', width: '200px' }",
-    );
+    )
   }
   if (fixture.kind === 'wrap') {
     parts.push(
       "boxNarrowClipped: { borderColor: 'var(--border)', borderStyle: 'solid', borderWidth: '1px', padding: '0.5rem', width: '200px', overflow: 'hidden' }",
-    );
+    )
   }
-  return parts.join(',\n  ');
-};
+  return parts.join(',\n  ')
+}
 
 const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
-  const fixture = textFixtures[index] ?? textFixtures[0];
-  const isStyleX = renderer === 'stylex';
-  const imports: string[] = [];
+  const fixture = textFixtures[index] ?? textFixtures[0]
+  const isStyleX = renderer === 'stylex'
+  const imports: string[] = []
   if (isStyleX) {
     imports.push(
       `import * as stylex from '@stylexjs/stylex'`,
       `import { className } from '@/stylex/style'`,
-    );
+    )
   }
   if (fixture.kind === 'headingLevels') {
     imports.push(
       `import * as Heading from '@/${isStyleX ? 'stylex' : 'ui'}/heading'`,
-    );
+    )
   }
   if (fixture.kind === 'truncation') {
-    imports.push(``, `const LONG_TEXT = '${LONG_TEXT}'`);
+    imports.push(``, `const LONG_TEXT = '${LONG_TEXT}'`)
   }
-  const styles = stylexStyles(fixture);
+  const styles = stylexStyles(fixture)
   const componentImports = [
     ...imports,
     ...(isStyleX && styles !== ''
-      ? [
-          ``,
-          `const styles = stylex.create({\n  ${styles}\n})`,
-        ]
+      ? [``, `const styles = stylex.create({\n  ${styles}\n})`]
       : []),
-  ].join('\n');
+  ].join('\n')
   return staticComponentApplication({
     componentName: 'Text',
     componentSlug: 'text',
@@ -470,8 +473,8 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
     exampleName: fixture.title,
     ...(componentImports === '' ? {} : { componentImports }),
     viewBody: viewBody(fixture, index, isStyleX),
-  });
-};
+  })
+}
 
 export const textExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -482,4 +485,4 @@ export const textExamples = (
       ? {}
       : { description: fixture.description }),
     code: source(index, renderer),
-  }));
+  }))

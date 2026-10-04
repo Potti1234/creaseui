@@ -1,6 +1,6 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils'
 
 /* Ported from Meta Astryx List + ListItem (packages/core/src/List/List.tsx,
    ListItem.tsx, Item/Item.tsx) — examples and visual spec adapted to Crease
@@ -9,32 +9,32 @@ import { cn } from '@/lib/utils';
    `listStyle`, `hasDividers`, and `edgeCompensation` explicitly (defaults
    match astryx's context defaults — pass the same values to each item). */
 
-export type ListDensity = 'compact' | 'balanced' | 'spacious';
+export type ListDensity = 'compact' | 'balanced' | 'spacious'
 
-export type ListMarkerStyle = 'none' | 'disc' | 'decimal' | 'circle';
+export type ListMarkerStyle = 'none' | 'disc' | 'decimal' | 'circle'
 
-export type ListEdgeCompensation = 'inline';
+export type ListEdgeCompensation = 'inline'
 
 export type ListProps = Readonly<{
-  children: ReadonlyArray<Html>;
-  density?: ListDensity;
-  hasDividers?: boolean;
-  edgeCompensation?: ListEdgeCompensation;
+  children: ReadonlyArray<Html>
+  density?: ListDensity
+  hasDividers?: boolean
+  edgeCompensation?: ListEdgeCompensation
   /** Header content rendered above the list, associated via aria-labelledby. */
-  header?: Html | string;
+  header?: Html | string
   /** List marker style. `'decimal'` renders an `<ol>`; others render `<ul>`. */
-  listStyle?: ListMarkerStyle;
+  listStyle?: ListMarkerStyle
   /** Starting number for `listStyle: 'decimal'` lists. */
-  start?: number;
-  class?: string;
-}>;
+  start?: number
+  class?: string
+}>
 
 export const list = <Msg>(props: ListProps, h: HtmlBuilder<Msg>): Html => {
-  const listStyle = props.listStyle ?? 'none';
-  const hasDividers = props.hasDividers ?? false;
-  const start = props.start ?? 1;
-  const isOrdered = listStyle === 'decimal';
-  const headerId = 'list-header';
+  const listStyle = props.listStyle ?? 'none'
+  const hasDividers = props.hasDividers ?? false
+  const start = props.start ?? 1
+  const isOrdered = listStyle === 'decimal'
+  const headerId = 'list-header'
 
   const attributes = [
     h.DataAttribute('slot', 'list'),
@@ -56,35 +56,38 @@ export const list = <Msg>(props: ListProps, h: HtmlBuilder<Msg>): Html => {
           }),
         ]
       : []),
-  ];
+  ]
 
   const listElement = isOrdered
     ? h.ol(attributes, [...props.children])
-    : h.ul(attributes, [...props.children]);
+    : h.ul(attributes, [...props.children])
 
   if (props.header === undefined) {
-    return listElement;
+    return listElement
   }
-  return h.div([h.Class('flex flex-col')], [
-    h.div(
-      [h.Id(headerId), h.Class('mb-2')],
-      [typeof props.header === 'string' ? props.header : props.header],
-    ),
-    listElement,
-  ]);
-};
+  return h.div(
+    [h.Class('flex flex-col')],
+    [
+      h.div(
+        [h.Id(headerId), h.Class('mb-2')],
+        [typeof props.header === 'string' ? props.header : props.header],
+      ),
+      listElement,
+    ],
+  )
+}
 
 const densityPaddingBlock: Record<ListDensity, string> = {
   compact: 'py-1',
   balanced: 'py-2',
   spacious: 'py-3',
-};
+}
 
 const densityInsetInline: Record<ListDensity, string> = {
   compact: '8px',
   balanced: '8px',
   spacious: '12px',
-};
+}
 
 const markerElement = <Msg>(
   listStyle: ListMarkerStyle,
@@ -99,10 +102,8 @@ const markerElement = <Msg>(
             'self-baseline box-border flex items-center justify-center shrink-0 w-4 mt-[calc((1em*1.4286-6px)/2)]',
           ),
         ],
-        [
-          h.span([h.Class('w-1.5 h-1.5 rounded-full bg-foreground')], []),
-        ],
-      );
+        [h.span([h.Class('w-1.5 h-1.5 rounded-full bg-foreground')], [])],
+      )
     case 'circle':
       return h.span(
         [
@@ -121,7 +122,7 @@ const markerElement = <Msg>(
             [],
           ),
         ],
-      );
+      )
     case 'decimal':
       return h.span(
         [
@@ -131,37 +132,37 @@ const markerElement = <Msg>(
           ),
         ],
         [],
-      );
+      )
     case 'none':
-      return null;
+      return null
   }
-};
+}
 
 export type ListItemProps<Msg> = Readonly<{
   /** Primary label. A plain string truncates to one line. */
-  label: Html | string;
+  label: Html | string
   /** Secondary description under the label; strings truncate to one line. */
-  description?: Html | string;
+  description?: Html | string
   /** Content rendered before the item (icon, avatar, checkbox). */
-  startContent?: Html;
+  startContent?: Html
   /** Content rendered after the item (badge, action, chevron). */
-  endContent?: Html;
-  onClick?: Msg;
-  href?: string;
-  target?: '_blank' | '_self';
-  rel?: string;
-  isDisabled?: boolean;
-  isSelected?: boolean;
+  endContent?: Html
+  onClick?: Msg
+  href?: string
+  target?: '_blank' | '_self'
+  rel?: string
+  isDisabled?: boolean
+  isSelected?: boolean
   /** Density — pass the parent list's `density` (default `'balanced'`). */
-  density?: ListDensity;
+  density?: ListDensity
   /** Marker style — pass the parent list's `listStyle` (default `'none'`). */
-  listStyle?: ListMarkerStyle;
+  listStyle?: ListMarkerStyle
   /** Dividers — pass the parent list's `hasDividers` (default `false`). */
-  hasDividers?: boolean;
+  hasDividers?: boolean
   /** Edge compensation — pass the parent list's `edgeCompensation`. */
-  edgeCompensation?: ListEdgeCompensation;
-  class?: string;
-}>;
+  edgeCompensation?: ListEdgeCompensation
+  class?: string
+}>
 
 const labelOrDescription = <Msg>(
   content: Html | string,
@@ -170,27 +171,23 @@ const labelOrDescription = <Msg>(
 ): ReadonlyArray<Html | string> =>
   typeof content === 'string'
     ? [h.span([h.Class(cn('truncate', singleLineClass))], [content])]
-    : [h.span([h.Class(singleLineClass)], [content])];
+    : [h.span([h.Class(singleLineClass)], [content])]
 
 export const listItem = <Msg>(
   props: ListItemProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const density = props.density ?? 'balanced';
-  const listStyle = props.listStyle ?? 'none';
-  const hasDividers = props.hasDividers ?? false;
-  const isDisabled = props.isDisabled ?? false;
-  const isSelected = props.isSelected ?? false;
-  const isInteractive = props.onClick !== undefined || props.href !== undefined;
+  const density = props.density ?? 'balanced'
+  const listStyle = props.listStyle ?? 'none'
+  const hasDividers = props.hasDividers ?? false
+  const isDisabled = props.isDisabled ?? false
+  const isSelected = props.isSelected ?? false
+  const isInteractive = props.onClick !== undefined || props.href !== undefined
 
-  const marker = markerElement(listStyle, h);
+  const marker = markerElement(listStyle, h)
 
   const labelDescription: ReadonlyArray<Html | string> = [
-    ...labelOrDescription(
-      props.label,
-      'text-foreground text-sm leading-5',
-      h,
-    ),
+    ...labelOrDescription(props.label, 'text-foreground text-sm leading-5', h),
     ...(props.description === undefined
       ? []
       : labelOrDescription(
@@ -198,7 +195,7 @@ export const listItem = <Msg>(
           'text-muted-foreground text-xs leading-5',
           h,
         )),
-  ];
+  ]
 
   const contentElement: Html =
     props.href !== undefined
@@ -206,15 +203,9 @@ export const listItem = <Msg>(
           [
             h.DataAttribute('slot', 'list-item-anchor'),
             h.Href(props.href),
-            ...(props.target === undefined
-              ? []
-              : [h.Target(props.target)]),
+            ...(props.target === undefined ? [] : [h.Target(props.target)]),
             ...(props.target === '_blank'
-              ? [
-                  h.Rel(
-                    `${props.rel ?? ''} noopener noreferrer`.trim(),
-                  ),
-                ]
+              ? [h.Rel(`${props.rel ?? ''} noopener noreferrer`.trim())]
               : props.rel === undefined
                 ? []
                 : [h.Rel(props.rel)]),
@@ -255,7 +246,7 @@ export const listItem = <Msg>(
               ),
             ],
             [...labelDescription],
-          );
+          )
 
   return h.li(
     [
@@ -315,5 +306,5 @@ export const listItem = <Msg>(
             ),
           ]),
     ],
-  );
-};
+  )
+}

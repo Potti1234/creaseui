@@ -122,15 +122,14 @@ type FormModule = Readonly<{
     props: { for: string; children: ReadonlyArray<Html | string> },
     h: HtmlBuilder<Msg>,
   ) => Html
-  formMessage: <Msg>(
-    props: { message?: string },
-    h: HtmlBuilder<Msg>,
-  ) => Html
+  formMessage: <Msg>(props: { message?: string }, h: HtmlBuilder<Msg>) => Html
   errorSummary: <Msg>(
     props: {
       id: string
       title: Html | string
-      errors: ReadonlyArray<Readonly<{ controlId: string; message: Html | string }>>
+      errors: ReadonlyArray<
+        Readonly<{ controlId: string; message: Html | string }>
+      >
       isAutofocus?: boolean
       onErrorLink?: (controlId: string) => Msg
     },
@@ -328,7 +327,14 @@ const verifyRenderer = (
                     {
                       isDisabled: true,
                       children: [
-                        namedField(Form, Input, model, 'nickname', 'Nickname', h),
+                        namedField(
+                          Form,
+                          Input,
+                          model,
+                          'nickname',
+                          'Nickname',
+                          h,
+                        ),
                       ],
                     },
                     h,
@@ -415,9 +421,7 @@ const verifyRenderer = (
               h,
             ),
         },
-        Scene.given(
-          initialModel({ errors: { email: 'Enter your email.' } }),
-        ),
+        Scene.given(initialModel({ errors: { email: 'Enter your email.' } })),
         Scene.expect(
           Scene.selector('[data-slot="form-error-summary"]'),
         ).toBeAbsent(),
@@ -463,9 +467,10 @@ const verifyRenderer = (
             view: errorForm(Form, Input, Button)([['foo', 'Foo']]),
           },
           Scene.given(initialModel({ errors: { foo: 'bar' } })),
-          Scene.expect(
-            Scene.role('textbox', { name: 'Foo' }),
-          ).toHaveAttr('aria-invalid', 'true'),
+          Scene.expect(Scene.role('textbox', { name: 'Foo' })).toHaveAttr(
+            'aria-invalid',
+            'true',
+          ),
           Scene.expect(Scene.selector('[data-slot="field"]')).toHaveAttr(
             'data-invalid',
             'true',
@@ -482,12 +487,12 @@ const verifyRenderer = (
           },
           Scene.given(initialModel()),
           Scene.expect(fieldError).toBeAbsent(),
-          Scene.expect(
-            Scene.role('textbox', { name: 'Foo' }),
-          ).not.toHaveAttr('aria-invalid'),
-          Scene.expect(
-            Scene.selector('[data-slot="field"]'),
-          ).not.toHaveAttr('data-invalid'),
+          Scene.expect(Scene.role('textbox', { name: 'Foo' })).not.toHaveAttr(
+            'aria-invalid',
+          ),
+          Scene.expect(Scene.selector('[data-slot="field"]')).not.toHaveAttr(
+            'data-invalid',
+          ),
         )
       })
 
@@ -498,7 +503,11 @@ const verifyRenderer = (
         Scene.scene(
           {
             update,
-            view: errorForm(Form, Input, Button)([
+            view: errorForm(
+              Form,
+              Input,
+              Button,
+            )([
               ['first', 'First'],
               ['second', 'Second'],
             ]),
@@ -532,7 +541,11 @@ const verifyRenderer = (
         Scene.scene(
           {
             update,
-            view: errorForm(Form, Input, Button)([
+            view: errorForm(
+              Form,
+              Input,
+              Button,
+            )([
               ['name', 'Name'],
               ['age', 'Age'],
             ]),
@@ -641,10 +654,7 @@ const verifyRenderer = (
                       },
                       h,
                     ),
-                    Button.button(
-                      { type: 'submit', children: ['Submit'] },
-                      h,
-                    ),
+                    Button.button({ type: 'submit', children: ['Submit'] }, h),
                     submitCountMarker(model, h),
                   ],
                 },
@@ -745,5 +755,11 @@ const verifyRenderer = (
   })
 }
 
-verifyRenderer('Tailwind', TailwindForm, TailwindField, TailwindInput, TailwindButton)
+verifyRenderer(
+  'Tailwind',
+  TailwindForm,
+  TailwindField,
+  TailwindInput,
+  TailwindButton,
+)
 verifyRenderer('StyleX', StyleXForm, StyleXField, StyleXInput, StyleXButton)

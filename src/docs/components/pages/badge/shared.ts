@@ -1,37 +1,44 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { staticComponentApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 export type BadgeIcon = Readonly<{
-  name: 'badge-check' | 'bookmark' | 'arrow-up-right';
-  position: 'start' | 'end';
-}>;
+  name: 'badge-check' | 'bookmark' | 'arrow-up-right'
+  position: 'start' | 'end'
+}>
 
-export type BadgePalette = 'blue' | 'green' | 'sky' | 'purple' | 'red';
+export type BadgePalette = 'blue' | 'green' | 'sky' | 'purple' | 'red'
 
 export type BadgeItem = Readonly<{
-  label: string;
-  variant?: 'default' | 'secondary' | 'destructive' | 'outline' | 'ghost' | 'link';
-  icon?: BadgeIcon;
-  spinner?: 'start' | 'end';
-  href?: string;
-  palette?: BadgePalette;
-}>;
+  label: string
+  variant?:
+    | 'default'
+    | 'secondary'
+    | 'destructive'
+    | 'outline'
+    | 'ghost'
+    | 'link'
+  icon?: BadgeIcon
+  spinner?: 'start' | 'end'
+  href?: string
+  palette?: BadgePalette
+}>
 
 export type BadgeFixture = Readonly<{
-  title: string;
-  description: string;
-  direction?: 'rtl';
-  centered?: boolean;
-  items: ReadonlyArray<BadgeItem>;
-}>;
+  title: string
+  description: string
+  direction?: 'rtl'
+  centered?: boolean
+  items: ReadonlyArray<BadgeItem>
+}>
 
 export const badgeTailwindPaletteClass: Record<BadgePalette, string> = {
   blue: 'bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300',
   green: 'bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300',
   sky: 'bg-sky-50 text-sky-700 dark:bg-sky-950 dark:text-sky-300',
-  purple: 'bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
+  purple:
+    'bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
   red: 'bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300',
-};
+}
 
 /* Tailwind v4 oklch palette values via light-dark() — follows the app's
    color-scheme so the StyleX palettes theme like the Tailwind dark: classes. */
@@ -42,34 +49,29 @@ export const badgeStyleXPalette: Record<
   blue: {
     backgroundColor:
       'light-dark(oklch(0.97 0.014 254.604), oklch(0.282 0.091 267.935))',
-    color:
-      'light-dark(oklch(0.488 0.243 264.376), oklch(0.809 0.105 251.813))',
+    color: 'light-dark(oklch(0.488 0.243 264.376), oklch(0.809 0.105 251.813))',
   },
   green: {
     backgroundColor:
       'light-dark(oklch(0.982 0.018 155.826), oklch(0.266 0.065 152.934))',
-    color:
-      'light-dark(oklch(0.527 0.154 150.069), oklch(0.871 0.15 154.449))',
+    color: 'light-dark(oklch(0.527 0.154 150.069), oklch(0.871 0.15 154.449))',
   },
   sky: {
     backgroundColor:
       'light-dark(oklch(0.977 0.013 236.62), oklch(0.293 0.066 243.157))',
-    color:
-      'light-dark(oklch(0.5 0.134 242.749), oklch(0.828 0.111 230.318))',
+    color: 'light-dark(oklch(0.5 0.134 242.749), oklch(0.828 0.111 230.318))',
   },
   purple: {
     backgroundColor:
       'light-dark(oklch(0.977 0.014 308.299), oklch(0.291 0.149 302.717))',
-    color:
-      'light-dark(oklch(0.496 0.265 301.924), oklch(0.827 0.119 306.383))',
+    color: 'light-dark(oklch(0.496 0.265 301.924), oklch(0.827 0.119 306.383))',
   },
   red: {
     backgroundColor:
       'light-dark(oklch(0.971 0.013 17.38), oklch(0.258 0.092 26.042))',
-    color:
-      'light-dark(oklch(0.505 0.213 27.518), oklch(0.808 0.114 19.571))',
+    color: 'light-dark(oklch(0.505 0.213 27.518), oklch(0.808 0.114 19.571))',
   },
-};
+}
 
 export const badgeFixtures: Readonly<[BadgeFixture, ...Array<BadgeFixture>]> = [
   {
@@ -113,7 +115,8 @@ export const badgeFixtures: Readonly<[BadgeFixture, ...Array<BadgeFixture>]> = [
   },
   {
     title: 'With Spinner',
-    description: 'Render a spinner inside the badge with data-icon positioning.',
+    description:
+      'Render a spinner inside the badge with data-icon positioning.',
     items: [
       { label: 'Deleting', variant: 'destructive', spinner: 'start' },
       { label: 'Generating', variant: 'secondary', spinner: 'end' },
@@ -164,102 +167,102 @@ export const badgeFixtures: Readonly<[BadgeFixture, ...Array<BadgeFixture>]> = [
       },
     ],
   },
-];
+]
 
 const iconExports: Record<BadgeIcon['name'], string> = {
   'badge-check': 'Icon.badgeCheck',
   bookmark: 'Icon.bookmark',
   'arrow-up-right': 'Icon.arrowUpRight',
-};
+}
 
 const tailwindItemSource = (item: BadgeItem): string => {
-  const children: Array<string> = [];
+  const children: Array<string> = []
   if (item.icon?.position === 'start') {
     children.push(
       `${iconExports[item.icon.name]}({ dataIcon: 'inline-start' }, h)`,
-    );
+    )
   }
   if (item.spinner === 'start') {
     children.push(
       `Spinner.spinner({ size: 'sm', isDecorative: true, dataIcon: 'inline-start' }, h)`,
-    );
+    )
   }
-  children.push(`'${item.label}'`);
+  children.push(`'${item.label}'`)
   if (item.spinner === 'end') {
     children.push(
       `Spinner.spinner({ size: 'sm', isDecorative: true, dataIcon: 'inline-end' }, h)`,
-    );
+    )
   }
   if (item.icon?.position === 'end') {
     children.push(
       `${iconExports[item.icon.name]}({ dataIcon: 'inline-end' }, h)`,
-    );
+    )
   }
-  const props: Array<string> = [];
+  const props: Array<string> = []
   if (item.variant !== undefined && item.variant !== 'default') {
-    props.push(`variant: '${item.variant}'`);
+    props.push(`variant: '${item.variant}'`)
   }
   if (item.href !== undefined) {
-    props.push(`href: '${item.href}'`);
+    props.push(`href: '${item.href}'`)
   }
   if (item.palette !== undefined) {
-    props.push(`class: '${badgeTailwindPaletteClass[item.palette]}'`);
+    props.push(`class: '${badgeTailwindPaletteClass[item.palette]}'`)
   }
-  props.push(`children: [${children.join(', ')}]`);
-  return `Badge.badge({ ${props.join(', ')} }, h)`;
-};
+  props.push(`children: [${children.join(', ')}]`)
+  return `Badge.badge({ ${props.join(', ')} }, h)`
+}
 
 const stylexItemSource = (item: BadgeItem): string => {
   if (item.palette !== undefined) {
     return `h.span(
         [h.Class(stylex.props(styles.badge).className ?? ''), h.Style({ backgroundColor: '${badgeStyleXPalette[item.palette].backgroundColor}', color: '${badgeStyleXPalette[item.palette].color}' })],
         ['${item.label}'],
-      )`;
+      )`
   }
-  const children: Array<string> = [];
+  const children: Array<string> = []
   const iconInset =
     item.icon?.position === 'start' || item.spinner === 'start'
       ? 'start'
       : item.icon?.position === 'end' || item.spinner === 'end'
         ? 'end'
-        : undefined;
+        : undefined
   if (item.icon?.position === 'start') {
     children.push(
       `${iconExports[item.icon.name]}({ dataIcon: 'inline-start' }, h)`,
-    );
+    )
   }
   if (item.spinner === 'start') {
     children.push(
       `Spinner.spinner({ size: 'sm', isDecorative: true, dataIcon: 'inline-start' }, h)`,
-    );
+    )
   }
-  children.push(`'${item.label}'`);
+  children.push(`'${item.label}'`)
   if (item.spinner === 'end') {
     children.push(
       `Spinner.spinner({ size: 'sm', isDecorative: true, dataIcon: 'inline-end' }, h)`,
-    );
+    )
   }
   if (item.icon?.position === 'end') {
     children.push(
       `${iconExports[item.icon.name]}({ dataIcon: 'inline-end' }, h)`,
-    );
+    )
   }
-  const props: Array<string> = [];
+  const props: Array<string> = []
   if (item.variant !== undefined && item.variant !== 'default') {
-    props.push(`variant: '${item.variant}'`);
+    props.push(`variant: '${item.variant}'`)
   }
   if (item.href !== undefined) {
-    props.push(`href: '${item.href}'`);
+    props.push(`href: '${item.href}'`)
   }
   if (iconInset !== undefined) {
-    props.push(`iconInset: '${iconInset}'`);
+    props.push(`iconInset: '${iconInset}'`)
   }
-  props.push(`children: [${children.join(', ')}]`);
-  return `Badge.badge({ ${props.join(', ')} }, h)`;
-};
+  props.push(`children: [${children.join(', ')}]`)
+  return `Badge.badge({ ${props.join(', ')} }, h)`
+}
 
 const stylexStylesSource = (fixture: BadgeFixture): string => {
-  const hasPalettes = fixture.items.some(item => item.palette !== undefined);
+  const hasPalettes = fixture.items.some(item => item.palette !== undefined)
   const badgeEntry = hasPalettes
     ? `,
   badge: {
@@ -278,36 +281,34 @@ const stylexStylesSource = (fixture: BadgeFixture): string => {
     paddingInline: '0.5rem',
     width: 'fit-content',
   }`
-    : '';
+    : ''
   return `import * as stylex from '@stylexjs/stylex'
 
 const styles = stylex.create({
   wrap: { display: 'flex', flexWrap: 'wrap', gap: '0.5rem'${
     fixture.centered ? ", justifyContent: 'center', width: '100%'" : ''
   } }${badgeEntry},
-})`;
-};
+})`
+}
 
 const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
-  const fixture = badgeFixtures[index] ?? badgeFixtures[0];
-  const isStyleX = renderer === 'stylex';
+  const fixture = badgeFixtures[index] ?? badgeFixtures[0]
+  const isStyleX = renderer === 'stylex'
   const wrapClass = fixture.centered
     ? 'flex w-full flex-wrap justify-center gap-2'
-    : 'flex flex-wrap gap-2';
+    : 'flex flex-wrap gap-2'
   const componentImports = [
     `import * as Icon from '@/lib/icon'`,
-    fixture.items.some(
-      item => item.spinner !== undefined,
-    )
+    fixture.items.some(item => item.spinner !== undefined)
       ? `import * as Spinner from '@/${isStyleX ? 'stylex' : 'ui'}/spinner'`
       : '',
     isStyleX ? stylexStylesSource(fixture) : '',
   ]
     .filter(Boolean)
-    .join('\n');
+    .join('\n')
   const items = fixture.items
     .map(item => (isStyleX ? stylexItemSource(item) : tailwindItemSource(item)))
-    .join(',\n      ');
+    .join(',\n      ')
   const viewBody = `h.div(
       [${fixture.direction === 'rtl' ? "h.Dir('rtl'), " : ''}${
         isStyleX
@@ -317,7 +318,7 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
       [
         ${items},
       ],
-    )`;
+    )`
   return staticComponentApplication({
     componentName: 'Badge',
     componentSlug: 'badge',
@@ -325,8 +326,8 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
     exampleName: fixture.title,
     componentImports,
     viewBody,
-  });
-};
+  })
+}
 
 export const badgeExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -335,4 +336,4 @@ export const badgeExamples = (
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
-  }));
+  }))

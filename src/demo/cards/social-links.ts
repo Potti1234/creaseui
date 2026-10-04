@@ -1,77 +1,75 @@
-﻿import { Match as M, Schema as S } from 'effect';
+﻿import { Match as M, Schema as S } from 'effect'
 import type { Update } from 'foldkit'
-import type { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import type { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-import * as Icon from '@/demo/icon-preview';
-import { button } from '@/ui/button';
-import {
-  card,
-  cardContent,
-  cardFooter,
-  cardHeader,
-  cardTitle,
-} from '@/ui/card';
-import { field, fieldGroup, fieldLabel } from '@/ui/field';
-import { inputGroup, inputGroupAddon, inputGroupInput } from '@/ui/input-group';
+import * as Icon from '@/demo/icon-preview'
+import { button } from '@/ui/button'
+import { card, cardContent, cardFooter, cardHeader, cardTitle } from '@/ui/card'
+import { field, fieldGroup, fieldLabel } from '@/ui/field'
+import { inputGroup, inputGroupAddon, inputGroupInput } from '@/ui/input-group'
 
 export const Model = S.Struct({
   spotifyUrl: S.String,
   instagramHandle: S.String,
   soundcloudUrl: S.String,
   websiteUrl: S.String,
-});
-export type Model = typeof Model.Type;
-
-
-
-
+})
+export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
   UpdatedSpotifyUrl: {
-  value: S.String,
-},
+    value: S.String,
+  },
   UpdatedInstagramHandle: {
-  value: S.String,
-},
+    value: S.String,
+  },
   UpdatedSoundcloudUrl: {
-  value: S.String,
-},
+    value: S.String,
+  },
   UpdatedWebsiteUrl: {
-  value: S.String,
-},
-});
-export type Message = typeof Message.Type;
+    value: S.String,
+  },
+})
+export type Message = typeof Message.Type
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 
 export const init = (): Model => ({
   spotifyUrl: 'spotify.com/artist/3j...2k',
   instagramHandle: '@julianduryea_music',
   soundcloudUrl: '',
   websiteUrl: '',
-});
+})
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      UpdatedSpotifyUrl: ({ value }) => ({ model: { ...model, spotifyUrl: value } }),
-      UpdatedInstagramHandle: ({ value }) => ({ model: { ...model, instagramHandle: value } }),
-      UpdatedSoundcloudUrl: ({ value }) => ({ model: { ...model, soundcloudUrl: value } }),
-      UpdatedWebsiteUrl: ({ value }) => ({ model: { ...model, websiteUrl: value } }),
+      UpdatedSpotifyUrl: ({ value }) => ({
+        model: { ...model, spotifyUrl: value },
+      }),
+      UpdatedInstagramHandle: ({ value }) => ({
+        model: { ...model, instagramHandle: value },
+      }),
+      UpdatedSoundcloudUrl: ({ value }) => ({
+        model: { ...model, soundcloudUrl: value },
+      }),
+      UpdatedWebsiteUrl: ({ value }) => ({
+        model: { ...model, websiteUrl: value },
+      }),
     }),
-  );
+  )
 
 type SocialFieldProps = Readonly<{
-  id: string;
-  label: string;
-  icon: string;
-  value: string;
-  onInput: (value: string) => Message;
-  placeholder?: string;
-}>;
+  id: string
+  label: string
+  icon: string
+  value: string
+  onInput: (value: string) => Message
+  placeholder?: string
+}>
 
 const socialField = (props: SocialFieldProps, h: HtmlBuilder<Message>): Html =>
   field(
@@ -105,7 +103,7 @@ const socialField = (props: SocialFieldProps, h: HtmlBuilder<Message>): Html =>
       ],
     },
     h,
-  );
+  )
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
   card(
@@ -130,7 +128,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                         label: 'Spotify Artist URL',
                         icon: 'circle-plus',
                         value: model.spotifyUrl,
-                        onInput: (value) => Message.UpdatedSpotifyUrl({ value }),
+                        onInput: value => Message.UpdatedSpotifyUrl({ value }),
                       },
                       h,
                     ),
@@ -140,7 +138,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                         label: 'Instagram Handle',
                         icon: 'camera',
                         value: model.instagramHandle,
-                        onInput: (value) => Message.UpdatedInstagramHandle({ value }),
+                        onInput: value =>
+                          Message.UpdatedInstagramHandle({ value }),
                       },
                       h,
                     ),
@@ -150,7 +149,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                         label: 'SoundCloud URL',
                         icon: 'cloud',
                         value: model.soundcloudUrl,
-                        onInput: (value) => Message.UpdatedSoundcloudUrl({ value }),
+                        onInput: value =>
+                          Message.UpdatedSoundcloudUrl({ value }),
                         placeholder: 'soundcloud.com/username',
                       },
                       h,
@@ -161,7 +161,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                         label: 'Website',
                         icon: 'globe',
                         value: model.websiteUrl,
-                        onInput: (value) => Message.UpdatedWebsiteUrl({ value }),
+                        onInput: value => Message.UpdatedWebsiteUrl({ value }),
                         placeholder: 'https://yoursite.com',
                       },
                       h,
@@ -187,7 +187,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
       ],
     },
     h,
-  );
+  )
 
 /*
 Minimal wiring:

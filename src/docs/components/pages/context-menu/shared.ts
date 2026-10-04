@@ -1,17 +1,17 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
-import type { DropdownMenuItemSpec } from '@/docs/components/pages/dropdown-menu/shared';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
+import type { DropdownMenuItemSpec } from '@/docs/components/pages/dropdown-menu/shared'
 
 export type ContextMenuFixture = Readonly<{
-  title: string;
-  description?: string;
-  heroOnly?: boolean;
-  items: ReadonlyArray<DropdownMenuItemSpec>;
-  checkedValues?: ReadonlyArray<string>;
-  peopleValue?: string;
-  themeValue?: string;
-  direction?: 'ltr' | 'rtl';
-}>;
+  title: string
+  description?: string
+  heroOnly?: boolean
+  items: ReadonlyArray<DropdownMenuItemSpec>
+  checkedValues?: ReadonlyArray<string>
+  peopleValue?: string
+  themeValue?: string
+  direction?: 'ltr' | 'rtl'
+}>
 
 export const contextMenuFixtures: ReadonlyArray<ContextMenuFixture> = [
   {
@@ -34,7 +34,8 @@ export const contextMenuFixtures: ReadonlyArray<ContextMenuFixture> = [
   },
   {
     title: 'Submenu',
-    description: 'Items can open nested submenus with their own groups and separators.',
+    description:
+      'Items can open nested submenus with their own groups and separators.',
     items: [
       { value: 'copy', label: 'Copy', shortcut: '⌘C' },
       { value: 'cut', label: 'Cut', shortcut: '⌘X' },
@@ -45,8 +46,17 @@ export const contextMenuFixtures: ReadonlyArray<ContextMenuFixture> = [
           { value: 'save-page', label: 'Save Page...', group: 'Page' },
           { value: 'create-shortcut', label: 'Create Shortcut...' },
           { value: 'name-window', label: 'Name Window...' },
-          { value: 'developer-tools', label: 'Developer Tools', group: 'Developer' },
-          { value: 'delete', label: 'Delete', variant: 'destructive', group: 'Danger' },
+          {
+            value: 'developer-tools',
+            label: 'Developer Tools',
+            group: 'Developer',
+          },
+          {
+            value: 'delete',
+            label: 'Delete',
+            variant: 'destructive',
+            group: 'Danger',
+          },
         ],
       },
     ],
@@ -74,7 +84,12 @@ export const contextMenuFixtures: ReadonlyArray<ContextMenuFixture> = [
       { value: 'cut', label: 'Cut', shortcut: '⌘X', group: 'Clipboard' },
       { value: 'copy', label: 'Copy', shortcut: '⌘C' },
       { value: 'paste', label: 'Paste', shortcut: '⌘V' },
-      { value: 'delete', label: 'Delete', variant: 'destructive', group: 'Danger' },
+      {
+        value: 'delete',
+        label: 'Delete',
+        variant: 'destructive',
+        group: 'Danger',
+      },
     ],
   },
   {
@@ -84,22 +99,39 @@ export const contextMenuFixtures: ReadonlyArray<ContextMenuFixture> = [
       { value: 'copy', label: 'Copy', icon: 'copy' },
       { value: 'cut', label: 'Cut', icon: 'scissors' },
       { value: 'paste', label: 'Paste', icon: 'clipboard-paste' },
-      { value: 'delete', label: 'Delete', icon: 'trash-2', variant: 'destructive', group: 'Danger' },
+      {
+        value: 'delete',
+        label: 'Delete',
+        icon: 'trash-2',
+        variant: 'destructive',
+        group: 'Danger',
+      },
     ],
   },
   {
     title: 'Checkboxes',
-    description: "kind: 'checkbox' items carry checked state; the parent owns the toggle.",
+    description:
+      "kind: 'checkbox' items carry checked state; the parent owns the toggle.",
     checkedValues: ['bookmarks-bar', 'developer-tools'],
     items: [
-      { value: 'bookmarks-bar', label: 'Show Bookmarks Bar', kind: 'checkbox', group: 'View' },
+      {
+        value: 'bookmarks-bar',
+        label: 'Show Bookmarks Bar',
+        kind: 'checkbox',
+        group: 'View',
+      },
       { value: 'full-urls', label: 'Show Full URLs', kind: 'checkbox' },
-      { value: 'developer-tools', label: 'Show Developer Tools', kind: 'checkbox' },
+      {
+        value: 'developer-tools',
+        label: 'Show Developer Tools',
+        kind: 'checkbox',
+      },
     ],
   },
   {
     title: 'Radio',
-    description: 'Independent radio groups keep one selection each, scoped by group.',
+    description:
+      'Independent radio groups keep one selection each, scoped by group.',
     peopleValue: 'pedro',
     themeValue: 'system',
     items: [
@@ -116,21 +148,45 @@ export const contextMenuFixtures: ReadonlyArray<ContextMenuFixture> = [
     items: [
       { value: 'edit', label: 'Edit', icon: 'pencil' },
       { value: 'share', label: 'Share', icon: 'share' },
-      { value: 'delete', label: 'Delete', icon: 'trash-2', variant: 'destructive', group: 'Danger' },
+      {
+        value: 'delete',
+        label: 'Delete',
+        icon: 'trash-2',
+        variant: 'destructive',
+        group: 'Danger',
+      },
     ],
   },
   {
     title: 'RTL',
-    description: "direction: 'rtl' mirrors items, icons and submenus for right-to-left layouts.",
+    description:
+      "direction: 'rtl' mirrors items, icons and submenus for right-to-left layouts.",
     direction: 'rtl',
     items: [
       {
         value: 'navigation',
         label: 'التنقل',
         submenu: [
-          { value: 'back', label: 'رجوع', icon: 'arrow-left', shortcut: '⌘[', group: 'التنقل' },
-          { value: 'forward', label: 'للأمام', icon: 'arrow-right', shortcut: '⌘]', isDisabled: true },
-          { value: 'reload', label: 'إعادة تحميل', icon: 'rotate-cw', shortcut: '⌘R' },
+          {
+            value: 'back',
+            label: 'رجوع',
+            icon: 'arrow-left',
+            shortcut: '⌘[',
+            group: 'التنقل',
+          },
+          {
+            value: 'forward',
+            label: 'للأمام',
+            icon: 'arrow-right',
+            shortcut: '⌘]',
+            isDisabled: true,
+          },
+          {
+            value: 'reload',
+            label: 'إعادة تحميل',
+            icon: 'rotate-cw',
+            shortcut: '⌘R',
+          },
         ],
       },
       {
@@ -141,26 +197,37 @@ export const contextMenuFixtures: ReadonlyArray<ContextMenuFixture> = [
           { value: 'create-shortcut', label: 'إنشاء اختصار' },
           { value: 'name-window', label: 'تسمية النافذة' },
           { value: 'developer-tools', label: 'أدوات المطور', group: 'المطور' },
-          { value: 'delete', label: 'حذف', variant: 'destructive', group: 'خطر' },
+          {
+            value: 'delete',
+            label: 'حذف',
+            variant: 'destructive',
+            group: 'خطر',
+          },
         ],
       },
     ],
   },
-];
+]
 
-export const fixtureItems = (fixture: ContextMenuFixture): ReadonlyArray<string> =>
-  fixture.items.map(item => item.value);
+export const fixtureItems = (
+  fixture: ContextMenuFixture,
+): ReadonlyArray<string> => fixture.items.map(item => item.value)
 
-export const fixtureLabel = (fixture: ContextMenuFixture, value: string): string => {
-  const flat = fixture.items.flatMap(item => [item, ...(item.submenu ?? [])]);
-  return flat.find(item => item.value === value)?.label ?? value;
-};
+export const fixtureLabel = (
+  fixture: ContextMenuFixture,
+  value: string,
+): string => {
+  const flat = fixture.items.flatMap(item => [item, ...(item.submenu ?? [])])
+  return flat.find(item => item.value === value)?.label ?? value
+}
 
-export const checkboxValues = (fixture: ContextMenuFixture): ReadonlyArray<string> =>
+export const checkboxValues = (
+  fixture: ContextMenuFixture,
+): ReadonlyArray<string> =>
   fixture.items
     .flatMap(item => [item, ...(item.submenu ?? [])])
     .filter(item => item.kind === 'checkbox')
-    .map(item => item.value);
+    .map(item => item.value)
 
 export const radioValuesFor = (
   fixture: ContextMenuFixture,
@@ -169,74 +236,93 @@ export const radioValuesFor = (
   fixture.items
     .flatMap(item => [item, ...(item.submenu ?? [])])
     .filter(item => item.kind === 'radio' && item.group === group)
-    .map(item => item.value);
+    .map(item => item.value)
 
 const itemConfigSource = (spec: DropdownMenuItemSpec): string => {
-  const fields: Array<string> = [`label: '${spec.label.replaceAll("'", "\\'")}'`];
+  const fields: Array<string> = [
+    `label: '${spec.label.replaceAll("'", "\\'")}'`,
+  ]
   if (spec.icon !== undefined)
-    fields.push(`icon: Icon.icon('${spec.icon}', { class: 'size-4' }, h)`);
+    fields.push(`icon: Icon.icon('${spec.icon}', { class: 'size-4' }, h)`)
   if (spec.shortcut !== undefined)
-    fields.push(`shortcut: '${spec.shortcut.replaceAll("'", "\\'")}'`);
+    fields.push(`shortcut: '${spec.shortcut.replaceAll("'", "\\'")}'`)
   if (spec.kind !== undefined) {
-    fields.push(`kind: '${spec.kind}'`);
-    fields.push('isInset: true');
+    fields.push(`kind: '${spec.kind}'`)
+    fields.push('isInset: true')
   }
-  if (spec.variant === 'destructive') fields.push(`variant: 'destructive'`);
-  if (spec.isDisabled === true) fields.push('isDisabled: true');
+  if (spec.variant === 'destructive') fields.push(`variant: 'destructive'`)
+  if (spec.isDisabled === true) fields.push('isDisabled: true')
   if (spec.group !== undefined)
-    fields.push(`group: '${spec.group.replaceAll("'", "\\'")}'`);
+    fields.push(`group: '${spec.group.replaceAll("'", "\\'")}'`)
   if (spec.submenu !== undefined) {
-    const items = spec.submenu.map(item => `'${item.value}'`).join(', ');
-    fields.push(`submenu: { items: [${items}], itemToConfig: item => configs[item] }`);
+    const items = spec.submenu.map(item => `'${item.value}'`).join(', ')
+    fields.push(
+      `submenu: { items: [${items}], itemToConfig: item => configs[item] }`,
+    )
   }
-  return `${JSON.stringify(spec.value)}: { ${fields.join(', ')} }`;
-};
+  return `${JSON.stringify(spec.value)}: { ${fields.join(', ')} }`
+}
 
-const allItemSpecs = (fixture: ContextMenuFixture): ReadonlyArray<DropdownMenuItemSpec> =>
-  fixture.items.flatMap(item => [item, ...(item.submenu ?? [])]);
+const allItemSpecs = (
+  fixture: ContextMenuFixture,
+): ReadonlyArray<DropdownMenuItemSpec> =>
+  fixture.items.flatMap(item => [item, ...(item.submenu ?? [])])
 
-const source = (fixture: ContextMenuFixture, renderer: 'tailwind' | 'stylex'): string => {
-  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '');
-  const uiDir = renderer === 'stylex' ? 'stylex' : 'ui';
-  const specs = allItemSpecs(fixture);
-  const usesIcons = specs.some(spec => spec.icon !== undefined);
-  const usesCheckbox = specs.some(spec => spec.kind === 'checkbox');
-  const usesRadio = specs.some(spec => spec.kind === 'radio');
-  const literalValues = specs.map(spec => `'${spec.value}'`).join(', ');
-  const topLevelValues = fixtureItems(fixture).map(value => `'${value}'`).join(', ');
-  const radioGroups = [...new Set(specs.filter(s => s.kind === 'radio').map(s => s.group ?? ''))];
+const source = (
+  fixture: ContextMenuFixture,
+  renderer: 'tailwind' | 'stylex',
+): string => {
+  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
+  const uiDir = renderer === 'stylex' ? 'stylex' : 'ui'
+  const specs = allItemSpecs(fixture)
+  const usesIcons = specs.some(spec => spec.icon !== undefined)
+  const usesCheckbox = specs.some(spec => spec.kind === 'checkbox')
+  const usesRadio = specs.some(spec => spec.kind === 'radio')
+  const literalValues = specs.map(spec => `'${spec.value}'`).join(', ')
+  const topLevelValues = fixtureItems(fixture)
+    .map(value => `'${value}'`)
+    .join(', ')
+  const radioGroups = [
+    ...new Set(specs.filter(s => s.kind === 'radio').map(s => s.group ?? '')),
+  ]
   const radioField = (group: string): string =>
-    `${group.charAt(0).toLowerCase()}${group.slice(1)}Value`;
+    `${group.charAt(0).toLowerCase()}${group.slice(1)}Value`
   const radioSeed = (group: string): string | undefined =>
-    group === 'People' ? fixture.peopleValue : fixture.themeValue;
+    group === 'People' ? fixture.peopleValue : fixture.themeValue
   const radioFields = radioGroups.map(
     group => `  ${radioField(group)}: S.Option(Item),`,
-  );
+  )
   const radioInit = radioGroups.map(group => {
-    const seed = radioSeed(group);
-    return `    ${radioField(group)}: ${seed === undefined ? 'Option.none()' : `Option.some('${seed}')`},`;
-  });
+    const seed = radioSeed(group)
+    return `    ${radioField(group)}: ${seed === undefined ? 'Option.none()' : `Option.some('${seed}')`},`
+  })
   const radioUpdate = radioGroups.map(group => {
-    const field = radioField(group);
-    const values = radioValuesFor(fixture, group).map(v => `'${v}'`).join(', ');
+    const field = radioField(group)
+    const values = radioValuesFor(fixture, group)
+      .map(v => `'${v}'`)
+      .join(', ')
     return `      const ${field} = Option.match(maybeSelection, {
         onNone: () => model.${field},
         onSome: selection => [${values}].includes(selection.value) ? Option.some(selection.value) : model.${field},
-      })`;
-  });
-  const radioSpread = radioGroups.map(group => `, ${radioField(group)}`).join('');
+      })`
+  })
+  const radioSpread = radioGroups
+    .map(group => `, ${radioField(group)}`)
+    .join('')
   const itemToConfigSource = usesCheckbox
     ? `itemToConfig: item => ({ ...configs[item], isChecked: model.checkedValues.includes(item) }),`
     : usesRadio
       ? `itemToConfig: item => ({ ...configs[item], isChecked: Option.contains(radioSelections[configs[item].group ?? ''] ?? Option.none(), item) }),`
-      : 'itemToConfig: item => configs[item],';
+      : 'itemToConfig: item => configs[item],'
   return foldkitApplication({
     title: `Context Menu — ${fixture.title}`,
     imports: `import { Option, Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-import * as ContextMenu from '@/${uiDir}/context-menu'${usesIcons ? `\nimport * as Icon from '@/lib/icon'` : ''}${renderer === 'stylex' ? `
+import * as ContextMenu from '@/${uiDir}/context-menu'${usesIcons ? `\nimport * as Icon from '@/lib/icon'` : ''}${
+      renderer === 'stylex'
+        ? `
 import * as stylex from '@stylexjs/stylex'
 
 import { className } from '@/stylex/style'
@@ -254,7 +340,9 @@ const styles = stylex.create({
     borderColor: 'var(--border)',
     fontSize: '0.875rem', lineHeight: '1.25rem',
   },
-})` : ''}`,
+})`
+        : ''
+    }`,
     model: `export const Item = S.Literals([${literalValues}])
 export type Item = typeof Item.Type
 export const Model = S.Struct({
@@ -298,7 +386,9 @@ ${[
       })`
     : '',
   ...radioUpdate,
-].filter(Boolean).join('\n')}
+]
+  .filter(Boolean)
+  .join('\n')}
       return { model: { ...model, menu, maybeLastAction${usesCheckbox ? ', checkedValues' : ''}${radioSpread} }, commands: Command.mapMessages(commands, next => GotMenuMessage({ message: next })) }
     }
   }
@@ -306,17 +396,23 @@ ${[
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => {
   const configs: Record<Item, ContextMenu.ContextMenuItemConfig<Item>> = {
     ${specs.map(itemConfigSource).join(',\n    ')},
-  }${usesRadio ? `
-  const radioSelections: Record<string, Option.Option<Item>> = { ${radioGroups.map(group => `'${group}': model.${radioField(group)}`).join(', ')} }` : ''}
+  }${
+    usesRadio
+      ? `
+  const radioSelections: Record<string, Option.Option<Item>> = { ${radioGroups.map(group => `'${group}': model.${radioField(group)}`).join(', ')} }`
+      : ''
+  }
   return {
     title: 'Context Menu — ${fixture.title}',
     body: h.main([h.Class('flex min-h-screen flex-col items-center justify-center gap-4 p-8')], [
       ContextMenu.contextMenu({
         model: model.menu,
         toParentMessage: message => GotMenuMessage({ message }),
-        ${renderer === 'stylex'
-          ? `trigger: h.div([h.Class(className(styles.targetInner))], ['Right click here']),`
-          : `trigger: h.div([h.Class('flex aspect-video w-80 items-center justify-center rounded-xl border border-dashed text-sm')], ['Right click here']),`}
+        ${
+          renderer === 'stylex'
+            ? `trigger: h.div([h.Class(className(styles.targetInner))], ['Right click here']),`
+            : `trigger: h.div([h.Class('flex aspect-video w-80 items-center justify-center rounded-xl border border-dashed text-sm')], ['Right click here']),`
+        }
         ariaLabel: '${fixture.title} menu',
         items: [${topLevelValues}]${specs.some(spec => spec.submenu !== undefined) ? ' as ReadonlyArray<Item>' : ''},
         ${itemToConfigSource}
@@ -331,13 +427,17 @@ ${[
     ]),
   }
 }`,
-  });
-};
+  })
+}
 
-export const contextMenuExamples = (renderer: 'tailwind' | 'stylex'): ReadonlyArray<DocsExample> =>
+export const contextMenuExamples = (
+  renderer: 'tailwind' | 'stylex',
+): ReadonlyArray<DocsExample> =>
   contextMenuFixtures.map(fixture => ({
     title: fixture.title,
-    ...(fixture.description === undefined ? {} : { description: fixture.description }),
+    ...(fixture.description === undefined
+      ? {}
+      : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: source(fixture, renderer),
-  }));
+  }))

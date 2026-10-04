@@ -1,13 +1,13 @@
 import type { Update } from 'foldkit'
-import { Match as M, Schema as S } from 'effect';
-import type { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import { Match as M, Schema as S } from 'effect'
+import type { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-import * as Icon from '@/demo/icon-preview';
-import { badge } from '@/ui/badge';
-import { card, cardContent, cardHeader } from '@/ui/card';
-import { inputGroup, inputGroupAddon, inputGroupInput } from '@/ui/input-group';
+import * as Icon from '@/demo/icon-preview'
+import { badge } from '@/ui/badge'
+import { card, cardContent, cardHeader } from '@/ui/card'
+import { inputGroup, inputGroupAddon, inputGroupInput } from '@/ui/input-group'
 import {
   item,
   itemContent,
@@ -15,8 +15,8 @@ import {
   itemGroup,
   itemMedia,
   itemTitle,
-} from '@/ui/item';
-import { toggleGroup } from '@/ui/toggle-group';
+} from '@/ui/item'
+import { toggleGroup } from '@/ui/toggle-group'
 
 const HOLDINGS = [
   {
@@ -51,34 +51,34 @@ const HOLDINGS = [
     shares: '320',
     value: '$15,136.59',
   },
-] as const;
+] as const
 
 export const Model = S.Struct({
   search: S.String,
   category: S.String,
-});
-export type Model = typeof Model.Type;
-
-
+})
+export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
   UpdatedSearch: { value: S.String },
   SelectedCategory: { value: S.String },
-});
-export type Message = typeof Message.Type;
+})
+export type Message = typeof Message.Type
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 
-export const init = (): Model => ({ search: '', category: 'etfs' });
+export const init = (): Model => ({ search: '', category: 'etfs' })
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
       UpdatedSearch: ({ value }) => ({ model: { ...model, search: value } }),
-      SelectedCategory: ({ value }) => ({ model: { ...model, category: value } }),
+      SelectedCategory: ({ value }) => ({
+        model: { ...model, category: value },
+      }),
     }),
-  );
+  )
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
   return card(
@@ -104,7 +104,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                           {
                             id: 'release-catalog-search',
                             value: model.search,
-                            onInput: (value) => Message.UpdatedSearch({ value }),
+                            onInput: value => Message.UpdatedSearch({ value }),
                             placeholder: 'Search holdings or tickers...',
                           },
                           h,
@@ -116,7 +116,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                   toggleGroup(
                     {
                       value: model.category,
-                      onToggle: (value) => Message.SelectedCategory({ value }),
+                      onToggle: value => Message.SelectedCategory({ value }),
                       variant: 'outline',
                       class: 'gap-1',
                       items: [
@@ -150,7 +150,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
             children: [
               itemGroup(
                 {
-                  children: HOLDINGS.map((holding) =>
+                  children: HOLDINGS.map(holding =>
                     item(
                       {
                         variant: 'muted',
@@ -231,8 +231,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 /*
 Minimal wiring:

@@ -17,7 +17,7 @@ The astryx source of truth is a clone of `github.com/facebook/astryx`:
 
 ## Visual contract
 
-Pixel-faithful to astryx's *structure* (sizes, spacing, radii, states, motion)
+Pixel-faithful to astryx's _structure_ (sizes, spacing, radii, states, motion)
 but expressed with **Crease UI design tokens** — do NOT introduce astryx's
 `colorVars`/`spacingVars`/`radiusVars`. Map astryx's token usage to the nearest
 Crease UI token:
@@ -139,7 +139,7 @@ alphabetical order so concurrent batches merge cleanly.)
   you will almost always have ≥ 2; a single-example astryx component is NOT
   acceptable alone, combine its real astryx demos or flag it in your report).
 - `staticComponentApplication` AUTO-emits `import * as <Name> from
-  '@/ui|stylex/<slug>'` — `componentImports` carries only EXTRA imports
+'@/ui|stylex/<slug>'` — `componentImports` carries only EXTRA imports
   (stylex/styles/etc). Never re-emit the component import: the docs-example
   typecheck fails with `Duplicate identifier`.
 - `exactOptionalPropertyTypes` is on: `componentImports` must be a `string`

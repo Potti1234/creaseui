@@ -1,38 +1,41 @@
-import { Schema as S } from 'effect';
-import { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import { Schema as S } from 'effect'
+import { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-import { definePreviewProgram } from '@/docs/components/pages/authored-page';
+import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
   popoverFixtures,
   type PopoverFixture,
   type PopoverInstance,
-} from '@/docs/components/pages/popover/shared';
-import * as Field from '@/ui/field';
-import * as Input from '@/ui/input';
-import * as Popover from '@/ui/popover';
+} from '@/docs/components/pages/popover/shared'
+import * as Field from '@/ui/field'
+import * as Input from '@/ui/input'
+import * as Popover from '@/ui/popover'
 
 const GotPopoverPreviewMessage = defineMessageUnion({
   GotPopoverMessage: { id: S.String, message: Popover.Message },
   ChangedFieldInput: { id: S.String, value: S.String },
-});
-type PreviewMessage = typeof GotPopoverPreviewMessage.Type;
+})
+type PreviewMessage = typeof GotPopoverPreviewMessage.Type
 const PreviewModel = S.Struct({
   _docsPage: S.Literal('popover'),
   popovers: S.Record(S.String, Popover.Model),
   values: S.Record(S.String, S.String),
-});
-type PreviewModel = typeof PreviewModel.Type;
+})
+type PreviewModel = typeof PreviewModel.Type
 
 const headerContent = <Msg>(rtl: boolean, h: HtmlBuilder<Msg>): Html =>
-  h.div([h.Class('grid gap-2')], [
-    h.h4([h.Class('font-medium')], [rtl ? 'الأبعاد' : 'Dimensions']),
-    h.p(
-      [h.Class('text-sm text-muted-foreground')],
-      [rtl ? 'تعيين الأبعاد للطبقة.' : 'Set the dimensions for the layer.'],
-    ),
-  ]);
+  h.div(
+    [h.Class('grid gap-2')],
+    [
+      h.h4([h.Class('font-medium')], [rtl ? 'الأبعاد' : 'Dimensions']),
+      h.p(
+        [h.Class('text-sm text-muted-foreground')],
+        [rtl ? 'تعيين الأبعاد للطبقة.' : 'Set the dimensions for the layer.'],
+      ),
+    ],
+  )
 
 const instanceView = (
   instance: PopoverInstance,
@@ -55,16 +58,12 @@ const instanceView = (
       align: instance.align,
       class: 'w-40',
       ...(instance.rtl === true ? { direction: 'rtl' as const } : {}),
-      content:
-        instance.rtl === true ? headerContent(true, h) : instance.text,
+      content: instance.rtl === true ? headerContent(true, h) : instance.text,
     },
     h,
-  );
+  )
 
-const basicView = (
-  model: PreviewModel,
-  h: HtmlBuilder<PreviewMessage>,
-): Html =>
+const basicView = (model: PreviewModel, h: HtmlBuilder<PreviewMessage>): Html =>
   Popover.popover(
     {
       model:
@@ -78,7 +77,7 @@ const basicView = (
       content: headerContent(false, h),
     },
     h,
-  );
+  )
 
 const formView = (
   model: PreviewModel,
@@ -102,7 +101,7 @@ const formView = (
         ],
       },
       h,
-    );
+    )
   return Popover.popover(
     {
       model:
@@ -115,26 +114,32 @@ const formView = (
       align: 'start',
       class: 'w-64',
       focusSelector: '[data-slot=popover-content] input',
-      content: h.div([h.Class('grid gap-4')], [
-        headerContent(false, h),
-        h.div([h.Class('grid gap-4')], [
-          fieldInput('width', 'Width', '100%'),
-          fieldInput('height', 'Height', '25px'),
-        ]),
-      ]),
+      content: h.div(
+        [h.Class('grid gap-4')],
+        [
+          headerContent(false, h),
+          h.div(
+            [h.Class('grid gap-4')],
+            [
+              fieldInput('width', 'Width', '100%'),
+              fieldInput('height', 'Height', '25px'),
+            ],
+          ),
+        ],
+      ),
     },
     h,
-  );
-};
+  )
+}
 
 const legacyView = (
   index: number,
   model: PreviewModel,
   h: HtmlBuilder<PreviewMessage>,
 ): Html => {
-  const fixture = popoverFixtures[index];
-  const side = fixture?.kind === 'legacy' ? fixture.side : 'bottom';
-  const align = fixture?.kind === 'legacy' ? fixture.align : 'start';
+  const fixture = popoverFixtures[index]
+  const side = fixture?.kind === 'legacy' ? fixture.side : 'bottom'
+  const align = fixture?.kind === 'legacy' ? fixture.align : 'start'
   return Popover.popover(
     {
       model:
@@ -147,58 +152,65 @@ const legacyView = (
       side,
       align,
       focusSelector: '[data-slot=popover-content] input',
-      content: h.div([h.Class('grid gap-2')], [
-        h.h4([h.Class('font-medium')], ['Dimensions']),
-        h.p(
-          [h.Class('text-sm text-muted-foreground')],
-          ['Set the dimensions for the layer.'],
-        ),
-        h.input([h.Type('number'), h.AriaLabel('Width'), h.Class('rounded-md border px-3 py-2')]),
-      ]),
+      content: h.div(
+        [h.Class('grid gap-2')],
+        [
+          h.h4([h.Class('font-medium')], ['Dimensions']),
+          h.p(
+            [h.Class('text-sm text-muted-foreground')],
+            ['Set the dimensions for the layer.'],
+          ),
+          h.input([
+            h.Type('number'),
+            h.AriaLabel('Width'),
+            h.Class('rounded-md border px-3 py-2'),
+          ]),
+        ],
+      ),
     },
     h,
-  );
-};
+  )
+}
 
 const idsForFixture = (fixture: PopoverFixture): ReadonlyArray<string> => {
   switch (fixture.kind) {
     case 'legacy':
-      return ['main'];
+      return ['main']
     case 'basic':
-      return ['basic'];
+      return ['basic']
     case 'form':
-      return ['form'];
+      return ['form']
     case 'align':
     case 'rtl':
-      return fixture.instances.map(instance => instance.id);
+      return fixture.instances.map(instance => instance.id)
   }
-};
+}
 
 const render = (
   index: number,
   model: PreviewModel,
   h: HtmlBuilder<PreviewMessage>,
 ): Html => {
-  const fixture = popoverFixtures[index] ?? popoverFixtures[0];
+  const fixture = popoverFixtures[index] ?? popoverFixtures[0]
   switch (fixture.kind) {
     case 'legacy':
-      return legacyView(index, model, h);
+      return legacyView(index, model, h)
     case 'basic':
-      return basicView(model, h);
+      return basicView(model, h)
     case 'form':
-      return formView(model, h);
+      return formView(model, h)
     case 'align':
       return h.div(
         [h.Class('flex flex-wrap justify-center gap-6')],
         fixture.instances.map(instance => instanceView(instance, model, h)),
-      );
+      )
     case 'rtl':
       return h.div(
         [h.Class('flex flex-wrap justify-center gap-2')],
         fixture.instances.map(instance => instanceView(instance, model, h)),
-      );
+      )
   }
-};
+}
 
 const mapPopover = (
   model: PreviewModel,
@@ -210,8 +222,9 @@ const mapPopover = (
     popovers: { ...model.popovers, [id]: result.model },
   },
   commands: Command.mapMessages(result.commands ?? [], next =>
-    GotPopoverPreviewMessage.GotPopoverMessage({ id, message: next })),
-});
+    GotPopoverPreviewMessage.GotPopoverMessage({ id, message: next }),
+  ),
+})
 
 export const popoverTailwindPreviewProgram = definePreviewProgram<
   PreviewModel,
@@ -220,7 +233,7 @@ export const popoverTailwindPreviewProgram = definePreviewProgram<
   Model: PreviewModel,
   Message: GotPopoverPreviewMessage,
   init: index => {
-    const fixture = popoverFixtures[index] ?? popoverFixtures[0];
+    const fixture = popoverFixtures[index] ?? popoverFixtures[0]
     return {
       _docsPage: 'popover',
       popovers: Object.fromEntries(
@@ -234,7 +247,7 @@ export const popoverTailwindPreviewProgram = definePreviewProgram<
         ]),
       ),
       values: { width: '100%', height: '25px' },
-    };
+    }
   },
   update: (model, message) => {
     switch (message._tag) {
@@ -244,19 +257,19 @@ export const popoverTailwindPreviewProgram = definePreviewProgram<
             ...model,
             values: { ...model.values, [message.id]: message.value },
           },
-        };
+        }
       case 'GotPopoverMessage': {
-        const popover = model.popovers[message.id];
+        const popover = model.popovers[message.id]
         if (popover === undefined) {
-          return { model };
+          return { model }
         }
         return mapPopover(
           model,
           message.id,
           Popover.update(popover, message.message),
-        );
+        )
       }
     }
   },
   view: (index, model, h) => render(index, model, h),
-});
+})

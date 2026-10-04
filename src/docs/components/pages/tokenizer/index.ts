@@ -1,6 +1,6 @@
-import { authoredPage } from '@/docs/components/pages/authored-page';
-import { tokenizerExamples } from '@/docs/components/pages/tokenizer/shared';
-import { tokenizerTailwindPreviewProgram } from '@/docs/components/pages/tokenizer/tailwind';
+import { authoredPage } from '@/docs/components/pages/authored-page'
+import { tokenizerExamples } from '@/docs/components/pages/tokenizer/shared'
+import { tokenizerTailwindPreviewProgram } from '@/docs/components/pages/tokenizer/tailwind'
 
 export const tokenizerPage = authoredPage({
   slug: 'tokenizer',
@@ -20,15 +20,27 @@ export const tokenizerPage = authoredPage({
     accessibility:
       'The inner input is a combobox with an anchored listbox: arrow keys navigate options, Enter commits. Each token carries an aria-labelled remove button, and the clear-all control clears every token at once.',
     keyboard: [
-      ['Type', 'Filters the listbox items; with hasCreate a free-text "Create" row appears for unmatched text.'],
-      ['ArrowDown / Click', 'Opens the anchored listbox while focus stays in the input.'],
-      ['Enter', 'Commits the highlighted option as a token, or creates one from the typed query.'],
+      [
+        'Type',
+        'Filters the listbox items; with hasCreate a free-text "Create" row appears for unmatched text.',
+      ],
+      [
+        'ArrowDown / Click',
+        'Opens the anchored listbox while focus stays in the input.',
+      ],
+      [
+        'Enter',
+        'Commits the highlighted option as a token, or creates one from the typed query.',
+      ],
       ['Escape', 'Closes the listbox and returns focus to the input.'],
-      ['Token × / Clear all', 'Removes one token or empties the selection, emitting ChangedTokens.'],
+      [
+        'Token × / Clear all',
+        'Removes one token or empties the selection, emitting ChangedTokens.',
+      ],
     ],
     composition:
       'Parent Model\n├── Tokenizer child Model (tokens + embedded Multi combobox)\n└── ChangedTokens OutMessage → parent domain state\n    ├── hasCreate offers a free-text create row from the typed query\n    ├── maxEntries hides the input once the cap is reached\n    └── tokenOverflowBehavior collapses the chip row while unfocused',
     examples: tokenizerExamples('tailwind'),
     stylexExamples: tokenizerExamples('stylex'),
   },
-});
+})

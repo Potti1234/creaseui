@@ -1,7 +1,7 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Icon from '@/demo/icon-preview';
-import { button } from '@/ui/button';
+import * as Icon from '@/demo/icon-preview'
+import { button } from '@/ui/button'
 import {
   card,
   cardAction,
@@ -9,15 +9,15 @@ import {
   cardDescription,
   cardHeader,
   cardTitle,
-} from '@/ui/card';
-import { barChart } from '@/ui/chart';
+} from '@/ui/card'
+import { barChart } from '@/ui/chart'
 import {
   item,
   itemContent,
   itemDescription,
   itemGroup,
   itemTitle,
-} from '@/ui/item';
+} from '@/ui/item'
 
 const holdings = [
   {
@@ -64,7 +64,7 @@ const holdings = [
       { label: 'Q4', value: 360 },
     ],
   },
-];
+]
 
 export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
   return card(
@@ -108,7 +108,7 @@ export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
               itemGroup(
                 {
                   class: 'gap-3',
-                  children: holdings.map((holding) =>
+                  children: holdings.map(holding =>
                     item(
                       {
                         variant: 'muted',
@@ -156,7 +156,7 @@ export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 // Stateful: no. Submodels: none. PORT NOTE: Recharts mini charts use @/ui/chart barChart; icon-sm is matched with a size-8 class.

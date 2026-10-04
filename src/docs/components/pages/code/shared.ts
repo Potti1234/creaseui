@@ -1,20 +1,18 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { staticComponentApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
-export type CodeExampleKind = 'showcase' | 'textSizes' | 'inline' | 'various';
+export type CodeExampleKind = 'showcase' | 'textSizes' | 'inline' | 'various'
 
 export type CodeFixture = Readonly<{
-  title: string;
-  description?: string;
-  kind: CodeExampleKind;
-}>;
+  title: string
+  description?: string
+  kind: CodeExampleKind
+}>
 
 /* Example set ported from Meta Astryx
    packages/cli/assets/templates/blocks/components/Code/*.tsx — same demos,
    same labels and copy. */
-export const codeFixtures: Readonly<
-  [CodeFixture, ...Array<CodeFixture>]
-> = [
+export const codeFixtures: Readonly<[CodeFixture, ...Array<CodeFixture>]> = [
   {
     title: 'Code',
     description:
@@ -38,7 +36,7 @@ export const codeFixtures: Readonly<
       'Common content types rendered inline: variables, terminal commands, CSS values, and file paths.',
     kind: 'various',
   },
-];
+]
 
 const variousEntries = [
   ['Variable', 'const [state, setState] = useState(0)'],
@@ -46,10 +44,10 @@ const variousEntries = [
   ['CSS', 'border-radius: 8px'],
   ['File path', 'src/components/Button.tsx'],
   ['Shortcut', '⌘ + K'],
-] as const;
+] as const
 
 const codeCall = (content: string): string =>
-  `Code.code({ children: ['${content}'] }, h)`;
+  `Code.code({ children: ['${content}'] }, h)`
 
 const textCall = (
   type: string,
@@ -59,7 +57,7 @@ const textCall = (
             ${parts.join(',\n            ')},
           ] },
           h,
-        )`;
+        )`
 
 const viewBody = (fixture: CodeFixture, isStyleX: boolean): string => {
   const stack = (items: string) =>
@@ -68,14 +66,14 @@ const viewBody = (fixture: CodeFixture, isStyleX: boolean): string => {
       [
         ${items},
       ],
-    )`;
+    )`
 
   switch (fixture.kind) {
     case 'showcase':
       return stack(
         `${textCall('body', ["'Install dependencies with '", codeCall('npm install'), "' and start building.'"])},
         ${textCall('body', ["'Use the variant: '", codeCall('v3.0.0'), "' release for the latest features.'"])}`,
-      );
+      )
     case 'inline':
       return `Text.text(
       { type: 'body', display: 'block', children: [
@@ -88,14 +86,14 @@ const viewBody = (fixture: CodeFixture, isStyleX: boolean): string => {
         ' share state across components.',
       ] },
       h,
-    )`;
+    )`
     case 'textSizes':
       return stack(
         `Heading.heading({ level: 3, children: ['Configure ', ${codeCall('config.json')}] }, h),
         ${textCall('body', ["'Run '", codeCall('pnpm install'), "' to set up the workspace.'"])},
         ${textCall('supporting', ["'Supports '", codeCall('ES2022'), "' and newer toolchains.'"])},
         ${textCall('label', ["'Shortcut: '", codeCall('⌘ + K')])}`,
-      );
+      )
     case 'various':
       return stack(
         variousEntries
@@ -109,45 +107,50 @@ const viewBody = (fixture: CodeFixture, isStyleX: boolean): string => {
         )`,
           )
           .join(',\n        '),
-      );
+      )
   }
-};
+}
 
 const stylexStyles = (fixture: CodeExampleKind): string => {
-  const parts = ["column: { display: 'flex', flexDirection: 'column', gap: '1rem' }"];
+  const parts = [
+    "column: { display: 'flex', flexDirection: 'column', gap: '1rem' }",
+  ]
   if (fixture === 'various') {
-    parts.push("rowGroup: { display: 'flex', flexDirection: 'column' }");
+    parts.push("rowGroup: { display: 'flex', flexDirection: 'column' }")
   }
-  return parts.join(',\n  ');
-};
+  return parts.join(',\n  ')
+}
 
 const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
-  const fixture = codeFixtures[index] ?? codeFixtures[0];
-  const isStyleX = renderer === 'stylex';
-  const base = isStyleX ? 'stylex' : 'ui';
-  const imports: string[] = [];
+  const fixture = codeFixtures[index] ?? codeFixtures[0]
+  const isStyleX = renderer === 'stylex'
+  const base = isStyleX ? 'stylex' : 'ui'
+  const imports: string[] = []
   if (isStyleX) {
     imports.push(
       `import * as stylex from '@stylexjs/stylex'`,
       `import { className } from '@/stylex/style'`,
-    );
+    )
   }
   if (fixture.kind !== 'various') {
-    imports.push(`import * as Text from '@/${base}/text'`);
+    imports.push(`import * as Text from '@/${base}/text'`)
   }
   if (fixture.kind === 'textSizes') {
-    imports.push(`import * as Heading from '@/${base}/heading'`);
+    imports.push(`import * as Heading from '@/${base}/heading'`)
   }
   if (fixture.kind === 'various') {
-    imports.push(`import * as Text from '@/${base}/text'`);
+    imports.push(`import * as Text from '@/${base}/text'`)
   }
-  const needsStack = fixture.kind !== 'inline';
+  const needsStack = fixture.kind !== 'inline'
   const componentImports = [
     ...imports,
     ...(isStyleX && needsStack
-      ? [``, `const styles = stylex.create({\n  ${stylexStyles(fixture.kind)}\n})`]
+      ? [
+          ``,
+          `const styles = stylex.create({\n  ${stylexStyles(fixture.kind)}\n})`,
+        ]
       : []),
-  ].join('\n');
+  ].join('\n')
   return staticComponentApplication({
     componentName: 'Code',
     componentSlug: 'code',
@@ -155,8 +158,8 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
     exampleName: fixture.title,
     ...(componentImports === '' ? {} : { componentImports }),
     viewBody: viewBody(fixture, isStyleX),
-  });
-};
+  })
+}
 
 export const codeExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -167,4 +170,4 @@ export const codeExamples = (
       ? {}
       : { description: fixture.description }),
     code: source(index, renderer),
-  }));
+  }))

@@ -1,25 +1,25 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type LogFixtureEntry = Readonly<{
-  id: string;
-  timestamp: string;
-  level: 'info' | 'warn' | 'error' | 'debug';
-  source?: string;
-  message: string;
+  id: string
+  timestamp: string
+  level: 'info' | 'warn' | 'error' | 'debug'
+  source?: string
+  message: string
   /** Rendered inside a <pre> in the expanded detail panel. */
-  detailText?: string;
-}>;
+  detailText?: string
+}>
 
 export type LogStreamFixture = Readonly<{
-  title: string;
-  description: string;
-  variant: 'default' | 'terminal';
-  maxHeight: number;
-  entries: ReadonlyArray<LogFixtureEntry>;
+  title: string
+  description: string
+  variant: 'default' | 'terminal'
+  maxHeight: number
+  entries: ReadonlyArray<LogFixtureEntry>
   /** 'follow' shows astryx's controlled append/reset toolbar. */
-  layout: 'terminal' | 'monitoring' | 'follow';
-}>;
+  layout: 'terminal' | 'monitoring' | 'follow'
+}>
 
 /* astryx ships no example blocks for LogStream — these fixtures are derived
    from apps/storybook/stories/LogStream.stories.tsx (TerminalBuild,
@@ -207,7 +207,7 @@ export const logStreamFixtures: Readonly<
       },
     ],
   },
-];
+]
 
 /** Entries appended by the Controlled follow toolbar (astryx liveScript). */
 export const logStreamLiveScript: ReadonlyArray<Omit<LogFixtureEntry, 'id'>> = [
@@ -235,14 +235,14 @@ export const logStreamLiveScript: ReadonlyArray<Omit<LogFixtureEntry, 'id'>> = [
     source: 'worker',
     message: 'job usage-rollup-0415 failed: table locked',
   },
-];
+]
 
 const logStreamSource = (
   fixture: LogStreamFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const isStyleX = renderer === 'stylex';
-  const ns = isStyleX ? 'LogStreamStyleX' : 'LogStream';
+  const isStyleX = renderer === 'stylex'
+  const ns = isStyleX ? 'LogStreamStyleX' : 'LogStream'
   const entriesLiteral = JSON.stringify(
     fixture.entries.map(({ detailText: _detailText, ...entry }) => entry),
     null,
@@ -250,15 +250,15 @@ const logStreamSource = (
   )
     .replace(/"([^"]+)":/g, '$1:')
     .split('\n')
-    .join('\n  ');
+    .join('\n  ')
 
   const detailProp = fixture.entries.some(
-    (entry) => entry.detailText !== undefined,
+    entry => entry.detailText !== undefined,
   )
     ? `
 /* Detail bodies are authored as text and wrapped in a pre here (astryx's
    ReactNode detail slot ports to Html). */`
-    : '';
+    : ''
 
   const streamCall = `${ns}.logStream(
       {
@@ -266,14 +266,18 @@ const logStreamSource = (
         toParentMessage: message => GotStreamMessage({ message }),
         entries: entries(model.entries, h),
         variant: '${fixture.variant}',
-        maxHeight: ${String(fixture.maxHeight)},${fixture.layout === 'follow' ? `
-        label: 'Live log stream',` : `
-        label: '${fixture.title === 'Build logs' ? 'Build logs' : 'Log results stream'}',`}
+        maxHeight: ${String(fixture.maxHeight)},${
+          fixture.layout === 'follow'
+            ? `
+        label: 'Live log stream',`
+            : `
+        label: '${fixture.title === 'Build logs' ? 'Build logs' : 'Log results stream'}',`
+        }
       },
       h,
-    )`;
+    )`
 
-  const isFollow = fixture.layout === 'follow';
+  const isFollow = fixture.layout === 'follow'
   const toolbar = isFollow
     ? `h.div(
         [h.Class('flex items-center gap-2')],
@@ -305,7 +309,8 @@ const logStreamSource = (
           ),
         ],
       ),
-      ` : '';
+      `
+    : ''
 
   return foldkitApplication({
     title: `Log Stream — ${fixture.title}`,
@@ -334,28 +339,32 @@ export type Model = typeof Model.Type`,
     messages: `export const GotStreamMessage = taggedStruct('GotStreamMessage', {
   message: ${ns}.Message,
 })${
-  isFollow
-    ? `
+      isFollow
+        ? `
 export const ClickedAppend = taggedStruct('ClickedAppend', {})
 export const ClickedReset = taggedStruct('ClickedReset', {})`
-    : ''
-}
+        : ''
+    }
 export const Message = S.Union([GotStreamMessage${
-    isFollow ? ', ClickedAppend, ClickedReset' : ''
-  }])
+      isFollow ? ', ClickedAppend, ClickedReset' : ''
+    }])
 export type Message = typeof Message.Type`,
-    init: `const BASE_ENTRIES: ReadonlyArray<LogEntry> = ${entriesLiteral}${isFollow ? `
+    init: `const BASE_ENTRIES: ReadonlyArray<LogEntry> = ${entriesLiteral}${
+      isFollow
+        ? `
 
 const BASE_ENTRY_COUNT = BASE_ENTRIES.length
 
 const LIVE_SCRIPT: ReadonlyArray<Omit<LogEntry, 'id'>> = ${JSON.stringify(
-      logStreamLiveScript,
-      null,
-      2,
-    )
-      .replace(/"([^"]+)":/g, '$1:')
-      .split('\n')
-      .join('\n  ')}` : ''}${detailProp}
+            logStreamLiveScript,
+            null,
+            2,
+          )
+            .replace(/"([^"]+)":/g, '$1:')
+            .split('\n')
+            .join('\n  ')}`
+        : ''
+    }${detailProp}
 
 const entries = (
   rows: ReadonlyArray<LogEntry>,
@@ -383,8 +392,12 @@ const entries = (
 export const init = (): Update.Return<Model, Message> => ({
   model: {
     stream: ${ns}.init({
-      id: 'log-stream',${isFollow ? `
-      isFollowing: true,` : ''}
+      id: 'log-stream',${
+        isFollow
+          ? `
+      isFollowing: true,`
+          : ''
+      }
     }),
     entries: BASE_ENTRIES,
   },
@@ -401,7 +414,9 @@ export const init = (): Update.Return<Model, Message> => ({
         commands: Command.mapMessages(next.commands ?? [], inner =>
           GotStreamMessage({ message: inner })),
       }
-    }${isFollow ? `
+    }${
+      isFollow
+        ? `
     case 'ClickedAppend': {
       const nextIndex = model.entries.length - BASE_ENTRY_COUNT
       const nextLine = LIVE_SCRIPT[nextIndex]
@@ -433,7 +448,9 @@ export const init = (): Update.Return<Model, Message> => ({
           },
         },
       }
-    }` : ''}
+    }`
+        : ''
+    }
   }
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
@@ -450,14 +467,14 @@ export const init = (): Update.Return<Model, Message> => ({
     ],
   ),
 })`,
-  });
-};
+  })
+}
 
 export const logStreamExamples = (
   renderer: 'tailwind' | 'stylex',
 ): ReadonlyArray<DocsExample> =>
-  logStreamFixtures.map((fixture) => ({
+  logStreamFixtures.map(fixture => ({
     title: fixture.title,
     description: fixture.description,
     code: logStreamSource(fixture, renderer),
-  }));
+  }))

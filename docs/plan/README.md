@@ -55,4 +55,3 @@ The plan is complete only when:
 - Tailwind and StyleX consume one behavior implementation and one semantic token contract;
 - the CLI can diagnose a consumer, install an artifact, show required integration, and preview upgrades safely;
 - the documentation teaches complete Foldkit integration using code that compiles against the supported baseline.
-

@@ -1,17 +1,17 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   breadcrumbFixtures,
   type BreadcrumbFixture,
   type BreadcrumbItemSpec,
-} from '@/docs/components/pages/breadcrumb/shared';
-import * as Icon from '@/lib/icon';
-import * as Breadcrumb from '@/stylex/breadcrumb';
-import type { ComponentLayoutStyle } from '@/stylex/contracts';
-import * as DropdownMenu from '@/stylex/dropdown-menu';
+} from '@/docs/components/pages/breadcrumb/shared'
+import * as Icon from '@/lib/icon'
+import * as Breadcrumb from '@/stylex/breadcrumb'
+import type { ComponentLayoutStyle } from '@/stylex/contracts'
+import * as DropdownMenu from '@/stylex/dropdown-menu'
 
 const styles = stylex.create({
   chevron: { fontSize: '0.875rem', lineHeight: '1.25rem' },
@@ -30,11 +30,11 @@ const styles = stylex.create({
     height: '2rem',
     width: '2rem',
   },
-});
+})
 
 type PreviewSnapshot = Readonly<{
-  menu: DropdownMenu.Model;
-}>;
+  menu: DropdownMenu.Model
+}>
 
 const menuView = <Msg>(
   model: PreviewSnapshot,
@@ -47,18 +47,12 @@ const menuView = <Msg>(
     {
       model: model.menu,
       toParentMessage: message =>
-        onMessageJson(
-          JSON.stringify({ _tag: 'GotMenuMessage', message }),
-        ),
+        onMessageJson(JSON.stringify({ _tag: 'GotMenuMessage', message })),
       trigger:
         item.kind === 'ellipsisMenu'
           ? Breadcrumb.breadcrumbEllipsis({}, h)
           : h.span(
-              [
-                h.Class(
-                  stylex.props(styles.dropdownTrigger).className ?? '',
-                ),
-              ],
+              [h.Class(stylex.props(styles.dropdownTrigger).className ?? '')],
               [
                 item.kind === 'dropdown' ? item.label : '',
                 Icon.icon(
@@ -70,8 +64,7 @@ const menuView = <Msg>(
             ),
       ...(item.kind === 'ellipsisMenu'
         ? {
-            triggerLayoutStyle:
-              styles.ellipsisTrigger as ComponentLayoutStyle,
+            triggerLayoutStyle: styles.ellipsisTrigger as ComponentLayoutStyle,
           }
         : {}),
       items: fixture.menuItems ?? [],
@@ -79,7 +72,7 @@ const menuView = <Msg>(
       ...(fixture.rtl === true ? { direction: 'rtl' as const } : {}),
     },
     h,
-  );
+  )
 
 const itemContentView = <Msg>(
   model: PreviewSnapshot,
@@ -93,16 +86,16 @@ const itemContentView = <Msg>(
       return Breadcrumb.breadcrumbLink(
         { href: item.href, children: [item.label] },
         h,
-      );
+      )
     case 'page':
-      return Breadcrumb.breadcrumbPage({ children: [item.label] }, h);
+      return Breadcrumb.breadcrumbPage({ children: [item.label] }, h)
     case 'ellipsis':
-      return Breadcrumb.breadcrumbEllipsis({}, h);
+      return Breadcrumb.breadcrumbEllipsis({}, h)
     case 'ellipsisMenu':
     case 'dropdown':
-      return menuView(model, item, fixture, onMessageJson, h);
+      return menuView(model, item, fixture, onMessageJson, h)
   }
-};
+}
 
 export const breadcrumbStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
@@ -110,9 +103,9 @@ export const breadcrumbStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ) => {
-  const fixture = breadcrumbFixtures[exampleIndex] ?? breadcrumbFixtures[0];
-  const previewModel = model as PreviewSnapshot;
-  const children: Array<Html> = [];
+  const fixture = breadcrumbFixtures[exampleIndex] ?? breadcrumbFixtures[0]
+  const previewModel = model as PreviewSnapshot
+  const children: Array<Html> = []
   fixture.items.forEach((item, index) => {
     if (index > 0) {
       children.push(
@@ -121,13 +114,11 @@ export const breadcrumbStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
             ...(fixture.separator === 'dot'
               ? { children: [Icon.icon('dot', {}, h)] }
               : {}),
-            ...(fixture.rtl === true
-              ? { direction: 'rtl' as const }
-              : {}),
+            ...(fixture.rtl === true ? { direction: 'rtl' as const } : {}),
           },
           h,
         ),
-      );
+      )
     }
     children.push(
       Breadcrumb.breadcrumbItem(
@@ -138,13 +129,13 @@ export const breadcrumbStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         },
         h,
       ),
-    );
-  });
+    )
+  })
   return Breadcrumb.breadcrumb(
     {
       ...(fixture.rtl === true ? { direction: 'rtl' as const } : {}),
       children: [Breadcrumb.breadcrumbList({ children }, h)],
     },
     h,
-  );
-};
+  )
+}

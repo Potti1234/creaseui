@@ -1,158 +1,191 @@
 import { taggedStruct } from 'foldkit/schema'
-import { Schema as S } from 'effect';
-import type { Update } from 'foldkit';
-import { Command, Subscription } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineView } from 'foldkit/submodel';
+import { Schema as S } from 'effect'
+import type { Update } from 'foldkit'
+import { Command, Subscription } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineView } from 'foldkit/submodel'
 
-import { componentPage, componentTitle, example, hero, toSlug } from '@/docs/component-page';
-import * as CopyFeedback from '@/docs/copy-feedback';
-import * as CodeFile from '@/lib/code-file';
+import {
+  componentPage,
+  componentTitle,
+  example,
+  hero,
+  toSlug,
+} from '@/docs/component-page'
+import * as CopyFeedback from '@/docs/copy-feedback'
+import * as CodeFile from '@/lib/code-file'
 import type {
   ComponentKind,
   PageDefinitions,
   StyleXExamplePreviewProvider,
-} from '@/docs/components/page-definition';
-import { componentApi } from '@/docs/generated-component-api';
-import { authoredPages } from '@/docs/components/pages';
-import { RoutedDocsPreviewMessage } from '@/docs/components/pages/authored-page';
+} from '@/docs/components/page-definition'
+import { componentApi } from '@/docs/generated-component-api'
+import { authoredPages } from '@/docs/components/pages'
+import { RoutedDocsPreviewMessage } from '@/docs/components/pages/authored-page'
 const stylexExamplePreviewProviders = new Map<
   string,
   StyleXExamplePreviewProvider
->();
+>()
 
 export const installStyleXExamplePreviewProvider = (
   slug: string,
   provider: StyleXExamplePreviewProvider,
 ): void => {
-  stylexExamplePreviewProviders.set(slug, provider);
-};
+  stylexExamplePreviewProviders.set(slug, provider)
+}
 
 const definitions: PageDefinitions = {
   ...Object.fromEntries(
-    Object.values(authoredPages).map((page) => [page.slug, page.definition]),
+    Object.values(authoredPages).map(page => [page.slug, page.definition]),
   ),
-};
+}
 
-const EXAMPLE_STATE_COUNT = 32;
+const EXAMPLE_STATE_COUNT = 32
 const localPrograms = Object.values(authoredPages).flatMap(page =>
-  page.previewProgram === undefined ? [] : [{ slug: page.slug, program: page.previewProgram }],
-);
+  page.previewProgram === undefined
+    ? []
+    : [{ slug: page.slug, program: page.previewProgram }],
+)
 
 export const Model = S.Struct({
   slug: S.String,
   examples: S.Array(S.Unknown),
   renderer: S.Literals(['tailwind', 'stylex']),
   copiedCode: CopyFeedback.Model,
-});
-export type Model = typeof Model.Type;
+})
+export type Model = typeof Model.Type
 
 export const GotExampleMessage = taggedStruct('GotCatalogExampleMessage', {
   index: S.Number,
   message: RoutedDocsPreviewMessage,
-});
+})
 export const ChangedRenderer = taggedStruct('ChangedCatalogRenderer', {
   renderer: S.Literals(['tailwind', 'stylex']),
-});
+})
 export const GotCodeFileMessage = taggedStruct('GotCatalogCodeFileMessage', {
   message: CodeFile.Message,
-});
+})
 export const Message = S.Union([
   GotExampleMessage,
   ChangedRenderer,
   GotCodeFileMessage,
   CopyFeedback.Message,
-]);
-export type Message = typeof Message.Type;
+])
+export type Message = typeof Message.Type
 
 export const init = (slug?: string): Model => ({
   slug: slug ?? '',
   // One spare slot at the end: the hero preview on top of the page re-renders
   // the first example but keeps its own state.
-  examples: Array.from({ length: (definitions[slug ?? '']?.examples.length ?? 0) === 0 ? 0 : (definitions[slug ?? '']?.examples.length ?? 0) + 1 }, (_, index) => {
-    const program = authoredPages[slug ?? '']?.previewProgram;
-    if (program === undefined) throw new Error(`Missing preview program for ${slug ?? ''}`);
-    return program.init(index);
-  }),
+  examples: Array.from(
+    {
+      length:
+        (definitions[slug ?? '']?.examples.length ?? 0) === 0
+          ? 0
+          : (definitions[slug ?? '']?.examples.length ?? 0) + 1,
+    },
+    (_, index) => {
+      const program = authoredPages[slug ?? '']?.previewProgram
+      if (program === undefined)
+        throw new Error(`Missing preview program for ${slug ?? ''}`)
+      return program.init(index)
+    },
+  ),
   renderer: 'tailwind',
   copiedCode: null,
-});
+})
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   if (message._tag === 'ChangedCatalogRenderer') {
-    return { model: { ...model, renderer: message.renderer } };
+    return { model: { ...model, renderer: message.renderer } }
   }
-  if (message._tag === 'GotCatalogCodeFileMessage') return { model: model };
+  if (message._tag === 'GotCatalogCodeFileMessage') return { model: model }
   if (message._tag !== 'GotCatalogExampleMessage') {
-    const { model: copiedCode, commands: copiedCodeCommands__ } = CopyFeedback.update(
-      model.copiedCode,
-      message,
-    )
+    const { model: copiedCode, commands: copiedCodeCommands__ } =
+      CopyFeedback.update(model.copiedCode, message)
     const commands = copiedCodeCommands__ ?? []
-    return { model: { ...model, copiedCode }, commands: Command.mapMessages(commands, (next) => next) };
+    return {
+      model: { ...model, copiedCode },
+      commands: Command.mapMessages(commands, next => next),
+    }
   }
 
-  const current = model.examples[message.index];
-  if (current === undefined) return { model: model };
+  const current = model.examples[message.index]
+  if (current === undefined) return { model: model }
 
-  const program = authoredPages[model.slug]?.previewProgram;
-  if (program === undefined) return { model: model };
-  const { model: example, commands: exampleCommands__ } = program.update(current, message.message);
+  const program = authoredPages[model.slug]?.previewProgram
+  if (program === undefined) return { model: model }
+  const { model: example, commands: exampleCommands__ } = program.update(
+    current,
+    message.message,
+  )
   const commands = exampleCommands__ ?? []
-  return { model: {
+  return {
+    model: {
       examples: model.examples.map((candidate, index) =>
         index === message.index ? example : candidate,
       ),
       slug: model.slug,
       renderer: model.renderer,
       copiedCode: model.copiedCode,
-    }, commands: Command.mapMessages(commands, (next) =>
-      GotExampleMessage({ index: message.index, message: next as RoutedDocsPreviewMessage }),
-    ) };
-};
+    },
+    commands: Command.mapMessages(commands, next =>
+      GotExampleMessage({
+        index: message.index,
+        message: next as RoutedDocsPreviewMessage,
+      }),
+    ),
+  }
+}
 
 export const subscriptions = Subscription.aggregate<Model, Message>()(
   ...localPrograms.flatMap(({ slug, program }, programIndex) => {
-    const childSubscriptions = program.subscriptions;
+    const childSubscriptions = program.subscriptions
     return childSubscriptions === undefined
       ? []
       : Array.from({ length: EXAMPLE_STATE_COUNT }, (_, index) => {
           const lifted = Subscription.lift(childSubscriptions)<Model, Message>({
             toChildModel: model =>
               model.slug === slug
-                ? model.examples[index] ?? program.init(index)
+                ? (model.examples[index] ?? program.init(index))
                 : program.init(index),
-            toParentMessage: message => GotExampleMessage({ index, message: message as RoutedDocsPreviewMessage }),
+            toParentMessage: message =>
+              GotExampleMessage({
+                index,
+                message: message as RoutedDocsPreviewMessage,
+              }),
             // A lifted subscription must only fire while its own page is
             // active: GotExampleMessage is routed to authoredPages[model.slug],
             // so emitting on another page feeds it a foreign message shape.
             when: model => model.slug === slug,
-          });
-          return Object.fromEntries(Object.entries(lifted).map(([key, subscription]) => [
-            `local${String(programIndex)}Example${String(index)}${key}`,
-            subscription,
-          ])) as Subscription.Subscriptions<Model, Message>;
-        });
+          })
+          return Object.fromEntries(
+            Object.entries(lifted).map(([key, subscription]) => [
+              `local${String(programIndex)}Example${String(index)}${key}`,
+              subscription,
+            ]),
+          ) as Subscription.Subscriptions<Model, Message>
+        })
   }),
-);
+)
 
 export const hasCatalogPage = (slug: string): boolean =>
-  componentTitle(slug) !== undefined;
+  componentTitle(slug) !== undefined
 
 export const hasDedicatedDefinition = (slug: string): boolean =>
-  definitions[slug] !== undefined;
+  definitions[slug] !== undefined
 
 export const dedicatedExampleTitles = (slug: string): ReadonlyArray<string> =>
-  definitions[slug]?.examples.map((config) => config.title) ?? [];
+  definitions[slug]?.examples.map(config => config.title) ?? []
 
 export const componentKind = (slug: string): ComponentKind | undefined => {
-  const definition = definitions[slug];
-  return definition === undefined ? undefined : kindFor(slug, definition);
-};
+  const definition = definitions[slug]
+  return definition === undefined ? undefined : kindFor(slug, definition)
+}
 
-export const titleFor = componentTitle;
+export const titleFor = componentTitle
 
 const exportOverrides: Readonly<Record<string, string>> = {
   'alert-dialog': 'alertDialog',
@@ -174,11 +207,11 @@ const exportOverrides: Readonly<Record<string, string>> = {
   'toggle-group': 'toggleGroup',
   typography: 'typographyH1',
   switch: 'switchControl',
-};
+}
 
 const primaryExport = (slug: string): string =>
   exportOverrides[slug] ??
-    slug.replace(/-([a-z])/g, (_match, letter: string) => letter.toUpperCase());
+  slug.replace(/-([a-z])/g, (_match, letter: string) => letter.toUpperCase())
 
 const recipeSlugs = new Set([
   'data-table',
@@ -188,28 +221,31 @@ const recipeSlugs = new Set([
   'sidebar',
   'toast',
   'typography',
-]);
+])
 
-const kindFor = (slug: string, definition: PageDefinitions[string]): ComponentKind => {
-  if (definition.kind !== undefined) return definition.kind;
-  if (recipeSlugs.has(slug)) return 'recipe';
-  const exports = componentApi[slug] ?? [];
-  return exports.some((entry) => entry.name === 'Model') &&
-      exports.some((entry) => entry.name === 'update')
+const kindFor = (
+  slug: string,
+  definition: PageDefinitions[string],
+): ComponentKind => {
+  if (definition.kind !== undefined) return definition.kind
+  if (recipeSlugs.has(slug)) return 'recipe'
+  const exports = componentApi[slug] ?? []
+  return exports.some(entry => entry.name === 'Model') &&
+    exports.some(entry => entry.name === 'update')
     ? 'submodel'
-    : 'helper';
-};
+    : 'helper'
+}
 
 const architectureFor = (kind: ComponentKind, name: string): string => {
   switch (kind) {
     case 'helper':
-      return `${name} is view-only. Call its render helper directly inside your view; it does not add a child Model, Message, update branch, or h.submodel boundary.`;
+      return `${name} is view-only. Call its render helper directly inside your view; it does not add a child Model, Message, update branch, or h.submodel boundary.`
     case 'submodel':
-      return `${name} owns interaction state. Store its Model in the parent, initialize it with the app, embed its Message, delegate update results and Commands, then render it through h.submodel.`;
+      return `${name} owns interaction state. Store its Model in the parent, initialize it with the app, embed its Message, delegate update results and Commands, then render it through h.submodel.`
     case 'recipe':
-      return `${name} composes source-owned Crease UI modules into an application pattern. Read the installed source as the public API and integrate stateful dependencies through the normal Foldkit update loop.`;
+      return `${name} composes source-owned Crease UI modules into an application pattern. Read the installed source as the public API and integrate stateful dependencies through the normal Foldkit update loop.`
   }
-};
+}
 
 const compositionFor = (
   kind: ComponentKind,
@@ -218,25 +254,25 @@ const compositionFor = (
 ): string => {
   switch (kind) {
     case 'helper':
-      return `${name}\n└── ${viewExport}(ViewConfig, HtmlBuilder) → Html`;
+      return `${name}\n└── ${viewExport}(ViewConfig, HtmlBuilder) → Html`
     case 'submodel':
-      return `${name}\n├── Model / init\n├── Message / update / Commands\n├── optional OutMessage\n└── h.submodel → ${viewExport} view`;
+      return `${name}\n├── Model / init\n├── Message / update / Commands\n├── optional OutMessage\n└── h.submodel → ${viewExport} view`
     case 'recipe':
-      return `${name}\n├── source-owned composition\n├── stateless helpers and/or child Models\n└── application Model / Message / update integration`;
+      return `${name}\n├── source-owned composition\n├── stateless helpers and/or child Models\n└── application Model / Message / update integration`
   }
-};
+}
 
 const usageFor = (slug: string, name: string, kind: ComponentKind): string => {
-  const namespace = name.replaceAll(' ', '');
+  const namespace = name.replaceAll(' ', '')
   if (kind === 'helper') {
-    return `import * as ${namespace} from '@/ui/${slug}'\n\nconst view = (model: Model, h: HtmlBuilder<Message>) =>\n  ${namespace}.${primaryExport(slug)}(viewConfig, h)`;
+    return `import * as ${namespace} from '@/ui/${slug}'\n\nconst view = (model: Model, h: HtmlBuilder<Message>) =>\n  ${namespace}.${primaryExport(slug)}(viewConfig, h)`
   }
   if (kind === 'submodel') {
-    const field = namespace[0]!.toLowerCase() + namespace.slice(1);
-    return `import { Command } from 'foldkit'\nimport * as ${namespace} from '@/ui/${slug}'\n\n// Model and init\n${field}: ${namespace}.Model\n${field}: ${namespace}.init(initConfig)\n\n// Delegate the child update and lift its commands\nconst nextOp__ = ${namespace}.update(model.${field}, childMessage)\nreturn [\n  { ...model, ${field}: next },\n  Command.mapMessages(commands, message => Got${namespace}Message({ message })),\n]\n\n// Keep the child view behind a keyed submodel boundary\nh.submodel({\n  slotId: '${slug}',\n  model: model.${field},\n  view: ${namespace}.view,\n  viewInputs,\n  toParentMessage: message => Got${namespace}Message({ message }),\n})`;
+    const field = namespace[0]!.toLowerCase() + namespace.slice(1)
+    return `import { Command } from 'foldkit'\nimport * as ${namespace} from '@/ui/${slug}'\n\n// Model and init\n${field}: ${namespace}.Model\n${field}: ${namespace}.init(initConfig)\n\n// Delegate the child update and lift its commands\nconst nextOp__ = ${namespace}.update(model.${field}, childMessage)\nreturn [\n  { ...model, ${field}: next },\n  Command.mapMessages(commands, message => Got${namespace}Message({ message })),\n]\n\n// Keep the child view behind a keyed submodel boundary\nh.submodel({\n  slotId: '${slug}',\n  model: model.${field},\n  view: ${namespace}.view,\n  viewInputs,\n  toParentMessage: message => Got${namespace}Message({ message }),\n})`
   }
-  return `import * as ${namespace} from '@/ui/${slug}'\n\n// Recipes are installed as source. Compose their exports in your view and\n// wire stateful dependencies through the parent Model, Message, and update.\n${namespace}.${primaryExport(slug)}(viewConfig, h)`;
-};
+  return `import * as ${namespace} from '@/ui/${slug}'\n\n// Recipes are installed as source. Compose their exports in your view and\n// wire stateful dependencies through the parent Model, Message, and update.\n${namespace}.${primaryExport(slug)}(viewConfig, h)`
+}
 
 export const view = (
   model: Model,
@@ -244,37 +280,39 @@ export const view = (
   dark: boolean,
   h: HtmlBuilder<Message>,
 ): Html => {
-  const name = componentTitle(slug);
-  const definition = definitions[slug];
+  const name = componentTitle(slug)
+  const definition = definitions[slug]
 
   if (name === undefined || definition === undefined) {
-    throw new Error(`Missing dedicated documentation definition for ${slug}`);
+    throw new Error(`Missing dedicated documentation definition for ${slug}`)
   }
-  const kind = kindFor(slug, definition);
-  const stylexExamples = definition.stylexExamples;
-  const stylexExamplePreviewProvider = stylexExamplePreviewProviders.get(slug);
+  const kind = kindFor(slug, definition)
+  const stylexExamples = definition.stylexExamples
+  const stylexExamplePreviewProvider = stylexExamplePreviewProviders.get(slug)
   if (
     model.renderer === 'stylex' &&
     (stylexExamples === undefined || stylexExamplePreviewProvider === undefined)
   ) {
-    throw new Error(`Missing StyleX example parity for ${slug}`);
+    throw new Error(`Missing StyleX example parity for ${slug}`)
   }
   const authoredExamples =
     model.renderer === 'stylex' && stylexExamples !== undefined
       ? stylexExamples
-      : definition.examples;
-  const authoredProgram = authoredPages[slug]?.previewProgram;
+      : definition.examples
+  const authoredProgram = authoredPages[slug]?.previewProgram
 
   // stateIndex selects the preview-model slot; contentIndex selects which
   // example fixture it renders — the hero reuses content 0 on a spare slot.
   const previewFor = (contentIndex: number, stateIndex: number): Html => {
-    const program = authoredProgram;
+    const program = authoredProgram
     if (program === undefined)
-      throw new Error(`Missing preview program for ${slug}`);
-    const exampleModel = model.examples[stateIndex] ?? program.init(contentIndex);
+      throw new Error(`Missing preview program for ${slug}`)
+    const exampleModel =
+      model.examples[stateIndex] ?? program.init(contentIndex)
     const previewView = defineView<unknown, RoutedDocsPreviewMessage>(
-      (previewModel, previewBuilder) => program.view(contentIndex, previewModel, previewBuilder),
-    );
+      (previewModel, previewBuilder) =>
+        program.view(contentIndex, previewModel, previewBuilder),
+    )
     if (
       model.renderer === 'stylex' &&
       stylexExamples !== undefined &&
@@ -284,51 +322,59 @@ export const view = (
         slotId: `docs-${slug}-stylex-example-${String(stateIndex)}`,
         model: exampleModel,
         view: defineView<unknown, RoutedDocsPreviewMessage>(
-          (stylexModel, stylexBuilder) => stylexExamplePreviewProvider(
-            contentIndex,
-            stylexModel,
-            messageJson => RoutedDocsPreviewMessage.RoutedDocsPreviewMessage({ messageJson }),
-            stylexBuilder,
-          ) ?? stylexBuilder.div([], []),
+          (stylexModel, stylexBuilder) =>
+            stylexExamplePreviewProvider(
+              contentIndex,
+              stylexModel,
+              messageJson =>
+                RoutedDocsPreviewMessage.RoutedDocsPreviewMessage({
+                  messageJson,
+                }),
+              stylexBuilder,
+            ) ?? stylexBuilder.div([], []),
         ),
-        toParentMessage: (message): Message => GotExampleMessage({ index: stateIndex, message }),
-      });
+        toParentMessage: (message): Message =>
+          GotExampleMessage({ index: stateIndex, message }),
+      })
     }
     return h.submodel({
       slotId: `docs-${slug}-example-${String(stateIndex)}`,
       model: exampleModel,
       view: previewView,
-      toParentMessage: (message): Message => GotExampleMessage({ index: stateIndex, message }),
-    });
-  };
+      toParentMessage: (message): Message =>
+        GotExampleMessage({ index: stateIndex, message }),
+    })
+  }
 
   const renderedExamples = authoredExamples
-        .map((config, index) => ({ config, index }))
-        .filter(({ config }) => config.heroOnly !== true)
-        .map(({ config, index }) => {
-          const exampleCode = config.code;
-          return example<Message>(
-            {
-              title: config.title,
-              ...(config.sectionId === undefined
-                ? {}
-                : { sectionId: config.sectionId }),
-              ...(config.description === undefined
-                ? {}
-                : { description: config.description }),
-              preview: previewFor(index, index),
-              code: exampleCode,
-              onCopy: CopyFeedback.Message.ClickedDocsCopyCode({ code: exampleCode }),
-              isCopied: model.copiedCode === exampleCode,
-              dark,
-              codeFileMessage: (message) => GotCodeFileMessage({ message }),
-              ...(config.previewClass === undefined
-                ? {}
-                : { previewClass: config.previewClass }),
-            },
-            h,
-          );
-        });
+    .map((config, index) => ({ config, index }))
+    .filter(({ config }) => config.heroOnly !== true)
+    .map(({ config, index }) => {
+      const exampleCode = config.code
+      return example<Message>(
+        {
+          title: config.title,
+          ...(config.sectionId === undefined
+            ? {}
+            : { sectionId: config.sectionId }),
+          ...(config.description === undefined
+            ? {}
+            : { description: config.description }),
+          preview: previewFor(index, index),
+          code: exampleCode,
+          onCopy: CopyFeedback.Message.ClickedDocsCopyCode({
+            code: exampleCode,
+          }),
+          isCopied: model.copiedCode === exampleCode,
+          dark,
+          codeFileMessage: message => GotCodeFileMessage({ message }),
+          ...(config.previewClass === undefined
+            ? {}
+            : { previewClass: config.previewClass }),
+        },
+        h,
+      )
+    })
 
   const heroEntry =
     authoredExamples
@@ -336,8 +382,8 @@ export const view = (
       .find(({ config }) => config.heroOnly === true) ??
     (authoredExamples[0] === undefined
       ? undefined
-      : { config: authoredExamples[0], index: 0 });
-  const heroIndex = authoredExamples.length;
+      : { config: authoredExamples[0], index: 0 })
+  const heroIndex = authoredExamples.length
   const heroExample =
     heroEntry === undefined
       ? undefined
@@ -354,13 +400,13 @@ export const view = (
             }),
             isCopied: model.copiedCode === heroEntry.config.code,
             dark,
-            codeFileMessage: (message) => GotCodeFileMessage({ message }),
+            codeFileMessage: message => GotCodeFileMessage({ message }),
             ...(heroEntry.config.previewClass === undefined
               ? {}
               : { previewClass: heroEntry.config.previewClass }),
           },
           h,
-        );
+        )
 
   return componentPage<Message>(
     {
@@ -375,24 +421,36 @@ export const view = (
               `@/ui/${slug}`,
               `@/stylex/${slug}`,
             )
-          : definition.usage ?? usageFor(slug, name, kind),
-      ...(definition.sections === undefined ? {} : { sections: definition.sections }),
-      ...(definition.styling === undefined ? {} : { styling: definition.styling }),
+          : (definition.usage ?? usageFor(slug, name, kind)),
+      ...(definition.sections === undefined
+        ? {}
+        : { sections: definition.sections }),
+      ...(definition.styling === undefined
+        ? {}
+        : { styling: definition.styling }),
       ...(definition.accessibility === undefined
         ? {}
         : { accessibility: definition.accessibility }),
-      ...(definition.keyboard === undefined ? {} : { keyboard: definition.keyboard }),
+      ...(definition.keyboard === undefined
+        ? {}
+        : { keyboard: definition.keyboard }),
       copiedCode: model.copiedCode,
-      onCopyCode: (code) => CopyFeedback.Message.ClickedDocsCopyCode({ code }),
+      onCopyCode: code => CopyFeedback.Message.ClickedDocsCopyCode({ code }),
       dark,
-      codeFileMessage: (message) => GotCodeFileMessage({ message }),
+      codeFileMessage: message => GotCodeFileMessage({ message }),
       exampleTitles: authoredExamples
-        .filter((example) => example.heroOnly !== true)
-        .map((example) => [example.sectionId ?? toSlug(example.title), example.title] as const),
+        .filter(example => example.heroOnly !== true)
+        .map(
+          example =>
+            [
+              example.sectionId ?? toSlug(example.title),
+              example.title,
+            ] as const,
+        ),
       ...(heroExample === undefined ? {} : { heroExample }),
       sidebarScrolled: CopyFeedback.Message.ObservedDocsSidebarScroll(),
       renderer: model.renderer,
-      onRendererChange: (renderer) => ChangedRenderer({ renderer }),
+      onRendererChange: renderer => ChangedRenderer({ renderer }),
       composition:
         definition.composition ??
         compositionFor(kind, name, primaryExport(slug)),
@@ -403,8 +461,10 @@ export const view = (
         definition.apiDescription ??
         `${name} is source-owned after installation. Its public model, messages, update function, and view helpers are documented directly in the installed TypeScript source.`,
       apiEntries:
-        slug === 'toast' ? (componentApi.sonner ?? []) : (componentApi[slug] ?? []),
+        slug === 'toast'
+          ? (componentApi.sonner ?? [])
+          : (componentApi[slug] ?? []),
     },
     h,
-  );
-};
+  )
+}

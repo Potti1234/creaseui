@@ -100,9 +100,13 @@ const initialModel = (
     contentFocus: options.productsContentFocus ?? true,
   })
   return {
-    products: options.productsOpen === true
-      ? PopoverPrimitive.update(productsBase, PopoverPrimitive.Message.RequestedOpen()).model
-      : productsBase,
+    products:
+      options.productsOpen === true
+        ? PopoverPrimitive.update(
+            productsBase,
+            PopoverPrimitive.Message.RequestedOpen(),
+          ).model
+        : productsBase,
     resources: PopoverPrimitive.init({ id: 'resources' }),
     homeActive: options.homeActive ?? false,
   }
@@ -165,14 +169,32 @@ const disclosureIcon = Scene.selector('svg.lucide-chevron-down')
    mounts a body portal; every scene step that opens a menu resolves both, and
    every close acknowledges their unmount plus the focus-restore Command. */
 const resolveOpenMounts = Scene.Mount.resolveAll(
-  [PopoverPrimitive.AnchorPopover, PopoverPrimitive.Message.CompletedAnchorPopover()],
-  [PopoverPrimitive.PortalPopoverBackdrop, PopoverPrimitive.Message.CompletedPortalPopoverBackdrop()],
+  [
+    PopoverPrimitive.AnchorPopover,
+    PopoverPrimitive.Message.CompletedAnchorPopover(),
+  ],
+  [
+    PopoverPrimitive.PortalPopoverBackdrop,
+    PopoverPrimitive.Message.CompletedPortalPopoverBackdrop(),
+  ],
 )
 const resolveBothOpenMounts = Scene.Mount.resolveAll(
-  [PopoverPrimitive.AnchorPopover, PopoverPrimitive.Message.CompletedAnchorPopover()],
-  [PopoverPrimitive.AnchorPopover, PopoverPrimitive.Message.CompletedAnchorPopover()],
-  [PopoverPrimitive.PortalPopoverBackdrop, PopoverPrimitive.Message.CompletedPortalPopoverBackdrop()],
-  [PopoverPrimitive.PortalPopoverBackdrop, PopoverPrimitive.Message.CompletedPortalPopoverBackdrop()],
+  [
+    PopoverPrimitive.AnchorPopover,
+    PopoverPrimitive.Message.CompletedAnchorPopover(),
+  ],
+  [
+    PopoverPrimitive.AnchorPopover,
+    PopoverPrimitive.Message.CompletedAnchorPopover(),
+  ],
+  [
+    PopoverPrimitive.PortalPopoverBackdrop,
+    PopoverPrimitive.Message.CompletedPortalPopoverBackdrop(),
+  ],
+  [
+    PopoverPrimitive.PortalPopoverBackdrop,
+    PopoverPrimitive.Message.CompletedPortalPopoverBackdrop(),
+  ],
 )
 /* expectEnded consumes its own matcher list, so it must be built fresh per
    scene — a shared instance silently acknowledges nothing on its second use. */
@@ -262,29 +284,37 @@ const menuView =
     )
 
 const controlledView =
-  (NavigationMenu: NavigationMenuModule) => (model: Model, h: HtmlBuilder<Message>) =>
-    h.div([], [
-      h.button(
-        [
-          h.Type('button'),
-          h.OnClick({ _tag: 'SetProductsOpen', isOpen: !model.products.isOpen }),
-        ],
-        ['Toggle products'],
-      ),
-      menuView(NavigationMenu, { navAriaLabel: 'Primary' })(model, h),
-    ])
+  (NavigationMenu: NavigationMenuModule) =>
+  (model: Model, h: HtmlBuilder<Message>) =>
+    h.div(
+      [],
+      [
+        h.button(
+          [
+            h.Type('button'),
+            h.OnClick({
+              _tag: 'SetProductsOpen',
+              isOpen: !model.products.isOpen,
+            }),
+          ],
+          ['Toggle products'],
+        ),
+        menuView(NavigationMenu, { navAriaLabel: 'Primary' })(model, h),
+      ],
+    )
 
 const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
   describe(`${name} NavigationMenu (Base UI port)`, () => {
     describe('ARIA attributes', () => {
       it('renders a navigation landmark containing the list', () => {
         Scene.scene(
-          { update, view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }) },
+          {
+            update,
+            view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }),
+          },
           Scene.given(initialModel()),
           Scene.expect(navigationMenu).toHaveAttr('aria-label', 'Primary'),
-          Scene.expect(
-            Scene.within(navigationMenu, navigationList),
-          ).toExist(),
+          Scene.expect(Scene.within(navigationMenu, navigationList)).toExist(),
           Scene.expect(
             Scene.within(
               navigationList,
@@ -304,7 +334,10 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
 
       it('does not apply aria-orientation to the top-level list or root element', () => {
         Scene.scene(
-          { update, view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }) },
+          {
+            update,
+            view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }),
+          },
           Scene.given(initialModel()),
           Scene.expect(navigationMenu).not.toHaveAttr('aria-orientation'),
           Scene.expect(navigationList).not.toHaveAttr('aria-orientation'),
@@ -313,7 +346,10 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
 
       it('marks the trigger collapsed with no aria-controls while closed', () => {
         Scene.scene(
-          { update, view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }) },
+          {
+            update,
+            view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }),
+          },
           Scene.given(initialModel()),
           Scene.expect(productsTrigger).toHaveAttr('type', 'button'),
           Scene.expect(productsTrigger).toHaveAttr('aria-expanded', 'false'),
@@ -325,12 +361,18 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
 
       it('links the trigger to the open popup through aria-controls', () => {
         Scene.scene(
-          { update, view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }) },
+          {
+            update,
+            view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }),
+          },
           Scene.given(initialModel()),
           Scene.click(productsTrigger),
           Scene.expectHandled(),
           Scene.expect(productsTrigger).toHaveAttr('aria-expanded', 'true'),
-          Scene.expect(productsTrigger).toHaveAttr('aria-controls', 'products-panel'),
+          Scene.expect(productsTrigger).toHaveAttr(
+            'aria-controls',
+            'products-panel',
+          ),
           Scene.expect(productsPanel).toHaveId('products-panel'),
           resolveOpenMounts,
         )
@@ -338,7 +380,10 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
 
       it('renders the disclosure chevron hidden from assistive technology', () => {
         Scene.scene(
-          { update, view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }) },
+          {
+            update,
+            view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }),
+          },
           Scene.given(initialModel()),
           Scene.expect(disclosureIcon).toHaveAttr('aria-hidden', 'true'),
         )
@@ -346,7 +391,10 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
 
       it('renders links as anchors with an href', () => {
         Scene.scene(
-          { update, view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }) },
+          {
+            update,
+            view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }),
+          },
           Scene.given(initialModel()),
           Scene.expect(homeLink).toHaveAttr('href', '#home'),
         )
@@ -354,7 +402,10 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
 
       it('when `true`, renders the link with aria-current="page"', () => {
         Scene.scene(
-          { update, view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }) },
+          {
+            update,
+            view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }),
+          },
           Scene.given(initialModel({ homeActive: true })),
           Scene.expect(homeLink).toHaveAttr('aria-current', 'page'),
           Scene.expect(homeLink).toHaveAttr('data-active', ''),
@@ -363,7 +414,10 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
 
       it('when `false`, does not render the link with aria-current="page"', () => {
         Scene.scene(
-          { update, view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }) },
+          {
+            update,
+            view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }),
+          },
           Scene.given(initialModel({ homeActive: false })),
           Scene.expect(homeLink).not.toHaveAttr('aria-current'),
           Scene.expect(homeLink).not.toHaveAttr('data-active'),
@@ -375,7 +429,10 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
       // Popover, so the trigger declares aria-haspopup="dialog".
       it('declares aria-haspopup="dialog" on the disclosure trigger (documented divergence)', () => {
         Scene.scene(
-          { update, view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }) },
+          {
+            update,
+            view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }),
+          },
           Scene.given(initialModel()),
           Scene.expect(productsTrigger).toHaveAttr('aria-haspopup', 'dialog'),
         )
@@ -385,7 +442,10 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
     describe('interactions', () => {
       it('opens on hover with mouse input', () => {
         Scene.scene(
-          { update, view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }) },
+          {
+            update,
+            view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }),
+          },
           Scene.given(initialModel()),
           Scene.hover(productsHoverLabel),
           Scene.expectHandled(),
@@ -402,7 +462,10 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
         // opt-in per disclosure — the press-intent trigger carries no
         // OnMouseEnter handler at all.
         Scene.scene(
-          { update, view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }) },
+          {
+            update,
+            view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }),
+          },
           Scene.given(initialModel()),
           Scene.expect(resourcesHoverLabel).not.toHaveHandler('mouseenter'),
           Scene.expect(productsHoverLabel).toHaveHandler('mouseenter'),
@@ -411,7 +474,10 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
 
       it('opens on click with mouse input', () => {
         Scene.scene(
-          { update, view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }) },
+          {
+            update,
+            view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }),
+          },
           Scene.given(initialModel()),
           Scene.click(productsTrigger),
           Scene.expectHandled(),
@@ -423,7 +489,10 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
 
       it('opens on click with touch input', () => {
         Scene.scene(
-          { update, view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }) },
+          {
+            update,
+            view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }),
+          },
           Scene.given(initialModel()),
           Scene.pointerDown(productsTrigger, { pointerType: 'touch' }),
           Scene.expectHandled(),
@@ -437,7 +506,10 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
 
       it('swallows the trailing click after a mouse pointerdown already opened', () => {
         Scene.scene(
-          { update, view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }) },
+          {
+            update,
+            view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }),
+          },
           Scene.given(initialModel()),
           Scene.pointerDown(productsTrigger),
           Scene.expectHandled(),
@@ -453,7 +525,10 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
 
       it('opens with the ArrowDown key', () => {
         Scene.scene(
-          { update, view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }) },
+          {
+            update,
+            view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }),
+          },
           Scene.given(initialModel()),
           Scene.keydown(productsTrigger, 'ArrowDown'),
           Scene.expectHandled(),
@@ -464,7 +539,10 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
 
       it('opens with the Enter key', () => {
         Scene.scene(
-          { update, view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }) },
+          {
+            update,
+            view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }),
+          },
           Scene.given(initialModel()),
           Scene.keydown(productsTrigger, 'Enter'),
           Scene.expectHandled(),
@@ -478,7 +556,10 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
       // only suppresses the page scroll). The DSL has no keyup step.
       it('opens with the Space key', () => {
         Scene.scene(
-          { update, view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }) },
+          {
+            update,
+            view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }),
+          },
           Scene.given(initialModel()),
           Scene.keydown(productsTrigger, ' '),
           Scene.expectHandled(),
@@ -489,7 +570,10 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
 
       it('closes with the Escape key on the trigger', () => {
         Scene.scene(
-          { update, view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }) },
+          {
+            update,
+            view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }),
+          },
           Scene.given(initialModel()),
           Scene.click(productsTrigger),
           Scene.expectHandled(),
@@ -506,7 +590,10 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
 
       it('closes with the Escape key inside the popup', () => {
         Scene.scene(
-          { update, view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }) },
+          {
+            update,
+            view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }),
+          },
           Scene.given(initialModel()),
           Scene.click(productsTrigger),
           Scene.expectHandled(),
@@ -522,7 +609,10 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
 
       it('closes when the backdrop is clicked', () => {
         Scene.scene(
-          { update, view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }) },
+          {
+            update,
+            view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }),
+          },
           Scene.given(initialModel()),
           Scene.click(productsTrigger),
           Scene.expectHandled(),
@@ -540,7 +630,10 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
         // The DSL cannot observe real focus; the contract it can check is
         // that closing emits the popover's FocusButton command.
         Scene.scene(
-          { update, view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }) },
+          {
+            update,
+            view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }),
+          },
           Scene.given(initialModel()),
           Scene.click(productsTrigger),
           Scene.expectHandled(),
@@ -558,7 +651,10 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
         // it closes without asking to refocus the trigger (Base UI's
         // "does not restore focus when focus moves outside").
         Scene.scene(
-          { update, view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }) },
+          {
+            update,
+            view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }),
+          },
           Scene.given(initialModel({ productsContentFocus: false })),
           Scene.click(productsTrigger),
           Scene.expectHandled(),
@@ -573,7 +669,10 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
 
       it('keeps the menu open when the panel blurs after a mouse press', () => {
         Scene.scene(
-          { update, view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }) },
+          {
+            update,
+            view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }),
+          },
           Scene.given(initialModel({ productsContentFocus: false })),
           Scene.pointerDown(productsTrigger),
           Scene.expectHandled(),
@@ -588,45 +687,48 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
       // DIVERGENCE: Base UI holds a single `value` — opening another trigger
       // collapses the previous item (aria-expanded flips to false). creaseui's
       // disclosures are independent Popovers, so both stay open.
-      it.fails(
-        'closes the previously open item when a different trigger opens (mouse)',
-        () => {
-          Scene.scene(
-            { update, view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }) },
-            Scene.given(initialModel()),
-            Scene.click(productsTrigger),
-            Scene.expectHandled(),
-            resolveOpenMounts,
-            Scene.click(resourcesTrigger),
-            Scene.expectHandled(),
-            Scene.expect(productsTrigger).toHaveAttr('aria-expanded', 'false'),
-          )
-        },
-      )
+      it.fails('closes the previously open item when a different trigger opens (mouse)', () => {
+        Scene.scene(
+          {
+            update,
+            view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }),
+          },
+          Scene.given(initialModel()),
+          Scene.click(productsTrigger),
+          Scene.expectHandled(),
+          resolveOpenMounts,
+          Scene.click(resourcesTrigger),
+          Scene.expectHandled(),
+          Scene.expect(productsTrigger).toHaveAttr('aria-expanded', 'false'),
+        )
+      })
 
-      it.fails(
-        'closes the previously open item when a different trigger opens (touch)',
-        () => {
-          Scene.scene(
-            { update, view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }) },
-            Scene.given(initialModel()),
-            Scene.click(productsTrigger),
-            Scene.expectHandled(),
-            resolveOpenMounts,
-            Scene.pointerDown(resourcesTrigger, { pointerType: 'touch' }),
-            Scene.expectHandled(),
-            Scene.click(resourcesTrigger),
-            Scene.expectHandled(),
-            Scene.expect(productsTrigger).toHaveAttr('aria-expanded', 'false'),
-          )
-        },
-      )
+      it.fails('closes the previously open item when a different trigger opens (touch)', () => {
+        Scene.scene(
+          {
+            update,
+            view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }),
+          },
+          Scene.given(initialModel()),
+          Scene.click(productsTrigger),
+          Scene.expectHandled(),
+          resolveOpenMounts,
+          Scene.pointerDown(resourcesTrigger, { pointerType: 'touch' }),
+          Scene.expectHandled(),
+          Scene.click(resourcesTrigger),
+          Scene.expectHandled(),
+          Scene.expect(productsTrigger).toHaveAttr('aria-expanded', 'false'),
+        )
+      })
 
       // DIVERGENCE: Base UI marks an open trigger data-popup-open (+data-pressed);
       // creaseui's popover marks it data-open instead.
       it.fails('marks the open trigger data-popup-open', () => {
         Scene.scene(
-          { update, view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }) },
+          {
+            update,
+            view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }),
+          },
           Scene.given(initialModel()),
           Scene.click(productsTrigger),
           Scene.expectHandled(),
@@ -637,21 +739,21 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
       // DIVERGENCE: Base UI keeps a single open value and only notifies a
       // switch; creaseui emits an Opened OutMessage per disclosure — the
       // first stays open, so no Closed precedes the second Opened.
-      it.fails(
-        'reports only the newly opened item when switching triggers',
-        () => {
-          Scene.scene(
-            { update, view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }) },
-            Scene.given(initialModel()),
-            Scene.click(productsTrigger),
-            Scene.expectHandled(),
-            resolveOpenMounts,
-            Scene.click(resourcesTrigger),
-            Scene.expectHandled(),
-            Scene.expectOutMessage(PopoverPrimitive.OutMessage.Closed()),
-          )
-        },
-      )
+      it.fails('reports only the newly opened item when switching triggers', () => {
+        Scene.scene(
+          {
+            update,
+            view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }),
+          },
+          Scene.given(initialModel()),
+          Scene.click(productsTrigger),
+          Scene.expectHandled(),
+          resolveOpenMounts,
+          Scene.click(resourcesTrigger),
+          Scene.expectHandled(),
+          Scene.expectOutMessage(PopoverPrimitive.OutMessage.Closed()),
+        )
+      })
 
       it.todo(
         'does not open on hover with touch input ' +
@@ -688,7 +790,10 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
     describe('prop: defaultValue', () => {
       it('respects an initially open value', () => {
         Scene.scene(
-          { update, view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }) },
+          {
+            update,
+            view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }),
+          },
           Scene.given(initialModel({ productsOpen: true })),
           Scene.expect(productsTrigger).toHaveAttr('aria-expanded', 'true'),
           Scene.expect(productsPanel).toExist(),
@@ -723,7 +828,10 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
     describe('prop: onValueChange', () => {
       it('notifies the parent through OutMessages when the state changes', () => {
         Scene.scene(
-          { update, view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }) },
+          {
+            update,
+            view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }),
+          },
           Scene.given(initialModel()),
           Scene.click(productsTrigger),
           Scene.expectHandled(),
@@ -772,7 +880,9 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
 
     describe('props: delay, closeDelay, side, orientation', () => {
       it.todo('respects a custom delay value (creaseui exposes no delay prop)')
-      it.todo('respects a custom closeDelay value (creaseui exposes no closeDelay prop)')
+      it.todo(
+        'respects a custom closeDelay value (creaseui exposes no closeDelay prop)',
+      )
       it.todo(
         'renders the popup on the requested side ' +
           '(the disclosure hardcodes bottom-start anchoring)',
@@ -799,7 +909,10 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
 
       it('does not keep the content mounted when closed', () => {
         Scene.scene(
-          { update, view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }) },
+          {
+            update,
+            view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }),
+          },
           Scene.given(initialModel()),
           Scene.expect(productsPanel).toBeAbsent(),
         )
@@ -839,7 +952,10 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
     describe('style hooks', () => {
       it('applies data-open to the trigger only while open', () => {
         Scene.scene(
-          { update, view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }) },
+          {
+            update,
+            view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }),
+          },
           Scene.given(initialModel()),
           Scene.expect(productsTrigger).not.toHaveAttr('data-open'),
           Scene.click(productsTrigger),
@@ -855,7 +971,10 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
         // renderer-specific class, so there is no attribute to port — the
         // icon's presence and hidden state is asserted in ARIA attributes.
         Scene.scene(
-          { update, view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }) },
+          {
+            update,
+            view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }),
+          },
           Scene.given(initialModel()),
           Scene.expect(disclosureIcon).toExist(),
           Scene.click(productsTrigger),

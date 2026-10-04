@@ -41,8 +41,10 @@ type OptionState = Readonly<{
 
 const childAttributeTag = (attribute: ChildAttribute): string | undefined => {
   const value = attribute.attribute
-  return typeof value === 'object' && value !== null && '_tag' in value &&
-      typeof value._tag === 'string'
+  return typeof value === 'object' &&
+    value !== null &&
+    '_tag' in value &&
+    typeof value._tag === 'string'
     ? value._tag
     : undefined
 }
@@ -69,14 +71,18 @@ export const renderRadioGroup = <Msg>(
     view: StringRadioGroup.view,
     viewInputs: {
       selectedValue: props.selectedValue,
-      options: props.options.map((option) => option.value),
+      options: props.options.map(option => option.value),
       ariaLabel: props.ariaLabel,
       isDisabled: props.isDisabled ?? false,
       isReadOnly: props.isReadOnly ?? false,
-      isOptionDisabled: (_value, index) => props.options[index]?.isDisabled === true,
-      hasOptionDescription: (_value, index) => props.options[index]?.description !== undefined,
+      isOptionDisabled: (_value, index) =>
+        props.options[index]?.isDisabled === true,
+      hasOptionDescription: (_value, index) =>
+        props.options[index]?.description !== undefined,
       ...(props.name === undefined ? {} : { name: props.name }),
-      ...(props.orientation === undefined ? {} : { orientation: props.orientation }),
+      ...(props.orientation === undefined
+        ? {}
+        : { orientation: props.orientation }),
       toView: ({ group, options, hiddenInput }) =>
         h.div(
           [
@@ -86,43 +92,61 @@ export const renderRadioGroup = <Msg>(
             ...visual.group,
           ],
           [
-            ...options.map((option) => {
+            ...options.map(option => {
               const content = props.options[option.index]
               if (content === undefined) return h.empty
-              return h.div([...visual.row], [
-                h.button(
-                  [
-                    ...option.option.filter(
-                      (attribute) =>
-                        content.description !== undefined ||
-                        childAttributeTag(attribute) !== 'AriaDescribedBy',
-                    ),
-                    h.Type('button'),
-                    h.DataAttribute('slot', 'radio-group-item'),
-                    ...(content.isInvalid === true ? [h.AriaInvalid(true)] : []),
-                    ...visual.item(option),
-                  ],
-                  [
-                    h.span(
-                      [h.DataAttribute('slot', 'radio-group-indicator'), ...visual.indicator],
-                      [toIndicator(option.isSelected, h)],
-                    ),
-                  ],
-                ),
-                h.div([...visual.text], [
-                  h.label(
+              return h.div(
+                [...visual.row],
+                [
+                  h.button(
                     [
-                      ...option.label,
-                      h.For(`${props.model.id}-option-${String(option.index)}`),
-                      ...visual.label,
+                      ...option.option.filter(
+                        attribute =>
+                          content.description !== undefined ||
+                          childAttributeTag(attribute) !== 'AriaDescribedBy',
+                      ),
+                      h.Type('button'),
+                      h.DataAttribute('slot', 'radio-group-item'),
+                      ...(content.isInvalid === true
+                        ? [h.AriaInvalid(true)]
+                        : []),
+                      ...visual.item(option),
                     ],
-                    [content.label],
+                    [
+                      h.span(
+                        [
+                          h.DataAttribute('slot', 'radio-group-indicator'),
+                          ...visual.indicator,
+                        ],
+                        [toIndicator(option.isSelected, h)],
+                      ),
+                    ],
                   ),
-                  ...(content.description === undefined
-                    ? []
-                    : [h.p([...option.description, ...visual.description], [content.description])]),
-                ]),
-              ])
+                  h.div(
+                    [...visual.text],
+                    [
+                      h.label(
+                        [
+                          ...option.label,
+                          h.For(
+                            `${props.model.id}-option-${String(option.index)}`,
+                          ),
+                          ...visual.label,
+                        ],
+                        [content.label],
+                      ),
+                      ...(content.description === undefined
+                        ? []
+                        : [
+                            h.p(
+                              [...option.description, ...visual.description],
+                              [content.description],
+                            ),
+                          ]),
+                    ],
+                  ),
+                ],
+              )
             }),
             ...(props.name === undefined ? [] : [h.input([...hiddenInput])]),
           ],

@@ -20,9 +20,13 @@ const recipes = new Set(roadmap.classifications.recipe)
 const legacy = new Set(roadmap.classifications.legacy)
 const upstreamNames = new Set(upstream.components)
 
-const missing = upstream.components.filter(component => !registryNames.includes(component))
+const missing = upstream.components.filter(
+  component => !registryNames.includes(component),
+)
 if (missing.length > 0) {
-  throw new Error(`Upstream components missing from Crease UI: ${missing.join(', ')}`)
+  throw new Error(
+    `Upstream components missing from Crease UI: ${missing.join(', ')}`,
+  )
 }
 
 const classificationFor = component =>
@@ -69,7 +73,9 @@ const contract = {
   summary: {
     upstreamItems: upstream.components.length,
     registryItems: registryNames.length,
-    creaseOnlyRecipes: registryNames.filter(component => !upstreamNames.has(component)),
+    creaseOnlyRecipes: registryNames.filter(
+      component => !upstreamNames.has(component),
+    ),
   },
   components,
 }
@@ -81,9 +87,13 @@ if (process.argv.includes('--write')) {
 } else {
   const current = await readFile(outputPath, 'utf8').catch(() => '')
   if (current !== output) {
-    console.error('Component parity contract is stale. Run npm run parity:generate.')
+    console.error(
+      'Component parity contract is stale. Run npm run parity:generate.',
+    )
     process.exitCode = 1
   } else {
-    console.log(`Component parity contract passed (${components.length} components).`)
+    console.log(
+      `Component parity contract passed (${components.length} components).`,
+    )
   }
 }

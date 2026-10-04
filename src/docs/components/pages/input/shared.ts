@@ -1,5 +1,5 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type InputKind =
   | 'basic'
@@ -15,13 +15,13 @@ export type InputKind =
   | 'inputGroup'
   | 'buttonGroup'
   | 'form'
-  | 'rtl';
+  | 'rtl'
 
 export interface InputFixture {
-  readonly title: string;
-  readonly description?: string;
-  readonly heroOnly?: boolean;
-  readonly kind: InputKind;
+  readonly title: string
+  readonly description?: string
+  readonly heroOnly?: boolean
+  readonly kind: InputKind
 }
 
 export const inputFixtures: Readonly<[InputFixture, ...Array<InputFixture>]> = [
@@ -39,22 +39,26 @@ export const inputFixtures: Readonly<[InputFixture, ...Array<InputFixture>]> = [
   { title: 'Button Group', kind: 'buttonGroup' },
   { title: 'Form', kind: 'form' },
   { title: 'RTL', kind: 'rtl' },
-];
+]
 
-export const inputCountries: ReadonlyArray<Readonly<{ value: string; label: string }>> = [
+export const inputCountries: ReadonlyArray<
+  Readonly<{ value: string; label: string }>
+> = [
   { value: 'us', label: 'United States' },
   { value: 'uk', label: 'United Kingdom' },
   { value: 'ca', label: 'Canada' },
-];
+]
 
 export const inputRtlCopy = {
   label: 'مفتاح API',
   placeholder: 'sk-...',
   description: 'مفتاح API الخاص بك مشفر ومخزن بأمان.',
-} as const;
+} as const
 
 /* Text-field keys owned by each kind in the preview model. */
-export const inputFieldKeys: Readonly<Record<InputKind, ReadonlyArray<string>>> = {
+export const inputFieldKeys: Readonly<
+  Record<InputKind, ReadonlyArray<string>>
+> = {
   basic: ['basic'],
   field: ['username'],
   fieldGroup: ['name', 'email'],
@@ -69,74 +73,81 @@ export const inputFieldKeys: Readonly<Record<InputKind, ReadonlyArray<string>>> 
   buttonGroup: ['searchButton'],
   form: ['formName', 'formEmail', 'formPhone', 'formAddress'],
   rtl: ['apiKey'],
-};
+}
 
-const sq = (value: string): string => value.replaceAll("'", "\\'");
+const sq = (value: string): string => value.replaceAll("'", "\\'")
 
-const kindUsesField = (kind: InputKind): boolean => kind !== 'basic';
+const kindUsesField = (kind: InputKind): boolean => kind !== 'basic'
 const kindUsesButton = (kind: InputKind): boolean =>
-  kind === 'fieldGroup' || kind === 'inline' || kind === 'buttonGroup' || kind === 'form';
-const kindUsesSelect = (kind: InputKind): boolean => kind === 'form';
+  kind === 'fieldGroup' ||
+  kind === 'inline' ||
+  kind === 'buttonGroup' ||
+  kind === 'form'
+const kindUsesSelect = (kind: InputKind): boolean => kind === 'form'
 
 const emitImports = (fixture: InputFixture, isStyleX: boolean): string => {
-  const base = isStyleX ? 'stylex' : 'ui';
+  const base = isStyleX ? 'stylex' : 'ui'
   const parts: Array<string> = [
     "import { Command, Runtime, Subscription, Update } from 'foldkit'",
     "import { type Document, type HtmlBuilder } from 'foldkit/html'",
     "import { defineMessageUnion } from 'foldkit/message'",
-  ];
+  ]
   if (isStyleX) {
-    parts.push("", "import * as stylex from '@stylexjs/stylex'");
+    parts.push('', "import * as stylex from '@stylexjs/stylex'")
   }
   if (kindUsesButton(fixture.kind)) {
-    parts.push(`import * as Button from '@/${base}/button'`);
+    parts.push(`import * as Button from '@/${base}/button'`)
   }
   if (fixture.kind === 'badge') {
-    parts.push(`import * as Badge from '@/${base}/badge'`);
+    parts.push(`import * as Badge from '@/${base}/badge'`)
   }
   if (fixture.kind === 'buttonGroup') {
-    parts.push(`import * as ButtonGroup from '@/${base}/button-group'`);
+    parts.push(`import * as ButtonGroup from '@/${base}/button-group'`)
   }
   if (kindUsesField(fixture.kind)) {
-    parts.push(`import * as Field from '@/${base}/field'`);
+    parts.push(`import * as Field from '@/${base}/field'`)
   }
   if (fixture.kind === 'inputGroup') {
-    parts.push(`import * as InputGroup from '@/${base}/input-group'`);
+    parts.push(`import * as InputGroup from '@/${base}/input-group'`)
   }
-  parts.push(`import * as Input from '@/${base}/input'`);
+  parts.push(`import * as Input from '@/${base}/input'`)
   if (kindUsesSelect(fixture.kind)) {
-    parts.push(`import * as Select from '@/${base}/select'`);
+    parts.push(`import * as Select from '@/${base}/select'`)
   }
   if (fixture.kind === 'inputGroup') {
-    parts.push("import * as Icon from '@/lib/icon'");
+    parts.push("import * as Icon from '@/lib/icon'")
   }
-  return parts.join('\n');
-};
+  return parts.join('\n')
+}
 
 const emitStyles = (fixture: InputFixture): string => {
-  const extras: Array<string> = [];
+  const extras: Array<string> = []
   if (fixture.kind === 'form') {
-    extras.push("  form: { width: '100%', maxWidth: '24rem' },");
+    extras.push("  form: { width: '100%', maxWidth: '24rem' },")
   }
   if (fixture.kind === 'grid') {
-    extras.push("  gridTwo: { display: 'grid', maxWidth: '24rem', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '1rem' },");
+    extras.push(
+      "  gridTwo: { display: 'grid', maxWidth: '24rem', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '1rem' },",
+    )
   }
   if (fixture.kind === 'form') {
-    extras.push("  gridTwo: { display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '1rem' },");
+    extras.push(
+      "  gridTwo: { display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '1rem' },",
+    )
   }
   if (fixture.kind === 'badge') {
-    extras.push("  push: { marginInlineStart: 'auto' },");
+    extras.push("  push: { marginInlineStart: 'auto' },")
   }
   if (fixture.kind === 'required') {
-    extras.push("  destructive: { color: 'var(--destructive)' },");
+    extras.push("  destructive: { color: 'var(--destructive)' },")
   }
   return `
 
 const styles = stylex.create({
 ${extras.join('\n')}
   page: { display: 'flex', minHeight: '100vh', alignItems: 'center', justifyContent: 'center', padding: '2rem' },
-})`;
-};
+})`
+}
 
 const emitModel = (fixture: InputFixture): string =>
   kindUsesSelect(fixture.kind)
@@ -147,7 +158,7 @@ const emitModel = (fixture: InputFixture): string =>
 })
 export type Model = typeof Model.Type`
     : `export const Model = S.Struct({ values: S.Record(S.String, S.String) })
-export type Model = typeof Model.Type`;
+export type Model = typeof Model.Type`
 
 const emitMessages = (fixture: InputFixture): string =>
   kindUsesSelect(fixture.kind)
@@ -159,7 +170,7 @@ export type Message = typeof Message.Type`
     : `export const Message = defineMessageUnion({
   ChangedInputValue: { field: S.String, value: S.String },
 })
-export type Message = typeof Message.Type`;
+export type Message = typeof Message.Type`
 
 const emitInit = (fixture: InputFixture): string =>
   kindUsesSelect(fixture.kind)
@@ -170,7 +181,7 @@ const emitInit = (fixture: InputFixture): string =>
     maybeCountry: Option.some('us'),
   },
 })`
-    : `export const init = (): Update.Return<Model, Message> => ({ model: { values: {} } })`;
+    : `export const init = (): Update.Return<Model, Message> => ({ model: { values: {} } })`
 
 const emitUpdate = (fixture: InputFixture): string =>
   kindUsesSelect(fixture.kind)
@@ -197,39 +208,51 @@ const emitUpdate = (fixture: InputFixture): string =>
     case 'ChangedInputValue':
       return { model: { ...model, values: { ...model.values, [message.field]: message.value } } }
   }
-}`;
+}`
 
 const emitInput = (key: string, id: string, extras: string = ''): string =>
   `Input.input({
           id: '${id}',
           value: model.values['${key}'] ?? '',
           onInput: value => Message.ChangedInputValue({ field: '${key}', value }),${extras}
-        }, h)`;
+        }, h)`
 
 const emitFieldRow = (lines: ReadonlyArray<string>): string =>
   `Field.field({
         children: [
 ${lines.map(line => `          ${line}`).join(',\n')}
         ],
-      }, h)`;
+      }, h)`
 
 const emitBody = (fixture: InputFixture, isStyleX: boolean): string => {
-  const label = (forId: string, text: string | null, children?: string): string =>
-    `Field.fieldLabel({ for: '${forId}', children: [${children ?? `'${sq(text ?? '')}'`}] }, h)`;
+  const label = (
+    forId: string,
+    text: string | null,
+    children?: string,
+  ): string =>
+    `Field.fieldLabel({ for: '${forId}', children: [${children ?? `'${sq(text ?? '')}'`}] }, h)`
   const desc = (text: string): string =>
-    `Field.fieldDescription({ children: ['${sq(text)}'] }, h)`;
-  const gridClass = isStyleX ? "stylex.props(styles.gridTwo).className ?? ''" : "'grid grid-cols-2 gap-4'";
-  const pageClass = isStyleX ? "stylex.props(styles.page).className ?? ''" : "'flex min-h-screen items-center justify-center p-8'";
+    `Field.fieldDescription({ children: ['${sq(text)}'] }, h)`
+  const gridClass = isStyleX
+    ? "stylex.props(styles.gridTwo).className ?? ''"
+    : "'grid grid-cols-2 gap-4'"
+  const pageClass = isStyleX
+    ? "stylex.props(styles.page).className ?? ''"
+    : "'flex min-h-screen items-center justify-center p-8'"
 
   switch (fixture.kind) {
     case 'basic':
-      return `    ${emitInput('basic', 'input-basic', `\n          placeholder: 'Enter text',`)}`;
+      return `    ${emitInput('basic', 'input-basic', `\n          placeholder: 'Enter text',`)}`
     case 'field':
       return `    ${emitFieldRow([
         label('input-field-username', 'Username'),
-        emitInput('username', 'input-field-username', `\n          type: 'text',\n          placeholder: 'Enter your username',`),
+        emitInput(
+          'username',
+          'input-field-username',
+          `\n          type: 'text',\n          placeholder: 'Enter your username',`,
+        ),
         desc('Choose a unique username for your account.'),
-      ])}`;
+      ])}`
     case 'fieldGroup':
       return `    Field.fieldGroup({
         children: [
@@ -254,13 +277,17 @@ const emitBody = (fixture: InputFixture, isStyleX: boolean): string => {
             ],
           }, h),
         ],
-      }, h)`;
+      }, h)`
     case 'disabled':
       return `    ${emitFieldRow([
         label('input-demo-disabled', 'Email'),
-        emitInput('disabled', 'input-demo-disabled', `\n          type: 'email',\n          placeholder: 'Email',\n          isDisabled: true,`),
+        emitInput(
+          'disabled',
+          'input-demo-disabled',
+          `\n          type: 'email',\n          placeholder: 'Email',\n          isDisabled: true,`,
+        ),
         desc('This field is currently disabled.'),
-      ])}`;
+      ])}`
     case 'invalid':
       return `    Field.field({
         isInvalid: true,
@@ -269,13 +296,13 @@ const emitBody = (fixture: InputFixture, isStyleX: boolean): string => {
           ${emitInput('invalid', 'input-invalid', `\n          placeholder: 'Error',\n          isInvalid: true,`)},
           ${desc('This field contains validation errors.')},
         ],
-      }, h)`;
+      }, h)`
     case 'file':
       return `    ${emitFieldRow([
         label('picture', 'Picture'),
         emitInput('file', 'picture', `\n          type: 'file',`),
         desc('Select a picture to upload.'),
-      ])}`;
+      ])}`
     case 'inline':
       return `    Field.field({
         orientation: 'horizontal',
@@ -283,7 +310,7 @@ const emitBody = (fixture: InputFixture, isStyleX: boolean): string => {
           ${emitInput('search', 'input-inline-search', `\n          type: 'search',\n          placeholder: 'Search...',`)},
           Button.button({ children: ['Search'] }, h),
         ],
-      }, h)`;
+      }, h)`
     case 'grid': {
       const gridFields = `Field.field({
             children: [
@@ -296,7 +323,7 @@ const emitBody = (fixture: InputFixture, isStyleX: boolean): string => {
               ${label('last-name', 'Last Name')},
               ${emitInput('lastName', 'last-name', `\n          placeholder: 'Lee',`)},
             ],
-          }, h)`;
+          }, h)`
       return isStyleX
         ? `    Field.fieldGroup({
         children: [
@@ -310,19 +337,35 @@ const emitBody = (fixture: InputFixture, isStyleX: boolean): string => {
         children: [
           ${gridFields},
         ],
-      }, h)`;
+      }, h)`
     }
     case 'required':
       return `    ${emitFieldRow([
-        label('input-required', null, `'Required Field ', h.span([h.Class(${isStyleX ? "stylex.props(styles.destructive).className ?? ''" : "'text-destructive'"})], ['*'])`),
-        emitInput('required', 'input-required', `\n          placeholder: 'This field is required',\n          isRequired: true,`),
+        label(
+          'input-required',
+          null,
+          `'Required Field ', h.span([h.Class(${isStyleX ? "stylex.props(styles.destructive).className ?? ''" : "'text-destructive'"})], ['*'])`,
+        ),
+        emitInput(
+          'required',
+          'input-required',
+          `\n          placeholder: 'This field is required',\n          isRequired: true,`,
+        ),
         desc('This field must be filled out.'),
-      ])}`;
+      ])}`
     case 'badge':
       return `    ${emitFieldRow([
-        label('input-badge', null, `'Webhook URL ', Badge.badge({ variant: 'secondary', ${isStyleX ? "layoutStyle: styles.push" : "class: 'ml-auto'"}, children: ['Beta'] }, h)`),
-        emitInput('webhookUrl', 'input-badge', `\n          type: 'url',\n          placeholder: 'https://api.example.com/webhook',`),
-      ])}`;
+        label(
+          'input-badge',
+          null,
+          `'Webhook URL ', Badge.badge({ variant: 'secondary', ${isStyleX ? 'layoutStyle: styles.push' : "class: 'ml-auto'"}, children: ['Beta'] }, h)`,
+        ),
+        emitInput(
+          'webhookUrl',
+          'input-badge',
+          `\n          type: 'url',\n          placeholder: 'https://api.example.com/webhook',`,
+        ),
+      ])}`
     case 'inputGroup':
       return `    ${emitFieldRow([
         label('input-group-url', 'Website URL'),
@@ -338,7 +381,7 @@ const emitBody = (fixture: InputFixture, isStyleX: boolean): string => {
             InputGroup.inputGroupAddon({ align: 'inline-end', children: [Icon.icon('info', {}, h)] }, h),
           ],
         }, h)`,
-      ])}`;
+      ])}`
     case 'buttonGroup':
       return `    ${emitFieldRow([
         label('input-button-group', 'Search'),
@@ -348,7 +391,7 @@ const emitBody = (fixture: InputFixture, isStyleX: boolean): string => {
             Button.button({ variant: 'outline', children: ['Search'] }, h),
           ],
         }, h)`,
-      ])}`;
+      ])}`
     case 'form':
       return `    h.form([h.Class(${isStyleX ? "stylex.props(styles.form).className ?? ''" : "'w-full max-w-sm'"})], [
       Field.fieldGroup({
@@ -403,36 +446,42 @@ const emitBody = (fixture: InputFixture, isStyleX: boolean): string => {
           }, h),
         ],
       }, h),
-    ])`;
+    ])`
     case 'rtl':
       return `    h.div([h.Dir('rtl')], [
       ${emitFieldRow([
         label('input-rtl-api-key', inputRtlCopy.label),
-        emitInput('apiKey', 'input-rtl-api-key', `\n          type: 'password',\n          placeholder: '${inputRtlCopy.placeholder}',`),
+        emitInput(
+          'apiKey',
+          'input-rtl-api-key',
+          `\n          type: 'password',\n          placeholder: '${inputRtlCopy.placeholder}',`,
+        ),
         desc(inputRtlCopy.description),
       ])},
-    ])`;
+    ])`
   }
-};
+}
 
 const emitApplication = (fixture: InputFixture, isStyleX: boolean): string => {
   const effectImports = kindUsesSelect(fixture.kind)
     ? "import { Option, Schema as S } from 'effect'"
-    : "import { Schema as S } from 'effect'";
-  const consts = fixture.kind === 'form'
-    ? `
+    : "import { Schema as S } from 'effect'"
+  const consts =
+    fixture.kind === 'form'
+      ? `
 
 const COUNTRIES = [
   { value: 'us', label: 'United States' },
   { value: 'uk', label: 'United Kingdom' },
   { value: 'ca', label: 'Canada' },
 ]`
-    : '';
-  const pageClass = isStyleX && fixture.kind === 'form'
-    ? "stylex.props(styles.page).className ?? ''"
-    : isStyleX
+      : ''
+  const pageClass =
+    isStyleX && fixture.kind === 'form'
       ? "stylex.props(styles.page).className ?? ''"
-      : "'flex min-h-screen items-center justify-center p-8'";
+      : isStyleX
+        ? "stylex.props(styles.page).className ?? ''"
+        : "'flex min-h-screen items-center justify-center p-8'"
   return foldkitApplication({
     title: `Input — ${fixture.title}`,
     imports: `${effectImports}
@@ -447,14 +496,17 @@ ${emitImports(fixture, isStyleX)}${isStyleX ? emitStyles(fixture) : ''}${consts}
 ${emitBody(fixture, isStyleX)}
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const inputExamples = (
   renderer: 'tailwind' | 'stylex',
-): ReadonlyArray<DocsExample> => inputFixtures.map(fixture => ({
-  title: fixture.title,
-  ...(fixture.description === undefined ? {} : { description: fixture.description }),
-  ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
-  code: emitApplication(fixture, renderer === 'stylex'),
-}));
+): ReadonlyArray<DocsExample> =>
+  inputFixtures.map(fixture => ({
+    title: fixture.title,
+    ...(fixture.description === undefined
+      ? {}
+      : { description: fixture.description }),
+    ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
+    code: emitApplication(fixture, renderer === 'stylex'),
+  }))

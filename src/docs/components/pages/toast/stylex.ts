@@ -1,5 +1,41 @@
-import * as stylex from '@stylexjs/stylex';
-import type { HtmlBuilder } from 'foldkit/html'; import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'; import * as Button from '@/stylex/button'; import * as Toast from '@/stylex/toast';
-const styles = stylex.create({ secondViewport: { marginBottom: '6rem' } });
+import * as stylex from '@stylexjs/stylex'
+import type { HtmlBuilder } from 'foldkit/html'
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import * as Button from '@/stylex/button'
+import * as Toast from '@/stylex/toast'
+const styles = stylex.create({ secondViewport: { marginBottom: '6rem' } })
 
-export const toastStyleXPreview: StyleXExamplePreviewProvider = <Msg>(_index: number, model: unknown, send: (json: string) => Msg, h: HtmlBuilder<Msg>) => { const m = model as { exampleIndex: number; notifications: Toast.Model }; const notifications = m.notifications; const message = (value: object) => send(JSON.stringify(value)); return h.div([], [Button.button({ onClick: message({ _tag: 'ShowedToastPreview' }), children: ['Show toast'] }, h), Toast.toast({ model: notifications, toParentMessage: next => message({ _tag: 'GotToastPreviewMessage', message: next }), ariaLabel: 'Toast notifications', ...(m.exampleIndex === 0 ? {} : { layoutStyle: styles.secondViewport }) }, h)]); };
+export const toastStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+  _index: number,
+  model: unknown,
+  send: (json: string) => Msg,
+  h: HtmlBuilder<Msg>,
+) => {
+  const m = model as { exampleIndex: number; notifications: Toast.Model }
+  const notifications = m.notifications
+  const message = (value: object) => send(JSON.stringify(value))
+  return h.div(
+    [],
+    [
+      Button.button(
+        {
+          onClick: message({ _tag: 'ShowedToastPreview' }),
+          children: ['Show toast'],
+        },
+        h,
+      ),
+      Toast.toast(
+        {
+          model: notifications,
+          toParentMessage: next =>
+            message({ _tag: 'GotToastPreviewMessage', message: next }),
+          ariaLabel: 'Toast notifications',
+          ...(m.exampleIndex === 0
+            ? {}
+            : { layoutStyle: styles.secondViewport }),
+        },
+        h,
+      ),
+    ],
+  )
+}

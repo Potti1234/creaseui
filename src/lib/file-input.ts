@@ -25,8 +25,10 @@ export const acceptsFile = (file: File, accept: string): boolean =>
     .map(entry => entry.trim().toLowerCase())
     .filter(entry => entry !== '')
     .some(type => {
-      if (type.startsWith('.')) return fileName(file).toLowerCase().endsWith(type)
-      if (type.endsWith('/*')) return fileType(file).startsWith(type.slice(0, -1))
+      if (type.startsWith('.'))
+        return fileName(file).toLowerCase().endsWith(type)
+      if (type.endsWith('/*'))
+        return fileType(file).startsWith(type.slice(0, -1))
       return fileType(file).toLowerCase() === type
     })
 
@@ -62,7 +64,9 @@ export const validateFiles = (
     const maxSize = options.maxSize
     valid = valid.filter(file => {
       if (fileSize(file) > maxSize) {
-        errors.push(`"${fileName(file)}" exceeds the ${formatFileSize(maxSize)} size limit`)
+        errors.push(
+          `"${fileName(file)}" exceeds the ${formatFileSize(maxSize)} size limit`,
+        )
         return false
       }
       return true
@@ -73,7 +77,11 @@ export const validateFiles = (
     errors.push('Only one file can be selected')
     valid = valid.slice(0, 1)
   }
-  if (options.isMultiple && options.maxFiles !== undefined && valid.length > options.maxFiles) {
+  if (
+    options.isMultiple &&
+    options.maxFiles !== undefined &&
+    valid.length > options.maxFiles
+  ) {
     errors.push(`You can upload up to ${options.maxFiles} files`)
     valid = valid.slice(0, options.maxFiles)
   }
@@ -129,11 +137,16 @@ export const OutMessage = defineMessageUnion({
 })
 export type OutMessage = typeof OutMessage.Type
 
-export type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>
+export type UpdateReturn = Update.ReturnWithOutMessage<
+  Model,
+  Message,
+  OutMessage
+>
 
-const foldFileDropOutMessage = (
-  outMessage: FileDrop.OutMessage,
-): Update.StepWithOutMessage<Model, Message, OutMessage> =>
+const foldFileDropOutMessage =
+  (
+    outMessage: FileDrop.OutMessage,
+  ): Update.StepWithOutMessage<Model, Message, OutMessage> =>
   model => {
     switch (outMessage._tag) {
       case 'ReceivedFiles': {
@@ -147,9 +160,7 @@ const foldFileDropOutMessage = (
           model: {
             ...model,
             validationError:
-              errors.length > 0
-                ? Option.some(errors.join(' '))
-                : Option.none(),
+              errors.length > 0 ? Option.some(errors.join(' ')) : Option.none(),
           },
           outMessage: OutMessage.ChangedValue({
             files: valid as ReadonlyArray<unknown>,
@@ -177,10 +188,7 @@ const ClickFileInput = Command.define('FileInputClickInput', {
   messages: [Message.Noop],
   args: { selector: S.String },
   execute: ({ selector }) =>
-    Dom.clickElement(selector).pipe(
-      Effect.ignore,
-      Effect.as(Message.Noop()),
-    ),
+    Dom.clickElement(selector).pipe(Effect.ignore, Effect.as(Message.Noop())),
 })
 
 export const update = (model: Model, message: Message): UpdateReturn => {

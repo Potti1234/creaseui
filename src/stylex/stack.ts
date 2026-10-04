@@ -1,10 +1,5 @@
 import * as stylex from '@stylexjs/stylex'
-import type {
-  Attribute,
-  ChildAttribute,
-  Html,
-  HtmlBuilder,
-} from 'foldkit/html'
+import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 
 import type { ComponentLayoutStyle } from './contracts'
 import { className } from './style'

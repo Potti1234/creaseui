@@ -1,22 +1,22 @@
-import { Effect, Queue, Schema as S, Stream } from 'effect';
-import { Command } from 'foldkit';
-import type { HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
-import * as Mount from 'foldkit/mount';
-import { definePreviewProgram } from '@/docs/components/pages/authored-page';
+import { Effect, Queue, Schema as S, Stream } from 'effect'
+import { Command } from 'foldkit'
+import type { HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import * as Mount from 'foldkit/mount'
+import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
   messageScrollerFixtures,
   type MessageScrollerFixture,
-} from '@/docs/components/pages/message-scroller/shared';
-import * as Bubble from '@/ui/bubble';
-import * as Button from '@/ui/button';
-import * as MessageScroller from '@/ui/message-scroller';
+} from '@/docs/components/pages/message-scroller/shared'
+import * as Bubble from '@/ui/bubble'
+import * as Button from '@/ui/button'
+import * as MessageScroller from '@/ui/message-scroller'
 
 const ChatMessage = S.Struct({
   id: S.Int,
   role: S.Literals(['user', 'assistant', 'marker']),
   text: S.String,
-});
+})
 
 const CHAT: Array<typeof ChatMessage.Type> = [
   { id: 1, role: 'assistant', text: 'Hey — welcome to the thread.' },
@@ -45,7 +45,7 @@ const CHAT: Array<typeof ChatMessage.Type> = [
     role: 'assistant',
     text: 'Write the resolved theme to localStorage on every change.',
   },
-];
+]
 
 const SEND_CHAT = [
   { role: 'user', text: 'Thanks — that covers it.' },
@@ -53,7 +53,7 @@ const SEND_CHAT = [
     role: 'assistant',
     text: 'Anytime — and for next time: the changelog lives under docs/releases, the migration guide covers the Button tokens, and the theme snippet is in the README. Ping me if the upgrade surfaces anything odd.',
   },
-] as const;
+] as const
 
 const MEMBER_CHAT = [
   { role: 'marker', text: 'Priya joined the chat' },
@@ -61,14 +61,14 @@ const MEMBER_CHAT = [
     role: 'assistant',
     text: 'Welcome, Priya — quick recap: we are shipping the release tomorrow, the Button size tokens were renamed, listbox typing is now strict, and RTL support is on by default in the calendar. The full notes are pinned above.',
   },
-] as const;
+] as const
 
 const HISTORY_CHAT: Array<typeof ChatMessage.Type> = [
   { id: -4, role: 'assistant', text: 'Earlier context: kicking things off.' },
   { id: -3, role: 'user', text: 'Did anyone open the RFC yet?' },
   { id: -2, role: 'assistant', text: 'Yes — review comments are in.' },
   { id: -1, role: 'marker', text: 'History loaded' },
-];
+]
 
 const STREAM_CHUNKS = [
   'Streaming',
@@ -77,7 +77,7 @@ const STREAM_CHUNKS = [
   ' chunk',
   ' by',
   ' chunk…',
-] as const;
+] as const
 
 const Message = defineMessageUnion({
   GotScrollerMessage: { message: MessageScroller.Message },
@@ -93,8 +93,8 @@ const Message = defineMessageUnion({
   CompletedAnchorScroll: {},
   CompletedJump: {},
   CompletedLoadHistory: {},
-});
-type Message = typeof Message.Type;
+})
+type Message = typeof Message.Type
 
 const Model = S.Struct({
   _docsPage: S.Literal('message-scroller'),
@@ -116,11 +116,11 @@ const Model = S.Struct({
   streamStep: S.Int,
   animatingIds: S.Array(S.Int),
   visibleIds: S.Array(S.Int),
-});
-type Model = typeof Model.Type;
+})
+type Model = typeof Model.Type
 
 const fixtureOf = (index: number): MessageScrollerFixture =>
-  messageScrollerFixtures[index] ?? messageScrollerFixtures[0]!;
+  messageScrollerFixtures[index] ?? messageScrollerFixtures[0]!
 
 const ScrollToAnchor = Command.define('ScrollChatToAnchorPreview', {
   args: { viewportId: S.String, peek: S.Number },
@@ -130,26 +130,29 @@ const ScrollToAnchor = Command.define('ScrollChatToAnchorPreview', {
       () =>
         new Promise<void>(resolve => {
           requestAnimationFrame(() => {
-                  const viewport = document.getElementById(viewportId);
-                  const anchors = viewport?.querySelectorAll('[data-scroll-anchor]');
-                  const target =
-                    anchors === undefined ? undefined : anchors[anchors.length - 1];
-                  if (viewport instanceof HTMLElement && target instanceof HTMLElement) {
-                    const top =
-                      viewport.scrollTop +
-                      target.getBoundingClientRect().top -
-                      viewport.getBoundingClientRect().top -
-                      peek;
-                    const reduced =
-                      globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches ??
-                      false;
-                    viewport.scrollTo({ top, behavior: reduced ? 'auto' : 'smooth' });
-                  }
+            const viewport = document.getElementById(viewportId)
+            const anchors = viewport?.querySelectorAll('[data-scroll-anchor]')
+            const target =
+              anchors === undefined ? undefined : anchors[anchors.length - 1]
+            if (
+              viewport instanceof HTMLElement &&
+              target instanceof HTMLElement
+            ) {
+              const top =
+                viewport.scrollTop +
+                target.getBoundingClientRect().top -
+                viewport.getBoundingClientRect().top -
+                peek
+              const reduced =
+                globalThis.matchMedia?.('(prefers-reduced-motion: reduce)')
+                  .matches ?? false
+              viewport.scrollTo({ top, behavior: reduced ? 'auto' : 'smooth' })
+            }
             resolve()
           })
         }),
     ).pipe(Effect.as(Message.CompletedAnchorScroll())),
-});
+})
 
 const ScrollToMessage = Command.define('ScrollChatToMessagePreview', {
   args: { viewportId: S.String, messageId: S.String },
@@ -159,27 +162,30 @@ const ScrollToMessage = Command.define('ScrollChatToMessagePreview', {
       () =>
         new Promise<void>(resolve => {
           requestAnimationFrame(() => {
-                  const viewport = document.getElementById(viewportId);
-                  const target = viewport?.querySelector(
-                    `[data-message-id="${messageId}"]`,
-                  );
-                  if (viewport instanceof HTMLElement && target instanceof HTMLElement) {
-                    const top =
-                      viewport.scrollTop +
-                      target.getBoundingClientRect().top -
-                      viewport.getBoundingClientRect().top -
-                      viewport.clientHeight / 2 +
-                      target.clientHeight / 2;
-                    const reduced =
-                      globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches ??
-                      false;
-                    viewport.scrollTo({ top, behavior: reduced ? 'auto' : 'smooth' });
-                  }
+            const viewport = document.getElementById(viewportId)
+            const target = viewport?.querySelector(
+              `[data-message-id="${messageId}"]`,
+            )
+            if (
+              viewport instanceof HTMLElement &&
+              target instanceof HTMLElement
+            ) {
+              const top =
+                viewport.scrollTop +
+                target.getBoundingClientRect().top -
+                viewport.getBoundingClientRect().top -
+                viewport.clientHeight / 2 +
+                target.clientHeight / 2
+              const reduced =
+                globalThis.matchMedia?.('(prefers-reduced-motion: reduce)')
+                  .matches ?? false
+              viewport.scrollTo({ top, behavior: reduced ? 'auto' : 'smooth' })
+            }
             resolve()
           })
         }),
     ).pipe(Effect.as(Message.CompletedJump())),
-});
+})
 
 const CaptureViewportAnchor = Command.define('CaptureViewportAnchorPreview', {
   args: { viewportId: S.String },
@@ -189,26 +195,26 @@ const CaptureViewportAnchor = Command.define('CaptureViewportAnchorPreview', {
       () =>
         new Promise<typeof Message.CapturedViewportAnchor.Type>(resolve => {
           requestAnimationFrame(() => {
-            const viewport = document.getElementById(viewportId);
-            let messageId = '';
-            let offset = 0;
+            const viewport = document.getElementById(viewportId)
+            let messageId = ''
+            let offset = 0
             if (viewport instanceof HTMLElement) {
-              const items = viewport.querySelectorAll('[data-message-id]');
+              const items = viewport.querySelectorAll('[data-message-id]')
               for (const item of items) {
-                if (!(item instanceof HTMLElement)) continue;
-                const rect = item.getBoundingClientRect();
+                if (!(item instanceof HTMLElement)) continue
+                const rect = item.getBoundingClientRect()
                 if (rect.bottom > viewport.getBoundingClientRect().top) {
-                  messageId = item.dataset.messageId ?? '';
-                  offset = rect.top - viewport.getBoundingClientRect().top;
-                  break;
+                  messageId = item.dataset.messageId ?? ''
+                  offset = rect.top - viewport.getBoundingClientRect().top
+                  break
                 }
               }
             }
-            resolve(Message.CapturedViewportAnchor({ messageId, offset }));
-          });
+            resolve(Message.CapturedViewportAnchor({ messageId, offset }))
+          })
         }),
     ),
-});
+})
 
 const RestoreViewportAnchor = Command.define('RestoreViewportAnchorPreview', {
   args: { viewportId: S.String, messageId: S.String, offset: S.Number },
@@ -218,32 +224,33 @@ const RestoreViewportAnchor = Command.define('RestoreViewportAnchorPreview', {
       () =>
         new Promise<void>(resolve => {
           requestAnimationFrame(() => {
-            const viewport = document.getElementById(viewportId);
+            const viewport = document.getElementById(viewportId)
             const target = viewport?.querySelector(
               `[data-message-id="${messageId}"]`,
-            );
-            if (viewport instanceof HTMLElement && target instanceof HTMLElement) {
+            )
+            if (
+              viewport instanceof HTMLElement &&
+              target instanceof HTMLElement
+            ) {
               const top =
                 viewport.scrollTop +
                 target.getBoundingClientRect().top -
                 viewport.getBoundingClientRect().top -
-                offset;
-              viewport.scrollTo({ top, behavior: 'auto' });
+                offset
+              viewport.scrollTo({ top, behavior: 'auto' })
             }
-            resolve();
-          });
+            resolve()
+          })
         }),
     ).pipe(Effect.as(Message.CompletedLoadHistory())),
-});
+})
 
 const NextStreamChunk = Command.define('NextStreamChunkPreview', {
   args: { step: S.Int },
   messages: [Message.StreamedChunk],
   execute: ({ step }) =>
-    Effect.sleep('250 millis').pipe(
-      Effect.as(Message.StreamedChunk({ step })),
-    ),
-});
+    Effect.sleep('250 millis').pipe(Effect.as(Message.StreamedChunk({ step }))),
+})
 
 const FinishEntryAnimation = Command.define('FinishEntryAnimationPreview', {
   args: { id: S.Int },
@@ -252,7 +259,7 @@ const FinishEntryAnimation = Command.define('FinishEntryAnimationPreview', {
     Effect.sleep('300 millis').pipe(
       Effect.as(Message.FinishedEntryAnimation({ id })),
     ),
-});
+})
 
 const ObserveVisibleMessages = Mount.defineStream(
   'ObserveVisibleMessagesPreview',
@@ -263,49 +270,48 @@ const ObserveVisibleMessages = Mount.defineStream(
         Effect.gen(function* () {
           yield* Effect.acquireRelease(
             Effect.sync(() => {
-              if (!(element instanceof HTMLElement)) return undefined;
+              if (!(element instanceof HTMLElement)) return undefined
               const viewport = element.querySelector(
                 '[data-slot="message-scroller-viewport"]',
-              );
-              if (!(viewport instanceof HTMLElement)) return undefined;
-              const visible = new Set<number>();
+              )
+              if (!(viewport instanceof HTMLElement)) return undefined
+              const visible = new Set<number>()
               const observer = new IntersectionObserver(
                 entries => {
                   for (const entry of entries) {
-                    const raw = (entry.target as HTMLElement).dataset
-                      .messageId;
-                    const id = Number(raw?.replace('msg-', ''));
-                    if (Number.isNaN(id)) continue;
-                    if (entry.isIntersecting) visible.add(id);
-                    else visible.delete(id);
+                    const raw = (entry.target as HTMLElement).dataset.messageId
+                    const id = Number(raw?.replace('msg-', ''))
+                    if (Number.isNaN(id)) continue
+                    if (entry.isIntersecting) visible.add(id)
+                    else visible.delete(id)
                   }
                   Queue.offerUnsafe(
                     queue,
                     Message.ObservedVisibility({
                       ids: [...visible].sort((a, b) => a - b),
                     }),
-                  );
+                  )
                 },
                 { root: viewport, threshold: 0.5 },
-              );
+              )
               viewport
                 .querySelectorAll('[data-message-id]')
-                .forEach(item => observer.observe(item));
-              return observer;
+                .forEach(item => observer.observe(item))
+              return observer
             }),
             observer =>
               Effect.sync(() => {
-                if (observer !== undefined) observer.disconnect();
+                if (observer !== undefined) observer.disconnect()
               }),
-          );
-          return yield* Effect.never;
+          )
+          return yield* Effect.never
         }),
       ),
   },
-);
+)
 
 const anchorPeek = (kind: MessageScrollerFixture['kind']): number =>
-  kind === 'previous-context' ? 140 : 72;
+  kind === 'previous-context' ? 140 : 72
 
 const chatRow = (
   message: typeof ChatMessage.Type,
@@ -347,62 +353,65 @@ const chatRow = (
       ],
     },
     h,
-  );
+  )
 
 const scrollerFrame = (
   fixture: MessageScrollerFixture,
   model: Model,
   h: HtmlBuilder<Message>,
 ) => {
-  const frame = h.div([h.Class('relative h-72 w-full rounded-md border')], [
-    MessageScroller.messageScroller(
-      {
-        children: [
-          MessageScroller.messageScrollerViewport(
-            {
-              model: model.scroller,
-              toParentMessage: message =>
-                Message.GotScrollerMessage({ message }),
-              children: [
-                MessageScroller.messageScrollerContent(
-                  {
-                    children: model.chat.map(message =>
-                      chatRow(message, fixture, model, h),
-                    ),
-                  },
-                  h,
-                ),
-              ],
-            },
-            h,
-          ),
-          ...(fixture.kind === 'scrollable'
-            ? [
-                MessageScroller.messageScrollerButton(
-                  {
-                    model: model.scroller,
-                    toParentMessage: message =>
-                      Message.GotScrollerMessage({ message }),
-                    direction: 'start',
-                  },
-                  h,
-                ),
-              ]
-            : []),
-          MessageScroller.messageScrollerButton(
-            {
-              model: model.scroller,
-              toParentMessage: message =>
-                Message.GotScrollerMessage({ message }),
-              direction: 'end',
-            },
-            h,
-          ),
-        ],
-      },
-      h,
-    ),
-  ]);
+  const frame = h.div(
+    [h.Class('relative h-72 w-full rounded-md border')],
+    [
+      MessageScroller.messageScroller(
+        {
+          children: [
+            MessageScroller.messageScrollerViewport(
+              {
+                model: model.scroller,
+                toParentMessage: message =>
+                  Message.GotScrollerMessage({ message }),
+                children: [
+                  MessageScroller.messageScrollerContent(
+                    {
+                      children: model.chat.map(message =>
+                        chatRow(message, fixture, model, h),
+                      ),
+                    },
+                    h,
+                  ),
+                ],
+              },
+              h,
+            ),
+            ...(fixture.kind === 'scrollable'
+              ? [
+                  MessageScroller.messageScrollerButton(
+                    {
+                      model: model.scroller,
+                      toParentMessage: message =>
+                        Message.GotScrollerMessage({ message }),
+                      direction: 'start',
+                    },
+                    h,
+                  ),
+                ]
+              : []),
+            MessageScroller.messageScrollerButton(
+              {
+                model: model.scroller,
+                toParentMessage: message =>
+                  Message.GotScrollerMessage({ message }),
+                direction: 'end',
+              },
+              h,
+            ),
+          ],
+        },
+        h,
+      ),
+    ],
+  )
   if (fixture.kind === 'visibility')
     return h.div(
       [
@@ -411,9 +420,9 @@ const scrollerFrame = (
         ),
       ],
       [frame],
-    );
-  return frame;
-};
+    )
+  return frame
+}
 
 const toolbarButton = (
   label: string,
@@ -428,7 +437,7 @@ const toolbarButton = (
       children: [label],
     },
     h,
-  );
+  )
 
 const bodyView = (
   fixture: MessageScrollerFixture,
@@ -440,15 +449,15 @@ const bodyView = (
       case 'anchoring':
       case 'previous-context':
       case 'animation':
-        return [toolbarButton('Send message', Message.PressedSend(), h)];
+        return [toolbarButton('Send message', Message.PressedSend(), h)]
       case 'group-chat':
         return [
           toolbarButton('Marcus joins the chat', Message.PressedAddMember(), h),
-        ];
+        ]
       case 'streaming':
         return [
           toolbarButton('Start streaming', Message.PressedStartStream(), h),
-        ];
+        ]
       case 'load-history':
         return [
           toolbarButton(
@@ -456,7 +465,7 @@ const bodyView = (
             Message.PressedLoadHistory(),
             h,
           ),
-        ];
+        ]
       case 'commands':
         return [
           toolbarButton(
@@ -474,30 +483,36 @@ const bodyView = (
             Message.PressedJumpTo({ id: 10 }),
             h,
           ),
-        ];
+        ]
       default:
-        return [];
+        return []
     }
-  })();
+  })()
   const header = (() => {
     if (fixture.kind === 'visibility')
       return [
-        h.p([h.Class('text-xs text-muted-foreground')], [
-          model.visibleIds.length === 0
-            ? 'Nothing in view'
-            : `In view: ${model.visibleIds.map(id => `msg-${String(id)}`).join(', ')}`,
-        ]),
-      ];
+        h.p(
+          [h.Class('text-xs text-muted-foreground')],
+          [
+            model.visibleIds.length === 0
+              ? 'Nothing in view'
+              : `In view: ${model.visibleIds.map(id => `msg-${String(id)}`).join(', ')}`,
+          ],
+        ),
+      ]
     if (fixture.kind === 'streaming')
       return [
-        h.p([h.Class('text-xs text-muted-foreground')], [
-          model.scroller.isFollowing
-            ? 'Following the live edge'
-            : model.scroller.hasNewMessages
-              ? 'New messages below — jump to the end'
-              : 'Not following',
-        ]),
-      ];
+        h.p(
+          [h.Class('text-xs text-muted-foreground')],
+          [
+            model.scroller.isFollowing
+              ? 'Following the live edge'
+              : model.scroller.hasNewMessages
+                ? 'New messages below — jump to the end'
+                : 'Not following',
+          ],
+        ),
+      ]
     if (fixture.kind === 'scrollable')
       return [
         h.div(
@@ -535,18 +550,14 @@ const bodyView = (
             ),
           ],
         ),
-      ];
-    return [];
-  })();
+      ]
+    return []
+  })()
   return h.div(
     [h.Class('flex w-full max-w-md flex-col gap-3')],
-    [
-      ...toolbar,
-      ...header,
-      scrollerFrame(fixture, model, h),
-    ],
-  );
-};
+    [...toolbar, ...header, scrollerFrame(fixture, model, h)],
+  )
+}
 
 export const messageScrollerTailwindPreviewProgram = definePreviewProgram<
   Model,
@@ -555,7 +566,7 @@ export const messageScrollerTailwindPreviewProgram = definePreviewProgram<
   Model,
   Message,
   init: index => {
-    const fixture = fixtureOf(index);
+    const fixture = fixtureOf(index)
     return {
       _docsPage: 'message-scroller',
       kind: fixture.kind,
@@ -565,22 +576,25 @@ export const messageScrollerTailwindPreviewProgram = definePreviewProgram<
       streamStep: 0,
       animatingIds: [],
       visibleIds: [],
-    };
+    }
   },
   update: (model, message) => {
     switch (message._tag) {
       case 'GotScrollerMessage': {
-        const next = MessageScroller.update(model.scroller, message.message);
+        const next = MessageScroller.update(model.scroller, message.message)
         const mapped = Command.mapMessages(next.commands ?? [], child =>
           Message.GotScrollerMessage({ message: child }),
-        );
+        )
         if (
           model.kind === 'opening-position' &&
           message.message._tag === 'ObservedMessageScrollerViewport' &&
           message.message.reason === 'mount'
         )
           return {
-            model: { ...model, scroller: { ...next.model, isFollowing: false } },
+            model: {
+              ...model,
+              scroller: { ...next.model, isFollowing: false },
+            },
             commands: [
               ...mapped,
               ScrollToMessage({
@@ -588,16 +602,16 @@ export const messageScrollerTailwindPreviewProgram = definePreviewProgram<
                 messageId: 'msg-5',
               }),
             ],
-          };
-        return { model: { ...model, scroller: next.model }, commands: mapped };
+          }
+        return { model: { ...model, scroller: next.model }, commands: mapped }
       }
       case 'PressedSend': {
-        const nextId = model.chat.length + 1;
+        const nextId = model.chat.length + 1
         const appended = SEND_CHAT.map((row, index) => ({
           id: nextId + index,
           role: row.role,
           text: row.text,
-        }));
+        }))
         if (model.kind === 'animation')
           return {
             model: {
@@ -609,10 +623,8 @@ export const messageScrollerTailwindPreviewProgram = definePreviewProgram<
                 ...appended.map(row => row.id),
               ],
             },
-            commands: appended.map(row =>
-              FinishEntryAnimation({ id: row.id }),
-            ),
-          };
+            commands: appended.map(row => FinishEntryAnimation({ id: row.id })),
+          }
         return {
           model: {
             ...model,
@@ -625,15 +637,15 @@ export const messageScrollerTailwindPreviewProgram = definePreviewProgram<
               peek: anchorPeek(model.kind),
             }),
           ],
-        };
+        }
       }
       case 'PressedAddMember': {
-        const nextId = model.chat.length + 1;
+        const nextId = model.chat.length + 1
         const appended = MEMBER_CHAT.map((row, index) => ({
           id: nextId + index,
           role: row.role,
           text: row.text,
-        }));
+        }))
         return {
           model: {
             ...model,
@@ -646,7 +658,7 @@ export const messageScrollerTailwindPreviewProgram = definePreviewProgram<
               peek: 72,
             }),
           ],
-        };
+        }
       }
       case 'PressedStartStream':
         return model.streaming
@@ -666,15 +678,15 @@ export const messageScrollerTailwindPreviewProgram = definePreviewProgram<
                 streamStep: 0,
               },
               commands: [NextStreamChunk({ step: 0 })],
-            };
+            }
       case 'StreamedChunk': {
-        const chunk = STREAM_CHUNKS[message.step];
+        const chunk = STREAM_CHUNKS[message.step]
         const chat = model.chat.map((row, index) =>
           index === model.chat.length - 1 && chunk !== undefined
             ? { ...row, text: row.text + chunk }
             : row,
-        );
-        const nextStep = message.step + 1;
+        )
+        const nextStep = message.step + 1
         return {
           model: {
             ...model,
@@ -686,7 +698,7 @@ export const messageScrollerTailwindPreviewProgram = definePreviewProgram<
             nextStep < STREAM_CHUNKS.length
               ? [NextStreamChunk({ step: nextStep })]
               : [],
-        };
+        }
       }
       case 'PressedLoadHistory':
         return {
@@ -696,7 +708,7 @@ export const messageScrollerTailwindPreviewProgram = definePreviewProgram<
               viewportId: `${model.scroller.id}-viewport`,
             }),
           ],
-        };
+        }
       case 'CapturedViewportAnchor':
         return {
           model: { ...model, chat: [...HISTORY_CHAT, ...model.chat] },
@@ -707,7 +719,7 @@ export const messageScrollerTailwindPreviewProgram = definePreviewProgram<
               offset: message.offset,
             }),
           ],
-        };
+        }
       case 'PressedJumpTo':
         return {
           model,
@@ -717,21 +729,21 @@ export const messageScrollerTailwindPreviewProgram = definePreviewProgram<
               messageId: `msg-${String(message.id)}`,
             }),
           ],
-        };
+        }
       case 'FinishedEntryAnimation':
         return {
           model: {
             ...model,
             animatingIds: model.animatingIds.filter(id => id !== message.id),
           },
-        };
+        }
       case 'ObservedVisibility':
-        return { model: { ...model, visibleIds: message.ids } };
+        return { model: { ...model, visibleIds: message.ids } }
       case 'CompletedAnchorScroll':
       case 'CompletedJump':
       case 'CompletedLoadHistory':
-        return { model };
+        return { model }
     }
   },
   view: (index, model, h) => bodyView(fixtureOf(index), model, h),
-});
+})

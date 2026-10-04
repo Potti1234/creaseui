@@ -1,71 +1,76 @@
-import type { Html, HtmlBuilder } from "foldkit/html";
-import * as stylex from "@stylexjs/stylex";
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import * as stylex from '@stylexjs/stylex'
 
-import * as Icon from "@/demo/icon-preview";
-import { card, cardContent, cardDescription, cardFooter } from "@/stylex/card";
-import { item, itemGroup } from "@/stylex/item";
-import { label } from "@/stylex/label";
-import { className } from "@/stylex/style";
-import { tokens } from "../../stylex/tokens.stylex";
+import * as Icon from '@/demo/icon-preview'
+import { card, cardContent, cardDescription, cardFooter } from '@/stylex/card'
+import { item, itemGroup } from '@/stylex/item'
+import { label } from '@/stylex/label'
+import { className } from '@/stylex/style'
+import { tokens } from '../../stylex/tokens.stylex'
 import { interactionTokens } from '../../stylex/interaction-tokens.stylex.const'
 
 const styles = stylex.create({
-  content: { gap: "0.75rem", display: "flex", flexDirection: "column" },
+  content: { gap: '0.75rem', display: 'flex', flexDirection: 'column' },
   eyebrow: {
     color: tokens.mutedForeground,
-    fontSize: "0.75rem",
+    fontSize: '0.75rem',
     fontWeight: 400,
-    letterSpacing: "0.05em",
- lineHeight: '1rem',
-    textAlign: "center",
-    textTransform: "uppercase",
+    letterSpacing: '0.05em',
+    lineHeight: '1rem',
+    textAlign: 'center',
+    textTransform: 'uppercase',
   },
-  artwork: { aspectRatio: "1 / 1" },
-  artworkFill: { height: "100%", width: "100%" },
+  artwork: { aspectRatio: '1 / 1' },
+  artworkFill: { height: '100%', width: '100%' },
   artworkLabel: {
-    alignItems: "center",
+    alignItems: 'center',
     cursor: interactionTokens.cursorAction,
-    display: "flex",
-    justifyContent: "center",
-    height: "100%",
-    width: "100%",
+    display: 'flex',
+    justifyContent: 'center',
+    height: '100%',
+    width: '100%',
   },
   artworkIcon: {
     color: tokens.mutedForeground,
     opacity: 0.5,
-    height: "2.5rem",
-    width: "2.5rem",
+    height: '2.5rem',
+    width: '2.5rem',
   },
   visuallyHidden: {
-    overflow: "hidden",
-    clip: "rect(0, 0, 0, 0)",
-    clipPath: "inset(50%)",
-    position: "absolute",
-    whiteSpace: "nowrap",
+    overflow: 'hidden',
+    clip: 'rect(0, 0, 0, 0)',
+    clipPath: 'inset(50%)',
+    position: 'absolute',
+    whiteSpace: 'nowrap',
     height: 1,
     width: 1,
   },
-  footer: { gap: "0.5rem", display: "flex", flexDirection: "column", width: "100%" },
+  footer: {
+    gap: '0.5rem',
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+  },
   uploadButton: {
     borderRadius: tokens.controlRadius,
-    paddingInline: "0.75rem",
-    alignItems: "center",
+    paddingInline: '0.75rem',
+    alignItems: 'center',
     backgroundColor: {
       default: tokens.secondary,
-      ":hover": tokens.secondaryHover,
+      ':hover': tokens.secondaryHover,
     },
     color: tokens.secondaryForeground,
     cursor: interactionTokens.cursorAction,
-    display: "inline-flex",
-    fontSize: "0.875rem",
+    display: 'inline-flex',
+    fontSize: '0.875rem',
     fontWeight: 500,
-    justifyContent: "center",
- lineHeight: '1.25rem',
-    height: "2rem",
-    width: "100%",
+    justifyContent: 'center',
+    lineHeight: '1.25rem',
+    height: '2rem',
+    width: '100%',
   },
-  hint: { fontSize: "0.75rem", lineHeight: '1rem', textAlign: "center" },
-});
+  hint: { fontSize: '0.75rem', lineHeight: '1rem', textAlign: 'center' },
+})
 
 export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
   return card(
@@ -79,7 +84,7 @@ export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
                 [
                   h.div(
                     [h.Class(className(styles.eyebrow))],
-                    [label({ for: "cover-art", children: ["Cover Art"] }, h)],
+                    [label({ for: 'cover-art', children: ['Cover Art'] }, h)],
                   ),
                   h.div(
                     [h.Class(className(styles.artwork))],
@@ -91,16 +96,16 @@ export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
                             item(
                               {
                                 layoutStyle: styles.artworkFill,
-                                variant: "outline",
+                                variant: 'outline',
                                 children: [
                                   h.label(
                                     [
-                                      h.For("cover-art"),
+                                      h.For('cover-art'),
                                       h.Class(className(styles.artworkLabel)),
                                     ],
                                     [
                                       Icon.icon<Msg>(
-                                        "image",
+                                        'image',
                                         {
                                           class: className(styles.artworkIcon),
                                         },
@@ -119,9 +124,9 @@ export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
                     ],
                   ),
                   h.input([
-                    h.Id("cover-art"),
-                    h.Type("file"),
-                    h.Accept("image/jpeg,image/png"),
+                    h.Id('cover-art'),
+                    h.Type('file'),
+                    h.Accept('image/jpeg,image/png'),
                     h.Class(className(styles.visuallyHidden)),
                   ]),
                 ],
@@ -138,10 +143,10 @@ export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
                 [
                   h.label(
                     [
-                      h.For("cover-art"),
+                      h.For('cover-art'),
                       h.Class(className(styles.uploadButton)),
                     ],
-                    ["Upload Artwork"],
+                    ['Upload Artwork'],
                   ),
                   h.div(
                     [h.Class(className(styles.hint))],
@@ -149,9 +154,9 @@ export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
                       cardDescription(
                         {
                           children: [
-                            "Minimum 3000 × 3000px",
+                            'Minimum 3000 × 3000px',
                             h.br([]),
-                            "JPEG or PNG only",
+                            'JPEG or PNG only',
                           ],
                         },
                         h,
@@ -167,8 +172,7 @@ export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 // Stateful? no. Submodels wired: none. PORT NOTEs: Button-as-child label substitute.
-

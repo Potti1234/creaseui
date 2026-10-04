@@ -35,8 +35,7 @@ type Model = Readonly<{
 }>
 
 type Message = Readonly<
-  | { _tag: 'Toggled'; isOpen: boolean }
-  | { _tag: 'SetOpen'; isOpen: boolean }
+  { _tag: 'Toggled'; isOpen: boolean } | { _tag: 'SetOpen'; isOpen: boolean }
 >
 
 const PANEL_CONTENT = 'This is panel content'
@@ -54,7 +53,10 @@ const update = (model: Model, message: Message): { model: Model } => {
 // Mirrors Base UI's "controlled without an external update": the toggle
 // message is dispatched but the parent never applies it, so the open state
 // cannot change.
-const updateIgnoringToggle = (model: Model, message: Message): { model: Model } => {
+const updateIgnoringToggle = (
+  model: Model,
+  message: Message,
+): { model: Model } => {
   switch (message._tag) {
     case 'Toggled':
       return { model }
@@ -239,16 +241,19 @@ const verifyRenderer = (name: string, Collapsible: CollapsibleModule) => {
           {
             update,
             view: (model, h) =>
-              h.div([], [
-                h.button(
-                  [
-                    h.Type('button'),
-                    h.OnClick({ _tag: 'SetOpen', isOpen: !model.isOpen }),
-                  ],
-                  ['Toggle'],
-                ),
-                collapsibleView(Collapsible)(model, h),
-              ]),
+              h.div(
+                [],
+                [
+                  h.button(
+                    [
+                      h.Type('button'),
+                      h.OnClick({ _tag: 'SetOpen', isOpen: !model.isOpen }),
+                    ],
+                    ['Toggle'],
+                  ),
+                  collapsibleView(Collapsible)(model, h),
+                ],
+              ),
           },
           Scene.given(initialModel()),
           Scene.expect(trigger).toHaveAttr('aria-expanded', 'false'),

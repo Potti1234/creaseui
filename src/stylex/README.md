@@ -47,4 +47,3 @@ the type tests in `contracts.ts` ensure StyleX cannot silently widen the
 layout-only contract after a dependency upgrade. The cross-file flow and
 governance checks run through `npm run lint:stylex-contracts` and
 `npm run lint:stylex-governance`.
-

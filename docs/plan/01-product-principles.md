@@ -149,4 +149,3 @@ Every interactive component must define all applicable states:
 Documentation should be precise and slightly dry. Prefer concrete claims backed by
 rendered proof. Say what state and wiring cost a component has. Do not describe an
 adapted or partially tested artifact as equivalent to upstream.
-

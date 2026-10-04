@@ -4,7 +4,11 @@ import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { focusToolbarItemsMount, Message, TOOLBAR_EDGE_COMP_ATTR } from '@/lib/toolbar'
+import {
+  focusToolbarItemsMount,
+  Message,
+  TOOLBAR_EDGE_COMP_ATTR,
+} from '@/lib/toolbar'
 import type { ComponentLayoutStyle } from './contracts'
 import { tokens } from './tokens.stylex'
 import { className } from './style'
@@ -70,10 +74,26 @@ const styles = stylex.create({
     backgroundColor: tokens.muted,
     color: tokens.foreground,
   },
-  dividerTop: { borderBlockStartColor: tokens.border, borderBlockStartStyle: 'solid', borderBlockStartWidth: '1px' },
-  dividerBottom: { borderBlockEndColor: tokens.border, borderBlockEndStyle: 'solid', borderBlockEndWidth: '1px' },
-  dividerStart: { borderInlineStartColor: tokens.border, borderInlineStartStyle: 'solid', borderInlineStartWidth: '1px' },
-  dividerEnd: { borderInlineEndColor: tokens.border, borderInlineEndStyle: 'solid', borderInlineEndWidth: '1px' },
+  dividerTop: {
+    borderBlockStartColor: tokens.border,
+    borderBlockStartStyle: 'solid',
+    borderBlockStartWidth: '1px',
+  },
+  dividerBottom: {
+    borderBlockEndColor: tokens.border,
+    borderBlockEndStyle: 'solid',
+    borderBlockEndWidth: '1px',
+  },
+  dividerStart: {
+    borderInlineStartColor: tokens.border,
+    borderInlineStartStyle: 'solid',
+    borderInlineStartWidth: '1px',
+  },
+  dividerEnd: {
+    borderInlineEndColor: tokens.border,
+    borderInlineEndStyle: 'solid',
+    borderInlineEndWidth: '1px',
+  },
   baseFlex: {
     alignItems: 'center',
     display: 'flex',
@@ -110,11 +130,8 @@ const styles = stylex.create({
     justifyContent: 'center',
   },
   endSlot: { justifyContent: 'flex-end' },
-  startOnly: { flexBasis: '0%',
- flexGrow: '1',
- flexShrink: '1', },
+  startOnly: { flexBasis: '0%', flexGrow: '1', flexShrink: '1' },
   endOnly: { marginInlineStart: 'auto' },
-
 })
 
 const VARIANT_STYLE: Readonly<Record<ToolbarVariant, StaticStyles>> = {
@@ -144,7 +161,10 @@ const GAP_REM: Readonly<Record<ToolbarGap, string>> = {
   10: '2.5rem',
 }
 
-export const toolbar = <Msg>(props: ToolbarProps<Msg>, h: HtmlBuilder<Msg>): Html => {
+export const toolbar = <Msg>(
+  props: ToolbarProps<Msg>,
+  h: HtmlBuilder<Msg>,
+): Html => {
   const orientation = props.orientation ?? 'horizontal'
   const variant = props.variant ?? 'transparent'
   const gap = props.gap ?? 1
@@ -165,11 +185,7 @@ export const toolbar = <Msg>(props: ToolbarProps<Msg>, h: HtmlBuilder<Msg>): Htm
     h.div(
       [
         h.Class(
-          className(
-            styles.slot,
-            edgeComp && styles.slotEdgeComp,
-            ...extra,
-          ),
+          className(styles.slot, edgeComp && styles.slotEdgeComp, ...extra),
         ),
         gapAttr,
       ],
@@ -205,11 +221,7 @@ export const toolbar = <Msg>(props: ToolbarProps<Msg>, h: HtmlBuilder<Msg>): Htm
 
   const mountAttrs =
     hasKeyboardNavigation && props.toParentMessage !== undefined
-      ? [
-          h.OnMount(
-            focusToolbarItemsMount(props.toParentMessage, orientation),
-          ),
-        ]
+      ? [h.OnMount(focusToolbarItemsMount(props.toParentMessage, orientation))]
       : []
 
   return h.div(

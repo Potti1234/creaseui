@@ -122,10 +122,12 @@ describe('TransferList', () => {
 
     next = TransferList.update(
       model,
-      dnd(Dnd.Message.CompletedResolveKeyboardMove({
-        targetContainerId: CONTAINER_ID,
-        targetIndex: 1,
-      })),
+      dnd(
+        Dnd.Message.CompletedResolveKeyboardMove({
+          targetContainerId: CONTAINER_ID,
+          targetIndex: 1,
+        }),
+      ),
       options,
     )
     model = next.model
@@ -149,11 +151,7 @@ describe('TransferList', () => {
       options,
     )
     model = next.model
-    next = TransferList.update(
-      model,
-      dnd(Dnd.Message.CancelledDrag()),
-      options,
-    )
+    next = TransferList.update(model, dnd(Dnd.Message.CancelledDrag()), options)
     model = next.model
     assert.equal(model.dnd.dragState._tag, 'Idle')
     assert.deepEqual(model.value, ['a', 'b', 'c'])

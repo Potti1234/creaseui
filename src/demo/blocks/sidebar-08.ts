@@ -1,12 +1,12 @@
-import { Match as M, Schema as S } from 'effect';
-import type { Update } from 'foldkit';
-import { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
-import { modifyFields } from 'foldkit/struct';
+import { Match as M, Schema as S } from 'effect'
+import type { Update } from 'foldkit'
+import { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import { modifyFields } from 'foldkit/struct'
 
-import * as Icon from '@/lib/icon';
-import { avatar, avatarFallback } from '@/ui/avatar';
+import * as Icon from '@/lib/icon'
+import { avatar, avatarFallback } from '@/ui/avatar'
 import {
   breadcrumb,
   breadcrumbItem,
@@ -14,10 +14,10 @@ import {
   breadcrumbList,
   breadcrumbPage,
   breadcrumbSeparator,
-} from '@/ui/breadcrumb';
-import * as Collapsible from '@/ui/collapsible';
-import * as DropdownMenu from '@/ui/dropdown-menu';
-import { separator } from '@/ui/separator';
+} from '@/ui/breadcrumb'
+import * as Collapsible from '@/ui/collapsible'
+import * as DropdownMenu from '@/ui/dropdown-menu'
+import { separator } from '@/ui/separator'
 import {
   sidebar,
   sidebarContent,
@@ -36,27 +36,27 @@ import {
   sidebarMenuSubItem,
   sidebarProvider,
   sidebarTrigger,
-} from '@/ui/sidebar';
+} from '@/ui/sidebar'
 
 type MainItem = Readonly<{
-  title: string;
-  url: string;
-  icon: string;
-  isActive?: boolean;
-  items: ReadonlyArray<Readonly<{ title: string; url: string }>>;
-}>;
+  title: string
+  url: string
+  icon: string
+  isActive?: boolean
+  items: ReadonlyArray<Readonly<{ title: string; url: string }>>
+}>
 
 type LinkItem = Readonly<{
-  title: string;
-  url: string;
-  icon: string;
-}>;
+  title: string
+  url: string
+  icon: string
+}>
 
 type Project = Readonly<{
-  name: string;
-  url: string;
-  icon: string;
-}>;
+  name: string
+  url: string
+  icon: string
+}>
 
 const data = {
   user: {
@@ -118,68 +118,68 @@ const data = {
     { name: 'Sales & Marketing', url: '#', icon: 'chart-pie' },
     { name: 'Travel', url: '#', icon: 'map' },
   ] satisfies ReadonlyArray<Project>,
-};
+}
 
-type ProjectAction = 'view' | 'share' | 'delete';
+type ProjectAction = 'view' | 'share' | 'delete'
 type UserAction =
-  'upgrade' | 'account' | 'billing' | 'notifications' | 'log-out';
+  | 'upgrade'
+  | 'account'
+  | 'billing'
+  | 'notifications'
+  | 'log-out'
 
 const PROJECT_ACTIONS: ReadonlyArray<ProjectAction> = [
   'view',
   'share',
   'delete',
-];
+]
 const USER_ACTIONS: ReadonlyArray<UserAction> = [
   'upgrade',
   'account',
   'billing',
   'notifications',
   'log-out',
-];
+]
 
-const ProjectMenu = DropdownMenu.create<ProjectAction>();
-const UserMenu = DropdownMenu.create<UserAction>();
+const ProjectMenu = DropdownMenu.create<ProjectAction>()
+const UserMenu = DropdownMenu.create<UserAction>()
 
 // MODEL
 
 export const Model = S.Struct({
-  isMobileOpen: S.Boolean, isSidebarOpen: S.Boolean,
+  isMobileOpen: S.Boolean,
+  isSidebarOpen: S.Boolean,
   navMainOpen: S.Array(S.Boolean),
   projectMenus: S.Array(DropdownMenu.Model),
   userMenu: DropdownMenu.Model,
-});
-export type Model = typeof Model.Type;
+})
+export type Model = typeof Model.Type
 
 // MESSAGE
-
-
-
-
-
-
 
 export const Message = defineMessageUnion({
   ToggledMobileSidebar: {},
   ToggledSidebar: {},
   ToggledNavMain: {
-  index: S.Number,
-  isOpen: S.Boolean,
-},
+    index: S.Number,
+    isOpen: S.Boolean,
+  },
   GotProjectMenuMessage: {
-  index: S.Number,
-  message: DropdownMenu.Message,
-},
+    index: S.Number,
+    message: DropdownMenu.Message,
+  },
   GotUserMenuMessage: {
-  message: DropdownMenu.Message,
-},
-});
-export type Message = typeof Message.Type;
+    message: DropdownMenu.Message,
+  },
+})
+export type Message = typeof Message.Type
 
 // INIT
 
 export const init = (): Model => ({
-  isMobileOpen: false, isSidebarOpen: true,
-  navMainOpen: data.navMain.map((item) => item.isActive ?? false),
+  isMobileOpen: false,
+  isSidebarOpen: true,
+  navMainOpen: data.navMain.map(item => item.isActive ?? false),
   projectMenus: data.projects.map((_, index) =>
     DropdownMenu.init({
       id: `sidebar-08-project-menu-${index}`,
@@ -190,63 +190,72 @@ export const init = (): Model => ({
     id: 'sidebar-08-user-menu',
     isAnimated: true,
   }),
-});
+})
 
 // UPDATE
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      ToggledMobileSidebar: () => ({ model: modifyFields(model, {isMobileOpen: current => !current}) }),
-      ToggledSidebar: () => ({ model: modifyFields(model, { isSidebarOpen: (current) => !current }) }),
+      ToggledMobileSidebar: () => ({
+        model: modifyFields(model, { isMobileOpen: current => !current }),
+      }),
+      ToggledSidebar: () => ({
+        model: modifyFields(model, { isSidebarOpen: current => !current }),
+      }),
       ToggledNavMain: ({ index, isOpen }) => {
         if (model.navMainOpen[index] === undefined) {
-          return { model: model };
+          return { model: model }
         }
-        return { model: modifyFields(model, {
-            navMainOpen: (items) =>
+        return {
+          model: modifyFields(model, {
+            navMainOpen: items =>
               items.map((open, itemIndex) =>
                 itemIndex === index ? isOpen : open,
               ),
-          }) };
+          }),
+        }
       },
       GotProjectMenuMessage: ({ index, message: childMessage }) => {
-        const current = model.projectMenus[index];
+        const current = model.projectMenus[index]
 
         if (current === undefined) {
-          return { model: model };
+          return { model: model }
         }
 
-        const nextOp__ = ProjectMenu.update(current, childMessage);
-    const next = nextOp__.model;
-    const commands = nextOp__.commands ?? [];;
+        const nextOp__ = ProjectMenu.update(current, childMessage)
+        const next = nextOp__.model
+        const commands = nextOp__.commands ?? []
 
-        return { model: modifyFields(model, {
-            projectMenus: (menus) =>
+        return {
+          model: modifyFields(model, {
+            projectMenus: menus =>
               menus.map((menu, menuIndex) =>
                 menuIndex === index ? next : menu,
               ),
-          }), commands: Command.mapMessages(commands, (nextMessage) =>
+          }),
+          commands: Command.mapMessages(commands, nextMessage =>
             Message.GotProjectMenuMessage({ index, message: nextMessage }),
-          ) };
+          ),
+        }
       },
       GotUserMenuMessage: ({ message: childMessage }) => {
-        const userMenuOp__ = UserMenu.update(
-          model.userMenu,
-          childMessage,
-        );
-    const userMenu = userMenuOp__.model;
-    const commands = userMenuOp__.commands ?? [];;
+        const userMenuOp__ = UserMenu.update(model.userMenu, childMessage)
+        const userMenu = userMenuOp__.model
+        const commands = userMenuOp__.commands ?? []
 
-        return { model: modifyFields(model, { userMenu: () => userMenu }), commands: Command.mapMessages(commands, (nextMessage) =>
+        return {
+          model: modifyFields(model, { userMenu: () => userMenu }),
+          commands: Command.mapMessages(commands, nextMessage =>
             Message.GotUserMenuMessage({ message: nextMessage }),
-          ) };
+          ),
+        }
       },
     }),
-  );
+  )
 
 // VIEW
 
@@ -261,10 +270,10 @@ const navMain = (
         sidebarMenu(
           {
             children: data.navMain.flatMap((item, index) => {
-              const isOpen = openStates[index];
+              const isOpen = openStates[index]
 
               if (isOpen === undefined) {
-                return [];
+                return []
               }
               return [
                 sidebarMenuItem(
@@ -274,8 +283,11 @@ const navMain = (
                         {
                           id: `sidebar-08-nav-main-${index}`,
                           isOpen,
-                          onToggle: (nextIsOpen) =>
-                            Message.ToggledNavMain({ index, isOpen: nextIsOpen }),
+                          onToggle: nextIsOpen =>
+                            Message.ToggledNavMain({
+                              index,
+                              isOpen: nextIsOpen,
+                            }),
                           class: 'group/collapsible',
                           triggerClass: sidebarMenuButtonVariants(),
                           trigger: h.span(
@@ -302,7 +314,7 @@ const navMain = (
                           ),
                           content: sidebarMenuSub(
                             {
-                              children: item.items.map((subItem) =>
+                              children: item.items.map(subItem =>
                                 sidebarMenuSubItem(
                                   {
                                     children: [
@@ -330,7 +342,7 @@ const navMain = (
                   },
                   h,
                 ),
-              ];
+              ]
             }),
           },
           h,
@@ -338,7 +350,7 @@ const navMain = (
       ],
     },
     h,
-  );
+  )
 
 const projectActionConfig = (
   action: ProjectAction,
@@ -362,10 +374,10 @@ const projectActionConfig = (
       group: '',
     })),
     M.exhaustive,
-  );
+  )
 
 const PROJECT_ACTION_CLASS =
-  'absolute top-1.5 right-1 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground ring-sidebar-ring outline-hidden transition-transform peer-hover/menu-button:text-sidebar-accent-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 after:absolute after:-inset-2 group-data-[collapsible=icon]:hidden group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[open]:opacity-100 md:opacity-0';
+  'absolute top-1.5 right-1 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground ring-sidebar-ring outline-hidden transition-transform peer-hover/menu-button:text-sidebar-accent-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 after:absolute after:-inset-2 group-data-[collapsible=icon]:hidden group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[open]:opacity-100 md:opacity-0'
 
 const navProjects = (
   models: ReadonlyArray<DropdownMenu.Model>,
@@ -380,10 +392,10 @@ const navProjects = (
           {
             children: [
               ...data.projects.flatMap((project, index) => {
-                const model = models[index];
+                const model = models[index]
 
                 if (model === undefined) {
-                  return [];
+                  return []
                 }
 
                 return [
@@ -403,7 +415,7 @@ const navProjects = (
                         DropdownMenu.dropdownMenu<ProjectAction, Message>(
                           {
                             model,
-                            toParentMessage: (message) =>
+                            toParentMessage: message =>
                               Message.GotProjectMenuMessage({ index, message }),
                             trigger: h.span(
                               [h.Class('contents')],
@@ -415,7 +427,7 @@ const navProjects = (
                             placement: 'sidebarAction',
                             triggerClass: PROJECT_ACTION_CLASS,
                             items: PROJECT_ACTIONS,
-                            itemToConfig: (action) =>
+                            itemToConfig: action =>
                               projectActionConfig(action, h),
                             side: 'right',
                             align: 'start',
@@ -427,7 +439,7 @@ const navProjects = (
                     },
                     h,
                   ),
-                ];
+                ]
               }),
               sidebarMenuItem(
                 {
@@ -452,8 +464,8 @@ const navProjects = (
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const navSecondary = (h: HtmlBuilder<Message>): Html => {
   return sidebarGroup(
@@ -465,7 +477,7 @@ const navSecondary = (h: HtmlBuilder<Message>): Html => {
             children: [
               sidebarMenu(
                 {
-                  children: data.navSecondary.map((item) =>
+                  children: data.navSecondary.map(item =>
                     sidebarMenuItem(
                       {
                         children: [
@@ -495,8 +507,8 @@ const navSecondary = (h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const userSummary = (h: HtmlBuilder<Message>): Html => {
   return h.span(
@@ -525,8 +537,8 @@ const userSummary = (h: HtmlBuilder<Message>): Html => {
         ],
       ),
     ],
-  );
-};
+  )
+}
 
 const userActionConfig = (
   action: UserAction,
@@ -560,7 +572,7 @@ const userActionConfig = (
       group: '',
     })),
     M.exhaustive,
-  );
+  )
 
 const navUser = (model: DropdownMenu.Model, h: HtmlBuilder<Message>): Html => {
   return sidebarMenu(
@@ -572,7 +584,8 @@ const navUser = (model: DropdownMenu.Model, h: HtmlBuilder<Message>): Html => {
               DropdownMenu.dropdownMenu<UserAction, Message>(
                 {
                   model,
-                  toParentMessage: (message) => Message.GotUserMenuMessage({ message }),
+                  toParentMessage: message =>
+                    Message.GotUserMenuMessage({ message }),
                   trigger: h.span(
                     [h.Class('contents')],
                     [
@@ -591,7 +604,7 @@ const navUser = (model: DropdownMenu.Model, h: HtmlBuilder<Message>): Html => {
                       'data-[open]:bg-sidebar-accent data-[open]:text-sidebar-accent-foreground',
                   }),
                   items: USER_ACTIONS,
-                  itemToConfig: (action) => userActionConfig(action, h),
+                  itemToConfig: action => userActionConfig(action, h),
                   side: 'right',
                   align: 'end',
                   ariaLabel: 'User menu',
@@ -605,15 +618,17 @@ const navUser = (model: DropdownMenu.Model, h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
-  const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
+  const state = model.isSidebarOpen ? 'expanded' : 'collapsed'
 
   return sidebar(
     {
-      isMobileOpen: model.isMobileOpen, onMobileDismiss: Message.ToggledMobileSidebar(), state,
+      isMobileOpen: model.isMobileOpen,
+      onMobileDismiss: Message.ToggledMobileSidebar(),
+      state,
       variant: 'inset',
       children: [
         sidebarHeader(
@@ -691,8 +706,8 @@ const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const pageContent = (h: HtmlBuilder<Message>): Html => {
   return sidebarInset(
@@ -706,7 +721,8 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
               [
                 sidebarTrigger(
                   {
-                    onMobileClick: Message.ToggledMobileSidebar(), onClick: Message.ToggledSidebar(),
+                    onMobileClick: Message.ToggledMobileSidebar(),
+                    onClick: Message.ToggledSidebar(),
                     class: '-ml-1',
                   },
                   h,
@@ -794,11 +810,11 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
-  const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
+  const state = model.isSidebarOpen ? 'expanded' : 'collapsed'
 
   return sidebarProvider<Message>(
     {
@@ -806,8 +822,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       children: [appSidebar(model, h), pageContent(h)],
     },
     h,
-  );
-};
+  )
+}
 
 // PORT NOTE: Avatar files are not bundled, so the source image is represented
 // by its CN fallback. The foldkit Disclosure exposes one trigger, so the main

@@ -23,6 +23,23 @@ Keep commits small and dependency ordered. A foundation or utility should land
 before the components that use it. Avoid mixing generated screenshots, broad
 formatting, or unrelated refactors into a component commit.
 
+## Formatting
+
+Use Node.js 22.22.1 or newer and run `npm ci` after cloning. The install step
+enables the Husky pre-commit hook, which runs Oxfmt through lint-staged on staged
+files and keeps unstaged edits out of the commit.
+
+- `npm run format` formats the repository.
+- `npm run format -- src/stylex/switch.ts` formats a specific file.
+- `npm run format:check` checks formatting without changing files.
+- `npm run format:staged` runs the same formatter as the pre-commit hook.
+
+Formatting uses two spaces, single quotes, no semicolons, LF line endings, and an
+80-column target. The formatting check also runs as part of `npm run check` in CI.
+Generated artifacts are excluded in `.oxfmtrc.json`; update them with their owning
+generation commands. Import order, Tailwind class order, and embedded code
+examples are preserved.
+
 ## Foldkit conventions
 
 - Keep views and updates pure; describe effects through Foldkit commands and

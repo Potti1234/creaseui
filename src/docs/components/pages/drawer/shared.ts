@@ -1,16 +1,22 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
-export type DrawerKind = 'goal' | 'side' | 'scroll' | 'sides' | 'responsive' | 'rtl';
-export type DrawerSide = 'top' | 'right' | 'bottom' | 'left';
+export type DrawerKind =
+  | 'goal'
+  | 'side'
+  | 'scroll'
+  | 'sides'
+  | 'responsive'
+  | 'rtl'
+export type DrawerSide = 'top' | 'right' | 'bottom' | 'left'
 
 export type DrawerFixture = Readonly<{
-  title: string;
-  description?: string;
-  heroOnly?: boolean;
-  kind: DrawerKind;
-  triggerLabel: string;
-}>;
+  title: string
+  description?: string
+  heroOnly?: boolean
+  kind: DrawerKind
+  triggerLabel: string
+}>
 
 export const drawerFixtures: ReadonlyArray<DrawerFixture> = [
   {
@@ -21,42 +27,52 @@ export const drawerFixtures: ReadonlyArray<DrawerFixture> = [
   },
   {
     title: 'Side drawer',
-    description: 'The same child integration can present a compact task from the right edge.',
+    description:
+      'The same child integration can present a compact task from the right edge.',
     kind: 'side',
     triggerLabel: 'Open right drawer',
   },
   {
     title: 'Scrollable Content',
-    description: 'Long copy scrolls inside a right-hand drawer while the footer stays put.',
+    description:
+      'Long copy scrolls inside a right-hand drawer while the footer stays put.',
     kind: 'scroll',
     triggerLabel: 'Scrollable Content',
   },
   {
     title: 'Sides',
-    description: 'One drawer model plus a direction field opens from any of the four edges.',
+    description:
+      'One drawer model plus a direction field opens from any of the four edges.',
     kind: 'sides',
     triggerLabel: 'Sides',
   },
   {
     title: 'Responsive Dialog',
-    description: 'matchMedia chooses Dialog on desktop and Drawer on smaller viewports.',
+    description:
+      'matchMedia chooses Dialog on desktop and Drawer on smaller viewports.',
     kind: 'responsive',
     triggerLabel: 'Edit Profile',
   },
   {
     title: 'RTL',
-    description: 'A dir="rtl" content wrapper mirrors the counter controls and labels.',
+    description:
+      'A dir="rtl" content wrapper mirrors the counter controls and labels.',
     kind: 'rtl',
     triggerLabel: 'افتح الدرج',
   },
-];
+]
 
-export const drawerSides: ReadonlyArray<DrawerSide> = ['top', 'right', 'bottom', 'left'];
+export const drawerSides: ReadonlyArray<DrawerSide> = [
+  'top',
+  'right',
+  'bottom',
+  'left',
+]
 
 export const drawerLorem =
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
+  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
 
-export const drawerGoalData = [350, 350, 350, 350, 350, 350, 350] as const;
+export const drawerGoalData = [350, 350, 350, 350, 350, 350, 350] as const
 
 export const drawerRtlCopy = {
   title: 'تحديد الهدف',
@@ -66,7 +82,7 @@ export const drawerRtlCopy = {
   increase: 'زيادة',
   submit: 'إرسال',
   cancel: 'إلغاء',
-} as const;
+} as const
 
 const emitStyles = `const styles = stylex.create({
   body: { paddingInline: '1rem', paddingBlockEnd: '1.5rem', textAlign: 'center' },
@@ -86,13 +102,13 @@ const emitStyles = `const styles = stylex.create({
   counterFlex: { flex: '1 1 0%', textAlign: 'center' },
   fieldGrid: { display: 'grid', gap: '1rem', paddingInline: '1rem' },
   compact: { maxWidth: '24rem' },
-})`;
+})`
 
-const sq = (value: string): string => value.replaceAll("'", "\\'");
+const sq = (value: string): string => value.replaceAll("'", "\\'")
 
 const emitContent = (fixture: DrawerFixture, isStyleX: boolean): string => {
   const cls = (tailwind: string, stylexRef: string) =>
-    isStyleX ? `className(${stylexRef})` : `'${tailwind}'`;
+    isStyleX ? `className(${stylexRef})` : `'${tailwind}'`
   switch (fixture.kind) {
     case 'goal':
     case 'side':
@@ -101,7 +117,7 @@ const emitContent = (fixture: DrawerFixture, isStyleX: boolean): string => {
           h.p([h.Class(${cls('text-5xl font-bold tabular-nums', 'styles.value')})], ['350']),
           h.p([h.Class(${cls('text-sm text-muted-foreground', 'styles.label')})], ['Calories per day']),
         ]),
-      ],`;
+      ],`
     case 'scroll':
     case 'sides':
       return `content: () => [
@@ -113,7 +129,7 @@ const emitContent = (fixture: DrawerFixture, isStyleX: boolean): string => {
             ]),
           ),
         ),
-      ],`;
+      ],`
     case 'responsive':
       return `content: () => [
         Field.fieldGroup({ children: [
@@ -126,7 +142,7 @@ const emitContent = (fixture: DrawerFixture, isStyleX: boolean): string => {
             Input.input({ id: 'username-1', value: model.username, onInput: value => ChangedUsername({ value }) }, h),
           ] }, h),
         ] }, h),
-      ],`;
+      ],`
     case 'rtl':
       return `content: () => [
         h.div([h.Dir('rtl'), h.Class(${cls('mx-auto w-full max-w-sm', 'styles.rtlWrap')})], [
@@ -161,96 +177,96 @@ const emitContent = (fixture: DrawerFixture, isStyleX: boolean): string => {
             ]),
           ]),
         ]),
-      ],`;
+      ],`
   }
-};
+}
 
 const emitFooter = (fixture: DrawerFixture, isStyleX: boolean): string => {
   const cls = (tailwind: string, stylexRef: string) =>
-    isStyleX ? `className(${stylexRef})` : `'${tailwind}'`;
+    isStyleX ? `className(${stylexRef})` : `'${tailwind}'`
   const outline = (label: string, initialFocus = false) =>
-    `h.button([...slots.closeButton, ${initialFocus ? '...slots.initialFocusAttributes(), ' : ''}h.Type('button'), h.Class(${cls('rounded-md border px-4 py-2 text-sm', 'styles.cancel')})], ['${label}'])`;
+    `h.button([...slots.closeButton, ${initialFocus ? '...slots.initialFocusAttributes(), ' : ''}h.Type('button'), h.Class(${cls('rounded-md border px-4 py-2 text-sm', 'styles.cancel')})], ['${label}'])`
   const primary = (label: string) =>
-    `h.button([...slots.closeButton, h.Type('button'), h.Class(${cls('rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground', 'styles.action')})], ['${label}'])`;
+    `h.button([...slots.closeButton, h.Type('button'), h.Class(${cls('rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground', 'styles.action')})], ['${label}'])`
   switch (fixture.kind) {
     case 'goal':
     case 'side':
       return `footer: slots => [
         ${primary('Save goal')},
         ${outline('Cancel')},
-      ],`;
+      ],`
     case 'scroll':
     case 'sides':
       return `footer: slots => [
         ${primary('Submit')},
         ${outline('Cancel')},
-      ],`;
+      ],`
     case 'rtl':
       return `footer: slots => [
         ${primary(drawerRtlCopyEmit.submit)},
         ${outline(drawerRtlCopyEmit.cancel)},
-      ],`;
+      ],`
     case 'responsive':
-      return `footer: slots => [${outline('Cancel')}],`;
+      return `footer: slots => [${outline('Cancel')}],`
   }
-};
+}
 
-const drawerRtlCopyEmit = { submit: 'إرسال', cancel: 'إلغاء' } as const;
+const drawerRtlCopyEmit = { submit: 'إرسال', cancel: 'إلغاء' } as const
 
 const drawerInitExtra = (fixture: DrawerFixture): string => {
   switch (fixture.kind) {
     case 'sides':
-      return ", side: 'bottom'";
+      return ", side: 'bottom'"
     case 'responsive':
-      return ", dialog: Dialog.init({ id: 'responsive-dialog', isAnimated: true }), isDesktop: window.matchMedia('(min-width: 768px)').matches, name: 'Pedro Duarte', username: '@peduarte'";
+      return ", dialog: Dialog.init({ id: 'responsive-dialog', isAnimated: true }), isDesktop: window.matchMedia('(min-width: 768px)').matches, name: 'Pedro Duarte', username: '@peduarte'"
     case 'rtl':
-      return ', goal: 350';
+      return ', goal: 350'
     default:
-      return '';
+      return ''
   }
-};
+}
 
 const drawerModelFields = (fixture: DrawerFixture): string => {
   switch (fixture.kind) {
     case 'sides':
-      return ", side: S.Literals(['top', 'right', 'bottom', 'left'])";
+      return ", side: S.Literals(['top', 'right', 'bottom', 'left'])"
     case 'responsive':
-      return ', dialog: Dialog.Model, isDesktop: S.Boolean, name: S.String, username: S.String';
+      return ', dialog: Dialog.Model, isDesktop: S.Boolean, name: S.String, username: S.String'
     case 'rtl':
-      return ', goal: S.Number';
+      return ', goal: S.Number'
     default:
-      return '';
+      return ''
   }
-};
+}
 
 const drawerExtraMessages = (fixture: DrawerFixture, tag: string): string => {
   switch (fixture.kind) {
     case 'sides':
-      return `\nexport const ClickedOpenSide = taggedStruct('ClickedOpenSide${tag}', { side: S.Literals(['top', 'right', 'bottom', 'left']) });`;
+      return `\nexport const ClickedOpenSide = taggedStruct('ClickedOpenSide${tag}', { side: S.Literals(['top', 'right', 'bottom', 'left']) });`
     case 'responsive':
       return `\nexport const ChangedViewport = taggedStruct('ChangedViewport${tag}', { isDesktop: S.Boolean });
 export const ChangedName = taggedStruct('ChangedName${tag}', { value: S.String });
 export const ChangedUsername = taggedStruct('ChangedUsername${tag}', { value: S.String });
-export const GotDialogMessage = taggedStruct('GotDialogMessage${tag}', { message: Dialog.Message });`;
+export const GotDialogMessage = taggedStruct('GotDialogMessage${tag}', { message: Dialog.Message });`
     case 'rtl':
-      return `\nexport const AdjustedGoal = taggedStruct('AdjustedGoal${tag}', { delta: S.Number });`;
+      return `\nexport const AdjustedGoal = taggedStruct('AdjustedGoal${tag}', { delta: S.Number });`
     default:
-      return '';
+      return ''
   }
-};
+}
 
 const drawerUnionExtras = (fixture: DrawerFixture): string => {
   switch (fixture.kind) {
     case 'sides':
-      return ', ClickedOpenSide';
+      return ', ClickedOpenSide'
     case 'responsive':
-      return ', GotDialogMessage, ChangedViewport, ChangedName, ChangedUsername';
+      return ', GotDialogMessage, ChangedViewport, ChangedName, ChangedUsername'
     case 'rtl':
-      return ', AdjustedGoal';
+      return ', AdjustedGoal'
     default:
-      return '';
+      return ''
   }
-};
+}
 
 const drawerUpdateCases = (fixture: DrawerFixture, tag: string): string => {
   switch (fixture.kind) {
@@ -262,14 +278,14 @@ const drawerUpdateCases = (fixture: DrawerFixture, tag: string): string => {
     case 'ChangedName${tag}':
       return { model: { ...model, name: message.value } }
     case 'ChangedUsername${tag}':
-      return { model: { ...model, username: message.value } }`;
+      return { model: { ...model, username: message.value } }`
     case 'rtl':
       return `    case 'AdjustedGoal${tag}':
-      return { model: { ...model, goal: Math.max(200, Math.min(400, model.goal + message.delta)) } }`;
+      return { model: { ...model, goal: Math.max(200, Math.min(400, model.goal + message.delta)) } }`
     default:
-      return '';
+      return ''
   }
-};
+}
 
 const emitImports = (fixture: DrawerFixture, isStyleX: boolean): string => {
   const extra = [
@@ -279,16 +295,19 @@ const emitImports = (fixture: DrawerFixture, isStyleX: boolean): string => {
     fixture.kind === 'rtl' ? "import * as Chart from '@/lib/echarts'" : '',
   ]
     .filter(Boolean)
-    .join('\n');
+    .join('\n')
   return `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 ${isStyleX ? "\nimport * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\n" : ''}
 import * as Button from '@/${isStyleX ? 'stylex' : 'ui'}/button'
-import * as Drawer from '@/${isStyleX ? 'stylex' : 'ui'}/drawer'${extra === '' ? '' : `\n${extra}`}${isStyleX ? `\n\n${emitStyles}` : ''}`;
-};
+import * as Drawer from '@/${isStyleX ? 'stylex' : 'ui'}/drawer'${extra === '' ? '' : `\n${extra}`}${isStyleX ? `\n\n${emitStyles}` : ''}`
+}
 
-const emitSubscriptions = (fixture: DrawerFixture, isStyleX: boolean): string | undefined => {
+const emitSubscriptions = (
+  fixture: DrawerFixture,
+  isStyleX: boolean,
+): string | undefined => {
   if (fixture.kind === 'responsive') {
     return `export const subscriptions = Subscription.make<Model, Message>()(() => ({
   viewport: Subscription.persistent(Subscription.fromEvent({
@@ -296,14 +315,14 @@ const emitSubscriptions = (fixture: DrawerFixture, isStyleX: boolean): string | 
     type: 'resize',
     mapEvent: () => ChangedViewport({ isDesktop: window.matchMedia('(min-width: 768px)').matches }),
   })),
-}))`;
+}))`
   }
-  return undefined;
-};
+  return undefined
+}
 
 const emitView = (fixture: DrawerFixture, isStyleX: boolean): string => {
   const cls = (tailwind: string, stylexRef: string) =>
-    isStyleX ? `className(${stylexRef})` : `'${tailwind}'`;
+    isStyleX ? `className(${stylexRef})` : `'${tailwind}'`
   switch (fixture.kind) {
     case 'goal':
     case 'side':
@@ -322,7 +341,7 @@ const emitView = (fixture: DrawerFixture, isStyleX: boolean): string => {
       ${emitFooter(fixture, isStyleX)}
     }, h),
   ]),
-})`;
+})`
     case 'sides':
       return `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Drawer — ${sq(fixture.title)}',
@@ -342,7 +361,7 @@ const emitView = (fixture: DrawerFixture, isStyleX: boolean): string => {
       ${emitFooter(fixture, isStyleX)}
     }, h),
   ]),
-})`;
+})`
     case 'responsive':
       return `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Drawer — ${sq(fixture.title)}',
@@ -353,7 +372,7 @@ const emitView = (fixture: DrawerFixture, isStyleX: boolean): string => {
       toParentMessage: message => GotDialogMessage({ message }),
       title: 'Edit profile',
       description: 'Make changes to your profile here. Click save when you\\'re done.',
-      ${isStyleX ? "layoutStyle: styles.compact," : "class: 'sm:max-w-sm',"}
+      ${isStyleX ? 'layoutStyle: styles.compact,' : "class: 'sm:max-w-sm',"}
       ${emitContent(fixture, isStyleX)}
     }, h),
     Drawer.drawer({
@@ -365,7 +384,7 @@ const emitView = (fixture: DrawerFixture, isStyleX: boolean): string => {
       ${emitFooter(fixture, isStyleX)}
     }, h),
   ]),
-})`;
+})`
     case 'rtl':
       return `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Drawer — ${sq(fixture.title)}',
@@ -380,23 +399,23 @@ const emitView = (fixture: DrawerFixture, isStyleX: boolean): string => {
       ${emitFooter(fixture, isStyleX)}
     }, h),
   ]),
-})`;
+})`
   }
-};
+}
 
 const source = (
   fixture: DrawerFixture,
   _index: number,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '');
-  const isStyleX = renderer === 'stylex';
+  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
+  const isStyleX = renderer === 'stylex'
   const openCase =
     fixture.kind === 'responsive'
       ? 'ClickedOpenResponsive'
       : fixture.kind === 'sides'
         ? 'ClickedOpenSide'
-        : 'ClickedOpenDrawer';
+        : 'ClickedOpenDrawer'
   return foldkitApplication({
     title: `Drawer — ${fixture.title}`,
     imports: emitImports(fixture, isStyleX),
@@ -406,8 +425,9 @@ export type Model = typeof Model.Type`,
 ${fixture.kind === 'sides' ? '' : `export const ${openCase} = taggedStruct('${openCase}${tag}');\n`}export const GotDrawerMessage = taggedStruct('GotDrawerMessage${tag}', { message: Drawer.Message });${drawerExtraMessages(fixture, tag)}
 export const Message = S.Union([${openCase}, GotDrawerMessage${drawerUnionExtras(fixture)}${fixture.kind === 'rtl' ? ', Chart.ChartMessage' : ''}])
 export type Message = typeof Message.Type`,
-    init: fixture.kind === 'rtl'
-      ? `export const init = (): Update.Return<Model, Message> => {
+    init:
+      fixture.kind === 'rtl'
+        ? `export const init = (): Update.Return<Model, Message> => {
   Chart.registerChart('drawer-rtl-chart', theme => ({
     grid: Chart.compactGrid(),
     series: [{ data: [350, 350, 350, 350, 350, 350, 350], itemStyle: { color: theme.chart2 }, name: 'Goal', type: 'bar' }],
@@ -417,53 +437,70 @@ export type Message = typeof Message.Type`,
   }))
   return { model: { drawer: Drawer.init({ id: 'drawer-${tag.toLowerCase()}', isAnimated: true }), goal: 350 } }
 }`
-      : `export const init = (): Update.Return<Model, Message> => ({ model: { drawer: Drawer.init({ id: 'drawer-${tag.toLowerCase()}', isAnimated: true })${drawerInitExtra(fixture)} } })`,
+        : `export const init = (): Update.Return<Model, Message> => ({ model: { drawer: Drawer.init({ id: 'drawer-${tag.toLowerCase()}', isAnimated: true })${drawerInitExtra(fixture)} } })`,
     update: `const mapDrawer = (
   model: Model,
   result: ReturnType<typeof Drawer.update>,
 ): Update.Return<Model, Message> => {
   return { model: { ...model, drawer: result.model }, commands: Command.mapMessages(result.commands, next => GotDrawerMessage({ message: next })) }
-}${fixture.kind === 'responsive' ? `
+}${
+      fixture.kind === 'responsive'
+        ? `
 
 const mapDialog = (
   model: Model,
   result: ReturnType<typeof Dialog.update>,
 ): Update.Return<Model, Message> => {
   return { model: { ...model, dialog: result.model }, commands: Command.mapMessages(result.commands, next => GotDialogMessage({ message: next })) }
-}` : ''}
+}`
+        : ''
+    }
 
 export const update = (
   model: Model,
   message: Message,
 ): Update.Return<Model, Message> => {
   switch (message._tag) {
-    case '${openCase}${tag}':${fixture.kind === 'sides' ? `
-      return mapDrawer({ ...model, side: message.side }, Drawer.open(model.drawer))` : fixture.kind === 'responsive' ? `
+    case '${openCase}${tag}':${
+      fixture.kind === 'sides'
+        ? `
+      return mapDrawer({ ...model, side: message.side }, Drawer.open(model.drawer))`
+        : fixture.kind === 'responsive'
+          ? `
       return model.isDesktop
         ? mapDialog(model, Dialog.open(model.dialog))
-        : mapDrawer(model, Drawer.open(model.drawer))` : `
-      return mapDrawer(model, Drawer.open(model.drawer))`}
+        : mapDrawer(model, Drawer.open(model.drawer))`
+          : `
+      return mapDrawer(model, Drawer.open(model.drawer))`
+    }
     case 'GotDrawerMessage${tag}':
-      return mapDrawer(model, Drawer.update(model.drawer, message.message))${drawerUpdateCases(fixture, tag) === '' ? '' : `\n${drawerUpdateCases(fixture, tag)}`}${fixture.kind === 'rtl' ? `
+      return mapDrawer(model, Drawer.update(model.drawer, message.message))${drawerUpdateCases(fixture, tag) === '' ? '' : `\n${drawerUpdateCases(fixture, tag)}`}${
+        fixture.kind === 'rtl'
+          ? `
     case 'CompletedSyncChart':
     case 'ChartMounted':
     case 'ChartMountFailed':
-      return { model }` : ''}
+      return { model }`
+          : ''
+      }
   }
 }`,
     ...(() => {
-      const emitted = emitSubscriptions(fixture, isStyleX);
-      return emitted === undefined ? {} : { subscriptions: emitted };
+      const emitted = emitSubscriptions(fixture, isStyleX)
+      return emitted === undefined ? {} : { subscriptions: emitted }
     })(),
     view: emitView(fixture, isStyleX),
-  });
-};
+  })
+}
 
 export const drawerExamples = (
   renderer: 'tailwind' | 'stylex',
-): ReadonlyArray<DocsExample> => drawerFixtures.map((fixture, index) => ({
-  title: fixture.title,
-  ...(fixture.description === undefined ? {} : { description: fixture.description }),
-  ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
-  code: source(fixture, index, renderer),
-}));
+): ReadonlyArray<DocsExample> =>
+  drawerFixtures.map((fixture, index) => ({
+    title: fixture.title,
+    ...(fixture.description === undefined
+      ? {}
+      : { description: fixture.description }),
+    ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
+    code: source(fixture, index, renderer),
+  }))

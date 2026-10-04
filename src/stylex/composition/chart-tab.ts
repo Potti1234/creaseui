@@ -18,7 +18,7 @@ const styles = stylex.create({
     fontSize: '1rem',
     fontWeight: 500,
     justifyContent: 'center',
- lineHeight: '1.5rem',
+    lineHeight: '1.5rem',
     textAlign: 'center',
     transitionDuration: interactionTokens.motionFast,
     transitionProperty: 'color, background-color',
@@ -26,7 +26,9 @@ const styles = stylex.create({
     whiteSpace: 'nowrap',
     height: '1.75rem',
   },
-  inactive: { color: { default: tokens.mutedForeground, ':hover': tokens.primary } },
+  inactive: {
+    color: { default: tokens.mutedForeground, ':hover': tokens.primary },
+  },
 })
 
 export type ChartTabProps = Readonly<{
@@ -35,8 +37,16 @@ export type ChartTabProps = Readonly<{
   href: string
 }>
 
-export const chartTab = <Message>(props: ChartTabProps, h: HtmlBuilder<Message>): Html =>
+export const chartTab = <Message>(
+  props: ChartTabProps,
+  h: HtmlBuilder<Message>,
+): Html =>
   h.a(
-    [h.Href(props.href), h.Class(className(styles.base, props.active ? styles.active : styles.inactive))],
+    [
+      h.Href(props.href),
+      h.Class(
+        className(styles.base, props.active ? styles.active : styles.inactive),
+      ),
+    ],
     props.children,
   )

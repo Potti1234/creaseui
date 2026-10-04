@@ -1,11 +1,11 @@
 import type { Update } from 'foldkit'
-import { Match as M, Schema as S } from 'effect';
-import type { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
-import { modifyFields } from 'foldkit/struct';
+import { Match as M, Schema as S } from 'effect'
+import type { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import { modifyFields } from 'foldkit/struct'
 
-import * as Icon from '@/lib/icon';
+import * as Icon from '@/lib/icon'
 import {
   breadcrumb,
   breadcrumbItem,
@@ -13,9 +13,9 @@ import {
   breadcrumbList,
   breadcrumbPage,
   breadcrumbSeparator,
-} from '@/ui/breadcrumb';
-import * as Collapsible from '@/ui/collapsible';
-import { separator } from '@/ui/separator';
+} from '@/ui/breadcrumb'
+import * as Collapsible from '@/ui/collapsible'
+import { separator } from '@/ui/separator'
 import {
   sidebar,
   sidebarContent,
@@ -34,19 +34,19 @@ import {
   sidebarProvider,
   sidebarRail,
   sidebarTrigger,
-} from '@/ui/sidebar';
+} from '@/ui/sidebar'
 
 type NavGroup = Readonly<{
-  title: string;
-  url: string;
+  title: string
+  url: string
   items: ReadonlyArray<
     Readonly<{
-      title: string;
-      url: string;
-      isActive?: boolean;
+      title: string
+      url: string
+      isActive?: boolean
     }>
-  >;
-}>;
+  >
+}>
 
 // This is sample data copied from the source block.
 const data = {
@@ -106,62 +106,66 @@ const data = {
       items: [{ title: 'Contribution Guide', url: '#' }],
     },
   ] satisfies ReadonlyArray<NavGroup>,
-};
+}
 
 // MODEL
 
 export const Model = S.Struct({
-  isMobileOpen: S.Boolean, isSidebarOpen: S.Boolean,
+  isMobileOpen: S.Boolean,
+  isSidebarOpen: S.Boolean,
   navMainOpen: S.Array(S.Boolean),
-});
-export type Model = typeof Model.Type;
+})
+export type Model = typeof Model.Type
 
 // MESSAGE
-
-
-
-
 
 export const Message = defineMessageUnion({
   ToggledMobileSidebar: {},
   ToggledSidebar: {},
   ToggledNavMain: {
-  index: S.Number,
-  isOpen: S.Boolean,
-},
-});
-export type Message = typeof Message.Type;
+    index: S.Number,
+    isOpen: S.Boolean,
+  },
+})
+export type Message = typeof Message.Type
 
 // INIT
 
 export const init = (): Model => ({
-  isMobileOpen: false, isSidebarOpen: true,
+  isMobileOpen: false,
+  isSidebarOpen: true,
   navMainOpen: data.navMain.map((_, index) => index === 1),
-});
+})
 
 // UPDATE
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      ToggledMobileSidebar: () => ({ model: modifyFields(model, {isMobileOpen: current => !current}) }),
-      ToggledSidebar: () => ({ model: modifyFields(model, { isSidebarOpen: (current) => !current }) }),
+      ToggledMobileSidebar: () => ({
+        model: modifyFields(model, { isMobileOpen: current => !current }),
+      }),
+      ToggledSidebar: () => ({
+        model: modifyFields(model, { isSidebarOpen: current => !current }),
+      }),
       ToggledNavMain: ({ index, isOpen }) => {
         if (model.navMainOpen[index] === undefined) {
-          return { model: model };
+          return { model: model }
         }
-        return { model: modifyFields(model, {
-            navMainOpen: (groups) =>
+        return {
+          model: modifyFields(model, {
+            navMainOpen: groups =>
               groups.map((open, groupIndex) =>
                 groupIndex === index ? isOpen : open,
               ),
-          }) };
+          }),
+        }
       },
     }),
-  );
+  )
 
 // VIEW
 
@@ -209,8 +213,8 @@ const brand = (h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const searchForm = (h: HtmlBuilder<Message>): Html => {
   return h.form(
@@ -252,8 +256,8 @@ const searchForm = (h: HtmlBuilder<Message>): Html => {
         h,
       ),
     ],
-  );
-};
+  )
+}
 
 const navMain = (
   openStates: ReadonlyArray<boolean>,
@@ -265,10 +269,10 @@ const navMain = (
         sidebarMenu(
           {
             children: data.navMain.flatMap((group, index) => {
-              const isOpen = openStates[index];
+              const isOpen = openStates[index]
 
               if (isOpen === undefined) {
-                return [];
+                return []
               }
               const trigger = h.span(
                 [h.Class('contents')],
@@ -278,10 +282,10 @@ const navMain = (
                     ? Icon.minus({ class: 'ml-auto size-4' }, h)
                     : Icon.plus({ class: 'ml-auto size-4' }, h),
                 ],
-              );
+              )
               const content = sidebarMenuSub<Message>(
                 {
-                  children: group.items.map((item) =>
+                  children: group.items.map(item =>
                     sidebarMenuSubItem(
                       {
                         children: [
@@ -300,7 +304,7 @@ const navMain = (
                   ),
                 },
                 h,
-              );
+              )
 
               return [
                 sidebarMenuItem(
@@ -310,8 +314,11 @@ const navMain = (
                         {
                           id: `sidebar-05-nav-main-${index}`,
                           isOpen,
-                          onToggle: (nextIsOpen) =>
-                            Message.ToggledNavMain({ index, isOpen: nextIsOpen }),
+                          onToggle: nextIsOpen =>
+                            Message.ToggledNavMain({
+                              index,
+                              isOpen: nextIsOpen,
+                            }),
                           class: 'group/collapsible',
                           trigger,
                           triggerClass: sidebarMenuButtonVariants(),
@@ -323,7 +330,7 @@ const navMain = (
                   },
                   h,
                 ),
-              ];
+              ]
             }),
           },
           h,
@@ -331,14 +338,16 @@ const navMain = (
       ],
     },
     h,
-  );
+  )
 
 const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
-  const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
+  const state = model.isSidebarOpen ? 'expanded' : 'collapsed'
 
   return sidebar<Message>(
     {
-      isMobileOpen: model.isMobileOpen, onMobileDismiss: Message.ToggledMobileSidebar(), state,
+      isMobileOpen: model.isMobileOpen,
+      onMobileDismiss: Message.ToggledMobileSidebar(),
+      state,
       children: [
         sidebarHeader({ children: [brand(h), searchForm(h)] }, h),
         sidebarContent({ children: [navMain(model.navMainOpen, h)] }, h),
@@ -346,8 +355,8 @@ const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const pageContent = (h: HtmlBuilder<Message>): Html => {
   return sidebarInset(
@@ -356,7 +365,14 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
         h.header(
           [h.Class('flex h-16 shrink-0 items-center gap-2 border-b px-4')],
           [
-            sidebarTrigger({ onMobileClick: Message.ToggledMobileSidebar(), onClick: Message.ToggledSidebar(), class: '-ml-1' }, h),
+            sidebarTrigger(
+              {
+                onMobileClick: Message.ToggledMobileSidebar(),
+                onClick: Message.ToggledSidebar(),
+                class: '-ml-1',
+              },
+              h,
+            ),
             separator(
               {
                 orientation: 'vertical',
@@ -431,11 +447,11 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
-  const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
+  const state = model.isSidebarOpen ? 'expanded' : 'collapsed'
 
   return sidebarProvider<Message>(
     {
@@ -443,5 +459,5 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       children: [appSidebar(model, h), pageContent(h)],
     },
     h,
-  );
-};
+  )
+}

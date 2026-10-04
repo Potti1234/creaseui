@@ -1,11 +1,11 @@
 import type { Update } from 'foldkit'
-import { Match as M, Schema as S } from 'effect';
-import type { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
-import { modifyFields } from 'foldkit/struct';
+import { Match as M, Schema as S } from 'effect'
+import type { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import { modifyFields } from 'foldkit/struct'
 
-import * as Icon from '@/lib/icon';
+import * as Icon from '@/lib/icon'
 import {
   breadcrumb,
   breadcrumbItem,
@@ -13,8 +13,8 @@ import {
   breadcrumbList,
   breadcrumbPage,
   breadcrumbSeparator,
-} from '@/ui/breadcrumb';
-import { separator } from '@/ui/separator';
+} from '@/ui/breadcrumb'
+import { separator } from '@/ui/separator'
 import {
   sidebar,
   sidebarContent,
@@ -29,19 +29,19 @@ import {
   sidebarMenuSubItem,
   sidebarProvider,
   sidebarTrigger,
-} from '@/ui/sidebar';
+} from '@/ui/sidebar'
 
 type NavGroup = Readonly<{
-  title: string;
-  url: string;
+  title: string
+  url: string
   items: ReadonlyArray<
     Readonly<{
-      title: string;
-      url: string;
-      isActive?: boolean;
+      title: string
+      url: string
+      isActive?: boolean
     }>
-  >;
-}>;
+  >
+}>
 
 // This is sample data copied from the source block.
 const data = {
@@ -101,42 +101,44 @@ const data = {
       items: [{ title: 'Contribution Guide', url: '#' }],
     },
   ] satisfies ReadonlyArray<NavGroup>,
-};
+}
 
 // MODEL
 
 export const Model = S.Struct({
-  isMobileOpen: S.Boolean, isSidebarOpen: S.Boolean,
-});
-export type Model = typeof Model.Type;
+  isMobileOpen: S.Boolean,
+  isSidebarOpen: S.Boolean,
+})
+export type Model = typeof Model.Type
 
 // MESSAGE
-
-
-
 
 export const Message = defineMessageUnion({
   ToggledMobileSidebar: {},
   ToggledSidebar: {},
-});
-export type Message = typeof Message.Type;
+})
+export type Message = typeof Message.Type
 
 // INIT
 
-export const init = (): Model => ({ isMobileOpen: false, isSidebarOpen: true });
+export const init = (): Model => ({ isMobileOpen: false, isSidebarOpen: true })
 
 // UPDATE
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      ToggledMobileSidebar: () => ({ model: modifyFields(model, {isMobileOpen: current => !current}) }),
-      ToggledSidebar: () => ({ model: modifyFields(model, { isSidebarOpen: (current) => !current }) }),
+      ToggledMobileSidebar: () => ({
+        model: modifyFields(model, { isMobileOpen: current => !current }),
+      }),
+      ToggledSidebar: () => ({
+        model: modifyFields(model, { isSidebarOpen: current => !current }),
+      }),
     }),
-  );
+  )
 
 // VIEW
 
@@ -184,8 +186,8 @@ const brand = (h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const navMain = (h: HtmlBuilder<Message>): Html =>
   sidebarGroup<Message>(
@@ -194,7 +196,7 @@ const navMain = (h: HtmlBuilder<Message>): Html =>
         sidebarMenu(
           {
             class: 'gap-2',
-            children: data.navMain.map((group) =>
+            children: data.navMain.map(group =>
               sidebarMenuItem(
                 {
                   children: [
@@ -209,7 +211,7 @@ const navMain = (h: HtmlBuilder<Message>): Html =>
                     sidebarMenuSub(
                       {
                         class: 'ml-0 border-l-0 px-1.5',
-                        children: group.items.map((item) =>
+                        children: group.items.map(item =>
                           sidebarMenuSubItem(
                             {
                               children: [
@@ -240,14 +242,16 @@ const navMain = (h: HtmlBuilder<Message>): Html =>
       ],
     },
     h,
-  );
+  )
 
 const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
-  const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
+  const state = model.isSidebarOpen ? 'expanded' : 'collapsed'
 
   return sidebar<Message>(
     {
-      isMobileOpen: model.isMobileOpen, onMobileDismiss: Message.ToggledMobileSidebar(), state,
+      isMobileOpen: model.isMobileOpen,
+      onMobileDismiss: Message.ToggledMobileSidebar(),
+      state,
       variant: 'floating',
       children: [
         sidebarHeader({ children: [brand(h)] }, h),
@@ -255,8 +259,8 @@ const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const pageContent = (h: HtmlBuilder<Message>): Html => {
   return sidebarInset(
@@ -265,7 +269,14 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
         h.header(
           [h.Class('flex h-16 shrink-0 items-center gap-2 px-4')],
           [
-            sidebarTrigger({ onMobileClick: Message.ToggledMobileSidebar(), onClick: Message.ToggledSidebar(), class: '-ml-1' }, h),
+            sidebarTrigger(
+              {
+                onMobileClick: Message.ToggledMobileSidebar(),
+                onClick: Message.ToggledSidebar(),
+                class: '-ml-1',
+              },
+              h,
+            ),
             separator(
               {
                 orientation: 'vertical',
@@ -340,11 +351,11 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
-  const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
+  const state = model.isSidebarOpen ? 'expanded' : 'collapsed'
 
   return sidebarProvider<Message>(
     {
@@ -353,8 +364,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       children: [appSidebar(model, h), pageContent(h)],
     },
     h,
-  );
-};
+  )
+}
 
 // PORT NOTE: sidebarProvider has no style prop, so the source's 19rem custom
 // property is applied as an important arbitrary-property class.

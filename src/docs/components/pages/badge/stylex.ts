@@ -1,19 +1,19 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   type BadgeItem,
   badgeFixtures,
   badgeStyleXPalette,
-} from '@/docs/components/pages/badge/shared';
-import { className } from '@/stylex/style';
-import * as Icon from '@/lib/icon';
-import * as Badge from '@/stylex/badge';
-import * as Spinner from '@/stylex/spinner';
+} from '@/docs/components/pages/badge/shared'
+import { className } from '@/stylex/style'
+import * as Icon from '@/lib/icon'
+import * as Badge from '@/stylex/badge'
+import * as Spinner from '@/stylex/spinner'
 
 const styles = stylex.create({
-  wrap: { gap: '0.5rem', display: 'flex', flexWrap: 'wrap', },
+  wrap: { gap: '0.5rem', display: 'flex', flexWrap: 'wrap' },
   wrapCentered: { justifyContent: 'center', width: '100%' },
   /* Custom-palette badges compose the badge base styles directly — the
      component's variant map is intentionally closed, so custom colors are
@@ -33,25 +33,25 @@ const styles = stylex.create({
     fontSize: '0.75rem',
     fontWeight: 500,
     justifyContent: 'center',
- lineHeight: '1rem',
+    lineHeight: '1rem',
     whiteSpace: 'nowrap',
     height: '1.25rem',
     width: 'fit-content',
   },
-});
+})
 
 const iconFor = <Msg>(item: BadgeItem, h: HtmlBuilder<Msg>): Array<Html> => {
-  if (item.icon === undefined) return [];
+  if (item.icon === undefined) return []
   const dataIcon =
-    item.icon.position === 'start' ? 'inline-start' : 'inline-end';
+    item.icon.position === 'start' ? 'inline-start' : 'inline-end'
   const icon =
     item.icon.name === 'badge-check'
       ? Icon.badgeCheck({ dataIcon }, h)
       : item.icon.name === 'bookmark'
         ? Icon.bookmark({ dataIcon }, h)
-        : Icon.arrowUpRight({ dataIcon }, h);
-  return [icon];
-};
+        : Icon.arrowUpRight({ dataIcon }, h)
+  return [icon]
+}
 
 const badgeItem = <Msg>(item: BadgeItem, h: HtmlBuilder<Msg>): Html => {
   if (item.palette !== undefined) {
@@ -64,14 +64,14 @@ const badgeItem = <Msg>(item: BadgeItem, h: HtmlBuilder<Msg>): Html => {
         }),
       ],
       [item.label],
-    );
+    )
   }
   const iconInset =
     item.icon?.position === 'start' || item.spinner === 'start'
       ? 'start'
       : item.icon?.position === 'end' || item.spinner === 'end'
         ? 'end'
-        : undefined;
+        : undefined
   return Badge.badge(
     {
       ...(item.variant === undefined ? {} : { variant: item.variant }),
@@ -100,8 +100,8 @@ const badgeItem = <Msg>(item: BadgeItem, h: HtmlBuilder<Msg>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 export const badgeStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
@@ -109,7 +109,7 @@ export const badgeStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   _onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ) => {
-  const fixture = badgeFixtures[exampleIndex] ?? badgeFixtures[0];
+  const fixture = badgeFixtures[exampleIndex] ?? badgeFixtures[0]
   return h.div(
     [
       h.Class(
@@ -121,5 +121,5 @@ export const badgeStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
       ...(fixture.direction === 'rtl' ? [h.Dir('rtl')] : []),
     ],
     fixture.items.map(item => badgeItem(item, h)),
-  );
-};
+  )
+}

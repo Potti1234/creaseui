@@ -31,4 +31,3 @@ Avoid cute origami imagery, busy craft-project aesthetics, hidden framework magi
 ## Accessibility & Inclusion
 
 Target WCAG 2.1 Level AA for flagship and shared surfaces. Preserve keyboard navigation, focus management, semantic structure, ARIA behavior from Foldkit UI primitives, readable contrast, responsive containment, and reduced-motion preferences.
-

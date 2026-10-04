@@ -83,9 +83,9 @@ describe('PowerSearch', () => {
       books,
     )
     assert.deepEqual(
-      filtered.map((book) => book.title),
+      filtered.map(book => book.title),
       ['Dune'],
     )
-    assert.ok(generated.fields.some((field) => field.key === 'year'))
+    assert.ok(generated.fields.some(field => field.key === 'year'))
   })
 })

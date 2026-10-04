@@ -1,38 +1,38 @@
-import { Option, Schema as S } from 'effect';
-import { Command } from 'foldkit';
-import * as Calendar from 'foldkit/calendar';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import { Option, Schema as S } from 'effect'
+import { Command } from 'foldkit'
+import * as Calendar from 'foldkit/calendar'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-import { definePreviewProgram } from '@/docs/components/pages/authored-page';
+import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
   dateRangeInputFixtures,
   presetDaysFor,
-} from '@/docs/components/pages/date-range-input/shared';
-import * as DateRangeInput from '@/ui/date-range-input';
+} from '@/docs/components/pages/date-range-input/shared'
+import * as DateRangeInput from '@/ui/date-range-input'
 
 const PreviewMessages = defineMessageUnion({
   GotDateRangeInputMessage: { slot: S.Number, message: DateRangeInput.Message },
-});
-type PreviewMessage = typeof PreviewMessages.Type;
+})
+type PreviewMessage = typeof PreviewMessages.Type
 
 const PreviewModel = S.Struct({
   _docsPage: S.Literal('date-range-input'),
   inputs: S.Array(DateRangeInput.Model),
-});
-type PreviewModel = typeof PreviewModel.Type;
+})
+type PreviewModel = typeof PreviewModel.Type
 
 export const PRESETS_FOR = (
   astryxExample: string,
   today: Calendar.CalendarDate,
 ): ReadonlyArray<DateRangeInput.DateRangePreset> =>
-  presetDaysFor(astryxExample).map((days) => ({
+  presetDaysFor(astryxExample).map(days => ({
     label: `Last ${String(days)} days`,
     getRange: () => ({
       start: Calendar.subtractDays(today, days),
       end: today,
     }),
-  }));
+  }))
 
 export const VALIDATION_FIELDS = [
   {
@@ -57,25 +57,25 @@ export const VALIDATION_FIELDS = [
     status: { type: 'success', message: 'Dates confirmed and available' },
   },
 ] as const satisfies ReadonlyArray<{
-  label: string;
-  value: { start: string; end: string };
-  status: DateRangeInput.DateRangeInputStatus;
-}>;
+  label: string
+  value: { start: string; end: string }
+  status: DateRangeInput.DateRangeInputStatus
+}>
 
 const toRange = (value: {
-  start: string;
-  end: string;
+  start: string
+  end: string
 }): DateRangeInput.Range | undefined =>
   Option.match(
     Option.all({
       start: DateRangeInput.dateFromISO(value.start),
       end: DateRangeInput.dateFromISO(value.end),
     }),
-    { onNone: () => undefined, onSome: (range) => range },
-  );
+    { onNone: () => undefined, onSome: range => range },
+  )
 
 const supporting = (text: string, h: HtmlBuilder<PreviewMessage>): Html =>
-  h.p([h.Class('text-muted-foreground text-sm')], [text]);
+  h.p([h.Class('text-muted-foreground text-sm')], [text])
 
 export const dateRangeInputTailwindPreviewProgram = definePreviewProgram<
   PreviewModel,
@@ -83,13 +83,13 @@ export const dateRangeInputTailwindPreviewProgram = definePreviewProgram<
 >({
   Model: PreviewModel,
   Message: PreviewMessages,
-  init: (index) => {
-    const fixture = dateRangeInputFixtures[index] ?? dateRangeInputFixtures[0]!;
-    const today = Calendar.fromDateInZone(new Date(), 'UTC');
+  init: index => {
+    const fixture = dateRangeInputFixtures[index] ?? dateRangeInputFixtures[0]!
+    const today = Calendar.fromDateInZone(new Date(), 'UTC')
     const values: ReadonlyArray<DateRangeInput.Range | undefined> =
       fixture.kind === 'validation'
-        ? VALIDATION_FIELDS.map((field) => toRange(field.value))
-        : [undefined];
+        ? VALIDATION_FIELDS.map(field => toRange(field.value))
+        : [undefined]
     return {
       _docsPage: 'date-range-input',
       inputs: values.map((value, i) =>
@@ -99,32 +99,32 @@ export const dateRangeInputTailwindPreviewProgram = definePreviewProgram<
           ...(value === undefined ? {} : { value }),
         }),
       ),
-    };
+    }
   },
   update: (model, message) => {
     switch (message._tag) {
       case 'GotDateRangeInputMessage': {
-        const target = model.inputs[message.slot];
-        if (target === undefined) return { model };
-        const next = DateRangeInput.update(target, message.message);
+        const target = model.inputs[message.slot]
+        if (target === undefined) return { model }
+        const next = DateRangeInput.update(target, message.message)
         const inputs = model.inputs.map((input, i) =>
           i === message.slot ? next.model : input,
-        );
+        )
         return {
           model: { ...model, inputs },
-          commands: Command.mapMessages(next.commands ?? [], (m) =>
+          commands: Command.mapMessages(next.commands ?? [], m =>
             PreviewMessages.GotDateRangeInputMessage({
               slot: message.slot,
               message: m,
             }),
           ),
-        };
+        }
       }
     }
   },
   view: (index, model, h) => {
-    const fixture = dateRangeInputFixtures[index] ?? dateRangeInputFixtures[0]!;
-    const today = Calendar.fromDateInZone(new Date(), 'UTC');
+    const fixture = dateRangeInputFixtures[index] ?? dateRangeInputFixtures[0]!
+    const today = Calendar.fromDateInZone(new Date(), 'UTC')
     const inputAt = (
       slot: number,
       props: Omit<
@@ -135,21 +135,21 @@ export const dateRangeInputTailwindPreviewProgram = definePreviewProgram<
       DateRangeInput.dateRangeInput(
         {
           model: model.inputs[slot]!,
-          toParentMessage: (message) =>
+          toParentMessage: message =>
             PreviewMessages.GotDateRangeInputMessage({ slot, message }),
           ...props,
         },
         h,
-      );
+      )
     const stack = (children: ReadonlyArray<Html>): Html =>
-      h.div([h.Class('grid w-full max-w-100 gap-4')], [...children]);
+      h.div([h.Class('grid w-full max-w-100 gap-4')], [...children])
     switch (fixture.astryxExample) {
       case 'DateRangeInputWithPresets':
         return stack([
           supporting(
             Option.match(model.inputs[0]?.value ?? Option.none(), {
               onNone: () => 'No range selected',
-              onSome: (range) =>
+              onSome: range =>
                 `${DateRangeInput.dateToISO(range.start)} → ${DateRangeInput.dateToISO(range.end)}`,
             }),
             h,
@@ -159,20 +159,20 @@ export const dateRangeInputTailwindPreviewProgram = definePreviewProgram<
             description: 'Use a preset or pick a custom range',
             presets: PRESETS_FOR(fixture.astryxExample, today),
           }),
-        ]);
+        ])
       case 'DateRangeInputWithValidation':
         return stack(
           VALIDATION_FIELDS.map((field, i) =>
             inputAt(i, { label: field.label, status: field.status }),
           ),
-        );
+        )
       default:
         return stack([
           inputAt(0, {
             label: 'Date range',
             presets: PRESETS_FOR(fixture.astryxExample, today),
           }),
-        ]);
+        ])
     }
   },
-});
+})

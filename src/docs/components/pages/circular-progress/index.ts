@@ -1,6 +1,6 @@
-import { authoredPage } from '@/docs/components/pages/authored-page';
-import { circularProgressExamples } from '@/docs/components/pages/circular-progress/shared';
-import { circularProgressTailwindPreviewProgram } from '@/docs/components/pages/circular-progress/tailwind';
+import { authoredPage } from '@/docs/components/pages/authored-page'
+import { circularProgressExamples } from '@/docs/components/pages/circular-progress/shared'
+import { circularProgressTailwindPreviewProgram } from '@/docs/components/pages/circular-progress/tailwind'
 
 export const circularProgressPage = authoredPage({
   slug: 'circular-progress',
@@ -9,11 +9,15 @@ export const circularProgressPage = authoredPage({
   previewProgram: circularProgressTailwindPreviewProgram,
   definition: {
     kind: 'helper',
-    description: 'A ring-shaped progress indicator for determinate and indeterminate work.',
-    architecture: 'CircularProgress is a stateless render helper. Determinate rings draw a value/max arc; `isIndeterminate` swaps in a continuously rotating arc, and `hasValueLabel` or `children` fills the center.',
-    apiHref: 'https://github.com/facebook/astryx/blob/main/packages/lab/src/CircularProgress/CircularProgress.tsx',
-    accessibility: 'The svg carries role="progressbar" with aria-valuemin/max/now in determinate mode; the label is sr-only unless `isLabelHidden` is false. Reduced-motion slows the spin.',
+    description:
+      'A ring-shaped progress indicator for determinate and indeterminate work.',
+    architecture:
+      'CircularProgress is a stateless render helper. Determinate rings draw a value/max arc; `isIndeterminate` swaps in a continuously rotating arc, and `hasValueLabel` or `children` fills the center.',
+    apiHref:
+      'https://github.com/facebook/astryx/blob/main/packages/lab/src/CircularProgress/CircularProgress.tsx',
+    accessibility:
+      'The svg carries role="progressbar" with aria-valuemin/max/now in determinate mode; the label is sr-only unless `isLabelHidden` is false. Reduced-motion slows the spin.',
     examples: circularProgressExamples('tailwind'),
     stylexExamples: circularProgressExamples('stylex'),
   },
-});
+})

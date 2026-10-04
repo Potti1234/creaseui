@@ -1,24 +1,24 @@
-import { Option } from 'effect';
-import type * as FoldkitCalendar from 'foldkit/calendar';
-import type { HtmlBuilder } from 'foldkit/html';
-import * as stylex from '@stylexjs/stylex';
+import { Option } from 'effect'
+import type * as FoldkitCalendar from 'foldkit/calendar'
+import type { HtmlBuilder } from 'foldkit/html'
+import * as stylex from '@stylexjs/stylex'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   arabicCalendarLocale,
   datePickerFixtures,
   type DatePickerFixtureKind,
-} from '@/docs/components/pages/date-picker/shared';
-import * as Calendar from '@/stylex/calendar';
-import * as DatePicker from '@/stylex/date-picker';
-import * as Field from '@/stylex/field';
-import * as Icon from '@/lib/icon';
-import * as Input from '@/stylex/input';
-import * as InputGroup from '@/stylex/input-group';
-import * as Popover from '@/stylex/popover';
-import type { ComponentLayoutStyle } from '@/stylex/contracts';
-import { className } from '@/stylex/style';
-import { tokens } from '../../../../stylex/tokens.stylex';
+} from '@/docs/components/pages/date-picker/shared'
+import * as Calendar from '@/stylex/calendar'
+import * as DatePicker from '@/stylex/date-picker'
+import * as Field from '@/stylex/field'
+import * as Icon from '@/lib/icon'
+import * as Input from '@/stylex/input'
+import * as InputGroup from '@/stylex/input-group'
+import * as Popover from '@/stylex/popover'
+import type { ComponentLayoutStyle } from '@/stylex/contracts'
+import { className } from '@/stylex/style'
+import { tokens } from '../../../../stylex/tokens.stylex'
 
 const styles = stylex.create({
   triggerRow: {
@@ -27,11 +27,37 @@ const styles = stylex.create({
     justifyContent: 'space-between',
     width: '100%',
   },
-  chevron: { flexShrink: 0, opacity: 0.5, height: '1rem', width: '1rem', },
+  chevron: { flexShrink: 0, opacity: 0.5, height: '1rem', width: '1rem' },
   trigger: { width: '11rem' },
   demoTrigger: { width: '11rem' },
-  rangeTrigger: { borderColor: tokens.input, borderRadius: 'calc(var(--radius) - 2px)', borderStyle: 'solid', borderWidth: 1, gap: '0.5rem', paddingInline: '0.625rem', alignItems: 'center', backgroundClip: 'border-box', backgroundColor: tokens.background, boxShadow: tokens.shadowSm, color: tokens.foreground, display: 'inline-flex', fontSize: '0.875rem', fontWeight: 400, justifyContent: 'flex-start', lineHeight: '1.25rem', whiteSpace: 'nowrap', height: '2rem', width: '15rem', },
-  iconTrigger: { borderRadius: '0.375rem', alignItems: 'center', justifyContent: 'center', height: '1.25rem', width: '1.25rem', },
+  rangeTrigger: {
+    borderColor: tokens.input,
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    gap: '0.5rem',
+    paddingInline: '0.625rem',
+    alignItems: 'center',
+    backgroundClip: 'border-box',
+    backgroundColor: tokens.background,
+    boxShadow: tokens.shadowSm,
+    color: tokens.foreground,
+    display: 'inline-flex',
+    fontSize: '0.875rem',
+    fontWeight: 400,
+    justifyContent: 'flex-start',
+    lineHeight: '1.25rem',
+    whiteSpace: 'nowrap',
+    height: '2rem',
+    width: '15rem',
+  },
+  iconTrigger: {
+    borderRadius: '0.375rem',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '1.25rem',
+    width: '1.25rem',
+  },
   icon: { height: '1rem', width: '1rem' },
   iconShrink: { flexShrink: 0, height: '1rem', width: '1rem' },
   srOnly: {
@@ -42,10 +68,10 @@ const styles = stylex.create({
     height: '1px',
     width: '1px',
   },
-  field44: { marginInline: 'auto', width: '11rem', },
-  field48: { marginInline: 'auto', width: '12rem', },
-  field60: { marginInline: 'auto', width: '15rem', },
-  fieldNatural: { marginInline: 'auto', maxWidth: '20rem', },
+  field44: { marginInline: 'auto', width: '11rem' },
+  field48: { marginInline: 'auto', width: '12rem' },
+  field60: { marginInline: 'auto', width: '15rem' },
+  fieldNatural: { marginInline: 'auto', maxWidth: '20rem' },
   timeRow: {
     marginInline: 'auto',
     flexDirection: 'row',
@@ -54,39 +80,59 @@ const styles = stylex.create({
   timeField: { width: '5.625rem' },
   timeInput: { minWidth: 0 },
   fullField: { width: '12.625rem' },
-  centerRow: { gap: '0.5rem', alignItems: 'center', display: 'flex', },
-  iconRow: { alignItems: 'center', display: 'flex', },
-});
+  centerRow: { gap: '0.5rem', alignItems: 'center', display: 'flex' },
+  iconRow: { alignItems: 'center', display: 'flex' },
+})
 
 interface Preview {
-  kind: string;
-  datePicker: DatePicker.Model;
-  calendar: Calendar.Model;
-  popover: Popover.Model;
-  selectedDate: Option.Option<FoldkitCalendar.CalendarDate>;
-  rangeStart: Option.Option<FoldkitCalendar.CalendarDate>;
-  rangeEnd: Option.Option<FoldkitCalendar.CalendarDate>;
-  inputValue: string;
-  timeValue: string;
+  kind: string
+  datePicker: DatePicker.Model
+  calendar: Calendar.Model
+  popover: Popover.Model
+  selectedDate: Option.Option<FoldkitCalendar.CalendarDate>
+  rangeStart: Option.Option<FoldkitCalendar.CalendarDate>
+  rangeEnd: Option.Option<FoldkitCalendar.CalendarDate>
+  inputValue: string
+  timeValue: string
 }
 
 const MONTH_NAMES = [
-  'January', 'February', 'March', 'April', 'May', 'June', 'July',
-  'August', 'September', 'October', 'November', 'December',
-];
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+]
 const SHORT_MONTH_NAMES = [
-  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-];
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+]
 
 const formatDisplay = (date: FoldkitCalendar.CalendarDate): string =>
-  `${MONTH_NAMES[date.month - 1]} ${String(date.day).padStart(2, '0')}, ${date.year}`;
+  `${MONTH_NAMES[date.month - 1]} ${String(date.day).padStart(2, '0')}, ${date.year}`
 const formatCompact = (date: FoldkitCalendar.CalendarDate): string =>
-  `${SHORT_MONTH_NAMES[date.month - 1]} ${String(date.day).padStart(2, '0')}, ${date.year}`;
+  `${SHORT_MONTH_NAMES[date.month - 1]} ${String(date.day).padStart(2, '0')}, ${date.year}`
 const formatUs = (date: FoldkitCalendar.CalendarDate): string =>
-  `${date.month}/${date.day}/${date.year}`;
+  `${date.month}/${date.day}/${date.year}`
 const formatArabic = (date: FoldkitCalendar.CalendarDate): string =>
-  `${arabicCalendarLocale.monthNames[date.month - 1]} ${date.day}، ${date.year}`;
+  `${arabicCalendarLocale.monthNames[date.month - 1]} ${date.day}، ${date.year}`
 
 const picker = <Msg>(
   kind: DatePickerFixtureKind,
@@ -94,15 +140,16 @@ const picker = <Msg>(
   onMessageJson: (json: string) => Msg,
   h: HtmlBuilder<Msg>,
 ) => {
-  const isRtl = kind === 'rtl';
+  const isRtl = kind === 'rtl'
   const placeholder =
     kind === 'demo' || kind === 'basic'
       ? 'Pick a date'
       : isRtl
         ? 'اختر تاريخًا'
-        : 'Select date';
-  const format = kind === 'dob' ? formatUs : isRtl ? formatArabic : formatDisplay;
-  const withChevron = kind === 'demo' || kind === 'time' || isRtl;
+        : 'Select date'
+  const format =
+    kind === 'dob' ? formatUs : isRtl ? formatArabic : formatDisplay
+  const withChevron = kind === 'demo' || kind === 'time' || isRtl
   return DatePicker.datePicker(
     {
       model: preview.datePicker,
@@ -115,36 +162,36 @@ const picker = <Msg>(
       ariaLabel: placeholder,
       triggerContent: maybeDate =>
         withChevron
-          ? h.span([h.Class(className(styles.triggerRow))], [
-              Option.match(maybeDate, {
-                onNone: () => h.span([], [placeholder]),
-                onSome: date => h.span([], [format(date)]),
-              }),
-              Icon.chevronDown({ class: className(styles.chevron) }, h),
-            ])
+          ? h.span(
+              [h.Class(className(styles.triggerRow))],
+              [
+                Option.match(maybeDate, {
+                  onNone: () => h.span([], [placeholder]),
+                  onSome: date => h.span([], [format(date)]),
+                }),
+                Icon.chevronDown({ class: className(styles.chevron) }, h),
+              ],
+            )
           : Option.match(maybeDate, {
               onNone: () => h.span([], [placeholder]),
               onSome: date => h.span([], [format(date)]),
             }),
-      triggerLayoutStyle:
-        kind === 'demo' ? styles.demoTrigger : styles.trigger,
+      triggerLayoutStyle: kind === 'demo' ? styles.demoTrigger : styles.trigger,
       ...(isRtl ? { direction: 'rtl' as const } : {}),
     },
     h,
-  );
-};
+  )
+}
 
-export const datePickerStyleXPreview: StyleXExamplePreviewProvider = <
-  Msg,
->(
+export const datePickerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (json: string) => Msg,
   h: HtmlBuilder<Msg>,
 ) => {
-  const preview = model as Preview;
-  const fixture = datePickerFixtures[index] ?? datePickerFixtures[0]!;
-  const kind = fixture.kind;
+  const preview = model as Preview
+  const fixture = datePickerFixtures[index] ?? datePickerFixtures[0]!
+  const kind = fixture.kind
 
   if (kind === 'range') {
     const rangeText = Option.match(preview.rangeStart, {
@@ -154,7 +201,7 @@ export const datePickerStyleXPreview: StyleXExamplePreviewProvider = <
           onNone: () => formatCompact(start),
           onSome: end => `${formatCompact(start)} - ${formatCompact(end)}`,
         }),
-    });
+    })
     const rangeOption = Option.match(preview.rangeStart, {
       onNone: () => Option.none(),
       onSome: start =>
@@ -162,7 +209,7 @@ export const datePickerStyleXPreview: StyleXExamplePreviewProvider = <
           onNone: () => Option.some({ start, end: start }),
           onSome: end => Option.some({ start, end }),
         }),
-    });
+    })
     return Field.field(
       {
         layoutStyle: styles.field60,
@@ -179,10 +226,13 @@ export const datePickerStyleXPreview: StyleXExamplePreviewProvider = <
                   JSON.stringify({ _tag: 'GotPopoverMessage', message }),
                 ),
               align: 'start',
-              trigger: h.span([h.Class(className(styles.centerRow))], [
-                Icon.calendarIcon({ class: className(styles.icon) }, h),
-                rangeText,
-              ]),
+              trigger: h.span(
+                [h.Class(className(styles.centerRow))],
+                [
+                  Icon.calendarIcon({ class: className(styles.icon) }, h),
+                  rangeText,
+                ],
+              ),
               triggerLayoutStyle: styles.rangeTrigger as ComponentLayoutStyle,
               content: Calendar.calendar(
                 {
@@ -204,11 +254,11 @@ export const datePickerStyleXPreview: StyleXExamplePreviewProvider = <
         ],
       },
       h,
-    );
+    )
   }
 
   if (kind === 'input' || kind === 'natural') {
-    const isNatural = kind === 'natural';
+    const isNatural = kind === 'natural'
     return Field.field(
       {
         layoutStyle: isNatural ? styles.fieldNatural : styles.field48,
@@ -271,7 +321,8 @@ export const datePickerStyleXPreview: StyleXExamplePreviewProvider = <
                                 ),
                               ],
                             ),
-                          triggerLayoutStyle: styles.iconTrigger as ComponentLayoutStyle,
+                          triggerLayoutStyle:
+                            styles.iconTrigger as ComponentLayoutStyle,
                         },
                         h,
                       ),
@@ -286,7 +337,7 @@ export const datePickerStyleXPreview: StyleXExamplePreviewProvider = <
         ],
       },
       h,
-    );
+    )
   }
 
   if (kind === 'time') {
@@ -335,18 +386,18 @@ export const datePickerStyleXPreview: StyleXExamplePreviewProvider = <
         ],
       },
       h,
-    );
+    )
   }
 
   if (kind === 'demo') {
-    return h.div([], [picker(kind, preview, onMessageJson, h)]);
+    return h.div([], [picker(kind, preview, onMessageJson, h)])
   }
 
   if (kind === 'rtl') {
     return h.div(
       [h.Dir('rtl'), h.Class(className(styles.field44))],
       [picker(kind, preview, onMessageJson, h)],
-    );
+    )
   }
 
   return Field.field(
@@ -364,5 +415,5 @@ export const datePickerStyleXPreview: StyleXExamplePreviewProvider = <
       ],
     },
     h,
-  );
-};
+  )
+}

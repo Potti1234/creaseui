@@ -1,70 +1,76 @@
-﻿import type { Html, HtmlBuilder } from 'foldkit/html';
+﻿import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { Slider as SliderPrimitive } from '@foldkit/ui';
+import { Slider as SliderPrimitive } from '@foldkit/ui'
 
-import { normalizeMultiValues, normalizeRange, normalizeRangeValues, updateMultiValue, updateRangeValue } from '@/lib/slider';
-import { cn } from '@/lib/utils';
+import {
+  normalizeMultiValues,
+  normalizeRange,
+  normalizeRangeValues,
+  updateMultiValue,
+  updateRangeValue,
+} from '@/lib/slider'
+import { cn } from '@/lib/utils'
 
-export const Model = SliderPrimitive.Model;
-export type Model = typeof Model.Type;
-export const Message = SliderPrimitive.Message;
-export type Message = typeof Message.Type;
-export const OutMessage = SliderPrimitive.OutMessage;
-export type OutMessage = typeof OutMessage.Type;
+export const Model = SliderPrimitive.Model
+export type Model = typeof Model.Type
+export const Message = SliderPrimitive.Message
+export type Message = typeof Message.Type
+export const OutMessage = SliderPrimitive.OutMessage
+export type OutMessage = typeof OutMessage.Type
 
-export const init = SliderPrimitive.init;
-export const update = SliderPrimitive.update;
-export const reflectRange = SliderPrimitive.reflectRange;
-export const snapAndClamp = SliderPrimitive.snapAndClamp;
-export const subscriptions = SliderPrimitive.subscriptions;
-export const subscriptionsForRoot = SliderPrimitive.subscriptionsForRoot;
-export const fractionOfValue = SliderPrimitive.fractionOfValue;
+export const init = SliderPrimitive.init
+export const update = SliderPrimitive.update
+export const reflectRange = SliderPrimitive.reflectRange
+export const snapAndClamp = SliderPrimitive.snapAndClamp
+export const subscriptions = SliderPrimitive.subscriptions
+export const subscriptionsForRoot = SliderPrimitive.subscriptionsForRoot
+export const fractionOfValue = SliderPrimitive.fractionOfValue
 
 const ROOT_CLASS =
-  'relative flex w-full touch-none items-center select-none data-[disabled]:opacity-50 data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-44 data-[orientation=vertical]:w-auto data-[orientation=vertical]:flex-col';
+  'relative flex w-full touch-none items-center select-none data-[disabled]:opacity-50 data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-44 data-[orientation=vertical]:w-auto data-[orientation=vertical]:flex-col'
 
 /* The foldkit Slider primitive is horizontal-only and sets data-orientation on
    the ROOT part, not on track/range as Radix does — so shadcn's
    data-[orientation=horizontal]: variants never match there. Horizontal styles
    are applied directly instead. */
 const TRACK_CLASS =
-  'relative grow overflow-hidden rounded-full bg-muted h-1.5 w-full';
+  'relative grow overflow-hidden rounded-full bg-muted h-1.5 w-full'
 
-const FILLED_TRACK_CLASS = 'absolute bg-primary h-full';
+const FILLED_TRACK_CLASS = 'absolute bg-primary h-full'
 
 const THUMB_CLASS =
-  'block size-4 shrink-0 rounded-full border border-primary bg-white shadow-sm ring-ring/50 transition-[color,box-shadow] hover:ring-4 focus-visible:ring-4 focus-visible:outline-hidden aria-disabled:pointer-events-none aria-disabled:opacity-50';
+  'block size-4 shrink-0 rounded-full border border-primary bg-white shadow-sm ring-ring/50 transition-[color,box-shadow] hover:ring-4 focus-visible:ring-4 focus-visible:outline-hidden aria-disabled:pointer-events-none aria-disabled:opacity-50'
 
-const LABEL_CLASS = 'text-sm leading-none font-medium select-none';
+const LABEL_CLASS = 'text-sm leading-none font-medium select-none'
 
 export type SliderProps<Msg> = Readonly<{
-  model: Model;
-  value: number;
-  toParentMessage: (message: Message) => Msg;
-  label?: string;
-  ariaLabel?: string;
-  formatValue?: (value: number) => string;
-  isDisabled?: boolean;
-  isReadOnly?: boolean;
-  name?: string;
-  class?: string;
-}>;
+  model: Model
+  value: number
+  toParentMessage: (message: Message) => Msg
+  label?: string
+  ariaLabel?: string
+  formatValue?: (value: number) => string
+  isDisabled?: boolean
+  isReadOnly?: boolean
+  name?: string
+  class?: string
+}>
 
 export type RangeSliderProps<Msg> = Readonly<{
-  values: readonly [number, number];
-  min: number;
-  max: number;
-  step?: number;
-  onInput: (values: readonly [number, number]) => Msg;
-  orientation?: 'horizontal' | 'vertical';
-  direction?: 'ltr' | 'rtl';
-  ariaLabels?: readonly [string, string];
-  formatValue?: (value: number, index: 0 | 1) => string;
-  isDisabled?: boolean;
-  isReadOnly?: boolean;
-  name?: string;
-  class?: string;
-}>;
+  values: readonly [number, number]
+  min: number
+  max: number
+  step?: number
+  onInput: (values: readonly [number, number]) => Msg
+  orientation?: 'horizontal' | 'vertical'
+  direction?: 'ltr' | 'rtl'
+  ariaLabels?: readonly [string, string]
+  formatValue?: (value: number, index: 0 | 1) => string
+  isDisabled?: boolean
+  isReadOnly?: boolean
+  name?: string
+  class?: string
+}>
 
 /** A controlled two-thumb slider. Native range inputs retain keyboard and
  * form semantics while the parent remains the sole owner of state. */
@@ -72,12 +78,12 @@ export const rangeSlider = <Msg>(
   props: RangeSliderProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const range = normalizeRange(props.min, props.max, props.step);
-  const [lower, upper] = normalizeRangeValues(props.values, range);
-  const span = Math.max(range.max - range.min, 1);
-  const start = ((lower - range.min) / span) * 100;
-  const end = ((upper - range.min) / span) * 100;
-  const orientation = props.orientation ?? 'horizontal';
+  const range = normalizeRange(props.min, props.max, props.step)
+  const [lower, upper] = normalizeRangeValues(props.values, range)
+  const span = Math.max(range.max - range.min, 1)
+  const start = ((lower - range.min) / span) * 100
+  const end = ((upper - range.min) / span) * 100
+  const orientation = props.orientation ?? 'horizontal'
   const input = (index: 0 | 1, value: number): Html =>
     h.input([
       h.Type('range'),
@@ -97,11 +103,13 @@ export const rangeSlider = <Msg>(
       ...(props.name === undefined
         ? []
         : [h.Name(`${props.name}[${String(index)}]`)]),
-      h.OnInput((next) => props.onInput(
-        props.isReadOnly === true
-          ? [lower, upper]
-          : updateRangeValue([lower, upper], index, Number(next), range),
-      )),
+      h.OnInput(next =>
+        props.onInput(
+          props.isReadOnly === true
+            ? [lower, upper]
+            : updateRangeValue([lower, upper], index, Number(next), range),
+        ),
+      ),
       h.Class(
         cn(
           'absolute m-0 appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:size-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:border-primary [&::-webkit-slider-thumb]:bg-white',
@@ -110,7 +118,7 @@ export const rangeSlider = <Msg>(
             : 'inset-y-0 left-1/2 h-full w-4 -translate-x-1/2 [writing-mode:vertical-lr] [direction:rtl]',
         ),
       ),
-    ]);
+    ])
   return h.div(
     [
       h.DataAttribute('slot', 'slider'),
@@ -165,8 +173,8 @@ export const rangeSlider = <Msg>(
       input(0, lower),
       input(1, upper),
     ],
-  );
-};
+  )
+}
 
 export const slider = <Msg>(
   props: SliderProps<Msg>,
@@ -186,7 +194,7 @@ export const slider = <Msg>(
         : { formatValue: props.formatValue }),
       ...(props.name === undefined ? {} : { name: props.name }),
       toView: ({ root, track, filledTrack, thumb, label, hiddenInput }) => {
-        const hs = h;
+        const hs = h
         const control = hs.div(
           [
             ...root,
@@ -221,7 +229,7 @@ export const slider = <Msg>(
             ),
             ...(props.name === undefined ? [] : [hs.input([...hiddenInput])]),
           ],
-        );
+        )
 
         return props.label === undefined
           ? control
@@ -231,12 +239,12 @@ export const slider = <Msg>(
                 hs.label([...label, hs.Class(LABEL_CLASS)], [props.label]),
                 control,
               ],
-            );
+            )
       },
     },
     toParentMessage: props.toParentMessage,
-  });
-};
+  })
+}
 
 /*
 Model: { volume: Slider.init({ id: 'volume', min: 0, max: 100, step: 1 }), volumeValue: S.Number }
@@ -246,19 +254,19 @@ View: Slider.slider({ model: model.volume, value: model.volumeValue, toParentMes
 */
 
 export type MultiSliderProps<Msg> = Readonly<{
-  values: readonly number[];
-  min: number;
-  max: number;
-  step?: number;
-  onInput: (values: readonly number[]) => Msg;
-  orientation?: 'horizontal' | 'vertical';
-  direction?: 'ltr' | 'rtl';
-  ariaLabels?: readonly string[];
-  isDisabled?: boolean;
-  isReadOnly?: boolean;
-  name?: string;
-  class?: string;
-}>;
+  values: readonly number[]
+  min: number
+  max: number
+  step?: number
+  onInput: (values: readonly number[]) => Msg
+  orientation?: 'horizontal' | 'vertical'
+  direction?: 'ltr' | 'rtl'
+  ariaLabels?: readonly string[]
+  isDisabled?: boolean
+  isReadOnly?: boolean
+  name?: string
+  class?: string
+}>
 
 /** A controlled N-thumb slider. Fills run between consecutive thumbs; a single
  * thumb fills from the range minimum. */
@@ -266,18 +274,20 @@ export const multiSlider = <Msg>(
   props: MultiSliderProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const range = normalizeRange(props.min, props.max, props.step);
-  const values = normalizeMultiValues(props.values, range);
-  const span = Math.max(range.max - range.min, 1);
-  const orientation = props.orientation ?? 'horizontal';
-  const rtl = props.direction === 'rtl' && orientation === 'horizontal';
-  const percent = (value: number): number => ((value - range.min) / span) * 100;
+  const range = normalizeRange(props.min, props.max, props.step)
+  const values = normalizeMultiValues(props.values, range)
+  const span = Math.max(range.max - range.min, 1)
+  const orientation = props.orientation ?? 'horizontal'
+  const rtl = props.direction === 'rtl' && orientation === 'horizontal'
+  const percent = (value: number): number => ((value - range.min) / span) * 100
   const segments: ReadonlyArray<readonly [number, number]> =
     values.length === 0
       ? []
       : values.length === 1
         ? [[range.min, values[0] ?? range.min]]
-        : values.slice(0, -1).map((value, index) => [value, values[index + 1] ?? value]);
+        : values
+            .slice(0, -1)
+            .map((value, index) => [value, values[index + 1] ?? value])
   const input = (index: number, value: number): Html =>
     h.input([
       h.Type('range'),
@@ -291,7 +301,7 @@ export const multiSlider = <Msg>(
       ...(props.name === undefined
         ? []
         : [h.Name(`${props.name}[${String(index)}]`)]),
-      h.OnInput((next) =>
+      h.OnInput(next =>
         props.onInput(
           props.isReadOnly === true
             ? values
@@ -306,7 +316,7 @@ export const multiSlider = <Msg>(
             : 'inset-y-0 left-1/2 h-full w-4 -translate-x-1/2 [writing-mode:vertical-lr] [direction:rtl]',
         ),
       ),
-    ]);
+    ])
   return h.div(
     [
       h.DataAttribute('slot', 'slider'),
@@ -336,8 +346,8 @@ export const multiSlider = <Msg>(
           ),
         ],
         segments.map(([lower, upper]) => {
-          const start = percent(lower);
-          const end = percent(upper);
+          const start = percent(lower)
+          const end = percent(upper)
           return h.div(
             [
               h.DataAttribute('slot', 'slider-range'),
@@ -363,10 +373,10 @@ export const multiSlider = <Msg>(
               ),
             ],
             [],
-          );
+          )
         }),
       ),
       ...values.map((value, index) => input(index, value)),
     ],
-  );
-};
+  )
+}

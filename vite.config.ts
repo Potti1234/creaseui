@@ -30,10 +30,12 @@ const sourceRevision = (): string => {
 const buildSha = sourceRevision()
 const buildDirty = (() => {
   try {
-    return execFileSync('git', ['status', '--porcelain'], {
-      encoding: 'utf8',
-      stdio: ['ignore', 'pipe', 'ignore'],
-    }).trim().length > 0
+    return (
+      execFileSync('git', ['status', '--porcelain'], {
+        encoding: 'utf8',
+        stdio: ['ignore', 'pipe', 'ignore'],
+      }).trim().length > 0
+    )
   } catch {
     return false
   }
@@ -44,11 +46,7 @@ export default defineConfig({
     __CREASEUI_BUILD_SHA__: JSON.stringify(buildSha),
     __CREASEUI_BUILD_DIRTY__: JSON.stringify(buildDirty),
   },
-  plugins: [
-    stylex.vite(stylexCompilerOptions),
-    tailwindcss(),
-    foldkit(),
-  ],
+  plugins: [stylex.vite(stylexCompilerOptions), tailwindcss(), foldkit()],
   resolve: {
     alias: {
       '@': '/src',

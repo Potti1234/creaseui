@@ -166,8 +166,9 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       const next = HoverCard.update(model.hoverCard, message.message)
       return {
         model: { ...model, hoverCard: next.model },
-        commands: Command.mapMessages(next.commands ?? [], (next) =>
-          Message.GotTimestampHoverCardMessage({ message: next })),
+        commands: Command.mapMessages(next.commands ?? [], next =>
+          Message.GotTimestampHoverCardMessage({ message: next }),
+        ),
       }
     }
     case 'TickedTimestamp':
@@ -199,7 +200,8 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       return {
         model: {
           ...model,
-          copiedValue: model.copiedValue === message.value ? null : model.copiedValue,
+          copiedValue:
+            model.copiedValue === message.value ? null : model.copiedValue,
         },
       }
   }
@@ -240,11 +242,11 @@ const effectiveFormatOf = (model: Model): TimestampFormat =>
       : 'date_time'
     : model.format
 
-export const subscriptions = Subscription.make<Model, Message>()((entry) => ({
+export const subscriptions = Subscription.make<Model, Message>()(entry => ({
   tick: entry(
     { intervalMs: S.Option(S.Number), tickId: S.String },
     {
-      modelToDependencies: (model) => ({
+      modelToDependencies: model => ({
         intervalMs:
           model.isLive &&
           !Number.isNaN(model.valueMs) &&
@@ -454,9 +456,9 @@ export const timestamp = <Msg>(
       : formatTooltipLines(date, entries)
 
   const hasLabelColumn = lines.some(
-    (line) => line.label !== undefined && line.label !== '',
+    line => line.label !== undefined && line.label !== '',
   )
-  const hasActionColumn = lines.some((line) => line.isCopyable)
+  const hasActionColumn = lines.some(line => line.isCopyable)
 
   const cardContent = h.dl(
     [
@@ -473,66 +475,66 @@ export const timestamp = <Msg>(
         ),
       ),
     ],
-    lines.map((line) =>
-      h.div([h.Class(className(styles.row))], [
-        ...(hasLabelColumn
-          ? [
-              h.dt([h.Class(className(styles.label))], [line.label ?? '']),
-            ]
-          : []),
-        h.dd([h.Class(className(styles.value))], [line.value]),
-        ...(hasActionColumn
-          ? [
-              h.div([h.Class(className(styles.action))], [
-                ...(line.isCopyable
-                  ? [
-                      h.button(
-                        [
-                          h.Type('button'),
-                          h.Class(className(styles.copyButton)),
-                          h.AriaLabel(
-                            model.copiedValue === line.value
-                              ? 'Copied'
-                              : `Copy ${line.value}`,
+    lines.map(line =>
+      h.div(
+        [h.Class(className(styles.row))],
+        [
+          ...(hasLabelColumn
+            ? [h.dt([h.Class(className(styles.label))], [line.label ?? ''])]
+            : []),
+          h.dd([h.Class(className(styles.value))], [line.value]),
+          ...(hasActionColumn
+            ? [
+                h.div(
+                  [h.Class(className(styles.action))],
+                  [
+                    ...(line.isCopyable
+                      ? [
+                          h.button(
+                            [
+                              h.Type('button'),
+                              h.Class(className(styles.copyButton)),
+                              h.AriaLabel(
+                                model.copiedValue === line.value
+                                  ? 'Copied'
+                                  : `Copy ${line.value}`,
+                              ),
+                              h.OnClick(
+                                props.toParentMessage(
+                                  Message.ClickedCopyTimestampValue({
+                                    value: line.value,
+                                  }),
+                                ),
+                              ),
+                            ],
+                            [
+                              model.copiedValue === line.value
+                                ? Icon.check({ class: 'size-3' }, h)
+                                : Icon.icon('copy', { class: 'size-3' }, h),
+                            ],
                           ),
-                          h.OnClick(
-                            props.toParentMessage(
-                              Message.ClickedCopyTimestampValue({
-                                value: line.value,
-                              }),
-                            ),
+                          h.span(
+                            [
+                              h.AriaLive('polite'),
+                              h.Class(className(styles.srOnly)),
+                            ],
+                            [model.copiedValue === line.value ? 'Copied' : ''],
                           ),
-                        ],
-                        [
-                          model.copiedValue === line.value
-                            ? Icon.check({ class: 'size-3' }, h)
-                            : Icon.icon('copy', { class: 'size-3' }, h),
-                        ],
-                      ),
-                      h.span(
-                        [
-                          h.AriaLive('polite'),
-                          h.Class(className(styles.srOnly)),
-                        ],
-                        [
-                          model.copiedValue === line.value
-                            ? 'Copied'
-                            : '',
-                        ],
-                      ),
-                    ]
-                  : []),
-              ]),
-            ]
-          : []),
-      ]),
+                        ]
+                      : []),
+                  ],
+                ),
+              ]
+            : []),
+        ],
+      ),
     ),
   )
 
   return HoverCardView.hoverCard(
     {
       model: model.hoverCard,
-      toParentMessage: (message) =>
+      toParentMessage: message =>
         props.toParentMessage(
           Message.GotTimestampHoverCardMessage({ message }),
         ),

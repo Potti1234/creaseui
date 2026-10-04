@@ -44,7 +44,7 @@ export {
 const comboboxPrimitive = ComboboxPrimitive.Multi.create<string>()
 
 const styles = stylex.create({
-  field: { gap: '0.375rem', display: 'flex', flexDirection: 'column', },
+  field: { gap: '0.375rem', display: 'flex', flexDirection: 'column' },
   label: {
     color: tokens.foreground,
     fontSize: '0.875rem',
@@ -64,8 +64,16 @@ const styles = stylex.create({
     width: 1,
   },
   requiredMark: { color: tokens.destructive },
-  optional: { color: tokens.mutedForeground, fontSize: '0.875rem', lineHeight: '1.25rem' },
-  description: { color: tokens.mutedForeground, fontSize: '0.875rem', lineHeight: '1.25rem' },
+  optional: {
+    color: tokens.mutedForeground,
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+  },
+  description: {
+    color: tokens.mutedForeground,
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+  },
   wrapper: {
     borderColor: {
       default: tokens.input,
@@ -115,7 +123,7 @@ const styles = stylex.create({
   sizeSm: { minHeight: '1.75rem' },
   sizeMd: { minHeight: '2rem' },
   sizeLg: { minHeight: '2.25rem' },
-  truncated: { overflow: 'hidden', flexWrap: 'nowrap', },
+  truncated: { overflow: 'hidden', flexWrap: 'nowrap' },
   truncatedSm: { height: '1.75rem' },
   truncatedMd: { height: '2rem' },
   truncatedLg: { height: '2.25rem' },
@@ -152,13 +160,13 @@ const styles = stylex.create({
     flexShrink: 0,
     fontSize: '0.75rem',
     fontWeight: 500,
- lineHeight: '1rem',
+    lineHeight: '1rem',
     whiteSpace: 'nowrap',
     maxWidth: '100%',
   },
-  tokenSm: { paddingInline: '0.5rem', height: '1.25rem', },
-  tokenMd: { paddingInline: '0.5rem', height: '1.5rem', },
-  tokenLg: { paddingInline: '0.5rem', height: '1.75rem', },
+  tokenSm: { paddingInline: '0.5rem', height: '1.25rem' },
+  tokenMd: { paddingInline: '0.5rem', height: '1.5rem' },
+  tokenLg: { paddingInline: '0.5rem', height: '1.75rem' },
   tokenLabel: {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -206,7 +214,8 @@ const styles = stylex.create({
     flexBasis: '0%',
     flexGrow: 1,
     fontFamily: 'inherit',
-    fontSize: '0.875rem', lineHeight: '1.25rem',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
     outlineStyle: 'none',
     minWidth: 0,
     '::placeholder': { color: tokens.mutedForeground },
@@ -219,12 +228,16 @@ const styles = stylex.create({
     alignItems: 'center',
     cursor: interactionTokens.cursorDefault,
     display: 'flex',
-    fontSize: '0.875rem', lineHeight: '1.25rem',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
     outlineStyle: 'none',
     position: 'relative',
     userSelect: 'none',
   },
-  itemActive: { backgroundColor: tokens.accent, color: tokens.accentForeground },
+  itemActive: {
+    backgroundColor: tokens.accent,
+    color: tokens.accentForeground,
+  },
   itemDisabled: { opacity: 0.5, pointerEvents: 'none' },
   itemCreate: { color: tokens.mutedForeground },
   itemContent: { display: 'contents' },
@@ -271,7 +284,8 @@ const styles = stylex.create({
   resultCount: {
     color: tokens.mutedForeground,
     flexShrink: 0,
-    fontSize: '0.875rem', lineHeight: '1.25rem',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
   },
   statusError: {
     alignItems: 'center',
@@ -291,9 +305,21 @@ const styles = stylex.create({
     display: 'inline-flex',
     flexShrink: 0,
   },
-  statusMessageError: { color: tokens.destructive, fontSize: '0.875rem', lineHeight: '1.25rem' },
-  statusMessageWarning: { color: tokens.alertWarning, fontSize: '0.875rem', lineHeight: '1.25rem' },
-  statusMessageSuccess: { color: tokens.alertSuccess, fontSize: '0.875rem', lineHeight: '1.25rem' },
+  statusMessageError: {
+    color: tokens.destructive,
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+  },
+  statusMessageWarning: {
+    color: tokens.alertWarning,
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+  },
+  statusMessageSuccess: {
+    color: tokens.alertSuccess,
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+  },
 })
 
 const STATUS_STYLE = {
@@ -393,29 +419,30 @@ const tokenChip = <Msg>(
   toParent: (message: Message) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html =>
-  h.span([h.Class(className(styles.token, TOKEN_SIZE_STYLE[size]))], [
-    h.span([h.Class(className(styles.tokenLabel))], [token.label]),
-    h.button(
-      [
-        h.Type('button'),
-        h.Tabindex(-1),
-        h.Class(
-          className(
-            styles.tokenRemove,
-            isDisabled && styles.tokenRemoveDisabled,
+  h.span(
+    [h.Class(className(styles.token, TOKEN_SIZE_STYLE[size]))],
+    [
+      h.span([h.Class(className(styles.tokenLabel))], [token.label]),
+      h.button(
+        [
+          h.Type('button'),
+          h.Tabindex(-1),
+          h.Class(
+            className(
+              styles.tokenRemove,
+              isDisabled && styles.tokenRemoveDisabled,
+            ),
           ),
-        ),
-        h.AriaLabel(`Remove ${token.label}`),
-        h.DataAttribute('slot', 'tokenizer-token-remove'),
-        ...(isDisabled
-          ? [h.Disabled(true)]
-          : [h.OnClick(toParent(Message.RemovedToken({ index })))]),
-      ],
-      [
-        Icon.icon('x', { class: className(styles.tokenRemoveIcon) }, h),
-      ],
-    ),
-  ])
+          h.AriaLabel(`Remove ${token.label}`),
+          h.DataAttribute('slot', 'tokenizer-token-remove'),
+          ...(isDisabled
+            ? [h.Disabled(true)]
+            : [h.OnClick(toParent(Message.RemovedToken({ index })))]),
+        ],
+        [Icon.icon('x', { class: className(styles.tokenRemoveIcon) }, h)],
+      ),
+    ],
+  )
 
 export const tokenizer = <Msg>(
   props: TokenizerProps<Msg>,
@@ -426,10 +453,8 @@ export const tokenizer = <Msg>(
   const size = props.size ?? 'md'
   const isDisabled = props.isDisabled === true
   const items = props.items ?? []
-  const maxEntries =
-    props.maxEntries ?? Option.getOrUndefined(model.maxEntries)
-  const isAtMax =
-    maxEntries !== undefined && model.tokens.length >= maxEntries
+  const maxEntries = props.maxEntries ?? Option.getOrUndefined(model.maxEntries)
+  const isAtMax = maxEntries !== undefined && model.tokens.length >= maxEntries
 
   const statusVariant = props.statusVariant ?? 'attached'
   const isInvalid =
@@ -452,50 +477,54 @@ export const tokenizer = <Msg>(
   ].filter((id): id is string => id !== undefined)
 
   const labelView = props.isLabelHidden
-    ? h.label([h.Id(labelId), h.Class(className(styles.labelHidden))], [
-        props.label,
-      ])
-    : h.label([h.Id(labelId), h.Class(className(styles.label))], [
-        props.label,
-        ...(props.isRequired === true
-          ? [h.span([h.Class(className(styles.requiredMark))], [' *'])]
-          : []),
-        ...(props.isOptional === true
-          ? [h.span([h.Class(className(styles.optional))], [' (optional)'])]
-          : []),
-      ])
+    ? h.label(
+        [h.Id(labelId), h.Class(className(styles.labelHidden))],
+        [props.label],
+      )
+    : h.label(
+        [h.Id(labelId), h.Class(className(styles.label))],
+        [
+          props.label,
+          ...(props.isRequired === true
+            ? [h.span([h.Class(className(styles.requiredMark))], [' *'])]
+            : []),
+          ...(props.isOptional === true
+            ? [h.span([h.Class(className(styles.optional))], [' (optional)'])]
+            : []),
+        ],
+      )
 
   const trimmedQuery = model.combobox.inputValue.trim()
   const query = trimmedQuery.toLocaleLowerCase()
   const matchedItems = items.filter(
-    (item) => query === '' || item.label.toLocaleLowerCase().includes(query),
+    item => query === '' || item.label.toLocaleLowerCase().includes(query),
   )
   const createId =
     props.hasCreate === true &&
     trimmedQuery !== '' &&
     !isAtMax &&
-    !model.tokens.some((t) => t.id === trimmedQuery) &&
+    !model.tokens.some(t => t.id === trimmedQuery) &&
     !matchedItems.some(
-      (item) =>
+      item =>
         item.label.toLocaleLowerCase() === trimmedQuery.toLocaleLowerCase(),
     )
       ? `${CREATE_ID_PREFIX}${trimmedQuery}`
       : undefined
   const values = [
-    ...matchedItems.map((item) => item.id),
+    ...matchedItems.map(item => item.id),
     ...(createId === undefined ? [] : [createId]),
   ]
 
   const viewInputs: ComboboxPrimitive.Multi.ViewInputs<string> = {
     items: values,
     restingInputValue: '',
-    selectedValues: model.tokens.map((t) => t.id),
-    itemToValue: (value) => value,
-    itemToDisplayText: (value) => {
+    selectedValues: model.tokens.map(t => t.id),
+    itemToValue: value => value,
+    itemToDisplayText: value => {
       if (value.startsWith(CREATE_ID_PREFIX)) {
         return `Create "${value.slice(CREATE_ID_PREFIX.length)}"`
       }
-      const found = items.find((item) => item.id === value)
+      const found = items.find(item => item.id === value)
       return found?.label ?? model.itemLabels[value] ?? value
     },
     itemToConfig: (value, context) => ({
@@ -516,7 +545,7 @@ export const tokenizer = <Msg>(
             [
               value.startsWith(CREATE_ID_PREFIX)
                 ? `Create "${value.slice(CREATE_ID_PREFIX.length)}"`
-                : (items.find((item) => item.id === value)?.label ?? value),
+                : (items.find(item => item.id === value)?.label ?? value),
             ],
           ),
           h.span(
@@ -528,9 +557,7 @@ export const tokenizer = <Msg>(
                 ),
               ),
             ],
-            [
-              Icon.icon('check', { class: className(styles.itemIconSize) }, h),
-            ],
+            [Icon.icon('check', { class: className(styles.itemIconSize) }, h)],
           ),
         ],
       ),
@@ -548,9 +575,7 @@ export const tokenizer = <Msg>(
     ]),
     openOnFocus: props.hasEntriesOnFocus ?? true,
     itemsClassName: className(styles.content),
-    itemsAttributes: childAttributes([
-      h.DataAttribute('slot', 'command-list'),
-    ]),
+    itemsAttributes: childAttributes([h.DataAttribute('slot', 'command-list')]),
     itemsScrollClassName: className(styles.list),
     backdropAttributes: childAttributes([
       h.DataAttribute('slot', 'combobox-backdrop'),
@@ -573,7 +598,7 @@ export const tokenizer = <Msg>(
     model: model.combobox,
     view: comboboxPrimitive.view,
     viewInputs,
-    toParentMessage: (message) =>
+    toParentMessage: message =>
       toParent(Message.GotComboboxMessage({ message })),
   })
 
@@ -614,13 +639,7 @@ export const tokenizer = <Msg>(
                 ),
                 h.AriaHidden(true),
               ],
-              [
-                Icon.icon(
-                  'search',
-                  { class: className(styles.iconSize) },
-                  h,
-                ),
-              ],
+              [Icon.icon('search', { class: className(styles.iconSize) }, h)],
             ),
           ]
         : []),
@@ -638,9 +657,7 @@ export const tokenizer = <Msg>(
                 h.DataAttribute('slot', 'tokenizer-clear'),
                 h.OnClick(toParent(Message.ClickedClearAll())),
               ],
-              [
-                Icon.icon('x', { class: className(styles.clearIconSize) }, h),
-              ],
+              [Icon.icon('x', { class: className(styles.clearIconSize) }, h)],
             ),
           ]
         : []),
@@ -699,10 +716,7 @@ export const tokenizer = <Msg>(
         ? []
         : [
             h.p(
-              [
-                h.Id(descriptionId),
-                h.Class(className(styles.description)),
-              ],
+              [h.Id(descriptionId), h.Class(className(styles.description))],
               [props.description],
             ),
           ]),

@@ -1,8 +1,8 @@
-import { Command, type Update } from 'foldkit';
-import { Duration, Effect, Option, Schedule, Schema as S, Stream } from 'effect';
-import { Subscription } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import { Command, type Update } from 'foldkit'
+import { Duration, Effect, Option, Schedule, Schema as S, Stream } from 'effect'
+import { Subscription } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
 import {
   astryxTextClasses,
@@ -10,11 +10,11 @@ import {
   type AstryxTextSize,
   type AstryxTextType,
   type AstryxTextWeight,
-} from '@/lib/astryx-text';
-import * as HoverCard from '@/lib/hover-card';
-import * as Icon from '@/lib/icon';
-import * as HoverCardView from '@/ui/hover-card';
-import { cn } from '@/lib/utils';
+} from '@/lib/astryx-text'
+import * as HoverCard from '@/lib/hover-card'
+import * as Icon from '@/lib/icon'
+import * as HoverCardView from '@/ui/hover-card'
+import { cn } from '@/lib/utils'
 
 /* Ported from Meta Astryx Timestamp.tsx — absolute/relative time display with
    a copyable hover card. astryx's React timer and lazy HoverCard become model
@@ -29,25 +29,25 @@ import {
   type TimestampFormat,
   type TimestampTooltipEntry,
   type TimestampTooltipLine,
-} from '@/lib/timestamp-format';
+} from '@/lib/timestamp-format'
 
 export type {
   InstantFormat,
   TimestampFormat,
   TimestampTooltipEntry,
   TimestampTooltipFormat,
-} from '@/lib/timestamp-format';
+} from '@/lib/timestamp-format'
 export {
   formatInstant,
   formatRelativeTime,
   formatTooltipLines,
-} from '@/lib/timestamp-format';
+} from '@/lib/timestamp-format'
 
 // =============================================================================
 // Model
 // =============================================================================
 
-const DEFAULT_AUTO_THRESHOLD = 604800;
+const DEFAULT_AUTO_THRESHOLD = 604800
 
 export const Model = S.Struct({
   id: S.String,
@@ -71,24 +71,24 @@ export const Model = S.Struct({
   nowMs: S.Number,
   hoverCard: HoverCard.Model,
   copiedValue: S.NullOr(S.String),
-});
-export type Model = typeof Model.Type;
+})
+export type Model = typeof Model.Type
 
 /** astryx accepts Unix timestamps in seconds (< 1e12) or ISO 8601 strings. */
 export const parseValueMs = (value: string | number): number => {
   if (typeof value === 'number') {
-    return value < 1e12 ? value * 1000 : value;
+    return value < 1e12 ? value * 1000 : value
   }
-  return new Date(value).getTime();
-};
+  return new Date(value).getTime()
+}
 
 export const init = (config: {
-  id: string;
-  value: string | number;
-  format?: TimestampFormat;
-  autoThreshold?: number;
-  isLive?: boolean;
-  nowMs?: number;
+  id: string
+  value: string | number
+  format?: TimestampFormat
+  autoThreshold?: number
+  isLive?: boolean
+  nowMs?: number
 }): Model => ({
   id: config.id,
   valueMs: parseValueMs(config.value),
@@ -98,7 +98,7 @@ export const init = (config: {
   nowMs: config.nowMs ?? Date.now(),
   hoverCard: HoverCard.init({ id: `${config.id}-hover-card` }),
   copiedValue: null,
-});
+})
 
 export const Message = defineMessageUnion({
   GotTimestampHoverCardMessage: { message: HoverCard.Message },
@@ -128,8 +128,8 @@ export const Message = defineMessageUnion({
   CompletedCopiedTimestampValue: { value: S.String },
   FailedCopyingTimestampValue: {},
   CompletedWaitBeforeClearingTimestampCopy: { value: S.String },
-});
-export type Message = typeof Message.Type;
+})
+export type Message = typeof Message.Type
 
 const CopyTimestampValue = Command.define('CopyTimestampValue', {
   args: { value: S.String },
@@ -142,7 +142,7 @@ const CopyTimestampValue = Command.define('CopyTimestampValue', {
       Effect.as(Message.CompletedCopiedTimestampValue({ value })),
       Effect.catch(() => Effect.succeed(Message.FailedCopyingTimestampValue())),
     ),
-});
+})
 
 const WaitBeforeClearingTimestampCopy = Command.define(
   'WaitBeforeClearingTimestampCopy',
@@ -154,22 +154,23 @@ const WaitBeforeClearingTimestampCopy = Command.define(
         Effect.as(Message.CompletedWaitBeforeClearingTimestampCopy({ value })),
       ),
   },
-);
+)
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
     case 'GotTimestampHoverCardMessage': {
-      const next = HoverCard.update(model.hoverCard, message.message);
+      const next = HoverCard.update(model.hoverCard, message.message)
       return {
         model: { ...model, hoverCard: next.model },
         commands: Command.mapMessages(next.commands ?? [], next =>
-          Message.GotTimestampHoverCardMessage({ message: next })),
-      };
+          Message.GotTimestampHoverCardMessage({ message: next }),
+        ),
+      }
     }
     case 'TickedTimestamp':
-      return { model: { ...model, nowMs: message.nowMs } };
+      return { model: { ...model, nowMs: message.nowMs } }
     case 'ConfiguredTimestamp':
       return {
         model: {
@@ -183,52 +184,53 @@ export const update = (model: Model, message: Message): UpdateReturn => {
             : { autoThreshold: message.autoThreshold }),
           ...(message.isLive === undefined ? {} : { isLive: message.isLive }),
         },
-      };
+      }
     case 'ClickedCopyTimestampValue':
-      return { model, commands: [CopyTimestampValue({ value: message.value })] };
+      return { model, commands: [CopyTimestampValue({ value: message.value })] }
     case 'CompletedCopiedTimestampValue':
       return {
         model: { ...model, copiedValue: message.value },
         commands: [WaitBeforeClearingTimestampCopy({ value: message.value })],
-      };
+      }
     case 'FailedCopyingTimestampValue':
-      return { model };
+      return { model }
     case 'CompletedWaitBeforeClearingTimestampCopy':
       return {
         model: {
           ...model,
-          copiedValue: model.copiedValue === message.value ? null : model.copiedValue,
+          copiedValue:
+            model.copiedValue === message.value ? null : model.copiedValue,
         },
-      };
+      }
   }
-};
+}
 
 // =============================================================================
 // Tick subscription
 // =============================================================================
 
-const MINUTE_S = 60;
-const HOUR_S = 3600;
-const DAY_S = 86400;
+const MINUTE_S = 60
+const HOUR_S = 3600
+const DAY_S = 86400
 
 const getLiveInterval = (diffSeconds: number): number => {
-  const absDiff = Math.abs(diffSeconds);
+  const absDiff = Math.abs(diffSeconds)
   if (absDiff < MINUTE_S) {
-    return 1000;
+    return 1000
   }
   if (absDiff < HOUR_S) {
-    return 30_000;
+    return 30_000
   }
   if (absDiff < DAY_S) {
-    return 60_000;
+    return 60_000
   }
-  return 300_000;
-};
+  return 300_000
+}
 
 const isRelativeFormat = (
   format: TimestampFormat,
 ): format is 'relative' | 'relative_short' =>
-  format === 'relative' || format === 'relative_short';
+  format === 'relative' || format === 'relative_short'
 
 const effectiveFormatOf = (model: Model): TimestampFormat =>
   model.format === 'auto'
@@ -236,7 +238,7 @@ const effectiveFormatOf = (model: Model): TimestampFormat =>
       model.autoThreshold
       ? 'relative'
       : 'date_time'
-    : model.format;
+    : model.format
 
 export const subscriptions = Subscription.make<Model, Message>()(entry => ({
   tick: entry(
@@ -264,7 +266,7 @@ export const subscriptions = Subscription.make<Model, Message>()(entry => ({
           : Stream.empty,
     },
   ),
-}));
+}))
 
 // =============================================================================
 // View
@@ -273,45 +275,45 @@ export const subscriptions = Subscription.make<Model, Message>()(entry => ({
 const isAbsoluteFormat = (
   format: TimestampFormat,
 ): format is Exclude<TimestampFormat, 'relative' | 'relative_short' | 'auto'> =>
-  format !== 'relative' && format !== 'relative_short' && format !== 'auto';
+  format !== 'relative' && format !== 'relative_short' && format !== 'auto'
 
 const COPY_FEEDBACK_CLASS =
-  'inline-flex size-5 shrink-0 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50';
+  'inline-flex size-5 shrink-0 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50'
 
 export type TimestampProps<Msg> = Readonly<{
-  model: Model;
-  toParentMessage: (message: Message) => Msg;
+  model: Model
+  toParentMessage: (message: Message) => Msg
   /** Semantic text type. @default 'supporting' */
-  type?: AstryxTextType;
-  size?: AstryxTextSize;
+  type?: AstryxTextType
+  size?: AstryxTextSize
   /** Text color. @default 'secondary' */
-  color?: AstryxTextColor;
-  weight?: AstryxTextWeight;
+  color?: AstryxTextColor
+  weight?: AstryxTextWeight
   /** Show the copyable hover card on hover/focus. @default true */
-  hasTooltip?: boolean;
+  hasTooltip?: boolean
   /** Lines on the hover card; an empty array means "use the default row". */
-  tooltipEntries?: ReadonlyArray<TimestampTooltipEntry>;
+  tooltipEntries?: ReadonlyArray<TimestampTooltipEntry>
   /** Append the timezone abbreviation to date_time/time text. @default false */
-  isTimezoneShown?: boolean;
-  class?: string;
-}>;
+  isTimezoneShown?: boolean
+  class?: string
+}>
 
 export const timestamp = <Msg>(
   props: TimestampProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const model = props.model;
-  const date = new Date(model.valueMs);
-  const isValidDate = !Number.isNaN(date.getTime());
+  const model = props.model
+  const date = new Date(model.valueMs)
+  const isValidDate = !Number.isNaN(date.getTime())
   if (!isValidDate) {
-    return h.empty;
+    return h.empty
   }
 
-  const isoString = date.toISOString();
-  const now = new Date(model.nowMs);
-  const effectiveFormat = effectiveFormatOf(model);
-  const isTimezoneShown = props.isTimezoneShown ?? false;
-  const hasTooltip = props.hasTooltip ?? true;
+  const isoString = date.toISOString()
+  const now = new Date(model.nowMs)
+  const effectiveFormat = effectiveFormatOf(model)
+  const isTimezoneShown = props.isTimezoneShown ?? false
+  const hasTooltip = props.hasTooltip ?? true
 
   const displayText =
     effectiveFormat === 'relative'
@@ -320,19 +322,19 @@ export const timestamp = <Msg>(
         ? formatRelativeTime(date, now, 'narrow')
         : isAbsoluteFormat(effectiveFormat)
           ? formatInstant(date, effectiveFormat, { isTimezoneShown })
-          : '';
+          : ''
 
-  const fullAbsoluteText = formatInstant(date, 'full');
+  const fullAbsoluteText = formatInstant(date, 'full')
   const ariaLabelText = formatInstant(date, 'full', {
     timeZoneNameStyle: 'long',
-  });
+  })
 
   const entries =
     props.tooltipEntries !== undefined && props.tooltipEntries.length > 0
       ? props.tooltipEntries
-      : undefined;
+      : undefined
   const showTooltip =
-    hasTooltip && (isRelativeFormat(effectiveFormat) || entries !== undefined);
+    hasTooltip && (isRelativeFormat(effectiveFormat) || entries !== undefined)
 
   const timeElement = h.time(
     [
@@ -358,21 +360,21 @@ export const timestamp = <Msg>(
       ),
     ],
     [displayText],
-  );
+  )
 
   if (!showTooltip) {
-    return timeElement;
+    return timeElement
   }
 
   const lines: ReadonlyArray<TimestampTooltipLine> =
     entries === undefined
       ? [{ value: fullAbsoluteText, isCopyable: true }]
-      : formatTooltipLines(date, entries);
+      : formatTooltipLines(date, entries)
 
   const hasLabelColumn = lines.some(
     line => line.label !== undefined && line.label !== '',
-  );
-  const hasActionColumn = lines.some(line => line.isCopyable);
+  )
+  const hasActionColumn = lines.some(line => line.isCopyable)
 
   const cardContent = h.dl(
     [
@@ -390,74 +392,73 @@ export const timestamp = <Msg>(
       ),
     ],
     lines.map(line =>
-      h.div([h.Class('contents')], [
-        ...(hasLabelColumn
-          ? [
-              h.dt(
-                [
-                  h.Class(
-                    'm-0 whitespace-nowrap p-0 text-xs leading-5 font-normal text-muted-foreground',
-                  ),
-                ],
-                [line.label ?? ''],
+      h.div(
+        [h.Class('contents')],
+        [
+          ...(hasLabelColumn
+            ? [
+                h.dt(
+                  [
+                    h.Class(
+                      'm-0 whitespace-nowrap p-0 text-xs leading-5 font-normal text-muted-foreground',
+                    ),
+                  ],
+                  [line.label ?? ''],
+                ),
+              ]
+            : []),
+          h.dd(
+            [
+              h.Class(
+                'm-0 whitespace-nowrap p-0 text-sm leading-5 font-normal text-foreground',
               ),
-            ]
-          : []),
-        h.dd(
-          [
-            h.Class(
-              'm-0 whitespace-nowrap p-0 text-sm leading-5 font-normal text-foreground',
-            ),
-          ],
-          [line.value],
-        ),
-        ...(hasActionColumn
-          ? [
-              h.div([h.Class('flex items-center justify-end')], [
-                ...(line.isCopyable
-                  ? [
-                      h.button(
-                        [
-                          h.Type('button'),
-                          h.Class(COPY_FEEDBACK_CLASS),
-                          h.AriaLabel(
-                            model.copiedValue === line.value
-                              ? 'Copied'
-                              : `Copy ${line.value}`,
+            ],
+            [line.value],
+          ),
+          ...(hasActionColumn
+            ? [
+                h.div(
+                  [h.Class('flex items-center justify-end')],
+                  [
+                    ...(line.isCopyable
+                      ? [
+                          h.button(
+                            [
+                              h.Type('button'),
+                              h.Class(COPY_FEEDBACK_CLASS),
+                              h.AriaLabel(
+                                model.copiedValue === line.value
+                                  ? 'Copied'
+                                  : `Copy ${line.value}`,
+                              ),
+                              h.OnClick(
+                                props.toParentMessage(
+                                  Message.ClickedCopyTimestampValue({
+                                    value: line.value,
+                                  }),
+                                ),
+                              ),
+                            ],
+                            [
+                              model.copiedValue === line.value
+                                ? Icon.check({ class: 'size-3' }, h)
+                                : Icon.icon('copy', { class: 'size-3' }, h),
+                            ],
                           ),
-                          h.OnClick(
-                            props.toParentMessage(
-                              Message.ClickedCopyTimestampValue({
-                                value: line.value,
-                              }),
-                            ),
+                          h.span(
+                            [h.AriaLive('polite'), h.Class('sr-only')],
+                            [model.copiedValue === line.value ? 'Copied' : ''],
                           ),
-                        ],
-                        [
-                          model.copiedValue === line.value
-                            ? Icon.check({ class: 'size-3' }, h)
-                            : Icon.icon('copy', { class: 'size-3' }, h),
-                        ],
-                      ),
-                      h.span(
-                        [
-                          h.AriaLive('polite'),
-                          h.Class('sr-only'),
-                        ],
-                        [
-                          model.copiedValue === line.value
-                            ? 'Copied'
-                            : '',
-                        ],
-                      ),
-                    ]
-                  : []),
-              ]),
-            ]
-          : []),
-      ]),
+                        ]
+                      : []),
+                  ],
+                ),
+              ]
+            : []),
+        ],
+      ),
     ),
-  );
+  )
 
   return HoverCardView.hoverCard(
     {
@@ -478,5 +479,5 @@ export const timestamp = <Msg>(
       ariaLabel: 'Timestamp details',
     },
     h,
-  );
-};
+  )
+}

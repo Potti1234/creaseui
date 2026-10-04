@@ -1,15 +1,15 @@
-import { Schema as S } from 'effect';
-import { Command, Subscription } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import { Schema as S } from 'effect'
+import { Command, Subscription } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-import { definePreviewProgram } from '@/docs/components/pages/authored-page';
+import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
   optionsFor,
   transferListFixtures,
   type TransferListFixture,
-} from '@/docs/components/pages/transfer-list/shared';
-import * as TransferList from '@/ui/transfer-list';
+} from '@/docs/components/pages/transfer-list/shared'
+import * as TransferList from '@/ui/transfer-list'
 
 const FixtureOption = S.Struct({
   value: S.String,
@@ -19,26 +19,26 @@ const FixtureOption = S.Struct({
   isTransferDisabled: S.optional(S.Boolean),
   isReorderDisabled: S.optional(S.Boolean),
   disabledMessage: S.optional(S.String),
-});
+})
 
 const Got = defineMessageUnion({
   GotListMessage: { message: TransferList.Message },
   GotList2Message: { message: TransferList.Message },
-});
-type Got = typeof Got.Type;
+})
+type Got = typeof Got.Type
 const Model = S.Struct({
   _docsPage: S.Literal('transfer-list'),
   list: TransferList.Model,
   list2: TransferList.Model,
   options: S.Array(FixtureOption),
   isReorderable: S.Boolean,
-});
-type Model = typeof Model.Type;
+})
+type Model = typeof Model.Type
 
 const cleanOptions = (
   rows: ReadonlyArray<typeof FixtureOption.Type>,
 ): ReadonlyArray<TransferList.TransferListOption> =>
-  rows.map((row) => ({
+  rows.map(row => ({
     value: row.value,
     label: row.label,
     ...(row.description === undefined ? {} : { description: row.description }),
@@ -52,7 +52,7 @@ const cleanOptions = (
     ...(row.disabledMessage === undefined
       ? {}
       : { disabledMessage: row.disabledMessage }),
-  }));
+  }))
 
 const renderList = (
   fixture: TransferListFixture,
@@ -62,7 +62,7 @@ const renderList = (
   TransferList.transferList(
     {
       model: model.list,
-      toParentMessage: (message) => Got.GotListMessage({ message }),
+      toParentMessage: message => Got.GotListMessage({ message }),
       label: fixture.label,
       description: fixture.listDescription,
       options: cleanOptions(model.options),
@@ -89,7 +89,7 @@ const renderList = (
         : { noResultsText: fixture.noResultsText }),
     },
     h,
-  );
+  )
 
 const fixtureView = (
   fixture: TransferListFixture,
@@ -97,30 +97,33 @@ const fixtureView = (
   h: HtmlBuilder<Got>,
 ): Html => {
   if (fixture.layout !== 'empty-pair') {
-    return renderList(fixture, model, h);
+    return renderList(fixture, model, h)
   }
-  return h.div([h.Class('flex flex-col gap-6')], [
-    renderList(fixture, model, h),
-    h.hr([h.Class('border-border')]),
-    TransferList.transferList(
-      {
-        model: model.list2,
-        toParentMessage: (message) => Got.GotList2Message({ message }),
-        label: 'Report fields',
-        description:
-          'A query that matches nothing replaces both panels with the no-results copy.',
-        options: cleanOptions(model.options),
-        selectedLabel: 'In report',
-        availableLabel: 'Available',
-        hasSearch: true,
-        searchLabel: 'Search report fields',
-        searchPlaceholder: 'Try a term that matches nothing',
-        noResultsText: 'No field matches that search.',
-      },
-      h,
-    ),
-  ]);
-};
+  return h.div(
+    [h.Class('flex flex-col gap-6')],
+    [
+      renderList(fixture, model, h),
+      h.hr([h.Class('border-border')]),
+      TransferList.transferList(
+        {
+          model: model.list2,
+          toParentMessage: message => Got.GotList2Message({ message }),
+          label: 'Report fields',
+          description:
+            'A query that matches nothing replaces both panels with the no-results copy.',
+          options: cleanOptions(model.options),
+          selectedLabel: 'In report',
+          availableLabel: 'Available',
+          hasSearch: true,
+          searchLabel: 'Search report fields',
+          searchPlaceholder: 'Try a term that matches nothing',
+          noResultsText: 'No field matches that search.',
+        },
+        h,
+      ),
+    ],
+  )
+}
 
 export const transferListTailwindPreviewProgram = definePreviewProgram<
   Model,
@@ -128,8 +131,8 @@ export const transferListTailwindPreviewProgram = definePreviewProgram<
 >({
   Model,
   Message: Got,
-  init: (index) => {
-    const fixture = transferListFixtures[index] ?? transferListFixtures[0];
+  init: index => {
+    const fixture = transferListFixtures[index] ?? transferListFixtures[0]
     return {
       _docsPage: 'transfer-list',
       list: TransferList.init({
@@ -142,7 +145,7 @@ export const transferListTailwindPreviewProgram = definePreviewProgram<
       }),
       options: [...optionsFor(fixture.options)],
       isReorderable: fixture.isReorderable ?? true,
-    };
+    }
   },
   update: (model, message) => {
     switch (message._tag) {
@@ -152,12 +155,13 @@ export const transferListTailwindPreviewProgram = definePreviewProgram<
           message.message,
           cleanOptions(model.options),
           model.isReorderable,
-        );
+        )
         return {
           model: { ...model, list: next.model },
-          commands: Command.mapMessages(next.commands ?? [], (next) =>
-            Got.GotListMessage({ message: next })),
-        };
+          commands: Command.mapMessages(next.commands ?? [], next =>
+            Got.GotListMessage({ message: next }),
+          ),
+        }
       }
       case 'GotList2Message': {
         const next = TransferList.update(
@@ -165,18 +169,19 @@ export const transferListTailwindPreviewProgram = definePreviewProgram<
           message.message,
           cleanOptions(model.options),
           model.isReorderable,
-        );
+        )
         return {
           model: { ...model, list2: next.model },
-          commands: Command.mapMessages(next.commands ?? [], (next) =>
-            Got.GotList2Message({ message: next })),
-        };
+          commands: Command.mapMessages(next.commands ?? [], next =>
+            Got.GotList2Message({ message: next }),
+          ),
+        }
       }
     }
   },
   view: (index, model, h) => {
-    const fixture = transferListFixtures[index] ?? transferListFixtures[0];
-    return fixtureView(fixture, model, h);
+    const fixture = transferListFixtures[index] ?? transferListFixtures[0]
+    return fixtureView(fixture, model, h)
   },
   subscriptions: Subscription.aggregate<Model, Got>()(
     Subscription.lift({
@@ -185,8 +190,8 @@ export const transferListTailwindPreviewProgram = definePreviewProgram<
       listKeyboard: TransferList.subscriptions.documentKeyboard,
       listAutoScroll: TransferList.subscriptions.autoScroll,
     })<Model, Got>({
-      toChildModel: (model) => model.list.dnd,
-      toParentMessage: (message) =>
+      toChildModel: model => model.list.dnd,
+      toParentMessage: message =>
         Got.GotListMessage({
           message: TransferList.Message.GotDndMessage({ message }),
         }),
@@ -197,11 +202,11 @@ export const transferListTailwindPreviewProgram = definePreviewProgram<
       list2Keyboard: TransferList.subscriptions.documentKeyboard,
       list2AutoScroll: TransferList.subscriptions.autoScroll,
     })<Model, Got>({
-      toChildModel: (model) => model.list2.dnd,
-      toParentMessage: (message) =>
+      toChildModel: model => model.list2.dnd,
+      toParentMessage: message =>
         Got.GotList2Message({
           message: TransferList.Message.GotDndMessage({ message }),
         }),
     }),
   ),
-});
+})

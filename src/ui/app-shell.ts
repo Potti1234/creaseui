@@ -1,6 +1,6 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils'
 
 /* Ported from Meta Astryx AppShell/AppShell.tsx — the application scaffold:
    root column shell with a skip link, an optional banner + topNav header
@@ -12,9 +12,9 @@ import { cn } from '@/lib/utils';
    48px (--spacing-12) sticky offset.
    astryx --radius-page = 28px → rounded-ss-[28px] for the elevated corner. */
 
-export type AppShellVariant = 'elevated' | 'wash' | 'surface' | 'section';
-export type AppShellHeight = 'fill' | 'auto';
-export type AppShellSpacing = 0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10;
+export type AppShellVariant = 'elevated' | 'wash' | 'surface' | 'section'
+export type AppShellHeight = 'fill' | 'auto'
+export type AppShellSpacing = 0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10
 
 const contentPaddingClasses: Record<AppShellSpacing, string> = {
   0: 'p-0',
@@ -28,14 +28,14 @@ const contentPaddingClasses: Record<AppShellSpacing, string> = {
   6: 'p-6',
   8: 'p-8',
   10: 'p-10',
-};
+}
 
 const variantRootClasses: Record<AppShellVariant, string> = {
   elevated: 'bg-background',
   wash: 'bg-background',
   surface: 'bg-card',
   section: 'bg-card',
-};
+}
 
 export type AppShellProps = Readonly<{
   /**
@@ -47,63 +47,63 @@ export type AppShellProps = Readonly<{
    * - `elevated`: wash nav with elevated surface content area + page-radius
    *   corner when a top nav and an inline side nav are both present (default)
    */
-  variant?: AppShellVariant;
+  variant?: AppShellVariant
   /** Optional banner slot rendered above the top nav. */
-  banner?: Html;
+  banner?: Html
   /** Top navigation slot (typically an app's top nav markup). */
-  topNav?: Html;
+  topNav?: Html
   /** Side navigation slot rendered as the start panel. */
-  sideNav?: Html;
+  sideNav?: Html
   /**
    * Padding for the main content area (spacing steps of 4px).
    * - `4` (16px) — standard for forms, settings, text-heavy pages
    * - `0` — edge-to-edge dashboards, maps, tables
    */
-  contentPadding?: AppShellSpacing;
+  contentPadding?: AppShellSpacing
   /**
    * Height behavior:
    * - `fill`: shell fills the viewport, content scrolls internally (default)
    * - `auto`: shell grows with content, page scrolls as a whole; the header
    *   and side nav stay sticky while scrolling
    */
-  height?: AppShellHeight;
+  height?: AppShellHeight
   /** Accessible label for the skip-to-content link. */
-  skipLinkLabel?: string;
+  skipLinkLabel?: string
   /** Element id used as the skip link's focus target on <main>. */
-  mainId?: string;
+  mainId?: string
   /** Main content area (rendered as <main>). */
-  children?: ReadonlyArray<Html | string>;
-  class?: string;
-}>;
+  children?: ReadonlyArray<Html | string>
+  class?: string
+}>
 
 const skipLinkClasses = cn(
   // visually hidden by default, revealed on keyboard focus
   'absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0 [clip-path:inset(50%)]',
   'focus:fixed focus:top-2 focus:start-2 focus:z-[9999] focus:w-auto focus:h-auto focus:m-0 focus:px-4 focus:py-2 focus:overflow-visible focus:[clip-path:none] focus:whitespace-normal',
   'focus:bg-card focus:text-primary focus:font-semibold focus:text-sm focus:no-underline',
-);
+)
 
 export const appShell = <Msg>(
   props: AppShellProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const variant = props.variant ?? 'elevated';
-  const height = props.height ?? 'fill';
-  const isFill = height === 'fill';
-  const isAuto = height === 'auto';
-  const mainId = props.mainId ?? 'app-shell-main';
-  const hasBanner = props.banner !== undefined;
-  const hasTopNav = props.topNav !== undefined;
-  const hasSideNav = props.sideNav !== undefined;
-  const navHasDividers = variant === 'section';
-  const isElevated = variant === 'elevated';
-  const contentPadding = props.contentPadding ?? 0;
+  const variant = props.variant ?? 'elevated'
+  const height = props.height ?? 'fill'
+  const isFill = height === 'fill'
+  const isAuto = height === 'auto'
+  const mainId = props.mainId ?? 'app-shell-main'
+  const hasBanner = props.banner !== undefined
+  const hasTopNav = props.topNav !== undefined
+  const hasSideNav = props.sideNav !== undefined
+  const navHasDividers = variant === 'section'
+  const isElevated = variant === 'elevated'
+  const contentPadding = props.contentPadding ?? 0
   const navAreaClass =
     variant === 'wash' || variant === 'elevated'
       ? 'bg-background'
       : variant === 'surface'
         ? 'bg-card'
-        : undefined;
+        : undefined
   const contentAreaClass =
     variant === 'wash'
       ? 'bg-background'
@@ -111,9 +111,10 @@ export const appShell = <Msg>(
         ? 'bg-transparent isolate'
         : variant === 'surface' || variant === 'elevated'
           ? 'bg-card'
-          : undefined;
-  const headerAreaClass = navAreaClass ?? (isAuto && variant === 'section' ? 'bg-card' : undefined);
-  const stickyBgClass = navAreaClass ?? 'bg-card';
+          : undefined
+  const headerAreaClass =
+    navAreaClass ?? (isAuto && variant === 'section' ? 'bg-card' : undefined)
+  const stickyBgClass = navAreaClass ?? 'bg-card'
 
   const headerContent =
     hasTopNav || hasBanner
@@ -122,15 +123,16 @@ export const appShell = <Msg>(
             h.Role('banner'),
             h.DataAttribute('slot', 'app-shell-header'),
             h.Class(
-              cn(
-                headerAreaClass,
-                isAuto ? 'sticky top-0 z-[1]' : undefined,
-              ),
+              cn(headerAreaClass, isAuto ? 'sticky top-0 z-[1]' : undefined),
             ),
           ],
           [
             h.header(
-              [h.Class(cn(navHasDividers && hasTopNav ? 'border-b' : undefined))],
+              [
+                h.Class(
+                  cn(navHasDividers && hasTopNav ? 'border-b' : undefined),
+                ),
+              ],
               [
                 ...(hasBanner
                   ? [
@@ -148,7 +150,7 @@ export const appShell = <Msg>(
             ),
           ],
         )
-      : undefined;
+      : undefined
 
   const sideNavPanel = hasSideNav
     ? h.aside(
@@ -165,7 +167,7 @@ export const appShell = <Msg>(
         ],
         [props.sideNav as Html],
       )
-    : undefined;
+    : undefined
 
   const sideNavContent =
     sideNavPanel !== undefined && isAuto
@@ -180,7 +182,7 @@ export const appShell = <Msg>(
           ],
           [sideNavPanel],
         )
-      : sideNavPanel;
+      : sideNavPanel
 
   const mainInner = h.main(
     [
@@ -197,7 +199,7 @@ export const appShell = <Msg>(
       ),
     ],
     [...(props.children ?? [])],
-  );
+  )
 
   // elevated corner treatment: a surface backdrop clips the page radius
   // behind the scrolling main region (astryx --radius-page = 28px)
@@ -220,7 +222,7 @@ export const appShell = <Msg>(
             mainInner,
           ],
         )
-      : mainInner;
+      : mainInner
 
   return h.div(
     [
@@ -256,5 +258,5 @@ export const appShell = <Msg>(
         ],
       ),
     ],
-  );
-};
+  )
+}

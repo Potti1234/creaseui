@@ -1,9 +1,9 @@
-import { Effect, Option, Schema as S } from 'effect';
-import { Command } from 'foldkit';
-import type { HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import { Effect, Option, Schema as S } from 'effect'
+import { Command } from 'foldkit'
+import type { HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-import { definePreviewProgram } from '@/docs/components/pages/authored-page';
+import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
   comboboxCountries,
   comboboxFixtures,
@@ -11,18 +11,18 @@ import {
   comboboxRtlCategories,
   comboboxTimezones,
   type ComboboxFixture,
-} from '@/docs/components/pages/combobox/shared';
-import * as Icon from '@/lib/icon';
-import * as Button from '@/ui/button';
-import * as Combobox from '@/ui/combobox';
+} from '@/docs/components/pages/combobox/shared'
+import * as Icon from '@/lib/icon'
+import * as Button from '@/ui/button'
+import * as Combobox from '@/ui/combobox'
 
 const PreviewMessages = defineMessageUnion({
   GotComboboxPreviewMessage: { message: Combobox.Message },
   GotMultiComboboxMessage: { message: Combobox.Message },
   RemovedChip: { value: S.String },
   ClickedClear: {},
-});
-type PreviewMessage = typeof PreviewMessages.Type;
+})
+type PreviewMessage = typeof PreviewMessages.Type
 
 const PreviewModel = S.Struct({
   _docsPage: S.Literal('combobox'),
@@ -31,8 +31,8 @@ const PreviewModel = S.Struct({
   maybeValue: S.Option(S.String),
   selectedValues: S.Array(S.String),
   autoHighlight: S.Boolean,
-});
-type PreviewModel = typeof PreviewModel.Type;
+})
+type PreviewModel = typeof PreviewModel.Type
 
 // Dispatches BlurredInput as a command so it lands after the open animation
 // fold — a same-tick Closed/BlurredInput is ignored while isOpen is still false.
@@ -46,15 +46,15 @@ const CloseComboboxAfterClear = Command.define('CloseComboboxAfterClear', {
       }),
     }),
   ),
-});
+})
 
-const AutoHighlightCombobox = Combobox.create<string>({ autoHighlight: true });
-const MultiCombobox = Combobox.createMulti<string>({ autoHighlight: true });
+const AutoHighlightCombobox = Combobox.create<string>({ autoHighlight: true })
+const MultiCombobox = Combobox.createMulti<string>({ autoHighlight: true })
 
 const labelFor =
   <Item extends { value: string; label: string }>(items: ReadonlyArray<Item>) =>
   (value: string): string =>
-    items.find(item => item.value === value)?.label ?? value;
+    items.find(item => item.value === value)?.label ?? value
 
 const commonProps = (model: PreviewModel) => ({
   model: model.combobox,
@@ -62,7 +62,7 @@ const commonProps = (model: PreviewModel) => ({
   toParentMessage: (message: Combobox.Message): PreviewMessage =>
     PreviewMessages.GotComboboxPreviewMessage({ message }),
   formName: 'docs-combobox',
-});
+})
 
 const frameworksView = (
   fixture: ComboboxFixture,
@@ -85,7 +85,7 @@ const frameworksView = (
       ...(fixture.isDisabled === true ? { isDisabled: true } : {}),
     },
     h,
-  );
+  )
 
 const timezonesView = (model: PreviewModel, h: HtmlBuilder<PreviewMessage>) =>
   Combobox.combobox(
@@ -104,7 +104,7 @@ const timezonesView = (model: PreviewModel, h: HtmlBuilder<PreviewMessage>) =>
       groupToHeading: group => group,
     },
     h,
-  );
+  )
 
 const countriesView = (model: PreviewModel, h: HtmlBuilder<PreviewMessage>) =>
   Combobox.combobox(
@@ -120,17 +120,26 @@ const countriesView = (model: PreviewModel, h: HtmlBuilder<PreviewMessage>) =>
       placeholder: 'Select country',
       ariaLabel: 'Country',
       itemToConfig: item => ({
-        content: h.span([h.Class('flex flex-col')], [
-          h.span([], [item.label]),
-          h.span([h.Class('text-muted-foreground text-xs')], [item.continent]),
-        ]),
+        content: h.span(
+          [h.Class('flex flex-col')],
+          [
+            h.span([], [item.label]),
+            h.span(
+              [h.Class('text-muted-foreground text-xs')],
+              [item.continent],
+            ),
+          ],
+        ),
         searchText: `${item.label} ${item.continent}`,
       }),
     },
     h,
-  );
+  )
 
-const autoHighlightView = (model: PreviewModel, h: HtmlBuilder<PreviewMessage>) =>
+const autoHighlightView = (
+  model: PreviewModel,
+  h: HtmlBuilder<PreviewMessage>,
+) =>
   AutoHighlightCombobox.combobox(
     {
       ...commonProps(model),
@@ -145,7 +154,7 @@ const autoHighlightView = (model: PreviewModel, h: HtmlBuilder<PreviewMessage>) 
       ariaLabel: 'Framework',
     },
     h,
-  );
+  )
 
 const popupView = (model: PreviewModel, h: HtmlBuilder<PreviewMessage>) =>
   Combobox.combobox(
@@ -167,7 +176,7 @@ const popupView = (model: PreviewModel, h: HtmlBuilder<PreviewMessage>) =>
       },
     },
     h,
-  );
+  )
 
 const multipleView = (model: PreviewModel, h: HtmlBuilder<PreviewMessage>) =>
   h.div(
@@ -217,7 +226,7 @@ const multipleView = (model: PreviewModel, h: HtmlBuilder<PreviewMessage>) =>
         h,
       ),
     ],
-  );
+  )
 
 const rtlView = (model: PreviewModel, h: HtmlBuilder<PreviewMessage>) =>
   Combobox.combobox(
@@ -235,9 +244,12 @@ const rtlView = (model: PreviewModel, h: HtmlBuilder<PreviewMessage>) =>
       direction: 'rtl',
     },
     h,
-  );
+  )
 
-export const comboboxTailwindPreviewProgram = definePreviewProgram<PreviewModel, PreviewMessage>({
+export const comboboxTailwindPreviewProgram = definePreviewProgram<
+  PreviewModel,
+  PreviewMessage
+>({
   Model: PreviewModel,
   Message: PreviewMessages,
   init: index => ({
@@ -246,12 +258,12 @@ export const comboboxTailwindPreviewProgram = definePreviewProgram<PreviewModel,
       const initial = Combobox.init({
         id: `docs-combobox-${String(index)}`,
         isAnimated: true,
-      });
+      })
       // Seed inputValue for the pre-selected clear example — upstream combobox
       // does not derive it from the resting label yet (foldkit finding F15).
       return comboboxFixtures[index]?.kind === 'clear'
         ? { ...initial, inputValue: 'Next.js' }
-        : initial;
+        : initial
     })(),
     multi: Combobox.multiInit({
       id: `docs-combobox-multi-${String(index)}`,
@@ -268,28 +280,27 @@ export const comboboxTailwindPreviewProgram = definePreviewProgram<PreviewModel,
   update: (model, message) => {
     switch (message._tag) {
       case 'GotComboboxPreviewMessage': {
-        const next = (model.autoHighlight ? AutoHighlightCombobox : Combobox).update(
-          model.combobox,
-          message.message,
-        );
-        const maybeOut = Option.fromNullishOr(next.outMessage);
+        const next = (
+          model.autoHighlight ? AutoHighlightCombobox : Combobox
+        ).update(model.combobox, message.message)
+        const maybeOut = Option.fromNullishOr(next.outMessage)
         const maybeValue = Option.match(maybeOut, {
           onNone: () => model.maybeValue,
           onSome: out =>
             out._tag === 'Selected'
               ? Option.some(out.value)
               : Option.none<string>(),
-        });
+        })
         return {
           model: { ...model, combobox: next.model, maybeValue },
           commands: Command.mapMessages(next.commands ?? [], child =>
             PreviewMessages.GotComboboxPreviewMessage({ message: child }),
           ),
-        };
+        }
       }
       case 'GotMultiComboboxMessage': {
-        const next = MultiCombobox.update(model.multi, message.message);
-        const maybeOut = Option.fromNullishOr(next.outMessage);
+        const next = MultiCombobox.update(model.multi, message.message)
+        const maybeOut = Option.fromNullishOr(next.outMessage)
         const selectedValues = Option.match(maybeOut, {
           onNone: () => model.selectedValues,
           onSome: out =>
@@ -298,13 +309,13 @@ export const comboboxTailwindPreviewProgram = definePreviewProgram<PreviewModel,
                 ? model.selectedValues.filter(value => value !== out.value)
                 : [...model.selectedValues, out.value]
               : model.selectedValues,
-        });
+        })
         return {
           model: { ...model, multi: next.model, selectedValues },
           commands: Command.mapMessages(next.commands ?? [], child =>
             PreviewMessages.GotMultiComboboxMessage({ message: child }),
           ),
-        };
+        }
       }
       case 'RemovedChip':
         return {
@@ -314,12 +325,12 @@ export const comboboxTailwindPreviewProgram = definePreviewProgram<PreviewModel,
               value => value !== message.value,
             ),
           },
-        };
+        }
       case 'ClickedClear': {
         const next = Combobox.update(
           model.combobox,
           Combobox.Message.UpdatedInputValue({ value: '' }),
-        );
+        )
         return {
           model: {
             ...model,
@@ -332,12 +343,12 @@ export const comboboxTailwindPreviewProgram = definePreviewProgram<PreviewModel,
             ),
             CloseComboboxAfterClear(),
           ],
-        };
+        }
       }
     }
   },
   view: (index, model, h) => {
-    const fixture = comboboxFixtures[index] ?? comboboxFixtures[0]!;
+    const fixture = comboboxFixtures[index] ?? comboboxFixtures[0]!
     const combo =
       fixture.kind === 'groups'
         ? timezonesView(model, h)
@@ -349,24 +360,27 @@ export const comboboxTailwindPreviewProgram = definePreviewProgram<PreviewModel,
               ? autoHighlightView(model, h)
               : fixture.kind === 'popup'
                 ? popupView(model, h)
-                : frameworksView(fixture, model, h);
+                : frameworksView(fixture, model, h)
     if (fixture.kind === 'multiple') {
-      return multipleView(model, h);
+      return multipleView(model, h)
     }
     return fixture.kind === 'clear'
-      ? h.div([h.Class('flex items-center gap-2')], [
-          combo,
-          Button.button(
-            {
-              variant: 'ghost',
-              size: 'icon',
-              ariaLabel: 'Clear selection',
-              onClick: PreviewMessages.ClickedClear(),
-              children: [Icon.icon('x', { class: 'size-4' }, h)],
-            },
-            h,
-          ),
-        ])
-      : h.div([h.Class('grid gap-2')], [combo]);
+      ? h.div(
+          [h.Class('flex items-center gap-2')],
+          [
+            combo,
+            Button.button(
+              {
+                variant: 'ghost',
+                size: 'icon',
+                ariaLabel: 'Clear selection',
+                onClick: PreviewMessages.ClickedClear(),
+                children: [Icon.icon('x', { class: 'size-4' }, h)],
+              },
+              h,
+            ),
+          ],
+        )
+      : h.div([h.Class('grid gap-2')], [combo])
   },
-});
+})

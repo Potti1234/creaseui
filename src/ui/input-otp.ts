@@ -1,43 +1,49 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils'
 
 export type InputOtpProps<Msg> = Readonly<{
-  id: string;
-  value: string;
-  onInput: (value: string) => Msg;
-  length?: number;
-  name?: string;
-  ariaLabel?: string;
-  isDisabled?: boolean;
-  isInvalid?: boolean;
-  isRequired?: boolean;
-  class?: string;
-  groupClass?: string;
+  id: string
+  value: string
+  onInput: (value: string) => Msg
+  length?: number
+  name?: string
+  ariaLabel?: string
+  isDisabled?: boolean
+  isInvalid?: boolean
+  isRequired?: boolean
+  class?: string
+  groupClass?: string
   /** Pattern accepted by the control. Defaults to ASCII digits. */
-  pattern?: RegExp;
+  pattern?: RegExp
   inputMode?:
-    'numeric' | 'text' | 'tel' | 'decimal' | 'email' | 'url' | 'search';
-  slotClass?: string;
-  separator?: (index: number) => Html;
-}>;
+    | 'numeric'
+    | 'text'
+    | 'tel'
+    | 'decimal'
+    | 'email'
+    | 'url'
+    | 'search'
+  slotClass?: string
+  separator?: (index: number) => Html
+}>
 
 const normalize = (value: string, length: number, pattern: RegExp): string =>
   Array.from(value)
-    .filter((character) => {
-      pattern.lastIndex = 0;
-      return pattern.test(character);
+    .filter(character => {
+      pattern.lastIndex = 0
+      return pattern.test(character)
     })
     .slice(0, length)
-    .join('');
+    .join('')
 
 export const inputOtp = <Msg>(
   props: InputOtpProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const length = props.length ?? 6;
-  const pattern = props.pattern ?? /[0-9]/;
-  const value = normalize(props.value, length, pattern);
+  const length = props.length ?? 6
+  const pattern = props.pattern ?? /[0-9]/
+  const value = normalize(props.value, length, pattern)
 
   return h.div(
     [
@@ -61,7 +67,7 @@ export const inputOtp = <Msg>(
           ? [h.Required(true), h.AriaRequired(true)]
           : []),
         ...(props.name === undefined ? [] : [h.Name(props.name)]),
-        h.OnInput((next) => props.onInput(normalize(next, length, pattern))),
+        h.OnInput(next => props.onInput(normalize(next, length, pattern))),
         // The fake caret always renders at value.length; pin the real caret
         // there too so arrow keys / mid-string clicks can't desync them.
         h.Attribute(
@@ -79,8 +85,8 @@ export const inputOtp = <Msg>(
           h.Class(cn('flex items-center', props.groupClass)),
         ],
         Array.from({ length }, (_, index) => {
-          const character = value[index];
-          const isActive = value.length === index;
+          const character = value[index]
+          const isActive = value.length === index
           const slot = h.div(
             [
               h.DataAttribute('slot', 'input-otp-slot'),
@@ -119,17 +125,17 @@ export const inputOtp = <Msg>(
                   ]
                 : []),
             ],
-          );
+          )
 
-          const separator = props.separator?.(index);
+          const separator = props.separator?.(index)
           return separator === undefined || index === length - 1
             ? slot
-            : h.div([h.Class('contents')], [slot, separator]);
+            : h.div([h.Class('contents')], [slot, separator])
         }),
       ),
     ],
-  );
-};
+  )
+}
 
 export const inputOtpSeparator = <Msg>(h: HtmlBuilder<Msg>): Html => {
   return h.div(
@@ -139,5 +145,5 @@ export const inputOtpSeparator = <Msg>(h: HtmlBuilder<Msg>): Html => {
       h.Class('px-2 text-muted-foreground'),
     ],
     ['·'],
-  );
-};
+  )
+}

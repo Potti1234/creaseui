@@ -1,49 +1,43 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Attribute, Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Attribute, Html, HtmlBuilder } from 'foldkit/html'
 
-import { Disclosure as DisclosurePrimitive } from '@foldkit/ui';
+import { Disclosure as DisclosurePrimitive } from '@foldkit/ui'
 
-import * as BannerBehavior from '@/lib/banner';
-import * as Icon from '@/lib/icon';
-import { buttonVisualStyles } from './button';
-import type { ComponentLayoutStyle } from './contracts';
-import { interactionTokens } from './interaction-tokens.stylex.const';
-import { className } from './style';
-import { tokens } from './tokens.stylex';
+import * as BannerBehavior from '@/lib/banner'
+import * as Icon from '@/lib/icon'
+import { buttonVisualStyles } from './button'
+import type { ComponentLayoutStyle } from './contracts'
+import { interactionTokens } from './interaction-tokens.stylex.const'
+import { className } from './style'
+import { tokens } from './tokens.stylex'
 
-export {
-  Model,
-  Message,
-  OutMessage,
-  init,
-  update,
-} from '@/lib/banner';
+export { Model, Message, OutMessage, init, update } from '@/lib/banner'
 export type {
   BannerContainer,
   BannerElevation,
   BannerStatus,
-} from '@/lib/banner';
+} from '@/lib/banner'
 
 /* Ported from Meta Astryx Banner.tsx — StyleX renderer. See src/ui/banner.ts
    for geometry notes. */
 
 export type BannerProps<Msg> = Readonly<{
-  model: BannerBehavior.Model;
-  toParentMessage: (message: BannerBehavior.Message) => Msg;
-  status: BannerBehavior.BannerStatus;
-  id: string;
-  title: Html | string;
-  description?: Html | string;
-  icon?: Html;
-  isDismissable?: boolean;
-  dismissLabel?: string;
-  endContent?: ReadonlyArray<Html | string>;
-  container?: BannerBehavior.BannerContainer;
-  elevation?: BannerBehavior.BannerElevation;
-  isCollapsible?: boolean;
-  children?: ReadonlyArray<Html | string>;
-  layoutStyle?: ComponentLayoutStyle;
-}>;
+  model: BannerBehavior.Model
+  toParentMessage: (message: BannerBehavior.Message) => Msg
+  status: BannerBehavior.BannerStatus
+  id: string
+  title: Html | string
+  description?: Html | string
+  icon?: Html
+  isDismissable?: boolean
+  dismissLabel?: string
+  endContent?: ReadonlyArray<Html | string>
+  container?: BannerBehavior.BannerContainer
+  elevation?: BannerBehavior.BannerElevation
+  isCollapsible?: boolean
+  children?: ReadonlyArray<Html | string>
+  layoutStyle?: ComponentLayoutStyle
+}>
 
 const styles = stylex.create({
   root: {
@@ -153,14 +147,14 @@ const styles = stylex.create({
   chevronExpanded: {
     transform: 'rotate(180deg)',
   },
-});
+})
 
 const statusIconColor = stylex.create({
   info: { color: tokens.primary },
   warning: { color: tokens.alertWarning },
   error: { color: tokens.destructive },
   success: { color: tokens.alertSuccess },
-});
+})
 
 /* astryx *-muted header fills are 20% hue tints — outside the stylex.create
    prop limits, so they apply as inline color-mix values (the same CSS
@@ -174,7 +168,7 @@ const STATUS_HEADER_TINT: Readonly<
   warning: 'color-mix(in oklab, var(--chart-4) 20%, transparent)',
   error: 'color-mix(in oklab, var(--destructive) 20%, transparent)',
   success: 'color-mix(in oklab, var(--chart-2) 20%, transparent)',
-};
+}
 
 const ELEVATION_SHADOW: Readonly<
   Record<BannerBehavior.BannerElevation, string>
@@ -184,12 +178,12 @@ const ELEVATION_SHADOW: Readonly<
   low: '0 1px 1px rgb(0 0 0 / 0.1), 0 2px 8px rgb(0 0 0 / 0.2)',
   med: '0 1px 2px rgb(0 0 0 / 0.1), 0 2px 12px rgb(0 0 0 / 0.2)',
   high: '0 2px 2px rgb(0 0 0 / 0.1), 0 8px 24px rgb(0 0 0 / 0.2)',
-};
+}
 
 type DisclosureAttrs<Msg> = Readonly<{
-  button: ReadonlyArray<Attribute<Msg>>;
-  panel: ReadonlyArray<Attribute<Msg>>;
-}>;
+  button: ReadonlyArray<Attribute<Msg>>
+  panel: ReadonlyArray<Attribute<Msg>>
+}>
 
 const render = <Msg>(
   props: BannerProps<Msg>,
@@ -211,18 +205,17 @@ const render = <Msg>(
     container = 'card',
     elevation = 'none',
     children,
-  } = props;
+  } = props
   const showEndArea =
     (endContent !== undefined && endContent.length > 0) ||
     isDismissable ||
-    hasToggle;
+    hasToggle
   const isSingleLine =
     description === undefined &&
-    ((endContent !== undefined && endContent.length > 0) || isDismissable);
-  const isCard = container === 'card';
+    ((endContent !== undefined && endContent.length > 0) || isDismissable)
+  const isCard = container === 'card'
   const dismissName =
-    dismissLabel ??
-    (typeof title === 'string' ? `Dismiss ${title}` : 'Dismiss');
+    dismissLabel ?? (typeof title === 'string' ? `Dismiss ${title}` : 'Dismiss')
 
   return h.div(
     [
@@ -268,9 +261,13 @@ const render = <Msg>(
             ],
             [
               icon ??
-                Icon.icon(BannerBehavior.STATUS_ICON[status], {
-                  class: className(styles.iconMd, statusIconColor[status]),
-                }, h),
+                Icon.icon(
+                  BannerBehavior.STATUS_ICON[status],
+                  {
+                    class: className(styles.iconMd, statusIconColor[status]),
+                  },
+                  h,
+                ),
             ],
           ),
           h.div(
@@ -327,12 +324,16 @@ const render = <Msg>(
                               ),
                             ],
                             [
-                              Icon.icon('chevron-down', {
-                                class: className(
-                                  styles.chevron,
-                                  model.isOpen && styles.chevronExpanded,
-                                ),
-                              }, h),
+                              Icon.icon(
+                                'chevron-down',
+                                {
+                                  class: className(
+                                    styles.chevron,
+                                    model.isOpen && styles.chevronExpanded,
+                                  ),
+                                },
+                                h,
+                              ),
                             ],
                           ),
                         ]
@@ -359,9 +360,13 @@ const render = <Msg>(
                               ),
                             ],
                             [
-                              Icon.icon('x', {
-                                class: className(styles.iconSm),
-                              }, h),
+                              Icon.icon(
+                                'x',
+                                {
+                                  class: className(styles.iconSm),
+                                },
+                                h,
+                              ),
                             ],
                           ),
                         ]
@@ -390,25 +395,24 @@ const render = <Msg>(
           ]
         : []),
     ],
-  );
-};
+  )
+}
 
 export const banner = <Msg>(
   props: BannerProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const { model, toParentMessage } = props;
+  const { model, toParentMessage } = props
   if (model.isDismissed) {
-    return h.empty;
+    return h.empty
   }
-  const isCollapsible = props.isCollapsible !== false;
-  const hasChildren =
-    props.children !== undefined && props.children.length > 0;
-  const hasToggle = isCollapsible && hasChildren;
-  const showContent = hasChildren && (!isCollapsible || model.isOpen);
+  const isCollapsible = props.isCollapsible !== false
+  const hasChildren = props.children !== undefined && props.children.length > 0
+  const hasToggle = isCollapsible && hasChildren
+  const showContent = hasChildren && (!isCollapsible || model.isOpen)
 
   if (!hasToggle) {
-    return render(props, showContent, false, undefined, h);
+    return render(props, showContent, false, undefined, h)
   }
   return DisclosurePrimitive.view(
     {
@@ -420,5 +424,5 @@ export const banner = <Msg>(
         render(props, showContent, true, { button, panel }, h),
     },
     h,
-  );
-};
+  )
+}

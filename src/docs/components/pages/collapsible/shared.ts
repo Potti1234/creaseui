@@ -1,40 +1,86 @@
-import type { DocsExample } from '@/docs/components/page-definition';
+import type { DocsExample } from '@/docs/components/page-definition'
 import {
   controlledBooleanApplication,
   foldkitApplication,
-} from '@/docs/components/pages/authored-page';
+} from '@/docs/components/pages/authored-page'
 
 export type CollapsibleFixture = Readonly<{
-  title: string;
-  description?: string;
-  heroOnly?: boolean;
-  kind: 'basic' | 'settings' | 'tree' | 'rtl' | 'single';
-  config?: string;
-}>;
+  title: string
+  description?: string
+  heroOnly?: boolean
+  kind: 'basic' | 'settings' | 'tree' | 'rtl' | 'single'
+  config?: string
+}>
 
 export const collapsibleFixtures: ReadonlyArray<CollapsibleFixture> = [
   { title: 'Demo', heroOnly: true, kind: 'basic' },
-  { title: 'Basic', kind: 'basic', description: 'A card wraps a collapsible whose content can hold rich elements like buttons.' },
-  { title: 'Settings Panel', kind: 'settings', description: 'Collapsed fields reveal related options inside a labeled card.' },
-  { title: 'File Tree', kind: 'tree', description: 'Nested collapsibles model an open-path set; each folder owns its disclosure id.' },
-  { title: 'RTL', kind: 'rtl', description: 'Right-to-left direction renders inside a dir="rtl" container with localized copy.' },
-  { title: 'Disabled', kind: 'single', config: 'isDisabled: true,', description: 'A disabled trigger exposes the panel state but does not dispatch Messages.' },
-];
+  {
+    title: 'Basic',
+    kind: 'basic',
+    description:
+      'A card wraps a collapsible whose content can hold rich elements like buttons.',
+  },
+  {
+    title: 'Settings Panel',
+    kind: 'settings',
+    description:
+      'Collapsed fields reveal related options inside a labeled card.',
+  },
+  {
+    title: 'File Tree',
+    kind: 'tree',
+    description:
+      'Nested collapsibles model an open-path set; each folder owns its disclosure id.',
+  },
+  {
+    title: 'RTL',
+    kind: 'rtl',
+    description:
+      'Right-to-left direction renders inside a dir="rtl" container with localized copy.',
+  },
+  {
+    title: 'Disabled',
+    kind: 'single',
+    config: 'isDisabled: true,',
+    description:
+      'A disabled trigger exposes the panel state but does not dispatch Messages.',
+  },
+]
 
 export const fileTree = [
   {
     name: 'components',
     items: [
-      { name: 'ui', items: [{ name: 'button.tsx' }, { name: 'card.tsx' }, { name: 'dialog.tsx' }, { name: 'input.tsx' }, { name: 'select.tsx' }, { name: 'table.tsx' }] },
+      {
+        name: 'ui',
+        items: [
+          { name: 'button.tsx' },
+          { name: 'card.tsx' },
+          { name: 'dialog.tsx' },
+          { name: 'input.tsx' },
+          { name: 'select.tsx' },
+          { name: 'table.tsx' },
+        ],
+      },
       { name: 'login-form.tsx' },
       { name: 'register-form.tsx' },
     ],
   },
-  { name: 'lib', items: [{ name: 'utils.ts' }, { name: 'cn.ts' }, { name: 'api.ts' }] },
-  { name: 'hooks', items: [{ name: 'use-media-query.ts' }, { name: 'use-debounce.ts' }, { name: 'use-local-storage.ts' }] },
+  {
+    name: 'lib',
+    items: [{ name: 'utils.ts' }, { name: 'cn.ts' }, { name: 'api.ts' }],
+  },
+  {
+    name: 'hooks',
+    items: [
+      { name: 'use-media-query.ts' },
+      { name: 'use-debounce.ts' },
+      { name: 'use-local-storage.ts' },
+    ],
+  },
   { name: 'types', items: [{ name: 'index.d.ts' }, { name: 'api.d.ts' }] },
   { name: 'public', items: [{ name: 'favicon.ico' }, { name: 'logo.svg' }] },
-] as const;
+] as const
 
 const basicSource = (renderer: 'tailwind' | 'stylex'): string =>
   foldkitApplication({
@@ -78,7 +124,7 @@ export type Message = typeof Message.Type`,
     ] }, h),
   ]),
 })`,
-  });
+  })
 
 const settingsSource = (renderer: 'tailwind' | 'stylex'): string =>
   foldkitApplication({
@@ -138,7 +184,7 @@ export type Message = typeof Message.Type`,
     ] }, h),
   ]),
 })`,
-  });
+  })
 
 const treeSource = (renderer: 'tailwind' | 'stylex'): string =>
   foldkitApplication({
@@ -191,7 +237,7 @@ export type Message = typeof Message.Type`,
       }, h))),
   ]),
 })`,
-  });
+  })
 
 const rtlSource = (renderer: 'tailwind' | 'stylex'): string =>
   foldkitApplication({
@@ -247,7 +293,7 @@ export type Message = typeof Message.Type`,
     ]),
   ]),
 })`,
-  });
+  })
 
 const singleSource = (
   fixture: CollapsibleFixture,
@@ -270,7 +316,7 @@ const singleSource = (
   content: 'Foldkit keeps disclosure state in the application Model.',
   ${fixture.config ?? ''}
 }, h),`,
-  });
+  })
 
 export const collapsibleExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -291,4 +337,4 @@ export const collapsibleExamples = (
             : fixture.kind === 'rtl'
               ? rtlSource(renderer)
               : singleSource(fixture, renderer),
-  }));
+  }))

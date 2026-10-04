@@ -4,7 +4,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import type { ComponentLayoutStyle } from './contracts'
 import { className } from './style'
-import { foundationTokens } from './foundations-tokens.stylex';
+import { foundationTokens } from './foundations-tokens.stylex'
 import { tokens } from './tokens.stylex'
 
 const styles = stylex.create({
@@ -17,12 +17,12 @@ const styles = stylex.create({
     overflow: 'hidden',
     paddingBlock: 'var(--card-spacing,1.5rem)',
     backgroundColor: tokens.card,
-    boxShadow:
-      foundationTokens.shadowSm,
+    boxShadow: foundationTokens.shadowSm,
     color: tokens.cardForeground,
     display: 'flex',
     flexDirection: 'column',
-    fontSize: '0.875rem', lineHeight: '1.25rem',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
   },
   cardFlush: {
     overflow: 'hidden',
@@ -85,19 +85,23 @@ type Slot = Readonly<{
   layoutStyle?: ComponentLayoutStyle
 }>
 
-export type CardProps = Slot & Readonly<{
-  element?: 'div' | 'section' | 'article'
-  density?: 'default' | 'flush'
-  size?: 'default' | 'sm'
-  /** Overrides the --card-spacing CSS variable (spacing demo). */
-  spacing?: string
-}>
+export type CardProps = Slot &
+  Readonly<{
+    element?: 'div' | 'section' | 'article'
+    density?: 'default' | 'flush'
+    size?: 'default' | 'sm'
+    /** Overrides the --card-spacing CSS variable (spacing demo). */
+    spacing?: string
+  }>
 
 const slot =
   (name: string, slotStyle: StaticStyles) =>
   <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html =>
     h.div(
-      [h.DataAttribute('slot', name), h.Class(className(slotStyle, props.layoutStyle))],
+      [
+        h.DataAttribute('slot', name),
+        h.Class(className(slotStyle, props.layoutStyle)),
+      ],
       [...props.children],
     )
 
@@ -110,29 +114,43 @@ export const card = <Msg>(props: CardProps, h: HtmlBuilder<Msg>): Html => {
         props.spacing ?? (props.size === 'sm' ? '1rem' : '1.5rem'),
       '--card-title-fs': props.size === 'sm' ? '0.875rem' : '1rem',
     }),
-    h.Class(className(
-      styles.card,
-      props.density === 'flush' && styles.cardFlush,
-      props.layoutStyle,
-    )),
+    h.Class(
+      className(
+        styles.card,
+        props.density === 'flush' && styles.cardFlush,
+        props.layoutStyle,
+      ),
+    ),
   ]
   const children = [...props.children]
 
   switch (props.element ?? 'div') {
-    case 'section': return h.section(attributes, children)
-    case 'article': return h.article(attributes, children)
-    default: return h.div(attributes, children)
+    case 'section':
+      return h.section(attributes, children)
+    case 'article':
+      return h.article(attributes, children)
+    default:
+      return h.div(attributes, children)
   }
 }
 
 export const cardHeader = slot('card-header', styles.header)
 export type CardTitleProps = Slot & Readonly<{ element?: 'h2' | 'h3' | 'h4' }>
-export const cardTitle = <Msg>(props: CardTitleProps, h: HtmlBuilder<Msg>): Html => {
-  const attributes = [h.DataAttribute('slot', 'card-title'), h.Class(className(styles.title, props.layoutStyle))]
+export const cardTitle = <Msg>(
+  props: CardTitleProps,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const attributes = [
+    h.DataAttribute('slot', 'card-title'),
+    h.Class(className(styles.title, props.layoutStyle)),
+  ]
   switch (props.element ?? 'h3') {
-    case 'h2': return h.h2(attributes, [...props.children])
-    case 'h4': return h.h4(attributes, [...props.children])
-    default: return h.h3(attributes, [...props.children])
+    case 'h2':
+      return h.h2(attributes, [...props.children])
+    case 'h4':
+      return h.h4(attributes, [...props.children])
+    default:
+      return h.h3(attributes, [...props.children])
   }
 }
 export const cardDescription = slot('card-description', styles.description)

@@ -1,9 +1,9 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { ComponentLayoutStyle } from './contracts';
-import { className } from './style';
-import { tokens } from './tokens.stylex';
+import type { ComponentLayoutStyle } from './contracts'
+import { className } from './style'
+import { tokens } from './tokens.stylex'
 
 /* Ported from Meta Astryx Stat (packages/lab/src/Stat/Stat.tsx) — examples and
    visual spec adapted to Crease UI tokens. Astryx's supporting-text role
@@ -63,41 +63,43 @@ const styles = stylex.create({
     marginTop: '0.25rem',
     minWidth: 0,
   },
-});
+})
 
-export type StatDeltaDirection = 'up' | 'down' | 'flat';
-export type StatDeltaSentiment = 'positive' | 'negative' | 'neutral';
-export type StatSize = 'sm' | 'md' | 'lg';
+export type StatDeltaDirection = 'up' | 'down' | 'flat'
+export type StatDeltaSentiment = 'positive' | 'negative' | 'neutral'
+export type StatSize = 'sm' | 'md' | 'lg'
 
 export type StatDelta = Readonly<{
   /** Pre-formatted change text, e.g. "+12.4%" or "-8 ms". */
-  value: string;
+  value: string
   /** Trend direction. Picks the glyph and the default sentiment. */
-  direction: StatDeltaDirection;
+  direction: StatDeltaDirection
   /**
    * Overrides the direction-to-color mapping for inverted metrics where
    * down is good: up maps to positive, down to negative, flat to neutral.
    */
-  sentiment?: StatDeltaSentiment;
-}>;
+  sentiment?: StatDeltaSentiment
+}>
 
-const DIRECTION_SENTIMENT: Readonly<Record<StatDeltaDirection, StatDeltaSentiment>> = {
+const DIRECTION_SENTIMENT: Readonly<
+  Record<StatDeltaDirection, StatDeltaSentiment>
+> = {
   up: 'positive',
   down: 'negative',
   flat: 'neutral',
-};
+}
 
 const DIRECTION_TEXT: Readonly<Record<StatDeltaDirection, string>> = {
   up: 'trending up',
   down: 'trending down',
   flat: 'flat',
-};
+}
 
 const DELTA_GLYPH_PATHS: Readonly<Record<StatDeltaDirection, string>> = {
   up: 'M3.5 8.5L8.5 3.5M8.5 3.5H4.75M8.5 3.5V7.25',
   down: 'M3.5 3.5L8.5 8.5M8.5 8.5H4.75M8.5 8.5V4.75',
   flat: 'M2.5 6H9.5',
-};
+}
 
 const srOnly = stylex.create({
   text: {
@@ -111,9 +113,12 @@ const srOnly = stylex.create({
     height: '1px',
     width: '1px',
   },
-});
+})
 
-const deltaGlyph = <Msg>(direction: StatDeltaDirection, h: HtmlBuilder<Msg>): Html =>
+const deltaGlyph = <Msg>(
+  direction: StatDeltaDirection,
+  h: HtmlBuilder<Msg>,
+): Html =>
   h.svg(
     [
       h.AriaHidden(true),
@@ -129,31 +134,31 @@ const deltaGlyph = <Msg>(direction: StatDeltaDirection, h: HtmlBuilder<Msg>): Ht
       h.DataAttribute('slot', 'stat-delta-glyph'),
     ],
     [h.path([h.D(DELTA_GLYPH_PATHS[direction])], [])],
-  );
+  )
 
 export type StatProps = Readonly<{
   /** Metric name shown above the value, e.g. "Total requests". */
-  label: string;
+  label: string
   /** The headline metric, rendered large with tabular numerals. */
-  value: string;
+  value: string
   /** Change indicator rendered next to the value. */
-  delta?: StatDelta;
+  delta?: StatDelta
   /** Muted supporting line under the value, e.g. "vs. previous 30 days". */
-  description?: string;
+  description?: string
   /** Trend slot rendered below the text content, e.g. a sparkline. */
-  media?: ReadonlyArray<Html>;
+  media?: ReadonlyArray<Html>
   /** Size variant controlling the value's font size. */
-  size?: StatSize;
+  size?: StatSize
   /** Parent-layout positioning only. */
-  layoutStyle?: ComponentLayoutStyle;
-}>;
+  layoutStyle?: ComponentLayoutStyle
+}>
 
 export const stat = <Msg>(props: StatProps, h: HtmlBuilder<Msg>): Html => {
-  const size = props.size ?? 'md';
+  const size = props.size ?? 'md'
   const sentiment =
     props.delta === undefined
       ? undefined
-      : props.delta.sentiment ?? DIRECTION_SENTIMENT[props.delta.direction];
+      : (props.delta.sentiment ?? DIRECTION_SENTIMENT[props.delta.direction])
 
   return h.div(
     [
@@ -162,7 +167,13 @@ export const stat = <Msg>(props: StatProps, h: HtmlBuilder<Msg>): Html => {
       h.Class(className(styles.root, props.layoutStyle)),
     ],
     [
-      h.span([h.DataAttribute('slot', 'stat-label'), h.Class(className(styles.label))], [props.label]),
+      h.span(
+        [
+          h.DataAttribute('slot', 'stat-label'),
+          h.Class(className(styles.label)),
+        ],
+        [props.label],
+      ),
       h.span(
         [h.Class(className(styles.valueRow))],
         [
@@ -172,7 +183,11 @@ export const stat = <Msg>(props: StatProps, h: HtmlBuilder<Msg>): Html => {
               h.Class(
                 className(
                   styles.value,
-                  size === 'sm' ? styles.valueSm : size === 'lg' ? styles.valueLg : styles.valueMd,
+                  size === 'sm'
+                    ? styles.valueSm
+                    : size === 'lg'
+                      ? styles.valueLg
+                      : styles.valueMd,
                 ),
               ),
             ],
@@ -199,7 +214,10 @@ export const stat = <Msg>(props: StatProps, h: HtmlBuilder<Msg>): Html => {
                   [
                     deltaGlyph(props.delta.direction, h),
                     props.delta.value,
-                    h.span([h.Class(className(srOnly.text))], [`(${DIRECTION_TEXT[props.delta.direction]})`]),
+                    h.span(
+                      [h.Class(className(srOnly.text))],
+                      [`(${DIRECTION_TEXT[props.delta.direction]})`],
+                    ),
                   ],
                 ),
               ]),
@@ -209,7 +227,10 @@ export const stat = <Msg>(props: StatProps, h: HtmlBuilder<Msg>): Html => {
         ? []
         : [
             h.span(
-              [h.DataAttribute('slot', 'stat-description'), h.Class(className(styles.description))],
+              [
+                h.DataAttribute('slot', 'stat-description'),
+                h.Class(className(styles.description)),
+              ],
               [props.description],
             ),
           ]),
@@ -217,10 +238,13 @@ export const stat = <Msg>(props: StatProps, h: HtmlBuilder<Msg>): Html => {
         ? []
         : [
             h.div(
-              [h.DataAttribute('slot', 'stat-media'), h.Class(className(styles.media))],
+              [
+                h.DataAttribute('slot', 'stat-media'),
+                h.Class(className(styles.media)),
+              ],
               [...props.media],
             ),
           ]),
     ],
-  );
-};
+  )
+}

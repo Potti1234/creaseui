@@ -1,5 +1,5 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { staticComponentApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 /* Astryx Center example blocks ported 1:1. astryx Card default padding →
    crease Card size 'sm' (16px); astryx Card padding={2} (8px) has no crease
@@ -7,12 +7,14 @@ import { staticComponentApplication } from '@/docs/components/pages/authored-pag
    ghost icon-sm Button with ariaLabel. */
 
 export type CenterFixture = Readonly<{
-  title: string;
-  description?: string;
-  kind: 'showcase' | 'horizontal' | 'insideCard';
-}>;
+  title: string
+  description?: string
+  kind: 'showcase' | 'horizontal' | 'insideCard'
+}>
 
-export const centerFixtures: Readonly<[CenterFixture, ...Array<CenterFixture>]> = [
+export const centerFixtures: Readonly<
+  [CenterFixture, ...Array<CenterFixture>]
+> = [
   {
     title: 'Center',
     description:
@@ -31,17 +33,17 @@ export const centerFixtures: Readonly<[CenterFixture, ...Array<CenterFixture>]> 
       'An empty state with an icon, heading, and description centered both vertically and horizontally inside a card. This is the most common use of Center: placing content in the middle of a fixed-height area like a panel, card, or content region. The height prop defines the centering space.',
     kind: 'insideCard',
   },
-];
+]
 
 const emitShowcase = (renderer: 'tailwind' | 'stylex'): string => {
   const heading =
     renderer === 'tailwind'
       ? `h.h4([h.Class('text-sm font-semibold')], ['Centered content'])`
-      : `h.h4([h.Class(stylex.props(styles.heading).className ?? '')], ['Centered content'])`;
+      : `h.h4([h.Class(stylex.props(styles.heading).className ?? '')], ['Centered content'])`
   const body =
     renderer === 'tailwind'
       ? `h.p([h.Class('text-sm text-muted-foreground')], ['Horizontally and vertically aligned.'])`
-      : `h.p([h.Class(stylex.props(styles.body).className ?? '')], ['Horizontally and vertically aligned.'])`;
+      : `h.p([h.Class(stylex.props(styles.body).className ?? '')], ['Horizontally and vertically aligned.'])`
   return `Center.center(
       { axis: 'both', width: '100%', height: 240, children: [
         Stack.vStack({ gap: 2, hAlign: 'center', children: [
@@ -50,20 +52,20 @@ const emitShowcase = (renderer: 'tailwind' | 'stylex'): string => {
         ] }, h),
       ] },
       h,
-    )`;
-};
+    )`
+}
 
 const emitHorizontal = (renderer: 'tailwind' | 'stylex'): string => {
   const icon = (name: string): string =>
     renderer === 'tailwind'
       ? `icon('${name}', { class: 'size-4' }, h)`
-      : `icon('${name}', {}, h)`;
+      : `icon('${name}', {}, h)`
   const iconButton = (name: string, label: string): string =>
     `Button.button({ variant: 'ghost', size: 'icon-sm', ariaLabel: '${label}', children: [
                 ${icon(name)},
-              ] }, h)`;
+              ] }, h)`
   const cardClass =
-    renderer === 'tailwind' ? `class: 'w-[520px]'` : `layoutStyle: styles.card`;
+    renderer === 'tailwind' ? `class: 'w-[520px]'` : `layoutStyle: styles.card`
   return `Card.card(
       { size: 'sm', ${cardClass}, children: [
         Card.cardContent({ children: [
@@ -83,24 +85,24 @@ const emitHorizontal = (renderer: 'tailwind' | 'stylex'): string => {
         ] }, h),
       ] },
       h,
-    )`;
-};
+    )`
+}
 
 const emitInsideCard = (renderer: 'tailwind' | 'stylex'): string => {
   const inboxIcon =
     renderer === 'tailwind'
       ? `icon('inbox', { class: 'size-6 text-muted-foreground' }, h)`
-      : `icon('inbox', { class: stylex.props(styles.icon).className ?? '' }, h)`;
+      : `icon('inbox', { class: stylex.props(styles.icon).className ?? '' }, h)`
   const heading =
     renderer === 'tailwind'
       ? `h.p([h.Class('text-sm font-semibold')], ['No messages yet'])`
-      : `h.p([h.Class(stylex.props(styles.heading).className ?? '')], ['No messages yet'])`;
+      : `h.p([h.Class(stylex.props(styles.heading).className ?? '')], ['No messages yet'])`
   const body =
     renderer === 'tailwind'
       ? `h.p([h.Class('text-xs text-muted-foreground')], ['Messages from your team will appear here.'])`
-      : `h.p([h.Class(stylex.props(styles.body).className ?? '')], ['Messages from your team will appear here.'])`;
+      : `h.p([h.Class(stylex.props(styles.body).className ?? '')], ['Messages from your team will appear here.'])`
   const cardClass =
-    renderer === 'tailwind' ? `class: 'w-[400px]'` : `layoutStyle: styles.card`;
+    renderer === 'tailwind' ? `class: 'w-[400px]'` : `layoutStyle: styles.card`
   return `Card.card(
       { size: 'sm', ${cardClass}, children: [
         Card.cardContent({ children: [
@@ -117,8 +119,8 @@ const emitInsideCard = (renderer: 'tailwind' | 'stylex'): string => {
         ] }, h),
       ] },
       h,
-    )`;
-};
+    )`
+}
 
 const emitBody = (
   fixture: CenterFixture,
@@ -126,47 +128,51 @@ const emitBody = (
 ): string => {
   switch (fixture.kind) {
     case 'showcase':
-      return emitShowcase(renderer);
+      return emitShowcase(renderer)
     case 'horizontal':
-      return emitHorizontal(renderer);
+      return emitHorizontal(renderer)
     case 'insideCard':
-      return emitInsideCard(renderer);
+      return emitInsideCard(renderer)
   }
-};
+}
 
 const stylexStylesFor = (kind: CenterFixture['kind']): string => {
-  const entries: Array<string> = [];
+  const entries: Array<string> = []
   if (kind === 'showcase') {
-    entries.push(`  heading: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 600 }`);
+    entries.push(
+      `  heading: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 600 }`,
+    )
     entries.push(
       `  body: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' }`,
-    );
+    )
   }
   if (kind === 'horizontal' || kind === 'insideCard') {
     entries.push(
       `  card: { width: '${kind === 'horizontal' ? '32.5rem' : '25rem'}' }`,
-    );
+    )
   }
   if (kind === 'insideCard') {
     entries.push(
       `  icon: { color: 'var(--muted-foreground)', height: '1.5rem', width: '1.5rem' }`,
-    );
-    entries.push(`  heading: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 600 }`);
+    )
+    entries.push(
+      `  heading: { fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 600 }`,
+    )
     entries.push(
       `  body: { color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1rem' }`,
-    );
+    )
   }
-  if (entries.length === 0) return '';
+  if (entries.length === 0) return ''
   return `import * as stylex from '@stylexjs/stylex'
 
 const styles = stylex.create({
 ${entries.join(',\n')},
-})`;
-};
+})`
+}
 
 const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
-  const fixture = centerFixtures[index] ?? centerFixtures[0];
-  const mod = renderer === 'stylex' ? 'stylex' : 'ui';
+  const fixture = centerFixtures[index] ?? centerFixtures[0]
+  const mod = renderer === 'stylex' ? 'stylex' : 'ui'
   const componentImports = [
     `import * as Stack from '@/${mod}/stack'`,
     fixture.kind !== 'showcase' ? `import * as Card from '@/${mod}/card'` : '',
@@ -178,7 +184,7 @@ import { icon } from '@/lib/icon'`
     renderer === 'stylex' ? stylexStylesFor(fixture.kind) : '',
   ]
     .filter(Boolean)
-    .join('\n');
+    .join('\n')
   return staticComponentApplication({
     componentName: 'Center',
     componentSlug: 'center',
@@ -186,8 +192,8 @@ import { icon } from '@/lib/icon'`
     exampleName: fixture.title,
     componentImports,
     viewBody: emitBody(fixture, renderer),
-  });
-};
+  })
+}
 
 export const centerExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -198,4 +204,4 @@ export const centerExamples = (
       ? {}
       : { description: fixture.description }),
     code: source(index, renderer),
-  }));
+  }))

@@ -32,6 +32,8 @@ describe('Carousel lifecycle ownership', () => {
   it('keeps only observed selection in the serializable child model', () => {
     assert.match(behavior, /WentTo/u)
     assert.doesNotMatch(behavior, /export const (Previous|Next)/u)
-    assert.doesNotThrow(() => JSON.stringify({ ...({ id: 'gallery', index: 1, count: 3 }) }))
+    assert.doesNotThrow(() =>
+      JSON.stringify({ ...{ id: 'gallery', index: 1, count: 3 } }),
+    )
   })
 })

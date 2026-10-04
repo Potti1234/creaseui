@@ -1,29 +1,29 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type TimeInputFixtureEntry = Readonly<{
-  id: string;
-  label: string;
-  initialValue?: string;
-  placeholder?: string;
-  min?: string;
-  max?: string;
-  increment?: number;
-  hourFormat?: '12h' | '24h';
-  hasSeconds?: boolean;
-  hasClear?: boolean;
-  isDisabled?: boolean;
-  description?: string;
-  status?: Readonly<{ type: 'error' | 'warning' | 'success'; message: string }>;
-}>;
+  id: string
+  label: string
+  initialValue?: string
+  placeholder?: string
+  min?: string
+  max?: string
+  increment?: number
+  hourFormat?: '12h' | '24h'
+  hasSeconds?: boolean
+  hasClear?: boolean
+  isDisabled?: boolean
+  description?: string
+  status?: Readonly<{ type: 'error' | 'warning' | 'success'; message: string }>
+}>
 
 export type TimeInputFixture = Readonly<{
-  title: string;
-  description: string;
-  heading?: string;
-  maxWidth: number;
-  entries: ReadonlyArray<TimeInputFixtureEntry>;
-}>;
+  title: string
+  description: string
+  heading?: string
+  maxWidth: number
+  entries: ReadonlyArray<TimeInputFixtureEntry>
+}>
 
 /* Example set ported from Meta Astryx
    packages/cli/assets/templates/blocks/components/TimeInput/*.tsx —
@@ -36,9 +36,7 @@ export const timeInputFixtures: Readonly<
     description:
       'A time input that uses the browser/OS picker on touch by default and Astryx typed entry on fine pointers.',
     maxWidth: 400,
-    entries: [
-      { id: 'time', label: 'Time', placeholder: 'Select a time' },
-    ],
+    entries: [{ id: 'time', label: 'Time', placeholder: 'Select a time' }],
   },
   {
     title: 'TimeInput — Constrained',
@@ -65,7 +63,12 @@ export const timeInputFixtures: Readonly<
     maxWidth: 400,
     entries: [
       { id: '24h', label: '24-hour', hourFormat: '24h', initialValue: '14:30' },
-      { id: 'seconds', label: 'With seconds', hasSeconds: true, initialValue: '14:30:45' },
+      {
+        id: 'seconds',
+        label: 'With seconds',
+        hasSeconds: true,
+        initialValue: '14:30:45',
+      },
     ],
   },
   {
@@ -90,12 +93,20 @@ export const timeInputFixtures: Readonly<
       'Default, disabled, error, warning, and success states. Use status messages to give users clear feedback about their time selection.',
     maxWidth: 400,
     entries: [
-      { id: 'disabled', label: 'Disabled field', initialValue: '10:00', isDisabled: true },
+      {
+        id: 'disabled',
+        label: 'Disabled field',
+        initialValue: '10:00',
+        isDisabled: true,
+      },
       {
         id: 'error',
         label: 'Error message',
         initialValue: '22:00',
-        status: { type: 'error', message: 'Time must be during business hours' },
+        status: {
+          type: 'error',
+          message: 'Time must be during business hours',
+        },
       },
       {
         id: 'warning',
@@ -111,10 +122,10 @@ export const timeInputFixtures: Readonly<
       },
     ],
   },
-];
+]
 
 const ui = (renderer: 'tailwind' | 'stylex'): string =>
-  renderer === 'stylex' ? 'stylex' : 'ui';
+  renderer === 'stylex' ? 'stylex' : 'ui'
 
 const timeInputCallSource = (
   entry: TimeInputFixtureEntry,
@@ -128,16 +139,16 @@ const timeInputCallSource = (
             value: model.inputs[${slot}]!.value.pipe(Option.getOrNull),
           },
           h,
-        )`;
+        )`
 
 const viewSource = (fixture: TimeInputFixture): string => {
   const entries = fixture.entries
     .map((entry, entryIndex) => timeInputCallSource(entry, String(entryIndex)))
-    .join(',\n        ');
+    .join(',\n        ')
   const heading =
     fixture.heading === undefined
       ? ''
-      : `      h.p([h.Class('text-xs text-muted-foreground')], ['${fixture.heading}']),\n      `;
+      : `      h.p([h.Class('text-xs text-muted-foreground')], ['${fixture.heading}']),\n      `
   return `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: '${fixture.title}',
   body: h.main([h.Class('mx-auto flex min-h-screen w-full max-w-md items-center p-8')], [
@@ -148,11 +159,11 @@ const viewSource = (fixture: TimeInputFixture): string => {
       ],
     ),
   ]),
-})`;
-};
+})`
+}
 
 const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
-  const fixture = timeInputFixtures[index] ?? timeInputFixtures[0];
+  const fixture = timeInputFixtures[index] ?? timeInputFixtures[0]
   return foldkitApplication({
     title: `TimeInput — ${fixture.title}`,
     imports: `import { Option, Schema as S } from 'effect'
@@ -199,8 +210,8 @@ export type Message = typeof Message.Type`,
   }
 }`,
     view: viewSource(fixture),
-  });
-};
+  })
+}
 
 export const timeInputExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -209,4 +220,4 @@ export const timeInputExamples = (
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
-  }));
+  }))

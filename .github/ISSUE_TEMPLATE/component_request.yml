@@ -1,6 +1,6 @@
 name: Component or parity request
 description: Propose a missing component, state, example, or fidelity improvement.
-title: "[component]: "
+title: '[component]: '
 labels: [enhancement]
 body:
   - type: input

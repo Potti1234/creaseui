@@ -1,25 +1,25 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { staticComponentApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 export type CircularProgressItem = Readonly<{
-  value?: number;
-  max?: number;
-  variant?: 'accent' | 'success' | 'warning' | 'error' | 'neutral';
-  size?: 'sm' | 'md' | 'lg';
-  hasValueLabel?: boolean;
-  formatValueLabel?: boolean;
-  isDisabled?: boolean;
-  isIndeterminate?: boolean;
-  label?: string;
-  isLabelHidden?: boolean;
-}>;
+  value?: number
+  max?: number
+  variant?: 'accent' | 'success' | 'warning' | 'error' | 'neutral'
+  size?: 'sm' | 'md' | 'lg'
+  hasValueLabel?: boolean
+  formatValueLabel?: boolean
+  isDisabled?: boolean
+  isIndeterminate?: boolean
+  label?: string
+  isLabelHidden?: boolean
+}>
 
 export type CircularProgressFixture = Readonly<{
-  title: string;
-  description: string;
-  layout: 'row' | 'single';
-  items: ReadonlyArray<CircularProgressItem>;
-}>;
+  title: string
+  description: string
+  layout: 'row' | 'single'
+  items: ReadonlyArray<CircularProgressItem>
+}>
 
 /* Example set ported from Meta Astryx CircularProgress stories
    (packages/lab/src/CircularProgress/CircularProgress.stories.tsx —
@@ -36,11 +36,18 @@ export const circularProgressFixtures: Readonly<
   },
   {
     title: 'Circular Progress — Value Label',
-    description: 'The percentage or a custom value string centered inside the ring.',
+    description:
+      'The percentage or a custom value string centered inside the ring.',
     layout: 'row',
     items: [
       { value: 75, size: 'lg', hasValueLabel: true },
-      { value: 3, max: 5, size: 'lg', hasValueLabel: true, formatValueLabel: true },
+      {
+        value: 3,
+        max: 5,
+        size: 'lg',
+        hasValueLabel: true,
+        formatValueLabel: true,
+      },
     ],
   },
   {
@@ -82,14 +89,15 @@ export const circularProgressFixtures: Readonly<
   },
   {
     title: 'Circular Progress — Empty And Full',
-    description: 'Zero shows a bare track; a completed ring can carry a success variant.',
+    description:
+      'Zero shows a bare track; a completed ring can carry a success variant.',
     layout: 'row',
     items: [
       { value: 0 },
       { value: 100, variant: 'success', label: 'Complete' },
     ],
   },
-];
+]
 
 const itemSource = (item: CircularProgressItem): string => {
   const props = [
@@ -99,24 +107,26 @@ const itemSource = (item: CircularProgressItem): string => {
     ...(item.max === undefined ? [] : [`max: ${item.max}`]),
     ...(item.variant === undefined ? [] : [`variant: '${item.variant}'`]),
     ...(item.size === undefined ? [] : [`size: '${item.size}'`]),
-    ...(item.hasValueLabel === undefined ? [] : [`hasValueLabel: ${item.hasValueLabel}`]),
+    ...(item.hasValueLabel === undefined
+      ? []
+      : [`hasValueLabel: ${item.hasValueLabel}`]),
     ...(item.formatValueLabel === undefined
       ? []
       : [`formatValueLabel: (value, max) => \`\${value}/\${max}\``]),
     ...(item.isDisabled === true ? ['isDisabled: true'] : []),
     ...(item.isIndeterminate === true ? ['isIndeterminate: true'] : []),
-  ];
-  return `CircularProgress.circularProgress({ ${props.join(', ')} }, h)`;
-};
+  ]
+  return `CircularProgress.circularProgress({ ${props.join(', ')} }, h)`
+}
 
 const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
-  const fixture = circularProgressFixtures[index] ?? circularProgressFixtures[0];
-  const isStyleX = renderer === 'stylex';
+  const fixture = circularProgressFixtures[index] ?? circularProgressFixtures[0]
+  const isStyleX = renderer === 'stylex'
   const componentImports = isStyleX
     ? `import * as stylex from '@stylexjs/stylex'
 
 const styles = stylex.create({ row: { display: 'flex', gap: '1.5rem', alignItems: 'center', flexWrap: 'wrap' } })`
-    : '';
+    : ''
   const viewBody =
     fixture.layout === 'row'
       ? `h.div(
@@ -130,7 +140,7 @@ const styles = stylex.create({ row: { display: 'flex', gap: '1.5rem', alignItems
       [
         ${fixture.items.map(itemSource).join(',\n        ')},
       ],
-    )`;
+    )`
   return staticComponentApplication({
     componentName: 'CircularProgress',
     componentSlug: 'circular-progress',
@@ -138,8 +148,8 @@ const styles = stylex.create({ row: { display: 'flex', gap: '1.5rem', alignItems
     exampleName: fixture.title,
     componentImports,
     viewBody,
-  });
-};
+  })
+}
 
 export const circularProgressExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -148,4 +158,4 @@ export const circularProgressExamples = (
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
-  }));
+  }))

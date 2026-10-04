@@ -43,7 +43,7 @@ test('sections group their actions under the section title', () => {
     },
   ])
   assert.deepEqual(
-    flat.map((entry) => entry.config.group),
+    flat.map(entry => entry.config.group),
     ['Actions', 'Actions', 'Danger zone'],
   )
   assert.equal(flat[2]?.config.variant, 'destructive')

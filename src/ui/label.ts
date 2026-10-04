@@ -1,14 +1,14 @@
-﻿import type { Html, HtmlBuilder } from 'foldkit/html';
+﻿import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils'
 
 export type LabelProps = Readonly<{
-  for?: string;
-  isRequired?: boolean;
-  isDisabled?: boolean;
-  class?: string;
-  children: ReadonlyArray<Html | string>;
-}>;
+  for?: string
+  isRequired?: boolean
+  isDisabled?: boolean
+  class?: string
+  children: ReadonlyArray<Html | string>
+}>
 
 export const label = <Msg>(props: LabelProps, h: HtmlBuilder<Msg>): Html => {
   return h.label(
@@ -25,6 +25,11 @@ export const label = <Msg>(props: LabelProps, h: HtmlBuilder<Msg>): Html => {
         ),
       ),
     ],
-    [...props.children, ...((props.isRequired ?? false) ? [h.span([h.AriaHidden(true)], ['*'])] : [])],
-  );
-};
+    [
+      ...props.children,
+      ...((props.isRequired ?? false)
+        ? [h.span([h.AriaHidden(true)], ['*'])]
+        : []),
+    ],
+  )
+}

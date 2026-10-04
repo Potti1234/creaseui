@@ -1,17 +1,17 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   popoverFixtures,
   type PopoverFixture,
   type PopoverInstance,
-} from '@/docs/components/pages/popover/shared';
-import type { ComponentLayoutStyle } from '@/stylex/contracts';
-import * as Field from '@/stylex/field';
-import * as Input from '@/stylex/input';
-import * as Popover from '@/stylex/popover';
-import { className } from '@/stylex/style';
+} from '@/docs/components/pages/popover/shared'
+import type { ComponentLayoutStyle } from '@/stylex/contracts'
+import * as Field from '@/stylex/field'
+import * as Input from '@/stylex/input'
+import * as Popover from '@/stylex/popover'
+import { className } from '@/stylex/style'
 
 const styles = stylex.create({
   wrap: {
@@ -34,8 +34,8 @@ const styles = stylex.create({
     paddingBlock: '0.5rem',
     paddingInline: '1rem',
     fontSize: '0.875rem',
- fontWeight: 500,
- lineHeight: '1.25rem',
+    fontWeight: 500,
+    lineHeight: '1.25rem',
   },
   triggerSm: {
     borderColor: 'var(--border)',
@@ -45,20 +45,24 @@ const styles = stylex.create({
     paddingBlock: '0.375rem',
     paddingInline: '0.75rem',
     fontSize: '0.875rem',
- lineHeight: '1.25rem',
+    lineHeight: '1.25rem',
   },
   panel: { width: '10rem' },
   panelWide: { width: '16rem' },
-  content: { gap: '0.5rem', display: 'grid', },
-  contentWide: { gap: '1rem', display: 'grid', },
+  content: { gap: '0.5rem', display: 'grid' },
+  contentWide: { gap: '1rem', display: 'grid' },
   heading: { fontWeight: 500 },
-  copy: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
+  copy: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+  },
   labelHalf: { width: '50%' },
-});
+})
 
 interface PreviewShape {
-  readonly popovers: Readonly<Record<string, Popover.Model>>;
-  readonly values: Readonly<Record<string, string>>;
+  readonly popovers: Readonly<Record<string, Popover.Model>>
+  readonly values: Readonly<Record<string, string>>
 }
 
 const popoverFor = <Msg>(
@@ -80,16 +84,22 @@ const popoverFor = <Msg>(
       ...extra,
     },
     h,
-  );
+  )
 
 const headerContent = <Msg>(rtl: boolean, h: HtmlBuilder<Msg>): Html =>
-  h.div([h.Class(className(styles.content))], [
-    h.h4([h.Class(className(styles.heading))], [rtl ? 'الأبعاد' : 'Dimensions']),
-    h.p(
-      [h.Class(className(styles.copy))],
-      [rtl ? 'تعيين الأبعاد للطبقة.' : 'Set the dimensions for the layer.'],
-    ),
-  ]);
+  h.div(
+    [h.Class(className(styles.content))],
+    [
+      h.h4(
+        [h.Class(className(styles.heading))],
+        [rtl ? 'الأبعاد' : 'Dimensions'],
+      ),
+      h.p(
+        [h.Class(className(styles.copy))],
+        [rtl ? 'تعيين الأبعاد للطبقة.' : 'Set the dimensions for the layer.'],
+      ),
+    ],
+  )
 
 const legacyView = <Msg>(
   index: number,
@@ -97,9 +107,9 @@ const legacyView = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const fixture = popoverFixtures[index];
-  const side = fixture?.kind === 'legacy' ? fixture.side : 'bottom';
-  const align = fixture?.kind === 'legacy' ? fixture.align : 'start';
+  const fixture = popoverFixtures[index]
+  const side = fixture?.kind === 'legacy' ? fixture.side : 'bottom'
+  const align = fixture?.kind === 'legacy' ? fixture.align : 'start'
   return popoverFor(
     'main',
     model,
@@ -110,18 +120,21 @@ const legacyView = <Msg>(
       side,
       align,
       focusSelector: '[data-slot=popover-content] input',
-      content: h.div([h.Class(className(styles.content))], [
-        h.h4([h.Class(className(styles.heading))], ['Dimensions']),
-        h.p(
-          [h.Class(className(styles.copy))],
-          ['Set the dimensions for the layer.'],
-        ),
-        h.input([h.Type('number'), h.AriaLabel('Width')]),
-      ]),
+      content: h.div(
+        [h.Class(className(styles.content))],
+        [
+          h.h4([h.Class(className(styles.heading))], ['Dimensions']),
+          h.p(
+            [h.Class(className(styles.copy))],
+            ['Set the dimensions for the layer.'],
+          ),
+          h.input([h.Type('number'), h.AriaLabel('Width')]),
+        ],
+      ),
     },
     h,
-  );
-};
+  )
+}
 
 const formView = <Msg>(
   model: PreviewShape,
@@ -151,7 +164,7 @@ const formView = <Msg>(
         ],
       },
       h,
-    );
+    )
   return popoverFor(
     'form',
     model,
@@ -162,17 +175,23 @@ const formView = <Msg>(
       align: 'start',
       layoutStyle: styles.panelWide,
       focusSelector: '[data-slot=popover-content] input',
-      content: h.div([h.Class(className(styles.contentWide))], [
-        headerContent(false, h),
-        h.div([h.Class(className(styles.contentWide))], [
-          fieldInput('width', 'Width', '100%'),
-          fieldInput('height', 'Height', '25px'),
-        ]),
-      ]),
+      content: h.div(
+        [h.Class(className(styles.contentWide))],
+        [
+          headerContent(false, h),
+          h.div(
+            [h.Class(className(styles.contentWide))],
+            [
+              fieldInput('width', 'Width', '100%'),
+              fieldInput('height', 'Height', '25px'),
+            ],
+          ),
+        ],
+      ),
     },
     h,
-  );
-};
+  )
+}
 
 const instanceView = <Msg>(
   instance: PopoverInstance,
@@ -191,11 +210,10 @@ const instanceView = <Msg>(
       align: instance.align,
       layoutStyle: styles.panel,
       ...(instance.rtl === true ? { direction: 'rtl' as const } : {}),
-      content:
-        instance.rtl === true ? headerContent(true, h) : instance.text,
+      content: instance.rtl === true ? headerContent(true, h) : instance.text,
     },
     h,
-  );
+  )
 
 export const popoverStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   index: number,
@@ -203,12 +221,11 @@ export const popoverStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const preview = model as PreviewShape;
-  const fixture: PopoverFixture =
-    popoverFixtures[index] ?? popoverFixtures[0];
+  const preview = model as PreviewShape
+  const fixture: PopoverFixture = popoverFixtures[index] ?? popoverFixtures[0]
   switch (fixture.kind) {
     case 'legacy':
-      return legacyView(index, preview, onMessageJson, h);
+      return legacyView(index, preview, onMessageJson, h)
     case 'basic':
       return popoverFor(
         'basic',
@@ -217,24 +234,26 @@ export const popoverStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         {
           trigger: 'Open Popover',
           triggerLayoutStyle: styles.trigger as ComponentLayoutStyle,
-              align: 'start',
+          align: 'start',
           content: headerContent(false, h),
         },
         h,
-      );
+      )
     case 'form':
-      return formView(preview, onMessageJson, h);
+      return formView(preview, onMessageJson, h)
     case 'align':
       return h.div(
         [h.Class(className(styles.wrap))],
         fixture.instances.map(instance =>
-          instanceView(instance, preview, onMessageJson, h)),
-      );
+          instanceView(instance, preview, onMessageJson, h),
+        ),
+      )
     case 'rtl':
       return h.div(
         [h.Class(className(styles.wrapTight))],
         fixture.instances.map(instance =>
-          instanceView(instance, preview, onMessageJson, h)),
-      );
+          instanceView(instance, preview, onMessageJson, h),
+        ),
+      )
   }
-};
+}

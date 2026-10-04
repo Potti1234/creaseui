@@ -84,7 +84,7 @@ const styles = stylex.create({
   labelIndicator: {
     fontSize: '0.75rem',
     fontWeight: 400,
- lineHeight: '1rem',
+    lineHeight: '1rem',
   },
   description: {
     color: tokens.mutedForeground,
@@ -268,11 +268,12 @@ const styles = stylex.create({
     color: tokens.foreground,
     fontSize: '0.875rem',
     fontWeight: 500,
- lineHeight: '1.25rem',
+    lineHeight: '1.25rem',
   },
   emptyDescription: {
     color: tokens.mutedForeground,
-    fontSize: '0.875rem', lineHeight: '1.25rem',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
     marginBlockStart: '0.25rem',
   },
   statusDetached: {
@@ -322,8 +323,6 @@ const styles = stylex.create({
   },
 })
 
-
-
 export type ListInputProps<T, Msg> = Readonly<{
   model: Model
   /** Lifts this submodel's messages into the parent message type. */
@@ -342,7 +341,11 @@ export type ListInputProps<T, Msg> = Readonly<{
   itemName?: string
   status?: InputStatus
   getItemStatus?: (item: T, index: number) => InputStatus | undefined
-  getFieldStatus?: (item: T, columnKey: string, index: number) => InputStatus | undefined
+  getFieldStatus?: (
+    item: T,
+    columnKey: string,
+    index: number,
+  ) => InputStatus | undefined
   isReorderable?: boolean
   isDisabled?: boolean
   isLoading?: boolean
@@ -377,14 +380,24 @@ type ViewInputs = Readonly<{
   columns: ReadonlyArray<{
     key: string
     header: string
-    width?: Readonly<{ type: 'pixel' | 'proportional'; value: number }> | undefined
+    width?:
+      | Readonly<{ type: 'pixel' | 'proportional'; value: number }>
+      | undefined
   }>
   renderInput: (context: CellContext) => Html
   toParentMessage: (message: Message) => unknown
   getItemKey: (item: unknown) => string | number
   createItem: () => unknown
-  getItemStatus?: ((item: unknown, index: number) => InputStatus | undefined) | undefined
-  getFieldStatus?: ((item: unknown, columnKey: string, index: number) => InputStatus | undefined) | undefined
+  getItemStatus?:
+    | ((item: unknown, index: number) => InputStatus | undefined)
+    | undefined
+  getFieldStatus?:
+    | ((
+        item: unknown,
+        columnKey: string,
+        index: number,
+      ) => InputStatus | undefined)
+    | undefined
   itemName?: string | undefined
   description?: Html | string | undefined
   status?: InputStatus | undefined
@@ -410,9 +423,12 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
   const fieldIds = ids(props.id)
   const itemName = props.itemName ?? 'item'
   const total = props.value.length
-  const mutationsDisabled = props.isDisabled === true || props.isLoading === true
+  const mutationsDisabled =
+    props.isDisabled === true || props.isLoading === true
   const showReorderColumn = props.isReorderable === true
-  const columnTracks = props.columns.map(column => resolveColumnTrack(column.width)).join(' ')
+  const columnTracks = props.columns
+    .map(column => resolveColumnTrack(column.width))
+    .join(' ')
 
   const rowColumns = showReorderColumn
     ? 'minmax(0, 1fr) 2rem 2rem'
@@ -485,11 +501,12 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
           )
         }
         if (reorder === undefined) return Option.none()
-        const toIndex = Math.max(0, Math.min(reorder.previewIndex + delta, total - 1))
-        if (toIndex === reorder.previewIndex) return Option.none()
-        return Option.some(
-          Message.GrabPreviewed({ toIndex, itemName, total }),
+        const toIndex = Math.max(
+          0,
+          Math.min(reorder.previewIndex + delta, total - 1),
         )
+        if (toIndex === reorder.previewIndex) return Option.none()
+        return Option.some(Message.GrabPreviewed({ toIndex, itemName, total }))
       }
       if (key === ' ' || key === 'Enter') {
         return Option.some(
@@ -577,7 +594,10 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
             ],
             [column.header],
           ),
-          h.div([h.Class(className(styles.cellContent))], [props.renderInput(ctx)]),
+          h.div(
+            [h.Class(className(styles.cellContent))],
+            [props.renderInput(ctx)],
+          ),
         ],
       )
     })
@@ -635,9 +655,7 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
                   ),
                 ),
                 handleKeyDown(itemKey, index),
-                ...(isActiveReorder
-                  ? [h.OnBlur(Message.GrabCancelled())]
-                  : []),
+                ...(isActiveReorder ? [h.OnBlur(Message.GrabCancelled())] : []),
               ],
               [Icon.gripVertical({ class: className(styles.iconMd) }, h)],
             ),
@@ -650,7 +668,9 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
         h.AriaPosinset(index + 1),
         h.AriaSetsize(total),
         h.AriaInvalid(itemStatus?.type === 'error'),
-        ...(itemStatusId === undefined ? [] : [h.AriaDescribedBy(itemStatusId)]),
+        ...(itemStatusId === undefined
+          ? []
+          : [h.AriaDescribedBy(itemStatusId)]),
         h.DataAttribute('slot', 'list-input-item'),
         h.DataAttribute('list-input-motion-key', `item:${itemKey}`),
         h.Class(className(styles.item)),
@@ -706,7 +726,11 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
                       icon: [h.Class(className(styles.statusIconRow))],
                       text: [h.Class(className(styles.statusText))],
                     },
-                    Icon.icon(statusIconName(itemStatus.type), { class: className(styles.iconSm) }, h),
+                    Icon.icon(
+                      statusIconName(itemStatus.type),
+                      { class: className(styles.iconSm) },
+                      h,
+                    ),
                     h,
                     itemStatusId,
                   ),
@@ -718,12 +742,18 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
   })
 
   const emptyItem = h.li(
-    [h.Class(className(styles.emptyItem)), h.DataAttribute('slot', 'list-input-empty')],
+    [
+      h.Class(className(styles.emptyItem)),
+      h.DataAttribute('slot', 'list-input-empty'),
+    ],
     [
       h.div(
         [h.Class(className(styles.emptyContainer))],
         [
-          h.div([h.Class(className(styles.emptyTitle))], [`No ${itemName}s yet`]),
+          h.div(
+            [h.Class(className(styles.emptyTitle))],
+            [`No ${itemName}s yet`],
+          ),
           h.div(
             [h.Class(className(styles.emptyDescription))],
             [`Add a ${itemName} to get started.`],
@@ -733,8 +763,7 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
     ],
   )
 
-  const hasReachedMax =
-    props.maxItems !== undefined && total >= props.maxItems
+  const hasReachedMax = props.maxItems !== undefined && total >= props.maxItems
   const addRow = h.div(
     [
       h.Class(className(styles.actionRow)),
@@ -837,7 +866,10 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
           ...(showReorderColumn
             ? [
                 h.div(
-                  [h.Id(fieldIds.instructions), h.Class(className(styles.srOnly))],
+                  [
+                    h.Id(fieldIds.instructions),
+                    h.Class(className(styles.srOnly)),
+                  ],
                   [
                     'Use Arrow Up or Arrow Down to move this item one position. Press Space or Enter to pick it up for extended keyboard reordering.',
                   ],
@@ -878,9 +910,9 @@ export const listInput = <T, Msg>(
         width: column.width,
       })),
       renderInput: context =>
-        props.columns.find(column => column.key === context.columnKey)
-          ?.renderInput(context as ListInputRenderContext<T, Msg>) ??
-        h.empty,
+        props.columns
+          .find(column => column.key === context.columnKey)
+          ?.renderInput(context as ListInputRenderContext<T, Msg>) ?? h.empty,
       toParentMessage: props.toParentMessage,
       getItemKey: props.getItemKey as (item: unknown) => string | number,
       createItem: props.createItem as () => unknown,

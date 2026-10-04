@@ -16,7 +16,13 @@ import type {
   ResponsiveSpaceToken,
 } from './types'
 
-export type BoxSurface = 'none' | 'page' | 'section' | 'card' | 'muted' | 'canvas'
+export type BoxSurface =
+  | 'none'
+  | 'page'
+  | 'section'
+  | 'card'
+  | 'muted'
+  | 'canvas'
 export type BoxRadius = 'none' | 'sm' | 'md' | 'lg' | 'full'
 
 export type BoxProps = Readonly<{
@@ -25,7 +31,14 @@ export type BoxProps = Readonly<{
   contain?: 'none' | 'paint'
   contentAlignment?: 'normal' | 'center'
   data?: PrimitiveData
-  minHeight?: 'viewport' | 'none' | 'full' | 'createPage' | 'blockPreview' | 'blocksHero' | 'skeleton'
+  minHeight?:
+    | 'viewport'
+    | 'none'
+    | 'full'
+    | 'createPage'
+    | 'blockPreview'
+    | 'blocksHero'
+    | 'skeleton'
   minWidth?: 'none' | 'maxContent'
   overflowX?: 'visible' | 'hidden' | 'auto'
   overflowY?: 'visible' | 'hidden' | 'auto'
@@ -36,18 +49,34 @@ export type BoxProps = Readonly<{
   slot?: string
   surface?: BoxSurface
   visibility?: 'always' | 'desktop' | 'mobile'
-  width?: 'auto' | 'full' | 'fit' | 'content' | 'readable' | 'form' | 'login' | 'createBoard'
+  width?:
+    | 'auto'
+    | 'full'
+    | 'fit'
+    | 'content'
+    | 'readable'
+    | 'form'
+    | 'login'
+    | 'createBoard'
 }>
 
 const styles = stylex.create({
   containNone: { contain: 'none' },
   containPaint: { contain: 'paint' },
-  contentCenter: { alignItems: 'center', display: 'grid', justifyItems: 'center' },
+  contentCenter: {
+    alignItems: 'center',
+    display: 'grid',
+    justifyItems: 'center',
+  },
   contentNormal: { display: 'block' },
   minHeightViewport: { minHeight: '100svh' },
   minHeightCreatePage: { minHeight: 'calc(100vh - 3.5rem)' },
-  minHeightBlockPreview: { minHeight: { default: '36rem', '@media (min-width: 768px)': '50rem' } },
-  minHeightBlocksHero: { minHeight: { default: '22rem', '@media (min-width: 768px)': '25rem' } },
+  minHeightBlockPreview: {
+    minHeight: { default: '36rem', '@media (min-width: 768px)': '50rem' },
+  },
+  minHeightBlocksHero: {
+    minHeight: { default: '22rem', '@media (min-width: 768px)': '25rem' },
+  },
   minHeightFull: { minHeight: '100%' },
   minHeightNone: { minHeight: 0 },
   minHeightSkeleton: { minHeight: '28rem' },
@@ -81,14 +110,27 @@ const styles = stylex.create({
     boxShadow: tokens.shadowCard,
     color: tokens.cardForeground,
   },
-  surfaceCanvas: { backgroundColor: compositionTheme.canvas, color: tokens.foreground },
-  surfaceMuted: { backgroundColor: foundationTokens.muted, color: tokens.foreground },
+  surfaceCanvas: {
+    backgroundColor: compositionTheme.canvas,
+    color: tokens.foreground,
+  },
+  surfaceMuted: {
+    backgroundColor: foundationTokens.muted,
+    color: tokens.foreground,
+  },
   surfaceNone: { backgroundColor: tokens.transparent },
   surfacePage: { backgroundColor: tokens.background, color: tokens.foreground },
-  surfaceSection: { backgroundColor: tokens.secondary, color: tokens.secondaryForeground },
+  surfaceSection: {
+    backgroundColor: tokens.secondary,
+    color: tokens.secondaryForeground,
+  },
   visibilityAlways: { display: 'block' },
-  visibilityDesktop: { display: { default: 'none', '@media (min-width: 768px)': 'block' } },
-  visibilityMobile: { display: { default: 'block', '@media (min-width: 768px)': 'none' } },
+  visibilityDesktop: {
+    display: { default: 'none', '@media (min-width: 768px)': 'block' },
+  },
+  visibilityMobile: {
+    display: { default: 'block', '@media (min-width: 768px)': 'none' },
+  },
   widthAuto: { width: 'auto' },
   widthContent: { marginInline: 'auto', maxWidth: '90rem', width: '100%' },
   widthCreateBoard: {
@@ -98,17 +140,23 @@ const styles = stylex.create({
   widthFit: { width: 'fit-content' },
   widthForm: { maxWidth: semanticSystemTheme.contentForm, width: '100%' },
   widthLogin: { marginInline: 'auto', maxWidth: '56rem', width: '100%' },
-  widthReadable: { marginInline: 'auto', maxWidth: semanticSystemTheme.contentReadable, width: '100%' },
+  widthReadable: {
+    marginInline: 'auto',
+    maxWidth: semanticSystemTheme.contentReadable,
+    width: '100%',
+  },
   widthFull: { width: '100%' },
 })
 
 const pick = <T extends PropertyKey>(
   value: T | undefined,
   map: Readonly<Record<T, StaticStyles>>,
-): ReadonlyArray<StaticStyles> =>
-  value === undefined ? [] : [map[value]]
+): ReadonlyArray<StaticStyles> => (value === undefined ? [] : [map[value]])
 
-export const box = <Message>(props: BoxProps, h: HtmlBuilder<Message>): Html => {
+export const box = <Message>(
+  props: BoxProps,
+  h: HtmlBuilder<Message>,
+): Html => {
   const style = className(
     ...pick(props.surface, {
       card: styles.surfaceCard,
@@ -188,4 +236,3 @@ export const box = <Message>(props: BoxProps, h: HtmlBuilder<Message>): Html => 
     h,
   )
 }
-

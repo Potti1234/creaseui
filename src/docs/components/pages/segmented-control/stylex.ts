@@ -1,25 +1,25 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   segmentedControlFixtures,
   type SCOption,
-} from '@/docs/components/pages/segmented-control/shared';
-import * as Icon from '@/lib/icon';
-import * as SegmentedControl from '@/stylex/segmented-control';
-import { className } from '@/stylex/style';
+} from '@/docs/components/pages/segmented-control/shared'
+import * as Icon from '@/lib/icon'
+import * as SegmentedControl from '@/stylex/segmented-control'
+import { className } from '@/stylex/style'
 
 const styles = stylex.create({
   frame: { width: '400px' },
-  iconFill: { height: '100%', width: '100%', },
-});
+  iconFill: { height: '100%', width: '100%' },
+})
 
-const Bundle = SegmentedControl.create<string>();
+const Bundle = SegmentedControl.create<string>()
 
 interface PreviewShape {
-  readonly control: SegmentedControl.Model;
-  readonly value: string;
+  readonly control: SegmentedControl.Model
+  readonly value: string
 }
 
 const optionConfig = <Msg>(
@@ -28,19 +28,24 @@ const optionConfig = <Msg>(
 ): SegmentedControl.SegmentedControlItem<string> => ({
   value: option.value,
   label: option.label,
-  ...(option.icon !== undefined ? { icon: Icon.icon(option.icon, { class: className(styles.iconFill) }, h) } : {}),
+  ...(option.icon !== undefined
+    ? { icon: Icon.icon(option.icon, { class: className(styles.iconFill) }, h) }
+    : {}),
   ...(option.isLabelHidden === true ? { isLabelHidden: true } : {}),
   ...(option.isDisabled === true ? { isDisabled: true } : {}),
-});
+})
 
-export const segmentedControlStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const segmentedControlStyleXPreview: StyleXExamplePreviewProvider = <
+  Msg,
+>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ) => {
-  const preview = model as PreviewShape;
-  const fixture = segmentedControlFixtures[exampleIndex] ?? segmentedControlFixtures[0];
+  const preview = model as PreviewShape
+  const fixture =
+    segmentedControlFixtures[exampleIndex] ?? segmentedControlFixtures[0]
   const control: Html = Bundle.segmentedControl(
     {
       model: preview.control,
@@ -58,8 +63,8 @@ export const segmentedControlStyleXPreview: StyleXExamplePreviewProvider = <Msg>
       ...(fixture.group.layout === 'fill' ? { layout: 'fill' as const } : {}),
     },
     h,
-  );
+  )
   return fixture.width === undefined
     ? control
-    : h.div([h.Class(className(styles.frame))], [control]);
-};
+    : h.div([h.Class(className(styles.frame))], [control])
+}

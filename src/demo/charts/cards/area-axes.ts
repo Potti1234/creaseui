@@ -1,8 +1,8 @@
-import type { EChartsOption } from 'echarts/types/dist/shared';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { EChartsOption } from 'echarts/types/dist/shared'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Chart from '@/lib/echarts';
-import * as Icon from '@/lib/icon';
+import * as Chart from '@/lib/echarts'
+import * as Icon from '@/lib/icon'
 import {
   card,
   cardContent,
@@ -10,19 +10,19 @@ import {
   cardFooter,
   cardHeader,
   cardTitle,
-} from '@/ui/card';
+} from '@/ui/card'
 
-const HOST_ID = 'chart-area-axes';
+const HOST_ID = 'chart-area-axes'
 
-const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June'];
-const DESKTOP = [186, 305, 237, 73, 209, 214];
-const MOBILE = [80, 200, 120, 190, 130, 140];
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June']
+const DESKTOP = [186, 305, 237, 73, 209, 214]
+const MOBILE = [80, 200, 120, 190, 130, 140]
 
 Chart.registerChart(HOST_ID, (theme): EChartsOption => ({
   grid: Chart.compactGrid({ left: 0 }),
   xAxis: Chart.categoryAxis(
     theme,
-    MONTHS.map((month) => month.slice(0, 3)),
+    MONTHS.map(month => month.slice(0, 3)),
   ),
   yAxis: {
     ...Chart.valueAxis(theme, { showLabels: true }),
@@ -53,7 +53,7 @@ Chart.registerChart(HOST_ID, (theme): EChartsOption => ({
       data: [...DESKTOP],
     },
   ],
-}));
+}))
 
 export const view = <Msg>(
   toMessage: (message: Chart.ChartMessage) => Msg,
@@ -135,5 +135,5 @@ export const view = <Msg>(
       ],
     },
     h,
-  );
-};
+  )
+}

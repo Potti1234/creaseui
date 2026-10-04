@@ -1,8 +1,8 @@
-import type { EChartsOption } from 'echarts/types/dist/shared';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { EChartsOption } from 'echarts/types/dist/shared'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Chart from '@/lib/echarts';
-import * as Icon from '@/lib/icon';
+import * as Chart from '@/lib/echarts'
+import * as Icon from '@/lib/icon'
 import {
   card,
   cardContent,
@@ -10,9 +10,9 @@ import {
   cardFooter,
   cardHeader,
   cardTitle,
-} from '@/ui/card';
+} from '@/ui/card'
 
-const HOST_ID = 'chart-radial-grid';
+const HOST_ID = 'chart-radial-grid'
 
 Chart.registerChart(HOST_ID, (theme): EChartsOption => {
   const data = [
@@ -21,7 +21,7 @@ Chart.registerChart(HOST_ID, (theme): EChartsOption => {
     { name: 'Firefox', value: 187, itemStyle: { color: theme.chart3 } },
     { name: 'Edge', value: 173, itemStyle: { color: theme.chart4 } },
     { name: 'Other', value: 90, itemStyle: { color: theme.chart5 } },
-  ];
+  ]
 
   return {
     polar: { radius: ['25%', '84%'] },
@@ -34,7 +34,7 @@ Chart.registerChart(HOST_ID, (theme): EChartsOption => {
     },
     radiusAxis: {
       type: 'category',
-      data: data.map((item) => item.name),
+      data: data.map(item => item.name),
       axisLine: { show: false },
       axisTick: { show: false },
       axisLabel: { show: false },
@@ -54,8 +54,8 @@ Chart.registerChart(HOST_ID, (theme): EChartsOption => {
         data,
       },
     ],
-  };
-});
+  }
+})
 
 export const view = <Msg>(
   toMessage: (message: Chart.ChartMessage) => Msg,
@@ -114,5 +114,5 @@ export const view = <Msg>(
       ],
     },
     h,
-  );
-};
+  )
+}

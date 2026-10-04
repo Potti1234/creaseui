@@ -1,61 +1,62 @@
-import fs from 'node:fs';
-import path from 'node:path';
+import fs from 'node:fs'
+import path from 'node:path'
 
-import ts from 'typescript';
+import ts from 'typescript'
 
-const root = process.cwd();
-const write = process.argv.includes('--write');
+const root = process.cwd()
+const write = process.argv.includes('--write')
 const registry = JSON.parse(
   fs.readFileSync(path.join(root, 'src/ui/registry.json'), 'utf8'),
-);
-const authoredPagesDirectory = path.join(root, 'src/docs/components/pages');
+)
+const authoredPagesDirectory = path.join(root, 'src/docs/components/pages')
 
-const normalize = (value) => value.replace(/\s+/g, ' ').trim();
+const normalize = value => value.replace(/\s+/g, ' ').trim()
 const shorten = (value, limit = 260) =>
-  value.length <= limit ? value : `${value.slice(0, limit - 1)}…`;
-const hasExport = (node) =>
-  node.modifiers?.some((modifier) => modifier.kind === ts.SyntaxKind.ExportKeyword) ??
-  false;
+  value.length <= limit ? value : `${value.slice(0, limit - 1)}…`
+const hasExport = node =>
+  node.modifiers?.some(
+    modifier => modifier.kind === ts.SyntaxKind.ExportKeyword,
+  ) ?? false
 
 const parameters = (node, sourceFile) =>
   node.parameters
-    .map((parameter) => normalize(parameter.getText(sourceFile)))
-    .join(', ');
+    .map(parameter => normalize(parameter.getText(sourceFile)))
+    .join(', ')
 const typeParameters = (node, sourceFile) =>
   node.typeParameters === undefined
     ? ''
-    : `<${node.typeParameters.map((item) => normalize(item.getText(sourceFile))).join(', ')}>`;
+    : `<${node.typeParameters.map(item => normalize(item.getText(sourceFile))).join(', ')}>`
 
-const apiFor = (file) => {
-  const source = fs.readFileSync(file, 'utf8');
+const apiFor = file => {
+  const source = fs.readFileSync(file, 'utf8')
   const sourceFile = ts.createSourceFile(
     file,
     source,
     ts.ScriptTarget.Latest,
     true,
     ts.ScriptKind.TS,
-  );
-  const api = [];
+  )
+  const api = []
   for (const statement of sourceFile.statements) {
-    if (!hasExport(statement) && !ts.isExportDeclaration(statement)) continue;
+    if (!hasExport(statement) && !ts.isExportDeclaration(statement)) continue
     if (ts.isExportDeclaration(statement)) {
-      const moduleName = statement.moduleSpecifier?.getText(sourceFile) ?? '';
+      const moduleName = statement.moduleSpecifier?.getText(sourceFile) ?? ''
       if (statement.exportClause === undefined) {
         api.push({
           name: '*',
           kind: 're-export',
           signature: `export * from ${moduleName}`,
-        });
+        })
       } else if (ts.isNamedExports(statement.exportClause)) {
         for (const element of statement.exportClause.elements) {
           api.push({
             name: element.name.text,
             kind: 're-export',
             signature: `export { ${normalize(element.getText(sourceFile))} } from ${moduleName}`,
-          });
+          })
         }
       }
-      continue;
+      continue
     }
     if (ts.isTypeAliasDeclaration(statement)) {
       api.push({
@@ -64,16 +65,16 @@ const apiFor = (file) => {
         signature: shorten(
           `${statement.name.text}${typeParameters(statement, sourceFile)} = ${normalize(statement.type.getText(sourceFile))}`,
         ),
-      });
-      continue;
+      })
+      continue
     }
     if (ts.isInterfaceDeclaration(statement)) {
       api.push({
         name: statement.name.text,
         kind: 'interface',
         signature: shorten(normalize(statement.getText(sourceFile))),
-      });
-      continue;
+      })
+      continue
     }
     if (ts.isFunctionDeclaration(statement) && statement.name !== undefined) {
       api.push({
@@ -82,16 +83,17 @@ const apiFor = (file) => {
         signature: shorten(
           `${statement.name.text}${typeParameters(statement, sourceFile)}(${parameters(statement, sourceFile)}): ${normalize(statement.type?.getText(sourceFile) ?? 'inferred')}`,
         ),
-      });
-      continue;
+      })
+      continue
     }
     if (ts.isVariableStatement(statement)) {
       for (const declaration of statement.declarationList.declarations) {
-        if (!ts.isIdentifier(declaration.name)) continue;
-        const initializer = declaration.initializer;
+        if (!ts.isIdentifier(declaration.name)) continue
+        const initializer = declaration.initializer
         const callable =
           initializer !== undefined &&
-          (ts.isArrowFunction(initializer) || ts.isFunctionExpression(initializer));
+          (ts.isArrowFunction(initializer) ||
+            ts.isFunctionExpression(initializer))
         api.push({
           name: declaration.name.text,
           kind: callable ? 'function' : 'value',
@@ -100,51 +102,72 @@ const apiFor = (file) => {
               ? `${declaration.name.text}${typeParameters(initializer, sourceFile)}(${parameters(initializer, sourceFile)}): ${normalize(initializer.type?.getText(sourceFile) ?? 'inferred')}`
               : `${declaration.name.text}: ${normalize(declaration.type?.getText(sourceFile) ?? 'value')}`,
           ),
-        });
+        })
       }
     }
   }
-  return api;
-};
+  return api
+}
 
 const titleProperties = (file, preferredSuffix) => {
-  if (!fs.existsSync(file)) return [];
-  const source = fs.readFileSync(file, 'utf8');
-  const sourceFile = ts.createSourceFile(file, source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
-  const titles = [];
-  const collect = (node) => {
+  if (!fs.existsSync(file)) return []
+  const source = fs.readFileSync(file, 'utf8')
+  const sourceFile = ts.createSourceFile(
+    file,
+    source,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TS,
+  )
+  const titles = []
+  const collect = node => {
     if (
       ts.isPropertyAssignment(node) &&
-      ((ts.isIdentifier(node.name) && node.name.text === 'title') || (ts.isStringLiteral(node.name) && node.name.text === 'title')) &&
+      ((ts.isIdentifier(node.name) && node.name.text === 'title') ||
+        (ts.isStringLiteral(node.name) && node.name.text === 'title')) &&
       ts.isStringLiteral(node.initializer)
-    ) titles.push(node.initializer.text);
-    ts.forEachChild(node, collect);
-  };
+    )
+      titles.push(node.initializer.text)
+    ts.forEachChild(node, collect)
+  }
   for (const statement of sourceFile.statements) {
-    if (!ts.isVariableStatement(statement)) continue;
+    if (!ts.isVariableStatement(statement)) continue
     for (const declaration of statement.declarationList.declarations) {
-      if (ts.isIdentifier(declaration.name) && declaration.name.text.endsWith(preferredSuffix) && declaration.initializer !== undefined) collect(declaration.initializer);
+      if (
+        ts.isIdentifier(declaration.name) &&
+        declaration.name.text.endsWith(preferredSuffix) &&
+        declaration.initializer !== undefined
+      )
+        collect(declaration.initializer)
     }
   }
-  return [...new Set(titles)];
-};
+  return [...new Set(titles)]
+}
 
 const pageEntryFiles = fs
   .readdirSync(authoredPagesDirectory, { recursive: true, withFileTypes: true })
-  .filter((entry) => entry.isFile() && entry.name === 'index.ts')
-  .map((entry) => path.join(entry.parentPath, entry.name));
+  .filter(entry => entry.isFile() && entry.name === 'index.ts')
+  .map(entry => path.join(entry.parentPath, entry.name))
 
-const authoredExamples = new Map(pageEntryFiles.flatMap((file) => {
-  const source = fs.readFileSync(file, 'utf8');
-  const slug = source.match(/slug: '([^']+)'/)?.[1];
-  if (slug === undefined) return [];
-  const sharedFile = path.join(path.dirname(file), 'shared.ts');
-  const fixtures = titleProperties(sharedFile, 'Fixtures');
-  const examples = fixtures.length > 0 ? fixtures : titleProperties(sharedFile, 'Examples');
-  return [[slug, examples.length > 0 ? examples : ['Timed notification', 'Sticky error']]];
-}));
-const components = registry.items.map((item) => {
-  const file = path.join(root, 'src/ui', item.files[0].path);
+const authoredExamples = new Map(
+  pageEntryFiles.flatMap(file => {
+    const source = fs.readFileSync(file, 'utf8')
+    const slug = source.match(/slug: '([^']+)'/)?.[1]
+    if (slug === undefined) return []
+    const sharedFile = path.join(path.dirname(file), 'shared.ts')
+    const fixtures = titleProperties(sharedFile, 'Fixtures')
+    const examples =
+      fixtures.length > 0 ? fixtures : titleProperties(sharedFile, 'Examples')
+    return [
+      [
+        slug,
+        examples.length > 0 ? examples : ['Timed notification', 'Sticky error'],
+      ],
+    ]
+  }),
+)
+const components = registry.items.map(item => {
+  const file = path.join(root, 'src/ui', item.files[0].path)
   return {
     slug: item.name,
     title: item.title,
@@ -152,50 +175,58 @@ const components = registry.items.map((item) => {
     docs: `/docs/components/${item.name}`,
     source: `src/ui/${item.files[0].path}`,
     install: `npx shadcn@latest add Potti1234/creaseui/${item.name}`,
-    dependencies: [...(item.dependencies ?? []), ...(item.registryDependencies ?? [])],
+    dependencies: [
+      ...(item.dependencies ?? []),
+      ...(item.registryDependencies ?? []),
+    ],
     examples: authoredExamples.get(item.name) ?? [],
     api: apiFor(file),
-  };
-});
+  }
+})
 
 const metadata = {
   $schema: './docs-index.schema.json',
   generatedFrom: ['src/ui/registry.json', 'src/ui/*.ts'],
   componentCount: components.length,
   components,
-};
+}
 
 const generatedApi = `// Generated by npm run docs:metadata:generate. Do not edit manually.\nexport type ApiEntry = Readonly<{ name: string; kind: string; signature: string }>;\nexport const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = ${JSON.stringify(
-  Object.fromEntries(components.map((component) => [component.slug, component.api])),
+  Object.fromEntries(
+    components.map(component => [component.slug, component.api]),
+  ),
   null,
   2,
-)};\n`;
+)};\n`
 
 const llms = `# crease/ui\n\n> The shadcn/ui design language rebuilt as source-owned Foldkit components. No React or JSX.\n\n## Primary documentation\n\n- Architecture: /docs/architecture.md\n- Registry installation: /docs/registry.md\n- Create presets: /docs/create-presets.md\n- Component parity: /docs/component-parity.md\n- Machine-readable component index: /docs-index.json\n- Complete API inventory: /llms-full.txt\n\n## Components\n\n${components
   .map(
-    (component) =>
+    component =>
       `- ${component.title}: ${component.docs} — install with \`${component.install}\``,
   )
-  .join('\n')}\n`;
+  .join('\n')}\n`
 
 const llmsFull = `${llms}\n## API inventory\n\n${components
   .map(
-    (component) =>
+    component =>
       `### ${component.title}\n\n${component.description}\n\nSource: \`${component.source}\`\n\nExamples: ${component.examples.join(', ')}\n\n${component.api
-        .map((entry) => `- \`${entry.signature}\` (${entry.kind})`)
+        .map(entry => `- \`${entry.signature}\` (${entry.kind})`)
         .join('\n')}`,
   )
-  .join('\n\n')}\n`;
+  .join('\n\n')}\n`
 
 const apiMarkdown = `# Component API inventory\n\nThis file is generated from exported declarations in \`src/ui/*.ts\`. The web documentation presents the same data beside runnable examples.\n\n${components
   .map(
-    (component) =>
-      `## ${component.title}\n\nSource: [\`${component.source}\`](../${component.source})\n\n| Export | Kind | Signature |\n| --- | --- | --- |\n${component.api.map((entry) => `| \`${entry.name}\` | ${entry.kind} | \`${entry.signature.replaceAll('|', '\\|')}\` |`).join('\n')}`,
+    component =>
+      `## ${component.title}\n\nSource: [\`${component.source}\`](../${component.source})\n\n| Export | Kind | Signature |\n| --- | --- | --- |\n${component.api.map(entry => `| \`${entry.name}\` | ${entry.kind} | \`${entry.signature.replaceAll('|', '\\|')}\` |`).join('\n')}`,
   )
-  .join('\n\n')}\n`;
+  .join('\n\n')}\n`
 
 const desired = new Map([
-  [path.join(root, 'public/docs-index.json'), `${JSON.stringify(metadata, null, 2)}\n`],
+  [
+    path.join(root, 'public/docs-index.json'),
+    `${JSON.stringify(metadata, null, 2)}\n`,
+  ],
   [
     path.join(root, 'public/llms.txt'),
     llms.replace(
@@ -206,24 +237,28 @@ const desired = new Map([
   [path.join(root, 'public/llms-full.txt'), llmsFull],
   [path.join(root, 'src/docs/generated-component-api.ts'), generatedApi],
   [path.join(root, 'docs/api-reference.md'), apiMarkdown],
-]);
+])
 
-const stale = [];
+const stale = []
 for (const [file, content] of desired) {
-  const current = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : null;
-  if (current === content) continue;
+  const current = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : null
+  if (current === content) continue
   if (write) {
-    fs.mkdirSync(path.dirname(file), { recursive: true });
-    fs.writeFileSync(file, content);
+    fs.mkdirSync(path.dirname(file), { recursive: true })
+    fs.writeFileSync(file, content)
   } else {
-    stale.push(path.relative(root, file));
+    stale.push(path.relative(root, file))
   }
 }
 
 if (stale.length > 0) {
-  console.error(`Documentation metadata is stale:\n${stale.map((file) => `- ${file}`).join('\n')}`);
-  console.error('Run npm run docs:metadata:generate.');
-  process.exitCode = 1;
+  console.error(
+    `Documentation metadata is stale:\n${stale.map(file => `- ${file}`).join('\n')}`,
+  )
+  console.error('Run npm run docs:metadata:generate.')
+  process.exitCode = 1
 } else {
-  console.log(`${write ? 'Generated' : 'Verified'} API and discovery metadata for ${components.length} components.`);
+  console.log(
+    `${write ? 'Generated' : 'Verified'} API and discovery metadata for ${components.length} components.`,
+  )
 }

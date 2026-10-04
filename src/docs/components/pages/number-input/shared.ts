@@ -1,27 +1,27 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type NumberInputFixtureEntry = Readonly<{
-  id: string;
-  label: string;
-  initialValue?: number;
-  placeholder?: string;
-  units?: string;
-  min?: number;
-  max?: number;
-  description?: string;
-  status?: Readonly<{ type: 'error' | 'warning' | 'success'; message: string }>;
-  hasClear?: boolean;
-  hasNumberSteppers?: boolean;
-  formatValue?: 'items';
-}>;
+  id: string
+  label: string
+  initialValue?: number
+  placeholder?: string
+  units?: string
+  min?: number
+  max?: number
+  description?: string
+  status?: Readonly<{ type: 'error' | 'warning' | 'success'; message: string }>
+  hasClear?: boolean
+  hasNumberSteppers?: boolean
+  formatValue?: 'items'
+}>
 
 export type NumberInputFixture = Readonly<{
-  title: string;
-  description: string;
-  width: number;
-  entries: ReadonlyArray<NumberInputFixtureEntry>;
-}>;
+  title: string
+  description: string
+  width: number
+  entries: ReadonlyArray<NumberInputFixtureEntry>
+}>
 
 /* Example set ported from Meta Astryx
    packages/cli/assets/templates/blocks/components/NumberInput/*.tsx —
@@ -46,7 +46,8 @@ export const numberInputFixtures: Readonly<
   },
   {
     title: 'NumberInput — Clearable',
-    description: 'Number input with a clear button, unit suffix, and min/max constraint',
+    description:
+      'Number input with a clear button, unit suffix, and min/max constraint',
     width: 300,
     entries: [
       {
@@ -62,7 +63,8 @@ export const numberInputFixtures: Readonly<
   },
   {
     title: 'NumberInput — Range Constrained',
-    description: 'Number input with min/max boundaries and a helper description',
+    description:
+      'Number input with min/max boundaries and a helper description',
     width: 300,
     entries: [
       {
@@ -78,7 +80,8 @@ export const numberInputFixtures: Readonly<
   },
   {
     title: 'NumberInput — Status Variants',
-    description: 'Number inputs showing error, warning, and success validation states',
+    description:
+      'Number inputs showing error, warning, and success validation states',
     width: 300,
     entries: [
       {
@@ -118,10 +121,10 @@ export const numberInputFixtures: Readonly<
       },
     ],
   },
-];
+]
 
 const ui = (renderer: 'tailwind' | 'stylex'): string =>
-  renderer === 'stylex' ? 'stylex' : 'ui';
+  renderer === 'stylex' ? 'stylex' : 'ui'
 
 const numberInputCallSource = (
   entry: NumberInputFixtureEntry,
@@ -135,14 +138,14 @@ const numberInputCallSource = (
           value: model.inputs[${slot}]!.value.pipe(Option.getOrNull),
         },
         h,
-      )`;
+      )`
 
-const viewSource = (
-  fixture: NumberInputFixture,
-): string => {
+const viewSource = (fixture: NumberInputFixture): string => {
   const entries = fixture.entries
-    .map((entry, entryIndex) => numberInputCallSource(entry, String(entryIndex)))
-    .join(',\n      ');
+    .map((entry, entryIndex) =>
+      numberInputCallSource(entry, String(entryIndex)),
+    )
+    .join(',\n      ')
   return `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: '${fixture.title}',
   body: h.main([h.Class('mx-auto flex min-h-screen w-full max-w-md items-center p-8')], [
@@ -153,11 +156,11 @@ const viewSource = (
       ],
     ),
   ]),
-})`;
-};
+})`
+}
 
 const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
-  const fixture = numberInputFixtures[index] ?? numberInputFixtures[0];
+  const fixture = numberInputFixtures[index] ?? numberInputFixtures[0]
   return foldkitApplication({
     title: `NumberInput — ${fixture.title}`,
     imports: `import { Option, Schema as S } from 'effect'
@@ -204,8 +207,8 @@ export type Message = typeof Message.Type`,
   }
 }`,
     view: viewSource(fixture),
-  });
-};
+  })
+}
 
 export const numberInputExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -214,4 +217,4 @@ export const numberInputExamples = (
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
-  }));
+  }))

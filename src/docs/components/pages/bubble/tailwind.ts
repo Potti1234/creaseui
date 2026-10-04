@@ -1,9 +1,9 @@
-import { Schema as S } from 'effect';
-import { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import { Schema as S } from 'effect'
+import { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-import { definePreviewProgram } from '@/docs/components/pages/authored-page';
+import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
   bubbleFixtures,
   COLLAPSIBLE_TEXT,
@@ -11,12 +11,12 @@ import {
   type BubbleFixture,
   type BubbleReactionsSpec,
   type BubbleSpec,
-} from '@/docs/components/pages/bubble/shared';
-import * as Bubble from '@/ui/bubble';
-import * as Button from '@/ui/button';
-import * as Icon from '@/lib/icon';
-import * as Popover from '@/ui/popover';
-import * as Tooltip from '@/ui/tooltip';
+} from '@/docs/components/pages/bubble/shared'
+import * as Bubble from '@/ui/bubble'
+import * as Button from '@/ui/button'
+import * as Icon from '@/lib/icon'
+import * as Popover from '@/ui/popover'
+import * as Tooltip from '@/ui/tooltip'
 
 const PreviewMessage = defineMessageUnion({
   ClickedOption: { label: S.String },
@@ -24,8 +24,8 @@ const PreviewMessage = defineMessageUnion({
   ToggledCollapsible: { isOpen: S.Boolean },
   GotTooltipMessage: { message: Tooltip.Message },
   GotPopoverMessage: { message: Popover.Message },
-});
-type PreviewMessage = typeof PreviewMessage.Type;
+})
+type PreviewMessage = typeof PreviewMessage.Type
 
 const PreviewModel = S.Struct({
   _docsPage: S.Literal('bubble'),
@@ -34,8 +34,8 @@ const PreviewModel = S.Struct({
   open: S.Boolean,
   tooltip: Tooltip.Model,
   popover: Popover.Model,
-});
-type PreviewModel = typeof PreviewModel.Type;
+})
+type PreviewModel = typeof PreviewModel.Type
 
 const reactionsView = (
   model: PreviewModel,
@@ -56,7 +56,7 @@ const reactionsView = (
           children: reactions.items.map(item => h.span([], [item])),
         },
         h,
-      );
+      )
     case 'action':
       return Bubble.bubbleReactions(
         {
@@ -75,7 +75,7 @@ const reactionsView = (
           ],
         },
         h,
-      );
+      )
     case 'tooltip':
       return Bubble.bubbleReactions(
         {
@@ -97,7 +97,7 @@ const reactionsView = (
           ],
         },
         h,
-      );
+      )
     case 'popover':
       return Bubble.bubbleReactions(
         {
@@ -114,25 +114,25 @@ const reactionsView = (
                 ),
                 triggerClass:
                   'inline-flex size-6 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground aria-expanded:text-destructive',
-                content: h.div([h.Class('grid gap-1')], [
-                  h.p(
-                    [h.Class('text-sm font-medium')],
-                    [reactions.title],
-                  ),
-                  h.p(
-                    [h.Class('text-sm text-muted-foreground')],
-                    [reactions.description],
-                  ),
-                ]),
+                content: h.div(
+                  [h.Class('grid gap-1')],
+                  [
+                    h.p([h.Class('text-sm font-medium')], [reactions.title]),
+                    h.p(
+                      [h.Class('text-sm text-muted-foreground')],
+                      [reactions.description],
+                    ),
+                  ],
+                ),
               },
               h,
             ),
           ],
         },
         h,
-      );
+      )
   }
-};
+}
 
 const contentView = (
   model: PreviewModel,
@@ -189,7 +189,7 @@ const contentView = (
       ],
     },
     h,
-  );
+  )
 
 const bubbleView = (
   model: PreviewModel,
@@ -210,7 +210,7 @@ const bubbleView = (
       ],
     },
     h,
-  );
+  )
 
 const clusterView = (
   model: PreviewModel,
@@ -220,17 +220,18 @@ const clusterView = (
   cluster.grouped === true
     ? Bubble.bubbleGroup(
         {
-          children: cluster.bubbles.map(bubble =>
-            bubbleView(model, bubble, h),
-          ),
+          children: cluster.bubbles.map(bubble => bubbleView(model, bubble, h)),
         },
         h,
       )
-    : (cluster.bubbles[0] === undefined
-        ? h.empty
-        : cluster.bubbles.length === 1
-          ? bubbleView(model, cluster.bubbles[0], h)
-          : h.div([], cluster.bubbles.map(bubble => bubbleView(model, bubble, h))));
+    : cluster.bubbles[0] === undefined
+      ? h.empty
+      : cluster.bubbles.length === 1
+        ? bubbleView(model, cluster.bubbles[0], h)
+        : h.div(
+            [],
+            cluster.bubbles.map(bubble => bubbleView(model, bubble, h)),
+          )
 
 const fixtureView = (
   fixture: BubbleFixture,
@@ -250,7 +251,7 @@ const fixtureView = (
           ]
         : []),
     ],
-  );
+  )
 
 export const bubbleTailwindPreviewProgram = definePreviewProgram<
   PreviewModel,
@@ -269,33 +270,31 @@ export const bubbleTailwindPreviewProgram = definePreviewProgram<
   update: (model, message) => {
     switch (message._tag) {
       case 'ClickedOption':
-        return { model: { ...model, lastClicked: message.label } };
+        return { model: { ...model, lastClicked: message.label } }
       case 'ClickedRunIt':
-        return { model: { ...model, ranIt: true } };
+        return { model: { ...model, ranIt: true } }
       case 'ToggledCollapsible':
-        return { model: { ...model, open: message.isOpen } };
+        return { model: { ...model, open: message.isOpen } }
       case 'GotTooltipMessage': {
-        const result = Tooltip.update(model.tooltip, message.message);
+        const result = Tooltip.update(model.tooltip, message.message)
         return {
           model: { ...model, tooltip: result.model },
-          commands: Command.mapMessages(
-            result.commands,
-            next => PreviewMessage.GotTooltipMessage({ message: next }),
+          commands: Command.mapMessages(result.commands, next =>
+            PreviewMessage.GotTooltipMessage({ message: next }),
           ),
-        };
+        }
       }
       case 'GotPopoverMessage': {
-        const result = Popover.update(model.popover, message.message);
+        const result = Popover.update(model.popover, message.message)
         return {
           model: { ...model, popover: result.model },
-          commands: Command.mapMessages(
-            result.commands ?? [],
-            next => PreviewMessage.GotPopoverMessage({ message: next }),
+          commands: Command.mapMessages(result.commands ?? [], next =>
+            PreviewMessage.GotPopoverMessage({ message: next }),
           ),
-        };
+        }
       }
     }
   },
   view: (index, model, h) =>
     fixtureView(bubbleFixtures[index] ?? bubbleFixtures[0], model, h),
-});
+})

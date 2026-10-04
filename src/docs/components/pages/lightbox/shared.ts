@@ -1,15 +1,15 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
-import type { LightboxMedia } from '@/ui/lightbox';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
+import type { LightboxMedia } from '@/ui/lightbox'
 
-export type LightboxKind = 'showcase' | 'gallery' | 'video' | 'zoom';
+export type LightboxKind = 'showcase' | 'gallery' | 'video' | 'zoom'
 
 export type LightboxFixture = Readonly<{
-  title: string;
-  description?: string;
-  kind: LightboxKind;
-  triggerLabel: string;
-}>;
+  title: string
+  description?: string
+  kind: LightboxKind
+  triggerLabel: string
+}>
 
 /* Example set ported from Meta Astryx
    packages/cli/assets/templates/blocks/components/Lightbox/*.tsx — same
@@ -43,28 +43,27 @@ export const lightboxFixtures: ReadonlyArray<LightboxFixture> = [
     kind: 'zoom',
     triggerLabel: 'Open zoomable image',
   },
-];
+]
 
 export const coastMedia: LightboxMedia = {
   src: 'https://picsum.photos/seed/coastline/1280/720',
   alt: 'Coastal shoreline with ocean waves',
   caption:
     'A scenic coastline with waves rolling onto a sandy beach beneath a clear sky.',
-};
+}
 
 export const zoomMedia: LightboxMedia = {
   src: 'https://picsum.photos/seed/coastline/1280/720',
   alt: 'Coastal shoreline with ocean waves',
-  caption:
-    'A scenic coastline. Double-click to zoom in and drag to pan.',
-};
+  caption: 'A scenic coastline. Double-click to zoom in and drag to pan.',
+}
 
 export const videoMedia: LightboxMedia = {
   src: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4',
   alt: 'Flower blooming in time-lapse',
   type: 'video',
   caption: 'A flower blooming in time-lapse',
-};
+}
 
 export const galleryMedia: ReadonlyArray<LightboxMedia> = [
   {
@@ -89,49 +88,51 @@ export const galleryMedia: ReadonlyArray<LightboxMedia> = [
     caption:
       'A stylized landscape illustration featuring pink clouds reflected over a calm lake at sunset.',
   },
-];
+]
 
-export const mediaFor = (kind: LightboxKind): LightboxMedia | ReadonlyArray<LightboxMedia> => {
+export const mediaFor = (
+  kind: LightboxKind,
+): LightboxMedia | ReadonlyArray<LightboxMedia> => {
   switch (kind) {
     case 'showcase':
-      return coastMedia;
+      return coastMedia
     case 'gallery':
-      return galleryMedia;
+      return galleryMedia
     case 'video':
-      return videoMedia;
+      return videoMedia
     case 'zoom':
-      return zoomMedia;
+      return zoomMedia
   }
-};
+}
 
 export const mediaCountFor = (kind: LightboxKind): number =>
-  kind === 'gallery' ? galleryMedia.length : 1;
+  kind === 'gallery' ? galleryMedia.length : 1
 
-const sq = (value: string): string => value.replaceAll("'", "\\'");
+const sq = (value: string): string => value.replaceAll("'", "\\'")
 
 const emitMedia = (items: ReadonlyArray<LightboxMedia>): string =>
   `[
 ${items
   .map(
     item =>
-      `    { src: '${item.src}', alt: '${sq(item.alt)}',${item.type === undefined ? '' : ` type: '${item.type}',`}${item.caption === undefined ? '' : ` caption: '${sq(item.caption)}'` } },`,
+      `    { src: '${item.src}', alt: '${sq(item.alt)}',${item.type === undefined ? '' : ` type: '${item.type}',`}${item.caption === undefined ? '' : ` caption: '${sq(item.caption)}'`} },`,
   )
   .join('\n')}
-  ]`;
+  ]`
 
 const emitStyles = `const styles = stylex.create({
   thumbGrid: { display: 'grid', gap: '0.5rem', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', width: '8.5rem' },
   thumb: { borderRadius: 'calc(var(--radius) - 2px)', cursor: 'pointer', overflow: 'hidden', padding: 0 },
   thumbImg: { aspectRatio: '1 / 1', display: 'block', height: '100%', objectFit: 'cover', width: '100%' },
   triggerButton: { backgroundClip: 'padding-box' },
-})`;
+})`
 
 const emitView = (fixture: LightboxFixture, isStyleX: boolean): string => {
   const cls = (tailwind: string, stylexRef: string) =>
-    isStyleX ? `className(${stylexRef})` : `'${tailwind}'`;
-  const media = mediaFor(fixture.kind);
-  const mediaItems = Array.isArray(media) ? media : [media];
-  const mediaLiteral = emitMedia(mediaItems);
+    isStyleX ? `className(${stylexRef})` : `'${tailwind}'`
+  const media = mediaFor(fixture.kind)
+  const mediaItems = Array.isArray(media) ? media : [media]
+  const mediaLiteral = emitMedia(mediaItems)
   const trigger =
     fixture.kind === 'gallery'
       ? `h.div([h.Class(${cls('grid w-[136px] grid-cols-2 gap-2', 'styles.thumbGrid')})],
@@ -146,7 +147,7 @@ const emitView = (fixture: LightboxFixture, isStyleX: boolean): string => {
         ]),
       ),
     )`
-      : `Button.button({ variant: 'outline', onClick: ClickedOpenLightbox(), ${isStyleX ? "layoutStyle: styles.triggerButton as ComponentLayoutStyle, " : ''}children: ['${sq(fixture.triggerLabel)}'] }, h)`;
+      : `Button.button({ variant: 'outline', onClick: ClickedOpenLightbox(), ${isStyleX ? 'layoutStyle: styles.triggerButton as ComponentLayoutStyle, ' : ''}children: ['${sq(fixture.triggerLabel)}'] }, h)`
   return `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Lightbox — ${sq(fixture.title)}',
   body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
@@ -157,23 +158,23 @@ const emitView = (fixture: LightboxFixture, isStyleX: boolean): string => {
       media: ${mediaLiteral},${fixture.kind === 'zoom' ? '\n      hasZoom: true,' : ''}${fixture.kind === 'video' ? '\n      hasAutoPlay: true,' : ''}
     }, h),
   ]),
-})`;
-};
+})`
+}
 
 const source = (
   fixture: LightboxFixture,
   _index: number,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '');
-  const isStyleX = renderer === 'stylex';
-  const isGallery = fixture.kind === 'gallery';
+  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
+  const isStyleX = renderer === 'stylex'
+  const isGallery = fixture.kind === 'gallery'
   const imports = `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 ${isStyleX ? "\nimport * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\nimport type { ComponentLayoutStyle } from '@/stylex/contracts'\n" : ''}
 import * as Button from '@/${isStyleX ? 'stylex' : 'ui'}/button'
-import * as Lightbox from '@/${isStyleX ? 'stylex' : 'ui'}/lightbox'${isStyleX ? `\n\n${emitStyles}` : ''}`;
+import * as Lightbox from '@/${isStyleX ? 'stylex' : 'ui'}/lightbox'${isStyleX ? `\n\n${emitStyles}` : ''}`
   return foldkitApplication({
     title: `Lightbox — ${fixture.title}`,
     imports,
@@ -198,22 +199,29 @@ export const update = (
 ): Update.Return<Model, Message> => {
   switch (message._tag) {
     case 'ClickedOpenLightbox${tag}':
-      return mapLightbox(model, Lightbox.open(model.lightbox))${isGallery ? `
+      return mapLightbox(model, Lightbox.open(model.lightbox))${
+        isGallery
+          ? `
     case 'ClickedOpenLightboxAt${tag}':
-      return mapLightbox(model, Lightbox.open(model.lightbox, message.index))` : ''}
+      return mapLightbox(model, Lightbox.open(model.lightbox, message.index))`
+          : ''
+      }
     case 'GotLightboxMessage${tag}':
       return mapLightbox(model, Lightbox.update(model.lightbox, message.message))
   }
 }`,
     view: emitView(fixture, isStyleX),
-  });
-};
+  })
+}
 
 export const lightboxExamples = (
   renderer: 'tailwind' | 'stylex',
-): ReadonlyArray<DocsExample> => lightboxFixtures.map((fixture, index) => ({
-  title: fixture.title,
-  keepIdsCanonical: index === 0,
-  ...(fixture.description === undefined ? {} : { description: fixture.description }),
-  code: source(fixture, index, renderer),
-}));
+): ReadonlyArray<DocsExample> =>
+  lightboxFixtures.map((fixture, index) => ({
+    title: fixture.title,
+    keepIdsCanonical: index === 0,
+    ...(fixture.description === undefined
+      ? {}
+      : { description: fixture.description }),
+    code: source(fixture, index, renderer),
+  }))

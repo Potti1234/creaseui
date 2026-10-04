@@ -72,7 +72,10 @@ export const reflectOptions = (
 
 type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>
 
-const emitChange = (model: Model, values: ReadonlyArray<string>): UpdateReturn => ({
+const emitChange = (
+  model: Model,
+  values: ReadonlyArray<string>,
+): UpdateReturn => ({
   model: { ...model, values: [...values] },
   outMessage: OutMessage.ChangedValues({ values: [...values] }),
 })
@@ -85,7 +88,7 @@ const toggleSelectAll = (
 ): UpdateReturn => {
   const allSelected =
     allValues.length > 0 &&
-    allValues.every((value) => model.values.includes(value))
+    allValues.every(value => model.values.includes(value))
   return emitChange(model, allSelected ? [] : allValues)
 }
 
@@ -98,7 +101,10 @@ const toggleValue = (
     return toggleSelectAll(model, allValues)
   }
   return model.values.includes(value)
-    ? emitChange(model, model.values.filter((v) => v !== value))
+    ? emitChange(
+        model,
+        model.values.filter(v => v !== value),
+      )
     : emitChange(model, [...model.values, value])
 }
 
@@ -107,7 +113,7 @@ const liftListbox = (
   message: ListboxPrimitive.Message,
 ): UpdateReturn => {
   const result = listboxBundle.update(model.listbox, message)
-  const liftedCommands = Command.mapMessages(result.commands ?? [], (m) =>
+  const liftedCommands = Command.mapMessages(result.commands ?? [], m =>
     Message.GotListboxMessage({ message: m }),
   )
   switch (result.outMessage?._tag) {
@@ -140,8 +146,6 @@ export const update = (model: Model, message: Message): UpdateReturn => {
     case 'GotListboxMessage':
       return liftListbox(model, message.message)
     case 'ClickedClearAll':
-      return model.values.length === 0
-        ? { model }
-        : emitChange(model, [])
+      return model.values.length === 0 ? { model } : emitChange(model, [])
   }
 }

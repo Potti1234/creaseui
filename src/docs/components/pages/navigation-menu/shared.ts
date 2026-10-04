@@ -1,19 +1,64 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication, staticComponentApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import {
+  foldkitApplication,
+  staticComponentApplication,
+} from '@/docs/components/pages/authored-page'
 
 export const navigationMenuFixtures = [
-  { title: 'Semantic links', description: 'Plain site navigation needs no Foldkit child model; the active route supplies aria-current.' },
-  { title: 'Popover disclosure', description: 'A rich navigation disclosure uses an explicit Popover child integration rather than hidden component-local state.' },
-  { title: 'Responsive fallback', description: 'A finite responsive layout stacks the list on narrow viewports without moving route data into widget state.' },
-  { title: 'RTL', description: 'A scroll layout contains long navigation sets and preserves RTL reading direction.' },
-] as const;
+  {
+    title: 'Semantic links',
+    description:
+      'Plain site navigation needs no Foldkit child model; the active route supplies aria-current.',
+  },
+  {
+    title: 'Popover disclosure',
+    description:
+      'A rich navigation disclosure uses an explicit Popover child integration rather than hidden component-local state.',
+  },
+  {
+    title: 'Responsive fallback',
+    description:
+      'A finite responsive layout stacks the list on narrow viewports without moving route data into widget state.',
+  },
+  {
+    title: 'RTL',
+    description:
+      'A scroll layout contains long navigation sets and preserves RTL reading direction.',
+  },
+] as const
 
-const staticSource = (renderer: 'tailwind' | 'stylex', exampleIndex: 0 | 2 | 3): string => {
-  const config = exampleIndex === 0
-    ? { name: 'Semantic links', layout: '', direction: '', labels: "['Home', 'Components', 'Docs']", active: ', index) =>', activeProp: ', isActive: index === 0' }
-    : exampleIndex === 2
-      ? { name: 'Responsive fallback', layout: ", layout: 'responsive'", direction: '', labels: "['Home', 'Components', 'Docs']", active: ') =>', activeProp: '' }
-      : { name: 'RTL', layout: ", layout: 'scroll'", direction: ", direction: 'rtl'", labels: "['Home', 'Products', 'Solutions', 'Customers', 'Resources', 'Company', 'Docs']", active: ') =>', activeProp: '' };
+const staticSource = (
+  renderer: 'tailwind' | 'stylex',
+  exampleIndex: 0 | 2 | 3,
+): string => {
+  const config =
+    exampleIndex === 0
+      ? {
+          name: 'Semantic links',
+          layout: '',
+          direction: '',
+          labels: "['Home', 'Components', 'Docs']",
+          active: ', index) =>',
+          activeProp: ', isActive: index === 0',
+        }
+      : exampleIndex === 2
+        ? {
+            name: 'Responsive fallback',
+            layout: ", layout: 'responsive'",
+            direction: '',
+            labels: "['Home', 'Components', 'Docs']",
+            active: ') =>',
+            activeProp: '',
+          }
+        : {
+            name: 'RTL',
+            layout: ", layout: 'scroll'",
+            direction: ", direction: 'rtl'",
+            labels:
+              "['Home', 'Products', 'Solutions', 'Customers', 'Resources', 'Company', 'Docs']",
+            active: ') =>',
+            activeProp: '',
+          }
   return staticComponentApplication({
     componentName: 'NavigationMenu',
     componentSlug: 'navigation-menu',
@@ -26,11 +71,11 @@ const staticSource = (renderer: 'tailwind' | 'stylex', exampleIndex: 0 | 2 | 3):
     ] }, h),
   ) }, h),
 ] }, h)`,
-  });
-};
+  })
+}
 
 const disclosureSource = (renderer: 'tailwind' | 'stylex'): string => {
-  const isStyleX = renderer === 'stylex';
+  const isStyleX = renderer === 'stylex'
   return foldkitApplication({
     title: 'Navigation Menu — Disclosure',
     imports: `import { Schema as S } from 'effect'
@@ -79,12 +124,14 @@ export type Message = typeof Message.Type`,
     ] }, h),
   ]),
 })`,
-  });
-};
+  })
+}
 
-export const navigationMenuExamples = (renderer: 'tailwind' | 'stylex'): ReadonlyArray<DocsExample> => [
+export const navigationMenuExamples = (
+  renderer: 'tailwind' | 'stylex',
+): ReadonlyArray<DocsExample> => [
   { ...navigationMenuFixtures[0], code: staticSource(renderer, 0) },
   { ...navigationMenuFixtures[1], code: disclosureSource(renderer) },
   { ...navigationMenuFixtures[2], code: staticSource(renderer, 2) },
   { ...navigationMenuFixtures[3], code: staticSource(renderer, 3) },
-];
+]

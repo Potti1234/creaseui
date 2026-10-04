@@ -1,4 +1,4 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import {
   card,
@@ -6,7 +6,7 @@ import {
   cardDescription,
   cardHeader,
   cardTitle,
-} from '@/ui/card';
+} from '@/ui/card'
 
 export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
   return card(
@@ -54,7 +54,7 @@ export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 // Stateful: no. Submodels: none. PORT NOTEs: none.

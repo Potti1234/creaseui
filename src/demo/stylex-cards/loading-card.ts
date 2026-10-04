@@ -1,8 +1,8 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 
-import { card, cardContent, cardHeader } from '@/stylex/card';
+import { card, cardContent, cardHeader } from '@/stylex/card'
 import { className } from '@/stylex/style'
 import { tokens } from '../../stylex/tokens.stylex'
 import { interactionTokens } from '../../stylex/interaction-tokens.stylex.const'
@@ -13,10 +13,10 @@ const pulse = stylex.keyframes({
 })
 
 const styles = stylex.create({
-  actions: { gap: '0.5rem', display: 'flex', },
-  body: { gap: '1rem', display: 'flex', flexDirection: 'column', },
+  actions: { gap: '0.5rem', display: 'flex' },
+  body: { gap: '1rem', display: 'flex', flexDirection: 'column' },
   button: { flexGrow: 1, height: '2.25rem' },
-  copy: { gap: '0.5rem', display: 'flex', flexDirection: 'column', },
+  copy: { gap: '0.5rem', display: 'flex', flexDirection: 'column' },
   description: { height: '1rem', width: '12rem' },
   half: { width: '50%' },
   hero: { borderRadius: tokens.radius, height: '8rem', width: '100%' },
@@ -51,24 +51,27 @@ export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
         cardContent(
           {
             children: [
-              h.div([h.Class(className(styles.body))], [
-              placeholder(styles.hero, h),
               h.div(
-                [h.Class(className(styles.copy))],
+                [h.Class(className(styles.body))],
                 [
-                  placeholder(styles.line, h),
-                  placeholder([styles.line, styles.threeQuarters], h),
-                  placeholder([styles.line, styles.half], h),
+                  placeholder(styles.hero, h),
+                  h.div(
+                    [h.Class(className(styles.copy))],
+                    [
+                      placeholder(styles.line, h),
+                      placeholder([styles.line, styles.threeQuarters], h),
+                      placeholder([styles.line, styles.half], h),
+                    ],
+                  ),
+                  h.div(
+                    [h.Class(className(styles.actions))],
+                    [
+                      placeholder(styles.button, h),
+                      placeholder(styles.button, h),
+                    ],
+                  ),
                 ],
               ),
-              h.div(
-                [h.Class(className(styles.actions))],
-                [
-                  placeholder(styles.button, h),
-                  placeholder(styles.button, h),
-                ],
-              ),
-              ]),
             ],
           },
           h,
@@ -76,8 +79,7 @@ export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 // Card summary: stateful? no. Submodels wired: none. PORT NOTEs: none.
-

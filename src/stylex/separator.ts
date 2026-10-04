@@ -16,13 +16,18 @@ export type SeparatorProps = Readonly<{
   layoutStyle?: ComponentLayoutStyle
 }>
 
-export const separator = <Msg>(props: SeparatorProps = {}, h: HtmlBuilder<Msg>): Html => {
+export const separator = <Msg>(
+  props: SeparatorProps = {},
+  h: HtmlBuilder<Msg>,
+): Html => {
   const orientation = props.orientation ?? 'horizontal'
   return h.div(
     [
       h.DataAttribute('slot', 'separator'),
       h.DataAttribute('orientation', orientation),
-      ...(props.decorative ?? true ? [h.Role('none')] : [h.Role('separator'), h.AriaOrientation(orientation)]),
+      ...((props.decorative ?? true)
+        ? [h.Role('none')]
+        : [h.Role('separator'), h.AriaOrientation(orientation)]),
       h.Class(className(styles.base, styles[orientation], props.layoutStyle)),
     ],
     [],

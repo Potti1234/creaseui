@@ -1,20 +1,20 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   sheetFixtures,
   type SheetFixture,
   type SheetInstance,
-} from '@/docs/components/pages/sheet/shared';
-import * as Button from '@/stylex/button';
-import * as Input from '@/stylex/input';
-import * as Label from '@/stylex/label';
-import * as Sheet from '@/stylex/sheet';
-import { className } from '@/stylex/style';
+} from '@/docs/components/pages/sheet/shared'
+import * as Button from '@/stylex/button'
+import * as Input from '@/stylex/input'
+import * as Label from '@/stylex/label'
+import * as Sheet from '@/stylex/sheet'
+import { className } from '@/stylex/style'
 
 const styles = stylex.create({
-  wrap: { gap: '0.5rem', display: 'flex', flexWrap: 'wrap', },
+  wrap: { gap: '0.5rem', display: 'flex', flexWrap: 'wrap' },
   fieldsWrap: {
     gap: '1.5rem',
     paddingInline: '1rem',
@@ -22,16 +22,17 @@ const styles = stylex.create({
     flexGrow: 1,
     gridAutoRows: 'min-content',
   },
-  field: { gap: '0.75rem', display: 'grid', },
-  loremWrap: { paddingInline: '1rem', overflowY: 'auto', },
-  paragraph: { lineHeight: 1.625, marginBottom: '0.5rem', },
+  field: { gap: '0.75rem', display: 'grid' },
+  loremWrap: { paddingInline: '1rem', overflowY: 'auto' },
+  paragraph: { lineHeight: 1.625, marginBottom: '0.5rem' },
   footerSave: {
     borderRadius: '0.375rem',
     paddingBlock: '0.5rem',
     paddingInline: '1rem',
     backgroundColor: 'var(--primary)',
     color: 'var(--primary-foreground)',
-    fontSize: '0.875rem', lineHeight: '1.25rem',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
   },
   footerCancel: {
     borderColor: 'var(--border)',
@@ -40,17 +41,21 @@ const styles = stylex.create({
     borderWidth: '1px',
     paddingBlock: '0.5rem',
     paddingInline: '1rem',
-    fontSize: '0.875rem', lineHeight: '1.25rem',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
   },
-});
+})
 
 interface PreviewShape {
-  readonly sheets: Readonly<Record<string, Sheet.Model>>;
-  readonly values: Readonly<Record<string, string>>;
+  readonly sheets: Readonly<Record<string, Sheet.Model>>
+  readonly values: Readonly<Record<string, string>>
 }
 
-const LOREM: ReadonlyArray<string> = Array.from({ length: 10 }, () =>
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.');
+const LOREM: ReadonlyArray<string> = Array.from(
+  { length: 10 },
+  () =>
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+)
 
 const instanceView = <Msg>(
   instance: SheetInstance,
@@ -58,48 +63,52 @@ const instanceView = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const content: Array<Html> = [];
+  const content: Array<Html> = []
   if (instance.fields !== undefined) {
     content.push(
       h.div(
         [h.Class(className(styles.fieldsWrap))],
         instance.fields.map(field =>
-          h.div([h.Class(className(styles.field))], [
-            Label.label(
-              {
-                for: `sheet-field-${field.id}`,
-                children: [field.label],
-              },
-              h,
-            ),
-            Input.input(
-              {
-                id: `sheet-field-${field.id}`,
-                value: preview.values[field.id] ?? field.value,
-                onInput: value =>
-                  onMessageJson(
-                    JSON.stringify({
-                      _tag: 'ChangedSheetInput',
-                      id: field.id,
-                      value,
-                    }),
-                  ),
-              },
-              h,
-            ),
-          ]),
+          h.div(
+            [h.Class(className(styles.field))],
+            [
+              Label.label(
+                {
+                  for: `sheet-field-${field.id}`,
+                  children: [field.label],
+                },
+                h,
+              ),
+              Input.input(
+                {
+                  id: `sheet-field-${field.id}`,
+                  value: preview.values[field.id] ?? field.value,
+                  onInput: value =>
+                    onMessageJson(
+                      JSON.stringify({
+                        _tag: 'ChangedSheetInput',
+                        id: field.id,
+                        value,
+                      }),
+                    ),
+                },
+                h,
+              ),
+            ],
+          ),
         ),
       ),
-    );
+    )
   }
   if (instance.loremBody === true) {
     content.push(
       h.div(
         [h.Class(className(styles.loremWrap))],
         LOREM.map(paragraph =>
-          h.p([h.Class(className(styles.paragraph))], [paragraph])),
+          h.p([h.Class(className(styles.paragraph))], [paragraph]),
+        ),
       ),
-    );
+    )
   }
   return Sheet.sheet(
     {
@@ -147,8 +156,8 @@ const instanceView = <Msg>(
           }),
     },
     h,
-  );
-};
+  )
+}
 
 export const sheetStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
@@ -156,9 +165,8 @@ export const sheetStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const preview = model as PreviewShape;
-  const fixture: SheetFixture =
-    sheetFixtures[exampleIndex] ?? sheetFixtures[0];
+  const preview = model as PreviewShape
+  const fixture: SheetFixture = sheetFixtures[exampleIndex] ?? sheetFixtures[0]
   return h.div(
     [h.Class(className(styles.wrap))],
     fixture.instances
@@ -175,10 +183,12 @@ export const sheetStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
             children: [instance.trigger],
           },
           h,
-        ))
+        ),
+      )
       .concat(
         fixture.instances.map(instance =>
-          instanceView(instance, preview, onMessageJson, h)),
+          instanceView(instance, preview, onMessageJson, h),
+        ),
       ),
-  );
-};
+  )
+}

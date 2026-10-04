@@ -11,7 +11,9 @@ type Model = Readonly<{ value: string }>
 type Message = Readonly<{ readonly _tag: 'ChangedName'; value: string }>
 
 const ChangedName = (value: string): Message => ({ _tag: 'ChangedName', value })
-const update = (_model: Model, message: Message) => ({ model: { value: message.value } })
+const update = (_model: Model, message: Message) => ({
+  model: { value: message.value },
+})
 
 type Parts = Readonly<{
   controlId: string
@@ -97,7 +99,9 @@ const verifyRenderer = (
           /Shown on your public profile.*Display name is required/u,
         ),
         Scene.expect(Scene.role('alert')).toHaveId('profile-name-error'),
-        Scene.expect(Scene.role('alert')).toHaveText('Display name is required.'),
+        Scene.expect(Scene.role('alert')).toHaveText(
+          'Display name is required.',
+        ),
         Scene.type(Scene.label('Display name'), 'Ada Lovelace'),
         Scene.expectHandled(),
         Scene.expect(Scene.label('Display name')).toHaveValue('Ada Lovelace'),

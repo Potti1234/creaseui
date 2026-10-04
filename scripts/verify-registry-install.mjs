@@ -1,5 +1,11 @@
 import assert from 'node:assert/strict'
-import { cpSync, mkdtempSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import {
+  cpSync,
+  mkdtempSync,
+  mkdirSync,
+  readFileSync,
+  writeFileSync,
+} from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { spawn } from 'node:child_process'
@@ -9,7 +15,9 @@ const root = process.cwd()
 const fixture = mkdtempSync(join(tmpdir(), 'creaseui-registry-'))
 const npx = process.platform === 'win32' ? 'npx.cmd' : 'npx'
 const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm'
-const registry = JSON.parse(readFileSync(join(root, 'src', 'ui', 'registry.json'), 'utf8'))
+const registry = JSON.parse(
+  readFileSync(join(root, 'src', 'ui', 'registry.json'), 'utf8'),
+)
 const registryComponentNames = registry.items.map(item => item.name)
 const requestedComponentNames = process.argv.slice(2)
 const unknownComponentNames = requestedComponentNames.filter(
@@ -20,15 +28,24 @@ assert.deepEqual(
   [],
   `Unknown registry components: ${unknownComponentNames.join(', ')}`,
 )
-const componentNames = requestedComponentNames.length === 0
-  ? registryComponentNames
-  : requestedComponentNames
-const sourcePackage = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'))
+const componentNames =
+  requestedComponentNames.length === 0
+    ? registryComponentNames
+    : requestedComponentNames
+const sourcePackage = JSON.parse(
+  readFileSync(join(root, 'package.json'), 'utf8'),
+)
 const frameworkVersions = {
-  '@effect/platform-browser': process.env.CREASEUI_PLATFORM_VERSION ?? sourcePackage.dependencies['@effect/platform-browser'],
-  '@foldkit/ui': process.env.CREASEUI_FOLDKIT_UI_VERSION ?? sourcePackage.dependencies['@foldkit/ui'],
-  effect: process.env.CREASEUI_EFFECT_VERSION ?? sourcePackage.dependencies.effect,
-  foldkit: process.env.CREASEUI_FOLDKIT_VERSION ?? sourcePackage.dependencies.foldkit,
+  '@effect/platform-browser':
+    process.env.CREASEUI_PLATFORM_VERSION ??
+    sourcePackage.dependencies['@effect/platform-browser'],
+  '@foldkit/ui':
+    process.env.CREASEUI_FOLDKIT_UI_VERSION ??
+    sourcePackage.dependencies['@foldkit/ui'],
+  effect:
+    process.env.CREASEUI_EFFECT_VERSION ?? sourcePackage.dependencies.effect,
+  foldkit:
+    process.env.CREASEUI_FOLDKIT_VERSION ?? sourcePackage.dependencies.foldkit,
 }
 
 const registryOutput = join(root, '.registry')
@@ -40,13 +57,17 @@ const server = createServer((request, response) => {
   }
 
   try {
-    const item = JSON.parse(readFileSync(join(registryOutput, `${name}.json`), 'utf8'))
-    item.registryDependencies = (item.registryDependencies ?? []).map(dependency => {
-      const dependencyName = dependency.match(/\/([^/]+)$/)?.[1]
-      return dependencyName === undefined
-        ? dependency
-        : `http://127.0.0.1:${server.address().port}/${dependencyName}.json`
-    })
+    const item = JSON.parse(
+      readFileSync(join(registryOutput, `${name}.json`), 'utf8'),
+    )
+    item.registryDependencies = (item.registryDependencies ?? []).map(
+      dependency => {
+        const dependencyName = dependency.match(/\/([^/]+)$/)?.[1]
+        return dependencyName === undefined
+          ? dependency
+          : `http://127.0.0.1:${server.address().port}/${dependencyName}.json`
+      },
+    )
     response.writeHead(200, { 'content-type': 'application/json' })
     response.end(JSON.stringify(item))
   } catch {
@@ -68,28 +89,39 @@ const run = (command, args) =>
       shell: process.platform === 'win32',
     })
     child.once('error', reject)
-    child.once('exit', code => code === 0
-      ? resolve()
-      : reject(new Error(`${command} exited with code ${code ?? 'unknown'}`)))
+    child.once('exit', code =>
+      code === 0
+        ? resolve()
+        : reject(new Error(`${command} exited with code ${code ?? 'unknown'}`)),
+    )
   })
 
-for (const file of ['tsconfig.json', 'vite.config.ts', 'stylex.config.js', 'index.html']) {
+for (const file of [
+  'tsconfig.json',
+  'vite.config.ts',
+  'stylex.config.js',
+  'index.html',
+]) {
   cpSync(join(root, file), join(fixture, file))
 }
 
 writeFileSync(
   join(fixture, 'package.json'),
-  `${JSON.stringify({
-    name: 'creaseui-registry-consumer',
-    private: true,
-    type: 'module',
-    scripts: sourcePackage.scripts,
-    dependencies: {
-      ...sourcePackage.dependencies,
-      ...frameworkVersions,
+  `${JSON.stringify(
+    {
+      name: 'creaseui-registry-consumer',
+      private: true,
+      type: 'module',
+      scripts: sourcePackage.scripts,
+      dependencies: {
+        ...sourcePackage.dependencies,
+        ...frameworkVersions,
+      },
+      devDependencies: sourcePackage.devDependencies,
     },
-    devDependencies: sourcePackage.devDependencies,
-  }, null, 2)}\n`,
+    null,
+    2,
+  )}\n`,
 )
 
 mkdirSync(join(fixture, 'src'), { recursive: true })
@@ -143,16 +175,18 @@ try {
     ...componentNames.map(name => `${registryBaseUrl}/${name}.json`),
     '--yes',
   ])
-const installedPackage = JSON.parse(
-  readFileSync(join(fixture, 'package.json'), 'utf8'),
-)
-for (const [packageName, expectedVersion] of Object.entries(frameworkVersions)) {
-  assert.equal(
-    installedPackage.dependencies[packageName],
-    expectedVersion,
-    `${packageName} was changed during registry installation`,
+  const installedPackage = JSON.parse(
+    readFileSync(join(fixture, 'package.json'), 'utf8'),
   )
-}
+  for (const [packageName, expectedVersion] of Object.entries(
+    frameworkVersions,
+  )) {
+    assert.equal(
+      installedPackage.dependencies[packageName],
+      expectedVersion,
+      `${packageName} was changed during registry installation`,
+    )
+  }
   await run(npm, ['install'])
   if (requestedComponentNames.length === 0) {
     for (const iconLibrary of [

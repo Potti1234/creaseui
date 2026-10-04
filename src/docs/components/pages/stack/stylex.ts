@@ -1,7 +1,7 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   stackAlignmentRows,
   stackFixtures,
@@ -9,40 +9,42 @@ import {
   stackShowcaseGroups,
   stackUsers,
   type StackFixture,
-} from '@/docs/components/pages/stack/shared';
-import { className } from '@/stylex/style';
-import * as Avatar from '@/stylex/avatar';
-import * as Badge from '@/stylex/badge';
-import * as Button from '@/stylex/button';
-import * as Card from '@/stylex/card';
-import * as Stack from '@/stylex/stack';
+} from '@/docs/components/pages/stack/shared'
+import { className } from '@/stylex/style'
+import * as Avatar from '@/stylex/avatar'
+import * as Badge from '@/stylex/badge'
+import * as Button from '@/stylex/button'
+import * as Card from '@/stylex/card'
+import * as Stack from '@/stylex/stack'
 
 const styles = stylex.create({
   supporting: {
     color: 'var(--muted-foreground)',
-    fontSize: '0.75rem', lineHeight: '1rem',
+    fontSize: '0.75rem',
+    lineHeight: '1rem',
   },
   name: {
     fontSize: '0.875rem',
     fontWeight: 600,
- lineHeight: '1.25rem',
+    lineHeight: '1.25rem',
   },
   heading: {
     fontSize: '0.75rem',
     fontWeight: 600,
- lineHeight: '1rem',
+    lineHeight: '1rem',
   },
   body: {
     color: 'var(--muted-foreground)',
-    fontSize: '0.875rem', lineHeight: '1.25rem',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
   },
-});
+})
 
 const supporting = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class(className(styles.supporting))], [text]);
+  h.p([h.Class(className(styles.supporting))], [text])
 
 const badge = <Msg>(label: string, h: HtmlBuilder<Msg>): Html =>
-  Badge.badge({ variant: 'secondary', children: [label] }, h);
+  Badge.badge({ variant: 'secondary', children: [label] }, h)
 
 const cardLabel = <Msg>(label: string, h: HtmlBuilder<Msg>): Html =>
   Card.card(
@@ -51,7 +53,7 @@ const cardLabel = <Msg>(label: string, h: HtmlBuilder<Msg>): Html =>
       children: [Card.cardContent({ children: [supporting(label, h)] }, h)],
     },
     h,
-  );
+  )
 
 const directionsView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Stack.hStack(
@@ -85,7 +87,7 @@ const directionsView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ],
     },
     h,
-  );
+  )
 
 const alignmentView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Stack.stack(
@@ -143,7 +145,7 @@ const alignmentView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ),
     },
     h,
-  );
+  )
 
 const fillItemView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Stack.vStack(
@@ -217,7 +219,7 @@ const fillItemView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ),
     },
     h,
-  );
+  )
 
 const hBasicView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Stack.hStack(
@@ -231,7 +233,7 @@ const hBasicView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ],
     },
     h,
-  );
+  )
 
 const hShowcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Stack.vStack(
@@ -260,7 +262,7 @@ const hShowcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ),
     },
     h,
-  );
+  )
 
 const vBasicView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Stack.vStack(
@@ -268,16 +270,18 @@ const vBasicView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       gap: 3,
       children: [
         h.h5([h.Class(className(styles.heading))], ['Weekly Report']),
-        h.p([h.Class(className(styles.body))], [
-          'VStack arranges its children in a vertical column.',
-        ]),
-        h.p([h.Class(className(styles.body))], [
-          'The gap prop controls the spacing between each item.',
-        ]),
+        h.p(
+          [h.Class(className(styles.body))],
+          ['VStack arranges its children in a vertical column.'],
+        ),
+        h.p(
+          [h.Class(className(styles.body))],
+          ['The gap prop controls the spacing between each item.'],
+        ),
       ],
     },
     h,
-  );
+  )
 
 const vShowcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Stack.hStack(
@@ -308,7 +312,7 @@ const vShowcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ),
     },
     h,
-  );
+  )
 
 const itemFillView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Stack.hStack(
@@ -332,7 +336,7 @@ const itemFillView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ],
     },
     h,
-  );
+  )
 
 const itemShowcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Stack.hStack(
@@ -360,37 +364,34 @@ const itemShowcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ],
     },
     h,
-  );
+  )
 
-const previewFor = <Msg>(
-  fixture: StackFixture,
-  h: HtmlBuilder<Msg>,
-): Html => {
+const previewFor = <Msg>(fixture: StackFixture, h: HtmlBuilder<Msg>): Html => {
   switch (fixture.kind) {
     case 'directions':
-      return directionsView(h);
+      return directionsView(h)
     case 'alignment':
-      return alignmentView(h);
+      return alignmentView(h)
     case 'fillItem':
-      return fillItemView(h);
+      return fillItemView(h)
     case 'hBasic':
-      return hBasicView(h);
+      return hBasicView(h)
     case 'hShowcase':
-      return hShowcaseView(h);
+      return hShowcaseView(h)
     case 'vBasic':
-      return vBasicView(h);
+      return vBasicView(h)
     case 'vShowcase':
-      return vShowcaseView(h);
+      return vShowcaseView(h)
     case 'itemFill':
-      return itemFillView(h);
+      return itemFillView(h)
     case 'itemShowcase':
-      return itemShowcaseView(h);
+      return itemShowcaseView(h)
   }
-};
+}
 
 export const stackStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   _model: unknown,
   _onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
-) => previewFor(stackFixtures[exampleIndex] ?? stackFixtures[0], h);
+) => previewFor(stackFixtures[exampleIndex] ?? stackFixtures[0], h)

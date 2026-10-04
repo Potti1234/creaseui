@@ -1,11 +1,12 @@
-import { authoredPage } from '@/docs/components/pages/authored-page';
-import { appShellExamples } from '@/docs/components/pages/app-shell/shared';
-import { appShellTailwindPreviews } from '@/docs/components/pages/app-shell/tailwind';
+import { authoredPage } from '@/docs/components/pages/authored-page'
+import { appShellExamples } from '@/docs/components/pages/app-shell/shared'
+import { appShellTailwindPreviews } from '@/docs/components/pages/app-shell/tailwind'
 
 const tailwindExamples = appShellExamples('tailwind').map((example, index) => ({
   ...example,
-  staticPreview: (appShellTailwindPreviews[index] ?? appShellTailwindPreviews[0])!,
-}));
+  staticPreview: (appShellTailwindPreviews[index] ??
+    appShellTailwindPreviews[0])!,
+}))
 
 export const appShellPage = authoredPage({
   slug: 'app-shell',
@@ -21,10 +22,10 @@ export const appShellPage = authoredPage({
     apiHref:
       'https://github.com/facebook/astryx/tree/main/packages/core/src/AppShell',
     styling:
-      'The nav slots take arbitrary markup — pass your app\'s top-nav and side-nav composition. `contentPadding` uses the spacing scale; the elevated variant adds the 28px page-radius corner when both navs are present.',
+      "The nav slots take arbitrary markup — pass your app's top-nav and side-nav composition. `contentPadding` uses the spacing scale; the elevated variant adds the 28px page-radius corner when both navs are present.",
     accessibility:
       'The shell renders a skip-to-content link targeting <main> (a tabIndex={-1} focus target, per WCAG 2.4.1). The header region is a `banner` landmark and <main> carries the page content.',
     examples: tailwindExamples,
     stylexExamples: appShellExamples('stylex'),
   },
-});
+})

@@ -233,9 +233,7 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
     (
       bundle: typeof Single,
       items: ReadonlyArray<Fruit>,
-      extra?: Partial<
-        TailwindCombobox.ComboboxProps<Fruit, string, Message>
-      >,
+      extra?: Partial<TailwindCombobox.ComboboxProps<Fruit, string, Message>>,
     ) =>
     (model: Model, h: HtmlBuilder<Message>) =>
       bundle.combobox(
@@ -322,12 +320,15 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
           {
             update,
             view: (model, h) =>
-              h.div([], [
-                h.span([h.Id('fruit-label')], ['Pick a fruit']),
-                singleView(Single, FRUITS, {
-                  ariaLabelledBy: 'fruit-label',
-                })(model, h),
-              ]),
+              h.div(
+                [],
+                [
+                  h.span([h.Id('fruit-label')], ['Pick a fruit']),
+                  singleView(Single, FRUITS, {
+                    ariaLabelledBy: 'fruit-label',
+                  })(model, h),
+                ],
+              ),
           },
           Scene.given(initModel()),
           Scene.expect(input).toHaveAccessibleName('Pick a fruit'),
@@ -945,7 +946,9 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
           // An emptied query matches everything, so the panel stays mounted.
           Scene.type(input, ''),
           Scene.keydown(input, 'Escape'),
-          Scene.expectOutMessage(TailwindCombobox.OutMessage.ClearedSelection()),
+          Scene.expectOutMessage(
+            TailwindCombobox.OutMessage.ClearedSelection(),
+          ),
           resolveFocusInput,
           expectPanelUnmounted(),
           Scene.expect(input).toHaveValue(''),
@@ -1207,13 +1210,17 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
           // heading's id; the `fruit-group-<key>` key is a vnode key, not
           // a DOM id.
           Scene.expect(
-            Scene.selector('[role="group"][aria-labelledby="fruit-heading-fruit"]'),
+            Scene.selector(
+              '[role="group"][aria-labelledby="fruit-heading-fruit"]',
+            ),
           ).toExist(),
+          Scene.expect(Scene.selector('#fruit-heading-fruit')).toHaveText(
+            'group-fruit',
+          ),
           Scene.expect(
-            Scene.selector('#fruit-heading-fruit'),
-          ).toHaveText('group-fruit'),
-          Scene.expect(
-            Scene.selector('[role="group"][aria-labelledby="fruit-heading-vegetable"]'),
+            Scene.selector(
+              '[role="group"][aria-labelledby="fruit-heading-vegetable"]',
+            ),
           ).toExist(),
         )
       })
@@ -1237,7 +1244,9 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
           Scene.type(input, 'carr'),
           Scene.expectAll(allGroups).toHaveCount(1),
           Scene.expect(
-            Scene.selector('[role="group"][aria-labelledby="fruit-heading-vegetable"]'),
+            Scene.selector(
+              '[role="group"][aria-labelledby="fruit-heading-vegetable"]',
+            ),
           ).toExist(),
           Scene.expect(Scene.selector('#fruit-group-fruit')).toBeAbsent(),
         )
@@ -1285,9 +1294,7 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
         )
       })
 
-      it.todo(
-        'marks the hidden input required (creaseui has no required prop)',
-      )
+      it.todo('marks the hidden input required (creaseui has no required prop)')
     })
 
     describe('prop: multiple', () => {

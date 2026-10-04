@@ -60,18 +60,21 @@ const update = (model: Model, message: Message): { model: Model } => {
 }
 
 type SwitchModule = Readonly<{
-  switchControl: <Msg>(props: {
-    id: string
-    isChecked: boolean
-    onToggle: (checked: boolean) => Msg
-    label?: Html | string
-    description?: Html | string
-    isDisabled?: boolean
-    isReadOnly?: boolean
-    isInvalid?: boolean
-    name?: string
-    value?: string
-  }, h: HtmlBuilder<Msg>) => Html
+  switchControl: <Msg>(
+    props: {
+      id: string
+      isChecked: boolean
+      onToggle: (checked: boolean) => Msg
+      label?: Html | string
+      description?: Html | string
+      isDisabled?: boolean
+      isReadOnly?: boolean
+      isInvalid?: boolean
+      name?: string
+      value?: string
+    },
+    h: HtmlBuilder<Msg>,
+  ) => Html
 }>
 
 const switchControl = Scene.role('switch', { name: 'Airplane mode' })
@@ -222,24 +225,30 @@ const verifyRenderer = (name: string, Switch: SwitchModule) => {
           {
             update,
             view: (model, h) =>
-              h.div([], [
-                h.button(
-                  [
-                    h.Type('button'),
-                    h.OnClick({ _tag: 'SetChecked', checked: !model.checked }),
-                  ],
-                  ['Toggle'],
-                ),
-                Switch.switchControl(
-                  {
-                    id: 'airplane',
-                    isChecked: model.checked,
-                    onToggle: checked => ({ _tag: 'Toggled', checked }),
-                    label: 'Airplane mode',
-                  },
-                  h,
-                ),
-              ]),
+              h.div(
+                [],
+                [
+                  h.button(
+                    [
+                      h.Type('button'),
+                      h.OnClick({
+                        _tag: 'SetChecked',
+                        checked: !model.checked,
+                      }),
+                    ],
+                    ['Toggle'],
+                  ),
+                  Switch.switchControl(
+                    {
+                      id: 'airplane',
+                      isChecked: model.checked,
+                      onToggle: checked => ({ _tag: 'Toggled', checked }),
+                      label: 'Airplane mode',
+                    },
+                    h,
+                  ),
+                ],
+              ),
           },
           Scene.given(initialModel()),
           Scene.expect(switchControl).toHaveAttr('aria-checked', 'false'),

@@ -27,8 +27,21 @@
     "legacy": []
   },
   "qualityContract": {
-    "statuses": ["verified", "partial", "adapted", "unverified", "not-applicable"],
-    "dimensions": ["visual", "behavior", "accessibility", "composition", "documentation", "registry"],
+    "statuses": [
+      "verified",
+      "partial",
+      "adapted",
+      "unverified",
+      "not-applicable"
+    ],
+    "dimensions": [
+      "visual",
+      "behavior",
+      "accessibility",
+      "composition",
+      "documentation",
+      "registry"
+    ],
     "defaults": {
       "visual": "unverified",
       "behavior": "partial",
@@ -44,14 +57,21 @@
     },
     "componentOverrides": {
       "button": { "accessibility": "verified" },
-      "dialog": { "behavior": "verified", "accessibility": "verified", "composition": "verified" },
+      "dialog": {
+        "behavior": "verified",
+        "accessibility": "verified",
+        "composition": "verified"
+      },
       "input": { "accessibility": "verified" },
       "select": { "behavior": "verified", "accessibility": "verified" },
       "sheet": { "composition": "verified" }
     },
     "evidence": {
       "button": ["e2e/site.spec.ts#flagship-accessibility"],
-      "dialog": ["e2e/site.spec.ts#dialog-focus-and-compound-parts", "e2e/site.spec.ts#flagship-accessibility"],
+      "dialog": [
+        "e2e/site.spec.ts#dialog-focus-and-compound-parts",
+        "e2e/site.spec.ts#flagship-accessibility"
+      ],
       "input": ["e2e/site.spec.ts#flagship-accessibility"],
       "select": ["e2e/site.spec.ts#flagship-accessibility"],
       "sheet": ["e2e/site.spec.ts#sheet-compound-parts"]

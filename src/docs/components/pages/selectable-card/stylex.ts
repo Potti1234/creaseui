@@ -1,7 +1,7 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   selectableCardElevatedPlans,
   selectableCardFixtures,
@@ -9,12 +9,12 @@ import {
   selectableCardTags,
   type SelectableCardFixture,
   type SelectablePlan,
-} from '@/docs/components/pages/selectable-card/shared';
-import { className } from '@/stylex/style';
-import * as SelectableCard from '@/stylex/selectable-card';
+} from '@/docs/components/pages/selectable-card/shared'
+import { className } from '@/stylex/style'
+import * as SelectableCard from '@/stylex/selectable-card'
 
 const styles = stylex.create({
-  row: { gap: '0.75rem', display: 'flex', },
+  row: { gap: '0.75rem', display: 'flex' },
   grid2: {
     gap: '0.75rem',
     display: 'grid',
@@ -27,26 +27,26 @@ const styles = stylex.create({
     gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
     width: '25rem',
   },
-  stack1: { gap: '0.25rem', display: 'flex', flexDirection: 'column', },
+  stack1: { gap: '0.25rem', display: 'flex', flexDirection: 'column' },
   heading: {
     fontSize: '1.25rem',
     fontWeight: 600,
     letterSpacing: '-0.025em',
     lineHeight: '1.75rem',
   },
-  price: { fontSize: '1.125rem', fontWeight: 600, lineHeight: '1.75rem', },
-  bodyBold: { fontSize: '0.875rem', fontWeight: 700, lineHeight: '1.25rem', },
+  price: { fontSize: '1.125rem', fontWeight: 600, lineHeight: '1.75rem' },
+  bodyBold: { fontSize: '0.875rem', fontWeight: 700, lineHeight: '1.25rem' },
   supporting: {
     color: 'var(--muted-foreground)',
     fontSize: '0.75rem',
     lineHeight: '1rem',
   },
-});
+})
 
 type Preview = Readonly<{
-  selected: string;
-  multi: ReadonlyArray<string>;
-}>;
+  selected: string
+  multi: ReadonlyArray<string>
+}>
 
 const planBody = <Msg>(plan: SelectablePlan, h: HtmlBuilder<Msg>): Html =>
   h.div(
@@ -56,7 +56,7 @@ const planBody = <Msg>(plan: SelectablePlan, h: HtmlBuilder<Msg>): Html =>
       h.p([h.Class(className(styles.price))], [plan.price ?? '']),
       h.p([h.Class(className(styles.supporting))], [plan.desc ?? '']),
     ],
-  );
+  )
 
 const view = <Msg>(
   fixture: SelectableCardFixture,
@@ -82,7 +82,7 @@ const view = <Msg>(
             h,
           ),
         ),
-      );
+      )
     case 'elevated':
       return h.div(
         [h.Class(className(styles.grid2))],
@@ -108,7 +108,7 @@ const view = <Msg>(
             h,
           ),
         ),
-      );
+      )
     case 'multi':
       return h.div(
         [h.Class(className(styles.grid3))],
@@ -128,9 +128,9 @@ const view = <Msg>(
             h,
           ),
         ),
-      );
+      )
   }
-};
+}
 
 export const selectableCardStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
@@ -138,7 +138,7 @@ export const selectableCardStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ) => {
-  const fixture = selectableCardFixtures[exampleIndex];
-  if (fixture === undefined) return undefined;
-  return view(fixture, model as Preview, onMessageJson, h);
-};
+  const fixture = selectableCardFixtures[exampleIndex]
+  if (fixture === undefined) return undefined
+  return view(fixture, model as Preview, onMessageJson, h)
+}

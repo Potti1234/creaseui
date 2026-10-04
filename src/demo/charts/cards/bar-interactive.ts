@@ -1,17 +1,17 @@
-import type { EChartsOption } from 'echarts/types/dist/shared';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { EChartsOption } from 'echarts/types/dist/shared'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Chart from '@/lib/echarts';
+import * as Chart from '@/lib/echarts'
 import {
   card,
   cardContent,
   cardDescription,
   cardHeader,
   cardTitle,
-} from '@/ui/card';
+} from '@/ui/card'
 
-export const HOST_ID = 'chart-bar-interactive';
-export type Series = 'desktop' | 'mobile';
+export const HOST_ID = 'chart-bar-interactive'
+export type Series = 'desktop' | 'mobile'
 
 const DESKTOP = [
   222, 97, 167, 242, 373, 301, 245, 409, 59, 261, 327, 292, 342, 137, 120, 138,
@@ -20,7 +20,7 @@ const DESKTOP = [
   315, 235, 177, 82, 81, 252, 294, 201, 213, 420, 233, 78, 340, 178, 178, 470,
   103, 439, 88, 294, 323, 385, 438, 155, 92, 492, 81, 426, 307, 371, 475, 107,
   341, 408, 169, 317, 480, 132, 141, 434, 448, 149, 103, 446,
-];
+]
 const MOBILE = [
   150, 180, 120, 260, 290, 340, 180, 320, 110, 190, 350, 210, 380, 220, 170,
   190, 360, 410, 180, 150, 200, 170, 230, 290, 250, 130, 420, 180, 240, 380,
@@ -29,22 +29,22 @@ const MOBILE = [
   230, 200, 410, 160, 380, 140, 250, 370, 320, 480, 200, 150, 420, 130, 380,
   350, 310, 520, 170, 290, 450, 210, 270, 530, 180, 190, 380, 490, 200, 160,
   400,
-];
+]
 
 const DATES = Array.from({ length: 91 }, (_, index) => {
-  const date = new Date(Date.UTC(2024, 3, index + 1));
-  return date.toISOString().slice(0, 10);
-});
+  const date = new Date(Date.UTC(2024, 3, index + 1))
+  return date.toISOString().slice(0, 10)
+})
 
 const shortDate = (value: string): string =>
   new Intl.DateTimeFormat('en-US', {
     month: 'short',
     day: 'numeric',
     timeZone: 'UTC',
-  }).format(new Date(`${value}T00:00:00Z`));
+  }).format(new Date(`${value}T00:00:00Z`))
 
 Chart.registerChart(HOST_ID, (theme, variant): EChartsOption => {
-  const active: Series = variant === 'mobile' ? 'mobile' : 'desktop';
+  const active: Series = variant === 'mobile' ? 'mobile' : 'desktop'
   return {
     grid: Chart.compactGrid({ left: 12, right: 12 }),
     xAxis: {
@@ -58,7 +58,7 @@ Chart.registerChart(HOST_ID, (theme, variant): EChartsOption => {
         fontSize: 12,
         fontFamily: theme.fontFamily,
         margin: 8,
-        formatter: (value) => shortDate(String(value)),
+        formatter: value => shortDate(String(value)),
         hideOverlap: true,
       },
     },
@@ -74,20 +74,20 @@ Chart.registerChart(HOST_ID, (theme, variant): EChartsOption => {
         data: [...(active === 'desktop' ? DESKTOP : MOBILE)],
       },
     ],
-  };
-});
+  }
+})
 
 const TOTALS: Readonly<Record<Series, number>> = {
   desktop: DESKTOP.reduce((total, value) => total + value, 0),
   mobile: MOBILE.reduce((total, value) => total + value, 0),
-};
-const SERIES: ReadonlyArray<Series> = ['desktop', 'mobile'];
+}
+const SERIES: ReadonlyArray<Series> = ['desktop', 'mobile']
 
 export const view = <Msg>(
   props: Readonly<{
-    activeSeries: Series;
-    onSelect: (series: Series) => Msg;
-    toMessage: (message: Chart.ChartMessage) => Msg;
+    activeSeries: Series
+    onSelect: (series: Series) => Msg
+    toMessage: (message: Chart.ChartMessage) => Msg
   }>,
   h: HtmlBuilder<Msg>,
 ): Html => {
@@ -119,7 +119,7 @@ export const view = <Msg>(
               ),
               h.div(
                 [h.Class('flex')],
-                SERIES.map((series) =>
+                SERIES.map(series =>
                   h.button(
                     [
                       h.Type('button'),
@@ -170,8 +170,8 @@ export const view = <Msg>(
       ],
     },
     h,
-  );
-};
+  )
+}
 
 /* Minimal wiring:
    Model includes activeSeries: Schema.Literal('desktop', 'mobile').

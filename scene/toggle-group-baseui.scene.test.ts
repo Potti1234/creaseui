@@ -55,7 +55,10 @@ type Message = Readonly<
   | { _tag: 'SetMultiple'; multiple: boolean }
 >
 
-type OutMessage = Readonly<{ _tag: 'ValueChanged'; values: ReadonlyArray<string> }>
+type OutMessage = Readonly<{
+  _tag: 'ValueChanged'
+  values: ReadonlyArray<string>
+}>
 
 const update = (
   model: Model,
@@ -68,10 +71,10 @@ const update = (
   switch (message._tag) {
     case 'GotGroup': {
       const next = updateGroup(model.group, message.message)
-      const commands = Command.mapMessages(
-        next.commands,
-        (child): Message => ({ _tag: 'GotGroup', message: child }),
-      )
+      const commands = Command.mapMessages(next.commands, (child): Message => ({
+        _tag: 'GotGroup',
+        message: child,
+      }))
       if (next.outMessage === undefined) {
         return { model: { ...model, group: next.model }, commands }
       }
@@ -141,9 +144,7 @@ type ViewOptions = Readonly<{
 }>
 
 const selectionProps = (model: Model): SelectionProps =>
-  model.multiple
-    ? { values: model.values }
-    : { value: model.values[0] ?? '' }
+  model.multiple ? { values: model.values } : { value: model.values[0] ?? '' }
 
 const groupView =
   (ToggleGroup: ToggleGroupModule, options?: ViewOptions) =>
@@ -154,7 +155,10 @@ const groupView =
         ToggleGroup.toggleGroup(
           {
             model: model.group,
-            toParentMessage: (message): Message => ({ _tag: 'GotGroup', message }),
+            toParentMessage: (message): Message => ({
+              _tag: 'GotGroup',
+              message,
+            }),
             ariaLabel: 'My Toggle Group',
             items: options?.items ?? items(),
             ...(options?.direction === undefined
@@ -321,7 +325,10 @@ const verifyRenderer = (name: string, ToggleGroup: ToggleGroupModule) => {
 
       it('can disable individual items', () => {
         Scene.scene(
-          { update, view: view({ items: items({ two: { isDisabled: true } }) }) },
+          {
+            update,
+            view: view({ items: items({ two: { isDisabled: true } }) }),
+          },
           Scene.given(fresh()),
           Scene.expect(one).not.toHaveAttr('data-disabled'),
           Scene.expect(one).toBeEnabled(),
@@ -422,7 +429,10 @@ const verifyRenderer = (name: string, ToggleGroup: ToggleGroupModule) => {
                 h.button(
                   [
                     h.Type('button'),
-                    h.OnClick({ _tag: 'SetMultiple', multiple: !model.multiple }),
+                    h.OnClick({
+                      _tag: 'SetMultiple',
+                      multiple: !model.multiple,
+                    }),
                   ],
                   ['Switch mode'],
                 ),
@@ -477,7 +487,14 @@ const verifyRenderer = (name: string, ToggleGroup: ToggleGroupModule) => {
       ] as const
 
       matrix.forEach(
-        ([direction, vertical, nextKey, prevKey, ignoredNextKey, ignoredPrevKey]) => {
+        ([
+          direction,
+          vertical,
+          nextKey,
+          prevKey,
+          ignoredNextKey,
+          ignoredPrevKey,
+        ]) => {
           it(`${direction} / orientation: ${vertical ? 'vertical' : 'horizontal'}`, () => {
             Scene.scene(
               {

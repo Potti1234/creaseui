@@ -30,13 +30,7 @@ import {
 } from '@/lib/number-input'
 import { cn } from '@/lib/utils'
 
-export {
-  init,
-  Model,
-  Message,
-  OutMessage,
-  update,
-} from '@/lib/number-input'
+export { init, Model, Message, OutMessage, update } from '@/lib/number-input'
 export type { NumberInputSize } from '@/lib/number-input'
 export type { InputStatus } from '@/lib/input-status'
 
@@ -120,7 +114,10 @@ const displayValue = (props: NumberInputViewInputs, model: Model): string =>
     },
   })
 
-const pendingIsInvalid = (props: NumberInputViewInputs, model: Model): boolean =>
+const pendingIsInvalid = (
+  props: NumberInputViewInputs,
+  model: Model,
+): boolean =>
   Option.match(model.pendingInput, {
     onSome: text =>
       text.trim() !== '' &&
@@ -178,7 +175,10 @@ const view = defineView<Model, Message, NumberInputViewInputs>(
         ...(props.isOptional === true
           ? [
               h.span(
-                [h.Attribute('aria-hidden', 'true'), h.Class('text-xs font-normal')],
+                [
+                  h.Attribute('aria-hidden', 'true'),
+                  h.Class('text-xs font-normal'),
+                ],
                 [' ∙ Optional'],
               ),
             ]
@@ -186,7 +186,10 @@ const view = defineView<Model, Message, NumberInputViewInputs>(
         ...(props.isRequired === true && props.isOptional !== true
           ? [
               h.span(
-                [h.Attribute('aria-hidden', 'true'), h.Class('text-xs font-normal')],
+                [
+                  h.Attribute('aria-hidden', 'true'),
+                  h.Class('text-xs font-normal'),
+                ],
                 [' ∙ Required'],
               ),
             ]
@@ -201,7 +204,9 @@ const view = defineView<Model, Message, NumberInputViewInputs>(
       h.Attribute('autocomplete', props.autocomplete ?? 'off'),
       h.Attribute('spellcheck', 'false'),
       h.Value(displayValue(props, model)),
-      ...(props.placeholder === undefined ? [] : [h.Placeholder(props.placeholder)]),
+      ...(props.placeholder === undefined
+        ? []
+        : [h.Placeholder(props.placeholder)]),
       h.AriaLabelledBy(fieldIds.label),
       ...(props['aria-label'] === undefined
         ? []
@@ -216,7 +221,9 @@ const view = defineView<Model, Message, NumberInputViewInputs>(
       h.DataAttribute('slot', 'number-input-input'),
       h.Class(cn(inputText, props.isDisabled === true && 'cursor-default')),
       h.OnFocus(Message.FocusGained()),
-      h.OnBlur(Message.CommitDecided({ resolution: commitResolutionOf(commit) })),
+      h.OnBlur(
+        Message.CommitDecided({ resolution: commitResolutionOf(commit) }),
+      ),
       h.OnInput(text => Message.DraftEdited({ text })),
       ...(props.isDisabled === true || props.isReadOnly === true
         ? []
@@ -234,7 +241,9 @@ const view = defineView<Model, Message, NumberInputViewInputs>(
               }
               if (key === 'Enter') {
                 return Option.some(
-                  Message.CommitDecided({ resolution: commitResolutionOf(commit) }),
+                  Message.CommitDecided({
+                    resolution: commitResolutionOf(commit),
+                  }),
                 )
               }
               return Option.none()
@@ -279,15 +288,19 @@ const view = defineView<Model, Message, NumberInputViewInputs>(
               h.Class('flex shrink-0 items-center'),
             ],
             [
-              Icon.icon(statusIconName(props.status.type), {
-                class: cn(
-                  'size-4',
-                  props.status.type === 'error' && 'text-destructive',
-                  props.status.type === 'warning' && 'text-chart-4',
-                  props.status.type === 'success' && 'text-chart-2',
-                ),
-                ariaLabel: statusButtonLabel(props.status.type),
-              }, h),
+              Icon.icon(
+                statusIconName(props.status.type),
+                {
+                  class: cn(
+                    'size-4',
+                    props.status.type === 'error' && 'text-destructive',
+                    props.status.type === 'warning' && 'text-chart-4',
+                    props.status.type === 'success' && 'text-chart-2',
+                  ),
+                  ariaLabel: statusButtonLabel(props.status.type),
+                },
+                h,
+              ),
             ],
           )
         : undefined
@@ -301,22 +314,20 @@ const view = defineView<Model, Message, NumberInputViewInputs>(
                 '-my-1 flex w-4 shrink-0 flex-col self-stretch overflow-hidden border-l border-input',
               ),
             ],
-            (
-              [
-                {
-                  delta: 1 as const,
-                  label: `Increment ${typeof props.label === 'string' ? props.label : 'value'}`,
-                  icon: 'chevron-up',
-                  extra: '',
-                },
-                {
-                  delta: -1 as const,
-                  label: `Decrement ${typeof props.label === 'string' ? props.label : 'value'}`,
-                  icon: 'chevron-down',
-                  extra: 'border-t border-input',
-                },
-              ]
-            ).map(({ delta, label, icon, extra }) =>
+            [
+              {
+                delta: 1 as const,
+                label: `Increment ${typeof props.label === 'string' ? props.label : 'value'}`,
+                icon: 'chevron-up',
+                extra: '',
+              },
+              {
+                delta: -1 as const,
+                label: `Decrement ${typeof props.label === 'string' ? props.label : 'value'}`,
+                icon: 'chevron-down',
+                extra: 'border-t border-input',
+              },
+            ].map(({ delta, label, icon, extra }) =>
               h.button(
                 [
                   h.Type('button'),
@@ -325,7 +336,11 @@ const view = defineView<Model, Message, NumberInputViewInputs>(
                   h.Disabled(
                     props.isDisabled === true ||
                       props.isReadOnly === true ||
-                      !canStep(delta, { value, min: props.min, max: props.max }),
+                      !canStep(delta, {
+                        value,
+                        min: props.min,
+                        max: props.max,
+                      }),
                   ),
                   h.OnClick(Message.Stepped({ value: stepper(delta) }), {
                     propagation: 'Stop',
@@ -400,7 +415,8 @@ const view = defineView<Model, Message, NumberInputViewInputs>(
                       h.Class(
                         cn(
                           'mt-1 flex items-start gap-1 rounded-lg p-2 text-xs leading-5',
-                          type === 'error' && 'bg-destructive/10 text-destructive',
+                          type === 'error' &&
+                            'bg-destructive/10 text-destructive',
                           type === 'warning' && 'bg-chart-4/15 text-chart-4',
                           type === 'success' && 'bg-chart-2/15 text-chart-2',
                         ),
@@ -425,7 +441,8 @@ const view = defineView<Model, Message, NumberInputViewInputs>(
                         cn(
                           'pointer-events-none rounded-b-md px-2 pb-2 text-xs leading-5',
                           attachedOverlap[size],
-                          type === 'error' && 'bg-destructive/10 text-destructive',
+                          type === 'error' &&
+                            'bg-destructive/10 text-destructive',
                           type === 'warning' && 'bg-chart-4/15 text-chart-4',
                           type === 'success' && 'bg-chart-2/15 text-chart-2',
                         ),
@@ -467,9 +484,10 @@ const view = defineView<Model, Message, NumberInputViewInputs>(
         ),
         ...(pendingIsInvalid(props, model)
           ? [
-              h.span([h.Class('sr-only'), h.AriaLive('polite')], [
-                'Invalid number',
-              ]),
+              h.span(
+                [h.Class('sr-only'), h.AriaLive('polite')],
+                ['Invalid number'],
+              ),
             ]
           : []),
       ],

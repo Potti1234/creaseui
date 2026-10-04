@@ -1,32 +1,32 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import {
   type SectionFixture,
   sectionFeatures,
   sectionFixtures,
-} from '@/docs/components/pages/section/shared';
-import { icon } from '@/lib/icon';
-import * as Button from '@/ui/button';
-import * as Section from '@/ui/section';
-import * as Stack from '@/ui/stack';
+} from '@/docs/components/pages/section/shared'
+import { icon } from '@/lib/icon'
+import * as Button from '@/ui/button'
+import * as Section from '@/ui/section'
+import * as Stack from '@/ui/stack'
 
 const boldBody = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class('text-sm font-semibold')], [text]);
+  h.p([h.Class('text-sm font-semibold')], [text])
 const supporting = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class('text-xs text-muted-foreground')], [text]);
+  h.p([h.Class('text-xs text-muted-foreground')], [text])
 const bodyMuted = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class('text-sm text-muted-foreground')], [text]);
+  h.p([h.Class('text-sm text-muted-foreground')], [text])
 const body = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class('text-sm')], [text]);
+  h.p([h.Class('text-sm')], [text])
 const display = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class('text-[29px] leading-9 font-normal')], [text]);
+  h.p([h.Class('text-[29px] leading-9 font-normal')], [text])
 
 const variantsView = <Msg>(h: HtmlBuilder<Msg>): Html => {
   const inner = (title: string, desc: string): Html =>
     Stack.vStack(
       { gap: 1, children: [boldBody(title, h), supporting(desc, h)] },
       h,
-    );
+    )
   return Stack.vStack(
     {
       gap: 6,
@@ -60,8 +60,8 @@ const variantsView = <Msg>(h: HtmlBuilder<Msg>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const washView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Stack.vStack(
@@ -133,10 +133,7 @@ const washView = <Msg>(h: HtmlBuilder<Msg>): Html =>
                       {
                         gap: 2,
                         vAlign: 'center',
-                        children: [
-                          display('$49', h),
-                          supporting('/ month', h),
-                        ],
+                        children: [display('$49', h), supporting('/ month', h)],
                       },
                       h,
                     ),
@@ -152,7 +149,7 @@ const washView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ],
     },
     h,
-  );
+  )
 
 const dividersView = <Msg>(h: HtmlBuilder<Msg>): Html => {
   const row = (
@@ -173,7 +170,7 @@ const dividersView = <Msg>(h: HtmlBuilder<Msg>): Html => {
         ],
       },
       h,
-    );
+    )
   return Stack.vStack(
     {
       gap: 0,
@@ -186,24 +183,24 @@ const dividersView = <Msg>(h: HtmlBuilder<Msg>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 export type SectionStaticPreview = <Msg>(
   model: Readonly<Record<string, never>>,
   h: HtmlBuilder<Msg>,
-) => Html;
+) => Html
 
 const previewFor = (fixture: SectionFixture): SectionStaticPreview => {
   switch (fixture.kind) {
     case 'variants':
-      return (_m, h) => variantsView(h);
+      return (_m, h) => variantsView(h)
     case 'wash':
-      return (_m, h) => washView(h);
+      return (_m, h) => washView(h)
     case 'dividers':
-      return (_m, h) => dividersView(h);
+      return (_m, h) => dividersView(h)
   }
-};
+}
 
 export const sectionTailwindPreviews: ReadonlyArray<SectionStaticPreview> =
-  sectionFixtures.map(previewFor);
+  sectionFixtures.map(previewFor)

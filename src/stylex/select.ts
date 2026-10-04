@@ -1,9 +1,9 @@
-import { Option } from 'effect';
-import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html';
+import { Option } from 'effect'
+import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
 
-import { Listbox as ListboxPrimitive } from '@foldkit/ui';
+import { Listbox as ListboxPrimitive } from '@foldkit/ui'
 
-import * as Icon from '@/lib/icon';
+import * as Icon from '@/lib/icon'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import { joinStyles } from './button-group-join.stylex'
@@ -55,15 +55,15 @@ const cn = (...values: ReadonlyArray<unknown>): string =>
    than the primitive's outer role=option element. Arbitrary consumer items are
    projected through itemToValue, so their values must be unique. */
 
-export const Model = ListboxPrimitive.Model;
-export type Model = typeof Model.Type;
-export const Message = ListboxPrimitive.Message;
-export type Message = typeof Message.Type;
-export const OutMessage = ListboxPrimitive.OutMessage;
+export const Model = ListboxPrimitive.Model
+export type Model = typeof Model.Type
+export const Message = ListboxPrimitive.Message
+export type Message = typeof Message.Type
+export const OutMessage = ListboxPrimitive.OutMessage
 export type OutMessage<Value extends string = string> =
-  ListboxPrimitive.OutMessage<Value>;
+  ListboxPrimitive.OutMessage<Value>
 
-export const init = ListboxPrimitive.init;
+export const init = ListboxPrimitive.init
 
 const TRIGGER_CLASS = overlayStyles.trigger
 
@@ -86,108 +86,116 @@ const ANCHOR: ListboxPrimitive.AnchorConfig = themedAnchor({
   gap: 4,
 })
 
-export type SelectSize = 'sm' | 'default';
+export type SelectSize = 'sm' | 'default'
 
 export type SelectItemConfig = Readonly<{
-  content?: Html | string;
-  searchText?: string;
-  layoutStyle?: ComponentLayoutStyle;
-  isDisabled?: boolean;
-}>;
+  content?: Html | string
+  searchText?: string
+  layoutStyle?: ComponentLayoutStyle
+  isDisabled?: boolean
+}>
 
 export type SelectProps<Item, Value extends string, Msg> = Readonly<{
-  model: Model;
-  maybeSelectedValue: Option.Option<Value>;
-  toParentMessage: (message: Message) => Msg;
-  items: ReadonlyArray<Item>;
-  itemToValue: (item: Item) => Value;
-  itemToLabel: (item: Item) => string;
-  itemToConfig?: (item: Item) => SelectItemConfig;
-  placeholder?: string;
-  triggerLayoutStyle?: ComponentLayoutStyle;
-  size?: SelectSize;
-  ariaLabel?: string;
-  isDisabled?: boolean;
-  isReadOnly?: boolean;
-  isInvalid?: boolean;
-  name?: string;
-  form?: string;
-  direction?: 'ltr' | 'rtl';
+  model: Model
+  maybeSelectedValue: Option.Option<Value>
+  toParentMessage: (message: Message) => Msg
+  items: ReadonlyArray<Item>
+  itemToValue: (item: Item) => Value
+  itemToLabel: (item: Item) => string
+  itemToConfig?: (item: Item) => SelectItemConfig
+  placeholder?: string
+  triggerLayoutStyle?: ComponentLayoutStyle
+  size?: SelectSize
+  ariaLabel?: string
+  isDisabled?: boolean
+  isReadOnly?: boolean
+  isInvalid?: boolean
+  name?: string
+  form?: string
+  direction?: 'ltr' | 'rtl'
   /**
    * 'popper' places the popup below the trigger (default). 'item-aligned'
    * shifts the popup so the selected item overlaps the trigger, matching
    * Radix's position="item-aligned" as a static offset approximation.
    */
-  position?: 'popper' | 'item-aligned';
-  itemGroupKey?: (item: Item, index: number) => string;
-  groupToHeading?: (groupKey: string) => string | undefined;
-}>;
+  position?: 'popper' | 'item-aligned'
+  itemGroupKey?: (item: Item, index: number) => string
+  groupToHeading?: (groupKey: string) => string | undefined
+}>
 
-const ITEM_ALIGNED_ITEM_HEIGHT = 32;
-const ITEM_ALIGNED_BASE_OFFSET = 40;
+const ITEM_ALIGNED_ITEM_HEIGHT = 32
+const ITEM_ALIGNED_BASE_OFFSET = 40
 
 const buildAnchor = <Item, Value extends string, Msg>(
   props: SelectProps<Item, Value, Msg>,
   values: ReadonlyArray<Value>,
 ): Readonly<{ anchor: ListboxPrimitive.AnchorConfig }> => {
   if (props.position !== 'item-aligned') {
-    return { anchor: ANCHOR };
+    return { anchor: ANCHOR }
   }
   const selectedIndex = Option.match(props.maybeSelectedValue, {
     onNone: () => 0,
     onSome: selected =>
-      Math.max(0, values.findIndex(value => value === selected)),
-  });
+      Math.max(
+        0,
+        values.findIndex(value => value === selected),
+      ),
+  })
   return {
     anchor: themedAnchor({
       placement: 'bottom-start',
-      gap: -(ITEM_ALIGNED_BASE_OFFSET + selectedIndex * ITEM_ALIGNED_ITEM_HEIGHT),
+      gap: -(
+        ITEM_ALIGNED_BASE_OFFSET +
+        selectedIndex * ITEM_ALIGNED_ITEM_HEIGHT
+      ),
     }),
-  };
-};
+  }
+}
 
 const renderSelect = <Item, Value extends string, Msg>(
   listbox: ListboxPrimitive.Bundle<Value, Value>,
   props: SelectProps<Item, Value, Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const hs = h;
-  const values = props.items.map(props.itemToValue);
+  const hs = h
+  const values = props.items.map(props.itemToValue)
   const itemForValue = (value: Value): Item | undefined =>
-    props.items.find((item) => props.itemToValue(item) === value);
+    props.items.find(item => props.itemToValue(item) === value)
   const labelForValue = (value: Value): string => {
-    const item = itemForValue(value);
-    return item === undefined ? value : props.itemToLabel(item);
-  };
+    const item = itemForValue(value)
+    return item === undefined ? value : props.itemToLabel(item)
+  }
   const selectedLabel = Option.match(props.maybeSelectedValue, {
     onNone: () => undefined,
     onSome: labelForValue,
-  });
+  })
 
   const viewInputs: ListboxPrimitive.ViewInputs<Value, Value> = {
     maybeSelectedValue: props.maybeSelectedValue,
     items: values,
-    itemToValue: (value) => value,
-    itemToSearchText: (value) => {
-      const item = itemForValue(value);
+    itemToValue: value => value,
+    itemToSearchText: value => {
+      const item = itemForValue(value)
       return item === undefined
         ? labelForValue(value)
-        : (props.itemToConfig?.(item).searchText ?? labelForValue(value));
+        : (props.itemToConfig?.(item).searchText ?? labelForValue(value))
     },
-    isItemDisabled: (value) => {
-      const item = itemForValue(value);
+    isItemDisabled: value => {
+      const item = itemForValue(value)
       return item === undefined
         ? false
-        : (props.itemToConfig?.(item).isDisabled ?? false);
+        : (props.itemToConfig?.(item).isDisabled ?? false)
     },
-    itemToConfig: (value) => {
-      const item = itemForValue(value);
-      const config =
-        item === undefined ? undefined : props.itemToConfig?.(item);
+    itemToConfig: value => {
+      const item = itemForValue(value)
+      const config = item === undefined ? undefined : props.itemToConfig?.(item)
       return {
         className: cn(ITEM_CLASS, config?.layoutStyle),
         content: hs.span(
-          [hs.DataAttribute('slot', 'select-item'), hs.Class(className(styles.contents))],
+          [
+            hs.DataAttribute('slot', 'select-item'),
+            hs.Class(className(styles.contents)),
+          ],
           [
             hs.span(
               [
@@ -199,7 +207,7 @@ const renderSelect = <Item, Value extends string, Msg>(
             hs.span([], [config?.content ?? labelForValue(value)]),
           ],
         ),
-      };
+      }
     },
     buttonContent: hs.span(
       [hs.Class(className(styles.contents))],
@@ -208,7 +216,10 @@ const renderSelect = <Item, Value extends string, Msg>(
           [hs.DataAttribute('slot', 'select-value')],
           [selectedLabel ?? props.placeholder ?? ''],
         ),
-        Icon.chevronDown({ class: className(overlayStyles.icon, styles.iconDim) }, h),
+        Icon.chevronDown(
+          { class: className(overlayStyles.icon, styles.iconDim) },
+          h,
+        ),
       ],
     ),
     buttonClassName: cn(
@@ -241,7 +252,9 @@ const renderSelect = <Item, Value extends string, Msg>(
     ]),
     itemsScrollClassName: className(VIEWPORT_CLASS),
     backdropClassName: className(BACKDROP_CLASS),
-    backdropAttributes: childAttributes([hs.DataAttribute('slot', 'select-backdrop')]),
+    backdropAttributes: childAttributes([
+      hs.DataAttribute('slot', 'select-backdrop'),
+    ]),
     attributes: childAttributes([
       hs.DataAttribute('slot', 'select'),
       ...(props.direction === undefined ? [] : [hs.Dir(props.direction)]),
@@ -250,13 +263,13 @@ const renderSelect = <Item, Value extends string, Msg>(
       ? {}
       : {
           itemGroupKey: (value: Value, index: number): string => {
-            const item = itemForValue(value);
+            const item = itemForValue(value)
             return item === undefined
               ? ''
-              : (props.itemGroupKey?.(item, index) ?? '');
+              : (props.itemGroupKey?.(item, index) ?? '')
           },
           groupToHeading: (groupKey: string) => {
-            const heading = props.groupToHeading?.(groupKey);
+            const heading = props.groupToHeading?.(groupKey)
             return heading === undefined
               ? undefined
               : {
@@ -265,7 +278,7 @@ const renderSelect = <Item, Value extends string, Msg>(
                     [heading],
                   ),
                   className: className(LABEL_CLASS),
-                };
+                }
           },
           groupAttributes: childAttributes([
             hs.DataAttribute('slot', 'select-group'),
@@ -276,7 +289,7 @@ const renderSelect = <Item, Value extends string, Msg>(
           ]),
         }),
     ...(props.ariaLabel === undefined ? {} : { ariaLabel: props.ariaLabel }),
-  };
+  }
 
   // TypeScript cannot reduce Foldkit's conditional SubmodelConfig while
   // Value is still generic; every field remains independently typed above.
@@ -287,25 +300,30 @@ const renderSelect = <Item, Value extends string, Msg>(
     view: listbox.view,
     viewInputs,
     toParentMessage: props.toParentMessage,
-  } as unknown as Parameters<typeof h.submodel<typeof listbox.view>>[0]);
-};
+  } as unknown as Parameters<typeof h.submodel<typeof listbox.view>>[0])
+}
 
 export type SelectBundle<Value extends string> = Readonly<{
-  update: ReturnType<typeof ListboxPrimitive.create<Value, Value>>['update'];
-  select: <Item, Msg>(props: SelectProps<Item, Value, Msg>, h: HtmlBuilder<Msg>) => Html;
-}>;
+  update: ReturnType<typeof ListboxPrimitive.create<Value, Value>>['update']
+  select: <Item, Msg>(
+    props: SelectProps<Item, Value, Msg>,
+    h: HtmlBuilder<Msg>,
+  ) => Html
+}>
 
-export const create = <Value extends string = string>(): SelectBundle<Value> => {
-  const listbox = ListboxPrimitive.create<Value, Value>();
+export const create = <
+  Value extends string = string,
+>(): SelectBundle<Value> => {
+  const listbox = ListboxPrimitive.create<Value, Value>()
   return {
     update: listbox.update,
     select: (props, h) => renderSelect(listbox, props, h),
-  };
-};
+  }
+}
 
-const StringSelect = create<string>();
-export const update = StringSelect.update;
-export const select = StringSelect.select;
+const StringSelect = create<string>()
+export const update = StringSelect.update
+export const select = StringSelect.select
 
 /*
    Minimal wiring:

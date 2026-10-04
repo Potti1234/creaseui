@@ -1,4 +1,4 @@
-import type { Html, HtmlBuilder } from "foldkit/html";
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import {
   appShell,
@@ -7,27 +7,27 @@ import {
   section,
   tableRegion,
   toolbar,
-} from "./semantic-layout";
+} from './semantic-layout'
 import type {
   Density,
   NarrowRegionBehavior,
   PrimitiveChildren,
-} from "@/stylex/composition/types-internal";
-import { themeScope } from "./theme";
-import type { SemanticThemeName } from "./theme";
+} from '@/stylex/composition/types-internal'
+import { themeScope } from './theme'
+import type { SemanticThemeName } from './theme'
 
 // Re-exported locally to keep recipe APIs independent from implementation files.
-export type RecipeDensity = Density;
+export type RecipeDensity = Density
 
 export type DashboardShellProps = Readonly<{
-  content: PrimitiveChildren;
-  density?: RecipeDensity | undefined;
-  footer?: PrimitiveChildren | undefined;
-  header: PrimitiveChildren;
-  navigation: Html;
-  navigationWidth?: "standard" | "wide" | undefined;
-  theme?: SemanticThemeName | undefined;
-}>;
+  content: PrimitiveChildren
+  density?: RecipeDensity | undefined
+  footer?: PrimitiveChildren | undefined
+  header: PrimitiveChildren
+  navigation: Html
+  navigationWidth?: 'standard' | 'wide' | undefined
+  theme?: SemanticThemeName | undefined
+}>
 
 export const dashboardShell = <Message>(
   props: DashboardShellProps,
@@ -49,7 +49,7 @@ export const dashboardShell = <Message>(
                 h,
               ),
             ],
-            data: { recipe: "dashboard" },
+            data: { recipe: 'dashboard' },
             navigation: props.navigation,
             navigationWidth: props.navigationWidth,
           },
@@ -59,16 +59,16 @@ export const dashboardShell = <Message>(
       theme: props.theme,
     },
     h,
-  );
+  )
 
 export type SettingsPageProps = Readonly<{
-  actions?: PrimitiveChildren | undefined;
-  description?: string | undefined;
-  fields: PrimitiveChildren;
-  navigation?: Html | undefined;
-  title: string;
-  theme?: SemanticThemeName | undefined;
-}>;
+  actions?: PrimitiveChildren | undefined
+  description?: string | undefined
+  fields: PrimitiveChildren
+  navigation?: Html | undefined
+  title: string
+  theme?: SemanticThemeName | undefined
+}>
 
 export const settingsPage = <Message>(
   props: SettingsPageProps,
@@ -85,11 +85,11 @@ export const settingsPage = <Message>(
       },
       h,
     ),
-  ];
+  ]
   const page = pageLayout(
-    { content, contentWidth: "form", data: { recipe: "settings" } },
+    { content, contentWidth: 'form', data: { recipe: 'settings' } },
     h,
-  );
+  )
   return themeScope(
     {
       children: [
@@ -100,17 +100,17 @@ export const settingsPage = <Message>(
       theme: props.theme,
     },
     h,
-  );
-};
+  )
+}
 
 export type MasterDetailPageProps = Readonly<{
-  detail: Html;
-  detailBehavior?: NarrowRegionBehavior | undefined;
-  header: PrimitiveChildren;
-  master: PrimitiveChildren;
-  navigation?: Html | undefined;
-  theme?: SemanticThemeName | undefined;
-}>;
+  detail: Html
+  detailBehavior?: NarrowRegionBehavior | undefined
+  header: PrimitiveChildren
+  master: PrimitiveChildren
+  navigation?: Html | undefined
+  theme?: SemanticThemeName | undefined
+}>
 
 export const masterDetailPage = <Message>(
   props: MasterDetailPageProps,
@@ -125,8 +125,8 @@ export const masterDetailPage = <Message>(
             children: [
               pageLayout({ content: props.master, header: props.header }, h),
             ],
-            data: { recipe: "master-detail" },
-            narrowAuxiliary: props.detailBehavior ?? "overlay",
+            data: { recipe: 'master-detail' },
+            narrowAuxiliary: props.detailBehavior ?? 'overlay',
             navigation: props.navigation,
           },
           h,
@@ -135,17 +135,17 @@ export const masterDetailPage = <Message>(
       theme: props.theme,
     },
     h,
-  );
+  )
 
 export type DataExplorerPageProps = Readonly<{
-  actions?: PrimitiveChildren | undefined;
-  description?: string | undefined;
-  filters: PrimitiveChildren;
-  navigation?: Html | undefined;
-  table: PrimitiveChildren;
-  title: string;
-  theme?: SemanticThemeName | undefined;
-}>;
+  actions?: PrimitiveChildren | undefined
+  description?: string | undefined
+  filters: PrimitiveChildren
+  navigation?: Html | undefined
+  table: PrimitiveChildren
+  title: string
+  theme?: SemanticThemeName | undefined
+}>
 
 export const dataExplorerPage = <Message>(
   props: DataExplorerPageProps,
@@ -167,11 +167,11 @@ export const dataExplorerPage = <Message>(
       },
       h,
     ),
-  ];
+  ]
   const page = pageLayout(
-    { content, data: { recipe: "data-explorer" }, density: "compact" },
+    { content, data: { recipe: 'data-explorer' }, density: 'compact' },
     h,
-  );
+  )
   return themeScope(
     {
       children: [
@@ -182,15 +182,15 @@ export const dataExplorerPage = <Message>(
       theme: props.theme,
     },
     h,
-  );
-};
+  )
+}
 
 export type CommercePageProps = Readonly<{
-  cart?: Html | undefined;
-  header: PrimitiveChildren;
-  products: PrimitiveChildren;
-  theme?: SemanticThemeName | undefined;
-}>;
+  cart?: Html | undefined
+  header: PrimitiveChildren
+  products: PrimitiveChildren
+  theme?: SemanticThemeName | undefined
+}>
 
 export const commercePage = <Message>(
   props: CommercePageProps,
@@ -207,18 +207,18 @@ export const commercePage = <Message>(
                 {
                   content: [
                     section(
-                      { children: props.products, density: "spacious" },
+                      { children: props.products, density: 'spacious' },
                       h,
                     ),
                   ],
-                  density: "spacious",
+                  density: 'spacious',
                   header: props.header,
                 },
                 h,
               ),
             ],
-            data: { recipe: "commerce" },
-            narrowAuxiliary: "overlay",
+            data: { recipe: 'commerce' },
+            narrowAuxiliary: 'overlay',
           },
           h,
         ),
@@ -226,4 +226,4 @@ export const commercePage = <Message>(
       theme: props.theme,
     },
     h,
-  );
+  )

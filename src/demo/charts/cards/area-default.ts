@@ -1,8 +1,8 @@
-import type { EChartsOption } from 'echarts/types/dist/shared';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { EChartsOption } from 'echarts/types/dist/shared'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Chart from '@/lib/echarts';
-import * as Icon from '@/lib/icon';
+import * as Chart from '@/lib/echarts'
+import * as Icon from '@/lib/icon'
 import {
   card,
   cardContent,
@@ -10,23 +10,23 @@ import {
   cardFooter,
   cardHeader,
   cardTitle,
-} from '@/ui/card';
+} from '@/ui/card'
 
 /* Port of registry chart-area-default.tsx — recharts AreaChart with natural
    curve, translated to an ECharts smoothed line + area fill. This file is the
    EXEMPLAR for all chart card ports: static data at the top, registerChart at
    module load with an option builder, a `view` taking the page's toMessage. */
 
-const HOST_ID = 'chart-area-default';
+const HOST_ID = 'chart-area-default'
 
-const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June'];
-const DESKTOP = [186, 305, 237, 73, 209, 214];
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June']
+const DESKTOP = [186, 305, 237, 73, 209, 214]
 
 Chart.registerChart(HOST_ID, (theme): EChartsOption => ({
   grid: Chart.compactGrid(),
   xAxis: Chart.categoryAxis(
     theme,
-    MONTHS.map((month) => month.slice(0, 3)),
+    MONTHS.map(month => month.slice(0, 3)),
   ),
   yAxis: Chart.valueAxis(theme),
   tooltip: Chart.shadcnTooltip(theme),
@@ -42,7 +42,7 @@ Chart.registerChart(HOST_ID, (theme): EChartsOption => ({
       data: [...DESKTOP],
     },
   ],
-}));
+}))
 
 export const view = <Msg>(
   toMessage: (message: Chart.ChartMessage) => Msg,
@@ -124,5 +124,5 @@ export const view = <Msg>(
       ],
     },
     h,
-  );
-};
+  )
+}

@@ -1,7 +1,10 @@
 import { Checkbox as CheckboxPrimitive } from '@foldkit/ui'
 import type { Attribute, Html, HtmlBuilder } from 'foldkit/html'
 
-import type { FieldStatusVisualAttributes, InputStatus } from '@/lib/input-status'
+import type {
+  FieldStatusVisualAttributes,
+  InputStatus,
+} from '@/lib/input-status'
 import { renderDetachedStatus } from '@/lib/input-status'
 
 /* Ported from Meta Astryx CheckboxList + CheckboxListItem
@@ -71,7 +74,11 @@ export const resolveItemToggle = <Msg>(
     if (onChange === undefined) return undefined
     const values = collection.value
     return () =>
-      onChange(next ? [...values, item.value as string] : values.filter(v => v !== item.value))
+      onChange(
+        next
+          ? [...values, item.value as string]
+          : values.filter(v => v !== item.value),
+      )
   }
   const onToggle = item.onToggle
   return onToggle === undefined ? undefined : () => onToggle(next)
@@ -136,7 +143,9 @@ export const renderCheckboxListItem = <Msg>(
   const checked = resolveItemChecked(options.collection ?? {}, item)
   const isIndeterminate = checked === 'indeterminate'
   const isDisabled =
-    options.isDisabled === true || item.isDisabled === true || item.isLoading === true
+    options.isDisabled === true ||
+    item.isDisabled === true ||
+    item.isLoading === true
   const isReadOnly = options.isReadOnly === true || item.isReadOnly === true
   const toggle = resolveItemToggle(options.collection ?? {}, item, checked)
   const isInteractive = !isDisabled && !isReadOnly && toggle !== undefined
@@ -146,7 +155,9 @@ export const renderCheckboxListItem = <Msg>(
     isInteractive,
     isDisabled,
   }
-  const ariaLabel = item['aria-label'] ?? (typeof item.label === 'string' ? item.label : undefined)
+  const ariaLabel =
+    item['aria-label'] ??
+    (typeof item.label === 'string' ? item.label : undefined)
 
   return CheckboxPrimitive.view(
     {
@@ -175,7 +186,11 @@ export const renderCheckboxListItem = <Msg>(
               [
                 ...checkbox.filter(attribute => !isOnClick(attribute)),
                 ...(isInteractive && toggle !== undefined
-                  ? [h.OnClick(toggle(checked !== true), { propagation: 'Stop' })]
+                  ? [
+                      h.OnClick(toggle(checked !== true), {
+                        propagation: 'Stop',
+                      }),
+                    ]
                   : []),
                 ...(ariaLabel === undefined ? [] : [h.AriaLabel(ariaLabel)]),
                 h.DataAttribute('slot', 'checkbox-list-item-control'),
@@ -183,33 +198,45 @@ export const renderCheckboxListItem = <Msg>(
               ],
               [toIndicator(state, h)],
             ),
-            h.div([h.DataAttribute('slot', 'checkbox-list-item-content'), ...visual.content], [
-              h.span(
-                [
-                  h.Id(CheckboxPrimitive.labelId(options.id)),
-                  h.DataAttribute('slot', 'checkbox-list-item-label'),
-                  ...visual.label,
-                ],
-                [item.label],
-              ),
-              ...(item.description === undefined
-                ? []
-                : [
-                    h.p(
-                      [
-                        ...description,
-                        h.DataAttribute('slot', 'checkbox-list-item-description'),
-                        ...visual.description,
-                      ],
-                      [item.description],
-                    ),
-                  ]),
-            ]),
+            h.div(
+              [
+                h.DataAttribute('slot', 'checkbox-list-item-content'),
+                ...visual.content,
+              ],
+              [
+                h.span(
+                  [
+                    h.Id(CheckboxPrimitive.labelId(options.id)),
+                    h.DataAttribute('slot', 'checkbox-list-item-label'),
+                    ...visual.label,
+                  ],
+                  [item.label],
+                ),
+                ...(item.description === undefined
+                  ? []
+                  : [
+                      h.p(
+                        [
+                          ...description,
+                          h.DataAttribute(
+                            'slot',
+                            'checkbox-list-item-description',
+                          ),
+                          ...visual.description,
+                        ],
+                        [item.description],
+                      ),
+                    ]),
+              ],
+            ),
             ...(item.endContent === undefined
               ? []
               : [
                   h.div(
-                    [h.DataAttribute('slot', 'checkbox-list-item-end-content'), ...visual.endContent],
+                    [
+                      h.DataAttribute('slot', 'checkbox-list-item-end-content'),
+                      ...visual.endContent,
+                    ],
                     [item.endContent],
                   ),
                 ]),
@@ -299,7 +326,10 @@ export const renderCheckboxList = <Msg>(
                   : [
                       h.span(
                         [
-                          h.DataAttribute('slot', 'checkbox-list-label-indicator'),
+                          h.DataAttribute(
+                            'slot',
+                            'checkbox-list-label-indicator',
+                          ),
                           h.Attribute('aria-hidden', 'true'),
                           ...visual.labelIndicator,
                         ],
@@ -325,23 +355,30 @@ export const renderCheckboxList = <Msg>(
         [
           h.Attribute('role', 'group'),
           h.AriaLabelledBy(ids.label),
-          ...(describedBy === undefined ? [] : [h.AriaDescribedBy(describedBy)]),
+          ...(describedBy === undefined
+            ? []
+            : [h.AriaDescribedBy(describedBy)]),
           h.DataAttribute('slot', 'checkbox-list-group'),
           ...visual.group,
         ],
         [
           h.ul(
-            [
-              h.DataAttribute('slot', 'checkbox-list-items'),
-              ...visual.list,
-            ],
+            [h.DataAttribute('slot', 'checkbox-list-items'), ...visual.list],
             rows,
           ),
         ],
       ),
       ...(props.status?.message === undefined
         ? []
-        : [renderDetachedStatus(props.status, visual.status, statusIcon, h, ids.status)]),
+        : [
+            renderDetachedStatus(
+              props.status,
+              visual.status,
+              statusIcon,
+              h,
+              ids.status,
+            ),
+          ]),
     ],
   )
 }

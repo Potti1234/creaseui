@@ -1,6 +1,6 @@
-import { authoredPage } from '@/docs/components/pages/authored-page';
-import { dateRangeInputExamples } from '@/docs/components/pages/date-range-input/shared';
-import { dateRangeInputTailwindPreviewProgram } from '@/docs/components/pages/date-range-input/tailwind';
+import { authoredPage } from '@/docs/components/pages/authored-page'
+import { dateRangeInputExamples } from '@/docs/components/pages/date-range-input/shared'
+import { dateRangeInputTailwindPreviewProgram } from '@/docs/components/pages/date-range-input/tailwind'
 
 export const dateRangeInputPage = authoredPage({
   slug: 'date-range-input',
@@ -21,8 +21,14 @@ export const dateRangeInputPage = authoredPage({
       'The trigger is a real button with aria-haspopup=dialog, aria-expanded, and a labelled summary of the selection. Presets are a labelled group of buttons — the applied one carries aria-current; out-of-window presets stay visible but disabled. The calendar grid keeps grid semantics with a single roving tabindex.',
     keyboard: [
       ['Trigger', 'Opens the calendar popover; focus moves into the day grid.'],
-      ['First day click', 'Marks the pending start and clamps the span-cap window.'],
-      ['Second day click', 'Commits the normalized range and closes the popover.'],
+      [
+        'First day click',
+        'Marks the pending start and clamps the span-cap window.',
+      ],
+      [
+        'Second day click',
+        'Commits the normalized range and closes the popover.',
+      ],
       ['Escape', 'Closes the popover and discards a pending start.'],
       ['Clear button', 'Clears the range and emits ChangedValue(none).'],
     ],
@@ -31,4 +37,4 @@ export const dateRangeInputPage = authoredPage({
     examples: dateRangeInputExamples('tailwind'),
     stylexExamples: dateRangeInputExamples('stylex'),
   },
-});
+})

@@ -1,31 +1,31 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Icon from '@/lib/icon';
-import type { ComponentLayoutStyle } from './contracts';
-import { className } from './style';
-import { tokens } from './tokens.stylex';
+import * as Icon from '@/lib/icon'
+import type { ComponentLayoutStyle } from './contracts'
+import { className } from './style'
+import { tokens } from './tokens.stylex'
 
 /* Ported from Meta Astryx FieldStatus.tsx — StyleX renderer.
    See src/ui/field-status.ts for the port contract + PORT-NOTEs. */
 
-export type FieldStatusType = 'warning' | 'error' | 'success';
+export type FieldStatusType = 'warning' | 'error' | 'success'
 
-export type FieldStatusVariant = 'attached' | 'detached';
+export type FieldStatusVariant = 'attached' | 'detached'
 
 export type FieldStatusProps = Readonly<{
-  type: FieldStatusType;
-  message: string;
-  variant?: FieldStatusVariant;
-  id?: string;
-  layoutStyle?: ComponentLayoutStyle;
-}>;
+  type: FieldStatusType
+  message: string
+  variant?: FieldStatusVariant
+  id?: string
+  layoutStyle?: ComponentLayoutStyle
+}>
 
 const STATUS_ICON: Readonly<Record<FieldStatusType, string>> = {
   warning: 'triangle-alert',
   error: 'circle-alert',
   success: 'circle-check',
-};
+}
 
 const styles = stylex.create({
   base: {
@@ -65,7 +65,7 @@ const styles = stylex.create({
     height: '1rem',
     width: '1rem',
   },
-});
+})
 
 const statusColor = stylex.create({
   warning: {
@@ -77,7 +77,7 @@ const statusColor = stylex.create({
   success: {
     color: tokens.alertSuccess,
   },
-});
+})
 
 /* astryx warning/error/success-muted backgrounds are 20% hue tints — outside
    the create prop limits, so they apply as inline color-mix values.
@@ -86,13 +86,13 @@ const STATUS_BG: Readonly<Record<FieldStatusType, string>> = {
   warning: 'color-mix(in oklab, var(--chart-4) 20%, transparent)',
   error: 'color-mix(in oklab, var(--destructive) 20%, transparent)',
   success: 'color-mix(in oklab, var(--chart-2) 20%, transparent)',
-};
+}
 
 export const fieldStatus = <Msg>(
   props: FieldStatusProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const variant = props.variant ?? 'attached';
+  const variant = props.variant ?? 'attached'
   return h.div(
     [
       h.DataAttribute('slot', 'field-status'),
@@ -133,5 +133,5 @@ export const fieldStatus = <Msg>(
           ),
         ]
       : [props.message],
-  );
-};
+  )
+}

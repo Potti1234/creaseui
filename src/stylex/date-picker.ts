@@ -1,12 +1,12 @@
-import { Option } from 'effect';
-import * as FoldkitCalendar from 'foldkit/calendar';
-import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html';
+import { Option } from 'effect'
+import * as FoldkitCalendar from 'foldkit/calendar'
+import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
 
-import { DatePicker as DatePickerPrimitive } from '@foldkit/ui';
+import { DatePicker as DatePickerPrimitive } from '@foldkit/ui'
 
-import * as Icon from '@/lib/icon';
-import { mirrorNavigationKeyForRtl } from '@/lib/calendar';
-import { calendarView } from './calendar';
+import * as Icon from '@/lib/icon'
+import { mirrorNavigationKeyForRtl } from '@/lib/calendar'
+import { calendarView } from './calendar'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import { overlayStyles } from './overlay-tokens.stylex'
@@ -20,14 +20,80 @@ const styles = stylex.create({
   icon: { flexShrink: 0 },
   empty: { color: tokens.mutedForeground },
   panel: { padding: 0, width: 'auto' },
-  trigger: { fontWeight: 400, justifyContent: 'flex-start', textAlign: 'left', width: '15rem' },
-  triggerButton: { borderColor: { default: tokens.border, ':focus-visible': tokens.ring }, borderRadius: tokens.controlRadius, borderStyle: 'solid', borderWidth: 1, gap: '0.375rem', paddingInline: '0.625rem', alignItems: 'center', backgroundClip: 'padding-box', backgroundColor: { default: tokens.background, ':is([aria-expanded="true"])': tokens.muted, ':hover': tokens.muted, }, boxShadow: { default: tokens.shadowSm, ':focus-visible': tokens.focusRingShadow }, color: 'inherit', display: 'inline-flex', flexShrink: 0, fontSize: '0.875rem', fontWeight: 500, justifyContent: 'center', lineHeight: '1.25rem', opacity: { default: 1, ':is([data-disabled], [aria-disabled="true"])': 0.5 }, outlineStyle: 'none', whiteSpace: 'nowrap', height: '2.25rem', },
+  trigger: {
+    fontWeight: 400,
+    justifyContent: 'flex-start',
+    textAlign: 'left',
+    width: '15rem',
+  },
+  triggerButton: {
+    borderColor: { default: tokens.border, ':focus-visible': tokens.ring },
+    borderRadius: tokens.controlRadius,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    gap: '0.375rem',
+    paddingInline: '0.625rem',
+    alignItems: 'center',
+    backgroundClip: 'padding-box',
+    backgroundColor: {
+      default: tokens.background,
+      ':is([aria-expanded="true"])': tokens.muted,
+      ':hover': tokens.muted,
+    },
+    boxShadow: {
+      default: tokens.shadowSm,
+      ':focus-visible': tokens.focusRingShadow,
+    },
+    color: 'inherit',
+    display: 'inline-flex',
+    flexShrink: 0,
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    justifyContent: 'center',
+    lineHeight: '1.25rem',
+    opacity: {
+      default: 1,
+      ':is([data-disabled], [aria-disabled="true"])': 0.5,
+    },
+    outlineStyle: 'none',
+    whiteSpace: 'nowrap',
+    height: '2.25rem',
+  },
   field: { gap: '0.5rem', display: 'grid' },
-  fieldRow: { gap: '0.5rem', alignItems: 'center', display: 'flex', flexWrap: 'wrap' },
-  input: { borderColor: tokens.border, borderRadius: tokens.controlRadius, borderStyle: 'solid', borderWidth: 1, paddingInline: '0.75rem', backgroundColor: tokens.background, flexBasis: '0%', flexGrow: 1, fontSize: '0.875rem', lineHeight: '1.25rem', height: '2.5rem', minWidth: 0 },
-  inputLabel: { fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem', },
-  error: { color: tokens.destructive, fontSize: '0.875rem', lineHeight: '1.25rem' },
-  mobileDialog: { position: { default: null, '@media (max-width: 639px)': 'fixed' }, bottom: { default: null, '@media (max-width: 639px)': '0.75rem' }, left: { default: null, '@media (max-width: 639px)': '0.75rem' }, right: { default: null, '@media (max-width: 639px)': '0.75rem' }, top: { default: null, '@media (max-width: 639px)': 'auto' }, width: { default: null, '@media (max-width: 639px)': 'auto' } },
+  fieldRow: {
+    gap: '0.5rem',
+    alignItems: 'center',
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  input: {
+    borderColor: tokens.border,
+    borderRadius: tokens.controlRadius,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    paddingInline: '0.75rem',
+    backgroundColor: tokens.background,
+    flexBasis: '0%',
+    flexGrow: 1,
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+    height: '2.5rem',
+    minWidth: 0,
+  },
+  inputLabel: { fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem' },
+  error: {
+    color: tokens.destructive,
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+  },
+  mobileDialog: {
+    position: { default: null, '@media (max-width: 639px)': 'fixed' },
+    bottom: { default: null, '@media (max-width: 639px)': '0.75rem' },
+    left: { default: null, '@media (max-width: 639px)': '0.75rem' },
+    right: { default: null, '@media (max-width: 639px)': '0.75rem' },
+    top: { default: null, '@media (max-width: 639px)': 'auto' },
+    width: { default: null, '@media (max-width: 639px)': 'auto' },
+  },
 })
 
 const isStaticStyle = (value: unknown): value is StaticStyles =>
@@ -42,26 +108,26 @@ const cn = (...values: ReadonlyArray<unknown>): string =>
    wrapped with childAttributes. The popover uses foldkit's forced inline
    positioning; no Style attribute is emitted here. */
 
-export const Model = DatePickerPrimitive.Model;
-export type Model = typeof Model.Type;
-export const Message = DatePickerPrimitive.Message;
-export type Message = typeof Message.Type;
-export const OutMessage = DatePickerPrimitive.OutMessage;
-export type OutMessage = typeof OutMessage.Type;
+export const Model = DatePickerPrimitive.Model
+export type Model = typeof Model.Type
+export const Message = DatePickerPrimitive.Message
+export type Message = typeof Message.Type
+export const OutMessage = DatePickerPrimitive.OutMessage
+export type OutMessage = typeof OutMessage.Type
 
-export const init = DatePickerPrimitive.init;
-export const update = DatePickerPrimitive.update;
-export const open = DatePickerPrimitive.open;
-export const close = DatePickerPrimitive.close;
-export const selectDate = DatePickerPrimitive.selectDate;
-export const clear = DatePickerPrimitive.clear;
-export const focusDate = DatePickerPrimitive.focusDate;
-export const reflectMinDate = DatePickerPrimitive.reflectMinDate;
-export const reflectMaxDate = DatePickerPrimitive.reflectMaxDate;
-export const reflectDisabledDates = DatePickerPrimitive.reflectDisabledDates;
+export const init = DatePickerPrimitive.init
+export const update = DatePickerPrimitive.update
+export const open = DatePickerPrimitive.open
+export const close = DatePickerPrimitive.close
+export const selectDate = DatePickerPrimitive.selectDate
+export const clear = DatePickerPrimitive.clear
+export const focusDate = DatePickerPrimitive.focusDate
+export const reflectMinDate = DatePickerPrimitive.reflectMinDate
+export const reflectMaxDate = DatePickerPrimitive.reflectMaxDate
+export const reflectDisabledDates = DatePickerPrimitive.reflectDisabledDates
 export const reflectDisabledDaysOfWeek =
-  DatePickerPrimitive.reflectDisabledDaysOfWeek;
-export const triggerId = DatePickerPrimitive.triggerId;
+  DatePickerPrimitive.reflectDisabledDaysOfWeek
+export const triggerId = DatePickerPrimitive.triggerId
 
 /** Wraps update for right-to-left pickers: the embedded calendar's grid is
  *  mirrored visually, so ArrowLeft/ArrowRight inside the calendar submodel
@@ -77,7 +143,7 @@ export const updateForRtl = (
           message: mirrorNavigationKeyForRtl(message.message),
         })
       : message,
-  );
+  )
 
 const TRIGGER_CLASS = styles.triggerButton
 
@@ -85,37 +151,52 @@ const PANEL_CLASS = styles.panel
 
 const BACKDROP_CLASS = overlayStyles.backdrop
 
-type DatePickerTextInput<Msg> = Readonly<{ query: string; onQueryInput: (value: string) => Msg; inputLabel: string; parseError?: string }> | Readonly<{ query?: never; onQueryInput?: never; inputLabel?: never; parseError?: never }>
+type DatePickerTextInput<Msg> =
+  | Readonly<{
+      query: string
+      onQueryInput: (value: string) => Msg
+      inputLabel: string
+      parseError?: string
+    }>
+  | Readonly<{
+      query?: never
+      onQueryInput?: never
+      inputLabel?: never
+      parseError?: never
+    }>
 export type DatePickerProps<Msg> = Readonly<{
-  model: Model;
-  maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>;
-  toParentMessage: (message: Message) => Msg;
-  placeholder?: string;
-  formatDate?: (date: FoldkitCalendar.CalendarDate) => string;
-  name?: string;
-  isDisabled?: boolean;
-  ariaLabel?: string;
-  ariaLabelledBy?: string;
-  layoutStyle?: ComponentLayoutStyle;
-  triggerLayoutStyle?: ComponentLayoutStyle;
+  model: Model
+  maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>
+  toParentMessage: (message: Message) => Msg
+  placeholder?: string
+  formatDate?: (date: FoldkitCalendar.CalendarDate) => string
+  name?: string
+  isDisabled?: boolean
+  ariaLabel?: string
+  ariaLabelledBy?: string
+  layoutStyle?: ComponentLayoutStyle
+  triggerLayoutStyle?: ComponentLayoutStyle
   /** Overrides the trigger's inner content (receives the selected date). */
-  triggerContent?: (maybeDate: Option.Option<FoldkitCalendar.CalendarDate>) => Html;
-  panelLayoutStyle?: ComponentLayoutStyle;
-  calendarLayoutStyle?: ComponentLayoutStyle;
-  mobilePresentation?: 'dialog' | 'popover';
-  direction?: 'ltr' | 'rtl';
-}> & DatePickerTextInput<Msg>;
+  triggerContent?: (
+    maybeDate: Option.Option<FoldkitCalendar.CalendarDate>,
+  ) => Html
+  panelLayoutStyle?: ComponentLayoutStyle
+  calendarLayoutStyle?: ComponentLayoutStyle
+  mobilePresentation?: 'dialog' | 'popover'
+  direction?: 'ltr' | 'rtl'
+}> &
+  DatePickerTextInput<Msg>
 
 export const datePicker = <Msg>(
   props: DatePickerProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const hd = h;
-  const isEmpty = Option.isNone(props.maybeSelectedDate);
+  const hd = h
+  const isEmpty = Option.isNone(props.maybeSelectedDate)
   const formatDate =
     props.formatDate ??
     ((date: FoldkitCalendar.CalendarDate): string =>
-      FoldkitCalendar.formatLong(date, props.model.calendar.locale));
+      FoldkitCalendar.formatLong(date, props.model.calendar.locale))
 
   const picker = h.submodel({
     slotId: props.model.id,
@@ -126,7 +207,7 @@ export const datePicker = <Msg>(
       anchor: themedAnchor({ placement: 'bottom-start', gap: 4 }),
       triggerContent:
         props.triggerContent ??
-        ((maybeDate) =>
+        (maybeDate =>
           hd.span(
             [hd.Class(className(styles.contents))],
             [
@@ -137,7 +218,7 @@ export const datePicker = <Msg>(
               }),
             ],
           )),
-      toCalendarView: (attributes) =>
+      toCalendarView: attributes =>
         calendarView(
           attributes,
           {
@@ -164,7 +245,14 @@ export const datePicker = <Msg>(
       triggerAttributes: childAttributes([
         hd.DataAttribute('slot', 'popover-trigger'),
       ]),
-      panelClassName: cn(overlayStyles.panel, PANEL_CLASS, props.mobilePresentation === 'popover' ? undefined : styles.mobileDialog, props.panelLayoutStyle),
+      panelClassName: cn(
+        overlayStyles.panel,
+        PANEL_CLASS,
+        props.mobilePresentation === 'popover'
+          ? undefined
+          : styles.mobileDialog,
+        props.panelLayoutStyle,
+      ),
       panelAttributes: childAttributes([
         hd.DataAttribute('slot', 'popover-content'),
         hd.Role('dialog'),
@@ -176,11 +264,57 @@ export const datePicker = <Msg>(
         : { ariaLabelledBy: props.ariaLabelledBy }),
     },
     toParentMessage: props.toParentMessage,
-  });
-  if (props.query === undefined) return picker;
-  const inputId = `${props.model.id}-input`; const errorId = `${props.model.id}-error`;
-  return h.div([h.DataAttribute('slot', 'date-picker-field'), h.DataAttribute('mobile-presentation', props.mobilePresentation ?? 'dialog'), h.Class(className(styles.field))], [h.label([h.For(inputId), h.Class(className(styles.inputLabel))], [props.inputLabel]), h.div([h.Class(className(styles.fieldRow))], [h.input([h.Id(inputId), h.Type('text'), h.Value(props.query), h.OnInput(props.onQueryInput), h.AriaInvalid(props.parseError !== undefined), ...(props.parseError === undefined ? [] : [h.AriaDescribedBy(errorId)]), h.Placeholder('YYYY-MM-DD'), h.Class(className(styles.input))]), picker]), ...(props.parseError === undefined ? [] : [h.p([h.Id(errorId), h.Role('alert'), h.Class(className(styles.error))], [props.parseError])])]);
-};
+  })
+  if (props.query === undefined) return picker
+  const inputId = `${props.model.id}-input`
+  const errorId = `${props.model.id}-error`
+  return h.div(
+    [
+      h.DataAttribute('slot', 'date-picker-field'),
+      h.DataAttribute(
+        'mobile-presentation',
+        props.mobilePresentation ?? 'dialog',
+      ),
+      h.Class(className(styles.field)),
+    ],
+    [
+      h.label(
+        [h.For(inputId), h.Class(className(styles.inputLabel))],
+        [props.inputLabel],
+      ),
+      h.div(
+        [h.Class(className(styles.fieldRow))],
+        [
+          h.input([
+            h.Id(inputId),
+            h.Type('text'),
+            h.Value(props.query),
+            h.OnInput(props.onQueryInput),
+            h.AriaInvalid(props.parseError !== undefined),
+            ...(props.parseError === undefined
+              ? []
+              : [h.AriaDescribedBy(errorId)]),
+            h.Placeholder('YYYY-MM-DD'),
+            h.Class(className(styles.input)),
+          ]),
+          picker,
+        ],
+      ),
+      ...(props.parseError === undefined
+        ? []
+        : [
+            h.p(
+              [
+                h.Id(errorId),
+                h.Role('alert'),
+                h.Class(className(styles.error)),
+              ],
+              [props.parseError],
+            ),
+          ]),
+    ],
+  )
+}
 
 /*
    Minimal wiring:

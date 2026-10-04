@@ -1,14 +1,14 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type DateInputFixture = Readonly<{
-  title: string;
-  description?: string;
-  heroOnly?: boolean;
-  kind: 'single' | 'constraints' | 'formats' | 'validation';
+  title: string
+  description?: string
+  heroOnly?: boolean
+  kind: 'single' | 'constraints' | 'formats' | 'validation'
   /** Astrryx block id, kept for tracing against the source templates. */
-  astryxExample: string;
-}>;
+  astryxExample: string
+}>
 
 export const dateInputFixtures: ReadonlyArray<DateInputFixture> = [
   {
@@ -54,7 +54,7 @@ export const dateInputFixtures: ReadonlyArray<DateInputFixture> = [
     description:
       'Date input in all three status states: error, warning, and success. Use to surface validation issues, caution the user, or confirm a valid selection.',
   },
-];
+]
 
 const imports = (renderer: 'tailwind' | 'stylex', extra: string): string =>
   `import { Option, Schema as S } from 'effect'
@@ -62,7 +62,7 @@ import { Command, Runtime, Subscription, Update } from 'foldkit'
 import * as Calendar from 'foldkit/calendar'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-import * as DateInput from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/date-input'${extra}`;
+import * as DateInput from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/date-input'${extra}`
 
 const stylexPreamble = `
 import * as stylex from '@stylexjs/stylex'
@@ -77,23 +77,23 @@ const styles = stylex.create({
     width: '100%',
   },
   supporting: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
-})`;
+})`
 
 const stackClass = (isStyleX: boolean): string =>
   isStyleX
     ? `h.Class(className(styles.stack))`
-    : `h.Class('grid w-full max-w-[400px] min-w-[240px] gap-4')`;
+    : `h.Class('grid w-full max-w-[400px] min-w-[240px] gap-4')`
 
 const supportingClass = (isStyleX: boolean): string =>
   isStyleX
     ? `h.Class(className(styles.supporting))`
-    : `h.Class('text-muted-foreground text-sm')`;
+    : `h.Class('text-muted-foreground text-sm')`
 
 const messages = (multiSlot: boolean): string =>
   `import { taggedStruct } from 'foldkit/schema'
 export const GotDateInputMessage = taggedStruct('GotDateInputMessage', { ${multiSlot ? 'slot: S.Number, ' : ''}message: DateInput.Message });
 export const Message = S.Union([GotDateInputMessage])
-export type Message = typeof Message.Type`;
+export type Message = typeof Message.Type`
 
 const singleUpdate = `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
@@ -105,12 +105,15 @@ const singleUpdate = `export const update = (model: Model, message: Message): Up
       }
     }
   }
-}`;
+}`
 
-const singleSource = (fixture: DateInputFixture, renderer: 'tailwind' | 'stylex'): string => {
-  const isStyleX = renderer === 'stylex';
-  const isClearable = fixture.astryxExample === 'DateInputClearable';
-  const isDescription = fixture.astryxExample === 'DateInputWithDescription';
+const singleSource = (
+  fixture: DateInputFixture,
+  renderer: 'tailwind' | 'stylex',
+): string => {
+  const isStyleX = renderer === 'stylex'
+  const isClearable = fixture.astryxExample === 'DateInputClearable'
+  const isDescription = fixture.astryxExample === 'DateInputWithDescription'
   const inputCall = `DateInput.dateInput({
         model: model.dateInput,
         toParentMessage: message => GotDateInputMessage({ message }),
@@ -118,13 +121,13 @@ const singleSource = (fixture: DateInputFixture, renderer: 'tailwind' | 'stylex'
         ${isClearable ? `description: 'Pick a date for your event',` : isDescription ? `description: 'Your subscription begins on this date',` : ''}
         placeholder: '${isDescription ? 'Select a start date' : 'Select a date'}',
         ${!isDescription ? 'hasClear: true,' : ''}
-      }, h)`;
+      }, h)`
   const supporting = isClearable
     ? `Option.match(model.dateInput.value, {
             onNone: () => 'No date selected',
             onSome: date => \`Selected: \${DateInput.dateToISO(date)}\`,
           })`
-    : `'Helper text explains what the field expects'`;
+    : `'Helper text explains what the field expects'`
   return foldkitApplication({
     title: `DateInput — ${fixture.title}`,
     imports: imports(renderer, isStyleX ? stylexPreamble : ''),
@@ -137,8 +140,12 @@ export type Model = typeof Model.Type`,
   model: {
     dateInput: DateInput.init({
       id: 'docs-date-input',
-      today: Calendar.fromDateInZone(new Date(), 'UTC'),${isClearable ? `
-      value: Option.getOrUndefined(DateInput.dateFromISO('2026-04-06')),` : ''}
+      today: Calendar.fromDateInZone(new Date(), 'UTC'),${
+        isClearable
+          ? `
+      value: Option.getOrUndefined(DateInput.dateFromISO('2026-04-06')),`
+          : ''
+      }
     }),
   },
 })`,
@@ -146,19 +153,26 @@ export type Model = typeof Model.Type`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'DateInput — ${fixture.title}',
   body: h.main([h.Class('flex min-h-screen items-start justify-center p-8')], [
-    h.div([${stackClass(isStyleX)}], [${isClearable || isDescription ? `
+    h.div([${stackClass(isStyleX)}], [${
+      isClearable || isDescription
+        ? `
       h.p([${supportingClass(isStyleX)}], [
         ${supporting},
-      ]),` : ''}
+      ]),`
+        : ''
+    }
       ${inputCall},
     ]),
   ]),
 })`,
-  });
-};
+  })
+}
 
-const constraintsSource = (fixture: DateInputFixture, renderer: 'tailwind' | 'stylex'): string => {
-  const isStyleX = renderer === 'stylex';
+const constraintsSource = (
+  fixture: DateInputFixture,
+  renderer: 'tailwind' | 'stylex',
+): string => {
+  const isStyleX = renderer === 'stylex'
   return foldkitApplication({
     title: `DateInput — ${fixture.title}`,
     imports: imports(renderer, isStyleX ? stylexPreamble : ''),
@@ -204,11 +218,14 @@ const WINDOW_LABEL = \`\${MONTH_NAME} 8 – 21, \${String(TODAY.year)}\``,
     ]),
   ]),
 })`,
-  });
-};
+  })
+}
 
-const formatsSource = (fixture: DateInputFixture, renderer: 'tailwind' | 'stylex'): string => {
-  const isStyleX = renderer === 'stylex';
+const formatsSource = (
+  fixture: DateInputFixture,
+  renderer: 'tailwind' | 'stylex',
+): string => {
+  const isStyleX = renderer === 'stylex'
   return foldkitApplication({
     title: `DateInput — ${fixture.title}`,
     imports: imports(renderer, isStyleX ? stylexPreamble : ''),
@@ -276,11 +293,14 @@ const FORMATS = [
     ]),
   ]),
 })`,
-  });
-};
+  })
+}
 
-const validationSource = (fixture: DateInputFixture, renderer: 'tailwind' | 'stylex'): string => {
-  const isStyleX = renderer === 'stylex';
+const validationSource = (
+  fixture: DateInputFixture,
+  renderer: 'tailwind' | 'stylex',
+): string => {
+  const isStyleX = renderer === 'stylex'
   return foldkitApplication({
     title: `DateInput — ${fixture.title}`,
     imports: imports(renderer, isStyleX ? stylexPreamble : ''),
@@ -337,21 +357,24 @@ const FIELDS = [
     ]),
   ]),
 })`,
-  });
-};
+  })
+}
 
-const dateInputSource = (fixture: DateInputFixture, renderer: 'tailwind' | 'stylex'): string => {
+const dateInputSource = (
+  fixture: DateInputFixture,
+  renderer: 'tailwind' | 'stylex',
+): string => {
   switch (fixture.kind) {
     case 'constraints':
-      return constraintsSource(fixture, renderer);
+      return constraintsSource(fixture, renderer)
     case 'formats':
-      return formatsSource(fixture, renderer);
+      return formatsSource(fixture, renderer)
     case 'validation':
-      return validationSource(fixture, renderer);
+      return validationSource(fixture, renderer)
     default:
-      return singleSource(fixture, renderer);
+      return singleSource(fixture, renderer)
   }
-};
+}
 
 export const dateInputExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -364,4 +387,4 @@ export const dateInputExamples = (
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: dateInputSource(fixture, renderer),
-  }));
+  }))

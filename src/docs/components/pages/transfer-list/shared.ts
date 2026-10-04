@@ -1,29 +1,29 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
-import type { TransferListOption } from '@/ui/transfer-list';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
+import type { TransferListOption } from '@/ui/transfer-list'
 
 export type TransferListFixture = Readonly<{
-  title: string;
-  description: string;
+  title: string
+  description: string
   /** The TransferList label prop (accessible group name). */
-  label: string;
-  listDescription: string;
-  selectedLabel: string;
-  availableLabel: string;
-  initialValue: ReadonlyArray<string>;
-  options: 'basic' | 'locked' | 'large';
-  hasSearch?: boolean;
-  searchLabel?: string;
-  searchPlaceholder?: string;
-  isReorderable?: boolean;
-  hasSelectAll?: boolean;
-  hasClear?: boolean;
-  selectedEmptyText?: string;
-  availableEmptyText?: string;
-  noResultsText?: string;
+  label: string
+  listDescription: string
+  selectedLabel: string
+  availableLabel: string
+  initialValue: ReadonlyArray<string>
+  options: 'basic' | 'locked' | 'large'
+  hasSearch?: boolean
+  searchLabel?: string
+  searchPlaceholder?: string
+  isReorderable?: boolean
+  hasSelectAll?: boolean
+  hasClear?: boolean
+  selectedEmptyText?: string
+  availableEmptyText?: string
+  noResultsText?: string
   /** 'empty-pair' renders Empty + NoResults like the astryx Empty story. */
-  layout: 'single' | 'empty-pair';
-}>;
+  layout: 'single' | 'empty-pair'
+}>
 
 /* astryx ships no example blocks for TransferList — these fixtures are
    derived from apps/storybook/stories/TransferList.stories.tsx (Default,
@@ -49,7 +49,7 @@ export const basicOptions: ReadonlyArray<TransferListOption> = [
     description: 'Most recent change time',
   },
   { value: 'created', label: 'Created', description: 'Original creation time' },
-];
+]
 
 export const lockedOptions: ReadonlyArray<TransferListOption> = [
   {
@@ -96,21 +96,21 @@ export const lockedOptions: ReadonlyArray<TransferListOption> = [
     description: 'Most recent change time',
     group: 'Activity',
   },
-];
+]
 
 /** 200 generated fields in five groups, matching the Searchable story. */
 export const largePoolOptions: ReadonlyArray<TransferListOption> = Array.from(
   { length: 200 },
   (_, index) => {
-    const number = index + 1;
+    const number = index + 1
     return {
       value: `field-${String(number)}`,
       label: `Field ${String(number).padStart(3, '0')}`,
       description: `Configurable field ${String(number)}`,
       group: `Group ${String(Math.floor(index / 40) + 1)}`,
-    };
+    }
   },
-);
+)
 
 export const optionsFor = (
   key: TransferListFixture['options'],
@@ -119,7 +119,7 @@ export const optionsFor = (
     ? lockedOptions
     : key === 'large'
       ? largePoolOptions
-      : basicOptions;
+      : basicOptions
 
 export const transferListFixtures: Readonly<
   [TransferListFixture, ...Array<TransferListFixture>]
@@ -207,7 +207,7 @@ export const transferListFixtures: Readonly<
     hasClear: true,
     layout: 'empty-pair',
   },
-];
+]
 
 const OPTIONS_LITERALS: Record<TransferListFixture['options'], string> = {
   basic: `const BASIC_OPTIONS: ReadonlyArray<TransferList.TransferListOption> = [
@@ -237,13 +237,13 @@ const OPTIONS_LITERALS: Record<TransferListFixture['options'], string> = {
       group: \`Group \${String(Math.floor(index / 40) + 1)}\`,
     }
   })`,
-};
+}
 
 const OPTIONS_NAME: Record<TransferListFixture['options'], string> = {
   basic: 'BASIC_OPTIONS',
   locked: 'LOCKED_OPTIONS',
   large: 'LARGE_POOL_OPTIONS',
-};
+}
 
 const listCall = (fixture: TransferListFixture, suffix: '' | '2'): string => {
   const props: ReadonlyArray<string> = [
@@ -273,22 +273,22 @@ const listCall = (fixture: TransferListFixture, suffix: '' | '2'): string => {
     ...(fixture.noResultsText === undefined
       ? []
       : [`noResultsText: '${fixture.noResultsText}',`]),
-  ];
+  ]
   return `TransferList.transferList(
         {
           ${props.join('\n          ')}
         },
         h,
-      )`;
-};
+      )`
+}
 
 const transferListSource = (
   fixture: TransferListFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const isStyleX = renderer === 'stylex';
-  const ns = 'TransferList';
-  const isPair = fixture.layout === 'empty-pair';
+  const isStyleX = renderer === 'stylex'
+  const ns = 'TransferList'
+  const isPair = fixture.layout === 'empty-pair'
   /* The astryx Empty story pairs an empty-selection list with a search that
      matches nothing — the second list keeps ['name'] selected. */
   const secondProps = isPair
@@ -309,7 +309,7 @@ const transferListSource = (
           },
           h,
         )`
-    : '';
+    : ''
 
   return foldkitApplication({
     title: `Transfer List — ${fixture.title}`,
@@ -319,16 +319,24 @@ import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { taggedStruct } from 'foldkit/schema'
 import * as ${ns} from '@/${isStyleX ? 'stylex' : 'ui'}/transfer-list'`,
     model: `export const Model = S.Struct({
-  list: ${ns}.Model,${isPair ? `
-  list2: ${ns}.Model,` : ''}
+  list: ${ns}.Model,${
+    isPair
+      ? `
+  list2: ${ns}.Model,`
+      : ''
+  }
 })
 export type Model = typeof Model.Type`,
     messages: `export const GotListMessage = taggedStruct('GotListMessage', {
   message: ${ns}.Message,
-})${isPair ? `
+})${
+      isPair
+        ? `
 export const GotList2Message = taggedStruct('GotList2Message', {
   message: ${ns}.Message,
-})` : ''}
+})`
+        : ''
+    }
 export const Message = S.Union([GotListMessage${isPair ? ', GotList2Message' : ''}])
 export type Message = typeof Message.Type`,
     init: `${OPTIONS_LITERALS[fixture.options]}
@@ -338,11 +346,15 @@ export const init = (): Update.Return<Model, Message> => ({
     list: ${ns}.init({
       id: 'transfer-list',
       value: ${JSON.stringify(fixture.initialValue)},
-    }),${isPair ? `
+    }),${
+      isPair
+        ? `
     list2: ${ns}.init({
       id: 'transfer-list-2',
       value: ['name'],
-    }),` : ''}
+    }),`
+        : ''
+    }
   },
 })`,
     update: `export const update = (
@@ -361,7 +373,9 @@ export const init = (): Update.Return<Model, Message> => ({
         commands: Command.mapMessages(next.commands ?? [], inner =>
           GotListMessage({ message: inner })),
       }
-    }${isPair ? `
+    }${
+      isPair
+        ? `
     case 'GotList2Message': {
       const next = ${ns}.update(
         model.list2,
@@ -373,7 +387,9 @@ export const init = (): Update.Return<Model, Message> => ({
         commands: Command.mapMessages(next.commands ?? [], inner =>
           GotList2Message({ message: inner })),
       }
-    }` : ''}
+    }`
+        : ''
+    }
   }
 }`,
     subscriptions: `export const subscriptions = Subscription.aggregate<Model, Message>()(
@@ -388,7 +404,9 @@ export const init = (): Update.Return<Model, Message> => ({
       GotListMessage({
         message: ${ns}.Message.GotDndMessage({ message }),
       }),
-  }),${isPair ? `
+  }),${
+    isPair
+      ? `
   Subscription.lift({
     list2Pointer: ${ns}.subscriptions.documentPointer,
     list2Escape: ${ns}.subscriptions.documentEscape,
@@ -400,7 +418,9 @@ export const init = (): Update.Return<Model, Message> => ({
       GotList2Message({
         message: ${ns}.Message.GotDndMessage({ message }),
       }),
-  }),` : ''}
+  }),`
+      : ''
+  }
 )`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: '${fixture.title}',
@@ -410,25 +430,33 @@ export const init = (): Update.Return<Model, Message> => ({
       h.div(
         [h.Class('flex w-full max-w-3xl flex-col gap-6')],
         [
-          ${listCall(fixture, '')},${isPair ? `
-          h.hr([h.Class('border-border')]),` : ''}${isPair ? `
-          ${secondProps},` : ''}
+          ${listCall(fixture, '')},${
+            isPair
+              ? `
+          h.hr([h.Class('border-border')]),`
+              : ''
+          }${
+            isPair
+              ? `
+          ${secondProps},`
+              : ''
+          }
         ],
       ),
     ],
   ),
 })`,
-  });
-};
+  })
+}
 
 export const transferListExamples = (
   renderer: 'tailwind' | 'stylex',
 ): ReadonlyArray<DocsExample> =>
-  transferListFixtures.map((fixture) => ({
+  transferListFixtures.map(fixture => ({
     title: fixture.title,
     description: fixture.description,
     code: transferListSource(fixture, renderer),
     /* The transfer-list root is an @container: inside the centered preview
        it shrink-to-fits to ~one word. Stretch keeps it full width. */
     previewClass: 'justify-stretch',
-  }));
+  }))

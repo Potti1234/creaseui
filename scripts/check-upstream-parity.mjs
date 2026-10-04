@@ -4,7 +4,12 @@ import { basename, join } from 'node:path'
 const UPSTREAM_TREE =
   'https://api.github.com/repos/shadcn-ui/ui/git/trees/main?recursive=1'
 const UPSTREAM_PREFIX = 'apps/v4/registry/new-york-v4/ui/'
-const LOCAL_RECIPES = new Set(['data-table', 'date-picker', 'typography', 'toast'])
+const LOCAL_RECIPES = new Set([
+  'data-table',
+  'date-picker',
+  'typography',
+  'toast',
+])
 
 const response = await fetch(UPSTREAM_TREE, {
   headers: { Accept: 'application/vnd.github+json' },

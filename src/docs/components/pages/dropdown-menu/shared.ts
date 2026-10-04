@@ -1,32 +1,31 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type DropdownMenuItemSpec = Readonly<{
-  value: string;
-  label: string;
-  icon?: string;
-  shortcut?: string;
-  kind?: 'checkbox' | 'radio';
-  variant?: 'destructive';
-  isDisabled?: boolean;
-  group?: string;
-  submenu?: ReadonlyArray<DropdownMenuItemSpec>;
-}>;
+  value: string
+  label: string
+  icon?: string
+  shortcut?: string
+  kind?: 'checkbox' | 'radio'
+  variant?: 'destructive'
+  isDisabled?: boolean
+  group?: string
+  submenu?: ReadonlyArray<DropdownMenuItemSpec>
+}>
 
 export type DropdownMenuTriggerSpec = Readonly<
-  | { kind: 'button'; label: string }
-  | { kind: 'avatar'; initials: string }
->;
+  { kind: 'button'; label: string } | { kind: 'avatar'; initials: string }
+>
 
 export type DropdownMenuFixture = Readonly<{
-  title: string;
-  description: string;
-  trigger: DropdownMenuTriggerSpec;
-  items: ReadonlyArray<DropdownMenuItemSpec>;
-  checkedValues?: ReadonlyArray<string>;
-  radioValue?: string;
-  direction?: 'ltr' | 'rtl';
-}>;
+  title: string
+  description: string
+  trigger: DropdownMenuTriggerSpec
+  items: ReadonlyArray<DropdownMenuItemSpec>
+  checkedValues?: ReadonlyArray<string>
+  radioValue?: string
+  direction?: 'ltr' | 'rtl'
+}>
 
 export const dropdownMenuFixtures: Readonly<
   [DropdownMenuFixture, ...Array<DropdownMenuFixture>]
@@ -79,7 +78,11 @@ export const dropdownMenuFixtures: Readonly<
           { value: 'save-page', label: 'Save page', shortcut: '⌘S' },
           { value: 'create-shortcut', label: 'Create shortcut' },
           { value: 'name-window', label: 'Name window', isDisabled: true },
-          { value: 'developer-tools', label: 'Developer tools', shortcut: '⌘I' },
+          {
+            value: 'developer-tools',
+            label: 'Developer tools',
+            shortcut: '⌘I',
+          },
         ],
       },
       {
@@ -93,8 +96,7 @@ export const dropdownMenuFixtures: Readonly<
   },
   {
     title: 'Icons',
-    description:
-      'Items render a leading Lucide icon before the label.',
+    description: 'Items render a leading Lucide icon before the label.',
     trigger: { kind: 'button', label: 'Open' },
     items: [
       { value: 'profile', label: 'Profile', icon: 'user', group: 'My Account' },
@@ -145,7 +147,12 @@ export const dropdownMenuFixtures: Readonly<
         kind: 'checkbox',
         icon: 'activity',
       },
-      { value: 'mentions', label: 'Mentions only', kind: 'checkbox', icon: 'bell' },
+      {
+        value: 'mentions',
+        label: 'Mentions only',
+        kind: 'checkbox',
+        icon: 'bell',
+      },
     ],
   },
   {
@@ -223,8 +230,18 @@ export const dropdownMenuFixtures: Readonly<
         shortcut: '⌘⇧P',
         group: 'My Account',
       },
-      { value: 'billing', label: 'Billing', icon: 'credit-card', shortcut: '⌘B' },
-      { value: 'settings', label: 'Settings', icon: 'settings', shortcut: '⌘S' },
+      {
+        value: 'billing',
+        label: 'Billing',
+        icon: 'credit-card',
+        shortcut: '⌘B',
+      },
+      {
+        value: 'settings',
+        label: 'Settings',
+        icon: 'settings',
+        shortcut: '⌘S',
+      },
       {
         value: 'shortcuts',
         label: 'Keyboard shortcuts',
@@ -279,43 +296,51 @@ export const dropdownMenuFixtures: Readonly<
       { value: 'logout', label: 'تسجيل الخروج', icon: 'log-out' },
     ],
   },
-];
+]
 
-export const fixtureItems = (fixture: DropdownMenuFixture): ReadonlyArray<string> =>
-  fixture.items.map(item => item.value);
+export const fixtureItems = (
+  fixture: DropdownMenuFixture,
+): ReadonlyArray<string> => fixture.items.map(item => item.value)
 
-export const fixtureLabel = (fixture: DropdownMenuFixture, value: string): string => {
-  const flat = fixture.items.flatMap(item => [item, ...(item.submenu ?? [])]);
-  return flat.find(item => item.value === value)?.label ?? value;
-};
+export const fixtureLabel = (
+  fixture: DropdownMenuFixture,
+  value: string,
+): string => {
+  const flat = fixture.items.flatMap(item => [item, ...(item.submenu ?? [])])
+  return flat.find(item => item.value === value)?.label ?? value
+}
 
-export const checkboxValues = (fixture: DropdownMenuFixture): ReadonlyArray<string> =>
-  fixture.items.filter(item => item.kind === 'checkbox').map(item => item.value);
+export const checkboxValues = (
+  fixture: DropdownMenuFixture,
+): ReadonlyArray<string> =>
+  fixture.items.filter(item => item.kind === 'checkbox').map(item => item.value)
 
-export const radioValues = (fixture: DropdownMenuFixture): ReadonlyArray<string> =>
-  fixture.items.filter(item => item.kind === 'radio').map(item => item.value);
+export const radioValues = (
+  fixture: DropdownMenuFixture,
+): ReadonlyArray<string> =>
+  fixture.items.filter(item => item.kind === 'radio').map(item => item.value)
 
 /** Transient per-preview state for checkable items (seeds + toggles). */
 export type CheckableState = Readonly<{
-  checkedValues: ReadonlyArray<string>;
-  radioValue: string | undefined;
-}>;
+  checkedValues: ReadonlyArray<string>
+  radioValue: string | undefined
+}>
 
 export type ResolvedItemConfig<IconHtml> = Readonly<{
-  label: string;
-  icon?: IconHtml;
-  shortcut?: string;
-  kind?: 'checkbox' | 'radio';
-  isChecked?: boolean;
-  isInset?: boolean;
-  variant?: 'destructive';
-  isDisabled?: boolean;
-  group?: string;
+  label: string
+  icon?: IconHtml
+  shortcut?: string
+  kind?: 'checkbox' | 'radio'
+  isChecked?: boolean
+  isInset?: boolean
+  variant?: 'destructive'
+  isDisabled?: boolean
+  group?: string
   submenu?: {
-    items: ReadonlyArray<string>;
-    itemToConfig: (item: string) => ResolvedItemConfig<IconHtml>;
-  };
-}>;
+    items: ReadonlyArray<string>
+    itemToConfig: (item: string) => ResolvedItemConfig<IconHtml>
+  }
+}>
 
 /** Maps a fixture spec onto the component's itemToConfig shape, injecting
     checked state from the preview model. IconHtml is renderer-owned. */
@@ -337,7 +362,9 @@ export const resolveItemConfig = <IconHtml>(
             ? state.checkedValues.includes(spec.value)
             : state.radioValue === spec.value,
       }),
-  ...(spec.variant === 'destructive' ? { variant: 'destructive' as const } : {}),
+  ...(spec.variant === 'destructive'
+    ? { variant: 'destructive' as const }
+    : {}),
   ...(spec.isDisabled === true ? { isDisabled: true } : {}),
   ...(spec.group === undefined ? {} : { group: spec.group }),
   ...(spec.submenu === undefined
@@ -346,71 +373,90 @@ export const resolveItemConfig = <IconHtml>(
         submenu: {
           items: spec.submenu.map(item => item.value),
           itemToConfig: (item: string) => {
-            const child = spec.submenu?.find(candidate => candidate.value === item);
+            const child = spec.submenu?.find(
+              candidate => candidate.value === item,
+            )
             return child === undefined
               ? { label: item }
-              : resolveItemConfig(child, state, makeIcon);
+              : resolveItemConfig(child, state, makeIcon)
           },
         },
       }),
-});
+})
 
 // ---------- generated example source ----------
 
 const itemConfigSource = (spec: DropdownMenuItemSpec): string => {
-  const fields: Array<string> = [`label: '${spec.label.replaceAll("'", "\\'")}'`];
+  const fields: Array<string> = [
+    `label: '${spec.label.replaceAll("'", "\\'")}'`,
+  ]
   if (spec.icon !== undefined)
-    fields.push(`icon: Icon.icon('${spec.icon}', { class: 'size-4' }, h)`);
+    fields.push(`icon: Icon.icon('${spec.icon}', { class: 'size-4' }, h)`)
   if (spec.shortcut !== undefined)
-    fields.push(`shortcut: '${spec.shortcut.replaceAll("'", "\\'")}'`);
+    fields.push(`shortcut: '${spec.shortcut.replaceAll("'", "\\'")}'`)
   if (spec.kind !== undefined) {
-    fields.push(`kind: '${spec.kind}'`);
-    fields.push('isInset: true');
+    fields.push(`kind: '${spec.kind}'`)
+    fields.push('isInset: true')
   }
-  if (spec.variant === 'destructive') fields.push(`variant: 'destructive'`);
-  if (spec.isDisabled === true) fields.push('isDisabled: true');
+  if (spec.variant === 'destructive') fields.push(`variant: 'destructive'`)
+  if (spec.isDisabled === true) fields.push('isDisabled: true')
   if (spec.group !== undefined)
-    fields.push(`group: '${spec.group.replaceAll("'", "\\'")}'`);
+    fields.push(`group: '${spec.group.replaceAll("'", "\\'")}'`)
   if (spec.submenu !== undefined) {
-    const items = spec.submenu.map(item => `'${item.value}'`).join(', ');
-    fields.push(`submenu: { items: [${items}], itemToConfig: item => configs[item] }`);
+    const items = spec.submenu.map(item => `'${item.value}'`).join(', ')
+    fields.push(
+      `submenu: { items: [${items}], itemToConfig: item => configs[item] }`,
+    )
   }
-  return `${JSON.stringify(spec.value)}: { ${fields.join(', ')} }`;
-};
+  return `${JSON.stringify(spec.value)}: { ${fields.join(', ')} }`
+}
 
-const allItemSpecs = (fixture: DropdownMenuFixture): ReadonlyArray<DropdownMenuItemSpec> =>
-  fixture.items.flatMap(item => [item, ...(item.submenu ?? [])]);
+const allItemSpecs = (
+  fixture: DropdownMenuFixture,
+): ReadonlyArray<DropdownMenuItemSpec> =>
+  fixture.items.flatMap(item => [item, ...(item.submenu ?? [])])
 
-const source = (fixture: DropdownMenuFixture, renderer: 'tailwind' | 'stylex'): string => {
-  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '');
-  const isStyleX = renderer === 'stylex';
-  const uiDir = isStyleX ? 'stylex' : 'ui';
-  const specs = allItemSpecs(fixture);
-  const usesIcons = specs.some(spec => spec.icon !== undefined);
-  const usesAvatar = fixture.trigger.kind === 'avatar';
-  const usesCheckbox = specs.some(spec => spec.kind === 'checkbox');
-  const usesRadio = specs.some(spec => spec.kind === 'radio');
-  const literalValues = specs.map(spec => `'${spec.value}'`).join(', ');
-  const topLevelValues = fixtureItems(fixture).map(value => `'${value}'`).join(', ');
-  const imports = [
-    `import { Option, Schema as S } from 'effect'`,
-    `import { Command, Runtime, Subscription, Update } from 'foldkit'`,
-    `import { type Document, type HtmlBuilder } from 'foldkit/html'`,
-    ``,
-    ...(isStyleX
-      ? [
-          `import * as stylex from '@stylexjs/stylex'`,
-          `import type { ComponentLayoutStyle } from '@/stylex/contracts'`,
-        ]
-      : []),
-    ...(usesAvatar ? [`import * as Avatar from '@/${uiDir}/avatar'`] : []),
-    `import * as DropdownMenu from '@/${uiDir}/dropdown-menu'`,
-    ...(usesIcons ? [`import * as Icon from '@/lib/icon'`] : []),
-  ].join('\n') + (isStyleX ? `\n\nconst styles = stylex.create({\n  trigger: { borderColor: 'var(--border)', borderRadius: 'var(--radius-md)', borderStyle: 'solid', borderWidth: '1px', fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500, padding: '0.5rem 1rem' },\n  triggerAvatar: { borderRadius: '9999px' },\n})` : '');
+const source = (
+  fixture: DropdownMenuFixture,
+  renderer: 'tailwind' | 'stylex',
+): string => {
+  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
+  const isStyleX = renderer === 'stylex'
+  const uiDir = isStyleX ? 'stylex' : 'ui'
+  const specs = allItemSpecs(fixture)
+  const usesIcons = specs.some(spec => spec.icon !== undefined)
+  const usesAvatar = fixture.trigger.kind === 'avatar'
+  const usesCheckbox = specs.some(spec => spec.kind === 'checkbox')
+  const usesRadio = specs.some(spec => spec.kind === 'radio')
+  const literalValues = specs.map(spec => `'${spec.value}'`).join(', ')
+  const topLevelValues = fixtureItems(fixture)
+    .map(value => `'${value}'`)
+    .join(', ')
+  const imports =
+    [
+      `import { Option, Schema as S } from 'effect'`,
+      `import { Command, Runtime, Subscription, Update } from 'foldkit'`,
+      `import { type Document, type HtmlBuilder } from 'foldkit/html'`,
+      ``,
+      ...(isStyleX
+        ? [
+            `import * as stylex from '@stylexjs/stylex'`,
+            `import type { ComponentLayoutStyle } from '@/stylex/contracts'`,
+          ]
+        : []),
+      ...(usesAvatar ? [`import * as Avatar from '@/${uiDir}/avatar'`] : []),
+      `import * as DropdownMenu from '@/${uiDir}/dropdown-menu'`,
+      ...(usesIcons ? [`import * as Icon from '@/lib/icon'`] : []),
+    ].join('\n') +
+    (isStyleX
+      ? `\n\nconst styles = stylex.create({\n  trigger: { borderColor: 'var(--border)', borderRadius: 'var(--radius-md)', borderStyle: 'solid', borderWidth: '1px', fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500, padding: '0.5rem 1rem' },\n  triggerAvatar: { borderRadius: '9999px' },\n})`
+      : '')
   const modelExtra = [
     usesCheckbox ? `  checkedValues: S.Array(Item),` : '',
     usesRadio ? `  radioValue: S.Option(Item),` : '',
-  ].filter(Boolean).join('\n');
+  ]
+    .filter(Boolean)
+    .join('\n')
   const initExtra = [
     usesCheckbox
       ? `    checkedValues: [${(fixture.checkedValues ?? []).map(v => `'${v}'`).join(', ')}],`
@@ -418,7 +464,9 @@ const source = (fixture: DropdownMenuFixture, renderer: 'tailwind' | 'stylex'): 
     usesRadio
       ? `    radioValue: ${fixture.radioValue === undefined ? 'Option.none()' : `Option.some('${fixture.radioValue}')`},`
       : '',
-  ].filter(Boolean).join('\n');
+  ]
+    .filter(Boolean)
+    .join('\n')
   const updateExtra = [
     usesCheckbox
       ? `      const checkedValues = Option.match(maybeSelection, {
@@ -435,20 +483,22 @@ const source = (fixture: DropdownMenuFixture, renderer: 'tailwind' | 'stylex'): 
         onSome: selection => Option.some(selection.value),
       })`
       : '',
-  ].filter(Boolean).join('\n');
+  ]
+    .filter(Boolean)
+    .join('\n')
   const spreadExtra = [
     usesCheckbox ? ', checkedValues' : '',
     usesRadio ? ', radioValue' : '',
-  ].join('');
+  ].join('')
   const triggerSource =
     fixture.trigger.kind === 'avatar'
       ? `Avatar.avatar({ children: [Avatar.avatarFallback({ children: ['${fixture.trigger.initials}'] }, h)] }, h)`
-      : `'${fixture.trigger.label.replaceAll("'", "\\'")}'`;
+      : `'${fixture.trigger.label.replaceAll("'", "\\'")}'`
   const itemToConfigSource = usesCheckbox
     ? `itemToConfig: item => ({ ...configs[item], isChecked: model.checkedValues.includes(item) }),`
     : usesRadio
       ? `itemToConfig: item => ({ ...configs[item], isChecked: Option.contains(model.radioValue, item) }),`
-      : 'itemToConfig: item => configs[item],';
+      : 'itemToConfig: item => configs[item],'
   return foldkitApplication({
     title: `Dropdown Menu — ${fixture.title}`,
     imports,
@@ -500,7 +550,7 @@ ${updateExtra}
         model: model.menu,
         toParentMessage: message => GotMenuMessage({ message }),
         trigger: ${triggerSource},
-        ${isStyleX ? fixture.trigger.kind === 'avatar' ? 'triggerLayoutStyle: styles.triggerAvatar as ComponentLayoutStyle,' : 'triggerLayoutStyle: styles.trigger as ComponentLayoutStyle,' : fixture.trigger.kind === 'avatar' ? "triggerClass: 'rounded-full'," : "triggerClass: 'rounded-md border px-4 py-2 text-sm font-medium',"}
+        ${isStyleX ? (fixture.trigger.kind === 'avatar' ? 'triggerLayoutStyle: styles.triggerAvatar as ComponentLayoutStyle,' : 'triggerLayoutStyle: styles.trigger as ComponentLayoutStyle,') : fixture.trigger.kind === 'avatar' ? "triggerClass: 'rounded-full'," : "triggerClass: 'rounded-md border px-4 py-2 text-sm font-medium',"}
         ariaLabel: '${fixture.title} menu',
         items: [${topLevelValues}]${specs.some(spec => spec.submenu !== undefined) ? ' as ReadonlyArray<Item>' : ''},
         ${itemToConfigSource}
@@ -510,11 +560,14 @@ ${updateExtra}
     ]),
   }
 }`,
-  });
-};
+  })
+}
 
-export const dropdownMenuExamples = (renderer: 'tailwind' | 'stylex'): ReadonlyArray<DocsExample> => dropdownMenuFixtures.map(fixture => ({
-  title: fixture.title,
-  description: fixture.description,
-  code: source(fixture, renderer),
-}));
+export const dropdownMenuExamples = (
+  renderer: 'tailwind' | 'stylex',
+): ReadonlyArray<DocsExample> =>
+  dropdownMenuFixtures.map(fixture => ({
+    title: fixture.title,
+    description: fixture.description,
+    code: source(fixture, renderer),
+  }))

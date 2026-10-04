@@ -1,23 +1,23 @@
-import * as stylex from '@stylexjs/stylex';
-import type { StaticStyles } from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { StaticStyles } from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { ComponentLayoutStyle } from './contracts';
-import { className } from './style';
+import type { ComponentLayoutStyle } from './contracts'
+import { className } from './style'
 import { interactionTokens } from './interaction-tokens.stylex.const'
-import { tokens } from './tokens.stylex';
+import { tokens } from './tokens.stylex'
 
-export type MarkerVariant = 'default' | 'separator' | 'border';
-export type MarkerPurpose = 'annotation' | 'status' | 'decorative';
+export type MarkerVariant = 'default' | 'separator' | 'border'
+export type MarkerPurpose = 'annotation' | 'status' | 'decorative'
 type ChildrenProps = Readonly<{
-  children: ReadonlyArray<Html | string>;
-  layoutStyle?: ComponentLayoutStyle;
-}>;
+  children: ReadonlyArray<Html | string>
+  layoutStyle?: ComponentLayoutStyle
+}>
 
 const shimmerSweep = stylex.keyframes({
   from: { backgroundPosition: '100% 0' },
   to: { backgroundPosition: '0 0' },
-});
+})
 
 const styles = stylex.create({
   root: {
@@ -25,7 +25,8 @@ const styles = stylex.create({
     alignItems: 'center',
     color: tokens.mutedForeground,
     display: 'flex',
-    fontSize: '0.875rem', lineHeight: '1.25rem',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
     position: 'relative',
     textAlign: 'left',
     minHeight: '1rem',
@@ -74,14 +75,26 @@ const styles = stylex.create({
     textDecorationLine: 'underline',
     textUnderlineOffset: '0.1875rem',
   },
-  column: { flexDirection: 'column', },
+  column: { flexDirection: 'column' },
   icon: { flexShrink: 0, height: '1rem', width: '1rem' },
   content: { overflowWrap: 'break-word', minWidth: 0 },
   separatorContent: {
-    flexBasis: { default: null, [stylex.when.ancestor(':is([data-variant=separator])')]: 'auto' },
-    flexGrow: { default: null, [stylex.when.ancestor(':is([data-variant=separator])')]: 0 },
-    flexShrink: { default: null, [stylex.when.ancestor(':is([data-variant=separator])')]: 0 },
-    textAlign: { default: null, [stylex.when.ancestor(':is([data-variant=separator])')]: 'center' },
+    flexBasis: {
+      default: null,
+      [stylex.when.ancestor(':is([data-variant=separator])')]: 'auto',
+    },
+    flexGrow: {
+      default: null,
+      [stylex.when.ancestor(':is([data-variant=separator])')]: 0,
+    },
+    flexShrink: {
+      default: null,
+      [stylex.when.ancestor(':is([data-variant=separator])')]: 0,
+    },
+    textAlign: {
+      default: null,
+      [stylex.when.ancestor(':is([data-variant=separator])')]: 'center',
+    },
   },
   shimmer: {
     WebkitTextFillColor: 'transparent',
@@ -95,27 +108,27 @@ const styles = stylex.create({
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'calc(200% + (3ch + 40px) * 2) 100%',
   },
-});
+})
 
 export const markerVariants = (
   options: Readonly<{ variant?: MarkerVariant | null }> = {},
-): string => className(styles.root, styles[options.variant ?? 'default']);
+): string => className(styles.root, styles[options.variant ?? 'default'])
 
 export const marker = <Msg>(
   props: ChildrenProps &
     Readonly<{
-      variant?: MarkerVariant;
-      purpose?: MarkerPurpose;
-      ariaLabel?: string;
-      element?: 'div' | 'a' | 'button';
-      href?: string;
-      onClick?: () => Msg;
-      direction?: 'row' | 'column';
+      variant?: MarkerVariant
+      purpose?: MarkerPurpose
+      ariaLabel?: string
+      element?: 'div' | 'a' | 'button'
+      href?: string
+      onClick?: () => Msg
+      direction?: 'row' | 'column'
     }>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const purpose = props.purpose ?? 'annotation';
-  const element = props.element ?? 'div';
+  const purpose = props.purpose ?? 'annotation'
+  const element = props.element ?? 'div'
   const attrs = [
     h.DataAttribute('slot', 'marker'),
     h.DataAttribute('variant', props.variant ?? 'default'),
@@ -136,25 +149,23 @@ export const marker = <Msg>(
         props.layoutStyle,
       ),
     ),
-  ];
+  ]
   switch (element) {
     case 'a':
-      return h.a([...attrs, h.Href(props.href ?? '#')], [...props.children]);
+      return h.a([...attrs, h.Href(props.href ?? '#')], [...props.children])
     case 'button':
       return h.button(
         [
           ...attrs,
           h.Type('button'),
-          ...(props.onClick === undefined
-            ? []
-            : [h.OnClick(props.onClick())]),
+          ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick())]),
         ],
         [...props.children],
-      );
+      )
     default:
-      return h.div(attrs, [...props.children]);
+      return h.div(attrs, [...props.children])
   }
-};
+}
 
 export const markerIcon = <Msg>(
   props: ChildrenProps,
@@ -167,7 +178,7 @@ export const markerIcon = <Msg>(
       h.Class(className(styles.icon, props.layoutStyle)),
     ],
     [...props.children],
-  );
+  )
 
 export const markerContent = <Msg>(
   props: ChildrenProps & Readonly<{ shimmer?: boolean }>,
@@ -186,4 +197,4 @@ export const markerContent = <Msg>(
       ),
     ],
     [...props.children],
-  );
+  )

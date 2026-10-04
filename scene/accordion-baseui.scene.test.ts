@@ -499,7 +499,9 @@ const verifyRenderer = (name: string, Accordion: AccordionModule) => {
       it('does not render the item value as data-value on triggers', () => {
         Scene.scene(
           { update: Accordion.update, view: view() },
-          Scene.given(Accordion.init(initConfig(['first', 'second'], 'multiple'))),
+          Scene.given(
+            Accordion.init(initConfig(['first', 'second'], 'multiple')),
+          ),
           Scene.expect(trigger1).not.toHaveAttr('data-value'),
           Scene.expect(trigger2).not.toHaveAttr('data-value'),
         )

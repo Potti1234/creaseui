@@ -41,14 +41,14 @@ the same design in many inconsistent ways.
 
 The more precise verdict is:
 
-| Question | Finding |
-| --- | --- |
-| Does replacing Tailwind with StyleX automatically prevent drift? | No. Raw `stylex.create`, unrestricted `StyleXStyles`, arbitrary component overrides, and raw layout elements can recreate the same openness. |
-| Can StyleX support a strongly constrained system? | Yes. Static extraction, typed style objects, theme variables, and StyleX lint rules provide a strong base for a closed API. |
-| Did the primitives make later composition easier? | Yes. Once the vocabulary existed, the constrained board was assembled mostly by choosing finite props rather than inventing CSS. |
-| Was visual parity one-shot? | No. The first full migration required repeated browser comparison and fixes for responsive behavior, contextual states, icon sizing, card geometry, accessibility, and theme scoping. |
-| Is later AI work more predictable? | Yes. An agent working at the constrained page boundary has far fewer valid decisions and receives deterministic failures for most escape attempts. |
-| Can CI prove pixel-perfect design quality? | No. CI can prove structural and vocabulary constraints. Browser geometry and screenshot testing can detect regressions, but design judgment is still required for new visual decisions. |
+| Question                                                         | Finding                                                                                                                                                                                 |
+| ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Does replacing Tailwind with StyleX automatically prevent drift? | No. Raw `stylex.create`, unrestricted `StyleXStyles`, arbitrary component overrides, and raw layout elements can recreate the same openness.                                            |
+| Can StyleX support a strongly constrained system?                | Yes. Static extraction, typed style objects, theme variables, and StyleX lint rules provide a strong base for a closed API.                                                             |
+| Did the primitives make later composition easier?                | Yes. Once the vocabulary existed, the constrained board was assembled mostly by choosing finite props rather than inventing CSS.                                                        |
+| Was visual parity one-shot?                                      | No. The first full migration required repeated browser comparison and fixes for responsive behavior, contextual states, icon sizing, card geometry, accessibility, and theme scoping.   |
+| Is later AI work more predictable?                               | Yes. An agent working at the constrained page boundary has far fewer valid decisions and receives deterministic failures for most escape attempts.                                      |
+| Can CI prove pixel-perfect design quality?                       | No. CI can prove structural and vocabulary constraints. Browser geometry and screenshot testing can detect regressions, but design judgment is still required for new visual decisions. |
 
 ## Inspiration from Polar Orbit
 
@@ -78,14 +78,14 @@ the full CSS value space.
 
 ### Where Crease follows Orbit
 
-| Orbit idea | Crease implementation |
-| --- | --- |
-| Tokens are the vocabulary | `tokens.stylex.ts`, family token files, and composition token files contain semantic paint, shape, shadow, and spacing decisions. |
-| Typed primitive props | `Box`, `Stack`, `Inline`, `Grid`, and `Text` accept closed string unions. |
-| Remove the nearby escape hatch | The constrained page cannot call raw Foldkit layout builders, `h.Class`, `h.Style`, `stylex.create`, or class-composition helpers. |
-| Preserve semantics | Primitives accept a closed `as` union for `main`, `nav`, `section`, lists, and other approved elements. |
-| CI is the contract | Lint, compiler assertions, AST checks, catalog checks, and Playwright tests are executable requirements. |
-| Add a token instead of bypassing the system | Visual changes require a reviewed semantic token, named variant, or primitive prop. |
+| Orbit idea                                  | Crease implementation                                                                                                              |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Tokens are the vocabulary                   | `tokens.stylex.ts`, family token files, and composition token files contain semantic paint, shape, shadow, and spacing decisions.  |
+| Typed primitive props                       | `Box`, `Stack`, `Inline`, `Grid`, and `Text` accept closed string unions.                                                          |
+| Remove the nearby escape hatch              | The constrained page cannot call raw Foldkit layout builders, `h.Class`, `h.Style`, `stylex.create`, or class-composition helpers. |
+| Preserve semantics                          | Primitives accept a closed `as` union for `main`, `nav`, `section`, lists, and other approved elements.                            |
+| CI is the contract                          | Lint, compiler assertions, AST checks, catalog checks, and Playwright tests are executable requirements.                           |
+| Add a token instead of bypassing the system | Visual changes require a reviewed semantic token, named variant, or primitive prop.                                                |
 
 ### Where Crease differs
 
@@ -135,14 +135,14 @@ The initial experiment proved component coverage and constrained composition.
 The following hardening pass closes the six gaps identified after studying
 Linear's migration.
 
-| Point | Implemented contract | What now fails deterministically |
-| --- | --- | --- |
-| Cross-file style flow | `check-stylex-contract-flow.mjs` uses the TypeScript program and checker to follow each public `layoutStyle` and slot layout prop through wrappers, renamed forwarding, and final class materialization. | A declared layout hook that is dropped, applied outside the StyleX adapter, or merged before component-owned styles. |
-| Theme-aware overlays | Every anchored StyleX component calls `themedAnchor`, which fixes `portal` to `false`. | A body portal, a public `portal?: boolean`, direct Foldkit portal access, or a literal unguarded anchor config. |
-| Semantic interaction policy | `interaction-tokens.stylex.const.ts` owns durations, easing, cursors, and press transform; shared controls and overlays include reduced-motion behavior. | Raw timing, easing, or cursor values in the StyleX implementation and StyleX Create cards. |
-| Suppression and fallback governance | Only justified next-line suppressions are accepted; CSS Modules must live in `src/stylex/fallbacks` and be declared in its manifest with a specific reason. | File-wide disables, unexplained suppressions, undeclared CSS fallbacks, missing fallback files, and stale ESLint disables. |
-| Browser state matrix | A dedicated Playwright test records and asserts rest, hover, focus, active, disabled, dark, open, and scoped-theme states. | Missing visual state changes, broken focus rings, lost disabled semantics, dark-token drift, or an overlay escaping the theme scope. |
-| Adoption metrics | A generated drift-checked report labels the work as a `parallel-experiment` and separately counts UI components, Create cards, constrained primitives, and guardrail escapes. | Counter drift, missing counterparts, new legacy imports, suppressions, fallbacks, or unsafe portals that are not reflected in the report. |
+| Point                               | Implemented contract                                                                                                                                                                                     | What now fails deterministically                                                                                                          |
+| ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| Cross-file style flow               | `check-stylex-contract-flow.mjs` uses the TypeScript program and checker to follow each public `layoutStyle` and slot layout prop through wrappers, renamed forwarding, and final class materialization. | A declared layout hook that is dropped, applied outside the StyleX adapter, or merged before component-owned styles.                      |
+| Theme-aware overlays                | Every anchored StyleX component calls `themedAnchor`, which fixes `portal` to `false`.                                                                                                                   | A body portal, a public `portal?: boolean`, direct Foldkit portal access, or a literal unguarded anchor config.                           |
+| Semantic interaction policy         | `interaction-tokens.stylex.const.ts` owns durations, easing, cursors, and press transform; shared controls and overlays include reduced-motion behavior.                                                 | Raw timing, easing, or cursor values in the StyleX implementation and StyleX Create cards.                                                |
+| Suppression and fallback governance | Only justified next-line suppressions are accepted; CSS Modules must live in `src/stylex/fallbacks` and be declared in its manifest with a specific reason.                                              | File-wide disables, unexplained suppressions, undeclared CSS fallbacks, missing fallback files, and stale ESLint disables.                |
+| Browser state matrix                | A dedicated Playwright test records and asserts rest, hover, focus, active, disabled, dark, open, and scoped-theme states.                                                                               | Missing visual state changes, broken focus rings, lost disabled semantics, dark-token drift, or an overlay escaping the theme scope.      |
+| Adoption metrics                    | A generated drift-checked report labels the work as a `parallel-experiment` and separately counts UI components, Create cards, constrained primitives, and guardrail escapes.                            | Counter drift, missing counterparts, new legacy imports, suppressions, fallbacks, or unsafe portals that are not reflected in the report. |
 
 The current flow checker covers 65 component modules, 171 exported functions,
 and 190 constrained layout properties. Multiple final materializations are
@@ -216,10 +216,10 @@ and visual styling moved to StyleX.
 The `/create` renderer switcher makes the comparison explicit without
 duplicating pages:
 
-| Renderer | Purpose |
-| --- | --- |
-| Tailwind | Original Create reference. |
-| StyleX | Same Create behavior, with StyleX components composed through the five closed primitives. |
+| Renderer | Purpose                                                                                   |
+| -------- | ----------------------------------------------------------------------------------------- |
+| Tailwind | Original Create reference.                                                                |
+| StyleX   | Same Create behavior, with StyleX components composed through the five closed primitives. |
 
 The StyleX renderer does not fork product behavior. It reuses the StyleX
 board model, messages, reducers, commands, subscriptions, preset theme, sprite
@@ -309,14 +309,14 @@ how a primitive affects the real Create page.
 
 The specimen was removed. The current controls modify the actual board:
 
-| Inspector control | Real target |
-| --- | --- |
-| Canvas padding (`Box`) | Padding around the complete 33-card board. |
-| Canvas surface (`Box`) | Background, foreground, border, and shadow semantics of the board canvas. |
-| Card spacing (`Stack`) | Vertical space between real cards and space inside real split columns. |
-| Board alignment (`Inline`) | Justification of the actual fixed-width board inside its horizontal layout context. |
-| Split layout (`Grid`) | Real two-card split compositions switch between one and two columns. |
-| Board text scale (`Text`) | Typography inherited by the real board; explicit component typography remains stable by design. |
+| Inspector control          | Real target                                                                                     |
+| -------------------------- | ----------------------------------------------------------------------------------------------- |
+| Canvas padding (`Box`)     | Padding around the complete 33-card board.                                                      |
+| Canvas surface (`Box`)     | Background, foreground, border, and shadow semantics of the board canvas.                       |
+| Card spacing (`Stack`)     | Vertical space between real cards and space inside real split columns.                          |
+| Board alignment (`Inline`) | Justification of the actual fixed-width board inside its horizontal layout context.             |
+| Split layout (`Grid`)      | Real two-card split compositions switch between one and two columns.                            |
+| Board text scale (`Text`)  | Typography inherited by the real board; explicit component typography remains stable by design. |
 
 `responsive` and `inherit` are first-class finite decisions. They preserve the
 reference geometry at the default state while still allowing visible changes.
@@ -440,15 +440,15 @@ cost, not a forced-exit workaround.
 
 ## What each layer can and cannot prove
 
-| Layer | Can prove | Cannot prove |
-| --- | --- | --- |
-| Closed prop types | Only declared decisions are accepted at ordinary call sites. | That every declared decision looks good in every context. |
-| Semantic tokens | Paint, radius, shadow, and spacing values come from reviewed vocabulary. | That a semantically valid token was chosen for the correct product meaning. |
-| StyleX compiler | Styles are statically extracted and compiler-valid. | Product-level consistency by itself. |
-| ESLint and Oxlint | Known syntax and policy violations fail deterministically. | Arbitrary intent or visual quality. |
-| AST tests | Structural boundaries, imports, calls, props, and exports remain constrained. | Runtime layout and browser CSS behavior. |
-| Playwright geometry | Important rendered measurements and interactions remain stable. | Every pixel in every state unless screenshot coverage is exhaustive. |
-| Human review | New decisions fit the design language and product context. | Deterministic enforcement across future changes unless the decision is encoded afterward. |
+| Layer               | Can prove                                                                     | Cannot prove                                                                              |
+| ------------------- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Closed prop types   | Only declared decisions are accepted at ordinary call sites.                  | That every declared decision looks good in every context.                                 |
+| Semantic tokens     | Paint, radius, shadow, and spacing values come from reviewed vocabulary.      | That a semantically valid token was chosen for the correct product meaning.               |
+| StyleX compiler     | Styles are statically extracted and compiler-valid.                           | Product-level consistency by itself.                                                      |
+| ESLint and Oxlint   | Known syntax and policy violations fail deterministically.                    | Arbitrary intent or visual quality.                                                       |
+| AST tests           | Structural boundaries, imports, calls, props, and exports remain constrained. | Runtime layout and browser CSS behavior.                                                  |
+| Playwright geometry | Important rendered measurements and interactions remain stable.               | Every pixel in every state unless screenshot coverage is exhaustive.                      |
+| Human review        | New decisions fit the design language and product context.                    | Deterministic enforcement across future changes unless the decision is encoded afterward. |
 
 ## Implementation learnings
 
@@ -578,30 +578,30 @@ npm run check
 
 ## Important files
 
-| Area | File |
-| --- | --- |
-| Shared compiler semantics | `stylex.config.js` |
-| Vite application adapter | `vite.config.ts` |
-| Vitest compile-only adapter | `vitest.config.ts` |
-| StyleX lint policy | `eslint.config.js` |
-| Component layout contract | `src/stylex/contracts.ts` |
-| Semantic component tokens | `src/stylex/tokens.stylex.ts` |
-| Component authoring policy | `src/stylex/README.md` |
-| Component manifest | `src/stylex/index.ts` |
-| Cross-file layout flow checker | `scripts/check-stylex-contract-flow.mjs` |
-| Theme-aware overlay boundary | `src/stylex/overlay-boundary.ts` |
-| Interaction and motion tokens | `src/stylex/interaction-tokens.stylex.const.ts` |
-| Suppression/fallback governance | `scripts/check-stylex-governance.mjs`, `src/stylex/fallbacks/manifest.json` |
-| Parallel adoption metrics | `scripts/report-stylex-adoption.mjs`, `docs/stylex-adoption.json` |
-| Composition primitives | `src/stylex/composition/` |
-| Constrained page | `src/demo/board-constrained.ts` |
-| Shared StyleX board behavior | `src/demo/board-stylex.ts` |
-| StyleX card modules | `src/demo/stylex-cards/` |
-| Composition source guard | `scripts/check-constrained-composition.mjs` |
-| Composition AST tests | `test/stylex-composition.test.ts` |
-| Component/catalog contracts | `test/stylex-catalog.test.ts`, `test/stylex-contract.test.ts` |
-| Browser parity and inspector tests | `e2e/site.spec.ts` |
-| Browser interaction/theme matrix | `e2e/stylex-state-matrix.spec.ts` |
+| Area                               | File                                                                        |
+| ---------------------------------- | --------------------------------------------------------------------------- |
+| Shared compiler semantics          | `stylex.config.js`                                                          |
+| Vite application adapter           | `vite.config.ts`                                                            |
+| Vitest compile-only adapter        | `vitest.config.ts`                                                          |
+| StyleX lint policy                 | `eslint.config.js`                                                          |
+| Component layout contract          | `src/stylex/contracts.ts`                                                   |
+| Semantic component tokens          | `src/stylex/tokens.stylex.ts`                                               |
+| Component authoring policy         | `src/stylex/README.md`                                                      |
+| Component manifest                 | `src/stylex/index.ts`                                                       |
+| Cross-file layout flow checker     | `scripts/check-stylex-contract-flow.mjs`                                    |
+| Theme-aware overlay boundary       | `src/stylex/overlay-boundary.ts`                                            |
+| Interaction and motion tokens      | `src/stylex/interaction-tokens.stylex.const.ts`                             |
+| Suppression/fallback governance    | `scripts/check-stylex-governance.mjs`, `src/stylex/fallbacks/manifest.json` |
+| Parallel adoption metrics          | `scripts/report-stylex-adoption.mjs`, `docs/stylex-adoption.json`           |
+| Composition primitives             | `src/stylex/composition/`                                                   |
+| Constrained page                   | `src/demo/board-constrained.ts`                                             |
+| Shared StyleX board behavior       | `src/demo/board-stylex.ts`                                                  |
+| StyleX card modules                | `src/demo/stylex-cards/`                                                    |
+| Composition source guard           | `scripts/check-constrained-composition.mjs`                                 |
+| Composition AST tests              | `test/stylex-composition.test.ts`                                           |
+| Component/catalog contracts        | `test/stylex-catalog.test.ts`, `test/stylex-contract.test.ts`               |
+| Browser parity and inspector tests | `e2e/site.spec.ts`                                                          |
+| Browser interaction/theme matrix   | `e2e/stylex-state-matrix.spec.ts`                                           |
 
 ## Current limitations and open work
 
@@ -635,15 +635,15 @@ result was poor.
 
 That failure is important: syntactic safety is not design accuracy.
 
-| First-pass failure | Root cause | System improvement |
-| --- | --- | --- |
-| The marketing hero became a small, left-aligned introduction. | The agent preserved words but not the reference's page hierarchy and spatial emphasis. | Added finite hero height, hero typography, text measure, centering, and responsive visibility choices. |
-| Block titles and controls used an invented gallery toolbar. | The source contract checked block IDs, not toolbar anatomy or semantic ordering. | Rebuilt the toolbar around the reference hierarchy and added desktop/mobile presentations. |
-| Sidebar examples were generic placeholders. | The one-shot pass treated blocks as categories rather than concrete products with distinct information architecture. | Recovered registry content and made `sidebar-03` a documentation tree instead of another product sidebar. |
-| Dashboard cards omitted their second line and collapsed to two columns. | Content fidelity was not part of the contract, and overlapping media queries had ambiguous precedence. | Restored the complete card hierarchy and changed the responsive grid to mutually exclusive breakpoint ranges. |
-| Icons were blank and consumed layout space. | The raw icon renderer accepts arbitrary names and unconstrained SVG sizing; the primitive system had no safe icon adapter. | Added a closed StyleX icon adapter with finite sizes and used only generated icon names. |
-| Login forms were too wide and the separator wrapped vertically. | `width: full` was the closest available choice, while separators were improvised from generic layout primitives. | Added finite form/login widths, centered-content alignment, and used the shared `FieldSeparator`. |
-| Mobile controls overflowed the viewport. | A wrapping desktop toolbar is not the same composition as the mobile reference. | Added finite desktop/mobile visibility and a separate compact mobile block heading. |
+| First-pass failure                                                      | Root cause                                                                                                                 | System improvement                                                                                            |
+| ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| The marketing hero became a small, left-aligned introduction.           | The agent preserved words but not the reference's page hierarchy and spatial emphasis.                                     | Added finite hero height, hero typography, text measure, centering, and responsive visibility choices.        |
+| Block titles and controls used an invented gallery toolbar.             | The source contract checked block IDs, not toolbar anatomy or semantic ordering.                                           | Rebuilt the toolbar around the reference hierarchy and added desktop/mobile presentations.                    |
+| Sidebar examples were generic placeholders.                             | The one-shot pass treated blocks as categories rather than concrete products with distinct information architecture.       | Recovered registry content and made `sidebar-03` a documentation tree instead of another product sidebar.     |
+| Dashboard cards omitted their second line and collapsed to two columns. | Content fidelity was not part of the contract, and overlapping media queries had ambiguous precedence.                     | Restored the complete card hierarchy and changed the responsive grid to mutually exclusive breakpoint ranges. |
+| Icons were blank and consumed layout space.                             | The raw icon renderer accepts arbitrary names and unconstrained SVG sizing; the primitive system had no safe icon adapter. | Added a closed StyleX icon adapter with finite sizes and used only generated icon names.                      |
+| Login forms were too wide and the separator wrapped vertically.         | `width: full` was the closest available choice, while separators were improvised from generic layout primitives.           | Added finite form/login widths, centered-content alignment, and used the shared `FieldSeparator`.             |
+| Mobile controls overflowed the viewport.                                | A wrapping desktop toolbar is not the same composition as the mobile reference.                                            | Added finite desktop/mobile visibility and a separate compact mobile block heading.                           |
 
 ### What the case study changes
 

@@ -50,7 +50,10 @@ const getContentEditableRoot = (el: HTMLElement): HTMLElement | null => {
 /** Whether an arrow/Home/End key should be left to the browser because the
     event target is a text-editing element whose caret is not yet at the
     boundary in the direction of travel (or a selection is present). */
-const shouldDeferToCaret = (target: EventTarget | null, key: string): boolean => {
+const shouldDeferToCaret = (
+  target: EventTarget | null,
+  key: string,
+): boolean => {
   if (!(target instanceof HTMLElement)) return false
   const editableRoot = getContentEditableRoot(target)
   if (editableRoot) {
@@ -143,7 +146,9 @@ export const FocusToolbarItems = Mount.defineStream('FocusToolbarItems', {
               }
             }
 
-            const getCurrentIndex = (items: ReadonlyArray<HTMLElement>): number => {
+            const getCurrentIndex = (
+              items: ReadonlyArray<HTMLElement>,
+            ): number => {
               const active = document.activeElement
               return items.findIndex(
                 item => item === active || item.contains(active),
@@ -200,15 +205,33 @@ export const FocusToolbarItems = Mount.defineStream('FocusToolbarItems', {
 
               if (isNext) {
                 const from = currentIndex === -1 ? 0 : currentIndex + 1
-                const next = findEnabledIndex(items, isItemDisabled, from, 1, true)
+                const next = findEnabledIndex(
+                  items,
+                  isItemDisabled,
+                  from,
+                  1,
+                  true,
+                )
                 if (next !== -1) focusIndex(items, next)
               } else if (isPrev) {
                 const from =
                   currentIndex === -1 ? items.length - 1 : currentIndex - 1
-                const prev = findEnabledIndex(items, isItemDisabled, from, -1, true)
+                const prev = findEnabledIndex(
+                  items,
+                  isItemDisabled,
+                  from,
+                  -1,
+                  true,
+                )
                 if (prev !== -1) focusIndex(items, prev)
               } else if (isHome) {
-                const first = findEnabledIndex(items, isItemDisabled, 0, 1, false)
+                const first = findEnabledIndex(
+                  items,
+                  isItemDisabled,
+                  0,
+                  1,
+                  false,
+                )
                 if (first !== -1) focusIndex(items, first)
               } else if (isEnd) {
                 const last = findEnabledIndex(
@@ -258,8 +281,4 @@ export const FocusToolbarItems = Mount.defineStream('FocusToolbarItems', {
 export const focusToolbarItemsMount = <Msg>(
   toParentMessage: (message: Message) => Msg,
   orientation: 'horizontal' | 'vertical',
-) =>
-  Mount.mapMessage(
-    FocusToolbarItems({ orientation }),
-    toParentMessage,
-  )
+) => Mount.mapMessage(FocusToolbarItems({ orientation }), toParentMessage)

@@ -1,6 +1,6 @@
-import { authoredPage } from '@/docs/components/pages/authored-page';
-import { tourExamples } from '@/docs/components/pages/tour/shared';
-import { tourTailwindPreviewProgram } from '@/docs/components/pages/tour/tailwind';
+import { authoredPage } from '@/docs/components/pages/authored-page'
+import { tourExamples } from '@/docs/components/pages/tour/shared'
+import { tourTailwindPreviewProgram } from '@/docs/components/pages/tour/tailwind'
 
 export const tourPage = authoredPage({
   slug: 'tour',
@@ -21,10 +21,13 @@ export const tourPage = authoredPage({
       'The callout is role=dialog labelled by its heading and receives focus after anchoring; a visible close control and Escape both dismiss with the "close" source. Steps must target interactive elements, matching Popover\'s anchor contract.',
     keyboard: [
       ['Escape', 'Dismisses the tour (reported as a close).'],
-      ['Enter / Space', 'Activates the focused tour control (Back, Next, Done, Close).'],
+      [
+        'Enter / Space',
+        'Activates the focused tour control (Back, Next, Done, Close).',
+      ],
       ['Tab', 'Moves focus within the callout; the target stays the anchor.'],
     ],
     examples: tourExamples('tailwind'),
     stylexExamples: tourExamples('stylex'),
   },
-});
+})

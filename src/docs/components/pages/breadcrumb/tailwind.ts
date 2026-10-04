@@ -1,28 +1,28 @@
-import { Schema as S } from 'effect';
-import { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import { Schema as S } from 'effect'
+import { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-import { definePreviewProgram } from '@/docs/components/pages/authored-page';
+import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
   breadcrumbFixtures,
   type BreadcrumbFixture,
   type BreadcrumbItemSpec,
-} from '@/docs/components/pages/breadcrumb/shared';
-import * as Breadcrumb from '@/ui/breadcrumb';
-import * as DropdownMenu from '@/ui/dropdown-menu';
-import * as Icon from '@/lib/icon';
+} from '@/docs/components/pages/breadcrumb/shared'
+import * as Breadcrumb from '@/ui/breadcrumb'
+import * as DropdownMenu from '@/ui/dropdown-menu'
+import * as Icon from '@/lib/icon'
 
 const PreviewMessage = defineMessageUnion({
   GotMenuMessage: { message: DropdownMenu.Message },
-});
-type PreviewMessage = typeof PreviewMessage.Type;
+})
+type PreviewMessage = typeof PreviewMessage.Type
 
 const PreviewModel = S.Struct({
   _docsPage: S.Literal('breadcrumb'),
   menu: DropdownMenu.Model,
-});
-type PreviewModel = typeof PreviewModel.Type;
+})
+type PreviewModel = typeof PreviewModel.Type
 
 const menuView = (
   model: PreviewModel,
@@ -55,7 +55,7 @@ const menuView = (
       ...(fixture.rtl === true ? { direction: 'rtl' as const } : {}),
     },
     h,
-  );
+  )
 
 const itemContentView = (
   model: PreviewModel,
@@ -68,23 +68,23 @@ const itemContentView = (
       return Breadcrumb.breadcrumbLink(
         { href: item.href, children: [item.label] },
         h,
-      );
+      )
     case 'page':
-      return Breadcrumb.breadcrumbPage({ children: [item.label] }, h);
+      return Breadcrumb.breadcrumbPage({ children: [item.label] }, h)
     case 'ellipsis':
-      return Breadcrumb.breadcrumbEllipsis({}, h);
+      return Breadcrumb.breadcrumbEllipsis({}, h)
     case 'ellipsisMenu':
     case 'dropdown':
-      return menuView(model, item, fixture, h);
+      return menuView(model, item, fixture, h)
   }
-};
+}
 
 const breadcrumbView = (
   fixture: BreadcrumbFixture,
   model: PreviewModel,
   h: HtmlBuilder<PreviewMessage>,
 ): Html => {
-  const children: Array<Html> = [];
+  const children: Array<Html> = []
   fixture.items.forEach((item, index) => {
     if (index > 0) {
       children.push(
@@ -93,29 +93,27 @@ const breadcrumbView = (
             ...(fixture.separator === 'dot'
               ? { children: [Icon.icon('dot', {}, h)] }
               : {}),
-            ...(fixture.rtl === true
-              ? { direction: 'rtl' as const }
-              : {}),
+            ...(fixture.rtl === true ? { direction: 'rtl' as const } : {}),
           },
           h,
         ),
-      );
+      )
     }
     children.push(
       Breadcrumb.breadcrumbItem(
         { children: [itemContentView(model, item, fixture, h)] },
         h,
       ),
-    );
-  });
+    )
+  })
   return Breadcrumb.breadcrumb(
     {
       ...(fixture.rtl === true ? { direction: 'rtl' as const } : {}),
       children: [Breadcrumb.breadcrumbList({ children }, h)],
     },
     h,
-  );
-};
+  )
+}
 
 export const breadcrumbTailwindPreviewProgram = definePreviewProgram<
   PreviewModel,
@@ -133,14 +131,13 @@ export const breadcrumbTailwindPreviewProgram = definePreviewProgram<
   update: (model, message) => {
     switch (message._tag) {
       case 'GotMenuMessage': {
-        const result = DropdownMenu.update(model.menu, message.message);
+        const result = DropdownMenu.update(model.menu, message.message)
         return {
           model: { ...model, menu: result.model },
-          commands: Command.mapMessages(
-            result.commands,
-            next => PreviewMessage.GotMenuMessage({ message: next }),
+          commands: Command.mapMessages(result.commands, next =>
+            PreviewMessage.GotMenuMessage({ message: next }),
           ),
-        };
+        }
       }
     }
   },
@@ -150,4 +147,4 @@ export const breadcrumbTailwindPreviewProgram = definePreviewProgram<
       model,
       h,
     ),
-});
+})

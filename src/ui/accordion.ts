@@ -1,11 +1,11 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineView } from 'foldkit/submodel';
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineView } from 'foldkit/submodel'
 
-import { Disclosure as DisclosurePrimitive } from '@foldkit/ui';
+import { Disclosure as DisclosurePrimitive } from '@foldkit/ui'
 
-import * as Icon from '@/lib/icon';
-import * as AccordionBehavior from '@/lib/accordion-state';
-import { cn } from '@/lib/utils';
+import * as Icon from '@/lib/icon'
+import * as AccordionBehavior from '@/lib/accordion-state'
+import { cn } from '@/lib/utils'
 
 export {
   AccordionType,
@@ -15,32 +15,32 @@ export {
   init,
   reflect,
   update,
-} from '@/lib/accordion-state';
+} from '@/lib/accordion-state'
 export type {
   AccordionInitItem,
   AccordionItem,
   InitConfig,
   UpdateReturn,
-} from '@/lib/accordion-state';
+} from '@/lib/accordion-state'
 
-const ITEM_CLASS = 'border-b last:border-b-0';
+const ITEM_CLASS = 'border-b last:border-b-0'
 const TRIGGER_CLASS =
-  'group flex min-h-10 flex-1 items-start justify-between gap-4 rounded-md py-2.5 text-left text-sm font-medium outline-none hover:underline focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50';
+  'group flex min-h-10 flex-1 items-start justify-between gap-4 rounded-md py-2.5 text-left text-sm font-medium outline-none hover:underline focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50'
 const ICON_CLASS =
-  'pointer-events-none size-4 shrink-0 translate-y-0.5 text-muted-foreground transition-transform duration-200 ease-in-out group-data-[open]:rotate-180';
-const PANEL_CLASS = 'overflow-hidden text-sm';
-const CONTENT_CLASS = 'pt-0 pb-2.5';
+  'pointer-events-none size-4 shrink-0 translate-y-0.5 text-muted-foreground transition-transform duration-200 ease-in-out group-data-[open]:rotate-180'
+const PANEL_CLASS = 'overflow-hidden text-sm'
+const CONTENT_CLASS = 'pt-0 pb-2.5'
 
 export type ViewInputs = Readonly<{
-  items: ReadonlyArray<AccordionBehavior.AccordionItem>;
-  class?: string;
-  itemClass?: string;
-  triggerClass?: string;
-  contentClass?: string;
-}>;
+  items: ReadonlyArray<AccordionBehavior.AccordionItem>
+  class?: string
+  itemClass?: string
+  triggerClass?: string
+  contentClass?: string
+}>
 
 const itemDomId = (accordionId: string, value: string): string =>
-  `${accordionId}-item-${encodeURIComponent(value)}`;
+  `${accordionId}-item-${encodeURIComponent(value)}`
 
 const render = <Msg>(
   model: AccordionBehavior.Model,
@@ -51,16 +51,18 @@ const render = <Msg>(
   h.div(
     [
       h.DataAttribute('slot', 'accordion'),
-      ...(viewInputs.class === undefined ? [] : [h.Class(cn(viewInputs.class))]),
+      ...(viewInputs.class === undefined
+        ? []
+        : [h.Class(cn(viewInputs.class))]),
     ],
-    viewInputs.items.map((item) => {
-      const isOpen = model.value.includes(item.value);
+    viewInputs.items.map(item => {
+      const isOpen = model.value.includes(item.value)
 
       return DisclosurePrimitive.view(
         {
           id: itemDomId(model.id, item.value),
           isOpen,
-          onToggle: (nextIsOpen) =>
+          onToggle: nextIsOpen =>
             toMessage(
               AccordionBehavior.Message.ToggledItem({
                 value: item.value,
@@ -112,16 +114,16 @@ const render = <Msg>(
             ),
         },
         h,
-      );
+      )
     }),
-  );
+  )
 
 /** Canonical stateful view. Embed with `h.submodel`. */
 export const view = defineView<
   AccordionBehavior.Model,
   AccordionBehavior.Message,
   ViewInputs
->((model, viewInputs, h) => render(model, viewInputs, (message) => message, h));
+>((model, viewInputs, h) => render(model, viewInputs, message => message, h))
 
 /**
  * Compatibility helper for existing consumers. New code should use
@@ -129,11 +131,11 @@ export const view = defineView<
  */
 export type AccordionProps<Msg> = ViewInputs &
   Readonly<{
-    model: AccordionBehavior.Model;
-    toParentMessage: (message: AccordionBehavior.Message) => Msg;
-  }>;
+    model: AccordionBehavior.Model
+    toParentMessage: (message: AccordionBehavior.Message) => Msg
+  }>
 
 export const accordion = <Msg>(
   props: AccordionProps<Msg>,
   h: HtmlBuilder<Msg>,
-): Html => render(props.model, props, props.toParentMessage, h);
+): Html => render(props.model, props, props.toParentMessage, h)

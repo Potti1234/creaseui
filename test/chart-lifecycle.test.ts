@@ -5,7 +5,10 @@ import { describe, it } from 'node:test'
 describe('ECharts Foldkit lifecycle adapter', () => {
   const adapter = readFileSync('src/lib/echarts.ts', 'utf8')
   const publicRecipe = readFileSync('src/ui/chart.ts', 'utf8')
-  const stylexRecipe = readFileSync('src/stylex/integrations/echarts.ts', 'utf8')
+  const stylexRecipe = readFileSync(
+    'src/stylex/integrations/echarts.ts',
+    'utf8',
+  )
 
   it('acquires and releases the imperative runtime through Mount', () => {
     assert.match(adapter, /Mount\.define/u)

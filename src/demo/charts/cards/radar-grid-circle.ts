@@ -1,10 +1,8 @@
-﻿import type { Html, HtmlBuilder } from 'foldkit/html';
-import * as Chart from '@/lib/echarts';
-import { radarCard, radarOption } from './radar-shared';
-const HOST_ID = 'chart-radar-grid-circle';
-Chart.registerChart(HOST_ID, (theme) =>
-  radarOption(theme, { shape: 'circle' }),
-);
+﻿import type { Html, HtmlBuilder } from 'foldkit/html'
+import * as Chart from '@/lib/echarts'
+import { radarCard, radarOption } from './radar-shared'
+const HOST_ID = 'chart-radar-grid-circle'
+Chart.registerChart(HOST_ID, theme => radarOption(theme, { shape: 'circle' }))
 export const view = <Msg>(
   toMessage: (message: Chart.ChartMessage) => Msg,
   h: HtmlBuilder<Msg>,
@@ -12,4 +10,4 @@ export const view = <Msg>(
   radarCard(
     { hostId: HOST_ID, title: 'Radar Chart - Grid Circle', toMessage },
     h,
-  );
+  )

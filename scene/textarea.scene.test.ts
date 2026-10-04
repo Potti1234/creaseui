@@ -12,7 +12,9 @@ const ChangedTextarea = (value: string): Message => ({
   _tag: 'ChangedTextarea',
   value,
 })
-const update = (_model: Model, message: Message) => ({ model: { value: message.value } })
+const update = (_model: Model, message: Message) => ({
+  model: { value: message.value },
+})
 
 type TextareaModule = Readonly<{
   textarea: <Msg>(
@@ -91,7 +93,9 @@ const verifyRenderer = (name: string, Textarea: TextareaModule) => {
             ),
         },
         Scene.given({ value: 'Generated output' }),
-        Scene.expect(Scene.label('Generated summary')).toHaveAttr('data-readonly'),
+        Scene.expect(Scene.label('Generated summary')).toHaveAttr(
+          'data-readonly',
+        ),
         Scene.expect(Scene.label('Generated summary')).toHaveAttr(
           'data-resize',
           'none',

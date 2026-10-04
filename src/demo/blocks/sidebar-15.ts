@@ -1,23 +1,23 @@
-import { Match as M, Option, Schema as S } from 'effect';
-import type { Update } from 'foldkit';
-import { Command } from 'foldkit';
-import * as FoldkitCalendar from 'foldkit/calendar';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
-import { modifyFields } from 'foldkit/struct';
+import { Match as M, Option, Schema as S } from 'effect'
+import type { Update } from 'foldkit'
+import { Command } from 'foldkit'
+import * as FoldkitCalendar from 'foldkit/calendar'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import { modifyFields } from 'foldkit/struct'
 
-import * as Icon from '@/lib/icon';
-import { avatar, avatarFallback } from '@/ui/avatar';
+import * as Icon from '@/lib/icon'
+import { avatar, avatarFallback } from '@/ui/avatar'
 import {
   breadcrumb,
   breadcrumbItem,
   breadcrumbList,
   breadcrumbPage,
-} from '@/ui/breadcrumb';
-import * as Calendar from '@/ui/calendar';
-import * as Collapsible from '@/ui/collapsible';
-import * as DropdownMenu from '@/ui/dropdown-menu';
-import { separator } from '@/ui/separator';
+} from '@/ui/breadcrumb'
+import * as Calendar from '@/ui/calendar'
+import * as Collapsible from '@/ui/collapsible'
+import * as DropdownMenu from '@/ui/dropdown-menu'
+import { separator } from '@/ui/separator'
 import {
   sidebar,
   sidebarContent,
@@ -39,7 +39,7 @@ import {
   sidebarRail,
   sidebarSeparator,
   sidebarTrigger,
-} from '@/ui/sidebar';
+} from '@/ui/sidebar'
 
 const leftData = {
   teams: [
@@ -175,7 +175,7 @@ const leftData = {
       ],
     },
   ],
-};
+}
 
 const rightData = {
   user: {
@@ -188,28 +188,29 @@ const rightData = {
     { name: 'Favorites', items: ['Holidays', 'Birthdays'] },
     { name: 'Other', items: ['Travel', 'Reminders', 'Deadlines'] },
   ],
-};
+}
 
-type TeamItem = 'team-0' | 'team-1' | 'team-2' | 'add-team';
-type UserItem = 'upgrade' | 'account' | 'billing' | 'notifications' | 'log-out';
+type TeamItem = 'team-0' | 'team-1' | 'team-2' | 'add-team'
+type UserItem = 'upgrade' | 'account' | 'billing' | 'notifications' | 'log-out'
 const TEAM_ITEMS: ReadonlyArray<TeamItem> = [
   'team-0',
   'team-1',
   'team-2',
   'add-team',
-];
+]
 const USER_ITEMS: ReadonlyArray<UserItem> = [
   'upgrade',
   'account',
   'billing',
   'notifications',
   'log-out',
-];
-const TeamMenu = DropdownMenu.create<TeamItem>();
-const UserMenu = DropdownMenu.create<UserItem>();
+]
+const TeamMenu = DropdownMenu.create<TeamItem>()
+const UserMenu = DropdownMenu.create<UserItem>()
 
 export const Model = S.Struct({
-  isMobileOpen: S.Boolean, isLeftSidebarOpen: S.Boolean,
+  isMobileOpen: S.Boolean,
+  isLeftSidebarOpen: S.Boolean,
   isRightSidebarOpen: S.Boolean,
   activeTeamIndex: S.Number,
   teamMenu: DropdownMenu.Model,
@@ -218,41 +219,35 @@ export const Model = S.Struct({
   calendar: Calendar.Model,
   selectedDate: S.Option(FoldkitCalendar.CalendarDate),
   calendarGroupsOpen: S.Array(S.Boolean),
-});
-export type Model = typeof Model.Type;
-
-
-
-
-
-
-
+})
+export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
   ToggledMobileSidebar: {},
   ToggledSidebar: {},
   GotTeamMenuMessage: {
-  message: DropdownMenu.Message,
-},
+    message: DropdownMenu.Message,
+  },
   GotUserMenuMessage: {
-  message: DropdownMenu.Message,
-},
+    message: DropdownMenu.Message,
+  },
   ToggledWorkspace: {
-  index: S.Number,
-  isOpen: S.Boolean,
-},
+    index: S.Number,
+    isOpen: S.Boolean,
+  },
   GotCalendarMessage: {
-  message: Calendar.Message,
-},
+    message: Calendar.Message,
+  },
   ToggledCalendarGroup: {
-  index: S.Number,
-  isOpen: S.Boolean,
-},
-});
-export type Message = typeof Message.Type;
+    index: S.Number,
+    isOpen: S.Boolean,
+  },
+})
+export type Message = typeof Message.Type
 
 export const init = (): Model => ({
-  isMobileOpen: false, isLeftSidebarOpen: true,
+  isMobileOpen: false,
+  isLeftSidebarOpen: true,
   isRightSidebarOpen: true,
   activeTeamIndex: 0,
   teamMenu: DropdownMenu.init({
@@ -270,20 +265,25 @@ export const init = (): Model => ({
   }),
   selectedDate: Option.none(),
   calendarGroupsOpen: rightData.calendars.map((_, index) => index === 0),
-});
+})
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      ToggledMobileSidebar: () => ({ model: modifyFields(model, {isMobileOpen: current => !current}) }),
-      ToggledSidebar: () => ({ model: modifyFields(model, { isLeftSidebarOpen: (current) => !current }) }),
+      ToggledMobileSidebar: () => ({
+        model: modifyFields(model, { isMobileOpen: current => !current }),
+      }),
+      ToggledSidebar: () => ({
+        model: modifyFields(model, { isLeftSidebarOpen: current => !current }),
+      }),
       GotTeamMenuMessage: ({ message: childMessage }) => {
-        const { model: teamMenu, commands: teamMenuCommands__, outMessage: teamMenuOut__ } = TeamMenu.update(
-          model.teamMenu,
-          childMessage,
-        );
+        const {
+          model: teamMenu,
+          commands: teamMenuCommands__,
+          outMessage: teamMenuOut__,
+        } = TeamMenu.update(model.teamMenu, childMessage)
         const commands = teamMenuCommands__ ?? []
         const selection = Option.fromNullishOr(teamMenuOut__)
         const activeTeamIndex = Option.match(selection, {
@@ -296,69 +296,82 @@ export const update = (model: Model, message: Message): UpdateReturn =>
                 : value === 'team-2'
                   ? 2
                   : model.activeTeamIndex,
-        });
-        return { model: modifyFields(model, {
+        })
+        return {
+          model: modifyFields(model, {
             teamMenu: () => teamMenu,
             activeTeamIndex: () => activeTeamIndex,
-          }), commands: Command.mapMessages(commands, (next) =>
+          }),
+          commands: Command.mapMessages(commands, next =>
             Message.GotTeamMenuMessage({ message: next }),
-          ) };
+          ),
+        }
       },
       GotUserMenuMessage: ({ message: childMessage }) => {
-        const { model: userMenu, commands: userMenuCommands__ } = UserMenu.update(
-          model.userMenu,
-          childMessage,
-        );
+        const { model: userMenu, commands: userMenuCommands__ } =
+          UserMenu.update(model.userMenu, childMessage)
         const commands = userMenuCommands__ ?? []
-        return { model: modifyFields(model, { userMenu: () => userMenu }), commands: Command.mapMessages(commands, (next) =>
+        return {
+          model: modifyFields(model, { userMenu: () => userMenu }),
+          commands: Command.mapMessages(commands, next =>
             Message.GotUserMenuMessage({ message: next }),
-          ) };
+          ),
+        }
       },
       ToggledWorkspace: ({ index, isOpen }) => {
-        if (model.workspaceOpen[index] === undefined) return { model: model };
-        return { model: modifyFields(model, {
-            workspaceOpen: (items) =>
+        if (model.workspaceOpen[index] === undefined) return { model: model }
+        return {
+          model: modifyFields(model, {
+            workspaceOpen: items =>
               items.map((open, itemIndex) =>
                 itemIndex === index ? isOpen : open,
               ),
-          }) };
+          }),
+        }
       },
       GotCalendarMessage: ({ message: childMessage }) => {
-        const { model: calendar, commands: calendarCommands__, outMessage: calendarOut__ } = Calendar.update(
-          model.calendar,
-          childMessage,
-        )
+        const {
+          model: calendar,
+          commands: calendarCommands__,
+          outMessage: calendarOut__,
+        } = Calendar.update(model.calendar, childMessage)
         const commands = calendarCommands__ ?? []
         const maybeSelection = Option.fromNullishOr(calendarOut__)
-        return { model: modifyFields(model, {
+        return {
+          model: modifyFields(model, {
             calendar: () => calendar,
-            selectedDate: (current) =>
+            selectedDate: current =>
               Option.match(maybeSelection, {
                 onNone: () => current,
-                onSome: (selection) =>
+                onSome: selection =>
                   selection._tag === 'SelectedDate'
                     ? Option.some(selection.date)
                     : current,
               }),
-          }), commands: Command.mapMessages(commands, (next) =>
+          }),
+          commands: Command.mapMessages(commands, next =>
             Message.GotCalendarMessage({ message: next }),
-          ) };
+          ),
+        }
       },
       ToggledCalendarGroup: ({ index, isOpen }) => {
-        if (model.calendarGroupsOpen[index] === undefined) return { model: model };
-        return { model: modifyFields(model, {
-            calendarGroupsOpen: (groups) =>
+        if (model.calendarGroupsOpen[index] === undefined)
+          return { model: model }
+        return {
+          model: modifyFields(model, {
+            calendarGroupsOpen: groups =>
               groups.map((open, groupIndex) =>
                 groupIndex === index ? isOpen : open,
               ),
-          }) };
+          }),
+        }
       },
     }),
-  );
+  )
 
 const teamSwitcher = (model: Model, h: HtmlBuilder<Message>): Html => {
-  const active = leftData.teams[model.activeTeamIndex] ?? leftData.teams[0];
-  if (active === undefined) return h.div([], []);
+  const active = leftData.teams[model.activeTeamIndex] ?? leftData.teams[0]
+  if (active === undefined) return h.div([], [])
   return sidebarMenu(
     {
       children: [
@@ -368,7 +381,8 @@ const teamSwitcher = (model: Model, h: HtmlBuilder<Message>): Html => {
               DropdownMenu.dropdownMenu<TeamItem, Message>(
                 {
                   model: model.teamMenu,
-                  toParentMessage: (message) => Message.GotTeamMenuMessage({ message }),
+                  toParentMessage: message =>
+                    Message.GotTeamMenuMessage({ message }),
                   trigger: h.span(
                     [h.Class('contents')],
                     [
@@ -388,17 +402,17 @@ const teamSwitcher = (model: Model, h: HtmlBuilder<Message>): Html => {
                     class: 'w-fit px-1.5',
                   }),
                   items: TEAM_ITEMS,
-                  itemToConfig: (item) => {
+                  itemToConfig: item => {
                     if (item === 'add-team') {
                       return {
                         label: 'Add team',
                         icon: Icon.plus({}, h),
                         group: '',
-                      };
+                      }
                     }
                     const index =
-                      item === 'team-0' ? 0 : item === 'team-1' ? 1 : 2;
-                    const team = leftData.teams[index];
+                      item === 'team-0' ? 0 : item === 'team-1' ? 1 : 2
+                    const team = leftData.teams[index]
                     return {
                       label: team?.name ?? '',
                       ...(team === undefined
@@ -406,7 +420,7 @@ const teamSwitcher = (model: Model, h: HtmlBuilder<Message>): Html => {
                         : { icon: Icon.icon(team.logo, {}, h) }),
                       shortcut: `⌘${index + 1}`,
                       group: 'Teams',
-                    };
+                    }
                   },
                   side: 'bottom',
                   align: 'start',
@@ -421,13 +435,13 @@ const teamSwitcher = (model: Model, h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const navMain = (h: HtmlBuilder<Message>): Html =>
   sidebarMenu<Message>(
     {
-      children: leftData.navMain.map((item) =>
+      children: leftData.navMain.map(item =>
         sidebarMenuItem(
           {
             children: [
@@ -446,7 +460,7 @@ const navMain = (h: HtmlBuilder<Message>): Html =>
       ),
     },
     h,
-  );
+  )
 
 const navFavorites = (h: HtmlBuilder<Message>): Html => {
   return sidebarGroup(
@@ -457,7 +471,7 @@ const navFavorites = (h: HtmlBuilder<Message>): Html => {
         sidebarMenu(
           {
             children: [
-              ...leftData.favorites.map((item) =>
+              ...leftData.favorites.map(item =>
                 sidebarMenuItem(
                   {
                     children: [
@@ -507,8 +521,8 @@ const navFavorites = (h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const navWorkspaces = (
   openStates: ReadonlyArray<boolean>,
@@ -525,8 +539,8 @@ const navWorkspaces = (
                 {
                   children: [
                     ...leftData.workspaces.flatMap((workspace, index) => {
-                      const isOpen = openStates[index];
-                      if (isOpen === undefined) return [];
+                      const isOpen = openStates[index]
+                      if (isOpen === undefined) return []
                       return [
                         sidebarMenuItem(
                           {
@@ -535,7 +549,7 @@ const navWorkspaces = (
                                 {
                                   id: `sidebar-15-left-workspace-${index}`,
                                   isOpen,
-                                  onToggle: (nextIsOpen) =>
+                                  onToggle: nextIsOpen =>
                                     Message.ToggledWorkspace({
                                       index,
                                       isOpen: nextIsOpen,
@@ -558,7 +572,7 @@ const navWorkspaces = (
                                   triggerClass: sidebarMenuButtonVariants(),
                                   content: sidebarMenuSub(
                                     {
-                                      children: workspace.pages.map((page) =>
+                                      children: workspace.pages.map(page =>
                                         sidebarMenuSubItem(
                                           {
                                             children: [
@@ -587,7 +601,7 @@ const navWorkspaces = (
                           },
                           h,
                         ),
-                      ];
+                      ]
                     }),
                     sidebarMenuItem(
                       {
@@ -614,8 +628,8 @@ const navWorkspaces = (
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const navSecondary = (h: HtmlBuilder<Message>): Html =>
   sidebarGroup<Message>(
@@ -627,7 +641,7 @@ const navSecondary = (h: HtmlBuilder<Message>): Html =>
             children: [
               sidebarMenu(
                 {
-                  children: leftData.navSecondary.map((item) =>
+                  children: leftData.navSecondary.map(item =>
                     sidebarMenuItem(
                       {
                         children: [
@@ -656,13 +670,15 @@ const navSecondary = (h: HtmlBuilder<Message>): Html =>
       ],
     },
     h,
-  );
+  )
 
 const sidebarLeft = (model: Model, h: HtmlBuilder<Message>): Html => {
-  const state = model.isLeftSidebarOpen ? 'expanded' : 'collapsed';
+  const state = model.isLeftSidebarOpen ? 'expanded' : 'collapsed'
   return sidebar<Message>(
     {
-      state, isMobileOpen: model.isMobileOpen, onMobileDismiss: Message.ToggledMobileSidebar(),
+      state,
+      isMobileOpen: model.isMobileOpen,
+      onMobileDismiss: Message.ToggledMobileSidebar(),
       class: 'border-r-0',
       children: [
         sidebarHeader(
@@ -685,8 +701,8 @@ const sidebarLeft = (model: Model, h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const userSummary = (h: HtmlBuilder<Message>): Html => {
   return h.span(
@@ -709,8 +725,8 @@ const userSummary = (h: HtmlBuilder<Message>): Html => {
         ],
       ),
     ],
-  );
-};
+  )
+}
 
 const navUser = (model: DropdownMenu.Model, h: HtmlBuilder<Message>): Html => {
   return sidebarMenu(
@@ -722,7 +738,8 @@ const navUser = (model: DropdownMenu.Model, h: HtmlBuilder<Message>): Html => {
               DropdownMenu.dropdownMenu<UserItem, Message>(
                 {
                   model,
-                  toParentMessage: (message) => Message.GotUserMenuMessage({ message }),
+                  toParentMessage: message =>
+                    Message.GotUserMenuMessage({ message }),
                   trigger: h.span(
                     [h.Class('contents')],
                     [
@@ -736,7 +753,7 @@ const navUser = (model: DropdownMenu.Model, h: HtmlBuilder<Message>): Html => {
                       'data-[open]:bg-sidebar-accent data-[open]:text-sidebar-accent-foreground',
                   }),
                   items: USER_ITEMS,
-                  itemToConfig: (item) =>
+                  itemToConfig: item =>
                     M.value(item).pipe(
                       M.withReturnType<DropdownMenu.DropdownMenuItemConfig>(),
                       M.when('upgrade', () => ({
@@ -779,16 +796,16 @@ const navUser = (model: DropdownMenu.Model, h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const rightCalendars = (
   openStates: ReadonlyArray<boolean>,
   h: HtmlBuilder<Message>,
 ): ReadonlyArray<Html> => {
   return rightData.calendars.flatMap((calendar, index) => {
-    const isOpen = openStates[index];
-    if (isOpen === undefined) return [];
+    const isOpen = openStates[index]
+    if (isOpen === undefined) return []
     return [
       sidebarGroup(
         {
@@ -798,7 +815,7 @@ const rightCalendars = (
               {
                 id: `sidebar-15-right-calendar-group-${index}`,
                 isOpen,
-                onToggle: (nextIsOpen) =>
+                onToggle: nextIsOpen =>
                   Message.ToggledCalendarGroup({ index, isOpen: nextIsOpen }),
                 class: 'group/collapsible',
                 trigger: h.span(
@@ -873,9 +890,9 @@ const rightCalendars = (
         h,
       ),
       sidebarSeparator({ class: 'mx-0' }, h),
-    ];
-  });
-};
+    ]
+  })
+}
 
 const sidebarRight = (model: Model, h: HtmlBuilder<Message>): Html =>
   sidebar<Message>(
@@ -906,7 +923,7 @@ const sidebarRight = (model: Model, h: HtmlBuilder<Message>): Html =>
                             {
                               model: model.calendar,
                               maybeSelectedDate: model.selectedDate,
-                              toParentMessage: (message) =>
+                              toParentMessage: message =>
                                 Message.GotCalendarMessage({ message }),
                               class:
                                 '[&_[role=gridcell]]:w-[33px] [&_[role=gridcell].bg-accent]:bg-sidebar-primary [&_[role=gridcell].bg-accent]:text-sidebar-primary-foreground',
@@ -957,7 +974,7 @@ const sidebarRight = (model: Model, h: HtmlBuilder<Message>): Html =>
       ],
     },
     h,
-  );
+  )
 
 const pageContent = (h: HtmlBuilder<Message>): Html => {
   return sidebarInset(
@@ -973,7 +990,13 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
             h.div(
               [h.Class('flex flex-1 items-center gap-2 px-3')],
               [
-                sidebarTrigger({ onMobileClick: Message.ToggledMobileSidebar(), onClick: Message.ToggledSidebar() }, h),
+                sidebarTrigger(
+                  {
+                    onMobileClick: Message.ToggledMobileSidebar(),
+                    onClick: Message.ToggledSidebar(),
+                  },
+                  h,
+                ),
                 separator(
                   {
                     orientation: 'vertical',
@@ -1035,12 +1058,12 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
-  const leftState = model.isLeftSidebarOpen ? 'expanded' : 'collapsed';
-  const rightState = model.isRightSidebarOpen ? 'expanded' : 'collapsed';
+  const leftState = model.isLeftSidebarOpen ? 'expanded' : 'collapsed'
+  const rightState = model.isRightSidebarOpen ? 'expanded' : 'collapsed'
   return sidebarProvider<Message>(
     {
       state: leftState,
@@ -1057,8 +1080,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 // PORT NOTE: Avatar images are not bundled, so the source image uses its CN
 // fallback. Per-favorite action menus are represented by their ellipsis

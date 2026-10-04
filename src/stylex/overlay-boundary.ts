@@ -17,4 +17,3 @@ export const themedAnchor = <
   ...anchor,
   portal: THEMED_OVERLAY_PORTAL,
 })
-

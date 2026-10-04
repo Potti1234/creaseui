@@ -1,6 +1,6 @@
-import { authoredPage } from '@/docs/components/pages/authored-page';
-import { fieldStatusExamples } from '@/docs/components/pages/field-status/shared';
-import { fieldStatusTailwindPreviewProgram } from '@/docs/components/pages/field-status/tailwind';
+import { authoredPage } from '@/docs/components/pages/authored-page'
+import { fieldStatusExamples } from '@/docs/components/pages/field-status/shared'
+import { fieldStatusTailwindPreviewProgram } from '@/docs/components/pages/field-status/tailwind'
 
 export const fieldStatusPage = authoredPage({
   slug: 'field-status',
@@ -22,4 +22,4 @@ export const fieldStatusPage = authoredPage({
     examples: fieldStatusExamples('tailwind'),
     stylexExamples: fieldStatusExamples('stylex'),
   },
-});
+})

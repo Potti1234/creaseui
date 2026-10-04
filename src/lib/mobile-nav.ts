@@ -21,15 +21,16 @@ export const Model = S.Struct({
 export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
-  'GotMobileNavDialogMessage': { message: Dialog.Message },
-});
+  GotMobileNavDialogMessage: { message: Dialog.Message },
+})
 export type Message = typeof Message.Type
 export const OutMessage = Dialog.OutMessage
 export type OutMessage = typeof OutMessage.Type
 
-export type InitConfig = Dialog.InitConfig & Readonly<{
-  side?: MobileNavSide;
-}>
+export type InitConfig = Dialog.InitConfig &
+  Readonly<{
+    side?: MobileNavSide
+  }>
 
 export const init = (config: InitConfig): Model => ({
   dialog: Dialog.init(config),
@@ -39,12 +40,17 @@ export const init = (config: InitConfig): Model => ({
 
 type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>
 
-const mapDialogResult = (model: Model, result: ReturnType<typeof Dialog.update>): UpdateReturn => {
+const mapDialogResult = (
+  model: Model,
+  result: ReturnType<typeof Dialog.update>,
+): UpdateReturn => {
   const { model: dialog, commands: dialogCommands, outMessage } = result
   const commands = dialogCommands ?? []
   return {
     model: { ...model, dialog },
-    commands: Command.mapMessages(commands, message => Message['GotMobileNavDialogMessage']({ message })),
+    commands: Command.mapMessages(commands, message =>
+      Message['GotMobileNavDialogMessage']({ message }),
+    ),
     ...(outMessage === undefined ? {} : { outMessage }),
   }
 }
@@ -67,16 +73,16 @@ const resolveAutoSide = (): ResolvedSide => {
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
     case 'GotMobileNavDialogMessage':
-      return mapDialogResult(model, Dialog.update(model.dialog, message.message))
+      return mapDialogResult(
+        model,
+        Dialog.update(model.dialog, message.message),
+      )
   }
 }
 
 export const open = (model: Model): UpdateReturn => {
   const resolvedSide = model.side === 'auto' ? resolveAutoSide() : model.side
-  return mapDialogResult(
-    { ...model, resolvedSide },
-    Dialog.open(model.dialog),
-  )
+  return mapDialogResult({ ...model, resolvedSide }, Dialog.open(model.dialog))
 }
 
 export const close = (model: Model): UpdateReturn =>

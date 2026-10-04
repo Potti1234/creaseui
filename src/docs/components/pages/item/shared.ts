@@ -1,5 +1,5 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type ItemKind =
   | 'demo'
@@ -12,14 +12,14 @@ export type ItemKind =
   | 'header'
   | 'link'
   | 'dropdown'
-  | 'rtl';
+  | 'rtl'
 
 export type ItemFixture = Readonly<{
-  title: string;
-  description?: string;
-  heroOnly?: boolean;
-  kind: ItemKind;
-}>;
+  title: string
+  description?: string
+  heroOnly?: boolean
+  kind: ItemKind
+}>
 
 export const itemFixtures: Readonly<[ItemFixture, ...Array<ItemFixture>]> = [
   { title: 'Basic', heroOnly: true, kind: 'demo' },
@@ -30,7 +30,8 @@ export const itemFixtures: Readonly<[ItemFixture, ...Array<ItemFixture>]> = [
   },
   {
     title: 'Size',
-    description: 'Use the size prop to change the size of the item. Available sizes are default, sm, and xs.',
+    description:
+      'Use the size prop to change the size of the item. Available sizes are default, sm, and xs.',
     kind: 'size',
   },
   {
@@ -60,16 +61,18 @@ export const itemFixtures: Readonly<[ItemFixture, ...Array<ItemFixture>]> = [
   },
   {
     title: 'Link',
-    description: 'Render the item as a link. The hover and focus states are applied to the anchor element.',
+    description:
+      'Render the item as a link. The hover and focus states are applied to the anchor element.',
     kind: 'link',
   },
   { title: 'Dropdown', kind: 'dropdown' },
   {
     title: 'RTL',
-    description: 'Items mirror their layout and copy in right-to-left contexts.',
+    description:
+      'Items mirror their layout and copy in right-to-left contexts.',
     kind: 'rtl',
   },
-];
+]
 
 /* Arabic copy, verbatim from upstream item-rtl.tsx. */
 export const itemRtlCopy = {
@@ -77,7 +80,7 @@ export const itemRtlCopy = {
   basicItemDesc: 'عنصر بسيط يحتوي على عنوان ووصف.',
   action: 'إجراء',
   verifiedTitle: 'تم التحقق من ملفك الشخصي.',
-} as const;
+} as const
 
 export const itemMusic = [
   {
@@ -98,7 +101,7 @@ export const itemMusic = [
     album: 'Binary Beats',
     duration: '3:30',
   },
-] as const;
+] as const
 
 export const itemPeople = [
   {
@@ -116,7 +119,7 @@ export const itemPeople = [
     avatar: 'https://github.com/evilrabbit.png',
     email: 'evilrabbit@vercel.com',
   },
-] as const;
+] as const
 
 export const itemModels = [
   {
@@ -137,9 +140,9 @@ export const itemModels = [
     image:
       'https://images.unsplash.com/photo-1602146057681-08560aee8cde?q=80&w=640&auto=format&fit=crop',
   },
-] as const;
+] as const
 
-const sq = (value: string): string => value.replaceAll("'", "\\'");
+const sq = (value: string): string => value.replaceAll("'", "\\'")
 
 const kindUsesIcon = (kind: ItemKind): boolean =>
   kind === 'demo' ||
@@ -150,124 +153,142 @@ const kindUsesIcon = (kind: ItemKind): boolean =>
   kind === 'group' ||
   kind === 'link' ||
   kind === 'dropdown' ||
-  kind === 'rtl';
+  kind === 'rtl'
 const kindUsesButton = (kind: ItemKind): boolean =>
   kind === 'demo' ||
   kind === 'icon' ||
   kind === 'avatar' ||
   kind === 'group' ||
   kind === 'dropdown' ||
-  kind === 'rtl';
+  kind === 'rtl'
 const kindUsesAvatar = (kind: ItemKind): boolean =>
-  kind === 'avatar' || kind === 'group' || kind === 'dropdown';
-const kindUsesDropdown = (kind: ItemKind): boolean => kind === 'dropdown';
+  kind === 'avatar' || kind === 'group' || kind === 'dropdown'
+const kindUsesDropdown = (kind: ItemKind): boolean => kind === 'dropdown'
 const kindUsesImage = (kind: ItemKind): boolean =>
-  kind === 'image' || kind === 'header';
+  kind === 'image' || kind === 'header'
 
 const emitImports = (fixture: ItemFixture, isStyleX: boolean): string => {
-  const base = isStyleX ? 'stylex' : 'ui';
+  const base = isStyleX ? 'stylex' : 'ui'
   const parts: Array<string> = [
     "import { Command, Runtime, Subscription, Update } from 'foldkit'",
     "import { type Document, type HtmlBuilder } from 'foldkit/html'",
     "import { defineMessageUnion } from 'foldkit/message'",
-  ];
+  ]
   if (isStyleX) {
-    parts.push('', "import * as stylex from '@stylexjs/stylex'");
+    parts.push('', "import * as stylex from '@stylexjs/stylex'")
   }
   if (kindUsesAvatar(fixture.kind)) {
-    parts.push(`import * as Avatar from '@/${base}/avatar'`);
+    parts.push(`import * as Avatar from '@/${base}/avatar'`)
   }
   if (kindUsesButton(fixture.kind)) {
-    parts.push(`import * as Button from '@/${base}/button'`);
+    parts.push(`import * as Button from '@/${base}/button'`)
   }
   if (kindUsesDropdown(fixture.kind)) {
-    parts.push(`import * as DropdownMenu from '@/${base}/dropdown-menu'`);
+    parts.push(`import * as DropdownMenu from '@/${base}/dropdown-menu'`)
   }
-  parts.push(`import * as Item from '@/${base}/item'`);
+  parts.push(`import * as Item from '@/${base}/item'`)
   if (!isStyleX && fixture.kind === 'dropdown') {
-    parts.push("import { buttonVariants } from '@/ui/button'");
+    parts.push("import { buttonVariants } from '@/ui/button'")
   }
   if (kindUsesIcon(fixture.kind)) {
-    parts.push("import * as Icon from '@/lib/icon'");
+    parts.push("import * as Icon from '@/lib/icon'")
   }
-  return parts.join('\n');
-};
+  return parts.join('\n')
+}
 
 const emitStyles = (fixture: ItemFixture): string => {
-  const extras: Array<string> = [];
+  const extras: Array<string> = []
   switch (fixture.kind) {
     case 'demo':
     case 'rtl':
-      extras.push("  stack: { display: 'flex', flexDirection: 'column', gap: '1.5rem', maxWidth: '28rem', width: '100%' },");
-      break;
+      extras.push(
+        "  stack: { display: 'flex', flexDirection: 'column', gap: '1.5rem', maxWidth: '28rem', width: '100%' },",
+      )
+      break
     case 'variant':
     case 'size':
-      extras.push("  stack: { display: 'flex', flexDirection: 'column', gap: '1.5rem', maxWidth: '28rem', width: '100%' },");
-      break;
+      extras.push(
+        "  stack: { display: 'flex', flexDirection: 'column', gap: '1.5rem', maxWidth: '28rem', width: '100%' },",
+      )
+      break
     case 'icon':
     case 'avatar':
-      extras.push("  stack: { display: 'flex', flexDirection: 'column', gap: '1.5rem', maxWidth: '32rem', width: '100%' },");
-      break;
+      extras.push(
+        "  stack: { display: 'flex', flexDirection: 'column', gap: '1.5rem', maxWidth: '32rem', width: '100%' },",
+      )
+      break
     case 'image':
-      extras.push("  stack: { display: 'flex', flexDirection: 'column', gap: '1.5rem', maxWidth: '28rem', width: '100%' },");
-      extras.push("  songTitle: { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },");
-      extras.push("  muted: { color: 'var(--muted-foreground)' },");
-      extras.push("  cover: { borderRadius: 'calc(var(--radius) - 4px)', objectFit: 'cover' },");
-      extras.push("  duration: { flexGrow: 0, flexShrink: 0 },");
-      break;
+      extras.push(
+        "  stack: { display: 'flex', flexDirection: 'column', gap: '1.5rem', maxWidth: '28rem', width: '100%' },",
+      )
+      extras.push(
+        "  songTitle: { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },",
+      )
+      extras.push("  muted: { color: 'var(--muted-foreground)' },")
+      extras.push(
+        "  cover: { borderRadius: 'calc(var(--radius) - 4px)', objectFit: 'cover' },",
+      )
+      extras.push('  duration: { flexGrow: 0, flexShrink: 0 },')
+      break
     case 'group':
-      extras.push("  group: { maxWidth: '24rem' },");
-      break;
+      extras.push("  group: { maxWidth: '24rem' },")
+      break
     case 'header':
-      extras.push("  stack: { display: 'flex', flexDirection: 'column', gap: '1.5rem', maxWidth: '36rem', width: '100%' },");
-      extras.push("  headerImg: { aspectRatio: '1 / 1', borderRadius: 'calc(var(--radius) - 4px)', objectFit: 'cover', width: '100%' },");
-      break;
+      extras.push(
+        "  stack: { display: 'flex', flexDirection: 'column', gap: '1.5rem', maxWidth: '36rem', width: '100%' },",
+      )
+      extras.push(
+        "  headerImg: { aspectRatio: '1 / 1', borderRadius: 'calc(var(--radius) - 4px)', objectFit: 'cover', width: '100%' },",
+      )
+      break
     case 'link':
-      extras.push("  stack: { display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '28rem', width: '100%' },");
-      break;
+      extras.push(
+        "  stack: { display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '28rem', width: '100%' },",
+      )
+      break
     case 'dropdown':
-      extras.push("  menuItem: { width: '100%' },");
-      break;
+      extras.push("  menuItem: { width: '100%' },")
+      break
     default:
-      break;
+      break
   }
-  return extras.join('\n');
-};
+  return extras.join('\n')
+}
 
 const emitModel = (fixture: ItemFixture): string => {
   if (kindUsesDropdown(fixture.kind)) {
     return `export const Model = S.Struct({
   dropdown: DropdownMenu.Model,
 })
-export type Model = typeof Model.Type`;
+export type Model = typeof Model.Type`
   }
   return `export const Model = S.Struct({})
-export type Model = typeof Model.Type`;
-};
+export type Model = typeof Model.Type`
+}
 
 const emitMessages = (fixture: ItemFixture): string => {
   if (kindUsesDropdown(fixture.kind)) {
     return `export const Message = defineMessageUnion({
   GotDropdownMessage: { message: DropdownMenu.Message },
 })
-export type Message = typeof Message.Type`;
+export type Message = typeof Message.Type`
   }
   return `import { taggedStruct } from 'foldkit/schema'
 // This example has no interaction. Runtime applications still expose a
 // closed Message schema so the program boundary remains explicit.
 export const NoOp = taggedStruct('NoOpItem${fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')}');
 export const Message = S.Union([NoOp])
-export type Message = typeof Message.Type`;
-};
+export type Message = typeof Message.Type`
+}
 
 const emitInit = (fixture: ItemFixture): string => {
   if (kindUsesDropdown(fixture.kind)) {
     return `export const init = (): Update.Return<Model, Message> => ({
   model: { dropdown: DropdownMenu.init({ id: 'people-menu', isAnimated: false }) },
-})`;
+})`
   }
-  return `export const init = (): Update.Return<Model, Message> => ({ model: {} })`;
-};
+  return `export const init = (): Update.Return<Model, Message> => ({ model: {} })`
+}
 
 const emitUpdate = (fixture: ItemFixture): string => {
   if (kindUsesDropdown(fixture.kind)) {
@@ -282,13 +303,13 @@ const emitUpdate = (fixture: ItemFixture): string => {
       }
     }
   }
-}`;
+}`
   }
   return `export const update = (
   model: Model,
   _message: Message,
-): Update.Return<Model, Message> => ({ model: model })`;
-};
+): Update.Return<Model, Message> => ({ model: model })`
+}
 
 /* Emits a const data array for fixtures that render repeated items. */
 const emitData = (fixture: ItemFixture): string => {
@@ -300,7 +321,7 @@ const emitData = (fixture: ItemFixture): string => {
   { title: 'Digital Rain', artist: 'Cyber Symphony', album: 'Binary Beats', duration: '3:30' },
 ] as const
 
-`;
+`
     case 'group':
     case 'dropdown':
       return `const people = [
@@ -309,7 +330,7 @@ const emitData = (fixture: ItemFixture): string => {
   { username: 'evilrabbit', avatar: 'https://github.com/evilrabbit.png', email: 'evilrabbit@vercel.com' },
 ] as const
 
-`;
+`
     case 'header':
       return `const models = [
   {
@@ -329,19 +350,23 @@ const emitData = (fixture: ItemFixture): string => {
   },
 ] as const
 
-`;
+`
     default:
-      return '';
+      return ''
   }
-};
+}
 
 const emitBody = (fixture: ItemFixture, isStyleX: boolean): string => {
   const cls = (twClass: string, sxName: string): string =>
-    isStyleX ? `stylex.props(styles.${sxName}).className ?? ''` : `'${twClass}'`;
+    isStyleX ? `stylex.props(styles.${sxName}).className ?? ''` : `'${twClass}'`
   const icon = (name: string, extras: string = ''): string =>
-    `Icon.icon('${name}', {${extras}}, h)`;
-  const inbox = isStyleX ? icon('inbox') : icon('inbox', " class: 'size-4'");
-  const personItem = (media: string, contentExtras: string, tail: string): string => `Item.item({
+    `Icon.icon('${name}', {${extras}}, h)`
+  const inbox = isStyleX ? icon('inbox') : icon('inbox', " class: 'size-4'")
+  const personItem = (
+    media: string,
+    contentExtras: string,
+    tail: string,
+  ): string => `Item.item({
           variant: 'outline',
           children: [
             ${media},
@@ -354,7 +379,7 @@ const emitBody = (fixture: ItemFixture, isStyleX: boolean): string => {
             }, h),
             ${tail}
           ],
-        }, h)`;
+        }, h)`
   const personAvatar = isStyleX
     ? `Item.itemMedia({
               children: [
@@ -377,7 +402,7 @@ const emitBody = (fixture: ItemFixture, isStyleX: boolean): string => {
                   ],
                 }, h),
               ],
-            }, h)`;
+            }, h)`
   const plusAction = isStyleX
     ? `Item.itemActions({
               children: [
@@ -399,17 +424,21 @@ const emitBody = (fixture: ItemFixture, isStyleX: boolean): string => {
                   children: [${icon('plus')}],
                 }, h),
               ],
-            }, h)`;
+            }, h)`
 
   switch (fixture.kind) {
     case 'demo':
     case 'rtl': {
-      const t = itemRtlCopy;
-      const isRtl = fixture.kind === 'rtl';
-      const title1 = isRtl ? t.basicItem : 'Basic Item';
-      const desc1 = isRtl ? t.basicItemDesc : 'A simple item with title and description.';
-      const action = isRtl ? t.action : 'Action';
-      const verified = isRtl ? t.verifiedTitle : 'Your profile has been verified.';
+      const t = itemRtlCopy
+      const isRtl = fixture.kind === 'rtl'
+      const title1 = isRtl ? t.basicItem : 'Basic Item'
+      const desc1 = isRtl
+        ? t.basicItemDesc
+        : 'A simple item with title and description.'
+      const action = isRtl ? t.action : 'Action'
+      const verified = isRtl
+        ? t.verifiedTitle
+        : 'Your profile has been verified.'
       const first = `Item.item({
           variant: 'outline',
           children: [
@@ -425,7 +454,7 @@ const emitBody = (fixture: ItemFixture, isStyleX: boolean): string => {
               ],
             }, h),
           ],
-        }, h)`;
+        }, h)`
       const second = `Item.item({
           variant: 'outline',
           size: 'sm',
@@ -444,16 +473,16 @@ const emitBody = (fixture: ItemFixture, isStyleX: boolean): string => {
               children: [${icon('chevron-right', isStyleX ? '' : " class: 'size-4'")}],
             }, h),
           ],
-        }, h)`;
+        }, h)`
       const stack = `h.div([h.Class(${cls('flex w-full max-w-md flex-col gap-6', 'stack')})], [
       ${first},
       ${second},
-    ])`;
+    ])`
       return isRtl
         ? `    h.div([h.Dir('rtl'), h.Class('contents')], [
       ${stack},
     ])`
-        : `    ${stack}`;
+        : `    ${stack}`
     }
     case 'variant':
     case 'size': {
@@ -461,14 +490,34 @@ const emitBody = (fixture: ItemFixture, isStyleX: boolean): string => {
         fixture.kind === 'variant'
           ? [
               ['', 'Default Variant', 'Transparent background with no border.'],
-              ["variant: 'outline'", 'Outline Variant', 'Outlined style with a visible border.'],
-              ["variant: 'muted'", 'Muted Variant', 'Muted background for secondary content.'],
+              [
+                "variant: 'outline'",
+                'Outline Variant',
+                'Outlined style with a visible border.',
+              ],
+              [
+                "variant: 'muted'",
+                'Muted Variant',
+                'Muted background for secondary content.',
+              ],
             ]
           : [
-              ["variant: 'outline'", 'Default Size', 'The standard size for most use cases.'],
-              ["variant: 'outline',\n          size: 'sm'", 'Small Size', 'A compact size for dense layouts.'],
-              ["variant: 'outline',\n          size: 'xs'", 'Extra Small Size', 'The most compact size available.'],
-            ];
+              [
+                "variant: 'outline'",
+                'Default Size',
+                'The standard size for most use cases.',
+              ],
+              [
+                "variant: 'outline',\n          size: 'sm'",
+                'Small Size',
+                'A compact size for dense layouts.',
+              ],
+              [
+                "variant: 'outline',\n          size: 'xs'",
+                'Extra Small Size',
+                'The most compact size available.',
+              ],
+            ]
       const items = rows
         .map(
           ([props, title, description]) => `Item.item({
@@ -483,10 +532,10 @@ const emitBody = (fixture: ItemFixture, isStyleX: boolean): string => {
           ],
         }, h)`,
         )
-        .join(',\n      ');
+        .join(',\n      ')
       return `    h.div([h.Class(${cls('flex w-full max-w-md flex-col gap-6', 'stack')})], [
       ${items},
-    ])`;
+    ])`
     }
     case 'icon':
       return `    h.div([h.Class(${cls('flex w-full max-w-lg flex-col gap-6', 'stack')})], [
@@ -507,7 +556,7 @@ const emitBody = (fixture: ItemFixture, isStyleX: boolean): string => {
           }, h),
         ],
       }, h),
-    ])`;
+    ])`
     case 'avatar': {
       const single = `Item.item({
           variant: 'outline',
@@ -541,7 +590,7 @@ const emitBody = (fixture: ItemFixture, isStyleX: boolean): string => {
               ],
             }, h),
           ],
-        }, h)`;
+        }, h)`
       const team = `Item.item({
           variant: 'outline',
           children: [
@@ -584,11 +633,11 @@ const emitBody = (fixture: ItemFixture, isStyleX: boolean): string => {
               ],
             }, h),
           ],
-        }, h)`;
+        }, h)`
       return `    h.div([h.Class(${cls('flex w-full max-w-lg flex-col gap-6', 'stack')})], [
       ${single},
       ${team},
-    ])`;
+    ])`
     }
     case 'image':
       return `    h.div([h.Class(${cls('flex w-full max-w-md flex-col gap-6', 'stack')})], [
@@ -615,20 +664,22 @@ const emitBody = (fixture: ItemFixture, isStyleX: boolean): string => {
                   Item.itemTitle({
                     ${isStyleX ? '' : "class: 'line-clamp-1',"}
                     children: [
-                      ${isStyleX
-                        ? `h.span([h.Class(stylex.props(styles.songTitle).className ?? '')], [
+                      ${
+                        isStyleX
+                          ? `h.span([h.Class(stylex.props(styles.songTitle).className ?? '')], [
                         \`\${song.title} - \`,
                         h.span([h.Class(stylex.props(styles.muted).className ?? '')], [song.album]),
                       ]),`
-                        : `\`\${song.title} - \`,
-                      h.span([h.Class('text-muted-foreground')], [song.album]),`}
+                          : `\`\${song.title} - \`,
+                      h.span([h.Class('text-muted-foreground')], [song.album]),`
+                      }
                     ],
                   }, h),
                   Item.itemDescription({ children: [song.artist] }, h),
                 ],
               }, h),
               Item.itemContent({
-                ${isStyleX ? "layoutStyle: styles.duration," : "class: 'flex-none text-center',"}
+                ${isStyleX ? 'layoutStyle: styles.duration,' : "class: 'flex-none text-center',"}
                 children: [
                   Item.itemDescription({ children: [song.duration] }, h),
                 ],
@@ -637,14 +688,14 @@ const emitBody = (fixture: ItemFixture, isStyleX: boolean): string => {
           }, h),
         ),
       }, h),
-    ])`;
+    ])`
     case 'group':
       return `    Item.itemGroup({
-      ${isStyleX ? "layoutStyle: styles.group," : "class: 'max-w-sm',"}
+      ${isStyleX ? 'layoutStyle: styles.group,' : "class: 'max-w-sm',"}
       children: people.map(person =>
         ${personItem(personAvatar, isStyleX ? '' : '', plusAction)}
       ),
-    }, h)`;
+    }, h)`
     case 'header':
       return `    h.div([h.Class(${cls('flex w-full max-w-xl flex-col gap-6', 'stack')})], [
       Item.itemGroup({
@@ -672,7 +723,7 @@ const emitBody = (fixture: ItemFixture, isStyleX: boolean): string => {
           }, h),
         ),
       }, h),
-    ])`;
+    ])`
     case 'link':
       return `    h.div([h.Class(${cls('flex w-full max-w-md flex-col gap-4', 'stack')})], [
       Item.item({
@@ -708,11 +759,11 @@ const emitBody = (fixture: ItemFixture, isStyleX: boolean): string => {
           }, h),
         ],
       }, h),
-    ])`;
+    ])`
     case 'dropdown': {
       const menuItem = `Item.item({
               size: 'xs',
-              ${isStyleX ? "layoutStyle: styles.menuItem," : "class: 'w-full p-2',"}
+              ${isStyleX ? 'layoutStyle: styles.menuItem,' : "class: 'w-full p-2',"}
               children: [
                 Item.itemMedia({
                   children: [
@@ -735,12 +786,12 @@ const emitBody = (fixture: ItemFixture, isStyleX: boolean): string => {
                   ],
                 }, h),
               ],
-            }, h)`;
+            }, h)`
       const trigger = isStyleX
         ? `trigger: h.span([], ['Select', ${icon('chevron-down')}]),
                   triggerButtonVariant: 'outline',`
         : `trigger: h.span([h.Class('flex items-center gap-2')], ['Select', ${icon('chevron-down', " class: 'size-4'")}]),
-                  triggerClass: buttonVariants({ variant: 'outline' }),`;
+                  triggerClass: buttonVariants({ variant: 'outline' }),`
       return `    DropdownMenu.dropdownMenu({
       model: model.dropdown,
       toParentMessage: message => Message.GotDropdownMessage({ message }),
@@ -754,12 +805,12 @@ const emitBody = (fixture: ItemFixture, isStyleX: boolean): string => {
           label: ${menuItem},
         }
       },
-    }, h)`;
+    }, h)`
     }
     default:
-      return `    h.div([], [])`;
+      return `    h.div([], [])`
   }
-};
+}
 
 const emitApplication = (fixture: ItemFixture, isStyleX: boolean): string => {
   const stylesBlock = isStyleX
@@ -770,10 +821,10 @@ ${emitStyles(fixture)}
 })
 
 `
-    : '';
+    : ''
   const bodyStart = isStyleX
     ? `h.main([h.Class(stylex.props(styles.page).className ?? '')], [`
-    : `h.main([h.Class('flex min-h-screen items-center justify-center p-4')], [`;
+    : `h.main([h.Class('flex min-h-screen items-center justify-center p-4')], [`
   return foldkitApplication({
     title: `Item — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'\n${emitImports(fixture, isStyleX)}\n\n${stylesBlock}${emitData(fixture)}`,
@@ -787,14 +838,17 @@ ${emitStyles(fixture)}
     ${emitBody(fixture, isStyleX)}
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const itemExamples = (
   renderer: 'tailwind' | 'stylex',
-): ReadonlyArray<DocsExample> => itemFixtures.map(fixture => ({
-  title: fixture.title,
-  ...(fixture.description === undefined ? {} : { description: fixture.description }),
-  ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
-  code: emitApplication(fixture, renderer === 'stylex'),
-}));
+): ReadonlyArray<DocsExample> =>
+  itemFixtures.map(fixture => ({
+    title: fixture.title,
+    ...(fixture.description === undefined
+      ? {}
+      : { description: fixture.description }),
+    ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
+    code: emitApplication(fixture, renderer === 'stylex'),
+  }))

@@ -1,5 +1,14 @@
 import type { Update } from 'foldkit'
-import { Array as A, Duration, Effect, Option, Queue, Result, Schema as S, Stream } from 'effect'
+import {
+  Array as A,
+  Duration,
+  Effect,
+  Option,
+  Queue,
+  Result,
+  Schema as S,
+  Stream,
+} from 'effect'
 import * as Command from 'foldkit/command'
 import { defineMessageUnion } from 'foldkit/message'
 import * as Mount from 'foldkit/mount'
@@ -49,7 +58,9 @@ export const SheetHeight = S.Union([
 export type SheetHeight = typeof SheetHeight.Type
 
 /** Named height budgets as viewport fractions (astryx HEIGHT_BUDGETS). */
-export const HEIGHT_BUDGETS: Readonly<Record<'hug' | 'capped' | 'tall', number>> = {
+export const HEIGHT_BUDGETS: Readonly<
+  Record<'hug' | 'capped' | 'tall', number>
+> = {
   hug: 0.92,
   capped: 0.62,
   tall: 0.92,
@@ -175,7 +186,10 @@ export const resolveSettleOffset = (
 
 /** Pull a value toward the nearest target when within MAGNET_RANGE, easing the
     last stretch so the surface clicks into place while dragging. */
-export const magnetize = (value: number, targets: ReadonlyArray<number>): number => {
+export const magnetize = (
+  value: number,
+  targets: ReadonlyArray<number>,
+): number => {
   if (targets.length === 0) return value
   let nearestTarget = targets[0] ?? 0
   let nearestDist = Math.abs(value - nearestTarget)
@@ -353,9 +367,13 @@ export const settleDrag = (
     dismiss: true,
   })
   if (gesture.dragPhase === 'Arming') {
-    return { gesture: { ...initGesture(), sheetHeight: gesture.sheetHeight }, dismiss: false }
+    return {
+      gesture: { ...initGesture(), sheetHeight: gesture.sheetHeight },
+      dismiss: false,
+    }
   }
-  const isFlick = Math.abs(velocity) > FLICK_VELOCITY && travel > FLICK_MIN_DISTANCE
+  const isFlick =
+    Math.abs(velocity) > FLICK_VELOCITY && travel > FLICK_MIN_DISTANCE
   if (dir > 0 && isFlick) {
     return canDismiss ? dismiss() : at(maxOffset)
   }
@@ -375,7 +393,12 @@ export const cancelDrag = (
 ): GestureState => ({
   ...initGesture(),
   sheetHeight: gesture.sheetHeight,
-  settledOffset: resolveSettleOffset(gesture.dragOffset, detents, 0, gesture.dragBaseOffset),
+  settledOffset: resolveSettleOffset(
+    gesture.dragOffset,
+    detents,
+    0,
+    gesture.dragBaseOffset,
+  ),
   settledLayoutOffset: layoutOffsetFor(
     resolveSettleOffset(gesture.dragOffset, detents, 0, gesture.dragBaseOffset),
     peekOffset,
@@ -396,25 +419,34 @@ export const Model = S.Struct({
 export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
-  'GotBottomSheetDialogMessage': { message: Dialog.Message },
-  'RequestedSheetDismiss': {},
-  'StartedSheetDrag': { y: S.Number, timeStamp: S.Number, armOnly: S.Boolean },
-  'DraggedSheet': { y: S.Number, timeStamp: S.Number, detents: S.Array(S.Number) },
-  'EndedSheetDrag': { y: S.Number, timeStamp: S.Number, detents: S.Array(S.Number) },
-  'CancelledSheetDrag': { detents: S.Array(S.Number) },
-  'MeasuredSheet': { height: S.Number },
-  'CompletedSheetExit': {},
-});
+  GotBottomSheetDialogMessage: { message: Dialog.Message },
+  RequestedSheetDismiss: {},
+  StartedSheetDrag: { y: S.Number, timeStamp: S.Number, armOnly: S.Boolean },
+  DraggedSheet: {
+    y: S.Number,
+    timeStamp: S.Number,
+    detents: S.Array(S.Number),
+  },
+  EndedSheetDrag: {
+    y: S.Number,
+    timeStamp: S.Number,
+    detents: S.Array(S.Number),
+  },
+  CancelledSheetDrag: { detents: S.Array(S.Number) },
+  MeasuredSheet: { height: S.Number },
+  CompletedSheetExit: {},
+})
 export type Message = typeof Message.Type
 export const OutMessage = Dialog.OutMessage
 export type OutMessage = typeof OutMessage.Type
 
-export type InitConfig = Dialog.InitConfig & Readonly<{
-  purpose?: SheetPurpose;
-  hasScrim?: boolean;
-  height?: SheetHeight;
-  snapPoints?: ReadonlyArray<BottomSheetSnapPoint>;
-}>
+export type InitConfig = Dialog.InitConfig &
+  Readonly<{
+    purpose?: SheetPurpose
+    hasScrim?: boolean
+    height?: SheetHeight
+    snapPoints?: ReadonlyArray<BottomSheetSnapPoint>
+  }>
 
 export const init = (config: InitConfig): Model => ({
   dialog: Dialog.init(config),
@@ -428,19 +460,27 @@ export const init = (config: InitConfig): Model => ({
 
 type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>
 
-const mapDialogResult = (model: Model, result: ReturnType<typeof Dialog.update>): UpdateReturn => {
+const mapDialogResult = (
+  model: Model,
+  result: ReturnType<typeof Dialog.update>,
+): UpdateReturn => {
   const { model: dialog, commands: dialogCommands, outMessage } = result
   const commands = dialogCommands ?? []
   return {
     model: { ...model, dialog },
-    commands: Command.mapMessages(commands, message => Message['GotBottomSheetDialogMessage']({ message })),
+    commands: Command.mapMessages(commands, message =>
+      Message['GotBottomSheetDialogMessage']({ message }),
+    ),
     ...(outMessage === undefined ? {} : { outMessage }),
   }
 }
 
 const ExitSheet = Command.define('BottomSheetExit', {
   messages: [Message.CompletedSheetExit],
-  execute: Effect.as(Effect.sleep(Duration.millis(320)), Message.CompletedSheetExit()),
+  execute: Effect.as(
+    Effect.sleep(Duration.millis(320)),
+    Message.CompletedSheetExit(),
+  ),
 })
 
 const canSwipeDismiss = (model: Model): boolean => model.purpose === 'info'
@@ -466,7 +506,10 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       ) {
         return { model }
       }
-      return mapDialogResult(model, Dialog.update(model.dialog, message.message))
+      return mapDialogResult(
+        model,
+        Dialog.update(model.dialog, message.message),
+      )
     }
     case 'RequestedSheetDismiss':
       return requestClose(model)
@@ -496,7 +539,13 @@ export const update = (model: Model, message: Message): UpdateReturn => {
     }
     case 'EndedSheetDrag': {
       const peek = peekOffsetFor(message.detents, model.gesture.sheetHeight)
-      const result = settleDrag(model.gesture, message, message.detents, canSwipeDismiss(model), peek)
+      const result = settleDrag(
+        model.gesture,
+        message,
+        message.detents,
+        canSwipeDismiss(model),
+        peek,
+      )
       if (result.dismiss) {
         return requestClose({ ...model, gesture: result.gesture })
       }
@@ -556,29 +605,40 @@ export const SwitcherModel = S.Struct({
 export type SwitcherModel = typeof SwitcherModel.Type
 
 export const SwitcherMessage = defineMessageUnion({
-  'GotSwitcherDialogMessage': { message: Dialog.Message },
-  'RequestedSheet': { sheetId: S.String },
-  'RequestedSwitcherDismiss': {},
-  'StartedSheetDrag': { y: S.Number, timeStamp: S.Number, armOnly: S.Boolean },
-  'DraggedSheet': { y: S.Number, timeStamp: S.Number, detents: S.Array(S.Number) },
-  'EndedSheetDrag': { y: S.Number, timeStamp: S.Number, detents: S.Array(S.Number) },
-  'CancelledSheetDrag': { detents: S.Array(S.Number) },
-  'MeasuredSheet': { sheetId: S.String, height: S.Number },
-});
+  GotSwitcherDialogMessage: { message: Dialog.Message },
+  RequestedSheet: { sheetId: S.String },
+  RequestedSwitcherDismiss: {},
+  StartedSheetDrag: { y: S.Number, timeStamp: S.Number, armOnly: S.Boolean },
+  DraggedSheet: {
+    y: S.Number,
+    timeStamp: S.Number,
+    detents: S.Array(S.Number),
+  },
+  EndedSheetDrag: {
+    y: S.Number,
+    timeStamp: S.Number,
+    detents: S.Array(S.Number),
+  },
+  CancelledSheetDrag: { detents: S.Array(S.Number) },
+  MeasuredSheet: { sheetId: S.String, height: S.Number },
+})
 export type SwitcherMessage = typeof SwitcherMessage.Type
 export const SwitcherOutMessage = Dialog.OutMessage
 export type SwitcherOutMessage = typeof SwitcherOutMessage.Type
 
-export type SwitcherInitConfig = Dialog.InitConfig & Readonly<{
-  hasScrim?: boolean;
-  sheets: ReadonlyArray<Readonly<{
-    id: string;
-    label: string;
-    purpose?: SheetPurpose;
-    height?: SheetHeight;
-    snapPoints?: ReadonlyArray<BottomSheetSnapPoint>;
-  }>>;
-}>
+export type SwitcherInitConfig = Dialog.InitConfig &
+  Readonly<{
+    hasScrim?: boolean
+    sheets: ReadonlyArray<
+      Readonly<{
+        id: string
+        label: string
+        purpose?: SheetPurpose
+        height?: SheetHeight
+        snapPoints?: ReadonlyArray<BottomSheetSnapPoint>
+      }>
+    >
+  }>
 
 export const initSwitcher = (config: SwitcherInitConfig): SwitcherModel => ({
   dialog: Dialog.init(config),
@@ -600,14 +660,23 @@ export const initSwitcher = (config: SwitcherInitConfig): SwitcherModel => ({
   previousSheetId: Option.none(),
 })
 
-type SwitcherUpdateReturn = Update.ReturnWithOutMessage<SwitcherModel, SwitcherMessage, SwitcherOutMessage>
+type SwitcherUpdateReturn = Update.ReturnWithOutMessage<
+  SwitcherModel,
+  SwitcherMessage,
+  SwitcherOutMessage
+>
 
-const mapSwitcherDialog = (model: SwitcherModel, result: ReturnType<typeof Dialog.update>): SwitcherUpdateReturn => {
+const mapSwitcherDialog = (
+  model: SwitcherModel,
+  result: ReturnType<typeof Dialog.update>,
+): SwitcherUpdateReturn => {
   const { model: dialog, commands: dialogCommands, outMessage } = result
   const commands = dialogCommands ?? []
   return {
     model: { ...model, dialog },
-    commands: Command.mapMessages(commands, message => SwitcherMessage['GotSwitcherDialogMessage']({ message })),
+    commands: Command.mapMessages(commands, message =>
+      SwitcherMessage['GotSwitcherDialogMessage']({ message }),
+    ),
     ...(outMessage === undefined ? {} : { outMessage }),
   }
 }
@@ -628,9 +697,13 @@ const updateActiveGesture = (
   }
 }
 
-export const updateSwitcher = (model: SwitcherModel, message: SwitcherMessage): SwitcherUpdateReturn => {
+export const updateSwitcher = (
+  model: SwitcherModel,
+  message: SwitcherMessage,
+): SwitcherUpdateReturn => {
   const activeId = Option.getOrUndefined(model.activeSheetId)
-  const activeSheet = activeId === undefined ? undefined : model.sheets[activeId]
+  const activeSheet =
+    activeId === undefined ? undefined : model.sheets[activeId]
   switch (message._tag) {
     case 'GotSwitcherDialogMessage': {
       if (
@@ -656,7 +729,10 @@ export const updateSwitcher = (model: SwitcherModel, message: SwitcherMessage): 
     case 'RequestedSheet': {
       const target = model.sheets[message.sheetId]
       if (target === undefined) return { model }
-      if (model.activeSheetId._tag === 'Some' && model.activeSheetId.value === message.sheetId) {
+      if (
+        model.activeSheetId._tag === 'Some' &&
+        model.activeSheetId.value === message.sheetId
+      ) {
         return { model }
       }
       const previousId = Option.getOrUndefined(model.activeSheetId)
@@ -667,7 +743,14 @@ export const updateSwitcher = (model: SwitcherModel, message: SwitcherMessage): 
         sheets: Object.fromEntries(
           Object.entries(model.sheets).map(([id, sheet]) => [
             id,
-            { ...sheet, gesture: { ...sheet.gesture, dragPhase: 'Idle', dragStartY: Option.none() } },
+            {
+              ...sheet,
+              gesture: {
+                ...sheet.gesture,
+                dragPhase: 'Idle',
+                dragStartY: Option.none(),
+              },
+            },
           ]),
         ),
       }
@@ -691,24 +774,33 @@ export const updateSwitcher = (model: SwitcherModel, message: SwitcherMessage): 
     case 'StartedSheetDrag':
       return {
         model: updateActiveGesture(model, sheet =>
-          startDrag(sheet.gesture, message, message.armOnly)),
+          startDrag(sheet.gesture, message, message.armOnly),
+        ),
       }
     case 'DraggedSheet':
       return {
         model: updateActiveGesture(model, sheet =>
-          applyDrag(sheet.gesture, message, message.detents)),
+          applyDrag(sheet.gesture, message, message.detents),
+        ),
       }
     case 'CancelledSheetDrag': {
       if (activeSheet === undefined) return { model }
-      const peek = peekOffsetFor(message.detents, activeSheet.gesture.sheetHeight)
+      const peek = peekOffsetFor(
+        message.detents,
+        activeSheet.gesture.sheetHeight,
+      )
       return {
         model: updateActiveGesture(model, s =>
-          cancelDrag(s.gesture, message.detents, peek)),
+          cancelDrag(s.gesture, message.detents, peek),
+        ),
       }
     }
     case 'EndedSheetDrag': {
       if (activeSheet === undefined) return { model }
-      const peek = peekOffsetFor(message.detents, activeSheet.gesture.sheetHeight)
+      const peek = peekOffsetFor(
+        message.detents,
+        activeSheet.gesture.sheetHeight,
+      )
       const result = settleDrag(
         activeSheet.gesture,
         message,
@@ -741,7 +833,10 @@ export const updateSwitcher = (model: SwitcherModel, message: SwitcherMessage): 
   }
 }
 
-export const openSheet = (model: SwitcherModel, sheetId: string): SwitcherUpdateReturn =>
+export const openSheet = (
+  model: SwitcherModel,
+  sheetId: string,
+): SwitcherUpdateReturn =>
   updateSwitcher(model, SwitcherMessage.RequestedSheet({ sheetId }))
 
 export const closeSwitcher = (model: SwitcherModel): SwitcherUpdateReturn =>
@@ -774,28 +869,34 @@ export const ObserveSheet = Mount.defineStream('ObserveBottomSheetPanel', {
     ),
 })
 
-export const ObserveSwitcherSheet = Mount.defineStream('ObserveBottomSheetSwitcherPanel', {
-  args: { sheetId: S.String },
-  messages: [SwitcherMessage.MeasuredSheet],
-  execute: ({ element, sheetId }) =>
-    Stream.callback<typeof SwitcherMessage.MeasuredSheet.Type>(queue =>
-      Effect.gen(function* () {
-        yield* Effect.acquireRelease(
-          Effect.sync(() => {
-            if (!(element instanceof HTMLElement)) return undefined
-            const emit = () =>
-              Queue.offerUnsafe(
-                queue,
-                SwitcherMessage.MeasuredSheet({ sheetId, height: element.offsetHeight }),
-              )
-            const resize = new ResizeObserver(emit)
-            resize.observe(element)
-            emit()
-            return resize
-          }),
-          resize => Effect.sync(() => resize?.disconnect()),
-        )
-        return yield* Effect.never
-      }),
-    ),
-})
+export const ObserveSwitcherSheet = Mount.defineStream(
+  'ObserveBottomSheetSwitcherPanel',
+  {
+    args: { sheetId: S.String },
+    messages: [SwitcherMessage.MeasuredSheet],
+    execute: ({ element, sheetId }) =>
+      Stream.callback<typeof SwitcherMessage.MeasuredSheet.Type>(queue =>
+        Effect.gen(function* () {
+          yield* Effect.acquireRelease(
+            Effect.sync(() => {
+              if (!(element instanceof HTMLElement)) return undefined
+              const emit = () =>
+                Queue.offerUnsafe(
+                  queue,
+                  SwitcherMessage.MeasuredSheet({
+                    sheetId,
+                    height: element.offsetHeight,
+                  }),
+                )
+              const resize = new ResizeObserver(emit)
+              resize.observe(element)
+              emit()
+              return resize
+            }),
+            resize => Effect.sync(() => resize?.disconnect()),
+          )
+          return yield* Effect.never
+        }),
+      ),
+  },
+)

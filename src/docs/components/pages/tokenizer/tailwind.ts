@@ -1,27 +1,27 @@
-import { Schema as S } from 'effect';
-import { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import { Schema as S } from 'effect'
+import { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-import { definePreviewProgram } from '@/docs/components/pages/authored-page';
+import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
   SKILLS,
   TAGS,
   USERS,
   tokenizerFixtures,
-} from '@/docs/components/pages/tokenizer/shared';
-import * as Tokenizer from '@/ui/tokenizer';
+} from '@/docs/components/pages/tokenizer/shared'
+import * as Tokenizer from '@/ui/tokenizer'
 
 const PreviewMessages = defineMessageUnion({
   GotTokenizerMessage: { slot: S.Number, message: Tokenizer.Message },
-});
-type PreviewMessage = typeof PreviewMessages.Type;
+})
+type PreviewMessage = typeof PreviewMessages.Type
 
 const PreviewModel = S.Struct({
   _docsPage: S.Literal('tokenizer'),
   tokenizers: S.Array(Tokenizer.Model),
-});
-type PreviewModel = typeof PreviewModel.Type;
+})
+type PreviewModel = typeof PreviewModel.Type
 
 const STATE_FIELDS = [
   { label: 'Disabled field', isDisabled: true, seed: [0, 2] },
@@ -43,16 +43,16 @@ const STATE_FIELDS = [
     status: { type: 'success', message: 'All required reviewers added' },
     seed: [1, 3],
   },
-] as const;
+] as const
 
 const initFixture = (
   index: number,
   fixture: (typeof tokenizerFixtures)[number],
 ): ReadonlyArray<Tokenizer.Model> => {
-  const id = (slot: number) => `docs-tokenizer-${String(index)}-${String(slot)}`;
+  const id = (slot: number) => `docs-tokenizer-${String(index)}-${String(slot)}`
   switch (fixture.kind) {
     case 'showcase':
-      return [Tokenizer.init({ id: id(0), tokens: [...TAGS] })];
+      return [Tokenizer.init({ id: id(0), tokens: [...TAGS] })]
     case 'clear':
       return [
         Tokenizer.init({
@@ -60,7 +60,7 @@ const initFixture = (
           tokens: [USERS[0]!, USERS[1]!],
           items: [...USERS],
         }),
-      ];
+      ]
     case 'icon':
     case 'endContent':
       return [
@@ -69,12 +69,12 @@ const initFixture = (
           tokens: [USERS[0]!, USERS[2]!],
           items: [...USERS],
         }),
-      ];
+      ]
     case 'creatable':
       return [
         Tokenizer.init({ id: id(0) }),
         Tokenizer.init({ id: id(1), items: [...USERS] }),
-      ];
+      ]
     case 'maxEntries':
       return [
         Tokenizer.init({
@@ -83,29 +83,27 @@ const initFixture = (
           items: [...SKILLS],
           maxEntries: 3,
         }),
-      ];
+      ]
     case 'overflow':
       return [
         Tokenizer.init({ id: id(0), tokens: [...USERS], items: [...USERS] }),
         Tokenizer.init({ id: id(1), tokens: [...USERS], items: [...USERS] }),
-      ];
+      ]
     case 'states':
       return STATE_FIELDS.map((field, i) =>
         Tokenizer.init({
           id: id(i),
-          tokens: field.seed.map((n) => USERS[n]!),
+          tokens: field.seed.map(n => USERS[n]!),
           items: [...USERS],
         }),
-      );
+      )
     default:
-      return [Tokenizer.init({ id: id(0), items: [...USERS] })];
+      return [Tokenizer.init({ id: id(0), items: [...USERS] })]
   }
-};
+}
 
-const supporting = (
-  text: string,
-  h: HtmlBuilder<PreviewMessage>,
-): Html => h.p([h.Class('text-muted-foreground text-sm')], [text]);
+const supporting = (text: string, h: HtmlBuilder<PreviewMessage>): Html =>
+  h.p([h.Class('text-muted-foreground text-sm')], [text])
 
 export const tokenizerTailwindPreviewProgram = definePreviewProgram<
   PreviewModel,
@@ -113,36 +111,36 @@ export const tokenizerTailwindPreviewProgram = definePreviewProgram<
 >({
   Model: PreviewModel,
   Message: PreviewMessages,
-  init: (index) => {
-    const fixture = tokenizerFixtures[index] ?? tokenizerFixtures[0]!;
+  init: index => {
+    const fixture = tokenizerFixtures[index] ?? tokenizerFixtures[0]!
     return {
       _docsPage: 'tokenizer',
       tokenizers: [...initFixture(index, fixture)],
-    };
+    }
   },
   update: (model, message) => {
     switch (message._tag) {
       case 'GotTokenizerMessage': {
-        const target = model.tokenizers[message.slot];
-        if (target === undefined) return { model };
-        const next = Tokenizer.update(target, message.message);
+        const target = model.tokenizers[message.slot]
+        if (target === undefined) return { model }
+        const next = Tokenizer.update(target, message.message)
         const tokenizers = model.tokenizers.map((entry, i) =>
           i === message.slot ? next.model : entry,
-        );
+        )
         return {
           model: { ...model, tokenizers },
-          commands: Command.mapMessages(next.commands ?? [], (m) =>
+          commands: Command.mapMessages(next.commands ?? [], m =>
             PreviewMessages.GotTokenizerMessage({
               slot: message.slot,
               message: m,
             }),
           ),
-        };
+        }
       }
     }
   },
   view: (index, model, h) => {
-    const fixture = tokenizerFixtures[index] ?? tokenizerFixtures[0]!;
+    const fixture = tokenizerFixtures[index] ?? tokenizerFixtures[0]!
     const tokenizerAt = (
       slot: number,
       props: Omit<
@@ -153,17 +151,14 @@ export const tokenizerTailwindPreviewProgram = definePreviewProgram<
       Tokenizer.tokenizer(
         {
           model: model.tokenizers[slot]!,
-          toParentMessage: (message) =>
+          toParentMessage: message =>
             PreviewMessages.GotTokenizerMessage({ slot, message }),
           ...props,
         },
         h,
-      );
+      )
     const stack = (children: ReadonlyArray<Html>): Html =>
-      h.div(
-        [h.Class('grid w-full max-w-100 min-w-60 gap-4')],
-        [...children],
-      );
+      h.div([h.Class('grid w-full max-w-100 min-w-60 gap-4')], [...children])
     switch (fixture.kind) {
       case 'showcase':
         return stack([
@@ -173,7 +168,7 @@ export const tokenizerTailwindPreviewProgram = definePreviewProgram<
             items: [],
             width: 400,
           }),
-        ]);
+        ])
       case 'clear':
         return stack([
           supporting('Clear-all button appears when tokens are selected', h),
@@ -184,7 +179,7 @@ export const tokenizerTailwindPreviewProgram = definePreviewProgram<
             hasClear: true,
             width: 400,
           }),
-        ]);
+        ])
       case 'creatable':
         return stack([
           supporting('Free-text only', h),
@@ -204,7 +199,7 @@ export const tokenizerTailwindPreviewProgram = definePreviewProgram<
             hasEntriesOnFocus: true,
             width: 400,
           }),
-        ]);
+        ])
       case 'endContent':
         return stack([
           supporting('Action button in the end slot', h),
@@ -223,7 +218,7 @@ export const tokenizerTailwindPreviewProgram = definePreviewProgram<
             ),
             width: 400,
           }),
-        ]);
+        ])
       case 'icon':
         return stack([
           supporting('Leading icon reinforces the search affordance', h),
@@ -234,7 +229,7 @@ export const tokenizerTailwindPreviewProgram = definePreviewProgram<
             hasStartIcon: true,
             width: 400,
           }),
-        ]);
+        ])
       case 'maxEntries':
         return stack([
           supporting(
@@ -249,7 +244,7 @@ export const tokenizerTailwindPreviewProgram = definePreviewProgram<
             maxEntries: 3,
             width: 400,
           }),
-        ]);
+        ])
       case 'overflow':
         return stack([
           supporting('Inline overflow — content shifts down on expand', h),
@@ -260,10 +255,7 @@ export const tokenizerTailwindPreviewProgram = definePreviewProgram<
             tokenOverflowBehavior: 'unfocusedInline',
             width: 400,
           }),
-          supporting(
-            'Layer overflow — expands as overlay, no layout shift',
-            h,
-          ),
+          supporting('Layer overflow — expands as overlay, no layout shift', h),
           tokenizerAt(1, {
             label: 'Layer Overflow',
             placeholder: 'Add more...',
@@ -271,7 +263,7 @@ export const tokenizerTailwindPreviewProgram = definePreviewProgram<
             tokenOverflowBehavior: 'unfocusedLayer',
             width: 400,
           }),
-        ]);
+        ])
       case 'states':
         return stack(
           STATE_FIELDS.map((field, i) =>
@@ -285,9 +277,9 @@ export const tokenizerTailwindPreviewProgram = definePreviewProgram<
               width: 400,
             }),
           ),
-        );
+        )
       default:
-        return stack([]);
+        return stack([])
     }
   },
-});
+})

@@ -46,10 +46,24 @@ const typeStyles = stylex.create({
   large: { fontSize: '1.0625rem', fontWeight: 600, lineHeight: '1.5rem' },
   label: { fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem' },
   supporting: { fontSize: '0.75rem', fontWeight: 400, lineHeight: '1.25rem' },
-  code: { fontFamily: 'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)', fontSize: '0.875rem', fontWeight: 400, lineHeight: '1.25rem' },
+  code: {
+    fontFamily:
+      'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
+    fontSize: '0.875rem',
+    fontWeight: 400,
+    lineHeight: '1.25rem',
+  },
   'display-1': { fontSize: '2.625rem', fontWeight: 400, lineHeight: '3.25rem' },
-  'display-2': { fontSize: '2.1875rem', fontWeight: 400, lineHeight: '2.75rem' },
-  'display-3': { fontSize: '1.8125rem', fontWeight: 400, lineHeight: '2.25rem' },
+  'display-2': {
+    fontSize: '2.1875rem',
+    fontWeight: 400,
+    lineHeight: '2.75rem',
+  },
+  'display-3': {
+    fontSize: '1.8125rem',
+    fontWeight: 400,
+    lineHeight: '2.25rem',
+  },
   inherit: {
     fontFamily: 'inherit',
     fontSize: 'inherit',

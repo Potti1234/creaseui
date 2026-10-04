@@ -1,16 +1,16 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   alertDialogFixtures,
   type AlertDialogFixture,
-} from '@/docs/components/pages/alert-dialog/shared';
-import * as Icon from '@/lib/icon';
-import * as AlertDialog from '@/stylex/alert-dialog';
-import * as Button from '@/stylex/button';
-import { className } from '@/stylex/style';
+} from '@/docs/components/pages/alert-dialog/shared'
+import * as Icon from '@/lib/icon'
+import * as AlertDialog from '@/stylex/alert-dialog'
+import * as Button from '@/stylex/button'
+import { className } from '@/stylex/style'
 
 const styles = stylex.create({
   frame: { gap: '0.75rem', display: 'grid', justifyItems: 'center' },
@@ -27,14 +27,14 @@ const styles = stylex.create({
     fontSize: '0.875rem',
     lineHeight: '1.25rem',
   },
-});
+})
 
 type PreviewSnapshot = {
-  dialog: AlertDialog.Model;
-  dialogSmall: AlertDialog.Model;
-  status: 'idle' | 'pending' | 'complete';
-  asyncFlow: boolean;
-};
+  dialog: AlertDialog.Model
+  dialogSmall: AlertDialog.Model
+  status: 'idle' | 'pending' | 'complete'
+  asyncFlow: boolean
+}
 
 const dialogView = <Msg>(
   spec: AlertDialogFixture['dialogs'][number],
@@ -88,7 +88,7 @@ const dialogView = <Msg>(
           }),
     },
     h,
-  );
+  )
 
 export const alertDialogStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
@@ -96,8 +96,8 @@ export const alertDialogStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ) => {
-  const fixture = alertDialogFixtures[exampleIndex] ?? alertDialogFixtures[0];
-  const previewModel = model as PreviewSnapshot;
+  const fixture = alertDialogFixtures[exampleIndex] ?? alertDialogFixtures[0]
+  const previewModel = model as PreviewSnapshot
   const children = fixture.dialogs.flatMap((spec, index) => [
     Button.button(
       {
@@ -120,28 +120,28 @@ export const alertDialogStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
       onMessageJson,
       h,
     ),
-  ]);
+  ])
   if (fixture.kind === 'rtl') {
-    return h.div(
-      [h.Dir('rtl'), h.Class(className(styles.frameRtl))],
-      children,
-    );
+    return h.div([h.Dir('rtl'), h.Class(className(styles.frameRtl))], children)
   }
-  return h.div([h.Class(className(styles.frame))], [
-    ...children,
-    ...(fixture.async === undefined
-      ? []
-      : [
-          h.p(
-            [h.Role('status'), h.Class(className(styles.status))],
-            [
-              previewModel.status === 'complete'
-                ? fixture.async.completeLabel
-                : previewModel.status === 'pending'
-                  ? 'Working…'
-                  : 'No action taken.',
-            ],
-          ),
-        ]),
-  ]);
-};
+  return h.div(
+    [h.Class(className(styles.frame))],
+    [
+      ...children,
+      ...(fixture.async === undefined
+        ? []
+        : [
+            h.p(
+              [h.Role('status'), h.Class(className(styles.status))],
+              [
+                previewModel.status === 'complete'
+                  ? fixture.async.completeLabel
+                  : previewModel.status === 'pending'
+                    ? 'Working…'
+                    : 'No action taken.',
+              ],
+            ),
+          ]),
+    ],
+  )
+}

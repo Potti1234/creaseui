@@ -1,12 +1,12 @@
-﻿import type { Html, HtmlBuilder } from 'foldkit/html';
+﻿import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils'
 
 type Slot = Readonly<{
-  class?: string;
-  children: ReadonlyArray<Html | string>;
-  icon?: 'inline-start' | 'inline-end';
-}>;
+  class?: string
+  children: ReadonlyArray<Html | string>
+  icon?: 'inline-start' | 'inline-end'
+}>
 
 export const kbd = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => {
   return h.kbd(
@@ -23,8 +23,8 @@ export const kbd = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => {
       ),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 export const kbdGroup = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => {
   return h.kbd(
@@ -33,5 +33,5 @@ export const kbdGroup = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => {
       h.Class(cn('inline-flex items-center gap-1', props.class)),
     ],
     [...props.children],
-  );
-};
+  )
+}

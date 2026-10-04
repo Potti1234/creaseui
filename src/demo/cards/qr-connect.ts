@@ -1,6 +1,6 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { button } from '@/ui/button';
+import { button } from '@/ui/button'
 import {
   card,
   cardContent,
@@ -8,12 +8,12 @@ import {
   cardFooter,
   cardHeader,
   cardTitle,
-} from '@/ui/card';
+} from '@/ui/card'
 
 const qrCells = [
   0, 1, 2, 5, 6, 7, 8, 10, 13, 15, 16, 18, 19, 21, 23, 24, 29, 31, 32, 33, 34,
   37, 38, 39, 41, 43, 44, 46, 48, 50, 53, 55, 56, 58, 61, 62, 63,
-];
+]
 
 export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
   return card(
@@ -94,7 +94,7 @@ export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 // Stateful? no. Submodels wired: none. PORT NOTEs: QR library replaced by a neutral grid.

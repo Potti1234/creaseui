@@ -1,41 +1,41 @@
-import { Schema as S } from 'effect';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import { Schema as S } from 'effect'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-import { definePreviewProgram } from '@/docs/components/pages/authored-page';
+import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
   type VisuallyHiddenFixture,
   vhActions,
   vhItems,
   visuallyHiddenFixtures,
   vhStats,
-} from '@/docs/components/pages/visually-hidden/shared';
-import { icon } from '@/lib/icon';
-import * as Badge from '@/ui/badge';
-import * as Button from '@/ui/button';
-import * as Card from '@/ui/card';
-import * as Stack from '@/ui/stack';
-import * as VisuallyHidden from '@/ui/visually-hidden';
+} from '@/docs/components/pages/visually-hidden/shared'
+import { icon } from '@/lib/icon'
+import * as Badge from '@/ui/badge'
+import * as Button from '@/ui/button'
+import * as Card from '@/ui/card'
+import * as Stack from '@/ui/stack'
+import * as VisuallyHidden from '@/ui/visually-hidden'
 
-const COLUMNS = ['Backlog', 'In progress', 'Done'] as const;
+const COLUMNS = ['Backlog', 'In progress', 'Done'] as const
 
 const VisuallyHiddenPreviewMessageUnion = defineMessageUnion({
   MovedTask: {},
-});
+})
 type VisuallyHiddenPreviewMessage =
-  typeof VisuallyHiddenPreviewMessageUnion.Type;
+  typeof VisuallyHiddenPreviewMessageUnion.Type
 const VisuallyHiddenPreviewModel = S.Struct({
   _docsPage: S.Literal('visually-hidden'),
   column: S.Number,
-});
-type VisuallyHiddenPreviewModel = typeof VisuallyHiddenPreviewModel.Type;
+})
+type VisuallyHiddenPreviewModel = typeof VisuallyHiddenPreviewModel.Type
 
 const supporting = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class('text-xs text-muted-foreground')], [text]);
+  h.p([h.Class('text-xs text-muted-foreground')], [text])
 const body = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class('text-sm')], [text]);
+  h.p([h.Class('text-sm')], [text])
 const display = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class('text-[29px] leading-9 font-normal')], [text]);
+  h.p([h.Class('text-[29px] leading-9 font-normal')], [text])
 
 const mutedCard = <Msg>(
   children: ReadonlyArray<Html>,
@@ -48,7 +48,7 @@ const mutedCard = <Msg>(
       children: [Card.cardContent({ children: [...children] }, h)],
     },
     h,
-  );
+  )
 
 const showcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Stack.vStack(
@@ -150,13 +150,13 @@ const showcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ],
     },
     h,
-  );
+  )
 
 const liveRegionView = (
   model: VisuallyHiddenPreviewModel,
   h: HtmlBuilder<VisuallyHiddenPreviewMessage>,
 ): Html => {
-  const current = COLUMNS[model.column] ?? COLUMNS[0];
+  const current = COLUMNS[model.column] ?? COLUMNS[0]
   return Stack.vStack(
     {
       gap: 4,
@@ -175,15 +175,14 @@ const liveRegionView = (
                 {
                   variant: 'secondary',
                   children: ['Move task'],
-                  onClick:
-                    VisuallyHiddenPreviewMessageUnion.MovedTask(),
+                  onClick: VisuallyHiddenPreviewMessageUnion.MovedTask(),
                 },
                 h,
               ),
-              h.p([h.Class('text-sm')], [
-                'Task is in ',
-                h.span([h.Class('font-bold')], [current]),
-              ]),
+              h.p(
+                [h.Class('text-sm')],
+                ['Task is in ', h.span([h.Class('font-bold')], [current])],
+              ),
             ],
           },
           h,
@@ -199,8 +198,8 @@ const liveRegionView = (
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const headingView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Stack.vStack(
@@ -252,7 +251,7 @@ const headingView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ],
     },
     h,
-  );
+  )
 
 const supplementaryView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Stack.hStack(
@@ -274,9 +273,7 @@ const supplementaryView = <Msg>(h: HtmlBuilder<Msg>): Html =>
                       vAlign: 'center',
                       children: [
                         icon(
-                          stat.direction === 'up'
-                            ? 'arrow-up'
-                            : 'arrow-down',
+                          stat.direction === 'up' ? 'arrow-up' : 'arrow-down',
                           {
                             class:
                               stat.direction === 'up'
@@ -311,7 +308,7 @@ const supplementaryView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ),
     },
     h,
-  );
+  )
 
 const viewFor = (
   fixture: VisuallyHiddenFixture,
@@ -320,15 +317,15 @@ const viewFor = (
 ): Html => {
   switch (fixture.kind) {
     case 'showcase':
-      return showcaseView(h);
+      return showcaseView(h)
     case 'liveRegion':
-      return liveRegionView(model, h);
+      return liveRegionView(model, h)
     case 'heading':
-      return headingView(h);
+      return headingView(h)
     case 'supplementary':
-      return supplementaryView(h);
+      return supplementaryView(h)
   }
-};
+}
 
 export const visuallyHiddenTailwindPreviewProgram = definePreviewProgram<
   VisuallyHiddenPreviewModel,
@@ -345,11 +342,11 @@ export const visuallyHiddenTailwindPreviewProgram = definePreviewProgram<
             ...model,
             column: (model.column + 1) % COLUMNS.length,
           },
-        };
+        }
     }
   },
   view: (index, model, h) => {
-    const fixture = visuallyHiddenFixtures[index] ?? visuallyHiddenFixtures[0];
-    return viewFor(fixture, model, h);
+    const fixture = visuallyHiddenFixtures[index] ?? visuallyHiddenFixtures[0]
+    return viewFor(fixture, model, h)
   },
-});
+})

@@ -1,4 +1,7 @@
-import { Dialog as DialogPrimitive, Animation as AnimationPrimitive } from '@foldkit/ui'
+import {
+  Dialog as DialogPrimitive,
+  Animation as AnimationPrimitive,
+} from '@foldkit/ui'
 import * as Command from 'foldkit/command'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as Scene from 'foldkit/scene'
@@ -53,13 +56,11 @@ type Message = Readonly<
 
 const lift = (result: ReturnType<typeof AlertDialogBehavior.update>) => ({
   model: { alertDialog: result.model },
-  commands: Command.mapMessages(
-    result.commands,
-    (message): Message => ({ _tag: 'GotAlertDialogMessage', message }),
-  ),
-  ...(result.outMessage === undefined
-    ? {}
-    : { outMessage: result.outMessage }),
+  commands: Command.mapMessages(result.commands, (message): Message => ({
+    _tag: 'GotAlertDialogMessage',
+    message,
+  })),
+  ...(result.outMessage === undefined ? {} : { outMessage: result.outMessage }),
 })
 
 const update = (model: Model, message: Message) => {
@@ -69,7 +70,9 @@ const update = (model: Model, message: Message) => {
     case 'RequestedCloseDialog':
       return lift(AlertDialogBehavior.close(model.alertDialog))
     case 'GotAlertDialogMessage':
-      return lift(AlertDialogBehavior.update(model.alertDialog, message.message))
+      return lift(
+        AlertDialogBehavior.update(model.alertDialog, message.message),
+      )
   }
 }
 
@@ -96,33 +99,36 @@ type AlertDialogModule = Readonly<{
 const sceneView =
   (AlertDialog: AlertDialogModule, isPending = false) =>
   (model: Model, h: HtmlBuilder<Message>): Html =>
-    h.div([], [
-      h.button(
-        [h.Type('button'), h.OnClick({ _tag: 'RequestedOpenDialog' })],
-        ['Open'],
-      ),
-      h.button(
-        [h.Type('button'), h.OnClick({ _tag: 'RequestedCloseDialog' })],
-        ['Dismiss'],
-      ),
-      AlertDialog.alertDialog(
-        {
-          model: model.alertDialog,
-          toParentMessage: message => ({
-            _tag: 'GotAlertDialogMessage',
-            message,
-          }),
-          title: 'Are you absolutely sure?',
-          description:
-            'This action cannot be undone. This will permanently delete your account.',
-          actionLabel: 'Continue',
-          cancelLabel: 'Cancel',
-          pendingLabel: 'Deleting…',
-          isPending,
-        },
-        h,
-      ),
-    ])
+    h.div(
+      [],
+      [
+        h.button(
+          [h.Type('button'), h.OnClick({ _tag: 'RequestedOpenDialog' })],
+          ['Open'],
+        ),
+        h.button(
+          [h.Type('button'), h.OnClick({ _tag: 'RequestedCloseDialog' })],
+          ['Dismiss'],
+        ),
+        AlertDialog.alertDialog(
+          {
+            model: model.alertDialog,
+            toParentMessage: message => ({
+              _tag: 'GotAlertDialogMessage',
+              message,
+            }),
+            title: 'Are you absolutely sure?',
+            description:
+              'This action cannot be undone. This will permanently delete your account.',
+            actionLabel: 'Continue',
+            cancelLabel: 'Cancel',
+            pendingLabel: 'Deleting…',
+            isPending,
+          },
+          h,
+        ),
+      ],
+    )
 
 const dialog = Scene.selector('[data-slot="alert-dialog"]')
 const popup = Scene.role('alertdialog')
@@ -142,8 +148,9 @@ const closedModel = (isAnimated = false): Model => ({
 // model through the real `open` path and keep only the model — the ShowDialog
 // command is a runtime concern the scene resolves separately.
 const openModel = (): Model => ({
-  alertDialog: AlertDialogBehavior.open(AlertDialogBehavior.init({ id: 'delete-alert' }))
-    .model,
+  alertDialog: AlertDialogBehavior.open(
+    AlertDialogBehavior.init({ id: 'delete-alert' }),
+  ).model,
 })
 
 // Acknowledges the framework plumbing an open dialog dispatches: the
@@ -159,11 +166,14 @@ const acquireResources = Scene.Mount.resolve(
 /* foldkit 0.164's Animation commands carry a `generation` arg that the result
    Messages must echo back. Read it off the pending Command. */
 const pendingAnimationGeneration = (
-  commands: ReadonlyArray<Readonly<{ name: string; args?: Record<string, unknown> }>>,
+  commands: ReadonlyArray<
+    Readonly<{ name: string; args?: Record<string, unknown> }>
+  >,
 ): number => {
   const pending = commands.find(
     command =>
-      command.name === 'WaitForPaint' || command.name === 'WaitForAnimationSettled',
+      command.name === 'WaitForPaint' ||
+      command.name === 'WaitForAnimationSettled',
   )
   const generation = pending?.args?.['generation']
   if (typeof generation !== 'number') {
@@ -544,9 +554,7 @@ const verifyRenderer = (name: string, AlertDialog: AlertDialogModule) => {
             Scene.expect(
               Scene.selector('[data-slot="alert-dialog-action"]'),
             ).toHaveAttr('aria-busy', 'true'),
-            Scene.expect(
-              Scene.role('button', { name: 'Deleting…' }),
-            ).toExist(),
+            Scene.expect(Scene.role('button', { name: 'Deleting…' })).toExist(),
           )
         })
       })

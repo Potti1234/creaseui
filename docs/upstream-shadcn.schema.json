@@ -1,7 +1,14 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
-  "required": ["repository", "commit", "date", "registryPath", "components", "files"],
+  "required": [
+    "repository",
+    "commit",
+    "date",
+    "registryPath",
+    "components",
+    "files"
+  ],
   "properties": {
     "repository": { "type": "string", "format": "uri" },
     "commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },

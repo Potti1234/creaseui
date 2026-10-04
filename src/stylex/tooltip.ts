@@ -1,8 +1,8 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { Tooltip as TooltipPrimitive } from '@foldkit/ui';
-import { Option } from 'effect';
-import * as Mount from 'foldkit/mount';
+import { Tooltip as TooltipPrimitive } from '@foldkit/ui'
+import { Option } from 'effect'
+import * as Mount from 'foldkit/mount'
 
 import * as TooltipBehavior from '@/lib/tooltip'
 import * as stylex from '@stylexjs/stylex'
@@ -27,24 +27,24 @@ const cn = (...values: ReadonlyArray<unknown>): string =>
    Foldkit's floating anchor may flip a panel to avoid collisions. The arrow is
    styled from the anchor's runtime data-placement, so it follows that flip. */
 
-export const Model = TooltipBehavior.Model;
-export type Model = typeof Model.Type;
-export const Message = TooltipBehavior.Message;
-export type Message = typeof Message.Type;
-export const OutMessage = TooltipBehavior.OutMessage;
-export type OutMessage = typeof OutMessage.Type;
+export const Model = TooltipBehavior.Model
+export type Model = typeof Model.Type
+export const Message = TooltipBehavior.Message
+export type Message = typeof Message.Type
+export const OutMessage = TooltipBehavior.OutMessage
+export type OutMessage = typeof OutMessage.Type
 
-export const init = TooltipBehavior.init;
-export const update = TooltipBehavior.update;
-export const reflectShowDelay = TooltipBehavior.reflectShowDelay;
-export const reflectCloseDelay = TooltipBehavior.reflectCloseDelay;
+export const init = TooltipBehavior.init
+export const update = TooltipBehavior.update
+export const reflectShowDelay = TooltipBehavior.reflectShowDelay
+export const reflectCloseDelay = TooltipBehavior.reflectCloseDelay
 
 const CONTENT_CLASS = styles.content
 
-export type TooltipSide = 'top' | 'right' | 'bottom' | 'left';
-export type TooltipAlign = 'start' | 'center' | 'end';
+export type TooltipSide = 'top' | 'right' | 'bottom' | 'left'
+export type TooltipAlign = 'start' | 'center' | 'end'
 
-type Placement = NonNullable<TooltipPrimitive.AnchorConfig['placement']>;
+type Placement = NonNullable<TooltipPrimitive.AnchorConfig['placement']>
 
 const PLACEMENTS: Readonly<
   Record<TooltipSide, Readonly<Record<TooltipAlign, Placement>>>
@@ -53,113 +53,181 @@ const PLACEMENTS: Readonly<
   right: { start: 'right-start', center: 'right', end: 'right-end' },
   bottom: { start: 'bottom-start', center: 'bottom', end: 'bottom-end' },
   left: { start: 'left-start', center: 'left', end: 'left-end' },
-};
+}
 
 const ARROW_CLASS = overlayStyles.arrow
 
 export type TooltipProps<Msg> = Readonly<{
-  model: Model;
-  toParentMessage: (message: Message) => Msg;
-  trigger: Html | string;
-  content: Html | string;
-  align?: TooltipAlign;
-  side?: TooltipSide;
-  isDisabled?: boolean;
-  ariaLabel?: string;
-  triggerLayoutStyle?: ComponentLayoutStyle;
-  layoutStyle?: ComponentLayoutStyle;
-  showArrow?: boolean;
-  gap?: number;
-  offset?: number;
+  model: Model
+  toParentMessage: (message: Message) => Msg
+  trigger: Html | string
+  content: Html | string
+  align?: TooltipAlign
+  side?: TooltipSide
+  isDisabled?: boolean
+  ariaLabel?: string
+  triggerLayoutStyle?: ComponentLayoutStyle
+  layoutStyle?: ComponentLayoutStyle
+  showArrow?: boolean
+  gap?: number
+  offset?: number
   /** Only the theme-safe inline mode is supported by the StyleX boundary. */
-  portal?: false;
-}>;
+  portal?: false
+}>
 
 export const tooltip = <Msg>(
   props: TooltipProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const side = props.side ?? 'top';
-  const placement = PLACEMENTS[side][props.align ?? 'center'];
+  const side = props.side ?? 'top'
+  const placement = PLACEMENTS[side][props.align ?? 'center']
 
-  const triggerId = `${props.model.id}-trigger`;
-  const panelId = `${props.model.id}-panel`;
-  const disabled = props.isDisabled ?? false;
-  const send = props.toParentMessage;
+  const triggerId = `${props.model.id}-trigger`
+  const panelId = `${props.model.id}-panel`
+  const disabled = props.isDisabled ?? false
+  const send = props.toParentMessage
   const anchor = themedAnchor({
-        placement,
-        gap: props.gap ?? 4,
-        ...(props.offset === undefined ? {} : { offset: props.offset }),
-      });
+    placement,
+    gap: props.gap ?? 4,
+    ...(props.offset === undefined ? {} : { offset: props.offset }),
+  })
   return h.div(
-          [h.DataAttribute('slot', 'tooltip')],
-          [
-            ...(disabled
-              ? [
-                  h.span(
-                    [
-                      h.Id(triggerId), h.AriaDescribedBy(panelId), h.DataAttribute('slot', 'tooltip-trigger'),
-                      h.Class(className(styles.disabledTrigger)),
-                      h.OnMouseEnter(send(TooltipBehavior.Message.EnteredTooltipTrigger())),
-                      h.OnMouseLeave(send(TooltipBehavior.Message.LeftTooltipTrigger())),
-                      h.OnPointerDown((pointerType) => Option.some(send(TooltipBehavior.Message.PressedPointerOnTooltipTrigger({ pointerType })))),
-                    ],
-                    [
-                      h.button(
+    [h.DataAttribute('slot', 'tooltip')],
+    [
+      ...(disabled
+        ? [
+            h.span(
+              [
+                h.Id(triggerId),
+                h.AriaDescribedBy(panelId),
+                h.DataAttribute('slot', 'tooltip-trigger'),
+                h.Class(className(styles.disabledTrigger)),
+                h.OnMouseEnter(
+                  send(TooltipBehavior.Message.EnteredTooltipTrigger()),
+                ),
+                h.OnMouseLeave(
+                  send(TooltipBehavior.Message.LeftTooltipTrigger()),
+                ),
+                h.OnPointerDown(pointerType =>
+                  Option.some(
+                    send(
+                      TooltipBehavior.Message.PressedPointerOnTooltipTrigger({
+                        pointerType,
+                      }),
+                    ),
+                  ),
+                ),
+              ],
+              [
+                h.button(
+                  [
+                    h.Type('button'),
+                    h.Disabled(true),
+                    ...(props.ariaLabel === undefined
+                      ? []
+                      : [h.AriaLabel(props.ariaLabel)]),
+                    ...(props.triggerLayoutStyle === undefined
+                      ? []
+                      : [h.Class(cn(props.triggerLayoutStyle))]),
+                  ],
+                  [props.trigger],
+                ),
+              ],
+            ),
+          ]
+        : [
+            h.button(
+              [
+                h.Id(triggerId),
+                h.Type('button'),
+                h.AriaDescribedBy(panelId),
+                h.Disabled(false),
+                ...(props.ariaLabel === undefined
+                  ? []
+                  : [h.AriaLabel(props.ariaLabel)]),
+                h.OnMouseEnter(
+                  send(TooltipBehavior.Message.EnteredTooltipTrigger()),
+                ),
+                h.OnMouseLeave(
+                  send(TooltipBehavior.Message.LeftTooltipTrigger()),
+                ),
+                h.OnFocus(
+                  send(TooltipBehavior.Message.FocusedTooltipTrigger()),
+                ),
+                h.OnBlur(send(TooltipBehavior.Message.BlurredTooltipTrigger())),
+                h.OnPointerDown(pointerType =>
+                  Option.some(
+                    send(
+                      TooltipBehavior.Message.PressedPointerOnTooltipTrigger({
+                        pointerType,
+                      }),
+                    ),
+                  ),
+                ),
+                h.OnKeyDownPreventDefault(key =>
+                  key === 'Escape' && props.model.isOpen
+                    ? Option.some(
+                        send(TooltipBehavior.Message.PressedEscapeOnTooltip()),
+                      )
+                    : Option.none(),
+                ),
+                h.DataAttribute('slot', 'tooltip-trigger'),
+                ...(props.triggerLayoutStyle === undefined
+                  ? []
+                  : [h.Class(cn(props.triggerLayoutStyle))]),
+              ],
+              [props.trigger],
+            ),
+          ]),
+      ...(props.model.isOpen
+        ? [
+            h.div(
+              [
+                h.Id(panelId),
+                h.Role('tooltip'),
+                h.Style({
+                  position: 'absolute',
+                  margin: '0',
+                  visibility: 'hidden',
+                  pointerEvents: 'none',
+                }),
+                h.OnMount(
+                  Mount.mapMessage(
+                    TooltipPrimitive.AnchorTooltip({
+                      buttonId: triggerId,
+                      anchor,
+                    }),
+                    () =>
+                      send(TooltipBehavior.Message.CompletedTooltipAnchor()),
+                  ),
+                ),
+                h.DataAttribute('open', ''),
+                h.DataAttribute('slot', 'tooltip-content'),
+                h.Class(
+                  cn(overlayStyles.tooltip, CONTENT_CLASS, props.layoutStyle),
+                ),
+              ],
+              [
+                props.content,
+                ...(props.showArrow === false
+                  ? []
+                  : [
+                      h.span(
                         [
-                          h.Type('button'), h.Disabled(true),
-                          ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
-                          ...(props.triggerLayoutStyle === undefined
-                            ? []
-                            : [h.Class(cn(props.triggerLayoutStyle))]),
+                          h.AriaHidden(true),
+                          h.DataAttribute('slot', 'tooltip-arrow'),
+                          h.Class(className(ARROW_CLASS)),
                         ],
-                        [props.trigger],
+                        [],
                       ),
-                    ],
-                  ),
-                ]
-              : [
-                  h.button(
-                    [
-                      h.Id(triggerId), h.Type('button'), h.AriaDescribedBy(panelId), h.Disabled(false),
-                      ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
-                      h.OnMouseEnter(send(TooltipBehavior.Message.EnteredTooltipTrigger())), h.OnMouseLeave(send(TooltipBehavior.Message.LeftTooltipTrigger())), h.OnFocus(send(TooltipBehavior.Message.FocusedTooltipTrigger())), h.OnBlur(send(TooltipBehavior.Message.BlurredTooltipTrigger())), h.OnPointerDown((pointerType) => Option.some(send(TooltipBehavior.Message.PressedPointerOnTooltipTrigger({ pointerType })))), h.OnKeyDownPreventDefault(key => key === 'Escape' && props.model.isOpen ? Option.some(send(TooltipBehavior.Message.PressedEscapeOnTooltip())) : Option.none()),
-                      h.DataAttribute('slot', 'tooltip-trigger'),
-                      ...(props.triggerLayoutStyle === undefined
-                        ? []
-                        : [h.Class(cn(props.triggerLayoutStyle))]),
-                    ],
-                    [props.trigger],
-                  ),
-                ]),
-            ...(props.model.isOpen
-              ? [
-                  h.div(
-                    [
-                      h.Id(panelId), h.Role('tooltip'), h.Style({ position: 'absolute', margin: '0', visibility: 'hidden', pointerEvents: 'none' }),
-                      h.OnMount(Mount.mapMessage(TooltipPrimitive.AnchorTooltip({ buttonId: triggerId, anchor }), () => send(TooltipBehavior.Message.CompletedTooltipAnchor()))),
-                      h.DataAttribute('open', ''), h.DataAttribute('slot', 'tooltip-content'),
-                      h.Class(cn(overlayStyles.tooltip, CONTENT_CLASS, props.layoutStyle)),
-                    ],
-                    [
-                      props.content,
-                      ...(props.showArrow === false
-                        ? []
-                        : [
-                            h.span(
-                              [
-                                h.AriaHidden(true), h.DataAttribute('slot', 'tooltip-arrow'), h.Class(className(ARROW_CLASS)),
-                              ],
-                              [],
-                            ),
-                          ]),
-                    ],
-                  ),
-                ]
-              : []),
-          ],
-        );
-};
+                    ]),
+              ],
+            ),
+          ]
+        : []),
+    ],
+  )
+}
 
 /*
 Minimal wiring:

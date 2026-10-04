@@ -1,8 +1,8 @@
-import { Option } from 'effect';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import * as stylex from '@stylexjs/stylex';
+import { Option } from 'effect'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import * as stylex from '@stylexjs/stylex'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   comboboxCountries,
   comboboxFixtures,
@@ -10,19 +10,23 @@ import {
   comboboxRtlCategories,
   comboboxTimezones,
   type ComboboxFixture,
-} from '@/docs/components/pages/combobox/shared';
-import * as Icon from '@/lib/icon';
-import * as Button from '@/stylex/button';
-import * as Combobox from '@/stylex/combobox';
-import type { ComponentLayoutStyle } from '@/stylex/contracts';
-import { className } from '@/stylex/style';
+} from '@/docs/components/pages/combobox/shared'
+import * as Icon from '@/lib/icon'
+import * as Button from '@/stylex/button'
+import * as Combobox from '@/stylex/combobox'
+import type { ComponentLayoutStyle } from '@/stylex/contracts'
+import { className } from '@/stylex/style'
 
 const styles = stylex.create({
-  row: { gap: '0.5rem', alignItems: 'center', display: 'flex', },
-  stack: { gap: '0.5rem', display: 'grid', },
-  icon: { height: '1rem', width: '1rem', },
+  row: { gap: '0.5rem', alignItems: 'center', display: 'flex' },
+  stack: { gap: '0.5rem', display: 'grid' },
+  icon: { height: '1rem', width: '1rem' },
   itemCol: { display: 'flex', flexDirection: 'column' },
-  itemMeta: { color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1rem' },
+  itemMeta: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.75rem',
+    lineHeight: '1rem',
+  },
   chipsBox: {
     borderColor: 'var(--border)',
     borderRadius: '0.5rem',
@@ -51,7 +55,7 @@ const styles = stylex.create({
     display: 'flex',
     fontSize: '0.75rem',
     fontWeight: 500,
- lineHeight: '1rem',
+    lineHeight: '1rem',
   },
   chipButton: {
     borderRadius: '0.375rem',
@@ -70,7 +74,7 @@ const styles = stylex.create({
     height: '1.75rem',
     minWidth: '4rem',
   },
-  chevron: { opacity: 0.5, height: '1rem', width: '1rem', },
+  chevron: { opacity: 0.5, height: '1rem', width: '1rem' },
   toggleButton: {
     borderRadius: '0.375rem',
     alignSelf: 'center',
@@ -79,23 +83,23 @@ const styles = stylex.create({
     height: '1.5rem',
     width: '1.5rem',
   },
-});
+})
 
 type Preview = Readonly<{
-  combobox: Combobox.Model;
-  multi: Combobox.MultiModel;
-  maybeValue: Option.Option<string>;
-  selectedValues: ReadonlyArray<string>;
-  autoHighlight: boolean;
-}>;
+  combobox: Combobox.Model
+  multi: Combobox.MultiModel
+  maybeValue: Option.Option<string>
+  selectedValues: ReadonlyArray<string>
+  autoHighlight: boolean
+}>
 
-const AutoHighlightCombobox = Combobox.create<string>({ autoHighlight: true });
-const MultiCombobox = Combobox.createMulti<string>({ autoHighlight: true });
+const AutoHighlightCombobox = Combobox.create<string>({ autoHighlight: true })
+const MultiCombobox = Combobox.createMulti<string>({ autoHighlight: true })
 
 const labelFor =
   <Item extends { value: string; label: string }>(items: ReadonlyArray<Item>) =>
   (value: string): string =>
-    items.find(item => item.value === value)?.label ?? value;
+    items.find(item => item.value === value)?.label ?? value
 
 export const comboboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   index: number,
@@ -103,11 +107,13 @@ export const comboboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html | undefined => {
-  const fixture = comboboxFixtures[index];
-  if (fixture === undefined) return undefined;
-  const preview = model as Preview;
+  const fixture = comboboxFixtures[index]
+  if (fixture === undefined) return undefined
+  const preview = model as Preview
   const toParentMessage = (message: Combobox.Message): Msg =>
-    onMessageJson(JSON.stringify({ _tag: 'GotComboboxPreviewMessage', message }));
+    onMessageJson(
+      JSON.stringify({ _tag: 'GotComboboxPreviewMessage', message }),
+    )
 
   const combo = ((): Html => {
     if (fixture.kind === 'groups') {
@@ -130,7 +136,7 @@ export const comboboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           groupToHeading: group => group,
         },
         h,
-      );
+      )
     }
     if (fixture.kind === 'custom') {
       return Combobox.combobox(
@@ -149,15 +155,18 @@ export const comboboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           ariaLabel: 'Country',
           formName: 'docs-combobox',
           itemToConfig: item => ({
-            content: h.span([h.Class(className(styles.itemCol))], [
-              h.span([], [item.label]),
-              h.span([h.Class(className(styles.itemMeta))], [item.continent]),
-            ]),
+            content: h.span(
+              [h.Class(className(styles.itemCol))],
+              [
+                h.span([], [item.label]),
+                h.span([h.Class(className(styles.itemMeta))], [item.continent]),
+              ],
+            ),
             searchText: `${item.label} ${item.continent}`,
           }),
         },
         h,
-      );
+      )
     }
     if (fixture.kind === 'rtl') {
       return Combobox.combobox(
@@ -178,7 +187,7 @@ export const comboboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           direction: 'rtl',
         },
         h,
-      );
+      )
     }
     if (fixture.kind === 'autoHighlight') {
       return AutoHighlightCombobox.combobox(
@@ -198,7 +207,7 @@ export const comboboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           formName: 'docs-combobox',
         },
         h,
-      );
+      )
     }
     if (fixture.kind === 'popup') {
       return Combobox.combobox(
@@ -217,13 +226,16 @@ export const comboboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           ariaLabel: 'Country',
           formName: 'docs-combobox',
           trigger: {
-            content: Icon.chevronsUpDown({ class: className(styles.chevron) }, h),
+            content: Icon.chevronsUpDown(
+              { class: className(styles.chevron) },
+              h,
+            ),
             ariaLabel: 'Toggle options',
             layoutStyle: styles.toggleButton as ComponentLayoutStyle,
           },
         },
         h,
-      );
+      )
     }
     return Combobox.combobox(
       {
@@ -244,67 +256,74 @@ export const comboboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         ...(fixture.isDisabled === true ? { isDisabled: true } : {}),
       },
       h,
-    );
-  })();
+    )
+  })()
 
   if (fixture.kind === 'multiple') {
-    return h.div([h.Class(className(styles.chipsBox))], [
-      ...preview.selectedValues.map(value =>
-        h.span([h.Class(className(styles.chip))], [
-          comboboxFrameworks.find(item => item.value === value)?.label ??
-            value,
-          h.button(
+    return h.div(
+      [h.Class(className(styles.chipsBox))],
+      [
+        ...preview.selectedValues.map(value =>
+          h.span(
+            [h.Class(className(styles.chip))],
             [
-              h.Class(className(styles.chipButton)),
-              h.AriaLabel(`Remove ${value}`),
-              h.OnClick(
-                onMessageJson(
-                  JSON.stringify({ _tag: 'RemovedChip', value }),
-                ),
+              comboboxFrameworks.find(item => item.value === value)?.label ??
+                value,
+              h.button(
+                [
+                  h.Class(className(styles.chipButton)),
+                  h.AriaLabel(`Remove ${value}`),
+                  h.OnClick(
+                    onMessageJson(
+                      JSON.stringify({ _tag: 'RemovedChip', value }),
+                    ),
+                  ),
+                ],
+                [Icon.x({ class: className(styles.chipIcon) }, h)],
               ),
             ],
-            [Icon.x({ class: className(styles.chipIcon) }, h)],
           ),
-        ]),
-      ),
-      MultiCombobox.comboboxMulti(
-        {
-          model: preview.multi,
-          selectedValues: preview.selectedValues,
-          toParentMessage: message =>
-            onMessageJson(
-              JSON.stringify({
-                _tag: 'GotMultiComboboxMessage',
-                message,
-              }),
-            ),
-          items: comboboxFrameworks,
-          itemToValue: item => item.value,
-          itemToLabel: item => item.label,
-          placeholder:
-            preview.selectedValues.length === 0
-              ? 'Select a framework'
-              : '',
-          ariaLabel: 'Frameworks',
-          triggerLayoutStyle: styles.multiInput as ComponentLayoutStyle,
-        },
-        h,
-      ),
-    ]);
-  }
-  return fixture.kind === 'clear'
-    ? h.div([h.Class(className(styles.row))], [
-        combo,
-        Button.button(
+        ),
+        MultiCombobox.comboboxMulti(
           {
-            variant: 'ghost',
-            size: 'icon',
-            ariaLabel: 'Clear selection',
-            onClick: onMessageJson(JSON.stringify({ _tag: 'ClickedClear' })),
-            children: [Icon.icon('x', { class: className(styles.icon) }, h)],
+            model: preview.multi,
+            selectedValues: preview.selectedValues,
+            toParentMessage: message =>
+              onMessageJson(
+                JSON.stringify({
+                  _tag: 'GotMultiComboboxMessage',
+                  message,
+                }),
+              ),
+            items: comboboxFrameworks,
+            itemToValue: item => item.value,
+            itemToLabel: item => item.label,
+            placeholder:
+              preview.selectedValues.length === 0 ? 'Select a framework' : '',
+            ariaLabel: 'Frameworks',
+            triggerLayoutStyle: styles.multiInput as ComponentLayoutStyle,
           },
           h,
         ),
-      ])
-    : h.div([h.Class(className(styles.stack))], [combo]);
-};
+      ],
+    )
+  }
+  return fixture.kind === 'clear'
+    ? h.div(
+        [h.Class(className(styles.row))],
+        [
+          combo,
+          Button.button(
+            {
+              variant: 'ghost',
+              size: 'icon',
+              ariaLabel: 'Clear selection',
+              onClick: onMessageJson(JSON.stringify({ _tag: 'ClickedClear' })),
+              children: [Icon.icon('x', { class: className(styles.icon) }, h)],
+            },
+            h,
+          ),
+        ],
+      )
+    : h.div([h.Class(className(styles.stack))], [combo])
+}

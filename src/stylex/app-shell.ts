@@ -1,9 +1,9 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { ComponentLayoutStyle } from './contracts';
-import { className } from './style';
-import { tokens } from './tokens.stylex';
+import type { ComponentLayoutStyle } from './contracts'
+import { className } from './style'
+import { tokens } from './tokens.stylex'
 
 /* Ported from Meta Astryx AppShell/AppShell.tsx — the application scaffold:
    root column shell with a skip link, an optional banner + topNav header
@@ -50,7 +50,7 @@ const styles = stylex.create({
   },
   mainFocusTarget: { outline: { default: null, ':focus': 'none' } },
   banner: { flexShrink: 0 },
-  headerSticky: { position: 'sticky', zIndex: 1, top: 0, },
+  headerSticky: { position: 'sticky', zIndex: 1, top: 0 },
   sideNavSticky: {
     overflow: 'clip',
     display: 'flex',
@@ -80,16 +80,44 @@ const styles = stylex.create({
   navAreaSurface: { backgroundColor: tokens.card },
   contentBgWash: { backgroundColor: tokens.background },
   contentBgSurface: { backgroundColor: tokens.card },
-  contentBgTransparent: { backgroundColor: 'transparent', isolation: 'isolate' },
+  contentBgTransparent: {
+    backgroundColor: 'transparent',
+    isolation: 'isolate',
+  },
   sideNav: { display: 'flex', flexDirection: 'column', flexShrink: 0 },
   sideNavFill: { overflow: 'auto' },
-  sideNavAuto: { overflow: 'auto', flexBasis: '0%', flexGrow: 1, flexShrink: 1, },
-  sideNavDivider: { borderColor: tokens.border, borderInlineEndStyle: 'solid', borderInlineEndWidth: 1, },
-  headerDivider: { borderColor: tokens.border, borderBottomStyle: 'solid', borderBottomWidth: 1, },
-  main: { flexBasis: '0%', flexGrow: 1, flexShrink: 1, minHeight: 0, minWidth: 0 },
+  sideNavAuto: {
+    overflow: 'auto',
+    flexBasis: '0%',
+    flexGrow: 1,
+    flexShrink: 1,
+  },
+  sideNavDivider: {
+    borderColor: tokens.border,
+    borderInlineEndStyle: 'solid',
+    borderInlineEndWidth: 1,
+  },
+  headerDivider: {
+    borderColor: tokens.border,
+    borderBottomStyle: 'solid',
+    borderBottomWidth: 1,
+  },
+  main: {
+    flexBasis: '0%',
+    flexGrow: 1,
+    flexShrink: 1,
+    minHeight: 0,
+    minWidth: 0,
+  },
   mainFill: { overflow: 'auto' },
-  middle: { display: 'flex', flexBasis: '0%', flexGrow: 1, flexShrink: 1, minHeight: 0, },
-});
+  middle: {
+    display: 'flex',
+    flexBasis: '0%',
+    flexGrow: 1,
+    flexShrink: 1,
+    minHeight: 0,
+  },
+})
 
 const contentPaddingStyles = stylex.create({
   0: { padding: '0px' },
@@ -103,46 +131,46 @@ const contentPaddingStyles = stylex.create({
   6: { padding: '1.5rem' },
   8: { padding: '2rem' },
   10: { padding: '2.5rem' },
-});
+})
 
-export type AppShellVariant = 'elevated' | 'wash' | 'surface' | 'section';
-export type AppShellHeight = 'fill' | 'auto';
-export type AppShellSpacing = keyof typeof contentPaddingStyles;
+export type AppShellVariant = 'elevated' | 'wash' | 'surface' | 'section'
+export type AppShellHeight = 'fill' | 'auto'
+export type AppShellSpacing = keyof typeof contentPaddingStyles
 
 export type AppShellProps = Readonly<{
-  variant?: AppShellVariant;
-  banner?: Html;
-  topNav?: Html;
-  sideNav?: Html;
-  contentPadding?: AppShellSpacing;
-  height?: AppShellHeight;
-  skipLinkLabel?: string;
-  mainId?: string;
-  children?: ReadonlyArray<Html | string>;
-  layoutStyle?: ComponentLayoutStyle;
-}>;
+  variant?: AppShellVariant
+  banner?: Html
+  topNav?: Html
+  sideNav?: Html
+  contentPadding?: AppShellSpacing
+  height?: AppShellHeight
+  skipLinkLabel?: string
+  mainId?: string
+  children?: ReadonlyArray<Html | string>
+  layoutStyle?: ComponentLayoutStyle
+}>
 
 export const appShell = <Msg>(
   props: AppShellProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const variant = props.variant ?? 'elevated';
-  const height = props.height ?? 'fill';
-  const isFill = height === 'fill';
-  const isAuto = height === 'auto';
-  const mainId = props.mainId ?? 'app-shell-main';
-  const hasBanner = props.banner !== undefined;
-  const hasTopNav = props.topNav !== undefined;
-  const hasSideNav = props.sideNav !== undefined;
-  const navHasDividers = variant === 'section';
-  const isElevated = variant === 'elevated';
-  const contentPadding = props.contentPadding ?? 0;
+  const variant = props.variant ?? 'elevated'
+  const height = props.height ?? 'fill'
+  const isFill = height === 'fill'
+  const isAuto = height === 'auto'
+  const mainId = props.mainId ?? 'app-shell-main'
+  const hasBanner = props.banner !== undefined
+  const hasTopNav = props.topNav !== undefined
+  const hasSideNav = props.sideNav !== undefined
+  const navHasDividers = variant === 'section'
+  const isElevated = variant === 'elevated'
+  const contentPadding = props.contentPadding ?? 0
   const navAreaStyle =
     variant === 'wash' || variant === 'elevated'
       ? styles.navAreaWash
       : variant === 'surface'
         ? styles.navAreaSurface
-        : undefined;
+        : undefined
   const contentAreaStyle =
     variant === 'wash'
       ? styles.contentBgWash
@@ -150,11 +178,11 @@ export const appShell = <Msg>(
         ? styles.contentBgTransparent
         : variant === 'surface' || variant === 'elevated'
           ? styles.contentBgSurface
-          : undefined;
+          : undefined
   const headerAreaStyle =
     navAreaStyle ??
-    (isAuto && variant === 'section' ? styles.navAreaSurface : undefined);
-  const stickyBgStyle = navAreaStyle ?? styles.navAreaSurface;
+    (isAuto && variant === 'section' ? styles.navAreaSurface : undefined)
+  const stickyBgStyle = navAreaStyle ?? styles.navAreaSurface
 
   const headerContent =
     hasTopNav || hasBanner
@@ -163,7 +191,10 @@ export const appShell = <Msg>(
             h.Role('banner'),
             h.DataAttribute('slot', 'app-shell-header'),
             h.Class(
-              className(headerAreaStyle, isAuto ? styles.headerSticky : undefined),
+              className(
+                headerAreaStyle,
+                isAuto ? styles.headerSticky : undefined,
+              ),
             ),
           ],
           [
@@ -171,7 +202,9 @@ export const appShell = <Msg>(
               [
                 h.Class(
                   className(
-                    navHasDividers && hasTopNav ? styles.headerDivider : undefined,
+                    navHasDividers && hasTopNav
+                      ? styles.headerDivider
+                      : undefined,
                   ),
                 ),
               ],
@@ -192,7 +225,7 @@ export const appShell = <Msg>(
             ),
           ],
         )
-      : undefined;
+      : undefined
 
   const sideNavPanel = hasSideNav
     ? h.aside(
@@ -209,7 +242,7 @@ export const appShell = <Msg>(
         ],
         [props.sideNav as Html],
       )
-    : undefined;
+    : undefined
 
   const sideNavContent =
     sideNavPanel !== undefined && isAuto
@@ -217,7 +250,7 @@ export const appShell = <Msg>(
           [h.Class(className(styles.sideNavSticky, stickyBgStyle))],
           [sideNavPanel],
         )
-      : sideNavPanel;
+      : sideNavPanel
 
   const mainInner = h.main(
     [
@@ -235,7 +268,7 @@ export const appShell = <Msg>(
       ),
     ],
     [...(props.children ?? [])],
-  );
+  )
 
   const mainContent =
     isElevated && hasTopNav && hasSideNav
@@ -246,7 +279,7 @@ export const appShell = <Msg>(
           ],
           [h.div([h.Class(className(styles.elevatedBackdrop))], []), mainInner],
         )
-      : mainInner;
+      : mainInner
 
   return h.div(
     [
@@ -288,5 +321,5 @@ export const appShell = <Msg>(
         ],
       ),
     ],
-  );
-};
+  )
+}

@@ -1,17 +1,17 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { staticComponentApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 export type FieldStatusItemSpec = Readonly<{
-  type: 'warning' | 'error' | 'success';
-  message: string;
-  variant?: 'attached' | 'detached';
-}>;
+  type: 'warning' | 'error' | 'success'
+  message: string
+  variant?: 'attached' | 'detached'
+}>
 
 export type FieldStatusFixture = Readonly<{
-  title: string;
-  description: string;
-  items: ReadonlyArray<FieldStatusItemSpec>;
-}>;
+  title: string
+  description: string
+  items: ReadonlyArray<FieldStatusItemSpec>
+}>
 
 /* Example set ported from Meta Astryx
    packages/cli/assets/templates/blocks/components/FieldStatus/*.tsx +
@@ -58,17 +58,17 @@ export const fieldStatusFixtures: Readonly<
       },
     ],
   },
-];
+]
 
 const itemSource = (item: FieldStatusItemSpec): string =>
-  `FieldStatus.fieldStatus({ type: '${item.type}', message: '${item.message}', variant: '${item.variant ?? 'attached'}' }, h)`;
+  `FieldStatus.fieldStatus({ type: '${item.type}', message: '${item.message}', variant: '${item.variant ?? 'attached'}' }, h)`
 
 const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
-  const fixture = fieldStatusFixtures[index] ?? fieldStatusFixtures[0];
-  const isStyleX = renderer === 'stylex';
+  const fixture = fieldStatusFixtures[index] ?? fieldStatusFixtures[0]
+  const isStyleX = renderer === 'stylex'
   const wrapperOpen = isStyleX
     ? `h.div([h.Class(stylex.props(styles.stack).className ?? '')], [`
-    : `h.div([h.Class('flex flex-col gap-4')], [`;
+    : `h.div([h.Class('flex flex-col gap-4')], [`
   return staticComponentApplication({
     componentName: 'FieldStatus',
     componentSlug: 'field-status',
@@ -82,8 +82,8 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
     viewBody: `${wrapperOpen}
       ${fixture.items.map(itemSource).join(',\n      ')},
     ])`,
-  });
-};
+  })
+}
 
 export const fieldStatusExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -92,4 +92,4 @@ export const fieldStatusExamples = (
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
-  }));
+  }))

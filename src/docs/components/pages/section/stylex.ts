@@ -1,43 +1,51 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   type SectionFixture,
   sectionFeatures,
   sectionFixtures,
-} from '@/docs/components/pages/section/shared';
-import { icon } from '@/lib/icon';
-import { className } from '@/stylex/style';
-import * as Button from '@/stylex/button';
-import * as Section from '@/stylex/section';
-import * as Stack from '@/stylex/stack';
+} from '@/docs/components/pages/section/shared'
+import { icon } from '@/lib/icon'
+import { className } from '@/stylex/style'
+import * as Button from '@/stylex/button'
+import * as Section from '@/stylex/section'
+import * as Stack from '@/stylex/stack'
 
 const styles = stylex.create({
-  boldBody: { fontSize: '0.875rem', fontWeight: 600, lineHeight: '1.25rem', },
-  supporting: { color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1rem' },
-  bodyMuted: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
+  boldBody: { fontSize: '0.875rem', fontWeight: 600, lineHeight: '1.25rem' },
+  supporting: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.75rem',
+    lineHeight: '1rem',
+  },
+  bodyMuted: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+  },
   body: { fontSize: '0.875rem', lineHeight: '1.25rem' },
   display: { fontSize: '1.8125rem', fontWeight: 400, lineHeight: '1.2414' },
-});
+})
 
 const boldBody = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class(className(styles.boldBody))], [text]);
+  h.p([h.Class(className(styles.boldBody))], [text])
 const supporting = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class(className(styles.supporting))], [text]);
+  h.p([h.Class(className(styles.supporting))], [text])
 const bodyMuted = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class(className(styles.bodyMuted))], [text]);
+  h.p([h.Class(className(styles.bodyMuted))], [text])
 const body = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class(className(styles.body))], [text]);
+  h.p([h.Class(className(styles.body))], [text])
 const display = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class(className(styles.display))], [text]);
+  h.p([h.Class(className(styles.display))], [text])
 
 const variantsView = <Msg>(h: HtmlBuilder<Msg>): Html => {
   const inner = (title: string, desc: string): Html =>
     Stack.vStack(
       { gap: 1, children: [boldBody(title, h), supporting(desc, h)] },
       h,
-    );
+    )
   return Stack.vStack(
     {
       gap: 6,
@@ -71,8 +79,8 @@ const variantsView = <Msg>(h: HtmlBuilder<Msg>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const washView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Stack.vStack(
@@ -144,10 +152,7 @@ const washView = <Msg>(h: HtmlBuilder<Msg>): Html =>
                       {
                         gap: 2,
                         vAlign: 'center',
-                        children: [
-                          display('$49', h),
-                          supporting('/ month', h),
-                        ],
+                        children: [display('$49', h), supporting('/ month', h)],
                       },
                       h,
                     ),
@@ -163,7 +168,7 @@ const washView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ],
     },
     h,
-  );
+  )
 
 const dividersView = <Msg>(h: HtmlBuilder<Msg>): Html => {
   const row = (
@@ -184,7 +189,7 @@ const dividersView = <Msg>(h: HtmlBuilder<Msg>): Html => {
         ],
       },
       h,
-    );
+    )
   return Stack.vStack(
     {
       gap: 0,
@@ -197,23 +202,23 @@ const dividersView = <Msg>(h: HtmlBuilder<Msg>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const viewFor = <Msg>(fixture: SectionFixture, h: HtmlBuilder<Msg>): Html => {
   switch (fixture.kind) {
     case 'variants':
-      return variantsView(h);
+      return variantsView(h)
     case 'wash':
-      return washView(h);
+      return washView(h)
     case 'dividers':
-      return dividersView(h);
+      return dividersView(h)
   }
-};
+}
 
 export const sectionStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   _model: unknown,
   _onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
-) => viewFor(sectionFixtures[exampleIndex] ?? sectionFixtures[0], h);
+) => viewFor(sectionFixtures[exampleIndex] ?? sectionFixtures[0], h)

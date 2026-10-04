@@ -1,43 +1,45 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type SCOption = Readonly<{
-  value: string;
-  label: string;
-  icon?: string;
-  isLabelHidden?: boolean;
-  isDisabled?: boolean;
-}>;
+  value: string
+  label: string
+  icon?: string
+  isLabelHidden?: boolean
+  isDisabled?: boolean
+}>
 
 export type SCFixture = Readonly<{
-  title: string;
-  description?: string;
-  heroOnly?: boolean;
+  title: string
+  description?: string
+  heroOnly?: boolean
   group: Readonly<{
-    id: string;
-    ariaLabel: string;
-    options: ReadonlyArray<SCOption>;
-    selected: string;
-    size?: 'sm' | 'md' | 'lg';
-    layout?: 'fill';
-  }>;
+    id: string
+    ariaLabel: string
+    options: ReadonlyArray<SCOption>
+    selected: string
+    size?: 'sm' | 'md' | 'lg'
+    layout?: 'fill'
+  }>
   /** Width of the wrapping preview container in pixels. */
-  width?: number;
-}>;
+  width?: number
+}>
 
 const viewOptions: ReadonlyArray<SCOption> = [
   { value: 'grid', label: 'Grid' },
   { value: 'list', label: 'List' },
   { value: 'table', label: 'Table' },
-];
+]
 
 const viewIconOptions: ReadonlyArray<SCOption> = [
   { value: 'grid', label: 'Grid', icon: 'layout-grid' },
   { value: 'list', label: 'List', icon: 'list' },
   { value: 'table', label: 'Table', icon: 'table' },
-];
+]
 
-export const segmentedControlFixtures: Readonly<[SCFixture, ...Array<SCFixture>]> = [
+export const segmentedControlFixtures: Readonly<
+  [SCFixture, ...Array<SCFixture>]
+> = [
   {
     title: 'Segmented Control',
     heroOnly: true,
@@ -67,7 +69,12 @@ export const segmentedControlFixtures: Readonly<[SCFixture, ...Array<SCFixture>]
       id: 'icon-only',
       ariaLabel: 'View mode',
       options: [
-        { value: 'grid', label: 'Grid', icon: 'layout-grid', isLabelHidden: true },
+        {
+          value: 'grid',
+          label: 'Grid',
+          icon: 'layout-grid',
+          isLabelHidden: true,
+        },
         { value: 'list', label: 'List', icon: 'list', isLabelHidden: true },
       ],
       selected: 'grid',
@@ -106,21 +113,33 @@ export const segmentedControlFixtures: Readonly<[SCFixture, ...Array<SCFixture>]
       selected: 'hourly',
     },
   },
-];
+]
 
 const optionEmit = (option: SCOption): string => `      {
         value: '${option.value}',
-        label: '${option.label}',${option.icon !== undefined ? `
-        icon: Icon.icon('${option.icon}', {}, h),` : ''}${option.isLabelHidden === true ? `
-        isLabelHidden: true,` : ''}${option.isDisabled === true ? `
-        isDisabled: true,` : ''}
-      }`;
+        label: '${option.label}',${
+          option.icon !== undefined
+            ? `
+        icon: Icon.icon('${option.icon}', {}, h),`
+            : ''
+        }${
+          option.isLabelHidden === true
+            ? `
+        isLabelHidden: true,`
+            : ''
+        }${
+          option.isDisabled === true
+            ? `
+        isDisabled: true,`
+            : ''
+        }
+      }`
 
 const emitSource = (fixture: SCFixture, isStyleX: boolean): string => {
-  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '');
-  const lib = isStyleX ? 'stylex' : 'ui';
-  const group = fixture.group;
-  const usesIcon = group.options.some(option => option.icon !== undefined);
+  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
+  const lib = isStyleX ? 'stylex' : 'ui'
+  const group = fixture.group
+  const usesIcon = group.options.some(option => option.icon !== undefined)
   const controlCall = `ExampleControl.segmentedControl({
       model: model.control ?? SegmentedControl.init({ id: '${group.id}' }),
       toParentMessage: message =>
@@ -129,29 +148,50 @@ const emitSource = (fixture: SCFixture, isStyleX: boolean): string => {
       value: model.value,
       options: [
 ${group.options.map(option => optionEmit(option)).join(',\n')},
-      ],${group.size !== undefined && group.size !== 'md' ? `
-      size: '${group.size}',` : ''}${group.layout === 'fill' ? `
-      layout: 'fill',` : ''}
-    }, h)`;
-  const viewChild = fixture.width !== undefined
-    ? `    h.div([h.Class(${isStyleX ? 'className(styles.frame)' : `'w-[${fixture.width}px]'`})], [
+      ],${
+        group.size !== undefined && group.size !== 'md'
+          ? `
+      size: '${group.size}',`
+          : ''
+      }${
+        group.layout === 'fill'
+          ? `
+      layout: 'fill',`
+          : ''
+      }
+    }, h)`
+  const viewChild =
+    fixture.width !== undefined
+      ? `    h.div([h.Class(${isStyleX ? 'className(styles.frame)' : `'w-[${fixture.width}px]'`})], [
       ${controlCall},
     ])`
-    : `    ${controlCall}`;
+      : `    ${controlCall}`
   return foldkitApplication({
     title: `Segmented Control — ${fixture.title}`,
     imports: `import { Option, Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { taggedStruct } from 'foldkit/schema'
-${isStyleX ? `import * as stylex from '@stylexjs/stylex'
+${
+  isStyleX
+    ? `import * as stylex from '@stylexjs/stylex'
 import { className } from '@/stylex/style'
-` : ''}${usesIcon ? `import * as Icon from '@/lib/icon'
-` : ''}import * as SegmentedControl from '@/${lib}/segmented-control'
-${isStyleX && fixture.width !== undefined ? `const styles = stylex.create({
+`
+    : ''
+}${
+      usesIcon
+        ? `import * as Icon from '@/lib/icon'
+`
+        : ''
+    }import * as SegmentedControl from '@/${lib}/segmented-control'
+${
+  isStyleX && fixture.width !== undefined
+    ? `const styles = stylex.create({
   frame: { width: '${fixture.width}px' },
 })
-` : ''}`,
+`
+    : ''
+}`,
     model: `const ExampleControl = SegmentedControl.create<string>()
 export const Model = S.Struct({
   control: SegmentedControl.Model,
@@ -197,8 +237,8 @@ export type Message = typeof Message.Type`,
 ${viewChild},
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const segmentedControlExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -210,4 +250,4 @@ export const segmentedControlExamples = (
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitSource(fixture, renderer === 'stylex'),
-  }));
+  }))

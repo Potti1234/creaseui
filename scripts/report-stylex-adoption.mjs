@@ -6,10 +6,9 @@ const names = (directory, excluded = new Set()) =>
   fs
     .readdirSync(directory)
     .filter(
-      (file) =>
-        file.endsWith('.ts') && !excluded.has(file.replace(/\.ts$/u, '')),
+      file => file.endsWith('.ts') && !excluded.has(file.replace(/\.ts$/u, '')),
     )
-    .map((file) => file.replace(/\.ts$/u, ''))
+    .map(file => file.replace(/\.ts$/u, ''))
     .sort()
 
 const uiNames = names('src/ui')
@@ -36,28 +35,34 @@ const stylexCardNames = names(
     'interaction-card-tokens.stylex',
   ]),
 )
-const paired = (left, right) => left.filter((name) => right.includes(name))
+const paired = (left, right) => left.filter(name => right.includes(name))
 
 const boundaryFiles = [
   ...fs
     .readdirSync('src/stylex', { recursive: true, withFileTypes: true })
-    .filter((entry) => entry.isFile() && entry.name.endsWith('.ts'))
-    .map((entry) => path.join(entry.parentPath, entry.name)),
+    .filter(entry => entry.isFile() && entry.name.endsWith('.ts'))
+    .map(entry => path.join(entry.parentPath, entry.name)),
   ...fs
-    .readdirSync('src/demo/stylex-cards', { recursive: true, withFileTypes: true })
-    .filter((entry) => entry.isFile() && entry.name.endsWith('.ts'))
-    .map((entry) => path.join(entry.parentPath, entry.name)),
+    .readdirSync('src/demo/stylex-cards', {
+      recursive: true,
+      withFileTypes: true,
+    })
+    .filter(entry => entry.isFile() && entry.name.endsWith('.ts'))
+    .map(entry => path.join(entry.parentPath, entry.name)),
   'src/demo/board-stylex.ts',
   'src/demo/board-constrained.ts',
 ]
 const boundarySource = boundaryFiles
-  .map((file) => fs.readFileSync(file, 'utf8'))
+  .map(file => fs.readFileSync(file, 'utf8'))
   .join('\n')
 
 const primitiveFiles = ['box', 'grid', 'inline', 'stack', 'text']
-const constrainedSource = fs.readFileSync('src/demo/board-constrained.ts', 'utf8')
+const constrainedSource = fs.readFileSync(
+  'src/demo/board-constrained.ts',
+  'utf8',
+)
 const primitiveCalls = Object.fromEntries(
-  primitiveFiles.map((name) => [
+  primitiveFiles.map(name => [
     name,
     (constrainedSource.match(new RegExp(`\\b${name}\\(`, 'gu')) ?? []).length,
   ]),
@@ -83,7 +88,10 @@ const report = {
     stylexCounterparts: paired(cardNames, stylexCardNames).length,
     paired: paired(cardNames, stylexCardNames).length,
     coveragePercent: Number(
-      ((paired(cardNames, stylexCardNames).length / cardNames.length) * 100).toFixed(1),
+      (
+        (paired(cardNames, stylexCardNames).length / cardNames.length) *
+        100
+      ).toFixed(1),
     ),
   },
   constrainedComposition: {
@@ -93,13 +101,15 @@ const report = {
   guardrails: {
     boundaryFiles: boundaryFiles.length,
     cssFallbacks: manifest.fallbacks.length,
-    legacyUiImports: (boundarySource.match(/from\s+['"]@\/ui\//gu) ?? []).length,
+    legacyUiImports: (boundarySource.match(/from\s+['"]@\/ui\//gu) ?? [])
+      .length,
     suppressions: (
       boundarySource.match(
         /(?:eslint|oxlint)-disable|@ts-(?:expect-error|ignore)/gu,
       ) ?? []
     ).length,
-    unsafeBodyPortals: (boundarySource.match(/portal\s*:\s*true/gu) ?? []).length,
+    unsafeBodyPortals: (boundarySource.match(/portal\s*:\s*true/gu) ?? [])
+      .length,
   },
 }
 
@@ -109,9 +119,13 @@ if (process.argv.includes('--write')) {
   fs.writeFileSync(outputPath, serialized)
   console.log(`Wrote ${outputPath}`)
 } else {
-  const current = fs.existsSync(outputPath) ? fs.readFileSync(outputPath, 'utf8') : ''
+  const current = fs.existsSync(outputPath)
+    ? fs.readFileSync(outputPath, 'utf8')
+    : ''
   if (current !== serialized) {
-    console.error(`StyleX adoption metrics drifted. Run npm run stylex:adoption:generate.`)
+    console.error(
+      `StyleX adoption metrics drifted. Run npm run stylex:adoption:generate.`,
+    )
     process.exitCode = 1
   } else {
     console.log(serialized.trim())

@@ -1,10 +1,10 @@
-import { Option, Schema as S } from 'effect';
-import type { Update } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import { Option, Schema as S } from 'effect'
+import type { Update } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-import * as Icon from '@/lib/icon';
-import { cn } from '@/lib/utils';
+import * as Icon from '@/lib/icon'
+import { cn } from '@/lib/utils'
 
 /* Ported from Meta Astryx ChatReasoning.tsx (packages/lab) — compact
    collapsible reasoning/thinking display. Astryx's StyleX token map is
@@ -16,26 +16,26 @@ import { cn } from '@/lib/utils';
 export const Model = S.Struct({
   id: S.String,
   isExpanded: S.Boolean,
-});
-export type Model = typeof Model.Type;
+})
+export type Model = typeof Model.Type
 
-export const init = (config: {
-  id: string;
-  isExpanded?: boolean;
-}): Model => ({ id: config.id, isExpanded: config.isExpanded ?? false });
+export const init = (config: { id: string; isExpanded?: boolean }): Model => ({
+  id: config.id,
+  isExpanded: config.isExpanded ?? false,
+})
 
 export const Message = defineMessageUnion({
   ToggledChatReasoning: {},
   SetChatReasoningExpanded: { isExpanded: S.Boolean },
-});
-export type Message = typeof Message.Type;
+})
+export type Message = typeof Message.Type
 
 export const OutMessage = defineMessageUnion({
   ChangedChatReasoningExpansion: { isExpanded: S.Boolean },
-});
-export type OutMessage = typeof OutMessage.Type;
+})
+export type OutMessage = typeof OutMessage.Type
 
-type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>;
+type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
@@ -45,11 +45,11 @@ export const update = (model: Model, message: Message): UpdateReturn => {
         outMessage: OutMessage.ChangedChatReasoningExpansion({
           isExpanded: !model.isExpanded,
         }),
-      };
+      }
     case 'SetChatReasoningExpanded':
-      return { model: { ...model, isExpanded: message.isExpanded } };
+      return { model: { ...model, isExpanded: message.isExpanded } }
   }
-};
+}
 
 /* astryx's ThinkingIcon: a dashed ring with two thought dots. */
 const thinkingIcon = <Msg>(h: HtmlBuilder<Msg>): Html =>
@@ -82,36 +82,36 @@ const thinkingIcon = <Msg>(h: HtmlBuilder<Msg>): Html =>
         [],
       ),
     ],
-  );
+  )
 
 export type ChatReasoningProps<Msg> = Readonly<{
-  model: Model;
-  toParentMessage: (message: Message) => Msg;
+  model: Model
+  toParentMessage: (message: Message) => Msg
   /** Reasoning content rendered inside the expanded panel. */
-  children: ReadonlyArray<Html | string>;
+  children: ReadonlyArray<Html | string>
   /** Header label. @default 'Thinking' */
-  label?: string;
+  label?: string
   /** Duration string shown after the label (e.g. "12s"). */
-  duration?: string;
+  duration?: string
   /** Whether reasoning is still streaming. Shows shimmer on the label. */
-  isStreaming?: boolean;
+  isStreaming?: boolean
   /** Collapsed single-line preview; falls back to string children. */
-  preview?: string;
-  class?: string;
-}>;
+  preview?: string
+  class?: string
+}>
 
 export const chatReasoning = <Msg>(
   props: ChatReasoningProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const isExpanded = props.model.isExpanded;
-  const isStreaming = props.isStreaming ?? false;
+  const isExpanded = props.model.isExpanded
+  const isStreaming = props.isStreaming ?? false
   const previewText =
     props.preview ??
     (props.children.length === 1 && typeof props.children[0] === 'string'
       ? props.children[0]
-      : undefined);
-  const contentId = `${props.model.id}-content`;
+      : undefined)
+  const contentId = `${props.model.id}-content`
 
   return h.div(
     [
@@ -130,7 +130,9 @@ export const chatReasoning = <Msg>(
           h.OnClick(props.toParentMessage(Message.ToggledChatReasoning())),
           h.OnKeyDownPreventDefault(key =>
             key === 'Enter' || key === ' '
-              ? Option.some(props.toParentMessage(Message.ToggledChatReasoning()))
+              ? Option.some(
+                  props.toParentMessage(Message.ToggledChatReasoning()),
+                )
               : Option.none(),
           ),
           h.Class(
@@ -228,14 +230,21 @@ export const chatReasoning = <Msg>(
           ),
         ],
         [
-          h.div([h.Class('min-h-0 overflow-hidden')], [
-            h.div(
-              [h.Class('pt-2 pl-[22px] text-xs leading-5 text-muted-foreground')],
-              [...props.children],
-            ),
-          ]),
+          h.div(
+            [h.Class('min-h-0 overflow-hidden')],
+            [
+              h.div(
+                [
+                  h.Class(
+                    'pt-2 pl-[22px] text-xs leading-5 text-muted-foreground',
+                  ),
+                ],
+                [...props.children],
+              ),
+            ],
+          ),
         ],
       ),
     ],
-  );
-};
+  )
+}

@@ -1,12 +1,12 @@
-import { Schema as S } from 'effect';
-import type { Update } from 'foldkit';
-import { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
-import { modifyFields } from 'foldkit/struct';
+import { Schema as S } from 'effect'
+import type { Update } from 'foldkit'
+import { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import { modifyFields } from 'foldkit/struct'
 
-import * as Icon from '@/demo/icon-preview';
-import { button } from '@/ui/button';
+import * as Icon from '@/demo/icon-preview'
+import { button } from '@/ui/button'
 import {
   card,
   cardAction,
@@ -14,18 +14,18 @@ import {
   cardDescription,
   cardHeader,
   cardTitle,
-} from '@/ui/card';
-import * as DropdownMenu from '@/ui/dropdown-menu';
-import { table, tableBody, tableCell, tableRow } from '@/ui/table';
+} from '@/ui/card'
+import * as DropdownMenu from '@/ui/dropdown-menu'
+import { table, tableBody, tableCell, tableRow } from '@/ui/table'
 
 type Transaction = Readonly<{
-  merchant: string;
-  category: string;
-  date: string;
-  amount: string;
-  icon: string;
-  isIncome?: boolean;
-}>;
+  merchant: string
+  category: string
+  date: string
+  amount: string
+  icon: string
+  isIncome?: boolean
+}>
 
 const TRANSACTIONS: ReadonlyArray<Transaction> = [
   {
@@ -64,64 +64,62 @@ const TRANSACTIONS: ReadonlyArray<Transaction> = [
     amount: '-$19.99',
     icon: 'tv',
   },
-];
+]
 
-type Action = 'view-details' | 'add-note' | 'categorize' | 'dispute';
+type Action = 'view-details' | 'add-note' | 'categorize' | 'dispute'
 
 const ACTIONS: ReadonlyArray<Action> = [
   'view-details',
   'add-note',
   'categorize',
   'dispute',
-];
+]
 
 const ACTION_LABELS: Readonly<Record<Action, string>> = {
   'view-details': 'View details',
   'add-note': 'Add note',
   categorize: 'Categorize',
   dispute: 'Dispute',
-};
+}
 
-const TransactionMenu = DropdownMenu.create<Action>();
+const TransactionMenu = DropdownMenu.create<Action>()
 
 export const Model = S.Struct({
   menus: S.Array(DropdownMenu.Model),
-});
-export type Model = typeof Model.Type;
-
-
+})
+export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
   GotMenuMessage: {
-  index: S.Number,
-  message: DropdownMenu.Message,
-},
-});
-export type Message = typeof Message.Type;
+    index: S.Number,
+    message: DropdownMenu.Message,
+  },
+})
+export type Message = typeof Message.Type
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 
 export const update = (model: Model, message: Message): UpdateReturn => {
-  const currentMenu = model.menus[message.index];
+  const currentMenu = model.menus[message.index]
 
   if (currentMenu === undefined) {
-    return { model: model };
+    return { model: model }
   }
 
-  const nextMenuOp__ = TransactionMenu.update(
-    currentMenu,
-    message.message,
-  );
-    const nextMenu = nextMenuOp__.model;
-    const commands = nextMenuOp__.commands ?? [];;
+  const nextMenuOp__ = TransactionMenu.update(currentMenu, message.message)
+  const nextMenu = nextMenuOp__.model
+  const commands = nextMenuOp__.commands ?? []
 
-  return { model: modifyFields(model, {
-      menus: (menus) =>
+  return {
+    model: modifyFields(model, {
+      menus: menus =>
         menus.map((menu, index) => (index === message.index ? nextMenu : menu)),
-    }), commands: Command.mapMessages(commands, (nextMessage) =>
+    }),
+    commands: Command.mapMessages(commands, nextMessage =>
       Message.GotMenuMessage({ index: message.index, message: nextMessage }),
-    ) };
-};
+    ),
+  }
+}
 
 export const init = (): Model => ({
   menus: TRANSACTIONS.map((_transaction, index) =>
@@ -130,10 +128,10 @@ export const init = (): Model => ({
       isAnimated: true,
     }),
   ),
-});
+})
 
 const MENU_TRIGGER_CLASS =
-  "inline-flex size-8 items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]";
+  "inline-flex size-8 items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]"
 
 const transactionRow = (
   transaction: Transaction,
@@ -207,12 +205,12 @@ const transactionRow = (
               DropdownMenu.dropdownMenu<Action, Message>(
                 {
                   model: menu,
-                  toParentMessage: (message) =>
+                  toParentMessage: message =>
                     Message.GotMenuMessage({ index, message }),
                   trigger: Icon.moreHorizontal({}, h),
                   triggerClass: MENU_TRIGGER_CLASS,
                   items: ACTIONS,
-                  itemToConfig: (action) => ({
+                  itemToConfig: action => ({
                     label: ACTION_LABELS[action],
                   }),
                   align: 'end',
@@ -227,8 +225,8 @@ const transactionRow = (
       ],
     },
     h,
-  );
-};
+  )
+}
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
   card<Message>(
@@ -272,11 +270,11 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                     tableBody(
                       {
                         children: TRANSACTIONS.flatMap((transaction, index) => {
-                          const menu = model.menus[index];
+                          const menu = model.menus[index]
 
                           return menu === undefined
                             ? []
-                            : [transactionRow(transaction, menu, index, h)];
+                            : [transactionRow(transaction, menu, index, h)]
                         }),
                       },
                       h,
@@ -292,7 +290,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
       ],
     },
     h,
-  );
+  )
 
 // PORT NOTE: DropdownMenu cannot express the source's unlabeled separator before Dispute.
 // PORT NOTE: Button has no icon-sm size, so the menu trigger uses an inline size-8 class equivalent.

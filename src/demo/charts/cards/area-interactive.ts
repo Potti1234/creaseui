@@ -1,20 +1,20 @@
-import type { EChartsOption } from 'echarts/types/dist/shared';
-import { Option } from 'effect';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { EChartsOption } from 'echarts/types/dist/shared'
+import { Option } from 'effect'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Chart from '@/lib/echarts';
-import * as Select from '@/ui/select';
+import * as Chart from '@/lib/echarts'
+import * as Select from '@/ui/select'
 import {
   card,
   cardContent,
   cardDescription,
   cardHeader,
   cardTitle,
-} from '@/ui/card';
+} from '@/ui/card'
 
-export const HOST_ID = 'chart-area-interactive';
+export const HOST_ID = 'chart-area-interactive'
 
-export type TimeRange = '90d' | '30d' | '7d';
+export type TimeRange = '90d' | '30d' | '7d'
 
 const TIME_RANGES: ReadonlyArray<
   Readonly<{ value: TimeRange; label: string }>
@@ -22,7 +22,7 @@ const TIME_RANGES: ReadonlyArray<
   { value: '90d', label: 'Last 3 months' },
   { value: '30d', label: 'Last 30 days' },
   { value: '7d', label: 'Last 7 days' },
-];
+]
 
 const DATA = [
   ['2024-04-01', 222, 150],
@@ -116,27 +116,27 @@ const DATA = [
   ['2024-06-28', 149, 200],
   ['2024-06-29', 103, 160],
   ['2024-06-30', 446, 400],
-] as const;
+] as const
 
 const firstDate: Readonly<Record<TimeRange, string>> = {
   '90d': '2024-04-01',
   '30d': '2024-05-31',
   '7d': '2024-06-23',
-};
+}
 
 const formatDate = (date: string): string =>
   new Date(`${date}T00:00:00Z`).toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',
     timeZone: 'UTC',
-  });
+  })
 
 const isTimeRange = (value: string): value is TimeRange =>
-  value === '90d' || value === '30d' || value === '7d';
+  value === '90d' || value === '30d' || value === '7d'
 
 Chart.registerChart(HOST_ID, (theme, variant): EChartsOption => {
-  const timeRange = isTimeRange(variant) ? variant : '90d';
-  const filtered = DATA.filter(([date]) => date >= firstDate[timeRange]);
+  const timeRange = isTimeRange(variant) ? variant : '90d'
+  const filtered = DATA.filter(([date]) => date >= firstDate[timeRange])
 
   return {
     grid: Chart.compactGrid({ bottom: 44 }),
@@ -180,16 +180,16 @@ Chart.registerChart(HOST_ID, (theme, variant): EChartsOption => {
         data: filtered.map(([, desktop]) => desktop),
       },
     ],
-  };
-});
+  }
+})
 
 export type ViewProps<Msg> = Readonly<{
-  timeRange: TimeRange;
-  selectedTimeRange: TimeRange;
-  selectModel: Select.Model;
-  toChartMessage: (message: Chart.ChartMessage) => Msg;
-  toSelectMessage: (message: Select.Message) => Msg;
-}>;
+  timeRange: TimeRange
+  selectedTimeRange: TimeRange
+  selectModel: Select.Model
+  toChartMessage: (message: Chart.ChartMessage) => Msg
+  toSelectMessage: (message: Select.Message) => Msg
+}>
 
 export const view = <Msg>(props: ViewProps<Msg>, h: HtmlBuilder<Msg>): Html => {
   return card(
@@ -221,8 +221,8 @@ export const view = <Msg>(props: ViewProps<Msg>, h: HtmlBuilder<Msg>): Html => {
                   maybeSelectedValue: Option.some(props.selectedTimeRange),
                   toParentMessage: props.toSelectMessage,
                   items: TIME_RANGES,
-                  itemToValue: (range) => range.value,
-                  itemToLabel: (range) => range.label,
+                  itemToValue: range => range.value,
+                  itemToLabel: range => range.label,
                   triggerClass:
                     'hidden w-[160px] rounded-lg sm:ml-auto sm:flex',
                   ariaLabel: 'Select a value',
@@ -255,8 +255,8 @@ export const view = <Msg>(props: ViewProps<Msg>, h: HtmlBuilder<Msg>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 /*
   Minimal wiring:

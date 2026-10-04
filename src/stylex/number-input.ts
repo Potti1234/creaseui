@@ -38,13 +38,7 @@ import { interactionTokens } from './interaction-tokens.stylex.const'
 import { className } from './style'
 import { tokens } from './tokens.stylex'
 
-export {
-  init,
-  Model,
-  Message,
-  OutMessage,
-  update,
-} from '@/lib/number-input'
+export { init, Model, Message, OutMessage, update } from '@/lib/number-input'
 export type { NumberInputSize } from '@/lib/number-input'
 export type { InputStatus } from '@/lib/input-status'
 
@@ -76,7 +70,7 @@ const styles = stylex.create({
   labelIndicator: {
     fontSize: '0.75rem',
     fontWeight: 400,
- lineHeight: '1rem',
+    lineHeight: '1rem',
   },
   description: {
     color: tokens.mutedForeground,
@@ -401,7 +395,10 @@ const displayValue = (props: NumberInputViewInputs, model: Model): string =>
     },
   })
 
-const pendingIsInvalid = (props: NumberInputViewInputs, model: Model): boolean =>
+const pendingIsInvalid = (
+  props: NumberInputViewInputs,
+  model: Model,
+): boolean =>
   Option.match(model.pendingInput, {
     onSome: text =>
       text.trim() !== '' &&
@@ -485,7 +482,9 @@ const view = defineView<Model, Message, NumberInputViewInputs>(
       h.Attribute('autocomplete', props.autocomplete ?? 'off'),
       h.Attribute('spellcheck', 'false'),
       h.Value(displayValue(props, model)),
-      ...(props.placeholder === undefined ? [] : [h.Placeholder(props.placeholder)]),
+      ...(props.placeholder === undefined
+        ? []
+        : [h.Placeholder(props.placeholder)]),
       h.AriaLabelledBy(fieldIds.label),
       ...(props['aria-label'] === undefined
         ? []
@@ -499,10 +498,15 @@ const view = defineView<Model, Message, NumberInputViewInputs>(
       ...(props.isAutofocus === true ? [h.Autofocus(true)] : []),
       h.DataAttribute('slot', 'number-input-input'),
       h.Class(
-        className(styles.input, props.isDisabled === true && styles.inputDisabled),
+        className(
+          styles.input,
+          props.isDisabled === true && styles.inputDisabled,
+        ),
       ),
       h.OnFocus(Message.FocusGained()),
-      h.OnBlur(Message.CommitDecided({ resolution: commitResolutionOf(commit) })),
+      h.OnBlur(
+        Message.CommitDecided({ resolution: commitResolutionOf(commit) }),
+      ),
       h.OnInput(text => Message.DraftEdited({ text })),
       ...(props.isDisabled === true || props.isReadOnly === true
         ? []
@@ -520,7 +524,9 @@ const view = defineView<Model, Message, NumberInputViewInputs>(
               }
               if (key === 'Enter') {
                 return Option.some(
-                  Message.CommitDecided({ resolution: commitResolutionOf(commit) }),
+                  Message.CommitDecided({
+                    resolution: commitResolutionOf(commit),
+                  }),
                 )
               }
               return Option.none()
@@ -563,15 +569,19 @@ const view = defineView<Model, Message, NumberInputViewInputs>(
               h.Class(className(styles.statusIconButton)),
             ],
             [
-              Icon.icon(statusIconName(props.status.type), {
-                class: className(
-                  styles.iconMd,
-                  props.status.type === 'error' && styles.statusIconError,
-                  props.status.type === 'warning' && styles.statusIconWarning,
-                  props.status.type === 'success' && styles.statusIconSuccess,
-                ),
-                ariaLabel: statusButtonLabel(props.status.type),
-              }, h),
+              Icon.icon(
+                statusIconName(props.status.type),
+                {
+                  class: className(
+                    styles.iconMd,
+                    props.status.type === 'error' && styles.statusIconError,
+                    props.status.type === 'warning' && styles.statusIconWarning,
+                    props.status.type === 'success' && styles.statusIconSuccess,
+                  ),
+                  ariaLabel: statusButtonLabel(props.status.type),
+                },
+                h,
+              ),
             ],
           )
         : undefined
@@ -583,22 +593,22 @@ const view = defineView<Model, Message, NumberInputViewInputs>(
               h.DataAttribute('slot', 'number-input-steppers'),
               h.Class(className(styles.steppers)),
             ],
-            (
-              [
-                {
-                  delta: 1 as const,
-                  label: `Increment ${typeof props.label === 'string' ? props.label : 'value'}`,
-                  icon: 'chevron-up',
-                  extra: undefined as stylex.StaticStyles | undefined,
-                },
-                {
-                  delta: -1 as const,
-                  label: `Decrement ${typeof props.label === 'string' ? props.label : 'value'}`,
-                  icon: 'chevron-down',
-                  extra: styles.stepperDecrement as stylex.StaticStyles | undefined,
-                },
-              ]
-            ).map(({ delta, label, icon, extra }) =>
+            [
+              {
+                delta: 1 as const,
+                label: `Increment ${typeof props.label === 'string' ? props.label : 'value'}`,
+                icon: 'chevron-up',
+                extra: undefined as stylex.StaticStyles | undefined,
+              },
+              {
+                delta: -1 as const,
+                label: `Decrement ${typeof props.label === 'string' ? props.label : 'value'}`,
+                icon: 'chevron-down',
+                extra: styles.stepperDecrement as
+                  | stylex.StaticStyles
+                  | undefined,
+              },
+            ].map(({ delta, label, icon, extra }) =>
               h.button(
                 [
                   h.Type('button'),
@@ -607,7 +617,11 @@ const view = defineView<Model, Message, NumberInputViewInputs>(
                   h.Disabled(
                     props.isDisabled === true ||
                       props.isReadOnly === true ||
-                      !canStep(delta, { value, min: props.min, max: props.max }),
+                      !canStep(delta, {
+                        value,
+                        min: props.min,
+                        max: props.max,
+                      }),
                   ),
                   h.OnClick(Message.Stepped({ value: stepper(delta) }), {
                     propagation: 'Stop',
@@ -741,9 +755,10 @@ const view = defineView<Model, Message, NumberInputViewInputs>(
         ),
         ...(pendingIsInvalid(props, model)
           ? [
-              h.span([h.Class(className(styles.srOnly)), h.AriaLive('polite')], [
-                'Invalid number',
-              ]),
+              h.span(
+                [h.Class(className(styles.srOnly)), h.AriaLive('polite')],
+                ['Invalid number'],
+              ),
             ]
           : []),
       ],

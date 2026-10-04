@@ -13,12 +13,25 @@ type Message = Readonly<{ _tag: 'GotRadio'; message: TailwindRadio.Message }>
 type RadioModule = Readonly<{
   init: typeof TailwindRadio.init
   update: typeof TailwindRadio.update
-  radioGroup: <Msg>(props: {
-    model: TailwindRadio.Model; toParentMessage: (message: TailwindRadio.Message) => Msg
-    selectedValue: Option.Option<string>; ariaLabel: string
-    options: ReadonlyArray<{ value: string; label: string; description?: string; isDisabled?: boolean }>
-    name?: string; isReadOnly?: boolean; direction?: 'ltr' | 'rtl'; orientation?: 'Horizontal' | 'Vertical'
-  }, h: HtmlBuilder<Msg>) => Html
+  radioGroup: <Msg>(
+    props: {
+      model: TailwindRadio.Model
+      toParentMessage: (message: TailwindRadio.Message) => Msg
+      selectedValue: Option.Option<string>
+      ariaLabel: string
+      options: ReadonlyArray<{
+        value: string
+        label: string
+        description?: string
+        isDisabled?: boolean
+      }>
+      name?: string
+      isReadOnly?: boolean
+      direction?: 'ltr' | 'rtl'
+      orientation?: 'Horizontal' | 'Vertical'
+    },
+    h: HtmlBuilder<Msg>,
+  ) => Html
 }>
 
 const options = [
@@ -35,24 +48,58 @@ const verifyRenderer = (name: string, Radio: RadioModule) => {
           update: (model: Model, message: Message) => {
             const result = Radio.update(model.radio, message.message)
             const out = result.outMessage
-            return { model: { ...model, radio: result.model, value: out === undefined ? model.value : out.value }, commands: Command.mapMessages(result.commands, child => ({ _tag: 'GotRadio' as const, message: child })) }
+            return {
+              model: {
+                ...model,
+                radio: result.model,
+                value: out === undefined ? model.value : out.value,
+              },
+              commands: Command.mapMessages(result.commands, child => ({
+                _tag: 'GotRadio' as const,
+                message: child,
+              })),
+            }
           },
-          view: (model, h) => Radio.radioGroup({
-            model: model.radio, selectedValue: Option.some(model.value),
-            toParentMessage: message => ({ _tag: 'GotRadio', message }),
-            ariaLabel: 'Density', options, name: 'density',
-          }, h),
+          view: (model, h) =>
+            Radio.radioGroup(
+              {
+                model: model.radio,
+                selectedValue: Option.some(model.value),
+                toParentMessage: message => ({ _tag: 'GotRadio', message }),
+                ariaLabel: 'Density',
+                options,
+                name: 'density',
+              },
+              h,
+            ),
         },
-        Scene.given({ value: 'default', radio: Radio.init({ id: `${name}-density` }) }),
+        Scene.given({
+          value: 'default',
+          radio: Radio.init({ id: `${name}-density` }),
+        }),
         Scene.expect(Scene.role('radio', { name: 'Default' })).toBeChecked(),
-        Scene.expect(Scene.role('radio', { name: 'Default' })).not.toHaveAttr('aria-describedby'),
-        Scene.expect(Scene.role('radio', { name: 'Comfortable' })).toHaveAccessibleDescription('More space.'),
+        Scene.expect(Scene.role('radio', { name: 'Default' })).not.toHaveAttr(
+          'aria-describedby',
+        ),
+        Scene.expect(
+          Scene.role('radio', { name: 'Comfortable' }),
+        ).toHaveAccessibleDescription('More space.'),
         Scene.click(Scene.role('radio', { name: 'Comfortable' })),
         Scene.expectHandled(),
-        Scene.expect(Scene.role('radio', { name: 'Comfortable' })).toBeChecked(),
-        Scene.expect(Scene.selector('input[type="hidden"]')).toHaveValue('comfortable'),
-        Scene.expect(Scene.role('radio', { name: 'Compact' })).toHaveAttr('aria-disabled', 'true'),
-        Scene.Command.resolve(RadioGroupPrimitive.FocusOption, RadioGroupPrimitive.Message.CompletedFocusOption()),
+        Scene.expect(
+          Scene.role('radio', { name: 'Comfortable' }),
+        ).toBeChecked(),
+        Scene.expect(Scene.selector('input[type="hidden"]')).toHaveValue(
+          'comfortable',
+        ),
+        Scene.expect(Scene.role('radio', { name: 'Compact' })).toHaveAttr(
+          'aria-disabled',
+          'true',
+        ),
+        Scene.Command.resolve(
+          RadioGroupPrimitive.FocusOption,
+          RadioGroupPrimitive.Message.CompletedFocusOption(),
+        ),
       )
     })
 
@@ -60,16 +107,32 @@ const verifyRenderer = (name: string, Radio: RadioModule) => {
       Scene.scene(
         {
           update: (model: Model) => ({ model: model }),
-          view: (model, h) => Radio.radioGroup({
-            model: model.radio, selectedValue: Option.some(model.value),
-            toParentMessage: message => ({ _tag: 'GotRadio', message }),
-            ariaLabel: 'Density', options, isReadOnly: true,
-            direction: 'rtl', orientation: 'Horizontal',
-          }, h),
+          view: (model, h) =>
+            Radio.radioGroup(
+              {
+                model: model.radio,
+                selectedValue: Option.some(model.value),
+                toParentMessage: message => ({ _tag: 'GotRadio', message }),
+                ariaLabel: 'Density',
+                options,
+                isReadOnly: true,
+                direction: 'rtl',
+                orientation: 'Horizontal',
+              },
+              h,
+            ),
         },
-        Scene.given({ value: 'default', radio: Radio.init({ id: `${name}-readonly` }) }),
-        Scene.expect(Scene.role('radio', { name: 'Comfortable' })).not.toHaveHandler('OnClick'),
-        Scene.expect(Scene.role('radiogroup', { name: 'Density' })).toHaveAttr('dir', 'rtl'),
+        Scene.given({
+          value: 'default',
+          radio: Radio.init({ id: `${name}-readonly` }),
+        }),
+        Scene.expect(
+          Scene.role('radio', { name: 'Comfortable' }),
+        ).not.toHaveHandler('OnClick'),
+        Scene.expect(Scene.role('radiogroup', { name: 'Density' })).toHaveAttr(
+          'dir',
+          'rtl',
+        ),
       )
     })
   })

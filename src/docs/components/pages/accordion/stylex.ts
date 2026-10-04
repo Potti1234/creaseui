@@ -1,20 +1,20 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   accordionCardCopy,
   accordionFixtures,
   type AccordionFixture,
-} from '@/docs/components/pages/accordion/shared';
-import * as Accordion from '@/stylex/accordion';
-import * as Card from '@/stylex/card';
-import { className } from '@/stylex/style';
+} from '@/docs/components/pages/accordion/shared'
+import * as Accordion from '@/stylex/accordion'
+import * as Card from '@/stylex/card'
+import { className } from '@/stylex/style'
 
 const styles = stylex.create({
   card: { maxWidth: '24rem', width: '100%' },
   frame: { maxWidth: '28rem', width: '100%' },
-});
+})
 
 const fixtureView = <Msg>(
   fixture: AccordionFixture,
@@ -31,25 +31,36 @@ const fixtureView = <Msg>(
       ...(fixture.kind === 'borders' ? { bordered: true } : {}),
     },
     toParentMessage,
-  });
+  })
   switch (fixture.kind) {
     case 'card':
-      return Card.card({
-        layoutStyle: styles.card,
-        children: [
-          Card.cardHeader({ children: [
-            Card.cardTitle({ children: [accordionCardCopy.title] }, h),
-            Card.cardDescription({ children: [accordionCardCopy.description] }, h),
-          ] }, h),
-          Card.cardContent({ children: [submodel] }, h),
-        ],
-      }, h);
+      return Card.card(
+        {
+          layoutStyle: styles.card,
+          children: [
+            Card.cardHeader(
+              {
+                children: [
+                  Card.cardTitle({ children: [accordionCardCopy.title] }, h),
+                  Card.cardDescription(
+                    { children: [accordionCardCopy.description] },
+                    h,
+                  ),
+                ],
+              },
+              h,
+            ),
+            Card.cardContent({ children: [submodel] }, h),
+          ],
+        },
+        h,
+      )
     case 'rtl':
-      return h.div([h.Dir('rtl'), h.Class(className(styles.frame))], [submodel]);
+      return h.div([h.Dir('rtl'), h.Class(className(styles.frame))], [submodel])
     default:
-      return submodel;
+      return submodel
   }
-};
+}
 
 export const accordionStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
@@ -57,16 +68,22 @@ export const accordionStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const fixture = accordionFixtures[exampleIndex] ?? accordionFixtures[0];
-  return h.div([h.Class('w-full max-w-xl')], [
-    fixtureView(
-      fixture,
-      (model as { accordion: Accordion.Model }).accordion,
-      message => onMessageJson(JSON.stringify({
-        _tag: 'GotAccordionPreviewMessage',
-        message,
-      })),
-      h,
-    ),
-  ]);
-};
+  const fixture = accordionFixtures[exampleIndex] ?? accordionFixtures[0]
+  return h.div(
+    [h.Class('w-full max-w-xl')],
+    [
+      fixtureView(
+        fixture,
+        (model as { accordion: Accordion.Model }).accordion,
+        message =>
+          onMessageJson(
+            JSON.stringify({
+              _tag: 'GotAccordionPreviewMessage',
+              message,
+            }),
+          ),
+        h,
+      ),
+    ],
+  )
+}

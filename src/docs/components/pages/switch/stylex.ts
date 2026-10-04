@@ -1,12 +1,12 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
-import { switchFixtures } from '@/docs/components/pages/switch/shared';
-import * as Field from '@/stylex/field';
-import * as Label from '@/stylex/label';
-import { className } from '@/stylex/style';
-import * as Switch from '@/stylex/switch';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import { switchFixtures } from '@/docs/components/pages/switch/shared'
+import * as Field from '@/stylex/field'
+import * as Label from '@/stylex/label'
+import { className } from '@/stylex/style'
+import * as Switch from '@/stylex/switch'
 
 const styles = stylex.create({
   row: {
@@ -24,10 +24,10 @@ const styles = stylex.create({
   narrow: {
     width: '10rem',
   },
-});
+})
 
 interface SwitchPreviewShape {
-  readonly states: Readonly<Record<string, boolean>>;
+  readonly states: Readonly<Record<string, boolean>>
 }
 
 const sw = <Msg>(
@@ -48,7 +48,7 @@ const sw = <Msg>(
       ...(extra ?? {}),
     },
     h,
-  );
+  )
 
 const descriptionField = <Msg>(
   shape: SwitchPreviewShape,
@@ -69,7 +69,10 @@ const descriptionField = <Msg>(
             children: [
               Field.fieldLabel(
                 {
-                  for: direction === 'rtl' ? 'switch-focus-mode-rtl' : 'switch-focus-mode',
+                  for:
+                    direction === 'rtl'
+                      ? 'switch-focus-mode-rtl'
+                      : 'switch-focus-mode',
                   children:
                     direction === 'rtl'
                       ? ['المشاركة عبر الأجهزة']
@@ -83,10 +86,16 @@ const descriptionField = <Msg>(
                 {
                   children:
                     direction === 'rtl'
-                      ? ['يتم مشاركة التركيز عبر الأجهزة، ويتم إيقاف تشغيله عند مغادرة التطبيق.']
+                      ? [
+                          'يتم مشاركة التركيز عبر الأجهزة، ويتم إيقاف تشغيله عند مغادرة التطبيق.',
+                        ]
                       : isInvalid
-                        ? ['You must accept the terms and conditions to continue.']
-                        : ['Focus is shared across devices, and turns off when you leave the app.'],
+                        ? [
+                            'You must accept the terms and conditions to continue.',
+                          ]
+                        : [
+                            'Focus is shared across devices, and turns off when you leave the app.',
+                          ],
                 },
                 h,
               ),
@@ -95,7 +104,11 @@ const descriptionField = <Msg>(
           h,
         ),
         sw(
-          direction === 'rtl' ? 'switch-focus-mode-rtl' : isInvalid ? 'switch-terms' : 'switch-focus-mode',
+          direction === 'rtl'
+            ? 'switch-focus-mode-rtl'
+            : isInvalid
+              ? 'switch-terms'
+              : 'switch-focus-mode',
           shape,
           onMessageJson,
           h,
@@ -107,7 +120,7 @@ const descriptionField = <Msg>(
       ],
     },
     h,
-  );
+  )
 
 const choiceCard = <Msg>(
   id: string,
@@ -142,7 +155,7 @@ const choiceCard = <Msg>(
       ],
     },
     h,
-  );
+  )
 
 export const switchStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
@@ -150,16 +163,19 @@ export const switchStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ) => {
-  const shape = model as SwitchPreviewShape;
-  const fixture = switchFixtures[exampleIndex] ?? switchFixtures[0];
+  const shape = model as SwitchPreviewShape
+  const fixture = switchFixtures[exampleIndex] ?? switchFixtures[0]
   switch (fixture.kind) {
     case 'demo':
-      return h.div([h.Class(className(styles.row))], [
-        sw('airplane-mode', shape, onMessageJson, h),
-        Label.label({ for: 'airplane-mode', children: ['Airplane Mode'] }, h),
-      ]);
+      return h.div(
+        [h.Class(className(styles.row))],
+        [
+          sw('airplane-mode', shape, onMessageJson, h),
+          Label.label({ for: 'airplane-mode', children: ['Airplane Mode'] }, h),
+        ],
+      )
     case 'description':
-      return descriptionField(shape, onMessageJson, h, undefined, false);
+      return descriptionField(shape, onMessageJson, h, undefined, false)
     case 'choiceCard':
       return Field.fieldGroup(
         {
@@ -184,7 +200,7 @@ export const switchStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           ],
         },
         h,
-      );
+      )
     case 'disabled':
       return Field.field(
         {
@@ -192,7 +208,9 @@ export const switchStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           isDisabled: true,
           layoutStyle: styles.fit,
           children: [
-            sw('switch-disabled-unchecked', shape, onMessageJson, h, { isDisabled: true }),
+            sw('switch-disabled-unchecked', shape, onMessageJson, h, {
+              isDisabled: true,
+            }),
             Field.fieldLabel(
               { for: 'switch-disabled-unchecked', children: ['Disabled'] },
               h,
@@ -200,9 +218,9 @@ export const switchStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           ],
         },
         h,
-      );
+      )
     case 'invalid':
-      return descriptionField(shape, onMessageJson, h, undefined, true);
+      return descriptionField(shape, onMessageJson, h, undefined, true)
     case 'size':
       return Field.fieldGroup(
         {
@@ -213,7 +231,10 @@ export const switchStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                 orientation: 'horizontal',
                 children: [
                   sw('switch-size-sm', shape, onMessageJson, h, { size: 'sm' }),
-                  Field.fieldLabel({ for: 'switch-size-sm', children: ['Small'] }, h),
+                  Field.fieldLabel(
+                    { for: 'switch-size-sm', children: ['Small'] },
+                    h,
+                  ),
                 ],
               },
               h,
@@ -222,7 +243,9 @@ export const switchStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
               {
                 orientation: 'horizontal',
                 children: [
-                  sw('switch-size-default', shape, onMessageJson, h, { size: 'default' }),
+                  sw('switch-size-default', shape, onMessageJson, h, {
+                    size: 'default',
+                  }),
                   Field.fieldLabel(
                     { for: 'switch-size-default', children: ['Default'] },
                     h,
@@ -234,8 +257,8 @@ export const switchStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           ],
         },
         h,
-      );
+      )
     case 'rtl':
-      return descriptionField(shape, onMessageJson, h, 'rtl', false);
+      return descriptionField(shape, onMessageJson, h, 'rtl', false)
   }
-};
+}

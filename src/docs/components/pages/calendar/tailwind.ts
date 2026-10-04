@@ -1,14 +1,14 @@
-import { Option, Schema as S } from 'effect';
-import { Command } from 'foldkit';
-import * as FoldkitCalendar from 'foldkit/calendar';
-import type { HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
-import { definePreviewProgram } from '@/docs/components/pages/authored-page';
+import { Option, Schema as S } from 'effect'
+import { Command } from 'foldkit'
+import * as FoldkitCalendar from 'foldkit/calendar'
+import type { HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
   calendarFixtures,
   germanCalendarLocale,
   type CalendarFixture,
-} from '@/docs/components/pages/calendar/shared';
+} from '@/docs/components/pages/calendar/shared'
 import {
   FA_DAY_NAMES,
   FA_MONTH_NAMES,
@@ -17,19 +17,19 @@ import {
   toJalaali,
   type JalaliCell,
   type JalaliDate,
-} from '@/lib/jalali';
-import * as Button from '@/ui/button';
-import * as Calendar from '@/ui/calendar';
-import * as Card from '@/ui/card';
-import * as Field from '@/ui/field';
-import * as Icon from '@/lib/icon';
-import * as InputGroup from '@/ui/input-group';
+} from '@/lib/jalali'
+import * as Button from '@/ui/button'
+import * as Calendar from '@/ui/calendar'
+import * as Card from '@/ui/card'
+import * as Field from '@/ui/field'
+import * as Icon from '@/lib/icon'
+import * as InputGroup from '@/ui/input-group'
 
 const JalaliDay = S.Struct({
   year: S.Int,
   month: S.Int,
   day: S.Int,
-});
+})
 
 const Message = defineMessageUnion({
   GotCalendarPreviewMessage: { message: Calendar.Message },
@@ -39,8 +39,8 @@ const Message = defineMessageUnion({
   ClickedJalaliDay: { date: JalaliDay },
   PressedJalaliPreviousMonth: {},
   PressedJalaliNextMonth: {},
-});
-type Message = typeof Message.Type;
+})
+type Message = typeof Message.Type
 
 const Model = S.Struct({
   _docsPage: S.Literal('calendar'),
@@ -54,12 +54,12 @@ const Model = S.Struct({
   jalaliViewMonth: S.Int,
   jalaliDay: S.Option(JalaliDay),
   jalaliToday: JalaliDay,
-});
-type Model = typeof Model.Type;
+})
+type Model = typeof Model.Type
 
 const BOOKED_DATES = [3, 12, 13, 14, 15].map(
   (day): FoldkitCalendar.CalendarDate => ({ year: 2026, month: 7, day }),
-);
+)
 
 const PRESETS = [
   { label: 'Today', days: 0 },
@@ -67,28 +67,28 @@ const PRESETS = [
   { label: 'In 3 days', days: 3 },
   { label: 'In a week', days: 7 },
   { label: 'In 2 weeks', days: 14 },
-] as const;
+] as const
 
-const TODAY: FoldkitCalendar.CalendarDate = { year: 2026, month: 7, day: 28 };
+const TODAY: FoldkitCalendar.CalendarDate = { year: 2026, month: 7, day: 28 }
 
 const addDays = (
   date: FoldkitCalendar.CalendarDate,
   days: number,
 ): FoldkitCalendar.CalendarDate => {
-  const d = new Date(Date.UTC(date.year, date.month - 1, date.day + days));
+  const d = new Date(Date.UTC(date.year, date.month - 1, date.day + days))
   return {
     year: d.getUTCFullYear(),
     month: d.getUTCMonth() + 1,
     day: d.getUTCDate(),
-  };
-};
+  }
+}
 
 const fixtureOf = (index: number): CalendarFixture =>
   calendarFixtures[index] ?? {
     title: 'Demo',
     description: '',
     layout: 'single',
-  };
+  }
 
 const calendarView = (
   fixture: CalendarFixture,
@@ -111,7 +111,7 @@ const calendarView = (
         : {}),
     },
     h,
-  );
+  )
 
 const timeFieldView = (
   field: 'start' | 'end',
@@ -144,7 +144,8 @@ const timeFieldView = (
                           field === 'start'
                             ? Message.ChangedStartTime({ value })
                             : Message.ChangedEndTime({ value }),
-                        ariaLabel: field === 'start' ? 'Start Time' : 'End Time',
+                        ariaLabel:
+                          field === 'start' ? 'Start Time' : 'End Time',
                       },
                       h,
                     ),
@@ -171,15 +172,20 @@ const timeFieldView = (
       ],
     },
     h,
-  );
+  )
 
 const isSameJalaliDay = (a: JalaliDate, b: JalaliDate): boolean =>
-  a.year === b.year && a.month === b.month && a.day === b.day;
+  a.year === b.year && a.month === b.month && a.day === b.day
 
-const jalaliDayButton = (cell: JalaliCell, model: Model, h: HtmlBuilder<Message>) => {
+const jalaliDayButton = (
+  cell: JalaliCell,
+  model: Model,
+  h: HtmlBuilder<Message>,
+) => {
   const selected =
-    Option.isSome(model.jalaliDay) && isSameJalaliDay(model.jalaliDay.value, cell);
-  const today = isSameJalaliDay(model.jalaliToday, cell);
+    Option.isSome(model.jalaliDay) &&
+    isSameJalaliDay(model.jalaliDay.value, cell)
+  const today = isSameJalaliDay(model.jalaliToday, cell)
   return h.button(
     [
       h.Type('button'),
@@ -200,42 +206,45 @@ const jalaliDayButton = (cell: JalaliCell, model: Model, h: HtmlBuilder<Message>
       ),
     ],
     [faDigits(cell.day)],
-  );
-};
+  )
+}
 
 const jalaliView = (model: Model, h: HtmlBuilder<Message>) => {
-  const cells = jalaliMonthCells(model.jalaliViewYear, model.jalaliViewMonth);
+  const cells = jalaliMonthCells(model.jalaliViewYear, model.jalaliViewMonth)
   return h.div(
     [h.Dir('rtl'), h.Class('rounded-lg border p-3 w-fit')],
     [
-      h.div([h.Class('flex items-center justify-between')], [
-        Button.button(
-          {
-            variant: 'ghost',
-            size: 'icon',
-            ariaLabel: 'Previous month',
-            onClick: Message.PressedJalaliPreviousMonth(),
-            children: [Icon.chevronRight({ class: 'size-4' }, h)],
-          },
-          h,
-        ),
-        h.span(
-          [h.Class('text-sm font-medium')],
-          [
-            `${FA_MONTH_NAMES[model.jalaliViewMonth - 1] ?? ''} ${faDigits(model.jalaliViewYear)}`,
-          ],
-        ),
-        Button.button(
-          {
-            variant: 'ghost',
-            size: 'icon',
-            ariaLabel: 'Next month',
-            onClick: Message.PressedJalaliNextMonth(),
-            children: [Icon.chevronLeft({ class: 'size-4' }, h)],
-          },
-          h,
-        ),
-      ]),
+      h.div(
+        [h.Class('flex items-center justify-between')],
+        [
+          Button.button(
+            {
+              variant: 'ghost',
+              size: 'icon',
+              ariaLabel: 'Previous month',
+              onClick: Message.PressedJalaliPreviousMonth(),
+              children: [Icon.chevronRight({ class: 'size-4' }, h)],
+            },
+            h,
+          ),
+          h.span(
+            [h.Class('text-sm font-medium')],
+            [
+              `${FA_MONTH_NAMES[model.jalaliViewMonth - 1] ?? ''} ${faDigits(model.jalaliViewYear)}`,
+            ],
+          ),
+          Button.button(
+            {
+              variant: 'ghost',
+              size: 'icon',
+              ariaLabel: 'Next month',
+              onClick: Message.PressedJalaliNextMonth(),
+              children: [Icon.chevronLeft({ class: 'size-4' }, h)],
+            },
+            h,
+          ),
+        ],
+      ),
       h.div(
         [h.Class('mt-2 grid grid-cols-7 gap-0')],
         [
@@ -253,15 +262,15 @@ const jalaliView = (model: Model, h: HtmlBuilder<Message>) => {
         ],
       ),
     ],
-  );
-};
+  )
+}
 
 const bodyView = (
   fixture: CalendarFixture,
   model: Model,
   h: HtmlBuilder<Message>,
 ) => {
-  if (fixture.layout === 'jalali') return jalaliView(model, h);
+  if (fixture.layout === 'jalali') return jalaliView(model, h)
   if (fixture.layout === 'presets')
     return Card.card(
       {
@@ -295,17 +304,14 @@ const bodyView = (
         ],
       },
       h,
-    );
+    )
   if (fixture.layout === 'time')
     return Card.card(
       {
         class: 'mx-auto w-fit',
         size: 'sm',
         children: [
-          Card.cardContent(
-            { children: [calendarView(fixture, model, h)] },
-            h,
-          ),
+          Card.cardContent({ children: [calendarView(fixture, model, h)] }, h),
           Card.cardFooter(
             {
               class: 'border-t bg-card',
@@ -326,22 +332,20 @@ const bodyView = (
         ],
       },
       h,
-    );
-  const calendar = calendarView(fixture, model, h);
+    )
+  const calendar = calendarView(fixture, model, h)
   if (fixture.card === true)
     return Card.card(
       {
         class: 'mx-auto w-fit p-0',
-        children: [
-          Card.cardContent({ children: [calendar] }, h),
-        ],
+        children: [Card.cardContent({ children: [calendar] }, h)],
       },
       h,
-    );
+    )
   if (fixture.bordered === true)
-    return h.div([h.Class('rounded-lg border w-fit')], [calendar]);
-  return calendar;
-};
+    return h.div([h.Class('rounded-lg border w-fit')], [calendar])
+  return calendar
+}
 
 export const calendarTailwindPreviewProgram = definePreviewProgram<
   Model,
@@ -350,8 +354,8 @@ export const calendarTailwindPreviewProgram = definePreviewProgram<
   Model,
   Message,
   init: index => {
-    const fixture = fixtureOf(index);
-    const initialDate = { year: 2026, month: 7, day: 18 };
+    const fixture = fixtureOf(index)
+    const initialDate = { year: 2026, month: 7, day: 18 }
     return {
       _docsPage: 'calendar',
       calendar: Calendar.init({
@@ -361,9 +365,7 @@ export const calendarTailwindPreviewProgram = definePreviewProgram<
           fixture.localized === true ? 'Europe/Berlin' : 'UTC',
         ),
         initialViewDate: initialDate,
-        ...(fixture.localized === true
-          ? { locale: germanCalendarLocale }
-          : {}),
+        ...(fixture.localized === true ? { locale: germanCalendarLocale } : {}),
         ...(fixture.booked === true ? { disabledDates: BOOKED_DATES } : {}),
       }),
       selectedDate: Option.some(initialDate),
@@ -379,7 +381,7 @@ export const calendarTailwindPreviewProgram = definePreviewProgram<
         month: new Date().getMonth() + 1,
         day: new Date().getDate(),
       }),
-    };
+    }
   },
   update: (model, message) => {
     switch (message._tag) {
@@ -388,8 +390,8 @@ export const calendarTailwindPreviewProgram = definePreviewProgram<
           model: calendar,
           commands: calendarCommands,
           outMessage,
-        } = Calendar.update(model.calendar, message.message);
-        const output = Option.fromNullishOr(outMessage);
+        } = Calendar.update(model.calendar, message.message)
+        const output = Option.fromNullishOr(outMessage)
         return {
           model: {
             ...model,
@@ -405,26 +407,26 @@ export const calendarTailwindPreviewProgram = definePreviewProgram<
           commands: Command.mapMessages(calendarCommands ?? [], next =>
             Message['GotCalendarPreviewMessage']({ message: next }),
           ),
-        };
+        }
       }
       case 'ClickedPreset': {
-        const date = addDays(TODAY, message.days);
+        const date = addDays(TODAY, message.days)
         return {
           model: {
             ...model,
             calendar: Calendar.focusDate(model.calendar, date),
             selectedDate: Option.some(date),
           },
-        };
+        }
       }
       case 'ChangedStartTime':
-        return { model: { ...model, startTime: message.value } };
+        return { model: { ...model, startTime: message.value } }
       case 'ChangedEndTime':
-        return { model: { ...model, endTime: message.value } };
+        return { model: { ...model, endTime: message.value } }
       case 'ClickedJalaliDay':
         return {
           model: { ...model, jalaliDay: Option.some(message.date) },
-        };
+        }
       case 'PressedJalaliPreviousMonth':
         return {
           model: {
@@ -433,9 +435,10 @@ export const calendarTailwindPreviewProgram = definePreviewProgram<
               model.jalaliViewMonth === 1
                 ? model.jalaliViewYear - 1
                 : model.jalaliViewYear,
-            jalaliViewMonth: model.jalaliViewMonth === 1 ? 12 : model.jalaliViewMonth - 1,
+            jalaliViewMonth:
+              model.jalaliViewMonth === 1 ? 12 : model.jalaliViewMonth - 1,
           },
-        };
+        }
       case 'PressedJalaliNextMonth':
         return {
           model: {
@@ -444,10 +447,11 @@ export const calendarTailwindPreviewProgram = definePreviewProgram<
               model.jalaliViewMonth === 12
                 ? model.jalaliViewYear + 1
                 : model.jalaliViewYear,
-            jalaliViewMonth: model.jalaliViewMonth === 12 ? 1 : model.jalaliViewMonth + 1,
+            jalaliViewMonth:
+              model.jalaliViewMonth === 12 ? 1 : model.jalaliViewMonth + 1,
           },
-        };
+        }
     }
   },
   view: (index, model, h) => bodyView(fixtureOf(index), model, h),
-});
+})

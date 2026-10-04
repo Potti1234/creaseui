@@ -1,9 +1,9 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { badge } from '@/ui/badge';
-import { button } from '@/ui/button';
-import { card, cardContent, cardDescription, cardTitle } from '@/ui/card';
-import { barChart } from '@/ui/chart';
+import { badge } from '@/ui/badge'
+import { button } from '@/ui/button'
+import { card, cardContent, cardDescription, cardTitle } from '@/ui/card'
+import { barChart } from '@/ui/chart'
 
 const activityData = [
   { month: 'Jan', amount: 40 },
@@ -18,7 +18,7 @@ const activityData = [
   { month: 'Oct', amount: 70 },
   { month: 'Nov', amount: 45 },
   { month: 'Dec', amount: 80 },
-];
+]
 
 export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
   return h.div(
@@ -126,7 +126,7 @@ export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
         h,
       ),
     ],
-  );
-};
+  )
+}
 
 // Stateful: no. Submodels: none. PORT NOTE: Recharts is rendered with @/ui/chart barChart.

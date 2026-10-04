@@ -1,7 +1,7 @@
-import { type VariantProps, cva } from 'class-variance-authority';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import { type VariantProps, cva } from 'class-variance-authority'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils'
 
 /* Ported from Meta Astryx StatusDot.tsx — 8px dot, variant plates, pulse
    animation and ink-on-plate icon contract adapted to Crease UI tokens.
@@ -27,23 +27,26 @@ export const statusDotVariants = cva(
       variant: 'success',
     },
   },
-);
+)
 
-export type StatusDotVariants = VariantProps<typeof statusDotVariants>;
+export type StatusDotVariants = VariantProps<typeof statusDotVariants>
 
 export type StatusDotProps = Readonly<{
   /** The semantic color variant. */
-  variant: NonNullable<StatusDotVariants['variant']>;
+  variant: NonNullable<StatusDotVariants['variant']>
   /** Accessible label describing the status (the dot's aria-label). */
-  label: string;
+  label: string
   /** Pulses the dot to indicate activity; honors prefers-reduced-motion. */
-  pulsing?: boolean;
+  pulsing?: boolean
   /** Optional icon content drawn into the 8px field in the variant's ink. */
-  children?: ReadonlyArray<Html>;
-  class?: string;
-}>;
+  children?: ReadonlyArray<Html>
+  class?: string
+}>
 
-export const statusDot = <Msg>(props: StatusDotProps, h: HtmlBuilder<Msg>): Html =>
+export const statusDot = <Msg>(
+  props: StatusDotProps,
+  h: HtmlBuilder<Msg>,
+): Html =>
   h.span(
     [
       h.DataAttribute('slot', 'status-dot'),
@@ -61,4 +64,4 @@ export const statusDot = <Msg>(props: StatusDotProps, h: HtmlBuilder<Msg>): Html
       h.AriaLabel(props.label),
     ],
     [...(props.children ?? [])],
-  );
+  )

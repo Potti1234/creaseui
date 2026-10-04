@@ -10,10 +10,8 @@ type VisualState = Readonly<{
   transform: string
 }>
 
-const visualState = async (
-  locator: Locator,
-): Promise<VisualState> =>
-  locator.evaluate((element) => {
+const visualState = async (locator: Locator): Promise<VisualState> =>
+  locator.evaluate(element => {
     const style = getComputedStyle(element)
     return {
       backgroundColor: style.backgroundColor,
@@ -25,7 +23,9 @@ const visualState = async (
     }
   })
 
-test('StyleX interaction and theme state matrix', async ({ page }, testInfo) => {
+test('StyleX interaction and theme state matrix', async ({
+  page,
+}, testInfo) => {
   test.slow()
   await page.emulateMedia({ reducedMotion: 'no-preference' })
   await page.goto('/docs/components/button')
@@ -34,8 +34,12 @@ test('StyleX interaction and theme state matrix', async ({ page }, testInfo) => 
     .getByRole('button', { name: 'StyleX' })
     .click()
 
-  const button = page.locator('#variants').getByRole('button', { name: 'Primary' })
-  const disabled = page.locator('#loading').getByRole('button', { name: 'Save changes' })
+  const button = page
+    .locator('#variants')
+    .getByRole('button', { name: 'Primary' })
+  const disabled = page
+    .locator('#loading')
+    .getByRole('button', { name: 'Save changes' })
 
   const matrix: Record<string, VisualState | Record<string, string>> = {}
   matrix.rest = await visualState(button)
@@ -51,7 +55,10 @@ test('StyleX interaction and theme state matrix', async ({ page }, testInfo) => 
   const bounds = await button.boundingBox()
   expect(bounds).not.toBeNull()
   if (bounds !== null) {
-    await page.mouse.move(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2)
+    await page.mouse.move(
+      bounds.x + bounds.width / 2,
+      bounds.y + bounds.height / 2,
+    )
     await page.mouse.down()
     await expect
       .poll(() => visualState(button).then(state => state.transform))
@@ -87,16 +94,28 @@ test('StyleX interaction and theme state matrix', async ({ page }, testInfo) => 
     .filter({ visible: true })
     .first()
   await expect(openPanel).toBeVisible()
-  expect(await openPanel.evaluate((element) => element.closest('[data-crease-board-theme]') !== null)).toBe(true)
-  await expect(page.locator('#foldkit-portal-root [role="listbox"], #foldkit-portal-root [role="menu"]')).toHaveCount(0)
+  expect(
+    await openPanel.evaluate(
+      element => element.closest('[data-crease-board-theme]') !== null,
+    ),
+  ).toBe(true)
+  await expect(
+    page.locator(
+      '#foldkit-portal-root [role="listbox"], #foldkit-portal-root [role="menu"]',
+    ),
+  ).toHaveCount(0)
 
-  matrix.openScopedTheme = await openPanel.evaluate((element) => {
+  matrix.openScopedTheme = await openPanel.evaluate(element => {
     const style = getComputedStyle(element)
     return {
       backgroundColor: style.backgroundColor,
       color: style.color,
-      portal: element.closest('#foldkit-portal-root') === null ? 'inline' : 'body',
-      themeScope: element.closest('[data-crease-board-theme]') === null ? 'missing' : 'inherited',
+      portal:
+        element.closest('#foldkit-portal-root') === null ? 'inline' : 'body',
+      themeScope:
+        element.closest('[data-crease-board-theme]') === null
+          ? 'missing'
+          : 'inherited',
     }
   })
 

@@ -1,6 +1,6 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
-import type { NotificationConfig } from '@/docs/components/pages/notification-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
+import type { NotificationConfig } from '@/docs/components/pages/notification-page'
 
 export const sonnerConfig: NotificationConfig = {
   slug: 'sonner',
@@ -9,7 +9,7 @@ export const sonnerConfig: NotificationConfig = {
   kind: 'submodel',
   description:
     'A compatibility skin over the canonical Toast notification Submodel, not a second state engine.',
-};
+}
 
 export type SonnerVariant =
   | 'default'
@@ -17,39 +17,47 @@ export type SonnerVariant =
   | 'info'
   | 'warning'
   | 'error'
-  | 'promise';
+  | 'promise'
 
 export type SonnerButtonSpec = Readonly<{
-  label: string;
-  variant: SonnerVariant;
-  description?: string;
-  actionLabel?: string;
-  position?: 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right';
-}>;
+  label: string
+  variant: SonnerVariant
+  description?: string
+  actionLabel?: string
+  position?:
+    | 'top-left'
+    | 'top-center'
+    | 'top-right'
+    | 'bottom-left'
+    | 'bottom-center'
+    | 'bottom-right'
+}>
 
 export type SonnerFixture = Readonly<{
-  title: string;
-  heroOnly?: boolean;
-  wrap?: 'start' | 'center';
-  buttons: Readonly<[SonnerButtonSpec, ...Array<SonnerButtonSpec>]>;
-}>;
+  title: string
+  heroOnly?: boolean
+  wrap?: 'start' | 'center'
+  buttons: Readonly<[SonnerButtonSpec, ...Array<SonnerButtonSpec>]>
+}>
 
 export const toastTitle = (variant: SonnerVariant): string => {
   switch (variant) {
     case 'default':
     case 'success':
     case 'promise':
-      return 'Event has been created';
+      return 'Event has been created'
     case 'info':
-      return 'Be at the area 10 minutes before the event time';
+      return 'Be at the area 10 minutes before the event time'
     case 'warning':
-      return 'Event start time cannot be earlier than 8am';
+      return 'Event start time cannot be earlier than 8am'
     case 'error':
-      return 'Event has not been created';
+      return 'Event has not been created'
   }
-};
+}
 
-export const sonnerFixtures: Readonly<[SonnerFixture, ...Array<SonnerFixture>]> = [
+export const sonnerFixtures: Readonly<
+  [SonnerFixture, ...Array<SonnerFixture>]
+> = [
   {
     title: 'Basic',
     heroOnly: true,
@@ -95,46 +103,51 @@ export const sonnerFixtures: Readonly<[SonnerFixture, ...Array<SonnerFixture>]> 
       { label: 'Bottom Right', variant: 'default', position: 'bottom-right' },
     ],
   },
-];
+]
 
 const factoryName = (variant: SonnerVariant): string =>
-  variant === 'promise' ? 'info' : variant === 'default' ? 'plain' : variant;
+  variant === 'promise' ? 'info' : variant === 'default' ? 'plain' : variant
 
 const showCallEmit = (button: SonnerButtonSpec): string => {
   if (button.variant === 'promise') {
     return `Sonner.show(model.notifications, Sonner.info({
         title: 'Loading...',
         sticky: true,
-      }))`;
+      }))`
   }
-  const props = [`title: '${toastTitle(button.variant)}'`];
+  const props = [`title: '${toastTitle(button.variant)}'`]
   if (button.description !== undefined) {
-    props.push(`description: '${button.description}'`);
+    props.push(`description: '${button.description}'`)
   }
   if (button.actionLabel !== undefined) {
-    props.push(`actionLabel: '${button.actionLabel}'`);
+    props.push(`actionLabel: '${button.actionLabel}'`)
   }
   if (button.position !== undefined) {
-    props.push(`position: '${button.position}'`);
+    props.push(`position: '${button.position}'`)
   }
   return `Sonner.show(model.notifications, Sonner.${factoryName(button.variant)}({
         ${props.join(',\n        ')},
-      }))`;
-};
+      }))`
+}
 
 const buttonEmit = (button: SonnerButtonSpec, index: number): string =>
   `    Button.button({
       onClick: ClickedShow${index}(),
       variant: 'outline',
       children: ['${button.label}'],
-    }, h)`;
+    }, h)`
 
 const emitSource = (fixture: SonnerFixture, isStyleX: boolean): string => {
-  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '');
-  const lib = isStyleX ? 'stylex' : 'ui';
-  const hasPromise = fixture.buttons.some(button => button.variant === 'promise');
-  const wrapClass = fixture.wrap === 'center' ? 'flex flex-wrap justify-center gap-2' : 'flex flex-wrap gap-2';
-  const clickTags = fixture.buttons.map((_, index) => `ClickedShow${index}`);
+  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
+  const lib = isStyleX ? 'stylex' : 'ui'
+  const hasPromise = fixture.buttons.some(
+    button => button.variant === 'promise',
+  )
+  const wrapClass =
+    fixture.wrap === 'center'
+      ? 'flex flex-wrap justify-center gap-2'
+      : 'flex flex-wrap gap-2'
+  const clickTags = fixture.buttons.map((_, index) => `ClickedShow${index}`)
   return foldkitApplication({
     title: `Sonner — ${fixture.title}`,
     imports: `import { Effect, Option, Schema as S } from 'effect'
@@ -145,8 +158,12 @@ import { taggedStruct } from 'foldkit/schema'
 import * as Button from '@/${lib}/button'
 import * as Sonner from '@/${lib}/sonner'`,
     model: `export const Model = S.Struct({
-  notifications: Sonner.Model,${hasPromise ? `
-  pendingPromiseId: S.Option(S.String),` : ''}
+  notifications: Sonner.Model,${
+    hasPromise
+      ? `
+  pendingPromiseId: S.Option(S.String),`
+      : ''
+  }
 })
 export type Model = typeof Model.Type`,
     messages: `${fixture.buttons
@@ -157,14 +174,22 @@ export type Model = typeof Model.Type`,
       .join('\n')}
 export const GotSonnerMessage = taggedStruct('GotSonnerMessage${tag}', {
   message: S.Union([Sonner.Message, Sonner.ActivatedToastAction]),
-})${hasPromise ? `
-export const CompletedPromise = taggedStruct('CompletedPromise${tag}')` : ''}
+})${
+      hasPromise
+        ? `
+export const CompletedPromise = taggedStruct('CompletedPromise${tag}')`
+        : ''
+    }
 export const Message = S.Union([${[...clickTags, 'GotSonnerMessage', ...(hasPromise ? ['CompletedPromise'] : [])].join(', ')}])
 export type Message = typeof Message.Type`,
     init: `export const init = (): Update.Return<Model, Message> => ({
   model: {
-    notifications: Sonner.init({ id: 'sonner-${tag.toLowerCase()}' }),${hasPromise ? `
-    pendingPromiseId: Option.none(),` : ''}
+    notifications: Sonner.init({ id: 'sonner-${tag.toLowerCase()}' }),${
+      hasPromise
+        ? `
+    pendingPromiseId: Option.none(),`
+        : ''
+    }
   },
 })`,
     update: `const mapSonner = (
@@ -175,12 +200,16 @@ export type Message = typeof Message.Type`,
   commands: Command.mapMessages(result.commands ?? [], next =>
     GotSonnerMessage({ message: next })),
 })
-${hasPromise ? `
+${
+  hasPromise
+    ? `
 const ResolvePromise = Command.define('ResolvePromise', {
   messages: [CompletedPromise],
   execute: Effect.sleep('1200 millis').pipe(Effect.as(CompletedPromise())),
 })
-` : ''}
+`
+    : ''
+}
 export const update = (
   model: Model,
   message: Message,
@@ -203,12 +232,14 @@ ${fixture.buttons
         },
         commands: [...commands, ResolvePromise()],
       }
-    }`;
+    }`
     }
     return `    case 'ClickedShow${index}${tag}':
-      return mapSonner(model, ${showCallEmit(button)})`;
+      return mapSonner(model, ${showCallEmit(button)})`
   })
-  .join('\n')}${hasPromise ? `
+  .join('\n')}${
+      hasPromise
+        ? `
     case 'CompletedPromise${tag}':
       return Option.match(model.pendingPromiseId, {
         onNone: () => ({ model }),
@@ -222,7 +253,9 @@ ${fixture.buttons
               duration: '4 seconds',
             }),
           ),
-      })` : ''}
+      })`
+        : ''
+    }
     case 'GotSonnerMessage${tag}':
       return mapSonner(model, Sonner.update(model.notifications, message.message))
   }
@@ -240,8 +273,8 @@ ${fixture.buttons.map((button, index) => buttonEmit(button, index)).join(',\n')}
     }, h),
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const sonnerExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -250,4 +283,4 @@ export const sonnerExamples = (
     title: fixture.title,
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitSource(fixture, renderer === 'stylex'),
-  }));
+  }))

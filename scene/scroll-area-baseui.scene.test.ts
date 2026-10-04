@@ -148,7 +148,10 @@ const verifyRenderer = (name: string, ScrollArea: ScrollAreaModule) => {
               ScrollArea.scrollArea({ children: ['scrollable content'] }, h),
           },
           Scene.given(initialModel),
-          Scene.expect(scrollAreaElement).toHaveAttr('data-orientation', 'both'),
+          Scene.expect(scrollAreaElement).toHaveAttr(
+            'data-orientation',
+            'both',
+          ),
         )
       })
 
@@ -157,9 +160,7 @@ const verifyRenderer = (name: string, ScrollArea: ScrollAreaModule) => {
           'renders no Scrollbar part (native scrollbars)',
       )
 
-      it.todo(
-        'allows overriding aria-hidden — no Scrollbar part to decorate',
-      )
+      it.todo('allows overriding aria-hidden — no Scrollbar part to decorate')
     })
 
     describe('Corner', () => {
@@ -168,9 +169,7 @@ const verifyRenderer = (name: string, ScrollArea: ScrollAreaModule) => {
           'renders no Corner part (native scrollbars)',
       )
 
-      it.todo(
-        'allows overriding aria-hidden — no Corner part to decorate',
-      )
+      it.todo('allows overriding aria-hidden — no Corner part to decorate')
     })
 
     describe('RTL', () => {
@@ -204,25 +203,28 @@ const verifyRenderer = (name: string, ScrollArea: ScrollAreaModule) => {
           {
             update,
             view: (model, h) =>
-              h.div([], [
-                h.button(
-                  [
-                    h.Type('button'),
-                    h.OnClick({
-                      _tag: 'SetDirection',
-                      direction: model.direction === 'ltr' ? 'rtl' : 'ltr',
-                    }),
-                  ],
-                  ['switch direction'],
-                ),
-                ScrollArea.scrollArea(
-                  {
-                    direction: model.direction,
-                    children: ['scrollable content'],
-                  },
-                  h,
-                ),
-              ]),
+              h.div(
+                [],
+                [
+                  h.button(
+                    [
+                      h.Type('button'),
+                      h.OnClick({
+                        _tag: 'SetDirection',
+                        direction: model.direction === 'ltr' ? 'rtl' : 'ltr',
+                      }),
+                    ],
+                    ['switch direction'],
+                  ),
+                  ScrollArea.scrollArea(
+                    {
+                      direction: model.direction,
+                      children: ['scrollable content'],
+                    },
+                    h,
+                  ),
+                ],
+              ),
           },
           Scene.given(initialModel),
           Scene.expect(scrollAreaElement).toHaveAttr('dir', 'ltr'),

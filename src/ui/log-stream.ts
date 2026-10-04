@@ -1,10 +1,10 @@
-import { Command, type Update } from 'foldkit';
-import { Option, Schema as S } from 'effect';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import { Command, type Update } from 'foldkit'
+import { Option, Schema as S } from 'effect'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-import * as MessageScrollerBehavior from '@/lib/message-scroller';
-import { cn } from '@/lib/utils';
+import * as MessageScrollerBehavior from '@/lib/message-scroller'
+import { cn } from '@/lib/utils'
 
 /* Ported from Meta Astryx LogStream.tsx (packages/lab) — mono grid rows
    (timestamp | level | source | message) with level accents, expandable
@@ -18,34 +18,34 @@ import { cn } from '@/lib/utils';
 // Model
 // =============================================================================
 
-export const LogStreamLevel = S.Literals(['info', 'warn', 'error', 'debug']);
-export type LogStreamLevel = typeof LogStreamLevel.Type;
+export const LogStreamLevel = S.Literals(['info', 'warn', 'error', 'debug'])
+export type LogStreamLevel = typeof LogStreamLevel.Type
 
 /** One row in the stream; all strings are pre-formatted by the caller. */
 export type LogEntry = Readonly<{
   /** Stable unique key, e.g. `"req-1042"`. */
-  id: string;
+  id: string
   /** Pre-formatted timestamp, e.g. `"14:02:11.482"`. Deterministic. */
-  timestamp: string;
-  level: LogStreamLevel;
-  message: string;
+  timestamp: string
+  level: LogStreamLevel
+  message: string
   /** Emitting service/component, e.g. `"api-gateway"`. */
-  source?: string;
+  source?: string
   /** When set, the row becomes a disclosure button for this panel. */
-  detail?: Html;
-}>;
+  detail?: Html
+}>
 
 export const Model = S.Struct({
   id: S.String,
   scroller: MessageScrollerBehavior.Model,
   expandedIds: S.Array(S.String),
-});
-export type Model = typeof Model.Type;
+})
+export type Model = typeof Model.Type
 
 export const init = (config: {
-  id: string;
+  id: string
   /** Initially pinned to the tail. @default false (astryx uncontrolled) */
-  isFollowing?: boolean;
+  isFollowing?: boolean
 }): Model => ({
   id: config.id,
   scroller: {
@@ -53,22 +53,22 @@ export const init = (config: {
     isFollowing: config.isFollowing ?? false,
   },
   expandedIds: [],
-});
+})
 
 export const Message = defineMessageUnion({
   GotLogStreamScrollerMessage: { message: MessageScrollerBehavior.Message },
   ToggledLogStreamEntry: { id: S.String },
   ClickedJumpToLatest: {},
-});
-export type Message = typeof Message.Type;
+})
+export type Message = typeof Message.Type
 
 /** Mirrors astryx's `onFollowChange`. */
 export const OutMessage = defineMessageUnion({
   ChangedLogStreamFollowing: { isFollowing: S.Boolean },
-});
-export type OutMessage = typeof OutMessage.Type;
+})
+export type OutMessage = typeof OutMessage.Type
 
-type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>;
+type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>
 
 const withFollowOutMessage = (
   previous: Model,
@@ -84,7 +84,7 @@ const withFollowOutMessage = (
           isFollowing: next.scroller.isFollowing,
         }),
       }),
-});
+})
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
@@ -92,41 +92,43 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       const next = MessageScrollerBehavior.update(
         model.scroller,
         message.message,
-      );
+      )
       return withFollowOutMessage(
         model,
         { ...model, scroller: next.model },
-        Command.mapMessages(next.commands ?? [], (inner) =>
-          Message.GotLogStreamScrollerMessage({ message: inner })),
-      );
+        Command.mapMessages(next.commands ?? [], inner =>
+          Message.GotLogStreamScrollerMessage({ message: inner }),
+        ),
+      )
     }
     case 'ToggledLogStreamEntry': {
       const expandedIds = model.expandedIds.includes(message.id)
-        ? model.expandedIds.filter((id) => id !== message.id)
-        : [...model.expandedIds, message.id];
-      return { model: { ...model, expandedIds } };
+        ? model.expandedIds.filter(id => id !== message.id)
+        : [...model.expandedIds, message.id]
+      return { model: { ...model, expandedIds } }
     }
     case 'ClickedJumpToLatest': {
       const next = MessageScrollerBehavior.update(
         model.scroller,
         MessageScrollerBehavior.Message.RequestedScroll({ direction: 'end' }),
-      );
+      )
       return withFollowOutMessage(
         model,
         { ...model, scroller: next.model },
-        Command.mapMessages(next.commands ?? [], (inner) =>
-          Message.GotLogStreamScrollerMessage({ message: inner })),
-      );
+        Command.mapMessages(next.commands ?? [], inner =>
+          Message.GotLogStreamScrollerMessage({ message: inner }),
+        ),
+      )
     }
   }
-};
+}
 
 // =============================================================================
 // View
 // =============================================================================
 
 /** User counts as "scrolled away" beyond this distance from the bottom. */
-const FOLLOW_THRESHOLD_PX = 24;
+const FOLLOW_THRESHOLD_PX = 24
 
 // The terminal variant is intentionally always-dark (terminal chrome is a
 // brand surface, mirroring real shells), so it uses fixed near-black grays
@@ -140,14 +142,14 @@ const TERM = {
   message: 'text-[#b9b9c0]',
   detail: 'bg-[#0e0e10] border-b-[#26262a] text-[#b9b9c0]',
   jump: 'border-[#26262a] bg-[#141417] text-[#e8e8ea] hover:bg-[#1d1d21]',
-} as const;
+} as const
 
 const TERM_LEVEL: Record<LogStreamLevel, string> = {
   info: 'text-[#b9b9c0]',
   debug: 'text-[#8b8b94]',
   warn: 'text-[#f2c00b]',
   error: 'text-[#ff6166]',
-};
+}
 
 /* astryx darkens the warning/error inks for text contrast; Crease's palette
    ports them onto chart-4/destructive (closest semantic tokens). */
@@ -156,40 +158,40 @@ const LEVEL: Record<LogStreamLevel, string> = {
   debug: 'text-muted-foreground/60',
   warn: 'text-chart-4',
   error: 'text-destructive',
-};
+}
 
 export type LogStreamProps<Msg> = Readonly<{
-  model: Model;
-  toParentMessage: (message: Message) => Msg;
+  model: Model
+  toParentMessage: (message: Message) => Msg
   /** Log rows, oldest first (live tails append at the end). */
-  entries: ReadonlyArray<LogEntry>;
+  entries: ReadonlyArray<LogEntry>
   /** Visual treatment; 'terminal' is always dark. @default 'default' */
-  variant?: 'default' | 'terminal';
+  variant?: 'default' | 'terminal'
   /** Max height of the scroll area before it scrolls (px number or CSS). */
-  maxHeight?: number | string;
+  maxHeight?: number | string
   /** Show the timestamp column. @default true */
-  hasTimestamps?: boolean;
+  hasTimestamps?: boolean
   /** Accessible label for the log region. @default 'Log stream' */
-  label?: string;
+  label?: string
   /** Escape hatch: fully replace the default row for an entry. */
-  renderEntry?: (entry: LogEntry) => Html;
-  class?: string;
-}>;
+  renderEntry?: (entry: LogEntry) => Html
+  class?: string
+}>
 
 export const logStream = <Msg>(
   props: LogStreamProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const model = props.model;
-  const isTerminal = props.variant === 'terminal';
-  const hasTimestamps = props.hasTimestamps ?? true;
-  const hasSource = props.entries.some((entry) => entry.source !== undefined);
+  const model = props.model
+  const isTerminal = props.variant === 'terminal'
+  const hasTimestamps = props.hasTimestamps ?? true
+  const hasSource = props.entries.some(entry => entry.source !== undefined)
 
-  const scroller = model.scroller;
+  const scroller = model.scroller
   const distanceFromBottom =
-    scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight;
+    scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight
   const isAtBottom =
-    scroller.scrollHeight === 0 || distanceFromBottom <= FOLLOW_THRESHOLD_PX;
+    scroller.scrollHeight === 0 || distanceFromBottom <= FOLLOW_THRESHOLD_PX
 
   const colsClass = hasTimestamps
     ? hasSource
@@ -197,11 +199,11 @@ export const logStream = <Msg>(
       : '[grid-template-columns:96px_52px_minmax(0,1fr)]'
     : hasSource
       ? '[grid-template-columns:52px_128px_minmax(0,1fr)]'
-      : '[grid-template-columns:52px_minmax(0,1fr)]';
+      : '[grid-template-columns:52px_minmax(0,1fr)]'
 
   const renderDefaultRow = (entry: LogEntry): ReadonlyArray<Html> => {
-    const isExpandable = entry.detail !== undefined;
-    const isExpanded = isExpandable && model.expandedIds.includes(entry.id);
+    const isExpandable = entry.detail !== undefined
+    const isExpanded = isExpandable && model.expandedIds.includes(entry.id)
     const cells: ReadonlyArray<Html | string> = [
       ...(hasTimestamps
         ? [
@@ -239,9 +241,7 @@ export const logStream = <Msg>(
                     isTerminal ? TERM.source : 'text-muted-foreground',
                   ),
                 ),
-                ...(entry.source === undefined
-                  ? []
-                  : [h.Title(entry.source)]),
+                ...(entry.source === undefined ? [] : [h.Title(entry.source)]),
               ],
               [entry.source ?? ''],
             ),
@@ -264,7 +264,7 @@ export const logStream = <Msg>(
         ],
         [entry.message],
       ),
-    ];
+    ]
 
     const rowClass = cn(
       'grid items-baseline gap-x-3 px-3 py-1 leading-[1.7] [content-visibility:auto] [contain-intrinsic-block-size:auto_28px] transition-opacity duration-150 ease-out starting:opacity-0',
@@ -278,7 +278,7 @@ export const logStream = <Msg>(
             entry.level === 'warn' &&
               'bg-[color-mix(in_srgb,var(--chart-4)_5%,transparent)]',
           ),
-    );
+    )
 
     if (!isExpandable) {
       return [
@@ -286,7 +286,7 @@ export const logStream = <Msg>(
           [h.DataAttribute('level', entry.level), h.Class(rowClass)],
           [...cells],
         ),
-      ];
+      ]
     }
     return [
       h.button(
@@ -317,9 +317,7 @@ export const logStream = <Msg>(
                 h.Class(
                   cn(
                     'border-b px-3 py-3',
-                    isTerminal
-                      ? TERM.detail
-                      : 'border-border bg-muted',
+                    isTerminal ? TERM.detail : 'border-border bg-muted',
                   ),
                 ),
               ],
@@ -327,8 +325,8 @@ export const logStream = <Msg>(
             ),
           ]
         : []),
-    ];
-  };
+    ]
+  }
 
   return h.div(
     [
@@ -354,9 +352,7 @@ export const logStream = <Msg>(
           h.AriaLive(scroller.isFollowing ? 'polite' : 'off'),
           h.DataAttribute('slot', 'log-stream-viewport'),
           h.DataAttribute('following', String(scroller.isFollowing)),
-          h.Class(
-            'overflow-y-auto overscroll-contain [scrollbar-width:thin]',
-          ),
+          h.Class('overflow-y-auto overscroll-contain [scrollbar-width:thin]'),
           ...(props.maxHeight === undefined
             ? []
             : [
@@ -368,18 +364,22 @@ export const logStream = <Msg>(
                 }),
               ]),
           h.OnMount(
-            MessageScrollerBehavior.viewportMount((message) =>
+            MessageScrollerBehavior.viewportMount(message =>
               props.toParentMessage(
                 Message.GotLogStreamScrollerMessage({ message }),
-              )),
+              ),
+            ),
           ),
         ],
-        props.entries.map((entry) =>
-          h.div([h.Key(entry.id)], [
-            ...(props.renderEntry === undefined
-              ? renderDefaultRow(entry)
-              : [props.renderEntry(entry)]),
-          ]),
+        props.entries.map(entry =>
+          h.div(
+            [h.Key(entry.id)],
+            [
+              ...(props.renderEntry === undefined
+                ? renderDefaultRow(entry)
+                : [props.renderEntry(entry)]),
+            ],
+          ),
         ),
       ),
       ...(!scroller.isFollowing && !isAtBottom && props.entries.length > 0
@@ -403,5 +403,5 @@ export const logStream = <Msg>(
           ]
         : []),
     ],
-  );
-};
+  )
+}

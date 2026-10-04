@@ -1,6 +1,6 @@
-import * as stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex'
 
-import { tokens } from './tokens.stylex';
+import { tokens } from './tokens.stylex'
 
 /* The terminal variant is intentionally always-dark (terminal chrome is a
    brand surface, mirroring real shells) so it overrides the semantic tokens
@@ -13,4 +13,4 @@ export const logStreamTerminalTheme = stylex.createTheme(tokens, {
   foreground: '#b9b9c0',
   muted: '#141417',
   mutedForeground: '#8b8b94',
-});
+})

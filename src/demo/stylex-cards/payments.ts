@@ -1,12 +1,12 @@
-import { Match as M, Schema as S } from 'effect';
-import type { Update } from 'foldkit';
-import { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
-import { modifyFields } from 'foldkit/struct';
+import { Match as M, Schema as S } from 'effect'
+import type { Update } from 'foldkit'
+import { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import { modifyFields } from 'foldkit/struct'
 import * as stylex from '@stylexjs/stylex'
 
-import * as Icon from '@/demo/icon-preview';
+import * as Icon from '@/demo/icon-preview'
 import {
   breadcrumb,
   breadcrumbItem,
@@ -14,22 +14,32 @@ import {
   breadcrumbList,
   breadcrumbPage,
   breadcrumbSeparator,
-} from '@/stylex/breadcrumb';
-import { card, cardContent, cardHeader } from '@/stylex/card';
-import * as DropdownMenu from '@/stylex/dropdown-menu';
+} from '@/stylex/breadcrumb'
+import { card, cardContent, cardHeader } from '@/stylex/card'
+import * as DropdownMenu from '@/stylex/dropdown-menu'
 import {
   itemContent,
   itemDescription,
   itemMedia,
   itemTitle,
-} from '@/stylex/item';
+} from '@/stylex/item'
 import { className } from '@/stylex/style'
 import { tokens } from '../../stylex/tokens.stylex'
 
 const styles = stylex.create({
-  header: { gap: '0.75rem', display: 'flex', flexDirection: 'column', },
-  icon: { color: tokens.mutedForeground, flexShrink: 0, height: '1rem', width: '1rem' },
-  iconGlyph: { display: 'inline-flex', flexShrink: 0, height: '1rem', width: '1rem' },
+  header: { gap: '0.75rem', display: 'flex', flexDirection: 'column' },
+  icon: {
+    color: tokens.mutedForeground,
+    flexShrink: 0,
+    height: '1rem',
+    width: '1rem',
+  },
+  iconGlyph: {
+    display: 'inline-flex',
+    flexShrink: 0,
+    height: '1rem',
+    width: '1rem',
+  },
   menuButton: {
     borderRadius: tokens.controlRadius,
     alignItems: 'center',
@@ -68,13 +78,13 @@ const styles = stylex.create({
   },
 })
 
-type MenuItem = 'profile' | 'statements' | 'documents';
+type MenuItem = 'profile' | 'statements' | 'documents'
 
 const menuItems: ReadonlyArray<MenuItem> = [
   'profile',
   'statements',
   'documents',
-];
+]
 
 const paymentItems = [
   {
@@ -97,44 +107,46 @@ const paymentItems = [
     title: 'Recurring card payments',
     description: 'Manage your repeated card transactions.',
   },
-] as const;
+] as const
 
 export const Model = S.Struct({
   menu: DropdownMenu.Model,
-});
-export type Model = typeof Model.Type;
-
+})
+export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
   GotMenuMessage: {
-  message: DropdownMenu.Message,
-},
-});
-export type Message = typeof Message.Type;
+    message: DropdownMenu.Message,
+  },
+})
+export type Message = typeof Message.Type
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
       GotMenuMessage: ({ message: childMessage }) => {
-        const menuOp__ = DropdownMenu.update(model.menu, childMessage);
-    const menu = menuOp__.model;
-    const commands = menuOp__.commands ?? [];;
-        return { model: modifyFields(model, { menu: () => menu }), commands: Command.mapMessages(commands, (next) =>
+        const menuOp__ = DropdownMenu.update(model.menu, childMessage)
+        const menu = menuOp__.model
+        const commands = menuOp__.commands ?? []
+        return {
+          model: modifyFields(model, { menu: () => menu }),
+          commands: Command.mapMessages(commands, next =>
             Message.GotMenuMessage({ message: next }),
-          ) };
+          ),
+        }
       },
     }),
-  );
+  )
 
 export const init = (): Model => ({
   menu: DropdownMenu.init({
     id: 'payments-account-options',
     isAnimated: true,
   }),
-});
+})
 
 const paymentLink = (
   icon: string,
@@ -156,7 +168,9 @@ const paymentLink = (
       itemMedia(
         {
           variant: 'icon',
-          children: [Icon.icon(icon, { class: className(styles.iconGlyph) }, h)],
+          children: [
+            Icon.icon(icon, { class: className(styles.iconGlyph) }, h),
+          ],
         },
         h,
       ),
@@ -177,8 +191,8 @@ const paymentLink = (
         h,
       ),
     ],
-  );
-};
+  )
+}
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
   const menuTrigger = h.span(
@@ -187,7 +201,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       Icon.moreHorizontal({ class: className(styles.iconGlyph) }, h),
       h.span([h.Class(className(styles.srOnly))], ['Account options']),
     ],
-  );
+  )
 
   return card<Message>(
     {
@@ -195,74 +209,83 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
         cardHeader(
           {
             children: [
-              h.div([h.Class(className(styles.header))], [
-              breadcrumb(
-                {
-                  children: [
-                    breadcrumbList(
-                      {
-                        children: [
-                          breadcrumbItem(
-                            {
-                              children: [
-                                breadcrumbLink(
-                                  {
-                                    href: '#',
-                                    children: ['Home'],
-                                  },
-                                  h,
-                                ),
-                              ],
-                            },
-                            h,
-                          ),
-                          breadcrumbSeparator({}, h),
-                          breadcrumbItem(
-                            {
-                              children: [
-                                DropdownMenu.dropdownMenu<MenuItem, Message>(
-                                  {
-                                    model: model.menu,
-                                    toParentMessage: (message) =>
-                                      Message.GotMenuMessage({ message }),
-                                    trigger: menuTrigger,
-                                    items: menuItems,
-                                    itemToConfig: (item) => ({
-                                      label:
-                                        item === 'profile'
-                                          ? 'Profile'
-                                          : item === 'statements'
-                                            ? 'Statements'
-                                            : 'Documents',
-                                      group: '',
-                                    }),
-                                    align: 'start',
-                                    ariaLabel: 'Account options',
-                                  },
-                                  h,
-                                ),
-                              ],
-                            },
-                            h,
-                          ),
-                          breadcrumbSeparator({}, h),
-                          breadcrumbItem(
-                            {
-                              children: [
-                                breadcrumbPage({ children: ['Payments'] }, h),
-                              ],
-                            },
-                            h,
-                          ),
-                        ],
-                      },
-                      h,
-                    ),
-                  ],
-                },
-                h,
+              h.div(
+                [h.Class(className(styles.header))],
+                [
+                  breadcrumb(
+                    {
+                      children: [
+                        breadcrumbList(
+                          {
+                            children: [
+                              breadcrumbItem(
+                                {
+                                  children: [
+                                    breadcrumbLink(
+                                      {
+                                        href: '#',
+                                        children: ['Home'],
+                                      },
+                                      h,
+                                    ),
+                                  ],
+                                },
+                                h,
+                              ),
+                              breadcrumbSeparator({}, h),
+                              breadcrumbItem(
+                                {
+                                  children: [
+                                    DropdownMenu.dropdownMenu<
+                                      MenuItem,
+                                      Message
+                                    >(
+                                      {
+                                        model: model.menu,
+                                        toParentMessage: message =>
+                                          Message.GotMenuMessage({ message }),
+                                        trigger: menuTrigger,
+                                        items: menuItems,
+                                        itemToConfig: item => ({
+                                          label:
+                                            item === 'profile'
+                                              ? 'Profile'
+                                              : item === 'statements'
+                                                ? 'Statements'
+                                                : 'Documents',
+                                          group: '',
+                                        }),
+                                        align: 'start',
+                                        ariaLabel: 'Account options',
+                                      },
+                                      h,
+                                    ),
+                                  ],
+                                },
+                                h,
+                              ),
+                              breadcrumbSeparator({}, h),
+                              breadcrumbItem(
+                                {
+                                  children: [
+                                    breadcrumbPage(
+                                      { children: ['Payments'] },
+                                      h,
+                                    ),
+                                  ],
+                                },
+                                h,
+                              ),
+                            ],
+                          },
+                          h,
+                        ),
+                      ],
+                    },
+                    h,
+                  ),
+                ],
               ),
-              ]),
             ],
           },
           h,
@@ -272,15 +295,18 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
             children: [
               h.ul(
                 [h.Class(className(styles.paymentList))],
-                paymentItems.map((payment) =>
-                  h.li([], [
-                    paymentLink(
-                      payment.icon,
-                      payment.title,
-                      payment.description,
-                      h,
-                    ),
-                  ]),
+                paymentItems.map(payment =>
+                  h.li(
+                    [],
+                    [
+                      paymentLink(
+                        payment.icon,
+                        payment.title,
+                        payment.description,
+                        h,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -290,8 +316,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 /*
 Stateful? yes.

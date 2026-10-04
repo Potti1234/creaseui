@@ -17,15 +17,21 @@ test.describe('carousel', () => {
 
     await next.click()
     await expect(previous).toBeEnabled()
-    await expect(example.getByRole('group', { name: '2 of 3' })).toBeInViewport()
+    await expect(
+      example.getByRole('group', { name: '2 of 3' }),
+    ).toBeInViewport()
 
     const viewport = example.locator('[data-slot="carousel-content"]')
     await viewport.focus()
     await page.keyboard.press('End')
-    await expect(example.getByRole('group', { name: '3 of 3' })).toBeInViewport()
+    await expect(
+      example.getByRole('group', { name: '3 of 3' }),
+    ).toBeInViewport()
     await expect(next).toBeDisabled()
     await page.keyboard.press('Home')
-    await expect(example.getByRole('group', { name: '1 of 3' })).toBeInViewport()
+    await expect(
+      example.getByRole('group', { name: '1 of 3' }),
+    ).toBeInViewport()
   })
 
   test('lays out and moves the vertical example on the y axis', async ({
@@ -73,18 +79,31 @@ test.describe('carousel', () => {
     })
   })
 
-  test('moves through a native touch gesture on mobile', { tag: '@mobile' }, async ({ page }) => {
-    await page.goto('/docs/components/carousel')
-    const example = page.locator('#single-slide')
-    const viewport = example.locator('[data-slot="carousel-content"]')
-    await viewport.scrollIntoViewIfNeeded()
-    const box = await viewport.boundingBox()
-    if (box === null) throw new Error('Carousel viewport has no layout box')
-    const session = await page.context().newCDPSession(page)
-    const y = box.y + box.height / 2
-    await session.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: box.x + box.width * 0.8, y }] })
-    await session.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: box.x + box.width * 0.2, y }] })
-    await session.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
-    await expect(example).toContainText('Slide 2 of 3')
-  })
+  test(
+    'moves through a native touch gesture on mobile',
+    { tag: '@mobile' },
+    async ({ page }) => {
+      await page.goto('/docs/components/carousel')
+      const example = page.locator('#single-slide')
+      const viewport = example.locator('[data-slot="carousel-content"]')
+      await viewport.scrollIntoViewIfNeeded()
+      const box = await viewport.boundingBox()
+      if (box === null) throw new Error('Carousel viewport has no layout box')
+      const session = await page.context().newCDPSession(page)
+      const y = box.y + box.height / 2
+      await session.send('Input.dispatchTouchEvent', {
+        type: 'touchStart',
+        touchPoints: [{ x: box.x + box.width * 0.8, y }],
+      })
+      await session.send('Input.dispatchTouchEvent', {
+        type: 'touchMove',
+        touchPoints: [{ x: box.x + box.width * 0.2, y }],
+      })
+      await session.send('Input.dispatchTouchEvent', {
+        type: 'touchEnd',
+        touchPoints: [],
+      })
+      await expect(example).toContainText('Slide 2 of 3')
+    },
+  )
 })

@@ -29,8 +29,7 @@ type Model = Readonly<{
 }>
 
 type Message = Readonly<
-  | { _tag: 'Toggled' }
-  | { _tag: 'SetPressed'; pressed: boolean }
+  { _tag: 'Toggled' } | { _tag: 'SetPressed'; pressed: boolean }
 >
 
 const initialModel = (pressed = false): Model => ({
@@ -92,19 +91,22 @@ const verifyRenderer = (name: string, Toggle: ToggleModule) => {
           {
             update,
             view: (model, h) =>
-              h.div([], [
-                h.button(
-                  [
-                    h.Type('button'),
-                    h.OnClick({
-                      _tag: 'SetPressed',
-                      pressed: !model.pressed,
-                    }),
-                  ],
-                  ['Driver'],
-                ),
-                simpleView(model, h),
-              ]),
+              h.div(
+                [],
+                [
+                  h.button(
+                    [
+                      h.Type('button'),
+                      h.OnClick({
+                        _tag: 'SetPressed',
+                        pressed: !model.pressed,
+                      }),
+                    ],
+                    ['Driver'],
+                  ),
+                  simpleView(model, h),
+                ],
+              ),
           },
           Scene.given(initialModel()),
           Scene.expect(toggleButton).toHaveAttr('aria-pressed', 'false'),
@@ -143,10 +145,13 @@ const verifyRenderer = (name: string, Toggle: ToggleModule) => {
           {
             update,
             view: (model, h) =>
-              h.div([], [
-                simpleView(model, h),
-                h.div([], [`Toggled ${model.toggleCount} times`]),
-              ]),
+              h.div(
+                [],
+                [
+                  simpleView(model, h),
+                  h.div([], [`Toggled ${model.toggleCount} times`]),
+                ],
+              ),
           },
           Scene.given(initialModel()),
           Scene.click(toggleButton),
@@ -233,14 +238,12 @@ const verifyRenderer = (name: string, Toggle: ToggleModule) => {
           },
           Scene.given(initialModel()),
           Scene.expect(Scene.role('button', { name: 'Toggle bold' })).toExist(),
-          Scene.expect(Scene.role('button', { name: 'Toggle bold' })).toHaveAttr(
-            'data-slot',
-            'toggle',
-          ),
-          Scene.expect(Scene.role('button', { name: 'Toggle bold' })).toHaveAttr(
-            'type',
-            'button',
-          ),
+          Scene.expect(
+            Scene.role('button', { name: 'Toggle bold' }),
+          ).toHaveAttr('data-slot', 'toggle'),
+          Scene.expect(
+            Scene.role('button', { name: 'Toggle bold' }),
+          ).toHaveAttr('type', 'button'),
         )
       })
     })

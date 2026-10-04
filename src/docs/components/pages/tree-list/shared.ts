@@ -1,36 +1,36 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
-import type { TreeListVariant } from '@/lib/tree-list';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
+import type { TreeListVariant } from '@/lib/tree-list'
 
 /** Renderer-neutral fixture item: icon/badge slots are decorated per renderer
     (startIcon/endIcon -> Icon.icon, endBadge -> Badge.badge). `onSelect`
     mirrors astryx's `onClick: noop` — activation reports the item id. */
 export type TreeListFixtureItem = Readonly<{
-  id: string;
-  label: string;
-  description?: string;
-  startIcon?: string;
-  endIcon?: string;
-  endBadge?: string;
-  href?: string;
-  onSelect?: boolean;
-  isSelected?: boolean;
-  isDisabled?: boolean;
-  isExpanded?: boolean;
-  children?: ReadonlyArray<TreeListFixtureItem>;
-}>;
+  id: string
+  label: string
+  description?: string
+  startIcon?: string
+  endIcon?: string
+  endBadge?: string
+  href?: string
+  onSelect?: boolean
+  isSelected?: boolean
+  isDisabled?: boolean
+  isExpanded?: boolean
+  children?: ReadonlyArray<TreeListFixtureItem>
+}>
 
 export type TreeListFixtureTree = Readonly<{
-  variant: TreeListVariant;
-  caption?: string;
-}>;
+  variant: TreeListVariant
+  caption?: string
+}>
 
 export type TreeListFixture = Readonly<{
-  title: string;
-  description?: string;
-  trees: ReadonlyArray<TreeListFixtureTree>;
-  items: ReadonlyArray<TreeListFixtureItem>;
-}>;
+  title: string
+  description?: string
+  trees: ReadonlyArray<TreeListFixtureTree>
+  items: ReadonlyArray<TreeListFixtureItem>
+}>
 
 const showcaseItems: ReadonlyArray<TreeListFixtureItem> = [
   {
@@ -61,9 +61,11 @@ const showcaseItems: ReadonlyArray<TreeListFixtureItem> = [
   },
   { id: 'pkg', label: 'package.json', onSelect: true },
   { id: 'readme', label: 'README.md', onSelect: true },
-];
+]
 
-export const treeListFixtures: Readonly<[TreeListFixture, ...Array<TreeListFixture>]> = [
+export const treeListFixtures: Readonly<
+  [TreeListFixture, ...Array<TreeListFixture>]
+> = [
   {
     title: 'Tree List',
     trees: [{ variant: 'lineGuides' }],
@@ -105,8 +107,7 @@ export const treeListFixtures: Readonly<[TreeListFixture, ...Array<TreeListFixtu
   },
   {
     title: 'TreeList — Interactive Settings',
-    description:
-      'Settings tree with clickable items and a documentation link.',
+    description: 'Settings tree with clickable items and a documentation link.',
     trees: [{ variant: 'lineGuides' }],
     items: [
       {
@@ -153,8 +154,7 @@ export const treeListFixtures: Readonly<[TreeListFixture, ...Array<TreeListFixtu
   },
   {
     title: 'TreeList — Navigation Tree',
-    description:
-      'Navigation tree with a selected item for the current page.',
+    description: 'Navigation tree with a selected item for the current page.',
     trees: [{ variant: 'lineGuides' }],
     items: [
       {
@@ -198,7 +198,7 @@ export const treeListFixtures: Readonly<[TreeListFixture, ...Array<TreeListFixtu
       { id: 'readme', label: 'README.md', onSelect: true },
     ],
   },
-];
+]
 
 const usesIcons = (items: ReadonlyArray<TreeListFixtureItem>): boolean =>
   items.some(
@@ -206,12 +206,12 @@ const usesIcons = (items: ReadonlyArray<TreeListFixtureItem>): boolean =>
       item.startIcon !== undefined ||
       item.endIcon !== undefined ||
       usesIcons(item.children ?? []),
-  );
+  )
 
 const usesBadge = (items: ReadonlyArray<TreeListFixtureItem>): boolean =>
   items.some(
     item => item.endBadge !== undefined || usesBadge(item.children ?? []),
-  );
+  )
 
 // ---------------------------------------------------------------------------
 // Generated example source
@@ -220,46 +220,48 @@ const usesBadge = (items: ReadonlyArray<TreeListFixtureItem>): boolean =>
 const iconCall = (name: string, renderer: 'tailwind' | 'stylex'): string =>
   renderer === 'stylex'
     ? `Icon.icon('${name}', { class: stylex.props(styles.itemIcon).className ?? '' }, h)`
-    : `Icon.icon('${name}', { class: 'size-4' }, h)`;
+    : `Icon.icon('${name}', { class: 'size-4' }, h)`
 
 const itemSource = (
   item: TreeListFixtureItem,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const fields: Array<string> = [`id: '${item.id}'`, `label: '${item.label}'`];
+  const fields: Array<string> = [`id: '${item.id}'`, `label: '${item.label}'`]
   if (item.isExpanded === true) {
-    fields.push('isExpanded: true');
+    fields.push('isExpanded: true')
   }
   if (item.isSelected === true) {
-    fields.push('isSelected: true');
+    fields.push('isSelected: true')
   }
   if (item.isDisabled === true) {
-    fields.push('isDisabled: true');
+    fields.push('isDisabled: true')
   }
   if (item.href !== undefined) {
-    fields.push(`href: '${item.href}'`);
+    fields.push(`href: '${item.href}'`)
   }
   if (item.onSelect === true) {
-    fields.push('onSelect: true');
+    fields.push('onSelect: true')
   }
   if (item.startIcon !== undefined) {
-    fields.push(`startContent: ${iconCall(item.startIcon, renderer)}`);
+    fields.push(`startContent: ${iconCall(item.startIcon, renderer)}`)
   }
   if (item.endIcon !== undefined) {
-    fields.push(`endContent: ${iconCall(item.endIcon, renderer)}`);
+    fields.push(`endContent: ${iconCall(item.endIcon, renderer)}`)
   }
   if (item.endBadge !== undefined) {
-    fields.push(`endContent: Badge.badge({ children: ['${item.endBadge}'] }, h)`);
+    fields.push(
+      `endContent: Badge.badge({ children: ['${item.endBadge}'] }, h)`,
+    )
   }
   if (item.children !== undefined) {
     fields.push(
       `children: [${item.children
         .map(child => itemSource(child, renderer))
         .join(', ')}]`,
-    );
+    )
   }
-  return `{ ${fields.join(', ')} }`;
-};
+  return `{ ${fields.join(', ')} }`
+}
 
 const submodelSource = (
   modelField: string,
@@ -271,7 +273,7 @@ const submodelSource = (
         view: TreeList.view,
         viewInputs: { items: items(h), variant: '${tree.variant}' },
         toParentMessage: message => Message['${messageTag}']({ message }),
-      })`;
+      })`
 
 const applySource = (
   modelField: string,
@@ -282,61 +284,56 @@ const applySource = (
     ? Option.some(result.outMessage.id)
     : model.maybeSelectedId;
   return { model: { ...model, ${modelField}: result.model, maybeSelectedId }, commands };
-};`;
+};`
 
-const source = (
-  index: number,
-  renderer: 'tailwind' | 'stylex',
-): string => {
-  const fixture = treeListFixtures[index] ?? treeListFixtures[0];
-  const isStyleX = renderer === 'stylex';
-  const ui = isStyleX ? 'stylex' : 'ui';
-  const multi = fixture.trees.length > 1;
-  const fields = multi ? ['treeLineGuides', 'treeNoGuides'] : ['tree'];
+const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+  const fixture = treeListFixtures[index] ?? treeListFixtures[0]
+  const isStyleX = renderer === 'stylex'
+  const ui = isStyleX ? 'stylex' : 'ui'
+  const multi = fixture.trees.length > 1
+  const fields = multi ? ['treeLineGuides', 'treeNoGuides'] : ['tree']
   const tags = multi
     ? ['GotTreeListLineGuidesMessage', 'GotTreeListNoGuidesMessage']
-    : ['GotTreeListMessage'];
-  const needsIcon = usesIcons(fixture.items);
-  const needsBadge = usesBadge(fixture.items);
+    : ['GotTreeListMessage']
+  const needsIcon = usesIcons(fixture.items)
+  const needsBadge = usesBadge(fixture.items)
 
-  const modelFields = fields
-    .map(field => `${field}: TreeList.Model`)
-    .join(', ');
+  const modelFields = fields.map(field => `${field}: TreeList.Model`).join(', ')
   const initFields = fixture.trees
     .map(
       (_tree, i) =>
         `${fields[i]!}: TreeList.init({ id: 'docs-tree-list-${String(i)}' })`,
     )
-    .join(', ');
+    .join(', ')
 
   const itemsCode = `const items = (h: HtmlBuilder<Message>): ReadonlyArray<TreeList.TreeListItemData> => [
     ${fixture.items.map(item => itemSource(item, renderer)).join(',\n    ')},
-  ];`;
+  ];`
 
   const treesSource = fixture.trees
     .map((tree, i) => {
-      const treeCode = submodelSource(fields[i]!, tags[i]!, tree);
+      const treeCode = submodelSource(fields[i]!, tags[i]!, tree)
       return tree.caption === undefined
         ? treeCode
         : `h.div([h.Class(${isStyleX ? "stylex.props(styles.column).className ?? ''" : "'flex flex-col gap-2'"})], [
         h.div([h.Class(${isStyleX ? "stylex.props(styles.caption).className ?? ''" : "'text-xs font-semibold text-muted-foreground'"})], ['${tree.caption}']),
         ${treeCode},
-      ])`;
+      ])`
     })
-    .join(',\n    ');
+    .join(',\n    ')
 
   const stylexStyles = isStyleX
     ? `import * as stylex from '@stylexjs/stylex'
 
 const styles = stylex.create({${needsIcon ? `\n  itemIcon: { height: '1rem', width: '1rem' },` : ''}${
-      multi
-        ? `\n  wrap: { display: 'flex', alignItems: 'flex-start', gap: '1.5rem' },
+        multi
+          ? `\n  wrap: { display: 'flex', alignItems: 'flex-start', gap: '1.5rem' },
   column: { display: 'flex', flexDirection: 'column', gap: '0.5rem' },
   caption: { color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1rem', fontWeight: 600 },`
-        : ''
-    }
+          : ''
+      }
 })`
-    : '';
+    : ''
 
   return foldkitApplication({
     title: `TreeList — ${fixture.title}`,
@@ -373,13 +370,17 @@ ${tags
 export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'TreeList — ${fixture.title}',
   body: h.main([h.Class('mx-auto flex min-h-screen w-full max-w-xl p-8')], [
-    ${multi ? `h.div([h.Class(${isStyleX ? "stylex.props(styles.wrap).className ?? ''" : "'flex items-start gap-6'"})], [
+    ${
+      multi
+        ? `h.div([h.Class(${isStyleX ? "stylex.props(styles.wrap).className ?? ''" : "'flex items-start gap-6'"})], [
       ${treesSource},
-    ])` : treesSource},
+    ])`
+        : treesSource
+    },
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const treeListExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -390,4 +391,4 @@ export const treeListExamples = (
       ? {}
       : { description: fixture.description }),
     code: source(index, renderer),
-  }));
+  }))

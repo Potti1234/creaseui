@@ -1,5 +1,5 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { staticComponentApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 export const spinnerFixtures = [
   { title: 'Basic', kind: 'item' },
@@ -10,9 +10,9 @@ export const spinnerFixtures = [
   { title: 'Input Group', kind: 'inputGroup' },
   { title: 'Empty', kind: 'empty' },
   { title: 'RTL', kind: 'item', rtl: true },
-] as const;
+] as const
 
-export type SpinnerFixture = (typeof spinnerFixtures)[number];
+export type SpinnerFixture = (typeof spinnerFixtures)[number]
 
 const SX_STYLES = `
 const styles = stylex.create({
@@ -26,24 +26,24 @@ const styles = stylex.create({
   amount: { fontSize: '0.875rem', lineHeight: '1.25rem', fontVariantNumeric: 'tabular-nums' },
   itemEnd: { marginInlineStart: 'auto' },
 })
-`;
+`
 
 const itemBody = (renderer: 'tailwind' | 'stylex', rtl: boolean): string => {
-  const isSx = renderer === 'stylex';
+  const isSx = renderer === 'stylex'
   const t = rtl
     ? { title: 'جاري معالجة الدفع...', amount: '١٠٠.٠٠ دولار' }
-    : { title: 'Processing payment...', amount: '$100.00' };
+    : { title: 'Processing payment...', amount: '$100.00' }
   const wrapCls = isSx
     ? "h.Class(stylex.props(styles.wrap).className ?? '')"
-    : "h.Class('w-full max-w-xs')";
-  const dir = rtl ? "h.Dir('rtl'), " : '';
+    : "h.Class('w-full max-w-xs')"
+  const dir = rtl ? "h.Dir('rtl'), " : ''
   const endContent = isSx
     ? `Item.itemContent({ layoutStyle: styles.itemEnd, children: [
     h.span([h.Class(stylex.props(styles.amount).className ?? '')], ['${t.amount}']),
   ] }, h)`
     : `Item.itemContent({ class: 'flex-none justify-end', children: [
     h.span([h.Class('text-sm tabular-nums')], ['${t.amount}']),
-  ] }, h)`;
+  ] }, h)`
   return `h.div([${dir}${wrapCls}], [
   Item.item({ variant: 'muted', children: [
     Item.itemMedia({ children: [Spinner.spinner({ isDecorative: true }, h)] }, h),
@@ -52,32 +52,36 @@ const itemBody = (renderer: 'tailwind' | 'stylex', rtl: boolean): string => {
     ] }, h),
     ${endContent},
   ] }, h),
-])`;
-};
+])`
+}
 
 const customBody = (renderer: 'tailwind' | 'stylex'): string => {
-  const isSx = renderer === 'stylex';
-  return `h.div([h.Class(${isSx
-    ? "stylex.props(styles.accent).className ?? ''"
-    : "'text-chart-2'"})], [
+  const isSx = renderer === 'stylex'
+  return `h.div([h.Class(${
+    isSx ? "stylex.props(styles.accent).className ?? ''" : "'text-chart-2'"
+  })], [
   Spinner.spinner({ label: 'Loading', size: 'lg' }, h),
-])`;
-};
+])`
+}
 
 const sizeBody = (renderer: 'tailwind' | 'stylex'): string =>
-  `h.div([h.Class(${renderer === 'stylex'
-    ? "stylex.props(styles.row).className ?? ''"
-    : "'flex items-center gap-6'"})], [
+  `h.div([h.Class(${
+    renderer === 'stylex'
+      ? "stylex.props(styles.row).className ?? ''"
+      : "'flex items-center gap-6'"
+  })], [
   Spinner.spinner({ isDecorative: true, size: 'sm' }, h),
   Spinner.spinner({ isDecorative: true, size: 'md' }, h),
   Spinner.spinner({ isDecorative: true, size: 'lg' }, h),
   Spinner.spinner({ isDecorative: true, size: 'xl' }, h),
-])`;
+])`
 
 const buttonBody = (renderer: 'tailwind' | 'stylex'): string =>
-  `h.div([h.Class(${renderer === 'stylex'
-    ? "stylex.props(styles.centerCol).className ?? ''"
-    : "'flex flex-col items-center gap-4'"})], [
+  `h.div([h.Class(${
+    renderer === 'stylex'
+      ? "stylex.props(styles.centerCol).className ?? ''"
+      : "'flex flex-col items-center gap-4'"
+  })], [
   Button.button({ size: 'sm', isDisabled: true, children: [
     Spinner.spinner({ isDecorative: true, dataIcon: 'inline-start' }, h),
     'Loading...',
@@ -90,12 +94,14 @@ const buttonBody = (renderer: 'tailwind' | 'stylex'): string =>
     Spinner.spinner({ isDecorative: true, dataIcon: 'inline-start' }, h),
     'Processing',
   ] }, h),
-])`;
+])`
 
 const badgeBody = (renderer: 'tailwind' | 'stylex'): string =>
-  `h.div([h.Class(${renderer === 'stylex'
-    ? "stylex.props(styles.rowSm).className ?? ''"
-    : "'flex items-center gap-4'"})], [
+  `h.div([h.Class(${
+    renderer === 'stylex'
+      ? "stylex.props(styles.rowSm).className ?? ''"
+      : "'flex items-center gap-4'"
+  })], [
   Badge.badge({ children: [
     Spinner.spinner({ isDecorative: true, dataIcon: 'inline-start' }, h),
     'Syncing',
@@ -108,12 +114,14 @@ const badgeBody = (renderer: 'tailwind' | 'stylex'): string =>
     Spinner.spinner({ isDecorative: true, dataIcon: 'inline-start' }, h),
     'Processing',
   ] }, h),
-])`;
+])`
 
 const inputGroupBody = (renderer: 'tailwind' | 'stylex'): string =>
-  `h.div([h.Class(${renderer === 'stylex'
-    ? "stylex.props(styles.column, styles.wrapMd).className ?? ''"
-    : "'flex w-full max-w-md flex-col gap-4'"})], [
+  `h.div([h.Class(${
+    renderer === 'stylex'
+      ? "stylex.props(styles.column, styles.wrapMd).className ?? ''"
+      : "'flex w-full max-w-md flex-col gap-4'"
+  })], [
   InputGroup.inputGroup({ children: [
     InputGroup.inputGroupInput({
       id: 'spinner-message',
@@ -143,7 +151,7 @@ const inputGroupBody = (renderer: 'tailwind' | 'stylex'): string =>
       ] }, h),
     ] }, h),
   ] }, h),
-])`;
+])`
 
 const emptyBody = (renderer: 'tailwind' | 'stylex'): string =>
   `Empty.empty({ children: [
@@ -159,7 +167,7 @@ const emptyBody = (renderer: 'tailwind' | 'stylex'): string =>
   Empty.emptyContent({ children: [
     Button.button({ variant: 'outline', size: 'sm', children: ['Cancel'] }, h),
   ] }, h),
-] }, h)`;
+] }, h)`
 
 const EXTRA_IMPORTS = {
   item: "import * as Item from '@/ui/item'",
@@ -171,7 +179,7 @@ const EXTRA_IMPORTS = {
     "import * as Icon from '@/lib/icon'\nimport * as InputGroup from '@/ui/input-group'",
   empty:
     "import * as Button from '@/ui/button'\nimport * as Empty from '@/ui/empty'",
-} as const;
+} as const
 
 const body = (
   fixture: SpinnerFixture,
@@ -179,21 +187,21 @@ const body = (
 ): string => {
   switch (fixture.kind) {
     case 'item':
-      return itemBody(renderer, 'rtl' in fixture && fixture.rtl === true);
+      return itemBody(renderer, 'rtl' in fixture && fixture.rtl === true)
     case 'custom':
-      return customBody(renderer);
+      return customBody(renderer)
     case 'size':
-      return sizeBody(renderer);
+      return sizeBody(renderer)
     case 'button':
-      return buttonBody(renderer);
+      return buttonBody(renderer)
     case 'badge':
-      return badgeBody(renderer);
+      return badgeBody(renderer)
     case 'inputGroup':
-      return inputGroupBody(renderer);
+      return inputGroupBody(renderer)
     case 'empty':
-      return emptyBody(renderer);
+      return emptyBody(renderer)
   }
-};
+}
 
 export const spinnerExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -207,11 +215,11 @@ export const spinnerExamples = (
       exampleName: fixture.title,
       componentImports:
         (EXTRA_IMPORTS[fixture.kind].length > 0
-          ? `${EXTRA_IMPORTS[fixture.kind].replaceAll("@/ui/", `@/${renderer === 'stylex' ? 'stylex' : 'ui'}/`)}\n`
+          ? `${EXTRA_IMPORTS[fixture.kind].replaceAll('@/ui/', `@/${renderer === 'stylex' ? 'stylex' : 'ui'}/`)}\n`
           : '') +
         (renderer === 'stylex'
           ? `import * as stylex from '@stylexjs/stylex'\n${SX_STYLES}`
           : ''),
       viewBody: `${body(fixture, renderer)},`,
     }),
-  }));
+  }))

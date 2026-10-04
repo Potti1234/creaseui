@@ -1,34 +1,34 @@
-import { Option, Schema as S } from 'effect';
-import { Command } from 'foldkit';
-import { defineMessageUnion } from 'foldkit/message';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import { Option, Schema as S } from 'effect'
+import { Command } from 'foldkit'
+import { defineMessageUnion } from 'foldkit/message'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { definePreviewProgram } from '@/docs/components/pages/authored-page';
+import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
   sideNavFixtures,
   type SideNavFixture,
   type SideNavFixtureHeading,
   type SideNavFixtureItem,
   type SideNavFixtureNav,
-} from '@/docs/components/pages/side-nav/shared';
-import * as Icon from '@/lib/icon';
-import * as Badge from '@/ui/badge';
-import * as SideNav from '@/ui/side-nav';
+} from '@/docs/components/pages/side-nav/shared'
+import * as Icon from '@/lib/icon'
+import * as Badge from '@/ui/badge'
+import * as SideNav from '@/ui/side-nav'
 
 const GotSideNavPreviewMessage = defineMessageUnion({
   GotSideNavPreviewMessage: {
     key: S.String,
     message: SideNav.Message,
   },
-});
-type GotSideNavPreviewMessage = typeof GotSideNavPreviewMessage.Type;
+})
+type GotSideNavPreviewMessage = typeof GotSideNavPreviewMessage.Type
 
 const SideNavPreviewModel = S.Struct({
   _docsPage: S.Literal('side-nav'),
   navs: S.Record(S.String, SideNav.Model),
   maybeSelectedId: S.Option(S.String),
-});
-type SideNavPreviewModel = typeof SideNavPreviewModel.Type;
+})
+type SideNavPreviewModel = typeof SideNavPreviewModel.Type
 
 const decorateItems = <Msg>(
   items: ReadonlyArray<SideNavFixtureItem>,
@@ -68,7 +68,7 @@ const decorateItems = <Msg>(
     ...(item.children === undefined
       ? {}
       : { children: decorateItems(item.children, h) }),
-  }));
+  }))
 
 const decorateHeading = <Msg>(
   heading: SideNavFixtureHeading,
@@ -107,7 +107,7 @@ const decorateHeading = <Msg>(
     : {
         menu: heading.menu.map(label => ({ label, href: '#' })),
       }),
-});
+})
 
 const navView = <Msg>(
   nav: SideNavFixtureNav,
@@ -128,9 +128,7 @@ const navView = <Msg>(
         ? {}
         : {
             sections: nav.sections.map(section => ({
-              ...(section.title === undefined
-                ? {}
-                : { title: section.title }),
+              ...(section.title === undefined ? {} : { title: section.title }),
               ...(section.isHeaderHidden === true
                 ? { isHeaderHidden: true }
                 : {}),
@@ -140,9 +138,7 @@ const navView = <Msg>(
       ...(nav.items === undefined
         ? {}
         : { items: decorateItems(nav.items, h) }),
-      ...(nav.hasCollapseButton === false
-        ? { hasCollapseButton: false }
-        : {}),
+      ...(nav.hasCollapseButton === false ? { hasCollapseButton: false } : {}),
       ...(nav.footerCollapseButton === true
         ? { footerCollapseButton: true }
         : {}),
@@ -155,7 +151,7 @@ const navView = <Msg>(
           message,
         }),
       ),
-  });
+  })
 
 const fixtureView = <Msg>(
   fixture: SideNavFixture,
@@ -164,14 +160,14 @@ const fixtureView = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Html => {
   const navs = fixture.navs.map((nav, index) => {
-    const key = `nav-${String(index)}`;
-    const navModel = model.navs[key] ?? SideNav.init({ id: key });
-    return navView(nav, navModel, index, toParentMessage, h);
-  });
+    const key = `nav-${String(index)}`
+    const navModel = model.navs[key] ?? SideNav.init({ id: key })
+    return navView(nav, navModel, index, toParentMessage, h)
+  })
   return fixture.navs.length > 1
     ? h.div([h.Class('flex h-96 items-start gap-6')], navs)
-    : h.div([h.Class('h-96')], navs);
-};
+    : h.div([h.Class('h-96')], navs)
+}
 
 export const sideNavTailwindPreviewProgram = definePreviewProgram<
   SideNavPreviewModel,
@@ -180,7 +176,7 @@ export const sideNavTailwindPreviewProgram = definePreviewProgram<
   Model: SideNavPreviewModel,
   Message: GotSideNavPreviewMessage,
   init: index => {
-    const fixture = sideNavFixtures[index] ?? sideNavFixtures[0];
+    const fixture = sideNavFixtures[index] ?? sideNavFixtures[0]
     return {
       _docsPage: 'side-nav',
       navs: Object.fromEntries(
@@ -193,16 +189,16 @@ export const sideNavTailwindPreviewProgram = definePreviewProgram<
         ]),
       ),
       maybeSelectedId: Option.none(),
-    };
+    }
   },
   update: (model, message) => {
-    const nav = model.navs[message.key];
+    const nav = model.navs[message.key]
     if (nav === undefined) {
-      return { model };
+      return { model }
     }
-    const result = SideNav.update(nav, message.message);
-    const commands = result.commands ?? [];
-    const maybeOut = Option.fromNullishOr(result.outMessage);
+    const result = SideNav.update(nav, message.message)
+    const commands = result.commands ?? []
+    const maybeOut = Option.fromNullishOr(result.outMessage)
     return {
       model: {
         ...model,
@@ -221,12 +217,13 @@ export const sideNavTailwindPreviewProgram = definePreviewProgram<
           message: next,
         }),
       ),
-    };
+    }
   },
   view: (index, model, h) => {
-    const fixture = sideNavFixtures[index] ?? sideNavFixtures[0];
-    return h.div([h.Class('w-full max-w-xl')], [
-      fixtureView(fixture, model, message => message, h),
-    ]);
+    const fixture = sideNavFixtures[index] ?? sideNavFixtures[0]
+    return h.div(
+      [h.Class('w-full max-w-xl')],
+      [fixtureView(fixture, model, message => message, h)],
+    )
   },
-});
+})

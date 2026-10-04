@@ -1,22 +1,30 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   type CenterFixture,
   centerFixtures,
-} from '@/docs/components/pages/center/shared';
-import { icon } from '@/lib/icon';
-import { className } from '@/stylex/style';
-import * as Button from '@/stylex/button';
-import * as Card from '@/stylex/card';
-import * as Center from '@/stylex/center';
-import * as Stack from '@/stylex/stack';
+} from '@/docs/components/pages/center/shared'
+import { icon } from '@/lib/icon'
+import { className } from '@/stylex/style'
+import * as Button from '@/stylex/button'
+import * as Card from '@/stylex/card'
+import * as Center from '@/stylex/center'
+import * as Stack from '@/stylex/stack'
 
 const styles = stylex.create({
-  heading: { fontSize: '0.875rem', fontWeight: 600, lineHeight: '1.25rem', },
-  body: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
-  supporting: { color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1rem' },
+  heading: { fontSize: '0.875rem', fontWeight: 600, lineHeight: '1.25rem' },
+  body: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+  },
+  supporting: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.75rem',
+    lineHeight: '1rem',
+  },
   icon: {
     color: 'var(--muted-foreground)',
     height: '1.5rem',
@@ -25,7 +33,7 @@ const styles = stylex.create({
   iconBtn4: { flexShrink: 0, height: '1rem', width: '1rem' },
   cardWide: { width: '32.5rem' },
   cardNarrow: { width: '25rem' },
-});
+})
 
 const showcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Center.center(
@@ -40,9 +48,10 @@ const showcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
             hAlign: 'center',
             children: [
               h.h4([h.Class(className(styles.heading))], ['Centered content']),
-              h.p([h.Class(className(styles.body))], [
-                'Horizontally and vertically aligned.',
-              ]),
+              h.p(
+                [h.Class(className(styles.body))],
+                ['Horizontally and vertically aligned.'],
+              ),
             ],
           },
           h,
@@ -50,7 +59,7 @@ const showcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ],
     },
     h,
-  );
+  )
 
 const horizontalView = <Msg>(h: HtmlBuilder<Msg>): Html => {
   const iconButton = (name: string, label: string): Html =>
@@ -62,7 +71,7 @@ const horizontalView = <Msg>(h: HtmlBuilder<Msg>): Html => {
         children: [icon(name, { class: className(styles.iconBtn4) }, h)],
       },
       h,
-    );
+    )
   return Card.card(
     {
       size: 'sm',
@@ -102,8 +111,8 @@ const horizontalView = <Msg>(h: HtmlBuilder<Msg>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const insideCardView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   Card.card(
@@ -123,17 +132,15 @@ const insideCardView = <Msg>(h: HtmlBuilder<Msg>): Html =>
                         gap: 2,
                         hAlign: 'center',
                         children: [
-                          icon(
-                            'inbox',
-                            { class: className(styles.icon) },
-                            h,
+                          icon('inbox', { class: className(styles.icon) }, h),
+                          h.p(
+                            [h.Class(className(styles.heading))],
+                            ['No messages yet'],
                           ),
-                          h.p([h.Class(className(styles.heading))], [
-                            'No messages yet',
-                          ]),
-                          h.p([h.Class(className(styles.supporting))], [
-                            'Messages from your team will appear here.',
-                          ]),
+                          h.p(
+                            [h.Class(className(styles.supporting))],
+                            ['Messages from your team will appear here.'],
+                          ),
                         ],
                       },
                       h,
@@ -149,22 +156,22 @@ const insideCardView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       ],
     },
     h,
-  );
+  )
 
 const viewFor = <Msg>(fixture: CenterFixture, h: HtmlBuilder<Msg>): Html => {
   switch (fixture.kind) {
     case 'showcase':
-      return showcaseView(h);
+      return showcaseView(h)
     case 'horizontal':
-      return horizontalView(h);
+      return horizontalView(h)
     case 'insideCard':
-      return insideCardView(h);
+      return insideCardView(h)
   }
-};
+}
 
 export const centerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   _model: unknown,
   _onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
-) => viewFor(centerFixtures[exampleIndex] ?? centerFixtures[0], h);
+) => viewFor(centerFixtures[exampleIndex] ?? centerFixtures[0], h)

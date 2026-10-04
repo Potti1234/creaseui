@@ -1,30 +1,29 @@
-﻿import { Schema as S } from 'effect';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+﻿import { Schema as S } from 'effect'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils'
 
 export const Model = S.Struct({
   status: S.Literals(['loading', 'loaded', 'error']),
-});
-export type Model = typeof Model.Type;
-
+})
+export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
   Loaded: {},
   Failed: {},
-});
-export type Message = typeof Message.Type;
-export const init = (): Model => ({ status: 'loading' });
+})
+export type Message = typeof Message.Type
+export const init = (): Model => ({ status: 'loading' })
 export const update = (_model: Model, message: Message): Model => ({
   status: message._tag === 'Loaded' ? 'loaded' : 'error',
-});
+})
 
 export type AvatarProps = Readonly<{
-  size?: 'default' | 'sm' | 'lg';
-  class?: string;
-  children: ReadonlyArray<Html | string>;
-}>;
+  size?: 'default' | 'sm' | 'lg'
+  class?: string
+  children: ReadonlyArray<Html | string>
+}>
 
 export const avatar = <Msg>(props: AvatarProps, h: HtmlBuilder<Msg>): Html => {
   return h.div(
@@ -39,22 +38,22 @@ export const avatar = <Msg>(props: AvatarProps, h: HtmlBuilder<Msg>): Html => {
       ),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 export type AvatarImageProps = Readonly<{
-  src: string;
-  alt: string;
-  class?: string;
-  model?: Model;
-}>;
+  src: string
+  alt: string
+  class?: string
+  model?: Model
+}>
 
 export const avatarImage = <Msg>(
   props: AvatarImageProps &
     Readonly<{ toParentMessage?: (message: Message) => Msg }>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  if (props.model?.status === 'error') return h.empty;
+  if (props.model?.status === 'error') return h.empty
 
   return h.img([
     h.DataAttribute('slot', 'avatar-image'),
@@ -75,20 +74,20 @@ export const avatarImage = <Msg>(
         props.class,
       ),
     ),
-  ]);
-};
+  ])
+}
 
 export type AvatarFallbackProps = Readonly<{
-  class?: string;
-  children: ReadonlyArray<Html | string>;
-  model?: Model;
-}>;
+  class?: string
+  children: ReadonlyArray<Html | string>
+  model?: Model
+}>
 
 export const avatarFallback = <Msg>(
   props: AvatarFallbackProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  if (props.model?.status === 'loaded') return h.empty;
+  if (props.model?.status === 'loaded') return h.empty
 
   return h.div(
     [
@@ -101,13 +100,13 @@ export const avatarFallback = <Msg>(
       ),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 export type AvatarBadgeProps = Readonly<{
-  class?: string;
-  children?: ReadonlyArray<Html | string>;
-}>;
+  class?: string
+  children?: ReadonlyArray<Html | string>
+}>
 
 export const avatarBadge = <Msg>(
   props: AvatarBadgeProps,
@@ -127,13 +126,13 @@ export const avatarBadge = <Msg>(
       ),
     ],
     [...(props.children ?? [])],
-  );
-};
+  )
+}
 
 export type AvatarGroupProps = Readonly<{
-  class?: string;
-  children: ReadonlyArray<Html | string>;
-}>;
+  class?: string
+  children: ReadonlyArray<Html | string>
+}>
 
 export const avatarGroup = <Msg>(
   props: AvatarGroupProps,
@@ -150,13 +149,13 @@ export const avatarGroup = <Msg>(
       ),
     ],
     [...props.children],
-  );
-};
+  )
+}
 
 export type AvatarGroupCountProps = Readonly<{
-  class?: string;
-  children: ReadonlyArray<Html | string>;
-}>;
+  class?: string
+  children: ReadonlyArray<Html | string>
+}>
 
 export const avatarGroupCount = <Msg>(
   props: AvatarGroupCountProps,
@@ -173,5 +172,5 @@ export const avatarGroupCount = <Msg>(
       ),
     ],
     [...props.children],
-  );
-};
+  )
+}

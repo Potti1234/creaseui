@@ -130,13 +130,18 @@ const initialModel = (
 ): Model => ({
   dialog: DialogPrimitive.init({
     id: options.id ?? 'test-dialog',
-    ...(options.isAnimated === undefined ? {} : { isAnimated: options.isAnimated }),
+    ...(options.isAnimated === undefined
+      ? {}
+      : { isAnimated: options.isAnimated }),
     ...(options.focusSelector === undefined
       ? {}
       : { focusSelector: options.focusSelector }),
   }),
   title: 'Edit profile',
-  description: 'description' in options ? options.description : 'Adjust your profile details',
+  description:
+    'description' in options
+      ? options.description
+      : 'Adjust your profile details',
   declineOpen: options.declineOpen ?? false,
   declineClose: options.declineClose ?? false,
   lastDialogMessage: 'none',
@@ -160,7 +165,9 @@ type DialogModule = Readonly<{
         parts: Readonly<{
           header: (props: { children: ReadonlyArray<Html | string> }) => Html
           title: (props: { children: ReadonlyArray<Html | string> }) => Html
-          description: (props: { children: ReadonlyArray<Html | string> }) => Html
+          description: (props: {
+            children: ReadonlyArray<Html | string>
+          }) => Html
           footer: (props: { children: ReadonlyArray<Html | string> }) => Html
           close: (
             props?: Readonly<{
@@ -218,89 +225,110 @@ const dialogView =
     } = {},
   ) =>
   (model: Model, h: HtmlBuilder<Message>): Html =>
-    h.div([], [
-      h.button([h.Type('button'), h.OnClick({ _tag: 'RequestedOpen' })], [
-        'Open dialog',
-      ]),
-      h.button([h.Type('button'), h.OnClick({ _tag: 'RequestedClose' })], [
-        'Close dialog externally',
-      ]),
-      h.button(
-        [h.Type('button'), h.OnClick({ _tag: 'ChangedTitle', title: 'Rename profile' })],
-        ['Rename'],
-      ),
-      h.button(
-        [
-          h.Type('button'),
-          h.OnClick({ _tag: 'ChangedDescription', description: 'Updated details' }),
-        ],
-        ['Set description'],
-      ),
-      h.button(
-        [h.Type('button'), h.OnClick({ _tag: 'ChangedDescription', description: undefined })],
-        ['Clear description'],
-      ),
-      h.div([h.DataAttribute('slot', 'last-dialog-message')], [
-        model.lastDialogMessage,
-      ]),
-      Dialog.dialog(
-        {
-          model: model.dialog,
-          toParentMessage: message => ({ _tag: 'GotDialogMessage', message }),
-          title: model.title,
-          ...(model.description === undefined
-            ? {}
-            : { description: model.description }),
-          ...(options.showCloseButton === undefined
-            ? {}
-            : { showCloseButton: options.showCloseButton }),
-          content: () => [
-            h.button(
-              [h.Type('button'), h.OnClick({ _tag: 'InteractedInsidePanel' })],
-              ['Inside panel action'],
-            ),
+    h.div(
+      [],
+      [
+        h.button(
+          [h.Type('button'), h.OnClick({ _tag: 'RequestedOpen' })],
+          ['Open dialog'],
+        ),
+        h.button(
+          [h.Type('button'), h.OnClick({ _tag: 'RequestedClose' })],
+          ['Close dialog externally'],
+        ),
+        h.button(
+          [
+            h.Type('button'),
+            h.OnClick({ _tag: 'ChangedTitle', title: 'Rename profile' }),
           ],
-          footer: slots => [
-            h.button(
-              [
-                ...slots.closeButton,
-                ...(options.claimInitialFocusInFooter
-                  ? slots.initialFocusAttributes()
-                  : []),
-                h.Id('done-button'),
-                h.Type('button'),
-              ],
-              ['Done'],
-            ),
+          ['Rename'],
+        ),
+        h.button(
+          [
+            h.Type('button'),
+            h.OnClick({
+              _tag: 'ChangedDescription',
+              description: 'Updated details',
+            }),
           ],
-          ...(options.layoutWithoutTitle
-            ? {
-                layout: parts => [
-                  parts.footer({
-                    children: [
-                      h.button(
-                        [...parts.closeButtonAttributes, h.Type('button')],
-                        ['Done'],
-                      ),
-                    ],
-                  }),
+          ['Set description'],
+        ),
+        h.button(
+          [
+            h.Type('button'),
+            h.OnClick({ _tag: 'ChangedDescription', description: undefined }),
+          ],
+          ['Clear description'],
+        ),
+        h.div(
+          [h.DataAttribute('slot', 'last-dialog-message')],
+          [model.lastDialogMessage],
+        ),
+        Dialog.dialog(
+          {
+            model: model.dialog,
+            toParentMessage: message => ({ _tag: 'GotDialogMessage', message }),
+            title: model.title,
+            ...(model.description === undefined
+              ? {}
+              : { description: model.description }),
+            ...(options.showCloseButton === undefined
+              ? {}
+              : { showCloseButton: options.showCloseButton }),
+            content: () => [
+              h.button(
+                [
+                  h.Type('button'),
+                  h.OnClick({ _tag: 'InteractedInsidePanel' }),
                 ],
-              }
-            : {}),
-        },
-        h,
-      ),
-    ])
+                ['Inside panel action'],
+              ),
+            ],
+            footer: slots => [
+              h.button(
+                [
+                  ...slots.closeButton,
+                  ...(options.claimInitialFocusInFooter
+                    ? slots.initialFocusAttributes()
+                    : []),
+                  h.Id('done-button'),
+                  h.Type('button'),
+                ],
+                ['Done'],
+              ),
+            ],
+            ...(options.layoutWithoutTitle
+              ? {
+                  layout: parts => [
+                    parts.footer({
+                      children: [
+                        h.button(
+                          [...parts.closeButtonAttributes, h.Type('button')],
+                          ['Done'],
+                        ),
+                      ],
+                    }),
+                  ],
+                }
+              : {}),
+          },
+          h,
+        ),
+      ],
+    )
 
 /* foldkit 0.164's Animation commands carry a `generation` arg that the result
    Messages must echo back. Read it off the pending Command so the test does
    not hardcode a generation number. */
 const pendingAnimationGeneration = (
-  commands: ReadonlyArray<Readonly<{ name: string; args?: Record<string, unknown> }>>,
+  commands: ReadonlyArray<
+    Readonly<{ name: string; args?: Record<string, unknown> }>
+  >,
   name = 'WaitForPaint',
 ): number => {
   const pending = commands.find(
-    command => command.name === name || command.name === 'WaitForAnimationSettled',
+    command =>
+      command.name === name || command.name === 'WaitForAnimationSettled',
   )
   const generation = pending?.args?.['generation']
   if (typeof generation !== 'number') {
@@ -332,7 +360,9 @@ const animationPaintedThenSettled = (
 /* Steps shared by most cases: drive a fresh open to fully settled. */
 const openDialog = (
   options: { isAnimated?: boolean } = {},
-): ReadonlyArray<Scene.SceneStep<Model, Message, DialogPrimitive.OutMessage>> => [
+): ReadonlyArray<
+  Scene.SceneStep<Model, Message, DialogPrimitive.OutMessage>
+> => [
   Scene.click(openTrigger),
   Scene.expectHandled(),
   Scene.expectOutMessage(DialogPrimitive.OutMessage.Opened()),
@@ -377,7 +407,9 @@ const verifyRenderer = (
             'id',
             'test-dialog-dialog-description',
           ),
-          Scene.expect(descriptionPart).toHaveText('Adjust your profile details'),
+          Scene.expect(descriptionPart).toHaveText(
+            'Adjust your profile details',
+          ),
         )
       })
 
@@ -725,7 +757,9 @@ const verifyRenderer = (
             DialogPrimitive.AcquireResources,
             DialogPrimitive.Message.SucceededAcquireResources(),
           ),
-          Scene.expect(lastDialogMessage).toHaveText('SucceededAcquireResources'),
+          Scene.expect(lastDialogMessage).toHaveText(
+            'SucceededAcquireResources',
+          ),
         )
       })
 
@@ -991,9 +1025,7 @@ const verifyRenderer = (
               DialogPrimitive.CloseDialog,
               DialogPrimitive.Message.CompletedCloseDialog(),
             ),
-            Scene.expect(
-              Scene.selector(initialFocusMarker),
-            ).toBeAbsent(),
+            Scene.expect(Scene.selector(initialFocusMarker)).toBeAbsent(),
           )
         })
 
@@ -1057,27 +1089,34 @@ const verifyRenderer = (
 
     describe('sheet coverage (same primitive)', () => {
       const sheetView =
-        (options: { side?: 'top' | 'right' | 'bottom' | 'left'; rtl?: boolean }) =>
+        (options: {
+          side?: 'top' | 'right' | 'bottom' | 'left'
+          rtl?: boolean
+        }) =>
         (model: Model, h: HtmlBuilder<Message>): Html =>
-          h.div([], [
-            h.button([h.Type('button'), h.OnClick({ _tag: 'RequestedOpen' })], [
-              'Open dialog',
-            ]),
-            Sheet.sheet(
-              {
-                model: model.dialog,
-                toParentMessage: message => ({
-                  _tag: 'GotDialogMessage',
-                  message,
-                }),
-                title: 'Sheet title',
-                description: 'Sheet description',
-                ...(options.side === undefined ? {} : { side: options.side }),
-                ...(options.rtl ? { direction: 'rtl' as const } : {}),
-              },
-              h,
-            ),
-          ])
+          h.div(
+            [],
+            [
+              h.button(
+                [h.Type('button'), h.OnClick({ _tag: 'RequestedOpen' })],
+                ['Open dialog'],
+              ),
+              Sheet.sheet(
+                {
+                  model: model.dialog,
+                  toParentMessage: message => ({
+                    _tag: 'GotDialogMessage',
+                    message,
+                  }),
+                  title: 'Sheet title',
+                  description: 'Sheet description',
+                  ...(options.side === undefined ? {} : { side: options.side }),
+                  ...(options.rtl ? { direction: 'rtl' as const } : {}),
+                },
+                h,
+              ),
+            ],
+          )
 
       it('labels and describes the sheet dialog the same way', () => {
         Scene.scene(
@@ -1109,7 +1148,9 @@ const verifyRenderer = (
           Scene.click(Scene.selector('[data-slot="sheet-overlay"]')),
           Scene.expectHandled(),
           Scene.expectOutMessage(DialogPrimitive.OutMessage.Closed()),
-          Scene.expect(Scene.selector('[data-slot="sheet-content"]')).toBeAbsent(),
+          Scene.expect(
+            Scene.selector('[data-slot="sheet-content"]'),
+          ).toBeAbsent(),
           Scene.Mount.expectEnded(DialogPrimitive.AcquireResources),
           Scene.Command.resolve(
             DialogPrimitive.CloseDialog,
@@ -1128,9 +1169,9 @@ const verifyRenderer = (
           // the Tailwind renderer (StyleX hashes atomic class names).
           ...(isTailwind
             ? [
-                Scene.expect(
-                  Scene.selector('[data-slot="sheet"]'),
-                ).toHaveClass('justify-start'),
+                Scene.expect(Scene.selector('[data-slot="sheet"]')).toHaveClass(
+                  'justify-start',
+                ),
                 Scene.expect(
                   Scene.selector('[data-slot="sheet-content"]'),
                 ).toHaveClass('border-r'),
@@ -1144,10 +1185,9 @@ const verifyRenderer = (
           { update, view: sheetView({ rtl: true }) },
           Scene.given(initialModel({ id: 'test-sheet' })),
           ...openDialog(),
-          Scene.expect(Scene.selector('[data-slot="sheet-content"]')).toHaveAttr(
-            'dir',
-            'rtl',
-          ),
+          Scene.expect(
+            Scene.selector('[data-slot="sheet-content"]'),
+          ).toHaveAttr('dir', 'rtl'),
         )
       })
 

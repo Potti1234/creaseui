@@ -68,7 +68,7 @@ export const init = (
   id: config.id,
   tokens: [...(config.tokens ?? [])],
   itemLabels: Object.fromEntries(
-    [...(config.items ?? []), ...(config.tokens ?? [])].map((t) => [
+    [...(config.items ?? []), ...(config.tokens ?? [])].map(t => [
       t.id,
       t.label,
     ]),
@@ -81,15 +81,12 @@ export const init = (
 })
 
 /** Syncs the committed token list when it derives from external state. */
-export const reflect = (
-  model: Model,
-  tokens: ReadonlyArray<Token>,
-): Model => ({
+export const reflect = (model: Model, tokens: ReadonlyArray<Token>): Model => ({
   ...model,
   tokens: [...tokens],
   itemLabels: {
     ...model.itemLabels,
-    ...Object.fromEntries(tokens.map((t) => [t.id, t.label])),
+    ...Object.fromEntries(tokens.map(t => [t.id, t.label])),
   },
 })
 
@@ -102,18 +99,15 @@ export const reflectItems = (
   ...model,
   itemLabels: {
     ...model.itemLabels,
-    ...Object.fromEntries(items.map((t) => [t.id, t.label])),
+    ...Object.fromEntries(items.map(t => [t.id, t.label])),
   },
 })
 
 const isAtMaxEntries = (model: Model): boolean =>
-  Option.exists(
-    model.maxEntries,
-    (max) => model.tokens.length >= max,
-  )
+  Option.exists(model.maxEntries, max => model.tokens.length >= max)
 
 const addToken = (model: Model, token: Token): UpdateReturn =>
-  isAtMaxEntries(model) || model.tokens.some((t) => t.id === token.id)
+  isAtMaxEntries(model) || model.tokens.some(t => t.id === token.id)
     ? { model }
     : {
         model: { ...model, tokens: [...model.tokens, token] },
@@ -131,7 +125,7 @@ const removeTokenAt = (model: Model, index: number): UpdateReturn => {
 }
 
 const toggleValue = (model: Model, value: string): UpdateReturn => {
-  const existing = model.tokens.findIndex((t) => t.id === value)
+  const existing = model.tokens.findIndex(t => t.id === value)
   if (existing >= 0) {
     return removeTokenAt(model, existing)
   }
@@ -152,7 +146,7 @@ const liftCombobox = (
   message: ComboboxPrimitive.Message,
 ): UpdateReturn => {
   const result = combobox.update(model.combobox, message)
-  const liftedCommands = Command.mapMessages(result.commands ?? [], (m) =>
+  const liftedCommands = Command.mapMessages(result.commands ?? [], m =>
     Message.GotComboboxMessage({ message: m }),
   )
   switch (result.outMessage?._tag) {
@@ -163,10 +157,7 @@ const liftCombobox = (
       )
       return {
         model: folded.model,
-        commands: [
-          ...liftedCommands,
-          ...(folded.commands ?? []),
-        ],
+        commands: [...liftedCommands, ...(folded.commands ?? [])],
         ...(folded.outMessage === undefined
           ? {}
           : { outMessage: folded.outMessage }),

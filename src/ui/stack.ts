@@ -1,26 +1,26 @@
-import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html';
+import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils'
 
 /* Ported from Meta Astryx Stack/Stack.tsx + StackItem.tsx — direction-aware
    flex layout. The astryx spacing scale (1 step = 4px) maps 1:1 onto
    Tailwind's spacing scale, so gap/padding props emit literal utilities. */
 
-export type StackDirection = 'horizontal' | 'vertical';
+export type StackDirection = 'horizontal' | 'vertical'
 export type StackMainAlignment =
   | 'start'
   | 'center'
   | 'end'
   | 'between'
   | 'around'
-  | 'evenly';
-export type StackCrossAlignment = 'start' | 'center' | 'end' | 'stretch';
-export type StackAlignment = StackMainAlignment | StackCrossAlignment;
-export type StackWrap = 'nowrap' | 'wrap' | 'wrap-reverse';
-export type StackSpacing = 0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10;
-export type StackItemSize = 'static' | 'fill';
-export type StackItemCrossAlignSelf = 'start' | 'center' | 'end' | 'stretch';
-export type StackSizeValue = number | string;
+  | 'evenly'
+export type StackCrossAlignment = 'start' | 'center' | 'end' | 'stretch'
+export type StackAlignment = StackMainAlignment | StackCrossAlignment
+export type StackWrap = 'nowrap' | 'wrap' | 'wrap-reverse'
+export type StackSpacing = 0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10
+export type StackItemSize = 'static' | 'fill'
+export type StackItemCrossAlignSelf = 'start' | 'center' | 'end' | 'stretch'
+export type StackSizeValue = number | string
 export type StackElement =
   | 'article'
   | 'aside'
@@ -35,12 +35,12 @@ export type StackElement =
   | 'ol'
   | 'section'
   | 'span'
-  | 'ul';
+  | 'ul'
 
 const directionClasses: Record<StackDirection, string> = {
   horizontal: 'flex-row',
   vertical: 'flex-col',
-};
+}
 
 const mainAlignClasses: Record<StackMainAlignment, string> = {
   start: 'justify-start',
@@ -49,27 +49,27 @@ const mainAlignClasses: Record<StackMainAlignment, string> = {
   between: 'justify-between',
   around: 'justify-around',
   evenly: 'justify-evenly',
-};
+}
 
 const crossAlignClasses: Record<StackCrossAlignment, string> = {
   start: 'items-start',
   center: 'items-center',
   end: 'items-end',
   stretch: 'items-stretch',
-};
+}
 
 const crossAlignSelfClasses: Record<StackItemCrossAlignSelf, string> = {
   start: 'self-start',
   center: 'self-center',
   end: 'self-end',
   stretch: 'self-stretch',
-};
+}
 
 const wrapClasses: Record<StackWrap, string> = {
   nowrap: 'flex-nowrap',
   wrap: 'flex-wrap',
   'wrap-reverse': 'flex-wrap-reverse',
-};
+}
 
 const gapClasses: Record<StackSpacing, string> = {
   0: 'gap-0',
@@ -83,7 +83,7 @@ const gapClasses: Record<StackSpacing, string> = {
   6: 'gap-6',
   8: 'gap-8',
   10: 'gap-10',
-};
+}
 
 const paddingInlineStartClasses: Record<StackSpacing, string> = {
   0: 'ps-0',
@@ -97,7 +97,7 @@ const paddingInlineStartClasses: Record<StackSpacing, string> = {
   6: 'ps-6',
   8: 'ps-8',
   10: 'ps-10',
-};
+}
 
 const paddingInlineEndClasses: Record<StackSpacing, string> = {
   0: 'pe-0',
@@ -111,7 +111,7 @@ const paddingInlineEndClasses: Record<StackSpacing, string> = {
   6: 'pe-6',
   8: 'pe-8',
   10: 'pe-10',
-};
+}
 
 const paddingBlockStartClasses: Record<StackSpacing, string> = {
   0: 'pt-0',
@@ -125,7 +125,7 @@ const paddingBlockStartClasses: Record<StackSpacing, string> = {
   6: 'pt-6',
   8: 'pt-8',
   10: 'pt-10',
-};
+}
 
 const paddingBlockEndClasses: Record<StackSpacing, string> = {
   0: 'pb-0',
@@ -139,31 +139,35 @@ const paddingBlockEndClasses: Record<StackSpacing, string> = {
   6: 'pb-6',
   8: 'pb-8',
   10: 'pb-10',
-};
+}
 
 const sizeValue = (value: StackSizeValue): string =>
-  typeof value === 'number' ? `${value}px` : value;
+  typeof value === 'number' ? `${value}px` : value
 
 const sizingStyle = (
   props: Readonly<{
-    width?: StackSizeValue;
-    height?: StackSizeValue;
-    maxWidth?: StackSizeValue;
-    minHeight?: StackSizeValue;
+    width?: StackSizeValue
+    height?: StackSizeValue
+    maxWidth?: StackSizeValue
+    minHeight?: StackSizeValue
   }>,
 ): Record<string, string> => ({
   ...(props.width === undefined ? {} : { width: sizeValue(props.width) }),
   ...(props.height === undefined ? {} : { height: sizeValue(props.height) }),
-  ...(props.maxWidth === undefined ? {} : { maxWidth: sizeValue(props.maxWidth) }),
-  ...(props.minHeight === undefined ? {} : { minHeight: sizeValue(props.minHeight) }),
-});
+  ...(props.maxWidth === undefined
+    ? {}
+    : { maxWidth: sizeValue(props.maxWidth) }),
+  ...(props.minHeight === undefined
+    ? {}
+    : { minHeight: sizeValue(props.minHeight) }),
+})
 
 const elementFor = <Msg>(
   element: StackElement,
   h: HtmlBuilder<Msg>,
   attributes: ReadonlyArray<Attribute<Msg> | ChildAttribute>,
   children: ReadonlyArray<Html | string>,
-): Html => h[element](attributes, children);
+): Html => h[element](attributes, children)
 
 export type StackProps = Readonly<{
   /**
@@ -171,79 +175,79 @@ export type StackProps = Readonly<{
    * - `horizontal`: items flow left-to-right (hStack)
    * - `vertical`: items flow top-to-bottom (vStack, the default)
    */
-  direction?: StackDirection;
+  direction?: StackDirection
   /**
    * Horizontal alignment of items.
    * - `horizontal`: main axis (justify-content)
    * - `vertical`: cross axis (align-items)
    */
-  hAlign?: StackAlignment;
+  hAlign?: StackAlignment
   /**
    * Vertical alignment of items.
    * - `horizontal`: cross axis (align-items)
    * - `vertical`: main axis (justify-content)
    */
-  vAlign?: StackAlignment;
+  vAlign?: StackAlignment
   /** Main-axis alignment alias; resolves against `direction`. */
-  justify?: StackMainAlignment;
+  justify?: StackMainAlignment
   /** Cross-axis alignment alias; resolves against `direction`. */
-  align?: StackCrossAlignment;
+  align?: StackCrossAlignment
   /** Spacing between items on the astryx spacing scale. */
-  gap?: StackSpacing;
+  gap?: StackSpacing
   /** Inner padding on all sides. */
-  padding?: StackSpacing;
+  padding?: StackSpacing
   /** Inline (horizontal) padding; overrides `padding` on that axis. */
-  paddingInline?: StackSpacing;
+  paddingInline?: StackSpacing
   /** Inline-start padding; overrides `paddingInline` on that edge. */
-  paddingInlineStart?: StackSpacing;
+  paddingInlineStart?: StackSpacing
   /** Inline-end padding; overrides `paddingInline` on that edge. */
-  paddingInlineEnd?: StackSpacing;
+  paddingInlineEnd?: StackSpacing
   /** Block (vertical) padding; overrides `padding` on that axis. */
-  paddingBlock?: StackSpacing;
+  paddingBlock?: StackSpacing
   /** Block-start padding; overrides `paddingBlock` on that edge. */
-  paddingBlockStart?: StackSpacing;
+  paddingBlockStart?: StackSpacing
   /** Block-end padding; overrides `paddingBlock` on that edge. */
-  paddingBlockEnd?: StackSpacing;
+  paddingBlockEnd?: StackSpacing
   /** Enables scrollable overflow (overflow: auto). */
-  isScrollable?: boolean;
+  isScrollable?: boolean
   /** Flex wrap behavior. */
-  wrap?: StackWrap;
+  wrap?: StackWrap
   /** Container width; numbers are pixels. */
-  width?: StackSizeValue;
+  width?: StackSizeValue
   /** Container height; numbers are pixels. */
-  height?: StackSizeValue;
+  height?: StackSizeValue
   /** Container max-width; numbers are pixels. */
-  maxWidth?: StackSizeValue;
+  maxWidth?: StackSizeValue
   /** Container min-height; numbers are pixels. */
-  minHeight?: StackSizeValue;
+  minHeight?: StackSizeValue
   /** The element to render. */
-  as?: StackElement;
-  children?: ReadonlyArray<Html | string>;
-  class?: string;
-}>;
+  as?: StackElement
+  children?: ReadonlyArray<Html | string>
+  class?: string
+}>
 
 export const stack = <Msg>(props: StackProps, h: HtmlBuilder<Msg>): Html => {
-  const direction = props.direction ?? 'vertical';
+  const direction = props.direction ?? 'vertical'
   const resolvedHAlign =
-    props.hAlign ?? (direction === 'horizontal' ? props.justify : props.align);
+    props.hAlign ?? (direction === 'horizontal' ? props.justify : props.align)
   const resolvedVAlign =
-    props.vAlign ?? (direction === 'horizontal' ? props.align : props.justify);
+    props.vAlign ?? (direction === 'horizontal' ? props.align : props.justify)
   const mainAlign = (
     direction === 'horizontal' ? resolvedHAlign : resolvedVAlign
-  ) as StackMainAlignment | undefined;
+  ) as StackMainAlignment | undefined
   const crossAlign = (
     direction === 'horizontal' ? resolvedVAlign : resolvedHAlign
-  ) as StackCrossAlignment | undefined;
+  ) as StackCrossAlignment | undefined
 
   const paddingInlineStart =
-    props.paddingInlineStart ?? props.paddingInline ?? props.padding;
+    props.paddingInlineStart ?? props.paddingInline ?? props.padding
   const paddingInlineEnd =
-    props.paddingInlineEnd ?? props.paddingInline ?? props.padding;
+    props.paddingInlineEnd ?? props.paddingInline ?? props.padding
   const paddingBlockStart =
-    props.paddingBlockStart ?? props.paddingBlock ?? props.padding;
+    props.paddingBlockStart ?? props.paddingBlock ?? props.padding
   const paddingBlockEnd =
-    props.paddingBlockEnd ?? props.paddingBlock ?? props.padding;
-  const sizing = sizingStyle(props);
+    props.paddingBlockEnd ?? props.paddingBlock ?? props.padding
+  const sizing = sizingStyle(props)
 
   return elementFor(
     props.as ?? 'div',
@@ -278,35 +282,35 @@ export const stack = <Msg>(props: StackProps, h: HtmlBuilder<Msg>): Html => {
       ...(Object.keys(sizing).length > 0 ? [h.Style(sizing)] : []),
     ],
     [...(props.children ?? [])],
-  );
-};
+  )
+}
 
 export const hStack = <Msg>(
   props: Omit<StackProps, 'direction'>,
   h: HtmlBuilder<Msg>,
-): Html => stack({ ...props, direction: 'horizontal' }, h);
+): Html => stack({ ...props, direction: 'horizontal' }, h)
 
 export const vStack = <Msg>(
   props: Omit<StackProps, 'direction'>,
   h: HtmlBuilder<Msg>,
-): Html => stack({ ...props, direction: 'vertical' }, h);
+): Html => stack({ ...props, direction: 'vertical' }, h)
 
 export type StackItemProps = Readonly<{
   /** Overrides the parent stack's cross-axis alignment for this item. */
-  crossAlignSelf?: StackItemCrossAlignSelf;
+  crossAlignSelf?: StackItemCrossAlignSelf
   /**
    * Size behavior within the stack.
    * - `static`: intrinsic size, never grows or shrinks (default)
    * - `fill`: grows to fill remaining space
    */
-  size?: StackItemSize;
+  size?: StackItemSize
   /** Enables scrollable overflow (overflow: auto). */
-  isScrollable?: boolean;
+  isScrollable?: boolean
   /** The element to render. */
-  as?: StackElement;
-  children?: ReadonlyArray<Html | string>;
-  class?: string;
-}>;
+  as?: StackElement
+  children?: ReadonlyArray<Html | string>
+  class?: string
+}>
 
 export const stackItem = <Msg>(
   props: StackItemProps,
@@ -331,4 +335,4 @@ export const stackItem = <Msg>(
       ),
     ],
     [...(props.children ?? [])],
-  );
+  )

@@ -1,12 +1,12 @@
-import { Command, type Update } from 'foldkit';
-import { Effect, Option, Queue, Schema as S, Stream } from 'effect';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
-import * as Mount from 'foldkit/mount';
+import { Command, type Update } from 'foldkit'
+import { Effect, Option, Queue, Schema as S, Stream } from 'effect'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import * as Mount from 'foldkit/mount'
 
-import * as Icon from '@/lib/icon';
-import { cn } from '@/lib/utils';
-import { astryxTextClasses } from '@/lib/astryx-text';
+import * as Icon from '@/lib/icon'
+import { cn } from '@/lib/utils'
+import { astryxTextClasses } from '@/lib/astryx-text'
 
 /* Ported from Meta Astryx PowerSearch (packages/core) — a faceted filter
    search bar: filter pills ("Status: is Open"), a typeahead input whose menu
@@ -24,47 +24,40 @@ import { astryxTextClasses } from '@/lib/astryx-text';
 // Types (astryx types.ts)
 // =============================================================================
 
-export type EnumItem = Readonly<{ value: string; label: string }>;
+export type EnumItem = Readonly<{ value: string; label: string }>
 
 export type PowerSearchEntity = Readonly<{
-  id: string;
-  label: string;
-  photo?: string;
-}>;
+  id: string
+  label: string
+  photo?: string
+}>
 
 export type SearchableItem = Readonly<{
-  id: string;
-  label: string;
-  photo?: string;
-  auxiliaryData?: unknown;
-}>;
+  id: string
+  label: string
+  photo?: string
+  auxiliaryData?: unknown
+}>
 
 /** astryx Typeahead SearchSource: filter a pool, or list it when no query. */
 export type SearchSource = Readonly<{
-  search: (query: string) => ReadonlyArray<SearchableItem>;
-  bootstrap?: () => ReadonlyArray<SearchableItem>;
-}>;
+  search: (query: string) => ReadonlyArray<SearchableItem>
+  bootstrap?: () => ReadonlyArray<SearchableItem>
+}>
 
 export type DateTimeRangePart =
   | Readonly<{ type: 'NOW' }>
   | Readonly<{ type: 'ABSOLUTE'; unixSeconds: number }>
   | Readonly<{
-      type: 'RELATIVE';
-      backValue: number;
-      unit:
-        | 'second'
-        | 'minute'
-        | 'hour'
-        | 'day'
-        | 'week'
-        | 'month'
-        | 'year';
-    }>;
+      type: 'RELATIVE'
+      backValue: number
+      unit: 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year'
+    }>
 
 export type DateTimeRange = Readonly<{
-  start: DateTimeRangePart;
-  end: DateTimeRangePart;
-}>;
+  start: DateTimeRangePart
+  end: DateTimeRangePart
+}>
 
 export type OperatorValue =
   | Readonly<{ type: 'empty' }>
@@ -75,38 +68,41 @@ export type OperatorValue =
   | Readonly<{ type: 'time' }>
   | Readonly<{ type: 'date_absolute' }>
   | Readonly<{
-      type: 'date_relative';
-      presets?: ReadonlyArray<RelativeDateFilterPreset>;
+      type: 'date_relative'
+      presets?: ReadonlyArray<RelativeDateFilterPreset>
     }>
   | Readonly<{ type: 'date_range' }>
   | Readonly<{ type: 'enum'; values: ReadonlyArray<EnumItem> }>
   | Readonly<{ type: 'enum_list'; values: ReadonlyArray<EnumItem> }>
   | Readonly<{ type: 'entity_list'; searchSource?: SearchSource }>
   | Readonly<{ type: 'custom' }>
-  | Readonly<{ type: 'nested'; fields: ReadonlyArray<PowerSearchField> }>;
+  | Readonly<{ type: 'nested'; fields: ReadonlyArray<PowerSearchField> }>
 
 export type RelativeDateFilterPreset = Readonly<{
-  key: string;
-  label: string;
-  range: DateTimeRange;
-}>;
+  key: string
+  label: string
+  range: DateTimeRange
+}>
 
-export type PowerSearchOperator = Readonly<{ key: string; value: OperatorValue }> &
-  (Readonly<{ label: string }> | Readonly<{ i18nKey: string }>);
+export type PowerSearchOperator = Readonly<{
+  key: string
+  value: OperatorValue
+}> &
+  (Readonly<{ label: string }> | Readonly<{ i18nKey: string }>)
 
 export type PowerSearchField = Readonly<{
-  key: string;
-  label: string;
-  operators: ReadonlyArray<PowerSearchOperator>;
-  icon?: string;
-  defaultOperator?: string;
-  group?: string;
-  description?: string;
-  typeaheadAliases?: ReadonlyArray<string>;
-  typeaheadMinQueryLength?: number;
+  key: string
+  label: string
+  operators: ReadonlyArray<PowerSearchOperator>
+  icon?: string
+  defaultOperator?: string
+  group?: string
+  description?: string
+  typeaheadAliases?: ReadonlyArray<string>
+  typeaheadMinQueryLength?: number
   /** When false, "<field> <value>" literal suggestions are suppressed. */
-  isValueMatchAllowed?: boolean;
-}>;
+  isValueMatchAllowed?: boolean
+}>
 
 export type FilterValue =
   | Readonly<{ type: 'empty' }>
@@ -123,30 +119,30 @@ export type FilterValue =
   | Readonly<{ type: 'entity_list'; value: ReadonlyArray<PowerSearchEntity> }>
   | Readonly<{ type: 'custom'; value: unknown }>
   | Readonly<{
-      type: 'nested';
-      value: ReadonlyArray<PowerSearchFilter>;
-    }>;
+      type: 'nested'
+      value: ReadonlyArray<PowerSearchFilter>
+    }>
 
 export type PowerSearchFilter = Readonly<{
-  field: string;
-  operator: string;
-  value: FilterValue;
-  isReadOnly?: boolean;
-}>;
+  field: string
+  operator: string
+  value: FilterValue
+  isReadOnly?: boolean
+}>
 
 export type PartialFilter = Readonly<{
-  field: string;
-  operator?: string;
-  value?: FilterValue;
-}>;
+  field: string
+  operator?: string
+  value?: FilterValue
+}>
 
 export type PowerSearchConfig = Readonly<{
-  name: string;
-  fields: ReadonlyArray<PowerSearchField>;
-  contentSearchFieldKey?: string;
-}>;
+  name: string
+  fields: ReadonlyArray<PowerSearchField>
+  contentSearchFieldKey?: string
+}>
 
-export type PowerSearchChangeType = 'add' | 'edit' | 'remove';
+export type PowerSearchChangeType = 'add' | 'edit' | 'remove'
 
 // =============================================================================
 // i18n (astryx en catalog, inlined)
@@ -175,15 +171,15 @@ const OPERATOR_I18N: Readonly<Record<string, string>> = {
   '@astryx.powersearch.operator.isFalse': 'is false',
   '@astryx.powersearch.operator.isAnyOf': 'is any of',
   '@astryx.powersearch.operator.isNoneOf': 'is none of',
-};
+}
 
 export const resolveOperatorLabel = (operator: PowerSearchOperator): string => {
   if ('label' in operator) {
-    return operator.label;
+    return operator.label
   }
-  const i18nKey = (operator as Readonly<{ i18nKey: string }>).i18nKey;
-  return OPERATOR_I18N[i18nKey] ?? i18nKey;
-};
+  const i18nKey = (operator as Readonly<{ i18nKey: string }>).i18nKey
+  return OPERATOR_I18N[i18nKey] ?? i18nKey
+}
 
 const UI = {
   searchLabel: 'Search',
@@ -209,41 +205,41 @@ const UI = {
   enterNumberPlaceholder: 'Enter number…',
   selectValuesPlaceholder: 'Select values…',
   dateRangeLabel: 'date range',
-} as const;
+} as const
 
-const itemsCount = (n: number): string => `${n} ${n === 1 ? 'item' : 'items'}`;
+const itemsCount = (n: number): string => `${n} ${n === 1 ? 'item' : 'items'}`
 const entitiesCount = (n: number): string =>
-  `${n} ${n === 1 ? 'entity' : 'entities'}`;
+  `${n} ${n === 1 ? 'entity' : 'entities'}`
 const filtersCount = (n: number): string =>
-  `${n} ${n === 1 ? 'filter' : 'filters'}`;
+  `${n} ${n === 1 ? 'filter' : 'filters'}`
 
 // =============================================================================
 // Internal config (astryx useInternalConfig)
 // =============================================================================
 
 export type InternalPowerSearchConfig = Readonly<{
-  name: string;
-  fields: ReadonlyArray<PowerSearchField>;
-  contentSearchFieldKey?: string;
-  fieldsByKey: ReadonlyMap<string, PowerSearchField>;
+  name: string
+  fields: ReadonlyArray<PowerSearchField>
+  contentSearchFieldKey?: string
+  fieldsByKey: ReadonlyMap<string, PowerSearchField>
   /** The portion of the fields array that precedes contentSearchFieldKey
       (astryx excludes the content-search field from field browsing). */
-  nonContentSearchFields: ReadonlyArray<PowerSearchField>;
-  contentSearchField?: PowerSearchField;
-}>;
+  nonContentSearchFields: ReadonlyArray<PowerSearchField>
+  contentSearchField?: PowerSearchField
+}>
 
 export const createInternalConfig = (
   config: PowerSearchConfig,
 ): InternalPowerSearchConfig => {
-  const fieldsByKey = new Map<string, PowerSearchField>();
-  const nonContentSearchFields: PowerSearchField[] = [];
-  let contentSearchField: PowerSearchField | undefined;
+  const fieldsByKey = new Map<string, PowerSearchField>()
+  const nonContentSearchFields: PowerSearchField[] = []
+  let contentSearchField: PowerSearchField | undefined
   for (const field of config.fields) {
-    fieldsByKey.set(field.key, field);
+    fieldsByKey.set(field.key, field)
     if (field.key === config.contentSearchFieldKey) {
-      contentSearchField = field;
+      contentSearchField = field
     } else {
-      nonContentSearchFields.push(field);
+      nonContentSearchFields.push(field)
     }
   }
   return {
@@ -255,8 +251,8 @@ export const createInternalConfig = (
       ? { contentSearchFieldKey: config.contentSearchFieldKey }
       : {}),
     ...(contentSearchField !== undefined ? { contentSearchField } : {}),
-  };
-};
+  }
+}
 
 const resolveOperator = (
   config: InternalPowerSearchConfig,
@@ -265,30 +261,32 @@ const resolveOperator = (
 ): PowerSearchOperator | undefined =>
   config.fieldsByKey
     .get(fieldKey)
-    ?.operators.find((operator) => operator.key === operatorKey);
+    ?.operators.find(operator => operator.key === operatorKey)
 
-const defaultOperator = (field: PowerSearchField): PowerSearchOperator | undefined =>
-  field.operators.find((operator) => operator.key === field.defaultOperator) ??
-  field.operators[0];
+const defaultOperator = (
+  field: PowerSearchField,
+): PowerSearchOperator | undefined =>
+  field.operators.find(operator => operator.key === field.defaultOperator) ??
+  field.operators[0]
 
 const defaultFilterValue = (
   operatorValue: OperatorValue,
 ): FilterValue | undefined => {
   switch (operatorValue.type) {
     case 'empty':
-      return { type: 'empty' };
+      return { type: 'empty' }
     case 'string_list':
-      return { type: 'string_list', value: [] };
+      return { type: 'string_list', value: [] }
     case 'enum_list':
-      return { type: 'enum_list', value: [] };
+      return { type: 'enum_list', value: [] }
     case 'entity_list':
-      return { type: 'entity_list', value: [] };
+      return { type: 'entity_list', value: [] }
     case 'nested':
-      return { type: 'nested', value: [] };
+      return { type: 'nested', value: [] }
     default:
-      return undefined;
+      return undefined
   }
-};
+}
 
 // =============================================================================
 // Date helpers (astryx resolveDateTimeRangePart + date input conversions)
@@ -302,7 +300,7 @@ const SECONDS_BY_UNIT: Readonly<Record<string, number>> = {
   week: 604800,
   month: 2592000,
   year: 31536000,
-};
+}
 
 export const resolveDateTimeRangePart = (
   part: DateTimeRangePart,
@@ -310,83 +308,84 @@ export const resolveDateTimeRangePart = (
 ): number => {
   switch (part.type) {
     case 'NOW':
-      return Math.floor(nowSeconds);
+      return Math.floor(nowSeconds)
     case 'ABSOLUTE':
-      return part.unixSeconds;
+      return part.unixSeconds
     case 'RELATIVE':
       return Math.floor(
         nowSeconds - part.backValue * (SECONDS_BY_UNIT[part.unit] ?? 1),
-      );
+      )
   }
-};
+}
 
 /** unixSeconds → `YYYY-MM-DD` (local time) for <input type="date">. */
 const unixSecondsToDateInput = (unixSeconds: number): string => {
-  const date = new Date(unixSeconds * 1000);
-  const year = date.getFullYear();
-  const month = `${date.getMonth() + 1}`.padStart(2, '0');
-  const day = `${date.getDate()}`.padStart(2, '0');
-  return `${year}-${month}-${day}`;
-};
+  const date = new Date(unixSeconds * 1000)
+  const year = date.getFullYear()
+  const month = `${date.getMonth() + 1}`.padStart(2, '0')
+  const day = `${date.getDate()}`.padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
 
 /** `YYYY-MM-DD` → unixSeconds at local midnight (astryx DateInput epoch). */
 const dateInputToUnixSeconds = (value: string): number | undefined => {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-    return undefined;
+    return undefined
   }
-  const [year, month, day] = value.split('-').map(Number);
-  const date = new Date(year ?? 0, (month ?? 1) - 1, day ?? 1);
-  return Math.floor(date.getTime() / 1000);
-};
+  const [year, month, day] = value.split('-').map(Number)
+  const date = new Date(year ?? 0, (month ?? 1) - 1, day ?? 1)
+  return Math.floor(date.getTime() / 1000)
+}
 
 /** Seconds since midnight → `HH:MM`. */
 const secondsToTimeInput = (seconds: number): string => {
-  const hours = `${Math.floor(seconds / 3600) % 24}`.padStart(2, '0');
-  const minutes = `${Math.floor((seconds % 3600) / 60)}`.padStart(2, '0');
-  return `${hours}:${minutes}`;
-};
+  const hours = `${Math.floor(seconds / 3600) % 24}`.padStart(2, '0')
+  const minutes = `${Math.floor((seconds % 3600) / 60)}`.padStart(2, '0')
+  return `${hours}:${minutes}`
+}
 
 const timeInputToSeconds = (value: string): number | undefined => {
   if (!/^\d{2}:\d{2}$/.test(value)) {
-    return undefined;
+    return undefined
   }
-  const [hours, minutes] = value.split(':').map(Number);
-  return (hours ?? 0) * 3600 + (minutes ?? 0) * 60;
-};
+  const [hours, minutes] = value.split(':').map(Number)
+  return (hours ?? 0) * 3600 + (minutes ?? 0) * 60
+}
 
-const RELATIVE_DATE_PRESETS: ReadonlyArray<Readonly<{ key: string; label: string }>> =
-  [
-    { key: '1d_ago', label: '1 day ago' },
-    { key: '7d_ago', label: '7 days ago' },
-    { key: '14d_ago', label: '14 days ago' },
-    { key: '30d_ago', label: '30 days ago' },
-    { key: '60d_ago', label: '60 days ago' },
-    { key: '90d_ago', label: '90 days ago' },
-    { key: '120d_ago', label: '120 days ago' },
-    { key: '1w_ago', label: '1 week ago' },
-    { key: '2w_ago', label: '2 weeks ago' },
-    { key: '4w_ago', label: '4 weeks ago' },
-    { key: '1m_ago', label: '1 month ago' },
-    { key: '3m_ago', label: '3 months ago' },
-    { key: '6m_ago', label: '6 months ago' },
-    { key: '1d_from_now', label: '1 day from now' },
-    { key: '7d_from_now', label: '7 days from now' },
-    { key: '30d_from_now', label: '30 days from now' },
-  ];
+const RELATIVE_DATE_PRESETS: ReadonlyArray<
+  Readonly<{ key: string; label: string }>
+> = [
+  { key: '1d_ago', label: '1 day ago' },
+  { key: '7d_ago', label: '7 days ago' },
+  { key: '14d_ago', label: '14 days ago' },
+  { key: '30d_ago', label: '30 days ago' },
+  { key: '60d_ago', label: '60 days ago' },
+  { key: '90d_ago', label: '90 days ago' },
+  { key: '120d_ago', label: '120 days ago' },
+  { key: '1w_ago', label: '1 week ago' },
+  { key: '2w_ago', label: '2 weeks ago' },
+  { key: '4w_ago', label: '4 weeks ago' },
+  { key: '1m_ago', label: '1 month ago' },
+  { key: '3m_ago', label: '3 months ago' },
+  { key: '6m_ago', label: '6 months ago' },
+  { key: '1d_from_now', label: '1 day from now' },
+  { key: '7d_from_now', label: '7 days from now' },
+  { key: '30d_from_now', label: '30 days from now' },
+]
 
 // =============================================================================
 // formatFilterValue (astryx formatFilterValue.ts, en locale)
 // =============================================================================
 
 const truncate = (value: string, maxLength: number): string =>
-  value.length > maxLength ? `${value.slice(0, maxLength)}…` : value;
+  value.length > maxLength ? `${value.slice(0, maxLength)}…` : value
 
 const formatDateCompact = (unixSeconds: number): string =>
   new Intl.DateTimeFormat(undefined, {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
-  }).format(new Date(unixSeconds * 1000));
+  }).format(new Date(unixSeconds * 1000))
 
 const formatDateDetailed = (unixSeconds: number): string =>
   new Intl.DateTimeFormat(undefined, {
@@ -395,12 +394,12 @@ const formatDateDetailed = (unixSeconds: number): string =>
     year: 'numeric',
     hour: 'numeric',
     minute: '2-digit',
-  }).format(new Date(unixSeconds * 1000));
+  }).format(new Date(unixSeconds * 1000))
 
 const formatTime = (seconds: number): string =>
   `${`${Math.floor(seconds / 3600) % 24}`.padStart(2, '0')}:${`${Math.floor(
     (seconds % 3600) / 60,
-  )}`.padStart(2, '0')}`;
+  )}`.padStart(2, '0')}`
 
 export const formatFilterValue = (
   config: InternalPowerSearchConfig,
@@ -409,82 +408,81 @@ export const formatFilterValue = (
   maxLength: number,
 ): string => {
   if (filterValue === undefined) {
-    return '';
+    return ''
   }
   const listLabel = (
     value: unknown,
     resolveLabel: (v: string) => string | undefined,
   ): string | undefined => {
     if (typeof value === 'string') {
-      return resolveLabel(value);
+      return resolveLabel(value)
     }
-    return undefined;
-  };
+    return undefined
+  }
   const enumLabel = (value: string): string => {
     if (operatorValue.type === 'enum' || operatorValue.type === 'enum_list') {
       return (
-        operatorValue.values.find((item) => item.value === value)?.label ??
-        value
-      );
+        operatorValue.values.find(item => item.value === value)?.label ?? value
+      )
     }
-    return value;
-  };
+    return value
+  }
 
   switch (filterValue.type) {
     case 'empty':
-      return '';
+      return ''
     case 'string':
-      return truncate(filterValue.value, maxLength);
+      return truncate(filterValue.value, maxLength)
     case 'string_list': {
-      const values = filterValue.value;
+      const values = filterValue.value
       if (values.length <= 2) {
-        return truncate(values.join(', '), maxLength);
+        return truncate(values.join(', '), maxLength)
       }
-      return itemsCount(values.length);
+      return itemsCount(values.length)
     }
     case 'integer':
     case 'float':
-      return `${filterValue.value}`;
+      return `${filterValue.value}`
     case 'time':
-      return formatTime(filterValue.value);
+      return formatTime(filterValue.value)
     case 'date_absolute':
-      return formatDateDetailed(filterValue.unixSeconds);
+      return formatDateDetailed(filterValue.unixSeconds)
     case 'date_relative':
       return truncate(
-        RELATIVE_DATE_PRESETS.find((preset) => preset.key === filterValue.value)
+        RELATIVE_DATE_PRESETS.find(preset => preset.key === filterValue.value)
           ?.label ?? filterValue.value,
         maxLength,
-      );
+      )
     case 'date_range':
-      return UI.dateRangeLabel;
+      return UI.dateRangeLabel
     case 'enum':
       return truncate(
         listLabel(filterValue.value, enumLabel) ?? filterValue.value,
         maxLength,
-      );
+      )
     case 'enum_list': {
-      const values = filterValue.value;
+      const values = filterValue.value
       if (values.length <= 2) {
-        return truncate(values.map(enumLabel).join(', '), maxLength);
+        return truncate(values.map(enumLabel).join(', '), maxLength)
       }
-      return itemsCount(values.length);
+      return itemsCount(values.length)
     }
     case 'entity_list': {
-      const entities = filterValue.value;
+      const entities = filterValue.value
       if (entities.length <= 2) {
         return truncate(
-          entities.map((entity) => entity.label).join(', '),
+          entities.map(entity => entity.label).join(', '),
           maxLength,
-        );
+        )
       }
-      return entitiesCount(entities.length);
+      return entitiesCount(entities.length)
     }
     case 'nested':
-      return filtersCount(filterValue.value.length);
+      return filtersCount(filterValue.value.length)
     case 'custom':
-      return '';
+      return ''
   }
-};
+}
 
 // =============================================================================
 // Suggestion pipeline (astryx usePowerSearchSource)
@@ -494,22 +492,22 @@ export type PowerSearchSuggestion =
   | Readonly<{ kind: 'group'; label: string }>
   | Readonly<{ kind: 'field'; field: PowerSearchField }>
   | Readonly<{
-      kind: 'operator';
-      field: PowerSearchField;
-      operator: PowerSearchOperator;
-      label: string;
+      kind: 'operator'
+      field: PowerSearchField
+      operator: PowerSearchOperator
+      label: string
     }>
   | Readonly<{
-      kind: 'value';
-      field: PowerSearchField;
-      operator: PowerSearchOperator;
-      value: FilterValue;
-      label: string;
+      kind: 'value'
+      field: PowerSearchField
+      operator: PowerSearchOperator
+      value: FilterValue
+      label: string
     }>
-  | Readonly<{ kind: 'content'; query: string }>;
+  | Readonly<{ kind: 'content'; query: string }>
 
 const fieldSortWeight = (field: PowerSearchField): number =>
-  field.group === undefined ? 0 : 1;
+  field.group === undefined ? 0 : 1
 
 /** Resolves "<operator> <value>" or bare "<value>" text into committed
     FilterValue items for a field (astryx resolveValueMatches). */
@@ -518,29 +516,29 @@ const resolveValueMatches = (
   valueText: string,
   limit: number,
 ): ReadonlyArray<PowerSearchSuggestion> => {
-  const out: PowerSearchSuggestion[] = [];
-  const text = valueText.trim();
+  const out: PowerSearchSuggestion[] = []
+  const text = valueText.trim()
   if (text === '') {
-    return out;
+    return out
   }
   for (const operator of field.operators) {
     if (out.length >= limit) {
-      break;
+      break
     }
-    const opLabel = resolveOperatorLabel(operator);
+    const opLabel = resolveOperatorLabel(operator)
     const rest = text.toLowerCase().startsWith(`${opLabel.toLowerCase()} `)
       ? text.slice(opLabel.length).trim()
-      : text;
-    const typedAgainstOperator = rest !== text || out.length === 0;
+      : text
+    const typedAgainstOperator = rest !== text || out.length === 0
     if (!typedAgainstOperator) {
-      continue;
+      continue
     }
     switch (operator.value.type) {
       case 'enum':
       case 'enum_list': {
         for (const item of operator.value.values) {
           if (out.length >= limit) {
-            break;
+            break
           }
           if (
             item.label.toLowerCase().includes(rest.toLowerCase()) ||
@@ -555,10 +553,10 @@ const resolveValueMatches = (
                 operator.value.type === 'enum'
                   ? { type: 'enum', value: item.value }
                   : { type: 'enum_list', value: [item.value] },
-            });
+            })
           }
         }
-        break;
+        break
       }
       case 'string': {
         if (field.isValueMatchAllowed !== false) {
@@ -568,13 +566,13 @@ const resolveValueMatches = (
             operator,
             label: `${field.label} ${opLabel} "${rest}"`,
             value: { type: 'string', value: rest },
-          });
+          })
         }
-        break;
+        break
       }
       case 'integer':
       case 'float': {
-        const parsed = Number(rest);
+        const parsed = Number(rest)
         if (rest !== '' && Number.isFinite(parsed)) {
           out.push({
             kind: 'value',
@@ -583,18 +581,19 @@ const resolveValueMatches = (
             label: `${field.label} ${opLabel} ${rest}`,
             value: {
               type: operator.value.type === 'integer' ? 'integer' : 'float',
-              value: operator.value.type === 'integer' ? Math.trunc(parsed) : parsed,
+              value:
+                operator.value.type === 'integer' ? Math.trunc(parsed) : parsed,
             },
-          });
+          })
         }
-        break;
+        break
       }
       default:
-        break;
+        break
     }
   }
-  return out;
-};
+  return out
+}
 
 /** astryx's combined "<field> <op> [value]" matcher over the raw query. */
 const computeSuggestions = (
@@ -602,38 +601,38 @@ const computeSuggestions = (
   query: string,
   maxResults: number,
 ): ReadonlyArray<PowerSearchSuggestion> => {
-  const trimmed = query.trim();
-  const fields = config.nonContentSearchFields;
+  const trimmed = query.trim()
+  const fields = config.nonContentSearchFields
 
   if (trimmed === '') {
     // Browse mode: ungrouped fields first, then group headers + members.
-    const out: PowerSearchSuggestion[] = [];
+    const out: PowerSearchSuggestion[] = []
     const sorted = [...fields].sort(
       (a, b) => fieldSortWeight(a) - fieldSortWeight(b),
-    );
-    const seenGroups = new Set<string>();
+    )
+    const seenGroups = new Set<string>()
     for (const field of sorted) {
       if (field.group !== undefined && !seenGroups.has(field.group)) {
-        seenGroups.add(field.group);
-        out.push({ kind: 'group', label: field.group });
+        seenGroups.add(field.group)
+        out.push({ kind: 'group', label: field.group })
       }
-      out.push({ kind: 'field', field });
+      out.push({ kind: 'field', field })
     }
-    return out.slice(0, maxResults);
+    return out.slice(0, maxResults)
   }
 
-  const lower = trimmed.toLowerCase();
-  const out: PowerSearchSuggestion[] = [];
+  const lower = trimmed.toLowerCase()
+  const out: PowerSearchSuggestion[] = []
 
   // 1. A leading "<field> " prefix shifts the query into operator/value space.
   const fieldPrefix = fields
-    .filter((field) => lower.startsWith(`${field.label.toLowerCase()} `))
-    .sort((a, b) => b.label.length - a.label.length)[0];
+    .filter(field => lower.startsWith(`${field.label.toLowerCase()} `))
+    .sort((a, b) => b.label.length - a.label.length)[0]
 
   if (fieldPrefix !== undefined) {
-    const rest = trimmed.slice(fieldPrefix.label.length).trim();
+    const rest = trimmed.slice(fieldPrefix.label.length).trim()
     for (const operator of fieldPrefix.operators) {
-      const opLabel = resolveOperatorLabel(operator);
+      const opLabel = resolveOperatorLabel(operator)
       if (
         rest === '' ||
         opLabel.toLowerCase().startsWith(rest.toLowerCase()) ||
@@ -646,54 +645,48 @@ const computeSuggestions = (
           field: fieldPrefix,
           operator,
           label: `${fieldPrefix.label} ${opLabel}`,
-        });
+        })
       }
     }
-    out.push(
-      ...resolveValueMatches(fieldPrefix, rest, maxResults - out.length),
-    );
-    return out.slice(0, maxResults);
+    out.push(...resolveValueMatches(fieldPrefix, rest, maxResults - out.length))
+    return out.slice(0, maxResults)
   }
 
   // 2. Plain text → field matches (label / key / typeahead aliases).
-  const fieldMatches = fields.filter((field) => {
-    const minLength = field.typeaheadMinQueryLength ?? 1;
+  const fieldMatches = fields.filter(field => {
+    const minLength = field.typeaheadMinQueryLength ?? 1
     if (lower.length < minLength) {
-      return false;
+      return false
     }
     const candidates = [
       field.label,
       field.key,
       ...(field.typeaheadAliases ?? []),
-    ];
-    return candidates.some((candidate) =>
-      candidate.toLowerCase().includes(lower),
-    );
-  });
+    ]
+    return candidates.some(candidate => candidate.toLowerCase().includes(lower))
+  })
   for (const field of fieldMatches) {
-    out.push({ kind: 'field', field });
+    out.push({ kind: 'field', field })
   }
 
   // 3. Literal "<field> <value>" suggestions across fields.
   for (const field of fieldMatches) {
-    out.push(
-      ...resolveValueMatches(field, trimmed, maxResults - out.length),
-    );
+    out.push(...resolveValueMatches(field, trimmed, maxResults - out.length))
     if (out.length >= maxResults) {
-      break;
+      break
     }
   }
 
   // 4. Content search fallback.
   const exactFieldMatch = fields.some(
-    (field) => field.label.toLowerCase() === lower,
-  );
+    field => field.label.toLowerCase() === lower,
+  )
   if (!exactFieldMatch && config.contentSearchField !== undefined) {
-    out.push({ kind: 'content', query: trimmed });
+    out.push({ kind: 'content', query: trimmed })
   }
 
-  return out.slice(0, maxResults);
-};
+  return out.slice(0, maxResults)
+}
 
 // =============================================================================
 // Filter application (astryx usePowerSearchConfig)
@@ -706,25 +699,28 @@ type FieldDefinitionType =
   | 'date'
   | 'enum'
   | 'enum_list'
-  | 'string_list';
+  | 'string_list'
 
 export type FieldDefinition = Readonly<{
-  key: string;
-  type: FieldDefinitionType;
-  label?: string;
-  enumValues?: ReadonlyArray<EnumItem>;
-}>;
+  key: string
+  type: FieldDefinitionType
+  label?: string
+  enumValues?: ReadonlyArray<EnumItem>
+}>
 
 const i18nOp = (
   key: string,
   i18nKey: string,
   value: OperatorValue,
-): PowerSearchOperator => ({ key, i18nKey, value });
+): PowerSearchOperator => ({ key, i18nKey, value })
 
 /** astryx's default operator sets per FieldDefinition.type. */
 const operatorsForDefinition = (
   definition: FieldDefinition,
-): { defaultOperator: string; operators: ReadonlyArray<PowerSearchOperator> } => {
+): {
+  defaultOperator: string
+  operators: ReadonlyArray<PowerSearchOperator>
+} => {
   switch (definition.type) {
     case 'string':
       return {
@@ -755,7 +751,7 @@ const operatorsForDefinition = (
             type: 'string',
           }),
         ],
-      };
+      }
     case 'number':
       return {
         defaultOperator: 'equals',
@@ -783,7 +779,7 @@ const operatorsForDefinition = (
             { type: 'float' },
           ),
         ],
-      };
+      }
     case 'date':
       return {
         defaultOperator: 'after',
@@ -798,7 +794,7 @@ const operatorsForDefinition = (
             type: 'date_range',
           }),
         ],
-      };
+      }
     case 'boolean':
       return {
         defaultOperator: 'is_true',
@@ -810,9 +806,9 @@ const operatorsForDefinition = (
             type: 'empty',
           }),
         ],
-      };
+      }
     case 'enum': {
-      const values = definition.enumValues ?? [];
+      const values = definition.enumValues ?? []
       return {
         defaultOperator: 'is',
         operators: [
@@ -833,10 +829,10 @@ const operatorsForDefinition = (
             values,
           }),
         ],
-      };
+      }
     }
     case 'enum_list': {
-      const values = definition.enumValues ?? [];
+      const values = definition.enumValues ?? []
       return {
         defaultOperator: 'is_any_of',
         operators: [
@@ -849,7 +845,7 @@ const operatorsForDefinition = (
             values,
           }),
         ],
-      };
+      }
     }
     case 'string_list':
       return {
@@ -862,159 +858,159 @@ const operatorsForDefinition = (
             type: 'string_list',
           }),
         ],
-      };
+      }
   }
-};
+}
 
 const matchesFilter = (
   row: Record<string, unknown>,
   filter: PowerSearchFilter,
 ): boolean => {
-  const fieldValue = row[filter.field];
-  const { operator, value: filterValue } = filter;
+  const fieldValue = row[filter.field]
+  const { operator, value: filterValue } = filter
 
   const toStringValues = (value: unknown): string[] | null => {
     if (typeof value === 'string') {
-      return [value];
+      return [value]
     }
-    if (Array.isArray(value) && value.every((item) => typeof item === 'string')) {
-      return value as string[];
+    if (Array.isArray(value) && value.every(item => typeof item === 'string')) {
+      return value as string[]
     }
-    return null;
-  };
+    return null
+  }
   const toUnixSeconds = (value: unknown): number | null => {
     if (value instanceof Date) {
-      return Math.floor(value.getTime() / 1000);
+      return Math.floor(value.getTime() / 1000)
     }
     if (typeof value === 'number') {
-      return value;
+      return value
     }
-    return null;
-  };
+    return null
+  }
 
   switch (filterValue.type) {
     case 'empty': {
       if (operator === 'is_true') {
-        return Boolean(fieldValue) === true;
+        return Boolean(fieldValue) === true
       }
       if (operator === 'is_false') {
-        return Boolean(fieldValue) === false;
+        return Boolean(fieldValue) === false
       }
-      return true;
+      return true
     }
     case 'string': {
       if (typeof fieldValue !== 'string') {
-        return false;
+        return false
       }
-      const source = fieldValue.toLowerCase();
-      const target = filterValue.value.toLowerCase();
+      const source = fieldValue.toLowerCase()
+      const target = filterValue.value.toLowerCase()
       switch (operator) {
         case 'contains':
-          return source.includes(target);
+          return source.includes(target)
         case 'not_contains':
-          return !source.includes(target);
+          return !source.includes(target)
         case 'starts_with':
-          return source.startsWith(target);
+          return source.startsWith(target)
         case 'not_starts_with':
-          return !source.startsWith(target);
+          return !source.startsWith(target)
         case 'ends_with':
-          return source.endsWith(target);
+          return source.endsWith(target)
         case 'not_ends_with':
-          return !source.endsWith(target);
+          return !source.endsWith(target)
         case 'is':
-          return source === target;
+          return source === target
         case 'is_not':
-          return source !== target;
+          return source !== target
         default:
-          return true;
+          return true
       }
     }
     case 'integer':
     case 'float': {
       if (typeof fieldValue !== 'number') {
-        return false;
+        return false
       }
-      const target = filterValue.value;
+      const target = filterValue.value
       switch (operator) {
         case 'equals':
-          return fieldValue === target;
+          return fieldValue === target
         case 'not_equals':
-          return fieldValue !== target;
+          return fieldValue !== target
         case 'greater_than':
-          return fieldValue > target;
+          return fieldValue > target
         case 'less_than':
-          return fieldValue < target;
+          return fieldValue < target
         case 'greater_than_or_equal':
-          return fieldValue >= target;
+          return fieldValue >= target
         case 'less_than_or_equal':
-          return fieldValue <= target;
+          return fieldValue <= target
         default:
-          return true;
+          return true
       }
     }
     case 'date_absolute': {
-      const timestamp = toUnixSeconds(fieldValue);
+      const timestamp = toUnixSeconds(fieldValue)
       if (timestamp === null) {
-        return false;
+        return false
       }
       if (operator === 'before') {
-        return timestamp < filterValue.unixSeconds;
+        return timestamp < filterValue.unixSeconds
       }
       if (operator === 'after') {
-        return timestamp > filterValue.unixSeconds;
+        return timestamp > filterValue.unixSeconds
       }
-      return true;
+      return true
     }
     case 'date_range': {
-      const timestamp = toUnixSeconds(fieldValue);
+      const timestamp = toUnixSeconds(fieldValue)
       if (timestamp === null) {
-        return false;
+        return false
       }
       if (operator === 'between') {
-        const nowSeconds = Date.now() / 1000;
+        const nowSeconds = Date.now() / 1000
         const start = resolveDateTimeRangePart(
           filterValue.value.start,
           nowSeconds,
-        );
-        const end = resolveDateTimeRangePart(filterValue.value.end, nowSeconds);
-        return timestamp >= start && timestamp <= end;
+        )
+        const end = resolveDateTimeRangePart(filterValue.value.end, nowSeconds)
+        return timestamp >= start && timestamp <= end
       }
-      return true;
+      return true
     }
     case 'enum': {
       if (typeof fieldValue !== 'string') {
-        return false;
+        return false
       }
       if (operator === 'is' || operator === 'is_any_of') {
-        return fieldValue === filterValue.value;
+        return fieldValue === filterValue.value
       }
       if (operator === 'is_not' || operator === 'is_none_of') {
-        return fieldValue !== filterValue.value;
+        return fieldValue !== filterValue.value
       }
-      return true;
+      return true
     }
     case 'enum_list':
     case 'string_list': {
-      const values = toStringValues(fieldValue);
+      const values = toStringValues(fieldValue)
       if (values === null) {
-        return false;
+        return false
       }
       if (operator === 'is_any_of' || operator === 'any_of') {
-        return values.some((value) => filterValue.value.includes(value));
+        return values.some(value => filterValue.value.includes(value))
       }
       if (operator === 'is_none_of' || operator === 'none_of') {
-        return values.every((value) => !filterValue.value.includes(value));
+        return values.every(value => !filterValue.value.includes(value))
       }
-      return true;
+      return true
     }
     case 'entity_list':
     case 'custom':
     case 'nested':
     case 'time':
     case 'date_relative':
-      return true;
+      return true
   }
-};
+}
 
 /** astryx createPowerSearchConfig / usePowerSearchConfig (memoization elided:
     the foldkit port is a pure factory — call it once per config). */
@@ -1022,46 +1018,46 @@ export const createPowerSearchConfig = (
   definitions: ReadonlyArray<FieldDefinition>,
   configName?: string,
 ): {
-  config: PowerSearchConfig;
+  config: PowerSearchConfig
   applyFilters: <Row extends Record<string, unknown>>(
     filters: ReadonlyArray<PowerSearchFilter>,
     data: ReadonlyArray<Row>,
-  ) => Row[];
+  ) => Row[]
 } => {
-  const fields: PowerSearchField[] = definitions.map((definition) => ({
+  const fields: PowerSearchField[] = definitions.map(definition => ({
     key: definition.key,
     label: definition.label ?? definition.key,
     ...operatorsForDefinition(definition),
-  }));
+  }))
 
   const config: PowerSearchConfig = {
     name: configName ?? 'PowerSearchConfig',
     fields,
-  };
+  }
 
   const applyFilters = <Row extends Record<string, unknown>>(
     filters: ReadonlyArray<PowerSearchFilter>,
     data: ReadonlyArray<Row>,
   ): Row[] => {
     if (filters.length === 0) {
-      return [...data];
+      return [...data]
     }
-    return data.filter((row) =>
-      filters.every((filter) =>
+    return data.filter(row =>
+      filters.every(filter =>
         matchesFilter(row as Record<string, unknown>, filter),
       ),
-    );
-  };
+    )
+  }
 
-  return { config, applyFilters };
-};
+  return { config, applyFilters }
+}
 
 // =============================================================================
 // Model
 // =============================================================================
 
-type PopoverState = 'idle' | 'adding' | 'editing';
-const PopoverState = S.Literals(['idle', 'adding', 'editing']);
+type PopoverState = 'idle' | 'adding' | 'editing'
+const PopoverState = S.Literals(['idle', 'adding', 'editing'])
 
 /** One row of the nested-filter editor (first level only — PORT-NOTE:
     astryx recurses arbitrarily via TreeList). */
@@ -1069,8 +1065,8 @@ const SubFilter = S.Struct({
   field: S.String,
   operator: S.NullOr(S.String),
   value: S.NullOr(S.Unknown),
-});
-type SubFilter = typeof SubFilter.Type;
+})
+type SubFilter = typeof SubFilter.Type
 
 export const Model = S.Struct({
   id: S.String,
@@ -1093,8 +1089,8 @@ export const Model = S.Struct({
   editorMenu: S.NullOr(S.String),
   announcement: S.String,
   lastResultCountText: S.NullOr(S.String),
-});
-export type Model = typeof Model.Type;
+})
+export type Model = typeof Model.Type
 
 export const init = (config: { id: string }): Model => ({
   id: config.id,
@@ -1112,7 +1108,7 @@ export const init = (config: { id: string }): Model => ({
   editorMenu: null,
   announcement: '',
   lastResultCountText: null,
-});
+})
 
 // =============================================================================
 // Messages
@@ -1146,8 +1142,8 @@ export const Message = defineMessageUnion({
   ChangedNestedDraft: { index: S.Number, value: S.Unknown },
   CompletedFocusPowerSearchInput: {},
   CompletedFocusPowerSearchEditor: {},
-});
-export type Message = typeof Message.Type;
+})
+export type Message = typeof Message.Type
 
 export const OutMessage = defineMessageUnion({
   ChangedPowerSearch: {
@@ -1155,8 +1151,8 @@ export const OutMessage = defineMessageUnion({
     changeType: S.String,
     index: S.NullOr(S.Number),
   },
-});
-export type OutMessage = typeof OutMessage.Type;
+})
+export type OutMessage = typeof OutMessage.Type
 
 // =============================================================================
 // Commands / Mount
@@ -1170,9 +1166,9 @@ const FocusPowerSearchInput = Command.define('FocusPowerSearchInput', {
       document
         .getElementById(rootId)
         ?.querySelector<HTMLInputElement>('[data-power-search-input]')
-        ?.focus();
+        ?.focus()
     }).pipe(Effect.as(Message.CompletedFocusPowerSearchInput())),
-});
+})
 
 const FocusPowerSearchEditor = Command.define('FocusPowerSearchEditor', {
   args: { rootId: S.String },
@@ -1181,13 +1177,13 @@ const FocusPowerSearchEditor = Command.define('FocusPowerSearchEditor', {
     Effect.sync(() => {
       const editor = document
         .getElementById(rootId)
-        ?.querySelector<HTMLElement>('[data-power-search-editor]');
+        ?.querySelector<HTMLElement>('[data-power-search-editor]')
       const first = editor?.querySelector<HTMLElement>(
         'input:not(:disabled), button:not(:disabled), select:not(:disabled)',
-      );
-      first?.focus();
+      )
+      first?.focus()
     }).pipe(Effect.as(Message.CompletedFocusPowerSearchEditor())),
-});
+})
 
 /** Document-level pointerdown → close the menu/popover when the press lands
     outside the component root (astryx usePopover light-dismiss). */
@@ -1196,7 +1192,7 @@ const ObservePowerSearchDismiss = Mount.defineStream(
   {
     messages: [Message.ClosedPowerSearchSurface],
     execute: () =>
-      Stream.callback<typeof Message.ClosedPowerSearchSurface.Type>((queue) =>
+      Stream.callback<typeof Message.ClosedPowerSearchSurface.Type>(queue =>
         Effect.gen(function* () {
           const handle = yield* Effect.acquireRelease(
             Effect.sync(() => {
@@ -1206,37 +1202,36 @@ const ObservePowerSearchDismiss = Mount.defineStream(
                   Message.ClosedPowerSearchSurface({
                     targetInside:
                       event.target instanceof Element &&
-                      event.target.closest('[data-power-search-root]') !==
-                        null,
+                      event.target.closest('[data-power-search-root]') !== null,
                   }),
-                );
-              };
-              document.addEventListener('pointerdown', listener);
-              return listener;
+                )
+              }
+              document.addEventListener('pointerdown', listener)
+              return listener
             }),
-            (listener) =>
+            listener =>
               Effect.sync(() => {
-                document.removeEventListener('pointerdown', listener);
+                document.removeEventListener('pointerdown', listener)
               }),
-          );
-          void handle;
-          return yield* Effect.never;
+          )
+          void handle
+          return yield* Effect.never
         }),
       ),
   },
-);
+)
 
 // =============================================================================
 // Update
 // =============================================================================
 
-type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>;
+type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>
 
 type FilterChange = Readonly<{
-  filters: ReadonlyArray<PowerSearchFilter>;
-  changeType: PowerSearchChangeType;
-  index: number | null;
-}>;
+  filters: ReadonlyArray<PowerSearchFilter>
+  changeType: PowerSearchChangeType
+  index: number | null
+}>
 
 const emitChange = (
   model: Model,
@@ -1250,28 +1245,28 @@ const emitChange = (
     changeType: change.changeType,
     index: change.index === null ? null : change.index,
   }),
-});
+})
 
 const resultCountText = (resultCount: number | null): string | null =>
   resultCount === null
     ? null
-    : `${resultCount} ${resultCount === 1 ? 'result' : 'results'}`;
+    : `${resultCount} ${resultCount === 1 ? 'result' : 'results'}`
 
 /** astryx useAnnounce on resultCountText changes. */
 const announceResultCount = (
   model: Model,
   resultCount: number | null,
 ): Model => {
-  const text = resultCountText(resultCount);
+  const text = resultCountText(resultCount)
   if (text === model.lastResultCountText) {
-    return model;
+    return model
   }
   return {
     ...model,
     lastResultCountText: text,
     announcement: text ?? '',
-  };
-};
+  }
+}
 
 const blankEditor: Pick<
   Model,
@@ -1288,18 +1283,18 @@ const blankEditor: Pick<
   subFilters: [],
   editorQuery: '',
   editorMenu: null,
-};
+}
 
 const openAddingPopover = (
   model: Model,
   field: PowerSearchField,
   operator: PowerSearchOperator | undefined,
 ): Model => {
-  const resolvedOperator = operator ?? defaultOperator(field);
+  const resolvedOperator = operator ?? defaultOperator(field)
   const nestedField =
     resolvedOperator !== undefined && resolvedOperator.value.type === 'nested'
       ? resolvedOperator.value.fields[0]
-      : undefined;
+      : undefined
   return {
     ...model,
     ...blankEditor,
@@ -1313,8 +1308,7 @@ const openAddingPopover = (
         ? null
         : (defaultFilterValue(resolvedOperator.value) ?? null),
     subFilters:
-      resolvedOperator !== undefined &&
-      resolvedOperator.value.type === 'nested'
+      resolvedOperator !== undefined && resolvedOperator.value.type === 'nested'
         ? [
             {
               field: nestedField?.key ?? '',
@@ -1325,8 +1319,8 @@ const openAddingPopover = (
             },
           ]
         : [],
-  };
-};
+  }
+}
 
 const openEditingPopover = (
   model: Model,
@@ -1334,26 +1328,26 @@ const openEditingPopover = (
   filters: ReadonlyArray<PowerSearchFilter>,
   index: number,
 ): Model => {
-  const filter = filters[index];
+  const filter = filters[index]
   if (filter === undefined) {
-    return model;
+    return model
   }
-  const operator = resolveOperator(config, filter.field, filter.operator);
+  const operator = resolveOperator(config, filter.field, filter.operator)
   const subFilters: SubFilter[] =
     filter.value.type === 'nested'
-      ? filter.value.value.map((sub) => ({
+      ? filter.value.value.map(sub => ({
           field: sub.field,
           operator: sub.operator === '' ? null : sub.operator,
           value: sub.value,
         }))
-      : [];
-  const entityLabels: Record<string, string> = {};
+      : []
+  const entityLabels: Record<string, string> = {}
   if (filter.value.type === 'entity_list') {
     for (const entity of filter.value.value) {
-      entityLabels[entity.id] = entity.label;
+      entityLabels[entity.id] = entity.label
     }
   }
-  void operator;
+  void operator
   return {
     ...model,
     ...blankEditor,
@@ -1364,8 +1358,8 @@ const openEditingPopover = (
     draftValue: filter.value,
     subFilters,
     entityLabels,
-  };
-};
+  }
+}
 
 /** A draft is committable once field+operator are picked and the value is
     present for its type (astryx Apply-enable rule). */
@@ -1374,53 +1368,53 @@ const isDraftComplete = (
   model: Model,
 ): boolean => {
   if (model.partialField === null || model.partialOperator === null) {
-    return false;
+    return false
   }
   const operator = resolveOperator(
     config,
     model.partialField,
     model.partialOperator,
-  );
+  )
   if (operator === undefined) {
-    return false;
+    return false
   }
   if (operator.value.type === 'nested') {
     return model.subFilters.some(
-      (sub) => sub.field !== '' && sub.operator !== null && sub.value !== null,
-    );
+      sub => sub.field !== '' && sub.operator !== null && sub.value !== null,
+    )
   }
-  const draft = model.draftValue as FilterValue | null;
+  const draft = model.draftValue as FilterValue | null
   if (draft === null) {
-    return false;
+    return false
   }
   switch (draft.type) {
     case 'string_list':
     case 'enum_list':
     case 'entity_list':
-      return draft.value.length > 0;
+      return draft.value.length > 0
     case 'nested':
-      return draft.value.length > 0;
+      return draft.value.length > 0
     case 'empty':
-      return true;
+      return true
     default:
-      return true;
+      return true
   }
-};
+}
 
 const subFilterValue = (
   config: InternalPowerSearchConfig,
   sub: SubFilter,
 ): FilterValue | null => {
   if (sub.value !== null) {
-    return sub.value as FilterValue;
+    return sub.value as FilterValue
   }
-  const field = config.fieldsByKey.get(sub.field);
-  const operator = field?.operators.find((op) => op.key === sub.operator);
+  const field = config.fieldsByKey.get(sub.field)
+  const operator = field?.operators.find(op => op.key === sub.operator)
   if (operator === undefined) {
-    return null;
+    return null
   }
-  return defaultFilterValue(operator.value) ?? null;
-};
+  return defaultFilterValue(operator.value) ?? null
+}
 
 const commitEditor = (
   model: Model,
@@ -1428,61 +1422,65 @@ const commitEditor = (
   filters: ReadonlyArray<PowerSearchFilter>,
 ): UpdateReturn => {
   if (model.partialField === null || model.partialOperator === null) {
-    return { model, commands: [] };
+    return { model, commands: [] }
   }
   const operator = resolveOperator(
     config,
     model.partialField,
     model.partialOperator,
-  );
-  let value: FilterValue | null;
+  )
+  let value: FilterValue | null
   if (operator?.value.type === 'nested') {
-    const subs: PowerSearchFilter[] = [];
+    const subs: PowerSearchFilter[] = []
     for (const sub of model.subFilters) {
       if (sub.field === '' || sub.operator === null) {
-        continue;
+        continue
       }
-      const resolved = subFilterValue(config, sub);
+      const resolved = subFilterValue(config, sub)
       if (resolved !== null) {
-        subs.push({ field: sub.field, operator: sub.operator, value: resolved });
+        subs.push({ field: sub.field, operator: sub.operator, value: resolved })
       }
     }
-    value = { type: 'nested', value: subs };
+    value = { type: 'nested', value: subs }
   } else {
-    value = model.draftValue as FilterValue | null;
+    value = model.draftValue as FilterValue | null
   }
   if (value === null || !isDraftComplete(config, model)) {
-    return { model, commands: [] };
+    return { model, commands: [] }
   }
   const next: PowerSearchFilter = {
     field: model.partialField,
     operator: model.partialOperator,
     value,
-  };
+  }
   const closed: Model = {
     ...model,
     ...blankEditor,
     popoverState: 'idle',
     editingFilterIndex: -1,
-  };
-  const focus = [FocusPowerSearchInput({ rootId: model.id })];
+  }
+  const focus = [FocusPowerSearchInput({ rootId: model.id })]
   if (model.popoverState === 'editing' && model.editingFilterIndex >= 0) {
     const nextFilters = filters.map((filter, index) =>
       index === model.editingFilterIndex ? next : filter,
-    );
+    )
     return emitChange(
       closed,
-      { filters: nextFilters, changeType: 'edit', index: model.editingFilterIndex },
+      {
+        filters: nextFilters,
+        changeType: 'edit',
+        index: model.editingFilterIndex,
+      },
       focus,
-    );
+    )
   }
-  const index = filters.length;
+  const index = filters.length
   return emitChange(
     closed,
     { filters: [...filters, next], changeType: 'add', index },
     focus,
-  );
-};
+  )
+}
 
 const cancelEditor = (model: Model): UpdateReturn => ({
   model: {
@@ -1492,7 +1490,7 @@ const cancelEditor = (model: Model): UpdateReturn => ({
     editingFilterIndex: -1,
   },
   commands: [FocusPowerSearchInput({ rootId: model.id })],
-});
+})
 
 export const update = (
   model: Model,
@@ -1502,17 +1500,15 @@ export const update = (
   resultCount: number | null = null,
 ): UpdateReturn => {
   const done = (next: Model, commands: Update.Commands<Message> = []) =>
-    ({ model: announceResultCount(next, resultCount), commands }) as UpdateReturn;
+    ({
+      model: announceResultCount(next, resultCount),
+      commands,
+    }) as UpdateReturn
   const doneWithChange = (
     next: Model,
     change: FilterChange,
     commands: Update.Commands<Message> = [],
-  ) =>
-    emitChange(
-      announceResultCount(next, resultCount),
-      change,
-      commands,
-    );
+  ) => emitChange(announceResultCount(next, resultCount), change, commands)
 
   switch (message._tag) {
     case 'ChangedPowerSearchQuery': {
@@ -1521,46 +1517,46 @@ export const update = (
         query: message.value,
         isMenuOpen: true,
         highlightedIndex: -1,
-      });
+      })
     }
     case 'FocusedPowerSearchInput': {
       if (model.popoverState !== 'idle') {
-        return done(model);
+        return done(model)
       }
-      return done({ ...model, isMenuOpen: true });
+      return done({ ...model, isMenuOpen: true })
     }
     case 'PressedPowerSearchInputKey': {
-      const suggestions = computeSuggestions(config, model.query, 10);
+      const suggestions = computeSuggestions(config, model.query, 10)
       switch (message.key) {
         case 'ArrowDown': {
           const selectable = suggestions
             .map((item, index) => ({ item, index }))
-            .filter(({ item }) => item.kind !== 'group');
+            .filter(({ item }) => item.kind !== 'group')
           if (selectable.length === 0) {
-            return done(model);
+            return done(model)
           }
           const nextIndex =
             selectable.find(({ index }) => index > model.highlightedIndex)
-              ?.index ?? selectable[0]?.index ?? -1;
-          return done({ ...model, highlightedIndex: nextIndex });
+              ?.index ??
+            selectable[0]?.index ??
+            -1
+          return done({ ...model, highlightedIndex: nextIndex })
         }
         case 'ArrowUp': {
           const selectable = suggestions
             .map((item, index) => ({ item, index }))
-            .filter(({ item }) => item.kind !== 'group');
+            .filter(({ item }) => item.kind !== 'group')
           if (selectable.length === 0) {
-            return done(model);
+            return done(model)
           }
           const previous = [...selectable]
             .reverse()
-            .find(({ index }) => index < model.highlightedIndex);
+            .find(({ index }) => index < model.highlightedIndex)
           return done({
             ...model,
             highlightedIndex:
-              previous?.index ??
-              selectable[selectable.length - 1]?.index ??
-              -1,
-          });
+              previous?.index ?? selectable[selectable.length - 1]?.index ?? -1,
+          })
         }
         case 'Enter': {
           if (model.highlightedIndex >= 0) {
@@ -1572,47 +1568,47 @@ export const update = (
               config,
               filters,
               resultCount,
-            );
+            )
           }
-          return done({ ...model, isMenuOpen: false });
+          return done({ ...model, isMenuOpen: false })
         }
         case 'Escape': {
-          return done({ ...model, isMenuOpen: false, highlightedIndex: -1 });
+          return done({ ...model, isMenuOpen: false, highlightedIndex: -1 })
         }
         case 'Backspace': {
           if (model.query !== '' || filters.length === 0) {
-            return done(model);
+            return done(model)
           }
           // astryx Tokenizer: Backspace on an empty input removes the last
           // editable token.
           const lastEditable = [...filters]
             .map((filter, index) => ({ filter, index }))
             .reverse()
-            .find(({ filter }) => filter.isReadOnly !== true);
+            .find(({ filter }) => filter.isReadOnly !== true)
           if (lastEditable === undefined) {
-            return done(model);
+            return done(model)
           }
           const nextFilters = filters.filter(
             (_, index) => index !== lastEditable.index,
-          );
+          )
           return doneWithChange(model, {
             filters: nextFilters,
             changeType: 'remove',
             index: lastEditable.index,
-          });
+          })
         }
         default:
-          return done(model);
+          return done(model)
       }
     }
     case 'HighlightedPowerSearchItem': {
-      return done({ ...model, highlightedIndex: message.index });
+      return done({ ...model, highlightedIndex: message.index })
     }
     case 'ClickedPowerSearchItem': {
-      const suggestions = computeSuggestions(config, model.query, 10);
-      const item = suggestions[message.index];
+      const suggestions = computeSuggestions(config, model.query, 10)
+      const item = suggestions[message.index]
       if (item === undefined) {
-        return done(model);
+        return done(model)
       }
       switch (item.kind) {
         case 'field': {
@@ -1623,7 +1619,7 @@ export const update = (
             query: `${item.field.label} `,
             isMenuOpen: true,
             highlightedIndex: -1,
-          });
+          })
         }
         case 'operator': {
           if (item.operator.value.type === 'empty') {
@@ -1631,7 +1627,7 @@ export const update = (
               field: item.field.key,
               operator: item.operator.key,
               value: { type: 'empty' },
-            };
+            }
             return doneWithChange(
               { ...model, query: '', isMenuOpen: true },
               {
@@ -1640,7 +1636,7 @@ export const update = (
                 index: filters.length,
               },
               [FocusPowerSearchInput({ rootId: model.id })],
-            );
+            )
           }
           return done(
             {
@@ -1648,14 +1644,14 @@ export const update = (
               isMenuOpen: false,
             },
             [FocusPowerSearchEditor({ rootId: model.id })],
-          );
+          )
         }
         case 'value': {
           const next: PowerSearchFilter = {
             field: item.field.key,
             operator: item.operator.key,
             value: item.value,
-          };
+          }
           return doneWithChange(
             { ...model, query: '', isMenuOpen: true },
             {
@@ -1664,23 +1660,23 @@ export const update = (
               index: filters.length,
             },
             [FocusPowerSearchInput({ rootId: model.id })],
-          );
+          )
         }
         case 'content': {
-          const field = config.contentSearchField;
+          const field = config.contentSearchField
           const operator =
             field === undefined
               ? undefined
-              : (field.operators.find((op) => op.value.type === 'string') ??
-                defaultOperator(field));
+              : (field.operators.find(op => op.value.type === 'string') ??
+                defaultOperator(field))
           if (field === undefined || operator === undefined) {
-            return done(model);
+            return done(model)
           }
           const next: PowerSearchFilter = {
             field: field.key,
             operator: operator.key,
             value: { type: 'string', value: item.query },
-          };
+          }
           return doneWithChange(
             { ...model, query: '', isMenuOpen: true },
             {
@@ -1689,34 +1685,29 @@ export const update = (
               index: filters.length,
             },
             [FocusPowerSearchInput({ rootId: model.id })],
-          );
+          )
         }
         case 'group':
-          return done(model);
+          return done(model)
       }
-      break;
+      break
     }
     case 'ClickedEditFilterToken': {
-      const next = openEditingPopover(model, config, filters, message.index);
-      return done(
-        { ...next, isMenuOpen: false },
-        [FocusPowerSearchEditor({ rootId: model.id })],
-      );
+      const next = openEditingPopover(model, config, filters, message.index)
+      return done({ ...next, isMenuOpen: false }, [
+        FocusPowerSearchEditor({ rootId: model.id }),
+      ])
     }
     case 'ClickedRemoveFilterToken': {
-      const nextFilters = filters.filter(
-        (_, index) => index !== message.index,
-      );
+      const nextFilters = filters.filter((_, index) => index !== message.index)
       return doneWithChange(model, {
         filters: nextFilters,
         changeType: 'remove',
         index: message.index,
-      });
+      })
     }
     case 'ClickedClearPowerSearch': {
-      const nextFilters = filters.filter(
-        (filter) => filter.isReadOnly === true,
-      );
+      const nextFilters = filters.filter(filter => filter.isReadOnly === true)
       return doneWithChange(
         { ...model, query: '' },
         {
@@ -1724,46 +1715,44 @@ export const update = (
           changeType: 'remove',
           index: null,
         },
-      );
+      )
     }
     case 'ClosedPowerSearchSurface': {
       if (message.targetInside) {
-        return done(model);
+        return done(model)
       }
       if (model.popoverState !== 'idle') {
-        return cancelEditor(model);
+        return cancelEditor(model)
       }
-      return done({ ...model, isMenuOpen: false, highlightedIndex: -1 });
+      return done({ ...model, isMenuOpen: false, highlightedIndex: -1 })
     }
     case 'SelectedEditorField': {
-      const field = config.fieldsByKey.get(message.fieldKey);
+      const field = config.fieldsByKey.get(message.fieldKey)
       if (field === undefined) {
-        return done(model);
+        return done(model)
       }
-      const operator = defaultOperator(field);
-      return done(
-        {
-          ...model,
-          partialField: field.key,
-          partialOperator: operator?.key ?? null,
-          draftValue:
-            operator === undefined
-              ? null
-              : (defaultFilterValue(operator.value) ?? null),
-          subFilters: [],
-          editorQuery: '',
-          editorMenu: null,
-        },
-      );
+      const operator = defaultOperator(field)
+      return done({
+        ...model,
+        partialField: field.key,
+        partialOperator: operator?.key ?? null,
+        draftValue:
+          operator === undefined
+            ? null
+            : (defaultFilterValue(operator.value) ?? null),
+        subFilters: [],
+        editorQuery: '',
+        editorMenu: null,
+      })
     }
     case 'SelectedEditorOperator': {
       const operator = resolveOperator(
         config,
         model.partialField ?? '',
         message.operatorKey,
-      );
+      )
       if (operator === undefined) {
-        return done(model);
+        return done(model)
       }
       return done({
         ...model,
@@ -1781,69 +1770,70 @@ export const update = (
             : [],
         editorQuery: '',
         editorMenu: null,
-      });
+      })
     }
     case 'ChangedEditorInput': {
       const operator = resolveOperator(
         config,
         model.partialField ?? '',
         model.partialOperator ?? '',
-      );
+      )
       if (operator === undefined) {
-        return done(model);
+        return done(model)
       }
-      const raw = message.value;
-      let draft: FilterValue | null = null;
+      const raw = message.value
+      let draft: FilterValue | null = null
       switch (operator.value.type) {
         case 'string':
-          draft = { type: 'string', value: raw };
-          break;
+          draft = { type: 'string', value: raw }
+          break
         case 'integer':
           draft =
             raw === '' || !Number.isFinite(Number(raw))
               ? null
-              : { type: 'integer', value: Math.trunc(Number(raw)) };
-          break;
+              : { type: 'integer', value: Math.trunc(Number(raw)) }
+          break
         case 'float':
           draft =
             raw === '' || !Number.isFinite(Number(raw))
               ? null
-              : { type: 'float', value: Number(raw) };
-          break;
+              : { type: 'float', value: Number(raw) }
+          break
         case 'time': {
-          const seconds = timeInputToSeconds(raw);
-          draft = seconds === undefined ? null : { type: 'time', value: seconds };
-          break;
+          const seconds = timeInputToSeconds(raw)
+          draft =
+            seconds === undefined ? null : { type: 'time', value: seconds }
+          break
         }
         case 'date_absolute': {
-          const seconds = dateInputToUnixSeconds(raw);
+          const seconds = dateInputToUnixSeconds(raw)
           draft =
             seconds === undefined
               ? null
-              : { type: 'date_absolute', unixSeconds: seconds };
-          break;
+              : { type: 'date_absolute', unixSeconds: seconds }
+          break
         }
         case 'date_relative':
-          draft = raw === '' ? null : { type: 'date_relative', value: raw };
-          break;
+          draft = raw === '' ? null : { type: 'date_relative', value: raw }
+          break
         case 'custom':
-          draft = raw === '' ? null : { type: 'custom', value: raw };
-          break;
+          draft = raw === '' ? null : { type: 'custom', value: raw }
+          break
         default:
-          break;
+          break
       }
-      return done({ ...model, draftValue: draft });
+      return done({ ...model, draftValue: draft })
     }
     case 'ChangedEditorDraft': {
       const operator = resolveOperator(
         config,
         model.partialField ?? '',
         model.partialOperator ?? '',
-      );
+      )
       if (operator === undefined) {
-        return done(model);
+        return done(model)
       }
-      const draft = message.value as FilterValue;
+      const draft = message.value as FilterValue
       // astryx enum Selector commits immediately and closes the popover.
       if (operator.value.type === 'enum' && draft.type === 'enum') {
         return update(
@@ -1852,43 +1842,43 @@ export const update = (
           config,
           filters,
           resultCount,
-        );
+        )
       }
       return done({
         ...model,
         draftValue: draft,
         editorQuery: '',
         editorMenu: null,
-      });
+      })
     }
     case 'ChangedEditorQuery': {
       return done({
         ...model,
         editorQuery: message.value,
         editorMenu: 'entityList',
-      });
+      })
     }
     case 'SetEditorMenu': {
-      return done({ ...model, editorMenu: message.menu });
+      return done({ ...model, editorMenu: message.menu })
     }
     case 'PressedEditorKey': {
       switch (message.key) {
         case 'Escape':
           if (model.editorMenu !== null) {
-            return done({ ...model, editorMenu: null });
+            return done({ ...model, editorMenu: null })
           }
-          return cancelEditor(model);
+          return cancelEditor(model)
         case 'Enter':
           if (model.editorMenu !== null) {
-            return done({ ...model, editorMenu: null });
+            return done({ ...model, editorMenu: null })
           }
-          return commitEditor(model, config, filters);
+          return commitEditor(model, config, filters)
         default:
-          return done(model);
+          return done(model)
       }
     }
     case 'ClickedEditorSave': {
-      return commitEditor(model, config, filters);
+      return commitEditor(model, config, filters)
     }
     case 'ClickedEditorDelete': {
       const next = {
@@ -1896,7 +1886,7 @@ export const update = (
         ...blankEditor,
         popoverState: 'idle' as const,
         editingFilterIndex: -1,
-      };
+      }
       return doneWithChange(
         next,
         {
@@ -1907,20 +1897,20 @@ export const update = (
           index: model.editingFilterIndex,
         },
         [FocusPowerSearchInput({ rootId: model.id })],
-      );
+      )
     }
     case 'ClickedEditorCancel': {
-      return cancelEditor(model);
+      return cancelEditor(model)
     }
     case 'AddedNestedSubFilter': {
       const operator = resolveOperator(
         config,
         model.partialField ?? '',
         model.partialOperator ?? '',
-      );
+      )
       const nestedFields =
-        operator?.value.type === 'nested' ? operator.value.fields : [];
-      const first = nestedFields[0];
+        operator?.value.type === 'nested' ? operator.value.fields : []
+      const first = nestedFields[0]
       return done({
         ...model,
         subFilters: [
@@ -1931,7 +1921,7 @@ export const update = (
             value: null,
           },
         ],
-      });
+      })
     }
     case 'RemovedNestedSubFilter': {
       return done({
@@ -1939,41 +1929,41 @@ export const update = (
         subFilters: model.subFilters.filter(
           (_, index) => index !== message.index,
         ),
-      });
+      })
     }
     case 'ChangedNestedField':
     case 'ChangedNestedOperator':
     case 'ChangedNestedInput':
     case 'ChangedNestedDraft': {
-      const sub = model.subFilters[message.index];
+      const sub = model.subFilters[message.index]
       if (sub === undefined) {
-        return done(model);
+        return done(model)
       }
-      let next: SubFilter = sub;
+      let next: SubFilter = sub
       if (message._tag === 'ChangedNestedField') {
         const nestedOperator = resolveOperator(
           config,
           model.partialField ?? '',
           model.partialOperator ?? '',
-        );
+        )
         const nestedFields =
           nestedOperator?.value.type === 'nested'
             ? nestedOperator.value.fields
-            : [];
+            : []
         const field = nestedFields.find(
-          (candidate) => candidate.key === message.fieldKey,
-        );
+          candidate => candidate.key === message.fieldKey,
+        )
         if (field === undefined) {
-          return done(model);
+          return done(model)
         }
-        const op = defaultOperator(field);
+        const op = defaultOperator(field)
         next = {
           field: field.key,
           operator: op?.key ?? null,
           value: null,
-        };
+        }
       } else if (message._tag === 'ChangedNestedOperator') {
-        next = { ...sub, operator: message.operatorKey, value: null };
+        next = { ...sub, operator: message.operatorKey, value: null }
       } else {
         next = {
           ...sub,
@@ -1983,64 +1973,64 @@ export const update = (
                 ? null
                 : { type: 'string', value: message.value }
               : message.value,
-        };
+        }
       }
       return done({
         ...model,
         subFilters: model.subFilters.map((candidate, index) =>
           index === message.index ? next : candidate,
         ),
-      });
+      })
     }
     case 'CompletedFocusPowerSearchInput':
     case 'CompletedFocusPowerSearchEditor': {
-      return done(model);
+      return done(model)
     }
   }
-};
+}
 
 // =============================================================================
 // View
 // =============================================================================
 
 export type PowerSearchProps<Msg> = Readonly<{
-  model: Model;
-  toParentMessage: (message: Message) => Msg;
+  model: Model
+  toParentMessage: (message: Message) => Msg
   /** Controlled filter list (astryx `filters` prop + `onChange`). */
-  filters: ReadonlyArray<PowerSearchFilter>;
-  config: InternalPowerSearchConfig;
-  placeholder?: string;
+  filters: ReadonlyArray<PowerSearchFilter>
+  config: InternalPowerSearchConfig
+  placeholder?: string
   /** Max characters of the formatted value inside a token. @default 40 */
-  valueMaxLength?: number;
-  resultCount?: number;
+  valueMaxLength?: number
+  resultCount?: number
   /** astryx `hasClear`. @default false */
-  hasClear?: boolean;
-  isDisabled?: boolean;
+  hasClear?: boolean
+  isDisabled?: boolean
   /** Content rendered after the input, before the clear button. */
-  endContent?: Html;
-  class?: string;
-}>;
+  endContent?: Html
+  class?: string
+}>
 
 const inputClasses =
-  'h-8 w-full rounded-md border border-input bg-transparent px-2 text-sm shadow-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50';
+  'h-8 w-full rounded-md border border-input bg-transparent px-2 text-sm shadow-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50'
 
 const menuContainerClasses =
-  'absolute inset-x-0 top-full z-50 mt-1 max-h-60 overflow-y-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md';
+  'absolute inset-x-0 top-full z-50 mt-1 max-h-60 overflow-y-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md'
 
 const menuItemBase =
-  'flex w-full cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none';
+  'flex w-full cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none'
 
 const chipClasses =
-  'inline-flex h-6 shrink-0 items-center gap-1 rounded-md bg-muted px-2 text-xs text-foreground';
+  'inline-flex h-6 shrink-0 items-center gap-1 rounded-md bg-muted px-2 text-xs text-foreground'
 
-type ToParent<Msg> = (message: Message) => Msg;
+type ToParent<Msg> = (message: Message) => Msg
 
 type Ctx<Msg> = Readonly<{
-  model: Model;
-  config: InternalPowerSearchConfig;
-  toParent: ToParent<Msg>;
-  h: HtmlBuilder<Msg>;
-}>;
+  model: Model
+  config: InternalPowerSearchConfig
+  toParent: ToParent<Msg>
+  h: HtmlBuilder<Msg>
+}>
 
 const menuItemIcon = <Msg>(
   item: PowerSearchSuggestion,
@@ -2051,19 +2041,19 @@ const menuItemIcon = <Msg>(
       ? (item.field.icon ?? 'menu')
       : item.kind === 'operator'
         ? 'menu'
-        : 'search';
+        : 'search'
   return Icon.icon(
     name,
     { class: cn('size-3.5 shrink-0 text-muted-foreground') },
     ctx.h,
-  );
-};
+  )
+}
 
 const menu = <Msg>(ctx: Ctx<Msg>): Html => {
-  const { model, h, toParent } = ctx;
-  const suggestions = computeSuggestions(ctx.config, model.query, 10);
+  const { model, h, toParent } = ctx
+  const suggestions = computeSuggestions(ctx.config, model.query, 10)
   if (suggestions.length === 0) {
-    return h.empty;
+    return h.empty
   }
   return h.div(
     [
@@ -2072,17 +2062,15 @@ const menu = <Msg>(ctx: Ctx<Msg>): Html => {
       h.AriaLabel('Suggestions'),
     ],
     suggestions.map((item, index) => {
-      const highlighted = index === model.highlightedIndex;
+      const highlighted = index === model.highlightedIndex
       if (item.kind === 'group') {
         return h.div(
           [
             h.Key(`group-${item.label}`),
-            h.Class(
-              'text-muted-foreground px-2 pt-2 pb-1 text-xs font-medium',
-            ),
+            h.Class('text-muted-foreground px-2 pt-2 pb-1 text-xs font-medium'),
           ],
           [item.label],
-        );
+        )
       }
       const label =
         item.kind === 'field'
@@ -2091,9 +2079,9 @@ const menu = <Msg>(ctx: Ctx<Msg>): Html => {
             ? item.label
             : item.kind === 'value'
               ? item.label
-              : `"${item.query}"`;
+              : `"${item.query}"`
       const description =
-        item.kind === 'field' ? item.field.description : undefined;
+        item.kind === 'field' ? item.field.description : undefined
       return h.button(
         [
           h.Key(`item-${index}`),
@@ -2101,10 +2089,7 @@ const menu = <Msg>(ctx: Ctx<Msg>): Html => {
           h.Role('option'),
           h.AriaSelected(highlighted),
           h.Class(
-            cn(
-              menuItemBase,
-              highlighted && 'bg-accent text-accent-foreground',
-            ),
+            cn(menuItemBase, highlighted && 'bg-accent text-accent-foreground'),
           ),
           h.OnMouseEnter(
             toParent(Message.HighlightedPowerSearchItem({ index })),
@@ -2118,145 +2103,159 @@ const menu = <Msg>(ctx: Ctx<Msg>): Html => {
             ? []
             : [
                 h.span(
-                  [
-                    h.Class(
-                      'text-muted-foreground ml-auto truncate text-xs',
-                    ),
-                  ],
+                  [h.Class('text-muted-foreground ml-auto truncate text-xs')],
                   [description],
                 ),
               ]),
         ],
-      );
+      )
     }),
-  );
-};
+  )
+}
 
 /** Which small listbox inside the editor popover is currently open (astryx
     Selector dropdowns; 'subField-N'/'subOp-N'/'sub-N' for nested rows). */
-type EditorMenuKey = string;
+type EditorMenuKey = string
 
 const editorSelect = <Msg>(
   ctx: Ctx<Msg>,
   args: Readonly<{
-    menuKey: EditorMenuKey;
-    label: string;
-    options: ReadonlyArray<Readonly<{ value: string; label: string }>>;
-    selected: string | null;
-    placeholder?: string;
-    onPick: (value: string) => Message;
-    class?: string;
+    menuKey: EditorMenuKey
+    label: string
+    options: ReadonlyArray<Readonly<{ value: string; label: string }>>
+    selected: string | null
+    placeholder?: string
+    onPick: (value: string) => Message
+    class?: string
   }>,
 ): Html => {
-  const { model, h, toParent } = ctx;
-  const isOpen = model.editorMenu === args.menuKey;
-  const current = args.options.find(
-    (option) => option.value === args.selected,
-  );
-  return h.div([h.Class(cn('min-w-28 flex-1', args.class ?? ''))], [
-    h.div([h.Class('text-muted-foreground mb-1 text-xs font-medium')], [
-      args.label,
-    ]),
-    h.div([h.Class('relative')], [
-      h.button(
-        [
-          h.Type('button'),
-          h.Class(
-            cn(
-              inputClasses,
-              'flex items-center justify-between gap-2 text-left',
-            ),
-          ),
-          h.OnClick(
-            toParent(
-              Message.SetEditorMenu({ menu: isOpen ? null : args.menuKey }),
-            ),
-          ),
-        ],
-        [
-          h.span(
-            [
-              h.Class(
-                cn('truncate', current === undefined && 'text-muted-foreground'),
-              ),
-            ],
-            [current?.label ?? args.placeholder ?? UI.selectValuesPlaceholder],
-          ),
-          Icon.icon(
-            'chevron-down',
-            { class: 'size-3.5 shrink-0 text-muted-foreground' },
-            h,
-          ),
-        ],
+  const { model, h, toParent } = ctx
+  const isOpen = model.editorMenu === args.menuKey
+  const current = args.options.find(option => option.value === args.selected)
+  return h.div(
+    [h.Class(cn('min-w-28 flex-1', args.class ?? ''))],
+    [
+      h.div(
+        [h.Class('text-muted-foreground mb-1 text-xs font-medium')],
+        [args.label],
       ),
-      ...(isOpen
-        ? [
-            h.div(
-              [
-                h.Class(cn(menuContainerClasses, 'w-full min-w-40')),
-                h.Role('listbox'),
-              ],
-              args.options.map((option) =>
-                h.button(
-                  [
-                    h.Key(option.value),
-                    h.Type('button'),
-                    h.Role('option'),
-                    h.AriaSelected(option.value === args.selected),
-                    h.Class(
-                      cn(
-                        menuItemBase,
-                        option.value === args.selected &&
-                          'bg-accent text-accent-foreground',
-                      ),
-                    ),
-                    h.OnClick(toParent(args.onPick(option.value))),
-                  ],
-                  [option.label],
+      h.div(
+        [h.Class('relative')],
+        [
+          h.button(
+            [
+              h.Type('button'),
+              h.Class(
+                cn(
+                  inputClasses,
+                  'flex items-center justify-between gap-2 text-left',
                 ),
               ),
-            ),
-          ]
-        : []),
-    ]),
-  ]);
-};
+              h.OnClick(
+                toParent(
+                  Message.SetEditorMenu({ menu: isOpen ? null : args.menuKey }),
+                ),
+              ),
+            ],
+            [
+              h.span(
+                [
+                  h.Class(
+                    cn(
+                      'truncate',
+                      current === undefined && 'text-muted-foreground',
+                    ),
+                  ),
+                ],
+                [
+                  current?.label ??
+                    args.placeholder ??
+                    UI.selectValuesPlaceholder,
+                ],
+              ),
+              Icon.icon(
+                'chevron-down',
+                { class: 'size-3.5 shrink-0 text-muted-foreground' },
+                h,
+              ),
+            ],
+          ),
+          ...(isOpen
+            ? [
+                h.div(
+                  [
+                    h.Class(cn(menuContainerClasses, 'w-full min-w-40')),
+                    h.Role('listbox'),
+                  ],
+                  args.options.map(option =>
+                    h.button(
+                      [
+                        h.Key(option.value),
+                        h.Type('button'),
+                        h.Role('option'),
+                        h.AriaSelected(option.value === args.selected),
+                        h.Class(
+                          cn(
+                            menuItemBase,
+                            option.value === args.selected &&
+                              'bg-accent text-accent-foreground',
+                          ),
+                        ),
+                        h.OnClick(toParent(args.onPick(option.value))),
+                      ],
+                      [option.label],
+                    ),
+                  ),
+                ),
+              ]
+            : []),
+        ],
+      ),
+    ],
+  )
+}
 
 /** Chip row + input tail for *_list value editing (astryx Tokenizer). */
 const editorChips = <Msg>(
   ctx: Ctx<Msg>,
   args: Readonly<{
-    values: ReadonlyArray<Readonly<{ id: string; label: string }>>;
-    onRemove: (id: string) => Message;
-    tail: Html;
+    values: ReadonlyArray<Readonly<{ id: string; label: string }>>
+    onRemove: (id: string) => Message
+    tail: Html
   }>,
 ): Html => {
-  const { h, toParent } = ctx;
+  const { h, toParent } = ctx
   return h.div(
     [
       h.Class(
-        cn(inputClasses, 'flex h-auto min-h-8 flex-wrap items-center gap-1 py-1'),
+        cn(
+          inputClasses,
+          'flex h-auto min-h-8 flex-wrap items-center gap-1 py-1',
+        ),
       ),
     ],
     [
-      ...args.values.map((item) =>
-        h.span([h.Key(item.id), h.Class(chipClasses)], [
-          item.label,
-          h.button(
-            [
-              h.Type('button'),
-              h.Class('text-muted-foreground hover:text-foreground'),
-              h.AriaLabel(UI.removeFilter),
-              h.OnClick(toParent(args.onRemove(item.id))),
-            ],
-            [Icon.icon('x', { class: 'size-3' }, h)],
-          ),
-        ]),
+      ...args.values.map(item =>
+        h.span(
+          [h.Key(item.id), h.Class(chipClasses)],
+          [
+            item.label,
+            h.button(
+              [
+                h.Type('button'),
+                h.Class('text-muted-foreground hover:text-foreground'),
+                h.AriaLabel(UI.removeFilter),
+                h.OnClick(toParent(args.onRemove(item.id))),
+              ],
+              [Icon.icon('x', { class: 'size-3' }, h)],
+            ),
+          ],
+        ),
       ),
       args.tail,
     ],
-  );
-};
+  )
+}
 
 const removeFromList = (
   draft: FilterValue | null,
@@ -2264,50 +2263,50 @@ const removeFromList = (
   id: string,
 ): FilterValue | null => {
   if (draft === null || draft.type !== listType) {
-    return draft;
+    return draft
   }
   if (draft.type === 'entity_list') {
     return {
       type: 'entity_list',
-      value: draft.value.filter((entity) => entity.id !== id),
-    };
+      value: draft.value.filter(entity => entity.id !== id),
+    }
   }
   if (draft.type === 'enum_list' || draft.type === 'string_list') {
     return {
       type: draft.type,
-      value: draft.value.filter((value) => value !== id),
-    };
+      value: draft.value.filter(value => value !== id),
+    }
   }
-  return draft;
-};
+  return draft
+}
 
-const editorLabel = <Msg>(
-  ctx: Ctx<Msg>,
-  label: string,
-  control: Html,
-): Html =>
-  ctx.h.div([ctx.h.Class('min-w-28 flex-1')], [
-    ctx.h.div([ctx.h.Class('text-muted-foreground mb-1 text-xs font-medium')], [
-      label,
-    ]),
-    control,
-  ]);
+const editorLabel = <Msg>(ctx: Ctx<Msg>, label: string, control: Html): Html =>
+  ctx.h.div(
+    [ctx.h.Class('min-w-28 flex-1')],
+    [
+      ctx.h.div(
+        [ctx.h.Class('text-muted-foreground mb-1 text-xs font-medium')],
+        [label],
+      ),
+      control,
+    ],
+  )
 
 const editorValueControl = <Msg>(ctx: Ctx<Msg>): Html => {
-  const { model, config, h, toParent } = ctx;
+  const { model, config, h, toParent } = ctx
   const operator = resolveOperator(
     config,
     model.partialField ?? '',
     model.partialOperator ?? '',
-  );
+  )
   if (operator === undefined) {
-    return h.empty;
+    return h.empty
   }
-  const opValue = operator.value;
+  const opValue = operator.value
   if (opValue.type === 'empty') {
-    return h.empty;
+    return h.empty
   }
-  const draft = model.draftValue as FilterValue | null;
+  const draft = model.draftValue as FilterValue | null
   const textInput = (inputType: string, value: string, placeholder: string) =>
     h.input([
       h.Type(inputType),
@@ -2317,347 +2316,371 @@ const editorValueControl = <Msg>(ctx: Ctx<Msg>): Html => {
       h.OnInput((value: string) =>
         toParent(Message.ChangedEditorInput({ value })),
       ),
-    ]);
+    ])
 
   switch (opValue.type) {
     case 'string': {
-      const value = draft?.type === 'string' ? draft.value : '';
+      const value = draft?.type === 'string' ? draft.value : ''
       return editorLabel(
         ctx,
         UI.valueLabel,
         textInput('text', value, UI.enterValuePlaceholder),
-      );
+      )
     }
     case 'integer':
     case 'float': {
       const value =
         draft !== null && (draft.type === 'integer' || draft.type === 'float')
           ? `${draft.value}`
-          : '';
+          : ''
       return editorLabel(
         ctx,
         UI.valueLabel,
         textInput('number', value, UI.enterNumberPlaceholder),
-      );
+      )
     }
     case 'time': {
       const value =
-        draft?.type === 'time' ? secondsToTimeInput(draft.value) : '';
-      return editorLabel(ctx, UI.timeLabel, textInput('time', value, ''));
+        draft?.type === 'time' ? secondsToTimeInput(draft.value) : ''
+      return editorLabel(ctx, UI.timeLabel, textInput('time', value, ''))
     }
     case 'date_absolute': {
       const value =
         draft?.type === 'date_absolute'
           ? unixSecondsToDateInput(draft.unixSeconds)
-          : '';
-      return editorLabel(ctx, UI.dateLabel, textInput('date', value, ''));
+          : ''
+      return editorLabel(ctx, UI.dateLabel, textInput('date', value, ''))
     }
     case 'date_relative': {
-      const options = RELATIVE_DATE_PRESETS.map((preset) => ({
+      const options = RELATIVE_DATE_PRESETS.map(preset => ({
         value: preset.key,
         label: preset.label,
-      }));
+      }))
       return editorSelect(ctx, {
         menuKey: 'relative',
         label: UI.relativeDateLabel,
         options,
         selected: draft?.type === 'date_relative' ? draft.value : null,
-        onPick: (value) =>
+        onPick: value =>
           Message.ChangedEditorDraft({
             value: { type: 'date_relative', value },
           }),
-      });
+      })
     }
     case 'date_range': {
-      const range = draft?.type === 'date_range' ? draft.value : undefined;
+      const range = draft?.type === 'date_range' ? draft.value : undefined
       const start =
         range?.start.type === 'ABSOLUTE'
           ? unixSecondsToDateInput(range.start.unixSeconds)
-          : '';
+          : ''
       const end =
         range?.end.type === 'ABSOLUTE'
           ? unixSecondsToDateInput(range.end.unixSeconds)
-          : '';
+          : ''
       const toPart = (raw: string): DateTimeRangePart => {
-        const seconds = dateInputToUnixSeconds(raw);
+        const seconds = dateInputToUnixSeconds(raw)
         return seconds === undefined
           ? { type: 'NOW' }
-          : { type: 'ABSOLUTE', unixSeconds: seconds };
-      };
-      return h.div([h.Class('flex min-w-28 flex-1 gap-2')], [
-        editorLabel(
-          ctx,
-          UI.startDateLabel,
-          h.input([
-            h.Type('date'),
-            h.Class(inputClasses),
-            h.Value(start),
-            h.OnInput((raw: string) =>
-              toParent(
-                Message.ChangedEditorDraft({
-                  value: {
-                    type: 'date_range',
+          : { type: 'ABSOLUTE', unixSeconds: seconds }
+      }
+      return h.div(
+        [h.Class('flex min-w-28 flex-1 gap-2')],
+        [
+          editorLabel(
+            ctx,
+            UI.startDateLabel,
+            h.input([
+              h.Type('date'),
+              h.Class(inputClasses),
+              h.Value(start),
+              h.OnInput((raw: string) =>
+                toParent(
+                  Message.ChangedEditorDraft({
                     value: {
-                      start: toPart(raw),
-                      end: range?.end ?? { type: 'NOW' },
+                      type: 'date_range',
+                      value: {
+                        start: toPart(raw),
+                        end: range?.end ?? { type: 'NOW' },
+                      },
                     },
-                  },
-                }),
+                  }),
+                ),
               ),
-            ),
-          ]),
-        ),
-        editorLabel(
-          ctx,
-          UI.endDateLabel,
-          h.input([
-            h.Type('date'),
-            h.Class(inputClasses),
-            h.Value(end),
-            h.OnInput((raw: string) =>
-              toParent(
-                Message.ChangedEditorDraft({
-                  value: {
-                    type: 'date_range',
+            ]),
+          ),
+          editorLabel(
+            ctx,
+            UI.endDateLabel,
+            h.input([
+              h.Type('date'),
+              h.Class(inputClasses),
+              h.Value(end),
+              h.OnInput((raw: string) =>
+                toParent(
+                  Message.ChangedEditorDraft({
                     value: {
-                      start: range?.start ?? { type: 'ABSOLUTE', unixSeconds: 0 },
-                      end: toPart(raw),
+                      type: 'date_range',
+                      value: {
+                        start: range?.start ?? {
+                          type: 'ABSOLUTE',
+                          unixSeconds: 0,
+                        },
+                        end: toPart(raw),
+                      },
                     },
-                  },
-                }),
+                  }),
+                ),
               ),
-            ),
-          ]),
-        ),
-      ]);
+            ]),
+          ),
+        ],
+      )
     }
     case 'enum': {
       return editorSelect(ctx, {
         menuKey: 'enum',
         label: UI.valueLabel,
-        options: opValue.values.map((item) => ({
+        options: opValue.values.map(item => ({
           value: item.value,
           label: item.label,
         })),
         selected: draft?.type === 'enum' ? draft.value : null,
-        onPick: (value) =>
+        onPick: value =>
           Message.ChangedEditorDraft({ value: { type: 'enum', value } }),
-      });
+      })
     }
     case 'enum_list': {
-      const selected = draft?.type === 'enum_list' ? draft.value : [];
+      const selected = draft?.type === 'enum_list' ? draft.value : []
       const remaining = opValue.values.filter(
-        (item) => !selected.includes(item.value),
-      );
-      const isOpen = model.editorMenu === 'enumList';
-      return h.div([h.Class('min-w-28 flex-1')], [
-        h.div([h.Class('text-muted-foreground mb-1 text-xs font-medium')], [
-          UI.valuesLabel,
-        ]),
-        h.div([h.Class('relative')], [
-          editorChips(ctx, {
-            values: selected.map((value) => ({
-              id: value,
-              label:
-                opValue.values.find((item) => item.value === value)
-                  ?.label ?? value,
-            })),
-            onRemove: (id) =>
-              Message.ChangedEditorDraft({
-                value: removeFromList(draft, 'enum_list', id),
-              }),
-            tail: h.button(
-              [
-                h.Type('button'),
-                h.Class(
-                  'text-muted-foreground flex-1 px-1 text-left text-xs outline-hidden',
-                ),
-                h.OnClick(
-                  toParent(
-                    Message.SetEditorMenu({
-                      menu: isOpen ? null : 'enumList',
-                    }),
-                  ),
-                ),
-              ],
-              [selected.length === 0 ? UI.selectValuesPlaceholder : ''],
-            ),
-          }),
-          ...(isOpen && remaining.length > 0
-            ? [
-                h.div(
-                  [h.Class(cn(menuContainerClasses, 'w-full'))],
-                  remaining.map((item) =>
-                    h.button(
-                      [
-                        h.Key(item.value),
-                        h.Type('button'),
-                        h.Class(menuItemBase),
-                        h.OnClick(
-                          toParent(
-                            Message.ChangedEditorDraft({
-                              value: {
-                                type: 'enum_list',
-                                value: [...selected, item.value],
-                              },
-                            }),
-                          ),
-                        ),
-                      ],
-                      [item.label],
+        item => !selected.includes(item.value),
+      )
+      const isOpen = model.editorMenu === 'enumList'
+      return h.div(
+        [h.Class('min-w-28 flex-1')],
+        [
+          h.div(
+            [h.Class('text-muted-foreground mb-1 text-xs font-medium')],
+            [UI.valuesLabel],
+          ),
+          h.div(
+            [h.Class('relative')],
+            [
+              editorChips(ctx, {
+                values: selected.map(value => ({
+                  id: value,
+                  label:
+                    opValue.values.find(item => item.value === value)?.label ??
+                    value,
+                })),
+                onRemove: id =>
+                  Message.ChangedEditorDraft({
+                    value: removeFromList(draft, 'enum_list', id),
+                  }),
+                tail: h.button(
+                  [
+                    h.Type('button'),
+                    h.Class(
+                      'text-muted-foreground flex-1 px-1 text-left text-xs outline-hidden',
                     ),
-                  ),
+                    h.OnClick(
+                      toParent(
+                        Message.SetEditorMenu({
+                          menu: isOpen ? null : 'enumList',
+                        }),
+                      ),
+                    ),
+                  ],
+                  [selected.length === 0 ? UI.selectValuesPlaceholder : ''],
                 ),
-              ]
-            : []),
-        ]),
-      ]);
+              }),
+              ...(isOpen && remaining.length > 0
+                ? [
+                    h.div(
+                      [h.Class(cn(menuContainerClasses, 'w-full'))],
+                      remaining.map(item =>
+                        h.button(
+                          [
+                            h.Key(item.value),
+                            h.Type('button'),
+                            h.Class(menuItemBase),
+                            h.OnClick(
+                              toParent(
+                                Message.ChangedEditorDraft({
+                                  value: {
+                                    type: 'enum_list',
+                                    value: [...selected, item.value],
+                                  },
+                                }),
+                              ),
+                            ),
+                          ],
+                          [item.label],
+                        ),
+                      ),
+                    ),
+                  ]
+                : []),
+            ],
+          ),
+        ],
+      )
     }
     case 'entity_list': {
-      const selected = draft?.type === 'entity_list' ? draft.value : [];
-      const source = opValue.searchSource;
+      const selected = draft?.type === 'entity_list' ? draft.value : []
+      const source = opValue.searchSource
       const pool =
         source === undefined
           ? []
           : model.editorQuery === ''
             ? [...(source.bootstrap?.() ?? [])]
-            : [...source.search(model.editorQuery)];
+            : [...source.search(model.editorQuery)]
       const suggestions = pool.filter(
-        (item) => !selected.some((entity) => entity.id === item.id),
-      );
-      const isOpen = model.editorMenu === 'entityList';
-      return h.div([h.Class('min-w-28 flex-1')], [
-        h.div([h.Class('text-muted-foreground mb-1 text-xs font-medium')], [
-          UI.entitiesLabel,
-        ]),
-        h.div([h.Class('relative')], [
+        item => !selected.some(entity => entity.id === item.id),
+      )
+      const isOpen = model.editorMenu === 'entityList'
+      return h.div(
+        [h.Class('min-w-28 flex-1')],
+        [
+          h.div(
+            [h.Class('text-muted-foreground mb-1 text-xs font-medium')],
+            [UI.entitiesLabel],
+          ),
+          h.div(
+            [h.Class('relative')],
+            [
+              editorChips(ctx, {
+                values: selected.map(entity => ({
+                  id: entity.id,
+                  label: entity.label,
+                })),
+                onRemove: id =>
+                  Message.ChangedEditorDraft({
+                    value: removeFromList(draft, 'entity_list', id),
+                  }),
+                tail: h.input([
+                  h.Type('text'),
+                  h.Class(
+                    'min-w-16 flex-1 bg-transparent text-xs outline-hidden',
+                  ),
+                  h.Value(model.editorQuery),
+                  h.Placeholder(UI.searchPlaceholder),
+                  h.OnInput((value: string) =>
+                    toParent(Message.ChangedEditorQuery({ value })),
+                  ),
+                  h.OnFocus(
+                    toParent(Message.SetEditorMenu({ menu: 'entityList' })),
+                  ),
+                ]),
+              }),
+              ...(isOpen && suggestions.length > 0
+                ? [
+                    h.div(
+                      [h.Class(cn(menuContainerClasses, 'w-full'))],
+                      suggestions.map(item =>
+                        h.button(
+                          [
+                            h.Key(item.id),
+                            h.Type('button'),
+                            h.Class(menuItemBase),
+                            h.OnClick(
+                              toParent(
+                                Message.ChangedEditorDraft({
+                                  value: {
+                                    type: 'entity_list',
+                                    value: [
+                                      ...selected,
+                                      { id: item.id, label: item.label },
+                                    ],
+                                  },
+                                }),
+                              ),
+                            ),
+                          ],
+                          [item.label],
+                        ),
+                      ),
+                    ),
+                  ]
+                : []),
+            ],
+          ),
+        ],
+      )
+    }
+    case 'string_list': {
+      const selected = draft?.type === 'string_list' ? draft.value : []
+      return h.div(
+        [h.Class('min-w-28 flex-1')],
+        [
+          h.div(
+            [h.Class('text-muted-foreground mb-1 text-xs font-medium')],
+            [UI.valuesLabel],
+          ),
           editorChips(ctx, {
-            values: selected.map((entity) => ({
-              id: entity.id,
-              label: entity.label,
-            })),
-            onRemove: (id) =>
+            values: selected.map(value => ({ id: value, label: value })),
+            onRemove: id =>
               Message.ChangedEditorDraft({
-                value: removeFromList(draft, 'entity_list', id),
+                value: removeFromList(draft, 'string_list', id),
               }),
             tail: h.input([
               h.Type('text'),
-              h.Class(
-                'min-w-16 flex-1 bg-transparent text-xs outline-hidden',
-              ),
+              h.Class('min-w-16 flex-1 bg-transparent text-xs outline-hidden'),
               h.Value(model.editorQuery),
-              h.Placeholder(UI.searchPlaceholder),
+              h.Placeholder(UI.addValuesPlaceholder),
               h.OnInput((value: string) =>
                 toParent(Message.ChangedEditorQuery({ value })),
               ),
-              h.OnFocus(
-                toParent(Message.SetEditorMenu({ menu: 'entityList' })),
+              h.OnKeyDownPreventDefault((key: string) =>
+                key === 'Enter' && model.editorQuery.trim() !== ''
+                  ? Option.some(
+                      toParent(
+                        Message.ChangedEditorDraft({
+                          value: {
+                            type: 'string_list',
+                            value: [...selected, model.editorQuery.trim()],
+                          },
+                        }),
+                      ),
+                    )
+                  : key === 'Escape'
+                    ? Option.some(toParent(Message.PressedEditorKey({ key })))
+                    : Option.none(),
               ),
             ]),
           }),
-          ...(isOpen && suggestions.length > 0
-            ? [
-                h.div(
-                  [h.Class(cn(menuContainerClasses, 'w-full'))],
-                  suggestions.map((item) =>
-                    h.button(
-                      [
-                        h.Key(item.id),
-                        h.Type('button'),
-                        h.Class(menuItemBase),
-                        h.OnClick(
-                          toParent(
-                            Message.ChangedEditorDraft({
-                              value: {
-                                type: 'entity_list',
-                                value: [
-                                  ...selected,
-                                  { id: item.id, label: item.label },
-                                ],
-                              },
-                            }),
-                          ),
-                        ),
-                      ],
-                      [item.label],
-                    ),
-                  ),
-                ),
-              ]
-            : []),
-        ]),
-      ]);
-    }
-    case 'string_list': {
-      const selected = draft?.type === 'string_list' ? draft.value : [];
-      return h.div([h.Class('min-w-28 flex-1')], [
-        h.div([h.Class('text-muted-foreground mb-1 text-xs font-medium')], [
-          UI.valuesLabel,
-        ]),
-        editorChips(ctx, {
-          values: selected.map((value) => ({ id: value, label: value })),
-          onRemove: (id) =>
-            Message.ChangedEditorDraft({
-              value: removeFromList(draft, 'string_list', id),
-            }),
-          tail: h.input([
-            h.Type('text'),
-            h.Class('min-w-16 flex-1 bg-transparent text-xs outline-hidden'),
-            h.Value(model.editorQuery),
-            h.Placeholder(UI.addValuesPlaceholder),
-            h.OnInput((value: string) =>
-              toParent(Message.ChangedEditorQuery({ value })),
-            ),
-            h.OnKeyDownPreventDefault((key: string) =>
-              key === 'Enter' && model.editorQuery.trim() !== ''
-                ? Option.some(
-                    toParent(
-                      Message.ChangedEditorDraft({
-                        value: {
-                          type: 'string_list',
-                          value: [...selected, model.editorQuery.trim()],
-                        },
-                      }),
-                    ),
-                  )
-                : key === 'Escape'
-                  ? Option.some(toParent(Message.PressedEditorKey({ key })))
-                  : Option.none(),
-            ),
-          ]),
-        }),
-      ]);
+        ],
+      )
     }
     case 'nested':
     case 'custom':
-      return h.empty;
+      return h.empty
   }
-};
+}
 
 const nestedEditor = <Msg>(ctx: Ctx<Msg>): Html => {
-  const { model, config, h, toParent } = ctx;
+  const { model, config, h, toParent } = ctx
   const operator = resolveOperator(
     config,
     model.partialField ?? '',
     model.partialOperator ?? '',
-  );
+  )
   if (operator === undefined || operator.value.type !== 'nested') {
-    return h.empty;
+    return h.empty
   }
-  const fields = operator.value.fields;
+  const fields = operator.value.fields
   return h.div(
     [h.Class('mt-3 flex flex-col gap-2')],
     [
       ...model.subFilters.map((sub, index) => {
-        const subField = fields.find((field) => field.key === sub.field);
+        const subField = fields.find(field => field.key === sub.field)
         const subOperator = subField?.operators.find(
-          (candidate) => candidate.key === sub.operator,
-        );
-        const subOpValue = subOperator?.value;
-        const subValue = sub.value as FilterValue | null;
+          candidate => candidate.key === sub.operator,
+        )
+        const subOpValue = subOperator?.value
+        const subValue = sub.value as FilterValue | null
         const valueControl = (() => {
           if (subField === undefined || subOperator === undefined) {
-            return h.empty;
+            return h.empty
           }
           switch (subOpValue?.type) {
             case 'enum':
@@ -2665,17 +2688,17 @@ const nestedEditor = <Msg>(ctx: Ctx<Msg>): Html => {
               return editorSelect(ctx, {
                 menuKey: `sub-${index}` as EditorMenuKey,
                 label: UI.valueLabel,
-                options: subOpValue.values.map((item) => ({
+                options: subOpValue.values.map(item => ({
                   value: item.value,
                   label: item.label,
                 })),
                 selected: subValue?.type === 'enum' ? subValue.value : null,
-                onPick: (value) =>
+                onPick: value =>
                   Message.ChangedNestedDraft({
                     index,
                     value: { type: 'enum', value },
                   }),
-              });
+              })
             case 'integer':
             case 'float':
               return h.input([
@@ -2704,7 +2727,7 @@ const nestedEditor = <Msg>(ctx: Ctx<Msg>): Html => {
                     }),
                   ),
                 ),
-              ]);
+              ])
             default:
               return h.input([
                 h.Type('text'),
@@ -2715,58 +2738,64 @@ const nestedEditor = <Msg>(ctx: Ctx<Msg>): Html => {
                   toParent(
                     Message.ChangedNestedDraft({
                       index,
-                      value:
-                        value === '' ? null : { type: 'string', value },
+                      value: value === '' ? null : { type: 'string', value },
                     }),
                   ),
                 ),
-              ]);
+              ])
           }
-        })();
-        return h.div([h.Key(`sub-${index}`), h.Class('flex items-end gap-2')], [
-          editorSelect(ctx, {
-            menuKey: `subField-${index}` as EditorMenuKey,
-            label: UI.editorField,
-            options: fields.map((field) => ({
-              value: field.key,
-              label: field.label,
-            })),
-            selected: sub.field === '' ? null : sub.field,
-            onPick: (fieldKey) => Message.ChangedNestedField({ index, fieldKey }),
-          }),
-          editorSelect(ctx, {
-            menuKey: `subOp-${index}` as EditorMenuKey,
-            label: UI.editorOperator,
-            options: (subField?.operators ?? []).map((candidate) => ({
-              value: candidate.key,
-              label: resolveOperatorLabel(candidate),
-            })),
-            selected: sub.operator,
-            onPick: (operatorKey) =>
-              Message.ChangedNestedOperator({ index, operatorKey }),
-          }),
-          h.div([h.Class('min-w-28 flex-1')], [
+        })()
+        return h.div(
+          [h.Key(`sub-${index}`), h.Class('flex items-end gap-2')],
+          [
+            editorSelect(ctx, {
+              menuKey: `subField-${index}` as EditorMenuKey,
+              label: UI.editorField,
+              options: fields.map(field => ({
+                value: field.key,
+                label: field.label,
+              })),
+              selected: sub.field === '' ? null : sub.field,
+              onPick: fieldKey =>
+                Message.ChangedNestedField({ index, fieldKey }),
+            }),
+            editorSelect(ctx, {
+              menuKey: `subOp-${index}` as EditorMenuKey,
+              label: UI.editorOperator,
+              options: (subField?.operators ?? []).map(candidate => ({
+                value: candidate.key,
+                label: resolveOperatorLabel(candidate),
+              })),
+              selected: sub.operator,
+              onPick: operatorKey =>
+                Message.ChangedNestedOperator({ index, operatorKey }),
+            }),
             h.div(
-              [h.Class('text-muted-foreground mb-1 text-xs font-medium')],
-              [UI.valueLabel],
-            ),
-            valueControl,
-          ]),
-          h.button(
-            [
-              h.Type('button'),
-              h.Class(
-                cn(
-                  inputClasses,
-                  'text-muted-foreground hover:text-foreground h-8 w-8 shrink-0 p-0',
+              [h.Class('min-w-28 flex-1')],
+              [
+                h.div(
+                  [h.Class('text-muted-foreground mb-1 text-xs font-medium')],
+                  [UI.valueLabel],
                 ),
-              ),
-              h.AriaLabel(UI.removeFilter),
-              h.OnClick(toParent(Message.RemovedNestedSubFilter({ index }))),
-            ],
-            [Icon.icon('x', { class: 'mx-auto size-3.5' }, h)],
-          ),
-        ]);
+                valueControl,
+              ],
+            ),
+            h.button(
+              [
+                h.Type('button'),
+                h.Class(
+                  cn(
+                    inputClasses,
+                    'text-muted-foreground hover:text-foreground h-8 w-8 shrink-0 p-0',
+                  ),
+                ),
+                h.AriaLabel(UI.removeFilter),
+                h.OnClick(toParent(Message.RemovedNestedSubFilter({ index }))),
+              ],
+              [Icon.icon('x', { class: 'mx-auto size-3.5' }, h)],
+            ),
+          ],
+        )
       }),
       h.button(
         [
@@ -2779,16 +2808,15 @@ const nestedEditor = <Msg>(ctx: Ctx<Msg>): Html => {
         [UI.addFilter],
       ),
     ],
-  );
-};
+  )
+}
 
 const editorPopover = <Msg>(ctx: Ctx<Msg>): Html => {
-  const { model, config, h, toParent } = ctx;
-  const fields = config.nonContentSearchFields;
-  const field = config.fieldsByKey.get(model.partialField ?? '');
-  const showOperator =
-    field !== undefined && field.operators.length > 1;
-  const canApply = isDraftComplete(config, model);
+  const { model, config, h, toParent } = ctx
+  const fields = config.nonContentSearchFields
+  const field = config.fieldsByKey.get(model.partialField ?? '')
+  const showOperator = field !== undefined && field.operators.length > 1
+  const canApply = isDraftComplete(config, model)
   return h.div(
     [
       h.DataAttribute('power-search-editor', 'true'),
@@ -2802,90 +2830,102 @@ const editorPopover = <Msg>(ctx: Ctx<Msg>): Html => {
       ),
     ],
     [
-      h.div([h.Class('p-4')], [
-        h.div([h.Class('@container')], [
+      h.div(
+        [h.Class('p-4')],
+        [
           h.div(
+            [h.Class('@container')],
             [
-              h.Class(
-                'flex flex-wrap items-end gap-2 @min-[24.9rem]:flex-nowrap',
+              h.div(
+                [
+                  h.Class(
+                    'flex flex-wrap items-end gap-2 @min-[24.9rem]:flex-nowrap',
+                  ),
+                ],
+                [
+                  editorSelect(ctx, {
+                    menuKey: 'field',
+                    label: UI.editorField,
+                    options: fields.map(candidate => ({
+                      value: candidate.key,
+                      label: candidate.label,
+                    })),
+                    selected: model.partialField,
+                    onPick: fieldKey =>
+                      Message.SelectedEditorField({ fieldKey }),
+                  }),
+                  ...(showOperator
+                    ? [
+                        editorSelect(ctx, {
+                          menuKey: 'operator',
+                          label: UI.editorOperator,
+                          options: (field?.operators ?? []).map(candidate => ({
+                            value: candidate.key,
+                            label: resolveOperatorLabel(candidate),
+                          })),
+                          selected: model.partialOperator,
+                          onPick: operatorKey =>
+                            Message.SelectedEditorOperator({ operatorKey }),
+                        }),
+                      ]
+                    : []),
+                  editorValueControl(ctx),
+                ],
               ),
             ],
-            [
-              editorSelect(ctx, {
-                menuKey: 'field',
-                label: UI.editorField,
-                options: fields.map((candidate) => ({
-                  value: candidate.key,
-                  label: candidate.label,
-                })),
-                selected: model.partialField,
-                onPick: (fieldKey) =>
-                  Message.SelectedEditorField({ fieldKey }),
-              }),
-              ...(showOperator
-                ? [
-                    editorSelect(ctx, {
-                      menuKey: 'operator',
-                      label: UI.editorOperator,
-                      options: (field?.operators ?? []).map((candidate) => ({
-                        value: candidate.key,
-                        label: resolveOperatorLabel(candidate),
-                      })),
-                      selected: model.partialOperator,
-                      onPick: (operatorKey) =>
-                        Message.SelectedEditorOperator({ operatorKey }),
-                    }),
-                  ]
-                : []),
-              editorValueControl(ctx),
-            ],
           ),
-        ]),
-        nestedEditor(ctx),
-      ]),
-      h.div([h.Class('flex items-center justify-between px-3 pb-3')], [
-        model.popoverState === 'editing'
-          ? h.button(
-              [
-                h.Type('button'),
-                h.Class(
-                  'text-muted-foreground hover:text-foreground hover:bg-accent inline-flex h-8 items-center rounded-md px-3 text-sm font-medium',
-                ),
-                h.OnClick(toParent(Message.ClickedEditorDelete())),
-              ],
-              [UI.deleteLabel],
-            )
-          : h.div([h.Class('')], []),
-        h.div([h.Class('flex items-center gap-2')], [
-          h.button(
+          nestedEditor(ctx),
+        ],
+      ),
+      h.div(
+        [h.Class('flex items-center justify-between px-3 pb-3')],
+        [
+          model.popoverState === 'editing'
+            ? h.button(
+                [
+                  h.Type('button'),
+                  h.Class(
+                    'text-muted-foreground hover:text-foreground hover:bg-accent inline-flex h-8 items-center rounded-md px-3 text-sm font-medium',
+                  ),
+                  h.OnClick(toParent(Message.ClickedEditorDelete())),
+                ],
+                [UI.deleteLabel],
+              )
+            : h.div([h.Class('')], []),
+          h.div(
+            [h.Class('flex items-center gap-2')],
             [
-              h.Type('button'),
-              h.Class(
-                'text-muted-foreground hover:bg-accent hover:text-foreground inline-flex h-8 items-center rounded-md px-3 text-sm font-medium',
+              h.button(
+                [
+                  h.Type('button'),
+                  h.Class(
+                    'text-muted-foreground hover:bg-accent hover:text-foreground inline-flex h-8 items-center rounded-md px-3 text-sm font-medium',
+                  ),
+                  h.OnClick(toParent(Message.ClickedEditorCancel())),
+                ],
+                [UI.cancelLabel],
               ),
-              h.OnClick(toParent(Message.ClickedEditorCancel())),
-            ],
-            [UI.cancelLabel],
-          ),
-          h.button(
-            [
-              h.Type('button'),
-              h.Class(
-                cn(
-                  'bg-primary text-primary-foreground hover:bg-primary/90 inline-flex h-8 items-center rounded-md px-3 text-sm font-medium shadow-xs',
-                  !canApply && 'pointer-events-none opacity-50',
-                ),
+              h.button(
+                [
+                  h.Type('button'),
+                  h.Class(
+                    cn(
+                      'bg-primary text-primary-foreground hover:bg-primary/90 inline-flex h-8 items-center rounded-md px-3 text-sm font-medium shadow-xs',
+                      !canApply && 'pointer-events-none opacity-50',
+                    ),
+                  ),
+                  h.Disabled(!canApply),
+                  h.OnClick(toParent(Message.ClickedEditorSave())),
+                ],
+                [UI.applyLabel],
               ),
-              h.Disabled(!canApply),
-              h.OnClick(toParent(Message.ClickedEditorSave())),
             ],
-            [UI.applyLabel],
           ),
-        ]),
-      ]),
+        ],
+      ),
     ],
-  );
-};
+  )
+}
 
 const tokenPill = <Msg>(
   ctx: Ctx<Msg>,
@@ -2894,27 +2934,27 @@ const tokenPill = <Msg>(
   valueMaxLength: number,
   isDisabled: boolean,
 ): Html => {
-  const { model, config, h, toParent } = ctx;
-  const field = config.fieldsByKey.get(filter.field);
-  const operator = resolveOperator(config, filter.field, filter.operator);
+  const { model, config, h, toParent } = ctx
+  const field = config.fieldsByKey.get(filter.field)
+  const operator = resolveOperator(config, filter.field, filter.operator)
   if (field === undefined || operator === undefined) {
-    return h.empty;
+    return h.empty
   }
-  const isReadOnly = filter.isReadOnly === true;
+  const isReadOnly = filter.isReadOnly === true
   const isEditing =
-    model.popoverState === 'editing' && model.editingFilterIndex === index;
-  const operatorLabel = resolveOperatorLabel(operator);
-  const tokenLabel = `${field.label}${operatorLabel === '' ? '' : `: ${operatorLabel}`}`;
+    model.popoverState === 'editing' && model.editingFilterIndex === index
+  const operatorLabel = resolveOperatorLabel(operator)
+  const tokenLabel = `${field.label}${operatorLabel === '' ? '' : `: ${operatorLabel}`}`
   const valueMax = Math.max(
     valueMaxLength - field.label.length - operatorLabel.length,
     10,
-  );
+  )
   const valueStr = formatFilterValue(
     config,
     operator.value,
     filter.value,
     valueMax,
-  );
+  )
   return h.span(
     [
       h.Key(`token-${index}`),
@@ -2932,9 +2972,7 @@ const tokenPill = <Msg>(
       h.button(
         [
           h.Type('button'),
-          h.Class(
-            'inline-flex items-center gap-1 truncate outline-hidden',
-          ),
+          h.Class('inline-flex items-center gap-1 truncate outline-hidden'),
           h.AriaDisabled(isDisabled),
           h.OnClick(toParent(Message.ClickedEditFilterToken({ index }))),
         ],
@@ -2942,12 +2980,7 @@ const tokenPill = <Msg>(
           h.span([h.Class('text-muted-foreground truncate')], [tokenLabel]),
           ...(valueStr === ''
             ? []
-            : [
-                h.span(
-                  [h.Class('truncate font-semibold')],
-                  [` ${valueStr}`],
-                ),
-              ]),
+            : [h.span([h.Class('truncate font-semibold')], [` ${valueStr}`])]),
         ],
       ),
       ...(!isReadOnly && !isDisabled
@@ -2968,27 +3001,27 @@ const tokenPill = <Msg>(
           ]
         : []),
     ],
-  );
-};
+  )
+}
 
 export const powerSearch = <Msg>(
   props: PowerSearchProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const { model } = props;
-  const toParent = props.toParentMessage;
-  const filters = props.filters;
+  const { model } = props
+  const toParent = props.toParentMessage
+  const filters = props.filters
   const ctx: Ctx<Msg> = {
     model,
     config: props.config,
     toParent,
     h,
-  };
+  }
   const menuOpen =
     model.isMenuOpen &&
     model.popoverState === 'idle' &&
-    props.isDisabled !== true;
-  const resultText = resultCountText(props.resultCount ?? null);
+    props.isDisabled !== true
+  const resultText = resultCountText(props.resultCount ?? null)
 
   return h.div(
     [
@@ -2996,9 +3029,7 @@ export const powerSearch = <Msg>(
       h.DataAttribute('power-search-root', 'true'),
       h.DataAttribute('slot', 'power-search'),
       h.Class(cn('relative w-full', props.class ?? '')),
-      h.OnMount(
-        Mount.mapMessage(ObservePowerSearchDismiss(), toParent),
-      ),
+      h.OnMount(Mount.mapMessage(ObservePowerSearchDismiss(), toParent)),
     ],
     [
       h.div(
@@ -3014,7 +3045,11 @@ export const powerSearch = <Msg>(
           ),
         ],
         [
-          Icon.icon('search', { class: cn('size-4 shrink-0 text-muted-foreground') }, h),
+          Icon.icon(
+            'search',
+            { class: cn('size-4 shrink-0 text-muted-foreground') },
+            h,
+          ),
           ...filters.map((filter, index) =>
             tokenPill(
               ctx,
@@ -3035,9 +3070,7 @@ export const powerSearch = <Msg>(
             ),
             h.Value(model.query),
             h.Placeholder(
-              filters.length === 0
-                ? (props.placeholder ?? UI.placeholder)
-                : '',
+              filters.length === 0 ? (props.placeholder ?? UI.placeholder) : '',
             ),
             h.Disabled(props.isDisabled === true),
             h.OnInput((value: string) =>
@@ -3076,7 +3109,7 @@ export const powerSearch = <Msg>(
             : []),
           ...(props.endContent === undefined ? [] : [props.endContent]),
           ...(props.hasClear === true &&
-          (filters.some((filter) => filter.isReadOnly !== true) ||
+          (filters.some(filter => filter.isReadOnly !== true) ||
             model.query !== '')
             ? [
                 h.button(
@@ -3098,5 +3131,5 @@ export const powerSearch = <Msg>(
       ...(model.popoverState !== 'idle' ? [editorPopover(ctx)] : []),
       h.div([h.AriaLive('polite'), h.Class('sr-only')], [model.announcement]),
     ],
-  );
-};
+  )
+}

@@ -70,7 +70,10 @@ type AvatarModule = Readonly<{
     Failed: () => AvatarMessage
   }>
   avatar: <Msg>(
-    props: Readonly<{ size?: 'default' | 'sm' | 'lg'; children: ReadonlyArray<Html | string> }>,
+    props: Readonly<{
+      size?: 'default' | 'sm' | 'lg'
+      children: ReadonlyArray<Html | string>
+    }>,
     h: HtmlBuilder<Msg>,
   ) => Html
   avatarImage: <Msg>(
@@ -79,7 +82,10 @@ type AvatarModule = Readonly<{
     h: HtmlBuilder<Msg>,
   ) => Html
   avatarFallback: <Msg>(
-    props: Readonly<{ children: ReadonlyArray<Html | string>; model?: AvatarModel }>,
+    props: Readonly<{
+      children: ReadonlyArray<Html | string>
+      model?: AvatarModel
+    }>,
     h: HtmlBuilder<Msg>,
   ) => Html
 }>
@@ -96,7 +102,10 @@ const makeUpdate =
     switch (message._tag) {
       case 'GotAvatarMessage':
         return {
-          model: { ...model, avatar: Avatar.update(model.avatar, message.message) },
+          model: {
+            ...model,
+            avatar: Avatar.update(model.avatar, message.message),
+          },
         }
       case 'HideImage':
         return { model: { ...model, showImage: false } }
@@ -166,7 +175,10 @@ const avatarViewWithToggle =
                     ),
                   ]
                 : []),
-              Avatar.avatarFallback({ model: model.avatar, children: ['JD'] }, h),
+              Avatar.avatarFallback(
+                { model: model.avatar, children: ['JD'] },
+                h,
+              ),
             ],
           },
           h,

@@ -30,69 +30,92 @@ type SharedProps<Item extends string, Msg> = Readonly<{
   class?: string
 }>
 
-export type MenubarProps<Item extends string, Msg> = SharedProps<Item, Msg> & Readonly<{
-  model: Model
-  toParentMessage: (message: Message) => Msg
-}>
+export type MenubarProps<Item extends string, Msg> = SharedProps<Item, Msg> &
+  Readonly<{
+    model: Model
+    toParentMessage: (message: Message) => Msg
+  }>
 
-type LegacyMenubarProps<Item extends string, Msg> = SharedProps<Item, Msg> & Readonly<{
-  onMove?: (index: number) => Msg
-  activeIndex?: number
-}>
+type LegacyMenubarProps<Item extends string, Msg> = SharedProps<Item, Msg> &
+  Readonly<{
+    onMove?: (index: number) => Msg
+    activeIndex?: number
+  }>
 
-const ROOT_CLASS = 'flex h-9 items-center gap-1 rounded-md border bg-background p-1 shadow-xs'
-const TRIGGER_CLASS = 'rounded-sm px-2 py-1 text-sm font-medium outline-none hover:bg-accent focus-visible:bg-accent data-[state=open]:bg-accent'
+const ROOT_CLASS =
+  'flex h-9 items-center gap-1 rounded-md border bg-background p-1 shadow-xs'
+const TRIGGER_CLASS =
+  'rounded-sm px-2 py-1 text-sm font-medium outline-none hover:bg-accent focus-visible:bg-accent data-[state=open]:bg-accent'
 
 const menuView = <Item extends string, Msg>(
   props: SharedProps<Item, Msg>,
   activeIndex: number,
-  menuAttributes: (index: number) => ReadonlyArray<Attribute<Msg> | ChildAttribute>,
+  menuAttributes: (
+    index: number,
+  ) => ReadonlyArray<Attribute<Msg> | ChildAttribute>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const anyOpen = props.menus.some((menu) => menu.model.isOpen);
+  const anyOpen = props.menus.some(menu => menu.model.isOpen)
   return h.div(
-  [
-    h.Role('menubar'),
-    h.DataAttribute('slot', 'menubar'),
-    h.AriaLabel(props.ariaLabel ?? 'Application menu'),
-    ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
-    h.Class(cn(ROOT_CLASS, props.class)),
-  ],
-  props.menus.map((menu, index) => h.div(
     [
-      h.Role('none'),
-      h.DataAttribute('slot', 'menubar-menu'),
-      // While a menu is open the open menu's backdrop (z-40) would otherwise
-      // sit above the sibling triggers; raise them so clicking or hovering
-      // another trigger can reach it.
-      h.Class(anyOpen ? 'relative z-50' : 'relative'),
-      ...menuAttributes(index),
+      h.Role('menubar'),
+      h.DataAttribute('slot', 'menubar'),
+      h.AriaLabel(props.ariaLabel ?? 'Application menu'),
+      ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
+      h.Class(cn(ROOT_CLASS, props.class)),
     ],
-    [DropdownMenu.dropdownMenu<Item, Msg>({
-      model: menu.model,
-      toParentMessage: menu.toParentMessage,
-      trigger: menu.label,
-      triggerTabindex: activeIndex === index ? 0 : -1,
-      triggerRole: 'menuitem',
-      triggerClass: cn(TRIGGER_CLASS, activeIndex === index ? 'bg-accent' : undefined),
-      items: menu.items,
-      itemToConfig: menu.itemToConfig,
-      ...(menu.contentClass === undefined ? {} : { contentClass: menu.contentClass }),
-      align: 'start',
-      ariaLabel: menu.label,
-      ...(props.direction === undefined ? {} : { direction: props.direction }),
-    }, h)],
-  )),
-);
-};
+    props.menus.map((menu, index) =>
+      h.div(
+        [
+          h.Role('none'),
+          h.DataAttribute('slot', 'menubar-menu'),
+          // While a menu is open the open menu's backdrop (z-40) would otherwise
+          // sit above the sibling triggers; raise them so clicking or hovering
+          // another trigger can reach it.
+          h.Class(anyOpen ? 'relative z-50' : 'relative'),
+          ...menuAttributes(index),
+        ],
+        [
+          DropdownMenu.dropdownMenu<Item, Msg>(
+            {
+              model: menu.model,
+              toParentMessage: menu.toParentMessage,
+              trigger: menu.label,
+              triggerTabindex: activeIndex === index ? 0 : -1,
+              triggerRole: 'menuitem',
+              triggerClass: cn(
+                TRIGGER_CLASS,
+                activeIndex === index ? 'bg-accent' : undefined,
+              ),
+              items: menu.items,
+              itemToConfig: menu.itemToConfig,
+              ...(menu.contentClass === undefined
+                ? {}
+                : { contentClass: menu.contentClass }),
+              align: 'start',
+              ariaLabel: menu.label,
+              ...(props.direction === undefined
+                ? {}
+                : { direction: props.direction }),
+            },
+            h,
+          ),
+        ],
+      ),
+    ),
+  )
+}
 
-const renderMenubar = <Item extends string, Msg>(props: MenubarProps<Item, Msg>, h: HtmlBuilder<Msg>): Html =>
+const renderMenubar = <Item extends string, Msg>(
+  props: MenubarProps<Item, Msg>,
+  h: HtmlBuilder<Msg>,
+): Html =>
   h.submodel({
     slotId: props.model.id,
     model: props.model,
     view: MenubarBehavior.behavior.view,
     viewInputs: {
-      triggerIds: props.menus.map((menu) => `${menu.model.id}-trigger`),
+      triggerIds: props.menus.map(menu => `${menu.model.id}-trigger`),
       ...(props.direction === undefined ? {} : { direction: props.direction }),
       shouldMoveTopLevel: (index, key) => {
         const menu = props.menus[index]
@@ -101,27 +124,60 @@ const renderMenubar = <Item extends string, Msg>(props: MenubarProps<Item, Msg>,
         if (Option.isSome(menu.model.openSubmenuIndex)) return false
         const forward = props.direction === 'rtl' ? 'ArrowLeft' : 'ArrowRight'
         const active = menu.items[menu.model.activeIndex]
-        return key !== forward || active === undefined || menu.itemToConfig(active).submenu === undefined
+        return (
+          key !== forward ||
+          active === undefined ||
+          menu.itemToConfig(active).submenu === undefined
+        )
       },
-      hoverFocus: props.menus.some((menu) => menu.model.isOpen),
-      toView: menus => menuView(props, props.model.activeIndex, index => menus[index]?.attributes ?? [], h),
+      hoverFocus: props.menus.some(menu => menu.model.isOpen),
+      toView: menus =>
+        menuView(
+          props,
+          props.model.activeIndex,
+          index => menus[index]?.attributes ?? [],
+          h,
+        ),
     },
     toParentMessage: props.toParentMessage,
   })
 
-const renderLegacy = <Item extends string, Msg>(props: LegacyMenubarProps<Item, Msg>, h: HtmlBuilder<Msg>): Html =>
-  menuView(props, props.activeIndex ?? 0, index => [
-    h.OnKeyDownPreventDefault((key) => {
-      if (props.onMove === undefined || props.menus.length === 0) return Option.none()
-      const forward = props.direction === 'rtl' ? 'ArrowLeft' : 'ArrowRight'
-      const backward = props.direction === 'rtl' ? 'ArrowRight' : 'ArrowLeft'
-      if (key !== forward && key !== backward) return Option.none()
-      return Option.some(props.onMove((index + (key === forward ? 1 : -1) + props.menus.length) % props.menus.length))
-    }),
-  ], h)
+const renderLegacy = <Item extends string, Msg>(
+  props: LegacyMenubarProps<Item, Msg>,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  menuView(
+    props,
+    props.activeIndex ?? 0,
+    index => [
+      h.OnKeyDownPreventDefault(key => {
+        if (props.onMove === undefined || props.menus.length === 0)
+          return Option.none()
+        const forward = props.direction === 'rtl' ? 'ArrowLeft' : 'ArrowRight'
+        const backward = props.direction === 'rtl' ? 'ArrowRight' : 'ArrowLeft'
+        if (key !== forward && key !== backward) return Option.none()
+        return Option.some(
+          props.onMove(
+            (index + (key === forward ? 1 : -1) + props.menus.length) %
+              props.menus.length,
+          ),
+        )
+      }),
+    ],
+    h,
+  )
 
-export function menubar<Item extends string, Msg>(props: MenubarProps<Item, Msg>, h: HtmlBuilder<Msg>): Html
-export function menubar<Item extends string, Msg>(props: LegacyMenubarProps<Item, Msg>, h: HtmlBuilder<Msg>): Html
-export function menubar<Item extends string, Msg>(props: MenubarProps<Item, Msg> | LegacyMenubarProps<Item, Msg>, h: HtmlBuilder<Msg>): Html {
+export function menubar<Item extends string, Msg>(
+  props: MenubarProps<Item, Msg>,
+  h: HtmlBuilder<Msg>,
+): Html
+export function menubar<Item extends string, Msg>(
+  props: LegacyMenubarProps<Item, Msg>,
+  h: HtmlBuilder<Msg>,
+): Html
+export function menubar<Item extends string, Msg>(
+  props: MenubarProps<Item, Msg> | LegacyMenubarProps<Item, Msg>,
+  h: HtmlBuilder<Msg>,
+): Html {
   return 'model' in props ? renderMenubar(props, h) : renderLegacy(props, h)
 }

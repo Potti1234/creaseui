@@ -1,9 +1,9 @@
 import type { Update } from 'foldkit'
-import { Match as M, Schema as S } from 'effect';
-import type { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
-import { modifyFields } from 'foldkit/struct';
+import { Match as M, Schema as S } from 'effect'
+import type { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import { modifyFields } from 'foldkit/struct'
 
 import {
   breadcrumb,
@@ -12,7 +12,7 @@ import {
   breadcrumbList,
   breadcrumbPage,
   breadcrumbSeparator,
-} from '@/ui/breadcrumb';
+} from '@/ui/breadcrumb'
 import {
   sidebar,
   sidebarContent,
@@ -29,7 +29,7 @@ import {
   sidebarProvider,
   sidebarRail,
   sidebarTrigger,
-} from '@/ui/sidebar';
+} from '@/ui/sidebar'
 
 const data = {
   navMain: [
@@ -88,36 +88,43 @@ const data = {
       items: [{ title: 'Contribution Guide', url: '#' }],
     },
   ],
-};
+}
 
-export const Model = S.Struct({ isMobileOpen: S.Boolean, isSidebarOpen: S.Boolean });
-export type Model = typeof Model.Type;
-
-
+export const Model = S.Struct({
+  isMobileOpen: S.Boolean,
+  isSidebarOpen: S.Boolean,
+})
+export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
   ToggledMobileSidebar: {},
   ToggledSidebar: {},
-});
-export type Message = typeof Message.Type;
+})
+export type Message = typeof Message.Type
 
-export const init = (): Model => ({ isMobileOpen: false, isSidebarOpen: true });
+export const init = (): Model => ({ isMobileOpen: false, isSidebarOpen: true })
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      ToggledMobileSidebar: () => ({ model: modifyFields(model, {isMobileOpen: current => !current}) }),
-      ToggledSidebar: () => ({ model: modifyFields(model, { isSidebarOpen: (current) => !current }) }),
+      ToggledMobileSidebar: () => ({
+        model: modifyFields(model, { isMobileOpen: current => !current }),
+      }),
+      ToggledSidebar: () => ({
+        model: modifyFields(model, { isSidebarOpen: current => !current }),
+      }),
     }),
-  );
+  )
 
 const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
-  const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
+  const state = model.isSidebarOpen ? 'expanded' : 'collapsed'
   return sidebar<Message>(
     {
-      isMobileOpen: model.isMobileOpen, onMobileDismiss: Message.ToggledMobileSidebar(), state,
+      isMobileOpen: model.isMobileOpen,
+      onMobileDismiss: Message.ToggledMobileSidebar(),
+      state,
       side: 'right',
       children: [
         sidebarContent(
@@ -132,7 +139,7 @@ const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
                         children: [
                           sidebarMenu(
                             {
-                              children: data.navMain.map((item) =>
+                              children: data.navMain.map(item =>
                                 sidebarMenuItem(
                                   {
                                     children: [
@@ -146,7 +153,7 @@ const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
                                       ),
                                       sidebarMenuSub(
                                         {
-                                          children: item.items.map((subItem) =>
+                                          children: item.items.map(subItem =>
                                             sidebarMenuSubItem(
                                               {
                                                 children: [
@@ -193,8 +200,8 @@ const appSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const pageContent = (h: HtmlBuilder<Message>): Html => {
   return sidebarInset(
@@ -246,7 +253,8 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
             ),
             sidebarTrigger(
               {
-                onMobileClick: Message.ToggledMobileSidebar(), onClick: Message.ToggledSidebar(),
+                onMobileClick: Message.ToggledMobileSidebar(),
+                onClick: Message.ToggledSidebar(),
                 class: '-mr-1 ml-auto rotate-180',
               },
               h,
@@ -275,16 +283,16 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
-  const state = model.isSidebarOpen ? 'expanded' : 'collapsed';
+  const state = model.isSidebarOpen ? 'expanded' : 'collapsed'
   return sidebarProvider<Message>(
     {
       state,
       children: [pageContent(h), appSidebar(model, h)],
     },
     h,
-  );
-};
+  )
+}

@@ -1,44 +1,62 @@
-import * as stylex from '@stylexjs/stylex';
-import type { HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
-import type { ComponentLayoutStyle } from '@/stylex/contracts';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ComponentLayoutStyle } from '@/stylex/contracts'
 import {
   avatarGroupFixtures,
   type AvatarEntry,
   type AvatarGroupSection,
-} from '@/docs/components/pages/avatar-group/shared';
-import { className } from '@/stylex/style';
-import { tokens } from '../../../../stylex/tokens.stylex';
-import * as Avatar from '@/stylex/avatar';
-import * as AvatarGroup from '@/stylex/avatar-group';
+} from '@/docs/components/pages/avatar-group/shared'
+import { className } from '@/stylex/style'
+import { tokens } from '../../../../stylex/tokens.stylex'
+import * as Avatar from '@/stylex/avatar'
+import * as AvatarGroup from '@/stylex/avatar-group'
 
 const styles = stylex.create({
-  column: { gap: '2rem', display: 'flex', flexDirection: 'column', },
-  section: { gap: '0.375rem', display: 'flex', flexDirection: 'column', },
+  column: { gap: '2rem', display: 'flex', flexDirection: 'column' },
+  section: { gap: '0.375rem', display: 'flex', flexDirection: 'column' },
   caption: {
     color: tokens.mutedForeground,
     fontSize: '0.75rem',
     lineHeight: '1rem',
   },
-  row: { gap: '1rem', alignItems: 'center', display: 'flex', },
+  row: { gap: '1rem', alignItems: 'center', display: 'flex' },
   avatarWrap: { position: 'relative' },
-  dotSlot: { insetInlineEnd: '-4px', position: 'absolute', bottom: '-4px', },
+  dotSlot: { insetInlineEnd: '-4px', position: 'absolute', bottom: '-4px' },
   /* Member-avatar negative margins mirror the group's --avatar-group-overlap
      (25% of 24/32/40px) — StyleX cannot read the custom property. The
      box-content + 2px surface border mirrors the group's
      [&_[data-slot=avatar]]:box-content/:border-2/:border-background selector. */
-  memberSm: { borderColor: tokens.background, borderStyle: 'solid', borderWidth: '2px', boxSizing: 'content-box', marginInlineStart: '-0.375rem', },
-  memberDefault: { borderColor: tokens.background, borderStyle: 'solid', borderWidth: '2px', boxSizing: 'content-box', marginInlineStart: '-0.5rem', },
-  memberLg: { borderColor: tokens.background, borderStyle: 'solid', borderWidth: '2px', boxSizing: 'content-box', marginInlineStart: '-0.625rem', },
-});
+  memberSm: {
+    borderColor: tokens.background,
+    borderStyle: 'solid',
+    borderWidth: '2px',
+    boxSizing: 'content-box',
+    marginInlineStart: '-0.375rem',
+  },
+  memberDefault: {
+    borderColor: tokens.background,
+    borderStyle: 'solid',
+    borderWidth: '2px',
+    boxSizing: 'content-box',
+    marginInlineStart: '-0.5rem',
+  },
+  memberLg: {
+    borderColor: tokens.background,
+    borderStyle: 'solid',
+    borderWidth: '2px',
+    boxSizing: 'content-box',
+    marginInlineStart: '-0.625rem',
+  },
+})
 
 const initials = (name: string): string =>
   name
     .split(' ')
     .map(part => part[0] ?? '')
     .join('')
-    .slice(0, 2);
+    .slice(0, 2)
 
 const avatarView = <Msg>(
   entry: AvatarEntry,
@@ -48,23 +66,28 @@ const avatarView = <Msg>(
   Avatar.avatar(
     {
       size,
-      layoutStyle: (
-        size === 'lg'
-          ? styles.memberLg
-          : size === 'sm'
-            ? styles.memberSm
-            : styles.memberDefault
-      ) as ComponentLayoutStyle,
+      layoutStyle: (size === 'lg'
+        ? styles.memberLg
+        : size === 'sm'
+          ? styles.memberSm
+          : styles.memberDefault) as ComponentLayoutStyle,
       children: [
         entry.src === undefined
           ? Avatar.avatarFallback({ children: [initials(entry.name)] }, h)
-          : Avatar.avatarImage({ src: entry.src, alt: entry.name, model: { status: 'loaded' } }, h),
+          : Avatar.avatarImage(
+              { src: entry.src, alt: entry.name, model: { status: 'loaded' } },
+              h,
+            ),
       ],
     },
     h,
-  );
+  )
 
-const sectionView = <Msg>(section: AvatarGroupSection, noop: Msg, h: HtmlBuilder<Msg>) =>
+const sectionView = <Msg>(
+  section: AvatarGroupSection,
+  noop: Msg,
+  h: HtmlBuilder<Msg>,
+) =>
   h.div(
     [h.Class(className(styles.section))],
     [
@@ -72,7 +95,9 @@ const sectionView = <Msg>(section: AvatarGroupSection, noop: Msg, h: HtmlBuilder
       AvatarGroup.avatarGroup(
         {
           avatarSize: section.size === 'default' ? 'md' : section.size,
-          ...(section.ariaLabel === undefined ? {} : { ariaLabel: section.ariaLabel }),
+          ...(section.ariaLabel === undefined
+            ? {}
+            : { ariaLabel: section.ariaLabel }),
           children: [
             ...section.avatars.map(entry => avatarView(entry, section.size, h)),
             ...(section.overflow === undefined
@@ -80,9 +105,12 @@ const sectionView = <Msg>(section: AvatarGroupSection, noop: Msg, h: HtmlBuilder
               : [
                   AvatarGroup.avatarGroupOverflow(
                     {
-                      avatarSize: section.size === 'default' ? 'md' : section.size,
+                      avatarSize:
+                        section.size === 'default' ? 'md' : section.size,
                       count: section.overflow.count,
-                      ...(section.overflow.onClick === true ? { onClick: noop } : {}),
+                      ...(section.overflow.onClick === true
+                        ? { onClick: noop }
+                        : {}),
                     },
                     h,
                   ),
@@ -92,7 +120,7 @@ const sectionView = <Msg>(section: AvatarGroupSection, noop: Msg, h: HtmlBuilder
         h,
       ),
     ],
-  );
+  )
 
 const statusSectionView = <Msg>(h: HtmlBuilder<Msg>) =>
   h.div(
@@ -104,7 +132,9 @@ const statusSectionView = <Msg>(h: HtmlBuilder<Msg>) =>
           Avatar.avatar(
             {
               size: 'lg',
-              children: [Avatar.avatarFallback({ children: [initials(dot.name)] }, h)],
+              children: [
+                Avatar.avatarFallback({ children: [initials(dot.name)] }, h),
+              ],
             },
             h,
           ),
@@ -120,7 +150,7 @@ const statusSectionView = <Msg>(h: HtmlBuilder<Msg>) =>
         ],
       ),
     ),
-  );
+  )
 
 export const avatarGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
@@ -128,14 +158,14 @@ export const avatarGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ) => {
-  const fixture = avatarGroupFixtures[exampleIndex] ?? avatarGroupFixtures[0];
+  const fixture = avatarGroupFixtures[exampleIndex] ?? avatarGroupFixtures[0]
   const noop = onMessageJson(
     JSON.stringify({ _tag: 'InteractedWithAvatarGroupPreview' }),
-  );
+  )
   return fixture.kind === 'status'
     ? statusSectionView(h)
     : h.div(
         [h.Class(className(styles.column))],
         fixture.sections.map(section => sectionView(section, noop, h)),
-      );
-};
+      )
+}

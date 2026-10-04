@@ -1,5 +1,5 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type MenubarKind =
   | 'demo'
@@ -7,19 +7,19 @@ export type MenubarKind =
   | 'radio'
   | 'submenu'
   | 'icons'
-  | 'rtl';
+  | 'rtl'
 
 export interface MarkerSpecItem {
-  readonly id: string;
-  readonly label: string;
-  readonly shortcut?: string;
-  readonly disabled?: boolean;
-  readonly inset?: boolean;
-  readonly kind?: 'checkbox' | 'radio';
-  readonly icon?: string;
-  readonly destructive?: boolean;
-  readonly separatorBefore?: boolean;
-  readonly submenu?: ReadonlyArray<MarkerSpecItem>;
+  readonly id: string
+  readonly label: string
+  readonly shortcut?: string
+  readonly disabled?: boolean
+  readonly inset?: boolean
+  readonly kind?: 'checkbox' | 'radio'
+  readonly icon?: string
+  readonly destructive?: boolean
+  readonly separatorBefore?: boolean
+  readonly submenu?: ReadonlyArray<MarkerSpecItem>
 }
 
 export interface MenubarSpecMenu {
@@ -30,10 +30,10 @@ export interface MenubarSpecMenu {
     | 'profiles'
     | 'format'
     | 'theme'
-    | 'more';
-  readonly label: string;
-  readonly contentWidth?: '11rem' | '16rem';
-  readonly items: ReadonlyArray<MarkerSpecItem>;
+    | 'more'
+  readonly label: string
+  readonly contentWidth?: '11rem' | '16rem'
+  readonly items: ReadonlyArray<MarkerSpecItem>
 }
 
 export const menubarTargets = [
@@ -44,15 +44,15 @@ export const menubarTargets = [
   'format',
   'theme',
   'more',
-] as const;
-export type MenubarTarget = (typeof menubarTargets)[number];
+] as const
+export type MenubarTarget = (typeof menubarTargets)[number]
 
 export interface MenubarFixture {
-  readonly title: string;
-  readonly description?: string;
-  readonly heroOnly?: boolean;
-  readonly kind: MenubarKind;
-  readonly direction?: 'ltr' | 'rtl';
+  readonly title: string
+  readonly description?: string
+  readonly heroOnly?: boolean
+  readonly kind: MenubarKind
+  readonly direction?: 'ltr' | 'rtl'
 }
 
 const ar = {
@@ -89,9 +89,11 @@ const ar = {
   luis: 'Luis',
   editProfile: 'تعديل...',
   addProfile: 'إضافة ملف شخصي...',
-} as const;
+} as const
 
-const demoSpec = (labels: Readonly<Record<keyof typeof en, string>>): ReadonlyArray<MenubarSpecMenu> => [
+const demoSpec = (
+  labels: Readonly<Record<keyof typeof en, string>>,
+): ReadonlyArray<MenubarSpecMenu> => [
   {
     target: 'file',
     label: labels.file,
@@ -109,7 +111,12 @@ const demoSpec = (labels: Readonly<Record<keyof typeof en, string>>): ReadonlyAr
           { id: 'notes', label: labels.notes },
         ],
       },
-      { id: 'print', label: labels.print, shortcut: '⌘P', separatorBefore: true },
+      {
+        id: 'print',
+        label: labels.print,
+        shortcut: '⌘P',
+        separatorBefore: true,
+      },
     ],
   },
   {
@@ -141,10 +148,32 @@ const demoSpec = (labels: Readonly<Record<keyof typeof en, string>>): ReadonlyAr
     items: [
       { id: 'bookmarks-bar', label: labels.bookmarksBar, kind: 'checkbox' },
       { id: 'full-urls', label: labels.fullUrls, kind: 'checkbox' },
-      { id: 'reload', label: labels.reload, shortcut: '⌘R', inset: true, separatorBefore: true },
-      { id: 'force-reload', label: labels.forceReload, shortcut: '⇧⌘R', inset: true, disabled: true },
-      { id: 'toggle-fullscreen', label: labels.toggleFullscreen, inset: true, separatorBefore: true },
-      { id: 'hide-sidebar', label: labels.hideSidebar, inset: true, separatorBefore: true },
+      {
+        id: 'reload',
+        label: labels.reload,
+        shortcut: '⌘R',
+        inset: true,
+        separatorBefore: true,
+      },
+      {
+        id: 'force-reload',
+        label: labels.forceReload,
+        shortcut: '⇧⌘R',
+        inset: true,
+        disabled: true,
+      },
+      {
+        id: 'toggle-fullscreen',
+        label: labels.toggleFullscreen,
+        inset: true,
+        separatorBefore: true,
+      },
+      {
+        id: 'hide-sidebar',
+        label: labels.hideSidebar,
+        inset: true,
+        separatorBefore: true,
+      },
     ],
   },
   {
@@ -154,11 +183,21 @@ const demoSpec = (labels: Readonly<Record<keyof typeof en, string>>): ReadonlyAr
       { id: 'andy', label: labels.andy, kind: 'radio' },
       { id: 'benoit', label: labels.benoit, kind: 'radio' },
       { id: 'luis', label: labels.luis, kind: 'radio' },
-      { id: 'edit-profile', label: labels.editProfile, inset: true, separatorBefore: true },
-      { id: 'add-profile', label: labels.addProfile, inset: true, separatorBefore: true },
+      {
+        id: 'edit-profile',
+        label: labels.editProfile,
+        inset: true,
+        separatorBefore: true,
+      },
+      {
+        id: 'add-profile',
+        label: labels.addProfile,
+        inset: true,
+        separatorBefore: true,
+      },
     ],
   },
-];
+]
 
 const en = {
   file: 'File',
@@ -194,9 +233,12 @@ const en = {
   luis: 'Luis',
   editProfile: 'Edit...',
   addProfile: 'Add Profile...',
-};
+}
 
-export const menubarSpecs: Record<MenubarKind, ReadonlyArray<MenubarSpecMenu>> = {
+export const menubarSpecs: Record<
+  MenubarKind,
+  ReadonlyArray<MenubarSpecMenu>
+> = {
   demo: demoSpec(en),
   rtl: demoSpec(ar),
   checkbox: [
@@ -205,10 +247,26 @@ export const menubarSpecs: Record<MenubarKind, ReadonlyArray<MenubarSpecMenu>> =
       label: 'View',
       contentWidth: '16rem',
       items: [
-        { id: 'bookmarks-bar', label: 'Always Show Bookmarks Bar', kind: 'checkbox' },
+        {
+          id: 'bookmarks-bar',
+          label: 'Always Show Bookmarks Bar',
+          kind: 'checkbox',
+        },
         { id: 'full-urls', label: 'Always Show Full URLs', kind: 'checkbox' },
-        { id: 'reload', label: 'Reload', shortcut: '⌘R', inset: true, separatorBefore: true },
-        { id: 'force-reload', label: 'Force Reload', shortcut: '⇧⌘R', inset: true, disabled: true },
+        {
+          id: 'reload',
+          label: 'Reload',
+          shortcut: '⌘R',
+          inset: true,
+          separatorBefore: true,
+        },
+        {
+          id: 'force-reload',
+          label: 'Force Reload',
+          shortcut: '⇧⌘R',
+          inset: true,
+          disabled: true,
+        },
       ],
     },
     {
@@ -229,8 +287,18 @@ export const menubarSpecs: Record<MenubarKind, ReadonlyArray<MenubarSpecMenu>> =
         { id: 'andy', label: 'Andy', kind: 'radio' },
         { id: 'benoit', label: 'Benoit', kind: 'radio' },
         { id: 'luis', label: 'Luis', kind: 'radio' },
-        { id: 'edit-profile', label: 'Edit...', inset: true, separatorBefore: true },
-        { id: 'add-profile', label: 'Add Profile...', inset: true, separatorBefore: true },
+        {
+          id: 'edit-profile',
+          label: 'Edit...',
+          inset: true,
+          separatorBefore: true,
+        },
+        {
+          id: 'add-profile',
+          label: 'Add Profile...',
+          inset: true,
+          separatorBefore: true,
+        },
       ],
     },
     {
@@ -257,7 +325,12 @@ export const menubarSpecs: Record<MenubarKind, ReadonlyArray<MenubarSpecMenu>> =
             { id: 'notes', label: 'Notes' },
           ],
         },
-        { id: 'print', label: 'Print...', shortcut: '⌘P', separatorBefore: true },
+        {
+          id: 'print',
+          label: 'Print...',
+          shortcut: '⌘P',
+          separatorBefore: true,
+        },
       ],
     },
     {
@@ -289,7 +362,13 @@ export const menubarSpecs: Record<MenubarKind, ReadonlyArray<MenubarSpecMenu>> =
       items: [
         { id: 'new-file', label: 'New File', icon: 'file', shortcut: '⌘N' },
         { id: 'open-folder', label: 'Open Folder', icon: 'folder' },
-        { id: 'save', label: 'Save', icon: 'save', shortcut: '⌘S', separatorBefore: true },
+        {
+          id: 'save',
+          label: 'Save',
+          icon: 'save',
+          shortcut: '⌘S',
+          separatorBefore: true,
+        },
       ],
     },
     {
@@ -298,13 +377,21 @@ export const menubarSpecs: Record<MenubarKind, ReadonlyArray<MenubarSpecMenu>> =
       items: [
         { id: 'settings', label: 'Settings', icon: 'settings' },
         { id: 'help', label: 'Help', icon: 'help-circle' },
-        { id: 'delete', label: 'Delete', icon: 'trash', destructive: true, separatorBefore: true },
+        {
+          id: 'delete',
+          label: 'Delete',
+          icon: 'trash',
+          destructive: true,
+          separatorBefore: true,
+        },
       ],
     },
   ],
-};
+}
 
-export const menubarFixtures: Readonly<[MenubarFixture, ...Array<MenubarFixture>]> = [
+export const menubarFixtures: Readonly<
+  [MenubarFixture, ...Array<MenubarFixture>]
+> = [
   { title: 'Basic', heroOnly: true, kind: 'demo' },
   {
     title: 'Checkbox',
@@ -323,22 +410,30 @@ export const menubarFixtures: Readonly<[MenubarFixture, ...Array<MenubarFixture>
   },
   {
     title: 'With Icons',
-    description: 'Prefix menu items with icons, including a destructive action.',
+    description:
+      'Prefix menu items with icons, including a destructive action.',
     kind: 'icons',
   },
   { title: 'RTL', kind: 'rtl', direction: 'rtl' },
-];
+]
 
-const sq = (value: string): string => value.replaceAll("'", "\\'");
+const sq = (value: string): string => value.replaceAll("'", "\\'")
 
 /** Checkbox item id -> the Model boolean field tracking it. */
-export const checkboxField: Record<string, 'checkedBookmarksBar' | 'checkedFullUrls' | 'checkedStrikethrough' | 'checkedCode' | 'checkedSuperscript'> = {
+export const checkboxField: Record<
+  string,
+  | 'checkedBookmarksBar'
+  | 'checkedFullUrls'
+  | 'checkedStrikethrough'
+  | 'checkedCode'
+  | 'checkedSuperscript'
+> = {
   'bookmarks-bar': 'checkedBookmarksBar',
   'full-urls': 'checkedFullUrls',
-  'strikethrough': 'checkedStrikethrough',
-  'code': 'checkedCode',
-  'superscript': 'checkedSuperscript',
-};
+  strikethrough: 'checkedStrikethrough',
+  code: 'checkedCode',
+  superscript: 'checkedSuperscript',
+}
 /** Radio item id -> the Model string field tracking it. */
 export const radioField: Record<string, 'radioUser' | 'radioTheme'> = {
   andy: 'radioUser',
@@ -347,31 +442,36 @@ export const radioField: Record<string, 'radioUser' | 'radioTheme'> = {
   light: 'radioTheme',
   dark: 'radioTheme',
   system: 'radioTheme',
-};
+}
 
 const checkedExpr = (item: MarkerSpecItem): string | undefined => {
-  const field = checkboxField[item.id];
-  if (item.kind === 'checkbox' && field !== undefined) return `model.${field}`;
-  const rfield = radioField[item.id];
-  if (item.kind === 'radio' && rfield !== undefined) return `model.${rfield} === '${item.id}'`;
-  return undefined;
-};
+  const field = checkboxField[item.id]
+  if (item.kind === 'checkbox' && field !== undefined) return `model.${field}`
+  const rfield = radioField[item.id]
+  if (item.kind === 'radio' && rfield !== undefined)
+    return `model.${rfield} === '${item.id}'`
+  return undefined
+}
 
 const emitItemConfig = (item: MarkerSpecItem, indent: string): string => {
-  const fields: Array<string> = [`label: '${sq(item.label)}'`];
-  if (item.icon !== undefined) fields.push(`icon: Icon.icon('${item.icon}', {}, h)`);
-  if (item.shortcut !== undefined) fields.push(`shortcut: '${item.shortcut}'`);
-  if (item.kind !== undefined) fields.push(`kind: '${item.kind}'`);
-  const checked = checkedExpr(item);
-  if (checked !== undefined) fields.push(`isChecked: ${checked}`);
-  if (item.inset === true) fields.push('isInset: true');
-  if (item.disabled === true) fields.push('isDisabled: true');
-  if (item.destructive === true) fields.push(`variant: 'destructive'`);
-  if (item.separatorBefore === true) fields.push('separatorBefore: true');
+  const fields: Array<string> = [`label: '${sq(item.label)}'`]
+  if (item.icon !== undefined)
+    fields.push(`icon: Icon.icon('${item.icon}', {}, h)`)
+  if (item.shortcut !== undefined) fields.push(`shortcut: '${item.shortcut}'`)
+  if (item.kind !== undefined) fields.push(`kind: '${item.kind}'`)
+  const checked = checkedExpr(item)
+  if (checked !== undefined) fields.push(`isChecked: ${checked}`)
+  if (item.inset === true) fields.push('isInset: true')
+  if (item.disabled === true) fields.push('isDisabled: true')
+  if (item.destructive === true) fields.push(`variant: 'destructive'`)
+  if (item.separatorBefore === true) fields.push('separatorBefore: true')
   if (item.submenu !== undefined) {
     const children = item.submenu
-      .map(child => `case '${child.id}':\n${indent}        return ${emitItemConfig(child, indent + '        ')}`)
-      .join('\n' + indent + '        ');
+      .map(
+        child =>
+          `case '${child.id}':\n${indent}        return ${emitItemConfig(child, indent + '        ')}`,
+      )
+      .join('\n' + indent + '        ')
     fields.push(`submenu: {
 ${indent}      items: [${item.submenu.map(child => `'${child.id}'`).join(', ')}],
 ${indent}      itemToConfig: (child: string) => {
@@ -381,30 +481,33 @@ ${indent}        default:
 ${indent}          return { label: child }
 ${indent}        }
 ${indent}      },
-${indent}    }`);
+${indent}    }`)
   }
-  return `{ ${fields.join(', ')} }`;
-};
+  return `{ ${fields.join(', ')} }`
+}
 
 const emitItemToConfig = (menu: MenubarSpecMenu, indent: string): string => {
   const cases = menu.items
-    .map(item => `case '${item.id}':\n${indent}      return ${emitItemConfig(item, indent + '      ')}`)
-    .join('\n' + indent + '    ');
+    .map(
+      item =>
+        `case '${item.id}':\n${indent}      return ${emitItemConfig(item, indent + '      ')}`,
+    )
+    .join('\n' + indent + '    ')
   return `(item: string) => {
 ${indent}    switch (item) {
 ${indent}    ${cases}
 ${indent}    default:
 ${indent}      return { label: item }
 ${indent}    }
-${indent}  }`;
-};
+${indent}  }`
+}
 
 const emitMenu = (menu: MenubarSpecMenu, isStyleX: boolean): string => {
-  const indent = '      ';
+  const indent = '      '
   const widthProp =
     menu.contentWidth === undefined
       ? ''
-      : `\n${indent}  ${isStyleX ? `contentLayoutStyle: styles.content${menu.contentWidth.replace('.', '')}` : `contentClass: 'w-${menu.contentWidth === '11rem' ? '44' : '64'}'`},`;
+      : `\n${indent}  ${isStyleX ? `contentLayoutStyle: styles.content${menu.contentWidth.replace('.', '')}` : `contentClass: 'w-${menu.contentWidth === '11rem' ? '44' : '64'}'`},`
   return `{
 ${indent}  id: 'menu-${menu.target}',
 ${indent}  label: '${sq(menu.label)}',
@@ -412,40 +515,43 @@ ${indent}  model: model.${menu.target},${widthProp}
 ${indent}  toParentMessage: message => Message.GotMenuMessage({ target: '${menu.target}', message }),
 ${indent}  items: [${menu.items.map(item => `'${item.id}'`).join(', ')}],
 ${indent}  itemToConfig: ${emitItemToConfig(menu, indent)},
-${indent}}`;
-};
+${indent}}`
+}
 
 const emitImports = (fixture: MenubarFixture, isStyleX: boolean): string => {
-  const base = isStyleX ? 'stylex' : 'ui';
+  const base = isStyleX ? 'stylex' : 'ui'
   const parts: Array<string> = [
     "import { Option, Schema as S } from 'effect'",
     "import { Command, Runtime, Subscription, Update } from 'foldkit'",
     "import { type Document, type HtmlBuilder } from 'foldkit/html'",
     "import { defineMessageUnion } from 'foldkit/message'",
-  ];
+  ]
   if (isStyleX) {
-    parts.push('', "import * as stylex from '@stylexjs/stylex'");
+    parts.push('', "import * as stylex from '@stylexjs/stylex'")
   }
-  parts.push(`import * as DropdownMenu from '@/${base}/dropdown-menu'`);
+  parts.push(`import * as DropdownMenu from '@/${base}/dropdown-menu'`)
   if (fixture.kind === 'icons') {
-    parts.push(`import * as Icon from '@/lib/icon'`);
+    parts.push(`import * as Icon from '@/lib/icon'`)
   }
-  parts.push(`import * as Menubar from '@/${base}/menubar'`);
-  return parts.join('\n');
-};
+  parts.push(`import * as Menubar from '@/${base}/menubar'`)
+  return parts.join('\n')
+}
 
 const emitStyles = (fixture: MenubarFixture): string => {
-  const spec = menubarSpecs[fixture.kind];
-  const extras: Array<string> = ["  menubar: { width: '18rem' },"];
+  const spec = menubarSpecs[fixture.kind]
+  const extras: Array<string> = ["  menubar: { width: '18rem' },"]
   for (const menu of spec) {
     if (menu.contentWidth !== undefined) {
-      extras.push(`  content${menu.contentWidth.replace('.', '')}: { width: '${menu.contentWidth}' },`);
+      extras.push(
+        `  content${menu.contentWidth.replace('.', '')}: { width: '${menu.contentWidth}' },`,
+      )
     }
   }
-  return extras.join('\n');
-};
+  return extras.join('\n')
+}
 
-const emitModel = (): string => `export const MenuTarget = S.Literals(['file', 'edit', 'view', 'profiles', 'format', 'theme', 'more'])
+const emitModel =
+  (): string => `export const MenuTarget = S.Literals(['file', 'edit', 'view', 'profiles', 'format', 'theme', 'more'])
 export type MenuTarget = typeof MenuTarget.Type
 export const Model = S.Struct({
   file: DropdownMenu.Model,
@@ -464,15 +570,16 @@ export const Model = S.Struct({
   radioUser: S.String,
   radioTheme: S.String,
 })
-export type Model = typeof Model.Type`;
+export type Model = typeof Model.Type`
 
 const emitMessages = (): string => `export const Message = defineMessageUnion({
   GotMenuMessage: { target: MenuTarget, message: DropdownMenu.Message },
   GotMenubarMessage: { message: Menubar.Message },
 })
-export type Message = typeof Message.Type`;
+export type Message = typeof Message.Type`
 
-const emitInit = (): string => `export const init = (): Update.Return<Model, Message> => ({ model: {
+const emitInit =
+  (): string => `export const init = (): Update.Return<Model, Message> => ({ model: {
   file: DropdownMenu.init({ id: 'menu-file' }),
   edit: DropdownMenu.init({ id: 'menu-edit' }),
   view: DropdownMenu.init({ id: 'menu-view' }),
@@ -488,9 +595,11 @@ const emitInit = (): string => `export const init = (): Update.Return<Model, Mes
   checkedSuperscript: false,
   radioUser: 'benoit',
   radioTheme: 'system',
-} })`;
+} })`
 
-const emitUpdate = (fixture: MenubarFixture): string => `const ActionMenu = DropdownMenu.create<string>()
+const emitUpdate = (
+  fixture: MenubarFixture,
+): string => `const ActionMenu = DropdownMenu.create<string>()
 const targets: ReadonlyArray<MenuTarget> = [${menubarSpecs[fixture.kind].map(menu => `'${menu.target}'`).join(', ')}]
 
 const applySelection = (model: Model, value: string): Model => {
@@ -562,11 +671,11 @@ export const update = (model: Model, message: Message): Update.Return<Model, Mes
       }
     }
   }
-}`;
+}`
 
 const emitBody = (fixture: MenubarFixture, isStyleX: boolean): string => {
-  const spec = menubarSpecs[fixture.kind];
-  const direction = fixture.direction === 'rtl' ? `\n    direction: 'rtl',` : '';
+  const spec = menubarSpecs[fixture.kind]
+  const direction = fixture.direction === 'rtl' ? `\n    direction: 'rtl',` : ''
   return `    Menubar.menubar<string, Message>({
     ariaLabel: 'Application menu',${direction}
     model: model.menubar,
@@ -575,23 +684,30 @@ const emitBody = (fixture: MenubarFixture, isStyleX: boolean): string => {
     menus: [
 ${spec.map(menu => emitMenu(menu, isStyleX)).join(',\n')}
     ],
-  }, h),`;
-};
+  }, h),`
+}
 
-const emitApplication = (fixture: MenubarFixture, renderer: 'tailwind' | 'stylex'): string => {
-  const isStyleX = renderer === 'stylex';
-  const stylesBlock = isStyleX ? emitStyles(fixture) : '';
+const emitApplication = (
+  fixture: MenubarFixture,
+  renderer: 'tailwind' | 'stylex',
+): string => {
+  const isStyleX = renderer === 'stylex'
+  const stylesBlock = isStyleX ? emitStyles(fixture) : ''
   const bodyStart = isStyleX
     ? `h.main([h.Class(stylex.props(styles.page).className ?? '')], [`
-    : `h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [`;
+    : `h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [`
   const pageStyle = isStyleX
     ? `const styles = stylex.create({
-  page: { display: 'flex', minHeight: '100vh', alignItems: 'flex-start', justifyContent: 'center', padding: '2rem' },${stylesBlock === '' ? '' : `
-${stylesBlock}`}
+  page: { display: 'flex', minHeight: '100vh', alignItems: 'flex-start', justifyContent: 'center', padding: '2rem' },${
+    stylesBlock === ''
+      ? ''
+      : `
+${stylesBlock}`
+  }
 })
 
 `
-    : '';
+    : ''
   return foldkitApplication({
     title: `Menubar — ${fixture.title}`,
     imports: `${emitImports(fixture, isStyleX)}\n\n${pageStyle}`,
@@ -605,8 +721,8 @@ ${stylesBlock}`}
     ${emitBody(fixture, isStyleX)}
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const menubarExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -618,4 +734,4 @@ export const menubarExamples = (
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer),
-  }));
+  }))

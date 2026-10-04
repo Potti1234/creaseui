@@ -4,17 +4,31 @@ import { describe, it } from 'node:test'
 import ts from 'typescript'
 
 import { DESIGN_SYSTEM_EVALUATIONS } from '../src/stylex/composition/evaluations'
-import { RECIPE_NAMES, templateById, templates } from '../src/stylex/composition/templates'
+import {
+  RECIPE_NAMES,
+  templateById,
+  templates,
+} from '../src/stylex/composition/templates'
 
-const parse = (file: string): ts.SourceFile => ts.createSourceFile(file, readFileSync(file, 'utf8'), ts.ScriptTarget.Latest, true, ts.ScriptKind.TS)
+const parse = (file: string): ts.SourceFile =>
+  ts.createSourceFile(
+    file,
+    readFileSync(file, 'utf8'),
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TS,
+  )
 const walk = (node: ts.Node, visit: (node: ts.Node) => void): void => {
   visit(node)
-  ts.forEachChild(node, (child) => walk(child, visit))
+  ts.forEachChild(node, child => walk(child, visit))
 }
 
 describe('Astryx-inspired constrained template system', () => {
   it('has one complete, agent-readable definition for every recipe', () => {
-    assert.deepEqual([...new Set(templates.map(({ recipe }) => recipe))].sort(), [...RECIPE_NAMES].sort())
+    assert.deepEqual(
+      [...new Set(templates.map(({ recipe }) => recipe))].sort(),
+      [...RECIPE_NAMES].sort(),
+    )
     assert.equal(new Set(templates.map(({ id }) => id)).size, templates.length)
     for (const template of templates) {
       assert.equal(templateById(template.id).id, template.id)
@@ -25,20 +39,38 @@ describe('Astryx-inspired constrained template system', () => {
   })
 
   it('covers every template with real-task evaluation criteria', () => {
-    const covered = new Set(DESIGN_SYSTEM_EVALUATIONS.map(({ template }) => template))
+    const covered = new Set(
+      DESIGN_SYSTEM_EVALUATIONS.map(({ template }) => template),
+    )
     assert.deepEqual([...covered].sort(), templates.map(({ id }) => id).sort())
     assert.ok(DESIGN_SYSTEM_EVALUATIONS.some(({ mode }) => mode === 'static'))
     assert.ok(DESIGN_SYSTEM_EVALUATIONS.some(({ mode }) => mode === 'browser'))
   })
 
   it('keeps semantic layout and recipe APIs closed to style escape hatches', () => {
-    const forbidden = new Set(['class', 'className', 'layoutStyle', 'style', 'styles', 'unsafeClass', 'unsafeStyle', 'xstyle'])
-    for (const file of ['src/stylex/composition/semantic-layout.ts', 'src/stylex/composition/recipes.ts']) {
+    const forbidden = new Set([
+      'class',
+      'className',
+      'layoutStyle',
+      'style',
+      'styles',
+      'unsafeClass',
+      'unsafeStyle',
+      'xstyle',
+    ])
+    for (const file of [
+      'src/stylex/composition/semantic-layout.ts',
+      'src/stylex/composition/recipes.ts',
+    ]) {
       const ast = parse(file)
-      walk(ast, (node) => {
+      walk(ast, node => {
         if (!ts.isPropertySignature(node) || node.name === undefined) return
         const property = node.name.getText(ast).replaceAll(/["']/gu, '')
-        assert.equal(forbidden.has(property), false, `${file}: forbidden public escape hatch ${property}`)
+        assert.equal(
+          forbidden.has(property),
+          false,
+          `${file}: forbidden public escape hatch ${property}`,
+        )
       })
     }
   })
@@ -46,19 +78,43 @@ describe('Astryx-inspired constrained template system', () => {
   it('migrates the featured dashboard to semantic regions', () => {
     const ast = parse('src/demo/blocks-stylex/featured-page.ts')
     const calls = new Set<string>()
-    walk(ast, (node) => {
-      if (ts.isCallExpression(node) && ts.isIdentifier(node.expression)) calls.add(node.expression.text)
+    walk(ast, node => {
+      if (ts.isCallExpression(node) && ts.isIdentifier(node.expression))
+        calls.add(node.expression.text)
     })
-    for (const name of ['dashboardShell', 'metricGrid', 'section', 'tableRegion', 'toolbar']) assert.equal(calls.has(name), true)
+    for (const name of [
+      'dashboardShell',
+      'metricGrid',
+      'section',
+      'tableRegion',
+      'toolbar',
+    ])
+      assert.equal(calls.has(name), true)
   })
 
   it('matches every Tailwind chart section and example count', () => {
     const chartsSource = readFileSync('src/demo/charts-stylex/page.ts', 'utf8')
-    const expected = { area: 10, bar: 10, line: 10, pie: 11, radar: 14, radial: 6, tooltip: 9 } as const
+    const expected = {
+      area: 10,
+      bar: 10,
+      line: 10,
+      pie: 11,
+      radar: 14,
+      radial: 6,
+      tooltip: 9,
+    } as const
     const ids = new Set<string>()
     for (const [section, count] of Object.entries(expected)) {
-      const body = chartsSource.match(new RegExp(`${section}: specs\\('${section}', \\[([\\s\\S]*?)\\]\\s*(?:, '[^']+')?\\),`, 'u'))?.[1] ?? ''
-      const entries = [...body.matchAll(/\['([^']+)', '[^']+'\]/gu)]
+      const body =
+        chartsSource.match(
+          new RegExp(
+            `${section}:\\s*specs\\(\\s*'${section}',\\s*\\[([\\s\\S]*?)\\]\\s*(?:,\\s*'[^']+')?\\s*,?\\s*\\),`,
+            'u',
+          ),
+        )?.[1] ?? ''
+      const entries = [
+        ...body.matchAll(/\[\s*'([^']+)',\s*'[^']+'\s*,?\s*\]/gu),
+      ]
       assert.equal(entries.length, count, `${section} StyleX examples`)
       for (const entry of entries) ids.add(`${section}-${entry[1] ?? ''}`)
     }

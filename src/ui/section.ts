@@ -1,6 +1,6 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils'
 
 /* Ported from Meta Astryx Section/Section.tsx — a padded page section with
    surface variants and edge dividers. The astryx outer/inner wrapper pair
@@ -8,23 +8,23 @@ import { cn } from '@/lib/utils';
    padding context, so the port renders a single <section>. Default padding
    follows the astryx theme default of step 4 (16px). */
 
-export type SectionVariant = 'section' | 'transparent' | 'muted';
-export type SectionDivider = 'top' | 'bottom' | 'start' | 'end';
-export type SectionSpacing = 0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10;
-export type SectionSizeValue = number | string;
+export type SectionVariant = 'section' | 'transparent' | 'muted'
+export type SectionDivider = 'top' | 'bottom' | 'start' | 'end'
+export type SectionSpacing = 0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10
+export type SectionSizeValue = number | string
 
 const variantClasses: Record<SectionVariant, string> = {
   section: 'bg-card',
   transparent: 'bg-transparent',
   muted: 'bg-muted',
-};
+}
 
 const dividerClasses: Record<SectionDivider, string> = {
   top: 'border-t',
   bottom: 'border-b',
   start: 'border-s',
   end: 'border-e',
-};
+}
 
 const paddingInlineStartClasses: Record<SectionSpacing, string> = {
   0: 'ps-0',
@@ -38,7 +38,7 @@ const paddingInlineStartClasses: Record<SectionSpacing, string> = {
   6: 'ps-6',
   8: 'ps-8',
   10: 'ps-10',
-};
+}
 
 const paddingInlineEndClasses: Record<SectionSpacing, string> = {
   0: 'pe-0',
@@ -52,7 +52,7 @@ const paddingInlineEndClasses: Record<SectionSpacing, string> = {
   6: 'pe-6',
   8: 'pe-8',
   10: 'pe-10',
-};
+}
 
 const paddingBlockStartClasses: Record<SectionSpacing, string> = {
   0: 'pt-0',
@@ -66,7 +66,7 @@ const paddingBlockStartClasses: Record<SectionSpacing, string> = {
   6: 'pt-6',
   8: 'pt-8',
   10: 'pt-10',
-};
+}
 
 const paddingBlockEndClasses: Record<SectionSpacing, string> = {
   0: 'pb-0',
@@ -80,10 +80,10 @@ const paddingBlockEndClasses: Record<SectionSpacing, string> = {
   6: 'pb-6',
   8: 'pb-8',
   10: 'pb-10',
-};
+}
 
 const sizeValue = (value: SectionSizeValue): string =>
-  typeof value === 'number' ? `${value}px` : value;
+  typeof value === 'number' ? `${value}px` : value
 
 export type SectionProps = Readonly<{
   /**
@@ -92,52 +92,51 @@ export type SectionProps = Readonly<{
    * - `transparent`: no background
    * - `muted`: muted background, draws attention to a region
    */
-  variant?: SectionVariant;
+  variant?: SectionVariant
   /** Divider borders to apply on the given logical edges. */
-  dividers?: ReadonlyArray<SectionDivider>;
+  dividers?: ReadonlyArray<SectionDivider>
   /**
    * Inner padding on all sides (spacing steps of 4px).
    * @default 4 (16px)
    */
-  padding?: SectionSpacing;
+  padding?: SectionSpacing
   /** Inline padding; overrides `padding` on that axis. */
-  paddingInline?: SectionSpacing;
+  paddingInline?: SectionSpacing
   /** Inline-start padding; overrides `paddingInline` on that edge. */
-  paddingInlineStart?: SectionSpacing;
+  paddingInlineStart?: SectionSpacing
   /** Inline-end padding; overrides `paddingInline` on that edge. */
-  paddingInlineEnd?: SectionSpacing;
+  paddingInlineEnd?: SectionSpacing
   /** Block padding; overrides `padding` on that axis. */
-  paddingBlock?: SectionSpacing;
+  paddingBlock?: SectionSpacing
   /** Block-start padding; overrides `paddingBlock` on that edge. */
-  paddingBlockStart?: SectionSpacing;
+  paddingBlockStart?: SectionSpacing
   /** Block-end padding; overrides `paddingBlock` on that edge. */
-  paddingBlockEnd?: SectionSpacing;
+  paddingBlockEnd?: SectionSpacing
   /** Section width; numbers are pixels. */
-  width?: SectionSizeValue;
+  width?: SectionSizeValue
   /** Section height; numbers are pixels. */
-  height?: SectionSizeValue;
+  height?: SectionSizeValue
   /** Section max-width; numbers are pixels. */
-  maxWidth?: SectionSizeValue;
+  maxWidth?: SectionSizeValue
   /** Section min-height; numbers are pixels. */
-  minHeight?: SectionSizeValue;
-  children?: ReadonlyArray<Html | string>;
-  class?: string;
-}>;
+  minHeight?: SectionSizeValue
+  children?: ReadonlyArray<Html | string>
+  class?: string
+}>
 
 export const section = <Msg>(
   props: SectionProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const variant = props.variant ?? 'section';
-  const padding = props.padding ?? 4;
+  const variant = props.variant ?? 'section'
+  const padding = props.padding ?? 4
   const paddingInlineStart =
-    props.paddingInlineStart ?? props.paddingInline ?? padding;
+    props.paddingInlineStart ?? props.paddingInline ?? padding
   const paddingInlineEnd =
-    props.paddingInlineEnd ?? props.paddingInline ?? padding;
+    props.paddingInlineEnd ?? props.paddingInline ?? padding
   const paddingBlockStart =
-    props.paddingBlockStart ?? props.paddingBlock ?? padding;
-  const paddingBlockEnd =
-    props.paddingBlockEnd ?? props.paddingBlock ?? padding;
+    props.paddingBlockStart ?? props.paddingBlock ?? padding
+  const paddingBlockEnd = props.paddingBlockEnd ?? props.paddingBlock ?? padding
   const sizing: Record<string, string> = {
     ...(props.width === undefined ? {} : { width: sizeValue(props.width) }),
     ...(props.height === undefined ? {} : { height: sizeValue(props.height) }),
@@ -147,7 +146,7 @@ export const section = <Msg>(
     ...(props.minHeight === undefined
       ? {}
       : { minHeight: sizeValue(props.minHeight) }),
-  };
+  }
   return h.section(
     [
       h.DataAttribute('slot', 'section'),
@@ -166,5 +165,5 @@ export const section = <Msg>(
       ...(Object.keys(sizing).length > 0 ? [h.Style(sizing)] : []),
     ],
     [...(props.children ?? [])],
-  );
-};
+  )
+}

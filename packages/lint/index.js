@@ -39,22 +39,41 @@ export const tailwind = (options = {}) => {
     settings: {
       shadcn: {
         componentImports,
-        note: options.note ?? 'See the Crease design-system lint documentation for approved exceptions.',
+        note:
+          options.note ??
+          'See the Crease design-system lint documentation for approved exceptions.',
       },
     },
     rules: {
-      'crease/no-component-restyle': options.restyle === false ? 'off' : [severity, {
-        ...shared,
-        allow: options.allow ?? ['layout'],
-        contracts: options.contracts ?? [],
-      }],
-      'crease/require-static-class': options.staticClasses === false ? 'off' : [severity, shared],
-      'crease/no-foldkit-inline-style': options.inlineStyles === 'forbid' ? severity : 'off',
-      'shadcn/no-raw-colors': options.rawColors === false ? 'off' : [severity, { scanAllStrings: true }],
-      'shadcn/no-arbitrary-values': options.arbitraryValues === false ? 'off' : [severity, {
-        allow: options.arbitraryValueAllow ?? [],
-        scanAllStrings: true,
-      }],
+      'crease/no-component-restyle':
+        options.restyle === false
+          ? 'off'
+          : [
+              severity,
+              {
+                ...shared,
+                allow: options.allow ?? ['layout'],
+                contracts: options.contracts ?? [],
+              },
+            ],
+      'crease/require-static-class':
+        options.staticClasses === false ? 'off' : [severity, shared],
+      'crease/no-foldkit-inline-style':
+        options.inlineStyles === 'forbid' ? severity : 'off',
+      'shadcn/no-raw-colors':
+        options.rawColors === false
+          ? 'off'
+          : [severity, { scanAllStrings: true }],
+      'shadcn/no-arbitrary-values':
+        options.arbitraryValues === false
+          ? 'off'
+          : [
+              severity,
+              {
+                allow: options.arbitraryValueAllow ?? [],
+                scanAllStrings: true,
+              },
+            ],
     },
   }
 }
@@ -67,42 +86,64 @@ export const stylex = (options = {}) => {
     ignores: options.ignores ?? [],
     plugins: { '@stylexjs': stylexPlugin, crease: plugin },
     rules: {
-      '@stylexjs/enforce-extension': [severity, {
-        enforceDefineConstsExtension: true,
-        legacyAllowMixedExports: false,
-        themeFileExtension: '.stylex',
-      }],
+      '@stylexjs/enforce-extension': [
+        severity,
+        {
+          enforceDefineConstsExtension: true,
+          legacyAllowMixedExports: false,
+          themeFileExtension: '.stylex',
+        },
+      ],
       '@stylexjs/no-legacy-contextual-styles': severity,
       '@stylexjs/no-lookahead-selectors': severity,
       '@stylexjs/no-nonstandard-styles': severity,
       '@stylexjs/no-conflicting-props': severity,
       '@stylexjs/no-unused': severity,
-      '@stylexjs/sort-keys': [severity, {
-        allowLineSeparatedGroups: false,
-        minKeys: 2,
-        order: 'default',
-      }],
-      '@stylexjs/valid-shorthands': [severity, {
-        allowImportant: false,
-        preferInline: true,
-      }],
-      '@stylexjs/valid-styles': [severity, {
-        allowOuterPseudoAndMedia: false,
-        allowRawCSSVars: false,
-        banPropsForLegacy: false,
-        propLimits: options.propLimits ?? {},
-        styleResolution: options.styleResolution ?? 'property-specificity',
-      }],
-      'crease/no-foldkit-inline-style': options.inlineStyles === 'forbid' ? severity : 'off',
-      'crease/stylex-component-contract': [severity, {
-        componentImports: options.componentImports ?? ['^@/stylex(?:/|$)'],
-        ignoreImports: options.ignoreImports ?? [],
-        layoutProperties: options.layoutProperties ?? ['layoutStyle', '*LayoutStyle'],
-      }],
-      'crease/no-stylex-escape': [severity, {
-        allowCreateIn: options.allowCreateIn ?? ['.*'],
-        allowPropsIn: options.allowPropsIn ?? ['.*'],
-      }],
+      '@stylexjs/sort-keys': [
+        severity,
+        {
+          allowLineSeparatedGroups: false,
+          minKeys: 2,
+          order: 'default',
+        },
+      ],
+      '@stylexjs/valid-shorthands': [
+        severity,
+        {
+          allowImportant: false,
+          preferInline: true,
+        },
+      ],
+      '@stylexjs/valid-styles': [
+        severity,
+        {
+          allowOuterPseudoAndMedia: false,
+          allowRawCSSVars: false,
+          banPropsForLegacy: false,
+          propLimits: options.propLimits ?? {},
+          styleResolution: options.styleResolution ?? 'property-specificity',
+        },
+      ],
+      'crease/no-foldkit-inline-style':
+        options.inlineStyles === 'forbid' ? severity : 'off',
+      'crease/stylex-component-contract': [
+        severity,
+        {
+          componentImports: options.componentImports ?? ['^@/stylex(?:/|$)'],
+          ignoreImports: options.ignoreImports ?? [],
+          layoutProperties: options.layoutProperties ?? [
+            'layoutStyle',
+            '*LayoutStyle',
+          ],
+        },
+      ],
+      'crease/no-stylex-escape': [
+        severity,
+        {
+          allowCreateIn: options.allowCreateIn ?? ['.*'],
+          allowPropsIn: options.allowPropsIn ?? ['.*'],
+        },
+      ],
     },
   }
 }
@@ -112,7 +153,10 @@ export const constrainedStylex = (options = {}) => ({
   files: options.files ?? [],
   plugins: { crease: plugin },
   rules: {
-    'crease/no-stylex-escape': ['error', { allowCreateIn: [], allowPropsIn: [] }],
+    'crease/no-stylex-escape': [
+      'error',
+      { allowCreateIn: [], allowPropsIn: [] },
+    ],
     'crease/no-foldkit-inline-style': 'error',
     'crease/prefer-composition-primitives': 'error',
   },

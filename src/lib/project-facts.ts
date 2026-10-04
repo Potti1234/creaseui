@@ -1,5 +1,4 @@
-export const COMPONENT_COUNT = 120;
-export const SHOWCASE_CARD_COUNT = 33;
-export const CHART_EXAMPLE_COUNT = 70;
-export const SIDEBAR_BLOCK_COUNT = 16;
-
+export const COMPONENT_COUNT = 120
+export const SHOWCASE_CARD_COUNT = 33
+export const CHART_EXAMPLE_COUNT = 70
+export const SIDEBAR_BLOCK_COUNT = 16

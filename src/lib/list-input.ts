@@ -30,18 +30,19 @@ export type ListInputValueContext<T> = Readonly<{
   isLabelHidden: boolean
 }>
 
-export type ListInputRenderContext<T, Msg> = ListInputValueContext<T> & Readonly<{
-  /** The column's `key` for this cell. */
-  columnKey: string
-  /** Complete validation status scoped to this field. */
-  status?: { type: 'warning' | 'error' | 'success'; message?: string }
-  /** Forward to the rendered control so status uses its native tooltip. */
-  statusVariant: 'tooltip'
-  isDisabled: boolean
-  isLoading: boolean
-  /** Message factory replacing this record: `(nextItem, columnKey?) => Msg`. */
-  updateItem: (nextItem: T, columnKey?: string) => Msg
-}>
+export type ListInputRenderContext<T, Msg> = ListInputValueContext<T> &
+  Readonly<{
+    /** The column's `key` for this cell. */
+    columnKey: string
+    /** Complete validation status scoped to this field. */
+    status?: { type: 'warning' | 'error' | 'success'; message?: string }
+    /** Forward to the rendered control so status uses its native tooltip. */
+    statusVariant: 'tooltip'
+    isDisabled: boolean
+    isLoading: boolean
+    /** Message factory replacing this record: `(nextItem, columnKey?) => Msg`. */
+    updateItem: (nextItem: T, columnKey?: string) => Msg
+  }>
 
 export type ListInputChange =
   | Readonly<{ type: 'add'; index: number }>
@@ -58,7 +59,11 @@ export const resolveColumnTrack = (
 }
 
 /** Moves `fromIndex` to `toIndex`, used by the parent's reorder fold. */
-export const moveItem = <T>(items: ReadonlyArray<T>, fromIndex: number, toIndex: number): ReadonlyArray<T> => {
+export const moveItem = <T>(
+  items: ReadonlyArray<T>,
+  fromIndex: number,
+  toIndex: number,
+): ReadonlyArray<T> => {
   const next = [...items]
   const [item] = next.splice(fromIndex, 1)
   if (item === undefined) return items
@@ -94,13 +99,27 @@ export const Message = defineMessageUnion({
   /* The item factory rides the message: it is a view-supplied callback and
      update invokes it exactly once per dispatch (astryx calls createItem()
      inside the click handler). */
-  AddRequested: { createItem: S.Unknown, itemName: S.String, position: S.Number },
+  AddRequested: {
+    createItem: S.Unknown,
+    itemName: S.String,
+    position: S.Number,
+  },
   RemoveRequested: { index: S.Number, itemName: S.String, position: S.Number },
   FieldEdited: { index: S.Number, nextItem: S.Unknown, columnKey: S.String },
   /* Arrow keys on the handle while not grabbed: immediate one-position move. */
-  MoveRequested: { fromIndex: S.Number, toIndex: S.Number, itemName: S.String, total: S.Number },
+  MoveRequested: {
+    fromIndex: S.Number,
+    toIndex: S.Number,
+    itemName: S.String,
+    total: S.Number,
+  },
   AlreadyAtBoundary: { itemName: S.String, boundary: S.String },
-  GrabStarted: { index: S.Number, key: S.String, itemName: S.String, position: S.Number },
+  GrabStarted: {
+    index: S.Number,
+    key: S.String,
+    itemName: S.String,
+    position: S.Number,
+  },
   GrabPreviewed: { toIndex: S.Number, itemName: S.String, total: S.Number },
   GrabCommitted: { itemName: S.String, total: S.Number },
   GrabCancelled: {},
@@ -115,7 +134,11 @@ export const OutMessage = defineMessageUnion({
 })
 export type OutMessage = typeof OutMessage.Type
 
-export type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>
+export type UpdateReturn = Update.ReturnWithOutMessage<
+  Model,
+  Message,
+  OutMessage
+>
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
@@ -176,7 +199,11 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       return {
         model: {
           ...model,
-          reorder: Option.some({ key: message.key, fromIndex: message.index, previewIndex: message.index }),
+          reorder: Option.some({
+            key: message.key,
+            fromIndex: message.index,
+            previewIndex: message.index,
+          }),
           announcement: Option.some(
             `${message.itemName} ${message.position} grabbed. Use arrow keys to move, Space or Enter to drop, and Escape to cancel.`,
           ),

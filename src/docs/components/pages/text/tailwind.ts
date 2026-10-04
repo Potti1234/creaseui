@@ -1,24 +1,24 @@
-import { Schema as S } from 'effect';
-import type { HtmlBuilder } from 'foldkit/html';
-import type { Html } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import { Schema as S } from 'effect'
+import type { HtmlBuilder } from 'foldkit/html'
+import type { Html } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-import { definePreviewProgram } from '@/docs/components/pages/authored-page';
+import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
   LONG_TEXT,
   textFixtures,
   type TextFixture,
   type TextRow,
-} from '@/docs/components/pages/text/shared';
-import * as Heading from '@/ui/heading';
-import * as Text from '@/ui/text';
+} from '@/docs/components/pages/text/shared'
+import * as Heading from '@/ui/heading'
+import * as Text from '@/ui/text'
 
 const InteractedWithTextPreview = defineMessageUnion({
   InteractedWithTextPreview: {},
-});
-type InteractedWithTextPreview = typeof InteractedWithTextPreview.Type;
-const TextPreviewModel = S.Struct({ _docsPage: S.Literal('text') });
-type TextPreviewModel = typeof TextPreviewModel.Type;
+})
+type InteractedWithTextPreview = typeof InteractedWithTextPreview.Type
+const TextPreviewModel = S.Struct({ _docsPage: S.Literal('text') })
+type TextPreviewModel = typeof TextPreviewModel.Type
 
 const textRow = <Msg>(row: TextRow, h: HtmlBuilder<Msg>): Html =>
   Text.text(
@@ -39,7 +39,7 @@ const textRow = <Msg>(row: TextRow, h: HtmlBuilder<Msg>): Html =>
       children: [row.content],
     },
     h,
-  );
+  )
 
 const typesLabels = [
   'Body text',
@@ -49,7 +49,7 @@ const typesLabels = [
   'Code text',
   'Strikethrough',
   'Tabular numbers',
-];
+]
 
 const wrapBoxes: ReadonlyArray<
   readonly [string, 'wrap' | 'nowrap' | 'balance' | 'pretty', string, boolean]
@@ -78,7 +78,7 @@ const wrapBoxes: ReadonlyArray<
     'This text uses pretty wrap to avoid orphans at the end of paragraphs.',
     false,
   ],
-];
+]
 
 const renderFixture = <Msg>(
   fixture: TextFixture,
@@ -89,23 +89,20 @@ const renderFixture = <Msg>(
       return h.div(
         [h.Class('flex flex-col gap-2')],
         fixture.rows.map(row => textRow(row, h)),
-      );
+      )
     case 'colors':
     case 'weight':
       return h.div(
         [h.Class('flex flex-col gap-3')],
         fixture.rows.map(row => textRow(row, h)),
-      );
+      )
     case 'headingLevels':
       return h.div(
         [h.Class('flex flex-col gap-3')],
         ([1, 2, 3, 4, 5, 6] as const).map(level =>
-          Heading.heading(
-            { level, children: [`Heading ${level}`] },
-            h,
-          ),
+          Heading.heading({ level, children: [`Heading ${level}`] }, h),
         ),
-      );
+      )
     case 'inline':
       return Text.text(
         {
@@ -118,7 +115,7 @@ const renderFixture = <Msg>(
           ],
         },
         h,
-      );
+      )
     case 'types':
       return h.div(
         [h.Class('flex flex-col gap-3')],
@@ -138,7 +135,7 @@ const renderFixture = <Msg>(
             ],
           ),
         ),
-      );
+      )
     case 'truncation':
       return h.div(
         [h.Class('flex flex-col gap-4 max-w-75')],
@@ -173,7 +170,7 @@ const renderFixture = <Msg>(
             ],
           ),
         ),
-      );
+      )
     case 'wordBreak':
       return h.div(
         [h.Class('flex flex-col gap-4 max-w-100')],
@@ -237,7 +234,7 @@ const renderFixture = <Msg>(
             ],
           ),
         ],
-      );
+      )
     case 'wrap':
       return h.div(
         [h.Class('flex flex-col gap-4 max-w-100')],
@@ -269,9 +266,9 @@ const renderFixture = <Msg>(
             ],
           ),
         ),
-      );
+      )
   }
-};
+}
 
 export const textTailwindPreviewProgram = definePreviewProgram<
   TextPreviewModel,
@@ -283,4 +280,4 @@ export const textTailwindPreviewProgram = definePreviewProgram<
   update: model => ({ model: model }),
   view: (index, _model, h) =>
     renderFixture(textFixtures[index] ?? textFixtures[0], h),
-});
+})

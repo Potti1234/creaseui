@@ -1,6 +1,6 @@
-import { DatePart, type LocaleConfig } from 'foldkit/calendar';
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import { DatePart, type LocaleConfig } from 'foldkit/calendar'
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type DatePickerFixtureKind =
   | 'demo'
@@ -10,13 +10,13 @@ export type DatePickerFixtureKind =
   | 'input'
   | 'time'
   | 'natural'
-  | 'rtl';
+  | 'rtl'
 
 export type DatePickerFixture = Readonly<{
-  title: string;
-  kind: DatePickerFixtureKind;
-  heroOnly?: boolean;
-}>;
+  title: string
+  kind: DatePickerFixtureKind
+  heroOnly?: boolean
+}>
 
 export const datePickerFixtures: ReadonlyArray<DatePickerFixture> = [
   { title: 'Pick a date', kind: 'demo', heroOnly: true },
@@ -27,20 +27,46 @@ export const datePickerFixtures: ReadonlyArray<DatePickerFixture> = [
   { title: 'Time Picker', kind: 'time' },
   { title: 'Natural Language Picker', kind: 'natural' },
   { title: 'RTL', kind: 'rtl' },
-];
+]
 
 export const arabicCalendarLocale: LocaleConfig = {
   firstDayOfWeek: 'Saturday',
   monthNames: [
-    'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس',
-    'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر',
+    'يناير',
+    'فبراير',
+    'مارس',
+    'أبريل',
+    'مايو',
+    'يونيو',
+    'يوليو',
+    'أغسطس',
+    'سبتمبر',
+    'أكتوبر',
+    'نوفمبر',
+    'ديسمبر',
   ],
   shortMonthNames: [
-    'ينا', 'فبر', 'مار', 'أبر', 'ماي', 'يون', 'يول', 'أغس', 'سبت', 'أكت',
-    'نوف', 'ديس',
+    'ينا',
+    'فبر',
+    'مار',
+    'أبر',
+    'ماي',
+    'يون',
+    'يول',
+    'أغس',
+    'سبت',
+    'أكت',
+    'نوف',
+    'ديس',
   ],
   dayNames: [
-    'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت',
+    'الأحد',
+    'الاثنين',
+    'الثلاثاء',
+    'الأربعاء',
+    'الخميس',
+    'الجمعة',
+    'السبت',
   ],
   shortDayNames: ['أحد', 'اثن', 'ثلا', 'أرب', 'خمي', 'جمع', 'سبت'],
   longFormat: [
@@ -73,7 +99,7 @@ export const arabicCalendarLocale: LocaleConfig = {
     DatePart.LiteralText({ text: ' ' }),
     DatePart.YearNumber(),
   ],
-};
+}
 
 /* Helpers emitted into generated sources: English display formatting plus the
    small parsers the Input and Natural Language examples use. */
@@ -85,14 +111,14 @@ const formatDisplay = (date: FoldkitCalendar.CalendarDate): string =>
 const formatCompact = (date: FoldkitCalendar.CalendarDate): string =>
   SHORT_MONTH_NAMES[date.month - 1] + ' ' + String(date.day).padStart(2, '0') + ', ' + String(date.year)
 const formatUs = (date: FoldkitCalendar.CalendarDate): string =>
-  String(date.month) + '/' + String(date.day) + '/' + String(date.year)`;
+  String(date.month) + '/' + String(date.day) + '/' + String(date.year)`
 
 const PARSE_INPUT = `const parseInputDate = (value: string): Option.Option<FoldkitCalendar.CalendarDate> => {
   const parsed = new Date(value)
   return Number.isNaN(parsed.getTime())
     ? Option.none()
     : Option.some({ year: parsed.getFullYear(), month: parsed.getMonth() + 1, day: parsed.getDate() })
-}`;
+}`
 
 const PARSE_NATURAL = `const WEEKDAYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
 const WEEKDAY_INDEX: Readonly<Record<string, number>> = {
@@ -128,7 +154,7 @@ const parseNaturalDate = (value: string, today: FoldkitCalendar.CalendarDate): O
     return Option.some(FoldkitCalendar.addDays(today, offset))
   }
   return Option.none()
-}`;
+}`
 
 /* Emits for the single-date kinds (demo, basic, dob, time, rtl) — one
    DatePicker model driven by the parent-owned selectedDate. */
@@ -136,13 +162,13 @@ const pickerSource = (
   fixture: DatePickerFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const isStyleX = renderer === 'stylex';
-  const dir = isStyleX ? 'stylex' : 'ui';
-  const kind = fixture.kind;
-  const isRtl = kind === 'rtl';
-  const isTime = kind === 'time';
-  const withChevron = kind === 'demo' || isTime || isRtl;
-  const needsField = kind !== 'demo';
+  const isStyleX = renderer === 'stylex'
+  const dir = isStyleX ? 'stylex' : 'ui'
+  const kind = fixture.kind
+  const isRtl = kind === 'rtl'
+  const isTime = kind === 'time'
+  const withChevron = kind === 'demo' || isTime || isRtl
+  const needsField = kind !== 'demo'
   const labelText =
     kind === 'basic'
       ? 'Date'
@@ -150,14 +176,14 @@ const pickerSource = (
         ? 'Date of birth'
         : isTime
           ? 'Date'
-          : undefined;
+          : undefined
   const placeholder =
     kind === 'demo' || kind === 'basic'
       ? 'Pick a date'
       : isRtl
         ? 'اختر تاريخًا'
-        : 'Select date';
-  const formatFn = kind === 'dob' ? 'formatUs' : 'formatDisplay';
+        : 'Select date'
+  const formatFn = kind === 'dob' ? 'formatUs' : 'formatDisplay'
 
   const triggerContentEmit =
     kind === 'basic' || kind === 'dob'
@@ -171,7 +197,7 @@ const pickerSource = (
           onSome: date => h.span([], [${formatFn}(date)]),
         }),
         Icon.chevronDown({ class: ${isStyleX ? 'className(styles.chevron)' : `'size-4 opacity-50'`} }, h),
-      ]),`;
+      ]),`
 
   const datePickerCall = `DatePicker.datePicker({
       model: model.datePicker,
@@ -180,16 +206,20 @@ const pickerSource = (
       name: 'date',
       ariaLabel: '${placeholder}',
 ${triggerContentEmit}
-      ${isStyleX ? `triggerLayoutStyle: styles.${kind === 'demo' ? 'demoTrigger' : 'trigger'}` : `triggerClass: 'w-44 justify-start font-normal'`},${isRtl ? `
-      direction: 'rtl',` : ''}
-    }, h)`;
+      ${isStyleX ? `triggerLayoutStyle: styles.${kind === 'demo' ? 'demoTrigger' : 'trigger'}` : `triggerClass: 'w-44 justify-start font-normal'`},${
+        isRtl
+          ? `
+      direction: 'rtl',`
+          : ''
+      }
+    }, h)`
 
   const pickerBlock = needsField
     ? `Field.field({ children: [
       Field.fieldLabel({ for: 'date-picker', children: ['${labelText}'] }, h),
       ${isStyleX ? `h.div([h.Class(className(styles.fieldWrap))], [${datePickerCall}])` : `h.div([h.Class('mx-auto w-44')], [${datePickerCall}])`},
     ] }, h)`
-    : `h.div([], [${datePickerCall}])`;
+    : `h.div([], [${datePickerCall}])`
 
   const view = `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Date Picker — ${fixture.title}',
@@ -207,15 +237,19 @@ ${triggerContentEmit}
           id: 'time-picker-optional',
           value: model.timeValue,
           onInput: value => ChangedTime({ value }),
-          type: 'time',${isStyleX ? '' : `
-          class: 'w-32 appearance-none bg-background [&::-webkit-calendar-picker-indicator]:hidden',`}
+          type: 'time',${
+            isStyleX
+              ? ''
+              : `
+          class: 'w-32 appearance-none bg-background [&::-webkit-calendar-picker-indicator]:hidden',`
+          }
         }, h),
       ] }, h),
     ] }, h)`
         : pickerBlock
     },
   ]),
-})`;
+})`
 
   return foldkitApplication({
     title: `Date Picker — ${fixture.title}`,
@@ -224,43 +258,83 @@ import { Command, Runtime, Subscription, Update } from 'foldkit'
 import * as FoldkitCalendar from 'foldkit/calendar'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-${isStyleX ? `import * as stylex from '@stylexjs/stylex'
+${
+  isStyleX
+    ? `import * as stylex from '@stylexjs/stylex'
 import { className } from '@/stylex/style'
 
-` : ''}import * as DatePicker from '@/${dir}/date-picker'${needsField ? `
-import * as Field from '@/${dir}/field'` : ''}${isTime ? `
-import * as Input from '@/${dir}/input'` : ''}${withChevron ? `
-import * as Icon from '@/lib/icon'` : ''}${isRtl ? `
+`
+    : ''
+}import * as DatePicker from '@/${dir}/date-picker'${
+      needsField
+        ? `
+import * as Field from '@/${dir}/field'`
+        : ''
+    }${
+      isTime
+        ? `
+import * as Input from '@/${dir}/input'`
+        : ''
+    }${
+      withChevron
+        ? `
+import * as Icon from '@/lib/icon'`
+        : ''
+    }${
+      isRtl
+        ? `
 
-const arabicCalendarLocale: FoldkitCalendar.LocaleConfig = ${JSON.stringify(arabicCalendarLocale)}` : ''}${isStyleX ? `
+const arabicCalendarLocale: FoldkitCalendar.LocaleConfig = ${JSON.stringify(arabicCalendarLocale)}`
+        : ''
+    }${
+      isStyleX
+        ? `
 
 const styles = stylex.create({
   triggerRow: { display: 'flex', width: '100%', alignItems: 'center', justifyContent: 'space-between' },
   chevron: { height: '1rem', width: '1rem', opacity: 0.5 },
   trigger: { width: '11rem' },
   demoTrigger: { width: '13.25rem' },
-  fieldWrap: { width: '11rem', marginInline: 'auto' },${isTime ? `
+  fieldWrap: { width: '11rem', marginInline: 'auto' },${
+    isTime
+      ? `
   timeField: { width: '8rem' },
-  timeRow: { display: 'flex', flexDirection: 'row', gap: '0.5rem', marginInline: 'auto', maxWidth: '20rem' },` : ''}
-})` : ''}
+  timeRow: { display: 'flex', flexDirection: 'row', gap: '0.5rem', marginInline: 'auto', maxWidth: '20rem' },`
+      : ''
+  }
+})`
+        : ''
+    }
 
 ${FORMAT_HELPERS}`,
     model: `export const Model = S.Struct({
   datePicker: DatePicker.Model,
-  selectedDate: S.Option(FoldkitCalendar.CalendarDate),${isTime ? `
-  timeValue: S.String,` : ''}
+  selectedDate: S.Option(FoldkitCalendar.CalendarDate),${
+    isTime
+      ? `
+  timeValue: S.String,`
+      : ''
+  }
 })
 export type Model = typeof Model.Type`,
     messages: `import { taggedStruct } from 'foldkit/schema'
-export const GotDatePickerMessage = taggedStruct('GotDatePickerMessage', { message: DatePicker.Message });${isTime ? `
-export const ChangedTime = taggedStruct('ChangedTime', { value: S.String });` : ''}
+export const GotDatePickerMessage = taggedStruct('GotDatePickerMessage', { message: DatePicker.Message });${
+      isTime
+        ? `
+export const ChangedTime = taggedStruct('ChangedTime', { value: S.String });`
+        : ''
+    }
 export const Message = S.Union([GotDatePickerMessage${isTime ? ', ChangedTime' : ''}])
 export type Message = typeof Message.Type`,
     init: `export const init = (): Update.Return<Model, Message> => ({
   model: {
     datePicker: DatePicker.init({ id: 'docs-date-picker', today: FoldkitCalendar.fromDateInZone(new Date(), 'UTC'), isAnimated: true${isRtl ? ', locale: arabicCalendarLocale' : ''} }),
-    selectedDate: Option.none(),${isTime ? `
-    timeValue: '10:30:00',` : ''}
+    selectedDate: Option.none(),${
+      isTime
+        ? `
+    timeValue: '10:30:00',`
+        : ''
+    }
   },
 })`,
     update: `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
@@ -273,20 +347,24 @@ export type Message = typeof Message.Type`,
         onSome: out => out._tag === 'SelectedDate' ? Option.some(out.date) : out._tag === 'ClearedDate' ? Option.none() : model.selectedDate,
       })
       return { model: { ...model, datePicker: next.model, selectedDate }, commands: Command.mapMessages(next.commands ?? [], child => GotDatePickerMessage({ message: child })) }
-    }${isTime ? `
+    }${
+      isTime
+        ? `
     case 'ChangedTime':
-      return { model: { ...model, timeValue: message.value }, commands: [] }` : ''}
+      return { model: { ...model, timeValue: message.value }, commands: [] }`
+        : ''
+    }
   }
 }`,
     view,
-  });
-};
+  })
+}
 
 /* Range: parent-owned endpoints rendered through the Calendar's range option,
    opened from a Popover trigger. */
 const rangeSource = (renderer: 'tailwind' | 'stylex'): string => {
-  const isStyleX = renderer === 'stylex';
-  const dir = isStyleX ? 'stylex' : 'ui';
+  const isStyleX = renderer === 'stylex'
+  const dir = isStyleX ? 'stylex' : 'ui'
   return foldkitApplication({
     title: 'Date Picker — Range Picker',
     imports: `import { Option, Schema as S } from 'effect'
@@ -294,10 +372,14 @@ import { Command, Runtime, Subscription, Update } from 'foldkit'
 import * as FoldkitCalendar from 'foldkit/calendar'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-${isStyleX ? `import * as stylex from '@stylexjs/stylex'
+${
+  isStyleX
+    ? `import * as stylex from '@stylexjs/stylex'
 import { className } from '@/stylex/style'
 
-` : ''}import * as Calendar from '@/${dir}/calendar'
+`
+    : ''
+}import * as Calendar from '@/${dir}/calendar'
 import * as Field from '@/${dir}/field'
 import * as Icon from '@/lib/icon'
 import * as Popover from '@/${dir}/popover'
@@ -305,14 +387,18 @@ import * as Popover from '@/${dir}/popover'
 // @/${dir}/date-picker is single-date only — range selection composes
 // Popover + Calendar with the endpoints owned by the app model.
 
-${FORMAT_HELPERS}${isStyleX ? `
+${FORMAT_HELPERS}${
+      isStyleX
+        ? `
 
 const styles = stylex.create({
   triggerRow: { display: 'flex', alignItems: 'center', gap: '0.5rem' },
   icon: { height: '1rem', width: '1rem' },
   rangeTrigger: { width: '15rem' },
   field: { width: '15rem', marginInline: 'auto' },
-})` : ''}`,
+})`
+        : ''
+    }`,
     model: `export const Model = S.Struct({
   calendar: Calendar.Model,
   popover: Popover.Model,
@@ -415,8 +501,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
     ] }, h),
   ]),
 })`,
-  });
-};
+  })
+}
 
 /* Input + Natural Language: an InputGroup whose trailing icon button opens a
    calendar Popover; typing parses free text into the selected date. */
@@ -426,13 +512,15 @@ const inputLikeSource = (
   fixture: DatePickerFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const isStyleX = renderer === 'stylex';
-  const dir = isStyleX ? 'stylex' : 'ui';
-  const isNatural = fixture.kind === 'natural';
-  const label = isNatural ? 'Schedule Date' : 'Subscription Date';
-  const inputId = isNatural ? 'date-optional' : 'date-required';
-  const placeholder = isNatural ? 'Tomorrow or next week' : 'June 01, 2025';
-  const parseFn = isNatural ? `parseNaturalDate(message.value, today)` : 'parseInputDate(message.value)';
+  const isStyleX = renderer === 'stylex'
+  const dir = isStyleX ? 'stylex' : 'ui'
+  const isNatural = fixture.kind === 'natural'
+  const label = isNatural ? 'Schedule Date' : 'Subscription Date'
+  const inputId = isNatural ? 'date-optional' : 'date-required'
+  const placeholder = isNatural ? 'Tomorrow or next week' : 'June 01, 2025'
+  const parseFn = isNatural
+    ? `parseNaturalDate(message.value, today)`
+    : 'parseInputDate(message.value)'
 
   return foldkitApplication({
     title: `Date Picker — ${fixture.title}`,
@@ -441,17 +529,23 @@ import { Command, Runtime, Subscription, Update } from 'foldkit'
 import * as FoldkitCalendar from 'foldkit/calendar'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-${isStyleX ? `import * as stylex from '@stylexjs/stylex'
+${
+  isStyleX
+    ? `import * as stylex from '@stylexjs/stylex'
 import { className } from '@/stylex/style'
 
-` : ''}import * as DatePicker from '@/${dir}/date-picker'
+`
+    : ''
+}import * as DatePicker from '@/${dir}/date-picker'
 import * as Field from '@/${dir}/field'
 import * as Icon from '@/lib/icon'
 import * as InputGroup from '@/${dir}/input-group'
 
 ${FORMAT_HELPERS}
 
-${isNatural ? PARSE_NATURAL : PARSE_INPUT}${isStyleX ? `
+${isNatural ? PARSE_NATURAL : PARSE_INPUT}${
+      isStyleX
+        ? `
 
 const styles = stylex.create({
   field: { width: ${isNatural ? `'20rem'` : `'12rem'`}, marginInline: 'auto' },
@@ -459,7 +553,9 @@ const styles = stylex.create({
   trigger: { height: '1.25rem', width: '1.25rem' },
   icon: { height: '1rem', width: '1rem' },
   srOnly: { position: 'absolute', width: '1px', height: '1px', overflow: 'hidden', clipPath: 'inset(50%)' },
-})` : ''}`,
+})`
+        : ''
+    }`,
     model: `export const Model = S.Struct({
   datePicker: DatePicker.Model,
   selectedDate: S.Option(FoldkitCalendar.CalendarDate),
@@ -552,8 +648,8 @@ export const init = (): Update.Return<Model, Message> => ({
     ] }, h),
   ]),
 })`,
-  });
-};
+  })
+}
 
 const sourceFor = (
   fixture: DatePickerFixture,
@@ -563,7 +659,7 @@ const sourceFor = (
     ? rangeSource(renderer)
     : fixture.kind === 'input' || fixture.kind === 'natural'
       ? inputLikeSource(fixture, renderer)
-      : pickerSource(fixture, renderer);
+      : pickerSource(fixture, renderer)
 
 export const datePickerExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -572,4 +668,4 @@ export const datePickerExamples = (
     title: fixture.title,
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: sourceFor(fixture, renderer),
-  }));
+  }))

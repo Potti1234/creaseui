@@ -1,12 +1,12 @@
-import { Match as M, Option, Schema as S } from 'effect';
-import type { Update } from 'foldkit';
-import { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
-import { modifyFields } from 'foldkit/struct';
+import { Match as M, Option, Schema as S } from 'effect'
+import type { Update } from 'foldkit'
+import { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import { modifyFields } from 'foldkit/struct'
 
-import * as Icon from '@/demo/icon-preview';
-import { button } from '@/ui/button';
+import * as Icon from '@/demo/icon-preview'
+import { button } from '@/ui/button'
 import {
   card,
   cardAction,
@@ -15,72 +15,85 @@ import {
   cardFooter,
   cardHeader,
   cardTitle,
-} from '@/ui/card';
+} from '@/ui/card'
 import {
   field,
   fieldGroup,
   fieldLabel,
   fieldLegend,
   fieldSet,
-} from '@/ui/field';
-import { input } from '@/ui/input';
-import * as RadioGroup from '@/ui/radio-group';
+} from '@/ui/field'
+import { input } from '@/ui/input'
+import * as RadioGroup from '@/ui/radio-group'
 
 export const Model = S.Struct({
   accountHolder: S.String,
   receivingMethod: S.String,
   iban: S.String,
   radioGroup: RadioGroup.Model,
-});
-export type Model = typeof Model.Type;
-
-
-
-
+})
+export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
   UpdatedAccountHolder: {
-  value: S.String,
-},
+    value: S.String,
+  },
   SelectedReceivingMethod: {
-  value: S.String,
-},
+    value: S.String,
+  },
   UpdatedIban: { value: S.String },
-  'GotReceivingMethodRadioGroupMessage': { message: RadioGroup.Message },
-});
-export type Message = typeof Message.Type;
+  GotReceivingMethodRadioGroupMessage: { message: RadioGroup.Message },
+})
+export type Message = typeof Message.Type
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      UpdatedAccountHolder: ({ value }) => ({ model: modifyFields(model, { accountHolder: () => value }) }),
-      SelectedReceivingMethod: ({ value }) => ({ model: { ...model, receivingMethod: value } }),
-      UpdatedIban: ({ value }) => ({ model: modifyFields(model, { iban: () => value }) }),
+      UpdatedAccountHolder: ({ value }) => ({
+        model: modifyFields(model, { accountHolder: () => value }),
+      }),
+      SelectedReceivingMethod: ({ value }) => ({
+        model: { ...model, receivingMethod: value },
+      }),
+      UpdatedIban: ({ value }) => ({
+        model: modifyFields(model, { iban: () => value }),
+      }),
       GotReceivingMethodRadioGroupMessage: ({ message }) => {
-        const { model: radioGroup, commands: radioGroupCommands__, outMessage: radioGroupOut__ } = RadioGroup.update(model.radioGroup, message)
+        const {
+          model: radioGroup,
+          commands: radioGroupCommands__,
+          outMessage: radioGroupOut__,
+        } = RadioGroup.update(model.radioGroup, message)
         const commands = radioGroupCommands__ ?? []
         const maybeSelection = Option.fromNullishOr(radioGroupOut__)
-        return { model: {
+        return {
+          model: {
             ...model,
             radioGroup,
             receivingMethod: Option.match(maybeSelection, {
               onNone: () => model.receivingMethod,
               onSome: selection => selection.value,
             }),
-          }, commands: Command.mapMessages(commands, childMessage => Message['GotReceivingMethodRadioGroupMessage']({ message: childMessage })) };
+          },
+          commands: Command.mapMessages(commands, childMessage =>
+            Message['GotReceivingMethodRadioGroupMessage']({
+              message: childMessage,
+            }),
+          ),
+        }
       },
     }),
-  );
+  )
 
 export const init = (): Model => ({
   accountHolder: 'Synthetic Horizons Music LLC',
   receivingMethod: 'bank',
   iban: '',
   radioGroup: RadioGroup.init({ id: 'receiving-method-choice' }),
-});
+})
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
   card<Message>(
@@ -131,7 +144,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                             {
                               id: 'receiving-method-account-holder',
                               value: model.accountHolder,
-                              onInput: (value) =>
+                              onInput: value =>
                                 Message.UpdatedAccountHolder({ value }),
                             },
                             h,
@@ -154,7 +167,10 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                             {
                               model: model.radioGroup,
                               selectedValue: Option.some(model.receivingMethod),
-                              toParentMessage: (message) => Message['GotReceivingMethodRadioGroupMessage']({ message }),
+                              toParentMessage: message =>
+                                Message['GotReceivingMethodRadioGroupMessage']({
+                                  message,
+                                }),
                               ariaLabel: 'Receiving Method',
                               options: [
                                 {
@@ -191,7 +207,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                             {
                               id: 'receiving-method-iban',
                               value: model.iban,
-                              onInput: (value) => Message.UpdatedIban({ value }),
+                              onInput: value => Message.UpdatedIban({ value }),
                               placeholder: 'DE89 3704 0044 ....',
                             },
                             h,
@@ -226,7 +242,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
       ],
     },
     h,
-  );
+  )
 
 /*
 Stateful? yes.

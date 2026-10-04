@@ -1,23 +1,23 @@
-import { Schema as S } from 'effect';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import { Schema as S } from 'effect'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-import { definePreviewProgram } from '@/docs/components/pages/authored-page';
+import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
   listFixtures,
   type ListFixture,
   type ListItemSpec,
-} from '@/docs/components/pages/list/shared';
-import * as Avatar from '@/ui/avatar';
-import * as Badge from '@/ui/badge';
-import * as List from '@/ui/list';
+} from '@/docs/components/pages/list/shared'
+import * as Avatar from '@/ui/avatar'
+import * as Badge from '@/ui/badge'
+import * as List from '@/ui/list'
 
 const InteractedWithListPreview = defineMessageUnion({
   InteractedWithListPreview: {},
-});
-type InteractedWithListPreview = typeof InteractedWithListPreview.Type;
-const ListPreviewModel = S.Struct({ _docsPage: S.Literal('list') });
-type ListPreviewModel = typeof ListPreviewModel.Type;
+})
+type InteractedWithListPreview = typeof InteractedWithListPreview.Type
+const ListPreviewModel = S.Struct({ _docsPage: S.Literal('list') })
+type ListPreviewModel = typeof ListPreviewModel.Type
 
 const item = (
   spec: ListItemSpec,
@@ -40,15 +40,14 @@ const item = (
               },
               h,
             ),
-            onClick:
-              InteractedWithListPreview['InteractedWithListPreview'](),
+            onClick: InteractedWithListPreview['InteractedWithListPreview'](),
           }),
       ...(spec.badge === undefined
         ? {}
         : { endContent: Badge.badge({ children: [spec.badge] }, h) }),
     },
     h,
-  );
+  )
 
 const renderFixture = (
   fixture: ListFixture,
@@ -63,7 +62,7 @@ const renderFixture = (
       ...(fixture.hasDividers === true ? { hasDividers: true } : {}),
     },
     h,
-  );
+  )
 
 export const listTailwindPreviewProgram = definePreviewProgram<
   ListPreviewModel,
@@ -75,4 +74,4 @@ export const listTailwindPreviewProgram = definePreviewProgram<
   update: model => ({ model: model }),
   view: (index, _model, h) =>
     renderFixture(listFixtures[index] ?? listFixtures[0], h),
-});
+})

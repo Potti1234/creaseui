@@ -23,4 +23,3 @@ export const interactionTokens = stylex.defineConsts({
   pressTransform: 'scale(0.98)',
   pressTransformTactile: 'scale(0.96)',
 } as const)
-

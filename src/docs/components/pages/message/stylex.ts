@@ -1,22 +1,22 @@
-import * as stylex from '@stylexjs/stylex';
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import * as stylex from '@stylexjs/stylex'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition';
+import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   messageFixtures,
   specFor,
   type BubblePart,
   type MessagePart,
   type MessageSpec,
-} from '@/docs/components/pages/message/shared';
-import * as Attachment from '@/stylex/attachment';
-import * as Avatar from '@/stylex/avatar';
-import * as Bubble from '@/stylex/bubble';
-import * as Button from '@/stylex/button';
-import * as Icon from '@/lib/icon';
-import * as Marker from '@/stylex/marker';
-import * as Message from '@/stylex/message';
-import { className } from '@/stylex/style';
+} from '@/docs/components/pages/message/shared'
+import * as Attachment from '@/stylex/attachment'
+import * as Avatar from '@/stylex/avatar'
+import * as Bubble from '@/stylex/bubble'
+import * as Button from '@/stylex/button'
+import * as Icon from '@/lib/icon'
+import * as Marker from '@/stylex/marker'
+import * as Message from '@/stylex/message'
+import { className } from '@/stylex/style'
 
 const styles = stylex.create({
   stack: {
@@ -37,23 +37,23 @@ const styles = stylex.create({
     paddingTop: '3rem',
     width: '100%',
   },
-  row: { gap: '0.25rem', alignItems: 'center', display: 'flex', },
+  row: { gap: '0.25rem', alignItems: 'center', display: 'flex' },
   fontNormal: { fontWeight: 400 },
-  destructive: { color: 'var(--destructive)', fontWeight: 400, },
+  destructive: { color: 'var(--destructive)', fontWeight: 400 },
   fontMedium: { fontWeight: 500 },
   mediaImage: { aspectRatio: '1', objectFit: 'cover', width: '100%' },
   iconMd: { height: '1rem', width: '1rem' },
-});
+})
 
-const sx = (style: stylex.StaticStyles): string => className(style);
+const sx = (style: stylex.StaticStyles): string => className(style)
 
 const send = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   tag: string,
-): Msg => onMessageJson(JSON.stringify({ _tag: tag }));
+): Msg => onMessageJson(JSON.stringify({ _tag: tag }))
 
 const ATTACHMENT_IMAGE_URL =
-  'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=900&auto=format&fit=crop&q=80';
+  'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=900&auto=format&fit=crop&q=80'
 
 const bubble = <Msg>(part: BubblePart, h: HtmlBuilder<Msg>): Html =>
   Bubble.bubble(
@@ -71,14 +71,17 @@ const bubble = <Msg>(part: BubblePart, h: HtmlBuilder<Msg>): Html =>
           ? []
           : [
               Bubble.bubbleReactions(
-                { ariaLabel: 'Reactions: thumbs up', children: [part.reactions] },
+                {
+                  ariaLabel: 'Reactions: thumbs up',
+                  children: [part.reactions],
+                },
                 h,
               ),
             ]),
       ],
     },
     h,
-  );
+  )
 
 const part = <Msg>(
   part: MessagePart,
@@ -87,12 +90,12 @@ const part = <Msg>(
 ): Html => {
   switch (part.type) {
     case 'bubble':
-      return bubble(part, h);
+      return bubble(part, h)
     case 'bubble-group':
       return Bubble.bubbleGroup(
         { children: part.bubbles.map(b => bubble(b, h)) },
         h,
-      );
+      )
     case 'attachment-image':
       return Attachment.attachment(
         {
@@ -102,7 +105,11 @@ const part = <Msg>(
               {
                 variant: 'image',
                 children: [
-                  h.img([h.Src(ATTACHMENT_IMAGE_URL), h.Alt('Workspace'), h.Class(sx(styles.mediaImage))]),
+                  h.img([
+                    h.Src(ATTACHMENT_IMAGE_URL),
+                    h.Alt('Workspace'),
+                    h.Class(sx(styles.mediaImage)),
+                  ]),
                 ],
               },
               h,
@@ -110,13 +117,21 @@ const part = <Msg>(
           ],
         },
         h,
-      );
+      )
     case 'attachment-file':
       return Attachment.attachment(
         {
           children: [
             Attachment.attachmentMedia(
-              { children: [Icon.icon('file-text', { class: className(styles.iconMd) }, h)] },
+              {
+                children: [
+                  Icon.icon(
+                    'file-text',
+                    { class: className(styles.iconMd) },
+                    h,
+                  ),
+                ],
+              },
               h,
             ),
             Attachment.attachmentContent(
@@ -152,9 +167,9 @@ const part = <Msg>(
           ],
         },
         h,
-      );
+      )
   }
-};
+}
 
 const footer = <Msg>(
   spec: MessageSpec,
@@ -165,17 +180,17 @@ const footer = <Msg>(
     return Message.messageFooter(
       {
         children: [
-          h.div([h.Class(sx(styles.row))], [
-            'Read ',
-            h.span([h.Class(sx(styles.fontNormal))], ['Yesterday']),
-          ]),
+          h.div(
+            [h.Class(sx(styles.row))],
+            ['Read ', h.span([h.Class(sx(styles.fontNormal))], ['Yesterday'])],
+          ),
         ],
       },
       h,
-    );
+    )
   }
   if (spec.footer !== undefined) {
-    return Message.messageFooter({ children: [spec.footer] }, h);
+    return Message.messageFooter({ children: [spec.footer] }, h)
   }
   if (spec.footerActions === 'copyLikeDislike') {
     const btn = (icon: string, label: string): Html =>
@@ -188,7 +203,7 @@ const footer = <Msg>(
           children: [Icon.icon(icon, { class: className(styles.iconMd) }, h)],
         },
         h,
-      );
+      )
     return Message.messageFooter(
       {
         children: [
@@ -198,7 +213,7 @@ const footer = <Msg>(
         ],
       },
       h,
-    );
+    )
   }
   if (spec.footerActions === 'failedRetry') {
     return Message.messageFooter(
@@ -224,17 +239,17 @@ const footer = <Msg>(
         ],
       },
       h,
-    );
+    )
   }
-  return undefined;
-};
+  return undefined
+}
 
 const message = <Msg>(
   spec: MessageSpec,
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const foot = footer(spec, onMessageJson, h);
+  const foot = footer(spec, onMessageJson, h)
   return Message.message(
     {
       ...(spec.align === 'end' ? { align: 'end' as const } : {}),
@@ -282,50 +297,53 @@ const message = <Msg>(
       ],
     },
     h,
-  );
-};
+  )
+}
 
 const messageSxView = <Msg>(
   index: number,
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const fixture = messageFixtures[index] ?? messageFixtures[0];
-  const spec = specFor(fixture.kind);
-  const isGroupGap = fixture.kind === 'demo' || fixture.kind === 'group';
-  const messages = spec.map(m => message(m, onMessageJson, h));
-  return h.div([h.Class(sx(isGroupGap ? styles.stackGroup : styles.stack))], [
-    ...(fixture.kind === 'group'
-      ? [Message.messageGroup({ children: messages }, h)]
-      : messages),
-    ...(fixture.kind === 'demo'
-      ? [
-          Marker.marker(
-            {
-              purpose: 'status',
-              children: [
-                Marker.markerContent(
-                  {
-                    shimmer: true,
-                    children: [
-                      h.span([h.Class(sx(styles.fontMedium))], ['Oliver']),
-                      ' is typing...',
-                    ],
-                  },
-                  h,
-                ),
-              ],
-            },
-            h,
-          ),
-        ]
-      : []),
-  ]);
-};
+  const fixture = messageFixtures[index] ?? messageFixtures[0]
+  const spec = specFor(fixture.kind)
+  const isGroupGap = fixture.kind === 'demo' || fixture.kind === 'group'
+  const messages = spec.map(m => message(m, onMessageJson, h))
+  return h.div(
+    [h.Class(sx(isGroupGap ? styles.stackGroup : styles.stack))],
+    [
+      ...(fixture.kind === 'group'
+        ? [Message.messageGroup({ children: messages }, h)]
+        : messages),
+      ...(fixture.kind === 'demo'
+        ? [
+            Marker.marker(
+              {
+                purpose: 'status',
+                children: [
+                  Marker.markerContent(
+                    {
+                      shimmer: true,
+                      children: [
+                        h.span([h.Class(sx(styles.fontMedium))], ['Oliver']),
+                        ' is typing...',
+                      ],
+                    },
+                    h,
+                  ),
+                ],
+              },
+              h,
+            ),
+          ]
+        : []),
+    ],
+  )
+}
 
 export const messageStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   _model: unknown,
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
-) => messageSxView(exampleIndex, onMessageJson, h);
+) => messageSxView(exampleIndex, onMessageJson, h)

@@ -1,10 +1,10 @@
-import type { Html, HtmlBuilder } from 'foldkit/html';
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as Icon from '@/demo/icon-preview';
-import { buttonVariants } from '@/ui/button';
-import { card, cardContent, cardDescription, cardFooter } from '@/ui/card';
-import { item } from '@/ui/item';
-import { label } from '@/ui/label';
+import * as Icon from '@/demo/icon-preview'
+import { buttonVariants } from '@/ui/button'
+import { card, cardContent, cardDescription, cardFooter } from '@/ui/card'
+import { item } from '@/ui/item'
+import { label } from '@/ui/label'
 
 export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
   return card(
@@ -95,7 +95,7 @@ export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
       ],
     },
     h,
-  );
-};
+  )
+}
 
 // Stateful? no. Submodels wired: none. PORT NOTEs: Button-as-child label substitute.

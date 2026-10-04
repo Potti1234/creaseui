@@ -1,54 +1,54 @@
-﻿import { Option } from 'effect';
-import type { ChildAttribute, Html, HtmlBuilder } from 'foldkit/html';
+﻿import { Option } from 'effect'
+import type { ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 
-import { Dialog as DialogPrimitive } from '@foldkit/ui';
+import { Dialog as DialogPrimitive } from '@foldkit/ui'
 
-import * as DrawerBehavior from '@/lib/drawer';
-import { cn } from '@/lib/utils';
+import * as DrawerBehavior from '@/lib/drawer'
+import { cn } from '@/lib/utils'
 
-export const Model = DrawerBehavior.Model;
-export type Model = typeof Model.Type;
-export const GotDialogMessage = DrawerBehavior.Message.GotDrawerDialogMessage;
-export const StartedDrag = DrawerBehavior.Message.StartedDrawerDrag;
-export const Dragged = DrawerBehavior.Message.DraggedDrawer;
-export const EndedDrag = DrawerBehavior.Message.EndedDrawerDrag;
-export const CancelledDrag = DrawerBehavior.Message.CancelledDrawerDrag;
-export const Message = DrawerBehavior.Message;
-export type Message = typeof Message.Type;
-export const OutMessage = DrawerBehavior.OutMessage;
-export type OutMessage = typeof OutMessage.Type;
+export const Model = DrawerBehavior.Model
+export type Model = typeof Model.Type
+export const GotDialogMessage = DrawerBehavior.Message.GotDrawerDialogMessage
+export const StartedDrag = DrawerBehavior.Message.StartedDrawerDrag
+export const Dragged = DrawerBehavior.Message.DraggedDrawer
+export const EndedDrag = DrawerBehavior.Message.EndedDrawerDrag
+export const CancelledDrag = DrawerBehavior.Message.CancelledDrawerDrag
+export const Message = DrawerBehavior.Message
+export type Message = typeof Message.Type
+export const OutMessage = DrawerBehavior.OutMessage
+export type OutMessage = typeof OutMessage.Type
 
-export const init = DrawerBehavior.init;
-export const update = DrawerBehavior.update;
-export const open = DrawerBehavior.open;
-export const close = DrawerBehavior.close;
+export const init = DrawerBehavior.init
+export const update = DrawerBehavior.update
+export const open = DrawerBehavior.open
+export const close = DrawerBehavior.close
 
 const OVERLAY_CLASS =
-  'fixed inset-0 z-50 bg-black/50 transition duration-200 ease-out data-[closed]:opacity-0 motion-reduce:transition-none';
+  'fixed inset-0 z-50 bg-black/50 transition duration-200 ease-out data-[closed]:opacity-0 motion-reduce:transition-none'
 const HEADER_CLASS =
-  'flex flex-col gap-0.5 p-4 text-center md:gap-1.5 md:text-left';
-const FOOTER_CLASS = 'mt-auto flex flex-col gap-2 p-4';
+  'flex flex-col gap-0.5 p-4 text-center md:gap-1.5 md:text-left'
+const FOOTER_CLASS = 'mt-auto flex flex-col gap-2 p-4'
 
-export type DrawerDirection = 'top' | 'right' | 'bottom' | 'left';
+export type DrawerDirection = 'top' | 'right' | 'bottom' | 'left'
 export type DrawerSlots = Readonly<{
-  closeButton: ReadonlyArray<ChildAttribute>;
-}>;
+  closeButton: ReadonlyArray<ChildAttribute>
+}>
 export type DrawerProps<Msg> = Readonly<{
-  model: Model;
-  toParentMessage: (message: Message) => Msg;
-  title: string;
-  description?: string;
-  content?: (slots: DrawerSlots) => ReadonlyArray<Html>;
-  footer?: (slots: DrawerSlots) => ReadonlyArray<Html>;
-  direction?: DrawerDirection;
-  class?: string;
-}>;
+  model: Model
+  toParentMessage: (message: Message) => Msg
+  title: string
+  description?: string
+  content?: (slots: DrawerSlots) => ReadonlyArray<Html>
+  footer?: (slots: DrawerSlots) => ReadonlyArray<Html>
+  direction?: DrawerDirection
+  class?: string
+}>
 
 const axisPosition = (
   direction: DrawerDirection,
   x: number,
   y: number,
-): number => (direction === 'left' || direction === 'right' ? x : y);
+): number => (direction === 'left' || direction === 'right' ? x : y)
 const offsetFrom = (
   direction: DrawerDirection,
   start: number,
@@ -56,7 +56,7 @@ const offsetFrom = (
 ): number =>
   direction === 'top' || direction === 'left'
     ? start - current
-    : current - start;
+    : current - start
 const contentClass = (direction: DrawerDirection): string =>
   cn(
     'group/drawer-content fixed z-50 flex flex-col border bg-background transition-[transform] duration-200 ease-out motion-reduce:transition-none',
@@ -68,24 +68,24 @@ const contentClass = (direction: DrawerDirection): string =>
       'inset-y-0 left-0 mr-24 w-3/4 max-w-sm rounded-r-lg border-r',
     direction === 'right' &&
       'inset-y-0 right-0 ml-24 w-3/4 max-w-sm rounded-l-lg border-l',
-  );
+  )
 const dragTransform = (direction: DrawerDirection, offset: number): string => {
-  const value = `${offset}px`;
+  const value = `${offset}px`
   return direction === 'bottom'
     ? `translateY(${value})`
     : direction === 'top'
       ? `translateY(-${value})`
       : direction === 'right'
         ? `translateX(${value})`
-        : `translateX(-${value})`;
-};
+        : `translateX(-${value})`
+}
 
 export const drawer = <Msg>(
   props: DrawerProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const direction = props.direction ?? 'bottom';
-  const start = Option.getOrUndefined(props.model.dragStart);
+  const direction = props.direction ?? 'bottom'
+  const start = Option.getOrUndefined(props.model.dragStart)
 
   return h.div(
     [
@@ -130,8 +130,8 @@ export const drawer = <Msg>(
             closeButton,
             isVisible,
           }: DialogPrimitive.RenderInfo) => {
-            const hd = h;
-            const slots: DrawerSlots = { closeButton };
+            const hd = h
+            const slots: DrawerSlots = { closeButton }
             return hd.dialog(
               [
                 ...dialogAttributes,
@@ -173,12 +173,27 @@ export const drawer = <Msg>(
                         hd.div(
                           [
                             hd.DataAttribute('slot', 'drawer-handle'),
-                            hd.DataAttribute('drag-phase', props.model.dragPhase),
+                            hd.DataAttribute(
+                              'drag-phase',
+                              props.model.dragPhase,
+                            ),
                             hd.AriaHidden(true),
-                            hd.OnPointerDown((_type, button, x, y, timeStamp) =>
-                              button === 0
-                                ? Option.some(props.toParentMessage(StartedDrag({ position: axisPosition(direction, x, y), timeStamp })))
-                                : Option.none(),
+                            hd.OnPointerDown(
+                              (_type, button, x, y, timeStamp) =>
+                                button === 0
+                                  ? Option.some(
+                                      props.toParentMessage(
+                                        StartedDrag({
+                                          position: axisPosition(
+                                            direction,
+                                            x,
+                                            y,
+                                          ),
+                                          timeStamp,
+                                        }),
+                                      ),
+                                    )
+                                  : Option.none(),
                             ),
                             hd.Class(
                               cn(
@@ -249,12 +264,12 @@ export const drawer = <Msg>(
                     ),
                   ]
                 : [],
-            );
+            )
           },
         },
-        toParentMessage: (message) =>
+        toParentMessage: message =>
           props.toParentMessage(GotDialogMessage({ message })),
       }),
     ],
-  );
-};
+  )
+}

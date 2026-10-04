@@ -1,21 +1,21 @@
 import type { Update } from 'foldkit'
-import { Match as M, Schema as S } from 'effect';
-import type { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
-import { modifyFields } from 'foldkit/struct';
+import { Match as M, Schema as S } from 'effect'
+import type { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import { modifyFields } from 'foldkit/struct'
 
-import * as Chart from '@/lib/echarts';
-import * as Icon from '@/lib/icon';
+import * as Chart from '@/lib/echarts'
+import * as Icon from '@/lib/icon'
 import {
   CHART_EXAMPLE_COUNT,
   COMPONENT_COUNT,
   SHOWCASE_CARD_COUNT,
   SIDEBAR_BLOCK_COUNT,
-} from '@/lib/project-facts';
-import { componentDocsPath, createPath } from '@/route';
-import { badge } from '@/ui/badge';
-import { button } from '@/ui/button';
+} from '@/lib/project-facts'
+import { componentDocsPath, createPath } from '@/route'
+import { badge } from '@/ui/badge'
+import { button } from '@/ui/button'
 import {
   card,
   cardContent,
@@ -23,10 +23,10 @@ import {
   cardFooter,
   cardHeader,
   cardTitle,
-} from '@/ui/card';
-import { input } from '@/ui/input';
-import { kbd } from '@/ui/kbd';
-import { separator } from '@/ui/separator';
+} from '@/ui/card'
+import { input } from '@/ui/input'
+import { kbd } from '@/ui/kbd'
+import { separator } from '@/ui/separator'
 
 /* The crease/ui landing page (route: /). Copy and structure follow
    brand/LANDING.md. Interactive bits: the before/after comparison slider;
@@ -36,49 +36,47 @@ import { separator } from '@/ui/separator';
 
 export const Model = S.Struct({
   comparePercent: S.Number,
-});
-export type Model = typeof Model.Type;
+})
+export type Model = typeof Model.Type
 
 // MESSAGE
-
-
-
-
 
 export const Message = defineMessageUnion({
   DraggedCompare: { value: S.Number },
   ChangedDemoEmail: {},
   GotChartMessage: {
-  message: Chart.ChartMessage,
-},
-});
-export type Message = typeof Message.Type;
+    message: Chart.ChartMessage,
+  },
+})
+export type Message = typeof Message.Type
 
 // INIT
 
-export const init = (): Model => ({ comparePercent: 50 });
+export const init = (): Model => ({ comparePercent: 50 })
 
 // UPDATE
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      DraggedCompare: ({ value }) => ({ model: modifyFields(model, { comparePercent: () => value }) }),
+      DraggedCompare: ({ value }) => ({
+        model: modifyFields(model, { comparePercent: () => value }),
+      }),
       ChangedDemoEmail: () => ({ model: model }),
       GotChartMessage: () => ({ model: model }),
     }),
-  );
+  )
 
 // HERO CHART — standalone ECharts card in the collage
 
-const HERO_CHART_ID = 'landing-hero-chart';
-const HERO_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
-const HERO_DATA = [186, 305, 237, 173, 209, 274];
+const HERO_CHART_ID = 'landing-hero-chart'
+const HERO_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
+const HERO_DATA = [186, 305, 237, 173, 209, 274]
 
-Chart.registerChart(HERO_CHART_ID, (theme) => ({
+Chart.registerChart(HERO_CHART_ID, theme => ({
   grid: Chart.compactGrid({ bottom: 4, top: 8 }),
   xAxis: { ...Chart.categoryAxis(theme, HERO_MONTHS), show: false },
   yAxis: { ...Chart.valueAxis(theme), show: false },
@@ -95,12 +93,12 @@ Chart.registerChart(HERO_CHART_ID, (theme) => ({
       data: [...HERO_DATA],
     },
   ],
-}));
+}))
 
 // VIEW HELPERS
 
 const toChart = (message: Chart.ChartMessage): Message =>
-  Message.GotChartMessage({ message });
+  Message.GotChartMessage({ message })
 
 const sectionHeading = (
   title: string,
@@ -120,8 +118,8 @@ const sectionHeading = (
       ),
       h.p([h.Class('text-muted-foreground text-balance')], [copy]),
     ],
-  );
-};
+  )
+}
 
 const heroCollage = (h: HtmlBuilder<Message>): Html => {
   return h.div(
@@ -236,8 +234,8 @@ const heroCollage = (h: HtmlBuilder<Message>): Html => {
         ],
       ),
     ],
-  );
-};
+  )
+}
 
 const hero = (h: HtmlBuilder<Message>): Html => {
   return h.section(
@@ -310,11 +308,11 @@ const hero = (h: HtmlBuilder<Message>): Html => {
       ),
       heroCollage(h),
     ],
-  );
-};
+  )
+}
 
 const comparisonSlider = (model: Model, h: HtmlBuilder<Message>): Html => {
-  const percent = Math.min(100, Math.max(0, model.comparePercent));
+  const percent = Math.min(100, Math.max(0, model.comparePercent))
 
   return h.section(
     [
@@ -385,7 +383,9 @@ const comparisonSlider = (model: Model, h: HtmlBuilder<Message>): Html => {
             h.Min('0'),
             h.Max('100'),
             h.Value(String(percent)),
-            h.OnInput((value) => Message.DraggedCompare({ value: Number(value) || 0 })),
+            h.OnInput(value =>
+              Message.DraggedCompare({ value: Number(value) || 0 }),
+            ),
             h.AriaLabel('Comparison slider between crease/ui and shadcn/ui'),
             h.Class(
               'absolute inset-0 h-full w-full cursor-ew-resize opacity-0',
@@ -394,8 +394,8 @@ const comparisonSlider = (model: Model, h: HtmlBuilder<Message>): Html => {
         ],
       ),
     ],
-  );
-};
+  )
+}
 
 const howItWorks = (h: HtmlBuilder<Message>): Html => {
   const layer = (name: string, role: string): Html =>
@@ -405,7 +405,7 @@ const howItWorks = (h: HtmlBuilder<Message>): Html => {
         h.span([h.Class('text-sm font-semibold')], [name]),
         h.span([h.Class('text-muted-foreground text-sm')], [role]),
       ],
-    );
+    )
 
   return h.section(
     [h.Class('bg-muted/40 border-y')],
@@ -512,8 +512,8 @@ const howItWorks = (h: HtmlBuilder<Message>): Html => {
         ],
       ),
     ],
-  );
-};
+  )
+}
 
 const numbers = (h: HtmlBuilder<Message>): Html => {
   const stat = (value: string, label: string, href: string): Html =>
@@ -528,7 +528,7 @@ const numbers = (h: HtmlBuilder<Message>): Html => {
         h.span([h.Class('text-3xl font-semibold tracking-tight')], [value]),
         h.span([h.Class('text-muted-foreground text-sm')], [label]),
       ],
-    );
+    )
 
   return h.section(
     [
@@ -563,8 +563,8 @@ const numbers = (h: HtmlBuilder<Message>): Html => {
         ],
       ),
     ],
-  );
-};
+  )
+}
 
 const honestSection = (model: Model, h: HtmlBuilder<Message>): Html => {
   return h.section(
@@ -624,8 +624,8 @@ const honestSection = (model: Model, h: HtmlBuilder<Message>): Html => {
         ],
       ),
     ],
-  );
-};
+  )
+}
 
 const faq = (h: HtmlBuilder<Message>): Html => {
   const item = (question: string, answer: string): Html =>
@@ -635,7 +635,7 @@ const faq = (h: HtmlBuilder<Message>): Html => {
         h.h3([h.Class('text-sm font-semibold')], [question]),
         h.p([h.Class('text-muted-foreground text-sm')], [answer]),
       ],
-    );
+    )
 
   return h.section(
     [
@@ -667,18 +667,20 @@ const faq = (h: HtmlBuilder<Message>): Html => {
         ],
       ),
     ],
-  );
-};
+  )
+}
 
 const footer = (h: HtmlBuilder<Message>): Html => {
-  const buildSha = typeof __CREASEUI_BUILD_SHA__ === 'undefined'
-    ? 'development'
-    : __CREASEUI_BUILD_SHA__;
-  const isBuildDirty = typeof __CREASEUI_BUILD_DIRTY__ === 'undefined'
-    ? true
-    : __CREASEUI_BUILD_DIRTY__;
-  const shortRevision = buildSha.slice(0, 7);
-  const revisionLabel = `${shortRevision}${isBuildDirty ? '+dirty' : ''}`;
+  const buildSha =
+    typeof __CREASEUI_BUILD_SHA__ === 'undefined'
+      ? 'development'
+      : __CREASEUI_BUILD_SHA__
+  const isBuildDirty =
+    typeof __CREASEUI_BUILD_DIRTY__ === 'undefined'
+      ? true
+      : __CREASEUI_BUILD_DIRTY__
+  const shortRevision = buildSha.slice(0, 7)
+  const revisionLabel = `${shortRevision}${isBuildDirty ? '+dirty' : ''}`
 
   return h.footer(
     [h.Class('border-t')],
@@ -727,8 +729,8 @@ const footer = (h: HtmlBuilder<Message>): Html => {
         ],
       ),
     ],
-  );
-};
+  )
+}
 
 // VIEW
 
@@ -744,5 +746,5 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       faq(h),
       footer(h),
     ],
-  );
-};
+  )
+}

@@ -1,15 +1,17 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
-export type SeparatorKind = 'demo' | 'vertical' | 'menu' | 'list' | 'rtl';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
+export type SeparatorKind = 'demo' | 'vertical' | 'menu' | 'list' | 'rtl'
 
 export interface SeparatorFixture {
-  readonly title: string;
-  readonly description?: string;
-  readonly heroOnly?: boolean;
-  readonly kind: SeparatorKind;
+  readonly title: string
+  readonly description?: string
+  readonly heroOnly?: boolean
+  readonly kind: SeparatorKind
 }
 
-export const separatorFixtures: Readonly<[SeparatorFixture, ...Array<SeparatorFixture>]> = [
+export const separatorFixtures: Readonly<
+  [SeparatorFixture, ...Array<SeparatorFixture>]
+> = [
   { title: 'Basic', heroOnly: true, kind: 'demo' },
   {
     title: 'Vertical',
@@ -31,12 +33,12 @@ export const separatorFixtures: Readonly<[SeparatorFixture, ...Array<SeparatorFi
     description: 'The separator renders mirrored in right-to-left contexts.',
     kind: 'rtl',
   },
-];
+]
 
 export interface SeparatorCopy {
-  readonly title: string;
-  readonly subtitle: string;
-  readonly description: string;
+  readonly title: string
+  readonly subtitle: string
+  readonly description: string
 }
 
 export const separatorCopy = (kind: SeparatorKind): SeparatorCopy =>
@@ -52,7 +54,7 @@ export const separatorCopy = (kind: SeparatorKind): SeparatorCopy =>
         subtitle: 'The Foundation for your Design System',
         description:
           'A set of beautifully designed components that you can customize, extend, and build on.',
-      };
+      }
 
 export const menuItems = (
   kind: SeparatorKind,
@@ -63,7 +65,7 @@ export const menuItems = (
         { heading: 'Account', note: 'Profile & security' },
         { heading: 'Help', note: 'Support & docs' },
       ]
-    : [];
+    : []
 
 export const listItems = (
   kind: SeparatorKind,
@@ -74,26 +76,25 @@ export const listItems = (
         { item: 'Item 2', value: 'Value 2' },
         { item: 'Item 3', value: 'Value 3' },
       ]
-    : [];
+    : []
 
-const sq = (value: string): string => value.replaceAll("'", "\\'");
+const sq = (value: string): string => value.replaceAll("'", "\\'")
 
 const cardMarkup = (kind: SeparatorKind, isStyleX: boolean): string => {
-  const copy = separatorCopy(kind);
-  const attrs =
-    kind === 'rtl' ? `, h.Dir('rtl')` : '';
+  const copy = separatorCopy(kind)
+  const attrs = kind === 'rtl' ? `, h.Dir('rtl')` : ''
   const outer = isStyleX
     ? `h.Class(className(styles.card))`
-    : `h.Class('flex max-w-sm flex-col gap-4 text-sm')`;
+    : `h.Class('flex max-w-sm flex-col gap-4 text-sm')`
   const inner = isStyleX
     ? `h.Class(className(styles.header))`
-    : `h.Class('flex flex-col gap-1.5')`;
+    : `h.Class('flex flex-col gap-1.5')`
   const title = isStyleX
     ? `h.Class(className(styles.title))`
-    : `h.Class('leading-none font-medium')`;
+    : `h.Class('leading-none font-medium')`
   const subtitle = isStyleX
     ? `h.Class(className(styles.muted))`
-    : `h.Class('text-muted-foreground')`;
+    : `h.Class('text-muted-foreground')`
   return `    h.div([${outer}${attrs}], [
       h.div([${inner}], [
         h.div([${title}], ['${sq(copy.title)}']),
@@ -101,48 +102,48 @@ const cardMarkup = (kind: SeparatorKind, isStyleX: boolean): string => {
       ]),
       Separator.separator({}, h),
       h.div([], ['${sq(copy.description)}']),
-    ])`;
-};
+    ])`
+}
 
 const emitBody = (fixture: SeparatorFixture, isStyleX: boolean): string => {
   switch (fixture.kind) {
     case 'demo':
     case 'rtl':
-      return cardMarkup(fixture.kind, isStyleX);
+      return cardMarkup(fixture.kind, isStyleX)
     case 'vertical': {
       const outer = isStyleX
         ? `h.Class(className(styles.verticalRow))`
-        : `h.Class('flex h-5 items-center gap-4 text-sm')`;
+        : `h.Class('flex h-5 items-center gap-4 text-sm')`
       return `    h.div([${outer}], [
       h.div([], ['Blog']),
       Separator.separator({ orientation: 'vertical' }, h),
       h.div([], ['Docs']),
       Separator.separator({ orientation: 'vertical' }, h),
       h.div([], ['Source']),
-    ])`;
+    ])`
     }
     case 'menu': {
       const outer = isStyleX
         ? `h.Class(className(styles.menuRow))`
-        : `h.Class('flex items-center gap-2 text-sm md:gap-4')`;
+        : `h.Class('flex items-center gap-2 text-sm md:gap-4')`
       const item = isStyleX
         ? `h.Class(className(styles.header))`
-        : `h.Class('flex flex-col gap-1')`;
+        : `h.Class('flex flex-col gap-1')`
       const itemHidden = isStyleX
         ? `h.Class(className(styles.header, styles.hiddenBelowMd))`
-        : `h.Class('hidden flex-col gap-1 md:flex')`;
+        : `h.Class('hidden flex-col gap-1 md:flex')`
       const heading = isStyleX
         ? `h.Class(className(styles.title))`
-        : `h.Class('font-medium')`;
+        : `h.Class('font-medium')`
       const note = isStyleX
         ? `h.Class(className(styles.note))`
-        : `h.Class('text-xs text-muted-foreground')`;
+        : `h.Class('text-xs text-muted-foreground')`
       const separatorClass = isStyleX
         ? `Separator.separator({ orientation: 'vertical' }, h)`
-        : `Separator.separator({ orientation: 'vertical', class: 'self-stretch' }, h)`;
+        : `Separator.separator({ orientation: 'vertical', class: 'self-stretch' }, h)`
       const separatorHidden = isStyleX
         ? `h.div([h.Class(className(styles.hiddenBelowMdBlock))], [\n        Separator.separator({ orientation: 'vertical', layoutStyle: styles.separatorFill }, h),\n      ])`
-        : `Separator.separator({ orientation: 'vertical', class: 'hidden self-stretch md:block' }, h)`;
+        : `Separator.separator({ orientation: 'vertical', class: 'hidden self-stretch md:block' }, h)`
       return `    h.div([${outer}], [
       h.div([${item}], [
         h.span([${heading}], ['Settings']),
@@ -158,30 +159,33 @@ const emitBody = (fixture: SeparatorFixture, isStyleX: boolean): string => {
         h.span([${heading}], ['Help']),
         h.span([${note}], ['Support & docs']),
       ]),
-    ])`;
+    ])`
     }
     case 'list': {
       const outer = isStyleX
         ? `h.Class(className(styles.listStack))`
-        : `h.Class('flex w-full max-w-sm flex-col gap-2 text-sm')`;
+        : `h.Class('flex w-full max-w-sm flex-col gap-2 text-sm')`
       const row = isStyleX
         ? `h.Class(className(styles.listRow))`
-        : `h.Class('flex items-center justify-between')`;
+        : `h.Class('flex items-center justify-between')`
       const value = isStyleX
         ? `h.Class(className(styles.muted))`
-        : `h.Class('text-muted-foreground')`;
+        : `h.Class('text-muted-foreground')`
       const rows = listItems('list')
         .map(
-          (entry, index) => `      ${index === 0 ? '' : 'Separator.separator({}, h),\n      '}h.dl([${row}], [
+          (
+            entry,
+            index,
+          ) => `      ${index === 0 ? '' : 'Separator.separator({}, h),\n      '}h.dl([${row}], [
         h.dt([], ['${entry.item}']),
         h.dd([${value}], ['${entry.value}']),
       ])`,
         )
-        .join(',\n');
-      return `    h.div([${outer}], [\n${rows}\n    ])`;
+        .join(',\n')
+      return `    h.div([${outer}], [\n${rows}\n    ])`
     }
   }
-};
+}
 
 const emitStyles = (fixture: SeparatorFixture): string => {
   switch (fixture.kind) {
@@ -190,9 +194,9 @@ const emitStyles = (fixture: SeparatorFixture): string => {
       return `  card: { display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '24rem', fontSize: '0.875rem', lineHeight: '1.25rem' },
   header: { display: 'flex', flexDirection: 'column', gap: '0.375rem' },
   title: { lineHeight: '1', fontWeight: '500' },
-  muted: { color: tokens.mutedForeground },`;
+  muted: { color: tokens.mutedForeground },`
     case 'vertical':
-      return `  verticalRow: { display: 'flex', alignItems: 'center', gap: '1rem', height: '1.25rem', fontSize: '0.875rem', lineHeight: '1.25rem' },`;
+      return `  verticalRow: { display: 'flex', alignItems: 'center', gap: '1rem', height: '1.25rem', fontSize: '0.875rem', lineHeight: '1.25rem' },`
     case 'menu':
       return `  menuRow: { display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '0.875rem', lineHeight: '1.25rem' },
   header: { display: 'flex', flexDirection: 'column', gap: '0.25rem' },
@@ -200,26 +204,28 @@ const emitStyles = (fixture: SeparatorFixture): string => {
   note: { fontSize: '0.75rem', lineHeight: '1rem', color: tokens.mutedForeground },
   hiddenBelowMd: { display: { default: 'none', '@media (min-width: 768px)': 'flex' }, flexDirection: 'column', gap: '0.25rem' },
   hiddenBelowMdBlock: { display: { default: 'none', '@media (min-width: 768px)': 'block' } },
-  separatorFill: { height: '100%' },`;
+  separatorFill: { height: '100%' },`
     case 'list':
       return `  listStack: { display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%', maxWidth: '24rem', fontSize: '0.875rem', lineHeight: '1.25rem' },
   listRow: { display: 'flex', alignItems: 'center', justifyContent: 'space-between' },
-  muted: { color: tokens.mutedForeground },`;
+  muted: { color: tokens.mutedForeground },`
   }
-};
+}
 
 const emitApplication = (
   fixture: SeparatorFixture,
   renderer: 'tailwind' | 'stylex',
 ): string => {
-  const isStyleX = renderer === 'stylex';
+  const isStyleX = renderer === 'stylex'
   const stylexStylesBlock = isStyleX
     ? `\n\nconst styles = stylex.create({
 ${emitStyles(fixture)}
 })`
-    : '';
-  const sep = isStyleX ? 'stylex' : 'ui';
-  const classNameImport = isStyleX ? `\nimport { className } from '@/stylex/style'` : '';
+    : ''
+  const sep = isStyleX ? 'stylex' : 'ui'
+  const classNameImport = isStyleX
+    ? `\nimport { className } from '@/stylex/style'`
+    : ''
   return foldkitApplication({
     title: `Separator — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
@@ -241,8 +247,8 @@ export type Message = typeof Message.Type`,
 ${emitBody(fixture, isStyleX)}
   ]),
 })`,
-  });
-};
+  })
+}
 
 export const separatorExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -254,4 +260,4 @@ export const separatorExamples = (
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer),
-  }));
+  }))

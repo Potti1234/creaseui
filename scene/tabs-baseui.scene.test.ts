@@ -78,16 +78,14 @@ type TabsModule = Readonly<{
 }>
 
 const tabConfigs = (model: Model) =>
-  model.values.map((value) => ({
+  model.values.map(value => ({
     value,
     label: `Tab ${value}`,
     content: `Panel ${value}`,
     isDisabled: model.disabled.includes(value),
   }))
 
-const givenModel = (
-  overrides?: Partial<Model>,
-): Model => ({
+const givenModel = (overrides?: Partial<Model>): Model => ({
   tabs: TabsPrimitive.init({ id: 'demo-tabs' }),
   selected: 'one',
   values: ['one', 'two', 'three'],
@@ -123,7 +121,7 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
             selected:
               selection === undefined ? model.selected : selection.value,
           },
-          commands: Command.mapMessages(next.commands, (child) => ({
+          commands: Command.mapMessages(next.commands, child => ({
             _tag: 'GotTabs' as const,
             message: child,
           })),
@@ -136,7 +134,7 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
         return {
           model: {
             ...model,
-            values: model.values.filter((value) => value !== message.value),
+            values: model.values.filter(value => value !== message.value),
           },
         }
       case 'SetDisabled':
@@ -145,7 +143,7 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
             ...model,
             disabled: message.isDisabled
               ? [...model.disabled, message.value]
-              : model.disabled.filter((value) => value !== message.value),
+              : model.disabled.filter(value => value !== message.value),
           },
         }
     }
@@ -162,7 +160,7 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
         {
           model: model.tabs,
           selectedValue: model.selected,
-          toParentMessage: (message) => ({ _tag: 'GotTabs', message }),
+          toParentMessage: message => ({ _tag: 'GotTabs', message }),
           tabs: tabConfigs(model),
           ...overrides,
         },
@@ -198,16 +196,13 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
       // DIVERGENCE: Base UI omits aria-orientation on a horizontal tablist
       // (horizontal is the implicit default) and only emits it when
       // orientation="vertical". foldkit always emits it.
-      it.fails(
-        'does not add aria-orientation by default',
-        () => {
-          Scene.scene(
-            { update, view: defaultView() },
-            Scene.given(givenModel()),
-            Scene.expect(tablist).not.toHaveAttr('aria-orientation'),
-          )
-        },
-      )
+      it.fails('does not add aria-orientation by default', () => {
+        Scene.scene(
+          { update, view: defaultView() },
+          Scene.given(givenModel()),
+          Scene.expect(tablist).not.toHaveAttr('aria-orientation'),
+        )
+      })
 
       it('adds the proper aria-orientation when vertical', () => {
         Scene.scene(
@@ -248,10 +243,7 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
           { update, view: defaultView() },
           Scene.given(givenModel()),
           Scene.expect(tab('Tab one')).toHaveAttr('id', 'demo-tabs-tab-0'),
-          Scene.expect(panel).toHaveAttr(
-            'aria-labelledby',
-            'demo-tabs-tab-0',
-          ),
+          Scene.expect(panel).toHaveAttr('aria-labelledby', 'demo-tabs-tab-0'),
           Scene.expect(panel).toHaveText('Panel one'),
         )
       })
@@ -285,27 +277,30 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
           {
             update,
             view: (model, h) =>
-              h.div([], [
-                h.button(
-                  [
-                    h.Type('button'),
-                    h.OnClick({ _tag: 'SetSelected', value: 'three' }),
-                  ],
-                  ['Select three'],
-                ),
-                Tabs.tabs(
-                  {
-                    model: model.tabs,
-                    selectedValue: model.selected,
-                    toParentMessage: (message) => ({
-                      _tag: 'GotTabs',
-                      message,
-                    }),
-                    tabs: tabConfigs(model),
-                  },
-                  h,
-                ),
-              ]),
+              h.div(
+                [],
+                [
+                  h.button(
+                    [
+                      h.Type('button'),
+                      h.OnClick({ _tag: 'SetSelected', value: 'three' }),
+                    ],
+                    ['Select three'],
+                  ),
+                  Tabs.tabs(
+                    {
+                      model: model.tabs,
+                      selectedValue: model.selected,
+                      toParentMessage: message => ({
+                        _tag: 'GotTabs',
+                        message,
+                      }),
+                      tabs: tabConfigs(model),
+                    },
+                    h,
+                  ),
+                ],
+              ),
           },
           Scene.given(givenModel()),
           Scene.expect(tab('Tab one')).toHaveAttr('tabIndex', '0'),
@@ -379,18 +374,15 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
       // DIVERGENCE: Base UI does not call onValueChange when the active tab
       // is clicked again. foldkit dispatches SelectedTab unconditionally,
       // so the OutMessage re-commits.
-      it.fails(
-        'should not call onValueChange when already active',
-        () => {
-          Scene.scene(
-            { update, view: defaultView() },
-            Scene.given(givenModel()),
-            Scene.click(tab('Tab one')),
-            Scene.expectHandled(),
-            Scene.expectNoOutMessage(),
-          )
-        },
-      )
+      it.fails('should not call onValueChange when already active', () => {
+        Scene.scene(
+          { update, view: defaultView() },
+          Scene.given(givenModel()),
+          Scene.click(tab('Tab one')),
+          Scene.expectHandled(),
+          Scene.expectNoOutMessage(),
+        )
+      })
 
       // DIVERGENCE (documented): Base UI's activateOnFocus commits selection
       // on pointerdown; foldkit wires no pointerdown handler and commits on
@@ -494,75 +486,55 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
       // native `disabled` attribute and skips it in roving navigation — the
       // arrow lands on the next enabled tab and, in automatic mode,
       // activates it.
-      it.fails(
-        'moves focus to a disabled tab without activating it',
-        () => {
-          Scene.scene(
-            { update, view: defaultView() },
-            Scene.given(givenModel({ disabled: ['two'] })),
-            Scene.keydown(tab('Tab one'), 'ArrowRight'),
-            Scene.expectHandled(),
-            Scene.expect(tab('Tab two')).toHaveAttr('tabIndex', '0'),
-            Scene.expect(tab('Tab two')).toHaveAttr('aria-selected', 'false'),
-          )
-        },
-      )
+      it.fails('moves focus to a disabled tab without activating it', () => {
+        Scene.scene(
+          { update, view: defaultView() },
+          Scene.given(givenModel({ disabled: ['two'] })),
+          Scene.keydown(tab('Tab one'), 'ArrowRight'),
+          Scene.expectHandled(),
+          Scene.expect(tab('Tab two')).toHaveAttr('tabIndex', '0'),
+          Scene.expect(tab('Tab two')).toHaveAttr('aria-selected', 'false'),
+        )
+      })
 
-      it.fails(
-        'moves focus to a disabled first tab on Home without activating it',
-        () => {
-          Scene.scene(
-            { update, view: defaultView() },
-            Scene.given(
-              givenModel({ selected: 'three', disabled: ['one'] }),
-            ),
-            Scene.keydown(tab('Tab three'), 'Home'),
-            Scene.expectHandled(),
-            Scene.expect(tab('Tab one')).toHaveAttr('tabIndex', '0'),
-            Scene.expect(tab('Tab one')).toHaveAttr('aria-selected', 'false'),
-          )
-        },
-      )
+      it.fails('moves focus to a disabled first tab on Home without activating it', () => {
+        Scene.scene(
+          { update, view: defaultView() },
+          Scene.given(givenModel({ selected: 'three', disabled: ['one'] })),
+          Scene.keydown(tab('Tab three'), 'Home'),
+          Scene.expectHandled(),
+          Scene.expect(tab('Tab one')).toHaveAttr('tabIndex', '0'),
+          Scene.expect(tab('Tab one')).toHaveAttr('aria-selected', 'false'),
+        )
+      })
 
-      it.fails(
-        'moves focus to a disabled last tab on End without activating it',
-        () => {
-          Scene.scene(
-            { update, view: defaultView() },
-            Scene.given(givenModel({ disabled: ['three'] })),
-            Scene.keydown(tab('Tab one'), 'End'),
-            Scene.expectHandled(),
-            Scene.expect(tab('Tab three')).toHaveAttr('tabIndex', '0'),
-            Scene.expect(tab('Tab three')).toHaveAttr(
-              'aria-selected',
-              'false',
-            ),
-          )
-        },
-      )
+      it.fails('moves focus to a disabled last tab on End without activating it', () => {
+        Scene.scene(
+          { update, view: defaultView() },
+          Scene.given(givenModel({ disabled: ['three'] })),
+          Scene.keydown(tab('Tab one'), 'End'),
+          Scene.expectHandled(),
+          Scene.expect(tab('Tab three')).toHaveAttr('tabIndex', '0'),
+          Scene.expect(tab('Tab three')).toHaveAttr('aria-selected', 'false'),
+        )
+      })
 
       // DIVERGENCE: Base UI ignores arrow keys while a modifier is held.
       // foldkit's keydown handler only inspects the key, so modifier+arrow
       // still navigates.
       ;(['shiftKey', 'ctrlKey', 'altKey', 'metaKey'] as const).forEach(
-        (modifier) => {
-          it.fails(
-            `does not move focus when modifier key: ${modifier} is pressed`,
-            () => {
-              Scene.scene(
-                { update, view: defaultView() },
-                Scene.given(givenModel()),
-                Scene.keydown(tab('Tab one'), 'ArrowRight', {
-                  [modifier]: true,
-                }),
-                Scene.expectHandled(),
-                Scene.expect(tab('Tab one')).toHaveAttr(
-                  'aria-selected',
-                  'true',
-                ),
-              )
-            },
-          )
+        modifier => {
+          it.fails(`does not move focus when modifier key: ${modifier} is pressed`, () => {
+            Scene.scene(
+              { update, view: defaultView() },
+              Scene.given(givenModel()),
+              Scene.keydown(tab('Tab one'), 'ArrowRight', {
+                [modifier]: true,
+              }),
+              Scene.expectHandled(),
+              Scene.expect(tab('Tab one')).toHaveAttr('aria-selected', 'true'),
+            )
+          })
         },
       )
     })
@@ -612,7 +584,7 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
         )
       })
 
-      ;(['Enter', ' '] as const).forEach((key) => {
+      ;(['Enter', ' '] as const).forEach(key => {
         it(`activates the focused tab with ${
           key === ' ' ? 'Space' : 'Enter'
         }`, () => {
@@ -640,27 +612,30 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
           {
             update,
             view: (model, h) =>
-              h.div([], [
-                h.button(
-                  [
-                    h.Type('button'),
-                    h.OnClick({ _tag: 'SetSelected', value: 'three' }),
-                  ],
-                  ['Select three'],
-                ),
-                Tabs.tabs(
-                  {
-                    model: model.tabs,
-                    selectedValue: model.selected,
-                    toParentMessage: (message) => ({
-                      _tag: 'GotTabs',
-                      message,
-                    }),
-                    tabs: tabConfigs(model),
-                  },
-                  h,
-                ),
-              ]),
+              h.div(
+                [],
+                [
+                  h.button(
+                    [
+                      h.Type('button'),
+                      h.OnClick({ _tag: 'SetSelected', value: 'three' }),
+                    ],
+                    ['Select three'],
+                  ),
+                  Tabs.tabs(
+                    {
+                      model: model.tabs,
+                      selectedValue: model.selected,
+                      toParentMessage: message => ({
+                        _tag: 'GotTabs',
+                        message,
+                      }),
+                      tabs: tabConfigs(model),
+                    },
+                    h,
+                  ),
+                ],
+              ),
           },
           Scene.given(givenManualModel()),
           Scene.keydown(tab('Tab one'), 'ArrowRight'),
@@ -780,31 +755,34 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
           {
             update,
             view: (model, h) =>
-              h.div([], [
-                h.button(
-                  [
-                    h.Type('button'),
-                    h.OnClick({
-                      _tag: 'SetDisabled',
-                      value: 'one',
-                      isDisabled: true,
-                    }),
-                  ],
-                  ['Disable one'],
-                ),
-                Tabs.tabs(
-                  {
-                    model: model.tabs,
-                    selectedValue: model.selected,
-                    toParentMessage: (message) => ({
-                      _tag: 'GotTabs',
-                      message,
-                    }),
-                    tabs: tabConfigs(model),
-                  },
-                  h,
-                ),
-              ]),
+              h.div(
+                [],
+                [
+                  h.button(
+                    [
+                      h.Type('button'),
+                      h.OnClick({
+                        _tag: 'SetDisabled',
+                        value: 'one',
+                        isDisabled: true,
+                      }),
+                    ],
+                    ['Disable one'],
+                  ),
+                  Tabs.tabs(
+                    {
+                      model: model.tabs,
+                      selectedValue: model.selected,
+                      toParentMessage: message => ({
+                        _tag: 'GotTabs',
+                        message,
+                      }),
+                      tabs: tabConfigs(model),
+                    },
+                    h,
+                  ),
+                ],
+              ),
           },
           Scene.given(givenModel()),
           Scene.click(Scene.text('Disable one')),
@@ -822,18 +800,13 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
       // highlighted tab. foldkit's roving cursor follows the selected tab
       // whenever no manual focus exists, so the disabled selected tab gets
       // tabindex="0".
-      it.fails(
-        'does not set tabIndex=0 on disabled tabs when they are programmatically selected',
-        () => {
-          Scene.scene(
-            { update, view: defaultView() },
-            Scene.given(
-              givenModel({ selected: 'one', disabled: ['one'] }),
-            ),
-            Scene.expect(tab('Tab one')).toHaveAttr('tabIndex', '-1'),
-          )
-        },
-      )
+      it.fails('does not set tabIndex=0 on disabled tabs when they are programmatically selected', () => {
+        Scene.scene(
+          { update, view: defaultView() },
+          Scene.given(givenModel({ selected: 'one', disabled: ['one'] })),
+          Scene.expect(tab('Tab one')).toHaveAttr('tabIndex', '-1'),
+        )
+      })
 
       it.todo(
         'does not select any tab when all tabs are disabled — ' +
@@ -857,27 +830,30 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
           {
             update,
             view: (model, h) =>
-              h.div([], [
-                h.button(
-                  [
-                    h.Type('button'),
-                    h.OnClick({ _tag: 'RemoveValue', value: 'one' }),
-                  ],
-                  ['Remove one'],
-                ),
-                Tabs.tabs(
-                  {
-                    model: model.tabs,
-                    selectedValue: model.selected,
-                    toParentMessage: (message) => ({
-                      _tag: 'GotTabs',
-                      message,
-                    }),
-                    tabs: tabConfigs(model),
-                  },
-                  h,
-                ),
-              ]),
+              h.div(
+                [],
+                [
+                  h.button(
+                    [
+                      h.Type('button'),
+                      h.OnClick({ _tag: 'RemoveValue', value: 'one' }),
+                    ],
+                    ['Remove one'],
+                  ),
+                  Tabs.tabs(
+                    {
+                      model: model.tabs,
+                      selectedValue: model.selected,
+                      toParentMessage: message => ({
+                        _tag: 'GotTabs',
+                        message,
+                      }),
+                      tabs: tabConfigs(model),
+                    },
+                    h,
+                  ),
+                ],
+              ),
           },
           Scene.given(givenModel()),
           Scene.click(Scene.text('Remove one')),
@@ -895,31 +871,32 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
           {
             update,
             view: (model, h) =>
-              h.div([], [
-                h.button(
-                  [
-                    h.Type('button'),
-                    h.OnClick({ _tag: 'RemoveValue', value: 'three' }),
-                  ],
-                  ['Remove three'],
-                ),
-                Tabs.tabs(
-                  {
-                    model: model.tabs,
-                    selectedValue: model.selected,
-                    toParentMessage: (message) => ({
-                      _tag: 'GotTabs',
-                      message,
-                    }),
-                    tabs: tabConfigs(model),
-                  },
-                  h,
-                ),
-              ]),
+              h.div(
+                [],
+                [
+                  h.button(
+                    [
+                      h.Type('button'),
+                      h.OnClick({ _tag: 'RemoveValue', value: 'three' }),
+                    ],
+                    ['Remove three'],
+                  ),
+                  Tabs.tabs(
+                    {
+                      model: model.tabs,
+                      selectedValue: model.selected,
+                      toParentMessage: message => ({
+                        _tag: 'GotTabs',
+                        message,
+                      }),
+                      tabs: tabConfigs(model),
+                    },
+                    h,
+                  ),
+                ],
+              ),
           },
-          Scene.given(
-            givenModel({ selected: 'three', disabled: ['one'] }),
-          ),
+          Scene.given(givenModel({ selected: 'three', disabled: ['one'] })),
           Scene.click(Scene.text('Remove three')),
           Scene.expectHandled(),
           Scene.expectNoOutMessage(),
@@ -936,27 +913,30 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
           {
             update,
             view: (model, h) =>
-              h.div([], [
-                h.button(
-                  [
-                    h.Type('button'),
-                    h.OnClick({ _tag: 'RemoveValue', value: 'one' }),
-                  ],
-                  ['Remove one'],
-                ),
-                Tabs.tabs(
-                  {
-                    model: model.tabs,
-                    selectedValue: model.selected,
-                    toParentMessage: (message) => ({
-                      _tag: 'GotTabs',
-                      message,
-                    }),
-                    tabs: tabConfigs(model),
-                  },
-                  h,
-                ),
-              ]),
+              h.div(
+                [],
+                [
+                  h.button(
+                    [
+                      h.Type('button'),
+                      h.OnClick({ _tag: 'RemoveValue', value: 'one' }),
+                    ],
+                    ['Remove one'],
+                  ),
+                  Tabs.tabs(
+                    {
+                      model: model.tabs,
+                      selectedValue: model.selected,
+                      toParentMessage: message => ({
+                        _tag: 'GotTabs',
+                        message,
+                      }),
+                      tabs: tabConfigs(model),
+                    },
+                    h,
+                  ),
+                ],
+              ),
           },
           Scene.given(givenModel({ selected: 'three' })),
           Scene.click(Scene.text('Remove one')),
@@ -981,10 +961,7 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
         | { _tag: 'GotInnerTabs'; message: TabsPrimitive.Message }
       >
 
-      const nestedUpdate = (
-        model: NestedModel,
-        message: NestedMessage,
-      ) => {
+      const nestedUpdate = (model: NestedModel, message: NestedMessage) => {
         switch (message._tag) {
           case 'GotOuterTabs': {
             const next = Tabs.update(model.outer, message.message)
@@ -998,7 +975,7 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
                     ? model.outerSelected
                     : selection.value,
               },
-              commands: Command.mapMessages(next.commands, (child) => ({
+              commands: Command.mapMessages(next.commands, child => ({
                 _tag: 'GotOuterTabs' as const,
                 message: child,
               })),
@@ -1017,7 +994,7 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
                     ? model.innerSelected
                     : selection.value,
               },
-              commands: Command.mapMessages(next.commands, (child) => ({
+              commands: Command.mapMessages(next.commands, child => ({
                 _tag: 'GotInnerTabs' as const,
                 message: child,
               })),
@@ -1032,7 +1009,7 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
           {
             model: model.outer,
             selectedValue: model.outerSelected,
-            toParentMessage: (message) => ({
+            toParentMessage: message => ({
               _tag: 'GotOuterTabs',
               message,
             }),
@@ -1045,7 +1022,7 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
                   {
                     model: model.inner,
                     selectedValue: model.innerSelected,
-                    toParentMessage: (message) => ({
+                    toParentMessage: message => ({
                       _tag: 'GotInnerTabs',
                       message,
                     }),
@@ -1086,9 +1063,10 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
             'aria-controls',
             'inner-tabs-panel-0',
           ),
-          Scene.expect(
-            Scene.role('tabpanel', { name: 'Inner 1' }),
-          ).toHaveAttr('id', 'inner-tabs-panel-0'),
+          Scene.expect(Scene.role('tabpanel', { name: 'Inner 1' })).toHaveAttr(
+            'id',
+            'inner-tabs-panel-0',
+          ),
           // Arrow keys within the nested list stay within the nested list.
           Scene.keydown(tab('Inner 1'), 'ArrowRight'),
           Scene.expectHandled(),

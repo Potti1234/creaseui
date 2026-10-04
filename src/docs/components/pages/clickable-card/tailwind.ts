@@ -1,23 +1,23 @@
-import { Schema as S } from 'effect';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
+import { Schema as S } from 'effect'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-import { definePreviewProgram } from '@/docs/components/pages/authored-page';
+import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
   clickableCardFixtures,
   type ClickableCardFixture,
-} from '@/docs/components/pages/clickable-card/shared';
-import * as Button from '@/ui/button';
-import * as ClickableCard from '@/ui/clickable-card';
+} from '@/docs/components/pages/clickable-card/shared'
+import * as Button from '@/ui/button'
+import * as ClickableCard from '@/ui/clickable-card'
 
 const ClickableCardPreviewMessage = defineMessageUnion({
   ClickableCardPreviewMessage: {},
-});
-type ClickableCardPreviewMessage = typeof ClickableCardPreviewMessage.Type;
+})
+type ClickableCardPreviewMessage = typeof ClickableCardPreviewMessage.Type
 const ClickableCardPreviewModel = S.Struct({
   _docsPage: S.Literal('clickable-card'),
-});
-type ClickableCardPreviewModel = typeof ClickableCardPreviewModel.Type;
+})
+type ClickableCardPreviewModel = typeof ClickableCardPreviewModel.Type
 
 const textBlock = <Msg>(
   heading: string,
@@ -33,7 +33,7 @@ const textBlock = <Msg>(
       ),
       h.p([h.Class('text-sm text-muted-foreground')], [body]),
     ],
-  );
+  )
 
 const body = <Msg>(
   fixture: ClickableCardFixture,
@@ -45,13 +45,13 @@ const body = <Msg>(
         'Settings',
         'Click anywhere on this card to navigate. Nested buttons and links work independently.',
         h,
-      );
+      )
     case 'report':
       return textBlock(
         'Quarterly report',
         'A raised shadow signals the whole card is clickable, lifting it above the surrounding content.',
         h,
-      );
+      )
     case 'product':
       return h.div(
         [h.Class('flex flex-col gap-3')],
@@ -68,9 +68,9 @@ const body = <Msg>(
           ),
           Button.button({ variant: 'default', children: ['Add to cart'] }, h),
         ],
-      );
+      )
   }
-};
+}
 
 export const clickableCardTailwindPreviewProgram = definePreviewProgram<
   ClickableCardPreviewModel,
@@ -81,7 +81,7 @@ export const clickableCardTailwindPreviewProgram = definePreviewProgram<
   init: () => ({ _docsPage: 'clickable-card' }),
   update: model => ({ model: model }),
   view: (index, _model, h) => {
-    const fixture = clickableCardFixtures[index] ?? clickableCardFixtures[0];
+    const fixture = clickableCardFixtures[index] ?? clickableCardFixtures[0]
     return ClickableCard.clickableCard(
       {
         label: fixture.label,
@@ -93,6 +93,6 @@ export const clickableCardTailwindPreviewProgram = definePreviewProgram<
         children: [body(fixture, h)],
       },
       h,
-    );
+    )
   },
-});
+})

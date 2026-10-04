@@ -1,14 +1,14 @@
-import type { DocsExample } from '@/docs/components/page-definition';
-import { foldkitApplication } from '@/docs/components/pages/authored-page';
+import type { DocsExample } from '@/docs/components/page-definition'
+import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type DateRangeInputFixture = Readonly<{
-  title: string;
-  description?: string;
-  heroOnly?: boolean;
-  kind: 'presets' | 'validation';
+  title: string
+  description?: string
+  heroOnly?: boolean
+  kind: 'presets' | 'validation'
   /** Astrryx block id, kept for tracing against the source templates. */
-  astryxExample: string;
-}>;
+  astryxExample: string
+}>
 
 export const dateRangeInputFixtures: ReadonlyArray<DateRangeInputFixture> = [
   {
@@ -33,21 +33,24 @@ export const dateRangeInputFixtures: ReadonlyArray<DateRangeInputFixture> = [
     description:
       'Date range input in all three status states: error, warning, and success. Use to surface booking conflicts, flag high-demand periods, or confirm an available range.',
   },
-];
+]
 
 const PRESET_SETS: Readonly<Record<string, ReadonlyArray<number>>> = {
   DateRangeInputShowcase: [7, 30],
   DateRangeInputWithPresets: [7, 14, 30, 90],
-};
+}
 
 export const presetDaysFor = (astryxExample: string): ReadonlyArray<number> =>
-  PRESET_SETS[astryxExample] ?? [7, 30];
+  PRESET_SETS[astryxExample] ?? [7, 30]
 
 const VALIDATION_FIELDS = [
   {
     label: 'Booking period',
     value: { start: '2026-01-01', end: '2026-01-31' },
-    status: { type: 'error', message: 'Selected dates are no longer available' },
+    status: {
+      type: 'error',
+      message: 'Selected dates are no longer available',
+    },
   },
   {
     label: 'Preferred period',
@@ -59,7 +62,7 @@ const VALIDATION_FIELDS = [
     value: { start: '2026-03-01', end: '2026-03-31' },
     status: { type: 'success', message: 'Dates confirmed and available' },
   },
-] as const;
+] as const
 
 const imports = (renderer: 'tailwind' | 'stylex', extra: string): string =>
   `import { Option, Schema as S } from 'effect'
@@ -67,7 +70,7 @@ import { Command, Runtime, Subscription, Update } from 'foldkit'
 import * as Calendar from 'foldkit/calendar'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-import * as DateRangeInput from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/date-range-input'${extra}`;
+import * as DateRangeInput from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/date-range-input'${extra}`
 
 const stylexPreamble = `
 import * as stylex from '@stylexjs/stylex'
@@ -81,23 +84,23 @@ const styles = stylex.create({
     width: '100%',
   },
   supporting: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
-})`;
+})`
 
 const stackClass = (isStyleX: boolean): string =>
   isStyleX
     ? `h.Class(className(styles.stack))`
-    : `h.Class('grid w-full max-w-[400px] gap-4')`;
+    : `h.Class('grid w-full max-w-[400px] gap-4')`
 
 const supportingClass = (isStyleX: boolean): string =>
   isStyleX
     ? `h.Class(className(styles.supporting))`
-    : `h.Class('text-muted-foreground text-sm')`;
+    : `h.Class('text-muted-foreground text-sm')`
 
 const messages = (multiSlot: boolean): string =>
   `import { taggedStruct } from 'foldkit/schema'
 export const GotDateRangeInputMessage = taggedStruct('GotDateRangeInputMessage', { ${multiSlot ? 'slot: S.Number, ' : ''}message: DateRangeInput.Message });
 export const Message = S.Union([GotDateRangeInputMessage])
-export type Message = typeof Message.Type`;
+export type Message = typeof Message.Type`
 
 const singleUpdate = `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
@@ -109,18 +112,21 @@ const singleUpdate = `export const update = (model: Model, message: Message): Up
       }
     }
   }
-}`;
+}`
 
-const presetsSource = (fixture: DateRangeInputFixture, renderer: 'tailwind' | 'stylex'): string => {
-  const isStyleX = renderer === 'stylex';
-  const isShowcase = fixture.astryxExample === 'DateRangeInputShowcase';
-  const days = presetDaysFor(fixture.astryxExample);
+const presetsSource = (
+  fixture: DateRangeInputFixture,
+  renderer: 'tailwind' | 'stylex',
+): string => {
+  const isStyleX = renderer === 'stylex'
+  const isShowcase = fixture.astryxExample === 'DateRangeInputShowcase'
+  const days = presetDaysFor(fixture.astryxExample)
   const presetLines = days
     .map(
-      (n) =>
+      n =>
         `  { label: 'Last ${String(n)} days', getRange: () => ({ start: Calendar.subtractDays(TODAY, ${String(n)}), end: TODAY }) },`,
     )
-    .join('\n');
+    .join('\n')
   return foldkitApplication({
     title: `DateRangeInput — ${fixture.title}`,
     imports: imports(renderer, isStyleX ? stylexPreamble : ''),
@@ -146,33 +152,44 @@ ${presetLines}
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'DateRangeInput — ${fixture.title}',
   body: h.main([h.Class('flex min-h-screen items-start justify-center p-8')], [
-    h.div([${stackClass(isStyleX)}], [${isShowcase ? '' : `
+    h.div([${stackClass(isStyleX)}], [${
+      isShowcase
+        ? ''
+        : `
       h.p([${supportingClass(isStyleX)}], [
         Option.match(model.dateRangeInput.value, {
           onNone: () => 'No range selected',
           onSome: range =>
             \`\${DateRangeInput.dateToISO(range.start)} → \${DateRangeInput.dateToISO(range.end)}\`,
         }),
-      ]),`}
+      ]),`
+    }
       DateRangeInput.dateRangeInput({
         model: model.dateRangeInput,
         toParentMessage: message => GotDateRangeInputMessage({ message }),
-        label: '${isShowcase ? 'Date range' : 'Report period'}',${isShowcase ? '' : `
-        description: 'Use a preset or pick a custom range',`}
+        label: '${isShowcase ? 'Date range' : 'Report period'}',${
+          isShowcase
+            ? ''
+            : `
+        description: 'Use a preset or pick a custom range',`
+        }
         presets: PRESETS,
       }, h),
     ]),
   ]),
 })`,
-  });
-};
+  })
+}
 
-const validationSource = (fixture: DateRangeInputFixture, renderer: 'tailwind' | 'stylex'): string => {
-  const isStyleX = renderer === 'stylex';
+const validationSource = (
+  fixture: DateRangeInputFixture,
+  renderer: 'tailwind' | 'stylex',
+): string => {
+  const isStyleX = renderer === 'stylex'
   const fieldLines = VALIDATION_FIELDS.map(
-    (f) =>
+    f =>
       `  { label: '${f.label}', value: { start: '${f.value.start}', end: '${f.value.end}' }, status: { type: '${f.status.type}', message: '${f.status.message}' } },`,
-  ).join('\n');
+  ).join('\n')
   return foldkitApplication({
     title: `DateRangeInput — ${fixture.title}`,
     imports: imports(renderer, isStyleX ? stylexPreamble : ''),
@@ -238,13 +255,16 @@ ${fieldLines}
     ]),
   ]),
 })`,
-  });
-};
+  })
+}
 
-const dateRangeInputSource = (fixture: DateRangeInputFixture, renderer: 'tailwind' | 'stylex'): string =>
+const dateRangeInputSource = (
+  fixture: DateRangeInputFixture,
+  renderer: 'tailwind' | 'stylex',
+): string =>
   fixture.kind === 'validation'
     ? validationSource(fixture, renderer)
-    : presetsSource(fixture, renderer);
+    : presetsSource(fixture, renderer)
 
 export const dateRangeInputExamples = (
   renderer: 'tailwind' | 'stylex',
@@ -257,4 +277,4 @@ export const dateRangeInputExamples = (
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: dateRangeInputSource(fixture, renderer),
-  }));
+  }))

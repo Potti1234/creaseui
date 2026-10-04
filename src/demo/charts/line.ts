@@ -1,23 +1,23 @@
-import { Match as M, Schema as S } from 'effect';
-import type { Update } from 'foldkit';
-import { Command } from 'foldkit';
-import type { Html, HtmlBuilder } from 'foldkit/html';
-import { defineMessageUnion } from 'foldkit/message';
-import { modifyFields } from 'foldkit/struct';
+import { Match as M, Schema as S } from 'effect'
+import type { Update } from 'foldkit'
+import { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import { modifyFields } from 'foldkit/struct'
 
-import * as LineDefault from '@/demo/charts/cards/line-default';
-import * as LineDots from '@/demo/charts/cards/line-dots';
-import * as LineDotsColors from '@/demo/charts/cards/line-dots-colors';
-import * as LineDotsCustom from '@/demo/charts/cards/line-dots-custom';
-import * as LineInteractive from '@/demo/charts/cards/line-interactive';
-import * as LineLabel from '@/demo/charts/cards/line-label';
-import * as LineLabelCustom from '@/demo/charts/cards/line-label-custom';
-import * as LineLinear from '@/demo/charts/cards/line-linear';
-import * as LineMultiple from '@/demo/charts/cards/line-multiple';
-import * as LineStep from '@/demo/charts/cards/line-step';
-import * as Chart from '@/lib/echarts';
+import * as LineDefault from '@/demo/charts/cards/line-default'
+import * as LineDots from '@/demo/charts/cards/line-dots'
+import * as LineDotsColors from '@/demo/charts/cards/line-dots-colors'
+import * as LineDotsCustom from '@/demo/charts/cards/line-dots-custom'
+import * as LineInteractive from '@/demo/charts/cards/line-interactive'
+import * as LineLabel from '@/demo/charts/cards/line-label'
+import * as LineLabelCustom from '@/demo/charts/cards/line-label-custom'
+import * as LineLinear from '@/demo/charts/cards/line-linear'
+import * as LineMultiple from '@/demo/charts/cards/line-multiple'
+import * as LineStep from '@/demo/charts/cards/line-step'
+import * as Chart from '@/lib/echarts'
 
-import { chartsPageShell } from '@/demo/charts/shell';
+import { chartsPageShell } from '@/demo/charts/shell'
 
 /* /charts/line — grid of line chart variants. Chart mounts emit ChartMessage
    (mounted/synced) which this page absorbs; interactive variants add their own
@@ -25,58 +25,58 @@ import { chartsPageShell } from '@/demo/charts/shell';
 
 // MODEL
 
-const ActiveChart = S.Literals(['desktop', 'mobile']);
+const ActiveChart = S.Literals(['desktop', 'mobile'])
 
 export const Model = S.Struct({
   activeChart: ActiveChart,
-});
-export type Model = typeof Model.Type;
+})
+export type Model = typeof Model.Type
 
 // MESSAGE
 
-
-
-
 export const Message = defineMessageUnion({
   GotChartMessage: {
-  message: Chart.ChartMessage,
-},
+    message: Chart.ChartMessage,
+  },
   SelectedActiveChart: {
-  activeChart: ActiveChart,
-},
-});
-export type Message = typeof Message.Type;
+    activeChart: ActiveChart,
+  },
+})
+export type Message = typeof Message.Type
 
 // INIT
 
-export const init = (): Model => ({ activeChart: 'desktop' });
+export const init = (): Model => ({ activeChart: 'desktop' })
 
 // UPDATE
 
-type UpdateReturn = Update.Return<Model, Message>;
+type UpdateReturn = Update.Return<Model, Message>
 
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
       GotChartMessage: () => ({ model: model }),
-      SelectedActiveChart: ({ activeChart }) => ({ model: modifyFields(model, { activeChart: () => activeChart }), commands: [
+      SelectedActiveChart: ({ activeChart }) => ({
+        model: modifyFields(model, { activeChart: () => activeChart }),
+        commands: [
           Command.mapMessage(
             Chart.SyncChart({
               hostId: LineInteractive.HOST_ID,
               variant: activeChart,
             }),
-            (message) => Message.GotChartMessage({ message }),
+            message => Message.GotChartMessage({ message }),
           ),
-        ] }),
+        ],
+      }),
     }),
-  );
+  )
 
 // VIEW
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
   const toMessage = (message: Chart.ChartMessage): Message =>
-    Message.GotChartMessage({ message });
+    Message.GotChartMessage({ message })
 
   return chartsPageShell<Message>(
     'line',
@@ -93,12 +93,12 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       LineInteractive.view(
         {
           activeChart: model.activeChart,
-          onSelect: (activeChart) => Message.SelectedActiveChart({ activeChart }),
+          onSelect: activeChart => Message.SelectedActiveChart({ activeChart }),
           toMessage,
         },
         h,
       ),
     ],
     h,
-  );
-};
+  )
+}

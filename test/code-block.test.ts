@@ -20,7 +20,10 @@ describe('CodeBlock submodel', () => {
     const next = CodeBlock.update(model, CodeBlock.Message.ToggledCollapse())
     assert.equal(next.model.isCollapsed, true)
     assert.equal(next.commands, undefined)
-    const back = CodeBlock.update(next.model, CodeBlock.Message.ToggledCollapse())
+    const back = CodeBlock.update(
+      next.model,
+      CodeBlock.Message.ToggledCollapse(),
+    )
     assert.equal(back.model.isCollapsed, false)
   })
 
