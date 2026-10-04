@@ -70,6 +70,7 @@
   },
   "dependencies": {
     "@effect/platform-browser": "4.0.0-rc.117",
+    "@foldkit/devtools": "0.164.0",
     "@foldkit/ui": "0.164.0",
     "@pierre/diffs": "^1.4.2",
     "@stylexjs/stylex": "^0.19.0",

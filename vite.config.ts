@@ -46,7 +46,27 @@ export default defineConfig({
     __CREASEUI_BUILD_SHA__: JSON.stringify(buildSha),
     __CREASEUI_BUILD_DIRTY__: JSON.stringify(buildDirty),
   },
-  plugins: [stylex.vite(stylexCompilerOptions), tailwindcss(), foldkit()],
+  plugins: [
+    stylex.vite(stylexCompilerOptions),
+    tailwindcss(),
+    foldkit(),
+    {
+      name: 'creaseui:foldkit-devtools-singleton',
+      configResolved(config) {
+        // The Foldkit plugin explicitly includes this entry. Prebundling it
+        // separates overlay registration from the unbundled runtime, and Vite
+        // removes the now-unused registration state. Drop the forced include
+        // so optimizeDeps.exclude below can keep the host unbundled.
+        config.optimizeDeps.include = config.optimizeDeps.include?.filter(
+          specifier => specifier !== 'foldkit/devtools-host',
+        )
+      },
+    },
+  ],
+  optimizeDeps: {
+    // Keep overlay registration on the same Foldkit module as the app runtime.
+    exclude: ['foldkit/devtools-host'],
+  },
   resolve: {
     alias: {
       '@': '/src',

@@ -21,7 +21,15 @@ const application = Runtime.makeApplication({
   view,
   subscriptions,
   container: document.getElementById('root'),
-  devTools: { keyframeInterval: 1 },
+  devTools:
+    window.self === window.top
+      ? {
+          show: 'Always',
+          position: 'BottomRight',
+          mode: { development: 'TimeTravel', production: 'Inspect' },
+          keyframeInterval: 1,
+        }
+      : false,
   routing: {
     onUrlRequest: request => Message.ClickedLink({ request }),
     onUrlChange: url => Message.ChangedUrl({ url }),

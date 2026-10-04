@@ -25,6 +25,11 @@ npm install
 npm run dev
 ```
 
+Foldkit DevTools is available through the **DEV** badge in the bottom-right
+corner of the site. Local development supports time travel; the published site
+uses inspection mode to browse model and message history without pausing the
+examples. Embedded block previews hide their own devtools panels.
+
 Before submitting a change, run:
 
 ```sh
