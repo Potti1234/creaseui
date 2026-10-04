@@ -27,11 +27,14 @@ const basicCard = <Msg>(h: HtmlBuilder<Msg>): Html =>
   h.div(
     [h.Class('flex w-64 flex-col gap-0.5')],
     [
-      h.div([h.Class('font-semibold')], ['@nextjs']),
-      h.div([], ['The React Framework – created and maintained by @vercel.']),
+      h.div([h.Class('font-semibold')], ['@creaseui']),
+      h.div(
+        [],
+        ['UI components for Foldkit, built with TypeScript and Effect.'],
+      ),
       h.div(
         [h.Class('mt-1 text-xs text-muted-foreground')],
-        ['Joined December 2021'],
+        ['Available in Tailwind and StyleX'],
       ),
     ],
   )
@@ -115,7 +118,7 @@ export const hoverCardTailwindPreviewProgram = definePreviewProgram<
             { variant: 'link', children: ['Hover Here'] },
             h,
           ),
-          ariaLabel: 'Preview the Next.js profile',
+          ariaLabel: 'Preview the CreaseUI profile',
           content: basicCard(h),
         },
         h,

@@ -38,7 +38,7 @@ export const linkFixtures: Readonly<[LinkFixture, ...Array<LinkFixture>]> = [
 const externalLinks = [
   ['GitHub', 'https://github.com', false],
   ['MDN', 'https://developer.mozilla.org', false],
-  ['React', 'https://react.dev', true],
+  ['Foldkit', 'https://foldkit.dev', true],
 ] as const
 
 const tooltipLinks = [

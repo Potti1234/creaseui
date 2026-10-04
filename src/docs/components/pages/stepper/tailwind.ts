@@ -175,7 +175,10 @@ const reviewCard = (h: HtmlBuilder<PreviewMessage>): Html =>
                   h.div(
                     [h.Class('flex items-center gap-2')],
                     [
-                      h.span([h.Class('text-sm font-medium')], ['Next.js 15']),
+                      h.span(
+                        [h.Class('text-sm font-medium')],
+                        ['Foldkit + Vite'],
+                      ),
                       badge<PreviewMessage>(
                         { variant: 'secondary', children: ['Detected'] },
                         h,
@@ -186,10 +189,10 @@ const reviewCard = (h: HtmlBuilder<PreviewMessage>): Html =>
                     [h.Class('text-muted-foreground text-xs')],
                     [
                       'Build command ',
-                      h.code([], ['next build']),
+                      h.code([], ['vite build']),
                       ' · Output ',
-                      h.code([], ['.next']),
-                      ' · Node 20',
+                      h.code([], ['dist']),
+                      ' · Node 22',
                     ],
                   ),
                 ],

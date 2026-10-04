@@ -39,10 +39,10 @@ export const codeFixtures: Readonly<[CodeFixture, ...Array<CodeFixture>]> = [
 ]
 
 const variousEntries = [
-  ['Variable', 'const [state, setState] = useState(0)'],
+  ['Variable', 'const model = { count: 0 }'],
   ['Terminal', 'npm run dev'],
   ['CSS', 'border-radius: 8px'],
-  ['File path', 'src/components/Button.tsx'],
+  ['File path', 'src/ui/button.ts'],
   ['Shortcut', '⌘ + K'],
 ] as const
 
@@ -77,13 +77,13 @@ const viewBody = (fixture: CodeFixture, isStyleX: boolean): string => {
     case 'inline':
       return `Text.text(
       { type: 'body', display: 'block', children: [
-        'React hooks such as ',
-        ${codeCall('useState')},
+        'Foldkit programs use ',
+        ${codeCall('Model')},
         ', ',
-        ${codeCall('useEffect')},
+        ${codeCall('update')},
         ', and ',
-        ${codeCall('useContext')},
-        ' share state across components.',
+        ${codeCall('view')},
+        ' to model state, handle messages, and render HTML.',
       ] },
       h,
     )`

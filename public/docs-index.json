@@ -1956,13 +1956,13 @@
       ],
       "examples": [
         "CodeBlock",
-        "useUser.ts",
+        "counter.ts",
         "Code — Snippet",
         "Code — Highlighted",
         "Code — Config",
         "package.json",
         "Code — Scrollable",
-        "many-lines.ts",
+        "main.ts",
         "Code — Terminal"
       ],
       "api": [

@@ -105,7 +105,7 @@ export const overflowListFixtures: Readonly<
     container: { kind: 'card', width: 260, minWidth: 120, resizable: true },
     indicator: 'badge',
     items: [
-      { kind: 'badge', label: 'React', tone: 'info' },
+      { kind: 'badge', label: 'Foldkit', tone: 'info' },
       { kind: 'badge', label: 'TypeScript', tone: 'info' },
       { kind: 'badge', label: 'StyleX', tone: 'info' },
       { kind: 'badge', label: 'Storybook', tone: 'info' },
@@ -125,7 +125,7 @@ export const overflowListFixtures: Readonly<
     container: { kind: 'card', width: 300, minWidth: 80, resizable: true },
     indicator: 'badge',
     items: [
-      { kind: 'badge', label: 'React', tone: 'info' },
+      { kind: 'badge', label: 'Foldkit', tone: 'info' },
       { kind: 'badge', label: 'TypeScript', tone: 'success' },
       { kind: 'badge', label: 'StyleX', tone: 'warning' },
       { kind: 'badge', label: 'Storybook', tone: 'neutral' },

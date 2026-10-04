@@ -68,7 +68,7 @@ export const logStreamFixtures: Readonly<
         timestamp: '12:04:23.348',
         level: 'info',
         source: 'build',
-        message: '$ next build',
+        message: '$ vite build',
       },
       {
         id: 'b-06',
@@ -77,7 +77,7 @@ export const logStreamFixtures: Readonly<
         source: 'build',
         message: 'Compiled with warnings (1)',
         detailText:
-          './app/logs/page.tsx\n42:9 Warning: "range" is assigned a value but never used.',
+          './src/pages/logs.ts\n42:9 Warning: "range" is assigned a value but never used.',
       },
       {
         id: 'b-07',
@@ -256,8 +256,7 @@ const logStreamSource = (
     entry => entry.detailText !== undefined,
   )
     ? `
-/* Detail bodies are authored as text and wrapped in a pre here (creaseui's
-   ReactNode detail slot ports to Html). */`
+/* Render each detail body as Foldkit Html using h.pre([], [detailText]). */`
     : ''
 
   const streamCall = `${ns}.logStream(

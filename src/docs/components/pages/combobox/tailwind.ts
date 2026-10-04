@@ -262,7 +262,7 @@ export const comboboxTailwindPreviewProgram = definePreviewProgram<
       // Seed inputValue for the pre-selected clear example — upstream combobox
       // does not derive it from the resting label yet (foldkit finding F15).
       return comboboxFixtures[index]?.kind === 'clear'
-        ? { ...initial, inputValue: 'Next.js' }
+        ? { ...initial, inputValue: 'Foldkit' }
         : initial
     })(),
     multi: Combobox.multiInit({
@@ -271,10 +271,10 @@ export const comboboxTailwindPreviewProgram = definePreviewProgram<
     }),
     maybeValue:
       comboboxFixtures[index]?.kind === 'clear'
-        ? Option.some('nextjs')
+        ? Option.some('foldkit')
         : Option.none(),
     selectedValues:
-      comboboxFixtures[index]?.kind === 'multiple' ? ['nextjs'] : [],
+      comboboxFixtures[index]?.kind === 'multiple' ? ['foldkit'] : [],
     autoHighlight: comboboxFixtures[index]?.kind === 'autoHighlight',
   }),
   update: (model, message) => {

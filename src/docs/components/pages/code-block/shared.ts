@@ -27,36 +27,33 @@ export type CodeBlockFixture = Readonly<{
   blocks: ReadonlyArray<CodeBlockSpec>
 }>
 
-/* Example set ported from Meta Astryx
-   packages/cli/assets/templates/blocks/components/CodeBlock/*.tsx — same
-   demos, same code content. The Terminal demo drops astryx's SyntaxTheme
-   wrapper (theme objects are astryx-only); the bash content is kept. */
-export const SHOWCASE_CODE = `import {useState, useEffect} from 'react';
+// CodeBlock presentation examples adapted from Meta Astryx, with Foldkit code.
+export const SHOWCASE_CODE = `import { Schema as S } from 'effect'
+import type { Update } from 'foldkit'
+import { defineMessageUnion } from 'foldkit/message'
 
-export function useUser(id: string) {
-  const [user, setUser] = useState<User | null>(null);
+export const Model = S.Struct({ count: S.Number })
+export type Model = typeof Model.Type
 
-  useEffect(() => {
-    fetch(\`/api/users/\${id}\`)
-      .then(res => res.json())
-      .then(setUser);
-  }, [id]);
+export const Message = defineMessageUnion({
+  ClickedIncrement: {},
+  ClickedReset: {},
+})
+export type Message = typeof Message.Type
 
-  return user;
-}`
+export const init = (): Update.Return<Model, Message> => ({
+  model: { count: 0 },
+})
 
-export const HIGHLIGHT_CODE = `interface User {
-  id: string;
-  name: string;
-}
+export const update = (model: Model, message: Message) =>
+  Message.match<Update.Return<Model, Message>>(message, {
+    ClickedIncrement: () => ({
+      model: { ...model, count: model.count + 1 },
+    }),
+    ClickedReset: () => ({ model: { ...model, count: 0 } }),
+  })`
 
-export function useUser(id: string) {
-  const [user, setUser] = useState<User>();
-  useEffect(() => {
-    fetchUser(id).then(setUser);
-  }, [id]);
-  return user;
-}`
+export const HIGHLIGHT_CODE = SHOWCASE_CODE
 
 export const JSON_CODE = `{
   "name": "creaseui-example",
@@ -72,10 +69,30 @@ export const JSON_CODE = `{
   }
 }`
 
-export const SCROLLABLE_CODE = Array.from(
-  { length: 50 },
-  (_, i) => `const line${String(i + 1)} = ${String(i + 1)};`,
-).join('\n')
+export const SCROLLABLE_CODE = `import { Runtime } from 'foldkit'
+import type { Document, HtmlBuilder } from 'foldkit/html'
+
+${SHOWCASE_CODE}
+
+export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+  title: 'CreaseUI counter',
+  body: h.main([], [
+    h.h1([], ['Counter']),
+    h.p([h.AriaLive('polite')], ['Count: ' + String(model.count)]),
+    h.button([h.OnClick(Message.ClickedIncrement())], ['Increment']),
+    h.button([h.OnClick(Message.ClickedReset())], ['Reset']),
+  ]),
+})
+
+Runtime.run(
+  Runtime.makeApplication({
+    Model,
+    init,
+    update,
+    view,
+    container: document.getElementById('root'),
+  }),
+)`
 
 export const TERMINAL_CODE = `$ npx creaseui init
 ✓ CreaseUI theme and core components installed
@@ -87,14 +104,14 @@ export const codeBlockFixtures: Readonly<
   {
     title: 'CodeBlock',
     description:
-      'A TypeScript code block with line numbers, file name header, and copy button.',
+      'A Foldkit counter model and update function with line numbers, a file name header, and a copy button.',
     kind: 'showcase',
     blocks: [
       {
         id: 'showcase',
         code: SHOWCASE_CODE,
         language: 'typescript',
-        title: 'useUser.ts',
+        title: 'counter.ts',
         hasLineNumbers: true,
         hasCopyButton: true,
       },
@@ -122,16 +139,16 @@ export const codeBlockFixtures: Readonly<
   {
     title: 'Code — Highlighted',
     description:
-      'A TypeScript code block with specific lines highlighted for emphasis.',
+      'Highlight the pure model transitions that increment and reset a Foldkit counter.',
     kind: 'highlighted',
     blocks: [
       {
         id: 'highlighted',
         code: HIGHLIGHT_CODE,
         language: 'typescript',
-        title: 'useUser.ts',
+        title: 'counter.ts',
         hasLineNumbers: true,
-        highlightLines: [8, 9, 10],
+        highlightLines: [20, 21, 22, 23],
       },
     ],
   },
@@ -152,14 +169,14 @@ export const codeBlockFixtures: Readonly<
   {
     title: 'Code — Scrollable',
     description:
-      'A long TypeScript snippet constrained to a max height with scrolling.',
+      'A complete Foldkit counter, including its view and runtime, in a scrollable code block.',
     kind: 'scrollable',
     blocks: [
       {
         id: 'scrollable',
         code: SCROLLABLE_CODE,
         language: 'typescript',
-        title: 'many-lines.ts',
+        title: 'main.ts',
         hasLineNumbers: true,
         maxHeight: 280,
       },
@@ -216,9 +233,6 @@ const codeConsts = (fixture: CodeBlockFixture): string =>
   fixture.blocks
     .map(block => {
       const name = `CODE_${block.id === 'scrollable' ? 'SCROLLABLE' : block.id.toUpperCase()}`
-      if (block.id === 'scrollable') {
-        return `const ${name} = Array.from(\n  { length: 50 },\n  (_, i) => \`const line\${i + 1} = \${i + 1};\`,\n).join('\\n')`
-      }
       return `const ${name} = ${JSON.stringify(block.code)}`
     })
     .join('\n\n')

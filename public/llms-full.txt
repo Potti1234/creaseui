@@ -634,7 +634,7 @@ A CreaseUI Code Block component for Foldkit.
 
 Source: `src/ui/code-block.ts`
 
-Examples: CodeBlock, useUser.ts, Code — Snippet, Code — Highlighted, Code — Config, package.json, Code — Scrollable, many-lines.ts, Code — Terminal
+Examples: CodeBlock, counter.ts, Code — Snippet, Code — Highlighted, Code — Config, package.json, Code — Scrollable, main.ts, Code — Terminal
 
 - `export { init } from ` (re-export)
 - `export { Model } from ` (re-export)

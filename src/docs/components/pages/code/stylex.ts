@@ -66,13 +66,13 @@ const renderFixture = <Msg>(
           type: 'body',
           display: 'block',
           children: [
-            'React hooks such as ',
-            inline('useState'),
+            'Foldkit programs use ',
+            inline('Model'),
             ', ',
-            inline('useEffect'),
+            inline('update'),
             ', and ',
-            inline('useContext'),
-            ' share state across components.',
+            inline('view'),
+            ' to model state, handle messages, and render HTML.',
           ],
         },
         h,
@@ -127,10 +127,10 @@ const renderFixture = <Msg>(
         [h.Class(className(styles.column))],
         (
           [
-            ['Variable', 'const [state, setState] = useState(0)'],
+            ['Variable', 'const model = { count: 0 }'],
             ['Terminal', 'npm run dev'],
             ['CSS', 'border-radius: 8px'],
-            ['File path', 'src/components/Button.tsx'],
+            ['File path', 'src/ui/button.ts'],
             ['Shortcut', '⌘ + K'],
           ] as const
         ).map(([label, content]) =>

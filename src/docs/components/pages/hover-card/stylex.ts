@@ -70,16 +70,19 @@ export const hoverCardStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           { variant: 'link', children: ['Hover Here'] },
           h,
         ),
-        ariaLabel: 'Preview the Next.js profile',
+        ariaLabel: 'Preview the CreaseUI profile',
         content: h.div(
           [h.Class(className(styles.content))],
           [
-            h.div([h.Class(className(styles.heading))], ['@nextjs']),
+            h.div([h.Class(className(styles.heading))], ['@creaseui']),
             h.div(
               [],
-              ['The React Framework – created and maintained by @vercel.'],
+              ['UI components for Foldkit, built with TypeScript and Effect.'],
             ),
-            h.div([h.Class(className(styles.meta))], ['Joined December 2021']),
+            h.div(
+              [h.Class(className(styles.meta))],
+              ['Available in Tailwind and StyleX'],
+            ),
           ],
         ),
       },

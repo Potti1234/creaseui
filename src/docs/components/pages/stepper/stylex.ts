@@ -118,7 +118,7 @@ const contentFor = <Msg>(
                             [
                               h.span(
                                 [h.Class(className(styles.cardLabel))],
-                                ['Next.js 15'],
+                                ['Foldkit + Vite'],
                               ),
                               badge<Msg>(
                                 {
@@ -133,10 +133,10 @@ const contentFor = <Msg>(
                             [h.Class(className(styles.cardMeta))],
                             [
                               'Build command ',
-                              h.code([], ['next build']),
+                              h.code([], ['vite build']),
                               ' · Output ',
-                              h.code([], ['.next']),
-                              ' · Node 20',
+                              h.code([], ['dist']),
+                              ' · Node 22',
                             ],
                           ),
                         ],

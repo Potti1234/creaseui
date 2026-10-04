@@ -47,7 +47,7 @@ const renderFixture = <Msg>(
           [
             ['GitHub', 'https://github.com', false],
             ['MDN', 'https://developer.mozilla.org', false],
-            ['React', 'https://react.dev', true],
+            ['Foldkit', 'https://foldkit.dev', true],
           ] as const
         ).map(([label, url, underlined]) =>
           Link.link(

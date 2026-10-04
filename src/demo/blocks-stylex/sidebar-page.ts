@@ -81,8 +81,8 @@ export const init = (): Model => ({
   expanded: {
     Playground: true,
     'Build Your Application': true,
-    components: true,
-    'components/ui': true,
+    src: true,
+    'src/ui': true,
   },
   calendar: Calendar.init({
     id: 'stylex-sidebar-calendar',
@@ -883,7 +883,7 @@ export const view = (
     id === '09'
       ? 'Inbox'
       : id === '11'
-        ? 'button.tsx'
+        ? 'button.ts'
         : id === '12'
           ? 'October 2024'
           : id === '10' || id === '15'
@@ -969,7 +969,7 @@ export const view = (
                               id === '09'
                                 ? 'All Inboxes'
                                 : id === '11'
-                                  ? 'components › ui'
+                                  ? 'src › ui'
                                   : 'Build Your Application',
                             ],
                             tone: 'secondary',

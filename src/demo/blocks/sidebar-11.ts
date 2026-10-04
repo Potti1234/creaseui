@@ -44,32 +44,23 @@ type TreeItem = string | ReadonlyArray<TreeItem>
 export const data = {
   changes: [
     { file: 'README.md', state: 'M' },
-    { file: 'api/hello/route.ts', state: 'U' },
-    { file: 'app/layout.tsx', state: 'M' },
+    { file: 'src/ui/button.ts', state: 'U' },
+    { file: 'src/main.ts', state: 'M' },
   ] satisfies ReadonlyArray<Change>,
   tree: [
     [
-      'app',
-      [
-        'api',
-        ['hello', ['route.ts']],
-        'page.tsx',
-        'layout.tsx',
-        ['blog', ['page.tsx']],
-      ],
+      'src',
+      'main.ts',
+      'entry.ts',
+      ['ui', 'button.ts', 'card.ts'],
+      ['components', 'header.ts', 'footer.ts'],
+      ['lib', 'utils.ts'],
     ],
-    [
-      'components',
-      ['ui', 'button.tsx', 'card.tsx'],
-      'header.tsx',
-      'footer.tsx',
-    ],
-    ['lib', ['util.ts']],
-    ['public', 'favicon.ico', 'vercel.svg'],
-    '.eslintrc.json',
+    ['public', 'favicon.ico', 'logo-mark.svg'],
+    'eslint.config.mjs',
     '.gitignore',
-    'next.config.js',
-    'tailwind.config.js',
+    'vite.config.ts',
+    'tsconfig.json',
     'package.json',
     'README.md',
   ] satisfies ReadonlyArray<TreeItem>,
@@ -100,7 +91,7 @@ const folderEntries = (
     return [
       {
         path,
-        isOpen: name === 'components' || name === 'ui',
+        isOpen: name === 'src' || name === 'ui',
       },
       ...folderEntries(children, path),
     ]
@@ -189,7 +180,7 @@ const treeItem = (
   if (children.length === 0) {
     return sidebarMenuButton(
       {
-        isActive: name === 'button.tsx',
+        isActive: name === 'button.ts',
         class: 'data-[active]:bg-transparent',
         children: [Icon.icon('file', {}, h), name],
       },
@@ -371,7 +362,7 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
                               breadcrumbLink(
                                 {
                                   href: '#',
-                                  children: ['components'],
+                                  children: ['src'],
                                 },
                                 h,
                               ),
@@ -401,7 +392,7 @@ const pageContent = (h: HtmlBuilder<Message>): Html => {
                             children: [
                               breadcrumbPage(
                                 {
-                                  children: ['button.tsx'],
+                                  children: ['button.ts'],
                                 },
                                 h,
                               ),

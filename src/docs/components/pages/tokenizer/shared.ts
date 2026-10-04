@@ -87,7 +87,7 @@ export const USERS = [
 ] as const
 
 export const SKILLS = [
-  { id: '1', label: 'React' },
+  { id: '1', label: 'Foldkit' },
   { id: '2', label: 'TypeScript' },
   { id: '3', label: 'GraphQL' },
   { id: '4', label: 'Node.js' },
@@ -182,7 +182,7 @@ const ITEMS_SNIPPET = `const USERS = [
 ] as const
 
 const SKILLS = [
-  { id: '1', label: 'React' },
+  { id: '1', label: 'Foldkit' },
   { id: '2', label: 'TypeScript' },
   { id: '3', label: 'GraphQL' },
   { id: '4', label: 'Node.js' },

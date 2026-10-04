@@ -85,7 +85,7 @@ export const comboboxFixtures: ReadonlyArray<ComboboxFixture> = [
 ]
 
 export const comboboxFrameworks = [
-  { value: 'nextjs', label: 'Next.js' },
+  { value: 'foldkit', label: 'Foldkit' },
   { value: 'sveltekit', label: 'SvelteKit' },
   { value: 'nuxt', label: 'Nuxt.js' },
   { value: 'remix', label: 'Remix' },
@@ -236,7 +236,7 @@ const itemsCode = (kind: ComboboxFixture['kind']): string => {
 ]`
   }
   return `const frameworks = [
-  { value: 'nextjs', label: 'Next.js' },
+  { value: 'foldkit', label: 'Foldkit' },
   { value: 'sveltekit', label: 'SvelteKit' },
   { value: 'nuxt', label: 'Nuxt.js' },
   { value: 'remix', label: 'Remix' },
@@ -460,8 +460,8 @@ ${itemsCode(fixture.kind)}`,
   const combobox = Combobox.init({ id: 'docs-combobox', isAnimated: true })
   return {
     model: {
-      combobox: ${isClear ? "{ ...combobox, inputValue: 'Next.js' }" : 'combobox'},
-      maybeValue: ${isClear ? "Option.some('nextjs')" : 'Option.none()'},
+      combobox: ${isClear ? "{ ...combobox, inputValue: 'Foldkit' }" : 'combobox'},
+      maybeValue: ${isClear ? "Option.some('foldkit')" : 'Option.none()'},
     },
   }
 }`,
@@ -492,7 +492,7 @@ import { className } from '@/stylex/style'
 import * as Icon from '@/lib/icon'
 
 const frameworks = [
-  { value: 'nextjs', label: 'Next.js' },
+  { value: 'foldkit', label: 'Foldkit' },
   { value: 'sveltekit', label: 'SvelteKit' },
   { value: 'nuxt', label: 'Nuxt.js' },
   { value: 'remix', label: 'Remix' },
@@ -550,7 +550,7 @@ export type Message = typeof Message.Type`,
     init: `export const init = (): Update.Return<Model, Message> => ({
   model: {
     multi: Combobox.multiInit({ id: 'docs-multi-combobox', isAnimated: true }),
-    selectedValues: ['nextjs'],
+    selectedValues: ['foldkit'],
   },
 })`,
     update: `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {

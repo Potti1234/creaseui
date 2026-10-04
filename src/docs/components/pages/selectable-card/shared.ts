@@ -50,7 +50,7 @@ export const selectableCardFixtures: Readonly<
     description:
       'Multi-select tag picker using color variant selectable cards with color-matched selection borders.',
     kind: 'multi',
-    initialSelected: ['react', 'typescript'],
+    initialSelected: ['foldkit', 'typescript'],
   },
 ]
 
@@ -71,7 +71,7 @@ export const selectableCardElevatedPlans: ReadonlyArray<SelectablePlan> = [
 ]
 
 export const selectableCardTags: ReadonlyArray<SelectableTag> = [
-  { id: 'react', name: 'React', variant: 'blue' },
+  { id: 'foldkit', name: 'Foldkit', variant: 'blue' },
   { id: 'typescript', name: 'TypeScript', variant: 'cyan' },
   { id: 'node', name: 'Node.js', variant: 'green' },
   { id: 'python', name: 'Python', variant: 'yellow' },
@@ -186,7 +186,7 @@ export const ToggledTag = taggedStruct('ToggledTagSelectableCardMulti', { tag: S
 export const Message = S.Union([ToggledTag])
 export type Message = typeof Message.Type`,
     init: `export const init = (): Update.Return<Model, Message> => ({
-  model: { selected: ['react', 'typescript'] },
+  model: { selected: ['foldkit', 'typescript'] },
 })`,
     update: `export const update = (
   model: Model,

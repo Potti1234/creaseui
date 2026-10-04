@@ -227,7 +227,7 @@ const hBasicView = <Msg>(h: HtmlBuilder<Msg>): Html =>
       gap: 2,
       vAlign: 'center',
       children: [
-        badge('React', h),
+        badge('Foldkit', h),
         badge('TypeScript', h),
         badge('Node.js', h),
       ],

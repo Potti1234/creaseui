@@ -103,7 +103,7 @@ export const stackShowcaseGroups: ReadonlyArray<StackShowcaseGroup> = [
     label: 'HAlign: start',
     gap: 2,
     hAlign: 'start',
-    items: ['React', 'TypeScript', 'Node.js'],
+    items: ['Foldkit', 'TypeScript', 'Node.js'],
   },
   {
     label: 'HAlign: center',
@@ -250,7 +250,7 @@ const emitFillItem = (renderer: 'tailwind' | 'stylex'): string => {
 const emitHBasic = (badge: (label: string) => string): string =>
   `Stack.hStack(
       { gap: 2, vAlign: 'center', children: [
-        ${badge(`'React'`)},
+        ${badge(`'Foldkit'`)},
         ${badge(`'TypeScript'`)},
         ${badge(`'Node.js'`)},
       ] },
@@ -373,7 +373,7 @@ const stackUsersSource = `const USERS = [
 ]`
 
 const hGroupsSource = `const GROUPS = [
-  { label: 'HAlign: start', gap: 2, hAlign: 'start', items: ['React', 'TypeScript', 'Node.js'] },
+  { label: 'HAlign: start', gap: 2, hAlign: 'start', items: ['Foldkit', 'TypeScript', 'Node.js'] },
   { label: 'HAlign: center', gap: 4, hAlign: 'center', items: ['Design', 'Engineering', 'Product'] },
   { label: 'HAlign: between', gap: 2, hAlign: 'between', items: ['Start', 'Middle', 'End'] },
 ] as const`

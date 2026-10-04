@@ -57,7 +57,7 @@ export const typographyFixtures: ReadonlyArray<TypographyFixture> = [
     title: 'Inline code',
     kind: 'single',
     component: 'typographyInlineCode',
-    children: ['@radix-ui/react-alert-dialog'],
+    children: ['@/ui/alert-dialog'],
   },
   {
     title: 'Lead',

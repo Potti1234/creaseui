@@ -54,16 +54,16 @@ export const fileTree = [
       {
         name: 'ui',
         items: [
-          { name: 'button.tsx' },
-          { name: 'card.tsx' },
-          { name: 'dialog.tsx' },
-          { name: 'input.tsx' },
-          { name: 'select.tsx' },
-          { name: 'table.tsx' },
+          { name: 'button.ts' },
+          { name: 'card.ts' },
+          { name: 'dialog.ts' },
+          { name: 'input.ts' },
+          { name: 'select.ts' },
+          { name: 'table.ts' },
         ],
       },
-      { name: 'login-form.tsx' },
-      { name: 'register-form.tsx' },
+      { name: 'login-form.ts' },
+      { name: 'register-form.ts' },
     ],
   },
   {
@@ -199,13 +199,13 @@ import * as Icon from '@/lib/icon'`,
 export type Model = typeof Model.Type
 
 const folders = [
-  { name: 'components', items: ['ui', 'login-form.tsx', 'register-form.tsx'] },
+  { name: 'components', items: ['ui', 'login-form.ts', 'register-form.ts'] },
   { name: 'lib', items: ['utils.ts', 'cn.ts', 'api.ts'] },
   { name: 'hooks', items: ['use-media-query.ts', 'use-debounce.ts', 'use-local-storage.ts'] },
   { name: 'types', items: ['index.d.ts', 'api.d.ts'] },
   { name: 'public', items: ['favicon.ico', 'logo.svg'] },
 ]
-const uiFiles = ['button.tsx', 'card.tsx', 'dialog.tsx', 'input.tsx', 'select.tsx', 'table.tsx']`,
+const uiFiles = ['button.ts', 'card.ts', 'dialog.ts', 'input.ts', 'select.ts', 'table.ts']`,
     messages: `import { taggedStruct } from 'foldkit/schema'
 export const ToggledNode = taggedStruct('ToggledNode', { id: S.String, isOpen: S.Boolean });
 export const Message = S.Union([ToggledNode])

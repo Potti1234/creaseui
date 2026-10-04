@@ -1625,15 +1625,15 @@ test('hover-card sections match upstream variants in both renderers', async ({
 
   const hero = page.locator('[aria-label="Basic preview"]')
   const heroTrigger = hero.getByRole('button', {
-    name: 'Preview the Next.js profile',
+    name: 'Preview the CreaseUI profile',
   })
   await expect(heroTrigger).toBeVisible()
   await heroTrigger.focus()
   const heroPanel = hero.locator('[data-slot="hover-card-content"]')
   await expect(heroPanel).toBeVisible()
   await expect(heroTrigger).toHaveAttribute('aria-expanded', 'true')
-  await expect(heroPanel).toContainText('@nextjs')
-  await expect(heroPanel).toContainText('Joined December 2021')
+  await expect(heroPanel).toContainText('@creaseui')
+  await expect(heroPanel).toContainText('Available in Tailwind and StyleX')
   await page.keyboard.press('Escape')
   await expect(heroPanel).toBeHidden()
   await expect(heroTrigger).toBeFocused()
@@ -1696,7 +1696,7 @@ test('hover-card sections match upstream variants in both renderers', async ({
   await page.getByRole('button', { name: 'StyleX' }).click()
   const sxHero = page.locator('[aria-label="Basic preview"]')
   await sxHero
-    .getByRole('button', { name: 'Preview the Next.js profile' })
+    .getByRole('button', { name: 'Preview the CreaseUI profile' })
     .focus()
   const sxPanel = sxHero.locator('[data-slot="hover-card-content"]')
   await expect(sxPanel).toBeVisible()
@@ -1892,7 +1892,7 @@ test('combobox filters items and persists its typed selection output', async ({
 
   const clearExample = page.locator('#clear-button')
   const clearInput = clearExample.getByRole('combobox', { name: 'Framework' })
-  await expect(clearInput).toHaveValue('Next.js')
+  await expect(clearInput).toHaveValue('Foldkit')
   await clearExample.getByRole('button', { name: 'Clear selection' }).click()
   await expect(clearInput).toHaveValue('')
 
@@ -1913,7 +1913,7 @@ test('combobox filters items and persists its typed selection output', async ({
 
   const multipleExample = page.locator('#multiple')
   await expect(
-    multipleExample.getByText('Next.js', { exact: true }),
+    multipleExample.getByText('Foldkit', { exact: true }),
   ).toBeVisible()
   await multipleExample.getByRole('combobox', { name: 'Frameworks' }).click()
   await page.getByRole('option', { name: 'SvelteKit' }).click()
@@ -1928,7 +1928,7 @@ test('combobox filters items and persists its typed selection output', async ({
     multipleExample.getByText('SvelteKit', { exact: true }),
   ).toBeHidden()
   await expect(
-    multipleExample.getByText('Next.js', { exact: true }),
+    multipleExample.getByText('Foldkit', { exact: true }),
   ).toBeVisible()
 
   const autoHighlightExample = page.locator('#auto-highlight')
@@ -1938,7 +1938,7 @@ test('combobox filters items and persists its typed selection output', async ({
   await autoInput.click()
   const activeId = await autoInput.getAttribute('aria-activedescendant')
   expect(activeId).toBeTruthy()
-  await expect(page.getByRole('option', { name: 'Next.js' })).toBeVisible()
+  await expect(page.getByRole('option', { name: 'Foldkit' })).toBeVisible()
   await page.keyboard.press('Escape')
 
   const popupExample = page.locator('#popup')
@@ -2790,7 +2790,7 @@ test('typography mirrors the shadcn example set across renderers', async ({
     page
       .locator('#inline-code')
       .locator("code[data-slot='typography-inline-code']"),
-  ).toHaveText('@radix-ui/react-alert-dialog')
+  ).toHaveText('@/ui/alert-dialog')
   await expect(page.locator('#muted')).toContainText(
     'Enter your email address.',
   )

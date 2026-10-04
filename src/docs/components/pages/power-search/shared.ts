@@ -370,7 +370,7 @@ export const powerSearchFixtures: Readonly<
   {
     title: 'PowerSearch — Search with Table',
     description:
-      'Composition of PowerSearch with Table using usePowerSearchConfig to auto-generate config and filter data.',
+      'Composition of PowerSearch with Table using createPowerSearchConfig to auto-generate config and filter data.',
     configKey: 'books',
     placeholder: 'Filter books by title, author, year, genre...',
     maxWidth: 500,
