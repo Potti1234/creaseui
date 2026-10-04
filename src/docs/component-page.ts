@@ -206,7 +206,7 @@ export const codeBlock = <Msg>(
                 ),
                 h.Title(copy.isCopied ? 'Copied' : 'Copy code'),
                 h.Class(
-                  'absolute top-2.5 right-2.5 inline-flex size-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-background hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50',
+                  'absolute top-0 right-2.5 inline-flex size-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-background hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50',
                 ),
               ],
               [
