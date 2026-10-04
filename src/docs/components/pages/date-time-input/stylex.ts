@@ -59,7 +59,7 @@ export const dateTimeInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   const stack = (children: ReadonlyArray<Html>): Html =>
     h.div([h.Class(className(styles.stack))], [...children])
 
-  switch (fixture.astryxExample) {
+  switch (fixture.example) {
     case 'DateTimeInputWithValidation':
       return stack(
         VALIDATION_FIELDS.map((field, i) =>

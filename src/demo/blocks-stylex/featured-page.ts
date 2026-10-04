@@ -47,7 +47,7 @@ import {
   incidentConsoleDashboard,
   projectStatusDashboard,
   serviceMonitoringDashboard,
-} from './astryx-inspired-dashboards'
+} from './creaseui-dashboards'
 import {
   cardGrid,
   checkoutForm,
@@ -55,7 +55,7 @@ import {
   inboxTable,
   kanbanBoard,
   orderDetail,
-} from './astryx-inspired-blocks'
+} from './creaseui-blocks'
 import { chartAnalyticsDashboard } from './chart-analytics-dashboard'
 import { featuredVisitorsChart } from './dashboard-echarts'
 
@@ -624,7 +624,7 @@ const dashboard = (model: Model, h: HtmlBuilder<Message>): Html =>
                                         children: [
                                           text(
                                             {
-                                              children: ['shadcn'],
+                                              children: ['CreaseUI'],
                                               variant: 'label',
                                             },
                                             h,
@@ -1005,46 +1005,46 @@ const blocks: ReadonlyArray<Block> = [
   {
     description:
       'Executive scorecard, objectives, trends and a narrative insight rail.',
-    name: 'astryx-executive-summary',
+    name: 'creaseui-executive-summary',
     preview: (_model, h) =>
       executiveSummaryDashboard(message => GotEChartMessage({ message }), h),
   },
   {
     description: 'Growth funnel, conversion trend and weekly cohort retention.',
-    name: 'astryx-cohort-funnel',
+    name: 'creaseui-cohort-funnel',
     preview: (_model, h) =>
       cohortFunnelDashboard(message => GotEChartMessage({ message }), h),
   },
   {
     description:
       'Launch milestones, weighted task progress, workstreams and risks.',
-    name: 'astryx-project-status',
+    name: 'creaseui-project-status',
     preview: (_model, h) =>
       projectStatusDashboard(message => GotEChartMessage({ message }), h),
   },
   {
     description:
       'Live service health, traffic metrics and an operational triage rail.',
-    name: 'astryx-service-monitoring',
+    name: 'creaseui-service-monitoring',
     preview: (_model, h) =>
       serviceMonitoringDashboard(message => GotEChartMessage({ message }), h),
   },
   {
     description:
       'Dense incident rows with filtering and a dedicated inspector panel.',
-    name: 'astryx-incident-console',
+    name: 'creaseui-incident-console',
     preview: (_model, h) => incidentConsoleDashboard(h),
   },
   {
     description:
       'Four status lanes of task cards under a shared sprint toolbar.',
-    name: 'astryx-kanban-board',
+    name: 'creaseui-kanban-board',
     preview: (_model, h) => kanbanBoard(h),
   },
   {
     description:
       'A mail queue that indexes a reading pane with a live reply composer.',
-    name: 'astryx-inbox-table',
+    name: 'creaseui-inbox-table',
     preview: (model, h) =>
       inboxTable(
         {
@@ -1059,13 +1059,13 @@ const blocks: ReadonlyArray<Block> = [
   {
     description:
       'A single record with line items, totals and an activity rail.',
-    name: 'astryx-order-detail',
+    name: 'creaseui-order-detail',
     preview: (_model, h) => orderDetail(h),
   },
   {
     description:
       'A sectioned checkout form beside an order summary that recalculates.',
-    name: 'astryx-checkout-form',
+    name: 'creaseui-checkout-form',
     preview: (model, h) =>
       checkoutForm(
         {
@@ -1081,14 +1081,14 @@ const blocks: ReadonlyArray<Block> = [
   {
     description:
       'Sparkline tiles with period-over-period deltas and segment breakdowns.',
-    name: 'astryx-data-dashboard',
+    name: 'creaseui-data-dashboard',
     preview: (_model, h) =>
       dataDashboard(message => GotEChartMessage({ message }), h),
   },
   {
     description:
       'A browsable catalog grid with search, filter tabs and a real empty state.',
-    name: 'astryx-card-grid',
+    name: 'creaseui-card-grid',
     preview: (model, h) =>
       cardGrid(
         {

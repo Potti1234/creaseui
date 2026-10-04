@@ -23,10 +23,10 @@ const PreviewModel = S.Struct({
 type PreviewModel = typeof PreviewModel.Type
 
 export const PRESETS_FOR = (
-  astryxExample: string,
+  example: string,
   today: Calendar.CalendarDate,
 ): ReadonlyArray<DateRangeInput.DateRangePreset> =>
-  presetDaysFor(astryxExample).map(days => ({
+  presetDaysFor(example).map(days => ({
     label: `Last ${String(days)} days`,
     getRange: () => ({
       start: Calendar.subtractDays(today, days),
@@ -143,7 +143,7 @@ export const dateRangeInputTailwindPreviewProgram = definePreviewProgram<
       )
     const stack = (children: ReadonlyArray<Html>): Html =>
       h.div([h.Class('grid w-full max-w-100 gap-4')], [...children])
-    switch (fixture.astryxExample) {
+    switch (fixture.example) {
       case 'DateRangeInputWithPresets':
         return stack([
           supporting(
@@ -157,7 +157,7 @@ export const dateRangeInputTailwindPreviewProgram = definePreviewProgram<
           inputAt(0, {
             label: 'Report period',
             description: 'Use a preset or pick a custom range',
-            presets: PRESETS_FOR(fixture.astryxExample, today),
+            presets: PRESETS_FOR(fixture.example, today),
           }),
         ])
       case 'DateRangeInputWithValidation':
@@ -170,7 +170,7 @@ export const dateRangeInputTailwindPreviewProgram = definePreviewProgram<
         return stack([
           inputAt(0, {
             label: 'Date range',
-            presets: PRESETS_FOR(fixture.astryxExample, today),
+            presets: PRESETS_FOR(fixture.example, today),
           }),
         ])
     }

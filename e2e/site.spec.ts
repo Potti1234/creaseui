@@ -485,7 +485,7 @@ test('avatar sections mirror shadcn examples in both renderers', async ({
   await expect(sizes.nth(2)).toHaveAttribute('data-size', 'lg')
 
   const basic = page.locator('#basic')
-  const basicImage = basic.getByRole('img', { name: '@shadcn' })
+  const basicImage = basic.getByRole('img', { name: '@creaseui' })
   await expect(basicImage).toBeVisible()
   await expect(basicImage).not.toHaveAttribute('data-loading', '')
 
@@ -1100,7 +1100,9 @@ test('dialog matches upstream sections, restores focus, and scrolls long content
   const shareDialog = page.locator('#docs-dialog-2')
   await expect(shareDialog).toBeVisible()
   const linkInput = shareDialog.getByRole('textbox', { name: 'Link' })
-  await expect(linkInput).toHaveValue('https://ui.shadcn.com/docs/installation')
+  await expect(linkInput).toHaveValue(
+    'https://creaseui.com/docs/components/button',
+  )
   await expect(linkInput).toHaveAttribute('readonly', '')
   await shareDialog
     .locator('[data-slot="dialog-footer"]')
@@ -1178,7 +1180,7 @@ test('dialog matches upstream sections, restores focus, and scrolls long content
   await expect(sxShareDialog).toBeVisible()
   await expect(
     sxShareDialog.getByRole('textbox', { name: 'Link' }),
-  ).toHaveValue('https://ui.shadcn.com/docs/installation')
+  ).toHaveValue('https://creaseui.com/docs/components/button')
   await page.keyboard.press('Escape')
 })
 
@@ -4579,7 +4581,7 @@ test('item sections match upstream variants in both renderers', async ({
   await expect(image.locator('img')).toHaveCount(3)
 
   const group = page.locator('#group')
-  await expect(group.getByText('shadcn', { exact: true })).toBeVisible()
+  await expect(group.getByText('CreaseUI', { exact: true })).toBeVisible()
   await expect(
     group.getByText('maxleiter@vercel.com', { exact: true }),
   ).toBeVisible()
@@ -4636,7 +4638,7 @@ test('item sections match upstream variants in both renderers', async ({
   await sxDropdown.getByRole('button', { name: 'Select' }).click()
   await expect(page.getByRole('menu')).toBeVisible()
   await expect(
-    page.getByRole('menu').getByText('shadcn@vercel.com'),
+    page.getByRole('menu').getByText('creaseui@example.com'),
   ).toBeVisible()
   await page.keyboard.press('Escape')
 })
@@ -5461,7 +5463,7 @@ test('empty sections match upstream variants in both renderers', async ({
   await expect(
     avatar.getByRole('heading', { level: 2, name: 'User Offline' }),
   ).toBeVisible()
-  await expect(avatar.locator('img[alt="@shadcn"]').first()).toBeVisible()
+  await expect(avatar.locator('img[alt="@creaseui"]').first()).toBeVisible()
   await expect(
     avatar.getByRole('button', { name: 'Leave Message' }),
   ).toBeVisible()

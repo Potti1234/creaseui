@@ -43,7 +43,7 @@ type InputGroupPreviewModel = typeof InputGroupPreviewModel.Type
 const CopyUrl = Command.define('CopyDocsUrl', {
   messages: [InputGroupPreviewMessage.CompletedCopy],
   execute: Effect.promise(() =>
-    navigator.clipboard.writeText('https://x.com/shadcn'),
+    navigator.clipboard.writeText('https://creaseui.com'),
   ).pipe(Effect.as(InputGroupPreviewMessage.CompletedCopy())),
 })
 const WaitBeforeClearingCopy = Command.define(
@@ -614,7 +614,7 @@ const inputGroupView = (
                   model,
                   'buttonCopy',
                   'button-copy',
-                  { placeholder: 'https://x.com/shadcn' },
+                  { placeholder: 'https://creaseui.com' },
                   h,
                 ),
                 InputGroup.inputGroupAddon(

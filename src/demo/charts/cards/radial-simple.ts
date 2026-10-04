@@ -39,7 +39,7 @@ Chart.registerChart(HOST_ID, (theme): EChartsOption => {
       axisTick: { show: false },
       axisLabel: { show: false },
     },
-    tooltip: Chart.shadcnTooltip(theme, { trigger: 'item' }),
+    tooltip: Chart.tooltipOptions(theme, { trigger: 'item' }),
     series: [
       {
         name: 'Visitors',

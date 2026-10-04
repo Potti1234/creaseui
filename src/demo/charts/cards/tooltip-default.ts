@@ -58,7 +58,7 @@ const tooltip = (
   theme: Chart.ChartTheme,
   mode: TooltipMode,
 ): NonNullable<EChartsOption['tooltip']> => ({
-  ...Chart.shadcnTooltip(theme),
+  ...Chart.tooltipOptions(theme),
   formatter: params => {
     const rows = rowsFrom(params)
     const date = rows[0]?.name ?? ''

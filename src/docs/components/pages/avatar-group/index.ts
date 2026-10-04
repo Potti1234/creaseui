@@ -12,9 +12,9 @@ export const avatarGroupPage = authoredPage({
     description:
       'A facepile: overlapping avatars with a shared ring, an optional "+N" overflow chip, and per-avatar status dots.',
     architecture:
-      'The group sets `--avatar-group-overlap` from the shared size (25% overlap, astryx formula) and gives member avatars their ring. `avatarGroupOverflow` renders the trailing count (as a button when `onClick` is set); `avatarStatusDot` is a corner overlay you position over an avatar.',
+      'The group sets `--avatar-group-overlap` from the shared size (25% overlap) and gives member avatars their ring. `avatarGroupOverflow` renders the trailing count (as a button when `onClick` is set); `avatarStatusDot` is a corner overlay you position over an avatar.',
     apiHref:
-      'https://github.com/facebook/astryx/blob/main/packages/core/src/AvatarGroup/AvatarGroup.tsx',
+      'https://github.com/Potti1234/creaseui/blob/main/src/ui/avatar-group.ts',
     usage:
       "StyleX cannot style child avatars, so member `Avatar.avatar` calls take `ring: true` and `layoutStyle: { marginInlineStart: 'var(--avatar-group-overlap)' }` — the variable is set by the group.",
     accessibility:

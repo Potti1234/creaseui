@@ -14,7 +14,7 @@ export const headingPage = authoredPage({
     architecture:
       'Heading is a stateless render helper. The parent chooses the heading level and optional truncation per render; it returns Html directly.',
     apiHref:
-      'https://github.com/facebook/astryx/blob/main/packages/core/src/Heading/Heading.tsx',
+      'https://github.com/Potti1234/creaseui/blob/main/src/ui/heading.ts',
     styling:
       'Choose the level for document structure first, then adjust type size with the type input when the visual scale should differ. Multi-line truncation is opt-in per instance.',
     accessibility:

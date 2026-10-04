@@ -14,7 +14,7 @@ export const visuallyHiddenPage = authoredPage({
     architecture:
       'VisuallyHidden is a stateless render helper emitting the canonical clip block (1px absolute box, clip rect, nowrap). The `as` prop picks the element — span by default, div for block content or aria-live regions, heading tags for structural landmarks.',
     apiHref:
-      'https://github.com/facebook/astryx/tree/main/packages/core/src/VisuallyHidden',
+      'https://github.com/Potti1234/creaseui/blob/main/src/ui/visually-hidden.ts',
     styling:
       'The clip styles cannot be overridden — hiding is the entire contract. Pass a block element with `as` when wrapping block content.',
     accessibility:

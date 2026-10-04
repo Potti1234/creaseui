@@ -13,8 +13,7 @@ export const bannerPage = authoredPage({
       'A page-level notice for persistent messages — updates, confirmations, cautions, or problems — that can be dismissed and collapsed.',
     architecture:
       "Banner is a submodel: its Model tracks `isDismissed` and the collapsible panel's `isOpen`. The view renders a status-tinted header (icon, title, description, endContent, controls) plus an optional content region, and restores focus to the element that had it before the banner took it when dismissed.",
-    apiHref:
-      'https://github.com/facebook/astryx/blob/main/packages/core/src/Banner/Banner.tsx',
+    apiHref: 'https://github.com/Potti1234/creaseui/blob/main/src/ui/banner.ts',
     composition:
       'Parent Model\n├── Banner child Model(s)\n└── banner view\n    ├── status icon + title/description\n    ├── endContent actions, collapse toggle, dismiss button\n    └── optional collapsible children',
     styling:

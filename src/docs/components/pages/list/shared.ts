@@ -92,12 +92,12 @@ export const listFixtures: Readonly<[ListFixture, ...Array<ListFixture>]> = [
     listStyle: 'decimal',
     items: [
       {
-        label: 'Install the package',
-        description: 'npm install @astryxdesign/core',
+        label: 'Add the component',
+        description: 'npx creaseui add list',
       },
       {
         label: 'Import components',
-        description: "import { List } from '@astryxdesign/core'",
+        description: "import * as List from '@/ui/list'",
       },
       { label: 'Start building', description: 'Use components in your app' },
     ],

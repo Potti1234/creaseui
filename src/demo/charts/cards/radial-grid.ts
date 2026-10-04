@@ -43,7 +43,7 @@ Chart.registerChart(HOST_ID, (theme): EChartsOption => {
         lineStyle: { color: theme.border, width: 1 },
       },
     },
-    tooltip: Chart.shadcnTooltip(theme, { trigger: 'item' }),
+    tooltip: Chart.tooltipOptions(theme, { trigger: 'item' }),
     series: [
       {
         name: 'Visitors',

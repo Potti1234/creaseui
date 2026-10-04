@@ -14,7 +14,7 @@ export const thumbnailPage = authoredPage({
     architecture:
       'Thumbnail is a stateless render helper. `onClick` wraps the image in a real button, `onRemove` overlays a dismiss slot, and `showRemoveOn` chooses between always-visible and hover-revealed (`hover` is the default). `isLoading`/`isError` are model-owned props.',
     apiHref:
-      'https://github.com/facebook/astryx/blob/main/packages/core/src/Thumbnail/Thumbnail.tsx',
+      'https://github.com/Potti1234/creaseui/blob/main/src/ui/thumbnail.ts',
     accessibility:
       'The frame is a labelled group; the image is aria-hidden when `alt` is empty, and `label`/`alt` combine into the accessible name.',
     examples: thumbnailExamples('tailwind'),

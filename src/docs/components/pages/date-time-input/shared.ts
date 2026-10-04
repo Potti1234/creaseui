@@ -7,7 +7,7 @@ export type DateTimeInputFixture = Readonly<{
   heroOnly?: boolean
   kind: 'single' | 'validation'
   /** Astrryx block id, kept for tracing against the source templates. */
-  astryxExample: string
+  example: string
   /** Minutes between preset-time options; enables the time listbox. */
   timeOptionInterval?: number
   /** ISO date+time the field starts committed to. */
@@ -19,14 +19,14 @@ export const dateTimeInputFixtures: ReadonlyArray<DateTimeInputFixture> = [
     title: 'Date Time Input',
     heroOnly: true,
     kind: 'single',
-    astryxExample: 'DateTimeInputShowcase',
+    example: 'DateTimeInputShowcase',
     description:
       'A combined date and time picker. Desktop opens a calendar popover with a time input; touch devices open a Date/Time bottom sheet.',
   },
   {
     title: 'DateTimeInput — Validation',
     kind: 'validation',
-    astryxExample: 'DateTimeInputWithValidation',
+    example: 'DateTimeInputWithValidation',
     description:
       'DateTimeInput in all three status states: error, warning, and success. Use to surface scheduling conflicts, caution the user about edge cases, or confirm a valid datetime.',
   },
@@ -36,7 +36,7 @@ export const dateTimeInputFixtures: ReadonlyArray<DateTimeInputFixture> = [
        the listbox path has no docs coverage. */
     title: 'DateTimeInput — Time options',
     kind: 'single',
-    astryxExample: 'DateTimeInputWithTimeOptions',
+    example: 'DateTimeInputWithTimeOptions',
     timeOptionInterval: 30,
     /* astryx's story starts committed ('2026-03-15T09:00') — a date is
        required for a time pick to land, mirroring commitTimeOption's

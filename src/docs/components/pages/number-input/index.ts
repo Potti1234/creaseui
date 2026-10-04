@@ -14,7 +14,7 @@ export const numberInputPage = authoredPage({
     architecture:
       'Number Input is a submodel: its Model owns focus and the draft text while the parent Model owns the committed value. Edits report ChangedValue OutMessages upward.',
     apiHref:
-      'https://github.com/facebook/astryx/blob/main/packages/core/src/NumberInput/NumberInput.tsx',
+      'https://github.com/Potti1234/creaseui/blob/main/src/ui/number-input.ts',
     styling:
       'Two sizes plus stepper affordances; status renders an attached message strip under the control.',
     accessibility:

@@ -47,7 +47,7 @@ export const logStreamFixtures: Readonly<
         timestamp: '12:04:16.089',
         level: 'info',
         source: 'build',
-        message: 'Cloning github.com/acme/astryx-console (branch: main)',
+        message: 'Cloning github.com/acme/creaseui-console (branch: main)',
       },
       {
         id: 'b-03',
@@ -256,7 +256,7 @@ const logStreamSource = (
     entry => entry.detailText !== undefined,
   )
     ? `
-/* Detail bodies are authored as text and wrapped in a pre here (astryx's
+/* Detail bodies are authored as text and wrapped in a pre here (creaseui's
    ReactNode detail slot ports to Html). */`
     : ''
 

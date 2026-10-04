@@ -5,7 +5,7 @@ import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import { aspectRatioFixtures } from '@/docs/components/pages/aspect-ratio/shared'
 import * as AspectRatio from '@/ui/aspect-ratio'
 
-const IMAGE_URL = 'https://avatar.vercel.sh/shadcn1'
+const IMAGE_URL = 'https://avatar.vercel.sh/creaseui'
 
 const InteractedWithAspectRatioPreview = defineMessageUnion({
   InteractedWithAspectRatioPreview: {},

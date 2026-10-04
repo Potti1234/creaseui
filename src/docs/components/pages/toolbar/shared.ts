@@ -36,7 +36,7 @@ export const toolbarFixtures: Readonly<
   {
     title: 'Toolbar — Sizes',
     description:
-      'Small, medium, and large toolbars side by side. Set the size on the toolbar once and size child controls to match (astryx cascades it automatically).',
+      'Small, medium, and large CreaseUI toolbars side by side. Set the size on the toolbar once and size child controls to match.',
     kind: 'sizes',
     width: 500,
   },
@@ -57,7 +57,7 @@ export const toolbarFixtures: Readonly<
   {
     title: 'Toolbar — Table Filter',
     description:
-      'Filter bar above a table: a search box leads the row, each field beside it is a filter clause, followed by a live result count and a clear-all action. Adapted: astryx folds clauses into an OverflowList and a column picker popover — this port renders the clauses inline.',
+      'A CreaseUI filter bar above a table: a search box leads the row, inline fields define filter clauses, and a live result count and clear-all action follow.',
     kind: 'filter',
     width: 760,
   },

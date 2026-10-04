@@ -14,7 +14,7 @@ export const multiSelectorPage = authoredPage({
     architecture:
       'Multi Selector is a foldkit submodel. The child Model owns the committed value array plus an embedded foldkit Multi listbox for the trigger button and anchored option panel; ChangedValues OutMessages carry each toggle. reflect/reflectOptions sync external selections and the select-all option set.',
     apiHref:
-      'https://github.com/facebook/astryx/blob/main/packages/core/src/MultiSelector/MultiSelector.tsx',
+      'https://github.com/Potti1234/creaseui/blob/main/src/ui/multi-selector.ts',
     styling:
       'The trigger follows the input-group chrome (border, 8px radius, inset ring on hover/focus-visible); the ghost variant drops the border for toolbars and presses to scale(0.98). Options render a 4px-radius checkbox box that fills primary when selected, matching the checkbox primitive.',
     accessibility:

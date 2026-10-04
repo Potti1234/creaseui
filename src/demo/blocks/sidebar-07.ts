@@ -68,9 +68,9 @@ type Project = Readonly<{
 // equivalent lucide-static names for foldkit's icon renderer.
 export const data = {
   user: {
-    name: 'shadcn',
+    name: 'CreaseUI',
     email: 'm@example.com',
-    avatar: '/avatars/shadcn.jpg',
+    avatar: '/logo-mark.svg',
   },
   teams: [
     {
@@ -567,7 +567,7 @@ const userSummary = (h: HtmlBuilder<Message>): Html => {
             avatarFallback(
               {
                 class: 'rounded-lg',
-                children: ['CN'],
+                children: ['CU'],
               },
               h,
             ),
@@ -616,7 +616,7 @@ const navUser = (model: DropdownMenu.Model, h: HtmlBuilder<Message>): Html => {
                       M.when('upgrade', () => ({
                         label: 'Upgrade to Pro',
                         icon: Icon.icon('sparkles', {}, h),
-                        group: 'shadcn · m@example.com',
+                        group: 'CreaseUI · m@example.com',
                       })),
                       M.when('account', () => ({
                         label: 'Account',
@@ -802,7 +802,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
 }
 
 // PORT NOTE: Avatar files are not bundled, so the source image is represented
-// by its CN fallback. The dropdown wrapper cannot render the source's rich
+// by its CU fallback. The dropdown wrapper cannot render the source's rich
 // non-selectable user label, so the same identity is shown in the trigger and
 // summarized as the first menu group heading.
 // PORT NOTE: Per-project dropdowns are intentionally represented by static

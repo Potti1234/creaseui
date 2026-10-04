@@ -50,11 +50,11 @@ export type AvatarFixture = Readonly<{
   clusters: ReadonlyArray<AvatarClusterSpec>
 }>
 
-const SHADCN: AvatarItemSpec = {
-  key: 'shadcn',
-  src: 'https://github.com/shadcn.png',
-  alt: '@shadcn',
-  fallback: 'CN',
+const CREASEUI: AvatarItemSpec = {
+  key: 'creaseui',
+  src: '/logo-mark.svg',
+  alt: '@creaseui',
+  fallback: 'CU',
 }
 const MAXLEITER: AvatarItemSpec = {
   key: 'maxleiter',
@@ -76,13 +76,13 @@ const PRANATHIP: AvatarItemSpec = {
 }
 
 const GROUP_TRIO: ReadonlyArray<AvatarItemSpec> = [
-  SHADCN,
+  CREASEUI,
   MAXLEITER,
   EVILRABBIT,
 ]
 
 const demoClusters = (count: string): ReadonlyArray<AvatarClusterSpec> => [
-  { items: [{ ...SHADCN, grayscale: 'image' }] },
+  { items: [{ ...CREASEUI, grayscale: 'image' }] },
   { items: [{ ...EVILRABBIT, badge: 'green' }] },
   { grouped: true, grayscale: true, count, items: GROUP_TRIO },
 ]
@@ -103,14 +103,14 @@ export const avatarFixtures: Readonly<
     title: 'Basic',
     description: 'A single avatar with an image and initials fallback.',
     frame: 'plain',
-    clusters: [{ items: [{ ...SHADCN, grayscale: 'image' }] }],
+    clusters: [{ items: [{ ...CREASEUI, grayscale: 'image' }] }],
   },
   {
     kind: 'badge',
     title: 'Badge',
     description: 'AvatarBadge pins a status dot to the corner of the avatar.',
     frame: 'plain',
-    clusters: [{ items: [{ ...SHADCN, badge: 'green' }] }],
+    clusters: [{ items: [{ ...CREASEUI, badge: 'green' }] }],
   },
   {
     kind: 'badgeIcon',
@@ -153,7 +153,11 @@ export const avatarFixtures: Readonly<
     frame: 'sizesRow',
     clusters: [
       {
-        items: [{ ...SHADCN, size: 'sm' }, SHADCN, { ...SHADCN, size: 'lg' }],
+        items: [
+          { ...CREASEUI, size: 'sm' },
+          CREASEUI,
+          { ...CREASEUI, size: 'lg' },
+        ],
       },
     ],
   },
@@ -168,7 +172,7 @@ export const avatarFixtures: Readonly<
       { label: 'Settings' },
       { label: 'Log out', destructive: true },
     ],
-    clusters: [{ items: [SHADCN] }],
+    clusters: [{ items: [CREASEUI] }],
   },
   {
     kind: 'rtl',

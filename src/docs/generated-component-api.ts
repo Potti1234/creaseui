@@ -161,7 +161,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "AppShellProps",
       "kind": "type",
-      "signature": "AppShellProps = Readonly<{ /** * Navigation background style controlling how nav areas contrast with * content. * - `wash`: nav uses wash background, no dividers * - `surface`: nav uses surface background, no dividers * - `section`: dividers between nav and c…"
+      "signature": "AppShellProps = Readonly<{ variant?: AppShellVariant; banner?: Html; topNav?: Html; sideNav?: Html; contentPadding?: AppShellSpacing; height?: AppShellHeight; skipLinkLabel?: string; mainId?: string; children?: ReadonlyArray<Html | string>; class?: string; }>"
     },
     {
       "name": "appShell",
@@ -200,7 +200,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "attachmentMedia",
       "kind": "function",
-      "signature": "attachmentMedia<Msg>(props: ChildrenProps & Readonly<{ variant?: 'icon' | 'image' }>, h: HtmlBuilder<Msg>): Html"
+      "signature": "attachmentMedia<Msg>(props: ChildrenProps & Readonly<{ variant?: 'icon' | 'image'; }>, h: HtmlBuilder<Msg>): Html"
     },
     {
       "name": "attachmentContent",
@@ -235,7 +235,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "attachmentTrigger",
       "kind": "function",
-      "signature": "attachmentTrigger<Msg>(props: Readonly<{ onClick: Msg; label: string; class?: string }>, h: HtmlBuilder<Msg>): Html"
+      "signature": "attachmentTrigger<Msg>(props: Readonly<{ onClick: Msg; label: string; class?: string; }>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "avatar-group": [
@@ -252,7 +252,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "AvatarGroupProps",
       "kind": "type",
-      "signature": "AvatarGroupProps = Readonly<{ /** Accessible name for the group; defaults to \"Avatar group\". */ ariaLabel?: string; /** Shared avatar size used to compute the 25% overlap. Defaults to 'md'. */ avatarSize?: AvatarGroupSize; children: ReadonlyArray<Html>; class…"
+      "signature": "AvatarGroupProps = Readonly<{ ariaLabel?: string; avatarSize?: AvatarGroupSize; children: ReadonlyArray<Html>; class?: string; }>"
     },
     {
       "name": "avatarGroup",
@@ -262,7 +262,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "AvatarGroupOverflowProps",
       "kind": "type",
-      "signature": "AvatarGroupOverflowProps<Msg> = Readonly<{ /** Number of hidden avatars; rendered as \"+N\" when no children are given. */ count?: number; /** Shared avatar size (px or named); the overflow chip is size + 4px to span the ring. */ avatarSize?: AvatarGroupSize; /…"
+      "signature": "AvatarGroupOverflowProps<Msg> = Readonly<{ count?: number; avatarSize?: AvatarGroupSize; shape?: AvatarShape; children?: ReadonlyArray<Html>; onClick?: Msg; ariaLabel?: string; class?: string; }>"
     },
     {
       "name": "avatarGroupOverflow",
@@ -282,7 +282,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "AvatarStatusDotProps",
       "kind": "type",
-      "signature": "AvatarStatusDotProps = Readonly<{ /** Semantic tone: success (online), neutral (offline), error (busy). */ variant: AvatarStatusDotVariant; /** Driving avatar's size — picks the dot diameter tier (10/20/32px). */ avatarSize?: AvatarStatusDotSize; /** Accessib…"
+      "signature": "AvatarStatusDotProps = Readonly<{ variant: AvatarStatusDotVariant; avatarSize?: AvatarStatusDotSize; label?: string; icon?: <M>(h: HtmlBuilder<M>) => Html; class?: string; }>"
     },
     {
       "name": "avatarStatusDot",
@@ -339,7 +339,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "avatarImage",
       "kind": "function",
-      "signature": "avatarImage<Msg>(props: AvatarImageProps & Readonly<{ toParentMessage?: (message: Message) => Msg }>, h: HtmlBuilder<Msg>): Html"
+      "signature": "avatarImage<Msg>(props: AvatarImageProps & Readonly<{ toParentMessage?: (message: Message) => Msg; }>, h: HtmlBuilder<Msg>): Html"
     },
     {
       "name": "AvatarFallbackProps",
@@ -396,7 +396,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "BadgeProps",
       "kind": "type",
-      "signature": "BadgeProps = Readonly<{ children: ReadonlyArray<Html | string>; variant?: BadgeVariants['variant']; class?: string; /** Renders the badge as an anchor pointing at this URL. */ href?: string; }>"
+      "signature": "BadgeProps = Readonly<{ children: ReadonlyArray<Html | string>; variant?: BadgeVariants['variant']; class?: string; href?: string; }>"
     },
     {
       "name": "badge",
@@ -448,7 +448,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "BannerProps",
       "kind": "type",
-      "signature": "BannerProps<Msg> = Readonly<{ model: BannerBehavior.Model; toParentMessage: (message: BannerBehavior.Message) => Msg; /** Status type controlling the icon, tint, and ARIA role. */ status: BannerBehavior.BannerStatus; /** Stable id — anchors the disclosure's a…"
+      "signature": "BannerProps<Msg> = Readonly<{ model: BannerBehavior.Model; toParentMessage: (message: BannerBehavior.Message) => Msg; status: BannerBehavior.BannerStatus; id: string; title: Html | string; description?: Html | string; icon?: Html; isDismissable?: boolean; dis…"
     },
     {
       "name": "banner",
@@ -612,7 +612,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "SheetDragDispatch",
       "kind": "type",
-      "signature": "SheetDragDispatch<Msg> = Readonly<{ started: (frame: { y: number; timeStamp: number; armOnly: boolean }) => Msg; dragged: (frame: { y: number; timeStamp: number; detents: number[] }) => Msg; ended: (frame: { y: number; timeStamp: number; detents: number[] }) …"
+      "signature": "SheetDragDispatch<Msg> = Readonly<{ started: (frame: { y: number; timeStamp: number; armOnly: boolean; }) => Msg; dragged: (frame: { y: number; timeStamp: number; detents: number[]; }) => Msg; ended: (frame: { y: number; timeStamp: number; detents: number[]; …"
     },
     {
       "name": "BottomSheetProps",
@@ -731,12 +731,12 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "bubble",
       "kind": "function",
-      "signature": "bubble<Msg>(props: ChildrenProps & Readonly<{ variant?: BubbleVariant; align?: 'start' | 'end' }>, h: HtmlBuilder<Msg>): Html"
+      "signature": "bubble<Msg>(props: ChildrenProps & Readonly<{ variant?: BubbleVariant; align?: 'start' | 'end'; }>, h: HtmlBuilder<Msg>): Html"
     },
     {
       "name": "bubbleContent",
       "kind": "function",
-      "signature": "bubbleContent<Msg>(props: ChildrenProps & Readonly<{ onClick?: Msg }>, h: HtmlBuilder<Msg>): Html"
+      "signature": "bubbleContent<Msg>(props: ChildrenProps & Readonly<{ onClick?: Msg; }>, h: HtmlBuilder<Msg>): Html"
     },
     {
       "name": "bubbleReactions",
@@ -939,7 +939,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "CardTitleProps",
       "kind": "type",
-      "signature": "CardTitleProps = Slot & Readonly<{ element?: 'h2' | 'h3' | 'h4' }>"
+      "signature": "CardTitleProps = Slot & Readonly<{ element?: 'h2' | 'h3' | 'h4'; }>"
     },
     {
       "name": "cardTitle",
@@ -976,7 +976,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "CarouselProps",
       "kind": "type",
-      "signature": "CarouselProps<Msg> = Readonly<{ model: CarouselBehavior.Model; toParentMessage: (message: CarouselBehavior.Message) => Msg; items: ReadonlyArray<Html | string>; ariaLabel?: string; orientation?: 'horizontal' | 'vertical'; loop?: boolean; /** Additional Embla …"
+      "signature": "CarouselProps<Msg> = Readonly<{ model: CarouselBehavior.Model; toParentMessage: (message: CarouselBehavior.Message) => Msg; items: ReadonlyArray<Html | string>; ariaLabel?: string; orientation?: 'horizontal' | 'vertical'; loop?: boolean; options?: CarouselBeh…"
     },
     {
       "name": "carousel",
@@ -1003,7 +1003,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "CenterProps",
       "kind": "type",
-      "signature": "CenterProps = Readonly<{ /** * Center mode. * - `both`: center on the flex main and cross axes (default) * - `horizontal`: center on the flex main/inline axis * - `vertical`: center on the flex cross/block axis */ axis?: CenterAxis; /** Renders inline-flex (u…"
+      "signature": "CenterProps = Readonly<{ axis?: CenterAxis; isInline?: boolean; padding?: CenterSpacing; paddingInline?: CenterSpacing; paddingInlineStart?: CenterSpacing; paddingInlineEnd?: CenterSpacing; paddingBlock?: CenterSpacing; paddingBlockStart?: CenterSpacing; padd…"
     },
     {
       "name": "center",
@@ -1015,7 +1015,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "EChartProps",
       "kind": "type",
-      "signature": "EChartProps<Msg> = Omit<ECharts.ChartProps<Msg>, 'accessibleAlternative'> & Readonly<{ accessibleAlternative: Html }>"
+      "signature": "EChartProps<Msg> = Omit<ECharts.ChartProps<Msg>, 'accessibleAlternative'> & Readonly<{ accessibleAlternative: Html; }>"
     },
     {
       "name": "ChartMessage",
@@ -1068,14 +1068,14 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "registerChart: value"
     },
     {
-      "name": "shadcnLegend",
+      "name": "legendOptions",
       "kind": "value",
-      "signature": "shadcnLegend: value"
+      "signature": "legendOptions: value"
     },
     {
-      "name": "shadcnTooltip",
+      "name": "tooltipOptions",
       "kind": "value",
-      "signature": "shadcnTooltip: value"
+      "signature": "tooltipOptions: value"
     },
     {
       "name": "valueAxis",
@@ -1120,7 +1120,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "ChartTooltipItem",
       "kind": "type",
-      "signature": "ChartTooltipItem = Readonly<{ key: string; value: Html | string }>"
+      "signature": "ChartTooltipItem = Readonly<{ key: string; value: Html | string; }>"
     },
     {
       "name": "chartTooltipContent",
@@ -1222,7 +1222,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "ChatReasoningProps",
       "kind": "type",
-      "signature": "ChatReasoningProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Reasoning content rendered inside the expanded panel. */ children: ReadonlyArray<Html | string>; /** Header label. @default 'Thinking' */ label?: string; /** Du…"
+      "signature": "ChatReasoningProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; children: ReadonlyArray<Html | string>; label?: string; duration?: string; isStreaming?: boolean; preview?: string; class?: string; }>"
     },
     {
       "name": "chatReasoning",
@@ -1264,12 +1264,12 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "checkboxListItem",
       "kind": "function",
-      "signature": "checkboxListItem<Msg>(item: CheckboxListItem<Msg>, h: HtmlBuilder<Msg>, options?: Readonly<{ id?: string density?: CheckboxListDensity isDisabled?: boolean isReadOnly?: boolean }>): Html"
+      "signature": "checkboxListItem<Msg>(item: CheckboxListItem<Msg>, h: HtmlBuilder<Msg>, options?: Readonly<{ id?: string; density?: CheckboxListDensity; isDisabled?: boolean; isReadOnly?: boolean; }>): Html"
     },
     {
       "name": "CheckboxListUiProps",
       "kind": "type",
-      "signature": "CheckboxListUiProps<Msg> = CheckboxListProps<Msg> & Readonly<{ class?: string }>"
+      "signature": "CheckboxListUiProps<Msg> = CheckboxListProps<Msg> & Readonly<{ class?: string; }>"
     },
     {
       "name": "checkboxList",
@@ -1281,7 +1281,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "CheckboxProps",
       "kind": "type",
-      "signature": "CheckboxProps<Msg> = CheckboxBehaviorProps<Msg> & Readonly<{ class?: string }>"
+      "signature": "CheckboxProps<Msg> = CheckboxBehaviorProps<Msg> & Readonly<{ class?: string; }>"
     },
     {
       "name": "checkbox",
@@ -1303,7 +1303,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "CircularProgressProps",
       "kind": "type",
-      "signature": "CircularProgressProps = Readonly<{ /** Current value. Ignored when isIndeterminate is true. */ value?: number; /** Maximum value. */ max?: number; /** Accessible label for the progress indicator. Required for a11y. */ label: string; /** When true (default), t…"
+      "signature": "CircularProgressProps = Readonly<{ value?: number; max?: number; label: string; isLabelHidden?: boolean; hasValueLabel?: boolean; formatValueLabel?: (value: number, max: number) => string; children?: ReadonlyArray<Html>; size?: CircularProgressSize; variant?:…"
     },
     {
       "name": "circularProgress",
@@ -1335,7 +1335,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "ClickableCardProps",
       "kind": "type",
-      "signature": "ClickableCardProps<Msg> = Readonly<{ /** Accessibility label for the card. Applied to the hidden control that owns keyboard focus so the card surface itself stays a plain <div>. */ label: string; /** Message emitted when the card surface is clicked (not when …"
+      "signature": "ClickableCardProps<Msg> = Readonly<{ label: string; onClick?: Msg; href?: string; target?: string; isDisabled?: boolean; children?: ReadonlyArray<Html | string>; padding?: CardPadding; variant?: CardVariant; elevation?: CardElevation; width?: string; height?:…"
     },
     {
       "name": "clickableCard",
@@ -1402,12 +1402,12 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "CustomTokenizer",
       "kind": "type",
-      "signature": "CustomTokenizer = ( code: string, language: string, ) => ReadonlyArray<{ type: string; start: number; end: number }>"
+      "signature": "CustomTokenizer = (code: string, language: string) => ReadonlyArray<{ type: string; start: number; end: number; }>"
     },
     {
       "name": "CodeBlockProps",
       "kind": "type",
-      "signature": "CodeBlockProps<Msg> = Readonly<{ /** The CodeBlock submodel state (see `init`/`update` in `@/lib/code-block`). */ model: Model; toParentMessage: (message: Message) => Msg; code: string; language?: string; title?: string; hasLanguageLabel?: boolean; hasLineNum…"
+      "signature": "CodeBlockProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; code: string; language?: string; title?: string; hasLanguageLabel?: boolean; hasLineNumbers?: boolean; highlightLines?: ReadonlyArray<number>; hasCopyButton?: boolean; …"
     },
     {
       "name": "codeBlock",
@@ -1528,22 +1528,22 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "create",
       "kind": "function",
-      "signature": "create<Value extends string = string>(config?: Readonly<{ autoHighlight?: boolean }>): ComboboxBundle<Value>"
+      "signature": "create<Value extends string = string>(config?: Readonly<{ autoHighlight?: boolean; }>): ComboboxBundle<Value>"
     },
     {
       "name": "ComboboxMultiProps",
       "kind": "type",
-      "signature": "ComboboxMultiProps<Item, Value extends string, Msg> = Omit< ComboboxProps<Item, Value, Msg>, 'maybeSelectedValue' | 'restingInputValue' > & Readonly<{ /** The selection the parent owns; selecting an item toggles membership. */ selectedValues: ReadonlyArray<Va…"
+      "signature": "ComboboxMultiProps<Item, Value extends string, Msg> = Omit<ComboboxProps<Item, Value, Msg>, 'maybeSelectedValue' | 'restingInputValue'> & Readonly<{ selectedValues: ReadonlyArray<Value>; }>"
     },
     {
       "name": "ComboboxMultiBundle",
       "kind": "type",
-      "signature": "ComboboxMultiBundle<Value extends string> = Readonly<{ update: ReturnType<typeof ComboboxPrimitive.Multi.create<Value>>['update']; comboboxMulti: <Item, Msg>( props: ComboboxMultiProps<Item, Value, Msg>, h: HtmlBuilder<Msg>, ) => Html; }>"
+      "signature": "ComboboxMultiBundle<Value extends string> = Readonly<{ update: ReturnType<typeof ComboboxPrimitive.Multi.create<Value>>['update']; comboboxMulti: <Item, Msg>(props: ComboboxMultiProps<Item, Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>"
     },
     {
       "name": "createMulti",
       "kind": "function",
-      "signature": "createMulti<Value extends string = string>(config?: Readonly<{ autoHighlight?: boolean }>): ComboboxMultiBundle<Value>"
+      "signature": "createMulti<Value extends string = string>(config?: Readonly<{ autoHighlight?: boolean; }>): ComboboxMultiBundle<Value>"
     },
     {
       "name": "update",
@@ -1791,12 +1791,12 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "dateFromISO",
       "kind": "re-export",
-      "signature": "export { dateFromISO } from \"@/lib/date-parse\""
+      "signature": "export { dateFromISO } from '@/lib/date-parse'"
     },
     {
       "name": "dateToISO",
       "kind": "re-export",
-      "signature": "export { dateToISO } from \"@/lib/date-parse\""
+      "signature": "export { dateToISO } from '@/lib/date-parse'"
     },
     {
       "name": "SharedDateFormat",
@@ -1806,12 +1806,12 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "DateInputStatus",
       "kind": "type",
-      "signature": "DateInputStatus = Readonly<{ type: \"error\" | \"warning\" | \"success\"; message?: string; }>"
+      "signature": "DateInputStatus = Readonly<{ type: 'error' | 'warning' | 'success'; message?: string; }>"
     },
     {
       "name": "DateInputProps",
       "kind": "type",
-      "signature": "DateInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label?: string; isLabelHidden?: boolean; description?: string; placeholder?: string; isOptional?: boolean; isRequired?: boolean; isDisabled?: boolean; /** Astryx shows …"
+      "signature": "DateInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label?: string; isLabelHidden?: boolean; description?: string; placeholder?: string; isOptional?: boolean; isRequired?: boolean; isDisabled?: boolean; disabledMessage?:…"
     },
     {
       "name": "dateInput",
@@ -1980,12 +1980,12 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "dateFromISO",
       "kind": "re-export",
-      "signature": "export { dateFromISO } from \"@/lib/date-parse\""
+      "signature": "export { dateFromISO } from '@/lib/date-parse'"
     },
     {
       "name": "dateToISO",
       "kind": "re-export",
-      "signature": "export { dateToISO } from \"@/lib/date-parse\""
+      "signature": "export { dateToISO } from '@/lib/date-parse'"
     },
     {
       "name": "DateRangePreset",
@@ -1995,12 +1995,12 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "DateRangeInputStatus",
       "kind": "type",
-      "signature": "DateRangeInputStatus = Readonly<{ type: \"error\" | \"warning\" | \"success\"; message?: string; }>"
+      "signature": "DateRangeInputStatus = Readonly<{ type: 'error' | 'warning' | 'success'; message?: string; }>"
     },
     {
       "name": "DateRangeInputProps",
       "kind": "type",
-      "signature": "DateRangeInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label: string; isLabelHidden?: boolean; description?: string; isOptional?: boolean; isRequired?: boolean; isDisabled?: boolean; /** Astryx shows it as a focus ring…"
+      "signature": "DateRangeInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label: string; isLabelHidden?: boolean; description?: string; isOptional?: boolean; isRequired?: boolean; isDisabled?: boolean; disabledMessage?: string; isReadOnl…"
     },
     {
       "name": "dateRangeInput",
@@ -2052,27 +2052,27 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "dateFromISO",
       "kind": "re-export",
-      "signature": "export { dateFromISO } from \"@/lib/date-parse\""
+      "signature": "export { dateFromISO } from '@/lib/date-parse'"
     },
     {
       "name": "dateToISO",
       "kind": "re-export",
-      "signature": "export { dateToISO } from \"@/lib/date-parse\""
+      "signature": "export { dateToISO } from '@/lib/date-parse'"
     },
     {
       "name": "formatDisplayTime12h",
       "kind": "re-export",
-      "signature": "export { formatDisplayTime12h } from \"@/lib/time-parse\""
+      "signature": "export { formatDisplayTime12h } from '@/lib/time-parse'"
     },
     {
       "name": "formatDisplayTime24h",
       "kind": "re-export",
-      "signature": "export { formatDisplayTime24h } from \"@/lib/time-parse\""
+      "signature": "export { formatDisplayTime24h } from '@/lib/time-parse'"
     },
     {
       "name": "formatISOTime",
       "kind": "re-export",
-      "signature": "export { formatISOTime } from \"@/lib/time-parse\""
+      "signature": "export { formatISOTime } from '@/lib/time-parse'"
     },
     {
       "name": "SharedDateFormat",
@@ -2082,12 +2082,12 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "DateTimeInputStatus",
       "kind": "type",
-      "signature": "DateTimeInputStatus = Readonly<{ type: \"error\" | \"warning\" | \"success\"; message?: string; }>"
+      "signature": "DateTimeInputStatus = Readonly<{ type: 'error' | 'warning' | 'success'; message?: string; }>"
     },
     {
       "name": "DateTimeInputProps",
       "kind": "type",
-      "signature": "DateTimeInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label: string; isLabelHidden?: boolean; description?: string; isOptional?: boolean; isRequired?: boolean; isDisabled?: boolean; /** Astryx shows it as a focus ring …"
+      "signature": "DateTimeInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label: string; isLabelHidden?: boolean; description?: string; isOptional?: boolean; isRequired?: boolean; isDisabled?: boolean; disabledMessage?: string; isReadOnly…"
     },
     {
       "name": "dateTimeInput",
@@ -2164,7 +2164,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "DialogTextPartProps",
       "kind": "type",
-      "signature": "DialogTextPartProps = DialogPartProps & Readonly<{ attributes: ReadonlyArray<ChildAttribute> }>"
+      "signature": "DialogTextPartProps = DialogPartProps & Readonly<{ attributes: ReadonlyArray<ChildAttribute>; }>"
     },
     {
       "name": "DialogCloseProps",
@@ -2199,7 +2199,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "DialogProps",
       "kind": "type",
-      "signature": "DialogProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description?: string; content?: (slots: DialogSlots) => ReadonlyArray<Html>; footer?: (slots: DialogSlots) => ReadonlyArray<Html>; /** Replaces the default …"
+      "signature": "DialogProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description?: string; content?: (slots: DialogSlots) => ReadonlyArray<Html>; footer?: (slots: DialogSlots) => ReadonlyArray<Html>; layout?: (parts: DialogPa…"
     },
     {
       "name": "dialog",
@@ -2350,7 +2350,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "init",
       "kind": "function",
-      "signature": "init(config: Readonly<{ id: string; isAnimated?: boolean; isModal?: boolean }>): Model"
+      "signature": "init(config: Readonly<{ id: string; isAnimated?: boolean; isModal?: boolean; }>): Model"
     },
     {
       "name": "create",
@@ -2400,7 +2400,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "DropdownMenuProps",
       "kind": "type",
-      "signature": "DropdownMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; /** Anchor an action directly to its sidebar menu item. */ placement?: 'inline' | 'sidebarAction'…"
+      "signature": "DropdownMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; placement?: 'inline' | 'sidebarAction'; triggerTabindex?: number; triggerRole?: string; triggerAr…"
     },
     {
       "name": "dropdownMenu",
@@ -2469,7 +2469,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "FieldStatusProps",
       "kind": "type",
-      "signature": "FieldStatusProps = Readonly<{ type: FieldStatusType; message: string; /** @default 'attached' */ variant?: FieldStatusVariant; /** Stable id — inputs reference it via aria-describedby. */ id?: string; class?: string; }>"
+      "signature": "FieldStatusProps = Readonly<{ type: FieldStatusType; message: string; variant?: FieldStatusVariant; id?: string; class?: string; }>"
     },
     {
       "name": "fieldStatus",
@@ -2501,7 +2501,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "FieldSetProps",
       "kind": "type",
-      "signature": "FieldSetProps = Slot & Readonly<{ isDisabled?: boolean; /** Base id; wires legend/description ids and aria-describedby via the foldkit Fieldset primitive. Pair with `fieldSetLegendId` and `fieldSetDescriptionId`. */ id?: string; /** Set when a `fieldDescripti…"
+      "signature": "FieldSetProps = Slot & Readonly<{ isDisabled?: boolean; id?: string; hasDescription?: boolean; }>"
     },
     {
       "name": "fieldSet",
@@ -2511,7 +2511,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "FieldLegendProps",
       "kind": "type",
-      "signature": "FieldLegendProps = Slot & Readonly<{ variant?: 'legend' | 'label'; id?: string }>"
+      "signature": "FieldLegendProps = Slot & Readonly<{ variant?: 'legend' | 'label'; id?: string; }>"
     },
     {
       "name": "fieldLegend",
@@ -2521,7 +2521,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "FieldGroupProps",
       "kind": "type",
-      "signature": "FieldGroupProps = Slot & Readonly<{ variant?: 'default' | 'outline' }>"
+      "signature": "FieldGroupProps = Slot & Readonly<{ variant?: 'default' | 'outline'; }>"
     },
     {
       "name": "fieldGroup",
@@ -2541,7 +2541,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "ControlFieldProps",
       "kind": "type",
-      "signature": "ControlFieldProps<Msg> = SharedControlFieldProps<Msg> & Readonly<{ class?: string }>"
+      "signature": "ControlFieldProps<Msg> = SharedControlFieldProps<Msg> & Readonly<{ class?: string; }>"
     },
     {
       "name": "controlField",
@@ -2566,7 +2566,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "FieldLabelProps",
       "kind": "type",
-      "signature": "FieldLabelProps = Slot & Readonly<{ for?: string }>"
+      "signature": "FieldLabelProps = Slot & Readonly<{ for?: string; }>"
     },
     {
       "name": "fieldLabel",
@@ -2581,7 +2581,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "fieldDescription",
       "kind": "function",
-      "signature": "fieldDescription<Msg>(props: Slot & Readonly<{ id?: string }>, h: HtmlBuilder<Msg>): Html"
+      "signature": "fieldDescription<Msg>(props: Slot & Readonly<{ id?: string; }>, h: HtmlBuilder<Msg>): Html"
     },
     {
       "name": "FieldSeparatorProps",
@@ -2653,12 +2653,12 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "FileInputProps",
       "kind": "type",
-      "signature": "FileInputProps<Msg> = Readonly<{ model: Model /** Lifts this submodel's messages into the parent message type. */ toParentMessage: (message: Message) => Msg id: string label: Html | string /** The accepted files owned by the parent. */ value?: ReadonlyArray<F…"
+      "signature": "FileInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; id: string; label: Html | string; value?: ReadonlyArray<File>; isLabelHidden?: boolean; description?: Html | string; isOptional?: boolean; isRequired?: boolean; isDisab…"
     },
     {
       "name": "FileInputViewInputs",
       "kind": "type",
-      "signature": "FileInputViewInputs = Omit< FileInputProps<never>, 'model' | 'toParentMessage' >"
+      "signature": "FileInputViewInputs = Omit<FileInputProps<never>, 'model' | 'toParentMessage'>"
     },
     {
       "name": "fileInput",
@@ -2685,7 +2685,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "FormProps",
       "kind": "type",
-      "signature": "FormProps<Msg> = FormBehaviorProps<Msg> & Readonly<{ class?: string }>"
+      "signature": "FormProps<Msg> = FormBehaviorProps<Msg> & Readonly<{ class?: string; }>"
     },
     {
       "name": "form",
@@ -2695,7 +2695,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "ErrorSummaryProps",
       "kind": "type",
-      "signature": "ErrorSummaryProps<Msg> = SharedErrorSummaryProps<Msg> & Readonly<{ class?: string }>"
+      "signature": "ErrorSummaryProps<Msg> = SharedErrorSummaryProps<Msg> & Readonly<{ class?: string; }>"
     },
     {
       "name": "errorSummary",
@@ -2705,7 +2705,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "FormItemProps",
       "kind": "type",
-      "signature": "FormItemProps = Slot & Readonly<{ id: string; isInvalid?: boolean; isDisabled?: boolean }>"
+      "signature": "FormItemProps = Slot & Readonly<{ id: string; isInvalid?: boolean; isDisabled?: boolean; }>"
     },
     {
       "name": "formItem",
@@ -2715,7 +2715,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "FormLabelProps",
       "kind": "type",
-      "signature": "FormLabelProps = Slot & Readonly<{ for: string }>"
+      "signature": "FormLabelProps = Slot & Readonly<{ for: string; }>"
     },
     {
       "name": "formLabel",
@@ -2725,7 +2725,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "FormDescriptionProps",
       "kind": "type",
-      "signature": "FormDescriptionProps = Slot & Readonly<{ id?: string }>"
+      "signature": "FormDescriptionProps = Slot & Readonly<{ id?: string; }>"
     },
     {
       "name": "formDescription",
@@ -2762,17 +2762,17 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "GridElement",
       "kind": "type",
-      "signature": "GridElement = | 'article' | 'aside' | 'div' | 'fieldset' | 'footer' | 'form' | 'header' | 'li' | 'main' | 'nav' | 'ol' | 'section' | 'ul'"
+      "signature": "GridElement = 'article' | 'aside' | 'div' | 'fieldset' | 'footer' | 'form' | 'header' | 'li' | 'main' | 'nav' | 'ol' | 'section' | 'ul'"
     },
     {
       "name": "GridColumns",
       "kind": "type",
-      "signature": "GridColumns = | number | Readonly<{ minWidth: number; max?: number; repeat?: 'fill' | 'fit'; }>"
+      "signature": "GridColumns = number | Readonly<{ minWidth: number; max?: number; repeat?: 'fill' | 'fit'; }>"
     },
     {
       "name": "GridProps",
       "kind": "type",
-      "signature": "GridProps = Readonly<{ /** Column configuration — a fixed count or a responsive min-width rule. */ columns?: GridColumns; /** Height of each implicit row track in pixels (grid-auto-rows). */ rowHeight?: number; /** Spacing between all grid items (astryx spaci…"
+      "signature": "GridProps = Readonly<{ columns?: GridColumns; rowHeight?: number; gap?: GridSpacing; rowGap?: GridSpacing; columnGap?: GridSpacing; align?: GridAlignment; justify?: GridAlignment; width?: GridSizeValue; height?: GridSizeValue; maxWidth?: GridSizeValue; minHei…"
     },
     {
       "name": "grid",
@@ -2782,7 +2782,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "GridSpanProps",
       "kind": "type",
-      "signature": "GridSpanProps = Readonly<{ /** Columns to span — a number (`grid-column: span N`) or 'full' (1 / -1). */ columns?: number | 'full'; /** Rows to span (`grid-row: span N`). */ rows?: number; /** The element to render. */ as?: GridElement; children?: ReadonlyArr…"
+      "signature": "GridSpanProps = Readonly<{ columns?: number | 'full'; rows?: number; as?: GridElement; children?: ReadonlyArray<Html | string>; class?: string; }>"
     },
     {
       "name": "gridSpan",
@@ -2948,7 +2948,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "CheckIndicatorProps",
       "kind": "type",
-      "signature": "CheckIndicatorProps = Readonly<{ state: 'unchecked' | 'checked'; size?: IndicatorSize; isDisabled?: boolean; /** Replacement content rendered in the mark's slot (e.g. a busy spinner). */ children?: ReadonlyArray<Html>; class?: string; }>"
+      "signature": "CheckIndicatorProps = Readonly<{ state: 'unchecked' | 'checked'; size?: IndicatorSize; isDisabled?: boolean; children?: ReadonlyArray<Html>; class?: string; }>"
     },
     {
       "name": "checkIndicator",
@@ -2958,7 +2958,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "CheckboxIndicatorProps",
       "kind": "type",
-      "signature": "CheckboxIndicatorProps = Readonly<{ state: IndicatorState; size?: IndicatorSize; isDisabled?: boolean; /** Replacement content rendered inside the box (e.g. a busy spinner). */ children?: ReadonlyArray<Html>; class?: string; }>"
+      "signature": "CheckboxIndicatorProps = Readonly<{ state: IndicatorState; size?: IndicatorSize; isDisabled?: boolean; children?: ReadonlyArray<Html>; class?: string; }>"
     },
     {
       "name": "checkboxIndicator",
@@ -2968,7 +2968,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "RadioIndicatorProps",
       "kind": "type",
-      "signature": "RadioIndicatorProps = Readonly<{ /** A radio has no partial state; anything other than unchecked reads as selected. */ state: IndicatorState; size?: IndicatorSize; isDisabled?: boolean; /** Replacement content rendered inside the circle (e.g. a busy spinner).…"
+      "signature": "RadioIndicatorProps = Readonly<{ state: IndicatorState; size?: IndicatorSize; isDisabled?: boolean; children?: ReadonlyArray<Html>; class?: string; }>"
     },
     {
       "name": "radioIndicator",
@@ -3035,7 +3035,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "InfoTipProps",
       "kind": "type",
-      "signature": "InfoTipProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Content shown in the tooltip. Keep it short and non-interactive. */ content: Html | string; /** Accessible name for the trigger button. Defaults to 'More information'…"
+      "signature": "InfoTipProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; content: Html | string; label?: string; size?: InfoTipSize; side?: InfoTipSide; align?: InfoTipAlign; class?: string; }>"
     },
     {
       "name": "infoTip",
@@ -3057,7 +3057,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "InputGroupAddonVariants",
       "kind": "type",
-      "signature": "InputGroupAddonVariants = VariantProps< typeof inputGroupAddonVariants >"
+      "signature": "InputGroupAddonVariants = VariantProps<typeof inputGroupAddonVariants>"
     },
     {
       "name": "InputGroupAddonProps",
@@ -3077,12 +3077,12 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "InputGroupButtonVariants",
       "kind": "type",
-      "signature": "InputGroupButtonVariants = VariantProps< typeof inputGroupButtonVariants >"
+      "signature": "InputGroupButtonVariants = VariantProps<typeof inputGroupButtonVariants>"
     },
     {
       "name": "InputGroupButtonProps",
       "kind": "type",
-      "signature": "InputGroupButtonProps<Msg> = Omit< ButtonProps<Msg>, 'size' | 'class' > & Readonly<{ size?: InputGroupButtonVariants['size']; class?: string; }>"
+      "signature": "InputGroupButtonProps<Msg> = Omit<ButtonProps<Msg>, 'size' | 'class'> & Readonly<{ size?: InputGroupButtonVariants['size']; class?: string; }>"
     },
     {
       "name": "inputGroupButton",
@@ -3119,7 +3119,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "InputOtpProps",
       "kind": "type",
-      "signature": "InputOtpProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; length?: number; name?: string; ariaLabel?: string; isDisabled?: boolean; isInvalid?: boolean; isRequired?: boolean; class?: string; groupClass?: string; /** Pattern a…"
+      "signature": "InputOtpProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; length?: number; name?: string; ariaLabel?: string; isDisabled?: boolean; isInvalid?: boolean; isRequired?: boolean; class?: string; groupClass?: string; pattern?: Reg…"
     },
     {
       "name": "inputOtp",
@@ -3413,7 +3413,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "ListInputProps",
       "kind": "type",
-      "signature": "ListInputProps<T, Msg> = Readonly<{ model: Model /** Lifts this submodel's messages into the parent message type. */ toParentMessage: (message: Message) => Msg id: string label: Html | string /** Controlled records owned by the parent. */ value: ReadonlyArray…"
+      "signature": "ListInputProps<T, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; id: string; label: Html | string; value: ReadonlyArray<T>; description?: Html | string; getItemKey: (item: T) => string | number; createItem: () => T; columns: Reado…"
     },
     {
       "name": "listInput",
@@ -3440,7 +3440,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "ListProps",
       "kind": "type",
-      "signature": "ListProps = Readonly<{ children: ReadonlyArray<Html>; density?: ListDensity; hasDividers?: boolean; edgeCompensation?: ListEdgeCompensation; /** Header content rendered above the list, associated via aria-labelledby. */ header?: Html | string; /** List marker…"
+      "signature": "ListProps = Readonly<{ children: ReadonlyArray<Html>; density?: ListDensity; hasDividers?: boolean; edgeCompensation?: ListEdgeCompensation; header?: Html | string; listStyle?: ListMarkerStyle; start?: number; class?: string; }>"
     },
     {
       "name": "list",
@@ -3450,7 +3450,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "ListItemProps",
       "kind": "type",
-      "signature": "ListItemProps<Msg> = Readonly<{ /** Primary label. A plain string truncates to one line. */ label: Html | string; /** Secondary description under the label; strings truncate to one line. */ description?: Html | string; /** Content rendered before the item (ic…"
+      "signature": "ListItemProps<Msg> = Readonly<{ label: Html | string; description?: Html | string; startContent?: Html; endContent?: Html; onClick?: Msg; href?: string; target?: '_blank' | '_self'; rel?: string; isDisabled?: boolean; isSelected?: boolean; density?: ListDensi…"
     },
     {
       "name": "listItem",
@@ -3472,7 +3472,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "LogEntry",
       "kind": "type",
-      "signature": "LogEntry = Readonly<{ /** Stable unique key, e.g. `\"req-1042\"`. */ id: string; /** Pre-formatted timestamp, e.g. `\"14:02:11.482\"`. Deterministic. */ timestamp: string; level: LogStreamLevel; message: string; /** Emitting service/component, e.g. `\"api-gateway\"…"
+      "signature": "LogEntry = Readonly<{ id: string; timestamp: string; level: LogStreamLevel; message: string; source?: string; detail?: Html; }>"
     },
     {
       "name": "Model",
@@ -3487,7 +3487,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "init",
       "kind": "function",
-      "signature": "init(config: { id: string; /** Initially pinned to the tail. @default false (astryx uncontrolled) */ isFollowing?: boolean; }): Model"
+      "signature": "init(config: { id: string; isFollowing?: boolean; }): Model"
     },
     {
       "name": "Message",
@@ -3517,7 +3517,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "LogStreamProps",
       "kind": "type",
-      "signature": "LogStreamProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Log rows, oldest first (live tails append at the end). */ entries: ReadonlyArray<LogEntry>; /** Visual treatment; 'terminal' is always dark. @default 'default' */ v…"
+      "signature": "LogStreamProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; entries: ReadonlyArray<LogEntry>; variant?: 'default' | 'terminal'; maxHeight?: number | string; hasTimestamps?: boolean; label?: string; renderEntry?: (entry: LogEntry…"
     },
     {
       "name": "logStream",
@@ -3619,7 +3619,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "MarkdownProps",
       "kind": "type",
-      "signature": "MarkdownProps<Msg> = Readonly<{ /** Markdown submodel state (owns the per-fence CodeBlock models). */ model: Model; toParentMessage: (message: Message) => Msg; /** Markdown source string. */ children: string; display?: MarkdownDisplay; density?: MarkdownDensi…"
+      "signature": "MarkdownProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; children: string; display?: MarkdownDisplay; density?: MarkdownDensity; headingLevelStart?: HeadingLevel; sources?: Record<string, MarkdownSource>; citationStyle?: Markd…"
     },
     {
       "name": "markdown",
@@ -3651,7 +3651,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "markerContent",
       "kind": "function",
-      "signature": "markerContent<Msg>(props: ChildrenProps & Readonly<{ shimmer?: boolean }>, h: HtmlBuilder<Msg>): Html"
+      "signature": "markerContent<Msg>(props: ChildrenProps & Readonly<{ shimmer?: boolean; }>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "menubar": [
@@ -3693,12 +3693,12 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "MenubarMenu",
       "kind": "type",
-      "signature": "MenubarMenu<Item extends string, Msg> = Readonly<{ id: string label: string model: DropdownMenu.Model toParentMessage: (message: DropdownMenu.Message) => Msg items: ReadonlyArray<Item> itemToConfig: (item: Item) => DropdownMenu.DropdownMenuItemConfig<Item> co…"
+      "signature": "MenubarMenu<Item extends string, Msg> = Readonly<{ id: string; label: string; model: DropdownMenu.Model; toParentMessage: (message: DropdownMenu.Message) => Msg; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => DropdownMenu.DropdownMenuItemConfig<Ite…"
     },
     {
       "name": "MenubarProps",
       "kind": "type",
-      "signature": "MenubarProps<Item extends string, Msg> = SharedProps<Item, Msg> & Readonly<{ model: Model toParentMessage: (message: Message) => Msg }>"
+      "signature": "MenubarProps<Item extends string, Msg> = SharedProps<Item, Msg> & Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; }>"
     },
     {
       "name": "menubar",
@@ -3785,7 +3785,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "messageScrollerItem",
       "kind": "function",
-      "signature": "messageScrollerItem<Msg>(props: ChildrenProps & Readonly<{ scrollAnchor?: boolean; messageId?: string }>, h: HtmlBuilder<Msg>): Html"
+      "signature": "messageScrollerItem<Msg>(props: ChildrenProps & Readonly<{ scrollAnchor?: boolean; messageId?: string; }>, h: HtmlBuilder<Msg>): Html"
     },
     {
       "name": "messageScrollerButton",
@@ -3802,7 +3802,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "message",
       "kind": "function",
-      "signature": "message<Msg>(props: ChildrenProps & Readonly<{ align?: 'start' | 'end'; announcement?: 'none' | 'status'; ariaLabel?: string }>, h: HtmlBuilder<Msg>): Html"
+      "signature": "message<Msg>(props: ChildrenProps & Readonly<{ align?: 'start' | 'end'; announcement?: 'none' | 'status'; ariaLabel?: string; }>, h: HtmlBuilder<Msg>): Html"
     },
     {
       "name": "messageAvatar",
@@ -3884,7 +3884,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "MetadataListProps",
       "kind": "type",
-      "signature": "MetadataListProps<Msg> = Readonly<{ model: Behavior.Model; toParentMessage: (message: Behavior.Message) => Msg; /** Stable id — anchors the show-more toggle's aria-controls. */ id: string; /** @default 'single' */ columns?: Behavior.MetadataListColumns; label…"
+      "signature": "MetadataListProps<Msg> = Readonly<{ model: Behavior.Model; toParentMessage: (message: Behavior.Message) => Msg; id: string; columns?: Behavior.MetadataListColumns; label?: Behavior.MetadataListLabelConfig; maxNumOfItems?: number; orientation?: Behavior.Metada…"
     },
     {
       "name": "metadataList",
@@ -3894,7 +3894,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "MetadataListItemProps",
       "kind": "type",
-      "signature": "MetadataListItemProps = Readonly<{ label: Html | string; icon?: Html; /** Render the label above the value inside a wrapper (top labels and horizontal layouts). The parent MetadataList resolves this. */ stacked?: boolean; children?: ReadonlyArray<Html | strin…"
+      "signature": "MetadataListItemProps = Readonly<{ label: Html | string; icon?: Html; stacked?: boolean; children?: ReadonlyArray<Html | string>; class?: string; }>"
     },
     {
       "name": "metadataListItem",
@@ -4028,7 +4028,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "MoreMenuProps",
       "kind": "type",
-      "signature": "MoreMenuProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<MoreMenuOption>; /** Trigger aria-label — the button is always icon-only. @default 'More options' */ label?: string; /** @default 'ghost' */ variant…"
+      "signature": "MoreMenuProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<MoreMenuOption>; label?: string; variant?: NonNullable<ButtonVariants['variant']>; size?: 'sm' | 'md' | 'lg'; icon?: Html; isDisabled?: boolean; sid…"
     },
     {
       "name": "moreMenu",
@@ -4080,22 +4080,22 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "MultiSelectorOption",
       "kind": "type",
-      "signature": "MultiSelectorOption = Readonly<{ value: string label: string }>"
+      "signature": "MultiSelectorOption = Readonly<{ value: string; label: string; }>"
     },
     {
       "name": "MultiSelectorSection",
       "kind": "type",
-      "signature": "MultiSelectorSection = Readonly<{ title: string options: ReadonlyArray<MultiSelectorOption> }>"
+      "signature": "MultiSelectorSection = Readonly<{ title: string; options: ReadonlyArray<MultiSelectorOption>; }>"
     },
     {
       "name": "MultiSelectorStatus",
       "kind": "type",
-      "signature": "MultiSelectorStatus = Readonly<{ type: 'error' | 'warning' | 'success' message?: string }>"
+      "signature": "MultiSelectorStatus = Readonly<{ type: 'error' | 'warning' | 'success'; message?: string; }>"
     },
     {
       "name": "MultiSelectorProps",
       "kind": "type",
-      "signature": "MultiSelectorProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg label: string isLabelHidden?: boolean description?: string isOptional?: boolean isRequired?: boolean isDisabled?: boolean /** Astryx shows it as a tooltip on the disa…"
+      "signature": "MultiSelectorProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label: string; isLabelHidden?: boolean; description?: string; isOptional?: boolean; isRequired?: boolean; isDisabled?: boolean; disabledMessage?: string; isReadOnly…"
     },
     {
       "name": "multiSelector",
@@ -4154,12 +4154,12 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "navigationMenu",
       "kind": "function",
-      "signature": "navigationMenu<Msg>(props: Slot & Readonly<{ ariaLabel?: string; direction?: 'ltr' | 'rtl'; layout?: NavigationMenuLayout }>, h: HtmlBuilder<Msg>): Html"
+      "signature": "navigationMenu<Msg>(props: Slot & Readonly<{ ariaLabel?: string; direction?: 'ltr' | 'rtl'; layout?: NavigationMenuLayout; }>, h: HtmlBuilder<Msg>): Html"
     },
     {
       "name": "navigationMenuList",
       "kind": "function",
-      "signature": "navigationMenuList<Msg>(props: Slot & Readonly<{ layout?: NavigationMenuLayout }>, h: HtmlBuilder<Msg>): Html"
+      "signature": "navigationMenuList<Msg>(props: Slot & Readonly<{ layout?: NavigationMenuLayout; }>, h: HtmlBuilder<Msg>): Html"
     },
     {
       "name": "navigationMenuItem",
@@ -4169,7 +4169,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "navigationMenuLink",
       "kind": "function",
-      "signature": "navigationMenuLink<Msg>(props: Slot & Readonly<{ href: string; isActive?: boolean }>, h: HtmlBuilder<Msg>): Html"
+      "signature": "navigationMenuLink<Msg>(props: Slot & Readonly<{ href: string; isActive?: boolean; }>, h: HtmlBuilder<Msg>): Html"
     },
     {
       "name": "NavigationMenuDisclosureProps",
@@ -4221,12 +4221,12 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "NumberInputProps",
       "kind": "type",
-      "signature": "NumberInputProps<Msg> = Readonly<{ model: Model /** Lifts this submodel's messages into the parent message type. */ toParentMessage: (message: Message) => Msg id: string label: Html | string /** The committed value owned by the parent (`null`/`undefined` = em…"
+      "signature": "NumberInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; id: string; label: Html | string; value?: number | null; isLabelHidden?: boolean; description?: Html | string; isOptional?: boolean; isRequired?: boolean; isDisabled?…"
     },
     {
       "name": "NumberInputViewInputs",
       "kind": "type",
-      "signature": "NumberInputViewInputs = Omit< NumberInputProps<never>, 'model' | 'toParentMessage' >"
+      "signature": "NumberInputViewInputs = Omit<NumberInputProps<never>, 'model' | 'toParentMessage'>"
     },
     {
       "name": "numberInput",
@@ -4298,7 +4298,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "OverflowListProps",
       "kind": "type",
-      "signature": "OverflowListProps<Msg> = Readonly<{ model: Behavior.Model; toParentMessage: (message: Behavior.Message) => Msg; /** @default 2 — spacing-step gap between items. */ gap?: Behavior.SpacingStep; /** @default 0 — floor: always show at least this many items. */ mi…"
+      "signature": "OverflowListProps<Msg> = Readonly<{ model: Behavior.Model; toParentMessage: (message: Behavior.Message) => Msg; gap?: Behavior.SpacingStep; minVisibleItems?: number; maxVisibleItems?: number; maxRows?: number; collapseFrom?: Behavior.CollapseFrom; behavior?: …"
     },
     {
       "name": "overflowList",
@@ -4454,7 +4454,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "EnumItem",
       "kind": "type",
-      "signature": "EnumItem = Readonly<{ value: string; label: string }>"
+      "signature": "EnumItem = Readonly<{ value: string; label: string; }>"
     },
     {
       "name": "PowerSearchEntity",
@@ -4474,7 +4474,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "DateTimeRangePart",
       "kind": "type",
-      "signature": "DateTimeRangePart = | Readonly<{ type: 'NOW' }> | Readonly<{ type: 'ABSOLUTE'; unixSeconds: number }> | Readonly<{ type: 'RELATIVE'; backValue: number; unit: | 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year'; }>"
+      "signature": "DateTimeRangePart = Readonly<{ type: 'NOW'; }> | Readonly<{ type: 'ABSOLUTE'; unixSeconds: number; }> | Readonly<{ type: 'RELATIVE'; backValue: number; unit: 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year'; }>"
     },
     {
       "name": "DateTimeRange",
@@ -4484,7 +4484,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "OperatorValue",
       "kind": "type",
-      "signature": "OperatorValue = | Readonly<{ type: 'empty' }> | Readonly<{ type: 'string'; searchSource?: SearchSource }> | Readonly<{ type: 'string_list'; searchSource?: SearchSource }> | Readonly<{ type: 'integer' }> | Readonly<{ type: 'float' }> | Readonly<{ type: 'time' …"
+      "signature": "OperatorValue = Readonly<{ type: 'empty'; }> | Readonly<{ type: 'string'; searchSource?: SearchSource; }> | Readonly<{ type: 'string_list'; searchSource?: SearchSource; }> | Readonly<{ type: 'integer'; }> | Readonly<{ type: 'float'; }> | Readonly<{ type: 'tim…"
     },
     {
       "name": "RelativeDateFilterPreset",
@@ -4494,7 +4494,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "PowerSearchOperator",
       "kind": "type",
-      "signature": "PowerSearchOperator = Readonly<{ key: string; value: OperatorValue }> & (Readonly<{ label: string }> | Readonly<{ i18nKey: string }>)"
+      "signature": "PowerSearchOperator = Readonly<{ key: string; value: OperatorValue; }> & (Readonly<{ label: string; }> | Readonly<{ i18nKey: string; }>)"
     },
     {
       "name": "PowerSearchField",
@@ -4504,7 +4504,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "FilterValue",
       "kind": "type",
-      "signature": "FilterValue = | Readonly<{ type: 'empty' }> | Readonly<{ type: 'string'; value: string }> | Readonly<{ type: 'string_list'; value: ReadonlyArray<string> }> | Readonly<{ type: 'integer'; value: number }> | Readonly<{ type: 'float'; value: number }> | Readonly<…"
+      "signature": "FilterValue = Readonly<{ type: 'empty'; }> | Readonly<{ type: 'string'; value: string; }> | Readonly<{ type: 'string_list'; value: ReadonlyArray<string>; }> | Readonly<{ type: 'integer'; value: number; }> | Readonly<{ type: 'float'; value: number; }> | Readon…"
     },
     {
       "name": "PowerSearchFilter",
@@ -4534,7 +4534,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "InternalPowerSearchConfig",
       "kind": "type",
-      "signature": "InternalPowerSearchConfig = Readonly<{ name: string; fields: ReadonlyArray<PowerSearchField>; contentSearchFieldKey?: string; fieldsByKey: ReadonlyMap<string, PowerSearchField>; /** The portion of the fields array that precedes contentSearchFieldKey (astryx e…"
+      "signature": "InternalPowerSearchConfig = Readonly<{ name: string; fields: ReadonlyArray<PowerSearchField>; contentSearchFieldKey?: string; fieldsByKey: ReadonlyMap<string, PowerSearchField>; nonContentSearchFields: ReadonlyArray<PowerSearchField>; contentSearchField?: Pow…"
     },
     {
       "name": "createInternalConfig",
@@ -4554,7 +4554,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "PowerSearchSuggestion",
       "kind": "type",
-      "signature": "PowerSearchSuggestion = | Readonly<{ kind: 'group'; label: string }> | Readonly<{ kind: 'field'; field: PowerSearchField }> | Readonly<{ kind: 'operator'; field: PowerSearchField; operator: PowerSearchOperator; label: string; }> | Readonly<{ kind: 'value'; fi…"
+      "signature": "PowerSearchSuggestion = Readonly<{ kind: 'group'; label: string; }> | Readonly<{ kind: 'field'; field: PowerSearchField; }> | Readonly<{ kind: 'operator'; field: PowerSearchField; operator: PowerSearchOperator; label: string; }> | Readonly<{ kind: 'value'; fi…"
     },
     {
       "name": "FieldDefinition",
@@ -4564,7 +4564,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "createPowerSearchConfig",
       "kind": "function",
-      "signature": "createPowerSearchConfig(definitions: ReadonlyArray<FieldDefinition>, configName?: string): { config: PowerSearchConfig; applyFilters: <Row extends Record<string, unknown>>( filters: ReadonlyArray<PowerSearchFilter>, data: ReadonlyArray<Row>, ) => Row[]; }"
+      "signature": "createPowerSearchConfig(definitions: ReadonlyArray<FieldDefinition>, configName?: string): { config: PowerSearchConfig; applyFilters: <Row extends Record<string, unknown>>(filters: ReadonlyArray<PowerSearchFilter>, data: ReadonlyArray<Row>) => Row[]; }"
     },
     {
       "name": "Model",
@@ -4579,7 +4579,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "init",
       "kind": "function",
-      "signature": "init(config: { id: string }): Model"
+      "signature": "init(config: { id: string; }): Model"
     },
     {
       "name": "Message",
@@ -4609,7 +4609,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "PowerSearchProps",
       "kind": "type",
-      "signature": "PowerSearchProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Controlled filter list (astryx `filters` prop + `onChange`). */ filters: ReadonlyArray<PowerSearchFilter>; config: InternalPowerSearchConfig; placeholder?: string…"
+      "signature": "PowerSearchProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; filters: ReadonlyArray<PowerSearchFilter>; config: InternalPowerSearchConfig; placeholder?: string; valueMaxLength?: number; resultCount?: number; hasClear?: boolean;…"
     },
     {
       "name": "powerSearch",
@@ -4621,7 +4621,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "ProgressProps",
       "kind": "type",
-      "signature": "ProgressProps = Readonly<{ /** `null` renders an indeterminate progress indicator. */ value: number | null; max?: number; ariaLabel?: string; valueText?: string; id?: string; direction?: 'ltr' | 'rtl'; class?: string; }>"
+      "signature": "ProgressProps = Readonly<{ value: number | null; max?: number; ariaLabel?: string; valueText?: string; id?: string; direction?: 'ltr' | 'rtl'; class?: string; }>"
     },
     {
       "name": "progress",
@@ -4705,7 +4705,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "ResizableProps",
       "kind": "type",
-      "signature": "ResizableProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; first: Html | string; second: Html | string; direction?: 'horizontal' | 'vertical'; rtl?: boolean; withHandle?: boolean; minSize?: number; maxSize?: number; /** Pixel e…"
+      "signature": "ResizableProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; first: Html | string; second: Html | string; direction?: 'horizontal' | 'vertical'; rtl?: boolean; withHandle?: boolean; minSize?: number; maxSize?: number; extent?: nu…"
     },
     {
       "name": "resizable",
@@ -4789,7 +4789,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "SectionProps",
       "kind": "type",
-      "signature": "SectionProps = Readonly<{ /** * Visual variant. * - `section`: surface (card) background (default) * - `transparent`: no background * - `muted`: muted background, draws attention to a region */ variant?: SectionVariant; /** Divider borders to apply on the giv…"
+      "signature": "SectionProps = Readonly<{ variant?: SectionVariant; dividers?: ReadonlyArray<SectionDivider>; padding?: SectionSpacing; paddingInline?: SectionSpacing; paddingInlineStart?: SectionSpacing; paddingInlineEnd?: SectionSpacing; paddingBlock?: SectionSpacing; padd…"
     },
     {
       "name": "section",
@@ -4831,17 +4831,17 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "SegmentedControlItem",
       "kind": "type",
-      "signature": "SegmentedControlItem<Value extends string = string> = Readonly<{ value: Value /** Visible label; also the accessible name when `isLabelHidden` is set. */ label: string /** Icon element displayed before the label. */ icon?: Html isLabelHidden?: boolean isDisab…"
+      "signature": "SegmentedControlItem<Value extends string = string> = Readonly<{ value: Value; label: string; icon?: Html; isLabelHidden?: boolean; isDisabled?: boolean; }>"
     },
     {
       "name": "SegmentedControlProps",
       "kind": "type",
-      "signature": "SegmentedControlProps<Value extends string, Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg /** The currently selected value (controlled). */ value: Value /** Accessible label for the radio group (used as aria-label, never rendered v…"
+      "signature": "SegmentedControlProps<Value extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; value: Value; ariaLabel: string; options: ReadonlyArray<SegmentedControlItem<Value>>; size?: SegmentedControlSize; layout?: SegmentedContro…"
     },
     {
       "name": "SegmentedControlBundle",
       "kind": "type",
-      "signature": "SegmentedControlBundle<Value extends string> = Readonly<{ update: ReturnType<typeof createBehavior<Value>>['update'] segmentedControl: <Msg>( props: SegmentedControlProps<Value, Msg>, h: HtmlBuilder<Msg>, ) => Html }>"
+      "signature": "SegmentedControlBundle<Value extends string> = Readonly<{ update: ReturnType<typeof createBehavior<Value>>['update']; segmentedControl: <Msg>(props: SegmentedControlProps<Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>"
     },
     {
       "name": "create",
@@ -4955,7 +4955,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "SelectableCardProps",
       "kind": "type",
-      "signature": "SelectableCardProps<Msg> = Readonly<{ /** Accessibility label for the card, applied to the hidden checkbox. */ label: string; /** Controlled selection state — the parent owns it. */ isSelected: boolean; /** Message emitted when the card requests a toggle. */ …"
+      "signature": "SelectableCardProps<Msg> = Readonly<{ label: string; isSelected: boolean; onChange?: Msg; isDisabled?: boolean; children?: ReadonlyArray<Html | string>; padding?: CardPadding; variant?: CardVariant; elevation?: CardElevation; width?: string; height?: string; …"
     },
     {
       "name": "selectableCard",
@@ -5044,7 +5044,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "SheetTextPartProps",
       "kind": "type",
-      "signature": "SheetTextPartProps = SheetPartProps & Readonly<{ attributes: ReadonlyArray<ChildAttribute> }>"
+      "signature": "SheetTextPartProps = SheetPartProps & Readonly<{ attributes: ReadonlyArray<ChildAttribute>; }>"
     },
     {
       "name": "SheetCloseProps",
@@ -5146,7 +5146,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "SideNavItemData",
       "kind": "type",
-      "signature": "SideNavItemData = Readonly<{ id: string; label: string; icon?: string; /** Icon shown instead of `icon` while the item is selected (astryx selectedIcon). */ selectedIcon?: string; isSelected?: boolean; isDisabled?: boolean; href?: string; /** Invoked for item…"
+      "signature": "SideNavItemData = Readonly<{ id: string; label: string; icon?: string; selectedIcon?: string; isSelected?: boolean; isDisabled?: boolean; href?: string; onSelect?: boolean; endContent?: Html; actions?: Html; children?: ReadonlyArray<SideNavItemData>; defaultC…"
     },
     {
       "name": "SideNavMenuItemData",
@@ -5166,7 +5166,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "ViewInputs",
       "kind": "type",
-      "signature": "ViewInputs = Readonly<{ /** Bare top-level items (astryx SideNav children outside a Section). */ items?: ReadonlyArray<SideNavItemData>; sections?: ReadonlyArray<SideNavSectionData>; heading?: SideNavHeadingData; topContent?: Html; footer?: Html; /** Small ic…"
+      "signature": "ViewInputs = Readonly<{ items?: ReadonlyArray<SideNavItemData>; sections?: ReadonlyArray<SideNavSectionData>; heading?: SideNavHeadingData; topContent?: Html; footer?: Html; footerIcons?: Html; hasCollapseButton?: boolean; footerCollapseButton?: boolean; size…"
     },
     {
       "name": "view",
@@ -5283,7 +5283,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "sidebarSeparator",
       "kind": "function",
-      "signature": "sidebarSeparator<Msg>(props: Readonly<{ class?: string }> = {}, h: HtmlBuilder<Msg>): Html"
+      "signature": "sidebarSeparator<Msg>(props: Readonly<{ class?: string; }> = {}, h: HtmlBuilder<Msg>): Html"
     },
     {
       "name": "sidebarContent",
@@ -5333,7 +5333,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "SidebarMenuButtonVariants",
       "kind": "type",
-      "signature": "SidebarMenuButtonVariants = VariantProps< typeof sidebarMenuButtonVariants >"
+      "signature": "SidebarMenuButtonVariants = VariantProps<typeof sidebarMenuButtonVariants>"
     },
     {
       "name": "SidebarMenuButtonProps",
@@ -5477,7 +5477,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "RangeSliderProps",
       "kind": "type",
-      "signature": "RangeSliderProps<Msg> = Readonly<{ values: readonly [number, number]; min: number; max: number; step?: number; onInput: (values: readonly [number, number]) => Msg; orientation?: 'horizontal' | 'vertical'; direction?: 'ltr' | 'rtl'; ariaLabels?: readonly [stri…"
+      "signature": "RangeSliderProps<Msg> = Readonly<{ values: readonly [ number, number ]; min: number; max: number; step?: number; onInput: (values: readonly [ number, number ]) => Msg; orientation?: 'horizontal' | 'vertical'; direction?: 'ltr' | 'rtl'; ariaLabels?: readonly […"
     },
     {
       "name": "rangeSlider",
@@ -5509,7 +5509,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "SonnerProps",
       "kind": "type",
-      "signature": "SonnerProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg ariaLabel?: string pausePolicy?: 'none' | 'pointer' class?: string entryClass?: string position?: Position }>"
+      "signature": "SonnerProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; ariaLabel?: string; pausePolicy?: 'none' | 'pointer'; class?: string; entryClass?: string; position?: Position; }>"
     },
     {
       "name": "sonner",
@@ -5521,7 +5521,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "SpinnerProps",
       "kind": "type",
-      "signature": "SpinnerProps = SpinnerAccessibility & Readonly<{ size?: 'sm' | 'md' | 'lg' | 'xl'; tone?: 'current' | 'muted' | 'primary'; /** Emits data-icon=\"inline-start|inline-end\" for parent icon positioning. */ dataIcon?: 'inline-start' | 'inline-end'; class?: string; …"
+      "signature": "SpinnerProps = SpinnerAccessibility & Readonly<{ size?: 'sm' | 'md' | 'lg' | 'xl'; tone?: 'current' | 'muted' | 'primary'; dataIcon?: 'inline-start' | 'inline-end'; class?: string; }>"
     },
     {
       "name": "spinner",
@@ -5538,7 +5538,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "StackMainAlignment",
       "kind": "type",
-      "signature": "StackMainAlignment = | 'start' | 'center' | 'end' | 'between' | 'around' | 'evenly'"
+      "signature": "StackMainAlignment = 'start' | 'center' | 'end' | 'between' | 'around' | 'evenly'"
     },
     {
       "name": "StackCrossAlignment",
@@ -5578,12 +5578,12 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "StackElement",
       "kind": "type",
-      "signature": "StackElement = | 'article' | 'aside' | 'div' | 'fieldset' | 'footer' | 'form' | 'header' | 'li' | 'main' | 'nav' | 'ol' | 'section' | 'span' | 'ul'"
+      "signature": "StackElement = 'article' | 'aside' | 'div' | 'fieldset' | 'footer' | 'form' | 'header' | 'li' | 'main' | 'nav' | 'ol' | 'section' | 'span' | 'ul'"
     },
     {
       "name": "StackProps",
       "kind": "type",
-      "signature": "StackProps = Readonly<{ /** * Direction of the stack layout. * - `horizontal`: items flow left-to-right (hStack) * - `vertical`: items flow top-to-bottom (vStack, the default) */ direction?: StackDirection; /** * Horizontal alignment of items. * - `horizontal…"
+      "signature": "StackProps = Readonly<{ direction?: StackDirection; hAlign?: StackAlignment; vAlign?: StackAlignment; justify?: StackMainAlignment; align?: StackCrossAlignment; gap?: StackSpacing; padding?: StackSpacing; paddingInline?: StackSpacing; paddingInlineStart?: Sta…"
     },
     {
       "name": "stack",
@@ -5603,7 +5603,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "StackItemProps",
       "kind": "type",
-      "signature": "StackItemProps = Readonly<{ /** Overrides the parent stack's cross-axis alignment for this item. */ crossAlignSelf?: StackItemCrossAlignSelf; /** * Size behavior within the stack. * - `static`: intrinsic size, never grows or shrinks (default) * - `fill`: grow…"
+      "signature": "StackItemProps = Readonly<{ crossAlignSelf?: StackItemCrossAlignSelf; size?: StackItemSize; isScrollable?: boolean; as?: StackElement; children?: ReadonlyArray<Html | string>; class?: string; }>"
     },
     {
       "name": "stackItem",
@@ -5630,12 +5630,12 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "StatDelta",
       "kind": "type",
-      "signature": "StatDelta = Readonly<{ /** Pre-formatted change text, e.g. \"+12.4%\" or \"-8 ms\". */ value: string; /** Trend direction. Picks the glyph and the default sentiment. */ direction: StatDeltaDirection; /** * Overrides the direction-to-color mapping for inverted met…"
+      "signature": "StatDelta = Readonly<{ value: string; direction: StatDeltaDirection; sentiment?: StatDeltaSentiment; }>"
     },
     {
       "name": "StatProps",
       "kind": "type",
-      "signature": "StatProps = Readonly<{ /** Metric name shown above the value, e.g. \"Total requests\". */ label: string; /** The headline metric, rendered large with tabular numerals. */ value: string; /** Change indicator rendered next to the value. */ delta?: StatDelta; /** …"
+      "signature": "StatProps = Readonly<{ label: string; value: string; delta?: StatDelta; description?: string; media?: ReadonlyArray<Html>; size?: StatSize; class?: string; }>"
     },
     {
       "name": "stat",
@@ -5657,7 +5657,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "StatusDotProps",
       "kind": "type",
-      "signature": "StatusDotProps = Readonly<{ /** The semantic color variant. */ variant: NonNullable<StatusDotVariants['variant']>; /** Accessible label describing the status (the dot's aria-label). */ label: string; /** Pulses the dot to indicate activity; honors prefers-red…"
+      "signature": "StatusDotProps = Readonly<{ variant: NonNullable<StatusDotVariants['variant']>; label: string; pulsing?: boolean; children?: ReadonlyArray<Html>; class?: string; }>"
     },
     {
       "name": "statusDot",
@@ -5709,7 +5709,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "StepperCollapsedVariant",
       "kind": "type",
-      "signature": "StepperCollapsedVariant = | 'withLabelAndControls' | 'withLabel' | 'hiddenLabel'"
+      "signature": "StepperCollapsedVariant = 'withLabelAndControls' | 'withLabel' | 'hiddenLabel'"
     },
     {
       "name": "StepperStepStatus",
@@ -5719,12 +5719,12 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "StepperStep",
       "kind": "type",
-      "signature": "StepperStep<Msg> = Readonly<{ label: string description?: string status?: StepperStepStatus isDisabled?: boolean isOptional?: boolean /** 'auto' (default): number while upcoming, check once completed, current ring while active. 'number': always a number badge…"
+      "signature": "StepperStep<Msg> = Readonly<{ label: string; description?: string; status?: StepperStepStatus; isDisabled?: boolean; isOptional?: boolean; indicator?: 'number' | 'auto' | 'none' | Html; endContent?: Html; content?: Html | ReadonlyArray<Html | string>; }>"
     },
     {
       "name": "StepperProps",
       "kind": "type",
-      "signature": "StepperProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg /** Zero-based active step (controlled by the parent). */ activeStep: number steps: ReadonlyArray<StepperStep<Msg>> orientation?: StepperOrientation /** 'separated': bar se…"
+      "signature": "StepperProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; activeStep: number; steps: ReadonlyArray<StepperStep<Msg>>; orientation?: StepperOrientation; indicatorPosition?: StepperIndicatorPosition; density?: StepperDensity; hasS…"
     },
     {
       "name": "stepper",
@@ -5783,7 +5783,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "TableHeadProps",
       "kind": "type",
-      "signature": "TableHeadProps = SlotProps & Readonly<{ scope?: 'col' | 'row' }>"
+      "signature": "TableHeadProps = SlotProps & Readonly<{ scope?: 'col' | 'row'; }>"
     },
     {
       "name": "tableHead",
@@ -5793,7 +5793,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "TableCellProps",
       "kind": "type",
-      "signature": "TableCellProps = SlotProps & Readonly<{ colspan?: number }>"
+      "signature": "TableCellProps = SlotProps & Readonly<{ colspan?: number; }>"
     },
     {
       "name": "tableCell",
@@ -5892,17 +5892,17 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "TextType",
       "kind": "type",
-      "signature": "TextType = | 'body' | 'large' | 'label' | 'supporting' | 'code' | 'display-1' | 'display-2' | 'display-3' | 'inherit'"
+      "signature": "TextType = 'body' | 'large' | 'label' | 'supporting' | 'code' | 'display-1' | 'display-2' | 'display-3' | 'inherit'"
     },
     {
       "name": "TextSize",
       "kind": "type",
-      "signature": "TextSize = | '4xs' | '3xs' | '2xs' | 'xsm' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl'"
+      "signature": "TextSize = '4xs' | '3xs' | '2xs' | 'xsm' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl'"
     },
     {
       "name": "TextColor",
       "kind": "type",
-      "signature": "TextColor = | 'primary' | 'secondary' | 'disabled' | 'placeholder' | 'accent' | 'inherit'"
+      "signature": "TextColor = 'primary' | 'secondary' | 'disabled' | 'placeholder' | 'accent' | 'inherit'"
     },
     {
       "name": "TextWeight",
@@ -5976,7 +5976,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "ThumbnailProps",
       "kind": "type",
-      "signature": "ThumbnailProps<Msg> = Readonly<{ /** Image source. When omitted, the thumbnail shows its placeholder state. */ src?: string; /** Alt text for the image. */ alt?: string; /** Human-readable name shown in tooltips and used in accessible labels. */ label?: strin…"
+      "signature": "ThumbnailProps<Msg> = Readonly<{ src?: string; alt?: string; label?: string; isLoading?: boolean; isError?: boolean; isDisabled?: boolean; onClick?: Msg; onRemove?: Msg; onError?: Msg; onLoad?: Msg; showRemoveOn?: ThumbnailShowRemoveOn; class?: string; }>"
     },
     {
       "name": "thumbnail",
@@ -6023,12 +6023,12 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "TimeInputProps",
       "kind": "type",
-      "signature": "TimeInputProps<Msg> = Readonly<{ model: Model /** Lifts this submodel's messages into the parent message type. */ toParentMessage: (message: Message) => Msg id: string label: Html | string /** The committed value owned by the parent, as \"HH:MM\" / \"HH:MM:SS\". …"
+      "signature": "TimeInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; id: string; label: Html | string; value?: string | null; isLabelHidden?: boolean; description?: Html | string; isOptional?: boolean; isRequired?: boolean; isDisabled?: …"
     },
     {
       "name": "TimeInputViewInputs",
       "kind": "type",
-      "signature": "TimeInputViewInputs = Omit< TimeInputProps<never>, 'model' | 'toParentMessage' >"
+      "signature": "TimeInputViewInputs = Omit<TimeInputProps<never>, 'model' | 'toParentMessage'>"
     },
     {
       "name": "timeInput",
@@ -6055,7 +6055,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "init",
       "kind": "function",
-      "signature": "init(config: { id: string; startTimeMs?: number; format?: TimerFormat; /** Clock override for deterministic previews/tests. Defaults to Date.now(). */ nowMs?: number; }): Model"
+      "signature": "init(config: { id: string; startTimeMs?: number; format?: TimerFormat; nowMs?: number; }): Model"
     },
     {
       "name": "Message",
@@ -6080,7 +6080,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "TimerProps",
       "kind": "type",
-      "signature": "TimerProps<Msg> = Readonly<{ model: Model; /** Semantic text type. @default 'supporting' */ type?: AstryxTextType; /** Font size override; keeps the type's line height. */ size?: AstryxTextSize; /** Text color. @default 'secondary' */ color?: AstryxTextColor;…"
+      "signature": "TimerProps<Msg> = Readonly<{ model: Model; type?: TextType; size?: TextSize; color?: TextColor; weight?: TextWeight; class?: string; }>"
     },
     {
       "name": "timer",
@@ -6167,7 +6167,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "TimestampProps",
       "kind": "type",
-      "signature": "TimestampProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Semantic text type. @default 'supporting' */ type?: AstryxTextType; size?: AstryxTextSize; /** Text color. @default 'secondary' */ color?: AstryxTextColor; weight?:…"
+      "signature": "TimestampProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; type?: TextType; size?: TextSize; color?: TextColor; weight?: TextWeight; hasTooltip?: boolean; tooltipEntries?: ReadonlyArray<TimestampTooltipEntry>; isTimezoneShown?:…"
     },
     {
       "name": "timestamp",
@@ -6211,17 +6211,17 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "ToggleGroupItem",
       "kind": "type",
-      "signature": "ToggleGroupItem<Value extends string = string> = Readonly<{ value: Value children: ReadonlyArray<Html | string> ariaLabel?: string isDisabled?: boolean class?: string }>"
+      "signature": "ToggleGroupItem<Value extends string = string> = Readonly<{ value: Value; children: ReadonlyArray<Html | string>; ariaLabel?: string; isDisabled?: boolean; class?: string; }>"
     },
     {
       "name": "ToggleGroupProps",
       "kind": "type",
-      "signature": "ToggleGroupProps<Value extends string, Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg ariaLabel: string items: ReadonlyArray<ToggleGroupItem<Value>> direction?: 'ltr' | 'rtl' arrangement?: 'joined' | 'wrapped' orientation?: 'vertica…"
+      "signature": "ToggleGroupProps<Value extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; ariaLabel: string; items: ReadonlyArray<ToggleGroupItem<Value>>; direction?: 'ltr' | 'rtl'; arrangement?: 'joined' | 'wrapped'; orientation?: 'v…"
     },
     {
       "name": "ToggleGroupBundle",
       "kind": "type",
-      "signature": "ToggleGroupBundle<Value extends string> = Readonly<{ update: BehaviorBundle<Value>['update'] toggleGroup: <Msg>(props: ToggleGroupProps<Value, Msg>, h: HtmlBuilder<Msg>) => Html }>"
+      "signature": "ToggleGroupBundle<Value extends string> = Readonly<{ update: BehaviorBundle<Value>['update']; toggleGroup: <Msg>(props: ToggleGroupProps<Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>"
     },
     {
       "name": "create",
@@ -6275,7 +6275,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "TokenColor",
       "kind": "type",
-      "signature": "TokenColor = | 'default' | 'gray' | 'red' | 'orange' | 'yellow' | 'green' | 'teal' | 'cyan' | 'blue' | 'purple' | 'pink'"
+      "signature": "TokenColor = 'default' | 'gray' | 'red' | 'orange' | 'yellow' | 'green' | 'teal' | 'cyan' | 'blue' | 'purple' | 'pink'"
     },
     {
       "name": "TokenSize",
@@ -6285,7 +6285,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "TokenProps",
       "kind": "type",
-      "signature": "TokenProps<Msg> = Readonly<{ /** Text shown inside the token. */ label: string; /** Semantic colorway; 'default' is the neutral gray chip. */ color?: TokenColor; /** Chip height: sm 20px, md 24px, lg 28px. */ size?: TokenSize; /** Leading glyph, e.g. `h => Ic…"
+      "signature": "TokenProps<Msg> = Readonly<{ label: string; color?: TokenColor; size?: TokenSize; icon?: <M>(h: HtmlBuilder<M>) => Html; endContent?: ReadonlyArray<Html>; isLabelHidden?: boolean; href?: string; onClick?: Msg; onRemove?: Msg; isDisabled?: boolean; description…"
     },
     {
       "name": "token",
@@ -6342,12 +6342,12 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "TokenizerStatus",
       "kind": "type",
-      "signature": "TokenizerStatus = Readonly<{ type: 'error' | 'warning' | 'success' message?: string }>"
+      "signature": "TokenizerStatus = Readonly<{ type: 'error' | 'warning' | 'success'; message?: string; }>"
     },
     {
       "name": "TokenizerProps",
       "kind": "type",
-      "signature": "TokenizerProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg label: string isLabelHidden?: boolean description?: string isOptional?: boolean isRequired?: boolean isDisabled?: boolean isReadOnly?: boolean status?: TokenizerStatus st…"
+      "signature": "TokenizerProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label: string; isLabelHidden?: boolean; description?: string; isOptional?: boolean; isRequired?: boolean; isDisabled?: boolean; isReadOnly?: boolean; status?: Tokenizer…"
     },
     {
       "name": "tokenizer",
@@ -6394,7 +6394,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "ToolbarProps",
       "kind": "type",
-      "signature": "ToolbarProps<Msg> = Readonly<{ /** Accessible label for the toolbar (aria-label). */ label: string /** Content aligned to the start (left in LTR). */ startContent?: Html | ReadonlyArray<Html | string> /** Centered content. When present, switches the layout to…"
+      "signature": "ToolbarProps<Msg> = Readonly<{ label: string; startContent?: Html | ReadonlyArray<Html | string>; centerContent?: Html | ReadonlyArray<Html | string>; endContent?: Html | ReadonlyArray<Html | string>; size?: ToolbarSize; gap?: ToolbarGap; orientation?: Toolba…"
     },
     {
       "name": "toolbar",
@@ -6478,62 +6478,62 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "dropdownMenuKey",
       "kind": "re-export",
-      "signature": "export { dropdownMenuKey } from \"@/lib/top-nav\""
+      "signature": "export { dropdownMenuKey } from '@/lib/top-nav'"
     },
     {
       "name": "HEADING_MENU_KEY",
       "kind": "re-export",
-      "signature": "export { HEADING_MENU_KEY } from \"@/lib/top-nav\""
+      "signature": "export { HEADING_MENU_KEY } from '@/lib/top-nav'"
     },
     {
       "name": "init",
       "kind": "re-export",
-      "signature": "export { init } from \"@/lib/top-nav\""
+      "signature": "export { init } from '@/lib/top-nav'"
     },
     {
       "name": "isMenuOpen",
       "kind": "re-export",
-      "signature": "export { isMenuOpen } from \"@/lib/top-nav\""
+      "signature": "export { isMenuOpen } from '@/lib/top-nav'"
     },
     {
       "name": "menuFor",
       "kind": "re-export",
-      "signature": "export { menuFor } from \"@/lib/top-nav\""
+      "signature": "export { menuFor } from '@/lib/top-nav'"
     },
     {
       "name": "Model",
       "kind": "re-export",
-      "signature": "export { Model } from \"@/lib/top-nav\""
+      "signature": "export { Model } from '@/lib/top-nav'"
     },
     {
       "name": "update",
       "kind": "re-export",
-      "signature": "export { update } from \"@/lib/top-nav\""
+      "signature": "export { update } from '@/lib/top-nav'"
     },
     {
       "name": "InitConfig",
       "kind": "re-export",
-      "signature": "export { InitConfig } from \"@/lib/top-nav\""
+      "signature": "export { InitConfig } from '@/lib/top-nav'"
     },
     {
       "name": "TopNavMenuKind",
       "kind": "re-export",
-      "signature": "export { TopNavMenuKind } from \"@/lib/top-nav\""
+      "signature": "export { TopNavMenuKind } from '@/lib/top-nav'"
     },
     {
       "name": "Message",
       "kind": "re-export",
-      "signature": "export { Message } from \"@/lib/top-nav\""
+      "signature": "export { Message } from '@/lib/top-nav'"
     },
     {
       "name": "OutMessage",
       "kind": "re-export",
-      "signature": "export { OutMessage } from \"@/lib/top-nav\""
+      "signature": "export { OutMessage } from '@/lib/top-nav'"
     },
     {
       "name": "TopNavItemData",
       "kind": "type",
-      "signature": "TopNavItemData = Readonly<{ kind?: \"item\"; label: string; href?: string; icon?: string; isSelected?: boolean; isDisabled?: boolean; isIconOnly?: boolean; onSelect?: boolean; }>"
+      "signature": "TopNavItemData = Readonly<{ kind?: 'item'; label: string; href?: string; icon?: string; isSelected?: boolean; isDisabled?: boolean; isIconOnly?: boolean; onSelect?: boolean; }>"
     },
     {
       "name": "TopNavMenuItemData",
@@ -6543,7 +6543,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "TopNavMenuData",
       "kind": "type",
-      "signature": "TopNavMenuData = Readonly<{ kind: \"menu\"; label: string; items: ReadonlyArray<TopNavMenuItemData>; }>"
+      "signature": "TopNavMenuData = Readonly<{ kind: 'menu'; label: string; items: ReadonlyArray<TopNavMenuItemData>; }>"
     },
     {
       "name": "TopNavMegaMenuItemData",
@@ -6558,7 +6558,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "TopNavMegaMenuData",
       "kind": "type",
-      "signature": "TopNavMegaMenuData = Readonly<{ kind: \"megaMenu\"; label: string; items: ReadonlyArray<TopNavMegaMenuItemData>; featured?: TopNavMegaMenuFeaturedCardData; }>"
+      "signature": "TopNavMegaMenuData = Readonly<{ kind: 'megaMenu'; label: string; items: ReadonlyArray<TopNavMegaMenuItemData>; featured?: TopNavMegaMenuFeaturedCardData; }>"
     },
     {
       "name": "TopNavEntry",
@@ -6578,7 +6578,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "ViewInputs",
       "kind": "type",
-      "signature": "ViewInputs = Readonly<{ label?: string; heading?: TopNavHeadingData; startItems?: ReadonlyArray<TopNavEntry>; centerItems?: ReadonlyArray<TopNavEntry>; /** Escape hatch for arbitrary start slot content. */ startContent?: Html; centerContent?: Html; endContent…"
+      "signature": "ViewInputs = Readonly<{ label?: string; heading?: TopNavHeadingData; startItems?: ReadonlyArray<TopNavEntry>; centerItems?: ReadonlyArray<TopNavEntry>; startContent?: Html; centerContent?: Html; endContent?: Html; class?: string; }>"
     },
     {
       "name": "topNavItem",
@@ -6680,17 +6680,17 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "TourStepPlacement",
       "kind": "type",
-      "signature": "TourStepPlacement = \"below\" | \"above\" | \"start\" | \"end\""
+      "signature": "TourStepPlacement = 'below' | 'above' | 'start' | 'end'"
     },
     {
       "name": "TourStepAlignment",
       "kind": "type",
-      "signature": "TourStepAlignment = \"start\" | \"center\" | \"end\""
+      "signature": "TourStepAlignment = 'start' | 'center' | 'end'"
     },
     {
       "name": "TourStepSpec",
       "kind": "type",
-      "signature": "TourStepSpec = Readonly<{ /** Stable step key — the callout is re-keyed per step to re-anchor. */ id: string; /** `id` of the element this step points at (astryx targetRef equivalent — must be interactive for aria, matching Popover's anchor contract). */ targ…"
+      "signature": "TourStepSpec = Readonly<{ id: string; targetId: string; heading: string; content: Html | string; placement?: TourStepPlacement; alignment?: TourStepAlignment; }>"
     },
     {
       "name": "TourProps",
@@ -6707,7 +6707,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "TransferListOption",
       "kind": "type",
-      "signature": "TransferListOption = Readonly<{ /** Stable value written to the controlled value array. */ value: string; /** Visible option name and the basis of action labels. */ label: string; /** Optional searchable metadata. Not rendered in the default row. */ descripti…"
+      "signature": "TransferListOption = Readonly<{ value: string; label: string; description?: string; group?: string; isTransferDisabled?: boolean; isReorderDisabled?: boolean; disabledMessage?: string; }>"
     },
     {
       "name": "Model",
@@ -6757,7 +6757,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "TransferListProps",
       "kind": "type",
-      "signature": "TransferListProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Accessible name for the complete control. */ label: string; /** Visually hides the label while retaining its accessible name. */ isLabelHidden?: boolean; /** Sup…"
+      "signature": "TransferListProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label: string; isLabelHidden?: boolean; description?: string; options: ReadonlyArray<TransferListOption>; selectedLabel?: string; availableLabel?: string; hasSearch?…"
     },
     {
       "name": "REORDER_INSTRUCTIONS",
@@ -6933,12 +6933,12 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "VisuallyHiddenElement",
       "kind": "type",
-      "signature": "VisuallyHiddenElement = | 'article' | 'aside' | 'code' | 'div' | 'em' | 'footer' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'header' | 'label' | 'li' | 'main' | 'nav' | 'p' | 'section' | 'small' | 'span' | 'strong' | 'ul' | 'ol'"
+      "signature": "VisuallyHiddenElement = 'article' | 'aside' | 'code' | 'div' | 'em' | 'footer' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'header' | 'label' | 'li' | 'main' | 'nav' | 'p' | 'section' | 'small' | 'span' | 'strong' | 'ul' | 'ol'"
     },
     {
       "name": "VisuallyHiddenProps",
       "kind": "type",
-      "signature": "VisuallyHiddenProps = Readonly<{ /** * HTML tag to render as. Defaults to `'span'` (inline) for the common * icon-label case; pass a block element such as `'div'` when wrapping block * content or hosting an `aria-live` region. This is a structural choice, * n…"
+      "signature": "VisuallyHiddenProps = Readonly<{ as?: VisuallyHiddenElement; ariaLive?: 'polite' | 'assertive' | 'off'; role?: string; id?: string; children: ReadonlyArray<Html | string>; }>"
     },
     {
       "name": "visuallyHidden",

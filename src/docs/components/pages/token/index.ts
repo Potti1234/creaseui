@@ -13,8 +13,7 @@ export const tokenPage = authoredPage({
       'A compact pill/chip for a selected entity — the building block of multi-select fields, active filters, and tokenizers.',
     architecture:
       'Token is a stateless render helper in one of four shapes: static label, clickable (onClick), link (href), or removable (onRemove). `icon` takes a render function, `endContent` takes Html for a trailing badge.',
-    apiHref:
-      'https://github.com/facebook/astryx/blob/main/packages/core/src/Token/Token.tsx',
+    apiHref: 'https://github.com/Potti1234/creaseui/blob/main/src/ui/token.ts',
     accessibility:
       'The remove button stops propagation so the token’s own click/link is not triggered; `isLabelHidden` keeps the label as aria-label.',
     examples: tokenExamples('tailwind'),

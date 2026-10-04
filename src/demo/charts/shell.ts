@@ -49,7 +49,7 @@ export const chartsPageShell = <Msg>(
               ),
             ],
             [
-              'A collection of ready-to-use chart components built with Apache ECharts and foldkit, styled like shadcn/ui. From basic charts to rich data displays.',
+              'A collection of ready-to-use chart components built with Apache ECharts and foldkit, styled with CreaseUI. From basic charts to rich data displays.',
             ],
           ),
         ],

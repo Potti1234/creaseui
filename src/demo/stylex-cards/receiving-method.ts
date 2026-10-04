@@ -275,5 +275,5 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
 /*
 Stateful? yes.
 Submodels wired: RadioGroup (receiving method).
-PORT NOTEs: The shared RadioGroup wrapper cannot reproduce shadcn's Field-inside-FieldLabel option cards, so it uses the closest two-column labeled radio layout.
+The CreaseUI RadioGroup example uses a two-column layout with labeled options.
 */

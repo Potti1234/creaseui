@@ -60,9 +60,9 @@ type Project = Readonly<{
 
 const data = {
   user: {
-    name: 'shadcn',
+    name: 'CreaseUI',
     email: 'm@example.com',
-    avatar: '/avatars/shadcn.jpg',
+    avatar: '/logo-mark.svg',
   },
   navMain: [
     {
@@ -521,7 +521,7 @@ const userSummary = (h: HtmlBuilder<Message>): Html => {
             avatarFallback(
               {
                 class: 'rounded-lg',
-                children: ['CN'],
+                children: ['CU'],
               },
               h,
             ),
@@ -549,7 +549,7 @@ const userActionConfig = (
     M.when('upgrade', () => ({
       label: 'Upgrade to Pro',
       icon: Icon.icon('sparkles', {}, h),
-      group: 'shadcn · m@example.com',
+      group: 'CreaseUI · m@example.com',
     })),
     M.when('account', () => ({
       label: 'Account',
@@ -826,7 +826,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
 }
 
 // PORT NOTE: Avatar files are not bundled, so the source image is represented
-// by its CN fallback. The foldkit Disclosure exposes one trigger, so the main
+// by its CU fallback. The foldkit Disclosure exposes one trigger, so the main
 // navigation title row owns expansion instead of a separate action button.
 
 /* Minimal interactive wiring:

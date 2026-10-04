@@ -247,8 +247,8 @@ const emptyView = <Msg>(
               variant: 'default',
               children: [
                 avatarNode(
-                  'https://github.com/shadcn.png',
-                  '@shadcn',
+                  '/logo-mark.svg',
+                  '@creaseui',
                   'LR',
                   false,
                   false,
@@ -279,7 +279,7 @@ const emptyView = <Msg>(
                     grayscale: true,
                     children: (
                       [
-                        ['https://github.com/shadcn.png', '@shadcn', 'CN'],
+                        ['/logo-mark.svg', '@creaseui', 'CU'],
                         [
                           'https://github.com/maxleiter.png',
                           '@maxleiter',

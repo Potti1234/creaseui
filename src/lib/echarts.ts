@@ -254,6 +254,10 @@ export const shadcnLegend = (
   },
 })
 
+/** CreaseUI tooltip and legend presets for chart examples. */
+export const tooltipOptions = shadcnTooltip
+export const legendOptions = shadcnLegend
+
 /** Vertical fade used by shadcn's gradient area charts. */
 export const areaGradient = (
   color: string,

@@ -14,7 +14,7 @@ export const statusDotPage = authoredPage({
     architecture:
       'Status Dot is a stateless render helper. The parent Model supplies the variant and label and it returns Html directly.',
     apiHref:
-      'https://github.com/facebook/astryx/blob/main/packages/core/src/StatusDot/StatusDot.tsx',
+      'https://github.com/Potti1234/creaseui/blob/main/src/ui/status-dot.ts',
     styling:
       'Choose the semantic variant that matches the status. The dot is a fixed 8px signal; pair it with a visible label or icon when color alone is not enough.',
     accessibility:

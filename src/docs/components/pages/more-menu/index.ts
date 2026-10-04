@@ -11,9 +11,9 @@ export const moreMenuPage = authoredPage({
     kind: 'submodel',
     description: 'A three-dot overflow trigger that opens a menu of actions.',
     architecture:
-      'More Menu is a submodel wrapper over Dropdown Menu: it re-exports the same Model, Message, OutMessage, init, and update, flattens astryx-style action/divider/section options into menu items, and renders an icon-only ghost trigger.',
+      'More Menu is a submodel wrapper over Dropdown Menu: it re-exports the same Model, Message, OutMessage, init, and update, flattens action, divider, and section options into menu items, and renders an icon-only ghost trigger.',
     apiHref:
-      'https://github.com/facebook/astryx/blob/main/packages/core/src/MoreMenu/MoreMenu.tsx',
+      'https://github.com/Potti1234/creaseui/blob/main/src/ui/more-menu.ts',
     composition:
       'Parent Model\n├── More Menu child Model (Dropdown Menu model)\n└── moreMenu view\n    ├── ellipsis icon trigger\n    └── items / dividers / labeled sections',
     styling:

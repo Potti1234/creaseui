@@ -80,11 +80,11 @@ export const radarOption = (
   ]
 
   return {
-    tooltip: Chart.shadcnTooltip(theme, { trigger: 'item' }),
+    tooltip: Chart.tooltipOptions(theme, { trigger: 'item' }),
     ...(config.legend === true
       ? {
           legend: {
-            ...Chart.shadcnLegend(theme),
+            ...Chart.legendOptions(theme),
             data: mobile === undefined ? ['Desktop'] : ['Desktop', 'Mobile'],
           },
         }

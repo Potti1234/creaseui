@@ -14,7 +14,7 @@ export const tokenizerPage = authoredPage({
     architecture:
       'Tokenizer is a foldkit submodel. The child Model owns the committed token list plus an embedded foldkit Multi combobox for the input and anchored listbox; ChangedTokens OutMessages carry token add/remove. reflect/reflectItems sync externally-derived tokens and option labels.',
     apiHref:
-      'https://github.com/facebook/astryx/blob/main/packages/core/src/Tokenizer/Tokenizer.tsx',
+      'https://github.com/Potti1234/creaseui/blob/main/src/ui/tokenizer.ts',
     styling:
       'The wrapper follows the input-group chrome — input border, 8px radius, inset border shadow on hover, accent ring on focus-within — and wraps chips + input in one flex-wrap row. Tokens are 4px-radius muted chips at the field height minus 8px, each with a 16px circular remove affordance. Overflow behaviors clip the chip row while unfocused.',
     accessibility:

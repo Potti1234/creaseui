@@ -32,63 +32,63 @@ export const BLOCKS: ReadonlyArray<BlockDefinition> = [
     category: 'dashboard',
   },
   {
-    name: 'astryx-executive-summary',
+    name: 'creaseui-executive-summary',
     description: 'An executive scorecard with objectives, trends and insights.',
     category: 'dashboard',
   },
   {
-    name: 'astryx-cohort-funnel',
+    name: 'creaseui-cohort-funnel',
     description:
       'An acquisition funnel with conversion trends and cohort retention.',
     category: 'dashboard',
   },
   {
-    name: 'astryx-project-status',
+    name: 'creaseui-project-status',
     description: 'Project milestones, progress, workstreams and risks.',
     category: 'dashboard',
   },
   {
-    name: 'astryx-service-monitoring',
+    name: 'creaseui-service-monitoring',
     description: 'Service health, traffic metrics and active alerts.',
     category: 'dashboard',
   },
   {
-    name: 'astryx-incident-console',
+    name: 'creaseui-incident-console',
     description: 'An incident table with a dedicated inspector panel.',
     category: 'dashboard',
   },
   {
-    name: 'astryx-kanban-board',
+    name: 'creaseui-kanban-board',
     description:
       'Four status lanes of task cards under a shared sprint toolbar.',
     category: 'dashboard',
   },
   {
-    name: 'astryx-inbox-table',
+    name: 'creaseui-inbox-table',
     description:
       'A mail queue that indexes a reading pane with a live reply composer.',
     category: 'dashboard',
   },
   {
-    name: 'astryx-order-detail',
+    name: 'creaseui-order-detail',
     description:
       'A single record with line items, totals and an activity rail.',
     category: 'dashboard',
   },
   {
-    name: 'astryx-checkout-form',
+    name: 'creaseui-checkout-form',
     description:
       'A sectioned checkout form beside an order summary that recalculates.',
     category: 'dashboard',
   },
   {
-    name: 'astryx-data-dashboard',
+    name: 'creaseui-data-dashboard',
     description:
       'Sparkline tiles with period-over-period deltas and segment breakdowns.',
     category: 'dashboard',
   },
   {
-    name: 'astryx-card-grid',
+    name: 'creaseui-card-grid',
     description:
       'A browsable catalog grid with search, filter tabs and a real empty state.',
     category: 'dashboard',
@@ -120,7 +120,8 @@ export const resolveBlock = (
 ): Readonly<{ renderer: 'tailwind' | 'stylex'; name: string }> | undefined => {
   const [prefix, ...parts] = blockId.split('--')
   const renderer = prefix === 'stylex' ? 'stylex' : 'tailwind'
-  const name = parts.length ? parts.join('--') : `sidebar-${blockId}`
+  const requestedName = parts.length ? parts.join('--') : `sidebar-${blockId}`
+  const name = requestedName.replace(/^astryx-/u, 'creaseui-')
   return BLOCKS.some(block => block.name === name)
     ? { renderer, name }
     : undefined

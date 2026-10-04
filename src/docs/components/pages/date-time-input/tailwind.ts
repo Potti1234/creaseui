@@ -106,7 +106,7 @@ export const dateTimeInputTailwindPreviewProgram = definePreviewProgram<
         },
         h,
       )
-    switch (fixture.astryxExample) {
+    switch (fixture.example) {
       case 'DateTimeInputWithValidation':
         return stack(
           VALIDATION_FIELDS.map((field, i) =>

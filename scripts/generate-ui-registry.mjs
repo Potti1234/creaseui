@@ -168,7 +168,7 @@ const items = files.map(file => {
     name,
     type: 'registry:ui',
     title: title(name),
-    description: `A shadcn-styled ${title(name)} component for Foldkit.`,
+    description: `A CreaseUI ${title(name)} component for Foldkit.`,
     ...(dependencies.length === 0 ? {} : { dependencies }),
     registryDependencies: Array.from(registryDependencies).sort(),
     files: [

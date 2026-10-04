@@ -12,9 +12,8 @@ export const gridPage = authoredPage({
     description:
       'Lays out children in a CSS grid — fixed equal-width columns or responsive min-width tracks — with optional column/row spans via GridSpan.',
     architecture:
-      'Grid is a stateless render helper. The columns prop accepts a count or { minWidth, max, repeat } — responsive templates compile to repeat(auto-fill|auto-fit, minmax(…)) inline styles, and GridSpan maps to grid-column/grid-row spans. Gap props follow the astryx spacing scale (1 step = 4px).',
-    apiHref:
-      'https://github.com/facebook/astryx/tree/main/packages/core/src/Grid',
+      'Grid is a stateless render helper. The columns prop accepts a count or { minWidth, max, repeat } — responsive templates compile to repeat(auto-fill|auto-fit, minmax(…)) inline styles, and GridSpan maps to grid-column/grid-row spans. Gap props follow the CreaseUI spacing scale (1 step = 4px).',
+    apiHref: 'https://github.com/Potti1234/creaseui/blob/main/src/ui/grid.ts',
     styling:
       'Prefer the columns/gap props over ad-hoc classes. Wrap children in GridSpan for multi-column or multi-row placement; the span itself fills its grid cell.',
     accessibility:

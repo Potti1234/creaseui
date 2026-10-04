@@ -14,7 +14,7 @@ export const dateInputPage = authoredPage({
     architecture:
       'Date Input is a foldkit submodel. The child Model owns the committed Option<CalendarDate>, the pending text while editing, and an embedded foldkit DatePicker for the popover calendar. ChangedValue OutMessages carry the commit; reflect/reflectConstraints sync externally-derived values and min/max/disabled windows.',
     apiHref:
-      'https://github.com/facebook/astryx/blob/main/packages/core/src/DateInput/DateInput.tsx',
+      'https://github.com/Potti1234/creaseui/blob/main/src/ui/date-input.ts',
     styling:
       'The wrapper follows the input-group chrome: input border, 8px radius, an inset border shadow at 30% on hover, and the accent ring on focus-within. Status variants tint the border and focus ring — error uses destructive, warning chart-4, success chart-2.',
     accessibility:

@@ -14,11 +14,11 @@ export const fieldStatusPage = authoredPage({
     architecture:
       'Field Status is a stateless render helper. The parent supplies the status type, message text, and variant; the component renders the colored strip — `attached` overlaps the control above it inside a Field, `detached` floats below with a leading status icon.',
     apiHref:
-      'https://github.com/facebook/astryx/blob/main/packages/core/src/FieldStatus/FieldStatus.tsx',
+      'https://github.com/Potti1234/creaseui/blob/main/src/ui/field-status.ts',
     styling:
       '`attached` is the default and visually merges with the control above via a 6px overlap and bottom radii; `detached` is a standalone tinted strip for custom controls.',
     accessibility:
-      'Detached messages lead with a status icon so meaning is not conveyed by color alone. In astryx the message is announced through a live region and animates in when mounted dynamically; the port renders it statically (no live-region primitive exists yet).',
+      'Detached messages lead with a status icon so meaning is not conveyed by color alone. CreaseUI renders these messages statically; applications should provide a live region when dynamic status changes need to be announced.',
     examples: fieldStatusExamples('tailwind'),
     stylexExamples: fieldStatusExamples('stylex'),
   },

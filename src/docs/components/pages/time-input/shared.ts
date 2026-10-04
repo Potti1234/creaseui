@@ -34,7 +34,7 @@ export const timeInputFixtures: Readonly<
   {
     title: 'Time Input',
     description:
-      'A time input that uses the browser/OS picker on touch by default and Astryx typed entry on fine pointers.',
+      'A time input that uses the browser/OS picker on touch by default and CreaseUI typed entry on fine pointers.',
     maxWidth: 400,
     entries: [{ id: 'time', label: 'Time', placeholder: 'Select a time' }],
   },

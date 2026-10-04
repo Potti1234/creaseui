@@ -17,9 +17,8 @@ export const stackPage = authoredPage({
     description:
       'Arranges children horizontally or vertically with consistent spacing and alignment. HStack and VStack are direction presets; StackItem opts individual children into fill or static sizing.',
     architecture:
-      'Stack is a stateless render helper. Direction resolves hAlign/vAlign onto the flex main and cross axes; justify and align are direction-neutral aliases. Gap and padding follow the astryx spacing scale (1 step = 4px) and map 1:1 onto the Tailwind spacing scale.',
-    apiHref:
-      'https://github.com/facebook/astryx/tree/main/packages/core/src/Stack',
+      'Stack is a stateless render helper. Direction resolves hAlign/vAlign onto the flex main and cross axes; justify and align are direction-neutral aliases. Gap and padding follow the CreaseUI spacing scale (1 step = 4px) and map 1:1 onto the Tailwind spacing scale.',
+    apiHref: 'https://github.com/Potti1234/creaseui/blob/main/src/ui/stack.ts',
     styling:
       'Use gap for item spacing and the padding props for inner padding. Renderer-specific layout inputs (class in Tailwind, layoutStyle in StyleX) are for positioning in the parent only.',
     accessibility:

@@ -13,8 +13,7 @@ export const textPage = authoredPage({
       'Semantic typescale text for body, large, label, supporting, and code roles.',
     architecture:
       'Text is a stateless render helper. The parent supplies type, color, weight, display, truncation, and wrapping inputs per render; it returns Html directly.',
-    apiHref:
-      'https://github.com/facebook/astryx/blob/main/packages/core/src/Text/Text.tsx',
+    apiHref: 'https://github.com/Potti1234/creaseui/blob/main/src/ui/text.ts',
     styling:
       'Pick the semantic type that matches the content role before reaching for size or weight overrides. Truncation and wrapping belong to the layout, not the content.',
     accessibility:

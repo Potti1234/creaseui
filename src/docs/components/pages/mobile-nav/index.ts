@@ -16,7 +16,7 @@ export const mobileNavPage = authoredPage({
       "'start' | 'end' | 'auto'" +
       "): auto inspects the toggle's viewport position at open time and slides in from the same edge. The toggle is a standalone button bound to the dialog by aria-controls.",
     apiHref:
-      'https://github.com/facebook/astryx/blob/main/packages/core/src/MobileNav/MobileNav.tsx',
+      'https://github.com/Potti1234/creaseui/blob/main/src/ui/mobile-nav.ts',
     styling:
       'A full-height panel 320px wide with a blurred scrim, a compact header row with a close control, and a scrollable nav body; start/end slide transforms mirror for RTL.',
     accessibility:

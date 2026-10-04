@@ -25,7 +25,7 @@ export const barTooltip = (
     indicator?: 'square' | 'line' | 'dashed' | 'none'
   }> = {},
 ): NonNullable<EChartsOption['tooltip']> => ({
-  ...Chart.shadcnTooltip(theme),
+  ...Chart.tooltipOptions(theme),
   formatter: (params: TooltipComponentFormatterCallbackParams) => {
     const rows = Array.isArray(params) ? params : [params]
     const heading = config.hideLabel ? '' : (rows[0]?.name ?? '')

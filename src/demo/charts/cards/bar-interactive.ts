@@ -63,7 +63,7 @@ Chart.registerChart(HOST_ID, (theme, variant): EChartsOption => {
       },
     },
     yAxis: Chart.valueAxis(theme),
-    tooltip: Chart.shadcnTooltip(theme),
+    tooltip: Chart.tooltipOptions(theme),
     series: [
       {
         name: active === 'desktop' ? 'Desktop' : 'Mobile',

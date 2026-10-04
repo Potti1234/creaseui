@@ -7,7 +7,7 @@ export type DateRangeInputFixture = Readonly<{
   heroOnly?: boolean
   kind: 'presets' | 'validation'
   /** Astrryx block id, kept for tracing against the source templates. */
-  astryxExample: string
+  example: string
 }>
 
 export const dateRangeInputFixtures: ReadonlyArray<DateRangeInputFixture> = [
@@ -15,21 +15,21 @@ export const dateRangeInputFixtures: ReadonlyArray<DateRangeInputFixture> = [
     title: 'Date Range Input',
     heroOnly: true,
     kind: 'presets',
-    astryxExample: 'DateRangeInputShowcase',
+    example: 'DateRangeInputShowcase',
     description:
       'A date range picker with a button trigger and dual-month calendar popover with preset ranges.',
   },
   {
     title: 'With Presets',
     kind: 'presets',
-    astryxExample: 'DateRangeInputWithPresets',
+    example: 'DateRangeInputWithPresets',
     description:
       'Date range picker with quick-select presets for common periods. Use for analytics dashboards, report filters, or any context where users frequently select standard time windows.',
   },
   {
     title: 'Validation',
     kind: 'validation',
-    astryxExample: 'DateRangeInputWithValidation',
+    example: 'DateRangeInputWithValidation',
     description:
       'Date range input in all three status states: error, warning, and success. Use to surface booking conflicts, flag high-demand periods, or confirm an available range.',
   },
@@ -40,8 +40,8 @@ const PRESET_SETS: Readonly<Record<string, ReadonlyArray<number>>> = {
   DateRangeInputWithPresets: [7, 14, 30, 90],
 }
 
-export const presetDaysFor = (astryxExample: string): ReadonlyArray<number> =>
-  PRESET_SETS[astryxExample] ?? [7, 30]
+export const presetDaysFor = (example: string): ReadonlyArray<number> =>
+  PRESET_SETS[example] ?? [7, 30]
 
 const VALIDATION_FIELDS = [
   {
@@ -119,8 +119,8 @@ const presetsSource = (
   renderer: 'tailwind' | 'stylex',
 ): string => {
   const isStyleX = renderer === 'stylex'
-  const isShowcase = fixture.astryxExample === 'DateRangeInputShowcase'
-  const days = presetDaysFor(fixture.astryxExample)
+  const isShowcase = fixture.example === 'DateRangeInputShowcase'
+  const days = presetDaysFor(fixture.example)
   const presetLines = days
     .map(
       n =>

@@ -431,7 +431,7 @@ export type Message = typeof Message.Type`,
   Chart.registerChart('drawer-rtl-chart', theme => ({
     grid: Chart.compactGrid(),
     series: [{ data: [350, 350, 350, 350, 350, 350, 350], itemStyle: { color: theme.chart2 }, name: 'Goal', type: 'bar' }],
-    tooltip: Chart.shadcnTooltip(theme),
+    tooltip: Chart.tooltipOptions(theme),
     xAxis: { ...Chart.categoryAxis(theme, ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], { boundaryGap: true }), inverse: true },
     yAxis: Chart.valueAxis(theme, { showLabels: false }),
   }))

@@ -48,7 +48,7 @@ Chart.registerChart(AREA_HOST, (theme): EChartsOption => ({
       type: 'line',
     },
   ],
-  tooltip: Chart.shadcnTooltip(theme),
+  tooltip: Chart.tooltipOptions(theme),
   xAxis: Chart.categoryAxis(theme, MONTHS),
   yAxis: Chart.valueAxis(theme),
 }))
@@ -69,14 +69,14 @@ Chart.registerChart(BAR_HOST, (theme): EChartsOption => ({
       type: 'bar',
     },
   ],
-  tooltip: Chart.shadcnTooltip(theme),
+  tooltip: Chart.tooltipOptions(theme),
   xAxis: Chart.categoryAxis(theme, MONTHS, { boundaryGap: true }),
   yAxis: Chart.valueAxis(theme),
 }))
 
 Chart.registerChart(LINE_HOST, (theme): EChartsOption => ({
   grid: Chart.compactGrid({ bottom: 42 }),
-  legend: Chart.shadcnLegend(theme),
+  legend: Chart.legendOptions(theme),
   series: [
     {
       data: [142, 136, 158, 149, 172, 151],
@@ -97,13 +97,13 @@ Chart.registerChart(LINE_HOST, (theme): EChartsOption => ({
       type: 'line',
     },
   ],
-  tooltip: Chart.shadcnTooltip(theme),
+  tooltip: Chart.tooltipOptions(theme),
   xAxis: Chart.categoryAxis(theme, MONTHS),
   yAxis: Chart.valueAxis(theme),
 }))
 
 Chart.registerChart(PIE_HOST, (theme): EChartsOption => ({
-  legend: Chart.shadcnLegend(theme),
+  legend: Chart.legendOptions(theme),
   series: [
     {
       data: [
@@ -119,7 +119,7 @@ Chart.registerChart(PIE_HOST, (theme): EChartsOption => ({
       type: 'pie',
     },
   ],
-  tooltip: Chart.shadcnTooltip(theme, { trigger: 'item' }),
+  tooltip: Chart.tooltipOptions(theme, { trigger: 'item' }),
 }))
 
 Chart.registerChart(RADAR_HOST, (theme): EChartsOption => ({
@@ -149,7 +149,7 @@ Chart.registerChart(RADAR_HOST, (theme): EChartsOption => ({
       type: 'radar',
     },
   ],
-  tooltip: Chart.shadcnTooltip(theme, { trigger: 'item' }),
+  tooltip: Chart.tooltipOptions(theme, { trigger: 'item' }),
 }))
 
 Chart.registerChart(RADIAL_HOST, (theme): EChartsOption => ({
@@ -181,7 +181,7 @@ Chart.registerChart(RADIAL_HOST, (theme): EChartsOption => ({
       type: 'bar',
     },
   ],
-  tooltip: Chart.shadcnTooltip(theme, { trigger: 'item' }),
+  tooltip: Chart.tooltipOptions(theme, { trigger: 'item' }),
 }))
 
 const metric = <Message>(

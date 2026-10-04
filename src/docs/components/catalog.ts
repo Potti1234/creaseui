@@ -414,7 +414,7 @@ export const view = (
       description: definition.description,
       kind,
       architecture: definition.architecture ?? architectureFor(kind, name),
-      installation: `npx shadcn@latest add Potti1234/creaseui/${slug}`,
+      installation: `npx creaseui add ${slug}`,
       usage:
         model.renderer === 'stylex'
           ? (definition.usage ?? usageFor(slug, name, kind)).replaceAll(

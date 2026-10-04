@@ -44,13 +44,13 @@ export interface SeparatorCopy {
 export const separatorCopy = (kind: SeparatorKind): SeparatorCopy =>
   kind === 'rtl'
     ? {
-        title: 'shadcn/ui',
+        title: 'CreaseUI',
         subtitle: 'الأساس لنظام التصميم الخاص بك',
         description:
           'مجموعة من المكونات المصممة بشكل جميل يمكنك تخصيصها وتوسيعها والبناء عليها.',
       }
     : {
-        title: 'shadcn/ui',
+        title: 'CreaseUI',
         subtitle: 'The Foundation for your Design System',
         description:
           'A set of beautifully designed components that you can customize, extend, and build on.',

@@ -248,7 +248,7 @@ const emitInit = (fixture: InputGroupFixture): string => {
   if (kindUsesPopover(fixture.kind)) {
     return `export const init = (): Update.Return<Model, Message> => ({
   model: {
-    values: { copyUrl: 'https://x.com/shadcn' },
+    values: { copyUrl: 'https://creaseui.com' },
     popover: Popover.init({ id: 'secure-info', isAnimated: false }),
     isFavorite: false,
     isCopied: false,
@@ -283,7 +283,7 @@ const emitUpdate = (fixture: InputGroupFixture): string => {
   if (kindUsesPopover(fixture.kind)) {
     return `const CopyUrl = Command.define('CopyDocsUrl', {
   messages: [Message.CompletedCopy],
-  execute: Effect.promise(() => navigator.clipboard.writeText('https://x.com/shadcn')).pipe(
+  execute: Effect.promise(() => navigator.clipboard.writeText('https://creaseui.com')).pipe(
     Effect.as(Message.CompletedCopy()),
   ),
 })
@@ -547,7 +547,7 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
     case 'button': {
       const copyGroup = `InputGroup.inputGroup({
           children: [
-            ${emitInput('buttonCopy', 'button-copy', "\n            placeholder: 'https://x.com/shadcn',")},
+            ${emitInput('buttonCopy', 'button-copy', "\n            placeholder: 'https://creaseui.com',")},
             InputGroup.inputGroupAddon({
               align: 'inline-end',
               children: [

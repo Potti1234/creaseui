@@ -14,7 +14,7 @@ export const listInputPage = authoredPage({
     architecture:
       'List Input is a submodel: its Model owns reorder state and announcements while the parent Model owns the record list. Changes report ItemAdded/ItemRemoved/ItemUpdated/ItemReordered OutMessages upward.',
     apiHref:
-      'https://github.com/facebook/astryx/blob/main/packages/lab/src/ListInput/ListInput.tsx',
+      'https://github.com/Potti1234/creaseui/blob/main/src/ui/list-input.ts',
     styling:
       'Rows render as a grid (fields + remove + reorder); under 640px columns stack and the actions move to the first row. The Add button fills the row.',
     accessibility:

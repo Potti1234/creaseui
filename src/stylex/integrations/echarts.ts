@@ -18,7 +18,11 @@ export const categoryAxis = ECharts.categoryAxis
 export const colorWithOpacity = ECharts.colorWithOpacity
 export const compactGrid = ECharts.compactGrid
 export const registerChart = ECharts.registerChart
+export const legendOptions = ECharts.legendOptions
+export const tooltipOptions = ECharts.tooltipOptions
+/** @deprecated Use legendOptions. */
 export const shadcnLegend = ECharts.shadcnLegend
+/** @deprecated Use tooltipOptions. */
 export const shadcnTooltip = ECharts.shadcnTooltip
 export const SyncChart = ECharts.SyncChart
 export const valueAxis = ECharts.valueAxis

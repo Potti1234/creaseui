@@ -13,8 +13,7 @@ export const listPage = authoredPage({
       'Ordered, unordered, and none-marker lists of label/description rows.',
     architecture:
       'List is a stateless render helper. The parent supplies listStyle, divider, and row content per render; it returns Html directly.',
-    apiHref:
-      'https://github.com/facebook/astryx/blob/main/packages/core/src/List/List.tsx',
+    apiHref: 'https://github.com/Potti1234/creaseui/blob/main/src/ui/list.ts',
     styling:
       'Pick the marker style for the content semantics (disc for unordered, decimal for steps, none for stacked rows); dividers separate dense message-style rows.',
     accessibility:

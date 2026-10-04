@@ -470,7 +470,7 @@ const mailNavigation = <Message>(h: HtmlBuilder<Message>): Html =>
     h,
   )
 
-/* Astryx "Kanban Board": horizontal lanes where the column itself is the status. */
+/* CreaseUI "Kanban Board": horizontal lanes where the column itself is the status. */
 export const kanbanBoard = <Message>(h: HtmlBuilder<Message>): Html => {
   const laneCard = (
     cardTitle: string,
@@ -703,7 +703,7 @@ export const kanbanBoard = <Message>(h: HtmlBuilder<Message>): Html => {
   )
 }
 
-/* Astryx "Inbox Table": the table indexes a reading pane instead of being the destination. */
+/* CreaseUI "Inbox Table": the table indexes a reading pane instead of being the destination. */
 type MailThread = Readonly<{
   email: string
   id: string
@@ -1126,7 +1126,7 @@ export const inboxTable = <Message>(
   )
 }
 
-/* Astryx "Order Detail": a record holding children plus a chronological activity rail. */
+/* CreaseUI "Order Detail": a record holding children plus a chronological activity rail. */
 export const orderDetail = <Message>(h: HtmlBuilder<Message>): Html =>
   masterDetailPage(
     {
@@ -1527,7 +1527,7 @@ export const orderDetail = <Message>(h: HtmlBuilder<Message>): Html =>
     h,
   )
 
-/* Astryx "Data Dashboard": every tile carries a sparkline and period-over-period deltas. */
+/* CreaseUI "Data Dashboard": every tile carries a sparkline and period-over-period deltas. */
 export const dataDashboard = <Message>(
   toMessage: (message: ChartMessage) => Message,
   h: HtmlBuilder<Message>,
@@ -1846,7 +1846,7 @@ export const dataDashboard = <Message>(
   )
 }
 
-/* Astryx "Card Grid": browsable tiles with filter tabs and a real empty state. */
+/* CreaseUI "Card Grid": browsable tiles with filter tabs and a real empty state. */
 type CatalogProduct = Readonly<{
   format: string
   name: string
@@ -2187,7 +2187,7 @@ export const cardGrid = <Message>(
   )
 }
 
-/* Astryx "Checkout Form": a long sectioned form beside a sticky order summary. */
+/* CreaseUI "Checkout Form": a long sectioned form beside a sticky order summary. */
 export const checkoutForm = <Message>(
   props: Readonly<{
     delivery: string

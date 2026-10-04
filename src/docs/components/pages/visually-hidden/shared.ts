@@ -54,9 +54,9 @@ export const vhItems: ReadonlyArray<{
   status: string
   variant: 'success' | 'error'
 }> = [
-  { name: 'astryx-core', status: 'Passing', variant: 'success' },
-  { name: 'astryx-charts', status: 'Failing', variant: 'error' },
-  { name: 'astryx-cli', status: 'Passing', variant: 'success' },
+  { name: 'creaseui-core', status: 'Passing', variant: 'success' },
+  { name: 'creaseui-charts', status: 'Failing', variant: 'error' },
+  { name: 'creaseui-cli', status: 'Passing', variant: 'success' },
 ]
 
 export const vhStats: ReadonlyArray<{
@@ -76,9 +76,9 @@ const actionsSource = `const ACTIONS = [
 ] as const`
 
 const itemsSource = `const ITEMS = [
-  { name: 'astryx-core', status: 'Passing', variant: 'secondary' },
-  { name: 'astryx-charts', status: 'Failing', variant: 'destructive' },
-  { name: 'astryx-cli', status: 'Passing', variant: 'secondary' },
+  { name: 'creaseui-core', status: 'Passing', variant: 'secondary' },
+  { name: 'creaseui-charts', status: 'Failing', variant: 'destructive' },
+  { name: 'creaseui-cli', status: 'Passing', variant: 'secondary' },
 ] as const`
 
 const statsSource = `const STATS = [

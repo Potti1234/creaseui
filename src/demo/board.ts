@@ -242,7 +242,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           onNone: () => ({
             model: modifyFields(model, {
               presetError: () =>
-                'Enter a valid shadcn preset code, URL, or --preset flag.',
+                'Enter a valid CreaseUI preset code, URL, or --preset flag.',
             }),
           }),
           onSome: decoded => ({
@@ -773,7 +773,7 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
                     h.OnInput(value =>
                       Message['ChangedCreatePresetInput']({ value }),
                     ),
-                    h.Placeholder('Paste code or shadcn URL'),
+                    h.Placeholder('Paste code or CreaseUI URL'),
                     h.Class(
                       'h-9 w-full rounded-lg border border-white/10 bg-black/20 px-3 font-mono text-xs text-white outline-none focus-visible:ring-2 focus-visible:ring-white/30',
                     ),

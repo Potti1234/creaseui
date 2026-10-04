@@ -59,14 +59,15 @@ export function useUser(id: string) {
 }`
 
 export const JSON_CODE = `{
-  "name": "@astryxdesign/core",
-  "version": "0.0.5",
+  "name": "creaseui-example",
+  "version": "0.1.0",
   "dependencies": {
-    "@astryxdesign/theme-neutral": "^0.1.0",
-    "react": "^19.0.0"
+    "@foldkit/ui": "0.164.0",
+    "foldkit": "0.164.0",
+    "effect": "4.0.0-rc.117"
   },
   "scripts": {
-    "build": "tsup",
+    "build": "vite build",
     "test": "vitest"
   }
 }`
@@ -76,9 +77,9 @@ export const SCROLLABLE_CODE = Array.from(
   (_, i) => `const line${String(i + 1)} = ${String(i + 1)};`,
 ).join('\n')
 
-export const TERMINAL_CODE = `$ astryx init --features agents
-✓ AI agent docs installed → AGENTS.md
-$ pnpm astryx component CodeBlock --dense`
+export const TERMINAL_CODE = `$ npx creaseui init
+✓ CreaseUI theme and core components installed
+$ npx creaseui add code-block`
 
 export const codeBlockFixtures: Readonly<
   [CodeBlockFixture, ...Array<CodeBlockFixture>]
@@ -106,13 +107,13 @@ export const codeBlockFixtures: Readonly<
     blocks: [
       {
         id: 'npm',
-        code: 'npm install @astryxdesign/core',
+        code: 'npx creaseui add code-block',
         language: 'bash',
         hasCopyButton: true,
       },
       {
         id: 'yarn',
-        code: 'yarn add @astryxdesign/theme-neutral',
+        code: 'npx creaseui init',
         language: 'bash',
         hasCopyButton: true,
       },

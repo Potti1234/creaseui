@@ -277,9 +277,9 @@ const cartesianOption = (
 
   return {
     grid: Chart.compactGrid({ bottom: multiple ? 42 : 24 }),
-    ...(multiple ? { legend: Chart.shadcnLegend(theme) } : {}),
+    ...(multiple ? { legend: Chart.legendOptions(theme) } : {}),
     series,
-    tooltip: Chart.shadcnTooltip(theme),
+    tooltip: Chart.tooltipOptions(theme),
     xAxis: horizontal
       ? Chart.valueAxis(theme)
       : Chart.categoryAxis(theme, MONTHS, { boundaryGap: isBar }),
@@ -335,19 +335,19 @@ const pieOption = (
   }
   return {
     ...(spec.id.includes('legend')
-      ? { legend: Chart.shadcnLegend(theme) }
+      ? { legend: Chart.legendOptions(theme) }
       : {}),
     series: spec.id.includes('stacked')
       ? [base, { ...base, data: data.slice(0, 3), radius: ['18%', '35%'] }]
       : [base],
-    tooltip: Chart.shadcnTooltip(theme, { trigger: 'item' }),
+    tooltip: Chart.tooltipOptions(theme, { trigger: 'item' }),
   } as EChartsOption
 }
 
 const radarOption = (spec: ChartSpec, theme: Chart.ChartTheme): EChartsOption =>
   ({
     ...(spec.id.includes('legend') || spec.id.includes('icons')
-      ? { legend: Chart.shadcnLegend(theme) }
+      ? { legend: Chart.legendOptions(theme) }
       : {}),
     radar: {
       axisLine: {
@@ -404,7 +404,7 @@ const radarOption = (spec: ChartSpec, theme: Chart.ChartTheme): EChartsOption =>
         type: 'radar',
       },
     ],
-    tooltip: Chart.shadcnTooltip(theme, { trigger: 'item' }),
+    tooltip: Chart.tooltipOptions(theme, { trigger: 'item' }),
   }) as EChartsOption
 
 const radialOption = (
@@ -455,7 +455,7 @@ const radialOption = (
         type: 'bar',
       },
     ],
-    tooltip: Chart.shadcnTooltip(theme, { trigger: 'item' }),
+    tooltip: Chart.tooltipOptions(theme, { trigger: 'item' }),
   }) as EChartsOption
 
 const tooltipOption = (
@@ -476,7 +476,7 @@ const tooltipOption = (
       },
     ],
     tooltip: {
-      ...Chart.shadcnTooltip(theme),
+      ...Chart.tooltipOptions(theme),
       axisPointer: {
         type: spec.id.includes('indicator-line') ? 'line' : 'none',
       },
@@ -651,7 +651,7 @@ export const view = (
                       {
                         as: 'p',
                         children: [
-                          'A collection of ready-to-use chart components built with Apache ECharts and foldkit, styled like shadcn/ui. From basic charts to rich data displays.',
+                          'A collection of ready-to-use chart components built with Apache ECharts and foldkit, styled with CreaseUI. From basic charts to rich data displays.',
                         ],
                         variant: 'chartLead',
                       },

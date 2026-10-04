@@ -9,7 +9,7 @@ export const toastConfig: NotificationConfig = {
   namespace: 'Toast',
   kind: 'recipe',
   description:
-    'Provides the shadcn Toast naming surface as a source-compatible recipe alias over Crease UI’s Sonner notification state engine.',
+    'Provides the CreaseUI Toast naming surface as a source-compatible recipe alias over Crease UI’s Sonner notification state engine.',
 }
 export const toastExamples = (
   renderer: 'tailwind' | 'stylex',

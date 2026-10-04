@@ -210,7 +210,7 @@ const emitSpanning = (renderer: 'tailwind' | 'stylex'): string => {
   const cyan = renderer === 'tailwind' ? cyanCardTw : cyanCardSx
   const featured = `Stack.vStack({ gap: 1, children: [
                   ${label(`'Featured Release'`)},
-                  ${supporting(`'Astryx 4.0 is now available with new layout primitives, refreshed tokens, and improved theming support across the system.'`)},
+                  ${supporting(`'CreaseUI is now available with new layout primitives, refreshed tokens, and improved theming support across the system.'`)},
                 ] }, h)`
   return `Grid.grid(
       { columns: 3, gap: 4, width: '100%', maxWidth: 500, children: [
@@ -219,7 +219,7 @@ const emitSpanning = (renderer: 'tailwind' | 'stylex'): string => {
             renderer === 'tailwind'
               ? cyan(featured)
               : cyan(`${label(`'Featured Release'`)},
-                  ${supporting(`'Astryx 4.0 is now available with new layout primitives, refreshed tokens, and improved theming support across the system.'`)}`)
+                  ${supporting(`'CreaseUI is now available with new layout primitives, refreshed tokens, and improved theming support across the system.'`)}`)
           },
         ] }, h),
         ...STATS.map(stat =>
@@ -231,10 +231,10 @@ const emitSpanning = (renderer: 'tailwind' | 'stylex'): string => {
             renderer === 'tailwind'
               ? cyan(`Stack.vStack({ gap: 1, children: [
                   ${label(`'Community Showcase'`)},
-                  ${supporting(`'See how teams are building with Astryx across the organization'`)},
+                  ${supporting(`'See how teams are building with CreaseUI across the organization'`)},
                 ] }, h)`)
               : cyan(`${label(`'Community Showcase'`)},
-                  ${supporting(`'See how teams are building with Astryx across the organization'`)}`)
+                  ${supporting(`'See how teams are building with CreaseUI across the organization'`)}`)
           },
         ] }, h),
       ] },

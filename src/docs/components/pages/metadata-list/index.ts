@@ -14,7 +14,7 @@ export const metadataListPage = authoredPage({
     architecture:
       'Metadata List is a submodel: a tiny Model carries whether a capped list is expanded (Show more), and the view renders a dl grid whose layout is resolved by `resolveLayout` — single column, multi column, numeric columns, or horizontal. `metadataListItem` renders each dt/dd pair; pass `stacked` from `resolveLayout(...).isStacked` so items match the list layout.',
     apiHref:
-      'https://github.com/facebook/astryx/blob/main/packages/core/src/MetadataList/MetadataList.tsx',
+      'https://github.com/Potti1234/creaseui/blob/main/src/ui/metadata-list.ts',
     composition:
       'Parent Model\n├── Metadata List child Model (isOpen)\n└── metadataList view\n    ├── optional title\n    ├── dl of metadataListItem pairs\n    └── show more/less toggle when maxNumOfItems caps the list',
     styling:

@@ -326,7 +326,7 @@ const user = (h: HtmlBuilder<Message>, collapsed: boolean): Html =>
                     Sidebar.sidebarMenuButton(
                       {
                         children: [
-                          badge({ children: ['CN'], variant: 'secondary' }, h),
+                          badge({ children: ['CU'], variant: 'secondary' }, h),
                           ...(collapsed
                             ? []
                             : [
@@ -336,7 +336,7 @@ const user = (h: HtmlBuilder<Message>, collapsed: boolean): Html =>
                                     children: [
                                       text(
                                         {
-                                          children: ['shadcn'],
+                                          children: ['CreaseUI'],
                                           variant: 'label',
                                         },
                                         h,
@@ -354,7 +354,7 @@ const user = (h: HtmlBuilder<Message>, collapsed: boolean): Html =>
                                 ),
                               ]),
                         ],
-                        tooltip: 'shadcn account',
+                        tooltip: 'CreaseUI account',
                         size: 'lg',
                       },
                       h,

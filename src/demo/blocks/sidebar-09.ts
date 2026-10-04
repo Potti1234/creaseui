@@ -52,9 +52,9 @@ type Mail = Readonly<{
 
 export const data = {
   user: {
-    name: 'shadcn',
+    name: 'CreaseUI',
     email: 'm@example.com',
-    avatar: '/avatars/shadcn.jpg',
+    avatar: '/logo-mark.svg',
   },
   navMain: [
     {
@@ -279,7 +279,7 @@ const userSummary = (h: HtmlBuilder<Message>): Html => {
             avatarFallback(
               {
                 class: 'rounded-lg',
-                children: ['CN'],
+                children: ['CU'],
               },
               h,
             ),
@@ -307,7 +307,7 @@ const userActionConfig = (
     M.when('upgrade', () => ({
       label: 'Upgrade to Pro',
       icon: Icon.icon('sparkles', {}, h),
-      group: 'shadcn · m@example.com',
+      group: 'CreaseUI · m@example.com',
     })),
     M.when('account', () => ({
       label: 'Account',
@@ -725,7 +725,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
 // Preserve the source's 350px nested-sidebar width through the shared provider.
 // Mail ordering stays deterministic when a mailbox is selected.
 // PORT NOTE: Avatar files are not bundled, so the source image is represented
-// by its CN fallback.
+// by its CU fallback.
 
 /* Minimal interactive wiring:
    const model = init()

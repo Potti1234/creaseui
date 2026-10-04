@@ -14,7 +14,7 @@ export const markdownPage = authoredPage({
     architecture:
       'Markdown is a submodel component. The parent owns one Markdown.Model, wires GotMarkdownMessage through update, and the child parses the source and manages per-fence CodeBlock state.',
     apiHref:
-      'https://github.com/facebook/astryx/blob/main/packages/core/src/Markdown/Markdown.tsx',
+      'https://github.com/Potti1234/creaseui/blob/main/src/ui/markdown.ts',
     styling:
       'Compact density tightens block spacing for chat surfaces; headingLevelStart shifts the rendered heading scale, and contentWidth/contentAlign bound prose measure.',
     accessibility:

@@ -1180,7 +1180,7 @@ const homeView = (h: HtmlBuilder<Message>): Html => {
       h.h1([h.Class('text-3xl font-semibold tracking-tight')], ['crease/ui']),
       h.p(
         [h.Class('text-muted-foreground')],
-        ['shadcn/ui rebuilt on foldkit UI. Pick a demo:'],
+        ['CreaseUI components built on Foldkit UI. Pick a demo:'],
       ),
       h.ul(
         [h.Class('list-disc pl-5 text-sm leading-7')],
@@ -1190,7 +1190,7 @@ const homeView = (h: HtmlBuilder<Message>): Html => {
             [
               h.a(
                 [h.Href(createPath()), h.Class('underline underline-offset-4')],
-                ['/create — the ui.shadcn.com/create preview board'],
+                ['/create — the CreaseUI preview board'],
               ),
             ],
           ),
@@ -1202,7 +1202,7 @@ const homeView = (h: HtmlBuilder<Message>): Html => {
                   h.Href(chartsPath('area')),
                   h.Class('underline underline-offset-4'),
                 ],
-                ['/charts — shadcn charts rendered with Apache ECharts'],
+                ['/charts — CreaseUI charts rendered with Apache ECharts'],
               ),
             ],
           ),

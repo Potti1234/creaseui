@@ -148,7 +148,7 @@ const spanningView = <Msg>(h: HtmlBuilder<Msg>): Html =>
                       children: [
                         label('Featured Release', h),
                         supporting(
-                          'Astryx 4.0 is now available with new layout primitives, refreshed tokens, and improved theming support across the system.',
+                          'CreaseUI is now available with new layout primitives, refreshed tokens, and improved theming support across the system.',
                           h,
                         ),
                       ],
@@ -177,7 +177,7 @@ const spanningView = <Msg>(h: HtmlBuilder<Msg>): Html =>
                       children: [
                         label('Community Showcase', h),
                         supporting(
-                          'See how teams are building with Astryx across the organization',
+                          'See how teams are building with CreaseUI across the organization',
                           h,
                         ),
                       ],

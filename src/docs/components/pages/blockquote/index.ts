@@ -14,7 +14,7 @@ export const blockquotePage = authoredPage({
     architecture:
       'Blockquote is a stateless render helper. The parent supplies the quote content and optional cite per render; it returns Html directly.',
     apiHref:
-      'https://github.com/facebook/astryx/blob/main/packages/core/src/Blockquote/Blockquote.tsx',
+      'https://github.com/Potti1234/creaseui/blob/main/src/ui/blockquote.ts',
     styling:
       'The component carries its own left accent border and muted text; wrap it for layout instead of restyling the quote itself.',
     accessibility:

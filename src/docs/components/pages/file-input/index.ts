@@ -14,7 +14,7 @@ export const fileInputPage = authoredPage({
     architecture:
       'File Input is a submodel wrapping @foldkit/ui FileDrop: its Model owns drag state plus validation config; accepted files report ChangedValue OutMessages to the parent.',
     apiHref:
-      'https://github.com/facebook/astryx/blob/main/packages/core/src/FileInput/FileInput.tsx',
+      'https://github.com/Potti1234/creaseui/blob/main/src/ui/file-input.ts',
     styling:
       'Dropzone renders a dashed bordered area that tints on drag-over; compact mode renders a browse button with the selected file names.',
     accessibility:

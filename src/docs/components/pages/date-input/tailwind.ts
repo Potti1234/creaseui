@@ -82,7 +82,7 @@ export const dateInputTailwindPreviewProgram = definePreviewProgram<
     const monthName = new Intl.DateTimeFormat('en-US', {
       month: 'short',
     }).format(Calendar.toDateLocal(today))
-    const values = INITIAL_VALUES[fixture.astryxExample] ?? [undefined]
+    const values = INITIAL_VALUES[fixture.example] ?? [undefined]
     const isConstraints = fixture.kind === 'constraints'
     return {
       _docsPage: 'date-input',
@@ -158,7 +158,7 @@ export const dateInputTailwindPreviewProgram = definePreviewProgram<
       onNone: () => 'Pick a date in the available range',
       onSome: date => `Booked: ${DateInput.dateToISO(date)}`,
     })
-    switch (fixture.astryxExample) {
+    switch (fixture.example) {
       case 'DateInputClearable':
         return stack([
           supporting(selectedText, h),

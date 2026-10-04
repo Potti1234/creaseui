@@ -15,11 +15,10 @@ export const centerPage = authoredPage({
   definition: {
     kind: 'helper',
     description:
-      'Centers content on one or both flex axes — horizontal, vertical, or both — with the astryx spacing scale for optional inner padding.',
+      'Centers content on one or both flex axes — horizontal, vertical, or both — with the CreaseUI spacing scale for optional inner padding.',
     architecture:
       'Center is a stateless render helper. The axis prop resolves onto justify-content (main axis) and align-items (cross axis); isInline switches to inline-flex for text/icon contexts. Height gives the region its centering space.',
-    apiHref:
-      'https://github.com/facebook/astryx/tree/main/packages/core/src/Center',
+    apiHref: 'https://github.com/Potti1234/creaseui/blob/main/src/ui/center.ts',
     styling:
       'Give the region a height (or place it inside a sized parent) for both-axes centering. Padding props follow the same edge → axis → all cascade as Stack.',
     accessibility:

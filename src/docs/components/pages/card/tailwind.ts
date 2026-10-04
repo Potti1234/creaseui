@@ -13,7 +13,7 @@ import * as Input from '@/ui/input'
 import * as Label from '@/ui/label'
 import * as ToggleGroup from '@/ui/toggle-group'
 
-const IMAGE_URL = 'https://avatar.vercel.sh/shadcn1'
+const IMAGE_URL = 'https://avatar.vercel.sh/creaseui'
 type SpacingValue = '4' | '5' | '6' | '8'
 
 const PreviewToggleGroup = ToggleGroup.create<SpacingValue>()

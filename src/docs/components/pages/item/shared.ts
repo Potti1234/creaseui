@@ -105,9 +105,9 @@ export const itemMusic = [
 
 export const itemPeople = [
   {
-    username: 'shadcn',
-    avatar: 'https://github.com/shadcn.png',
-    email: 'shadcn@vercel.com',
+    username: 'CreaseUI',
+    avatar: '/logo-mark.svg',
+    email: 'creaseui@example.com',
   },
   {
     username: 'maxleiter',
@@ -325,7 +325,7 @@ const emitData = (fixture: ItemFixture): string => {
     case 'group':
     case 'dropdown':
       return `const people = [
-  { username: 'shadcn', avatar: 'https://github.com/shadcn.png', email: 'shadcn@vercel.com' },
+  { username: 'CreaseUI', avatar: '/logo-mark.svg', email: 'creaseui@example.com' },
   { username: 'maxleiter', avatar: 'https://github.com/maxleiter.png', email: 'maxleiter@vercel.com' },
   { username: 'evilrabbit', avatar: 'https://github.com/evilrabbit.png', email: 'evilrabbit@vercel.com' },
 ] as const
@@ -600,8 +600,8 @@ const emitBody = (fixture: ItemFixture, isStyleX: boolean): string => {
                   Avatar.avatar({
                     ${isStyleX ? "size: 'sm'," : "class: 'hidden sm:flex',"}
                     children: [
-                      Avatar.avatarImage({ src: 'https://github.com/shadcn.png', alt: '@shadcn' }, h),
-                      Avatar.avatarFallback({ children: ['CN'] }, h),
+                      Avatar.avatarImage({ src: '/logo-mark.svg', alt: '@creaseui' }, h),
+                      Avatar.avatarFallback({ children: ['CU'] }, h),
                     ],
                   }, h),
                   Avatar.avatar({

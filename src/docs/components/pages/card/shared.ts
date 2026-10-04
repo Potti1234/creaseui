@@ -49,7 +49,7 @@ export const cardFixtures: Readonly<[CardFixture, ...Array<CardFixture>]> = [
   },
 ]
 
-const IMAGE_URL = 'https://avatar.vercel.sh/shadcn1'
+const IMAGE_URL = 'https://avatar.vercel.sh/creaseui'
 
 export const cardRtlCopy = {
   title: 'تسجيل الدخول إلى حسابك',

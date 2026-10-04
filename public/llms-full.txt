@@ -1,6 +1,6 @@
 # crease/ui
 
-> The shadcn/ui design language rebuilt as source-owned Foldkit components. No React or JSX.
+> CreaseUI provides source-owned components built on Foldkit UI. No React or JSX.
 
 ## Primary documentation
 
@@ -13,132 +13,132 @@
 
 ## Components
 
-- Accordion: /docs/components/accordion — install with `npx shadcn@latest add Potti1234/creaseui/accordion`
-- Alert Dialog: /docs/components/alert-dialog — install with `npx shadcn@latest add Potti1234/creaseui/alert-dialog`
-- Alert: /docs/components/alert — install with `npx shadcn@latest add Potti1234/creaseui/alert`
-- App Shell: /docs/components/app-shell — install with `npx shadcn@latest add Potti1234/creaseui/app-shell`
-- Aspect Ratio: /docs/components/aspect-ratio — install with `npx shadcn@latest add Potti1234/creaseui/aspect-ratio`
-- Attachment: /docs/components/attachment — install with `npx shadcn@latest add Potti1234/creaseui/attachment`
-- Avatar Group: /docs/components/avatar-group — install with `npx shadcn@latest add Potti1234/creaseui/avatar-group`
-- Avatar: /docs/components/avatar — install with `npx shadcn@latest add Potti1234/creaseui/avatar`
-- Badge: /docs/components/badge — install with `npx shadcn@latest add Potti1234/creaseui/badge`
-- Banner: /docs/components/banner — install with `npx shadcn@latest add Potti1234/creaseui/banner`
-- Blockquote: /docs/components/blockquote — install with `npx shadcn@latest add Potti1234/creaseui/blockquote`
-- Bottom Sheet: /docs/components/bottom-sheet — install with `npx shadcn@latest add Potti1234/creaseui/bottom-sheet`
-- Breadcrumb: /docs/components/breadcrumb — install with `npx shadcn@latest add Potti1234/creaseui/breadcrumb`
-- Bubble: /docs/components/bubble — install with `npx shadcn@latest add Potti1234/creaseui/bubble`
-- Button Group: /docs/components/button-group — install with `npx shadcn@latest add Potti1234/creaseui/button-group`
-- Button: /docs/components/button — install with `npx shadcn@latest add Potti1234/creaseui/button`
-- Calendar: /docs/components/calendar — install with `npx shadcn@latest add Potti1234/creaseui/calendar`
-- Card: /docs/components/card — install with `npx shadcn@latest add Potti1234/creaseui/card`
-- Carousel: /docs/components/carousel — install with `npx shadcn@latest add Potti1234/creaseui/carousel`
-- Center: /docs/components/center — install with `npx shadcn@latest add Potti1234/creaseui/center`
-- Chart: /docs/components/chart — install with `npx shadcn@latest add Potti1234/creaseui/chart`
-- Chat Reasoning: /docs/components/chat-reasoning — install with `npx shadcn@latest add Potti1234/creaseui/chat-reasoning`
-- Checkbox List: /docs/components/checkbox-list — install with `npx shadcn@latest add Potti1234/creaseui/checkbox-list`
-- Checkbox: /docs/components/checkbox — install with `npx shadcn@latest add Potti1234/creaseui/checkbox`
-- Circular Progress: /docs/components/circular-progress — install with `npx shadcn@latest add Potti1234/creaseui/circular-progress`
-- Clickable Card: /docs/components/clickable-card — install with `npx shadcn@latest add Potti1234/creaseui/clickable-card`
-- Code Block: /docs/components/code-block — install with `npx shadcn@latest add Potti1234/creaseui/code-block`
-- Code: /docs/components/code — install with `npx shadcn@latest add Potti1234/creaseui/code`
-- Collapsible: /docs/components/collapsible — install with `npx shadcn@latest add Potti1234/creaseui/collapsible`
-- Combobox: /docs/components/combobox — install with `npx shadcn@latest add Potti1234/creaseui/combobox`
-- Command: /docs/components/command — install with `npx shadcn@latest add Potti1234/creaseui/command`
-- Context Menu: /docs/components/context-menu — install with `npx shadcn@latest add Potti1234/creaseui/context-menu`
-- Data Table: /docs/components/data-table — install with `npx shadcn@latest add Potti1234/creaseui/data-table`
-- Date Input: /docs/components/date-input — install with `npx shadcn@latest add Potti1234/creaseui/date-input`
-- Date Picker: /docs/components/date-picker — install with `npx shadcn@latest add Potti1234/creaseui/date-picker`
-- Date Range Input: /docs/components/date-range-input — install with `npx shadcn@latest add Potti1234/creaseui/date-range-input`
-- Date Time Input: /docs/components/date-time-input — install with `npx shadcn@latest add Potti1234/creaseui/date-time-input`
-- Dialog: /docs/components/dialog — install with `npx shadcn@latest add Potti1234/creaseui/dialog`
-- Direction: /docs/components/direction — install with `npx shadcn@latest add Potti1234/creaseui/direction`
-- Drawer: /docs/components/drawer — install with `npx shadcn@latest add Potti1234/creaseui/drawer`
-- Dropdown Menu: /docs/components/dropdown-menu — install with `npx shadcn@latest add Potti1234/creaseui/dropdown-menu`
-- Empty: /docs/components/empty — install with `npx shadcn@latest add Potti1234/creaseui/empty`
-- Field Status: /docs/components/field-status — install with `npx shadcn@latest add Potti1234/creaseui/field-status`
-- Field: /docs/components/field — install with `npx shadcn@latest add Potti1234/creaseui/field`
-- File Input: /docs/components/file-input — install with `npx shadcn@latest add Potti1234/creaseui/file-input`
-- Form: /docs/components/form — install with `npx shadcn@latest add Potti1234/creaseui/form`
-- Grid: /docs/components/grid — install with `npx shadcn@latest add Potti1234/creaseui/grid`
-- Heading: /docs/components/heading — install with `npx shadcn@latest add Potti1234/creaseui/heading`
-- Hover Card: /docs/components/hover-card — install with `npx shadcn@latest add Potti1234/creaseui/hover-card`
-- Indicator: /docs/components/indicator — install with `npx shadcn@latest add Potti1234/creaseui/indicator`
-- Info Tip: /docs/components/info-tip — install with `npx shadcn@latest add Potti1234/creaseui/info-tip`
-- Input Group: /docs/components/input-group — install with `npx shadcn@latest add Potti1234/creaseui/input-group`
-- Input Otp: /docs/components/input-otp — install with `npx shadcn@latest add Potti1234/creaseui/input-otp`
-- Input: /docs/components/input — install with `npx shadcn@latest add Potti1234/creaseui/input`
-- Item: /docs/components/item — install with `npx shadcn@latest add Potti1234/creaseui/item`
-- Kbd: /docs/components/kbd — install with `npx shadcn@latest add Potti1234/creaseui/kbd`
-- Label: /docs/components/label — install with `npx shadcn@latest add Potti1234/creaseui/label`
-- Lightbox: /docs/components/lightbox — install with `npx shadcn@latest add Potti1234/creaseui/lightbox`
-- Link: /docs/components/link — install with `npx shadcn@latest add Potti1234/creaseui/link`
-- List Input: /docs/components/list-input — install with `npx shadcn@latest add Potti1234/creaseui/list-input`
-- List: /docs/components/list — install with `npx shadcn@latest add Potti1234/creaseui/list`
-- Log Stream: /docs/components/log-stream — install with `npx shadcn@latest add Potti1234/creaseui/log-stream`
-- Markdown: /docs/components/markdown — install with `npx shadcn@latest add Potti1234/creaseui/markdown`
-- Marker: /docs/components/marker — install with `npx shadcn@latest add Potti1234/creaseui/marker`
-- Menubar: /docs/components/menubar — install with `npx shadcn@latest add Potti1234/creaseui/menubar`
-- Message Scroller: /docs/components/message-scroller — install with `npx shadcn@latest add Potti1234/creaseui/message-scroller`
-- Message: /docs/components/message — install with `npx shadcn@latest add Potti1234/creaseui/message`
-- Metadata List: /docs/components/metadata-list — install with `npx shadcn@latest add Potti1234/creaseui/metadata-list`
-- Mobile Nav: /docs/components/mobile-nav — install with `npx shadcn@latest add Potti1234/creaseui/mobile-nav`
-- More Menu: /docs/components/more-menu — install with `npx shadcn@latest add Potti1234/creaseui/more-menu`
-- Multi Selector: /docs/components/multi-selector — install with `npx shadcn@latest add Potti1234/creaseui/multi-selector`
-- Native Select: /docs/components/native-select — install with `npx shadcn@latest add Potti1234/creaseui/native-select`
-- Navigation Menu: /docs/components/navigation-menu — install with `npx shadcn@latest add Potti1234/creaseui/navigation-menu`
-- Number Input: /docs/components/number-input — install with `npx shadcn@latest add Potti1234/creaseui/number-input`
-- Overflow List: /docs/components/overflow-list — install with `npx shadcn@latest add Potti1234/creaseui/overflow-list`
-- Pagination: /docs/components/pagination — install with `npx shadcn@latest add Potti1234/creaseui/pagination`
-- Popover: /docs/components/popover — install with `npx shadcn@latest add Potti1234/creaseui/popover`
-- Power Search: /docs/components/power-search — install with `npx shadcn@latest add Potti1234/creaseui/power-search`
-- Progress: /docs/components/progress — install with `npx shadcn@latest add Potti1234/creaseui/progress`
-- Radio Group: /docs/components/radio-group — install with `npx shadcn@latest add Potti1234/creaseui/radio-group`
-- Resizable: /docs/components/resizable — install with `npx shadcn@latest add Potti1234/creaseui/resizable`
-- Scroll Area: /docs/components/scroll-area — install with `npx shadcn@latest add Potti1234/creaseui/scroll-area`
-- Section: /docs/components/section — install with `npx shadcn@latest add Potti1234/creaseui/section`
-- Segmented Control: /docs/components/segmented-control — install with `npx shadcn@latest add Potti1234/creaseui/segmented-control`
-- Select: /docs/components/select — install with `npx shadcn@latest add Potti1234/creaseui/select`
-- Selectable Card: /docs/components/selectable-card — install with `npx shadcn@latest add Potti1234/creaseui/selectable-card`
-- Separator: /docs/components/separator — install with `npx shadcn@latest add Potti1234/creaseui/separator`
-- Sheet: /docs/components/sheet — install with `npx shadcn@latest add Potti1234/creaseui/sheet`
-- Side Nav: /docs/components/side-nav — install with `npx shadcn@latest add Potti1234/creaseui/side-nav`
-- Sidebar: /docs/components/sidebar — install with `npx shadcn@latest add Potti1234/creaseui/sidebar`
-- Skeleton: /docs/components/skeleton — install with `npx shadcn@latest add Potti1234/creaseui/skeleton`
-- Slider: /docs/components/slider — install with `npx shadcn@latest add Potti1234/creaseui/slider`
-- Sonner: /docs/components/sonner — install with `npx shadcn@latest add Potti1234/creaseui/sonner`
-- Spinner: /docs/components/spinner — install with `npx shadcn@latest add Potti1234/creaseui/spinner`
-- Stack: /docs/components/stack — install with `npx shadcn@latest add Potti1234/creaseui/stack`
-- Stat: /docs/components/stat — install with `npx shadcn@latest add Potti1234/creaseui/stat`
-- Status Dot: /docs/components/status-dot — install with `npx shadcn@latest add Potti1234/creaseui/status-dot`
-- Stepper: /docs/components/stepper — install with `npx shadcn@latest add Potti1234/creaseui/stepper`
-- Switch: /docs/components/switch — install with `npx shadcn@latest add Potti1234/creaseui/switch`
-- Table: /docs/components/table — install with `npx shadcn@latest add Potti1234/creaseui/table`
-- Tabs: /docs/components/tabs — install with `npx shadcn@latest add Potti1234/creaseui/tabs`
-- Text: /docs/components/text — install with `npx shadcn@latest add Potti1234/creaseui/text`
-- Textarea: /docs/components/textarea — install with `npx shadcn@latest add Potti1234/creaseui/textarea`
-- Thumbnail: /docs/components/thumbnail — install with `npx shadcn@latest add Potti1234/creaseui/thumbnail`
-- Time Input: /docs/components/time-input — install with `npx shadcn@latest add Potti1234/creaseui/time-input`
-- Timer: /docs/components/timer — install with `npx shadcn@latest add Potti1234/creaseui/timer`
-- Timestamp: /docs/components/timestamp — install with `npx shadcn@latest add Potti1234/creaseui/timestamp`
-- Toast: /docs/components/toast — install with `npx shadcn@latest add Potti1234/creaseui/toast`
-- Toggle Group: /docs/components/toggle-group — install with `npx shadcn@latest add Potti1234/creaseui/toggle-group`
-- Toggle: /docs/components/toggle — install with `npx shadcn@latest add Potti1234/creaseui/toggle`
-- Token: /docs/components/token — install with `npx shadcn@latest add Potti1234/creaseui/token`
-- Tokenizer: /docs/components/tokenizer — install with `npx shadcn@latest add Potti1234/creaseui/tokenizer`
-- Toolbar: /docs/components/toolbar — install with `npx shadcn@latest add Potti1234/creaseui/toolbar`
-- Tooltip: /docs/components/tooltip — install with `npx shadcn@latest add Potti1234/creaseui/tooltip`
-- Top Nav: /docs/components/top-nav — install with `npx shadcn@latest add Potti1234/creaseui/top-nav`
-- Tour: /docs/components/tour — install with `npx shadcn@latest add Potti1234/creaseui/tour`
-- Transfer List: /docs/components/transfer-list — install with `npx shadcn@latest add Potti1234/creaseui/transfer-list`
-- Tree List: /docs/components/tree-list — install with `npx shadcn@latest add Potti1234/creaseui/tree-list`
-- Typography: /docs/components/typography — install with `npx shadcn@latest add Potti1234/creaseui/typography`
-- Visually Hidden: /docs/components/visually-hidden — install with `npx shadcn@latest add Potti1234/creaseui/visually-hidden`
+- Accordion: /docs/components/accordion — install with `npx creaseui add accordion`
+- Alert Dialog: /docs/components/alert-dialog — install with `npx creaseui add alert-dialog`
+- Alert: /docs/components/alert — install with `npx creaseui add alert`
+- App Shell: /docs/components/app-shell — install with `npx creaseui add app-shell`
+- Aspect Ratio: /docs/components/aspect-ratio — install with `npx creaseui add aspect-ratio`
+- Attachment: /docs/components/attachment — install with `npx creaseui add attachment`
+- Avatar Group: /docs/components/avatar-group — install with `npx creaseui add avatar-group`
+- Avatar: /docs/components/avatar — install with `npx creaseui add avatar`
+- Badge: /docs/components/badge — install with `npx creaseui add badge`
+- Banner: /docs/components/banner — install with `npx creaseui add banner`
+- Blockquote: /docs/components/blockquote — install with `npx creaseui add blockquote`
+- Bottom Sheet: /docs/components/bottom-sheet — install with `npx creaseui add bottom-sheet`
+- Breadcrumb: /docs/components/breadcrumb — install with `npx creaseui add breadcrumb`
+- Bubble: /docs/components/bubble — install with `npx creaseui add bubble`
+- Button Group: /docs/components/button-group — install with `npx creaseui add button-group`
+- Button: /docs/components/button — install with `npx creaseui add button`
+- Calendar: /docs/components/calendar — install with `npx creaseui add calendar`
+- Card: /docs/components/card — install with `npx creaseui add card`
+- Carousel: /docs/components/carousel — install with `npx creaseui add carousel`
+- Center: /docs/components/center — install with `npx creaseui add center`
+- Chart: /docs/components/chart — install with `npx creaseui add chart`
+- Chat Reasoning: /docs/components/chat-reasoning — install with `npx creaseui add chat-reasoning`
+- Checkbox List: /docs/components/checkbox-list — install with `npx creaseui add checkbox-list`
+- Checkbox: /docs/components/checkbox — install with `npx creaseui add checkbox`
+- Circular Progress: /docs/components/circular-progress — install with `npx creaseui add circular-progress`
+- Clickable Card: /docs/components/clickable-card — install with `npx creaseui add clickable-card`
+- Code Block: /docs/components/code-block — install with `npx creaseui add code-block`
+- Code: /docs/components/code — install with `npx creaseui add code`
+- Collapsible: /docs/components/collapsible — install with `npx creaseui add collapsible`
+- Combobox: /docs/components/combobox — install with `npx creaseui add combobox`
+- Command: /docs/components/command — install with `npx creaseui add command`
+- Context Menu: /docs/components/context-menu — install with `npx creaseui add context-menu`
+- Data Table: /docs/components/data-table — install with `npx creaseui add data-table`
+- Date Input: /docs/components/date-input — install with `npx creaseui add date-input`
+- Date Picker: /docs/components/date-picker — install with `npx creaseui add date-picker`
+- Date Range Input: /docs/components/date-range-input — install with `npx creaseui add date-range-input`
+- Date Time Input: /docs/components/date-time-input — install with `npx creaseui add date-time-input`
+- Dialog: /docs/components/dialog — install with `npx creaseui add dialog`
+- Direction: /docs/components/direction — install with `npx creaseui add direction`
+- Drawer: /docs/components/drawer — install with `npx creaseui add drawer`
+- Dropdown Menu: /docs/components/dropdown-menu — install with `npx creaseui add dropdown-menu`
+- Empty: /docs/components/empty — install with `npx creaseui add empty`
+- Field Status: /docs/components/field-status — install with `npx creaseui add field-status`
+- Field: /docs/components/field — install with `npx creaseui add field`
+- File Input: /docs/components/file-input — install with `npx creaseui add file-input`
+- Form: /docs/components/form — install with `npx creaseui add form`
+- Grid: /docs/components/grid — install with `npx creaseui add grid`
+- Heading: /docs/components/heading — install with `npx creaseui add heading`
+- Hover Card: /docs/components/hover-card — install with `npx creaseui add hover-card`
+- Indicator: /docs/components/indicator — install with `npx creaseui add indicator`
+- Info Tip: /docs/components/info-tip — install with `npx creaseui add info-tip`
+- Input Group: /docs/components/input-group — install with `npx creaseui add input-group`
+- Input Otp: /docs/components/input-otp — install with `npx creaseui add input-otp`
+- Input: /docs/components/input — install with `npx creaseui add input`
+- Item: /docs/components/item — install with `npx creaseui add item`
+- Kbd: /docs/components/kbd — install with `npx creaseui add kbd`
+- Label: /docs/components/label — install with `npx creaseui add label`
+- Lightbox: /docs/components/lightbox — install with `npx creaseui add lightbox`
+- Link: /docs/components/link — install with `npx creaseui add link`
+- List Input: /docs/components/list-input — install with `npx creaseui add list-input`
+- List: /docs/components/list — install with `npx creaseui add list`
+- Log Stream: /docs/components/log-stream — install with `npx creaseui add log-stream`
+- Markdown: /docs/components/markdown — install with `npx creaseui add markdown`
+- Marker: /docs/components/marker — install with `npx creaseui add marker`
+- Menubar: /docs/components/menubar — install with `npx creaseui add menubar`
+- Message Scroller: /docs/components/message-scroller — install with `npx creaseui add message-scroller`
+- Message: /docs/components/message — install with `npx creaseui add message`
+- Metadata List: /docs/components/metadata-list — install with `npx creaseui add metadata-list`
+- Mobile Nav: /docs/components/mobile-nav — install with `npx creaseui add mobile-nav`
+- More Menu: /docs/components/more-menu — install with `npx creaseui add more-menu`
+- Multi Selector: /docs/components/multi-selector — install with `npx creaseui add multi-selector`
+- Native Select: /docs/components/native-select — install with `npx creaseui add native-select`
+- Navigation Menu: /docs/components/navigation-menu — install with `npx creaseui add navigation-menu`
+- Number Input: /docs/components/number-input — install with `npx creaseui add number-input`
+- Overflow List: /docs/components/overflow-list — install with `npx creaseui add overflow-list`
+- Pagination: /docs/components/pagination — install with `npx creaseui add pagination`
+- Popover: /docs/components/popover — install with `npx creaseui add popover`
+- Power Search: /docs/components/power-search — install with `npx creaseui add power-search`
+- Progress: /docs/components/progress — install with `npx creaseui add progress`
+- Radio Group: /docs/components/radio-group — install with `npx creaseui add radio-group`
+- Resizable: /docs/components/resizable — install with `npx creaseui add resizable`
+- Scroll Area: /docs/components/scroll-area — install with `npx creaseui add scroll-area`
+- Section: /docs/components/section — install with `npx creaseui add section`
+- Segmented Control: /docs/components/segmented-control — install with `npx creaseui add segmented-control`
+- Select: /docs/components/select — install with `npx creaseui add select`
+- Selectable Card: /docs/components/selectable-card — install with `npx creaseui add selectable-card`
+- Separator: /docs/components/separator — install with `npx creaseui add separator`
+- Sheet: /docs/components/sheet — install with `npx creaseui add sheet`
+- Side Nav: /docs/components/side-nav — install with `npx creaseui add side-nav`
+- Sidebar: /docs/components/sidebar — install with `npx creaseui add sidebar`
+- Skeleton: /docs/components/skeleton — install with `npx creaseui add skeleton`
+- Slider: /docs/components/slider — install with `npx creaseui add slider`
+- Sonner: /docs/components/sonner — install with `npx creaseui add sonner`
+- Spinner: /docs/components/spinner — install with `npx creaseui add spinner`
+- Stack: /docs/components/stack — install with `npx creaseui add stack`
+- Stat: /docs/components/stat — install with `npx creaseui add stat`
+- Status Dot: /docs/components/status-dot — install with `npx creaseui add status-dot`
+- Stepper: /docs/components/stepper — install with `npx creaseui add stepper`
+- Switch: /docs/components/switch — install with `npx creaseui add switch`
+- Table: /docs/components/table — install with `npx creaseui add table`
+- Tabs: /docs/components/tabs — install with `npx creaseui add tabs`
+- Text: /docs/components/text — install with `npx creaseui add text`
+- Textarea: /docs/components/textarea — install with `npx creaseui add textarea`
+- Thumbnail: /docs/components/thumbnail — install with `npx creaseui add thumbnail`
+- Time Input: /docs/components/time-input — install with `npx creaseui add time-input`
+- Timer: /docs/components/timer — install with `npx creaseui add timer`
+- Timestamp: /docs/components/timestamp — install with `npx creaseui add timestamp`
+- Toast: /docs/components/toast — install with `npx creaseui add toast`
+- Toggle Group: /docs/components/toggle-group — install with `npx creaseui add toggle-group`
+- Toggle: /docs/components/toggle — install with `npx creaseui add toggle`
+- Token: /docs/components/token — install with `npx creaseui add token`
+- Tokenizer: /docs/components/tokenizer — install with `npx creaseui add tokenizer`
+- Toolbar: /docs/components/toolbar — install with `npx creaseui add toolbar`
+- Tooltip: /docs/components/tooltip — install with `npx creaseui add tooltip`
+- Top Nav: /docs/components/top-nav — install with `npx creaseui add top-nav`
+- Tour: /docs/components/tour — install with `npx creaseui add tour`
+- Transfer List: /docs/components/transfer-list — install with `npx creaseui add transfer-list`
+- Tree List: /docs/components/tree-list — install with `npx creaseui add tree-list`
+- Typography: /docs/components/typography — install with `npx creaseui add typography`
+- Visually Hidden: /docs/components/visually-hidden — install with `npx creaseui add visually-hidden`
 
 ## API inventory
 
 ### Accordion
 
-A shadcn-styled Accordion component for Foldkit.
+A CreaseUI Accordion component for Foldkit.
 
 Source: `src/ui/accordion.ts`
 
@@ -162,7 +162,7 @@ Examples: Basic, Multiple, Disabled, Borders, Card, RTL
 
 ### Alert Dialog
 
-A shadcn-styled Alert Dialog component for Foldkit.
+A CreaseUI Alert Dialog component for Foldkit.
 
 Source: `src/ui/alert-dialog.ts`
 
@@ -175,7 +175,7 @@ Examples: Basic, Small, Media, Small with Media, Destructive, RTL, Async deletio
 
 ### Alert
 
-A shadcn-styled Alert component for Foldkit.
+A CreaseUI Alert component for Foldkit.
 
 Source: `src/ui/alert.ts`
 
@@ -192,7 +192,7 @@ Examples: Basic, Account updated successfully, Destructive, Payment failed, Acti
 
 ### App Shell
 
-A shadcn-styled App Shell component for Foldkit.
+A CreaseUI App Shell component for Foldkit.
 
 Source: `src/ui/app-shell.ts`
 
@@ -201,12 +201,12 @@ Examples: App Shell, AppShell — Top Nav Only, AppShell — Side Nav Only, AppS
 - `AppShellVariant = 'elevated' | 'wash' | 'surface' | 'section'` (type)
 - `AppShellHeight = 'fill' | 'auto'` (type)
 - `AppShellSpacing = 0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10` (type)
-- `AppShellProps = Readonly<{ /** * Navigation background style controlling how nav areas contrast with * content. * - `wash`: nav uses wash background, no dividers * - `surface`: nav uses surface background, no dividers * - `section`: dividers between nav and c…` (type)
+- `AppShellProps = Readonly<{ variant?: AppShellVariant; banner?: Html; topNav?: Html; sideNav?: Html; contentPadding?: AppShellSpacing; height?: AppShellHeight; skipLinkLabel?: string; mainId?: string; children?: ReadonlyArray<Html | string>; class?: string; }>` (type)
 - `appShell<Msg>(props: AppShellProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Aspect Ratio
 
-A shadcn-styled Aspect Ratio component for Foldkit.
+A CreaseUI Aspect Ratio component for Foldkit.
 
 Source: `src/ui/aspect-ratio.ts`
 
@@ -217,7 +217,7 @@ Examples: Square, Portrait, RTL
 
 ### Attachment
 
-A shadcn-styled Attachment component for Foldkit.
+A CreaseUI Attachment component for Foldkit.
 
 Source: `src/ui/attachment.ts`
 
@@ -226,18 +226,18 @@ Examples: Demo, Image, States, Sizes, Group, Trigger
 - `attachmentVariants: value` (value)
 - `AttachmentState = 'idle' | 'uploading' | 'processing' | 'error' | 'done'` (type)
 - `attachment<Msg>(props: ChildrenProps & Readonly<{ state?: AttachmentState; size?: VariantProps<typeof attachmentVariants>['size']; orientation?: VariantProps<typeof attachmentVariants>['orientation']; }>, h: HtmlBuilder<Msg>): Html` (function)
-- `attachmentMedia<Msg>(props: ChildrenProps & Readonly<{ variant?: 'icon' | 'image' }>, h: HtmlBuilder<Msg>): Html` (function)
+- `attachmentMedia<Msg>(props: ChildrenProps & Readonly<{ variant?: 'icon' | 'image'; }>, h: HtmlBuilder<Msg>): Html` (function)
 - `attachmentContent<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
 - `attachmentActions<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
 - `attachmentAction<Msg>(props: Readonly<{ onClick: Msg; label: string; children: ReadonlyArray<Html | string>; class?: string; }>, h: HtmlBuilder<Msg>): Html` (function)
 - `attachmentGroup<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
 - `attachmentTitle<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
 - `attachmentDescription<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
-- `attachmentTrigger<Msg>(props: Readonly<{ onClick: Msg; label: string; class?: string }>, h: HtmlBuilder<Msg>): Html` (function)
+- `attachmentTrigger<Msg>(props: Readonly<{ onClick: Msg; label: string; class?: string; }>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Avatar Group
 
-A shadcn-styled Avatar Group component for Foldkit.
+A CreaseUI Avatar Group component for Foldkit.
 
 Source: `src/ui/avatar-group.ts`
 
@@ -245,18 +245,18 @@ Examples: Avatar Group, Avatar Group — Interactive, Avatar — Group, Avatar �
 
 - `AvatarGroupSize = 'sm' | 'md' | 'lg' | number` (type)
 - `AvatarShape = 'circle' | 'rounded' | 'square'` (type)
-- `AvatarGroupProps = Readonly<{ /** Accessible name for the group; defaults to "Avatar group". */ ariaLabel?: string; /** Shared avatar size used to compute the 25% overlap. Defaults to 'md'. */ avatarSize?: AvatarGroupSize; children: ReadonlyArray<Html>; class…` (type)
+- `AvatarGroupProps = Readonly<{ ariaLabel?: string; avatarSize?: AvatarGroupSize; children: ReadonlyArray<Html>; class?: string; }>` (type)
 - `avatarGroup<Msg>(props: AvatarGroupProps, h: HtmlBuilder<Msg>): Html` (function)
-- `AvatarGroupOverflowProps<Msg> = Readonly<{ /** Number of hidden avatars; rendered as "+N" when no children are given. */ count?: number; /** Shared avatar size (px or named); the overflow chip is size + 4px to span the ring. */ avatarSize?: AvatarGroupSize; /…` (type)
+- `AvatarGroupOverflowProps<Msg> = Readonly<{ count?: number; avatarSize?: AvatarGroupSize; shape?: AvatarShape; children?: ReadonlyArray<Html>; onClick?: Msg; ariaLabel?: string; class?: string; }>` (type)
 - `avatarGroupOverflow<Msg>(props: AvatarGroupOverflowProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `AvatarStatusDotVariant = 'success' | 'neutral' | 'error'` (type)
 - `AvatarStatusDotSize = 'xsm' | 'sm' | 'md' | 'lg' | 'xl' | number` (type)
-- `AvatarStatusDotProps = Readonly<{ /** Semantic tone: success (online), neutral (offline), error (busy). */ variant: AvatarStatusDotVariant; /** Driving avatar's size — picks the dot diameter tier (10/20/32px). */ avatarSize?: AvatarStatusDotSize; /** Accessib…` (type)
+- `AvatarStatusDotProps = Readonly<{ variant: AvatarStatusDotVariant; avatarSize?: AvatarStatusDotSize; label?: string; icon?: <M>(h: HtmlBuilder<M>) => Html; class?: string; }>` (type)
 - `avatarStatusDot<Msg>(props: AvatarStatusDotProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Avatar
 
-A shadcn-styled Avatar component for Foldkit.
+A CreaseUI Avatar component for Foldkit.
 
 Source: `src/ui/avatar.ts`
 
@@ -271,7 +271,7 @@ Examples: Demo, Basic, Badge, Badge with Icon, Avatar Group, Avatar Group Count,
 - `AvatarProps = Readonly<{ size?: 'default' | 'sm' | 'lg'; class?: string; children: ReadonlyArray<Html | string>; }>` (type)
 - `avatar<Msg>(props: AvatarProps, h: HtmlBuilder<Msg>): Html` (function)
 - `AvatarImageProps = Readonly<{ src: string; alt: string; class?: string; model?: Model; }>` (type)
-- `avatarImage<Msg>(props: AvatarImageProps & Readonly<{ toParentMessage?: (message: Message) => Msg }>, h: HtmlBuilder<Msg>): Html` (function)
+- `avatarImage<Msg>(props: AvatarImageProps & Readonly<{ toParentMessage?: (message: Message) => Msg; }>, h: HtmlBuilder<Msg>): Html` (function)
 - `AvatarFallbackProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; model?: Model; }>` (type)
 - `avatarFallback<Msg>(props: AvatarFallbackProps, h: HtmlBuilder<Msg>): Html` (function)
 - `AvatarBadgeProps = Readonly<{ class?: string; children?: ReadonlyArray<Html | string>; }>` (type)
@@ -283,7 +283,7 @@ Examples: Demo, Basic, Badge, Badge with Icon, Avatar Group, Avatar Group Count,
 
 ### Badge
 
-A shadcn-styled Badge component for Foldkit.
+A CreaseUI Badge component for Foldkit.
 
 Source: `src/ui/badge.ts`
 
@@ -291,12 +291,12 @@ Examples: Basic, Variants, With Icon, With Spinner, Link, Custom Colors, RTL
 
 - `badgeVariants: value` (value)
 - `BadgeVariants = VariantProps<typeof badgeVariants>` (type)
-- `BadgeProps = Readonly<{ children: ReadonlyArray<Html | string>; variant?: BadgeVariants['variant']; class?: string; /** Renders the badge as an anchor pointing at this URL. */ href?: string; }>` (type)
+- `BadgeProps = Readonly<{ children: ReadonlyArray<Html | string>; variant?: BadgeVariants['variant']; class?: string; href?: string; }>` (type)
 - `badge<Msg>(props: BadgeProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Banner
 
-A shadcn-styled Banner component for Foldkit.
+A CreaseUI Banner component for Foldkit.
 
 Source: `src/ui/banner.ts`
 
@@ -310,12 +310,12 @@ Examples: Banner — Statuses, A new software update is available., Your changes
 - `export { BannerContainer } from '@/lib/banner'` (re-export)
 - `export { BannerElevation } from '@/lib/banner'` (re-export)
 - `export { BannerStatus } from '@/lib/banner'` (re-export)
-- `BannerProps<Msg> = Readonly<{ model: BannerBehavior.Model; toParentMessage: (message: BannerBehavior.Message) => Msg; /** Status type controlling the icon, tint, and ARIA role. */ status: BannerBehavior.BannerStatus; /** Stable id — anchors the disclosure's a…` (type)
+- `BannerProps<Msg> = Readonly<{ model: BannerBehavior.Model; toParentMessage: (message: BannerBehavior.Message) => Msg; status: BannerBehavior.BannerStatus; id: string; title: Html | string; description?: Html | string; icon?: Html; isDismissable?: boolean; dis…` (type)
 - `banner<Msg>(props: BannerProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Blockquote
 
-A shadcn-styled Blockquote component for Foldkit.
+A CreaseUI Blockquote component for Foldkit.
 
 Source: `src/ui/blockquote.ts`
 
@@ -326,7 +326,7 @@ Examples: Blockquote — Showcase, Blockquote — With Attribution, Blockquote �
 
 ### Bottom Sheet
 
-A shadcn-styled Bottom Sheet component for Foldkit.
+A CreaseUI Bottom Sheet component for Foldkit.
 
 Source: `src/ui/bottom-sheet.ts`
 
@@ -360,7 +360,7 @@ Examples: Bottom Sheet, Bottom Sheet — Height variants, Bottom Sheet — No sc
 - `OVERSCROLL_PADDING: value` (value)
 - `HEIGHT_BUDGETS: value` (value)
 - `isSheetDragCandidate(target: unknown): false | 'handle' | 'arm'` (function)
-- `SheetDragDispatch<Msg> = Readonly<{ started: (frame: { y: number; timeStamp: number; armOnly: boolean }) => Msg; dragged: (frame: { y: number; timeStamp: number; detents: number[] }) => Msg; ended: (frame: { y: number; timeStamp: number; detents: number[] }) …` (type)
+- `SheetDragDispatch<Msg> = Readonly<{ started: (frame: { y: number; timeStamp: number; armOnly: boolean; }) => Msg; dragged: (frame: { y: number; timeStamp: number; detents: number[]; }) => Msg; ended: (frame: { y: number; timeStamp: number; detents: number[]; …` (type)
 - `BottomSheetProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label: string; content: Html; class?: string; }>` (type)
 - `bottomSheet<Msg>(props: BottomSheetProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `SwitcherSheetContent = Readonly<{ id: string; content: Html; }>` (type)
@@ -369,7 +369,7 @@ Examples: Bottom Sheet, Bottom Sheet — Height variants, Bottom Sheet — No sc
 
 ### Breadcrumb
 
-A shadcn-styled Breadcrumb component for Foldkit.
+A CreaseUI Breadcrumb component for Foldkit.
 
 Source: `src/ui/breadcrumb.ts`
 
@@ -392,7 +392,7 @@ Examples: Demo, Basic, Custom separator, Dropdown, Collapsed, Link component, RT
 
 ### Bubble
 
-A shadcn-styled Bubble component for Foldkit.
+A CreaseUI Bubble component for Foldkit.
 
 Source: `src/ui/bubble.ts`
 
@@ -401,13 +401,13 @@ Examples: Demo, Variants, Alignment, Bubble Group, Links and Buttons, Reactions,
 - `bubbleVariants: value` (value)
 - `BubbleVariant = VariantProps<typeof bubbleVariants>['variant']` (type)
 - `bubbleGroup<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
-- `bubble<Msg>(props: ChildrenProps & Readonly<{ variant?: BubbleVariant; align?: 'start' | 'end' }>, h: HtmlBuilder<Msg>): Html` (function)
-- `bubbleContent<Msg>(props: ChildrenProps & Readonly<{ onClick?: Msg }>, h: HtmlBuilder<Msg>): Html` (function)
+- `bubble<Msg>(props: ChildrenProps & Readonly<{ variant?: BubbleVariant; align?: 'start' | 'end'; }>, h: HtmlBuilder<Msg>): Html` (function)
+- `bubbleContent<Msg>(props: ChildrenProps & Readonly<{ onClick?: Msg; }>, h: HtmlBuilder<Msg>): Html` (function)
 - `bubbleReactions<Msg>(props: ChildrenProps & Readonly<{ side?: 'top' | 'bottom'; align?: 'start' | 'end'; ariaLabel?: string; }>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Button Group
 
-A shadcn-styled Button Group component for Foldkit.
+A CreaseUI Button Group component for Foldkit.
 
 Source: `src/ui/button-group.ts`
 
@@ -424,7 +424,7 @@ Examples: Demo, Orientation, Size, Nested, Separator, Split, Input, Input Group,
 
 ### Button
 
-A shadcn-styled Button component for Foldkit.
+A CreaseUI Button component for Foldkit.
 
 Source: `src/ui/button.ts`
 
@@ -439,7 +439,7 @@ Examples: Basic, Size, Default, Outline, Secondary, Ghost, Destructive, Link, Ic
 
 ### Calendar
 
-A shadcn-styled Calendar component for Foldkit.
+A CreaseUI Calendar component for Foldkit.
 
 Source: `src/ui/calendar.ts`
 
@@ -468,7 +468,7 @@ Examples: Demo, Persian / Hijri / Jalali Calendar, Basic, Range Calendar, Month 
 
 ### Card
 
-A shadcn-styled Card component for Foldkit.
+A CreaseUI Card component for Foldkit.
 
 Source: `src/ui/card.ts`
 
@@ -477,7 +477,7 @@ Examples: Basic, Size, Spacing, Edge to Edge, Image, RTL
 - `CardProps = Slot & Readonly<{ element?: 'div' | 'section' | 'article'; size?: 'default' | 'sm'; }>` (type)
 - `card<Msg>(props: CardProps, h: HtmlBuilder<Msg>): Html` (function)
 - `cardHeader: value` (value)
-- `CardTitleProps = Slot & Readonly<{ element?: 'h2' | 'h3' | 'h4' }>` (type)
+- `CardTitleProps = Slot & Readonly<{ element?: 'h2' | 'h3' | 'h4'; }>` (type)
 - `cardTitle<Msg>(props: CardTitleProps, h: HtmlBuilder<Msg>): Html` (function)
 - `cardDescription: value` (value)
 - `cardAction: value` (value)
@@ -486,19 +486,19 @@ Examples: Basic, Size, Spacing, Edge to Edge, Image, RTL
 
 ### Carousel
 
-A shadcn-styled Carousel component for Foldkit.
+A CreaseUI Carousel component for Foldkit.
 
 Source: `src/ui/carousel.ts`
 
 Examples: Demo, Sizes, Spacing, Orientation, Options, API, Plugins, RTL
 
 - `export * from '@/lib/carousel'` (re-export)
-- `CarouselProps<Msg> = Readonly<{ model: CarouselBehavior.Model; toParentMessage: (message: CarouselBehavior.Message) => Msg; items: ReadonlyArray<Html | string>; ariaLabel?: string; orientation?: 'horizontal' | 'vertical'; loop?: boolean; /** Additional Embla …` (type)
+- `CarouselProps<Msg> = Readonly<{ model: CarouselBehavior.Model; toParentMessage: (message: CarouselBehavior.Message) => Msg; items: ReadonlyArray<Html | string>; ariaLabel?: string; orientation?: 'horizontal' | 'vertical'; loop?: boolean; options?: CarouselBeh…` (type)
 - `carousel<Msg>(props: CarouselProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Center
 
-A shadcn-styled Center component for Foldkit.
+A CreaseUI Center component for Foldkit.
 
 Source: `src/ui/center.ts`
 
@@ -507,18 +507,18 @@ Examples: Center, Center — Horizontal Center, Center — Vertical & Horizontal
 - `CenterAxis = 'both' | 'horizontal' | 'vertical'` (type)
 - `CenterSpacing = 0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10` (type)
 - `CenterSizeValue = number | string` (type)
-- `CenterProps = Readonly<{ /** * Center mode. * - `both`: center on the flex main and cross axes (default) * - `horizontal`: center on the flex main/inline axis * - `vertical`: center on the flex cross/block axis */ axis?: CenterAxis; /** Renders inline-flex (u…` (type)
+- `CenterProps = Readonly<{ axis?: CenterAxis; isInline?: boolean; padding?: CenterSpacing; paddingInline?: CenterSpacing; paddingInlineStart?: CenterSpacing; paddingInlineEnd?: CenterSpacing; paddingBlock?: CenterSpacing; paddingBlockStart?: CenterSpacing; padd…` (type)
 - `center<Msg>(props: CenterProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Chart
 
-A shadcn-styled Chart component for Foldkit.
+A CreaseUI Chart component for Foldkit.
 
 Source: `src/ui/chart.ts`
 
 Examples: Demo, Your First Chart, Tooltip, RTL, Monthly revenue, Traffic trend, ECharts lifecycle, Lifecycle states, Area chart, Bar chart, Line chart, Pie chart, Radar chart, Radial chart
 
-- `EChartProps<Msg> = Omit<ECharts.ChartProps<Msg>, 'accessibleAlternative'> & Readonly<{ accessibleAlternative: Html }>` (type)
+- `EChartProps<Msg> = Omit<ECharts.ChartProps<Msg>, 'accessibleAlternative'> & Readonly<{ accessibleAlternative: Html; }>` (type)
 - `ChartMessage = ECharts.ChartMessage` (type)
 - `ChartTheme = ECharts.ChartTheme` (type)
 - `OptionBuilder = ECharts.OptionBuilder` (type)
@@ -529,8 +529,8 @@ Examples: Demo, Your First Chart, Tooltip, RTL, Monthly revenue, Traffic trend, 
 - `colorWithOpacity: value` (value)
 - `compactGrid: value` (value)
 - `registerChart: value` (value)
-- `shadcnLegend: value` (value)
-- `shadcnTooltip: value` (value)
+- `legendOptions: value` (value)
+- `tooltipOptions: value` (value)
 - `valueAxis: value` (value)
 - `eChart<Msg>(props: EChartProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `ChartSeriesConfig = Readonly<{ label?: Html | string; color?: string; icon?: Html; }>` (type)
@@ -539,7 +539,7 @@ Examples: Demo, Your First Chart, Tooltip, RTL, Monthly revenue, Traffic trend, 
 - `chartContainer<Msg>(props: ChartContainerProps, h: HtmlBuilder<Msg>): Html` (function)
 - `ChartLegendProps = Readonly<{ config: ChartConfig; series?: ReadonlyArray<string>; class?: string; }>` (type)
 - `chartLegend<Msg>(props: ChartLegendProps, h: HtmlBuilder<Msg>): Html` (function)
-- `ChartTooltipItem = Readonly<{ key: string; value: Html | string }>` (type)
+- `ChartTooltipItem = Readonly<{ key: string; value: Html | string; }>` (type)
 - `chartTooltipContent<Msg>(props: Readonly<{ config: ChartConfig; label?: Html | string; items: ReadonlyArray<ChartTooltipItem>; class?: string; }>, h: HtmlBuilder<Msg>): Html` (function)
 - `BarChartDatum = Readonly<{ label: string; value: number; }>` (type)
 - `BarChartProps = Readonly<{ data: ReadonlyArray<BarChartDatum>; class?: string; showXAxisLabels?: boolean; isCompact?: boolean; }>` (type)
@@ -554,7 +554,7 @@ Examples: Demo, Your First Chart, Tooltip, RTL, Monthly revenue, Traffic trend, 
 
 ### Chat Reasoning
 
-A shadcn-styled Chat Reasoning component for Foldkit.
+A CreaseUI Chat Reasoning component for Foldkit.
 
 Source: `src/ui/chat-reasoning.ts`
 
@@ -568,12 +568,12 @@ Examples: Chat Reasoning, Expanded, Streaming, Custom Label, In a Message
 - `OutMessage: value` (value)
 - `OutMessage = typeof OutMessage.Type` (type)
 - `update(model: Model, message: Message): UpdateReturn` (function)
-- `ChatReasoningProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Reasoning content rendered inside the expanded panel. */ children: ReadonlyArray<Html | string>; /** Header label. @default 'Thinking' */ label?: string; /** Du…` (type)
+- `ChatReasoningProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; children: ReadonlyArray<Html | string>; label?: string; duration?: string; isStreaming?: boolean; preview?: string; class?: string; }>` (type)
 - `chatReasoning<Msg>(props: ChatReasoningProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Checkbox List
 
-A shadcn-styled Checkbox List component for Foldkit.
+A CreaseUI Checkbox List component for Foldkit.
 
 Source: `src/ui/checkbox-list.ts`
 
@@ -585,24 +585,24 @@ Examples: Checkbox List, CheckboxList — Select All With Indeterminate, Checkbo
 - `export { CheckboxListProps } from ` (re-export)
 - `export { checkboxListDivider } from '@/lib/checkbox-list'` (re-export)
 - `export { InputStatus } from '@/lib/input-status'` (re-export)
-- `checkboxListItem<Msg>(item: CheckboxListItem<Msg>, h: HtmlBuilder<Msg>, options?: Readonly<{ id?: string density?: CheckboxListDensity isDisabled?: boolean isReadOnly?: boolean }>): Html` (function)
-- `CheckboxListUiProps<Msg> = CheckboxListProps<Msg> & Readonly<{ class?: string }>` (type)
+- `checkboxListItem<Msg>(item: CheckboxListItem<Msg>, h: HtmlBuilder<Msg>, options?: Readonly<{ id?: string; density?: CheckboxListDensity; isDisabled?: boolean; isReadOnly?: boolean; }>): Html` (function)
+- `CheckboxListUiProps<Msg> = CheckboxListProps<Msg> & Readonly<{ class?: string; }>` (type)
 - `checkboxList<Msg>(props: CheckboxListUiProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Checkbox
 
-A shadcn-styled Checkbox component for Foldkit.
+A CreaseUI Checkbox component for Foldkit.
 
 Source: `src/ui/checkbox.ts`
 
 Examples: Demo, Invalid State, Basic, Description, Disabled, Group, Table, RTL, Indeterminate, Read only
 
-- `CheckboxProps<Msg> = CheckboxBehaviorProps<Msg> & Readonly<{ class?: string }>` (type)
+- `CheckboxProps<Msg> = CheckboxBehaviorProps<Msg> & Readonly<{ class?: string; }>` (type)
 - `checkbox<Msg>(props: CheckboxProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Circular Progress
 
-A shadcn-styled Circular Progress component for Foldkit.
+A CreaseUI Circular Progress component for Foldkit.
 
 Source: `src/ui/circular-progress.ts`
 
@@ -610,12 +610,12 @@ Examples: Circular Progress, Circular Progress — Value Label, Circular Progres
 
 - `CircularProgressVariant = 'accent' | 'success' | 'warning' | 'error' | 'neutral'` (type)
 - `CircularProgressSize = 'sm' | 'md' | 'lg'` (type)
-- `CircularProgressProps = Readonly<{ /** Current value. Ignored when isIndeterminate is true. */ value?: number; /** Maximum value. */ max?: number; /** Accessible label for the progress indicator. Required for a11y. */ label: string; /** When true (default), t…` (type)
+- `CircularProgressProps = Readonly<{ value?: number; max?: number; label: string; isLabelHidden?: boolean; hasValueLabel?: boolean; formatValueLabel?: (value: number, max: number) => string; children?: ReadonlyArray<Html>; size?: CircularProgressSize; variant?:…` (type)
 - `circularProgress<Msg>(props: CircularProgressProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Clickable Card
 
-A shadcn-styled Clickable Card component for Foldkit.
+A CreaseUI Clickable Card component for Foldkit.
 
 Source: `src/ui/clickable-card.ts`
 
@@ -625,12 +625,12 @@ Examples: ClickableCard, ClickableCard — Elevated, ClickableCardWithNestedButt
 - `export { CardPadding } from '@/lib/card-surface'` (re-export)
 - `export { CardVariant } from '@/lib/card-surface'` (re-export)
 - `export { Message } from '@/lib/clickable-card'` (re-export)
-- `ClickableCardProps<Msg> = Readonly<{ /** Accessibility label for the card. Applied to the hidden control that owns keyboard focus so the card surface itself stays a plain <div>. */ label: string; /** Message emitted when the card surface is clicked (not when …` (type)
+- `ClickableCardProps<Msg> = Readonly<{ label: string; onClick?: Msg; href?: string; target?: string; isDisabled?: boolean; children?: ReadonlyArray<Html | string>; padding?: CardPadding; variant?: CardVariant; elevation?: CardElevation; width?: string; height?:…` (type)
 - `clickableCard<Msg>(props: ClickableCardProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Code Block
 
-A shadcn-styled Code Block component for Foldkit.
+A CreaseUI Code Block component for Foldkit.
 
 Source: `src/ui/code-block.ts`
 
@@ -647,13 +647,13 @@ Examples: CodeBlock, useUser.ts, Code — Snippet, Code — Highlighted, Code �
 - `export { flatTokensToLines } from ` (re-export)
 - `CodeBlockSize = 'sm' | 'md'` (type)
 - `CodeBlockContainer = 'card' | 'section'` (type)
-- `CustomTokenizer = ( code: string, language: string, ) => ReadonlyArray<{ type: string; start: number; end: number }>` (type)
-- `CodeBlockProps<Msg> = Readonly<{ /** The CodeBlock submodel state (see `init`/`update` in `@/lib/code-block`). */ model: Model; toParentMessage: (message: Message) => Msg; code: string; language?: string; title?: string; hasLanguageLabel?: boolean; hasLineNum…` (type)
+- `CustomTokenizer = (code: string, language: string) => ReadonlyArray<{ type: string; start: number; end: number; }>` (type)
+- `CodeBlockProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; code: string; language?: string; title?: string; hasLanguageLabel?: boolean; hasLineNumbers?: boolean; highlightLines?: ReadonlyArray<number>; hasCopyButton?: boolean; …` (type)
 - `codeBlock<Msg>(props: CodeBlockProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Code
 
-A shadcn-styled Code component for Foldkit.
+A CreaseUI Code component for Foldkit.
 
 Source: `src/ui/code.ts`
 
@@ -666,7 +666,7 @@ Examples: Code, Code — Inline, Code — Text Sizes, Code — Content Types
 
 ### Collapsible
 
-A shadcn-styled Collapsible component for Foldkit.
+A CreaseUI Collapsible component for Foldkit.
 
 Source: `src/ui/collapsible.ts`
 
@@ -677,7 +677,7 @@ Examples: Demo, Basic, Settings Panel, File Tree, RTL, Disabled
 
 ### Combobox
 
-A shadcn-styled Combobox component for Foldkit.
+A CreaseUI Combobox component for Foldkit.
 
 Source: `src/ui/combobox.ts`
 
@@ -698,16 +698,16 @@ Examples: Demo, Basic, Multiple, Clear Button, Groups, Custom Items, Invalid, Di
 - `ComboboxItemConfig = Readonly<{ content?: Html | string; searchText?: string; class?: string; isDisabled?: boolean; }>` (type)
 - `ComboboxProps<Item, Value extends string, Msg> = Readonly<{ model: Model; maybeSelectedValue: Option.Option<Value>; restingInputValue: string; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<Item>; itemToValue: (item: Item) => Value; itemToLa…` (type)
 - `ComboboxBundle<Value extends string> = Readonly<{ update: ReturnType<typeof ComboboxPrimitive.create<Value>>['update']; combobox: <Item, Msg>(props: ComboboxProps<Item, Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>` (type)
-- `create<Value extends string = string>(config?: Readonly<{ autoHighlight?: boolean }>): ComboboxBundle<Value>` (function)
-- `ComboboxMultiProps<Item, Value extends string, Msg> = Omit< ComboboxProps<Item, Value, Msg>, 'maybeSelectedValue' | 'restingInputValue' > & Readonly<{ /** The selection the parent owns; selecting an item toggles membership. */ selectedValues: ReadonlyArray<Va…` (type)
-- `ComboboxMultiBundle<Value extends string> = Readonly<{ update: ReturnType<typeof ComboboxPrimitive.Multi.create<Value>>['update']; comboboxMulti: <Item, Msg>( props: ComboboxMultiProps<Item, Value, Msg>, h: HtmlBuilder<Msg>, ) => Html; }>` (type)
-- `createMulti<Value extends string = string>(config?: Readonly<{ autoHighlight?: boolean }>): ComboboxMultiBundle<Value>` (function)
+- `create<Value extends string = string>(config?: Readonly<{ autoHighlight?: boolean; }>): ComboboxBundle<Value>` (function)
+- `ComboboxMultiProps<Item, Value extends string, Msg> = Omit<ComboboxProps<Item, Value, Msg>, 'maybeSelectedValue' | 'restingInputValue'> & Readonly<{ selectedValues: ReadonlyArray<Value>; }>` (type)
+- `ComboboxMultiBundle<Value extends string> = Readonly<{ update: ReturnType<typeof ComboboxPrimitive.Multi.create<Value>>['update']; comboboxMulti: <Item, Msg>(props: ComboboxMultiProps<Item, Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>` (type)
+- `createMulti<Value extends string = string>(config?: Readonly<{ autoHighlight?: boolean; }>): ComboboxMultiBundle<Value>` (function)
 - `update: value` (value)
 - `combobox: value` (value)
 
 ### Command
 
-A shadcn-styled Command component for Foldkit.
+A CreaseUI Command component for Foldkit.
 
 Source: `src/ui/command.ts`
 
@@ -734,7 +734,7 @@ Examples: Demo, Basic, Shortcuts, Groups, Scrollable, RTL
 
 ### Context Menu
 
-A shadcn-styled Context Menu component for Foldkit.
+A CreaseUI Context Menu component for Foldkit.
 
 Source: `src/ui/context-menu.ts`
 
@@ -758,7 +758,7 @@ Examples: Demo, Basic, Submenu, Shortcuts, Groups, Icons, Checkboxes, Radio, Des
 
 ### Data Table
 
-A shadcn-styled Data Table component for Foldkit.
+A CreaseUI Data Table component for Foldkit.
 
 Source: `src/ui/data-table.ts`
 
@@ -771,7 +771,7 @@ Examples: Sortable payments, Filter and paginate, Server-owned query, RTL
 
 ### Date Input
 
-A shadcn-styled Date Input component for Foldkit.
+A CreaseUI Date Input component for Foldkit.
 
 Source: `src/ui/date-input.ts`
 
@@ -785,16 +785,16 @@ Examples: Date Input, Clearable, Min/Max Constraints, Formats, Description, Vali
 - `export { reflect } from ` (re-export)
 - `export { reflectConstraints } from ` (re-export)
 - `export { update } from ` (re-export)
-- `export { dateFromISO } from "@/lib/date-parse"` (re-export)
-- `export { dateToISO } from "@/lib/date-parse"` (re-export)
+- `export { dateFromISO } from '@/lib/date-parse'` (re-export)
+- `export { dateToISO } from '@/lib/date-parse'` (re-export)
 - `export { SharedDateFormat } from ` (re-export)
-- `DateInputStatus = Readonly<{ type: "error" | "warning" | "success"; message?: string; }>` (type)
-- `DateInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label?: string; isLabelHidden?: boolean; description?: string; placeholder?: string; isOptional?: boolean; isRequired?: boolean; isDisabled?: boolean; /** Astryx shows …` (type)
+- `DateInputStatus = Readonly<{ type: 'error' | 'warning' | 'success'; message?: string; }>` (type)
+- `DateInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label?: string; isLabelHidden?: boolean; description?: string; placeholder?: string; isOptional?: boolean; isRequired?: boolean; isDisabled?: boolean; disabledMessage?:…` (type)
 - `dateInput<Msg>(props: DateInputProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Date Picker
 
-A shadcn-styled Date Picker component for Foldkit.
+A CreaseUI Date Picker component for Foldkit.
 
 Source: `src/ui/date-picker.ts`
 
@@ -824,7 +824,7 @@ Examples: Pick a date, Basic, Range Picker, Date of Birth, Input, Time Picker, N
 
 ### Date Range Input
 
-A shadcn-styled Date Range Input component for Foldkit.
+A CreaseUI Date Range Input component for Foldkit.
 
 Source: `src/ui/date-range-input.ts`
 
@@ -840,16 +840,16 @@ Examples: Date Range Input, With Presets, Validation
 - `export { reflectConstraints } from ` (re-export)
 - `export { update } from ` (re-export)
 - `export { Range } from ` (re-export)
-- `export { dateFromISO } from "@/lib/date-parse"` (re-export)
-- `export { dateToISO } from "@/lib/date-parse"` (re-export)
+- `export { dateFromISO } from '@/lib/date-parse'` (re-export)
+- `export { dateToISO } from '@/lib/date-parse'` (re-export)
 - `DateRangePreset = Readonly<{ label: string; getRange: () => Range; }>` (type)
-- `DateRangeInputStatus = Readonly<{ type: "error" | "warning" | "success"; message?: string; }>` (type)
-- `DateRangeInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label: string; isLabelHidden?: boolean; description?: string; isOptional?: boolean; isRequired?: boolean; isDisabled?: boolean; /** Astryx shows it as a focus ring…` (type)
+- `DateRangeInputStatus = Readonly<{ type: 'error' | 'warning' | 'success'; message?: string; }>` (type)
+- `DateRangeInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label: string; isLabelHidden?: boolean; description?: string; isOptional?: boolean; isRequired?: boolean; isDisabled?: boolean; disabledMessage?: string; isReadOnl…` (type)
 - `dateRangeInput<Msg>(props: DateRangeInputProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Date Time Input
 
-A shadcn-styled Date Time Input component for Foldkit.
+A CreaseUI Date Time Input component for Foldkit.
 
 Source: `src/ui/date-time-input.ts`
 
@@ -863,19 +863,19 @@ Examples: Date Time Input, DateTimeInput — Validation, DateTimeInput — Time 
 - `export { reflect } from ` (re-export)
 - `export { reflectConstraints } from ` (re-export)
 - `export { update } from ` (re-export)
-- `export { dateFromISO } from "@/lib/date-parse"` (re-export)
-- `export { dateToISO } from "@/lib/date-parse"` (re-export)
-- `export { formatDisplayTime12h } from "@/lib/time-parse"` (re-export)
-- `export { formatDisplayTime24h } from "@/lib/time-parse"` (re-export)
-- `export { formatISOTime } from "@/lib/time-parse"` (re-export)
+- `export { dateFromISO } from '@/lib/date-parse'` (re-export)
+- `export { dateToISO } from '@/lib/date-parse'` (re-export)
+- `export { formatDisplayTime12h } from '@/lib/time-parse'` (re-export)
+- `export { formatDisplayTime24h } from '@/lib/time-parse'` (re-export)
+- `export { formatISOTime } from '@/lib/time-parse'` (re-export)
 - `export { SharedDateFormat } from ` (re-export)
-- `DateTimeInputStatus = Readonly<{ type: "error" | "warning" | "success"; message?: string; }>` (type)
-- `DateTimeInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label: string; isLabelHidden?: boolean; description?: string; isOptional?: boolean; isRequired?: boolean; isDisabled?: boolean; /** Astryx shows it as a focus ring …` (type)
+- `DateTimeInputStatus = Readonly<{ type: 'error' | 'warning' | 'success'; message?: string; }>` (type)
+- `DateTimeInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label: string; isLabelHidden?: boolean; description?: string; isOptional?: boolean; isRequired?: boolean; isDisabled?: boolean; disabledMessage?: string; isReadOnly…` (type)
 - `dateTimeInput<Msg>(props: DateTimeInputProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Dialog
 
-A shadcn-styled Dialog component for Foldkit.
+A CreaseUI Dialog component for Foldkit.
 
 Source: `src/ui/dialog.ts`
 
@@ -894,19 +894,19 @@ Examples: Edit profile, Compact confirmation, Custom Close Button, No Close Butt
 - `FOOTER_CLASS: value` (value)
 - `DialogSlots = Readonly<{ closeButton: ReadonlyArray<ChildAttribute>; initialFocusAttributes: () => ReadonlyArray<ChildAttribute>; }>` (type)
 - `DialogPartProps = Readonly<{ children: ReadonlyArray<Html | string>; class?: string; }>` (type)
-- `DialogTextPartProps = DialogPartProps & Readonly<{ attributes: ReadonlyArray<ChildAttribute> }>` (type)
+- `DialogTextPartProps = DialogPartProps & Readonly<{ attributes: ReadonlyArray<ChildAttribute>; }>` (type)
 - `DialogCloseProps = Readonly<{ children?: ReadonlyArray<Html | string>; class?: string; ariaLabel?: string; }>` (type)
 - `dialogHeader<Msg>(props: DialogPartProps, h: HtmlBuilder<Msg>): Html` (function)
 - `dialogTitle<Msg>(props: DialogTextPartProps, h: HtmlBuilder<Msg>): Html` (function)
 - `dialogDescription<Msg>(props: DialogTextPartProps, h: HtmlBuilder<Msg>): Html` (function)
 - `dialogFooter<Msg>(props: DialogPartProps, h: HtmlBuilder<Msg>): Html` (function)
 - `DialogParts<Msg> = Readonly<{ header: (props: DialogPartProps) => Html; title: (props: Omit<DialogTextPartProps, 'attributes'>) => Html; description: (props: Omit<DialogTextPartProps, 'attributes'>) => Html; footer: (props: DialogPartProps) => Html; close: (p…` (type)
-- `DialogProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description?: string; content?: (slots: DialogSlots) => ReadonlyArray<Html>; footer?: (slots: DialogSlots) => ReadonlyArray<Html>; /** Replaces the default …` (type)
+- `DialogProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description?: string; content?: (slots: DialogSlots) => ReadonlyArray<Html>; footer?: (slots: DialogSlots) => ReadonlyArray<Html>; layout?: (parts: DialogPa…` (type)
 - `dialog<Msg>(props: DialogProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Direction
 
-A shadcn-styled Direction component for Foldkit.
+A CreaseUI Direction component for Foldkit.
 
 Source: `src/ui/direction.ts`
 
@@ -917,7 +917,7 @@ Examples: Right to Left, Mixed Direction
 
 ### Drawer
 
-A shadcn-styled Drawer component for Foldkit.
+A CreaseUI Drawer component for Foldkit.
 
 Source: `src/ui/drawer.ts`
 
@@ -945,7 +945,7 @@ Examples: Activity goal, Side drawer, Scrollable Content, Sides, Responsive Dial
 
 ### Dropdown Menu
 
-A shadcn-styled Dropdown Menu component for Foldkit.
+A CreaseUI Dropdown Menu component for Foldkit.
 
 Source: `src/ui/dropdown-menu.ts`
 
@@ -957,7 +957,7 @@ Examples: Basic, Submenu, Shortcuts, Icons, Checkboxes, Checkboxes Icons, Radio 
 - `Message = typeof Message.Type` (type)
 - `OutMessage: value` (value)
 - `OutMessage<Item extends string = string> = Readonly<{ _tag: 'Selected'; value: Item; index: number; }>` (type)
-- `init(config: Readonly<{ id: string; isAnimated?: boolean; isModal?: boolean }>): Model` (function)
+- `init(config: Readonly<{ id: string; isAnimated?: boolean; isModal?: boolean; }>): Model` (function)
 - `create<Item extends string = string>(): inferred` (function)
 - `update: value` (value)
 - `open: value` (value)
@@ -967,12 +967,12 @@ Examples: Basic, Submenu, Shortcuts, Icons, Checkboxes, Checkboxes Icons, Radio 
 - `DropdownMenuItemConfig<Item extends string = string> = Readonly<{ label: Html | string; icon?: Html; shortcut?: Html | string; variant?: 'default' | 'destructive'; kind?: 'item' | 'checkbox' | 'radio'; isChecked?: boolean; isInset?: boolean; isDisabled?: bool…` (type)
 - `DropdownMenuSide = 'top' | 'right' | 'bottom' | 'left'` (type)
 - `DropdownMenuAlign = 'start' | 'center' | 'end'` (type)
-- `DropdownMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; /** Anchor an action directly to its sidebar menu item. */ placement?: 'inline' | 'sidebarAction'…` (type)
+- `DropdownMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; placement?: 'inline' | 'sidebarAction'; triggerTabindex?: number; triggerRole?: string; triggerAr…` (type)
 - `dropdownMenu<Item extends string, Msg>(props: DropdownMenuProps<Item, Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Empty
 
-A shadcn-styled Empty component for Foldkit.
+A CreaseUI Empty component for Foldkit.
 
 Source: `src/ui/empty.ts`
 
@@ -990,7 +990,7 @@ Examples: Create a project, Outline, Background, Avatar, Avatar Group, InputGrou
 
 ### Field Status
 
-A shadcn-styled Field Status component for Foldkit.
+A CreaseUI Field Status component for Foldkit.
 
 Source: `src/ui/field-status.ts`
 
@@ -998,12 +998,12 @@ Examples: FieldStatus — Basic, FieldStatus
 
 - `FieldStatusType = 'warning' | 'error' | 'success'` (type)
 - `FieldStatusVariant = 'attached' | 'detached'` (type)
-- `FieldStatusProps = Readonly<{ type: FieldStatusType; message: string; /** @default 'attached' */ variant?: FieldStatusVariant; /** Stable id — inputs reference it via aria-describedby. */ id?: string; class?: string; }>` (type)
+- `FieldStatusProps = Readonly<{ type: FieldStatusType; message: string; variant?: FieldStatusVariant; id?: string; class?: string; }>` (type)
 - `fieldStatus<Msg>(props: FieldStatusProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Field
 
-A shadcn-styled Field component for Foldkit.
+A CreaseUI Field component for Foldkit.
 
 Source: `src/ui/field.ts`
 
@@ -1013,23 +1013,23 @@ Examples: Payment Method, Input, Textarea, Select, Slider, Fieldset, Checkbox, R
 - `export { FieldError } from '@/lib/field'` (re-export)
 - `fieldSetLegendId: value` (value)
 - `fieldSetDescriptionId: value` (value)
-- `FieldSetProps = Slot & Readonly<{ isDisabled?: boolean; /** Base id; wires legend/description ids and aria-describedby via the foldkit Fieldset primitive. Pair with `fieldSetLegendId` and `fieldSetDescriptionId`. */ id?: string; /** Set when a `fieldDescripti…` (type)
+- `FieldSetProps = Slot & Readonly<{ isDisabled?: boolean; id?: string; hasDescription?: boolean; }>` (type)
 - `fieldSet<Msg>(props: FieldSetProps, h: HtmlBuilder<Msg>): Html` (function)
-- `FieldLegendProps = Slot & Readonly<{ variant?: 'legend' | 'label'; id?: string }>` (type)
+- `FieldLegendProps = Slot & Readonly<{ variant?: 'legend' | 'label'; id?: string; }>` (type)
 - `fieldLegend<Msg>(props: FieldLegendProps, h: HtmlBuilder<Msg>): Html` (function)
-- `FieldGroupProps = Slot & Readonly<{ variant?: 'default' | 'outline' }>` (type)
+- `FieldGroupProps = Slot & Readonly<{ variant?: 'default' | 'outline'; }>` (type)
 - `fieldGroup<Msg>(props: FieldGroupProps, h: HtmlBuilder<Msg>): Html` (function)
 - `fieldVariants: value` (value)
 - `FieldVariants = VariantProps<typeof fieldVariants>` (type)
-- `ControlFieldProps<Msg> = SharedControlFieldProps<Msg> & Readonly<{ class?: string }>` (type)
+- `ControlFieldProps<Msg> = SharedControlFieldProps<Msg> & Readonly<{ class?: string; }>` (type)
 - `controlField<Msg>(props: ControlFieldProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `FieldProps = Slot & Readonly<{ orientation?: FieldVariants['orientation']; isInvalid?: boolean; isDisabled?: boolean; direction?: 'ltr' | 'rtl'; }>` (type)
 - `field<Msg>(props: FieldProps, h: HtmlBuilder<Msg>): Html` (function)
 - `fieldContent<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
-- `FieldLabelProps = Slot & Readonly<{ for?: string }>` (type)
+- `FieldLabelProps = Slot & Readonly<{ for?: string; }>` (type)
 - `fieldLabel<Msg>(props: FieldLabelProps, h: HtmlBuilder<Msg>): Html` (function)
 - `fieldTitle<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
-- `fieldDescription<Msg>(props: Slot & Readonly<{ id?: string }>, h: HtmlBuilder<Msg>): Html` (function)
+- `fieldDescription<Msg>(props: Slot & Readonly<{ id?: string; }>, h: HtmlBuilder<Msg>): Html` (function)
 - `FieldSeparatorProps = Readonly<{ class?: string; children?: ReadonlyArray<Html | string>; }>` (type)
 - `fieldSeparator<Msg>(props: FieldSeparatorProps = {}, h: HtmlBuilder<Msg>): Html` (function)
 - `FieldErrorProps = Readonly<{ class?: string; children?: ReadonlyArray<Html | string>; errors?: ReadonlyArray<FieldError>; }>` (type)
@@ -1037,7 +1037,7 @@ Examples: Payment Method, Input, Textarea, Select, Slider, Fieldset, Checkbox, R
 
 ### File Input
 
-A shadcn-styled File Input component for Foldkit.
+A CreaseUI File Input component for Foldkit.
 
 Source: `src/ui/file-input.ts`
 
@@ -1052,13 +1052,13 @@ Examples: File Input, FileInput — Basic
 - `export { validateFiles } from '@/lib/file-input'` (re-export)
 - `export { FileInputMode } from '@/lib/file-input'` (re-export)
 - `export { InputStatus } from '@/lib/input-status'` (re-export)
-- `FileInputProps<Msg> = Readonly<{ model: Model /** Lifts this submodel's messages into the parent message type. */ toParentMessage: (message: Message) => Msg id: string label: Html | string /** The accepted files owned by the parent. */ value?: ReadonlyArray<F…` (type)
-- `FileInputViewInputs = Omit< FileInputProps<never>, 'model' | 'toParentMessage' >` (type)
+- `FileInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; id: string; label: Html | string; value?: ReadonlyArray<File>; isLabelHidden?: boolean; description?: Html | string; isOptional?: boolean; isRequired?: boolean; isDisab…` (type)
+- `FileInputViewInputs = Omit<FileInputProps<never>, 'model' | 'toParentMessage'>` (type)
 - `fileInput<Msg>(props: FileInputProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Form
 
-A shadcn-styled Form component for Foldkit.
+A CreaseUI Form component for Foldkit.
 
 Source: `src/ui/form.ts`
 
@@ -1067,22 +1067,22 @@ Examples: Newsletter signup, Error summary, Async validation
 - `export { FormError } from '@/lib/form'` (re-export)
 - `export { FormMethod } from '@/lib/form'` (re-export)
 - `export { formControlIds } from '@/lib/form'` (re-export)
-- `FormProps<Msg> = FormBehaviorProps<Msg> & Readonly<{ class?: string }>` (type)
+- `FormProps<Msg> = FormBehaviorProps<Msg> & Readonly<{ class?: string; }>` (type)
 - `form<Msg>(props: FormProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
-- `ErrorSummaryProps<Msg> = SharedErrorSummaryProps<Msg> & Readonly<{ class?: string }>` (type)
+- `ErrorSummaryProps<Msg> = SharedErrorSummaryProps<Msg> & Readonly<{ class?: string; }>` (type)
 - `errorSummary<Msg>(props: ErrorSummaryProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
-- `FormItemProps = Slot & Readonly<{ id: string; isInvalid?: boolean; isDisabled?: boolean }>` (type)
+- `FormItemProps = Slot & Readonly<{ id: string; isInvalid?: boolean; isDisabled?: boolean; }>` (type)
 - `formItem<Msg>(props: FormItemProps, h: HtmlBuilder<Msg>): Html` (function)
-- `FormLabelProps = Slot & Readonly<{ for: string }>` (type)
+- `FormLabelProps = Slot & Readonly<{ for: string; }>` (type)
 - `formLabel<Msg>(props: FormLabelProps, h: HtmlBuilder<Msg>): Html` (function)
-- `FormDescriptionProps = Slot & Readonly<{ id?: string }>` (type)
+- `FormDescriptionProps = Slot & Readonly<{ id?: string; }>` (type)
 - `formDescription<Msg>(props: FormDescriptionProps, h: HtmlBuilder<Msg>): Html` (function)
 - `FormMessageProps = Readonly<{ id?: string; class?: string; message?: string; errors?: ReadonlyArray<Field.FieldError>; }>` (type)
 - `formMessage<Msg>(props: FormMessageProps = {}, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Grid
 
-A shadcn-styled Grid component for Foldkit.
+A CreaseUI Grid component for Foldkit.
 
 Source: `src/ui/grid.ts`
 
@@ -1091,16 +1091,16 @@ Examples: Grid, Grid — Column Spanning, Grid — Responsive Auto-Fit, Grid —
 - `GridAlignment = 'start' | 'center' | 'end' | 'stretch'` (type)
 - `GridSpacing = 0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10` (type)
 - `GridSizeValue = number | string` (type)
-- `GridElement = | 'article' | 'aside' | 'div' | 'fieldset' | 'footer' | 'form' | 'header' | 'li' | 'main' | 'nav' | 'ol' | 'section' | 'ul'` (type)
-- `GridColumns = | number | Readonly<{ minWidth: number; max?: number; repeat?: 'fill' | 'fit'; }>` (type)
-- `GridProps = Readonly<{ /** Column configuration — a fixed count or a responsive min-width rule. */ columns?: GridColumns; /** Height of each implicit row track in pixels (grid-auto-rows). */ rowHeight?: number; /** Spacing between all grid items (astryx spaci…` (type)
+- `GridElement = 'article' | 'aside' | 'div' | 'fieldset' | 'footer' | 'form' | 'header' | 'li' | 'main' | 'nav' | 'ol' | 'section' | 'ul'` (type)
+- `GridColumns = number | Readonly<{ minWidth: number; max?: number; repeat?: 'fill' | 'fit'; }>` (type)
+- `GridProps = Readonly<{ columns?: GridColumns; rowHeight?: number; gap?: GridSpacing; rowGap?: GridSpacing; columnGap?: GridSpacing; align?: GridAlignment; justify?: GridAlignment; width?: GridSizeValue; height?: GridSizeValue; maxWidth?: GridSizeValue; minHei…` (type)
 - `grid<Msg>(props: GridProps, h: HtmlBuilder<Msg>): Html` (function)
-- `GridSpanProps = Readonly<{ /** Columns to span — a number (`grid-column: span N`) or 'full' (1 / -1). */ columns?: number | 'full'; /** Rows to span (`grid-row: span N`). */ rows?: number; /** The element to render. */ as?: GridElement; children?: ReadonlyArr…` (type)
+- `GridSpanProps = Readonly<{ columns?: number | 'full'; rows?: number; as?: GridElement; children?: ReadonlyArray<Html | string>; class?: string; }>` (type)
 - `gridSpan<Msg>(props: GridSpanProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Heading
 
-A shadcn-styled Heading component for Foldkit.
+A CreaseUI Heading component for Foldkit.
 
 Source: `src/ui/heading.ts`
 
@@ -1115,7 +1115,7 @@ Examples: Heading, Heading — Truncation, Heading — Page Hierarchy, Heading �
 
 ### Hover Card
 
-A shadcn-styled Hover Card component for Foldkit.
+A CreaseUI Hover Card component for Foldkit.
 
 Source: `src/ui/hover-card.ts`
 
@@ -1146,7 +1146,7 @@ Examples: Basic, Sides, RTL
 
 ### Indicator
 
-A shadcn-styled Indicator component for Foldkit.
+A CreaseUI Indicator component for Foldkit.
 
 Source: `src/ui/indicator.ts`
 
@@ -1154,16 +1154,16 @@ Examples: Indicator, Indicator — Radio, Indicator — Check, Indicator — Siz
 
 - `IndicatorState = 'unchecked' | 'checked' | 'indeterminate'` (type)
 - `IndicatorSize = 'sm' | 'md'` (type)
-- `CheckIndicatorProps = Readonly<{ state: 'unchecked' | 'checked'; size?: IndicatorSize; isDisabled?: boolean; /** Replacement content rendered in the mark's slot (e.g. a busy spinner). */ children?: ReadonlyArray<Html>; class?: string; }>` (type)
+- `CheckIndicatorProps = Readonly<{ state: 'unchecked' | 'checked'; size?: IndicatorSize; isDisabled?: boolean; children?: ReadonlyArray<Html>; class?: string; }>` (type)
 - `checkIndicator<Msg>(props: CheckIndicatorProps, h: HtmlBuilder<Msg>): Html` (function)
-- `CheckboxIndicatorProps = Readonly<{ state: IndicatorState; size?: IndicatorSize; isDisabled?: boolean; /** Replacement content rendered inside the box (e.g. a busy spinner). */ children?: ReadonlyArray<Html>; class?: string; }>` (type)
+- `CheckboxIndicatorProps = Readonly<{ state: IndicatorState; size?: IndicatorSize; isDisabled?: boolean; children?: ReadonlyArray<Html>; class?: string; }>` (type)
 - `checkboxIndicator<Msg>(props: CheckboxIndicatorProps, h: HtmlBuilder<Msg>): Html` (function)
-- `RadioIndicatorProps = Readonly<{ /** A radio has no partial state; anything other than unchecked reads as selected. */ state: IndicatorState; size?: IndicatorSize; isDisabled?: boolean; /** Replacement content rendered inside the circle (e.g. a busy spinner).…` (type)
+- `RadioIndicatorProps = Readonly<{ state: IndicatorState; size?: IndicatorSize; isDisabled?: boolean; children?: ReadonlyArray<Html>; class?: string; }>` (type)
 - `radioIndicator<Msg>(props: RadioIndicatorProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Info Tip
 
-A shadcn-styled Info Tip component for Foldkit.
+A CreaseUI Info Tip component for Foldkit.
 
 Source: `src/ui/info-tip.ts`
 
@@ -1180,12 +1180,12 @@ Examples: Basic, Sizes, Custom Label, Field Help
 - `InfoTipSize = 'xsm' | 'sm' | 'md' | 'lg'` (type)
 - `InfoTipSide = 'top' | 'right' | 'bottom' | 'left'` (type)
 - `InfoTipAlign = 'start' | 'center' | 'end'` (type)
-- `InfoTipProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Content shown in the tooltip. Keep it short and non-interactive. */ content: Html | string; /** Accessible name for the trigger button. Defaults to 'More information'…` (type)
+- `InfoTipProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; content: Html | string; label?: string; size?: InfoTipSize; side?: InfoTipSide; align?: InfoTipAlign; class?: string; }>` (type)
 - `infoTip<Msg>(props: InfoTipProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Input Group
 
-A shadcn-styled Input Group component for Foldkit.
+A CreaseUI Input Group component for Foldkit.
 
 Source: `src/ui/input-group.ts`
 
@@ -1193,12 +1193,12 @@ Examples: Basic, Align, Icon, Text, Button, Kbd, Dropdown, Spinner, Textarea, Cu
 
 - `inputGroup<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` (function)
 - `inputGroupAddonVariants: value` (value)
-- `InputGroupAddonVariants = VariantProps< typeof inputGroupAddonVariants >` (type)
+- `InputGroupAddonVariants = VariantProps<typeof inputGroupAddonVariants>` (type)
 - `InputGroupAddonProps<Msg = never> = SlotProps & Readonly<{ align?: InputGroupAddonVariants['align']; focusControlId?: string; onFocus?: Msg; }>` (type)
 - `inputGroupAddon<Msg>(props: InputGroupAddonProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `inputGroupButtonVariants: value` (value)
-- `InputGroupButtonVariants = VariantProps< typeof inputGroupButtonVariants >` (type)
-- `InputGroupButtonProps<Msg> = Omit< ButtonProps<Msg>, 'size' | 'class' > & Readonly<{ size?: InputGroupButtonVariants['size']; class?: string; }>` (type)
+- `InputGroupButtonVariants = VariantProps<typeof inputGroupButtonVariants>` (type)
+- `InputGroupButtonProps<Msg> = Omit<ButtonProps<Msg>, 'size' | 'class'> & Readonly<{ size?: InputGroupButtonVariants['size']; class?: string; }>` (type)
 - `inputGroupButton<Msg>(props: InputGroupButtonProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `inputGroupText<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` (function)
 - `InputGroupInputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; onKeyDown?: (key: string) => Msg; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; ariaLabel?: string; class?: str…` (type)
@@ -1208,19 +1208,19 @@ Examples: Basic, Align, Icon, Text, Button, Kbd, Dropdown, Spinner, Textarea, Cu
 
 ### Input Otp
 
-A shadcn-styled Input Otp component for Foldkit.
+A CreaseUI Input Otp component for Foldkit.
 
 Source: `src/ui/input-otp.ts`
 
 Examples: Basic, Pattern, Separator, Disabled, Controlled, Invalid, Four Digits, Alphanumeric, Form, RTL
 
-- `InputOtpProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; length?: number; name?: string; ariaLabel?: string; isDisabled?: boolean; isInvalid?: boolean; isRequired?: boolean; class?: string; groupClass?: string; /** Pattern a…` (type)
+- `InputOtpProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; length?: number; name?: string; ariaLabel?: string; isDisabled?: boolean; isInvalid?: boolean; isRequired?: boolean; class?: string; groupClass?: string; pattern?: Reg…` (type)
 - `inputOtp<Msg>(props: InputOtpProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `inputOtpSeparator<Msg>(h: HtmlBuilder<Msg>): Html` (function)
 
 ### Input
 
-A shadcn-styled Input component for Foldkit.
+A CreaseUI Input component for Foldkit.
 
 Source: `src/ui/input.ts`
 
@@ -1231,7 +1231,7 @@ Examples: Basic, Field, Field Group, Disabled, Invalid, File, Inline, Grid, Requ
 
 ### Item
 
-A shadcn-styled Item component for Foldkit.
+A CreaseUI Item component for Foldkit.
 
 Source: `src/ui/item.ts`
 
@@ -1257,7 +1257,7 @@ Examples: Basic, Variant, Size, Icon, Avatar, Image, Group, Header, Link, Dropdo
 
 ### Kbd
 
-A shadcn-styled Kbd component for Foldkit.
+A CreaseUI Kbd component for Foldkit.
 
 Source: `src/ui/kbd.ts`
 
@@ -1268,7 +1268,7 @@ Examples: Basic, Group, Button, Tooltip, Input Group, RTL
 
 ### Label
 
-A shadcn-styled Label component for Foldkit.
+A CreaseUI Label component for Foldkit.
 
 Source: `src/ui/label.ts`
 
@@ -1279,7 +1279,7 @@ Examples: Basic, Label in Field, RTL
 
 ### Lightbox
 
-A shadcn-styled Lightbox component for Foldkit.
+A CreaseUI Lightbox component for Foldkit.
 
 Source: `src/ui/lightbox.ts`
 
@@ -1302,7 +1302,7 @@ Examples: Lightbox, Lightbox — Gallery, Lightbox — Video, Lightbox — Zoom
 
 ### Link
 
-A shadcn-styled Link component for Foldkit.
+A CreaseUI Link component for Foldkit.
 
 Source: `src/ui/link.ts`
 
@@ -1315,7 +1315,7 @@ Examples: Link, Link — Inline Text, Link — External Links, Link — With Too
 
 ### List Input
 
-A shadcn-styled List Input component for Foldkit.
+A CreaseUI List Input component for Foldkit.
 
 Source: `src/ui/list-input.ts`
 
@@ -1333,12 +1333,12 @@ Examples: List Input, Controlled guest list
 - `export { ListInputRenderContext } from '@/lib/list-input'` (re-export)
 - `export { ListInputValueContext } from '@/lib/list-input'` (re-export)
 - `export { InputStatus } from '@/lib/input-status'` (re-export)
-- `ListInputProps<T, Msg> = Readonly<{ model: Model /** Lifts this submodel's messages into the parent message type. */ toParentMessage: (message: Message) => Msg id: string label: Html | string /** Controlled records owned by the parent. */ value: ReadonlyArray…` (type)
+- `ListInputProps<T, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; id: string; label: Html | string; value: ReadonlyArray<T>; description?: Html | string; getItemKey: (item: T) => string | number; createItem: () => T; columns: Reado…` (type)
 - `listInput<T, Msg>(props: ListInputProps<T, Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### List
 
-A shadcn-styled List component for Foldkit.
+A CreaseUI List component for Foldkit.
 
 Source: `src/ui/list.ts`
 
@@ -1347,14 +1347,14 @@ Examples: List, List — Basic, List — Bulleted Features, List — Message Lis
 - `ListDensity = 'compact' | 'balanced' | 'spacious'` (type)
 - `ListMarkerStyle = 'none' | 'disc' | 'decimal' | 'circle'` (type)
 - `ListEdgeCompensation = 'inline'` (type)
-- `ListProps = Readonly<{ children: ReadonlyArray<Html>; density?: ListDensity; hasDividers?: boolean; edgeCompensation?: ListEdgeCompensation; /** Header content rendered above the list, associated via aria-labelledby. */ header?: Html | string; /** List marker…` (type)
+- `ListProps = Readonly<{ children: ReadonlyArray<Html>; density?: ListDensity; hasDividers?: boolean; edgeCompensation?: ListEdgeCompensation; header?: Html | string; listStyle?: ListMarkerStyle; start?: number; class?: string; }>` (type)
 - `list<Msg>(props: ListProps, h: HtmlBuilder<Msg>): Html` (function)
-- `ListItemProps<Msg> = Readonly<{ /** Primary label. A plain string truncates to one line. */ label: Html | string; /** Secondary description under the label; strings truncate to one line. */ description?: Html | string; /** Content rendered before the item (ic…` (type)
+- `ListItemProps<Msg> = Readonly<{ label: Html | string; description?: Html | string; startContent?: Html; endContent?: Html; onClick?: Msg; href?: string; target?: '_blank' | '_self'; rel?: string; isDisabled?: boolean; isSelected?: boolean; density?: ListDensi…` (type)
 - `listItem<Msg>(props: ListItemProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Log Stream
 
-A shadcn-styled Log Stream component for Foldkit.
+A CreaseUI Log Stream component for Foldkit.
 
 Source: `src/ui/log-stream.ts`
 
@@ -1362,21 +1362,21 @@ Examples: Build logs, Log results, Controlled follow
 
 - `LogStreamLevel: value` (value)
 - `LogStreamLevel = typeof LogStreamLevel.Type` (type)
-- `LogEntry = Readonly<{ /** Stable unique key, e.g. `"req-1042"`. */ id: string; /** Pre-formatted timestamp, e.g. `"14:02:11.482"`. Deterministic. */ timestamp: string; level: LogStreamLevel; message: string; /** Emitting service/component, e.g. `"api-gateway"…` (type)
+- `LogEntry = Readonly<{ id: string; timestamp: string; level: LogStreamLevel; message: string; source?: string; detail?: Html; }>` (type)
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
-- `init(config: { id: string; /** Initially pinned to the tail. @default false (astryx uncontrolled) */ isFollowing?: boolean; }): Model` (function)
+- `init(config: { id: string; isFollowing?: boolean; }): Model` (function)
 - `Message: value` (value)
 - `Message = typeof Message.Type` (type)
 - `OutMessage: value` (value)
 - `OutMessage = typeof OutMessage.Type` (type)
 - `update(model: Model, message: Message): UpdateReturn` (function)
-- `LogStreamProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Log rows, oldest first (live tails append at the end). */ entries: ReadonlyArray<LogEntry>; /** Visual treatment; 'terminal' is always dark. @default 'default' */ v…` (type)
+- `LogStreamProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; entries: ReadonlyArray<LogEntry>; variant?: 'default' | 'terminal'; maxHeight?: number | string; hasTimestamps?: boolean; label?: string; renderEntry?: (entry: LogEntry…` (type)
 - `logStream<Msg>(props: LogStreamProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Markdown
 
-A shadcn-styled Markdown component for Foldkit.
+A CreaseUI Markdown component for Foldkit.
 
 Source: `src/ui/markdown.ts`
 
@@ -1400,12 +1400,12 @@ Examples: Markdown, Markdown — Rich Content, Markdown — Data Table, Markdown
 - `MarkdownDensity = 'default' | 'compact'` (type)
 - `MarkdownCitationStyle = 'label' | 'number'` (type)
 - `MarkdownContentAlign = 'start' | 'center'` (type)
-- `MarkdownProps<Msg> = Readonly<{ /** Markdown submodel state (owns the per-fence CodeBlock models). */ model: Model; toParentMessage: (message: Message) => Msg; /** Markdown source string. */ children: string; display?: MarkdownDisplay; density?: MarkdownDensi…` (type)
+- `MarkdownProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; children: string; display?: MarkdownDisplay; density?: MarkdownDensity; headingLevelStart?: HeadingLevel; sources?: Record<string, MarkdownSource>; citationStyle?: Markd…` (type)
 - `markdown<Msg>(props: MarkdownProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Marker
 
-A shadcn-styled Marker component for Foldkit.
+A CreaseUI Marker component for Foldkit.
 
 Source: `src/ui/marker.ts`
 
@@ -1415,11 +1415,11 @@ Examples: Basic, Variants, Status, Shimmer, Separator, Border, With Icon, Links 
 - `MarkerPurpose = 'annotation' | 'status' | 'decorative'` (type)
 - `marker<Msg>(props: ChildrenProps & Readonly<{ variant?: VariantProps<typeof markerVariants>['variant']; purpose?: MarkerPurpose; ariaLabel?: string; element?: 'div' | 'a' | 'button'; href?: string; onClick?: () => Msg; }>, h: HtmlBuilder<Msg>): Html` (function)
 - `markerIcon<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
-- `markerContent<Msg>(props: ChildrenProps & Readonly<{ shimmer?: boolean }>, h: HtmlBuilder<Msg>): Html` (function)
+- `markerContent<Msg>(props: ChildrenProps & Readonly<{ shimmer?: boolean; }>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Menubar
 
-A shadcn-styled Menubar component for Foldkit.
+A CreaseUI Menubar component for Foldkit.
 
 Source: `src/ui/menubar.ts`
 
@@ -1432,15 +1432,15 @@ Examples: Basic, Checkbox, Radio, Submenu, With Icons, RTL
 - `OutMessage = MenubarBehavior.OutMessage` (type)
 - `init: value` (value)
 - `update: value` (value)
-- `MenubarMenu<Item extends string, Msg> = Readonly<{ id: string label: string model: DropdownMenu.Model toParentMessage: (message: DropdownMenu.Message) => Msg items: ReadonlyArray<Item> itemToConfig: (item: Item) => DropdownMenu.DropdownMenuItemConfig<Item> co…` (type)
-- `MenubarProps<Item extends string, Msg> = SharedProps<Item, Msg> & Readonly<{ model: Model toParentMessage: (message: Message) => Msg }>` (type)
+- `MenubarMenu<Item extends string, Msg> = Readonly<{ id: string; label: string; model: DropdownMenu.Model; toParentMessage: (message: DropdownMenu.Message) => Msg; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => DropdownMenu.DropdownMenuItemConfig<Ite…` (type)
+- `MenubarProps<Item extends string, Msg> = SharedProps<Item, Msg> & Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; }>` (type)
 - `menubar<Item extends string, Msg>(props: MenubarProps<Item, Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `menubar<Item extends string, Msg>(props: LegacyMenubarProps<Item, Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `menubar<Item extends string, Msg>(props: MenubarProps<Item, Msg> | LegacyMenubarProps<Item, Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Message Scroller
 
-A shadcn-styled Message Scroller component for Foldkit.
+A CreaseUI Message Scroller component for Foldkit.
 
 Source: `src/ui/message-scroller.ts`
 
@@ -1459,19 +1459,19 @@ Examples: Anchoring Turns, Group Chat, Keeping Context Visible, Following the Li
 - `messageScroller<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
 - `messageScrollerViewport<Msg>(props: ChildrenProps & Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; }>, h: HtmlBuilder<Msg>): Html` (function)
 - `messageScrollerContent<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
-- `messageScrollerItem<Msg>(props: ChildrenProps & Readonly<{ scrollAnchor?: boolean; messageId?: string }>, h: HtmlBuilder<Msg>): Html` (function)
+- `messageScrollerItem<Msg>(props: ChildrenProps & Readonly<{ scrollAnchor?: boolean; messageId?: string; }>, h: HtmlBuilder<Msg>): Html` (function)
 - `messageScrollerButton<Msg>(props: Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; direction?: 'start' | 'end'; class?: string; }>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Message
 
-A shadcn-styled Message component for Foldkit.
+A CreaseUI Message component for Foldkit.
 
 Source: `src/ui/message.ts`
 
 Examples: Basic, Avatar, Group, Header and Footer, Actions, Attachment
 
 - `messageGroup<Msg>(props: MessageGroupProps, h: HtmlBuilder<Msg>): Html` (function)
-- `message<Msg>(props: ChildrenProps & Readonly<{ align?: 'start' | 'end'; announcement?: 'none' | 'status'; ariaLabel?: string }>, h: HtmlBuilder<Msg>): Html` (function)
+- `message<Msg>(props: ChildrenProps & Readonly<{ align?: 'start' | 'end'; announcement?: 'none' | 'status'; ariaLabel?: string; }>, h: HtmlBuilder<Msg>): Html` (function)
 - `messageAvatar<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
 - `messageContent<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
 - `messageHeader<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html` (function)
@@ -1482,7 +1482,7 @@ Examples: Basic, Avatar, Group, Header and Footer, Actions, Attachment
 
 ### Metadata List
 
-A shadcn-styled Metadata List component for Foldkit.
+A CreaseUI Metadata List component for Foldkit.
 
 Source: `src/ui/metadata-list.ts`
 
@@ -1496,14 +1496,14 @@ Examples: MetadataList, MetadataList — Basic, MetadataList — Collapsible, Me
 - `export { MetadataListColumns } from '@/lib/metadata-list'` (re-export)
 - `export { MetadataListLabelConfig } from '@/lib/metadata-list'` (re-export)
 - `export { MetadataListOrientation } from '@/lib/metadata-list'` (re-export)
-- `MetadataListProps<Msg> = Readonly<{ model: Behavior.Model; toParentMessage: (message: Behavior.Message) => Msg; /** Stable id — anchors the show-more toggle's aria-controls. */ id: string; /** @default 'single' */ columns?: Behavior.MetadataListColumns; label…` (type)
+- `MetadataListProps<Msg> = Readonly<{ model: Behavior.Model; toParentMessage: (message: Behavior.Message) => Msg; id: string; columns?: Behavior.MetadataListColumns; label?: Behavior.MetadataListLabelConfig; maxNumOfItems?: number; orientation?: Behavior.Metada…` (type)
 - `metadataList<Msg>(props: MetadataListProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
-- `MetadataListItemProps = Readonly<{ label: Html | string; icon?: Html; /** Render the label above the value inside a wrapper (top labels and horizontal layouts). The parent MetadataList resolves this. */ stacked?: boolean; children?: ReadonlyArray<Html | strin…` (type)
+- `MetadataListItemProps = Readonly<{ label: Html | string; icon?: Html; stacked?: boolean; children?: ReadonlyArray<Html | string>; class?: string; }>` (type)
 - `metadataListItem<Msg>(props: MetadataListItemProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Mobile Nav
 
-A shadcn-styled Mobile Nav component for Foldkit.
+A CreaseUI Mobile Nav component for Foldkit.
 
 Source: `src/ui/mobile-nav.ts`
 
@@ -1528,7 +1528,7 @@ Examples: Mobile Nav, Main, Settings, MobileNav — Basic Drawer, MobileNav — 
 
 ### More Menu
 
-A shadcn-styled More Menu component for Foldkit.
+A CreaseUI More Menu component for Foldkit.
 
 Source: `src/ui/more-menu.ts`
 
@@ -1542,12 +1542,12 @@ Examples: MoreMenu, MoreMenu — Default, MoreMenu — With Dividers, MoreMenu �
 - `export { flattenOptions } from '@/lib/more-menu'` (re-export)
 - `export { MoreMenuAction } from '@/lib/more-menu'` (re-export)
 - `export { MoreMenuOption } from '@/lib/more-menu'` (re-export)
-- `MoreMenuProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<MoreMenuOption>; /** Trigger aria-label — the button is always icon-only. @default 'More options' */ label?: string; /** @default 'ghost' */ variant…` (type)
+- `MoreMenuProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<MoreMenuOption>; label?: string; variant?: NonNullable<ButtonVariants['variant']>; size?: 'sm' | 'md' | 'lg'; icon?: Html; isDisabled?: boolean; sid…` (type)
 - `moreMenu<Msg>(props: MoreMenuProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Multi Selector
 
-A shadcn-styled Multi Selector component for Foldkit.
+A CreaseUI Multi Selector component for Foldkit.
 
 Source: `src/ui/multi-selector.ts`
 
@@ -1561,15 +1561,15 @@ Examples: Multi Selector, Searchable, Sectioned, Column Visibility, Form Composi
 - `export { reflect } from ` (re-export)
 - `export { reflectOptions } from ` (re-export)
 - `export { update } from ` (re-export)
-- `MultiSelectorOption = Readonly<{ value: string label: string }>` (type)
-- `MultiSelectorSection = Readonly<{ title: string options: ReadonlyArray<MultiSelectorOption> }>` (type)
-- `MultiSelectorStatus = Readonly<{ type: 'error' | 'warning' | 'success' message?: string }>` (type)
-- `MultiSelectorProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg label: string isLabelHidden?: boolean description?: string isOptional?: boolean isRequired?: boolean isDisabled?: boolean /** Astryx shows it as a tooltip on the disa…` (type)
+- `MultiSelectorOption = Readonly<{ value: string; label: string; }>` (type)
+- `MultiSelectorSection = Readonly<{ title: string; options: ReadonlyArray<MultiSelectorOption>; }>` (type)
+- `MultiSelectorStatus = Readonly<{ type: 'error' | 'warning' | 'success'; message?: string; }>` (type)
+- `MultiSelectorProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label: string; isLabelHidden?: boolean; description?: string; isOptional?: boolean; isRequired?: boolean; isDisabled?: boolean; disabledMessage?: string; isReadOnly…` (type)
 - `multiSelector<Msg>(props: MultiSelectorProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Native Select
 
-A shadcn-styled Native Select component for Foldkit.
+A CreaseUI Native Select component for Foldkit.
 
 Source: `src/ui/native-select.ts`
 
@@ -1586,23 +1586,23 @@ Examples: Basic, Groups, Disabled, Invalid, RTL
 
 ### Navigation Menu
 
-A shadcn-styled Navigation Menu component for Foldkit.
+A CreaseUI Navigation Menu component for Foldkit.
 
 Source: `src/ui/navigation-menu.ts`
 
 Examples: Semantic links, Popover disclosure, Responsive fallback, RTL
 
 - `NavigationMenuLayout = 'inline' | 'scroll' | 'responsive'` (type)
-- `navigationMenu<Msg>(props: Slot & Readonly<{ ariaLabel?: string; direction?: 'ltr' | 'rtl'; layout?: NavigationMenuLayout }>, h: HtmlBuilder<Msg>): Html` (function)
-- `navigationMenuList<Msg>(props: Slot & Readonly<{ layout?: NavigationMenuLayout }>, h: HtmlBuilder<Msg>): Html` (function)
+- `navigationMenu<Msg>(props: Slot & Readonly<{ ariaLabel?: string; direction?: 'ltr' | 'rtl'; layout?: NavigationMenuLayout; }>, h: HtmlBuilder<Msg>): Html` (function)
+- `navigationMenuList<Msg>(props: Slot & Readonly<{ layout?: NavigationMenuLayout; }>, h: HtmlBuilder<Msg>): Html` (function)
 - `navigationMenuItem<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
-- `navigationMenuLink<Msg>(props: Slot & Readonly<{ href: string; isActive?: boolean }>, h: HtmlBuilder<Msg>): Html` (function)
+- `navigationMenuLink<Msg>(props: Slot & Readonly<{ href: string; isActive?: boolean; }>, h: HtmlBuilder<Msg>): Html` (function)
 - `NavigationMenuDisclosureProps<Msg> = Readonly<{ model: Popover.Model; toParentMessage: (message: Popover.Message) => Msg; label: string; content: Html | string; class?: string; ariaLabel?: string; pointerIntent?: 'press' | 'hover-and-press'; }>` (type)
 - `navigationMenuDisclosure<Msg>(props: NavigationMenuDisclosureProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Number Input
 
-A shadcn-styled Number Input component for Foldkit.
+A CreaseUI Number Input component for Foldkit.
 
 Source: `src/ui/number-input.ts`
 
@@ -1615,13 +1615,13 @@ Examples: Number Input, NumberInput — Clearable, NumberInput — Range Constra
 - `export { update } from '@/lib/number-input'` (re-export)
 - `export { NumberInputSize } from '@/lib/number-input'` (re-export)
 - `export { InputStatus } from '@/lib/input-status'` (re-export)
-- `NumberInputProps<Msg> = Readonly<{ model: Model /** Lifts this submodel's messages into the parent message type. */ toParentMessage: (message: Message) => Msg id: string label: Html | string /** The committed value owned by the parent (`null`/`undefined` = em…` (type)
-- `NumberInputViewInputs = Omit< NumberInputProps<never>, 'model' | 'toParentMessage' >` (type)
+- `NumberInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; id: string; label: Html | string; value?: number | null; isLabelHidden?: boolean; description?: Html | string; isOptional?: boolean; isRequired?: boolean; isDisabled?…` (type)
+- `NumberInputViewInputs = Omit<NumberInputProps<never>, 'model' | 'toParentMessage'>` (type)
 - `numberInput<Msg>(props: NumberInputProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Overflow List
 
-A shadcn-styled Overflow List component for Foldkit.
+A CreaseUI Overflow List component for Foldkit.
 
 Source: `src/ui/overflow-list.ts`
 
@@ -1639,12 +1639,12 @@ Examples: OverflowList, OverflowList — Capped Toolbar, OverflowList — Collap
 - `export { OverflowBehavior } from '@/lib/overflow-list'` (re-export)
 - `export { OverflowListItem } from '@/lib/overflow-list'` (re-export)
 - `export { SpacingStep } from '@/lib/overflow-list'` (re-export)
-- `OverflowListProps<Msg> = Readonly<{ model: Behavior.Model; toParentMessage: (message: Behavior.Message) => Msg; /** @default 2 — spacing-step gap between items. */ gap?: Behavior.SpacingStep; /** @default 0 — floor: always show at least this many items. */ mi…` (type)
+- `OverflowListProps<Msg> = Readonly<{ model: Behavior.Model; toParentMessage: (message: Behavior.Message) => Msg; gap?: Behavior.SpacingStep; minVisibleItems?: number; maxVisibleItems?: number; maxRows?: number; collapseFrom?: Behavior.CollapseFrom; behavior?: …` (type)
 - `overflowList<Msg>(props: OverflowListProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Pagination
 
-A shadcn-styled Pagination component for Foldkit.
+A CreaseUI Pagination component for Foldkit.
 
 Source: `src/ui/pagination.ts`
 
@@ -1665,7 +1665,7 @@ Examples: Addressable pages, In-place results, Compact neighborhood, Disabled bo
 
 ### Popover
 
-A shadcn-styled Popover component for Foldkit.
+A CreaseUI Popover component for Foldkit.
 
 Source: `src/ui/popover.ts`
 
@@ -1690,60 +1690,60 @@ Examples: Basic, Align, With Form, Interactive content, Right aligned, RTL
 
 ### Power Search
 
-A shadcn-styled Power Search component for Foldkit.
+A CreaseUI Power Search component for Foldkit.
 
 Source: `src/ui/power-search.ts`
 
 Examples: Power Search, PowerSearch — Content Search, PowerSearch — Preset Filters, PowerSearch — Full Featured, PowerSearch — Search with Table
 
-- `EnumItem = Readonly<{ value: string; label: string }>` (type)
+- `EnumItem = Readonly<{ value: string; label: string; }>` (type)
 - `PowerSearchEntity = Readonly<{ id: string; label: string; photo?: string; }>` (type)
 - `SearchableItem = Readonly<{ id: string; label: string; photo?: string; auxiliaryData?: unknown; }>` (type)
 - `SearchSource = Readonly<{ search: (query: string) => ReadonlyArray<SearchableItem>; bootstrap?: () => ReadonlyArray<SearchableItem>; }>` (type)
-- `DateTimeRangePart = | Readonly<{ type: 'NOW' }> | Readonly<{ type: 'ABSOLUTE'; unixSeconds: number }> | Readonly<{ type: 'RELATIVE'; backValue: number; unit: | 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year'; }>` (type)
+- `DateTimeRangePart = Readonly<{ type: 'NOW'; }> | Readonly<{ type: 'ABSOLUTE'; unixSeconds: number; }> | Readonly<{ type: 'RELATIVE'; backValue: number; unit: 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year'; }>` (type)
 - `DateTimeRange = Readonly<{ start: DateTimeRangePart; end: DateTimeRangePart; }>` (type)
-- `OperatorValue = | Readonly<{ type: 'empty' }> | Readonly<{ type: 'string'; searchSource?: SearchSource }> | Readonly<{ type: 'string_list'; searchSource?: SearchSource }> | Readonly<{ type: 'integer' }> | Readonly<{ type: 'float' }> | Readonly<{ type: 'time' …` (type)
+- `OperatorValue = Readonly<{ type: 'empty'; }> | Readonly<{ type: 'string'; searchSource?: SearchSource; }> | Readonly<{ type: 'string_list'; searchSource?: SearchSource; }> | Readonly<{ type: 'integer'; }> | Readonly<{ type: 'float'; }> | Readonly<{ type: 'tim…` (type)
 - `RelativeDateFilterPreset = Readonly<{ key: string; label: string; range: DateTimeRange; }>` (type)
-- `PowerSearchOperator = Readonly<{ key: string; value: OperatorValue }> & (Readonly<{ label: string }> | Readonly<{ i18nKey: string }>)` (type)
+- `PowerSearchOperator = Readonly<{ key: string; value: OperatorValue; }> & (Readonly<{ label: string; }> | Readonly<{ i18nKey: string; }>)` (type)
 - `PowerSearchField = Readonly<{ key: string; label: string; operators: ReadonlyArray<PowerSearchOperator>; icon?: string; defaultOperator?: string; group?: string; description?: string; typeaheadAliases?: ReadonlyArray<string>; typeaheadMinQueryLength?: number;…` (type)
-- `FilterValue = | Readonly<{ type: 'empty' }> | Readonly<{ type: 'string'; value: string }> | Readonly<{ type: 'string_list'; value: ReadonlyArray<string> }> | Readonly<{ type: 'integer'; value: number }> | Readonly<{ type: 'float'; value: number }> | Readonly<…` (type)
+- `FilterValue = Readonly<{ type: 'empty'; }> | Readonly<{ type: 'string'; value: string; }> | Readonly<{ type: 'string_list'; value: ReadonlyArray<string>; }> | Readonly<{ type: 'integer'; value: number; }> | Readonly<{ type: 'float'; value: number; }> | Readon…` (type)
 - `PowerSearchFilter = Readonly<{ field: string; operator: string; value: FilterValue; isReadOnly?: boolean; }>` (type)
 - `PartialFilter = Readonly<{ field: string; operator?: string; value?: FilterValue; }>` (type)
 - `PowerSearchConfig = Readonly<{ name: string; fields: ReadonlyArray<PowerSearchField>; contentSearchFieldKey?: string; }>` (type)
 - `PowerSearchChangeType = 'add' | 'edit' | 'remove'` (type)
 - `resolveOperatorLabel(operator: PowerSearchOperator): string` (function)
-- `InternalPowerSearchConfig = Readonly<{ name: string; fields: ReadonlyArray<PowerSearchField>; contentSearchFieldKey?: string; fieldsByKey: ReadonlyMap<string, PowerSearchField>; /** The portion of the fields array that precedes contentSearchFieldKey (astryx e…` (type)
+- `InternalPowerSearchConfig = Readonly<{ name: string; fields: ReadonlyArray<PowerSearchField>; contentSearchFieldKey?: string; fieldsByKey: ReadonlyMap<string, PowerSearchField>; nonContentSearchFields: ReadonlyArray<PowerSearchField>; contentSearchField?: Pow…` (type)
 - `createInternalConfig(config: PowerSearchConfig): InternalPowerSearchConfig` (function)
 - `resolveDateTimeRangePart(part: DateTimeRangePart, nowSeconds: number = Date.now() / 1000): number` (function)
 - `formatFilterValue(config: InternalPowerSearchConfig, operatorValue: OperatorValue, filterValue: FilterValue | undefined, maxLength: number): string` (function)
-- `PowerSearchSuggestion = | Readonly<{ kind: 'group'; label: string }> | Readonly<{ kind: 'field'; field: PowerSearchField }> | Readonly<{ kind: 'operator'; field: PowerSearchField; operator: PowerSearchOperator; label: string; }> | Readonly<{ kind: 'value'; fi…` (type)
+- `PowerSearchSuggestion = Readonly<{ kind: 'group'; label: string; }> | Readonly<{ kind: 'field'; field: PowerSearchField; }> | Readonly<{ kind: 'operator'; field: PowerSearchField; operator: PowerSearchOperator; label: string; }> | Readonly<{ kind: 'value'; fi…` (type)
 - `FieldDefinition = Readonly<{ key: string; type: FieldDefinitionType; label?: string; enumValues?: ReadonlyArray<EnumItem>; }>` (type)
-- `createPowerSearchConfig(definitions: ReadonlyArray<FieldDefinition>, configName?: string): { config: PowerSearchConfig; applyFilters: <Row extends Record<string, unknown>>( filters: ReadonlyArray<PowerSearchFilter>, data: ReadonlyArray<Row>, ) => Row[]; }` (function)
+- `createPowerSearchConfig(definitions: ReadonlyArray<FieldDefinition>, configName?: string): { config: PowerSearchConfig; applyFilters: <Row extends Record<string, unknown>>(filters: ReadonlyArray<PowerSearchFilter>, data: ReadonlyArray<Row>) => Row[]; }` (function)
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
-- `init(config: { id: string }): Model` (function)
+- `init(config: { id: string; }): Model` (function)
 - `Message: value` (value)
 - `Message = typeof Message.Type` (type)
 - `OutMessage: value` (value)
 - `OutMessage = typeof OutMessage.Type` (type)
 - `update(model: Model, message: Message, config: InternalPowerSearchConfig, filters: ReadonlyArray<PowerSearchFilter>, resultCount: number | null = null): UpdateReturn` (function)
-- `PowerSearchProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Controlled filter list (astryx `filters` prop + `onChange`). */ filters: ReadonlyArray<PowerSearchFilter>; config: InternalPowerSearchConfig; placeholder?: string…` (type)
+- `PowerSearchProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; filters: ReadonlyArray<PowerSearchFilter>; config: InternalPowerSearchConfig; placeholder?: string; valueMaxLength?: number; resultCount?: number; hasClear?: boolean;…` (type)
 - `powerSearch<Msg>(props: PowerSearchProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Progress
 
-A shadcn-styled Progress component for Foldkit.
+A CreaseUI Progress component for Foldkit.
 
 Source: `src/ui/progress.ts`
 
 Examples: Basic, Label, Controlled, RTL, Determinate, Indeterminate, Narrow Range
 
-- `ProgressProps = Readonly<{ /** `null` renders an indeterminate progress indicator. */ value: number | null; max?: number; ariaLabel?: string; valueText?: string; id?: string; direction?: 'ltr' | 'rtl'; class?: string; }>` (type)
+- `ProgressProps = Readonly<{ value: number | null; max?: number; ariaLabel?: string; valueText?: string; id?: string; direction?: 'ltr' | 'rtl'; class?: string; }>` (type)
 - `progress<Msg>(props: ProgressProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Radio Group
 
-A shadcn-styled Radio Group component for Foldkit.
+A CreaseUI Radio Group component for Foldkit.
 
 Source: `src/ui/radio-group.ts`
 
@@ -1760,7 +1760,7 @@ Examples: Basic, Description, Choice Card, Fieldset, Disabled, Invalid, Read Onl
 
 ### Resizable
 
-A shadcn-styled Resizable component for Foldkit.
+A CreaseUI Resizable component for Foldkit.
 
 Source: `src/ui/resizable.ts`
 
@@ -1772,7 +1772,7 @@ Examples: Basic, Vertical, Handle, RTL
 - `Message = typeof Message.Type` (type)
 - `init(id: string, firstSize = 50): Model` (function)
 - `update(model: Model, message: Message): Model` (function)
-- `ResizableProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; first: Html | string; second: Html | string; direction?: 'horizontal' | 'vertical'; rtl?: boolean; withHandle?: boolean; minSize?: number; maxSize?: number; /** Pixel e…` (type)
+- `ResizableProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; first: Html | string; second: Html | string; direction?: 'horizontal' | 'vertical'; rtl?: boolean; withHandle?: boolean; minSize?: number; maxSize?: number; extent?: nu…` (type)
 - `resizable<Msg>(props: ResizableProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `GroupModel: value` (value)
 - `GroupModel = typeof GroupModel.Type` (type)
@@ -1785,7 +1785,7 @@ Examples: Basic, Vertical, Handle, RTL
 
 ### Scroll Area
 
-A shadcn-styled Scroll Area component for Foldkit.
+A CreaseUI Scroll Area component for Foldkit.
 
 Source: `src/ui/scroll-area.ts`
 
@@ -1796,7 +1796,7 @@ Examples: Basic, Horizontal, RTL
 
 ### Section
 
-A shadcn-styled Section component for Foldkit.
+A CreaseUI Section component for Foldkit.
 
 Source: `src/ui/section.ts`
 
@@ -1806,12 +1806,12 @@ Examples: Section — Variants, Section — Default with Wash, Section — With 
 - `SectionDivider = 'top' | 'bottom' | 'start' | 'end'` (type)
 - `SectionSpacing = 0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10` (type)
 - `SectionSizeValue = number | string` (type)
-- `SectionProps = Readonly<{ /** * Visual variant. * - `section`: surface (card) background (default) * - `transparent`: no background * - `muted`: muted background, draws attention to a region */ variant?: SectionVariant; /** Divider borders to apply on the giv…` (type)
+- `SectionProps = Readonly<{ variant?: SectionVariant; dividers?: ReadonlyArray<SectionDivider>; padding?: SectionSpacing; paddingInline?: SectionSpacing; paddingInlineStart?: SectionSpacing; paddingInlineEnd?: SectionSpacing; paddingBlock?: SectionSpacing; padd…` (type)
 - `section<Msg>(props: SectionProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Segmented Control
 
-A shadcn-styled Segmented Control component for Foldkit.
+A CreaseUI Segmented Control component for Foldkit.
 
 Source: `src/ui/segmented-control.ts`
 
@@ -1823,16 +1823,16 @@ Examples: Segmented Control, With Icons, Icon Only, Fill Layout, Disabled Item
 - `export { OutMessage } from ` (re-export)
 - `SegmentedControlSize = 'sm' | 'md' | 'lg'` (type)
 - `SegmentedControlLayout = 'hug' | 'fill'` (type)
-- `SegmentedControlItem<Value extends string = string> = Readonly<{ value: Value /** Visible label; also the accessible name when `isLabelHidden` is set. */ label: string /** Icon element displayed before the label. */ icon?: Html isLabelHidden?: boolean isDisab…` (type)
-- `SegmentedControlProps<Value extends string, Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg /** The currently selected value (controlled). */ value: Value /** Accessible label for the radio group (used as aria-label, never rendered v…` (type)
-- `SegmentedControlBundle<Value extends string> = Readonly<{ update: ReturnType<typeof createBehavior<Value>>['update'] segmentedControl: <Msg>( props: SegmentedControlProps<Value, Msg>, h: HtmlBuilder<Msg>, ) => Html }>` (type)
+- `SegmentedControlItem<Value extends string = string> = Readonly<{ value: Value; label: string; icon?: Html; isLabelHidden?: boolean; isDisabled?: boolean; }>` (type)
+- `SegmentedControlProps<Value extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; value: Value; ariaLabel: string; options: ReadonlyArray<SegmentedControlItem<Value>>; size?: SegmentedControlSize; layout?: SegmentedContro…` (type)
+- `SegmentedControlBundle<Value extends string> = Readonly<{ update: ReturnType<typeof createBehavior<Value>>['update']; segmentedControl: <Msg>(props: SegmentedControlProps<Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>` (type)
 - `create<Value extends string = string>(): SegmentedControlBundle<Value>` (function)
 - `update: value` (value)
 - `segmentedControl: value` (value)
 
 ### Select
 
-A shadcn-styled Select component for Foldkit.
+A CreaseUI Select component for Foldkit.
 
 Source: `src/ui/select.ts`
 
@@ -1855,7 +1855,7 @@ Examples: Basic, Align Item With Trigger, Groups, Scrollable, Disabled, Invalid,
 
 ### Selectable Card
 
-A shadcn-styled Selectable Card component for Foldkit.
+A CreaseUI Selectable Card component for Foldkit.
 
 Source: `src/ui/selectable-card.ts`
 
@@ -1865,12 +1865,12 @@ Examples: SelectableCard, SelectableCard — Elevated, SelectableCardMulti
 - `export { CardPadding } from '@/lib/card-surface'` (re-export)
 - `export { CardVariant } from '@/lib/card-surface'` (re-export)
 - `export { Message } from '@/lib/clickable-card'` (re-export)
-- `SelectableCardProps<Msg> = Readonly<{ /** Accessibility label for the card, applied to the hidden checkbox. */ label: string; /** Controlled selection state — the parent owns it. */ isSelected: boolean; /** Message emitted when the card requests a toggle. */ …` (type)
+- `SelectableCardProps<Msg> = Readonly<{ label: string; isSelected: boolean; onChange?: Msg; isDisabled?: boolean; children?: ReadonlyArray<Html | string>; padding?: CardPadding; variant?: CardVariant; elevation?: CardElevation; width?: string; height?: string; …` (type)
 - `selectableCard<Msg>(props: SelectableCardProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Separator
 
-A shadcn-styled Separator component for Foldkit.
+A CreaseUI Separator component for Foldkit.
 
 Source: `src/ui/separator.ts`
 
@@ -1881,7 +1881,7 @@ Examples: Basic, Vertical, Menu, List, RTL
 
 ### Sheet
 
-A shadcn-styled Sheet component for Foldkit.
+A CreaseUI Sheet component for Foldkit.
 
 Source: `src/ui/sheet.ts`
 
@@ -1900,7 +1900,7 @@ Examples: Basic, Side, No Close Button, RTL
 - `SheetSide = 'top' | 'right' | 'bottom' | 'left'` (type)
 - `SheetSlots = Readonly<{ closeButton: ReadonlyArray<ChildAttribute>; initialFocusAttributes: () => ReadonlyArray<ChildAttribute>; }>` (type)
 - `SheetPartProps = Readonly<{ children: ReadonlyArray<Html | string>; class?: string; }>` (type)
-- `SheetTextPartProps = SheetPartProps & Readonly<{ attributes: ReadonlyArray<ChildAttribute> }>` (type)
+- `SheetTextPartProps = SheetPartProps & Readonly<{ attributes: ReadonlyArray<ChildAttribute>; }>` (type)
 - `SheetCloseProps = Readonly<{ children?: ReadonlyArray<Html | string>; class?: string; ariaLabel?: string; }>` (type)
 - `sheetHeader<Msg>(props: SheetPartProps, h: HtmlBuilder<Msg>): Html` (function)
 - `sheetTitle<Msg>(props: SheetTextPartProps, h: HtmlBuilder<Msg>): Html` (function)
@@ -1912,7 +1912,7 @@ Examples: Basic, Side, No Close Button, RTL
 
 ### Side Nav
 
-A shadcn-styled Side Nav component for Foldkit.
+A CreaseUI Side Nav component for Foldkit.
 
 Source: `src/ui/side-nav.ts`
 
@@ -1929,18 +1929,18 @@ Examples: Side Nav, Main, Documents, SideNav — End Content, Navigation, SideNa
 - `export { update } from '@/lib/side-nav'` (re-export)
 - `export { visibleWidth } from '@/lib/side-nav'` (re-export)
 - `export { InitConfig } from '@/lib/side-nav'` (re-export)
-- `SideNavItemData = Readonly<{ id: string; label: string; icon?: string; /** Icon shown instead of `icon` while the item is selected (astryx selectedIcon). */ selectedIcon?: string; isSelected?: boolean; isDisabled?: boolean; href?: string; /** Invoked for item…` (type)
+- `SideNavItemData = Readonly<{ id: string; label: string; icon?: string; selectedIcon?: string; isSelected?: boolean; isDisabled?: boolean; href?: string; onSelect?: boolean; endContent?: Html; actions?: Html; children?: ReadonlyArray<SideNavItemData>; defaultC…` (type)
 - `SideNavMenuItemData = Readonly<{ label: string; href?: string; onSelect?: boolean; icon?: string; isDisabled?: boolean; }>` (type)
 - `SideNavHeadingData = Readonly<{ heading: string; icon?: Html; headingHref?: string; superheading?: string; superheadingHref?: string; subheading?: string; subheadingHref?: string; headerEndContent?: Html; menu?: ReadonlyArray<SideNavMenuItemData>; }>` (type)
 - `SideNavSectionData = Readonly<{ title?: string; subtitle?: string; isHeaderHidden?: boolean; endContent?: Html; items: ReadonlyArray<SideNavItemData>; }>` (type)
-- `ViewInputs = Readonly<{ /** Bare top-level items (astryx SideNav children outside a Section). */ items?: ReadonlyArray<SideNavItemData>; sections?: ReadonlyArray<SideNavSectionData>; heading?: SideNavHeadingData; topContent?: Html; footer?: Html; /** Small ic…` (type)
+- `ViewInputs = Readonly<{ items?: ReadonlyArray<SideNavItemData>; sections?: ReadonlyArray<SideNavSectionData>; heading?: SideNavHeadingData; topContent?: Html; footer?: Html; footerIcons?: Html; hasCollapseButton?: boolean; footerCollapseButton?: boolean; size…` (type)
 - `view: value` (value)
 - `SideNavProps<Msg> = ViewInputs & Readonly<{ model: SideNavLib.Model; toParentMessage: (message: SideNavLib.Message) => Msg; }>` (type)
 - `sideNav<Msg>(props: SideNavProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Sidebar
 
-A shadcn-styled Sidebar component for Foldkit.
+A CreaseUI Sidebar component for Foldkit.
 
 Source: `src/ui/sidebar.ts`
 
@@ -1965,7 +1965,7 @@ Examples: Application shell, Floating sidebar, Inset sidebar, Off-canvas collaps
 - `sidebarInput<Msg>(props: SidebarInputProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `sidebarHeader: value` (value)
 - `sidebarFooter: value` (value)
-- `sidebarSeparator<Msg>(props: Readonly<{ class?: string }> = {}, h: HtmlBuilder<Msg>): Html` (function)
+- `sidebarSeparator<Msg>(props: Readonly<{ class?: string; }> = {}, h: HtmlBuilder<Msg>): Html` (function)
 - `sidebarContent: value` (value)
 - `sidebarGroup: value` (value)
 - `sidebarGroupLabel: value` (value)
@@ -1975,7 +1975,7 @@ Examples: Application shell, Floating sidebar, Inset sidebar, Off-canvas collaps
 - `sidebarMenu<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
 - `sidebarMenuItem<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
 - `sidebarMenuButtonVariants: value` (value)
-- `SidebarMenuButtonVariants = VariantProps< typeof sidebarMenuButtonVariants >` (type)
+- `SidebarMenuButtonVariants = VariantProps<typeof sidebarMenuButtonVariants>` (type)
 - `SidebarMenuButtonProps<Msg> = Readonly<{ children: ReadonlyArray<Html | string>; onClick?: Msg; ariaExpanded?: boolean; href?: string; isActive?: boolean; variant?: SidebarMenuButtonVariants['variant']; size?: SidebarMenuButtonVariants['size']; tooltip?: stri…` (type)
 - `sidebarMenuButton<Msg>(props: SidebarMenuButtonProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `SidebarMenuActionProps<Msg> = SidebarActionProps<Msg> & Readonly<{ showOnHover?: boolean; }>` (type)
@@ -1990,7 +1990,7 @@ Examples: Application shell, Floating sidebar, Inset sidebar, Off-canvas collaps
 
 ### Skeleton
 
-A shadcn-styled Skeleton component for Foldkit.
+A CreaseUI Skeleton component for Foldkit.
 
 Source: `src/ui/skeleton.ts`
 
@@ -2001,7 +2001,7 @@ Examples: Basic, Avatar, Card, Text, Form, Table, RTL
 
 ### Slider
 
-A shadcn-styled Slider component for Foldkit.
+A CreaseUI Slider component for Foldkit.
 
 Source: `src/ui/slider.ts`
 
@@ -2021,7 +2021,7 @@ Examples: Basic, Range, Multiple Thumbs, Vertical, Controlled, Disabled, RTL
 - `subscriptionsForRoot: value` (value)
 - `fractionOfValue: value` (value)
 - `SliderProps<Msg> = Readonly<{ model: Model; value: number; toParentMessage: (message: Message) => Msg; label?: string; ariaLabel?: string; formatValue?: (value: number) => string; isDisabled?: boolean; isReadOnly?: boolean; name?: string; class?: string; }>` (type)
-- `RangeSliderProps<Msg> = Readonly<{ values: readonly [number, number]; min: number; max: number; step?: number; onInput: (values: readonly [number, number]) => Msg; orientation?: 'horizontal' | 'vertical'; direction?: 'ltr' | 'rtl'; ariaLabels?: readonly [stri…` (type)
+- `RangeSliderProps<Msg> = Readonly<{ values: readonly [ number, number ]; min: number; max: number; step?: number; onInput: (values: readonly [ number, number ]) => Msg; orientation?: 'horizontal' | 'vertical'; direction?: 'ltr' | 'rtl'; ariaLabels?: readonly […` (type)
 - `rangeSlider<Msg>(props: RangeSliderProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `slider<Msg>(props: SliderProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `MultiSliderProps<Msg> = Readonly<{ values: readonly number[]; min: number; max: number; step?: number; onInput: (values: readonly number[]) => Msg; orientation?: 'horizontal' | 'vertical'; direction?: 'ltr' | 'rtl'; ariaLabels?: readonly string[]; isDisabled?…` (type)
@@ -2029,37 +2029,37 @@ Examples: Basic, Range, Multiple Thumbs, Vertical, Controlled, Disabled, RTL
 
 ### Sonner
 
-A shadcn-styled Sonner component for Foldkit.
+A CreaseUI Sonner component for Foldkit.
 
 Source: `src/ui/sonner.ts`
 
 Examples: Basic, Types, Description, Position
 
 - `export * from '@/lib/toast'` (re-export)
-- `SonnerProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg ariaLabel?: string pausePolicy?: 'none' | 'pointer' class?: string entryClass?: string position?: Position }>` (type)
+- `SonnerProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; ariaLabel?: string; pausePolicy?: 'none' | 'pointer'; class?: string; entryClass?: string; position?: Position; }>` (type)
 - `sonner<Msg>(props: SonnerProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Spinner
 
-A shadcn-styled Spinner component for Foldkit.
+A CreaseUI Spinner component for Foldkit.
 
 Source: `src/ui/spinner.ts`
 
 Examples: Basic, Customization, Size, Button, Badge, Input Group, Empty, RTL
 
-- `SpinnerProps = SpinnerAccessibility & Readonly<{ size?: 'sm' | 'md' | 'lg' | 'xl'; tone?: 'current' | 'muted' | 'primary'; /** Emits data-icon="inline-start|inline-end" for parent icon positioning. */ dataIcon?: 'inline-start' | 'inline-end'; class?: string; …` (type)
+- `SpinnerProps = SpinnerAccessibility & Readonly<{ size?: 'sm' | 'md' | 'lg' | 'xl'; tone?: 'current' | 'muted' | 'primary'; dataIcon?: 'inline-start' | 'inline-end'; class?: string; }>` (type)
 - `spinner<Msg>(props: SpinnerProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Stack
 
-A shadcn-styled Stack component for Foldkit.
+A CreaseUI Stack component for Foldkit.
 
 Source: `src/ui/stack.ts`
 
 Examples: Stack — Directions, Stack — Alignment, Stack — Fill Item, HStack — Basic, H Stack, VStack — Basic, V Stack, StackItem — Fill, Stack Item
 
 - `StackDirection = 'horizontal' | 'vertical'` (type)
-- `StackMainAlignment = | 'start' | 'center' | 'end' | 'between' | 'around' | 'evenly'` (type)
+- `StackMainAlignment = 'start' | 'center' | 'end' | 'between' | 'around' | 'evenly'` (type)
 - `StackCrossAlignment = 'start' | 'center' | 'end' | 'stretch'` (type)
 - `StackAlignment = StackMainAlignment | StackCrossAlignment` (type)
 - `StackWrap = 'nowrap' | 'wrap' | 'wrap-reverse'` (type)
@@ -2067,17 +2067,17 @@ Examples: Stack — Directions, Stack — Alignment, Stack — Fill Item, HStack
 - `StackItemSize = 'static' | 'fill'` (type)
 - `StackItemCrossAlignSelf = 'start' | 'center' | 'end' | 'stretch'` (type)
 - `StackSizeValue = number | string` (type)
-- `StackElement = | 'article' | 'aside' | 'div' | 'fieldset' | 'footer' | 'form' | 'header' | 'li' | 'main' | 'nav' | 'ol' | 'section' | 'span' | 'ul'` (type)
-- `StackProps = Readonly<{ /** * Direction of the stack layout. * - `horizontal`: items flow left-to-right (hStack) * - `vertical`: items flow top-to-bottom (vStack, the default) */ direction?: StackDirection; /** * Horizontal alignment of items. * - `horizontal…` (type)
+- `StackElement = 'article' | 'aside' | 'div' | 'fieldset' | 'footer' | 'form' | 'header' | 'li' | 'main' | 'nav' | 'ol' | 'section' | 'span' | 'ul'` (type)
+- `StackProps = Readonly<{ direction?: StackDirection; hAlign?: StackAlignment; vAlign?: StackAlignment; justify?: StackMainAlignment; align?: StackCrossAlignment; gap?: StackSpacing; padding?: StackSpacing; paddingInline?: StackSpacing; paddingInlineStart?: Sta…` (type)
 - `stack<Msg>(props: StackProps, h: HtmlBuilder<Msg>): Html` (function)
 - `hStack<Msg>(props: Omit<StackProps, 'direction'>, h: HtmlBuilder<Msg>): Html` (function)
 - `vStack<Msg>(props: Omit<StackProps, 'direction'>, h: HtmlBuilder<Msg>): Html` (function)
-- `StackItemProps = Readonly<{ /** Overrides the parent stack's cross-axis alignment for this item. */ crossAlignSelf?: StackItemCrossAlignSelf; /** * Size behavior within the stack. * - `static`: intrinsic size, never grows or shrinks (default) * - `fill`: grow…` (type)
+- `StackItemProps = Readonly<{ crossAlignSelf?: StackItemCrossAlignSelf; size?: StackItemSize; isScrollable?: boolean; as?: StackElement; children?: ReadonlyArray<Html | string>; class?: string; }>` (type)
 - `stackItem<Msg>(props: StackItemProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Stat
 
-A shadcn-styled Stat component for Foldkit.
+A CreaseUI Stat component for Foldkit.
 
 Source: `src/ui/stat.ts`
 
@@ -2086,13 +2086,13 @@ Examples: Stat, Stat — Sizes, Stat — With Media
 - `StatDeltaDirection = 'up' | 'down' | 'flat'` (type)
 - `StatDeltaSentiment = 'positive' | 'negative' | 'neutral'` (type)
 - `StatSize = 'sm' | 'md' | 'lg'` (type)
-- `StatDelta = Readonly<{ /** Pre-formatted change text, e.g. "+12.4%" or "-8 ms". */ value: string; /** Trend direction. Picks the glyph and the default sentiment. */ direction: StatDeltaDirection; /** * Overrides the direction-to-color mapping for inverted met…` (type)
-- `StatProps = Readonly<{ /** Metric name shown above the value, e.g. "Total requests". */ label: string; /** The headline metric, rendered large with tabular numerals. */ value: string; /** Change indicator rendered next to the value. */ delta?: StatDelta; /** …` (type)
+- `StatDelta = Readonly<{ value: string; direction: StatDeltaDirection; sentiment?: StatDeltaSentiment; }>` (type)
+- `StatProps = Readonly<{ label: string; value: string; delta?: StatDelta; description?: string; media?: ReadonlyArray<Html>; size?: StatSize; class?: string; }>` (type)
 - `stat<Msg>(props: StatProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Status Dot
 
-A shadcn-styled Status Dot component for Foldkit.
+A CreaseUI Status Dot component for Foldkit.
 
 Source: `src/ui/status-dot.ts`
 
@@ -2100,12 +2100,12 @@ Examples: Status Dot, StatusDot — Variants, StatusDot — Pulsing, StatusDot �
 
 - `statusDotVariants: value` (value)
 - `StatusDotVariants = VariantProps<typeof statusDotVariants>` (type)
-- `StatusDotProps = Readonly<{ /** The semantic color variant. */ variant: NonNullable<StatusDotVariants['variant']>; /** Accessible label describing the status (the dot's aria-label). */ label: string; /** Pulses the dot to indicate activity; honors prefers-red…` (type)
+- `StatusDotProps = Readonly<{ variant: NonNullable<StatusDotVariants['variant']>; label: string; pulsing?: boolean; children?: ReadonlyArray<Html>; class?: string; }>` (type)
 - `statusDot<Msg>(props: StatusDotProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Stepper
 
-A shadcn-styled Stepper component for Foldkit.
+A CreaseUI Stepper component for Foldkit.
 
 Source: `src/ui/stepper.ts`
 
@@ -2119,15 +2119,15 @@ Examples: Stepper — Checkout Progress, Stepper — Indicator Modes, Stepper �
 - `StepperOrientation = 'horizontal' | 'vertical'` (type)
 - `StepperIndicatorPosition = 'separated' | 'on-track'` (type)
 - `StepperDensity = 'compact' | 'balanced' | 'spacious'` (type)
-- `StepperCollapsedVariant = | 'withLabelAndControls' | 'withLabel' | 'hiddenLabel'` (type)
+- `StepperCollapsedVariant = 'withLabelAndControls' | 'withLabel' | 'hiddenLabel'` (type)
 - `StepperStepStatus = StepperStatus` (type)
-- `StepperStep<Msg> = Readonly<{ label: string description?: string status?: StepperStepStatus isDisabled?: boolean isOptional?: boolean /** 'auto' (default): number while upcoming, check once completed, current ring while active. 'number': always a number badge…` (type)
-- `StepperProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg /** Zero-based active step (controlled by the parent). */ activeStep: number steps: ReadonlyArray<StepperStep<Msg>> orientation?: StepperOrientation /** 'separated': bar se…` (type)
+- `StepperStep<Msg> = Readonly<{ label: string; description?: string; status?: StepperStepStatus; isDisabled?: boolean; isOptional?: boolean; indicator?: 'number' | 'auto' | 'none' | Html; endContent?: Html; content?: Html | ReadonlyArray<Html | string>; }>` (type)
+- `StepperProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; activeStep: number; steps: ReadonlyArray<StepperStep<Msg>>; orientation?: StepperOrientation; indicatorPosition?: StepperIndicatorPosition; density?: StepperDensity; hasS…` (type)
 - `stepper<Msg>(props: StepperProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Switch
 
-A shadcn-styled Switch component for Foldkit.
+A CreaseUI Switch component for Foldkit.
 
 Source: `src/ui/switch.ts`
 
@@ -2140,7 +2140,7 @@ Examples: Basic, Description, Choice Card, Disabled, Invalid, Size, RTL
 
 ### Table
 
-A shadcn-styled Table component for Foldkit.
+A CreaseUI Table component for Foldkit.
 
 Source: `src/ui/table.ts`
 
@@ -2151,15 +2151,15 @@ Examples: Basic, Footer, Actions, RTL, Component Inventory, Dense overflow, Empt
 - `tableBody: value` (value)
 - `tableFooter: value` (value)
 - `tableRow: value` (value)
-- `TableHeadProps = SlotProps & Readonly<{ scope?: 'col' | 'row' }>` (type)
+- `TableHeadProps = SlotProps & Readonly<{ scope?: 'col' | 'row'; }>` (type)
 - `tableHead<Msg>(props: TableHeadProps, h: HtmlBuilder<Msg>): Html` (function)
-- `TableCellProps = SlotProps & Readonly<{ colspan?: number }>` (type)
+- `TableCellProps = SlotProps & Readonly<{ colspan?: number; }>` (type)
 - `tableCell<Msg>(props: TableCellProps, h: HtmlBuilder<Msg>): Html` (function)
 - `tableCaption: value` (value)
 
 ### Tabs
 
-A shadcn-styled Tabs component for Foldkit.
+A CreaseUI Tabs component for Foldkit.
 
 Source: `src/ui/tabs.ts`
 
@@ -2184,15 +2184,15 @@ Examples: Basic, Line, Vertical, Disabled, Icons, RTL, Manual with disabled tab
 
 ### Text
 
-A shadcn-styled Text component for Foldkit.
+A CreaseUI Text component for Foldkit.
 
 Source: `src/ui/text.ts`
 
 Examples: Text, Text — Colors, Text — Heading Levels, Text — Inline, Text — Types, Text — Weight, Text — Truncation, Text — Word Break, Text — Wrap
 
-- `TextType = | 'body' | 'large' | 'label' | 'supporting' | 'code' | 'display-1' | 'display-2' | 'display-3' | 'inherit'` (type)
-- `TextSize = | '4xs' | '3xs' | '2xs' | 'xsm' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl'` (type)
-- `TextColor = | 'primary' | 'secondary' | 'disabled' | 'placeholder' | 'accent' | 'inherit'` (type)
+- `TextType = 'body' | 'large' | 'label' | 'supporting' | 'code' | 'display-1' | 'display-2' | 'display-3' | 'inherit'` (type)
+- `TextSize = '4xs' | '3xs' | '2xs' | 'xsm' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl'` (type)
+- `TextColor = 'primary' | 'secondary' | 'disabled' | 'placeholder' | 'accent' | 'inherit'` (type)
 - `TextWeight = 'normal' | 'medium' | 'semibold' | 'bold'` (type)
 - `TextDisplay = 'inline' | 'block'` (type)
 - `TextJustify = 'start' | 'center' | 'end'` (type)
@@ -2206,7 +2206,7 @@ Examples: Text, Text — Colors, Text — Heading Levels, Text — Inline, Text 
 
 ### Textarea
 
-A shadcn-styled Textarea component for Foldkit.
+A CreaseUI Textarea component for Foldkit.
 
 Source: `src/ui/textarea.ts`
 
@@ -2217,19 +2217,19 @@ Examples: Basic, Field, Disabled, Invalid, Button, RTL, Form And Resize
 
 ### Thumbnail
 
-A shadcn-styled Thumbnail component for Foldkit.
+A CreaseUI Thumbnail component for Foldkit.
 
 Source: `src/ui/thumbnail.ts`
 
 Examples: Thumbnail, Thumbnail — States, Thumbnail — Gallery, Thumbnail — Removable, Thumbnail — Disabled
 
 - `ThumbnailShowRemoveOn = 'always' | 'hover'` (type)
-- `ThumbnailProps<Msg> = Readonly<{ /** Image source. When omitted, the thumbnail shows its placeholder state. */ src?: string; /** Alt text for the image. */ alt?: string; /** Human-readable name shown in tooltips and used in accessible labels. */ label?: strin…` (type)
+- `ThumbnailProps<Msg> = Readonly<{ src?: string; alt?: string; label?: string; isLoading?: boolean; isError?: boolean; isDisabled?: boolean; onClick?: Msg; onRemove?: Msg; onError?: Msg; onLoad?: Msg; showRemoveOn?: ThumbnailShowRemoveOn; class?: string; }>` (type)
 - `thumbnail<Msg>(props: ThumbnailProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Time Input
 
-A shadcn-styled Time Input component for Foldkit.
+A CreaseUI Time Input component for Foldkit.
 
 Source: `src/ui/time-input.ts`
 
@@ -2242,13 +2242,13 @@ Examples: Time Input, TimeInput — Constrained, TimeInput — Formats, TimeInpu
 - `export { update } from '@/lib/time-input'` (re-export)
 - `export { TimeValue } from '@/lib/time-input'` (re-export)
 - `export { InputStatus } from '@/lib/input-status'` (re-export)
-- `TimeInputProps<Msg> = Readonly<{ model: Model /** Lifts this submodel's messages into the parent message type. */ toParentMessage: (message: Message) => Msg id: string label: Html | string /** The committed value owned by the parent, as "HH:MM" / "HH:MM:SS". …` (type)
-- `TimeInputViewInputs = Omit< TimeInputProps<never>, 'model' | 'toParentMessage' >` (type)
+- `TimeInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; id: string; label: Html | string; value?: string | null; isLabelHidden?: boolean; description?: Html | string; isOptional?: boolean; isRequired?: boolean; isDisabled?: …` (type)
+- `TimeInputViewInputs = Omit<TimeInputProps<never>, 'model' | 'toParentMessage'>` (type)
 - `timeInput<Msg>(props: TimeInputProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Timer
 
-A shadcn-styled Timer component for Foldkit.
+A CreaseUI Timer component for Foldkit.
 
 Source: `src/ui/timer.ts`
 
@@ -2257,17 +2257,17 @@ Examples: Timer, Timer — Formats, Timer — Inline, Timer — Typography
 - `TimerFormat = 'elapsed' | 'clock'` (type)
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
-- `init(config: { id: string; startTimeMs?: number; format?: TimerFormat; /** Clock override for deterministic previews/tests. Defaults to Date.now(). */ nowMs?: number; }): Model` (function)
+- `init(config: { id: string; startTimeMs?: number; format?: TimerFormat; nowMs?: number; }): Model` (function)
 - `Message: value` (value)
 - `Message = typeof Message.Type` (type)
 - `update(model: Model, message: Message): UpdateReturn` (function)
 - `subscriptions: value` (value)
-- `TimerProps<Msg> = Readonly<{ model: Model; /** Semantic text type. @default 'supporting' */ type?: AstryxTextType; /** Font size override; keeps the type's line height. */ size?: AstryxTextSize; /** Text color. @default 'secondary' */ color?: AstryxTextColor;…` (type)
+- `TimerProps<Msg> = Readonly<{ model: Model; type?: TextType; size?: TextSize; color?: TextColor; weight?: TextWeight; class?: string; }>` (type)
 - `timer<Msg>(props: TimerProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Timestamp
 
-A shadcn-styled Timestamp component for Foldkit.
+A CreaseUI Timestamp component for Foldkit.
 
 Source: `src/ui/timestamp.ts`
 
@@ -2288,12 +2288,12 @@ Examples: Timestamp, Timestamp — Auto, Timestamp — Colors, Timestamp — For
 - `Message = typeof Message.Type` (type)
 - `update(model: Model, message: Message): UpdateReturn` (function)
 - `subscriptions: value` (value)
-- `TimestampProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Semantic text type. @default 'supporting' */ type?: AstryxTextType; size?: AstryxTextSize; /** Text color. @default 'secondary' */ color?: AstryxTextColor; weight?:…` (type)
+- `TimestampProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; type?: TextType; size?: TextSize; color?: TextColor; weight?: TextWeight; hasTooltip?: boolean; tooltipEntries?: ReadonlyArray<TimestampTooltipEntry>; isTimezoneShown?:…` (type)
 - `timestamp<Msg>(props: TimestampProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Toast
 
-A shadcn-styled Toast component for Foldkit.
+A CreaseUI Toast component for Foldkit.
 
 Source: `src/ui/toast.ts`
 
@@ -2304,7 +2304,7 @@ Examples: Timed notification, Sticky error
 
 ### Toggle Group
 
-A shadcn-styled Toggle Group component for Foldkit.
+A CreaseUI Toggle Group component for Foldkit.
 
 Source: `src/ui/toggle-group.ts`
 
@@ -2314,9 +2314,9 @@ Examples: Basic, Outline, Size, Spacing, Vertical, Disabled, Custom, RTL
 - `export { Model } from ` (re-export)
 - `export { init } from ` (re-export)
 - `export { OutMessage } from ` (re-export)
-- `ToggleGroupItem<Value extends string = string> = Readonly<{ value: Value children: ReadonlyArray<Html | string> ariaLabel?: string isDisabled?: boolean class?: string }>` (type)
-- `ToggleGroupProps<Value extends string, Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg ariaLabel: string items: ReadonlyArray<ToggleGroupItem<Value>> direction?: 'ltr' | 'rtl' arrangement?: 'joined' | 'wrapped' orientation?: 'vertica…` (type)
-- `ToggleGroupBundle<Value extends string> = Readonly<{ update: BehaviorBundle<Value>['update'] toggleGroup: <Msg>(props: ToggleGroupProps<Value, Msg>, h: HtmlBuilder<Msg>) => Html }>` (type)
+- `ToggleGroupItem<Value extends string = string> = Readonly<{ value: Value; children: ReadonlyArray<Html | string>; ariaLabel?: string; isDisabled?: boolean; class?: string; }>` (type)
+- `ToggleGroupProps<Value extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; ariaLabel: string; items: ReadonlyArray<ToggleGroupItem<Value>>; direction?: 'ltr' | 'rtl'; arrangement?: 'joined' | 'wrapped'; orientation?: 'v…` (type)
+- `ToggleGroupBundle<Value extends string> = Readonly<{ update: BehaviorBundle<Value>['update']; toggleGroup: <Msg>(props: ToggleGroupProps<Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>` (type)
 - `create<Value extends string = string>(): ToggleGroupBundle<Value>` (function)
 - `update: value` (value)
 - `toggleGroup<Msg, Value extends string = string>(props: LegacyToggleGroupProps<Value, Msg>, h: HtmlBuilder<Msg>): Html` (function)
@@ -2325,7 +2325,7 @@ Examples: Basic, Outline, Size, Spacing, Vertical, Disabled, Custom, RTL
 
 ### Toggle
 
-A shadcn-styled Toggle component for Foldkit.
+A CreaseUI Toggle component for Foldkit.
 
 Source: `src/ui/toggle.ts`
 
@@ -2338,20 +2338,20 @@ Examples: Basic, Outline, With Text, Size, Disabled, RTL
 
 ### Token
 
-A shadcn-styled Token component for Foldkit.
+A CreaseUI Token component for Foldkit.
 
 Source: `src/ui/token.ts`
 
 Examples: Token, Token — Clickable, Token — Colors, Token — End Content, Token — Icon, Token — Removable
 
-- `TokenColor = | 'default' | 'gray' | 'red' | 'orange' | 'yellow' | 'green' | 'teal' | 'cyan' | 'blue' | 'purple' | 'pink'` (type)
+- `TokenColor = 'default' | 'gray' | 'red' | 'orange' | 'yellow' | 'green' | 'teal' | 'cyan' | 'blue' | 'purple' | 'pink'` (type)
 - `TokenSize = 'sm' | 'md' | 'lg'` (type)
-- `TokenProps<Msg> = Readonly<{ /** Text shown inside the token. */ label: string; /** Semantic colorway; 'default' is the neutral gray chip. */ color?: TokenColor; /** Chip height: sm 20px, md 24px, lg 28px. */ size?: TokenSize; /** Leading glyph, e.g. `h => Ic…` (type)
+- `TokenProps<Msg> = Readonly<{ label: string; color?: TokenColor; size?: TokenSize; icon?: <M>(h: HtmlBuilder<M>) => Html; endContent?: ReadonlyArray<Html>; isLabelHidden?: boolean; href?: string; onClick?: Msg; onRemove?: Msg; isDisabled?: boolean; description…` (type)
 - `token<Msg>(props: TokenProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Tokenizer
 
-A shadcn-styled Tokenizer component for Foldkit.
+A CreaseUI Tokenizer component for Foldkit.
 
 Source: `src/ui/tokenizer.ts`
 
@@ -2366,13 +2366,13 @@ Examples: Tokenizer, Clear, Creatable, End Content, Icon, Max Entries, Overflow,
 - `export { reflect } from ` (re-export)
 - `export { reflectItems } from ` (re-export)
 - `export { update } from ` (re-export)
-- `TokenizerStatus = Readonly<{ type: 'error' | 'warning' | 'success' message?: string }>` (type)
-- `TokenizerProps<Msg> = Readonly<{ model: Model toParentMessage: (message: Message) => Msg label: string isLabelHidden?: boolean description?: string isOptional?: boolean isRequired?: boolean isDisabled?: boolean isReadOnly?: boolean status?: TokenizerStatus st…` (type)
+- `TokenizerStatus = Readonly<{ type: 'error' | 'warning' | 'success'; message?: string; }>` (type)
+- `TokenizerProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label: string; isLabelHidden?: boolean; description?: string; isOptional?: boolean; isRequired?: boolean; isDisabled?: boolean; isReadOnly?: boolean; status?: Tokenizer…` (type)
 - `tokenizer<Msg>(props: TokenizerProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Toolbar
 
-A shadcn-styled Toolbar component for Foldkit.
+A CreaseUI Toolbar component for Foldkit.
 
 Source: `src/ui/toolbar.ts`
 
@@ -2385,12 +2385,12 @@ Examples: Toolbar — Three Slot, Toolbar — Card Header, Toolbar — Sizes, To
 - `ToolbarVariant = 'transparent' | 'surface' | 'muted'` (type)
 - `ToolbarDivider = 'top' | 'bottom' | 'start' | 'end'` (type)
 - `ToolbarGap = 0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10` (type)
-- `ToolbarProps<Msg> = Readonly<{ /** Accessible label for the toolbar (aria-label). */ label: string /** Content aligned to the start (left in LTR). */ startContent?: Html | ReadonlyArray<Html | string> /** Centered content. When present, switches the layout to…` (type)
+- `ToolbarProps<Msg> = Readonly<{ label: string; startContent?: Html | ReadonlyArray<Html | string>; centerContent?: Html | ReadonlyArray<Html | string>; endContent?: Html | ReadonlyArray<Html | string>; size?: ToolbarSize; gap?: ToolbarGap; orientation?: Toolba…` (type)
 - `toolbar<Msg>(props: ToolbarProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Tooltip
 
-A shadcn-styled Tooltip component for Foldkit.
+A CreaseUI Tooltip component for Foldkit.
 
 Source: `src/ui/tooltip.ts`
 
@@ -2413,33 +2413,33 @@ Examples: Basic, Side, With Keyboard Shortcut, Disabled Button, RTL
 
 ### Top Nav
 
-A shadcn-styled Top Nav component for Foldkit.
+A CreaseUI Top Nav component for Foldkit.
 
 Source: `src/ui/top-nav.ts`
 
 Examples: Top Nav, TopNav — Centered Navigation, TopNav — Enterprise Dashboard, TopNav — Hover Menu, Analytics, Security, Automation, Developer Tools, TopNav — Mega Menu, Global Network, What's new in v4.0, TopNav — Multiple Dropdowns, Documentation, API Reference, Community Forum, TopNav — With Logo, TopNavHeading — Basic, Top Nav Heading, TopNavItem — Basic, Top Nav Item, TopNavMegaMenu — Basic, Deploy, Top Nav Mega Menu, API, What's New, TopNavMegaMenuFeaturedCard — Basic, Top Nav Mega Menu Featured Card, Introducing v2.0, TopNavMegaMenuItem — Basic, Edge Functions, Storage, Top Nav Mega Menu Item, CDN, Build Tools, TopNavMenu — Basic, Settings, Top Nav Menu, Team Members
 
-- `export { dropdownMenuKey } from "@/lib/top-nav"` (re-export)
-- `export { HEADING_MENU_KEY } from "@/lib/top-nav"` (re-export)
-- `export { init } from "@/lib/top-nav"` (re-export)
-- `export { isMenuOpen } from "@/lib/top-nav"` (re-export)
-- `export { menuFor } from "@/lib/top-nav"` (re-export)
-- `export { Model } from "@/lib/top-nav"` (re-export)
-- `export { update } from "@/lib/top-nav"` (re-export)
-- `export { InitConfig } from "@/lib/top-nav"` (re-export)
-- `export { TopNavMenuKind } from "@/lib/top-nav"` (re-export)
-- `export { Message } from "@/lib/top-nav"` (re-export)
-- `export { OutMessage } from "@/lib/top-nav"` (re-export)
-- `TopNavItemData = Readonly<{ kind?: "item"; label: string; href?: string; icon?: string; isSelected?: boolean; isDisabled?: boolean; isIconOnly?: boolean; onSelect?: boolean; }>` (type)
+- `export { dropdownMenuKey } from '@/lib/top-nav'` (re-export)
+- `export { HEADING_MENU_KEY } from '@/lib/top-nav'` (re-export)
+- `export { init } from '@/lib/top-nav'` (re-export)
+- `export { isMenuOpen } from '@/lib/top-nav'` (re-export)
+- `export { menuFor } from '@/lib/top-nav'` (re-export)
+- `export { Model } from '@/lib/top-nav'` (re-export)
+- `export { update } from '@/lib/top-nav'` (re-export)
+- `export { InitConfig } from '@/lib/top-nav'` (re-export)
+- `export { TopNavMenuKind } from '@/lib/top-nav'` (re-export)
+- `export { Message } from '@/lib/top-nav'` (re-export)
+- `export { OutMessage } from '@/lib/top-nav'` (re-export)
+- `TopNavItemData = Readonly<{ kind?: 'item'; label: string; href?: string; icon?: string; isSelected?: boolean; isDisabled?: boolean; isIconOnly?: boolean; onSelect?: boolean; }>` (type)
 - `TopNavMenuItemData = Readonly<{ title: string; description?: string; icon?: Html; href?: string; onSelect?: boolean; }>` (type)
-- `TopNavMenuData = Readonly<{ kind: "menu"; label: string; items: ReadonlyArray<TopNavMenuItemData>; }>` (type)
+- `TopNavMenuData = Readonly<{ kind: 'menu'; label: string; items: ReadonlyArray<TopNavMenuItemData>; }>` (type)
 - `TopNavMegaMenuItemData = Readonly<{ title: string; description?: string; icon?: Html; href?: string; onSelect?: boolean; }>` (type)
 - `TopNavMegaMenuFeaturedCardData = Readonly<{ title: string; description?: string; image?: string; imageAlt?: string; linkLabel?: string; linkHref?: string; children?: Html; }>` (type)
-- `TopNavMegaMenuData = Readonly<{ kind: "megaMenu"; label: string; items: ReadonlyArray<TopNavMegaMenuItemData>; featured?: TopNavMegaMenuFeaturedCardData; }>` (type)
+- `TopNavMegaMenuData = Readonly<{ kind: 'megaMenu'; label: string; items: ReadonlyArray<TopNavMegaMenuItemData>; featured?: TopNavMegaMenuFeaturedCardData; }>` (type)
 - `TopNavEntry = TopNavItemData | TopNavMenuData | TopNavMegaMenuData` (type)
 - `TopNavHeadingMenuItemData = Readonly<{ label: string; href?: string; onSelect?: boolean; }>` (type)
 - `TopNavHeadingData = Readonly<{ heading?: string; logo?: Html; logoLabel?: string; headingHref?: string; superheading?: string; superheadingHref?: string; subheading?: string; subheadingHref?: string; headerEndContent?: Html; menu?: ReadonlyArray<TopNavHeading…` (type)
-- `ViewInputs = Readonly<{ label?: string; heading?: TopNavHeadingData; startItems?: ReadonlyArray<TopNavEntry>; centerItems?: ReadonlyArray<TopNavEntry>; /** Escape hatch for arbitrary start slot content. */ startContent?: Html; centerContent?: Html; endContent…` (type)
+- `ViewInputs = Readonly<{ label?: string; heading?: TopNavHeadingData; startItems?: ReadonlyArray<TopNavEntry>; centerItems?: ReadonlyArray<TopNavEntry>; startContent?: Html; centerContent?: Html; endContent?: Html; class?: string; }>` (type)
 - `topNavItem<Msg>(item: TopNavItemData, emit: (message: TopNavLib.Message) => Msg, h: HtmlBuilder<Msg>): Html` (function)
 - `topNavMegaMenuItem<Msg>(item: TopNavMegaMenuItemData, onActivate: Msg | undefined, h: HtmlBuilder<Msg>): Html` (function)
 - `topNavMegaMenuFeaturedCard<Msg>(card: TopNavMegaMenuFeaturedCardData, h: HtmlBuilder<Msg>): Html` (function)
@@ -2449,7 +2449,7 @@ Examples: Top Nav, TopNav — Centered Navigation, TopNav — Enterprise Dashboa
 
 ### Tour
 
-A shadcn-styled Tour component for Foldkit.
+A CreaseUI Tour component for Foldkit.
 
 Source: `src/ui/tour.ts`
 
@@ -2468,21 +2468,21 @@ Examples: Tour, Tour — Lightweight, Tour — Callout placement
 - `activate: value` (value)
 - `deactivate: value` (value)
 - `HIGHLIGHT_PADDING: value` (value)
-- `TourStepPlacement = "below" | "above" | "start" | "end"` (type)
-- `TourStepAlignment = "start" | "center" | "end"` (type)
-- `TourStepSpec = Readonly<{ /** Stable step key — the callout is re-keyed per step to re-anchor. */ id: string; /** `id` of the element this step points at (astryx targetRef equivalent — must be interactive for aria, matching Popover's anchor contract). */ targ…` (type)
+- `TourStepPlacement = 'below' | 'above' | 'start' | 'end'` (type)
+- `TourStepAlignment = 'start' | 'center' | 'end'` (type)
+- `TourStepSpec = Readonly<{ id: string; targetId: string; heading: string; content: Html | string; placement?: TourStepPlacement; alignment?: TourStepAlignment; }>` (type)
 - `TourProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; steps: ReadonlyArray<TourStepSpec>; hasBackdrop?: boolean; isStepCountShown?: boolean; class?: string; }>` (type)
 - `tour<Msg>(props: TourProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Transfer List
 
-A shadcn-styled Transfer List component for Foldkit.
+A CreaseUI Transfer List component for Foldkit.
 
 Source: `src/ui/transfer-list.ts`
 
 Examples: Visible fields, Locked fields, Unordered, Searchable, Empty states
 
-- `TransferListOption = Readonly<{ /** Stable value written to the controlled value array. */ value: string; /** Visible option name and the basis of action labels. */ label: string; /** Optional searchable metadata. Not rendered in the default row. */ descripti…` (type)
+- `TransferListOption = Readonly<{ value: string; label: string; description?: string; group?: string; isTransferDisabled?: boolean; isReorderDisabled?: boolean; disabledMessage?: string; }>` (type)
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
 - `init(config: { id: string; value?: ReadonlyArray<string>; }): Model` (function)
@@ -2492,13 +2492,13 @@ Examples: Visible fields, Locked fields, Unordered, Searchable, Empty states
 - `OutMessage: value` (value)
 - `OutMessage = typeof OutMessage.Type` (type)
 - `update(model: Model, message: Message, options: ReadonlyArray<TransferListOption> = [], isReorderable = true): UpdateReturn` (function)
-- `TransferListProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; /** Accessible name for the complete control. */ label: string; /** Visually hides the label while retaining its accessible name. */ isLabelHidden?: boolean; /** Sup…` (type)
+- `TransferListProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label: string; isLabelHidden?: boolean; description?: string; options: ReadonlyArray<TransferListOption>; selectedLabel?: string; availableLabel?: string; hasSearch?…` (type)
 - `REORDER_INSTRUCTIONS: value` (value)
 - `transferList<Msg>(props: TransferListProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Tree List
 
-A shadcn-styled Tree List component for Foldkit.
+A CreaseUI Tree List component for Foldkit.
 
 Source: `src/ui/tree-list.ts`
 
@@ -2527,7 +2527,7 @@ Examples: Tree List, TreeList — File Tree With Icons, TreeList — Interactive
 
 ### Typography
 
-A shadcn-styled Typography component for Foldkit.
+A CreaseUI Typography component for Foldkit.
 
 Source: `src/ui/typography.ts`
 
@@ -2547,12 +2547,12 @@ Examples: Basic, h1, h2, h3, h4, p, blockquote, table, list, Inline code, Lead, 
 
 ### Visually Hidden
 
-A shadcn-styled Visually Hidden component for Foldkit.
+A CreaseUI Visually Hidden component for Foldkit.
 
 Source: `src/ui/visually-hidden.ts`
 
 Examples: VisuallyHidden, VisuallyHidden — Live Region, VisuallyHidden — Structural Heading, VisuallyHidden — Supplementary Context
 
-- `VisuallyHiddenElement = | 'article' | 'aside' | 'code' | 'div' | 'em' | 'footer' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'header' | 'label' | 'li' | 'main' | 'nav' | 'p' | 'section' | 'small' | 'span' | 'strong' | 'ul' | 'ol'` (type)
-- `VisuallyHiddenProps = Readonly<{ /** * HTML tag to render as. Defaults to `'span'` (inline) for the common * icon-label case; pass a block element such as `'div'` when wrapping block * content or hosting an `aria-live` region. This is a structural choice, * n…` (type)
+- `VisuallyHiddenElement = 'article' | 'aside' | 'code' | 'div' | 'em' | 'footer' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'header' | 'label' | 'li' | 'main' | 'nav' | 'p' | 'section' | 'small' | 'span' | 'strong' | 'ul' | 'ol'` (type)
+- `VisuallyHiddenProps = Readonly<{ as?: VisuallyHiddenElement; ariaLive?: 'polite' | 'assertive' | 'off'; role?: string; id?: string; children: ReadonlyArray<Html | string>; }>` (type)
 - `visuallyHidden<Msg>(props: VisuallyHiddenProps, h: HtmlBuilder<Msg>): Html` (function)

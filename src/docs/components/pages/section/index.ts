@@ -18,9 +18,9 @@ export const sectionPage = authoredPage({
     description:
       'A padded page section with surface variants (section, muted, transparent) and optional edge dividers for separating stacked regions.',
     architecture:
-      'Section is a stateless render helper emitting a single <section>. Padding follows the astryx spacing scale with the theme default of step 4 (16px); per-edge overrides cascade edge → axis → all.',
+      'Section is a stateless render helper emitting a single <section>. Padding follows the CreaseUI spacing scale with the theme default of step 4 (16px); per-edge overrides cascade edge → axis → all.',
     apiHref:
-      'https://github.com/facebook/astryx/tree/main/packages/core/src/Section',
+      'https://github.com/Potti1234/creaseui/blob/main/src/ui/section.ts',
     styling:
       'Use variant for background and dividers for separation between adjacent same-variant sections. The padding props accept the spacing scale; combine with Section or Stack children for inner rhythm.',
     accessibility:

@@ -77,7 +77,7 @@ export const dateInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
     onSome: date => `Booked: ${DateInput.dateToISO(date)}`,
   })
 
-  switch (fixture.astryxExample) {
+  switch (fixture.example) {
     case 'DateInputClearable':
       return stack([
         supporting(selectedText),

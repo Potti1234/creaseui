@@ -25,8 +25,8 @@ Chart.registerChart(HOST_ID, (theme): EChartsOption => ({
     MONTHS.map(month => month.slice(0, 3)),
   ),
   yAxis: Chart.valueAxis(theme),
-  tooltip: Chart.shadcnTooltip(theme),
-  legend: Chart.shadcnLegend(theme),
+  tooltip: Chart.tooltipOptions(theme),
+  legend: Chart.legendOptions(theme),
   series: [
     {
       name: 'Mobile',

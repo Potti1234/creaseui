@@ -55,7 +55,7 @@ export const chartFamilyOption = (
             type: 'line',
           },
         ],
-        tooltip: ECharts.shadcnTooltip(theme),
+        tooltip: ECharts.tooltipOptions(theme),
         xAxis: ECharts.categoryAxis(theme, labels),
         yAxis: ECharts.valueAxis(theme),
       } as EChartsOption
@@ -70,14 +70,14 @@ export const chartFamilyOption = (
             type: 'bar',
           },
         ],
-        tooltip: ECharts.shadcnTooltip(theme),
+        tooltip: ECharts.tooltipOptions(theme),
         xAxis: ECharts.categoryAxis(theme, labels, { boundaryGap: true }),
         yAxis: ECharts.valueAxis(theme),
       } as EChartsOption
     case 'line':
       return {
         grid: ECharts.compactGrid({ bottom: 42 }),
-        legend: ECharts.shadcnLegend(theme),
+        legend: ECharts.legendOptions(theme),
         series: [
           {
             data: desktop,
@@ -98,13 +98,13 @@ export const chartFamilyOption = (
             type: 'line',
           },
         ],
-        tooltip: ECharts.shadcnTooltip(theme),
+        tooltip: ECharts.tooltipOptions(theme),
         xAxis: ECharts.categoryAxis(theme, labels),
         yAxis: ECharts.valueAxis(theme),
       } as EChartsOption
     case 'pie':
       return {
-        legend: ECharts.shadcnLegend(theme),
+        legend: ECharts.legendOptions(theme),
         series: [
           {
             data: [
@@ -130,7 +130,7 @@ export const chartFamilyOption = (
             type: 'pie',
           },
         ],
-        tooltip: ECharts.shadcnTooltip(theme, { trigger: 'item' }),
+        tooltip: ECharts.tooltipOptions(theme, { trigger: 'item' }),
       } as EChartsOption
     case 'radar':
       return {
@@ -156,7 +156,7 @@ export const chartFamilyOption = (
             type: 'radar',
           },
         ],
-        tooltip: ECharts.shadcnTooltip(theme, { trigger: 'item' }),
+        tooltip: ECharts.tooltipOptions(theme, { trigger: 'item' }),
       } as EChartsOption
     case 'radial':
       return {
@@ -189,7 +189,7 @@ export const chartFamilyOption = (
             type: 'bar',
           },
         ],
-        tooltip: ECharts.shadcnTooltip(theme, { trigger: 'item' }),
+        tooltip: ECharts.tooltipOptions(theme, { trigger: 'item' }),
       } as EChartsOption
   }
 }
@@ -289,16 +289,16 @@ export const chartUpstreamOption = (
       return {
         grid: ECharts.compactGrid(),
         series,
-        tooltip: ECharts.shadcnTooltip(theme),
+        tooltip: ECharts.tooltipOptions(theme),
         xAxis: ECharts.categoryAxis(theme, axisLabels, { boundaryGap: true }),
         yAxis: ECharts.valueAxis(theme),
       } as EChartsOption
     case 'step-legend':
       return {
         grid: ECharts.compactGrid({ bottom: 42 }),
-        legend: ECharts.shadcnLegend(theme),
+        legend: ECharts.legendOptions(theme),
         series,
-        tooltip: ECharts.shadcnTooltip(theme),
+        tooltip: ECharts.tooltipOptions(theme),
         xAxis: ECharts.categoryAxis(theme, axisLabels, { boundaryGap: true }),
         yAxis: ECharts.valueAxis(theme),
       } as EChartsOption
@@ -317,7 +317,7 @@ export const chartUpstreamOption = (
             type: 'bar',
           },
         ],
-        tooltip: ECharts.shadcnTooltip(theme),
+        tooltip: ECharts.tooltipOptions(theme),
         xAxis: ECharts.categoryAxis(theme, demoLabels, { boundaryGap: true }),
         yAxis: ECharts.valueAxis(theme),
       } as EChartsOption
@@ -325,9 +325,9 @@ export const chartUpstreamOption = (
     case 'rtl':
       return {
         grid: ECharts.compactGrid({ bottom: 42 }),
-        legend: ECharts.shadcnLegend(theme),
+        legend: ECharts.legendOptions(theme),
         series,
-        tooltip: ECharts.shadcnTooltip(theme),
+        tooltip: ECharts.tooltipOptions(theme),
         xAxis: ECharts.categoryAxis(theme, axisLabels, { boundaryGap: true }),
         yAxis: ECharts.valueAxis(theme),
       } as EChartsOption
@@ -361,13 +361,13 @@ export const chartFixtures = [
     sectionId: 'your-first-chart-tooltip',
     kind: 'step-tooltip',
     description:
-      'Add a tooltip — shadcnTooltip styles hover details from the resolved theme.',
+      'Add a tooltip — tooltipOptions styles hover details from the resolved theme.',
   },
   {
     title: 'Your First Chart',
     sectionId: 'your-first-chart-legend',
     kind: 'step-legend',
-    description: 'Add a legend — shadcnLegend lists each named series.',
+    description: 'Add a legend — legendOptions lists each named series.',
   },
   {
     title: 'Tooltip',
@@ -459,7 +459,7 @@ const hostId = 'revenue-chart'
 Chart.registerChart(hostId, (theme, variant): EChartsOption => ({
   grid: Chart.compactGrid(),
   series: [{ data: variant === 'quarter' ? [186, 305, 237, 314] : [186, 305, 237, 273, 209, 314], itemStyle: { color: theme.chart2 }, name: 'Revenue', type: 'bar' }],
-  tooltip: Chart.shadcnTooltip(theme),
+  tooltip: Chart.tooltipOptions(theme),
   xAxis: Chart.categoryAxis(theme, variant === 'quarter' ? ['Q1', 'Q2', 'Q3', 'Q4'] : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'], { boundaryGap: true }),
   yAxis: Chart.valueAxis(theme, { showLabels: true }),
 }))`,
@@ -509,17 +509,17 @@ const staticSource = (
 const familyRegistration = (kind: ChartFamilyKind): string => {
   switch (kind) {
     case 'area':
-      return `grid: Chart.compactGrid(),\n  series: [{ areaStyle: { color: Chart.areaGradient(theme.chart1) }, data: [186, 305, 237, 273, 209, 314], itemStyle: { color: theme.chart1 }, lineStyle: { color: theme.chart1, width: 2 }, name: 'Desktop', showSymbol: false, smooth: 0.35, type: 'line' }],\n  tooltip: Chart.shadcnTooltip(theme),\n  xAxis: Chart.categoryAxis(theme, labels),\n  yAxis: Chart.valueAxis(theme)`
+      return `grid: Chart.compactGrid(),\n  series: [{ areaStyle: { color: Chart.areaGradient(theme.chart1) }, data: [186, 305, 237, 273, 209, 314], itemStyle: { color: theme.chart1 }, lineStyle: { color: theme.chart1, width: 2 }, name: 'Desktop', showSymbol: false, smooth: 0.35, type: 'line' }],\n  tooltip: Chart.tooltipOptions(theme),\n  xAxis: Chart.categoryAxis(theme, labels),\n  yAxis: Chart.valueAxis(theme)`
     case 'bar':
-      return `grid: Chart.compactGrid(),\n  series: [{ data: [186, 305, 237, 273, 209, 314], itemStyle: { borderRadius: 4, color: theme.chart2 }, name: 'Desktop', type: 'bar' }],\n  tooltip: Chart.shadcnTooltip(theme),\n  xAxis: Chart.categoryAxis(theme, labels, { boundaryGap: true }),\n  yAxis: Chart.valueAxis(theme)`
+      return `grid: Chart.compactGrid(),\n  series: [{ data: [186, 305, 237, 273, 209, 314], itemStyle: { borderRadius: 4, color: theme.chart2 }, name: 'Desktop', type: 'bar' }],\n  tooltip: Chart.tooltipOptions(theme),\n  xAxis: Chart.categoryAxis(theme, labels, { boundaryGap: true }),\n  yAxis: Chart.valueAxis(theme)`
     case 'line':
-      return `grid: Chart.compactGrid({ bottom: 42 }),\n  legend: Chart.shadcnLegend(theme),\n  series: [{ data: [186, 305, 237, 273, 209, 314], itemStyle: { color: theme.chart1 }, lineStyle: { color: theme.chart1, width: 2 }, name: 'Desktop', type: 'line' }, { data: [80, 200, 120, 190, 130, 140], itemStyle: { color: theme.chart2 }, lineStyle: { color: theme.chart2, width: 2 }, name: 'Mobile', type: 'line' }],\n  tooltip: Chart.shadcnTooltip(theme),\n  xAxis: Chart.categoryAxis(theme, labels),\n  yAxis: Chart.valueAxis(theme)`
+      return `grid: Chart.compactGrid({ bottom: 42 }),\n  legend: Chart.legendOptions(theme),\n  series: [{ data: [186, 305, 237, 273, 209, 314], itemStyle: { color: theme.chart1 }, lineStyle: { color: theme.chart1, width: 2 }, name: 'Desktop', type: 'line' }, { data: [80, 200, 120, 190, 130, 140], itemStyle: { color: theme.chart2 }, lineStyle: { color: theme.chart2, width: 2 }, name: 'Mobile', type: 'line' }],\n  tooltip: Chart.tooltipOptions(theme),\n  xAxis: Chart.categoryAxis(theme, labels),\n  yAxis: Chart.valueAxis(theme)`
     case 'pie':
-      return `legend: Chart.shadcnLegend(theme),\n  series: [{ data: [{ name: 'Chrome', value: 275 }, { name: 'Safari', value: 200 }, { name: 'Firefox', value: 187 }], radius: ['44%', '70%'], type: 'pie' }],\n  tooltip: Chart.shadcnTooltip(theme, { trigger: 'item' })`
+      return `legend: Chart.legendOptions(theme),\n  series: [{ data: [{ name: 'Chrome', value: 275 }, { name: 'Safari', value: 200 }, { name: 'Firefox', value: 187 }], radius: ['44%', '70%'], type: 'pie' }],\n  tooltip: Chart.tooltipOptions(theme, { trigger: 'item' })`
     case 'radar':
-      return `radar: { indicator: ['Speed', 'Quality', 'Coverage', 'Reliability', 'DX'].map(name => ({ max: 100, name })) },\n  series: [{ data: [{ name: 'Score', value: [82, 91, 76, 88, 84] }], itemStyle: { color: theme.chart1 }, type: 'radar' }],\n  tooltip: Chart.shadcnTooltip(theme, { trigger: 'item' })`
+      return `radar: { indicator: ['Speed', 'Quality', 'Coverage', 'Reliability', 'DX'].map(name => ({ max: 100, name })) },\n  series: [{ data: [{ name: 'Score', value: [82, 91, 76, 88, 84] }], itemStyle: { color: theme.chart1 }, type: 'radar' }],\n  tooltip: Chart.tooltipOptions(theme, { trigger: 'item' })`
     case 'radial':
-      return `angleAxis: { max: 400, startAngle: 90, type: 'value' },\n  polar: { radius: ['24%', '88%'] },\n  radiusAxis: { data: ['Search', 'Direct', 'Social', 'Email'], type: 'category' },\n  series: [{ coordinateSystem: 'polar', data: [275, 220, 187, 140], roundCap: true, type: 'bar' }],\n  tooltip: Chart.shadcnTooltip(theme, { trigger: 'item' })`
+      return `angleAxis: { max: 400, startAngle: 90, type: 'value' },\n  polar: { radius: ['24%', '88%'] },\n  radiusAxis: { data: ['Search', 'Direct', 'Social', 'Email'], type: 'category' },\n  series: [{ coordinateSystem: 'polar', data: [275, 220, 187, 140], roundCap: true, type: 'bar' }],\n  tooltip: Chart.tooltipOptions(theme, { trigger: 'item' })`
   }
 }
 
@@ -577,14 +577,14 @@ const stepRegistration = (
     case 'step-tooltip':
       return `grid: Chart.compactGrid(),
   ${series},
-  tooltip: Chart.shadcnTooltip(theme),
+  tooltip: Chart.tooltipOptions(theme),
   xAxis: Chart.categoryAxis(theme, labels, { boundaryGap: true }),
   yAxis: Chart.valueAxis(theme)`
     case 'step-legend':
       return `grid: Chart.compactGrid({ bottom: 42 }),
-  legend: Chart.shadcnLegend(theme),
+  legend: Chart.legendOptions(theme),
   ${series},
-  tooltip: Chart.shadcnTooltip(theme),
+  tooltip: Chart.tooltipOptions(theme),
   xAxis: Chart.categoryAxis(theme, labels, { boundaryGap: true }),
   yAxis: Chart.valueAxis(theme)`
   }
@@ -636,9 +636,9 @@ const hostId = '${chartUpstreamHostId('rtl')}'
 const labels = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو']
 Chart.registerChart(hostId, (theme): EChartsOption => ({
   grid: Chart.compactGrid({ bottom: 42 }),
-  legend: Chart.shadcnLegend(theme),
+  legend: Chart.legendOptions(theme),
   series: [{ data: [186, 305, 237, 73, 209, 214], itemStyle: { borderRadius: 4, color: theme.chart2 }, name: 'سطح المكتب', type: 'bar' }, { data: [80, 200, 120, 190, 130, 140], itemStyle: { borderRadius: 4, color: theme.chart1 }, name: 'الجوال', type: 'bar' }],
-  tooltip: Chart.shadcnTooltip(theme),
+  tooltip: Chart.tooltipOptions(theme),
   xAxis: Chart.categoryAxis(theme, labels, { boundaryGap: true }),
   yAxis: Chart.valueAxis(theme),
 }))`,
@@ -677,7 +677,7 @@ const totals = { desktop: data.desktop.reduce((a, b) => a + b, 0), mobile: data.
 Chart.registerChart(hostId, (theme, active): EChartsOption => ({
   grid: Chart.compactGrid({ left: 12, right: 12, top: 24 }),
   series: [{ data: active === 'mobile' ? data.mobile : data.desktop, itemStyle: { borderRadius: 2, color: active === 'mobile' ? theme.chart1 : theme.chart2 }, name: active === 'mobile' ? 'Mobile' : 'Desktop', type: 'bar' }],
-  tooltip: Chart.shadcnTooltip(theme),
+  tooltip: Chart.tooltipOptions(theme),
   xAxis: Chart.categoryAxis(theme, labels, { boundaryGap: true }),
   yAxis: Chart.valueAxis(theme),
 }))`,

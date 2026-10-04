@@ -89,11 +89,11 @@ export const pieOption = (
         ]
 
   return {
-    tooltip: Chart.shadcnTooltip(theme, { trigger: 'item' }),
+    tooltip: Chart.tooltipOptions(theme, { trigger: 'item' }),
     ...(config.legend === true
       ? {
           legend: {
-            ...Chart.shadcnLegend(theme),
+            ...Chart.legendOptions(theme),
             data: [...names],
           },
         }
@@ -144,7 +144,7 @@ export const stackedPieOption = (theme: Chart.ChartTheme): EChartsOption => {
     }))
 
   return {
-    tooltip: Chart.shadcnTooltip(theme, { trigger: 'item' }),
+    tooltip: Chart.tooltipOptions(theme, { trigger: 'item' }),
     series: [
       {
         name: 'Desktop',

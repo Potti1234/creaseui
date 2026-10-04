@@ -6,10 +6,10 @@ import { defineMessageUnion } from 'foldkit/message'
 
 import {
   astryxTextClasses,
-  type AstryxTextColor,
-  type AstryxTextSize,
-  type AstryxTextType,
-  type AstryxTextWeight,
+  type AstryxTextColor as TextColor,
+  type AstryxTextSize as TextSize,
+  type AstryxTextType as TextType,
+  type AstryxTextWeight as TextWeight,
 } from '@/lib/astryx-text'
 import * as HoverCard from '@/lib/hover-card'
 import * as Icon from '@/lib/icon'
@@ -284,11 +284,11 @@ export type TimestampProps<Msg> = Readonly<{
   model: Model
   toParentMessage: (message: Message) => Msg
   /** Semantic text type. @default 'supporting' */
-  type?: AstryxTextType
-  size?: AstryxTextSize
+  type?: TextType
+  size?: TextSize
   /** Text color. @default 'secondary' */
-  color?: AstryxTextColor
-  weight?: AstryxTextWeight
+  color?: TextColor
+  weight?: TextWeight
   /** Show the copyable hover card on hover/focus. @default true */
   hasTooltip?: boolean
   /** Lines on the hover card; an empty array means "use the default row". */

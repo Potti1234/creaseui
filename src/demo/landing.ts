@@ -721,7 +721,7 @@ const footer = (h: HtmlBuilder<Message>): Html => {
               h.span(
                 [],
                 [
-                  'Credits: shadcn/ui · Foldkit UI · Apache ECharts · Lucide · Hugeicons · Tabler · Phosphor · Remix Icon',
+                  'Credits: shadcn/ui · Astryx · Foldkit UI · Apache ECharts · Lucide · Hugeicons · Tabler · Phosphor · Remix Icon',
                 ],
               ),
             ],

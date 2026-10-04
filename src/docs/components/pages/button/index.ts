@@ -10,7 +10,7 @@ export const buttonPage = authoredPage({
   definition: {
     kind: 'helper',
     description:
-      'Triggers an action or navigates to another resource with shadcn-compatible variants and native button semantics.',
+      'Triggers an action or navigates to another resource with CreaseUI variants and native button semantics.',
     architecture:
       'Button is a stateless render helper. The parent owns action and loading state; children, icons, labels, variants, and sizes are per-render inputs; there is no child Model or lifecycle resource. Both skins use the same native behavior and semantic slots, so call Button.button directly inside view without h.submodel.',
     apiHref: 'https://foldkit.dev/ui/button',

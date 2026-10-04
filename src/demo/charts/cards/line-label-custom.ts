@@ -25,7 +25,7 @@ Chart.registerChart(HOST_ID, (theme): EChartsOption => ({
     show: false,
   },
   yAxis: Chart.valueAxis(theme),
-  tooltip: Chart.shadcnTooltip(theme),
+  tooltip: Chart.tooltipOptions(theme),
   series: [
     {
       name: 'Visitors',

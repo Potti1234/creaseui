@@ -785,7 +785,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           onNone: () => ({
             model: modifyFields(model, {
               presetError: () =>
-                'Enter a valid shadcn preset code, URL, or --preset flag.',
+                'Enter a valid CreaseUI preset code, URL, or --preset flag.',
             }),
           }),
           onSome: decoded => ({
@@ -1324,7 +1324,7 @@ export const presetCustomizer = (
                     h.OnInput(value =>
                       Message['ChangedCreatePresetInput']({ value }),
                     ),
-                    h.Placeholder('Paste code or shadcn URL'),
+                    h.Placeholder('Paste code or CreaseUI URL'),
                     h.Class(className(styles.fieldInput)),
                   ]),
                   h.button(

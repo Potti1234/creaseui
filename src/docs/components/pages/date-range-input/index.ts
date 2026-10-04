@@ -14,7 +14,7 @@ export const dateRangeInputPage = authoredPage({
     architecture:
       'Date Range Input is a foldkit submodel. The child Model owns the committed Option<Range>, the in-progress first click, and an embedded foldkit Calendar + Popover. The first day click sets a pending start and clamps the calendar to the span-cap window; the second click commits a normalized range, closes, and emits ChangedValue. Presets carry a getRange thunk evaluated at render and commit through ClickedPreset.',
     apiHref:
-      'https://github.com/facebook/astryx/blob/main/packages/core/src/DateRangeInput/DateRangeInput.tsx',
+      'https://github.com/Potti1234/creaseui/blob/main/src/ui/date-range-input.ts',
     styling:
       'The trigger reuses the input-wrapper chrome: input border, 8px radius, inset border shadow at 30% on hover and the accent ring on focus-within. Preset buttons sit in a bordered sidebar; the applied preset carries aria-current and the accent fill.',
     accessibility:

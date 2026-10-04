@@ -5,10 +5,10 @@ import { defineMessageUnion } from 'foldkit/message'
 
 import {
   astryxTextClasses,
-  type AstryxTextColor,
-  type AstryxTextSize,
-  type AstryxTextType,
-  type AstryxTextWeight,
+  type AstryxTextColor as TextColor,
+  type AstryxTextSize as TextSize,
+  type AstryxTextType as TextType,
+  type AstryxTextWeight as TextWeight,
 } from '@/lib/astryx-text'
 import { cn } from '@/lib/utils'
 
@@ -177,13 +177,13 @@ export const subscriptions = Subscription.make<Model, Message>()(entry => ({
 export type TimerProps<Msg> = Readonly<{
   model: Model
   /** Semantic text type. @default 'supporting' */
-  type?: AstryxTextType
+  type?: TextType
   /** Font size override; keeps the type's line height. */
-  size?: AstryxTextSize
+  size?: TextSize
   /** Text color. @default 'secondary' */
-  color?: AstryxTextColor
+  color?: TextColor
   /** Font weight override. */
-  weight?: AstryxTextWeight
+  weight?: TextWeight
   class?: string
 }>
 

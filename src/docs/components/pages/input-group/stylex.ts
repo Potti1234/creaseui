@@ -668,7 +668,7 @@ export const inputGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
             {
               children: [
                 in_('buttonCopy', 'button-copy', {
-                  placeholder: 'https://x.com/shadcn',
+                  placeholder: 'https://creaseui.com',
                 }),
                 InputGroup.inputGroupAddon(
                   {

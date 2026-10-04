@@ -784,7 +784,7 @@ export const componentPage = <Msg>(
                             'text-xs font-medium underline underline-offset-4',
                           ),
                         ],
-                        ['Foldkit reference'],
+                        ['API reference'],
                       ),
                       ...(config.sourceHref === undefined
                         ? []

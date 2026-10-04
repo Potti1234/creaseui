@@ -39,7 +39,7 @@ const lineOption = (
       type: 'line',
     },
   ],
-  tooltip: Chart.shadcnTooltip(theme),
+  tooltip: Chart.tooltipOptions(theme),
   xAxis: Chart.categoryAxis(theme, labels),
   yAxis: Chart.valueAxis(theme),
 })
@@ -59,7 +59,7 @@ const barOption = (
       type: 'bar',
     },
   ],
-  tooltip: Chart.shadcnTooltip(theme),
+  tooltip: Chart.tooltipOptions(theme),
   xAxis: Chart.categoryAxis(theme, labels, { boundaryGap: true }),
   yAxis: Chart.valueAxis(theme),
 })
@@ -77,7 +77,7 @@ Chart.registerChart(HOSTS.executiveCustomers, theme =>
 )
 Chart.registerChart(HOSTS.featuredVisitors, (theme): EChartsOption => ({
   grid: Chart.compactGrid({ bottom: 42 }),
-  legend: Chart.shadcnLegend(theme),
+  legend: Chart.legendOptions(theme),
   series: [
     {
       areaStyle: { color: Chart.colorWithOpacity(theme.chart1, 0.22) },
@@ -100,7 +100,7 @@ Chart.registerChart(HOSTS.featuredVisitors, (theme): EChartsOption => ({
       type: 'line',
     },
   ],
-  tooltip: Chart.shadcnTooltip(theme),
+  tooltip: Chart.tooltipOptions(theme),
   xAxis: Chart.categoryAxis(theme, [
     'Apr 1',
     'Apr 15',
@@ -152,7 +152,7 @@ Chart.registerChart(HOSTS.projectProgress, (theme): EChartsOption => ({
       type: 'pie',
     },
   ],
-  tooltip: Chart.shadcnTooltip(theme, { trigger: 'item' }),
+  tooltip: Chart.tooltipOptions(theme, { trigger: 'item' }),
 }))
 Chart.registerChart(HOSTS.serviceRequests, theme =>
   lineOption(

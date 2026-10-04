@@ -35,7 +35,7 @@ Chart.registerChart(chartHostId, (theme, variant): EChartsOption => ({
       type: 'bar',
     },
   ],
-  tooltip: Chart.shadcnTooltip(theme),
+  tooltip: Chart.tooltipOptions(theme),
   xAxis: Chart.categoryAxis(
     theme,
     variant === 'quarter'

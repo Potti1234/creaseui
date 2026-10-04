@@ -42,7 +42,7 @@ export interface MessageSpec {
   readonly footerActions?: 'copyLikeDislike' | 'failedRetry'
 }
 
-const me = { src: 'https://github.com/shadcn.png', alt: '@me', fallback: 'ME' }
+const me = { src: '/logo-mark.svg', alt: '@me', fallback: 'ME' }
 const rabbit = {
   src: 'https://github.com/evilrabbit.png',
   alt: '@rabbit',
@@ -167,7 +167,8 @@ const headerFooterSpec: ReadonlyArray<MessageSpec> = [
     parts: [
       {
         type: 'bubble',
-        content: 'Send the report to the team. Ping @shadcn if you need help.',
+        content:
+          'Send the report to the team. Ping @creaseui if you need help.',
       },
     ],
     footer: 'Read Yesterday',

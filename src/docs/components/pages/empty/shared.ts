@@ -175,7 +175,7 @@ const emitBody = (fixture: EmptyFixture, isStyleX: boolean): string => {
         media(
           'default',
           `Avatar.avatar({ ${isStyleX ? 'grayscale: true, layoutStyle: styles.avatarSize' : "class: 'size-12 grayscale'"}, children: [
-            Avatar.avatarImage({ src: 'https://github.com/shadcn.png', alt: '@shadcn', model: { status: 'loaded' } }, h),
+            Avatar.avatarImage({ src: '/logo-mark.svg', alt: '@creaseui', model: { status: 'loaded' } }, h),
             Avatar.avatarFallback({ children: ['LR'] }, h),
           ] }, h)`,
         ),
@@ -194,7 +194,7 @@ const emitBody = (fixture: EmptyFixture, isStyleX: boolean): string => {
           'default',
           `Avatar.avatarGroup({ ${isStyleX ? 'grayscale: true, ' : ''}children: [
             ${[
-              ['https://github.com/shadcn.png', '@shadcn', 'CN'],
+              ['/logo-mark.svg', '@creaseui', 'CU'],
               ['https://github.com/maxleiter.png', '@maxleiter', 'LR'],
               ['https://github.com/evilrabbit.png', '@evilrabbit', 'ER'],
             ]

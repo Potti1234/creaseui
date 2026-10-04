@@ -14,7 +14,7 @@ export const logStreamPage = authoredPage({
     architecture:
       'Log Stream is a submodel component. Its Model wraps the shared message-scroller model (scroll position, follow pinning) plus expandedIds for open detail rows. Scrolling away from the tail reveals a jump button that re-pins the stream; ChangedLogStreamFollowing reports pin transitions as an out message.',
     apiHref:
-      'https://github.com/facebook/astryx/blob/main/packages/lab/src/LogStream/LogStream.tsx',
+      'https://github.com/Potti1234/creaseui/blob/main/src/ui/log-stream.ts',
     styling:
       'The default variant uses theme surface tokens; the terminal variant is intentionally always-dark — brand chrome mirroring real shells — implemented as a StyleX theme override on the shared tokens. Rows use content-visibility for cheap long lists and appended rows fade in.',
     accessibility:

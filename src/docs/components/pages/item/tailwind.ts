@@ -367,12 +367,12 @@ const itemView = (
                               children: [
                                 Avatar.avatarImage(
                                   {
-                                    src: 'https://github.com/shadcn.png',
-                                    alt: '@shadcn',
+                                    src: '/logo-mark.svg',
+                                    alt: '@creaseui',
                                   },
                                   h,
                                 ),
-                                Avatar.avatarFallback({ children: ['CN'] }, h),
+                                Avatar.avatarFallback({ children: ['CU'] }, h),
                               ],
                             },
                             h,

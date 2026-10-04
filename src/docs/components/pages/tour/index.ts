@@ -13,8 +13,7 @@ export const tourPage = authoredPage({
       'A guided product tour: spotlight callouts anchored to elements on the page, stepped through with Next / Back / Done.',
     architecture:
       'Tour owns an active-step state machine and a measured target rect. Each step re-keys a callout that mounts an anchorSetup against the target element, while an observer stream keeps the highlight glued to the target across scroll and resize.',
-    apiHref:
-      'https://github.com/facebook/astryx/blob/main/packages/lab/src/Tour/Tour.tsx',
+    apiHref: 'https://github.com/Potti1234/creaseui/blob/main/src/ui/tour.ts',
     styling:
       'The highlight is a fixed ring drawn around the target rect with 4px of padding; with hasBackdrop the same ring carries the 9999px scrim shadow so the page dims while the target stays lit. The callout is a card positioned by the same anchor engine Popover uses.',
     accessibility:

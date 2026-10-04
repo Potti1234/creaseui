@@ -21,7 +21,7 @@ Chart.registerChart(HOST_ID, (theme): EChartsOption => ({
   ),
   yAxis: Chart.valueAxis(theme),
   tooltip: barTooltip(theme, { hideLabel: true }),
-  legend: Chart.shadcnLegend(theme),
+  legend: Chart.legendOptions(theme),
   series: [
     {
       name: 'Desktop',

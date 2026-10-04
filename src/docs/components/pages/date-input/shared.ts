@@ -7,7 +7,7 @@ export type DateInputFixture = Readonly<{
   heroOnly?: boolean
   kind: 'single' | 'constraints' | 'formats' | 'validation'
   /** Astrryx block id, kept for tracing against the source templates. */
-  astryxExample: string
+  example: string
 }>
 
 export const dateInputFixtures: ReadonlyArray<DateInputFixture> = [
@@ -15,42 +15,42 @@ export const dateInputFixtures: ReadonlyArray<DateInputFixture> = [
     title: 'Date Input',
     heroOnly: true,
     kind: 'single',
-    astryxExample: 'DateInputShowcase',
+    example: 'DateInputShowcase',
     description:
       'A date input field with a calendar popover. Type a date or click the calendar icon to pick one.',
   },
   {
     title: 'Clearable',
     kind: 'single',
-    astryxExample: 'DateInputClearable',
+    example: 'DateInputClearable',
     description:
       'Date input with a clear button that resets the value. Use when the date field is optional and the user may need to undo their selection.',
   },
   {
     title: 'Min/Max Constraints',
     kind: 'constraints',
-    astryxExample: 'DateInputDateRange',
+    example: 'DateInputDateRange',
     description:
       'Date input constrained to a min/max window. Use when only certain dates are valid, like booking availability or a fiscal quarter.',
   },
   {
     title: 'Formats',
     kind: 'formats',
-    astryxExample: 'DateInputFormats',
+    example: 'DateInputFormats',
     description:
       "The format prop reuses Timestamp's format vocabulary to control how the committed value is displayed: date, date_long (default), date_weekday, and system_date, or a function for a fully custom string. Formatting applies only to the committed value, never to text the user is actively typing.",
   },
   {
     title: 'Description',
     kind: 'single',
-    astryxExample: 'DateInputWithDescription',
+    example: 'DateInputWithDescription',
     description:
       'Date input with helper text below the label explaining what the field expects. Use when the purpose of the date is not obvious from the label alone.',
   },
   {
     title: 'Validation',
     kind: 'validation',
-    astryxExample: 'DateInputWithValidation',
+    example: 'DateInputWithValidation',
     description:
       'Date input in all three status states: error, warning, and success. Use to surface validation issues, caution the user, or confirm a valid selection.',
   },
@@ -112,8 +112,8 @@ const singleSource = (
   renderer: 'tailwind' | 'stylex',
 ): string => {
   const isStyleX = renderer === 'stylex'
-  const isClearable = fixture.astryxExample === 'DateInputClearable'
-  const isDescription = fixture.astryxExample === 'DateInputWithDescription'
+  const isClearable = fixture.example === 'DateInputClearable'
+  const isDescription = fixture.example === 'DateInputWithDescription'
   const inputCall = `DateInput.dateInput({
         model: model.dateInput,
         toParentMessage: message => GotDateInputMessage({ message }),

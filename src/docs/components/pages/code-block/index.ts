@@ -14,7 +14,7 @@ export const codeBlockPage = authoredPage({
     architecture:
       'CodeBlock is a submodel component. The parent owns one CodeBlock.Model per block, wires GotCodeBlockMessage through update, and the child manages copy feedback and collapse state.',
     apiHref:
-      'https://github.com/facebook/astryx/blob/main/packages/core/src/CodeBlock/CodeBlock.tsx',
+      'https://github.com/Potti1234/creaseui/blob/main/src/ui/code-block.ts',
     styling:
       'The header carries the language tag and optional title; line numbers, highlighted lines, and max-height scrolling are opt-in per block. Long snippets get collapse behavior.',
     accessibility:

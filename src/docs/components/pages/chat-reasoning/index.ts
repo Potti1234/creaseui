@@ -14,7 +14,7 @@ export const chatReasoningPage = authoredPage({
     architecture:
       'Chat Reasoning is a submodel component. Its Model holds the expanded state; clicking the header (or pressing Enter/Space on it) emits ToggledChatReasoning, and the parent observes expansions via the ChangedChatReasoningExpansion OutMessage. Reasoning content is passed as children so callers control how the trace is rendered.',
     apiHref:
-      'https://github.com/facebook/astryx/blob/main/packages/lab/src/ChatReasoning/ChatReasoning.tsx',
+      'https://github.com/Potti1234/creaseui/blob/main/src/ui/chat-reasoning.ts',
     styling:
       'The header renders in muted supporting text with a thinking glyph and chevron; while isStreaming is set, the label shimmers and the duration and preview stay hidden. Supply a preview string (or single-line string children) to show an ellipsis-truncated collapsed summary.',
     accessibility:

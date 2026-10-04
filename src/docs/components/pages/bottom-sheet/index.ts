@@ -14,7 +14,7 @@ export const bottomSheetPage = authoredPage({
     architecture:
       'BottomSheet composes the Dialog submodel and layers a pointer-gesture state machine on top: drag phases, detent offsets computed from snap points, velocity-aware settle, and magnetic capture. The switcher variant keeps one shared dialog whose sheets swap content with a retained-fade transition.',
     apiHref:
-      'https://github.com/facebook/astryx/blob/main/packages/core/src/BottomSheet/BottomSheet.tsx',
+      'https://github.com/Potti1234/creaseui/blob/main/src/ui/bottom-sheet.ts',
     styling:
       'The sheet hugs the bottom edge inside a centered 640px column with a top-edge grab handle and rounded top corners; the scrim thins as the sheet slides down to its peek detent.',
     accessibility:

@@ -14,7 +14,7 @@ export const indicatorPage = authoredPage({
     architecture:
       'Indicator is a set of stateless render helpers. The owning control supplies the state, size, and disabled flag; indicators stay aria-hidden while the host carries the role and accessible name.',
     apiHref:
-      'https://github.com/facebook/astryx/blob/main/packages/core/src/Indicator/Indicator.tsx',
+      'https://github.com/Potti1234/creaseui/blob/main/src/ui/indicator.ts',
     styling:
       'Hover tints engage when the host row opts in with the `group/indicator` class (Tailwind) or when the indicator itself is hovered (StyleX).',
     accessibility:

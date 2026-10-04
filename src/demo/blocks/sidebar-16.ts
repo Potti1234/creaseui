@@ -42,9 +42,9 @@ import {
 
 const data = {
   user: {
-    name: 'shadcn',
+    name: 'CreaseUI',
     email: 'm@example.com',
-    avatar: '/avatars/shadcn.jpg',
+    avatar: '/logo-mark.svg',
   },
   navMain: [
     {
@@ -380,7 +380,7 @@ const userSummary = (h: HtmlBuilder<Message>): Html => {
         {
           class: 'size-8 rounded-lg',
           children: [
-            avatarFallback({ class: 'rounded-lg', children: ['CN'] }, h),
+            avatarFallback({ class: 'rounded-lg', children: ['CU'] }, h),
           ],
         },
         h,
@@ -427,7 +427,7 @@ const navUser = (model: DropdownMenu.Model, h: HtmlBuilder<Message>): Html => {
                       M.when('upgrade', () => ({
                         label: 'Upgrade to Pro',
                         icon: Icon.icon('sparkles', {}, h),
-                        group: 'shadcn · m@example.com',
+                        group: 'CreaseUI · m@example.com',
                       })),
                       M.when('account', () => ({
                         label: 'Account',
@@ -709,5 +709,5 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
   )
 }
 
-// PORT NOTE: Avatar images are not bundled, so the source image uses its CN
+// PORT NOTE: Avatar images are not bundled, so the source image uses its CU
 // fallback. Per-project action menus use the accepted static ellipsis action.

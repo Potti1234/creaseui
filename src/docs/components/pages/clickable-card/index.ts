@@ -14,7 +14,7 @@ export const clickableCardPage = authoredPage({
     architecture:
       'Clickable Card is a stateless render helper. The parent supplies the label, destination or onClick message, and children; the card returns Html wired to a pressable-container mount that ignores nested interactive elements and existing text selections.',
     apiHref:
-      'https://github.com/facebook/astryx/blob/main/packages/core/src/ClickableCard/ClickableCard.tsx',
+      'https://github.com/Potti1234/creaseui/blob/main/src/ui/clickable-card.ts',
     styling:
       'Use `elevation` to raise the card when the resting shadow should signal interactivity, and `variant` for a chromatic background. The hover/press tint is an inert overlay, so nested content stays interactive.',
     accessibility:

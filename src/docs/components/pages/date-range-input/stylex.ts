@@ -70,7 +70,7 @@ export const dateRangeInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   const supporting = (text: string): Html =>
     h.p([h.Class(className(styles.supporting))], [text])
 
-  switch (fixture.astryxExample) {
+  switch (fixture.example) {
     case 'DateRangeInputWithPresets':
       return stack([
         supporting(
@@ -83,7 +83,7 @@ export const dateRangeInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         inputAt(0, {
           label: 'Report period',
           description: 'Use a preset or pick a custom range',
-          presets: PRESETS_FOR(fixture.astryxExample, today),
+          presets: PRESETS_FOR(fixture.example, today),
         }),
       ])
     case 'DateRangeInputWithValidation':
@@ -96,7 +96,7 @@ export const dateRangeInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
       return stack([
         inputAt(0, {
           label: 'Date range',
-          presets: PRESETS_FOR(fixture.astryxExample, today),
+          presets: PRESETS_FOR(fixture.example, today),
         }),
       ])
   }

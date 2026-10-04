@@ -160,8 +160,8 @@ const emptyView = <M>(
             'default',
             [
               avatarNode(
-                'https://github.com/shadcn.png',
-                '@shadcn',
+                '/logo-mark.svg',
+                '@creaseui',
                 'LR',
                 'size-12 grayscale',
                 h,
@@ -190,7 +190,7 @@ const emptyView = <M>(
                     '*:data-[slot=avatar]:size-12 *:data-[slot=avatar]:grayscale',
                   children: (
                     [
-                      ['https://github.com/shadcn.png', '@shadcn', 'CN'],
+                      ['/logo-mark.svg', '@creaseui', 'CU'],
                       ['https://github.com/maxleiter.png', '@maxleiter', 'LR'],
                       [
                         'https://github.com/evilrabbit.png',

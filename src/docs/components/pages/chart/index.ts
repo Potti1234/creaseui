@@ -50,7 +50,7 @@ Chart.registerChart(hostId, (theme, variant): EChartsOption => ({
     name: 'Revenue',
     type: 'bar',
   }],
-  tooltip: Chart.shadcnTooltip(theme),
+  tooltip: Chart.tooltipOptions(theme),
   xAxis: Chart.categoryAxis(theme, labels, { boundaryGap: true }),
   yAxis: Chart.valueAxis(theme, { showLabels: true }),
 }))`,
@@ -74,11 +74,11 @@ Chart.registerChart(hostId, (theme, variant): EChartsOption => ({
         id: 'tooltip-and-legend',
         title: 'Tooltip and legend',
         description:
-          'compactGrid, categoryAxis, valueAxis, shadcnTooltip, and shadcnLegend provide the shared shadcn-like visual language without hiding the underlying ECharts option. Compose only the helpers the chart needs.',
+          'compactGrid, categoryAxis, valueAxis, tooltipOptions, and legendOptions provide the shared CreaseUI visual language without hiding the underlying ECharts option. Compose only the helpers the chart needs.',
         code: `({
   grid: Chart.compactGrid({ bottom: 42 }),
-  legend: Chart.shadcnLegend(theme),
-  tooltip: Chart.shadcnTooltip(theme),
+  legend: Chart.legendOptions(theme),
+  tooltip: Chart.tooltipOptions(theme),
   xAxis: Chart.categoryAxis(theme, labels),
   yAxis: Chart.valueAxis(theme),
   series,

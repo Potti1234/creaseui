@@ -20,7 +20,7 @@ export const appShellPage = authoredPage({
     architecture:
       'AppShell is a stateless render helper. `height: "fill"` pins the shell to the viewport and scrolls the content internally; `"auto"` grows with content and keeps the header and side nav sticky while the page scrolls. Variants control how nav areas contrast with content.',
     apiHref:
-      'https://github.com/facebook/astryx/tree/main/packages/core/src/AppShell',
+      'https://github.com/Potti1234/creaseui/blob/main/src/ui/app-shell.ts',
     styling:
       "The nav slots take arbitrary markup — pass your app's top-nav and side-nav composition. `contentPadding` uses the spacing scale; the elevated variant adds the 28px page-radius corner when both navs are present.",
     accessibility:

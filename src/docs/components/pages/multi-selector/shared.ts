@@ -14,7 +14,7 @@ export type MultiSelectorFixture = Readonly<{
     | 'ghostToolbar'
     | 'bottomSheet'
   /** Astrryx block id, kept for tracing against the source templates. */
-  astryxExample: string
+  example: string
 }>
 
 export const multiSelectorFixtures: ReadonlyArray<MultiSelectorFixture> = [
@@ -22,46 +22,46 @@ export const multiSelectorFixtures: ReadonlyArray<MultiSelectorFixture> = [
     title: 'Multi Selector',
     heroOnly: true,
     kind: 'showcase',
-    astryxExample: 'MultiSelectorShowcase',
+    example: 'MultiSelectorShowcase',
     description:
       'A bordered multi-select field with checkbox options in an anchored popover.',
   },
   {
     title: 'Searchable',
     kind: 'searchable',
-    astryxExample: 'MultiSelectorSearchableMultiSelector',
+    example: 'MultiSelectorSearchableMultiSelector',
     description: 'Multi-select with search filtering and select-all.',
   },
   {
     title: 'Sectioned',
     kind: 'sectioned',
-    astryxExample: 'MultiSelectorSectionedMultiSelector',
+    example: 'MultiSelectorSectionedMultiSelector',
     description: 'Multi-select with options grouped into labeled sections.',
   },
   {
     title: 'Column Visibility',
     kind: 'columns',
-    astryxExample: 'MultiSelectorColumnVisibilitySelector',
+    example: 'MultiSelectorColumnVisibilitySelector',
     description:
       'Column visibility toggle with hidden label, search, select-all, and selection count.',
   },
   {
     title: 'Form Composition',
     kind: 'form',
-    astryxExample: 'MultiSelectorForm',
+    example: 'MultiSelectorForm',
     description: 'Two multi-selectors in a form with required/optional states.',
   },
   {
     title: 'Ghost Toolbar',
     kind: 'ghostToolbar',
-    astryxExample: 'MultiSelectorGhostToolbar',
+    example: 'MultiSelectorGhostToolbar',
     description:
       'Borderless MultiSelector variant composed with ghost buttons in a toolbar.',
   },
   {
     title: 'Bottom Sheet',
     kind: 'bottomSheet',
-    astryxExample: 'MultiSelectorBottomSheet',
+    example: 'MultiSelectorBottomSheet',
     description:
       'Keeps a multi-selection list open in a bottom sheet while choices are toggled.',
   },

@@ -189,15 +189,15 @@ test('block code toggle swaps the preview for the matching renderer source', asy
     'const dashboard',
     { timeout: 30_000 },
   )
-  const second = page.locator('[data-block="astryx-executive-summary"]')
+  const second = page.locator('[data-block="creaseui-executive-summary"]')
   await second
     .getByRole('button', {
-      name: 'View code for astryx-executive-summary',
+      name: 'View code for creaseui-executive-summary',
       exact: true,
     })
     .click()
   const secondPanel = second.locator(
-    '[data-block-code="astryx-executive-summary"]',
+    '[data-block-code="creaseui-executive-summary"]',
   )
   await expect(secondPanel).toBeVisible()
   await expect(panel).toBeVisible()
@@ -217,13 +217,13 @@ test('block code toggle swaps the preview for the matching renderer source', asy
   await expect(secondPanel).toBeVisible()
   await second
     .getByRole('button', {
-      name: 'Hide code for astryx-executive-summary',
+      name: 'Hide code for creaseui-executive-summary',
       exact: true,
     })
     .click()
   await expect(second.locator('iframe')).toHaveAttribute(
     'src',
-    '/blocks/preview/stylex--astryx-executive-summary',
+    '/blocks/preview/stylex--creaseui-executive-summary',
   )
   await expect(section.locator('iframe')).toHaveAttribute(
     'src',

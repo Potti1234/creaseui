@@ -13,8 +13,7 @@ export const linkPage = authoredPage({
       'Inline and standalone hyperlinks with underline, external-link, and disabled variants.',
     architecture:
       'Link is a stateless render helper. The parent supplies href, underline, external-link, and color inputs per render; it returns Html directly.',
-    apiHref:
-      'https://github.com/facebook/astryx/blob/main/packages/core/src/Link/Link.tsx',
+    apiHref: 'https://github.com/Potti1234/creaseui/blob/main/src/ui/link.ts',
     styling:
       'Inline links inherit surrounding text size; standalone links take the compact label size. Underlines appear on hover by default and can be pinned with hasUnderline.',
     accessibility:

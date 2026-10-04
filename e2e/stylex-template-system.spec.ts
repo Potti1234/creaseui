@@ -43,22 +43,22 @@ test('semantic dashboard recipe preserves region ownership and responsive contai
   expect(mobile.scrollWidth).toBeLessThanOrEqual(mobile.clientWidth + 1)
 })
 
-test('Astryx-inspired dashboards use constrained recipes and remain accessible', async ({
+test('CreaseUI dashboards use constrained recipes and remain accessible', async ({
   page,
 }) => {
   test.slow()
   const blocks = [
-    ['astryx-executive-summary', 2],
-    ['astryx-cohort-funnel', 1],
-    ['astryx-project-status', 2],
-    ['astryx-service-monitoring', 2],
-    ['astryx-incident-console', 0],
-    ['astryx-kanban-board', 0],
-    ['astryx-inbox-table', 0],
-    ['astryx-order-detail', 0],
-    ['astryx-checkout-form', 0],
-    ['astryx-data-dashboard', 4],
-    ['astryx-card-grid', 0],
+    ['creaseui-executive-summary', 2],
+    ['creaseui-cohort-funnel', 1],
+    ['creaseui-project-status', 2],
+    ['creaseui-service-monitoring', 2],
+    ['creaseui-incident-console', 0],
+    ['creaseui-kanban-board', 0],
+    ['creaseui-inbox-table', 0],
+    ['creaseui-order-detail', 0],
+    ['creaseui-checkout-form', 0],
+    ['creaseui-data-dashboard', 4],
+    ['creaseui-card-grid', 0],
   ] as const
   for (const [name, charts] of blocks) {
     await page.setViewportSize({ width: 1440, height: 1000 })
@@ -116,7 +116,7 @@ test('unified charts routes expose the complete constrained StyleX gallery', asy
   await page.goto('/charts/area')
   const headingName = 'Beautiful Charts & Graphs'
   const description =
-    'A collection of ready-to-use chart components built with Apache ECharts and foldkit, styled like shadcn/ui. From basic charts to rich data displays.'
+    'A collection of ready-to-use chart components built with Apache ECharts and foldkit, styled with CreaseUI. From basic charts to rich data displays.'
   const topLayout = async () =>
     page
       .getByRole('heading', { level: 1, name: headingName })

@@ -13,8 +13,7 @@ export const codePage = authoredPage({
       'Inline code rendered in a compact mono treatment inside running text.',
     architecture:
       'Code is a stateless render helper. The parent supplies the code content and optional color/size inputs per render; it returns Html directly.',
-    apiHref:
-      'https://github.com/facebook/astryx/blob/main/packages/core/src/Code/Code.tsx',
+    apiHref: 'https://github.com/Potti1234/creaseui/blob/main/src/ui/code.ts',
     styling:
       'Inline code inherits the surrounding text size so it sits naturally in headings, body, and captions; the size input overrides it when a fixed mono size is needed.',
     accessibility:

@@ -47,7 +47,7 @@ Chart.registerChart(HOST_ID, (theme): EChartsOption => ({
     splitLine: { lineStyle: { color: theme.border, type: 'dashed' } },
   },
   tooltip: {
-    ...Chart.shadcnTooltip(theme),
+    ...Chart.tooltipOptions(theme),
     valueFormatter: value => `${Math.round(Number(value) * 100)}%`,
   },
   series: [

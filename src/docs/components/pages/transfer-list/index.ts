@@ -14,7 +14,7 @@ export const transferListPage = authoredPage({
     architecture:
       'Transfer List is a submodel component. Its Model holds the controlled value array, the search query, a DragAndDrop child model, and the live-announcement text; the caller passes the full option catalog, maps ChangedTransferList out messages back into state, and lifts the exported document subscriptions onto the child model. Pointer drag, collision detection, keyboard moves, and edge auto-scroll run through the foldkit DragAndDrop primitive.',
     apiHref:
-      'https://github.com/facebook/astryx/blob/main/packages/lab/src/TransferList/TransferList.tsx',
+      'https://github.com/Potti1234/creaseui/blob/main/src/ui/transfer-list.ts',
     styling:
       'Panels split side by side in a 40rem container query and stack below it. Drop position is a primary-tinted rule between rows; the dragged row fades to half opacity. Group headings segment the available panel, and each panel is capped at 20rem of scrollable height.',
     accessibility:

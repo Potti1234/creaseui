@@ -13,7 +13,7 @@ import * as ToggleGroup from '@/stylex/toggle-group'
 import type { ComponentLayoutStyle } from '@/stylex/contracts'
 import { className } from '@/stylex/style'
 
-const IMAGE_URL = 'https://avatar.vercel.sh/shadcn1'
+const IMAGE_URL = 'https://avatar.vercel.sh/creaseui'
 type SpacingValue = '4' | '5' | '6' | '8'
 
 const styles = stylex.create({

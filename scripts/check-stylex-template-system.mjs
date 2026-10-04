@@ -5,8 +5,8 @@ const source = Object.fromEntries(
   Object.entries({
     docs: 'docs/stylex-astryx-architecture.md',
     featured: 'src/demo/blocks-stylex/featured-page.ts',
-    inspired: 'src/demo/blocks-stylex/astryx-inspired-dashboards.ts',
-    inspiredBlocks: 'src/demo/blocks-stylex/astryx-inspired-blocks.ts',
+    inspired: 'src/demo/blocks-stylex/creaseui-dashboards.ts',
+    inspiredBlocks: 'src/demo/blocks-stylex/creaseui-blocks.ts',
     charts: 'src/demo/blocks-stylex/chart-analytics-dashboard.ts',
     chartsPage: 'src/demo/charts-stylex/page.ts',
     layout: 'src/stylex/composition/semantic-layout.ts',

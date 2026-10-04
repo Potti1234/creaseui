@@ -28,7 +28,7 @@ Chart.registerChart(HOST_ID, (theme): EChartsOption => ({
     ...Chart.valueAxis(theme, { showLabels: true }),
     splitNumber: 2,
   },
-  tooltip: Chart.shadcnTooltip(theme),
+  tooltip: Chart.tooltipOptions(theme),
   series: [
     {
       name: 'Mobile',

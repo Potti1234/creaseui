@@ -1,7 +1,7 @@
 import type { DocsExample } from '@/docs/components/page-definition'
 import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
-const IMAGE_URL = 'https://avatar.vercel.sh/shadcn1'
+const IMAGE_URL = 'https://avatar.vercel.sh/creaseui'
 
 export type AspectRatioFixture = Readonly<{
   title: string

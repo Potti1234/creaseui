@@ -14,7 +14,7 @@ export const powerSearchPage = authoredPage({
     architecture:
       'Power Search is a submodel component. Its Model holds the query, the open/closed surface state, the draft filter being edited, and which menu inside the editor is open; the caller owns the controlled `filters` array and maps ChangedPowerSearch out messages back into state. A mounted stream watches document pointerdown to dismiss open surfaces, and focus restoration after commits is delegated to commands.',
     apiHref:
-      'https://github.com/facebook/astryx/blob/main/packages/core/src/PowerSearch/PowerSearch.tsx',
+      'https://github.com/Potti1234/creaseui/blob/main/src/ui/power-search.ts',
     styling:
       'Tokens render as compact chips beside the input; the editor popover wraps to two rows below a 24.9rem container query and goes single-line above it. The suggestion menu, token editors, and entity-list search all reuse the same listbox styling with accent-tinted active options.',
     accessibility:

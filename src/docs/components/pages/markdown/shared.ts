@@ -34,13 +34,13 @@ export const SHOWCASE_CONTENT = `## Formatting
 
 > A quoted passage with an accent border.
 
-[Documentation](https://github.com/facebook/astryx)`
+[Documentation](https://creaseui.com/docs/components/button)`
 
 export const RICH_CONTENT = `# Rich Content
 
 ## Inline Formatting
 
-Mix **bold**, *italic*, and \`inline code\` in one paragraph. Links like [Astryx](https://github.com/facebook/astryx) render inline.
+Mix **bold**, *italic*, and \`inline code\` in one paragraph. Links like [CreaseUI](https://creaseui.com/docs/components/button) render inline.
 
 ## Code Block
 
@@ -56,21 +56,21 @@ export function greet(name: string) {
 - [x] Parse lists
 - [ ] Parse math`
 
-export const TABLE_CONTENT = `| Feature | Astryx | shadcn/ui | MUI |
+export const TABLE_CONTENT = `| CreaseUI feature | Tailwind | StyleX | Notes |
 | :-- | :-: | :-: | --: |
-| StyleX styling | Yes | No | No |
-| Runtime theme | Yes | Partial | Partial |
-| CLI blocks | Yes | Yes | No |`
+| Component examples | Yes | Yes | Shared fixtures |
+| Runtime theme | Yes | Yes | Semantic tokens |
+| Copyable source | Yes | Yes | TypeScript |`
 
 export const COMPACT_CONTENT = `## Summary
 
 Here's the install command:
 
 \`\`\`bash
-pnpm add @astryxdesign/core
+npx creaseui add button
 \`\`\`
 
-- Works with React 19
+- Built on Foldkit UI
 - Ships StyleX variants
 - Typed component APIs
 

@@ -14,7 +14,7 @@ export const circularProgressPage = authoredPage({
     architecture:
       'CircularProgress is a stateless render helper. Determinate rings draw a value/max arc; `isIndeterminate` swaps in a continuously rotating arc, and `hasValueLabel` or `children` fills the center.',
     apiHref:
-      'https://github.com/facebook/astryx/blob/main/packages/lab/src/CircularProgress/CircularProgress.tsx',
+      'https://github.com/Potti1234/creaseui/blob/main/src/ui/circular-progress.ts',
     accessibility:
       'The svg carries role="progressbar" with aria-valuemin/max/now in determinate mode; the label is sr-only unless `isLabelHidden` is false. Reduced-motion slows the spin.',
     examples: circularProgressExamples('tailwind'),

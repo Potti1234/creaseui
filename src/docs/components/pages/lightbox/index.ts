@@ -14,7 +14,7 @@ export const lightboxPage = authoredPage({
     architecture:
       'Lightbox composes the Dialog submodel with its own media state: index, zoom level, and pan offset are transient child fields; pointer, keyboard, and navigation messages all flow through Lightbox.update.',
     apiHref:
-      'https://github.com/facebook/astryx/blob/main/packages/core/src/Lightbox/Lightbox.tsx',
+      'https://github.com/Potti1234/creaseui/blob/main/src/ui/lightbox.ts',
     styling:
       'The scrim keeps a single dark surface behind the media; controls sit on translucent circles at the edges and corners so they stay readable over any image.',
     accessibility:

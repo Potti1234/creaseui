@@ -15,7 +15,7 @@ export type TokenizerFixture = Readonly<{
     | 'overflow'
     | 'states'
   /** Astrryx block id, kept for tracing against the source templates. */
-  astryxExample: string
+  example: string
 }>
 
 export const tokenizerFixtures: ReadonlyArray<TokenizerFixture> = [
@@ -23,55 +23,55 @@ export const tokenizerFixtures: ReadonlyArray<TokenizerFixture> = [
     title: 'Tokenizer',
     heroOnly: true,
     kind: 'showcase',
-    astryxExample: 'TokenizerShowcase',
+    example: 'TokenizerShowcase',
     description: 'A tokenizer with preset tags and search source.',
   },
   {
     title: 'Clear',
     kind: 'clear',
-    astryxExample: 'TokenizerClear',
+    example: 'TokenizerClear',
     description:
       'Tokenizer with a built-in clear-all button for bulk removal of all selected tokens.',
   },
   {
     title: 'Creatable',
     kind: 'creatable',
-    astryxExample: 'TokenizerCreatable',
+    example: 'TokenizerCreatable',
     description:
       'Free-text tokenizer for creating custom tags and a combined create-or-search pattern. Use when users need to enter values that may not exist in a predefined list.',
   },
   {
     title: 'End Content',
     kind: 'endContent',
-    astryxExample: 'TokenizerEndContent',
+    example: 'TokenizerEndContent',
     description:
       'Tokenizer with an action button in the end slot. Use for inline actions like applying selections alongside the input.',
   },
   {
     title: 'Icon',
     kind: 'icon',
-    astryxExample: 'TokenizerIcon',
+    example: 'TokenizerIcon',
     description:
       'Tokenizer with a leading search icon to visually reinforce the search behavior.',
   },
   {
     title: 'Max Entries',
     kind: 'maxEntries',
-    astryxExample: 'TokenizerMaxEntries',
+    example: 'TokenizerMaxEntries',
     description:
       'Tokenizer with a maximum selection limit. The input hides automatically when the limit is reached, preventing further additions.',
   },
   {
     title: 'Overflow',
     kind: 'overflow',
-    astryxExample: 'TokenizerOverflow',
+    example: 'TokenizerOverflow',
     description:
       'Tokenizer with overflow truncation when unfocused. Inline mode pushes content down on expand; layer mode overlays without shifting layout.',
   },
   {
     title: 'States',
     kind: 'states',
-    astryxExample: 'TokenizerStates',
+    example: 'TokenizerStates',
     description:
       'Tokenizer in disabled, error, warning, and success states. Use to communicate validation feedback or lock a selection from editing.',
   },
