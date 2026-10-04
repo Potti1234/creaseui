@@ -1,6 +1,7 @@
-import { Effect, Equal, Match as M, Schema as S } from 'effect'
+import { Effect, Equal, Match as M, Option, Schema as S } from 'effect'
 import type { Runtime, Update } from 'foldkit'
 import { Command, Subscription } from 'foldkit'
+import * as Dom from 'foldkit/dom'
 import type { Document, Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import { UrlRequest, load, pushUrl } from 'foldkit/navigation'
@@ -73,6 +74,7 @@ export const Message = defineMessageUnion({
   CompletedNavigateInternal: {},
   CompletedLoadExternal: {},
   CompletedScrollToTop: {},
+  CompletedScrollToFragment: {},
   ClickedLink: { request: UrlRequest },
   ChangedUrl: { url: Url },
   ClickedThemeToggle: {},
@@ -155,7 +157,12 @@ export const init: Runtime.RoutingApplicationInit<Model, Message, Flags> = (
   url: Url,
 ) => {
   const route = urlToAppRoute(url)
-  return { model: { route, isDark: flags.isDark, page: Page.init(route) } }
+  return {
+    model: { route, isDark: flags.isDark, page: Page.init(route) },
+    commands: Option.isSome(url.hash)
+      ? [ScrollToFragment({ hash: url.hash.value })]
+      : [],
+  }
 }
 
 // COMMAND
@@ -196,6 +203,20 @@ const ScrollToTop = Command.define('ScrollToTop', {
   ),
 })
 
+const ScrollToFragment = Command.define('ScrollToFragment', {
+  args: { hash: S.String },
+  messages: [Message.CompletedScrollToFragment],
+  execute: ({ hash }) =>
+    Effect.try(() => decodeURIComponent(hash)).pipe(
+      Effect.catch(() => Effect.succeed(hash)),
+      Effect.flatMap(id =>
+        Dom.scrollIntoViewAfterPaint(`#${CSS.escape(id)}`, { block: 'start' }),
+      ),
+      Effect.catch(() => Effect.void),
+      Effect.as(Message.CompletedScrollToFragment()),
+    ),
+})
+
 const LoadBlockCode = Command.define('LoadBlockCode', {
   args: { renderer: Page.CreateRenderer, name: S.String },
   messages: [Message.LoadedBlockCode],
@@ -218,6 +239,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
     M.tagsExhaustive({
       CompletedNavigateInternal: () => ({ model: model }),
       CompletedScrollToTop: () => ({ model: model }),
+      CompletedScrollToFragment: () => ({ model: model }),
       CompletedLoadExternal: () => ({ model: model }),
       CompletedApplyTheme: () => ({ model: model }),
       IgnoredBlocksPreviewInput: () => ({ model: model }),
@@ -373,8 +395,10 @@ export const update = (model: Model, message: Message): UpdateReturn =>
 
       ChangedUrl: ({ url }) => {
         const route = urlToAppRoute(url)
+        const routeChanged = !Equal.equals(model.route, route)
         const page =
-          model.page._tag === 'ChartsPage' && route._tag === 'Charts'
+          !routeChanged ||
+          (model.page._tag === 'ChartsPage' && route._tag === 'Charts')
             ? model.page
             : Page.init(route)
         return {
@@ -382,7 +406,11 @@ export const update = (model: Model, message: Message): UpdateReturn =>
             route: () => route,
             page: () => page,
           }),
-          commands: Equal.equals(model.route, route) ? [] : [ScrollToTop()],
+          commands: Option.isSome(url.hash)
+            ? [ScrollToFragment({ hash: url.hash.value })]
+            : routeChanged
+              ? [ScrollToTop()]
+              : [],
         }
       },
 
