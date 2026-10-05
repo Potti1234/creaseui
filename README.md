@@ -36,17 +36,8 @@ Before submitting a change, run:
 npm run check
 ```
 
-The registry publishes the component catalog, shared utilities, and the Crease
-theme. The dedicated CLI keeps the common workflow concise:
-
-```sh
-npx creaseui doctor
-npx creaseui init
-npx creaseui add button dialog
-npx creaseui diff dialog
-```
-
-The underlying shadcn CLI remains available directly:
+The registry distributes the Tailwind components, shared utilities, and the
+Crease theme through the shadcn CLI:
 
 ```sh
 npx --yes shadcn@latest add Potti1234/creaseui/button --yes
@@ -57,6 +48,12 @@ Registry items copy their source into a Foldkit application so the resulting cod
 stays owned and editable by that application. The registry does not replace the
 consumer's Foldkit or Effect versions; consult the compatibility matrix before
 installing across a Foldkit API upgrade.
+
+The StyleX components in `src/stylex` are currently copied from this checkout;
+they are not included in `registry.json`. See the
+[StyleX authoring contract](src/stylex/README.md) for setup requirements.
+The local CLI can also be run from a consumer directory with
+`node /path/to/creaseui/scripts/crease.mjs doctor` (or `init`, `add`, `diff`).
 
 For side-by-side development, install from this checkout without pushing first:
 
