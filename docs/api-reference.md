@@ -360,19 +360,6 @@ Source: [`src/ui/circular-progress.ts`](../src/ui/circular-progress.ts)
 | `CircularProgressProps` | type | `CircularProgressProps = Readonly<{ value?: number; max?: number; label: string; isLabelHidden?: boolean; hasValueLabel?: boolean; formatValueLabel?: (value: number, max: number) => string; children?: ReadonlyArray<Html>; size?: CircularProgressSize; variant?:…` |
 | `circularProgress` | function | `circularProgress<Msg>(props: CircularProgressProps, h: HtmlBuilder<Msg>): Html` |
 
-## Clickable Card
-
-Source: [`src/ui/clickable-card.ts`](../src/ui/clickable-card.ts)
-
-| Export | Kind | Signature |
-| --- | --- | --- |
-| `CardElevation` | re-export | `export { CardElevation } from '@/lib/card-surface'` |
-| `CardPadding` | re-export | `export { CardPadding } from '@/lib/card-surface'` |
-| `CardVariant` | re-export | `export { CardVariant } from '@/lib/card-surface'` |
-| `Message` | re-export | `export { Message } from '@/lib/clickable-card'` |
-| `ClickableCardProps` | type | `ClickableCardProps<Msg> = Readonly<{ label: string; onClick?: Msg; href?: string; target?: string; isDisabled?: boolean; children?: ReadonlyArray<Html \| string>; padding?: CardPadding; variant?: CardVariant; elevation?: CardElevation; width?: string; height?:…` |
-| `clickableCard` | function | `clickableCard<Msg>(props: ClickableCardProps<Msg>, h: HtmlBuilder<Msg>): Html` |
-
 ## Code Block
 
 Source: [`src/ui/code-block.ts`](../src/ui/code-block.ts)
@@ -1489,7 +1476,7 @@ Source: [`src/ui/selectable-card.ts`](../src/ui/selectable-card.ts)
 | `CardElevation` | re-export | `export { CardElevation } from '@/lib/card-surface'` |
 | `CardPadding` | re-export | `export { CardPadding } from '@/lib/card-surface'` |
 | `CardVariant` | re-export | `export { CardVariant } from '@/lib/card-surface'` |
-| `Message` | re-export | `export { Message } from '@/lib/clickable-card'` |
+| `Message` | re-export | `export { Message } from '@/lib/card-pressable'` |
 | `SelectableCardProps` | type | `SelectableCardProps<Msg> = Readonly<{ label: string; isSelected: boolean; onChange?: Msg; isDisabled?: boolean; children?: ReadonlyArray<Html \| string>; padding?: CardPadding; variant?: CardVariant; elevation?: CardElevation; width?: string; height?: string; …` |
 | `selectableCard` | function | `selectableCard<Msg>(props: SelectableCardProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 

@@ -4,7 +4,7 @@
     "src/ui/registry.json",
     "src/ui/*.ts"
   ],
-  "componentCount": 117,
+  "componentCount": 116,
   "components": [
     {
       "slug": "accordion",
@@ -1584,55 +1584,6 @@
           "name": "circularProgress",
           "kind": "function",
           "signature": "circularProgress<Msg>(props: CircularProgressProps, h: HtmlBuilder<Msg>): Html"
-        }
-      ]
-    },
-    {
-      "slug": "clickable-card",
-      "title": "Clickable Card",
-      "description": "A CreaseUI Clickable Card component for Foldkit.",
-      "docs": "/docs/components/clickable-card",
-      "source": "src/ui/clickable-card.ts",
-      "install": "npx creaseui add clickable-card",
-      "dependencies": [
-        "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/utils"
-      ],
-      "examples": [
-        "ClickableCard",
-        "ClickableCard — Elevated",
-        "ClickableCardWithNestedButton"
-      ],
-      "api": [
-        {
-          "name": "CardElevation",
-          "kind": "re-export",
-          "signature": "export { CardElevation } from '@/lib/card-surface'"
-        },
-        {
-          "name": "CardPadding",
-          "kind": "re-export",
-          "signature": "export { CardPadding } from '@/lib/card-surface'"
-        },
-        {
-          "name": "CardVariant",
-          "kind": "re-export",
-          "signature": "export { CardVariant } from '@/lib/card-surface'"
-        },
-        {
-          "name": "Message",
-          "kind": "re-export",
-          "signature": "export { Message } from '@/lib/clickable-card'"
-        },
-        {
-          "name": "ClickableCardProps",
-          "kind": "type",
-          "signature": "ClickableCardProps<Msg> = Readonly<{ label: string; onClick?: Msg; href?: string; target?: string; isDisabled?: boolean; children?: ReadonlyArray<Html | string>; padding?: CardPadding; variant?: CardVariant; elevation?: CardElevation; width?: string; height?:…"
-        },
-        {
-          "name": "clickableCard",
-          "kind": "function",
-          "signature": "clickableCard<Msg>(props: ClickableCardProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
       ]
     },
@@ -6505,7 +6456,7 @@
         {
           "name": "Message",
           "kind": "re-export",
-          "signature": "export { Message } from '@/lib/clickable-card'"
+          "signature": "export { Message } from '@/lib/card-pressable'"
         },
         {
           "name": "SelectableCardProps",

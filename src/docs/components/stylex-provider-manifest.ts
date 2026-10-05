@@ -102,7 +102,6 @@ import { statusDotStyleXPreview } from '@/docs/components/pages/status-dot/style
 import { thumbnailStyleXPreview } from '@/docs/components/pages/thumbnail/stylex'
 import { toastStyleXPreview } from '@/docs/components/pages/toast/stylex'
 import { bannerStyleXPreview } from '@/docs/components/pages/banner/stylex'
-import { clickableCardStyleXPreview } from '@/docs/components/pages/clickable-card/stylex'
 import { fieldStatusStyleXPreview } from '@/docs/components/pages/field-status/stylex'
 import { infoTipStyleXPreview } from '@/docs/components/pages/info-tip/stylex'
 import { metadataListStyleXPreview } from '@/docs/components/pages/metadata-list/stylex'
@@ -227,10 +226,6 @@ installStyleXExamplePreviewProvider('banner', bannerStyleXPreview)
 installStyleXExamplePreviewProvider(
   'chat-reasoning',
   chatReasoningStyleXPreview,
-)
-installStyleXExamplePreviewProvider(
-  'clickable-card',
-  clickableCardStyleXPreview,
 )
 installStyleXExamplePreviewProvider('field-status', fieldStatusStyleXPreview)
 installStyleXExamplePreviewProvider('file-input', fileInputStyleXPreview)

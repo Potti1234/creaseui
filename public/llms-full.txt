@@ -35,7 +35,6 @@
 - Chat Reasoning: /docs/components/chat-reasoning — install with `npx creaseui add chat-reasoning`
 - Checkbox: /docs/components/checkbox — install with `npx creaseui add checkbox`
 - Circular Progress: /docs/components/circular-progress — install with `npx creaseui add circular-progress`
-- Clickable Card: /docs/components/clickable-card — install with `npx creaseui add clickable-card`
 - Code Block: /docs/components/code-block — install with `npx creaseui add code-block`
 - Code: /docs/components/code — install with `npx creaseui add code`
 - Collapsible: /docs/components/collapsible — install with `npx creaseui add collapsible`
@@ -534,21 +533,6 @@ Examples: Circular Progress, Circular Progress — Value Label, Circular Progres
 - `CircularProgressSize = 'sm' | 'md' | 'lg'` (type)
 - `CircularProgressProps = Readonly<{ value?: number; max?: number; label: string; isLabelHidden?: boolean; hasValueLabel?: boolean; formatValueLabel?: (value: number, max: number) => string; children?: ReadonlyArray<Html>; size?: CircularProgressSize; variant?:…` (type)
 - `circularProgress<Msg>(props: CircularProgressProps, h: HtmlBuilder<Msg>): Html` (function)
-
-### Clickable Card
-
-A CreaseUI Clickable Card component for Foldkit.
-
-Source: `src/ui/clickable-card.ts`
-
-Examples: ClickableCard, ClickableCard — Elevated, ClickableCardWithNestedButton
-
-- `export { CardElevation } from '@/lib/card-surface'` (re-export)
-- `export { CardPadding } from '@/lib/card-surface'` (re-export)
-- `export { CardVariant } from '@/lib/card-surface'` (re-export)
-- `export { Message } from '@/lib/clickable-card'` (re-export)
-- `ClickableCardProps<Msg> = Readonly<{ label: string; onClick?: Msg; href?: string; target?: string; isDisabled?: boolean; children?: ReadonlyArray<Html | string>; padding?: CardPadding; variant?: CardVariant; elevation?: CardElevation; width?: string; height?:…` (type)
-- `clickableCard<Msg>(props: ClickableCardProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Code Block
 
@@ -1786,7 +1770,7 @@ Examples: SelectableCard, SelectableCard — Elevated, SelectableCardMulti
 - `export { CardElevation } from '@/lib/card-surface'` (re-export)
 - `export { CardPadding } from '@/lib/card-surface'` (re-export)
 - `export { CardVariant } from '@/lib/card-surface'` (re-export)
-- `export { Message } from '@/lib/clickable-card'` (re-export)
+- `export { Message } from '@/lib/card-pressable'` (re-export)
 - `SelectableCardProps<Msg> = Readonly<{ label: string; isSelected: boolean; onChange?: Msg; isDisabled?: boolean; children?: ReadonlyArray<Html | string>; padding?: CardPadding; variant?: CardVariant; elevation?: CardElevation; width?: string; height?: string; …` (type)
 - `selectableCard<Msg>(props: SelectableCardProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 

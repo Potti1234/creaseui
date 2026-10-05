@@ -23,7 +23,7 @@
   ],
   "summary": {
     "upstreamItems": 62,
-    "registryItems": 117,
+    "registryItems": 116,
     "creaseOnlyRecipes": [
       "avatar-group",
       "banner",
@@ -31,7 +31,6 @@
       "center",
       "chat-reasoning",
       "circular-progress",
-      "clickable-card",
       "code",
       "code-block",
       "data-table",
@@ -478,24 +477,6 @@
         "src/ui/circular-progress.ts",
         "src/ui/registry.json#circular-progress",
         "/docs/components/circular-progress"
-      ]
-    },
-    {
-      "component": "clickable-card",
-      "upstream": false,
-      "classification": "full",
-      "dimensions": {
-        "visual": "unverified",
-        "behavior": "partial",
-        "accessibility": "partial",
-        "composition": "partial",
-        "documentation": "verified",
-        "registry": "verified"
-      },
-      "evidence": [
-        "src/ui/clickable-card.ts",
-        "src/ui/registry.json#clickable-card",
-        "/docs/components/clickable-card"
       ]
     },
     {

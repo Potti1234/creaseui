@@ -1065,38 +1065,6 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "circularProgress<Msg>(props: CircularProgressProps, h: HtmlBuilder<Msg>): Html"
     }
   ],
-  "clickable-card": [
-    {
-      "name": "CardElevation",
-      "kind": "re-export",
-      "signature": "export { CardElevation } from '@/lib/card-surface'"
-    },
-    {
-      "name": "CardPadding",
-      "kind": "re-export",
-      "signature": "export { CardPadding } from '@/lib/card-surface'"
-    },
-    {
-      "name": "CardVariant",
-      "kind": "re-export",
-      "signature": "export { CardVariant } from '@/lib/card-surface'"
-    },
-    {
-      "name": "Message",
-      "kind": "re-export",
-      "signature": "export { Message } from '@/lib/clickable-card'"
-    },
-    {
-      "name": "ClickableCardProps",
-      "kind": "type",
-      "signature": "ClickableCardProps<Msg> = Readonly<{ label: string; onClick?: Msg; href?: string; target?: string; isDisabled?: boolean; children?: ReadonlyArray<Html | string>; padding?: CardPadding; variant?: CardVariant; elevation?: CardElevation; width?: string; height?:…"
-    },
-    {
-      "name": "clickableCard",
-      "kind": "function",
-      "signature": "clickableCard<Msg>(props: ClickableCardProps<Msg>, h: HtmlBuilder<Msg>): Html"
-    }
-  ],
   "code-block": [
     {
       "name": "init",
@@ -4704,7 +4672,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "Message",
       "kind": "re-export",
-      "signature": "export { Message } from '@/lib/clickable-card'"
+      "signature": "export { Message } from '@/lib/card-pressable'"
     },
     {
       "name": "SelectableCardProps",

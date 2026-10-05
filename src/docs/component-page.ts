@@ -35,7 +35,6 @@ export const COMPONENTS = [
   'Checkbox',
   'Center',
   'Circular Progress',
-  'Clickable Card',
   'Code',
   'Code Block',
   'Collapsible',

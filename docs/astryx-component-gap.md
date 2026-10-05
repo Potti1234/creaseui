@@ -126,7 +126,6 @@ Batches are work units; slugs are the Crease UI names.
 | Slug              | Astryx source                       | Notes                                   |
 | ----------------- | ----------------------------------- | --------------------------------------- |
 | `banner`          | `Banner`                            | Page-level dismissible notice.          |
-| `clickable-card`  | `ClickableCard`                     | Whole-card link/button.                 |
 | `selectable-card` | `SelectableCard`                    | Card with selection affordance.         |
 | `metadata-list`   | `MetadataList` + `MetadataListItem` | Term/description grid.                  |
 | `more-menu`       | `MoreMenu`                          | “…” overflow menu trigger.              |

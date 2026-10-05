@@ -26,7 +26,6 @@ export * as Chart from './chart.js'
 export * as ChatReasoning from './chat-reasoning.js'
 export * as Checkbox from './checkbox.js'
 export * as CircularProgress from './circular-progress.js'
-export * as ClickableCard from './clickable-card.js'
 export * as CodeBlock from './code-block.js'
 export * as Code from './code.js'
 export * as Collapsible from './collapsible.js'
@@ -146,7 +145,6 @@ export const STYLEX_COMPONENT_NAMES = [
   'chat-reasoning',
   'checkbox',
   'circular-progress',
-  'clickable-card',
   'code-block',
   'code',
   'collapsible',

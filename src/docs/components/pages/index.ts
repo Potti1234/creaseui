@@ -21,7 +21,6 @@ import { centerPage } from '@/docs/components/pages/center'
 import { chatReasoningPage } from '@/docs/components/pages/chat-reasoning'
 import { checkboxPage } from '@/docs/components/pages/checkbox'
 import { circularProgressPage } from '@/docs/components/pages/circular-progress'
-import { clickableCardPage } from '@/docs/components/pages/clickable-card'
 import { codePage } from '@/docs/components/pages/code'
 import { codeBlockPage } from '@/docs/components/pages/code-block'
 import { collapsiblePage } from '@/docs/components/pages/collapsible'
@@ -142,7 +141,6 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       chatReasoningPage,
       checkboxPage,
       circularProgressPage,
-      clickableCardPage,
       codePage,
       codeBlockPage,
       collapsiblePage,

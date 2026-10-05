@@ -37,7 +37,6 @@
 - Chat Reasoning: /docs/components/chat-reasoning — install with `npx creaseui add chat-reasoning`
 - Checkbox: /docs/components/checkbox — install with `npx creaseui add checkbox`
 - Circular Progress: /docs/components/circular-progress — install with `npx creaseui add circular-progress`
-- Clickable Card: /docs/components/clickable-card — install with `npx creaseui add clickable-card`
 - Code Block: /docs/components/code-block — install with `npx creaseui add code-block`
 - Code: /docs/components/code — install with `npx creaseui add code`
 - Collapsible: /docs/components/collapsible — install with `npx creaseui add collapsible`
