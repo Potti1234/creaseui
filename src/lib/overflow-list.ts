@@ -362,14 +362,14 @@ const calculate = (
     maxRows?: number
     collapseFrom: CollapseFrom
     observeParent: boolean
+    observed: HTMLElement
   }>,
 ): Readonly<{ visibleCount: number; rows: number; rowHeight: number }> => {
   let availableWidth: number
-  if (config.observeParent && container.parentElement !== null) {
-    const parent = container.parentElement
-    const parentStyle = getComputedStyle(parent)
+  if (config.observeParent) {
+    const parentStyle = getComputedStyle(config.observed)
     availableWidth =
-      parent.clientWidth -
+      config.observed.clientWidth -
       Number.parseFloat(parentStyle.paddingLeft) -
       Number.parseFloat(parentStyle.paddingRight)
   } else {
@@ -436,12 +436,21 @@ export const ObserveOverflow = Mount.defineStream('ObserveOverflow', {
         if (measure === null || container === null) {
           return yield* Effect.never
         }
+        /* observeParent watches the element the list sits inside — the
+           mount element's parent, not the visible row's own parent (the
+           mount element is `display:contents`, i.e. boxless: RO never
+           fires on it and its clientWidth is 0). */
+        const observed =
+          behavior === 'observeParent' && element.parentElement !== null
+            ? element.parentElement
+            : container
         const config = {
           itemCount,
           gap,
           minVisibleItems,
           collapseFrom,
           observeParent: behavior === 'observeParent',
+          observed,
           ...(maxVisibleItems === undefined ? {} : { maxVisibleItems }),
           ...(maxRows === undefined ? {} : { maxRows }),
         }
@@ -460,11 +469,7 @@ export const ObserveOverflow = Mount.defineStream('ObserveOverflow', {
           Effect.sync(() => {
             const observer = new ResizeObserver(run)
             observer.observe(measure)
-            observer.observe(
-              config.observeParent && container.parentElement !== null
-                ? container.parentElement
-                : container,
-            )
+            observer.observe(observed)
             run()
             return observer
           }),

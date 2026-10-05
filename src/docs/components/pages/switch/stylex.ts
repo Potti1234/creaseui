@@ -56,8 +56,14 @@ const descriptionField = <Msg>(
   h: HtmlBuilder<Msg>,
   direction: 'ltr' | 'rtl' | undefined,
   isInvalid: boolean,
-): Html =>
-  Field.field(
+): Html => {
+  const switchId =
+    direction === 'rtl'
+      ? 'switch-focus-mode-rtl'
+      : isInvalid
+        ? 'switch-terms'
+        : 'switch-focus-mode'
+  return Field.field(
     {
       orientation: 'horizontal',
       ...(direction === undefined ? {} : { direction }),
@@ -69,10 +75,8 @@ const descriptionField = <Msg>(
             children: [
               Field.fieldLabel(
                 {
-                  for:
-                    direction === 'rtl'
-                      ? 'switch-focus-mode-rtl'
-                      : 'switch-focus-mode',
+                  id: `${switchId}-label`,
+                  for: `${switchId}-control`,
                   children:
                     direction === 'rtl'
                       ? ['المشاركة عبر الأجهزة']
@@ -103,24 +107,15 @@ const descriptionField = <Msg>(
           },
           h,
         ),
-        sw(
-          direction === 'rtl'
-            ? 'switch-focus-mode-rtl'
-            : isInvalid
-              ? 'switch-terms'
-              : 'switch-focus-mode',
-          shape,
-          onMessageJson,
-          h,
-          {
-            ...(direction === undefined ? {} : { direction }),
-            ...(isInvalid ? { isInvalid: true } : {}),
-          },
-        ),
+        sw(switchId, shape, onMessageJson, h, {
+          ...(direction === undefined ? {} : { direction }),
+          ...(isInvalid ? { isInvalid: true } : {}),
+        }),
       ],
     },
     h,
   )
+}
 
 const choiceCard = <Msg>(
   id: string,
@@ -132,7 +127,8 @@ const choiceCard = <Msg>(
 ): Html =>
   Field.fieldLabel(
     {
-      for: id,
+      id: `${id}-label`,
+      for: `${id}-control`,
       children: [
         Field.field(
           {
@@ -171,7 +167,14 @@ export const switchStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         [h.Class(className(styles.row))],
         [
           sw('airplane-mode', shape, onMessageJson, h),
-          Label.label({ for: 'airplane-mode', children: ['Airplane Mode'] }, h),
+          Label.label(
+            {
+              id: 'airplane-mode-label',
+              for: 'airplane-mode-control',
+              children: ['Airplane Mode'],
+            },
+            h,
+          ),
         ],
       )
     case 'description':
@@ -212,7 +215,11 @@ export const switchStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
               isDisabled: true,
             }),
             Field.fieldLabel(
-              { for: 'switch-disabled-unchecked', children: ['Disabled'] },
+              {
+                id: 'switch-disabled-unchecked-label',
+                for: 'switch-disabled-unchecked-control',
+                children: ['Disabled'],
+              },
               h,
             ),
           ],
@@ -232,7 +239,11 @@ export const switchStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                 children: [
                   sw('switch-size-sm', shape, onMessageJson, h, { size: 'sm' }),
                   Field.fieldLabel(
-                    { for: 'switch-size-sm', children: ['Small'] },
+                    {
+                      id: 'switch-size-sm-label',
+                      for: 'switch-size-sm-control',
+                      children: ['Small'],
+                    },
                     h,
                   ),
                 ],
@@ -247,7 +258,11 @@ export const switchStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                     size: 'default',
                   }),
                   Field.fieldLabel(
-                    { for: 'switch-size-default', children: ['Default'] },
+                    {
+                      id: 'switch-size-default-label',
+                      for: 'switch-size-default-control',
+                      children: ['Default'],
+                    },
                     h,
                   ),
                 ],

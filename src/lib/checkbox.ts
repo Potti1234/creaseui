@@ -52,6 +52,7 @@ export const renderCheckbox = <Msg>(
                     props.description !== undefined ||
                     attribute._tag !== 'AriaDescribedBy',
                 ),
+                h.Id(props.id),
                 h.Type('button'),
                 h.DataAttribute('slot', 'checkbox'),
                 h.AriaInvalid(props.isInvalid ?? false),

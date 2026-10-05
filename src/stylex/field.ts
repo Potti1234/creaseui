@@ -445,7 +445,7 @@ export const fieldContent = <Msg>(p: Slot, h: HtmlBuilder<Msg>): Html =>
     [...p.children],
   )
 export type FieldLabelProps = Slot &
-  Readonly<{ for?: string; weight?: 'normal' | 'medium' }>
+  Readonly<{ for?: string; id?: string; weight?: 'normal' | 'medium' }>
 export const fieldLabel = <Msg>(
   p: FieldLabelProps,
   h: HtmlBuilder<Msg>,
@@ -453,6 +453,7 @@ export const fieldLabel = <Msg>(
   h.label(
     [
       h.DataAttribute('slot', 'field-label'),
+      ...(p.id === undefined ? [] : [h.Id(p.id)]),
       ...(p.for === undefined ? [] : [h.For(p.for)]),
       h.Class(
         className(

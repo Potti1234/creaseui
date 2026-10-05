@@ -804,7 +804,7 @@ Source: [`src/ui/field.ts`](../src/ui/field.ts)
 | `FieldProps` | type | `FieldProps = Slot & Readonly<{ orientation?: FieldVariants['orientation']; isInvalid?: boolean; isDisabled?: boolean; direction?: 'ltr' \| 'rtl'; }>` |
 | `field` | function | `field<Msg>(props: FieldProps, h: HtmlBuilder<Msg>): Html` |
 | `fieldContent` | function | `fieldContent<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` |
-| `FieldLabelProps` | type | `FieldLabelProps = Slot & Readonly<{ for?: string; }>` |
+| `FieldLabelProps` | type | `FieldLabelProps = Slot & Readonly<{ for?: string; id?: string; }>` |
 | `fieldLabel` | function | `fieldLabel<Msg>(props: FieldLabelProps, h: HtmlBuilder<Msg>): Html` |
 | `fieldTitle` | function | `fieldTitle<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` |
 | `fieldDescription` | function | `fieldDescription<Msg>(props: Slot & Readonly<{ id?: string; }>, h: HtmlBuilder<Msg>): Html` |
@@ -1026,7 +1026,7 @@ Source: [`src/ui/label.ts`](../src/ui/label.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `LabelProps` | type | `LabelProps = Readonly<{ for?: string; isRequired?: boolean; isDisabled?: boolean; class?: string; children: ReadonlyArray<Html \| string>; }>` |
+| `LabelProps` | type | `LabelProps = Readonly<{ for?: string; id?: string; isRequired?: boolean; isDisabled?: boolean; class?: string; children: ReadonlyArray<Html \| string>; }>` |
 | `label` | function | `label<Msg>(props: LabelProps, h: HtmlBuilder<Msg>): Html` |
 
 ## Lightbox

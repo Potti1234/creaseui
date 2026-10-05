@@ -1026,7 +1026,7 @@ Examples: Payment Method, Input, Textarea, Select, Slider, Fieldset, Checkbox, R
 - `FieldProps = Slot & Readonly<{ orientation?: FieldVariants['orientation']; isInvalid?: boolean; isDisabled?: boolean; direction?: 'ltr' | 'rtl'; }>` (type)
 - `field<Msg>(props: FieldProps, h: HtmlBuilder<Msg>): Html` (function)
 - `fieldContent<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
-- `FieldLabelProps = Slot & Readonly<{ for?: string; }>` (type)
+- `FieldLabelProps = Slot & Readonly<{ for?: string; id?: string; }>` (type)
 - `fieldLabel<Msg>(props: FieldLabelProps, h: HtmlBuilder<Msg>): Html` (function)
 - `fieldTitle<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
 - `fieldDescription<Msg>(props: Slot & Readonly<{ id?: string; }>, h: HtmlBuilder<Msg>): Html` (function)
@@ -1274,7 +1274,7 @@ Source: `src/ui/label.ts`
 
 Examples: Basic, Label in Field, RTL
 
-- `LabelProps = Readonly<{ for?: string; isRequired?: boolean; isDisabled?: boolean; class?: string; children: ReadonlyArray<Html | string>; }>` (type)
+- `LabelProps = Readonly<{ for?: string; id?: string; isRequired?: boolean; isDisabled?: boolean; class?: string; children: ReadonlyArray<Html | string>; }>` (type)
 - `label<Msg>(props: LabelProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Lightbox

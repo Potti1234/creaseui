@@ -43,8 +43,14 @@ const descriptionField = (
   h: HtmlBuilder<PreviewMessage>,
   direction: 'ltr' | 'rtl' | undefined,
   isInvalid: boolean,
-): Html =>
-  Field.field(
+): Html => {
+  const switchId =
+    direction === 'rtl'
+      ? 'switch-focus-mode-rtl'
+      : isInvalid
+        ? 'switch-terms'
+        : 'switch-focus-mode'
+  return Field.field(
     {
       orientation: 'horizontal',
       ...(direction === undefined ? {} : { direction }),
@@ -56,10 +62,8 @@ const descriptionField = (
             children: [
               Field.fieldLabel(
                 {
-                  for:
-                    direction === 'rtl'
-                      ? 'switch-focus-mode-rtl'
-                      : 'switch-focus-mode',
+                  id: `${switchId}-label`,
+                  for: `${switchId}-control`,
                   children:
                     direction === 'rtl'
                       ? ['المشاركة عبر الأجهزة']
@@ -90,23 +94,15 @@ const descriptionField = (
           },
           h,
         ),
-        sw(
-          direction === 'rtl'
-            ? 'switch-focus-mode-rtl'
-            : isInvalid
-              ? 'switch-terms'
-              : 'switch-focus-mode',
-          model,
-          h,
-          {
-            ...(direction === undefined ? {} : { direction }),
-            ...(isInvalid ? { isInvalid: true } : {}),
-          },
-        ),
+        sw(switchId, model, h, {
+          ...(direction === undefined ? {} : { direction }),
+          ...(isInvalid ? { isInvalid: true } : {}),
+        }),
       ],
     },
     h,
   )
+}
 
 const choiceCard = (
   id: string,
@@ -117,7 +113,8 @@ const choiceCard = (
 ): Html =>
   Field.fieldLabel(
     {
-      for: id,
+      id: `${id}-label`,
+      for: `${id}-control`,
       children: [
         Field.field(
           {
@@ -177,7 +174,11 @@ export const switchTailwindPreviewProgram = definePreviewProgram<
           [
             sw('airplane-mode', model, h),
             Label.label(
-              { for: 'airplane-mode', children: ['Airplane Mode'] },
+              {
+                id: 'airplane-mode-label',
+                for: 'airplane-mode-control',
+                children: ['Airplane Mode'],
+              },
               h,
             ),
           ],
@@ -216,7 +217,11 @@ export const switchTailwindPreviewProgram = definePreviewProgram<
             children: [
               sw('switch-disabled-unchecked', model, h, { isDisabled: true }),
               Field.fieldLabel(
-                { for: 'switch-disabled-unchecked', children: ['Disabled'] },
+                {
+                  id: 'switch-disabled-unchecked-label',
+                  for: 'switch-disabled-unchecked-control',
+                  children: ['Disabled'],
+                },
                 h,
               ),
             ],
@@ -236,7 +241,11 @@ export const switchTailwindPreviewProgram = definePreviewProgram<
                   children: [
                     sw('switch-size-sm', model, h, { size: 'sm' }),
                     Field.fieldLabel(
-                      { for: 'switch-size-sm', children: ['Small'] },
+                      {
+                        id: 'switch-size-sm-label',
+                        for: 'switch-size-sm-control',
+                        children: ['Small'],
+                      },
                       h,
                     ),
                   ],
@@ -249,7 +258,11 @@ export const switchTailwindPreviewProgram = definePreviewProgram<
                   children: [
                     sw('switch-size-default', model, h, { size: 'default' }),
                     Field.fieldLabel(
-                      { for: 'switch-size-default', children: ['Default'] },
+                      {
+                        id: 'switch-size-default-label',
+                        for: 'switch-size-default-control',
+                        children: ['Default'],
+                      },
                       h,
                     ),
                   ],

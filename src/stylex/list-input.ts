@@ -781,7 +781,7 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
             {
               children: [`Add ${itemName}`],
               onClick: Message.AddRequested({
-                createItem: props.createItem,
+                item: props.createItem(),
                 itemName,
                 position: total + 1,
               }),

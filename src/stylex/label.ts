@@ -17,6 +17,7 @@ const styles = stylex.create({
 })
 export type LabelProps = Readonly<{
   for?: string
+  id?: string
   isRequired?: boolean
   isDisabled?: boolean
   children: ReadonlyArray<Html | string>
@@ -28,6 +29,7 @@ export const label = <Msg>(props: LabelProps, h: HtmlBuilder<Msg>): Html =>
       h.DataAttribute('slot', 'label'),
       h.DataAttribute('required', String(props.isRequired ?? false)),
       h.DataAttribute('disabled', String(props.isDisabled ?? false)),
+      ...(props.id === undefined ? [] : [h.Id(props.id)]),
       ...(props.for === undefined ? [] : [h.For(props.for)]),
       ...((props.isDisabled ?? false) ? [h.AriaDisabled(true)] : []),
       h.Class(

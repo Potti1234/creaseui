@@ -134,3 +134,38 @@ Toasts die before the click→console round-trip completes. Arm a MutationObserv
 - Tailwind `buttonVariants`: `group/button` base + `border-border bg-background shadow-xs` (outline), `size-6` (icon-xs), `text-primary underline-offset-4 hover:underline` (link), `h-8` (sm)
 - Tailwind `separator()`: `data-slot="separator"`, `data-orientation`, `aria-orientation`, `shrink-0 bg-border`
 - StyleX equivalents: atomic classes literally named `input__styles.input`, `button__base.root`, `separator__styles.base` + component-scoped overrides like `transfer-list__styles.searchInput`
+
+## Stress-test signatures learned across the 120-component docs pass
+
+- **Tiny icon triggers (~24px)** — '...' menus, stepper chevrons, chip × buttons have
+  ~24px hit-boxes; a click >8px off-center silently misses and looks like a dead trigger.
+  Resolve the element's bounding box and click dead-center before reporting dead.
+- **Option leak signature** — rendered `some(N)` or `NaN` means a raw `Option` reached a
+  number/string prop: grep the provider for `as number | null` vs `Option.getOrNull`.
+  The stylex preview providers duplicate `entryProps` — check BOTH paths, not just one.
+- **Frozen resizable demos (display:contents + ResizeObserver)** — a `display:contents`
+  element has no box: RO never fires on it and `clientWidth` is 0, so a "parent width"
+  observer bound to it freezes the demo at mount. Verify the observer target is the
+  first ancestor with a real box.
+- **foldkit render latency ~1–2s** — after dispatching an action, wait before asserting
+  new state; reading `aria-current`/`aria-expanded` immediately races the re-render and
+  produces false 'dead' reports. Keyboard Enter is the most reliable activation check.
+- **`left_click_drag` is too fast for pointer-capture drags** — resizable handles and
+  scrollbar thumbs need stepwise `mouse_move → left_mouse_down → moves… → left_mouse_up`.
+- **Un-committed draft values mislead** — time-input shows raw `1430` while editing and
+  formats `2:30 PM` on blur. Blur/commit before asserting the displayed value.
+- **Label association check** — verify BOTH directions: label `for` resolves to the
+  control's element `id` AND the control's `aria-labelledby` points back at the label's
+  `id`. A fallback `aria-label` can mask a dangling visible label. `button[role=switch]`
+  and listbox triggers are labelable — `for`→id clicks genuinely activate them.
+- **`items:[]` empty source = no suggestions by design** — a combobox that never opens
+  may simply have an empty option list (grep `shared.ts` for `items:` first). Real
+  dead-typeahead = items populated AND `aria-expanded` stays false AND `aria-controls`
+  unset AND zero `[role=listbox]`/`[role=option]` after typing + ArrowDown + focus.
+  Also: a filtered-to-zero query hides the panel (`isItemsPanelVisible` needs non-empty
+  items) — check the option texts actually match the query before reporting dead.
+- **hover:none env — JS pointer components still work** — real OS `mouse_move` fires
+  `pointerenter`/`pointerover` that foldkit's JS listeners honor (tooltip, hover-card,
+  top-nav menus). Assert `[data-slot=hover-card]`/`[role=tooltip]` materializes in DOM;
+  synthesize `pointerover` on the `*-trigger` WRAPPER only as a fallback (pointerenter
+  doesn't bubble).
