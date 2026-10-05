@@ -1227,6 +1227,7 @@
       "title": "Multi Selector",
       "description": "A CreaseUI Multi Selector component for Foldkit.",
       "registryDependencies": [
+        "Potti1234/creaseui/checkbox",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils"
@@ -1344,24 +1345,6 @@
           "path": "popover.ts",
           "type": "registry:ui",
           "target": "@ui/popover.ts"
-        }
-      ]
-    },
-    {
-      "name": "power-search",
-      "type": "registry:ui",
-      "title": "Power Search",
-      "description": "A CreaseUI Power Search component for Foldkit.",
-      "registryDependencies": [
-        "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/icons",
-        "Potti1234/creaseui/utils"
-      ],
-      "files": [
-        {
-          "path": "power-search.ts",
-          "type": "registry:ui",
-          "target": "@ui/power-search.ts"
         }
       ]
     },

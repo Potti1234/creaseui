@@ -91,7 +91,6 @@ describe('multidimensional component parity', () => {
       'multi-selector',
       'number-input',
       'overflow-list',
-      'power-search',
       'section',
       'segmented-control',
       'selectable-card',

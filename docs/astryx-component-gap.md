@@ -8,7 +8,7 @@ Crease UI already covers the shadcn/ui catalog (65 components). Astryx shares a
 large middle layer with shadcn (buttons, dialogs, popovers, tables, ...) but adds
 a second generation of components that shadcn does not ship: layout primitives,
 status indicators, token inputs, segmented date/time inputs, navigation chrome,
-and agent-era displays (ChatReasoning, LogStream, PowerSearch).
+and agent-era displays (ChatReasoning, LogStream).
 
 ## Coverage status
 
@@ -119,7 +119,7 @@ Batches are work units; slugs are the Crease UI names.
 | `circular-progress` | `CircularProgress` (lab)                                 | Ring progress, determinate + indeterminate.                   |
 | `thumbnail`         | `Thumbnail`                                              | Media frame w/ fallback.                                      |
 | `avatar-group`      | `AvatarGroup` + `AvatarGroupOverflow`, `AvatarStatusDot` | Grouped avatars w/ overflow + status dot.                     |
-| `token`             | `Token`                                                  | Pill/chip used by Tokenizer/PowerSearch.                      |
+| `token`             | `Token`                                                  | Pill/chip used by Tokenizer.                                  |
 
 **Cards, banners & metadata**
 
@@ -174,11 +174,10 @@ Batches are work units; slugs are the Crease UI names.
 
 **Composite & agent-era**
 
-| Slug             | Astryx source         | Notes                                   |
-| ---------------- | --------------------- | --------------------------------------- |
-| `power-search`   | `PowerSearch`         | Faceted filter search w/ token editors. |
-| `transfer-list`  | `TransferList` (lab)  | Dual-list move control.                 |
-| `log-stream`     | `LogStream` (lab)     | Scrolling log display w/ levels.        |
-| `timestamp`      | `Timestamp`           | Absolute/relative time display.         |
-| `timer`          | `Timer`               | Live elapsed/countdown.                 |
-| `chat-reasoning` | `ChatReasoning` (lab) | Collapsible reasoning trace block.      |
+| Slug             | Astryx source         | Notes                              |
+| ---------------- | --------------------- | ---------------------------------- |
+| `transfer-list`  | `TransferList` (lab)  | Dual-list move control.            |
+| `log-stream`     | `LogStream` (lab)     | Scrolling log display w/ levels.   |
+| `timestamp`      | `Timestamp`           | Absolute/relative time display.    |
+| `timer`          | `Timer`               | Live elapsed/countdown.            |
+| `chat-reasoning` | `ChatReasoning` (lab) | Collapsible reasoning trace block. |

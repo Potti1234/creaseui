@@ -346,7 +346,7 @@ Source: [`src/ui/checkbox.ts`](../src/ui/checkbox.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `CheckboxProps` | type | `CheckboxProps<Msg> = CheckboxBehaviorProps<Msg> & Readonly<{ class?: string; }>` |
+| `CheckboxProps` | type | `CheckboxProps<Msg> = CheckboxBehaviorProps<Msg> & Readonly<{ class?: string; tabindex?: number; }>` |
 | `checkbox` | function | `checkbox<Msg>(props: CheckboxProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Circular Progress
@@ -1318,46 +1318,6 @@ Source: [`src/ui/popover.ts`](../src/ui/popover.ts)
 | `PopoverProps` | type | `PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; triggerClass?: string; content: Html \| string; align?: PopoverAlign; side?: PopoverSide; class?: string; direction?: 'ltr' \| 'rtl'; focusSelector?…` |
 | `popover` | function | `popover<Msg>(props: PopoverProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
-## Power Search
-
-Source: [`src/ui/power-search.ts`](../src/ui/power-search.ts)
-
-| Export | Kind | Signature |
-| --- | --- | --- |
-| `EnumItem` | type | `EnumItem = Readonly<{ value: string; label: string; }>` |
-| `PowerSearchEntity` | type | `PowerSearchEntity = Readonly<{ id: string; label: string; photo?: string; }>` |
-| `SearchableItem` | type | `SearchableItem = Readonly<{ id: string; label: string; photo?: string; auxiliaryData?: unknown; }>` |
-| `SearchSource` | type | `SearchSource = Readonly<{ search: (query: string) => ReadonlyArray<SearchableItem>; bootstrap?: () => ReadonlyArray<SearchableItem>; }>` |
-| `DateTimeRangePart` | type | `DateTimeRangePart = Readonly<{ type: 'NOW'; }> \| Readonly<{ type: 'ABSOLUTE'; unixSeconds: number; }> \| Readonly<{ type: 'RELATIVE'; backValue: number; unit: 'second' \| 'minute' \| 'hour' \| 'day' \| 'week' \| 'month' \| 'year'; }>` |
-| `DateTimeRange` | type | `DateTimeRange = Readonly<{ start: DateTimeRangePart; end: DateTimeRangePart; }>` |
-| `OperatorValue` | type | `OperatorValue = Readonly<{ type: 'empty'; }> \| Readonly<{ type: 'string'; searchSource?: SearchSource; }> \| Readonly<{ type: 'string_list'; searchSource?: SearchSource; }> \| Readonly<{ type: 'integer'; }> \| Readonly<{ type: 'float'; }> \| Readonly<{ type: 'tim…` |
-| `RelativeDateFilterPreset` | type | `RelativeDateFilterPreset = Readonly<{ key: string; label: string; range: DateTimeRange; }>` |
-| `PowerSearchOperator` | type | `PowerSearchOperator = Readonly<{ key: string; value: OperatorValue; }> & (Readonly<{ label: string; }> \| Readonly<{ i18nKey: string; }>)` |
-| `PowerSearchField` | type | `PowerSearchField = Readonly<{ key: string; label: string; operators: ReadonlyArray<PowerSearchOperator>; icon?: string; defaultOperator?: string; group?: string; description?: string; typeaheadAliases?: ReadonlyArray<string>; typeaheadMinQueryLength?: number;…` |
-| `FilterValue` | type | `FilterValue = Readonly<{ type: 'empty'; }> \| Readonly<{ type: 'string'; value: string; }> \| Readonly<{ type: 'string_list'; value: ReadonlyArray<string>; }> \| Readonly<{ type: 'integer'; value: number; }> \| Readonly<{ type: 'float'; value: number; }> \| Readon…` |
-| `PowerSearchFilter` | type | `PowerSearchFilter = Readonly<{ field: string; operator: string; value: FilterValue; isReadOnly?: boolean; }>` |
-| `PartialFilter` | type | `PartialFilter = Readonly<{ field: string; operator?: string; value?: FilterValue; }>` |
-| `PowerSearchConfig` | type | `PowerSearchConfig = Readonly<{ name: string; fields: ReadonlyArray<PowerSearchField>; contentSearchFieldKey?: string; }>` |
-| `PowerSearchChangeType` | type | `PowerSearchChangeType = 'add' \| 'edit' \| 'remove'` |
-| `resolveOperatorLabel` | function | `resolveOperatorLabel(operator: PowerSearchOperator): string` |
-| `InternalPowerSearchConfig` | type | `InternalPowerSearchConfig = Readonly<{ name: string; fields: ReadonlyArray<PowerSearchField>; contentSearchFieldKey?: string; fieldsByKey: ReadonlyMap<string, PowerSearchField>; nonContentSearchFields: ReadonlyArray<PowerSearchField>; contentSearchField?: Pow…` |
-| `createInternalConfig` | function | `createInternalConfig(config: PowerSearchConfig): InternalPowerSearchConfig` |
-| `resolveDateTimeRangePart` | function | `resolveDateTimeRangePart(part: DateTimeRangePart, nowSeconds: number = Date.now() / 1000): number` |
-| `formatFilterValue` | function | `formatFilterValue(config: InternalPowerSearchConfig, operatorValue: OperatorValue, filterValue: FilterValue \| undefined, maxLength: number): string` |
-| `PowerSearchSuggestion` | type | `PowerSearchSuggestion = Readonly<{ kind: 'group'; label: string; }> \| Readonly<{ kind: 'field'; field: PowerSearchField; }> \| Readonly<{ kind: 'operator'; field: PowerSearchField; operator: PowerSearchOperator; label: string; }> \| Readonly<{ kind: 'value'; fi…` |
-| `FieldDefinition` | type | `FieldDefinition = Readonly<{ key: string; type: FieldDefinitionType; label?: string; enumValues?: ReadonlyArray<EnumItem>; }>` |
-| `createPowerSearchConfig` | function | `createPowerSearchConfig(definitions: ReadonlyArray<FieldDefinition>, configName?: string): { config: PowerSearchConfig; applyFilters: <Row extends Record<string, unknown>>(filters: ReadonlyArray<PowerSearchFilter>, data: ReadonlyArray<Row>) => Row[]; }` |
-| `Model` | value | `Model: value` |
-| `Model` | type | `Model = typeof Model.Type` |
-| `init` | function | `init(config: { id: string; }): Model` |
-| `Message` | value | `Message: value` |
-| `Message` | type | `Message = typeof Message.Type` |
-| `OutMessage` | value | `OutMessage: value` |
-| `OutMessage` | type | `OutMessage = typeof OutMessage.Type` |
-| `update` | function | `update(model: Model, message: Message, config: InternalPowerSearchConfig, filters: ReadonlyArray<PowerSearchFilter>, resultCount: number \| null = null): UpdateReturn` |
-| `PowerSearchProps` | type | `PowerSearchProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; filters: ReadonlyArray<PowerSearchFilter>; config: InternalPowerSearchConfig; placeholder?: string; valueMaxLength?: number; resultCount?: number; hasClear?: boolean;…` |
-| `powerSearch` | function | `powerSearch<Msg>(props: PowerSearchProps<Msg>, h: HtmlBuilder<Msg>): Html` |
-
 ## Progress
 
 Source: [`src/ui/progress.ts`](../src/ui/progress.ts)
@@ -1642,11 +1602,21 @@ Source: [`src/ui/slider.ts`](../src/ui/slider.ts)
 | `subscriptions` | value | `subscriptions: value` |
 | `subscriptionsForRoot` | value | `subscriptionsForRoot: value` |
 | `fractionOfValue` | value | `fractionOfValue: value` |
+| `initMulti` | re-export | `export { initMulti } from ` |
+| `MultiMessage` | re-export | `export { MultiMessage } from ` |
+| `MultiModel` | re-export | `export { MultiModel } from ` |
+| `MultiOutMessage` | re-export | `export { MultiOutMessage } from ` |
+| `multiThumbSubscriptions` | re-export | `export { multiThumbSubscriptions } from ` |
+| `normalizeMultiValues` | re-export | `export { normalizeMultiValues } from ` |
+| `reflectMultiRange` | re-export | `export { reflectMultiRange } from ` |
+| `toThumbValue` | re-export | `export { toThumbValue } from ` |
+| `updateMulti` | re-export | `export { updateMulti } from ` |
+| `updateMultiValue` | re-export | `export { updateMultiValue } from ` |
 | `SliderProps` | type | `SliderProps<Msg> = Readonly<{ model: Model; value: number; toParentMessage: (message: Message) => Msg; label?: string; ariaLabel?: string; formatValue?: (value: number) => string; isDisabled?: boolean; isReadOnly?: boolean; name?: string; class?: string; }>` |
-| `RangeSliderProps` | type | `RangeSliderProps<Msg> = Readonly<{ values: readonly [ number, number ]; min: number; max: number; step?: number; onInput: (values: readonly [ number, number ]) => Msg; orientation?: 'horizontal' \| 'vertical'; direction?: 'ltr' \| 'rtl'; ariaLabels?: readonly […` |
+| `MultiSliderProps` | type | `MultiSliderProps<Msg> = Readonly<{ model: MultiModel; values: readonly number[]; toParentMessage: (message: MultiMessage) => Msg; orientation?: 'horizontal' \| 'vertical'; direction?: 'ltr' \| 'rtl'; ariaLabels?: readonly string[]; formatValue?: (value: number,…` |
+| `RangeSliderProps` | type | `RangeSliderProps<Msg> = Readonly<Omit<MultiSliderProps<Msg>, 'values'> & { values: readonly [ number, number ]; }>` |
 | `rangeSlider` | function | `rangeSlider<Msg>(props: RangeSliderProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `slider` | function | `slider<Msg>(props: SliderProps<Msg>, h: HtmlBuilder<Msg>): Html` |
-| `MultiSliderProps` | type | `MultiSliderProps<Msg> = Readonly<{ values: readonly number[]; min: number; max: number; step?: number; onInput: (values: readonly number[]) => Msg; orientation?: 'horizontal' \| 'vertical'; direction?: 'ltr' \| 'rtl'; ariaLabels?: readonly string[]; isDisabled?…` |
 | `multiSlider` | function | `multiSlider<Msg>(props: MultiSliderProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Sonner

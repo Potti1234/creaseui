@@ -86,7 +86,6 @@
 - Overflow List: /docs/components/overflow-list — install with `npx creaseui add overflow-list`
 - Pagination: /docs/components/pagination — install with `npx creaseui add pagination`
 - Popover: /docs/components/popover — install with `npx creaseui add popover`
-- Power Search: /docs/components/power-search — install with `npx creaseui add power-search`
 - Progress: /docs/components/progress — install with `npx creaseui add progress`
 - Radio Group: /docs/components/radio-group — install with `npx creaseui add radio-group`
 - Resizable: /docs/components/resizable — install with `npx creaseui add resizable`
@@ -518,7 +517,7 @@ Source: `src/ui/checkbox.ts`
 
 Examples: Demo, Invalid State, Basic, Description, Disabled, Group, Table, RTL, Indeterminate, Read only
 
-- `CheckboxProps<Msg> = CheckboxBehaviorProps<Msg> & Readonly<{ class?: string; }>` (type)
+- `CheckboxProps<Msg> = CheckboxBehaviorProps<Msg> & Readonly<{ class?: string; tabindex?: number; }>` (type)
 - `checkbox<Msg>(props: CheckboxProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Circular Progress
@@ -1594,48 +1593,6 @@ Examples: Basic, Align, With Form, Interactive content, Right aligned, RTL
 - `PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; content: Html | string; align?: PopoverAlign; side?: PopoverSide; class?: string; direction?: 'ltr' | 'rtl'; focusSelector?…` (type)
 - `popover<Msg>(props: PopoverProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
-### Power Search
-
-A CreaseUI Power Search component for Foldkit.
-
-Source: `src/ui/power-search.ts`
-
-Examples: Power Search, PowerSearch — Content Search, PowerSearch — Preset Filters, PowerSearch — Full Featured, PowerSearch — Search with Table
-
-- `EnumItem = Readonly<{ value: string; label: string; }>` (type)
-- `PowerSearchEntity = Readonly<{ id: string; label: string; photo?: string; }>` (type)
-- `SearchableItem = Readonly<{ id: string; label: string; photo?: string; auxiliaryData?: unknown; }>` (type)
-- `SearchSource = Readonly<{ search: (query: string) => ReadonlyArray<SearchableItem>; bootstrap?: () => ReadonlyArray<SearchableItem>; }>` (type)
-- `DateTimeRangePart = Readonly<{ type: 'NOW'; }> | Readonly<{ type: 'ABSOLUTE'; unixSeconds: number; }> | Readonly<{ type: 'RELATIVE'; backValue: number; unit: 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year'; }>` (type)
-- `DateTimeRange = Readonly<{ start: DateTimeRangePart; end: DateTimeRangePart; }>` (type)
-- `OperatorValue = Readonly<{ type: 'empty'; }> | Readonly<{ type: 'string'; searchSource?: SearchSource; }> | Readonly<{ type: 'string_list'; searchSource?: SearchSource; }> | Readonly<{ type: 'integer'; }> | Readonly<{ type: 'float'; }> | Readonly<{ type: 'tim…` (type)
-- `RelativeDateFilterPreset = Readonly<{ key: string; label: string; range: DateTimeRange; }>` (type)
-- `PowerSearchOperator = Readonly<{ key: string; value: OperatorValue; }> & (Readonly<{ label: string; }> | Readonly<{ i18nKey: string; }>)` (type)
-- `PowerSearchField = Readonly<{ key: string; label: string; operators: ReadonlyArray<PowerSearchOperator>; icon?: string; defaultOperator?: string; group?: string; description?: string; typeaheadAliases?: ReadonlyArray<string>; typeaheadMinQueryLength?: number;…` (type)
-- `FilterValue = Readonly<{ type: 'empty'; }> | Readonly<{ type: 'string'; value: string; }> | Readonly<{ type: 'string_list'; value: ReadonlyArray<string>; }> | Readonly<{ type: 'integer'; value: number; }> | Readonly<{ type: 'float'; value: number; }> | Readon…` (type)
-- `PowerSearchFilter = Readonly<{ field: string; operator: string; value: FilterValue; isReadOnly?: boolean; }>` (type)
-- `PartialFilter = Readonly<{ field: string; operator?: string; value?: FilterValue; }>` (type)
-- `PowerSearchConfig = Readonly<{ name: string; fields: ReadonlyArray<PowerSearchField>; contentSearchFieldKey?: string; }>` (type)
-- `PowerSearchChangeType = 'add' | 'edit' | 'remove'` (type)
-- `resolveOperatorLabel(operator: PowerSearchOperator): string` (function)
-- `InternalPowerSearchConfig = Readonly<{ name: string; fields: ReadonlyArray<PowerSearchField>; contentSearchFieldKey?: string; fieldsByKey: ReadonlyMap<string, PowerSearchField>; nonContentSearchFields: ReadonlyArray<PowerSearchField>; contentSearchField?: Pow…` (type)
-- `createInternalConfig(config: PowerSearchConfig): InternalPowerSearchConfig` (function)
-- `resolveDateTimeRangePart(part: DateTimeRangePart, nowSeconds: number = Date.now() / 1000): number` (function)
-- `formatFilterValue(config: InternalPowerSearchConfig, operatorValue: OperatorValue, filterValue: FilterValue | undefined, maxLength: number): string` (function)
-- `PowerSearchSuggestion = Readonly<{ kind: 'group'; label: string; }> | Readonly<{ kind: 'field'; field: PowerSearchField; }> | Readonly<{ kind: 'operator'; field: PowerSearchField; operator: PowerSearchOperator; label: string; }> | Readonly<{ kind: 'value'; fi…` (type)
-- `FieldDefinition = Readonly<{ key: string; type: FieldDefinitionType; label?: string; enumValues?: ReadonlyArray<EnumItem>; }>` (type)
-- `createPowerSearchConfig(definitions: ReadonlyArray<FieldDefinition>, configName?: string): { config: PowerSearchConfig; applyFilters: <Row extends Record<string, unknown>>(filters: ReadonlyArray<PowerSearchFilter>, data: ReadonlyArray<Row>) => Row[]; }` (function)
-- `Model: value` (value)
-- `Model = typeof Model.Type` (type)
-- `init(config: { id: string; }): Model` (function)
-- `Message: value` (value)
-- `Message = typeof Message.Type` (type)
-- `OutMessage: value` (value)
-- `OutMessage = typeof OutMessage.Type` (type)
-- `update(model: Model, message: Message, config: InternalPowerSearchConfig, filters: ReadonlyArray<PowerSearchFilter>, resultCount: number | null = null): UpdateReturn` (function)
-- `PowerSearchProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; filters: ReadonlyArray<PowerSearchFilter>; config: InternalPowerSearchConfig; placeholder?: string; valueMaxLength?: number; resultCount?: number; hasClear?: boolean;…` (type)
-- `powerSearch<Msg>(props: PowerSearchProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
-
 ### Progress
 
 A CreaseUI Progress component for Foldkit.
@@ -1948,11 +1905,21 @@ Examples: Basic, Range, Multiple Thumbs, Vertical, Controlled, Disabled, RTL
 - `subscriptions: value` (value)
 - `subscriptionsForRoot: value` (value)
 - `fractionOfValue: value` (value)
+- `export { initMulti } from ` (re-export)
+- `export { MultiMessage } from ` (re-export)
+- `export { MultiModel } from ` (re-export)
+- `export { MultiOutMessage } from ` (re-export)
+- `export { multiThumbSubscriptions } from ` (re-export)
+- `export { normalizeMultiValues } from ` (re-export)
+- `export { reflectMultiRange } from ` (re-export)
+- `export { toThumbValue } from ` (re-export)
+- `export { updateMulti } from ` (re-export)
+- `export { updateMultiValue } from ` (re-export)
 - `SliderProps<Msg> = Readonly<{ model: Model; value: number; toParentMessage: (message: Message) => Msg; label?: string; ariaLabel?: string; formatValue?: (value: number) => string; isDisabled?: boolean; isReadOnly?: boolean; name?: string; class?: string; }>` (type)
-- `RangeSliderProps<Msg> = Readonly<{ values: readonly [ number, number ]; min: number; max: number; step?: number; onInput: (values: readonly [ number, number ]) => Msg; orientation?: 'horizontal' | 'vertical'; direction?: 'ltr' | 'rtl'; ariaLabels?: readonly […` (type)
+- `MultiSliderProps<Msg> = Readonly<{ model: MultiModel; values: readonly number[]; toParentMessage: (message: MultiMessage) => Msg; orientation?: 'horizontal' | 'vertical'; direction?: 'ltr' | 'rtl'; ariaLabels?: readonly string[]; formatValue?: (value: number,…` (type)
+- `RangeSliderProps<Msg> = Readonly<Omit<MultiSliderProps<Msg>, 'values'> & { values: readonly [ number, number ]; }>` (type)
 - `rangeSlider<Msg>(props: RangeSliderProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `slider<Msg>(props: SliderProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
-- `MultiSliderProps<Msg> = Readonly<{ values: readonly number[]; min: number; max: number; step?: number; onInput: (values: readonly number[]) => Msg; orientation?: 'horizontal' | 'vertical'; direction?: 'ltr' | 'rtl'; ariaLabels?: readonly string[]; isDisabled?…` (type)
 - `multiSlider<Msg>(props: MultiSliderProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Sonner

@@ -86,7 +86,6 @@ export const COMPONENTS = [
   'Overflow List',
   'Pagination',
   'Popover',
-  'Power Search',
   'Progress',
   'Radio Group',
   'Resizable',

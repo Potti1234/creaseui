@@ -84,7 +84,6 @@ import { carouselStyleXPreview } from '@/docs/components/pages/carousel/stylex'
 import { chartStyleXPreview } from '@/docs/components/pages/chart/stylex'
 import { chatReasoningStyleXPreview } from '@/docs/components/pages/chat-reasoning/stylex'
 import { logStreamStyleXPreview } from '@/docs/components/pages/log-stream/stylex'
-import { powerSearchStyleXPreview } from '@/docs/components/pages/power-search/stylex'
 import { timerStyleXPreview } from '@/docs/components/pages/timer/stylex'
 import { timestampStyleXPreview } from '@/docs/components/pages/timestamp/stylex'
 import { transferListStyleXPreview } from '@/docs/components/pages/transfer-list/stylex'
@@ -238,7 +237,6 @@ installStyleXExamplePreviewProvider('mobile-nav', mobileNavStyleXPreview)
 installStyleXExamplePreviewProvider('more-menu', moreMenuStyleXPreview)
 installStyleXExamplePreviewProvider('number-input', numberInputStyleXPreview)
 installStyleXExamplePreviewProvider('overflow-list', overflowListStyleXPreview)
-installStyleXExamplePreviewProvider('power-search', powerSearchStyleXPreview)
 installStyleXExamplePreviewProvider(
   'segmented-control',
   segmentedControlStyleXPreview,

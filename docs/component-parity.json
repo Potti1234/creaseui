@@ -23,7 +23,7 @@
   ],
   "summary": {
     "upstreamItems": 62,
-    "registryItems": 116,
+    "registryItems": 115,
     "creaseOnlyRecipes": [
       "avatar-group",
       "banner",
@@ -56,7 +56,6 @@
       "multi-selector",
       "number-input",
       "overflow-list",
-      "power-search",
       "section",
       "segmented-control",
       "selectable-card",
@@ -1398,24 +1397,6 @@
         "src/ui/popover.ts",
         "src/ui/registry.json#popover",
         "/docs/components/popover"
-      ]
-    },
-    {
-      "component": "power-search",
-      "upstream": false,
-      "classification": "full",
-      "dimensions": {
-        "visual": "unverified",
-        "behavior": "partial",
-        "accessibility": "partial",
-        "composition": "partial",
-        "documentation": "verified",
-        "registry": "verified"
-      },
-      "evidence": [
-        "src/ui/power-search.ts",
-        "src/ui/registry.json#power-search",
-        "/docs/components/power-search"
       ]
     },
     {

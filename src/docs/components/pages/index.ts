@@ -72,7 +72,6 @@ import { numberInputPage } from '@/docs/components/pages/number-input'
 import { overflowListPage } from '@/docs/components/pages/overflow-list'
 import { paginationPage } from '@/docs/components/pages/pagination'
 import { popoverPage } from '@/docs/components/pages/popover'
-import { powerSearchPage } from '@/docs/components/pages/power-search'
 import { progressPage } from '@/docs/components/pages/progress'
 import { radioGroupPage } from '@/docs/components/pages/radio-group'
 import { resizablePage } from '@/docs/components/pages/resizable'
@@ -192,7 +191,6 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       overflowListPage,
       paginationPage,
       popoverPage,
-      powerSearchPage,
       progressPage,
       radioGroupPage,
       resizablePage,

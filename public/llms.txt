@@ -88,7 +88,6 @@
 - Overflow List: /docs/components/overflow-list — install with `npx creaseui add overflow-list`
 - Pagination: /docs/components/pagination — install with `npx creaseui add pagination`
 - Popover: /docs/components/popover — install with `npx creaseui add popover`
-- Power Search: /docs/components/power-search — install with `npx creaseui add power-search`
 - Progress: /docs/components/progress — install with `npx creaseui add progress`
 - Radio Group: /docs/components/radio-group — install with `npx creaseui add radio-group`
 - Resizable: /docs/components/resizable — install with `npx creaseui add resizable`

@@ -77,7 +77,6 @@ export * as NumberInput from './number-input.js'
 export * as OverflowList from './overflow-list.js'
 export * as Pagination from './pagination.js'
 export * as Popover from './popover.js'
-export * as PowerSearch from './power-search.js'
 export * as Progress from './progress.js'
 export * as RadioGroup from './radio-group.js'
 export * as Resizable from './resizable.js'
@@ -196,7 +195,6 @@ export const STYLEX_COMPONENT_NAMES = [
   'overflow-list',
   'pagination',
   'popover',
-  'power-search',
   'progress',
   'radio-group',
   'resizable',
