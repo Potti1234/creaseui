@@ -176,7 +176,7 @@ const loginCardSource = (
   const cardClass =
     opts.renderer === 'tailwind'
       ? opts.spacingVar === 'dynamic'
-        ? `class: \`w-full max-w-sm [--card-spacing:--spacing(\${model.spacing})]\`,`
+        ? 'class: `w-full max-w-sm ${spacingClasses[model.spacing]}`,'
         : `class: 'w-full max-w-sm${spacingPart}',`
       : `layoutStyle: styles.frame,`
   const inputBlock = (
@@ -443,7 +443,22 @@ export const spacingOptions = [
   { value: '5', label: '20px' },
   { value: '6', label: '24px' },
   { value: '8', label: '32px' },
-] as const`,
+] as const
+${
+  renderer === 'tailwind'
+    ? `
+
+// Every option needs its own literal utility class — Tailwind only emits
+// rules for classes it can find by scanning source files, so
+// [--card-spacing:--spacing(...)] can't be interpolated at runtime.
+const spacingClasses: Record<Model['spacing'], string> = {
+  '4': '[--card-spacing:--spacing(4)]',
+  '5': '[--card-spacing:--spacing(5)]',
+  '6': '[--card-spacing:--spacing(6)]',
+  '8': '[--card-spacing:--spacing(8)]',
+}`
+    : ''
+}`,
         messages: `import { taggedStruct } from 'foldkit/schema'
 export const ChangedEmail = taggedStruct('ChangedEmail', { value: S.String })
 export const ChangedPassword = taggedStruct('ChangedPassword', { value: S.String })
