@@ -31,7 +31,7 @@ export const comboboxFixtures: ReadonlyArray<ComboboxFixture> = [
     title: 'Clear Button',
     kind: 'clear',
     description:
-      'A ghost clear button routes a synthesized UpdatedInputValue through the child update and clears the owned selection.',
+      'A ghost clear button closes the popup via BlurredInput when open, clearing the input and owned selection without reopening.',
   },
   {
     title: 'Groups',
@@ -338,23 +338,7 @@ const comboboxSource = (
   const messages = `import { taggedStruct } from 'foldkit/schema'
 export const GotComboboxMessage = taggedStruct('GotComboboxMessage', { message: Combobox.Message });${isClear ? "\nexport const ClickedClear = taggedStruct('ClickedClear', {});" : ''}
 export const Message = S.Union([GotComboboxMessage${isClear ? ', ClickedClear' : ''}])
-export type Message = typeof Message.Type${
-    isClear
-      ? `
-
-const CloseComboboxAfterClear = Command.define('CloseComboboxAfterClear', {
-  messages: [GotComboboxMessage],
-  execute: Effect.succeed(
-    GotComboboxMessage({
-      message: Combobox.Message.BlurredInput({
-        restingInputValue: '',
-        isClearable: true,
-      }),
-    }),
-  ),
-})`
-      : ''
-  }`
+export type Message = typeof Message.Type`
   const update = `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
     case 'GotComboboxMessage': {
@@ -372,13 +356,15 @@ const CloseComboboxAfterClear = Command.define('CloseComboboxAfterClear', {
       isClear
         ? `
     case 'ClickedClear': {
-      const next = Combobox.update(model.combobox, Combobox.Message.UpdatedInputValue({ value: '' }))
+      const next = model.combobox.isOpen
+        ? Combobox.update(
+            model.combobox,
+            Combobox.Message.BlurredInput({ restingInputValue: '', isClearable: true }),
+          )
+        : { model: { ...model.combobox, inputValue: '' }, commands: [] }
       return {
         model: { ...model, combobox: next.model, maybeValue: Option.none() },
-        commands: [
-          ...Command.mapMessages(next.commands ?? [], child => GotComboboxMessage({ message: child })),
-          CloseComboboxAfterClear(),
-        ],
+        commands: Command.mapMessages(next.commands ?? [], child => GotComboboxMessage({ message: child })),
       }
     }`
         : ''
@@ -392,13 +378,15 @@ const CloseComboboxAfterClear = Command.define('CloseComboboxAfterClear', {
       ${comboboxCall(fixture, isStyleX)},${
         isClear
           ? `
-      Button.button({
-        variant: 'ghost',
-        size: 'icon',
-        ariaLabel: 'Clear selection',
-        onClick: ClickedClear(),
-        children: [Icon.icon('x', { class: 'size-4' }, h)],
-      }, h),`
+      h.div([h.Class('relative z-50'), h.OnMouseDown(ClickedClear())], [
+        Button.button({
+          variant: 'ghost',
+          size: 'icon',
+          ariaLabel: 'Clear selection',
+          onClick: ClickedClear(),
+          children: [Icon.icon('x', { class: 'size-4' }, h)],
+        }, h),
+      ]),`
           : ''
       }
     ]),
@@ -407,7 +395,7 @@ const CloseComboboxAfterClear = Command.define('CloseComboboxAfterClear', {
 
   return foldkitApplication({
     title: `Combobox — ${fixture.title}`,
-    imports: `import { ${isClear ? 'Effect, ' : ''}Option, Schema as S } from 'effect'
+    imports: `import { Option, Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
