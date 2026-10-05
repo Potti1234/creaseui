@@ -424,7 +424,11 @@ export const dropdownMenu = <Item extends string, Msg>(
         h.Class(
           cn(
             ITEM_CLASS,
-            config.isInset ? styles.inset : undefined,
+            config.isInset ||
+              config.kind === 'checkbox' ||
+              config.kind === 'radio'
+              ? styles.inset
+              : undefined,
             config.variant === 'destructive' ? styles.destructive : undefined,
           ),
         ),
