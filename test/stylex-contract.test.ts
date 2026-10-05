@@ -514,18 +514,16 @@ describe('StyleX component authoring contract', () => {
     assert.match(stylex, /DialogPrimitive\.view/u)
   })
 
-  it('keeps Toast and Sonner on one versioned notification behavior', () => {
+  it('keeps Toast on one versioned notification behavior', () => {
     const behavior = readFileSync('src/lib/toast.ts', 'utf8')
-    const tailwind = readFileSync('src/ui/sonner.ts', 'utf8')
-    const stylex = readFileSync('src/stylex/sonner.ts', 'utf8')
-    const toast = readFileSync('src/ui/toast.ts', 'utf8')
+    const tailwind = readFileSync('src/ui/toast.ts', 'utf8')
+    const stylex = readFileSync('src/stylex/toast.ts', 'utf8')
 
     assert.match(behavior, /pendingDismissVersion/u)
     assert.match(behavior, /export const updateToast/u)
     assert.match(behavior, /ActivatedToast/u)
     assert.match(tailwind, /@\/lib\/toast/u)
     assert.match(stylex, /@\/lib\/toast/u)
-    assert.match(toast, /@\/ui\/sonner/u)
     assert.doesNotMatch(tailwind, /Command\.define/u)
     assert.doesNotMatch(stylex, /Command\.define/u)
   })
@@ -553,8 +551,8 @@ describe('StyleX component authoring contract', () => {
     assert.match(behavior, /WaitBeforeClosingHoverCard/u)
     assert.match(tailwind, /@\/lib\/hover-card/u)
     assert.match(stylex, /@\/lib\/hover-card/u)
-    assert.match(tailwind, /AnchorTooltip/u)
-    assert.match(stylex, /AnchorTooltip/u)
+    assert.match(tailwind, /AnchorHoverCard/u)
+    assert.match(stylex, /AnchorHoverCard/u)
     assert.doesNotMatch(stylex, /from ['"]@\/ui\/hover-card['"]/u)
   })
 

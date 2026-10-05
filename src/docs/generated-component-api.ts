@@ -5056,23 +5056,6 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "multiSlider<Msg>(props: MultiSliderProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
-  "sonner": [
-    {
-      "name": "*",
-      "kind": "re-export",
-      "signature": "export * from '@/lib/toast'"
-    },
-    {
-      "name": "SonnerProps",
-      "kind": "type",
-      "signature": "SonnerProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; ariaLabel?: string; pausePolicy?: 'none' | 'pointer'; class?: string; entryClass?: string; position?: Position; }>"
-    },
-    {
-      "name": "sonner",
-      "kind": "function",
-      "signature": "sonner<Msg>(props: SonnerProps<Msg>, h: HtmlBuilder<Msg>): Html"
-    }
-  ],
   "spinner": [
     {
       "name": "SpinnerProps",
@@ -5735,12 +5718,17 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "*",
       "kind": "re-export",
-      "signature": "export * from '@/ui/sonner'"
+      "signature": "export * from '@/lib/toast'"
+    },
+    {
+      "name": "ToastProps",
+      "kind": "type",
+      "signature": "ToastProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; ariaLabel?: string; pausePolicy?: 'none' | 'pointer'; class?: string; entryClass?: string; position?: Position; }>"
     },
     {
       "name": "toast",
-      "kind": "re-export",
-      "signature": "export { sonner as toast } from '@/ui/sonner'"
+      "kind": "function",
+      "signature": "toast<Msg>(props: ToastProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "toggle-group": [

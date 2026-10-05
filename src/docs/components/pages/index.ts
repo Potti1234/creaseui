@@ -85,7 +85,6 @@ import { sidebarPage } from '@/docs/components/pages/sidebar'
 import { skeletonPage } from '@/docs/components/pages/skeleton'
 import { sliderPage } from '@/docs/components/pages/slider'
 import { spinnerPage } from '@/docs/components/pages/spinner'
-import { sonnerPage } from '@/docs/components/pages/sonner'
 import { stackPage } from '@/docs/components/pages/stack'
 import { statPage } from '@/docs/components/pages/stat'
 import { statusDotPage } from '@/docs/components/pages/status-dot'
@@ -202,7 +201,6 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       skeletonPage,
       sliderPage,
       spinnerPage,
-      sonnerPage,
       stackPage,
       statPage,
       statusDotPage,

@@ -98,7 +98,6 @@
 - Sidebar: /docs/components/sidebar — install with `npx creaseui add sidebar`
 - Skeleton: /docs/components/skeleton — install with `npx creaseui add skeleton`
 - Slider: /docs/components/slider — install with `npx creaseui add slider`
-- Sonner: /docs/components/sonner — install with `npx creaseui add sonner`
 - Spinner: /docs/components/spinner — install with `npx creaseui add spinner`
 - Stack: /docs/components/stack — install with `npx creaseui add stack`
 - Stat: /docs/components/stat — install with `npx creaseui add stat`
@@ -1871,18 +1870,6 @@ Examples: Basic, Range, Multiple Thumbs, Vertical, Controlled, Disabled, RTL
 - `slider<Msg>(props: SliderProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `multiSlider<Msg>(props: MultiSliderProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
-### Sonner
-
-A CreaseUI Sonner component for Foldkit.
-
-Source: `src/ui/sonner.ts`
-
-Examples: Basic, Types, Description, Position
-
-- `export * from '@/lib/toast'` (re-export)
-- `SonnerProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; ariaLabel?: string; pausePolicy?: 'none' | 'pointer'; class?: string; entryClass?: string; position?: Position; }>` (type)
-- `sonner<Msg>(props: SonnerProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
-
 ### Spinner
 
 A CreaseUI Spinner component for Foldkit.
@@ -2141,10 +2128,11 @@ A CreaseUI Toast component for Foldkit.
 
 Source: `src/ui/toast.ts`
 
-Examples: Timed notification, Sticky error
+Examples: Basic, Types, Description, Position
 
-- `export * from '@/ui/sonner'` (re-export)
-- `export { sonner as toast } from '@/ui/sonner'` (re-export)
+- `export * from '@/lib/toast'` (re-export)
+- `ToastProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; ariaLabel?: string; pausePolicy?: 'none' | 'pointer'; class?: string; entryClass?: string; position?: Position; }>` (type)
+- `toast<Msg>(props: ToastProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Toggle Group
 

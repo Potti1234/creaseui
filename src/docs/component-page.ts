@@ -98,7 +98,6 @@ export const COMPONENTS = [
   'Sidebar',
   'Skeleton',
   'Slider',
-  'Sonner',
   'Spinner',
   'Stack',
   'Stat',

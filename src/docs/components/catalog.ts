@@ -465,10 +465,7 @@ export const view = (
       apiDescription:
         definition.apiDescription ??
         `${name} is source-owned after installation. Its public model, messages, update function, and view helpers are documented directly in the installed TypeScript source.`,
-      apiEntries:
-        slug === 'toast'
-          ? (componentApi.sonner ?? [])
-          : (componentApi[slug] ?? []),
+      apiEntries: componentApi[slug] ?? [],
     },
     h,
   )

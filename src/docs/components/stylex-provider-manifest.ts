@@ -95,7 +95,6 @@ import { fieldStyleXPreview } from '@/docs/components/pages/field/stylex'
 import { formStyleXPreview } from '@/docs/components/pages/form/stylex'
 import { inputGroupStyleXPreview } from '@/docs/components/pages/input-group/stylex'
 import { sidebarStyleXPreview } from '@/docs/components/pages/sidebar/stylex'
-import { sonnerStyleXPreview } from '@/docs/components/pages/sonner/stylex'
 import { statStyleXPreview } from '@/docs/components/pages/stat/stylex'
 import { statusDotStyleXPreview } from '@/docs/components/pages/status-dot/stylex'
 import { thumbnailStyleXPreview } from '@/docs/components/pages/thumbnail/stylex'
@@ -213,7 +212,6 @@ installStyleXExamplePreviewProvider('grid', gridStyleXPreview)
 installStyleXExamplePreviewProvider('input-group', inputGroupStyleXPreview)
 installStyleXExamplePreviewProvider('section', sectionStyleXPreview)
 installStyleXExamplePreviewProvider('sidebar', sidebarStyleXPreview)
-installStyleXExamplePreviewProvider('sonner', sonnerStyleXPreview)
 installStyleXExamplePreviewProvider('stack', stackStyleXPreview)
 installStyleXExamplePreviewProvider('stat', statStyleXPreview)
 installStyleXExamplePreviewProvider('status-dot', statusDotStyleXPreview)

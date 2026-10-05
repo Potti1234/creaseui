@@ -100,7 +100,6 @@
 - Sidebar: /docs/components/sidebar — install with `npx creaseui add sidebar`
 - Skeleton: /docs/components/skeleton — install with `npx creaseui add skeleton`
 - Slider: /docs/components/slider — install with `npx creaseui add slider`
-- Sonner: /docs/components/sonner — install with `npx creaseui add sonner`
 - Spinner: /docs/components/spinner — install with `npx creaseui add spinner`
 - Stack: /docs/components/stack — install with `npx creaseui add stack`
 - Stat: /docs/components/stat — install with `npx creaseui add stat`

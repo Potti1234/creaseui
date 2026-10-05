@@ -4,7 +4,7 @@
     "src/ui/registry.json",
     "src/ui/*.ts"
   ],
-  "componentCount": 113,
+  "componentCount": 112,
   "components": [
     {
       "slug": "accordion",
@@ -6916,43 +6916,6 @@
       ]
     },
     {
-      "slug": "sonner",
-      "title": "Sonner",
-      "description": "A CreaseUI Sonner component for Foldkit.",
-      "docs": "/docs/components/sonner",
-      "source": "src/ui/sonner.ts",
-      "install": "npx creaseui add sonner",
-      "dependencies": [
-        "Potti1234/creaseui/button",
-        "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/icons",
-        "Potti1234/creaseui/utils"
-      ],
-      "examples": [
-        "Basic",
-        "Types",
-        "Description",
-        "Position"
-      ],
-      "api": [
-        {
-          "name": "*",
-          "kind": "re-export",
-          "signature": "export * from '@/lib/toast'"
-        },
-        {
-          "name": "SonnerProps",
-          "kind": "type",
-          "signature": "SonnerProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; ariaLabel?: string; pausePolicy?: 'none' | 'pointer'; class?: string; entryClass?: string; position?: Position; }>"
-        },
-        {
-          "name": "sonner",
-          "kind": "function",
-          "signature": "sonner<Msg>(props: SonnerProps<Msg>, h: HtmlBuilder<Msg>): Html"
-        }
-      ]
-    },
-    {
       "slug": "spinner",
       "title": "Spinner",
       "description": "A CreaseUI Spinner component for Foldkit.",
@@ -7915,22 +7878,30 @@
       "install": "npx creaseui add toast",
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/sonner"
+        "Potti1234/creaseui/button",
+        "Potti1234/creaseui/icons"
       ],
       "examples": [
-        "Timed notification",
-        "Sticky error"
+        "Basic",
+        "Types",
+        "Description",
+        "Position"
       ],
       "api": [
         {
           "name": "*",
           "kind": "re-export",
-          "signature": "export * from '@/ui/sonner'"
+          "signature": "export * from '@/lib/toast'"
+        },
+        {
+          "name": "ToastProps",
+          "kind": "type",
+          "signature": "ToastProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; ariaLabel?: string; pausePolicy?: 'none' | 'pointer'; class?: string; entryClass?: string; position?: Position; }>"
         },
         {
           "name": "toast",
-          "kind": "re-export",
-          "signature": "export { sonner as toast } from '@/ui/sonner'"
+          "kind": "function",
+          "signature": "toast<Msg>(props: ToastProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
       ]
     },

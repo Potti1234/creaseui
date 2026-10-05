@@ -1,12 +1,12 @@
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 import type { PageDefinition } from '@/docs/components/page-definition'
 import type { ComponentKind } from '@/docs/components/page-definition'
-import type * as Sonner from '@/ui/sonner'
+import type * as Toast from '@/ui/toast'
 
 export type NotificationConfig = Readonly<{
-  slug: 'sonner' | 'toast'
-  title: 'Sonner' | 'Toast'
-  namespace: 'Sonner' | 'Toast'
+  slug: 'toast'
+  title: 'Toast'
+  namespace: 'Toast'
   description: string
   kind: ComponentKind
 }>
@@ -14,7 +14,7 @@ export type NotificationConfig = Readonly<{
 const application = (
   config: NotificationConfig,
   example: string,
-  variant: Sonner.Variant,
+  variant: Toast.Variant,
   sticky: boolean,
   renderer: 'tailwind' | 'stylex',
 ): string => {

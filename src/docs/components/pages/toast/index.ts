@@ -9,7 +9,7 @@ const base = notificationDefinition(toastConfig)
 export const toastPage = authoredPage({
   slug: 'toast',
   title: 'Toast',
-  kind: 'recipe',
+  kind: 'submodel',
   previewProgram: toastTailwindPreviewProgram,
   definition: {
     ...base,

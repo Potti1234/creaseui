@@ -89,7 +89,6 @@ export * as Sheet from './sheet.js'
 export * as Sidebar from './sidebar.js'
 export * as Skeleton from './skeleton.js'
 export * as Slider from './slider.js'
-export * as Sonner from './sonner.js'
 export * as Spinner from './spinner.js'
 export * as Stack from './stack.js'
 export * as Stat from './stat.js'
@@ -205,7 +204,6 @@ export const STYLEX_COMPONENT_NAMES = [
   'sidebar',
   'skeleton',
   'slider',
-  'sonner',
   'spinner',
   'stack',
   'stat',

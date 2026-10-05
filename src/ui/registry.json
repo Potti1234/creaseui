@@ -1562,25 +1562,6 @@
       ]
     },
     {
-      "name": "sonner",
-      "type": "registry:ui",
-      "title": "Sonner",
-      "description": "A CreaseUI Sonner component for Foldkit.",
-      "registryDependencies": [
-        "Potti1234/creaseui/button",
-        "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/icons",
-        "Potti1234/creaseui/utils"
-      ],
-      "files": [
-        {
-          "path": "sonner.ts",
-          "type": "registry:ui",
-          "target": "@ui/sonner.ts"
-        }
-      ]
-    },
-    {
       "name": "spinner",
       "type": "registry:ui",
       "title": "Spinner",
@@ -1840,8 +1821,10 @@
       "title": "Toast",
       "description": "A CreaseUI Toast component for Foldkit.",
       "registryDependencies": [
+        "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/sonner"
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
       ],
       "files": [
         {

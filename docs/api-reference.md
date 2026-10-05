@@ -1574,16 +1574,6 @@ Source: [`src/ui/slider.ts`](../src/ui/slider.ts)
 | `slider` | function | `slider<Msg>(props: SliderProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `multiSlider` | function | `multiSlider<Msg>(props: MultiSliderProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
-## Sonner
-
-Source: [`src/ui/sonner.ts`](../src/ui/sonner.ts)
-
-| Export | Kind | Signature |
-| --- | --- | --- |
-| `*` | re-export | `export * from '@/lib/toast'` |
-| `SonnerProps` | type | `SonnerProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; ariaLabel?: string; pausePolicy?: 'none' \| 'pointer'; class?: string; entryClass?: string; position?: Position; }>` |
-| `sonner` | function | `sonner<Msg>(props: SonnerProps<Msg>, h: HtmlBuilder<Msg>): Html` |
-
 ## Spinner
 
 Source: [`src/ui/spinner.ts`](../src/ui/spinner.ts)
@@ -1814,8 +1804,9 @@ Source: [`src/ui/toast.ts`](../src/ui/toast.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `*` | re-export | `export * from '@/ui/sonner'` |
-| `toast` | re-export | `export { sonner as toast } from '@/ui/sonner'` |
+| `*` | re-export | `export * from '@/lib/toast'` |
+| `ToastProps` | type | `ToastProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; ariaLabel?: string; pausePolicy?: 'none' \| 'pointer'; class?: string; entryClass?: string; position?: Position; }>` |
+| `toast` | function | `toast<Msg>(props: ToastProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Toggle Group
 

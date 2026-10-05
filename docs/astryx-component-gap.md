@@ -60,7 +60,7 @@ Astryx name → Crease UI equivalent.
 | Table                               | `table`, `data-table`                                 |
 | TextArea                            | `textarea`                                            |
 | TextInput                           | `input`                                               |
-| Toast                               | `toast`, `sonner`                                     |
+| Toast                               | `toast`                                               |
 | ToggleButton                        | `toggle`                                              |
 | ToggleButtonGroup                   | `toggle-group`                                        |
 | Tooltip                             | `tooltip`                                             |

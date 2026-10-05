@@ -23,7 +23,7 @@
   ],
   "summary": {
     "upstreamItems": 62,
-    "registryItems": 113,
+    "registryItems": 112,
     "creaseOnlyRecipes": [
       "avatar-group",
       "banner",
@@ -1613,24 +1613,6 @@
         "src/ui/slider.ts",
         "src/ui/registry.json#slider",
         "/docs/components/slider"
-      ]
-    },
-    {
-      "component": "sonner",
-      "upstream": true,
-      "classification": "full",
-      "dimensions": {
-        "visual": "unverified",
-        "behavior": "partial",
-        "accessibility": "partial",
-        "composition": "partial",
-        "documentation": "verified",
-        "registry": "verified"
-      },
-      "evidence": [
-        "src/ui/sonner.ts",
-        "src/ui/registry.json#sonner",
-        "/docs/components/sonner"
       ]
     },
     {
