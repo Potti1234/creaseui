@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -43,7 +44,7 @@ export const blockquote = <Msg>(
   h.blockquote(
     [
       h.DataAttribute('slot', 'blockquote'),
-      h.Class(className(styles.root, props.layoutStyle)),
+      h.Class(className(reset.text, styles.root, props.layoutStyle)),
     ],
     [
       ...props.children,

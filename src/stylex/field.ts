@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import { Fieldset as FieldsetPrimitive } from '@foldkit/ui'
@@ -149,7 +150,7 @@ const styles = stylex.create({
       ':has(>[data-slot=field])': 1,
     },
     backgroundColor: {
-      default: null,
+      default: 'transparent',
       ':has([data-checked])': foundationTokens.primaryFaint,
     },
     flexDirection: {
@@ -290,7 +291,7 @@ export const fieldSet = <Msg>(p: FieldSetProps, h: HtmlBuilder<Msg>): Html => {
             [
               ...fieldset,
               h.DataAttribute('slot', 'field-set'),
-              h.Class(className(styles.set, p.layoutStyle)),
+              h.Class(className(reset.fieldset, styles.set, p.layoutStyle)),
             ],
             [...p.children],
           ),
@@ -302,7 +303,7 @@ export const fieldSet = <Msg>(p: FieldSetProps, h: HtmlBuilder<Msg>): Html => {
     [
       h.DataAttribute('slot', 'field-set'),
       ...(p.isDisabled === undefined ? [] : [h.Disabled(p.isDisabled)]),
-      h.Class(className(styles.set, p.layoutStyle)),
+      h.Class(className(reset.fieldset, styles.set, p.layoutStyle)),
     ],
     [...p.children],
   )
@@ -320,6 +321,7 @@ export const fieldLegend = <Msg>(
       h.DataAttribute('variant', p.variant ?? 'legend'),
       h.Class(
         className(
+          reset.text,
           styles.legend,
           p.variant === 'label' && styles.legendLabel,
           p.layoutStyle,
@@ -388,9 +390,9 @@ export const controlField = <Msg>(
           className(styles.label, styles.controlLabel, styles.labelDisabled),
         ),
       ],
-      description: [h.Class(className(styles.description))],
-      error: [h.Class(className(styles.error))],
-      errorList: [h.Class(className(styles.errorList))],
+      description: [h.Class(className(reset.text, styles.description))],
+      error: [h.Class(className(reset.text, styles.error))],
+      errorList: [h.Class(className(reset.list, styles.errorList))],
     },
     h,
   )
@@ -474,7 +476,12 @@ export const fieldDescription = <Msg>(
       h.DataAttribute('slot', 'field-description'),
       ...(p.id === undefined ? [] : [h.Id(p.id)]),
       h.Class(
-        className(styles.description, styles.descriptionSpacing, p.layoutStyle),
+        className(
+          reset.text,
+          styles.description,
+          styles.descriptionSpacing,
+          p.layoutStyle,
+        ),
       ),
     ],
     [...p.children],
@@ -537,7 +544,7 @@ export const fieldError = <Msg>(
         ? [messages[0] ?? '']
         : [
             h.ul(
-              [h.Class(className(styles.errorList))],
+              [h.Class(className(reset.list, styles.errorList))],
               messages.map(message => h.li([], [message])),
             ),
           ]

@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 const styles = stylex.create({
   base: { display: 'inline-flex', position: 'relative' },
 })
@@ -112,7 +113,7 @@ export const hoverCard = <Msg>(
             ? []
             : [h.AriaLabel(props.ariaLabel)]),
           h.DataAttribute('slot', 'hover-card-trigger'),
-          h.Class(cn(props.triggerLayoutStyle)),
+          h.Class(cn(reset.button, props.triggerLayoutStyle)),
         ],
         [props.trigger],
       ),

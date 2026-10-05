@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
@@ -336,6 +337,7 @@ export const attachmentAction = <Msg>(
       h.AriaLabel(p.label),
       h.Class(
         className(
+          reset.button,
           ...buttonVisualStyles({ variant: 'ghost', size: 'icon-xs' }),
           styles.action,
           p.layoutStyle,
@@ -381,7 +383,7 @@ export const attachmentTrigger = <Msg>(
       h.OnClick(p.onClick),
       h.DataAttribute('slot', 'attachment-trigger'),
       h.AriaLabel(p.label),
-      h.Class(className(styles.trigger, p.layoutStyle)),
+      h.Class(className(reset.button, styles.trigger, p.layoutStyle)),
     ],
     [],
   )

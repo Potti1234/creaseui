@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import { Popover as PopoverPrimitive } from '@foldkit/ui'
@@ -108,6 +109,7 @@ export const popover = <Msg>(
                 hp.AriaHasPopup('dialog'),
                 hp.Class(
                   cn(
+                    reset.button,
                     props.variant === 'sidebar' && styles.sidebarTrigger,
                     props.triggerLayoutStyle,
                   ),

@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -219,7 +220,7 @@ export const clickableCard = <Msg>(
       isLink
         ? h.a(
             [
-              h.Class(className(styles.srOnly)),
+              h.Class(className(reset.link, styles.srOnly)),
               h.DataAttribute('pressable-control', 'true'),
               h.Href(props.href ?? ''),
               ...(props.target === undefined ? [] : [h.Target(props.target)]),
@@ -230,7 +231,7 @@ export const clickableCard = <Msg>(
           )
         : h.button(
             [
-              h.Class(className(styles.srOnly)),
+              h.Class(className(reset.button, styles.srOnly)),
               h.DataAttribute('pressable-control', 'true'),
               h.Type('button'),
               h.AriaLabel(props.label),

@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 /* Ported from Meta Astryx TreeList (packages/core/src/TreeList/) — StyleX
    renderer; visual spec adapted to Crease UI tokens. */
 
@@ -341,7 +342,7 @@ const renderItem = <Msg>(
             ),
             { propagation: 'Stop' },
           ),
-          h.Class(className(styles.chevronButton)),
+          h.Class(className(reset.button, styles.chevronButton)),
         ],
         [
           Icon.icon<Msg>(
@@ -388,7 +389,7 @@ const renderItem = <Msg>(
               : [h.AriaDescribedBy(descriptionId)]),
             h.Tabindex(-1),
             h.Id(TreeListBehavior.itemActionDomId(model.id, item.id)),
-            h.Class(className(styles.invisibleAnchor)),
+            h.Class(className(reset.link, styles.invisibleAnchor)),
           ],
           labelAndDescription,
         )
@@ -411,7 +412,7 @@ const renderItem = <Msg>(
                 ),
                 { propagation: 'Stop' },
               ),
-              h.Class(className(styles.invisibleButton)),
+              h.Class(className(reset.button, styles.invisibleButton)),
             ],
             labelAndDescription,
           )
@@ -511,7 +512,7 @@ const renderItem = <Msg>(
       ...(expanded
         ? [
             h.ul(
-              [h.Role('group'), h.Class(className(styles.list))],
+              [h.Role('group'), h.Class(className(reset.list, styles.list))],
               (item.children ?? []).map((child, index) =>
                 renderItem(
                   ctx,
@@ -654,7 +655,7 @@ const render = <Msg>(
       h.ul(
         [
           h.Role('tree'),
-          h.Class(className(styles.list)),
+          h.Class(className(reset.list, styles.list)),
           ...(viewInputs.header === undefined
             ? viewInputs.ariaLabel === undefined
               ? []

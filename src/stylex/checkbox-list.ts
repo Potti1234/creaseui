@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 /* Ported from Meta Astryx CheckboxList + CheckboxListItem
    (packages/core/src/CheckboxList) — examples and visual spec adapted to
    Crease UI tokens.
@@ -324,6 +325,7 @@ const itemVisuals = <Msg>(
     control: state => [
       h.Class(
         className(
+          reset.button,
           styles.controlBase,
           size === 'sm' ? styles.controlSm : styles.controlMd,
           state.checked || state.isIndeterminate
@@ -342,7 +344,7 @@ const itemVisuals = <Msg>(
       ),
     ],
     label: [h.Class(className(styles.itemLabel))],
-    description: [h.Class(className(styles.itemDescription))],
+    description: [h.Class(className(reset.text, styles.itemDescription))],
     endContent: [h.Class(className(styles.endContent))],
   }
 }
@@ -438,7 +440,7 @@ export const checkboxList = <Msg>(
         ),
       ],
       labelIndicator: [h.Class(className(styles.labelIndicator))],
-      description: [h.Class(className(styles.description))],
+      description: [h.Class(className(reset.text, styles.description))],
       group: [],
       list: [
         h.Class(

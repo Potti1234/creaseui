@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import {
@@ -105,6 +106,7 @@ export const radioGroup = <Msg>(
       item: state => [
         h.Class(
           className(
+            reset.button,
             styles.item,
             radioItemScope,
             state.isDisabled && styles.disabled,
@@ -115,7 +117,7 @@ export const radioGroup = <Msg>(
       indicator: [h.Class(className(styles.indicator))],
       text: [h.Class(className(styles.text))],
       label: [h.Class(className(styles.label))],
-      description: [h.Class(className(styles.description))],
+      description: [h.Class(className(reset.text, styles.description))],
     },
     (isSelected, indicatorH) =>
       isSelected

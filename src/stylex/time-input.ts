@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 /* Ported from Meta Astryx TimeInput (packages/core/src/TimeInput) —
    examples and visual spec adapted to Crease UI tokens.
 
@@ -475,6 +476,7 @@ const view = defineView<Model, Message, TimeInputViewInputs>(
       h.DataAttribute('slot', 'time-input-input'),
       h.Class(
         className(
+          reset.input,
           styles.input,
           props.isDisabled === true && styles.inputDisabled,
           pendingIsInvalid && styles.inputInvalid,
@@ -526,7 +528,7 @@ const view = defineView<Model, Message, TimeInputViewInputs>(
                 focusSelector: `#${fieldIds.input}`,
               }),
               h.DataAttribute('slot', 'time-input-clear'),
-              h.Class(className(styles.clearButton)),
+              h.Class(className(reset.button, styles.clearButton)),
             ],
             [Icon.x({ class: className(styles.iconSm) }, h)],
           )
@@ -541,7 +543,7 @@ const view = defineView<Model, Message, TimeInputViewInputs>(
               h.AriaLabel(statusButtonLabel(status.type)),
               h.Title(status.message ?? ''),
               h.DataAttribute('slot', 'time-input-status-icon'),
-              h.Class(className(styles.statusIconButton)),
+              h.Class(className(reset.button, styles.statusIconButton)),
             ],
             [
               Icon.icon(
@@ -655,7 +657,7 @@ const view = defineView<Model, Message, TimeInputViewInputs>(
                 [
                   h.Id(fieldIds.description),
                   h.DataAttribute('slot', 'time-input-description'),
-                  h.Class(className(styles.description)),
+                  h.Class(className(reset.text, styles.description)),
                 ],
                 [props.description],
               ),

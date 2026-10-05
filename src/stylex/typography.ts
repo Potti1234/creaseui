@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import type { ComponentLayoutStyle } from './contracts'
@@ -85,7 +86,7 @@ export const typographyH1 = <Msg>(p: TextProps, h: HtmlBuilder<Msg>): Html =>
   h.h1(
     [
       h.DataAttribute('slot', 'typography-h1'),
-      h.Class(className(styles.h1, p.layoutStyle)),
+      h.Class(className(reset.text, styles.h1, p.layoutStyle)),
     ],
     [...p.children],
   )
@@ -93,7 +94,7 @@ export const typographyH2 = <Msg>(p: TextProps, h: HtmlBuilder<Msg>): Html =>
   h.h2(
     [
       h.DataAttribute('slot', 'typography-h2'),
-      h.Class(className(styles.h2, p.layoutStyle)),
+      h.Class(className(reset.text, styles.h2, p.layoutStyle)),
     ],
     [...p.children],
   )
@@ -101,7 +102,7 @@ export const typographyH3 = <Msg>(p: TextProps, h: HtmlBuilder<Msg>): Html =>
   h.h3(
     [
       h.DataAttribute('slot', 'typography-h3'),
-      h.Class(className(styles.h3, p.layoutStyle)),
+      h.Class(className(reset.text, styles.h3, p.layoutStyle)),
     ],
     [...p.children],
   )
@@ -109,7 +110,7 @@ export const typographyH4 = <Msg>(p: TextProps, h: HtmlBuilder<Msg>): Html =>
   h.h4(
     [
       h.DataAttribute('slot', 'typography-h4'),
-      h.Class(className(styles.h4, p.layoutStyle)),
+      h.Class(className(reset.text, styles.h4, p.layoutStyle)),
     ],
     [...p.children],
   )
@@ -117,7 +118,7 @@ export const typographyP = <Msg>(p: TextProps, h: HtmlBuilder<Msg>): Html =>
   h.p(
     [
       h.DataAttribute('slot', 'typography-p'),
-      h.Class(className(styles.p, p.layoutStyle)),
+      h.Class(className(reset.text, styles.p, p.layoutStyle)),
     ],
     [...p.children],
   )
@@ -128,7 +129,7 @@ export const typographyBlockquote = <Msg>(
   h.blockquote(
     [
       h.DataAttribute('slot', 'typography-blockquote'),
-      h.Class(className(styles.blockquote, p.layoutStyle)),
+      h.Class(className(reset.text, styles.blockquote, p.layoutStyle)),
     ],
     [...p.children],
   )
@@ -139,7 +140,7 @@ export const typographyInlineCode = <Msg>(
   h.code(
     [
       h.DataAttribute('slot', 'typography-inline-code'),
-      h.Class(className(styles.code, p.layoutStyle)),
+      h.Class(className(reset.code, styles.code, p.layoutStyle)),
     ],
     [...p.children],
   )
@@ -147,7 +148,7 @@ export const typographyLead = <Msg>(p: TextProps, h: HtmlBuilder<Msg>): Html =>
   h.p(
     [
       h.DataAttribute('slot', 'typography-lead'),
-      h.Class(className(styles.lead, p.layoutStyle)),
+      h.Class(className(reset.text, styles.lead, p.layoutStyle)),
     ],
     [...p.children],
   )
@@ -171,7 +172,7 @@ export const typographyMuted = <Msg>(p: TextProps, h: HtmlBuilder<Msg>): Html =>
   h.p(
     [
       h.DataAttribute('slot', 'typography-muted'),
-      h.Class(className(styles.muted, p.layoutStyle)),
+      h.Class(className(reset.text, styles.muted, p.layoutStyle)),
     ],
     [...p.children],
   )

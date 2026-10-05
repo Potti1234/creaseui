@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Attribute, Html, HtmlBuilder } from 'foldkit/html'
 
@@ -316,6 +317,7 @@ const render = <Msg>(
                               h.DataAttribute('slot', 'banner-toggle'),
                               h.Class(
                                 className(
+                                  reset.button,
                                   ...buttonVisualStyles({
                                     variant: 'ghost',
                                     size: 'icon-sm',
@@ -347,6 +349,7 @@ const render = <Msg>(
                               h.AriaLabel(dismissName),
                               h.Class(
                                 className(
+                                  reset.button,
                                   ...buttonVisualStyles({
                                     variant: 'ghost',
                                     size: 'icon-sm',

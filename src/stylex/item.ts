@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
@@ -126,6 +127,7 @@ const slotDiv =
     )
 export const itemVariants = (o: ItemVariants = {}): string =>
   className(
+    reset.link,
     styles.item,
     o.variant === 'outline' && styles.outline,
     o.variant === 'muted' && styles.muted,
@@ -151,6 +153,7 @@ export const item = <Msg>(p: ItemProps, h: HtmlBuilder<Msg>): Html => {
       h.DataAttribute('size', size),
       h.Class(
         className(
+          reset.link,
           styles.item,
           variant === 'outline' && styles.outline,
           variant === 'muted' && styles.muted,
@@ -169,6 +172,7 @@ export const item = <Msg>(p: ItemProps, h: HtmlBuilder<Msg>): Html => {
       : p.element === 'a'
         ? h.a(
             [
+              h.Class(className(reset.link)),
               ...attrs,
               h.Href(p.href ?? '#'),
               ...(p.target === undefined
@@ -228,7 +232,7 @@ export const itemDescription = <Msg>(p: SlotProps, h: HtmlBuilder<Msg>): Html =>
   h.p(
     [
       h.DataAttribute('slot', 'item-description'),
-      h.Class(className(styles.description, p.layoutStyle)),
+      h.Class(className(reset.text, styles.description, p.layoutStyle)),
       h.Style({ WebkitLineClamp: '2' }),
     ],
     [...p.children],

@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import { Option, Schema as S } from 'effect'
 import * as stylex from '@stylexjs/stylex'
 import type { Update } from 'foldkit'
@@ -190,6 +191,7 @@ const styles = stylex.create({
 const thinkingIcon = <Msg>(h: HtmlBuilder<Msg>): Html =>
   h.svg(
     [
+      h.Class(className(reset.svg)),
       h.Width('14'),
       h.Height('14'),
       h.ViewBox('0 0 14 14'),

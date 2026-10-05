@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import { Disclosure as DisclosurePrimitive } from '@foldkit/ui'
@@ -71,6 +72,7 @@ export const collapsible = <Msg>(
                 h.DataAttribute('slot', 'collapsible-trigger'),
                 h.Class(
                   cn(
+                    reset.button,
                     styles.trigger,
                     props.variant === 'sidebar' && styles.sidebarTrigger,
                     props.triggerLayoutStyle,

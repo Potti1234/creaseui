@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -280,7 +281,7 @@ export const token = <Msg>(
         [
           h.Type('button'),
           h.AriaLabel(`Remove ${props.label}`),
-          h.Class(className(styles.removeButton)),
+          h.Class(className(reset.button, styles.removeButton)),
           h.OnClick(props.onRemove as Msg, { propagation: 'Stop' }),
         ],
         [Icon.x({ class: className(styles.iconXsm) }, h)],
@@ -305,7 +306,10 @@ export const token = <Msg>(
       [...sharedAttrs, h.Class(className(...baseStyles, props.layoutStyle))],
       [
         h.a(
-          [h.Href(props.href as string), h.Class(className(styles.link))],
+          [
+            h.Href(props.href as string),
+            h.Class(className(reset.link, styles.link)),
+          ],
           contentChildren,
         ),
         removeButton,
@@ -318,7 +322,7 @@ export const token = <Msg>(
       [
         ...sharedAttrs,
         h.Href(props.href as string),
-        h.Class(className(...baseStyles, props.layoutStyle)),
+        h.Class(className(reset.link, ...baseStyles, props.layoutStyle)),
       ],
       [...contentChildren],
     )
@@ -337,7 +341,7 @@ export const token = <Msg>(
         h.button(
           [
             h.Type('button'),
-            h.Class(className(styles.clickableButton)),
+            h.Class(className(reset.button, styles.clickableButton)),
             h.OnClick(props.onClick as Msg, { propagation: 'Stop' }),
           ],
           contentChildren,

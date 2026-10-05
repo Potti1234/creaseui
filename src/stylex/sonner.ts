@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Attribute, Html, HtmlBuilder } from 'foldkit/html'
 
@@ -263,6 +264,7 @@ const entryView = <Msg>(
                 ),
                 h.Class(
                   className(
+                    reset.button,
                     ...buttonVisualStyles({ variant: 'outline', size: 'sm' }),
                     styles.action,
                   ),
@@ -282,6 +284,7 @@ const entryView = <Msg>(
           ),
           h.Class(
             className(
+              reset.button,
               ...buttonVisualStyles({ variant: 'ghost', size: 'icon-xs' }),
               styles.dismiss,
             ),

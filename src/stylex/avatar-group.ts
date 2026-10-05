@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -185,7 +186,7 @@ export const avatarGroupOverflow = <Msg>(
           ...sharedAttrs,
           h.Type('button'),
           h.DataAttribute('avatar-item', 'true'),
-          h.Class(className(styles.overflowButton)),
+          h.Class(className(reset.button, styles.overflowButton)),
           h.OnClick(props.onClick),
         ],
         content,
@@ -259,6 +260,7 @@ const statusDotGlyph = <Msg>(
         : []
   return h.svg(
     [
+      h.Class(className(reset.svg)),
       h.AriaHidden(true),
       h.ViewBox(`0 0 ${field} ${field}`),
       h.Width(String(field)),

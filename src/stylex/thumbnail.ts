@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -189,6 +190,7 @@ export type ThumbnailProps<Msg> = Readonly<{
 const placeholderGlyph = <Msg>(h: HtmlBuilder<Msg>): Html =>
   h.svg(
     [
+      h.Class(className(reset.svg)),
       h.AriaHidden(true),
       h.ViewBox('0 0 24 24'),
       h.Width('24'),
@@ -237,7 +239,7 @@ export const thumbnail = <Msg>(
     ? h.img([
         h.Src(props.src ?? ''),
         h.Alt(props.alt ?? ''),
-        h.Class(className(styles.image)),
+        h.Class(className(reset.media, styles.image)),
         h.Loading('lazy'),
         ...(props.alt === undefined || props.alt === ''
           ? [h.AriaHidden(true)]
@@ -252,7 +254,7 @@ export const thumbnail = <Msg>(
         [
           h.Type('button'),
           h.AriaLabel(`Open ${accessibleName}`),
-          h.Class(className(styles.interactiveButton)),
+          h.Class(className(reset.button, styles.interactiveButton)),
           h.OnClick(props.onClick as Msg),
         ],
         [imageNode],
@@ -312,7 +314,7 @@ export const thumbnail = <Msg>(
                 [
                   h.Type('button'),
                   h.AriaLabel(`Remove ${accessibleName}`),
-                  h.Class(className(styles.removeButton)),
+                  h.Class(className(reset.button, styles.removeButton)),
                   h.Style({
                     '--thumbnail-overlay': 'oklab(0 0 0 / 0.4)',
                     '--thumbnail-overlay-hover': 'oklab(0 0 0 / 0.5)',

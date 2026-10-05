@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import { Stream } from 'effect'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
@@ -173,7 +174,11 @@ export const mailItem = <M>(
   h: HtmlBuilder<M>,
 ): Html =>
   h.button(
-    [h.Type('button'), h.OnClick(onClick), h.Class(className(styles.mailItem))],
+    [
+      h.Type('button'),
+      h.OnClick(onClick),
+      h.Class(className(reset.button, styles.mailItem)),
+    ],
     children,
   )
 export const blockSkeleton = <M>(

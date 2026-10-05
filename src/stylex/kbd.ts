@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import type { ComponentLayoutStyle } from './contracts'
@@ -40,7 +41,7 @@ export const kbd = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html =>
       ...(props.icon === undefined
         ? []
         : [h.DataAttribute('icon', props.icon)]),
-      h.Class(className(styles.key, props.layoutStyle)),
+      h.Class(className(reset.code, styles.key, props.layoutStyle)),
     ],
     [...props.children],
   )
@@ -48,7 +49,7 @@ export const kbdGroup = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html =>
   h.kbd(
     [
       h.DataAttribute('slot', 'kbd-group'),
-      h.Class(className(styles.group, props.layoutStyle)),
+      h.Class(className(reset.code, styles.group, props.layoutStyle)),
     ],
     [...props.children],
   )

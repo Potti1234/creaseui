@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 /* Ported from Meta Astryx TopNav (packages/core/src/TopNav/) — StyleX
    renderer; visual spec adapted to Crease UI tokens. */
 
@@ -638,6 +639,7 @@ export const topNavItem = <Msg>(
           h.Type('button'),
           h.Class(
             className(
+              reset.button,
               styles.item,
               !disabled && styles.itemHover,
               item.isSelected === true && styles.itemSelected,
@@ -657,6 +659,7 @@ export const topNavItem = <Msg>(
       [
         h.Class(
           className(
+            reset.link,
             styles.item,
             !disabled && styles.itemHover,
             item.isSelected === true && styles.itemSelected,
@@ -675,6 +678,7 @@ export const topNavItem = <Msg>(
     [
       h.Class(
         className(
+          reset.link,
           styles.item,
           !disabled && styles.itemHover,
           item.isSelected === true && styles.itemSelected,
@@ -741,7 +745,7 @@ const renderMenuItem = <Msg>(
   ]
   return item.href === undefined
     ? h.div(attrs, inner)
-    : h.a([...attrs, h.Href(item.href)], inner)
+    : h.a([h.Class(className(reset.link)), ...attrs, h.Href(item.href)], inner)
 }
 
 const renderDropdown = <Msg>(
@@ -765,6 +769,7 @@ const renderDropdown = <Msg>(
           h.Type('button'),
           h.Class(
             className(
+              reset.button,
               styles.trigger,
               styles.itemHover,
               open && styles.triggerOpen,
@@ -838,7 +843,7 @@ export const topNavMegaMenuItem = <Msg>(
         [...attrs, ...(onActivate === undefined ? [] : [h.Tabindex(0)])],
         inner,
       )
-    : h.a([...attrs, h.Href(item.href)], inner)
+    : h.a([h.Class(className(reset.link)), ...attrs, h.Href(item.href)], inner)
 }
 
 export const topNavMegaMenuFeaturedCard = <Msg>(
@@ -852,7 +857,7 @@ export const topNavMegaMenuFeaturedCard = <Msg>(
         ? []
         : [
             h.img([
-              h.Class(className(styles.featuredImage)),
+              h.Class(className(reset.media, styles.featuredImage)),
               h.Src(card.image),
               h.Alt(card.imageAlt ?? ''),
               ...(card.imageAlt === undefined
@@ -877,7 +882,7 @@ export const topNavMegaMenuFeaturedCard = <Msg>(
             : [
                 h.a(
                   [
-                    h.Class(className(styles.featuredLink)),
+                    h.Class(className(reset.link, styles.featuredLink)),
                     h.Href(card.linkHref),
                   ],
                   [`${card.linkLabel} →`],
@@ -910,6 +915,7 @@ const renderMegaMenu = <Msg>(
           h.Type('button'),
           h.Class(
             className(
+              reset.button,
               styles.trigger,
               styles.itemHover,
               open && styles.triggerOpen,
@@ -1003,7 +1009,7 @@ const renderHeadingText = <Msg>(
             hasAnyHref && heading.superheadingHref !== undefined && hasMenu
               ? h.a(
                   [
-                    h.Class(className(styles.headingSub)),
+                    h.Class(className(reset.link, styles.headingSub)),
                     h.Href(heading.superheadingHref),
                   ],
                   [heading.superheading],
@@ -1019,7 +1025,7 @@ const renderHeadingText = <Msg>(
           hasAnyHref && heading.headingHref !== undefined && hasMenu
             ? h.a(
                 [
-                  h.Class(className(styles.headingTitle)),
+                  h.Class(className(reset.link, styles.headingTitle)),
                   h.Href(heading.headingHref),
                 ],
                 [heading.heading ?? ''],
@@ -1037,7 +1043,7 @@ const renderHeadingText = <Msg>(
             hasAnyHref && heading.subheadingHref !== undefined && hasMenu
               ? h.a(
                   [
-                    h.Class(className(styles.headingSub)),
+                    h.Class(className(reset.link, styles.headingSub)),
                     h.Href(heading.subheadingHref),
                   ],
                   [heading.subheading],
@@ -1079,7 +1085,7 @@ const renderHeading = <Msg>(
       ? logoSpan
       : h.a(
           [
-            h.Class(className(styles.headingLogo)),
+            h.Class(className(reset.link, styles.headingLogo)),
             h.Href(heading.headingHref),
             h.AriaLabel(heading.logoLabel ?? heading.heading ?? 'Home'),
           ],
@@ -1093,7 +1099,7 @@ const renderHeading = <Msg>(
   const chevronTrigger = h.button(
     [
       h.Type('button'),
-      h.Class(className(styles.headingChevron)),
+      h.Class(className(reset.button, styles.headingChevron)),
       h.Id(NavMenu.triggerDomId(domBase)),
       h.AriaHasPopup('menu'),
       h.AriaExpanded(open),
@@ -1146,7 +1152,9 @@ const renderHeading = <Msg>(
               h.button(
                 [
                   h.Type('button'),
-                  h.Class(className(styles.headingPopoverHeading)),
+                  h.Class(
+                    className(reset.button, styles.headingPopoverHeading),
+                  ),
                   h.OnClick(emitMenu(NavMenu.Message.ClosedNavMenu())),
                 ],
                 [
@@ -1184,7 +1192,14 @@ const renderHeading = <Msg>(
                   ]
                   return item.href === undefined
                     ? h.div(attrs, [item.label])
-                    : h.a([...attrs, h.Href(item.href)], [item.label])
+                    : h.a(
+                        [
+                          h.Class(className(reset.link)),
+                          ...attrs,
+                          h.Href(item.href),
+                        ],
+                        [item.label],
+                      )
                 }),
               ),
             ],
@@ -1209,7 +1224,9 @@ const renderHeading = <Msg>(
   if (hasAnyHref && !hasMenu && heading.menu === undefined) {
     return h.a(
       [
-        h.Class(className(styles.headingRoot, styles.headingInteractive)),
+        h.Class(
+          className(reset.link, styles.headingRoot, styles.headingInteractive),
+        ),
         h.Href(heading.headingHref ?? ''),
       ],
       [

@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import type { ColumnDef, Table } from '@tanstack/table-core'
 import {
   createTable,
@@ -220,6 +221,7 @@ const checkbox = <Message>(
       h.OnClick(message),
       h.Class(
         className(
+          reset.button,
           styles.checkbox,
           (checked || indeterminate) && styles.checkboxChecked,
         ),
@@ -305,7 +307,7 @@ const calendarMonth = <Message>(
                         }),
                       ),
                     ),
-                    h.Class(className(styles.calendarNavigation)),
+                    h.Class(className(reset.button, styles.calendarNavigation)),
                   ],
                   [Icon.chevronLeft({ class: className(styles.smallIcon) }, h)],
                 ),
@@ -341,6 +343,7 @@ const calendarMonth = <Message>(
                     ),
                     h.Class(
                       className(
+                        reset.button,
                         styles.calendarNavigation,
                         model.calendarMonthOffset >= 0 &&
                           styles.calendarDayDisabled,
@@ -411,6 +414,7 @@ const calendarMonth = <Message>(
                 ),
                 h.Class(
                   className(
+                    reset.button,
                     styles.calendarDay,
                     selected && styles.calendarDaySelected,
                     inRange && styles.calendarDayRange,
@@ -464,7 +468,7 @@ const filterPanel = <Data, Message>(
                 )
               : Option.none(),
           ),
-          h.Class(className(styles.filterInput)),
+          h.Class(className(reset.input, styles.filterInput)),
         ]),
         h.div(
           [h.Class(className(styles.filterActions))],
@@ -525,7 +529,7 @@ const filterPanel = <Data, Message>(
                     [
                       h.Type('button'),
                       h.OnClick(clear),
-                      h.Class(className(styles.resetText)),
+                      h.Class(className(reset.button, styles.resetText)),
                     ],
                     ['Zurücksetzen'],
                   ),
@@ -544,7 +548,7 @@ const filterPanel = <Data, Message>(
                     State.Message.ChangedTanStackEnumSearch({ value }),
                   ),
                 ),
-                h.Class(className(styles.filterInput)),
+                h.Class(className(reset.input, styles.filterInput)),
               ]),
             ]),
         h.div(
@@ -559,6 +563,7 @@ const filterPanel = <Data, Message>(
               [h.Class(className(styles.enumOption))],
               [
                 h.input([
+                  h.Class(className(reset.input)),
                   h.Type('checkbox'),
                   h.Checked(checked),
                   h.OnChange(() =>
@@ -641,7 +646,7 @@ const filterPanel = <Data, Message>(
                     }),
                   ),
                 ),
-                h.Class(className(styles.select)),
+                h.Class(className(reset.input, styles.select)),
               ],
               [
                 h.option([h.Value('eq')], ['Ist gleich']),
@@ -680,7 +685,7 @@ const filterPanel = <Data, Message>(
                           State.Message.ChangedTanStackFilterDraft({ value }),
                         ),
                       ),
-                      h.Class(className(styles.filterInput)),
+                      h.Class(className(reset.input, styles.filterInput)),
                     ]),
                     ...(column.filter.unit
                       ? [h.span([], [column.filter.unit])]
@@ -710,7 +715,7 @@ const filterPanel = <Data, Message>(
                                 ),
                               ),
                             ),
-                            h.Class(className(styles.filterInput)),
+                            h.Class(className(reset.input, styles.filterInput)),
                           ]),
                           ...(column.filter.unit
                             ? [h.span([], [column.filter.unit])]
@@ -725,7 +730,7 @@ const filterPanel = <Data, Message>(
         ...(invalid && props.model.filterDraft !== ''
           ? [
               h.p(
-                [h.Class(className(styles.errorText))],
+                [h.Class(className(reset.text, styles.errorText))],
                 ['Bitte einen gültigen Wert eingeben.'],
               ),
             ]
@@ -792,7 +797,7 @@ const filterPanel = <Data, Message>(
                     [
                       h.Type('button'),
                       h.OnClick(clear),
-                      h.Class(className(styles.datePresetButton)),
+                      h.Class(className(reset.button, styles.datePresetButton)),
                     ],
                     [
                       Icon.x({ class: className(styles.smallIcon) }, h),
@@ -813,7 +818,7 @@ const filterPanel = <Data, Message>(
                 [
                   h.Type('button'),
                   h.OnClick(preset(Number(hours))),
-                  h.Class(className(styles.datePresetButton)),
+                  h.Class(className(reset.button, styles.datePresetButton)),
                 ],
                 [String(label)],
               ),
@@ -829,7 +834,7 @@ const filterPanel = <Data, Message>(
                     }),
                   ),
                 ),
-                h.Class(className(styles.datePresetButton)),
+                h.Class(className(reset.button, styles.datePresetButton)),
               ],
               [
                 Icon.calendarDays({ class: className(styles.smallIcon) }, h),
@@ -880,7 +885,7 @@ const filterPanel = <Data, Message>(
                     State.Message.ChangedTanStackFilterDraft({ value }),
                   ),
                 ),
-                h.Class(className(styles.filterInput)),
+                h.Class(className(reset.input, styles.filterInput)),
               ]),
             ],
           ),
@@ -898,7 +903,7 @@ const filterPanel = <Data, Message>(
                     }),
                   ),
                 ),
-                h.Class(className(styles.filterInput)),
+                h.Class(className(reset.input, styles.filterInput)),
               ]),
             ],
           ),
@@ -991,6 +996,7 @@ const filterControl = <Data, Message>(
           ),
           h.Class(
             className(
+              reset.button,
               styles.filterTrigger,
               filter !== undefined && styles.filterTriggerActive,
             ),
@@ -1128,7 +1134,9 @@ const layoutMenu = <Data, Message>(
                                 }),
                               ),
                             ),
-                            h.Class(className(styles.visibilityButton)),
+                            h.Class(
+                              className(reset.button, styles.visibilityButton),
+                            ),
                           ],
                           [
                             hidden
@@ -1278,6 +1286,7 @@ export const tanStackDataTable = <Data, Message>(
             ),
             h.Class(
               className(
+                reset.button,
                 styles.backdrop,
                 props.model.openFilterColumnId !== '' && styles.filterBackdrop,
               ),
@@ -1299,7 +1308,7 @@ export const tanStackDataTable = <Data, Message>(
                 h.OnClick(
                   props.toParentMessage(State.Message.ResetTanStackTableView()),
                 ),
-                h.Class(className(styles.toolbarButton)),
+                h.Class(className(reset.button, styles.toolbarButton)),
               ],
               [Icon.rotateCcw({ class: className(styles.smallIcon) }, h)],
             ),
@@ -1313,7 +1322,7 @@ export const tanStackDataTable = <Data, Message>(
                     State.Message.ResetTanStackColumnWidths(),
                   ),
                 ),
-                h.Class(className(styles.toolbarButton)),
+                h.Class(className(reset.button, styles.toolbarButton)),
               ],
               [Icon.moveHorizontal({ class: className(styles.smallIcon) }, h)],
             ),
@@ -1333,7 +1342,9 @@ export const tanStackDataTable = <Data, Message>(
                               State.Message.ToggledTanStackActiveFiltersMenu(),
                             ),
                           ),
-                          h.Class(className(styles.toolbarButton)),
+                          h.Class(
+                            className(reset.button, styles.toolbarButton),
+                          ),
                         ],
                         [
                           Icon.filter(
@@ -1395,7 +1406,12 @@ export const tanStackDataTable = <Data, Message>(
                                               ),
                                             ),
                                           ),
-                                          h.Class(className(styles.iconButton)),
+                                          h.Class(
+                                            className(
+                                              reset.button,
+                                              styles.iconButton,
+                                            ),
+                                          ),
                                         ],
                                         [
                                           Icon.x(
@@ -1649,7 +1665,12 @@ export const tanStackDataTable = <Data, Message>(
                                           }),
                                         ),
                                       ),
-                                      h.Class(className(styles.sortButton)),
+                                      h.Class(
+                                        className(
+                                          reset.button,
+                                          styles.sortButton,
+                                        ),
+                                      ),
                                     ],
                                     label,
                                   )
@@ -1990,7 +2011,12 @@ export const tanStackDataTable = <Data, Message>(
                                           )
                                         : Option.none(),
                                     ),
-                                    h.Class(className(styles.pageSizeInput)),
+                                    h.Class(
+                                      className(
+                                        reset.input,
+                                        styles.pageSizeInput,
+                                      ),
+                                    ),
                                   ]),
                                   ...(props.model.pageSizeMenuOpen
                                     ? [
@@ -2013,6 +2039,7 @@ export const tanStackDataTable = <Data, Message>(
                                                 ),
                                                 h.Class(
                                                   className(
+                                                    reset.button,
                                                     styles.pageSizeOption,
                                                     size ===
                                                       props.model.pageSize &&

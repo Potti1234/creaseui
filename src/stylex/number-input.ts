@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 /* Ported from Meta Astryx NumberInput (packages/core/src/NumberInput) —
    examples and visual spec adapted to Crease UI tokens.
 
@@ -499,6 +500,7 @@ const view = defineView<Model, Message, NumberInputViewInputs>(
       h.DataAttribute('slot', 'number-input-input'),
       h.Class(
         className(
+          reset.input,
           styles.input,
           props.isDisabled === true && styles.inputDisabled,
         ),
@@ -552,7 +554,7 @@ const view = defineView<Model, Message, NumberInputViewInputs>(
                 focusSelector: `#${fieldIds.input}`,
               }),
               h.DataAttribute('slot', 'number-input-clear'),
-              h.Class(className(styles.clearButton)),
+              h.Class(className(reset.button, styles.clearButton)),
             ],
             [Icon.x({ class: className(styles.iconSm) }, h)],
           )
@@ -566,7 +568,7 @@ const view = defineView<Model, Message, NumberInputViewInputs>(
               h.AriaLabel(statusButtonLabel(props.status.type)),
               h.Title(props.status.message ?? ''),
               h.DataAttribute('slot', 'number-input-status-icon'),
-              h.Class(className(styles.statusIconButton)),
+              h.Class(className(reset.button, styles.statusIconButton)),
             ],
             [
               Icon.icon(
@@ -627,7 +629,7 @@ const view = defineView<Model, Message, NumberInputViewInputs>(
                     propagation: 'Stop',
                     focusSelector: `#${fieldIds.input}`,
                   }),
-                  h.Class(className(styles.stepperButton, extra)),
+                  h.Class(className(reset.button, styles.stepperButton, extra)),
                 ],
                 [Icon.icon(icon, { class: className(styles.stepperIcon) }, h)],
               ),
@@ -741,7 +743,7 @@ const view = defineView<Model, Message, NumberInputViewInputs>(
                 [
                   h.Id(fieldIds.description),
                   h.DataAttribute('slot', 'number-input-description'),
-                  h.Class(className(styles.description)),
+                  h.Class(className(reset.text, styles.description)),
                 ],
                 [props.description],
               ),

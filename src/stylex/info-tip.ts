@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 /* Ported from Meta Astryx InfoTip (packages/lab/src/InfoTip/InfoTip.tsx) — examples and visual spec adapted to Crease UI tokens.
 
    Astryx wraps Tooltip around a real button with touchTrigger="tap" so the tap
@@ -125,7 +126,7 @@ export const infoTip = <Msg>(
           h.AriaLabel(props.label ?? 'More information'),
           h.AriaDescribedBy(panelId),
           h.DataAttribute('slot', 'info-tip-trigger'),
-          h.Class(className(styles.trigger, props.layoutStyle)),
+          h.Class(className(reset.button, styles.trigger, props.layoutStyle)),
           h.OnMouseEnter(send(Message.EnteredTooltipTrigger())),
           h.OnMouseLeave(send(Message.LeftTooltipTrigger())),
           h.OnFocus(send(Message.FocusedTooltipTrigger())),

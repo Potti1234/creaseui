@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import { Option } from 'effect'
@@ -71,7 +72,9 @@ const styles = stylex.create({
     overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',
+    fontFamily: 'inherit',
     isolation: 'isolate',
+    lineHeight: 'inherit',
     position: 'relative',
   },
   card: {
@@ -498,6 +501,7 @@ export const codeBlock = <Msg>(
               h.DataAttribute('slot', 'code-block-code'),
               h.Class(
                 className(
+                  reset.code,
                   styles.code,
                   size === 'sm' ? styles.codeSm : styles.codeMd,
                   isWrapped ? styles.codeWrapped : null,
@@ -550,6 +554,7 @@ export const codeBlock = <Msg>(
       h.DataAttribute('container', container),
       h.Class(
         className(
+          reset.text,
           styles.root,
           container === 'card' ? styles.card : styles.section,
           props.layoutStyle,

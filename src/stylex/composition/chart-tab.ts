@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -45,7 +46,11 @@ export const chartTab = <Message>(
     [
       h.Href(props.href),
       h.Class(
-        className(styles.base, props.active ? styles.active : styles.inactive),
+        className(
+          reset.link,
+          styles.base,
+          props.active ? styles.active : styles.inactive,
+        ),
       ),
     ],
     props.children,

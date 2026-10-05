@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 /* Ported from Meta Astryx Lightbox (packages/core/src/Lightbox/Lightbox.tsx) — examples and visual spec adapted to Crease UI tokens. */
 
 import { Option } from 'effect'
@@ -235,7 +236,7 @@ const mediaView = <Msg>(
             ]
           : []),
         h.DataAttribute('slot', 'lightbox-media'),
-        h.Class(className(styles.video)),
+        h.Class(className(reset.media, styles.video)),
       ],
       [],
     )
@@ -293,7 +294,7 @@ const mediaView = <Msg>(
           transitionDuration: '200ms',
           transitionTimingFunction: 'ease-out',
         }),
-        h.Class(className(styles.media)),
+        h.Class(className(reset.media, styles.media)),
       ]),
     ],
   )
@@ -428,7 +429,9 @@ export const lightbox = <Msg>(
                               hd.p(
                                 [
                                   hd.DataAttribute('slot', 'lightbox-caption'),
-                                  hd.Class(className(styles.caption)),
+                                  hd.Class(
+                                    className(reset.text, styles.caption),
+                                  ),
                                 ],
                                 [item.caption],
                               ),
@@ -453,6 +456,7 @@ export const lightbox = <Msg>(
                               hd.AriaLabel('Previous image'),
                               hd.Class(
                                 className(
+                                  reset.button,
                                   styles.controlButton,
                                   styles.navPrevious,
                                 ),
@@ -473,7 +477,11 @@ export const lightbox = <Msg>(
                               hd.OnClick(send(Message.NavigatedNext())),
                               hd.AriaLabel('Next image'),
                               hd.Class(
-                                className(styles.controlButton, styles.navNext),
+                                className(
+                                  reset.button,
+                                  styles.controlButton,
+                                  styles.navNext,
+                                ),
                               ),
                               hd.DataAttribute('slot', 'lightbox-next'),
                             ],
@@ -490,7 +498,13 @@ export const lightbox = <Msg>(
                       [
                         ...closeButton,
                         hd.AriaLabel('Close'),
-                        hd.Class(className(styles.controlButton, styles.close)),
+                        hd.Class(
+                          className(
+                            reset.button,
+                            styles.controlButton,
+                            styles.close,
+                          ),
+                        ),
                         hd.DataAttribute('slot', 'lightbox-close'),
                       ],
                       [Icon.x({ class: className(styles.iconSm) }, h)],

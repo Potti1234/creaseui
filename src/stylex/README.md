@@ -8,7 +8,7 @@ StyleX and shared `src/lib` modules. Configure the StyleX compiler with the
 semantics in [`stylex.config.js`](../../stylex.config.js) and provide the theme
 variables referenced by `tokens.stylex.ts`, `foundations-tokens.stylex.ts`, and
 `complex-tokens.stylex.ts` (the light and dark variable blocks in
-[`src/styles.css`](../styles.css) are a starting point). The application owns
+[`src/theme.css`](../theme.css) are a starting point). The application owns
 its document font, line height, and background.
 
 Components must not depend on Tailwind preflight. The `className()` adapter
@@ -24,6 +24,9 @@ conditions inline in `stylex.create`; they are compile-time expressions.
 `npx playwright test e2e/stylex-preflight.spec.ts --project=chromium` builds a
 separate StyleX consumer without Tailwind and compares computed styles and
 screenshots before and after adding preflight, in light and dark themes.
+`npm run test:sites` also checks every component documentation page in both
+production builds and compares StyleX preview geometry and computed styles
+with and without preflight. The StyleX site itself has no global element reset.
 
 ## Authoring
 

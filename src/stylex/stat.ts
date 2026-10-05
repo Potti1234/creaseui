@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -130,7 +131,7 @@ const deltaGlyph = <Msg>(
       h.StrokeWidth('1.5'),
       h.StrokeLinecap('round'),
       h.StrokeLinejoin('round'),
-      h.Class(className(styles.glyph)),
+      h.Class(className(reset.svg, styles.glyph)),
       h.DataAttribute('slot', 'stat-delta-glyph'),
     ],
     [h.path([h.D(DELTA_GLYPH_PATHS[direction])], [])],

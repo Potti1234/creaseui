@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -33,15 +34,15 @@ const styles = stylex.create({
     overflow: { default: 'hidden', ':focus': 'visible' },
     paddingBlock: { default: 0, ':focus': '0.5rem' },
     paddingInline: { default: 0, ':focus': '1rem' },
-    backgroundColor: { default: null, ':focus': tokens.card },
+    backgroundColor: { default: 'transparent', ':focus': tokens.card },
     clipPath: { default: 'inset(50%)', ':focus': 'none' },
-    color: { default: null, ':focus': tokens.primary },
+    color: { default: 'inherit', ':focus': tokens.primary },
     fontSize: { default: null, ':focus': '0.875rem' },
     fontWeight: { default: null, ':focus': 600 },
     insetInlineStart: { default: 0, ':focus': '0.5rem' },
     lineHeight: { default: null, ':focus': '1.25rem' },
     position: { default: 'absolute', ':focus': 'fixed' },
-    textDecorationLine: { default: null, ':focus': 'none' },
+    textDecorationLine: { default: 'none', ':focus': 'none' },
     whiteSpace: { default: 'nowrap', ':focus': 'normal' },
     zIndex: { default: null, ':focus': 9999 },
     height: { default: '1px', ':focus': 'auto' },
@@ -305,7 +306,7 @@ export const appShell = <Msg>(
         [
           h.Href(`#${mainId}`),
           h.DataAttribute('testid', 'skip-to-content'),
-          h.Class(className(styles.skipLink)),
+          h.Class(className(reset.link, styles.skipLink)),
         ],
         [props.skipLinkLabel ?? 'Skip to content'],
       ),

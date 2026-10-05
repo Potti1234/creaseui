@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { Tabs as TabsPrimitive } from '@foldkit/ui'
@@ -182,6 +183,7 @@ const renderTabs = <Value extends string, Msg>(
                             : [h.Dir(p.direction)]),
                           h.Class(
                             className(
+                              reset.button,
                               styles.trigger,
                               orientation === 'vertical' &&
                                 styles.triggerVertical,

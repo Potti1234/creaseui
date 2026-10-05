@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { Select as SelectPrimitive } from '@foldkit/ui'
@@ -159,6 +160,7 @@ export const nativeSelect = <Msg>(
                 h.DataAttribute('size', p.size ?? 'default'),
                 h.Class(
                   className(
+                    reset.input,
                     styles.control,
                     p.isInvalid && styles.invalid,
                     p.isDisabled && styles.disabled,
@@ -199,7 +201,7 @@ export const nativeSelect = <Msg>(
                       h.p(
                         [
                           ...description,
-                          h.Class(className(styles.description)),
+                          h.Class(className(reset.text, styles.description)),
                         ],
                         [p.description],
                       ),

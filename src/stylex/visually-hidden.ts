@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -72,7 +73,7 @@ export const visuallyHidden = <Msg>(
   h[props.as ?? 'span'](
     [
       h.DataAttribute('slot', 'visually-hidden'),
-      h.Class(className(styles.visuallyHidden)),
+      h.Class(className(reset.text, styles.visuallyHidden)),
       ...(props.ariaLive === undefined ? [] : [h.AriaLive(props.ariaLive)]),
       ...(props.role === undefined ? [] : [h.Role(props.role)]),
       ...(props.id === undefined ? [] : [h.Id(props.id)]),

@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as Icon from '@/lib/icon'
@@ -72,6 +73,7 @@ export const checkbox = <Msg>(
       control: [
         h.Class(
           className(
+            reset.button,
             styles.control,
             checkboxControlScope,
             p.isChecked && styles.checked,
@@ -83,7 +85,7 @@ export const checkbox = <Msg>(
       indicator: [h.Class(className(styles.indicator))],
       text: [h.Class(className(styles.text))],
       label: [h.Class(className(styles.label))],
-      description: [h.Class(className(styles.description))],
+      description: [h.Class(className(reset.text, styles.description))],
     },
     p.isIndeterminate === true
       ? Icon.minus({ class: className(styles.icon) }, h)

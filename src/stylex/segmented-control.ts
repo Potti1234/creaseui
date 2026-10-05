@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 /* Ported from Meta Astryx SegmentedControl (packages/core/src/SegmentedControl/SegmentedControl.tsx, SegmentedControlItem.tsx) — examples and visual spec adapted to Crease UI tokens. */
 
 import * as stylex from '@stylexjs/stylex'
@@ -228,6 +229,7 @@ const renderSegmentedControl = <Value extends string, Msg>(
           ht.DataAttribute('value', content.value),
           ht.Class(
             className(
+              reset.button,
               styles.item,
               ITEM_SIZE_STYLE[size] as ComponentLayoutStyle,
               layout === 'fill' && styles.itemFill,

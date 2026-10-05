@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import { Command, type Update } from 'foldkit'
 import { Effect, Option, Queue, Schema as S, Stream } from 'effect'
 import * as Mount from 'foldkit/mount'
@@ -2499,6 +2500,7 @@ const menu = <Msg>(ctx: Ctx<Msg>): Html => {
           h.AriaSelected(highlighted),
           h.Class(
             className(
+              reset.button,
               styles.menuItem,
               ...(highlighted ? [styles.menuItemActive] : []),
             ),
@@ -2551,7 +2553,13 @@ const editorSelect = <Msg>(
           h.button(
             [
               h.Type('button'),
-              h.Class(className(styles.inputControl, styles.selectTrigger)),
+              h.Class(
+                className(
+                  reset.button,
+                  styles.inputControl,
+                  styles.selectTrigger,
+                ),
+              ),
               h.OnClick(
                 toParent(
                   Message.SetEditorMenu({ menu: isOpen ? null : args.menuKey }),
@@ -2596,6 +2604,7 @@ const editorSelect = <Msg>(
                         h.AriaSelected(option.value === args.selected),
                         h.Class(
                           className(
+                            reset.button,
                             styles.menuItem,
                             ...(option.value === args.selected
                               ? [styles.menuItemActive]
@@ -2636,7 +2645,7 @@ const editorChips = <Msg>(
             h.button(
               [
                 h.Type('button'),
-                h.Class(className(styles.iconButton)),
+                h.Class(className(reset.button, styles.iconButton)),
                 h.AriaLabel(UI.removeFilter),
                 h.OnClick(toParent(args.onRemove(item.id))),
               ],
@@ -2697,7 +2706,7 @@ const editorValueControl = <Msg>(ctx: Ctx<Msg>): Html => {
   const textInput = (inputType: string, value: string, placeholder: string) =>
     h.input([
       h.Type(inputType),
-      h.Class(className(styles.inputControl)),
+      h.Class(className(reset.input, styles.inputControl)),
       h.Value(value),
       h.Placeholder(placeholder),
       h.OnInput((value: string) =>
@@ -2781,7 +2790,7 @@ const editorValueControl = <Msg>(ctx: Ctx<Msg>): Html => {
                 UI.startDateLabel,
                 h.input([
                   h.Type('date'),
-                  h.Class(className(styles.inputControl)),
+                  h.Class(className(reset.input, styles.inputControl)),
                   h.Value(start),
                   h.OnInput((raw: string) =>
                     toParent(
@@ -2803,7 +2812,7 @@ const editorValueControl = <Msg>(ctx: Ctx<Msg>): Html => {
                 UI.endDateLabel,
                 h.input([
                   h.Type('date'),
-                  h.Class(className(styles.inputControl)),
+                  h.Class(className(reset.input, styles.inputControl)),
                   h.Value(end),
                   h.OnInput((raw: string) =>
                     toParent(
@@ -2868,7 +2877,7 @@ const editorValueControl = <Msg>(ctx: Ctx<Msg>): Html => {
                 tail: h.button(
                   [
                     h.Type('button'),
-                    h.Class(className(styles.chipTailButton)),
+                    h.Class(className(reset.button, styles.chipTailButton)),
                     h.OnClick(
                       toParent(
                         Message.SetEditorMenu({
@@ -2889,7 +2898,7 @@ const editorValueControl = <Msg>(ctx: Ctx<Msg>): Html => {
                           [
                             h.Key(item.value),
                             h.Type('button'),
-                            h.Class(className(styles.menuItem)),
+                            h.Class(className(reset.button, styles.menuItem)),
                             h.OnClick(
                               toParent(
                                 Message.ChangedEditorDraft({
@@ -2943,7 +2952,7 @@ const editorValueControl = <Msg>(ctx: Ctx<Msg>): Html => {
                   }),
                 tail: h.input([
                   h.Type('text'),
-                  h.Class(className(styles.chipTailInput)),
+                  h.Class(className(reset.input, styles.chipTailInput)),
                   h.Value(model.editorQuery),
                   h.Placeholder(UI.searchPlaceholder),
                   h.OnInput((value: string) =>
@@ -2963,7 +2972,7 @@ const editorValueControl = <Msg>(ctx: Ctx<Msg>): Html => {
                           [
                             h.Key(item.id),
                             h.Type('button'),
-                            h.Class(className(styles.menuItem)),
+                            h.Class(className(reset.button, styles.menuItem)),
                             h.OnClick(
                               toParent(
                                 Message.ChangedEditorDraft({
@@ -3003,7 +3012,7 @@ const editorValueControl = <Msg>(ctx: Ctx<Msg>): Html => {
               }),
             tail: h.input([
               h.Type('text'),
-              h.Class(className(styles.chipTailInput)),
+              h.Class(className(reset.input, styles.chipTailInput)),
               h.Value(model.editorQuery),
               h.Placeholder(UI.addValuesPlaceholder),
               h.OnInput((value: string) =>
@@ -3082,7 +3091,7 @@ const nestedEditor = <Msg>(ctx: Ctx<Msg>): Html => {
             case 'float':
               return h.input([
                 h.Type('number'),
-                h.Class(className(styles.inputControl)),
+                h.Class(className(reset.input, styles.inputControl)),
                 h.Value(
                   subValue !== null &&
                     (subValue.type === 'integer' || subValue.type === 'float')
@@ -3110,7 +3119,7 @@ const nestedEditor = <Msg>(ctx: Ctx<Msg>): Html => {
             default:
               return h.input([
                 h.Type('text'),
-                h.Class(className(styles.inputControl)),
+                h.Class(className(reset.input, styles.inputControl)),
                 h.Value(subValue?.type === 'string' ? subValue.value : ''),
                 h.Placeholder(UI.enterValuePlaceholder),
                 h.OnInput((value: string) =>
@@ -3159,7 +3168,13 @@ const nestedEditor = <Msg>(ctx: Ctx<Msg>): Html => {
             h.button(
               [
                 h.Type('button'),
-                h.Class(className(styles.inputControl, styles.removeSubButton)),
+                h.Class(
+                  className(
+                    reset.button,
+                    styles.inputControl,
+                    styles.removeSubButton,
+                  ),
+                ),
                 h.AriaLabel(UI.removeFilter),
                 h.OnClick(toParent(Message.RemovedNestedSubFilter({ index }))),
               ],
@@ -3171,7 +3186,7 @@ const nestedEditor = <Msg>(ctx: Ctx<Msg>): Html => {
       h.button(
         [
           h.Type('button'),
-          h.Class(className(styles.addFilterButton)),
+          h.Class(className(reset.button, styles.addFilterButton)),
           h.OnClick(toParent(Message.AddedNestedSubFilter())),
         ],
         [UI.addFilter],
@@ -3241,7 +3256,7 @@ const editorPopover = <Msg>(ctx: Ctx<Msg>): Html => {
             ? h.button(
                 [
                   h.Type('button'),
-                  h.Class(className(styles.ghostButton)),
+                  h.Class(className(reset.button, styles.ghostButton)),
                   h.OnClick(toParent(Message.ClickedEditorDelete())),
                 ],
                 [UI.deleteLabel],
@@ -3253,7 +3268,7 @@ const editorPopover = <Msg>(ctx: Ctx<Msg>): Html => {
               h.button(
                 [
                   h.Type('button'),
-                  h.Class(className(styles.ghostButton)),
+                  h.Class(className(reset.button, styles.ghostButton)),
                   h.OnClick(toParent(Message.ClickedEditorCancel())),
                 ],
                 [UI.cancelLabel],
@@ -3263,6 +3278,7 @@ const editorPopover = <Msg>(ctx: Ctx<Msg>): Html => {
                   h.Type('button'),
                   h.Class(
                     className(
+                      reset.button,
                       styles.primaryButton,
                       ...(canApply ? [] : [styles.primaryButtonDisabled]),
                     ),
@@ -3327,7 +3343,7 @@ const tokenPill = <Msg>(
       h.button(
         [
           h.Type('button'),
-          h.Class(className(styles.chipButton)),
+          h.Class(className(reset.button, styles.chipButton)),
           h.AriaDisabled(isDisabled),
           h.OnClick(toParent(Message.ClickedEditFilterToken({ index }))),
         ],
@@ -3348,7 +3364,7 @@ const tokenPill = <Msg>(
             h.button(
               [
                 h.Type('button'),
-                h.Class(className(styles.iconButton)),
+                h.Class(className(reset.button, styles.iconButton)),
                 h.AriaLabel(UI.removeFilter),
                 h.OnClick(
                   toParent(Message.ClickedRemoveFilterToken({ index })),
@@ -3419,7 +3435,7 @@ export const powerSearch = <Msg>(
             h.Role('combobox'),
             h.AriaExpanded(menuOpen),
             h.AriaLabel(UI.searchLabel),
-            h.Class(className(styles.searchInput)),
+            h.Class(className(reset.input, styles.searchInput)),
             h.Value(model.query),
             h.Placeholder(
               filters.length === 0 ? (props.placeholder ?? UI.placeholder) : '',
@@ -3467,7 +3483,7 @@ export const powerSearch = <Msg>(
                 h.button(
                   [
                     h.Type('button'),
-                    h.Class(className(styles.iconButton)),
+                    h.Class(className(reset.button, styles.iconButton)),
                     h.AriaLabel('Clear'),
                     h.OnClick(toParent(Message.ClickedClearPowerSearch())),
                   ],

@@ -183,7 +183,7 @@ const xIcon = <Msg>(h: HtmlBuilder<Msg>): Html => {
       h.StrokeWidth('2'),
       h.StrokeLinecap('round'),
       h.StrokeLinejoin('round'),
-      h.Class(className(styles.icon)),
+      h.Class(className(reset.svg, styles.icon)),
       h.AriaHidden(true),
     ],
     [h.path([h.D('M18 6 6 18')], []), h.path([h.D('m6 6 12 12')], [])],

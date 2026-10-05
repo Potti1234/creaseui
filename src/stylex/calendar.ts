@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Option } from 'effect'
 import { Match as M } from 'effect'
@@ -331,7 +332,7 @@ const navigationButton = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Html =>
   h.button(
-    [...attributes, h.Class(className(styles.navButton))],
+    [...attributes, h.Class(className(reset.button, styles.navButton))],
     [
       (direction === 'previous') !== (options.direction === 'rtl')
         ? Icon.chevronLeft({ class: className(styles.navIcon) }, h)
@@ -409,7 +410,7 @@ const daysView = <Msg>(
               h.button(
                 [
                   ...cell.buttonAttributes,
-                  h.Class(className(styles.dayButton)),
+                  h.Class(className(reset.button, styles.dayButton)),
                 ],
                 [cell.label],
               ),
@@ -452,7 +453,7 @@ const daysView = <Msg>(
                 [
                   ...attributes.headingButton,
                   h.Id(attributes.heading.id),
-                  h.Class(className(styles.captionButton)),
+                  h.Class(className(reset.button, styles.captionButton)),
                 ],
                 [
                   attributes.heading.text,
@@ -508,7 +509,7 @@ const pickerView = <Msg>(
                 [
                   ...attributes.headingButton,
                   h.Id(attributes.heading.id),
-                  h.Class(className(styles.captionButton)),
+                  h.Class(className(reset.button, styles.captionButton)),
                 ],
                 [
                   attributes.heading.text,
@@ -529,7 +530,7 @@ const pickerView = <Msg>(
                   h.button(
                     [
                       ...cell.buttonAttributes,
-                      h.Class(className(styles.pickerButton)),
+                      h.Class(className(reset.button, styles.pickerButton)),
                     ],
                     [cell.shortLabel],
                   ),
@@ -597,7 +598,7 @@ const yearsView = <Msg>(
                   h.button(
                     [
                       ...cell.buttonAttributes,
-                      h.Class(className(styles.pickerButton)),
+                      h.Class(className(reset.button, styles.pickerButton)),
                     ],
                     [cell.label],
                   ),

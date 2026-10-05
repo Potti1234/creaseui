@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 const styles = stylex.create({
   bottom: {
     borderTopWidth: 1,
@@ -280,7 +281,9 @@ export const drawer = <Msg>(
                                   DialogPrimitive.titleId(props.model.dialog),
                                 ),
                                 hd.DataAttribute('slot', 'drawer-title'),
-                                hd.Class(className(overlayStyles.title)),
+                                hd.Class(
+                                  className(reset.text, overlayStyles.title),
+                                ),
                               ],
                               [props.title],
                             ),
@@ -299,7 +302,10 @@ export const drawer = <Msg>(
                                         'drawer-description',
                                       ),
                                       hd.Class(
-                                        className(overlayStyles.description),
+                                        className(
+                                          reset.text,
+                                          overlayStyles.description,
+                                        ),
                                       ),
                                     ],
                                     [props.description],

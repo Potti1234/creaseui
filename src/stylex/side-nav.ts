@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 /* Ported from Meta Astryx SideNav (packages/core/src/SideNav/) — StyleX
    renderer; visual spec adapted to Crease UI tokens. */
 
@@ -753,10 +754,19 @@ const renderMenuItems = <Msg>(
       h.span([h.Class(className(styles.flyoutLabel))], [item.label]),
     ]
     return item.href === undefined
-      ? h.button([h.Type('button'), ...attrs], children)
+      ? h.button(
+          [h.Class(className(reset.button)), h.Type('button'), ...attrs],
+          children,
+        )
       : disabled
-        ? h.button([h.Type('button'), ...attrs], children)
-        : h.a([h.Href(item.href), ...attrs], children)
+        ? h.button(
+            [h.Class(className(reset.button)), h.Type('button'), ...attrs],
+            children,
+          )
+        : h.a(
+            [h.Class(className(reset.link)), h.Href(item.href), ...attrs],
+            children,
+          )
   })
 
 const renderFlyoutItems = <Msg>(
@@ -784,8 +794,14 @@ const renderFlyoutItems = <Msg>(
       ...(item.endContent === undefined ? [] : [item.endContent]),
     ]
     return item.href === undefined
-      ? h.button([h.Type('button'), ...attrs], children)
-      : h.a([h.Href(item.href), ...attrs], children)
+      ? h.button(
+          [h.Class(className(reset.button)), h.Type('button'), ...attrs],
+          children,
+        )
+      : h.a(
+          [h.Class(className(reset.link)), h.Href(item.href), ...attrs],
+          children,
+        )
   })
 
 const flyoutPanel = <Msg>(
@@ -871,6 +887,7 @@ const renderItem = <Msg>(
       h.Id(NavMenu.triggerDomId(`${model.id}-${key}`)),
       h.Class(
         className(
+          reset.button,
           styles.item,
           styles.railItem,
           size === 'lg' && styles.railItemLg,
@@ -930,8 +947,22 @@ const renderItem = <Msg>(
     )
     const trigger =
       !hasChildren && item.href !== undefined && !isDisabled
-        ? h.a([h.Href(item.href), ...triggerAttrs], [iconEl])
-        : h.button([h.Type('button'), ...triggerAttrs], [iconEl])
+        ? h.a(
+            [
+              h.Class(className(reset.link)),
+              h.Href(item.href),
+              ...triggerAttrs,
+            ],
+            [iconEl],
+          )
+        : h.button(
+            [
+              h.Class(className(reset.button)),
+              h.Type('button'),
+              ...triggerAttrs,
+            ],
+            [iconEl],
+          )
     return h.div(
       [h.Class(className(styles.railColumn))],
       [
@@ -997,6 +1028,7 @@ const renderItem = <Msg>(
   const primaryAttrs = [
     h.Class(
       className(
+        reset.button,
         styles.item,
         SIZE_STYLES[size],
         styles.itemInteractive,
@@ -1019,9 +1051,13 @@ const renderItem = <Msg>(
   ]
   const primary =
     item.href !== undefined && !isDisabled
-      ? h.a([h.Href(item.href), ...primaryAttrs], primaryChildren)
+      ? h.a(
+          [h.Class(className(reset.link)), h.Href(item.href), ...primaryAttrs],
+          primaryChildren,
+        )
       : h.button(
           [
+            h.Class(className(reset.button)),
             h.Type('button'),
             ...(isDisabled ? [h.Disabled(true)] : []),
             ...primaryAttrs,
@@ -1034,7 +1070,13 @@ const renderItem = <Msg>(
       ? h.button(
           [
             h.Type('button'),
-            h.Class(className(styles.expandToggle, styles.expandToggleHover)),
+            h.Class(
+              className(
+                reset.button,
+                styles.expandToggle,
+                styles.expandToggleHover,
+              ),
+            ),
             h.AriaLabel(`Toggle ${item.label}`),
             h.AriaExpanded(!childrenCollapsed),
             h.AriaControls(childrenId),
@@ -1148,7 +1190,11 @@ const renderHeading = <Msg>(
     const triggerAttrs = [
       h.Id(NavMenu.triggerDomId(`${model.id}-${key}`)),
       h.Class(
-        className(styles.headingRailTrigger, styles.headingRailTriggerHover),
+        className(
+          reset.button,
+          styles.headingRailTrigger,
+          styles.headingRailTriggerHover,
+        ),
       ),
       h.AriaLabel(heading.heading),
       ...(hasMenu
@@ -1181,8 +1227,22 @@ const renderHeading = <Msg>(
     ]
     const trigger =
       !hasMenu && heading.headingHref !== undefined
-        ? h.a([h.Href(heading.headingHref), ...triggerAttrs], triggerChildren)
-        : h.button([h.Type('button'), ...triggerAttrs], triggerChildren)
+        ? h.a(
+            [
+              h.Class(className(reset.link)),
+              h.Href(heading.headingHref),
+              ...triggerAttrs,
+            ],
+            triggerChildren,
+          )
+        : h.button(
+            [
+              h.Class(className(reset.button)),
+              h.Type('button'),
+              ...triggerAttrs,
+            ],
+            triggerChildren,
+          )
     return h.div(
       [h.Class(className(styles.headingRailWrap))],
       [
@@ -1219,7 +1279,11 @@ const renderHeading = <Msg>(
                   [
                     h.Href(heading.superheadingHref),
                     h.Class(
-                      className(styles.headingSuper, styles.headingSubLink),
+                      className(
+                        reset.link,
+                        styles.headingSuper,
+                        styles.headingSubLink,
+                      ),
                     ),
                   ],
                   [heading.superheading],
@@ -1230,7 +1294,13 @@ const renderHeading = <Msg>(
         : h.a(
             [
               h.Href(heading.headingHref),
-              h.Class(className(styles.headingTitle, styles.headingTitleLink)),
+              h.Class(
+                className(
+                  reset.link,
+                  styles.headingTitle,
+                  styles.headingTitleLink,
+                ),
+              ),
             ],
             [heading.heading],
           ),
@@ -1246,7 +1316,11 @@ const renderHeading = <Msg>(
                   [
                     h.Href(heading.subheadingHref),
                     h.Class(
-                      className(styles.headingSub, styles.headingSubLink),
+                      className(
+                        reset.link,
+                        styles.headingSub,
+                        styles.headingSubLink,
+                      ),
                     ),
                   ],
                   [heading.subheading],
@@ -1261,7 +1335,13 @@ const renderHeading = <Msg>(
           [
             h.Type('button'),
             h.Id(NavMenu.triggerDomId(`${model.id}-${key}`)),
-            h.Class(className(styles.expandToggle, styles.expandToggleHover)),
+            h.Class(
+              className(
+                reset.button,
+                styles.expandToggle,
+                styles.expandToggleHover,
+              ),
+            ),
             h.AriaLabel('More options'),
             h.AriaHasPopup('menu'),
             h.AriaExpanded(NavMenu.isOpen(menu)),
@@ -1456,7 +1536,7 @@ const collapseButton = <Msg>(
   h.button(
     [
       h.Type('button'),
-      h.Class(className(styles.collapseButton)),
+      h.Class(className(reset.button, styles.collapseButton)),
       h.AriaLabel(
         model.isCollapsed ? 'Expand navigation' : 'Collapse navigation',
       ),

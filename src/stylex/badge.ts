@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -142,6 +143,7 @@ export const badge = <Msg>(props: BadgeProps, h: HtmlBuilder<Msg>): Html => {
   const attributes = [
     h.Class(
       className(
+        reset.link,
         base.root,
         variants[variant],
         ...(props.href === undefined ? [] : [anchor[variant]]),

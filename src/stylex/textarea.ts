@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { type TextareaBehaviorProps, renderTextarea } from '@/lib/textarea'
@@ -68,6 +69,7 @@ export const textarea = <Msg>(
       textarea: [
         h.Class(
           className(
+            reset.input,
             styles.control,
             resizeStyles[p.resize ?? 'vertical'],
             p.isInvalid && styles.invalid,
@@ -76,7 +78,7 @@ export const textarea = <Msg>(
           ),
         ),
       ],
-      description: [h.Class(className(styles.description))],
+      description: [h.Class(className(reset.text, styles.description))],
     },
     h,
   )

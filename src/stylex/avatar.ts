@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import { Schema as S } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
@@ -163,6 +164,7 @@ export const avatarImage = <Msg>(
           : [h.DataAttribute('loading', '')]),
         h.Class(
           className(
+            reset.media,
             styles.image,
             p.model?.status !== 'loaded' && styles.loading,
             p.grayscale === true && styles.grayscale,

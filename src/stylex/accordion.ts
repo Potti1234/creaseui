@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineView } from 'foldkit/submodel'
 import * as stylex from '@stylexjs/stylex'
@@ -187,14 +188,18 @@ const render = <Msg>(
               ],
               [
                 h.h3(
-                  [h.Class(className(styles.triggerRow))],
+                  [h.Class(className(reset.text, styles.triggerRow))],
                   [
                     h.button(
                       [
                         ...button,
                         h.DataAttribute('slot', 'accordion-trigger'),
                         h.Class(
-                          cn(styles.trigger, viewInputs.triggerLayoutStyle),
+                          cn(
+                            reset.button,
+                            styles.trigger,
+                            viewInputs.triggerLayoutStyle,
+                          ),
                         ),
                       ],
                       [

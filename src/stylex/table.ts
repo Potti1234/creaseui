@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
@@ -80,7 +81,7 @@ export const table = <Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html =>
       h.table(
         [
           h.DataAttribute('slot', 'table'),
-          h.Class(className(styles.table, props.layoutStyle)),
+          h.Class(className(reset.table, styles.table, props.layoutStyle)),
         ],
         [...props.children],
       ),
@@ -129,7 +130,7 @@ export const tableHead = <Msg>(
     [
       h.Scope(props.scope ?? 'col'),
       h.DataAttribute('slot', 'table-head'),
-      h.Class(className(styles.head, props.layoutStyle)),
+      h.Class(className(reset.tableHeading, styles.head, props.layoutStyle)),
     ],
     [...props.children],
   )

@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
@@ -144,6 +145,7 @@ export const metadataList = <Msg>(
           h.DataAttribute('slot', 'metadata-list-items'),
           h.Class(
             className(
+              reset.text,
               styles.dl,
               isHorizontal ? styles.horizontal : GRID_STYLE[layout.kind],
             ),
@@ -167,7 +169,7 @@ export const metadataList = <Msg>(
                 h.AriaControls(`${id}-content`),
                 h.AriaExpanded(model.isOpen),
                 h.OnClick(toParentMessage(Behavior.Message.ToggledShowAll())),
-                h.Class(className(styles.toggleButton)),
+                h.Class(className(reset.button, styles.toggleButton)),
               ],
               [model.isOpen ? 'Show less' : 'Show more'],
             ),
@@ -273,7 +275,7 @@ export const metadataListItem = <Msg>(
       [
         h.dt([h.Class(className(itemStyles.stackedLabel))], [...labelContent]),
         h.dd(
-          [h.Class(className(itemStyles.stackedValue))],
+          [h.Class(className(reset.text, itemStyles.stackedValue))],
           [...(children ?? [])],
         ),
       ],
@@ -289,7 +291,10 @@ export const metadataListItem = <Msg>(
     ],
     [
       h.dt([h.Class(className(itemStyles.label))], [...labelContent]),
-      h.dd([h.Class(className(itemStyles.value))], [...(children ?? [])]),
+      h.dd(
+        [h.Class(className(reset.text, itemStyles.value))],
+        [...(children ?? [])],
+      ),
     ],
   )
 }

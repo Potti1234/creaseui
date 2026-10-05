@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -138,6 +139,11 @@ export const marker = <Msg>(
     ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
     h.Class(
       className(
+        element === 'button'
+          ? reset.button
+          : element === 'a'
+            ? reset.link
+            : undefined,
         styles.root,
         styles[props.variant ?? 'default'],
         ...(props.direction === 'column' ? [styles.column] : []),

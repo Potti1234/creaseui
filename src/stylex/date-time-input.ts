@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import { Option } from 'effect'
@@ -537,7 +538,7 @@ export const dateTimeInput = <Msg>(
                     ),
                     h.Tabindex(-1),
                     ...(isEffectivelyDisabled ? [h.Disabled(true)] : []),
-                    h.Class(className(styles.iconButton)),
+                    h.Class(className(reset.button, styles.iconButton)),
                   ],
                   [
                     Icon.icon(
@@ -584,6 +585,7 @@ export const dateTimeInput = <Msg>(
                   ),
                   h.Class(
                     className(
+                      reset.input,
                       styles.input,
                       isDateInvalid && styles.inputInvalid,
                       isEffectivelyDisabled && styles.inputDisabled,
@@ -600,7 +602,7 @@ export const dateTimeInput = <Msg>(
                           h.Tabindex(-1),
                           h.AriaLabel(`Clear ${props.label}`),
                           h.OnClick(toParent(Message.ClearedInput())),
-                          h.Class(className(styles.clearButton)),
+                          h.Class(className(reset.button, styles.clearButton)),
                         ],
                         [
                           Icon.icon(
@@ -776,6 +778,7 @@ export const dateTimeInput = <Msg>(
                   ),
                   h.Class(
                     className(
+                      reset.input,
                       styles.input,
                       isTimeInvalid && styles.inputInvalid,
                       isEffectivelyDisabled && styles.inputDisabled,
@@ -889,7 +892,10 @@ export const dateTimeInput = <Msg>(
         ? []
         : [
             h.p(
-              [h.Id(descriptionId), h.Class(className(styles.description))],
+              [
+                h.Id(descriptionId),
+                h.Class(className(reset.text, styles.description)),
+              ],
               [props.description],
             ),
           ]),
@@ -934,6 +940,7 @@ export const dateTimeInput = <Msg>(
         ? []
         : [
             h.input([
+              h.Class(className(reset.input)),
               h.Type('hidden'),
               h.Name(props.htmlName),
               h.Value(

@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import { Checkbox as CheckboxPrimitive, VirtualList } from '@foldkit/ui'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -66,7 +67,7 @@ const selectionControl = <Msg>(
             ...checkbox,
             h.Type('button'),
             h.AriaLabel(props.label),
-            h.Class(className(styles.selectionButton)),
+            h.Class(className(reset.button, styles.selectionButton)),
           ],
           [
             h.span(
@@ -201,10 +202,10 @@ export const virtualDataTable = <Row, Msg>(
             ),
             h.Placeholder(props.filterPlaceholder ?? 'Filter rows…'),
             h.AriaLabel(props.filterPlaceholder ?? 'Filter rows'),
-            h.Class(className(styles.filter)),
+            h.Class(className(reset.input, styles.filter)),
           ]),
           h.p(
-            [h.Role('status'), h.Class(className(styles.summary))],
+            [h.Role('status'), h.Class(className(reset.text, styles.summary))],
             [
               `${selectedVisibleCount} selected · ${filtered.length.toLocaleString()} rows · virtualized`,
             ],
@@ -284,7 +285,12 @@ export const virtualDataTable = <Row, Msg>(
                                         ),
                                       ),
                                     ),
-                                    h.Class(className(styles.sortButton)),
+                                    h.Class(
+                                      className(
+                                        reset.button,
+                                        styles.sortButton,
+                                      ),
+                                    ),
                                   ],
                                   [
                                     column.header,

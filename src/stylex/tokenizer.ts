@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import { Option } from 'effect'
 
@@ -429,6 +430,7 @@ const tokenChip = <Msg>(
           h.Tabindex(-1),
           h.Class(
             className(
+              reset.button,
               styles.tokenRemove,
               isDisabled && styles.tokenRemoveDisabled,
             ),
@@ -562,7 +564,7 @@ export const tokenizer = <Msg>(
         ],
       ),
     }),
-    inputClassName: className(styles.input),
+    inputClassName: className(reset.input, styles.input),
     ...(props.placeholder === undefined
       ? {}
       : { inputPlaceholder: props.placeholder }),
@@ -576,7 +578,7 @@ export const tokenizer = <Msg>(
     openOnFocus: props.hasEntriesOnFocus ?? true,
     itemsClassName: className(styles.content),
     itemsAttributes: childAttributes([h.DataAttribute('slot', 'command-list')]),
-    itemsScrollClassName: className(styles.list),
+    itemsScrollClassName: className(reset.list, styles.list),
     backdropAttributes: childAttributes([
       h.DataAttribute('slot', 'combobox-backdrop'),
     ]),
@@ -652,7 +654,7 @@ export const tokenizer = <Msg>(
             h.button(
               [
                 h.Type('button'),
-                h.Class(className(styles.clearButton)),
+                h.Class(className(reset.button, styles.clearButton)),
                 h.AriaLabel('Clear all'),
                 h.DataAttribute('slot', 'tokenizer-clear'),
                 h.OnClick(toParent(Message.ClickedClearAll())),
@@ -716,7 +718,10 @@ export const tokenizer = <Msg>(
         ? []
         : [
             h.p(
-              [h.Id(descriptionId), h.Class(className(styles.description))],
+              [
+                h.Id(descriptionId),
+                h.Class(className(reset.text, styles.description)),
+              ],
               [props.description],
             ),
           ]),

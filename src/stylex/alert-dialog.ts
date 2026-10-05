@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import type { ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 
 import { Dialog as DialogPrimitive } from '@foldkit/ui'
@@ -212,7 +213,7 @@ export const alertDialog = <Msg>(
                           [
                             hd.Id(DialogPrimitive.titleId(props.model)),
                             hd.DataAttribute('slot', 'alert-dialog-title'),
-                            hd.Class(className(TITLE_CLASS)),
+                            hd.Class(className(reset.text, TITLE_CLASS)),
                           ],
                           [props.title],
                         ),
@@ -223,7 +224,7 @@ export const alertDialog = <Msg>(
                               'slot',
                               'alert-dialog-description',
                             ),
-                            hd.Class(className(DESCRIPTION_CLASS)),
+                            hd.Class(className(reset.text, DESCRIPTION_CLASS)),
                           ],
                           [props.description],
                         ),
@@ -247,7 +248,11 @@ export const alertDialog = <Msg>(
                             hd.Disabled(props.isPending ?? false),
                             hd.DataAttribute('slot', 'alert-dialog-cancel'),
                             hd.Class(
-                              cn(styles.cancel, props.cancelLayoutStyle),
+                              cn(
+                                reset.button,
+                                styles.cancel,
+                                props.cancelLayoutStyle,
+                              ),
                             ),
                           ],
                           [props.cancelLabel ?? 'Cancel'],
@@ -265,6 +270,7 @@ export const alertDialog = <Msg>(
                             hd.DataAttribute('slot', 'alert-dialog-action'),
                             hd.Class(
                               cn(
+                                reset.button,
                                 props.actionVariant === 'destructive'
                                   ? styles.actionDestructive
                                   : styles.action,

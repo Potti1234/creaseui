@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -146,6 +147,7 @@ const itemAttributes = <Value extends string, Msg>(
     ...(item.ariaLabel === undefined ? [] : [h.AriaLabel(item.ariaLabel)]),
     h.Class(
       className(
+        reset.button,
         styles.item,
         wrapped && styles.itemWrapped,
         !wrapped &&
@@ -233,6 +235,7 @@ const renderToggleGroup = <Value extends string, Msg>(
         ? ht.empty
         : ht.button(
             [
+              ht.Class(className(reset.button)),
               ...state.attributes,
               ...(props.direction === undefined
                 ? []
@@ -269,6 +272,7 @@ const renderLegacy = <Value extends string, Msg>(
     props.items.map((item, index) =>
       h.button(
         [
+          h.Class(className(reset.button)),
           h.Type('button'),
           h.OnClick(props.onToggle(item.value)),
           h.Disabled(item.isDisabled ?? false),

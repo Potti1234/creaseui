@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import type { ComponentLayoutStyle } from './contracts'
@@ -170,6 +171,7 @@ export const bubbleContent = <Msg>(
           h.DataAttribute('slot', 'bubble-content'),
           h.Class(
             className(
+              reset.button,
               styles.content,
               styles[p.variant ?? 'default'],
               styles.asButton,

@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -96,7 +97,7 @@ const styles = stylex.create({
   },
   pressedBackground: {
     backgroundColor: {
-      default: null,
+      default: 'transparent',
       ':active': foundationTokens.foregroundSoft,
     },
   },
@@ -237,6 +238,7 @@ export const link = <Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html => {
         h.Type('button'),
         h.Class(
           className(
+            reset.button,
             ...sharedStyles,
             styles.buttonReset,
             ...(isDisabled ? [] : [styles.pressedBackground]),
@@ -259,7 +261,7 @@ export const link = <Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html => {
       [
         h.DataAttribute('slot', 'link'),
         h.DataAttribute('color', color),
-        h.Class(className(...sharedStyles, props.layoutStyle)),
+        h.Class(className(reset.link, ...sharedStyles, props.layoutStyle)),
         h.AriaDisabled(true),
         h.Tabindex(-1),
         ...(props.label === undefined ? [] : [h.AriaLabel(props.label)]),
@@ -274,7 +276,12 @@ export const link = <Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html => {
       h.DataAttribute('slot', 'link'),
       h.DataAttribute('color', color),
       h.Class(
-        className(...sharedStyles, styles.pressedBackground, props.layoutStyle),
+        className(
+          reset.link,
+          ...sharedStyles,
+          styles.pressedBackground,
+          props.layoutStyle,
+        ),
       ),
       h.Href(props.href ?? ''),
       ...(target === undefined ? [] : [h.Target(target)]),

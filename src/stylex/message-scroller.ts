@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -196,6 +197,7 @@ export const messageScrollerButton = <Msg>(
       h.Tabindex(isActive ? 0 : -1),
       h.Class(
         className(
+          reset.button,
           styles.button,
           direction === 'start' ? styles.buttonStart : styles.buttonEnd,
           !isActive && styles.buttonInactive,

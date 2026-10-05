@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import type { ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 
 import { Dialog as DialogPrimitive } from '@foldkit/ui'
@@ -142,7 +143,7 @@ export const sheetTitle = <Msg>(
     [
       ...props.attributes,
       h.DataAttribute('slot', 'sheet-title'),
-      h.Class(cn(TITLE_CLASS, props.layoutStyle)),
+      h.Class(cn(reset.text, TITLE_CLASS, props.layoutStyle)),
     ],
     [...props.children],
   )
@@ -154,7 +155,7 @@ export const sheetDescription = <Msg>(
     [
       ...props.attributes,
       h.DataAttribute('slot', 'sheet-description'),
-      h.Class(cn(DESCRIPTION_CLASS, props.layoutStyle)),
+      h.Class(cn(reset.text, DESCRIPTION_CLASS, props.layoutStyle)),
     ],
     [...props.children],
   )
@@ -237,7 +238,7 @@ export const sheet = <Msg>(
                 hd.Type('button'),
                 hd.DataAttribute('slot', 'sheet-close'),
                 hd.AriaLabel(partProps.ariaLabel ?? 'Close'),
-                hd.Class(cn(CLOSE_CLASS, partProps.layoutStyle)),
+                hd.Class(cn(reset.button, CLOSE_CLASS, partProps.layoutStyle)),
               ],
               [
                 ...(partProps.children ?? [

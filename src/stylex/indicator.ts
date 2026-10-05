@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -107,6 +108,7 @@ const checkmark = <Msg>(
       h.Height(size === 'sm' ? '12' : '14'),
       h.Class(
         className(
+          reset.svg,
           base.checkGlyph,
           isCheckedState(state) ? base.markShown : base.markHidden,
         ),

@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
@@ -417,7 +418,9 @@ const renderCitation = <Msg>(
             h.Href(source.url),
             h.Target('_blank'),
             h.Rel('noopener noreferrer'),
-            h.Class(className(styles.citationNumber, styles.citationLink)),
+            h.Class(
+              className(reset.link, styles.citationNumber, styles.citationLink),
+            ),
           ],
           [String(num)],
         )
@@ -430,7 +433,7 @@ const renderCitation = <Msg>(
           h.img([
             h.Src(source.icon),
             h.Alt(''),
-            h.Class(className(styles.citationIcon)),
+            h.Class(className(reset.media, styles.citationIcon)),
           ]),
         ]),
     h.span([h.Class(className(styles.citationTitle))], [source.title]),
@@ -451,7 +454,9 @@ const renderCitation = <Msg>(
           h.Href(source.url),
           h.Target('_blank'),
           h.Rel('noopener noreferrer'),
-          h.Class(className(styles.citationLabel, styles.citationLink)),
+          h.Class(
+            className(reset.link, styles.citationLabel, styles.citationLink),
+          ),
         ],
         children,
       )
@@ -494,7 +499,7 @@ const renderInline = <Msg>(
         [
           h.DataAttribute('slot', 'markdown-link'),
           h.Href(safeHref),
-          h.Class(className(styles.link)),
+          h.Class(className(reset.link, styles.link)),
           ...(isExternal
             ? [h.Target('_blank'), h.Rel('noopener noreferrer')]
             : []),
@@ -510,7 +515,7 @@ const renderInline = <Msg>(
       return h.img([
         h.Src(safeSrc),
         h.Alt(node.alt),
-        h.Class(className(styles.image)),
+        h.Class(className(reset.media, styles.image)),
       ])
     }
     case 'citation':
@@ -790,7 +795,7 @@ const renderBlock = <Msg>(
     case 'thematicBreak':
       return h.hr([
         h.DataAttribute('slot', 'markdown-hr'),
-        h.Class(className(styles.hr, nodeSpacing)),
+        h.Class(className(reset.rule, styles.hr, nodeSpacing)),
       ])
     case 'image': {
       const safeSrc = sanitizeMarkdownUrl(node.url)
@@ -805,7 +810,7 @@ const renderBlock = <Msg>(
             : h.img([
                 h.Src(safeSrc),
                 h.Alt(node.alt),
-                h.Class(className(styles.image)),
+                h.Class(className(reset.media, styles.image)),
               ]),
         ],
       )

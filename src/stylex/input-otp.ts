@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import type { ComponentLayoutStyle } from './contracts'
@@ -148,7 +149,7 @@ export const inputOtp = <Msg>(
           'onselect',
           'if(this.selectionStart===this.selectionEnd)this.setSelectionRange(this.value.length,this.value.length)',
         ),
-        h.Class(className(styles.input)),
+        h.Class(className(reset.input, styles.input)),
       ]),
       h.div(
         [

@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { EmblaPluginType } from 'embla-carousel'
 import { Stream } from 'effect'
@@ -221,6 +222,7 @@ const carouselButton = <Msg>(
       h.DataAttribute('slot', `carousel-${props.direction}`),
       h.Class(
         className(
+          reset.button,
           styles.button,
           placement,
           props.isDisabled && styles.buttonDisabled,

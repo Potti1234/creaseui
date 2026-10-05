@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { Slider as SliderPrimitive } from '@foldkit/ui'
@@ -201,6 +202,7 @@ export const rangeSlider = <Msg>(
       ),
       h.Class(
         className(
+          reset.input,
           styles.input,
           orientation === 'horizontal'
             ? styles.inputHorizontal
@@ -322,7 +324,9 @@ export const slider = <Msg>(
               ],
               [],
             ),
-            ...(props.name === undefined ? [] : [h.input([...hiddenInput])]),
+            ...(props.name === undefined
+              ? []
+              : [h.input([h.Class(className(reset.input)), ...hiddenInput])]),
           ],
         )
         return props.label === undefined
@@ -397,6 +401,7 @@ export const multiSlider = <Msg>(
       ),
       h.Class(
         className(
+          reset.input,
           styles.input,
           orientation === 'horizontal'
             ? styles.inputHorizontal

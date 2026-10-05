@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 /* Ported from Meta Astryx MobileNav + MobileNavToggle (packages/core/src/MobileNav/) — examples and visual spec adapted to Crease UI tokens. */
 
 import * as stylex from '@stylexjs/stylex'
@@ -272,7 +273,9 @@ export const mobileNav = <Msg>(
                                 [
                                   hd.Id(DialogPrimitive.titleId(model.dialog)),
                                   hd.DataAttribute('slot', 'mobile-nav-title'),
-                                  hd.Class(className(styles.headerTitle)),
+                                  hd.Class(
+                                    className(reset.text, styles.headerTitle),
+                                  ),
                                 ],
                                 [props.title],
                               ),
@@ -284,7 +287,11 @@ export const mobileNav = <Msg>(
                             hd.DataAttribute('slot', 'mobile-nav-close'),
                             hd.AriaLabel('Close navigation'),
                             hd.Class(
-                              className(overlayStyles.close, styles.close),
+                              className(
+                                reset.button,
+                                overlayStyles.close,
+                                styles.close,
+                              ),
                             ),
                           ],
                           [Icon.x({ class: className(styles.icon) }, hd)],
@@ -332,7 +339,7 @@ export const mobileNavToggle = <Msg>(
       h.AriaExpanded(props.isExpanded),
       h.AriaLabel(props.label ?? 'Open navigation'),
       h.OnClick(props.message),
-      h.Class(className(styles.toggle, props.layoutStyle)),
+      h.Class(className(reset.button, styles.toggle, props.layoutStyle)),
     ],
     [Icon.menu({ class: className(styles.toggleIcon) }, h)],
   )

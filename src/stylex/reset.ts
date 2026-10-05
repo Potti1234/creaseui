@@ -44,6 +44,42 @@ export const reset = stylex.create({
   },
   list: { margin: 0, padding: 0, listStyleType: 'none' },
   link: { color: 'inherit', textDecorationLine: 'none' },
-  text: { margin: 0, padding: 0, fontSize: 'inherit', fontWeight: 'inherit' },
+  text: {
+    margin: 0,
+    padding: 0,
+    fontFamily: 'inherit',
+    fontSize: 'inherit',
+    fontWeight: 'inherit',
+    lineHeight: 'inherit',
+  },
   fieldset: { margin: 0, padding: 0, borderWidth: 0, minWidth: 0 },
+  media: {
+    display: 'block',
+    verticalAlign: 'middle',
+    height: 'auto',
+    maxWidth: '100%',
+  },
+  svg: { display: 'block', verticalAlign: 'middle' },
+  table: {
+    borderColor: 'inherit',
+    borderCollapse: 'collapse',
+    borderSpacing: 0,
+    textIndent: 0,
+  },
+  tableHeading: { padding: 0, textAlign: 'inherit' },
+  rule: {
+    margin: 0,
+    borderStyle: 'solid',
+    borderWidth: 0,
+    color: 'inherit',
+    borderTopWidth: 1,
+    height: 0,
+  },
+  code: {
+    fontFamily:
+      'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+    fontFeatureSettings: 'normal',
+    fontSize: '1em',
+    fontVariationSettings: 'normal',
+  },
 })

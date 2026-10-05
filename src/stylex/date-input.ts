@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import { Option } from 'effect'
 
@@ -512,6 +513,7 @@ export const dateInput = <Msg>(
                           : []),
                         h.Class(
                           className(
+                            reset.button,
                             styles.iconButton,
                             ...(props.isDisabled === true
                               ? [styles.iconButtonDisabled]
@@ -565,6 +567,7 @@ export const dateInput = <Msg>(
                       ),
                       h.Class(
                         className(
+                          reset.input,
                           styles.input,
                           ...(props.isDisabled === true
                             ? [styles.inputDisabled]
@@ -583,7 +586,9 @@ export const dateInput = <Msg>(
                               ...(props.isDisabled === true
                                 ? [h.Disabled(true)]
                                 : []),
-                              h.Class(className(styles.clearButton)),
+                              h.Class(
+                                className(reset.button, styles.clearButton),
+                              ),
                             ],
                             [Icon.x({ class: 'size-3.5' }, h)],
                           ),
@@ -674,7 +679,7 @@ export const dateInput = <Msg>(
               [
                 h.Id(descriptionId),
                 h.DataAttribute('slot', 'field-description'),
-                h.Class(className(styles.description)),
+                h.Class(className(reset.text, styles.description)),
               ],
               [props.description],
             ),
@@ -709,6 +714,7 @@ export const dateInput = <Msg>(
         ? []
         : [
             h.input([
+              h.Class(className(reset.input)),
               h.Type('hidden'),
               h.Name(props.htmlName),
               h.Value(

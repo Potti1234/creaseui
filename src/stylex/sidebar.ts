@@ -1096,6 +1096,7 @@ export const sidebarMenuButton = <Msg>(
   return props.href === undefined
     ? h.button(
         [
+          h.Class(className(reset.button)),
           ...attributes,
           h.Type('button'),
           ...(props.tooltip === undefined
@@ -1106,6 +1107,7 @@ export const sidebarMenuButton = <Msg>(
       )
     : h.a(
         [
+          h.Class(className(reset.link)),
           h.Href(props.href),
           ...attributes,
           ...(props.tooltip === undefined

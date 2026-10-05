@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { type SwitchBehaviorProps, renderSwitch } from '@/lib/switch'
@@ -82,6 +83,7 @@ export const switchControl = <Msg>(
         h.DataAttribute('size', size),
         h.Class(
           className(
+            reset.button,
             styles.control,
             size === 'sm' && styles.sm,
             p.isChecked && styles.checked,
@@ -103,7 +105,7 @@ export const switchControl = <Msg>(
       ],
       text: [h.Class(className(styles.text))],
       label: [h.Class(className(styles.label))],
-      description: [h.Class(className(styles.description))],
+      description: [h.Class(className(reset.text, styles.description))],
     },
     h,
   )
