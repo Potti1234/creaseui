@@ -153,10 +153,11 @@ const styles = stylex.create({
     borderRadius: '999px',
     padding: '.25rem .625rem',
     backgroundColor: tokens.muted,
-    color: tokens.mutedForeground,
+    color: tokens.secondaryForeground,
     fontSize: '.75rem',
     fontWeight: 500,
   },
+  surfaceCopy: { color: tokens.secondaryForeground },
   architecture: {
     borderBlockStyle: 'solid',
     borderBlockWidth: 1,
@@ -420,8 +421,19 @@ export const componentPage = <Msg>(
 ): Html => {
   const link = (href: string, label: string) =>
     h.a([h.Href(href), h.Class(className(reset.link, styles.link))], [label])
-  const paragraph = (copy: string) =>
-    h.p([h.Class(className(reset.text, styles.description))], [copy])
+  const paragraph = (copy: string, onSurface = false) =>
+    h.p(
+      [
+        h.Class(
+          className(
+            reset.text,
+            styles.description,
+            onSurface && styles.surfaceCopy,
+          ),
+        ),
+      ],
+      [copy],
+    )
   const section = (
     id: string,
     title: string,
@@ -617,7 +629,7 @@ export const componentPage = <Msg>(
                     [h.Class(className(reset.text, styles.label))],
                     ['How it fits Foldkit'],
                   ),
-                  paragraph(config.architecture),
+                  paragraph(config.architecture, true),
                 ],
               ),
               section('installation', 'Installation', [
