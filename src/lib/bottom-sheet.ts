@@ -731,7 +731,8 @@ export const updateSwitcher = (
       if (target === undefined) return { model }
       if (
         model.activeSheetId._tag === 'Some' &&
-        model.activeSheetId.value === message.sheetId
+        model.activeSheetId.value === message.sheetId &&
+        model.dialog.isOpen
       ) {
         return { model }
       }
