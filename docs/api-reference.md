@@ -1481,32 +1481,6 @@ Source: [`src/ui/sheet.ts`](../src/ui/sheet.ts)
 | `SheetSwitcherProps` | type | `SheetSwitcherProps<Msg> = Readonly<{ model: SwitcherModel; toParentMessage: (message: SwitcherMessage) => Msg; sheets: ReadonlyArray<SwitcherSheetContent>; class?: string; }>` |
 | `sheetSwitcher` | function | `sheetSwitcher<Msg>(props: SheetSwitcherProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
-## Side Nav
-
-Source: [`src/ui/side-nav.ts`](../src/ui/side-nav.ts)
-
-| Export | Kind | Signature |
-| --- | --- | --- |
-| `Message` | re-export | `export { Message } from '@/lib/side-nav'` |
-| `Model` | re-export | `export { Model } from '@/lib/side-nav'` |
-| `OutMessage` | re-export | `export { OutMessage } from '@/lib/side-nav'` |
-| `HEADING_MENU_KEY` | re-export | `export { HEADING_MENU_KEY } from '@/lib/side-nav'` |
-| `flyoutKey` | re-export | `export { flyoutKey } from '@/lib/side-nav'` |
-| `init` | re-export | `export { init } from '@/lib/side-nav'` |
-| `isItemCollapsed` | re-export | `export { isItemCollapsed } from '@/lib/side-nav'` |
-| `menuFor` | re-export | `export { menuFor } from '@/lib/side-nav'` |
-| `update` | re-export | `export { update } from '@/lib/side-nav'` |
-| `visibleWidth` | re-export | `export { visibleWidth } from '@/lib/side-nav'` |
-| `InitConfig` | re-export | `export { InitConfig } from '@/lib/side-nav'` |
-| `SideNavItemData` | type | `SideNavItemData = Readonly<{ id: string; label: string; icon?: string; selectedIcon?: string; isSelected?: boolean; isDisabled?: boolean; href?: string; onSelect?: boolean; endContent?: Html; actions?: Html; children?: ReadonlyArray<SideNavItemData>; defaultC…` |
-| `SideNavMenuItemData` | type | `SideNavMenuItemData = Readonly<{ label: string; href?: string; onSelect?: boolean; icon?: string; isDisabled?: boolean; }>` |
-| `SideNavHeadingData` | type | `SideNavHeadingData = Readonly<{ heading: string; icon?: Html; headingHref?: string; superheading?: string; superheadingHref?: string; subheading?: string; subheadingHref?: string; headerEndContent?: Html; menu?: ReadonlyArray<SideNavMenuItemData>; }>` |
-| `SideNavSectionData` | type | `SideNavSectionData = Readonly<{ title?: string; subtitle?: string; isHeaderHidden?: boolean; endContent?: Html; items: ReadonlyArray<SideNavItemData>; }>` |
-| `ViewInputs` | type | `ViewInputs = Readonly<{ items?: ReadonlyArray<SideNavItemData>; sections?: ReadonlyArray<SideNavSectionData>; heading?: SideNavHeadingData; topContent?: Html; footer?: Html; footerIcons?: Html; hasCollapseButton?: boolean; footerCollapseButton?: boolean; size…` |
-| `view` | value | `view: value` |
-| `SideNavProps` | type | `SideNavProps<Msg> = ViewInputs & Readonly<{ model: SideNavLib.Model; toParentMessage: (message: SideNavLib.Message) => Msg; }>` |
-| `sideNav` | function | `sideNav<Msg>(props: SideNavProps<Msg>, h: HtmlBuilder<Msg>): Html` |
-
 ## Sidebar
 
 Source: [`src/ui/sidebar.ts`](../src/ui/sidebar.ts)

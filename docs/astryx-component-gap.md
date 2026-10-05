@@ -166,11 +166,11 @@ Batches are work units; slugs are the Crease UI names.
 
 **Navigation chrome**
 
-| Slug        | Astryx source                             | Notes                                            |
-| ----------- | ----------------------------------------- | ------------------------------------------------ |
-| `top-nav`   | `TopNav` + mega menu pieces               | Header nav w/ dropdown + mega menu.              |
-| `side-nav`  | `SideNav` + section/heading/item/collapse | Left product nav (lighter than `sidebar` shell). |
-| `tree-list` | `TreeList`                                | Expandable tree view.                            |
+| Slug        | Astryx source                             | Notes                                               |
+| ----------- | ----------------------------------------- | --------------------------------------------------- |
+| `top-nav`   | `TopNav` + mega menu pieces               | Header nav w/ dropdown + mega menu.                 |
+| `side-nav`  | `SideNav` + section/heading/item/collapse | Covered by `sidebar`; standalone component removed. |
+| `tree-list` | `TreeList`                                | Expandable tree view.                               |
 
 **Composite & agent-era**
 

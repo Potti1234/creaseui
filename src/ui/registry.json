@@ -1506,24 +1506,6 @@
       ]
     },
     {
-      "name": "side-nav",
-      "type": "registry:ui",
-      "title": "Side Nav",
-      "description": "A CreaseUI Side Nav component for Foldkit.",
-      "registryDependencies": [
-        "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/icons",
-        "Potti1234/creaseui/utils"
-      ],
-      "files": [
-        {
-          "path": "side-nav.ts",
-          "type": "registry:ui",
-          "target": "@ui/side-nav.ts"
-        }
-      ]
-    },
-    {
       "name": "sidebar",
       "type": "registry:ui",
       "title": "Sidebar",

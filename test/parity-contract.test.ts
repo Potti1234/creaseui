@@ -93,7 +93,6 @@ describe('multidimensional component parity', () => {
       'overflow-list',
       'section',
       'selectable-card',
-      'side-nav',
       'stack',
       'stat',
       'status-dot',

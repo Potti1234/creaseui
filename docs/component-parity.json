@@ -23,7 +23,7 @@
   ],
   "summary": {
     "upstreamItems": 62,
-    "registryItems": 114,
+    "registryItems": 113,
     "creaseOnlyRecipes": [
       "avatar-group",
       "banner",
@@ -58,7 +58,6 @@
       "overflow-list",
       "section",
       "selectable-card",
-      "side-nav",
       "stack",
       "stat",
       "status-dot",
@@ -1560,24 +1559,6 @@
         "src/ui/registry.json#sheet",
         "/docs/components/sheet",
         "e2e/site.spec.ts#sheet-compound-parts"
-      ]
-    },
-    {
-      "component": "side-nav",
-      "upstream": false,
-      "classification": "full",
-      "dimensions": {
-        "visual": "unverified",
-        "behavior": "partial",
-        "accessibility": "partial",
-        "composition": "partial",
-        "documentation": "verified",
-        "registry": "verified"
-      },
-      "evidence": [
-        "src/ui/side-nav.ts",
-        "src/ui/registry.json#side-nav",
-        "/docs/components/side-nav"
       ]
     },
     {

@@ -86,7 +86,6 @@ export * as Select from './select.js'
 export * as SelectableCard from './selectable-card.js'
 export * as Separator from './separator.js'
 export * as Sheet from './sheet.js'
-export * as SideNav from './side-nav.js'
 export * as Sidebar from './sidebar.js'
 export * as Skeleton from './skeleton.js'
 export * as Slider from './slider.js'
@@ -203,7 +202,6 @@ export const STYLEX_COMPONENT_NAMES = [
   'selectable-card',
   'separator',
   'sheet',
-  'side-nav',
   'sidebar',
   'skeleton',
   'slider',

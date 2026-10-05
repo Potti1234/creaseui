@@ -95,7 +95,6 @@ export const COMPONENTS = [
   'Selectable Card',
   'Separator',
   'Sheet',
-  'Side Nav',
   'Sidebar',
   'Skeleton',
   'Slider',

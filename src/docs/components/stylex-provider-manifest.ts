@@ -107,7 +107,6 @@ import { metadataListStyleXPreview } from '@/docs/components/pages/metadata-list
 import { moreMenuStyleXPreview } from '@/docs/components/pages/more-menu/stylex'
 import { overflowListStyleXPreview } from '@/docs/components/pages/overflow-list/stylex'
 import { selectableCardStyleXPreview } from '@/docs/components/pages/selectable-card/stylex'
-import { sideNavStyleXPreview } from '@/docs/components/pages/side-nav/stylex'
 import { stepperStyleXPreview } from '@/docs/components/pages/stepper/stylex'
 import { tokenStyleXPreview } from '@/docs/components/pages/token/stylex'
 import { toolbarStyleXPreview } from '@/docs/components/pages/toolbar/stylex'
@@ -240,7 +239,6 @@ installStyleXExamplePreviewProvider(
   'selectable-card',
   selectableCardStyleXPreview,
 )
-installStyleXExamplePreviewProvider('side-nav', sideNavStyleXPreview)
 installStyleXExamplePreviewProvider('stepper', stepperStyleXPreview)
 installStyleXExamplePreviewProvider('time-input', timeInputStyleXPreview)
 installStyleXExamplePreviewProvider('timer', timerStyleXPreview)

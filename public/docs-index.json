@@ -4,7 +4,7 @@
     "src/ui/registry.json",
     "src/ui/*.ts"
   ],
-  "componentCount": 114,
+  "componentCount": 113,
   "components": [
     {
       "slug": "accordion",
@@ -6479,135 +6479,6 @@
           "name": "sheetSwitcher",
           "kind": "function",
           "signature": "sheetSwitcher<Msg>(props: SheetSwitcherProps<Msg>, h: HtmlBuilder<Msg>): Html"
-        }
-      ]
-    },
-    {
-      "slug": "side-nav",
-      "title": "Side Nav",
-      "description": "A CreaseUI Side Nav component for Foldkit.",
-      "docs": "/docs/components/side-nav",
-      "source": "src/ui/side-nav.ts",
-      "install": "npx creaseui add side-nav",
-      "dependencies": [
-        "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/icons",
-        "Potti1234/creaseui/utils"
-      ],
-      "examples": [
-        "Side Nav",
-        "Main",
-        "Documents",
-        "SideNav — End Content",
-        "Navigation",
-        "SideNav — Header with Menu",
-        "SideNav — Nested Items",
-        "SideNavCollapseButton — Basic",
-        "SideNavCollapseButton",
-        "SideNavHeading — Basic",
-        "SideNavHeading",
-        "SideNavItem — Basic",
-        "SideNavItem",
-        "SideNavSection — Basic",
-        "Overview",
-        "Account",
-        "SideNavSection"
-      ],
-      "api": [
-        {
-          "name": "Message",
-          "kind": "re-export",
-          "signature": "export { Message } from '@/lib/side-nav'"
-        },
-        {
-          "name": "Model",
-          "kind": "re-export",
-          "signature": "export { Model } from '@/lib/side-nav'"
-        },
-        {
-          "name": "OutMessage",
-          "kind": "re-export",
-          "signature": "export { OutMessage } from '@/lib/side-nav'"
-        },
-        {
-          "name": "HEADING_MENU_KEY",
-          "kind": "re-export",
-          "signature": "export { HEADING_MENU_KEY } from '@/lib/side-nav'"
-        },
-        {
-          "name": "flyoutKey",
-          "kind": "re-export",
-          "signature": "export { flyoutKey } from '@/lib/side-nav'"
-        },
-        {
-          "name": "init",
-          "kind": "re-export",
-          "signature": "export { init } from '@/lib/side-nav'"
-        },
-        {
-          "name": "isItemCollapsed",
-          "kind": "re-export",
-          "signature": "export { isItemCollapsed } from '@/lib/side-nav'"
-        },
-        {
-          "name": "menuFor",
-          "kind": "re-export",
-          "signature": "export { menuFor } from '@/lib/side-nav'"
-        },
-        {
-          "name": "update",
-          "kind": "re-export",
-          "signature": "export { update } from '@/lib/side-nav'"
-        },
-        {
-          "name": "visibleWidth",
-          "kind": "re-export",
-          "signature": "export { visibleWidth } from '@/lib/side-nav'"
-        },
-        {
-          "name": "InitConfig",
-          "kind": "re-export",
-          "signature": "export { InitConfig } from '@/lib/side-nav'"
-        },
-        {
-          "name": "SideNavItemData",
-          "kind": "type",
-          "signature": "SideNavItemData = Readonly<{ id: string; label: string; icon?: string; selectedIcon?: string; isSelected?: boolean; isDisabled?: boolean; href?: string; onSelect?: boolean; endContent?: Html; actions?: Html; children?: ReadonlyArray<SideNavItemData>; defaultC…"
-        },
-        {
-          "name": "SideNavMenuItemData",
-          "kind": "type",
-          "signature": "SideNavMenuItemData = Readonly<{ label: string; href?: string; onSelect?: boolean; icon?: string; isDisabled?: boolean; }>"
-        },
-        {
-          "name": "SideNavHeadingData",
-          "kind": "type",
-          "signature": "SideNavHeadingData = Readonly<{ heading: string; icon?: Html; headingHref?: string; superheading?: string; superheadingHref?: string; subheading?: string; subheadingHref?: string; headerEndContent?: Html; menu?: ReadonlyArray<SideNavMenuItemData>; }>"
-        },
-        {
-          "name": "SideNavSectionData",
-          "kind": "type",
-          "signature": "SideNavSectionData = Readonly<{ title?: string; subtitle?: string; isHeaderHidden?: boolean; endContent?: Html; items: ReadonlyArray<SideNavItemData>; }>"
-        },
-        {
-          "name": "ViewInputs",
-          "kind": "type",
-          "signature": "ViewInputs = Readonly<{ items?: ReadonlyArray<SideNavItemData>; sections?: ReadonlyArray<SideNavSectionData>; heading?: SideNavHeadingData; topContent?: Html; footer?: Html; footerIcons?: Html; hasCollapseButton?: boolean; footerCollapseButton?: boolean; size…"
-        },
-        {
-          "name": "view",
-          "kind": "value",
-          "signature": "view: value"
-        },
-        {
-          "name": "SideNavProps",
-          "kind": "type",
-          "signature": "SideNavProps<Msg> = ViewInputs & Readonly<{ model: SideNavLib.Model; toParentMessage: (message: SideNavLib.Message) => Msg; }>"
-        },
-        {
-          "name": "sideNav",
-          "kind": "function",
-          "signature": "sideNav<Msg>(props: SideNavProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
       ]
     },

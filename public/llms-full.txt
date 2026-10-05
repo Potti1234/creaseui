@@ -95,7 +95,6 @@
 - Selectable Card: /docs/components/selectable-card — install with `npx creaseui add selectable-card`
 - Separator: /docs/components/separator — install with `npx creaseui add separator`
 - Sheet: /docs/components/sheet — install with `npx creaseui add sheet`
-- Side Nav: /docs/components/side-nav — install with `npx creaseui add side-nav`
 - Sidebar: /docs/components/sidebar — install with `npx creaseui add sidebar`
 - Skeleton: /docs/components/skeleton — install with `npx creaseui add skeleton`
 - Slider: /docs/components/slider — install with `npx creaseui add slider`
@@ -1772,34 +1771,6 @@ Examples: Basic, Side, No Close Button, RTL, Bottom, Bottom — Height Variants,
 - `SwitcherSheetContent = Readonly<{ id: string; content: Html; }>` (type)
 - `SheetSwitcherProps<Msg> = Readonly<{ model: SwitcherModel; toParentMessage: (message: SwitcherMessage) => Msg; sheets: ReadonlyArray<SwitcherSheetContent>; class?: string; }>` (type)
 - `sheetSwitcher<Msg>(props: SheetSwitcherProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
-
-### Side Nav
-
-A CreaseUI Side Nav component for Foldkit.
-
-Source: `src/ui/side-nav.ts`
-
-Examples: Side Nav, Main, Documents, SideNav — End Content, Navigation, SideNav — Header with Menu, SideNav — Nested Items, SideNavCollapseButton — Basic, SideNavCollapseButton, SideNavHeading — Basic, SideNavHeading, SideNavItem — Basic, SideNavItem, SideNavSection — Basic, Overview, Account, SideNavSection
-
-- `export { Message } from '@/lib/side-nav'` (re-export)
-- `export { Model } from '@/lib/side-nav'` (re-export)
-- `export { OutMessage } from '@/lib/side-nav'` (re-export)
-- `export { HEADING_MENU_KEY } from '@/lib/side-nav'` (re-export)
-- `export { flyoutKey } from '@/lib/side-nav'` (re-export)
-- `export { init } from '@/lib/side-nav'` (re-export)
-- `export { isItemCollapsed } from '@/lib/side-nav'` (re-export)
-- `export { menuFor } from '@/lib/side-nav'` (re-export)
-- `export { update } from '@/lib/side-nav'` (re-export)
-- `export { visibleWidth } from '@/lib/side-nav'` (re-export)
-- `export { InitConfig } from '@/lib/side-nav'` (re-export)
-- `SideNavItemData = Readonly<{ id: string; label: string; icon?: string; selectedIcon?: string; isSelected?: boolean; isDisabled?: boolean; href?: string; onSelect?: boolean; endContent?: Html; actions?: Html; children?: ReadonlyArray<SideNavItemData>; defaultC…` (type)
-- `SideNavMenuItemData = Readonly<{ label: string; href?: string; onSelect?: boolean; icon?: string; isDisabled?: boolean; }>` (type)
-- `SideNavHeadingData = Readonly<{ heading: string; icon?: Html; headingHref?: string; superheading?: string; superheadingHref?: string; subheading?: string; subheadingHref?: string; headerEndContent?: Html; menu?: ReadonlyArray<SideNavMenuItemData>; }>` (type)
-- `SideNavSectionData = Readonly<{ title?: string; subtitle?: string; isHeaderHidden?: boolean; endContent?: Html; items: ReadonlyArray<SideNavItemData>; }>` (type)
-- `ViewInputs = Readonly<{ items?: ReadonlyArray<SideNavItemData>; sections?: ReadonlyArray<SideNavSectionData>; heading?: SideNavHeadingData; topContent?: Html; footer?: Html; footerIcons?: Html; hasCollapseButton?: boolean; footerCollapseButton?: boolean; size…` (type)
-- `view: value` (value)
-- `SideNavProps<Msg> = ViewInputs & Readonly<{ model: SideNavLib.Model; toParentMessage: (message: SideNavLib.Message) => Msg; }>` (type)
-- `sideNav<Msg>(props: SideNavProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Sidebar
 
