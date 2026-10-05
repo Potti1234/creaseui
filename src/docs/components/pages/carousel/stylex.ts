@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import Autoplay from 'embla-carousel-autoplay'
 import type { HtmlBuilder } from 'foldkit/html'
@@ -112,7 +113,7 @@ export const carouselStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
       ? [
           carousel,
           h.p(
-            [h.Class(className(styles.apiStatus))],
+            [h.Class(className(reset.text, styles.apiStatus))],
             [
               `Slide ${preview.carousel.index + 1} of ${preview.carousel.count}`,
             ],

@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as stylex from '@stylexjs/stylex'
@@ -271,7 +272,7 @@ export const comboboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                 value,
               h.button(
                 [
-                  h.Class(className(styles.chipButton)),
+                  h.Class(className(reset.button, styles.chipButton)),
                   h.AriaLabel(`Remove ${value}`),
                   h.OnClick(
                     onMessageJson(

@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -42,9 +43,12 @@ const detailChildren = <Msg>(h: HtmlBuilder<Msg>): Html =>
   h.div(
     [h.Class(className(styles.detailStack))],
     [
-      h.p([h.Class(className(styles.detailText))], ['Changed settings:']),
+      h.p(
+        [h.Class(className(reset.text, styles.detailText))],
+        ['Changed settings:'],
+      ),
       h.ul(
-        [h.Class(className(styles.detailList))],
+        [h.Class(className(reset.list, styles.detailList))],
         [
           h.li(
             [h.Class(className(styles.detailLi))],

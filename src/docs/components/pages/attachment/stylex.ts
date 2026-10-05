@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import * as stylex from '@stylexjs/stylex'
@@ -82,7 +83,7 @@ const itemView = <Msg>(
                   ? h.img([
                       h.Src(item.src),
                       h.Alt(item.alt ?? item.name),
-                      h.Class(className(styles.mediaImg)),
+                      h.Class(className(reset.media, styles.mediaImg)),
                     ])
                   : Icon.icon(
                       item.icon ?? 'file',

@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as stylex from '@stylexjs/stylex'
@@ -225,7 +226,7 @@ export const overflowListStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         h,
       ),
       h.p(
-        [h.Role('status'), h.Class(className(styles.status))],
+        [h.Role('status'), h.Class(className(reset.text, styles.status))],
         [
           previewModel.hiddenCount === 0
             ? 'Everything fits.'

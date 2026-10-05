@@ -1,3 +1,5 @@
+import { previewLayout } from '@/docs/components/preview-layout.stylex'
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -86,7 +88,7 @@ const decorateItems = <Msg>(
                 [
                   h.Type('button'),
                   h.AriaLabel('More actions'),
-                  h.Class(className(styles.endMenu)),
+                  h.Class(className(reset.button, styles.endMenu)),
                 ],
                 [
                   Icon.icon(
@@ -192,7 +194,7 @@ export const sideNavStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
     })
   })
   return h.div(
-    [h.Class('w-full max-w-xl')],
+    [h.Class(className(previewLayout.wide))],
     [
       fixture.navs.length > 1
         ? h.div([h.Class(className(styles.wrap))], navViews)

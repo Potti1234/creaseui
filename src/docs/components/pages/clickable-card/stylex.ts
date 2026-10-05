@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -35,8 +36,8 @@ const textBlock = <Msg>(
   h.div(
     [h.Class(className(styles.stack2))],
     [
-      h.h4([h.Class(className(styles.heading))], [heading]),
-      h.p([h.Class(className(styles.body))], [bodyText]),
+      h.h4([h.Class(className(reset.text, styles.heading))], [heading]),
+      h.p([h.Class(className(reset.text, styles.body))], [bodyText]),
     ],
   )
 
@@ -65,10 +66,10 @@ const body = <Msg>(
             [h.Class(className(styles.stack1))],
             [
               h.h4(
-                [h.Class(className(styles.heading))],
+                [h.Class(className(reset.text, styles.heading))],
                 ['Wireless Headphones'],
               ),
-              h.p([h.Class(className(styles.body))], ['$79.99']),
+              h.p([h.Class(className(reset.text, styles.body))], ['$79.99']),
             ],
           ),
           Button.button({ variant: 'default', children: ['Add to cart'] }, h),

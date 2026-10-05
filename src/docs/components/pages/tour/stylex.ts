@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import * as stylex from '@stylexjs/stylex'
@@ -76,9 +77,9 @@ export const tourStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
       h.div(
         [h.Class(className(styles.card))],
         [
-          h.h3([h.Class(className(styles.heading))], ['Workspace']),
+          h.h3([h.Class(className(reset.text, styles.heading))], ['Workspace']),
           h.p(
-            [h.Class(className(styles.body))],
+            [h.Class(className(reset.text, styles.body))],
             ['A tour walks new teammates through the parts that matter.'],
           ),
           h.div(

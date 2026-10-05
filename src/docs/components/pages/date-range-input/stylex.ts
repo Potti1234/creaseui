@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import { Option } from 'effect'
 import * as Calendar from 'foldkit/calendar'
 import type { Html, HtmlBuilder } from 'foldkit/html'
@@ -68,7 +69,7 @@ export const dateRangeInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
     h.div([h.Class(className(styles.stack))], [...children])
 
   const supporting = (text: string): Html =>
-    h.p([h.Class(className(styles.supporting))], [text])
+    h.p([h.Class(className(reset.text, styles.supporting))], [text])
 
   switch (fixture.example) {
     case 'DateRangeInputWithPresets':

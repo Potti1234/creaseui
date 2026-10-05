@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -158,10 +159,13 @@ export const separatorStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         listItems('list').flatMap((entry, i) => [
           ...(i === 0 ? [] : [Separator.separator({}, h)]),
           h.dl(
-            [h.Class(className(styles.listRow))],
+            [h.Class(className(reset.text, styles.listRow))],
             [
               h.dt([], [entry.item]),
-              h.dd([h.Class(className(styles.muted))], [entry.value]),
+              h.dd(
+                [h.Class(className(reset.text, styles.muted))],
+                [entry.value],
+              ),
             ],
           ),
         ]),

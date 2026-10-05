@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { HtmlBuilder } from 'foldkit/html'
 
@@ -32,7 +33,7 @@ const sparkline = <Msg>(h: HtmlBuilder<Msg>) =>
       h.ViewBox('0 0 160 36'),
       h.Role('img'),
       h.AriaLabel('Rising trend'),
-      h.Class(className(styles.sparkline)),
+      h.Class(className(reset.svg, styles.sparkline)),
     ],
     [
       h.polyline(

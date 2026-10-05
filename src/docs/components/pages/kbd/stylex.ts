@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { HtmlBuilder } from 'foldkit/html'
 
@@ -89,7 +90,7 @@ const kbdSxView = <Msg>(
         [h.Class(sx(styles.stack))],
         [
           h.p(
-            [h.Class(sx(styles.muted))],
+            [h.Class(className(reset.text, styles.muted))],
             [
               'Use ',
               Kbd.kbdGroup(

@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -91,11 +92,11 @@ const headerContent = <Msg>(rtl: boolean, h: HtmlBuilder<Msg>): Html =>
     [h.Class(className(styles.content))],
     [
       h.h4(
-        [h.Class(className(styles.heading))],
+        [h.Class(className(reset.text, styles.heading))],
         [rtl ? 'الأبعاد' : 'Dimensions'],
       ),
       h.p(
-        [h.Class(className(styles.copy))],
+        [h.Class(className(reset.text, styles.copy))],
         [rtl ? 'تعيين الأبعاد للطبقة.' : 'Set the dimensions for the layer.'],
       ),
     ],
@@ -123,12 +124,19 @@ const legacyView = <Msg>(
       content: h.div(
         [h.Class(className(styles.content))],
         [
-          h.h4([h.Class(className(styles.heading))], ['Dimensions']),
+          h.h4(
+            [h.Class(className(reset.text, styles.heading))],
+            ['Dimensions'],
+          ),
           h.p(
-            [h.Class(className(styles.copy))],
+            [h.Class(className(reset.text, styles.copy))],
             ['Set the dimensions for the layer.'],
           ),
-          h.input([h.Type('number'), h.AriaLabel('Width')]),
+          h.input([
+            h.Class(className(reset.input)),
+            h.Type('number'),
+            h.AriaLabel('Width'),
+          ]),
         ],
       ),
     },

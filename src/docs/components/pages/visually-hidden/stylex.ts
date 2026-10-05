@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -65,11 +66,11 @@ type PreviewModel = Readonly<{
 }>
 
 const supporting = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class(className(styles.supporting))], [text])
+  h.p([h.Class(className(reset.text, styles.supporting))], [text])
 const body = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class(className(styles.body))], [text])
+  h.p([h.Class(className(reset.text, styles.body))], [text])
 const display = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class(className(styles.display))], [text])
+  h.p([h.Class(className(reset.text, styles.display))], [text])
 
 const mutedCard = <Msg>(
   children: ReadonlyArray<Html | string>,
@@ -215,7 +216,7 @@ const liveRegionView = <Msg>(
                 h,
               ),
               h.p(
-                [h.Class(className(styles.body))],
+                [h.Class(className(reset.text, styles.body))],
                 [
                   'Task is in ',
                   h.span([h.Class(className(styles.bodyBold))], [current]),

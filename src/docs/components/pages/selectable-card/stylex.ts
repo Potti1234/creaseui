@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -52,9 +53,12 @@ const planBody = <Msg>(plan: SelectablePlan, h: HtmlBuilder<Msg>): Html =>
   h.div(
     [h.Class(className(styles.stack1))],
     [
-      h.h4([h.Class(className(styles.heading))], [plan.name]),
-      h.p([h.Class(className(styles.price))], [plan.price ?? '']),
-      h.p([h.Class(className(styles.supporting))], [plan.desc ?? '']),
+      h.h4([h.Class(className(reset.text, styles.heading))], [plan.name]),
+      h.p([h.Class(className(reset.text, styles.price))], [plan.price ?? '']),
+      h.p(
+        [h.Class(className(reset.text, styles.supporting))],
+        [plan.desc ?? ''],
+      ),
     ],
   )
 
@@ -96,9 +100,12 @@ const view = <Msg>(
               ),
               elevation: 'low',
               children: [
-                h.p([h.Class(className(styles.bodyBold))], [plan.name]),
                 h.p(
-                  [h.Class(className(styles.supporting))],
+                  [h.Class(className(reset.text, styles.bodyBold))],
+                  [plan.name],
+                ),
+                h.p(
+                  [h.Class(className(reset.text, styles.supporting))],
                   [
                     'The resting shadow stays put — the selection ring layers on top.',
                   ],
@@ -122,7 +129,10 @@ const view = <Msg>(
               ),
               variant: tag.variant,
               children: [
-                h.p([h.Class(className(styles.bodyBold))], [tag.name]),
+                h.p(
+                  [h.Class(className(reset.text, styles.bodyBold))],
+                  [tag.name],
+                ),
               ],
             },
             h,

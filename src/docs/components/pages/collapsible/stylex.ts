@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import * as stylex from '@stylexjs/stylex'
@@ -33,7 +34,7 @@ const styles = stylex.create({
     borderRadius: '0.5rem',
     paddingBlock: '0.375rem',
     paddingInline: '0.5rem',
-    backgroundColor: { default: null, ':hover': 'var(--muted)' },
+    backgroundColor: { default: 'transparent', ':hover': 'var(--muted)' },
     fontWeight: 500,
     width: '100%',
   },
@@ -41,14 +42,14 @@ const styles = stylex.create({
     borderRadius: '0.25rem',
     paddingBlock: '0.125rem',
     paddingInline: '0.25rem',
-    backgroundColor: { default: null, ':hover': 'var(--muted)' },
+    backgroundColor: { default: 'transparent', ':hover': 'var(--muted)' },
     textAlign: 'start',
     width: '100%',
   },
   triggerRtl: {
     borderRadius: '0.5rem',
     alignItems: 'center',
-    backgroundColor: { default: null, ':hover': 'var(--muted)' },
+    backgroundColor: { default: 'transparent', ':hover': 'var(--muted)' },
     display: 'inline-flex',
     justifyContent: 'center',
     height: '2rem',
@@ -378,7 +379,10 @@ export const collapsibleStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         h.div(
           [h.Class(className(styles.orderRow))],
           [
-            h.h4([h.Class(className(styles.orderTitle))], ['الطلب #4189']),
+            h.h4(
+              [h.Class(className(reset.text, styles.orderTitle))],
+              ['الطلب #4189'],
+            ),
             Collapsible.collapsible(
               {
                 id: `docs-collapsible-${String(exampleIndex)}`,
@@ -402,11 +406,11 @@ export const collapsibleStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                       [h.Class(className(styles.box))],
                       [
                         h.p(
-                          [h.Class(className(styles.medium))],
+                          [h.Class(className(reset.text, styles.medium))],
                           ['عنوان الشحن'],
                         ),
                         h.p(
-                          [h.Class(className(styles.muted))],
+                          [h.Class(className(reset.text, styles.muted))],
                           ['شارع السوق 100، سان فرانسيسكو'],
                         ),
                       ],
@@ -414,9 +418,12 @@ export const collapsibleStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                     h.div(
                       [h.Class(className(styles.box))],
                       [
-                        h.p([h.Class(className(styles.medium))], ['العناصر']),
                         h.p(
-                          [h.Class(className(styles.muted))],
+                          [h.Class(className(reset.text, styles.medium))],
+                          ['العناصر'],
+                        ),
+                        h.p(
+                          [h.Class(className(reset.text, styles.muted))],
                           ['سماعات الاستوديو ×2'],
                         ),
                       ],

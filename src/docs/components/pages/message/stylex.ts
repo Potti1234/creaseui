@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -108,7 +109,7 @@ const part = <Msg>(
                   h.img([
                     h.Src(ATTACHMENT_IMAGE_URL),
                     h.Alt('Workspace'),
-                    h.Class(sx(styles.mediaImage)),
+                    h.Class(className(reset.media, styles.mediaImage)),
                   ]),
                 ],
               },

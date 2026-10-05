@@ -1,3 +1,6 @@
+import { reset } from '@/stylex/reset'
+import { className } from '@/stylex/style'
+import { previewLayout } from '@/docs/components/preview-layout.stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
@@ -88,10 +91,10 @@ export const transferListStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
     return first
   }
   return h.div(
-    [h.Class('flex flex-col gap-6')],
+    [h.Class(className(previewLayout.stack))],
     [
       first,
-      h.hr([h.Class('border-border')]),
+      h.hr([h.Class(className(reset.rule, previewLayout.rule))]),
       TransferList.transferList(
         {
           model: preview.list2,

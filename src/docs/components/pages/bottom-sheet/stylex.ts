@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -131,8 +132,8 @@ const sheetHead = <Msg>(
   h.div(
     [h.Class(className(styles.stackTight))],
     [
-      h.h3([h.Class(className(styles.sheetHeading))], [title]),
-      h.p([h.Class(className(styles.sheetMeta))], [meta]),
+      h.h3([h.Class(className(reset.text, styles.sheetHeading))], [title]),
+      h.p([h.Class(className(reset.text, styles.sheetMeta))], [meta]),
     ],
   )
 
@@ -144,7 +145,7 @@ const filterContent = <Msg>(
   h.div(
     [h.Class(className(styles.sheetBody))],
     [
-      h.h3([h.Class(className(styles.sheetHeading))], ['Filters']),
+      h.h3([h.Class(className(reset.text, styles.sheetHeading))], ['Filters']),
       Separator.separator({}, h),
       h.div(
         [h.Class(className(styles.filterRows))],
@@ -210,12 +211,12 @@ const heightsContent = <Msg>(
     [h.Class(className(styles.sheetBody))],
     [
       h.h3(
-        [h.Class(className(styles.sheetHeadingCapitalize))],
+        [h.Class(className(reset.text, styles.sheetHeadingCapitalize))],
         [`${model.selectedHeight} height`],
       ),
       Separator.separator({}, h),
       h.p(
-        [h.Class(className(styles.sheetText))],
+        [h.Class(className(reset.text, styles.sheetText))],
         [heightsCopy[model.selectedHeight]],
       ),
       Button.button(
@@ -236,10 +237,13 @@ const noScrimContent = <Msg>(
   h.div(
     [h.Class(className(styles.sheetBody))],
     [
-      h.h3([h.Class(className(styles.sheetHeading))], ['Central Park']),
+      h.h3(
+        [h.Class(className(reset.text, styles.sheetHeading))],
+        ['Central Park'],
+      ),
       Separator.separator({}, h),
       h.p(
-        [h.Class(className(styles.sheetText))],
+        [h.Class(className(reset.text, styles.sheetText))],
         ['The page remains visible and interactive behind this sheet.'],
       ),
       Button.button(
@@ -263,7 +267,10 @@ const stepsContent = <Msg>(
       h.div(
         [h.Class(className(styles.stackTight))],
         [
-          h.h3([h.Class(className(styles.sheetHeading))], ['Ferry Building']),
+          h.h3(
+            [h.Class(className(reset.text, styles.sheetHeading))],
+            ['Ferry Building'],
+          ),
           h.div(
             [h.Class(className(styles.timeRow))],
             [
@@ -286,8 +293,14 @@ const stepsContent = <Msg>(
               h.div(
                 [h.Class(className(styles.stepTextWrap))],
                 [
-                  h.p([h.Class(className(styles.stepLabel))], [step.label]),
-                  h.p([h.Class(className(styles.stepDetail))], [step.detail]),
+                  h.p(
+                    [h.Class(className(reset.text, styles.stepLabel))],
+                    [step.label],
+                  ),
+                  h.p(
+                    [h.Class(className(reset.text, styles.stepDetail))],
+                    [step.detail],
+                  ),
                 ],
               ),
               h.span(
@@ -321,10 +334,13 @@ const keyboardContent = <Msg>(
       h.Class(className(styles.sheetBody)),
     ],
     [
-      h.h3([h.Class(className(styles.sheetHeading))], ['Edit profile']),
+      h.h3(
+        [h.Class(className(reset.text, styles.sheetHeading))],
+        ['Edit profile'],
+      ),
       Separator.separator({}, h),
       h.p(
-        [h.Class(className(styles.sheetMeta))],
+        [h.Class(className(reset.text, styles.sheetMeta))],
         [
           'Focus fields throughout the form to see them remain visible above the mobile keyboard.',
         ],
@@ -449,7 +465,7 @@ const switcherSheets = <Msg>(
     'Step 1 of 3',
     [
       h.p(
-        [h.Class(className(styles.sheetMeta))],
+        [h.Class(className(reset.text, styles.sheetMeta))],
         [
           'Stay informed about activity that matters without checking back throughout the day.',
         ],
@@ -466,9 +482,9 @@ const switcherSheets = <Msg>(
           h.div(
             [h.Class(className(styles.stackTight))],
             [
-              h.p([h.Class(className(styles.itemLabel))], [label]),
+              h.p([h.Class(className(reset.text, styles.itemLabel))], [label]),
               h.p(
-                [h.Class(className(styles.sheetMeta))],
+                [h.Class(className(reset.text, styles.sheetMeta))],
                 [
                   [
                     'Know when someone mentions you or needs your attention.',
@@ -555,7 +571,7 @@ const switcherSheets = <Msg>(
     'Step 3 of 3',
     [
       h.p(
-        [h.Class(className(styles.sheetMeta))],
+        [h.Class(className(reset.text, styles.sheetMeta))],
         ['Choose any combination. You can change these preferences later.'],
       ),
       h.div(
@@ -782,9 +798,12 @@ export const bottomSheetStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         h.div(
           [h.Class(className(styles.pageStack))],
           [
-            h.h3([h.Class(className(styles.pageHeading))], ['Nearby places']),
+            h.h3(
+              [h.Class(className(reset.text, styles.pageHeading))],
+              ['Nearby places'],
+            ),
             h.p(
-              [h.Class(className(styles.sheetText))],
+              [h.Class(className(reset.text, styles.sheetText))],
               [`Background interactions: ${m.backgroundClicks}`],
             ),
             Button.button(
@@ -819,7 +838,7 @@ export const bottomSheetStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           [h.Class(className(styles.pageStackNarrow))],
           [
             h.p(
-              [h.Class(className(styles.sheetText))],
+              [h.Class(className(reset.text, styles.sheetText))],
               [
                 'This sheet has two extra stops: half the viewport, and a 96px peek. Drag the handle down to collapse it, then back up — it rests at each stop instead of following your finger.',
               ],

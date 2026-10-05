@@ -1,3 +1,4 @@
+import { previewLayout } from '@/docs/components/preview-layout.stylex'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -102,7 +103,7 @@ export const treeListStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         )
   })
   return h.div(
-    [h.Class('w-full max-w-xl')],
+    [h.Class(className(previewLayout.wide))],
     [
       fixture.trees.length > 1
         ? h.div([h.Class(className(styles.wrap))], treeViews)

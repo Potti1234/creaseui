@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -101,7 +102,7 @@ interface PreviewShape {
 }
 
 const heading = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.h4([h.Class(className(styles.heading))], [text])
+  h.h4([h.Class(className(reset.text, styles.heading))], [text])
 
 const ghostIconButton = <Msg>(
   name: string,
@@ -501,7 +502,7 @@ const bodyFor = <Msg>(
                 [h.Class(className(styles.emptyState))],
                 [
                   h.p(
-                    [h.Class(className(styles.emptyTitle))],
+                    [h.Class(className(reset.text, styles.emptyTitle))],
                     ['No jobs match these filters'],
                   ),
                   button<Msg>(

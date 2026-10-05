@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import * as stylex from '@stylexjs/stylex'
@@ -156,7 +157,10 @@ const trigger = <Msg>(
             },
             h,
           ),
-          h.p([h.Class(className(styles.pageTitle))], ['Page title']),
+          h.p(
+            [h.Class(className(reset.text, styles.pageTitle))],
+            ['Page title'],
+          ),
         ],
       )
     case 'togglelabeled':
@@ -172,7 +176,10 @@ const trigger = <Msg>(
             },
             h,
           ),
-          h.p([h.Class(className(styles.pageTitle))], ['Page title']),
+          h.p(
+            [h.Class(className(reset.text, styles.pageTitle))],
+            ['Page title'],
+          ),
         ],
       )
   }

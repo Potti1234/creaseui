@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import { Option } from 'effect'
 import type { HtmlBuilder } from 'foldkit/html'
 import * as stylex from '@stylexjs/stylex'
@@ -50,7 +51,7 @@ export const moreMenuStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         h,
       ),
       h.p(
-        [h.Role('status'), h.Class(className(styles.status))],
+        [h.Role('status'), h.Class(className(reset.text, styles.status))],
         [
           Option.match(previewModel.maybeLastAction, {
             onNone: () => 'No action selected.',

@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import { Option } from 'effect'
 import * as stylex from '@stylexjs/stylex'
 import type { HtmlBuilder } from 'foldkit/html'
@@ -295,6 +296,7 @@ const jalaliDayButton = <Msg>(
       h.Type('button'),
       h.Class(
         className(
+          reset.button,
           styles.jalaliDay,
           cell.inMonth ? styles.jalaliDayInMonth : styles.jalaliDayOutside,
           ...(today ? [styles.jalaliDayToday] : []),

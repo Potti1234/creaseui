@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import * as stylex from '@stylexjs/stylex'
@@ -70,7 +71,7 @@ const scrollableContent = <Msg>(h: HtmlBuilder<Msg>): Html =>
     [h.Class(className(styles.scrollArea))],
     Array.from({ length: 10 }).map((_, index) =>
       h.p(
-        [h.Key(String(index)), h.Class(className(styles.lorem))],
+        [h.Key(String(index)), h.Class(className(reset.text, styles.lorem))],
         [dialogLorem],
       ),
     ),
@@ -152,7 +153,7 @@ const outlineAction = <Msg>(
       ...slots.closeButton,
       ...(initialFocus ? slots.initialFocusAttributes() : []),
       h.Type('button'),
-      h.Class(className(styles.action)),
+      h.Class(className(reset.button, styles.action)),
     ],
     [label],
   )
@@ -166,7 +167,7 @@ const primaryAction = <Msg>(
     [
       ...slots.closeButton,
       h.Type('button'),
-      h.Class(className(styles.action, styles.confirm)),
+      h.Class(className(reset.button, styles.action, styles.confirm)),
     ],
     [label],
   )
@@ -223,7 +224,7 @@ export const dialogStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           layoutStyle: styles.compact,
           content: () => [
             h.p(
-              [h.Class(className(styles.copy))],
+              [h.Class(className(reset.text, styles.copy))],
               ['Dialog content remains ordinary Foldkit Html.'],
             ),
           ],
@@ -316,7 +317,7 @@ export const dialogStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                         ...parts.closeButtonAttributes,
                         ...parts.initialFocusAttributes(),
                         h.Type('button'),
-                        h.Class(className(styles.action)),
+                        h.Class(className(reset.button, styles.action)),
                       ],
                       ['إلغاء'],
                     ),
@@ -324,7 +325,13 @@ export const dialogStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                       [
                         ...parts.closeButtonAttributes,
                         h.Type('button'),
-                        h.Class(className(styles.action, styles.confirm)),
+                        h.Class(
+                          className(
+                            reset.button,
+                            styles.action,
+                            styles.confirm,
+                          ),
+                        ),
                       ],
                       ['حفظ التغييرات'],
                     ),

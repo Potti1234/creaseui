@@ -1,3 +1,4 @@
+import { text } from '@/stylex/composition'
 import type { EChartsOption } from 'echarts/types/dist/shared'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -233,7 +234,10 @@ const render = <Message>(
 ): Html =>
   Chart.eChart(
     {
-      accessibleAlternative: h.p([], [ariaLabel]),
+      accessibleAlternative: text(
+        { as: 'p', variant: 'inherit', children: [ariaLabel] },
+        h,
+      ),
       ariaLabel,
       hostId,
       size: size ?? 'dashboard',

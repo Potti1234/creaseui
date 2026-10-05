@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import * as stylex from '@stylexjs/stylex'
@@ -132,7 +133,7 @@ export const alertDialogStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         ? []
         : [
             h.p(
-              [h.Role('status'), h.Class(className(styles.status))],
+              [h.Role('status'), h.Class(className(reset.text, styles.status))],
               [
                 previewModel.status === 'complete'
                   ? fixture.async.completeLabel

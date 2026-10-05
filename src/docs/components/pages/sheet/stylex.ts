@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -105,7 +106,7 @@ const instanceView = <Msg>(
       h.div(
         [h.Class(className(styles.loremWrap))],
         LOREM.map(paragraph =>
-          h.p([h.Class(className(styles.paragraph))], [paragraph]),
+          h.p([h.Class(className(reset.text, styles.paragraph))], [paragraph]),
         ),
       ),
     )
@@ -139,7 +140,7 @@ const instanceView = <Msg>(
                 [
                   ...slots.closeButton,
                   h.Type('button'),
-                  h.Class(className(styles.footerSave)),
+                  h.Class(className(reset.button, styles.footerSave)),
                 ],
                 [instance.footer!.save],
               ),
@@ -148,7 +149,7 @@ const instanceView = <Msg>(
                   ...slots.closeButton,
                   ...slots.initialFocusAttributes(),
                   h.Type('button'),
-                  h.Class(className(styles.footerCancel)),
+                  h.Class(className(reset.button, styles.footerCancel)),
                 ],
                 [instance.footer!.cancel],
               ),

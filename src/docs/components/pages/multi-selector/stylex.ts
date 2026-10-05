@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as stylex from '@stylexjs/stylex'
 
@@ -152,7 +153,7 @@ export const multiSelectorStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         [h.Class(className(styles.toolbar))],
         [
           h.button(
-            [h.Type('button'), h.Class(className(styles.button))],
+            [h.Type('button'), h.Class(className(reset.button, styles.button))],
             ['Refresh'],
           ),
           selectorAt(
@@ -183,7 +184,7 @@ export const multiSelectorStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
             [...STATUSES],
           ),
           h.button(
-            [h.Type('button'), h.Class(className(styles.button))],
+            [h.Type('button'), h.Class(className(reset.button, styles.button))],
             ['Export'],
           ),
         ],

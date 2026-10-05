@@ -1,3 +1,5 @@
+import { className } from '@/stylex/style'
+import { previewLayout } from '@/docs/components/preview-layout.stylex'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -90,7 +92,7 @@ export const powerSearchStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
       ),
     )
     return h.div(
-      [h.Class('flex w-full max-w-lg flex-col gap-4')],
+      [h.Class(className(previewLayout.search))],
       [
         PowerSearch.powerSearch(
           {

@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
@@ -850,7 +851,9 @@ const staticPanel = <Msg>(
                                       [
                                         h.Role('status'),
                                         h.AriaLive('polite'),
-                                        h.Class(cx(styles.feedback)),
+                                        h.Class(
+                                          cx(reset.text, styles.feedback),
+                                        ),
                                       ],
                                       [model.feedback],
                                     ),

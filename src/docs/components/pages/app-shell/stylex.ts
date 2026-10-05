@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -97,7 +98,7 @@ const styles = stylex.create({
 
 const navLogo = <Msg>(h: HtmlBuilder<Msg>): Html =>
   h.a(
-    [h.Href('#'), h.Class(className(styles.logoLink))],
+    [h.Href('#'), h.Class(className(reset.link, styles.logoLink))],
     [
       h.span(
         [h.Class(className(styles.logoChip))],
@@ -116,7 +117,12 @@ const sideNavItem = <Msg>(
   h.a(
     [
       h.Href('#'),
-      h.Class(className(selected ? styles.navItemSelected : styles.navItem)),
+      h.Class(
+        className(
+          reset.link,
+          selected ? styles.navItemSelected : styles.navItem,
+        ),
+      ),
     ],
     [icon(iconName, { class: className(styles.navItemIcon) }, h), label],
   )
@@ -192,7 +198,10 @@ const topNav = <Msg>(h: HtmlBuilder<Msg>): Html => {
       [
         h.Href('#'),
         h.Class(
-          className(selected ? styles.topNavItemSelected : styles.topNavItem),
+          className(
+            reset.link,
+            selected ? styles.topNavItemSelected : styles.topNavItem,
+          ),
         ),
       ],
       [label],
@@ -218,9 +227,12 @@ const pageContent = <Msg>(h: HtmlBuilder<Msg>): Html =>
     {
       gap: 4,
       children: [
-        h.h3([h.Class(className(styles.heading))], ['Page Content']),
+        h.h3(
+          [h.Class(className(reset.text, styles.heading))],
+          ['Page Content'],
+        ),
         h.p(
-          [h.Class(className(styles.body))],
+          [h.Class(className(reset.text, styles.body))],
           [
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.',
           ],

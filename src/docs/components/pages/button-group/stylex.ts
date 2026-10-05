@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -455,7 +456,7 @@ const nodeView = <Msg>(
                               JSON.stringify({ _tag: 'ToggledVoice' }),
                             ),
                           ),
-                          h.Class(className(styles.voiceButton)),
+                          h.Class(className(reset.button, styles.voiceButton)),
                         ],
                         [
                           Icon.icon(
@@ -576,11 +577,11 @@ const nodeView = <Msg>(
                 [h.Class(className(styles.popoverHead))],
                 [
                   h.p(
-                    [h.Class(className(styles.popoverTitle))],
+                    [h.Class(className(reset.text, styles.popoverTitle))],
                     ['Start a new task with Copilot'],
                   ),
                   h.p(
-                    [h.Class(className(styles.popoverCopy))],
+                    [h.Class(className(reset.text, styles.popoverCopy))],
                     ['Describe your task in natural language.'],
                   ),
                 ],
@@ -599,7 +600,7 @@ const nodeView = <Msg>(
                 h,
               ),
               h.p(
-                [h.Class(className(styles.popoverFootnote))],
+                [h.Class(className(reset.text, styles.popoverFootnote))],
                 ['Copilot will open a pull request for review.'],
               ),
             ],

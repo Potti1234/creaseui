@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -70,11 +71,11 @@ const msg = <Msg>(
   )
 
 const label = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class(className(styles.label))], [text])
+  h.p([h.Class(className(reset.text, styles.label))], [text])
 const supporting = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class(className(styles.supporting))], [text])
+  h.p([h.Class(className(reset.text, styles.supporting))], [text])
 const body = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class(className(styles.body))], [text])
+  h.p([h.Class(className(reset.text, styles.body))], [text])
 
 const card = <Msg>(
   children: ReadonlyArray<Html | string>,

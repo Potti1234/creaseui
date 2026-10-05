@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as stylex from '@stylexjs/stylex'
 
@@ -52,7 +53,10 @@ export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
                       [h.Class(className(styles.description))],
                       [
                         h.a(
-                          [h.Href('#'), h.Class(className(styles.link))],
+                          [
+                            h.Href('#'),
+                            h.Class(className(reset.link, styles.link)),
+                          ],
                           ['Over time'],
                         ),
                         ', this smooths out the average cost of your investments. When prices drop, your fixed amount buys more shares. When prices rise, you buy fewer. The result is a lower average cost per share compared to lump-sum investing during volatile periods.',

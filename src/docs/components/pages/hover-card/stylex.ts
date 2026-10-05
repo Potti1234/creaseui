@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -139,9 +140,12 @@ export const hoverCardStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           content: h.div(
             [h.Class(className(styles.gapSm))],
             [
-              h.h4([h.Class(className(styles.headingMedium))], ['Hover Card']),
+              h.h4(
+                [h.Class(className(reset.text, styles.headingMedium))],
+                ['Hover Card'],
+              ),
               h.p(
-                [],
+                [h.Class(className(reset.text))],
                 [`This hover card appears on the ${side} side of the trigger.`],
               ),
             ],

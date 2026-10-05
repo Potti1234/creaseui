@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -75,7 +76,7 @@ export const scrollAreaStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                   [h.Class(className(styles.tagsContent))],
                   [
                     h.h4(
-                      [h.Class(className(styles.tagsHeading))],
+                      [h.Class(className(reset.text, styles.tagsHeading))],
                       [fixture.heading],
                     ),
                     ...scrollAreaTags.map(tag =>

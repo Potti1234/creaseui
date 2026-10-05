@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import { Effect, Match as M, Option, Schema as S } from 'effect'
@@ -1196,6 +1197,7 @@ export const presetCustomizer = (
                       ),
                       h.Class(
                         className(
+                          reset.button,
                           styles.choice,
                           isSelected && styles.choiceSelected,
                         ),
@@ -1235,7 +1237,7 @@ export const presetCustomizer = (
           h.div(
             [h.Class(className(styles.customizerHeaderInner))],
             [
-              h.h1([h.Class(className(styles.title))], ['Menu']),
+              h.h1([h.Class(className(reset.text, styles.title))], ['Menu']),
               Icon.icon('menu', { class: className(styles.iconMenu) }, h),
             ],
           ),
@@ -1325,13 +1327,13 @@ export const presetCustomizer = (
                       Message['ChangedCreatePresetInput']({ value }),
                     ),
                     h.Placeholder('Paste code or CreaseUI URL'),
-                    h.Class(className(styles.fieldInput)),
+                    h.Class(className(reset.input, styles.fieldInput)),
                   ]),
                   h.button(
                     [
                       h.Type('button'),
                       h.OnClick(Message['AppliedCreatePresetInput']()),
-                      h.Class(className(styles.applyButton)),
+                      h.Class(className(reset.button, styles.applyButton)),
                     ],
                     ['Apply Preset'],
                   ),
@@ -1339,7 +1341,7 @@ export const presetCustomizer = (
                     ? []
                     : [
                         h.p(
-                          [h.Class(className(styles.error))],
+                          [h.Class(className(reset.text, styles.error))],
                           [model.presetError],
                         ),
                       ]),
@@ -1351,7 +1353,7 @@ export const presetCustomizer = (
             [
               h.Type('button'),
               h.OnClick(Message['ClickedShuffleCreatePreset']()),
-              h.Class(className(styles.applyButton)),
+              h.Class(className(reset.button, styles.applyButton)),
             ],
             ['Shuffle'],
           ),
@@ -1359,7 +1361,7 @@ export const presetCustomizer = (
             [
               h.Type('button'),
               h.OnClick(Message['ClickedCopyCreatePreset']()),
-              h.Class(className(styles.copyButton)),
+              h.Class(className(reset.button, styles.copyButton)),
             ],
             [
               Icon.icon(

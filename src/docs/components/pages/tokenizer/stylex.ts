@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as stylex from '@stylexjs/stylex'
 
@@ -74,7 +75,7 @@ export const tokenizerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   const stack = (children: ReadonlyArray<Html>): Html =>
     h.div([h.Class(className(styles.stack))], [...children])
   const supporting = (text: string): Html =>
-    h.p([h.Class(className(styles.supporting))], [text])
+    h.p([h.Class(className(reset.text, styles.supporting))], [text])
 
   switch (fixture.kind) {
     case 'showcase':
@@ -125,7 +126,7 @@ export const tokenizerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           placeholder: 'Search people...',
           items: [...USERS],
           endContent: h.button(
-            [h.Type('button'), h.Class(className(styles.button))],
+            [h.Type('button'), h.Class(className(reset.button, styles.button))],
             ['Apply'],
           ),
           width: 400,

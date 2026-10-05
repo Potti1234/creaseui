@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import * as stylex from '@stylexjs/stylex'
@@ -119,7 +120,7 @@ const scrollableContent = <Msg>(h: HtmlBuilder<Msg>): Html =>
     [h.Class(className(styles.scrollBody))],
     Array.from({ length: 10 }).map((_, index) =>
       h.p(
-        [h.Key(String(index)), h.Class(className(styles.lorem))],
+        [h.Key(String(index)), h.Class(className(reset.text, styles.lorem))],
         [drawerLorem],
       ),
     ),
@@ -129,8 +130,8 @@ const goalContent = <Msg>(h: HtmlBuilder<Msg>): Html =>
   h.div(
     [h.Class(className(styles.body))],
     [
-      h.p([h.Class(className(styles.value))], ['350']),
-      h.p([h.Class(className(styles.label))], ['Calories per day']),
+      h.p([h.Class(className(reset.text, styles.value))], ['350']),
+      h.p([h.Class(className(reset.text, styles.label))], ['Calories per day']),
     ],
   )
 
@@ -208,7 +209,7 @@ const rtlContent = <Msg>(
                   h.OnClick(msg(onMessageJson, 'AdjustedGoal', { delta: -10 })),
                   h.Disabled(model.goal <= 200),
                   h.AriaLabel(drawerRtlCopy.decrease),
-                  h.Class(className(styles.roundButton)),
+                  h.Class(className(reset.button, styles.roundButton)),
                 ],
                 ['−'],
               ),
@@ -216,11 +217,11 @@ const rtlContent = <Msg>(
                 [h.Class(className(styles.counterFlex))],
                 [
                   h.p(
-                    [h.Class(className(styles.counterValue))],
+                    [h.Class(className(reset.text, styles.counterValue))],
                     [String(model.goal)],
                   ),
                   h.p(
-                    [h.Class(className(styles.counterLabel))],
+                    [h.Class(className(reset.text, styles.counterLabel))],
                     [drawerRtlCopy.calories],
                   ),
                 ],
@@ -231,7 +232,7 @@ const rtlContent = <Msg>(
                   h.OnClick(msg(onMessageJson, 'AdjustedGoal', { delta: 10 })),
                   h.Disabled(model.goal >= 400),
                   h.AriaLabel(drawerRtlCopy.increase),
-                  h.Class(className(styles.roundButton)),
+                  h.Class(className(reset.button, styles.roundButton)),
                 ],
                 ['+'],
               ),
@@ -243,7 +244,7 @@ const rtlContent = <Msg>(
               Chart.chart(
                 {
                   accessibleAlternative: h.p(
-                    [],
+                    [h.Class(className(reset.text))],
                     ['Bar chart of daily activity goals.'],
                   ),
                   ariaLabel: 'Activity goal chart',
@@ -269,11 +270,19 @@ const footerActions = <Msg>(
   outline: string,
 ): ReadonlyArray<Html> => [
   h.button(
-    [...slots.closeButton, h.Type('button'), h.Class(className(styles.action))],
+    [
+      ...slots.closeButton,
+      h.Type('button'),
+      h.Class(className(reset.button, styles.action)),
+    ],
     [primary],
   ),
   h.button(
-    [...slots.closeButton, h.Type('button'), h.Class(className(styles.cancel))],
+    [
+      ...slots.closeButton,
+      h.Type('button'),
+      h.Class(className(reset.button, styles.cancel)),
+    ],
     [outline],
   ),
 ]
@@ -371,7 +380,7 @@ const drawerView = <Msg>(
                   [
                     ...slots.closeButton,
                     h.Type('button'),
-                    h.Class(className(styles.cancel)),
+                    h.Class(className(reset.button, styles.cancel)),
                   ],
                   ['Cancel'],
                 ),

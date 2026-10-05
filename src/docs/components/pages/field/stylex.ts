@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as stylex from '@stylexjs/stylex'
@@ -854,7 +855,10 @@ const fieldView = <Msg>(
                           [],
                           [
                             "Get notified when tasks you've created have updates. ",
-                            h.a([h.Href('#')], ['Manage tasks']),
+                            h.a(
+                              [h.Class(className(reset.link)), h.Href('#')],
+                              ['Manage tasks'],
+                            ),
                           ],
                         ),
                       ],

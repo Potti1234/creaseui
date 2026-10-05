@@ -1,3 +1,5 @@
+import { previewLayout } from '@/docs/components/preview-layout.stylex'
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -204,7 +206,7 @@ export const itemStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
       return demoStack(h, null)
     case 'rtl':
       return h.div(
-        [h.Dir('rtl'), h.Class('contents')],
+        [h.Dir('rtl'), h.Class(className(previewLayout.contents))],
         [demoStack(h, itemRtlCopy)],
       )
     case 'variant':
@@ -528,7 +530,7 @@ export const itemStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                             h.img([
                               h.Src(`https://avatar.vercel.sh/${song.title}`),
                               h.Alt(song.title),
-                              h.Class(sx(styles.cover)),
+                              h.Class(className(reset.media, styles.cover)),
                             ]),
                           ],
                         },
@@ -650,7 +652,7 @@ export const itemStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                             h.img([
                               h.Src(entry.image),
                               h.Alt(entry.name),
-                              h.Class(sx(styles.headerImg)),
+                              h.Class(className(reset.media, styles.headerImg)),
                             ]),
                           ],
                         },
