@@ -2566,7 +2566,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "FieldLabelProps",
       "kind": "type",
-      "signature": "FieldLabelProps = Slot & Readonly<{ for?: string; }>"
+      "signature": "FieldLabelProps = Slot & Readonly<{ for?: string; id?: string; }>"
     },
     {
       "name": "fieldLabel",
@@ -3247,7 +3247,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "LabelProps",
       "kind": "type",
-      "signature": "LabelProps = Readonly<{ for?: string; isRequired?: boolean; isDisabled?: boolean; class?: string; children: ReadonlyArray<Html | string>; }>"
+      "signature": "LabelProps = Readonly<{ for?: string; id?: string; isRequired?: boolean; isDisabled?: boolean; class?: string; children: ReadonlyArray<Html | string>; }>"
     },
     {
       "name": "label",
