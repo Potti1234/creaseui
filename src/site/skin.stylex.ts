@@ -1,0 +1,111 @@
+import type { skin as tailwindSkin } from './skin'
+import * as stylex from '@stylexjs/stylex'
+import { reset } from '@/stylex/reset'
+import { className } from '@/stylex/style'
+import { tokens } from '../stylex/tokens.stylex'
+
+const styles = stylex.create({
+  header: {
+    position: 'sticky',
+    top: 0,
+    zIndex: 40,
+    borderBottomStyle: 'solid',
+    borderBottomWidth: 1,
+    borderBottomColor: tokens.border,
+    backgroundColor: tokens.background,
+  },
+  bar: {
+    marginInline: 'auto',
+    display: 'flex',
+    minHeight: '3.5rem',
+    width: '100%',
+    maxWidth: '1400px',
+    alignItems: 'center',
+    gap: { default: '1rem', '@media (min-width: 768px)': '1.5rem' },
+    paddingInline: { default: '1rem', '@media (min-width: 768px)': '2rem' },
+  },
+  brand: { flexShrink: 0, fontSize: '.875rem', fontWeight: 600 },
+  nav: {
+    display: { default: 'none', '@media (min-width: 640px)': 'flex' },
+    alignItems: 'center',
+    gap: '1.5rem',
+  },
+  link: {
+    fontSize: '.875rem',
+    fontWeight: 500,
+    color: { default: tokens.mutedForeground, ':hover': tokens.foreground },
+  },
+  active: { color: tokens.foreground },
+  other: {
+    marginLeft: 'auto',
+    fontSize: '.75rem',
+    fontWeight: 500,
+    color: { default: tokens.mutedForeground, ':hover': tokens.foreground },
+  },
+  theme: {
+    display: 'inline-flex',
+    width: '2.5rem',
+    height: '2.5rem',
+    flexShrink: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '.375rem',
+    cursor: 'pointer',
+    backgroundColor: { default: tokens.transparent, ':hover': tokens.accent },
+    outlineColor: tokens.ring,
+  },
+  mobile: {
+    position: 'relative',
+    display: { default: 'block', '@media (min-width: 640px)': 'none' },
+  },
+  summary: {
+    display: 'flex',
+    width: '2.5rem',
+    height: '2.5rem',
+    cursor: 'pointer',
+    listStyleType: 'none',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '.375rem',
+    backgroundColor: { default: tokens.transparent, ':hover': tokens.accent },
+  },
+  menu: {
+    position: 'absolute',
+    top: '2.75rem',
+    right: 0,
+    zIndex: 50,
+    display: 'grid',
+    minWidth: '11rem',
+    gap: '1rem',
+    borderRadius: '.5rem',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderColor: tokens.border,
+    backgroundColor: tokens.background,
+    padding: '1rem',
+  },
+  icon: { width: '1rem', height: '1rem' },
+  notFound: {
+    marginInline: 'auto',
+    maxWidth: '36rem',
+    paddingInline: '2rem',
+    paddingBlock: '4rem',
+    color: tokens.mutedForeground,
+  },
+})
+
+export const skin = {
+  header: className(styles.header),
+  bar: className(styles.bar),
+  brand: className(reset.link, styles.brand),
+  nav: className(styles.nav),
+  link: className(reset.link, styles.link),
+  active: className(reset.link, styles.link, styles.active),
+  other: className(reset.link, styles.other),
+  theme: className(reset.button, styles.theme),
+  mobile: className(styles.mobile),
+  summary: className(styles.summary),
+  menu: className(styles.menu),
+  icon: className(styles.icon),
+  notFound: className(reset.text, styles.notFound),
+} satisfies Record<keyof typeof tailwindSkin, string>

@@ -33,7 +33,8 @@ import * as ComponentCatalog from '@/docs/components/catalog'
 import * as CopyFeedback from '@/docs/copy-feedback'
 import * as CodeFile from '@/lib/code-file'
 import * as Page from '@/app/page'
-import * as Icon from '@/lib/icon'
+import * as Chrome from '@/site/chrome'
+import { counterpartUrl, renderer } from '@/site/config'
 import {
   AppRoute,
   type ChartSection,
@@ -46,12 +47,12 @@ import {
   isChartSection,
   urlToAppRoute,
 } from '@/route'
-import { cn } from '@/lib/utils'
 
 // MODEL
 
 export const Model = S.Struct({
   route: AppRoute,
+  currentUrl: S.String,
   isDark: S.Boolean,
   page: Page.Page,
 })
@@ -158,7 +159,12 @@ export const init: Runtime.RoutingApplicationInit<Model, Message, Flags> = (
 ) => {
   const route = urlToAppRoute(url)
   return {
-    model: { route, isDark: flags.isDark, page: Page.init(route) },
+    model: {
+      route,
+      currentUrl: urlToString(url),
+      isDark: flags.isDark,
+      page: Page.init(route),
+    },
     commands: Option.isSome(url.hash)
       ? [ScrollToFragment({ hash: url.hash.value })]
       : [],
@@ -404,6 +410,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
         return {
           model: modifyFields(model, {
             route: () => route,
+            currentUrl: () => urlToString(url),
             page: () => page,
           }),
           commands: Option.isSome(url.hash)
@@ -735,275 +742,6 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
 
 // VIEW
 
-const headerLink = (
-  href: string,
-  label: string,
-  isActive: boolean,
-  className: string,
-  h: HtmlBuilder<Message>,
-): Html => {
-  return h.a(
-    [
-      h.Href(href),
-      h.Class(
-        cn(
-          'text-sm font-medium transition-colors hover:text-foreground',
-          isActive ? 'text-foreground' : 'text-muted-foreground',
-          className,
-        ),
-      ),
-    ],
-    [label],
-  )
-}
-
-const createRendererSwitcher = (
-  page: typeof Page.Create.Type,
-  className: string,
-  h: HtmlBuilder<Message>,
-): Html =>
-  h.div(
-    [
-      h.Role('group'),
-      h.AriaLabel('Create renderer'),
-      h.Class(
-        cn('items-center rounded-md border bg-muted/40 p-0.5', className),
-      ),
-    ],
-    (['tailwind', 'stylex'] as const).map(renderer =>
-      h.button(
-        [
-          h.Type('button'),
-          h.OnClick(Message.ChangedCreateRenderer({ renderer })),
-          h.AriaPressed(page.renderer === renderer ? 'true' : 'false'),
-          h.Class(
-            cn(
-              'min-h-8 rounded-[5px] px-2.5 text-xs font-medium transition-colors focus-visible:ring-2 focus-visible:ring-ring/50',
-              page.renderer === renderer
-                ? 'bg-background text-foreground shadow-xs'
-                : 'text-muted-foreground hover:text-foreground',
-            ),
-          ),
-        ],
-        [renderer === 'tailwind' ? 'Tailwind' : 'StyleX'],
-      ),
-    ),
-  )
-
-const chartsRendererSwitcher = (
-  page: typeof Page.Charts.Type,
-  h: HtmlBuilder<Message>,
-): Html =>
-  h.div(
-    [
-      h.Role('group'),
-      h.AriaLabel('Charts renderer'),
-      h.Class('flex items-center rounded-md border bg-muted/40 p-0.5'),
-    ],
-    (['tailwind', 'stylex'] as const).map(renderer =>
-      h.button(
-        [
-          h.Type('button'),
-          h.OnClick(Message.ChangedChartsRenderer({ renderer })),
-          h.AriaPressed(page.renderer === renderer ? 'true' : 'false'),
-          h.Class(
-            cn(
-              'min-h-8 rounded-[5px] px-2.5 text-xs font-medium transition-colors focus-visible:ring-2 focus-visible:ring-ring/50',
-              page.renderer === renderer
-                ? 'bg-background text-foreground shadow-xs'
-                : 'text-muted-foreground hover:text-foreground',
-            ),
-          ),
-        ],
-        [renderer === 'tailwind' ? 'Tailwind' : 'StyleX'],
-      ),
-    ),
-  )
-
-const blocksRendererSwitcher = (
-  page: typeof Page.BlocksIndex.Type,
-  h: HtmlBuilder<Message>,
-): Html =>
-  h.div(
-    [
-      h.Role('group'),
-      h.AriaLabel('Blocks renderer'),
-      h.Class('flex items-center rounded-md border bg-muted/40 p-0.5'),
-    ],
-    (['tailwind', 'stylex'] as const).map(renderer =>
-      h.button(
-        [
-          h.Type('button'),
-          h.OnClick(Message.ChangedBlocksRenderer({ renderer })),
-          h.AriaPressed(page.renderer === renderer ? 'true' : 'false'),
-          h.Class(
-            cn(
-              'min-h-8 rounded-[5px] px-2.5 text-xs font-medium transition-colors focus-visible:ring-2 focus-visible:ring-ring/50',
-              page.renderer === renderer
-                ? 'bg-background text-foreground shadow-xs'
-                : 'text-muted-foreground hover:text-foreground',
-            ),
-          ),
-        ],
-        [renderer === 'tailwind' ? 'Tailwind' : 'StyleX'],
-      ),
-    ),
-  )
-
-const header = (model: Model, h: HtmlBuilder<Message>): Html => {
-  const isCharts = model.route._tag === 'Charts'
-
-  return h.header(
-    [h.Class('sticky top-0 z-40 border-b bg-background/95 backdrop-blur')],
-    [
-      h.div(
-        [
-          h.Class(
-            'mx-auto flex h-14 w-full max-w-[1400px] items-center gap-4 px-4 md:gap-6 md:px-8',
-          ),
-        ],
-        [
-          h.a(
-            [h.Href(homePath()), h.Class('text-sm font-semibold')],
-            ['crease/ui'],
-          ),
-          headerLink(
-            componentDocsPath('accordion'),
-            'Docs',
-            model.route._tag === 'ComponentDocs',
-            'hidden sm:inline-flex',
-            h,
-          ),
-          headerLink(
-            createPath(),
-            'Create',
-            model.route._tag === 'Create',
-            'hidden sm:inline-flex',
-            h,
-          ),
-          ...(model.page._tag === 'CreatePage'
-            ? [createRendererSwitcher(model.page, 'flex', h)]
-            : []),
-          headerLink(
-            chartsPath('area'),
-            'Charts',
-            isCharts,
-            'hidden sm:inline-flex',
-            h,
-          ),
-          ...(model.page._tag === 'ChartsPage'
-            ? [chartsRendererSwitcher(model.page, h)]
-            : []),
-          headerLink(
-            blocksIndexPath(),
-            'Blocks',
-            model.route._tag === 'BlocksIndex' ||
-              model.route._tag === 'BlocksStyleX' ||
-              model.route._tag === 'BlocksStyleXTable',
-            'hidden sm:inline-flex',
-            h,
-          ),
-          ...(model.page._tag === 'BlocksIndexPage'
-            ? [blocksRendererSwitcher(model.page, h)]
-            : []),
-          h.details(
-            [h.Class('relative ml-auto sm:hidden')],
-            [
-              h.summary(
-                [
-                  h.AriaLabel('Open site navigation'),
-                  h.Class(
-                    'flex size-10 cursor-pointer list-none items-center justify-center rounded-md hover:bg-accent focus-visible:ring-3 focus-visible:ring-ring/50',
-                  ),
-                ],
-                [Icon.icon('menu', { class: 'size-4' }, h)],
-              ),
-              h.nav(
-                [
-                  h.AriaLabel('Site navigation'),
-                  h.Class(
-                    'absolute top-11 right-0 z-50 grid min-w-44 gap-1 rounded-lg border bg-background p-2 shadow-lg',
-                  ),
-                ],
-                [
-                  headerLink(
-                    componentDocsPath('accordion'),
-                    'Docs',
-                    model.route._tag === 'ComponentDocs',
-                    'rounded-md px-3 py-2 hover:bg-accent',
-                    h,
-                  ),
-                  headerLink(
-                    createPath(),
-                    'Create',
-                    model.route._tag === 'Create',
-                    'rounded-md px-3 py-2 hover:bg-accent',
-                    h,
-                  ),
-                  headerLink(
-                    chartsPath('area'),
-                    'Charts',
-                    isCharts,
-                    'rounded-md px-3 py-2 hover:bg-accent',
-                    h,
-                  ),
-                  headerLink(
-                    blocksIndexPath(),
-                    'Blocks',
-                    model.route._tag === 'BlocksIndex' ||
-                      model.route._tag === 'BlocksStyleX' ||
-                      model.route._tag === 'BlocksStyleXTable',
-                    'rounded-md px-3 py-2 hover:bg-accent',
-                    h,
-                  ),
-                ],
-              ),
-            ],
-          ),
-          h.button(
-            [
-              h.Type('button'),
-              h.OnClick(Message.ClickedThemeToggle()),
-              h.AriaLabel(
-                model.isDark ? 'Switch to light mode' : 'Switch to dark mode',
-              ),
-              h.Title(
-                model.isDark ? 'Switch to light mode' : 'Switch to dark mode',
-              ),
-              h.Class(
-                'group relative inline-flex size-10 shrink-0 items-center justify-center rounded-md text-foreground outline-none transition-[color,background-color,transform] duration-200 hover:bg-accent hover:text-accent-foreground focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-[0.96] sm:ml-auto',
-              ),
-            ],
-            [
-              h.span(
-                [h.Class('relative size-4')],
-                [
-                  Icon.icon(
-                    'sun',
-                    {
-                      class:
-                        'theme-toggle-icon absolute inset-0 size-4 scale-100 opacity-100 transition-[scale,opacity] duration-200 ease-[cubic-bezier(0.2,0,0,1)] dark:scale-25 dark:opacity-0',
-                    },
-                    h,
-                  ),
-                  Icon.icon(
-                    'moon',
-                    {
-                      class:
-                        'theme-toggle-icon absolute inset-0 size-4 scale-25 opacity-0 transition-[scale,opacity] duration-200 ease-[cubic-bezier(0.2,0,0,1)] dark:scale-100 dark:opacity-100',
-                    },
-                    h,
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
-      ),
-    ],
-  )
-}
-
 /* Page views are plain (model) => Html functions; wrap them once as
    SubmodelViews so h.submodel can embed them with message lifting. */
 const boardView = defineView<Board.Model, Board.Message>(Board.view)
@@ -1048,7 +786,8 @@ const blocksView = (
   h: HtmlBuilder<Message>,
 ): Html => {
   if (model.page._tag !== 'BlockPage') return h.empty
-  const block = resolveBlock(blockId)
+  const resolved = resolveBlock(blockId)
+  const block = resolved === undefined ? undefined : { ...resolved, renderer }
   if (block === undefined) return h.p([], ['Unknown block.'])
   const page = model.page
   if (block.name.startsWith('sidebar-')) {
@@ -1201,51 +940,7 @@ const chartsSectionView = (
   )
 }
 
-const homeView = (h: HtmlBuilder<Message>): Html => {
-  return h.div(
-    [h.Class('mx-auto flex max-w-xl flex-col items-start gap-4 px-8 py-16')],
-    [
-      h.h1([h.Class('text-3xl font-semibold tracking-tight')], ['crease/ui']),
-      h.p(
-        [h.Class('text-muted-foreground')],
-        ['CreaseUI components built on Foldkit UI. Pick a demo:'],
-      ),
-      h.ul(
-        [h.Class('list-disc pl-5 text-sm leading-7')],
-        [
-          h.li(
-            [],
-            [
-              h.a(
-                [h.Href(createPath()), h.Class('underline underline-offset-4')],
-                ['/create — the CreaseUI preview board'],
-              ),
-            ],
-          ),
-          h.li(
-            [],
-            [
-              h.a(
-                [
-                  h.Href(chartsPath('area')),
-                  h.Class('underline underline-offset-4'),
-                ],
-                ['/charts — CreaseUI charts rendered with Apache ECharts'],
-              ),
-            ],
-          ),
-        ],
-      ),
-    ],
-  )
-}
-
-const notFoundView = (path: string, h: HtmlBuilder<Message>): Html => {
-  return h.div(
-    [h.Class('mx-auto max-w-xl px-8 py-16')],
-    [h.p([h.Class('text-muted-foreground')], [`No page at ${path}.`])],
-  )
-}
+const notFoundView = Chrome.notFound
 
 /* Each page subtree is KEYED by route (and by charts section). Without keys,
    snabbdom patches the next page into the previous page's DOM in place; since
@@ -1408,6 +1103,20 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => {
     title,
     body: isFullPage
       ? h.div([], [pageView(model, h)])
-      : h.div([], [header(model, h), pageView(model, h)]),
+      : h.div(
+          [],
+          [
+            Chrome.header(
+              {
+                route: model.route,
+                isDark: model.isDark,
+                onThemeToggle: Message.ClickedThemeToggle(),
+                counterpartHref: counterpartUrl(new URL(model.currentUrl)),
+              },
+              h,
+            ),
+            pageView(model, h),
+          ],
+        ),
   }
 }

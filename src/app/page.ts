@@ -20,6 +20,7 @@ import * as ChartsStyleX from '@/demo/charts-stylex/page'
 import * as ComponentCatalog from '@/docs/components/catalog'
 import * as CopyFeedback from '@/docs/copy-feedback'
 import type { AppRoute } from '@/route'
+import { renderer } from '@/site/config'
 
 export const Landing = taggedStruct('LandingPage', {
   landing: LandingFeature.Model,
@@ -92,13 +93,13 @@ export const init = (route: AppRoute): Page =>
       Home: () => Landing({ landing: LandingFeature.init() }),
       Create: () =>
         Create({
-          renderer: 'tailwind',
+          renderer,
           tailwindBoard: BoardFeature.init(),
           styleXBoard: BoardConstrained.init(),
         }),
       Charts: () =>
         Charts({
-          renderer: 'tailwind',
+          renderer,
           area: ChartsArea.init(),
           bar: ChartsBar.init(),
           line: ChartsLine.init(),
@@ -110,14 +111,14 @@ export const init = (route: AppRoute): Page =>
         }),
       BlocksIndex: () =>
         BlocksIndex({
-          renderer: 'tailwind',
+          renderer,
           category: 'all',
           codeBlocks: {},
           copiedCode: null,
         }),
       BlocksStyleX: () =>
         BlocksIndex({
-          renderer: 'stylex',
+          renderer,
           category: 'all',
           codeBlocks: {},
           copiedCode: null,

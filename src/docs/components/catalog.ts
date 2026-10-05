@@ -22,6 +22,7 @@ import type {
 import { componentApi } from '@/docs/generated-component-api'
 import { authoredPages } from '@/docs/components/pages'
 import { RoutedDocsPreviewMessage } from '@/docs/components/pages/authored-page'
+import { renderer } from '@/site/config'
 const stylexExamplePreviewProviders = new Map<
   string,
   StyleXExamplePreviewProvider
@@ -91,7 +92,7 @@ export const init = (slug?: string): Model => ({
       return program.init(index)
     },
   ),
-  renderer: 'tailwind',
+  renderer,
   copiedCode: null,
 })
 
@@ -414,7 +415,10 @@ export const view = (
       description: definition.description,
       kind,
       architecture: definition.architecture ?? architectureFor(kind, name),
-      installation: `npx creaseui add ${slug}`,
+      installation:
+        renderer === 'stylex'
+          ? `// Copy src/stylex/${slug}.ts and its imports into your project.\n// Configure the StyleX compiler; see src/stylex/README.md.`
+          : `npx shadcn@latest add https://creaseui.com/r/${slug}.json`,
       usage:
         model.renderer === 'stylex'
           ? (definition.usage ?? usageFor(slug, name, kind)).replaceAll(
@@ -450,7 +454,6 @@ export const view = (
       ...(heroExample === undefined ? {} : { heroExample }),
       sidebarScrolled: CopyFeedback.Message.ObservedDocsSidebarScroll(),
       renderer: model.renderer,
-      onRendererChange: renderer => ChangedRenderer({ renderer }),
       composition:
         definition.composition ??
         compositionFor(kind, name, primaryExport(slug)),

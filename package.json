@@ -27,7 +27,7 @@
     "format:check": "oxfmt --check",
     "format:staged": "lint-staged --max-arg-length 4000",
     "dev": "vite",
-    "build": "vite build",
+    "build": "npm run build:tailwind && npm run build:stylex",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "test": "npm run test:lint-package && npm run test:unit && npm run test:scene",
@@ -63,7 +63,13 @@
     "registry:install-local": "node scripts/install-local-registry.mjs",
     "test:registry": "node scripts/verify-registry-install.mjs",
     "parity:names": "node scripts/check-upstream-parity.mjs",
-    "component:create": "node scripts/create-component.mjs"
+    "component:create": "node scripts/create-component.mjs",
+    "dev:tailwind": "vite --mode tailwind",
+    "dev:stylex": "vite --mode stylex",
+    "build:tailwind": "vite build --mode tailwind",
+    "build:stylex": "vite build --mode stylex",
+    "preview:tailwind": "vite preview --mode tailwind",
+    "preview:stylex": "vite preview --mode stylex"
   },
   "lint-staged": {
     "*": "oxfmt --write --no-error-on-unmatched-pattern"

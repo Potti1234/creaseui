@@ -18,7 +18,7 @@ import { separator } from '@/stylex/separator'
 import * as Sidebar from '@/stylex/sidebar'
 import { stack } from '@/stylex/stack'
 import { text } from '@/stylex/text'
-import themeSource from '@/styles.css?raw'
+import themeSource from '@/theme.css?raw'
 
 // Reuse only the theme variables. No Tailwind, preflight, or app selectors.
 const theme = document.createElement('style')
