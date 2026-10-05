@@ -81,13 +81,6 @@ export const Message = defineMessageUnion({
   ClickedThemeToggle: {},
   CompletedApplyTheme: {},
   IgnoredBlocksPreviewInput: {},
-  ChangedCreateRenderer: {
-    renderer: Page.CreateRenderer,
-  },
-  ChangedChartsRenderer: {
-    renderer: Page.CreateRenderer,
-  },
-  ChangedBlocksRenderer: { renderer: Page.CreateRenderer },
   ChangedBlocksCategory: { category: Page.BlockCategory },
   ToggledBlockCode: { block: S.String },
   LoadedBlockCode: {
@@ -250,19 +243,6 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       CompletedApplyTheme: () => ({ model: model }),
       IgnoredBlocksPreviewInput: () => ({ model: model }),
 
-      ChangedBlocksRenderer: ({ renderer }) => {
-        if (model.page._tag !== 'BlocksIndexPage') return { model: model }
-        const page = model.page
-        const open = Object.keys(page.codeBlocks)
-        const codeBlocks = Object.fromEntries(
-          open.map(name => [name, { files: {}, codeFile: '' }]),
-        )
-        const commands = open.map(name => LoadBlockCode({ renderer, name }))
-        return {
-          model: { ...model, page: { ...page, renderer, codeBlocks } },
-          commands: commands,
-        }
-      },
       ChangedBlocksCategory: ({ category }) =>
         model.page._tag === 'BlocksIndexPage'
           ? {
@@ -356,26 +336,6 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           ),
         }
       },
-      ChangedCreateRenderer: ({ renderer }) => {
-        if (model.page._tag !== 'CreatePage') return { model: model }
-        const currentPage = model.page
-        return {
-          model: modifyFields(model, {
-            page: () => modifyFields(currentPage, { renderer: () => renderer }),
-          }),
-        }
-      },
-
-      ChangedChartsRenderer: ({ renderer }) => {
-        if (model.page._tag !== 'ChartsPage') return { model: model }
-        const currentPage = model.page
-        return {
-          model: modifyFields(model, {
-            page: () => modifyFields(currentPage, { renderer: () => renderer }),
-          }),
-        }
-      },
-
       ClickedThemeToggle: () => {
         const isDark = !model.isDark
         return {

@@ -60,15 +60,11 @@ export const GotExampleMessage = taggedStruct('GotCatalogExampleMessage', {
   index: S.Number,
   message: RoutedDocsPreviewMessage,
 })
-export const ChangedRenderer = taggedStruct('ChangedCatalogRenderer', {
-  renderer: S.Literals(['tailwind', 'stylex']),
-})
 export const GotCodeFileMessage = taggedStruct('GotCatalogCodeFileMessage', {
   message: CodeFile.Message,
 })
 export const Message = S.Union([
   GotExampleMessage,
-  ChangedRenderer,
   GotCodeFileMessage,
   CopyFeedback.Message,
 ])
@@ -99,9 +95,6 @@ export const init = (slug?: string): Model => ({
 type UpdateReturn = Update.Return<Model, Message>
 
 export const update = (model: Model, message: Message): UpdateReturn => {
-  if (message._tag === 'ChangedCatalogRenderer') {
-    return { model: { ...model, renderer: message.renderer } }
-  }
   if (message._tag === 'GotCatalogCodeFileMessage') return { model: model }
   if (message._tag !== 'GotCatalogExampleMessage') {
     const { model: copiedCode, commands: copiedCodeCommands__ } =

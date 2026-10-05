@@ -18,7 +18,7 @@ import {
 import { componentDocsPath, createPath } from '@/route'
 import { landingSkin } from '@/site/landing-skin'
 import { badge } from '@/site/landing-ui'
-import { button } from '@/site/landing-ui'
+import { button, buttonLink } from '@/site/landing-ui'
 import {
   card,
   cardContent,
@@ -195,8 +195,16 @@ const heroCollage = (h: HtmlBuilder<Message>): Html => {
                 cardFooter(
                   {
                     children: [
-                      button({ variant: 'outline', children: ['Cancel'] }, h),
-                      button({ children: ['Continue'] }, h),
+                      h.div(
+                        [h.Class(landingSkin.actions)],
+                        [
+                          button(
+                            { variant: 'outline', children: ['Cancel'] },
+                            h,
+                          ),
+                          button({ children: ['Continue'] }, h),
+                        ],
+                      ),
                     ],
                   },
                   h,
@@ -258,18 +266,14 @@ const hero = (h: HtmlBuilder<Message>): Html => {
           h.div(
             [h.Class(landingSkin.actions)],
             [
-              h.a(
-                [h.Href(createPath())],
-                [button({ children: ['Get Started'] }, h)],
-              ),
-              h.a(
-                [h.Href(componentDocsPath('accordion'))],
-                [
-                  button(
-                    { variant: 'outline', children: ['Browse Components'] },
-                    h,
-                  ),
-                ],
+              buttonLink({ href: createPath(), children: ['Get Started'] }, h),
+              buttonLink(
+                {
+                  href: componentDocsPath('accordion'),
+                  variant: 'outline',
+                  children: ['Browse Components'],
+                },
+                h,
               ),
             ],
           ),

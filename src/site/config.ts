@@ -17,8 +17,9 @@ export const siteOrigin = (skin: Renderer): string =>
 
 export const counterpartUrl = (url: URL): string => {
   const local = url.hostname === 'localhost' || url.hostname === '127.0.0.1'
+  const preview = url.port === '4173' || url.port === '4174'
   const origin = local
-    ? `${url.protocol}//${url.hostname}:${otherRenderer === 'stylex' ? '5174' : '5173'}`
+    ? `${url.protocol}//${url.hostname}:${preview ? (otherRenderer === 'stylex' ? '4174' : '4173') : otherRenderer === 'stylex' ? '5174' : '5173'}`
     : siteOrigin(otherRenderer)
   return `${origin}${url.pathname}${url.search}${url.hash}`
 }
