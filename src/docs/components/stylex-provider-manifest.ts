@@ -53,7 +53,6 @@ import { dialogStyleXPreview } from '@/docs/components/pages/dialog/stylex'
 import { alertDialogStyleXPreview } from '@/docs/components/pages/alert-dialog/stylex'
 import { drawerStyleXPreview } from '@/docs/components/pages/drawer/stylex'
 import { lightboxStyleXPreview } from '@/docs/components/pages/lightbox/stylex'
-import { bottomSheetStyleXPreview } from '@/docs/components/pages/bottom-sheet/stylex'
 import { mobileNavStyleXPreview } from '@/docs/components/pages/mobile-nav/stylex'
 import { tourStyleXPreview } from '@/docs/components/pages/tour/stylex'
 import { sheetStyleXPreview } from '@/docs/components/pages/sheet/stylex'
@@ -226,7 +225,6 @@ installStyleXExamplePreviewProvider('status-dot', statusDotStyleXPreview)
 installStyleXExamplePreviewProvider('thumbnail', thumbnailStyleXPreview)
 installStyleXExamplePreviewProvider('toast', toastStyleXPreview)
 installStyleXExamplePreviewProvider('banner', bannerStyleXPreview)
-installStyleXExamplePreviewProvider('bottom-sheet', bottomSheetStyleXPreview)
 installStyleXExamplePreviewProvider(
   'chat-reasoning',
   chatReasoningStyleXPreview,

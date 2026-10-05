@@ -156,14 +156,19 @@ describe('StyleX component authoring contract', () => {
   })
 
   it('keeps Sheet as a render-only specialization of Dialog in both skins', () => {
+    const behavior = readFileSync('src/lib/sheet.ts', 'utf8')
     const tailwind = readFileSync('src/ui/sheet.ts', 'utf8')
     const stylex = readFileSync('src/stylex/sheet.ts', 'utf8')
 
+    // The shared engine wraps the Dialog submodel and adds the bottom-side
+    // gesture state machine; both skins only render through DialogPrimitive.
+    assert.match(behavior, /import \{ Dialog \} from '@foldkit\/ui'/u)
     for (const source of [tailwind, stylex]) {
-      assert.match(source, /Model = DialogPrimitive\.Model/u)
-      assert.match(source, /update = DialogPrimitive\.update/u)
-      assert.match(source, /open = DialogPrimitive\.open/u)
-      assert.match(source, /close = DialogPrimitive\.close/u)
+      assert.match(source, /Model = SheetBehavior\.Model/u)
+      assert.match(source, /update = SheetBehavior\.update/u)
+      assert.match(source, /open = SheetBehavior\.open/u)
+      assert.match(source, /close = SheetBehavior\.close/u)
+      assert.match(source, /view: DialogPrimitive\.view/u)
       assert.match(source, /side\?: SheetSide/u)
       assert.doesNotMatch(source, /S\.Struct/u)
     }

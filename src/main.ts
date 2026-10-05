@@ -1347,7 +1347,7 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
                 model: model.page.docs,
                 view: catalogDocsView,
                 viewInputs: {
-                  slug: component,
+                  slug: ComponentCatalog.canonicalComponentSlug(component),
                   dark: model.isDark,
                   renderer: model.renderer,
                 },

@@ -441,178 +441,6 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "blockquote<Msg>(props: BlockquoteProps, h: HtmlBuilder<Msg>): Html"
     }
   ],
-  "bottom-sheet": [
-    {
-      "name": "Model",
-      "kind": "value",
-      "signature": "Model: value"
-    },
-    {
-      "name": "Model",
-      "kind": "type",
-      "signature": "Model = typeof Model.Type"
-    },
-    {
-      "name": "Message",
-      "kind": "value",
-      "signature": "Message: value"
-    },
-    {
-      "name": "Message",
-      "kind": "type",
-      "signature": "Message = typeof Message.Type"
-    },
-    {
-      "name": "OutMessage",
-      "kind": "value",
-      "signature": "OutMessage: value"
-    },
-    {
-      "name": "OutMessage",
-      "kind": "type",
-      "signature": "OutMessage = typeof OutMessage.Type"
-    },
-    {
-      "name": "SwitcherModel",
-      "kind": "value",
-      "signature": "SwitcherModel: value"
-    },
-    {
-      "name": "SwitcherModel",
-      "kind": "type",
-      "signature": "SwitcherModel = typeof SwitcherModel.Type"
-    },
-    {
-      "name": "SwitcherMessage",
-      "kind": "value",
-      "signature": "SwitcherMessage: value"
-    },
-    {
-      "name": "SwitcherMessage",
-      "kind": "type",
-      "signature": "SwitcherMessage = typeof SwitcherMessage.Type"
-    },
-    {
-      "name": "SwitcherOutMessage",
-      "kind": "value",
-      "signature": "SwitcherOutMessage: value"
-    },
-    {
-      "name": "SwitcherOutMessage",
-      "kind": "type",
-      "signature": "SwitcherOutMessage = typeof SwitcherOutMessage.Type"
-    },
-    {
-      "name": "SheetState",
-      "kind": "value",
-      "signature": "SheetState: value"
-    },
-    {
-      "name": "SheetState",
-      "kind": "type",
-      "signature": "SheetState = typeof SheetState.Type"
-    },
-    {
-      "name": "BottomSheetSnapPoint",
-      "kind": "re-export",
-      "signature": "export { BottomSheetSnapPoint } from '@/lib/bottom-sheet'"
-    },
-    {
-      "name": "SheetHeight",
-      "kind": "re-export",
-      "signature": "export { SheetHeight } from '@/lib/bottom-sheet'"
-    },
-    {
-      "name": "SheetPurpose",
-      "kind": "re-export",
-      "signature": "export { SheetPurpose } from '@/lib/bottom-sheet'"
-    },
-    {
-      "name": "init",
-      "kind": "value",
-      "signature": "init: value"
-    },
-    {
-      "name": "update",
-      "kind": "value",
-      "signature": "update: value"
-    },
-    {
-      "name": "open",
-      "kind": "value",
-      "signature": "open: value"
-    },
-    {
-      "name": "close",
-      "kind": "value",
-      "signature": "close: value"
-    },
-    {
-      "name": "initSwitcher",
-      "kind": "value",
-      "signature": "initSwitcher: value"
-    },
-    {
-      "name": "updateSwitcher",
-      "kind": "value",
-      "signature": "updateSwitcher: value"
-    },
-    {
-      "name": "openSheet",
-      "kind": "value",
-      "signature": "openSheet: value"
-    },
-    {
-      "name": "closeSwitcher",
-      "kind": "value",
-      "signature": "closeSwitcher: value"
-    },
-    {
-      "name": "OVERSCROLL_PADDING",
-      "kind": "value",
-      "signature": "OVERSCROLL_PADDING: value"
-    },
-    {
-      "name": "HEIGHT_BUDGETS",
-      "kind": "value",
-      "signature": "HEIGHT_BUDGETS: value"
-    },
-    {
-      "name": "isSheetDragCandidate",
-      "kind": "function",
-      "signature": "isSheetDragCandidate(target: unknown): false | 'handle' | 'arm'"
-    },
-    {
-      "name": "SheetDragDispatch",
-      "kind": "type",
-      "signature": "SheetDragDispatch<Msg> = Readonly<{ started: (frame: { y: number; timeStamp: number; armOnly: boolean; }) => Msg; dragged: (frame: { y: number; timeStamp: number; detents: number[]; }) => Msg; ended: (frame: { y: number; timeStamp: number; detents: number[]; …"
-    },
-    {
-      "name": "BottomSheetProps",
-      "kind": "type",
-      "signature": "BottomSheetProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label: string; content: Html; class?: string; }>"
-    },
-    {
-      "name": "bottomSheet",
-      "kind": "function",
-      "signature": "bottomSheet<Msg>(props: BottomSheetProps<Msg>, h: HtmlBuilder<Msg>): Html"
-    },
-    {
-      "name": "SwitcherSheetContent",
-      "kind": "type",
-      "signature": "SwitcherSheetContent = Readonly<{ id: string; content: Html; }>"
-    },
-    {
-      "name": "BottomSheetSwitcherProps",
-      "kind": "type",
-      "signature": "BottomSheetSwitcherProps<Msg> = Readonly<{ model: SwitcherModel; toParentMessage: (message: SwitcherMessage) => Msg; sheets: ReadonlyArray<SwitcherSheetContent>; class?: string; }>"
-    },
-    {
-      "name": "bottomSheetSwitcher",
-      "kind": "function",
-      "signature": "bottomSheetSwitcher<Msg>(props: BottomSheetSwitcherProps<Msg>, h: HtmlBuilder<Msg>): Html"
-    }
-  ],
   "breadcrumb": [
     {
       "name": "*",
@@ -4980,6 +4808,61 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "OutMessage = typeof OutMessage.Type"
     },
     {
+      "name": "SwitcherModel",
+      "kind": "value",
+      "signature": "SwitcherModel: value"
+    },
+    {
+      "name": "SwitcherModel",
+      "kind": "type",
+      "signature": "SwitcherModel = typeof SwitcherModel.Type"
+    },
+    {
+      "name": "SwitcherMessage",
+      "kind": "value",
+      "signature": "SwitcherMessage: value"
+    },
+    {
+      "name": "SwitcherMessage",
+      "kind": "type",
+      "signature": "SwitcherMessage = typeof SwitcherMessage.Type"
+    },
+    {
+      "name": "SwitcherOutMessage",
+      "kind": "value",
+      "signature": "SwitcherOutMessage: value"
+    },
+    {
+      "name": "SwitcherOutMessage",
+      "kind": "type",
+      "signature": "SwitcherOutMessage = typeof SwitcherOutMessage.Type"
+    },
+    {
+      "name": "SheetState",
+      "kind": "value",
+      "signature": "SheetState: value"
+    },
+    {
+      "name": "SheetState",
+      "kind": "type",
+      "signature": "SheetState = typeof SheetState.Type"
+    },
+    {
+      "name": "SheetHeight",
+      "kind": "re-export",
+      "signature": "export { SheetHeight } from '@/lib/sheet'"
+    },
+    {
+      "name": "SheetPurpose",
+      "kind": "re-export",
+      "signature": "export { SheetPurpose } from '@/lib/sheet'"
+    },
+    {
+      "name": "SheetSnapPoint",
+      "kind": "re-export",
+      "signature": "export { SheetSnapPoint } from '@/lib/sheet'"
+    },
+    {
       "name": "init",
       "kind": "value",
       "signature": "init: value"
@@ -5000,9 +4883,49 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "close: value"
     },
     {
+      "name": "initSwitcher",
+      "kind": "value",
+      "signature": "initSwitcher: value"
+    },
+    {
+      "name": "updateSwitcher",
+      "kind": "value",
+      "signature": "updateSwitcher: value"
+    },
+    {
+      "name": "openSheet",
+      "kind": "value",
+      "signature": "openSheet: value"
+    },
+    {
+      "name": "closeSwitcher",
+      "kind": "value",
+      "signature": "closeSwitcher: value"
+    },
+    {
+      "name": "OVERSCROLL_PADDING",
+      "kind": "value",
+      "signature": "OVERSCROLL_PADDING: value"
+    },
+    {
+      "name": "HEIGHT_BUDGETS",
+      "kind": "value",
+      "signature": "HEIGHT_BUDGETS: value"
+    },
+    {
       "name": "SheetSide",
       "kind": "type",
       "signature": "SheetSide = 'top' | 'right' | 'bottom' | 'left'"
+    },
+    {
+      "name": "isSheetDragCandidate",
+      "kind": "function",
+      "signature": "isSheetDragCandidate(target: unknown): false | 'handle' | 'arm'"
+    },
+    {
+      "name": "SheetDragDispatch",
+      "kind": "type",
+      "signature": "SheetDragDispatch<Msg> = Readonly<{ started: (frame: { y: number; timeStamp: number; armOnly: boolean; }) => Msg; dragged: (frame: { y: number; timeStamp: number; detents: number[]; }) => Msg; ended: (frame: { y: number; timeStamp: number; detents: number[]; …"
     },
     {
       "name": "SheetSlots",
@@ -5058,6 +4981,21 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "sheet",
       "kind": "function",
       "signature": "sheet<Msg>(props: SheetProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "SwitcherSheetContent",
+      "kind": "type",
+      "signature": "SwitcherSheetContent = Readonly<{ id: string; content: Html; }>"
+    },
+    {
+      "name": "SheetSwitcherProps",
+      "kind": "type",
+      "signature": "SheetSwitcherProps<Msg> = Readonly<{ model: SwitcherModel; toParentMessage: (message: SwitcherMessage) => Msg; sheets: ReadonlyArray<SwitcherSheetContent>; class?: string; }>"
+    },
+    {
+      "name": "sheetSwitcher",
+      "kind": "function",
+      "signature": "sheetSwitcher<Msg>(props: SheetSwitcherProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "side-nav": [

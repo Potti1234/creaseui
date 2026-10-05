@@ -9,7 +9,6 @@ import { avatarGroupPage } from '@/docs/components/pages/avatar-group'
 import { badgePage } from '@/docs/components/pages/badge'
 import { bannerPage } from '@/docs/components/pages/banner'
 import { blockquotePage } from '@/docs/components/pages/blockquote'
-import { bottomSheetPage } from '@/docs/components/pages/bottom-sheet'
 import { breadcrumbPage } from '@/docs/components/pages/breadcrumb'
 import { bubblePage } from '@/docs/components/pages/bubble'
 import { buttonPage } from '@/docs/components/pages/button'
@@ -132,7 +131,6 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       badgePage,
       bannerPage,
       blockquotePage,
-      bottomSheetPage,
       breadcrumbPage,
       bubblePage,
       buttonPage,

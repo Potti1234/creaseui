@@ -23,12 +23,11 @@
   ],
   "summary": {
     "upstreamItems": 62,
-    "registryItems": 119,
+    "registryItems": 118,
     "creaseOnlyRecipes": [
       "avatar-group",
       "banner",
       "blockquote",
-      "bottom-sheet",
       "center",
       "chat-reasoning",
       "checkbox-list",
@@ -263,24 +262,6 @@
         "src/ui/blockquote.ts",
         "src/ui/registry.json#blockquote",
         "/docs/components/blockquote"
-      ]
-    },
-    {
-      "component": "bottom-sheet",
-      "upstream": false,
-      "classification": "full",
-      "dimensions": {
-        "visual": "unverified",
-        "behavior": "partial",
-        "accessibility": "partial",
-        "composition": "partial",
-        "documentation": "verified",
-        "registry": "verified"
-      },
-      "evidence": [
-        "src/ui/bottom-sheet.ts",
-        "src/ui/registry.json#bottom-sheet",
-        "/docs/components/bottom-sheet"
       ]
     },
     {

@@ -23,7 +23,6 @@
 - Badge: /docs/components/badge — install with `npx creaseui add badge`
 - Banner: /docs/components/banner — install with `npx creaseui add banner`
 - Blockquote: /docs/components/blockquote — install with `npx creaseui add blockquote`
-- Bottom Sheet: /docs/components/bottom-sheet — install with `npx creaseui add bottom-sheet`
 - Breadcrumb: /docs/components/breadcrumb — install with `npx creaseui add breadcrumb`
 - Bubble: /docs/components/bubble — install with `npx creaseui add bubble`
 - Button Group: /docs/components/button-group — install with `npx creaseui add button-group`
@@ -308,49 +307,6 @@ Examples: Blockquote — Showcase, Blockquote — With Attribution, Blockquote �
 
 - `BlockquoteProps = Readonly<{ children: ReadonlyArray<Html | string>; cite?: string; class?: string; }>` (type)
 - `blockquote<Msg>(props: BlockquoteProps, h: HtmlBuilder<Msg>): Html` (function)
-
-### Bottom Sheet
-
-A CreaseUI Bottom Sheet component for Foldkit.
-
-Source: `src/ui/bottom-sheet.ts`
-
-Examples: Bottom Sheet, Bottom Sheet — Height variants, Bottom Sheet — No scrim, Bottom Sheet — Snap points, Bottom Sheet — Mobile keyboard, Bottom Sheet Switcher, Bottom Sheet Switcher — Review flow
-
-- `Model: value` (value)
-- `Model = typeof Model.Type` (type)
-- `Message: value` (value)
-- `Message = typeof Message.Type` (type)
-- `OutMessage: value` (value)
-- `OutMessage = typeof OutMessage.Type` (type)
-- `SwitcherModel: value` (value)
-- `SwitcherModel = typeof SwitcherModel.Type` (type)
-- `SwitcherMessage: value` (value)
-- `SwitcherMessage = typeof SwitcherMessage.Type` (type)
-- `SwitcherOutMessage: value` (value)
-- `SwitcherOutMessage = typeof SwitcherOutMessage.Type` (type)
-- `SheetState: value` (value)
-- `SheetState = typeof SheetState.Type` (type)
-- `export { BottomSheetSnapPoint } from '@/lib/bottom-sheet'` (re-export)
-- `export { SheetHeight } from '@/lib/bottom-sheet'` (re-export)
-- `export { SheetPurpose } from '@/lib/bottom-sheet'` (re-export)
-- `init: value` (value)
-- `update: value` (value)
-- `open: value` (value)
-- `close: value` (value)
-- `initSwitcher: value` (value)
-- `updateSwitcher: value` (value)
-- `openSheet: value` (value)
-- `closeSwitcher: value` (value)
-- `OVERSCROLL_PADDING: value` (value)
-- `HEIGHT_BUDGETS: value` (value)
-- `isSheetDragCandidate(target: unknown): false | 'handle' | 'arm'` (function)
-- `SheetDragDispatch<Msg> = Readonly<{ started: (frame: { y: number; timeStamp: number; armOnly: boolean; }) => Msg; dragged: (frame: { y: number; timeStamp: number; detents: number[]; }) => Msg; ended: (frame: { y: number; timeStamp: number; detents: number[]; …` (type)
-- `BottomSheetProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label: string; content: Html; class?: string; }>` (type)
-- `bottomSheet<Msg>(props: BottomSheetProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
-- `SwitcherSheetContent = Readonly<{ id: string; content: Html; }>` (type)
-- `BottomSheetSwitcherProps<Msg> = Readonly<{ model: SwitcherModel; toParentMessage: (message: SwitcherMessage) => Msg; sheets: ReadonlyArray<SwitcherSheetContent>; class?: string; }>` (type)
-- `bottomSheetSwitcher<Msg>(props: BottomSheetSwitcherProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Breadcrumb
 
@@ -1866,11 +1822,11 @@ Examples: Basic, Vertical, Menu, List, RTL
 
 ### Sheet
 
-A CreaseUI Sheet component for Foldkit.
+A CreaseUI Sheet component for Foldkit — edge panels on any side; side "bottom" adds drag, snap points, and a multi-sheet switcher.
 
 Source: `src/ui/sheet.ts`
 
-Examples: Basic, Side, No Close Button, RTL
+Examples: Basic, Side, No Close Button, RTL, Bottom, Bottom — Height Variants, Bottom — No Scrim, Bottom — Snap Points, Bottom — Mobile Keyboard, Switcher, Switcher — Review Flow
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -1878,11 +1834,30 @@ Examples: Basic, Side, No Close Button, RTL
 - `Message = typeof Message.Type` (type)
 - `OutMessage: value` (value)
 - `OutMessage = typeof OutMessage.Type` (type)
+- `SwitcherModel: value` (value)
+- `SwitcherModel = typeof SwitcherModel.Type` (type)
+- `SwitcherMessage: value` (value)
+- `SwitcherMessage = typeof SwitcherMessage.Type` (type)
+- `SwitcherOutMessage: value` (value)
+- `SwitcherOutMessage = typeof SwitcherOutMessage.Type` (type)
+- `SheetState: value` (value)
+- `SheetState = typeof SheetState.Type` (type)
+- `export { SheetHeight } from '@/lib/sheet'` (re-export)
+- `export { SheetPurpose } from '@/lib/sheet'` (re-export)
+- `export { SheetSnapPoint } from '@/lib/sheet'` (re-export)
 - `init: value` (value)
 - `update: value` (value)
 - `open: value` (value)
 - `close: value` (value)
+- `initSwitcher: value` (value)
+- `updateSwitcher: value` (value)
+- `openSheet: value` (value)
+- `closeSwitcher: value` (value)
+- `OVERSCROLL_PADDING: value` (value)
+- `HEIGHT_BUDGETS: value` (value)
 - `SheetSide = 'top' | 'right' | 'bottom' | 'left'` (type)
+- `isSheetDragCandidate(target: unknown): false | 'handle' | 'arm'` (function)
+- `SheetDragDispatch<Msg> = Readonly<{ started: (frame: { y: number; timeStamp: number; armOnly: boolean; }) => Msg; dragged: (frame: { y: number; timeStamp: number; detents: number[]; }) => Msg; ended: (frame: { y: number; timeStamp: number; detents: number[]; …` (type)
 - `SheetSlots = Readonly<{ closeButton: ReadonlyArray<ChildAttribute>; initialFocusAttributes: () => ReadonlyArray<ChildAttribute>; }>` (type)
 - `SheetPartProps = Readonly<{ children: ReadonlyArray<Html | string>; class?: string; }>` (type)
 - `SheetTextPartProps = SheetPartProps & Readonly<{ attributes: ReadonlyArray<ChildAttribute>; }>` (type)
@@ -1894,6 +1869,9 @@ Examples: Basic, Side, No Close Button, RTL
 - `SheetParts<Msg> = Readonly<{ header: (props: SheetPartProps) => Html; title: (props: Omit<SheetTextPartProps, 'attributes'>) => Html; description: (props: Omit<SheetTextPartProps, 'attributes'>) => Html; footer: (props: SheetPartProps) => Html; close: (props?…` (type)
 - `SheetProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description?: string; content?: (slots: SheetSlots) => ReadonlyArray<Html>; footer?: (slots: SheetSlots) => ReadonlyArray<Html>; layout?: (parts: SheetParts<…` (type)
 - `sheet<Msg>(props: SheetProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `SwitcherSheetContent = Readonly<{ id: string; content: Html; }>` (type)
+- `SheetSwitcherProps<Msg> = Readonly<{ model: SwitcherModel; toParentMessage: (message: SwitcherMessage) => Msg; sheets: ReadonlyArray<SwitcherSheetContent>; class?: string; }>` (type)
+- `sheetSwitcher<Msg>(props: SheetSwitcherProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Side Nav
 

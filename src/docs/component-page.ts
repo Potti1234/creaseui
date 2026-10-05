@@ -23,7 +23,6 @@ export const COMPONENTS = [
   'Badge',
   'Banner',
   'Blockquote',
-  'Bottom Sheet',
   'Breadcrumb',
   'Button',
   'Button Group',
@@ -137,8 +136,17 @@ export const COMPONENTS = [
 export const toSlug = (name: string): string =>
   name.toLowerCase().replaceAll(' ', '-')
 
+/** Removed components whose docs URLs now forward to the page that absorbed
+    them. */
+const COMPONENT_SLUG_ALIASES: Readonly<Record<string, string>> = {
+  'bottom-sheet': 'sheet',
+}
+
+export const canonicalComponentSlug = (slug: string): string =>
+  COMPONENT_SLUG_ALIASES[slug] ?? slug
+
 export const componentTitle = (slug: string): string | undefined =>
-  COMPONENTS.find(name => toSlug(name) === slug)
+  COMPONENTS.find(name => toSlug(name) === canonicalComponentSlug(slug))
 
 export type ExampleConfig<Msg> = Readonly<{
   title: string

@@ -63,7 +63,6 @@ describe('multidimensional component parity', () => {
       'avatar-group',
       'banner',
       'blockquote',
-      'bottom-sheet',
       'center',
       'chat-reasoning',
       'checkbox-list',

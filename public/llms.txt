@@ -25,7 +25,6 @@
 - Badge: /docs/components/badge — install with `npx creaseui add badge`
 - Banner: /docs/components/banner — install with `npx creaseui add banner`
 - Blockquote: /docs/components/blockquote — install with `npx creaseui add blockquote`
-- Bottom Sheet: /docs/components/bottom-sheet — install with `npx creaseui add bottom-sheet`
 - Breadcrumb: /docs/components/breadcrumb — install with `npx creaseui add breadcrumb`
 - Bubble: /docs/components/bubble — install with `npx creaseui add bubble`
 - Button Group: /docs/components/button-group — install with `npx creaseui add button-group`

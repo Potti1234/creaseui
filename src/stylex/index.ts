@@ -14,7 +14,6 @@ export * as Avatar from './avatar.js'
 export * as Badge from './badge.js'
 export * as Banner from './banner.js'
 export * as Blockquote from './blockquote.js'
-export * as BottomSheet from './bottom-sheet.js'
 export * as Breadcrumb from './breadcrumb.js'
 export * as Bubble from './bubble.js'
 export * as ButtonGroup from './button-group.js'
@@ -136,7 +135,6 @@ export const STYLEX_COMPONENT_NAMES = [
   'badge',
   'banner',
   'blockquote',
-  'bottom-sheet',
   'breadcrumb',
   'bubble',
   'button-group',

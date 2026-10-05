@@ -156,47 +156,6 @@ Source: [`src/ui/blockquote.ts`](../src/ui/blockquote.ts)
 | `BlockquoteProps` | type | `BlockquoteProps = Readonly<{ children: ReadonlyArray<Html \| string>; cite?: string; class?: string; }>` |
 | `blockquote` | function | `blockquote<Msg>(props: BlockquoteProps, h: HtmlBuilder<Msg>): Html` |
 
-## Bottom Sheet
-
-Source: [`src/ui/bottom-sheet.ts`](../src/ui/bottom-sheet.ts)
-
-| Export | Kind | Signature |
-| --- | --- | --- |
-| `Model` | value | `Model: value` |
-| `Model` | type | `Model = typeof Model.Type` |
-| `Message` | value | `Message: value` |
-| `Message` | type | `Message = typeof Message.Type` |
-| `OutMessage` | value | `OutMessage: value` |
-| `OutMessage` | type | `OutMessage = typeof OutMessage.Type` |
-| `SwitcherModel` | value | `SwitcherModel: value` |
-| `SwitcherModel` | type | `SwitcherModel = typeof SwitcherModel.Type` |
-| `SwitcherMessage` | value | `SwitcherMessage: value` |
-| `SwitcherMessage` | type | `SwitcherMessage = typeof SwitcherMessage.Type` |
-| `SwitcherOutMessage` | value | `SwitcherOutMessage: value` |
-| `SwitcherOutMessage` | type | `SwitcherOutMessage = typeof SwitcherOutMessage.Type` |
-| `SheetState` | value | `SheetState: value` |
-| `SheetState` | type | `SheetState = typeof SheetState.Type` |
-| `BottomSheetSnapPoint` | re-export | `export { BottomSheetSnapPoint } from '@/lib/bottom-sheet'` |
-| `SheetHeight` | re-export | `export { SheetHeight } from '@/lib/bottom-sheet'` |
-| `SheetPurpose` | re-export | `export { SheetPurpose } from '@/lib/bottom-sheet'` |
-| `init` | value | `init: value` |
-| `update` | value | `update: value` |
-| `open` | value | `open: value` |
-| `close` | value | `close: value` |
-| `initSwitcher` | value | `initSwitcher: value` |
-| `updateSwitcher` | value | `updateSwitcher: value` |
-| `openSheet` | value | `openSheet: value` |
-| `closeSwitcher` | value | `closeSwitcher: value` |
-| `OVERSCROLL_PADDING` | value | `OVERSCROLL_PADDING: value` |
-| `HEIGHT_BUDGETS` | value | `HEIGHT_BUDGETS: value` |
-| `isSheetDragCandidate` | function | `isSheetDragCandidate(target: unknown): false \| 'handle' \| 'arm'` |
-| `SheetDragDispatch` | type | `SheetDragDispatch<Msg> = Readonly<{ started: (frame: { y: number; timeStamp: number; armOnly: boolean; }) => Msg; dragged: (frame: { y: number; timeStamp: number; detents: number[]; }) => Msg; ended: (frame: { y: number; timeStamp: number; detents: number[]; …` |
-| `BottomSheetProps` | type | `BottomSheetProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label: string; content: Html; class?: string; }>` |
-| `bottomSheet` | function | `bottomSheet<Msg>(props: BottomSheetProps<Msg>, h: HtmlBuilder<Msg>): Html` |
-| `SwitcherSheetContent` | type | `SwitcherSheetContent = Readonly<{ id: string; content: Html; }>` |
-| `BottomSheetSwitcherProps` | type | `BottomSheetSwitcherProps<Msg> = Readonly<{ model: SwitcherModel; toParentMessage: (message: SwitcherMessage) => Msg; sheets: ReadonlyArray<SwitcherSheetContent>; class?: string; }>` |
-| `bottomSheetSwitcher` | function | `bottomSheetSwitcher<Msg>(props: BottomSheetSwitcherProps<Msg>, h: HtmlBuilder<Msg>): Html` |
-
 ## Breadcrumb
 
 Source: [`src/ui/breadcrumb.ts`](../src/ui/breadcrumb.ts)
@@ -1571,11 +1530,30 @@ Source: [`src/ui/sheet.ts`](../src/ui/sheet.ts)
 | `Message` | type | `Message = typeof Message.Type` |
 | `OutMessage` | value | `OutMessage: value` |
 | `OutMessage` | type | `OutMessage = typeof OutMessage.Type` |
+| `SwitcherModel` | value | `SwitcherModel: value` |
+| `SwitcherModel` | type | `SwitcherModel = typeof SwitcherModel.Type` |
+| `SwitcherMessage` | value | `SwitcherMessage: value` |
+| `SwitcherMessage` | type | `SwitcherMessage = typeof SwitcherMessage.Type` |
+| `SwitcherOutMessage` | value | `SwitcherOutMessage: value` |
+| `SwitcherOutMessage` | type | `SwitcherOutMessage = typeof SwitcherOutMessage.Type` |
+| `SheetState` | value | `SheetState: value` |
+| `SheetState` | type | `SheetState = typeof SheetState.Type` |
+| `SheetHeight` | re-export | `export { SheetHeight } from '@/lib/sheet'` |
+| `SheetPurpose` | re-export | `export { SheetPurpose } from '@/lib/sheet'` |
+| `SheetSnapPoint` | re-export | `export { SheetSnapPoint } from '@/lib/sheet'` |
 | `init` | value | `init: value` |
 | `update` | value | `update: value` |
 | `open` | value | `open: value` |
 | `close` | value | `close: value` |
+| `initSwitcher` | value | `initSwitcher: value` |
+| `updateSwitcher` | value | `updateSwitcher: value` |
+| `openSheet` | value | `openSheet: value` |
+| `closeSwitcher` | value | `closeSwitcher: value` |
+| `OVERSCROLL_PADDING` | value | `OVERSCROLL_PADDING: value` |
+| `HEIGHT_BUDGETS` | value | `HEIGHT_BUDGETS: value` |
 | `SheetSide` | type | `SheetSide = 'top' \| 'right' \| 'bottom' \| 'left'` |
+| `isSheetDragCandidate` | function | `isSheetDragCandidate(target: unknown): false \| 'handle' \| 'arm'` |
+| `SheetDragDispatch` | type | `SheetDragDispatch<Msg> = Readonly<{ started: (frame: { y: number; timeStamp: number; armOnly: boolean; }) => Msg; dragged: (frame: { y: number; timeStamp: number; detents: number[]; }) => Msg; ended: (frame: { y: number; timeStamp: number; detents: number[]; …` |
 | `SheetSlots` | type | `SheetSlots = Readonly<{ closeButton: ReadonlyArray<ChildAttribute>; initialFocusAttributes: () => ReadonlyArray<ChildAttribute>; }>` |
 | `SheetPartProps` | type | `SheetPartProps = Readonly<{ children: ReadonlyArray<Html \| string>; class?: string; }>` |
 | `SheetTextPartProps` | type | `SheetTextPartProps = SheetPartProps & Readonly<{ attributes: ReadonlyArray<ChildAttribute>; }>` |
@@ -1587,6 +1565,9 @@ Source: [`src/ui/sheet.ts`](../src/ui/sheet.ts)
 | `SheetParts` | type | `SheetParts<Msg> = Readonly<{ header: (props: SheetPartProps) => Html; title: (props: Omit<SheetTextPartProps, 'attributes'>) => Html; description: (props: Omit<SheetTextPartProps, 'attributes'>) => Html; footer: (props: SheetPartProps) => Html; close: (props?…` |
 | `SheetProps` | type | `SheetProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description?: string; content?: (slots: SheetSlots) => ReadonlyArray<Html>; footer?: (slots: SheetSlots) => ReadonlyArray<Html>; layout?: (parts: SheetParts<…` |
 | `sheet` | function | `sheet<Msg>(props: SheetProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+| `SwitcherSheetContent` | type | `SwitcherSheetContent = Readonly<{ id: string; content: Html; }>` |
+| `SheetSwitcherProps` | type | `SheetSwitcherProps<Msg> = Readonly<{ model: SwitcherModel; toParentMessage: (message: SwitcherMessage) => Msg; sheets: ReadonlyArray<SwitcherSheetContent>; class?: string; }>` |
+| `sheetSwitcher` | function | `sheetSwitcher<Msg>(props: SheetSwitcherProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Side Nav
 
