@@ -1,8 +1,10 @@
 /* Ported from Meta Astryx NumberInput (packages/core/src/NumberInput) —
    examples and visual spec adapted to Crease UI tokens.
 
-   PORT-NOTE: astryx's `isWheelEnabled` scroll-stepping is dropped — foldkit's
-   `OnWheel` handler does not expose the wheel direction. */
+   PORT-NOTE: astryx's `isWheelEnabled` scroll-stepping runs DOM-side —
+   foldkit's `OnWheel` carries no delta, so the inline `onwheel` handler
+   (focused input only) dispatches the ArrowUp/ArrowDown the keydown path
+   already turns into Stepped. */
 
 import { Option } from 'effect'
 import { defineView } from 'foldkit/submodel'
@@ -228,6 +230,12 @@ const view = defineView<Model, Message, NumberInputViewInputs>(
       ...(props.isDisabled === true || props.isReadOnly === true
         ? []
         : [
+            // foldkit's OnWheel has no delta — dispatch the ArrowUp/ArrowDown
+            // the keydown handler already maps to Stepped, focused input only.
+            h.Attribute(
+              'onwheel',
+              "if(document.activeElement===this){event.preventDefault();this.dispatchEvent(new KeyboardEvent('keydown',{key:event.deltaY<0?'ArrowUp':'ArrowDown',cancelable:true}))}",
+            ),
             h.OnKeyDownPreventDefault(key => {
               if (key === 'ArrowUp') {
                 return canStep(1, { value, min: props.min, max: props.max })
@@ -311,7 +319,7 @@ const view = defineView<Model, Message, NumberInputViewInputs>(
             [
               h.DataAttribute('slot', 'number-input-steppers'),
               h.Class(
-                '-my-1 flex w-4 shrink-0 flex-col self-stretch overflow-hidden border-l border-input',
+                '-my-1 -me-2 flex w-7 shrink-0 flex-col self-stretch overflow-hidden rounded-r-[5px] border-l border-input',
               ),
             ],
             [
@@ -348,12 +356,12 @@ const view = defineView<Model, Message, NumberInputViewInputs>(
                   }),
                   h.Class(
                     cn(
-                      'flex min-h-0 flex-1 cursor-pointer items-center justify-center bg-background text-muted-foreground transition-colors hover:bg-muted disabled:cursor-default disabled:text-muted-foreground/50 disabled:hover:bg-background',
+                      'flex min-h-0 flex-1 cursor-pointer items-center justify-center bg-background text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground disabled:cursor-default disabled:text-muted-foreground/50 disabled:hover:bg-background',
                       extra,
                     ),
                   ),
                 ],
-                [Icon.icon(icon, { class: 'size-2.5' }, h)],
+                [Icon.icon(icon, { class: 'size-3.5' }, h)],
               ),
             ),
           )
