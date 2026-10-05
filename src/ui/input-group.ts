@@ -192,6 +192,7 @@ export type InputGroupInputProps<Msg> = Readonly<{
   isDisabled?: boolean
   isInvalid?: boolean
   ariaLabel?: string
+  step?: string
   class?: string
 }>
 
@@ -210,6 +211,7 @@ export const inputGroupInput = <Msg>(
       ? []
       : [h.OnKeyDown(key => props.onKeyDown!(key))]),
     h.Type(props.type ?? 'text'),
+    ...(props.step === undefined ? [] : [h.Step(props.step)]),
     ...(props.name === undefined ? [] : [h.Name(props.name)]),
     ...(props.placeholder === undefined
       ? []

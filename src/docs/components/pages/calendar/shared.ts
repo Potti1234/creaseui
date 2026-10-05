@@ -197,6 +197,14 @@ const calendarPropsSource = (
     parts.push(`range: { start: model.rangeStart, end: model.rangeEnd }`)
   if (f.weekNumbers === true) parts.push('weekNumbers: true')
   if (f.direction === 'rtl') parts.push(`direction: 'rtl'`)
+  if (f.layout === 'presets')
+    parts.push(
+      isSx
+        ? `density: 'flush',\n            size: 'comfortable'`
+        : `class: 'p-0 [--cell-size:--spacing(9.5)]'`,
+    )
+  if (f.layout === 'time')
+    parts.push(isSx ? `density: 'flush'` : `class: 'p-0'`)
   if (f.roomy === true)
     parts.push(
       isSx ? `size: 'comfortable'` : `class: '[--cell-size:--spacing(10)]'`,
@@ -232,7 +240,7 @@ const presetsSource = (renderer: 'tailwind' | 'stylex'): string => {
             Card.cardContent({
               children: [
                 ${calendarViewSource(
-                  { title: '', description: '', layout: 'single' },
+                  { title: '', description: '', layout: 'presets' },
                   renderer,
                 )},
               ],
@@ -270,10 +278,16 @@ const timeFieldSource = (
                             InputGroup.inputGroupInput({
                               id: '${id}',
                               type: 'time',
+                              step: '1',
                               value: model.${modelField},
                               onInput: value =>
                                 Message['${msg}']({ value }),
                               ariaLabel: '${label}',
+                              ${
+                                renderer === 'stylex'
+                                  ? ''
+                                  : `class: 'appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none',`
+                              }
                             }, h),
                             InputGroup.inputGroupAddon({
                               children: [
@@ -296,7 +310,17 @@ const timePickerSource = (
   return `Card.card({
           ${isSx ? 'layoutStyle: styles.cardFit,' : `class: 'mx-auto w-fit',`}
           size: 'sm',
-          children: [
+          children: [${
+            isSx
+              ? `\n            h.style(
+              [],
+              [
+                "input[type='time'] { appearance: none; }\\n" +
+                  "input[type='time']::-webkit-calendar-picker-indicator { display: none; }",
+              ],
+            ),`
+              : ''
+          }
             Card.cardContent({
               children: [
                 ${calendarViewSource(f, renderer)},

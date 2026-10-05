@@ -288,6 +288,7 @@ const styles = stylex.create({
     backgroundColor: tokens.background,
     width: 'fit-content',
   },
+  rootFlush: { padding: 0 },
   week: { display: 'flex', marginTop: '0.5rem', width: '100%' },
   weekday: {
     borderRadius: tokens.controlRadius,
@@ -319,6 +320,9 @@ const styles = stylex.create({
 })
 
 export type CalendarViewOptions = Readonly<{
+  /** 'flush' removes the root padding — the calendar's own frame inside a
+   * card, mirroring `p-0` on the Tailwind skin. */
+  density?: 'default' | 'flush'
   direction?: 'ltr' | 'rtl'
   layoutStyle?: ComponentLayoutStyle
   range?: CalendarBehavior.CalendarRange
@@ -428,7 +432,13 @@ const daysView = <Msg>(
       h.Style({
         '--cell-size': options.size === 'comfortable' ? '2.5rem' : '2rem',
       }),
-      h.Class(className(styles.root, options.layoutStyle)),
+      h.Class(
+        className(
+          styles.root,
+          options.density === 'flush' && styles.rootFlush,
+          options.layoutStyle,
+        ),
+      ),
     ],
     [
       h.div(
@@ -496,7 +506,13 @@ const pickerView = <Msg>(
       h.Style({
         '--cell-size': options.size === 'comfortable' ? '2.5rem' : '2rem',
       }),
-      h.Class(className(styles.root, options.layoutStyle)),
+      h.Class(
+        className(
+          styles.root,
+          options.density === 'flush' && styles.rootFlush,
+          options.layoutStyle,
+        ),
+      ),
     ],
     [
       h.div(
@@ -561,7 +577,13 @@ const yearsView = <Msg>(
       h.Style({
         '--cell-size': options.size === 'comfortable' ? '2.5rem' : '2rem',
       }),
-      h.Class(className(styles.root, options.layoutStyle)),
+      h.Class(
+        className(
+          styles.root,
+          options.density === 'flush' && styles.rootFlush,
+          options.layoutStyle,
+        ),
+      ),
     ],
     [
       h.div(
@@ -639,6 +661,9 @@ export type CalendarProps<Msg> = Readonly<{
   model: Model
   maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>
   toParentMessage: (message: Message) => Msg
+  /** 'flush' removes the root padding — the calendar's own frame inside a
+   * card, mirroring `p-0` on the Tailwind skin. */
+  density?: 'default' | 'flush'
   direction?: 'ltr' | 'rtl'
   range?: CalendarBehavior.CalendarRange
   layoutStyle?: ComponentLayoutStyle
@@ -665,6 +690,7 @@ export const calendar = <Msg>(
         calendarView(
           attributes,
           {
+            ...(props.density === undefined ? {} : { density: props.density }),
             ...(props.direction === undefined
               ? {}
               : { direction: props.direction }),
