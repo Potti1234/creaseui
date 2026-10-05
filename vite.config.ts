@@ -122,6 +122,7 @@ export default defineConfig(({ mode }) => {
         ...(isStyleX
           ? {
               '@/site/skin': source('site/skin.stylex.ts'),
+              '@/docs/component-page': source('site/docs.stylex.ts'),
             }
           : {}),
         '@': source(''),
