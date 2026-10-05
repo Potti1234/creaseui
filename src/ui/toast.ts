@@ -195,7 +195,7 @@ const entryView = <Msg>(
           h.Class(
             cn(
               buttonVariants({ variant: 'ghost', size: 'icon-xs' }),
-              'absolute top-2 right-2 p-1 text-foreground/50 opacity-0 transition-opacity motion-reduce:transition-none hover:text-foreground focus:opacity-100 group-hover:opacity-100',
+              'absolute top-2 right-2 p-1 text-foreground/50 transition-opacity motion-reduce:transition-none hover:text-foreground focus:opacity-100',
             ),
           ),
         ],
