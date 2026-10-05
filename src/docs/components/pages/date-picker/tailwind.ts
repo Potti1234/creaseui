@@ -1,3 +1,4 @@
+import { parseDate } from 'chrono-node'
 import { Option, Schema as S } from 'effect'
 import { Command } from 'foldkit'
 import * as FoldkitCalendar from 'foldkit/calendar'
@@ -93,61 +94,17 @@ const parseInputDate = (
       })
 }
 
-const WEEKDAYS = [
-  'sunday',
-  'monday',
-  'tuesday',
-  'wednesday',
-  'thursday',
-  'friday',
-  'saturday',
-]
-const WEEKDAY_INDEX: Readonly<Record<string, number>> = {
-  Sunday: 0,
-  Monday: 1,
-  Tuesday: 2,
-  Wednesday: 3,
-  Thursday: 4,
-  Friday: 5,
-  Saturday: 6,
-}
-
 const parseNaturalDate = (
   value: string,
   today: FoldkitCalendar.CalendarDate,
 ): Option.Option<FoldkitCalendar.CalendarDate> => {
-  const text = value.trim().toLowerCase()
-  if (text === 'today') return Option.some(today)
-  if (text === 'tomorrow') return Option.some(FoldkitCalendar.addDays(today, 1))
-  if (text === 'yesterday')
-    return Option.some(FoldkitCalendar.addDays(today, -1))
-  if (text === 'next week')
-    return Option.some(FoldkitCalendar.addDays(today, 7))
-  if (text === 'next month')
-    return Option.some(FoldkitCalendar.addMonths(today, 1))
-  const inMatch = /^in (\d+) (day|week|month)s?$/.exec(text)
-  if (inMatch !== null) {
-    const n = Number(inMatch[1])
-    const unit = inMatch[2]
-    return Option.some(
-      unit === 'day'
-        ? FoldkitCalendar.addDays(today, n)
-        : unit === 'week'
-          ? FoldkitCalendar.addDays(today, n * 7)
-          : FoldkitCalendar.addMonths(today, n),
-    )
-  }
-  const nextMatch = /^next (\w+)$/.exec(text)
-  const nextName = nextMatch?.[1] ?? ''
-  if (nextMatch !== null && WEEKDAYS.includes(nextName)) {
-    const target =
-      WEEKDAY_INDEX[nextName[0]!.toUpperCase() + nextName.slice(1)] ?? 0
-    const current = WEEKDAY_INDEX[FoldkitCalendar.dayOfWeek(today)] ?? 0
-    return Option.some(
-      FoldkitCalendar.addDays(today, ((target - current + 6) % 7) + 1),
-    )
-  }
-  return Option.none()
+  const parsed = parseDate(
+    value,
+    new Date(Date.UTC(today.year, today.month - 1, today.day)),
+  )
+  return parsed === null
+    ? Option.none()
+    : Option.some(FoldkitCalendar.fromDateInZone(parsed, 'UTC'))
 }
 
 const initPicker = (
