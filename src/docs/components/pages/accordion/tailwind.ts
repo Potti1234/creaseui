@@ -52,7 +52,7 @@ const fixtureView = <Msg>(
     case 'card':
       return Card.card(
         {
-          class: 'w-full max-w-sm',
+          class: 'mx-auto w-full max-w-sm',
           children: [
             Card.cardHeader(
               {
