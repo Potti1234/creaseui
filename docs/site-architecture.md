@@ -56,8 +56,8 @@ the rendered block even if the legacy URL contains the other renderer's name.
 `npm run test:sites` builds both sites and checks every catalog page, desktop
 and mobile navigation, counterpart links, themes, client navigation, and direct
 reloads. On StyleX pages it compares visible example geometry and computed
-styles before and after adding actual Tailwind preflight. External images and
-fonts are disabled for deterministic comparisons, and JavaScript animation time
+styles in light and dark themes before and after adding actual Tailwind preflight.
+External images and fonts are disabled for deterministic comparisons, and JavaScript animation time
 is frozen during the CSS measurement.
 
 `npx playwright test e2e/stylex-preflight.spec.ts --project=chromium` separately

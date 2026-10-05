@@ -132,8 +132,8 @@ export default defineConfig(({ mode }) => {
       },
     },
     cacheDir: `node_modules/.vite-${renderer}`,
-    server: { port: isStyleX ? 5174 : 5173 },
-    preview: { port: isStyleX ? 4174 : 4173 },
+    server: { port: isStyleX ? 5174 : 5173, strictPort: true },
+    preview: { port: isStyleX ? 4174 : 4173, strictPort: true },
     build: { outDir: `dist/${renderer}` },
   }
 })
