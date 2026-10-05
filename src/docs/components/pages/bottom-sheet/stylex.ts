@@ -25,7 +25,6 @@ const styles = stylex.create({
     alignItems: 'center',
     display: 'flex',
     justifyContent: 'center',
-    minHeight: '100vh',
   },
   sheetBody: {
     padding: '1rem',

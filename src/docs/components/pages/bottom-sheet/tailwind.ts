@@ -763,11 +763,7 @@ const reviewSheets = (
 const centerMain = (
   h: HtmlBuilder<PreviewMessage>,
   children: ReadonlyArray<Html>,
-): Html =>
-  h.main(
-    [h.Class('flex min-h-screen items-center justify-center p-8')],
-    children,
-  )
+): Html => h.main([h.Class('flex items-center justify-center p-8')], children)
 
 const sheetOf = (
   model: PreviewModel,
