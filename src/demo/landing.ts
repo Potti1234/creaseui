@@ -6,6 +6,8 @@ import { defineMessageUnion } from 'foldkit/message'
 import { modifyFields } from 'foldkit/struct'
 
 import * as Chart from '@/lib/echarts'
+import { heroChart } from '@/site/landing-ui'
+import { renderer } from '@/site/config'
 import * as Icon from '@/lib/icon'
 import {
   CHART_EXAMPLE_COUNT,
@@ -14,8 +16,9 @@ import {
   SIDEBAR_BLOCK_COUNT,
 } from '@/lib/project-facts'
 import { componentDocsPath, createPath } from '@/route'
-import { badge } from '@/ui/badge'
-import { button } from '@/ui/button'
+import { landingSkin } from '@/site/landing-skin'
+import { badge } from '@/site/landing-ui'
+import { button } from '@/site/landing-ui'
 import {
   card,
   cardContent,
@@ -23,10 +26,10 @@ import {
   cardFooter,
   cardHeader,
   cardTitle,
-} from '@/ui/card'
-import { input } from '@/ui/input'
-import { kbd } from '@/ui/kbd'
-import { separator } from '@/ui/separator'
+} from '@/site/landing-ui'
+import { input } from '@/site/landing-ui'
+import { kbd } from '@/site/landing-ui'
+import { separator } from '@/site/landing-ui'
 
 /* The crease/ui landing page (route: /). Copy and structure follow
    brand/LANDING.md. Interactive bits: the before/after comparison slider;
@@ -106,28 +109,20 @@ const sectionHeading = (
   h: HtmlBuilder<Message>,
 ): Html => {
   return h.div(
-    [h.Class('flex max-w-2xl flex-col gap-3')],
+    [h.Class(landingSkin.sectionHeading)],
     [
-      h.h2(
-        [
-          h.Class(
-            'text-2xl font-semibold tracking-tight text-balance sm:text-3xl',
-          ),
-        ],
-        [title],
-      ),
-      h.p([h.Class('text-muted-foreground text-balance')], [copy]),
+      h.h2([h.Class(landingSkin.sectionTitle)], [title]),
+      h.p([h.Class(landingSkin.sectionCopy)], [copy]),
     ],
   )
 }
 
 const heroCollage = (h: HtmlBuilder<Message>): Html => {
   return h.div(
-    [h.Class('grid w-full max-w-xl gap-4')],
+    [h.Class(landingSkin.collage)],
     [
       card(
         {
-          class: 'gap-3',
           children: [
             cardHeader(
               {
@@ -144,13 +139,11 @@ const heroCollage = (h: HtmlBuilder<Message>): Html => {
             cardContent(
               {
                 children: [
-                  Chart.chart(
+                  heroChart(
                     {
                       hostId: HERO_CHART_ID,
                       ariaLabel: 'Revenue trend for the last 6 months',
                       toMessage: toChart,
-                      class:
-                        'h-32 w-full [&>[data-slot=echart]]:h-full [&>[data-slot=echart]]:aspect-auto',
                     },
                     h,
                   ),
@@ -163,11 +156,10 @@ const heroCollage = (h: HtmlBuilder<Message>): Html => {
         h,
       ),
       h.div(
-        [h.Class('grid grid-cols-[1fr_auto] items-start gap-4')],
+        [h.Class(landingSkin.collageRow)],
         [
           card(
             {
-              class: 'gap-3',
               children: [
                 cardHeader(
                   {
@@ -202,7 +194,6 @@ const heroCollage = (h: HtmlBuilder<Message>): Html => {
                 ),
                 cardFooter(
                   {
-                    class: 'justify-end gap-2',
                     children: [
                       button({ variant: 'outline', children: ['Cancel'] }, h),
                       button({ children: ['Continue'] }, h),
@@ -215,18 +206,14 @@ const heroCollage = (h: HtmlBuilder<Message>): Html => {
             h,
           ),
           h.div(
-            [h.Class('flex flex-col items-start gap-2')],
+            [h.Class(landingSkin.badges)],
             [
               badge({ children: ['New'] }, h),
               badge({ variant: 'secondary', children: ['Beta'] }, h),
               badge({ variant: 'outline', children: ['MIT'] }, h),
               badge({ variant: 'destructive', children: ['Deprecated'] }, h),
               h.div(
-                [
-                  h.Class(
-                    'text-muted-foreground mt-2 flex items-center gap-1 text-xs',
-                  ),
-                ],
+                [h.Class(landingSkin.keyHints)],
                 [kbd({ children: ['⌘'] }, h), kbd({ children: ['B'] }, h)],
               ),
             ],
@@ -239,49 +226,37 @@ const heroCollage = (h: HtmlBuilder<Message>): Html => {
 
 const hero = (h: HtmlBuilder<Message>): Html => {
   return h.section(
-    [
-      h.Class(
-        'mx-auto grid w-full max-w-[1200px] items-center gap-12 px-4 py-16 md:grid-cols-2 md:px-8 md:py-24',
-      ),
-    ],
+    [h.Class(landingSkin.hero)],
     [
       h.div(
-        [h.Class('flex flex-col items-start gap-6')],
+        [h.Class(landingSkin.heroCopy)],
         [
           h.div(
-            [h.Class('flex items-center gap-3')],
+            [h.Class(landingSkin.brandRow)],
             [
               h.img([
                 h.Src('/favicon.svg'),
                 h.Alt('Crease'),
-                h.Class('size-10 rounded-[9px]'),
+                h.Class(landingSkin.logo),
               ]),
               h.span(
-                [h.Class('text-lg font-semibold tracking-tight')],
-                [
-                  'crease',
-                  h.span([h.Class('text-[oklch(0.62_0.15_145)]')], ['/']),
-                  'ui',
-                ],
+                [h.Class(landingSkin.brand)],
+                ['crease', h.span([h.Class(landingSkin.accent)], ['/']), 'ui'],
               ),
             ],
           ),
           h.h1(
-            [
-              h.Class(
-                'text-4xl leading-[1.1] font-semibold tracking-tight text-balance sm:text-5xl',
-              ),
-            ],
+            [h.Class(landingSkin.heroTitle)],
             ['Beautiful components for foldkit.'],
           ),
           h.p(
-            [h.Class('text-muted-foreground max-w-md text-lg text-balance')],
+            [h.Class(landingSkin.heroDescription)],
             [
               'The shadcn/ui design language, rebuilt on foldkit UI. Copy the code, own the code, ship.',
             ],
           ),
           h.div(
-            [h.Class('flex flex-wrap items-center gap-3')],
+            [h.Class(landingSkin.actions)],
             [
               h.a(
                 [h.Href(createPath())],
@@ -299,7 +274,7 @@ const hero = (h: HtmlBuilder<Message>): Html => {
             ],
           ),
           h.p(
-            [h.Class('text-muted-foreground text-xs')],
+            [h.Class(landingSkin.license)],
             [
               'MIT licensed · Built on foldkit UI · Works with any shadcn theme',
             ],
@@ -315,11 +290,7 @@ const comparisonSlider = (model: Model, h: HtmlBuilder<Message>): Html => {
   const percent = Math.min(100, Math.max(0, model.comparePercent))
 
   return h.section(
-    [
-      h.Class(
-        'mx-auto flex w-full max-w-[1200px] flex-col gap-8 px-4 py-16 md:px-8',
-      ),
-    ],
+    [h.Class(landingSkin.section)],
     [
       sectionHeading(
         'Spot the difference.',
@@ -327,20 +298,16 @@ const comparisonSlider = (model: Model, h: HtmlBuilder<Message>): Html => {
         h,
       ),
       h.div(
-        [
-          h.Class(
-            'relative w-full cursor-ew-resize touch-none overflow-hidden rounded-xl border shadow-sm select-none',
-          ),
-        ],
+        [h.Class(landingSkin.comparison)],
         [
           h.img([
             h.Src('/comparison/shadcn-board.png'),
             h.Alt('The original shadcn/ui create board'),
-            h.Class('block w-full'),
+            h.Class(landingSkin.image),
           ]),
           h.div(
             [
-              h.Class('absolute inset-0'),
+              h.Class(landingSkin.overlay),
               h.Style({
                 'clip-path': `inset(0 ${100 - percent}% 0 0)`,
               }),
@@ -349,35 +316,16 @@ const comparisonSlider = (model: Model, h: HtmlBuilder<Message>): Html => {
               h.img([
                 h.Src('/comparison/foldkit-board.png'),
                 h.Alt('The same board rebuilt with crease/ui on foldkit'),
-                h.Class('block w-full'),
+                h.Class(landingSkin.image),
               ]),
             ],
           ),
           h.div(
-            [
-              h.Class(
-                'bg-foreground/60 pointer-events-none absolute inset-y-0 w-px',
-              ),
-              h.Style({ left: `${percent}%` }),
-            ],
+            [h.Class(landingSkin.divider), h.Style({ left: `${percent}%` })],
             [],
           ),
-          h.span(
-            [
-              h.Class(
-                'bg-background/90 text-foreground pointer-events-none absolute top-3 left-3 rounded-md border px-2 py-1 text-xs font-medium',
-              ),
-            ],
-            ['crease/ui (foldkit)'],
-          ),
-          h.span(
-            [
-              h.Class(
-                'bg-background/90 text-foreground pointer-events-none absolute top-3 right-3 rounded-md border px-2 py-1 text-xs font-medium',
-              ),
-            ],
-            ['shadcn/ui (React)'],
-          ),
+          h.span([h.Class(landingSkin.leftLabel)], ['crease/ui (foldkit)']),
+          h.span([h.Class(landingSkin.rightLabel)], ['shadcn/ui (React)']),
           h.input([
             h.Type('range'),
             h.Min('0'),
@@ -387,9 +335,7 @@ const comparisonSlider = (model: Model, h: HtmlBuilder<Message>): Html => {
               Message.DraggedCompare({ value: Number(value) || 0 }),
             ),
             h.AriaLabel('Comparison slider between crease/ui and shadcn/ui'),
-            h.Class(
-              'absolute inset-0 h-full w-full cursor-ew-resize opacity-0',
-            ),
+            h.Class(landingSkin.range),
           ]),
         ],
       ),
@@ -400,25 +346,21 @@ const comparisonSlider = (model: Model, h: HtmlBuilder<Message>): Html => {
 const howItWorks = (h: HtmlBuilder<Message>): Html => {
   const layer = (name: string, role: string): Html =>
     h.div(
-      [h.Class('flex flex-col gap-1 rounded-xl border p-4')],
+      [h.Class(landingSkin.layer)],
       [
-        h.span([h.Class('text-sm font-semibold')], [name]),
-        h.span([h.Class('text-muted-foreground text-sm')], [role]),
+        h.span([h.Class(landingSkin.label)], [name]),
+        h.span([h.Class(landingSkin.muted)], [role]),
       ],
     )
 
   return h.section(
-    [h.Class('bg-muted/40 border-y')],
+    [h.Class(landingSkin.band)],
     [
       h.div(
-        [
-          h.Class(
-            'mx-auto grid w-full max-w-[1200px] items-start gap-10 px-4 py-16 md:grid-cols-2 md:px-8',
-          ),
-        ],
+        [h.Class(landingSkin.columns)],
         [
           h.div(
-            [h.Class('flex flex-col gap-6')],
+            [h.Class(landingSkin.stack)],
             [
               sectionHeading(
                 'Three layers, no magic.',
@@ -426,7 +368,7 @@ const howItWorks = (h: HtmlBuilder<Message>): Html => {
                 h,
               ),
               h.div(
-                [h.Class('grid gap-2')],
+                [h.Class(landingSkin.grid)],
                 [
                   layer(
                     'foldkit UI',
@@ -445,28 +387,30 @@ const howItWorks = (h: HtmlBuilder<Message>): Html => {
             ],
           ),
           h.div(
-            [h.Class('flex flex-col gap-4')],
+            [h.Class(landingSkin.stackTight)],
             [
               h.div(
-                [
-                  h.Class(
-                    'bg-background flex flex-col gap-3 rounded-xl border p-4 shadow-sm',
-                  ),
-                ],
+                [h.Class(landingSkin.installCard)],
                 [
                   h.div(
-                    [h.Class('flex items-center justify-between gap-2')],
+                    [h.Class(landingSkin.installRow)],
                     [
                       h.code(
-                        [h.Class('font-mono text-sm')],
+                        [h.Class(landingSkin.code)],
                         [
-                          'npx --yes shadcn@latest add Potti1234/creaseui/button --yes',
+                          renderer === 'stylex'
+                            ? "import { button } from '@/stylex/button'"
+                            : 'npx --yes shadcn@latest add Potti1234/creaseui/button --yes',
                         ],
                       ),
                       badge(
                         {
                           variant: 'secondary',
-                          children: ['registry available'],
+                          children: [
+                            renderer === 'stylex'
+                              ? 'source available'
+                              : 'registry available',
+                          ],
                         },
                         h,
                       ),
@@ -474,34 +418,36 @@ const howItWorks = (h: HtmlBuilder<Message>): Html => {
                   ),
                   separator({}, h),
                   h.p(
-                    [h.Class('text-muted-foreground text-sm')],
+                    [h.Class(landingSkin.muted)],
                     [
-                      'The registry copies the component and its local dependencies into your project. The installed source is yours to rename, adapt, or extend.',
+                      renderer === 'stylex'
+                        ? 'Copy the StyleX component and its local dependencies into your project. Configure the compiler and theme variables; no Tailwind reset is needed.'
+                        : 'The registry copies the component and its local dependencies into your project. The installed source is yours to rename, adapt, or extend.',
                     ],
                   ),
                 ],
               ),
               h.ul(
-                [h.Class('text-muted-foreground grid gap-2 text-sm')],
+                [h.Class(landingSkin.checks)],
                 [
                   h.li(
-                    [h.Class('flex items-center gap-2')],
+                    [h.Class(landingSkin.check)],
                     [
-                      Icon.check({ class: 'size-4' }, h),
+                      Icon.check({ class: landingSkin.icon }, h),
                       'You own the code — no dependency to babysit.',
                     ],
                   ),
                   h.li(
-                    [h.Class('flex items-center gap-2')],
+                    [h.Class(landingSkin.check)],
                     [
-                      Icon.check({ class: 'size-4' }, h),
+                      Icon.check({ class: landingSkin.icon }, h),
                       'shadcn-compatible tokens — your theme drops in.',
                     ],
                   ),
                   h.li(
-                    [h.Class('flex items-center gap-2')],
+                    [h.Class(landingSkin.check)],
                     [
-                      Icon.check({ class: 'size-4' }, h),
+                      Icon.check({ class: landingSkin.icon }, h),
                       'Stateful components expose explicit Foldkit models and messages.',
                     ],
                   ),
@@ -518,24 +464,15 @@ const howItWorks = (h: HtmlBuilder<Message>): Html => {
 const numbers = (h: HtmlBuilder<Message>): Html => {
   const stat = (value: string, label: string, href: string): Html =>
     h.a(
+      [h.Href(href), h.Class(landingSkin.stat)],
       [
-        h.Href(href),
-        h.Class(
-          'hover:bg-muted/50 flex flex-col gap-1 rounded-xl border p-6 transition-colors',
-        ),
-      ],
-      [
-        h.span([h.Class('text-3xl font-semibold tracking-tight')], [value]),
-        h.span([h.Class('text-muted-foreground text-sm')], [label]),
+        h.span([h.Class(landingSkin.statValue)], [value]),
+        h.span([h.Class(landingSkin.muted)], [label]),
       ],
     )
 
   return h.section(
-    [
-      h.Class(
-        'mx-auto flex w-full max-w-[1200px] flex-col gap-8 px-4 py-16 md:px-8',
-      ),
-    ],
+    [h.Class(landingSkin.section)],
     [
       sectionHeading(
         'Every component you expect.',
@@ -543,7 +480,7 @@ const numbers = (h: HtmlBuilder<Message>): Html => {
         h,
       ),
       h.div(
-        [h.Class('grid gap-4 sm:grid-cols-3')],
+        [h.Class(landingSkin.stats)],
         [
           stat(
             String(COMPONENT_COUNT),
@@ -568,17 +505,13 @@ const numbers = (h: HtmlBuilder<Message>): Html => {
 
 const honestSection = (model: Model, h: HtmlBuilder<Message>): Html => {
   return h.section(
-    [h.Class('bg-muted/40 border-y')],
+    [h.Class(landingSkin.band)],
     [
       h.div(
-        [
-          h.Class(
-            'mx-auto grid w-full max-w-[1200px] items-start gap-10 px-4 py-16 md:grid-cols-2 md:px-8',
-          ),
-        ],
+        [h.Class(landingSkin.columns)],
         [
           h.div(
-            [h.Class('flex flex-col gap-6')],
+            [h.Class(landingSkin.stack)],
             [
               sectionHeading(
                 'No hidden state. Really, none.',
@@ -586,18 +519,13 @@ const honestSection = (model: Model, h: HtmlBuilder<Message>): Html => {
                 h,
               ),
               h.p(
-                [h.Class('text-muted-foreground text-sm')],
+                [h.Class(landingSkin.muted)],
                 ['If that paragraph made you nod, you are home.'],
               ),
             ],
           ),
           h.pre(
-            [
-              h.Attribute('tabindex', '0'),
-              h.Class(
-                'bg-background overflow-x-auto rounded-xl border p-4 font-mono text-xs leading-relaxed shadow-sm',
-              ),
-            ],
+            [h.Attribute('tabindex', '0'), h.Class(landingSkin.snippet)],
             [
               h.code(
                 [],
@@ -630,23 +558,19 @@ const honestSection = (model: Model, h: HtmlBuilder<Message>): Html => {
 const faq = (h: HtmlBuilder<Message>): Html => {
   const item = (question: string, answer: string): Html =>
     h.div(
-      [h.Class('flex flex-col gap-1.5')],
+      [h.Class(landingSkin.faqItem)],
       [
-        h.h3([h.Class('text-sm font-semibold')], [question]),
-        h.p([h.Class('text-muted-foreground text-sm')], [answer]),
+        h.h3([h.Class(landingSkin.label)], [question]),
+        h.p([h.Class(landingSkin.muted)], [answer]),
       ],
     )
 
   return h.section(
-    [
-      h.Class(
-        'mx-auto flex w-full max-w-[1200px] flex-col gap-8 px-4 py-16 md:px-8',
-      ),
-    ],
+    [h.Class(landingSkin.section)],
     [
       sectionHeading('Questions, answered.', '', h),
       h.div(
-        [h.Class('grid gap-8 md:grid-cols-2')],
+        [h.Class(landingSkin.faqGrid)],
         [
           item(
             'Is this affiliated with shadcn?',
@@ -683,23 +607,19 @@ const footer = (h: HtmlBuilder<Message>): Html => {
   const revisionLabel = `${shortRevision}${isBuildDirty ? '+dirty' : ''}`
 
   return h.footer(
-    [h.Class('border-t')],
+    [h.Class(landingSkin.footer)],
     [
       h.div(
-        [
-          h.Class(
-            'text-muted-foreground mx-auto flex w-full max-w-[1200px] flex-wrap items-center justify-between gap-4 px-4 py-10 text-sm md:px-8',
-          ),
-        ],
+        [h.Class(landingSkin.footerInner)],
         [
           h.span([], ['crease/ui — the visible layer.']),
           h.div(
-            [h.Class('flex items-center gap-4')],
+            [h.Class(landingSkin.footerLinks)],
             [
               h.a(
                 [
                   h.Href('https://foldkit.dev'),
-                  h.Class('hover:text-foreground'),
+                  h.Class(landingSkin.footerLink),
                 ],
                 ['foldkit.dev'],
               ),
@@ -711,7 +631,7 @@ const footer = (h: HtmlBuilder<Message>): Html => {
                         h.Href(
                           `https://github.com/Potti1234/creaseui/commit/${buildSha}`,
                         ),
-                        h.Class('font-mono hover:text-foreground'),
+                        h.Class(landingSkin.revision),
                         h.AriaLabel(`Source revision ${revisionLabel}`),
                       ],
                       [`source ${revisionLabel}`],

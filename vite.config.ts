@@ -122,6 +122,8 @@ export default defineConfig(({ mode }) => {
         ...(isStyleX
           ? {
               '@/site/skin': source('site/skin.stylex.ts'),
+              '@/site/landing-skin': source('site/landing-skin.stylex.ts'),
+              '@/site/landing-ui': source('site/landing-ui.stylex.ts'),
               '@/docs/component-page': source('site/docs.stylex.ts'),
             }
           : {}),
