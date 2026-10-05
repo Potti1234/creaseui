@@ -24,7 +24,8 @@ const InputGroupPreviewMessage = defineMessageUnion({
   GotDropdownMessage: { index: S.Number, message: DropdownMenu.Message },
   GotPopoverMessage: { message: Popover.Message },
   ClickedFavorite: {},
-  ClickedCopy: {},
+  ClickedShowPassword: {},
+  ClickedCopy: { text: S.String },
   CompletedCopy: {},
   CompletedWaitBeforeClearingCopy: {},
 })
@@ -37,14 +38,20 @@ const InputGroupPreviewModel = S.Struct({
   popover: Popover.Model,
   isFavorite: S.Boolean,
   isCopied: S.Boolean,
+  isPasswordShown: S.Boolean,
 })
 type InputGroupPreviewModel = typeof InputGroupPreviewModel.Type
 
 const CopyUrl = Command.define('CopyDocsUrl', {
+  args: { text: S.String },
   messages: [InputGroupPreviewMessage.CompletedCopy],
-  execute: Effect.promise(() =>
-    navigator.clipboard.writeText('https://creaseui.com'),
-  ).pipe(Effect.as(InputGroupPreviewMessage.CompletedCopy())),
+  execute: ({ text }) =>
+    /* Clipboard permission can be denied (e.g. unfocused iframe); swallow
+       the rejection inside the promise so a denied write can't crash the
+       app, and still surface the check feedback. */
+    Effect.promise(() =>
+      navigator.clipboard.writeText(text).catch(() => {}),
+    ).pipe(Effect.as(InputGroupPreviewMessage.CompletedCopy())),
 })
 const WaitBeforeClearingCopy = Command.define(
   'WaitBeforeClearingCopyFeedback',
@@ -182,13 +189,35 @@ const inputGroupView = (
                         model,
                         'alignEnd',
                         'inline-end-input',
-                        { type: 'password', placeholder: 'Enter password' },
+                        {
+                          type: model.isPasswordShown ? 'text' : 'password',
+                          placeholder: 'Enter password',
+                        },
                         h,
                       ),
                       InputGroup.inputGroupAddon(
                         {
                           align: 'inline-end',
-                          children: [Icon.icon('eye-off', {}, h)],
+                          children: [
+                            InputGroup.inputGroupButton(
+                              {
+                                size: 'icon-xs',
+                                ariaLabel: model.isPasswordShown
+                                  ? 'Hide password'
+                                  : 'Show password',
+                                onClick:
+                                  InputGroupPreviewMessage.ClickedShowPassword(),
+                                children: [
+                                  Icon.icon(
+                                    model.isPasswordShown ? 'eye' : 'eye-off',
+                                    {},
+                                    h,
+                                  ),
+                                ],
+                              },
+                              h,
+                            ),
+                          ],
                         },
                         h,
                       ),
@@ -276,7 +305,19 @@ const inputGroupView = (
                                     {
                                       size: 'icon-xs',
                                       class: 'ml-auto',
-                                      children: [Icon.icon('copy', {}, h)],
+                                      ariaLabel: 'Copy',
+                                      onClick:
+                                        InputGroupPreviewMessage.ClickedCopy({
+                                          text:
+                                            model.values[
+                                              'alignBlockTextarea'
+                                            ] ?? '',
+                                        }),
+                                      children: [
+                                        model.isCopied
+                                          ? Icon.icon('check', {}, h)
+                                          : Icon.icon('copy', {}, h),
+                                      ],
                                     },
                                     h,
                                   ),
@@ -625,7 +666,9 @@ const inputGroupView = (
                         {
                           size: 'icon-xs',
                           ariaLabel: 'Copy',
-                          onClick: InputGroupPreviewMessage.ClickedCopy(),
+                          onClick: InputGroupPreviewMessage.ClickedCopy({
+                            text: model.values['buttonCopy'] ?? '',
+                          }),
                           children: [
                             model.isCopied
                               ? Icon.icon('check', {}, h)
@@ -1231,6 +1274,7 @@ export const inputGroupTailwindPreviewProgram = definePreviewProgram<
     }),
     isFavorite: false,
     isCopied: false,
+    isPasswordShown: false,
   }),
   update: (model, message) => {
     switch (message._tag) {
@@ -1277,8 +1321,12 @@ export const inputGroupTailwindPreviewProgram = definePreviewProgram<
       }
       case 'ClickedFavorite':
         return { model: { ...model, isFavorite: !model.isFavorite } }
+      case 'ClickedShowPassword':
+        return {
+          model: { ...model, isPasswordShown: !model.isPasswordShown },
+        }
       case 'ClickedCopy':
-        return { model, commands: [CopyUrl()] }
+        return { model, commands: [CopyUrl({ text: message.text })] }
       case 'CompletedCopy':
         return {
           model: { ...model, isCopied: true },

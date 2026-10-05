@@ -204,6 +204,14 @@ export type Model = typeof Model.Type`
 })
 export type Model = typeof Model.Type`
   }
+  if (fixture.kind === 'align') {
+    return `export const Model = S.Struct({
+  values: S.Record(S.String, S.String),
+  isPasswordShown: S.Boolean,
+  isCopied: S.Boolean,
+})
+export type Model = typeof Model.Type`
+  }
   return `export const Model = S.Struct({ values: S.Record(S.String, S.String) })
 export type Model = typeof Model.Type`
 }
@@ -222,6 +230,16 @@ export type Message = typeof Message.Type`
   GotPopoverMessage: { message: Popover.Message },
   ClickedFavorite: {},
   ClickedCopy: {},
+  CompletedCopy: {},
+  CompletedWaitBeforeClearingCopy: {},
+})
+export type Message = typeof Message.Type`
+  }
+  if (fixture.kind === 'align') {
+    return `export const Message = defineMessageUnion({
+  ChangedInputValue: { field: S.String, value: S.String },
+  ClickedShowPassword: {},
+  ClickedCopy: { text: S.String },
   CompletedCopy: {},
   CompletedWaitBeforeClearingCopy: {},
 })
@@ -255,6 +273,11 @@ const emitInit = (fixture: InputGroupFixture): string => {
   },
 })`
   }
+  if (fixture.kind === 'align') {
+    return `export const init = (): Update.Return<Model, Message> => ({
+  model: { values: {}, isPasswordShown: false, isCopied: false },
+})`
+  }
   return `export const init = (): Update.Return<Model, Message> => ({ model: { values: {} } })`
 }
 
@@ -283,9 +306,9 @@ const emitUpdate = (fixture: InputGroupFixture): string => {
   if (kindUsesPopover(fixture.kind)) {
     return `const CopyUrl = Command.define('CopyDocsUrl', {
   messages: [Message.CompletedCopy],
-  execute: Effect.promise(() => navigator.clipboard.writeText('https://creaseui.com')).pipe(
-    Effect.as(Message.CompletedCopy()),
-  ),
+  execute: Effect.promise(() =>
+    navigator.clipboard.writeText('https://creaseui.com').catch(() => {}),
+  ).pipe(Effect.as(Message.CompletedCopy())),
 })
 const WaitBeforeClearingCopy = Command.define('WaitBeforeClearingCopyFeedback', {
   messages: [Message.CompletedWaitBeforeClearingCopy],
@@ -310,6 +333,37 @@ export const update = (model: Model, message: Message): Update.Return<Model, Mes
       return { model: { ...model, isFavorite: !model.isFavorite } }
     case 'ClickedCopy':
       return { model, commands: [CopyUrl()] }
+    case 'CompletedCopy':
+      return { model: { ...model, isCopied: true }, commands: [WaitBeforeClearingCopy()] }
+    case 'CompletedWaitBeforeClearingCopy':
+      return { model: { ...model, isCopied: false } }
+  }
+}`
+  }
+  if (fixture.kind === 'align') {
+    return `const CopyText = Command.define('CopyText', {
+  args: { text: S.String },
+  messages: [Message.CompletedCopy],
+  execute: ({ text }) =>
+    Effect.promise(() => navigator.clipboard.writeText(text).catch(() => {})).pipe(
+      Effect.as(Message.CompletedCopy()),
+    ),
+})
+const WaitBeforeClearingCopy = Command.define('WaitBeforeClearingCopy', {
+  messages: [Message.CompletedWaitBeforeClearingCopy],
+  execute: Effect.sleep('1800 millis').pipe(
+    Effect.as(Message.CompletedWaitBeforeClearingCopy()),
+  ),
+})
+
+export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
+  switch (message._tag) {
+    case 'ChangedInputValue':
+      return { model: { ...model, values: { ...model.values, [message.field]: message.value } } }
+    case 'ClickedShowPassword':
+      return { model: { ...model, isPasswordShown: !model.isPasswordShown } }
+    case 'ClickedCopy':
+      return { model, commands: [CopyText({ text: message.text })] }
     case 'CompletedCopy':
       return { model: { ...model, isCopied: true }, commands: [WaitBeforeClearingCopy()] }
     case 'CompletedWaitBeforeClearingCopy':
@@ -394,10 +448,23 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
             ${label('inline-end-input', 'Input')},
             InputGroup.inputGroup({
               children: [
-                ${emitInput('alignEnd', 'inline-end-input', "\n              type: 'password',\n              placeholder: 'Enter password',")},
+                InputGroup.inputGroupInput({
+                  id: 'inline-end-input',
+                  value: model.values['alignEnd'] ?? '',
+                  onInput: value => Message.ChangedInputValue({ field: 'alignEnd', value }),
+                  type: model.isPasswordShown ? 'text' : 'password',
+                  placeholder: 'Enter password',
+                }, h),
                 InputGroup.inputGroupAddon({
                   align: 'inline-end',
-                  children: [Icon.icon('eye-off', {}, h)],
+                  children: [
+                    InputGroup.inputGroupButton({
+                      size: 'icon-xs',
+                      ariaLabel: model.isPasswordShown ? 'Hide password' : 'Show password',
+                      onClick: Message.ClickedShowPassword(),
+                      children: [Icon.icon(model.isPasswordShown ? 'eye' : 'eye-off', {}, h)],
+                    }, h),
+                  ],
                 }, h),
               ],
             }, h),
@@ -432,7 +499,13 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
                       children: [
                         Icon.icon('file-code', {}, h),
                         InputGroup.inputGroupText({ children: [${isStyleX ? "h.span([h.Class(stylex.props(styles.monoText).className ?? '')], ['script.js'])" : "h.span([h.Class('font-mono')], ['script.js'])"}] }, h),
-                        InputGroup.inputGroupButton({ size: 'icon-xs', ${isStyleX ? 'layoutStyle: styles.push' : "class: 'ml-auto'"}, children: [Icon.icon('copy', {}, h)] }, h),
+                        InputGroup.inputGroupButton({
+                          size: 'icon-xs',
+                          ${isStyleX ? 'layoutStyle: styles.push' : "class: 'ml-auto'"},
+                          ariaLabel: 'Copy',
+                          onClick: Message.ClickedCopy({ text: model.values['alignBlockTextarea'] ?? '' }),
+                          children: [Icon.icon(model.isCopied ? 'check' : 'copy', {}, h)],
+                        }, h),
                       ],
                     }, h),
                   ],
@@ -795,7 +868,7 @@ const emitApplication = (
   isStyleX: boolean,
 ): string => {
   const effectImports = (() => {
-    if (kindUsesPopover(fixture.kind))
+    if (kindUsesPopover(fixture.kind) || fixture.kind === 'align')
       return "import { Effect, Schema as S } from 'effect'"
     return "import { Schema as S } from 'effect'"
   })()

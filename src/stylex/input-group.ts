@@ -302,6 +302,7 @@ export const inputGroupButton = <Msg>(
             ...button,
             h.DataAttribute('slot', 'input-group-button'),
             h.DataAttribute('size', p.size ?? 'xs'),
+            ...(p.ariaLabel === undefined ? [] : [h.AriaLabel(p.ariaLabel)]),
             h.Class(
               className(
                 ...buttonVisualStyles({

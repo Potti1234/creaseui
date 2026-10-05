@@ -148,6 +148,7 @@ export const inputGroupButton = <Msg>(
       ...(props.isDisabled === undefined
         ? {}
         : { isDisabled: props.isDisabled }),
+      ...(props.ariaLabel === undefined ? {} : { ariaLabel: props.ariaLabel }),
       class: cn(
         inputGroupButtonVariants({ size: props.size ?? 'xs' }),
         props.class,
