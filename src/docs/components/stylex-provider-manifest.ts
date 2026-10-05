@@ -106,7 +106,6 @@ import { infoTipStyleXPreview } from '@/docs/components/pages/info-tip/stylex'
 import { metadataListStyleXPreview } from '@/docs/components/pages/metadata-list/stylex'
 import { moreMenuStyleXPreview } from '@/docs/components/pages/more-menu/stylex'
 import { overflowListStyleXPreview } from '@/docs/components/pages/overflow-list/stylex'
-import { segmentedControlStyleXPreview } from '@/docs/components/pages/segmented-control/stylex'
 import { selectableCardStyleXPreview } from '@/docs/components/pages/selectable-card/stylex'
 import { sideNavStyleXPreview } from '@/docs/components/pages/side-nav/stylex'
 import { stepperStyleXPreview } from '@/docs/components/pages/stepper/stylex'
@@ -237,10 +236,6 @@ installStyleXExamplePreviewProvider('mobile-nav', mobileNavStyleXPreview)
 installStyleXExamplePreviewProvider('more-menu', moreMenuStyleXPreview)
 installStyleXExamplePreviewProvider('number-input', numberInputStyleXPreview)
 installStyleXExamplePreviewProvider('overflow-list', overflowListStyleXPreview)
-installStyleXExamplePreviewProvider(
-  'segmented-control',
-  segmentedControlStyleXPreview,
-)
 installStyleXExamplePreviewProvider(
   'selectable-card',
   selectableCardStyleXPreview,

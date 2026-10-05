@@ -91,7 +91,6 @@
 - Resizable: /docs/components/resizable — install with `npx creaseui add resizable`
 - Scroll Area: /docs/components/scroll-area — install with `npx creaseui add scroll-area`
 - Section: /docs/components/section — install with `npx creaseui add section`
-- Segmented Control: /docs/components/segmented-control — install with `npx creaseui add segmented-control`
 - Select: /docs/components/select — install with `npx creaseui add select`
 - Selectable Card: /docs/components/selectable-card — install with `npx creaseui add selectable-card`
 - Separator: /docs/components/separator — install with `npx creaseui add separator`
@@ -1672,27 +1671,6 @@ Examples: Section — Variants, Section — Default with Wash, Section — With 
 - `SectionProps = Readonly<{ variant?: SectionVariant; dividers?: ReadonlyArray<SectionDivider>; padding?: SectionSpacing; paddingInline?: SectionSpacing; paddingInlineStart?: SectionSpacing; paddingInlineEnd?: SectionSpacing; paddingBlock?: SectionSpacing; padd…` (type)
 - `section<Msg>(props: SectionProps, h: HtmlBuilder<Msg>): Html` (function)
 
-### Segmented Control
-
-A CreaseUI Segmented Control component for Foldkit.
-
-Source: `src/ui/segmented-control.ts`
-
-Examples: Segmented Control, With Icons, Icon Only, Fill Layout, Disabled Item
-
-- `export { Message } from ` (re-export)
-- `export { Model } from ` (re-export)
-- `export { init } from ` (re-export)
-- `export { OutMessage } from ` (re-export)
-- `SegmentedControlSize = 'sm' | 'md' | 'lg'` (type)
-- `SegmentedControlLayout = 'hug' | 'fill'` (type)
-- `SegmentedControlItem<Value extends string = string> = Readonly<{ value: Value; label: string; icon?: Html; isLabelHidden?: boolean; isDisabled?: boolean; }>` (type)
-- `SegmentedControlProps<Value extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; value: Value; ariaLabel: string; options: ReadonlyArray<SegmentedControlItem<Value>>; size?: SegmentedControlSize; layout?: SegmentedContro…` (type)
-- `SegmentedControlBundle<Value extends string> = Readonly<{ update: ReturnType<typeof createBehavior<Value>>['update']; segmentedControl: <Msg>(props: SegmentedControlProps<Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>` (type)
-- `create<Value extends string = string>(): SegmentedControlBundle<Value>` (function)
-- `update: value` (value)
-- `segmentedControl: value` (value)
-
 ### Select
 
 A CreaseUI Select component for Foldkit.
@@ -2058,7 +2036,7 @@ A CreaseUI Tabs component for Foldkit.
 
 Source: `src/ui/tabs.ts`
 
-Examples: Basic, Line, Vertical, Disabled, Icons, RTL, Manual with disabled tab
+Examples: Basic, Line, Vertical, Disabled, Icons, Icon Only, RTL, Manual with disabled tab
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -2070,7 +2048,7 @@ Examples: Basic, Line, Vertical, Disabled, Icons, RTL, Manual with disabled tab
 - `tabsListVariants: value` (value)
 - `TabsListVariants = VariantProps<typeof tabsListVariants>` (type)
 - `TabsOrientation = 'horizontal' | 'vertical'` (type)
-- `TabConfig<Value extends string = string> = Readonly<{ value: Value; label: Html | string; content: Html | string; isDisabled?: boolean; }>` (type)
+- `TabConfig<Value extends string = string> = Readonly<{ value: Value; label: Html | string; icon?: Html; isLabelHidden?: boolean; content: Html | string; isDisabled?: boolean; }>` (type)
 - `TabsProps<Value extends string, Msg> = Readonly<{ model: Model; selectedValue: Value; toParentMessage: (message: Message) => Msg; tabs: ReadonlyArray<TabConfig<Value>>; ariaLabel?: string; orientation?: TabsOrientation; direction?: 'ltr' | 'rtl'; variant?: Ta…` (type)
 - `TabsBundle<Value extends string> = Readonly<{ update: ReturnType<typeof TabsPrimitive.create<Value>>['update']; tabs: <Msg>(props: TabsProps<Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>` (type)
 - `create<Value extends string = string>(): TabsBundle<Value>` (function)

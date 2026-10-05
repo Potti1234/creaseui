@@ -148,12 +148,12 @@ Batches are work units; slugs are the Crease UI names.
 
 **Selection & disclosure**
 
-| Slug                | Astryx source                               | Notes                                                                   |
-| ------------------- | ------------------------------------------- | ----------------------------------------------------------------------- |
-| `segmented-control` | `SegmentedControl` + `SegmentedControlItem` | iOS-style sliding segment picker (distinct visual from `toggle-group`). |
-| `stepper`           | `Stepper` + `Step`                          | Multi-step progress, orientations, statuses, collapse.                  |
-| `toolbar`           | `Toolbar`                                   | Action/formatting toolbar w/ groups.                                    |
-| `info-tip`          | `InfoTip` (lab)                             | Icon-triggered tooltip.                                                 |
+| Slug                | Astryx source                               | Notes                                                                               |
+| ------------------- | ------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `segmented-control` | `SegmentedControl` + `SegmentedControlItem` | Covered by `tabs` (`icon` + `isLabelHidden` per tab); standalone component removed. |
+| `stepper`           | `Stepper` + `Step`                          | Multi-step progress, orientations, statuses, collapse.                              |
+| `toolbar`           | `Toolbar`                                   | Action/formatting toolbar w/ groups.                                                |
+| `info-tip`          | `InfoTip` (lab)                             | Icon-triggered tooltip.                                                             |
 
 **Overlays & guided UI**
 

@@ -23,7 +23,7 @@
   ],
   "summary": {
     "upstreamItems": 62,
-    "registryItems": 115,
+    "registryItems": 114,
     "creaseOnlyRecipes": [
       "avatar-group",
       "banner",
@@ -57,7 +57,6 @@
       "number-input",
       "overflow-list",
       "section",
-      "segmented-control",
       "selectable-card",
       "side-nav",
       "stack",
@@ -1487,24 +1486,6 @@
         "src/ui/section.ts",
         "src/ui/registry.json#section",
         "/docs/components/section"
-      ]
-    },
-    {
-      "component": "segmented-control",
-      "upstream": false,
-      "classification": "full",
-      "dimensions": {
-        "visual": "unverified",
-        "behavior": "partial",
-        "accessibility": "partial",
-        "composition": "partial",
-        "documentation": "verified",
-        "registry": "verified"
-      },
-      "evidence": [
-        "src/ui/segmented-control.ts",
-        "src/ui/registry.json#segmented-control",
-        "/docs/components/segmented-control"
       ]
     },
     {

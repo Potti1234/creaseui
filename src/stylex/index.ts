@@ -82,7 +82,6 @@ export * as RadioGroup from './radio-group.js'
 export * as Resizable from './resizable.js'
 export * as ScrollArea from './scroll-area.js'
 export * as Section from './section.js'
-export * as SegmentedControl from './segmented-control.js'
 export * as Select from './select.js'
 export * as SelectableCard from './selectable-card.js'
 export * as Separator from './separator.js'
@@ -200,7 +199,6 @@ export const STYLEX_COMPONENT_NAMES = [
   'resizable',
   'scroll-area',
   'section',
-  'segmented-control',
   'select',
   'selectable-card',
   'separator',

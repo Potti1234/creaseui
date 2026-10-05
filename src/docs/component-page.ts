@@ -91,7 +91,6 @@ export const COMPONENTS = [
   'Resizable',
   'Scroll Area',
   'Section',
-  'Segmented Control',
   'Select',
   'Selectable Card',
   'Separator',

@@ -4352,68 +4352,6 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "section<Msg>(props: SectionProps, h: HtmlBuilder<Msg>): Html"
     }
   ],
-  "segmented-control": [
-    {
-      "name": "Message",
-      "kind": "re-export",
-      "signature": "export { Message } from "
-    },
-    {
-      "name": "Model",
-      "kind": "re-export",
-      "signature": "export { Model } from "
-    },
-    {
-      "name": "init",
-      "kind": "re-export",
-      "signature": "export { init } from "
-    },
-    {
-      "name": "OutMessage",
-      "kind": "re-export",
-      "signature": "export { OutMessage } from "
-    },
-    {
-      "name": "SegmentedControlSize",
-      "kind": "type",
-      "signature": "SegmentedControlSize = 'sm' | 'md' | 'lg'"
-    },
-    {
-      "name": "SegmentedControlLayout",
-      "kind": "type",
-      "signature": "SegmentedControlLayout = 'hug' | 'fill'"
-    },
-    {
-      "name": "SegmentedControlItem",
-      "kind": "type",
-      "signature": "SegmentedControlItem<Value extends string = string> = Readonly<{ value: Value; label: string; icon?: Html; isLabelHidden?: boolean; isDisabled?: boolean; }>"
-    },
-    {
-      "name": "SegmentedControlProps",
-      "kind": "type",
-      "signature": "SegmentedControlProps<Value extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; value: Value; ariaLabel: string; options: ReadonlyArray<SegmentedControlItem<Value>>; size?: SegmentedControlSize; layout?: SegmentedContro…"
-    },
-    {
-      "name": "SegmentedControlBundle",
-      "kind": "type",
-      "signature": "SegmentedControlBundle<Value extends string> = Readonly<{ update: ReturnType<typeof createBehavior<Value>>['update']; segmentedControl: <Msg>(props: SegmentedControlProps<Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>"
-    },
-    {
-      "name": "create",
-      "kind": "function",
-      "signature": "create<Value extends string = string>(): SegmentedControlBundle<Value>"
-    },
-    {
-      "name": "update",
-      "kind": "value",
-      "signature": "update: value"
-    },
-    {
-      "name": "segmentedControl",
-      "kind": "value",
-      "signature": "segmentedControl: value"
-    }
-  ],
   "select": [
     {
       "name": "Model",
@@ -5575,7 +5513,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "TabConfig",
       "kind": "type",
-      "signature": "TabConfig<Value extends string = string> = Readonly<{ value: Value; label: Html | string; content: Html | string; isDisabled?: boolean; }>"
+      "signature": "TabConfig<Value extends string = string> = Readonly<{ value: Value; label: Html | string; icon?: Html; isLabelHidden?: boolean; content: Html | string; isDisabled?: boolean; }>"
     },
     {
       "name": "TabsProps",

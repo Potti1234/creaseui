@@ -93,7 +93,6 @@
 - Resizable: /docs/components/resizable — install with `npx creaseui add resizable`
 - Scroll Area: /docs/components/scroll-area — install with `npx creaseui add scroll-area`
 - Section: /docs/components/section — install with `npx creaseui add section`
-- Segmented Control: /docs/components/segmented-control — install with `npx creaseui add segmented-control`
 - Select: /docs/components/select — install with `npx creaseui add select`
 - Selectable Card: /docs/components/selectable-card — install with `npx creaseui add selectable-card`
 - Separator: /docs/components/separator — install with `npx creaseui add separator`

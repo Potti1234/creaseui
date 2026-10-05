@@ -1387,25 +1387,6 @@ Source: [`src/ui/section.ts`](../src/ui/section.ts)
 | `SectionProps` | type | `SectionProps = Readonly<{ variant?: SectionVariant; dividers?: ReadonlyArray<SectionDivider>; padding?: SectionSpacing; paddingInline?: SectionSpacing; paddingInlineStart?: SectionSpacing; paddingInlineEnd?: SectionSpacing; paddingBlock?: SectionSpacing; padd…` |
 | `section` | function | `section<Msg>(props: SectionProps, h: HtmlBuilder<Msg>): Html` |
 
-## Segmented Control
-
-Source: [`src/ui/segmented-control.ts`](../src/ui/segmented-control.ts)
-
-| Export | Kind | Signature |
-| --- | --- | --- |
-| `Message` | re-export | `export { Message } from ` |
-| `Model` | re-export | `export { Model } from ` |
-| `init` | re-export | `export { init } from ` |
-| `OutMessage` | re-export | `export { OutMessage } from ` |
-| `SegmentedControlSize` | type | `SegmentedControlSize = 'sm' \| 'md' \| 'lg'` |
-| `SegmentedControlLayout` | type | `SegmentedControlLayout = 'hug' \| 'fill'` |
-| `SegmentedControlItem` | type | `SegmentedControlItem<Value extends string = string> = Readonly<{ value: Value; label: string; icon?: Html; isLabelHidden?: boolean; isDisabled?: boolean; }>` |
-| `SegmentedControlProps` | type | `SegmentedControlProps<Value extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; value: Value; ariaLabel: string; options: ReadonlyArray<SegmentedControlItem<Value>>; size?: SegmentedControlSize; layout?: SegmentedContro…` |
-| `SegmentedControlBundle` | type | `SegmentedControlBundle<Value extends string> = Readonly<{ update: ReturnType<typeof createBehavior<Value>>['update']; segmentedControl: <Msg>(props: SegmentedControlProps<Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>` |
-| `create` | function | `create<Value extends string = string>(): SegmentedControlBundle<Value>` |
-| `update` | value | `update: value` |
-| `segmentedControl` | value | `segmentedControl: value` |
-
 ## Select
 
 Source: [`src/ui/select.ts`](../src/ui/select.ts)
@@ -1749,7 +1730,7 @@ Source: [`src/ui/tabs.ts`](../src/ui/tabs.ts)
 | `tabsListVariants` | value | `tabsListVariants: value` |
 | `TabsListVariants` | type | `TabsListVariants = VariantProps<typeof tabsListVariants>` |
 | `TabsOrientation` | type | `TabsOrientation = 'horizontal' \| 'vertical'` |
-| `TabConfig` | type | `TabConfig<Value extends string = string> = Readonly<{ value: Value; label: Html \| string; content: Html \| string; isDisabled?: boolean; }>` |
+| `TabConfig` | type | `TabConfig<Value extends string = string> = Readonly<{ value: Value; label: Html \| string; icon?: Html; isLabelHidden?: boolean; content: Html \| string; isDisabled?: boolean; }>` |
 | `TabsProps` | type | `TabsProps<Value extends string, Msg> = Readonly<{ model: Model; selectedValue: Value; toParentMessage: (message: Message) => Msg; tabs: ReadonlyArray<TabConfig<Value>>; ariaLabel?: string; orientation?: TabsOrientation; direction?: 'ltr' \| 'rtl'; variant?: Ta…` |
 | `TabsBundle` | type | `TabsBundle<Value extends string> = Readonly<{ update: ReturnType<typeof TabsPrimitive.create<Value>>['update']; tabs: <Msg>(props: TabsProps<Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>` |
 | `create` | function | `create<Value extends string = string>(): TabsBundle<Value>` |

@@ -1436,23 +1436,6 @@
       ]
     },
     {
-      "name": "segmented-control",
-      "type": "registry:ui",
-      "title": "Segmented Control",
-      "description": "A CreaseUI Segmented Control component for Foldkit.",
-      "registryDependencies": [
-        "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/utils"
-      ],
-      "files": [
-        {
-          "path": "segmented-control.ts",
-          "type": "registry:ui",
-          "target": "@ui/segmented-control.ts"
-        }
-      ]
-    },
-    {
       "name": "select",
       "type": "registry:ui",
       "title": "Select",
