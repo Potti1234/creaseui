@@ -803,6 +803,21 @@ const rendererSwitcher = (model: Model, h: HtmlBuilder<Message>): Html =>
     ),
   )
 
+const gitHubLink = (h: HtmlBuilder<Message>): Html =>
+  h.a(
+    [
+      h.Href('https://github.com/Potti1234/creaseui'),
+      h.Target('_blank'),
+      h.Rel('noopener noreferrer'),
+      h.AriaLabel('GitHub repository'),
+      h.Title('GitHub repository'),
+      h.Class(
+        'inline-flex size-10 shrink-0 items-center justify-center rounded-md text-foreground outline-none transition-[color,background-color,transform] duration-200 hover:bg-accent hover:text-accent-foreground focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-[0.96]',
+      ),
+    ],
+    [Icon.icon('github', { class: 'size-4' }, h)],
+  )
+
 const themeToggle = (model: Model, h: HtmlBuilder<Message>): Html =>
   h.button(
     [
@@ -890,7 +905,7 @@ const header = (model: Model, h: HtmlBuilder<Message>): Html => {
           ),
           h.div(
             [h.Class('ml-auto flex items-center gap-1 sm:gap-2')],
-            [rendererSwitcher(model, h), themeToggle(model, h)],
+            [rendererSwitcher(model, h), gitHubLink(h), themeToggle(model, h)],
           ),
           h.details(
             [h.Class('relative sm:hidden')],
