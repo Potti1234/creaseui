@@ -50,18 +50,6 @@ Source: [`src/ui/alert.ts`](../src/ui/alert.ts)
 | `alertTitle` | function | `alertTitle<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` |
 | `alertDescription` | function | `alertDescription<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` |
 
-## App Shell
-
-Source: [`src/ui/app-shell.ts`](../src/ui/app-shell.ts)
-
-| Export | Kind | Signature |
-| --- | --- | --- |
-| `AppShellVariant` | type | `AppShellVariant = 'elevated' \| 'wash' \| 'surface' \| 'section'` |
-| `AppShellHeight` | type | `AppShellHeight = 'fill' \| 'auto'` |
-| `AppShellSpacing` | type | `AppShellSpacing = 0 \| 0.5 \| 1 \| 1.5 \| 2 \| 3 \| 4 \| 5 \| 6 \| 8 \| 10` |
-| `AppShellProps` | type | `AppShellProps = Readonly<{ variant?: AppShellVariant; banner?: Html; topNav?: Html; sideNav?: Html; contentPadding?: AppShellSpacing; height?: AppShellHeight; skipLinkLabel?: string; mainId?: string; children?: ReadonlyArray<Html \| string>; class?: string; }>` |
-| `appShell` | function | `appShell<Msg>(props: AppShellProps, h: HtmlBuilder<Msg>): Html` |
-
 ## Aspect Ratio
 
 Source: [`src/ui/aspect-ratio.ts`](../src/ui/aspect-ratio.ts)

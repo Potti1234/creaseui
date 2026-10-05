@@ -18,7 +18,6 @@
 - Accordion: /docs/components/accordion — install with `npx creaseui add accordion`
 - Alert Dialog: /docs/components/alert-dialog — install with `npx creaseui add alert-dialog`
 - Alert: /docs/components/alert — install with `npx creaseui add alert`
-- App Shell: /docs/components/app-shell — install with `npx creaseui add app-shell`
 - Aspect Ratio: /docs/components/aspect-ratio — install with `npx creaseui add aspect-ratio`
 - Attachment: /docs/components/attachment — install with `npx creaseui add attachment`
 - Avatar Group: /docs/components/avatar-group — install with `npx creaseui add avatar-group`

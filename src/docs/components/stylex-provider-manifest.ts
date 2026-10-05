@@ -1,6 +1,5 @@
 import { installStyleXExamplePreviewProvider } from '@/docs/components/catalog'
 import { accordionStyleXPreview } from '@/docs/components/pages/accordion/stylex'
-import { appShellStyleXPreview } from '@/docs/components/pages/app-shell/stylex'
 import { centerStyleXPreview } from '@/docs/components/pages/center/stylex'
 import { gridStyleXPreview } from '@/docs/components/pages/grid/stylex'
 import { sectionStyleXPreview } from '@/docs/components/pages/section/stylex'
@@ -122,7 +121,6 @@ import { treeListStyleXPreview } from '@/docs/components/pages/tree-list/stylex'
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview)
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview)
-installStyleXExamplePreviewProvider('app-shell', appShellStyleXPreview)
 installStyleXExamplePreviewProvider('aspect-ratio', aspectRatioStyleXPreview)
 installStyleXExamplePreviewProvider('avatar', avatarStyleXPreview)
 installStyleXExamplePreviewProvider('avatar-group', avatarGroupStyleXPreview)

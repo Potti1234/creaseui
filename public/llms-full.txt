@@ -16,7 +16,6 @@
 - Accordion: /docs/components/accordion — install with `npx creaseui add accordion`
 - Alert Dialog: /docs/components/alert-dialog — install with `npx creaseui add alert-dialog`
 - Alert: /docs/components/alert — install with `npx creaseui add alert`
-- App Shell: /docs/components/app-shell — install with `npx creaseui add app-shell`
 - Aspect Ratio: /docs/components/aspect-ratio — install with `npx creaseui add aspect-ratio`
 - Attachment: /docs/components/attachment — install with `npx creaseui add attachment`
 - Avatar Group: /docs/components/avatar-group — install with `npx creaseui add avatar-group`
@@ -189,20 +188,6 @@ Examples: Basic, Account updated successfully, Destructive, Payment failed, Acti
 - `alertIcon<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
 - `alertTitle<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
 - `alertDescription<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
-
-### App Shell
-
-A CreaseUI App Shell component for Foldkit.
-
-Source: `src/ui/app-shell.ts`
-
-Examples: App Shell, AppShell — Top Nav Only, AppShell — Side Nav Only, AppShell — Content Only, AppShell — Top Nav with Side Nav, AppShell — With Banner
-
-- `AppShellVariant = 'elevated' | 'wash' | 'surface' | 'section'` (type)
-- `AppShellHeight = 'fill' | 'auto'` (type)
-- `AppShellSpacing = 0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10` (type)
-- `AppShellProps = Readonly<{ variant?: AppShellVariant; banner?: Html; topNav?: Html; sideNav?: Html; contentPadding?: AppShellSpacing; height?: AppShellHeight; skipLinkLabel?: string; mainId?: string; children?: ReadonlyArray<Html | string>; class?: string; }>` (type)
-- `appShell<Msg>(props: AppShellProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Aspect Ratio
 

@@ -2,7 +2,6 @@ import type { AuthoredPage } from '@/docs/components/pages/authored-page'
 import { accordionPage } from '@/docs/components/pages/accordion'
 import { alertPage } from '@/docs/components/pages/alert'
 import { alertDialogPage } from '@/docs/components/pages/alert-dialog'
-import { appShellPage } from '@/docs/components/pages/app-shell'
 import { aspectRatioPage } from '@/docs/components/pages/aspect-ratio'
 import { attachmentPage } from '@/docs/components/pages/attachment'
 import { avatarPage } from '@/docs/components/pages/avatar'
@@ -126,7 +125,6 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       accordionPage,
       alertPage,
       alertDialogPage,
-      appShellPage,
       aspectRatioPage,
       attachmentPage,
       avatarPage,

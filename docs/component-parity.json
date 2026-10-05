@@ -23,9 +23,8 @@
   ],
   "summary": {
     "upstreamItems": 62,
-    "registryItems": 120,
+    "registryItems": 119,
     "creaseOnlyRecipes": [
-      "app-shell",
       "avatar-group",
       "banner",
       "blockquote",
@@ -138,24 +137,6 @@
         "src/ui/alert-dialog.ts",
         "src/ui/registry.json#alert-dialog",
         "/docs/components/alert-dialog"
-      ]
-    },
-    {
-      "component": "app-shell",
-      "upstream": false,
-      "classification": "full",
-      "dimensions": {
-        "visual": "unverified",
-        "behavior": "partial",
-        "accessibility": "partial",
-        "composition": "partial",
-        "documentation": "verified",
-        "registry": "verified"
-      },
-      "evidence": [
-        "src/ui/app-shell.ts",
-        "src/ui/registry.json#app-shell",
-        "/docs/components/app-shell"
       ]
     },
     {

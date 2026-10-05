@@ -58,23 +58,6 @@
       ]
     },
     {
-      "name": "app-shell",
-      "type": "registry:ui",
-      "title": "App Shell",
-      "description": "A CreaseUI App Shell component for Foldkit.",
-      "registryDependencies": [
-        "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/utils"
-      ],
-      "files": [
-        {
-          "path": "app-shell.ts",
-          "type": "registry:ui",
-          "target": "@ui/app-shell.ts"
-        }
-      ]
-    },
-    {
       "name": "aspect-ratio",
       "type": "registry:ui",
       "title": "Aspect Ratio",

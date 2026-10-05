@@ -108,7 +108,6 @@ Batches are work units; slugs are the Crease UI names.
 | `center`          | `Center`                    | Max-width centering.                                   |
 | `section`         | `Section`                   | Page section w/ heading slot.                          |
 | `visually-hidden` | `VisuallyHidden`            | sr-only utility.                                       |
-| `app-shell`       | `AppShell`                  | App scaffold (nav/main slots).                         |
 
 **Status & display**
 

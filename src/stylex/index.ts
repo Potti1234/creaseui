@@ -7,7 +7,6 @@
 export * as Accordion from './accordion.js'
 export * as AlertDialog from './alert-dialog.js'
 export * as Alert from './alert.js'
-export * as AppShell from './app-shell.js'
 export * as AspectRatio from './aspect-ratio.js'
 export * as Attachment from './attachment.js'
 export * as AvatarGroup from './avatar-group.js'
@@ -130,7 +129,6 @@ export const STYLEX_COMPONENT_NAMES = [
   'accordion',
   'alert-dialog',
   'alert',
-  'app-shell',
   'aspect-ratio',
   'attachment',
   'avatar-group',

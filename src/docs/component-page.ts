@@ -16,7 +16,6 @@ export const COMPONENTS = [
   'Accordion',
   'Alert',
   'Alert Dialog',
-  'App Shell',
   'Aspect Ratio',
   'Attachment',
   'Avatar',

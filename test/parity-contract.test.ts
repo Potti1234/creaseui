@@ -60,7 +60,6 @@ describe('multidimensional component parity', () => {
       [],
     )
     assert.deepEqual(parity.summary.creaseOnlyRecipes, [
-      'app-shell',
       'avatar-group',
       'banner',
       'blockquote',

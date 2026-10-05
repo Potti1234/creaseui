@@ -142,33 +142,6 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "alertDescription<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html"
     }
   ],
-  "app-shell": [
-    {
-      "name": "AppShellVariant",
-      "kind": "type",
-      "signature": "AppShellVariant = 'elevated' | 'wash' | 'surface' | 'section'"
-    },
-    {
-      "name": "AppShellHeight",
-      "kind": "type",
-      "signature": "AppShellHeight = 'fill' | 'auto'"
-    },
-    {
-      "name": "AppShellSpacing",
-      "kind": "type",
-      "signature": "AppShellSpacing = 0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10"
-    },
-    {
-      "name": "AppShellProps",
-      "kind": "type",
-      "signature": "AppShellProps = Readonly<{ variant?: AppShellVariant; banner?: Html; topNav?: Html; sideNav?: Html; contentPadding?: AppShellSpacing; height?: AppShellHeight; skipLinkLabel?: string; mainId?: string; children?: ReadonlyArray<Html | string>; class?: string; }>"
-    },
-    {
-      "name": "appShell",
-      "kind": "function",
-      "signature": "appShell<Msg>(props: AppShellProps, h: HtmlBuilder<Msg>): Html"
-    }
-  ],
   "aspect-ratio": [
     {
       "name": "AspectRatioProps",
