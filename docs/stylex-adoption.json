@@ -24,10 +24,10 @@
     }
   },
   "guardrails": {
-    "boundaryFiles": 210,
+    "boundaryFiles": 212,
     "cssFallbacks": 0,
     "legacyUiImports": 0,
-    "suppressions": 18,
+    "suppressions": 1,
     "unsafeBodyPortals": 0
   }
 }

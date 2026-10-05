@@ -29,7 +29,7 @@ describe('StyleX component authoring contract', () => {
     const adapter = readFileSync('src/stylex/style.ts', 'utf8')
     const contract = readFileSync('src/stylex/contracts.ts', 'utf8')
 
-    assert.match(adapter, /ReadonlyArray<StaticStyles>/u)
+    assert.match(adapter, /ReadonlyArray<StaticStyles \| Marker>/u)
     assert.doesNotMatch(adapter, /StyleXStyles/u)
     assert.match(contract, /ComponentLayoutStyle = StaticStyles/u)
     assert.match(contract, /_InlineLayoutStyleIsRejected/u)

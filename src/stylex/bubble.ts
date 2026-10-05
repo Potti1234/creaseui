@@ -1,5 +1,4 @@
 import * as stylex from '@stylexjs/stylex'
-import type { StaticStyles } from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import type { ComponentLayoutStyle } from './contracts'
 import { bubbleScope } from './bubble.markers.stylex'
@@ -138,8 +137,7 @@ export const bubble = <Msg>(
         className(
           styles.bubble,
           align === 'end' && styles.end,
-          // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
-          bubbleScope as unknown as StaticStyles,
+          bubbleScope,
           variant === 'ghost' && styles.ghostWidth,
           p.layoutStyle,
         ),

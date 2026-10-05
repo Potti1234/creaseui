@@ -3,6 +3,7 @@ import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 
 import type { ComponentLayoutStyle } from './contracts'
 import { className } from './style'
+import { reset } from './reset'
 
 /* Ported from Meta Astryx Stack/stack.stylex.ts + stackItem.stylex.ts —
    same style tables; astryx spacing vars become literal rem values on the
@@ -126,6 +127,22 @@ export type StackDirection = keyof typeof directionStyles
 export type StackMainAlignment = keyof typeof mainAlignStyles
 export type StackCrossAlignment = keyof typeof crossAlignStyles
 export type StackAlignment = StackMainAlignment | StackCrossAlignment
+
+const isMainAlignment = (
+  value: StackAlignment | undefined,
+): value is StackMainAlignment =>
+  value !== undefined && Object.hasOwn(mainAlignStyles, value)
+const isCrossAlignment = (
+  value: StackAlignment | undefined,
+): value is StackCrossAlignment =>
+  value !== undefined && Object.hasOwn(crossAlignStyles, value)
+
+const elementReset = (element: StackElement = 'div') =>
+  element === 'ul' || element === 'ol'
+    ? reset.list
+    : element === 'fieldset'
+      ? reset.fieldset
+      : undefined
 export type StackWrap = keyof typeof wrapStyles
 export type StackSpacing = keyof typeof gapStyles
 export type StackItemSize = 'static' | 'fill'
@@ -228,6 +245,7 @@ export type StackProps = Readonly<{
   minHeight?: StackSizeValue
   /** The element to render. */
   as?: StackElement
+  ariaLabel?: string
   children?: ReadonlyArray<Html | string>
   /** Parent-layout positioning only. */
   layoutStyle?: ComponentLayoutStyle
@@ -239,12 +257,9 @@ export const stack = <Msg>(props: StackProps, h: HtmlBuilder<Msg>): Html => {
     props.hAlign ?? (direction === 'horizontal' ? props.justify : props.align)
   const resolvedVAlign =
     props.vAlign ?? (direction === 'horizontal' ? props.align : props.justify)
-  const mainAlign = (
-    direction === 'horizontal' ? resolvedHAlign : resolvedVAlign
-  ) as StackMainAlignment | undefined
-  const crossAlign = (
+  const mainAlign = direction === 'horizontal' ? resolvedHAlign : resolvedVAlign
+  const crossAlign =
     direction === 'horizontal' ? resolvedVAlign : resolvedHAlign
-  ) as StackCrossAlignment | undefined
 
   const paddingInlineStart =
     props.paddingInlineStart ?? props.paddingInline ?? props.padding
@@ -262,13 +277,15 @@ export const stack = <Msg>(props: StackProps, h: HtmlBuilder<Msg>): Html => {
     [
       h.DataAttribute('slot', 'stack'),
       h.DataAttribute('direction', direction),
+      ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
       h.Class(
         className(
+          elementReset(props.as),
           baseStyles.stack,
           directionStyles[direction],
           ...(props.gap === undefined ? [] : [gapStyles[props.gap]]),
-          ...(mainAlign === undefined ? [] : [mainAlignStyles[mainAlign]]),
-          ...(crossAlign === undefined ? [] : [crossAlignStyles[crossAlign]]),
+          isMainAlignment(mainAlign) && mainAlignStyles[mainAlign],
+          isCrossAlignment(crossAlign) && crossAlignStyles[crossAlign],
           ...(props.wrap === undefined ? [] : [wrapStyles[props.wrap]]),
           ...(paddingInlineStart === undefined
             ? []
@@ -332,6 +349,7 @@ export const stackItem = <Msg>(
       h.DataAttribute('size', props.size ?? 'static'),
       h.Class(
         className(
+          elementReset(props.as),
           stackItemStyles.base,
           props.size === 'fill' ? stackItemStyles.fill : stackItemStyles.static,
           ...(props.crossAlignSelf === undefined

@@ -7,7 +7,6 @@ import { Calendar as CalendarPrimitive } from '@foldkit/ui'
 
 import * as CalendarBehavior from '@/lib/calendar'
 import * as Icon from '@/lib/icon'
-import type { StaticStyles } from '@stylexjs/stylex'
 import type { ComponentLayoutStyle } from './contracts'
 import { cellScope, dayScope } from './calendar.markers.stylex'
 import { className } from './style'
@@ -401,8 +400,8 @@ const daysView = <Msg>(
                   position === 'middle' && styles.dayRangeMiddle,
                   position === 'start' && styles.dayRangeStart,
                   position === 'end' && styles.dayRangeEnd,
-                  position === 'single' && styles.dayRangeSingle, // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
-                  dayScope as unknown as StaticStyles,
+                  position === 'single' && styles.dayRangeSingle,
+                  dayScope,
                 ),
               ),
             ],
@@ -524,12 +523,7 @@ const pickerView = <Msg>(
               h.div(
                 [
                   ...cell.cellAttributes,
-                  h.Class(
-                    className(
-                      styles.pickerCell, // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
-                      cellScope as unknown as StaticStyles,
-                    ),
-                  ),
+                  h.Class(className(styles.pickerCell, cellScope)),
                 ],
                 [
                   h.button(
@@ -597,12 +591,7 @@ const yearsView = <Msg>(
               h.div(
                 [
                   ...cell.cellAttributes,
-                  h.Class(
-                    className(
-                      styles.pickerCell, // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
-                      cellScope as unknown as StaticStyles,
-                    ),
-                  ),
+                  h.Class(className(styles.pickerCell, cellScope)),
                 ],
                 [
                   h.button(

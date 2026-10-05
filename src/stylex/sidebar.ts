@@ -6,6 +6,8 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as Icon from '@/lib/icon'
 import type { ComponentLayoutStyle } from './contracts'
 import { className } from './style'
+import { reset } from './reset'
+import { sidebarScope } from './sidebar.markers.stylex'
 import { complexTokens } from './complex-tokens.stylex'
 import { foundationTokens } from './foundations-tokens.stylex'
 import { tokens } from './tokens.stylex'
@@ -37,7 +39,10 @@ const styles = stylex.create({
       default: complexTokens.sidebarForeground,
       ':hover': complexTokens.sidebarAccentForeground,
     },
-    display: 'flex',
+    display: {
+      default: 'flex',
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: 'none',
+    },
     justifyContent: 'center',
     outlineStyle: 'none',
     position: 'absolute',
@@ -61,7 +66,10 @@ const styles = stylex.create({
     paddingInline: '0.25rem',
     alignItems: 'center',
     color: complexTokens.sidebarForeground,
-    display: 'flex',
+    display: {
+      default: 'flex',
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: 'none',
+    },
     fontSize: '0.75rem',
     fontVariantNumeric: 'tabular-nums',
     fontWeight: 500,
@@ -120,8 +128,22 @@ const styles = stylex.create({
     fontSize: '0.75rem',
     fontWeight: 500,
     lineHeight: '1rem',
+    opacity: {
+      default: 1,
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: 0,
+    },
     outlineStyle: 'none',
+    transitionDuration: {
+      default: interactionTokens.motionModerate,
+      '@media (prefers-reduced-motion: reduce)': interactionTokens.motionNone,
+    },
+    transitionProperty: 'margin, opacity',
     height: '2rem',
+    marginTop: {
+      default: 0,
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]:
+        '-2rem',
+    },
   },
   header: {
     padding: '0.5rem',
@@ -205,7 +227,10 @@ const styles = stylex.create({
       ':hover': complexTokens.sidebarAccent,
     },
     color: complexTokens.sidebarForeground,
-    display: 'flex',
+    display: {
+      default: 'flex',
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: 'none',
+    },
     justifyContent: 'center',
     outlineStyle: 'none',
     position: 'absolute',
@@ -235,8 +260,16 @@ const styles = stylex.create({
     display: 'flex',
     outlineStyle: 'none',
     textAlign: 'left',
+    transitionDuration: {
+      default: interactionTokens.motionModerate,
+      '@media (prefers-reduced-motion: reduce)': interactionTokens.motionNone,
+    },
     transitionProperty: 'width, height, padding',
-    width: '100%',
+    whiteSpace: 'nowrap',
+    width: {
+      default: '100%',
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: '2rem',
+    },
   },
   menuButtonActive: {
     backgroundColor: complexTokens.sidebarAccent,
@@ -248,7 +281,14 @@ const styles = stylex.create({
     lineHeight: '1.25rem',
     height: '2rem',
   },
-  menuButtonLg: { fontSize: '0.875rem', lineHeight: '1.25rem', height: '3rem' },
+  menuButtonLg: {
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+    height: {
+      default: '3rem',
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: '2rem',
+    },
+  },
   menuButtonOutline: {
     backgroundColor: {
       default: tokens.background,
@@ -267,7 +307,28 @@ const styles = stylex.create({
     },
     fontWeight: 600,
   },
-  menuButtonSm: { fontSize: '0.75rem', lineHeight: '1rem', height: '1.75rem' },
+  menuButtonSm: {
+    fontSize: '0.75rem',
+    lineHeight: '1rem',
+    height: {
+      default: '1.75rem',
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: '2rem',
+    },
+  },
+  menuLabel: {
+    overflow: 'hidden',
+    opacity: {
+      default: 1,
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: 0,
+    },
+    textOverflow: 'ellipsis',
+    transitionDuration: {
+      default: interactionTokens.motionModerate,
+      '@media (prefers-reduced-motion: reduce)': interactionTokens.motionNone,
+    },
+    transitionProperty: 'opacity',
+    whiteSpace: 'nowrap',
+  },
   menuItem: { position: 'relative' },
   mobile: {
     backgroundColor: complexTokens.sidebar,
@@ -423,7 +484,10 @@ const styles = stylex.create({
     marginInline: '0.875rem',
     paddingBlock: '0.125rem',
     paddingInline: '0.625rem',
-    display: 'flex',
+    display: {
+      default: 'flex',
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: 'none',
+    },
     flexDirection: 'column',
     transform: 'translateX(1px)',
     borderLeftColor: complexTokens.sidebarBorder,
@@ -476,7 +540,7 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundClip: 'padding-box',
     backgroundColor: { default: tokens.transparent, ':hover': tokens.muted },
-    color: { default: null, ':hover': tokens.foreground },
+    color: { default: 'inherit', ':hover': tokens.foreground },
     display: 'inline-flex',
     flexShrink: 0,
     fontSize: '0.875rem',
@@ -630,7 +694,7 @@ export const sidebar = <Msg>(
                           : Option.none(),
                       ),
                     ]),
-                h.Class(className(styles.backdrop)),
+                h.Class(className(reset.button, styles.backdrop)),
               ],
               [],
             ),
@@ -663,7 +727,7 @@ export const sidebar = <Msg>(
                           h.Type('button'),
                           h.AriaLabel('Close sidebar'),
                           h.OnClick(props.onMobileDismiss),
-                          h.Class(className(styles.mobileClose)),
+                          h.Class(className(reset.button, styles.mobileClose)),
                         ],
                         [Icon.x({}, h)],
                       ),
@@ -694,9 +758,11 @@ export const sidebar = <Msg>(
       h.div(
         [
           h.DataAttribute('slot', 'sidebar-container'),
+          h.DataAttribute('collapsible', collapsed ? collapsible : ''),
           h.Class(
             className(
               styles.sidebarContainer,
+              sidebarScope,
               props.belowHeader === true && styles.sidebarBelowHeader,
               props.presentation === 'contained' &&
                 styles.sidebarContainerContained,
@@ -756,7 +822,14 @@ export const sidebarTrigger = <Msg>(
         h.DataAttribute('slot', 'sidebar-trigger'),
         h.OnClick(onClick),
         h.Type('button'),
-        h.Class(className(styles.trigger, visibility, props.layoutStyle)),
+        h.Class(
+          className(
+            reset.button,
+            styles.trigger,
+            visibility,
+            props.layoutStyle,
+          ),
+        ),
       ],
       [
         Icon.panelLeft<Msg>({ class: className(styles.triggerIcon) }, h),
@@ -794,7 +867,11 @@ export const sidebarRail = <Msg>(
       h.Title('Toggle Sidebar'),
       h.Type('button'),
       h.Class(
-        className(styles.rail, props.side === 'right' && styles.railRight),
+        className(
+          reset.button,
+          styles.rail,
+          props.side === 'right' && styles.railRight,
+        ),
       ),
     ],
     [],
@@ -852,7 +929,7 @@ export const sidebarInput = <Msg>(
     h.Type(props.type ?? 'text'),
     h.Disabled(props.isDisabled ?? false),
     h.AriaInvalid(props.isInvalid ?? false),
-    h.Class(className(styles.input, props.layoutStyle)),
+    h.Class(className(reset.input, styles.input, props.layoutStyle)),
   ])
 
 export const sidebarHeader = slotDiv('sidebar-header', 'header', styles.header)
@@ -913,7 +990,7 @@ export const sidebarGroupAction = <Msg>(
       h.DataAttribute('sidebar', 'group-action'),
       ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick)]),
       h.Type('button'),
-      h.Class(className(styles.action, props.layoutStyle)),
+      h.Class(className(reset.button, styles.action, props.layoutStyle)),
     ],
     [
       h.span([h.AriaHidden(true), h.Class(className(styles.actionHalo))], []),
@@ -930,7 +1007,7 @@ export const sidebarMenu = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html =>
     [
       h.DataAttribute('slot', 'sidebar-menu'),
       h.DataAttribute('sidebar', 'menu'),
-      h.Class(className(styles.menu, props.layoutStyle)),
+      h.Class(className(reset.list, styles.menu, props.layoutStyle)),
     ],
     [...props.children],
   )
@@ -957,6 +1034,7 @@ export const sidebarMenuButtonVariants = (
   options: SidebarMenuButtonVariants = {},
 ): string =>
   className(
+    reset.button,
     styles.menuButton,
     options.variant === 'outline' && styles.menuButtonOutline,
     options.variant === 'primary' && styles.menuButtonPrimary,
@@ -982,13 +1060,19 @@ export const sidebarMenuButton = <Msg>(
     h.DataAttribute('slot', 'sidebar-menu-button'),
     h.DataAttribute('sidebar', 'menu-button'),
     h.DataAttribute('size', size),
-    ...((props.isActive ?? false) ? [h.DataAttribute('active', '')] : []),
+    ...(props.isActive === true
+      ? [
+          h.DataAttribute('active', ''),
+          ...(props.href === undefined ? [] : [h.AriaCurrent('page')]),
+        ]
+      : []),
     ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick)]),
     ...(props.ariaExpanded === undefined
       ? []
       : [h.AriaExpanded(props.ariaExpanded)]),
     h.Class(
       className(
+        reset.button,
         styles.menuButton,
         props.variant === 'outline' && styles.menuButtonOutline,
         props.variant === 'primary' && styles.menuButtonPrimary,
@@ -1032,6 +1116,16 @@ export const sidebarMenuButton = <Msg>(
       )
 }
 
+/** Keep label text in the DOM (and accessible name) during icon collapse. */
+export const sidebarMenuLabel = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html =>
+  h.span(
+    [
+      h.DataAttribute('slot', 'sidebar-menu-label'),
+      h.Class(className(styles.menuLabel, props.layoutStyle)),
+    ],
+    [...props.children],
+  )
+
 export type SidebarMenuActionProps<Msg> = SidebarActionProps<Msg> &
   Readonly<{ showOnHover?: boolean }>
 export const sidebarMenuAction = <Msg>(
@@ -1049,6 +1143,7 @@ export const sidebarMenuAction = <Msg>(
       h.Type('button'),
       h.Class(
         className(
+          reset.button,
           styles.menuAction,
           props.showOnHover === true && styles.menuActionHover,
           props.layoutStyle,
@@ -1111,7 +1206,7 @@ export const sidebarMenuSub = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html =>
     [
       h.DataAttribute('slot', 'sidebar-menu-sub'),
       h.DataAttribute('sidebar', 'menu-sub'),
-      h.Class(className(styles.sub, props.layoutStyle)),
+      h.Class(className(reset.list, styles.sub, props.layoutStyle)),
     ],
     [...props.children],
   )
@@ -1145,11 +1240,17 @@ export const sidebarMenuSubButton = <Msg>(
       h.DataAttribute('slot', 'sidebar-menu-sub-button'),
       h.DataAttribute('sidebar', 'menu-sub-button'),
       h.DataAttribute('size', size),
-      ...((props.isActive ?? false) ? [h.DataAttribute('active', '')] : []),
+      ...(props.isActive === true
+        ? [
+            h.DataAttribute('active', ''),
+            ...(props.href === undefined ? [] : [h.AriaCurrent('page')]),
+          ]
+        : []),
       ...(props.href === undefined ? [] : [h.Href(props.href)]),
       ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick)]),
       h.Class(
         className(
+          reset.link,
           styles.subButton,
           size === 'sm' ? styles.subSm : styles.subMd,
           props.isActive === true && styles.subButtonActive,

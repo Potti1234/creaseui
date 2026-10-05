@@ -156,8 +156,7 @@ export const item = <Msg>(p: ItemProps, h: HtmlBuilder<Msg>): Html => {
           variant === 'muted' && styles.muted,
           size === 'sm' && styles.sm,
           size === 'xs' && styles.xs,
-          // eslint-disable-next-line no-restricted-syntax -- reason: defaultMarker is stylex.props-compatible but absent from the narrow StaticStyles surface.
-          stylex.defaultMarker() as unknown as StaticStyles,
+          stylex.defaultMarker(),
           p.layoutStyle,
         ),
       ),

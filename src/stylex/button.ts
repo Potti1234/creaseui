@@ -18,6 +18,7 @@ import type {
 import { joinStyles } from './button-group-join.stylex'
 import { foundationTokens } from './foundations-tokens.stylex'
 import { className } from './style'
+import { reset } from './reset'
 import { tokens } from './tokens.stylex'
 import { interactionTokens } from './interaction-tokens.stylex.const'
 
@@ -112,7 +113,7 @@ const variants = stylex.create({
       ':hover': tokens.mutedHover,
     },
     color: {
-      default: null,
+      default: 'inherit',
       ':is([aria-expanded="true"])': tokens.foreground,
       ':hover': tokens.foreground,
     },
@@ -229,6 +230,7 @@ export const buttonVisualStyles = ({
   variant?: ButtonVariant
   size?: ButtonSize
 }> = {}): ReadonlyArray<StaticStyles> => [
+  reset.button,
   base.root,
   variants[variant],
   sizes[size],
@@ -247,6 +249,7 @@ export const button = <Msg>(
       ...(props.dataSize === undefined ? [h.DataAttribute('size', size)] : []),
       h.Class(
         className(
+          reset.button,
           base.root,
           joinStyles.join,
           variants[variant],
@@ -290,6 +293,7 @@ export const buttonLink = <Msg>(
       ...(props.dataSize === undefined ? [h.DataAttribute('size', size)] : []),
       h.Class(
         className(
+          reset.button,
           base.root,
           joinStyles.join,
           variants[variant],

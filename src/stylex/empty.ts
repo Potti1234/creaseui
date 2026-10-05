@@ -4,6 +4,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import type { ComponentLayoutStyle } from './contracts'
 import { foundationTokens } from './foundations-tokens.stylex'
 import { className } from './style'
+import { reset } from './reset'
 import { tokens } from './tokens.stylex'
 
 type SlotProps = Readonly<{
@@ -109,7 +110,7 @@ export const emptyTitle = <Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html =>
   h.h2(
     [
       h.DataAttribute('slot', 'empty-title'),
-      h.Class(className(styles.title, props.layoutStyle)),
+      h.Class(className(reset.text, styles.title, props.layoutStyle)),
     ],
     [...props.children],
   )

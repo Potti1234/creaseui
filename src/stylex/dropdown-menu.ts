@@ -85,6 +85,7 @@ import type {
   ComponentLayoutStyle,
 } from './contracts'
 import { className } from './style'
+import { reset } from './reset'
 import { tokens } from './tokens.stylex'
 import { interactionTokens } from './interaction-tokens.stylex.const'
 
@@ -599,6 +600,7 @@ export const dropdownMenu = <Item extends string, Msg>(
             : [h.Tabindex(props.triggerTabindex)]),
           h.Class(
             className(
+              reset.button,
               joinStyles.join,
               ...(props.triggerButtonVariant === undefined &&
               props.triggerButtonSize === undefined

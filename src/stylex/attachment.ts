@@ -284,8 +284,7 @@ export const attachment = <Msg>(
           styles[orientation],
           state === 'error' && styles.error,
           state === 'idle' && styles.idle,
-          // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
-          attachmentScope as unknown as StaticStyles,
+          attachmentScope,
           p.layoutStyle,
         ),
       ),

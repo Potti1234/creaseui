@@ -3,6 +3,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as Icon from '@/lib/icon'
 import type { ComponentLayoutStyle } from './contracts'
 import { className } from './style'
+import { reset } from './reset'
 import { tokens } from './tokens.stylex'
 import { interactionTokens } from './interaction-tokens.stylex.const'
 import {
@@ -74,7 +75,7 @@ export const breadcrumbList = <Msg>(p: Slot, h: HtmlBuilder<Msg>): Html =>
   h.ol(
     [
       h.DataAttribute('slot', 'breadcrumb-list'),
-      h.Class(className(styles.list, p.layoutStyle)),
+      h.Class(className(reset.list, styles.list, p.layoutStyle)),
     ],
     [...p.children],
   )
@@ -95,7 +96,7 @@ export const breadcrumbLink = <Msg>(
     [
       h.DataAttribute('slot', 'breadcrumb-link'),
       h.Href(p.href),
-      h.Class(className(styles.link, p.layoutStyle)),
+      h.Class(className(reset.link, styles.link, p.layoutStyle)),
     ],
     [...p.children],
   )

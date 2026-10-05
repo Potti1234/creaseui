@@ -1,5 +1,4 @@
 import * as stylex from '@stylexjs/stylex'
-import type { StaticStyles } from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import type { ComponentLayoutStyle } from './contracts'
@@ -144,8 +143,7 @@ export const marker = <Msg>(
         ...(props.direction === 'column' ? [styles.column] : []),
         ...(element === 'div' ? [] : [styles.interactive]),
         ...(element === 'a' ? [styles.interactiveAnchor] : []),
-        // eslint-disable-next-line no-restricted-syntax -- reason: defaultMarker is stylex.props-compatible but absent from the narrow StaticStyles surface.
-        stylex.defaultMarker() as unknown as StaticStyles,
+        stylex.defaultMarker(),
         props.layoutStyle,
       ),
     ),

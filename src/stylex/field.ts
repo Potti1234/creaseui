@@ -18,7 +18,7 @@ import {
   fieldVerticalScope,
 } from './field.markers.stylex'
 import { foundationTokens } from './foundations-tokens.stylex'
-import { className } from './style'
+import { className, type Marker } from './style'
 import { tokens } from './tokens.stylex'
 export type { ControlFieldParts, FieldError } from '@/lib/field'
 
@@ -340,26 +340,18 @@ export const fieldGroup = <Msg>(
       ...(p.variant === undefined
         ? []
         : [h.DataAttribute('variant', p.variant)]),
-      h.Class(
-        className(
-          styles.group,
-          // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
-          fieldGroupScope as unknown as StaticStyles,
-          p.layoutStyle,
-        ),
-      ),
+      h.Class(className(styles.group, fieldGroupScope, p.layoutStyle)),
     ],
     [...p.children],
   )
 const orientationMarker = (
   orientation: NonNullable<FieldVariants['orientation']>,
-): StaticStyles =>
-  // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
-  (orientation === 'horizontal'
+): Marker =>
+  orientation === 'horizontal'
     ? fieldHorizontalScope
     : orientation === 'responsive'
       ? fieldResponsiveScope
-      : fieldVerticalScope) as unknown as StaticStyles
+      : fieldVerticalScope
 export const fieldVariants = (o: FieldVariants = {}): string =>
   className(
     styles.field,
@@ -385,8 +377,7 @@ export const controlField = <Msg>(
               p.error !== undefined ||
               fieldErrorMessages(p.errors).length > 0) &&
               styles.invalid,
-            // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
-            p.isDisabled && (fieldDisabledScope as unknown as StaticStyles),
+            p.isDisabled && fieldDisabledScope,
             orientationMarker(orientation),
             p.layoutStyle,
           ),
@@ -426,8 +417,7 @@ export const field = <Msg>(p: FieldProps, h: HtmlBuilder<Msg>): Html => {
           styles.field,
           styles[orientation] as StaticStyles,
           p.isInvalid && styles.invalid,
-          // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
-          p.isDisabled && (fieldDisabledScope as unknown as StaticStyles),
+          p.isDisabled && fieldDisabledScope,
           orientationMarker(orientation),
           p.layoutStyle,
         ),
@@ -459,8 +449,7 @@ export const fieldLabel = <Msg>(
           styles.label,
           styles.fieldLabel,
           styles.labelDisabled,
-          // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
-          fieldLabelScope as unknown as StaticStyles,
+          fieldLabelScope,
           p.weight === 'normal' && styles.fontNormal,
           p.layoutStyle,
         ),

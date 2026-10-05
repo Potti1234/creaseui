@@ -2,7 +2,6 @@ import * as stylex from '@stylexjs/stylex'
 import { Schema as S } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import type { StaticStyles } from '@stylexjs/stylex'
 import { avatarScope } from './avatar.markers.stylex'
 import type { ComponentLayoutStyle } from './contracts'
 import { foundationTokens } from './foundations-tokens.stylex'
@@ -127,8 +126,8 @@ export const avatar = <Msg>(p: AvatarProps, h: HtmlBuilder<Msg>): Html =>
           p.size === 'lg' && styles.lg,
           p.ring === true && styles.ringed,
           p.overlap === true && styles.overlap,
-          p.grayscale === true && styles.grayscale, // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
-          avatarScope as unknown as StaticStyles,
+          p.grayscale === true && styles.grayscale,
+          avatarScope,
           p.layoutStyle,
         ),
       ),

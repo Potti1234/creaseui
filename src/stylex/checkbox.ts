@@ -1,5 +1,4 @@
 import * as stylex from '@stylexjs/stylex'
-import type { StaticStyles } from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as Icon from '@/lib/icon'
 import { type CheckboxBehaviorProps, renderCheckbox } from '@/lib/checkbox'
@@ -74,8 +73,7 @@ export const checkbox = <Msg>(
         h.Class(
           className(
             styles.control,
-            // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
-            checkboxControlScope as unknown as StaticStyles,
+            checkboxControlScope,
             p.isChecked && styles.checked,
             p.isInvalid === true && styles.invalid,
             p.isDisabled === true && styles.disabled,

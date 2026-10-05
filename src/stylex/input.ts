@@ -6,6 +6,7 @@ import { type InputBehaviorProps, renderInput } from '@/lib/input'
 import type { ComponentLayoutStyle } from './contracts'
 import { joinStyles } from './button-group-join.stylex'
 import { className } from './style'
+import { reset } from './reset'
 import { tokens } from './tokens.stylex'
 import { interactionTokens } from './interaction-tokens.stylex.const'
 
@@ -94,6 +95,7 @@ export const input = <Msg>(props: InputProps<Msg>, h: HtmlBuilder<Msg>): Html =>
       input: [
         h.Class(
           className(
+            reset.input,
             styles.input,
             joinStyles.join,
             joinStyles.inputGrow,
@@ -104,7 +106,7 @@ export const input = <Msg>(props: InputProps<Msg>, h: HtmlBuilder<Msg>): Html =>
           ),
         ),
       ],
-      description: [h.Class(className(styles.description))],
+      description: [h.Class(className(reset.text, styles.description))],
     },
     h,
   )

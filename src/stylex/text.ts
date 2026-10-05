@@ -3,6 +3,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import type { ComponentLayoutStyle } from './contracts'
 import { className } from './style'
+import { reset } from './reset'
 import { tokens } from './tokens.stylex'
 
 /* Ported from Meta Astryx Text (packages/core/src/Text/Text.tsx) — examples and
@@ -294,6 +295,7 @@ export const text = <Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html => {
     h.DataAttribute('color', color),
     h.Class(
       className(
+        reset.text,
         colorStyles[color],
         typeStyles[type],
         ...(props.size === undefined ? [] : [sizeStyles[props.size]]),

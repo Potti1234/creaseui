@@ -3,6 +3,7 @@ import * as stylex from '@stylexjs/stylex'
 export const tokens = stylex.defineVars({
   background: 'var(--background)',
   foreground: 'var(--foreground)',
+  controlPlaceholder: 'color-mix(in oklab, currentColor 50%, transparent)',
   card: 'var(--card)',
   cardForeground: 'var(--card-foreground)',
   primary: 'var(--primary)',

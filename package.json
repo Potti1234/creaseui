@@ -47,7 +47,7 @@
     "parity:upstream:update": "node scripts/sync-upstream-parity.mjs --update",
     "preset:build": "tsx scripts/materialize-create-preset.ts",
     "lint": "eslint src test scene e2e scripts packages/lint playwright.config.ts vite.config.ts --quiet",
-    "lint:design-system": "eslint src/ui src/stylex src/demo src/docs/components/pages --max-warnings 386",
+    "lint:design-system": "eslint src/ui src/stylex src/demo src/docs/components/pages --max-warnings 373",
     "test:lint-package": "node --test packages/lint/test/*.test.js",
     "lint:composition": "oxlint src/demo/board-constrained.ts src/demo/blocks-stylex src/stylex/composition && node scripts/check-constrained-composition.mjs && node --test --import tsx --import ./test/setup.ts test/stylex-composition.test.ts test/stylex-blocks-composition.test.ts",
     "lint:stylex-templates": "node scripts/check-stylex-template-system.mjs && node --test --import tsx --import ./test/setup.ts test/stylex-template-system.test.ts",

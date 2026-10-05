@@ -30,6 +30,8 @@ const infrastructureNames = new Set([
   'overlay-boundary',
   'overlay-tokens.stylex',
   'radio-group.markers.stylex',
+  'reset',
+  'sidebar.markers.stylex',
   'style',
   'tokens.stylex',
   'tree-list.markers.stylex',

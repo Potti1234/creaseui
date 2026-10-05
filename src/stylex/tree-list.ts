@@ -3,7 +3,6 @@
 
 import { Option } from 'effect'
 import * as stylex from '@stylexjs/stylex'
-import type { StaticStyles } from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineView } from 'foldkit/submodel'
 
@@ -455,14 +454,7 @@ const renderItem = <Msg>(
           TreeListBehavior.Message.FocusedTreeListItem({ id: item.id }),
         ),
       ),
-      h.Class(
-        className(
-          styles.item,
-          interactive &&
-            // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
-            (treeItemScope as unknown as StaticStyles),
-        ),
-      ),
+      h.Class(className(styles.item, interactive && treeItemScope)),
     ],
     [
       ctx.variant === 'noGuides'
