@@ -21,7 +21,12 @@ export type MenuMessage =
   | Readonly<{ _tag: 'OpenedSubmenu'; index: number }>
   | Readonly<{ _tag: 'ActivatedSubmenuItem'; index: number }>
   | Readonly<{ _tag: 'ClosedSubmenu' }>
-  | Readonly<{ _tag: 'SelectedItem'; item: string; index: number }>
+  | Readonly<{
+      _tag: 'SelectedItem'
+      item: string
+      index: number
+      staysOpenOnSelect: boolean
+    }>
 
 export type Selection = Readonly<{ item: string; index: number }>
 
@@ -88,13 +93,16 @@ export const update = (
       return noSelection({ ...model, openSubmenuIndex: Option.none() })
     case 'SelectedItem':
       return {
-        model: {
-          ...model,
-          isOpen: false,
-          openSubmenuIndex: Option.none(),
-          anchorX: Option.none(),
-          anchorY: Option.none(),
-        },
+        model:
+          message.staysOpenOnSelect === true
+            ? model
+            : {
+                ...model,
+                isOpen: false,
+                openSubmenuIndex: Option.none(),
+                anchorX: Option.none(),
+                anchorY: Option.none(),
+              },
         selection: Option.some({ item: message.item, index: message.index }),
       }
   }
@@ -103,6 +111,7 @@ export const update = (
 export type MenuItemBehavior<Item extends string = string> = Readonly<{
   label: string
   isDisabled: boolean
+  staysOpenOnSelect?: boolean
   submenu?: Readonly<{
     items: ReadonlyArray<Item>
     itemToBehavior: (item: Item) => MenuItemBehavior<Item>
@@ -193,7 +202,13 @@ export const keyMessage = <Item extends string>(
       const child = submenu.items[model.activeSubmenuIndex]
       return child === undefined
         ? undefined
-        : { _tag: 'SelectedItem', item: child, index: model.activeSubmenuIndex }
+        : {
+            _tag: 'SelectedItem',
+            item: child,
+            index: model.activeSubmenuIndex,
+            staysOpenOnSelect:
+              submenu.itemToBehavior(child).staysOpenOnSelect ?? false,
+          }
     }
     const match = typeaheadIndex(children, model.activeSubmenuIndex, key)
     return match === undefined
@@ -227,7 +242,12 @@ export const keyMessage = <Item extends string>(
     return { _tag: 'OpenedSubmenu', index: model.activeIndex }
   if (key === backKey) return { _tag: 'ClosedSubmenu' }
   if ((key === 'Enter' || key === ' ') && behavior.submenu === undefined)
-    return { _tag: 'SelectedItem', item: active, index: model.activeIndex }
+    return {
+      _tag: 'SelectedItem',
+      item: active,
+      index: model.activeIndex,
+      staysOpenOnSelect: behavior.staysOpenOnSelect ?? false,
+    }
 
   const match = typeaheadIndex(enabled, model.activeIndex, key)
   return match === undefined
