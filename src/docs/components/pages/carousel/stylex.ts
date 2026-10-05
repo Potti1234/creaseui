@@ -19,6 +19,18 @@ const styles = stylex.create({
     width: '100%',
   },
   carousel: { width: '100%' },
+  verticalCarousel: { height: '12.5rem' },
+  verticalCard: { height: '100%' },
+  cardContentVertical: {
+    padding: '1.5rem',
+    alignItems: 'center',
+    display: 'flex',
+    fontSize: '2.25rem',
+    fontWeight: 600,
+    height: '100%',
+    justifyContent: 'center',
+    lineHeight: '2.5rem',
+  },
   cardContent: {
     padding: '1.5rem',
     alignItems: 'center',
@@ -65,13 +77,19 @@ export const carouselStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
 ) => {
   const fixture = fixtureOf(index)
   const preview = model as { carousel: Carousel.Model }
+  const vertical = fixture.orientation === 'vertical'
   const cards = Array.from({ length: fixture.count }, (_, i) => {
     const card = Card.card(
       {
+        ...(vertical
+          ? { layoutStyle: styles.verticalCard as ComponentLayoutStyle }
+          : {}),
         children: [
           Card.cardContent(
             {
-              layoutStyle: styles.cardContent as ComponentLayoutStyle,
+              layoutStyle: (vertical
+                ? styles.cardContentVertical
+                : styles.cardContent) as ComponentLayoutStyle,
               children: [String(i + 1)],
             },
             h,
@@ -102,7 +120,9 @@ export const carouselStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
             plugins: [Autoplay({ delay: 2000, stopOnInteraction: true })],
           }
         : {}),
-      layoutStyle: styles.carousel,
+      layoutStyle: (vertical
+        ? [styles.carousel, styles.verticalCarousel]
+        : styles.carousel) as ComponentLayoutStyle,
       items: cards,
     },
     h,
