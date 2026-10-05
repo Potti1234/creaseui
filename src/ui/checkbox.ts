@@ -16,7 +16,7 @@ const LABEL_CLASS =
 const DESCRIPTION_CLASS = 'text-muted-foreground text-sm'
 
 export type CheckboxProps<Msg> = CheckboxBehaviorProps<Msg> &
-  Readonly<{ class?: string }>
+  Readonly<{ class?: string; tabindex?: number }>
 
 export const checkbox = <Msg>(
   props: CheckboxProps<Msg>,
@@ -26,7 +26,10 @@ export const checkbox = <Msg>(
     props,
     {
       root: [h.Class('flex items-start gap-2')],
-      control: [h.Class(cn(CHECKBOX_CLASS, props.class))],
+      control: [
+        h.Class(cn(CHECKBOX_CLASS, props.class)),
+        ...(props.tabindex === undefined ? [] : [h.Tabindex(props.tabindex)]),
+      ],
       indicator: [h.Class(INDICATOR_CLASS)],
       text: [h.Class('grid gap-1.5')],
       label: [h.Class(LABEL_CLASS)],

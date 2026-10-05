@@ -5,6 +5,7 @@ import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
 import { Listbox as ListboxPrimitive } from '@foldkit/ui'
 
 import * as Icon from '@/lib/icon'
+import * as Checkbox from '@/ui/checkbox'
 import {
   Message,
   Model,
@@ -104,12 +105,6 @@ const VIEWPORT_CLASS = 'w-full scroll-my-1 p-1'
 const ITEM_CLASS =
   "group relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-[active]:bg-accent data-[active]:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2"
 
-const CHECKBOX_BOX_CLASS =
-  'flex size-4 shrink-0 items-center justify-center rounded-[4px] border border-input bg-transparent transition-colors group-data-[selected]:border-primary group-data-[selected]:bg-primary [&>svg]:size-3 [&>svg]:text-primary-foreground [&>svg]:opacity-0 group-data-[selected]:[&>svg]:opacity-100'
-
-const CHECKBOX_INDETERMINATE_CLASS =
-  'flex size-4 shrink-0 items-center justify-center rounded-[4px] border border-primary bg-primary [&>svg]:size-3 [&>svg]:text-primary-foreground'
-
 const GROUP_HEADING_CLASS = 'px-2 py-1.5 text-xs text-muted-foreground'
 
 const BACKDROP_CLASS = 'fixed inset-0 z-40'
@@ -203,21 +198,6 @@ const statusIcon = <Msg>(
           : Icon.circleCheck({ class: 'size-4' }, h),
     ],
   )
-
-const checkboxBox = (
-  checked: boolean,
-  indeterminate: boolean,
-  h: HtmlBuilder<never>,
-): Html =>
-  indeterminate
-    ? h.span(
-        [h.Class(CHECKBOX_INDETERMINATE_CLASS), h.AriaHidden(true)],
-        [Icon.minus({ class: 'size-3' }, h)],
-      )
-    : h.span(
-        [h.Class(CHECKBOX_BOX_CLASS), h.AriaHidden(true)],
-        [Icon.check({ class: 'size-3' }, h)],
-      )
 
 export const multiSelector = <Msg>(
   props: MultiSelectorProps<Msg>,
@@ -364,32 +344,16 @@ export const multiSelector = <Msg>(
             content: h.span(
               [h.DataAttribute('slot', 'select-item'), h.Class('contents')],
               [
-                h.span(
-                  [h.Class('flex items-center gap-2')],
-                  [
-                    allSelected || someSelected
-                      ? h.span(
-                          [
-                            h.Class(
-                              cn(
-                                CHECKBOX_BOX_CLASS,
-                                'border-primary bg-primary [&>svg]:text-primary-foreground [&>svg]:opacity-100',
-                              ),
-                            ),
-                            h.AriaHidden(true),
-                          ],
-                          [
-                            allSelected
-                              ? Icon.check({ class: 'size-3' }, h)
-                              : Icon.minus({ class: 'size-3' }, h),
-                          ],
-                        )
-                      : h.span(
-                          [h.Class(CHECKBOX_BOX_CLASS), h.AriaHidden(true)],
-                          [Icon.check({ class: 'size-3' }, h)],
-                        ),
-                    props.selectAllLabel ?? 'Select all',
-                  ],
+                Checkbox.checkbox(
+                  {
+                    id: `${model.id}-opt-select-all`,
+                    isChecked: allSelected,
+                    isIndeterminate: someSelected,
+                    isReadOnly: true,
+                    label: props.selectAllLabel ?? 'Select all',
+                    tabindex: -1,
+                  },
+                  h,
                 ),
               ],
             ),
@@ -399,15 +363,15 @@ export const multiSelector = <Msg>(
             content: h.span(
               [h.DataAttribute('slot', 'select-item'), h.Class('contents')],
               [
-                h.span(
-                  [h.Class('flex items-center gap-2')],
-                  [
-                    h.span(
-                      [h.Class(CHECKBOX_BOX_CLASS), h.AriaHidden(true)],
-                      [Icon.check({ class: 'size-3' }, h)],
-                    ),
-                    labelFor(value),
-                  ],
+                Checkbox.checkbox(
+                  {
+                    id: `${model.id}-opt-${value}`,
+                    isChecked: context.isSelected,
+                    isReadOnly: true,
+                    label: labelFor(value),
+                    tabindex: -1,
+                  },
+                  h,
                 ),
               ],
             ),
