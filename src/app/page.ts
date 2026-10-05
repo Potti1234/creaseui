@@ -24,10 +24,9 @@ import type { AppRoute } from '@/route'
 export const Landing = taggedStruct('LandingPage', {
   landing: LandingFeature.Model,
 })
-export const CreateRenderer = S.Literals(['tailwind', 'stylex'])
-export type CreateRenderer = typeof CreateRenderer.Type
+export const Renderer = S.Literals(['tailwind', 'stylex'])
+export type Renderer = typeof Renderer.Type
 export const Create = taggedStruct('CreatePage', {
-  renderer: CreateRenderer,
   tailwindBoard: BoardFeature.Model,
   styleXBoard: BoardConstrained.Model,
 })
@@ -43,7 +42,6 @@ export const BlockCodePanel = S.Struct({
 })
 export type BlockCodePanel = typeof BlockCodePanel.Type
 export const BlocksIndex = taggedStruct('BlocksIndexPage', {
-  renderer: CreateRenderer,
   category: BlockCategory,
   codeBlocks: S.Record(S.String, BlockCodePanel),
   copiedCode: CopyFeedback.Model,
@@ -58,7 +56,6 @@ export const Block = taggedStruct('BlockPage', {
   tailwindFeatured: BlocksTailwindFeature.Model,
 })
 export const Charts = taggedStruct('ChartsPage', {
-  renderer: CreateRenderer,
   area: ChartsArea.Model,
   bar: ChartsBar.Model,
   line: ChartsLine.Model,
@@ -92,13 +89,11 @@ export const init = (route: AppRoute): Page =>
       Home: () => Landing({ landing: LandingFeature.init() }),
       Create: () =>
         Create({
-          renderer: 'tailwind',
           tailwindBoard: BoardFeature.init(),
           styleXBoard: BoardConstrained.init(),
         }),
       Charts: () =>
         Charts({
-          renderer: 'tailwind',
           area: ChartsArea.init(),
           bar: ChartsBar.init(),
           line: ChartsLine.init(),
@@ -110,14 +105,12 @@ export const init = (route: AppRoute): Page =>
         }),
       BlocksIndex: () =>
         BlocksIndex({
-          renderer: 'tailwind',
           category: 'all',
           codeBlocks: {},
           copiedCode: null,
         }),
       BlocksStyleX: () =>
         BlocksIndex({
-          renderer: 'stylex',
           category: 'all',
           codeBlocks: {},
           copiedCode: null,
