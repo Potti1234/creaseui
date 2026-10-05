@@ -703,7 +703,7 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
                   toParentMessage: message => Message.GotDropdownMessage({ index: 0, message }),
                   trigger: Icon.icon('ellipsis', { ariaLabel: 'More' }, h),
                   ${iconTriggerProps}
-                  ariaLabel: 'More',
+                  triggerAriaLabel: 'More',
                   align: 'end',
                   items: FILE_MENU_ITEMS,
                   itemToConfig: item => ({ label: item }),
@@ -722,9 +722,9 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
                 DropdownMenu.dropdownMenu({
                   model: model.dropdowns[1]!,
                   toParentMessage: message => Message.GotDropdownMessage({ index: 1, message }),
-                  trigger: 'Search In... ⌄',
+                  trigger: h.span([], ['Search In...', Icon.icon('chevron-down', {}, h)]),
                   ${textTriggerProps}
-                  ariaLabel: 'Search in',
+                  triggerAriaLabel: 'Search in',
                   align: 'end',
                   items: SEARCH_MENU_ITEMS,
                   itemToConfig: item => ({ label: item }),

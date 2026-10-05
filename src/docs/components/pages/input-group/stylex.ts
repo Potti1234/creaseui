@@ -175,7 +175,7 @@ export const inputGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           ),
         trigger,
         triggerLayoutStyle,
-        ariaLabel,
+        triggerAriaLabel: ariaLabel,
         align: 'end',
         items,
         itemToConfig: item => ({ label: item }),
@@ -905,7 +905,17 @@ export const inputGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                       dropdownMenu(
                         1,
                         'Search in',
-                        'Search In... ⌄',
+                        h.span(
+                          [],
+                          [
+                            'Search In...',
+                            Icon.icon(
+                              'chevron-down',
+                              { class: className(styles.iconMd) },
+                              h,
+                            ),
+                          ],
+                        ),
                         styles.menuTrigger as ComponentLayoutStyle,
                         SEARCH_MENU_ITEMS,
                       ),

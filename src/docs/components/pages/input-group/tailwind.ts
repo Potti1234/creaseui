@@ -835,7 +835,7 @@ const inputGroupView = (
                           ),
                           triggerClass:
                             'flex size-6 items-center justify-center rounded-[calc(var(--radius)-5px)] text-muted-foreground hover:bg-accent/50',
-                          ariaLabel: 'More',
+                          triggerAriaLabel: 'More',
                           align: 'end',
                           items: FILE_MENU_ITEMS,
                           itemToConfig: item => ({ label: item }),
@@ -878,10 +878,13 @@ const inputGroupView = (
                               index: 1,
                               message,
                             }),
-                          trigger: 'Search In... ⌄',
+                          trigger: h.span(
+                            [],
+                            ['Search In...', Icon.icon('chevron-down', {}, h)],
+                          ),
                           triggerClass:
                             'flex h-6 items-center gap-1 rounded-[calc(var(--radius)-5px)] px-1.5 text-xs text-muted-foreground hover:bg-accent/50',
-                          ariaLabel: 'Search in',
+                          triggerAriaLabel: 'Search in',
                           align: 'end',
                           items: SEARCH_MENU_ITEMS,
                           itemToConfig: item => ({ label: item }),
