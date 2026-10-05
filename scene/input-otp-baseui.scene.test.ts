@@ -91,6 +91,7 @@ const otpInput = Scene.role('textbox')
 const otpRoot = Scene.selector('[data-slot="input-otp"]')
 const otpGroup = Scene.selector('[data-slot="input-otp-group"]')
 const allSlots = Scene.all.selector('[data-slot="input-otp-slot"]')
+const allCaretBars = Scene.all.selector('[data-slot="input-otp-slot"] div div')
 const allTextboxes = Scene.all.role('textbox')
 const slot = (index: number) => Scene.nth(allSlots, index)
 
@@ -678,7 +679,7 @@ const verifyRenderer = (name: string, InputOtp: InputOtpModule) => {
 
       it.todo(
         'moves focus between slots with arrows, Home and End ' +
-          '(single input — the caret is pinned to the end via onselect; no per-slot focus)',
+          '(single input — the caret moves natively inside the value; no per-slot focus)',
       )
 
       it.todo(
@@ -698,7 +699,7 @@ const verifyRenderer = (name: string, InputOtp: InputOtpModule) => {
 
       // DIVERGENCE (intentional): Base UI wires keydown handlers on each slot
       // for navigation and deletion. creaseui wires none — every key falls
-      // through to the input's native behavior (and the onselect pin below).
+      // through to the input's native behavior (and the selection mirror below).
       it('wires no key handlers — keyboard editing is native', () => {
         Scene.scene(
           {
@@ -716,10 +717,12 @@ const verifyRenderer = (name: string, InputOtp: InputOtpModule) => {
       })
 
       // DIVERGENCE (intentional): Base UI implements per-slot selection on
-      // mousedown. creaseui pins the caret to the end of the single value via
-      // an inline onselect handler so arrows/clicks cannot desync the fake
-      // caret from the real one.
-      it('pins the caret to the end via an inline onselect handler', () => {
+      // mousedown. creaseui keeps selection native on the single input and
+      // mirrors it onto the slots with inline handlers: onmouseup snaps a
+      // click onto the slot's character so mistyped digits can be fixed,
+      // onselect/onkeyup/onfocus mirror the caret/selection into
+      // data-active, and onblur clears it.
+      it('mirrors the real selection onto the slots via inline handlers', () => {
         Scene.scene(
           {
             update,
@@ -731,6 +734,10 @@ const verifyRenderer = (name: string, InputOtp: InputOtpModule) => {
           },
           Scene.given(initialModel('12')),
           Scene.expect(otpInput).toHaveAttr('onselect'),
+          Scene.expect(otpInput).toHaveAttr('onkeyup'),
+          Scene.expect(otpInput).toHaveAttr('onfocus'),
+          Scene.expect(otpInput).toHaveAttr('onblur'),
+          Scene.expect(otpInput).toHaveAttr('onmouseup'),
         )
       })
     })
@@ -822,7 +829,7 @@ const verifyRenderer = (name: string, InputOtp: InputOtpModule) => {
       })
 
       // DIVERGENCE: Base UI mirrors data-complete onto each slot input.
-      // creaseui slots only carry data-active.
+      // creaseui slots carry no model-rendered state hook.
       it.fails('marks each slot data-complete when all slots are filled', () => {
         Scene.scene(
           {
@@ -859,9 +866,11 @@ const verifyRenderer = (name: string, InputOtp: InputOtpModule) => {
       })
 
       // DIVERGENCE (intentional): creaseui's slot-level state hook is
-      // data-active — true on the next empty slot, false everywhere else,
-      // including once the value is complete.
-      it('marks the next empty slot data-active', () => {
+      // data-active, but it is owned by the input's inline selection
+      // handlers ('caret' on the cell holding the caret, 'selected' inside
+      // a range) — the model never renders it, so re-renders cannot desync
+      // it from the real selection.
+      it('renders no data-active — the inline handlers own it', () => {
         Scene.scene(
           {
             update,
@@ -872,11 +881,28 @@ const verifyRenderer = (name: string, InputOtp: InputOtpModule) => {
               ),
           },
           Scene.given(initialModel('12')),
-          Scene.expect(slot(0)).toHaveAttr('data-active', 'false'),
-          Scene.expect(slot(2)).toHaveAttr('data-active', 'true'),
+          Scene.expect(slot(0)).not.toHaveAttr('data-active'),
+          Scene.expect(slot(2)).not.toHaveAttr('data-active'),
           Scene.type(otpInput, '123456'),
           Scene.expectHandled(),
-          Scene.expect(slot(5)).toHaveAttr('data-active', 'false'),
+          Scene.expect(slot(5)).not.toHaveAttr('data-active'),
+        )
+      })
+
+      // The fake caret renders in every slot (hidden); the inline handlers
+      // flip the caret cell's wrap to flex — never model-rendered either.
+      it('renders a hidden caret wrap in every slot', () => {
+        Scene.scene(
+          {
+            update,
+            view: (model, h) =>
+              InputOtp.inputOtp(
+                { id: 'otp', value: model.value, onInput: ChangedOtp },
+                h,
+              ),
+          },
+          Scene.given(initialModel()),
+          Scene.expectAll(allCaretBars).toHaveCount(6),
         )
       })
     })
