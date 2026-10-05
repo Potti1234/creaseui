@@ -18,12 +18,18 @@ const InteractedWithListPreview = defineMessageUnion({
 
 const item = <Msg>(
   spec: ListItemSpec,
+  fixture: ListFixture,
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html =>
   List.listItem(
     {
       label: spec.label,
+      // listItem is context-free — forward the parent list's shared config.
+      ...(fixture.listStyle === undefined
+        ? {}
+        : { listStyle: fixture.listStyle }),
+      ...(fixture.hasDividers === true ? { hasDividers: true } : {}),
       ...(spec.description === undefined
         ? {}
         : { description: spec.description }),
@@ -58,7 +64,9 @@ const renderFixture = <Msg>(
 ): Html =>
   List.list(
     {
-      children: fixture.items.map(spec => item(spec, onMessageJson, h)),
+      children: fixture.items.map(spec =>
+        item(spec, fixture, onMessageJson, h),
+      ),
       ...(fixture.listStyle === undefined
         ? {}
         : { listStyle: fixture.listStyle }),

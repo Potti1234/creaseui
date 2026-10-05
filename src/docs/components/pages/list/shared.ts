@@ -104,8 +104,15 @@ export const listFixtures: Readonly<[ListFixture, ...Array<ListFixture>]> = [
   },
 ]
 
-const itemSource = (item: ListItemSpec): string => {
+const itemSource = (item: ListItemSpec, fixture: ListFixture): string => {
   const props: string[] = [`label: '${item.label.replace(/'/g, "\\'")}'`]
+  // listItem is context-free — forward the parent list's shared config.
+  if (fixture.listStyle !== undefined) {
+    props.push(`listStyle: '${fixture.listStyle}'`)
+  }
+  if (fixture.hasDividers === true) {
+    props.push('hasDividers: true')
+  }
   if (item.description !== undefined) {
     props.push(`description: '${item.description.replace(/'/g, "\\'")}'`)
   }
@@ -129,7 +136,9 @@ const viewBody = (fixture: ListFixture): string => {
   if (fixture.hasDividers === true) {
     listProps.push('hasDividers: true')
   }
-  const items = fixture.items.map(itemSource).join(',\n      ')
+  const items = fixture.items
+    .map(item => itemSource(item, fixture))
+    .join(',\n      ')
   return `List.list(
       {
         children: [
