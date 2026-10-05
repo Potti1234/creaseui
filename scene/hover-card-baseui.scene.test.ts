@@ -20,7 +20,7 @@ import * as TailwindHoverCard from '@/ui/hover-card'
  * - The DSL has no mouseleave step, so `LeftHoverCard` is delivered through
  *   `Scene.Subscription.emit` — the message's real cause is pointer leaving
  *   the card region, which the DSL cannot reach.
- * - The content's AnchorTooltip mount is resolved with the parent-level
+ * - The content's HoverCardAnchor mount is resolved with the parent-level
  *   `CompletedHoverCardAnchor`, matching what `Mount.mapMessage` dispatches.
  *
  * Cases with no creaseui analogue (recorded here, not dropped):
@@ -54,7 +54,7 @@ const init = (overrides?: Partial<Model>): Model => ({
 const card = Scene.selector('[data-slot="hover-card"]')
 const trigger = Scene.selector('#hc-trigger')
 const panel = Scene.selector('#hc-content')
-const anchorMount = { name: 'AnchorTooltip' }
+const anchorMount = { name: 'HoverCardAnchor' }
 
 const pendingWaitVersion = (
   commands: ReadonlyArray<

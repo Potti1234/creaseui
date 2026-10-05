@@ -1,7 +1,7 @@
 import { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as Mount from 'foldkit/mount'
-import { Tooltip as TooltipPrimitive } from '@foldkit/ui'
+import type { Anchor } from '@foldkit/ui'
 
 import * as HoverCardBehavior from '@/lib/hover-card'
 import { cn } from '@/lib/utils'
@@ -37,7 +37,7 @@ const CONTENT_CLASS =
 export type HoverCardSide = 'top' | 'right' | 'bottom' | 'left'
 export type HoverCardAlign = 'start' | 'center' | 'end'
 
-type Placement = NonNullable<TooltipPrimitive.AnchorConfig['placement']>
+type Placement = NonNullable<Anchor.AnchorConfig['placement']>
 const PLACEMENTS: Readonly<
   Record<HoverCardSide, Readonly<Record<HoverCardAlign, Placement>>>
 > = {
@@ -111,7 +111,7 @@ export const hoverCard = <Msg>(
                 h.DataAttribute('slot', 'hover-card-content'),
                 h.OnMount(
                   Mount.mapMessage(
-                    TooltipPrimitive.AnchorTooltip({
+                    HoverCardBehavior.AnchorHoverCard({
                       buttonId: triggerId,
                       anchor: {
                         placement:
