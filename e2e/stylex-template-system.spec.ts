@@ -1,10 +1,11 @@
+import { visitRenderer } from './site-navigation'
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
 
 test('semantic dashboard recipe preserves region ownership and responsive containment', async ({
   page,
 }) => {
-  await page.goto('/blocks/preview/stylex--dashboard-01')
+  await page.goto('http://127.0.0.1:4174/blocks/preview/stylex--dashboard-01')
 
   const dashboard = page.locator('[data-recipe="dashboard"]')
   await expect(dashboard).toBeVisible()
@@ -62,7 +63,7 @@ test('CreaseUI dashboards use constrained recipes and remain accessible', async 
   ] as const
   for (const [name, charts] of blocks) {
     await page.setViewportSize({ width: 1440, height: 1000 })
-    await page.goto(`/blocks/preview/stylex--${name}`)
+    await page.goto(`http://127.0.0.1:4174/blocks/preview/stylex--${name}`)
     await expect(page.locator('[data-recipe]')).toBeAttached()
     await expect(page.locator('[data-slot="echart"]')).toHaveCount(charts)
     await expect(page.locator('canvas')).toHaveCount(charts)
@@ -86,7 +87,9 @@ test('CreaseUI dashboards use constrained recipes and remain accessible', async 
 test('StyleX analytics block mounts every Apache ECharts family', async ({
   page,
 }) => {
-  await page.goto('/blocks/preview/stylex--chart-analytics-dashboard')
+  await page.goto(
+    'http://127.0.0.1:4174/blocks/preview/stylex--chart-analytics-dashboard',
+  )
 
   const block = page.locator('[data-recipe]')
   await expect(block).toBeAttached()
@@ -180,10 +183,7 @@ test('unified charts routes expose the complete constrained StyleX gallery', asy
         }
       })
   const tailwindTopLayout = await topLayout()
-  await page
-    .getByRole('group', { name: 'Charts renderer' })
-    .getByRole('button', { name: 'StyleX' })
-    .click()
+  await visitRenderer(page, 'StyleX')
 
   const pageRoot = page.locator('[data-page="charts-stylex"]')
   await expect(
@@ -195,14 +195,6 @@ test('unified charts routes expose the complete constrained StyleX gallery', asy
   await expect(pageRoot.locator('canvas')).toHaveCount(10)
   const areaRange = pageRoot.getByRole('group', { name: 'Area range' })
   await areaRange.getByRole('button', { name: '7d' }).click()
-  await expect(areaRange.getByRole('button', { name: '7d' })).toHaveAttribute(
-    'aria-pressed',
-    'true',
-  )
-
-  const renderer = page.getByRole('group', { name: 'Charts renderer' })
-  await renderer.getByRole('button', { name: 'Tailwind' }).click()
-  await renderer.getByRole('button', { name: 'StyleX' }).click()
   await expect(areaRange.getByRole('button', { name: '7d' })).toHaveAttribute(
     'aria-pressed',
     'true',
@@ -235,11 +227,10 @@ test('unified charts routes expose the complete constrained StyleX gallery', asy
   for (const [label, section, count] of sections) {
     await pageRoot.getByRole('link', { name: label, exact: true }).click()
     await expect(page).toHaveURL(new RegExp(`/charts/${section}$`, 'u'))
-    await expect(
-      page
-        .getByRole('group', { name: 'Charts renderer' })
-        .getByRole('button', { name: 'StyleX' }),
-    ).toHaveAttribute('aria-pressed', 'true')
+    await expect(page.locator('html')).toHaveAttribute(
+      'data-renderer',
+      'stylex',
+    )
     await expect(pageRoot.locator('[data-slot="echart"]')).toHaveCount(count)
     await expect(pageRoot.locator('canvas')).toHaveCount(count)
   }

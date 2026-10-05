@@ -2,6 +2,7 @@ import { defineConfig, devices } from '@playwright/test'
 
 export default defineConfig({
   testDir: './e2e',
+  testIgnore: '**/sites/**',
   outputDir: 'test-results/playwright',
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
@@ -29,15 +30,18 @@ export default defineConfig({
       use: { ...devices['Pixel 7'] },
     },
   ],
-  webServer: {
-    // CI serves the production build: the vite dev server transforms pages on
-    // demand and saturated runners take >30s per cold page load, which trips
-    // page.goto timeouts under parallel workers.
-    command: process.env.CI
-      ? 'npm run preview -- --host 127.0.0.1 --port 4173'
-      : 'npm run dev -- --host 127.0.0.1 --port 4173',
-    url: 'http://127.0.0.1:4173',
-    reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
-  },
+  webServer: [
+    {
+      command: 'npm run preview:tailwind -- --host 127.0.0.1',
+      url: 'http://127.0.0.1:4173',
+      reuseExistingServer: !process.env.CI,
+      timeout: 120_000,
+    },
+    {
+      command: 'npm run preview:stylex -- --host 127.0.0.1',
+      url: 'http://127.0.0.1:4174',
+      reuseExistingServer: !process.env.CI,
+      timeout: 120_000,
+    },
+  ],
 })

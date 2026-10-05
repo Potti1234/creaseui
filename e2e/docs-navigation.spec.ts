@@ -1,3 +1,4 @@
+import { visitRenderer } from './site-navigation'
 import { expect, test, type Page } from '@playwright/test'
 
 const expectSectionNearTop = async (page: Page, id: string): Promise<void> => {
@@ -17,16 +18,12 @@ const expectSectionNearTop = async (page: Page, id: string): Promise<void> => {
     .toBe(true)
 }
 
-for (const renderer of ['Tailwind', 'StyleX']) {
+for (const renderer of ['Tailwind', 'StyleX'] as const) {
   test(`docs section links scroll and preserve ${renderer} example state`, async ({
     page,
   }) => {
     await page.goto('/docs/components/switch')
-    const rendererButton = page.getByRole('button', {
-      name: renderer,
-      exact: true,
-    })
-    await rendererButton.click()
+    await visitRenderer(page, renderer)
     const control = page.locator('#airplane-mode-control')
     await control.click()
     await expect(control).toHaveAttribute('aria-checked', 'true')
@@ -35,7 +32,10 @@ for (const renderer of ['Tailwind', 'StyleX']) {
     await toc.getByRole('link', { name: 'Installation', exact: true }).click()
     await expect(page).toHaveURL(/#installation$/u)
     await expectSectionNearTop(page, 'installation')
-    await expect(rendererButton).toHaveAttribute('aria-pressed', 'true')
+    await expect(page.locator('html')).toHaveAttribute(
+      'data-renderer',
+      renderer.toLowerCase(),
+    )
     await expect(control).toHaveAttribute('aria-checked', 'true')
 
     await toc.getByRole('link', { name: 'Description', exact: true }).click()
@@ -49,7 +49,10 @@ for (const renderer of ['Tailwind', 'StyleX']) {
     await page.evaluate(() => window.scrollTo(0, 0))
     await toc.getByRole('link', { name: 'Description', exact: true }).click()
     await expectSectionNearTop(page, 'description')
-    await expect(rendererButton).toHaveAttribute('aria-pressed', 'true')
+    await expect(page.locator('html')).toHaveAttribute(
+      'data-renderer',
+      renderer.toLowerCase(),
+    )
     await expect(control).toHaveAttribute('aria-checked', 'true')
   })
 }

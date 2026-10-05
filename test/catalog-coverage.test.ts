@@ -37,7 +37,7 @@ const presetRegistry = JSON.parse(
     registryDependencies: ReadonlyArray<string>
   }>
 }
-const componentPage = readFileSync('src/docs/component-page.ts', 'utf8')
+const componentPage = readFileSync('src/docs/component-metadata.ts', 'utf8')
 const catalog = readFileSync('src/docs/components/catalog.ts', 'utf8')
 const roadmap = JSON.parse(
   readFileSync('docs/component-roadmap.json', 'utf8'),
@@ -222,7 +222,12 @@ describe('component catalog coverage', () => {
     assert.equal(componentKind('button'), 'helper')
     assert.equal(componentKind('dialog'), 'submodel')
     assert.equal(componentKind('toast'), 'recipe')
-    assert.match(componentPage, /How it fits Foldkit/)
+    for (const shell of [
+      'src/docs/component-page.ts',
+      'src/site/docs.stylex.ts',
+    ]) {
+      assert.match(readFileSync(shell, 'utf8'), /How it fits Foldkit/)
+    }
   })
 
   it('keeps authored page examples as complete Foldkit applications', () => {
