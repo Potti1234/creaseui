@@ -271,7 +271,7 @@ const emitSource = (fixture: SelectFixture, isStyleX: boolean): string => {
         ? `    Field.field({
       isInvalid: true,
       children: [
-        Field.fieldLabel({ children: ['Fruit'] }, h),
+        Field.fieldLabel({ for: 'select-${tag}-button', children: ['Fruit'] }, h),
         ${selectCall},
         Field.fieldError({ children: ['Please select a fruit.'] }, h),
       ],

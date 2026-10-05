@@ -257,6 +257,7 @@ const emitBody = (fixture: LabelFixture, isStyleX: boolean): string => {
         onToggle: isChecked => Message.ToggledTerms({ isChecked }),
       }, h),
       Label.label({
+        id: 'terms-label',
         for: 'terms',
         children: ['Accept terms and conditions'],
       }, h),
@@ -274,6 +275,7 @@ const emitBody = (fixture: LabelFixture, isStyleX: boolean): string => {
           onToggle: isChecked => Message.ToggledTerms({ isChecked }),
         }, h),
         Label.label({
+          id: 'terms-rtl-label',
           for: 'terms-rtl',
           children: ['قبول الشروط والأحكام'],
         }, h),
@@ -331,7 +333,7 @@ const emitBody = (fixture: LabelFixture, isStyleX: boolean): string => {
                         Field.field({
                           children: [
                             Field.fieldLabel({
-                              for: 'checkout-exp-month',
+                              for: 'checkout-exp-month-button',
                               children: ['Month'],
                             }, h),
                             Select.select({
@@ -350,7 +352,7 @@ const emitBody = (fixture: LabelFixture, isStyleX: boolean): string => {
                         Field.field({
                           children: [
                             Field.fieldLabel({
-                              for: 'checkout-exp-year',
+                              for: 'checkout-exp-year-button',
                               children: ['Year'],
                             }, h),
                             Select.select({
@@ -404,6 +406,7 @@ const emitBody = (fixture: LabelFixture, isStyleX: boolean): string => {
                             onToggle: isChecked => Message.ToggledSameAsShipping({ isChecked }),
                           }, h),
                           Field.fieldLabel({
+                            id: 'checkout-same-as-shipping-label',
                             for: 'checkout-same-as-shipping',
                             children: ['Same as shipping address'],
                             ${isStyleX ? "weight: 'normal'," : "class: 'font-normal',"}

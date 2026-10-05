@@ -314,9 +314,14 @@ const HERO_ID_REF_ATTRIBUTES = [
 
 /** Heading-less copy of the first example, rendered directly under the page
     header like shadcn's unnamed top preview. The hero and the named section
-    render the same example, so element ids would duplicate: the hero rewrites
-    every id (and intra-hero id reference) inside its subtree with a suffix,
-    keeping the canonical ids on the named section. */
+    render the same example, so element ids could duplicate: the hero rewrites
+    every colliding id (and intra-hero id reference) inside its subtree with a
+    suffix, keeping the canonical ids on the named section. Ids that are
+    already unique — preview programs mint them per state slot — are left
+    canonical: components resolve their own elements with literal
+    `getElementById` lookups (Dialog's ShowDialog, popover anchorSetup, …), and
+    suffixing a model-owned id would make the lookup miss and the component
+    tear itself down (an opening `<dialog>` self-closing ~10ms later). */
 export const hero = <Msg>(
   config: HeroExampleConfig<Msg>,
   h: HtmlBuilder<Msg>,
@@ -328,17 +333,24 @@ export const hero = <Msg>(
         name: `docs-hero-${toSlug(config.title)}`,
         f: element => {
           if (!(element instanceof HTMLElement)) return Stream.empty
-          const scopedIds = new Set<string>()
           if (config.keepIdsCanonical === true) return Stream.empty
+          const scopedIds = new Set<string>()
           element.querySelectorAll<HTMLElement>('[id]').forEach(node => {
-            if (node.id.length > 0) scopedIds.add(node.id)
+            if (node.id.length > 0 && !node.id.endsWith(HERO_ID_SUFFIX))
+              scopedIds.add(node.id)
           })
+          const rewrittenIds = new Set<string>()
           scopedIds.forEach(id => {
+            const copies = element.ownerDocument.querySelectorAll<HTMLElement>(
+              `#${CSS.escape(id)}`,
+            )
+            if (copies.length <= 1) return
             const node = element.querySelector<HTMLElement>(
               `#${CSS.escape(id)}`,
             )
-            if (node !== null && !id.endsWith(HERO_ID_SUFFIX)) {
+            if (node !== null) {
               node.id = `${id}${HERO_ID_SUFFIX}`
+              rewrittenIds.add(id)
             }
           })
           HERO_ID_REF_ATTRIBUTES.forEach(attribute => {
@@ -350,7 +362,9 @@ export const hero = <Msg>(
                 const rewritten = value
                   .split(/\s+/)
                   .map(token =>
-                    scopedIds.has(token) ? `${token}${HERO_ID_SUFFIX}` : token,
+                    rewrittenIds.has(token)
+                      ? `${token}${HERO_ID_SUFFIX}`
+                      : token,
                   )
                   .join(' ')
                 if (rewritten !== value) node.setAttribute(attribute, rewritten)

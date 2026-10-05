@@ -218,5 +218,6 @@ export const infoTipExamples = (
     ...(fixture.description === undefined
       ? {}
       : { description: fixture.description }),
+    ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer),
   }))

@@ -91,7 +91,8 @@ const emitBody = (fixture: SwitchFixture, isStyleX: boolean): string => {
       return `  h.div([h.Class(${row})], [
     ${sw('airplane-mode', '')},
     Label.label({
-      for: 'airplane-mode',
+      id: 'airplane-mode-label',
+      for: 'airplane-mode-control',
       children: ['Airplane Mode'],
     }, h),
   ])`
@@ -102,7 +103,8 @@ const emitBody = (fixture: SwitchFixture, isStyleX: boolean): string => {
     children: [
       Field.fieldContent({ children: [
         Field.fieldLabel({
-          for: 'switch-focus-mode',
+          id: 'switch-focus-mode-label',
+          for: 'switch-focus-mode-control',
           children: ['Share across devices'],
         }, h),
         Field.fieldDescription({
@@ -118,7 +120,8 @@ const emitBody = (fixture: SwitchFixture, isStyleX: boolean): string => {
         titleText: string,
         descText: string,
       ) => `Field.fieldLabel({
-      for: '${id}',
+      id: '${id}-label',
+      for: '${id}-control',
       children: [
         Field.field({
           orientation: 'horizontal',
@@ -150,7 +153,8 @@ const emitBody = (fixture: SwitchFixture, isStyleX: boolean): string => {
     children: [
       ${sw('switch-disabled-unchecked', '\n      isDisabled: true,')},
       Field.fieldLabel({
-        for: 'switch-disabled-unchecked',
+        id: 'switch-disabled-unchecked-label',
+        for: 'switch-disabled-unchecked-control',
         children: ['Disabled'],
       }, h),
     ],
@@ -163,7 +167,8 @@ const emitBody = (fixture: SwitchFixture, isStyleX: boolean): string => {
     children: [
       Field.fieldContent({ children: [
         Field.fieldLabel({
-          for: 'switch-terms',
+          id: 'switch-terms-label',
+          for: 'switch-terms-control',
           children: ['Accept terms and conditions'],
         }, h),
         Field.fieldDescription({
@@ -183,7 +188,8 @@ const emitBody = (fixture: SwitchFixture, isStyleX: boolean): string => {
       children: [
         ${sw(id, `\n        size: '${size}',`)},
         Field.fieldLabel({
-          for: '${id}',
+          id: '${id}-label',
+          for: '${id}-control',
           children: ['${labelText}'],
         }, h),
       ],
@@ -204,7 +210,8 @@ const emitBody = (fixture: SwitchFixture, isStyleX: boolean): string => {
     children: [
       Field.fieldContent({ children: [
         Field.fieldLabel({
-          for: 'switch-focus-mode-rtl',
+          id: 'switch-focus-mode-rtl-label',
+          for: 'switch-focus-mode-rtl-control',
           children: ['المشاركة عبر الأجهزة'],
         }, h),
         Field.fieldDescription({

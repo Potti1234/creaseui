@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils'
 
 export type LabelProps = Readonly<{
   for?: string
+  id?: string
   isRequired?: boolean
   isDisabled?: boolean
   class?: string
@@ -14,6 +15,7 @@ export const label = <Msg>(props: LabelProps, h: HtmlBuilder<Msg>): Html => {
   return h.label(
     [
       h.DataAttribute('slot', 'label'),
+      ...(props.id === undefined ? [] : [h.Id(props.id)]),
       ...(props.for === undefined ? [] : [h.For(props.for)]),
       h.DataAttribute('required', String(props.isRequired ?? false)),
       h.DataAttribute('disabled', String(props.isDisabled ?? false)),

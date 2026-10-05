@@ -225,7 +225,7 @@ export const fieldContent = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => {
 const LABEL_CLASS =
   'flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled]:pointer-events-none group-data-[disabled]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50'
 
-export type FieldLabelProps = Slot & Readonly<{ for?: string }>
+export type FieldLabelProps = Slot & Readonly<{ for?: string; id?: string }>
 
 export const fieldLabel = <Msg>(
   props: FieldLabelProps,
@@ -234,6 +234,7 @@ export const fieldLabel = <Msg>(
   return h.label(
     [
       h.DataAttribute('slot', 'field-label'),
+      ...(props.id === undefined ? [] : [h.Id(props.id)]),
       ...(props.for === undefined ? [] : [h.For(props.for)]),
       h.Class(
         cn(
