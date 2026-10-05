@@ -1,11 +1,10 @@
 import type { DocsExample } from '@/docs/components/page-definition'
 import { staticComponentApplication } from '@/docs/components/pages/authored-page'
-import {
-  NIGHT_FOREST,
-  MISTY_VALLEY,
-  GOLDEN_SUNSET,
-  SNOWY_PEAKS,
-} from '@/docs/components/pages/thumbnail/shared'
+
+const FOLDKIT_SRC = 'https://github.com/foldkit.png'
+const DEVIN_SRC = 'https://avatars.githubusercontent.com/in/811515?v=4'
+const COGNITION_SRC = 'https://github.com/cognition-ai.png'
+const CREASE_SRC = '/logo-mark.svg'
 
 export type AvatarEntry = Readonly<{
   name: string
@@ -37,25 +36,24 @@ export type AvatarGroupFixture = Readonly<{
 }>
 
 const TEAM = [
-  { name: 'Alex Daniels' },
-  { name: 'Ann Smith' },
-  { name: 'Carol Davis' },
-  { name: 'Gina Wilson' },
-  { name: 'Eve Park' },
+  { name: 'Foldkit' },
+  { name: 'Devin' },
+  { name: 'Cognition AI' },
+  { name: 'Crease UI' },
+  { name: 'Astryx' },
 ]
 
 const MEMBERS = [
-  { name: 'Alex Daniels' },
-  { name: 'Ann Smith' },
-  { name: 'Carol Davis' },
+  { name: 'Foldkit' },
+  { name: 'Devin' },
+  { name: 'Cognition AI' },
 ]
 
 const PHOTO_USERS = [
-  { name: 'Ami Pena', src: NIGHT_FOREST },
-  { name: 'Drew Young', src: MISTY_VALLEY },
-  { name: 'Gabriela Fernandez', src: GOLDEN_SUNSET },
-  { name: 'Jihoo Song', src: SNOWY_PEAKS },
-  { name: 'Nam Tran', src: NIGHT_FOREST },
+  { name: 'Foldkit', src: FOLDKIT_SRC },
+  { name: 'Devin', src: DEVIN_SRC },
+  { name: 'Cognition AI', src: COGNITION_SRC },
+  { name: 'Crease UI', src: CREASE_SRC },
 ]
 
 export const avatarGroupFixtures: Readonly<
@@ -125,9 +123,9 @@ export const avatarGroupFixtures: Readonly<
     kind: 'status',
     sections: [],
     statusDots: [
-      { name: 'Itai Jordaan', variant: 'success', label: 'Online' },
-      { name: 'Margot Schroder', variant: 'neutral', label: 'Offline' },
-      { name: 'Pablo Morales', variant: 'error', label: 'Busy' },
+      { name: 'Foldkit', variant: 'success', label: 'Online' },
+      { name: 'Devin', variant: 'neutral', label: 'Offline' },
+      { name: 'Cognition AI', variant: 'error', label: 'Busy' },
     ],
   },
 ]
@@ -139,14 +137,14 @@ const initials = (name: string): string =>
     .join('')
     .slice(0, 2)
 
-const DATA_URIS: Record<string, string> = {
-  NIGHT_FOREST,
-  MISTY_VALLEY,
-  GOLDEN_SUNSET,
-  SNOWY_PEAKS,
+const IMAGE_SRCS: Record<string, string> = {
+  FOLDKIT_SRC,
+  DEVIN_SRC,
+  COGNITION_SRC,
+  CREASE_SRC,
 }
 const uriConstName = (src: string): string =>
-  Object.entries(DATA_URIS).find(([, v]) => v === src)?.[0] ?? 'NIGHT_FOREST'
+  Object.entries(IMAGE_SRCS).find(([, v]) => v === src)?.[0] ?? 'FOLDKIT_SRC'
 
 const avatarSource = (
   entry: AvatarEntry,
@@ -214,10 +212,9 @@ import type { ComponentLayoutStyle } from '@/stylex/contracts'
 
 const styles = stylex.create({ column: { display: 'flex', flexDirection: 'column', gap: '2rem' }, section: { display: 'flex', flexDirection: 'column', gap: '0.375rem' }, caption: { fontSize: '0.75rem', lineHeight: '1rem', color: 'var(--muted-foreground)' }, row: { display: 'flex', gap: '1rem', alignItems: 'center' }, avatarWrap: { position: 'relative' }, dotSlot: { position: 'absolute', bottom: '-4px', insetInlineEnd: '-4px' }, memberSm: { marginInlineStart: '-0.375rem', boxSizing: 'content-box', borderColor: 'var(--background)', borderStyle: 'solid', borderWidth: '2px' }, memberDefault: { marginInlineStart: '-0.5rem', boxSizing: 'content-box', borderColor: 'var(--background)', borderStyle: 'solid', borderWidth: '2px' }, memberLg: { marginInlineStart: '-0.625rem', boxSizing: 'content-box', borderColor: 'var(--background)', borderStyle: 'solid', borderWidth: '2px' } })`
       : '',
-    `const NIGHT_FOREST = '${NIGHT_FOREST}'`,
-    `const MISTY_VALLEY = '${MISTY_VALLEY}'`,
-    `const GOLDEN_SUNSET = '${GOLDEN_SUNSET}'`,
-    `const SNOWY_PEAKS = '${SNOWY_PEAKS}'`,
+    ...Object.entries(IMAGE_SRCS).map(
+      ([name, src]) => `const ${name} = '${src}'`,
+    ),
   ]
     .filter(Boolean)
     .join('\n')

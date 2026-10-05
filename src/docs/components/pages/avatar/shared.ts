@@ -56,34 +56,24 @@ const CREASEUI: AvatarItemSpec = {
   alt: '@creaseui',
   fallback: 'CU',
 }
-const MAXLEITER: AvatarItemSpec = {
-  key: 'maxleiter',
-  src: 'https://github.com/maxleiter.png',
-  alt: '@maxleiter',
-  fallback: 'LR',
+const FOLDKIT: AvatarItemSpec = {
+  key: 'foldkit',
+  src: 'https://github.com/foldkit.png',
+  alt: '@foldkit',
+  fallback: 'FK',
 }
-const EVILRABBIT: AvatarItemSpec = {
-  key: 'evilrabbit',
-  src: 'https://github.com/evilrabbit.png',
-  alt: '@evilrabbit',
-  fallback: 'ER',
-}
-const PRANATHIP: AvatarItemSpec = {
-  key: 'pranathip',
-  src: 'https://github.com/pranathip.png',
-  alt: '@pranathip',
-  fallback: 'PP',
+const DEVIN: AvatarItemSpec = {
+  key: 'devin',
+  src: 'https://avatars.githubusercontent.com/in/811515?v=4',
+  alt: 'Devin',
+  fallback: 'DV',
 }
 
-const GROUP_TRIO: ReadonlyArray<AvatarItemSpec> = [
-  CREASEUI,
-  MAXLEITER,
-  EVILRABBIT,
-]
+const GROUP_TRIO: ReadonlyArray<AvatarItemSpec> = [CREASEUI, FOLDKIT, DEVIN]
 
 const demoClusters = (count: string): ReadonlyArray<AvatarClusterSpec> => [
   { items: [{ ...CREASEUI, grayscale: 'image' }] },
-  { items: [{ ...EVILRABBIT, badge: 'green' }] },
+  { items: [{ ...DEVIN, badge: 'green' }] },
   { grouped: true, grayscale: true, count, items: GROUP_TRIO },
 ]
 
@@ -117,9 +107,7 @@ export const avatarFixtures: Readonly<
     title: 'Badge with Icon',
     description: 'AvatarBadge can also carry an icon.',
     frame: 'plain',
-    clusters: [
-      { items: [{ ...PRANATHIP, badge: 'icon', grayscale: 'avatar' }] },
-    ],
+    clusters: [{ items: [{ ...FOLDKIT, badge: 'icon', grayscale: 'avatar' }] }],
   },
   {
     kind: 'group',
