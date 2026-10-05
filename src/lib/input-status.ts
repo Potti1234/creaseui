@@ -2,7 +2,7 @@ import type { Attribute, Html, HtmlBuilder } from 'foldkit/html'
 
 /* Ported from Meta Astryx Field/types.ts — InputStatus contract shared by the
    astryx input ports (file-input, number-input, time-input, list-input,
-   checkbox-list). */
+   checkbox). */
 
 export type InputStatusType = 'warning' | 'error' | 'success'
 export type InputStatus = Readonly<{

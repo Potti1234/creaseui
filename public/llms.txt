@@ -35,7 +35,6 @@
 - Center: /docs/components/center — install with `npx creaseui add center`
 - Chart: /docs/components/chart — install with `npx creaseui add chart`
 - Chat Reasoning: /docs/components/chat-reasoning — install with `npx creaseui add chat-reasoning`
-- Checkbox List: /docs/components/checkbox-list — install with `npx creaseui add checkbox-list`
 - Checkbox: /docs/components/checkbox — install with `npx creaseui add checkbox`
 - Circular Progress: /docs/components/circular-progress — install with `npx creaseui add circular-progress`
 - Clickable Card: /docs/components/clickable-card — install with `npx creaseui add clickable-card`

@@ -23,14 +23,13 @@
   ],
   "summary": {
     "upstreamItems": 62,
-    "registryItems": 118,
+    "registryItems": 117,
     "creaseOnlyRecipes": [
       "avatar-group",
       "banner",
       "blockquote",
       "center",
       "chat-reasoning",
-      "checkbox-list",
       "circular-progress",
       "clickable-card",
       "code",
@@ -461,24 +460,6 @@
         "src/ui/checkbox.ts",
         "src/ui/registry.json#checkbox",
         "/docs/components/checkbox"
-      ]
-    },
-    {
-      "component": "checkbox-list",
-      "upstream": false,
-      "classification": "full",
-      "dimensions": {
-        "visual": "unverified",
-        "behavior": "partial",
-        "accessibility": "partial",
-        "composition": "partial",
-        "documentation": "verified",
-        "registry": "verified"
-      },
-      "evidence": [
-        "src/ui/checkbox-list.ts",
-        "src/ui/registry.json#checkbox-list",
-        "/docs/components/checkbox-list"
       ]
     },
     {

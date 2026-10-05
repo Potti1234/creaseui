@@ -24,7 +24,6 @@ export * as Carousel from './carousel.js'
 export * as Center from './center.js'
 export * as Chart from './chart.js'
 export * as ChatReasoning from './chat-reasoning.js'
-export * as CheckboxList from './checkbox-list.js'
 export * as Checkbox from './checkbox.js'
 export * as CircularProgress from './circular-progress.js'
 export * as ClickableCard from './clickable-card.js'
@@ -145,7 +144,6 @@ export const STYLEX_COMPONENT_NAMES = [
   'center',
   'chart',
   'chat-reasoning',
-  'checkbox-list',
   'checkbox',
   'circular-progress',
   'clickable-card',

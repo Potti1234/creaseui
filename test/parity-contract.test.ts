@@ -65,7 +65,6 @@ describe('multidimensional component parity', () => {
       'blockquote',
       'center',
       'chat-reasoning',
-      'checkbox-list',
       'circular-progress',
       'clickable-card',
       'code',

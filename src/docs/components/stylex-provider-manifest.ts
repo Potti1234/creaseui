@@ -34,7 +34,6 @@ import { textareaStyleXPreview } from '@/docs/components/pages/textarea/stylex'
 import { toggleStyleXPreview } from '@/docs/components/pages/toggle/stylex'
 import { toggleGroupStyleXPreview } from '@/docs/components/pages/toggle-group/stylex'
 import { checkboxStyleXPreview } from '@/docs/components/pages/checkbox/stylex'
-import { checkboxListStyleXPreview } from '@/docs/components/pages/checkbox-list/stylex'
 import { circularProgressStyleXPreview } from '@/docs/components/pages/circular-progress/stylex'
 import { fileInputStyleXPreview } from '@/docs/components/pages/file-input/stylex'
 import { listInputStyleXPreview } from '@/docs/components/pages/list-input/stylex'
@@ -229,7 +228,6 @@ installStyleXExamplePreviewProvider(
   'chat-reasoning',
   chatReasoningStyleXPreview,
 )
-installStyleXExamplePreviewProvider('checkbox-list', checkboxListStyleXPreview)
 installStyleXExamplePreviewProvider(
   'clickable-card',
   clickableCardStyleXPreview,

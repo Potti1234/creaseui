@@ -135,18 +135,17 @@ Batches are work units; slugs are the Crease UI names.
 
 **Inputs**
 
-| Slug               | Astryx source                       | Notes                                                       |
-| ------------------ | ----------------------------------- | ----------------------------------------------------------- |
-| `checkbox-list`    | `CheckboxList` + `CheckboxListItem` | Checkbox group with list semantics.                         |
-| `file-input`       | `FileInput`                         | File select/dropzone.                                       |
-| `number-input`     | `NumberInput`                       | Stepper input.                                              |
-| `time-input`       | `TimeInput`                         | Segmented time entry.                                       |
-| `list-input`       | `ListInput` (lab)                   | Freeform list-entry input.                                  |
-| `date-input`       | `DateInput`                         | Segmented date entry (distinct from `date-picker` popover). |
-| `date-range-input` | `DateRangeInput`                    | Two-segment range entry.                                    |
-| `date-time-input`  | `DateTimeInput`                     | Date + time segments.                                       |
-| `tokenizer`        | `Tokenizer`                         | Token/chip entry input.                                     |
-| `multi-selector`   | `MultiSelector`                     | Multi-value selector w/ tokens.                             |
+| Slug               | Astryx source     | Notes                                                       |
+| ------------------ | ----------------- | ----------------------------------------------------------- |
+| `file-input`       | `FileInput`       | File select/dropzone.                                       |
+| `number-input`     | `NumberInput`     | Stepper input.                                              |
+| `time-input`       | `TimeInput`       | Segmented time entry.                                       |
+| `list-input`       | `ListInput` (lab) | Freeform list-entry input.                                  |
+| `date-input`       | `DateInput`       | Segmented date entry (distinct from `date-picker` popover). |
+| `date-range-input` | `DateRangeInput`  | Two-segment range entry.                                    |
+| `date-time-input`  | `DateTimeInput`   | Date + time segments.                                       |
+| `tokenizer`        | `Tokenizer`       | Token/chip entry input.                                     |
+| `multi-selector`   | `MultiSelector`   | Multi-value selector w/ tokens.                             |
 
 **Selection & disclosure**
 

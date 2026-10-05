@@ -34,7 +34,6 @@ export const COMPONENTS = [
   'Chat Reasoning',
   'Checkbox',
   'Center',
-  'Checkbox List',
   'Circular Progress',
   'Clickable Card',
   'Code',

@@ -20,7 +20,6 @@ import { chartPage } from '@/docs/components/pages/chart'
 import { centerPage } from '@/docs/components/pages/center'
 import { chatReasoningPage } from '@/docs/components/pages/chat-reasoning'
 import { checkboxPage } from '@/docs/components/pages/checkbox'
-import { checkboxListPage } from '@/docs/components/pages/checkbox-list'
 import { circularProgressPage } from '@/docs/components/pages/circular-progress'
 import { clickableCardPage } from '@/docs/components/pages/clickable-card'
 import { codePage } from '@/docs/components/pages/code'
@@ -142,7 +141,6 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       centerPage,
       chatReasoningPage,
       checkboxPage,
-      checkboxListPage,
       circularProgressPage,
       clickableCardPage,
       codePage,

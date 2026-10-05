@@ -449,8 +449,8 @@ ${
     ? `
 
 // Every option needs its own literal utility class — Tailwind only emits
-// rules for classes it can find by scanning source files, so
-// [--card-spacing:--spacing(...)] can't be interpolated at runtime.
+// rules for classes it can find by scanning source files, so the
+// --card-spacing value can't be interpolated into the class at runtime.
 const spacingClasses: Record<Model['spacing'], string> = {
   '4': '[--card-spacing:--spacing(4)]',
   '5': '[--card-spacing:--spacing(5)]',

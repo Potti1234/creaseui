@@ -703,7 +703,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "CalendarViewOptions",
       "kind": "type",
-      "signature": "CalendarViewOptions = Readonly<{ class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarBehavior.CalendarRange; weekNumbers?: boolean; }>"
+      "signature": "CalendarViewOptions = Readonly<{ captionLayout?: 'label' | 'dropdown'; class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarBehavior.CalendarRange; weekNumbers?: boolean; }>"
     },
     {
       "name": "calendarView",
@@ -713,7 +713,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "CalendarProps",
       "kind": "type",
-      "signature": "CalendarProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarBehavior.CalendarRange; weekNumbers?: boolean;…"
+      "signature": "CalendarProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; captionLayout?: 'label' | 'dropdown'; class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarBehavior…"
     },
     {
       "name": "calendar",
@@ -1029,53 +1029,6 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "chatReasoning",
       "kind": "function",
       "signature": "chatReasoning<Msg>(props: ChatReasoningProps<Msg>, h: HtmlBuilder<Msg>): Html"
-    }
-  ],
-  "checkbox-list": [
-    {
-      "name": "CheckboxListDensity",
-      "kind": "re-export",
-      "signature": "export { CheckboxListDensity } from "
-    },
-    {
-      "name": "CheckboxListEntry",
-      "kind": "re-export",
-      "signature": "export { CheckboxListEntry } from "
-    },
-    {
-      "name": "CheckboxListItem",
-      "kind": "re-export",
-      "signature": "export { CheckboxListItem } from "
-    },
-    {
-      "name": "CheckboxListProps",
-      "kind": "re-export",
-      "signature": "export { CheckboxListProps } from "
-    },
-    {
-      "name": "checkboxListDivider",
-      "kind": "re-export",
-      "signature": "export { checkboxListDivider } from '@/lib/checkbox-list'"
-    },
-    {
-      "name": "InputStatus",
-      "kind": "re-export",
-      "signature": "export { InputStatus } from '@/lib/input-status'"
-    },
-    {
-      "name": "checkboxListItem",
-      "kind": "function",
-      "signature": "checkboxListItem<Msg>(item: CheckboxListItem<Msg>, h: HtmlBuilder<Msg>, options?: Readonly<{ id?: string; density?: CheckboxListDensity; isDisabled?: boolean; isReadOnly?: boolean; }>): Html"
-    },
-    {
-      "name": "CheckboxListUiProps",
-      "kind": "type",
-      "signature": "CheckboxListUiProps<Msg> = CheckboxListProps<Msg> & Readonly<{ class?: string; }>"
-    },
-    {
-      "name": "checkboxList",
-      "kind": "function",
-      "signature": "checkboxList<Msg>(props: CheckboxListUiProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "checkbox": [
@@ -2898,7 +2851,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "InputGroupInputProps",
       "kind": "type",
-      "signature": "InputGroupInputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; onKeyDown?: (key: string) => Msg; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; ariaLabel?: string; class?: str…"
+      "signature": "InputGroupInputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; onKeyDown?: (key: string) => Msg; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; ariaLabel?: string; step?: stri…"
     },
     {
       "name": "inputGroupInput",

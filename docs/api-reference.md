@@ -240,9 +240,9 @@ Source: [`src/ui/calendar.ts`](../src/ui/calendar.ts)
 | `reflectDisabledDates` | value | `reflectDisabledDates: value` |
 | `reflectDisabledDaysOfWeek` | value | `reflectDisabledDaysOfWeek: value` |
 | `dropToDays` | value | `dropToDays: value` |
-| `CalendarViewOptions` | type | `CalendarViewOptions = Readonly<{ class?: string; direction?: 'ltr' \| 'rtl'; range?: CalendarBehavior.CalendarRange; weekNumbers?: boolean; }>` |
+| `CalendarViewOptions` | type | `CalendarViewOptions = Readonly<{ captionLayout?: 'label' \| 'dropdown'; class?: string; direction?: 'ltr' \| 'rtl'; range?: CalendarBehavior.CalendarRange; weekNumbers?: boolean; }>` |
 | `calendarView` | function | `calendarView<Msg>(attributes: CalendarPrimitive.CalendarAttributes, options: CalendarViewOptions, h: HtmlBuilder<Msg>): Html` |
-| `CalendarProps` | type | `CalendarProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; class?: string; direction?: 'ltr' \| 'rtl'; range?: CalendarBehavior.CalendarRange; weekNumbers?: boolean;…` |
+| `CalendarProps` | type | `CalendarProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; captionLayout?: 'label' \| 'dropdown'; class?: string; direction?: 'ltr' \| 'rtl'; range?: CalendarBehavior…` |
 | `calendar` | function | `calendar<Msg>(props: CalendarProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Card
@@ -339,22 +339,6 @@ Source: [`src/ui/chat-reasoning.ts`](../src/ui/chat-reasoning.ts)
 | `update` | function | `update(model: Model, message: Message): UpdateReturn` |
 | `ChatReasoningProps` | type | `ChatReasoningProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; children: ReadonlyArray<Html \| string>; label?: string; duration?: string; isStreaming?: boolean; preview?: string; class?: string; }>` |
 | `chatReasoning` | function | `chatReasoning<Msg>(props: ChatReasoningProps<Msg>, h: HtmlBuilder<Msg>): Html` |
-
-## Checkbox List
-
-Source: [`src/ui/checkbox-list.ts`](../src/ui/checkbox-list.ts)
-
-| Export | Kind | Signature |
-| --- | --- | --- |
-| `CheckboxListDensity` | re-export | `export { CheckboxListDensity } from ` |
-| `CheckboxListEntry` | re-export | `export { CheckboxListEntry } from ` |
-| `CheckboxListItem` | re-export | `export { CheckboxListItem } from ` |
-| `CheckboxListProps` | re-export | `export { CheckboxListProps } from ` |
-| `checkboxListDivider` | re-export | `export { checkboxListDivider } from '@/lib/checkbox-list'` |
-| `InputStatus` | re-export | `export { InputStatus } from '@/lib/input-status'` |
-| `checkboxListItem` | function | `checkboxListItem<Msg>(item: CheckboxListItem<Msg>, h: HtmlBuilder<Msg>, options?: Readonly<{ id?: string; density?: CheckboxListDensity; isDisabled?: boolean; isReadOnly?: boolean; }>): Html` |
-| `CheckboxListUiProps` | type | `CheckboxListUiProps<Msg> = CheckboxListProps<Msg> & Readonly<{ class?: string; }>` |
-| `checkboxList` | function | `checkboxList<Msg>(props: CheckboxListUiProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Checkbox
 
@@ -910,7 +894,7 @@ Source: [`src/ui/input-group.ts`](../src/ui/input-group.ts)
 | `InputGroupButtonProps` | type | `InputGroupButtonProps<Msg> = Omit<ButtonProps<Msg>, 'size' \| 'class'> & Readonly<{ size?: InputGroupButtonVariants['size']; class?: string; }>` |
 | `inputGroupButton` | function | `inputGroupButton<Msg>(props: InputGroupButtonProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `inputGroupText` | function | `inputGroupText<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` |
-| `InputGroupInputProps` | type | `InputGroupInputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; onKeyDown?: (key: string) => Msg; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; ariaLabel?: string; class?: str…` |
+| `InputGroupInputProps` | type | `InputGroupInputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; onKeyDown?: (key: string) => Msg; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; ariaLabel?: string; step?: stri…` |
 | `inputGroupInput` | function | `inputGroupInput<Msg>(props: InputGroupInputProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `InputGroupTextareaProps` | type | `InputGroupTextareaProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; placeholder?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; ariaLabel?: string; class?: string; }>` |
 | `inputGroupTextarea` | function | `inputGroupTextarea<Msg>(props: InputGroupTextareaProps<Msg>, h: HtmlBuilder<Msg>): Html` |
