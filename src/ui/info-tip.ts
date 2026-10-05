@@ -56,9 +56,9 @@ const PLACEMENTS: Readonly<
 
 const SIZE_CLASS: Readonly<Record<InfoTipSize, string>> = {
   xsm: '[&_svg]:size-3',
-  sm: '[&_svg]:size-4',
-  md: '[&_svg]:size-5',
-  lg: '[&_svg]:size-6',
+  sm: '[&_svg]:size-3.5',
+  md: '[&_svg]:size-4',
+  lg: '[&_svg]:size-4.5',
 }
 
 export type InfoTipProps<Msg> = Readonly<{
@@ -68,7 +68,7 @@ export type InfoTipProps<Msg> = Readonly<{
   content: Html | string
   /** Accessible name for the trigger button. Defaults to 'More information'. */
   label?: string
-  /** Info icon size: xsm 12px, sm 16px, md 20px, lg 24px. */
+  /** Info icon size: xsm 12px, sm 14px, md 16px, lg 18px. */
   size?: InfoTipSize
   side?: InfoTipSide
   align?: InfoTipAlign

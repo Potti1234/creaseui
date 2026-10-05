@@ -39,7 +39,7 @@ export const infoTipFixtures: Readonly<
   {
     title: 'Sizes',
     description:
-      'The info icon maps 1:1 to icon sizes: xsm 12px, sm 16px, md 20px, lg 24px.',
+      'The info icon maps 1:1 to icon sizes: xsm 12px, sm 14px, md 16px, lg 18px.',
     kind: 'sizes',
     tips: [
       { id: 'tip-xsm', content: 'Extra small tip', size: 'xsm' },
