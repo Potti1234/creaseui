@@ -10,7 +10,7 @@ does not require React or JSX.
 
 The repository currently contains:
 
-- 65 UI modules, from buttons and fields to dialogs, calendars, and sidebars
+- 120 UI modules, from buttons and fields to dialogs, calendars, and sidebars
 - 33 component cards reproducing the shadcn/ui create-board showcase
 - 70 Apache ECharts examples styled in the same design language
 - 16 complete sidebar block examples
@@ -22,8 +22,18 @@ Requirements: a current Node.js release and npm.
 
 ```sh
 npm install
-npm run dev
+npm run dev:tailwind # http://localhost:5173
+npm run dev:stylex   # http://localhost:5174 (in a second terminal)
 ```
+
+The two sites share content and routes: `creaseui.com` renders Tailwind and
+`stylex.creaseui.com` renders StyleX. The header links to the same URL on the
+other site. The StyleX site loads no Tailwind CSS or global element reset.
+
+`npm run build` produces `dist/tailwind` and `dist/stylex`. Use
+`npm run preview:tailwind` (port 4173) and `npm run preview:stylex` (port 4174)
+to inspect the production builds. `npm run dev` and `npm run preview` default
+to Tailwind. See [site architecture and hosting](docs/site-architecture.md).
 
 Foldkit DevTools is available through the **DEV** badge in the bottom-right
 corner of the site. Local development supports time travel; the published site
@@ -34,6 +44,7 @@ Before submitting a change, run:
 
 ```sh
 npm run check
+npm run test:sites # build both sites and check all 120 component pages
 ```
 
 The registry distributes the Tailwind components, shared utilities, and the
