@@ -145,7 +145,11 @@ const inputGroupBody = (renderer: 'tailwind' | 'stylex'): string =>
     InputGroup.inputGroupAddon({ align: 'block-end', children: [
       Spinner.spinner({ isDecorative: true }, h),
       'Validating...',
-      InputGroup.inputGroupButton({ variant: 'default', children: [
+      InputGroup.inputGroupButton({ variant: 'default', size: 'icon-sm', ${
+        renderer === 'stylex'
+          ? 'layoutStyle: styles.itemEnd'
+          : "class: 'ml-auto'"
+      }, children: [
         Icon.arrowUp({}, h),
         h.span([h.Class('sr-only')], ['Send']),
       ] }, h),
