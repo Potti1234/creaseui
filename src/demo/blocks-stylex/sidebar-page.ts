@@ -27,7 +27,6 @@ import {
   blockPage,
   blockSkeleton,
   mailItem,
-  mailPanel,
 } from '@/stylex/composition/sidebar-block'
 import * as Sidebar from '@/stylex/sidebar'
 import {
@@ -43,6 +42,8 @@ import * as stylex from '@stylexjs/stylex'
 import * as BaseIcon from '@/lib/icon'
 import { className } from '@/stylex/style'
 import { complexTokens } from '../../stylex/complex-tokens.stylex'
+import { tokens } from '../../stylex/tokens.stylex'
+import * as Switch from '@/stylex/switch'
 import * as DropdownMenu from '@/stylex/dropdown-menu'
 
 /* Mirrors TW searchForm: form > sidebar-group(py-0) > group-content(relative)
@@ -139,6 +140,112 @@ const searchStyles = stylex.create({
     },
   },
   fullWidth: { width: '100%' },
+  /* TW-09 nested sidebars: flex-row wrapper inside the 350px icon sidebar —
+     rail 'w-[calc(var(--sidebar-width-icon)+1px)] border-r' + 'flex-1' mail. */
+  mailRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    width: '100%',
+    height: '100%',
+  },
+  mailRail: {
+    width: 'calc(var(--sidebar-width-icon) + 1px)',
+    flexShrink: 0,
+    borderRightWidth: 1,
+    borderRightStyle: 'solid',
+    borderRightColor: tokens.border,
+    backgroundColor: complexTokens.sidebar,
+    color: complexTokens.sidebarForeground,
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+  },
+  mailColumn: {
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: '0%',
+    minWidth: 0,
+    backgroundColor: complexTokens.sidebar,
+    color: complexTokens.sidebarForeground,
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+    overflowY: 'auto',
+  },
+  /* TW-09 mail header 'gap-3.5 border-b p-4'. */
+  mailHead: {
+    gap: '.875rem',
+    borderBottomWidth: 1,
+    borderBottomStyle: 'solid',
+    borderBottomColor: tokens.border,
+    padding: '1rem',
+  },
+  mailTitleRow: {
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  mailTitle: {
+    fontSize: '1rem',
+    lineHeight: '1.5rem',
+    fontWeight: 500,
+    color: tokens.foreground,
+  },
+  mailSwitchRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '.5rem',
+    fontSize: '.875rem',
+    lineHeight: '1.25rem',
+  },
+  mailNameRow: {
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center',
+    gap: '.5rem',
+  },
+  mailDate: {
+    marginInlineStart: 'auto',
+    fontSize: '.75rem',
+    lineHeight: '1rem',
+  },
+  mailSubject: { fontWeight: 500 },
+  /* TW-09 'line-clamp-2 w-[260px] text-xs whitespace-break-spaces'. */
+  mailTeaser: {
+    fontSize: '.75rem',
+    lineHeight: '1rem',
+    width: '260px',
+    whiteSpace: 'pre-wrap',
+    display: '-webkit-box',
+    WebkitBoxOrient: 'vertical',
+    WebkitLineClamp: 2,
+    overflow: 'hidden',
+  },
+  /* TW-09 group 'px-0' — keeps block padding from base p-2. */
+  mailGroup: {
+    position: 'relative',
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+    minWidth: 0,
+    paddingBlock: '.5rem',
+  },
+  /* TW-09 inset header 'sticky top-0 flex shrink-0 items-center gap-2
+     border-b bg-background p-4' — padding-sized, not h-16. */
+  mailInsetHeader: {
+    gap: '.5rem',
+    padding: '1rem',
+    alignItems: 'center',
+    display: 'flex',
+    flexShrink: 0,
+    borderBottomWidth: 1,
+    borderBottomStyle: 'solid',
+    borderBottomColor: tokens.border,
+    backgroundColor: tokens.background,
+    position: 'sticky',
+    top: 0,
+  },
   menuTriggerOpen: {
     padding: '0.5rem',
     alignItems: 'center',
@@ -167,6 +274,7 @@ export const Model = S.Struct({
   isMobileOpen: S.Boolean,
   active: S.String,
   query: S.String,
+  unreadOnly: S.Boolean,
   expanded: S.Record(S.String, S.Boolean),
   calendar: Calendar.Model,
   selectedDate: S.Option(CalendarDate.CalendarDate),
@@ -182,6 +290,9 @@ export const Message = defineMessageUnion({
   SelectedStyleXSidebarItem: { label: S.String },
   ChangedStyleXSidebarSearch: {
     value: S.String,
+  },
+  ToggledStyleXSidebarUnread: {
+    isChecked: S.Boolean,
   },
   ChangedStyleXSidebarGroup: {
     id: S.String,
@@ -208,6 +319,7 @@ export const init = (): Model => ({
   isMobileOpen: false,
   active: 'Data Fetching',
   query: '',
+  unreadOnly: false,
   expanded: {
     Playground: true,
     'Build Your Application': true,
@@ -244,6 +356,9 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       }),
       ChangedStyleXSidebarSearch: ({ value }) => ({
         model: { ...model, query: value },
+      }),
+      ToggledStyleXSidebarUnread: ({ isChecked }) => ({
+        model: { ...model, unreadOnly: isChecked },
       }),
       ChangedStyleXSidebarGroup: ({ id, isOpen }) => ({
         model: { ...model, expanded: { ...model.expanded, [id]: isOpen } },
@@ -1265,23 +1380,173 @@ export const view = (
   const navigation =
     id === '09'
       ? [
-          brand('Acme Inc', 'Enterprise', h, !model.isMobileOpen),
-          Sidebar.sidebarContent(
-            {
-              children: [
-                Sidebar.sidebarMenu(
-                  {
-                    children: mail.navMain.map(i =>
-                      item(i.title, model, h, i.icon, !model.isMobileOpen),
-                    ),
-                  },
-                  h,
-                ),
-              ],
-            },
-            h,
+          /* TW-09: one icon sidebar whose inner is flex-row containing a
+             49px icon rail (collapsible none) + flex-1 mail list sidebar. */
+          h.div(
+            [h.Class(className(searchStyles.mailRow))],
+            [
+              h.div(
+                [
+                  h.DataAttribute('slot', 'sidebar'),
+                  h.Class(className(searchStyles.mailRail)),
+                ],
+                [
+                  brand('Acme Inc', 'Enterprise', h, !model.isMobileOpen),
+                  Sidebar.sidebarContent(
+                    {
+                      children: [
+                        Sidebar.sidebarMenu(
+                          {
+                            children: mail.navMain.map(i =>
+                              item(
+                                i.title,
+                                model,
+                                h,
+                                i.icon,
+                                !model.isMobileOpen,
+                              ),
+                            ),
+                          },
+                          h,
+                        ),
+                      ],
+                    },
+                    h,
+                  ),
+                  user(h, !model.isMobileOpen),
+                ],
+              ),
+              h.div(
+                [
+                  h.DataAttribute('slot', 'sidebar'),
+                  h.Class(className(searchStyles.mailColumn)),
+                ],
+                [
+                  h.div(
+                    [h.Class(className(searchStyles.mailHead))],
+                    [
+                      h.div(
+                        [h.Class(className(searchStyles.mailTitleRow))],
+                        [
+                          h.div(
+                            [h.Class(className(searchStyles.mailTitle))],
+                            ['Inbox'],
+                          ),
+                          h.div(
+                            [h.Class(className(searchStyles.mailSwitchRow))],
+                            [
+                              h.span([], ['Unreads']),
+                              Switch.switchControl(
+                                {
+                                  id: 'stylex-sidebar-09-unreads',
+                                  isChecked: model.unreadOnly,
+                                  onToggle: isChecked =>
+                                    Message['ToggledStyleXSidebarUnread']({
+                                      isChecked,
+                                    }),
+                                },
+                                h,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Sidebar.sidebarInput(
+                        {
+                          id: 'stylex-sidebar-09-mail-search',
+                          value: model.query,
+                          onInput: value =>
+                            Message['ChangedStyleXSidebarSearch']({
+                              value,
+                            }),
+                          placeholder: 'Type to search...',
+                        },
+                        h,
+                      ),
+                    ],
+                  ),
+                  Sidebar.sidebarContent(
+                    {
+                      children: [
+                        h.div(
+                          [
+                            h.DataAttribute('slot', 'sidebar-group'),
+                            h.Class(className(searchStyles.mailGroup)),
+                          ],
+                          [
+                            Sidebar.sidebarGroupContent(
+                              {
+                                children: mail.mails
+                                  .filter(m =>
+                                    (m.name + ' ' + m.subject)
+                                      .toLowerCase()
+                                      .includes(model.query.toLowerCase()),
+                                  )
+                                  .map(m =>
+                                    mailItem(
+                                      [
+                                        h.div(
+                                          [
+                                            h.Class(
+                                              className(
+                                                searchStyles.mailNameRow,
+                                              ),
+                                            ),
+                                          ],
+                                          [
+                                            h.span([], [m.name]),
+                                            h.span(
+                                              [
+                                                h.Class(
+                                                  className(
+                                                    searchStyles.mailDate,
+                                                  ),
+                                                ),
+                                              ],
+                                              [m.date],
+                                            ),
+                                          ],
+                                        ),
+                                        h.span(
+                                          [
+                                            h.Class(
+                                              className(
+                                                searchStyles.mailSubject,
+                                              ),
+                                            ),
+                                          ],
+                                          [m.subject],
+                                        ),
+                                        h.span(
+                                          [
+                                            h.Class(
+                                              className(
+                                                searchStyles.mailTeaser,
+                                              ),
+                                            ),
+                                          ],
+                                          [m.teaser],
+                                        ),
+                                      ],
+                                      Message['SelectedStyleXSidebarItem']({
+                                        label: m.subject,
+                                      }),
+                                      h,
+                                    ),
+                                  ),
+                              },
+                              h,
+                            ),
+                          ],
+                        ),
+                      ],
+                    },
+                    h,
+                  ),
+                ],
+              ),
+            ],
           ),
-          user(h, !model.isMobileOpen),
         ]
       : id === '11'
         ? [
@@ -1344,41 +1609,48 @@ export const view = (
       children: [
         ...(id === '16'
           ? []
-          : [
-              blockHeader(
-                [
-                  ...(id === '14' ? [] : [trigger(h), headerSeparator(h)]),
-                  crumbTrail(id, title, h),
-                  ...(id === '14' ? [rightTrigger(h)] : []),
-                  ...(id === '10'
-                    ? [
-                        Popover.popover(
-                          {
-                            model: model.popover,
-                            toParentMessage: message =>
-                              Message['GotStyleXSidebarPopover']({ message }),
-                            trigger: icon(
-                              { ariaLabel: 'Page actions', name: 'ellipsis' },
-                              h,
-                            ),
-                            content: Sidebar.sidebar(
-                              {
-                                collapsible: 'none',
-                                children: documentation('03', model, h),
-                              },
-                              h,
-                            ),
-                            align: 'end',
-                          },
-                          h,
-                        ),
-                      ]
-                    : []),
-                ],
-                false,
-                h,
-              ),
-            ]),
+          : id === '09'
+            ? [
+                h.header(
+                  [h.Class(className(searchStyles.mailInsetHeader))],
+                  [trigger(h), headerSeparator(h), crumbTrail(id, title, h)],
+                ),
+              ]
+            : [
+                blockHeader(
+                  [
+                    ...(id === '14' ? [] : [trigger(h), headerSeparator(h)]),
+                    crumbTrail(id, title, h),
+                    ...(id === '14' ? [rightTrigger(h)] : []),
+                    ...(id === '10'
+                      ? [
+                          Popover.popover(
+                            {
+                              model: model.popover,
+                              toParentMessage: message =>
+                                Message['GotStyleXSidebarPopover']({ message }),
+                              trigger: icon(
+                                { ariaLabel: 'Page actions', name: 'ellipsis' },
+                                h,
+                              ),
+                              content: Sidebar.sidebar(
+                                {
+                                  collapsible: 'none',
+                                  children: documentation('03', model, h),
+                                },
+                                h,
+                              ),
+                              align: 'end',
+                            },
+                            h,
+                          ),
+                        ]
+                      : []),
+                  ],
+                  false,
+                  h,
+                ),
+              ]),
         blockSkeleton(
           id === '02' || id === '09'
             ? 'rows'
@@ -1393,52 +1665,6 @@ export const view = (
     },
     h,
   )
-  const sideMail =
-    id === '09' && model.isOpen
-      ? [
-          mailPanel(
-            [
-              Sidebar.sidebarInput(
-                {
-                  id: 'sidebar-09-mail-search',
-                  value: model.query,
-                  onInput: value =>
-                    Message['ChangedStyleXSidebarSearch']({ value }),
-                  placeholder: 'Type to search...',
-                },
-                h,
-              ),
-              ...mail.mails
-                .filter(m =>
-                  (m.name + ' ' + m.subject)
-                    .toLowerCase()
-                    .includes(model.query.toLowerCase()),
-                )
-                .map(m =>
-                  mailItem(
-                    [
-                      inline(
-                        {
-                          justify: 'between',
-                          children: [
-                            text({ children: [m.name], variant: 'label' }, h),
-                            text({ children: [m.date], variant: 'caption' }, h),
-                          ],
-                        },
-                        h,
-                      ),
-                      text({ children: [m.subject], variant: 'label' }, h),
-                      text({ children: [m.teaser], variant: 'caption' }, h),
-                    ],
-                    Message['SelectedStyleXSidebarItem']({ label: m.subject }),
-                    h,
-                  ),
-                ),
-            ],
-            h,
-          ),
-        ]
-      : []
   const right =
     id === '15'
       ? [
@@ -1476,9 +1702,9 @@ export const view = (
         {
           state,
           belowHeader: id === '16',
-          ...(id === '09' ? { width: '3rem' } : {}),
-          children:
-            id === '14' ? [main, nav] : [nav, ...sideMail, main, ...right],
+          ...(id === '09' ? { width: '350px' } : {}),
+          ...(id === '04' ? { width: '19rem' } : {}),
+          children: id === '14' ? [main, nav] : [nav, main, ...right],
         },
         h,
       ),
