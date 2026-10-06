@@ -87,7 +87,7 @@ const scopedStyleXThemeCss = (): string => {
       tokens.secondaryHover,
       'color-mix(in oklab, var(--secondary) 80%, transparent)',
     ],
-    [tokens.border, 'var(--border)'],
+    [tokens.border, 'var(--color-border)'],
     [tokens.input, 'var(--input)'],
     [tokens.ring, 'var(--ring)'],
     [tokens.radius, 'var(--radius)'],
@@ -178,7 +178,7 @@ const scopedStyleXThemeCss = (): string => {
     [boardTokens.boardMuted, 'var(--muted)'],
     [boardTokens.boardMutedForeground, 'var(--muted-foreground)'],
     [cardTokens.muted, 'var(--muted)'],
-    [cardDemoTokens.pendingIndicator, 'var(--chart-4)'],
+    /* TW hardcodes bg-yellow-500 for the pending dot — preset-immune literal. */
     [cardDemoTokens.artworkSurface, 'var(--muted)'],
     [cardDemoTokens.artworkForeground, 'var(--muted-foreground)'],
     [
@@ -220,7 +220,7 @@ const scopedStyleXThemeCss = (): string => {
 const styles = stylex.create({
   applyButton: {
     borderColor: boardTokens.border,
-    borderRadius: tokens.cardRadius,
+    borderRadius: foundationTokens.radiusMd,
     borderStyle: 'solid',
     borderWidth: 1,
     backgroundColor: {
@@ -228,8 +228,10 @@ const styles = stylex.create({
       ':hover': boardTokens.hover,
     },
     color: boardTokens.text,
+    fontSize: '0.875rem',
     fontWeight: 500,
     height: '2.25rem',
+    lineHeight: '1.25rem',
     width: '100%',
   },
   board: {
@@ -257,7 +259,7 @@ const styles = stylex.create({
     },
   },
   choice: {
-    borderRadius: tokens.cardRadius,
+    borderRadius: foundationTokens.radiusMd,
     paddingInline: '0.75rem',
     alignItems: 'center',
     backgroundColor: {
@@ -293,16 +295,23 @@ const styles = stylex.create({
     gridColumnStart: 'span 2',
   },
   copyButton: {
-    borderRadius: tokens.cardRadius,
+    borderRadius: foundationTokens.radiusMd,
     backgroundColor: {
       default: boardTokens.text,
       ':hover': boardTokens.textMuted,
     },
-    color: boardTokens.panel,
+    color: 'rgb(0 0 0)',
+    fontSize: '0.875rem',
     fontWeight: 500,
+    lineHeight: '1.25rem',
     position: 'relative',
     height: '2.25rem',
     width: '100%',
+    alignItems: 'center',
+    display: 'inline-flex',
+    gap: '0.375rem',
+    justifyContent: 'center',
+    paddingInline: '0.625rem',
   },
   copyIcon: {
     transitionProperty: 'scale, opacity, filter',
@@ -318,13 +327,11 @@ const styles = stylex.create({
     width: '1rem',
   },
   customizer: {
-    borderColor: boardTokens.border,
     borderRadius: boardTokens.panelRadius,
-    borderStyle: 'solid',
-    borderWidth: 1,
     overflow: 'hidden',
     backgroundColor: boardTokens.panel,
-    boxShadow: tokens.shadowCard,
+    boxShadow:
+      '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1), 0 0 0 1px rgb(255 255 255 / 0.1)',
     color: boardTokens.text,
     display: 'flex',
     flexDirection: 'column',
@@ -427,7 +434,7 @@ const styles = stylex.create({
   },
   panelCode: {
     borderColor: boardTokens.border,
-    borderRadius: tokens.cardRadius,
+    borderRadius: foundationTokens.radiusLg,
     borderStyle: 'solid',
     borderWidth: 1,
     overflow: 'hidden',
@@ -464,7 +471,7 @@ const styles = stylex.create({
   },
   pickerTrigger: {
     borderColor: boardTokens.border,
-    borderRadius: tokens.cardRadius,
+    borderRadius: foundationTokens.radiusLg,
     borderStyle: 'solid',
     borderWidth: 1,
     paddingInline: '0.75rem',
@@ -492,7 +499,7 @@ const styles = stylex.create({
   popoverSize: { width: '18rem' },
   presetButton: {
     borderColor: boardTokens.border,
-    borderRadius: tokens.cardRadius,
+    borderRadius: foundationTokens.radiusLg,
     borderStyle: 'solid',
     borderWidth: 1,
     listStyle: 'none',
@@ -1229,7 +1236,7 @@ export const presetCustomizer = (
     )
 
   return h.aside(
-    [h.Class(className(styles.customizer))],
+    [h.Class(`dark ${className(styles.customizer)}`)],
     [
       h.div(
         [h.Class(className(styles.customizerHeader))],

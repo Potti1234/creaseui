@@ -19,7 +19,6 @@ import * as TanStackTablePage from '@/demo/blocks-stylex/tanstack-table-page'
 import * as Blocks from '@/demo/blocks/registry'
 import * as Board from '@/demo/board'
 import * as BoardStyleX from '@/demo/board-stylex'
-import * as BoardConstrained from '@/demo/board-constrained'
 import * as Landing from '@/demo/landing'
 import * as ChartsArea from '@/demo/charts/area'
 import * as ChartsBar from '@/demo/charts/bar'
@@ -706,10 +705,9 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
 /* Page views are plain (model) => Html functions; wrap them once as
    SubmodelViews so h.submodel can embed them with message lifting. */
 const boardView = defineView<Board.Model, Board.Message>(Board.view)
-const boardConstrainedView = defineView<
-  BoardConstrained.Model,
-  BoardConstrained.Message
->(BoardConstrained.view)
+const boardStyleXView = defineView<BoardStyleX.Model, BoardStyleX.Message>(
+  BoardStyleX.view,
+)
 const landingView = defineView<Landing.Model, Landing.Message>(Landing.view)
 const catalogDocsView = defineView<
   ComponentCatalog.Model,
@@ -946,10 +944,9 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
                 h.submodel({
                   slotId: 'create-board-stylex',
                   model: model.page.styleXBoard,
-                  view: boardConstrainedView,
-                  toParentMessage: (
-                    message: BoardConstrained.Message,
-                  ): Message => Message.GotBoardStyleXMessage({ message }),
+                  view: boardStyleXView,
+                  toParentMessage: (message: BoardStyleX.Message): Message =>
+                    Message.GotBoardStyleXMessage({ message }),
                 }),
               )
           : keyed('page-not-found', notFoundView(createPath(), h)),
