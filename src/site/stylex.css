@@ -3,7 +3,7 @@
 /* Document presentation only. Component element defaults belong in StyleX
    recipes; a global reset here would conceal regressions in consumer apps. */
 html {
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Inter', 'Inter Fallback', ui-sans-serif, system-ui, sans-serif;
   line-height: 1.5;
   tab-size: 4;
   -webkit-text-size-adjust: 100%;
