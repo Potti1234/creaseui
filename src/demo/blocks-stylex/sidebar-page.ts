@@ -174,6 +174,8 @@ const searchStyles = stylex.create({
   },
   /* TW-09 mail header 'gap-3.5 border-b p-4'. */
   mailHead: {
+    display: 'flex',
+    flexDirection: 'column',
     gap: '.875rem',
     borderBottomWidth: 1,
     borderBottomStyle: 'solid',
@@ -199,18 +201,25 @@ const searchStyles = stylex.create({
     fontSize: '.875rem',
     lineHeight: '1.25rem',
   },
+  /* TW-09 mail rows are 'text-sm leading-tight' (14px / 17.5px). */
   mailNameRow: {
     display: 'flex',
     width: '100%',
     alignItems: 'center',
     gap: '.5rem',
+    fontSize: '.875rem',
+    lineHeight: 1.25,
   },
   mailDate: {
     marginInlineStart: 'auto',
     fontSize: '.75rem',
     lineHeight: '1rem',
   },
-  mailSubject: { fontWeight: 500 },
+  mailSubject: {
+    fontWeight: 500,
+    fontSize: '.875rem',
+    lineHeight: 1.25,
+  },
   /* TW-09 'line-clamp-2 w-[260px] text-xs whitespace-break-spaces'. */
   mailTeaser: {
     fontSize: '.75rem',
@@ -677,6 +686,7 @@ const brand = (
   h: HtmlBuilder<Message>,
   collapsed: boolean,
   extraChildren: ReadonlyArray<Html> = [],
+  iconName = 'gallery-vertical-end',
 ): Html =>
   Sidebar.sidebarHeader(
     {
@@ -691,12 +701,10 @@ const brand = (
                       {
                         children: [
                           collapsed
-                            ? icon({ name: 'gallery-vertical-end' }, h)
+                            ? icon({ name: iconName }, h)
                             : badge(
                                 {
-                                  children: [
-                                    icon({ name: 'gallery-vertical-end' }, h),
-                                  ],
+                                  children: [icon({ name: iconName }, h)],
                                 },
                                 h,
                               ),
@@ -1391,7 +1399,14 @@ export const view = (
                   h.Class(className(searchStyles.mailRail)),
                 ],
                 [
-                  brand('Acme Inc', 'Enterprise', h, !model.isMobileOpen),
+                  brand(
+                    'Acme Inc',
+                    'Enterprise',
+                    h,
+                    !model.isMobileOpen,
+                    [],
+                    'command',
+                  ),
                   Sidebar.sidebarContent(
                     {
                       children: [
