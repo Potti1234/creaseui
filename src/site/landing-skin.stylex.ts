@@ -11,7 +11,7 @@ const styles = stylex.create({
   },
   sectionTitle: {
     fontSize: { default: '1.5rem', '@media (min-width: 640px)': '1.875rem' },
-    lineHeight: 1.2,
+    lineHeight: { default: '2rem', '@media (min-width: 640px)': '2.25rem' },
     fontWeight: 600,
     letterSpacing: '-.025em',
     textWrap: 'balance',
@@ -37,6 +37,7 @@ const styles = stylex.create({
     alignItems: 'center',
     gap: '.25rem',
     fontSize: '.75rem',
+    lineHeight: '1rem',
   },
   hero: {
     marginInline: 'auto',
@@ -65,10 +66,17 @@ const styles = stylex.create({
     borderRadius: '9px',
     display: 'block',
   },
-  brand: { fontSize: '1.125rem', fontWeight: 600, letterSpacing: '-.025em' },
+  brand: {
+    fontSize: '1.125rem',
+    lineHeight: '1.75rem',
+    fontWeight: 600,
+    letterSpacing: '-.025em',
+  },
   accent: { color: 'oklch(.62 .15 145)' },
   heroTitle: {
     fontSize: { default: '2.25rem', '@media (min-width: 640px)': '3rem' },
+    // TW's leading-[1.1] emits a unitless line-height that scales with the
+    // responsive font size (39.6px at text-4xl, 52.8px at sm:text-5xl).
     lineHeight: 1.1,
     fontWeight: 600,
     letterSpacing: '-.025em',
@@ -78,6 +86,7 @@ const styles = stylex.create({
     color: 'var(--muted-foreground)',
     maxWidth: '28rem',
     fontSize: '1.125rem',
+    lineHeight: '1.75rem',
     textWrap: 'balance',
   },
   actions: {
@@ -86,7 +95,11 @@ const styles = stylex.create({
     alignItems: 'center',
     gap: '.75rem',
   },
-  license: { color: 'var(--muted-foreground)', fontSize: '.75rem' },
+  license: {
+    color: 'var(--muted-foreground)',
+    fontSize: '.75rem',
+    lineHeight: '1rem',
+  },
   section: {
     marginInline: 'auto',
     display: 'flex',
@@ -131,6 +144,7 @@ const styles = stylex.create({
     borderColor: 'var(--border)',
     padding: '.25rem .5rem',
     fontSize: '.75rem',
+    lineHeight: '1rem',
     fontWeight: 500,
   },
   rightLabel: {
@@ -146,6 +160,7 @@ const styles = stylex.create({
     borderColor: 'var(--border)',
     padding: '.25rem .5rem',
     fontSize: '.75rem',
+    lineHeight: '1rem',
     fontWeight: 500,
   },
   range: {
@@ -166,8 +181,12 @@ const styles = stylex.create({
     borderColor: 'var(--border)',
     padding: '1rem',
   },
-  label: { fontSize: '.875rem', fontWeight: 600 },
-  muted: { color: 'var(--muted-foreground)', fontSize: '.875rem' },
+  label: { fontSize: '.875rem', lineHeight: '1.25rem', fontWeight: 600 },
+  muted: {
+    color: 'var(--muted-foreground)',
+    fontSize: '.875rem',
+    lineHeight: '1.25rem',
+  },
   band: {
     backgroundColor: 'color-mix(in oklab,var(--muted) 40%,transparent)',
     borderBlockStyle: 'solid',
@@ -213,6 +232,7 @@ const styles = stylex.create({
   code: {
     fontFamily: 'ui-monospace, monospace',
     fontSize: '.875rem',
+    lineHeight: '1.25rem',
     overflowWrap: 'anywhere',
   },
   checks: {
@@ -220,6 +240,7 @@ const styles = stylex.create({
     display: 'grid',
     gap: '.5rem',
     fontSize: '.875rem',
+    lineHeight: '1.25rem',
     listStyleType: 'none',
   },
   check: { display: 'flex', alignItems: 'center', gap: '.5rem' },
@@ -241,6 +262,7 @@ const styles = stylex.create({
   },
   statValue: {
     fontSize: '1.875rem',
+    lineHeight: '2.25rem',
     fontWeight: 600,
     letterSpacing: '-.025em',
   },
@@ -287,6 +309,7 @@ const styles = stylex.create({
     paddingInline: { default: '1rem', '@media (min-width: 768px)': '2rem' },
     paddingBlock: '2.5rem',
     fontSize: '.875rem',
+    lineHeight: '1.25rem',
   },
   footerLinks: {
     display: 'flex',
