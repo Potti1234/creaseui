@@ -1359,11 +1359,15 @@ test('drawer documents its child model and preserves modal focus behavior', asyn
   const trigger = hero.getByRole('button', { name: 'Open Drawer' })
 
   await trigger.click()
-  const heroDrawer = page.locator('#docs-drawer-0')
+  // Hero reuses fixture 0's content on a spare preview-model slot (index 11),
+  // so its dialog id is docs-drawer-11.
+  const heroDrawer = page.locator('#docs-drawer-11')
   await expect(heroDrawer).toBeVisible()
+  // shadcn's Base UI drawer renders the swipe handle only via showSwipeHandle
+  // — the goal fixture leaves it off.
   await expect(
     heroDrawer.locator('[data-slot="drawer-swipe-handle"]'),
-  ).toBeVisible()
+  ).toHaveCount(0)
   await expect(heroDrawer.locator('[data-slot="drawer-title"]')).toHaveText(
     'Move goal',
   )
@@ -1377,7 +1381,7 @@ test('drawer documents its child model and preserves modal focus behavior', asyn
 
   const scrollSection = page.locator('#scrollable-content')
   await scrollSection
-    .getByRole('button', { name: 'Scrollable Content', exact: true })
+    .getByRole('button', { name: 'right', exact: true })
     .click()
   const scrollDrawer = page.locator('#docs-drawer-5')
   await expect(scrollDrawer).toBeVisible()
@@ -1552,14 +1556,15 @@ test('drawer handle supports mouse cancellation and touch threshold dismissal', 
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/docs/components/drawer')
   await visitRenderer(page, 'StyleX')
-  const example = page.locator('[aria-label="Activity goal preview"]')
-  const trigger = example.getByRole('button', { name: 'Open Drawer' })
+  const example = page.locator('#swipe-handle')
+  const trigger = example.getByRole('button', { name: 'down', exact: true })
   await trigger.click()
 
-  const drawer = page.locator('#docs-drawer-6')
-  const root = example.locator('[data-slot="drawer-root"]')
-  const panel = drawer.locator('[data-slot="drawer-content"]')
-  let handle = drawer.locator('[data-slot="drawer-handle"]')
+  const drawer = page.locator('#docs-drawer-3')
+  const viewport = page.locator('[data-slot="drawer-viewport"]')
+  const panel = drawer.locator('[data-slot="drawer-popup"]')
+  let handle = drawer.locator('[data-slot="drawer-swipe-handle"]')
+  await expect(handle).toBeVisible()
   await expect(panel).toHaveCSS('transition-property', 'none')
 
   await handle.dispatchEvent('pointerdown', {
@@ -1568,36 +1573,32 @@ test('drawer handle supports mouse cancellation and touch threshold dismissal', 
     screenX: 100,
     screenY: 100,
   })
-  handle = drawer.locator('[data-slot="drawer-handle"]')
-  await expect(handle).toHaveAttribute('data-drag-phase', 'Dragging')
-  await root.dispatchEvent('pointermove', {
+  await expect(panel).toHaveAttribute('data-swiping', '')
+  await viewport.dispatchEvent('pointermove', {
     pointerType: 'mouse',
     screenX: 100,
     screenY: 150,
   })
-  await root.dispatchEvent('pointerleave', { pointerType: 'mouse' })
+  await viewport.dispatchEvent('pointerleave', { pointerType: 'mouse' })
   await expect(drawer).toBeVisible()
-  await expect(drawer.locator('[data-slot="drawer-handle"]')).toHaveAttribute(
-    'data-drag-phase',
-    'Idle',
-  )
+  await expect(panel).not.toHaveAttribute('data-swiping', '')
 
-  handle = drawer.locator('[data-slot="drawer-handle"]')
+  handle = drawer.locator('[data-slot="drawer-swipe-handle"]')
   await handle.dispatchEvent('pointerdown', {
     pointerType: 'touch',
     button: 0,
     screenX: 100,
     screenY: 100,
   })
-  await root.dispatchEvent('pointermove', {
+  await viewport.dispatchEvent('pointermove', {
     pointerType: 'touch',
     screenX: 100,
-    screenY: 240,
+    screenY: 600,
   })
-  await root.dispatchEvent('pointerup', {
+  await viewport.dispatchEvent('pointerup', {
     pointerType: 'touch',
     screenX: 100,
-    screenY: 240,
+    screenY: 600,
   })
   await expect(drawer).toBeHidden()
   await expect(trigger).toBeFocused()
