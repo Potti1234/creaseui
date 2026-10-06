@@ -24,7 +24,12 @@ const styles = stylex.create({
     gap: { default: '1rem', '@media (min-width: 768px)': '1.5rem' },
     paddingInline: { default: '1rem', '@media (min-width: 768px)': '2rem' },
   },
-  brand: { flexShrink: 0, fontSize: '.875rem', fontWeight: 600 },
+  brand: {
+    flexShrink: 0,
+    fontSize: '.875rem',
+    lineHeight: '1.25rem',
+    fontWeight: 600,
+  },
   nav: {
     display: { default: 'none', '@media (min-width: 640px)': 'flex' },
     alignItems: 'center',
@@ -32,12 +37,23 @@ const styles = stylex.create({
   },
   link: {
     fontSize: '.875rem',
+    lineHeight: '1.25rem',
     fontWeight: 500,
     color: { default: tokens.mutedForeground, ':hover': tokens.foreground },
+    transitionProperty: 'color',
+    transitionDuration: '.15s',
   },
-  active: { color: tokens.foreground },
+  active: {
+    fontSize: '.875rem',
+    lineHeight: '1.25rem',
+    fontWeight: 500,
+    color: tokens.foreground,
+    transitionProperty: 'color',
+    transitionDuration: '.15s',
+  },
   other: {
     fontSize: '.75rem',
+    lineHeight: '1rem',
     fontWeight: 500,
     color: { default: tokens.mutedForeground, ':hover': tokens.foreground },
   },

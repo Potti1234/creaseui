@@ -43,6 +43,7 @@ const styles = stylex.create({
   description: {
     maxWidth: '48rem',
     fontSize: { default: '1rem', '@media (min-width: 640px)': '1.125rem' },
+    lineHeight: { default: '1.5rem', '@media (min-width: 640px)': '1.75rem' },
     color: tokens.mutedForeground,
     textWrap: 'pretty',
   },
@@ -52,6 +53,7 @@ const styles = stylex.create({
     borderRadius: '999px',
     paddingInline: '1rem',
     fontSize: '.875rem',
+    lineHeight: '1.25rem',
     fontWeight: 500,
     cursor: 'pointer',
     color: { default: tokens.mutedForeground, ':hover': tokens.foreground },
@@ -59,10 +61,15 @@ const styles = stylex.create({
   selected: { backgroundColor: tokens.muted, color: tokens.foreground },
   link: {
     fontSize: '.875rem',
+    lineHeight: '1.25rem',
     textUnderlineOffset: '4px',
     textDecorationLine: { default: 'none', ':hover': 'underline' },
   },
-  status: { fontSize: '.875rem', color: tokens.mutedForeground },
+  status: {
+    fontSize: '.875rem',
+    lineHeight: '1.25rem',
+    color: tokens.mutedForeground,
+  },
   block: {
     display: 'flex',
     flexDirection: 'column',
@@ -83,7 +90,7 @@ const styles = stylex.create({
     flexDirection: 'column',
     gap: '.25rem',
   },
-  heading: { fontSize: '.875rem', fontWeight: 600 },
+  heading: { fontSize: '.875rem', lineHeight: '1.25rem', fontWeight: 600 },
   actions: {
     display: 'flex',
     flexShrink: 0,
@@ -101,6 +108,7 @@ const styles = stylex.create({
     borderColor: tokens.border,
     paddingInline: '.75rem',
     fontSize: '.875rem',
+    lineHeight: '1.25rem',
     fontWeight: 500,
     cursor: 'pointer',
     backgroundColor: { default: tokens.background, ':hover': tokens.accent },
@@ -146,6 +154,7 @@ const styles = stylex.create({
   path: {
     fontFamily: 'ui-monospace, monospace',
     fontSize: '.75rem',
+    lineHeight: '1rem',
     color: tokens.mutedForeground,
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -170,6 +179,7 @@ const styles = stylex.create({
     padding: '.25rem .5rem',
     fontFamily: 'ui-monospace, monospace',
     fontSize: '.75rem',
+    lineHeight: '1rem',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
@@ -185,6 +195,7 @@ const styles = stylex.create({
     justifyContent: 'center',
     color: tokens.mutedForeground,
     fontSize: '.875rem',
+    lineHeight: '1.25rem',
   },
   icon: { width: '1rem', height: '1rem' },
 })
