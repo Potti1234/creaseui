@@ -173,6 +173,9 @@ const styles = stylex.create({
     fontWeight: 600,
     marginBottom: '.75rem',
   },
+  /* TW 'mb-3 px-2' on the sidebar 'Components' heading only; the TOC
+     'On this page' heading is mb-3 with no horizontal padding. */
+  labelIndent: { paddingInline: '.5rem' },
   description: {
     maxWidth: '70ch',
     color: tokens.mutedForeground,
@@ -976,7 +979,11 @@ export const componentPage = <Msg>(
             [h.AriaLabel('Component navigation')],
             [
               h.p(
-                [h.Class(className(reset.text, styles.label))],
+                [
+                  h.Class(
+                    className(reset.text, styles.label, styles.labelIndent),
+                  ),
+                ],
                 ['Components'],
               ),
               h.ul(
