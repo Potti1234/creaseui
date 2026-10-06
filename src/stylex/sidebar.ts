@@ -245,11 +245,21 @@ const styles = stylex.create({
     opacity: { default: 0, ':focus-visible': 1, ':hover': 1 },
   },
   menuButton: {
-    padding: '0.5rem',
+    padding: {
+      default: '0.5rem',
+      /* TW 'group-data-[collapsible=icon]:p-0!' — icon-collapsed buttons
+         go flush so their size-8 box is centered content. */
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: 0,
+    },
     borderRadius: tokens.controlRadius,
     gap: '0.5rem',
     overflow: 'hidden',
     alignItems: 'center',
+    justifyContent: {
+      default: null,
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]:
+        'center',
+    },
     backgroundColor: {
       default: tokens.transparent,
       ':hover': complexTokens.sidebarAccent,

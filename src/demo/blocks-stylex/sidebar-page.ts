@@ -28,6 +28,7 @@ import {
   mailItem,
 } from '@/stylex/composition/sidebar-block'
 import * as Sidebar from '@/stylex/sidebar'
+import { sidebarScope } from '@/stylex/sidebar.markers.stylex'
 import {
   breadcrumb,
   breadcrumbItem,
@@ -185,7 +186,7 @@ const searchStyles = stylex.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: '.5rem',
+    borderRadius: '.625rem',
     backgroundColor: complexTokens.sidebarPrimary,
     color: complexTokens.sidebarPrimaryForeground,
     flexShrink: 0,
@@ -449,7 +450,7 @@ const searchStyles = stylex.create({
     height: '2rem',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: '.5rem',
+    borderRadius: '.625rem',
     backgroundColor: foundationTokens.muted,
     color: tokens.mutedForeground,
     flexShrink: 0,
@@ -1397,12 +1398,10 @@ const brand = (
                     Sidebar.sidebarMenuButton(
                       {
                         children: [
-                          collapsed
-                            ? icon({ name: iconName }, h)
-                            : h.div(
-                                [h.Class(className(searchStyles.brandIconBox))],
-                                [icon({ name: iconName }, h)],
-                              ),
+                          h.div(
+                            [h.Class(className(searchStyles.brandIconBox))],
+                            [icon({ name: iconName }, h)],
+                          ),
                           ...(collapsed
                             ? []
                             : [
@@ -2624,7 +2623,11 @@ export const view = (
               h.div(
                 [
                   h.DataAttribute('slot', 'sidebar'),
-                  h.Class(className(searchStyles.mailRail)),
+                  /* Scope marker + collapsed-icon attr so rail menu
+                     buttons inherit the icon-collapsed chrome (size-8,
+                     centered, labels hidden). */
+                  h.DataAttribute('collapsible', 'icon'),
+                  h.Class(className(searchStyles.mailRail, sidebarScope)),
                 ],
                 [
                   brand(
@@ -2639,17 +2642,39 @@ export const view = (
                   Sidebar.sidebarContent(
                     {
                       children: [
-                        Sidebar.sidebarMenu(
+                        /* TW-09 rail: content > group > groupContent > menu —
+                           the group wrapper provides the px-2 rail inset. */
+                        Sidebar.sidebarGroup(
                           {
-                            children: mail.navMain.map(i =>
-                              item(
-                                i.title,
-                                model,
-                                h,
-                                i.icon,
-                                !model.isMobileOpen,
+                            children: [
+                              h.div(
+                                [
+                                  h.DataAttribute(
+                                    'slot',
+                                    'sidebar-group-content',
+                                  ),
+                                  h.DataAttribute('sidebar', 'group-content'),
+                                ],
+                                [
+                                  Sidebar.sidebarMenu(
+                                    {
+                                      children: mail.navMain.map(i =>
+                                        item(
+                                          i.title,
+                                          /* TW-09 marks 'Inbox' active in
+                                             the rail. */
+                                          { ...model, active: 'Inbox' },
+                                          h,
+                                          i.icon,
+                                          !model.isMobileOpen,
+                                        ),
+                                      ),
+                                    },
+                                    h,
+                                  ),
+                                ],
                               ),
-                            ),
+                            ],
                           },
                           h,
                         ),
