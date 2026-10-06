@@ -441,6 +441,105 @@ const searchStyles = stylex.create({
     flexShrink: 0,
     opacity: 0.5,
   },
+  /* TW-10 header nav actions 'ml-auto px-3 flex items-center gap-2'. */
+  headerActions: {
+    marginInlineStart: 'auto',
+    paddingInline: '.75rem',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '.5rem',
+    fontSize: '.875rem',
+    lineHeight: '1.25rem',
+  },
+  /* TW 'hidden font-medium text-muted-foreground md:inline-block'. */
+  editDate: {
+    fontWeight: 500,
+    color: tokens.mutedForeground,
+    display: { default: 'none', '@media (min-width: 768px)': 'inline-block' },
+  },
+  /* TW ghost icon button 'h-7 w-7'. */
+  headerIconButton: {
+    height: '1.75rem',
+    width: '1.75rem',
+  },
+  /* TW ROW_ACTION_CLASS: absolute top-1.5 right-1 w-5 action, hidden until
+     row hover/focus (SX menuActionHover: hover/focus-visible on itself). */
+  rowAction: {
+    padding: 0,
+    borderRadius: tokens.controlRadius,
+    alignItems: 'center',
+    backgroundColor: {
+      default: tokens.transparent,
+      ':hover': complexTokens.sidebarAccent,
+    },
+    color: complexTokens.sidebarForeground,
+    display: 'flex',
+    justifyContent: 'center',
+    outlineStyle: 'none',
+    position: 'absolute',
+    height: '1.25rem',
+    right: '.25rem',
+    top: '.375rem',
+    width: '1.25rem',
+    opacity: {
+      default: 0,
+      ':focus-visible': 1,
+      ':hover': 1,
+    },
+  },
+  /* TW 'text-sidebar-foreground/70' trailing More row. */
+  dimmedButton: {
+    color: {
+      default: complexTokens.sidebarForeground,
+      ':hover': complexTokens.sidebarAccentForeground,
+    },
+    opacity: 0.7,
+  },
+  /* TW-12/15 calendar checkbox 'size-4 rounded-sm border
+     data-[active]:bg-primary data-[active]:border-primary'. */
+  calBox: {
+    display: 'flex',
+    aspectRatio: '1 / 1',
+    width: '1rem',
+    flexShrink: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '.25rem',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: complexTokens.sidebarBorder,
+    color: complexTokens.sidebarPrimaryForeground,
+  },
+  calBoxActive: {
+    display: 'flex',
+    aspectRatio: '1 / 1',
+    width: '1rem',
+    flexShrink: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '.25rem',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: complexTokens.sidebarPrimary,
+    backgroundColor: complexTokens.sidebarPrimary,
+    color: complexTokens.sidebarPrimaryForeground,
+  },
+  calCheck: { width: '.75rem', height: '.75rem' },
+  /* TW-10 actions popover groups 'border-b last:border-none'. */
+  actionGroup: {
+    position: 'relative',
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+    minWidth: 0,
+    padding: '.5rem',
+    borderBottomWidth: 1,
+    borderBottomStyle: 'solid',
+    borderBottomColor: tokens.border,
+  },
+  actionGroupLast: {
+    borderBottomWidth: 0,
+  },
   menuTriggerOpen: {
     padding: '0.5rem',
     alignItems: 'center',
@@ -479,6 +578,7 @@ export const Model = S.Struct({
   teamMenu: DropdownMenu.Model,
   userMenu: DropdownMenu.Model,
   activeTeamIndex: S.Number,
+  favoriteMenus: S.Array(DropdownMenu.Model),
 })
 export type Model = typeof Model.Type
 
@@ -516,6 +616,10 @@ export const Message = defineMessageUnion({
   GotStyleXSidebarUserMenu: {
     message: DropdownMenu.Message,
   },
+  GotStyleXSidebarFavoriteMenu: {
+    index: S.Number,
+    message: DropdownMenu.Message,
+  },
 })
 export type Message = typeof Message.Type
 export const init = (): Model => ({
@@ -546,7 +650,19 @@ export const init = (): Model => ({
   teamMenu: DropdownMenu.init({ id: 'stylex-sidebar-team' }),
   userMenu: DropdownMenu.init({ id: 'stylex-sidebar-user' }),
   activeTeamIndex: 0,
+  favoriteMenus: Array.from({ length: 16 }, (_, index) =>
+    DropdownMenu.init({ id: 'stylex-favorite-' + index }),
+  ),
 })
+type FavoriteAction = 'remove' | 'copy-link' | 'open-tab' | 'delete'
+const FAVORITE_ACTIONS: ReadonlyArray<FavoriteAction> = [
+  'remove',
+  'copy-link',
+  'open-tab',
+  'delete',
+]
+const FavoriteMenu = DropdownMenu.create<FavoriteAction>()
+
 type TeamItem = 'team-0' | 'team-1' | 'team-2' | 'add-team'
 const TEAM_ITEMS: ReadonlyArray<TeamItem> = [
   'team-0',
@@ -684,6 +800,24 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           model: { ...model, userMenu },
           commands: Command.mapMessages(commands, message =>
             Message['GotStyleXSidebarUserMenu']({ message }),
+          ),
+        }
+      },
+      GotStyleXSidebarFavoriteMenu: ({ index, message: child }) => {
+        const current = model.favoriteMenus[index]
+        if (current === undefined) return { model: model }
+        const { model: favoriteMenu, commands: favoriteMenuCommands__ } =
+          FavoriteMenu.update(current, child)
+        const commands = favoriteMenuCommands__ ?? []
+        return {
+          model: {
+            ...model,
+            favoriteMenus: model.favoriteMenus.map((p, i) =>
+              i === index ? favoriteMenu : p,
+            ),
+          },
+          commands: Command.mapMessages(commands, message =>
+            Message['GotStyleXSidebarFavoriteMenu']({ index, message }),
           ),
         }
       },
@@ -1463,26 +1597,172 @@ const application = (
     user(model, h, collapsed),
   ]
 }
+/* TW-10 favorite row: menuButton [emoji span + name span] + hover-revealed
+   row-action dropdown; TW-15 uses a static show-on-hover menuAction. */
+const favoriteActionConfig = (
+  action: FavoriteAction,
+  h: HtmlBuilder<Message>,
+): DropdownMenu.DropdownMenuItemConfig<FavoriteAction> =>
+  M.value(action).pipe(
+    M.withReturnType<DropdownMenu.DropdownMenuItemConfig<FavoriteAction>>(),
+    M.when('remove', () => ({
+      label: 'Remove from Favorites',
+      icon: icon({ name: 'star-off' }, h),
+      group: 'Favorite',
+    })),
+    M.when('copy-link', () => ({
+      label: 'Copy Link',
+      icon: icon({ name: 'link' }, h),
+      group: 'Page',
+    })),
+    M.when('open-tab', () => ({
+      label: 'Open in New Tab',
+      icon: icon({ name: 'arrow-up-right' }, h),
+      group: 'Page',
+    })),
+    M.when('delete', () => ({
+      label: 'Delete',
+      icon: icon({ name: 'trash-2' }, h),
+      group: '',
+    })),
+    M.exhaustive,
+  )
+const favoriteItem = (
+  fav: Readonly<{ name: string; emoji: string; url: string }>,
+  index: number,
+  dropdown: boolean,
+  model: Model,
+  h: HtmlBuilder<Message>,
+): Html => {
+  const action = dropdown
+    ? DropdownMenu.dropdownMenu<FavoriteAction, Message>(
+        {
+          model:
+            model.favoriteMenus[index] ??
+            DropdownMenu.init({ id: 'stylex-favorite-' + index }),
+          toParentMessage: message =>
+            Message['GotStyleXSidebarFavoriteMenu']({ index, message }),
+          trigger: h.span(
+            [h.Class(className(searchStyles.contents))],
+            [
+              BaseIcon.icon(
+                'ellipsis',
+                { class: className(searchStyles.endIcon) },
+                h,
+              ),
+              h.span([h.Class(className(searchStyles.srOnly))], ['More']),
+            ],
+          ),
+          triggerStyle: searchStyles.rowAction,
+          placement: 'sidebarAction',
+          items: FAVORITE_ACTIONS,
+          itemToConfig: action => favoriteActionConfig(action, h),
+          side: 'right',
+          align: 'start',
+          ariaLabel: `${fav.name} actions`,
+        },
+        h,
+      )
+    : Sidebar.sidebarMenuAction(
+        {
+          showOnHover: true,
+          children: [
+            icon({ name: 'ellipsis' }, h),
+            h.span([h.Class(className(searchStyles.srOnly))], ['More']),
+          ],
+        },
+        h,
+      )
+  return Sidebar.sidebarMenuItem(
+    {
+      children: [
+        Sidebar.sidebarMenuButton(
+          {
+            children: [h.span([], [fav.emoji]), h.span([], [fav.name])],
+            tooltip: fav.name,
+            href: fav.url,
+          },
+          h,
+        ),
+        action,
+      ],
+    },
+    h,
+  )
+}
+/* TW favorites group: label + menu(items + trailing 'More' dimmed row). */
+const favoritesNav = (
+  model: Model,
+  h: HtmlBuilder<Message>,
+  dropdown: boolean,
+): Html =>
+  Sidebar.sidebarGroup(
+    {
+      children: [
+        Sidebar.sidebarGroupLabel({ children: ['Favorites'] }, h),
+        Sidebar.sidebarMenu(
+          {
+            children: [
+              ...workspace.favorites.map((f, index) =>
+                favoriteItem(f, index, dropdown, model, h),
+              ),
+              Sidebar.sidebarMenuItem(
+                {
+                  children: [
+                    Sidebar.sidebarMenuButton(
+                      {
+                        children: [
+                          BaseIcon.icon(
+                            'ellipsis',
+                            { class: className(searchStyles.dimmedButton) },
+                            h,
+                          ),
+                          h.span(
+                            [h.Class(className(searchStyles.dimmedButton))],
+                            ['More'],
+                          ),
+                        ],
+                      },
+                      h,
+                    ),
+                  ],
+                },
+                h,
+              ),
+            ],
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  )
 const workspaceNav = (
   model: Model,
   h: HtmlBuilder<Message>,
+  id: string,
 ): ReadonlyArray<Html> => [
-  brand('Acme Inc', 'Workspace', h, false),
-  group(
-    '',
-    workspace.navMain.map(i =>
-      item(i.title, model, h, i.icon === 'home' ? 'house' : i.icon),
-    ),
+  /* TW-10/15 left header: team switcher dropdown + nav menu. */
+  Sidebar.sidebarHeader(
+    {
+      children: [
+        teamSwitcher(model, h),
+        Sidebar.sidebarMenu(
+          {
+            children: workspace.navMain.map(i =>
+              item(i.title, model, h, i.icon === 'home' ? 'house' : i.icon),
+            ),
+          },
+          h,
+        ),
+      ],
+    },
     h,
   ),
   Sidebar.sidebarContent(
     {
       children: [
-        group(
-          'Favorites',
-          workspace.favorites.map(f => item(f.emoji + ' ' + f.name, model, h)),
-          h,
-        ),
+        favoritesNav(model, h, id === '10'),
         group(
           'Workspaces',
           workspace.workspaces.map(w =>
@@ -1541,6 +1821,84 @@ const tree = (
     },
     h,
   )
+/* TW-10 actions popover content: grouped menu items inside a transparent
+   'w-56 p-0' sidebar (border-b separators between groups). */
+const ACTION_GROUPS: ReadonlyArray<
+  ReadonlyArray<Readonly<{ label: string; icon: string }>>
+> = [
+  [
+    { label: 'Customize Page', icon: 'settings-2' },
+    { label: 'Turn into wiki', icon: 'file-text' },
+  ],
+  [
+    { label: 'Copy Link', icon: 'link' },
+    { label: 'Duplicate', icon: 'copy' },
+    { label: 'Move to', icon: 'corner-up-right' },
+    { label: 'Move to Trash', icon: 'trash-2' },
+  ],
+  [
+    { label: 'Undo', icon: 'corner-up-left' },
+    { label: 'View analytics', icon: 'chart-no-axes-combined' },
+    { label: 'Version History', icon: 'gallery-vertical-end' },
+    { label: 'Show delete pages', icon: 'trash' },
+    { label: 'Notifications', icon: 'bell' },
+  ],
+  [
+    { label: 'Import', icon: 'arrow-up' },
+    { label: 'Export', icon: 'arrow-down' },
+  ],
+]
+const actionNav = (h: HtmlBuilder<Message>): ReadonlyArray<Html> => [
+  Sidebar.sidebarContent(
+    {
+      children: ACTION_GROUPS.map((groupItems, groupIndex) =>
+        h.div(
+          [
+            h.DataAttribute('slot', 'sidebar-group'),
+            h.Class(className(searchStyles.actionGroup)),
+            ...(groupIndex === ACTION_GROUPS.length - 1
+              ? [h.Class(className(searchStyles.actionGroupLast))]
+              : []),
+          ],
+          [
+            Sidebar.sidebarMenu(
+              {
+                children: groupItems.map(i =>
+                  Sidebar.sidebarMenuItem(
+                    {
+                      children: [
+                        Sidebar.sidebarMenuButton(
+                          {
+                            children: [
+                              icon({ name: i.icon }, h),
+                              h.span([], [i.label]),
+                            ],
+                          },
+                          h,
+                        ),
+                      ],
+                    },
+                    h,
+                  ),
+                ),
+              },
+              h,
+            ),
+          ],
+        ),
+      ),
+    },
+    h,
+  ),
+]
+/* Mirrors TW sidebar-12/15 rightData.calendars. */
+const CALENDAR_GROUPS: ReadonlyArray<
+  Readonly<{ name: string; items: ReadonlyArray<string> }>
+> = [
+  { name: 'My Calendars', items: ['Personal', 'Work', 'Family'] },
+  { name: 'Favorites', items: ['Holidays', 'Birthdays'] },
+  { name: 'Other', items: ['Travel', 'Reminders', 'Deadlines'] },
+]
 const calendarNav = (
   model: Model,
   h: HtmlBuilder<Message>,
@@ -1566,24 +1924,56 @@ const calendarNav = (
           },
           h,
         ),
-        group(
-          'My Calendars',
-          ['Personal', 'Work', 'Family'].map(label =>
-            Sidebar.sidebarMenuItem(
+        ...CALENDAR_GROUPS.map((g, index) =>
+          expandable(
+            'calendar-group-' + index,
+            g.name,
+            Sidebar.sidebarGroupContent(
               {
                 children: [
-                  checkbox(
+                  Sidebar.sidebarMenu(
                     {
-                      id: 'calendar-' + label,
-                      label,
-                      isChecked:
-                        model.expanded['calendar-' + label] ??
-                        label !== 'Family',
-                      onToggle: isOpen =>
-                        Message['ChangedStyleXSidebarGroup']({
-                          id: 'calendar-' + label,
-                          isOpen,
-                        }),
+                      children: g.items.map((label, itemIndex) =>
+                        Sidebar.sidebarMenuItem(
+                          {
+                            children: [
+                              Sidebar.sidebarMenuButton(
+                                {
+                                  children: [
+                                    h.div(
+                                      [
+                                        h.Class(
+                                          className(
+                                            itemIndex < 2
+                                              ? searchStyles.calBoxActive
+                                              : searchStyles.calBox,
+                                          ),
+                                        ),
+                                      ],
+                                      itemIndex < 2
+                                        ? [
+                                            BaseIcon.icon(
+                                              'check',
+                                              {
+                                                class: className(
+                                                  searchStyles.calCheck,
+                                                ),
+                                              },
+                                              h,
+                                            ),
+                                          ]
+                                        : [],
+                                    ),
+                                    label,
+                                  ],
+                                },
+                                h,
+                              ),
+                            ],
+                          },
+                          h,
+                        ),
+                      ),
                     },
                     h,
                   ),
@@ -1591,11 +1981,13 @@ const calendarNav = (
               },
               h,
             ),
+            model,
+            h,
+            index === 0,
+            undefined,
+            'label',
           ),
-          h,
         ),
-        group('Favorites', [], h),
-        group('Other', [], h),
       ],
     },
     h,
@@ -2011,7 +2403,7 @@ export const view = (
         : id === '12'
           ? calendarNav(model, h, 'right')
           : id === '10' || id === '15'
-            ? workspaceNav(model, h)
+            ? workspaceNav(model, h, id)
             : isApp
               ? application(id, model, h)
               : documentation(id, model, h)
@@ -2050,30 +2442,55 @@ export const view = (
                     ...(id === '14' ? [rightTrigger(h)] : []),
                     ...(id === '10'
                       ? [
-                          Popover.popover(
-                            {
-                              model: model.popover,
-                              toParentMessage: message =>
-                                Message['GotStyleXSidebarPopover']({ message }),
-                              trigger: icon(
-                                { ariaLabel: 'Page actions', name: 'ellipsis' },
-                                h,
+                          h.div(
+                            [h.Class(className(searchStyles.headerActions))],
+                            [
+                              h.span(
+                                [h.Class(className(searchStyles.editDate))],
+                                ['Edit Oct 08'],
                               ),
-                              content: Sidebar.sidebar(
+                              button(
                                 {
-                                  collapsible: 'none',
-                                  children: documentation('03', model, h),
+                                  children: [icon({ name: 'star' }, h)],
+                                  variant: 'ghost',
+                                  size: 'icon',
+                                  layoutStyle: searchStyles.headerIconButton,
                                 },
                                 h,
                               ),
-                              align: 'end',
-                            },
-                            h,
+                              Popover.popover(
+                                {
+                                  model: model.popover,
+                                  toParentMessage: message =>
+                                    Message['GotStyleXSidebarPopover']({
+                                      message,
+                                    }),
+                                  trigger: icon(
+                                    {
+                                      ariaLabel: 'Page actions',
+                                      name: 'ellipsis',
+                                    },
+                                    h,
+                                  ),
+                                  triggerLayoutStyle:
+                                    searchStyles.headerIconButton,
+                                  content: Sidebar.sidebar(
+                                    {
+                                      collapsible: 'none',
+                                      children: actionNav(h),
+                                    },
+                                    h,
+                                  ),
+                                  align: 'end',
+                                },
+                                h,
+                              ),
+                            ],
                           ),
                         ]
                       : []),
                   ],
-                  false,
+                  id === '15',
                   h,
                 ),
               ]),
@@ -2082,9 +2499,11 @@ export const view = (
             ? 'rows'
             : id === '12'
               ? 'calendar'
-              : id === '10' || id === '15'
+              : id === '10'
                 ? 'document'
-                : 'cards',
+                : id === '15'
+                  ? 'documentTall'
+                  : 'cards',
           h,
         ),
       ],

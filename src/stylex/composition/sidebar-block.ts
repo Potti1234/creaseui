@@ -57,6 +57,56 @@ const styles = stylex.create({
     backgroundColor: foundationTokens.muted,
     opacity: 0.5,
   },
+  /* TW sidebar-10 document body 'flex flex-1 flex-col gap-4 px-4 py-10'
+     with 'mx-auto max-w-3xl' panels (h-24 + h-full). */
+  docBody: {
+    padding: '1rem',
+    paddingBlock: '2.5rem',
+    gap: '1rem',
+    display: 'flex',
+    flexDirection: 'column',
+    flexGrow: 1,
+    alignItems: 'center',
+    minHeight: 0,
+    minWidth: 0,
+  },
+  /* TW sidebar-15 document body 'flex flex-1 flex-col gap-4 p-4'
+     with 'mx-auto max-w-3xl' panels (h-24 + h-[100vh]). */
+  docBodyTall: {
+    padding: '1rem',
+    gap: '1rem',
+    display: 'flex',
+    flexDirection: 'column',
+    flexGrow: 1,
+    alignItems: 'center',
+    minHeight: 0,
+    minWidth: 0,
+  },
+  docRow: {
+    flexShrink: 0,
+    height: '6rem',
+    width: '100%',
+    maxWidth: '48rem',
+    borderRadius: '.75rem',
+    backgroundColor: foundationTokens.muted,
+    opacity: 0.5,
+  },
+  docFill: {
+    height: '100%',
+    width: '100%',
+    maxWidth: '48rem',
+    borderRadius: '.75rem',
+    backgroundColor: foundationTokens.muted,
+    opacity: 0.5,
+  },
+  docFillTall: {
+    height: '100vh',
+    width: '100%',
+    maxWidth: '48rem',
+    borderRadius: '.75rem',
+    backgroundColor: foundationTokens.muted,
+    opacity: 0.5,
+  },
   tile: { aspectRatio: '16 / 9' },
   fill: { flexGrow: 1, minHeight: '24rem' },
   row: { flexShrink: 0, height: '3rem' },
@@ -182,11 +232,22 @@ export const mailItem = <M>(
     children,
   )
 export const blockSkeleton = <M>(
-  variant: 'cards' | 'rows' | 'calendar' | 'document',
+  variant: 'cards' | 'rows' | 'calendar' | 'document' | 'documentTall',
   h: HtmlBuilder<M>,
 ): Html =>
   h.div(
-    [h.AriaHidden(true), h.Class(className(styles.body))],
+    [
+      h.AriaHidden(true),
+      h.Class(
+        className(
+          variant === 'document'
+            ? styles.docBody
+            : variant === 'documentTall'
+              ? styles.docBodyTall
+              : styles.body,
+        ),
+      ),
+    ],
     variant === 'cards'
       ? [
           h.div(
@@ -208,10 +269,15 @@ export const blockSkeleton = <M>(
           ]
         : variant === 'document'
           ? [
-              h.div([h.Class(className(styles.skeleton, styles.row))], []),
-              h.div([h.Class(className(styles.skeleton, styles.fill))], []),
+              h.div([h.Class(className(styles.docRow))], []),
+              h.div([h.Class(className(styles.docFill))], []),
             ]
-          : Array.from({ length: 14 }, () =>
-              h.div([h.Class(className(styles.skeleton, styles.row))], []),
-            ),
+          : variant === 'documentTall'
+            ? [
+                h.div([h.Class(className(styles.docRow))], []),
+                h.div([h.Class(className(styles.docFillTall))], []),
+              ]
+            : Array.from({ length: 14 }, () =>
+                h.div([h.Class(className(styles.skeleton, styles.row))], []),
+              ),
   )
