@@ -16,10 +16,23 @@ const styles = stylex.create({
     display: 'grid',
     maxWidth: '32rem',
   },
+  /* TW settings dialog: 'overflow-hidden p-0 md:max-h-[560px]
+     md:max-w-[700px] lg:max-w-[800px]' on a w-full panel. */
   settings: {
-    maxHeight: 'calc(100svh - 2rem)',
+    padding: 0,
+    width: '100%',
+    maxHeight: {
+      default: 'calc(100svh - 2rem)',
+      '@media (min-width: 768px)': '35rem',
+    },
     maxWidth: 'min(50rem, calc(100vw - 2rem))',
-    overflowY: 'auto',
+    overflow: 'hidden',
+  },
+  /* TW restores header spacing as '[&_header]:px-6 [&_header]:pt-6' —
+     margins on the header give the same visual inside the p-0 panel. */
+  settingsHeaderMargin: {
+    marginTop: '1.5rem',
+    marginInline: '1.5rem',
   },
   icon: {
     display: 'block',
@@ -241,6 +254,9 @@ export const dialog = <Msg>(
         }
         const content = props.layout?.(parts) ?? [
           parts.header({
+            ...(props.size === 'settings'
+              ? { layoutStyle: styles.settingsHeaderMargin }
+              : {}),
             children: [
               parts.title({ children: [props.title] }),
               ...(props.description === undefined

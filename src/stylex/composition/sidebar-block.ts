@@ -24,6 +24,8 @@ const styles = stylex.create({
     zIndex: 20,
     top: 0,
   },
+  /* TW-13's settings main header has no bottom border. */
+  borderless: { borderBottomWidth: 0 },
   label: {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -148,9 +150,10 @@ const styles = stylex.create({
     display: 'grid',
     gridTemplateColumns: {
       default: 'minmax(0, 1fr)',
-      '@media (min-width: 768px)': '15rem minmax(0, 1fr)',
+      /* TW-13 settingsSidebar renders a w-64 sidebar root. */
+      '@media (min-width: 768px)': '16rem minmax(0, 1fr)',
     },
-    height: '26rem',
+    height: 'min(30rem, calc(100svh - 6rem))',
     minWidth: 0,
   },
   settingsNavigation: {
@@ -163,15 +166,46 @@ const styles = stylex.create({
     minWidth: 0,
     overflowY: 'auto',
   },
+  /* TW-13 settings body 'flex flex-1 flex-col gap-4 overflow-y-auto
+     p-4 pt-0' with 'aspect-video max-w-3xl' tiles. */
+  docBodySettings: {
+    padding: '1rem',
+    paddingTop: 0,
+    gap: '1rem',
+    display: 'flex',
+    flexDirection: 'column',
+    flexGrow: 1,
+    alignItems: 'center',
+    minHeight: 0,
+    minWidth: 0,
+    overflowY: 'auto',
+  },
+  docTile: {
+    aspectRatio: '16 / 9',
+    width: '100%',
+    maxWidth: '48rem',
+    borderRadius: '.75rem',
+    backgroundColor: foundationTokens.muted,
+    opacity: 0.5,
+  },
 })
 
 export const blockHeader = <M>(
   children: ReadonlyArray<Html | string>,
   sticky: boolean,
   h: HtmlBuilder<M>,
+  bordered = true,
 ): Html =>
   h.header(
-    [h.Class(className(styles.header, sticky && styles.sticky))],
+    [
+      h.Class(
+        className(
+          styles.header,
+          sticky && styles.sticky,
+          !bordered && styles.borderless,
+        ),
+      ),
+    ],
     children,
   )
 export const blockLabel = <M>(label: string, h: HtmlBuilder<M>): Html =>
@@ -232,7 +266,13 @@ export const mailItem = <M>(
     children,
   )
 export const blockSkeleton = <M>(
-  variant: 'cards' | 'rows' | 'calendar' | 'document' | 'documentTall',
+  variant:
+    | 'cards'
+    | 'rows'
+    | 'calendar'
+    | 'document'
+    | 'documentTall'
+    | 'settings',
   h: HtmlBuilder<M>,
 ): Html =>
   h.div(
@@ -244,7 +284,9 @@ export const blockSkeleton = <M>(
             ? styles.docBody
             : variant === 'documentTall'
               ? styles.docBodyTall
-              : styles.body,
+              : variant === 'settings'
+                ? styles.docBodySettings
+                : styles.body,
         ),
       ),
     ],
@@ -277,7 +319,11 @@ export const blockSkeleton = <M>(
                 h.div([h.Class(className(styles.docRow))], []),
                 h.div([h.Class(className(styles.docFillTall))], []),
               ]
-            : Array.from({ length: 14 }, () =>
-                h.div([h.Class(className(styles.skeleton, styles.row))], []),
-              ),
+            : variant === 'settings'
+              ? Array.from({ length: 10 }, () =>
+                  h.div([h.Class(className(styles.docTile))], []),
+                )
+              : Array.from({ length: 14 }, () =>
+                  h.div([h.Class(className(styles.skeleton, styles.row))], []),
+                ),
   )

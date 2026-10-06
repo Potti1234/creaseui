@@ -921,7 +921,10 @@ const group = (
   Sidebar.sidebarGroup(
     {
       children: [
-        Sidebar.sidebarGroupLabel({ children: [title] }, h),
+        /* TW-13 has an unlabeled settings group — skip the empty label. */
+        ...(title === ''
+          ? []
+          : [Sidebar.sidebarGroupLabel({ children: [title] }, h)]),
         Sidebar.sidebarMenu({ children }, h),
       ],
     },
@@ -2104,7 +2107,28 @@ const settingsContent = (model: Model, h: HtmlBuilder<Message>): Html =>
               children: [
                 group(
                   '',
-                  settings.nav.map(i => item(i.name, model, h, i.icon)),
+                  /* TW-13 marks 'Messages & media' active statically. */
+                  settings.nav.map(i =>
+                    Sidebar.sidebarMenuItem(
+                      {
+                        children: [
+                          Sidebar.sidebarMenuButton(
+                            {
+                              children: [
+                                icon({ name: i.icon }, h),
+                                blockLabel(i.name, h),
+                              ],
+                              tooltip: i.name,
+                              isActive: i.name === 'Messages & media',
+                              href: '#',
+                            },
+                            h,
+                          ),
+                        ],
+                      },
+                      h,
+                    ),
+                  ),
                   h,
                 ),
               ],
@@ -2116,15 +2140,21 @@ const settingsContent = (model: Model, h: HtmlBuilder<Message>): Html =>
       h,
     ),
     [
+      /* TW-13 header: breadcrumb 'Settings > Messages & media'. */
       blockHeader(
         [
-          text({ children: ['Settings'], tone: 'secondary' }, h),
-          text(
+          breadcrumb(
             {
               children: [
-                model.active === 'Data Fetching'
-                  ? 'Messages & media'
-                  : model.active,
+                breadcrumbList(
+                  {
+                    children: [
+                      ...crumb('Settings', false, h),
+                      ...crumb('Messages & media', true, h),
+                    ],
+                  },
+                  h,
+                ),
               ],
             },
             h,
@@ -2132,8 +2162,9 @@ const settingsContent = (model: Model, h: HtmlBuilder<Message>): Html =>
         ],
         false,
         h,
+        false,
       ),
-      blockSkeleton('document', h),
+      blockSkeleton('settings', h),
     ],
     h,
   )
@@ -2161,6 +2192,7 @@ export const view = (
               Message['GotStyleXSidebarDialog']({ message }),
             title: 'Settings',
             description: 'Customize your settings here.',
+            showCloseButton: true,
             content: () => [settingsContent(model, h)],
           },
           h,
