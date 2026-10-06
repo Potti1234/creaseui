@@ -201,12 +201,7 @@ const styles = stylex.create({
       default: interactionTokens.cursorGrab,
       ':active': interactionTokens.cursorGrabbing,
     },
-    opacity: {
-      default: 1,
-      [stylex.when.ancestor('[data-nested-drawer-open]', drawerPopupScope)]: 0,
-      [stylex.when.ancestor('[data-nested-drawer-swiping]', drawerPopupScope)]:
-        1,
-    },
+    opacity: 1,
     transitionProperty: 'opacity',
     transitionDuration: interactionTokens.motionModerate,
     '::after': {
@@ -216,6 +211,7 @@ const styles = stylex.create({
       backgroundColor: tokens.muted,
     },
   },
+  handleDimmed: { opacity: 0 },
   handleAxisY: {
     height: '0.75rem',
     width: '100%',
@@ -242,16 +238,8 @@ const styles = stylex.create({
     overflowY: 'hidden',
     overscrollBehavior: 'contain',
     borderRadius: 'inherit',
-    userSelect: {
-      default: 'text',
-      [stylex.when.ancestor('[data-swiping]', drawerPopupScope)]: 'none',
-    },
-    opacity: {
-      default: 1,
-      [stylex.when.ancestor('[data-nested-drawer-open]', drawerPopupScope)]: 0,
-      [stylex.when.ancestor('[data-nested-drawer-swiping]', drawerPopupScope)]:
-        1,
-    },
+    userSelect: 'text',
+    opacity: 1,
     transitionProperty: {
       default: 'opacity',
       '@media (prefers-reduced-motion: reduce)': 'none',
@@ -262,6 +250,8 @@ const styles = stylex.create({
     },
     transitionTimingFunction: interactionTokens.easingDrawerContent,
   },
+  contentDimmed: { opacity: 0 },
+  contentSwiping: { userSelect: 'none' },
   header: {
     display: 'flex',
     flexShrink: 0,
@@ -311,7 +301,6 @@ import { Dialog as DialogPrimitive } from '@foldkit/ui'
 import * as DrawerBehavior from '@/lib/drawer'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
-import { drawerPopupScope } from './drawer.markers.stylex'
 import { foundationTokens } from './foundations-tokens.stylex'
 import { overlayStyles } from './overlay-tokens.stylex'
 import type { ComponentLayoutStyle } from './contracts'
@@ -723,7 +712,6 @@ export const drawer = <Msg>(
                             hd.Class(
                               className(
                                 styles.popup,
-                                drawerPopupScope,
                                 directionStyle,
                                 bleedStyle,
                                 ...(axis === 'x'
@@ -760,6 +748,9 @@ export const drawer = <Msg>(
                                           ...(handleOrderedLast
                                             ? [styles.handleOrderLast]
                                             : []),
+                                          ...(nestedOpen && !model.nestedSwiping
+                                            ? [styles.handleDimmed]
+                                            : []),
                                         ),
                                       ),
                                     ],
@@ -771,7 +762,15 @@ export const drawer = <Msg>(
                               [
                                 hd.DataAttribute('slot', 'drawer-content'),
                                 hd.DataAttribute('drawer-content', ''),
-                                hd.Class(className(styles.content)),
+                                hd.Class(
+                                  className(
+                                    styles.content,
+                                    ...(nestedOpen && !model.nestedSwiping
+                                      ? [styles.contentDimmed]
+                                      : []),
+                                    ...(swiping ? [styles.contentSwiping] : []),
+                                  ),
+                                ),
                                 // One OnMount per element — the nested-drawer
                                 // watcher lives here so it does not clobber
                                 // ObservePopup's marker; its subtree still

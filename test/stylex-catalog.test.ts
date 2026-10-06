@@ -19,7 +19,6 @@ const infrastructureNames = new Set([
   'checkbox.markers.stylex',
   'complex-tokens.stylex',
   'contracts',
-  'drawer.markers.stylex',
   'field.markers.stylex',
   'foundations-tokens.stylex',
   'astryx-text',

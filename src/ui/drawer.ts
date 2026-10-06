@@ -73,14 +73,29 @@ const POPUP_LEFT_CLASS =
 const POPUP_RIGHT_CLASS =
   'data-[swipe-direction=right]:right-0 data-[swipe-direction=right]:origin-right data-[swipe-direction=right]:rounded-l-xl data-[swipe-direction=right]:border-l data-[swipe-direction=right]:[--closed-transform:translate3d(calc(100%+var(--drawer-inset,0px)+2px),0,0)] data-[swipe-direction=right]:[--translate-x:calc(var(--drawer-swipe-movement-x)-var(--stack-peek-offset)-(var(--stack-shrink)*100%))]'
 
-const SWIPE_HANDLE_CLASS =
-  'relative z-10 flex shrink-0 cursor-grab transition-opacity duration-200 group-data-[nested-drawer-open]/drawer-popup:opacity-0 group-data-[nested-drawer-swiping]/drawer-popup:opacity-100 group-data-[swipe-direction=left]/drawer-popup:order-last group-data-[swipe-direction=up]/drawer-popup:order-last active:cursor-grabbing after:block after:shrink-0 after:rounded-full after:bg-muted group-data-[swipe-axis=y]/drawer-popup:h-3 group-data-[swipe-axis=y]/drawer-popup:w-full group-data-[swipe-axis=y]/drawer-popup:justify-center group-data-[swipe-axis=y]/drawer-popup:after:h-1 group-data-[swipe-axis=y]/drawer-popup:after:w-24 group-data-[swipe-direction=down]/drawer-popup:items-end group-data-[swipe-direction=up]/drawer-popup:items-start group-data-[swipe-axis=x]/drawer-popup:h-full group-data-[swipe-axis=x]/drawer-popup:w-3 group-data-[swipe-axis=x]/drawer-popup:items-center group-data-[swipe-axis=x]/drawer-popup:after:h-24 group-data-[swipe-axis=x]/drawer-popup:after:w-1 group-data-[swipe-direction=left]/drawer-popup:justify-start group-data-[swipe-direction=right]/drawer-popup:justify-end'
+/* shadcn's group-*\/drawer-popup descendants can't be used for the rules
+   below: a nested drawer's popup renders inside the parent's subtree, so a
+   descendant-scoped group variant would leak the parent's flags
+   (nested-drawer-open opacity, swipe-direction/axis geometry) into the
+   child. The model already knows every flag per drawer, so each child
+   applies its own values statically. */
+const SWIPE_HANDLE_BASE_CLASS =
+  'relative z-10 flex shrink-0 cursor-grab transition-opacity duration-200 active:cursor-grabbing after:block after:shrink-0 after:rounded-full after:bg-muted'
+const SWIPE_HANDLE_AXIS_Y_CLASS =
+  'h-3 w-full justify-center after:h-1 after:w-24'
+const SWIPE_HANDLE_AXIS_X_CLASS = 'h-full w-3 items-center after:h-24 after:w-1'
+const SWIPE_HANDLE_DIRECTION_CLASS = {
+  down: 'items-end',
+  up: 'items-start',
+  left: 'justify-start',
+  right: 'justify-end',
+} as const
 
-const CONTENT_CLASS =
-  'flex min-h-0 flex-1 flex-col overflow-hidden overscroll-contain rounded-[inherit] transition-opacity duration-300 ease-[cubic-bezier(0.45,1.005,0,1.005)] select-text group-data-[nested-drawer-open]/drawer-popup:opacity-0 group-data-[nested-drawer-swiping]/drawer-popup:opacity-100 group-data-[swiping]/drawer-popup:select-none'
+const CONTENT_BASE_CLASS =
+  'flex min-h-0 flex-1 flex-col overflow-hidden overscroll-contain rounded-[inherit] transition-opacity duration-300 ease-[cubic-bezier(0.45,1.005,0,1.005)] select-text'
 
-const HEADER_CLASS =
-  'flex shrink-0 flex-col gap-0.5 p-4 pb-0 group-data-[swipe-axis=y]/drawer-popup:text-center md:gap-0.5 md:text-left'
+const HEADER_BASE_CLASS = 'flex shrink-0 flex-col gap-0.5 p-4 pb-0'
+const HEADER_RESPONSIVE_CLASS = 'md:gap-0.5 md:text-left'
 const FOOTER_CLASS = 'mt-auto flex shrink-0 flex-col gap-2 p-4 pt-0'
 const TITLE_CLASS = 'text-base font-medium text-foreground'
 const DESCRIPTION_CLASS = 'text-sm text-balance text-muted-foreground'
@@ -428,7 +443,26 @@ export const drawer = <Msg>(
                                         'drawer-swipe-handle',
                                       ),
                                       hd.AriaHidden(true),
-                                      hd.Class(SWIPE_HANDLE_CLASS),
+                                      hd.Class(
+                                        cn(
+                                          SWIPE_HANDLE_BASE_CLASS,
+                                          axis === 'y'
+                                            ? SWIPE_HANDLE_AXIS_Y_CLASS
+                                            : SWIPE_HANDLE_AXIS_X_CLASS,
+                                          SWIPE_HANDLE_DIRECTION_CLASS[
+                                            direction
+                                          ],
+                                          direction === 'left' ||
+                                            direction === 'up'
+                                            ? 'order-last'
+                                            : '',
+                                          model.nestedSwiping
+                                            ? 'opacity-100'
+                                            : nestedOpen
+                                              ? 'opacity-0'
+                                              : '',
+                                        ),
+                                      ),
                                     ],
                                     [],
                                   ),
@@ -438,7 +472,17 @@ export const drawer = <Msg>(
                               [
                                 hd.DataAttribute('slot', 'drawer-content'),
                                 hd.DataAttribute('drawer-content', ''),
-                                hd.Class(CONTENT_CLASS),
+                                hd.Class(
+                                  cn(
+                                    CONTENT_BASE_CLASS,
+                                    model.nestedSwiping
+                                      ? 'opacity-100'
+                                      : nestedOpen
+                                        ? 'opacity-0'
+                                        : '',
+                                    swiping ? 'select-none' : '',
+                                  ),
+                                ),
                                 // One OnMount per element — foldkit stores a
                                 // single mount marker per vnode, so the
                                 // nested-drawer watcher lives here instead of
@@ -455,7 +499,13 @@ export const drawer = <Msg>(
                                 hd.div(
                                   [
                                     hd.DataAttribute('slot', 'drawer-header'),
-                                    hd.Class(HEADER_CLASS),
+                                    hd.Class(
+                                      cn(
+                                        HEADER_BASE_CLASS,
+                                        axis === 'y' ? 'text-center' : '',
+                                        HEADER_RESPONSIVE_CLASS,
+                                      ),
+                                    ),
                                   ],
                                   [
                                     hd.h2(
