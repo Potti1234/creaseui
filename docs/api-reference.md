@@ -630,10 +630,10 @@ Source: [`src/ui/drawer.ts`](../src/ui/drawer.ts)
 | `Model` | value | `Model: value` |
 | `Model` | type | `Model = typeof Model.Type` |
 | `GotDialogMessage` | value | `GotDialogMessage: value` |
-| `StartedDrag` | value | `StartedDrag: value` |
-| `Dragged` | value | `Dragged: value` |
-| `EndedDrag` | value | `EndedDrag: value` |
-| `CancelledDrag` | value | `CancelledDrag: value` |
+| `StartedSwipe` | value | `StartedSwipe: value` |
+| `DraggedSwipe` | value | `DraggedSwipe: value` |
+| `EndedSwipe` | value | `EndedSwipe: value` |
+| `CancelledSwipe` | value | `CancelledSwipe: value` |
 | `Message` | value | `Message: value` |
 | `Message` | type | `Message = typeof Message.Type` |
 | `OutMessage` | value | `OutMessage: value` |
@@ -642,9 +642,9 @@ Source: [`src/ui/drawer.ts`](../src/ui/drawer.ts)
 | `update` | value | `update: value` |
 | `open` | value | `open: value` |
 | `close` | value | `close: value` |
-| `DrawerDirection` | type | `DrawerDirection = 'top' \| 'right' \| 'bottom' \| 'left'` |
-| `DrawerSlots` | type | `DrawerSlots = Readonly<{ closeButton: ReadonlyArray<ChildAttribute>; }>` |
-| `DrawerProps` | type | `DrawerProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description?: string; content?: (slots: DrawerSlots) => ReadonlyArray<Html>; footer?: (slots: DrawerSlots) => ReadonlyArray<Html>; direction?: DrawerDirecti…` |
+| `snapTo` | value | `snapTo: value` |
+| `DrawerSlots` | type | `DrawerSlots = Readonly<{ closeButton: ReadonlyArray<ChildAttribute>; initialFocusAttributes: () => ReadonlyArray<ChildAttribute>; }>` |
+| `DrawerProps` | type | `DrawerProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description?: string; content?: (slots: DrawerSlots) => ReadonlyArray<Html>; footer?: (slots: DrawerSlots) => ReadonlyArray<Html>; showSwipeHandle?: boolean…` |
 | `drawer` | function | `drawer<Msg>(props: DrawerProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Dropdown Menu

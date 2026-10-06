@@ -24,7 +24,7 @@
     }
   },
   "guardrails": {
-    "boundaryFiles": 204,
+    "boundaryFiles": 205,
     "cssFallbacks": 0,
     "legacyUiImports": 0,
     "suppressions": 5,

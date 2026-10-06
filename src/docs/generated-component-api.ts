@@ -1958,24 +1958,24 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "GotDialogMessage: value"
     },
     {
-      "name": "StartedDrag",
+      "name": "StartedSwipe",
       "kind": "value",
-      "signature": "StartedDrag: value"
+      "signature": "StartedSwipe: value"
     },
     {
-      "name": "Dragged",
+      "name": "DraggedSwipe",
       "kind": "value",
-      "signature": "Dragged: value"
+      "signature": "DraggedSwipe: value"
     },
     {
-      "name": "EndedDrag",
+      "name": "EndedSwipe",
       "kind": "value",
-      "signature": "EndedDrag: value"
+      "signature": "EndedSwipe: value"
     },
     {
-      "name": "CancelledDrag",
+      "name": "CancelledSwipe",
       "kind": "value",
-      "signature": "CancelledDrag: value"
+      "signature": "CancelledSwipe: value"
     },
     {
       "name": "Message",
@@ -2018,19 +2018,19 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "close: value"
     },
     {
-      "name": "DrawerDirection",
-      "kind": "type",
-      "signature": "DrawerDirection = 'top' | 'right' | 'bottom' | 'left'"
+      "name": "snapTo",
+      "kind": "value",
+      "signature": "snapTo: value"
     },
     {
       "name": "DrawerSlots",
       "kind": "type",
-      "signature": "DrawerSlots = Readonly<{ closeButton: ReadonlyArray<ChildAttribute>; }>"
+      "signature": "DrawerSlots = Readonly<{ closeButton: ReadonlyArray<ChildAttribute>; initialFocusAttributes: () => ReadonlyArray<ChildAttribute>; }>"
     },
     {
       "name": "DrawerProps",
       "kind": "type",
-      "signature": "DrawerProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description?: string; content?: (slots: DrawerSlots) => ReadonlyArray<Html>; footer?: (slots: DrawerSlots) => ReadonlyArray<Html>; direction?: DrawerDirecti…"
+      "signature": "DrawerProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description?: string; content?: (slots: DrawerSlots) => ReadonlyArray<Html>; footer?: (slots: DrawerSlots) => ReadonlyArray<Html>; showSwipeHandle?: boolean…"
     },
     {
       "name": "drawer",
