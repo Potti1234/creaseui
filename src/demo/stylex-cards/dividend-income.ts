@@ -39,6 +39,9 @@ const styles = stylex.create({
   /* Layout slot accepts positioning props only; the responsive display rule
      stays on the wrapper. */
   chartSize: { height: '2rem', width: '6rem' },
+  /* TW: ghost + size-8 + bg-muted — --secondary === --muted in the site
+     theme, so the secondary variant yields the same muted box. */
+  closeButton: { height: '2rem', width: '2rem' },
   amount: {
     display: { default: 'none', '@media (min-width: 768px)': 'block' },
     fontSize: '0.875rem',
@@ -118,6 +121,7 @@ export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
                       {
                         variant: 'secondary',
                         size: 'icon',
+                        layoutStyle: styles.closeButton,
                         children: [
                           Icon.icon('x', {}, h),
                           h.span(
