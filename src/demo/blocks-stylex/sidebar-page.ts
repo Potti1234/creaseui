@@ -28,7 +28,7 @@ import {
   mailItem,
 } from '@/stylex/composition/sidebar-block'
 import * as Sidebar from '@/stylex/sidebar'
-import { sidebarScope } from '@/stylex/sidebar.markers.stylex'
+import { sidebarScope } from '../../stylex/sidebar.markers.stylex'
 import {
   breadcrumb,
   breadcrumbItem,
