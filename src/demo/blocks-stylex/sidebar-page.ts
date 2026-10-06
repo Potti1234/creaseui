@@ -650,13 +650,15 @@ const searchStyles = stylex.create({
       ':hover': 1,
     },
   },
-  /* TW 'text-sidebar-foreground/70' trailing More row. */
+  /* TW 'text-sidebar-foreground/70' trailing More row — icon and label
+     each render at 70% alpha of the foreground color (not element
+     opacity, which blends the whole row as one layer). */
   dimmedButton: {
     color: {
-      default: complexTokens.sidebarForeground,
+      default:
+        'color-mix(in oklab, var(--sidebar-foreground) 70%, transparent)',
       ':hover': complexTokens.sidebarAccentForeground,
     },
-    opacity: 0.7,
   },
   /* TW-12/15 calendar checkbox 'size-4 rounded-sm border
      data-[active]:bg-primary data-[active]:border-primary'. */
@@ -1412,6 +1414,9 @@ const brand = (
      flex-col gap-0.5 leading-none'; workspace sidebars (07+) use 'grid
      flex-1 text-left text-sm leading-tight' + 'truncate text-xs' detail. */
   stackShape: 'docs' | 'workspace' = 'docs',
+  /* Children appended inside the menu button after the label stack
+     (e.g. the teamSwitcher's 'ml-auto' chevrons-up-down). */
+  buttonTrailing: ReadonlyArray<Html> = [],
 ): Html =>
   Sidebar.sidebarHeader(
     {
@@ -1470,6 +1475,7 @@ const brand = (
                                   ],
                                 ),
                               ]),
+                          ...buttonTrailing,
                         ],
                         size: 'lg',
                         tooltip: label,
@@ -1805,7 +1811,9 @@ const application = (
 ): ReadonlyArray<Html> => {
   const collapsed = !model.isOpen && !model.isMobileOpen
   return [
-    /* TW-08/16 brand icon 'command'; TW-07 'gallery-vertical-end'. */
+    /* TW-08/16 brand icon 'command'; TW-07 'gallery-vertical-end'.
+       TW-07/10/15 brand is a teamSwitcher dropdown trigger whose trigger
+       carries the trailing 'ml-auto' chevrons-up-down icon. */
     brand(
       'Acme Inc',
       'Enterprise',
@@ -1814,6 +1822,15 @@ const application = (
       [],
       id === '08' || id === '16' ? 'command' : 'gallery-vertical-end',
       'workspace',
+      collapsed || !['07', '10', '15'].includes(id)
+        ? []
+        : [
+            BaseIcon.icon(
+              'chevrons-up-down',
+              { class: className(searchStyles.chevronTd) },
+              h,
+            ),
+          ],
     ),
     Sidebar.sidebarContent(
       {
@@ -1892,9 +1909,24 @@ const application = (
                         children: [
                           Sidebar.sidebarMenuButton(
                             {
+                              /* TW 'text-sidebar-foreground/70' on both
+                                 the icon and the label. */
                               children: [
-                                BaseIcon.icon('ellipsis', {}, h),
-                                blockLabel('More', h),
+                                BaseIcon.icon(
+                                  'ellipsis',
+                                  {
+                                    class: className(searchStyles.dimmedButton),
+                                  },
+                                  h,
+                                ),
+                                h.span(
+                                  [
+                                    h.Class(
+                                      className(searchStyles.dimmedButton),
+                                    ),
+                                  ],
+                                  ['More'],
+                                ),
                               ],
                               tooltip: 'More',
                             },
