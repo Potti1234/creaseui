@@ -15,6 +15,8 @@ export const boardTokens = stylex.defineVars({
   markerPrimary: 'oklch(0.922 0 0)',
   markerZinc: 'oklch(0.705 0.015 286.067)',
   panel: 'rgb(40 40 40)',
+  panelShadow:
+    '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1), 0 0 0 1px rgb(255 255 255 / 0.1)',
   panelField: 'rgb(255 255 255 / 0.035)',
   panelInput: 'rgb(0 0 0 / 0.2)',
   panelPopover: 'rgb(58 58 58)',
@@ -23,6 +25,7 @@ export const boardTokens = stylex.defineVars({
   selected: 'rgb(255 255 255 / 0.15)',
   success: 'oklch(0.627 0.194 149.214)',
   text: 'white',
+  textInverse: 'rgb(0 0 0)',
   textMuted: 'rgb(255 255 255 / 0.8)',
   textSubtle: 'rgb(255 255 255 / 0.35)',
   transparent: 'transparent',

@@ -251,22 +251,10 @@ const styles = stylex.create({
          go flush so their size-8 box is centered content. */
       [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: 0,
     },
-    /* TW 'group-has-data-[sidebar=menu-action]/menu-item:pr-8' — buttons
-       leave room for a trailing menu-action button. */
-    paddingInlineEnd: {
-      default: null,
-      [stylex.when.siblingAfter('[data-sidebar="menu-action"]', sidebarScope)]:
-        '2rem',
-    },
     borderRadius: tokens.controlRadius,
     gap: '0.5rem',
     overflow: 'hidden',
     alignItems: 'center',
-    justifyContent: {
-      default: null,
-      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]:
-        'center',
-    },
     backgroundColor: {
       default: tokens.transparent,
       ':hover': complexTokens.sidebarAccent,
@@ -277,7 +265,20 @@ const styles = stylex.create({
       ':hover': complexTokens.sidebarAccentForeground,
     },
     display: 'flex',
+    justifyContent: {
+      default: null,
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]:
+        'center',
+    },
     outlineStyle: 'none',
+    /* TW 'group-has-data-[sidebar=menu-action]/menu-item:pr-8' — buttons
+       leave room for a trailing menu-action button. */
+    paddingInlineEnd: {
+      default: null,
+      // eslint-disable-next-line @stylexjs/no-lookahead-selectors -- reason: TW's group-has rule is itself :has() sugar; there is no ancestor alternative to selecting the button that precedes the action.
+      [stylex.when.siblingAfter('[data-sidebar="menu-action"]', sidebarScope)]:
+        '2rem',
+    },
     textAlign: 'left',
     transitionDuration: {
       default: interactionTokens.motionModerate,
@@ -560,9 +561,9 @@ const styles = stylex.create({
   /* TW sidebar-04 'ml-0 border-l-0 px-1.5' — flattens the default sub
      indent but keeps the base translate-x-px nudge. */
   subFlat: {
+    paddingInline: '0.375rem',
     marginInlineStart: 0,
     borderLeftWidth: 0,
-    paddingInline: '0.375rem',
   },
   subMd: { fontSize: '0.875rem', lineHeight: '1.25rem' },
   subSm: { fontSize: '0.75rem', lineHeight: '1rem' },
@@ -969,7 +970,7 @@ export const sidebarInput = <Msg>(
     h.Disabled(props.isDisabled ?? false),
     h.AriaInvalid(props.isInvalid ?? false),
     h.Class(
-      className(reset.input, styles.input, props.layoutStyle, props.inputStyle),
+      className(reset.input, styles.input, props.inputStyle, props.layoutStyle),
     ),
   ])
 

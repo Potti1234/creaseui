@@ -58,6 +58,10 @@ import { cardDemoTokens } from './stylex-cards/foundations-card-tokens.stylex'
 import { interactionCardTokens } from './stylex-cards/interaction-card-tokens.stylex'
 import { interactionTokens } from '../stylex/interaction-tokens.stylex.const'
 
+/* The customizer panel always renders dark chrome; the global .dark class
+   supplies the dark token values its descendants' var() references resolve. */
+const darkThemeClass = 'dark'
+
 const stylexVariableName = (variable: string): string =>
   variable.replace(/^var\((--[^,)]+).*/, '$1')
 
@@ -230,8 +234,8 @@ const styles = stylex.create({
     color: boardTokens.text,
     fontSize: '0.875rem',
     fontWeight: 500,
-    height: '2.25rem',
     lineHeight: '1.25rem',
+    height: '2.25rem',
     width: '100%',
   },
   board: {
@@ -296,22 +300,22 @@ const styles = stylex.create({
   },
   copyButton: {
     borderRadius: foundationTokens.radiusMd,
+    gap: '0.375rem',
+    paddingInline: '0.625rem',
+    alignItems: 'center',
     backgroundColor: {
       default: boardTokens.text,
       ':hover': boardTokens.textMuted,
     },
-    color: 'rgb(0 0 0)',
+    color: boardTokens.textInverse,
+    display: 'inline-flex',
     fontSize: '0.875rem',
     fontWeight: 500,
+    justifyContent: 'center',
     lineHeight: '1.25rem',
     position: 'relative',
     height: '2.25rem',
     width: '100%',
-    alignItems: 'center',
-    display: 'inline-flex',
-    gap: '0.375rem',
-    justifyContent: 'center',
-    paddingInline: '0.625rem',
   },
   copyIcon: {
     transitionProperty: 'scale, opacity, filter',
@@ -330,8 +334,7 @@ const styles = stylex.create({
     borderRadius: boardTokens.panelRadius,
     overflow: 'hidden',
     backgroundColor: boardTokens.panel,
-    boxShadow:
-      '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1), 0 0 0 1px rgb(255 255 255 / 0.1)',
+    boxShadow: boardTokens.panelShadow,
     color: boardTokens.text,
     display: 'flex',
     flexDirection: 'column',
@@ -1236,7 +1239,7 @@ export const presetCustomizer = (
     )
 
   return h.aside(
-    [h.Class(`dark ${className(styles.customizer)}`)],
+    [h.Class(darkThemeClass + ' ' + className(styles.customizer))],
     [
       h.div(
         [h.Class(className(styles.customizerHeader))],

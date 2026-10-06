@@ -28,6 +28,8 @@ export const complexTokens = stylex.defineVars({
   transparent: 'transparent',
   sidebarEdgeRing: '0 0 0 1px var(--sidebar-border)',
   sidebarAccentRing: '0 0 0 1px var(--sidebar-accent)',
+  sidebarForegroundDim:
+    'color-mix(in oklab, var(--sidebar-foreground) 70%, transparent)',
   chart1Soft10: 'color-mix(in oklab, var(--chart-1) 10%, transparent)',
   chart2Soft10: 'color-mix(in oklab, var(--chart-2) 10%, transparent)',
   chart3Soft10: 'color-mix(in oklab, var(--chart-3) 10%, transparent)',

@@ -19,8 +19,8 @@ import { cardDemoTokens } from './foundations-card-tokens.stylex'
 const styles = stylex.create({
   balance: {
     fontSize: '3rem',
-    lineHeight: '3rem',
     fontVariantNumeric: 'tabular-nums',
+    lineHeight: '3rem',
   },
   pendingDot: {
     borderRadius: cardDemoTokens.round,

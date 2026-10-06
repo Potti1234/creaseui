@@ -238,7 +238,7 @@ const styles = stylex.create({
   rule: {
     inset: 0,
     /* TW's separator() emits bg-border (var(--border), preset-scoped). */
-    backgroundColor: 'var(--border)',
+    backgroundColor: tokens.border,
     flexShrink: 0,
     position: 'absolute',
     height: '1px',

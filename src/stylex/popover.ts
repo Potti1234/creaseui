@@ -23,18 +23,10 @@ const styles = stylex.create({
      ('relative inline-flex') parent: content-width, menu-button look. */
   sidebarTrigger: {
     padding: '0.5rem',
-    display: 'flex',
-    textAlign: 'left',
-    height: '2rem',
-    width: 'fit-content',
-    gap: '0.5rem',
     borderRadius: tokens.controlRadius,
-    alignItems: 'center',
+    gap: '0.5rem',
     overflow: 'hidden',
-    whiteSpace: 'nowrap',
-    fontSize: '0.875rem',
-    lineHeight: '1.25rem',
-    outlineStyle: 'none',
+    alignItems: 'center',
     backgroundColor: {
       default: tokens.transparent,
       ':hover': complexTokens.sidebarAccent,
@@ -43,6 +35,14 @@ const styles = stylex.create({
       default: complexTokens.sidebarForeground,
       ':hover': complexTokens.sidebarAccentForeground,
     },
+    display: 'flex',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+    outlineStyle: 'none',
+    textAlign: 'left',
+    whiteSpace: 'nowrap',
+    height: '2rem',
+    width: 'fit-content',
   },
 })
 

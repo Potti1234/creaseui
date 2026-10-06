@@ -19,21 +19,10 @@ const styles = stylex.create({
   /* TW triggerClass: sidebarMenuButtonVariants() — full menu-button look. */
   sidebarTrigger: {
     padding: '0.5rem',
-    alignItems: 'center',
-    display: 'flex',
-    textAlign: 'left',
-    height: '2rem',
-    width: {
-      default: '100%',
-      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: '2rem',
-    },
-    gap: '0.5rem',
     borderRadius: tokens.controlRadius,
+    gap: '0.5rem',
     overflow: 'hidden',
-    whiteSpace: 'nowrap',
-    fontSize: '0.875rem',
-    lineHeight: '1.25rem',
-    outlineStyle: 'none',
+    alignItems: 'center',
     backgroundColor: {
       default: tokens.transparent,
       ':hover': complexTokens.sidebarAccent,
@@ -43,23 +32,23 @@ const styles = stylex.create({
       default: complexTokens.sidebarForeground,
       ':hover': complexTokens.sidebarAccentForeground,
     },
+    display: 'flex',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+    outlineStyle: 'none',
+    textAlign: 'left',
+    whiteSpace: 'nowrap',
+    height: '2rem',
+    width: {
+      default: '100%',
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: '2rem',
+    },
   },
   /* TW GROUP_LABEL_CLASS (sidebar-02): group-label styled collapsible trigger. */
   sidebarLabelTrigger: {
+    borderRadius: tokens.controlRadius,
     paddingInline: '0.5rem',
     alignItems: 'center',
-    display: 'flex',
-    textAlign: 'left',
-    height: '2rem',
-    /* TW GROUP_LABEL_CLASS is content-width ('flex h-8 shrink-0 ...' with
-       no w-full); TW-15 calendar labels pass 'w-full' via layoutStyle. */
-    width: 'fit-content',
-    flexShrink: 0,
-    borderRadius: tokens.controlRadius,
-    fontSize: '0.875rem',
-    lineHeight: '1.25rem',
-    fontWeight: 500,
-    outlineStyle: 'none',
     backgroundColor: {
       default: tokens.transparent,
       ':hover': complexTokens.sidebarAccent,
@@ -68,6 +57,17 @@ const styles = stylex.create({
       default: complexTokens.sidebarForeground,
       ':hover': complexTokens.sidebarAccentForeground,
     },
+    display: 'flex',
+    flexShrink: 0,
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    lineHeight: '1.25rem',
+    outlineStyle: 'none',
+    textAlign: 'left',
+    height: '2rem',
+    /* TW GROUP_LABEL_CLASS is content-width ('flex h-8 shrink-0 ...' with
+       no w-full); TW-15 calendar labels pass 'w-full' via layoutStyle. */
+    width: 'fit-content',
   },
 })
 

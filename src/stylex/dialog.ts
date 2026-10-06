@@ -20,19 +20,19 @@ const styles = stylex.create({
      md:max-w-[700px] lg:max-w-[800px]' on a w-full panel. */
   settings: {
     padding: 0,
-    width: '100%',
+    overflow: 'hidden',
     maxHeight: {
       default: 'calc(100svh - 2rem)',
       '@media (min-width: 768px)': '35rem',
     },
     maxWidth: 'min(50rem, calc(100vw - 2rem))',
-    overflow: 'hidden',
+    width: '100%',
   },
   /* TW restores header spacing as '[&_header]:px-6 [&_header]:pt-6' —
      margins on the header give the same visual inside the p-0 panel. */
   settingsHeaderMargin: {
-    marginTop: '1.5rem',
     marginInline: '1.5rem',
+    marginTop: '1.5rem',
   },
   icon: {
     display: 'block',

@@ -35,7 +35,7 @@ const styles = stylex.create({
     outlineStyle: 'none',
   },
   /* TW 'border-border' -> var(--border), preset-scoped. */
-  outline: { borderColor: 'var(--border)' },
+  outline: { borderColor: tokens.border },
   muted: { backgroundColor: foundationTokens.mutedSoft },
   vertical: { alignItems: 'stretch', flexDirection: 'column' },
   sm: { gap: '0.625rem', paddingBlock: '0.625rem', paddingInline: '0.75rem' },
@@ -121,7 +121,7 @@ const styles = stylex.create({
   cols3: { display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))' },
   cols4: { display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))' },
   /* TW 'bg-border' -> var(--border), preset-scoped. */
-  separator: { backgroundColor: 'var(--border)', height: '1px', width: '100%' },
+  separator: { backgroundColor: tokens.border, height: '1px', width: '100%' },
 })
 const slotDiv =
   (slot: string, style: StaticStyles) =>
