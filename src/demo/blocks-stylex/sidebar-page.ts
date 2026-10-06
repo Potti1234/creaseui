@@ -584,9 +584,12 @@ const searchStyles = stylex.create({
     flexShrink: 0,
     opacity: 0.5,
   },
-  /* TW-10 header nav actions 'ml-auto px-3 flex items-center gap-2'. */
+  /* TW-10 header nav actions 'ml-auto px-3 flex items-center gap-2' —
+     the -1rem end margin cancels the header's px-4 so only the px-3
+     applies (TW's header carries no padding). */
   headerActions: {
     marginInlineStart: 'auto',
+    marginInlineEnd: '-1rem',
     paddingInline: '.75rem',
     display: 'flex',
     alignItems: 'center',
@@ -2951,7 +2954,8 @@ export const view = (
                   id === '15',
                   h,
                   true,
-                  id === '15',
+                  /* TW-10/15 site headers use 'h-14' (3.5rem), not h-16. */
+                  id === '10' || id === '15',
                 ),
               ]),
         blockSkeleton(
