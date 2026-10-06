@@ -47,6 +47,20 @@ const styles = stylex.create({
     color: tokens.mutedForeground,
     textWrap: 'pretty',
   },
+  /* TW 'flex flex-wrap items-center justify-between gap-4 border-b pb-3' —
+     keeps the Table playground link right-aligned on the tabs row. */
+  controls: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: '1rem',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: 1,
+    borderBottomColor: tokens.border,
+    paddingBottom: '.75rem',
+    width: '100%',
+  },
   categories: { display: 'flex', flexWrap: 'wrap', gap: '.25rem' },
   category: {
     minHeight: '2.25rem',
@@ -232,35 +246,42 @@ export const view = <Msg>(props: Props<Msg>, h: HtmlBuilder<Msg>): Html =>
             ],
           ),
           h.div(
+            [h.Class(className(styles.controls))],
             [
-              h.Role('group'),
-              h.AriaLabel('Block categories'),
-              h.Class(className(styles.categories)),
-            ],
-            categories.map(([category, label]) =>
-              h.button(
+              h.div(
                 [
-                  h.Type('button'),
-                  h.OnClick(props.onCategory(category)),
-                  h.AriaPressed(props.category === category ? 'true' : 'false'),
-                  h.Class(
-                    className(
-                      reset.button,
-                      styles.category,
-                      props.category === category && styles.selected,
-                    ),
-                  ),
+                  h.Role('group'),
+                  h.AriaLabel('Block categories'),
+                  h.Class(className(styles.categories)),
                 ],
-                [label],
+                categories.map(([category, label]) =>
+                  h.button(
+                    [
+                      h.Type('button'),
+                      h.OnClick(props.onCategory(category)),
+                      h.AriaPressed(
+                        props.category === category ? 'true' : 'false',
+                      ),
+                      h.Class(
+                        className(
+                          reset.button,
+                          styles.category,
+                          props.category === category && styles.selected,
+                        ),
+                      ),
+                    ],
+                    [label],
+                  ),
+                ),
               ),
-            ),
-          ),
-          h.a(
-            [
-              h.Href(blocksStyleXTablePath()),
-              h.Class(className(reset.link, styles.link)),
+              h.a(
+                [
+                  h.Href(blocksStyleXTablePath()),
+                  h.Class(className(reset.link, styles.link)),
+                ],
+                ['Table playground ↗'],
+              ),
             ],
-            ['Table playground ↗'],
           ),
         ],
       ),
