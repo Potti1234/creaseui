@@ -103,6 +103,8 @@ const searchStyles = stylex.create({
     transitionDuration: '.2s',
   },
   chevronOpen: { transform: 'rotate(90deg)' },
+  /* TW trigger wrapper 'contents' — StyleX needs an explicit display:contents. */
+  contents: { display: 'contents' },
   endIcon: {
     marginInlineStart: 'auto',
     flexShrink: 0,
@@ -431,7 +433,7 @@ const expandable = (
       onToggle: next =>
         Message['ChangedStyleXSidebarGroup']({ id, isOpen: next }),
       trigger: h.span(
-        [h.Class('contents')],
+        [h.Class(className(searchStyles.contents))],
         [
           ...leading,
           ...(name === undefined ? [] : [icon({ name }, h)]),
