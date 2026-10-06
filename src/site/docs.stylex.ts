@@ -448,16 +448,20 @@ const styles = stylex.create({
     transitionDuration: '.2s',
     userSelect: 'none',
   },
-  viewCodeText: {
+  /* TW uses peer-checked descendant selectors ('.peer:checked ~ label .x')
+     — sibling-then-descendant is not expressible in stylex.when, so the
+     toggle renders two overlapping labels, each a real sibling of the
+     checkbox, and swaps which one is displayed. */
+  viewCodeToggle: {
     display: {
-      default: 'inline',
+      default: 'flex',
       [stylex.when.siblingAfter(':checked', codeToggleScope)]: 'none',
     },
   },
-  hideCodeText: {
+  hideCodeToggle: {
     display: {
       default: 'none',
-      [stylex.when.siblingAfter(':checked', codeToggleScope)]: 'inline',
+      [stylex.when.siblingAfter(':checked', codeToggleScope)]: 'flex',
     },
   },
   copy: {
@@ -712,11 +716,6 @@ const exampleCard = <Msg>(
       h.div(
         [h.Class(className(styles.codeArea))],
         [
-          h.input([
-            h.Id(`example-code-${idBase}`),
-            h.Type('checkbox'),
-            h.Class(className(styles.codeToggle, codeToggleScope)),
-          ]),
           h.div(
             [h.Class(className(styles.codeClip))],
             [
@@ -784,14 +783,30 @@ const exampleCard = <Msg>(
           h.label(
             [
               h.For(`example-code-${idBase}`),
-              h.Class(className(styles.viewCodeLabel)),
+              h.Class(className(styles.viewCodeLabel, styles.viewCodeToggle)),
             ],
             [
               Icon.codeXml<Msg>({ class: className(styles.icon) }, h),
-              h.span([h.Class(className(styles.viewCodeText))], ['View Code']),
-              h.span([h.Class(className(styles.hideCodeText))], ['Hide Code']),
+              'View Code',
             ],
           ),
+          h.label(
+            [
+              h.For(`example-code-${idBase}`),
+              h.Class(className(styles.viewCodeLabel, styles.hideCodeToggle)),
+            ],
+            [
+              Icon.codeXml<Msg>({ class: className(styles.icon) }, h),
+              'Hide Code',
+            ],
+          ),
+          /* stylex.when.siblingAfter emits ':has(~ .scope:checked)' — the
+             checkbox must follow the elements it gates. */
+          h.input([
+            h.Id(`example-code-${idBase}`),
+            h.Type('checkbox'),
+            h.Class(className(styles.codeToggle, codeToggleScope)),
+          ]),
         ],
       ),
     ],
