@@ -26,6 +26,8 @@ const styles = stylex.create({
   },
   /* TW-13's settings main header has no bottom border. */
   borderless: { borderBottomWidth: 0 },
+  /* TW-15/16 site headers use 'h-14' instead of the default h-16. */
+  compact: { height: '3.5rem' },
   label: {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -195,6 +197,7 @@ export const blockHeader = <M>(
   sticky: boolean,
   h: HtmlBuilder<M>,
   bordered = true,
+  compact = false,
 ): Html =>
   h.header(
     [
@@ -203,6 +206,7 @@ export const blockHeader = <M>(
           styles.header,
           sticky && styles.sticky,
           !bordered && styles.borderless,
+          compact && styles.compact,
         ),
       ),
     ],

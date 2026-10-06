@@ -433,8 +433,9 @@ const styles = stylex.create({
     top: 0,
     width: 'var(--sidebar-width)',
   },
-  sidebarBelowHeader: { height: 'calc(100svh - 4rem)', top: '4rem' },
-  wrapperBelowHeader: { minHeight: 'calc(100svh - 4rem)' },
+  /* TW-16 site header is 'h-(--header-height)' = 3.5rem. */
+  sidebarBelowHeader: { height: 'calc(100svh - 3.5rem)', top: '3.5rem' },
+  wrapperBelowHeader: { minHeight: 'calc(100svh - 3.5rem)' },
   sidebarContainerContained: { position: 'absolute', height: '100%' },
   sidebarContainerFloating: { padding: '0.5rem' },
   sidebarContainerFloatingCollapsed: {

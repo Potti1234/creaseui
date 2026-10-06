@@ -71,6 +71,32 @@ const searchStyles = stylex.create({
     borderWidth: 0,
   },
   input: { paddingInlineStart: '2rem' },
+  /* TW-16 site-header search: 'w-full sm:ml-auto sm:w-auto' form with an
+     'h-8 pl-7' input. */
+  headerForm: {
+    width: { default: '100%', '@media (min-width: 640px)': 'auto' },
+    marginInlineStart: { default: '0', '@media (min-width: 640px)': 'auto' },
+  },
+  headerBox: {
+    position: 'relative',
+    width: { default: '100%', '@media (min-width: 640px)': 'auto' },
+  },
+  headerInput: { height: '2rem', paddingInlineStart: '1.75rem' },
+  /* TW-08/16 navSecondary 'mt-auto' — pins the group to the sidebar bottom. */
+  autoTop: { marginTop: 'auto' },
+  /* TW brand logo box 'flex aspect-square size-8 rounded-lg
+     bg-sidebar-primary text-sidebar-primary-foreground'. */
+  brandIconBox: {
+    aspectRatio: '1 / 1',
+    height: '2rem',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '.5rem',
+    backgroundColor: complexTokens.sidebarPrimary,
+    color: complexTokens.sidebarPrimaryForeground,
+    flexShrink: 0,
+  },
   icon: {
     position: 'absolute',
     left: '.5rem',
@@ -1235,11 +1261,9 @@ const brand = (
                         children: [
                           collapsed
                             ? icon({ name: iconName }, h)
-                            : badge(
-                                {
-                                  children: [icon({ name: iconName }, h)],
-                                },
-                                h,
+                            : h.div(
+                                [h.Class(className(searchStyles.brandIconBox))],
+                                [icon({ name: iconName }, h)],
                               ),
                           ...(collapsed
                             ? []
@@ -1548,47 +1572,157 @@ const application = (
 ): ReadonlyArray<Html> => {
   const collapsed = !model.isOpen && !model.isMobileOpen
   return [
-    brand('Acme Inc', 'Enterprise', h, collapsed),
+    /* TW-08/16 brand icon 'command'; TW-07 'gallery-vertical-end'. */
+    brand(
+      'Acme Inc',
+      'Enterprise',
+      h,
+      collapsed,
+      [],
+      id === '08' || id === '16' ? 'command' : 'gallery-vertical-end',
+    ),
     Sidebar.sidebarContent(
       {
         children: [
           ...(collapsed
-            ? []
-            : [Sidebar.sidebarGroupLabel({ children: ['Platform'] }, h)]),
-          ...app.navMain.map(g =>
-            collapsed
-              ? item(g.title, model, h, g.icon, true)
-              : expandable(
-                  g.title,
-                  g.title,
-                  subItems(
-                    g.items.map(i => i.title),
-                    model,
-                    h,
+            ? app.navMain.map(g => item(g.title, model, h, g.icon, true))
+            : /* TW-16: 'Platform' group = sidebarGroup > label + menu. */
+              [
+                group(
+                  'Platform',
+                  app.navMain.map(g =>
+                    expandable(
+                      g.title,
+                      g.title,
+                      subItems(
+                        g.items.map(i => i.title),
+                        model,
+                        h,
+                      ),
+                      model,
+                      h,
+                      false,
+                      g.icon,
+                    ),
                   ),
-                  model,
                   h,
-                  false,
-                  g.icon,
                 ),
-          ),
+              ]),
           ...(collapsed
             ? []
             : [
                 group(
                   'Projects',
-                  app.projects.map(p => item(p.name, model, h, p.icon)),
+                  [
+                    /* TW-16/08/07: each project row has a hover 'More'
+                       menu-action; a trailing plain 'More' item follows. */
+                    ...app.projects.map(p =>
+                      Sidebar.sidebarMenuItem(
+                        {
+                          children: [
+                            Sidebar.sidebarMenuButton(
+                              {
+                                children: [
+                                  icon({ name: p.icon }, h),
+                                  blockLabel(p.name, h),
+                                ],
+                                tooltip: p.name,
+                                isActive: model.active === p.name,
+                                onClick: Message['SelectedStyleXSidebarItem']({
+                                  label: p.name,
+                                }),
+                                href: '#',
+                              },
+                              h,
+                            ),
+                            Sidebar.sidebarMenuAction(
+                              {
+                                showOnHover: true,
+                                children: [
+                                  BaseIcon.icon('ellipsis', {}, h),
+                                  h.span(
+                                    [h.Class(className(searchStyles.srOnly))],
+                                    ['More'],
+                                  ),
+                                ],
+                              },
+                              h,
+                            ),
+                          ],
+                        },
+                        h,
+                      ),
+                    ),
+                    Sidebar.sidebarMenuItem(
+                      {
+                        children: [
+                          Sidebar.sidebarMenuButton(
+                            {
+                              children: [
+                                BaseIcon.icon('ellipsis', {}, h),
+                                blockLabel('More', h),
+                              ],
+                              tooltip: 'More',
+                            },
+                            h,
+                          ),
+                        ],
+                      },
+                      h,
+                    ),
+                  ],
                   h,
                 ),
               ]),
           ...(['08', '16'].includes(id)
             ? [
-                group(
-                  '',
-                  [
-                    item('Support', model, h, 'life-buoy', collapsed),
-                    item('Feedback', model, h, 'send', collapsed),
-                  ],
+                /* TW-08/16 navSecondary: 'mt-auto' group pinning the
+                   size-sm Support/Feedback items to the sidebar bottom. */
+                Sidebar.sidebarGroup(
+                  {
+                    layoutStyle: searchStyles.autoTop,
+                    children: [
+                      Sidebar.sidebarMenu(
+                        {
+                          children: (
+                            [
+                              ['Support', 'life-buoy'],
+                              ['Feedback', 'send'],
+                            ] as const
+                          ).map(([label, name]) =>
+                            Sidebar.sidebarMenuItem(
+                              {
+                                children: [
+                                  Sidebar.sidebarMenuButton(
+                                    {
+                                      children: [
+                                        icon({ name }, h),
+                                        ...(collapsed
+                                          ? []
+                                          : [blockLabel(label, h)]),
+                                      ],
+                                      tooltip: label,
+                                      isActive: model.active === label,
+                                      onClick: Message[
+                                        'SelectedStyleXSidebarItem'
+                                      ]({
+                                        label,
+                                      }),
+                                      size: 'sm',
+                                      href: '#',
+                                    },
+                                    h,
+                                  ),
+                                ],
+                              },
+                              h,
+                            ),
+                          ),
+                        },
+                        h,
+                      ),
+                    ],
+                  },
                   h,
                 ),
               ]
@@ -2524,6 +2658,8 @@ export const view = (
                   ],
                   id === '15',
                   h,
+                  true,
+                  id === '15',
                 ),
               ]),
         blockSkeleton(
@@ -2559,19 +2695,51 @@ export const view = (
     [
       ...(id === '16'
         ? [
+            /* TW-16 siteHeader: trigger + separator + real breadcrumb +
+               right-aligned search form (sticky, z-50, border-b). */
             blockHeader(
               [
                 trigger(h),
-                text(
-                  {
-                    children: ['Build Your Application › Data Fetching'],
-                    variant: 'label',
-                  },
-                  h,
+                headerSeparator(h),
+                crumbTrail(id, title, h),
+                h.form(
+                  [h.Class(className(searchStyles.headerForm))],
+                  [
+                    h.div(
+                      [h.Class(className(searchStyles.headerBox))],
+                      [
+                        h.label(
+                          [
+                            h.For('stylex-sidebar-16-search'),
+                            h.Class(className(searchStyles.srOnly)),
+                          ],
+                          ['Search'],
+                        ),
+                        Sidebar.sidebarInput(
+                          {
+                            id: 'stylex-sidebar-16-search',
+                            value: model.query,
+                            onInput: value =>
+                              Message['ChangedStyleXSidebarSearch']({ value }),
+                            placeholder: 'Type to search...',
+                            inputStyle: searchStyles.headerInput,
+                          },
+                          h,
+                        ),
+                        BaseIcon.icon(
+                          'search',
+                          { class: className(searchStyles.icon) },
+                          h,
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ],
               true,
               h,
+              true,
+              true,
             ),
           ]
         : []),
