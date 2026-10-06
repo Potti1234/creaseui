@@ -454,7 +454,9 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           Scene.given(openModel('modal-false', { modal: false })),
           // Non-modal drawers replace AcquireResources with a document
           // Escape listener so no modal top-layer resources (inert,
-          // scroll lock) are ever acquired.
+          // scroll lock) are ever acquired. The mount lives on the
+          // persistent <dialog> element, so it stays mounted for the
+          // drawer's lifetime — there is no expectEnded for it.
           Scene.Mount.expectHas(DrawerBehavior.ObserveNonModalEscape),
           ...resolveObservers(),
           Scene.expect(overlay).toBeAbsent(),
@@ -471,7 +473,6 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
             ),
           ),
           Scene.expectOutMessage(DrawerBehavior.OutMessage.Closed()),
-          Scene.Mount.expectEnded(DrawerBehavior.ObserveNonModalEscape),
           ...expectObserversEnded(),
           ...expectClosed(),
         )

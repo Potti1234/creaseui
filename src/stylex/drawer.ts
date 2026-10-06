@@ -626,17 +626,17 @@ export const drawer = <Msg>(
                       // Replaces the primitive's AcquireResources mount (one
                       // OnMount per vnode — last wins), so a non-modal
                       // drawer never installs modal top-layer resources,
-                      // inert or scroll-lock.
-                      ...(isVisible
-                        ? [
-                            hd.OnMount(
-                              Mount.mapMessage(
-                                DrawerBehavior.ObserveNonModalEscape(),
-                                message => send(message),
-                              ),
-                            ),
-                          ]
-                        : []),
+                      // inert or scroll-lock. Present from the first render:
+                      // OnMount only fires when the element inserts, and this
+                      // <dialog> persists across open/close, so a mount added
+                      // at open time would never attach. Escape while closed
+                      // is a RequestedClose no-op.
+                      hd.OnMount(
+                        Mount.mapMessage(
+                          DrawerBehavior.ObserveNonModalEscape(),
+                          message => send(message),
+                        ),
+                      ),
                     ]
                   : []),
               ],
