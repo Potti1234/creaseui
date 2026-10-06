@@ -64,4 +64,6 @@ export const tokens = stylex.defineVars({
   shadowNone: 'none',
   transparent: 'transparent',
   backdrop: 'rgb(0 0 0 / 0.5)',
+  /* shadcn base drawer overlay — 'bg-black/10'. */
+  drawerBackdrop: 'rgb(0 0 0 / 0.1)',
 })

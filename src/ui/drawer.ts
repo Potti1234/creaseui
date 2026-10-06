@@ -1,18 +1,26 @@
-﻿import { Option } from 'effect'
-import type { ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
+import { Option } from 'effect'
+import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
+import * as Mount from 'foldkit/mount'
 
 import { Dialog as DialogPrimitive } from '@foldkit/ui'
 
 import * as DrawerBehavior from '@/lib/drawer'
 import { cn } from '@/lib/utils'
 
+/* Tailwind drawer — the shadcn "base" drawer
+   (ui.shadcn.com/docs/components/base/drawer) markup ported onto foldkit:
+   dialog → overlay (modal only) → viewport (fixed inset-0, pointer-events
+   gated by data-modal) → popup (CSS-var translate/stack plumbing, bleed,
+   data-swipe-* attributes) → optional swipe handle + content. Gesture state
+   lives in `src/lib/drawer.ts` (Base UI model port); this file is DOM only. */
+
 export const Model = DrawerBehavior.Model
 export type Model = typeof Model.Type
 export const GotDialogMessage = DrawerBehavior.Message.GotDrawerDialogMessage
-export const StartedDrag = DrawerBehavior.Message.StartedDrawerDrag
-export const Dragged = DrawerBehavior.Message.DraggedDrawer
-export const EndedDrag = DrawerBehavior.Message.EndedDrawerDrag
-export const CancelledDrag = DrawerBehavior.Message.CancelledDrawerDrag
+export const StartedSwipe = DrawerBehavior.Message.StartedSwipe
+export const DraggedSwipe = DrawerBehavior.Message.DraggedSwipe
+export const EndedSwipe = DrawerBehavior.Message.EndedSwipe
+export const CancelledSwipe = DrawerBehavior.Message.CancelledSwipe
 export const Message = DrawerBehavior.Message
 export type Message = typeof Message.Type
 export const OutMessage = DrawerBehavior.OutMessage
@@ -22,17 +30,103 @@ export const init = DrawerBehavior.init
 export const update = DrawerBehavior.update
 export const open = DrawerBehavior.open
 export const close = DrawerBehavior.close
+export const snapTo = DrawerBehavior.snapTo
+
+// ——— Class strings (shadcn bases/base/ui/drawer.tsx + cn-drawer-* CSS)
 
 const OVERLAY_CLASS =
-  'fixed inset-0 z-50 bg-black/50 transition duration-200 ease-out data-[closed]:opacity-0 motion-reduce:transition-none'
-const HEADER_CLASS =
-  'flex flex-col gap-0.5 p-4 text-center md:gap-1.5 md:text-left'
-const FOOTER_CLASS = 'mt-auto flex flex-col gap-2 p-4'
+  'fixed inset-0 z-50 min-h-dvh bg-black/10 opacity-[max(var(--drawer-overlay-min-opacity,0),calc(1-var(--drawer-swipe-progress)))] transition-opacity duration-450 ease-[cubic-bezier(0.32,0.72,0,1)] select-none supports-backdrop-filter:backdrop-blur-xs data-[closed]:opacity-0 data-[leave]:pointer-events-none data-[leave]:opacity-0 data-[leave]:duration-[calc(var(--drawer-swipe-strength)*400ms)] data-[snap-points]:[--drawer-overlay-min-opacity:0.5] data-[swiping]:duration-0 supports-[-webkit-touch-callout:none]:absolute motion-reduce:transition-none'
 
-export type DrawerDirection = 'top' | 'right' | 'bottom' | 'left'
+const VIEWPORT_CLASS =
+  'pointer-events-none fixed inset-0 z-50 select-none data-[modal=true]:pointer-events-auto'
+
+const POPUP_BASE_CLASS =
+  'group/drawer-popup pointer-events-auto fixed z-50 m-(--drawer-inset,0px) flex h-(--drawer-content-height) max-h-(--drawer-content-max-height,none) min-h-0 w-(--drawer-content-width,auto) transform-[translate3d(var(--translate-x,0px),var(--translate-y,0px),0)_scale(var(--stack-scale))] flex-col bg-popover text-sm text-popover-foreground transition-[transform,height,opacity,filter] duration-450 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform outline-none select-none [interpolate-size:allow-keywords] motion-reduce:transition-none'
+
+const POPUP_NESTED_CLASS =
+  'data-[nested-drawer-open]:overflow-hidden data-[nested-drawer-open]:brightness-95'
+
+const POPUP_BLEED_CLASS =
+  'after:pointer-events-none after:absolute after:bg-(--drawer-bleed-background,var(--color-popover)) data-[swipe-axis=x]:after:inset-y-0 data-[swipe-axis=x]:after:w-(--bleed) data-[swipe-axis=y]:after:inset-x-0 data-[swipe-axis=y]:after:h-(--bleed) data-[swipe-direction=down]:after:top-full data-[swipe-direction=left]:after:right-full data-[swipe-direction=right]:after:left-full data-[swipe-direction=up]:after:bottom-full'
+
+const POPUP_SIZING_CLASS =
+  '[--drawer-content-height:var(--drawer-height,auto)] data-[swipe-axis=x]:[--drawer-content-width:75%] data-[swipe-axis=y]:[--drawer-content-max-height:calc(100dvh-6rem)] data-[swipe-axis=y]:data-[snap-points]:[--drawer-content-height:100dvh] data-[swipe-axis=x]:sm:[--drawer-content-width:24rem]'
+
+const POPUP_STACK_CLASS =
+  '[--bleed:3rem] [--peek:1rem] [--stack-height:var(--drawer-frontmost-height,var(--drawer-height,0px))] [--stack-peek-offset:max(0px,calc((var(--nested-drawers)-var(--stack-progress))*var(--peek)))] [--stack-progress:clamp(0,var(--drawer-swipe-progress),1)] [--stack-scale-base:max(0,calc(1-(var(--nested-drawers)*var(--stack-step))))] [--stack-scale:clamp(0,calc(var(--stack-scale-base)+(var(--stack-step)*var(--stack-progress))),1)] [--stack-shrink:calc(1-var(--stack-scale))] [--stack-step:0.05]'
+
+const POPUP_TRANSITION_CLASS =
+  'data-[closed]:transform-(--closed-transform) data-[leave]:transform-(--closed-transform) data-[leave]:opacity-[0.9999] data-[leave]:duration-[calc(var(--drawer-swipe-strength)*400ms)] data-[nested-drawer-swiping]:duration-0 data-[leave]:data-[nested-drawer-swiping]:duration-[calc(var(--drawer-swipe-strength)*400ms)] data-[swiping]:duration-0 data-[leave]:data-[swiping]:duration-[calc(var(--drawer-swipe-strength)*400ms)]'
+
+const POPUP_AXIS_CLASS =
+  'data-[swipe-axis=y]:inset-x-0 data-[swipe-axis=y]:data-[nested-drawer-open]:h-(--stack-height) data-[swipe-axis=x]:inset-y-0 data-[swipe-axis=x]:flex-row'
+
+const POPUP_DOWN_CLASS =
+  'data-[swipe-direction=down]:bottom-0 data-[swipe-direction=down]:origin-bottom data-[swipe-direction=down]:rounded-t-xl data-[swipe-direction=down]:border-t data-[swipe-direction=down]:[--closed-transform:translate3d(0,calc(100%+var(--drawer-inset,0px)+2px),0)] data-[swipe-direction=down]:[--translate-y:calc(var(--drawer-snap-point-offset,0px)+var(--drawer-swipe-movement-y)-var(--stack-peek-offset)-(var(--stack-shrink)*var(--stack-height)))]'
+
+const POPUP_UP_CLASS =
+  'data-[swipe-direction=up]:top-0 data-[swipe-direction=up]:origin-top data-[swipe-direction=up]:rounded-b-xl data-[swipe-direction=up]:border-b data-[swipe-direction=up]:[--closed-transform:translate3d(0,calc(-100%-var(--drawer-inset,0px)-2px),0)] data-[swipe-direction=up]:[--translate-y:calc(var(--drawer-snap-point-offset,0px)+var(--drawer-swipe-movement-y)+var(--stack-peek-offset)+(var(--stack-shrink)*var(--stack-height)))]'
+
+const POPUP_LEFT_CLASS =
+  'data-[swipe-direction=left]:left-0 data-[swipe-direction=left]:origin-left data-[swipe-direction=left]:rounded-r-xl data-[swipe-direction=left]:border-r data-[swipe-direction=left]:[--closed-transform:translate3d(calc(-100%-var(--drawer-inset,0px)-2px),0,0)] data-[swipe-direction=left]:[--translate-x:calc(var(--drawer-swipe-movement-x)+var(--stack-peek-offset)+(var(--stack-shrink)*100%))]'
+
+const POPUP_RIGHT_CLASS =
+  'data-[swipe-direction=right]:right-0 data-[swipe-direction=right]:origin-right data-[swipe-direction=right]:rounded-l-xl data-[swipe-direction=right]:border-l data-[swipe-direction=right]:[--closed-transform:translate3d(calc(100%+var(--drawer-inset,0px)+2px),0,0)] data-[swipe-direction=right]:[--translate-x:calc(var(--drawer-swipe-movement-x)-var(--stack-peek-offset)-(var(--stack-shrink)*100%))]'
+
+const SWIPE_HANDLE_CLASS =
+  'relative z-10 flex shrink-0 cursor-grab transition-opacity duration-200 group-data-[nested-drawer-open]/drawer-popup:opacity-0 group-data-[nested-drawer-swiping]/drawer-popup:opacity-100 group-data-[swipe-direction=left]/drawer-popup:order-last group-data-[swipe-direction=up]/drawer-popup:order-last active:cursor-grabbing after:block after:shrink-0 after:rounded-full after:bg-muted group-data-[swipe-axis=y]/drawer-popup:h-3 group-data-[swipe-axis=y]/drawer-popup:w-full group-data-[swipe-axis=y]/drawer-popup:justify-center group-data-[swipe-axis=y]/drawer-popup:after:h-1 group-data-[swipe-axis=y]/drawer-popup:after:w-24 group-data-[swipe-direction=down]/drawer-popup:items-end group-data-[swipe-direction=up]/drawer-popup:items-start group-data-[swipe-axis=x]/drawer-popup:h-full group-data-[swipe-axis=x]/drawer-popup:w-3 group-data-[swipe-axis=x]/drawer-popup:items-center group-data-[swipe-axis=x]/drawer-popup:after:h-24 group-data-[swipe-axis=x]/drawer-popup:after:w-1 group-data-[swipe-direction=left]/drawer-popup:justify-start group-data-[swipe-direction=right]/drawer-popup:justify-end'
+
+const CONTENT_CLASS =
+  'flex min-h-0 flex-1 flex-col overflow-hidden overscroll-contain rounded-[inherit] transition-opacity duration-300 ease-[cubic-bezier(0.45,1.005,0,1.005)] select-text group-data-[nested-drawer-open]/drawer-popup:opacity-0 group-data-[nested-drawer-swiping]/drawer-popup:opacity-100 group-data-[swiping]/drawer-popup:select-none'
+
+const HEADER_CLASS =
+  'flex shrink-0 flex-col gap-0.5 p-4 pb-0 group-data-[swipe-axis=y]/drawer-popup:text-center md:gap-0.5 md:text-left'
+const FOOTER_CLASS = 'mt-auto flex shrink-0 flex-col gap-2 p-4 pt-0'
+const TITLE_CLASS = 'text-base font-medium text-foreground'
+const DESCRIPTION_CLASS = 'text-sm text-balance text-muted-foreground'
+
+/** Base UI's swipe-ignore surface: interactive controls + explicit ignores
+    + the content region (mouse pointer only — touch swipes start on content
+    after scroll arbitration, which the model cannot see). */
+const SWIPE_IGNORE_SELECTOR =
+  '[data-base-ui-swipe-ignore], button, a, input, select, textarea, label, [role="button"]'
+const DRAWER_CONTENT_SELECTOR = '[data-drawer-content]'
+
+/** foldkit animation data attributes for elements that skip the dialog's
+    `backdrop`/`panel` attr groups (e.g. a non-dismissible overlay). */
+const animationAttributes = <Msg>(
+  hd: HtmlBuilder<Msg>,
+  transitionState: string,
+): ReadonlyArray<Attribute<Msg>> => {
+  switch (transitionState) {
+    case 'EnterStart':
+      return [
+        hd.DataAttribute('closed', ''),
+        hd.DataAttribute('enter', ''),
+        hd.DataAttribute('transition', ''),
+      ]
+    case 'EnterAnimating':
+      return [hd.DataAttribute('enter', ''), hd.DataAttribute('transition', '')]
+    case 'LeaveStart':
+      return [hd.DataAttribute('leave', ''), hd.DataAttribute('transition', '')]
+    case 'LeaveAnimating':
+      return [
+        hd.DataAttribute('closed', ''),
+        hd.DataAttribute('leave', ''),
+        hd.DataAttribute('transition', ''),
+      ]
+    default:
+      return []
+  }
+}
+
+// ——— Component API
+
 export type DrawerSlots = Readonly<{
   closeButton: ReadonlyArray<ChildAttribute>
+  initialFocusAttributes: () => ReadonlyArray<ChildAttribute>
 }>
+
 export type DrawerProps<Msg> = Readonly<{
   model: Model
   toParentMessage: (message: Message) => Msg
@@ -40,242 +134,361 @@ export type DrawerProps<Msg> = Readonly<{
   description?: string
   content?: (slots: DrawerSlots) => ReadonlyArray<Html>
   footer?: (slots: DrawerSlots) => ReadonlyArray<Html>
-  direction?: DrawerDirection
+  /** Renders the swipe handle pill (shadcn `showSwipeHandle`). */
+  showSwipeHandle?: boolean
   class?: string
 }>
 
-const axisPosition = (
-  direction: DrawerDirection,
-  x: number,
-  y: number,
-): number => (direction === 'left' || direction === 'right' ? x : y)
-const offsetFrom = (
-  direction: DrawerDirection,
-  start: number,
-  current: number,
-): number =>
-  direction === 'top' || direction === 'left'
-    ? start - current
-    : current - start
-const contentClass = (direction: DrawerDirection): string =>
-  cn(
-    'group/drawer-content fixed z-50 flex flex-col border bg-background transition-[transform] duration-200 ease-out motion-reduce:transition-none',
-    direction === 'bottom' &&
-      'inset-x-0 bottom-0 mt-24 max-h-[80vh] rounded-t-lg border-t',
-    direction === 'top' &&
-      'inset-x-0 top-0 mb-24 max-h-[80vh] rounded-b-lg border-b',
-    direction === 'left' &&
-      'inset-y-0 left-0 mr-24 w-3/4 max-w-sm rounded-r-lg border-r',
-    direction === 'right' &&
-      'inset-y-0 right-0 ml-24 w-3/4 max-w-sm rounded-l-lg border-l',
-  )
-const dragTransform = (direction: DrawerDirection, offset: number): string => {
-  const value = `${offset}px`
-  return direction === 'bottom'
-    ? `translateY(${value})`
-    : direction === 'top'
-      ? `translateY(-${value})`
-      : direction === 'right'
-        ? `translateX(${value})`
-        : `translateX(-${value})`
+const swipeAxis = (direction: DrawerBehavior.SwipeDirection): 'x' | 'y' =>
+  direction === 'down' || direction === 'up' ? 'y' : 'x'
+
+/** Popup inline style: the CSS custom properties Base UI writes imperatively
+    — rendered declaratively from the model here. */
+const popupStyle = (model: Model): Record<string, string> => {
+  const movement = DrawerBehavior.swipeMovement(model)
+  const snapOffset = DrawerBehavior.snapPointOffsetFor(model)
+  const nestedCount = Object.keys(model.nestedDrawerHeights).length
+  const leaving =
+    model.dialog.animation.transitionState === 'LeaveStart' ||
+    model.dialog.animation.transitionState === 'LeaveAnimating'
+  return {
+    '--drawer-swipe-movement-x': `${String(movement.x)}px`,
+    '--drawer-swipe-movement-y': `${String(movement.y)}px`,
+    '--drawer-snap-point-offset': `${String(snapOffset ?? 0)}px`,
+    '--drawer-swipe-progress': String(
+      nestedCount > 0 ? model.nestedSwipeProgress : model.swipeProgress,
+    ),
+    '--drawer-swipe-strength': Option.getOrElse(
+      model.swipeStrength,
+      () => 1,
+    ).toString(),
+    '--nested-drawers': String(nestedCount),
+    ...(model.popupHeight > 0 && (nestedCount > 0 || leaving)
+      ? { '--drawer-height': `${String(model.popupHeight)}px` }
+      : {}),
+    ...(model.nestedSwipeProgress > 0 || nestedCount > 0
+      ? {
+          '--drawer-frontmost-height': `${String(
+            DrawerBehavior.frontmostNestedHeight(model),
+          )}px`,
+        }
+      : {}),
+  }
+}
+
+const overlayStyle = (model: Model): Record<string, string> => {
+  const nestedCount = Object.keys(model.nestedDrawerHeights).length
+  const progress =
+    nestedCount > 0 ? model.nestedSwipeProgress : model.swipeProgress
+  return {
+    '--drawer-swipe-progress': String(progress),
+    ...(progress > 0 && DrawerBehavior.frontmostNestedHeight(model) > 0
+      ? {
+          '--drawer-height': `${String(
+            DrawerBehavior.frontmostNestedHeight(model),
+          )}px`,
+        }
+      : {}),
+  }
 }
 
 export const drawer = <Msg>(
   props: DrawerProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const direction = props.direction ?? 'bottom'
-  const start = Option.getOrUndefined(props.model.dragStart)
+  const model = props.model
+  const send = props.toParentMessage
+  const direction = model.swipeDirection
+  const axis = swipeAxis(direction)
+  const hasSnapPoints = model.snapPoints.length > 0
+  const swiping = model.swipe.phase === 'Swiping'
+  const nestedOpen = DrawerBehavior.nestedDrawerOpen(model)
+  const expanded = DrawerBehavior.isExpanded(model)
+  const modal = model.modal
 
-  return h.div(
-    [
-      h.DataAttribute('slot', 'drawer-root'),
-      h.OnPointerMove((x, y) =>
-        start === undefined
-          ? Option.none()
-          : Option.some(
-              props.toParentMessage(
-                Dragged({
-                  offset: offsetFrom(
-                    direction,
-                    start,
-                    axisPosition(direction, x, y),
-                  ),
+  const startSwipe = (
+    pointerType: string,
+    button: number,
+    screenX: number,
+    screenY: number,
+    timeStamp: number,
+    _clientX: number,
+    _clientY: number,
+    _pointerId: number,
+    target: EventTarget | null,
+  ): Option.Option<Msg> => {
+    if (button !== 0) return Option.none()
+    if (target instanceof Element) {
+      // Swipes only start inside the popup (Base UI's canStart requires the
+      // pointer target to be contained in the popup element).
+      if (target.closest('[data-slot="drawer-popup"]') === null) {
+        return Option.none()
+      }
+      if (target.closest(SWIPE_IGNORE_SELECTOR) !== null) return Option.none()
+      // Mouse drags never start inside the scrollable content region; touch
+      // swipes may (Base UI arbitrates against scroll at runtime).
+      if (
+        pointerType !== 'touch' &&
+        target.closest(DRAWER_CONTENT_SELECTOR) !== null
+      ) {
+        return Option.none()
+      }
+    }
+    return Option.some(
+      send(StartedSwipe({ x: screenX, y: screenY, timeStamp })),
+    )
+  }
+
+  const viewportGestureAttributes = (
+    hd: HtmlBuilder<Msg>,
+  ): ReadonlyArray<Attribute<Msg>> => [
+    hd.OnPointerDown(startSwipe),
+    ...(swiping
+      ? [
+          hd.OnPointerMove((_screenX, screenY, _pointerType) =>
+            Option.some(
+              send(
+                DraggedSwipe({
+                  x: _screenX,
+                  y: screenY,
                   timeStamp: performance.now(),
                 }),
               ),
             ),
-      ),
-      h.OnPointerUp(() =>
-        start === undefined
-          ? Option.none()
-          : Option.some(props.toParentMessage(EndedDrag())),
-      ),
-      h.OnPointerLeave(() =>
-        start === undefined
-          ? Option.none()
-          : Option.some(props.toParentMessage(CancelledDrag())),
-      ),
-    ],
+          ),
+          hd.OnPointerUp((screenX, screenY, _pointerType, timeStamp) =>
+            Option.some(
+              send(EndedSwipe({ x: screenX, y: screenY, timeStamp })),
+            ),
+          ),
+          hd.OnPointerLeave(() => Option.some(send(CancelledSwipe()))),
+        ]
+      : []),
+  ]
+
+  return h.div(
+    [h.DataAttribute('slot', 'drawer-root')],
     [
       h.submodel({
-        slotId: props.model.dialog.id,
-        model: props.model.dialog,
+        slotId: model.dialog.id,
+        model: model.dialog,
         view: DialogPrimitive.view,
         viewInputs: {
+          hasDescription: props.description !== undefined,
           toView: ({
             dialog: dialogAttributes,
             backdrop,
             panel,
+            title,
+            description,
+            initialFocus,
             closeButton,
             isVisible,
           }: DialogPrimitive.RenderInfo) => {
             const hd = h
-            const slots: DrawerSlots = { closeButton }
+            const focusRef = { claimed: false }
+            const slots: DrawerSlots = {
+              closeButton,
+              initialFocusAttributes: () => {
+                focusRef.claimed = true
+                return initialFocus
+              },
+            }
+            // Evaluate the consumer's body first so an initial-focus claim
+            // inside it lands before the popup fallback is built below.
+            const contentChildren = props.content?.(slots) ?? []
+            const footerChildren = props.footer?.(slots)
+            const popupFocusAttributes: ReadonlyArray<
+              Attribute<Msg> | ChildAttribute
+            > = focusRef.claimed
+              ? []
+              : [...initialFocus, hd.Attribute('tabindex', '-1')]
             return hd.dialog(
               [
                 ...dialogAttributes,
                 hd.DataAttribute('slot', 'drawer'),
                 hd.Class('bg-transparent p-0'),
+                ...(modal === false
+                  ? [hd.Style({ pointerEvents: 'none' })]
+                  : []),
               ],
               isVisible
                 ? [
-                    hd.div(
-                      [
-                        ...backdrop,
-                        hd.DataAttribute('slot', 'drawer-overlay'),
-                        hd.Class(OVERLAY_CLASS),
-                      ],
-                      [],
-                    ),
-                    hd.div(
-                      [
-                        ...panel,
-                        hd.DataAttribute('slot', 'drawer-content'),
-                        hd.DataAttribute('vaul-drawer-direction', direction),
-                        hd.Style({
-                          transform: dragTransform(
-                            direction,
-                            props.model.dragOffset,
+                    ...(modal !== false
+                      ? [
+                          hd.div(
+                            [
+                              ...(model.disablePointerDismissal ||
+                              modal === 'trap-focus'
+                                ? animationAttributes(
+                                    hd,
+                                    model.dialog.animation.transitionState,
+                                  )
+                                : backdrop),
+                              hd.DataAttribute('slot', 'drawer-overlay'),
+                              ...(hasSnapPoints
+                                ? [hd.DataAttribute('snap-points', '')]
+                                : []),
+                              ...(swiping
+                                ? [hd.DataAttribute('swiping', '')]
+                                : []),
+                              hd.Class(OVERLAY_CLASS),
+                              hd.Style(overlayStyle(model)),
+                            ],
+                            [],
                           ),
-                        }),
-                        hd.Class(
-                          cn(
-                            contentClass(direction),
-                            props.model.dragOffset > 0
-                              ? 'transition-none'
-                              : undefined,
-                            props.class,
+                        ]
+                      : []),
+                    hd.div(
+                      [
+                        hd.DataAttribute('slot', 'drawer-viewport'),
+                        hd.DataAttribute('modal', String(modal)),
+                        hd.Class(VIEWPORT_CLASS),
+                        hd.OnMount(
+                          Mount.mapMessage(
+                            DrawerBehavior.ObserveViewport(),
+                            message => send(message),
                           ),
                         ),
+                        ...viewportGestureAttributes(hd),
                       ],
                       [
                         hd.div(
                           [
-                            hd.DataAttribute('slot', 'drawer-handle'),
-                            hd.DataAttribute(
-                              'drag-phase',
-                              props.model.dragPhase,
-                            ),
-                            hd.AriaHidden(true),
-                            hd.OnPointerDown(
-                              (_type, button, x, y, timeStamp) =>
-                                button === 0
-                                  ? Option.some(
-                                      props.toParentMessage(
-                                        StartedDrag({
-                                          position: axisPosition(
-                                            direction,
-                                            x,
-                                            y,
-                                          ),
-                                          timeStamp,
-                                        }),
-                                      ),
-                                    )
-                                  : Option.none(),
-                            ),
+                            ...panel,
+                            ...popupFocusAttributes,
+                            hd.DataAttribute('slot', 'drawer-popup'),
+                            hd.DataAttribute('swipe-direction', direction),
+                            hd.DataAttribute('swipe-axis', axis),
+                            ...(hasSnapPoints
+                              ? [hd.DataAttribute('snap-points', '')]
+                              : []),
+                            ...(swiping
+                              ? [hd.DataAttribute('swiping', '')]
+                              : []),
+                            ...(expanded
+                              ? [hd.DataAttribute('expanded', '')]
+                              : []),
+                            ...(nestedOpen
+                              ? [hd.DataAttribute('nested-drawer-open', '')]
+                              : []),
+                            ...(model.nestedSwiping
+                              ? [hd.DataAttribute('nested-drawer-swiping', '')]
+                              : []),
+                            ...(model.swipeDismissed
+                              ? [hd.DataAttribute('swipe-dismiss', '')]
+                              : []),
                             hd.Class(
                               cn(
-                                'absolute z-[1] flex touch-none cursor-grab items-center justify-center',
-                                direction === 'bottom' &&
-                                  'inset-x-0 top-0 h-6 bg-gradient-to-b from-background from-60% to-transparent',
-                                direction === 'top' &&
-                                  'inset-x-0 bottom-0 h-6 bg-gradient-to-t from-background from-60% to-transparent',
-                                direction === 'left' &&
-                                  'inset-y-0 right-0 w-6 bg-gradient-to-l from-background from-60% to-transparent',
-                                direction === 'right' &&
-                                  'inset-y-0 left-0 w-6 bg-gradient-to-r from-background from-60% to-transparent',
+                                POPUP_BASE_CLASS,
+                                POPUP_NESTED_CLASS,
+                                POPUP_BLEED_CLASS,
+                                POPUP_SIZING_CLASS,
+                                POPUP_STACK_CLASS,
+                                POPUP_TRANSITION_CLASS,
+                                POPUP_AXIS_CLASS,
+                                POPUP_DOWN_CLASS,
+                                POPUP_UP_CLASS,
+                                POPUP_LEFT_CLASS,
+                                POPUP_RIGHT_CLASS,
+                                props.class,
+                              ),
+                            ),
+                            hd.Style(popupStyle(model)),
+                            hd.OnMount(
+                              Mount.mapMessage(
+                                DrawerBehavior.ObservePopup(),
+                                message => send(message),
                               ),
                             ),
                           ],
                           [
-                            hd.div(
-                              [
-                                hd.DataAttribute('slot', 'drawer-handle-pill'),
-                                hd.Class(
-                                  cn(
-                                    'rounded-full bg-border',
-                                    direction === 'top' ||
-                                      direction === 'bottom'
-                                      ? 'h-1 w-8'
-                                      : 'w-1 h-8',
-                                  ),
-                                ),
-                              ],
-                              [],
-                            ),
-                          ],
-                        ),
-                        hd.div(
-                          [
-                            hd.DataAttribute('slot', 'drawer-header'),
-                            hd.Class(HEADER_CLASS),
-                          ],
-                          [
-                            hd.h2(
-                              [
-                                hd.Id(
-                                  DialogPrimitive.titleId(props.model.dialog),
-                                ),
-                                hd.DataAttribute('slot', 'drawer-title'),
-                                hd.Class('font-semibold text-foreground'),
-                              ],
-                              [props.title],
-                            ),
-                            ...(props.description === undefined
-                              ? []
-                              : [
-                                  hd.p(
+                            ...(props.showSwipeHandle
+                              ? [
+                                  hd.div(
                                     [
-                                      hd.Id(
-                                        DialogPrimitive.descriptionId(
-                                          props.model.dialog,
-                                        ),
-                                      ),
                                       hd.DataAttribute(
                                         'slot',
-                                        'drawer-description',
+                                        'drawer-swipe-handle',
                                       ),
-                                      hd.Class('text-sm text-muted-foreground'),
+                                      hd.AriaHidden(true),
+                                      hd.Class(SWIPE_HANDLE_CLASS),
                                     ],
-                                    [props.description],
+                                    [],
                                   ),
-                                ]),
+                                ]
+                              : []),
+                            hd.div(
+                              [
+                                hd.DataAttribute('slot', 'drawer-content'),
+                                hd.DataAttribute('drawer-content', ''),
+                                hd.Class(CONTENT_CLASS),
+                                // One OnMount per element — foldkit stores a
+                                // single mount marker per vnode, so the
+                                // nested-drawer watcher lives here instead of
+                                // on the popup; its subtree still covers
+                                // nested popups rendered inside the content.
+                                hd.OnMount(
+                                  Mount.mapMessage(
+                                    DrawerBehavior.ObserveNestedDrawers(),
+                                    message => send(message),
+                                  ),
+                                ),
+                              ],
+                              [
+                                hd.div(
+                                  [
+                                    hd.DataAttribute('slot', 'drawer-header'),
+                                    hd.Class(HEADER_CLASS),
+                                  ],
+                                  [
+                                    hd.h2(
+                                      [
+                                        ...title,
+                                        hd.DataAttribute(
+                                          'slot',
+                                          'drawer-title',
+                                        ),
+                                        hd.Class(TITLE_CLASS),
+                                      ],
+                                      [props.title],
+                                    ),
+                                    ...(props.description === undefined
+                                      ? []
+                                      : [
+                                          hd.p(
+                                            [
+                                              ...description,
+                                              hd.DataAttribute(
+                                                'slot',
+                                                'drawer-description',
+                                              ),
+                                              hd.Class(DESCRIPTION_CLASS),
+                                            ],
+                                            [props.description],
+                                          ),
+                                        ]),
+                                  ],
+                                ),
+                                ...contentChildren,
+                                ...(footerChildren === undefined
+                                  ? []
+                                  : [
+                                      hd.div(
+                                        [
+                                          hd.DataAttribute(
+                                            'slot',
+                                            'drawer-footer',
+                                          ),
+                                          hd.Class(FOOTER_CLASS),
+                                        ],
+                                        [...footerChildren],
+                                      ),
+                                    ]),
+                              ],
+                            ),
                           ],
                         ),
-                        ...(props.content?.(slots) ?? []),
-                        ...(props.footer === undefined
-                          ? []
-                          : [
-                              hd.div(
-                                [
-                                  hd.DataAttribute('slot', 'drawer-footer'),
-                                  hd.Class(FOOTER_CLASS),
-                                ],
-                                [...props.footer(slots)],
-                              ),
-                            ]),
                       ],
                     ),
                   ]
@@ -283,8 +496,7 @@ export const drawer = <Msg>(
             )
           },
         },
-        toParentMessage: message =>
-          props.toParentMessage(GotDialogMessage({ message })),
+        toParentMessage: message => send(GotDialogMessage({ message })),
       }),
     ],
   )
