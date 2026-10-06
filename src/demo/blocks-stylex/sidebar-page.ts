@@ -17,7 +17,6 @@ import * as Calendar from '@/stylex/calendar'
 import * as Dialog from '@/stylex/dialog'
 import * as Popover from '@/stylex/popover'
 import { collapsible } from '@/stylex/collapsible'
-import { input } from '@/stylex/input'
 import { box, inline, stack, text } from '@/stylex/composition'
 import { icon } from '@/stylex/composition/icon'
 import {
@@ -43,7 +42,7 @@ import { separator } from '@/stylex/separator'
 import * as stylex from '@stylexjs/stylex'
 import * as BaseIcon from '@/lib/icon'
 import { className } from '@/stylex/style'
-import { complexTokens } from '@/stylex/complex-tokens.stylex'
+import { complexTokens } from '../../stylex/complex-tokens.stylex'
 import * as DropdownMenu from '@/stylex/dropdown-menu'
 
 /* Mirrors TW searchForm: form > sidebar-group(py-0) > group-content(relative)
@@ -139,6 +138,7 @@ const searchStyles = stylex.create({
       ':hover': complexTokens.sidebarAccentForeground,
     },
   },
+  fullWidth: { width: '100%' },
   menuTriggerOpen: {
     padding: '0.5rem',
     alignItems: 'center',
@@ -841,10 +841,10 @@ const documentation = (
                             },
                             h,
                           ),
-                          input(
+                          Sidebar.sidebarInput(
                             {
                               id: 'newsletter-email',
-                              label: 'Email',
+                              type: 'email',
                               value: model.query,
                               onInput: value =>
                                 Message['ChangedStyleXSidebarSearch']({
@@ -854,7 +854,14 @@ const documentation = (
                             },
                             h,
                           ),
-                          button({ children: ['Subscribe'] }, h),
+                          button(
+                            {
+                              children: ['Subscribe'],
+                              size: 'sm',
+                              layoutStyle: searchStyles.fullWidth,
+                            },
+                            h,
+                          ),
                         ],
                       },
                       h,
