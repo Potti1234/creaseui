@@ -910,6 +910,7 @@ export type SidebarInputProps<Msg> = Readonly<{
   isDisabled?: boolean
   isInvalid?: boolean
   layoutStyle?: ComponentLayoutStyle
+  inputStyle?: StaticStyles
 }>
 export const sidebarInput = <Msg>(
   props: SidebarInputProps<Msg>,
@@ -929,7 +930,9 @@ export const sidebarInput = <Msg>(
     h.Type(props.type ?? 'text'),
     h.Disabled(props.isDisabled ?? false),
     h.AriaInvalid(props.isInvalid ?? false),
-    h.Class(className(reset.input, styles.input, props.layoutStyle)),
+    h.Class(
+      className(reset.input, styles.input, props.layoutStyle, props.inputStyle),
+    ),
   ])
 
 export const sidebarHeader = slotDiv('sidebar-header', 'header', styles.header)

@@ -31,6 +31,47 @@ import {
   mailPanel,
 } from '@/stylex/composition/sidebar-block'
 import * as Sidebar from '@/stylex/sidebar'
+import * as stylex from '@stylexjs/stylex'
+import * as BaseIcon from '@/lib/icon'
+import { className } from '@/stylex/style'
+
+/* Mirrors TW searchForm: form > sidebar-group(py-0) > group-content(relative)
+   > sr-only label + sidebarInput(pl-8) + absolutely positioned search icon. */
+const searchStyles = stylex.create({
+  group: {
+    display: 'flex',
+    flexDirection: 'column',
+    position: 'relative',
+    minWidth: 0,
+    width: '100%',
+    paddingInline: '.5rem',
+  },
+  box: { position: 'relative', width: '100%' },
+  srOnly: {
+    position: 'absolute',
+    width: '1px',
+    height: '1px',
+    padding: 0,
+    margin: '-1px',
+    overflow: 'hidden',
+    clipPath: 'inset(50%)',
+    whiteSpace: 'nowrap',
+    borderWidth: 0,
+  },
+  input: { paddingInlineStart: '2rem' },
+  icon: {
+    position: 'absolute',
+    left: '.5rem',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    opacity: 0.5,
+    pointerEvents: 'none',
+    userSelect: 'none',
+    width: '1rem',
+    height: '1rem',
+    flexShrink: 0,
+  },
+})
 
 export const Model = S.Struct({
   isOpen: S.Boolean,
@@ -376,6 +417,7 @@ const brand = (
   detail: string,
   h: HtmlBuilder<Message>,
   collapsed: boolean,
+  extraChildren: ReadonlyArray<Html> = [],
 ): Html =>
   Sidebar.sidebarHeader(
     {
@@ -436,27 +478,57 @@ const brand = (
           },
           h,
         ),
+        ...extraChildren,
       ],
     },
     h,
   )
-const search = (model: Model, h: HtmlBuilder<Message>): Html =>
-  Sidebar.sidebarHeader(
-    {
-      children: [
-        input(
-          {
-            id: 'sidebar-search',
-            label: 'Search',
-            value: model.query,
-            onInput: value => Message['ChangedStyleXSidebarSearch']({ value }),
-            placeholder: 'Search the docs…',
-          },
-          h,
-        ),
-      ],
-    },
-    h,
+const searchForm = (id: string, model: Model, h: HtmlBuilder<Message>): Html =>
+  h.form(
+    [],
+    [
+      h.div(
+        [
+          h.DataAttribute('slot', 'sidebar-group'),
+          h.DataAttribute('sidebar', 'group'),
+          h.Class(className(searchStyles.group)),
+        ],
+        [
+          h.div(
+            [
+              h.DataAttribute('slot', 'sidebar-group-content'),
+              h.DataAttribute('sidebar', 'group-content'),
+              h.Class(className(searchStyles.box)),
+            ],
+            [
+              h.label(
+                [
+                  h.For(`sidebar-${id}-search`),
+                  h.Class(className(searchStyles.srOnly)),
+                ],
+                ['Search'],
+              ),
+              Sidebar.sidebarInput(
+                {
+                  id: `sidebar-${id}-search`,
+                  value: model.query,
+                  onInput: value =>
+                    Message['ChangedStyleXSidebarSearch']({ value }),
+                  placeholder: 'Search the docs...',
+                  inputStyle: searchStyles.input,
+                },
+                h,
+              ),
+              BaseIcon.icon(
+                'search',
+                { class: className(searchStyles.icon) },
+                h,
+              ),
+            ],
+          ),
+        ],
+      ),
+    ],
   )
 
 const documentation = (
@@ -472,9 +544,9 @@ const documentation = (
           id === '01' || id === '02' ? 'v1.0.1' : 'v1.0.0',
           h,
           false,
+          ['01', '02', '05'].includes(id) ? [searchForm(id, model, h)] : [],
         ),
       ]),
-  ...(['01', '02', '05'].includes(id) ? [search(model, h)] : []),
   Sidebar.sidebarContent(
     {
       children: docs.navMain.map((g, index) => {
@@ -1030,7 +1102,16 @@ export const view = (
       ? [
           mailPanel(
             [
-              search(model, h),
+              Sidebar.sidebarInput(
+                {
+                  id: 'sidebar-09-mail-search',
+                  value: model.query,
+                  onInput: value =>
+                    Message['ChangedStyleXSidebarSearch']({ value }),
+                  placeholder: 'Type to search...',
+                },
+                h,
+              ),
               ...mail.mails
                 .filter(m =>
                   (m.name + ' ' + m.subject)
