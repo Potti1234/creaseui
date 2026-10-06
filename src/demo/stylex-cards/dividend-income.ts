@@ -36,6 +36,9 @@ const styles = stylex.create({
     height: '2rem',
     width: '6rem',
   },
+  /* Layout slot accepts positioning props only; the responsive display rule
+     stays on the wrapper. */
+  chartSize: { height: '2rem', width: '6rem' },
   amount: {
     display: { default: 'none', '@media (min-width: 768px)': 'block' },
     fontSize: '0.875rem',
@@ -163,6 +166,7 @@ export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
                                 {
                                   data: holding.data,
                                   showXAxisLabels: false,
+                                  layoutStyle: styles.chartSize,
                                 },
                                 h,
                               ),

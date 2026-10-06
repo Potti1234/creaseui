@@ -16,12 +16,12 @@ import {
 import {
   item,
   itemContent,
-  itemDescription,
   itemGroup,
   itemMedia,
   itemTitle,
 } from '@/stylex/item'
 import { toggleGroup } from '@/stylex/toggle-group'
+import { reset } from '@/stylex/reset'
 import { className } from '@/stylex/style'
 import { tokens } from '../../stylex/tokens.stylex'
 import { cardTokens } from './complex-card-tokens.stylex'
@@ -33,7 +33,9 @@ const styles = stylex.create({
     display: 'flex',
     justifyContent: 'space-between',
   },
+  /* TW: itemDescription base styles plus 'text-xs tracking-wider uppercase'. */
   description: {
+    color: tokens.mutedForeground,
     fontSize: '0.75rem',
     letterSpacing: '0.05em',
     lineHeight: '1rem',
@@ -232,22 +234,19 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                             {
                               children: [
                                 itemTitle({ children: [holding.name] }, h),
-                                itemDescription(
-                                  {
-                                    children: [
-                                      h.span(
-                                        [
-                                          h.Class(
-                                            className(styles.description),
-                                          ),
-                                        ],
-                                        [
-                                          `${holding.shares} Shares · ${holding.added}`,
-                                        ],
-                                      ),
-                                    ],
-                                  },
-                                  h,
+                                /* Mirrors ui/item itemDescription: the p
+                                   carries the description classes directly. */
+                                h.p(
+                                  [
+                                    h.DataAttribute('slot', 'item-description'),
+                                    h.Class(
+                                      className(reset.text, styles.description),
+                                    ),
+                                    h.Style({ WebkitLineClamp: '2' }),
+                                  ],
+                                  [
+                                    `${holding.shares} Shares · ${holding.added}`,
+                                  ],
                                 ),
                               ],
                             },

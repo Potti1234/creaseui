@@ -38,6 +38,9 @@ const styles = stylex.create({
     justifyContent: 'space-between',
   },
   chart: { fontSize: '0.625rem', height: '5rem', width: '100%' },
+  /* Component layout slot accepts positioning props only; fontSize stays on
+     the wrapper so the chart's em-based internals inherit it. */
+  chartSize: { height: '5rem', width: '100%' },
 })
 
 const activityData = [
@@ -178,6 +181,7 @@ export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
                                     }),
                                   ),
                                   isCompact: true,
+                                  layoutStyle: styles.chartSize,
                                 },
                                 h,
                               ),

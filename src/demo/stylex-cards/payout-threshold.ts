@@ -36,6 +36,9 @@ const styles = stylex.create({
     display: 'flex',
     justifyContent: 'space-between',
   },
+  /* TW: ghost + size-8 + bg-muted — --secondary === --muted in the site
+     theme, so the secondary variant yields the same muted box. */
+  closeButton: { height: '2rem', width: '2rem' },
   full: { width: '100%' },
   icon: {
     display: 'inline-flex',
@@ -182,6 +185,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                       {
                         variant: 'secondary',
                         size: 'icon',
+                        layoutStyle: styles.closeButton,
                         children: [
                           Icon.icon('x', { class: className(styles.icon) }, h),
                           h.span(
