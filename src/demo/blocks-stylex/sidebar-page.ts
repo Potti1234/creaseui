@@ -121,6 +121,29 @@ const searchStyles = stylex.create({
     lineHeight: 1,
   },
   brandTitle: { fontSize: '.875rem', fontWeight: 500, lineHeight: 1 },
+  /* Workspace brand: TW 'grid flex-1 text-left text-sm leading-tight' +
+     'truncate font-medium' title + 'truncate text-xs' detail. */
+  brandGrid: {
+    display: 'grid',
+    flexGrow: 1,
+    textAlign: 'left',
+    fontSize: '.875rem',
+    lineHeight: '1.25',
+  },
+  brandTitleTruncate: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontWeight: 500,
+  },
+  brandDetailPlain: {},
+  brandDetailXs: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: '.75rem',
+    lineHeight: '1rem',
+  },
   /* TW-02 wraps its nav groups in 'gap-0' sidebarContent — clone the
      content chrome with zero gap (sidebarContent only takes layoutStyle). */
   contentFlat: {
@@ -181,6 +204,29 @@ const searchStyles = stylex.create({
   },
   /* TW trigger '-ml-1' / '-mr-1 ml-auto rotate-180' + separator 'mr-2 h-4'. */
   trigger: { marginInlineStart: '-.25rem' },
+  trigger8: { width: '2rem', height: '2rem' },
+  /* TW-16 siteHeader wrap + inner 'h-(--header-height)' row. */
+  siteHeader16: {
+    alignItems: 'center',
+    backgroundColor: tokens.background,
+    borderBottomColor: tokens.border,
+    borderBottomStyle: 'solid',
+    borderBottomWidth: 1,
+    display: 'flex',
+    flexShrink: 0,
+    position: 'sticky',
+    top: 0,
+    width: '100%',
+    zIndex: 50,
+  },
+  siteHeader16Row: {
+    alignItems: 'center',
+    display: 'flex',
+    gap: '.5rem',
+    height: '3.5rem',
+    paddingInline: '1rem',
+    width: '100%',
+  },
   rightTrigger: { marginInlineStart: 'auto', marginInlineEnd: '-.25rem' },
   triggerIcon: { transform: 'rotate(180deg)' },
   headerSeparator: { height: '1rem', marginInlineEnd: '.5rem' },
@@ -407,8 +453,8 @@ const searchStyles = stylex.create({
     backgroundColor: foundationTokens.muted,
     color: tokens.mutedForeground,
     flexShrink: 0,
-    fontSize: '.75rem',
-    fontWeight: 500,
+    fontSize: '.875rem',
+    fontWeight: 400,
   },
   /* TW 'grid flex-1 text-left text-sm leading-tight'. */
   userText: {
@@ -419,7 +465,7 @@ const searchStyles = stylex.create({
     minWidth: 0,
     textAlign: 'left',
     fontSize: '.875rem',
-    lineHeight: '1.25rem',
+    lineHeight: '1.25',
   },
   userName: {
     fontWeight: 500,
@@ -1334,6 +1380,10 @@ const brand = (
   collapsed: boolean,
   extraChildren: ReadonlyArray<Html> = [],
   iconName = 'gallery-vertical-end',
+  /* TW ships two label-stack markups: docs sidebars (01-06) use 'flex
+     flex-col gap-0.5 leading-none'; workspace sidebars (07+) use 'grid
+     flex-1 text-left text-sm leading-tight' + 'truncate text-xs' detail. */
+  stackShape: 'docs' | 'workspace' = 'docs',
 ): Html =>
   Sidebar.sidebarHeader(
     {
@@ -1356,20 +1406,41 @@ const brand = (
                           ...(collapsed
                             ? []
                             : [
-                                /* TW 'flex flex-col gap-0.5 leading-none' —
-                                   font-medium title + plain detail span. */
                                 h.div(
-                                  [h.Class(className(searchStyles.brandStack))],
+                                  [
+                                    h.Class(
+                                      className(
+                                        stackShape === 'docs'
+                                          ? searchStyles.brandStack
+                                          : searchStyles.brandGrid,
+                                      ),
+                                    ),
+                                  ],
                                   [
                                     h.span(
                                       [
                                         h.Class(
-                                          className(searchStyles.brandTitle),
+                                          className(
+                                            stackShape === 'docs'
+                                              ? searchStyles.brandTitle
+                                              : searchStyles.brandTitleTruncate,
+                                          ),
                                         ),
                                       ],
                                       [label],
                                     ),
-                                    h.span([], [detail]),
+                                    h.span(
+                                      [
+                                        h.Class(
+                                          className(
+                                            stackShape === 'docs'
+                                              ? searchStyles.brandDetailPlain
+                                              : searchStyles.brandDetailXs,
+                                          ),
+                                        ),
+                                      ],
+                                      [detail],
+                                    ),
                                   ],
                                 ),
                               ]),
@@ -1714,6 +1785,7 @@ const application = (
       collapsed,
       [],
       id === '08' || id === '16' ? 'command' : 'gallery-vertical-end',
+      'workspace',
     ),
     Sidebar.sidebarContent(
       {
@@ -2350,6 +2422,16 @@ const rightTrigger = (h: HtmlBuilder<Message>): Html =>
     },
     h,
   )
+/* TW-16 siteHeader trigger is 'size-8' (no -ml-1 nudge). */
+const headerTrigger16 = (h: HtmlBuilder<Message>): Html =>
+  Sidebar.sidebarTrigger(
+    {
+      onClick: Message['ToggledStyleXSidebar'](),
+      onMobileClick: Message['ToggledStyleXMobileSidebar'](),
+      layoutStyle: searchStyles.trigger8,
+    },
+    h,
+  )
 /* TW header: separator(vertical, 'mr-2 h-4') between trigger and breadcrumb. */
 const headerSeparator = (h: HtmlBuilder<Message>): Html =>
   separator(
@@ -2552,6 +2634,7 @@ export const view = (
                     !model.isMobileOpen,
                     [],
                     'command',
+                    'workspace',
                   ),
                   Sidebar.sidebarContent(
                     {
@@ -2879,51 +2962,56 @@ export const view = (
     [
       ...(id === '16'
         ? [
-            /* TW-16 siteHeader: trigger + separator + real breadcrumb +
-               right-aligned search form (sticky, z-50, border-b). */
-            blockHeader(
+            /* TW-16 siteHeader: 'sticky top-0 z-50 border-b' header wrap
+               > 'h-(--header-height) gap-2 px-4' row — trigger size-8 +
+               separator 'mr-2 h-4' + breadcrumb + right-aligned search. */
+            h.header(
+              [h.Class(className(searchStyles.siteHeader16))],
               [
-                trigger(h),
-                headerSeparator(h),
-                crumbTrail(id, title, h),
-                h.form(
-                  [h.Class(className(searchStyles.headerForm))],
+                h.div(
+                  [h.Class(className(searchStyles.siteHeader16Row))],
                   [
-                    h.div(
-                      [h.Class(className(searchStyles.headerBox))],
+                    headerTrigger16(h),
+                    headerSeparator(h),
+                    crumbTrail(id, title, h),
+                    h.form(
+                      [h.Class(className(searchStyles.headerForm))],
                       [
-                        h.label(
+                        h.div(
+                          [h.Class(className(searchStyles.headerBox))],
                           [
-                            h.For('stylex-sidebar-16-search'),
-                            h.Class(className(searchStyles.srOnly)),
+                            h.label(
+                              [
+                                h.For('stylex-sidebar-16-search'),
+                                h.Class(className(searchStyles.srOnly)),
+                              ],
+                              ['Search'],
+                            ),
+                            Sidebar.sidebarInput(
+                              {
+                                id: 'stylex-sidebar-16-search',
+                                value: model.query,
+                                onInput: value =>
+                                  Message['ChangedStyleXSidebarSearch']({
+                                    value,
+                                  }),
+                                placeholder: 'Type to search...',
+                                inputStyle: searchStyles.headerInput,
+                              },
+                              h,
+                            ),
+                            BaseIcon.icon(
+                              'search',
+                              { class: className(searchStyles.icon) },
+                              h,
+                            ),
                           ],
-                          ['Search'],
-                        ),
-                        Sidebar.sidebarInput(
-                          {
-                            id: 'stylex-sidebar-16-search',
-                            value: model.query,
-                            onInput: value =>
-                              Message['ChangedStyleXSidebarSearch']({ value }),
-                            placeholder: 'Type to search...',
-                            inputStyle: searchStyles.headerInput,
-                          },
-                          h,
-                        ),
-                        BaseIcon.icon(
-                          'search',
-                          { class: className(searchStyles.icon) },
-                          h,
                         ),
                       ],
                     ),
                   ],
                 ),
               ],
-              true,
-              h,
-              true,
-              true,
             ),
           ]
         : []),
