@@ -11,7 +11,8 @@ import {
   cardTitle,
 } from '@/stylex/card'
 import { barChart } from '@/stylex/chart'
-import { item, itemContent, itemDescription, itemGroup } from '@/stylex/item'
+import { item, itemContent, itemGroup } from '@/stylex/item'
+import { reset } from '@/stylex/reset'
 import { className } from '@/stylex/style'
 import { tokens } from '../../stylex/tokens.stylex'
 
@@ -62,17 +63,20 @@ export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
     item(
       {
         variant: 'muted',
+        orientation: 'vertical',
         children: [
           itemContent(
             {
               children: [
-                itemDescription(
-                  {
-                    children: [
-                      h.span([h.Class(className(styles.eyebrow))], [label]),
-                    ],
-                  },
-                  h,
+                /* Mirrors ui/item itemDescription: the p carries the eyebrow
+                   classes directly, keeping the line box at text-xs height. */
+                h.p(
+                  [
+                    h.DataAttribute('slot', 'item-description'),
+                    h.Class(className(reset.text, styles.eyebrow)),
+                    h.Style({ WebkitLineClamp: '2' }),
+                  ],
+                  [label],
                 ),
                 h.span([h.Class(className(styles.summaryValue))], [value]),
                 h.span(
@@ -103,10 +107,7 @@ export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
         cardContent(
           {
             children: [
-              h.div(
-                [h.Class(className(styles.chart))],
-                [barChart({ data: chartData }, h)],
-              ),
+              barChart({ data: chartData, layoutStyle: styles.chart }, h),
             ],
           },
           h,

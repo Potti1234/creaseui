@@ -33,18 +33,6 @@ import { tokens } from '../../stylex/tokens.stylex'
 const styles = stylex.create({
   button: { width: '100%' },
   fields: { gap: '1.3125rem', display: 'flex', flexDirection: 'column' },
-  itemContent: {
-    gap: '0.75rem',
-    display: 'flex',
-    flexDirection: 'column',
-    width: '100%',
-  },
-  itemStack: {
-    alignItems: 'stretch',
-    display: 'flex',
-    flexDirection: 'column',
-    width: '100%',
-  },
   mutedLabel: {
     color: tokens.mutedForeground,
     fontSize: '0.875rem',
@@ -365,49 +353,35 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                               item(
                                 {
                                   variant: 'muted',
+                                  orientation: 'vertical',
                                   children: [
-                                    h.div(
-                                      [h.Class(className(styles.itemStack))],
-                                      [
-                                        itemContent(
-                                          {
-                                            children: [
-                                              h.div(
-                                                [
-                                                  h.Class(
-                                                    className(
-                                                      styles.itemContent,
-                                                    ),
-                                                  ),
-                                                ],
-                                                [
-                                                  summaryRow(
-                                                    'Estimated arrival',
-                                                    'Today, Apr 14',
-                                                    false,
-                                                    h,
-                                                  ),
-                                                ],
-                                              ),
-                                              separator({}, h),
-                                              summaryRow(
-                                                'Transaction fee',
-                                                '$0.00',
-                                                false,
-                                                h,
-                                              ),
-                                              separator({}, h),
-                                              summaryRow(
-                                                'Total amount',
-                                                '$1,200.00',
-                                                true,
-                                                h,
-                                              ),
-                                            ],
-                                          },
-                                          h,
-                                        ),
-                                      ],
+                                    itemContent(
+                                      {
+                                        spacing: 'md',
+                                        children: [
+                                          summaryRow(
+                                            'Estimated arrival',
+                                            'Today, Apr 14',
+                                            false,
+                                            h,
+                                          ),
+                                          separator({}, h),
+                                          summaryRow(
+                                            'Transaction fee',
+                                            '$0.00',
+                                            false,
+                                            h,
+                                          ),
+                                          separator({}, h),
+                                          summaryRow(
+                                            'Total amount',
+                                            '$1,200.00',
+                                            true,
+                                            h,
+                                          ),
+                                        ],
+                                      },
+                                      h,
                                     ),
                                   ],
                                 },

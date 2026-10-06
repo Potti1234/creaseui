@@ -13,6 +13,8 @@ type SlotProps = Readonly<{
 export type ItemVariants = Readonly<{
   variant?: 'default' | 'outline' | 'muted' | null
   size?: 'default' | 'sm' | 'xs' | null
+  /** TW demos pass 'flex-col items-stretch' to stack content/footer rows. */
+  orientation?: 'horizontal' | 'vertical' | null
 }>
 export type ItemMediaVariants = Readonly<{
   variant?: 'default' | 'icon' | 'image' | null
@@ -32,8 +34,10 @@ const styles = stylex.create({
     lineHeight: '1.25rem',
     outlineStyle: 'none',
   },
-  outline: { borderColor: tokens.border },
+  /* TW 'border-border' -> var(--border), preset-scoped. */
+  outline: { borderColor: 'var(--border)' },
   muted: { backgroundColor: foundationTokens.mutedSoft },
+  vertical: { alignItems: 'stretch', flexDirection: 'column' },
   sm: { gap: '0.625rem', paddingBlock: '0.625rem', paddingInline: '0.75rem' },
   xs: { gap: '0.5rem', paddingBlock: '0.5rem', paddingInline: '0.625rem' },
   media: {
@@ -116,7 +120,8 @@ const styles = stylex.create({
   cols2: { display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))' },
   cols3: { display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))' },
   cols4: { display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))' },
-  separator: { backgroundColor: tokens.border, height: '1px', width: '100%' },
+  /* TW 'bg-border' -> var(--border), preset-scoped. */
+  separator: { backgroundColor: 'var(--border)', height: '1px', width: '100%' },
 })
 const slotDiv =
   (slot: string, style: StaticStyles) =>
@@ -131,6 +136,7 @@ export const itemVariants = (o: ItemVariants = {}): string =>
     styles.item,
     o.variant === 'outline' && styles.outline,
     o.variant === 'muted' && styles.muted,
+    o.orientation === 'vertical' && styles.vertical,
     o.size === 'sm' && styles.sm,
     o.size === 'xs' && styles.xs,
   )
@@ -138,6 +144,7 @@ export type ItemProps = SlotProps &
   Readonly<{
     variant?: ItemVariants['variant']
     size?: ItemVariants['size']
+    orientation?: ItemVariants['orientation']
     element?: 'div' | 'li' | 'article' | 'a'
     href?: string
     target?: string
@@ -157,6 +164,7 @@ export const item = <Msg>(p: ItemProps, h: HtmlBuilder<Msg>): Html => {
           styles.item,
           variant === 'outline' && styles.outline,
           variant === 'muted' && styles.muted,
+          p.orientation === 'vertical' && styles.vertical,
           size === 'sm' && styles.sm,
           size === 'xs' && styles.xs,
           stylex.defaultMarker(),

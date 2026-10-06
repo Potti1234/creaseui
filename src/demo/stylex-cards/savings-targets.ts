@@ -23,15 +23,10 @@ import {
   inputGroupInput,
   inputGroupText,
 } from '@/stylex/input-group'
-import {
-  item,
-  itemContent,
-  itemDescription,
-  itemFooter,
-  itemGroup,
-} from '@/stylex/item'
+import { item, itemContent, itemFooter, itemGroup } from '@/stylex/item'
 import { nativeSelect } from '@/stylex/native-select'
 import { progress } from '@/stylex/progress'
+import { reset } from '@/stylex/reset'
 import { className } from '@/stylex/style'
 import { tokens } from '../../stylex/tokens.stylex'
 
@@ -63,13 +58,6 @@ const styles = stylex.create({
     },
     display: 'grid',
     gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-  },
-  itemContent: { gap: '0.75rem', display: 'flex', flexDirection: 'column' },
-  itemStack: {
-    alignItems: 'stretch',
-    display: 'flex',
-    flexDirection: 'column',
-    width: '100%',
   },
   label: {
     color: tokens.mutedForeground,
@@ -146,51 +134,45 @@ const target = (
   return item<Message>(
     {
       variant: 'muted',
+      orientation: 'vertical',
       children: [
-        h.div(
-          [h.Class(className(styles.itemStack))],
-          [
-            itemContent(
-              {
-                children: [
-                  h.div(
-                    [h.Class(className(styles.itemContent))],
-                    [
-                      itemDescription(
-                        {
-                          children: [
-                            h.span([h.Class(className(styles.title))], [title]),
-                          ],
-                        },
-                        h,
-                      ),
-                      h.span([h.Class(className(styles.amount))], [amount]),
-                      progress(
-                        {
-                          value: percentage,
-                          ariaLabel: `${title} savings progress`,
-                        },
-                        h,
-                      ),
-                    ],
-                  ),
+        itemContent(
+          {
+            spacing: 'md',
+            children: [
+              /* Mirrors ui/item itemDescription: the p carries the eyebrow
+                 classes directly, keeping the line box at text-xs height. */
+              h.p(
+                [
+                  h.DataAttribute('slot', 'item-description'),
+                  h.Class(className(reset.text, styles.title)),
+                  h.Style({ WebkitLineClamp: '2' }),
                 ],
-              },
-              h,
-            ),
-            itemFooter(
-              {
-                children: [
-                  h.span(
-                    [h.Class(className(styles.label))],
-                    [`${String(percentage)}% achieved`],
-                  ),
-                  h.span([h.Class(className(styles.valueMedium))], [saved]),
-                ],
-              },
-              h,
-            ),
-          ],
+                [title],
+              ),
+              h.span([h.Class(className(styles.amount))], [amount]),
+              progress(
+                {
+                  value: percentage,
+                  ariaLabel: `${title} savings progress`,
+                },
+                h,
+              ),
+            ],
+          },
+          h,
+        ),
+        itemFooter(
+          {
+            children: [
+              h.span(
+                [h.Class(className(styles.label))],
+                [`${String(percentage)}% achieved`],
+              ),
+              h.span([h.Class(className(styles.valueMedium))], [saved]),
+            ],
+          },
+          h,
         ),
       ],
     },
