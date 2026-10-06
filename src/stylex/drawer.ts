@@ -632,7 +632,23 @@ export const drawer = <Msg>(
                 hd.DataAttribute('slot', 'drawer'),
                 hd.Class(className(overlayStyles.dialog)),
                 ...(modal === false
-                  ? [hd.Style({ pointerEvents: 'none' })]
+                  ? [
+                      hd.Style({ pointerEvents: 'none' }),
+                      // Replaces the primitive's AcquireResources mount (one
+                      // OnMount per vnode — last wins), so a non-modal
+                      // drawer never installs modal top-layer resources,
+                      // inert or scroll-lock.
+                      ...(isVisible
+                        ? [
+                            hd.OnMount(
+                              Mount.mapMessage(
+                                DrawerBehavior.ObserveNonModalEscape(),
+                                message => send(message),
+                              ),
+                            ),
+                          ]
+                        : []),
+                    ]
                   : []),
               ],
               isVisible

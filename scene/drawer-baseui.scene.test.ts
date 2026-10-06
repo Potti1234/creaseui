@@ -452,11 +452,28 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
         Scene.scene(
           { update, view },
           Scene.given(openModel('modal-false', { modal: false })),
-          resolveAcquireResources,
+          // Non-modal drawers replace AcquireResources with a document
+          // Escape listener so no modal top-layer resources (inert,
+          // scroll lock) are ever acquired.
+          Scene.Mount.expectHas(DrawerBehavior.ObserveNonModalEscape),
           ...resolveObservers(),
           Scene.expect(overlay).toBeAbsent(),
           Scene.expect(viewport).toHaveAttr('data-modal', 'false'),
           Scene.expect(popup).toExist(),
+          // Escape routes back through RequestedClose; CloseDialog is
+          // dropped for non-modal drawers, so no command resolves here.
+          Scene.Mount.resolve(
+            DrawerBehavior.ObserveNonModalEscape,
+            drawerMessage(
+              DrawerBehavior.Message['GotDrawerDialogMessage']({
+                message: DialogPrimitive.Message.RequestedClose(),
+              }),
+            ),
+          ),
+          Scene.expectOutMessage(DrawerBehavior.OutMessage.Closed()),
+          Scene.Mount.expectEnded(DrawerBehavior.ObserveNonModalEscape),
+          ...expectObserversEnded(),
+          ...expectClosed(),
         )
       })
     })

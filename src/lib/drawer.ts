@@ -528,6 +528,19 @@ export const swipeMovement = (model: Model): { x: number; y: number } => {
 
 type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>
 
+/* `modal={false}` keeps the page interactive, so the drawer must never
+   acquire foldkit's dialog resources (modal top-layer registration, sibling
+   inert, scroll lock). The view renders the plain `<dialog open>` element and
+   replaces the primitive's AcquireResources mount with ObserveNonModalEscape;
+   the primitive's DOM-facing commands are dropped here so those resources
+   can't be installed from any code path (open, RequestedClose, Unmounted,
+   animated leave). */
+const NON_MODAL_DROPPED_COMMANDS = new Set([
+  'ShowDialog',
+  'CloseDialog',
+  'ReleaseDialogResources',
+])
+
 const mapDialogResult = (
   model: Model,
   result: ReturnType<typeof Dialog.update>,
@@ -537,7 +550,10 @@ const mapDialogResult = (
     commands: dialogCommands__,
     outMessage: dialogOut__,
   } = result
-  const commands = dialogCommands__ ?? []
+  const commands = (dialogCommands__ ?? []).filter(
+    command =>
+      model.modal !== false || !NON_MODAL_DROPPED_COMMANDS.has(command.name),
+  )
   const out = dialogOut__
   return {
     model: { ...model, dialog },
@@ -1291,3 +1307,39 @@ export const ObserveNestedDrawers = Mount.defineStream('ObserveNestedDrawers', {
       }),
     ),
 })
+
+/** Document-level Escape for `modal={false}` drawers: a plain `<dialog open>`
+    fires no `cancel` event, so Escape is routed back through the dialog
+    submodel's RequestedClose. Mounted on the dialog element in place of the
+    primitive's AcquireResources (one OnMount per vnode — last wins). */
+export const ObserveNonModalEscape = Mount.defineStream(
+  'ObserveDrawerNonModalEscape',
+  {
+    messages: [Message['GotDrawerDialogMessage']],
+    execute: ({ element }) =>
+      Stream.callback<(typeof Message)['GotDrawerDialogMessage']['Type']>(
+        queue =>
+          Effect.gen(function* () {
+            yield* Effect.acquireRelease(
+              Effect.sync(() => {
+                const ownerDocument = element.ownerDocument
+                const onKeyDown = (event: KeyboardEvent) => {
+                  if (event.key !== 'Escape') return
+                  Queue.offerUnsafe(
+                    queue,
+                    Message['GotDrawerDialogMessage']({
+                      message: Dialog.Message.RequestedClose(),
+                    }),
+                  )
+                }
+                ownerDocument.addEventListener('keydown', onKeyDown)
+                return () =>
+                  ownerDocument.removeEventListener('keydown', onKeyDown)
+              }),
+              release => Effect.sync(() => release()),
+            )
+            return yield* Effect.never
+          }),
+      ),
+  },
+)

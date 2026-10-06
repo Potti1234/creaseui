@@ -309,7 +309,23 @@ export const drawer = <Msg>(
                 hd.DataAttribute('slot', 'drawer'),
                 hd.Class('bg-transparent p-0'),
                 ...(modal === false
-                  ? [hd.Style({ pointerEvents: 'none' })]
+                  ? [
+                      hd.Style({ pointerEvents: 'none' }),
+                      // The primitive's AcquireResources mount would register
+                      // a modal dialog (inert siblings + scroll lock); one
+                      // OnMount per vnode means this replaces it, leaving a
+                      // plain non-modal <dialog open>.
+                      ...(isVisible
+                        ? [
+                            hd.OnMount(
+                              Mount.mapMessage(
+                                DrawerBehavior.ObserveNonModalEscape(),
+                                message => send(message),
+                              ),
+                            ),
+                          ]
+                        : []),
+                    ]
                   : []),
               ],
               isVisible
