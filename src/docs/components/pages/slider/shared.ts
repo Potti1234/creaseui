@@ -176,27 +176,39 @@ const multiSource = (
 ): string => {
   const isStyleX = renderer === 'stylex'
   const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
+  const initEmit = (instance: SliderInstance): string =>
+    `Slider.initMulti({
+          id: '${instance.id}',
+          thumbs: ${String(instance.values.length)},
+          min: ${String(instance.min)},
+          max: ${String(instance.max)},
+          step: ${String(instance.step)},${
+            instance.direction === 'rtl' && instance.orientation !== 'vertical'
+              ? `
+          mirrored: true,`
+              : ''
+          }
+        })`
   const sliderEmit = (instance: SliderInstance): string => `Slider.multiSlider({
+        model: model.sliders['${instance.id}'] ?? fallbackSlider,
         values: model.values['${instance.id}'] ?? [${instance.values.join(', ')}],
-        min: ${String(instance.min)},
-        max: ${String(instance.max)},
-        step: ${String(instance.step)},
-        onInput: values => ChangedSliderValues({ id: '${instance.id}', values }),${
-          instance.orientation === 'vertical'
-            ? `
+        toParentMessage: message =>
+          GotMultiSliderMessage({ id: '${instance.id}', message }),${
+            instance.orientation === 'vertical'
+              ? `
         orientation: 'vertical',`
-            : ''
-        }${
-          instance.direction === 'rtl'
-            ? `
+              : ''
+          }${
+            instance.direction === 'rtl'
+              ? `
         direction: 'rtl',`
-            : ''
-        }${
-          isStyleX
-            ? ''
-            : `
+              : ''
+          }${
+            isStyleX
+              ? ''
+              : `
         class: '${instance.orientation === 'vertical' ? 'h-40' : 'w-full'}',`
-        }
+          }
       }, h)`
   const wrapEmit = (inner: string): string =>
     fixture.vertical === true
@@ -218,7 +230,7 @@ const multiSource = (
     ])`
   return foldkitApplication({
     title: `Slider — ${fixture.title}`,
-    imports: `import { Schema as S } from 'effect'
+    imports: `import { Option, Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { taggedStruct } from 'foldkit/schema'
@@ -231,18 +243,28 @@ import { className } from '@/stylex/style'
     : ''
 }
 import * as Slider from '@/${isStyleX ? 'stylex' : 'ui'}/slider'${isStyleX ? STYLES_BLOCK : ''}`,
-    model: `export const Model = S.Struct({
+    model: `const fallbackSlider = Slider.initMulti({
+  id: 'slider-fallback',
+  thumbs: 1,
+  min: 0,
+  max: 1,
+})
+export const Model = S.Struct({
+  sliders: S.Record(S.String, Slider.MultiModel),
   values: S.Record(S.String, S.Array(S.Number)),
 })
 export type Model = typeof Model.Type`,
-    messages: `export const ChangedSliderValues = taggedStruct('ChangedSliderValues${tag}', {
+    messages: `export const GotMultiSliderMessage = taggedStruct('GotMultiSliderMessage${tag}', {
   id: S.String,
-  values: S.Array(S.Number),
+  message: Slider.MultiMessage,
 })
-export const Message = S.Union([ChangedSliderValues])
+export const Message = S.Union([GotMultiSliderMessage])
 export type Message = typeof Message.Type`,
     init: `export const init = (): Update.Return<Model, Message> => ({
   model: {
+    sliders: {
+${fixture.instances.map(i => `      '${i.id}': ${initEmit(i)},`).join('\n')}
+    },
     values: {
 ${fixture.instances.map(i => `      '${i.id}': [${i.values.join(', ')}],`).join('\n')}
     },
@@ -253,15 +275,46 @@ ${fixture.instances.map(i => `      '${i.id}': [${i.values.join(', ')}],`).join(
   message: Message,
 ): Update.Return<Model, Message> => {
   switch (message._tag) {
-    case 'ChangedSliderValues${tag}':
+    case 'GotMultiSliderMessage${tag}': {
+      const slider = model.sliders[message.id] ?? fallbackSlider
+      const next = Slider.updateMulti(slider, message.message)
+      const change = Option.fromNullishOr(next.outMessage)
       return {
         model: {
           ...model,
-          values: { ...model.values, [message.id]: message.values },
+          sliders: { ...model.sliders, [message.id]: next.model },
+          values: Option.match(change, {
+            onNone: () => model.values,
+            onSome: out => ({
+              ...model.values,
+              [message.id]: Slider.updateMultiValue(
+                model.values[message.id] ?? [],
+                out.index,
+                out.value,
+                { min: slider.min, max: slider.max, step: slider.step },
+              ),
+            }),
+          }),
         },
+        commands: Command.mapMessages(next.commands ?? [], next =>
+          GotMultiSliderMessage({ id: message.id, message: next })),
       }
+    }
   }
 }`,
+    subscriptions: `export const subscriptions = Subscription.aggregate<Model, Message>()(
+${fixture.instances
+  .map(
+    i => `  Slider.multiThumbSubscriptions<Model, Message>({
+    id: '${i.id}',
+    thumbCount: ${String(i.values.length)},
+    toChildModel: model => model.sliders['${i.id}'] ?? fallbackSlider,
+    toParentMessage: message =>
+      GotMultiSliderMessage({ id: '${i.id}', message }),
+  }),`,
+  )
+  .join('\n')}
+)`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Slider — ${fixture.title}',
   body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [

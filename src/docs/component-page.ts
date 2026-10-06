@@ -16,7 +16,6 @@ export const COMPONENTS = [
   'Accordion',
   'Alert',
   'Alert Dialog',
-  'App Shell',
   'Aspect Ratio',
   'Attachment',
   'Avatar',
@@ -24,7 +23,6 @@ export const COMPONENTS = [
   'Badge',
   'Banner',
   'Blockquote',
-  'Bottom Sheet',
   'Breadcrumb',
   'Button',
   'Button Group',
@@ -36,9 +34,7 @@ export const COMPONENTS = [
   'Chat Reasoning',
   'Checkbox',
   'Center',
-  'Checkbox List',
   'Circular Progress',
-  'Clickable Card',
   'Code',
   'Code Block',
   'Collapsible',
@@ -90,22 +86,18 @@ export const COMPONENTS = [
   'Overflow List',
   'Pagination',
   'Popover',
-  'Power Search',
   'Progress',
   'Radio Group',
   'Resizable',
   'Scroll Area',
   'Section',
-  'Segmented Control',
   'Select',
   'Selectable Card',
   'Separator',
   'Sheet',
-  'Side Nav',
   'Sidebar',
   'Skeleton',
   'Slider',
-  'Sonner',
   'Spinner',
   'Stack',
   'Stat',
@@ -138,8 +130,17 @@ export const COMPONENTS = [
 export const toSlug = (name: string): string =>
   name.toLowerCase().replaceAll(' ', '-')
 
+/** Removed components whose docs URLs now forward to the page that absorbed
+    them. */
+const COMPONENT_SLUG_ALIASES: Readonly<Record<string, string>> = {
+  'bottom-sheet': 'sheet',
+}
+
+export const canonicalComponentSlug = (slug: string): string =>
+  COMPONENT_SLUG_ALIASES[slug] ?? slug
+
 export const componentTitle = (slug: string): string | undefined =>
-  COMPONENTS.find(name => toSlug(name) === slug)
+  COMPONENTS.find(name => toSlug(name) === canonicalComponentSlug(slug))
 
 export type ExampleConfig<Msg> = Readonly<{
   title: string

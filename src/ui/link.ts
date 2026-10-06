@@ -65,8 +65,11 @@ export const linkVariants = cva(
 
 export type LinkVariants = VariantProps<typeof linkVariants>
 
+/* where() would zero the selector's specificity and let the base
+   no-underline win, so the compound stays real — same shape astryx emits:
+   :hover:not(:disabled,[aria-disabled="true"]) inside @media (hover: hover). */
 const hoverUnderline =
-  '[@media(hover:hover):where(&:hover:not(:disabled,[aria-disabled="true"]))]:underline'
+  '[@media(hover:hover)]:[&:hover:not(:disabled,[aria-disabled="true"])]:underline'
 
 export type LinkProps<Msg> = Readonly<{
   children: ReadonlyArray<Html | string>

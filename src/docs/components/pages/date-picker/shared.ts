@@ -120,40 +120,11 @@ const PARSE_INPUT = `const parseInputDate = (value: string): Option.Option<Foldk
     : Option.some({ year: parsed.getFullYear(), month: parsed.getMonth() + 1, day: parsed.getDate() })
 }`
 
-const PARSE_NATURAL = `const WEEKDAYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
-const WEEKDAY_INDEX: Readonly<Record<string, number>> = {
-  Sunday: 0, Monday: 1, Tuesday: 2, Wednesday: 3, Thursday: 4, Friday: 5, Saturday: 6,
-}
-const parseNaturalDate = (value: string, today: FoldkitCalendar.CalendarDate): Option.Option<FoldkitCalendar.CalendarDate> => {
-  const text = value.trim().toLowerCase()
-  if (text === 'today') return Option.some(today)
-  if (text === 'tomorrow') return Option.some(FoldkitCalendar.addDays(today, 1))
-  if (text === 'yesterday') return Option.some(FoldkitCalendar.addDays(today, -1))
-  if (text === 'next week') return Option.some(FoldkitCalendar.addDays(today, 7))
-  if (text === 'next month') return Option.some(FoldkitCalendar.addMonths(today, 1))
-  const inMatch = /^in (\\d+) (day|week|month)s?$/.exec(text)
-  if (inMatch !== null) {
-    const n = Number(inMatch[1])
-    const unit = inMatch[2]
-    return Option.some(
-      unit === 'day'
-        ? FoldkitCalendar.addDays(today, n)
-        : unit === 'week'
-          ? FoldkitCalendar.addDays(today, n * 7)
-          : FoldkitCalendar.addMonths(today, n),
-    )
-  }
-  const nextMatch = /^next (\\w+)$/.exec(text)
-  const name = nextMatch?.[1] ?? ''
-  if (WEEKDAYS.includes(name)) {
-    const target = WEEKDAY_INDEX[
-      name.charAt(0).toUpperCase() + name.slice(1)
-    ] ?? 0
-    const current = WEEKDAY_INDEX[FoldkitCalendar.dayOfWeek(today)] ?? 0
-    const offset = ((target - current + 6) % 7) + 1
-    return Option.some(FoldkitCalendar.addDays(today, offset))
-  }
-  return Option.none()
+const PARSE_NATURAL = `const parseNaturalDate = (value: string, today: FoldkitCalendar.CalendarDate): Option.Option<FoldkitCalendar.CalendarDate> => {
+  const parsed = parseDate(value, new Date(Date.UTC(today.year, today.month - 1, today.day)))
+  return parsed === null
+    ? Option.none()
+    : Option.some(FoldkitCalendar.fromDateInZone(parsed, 'UTC'))
 }`
 
 /* Emits for the single-date kinds (demo, basic, dob, time, rtl) — one
@@ -539,7 +510,12 @@ import { className } from '@/stylex/style'
 }import * as DatePicker from '@/${dir}/date-picker'
 import * as Field from '@/${dir}/field'
 import * as Icon from '@/lib/icon'
-import * as InputGroup from '@/${dir}/input-group'
+import * as InputGroup from '@/${dir}/input-group'${
+      isNatural
+        ? `
+import { parseDate } from 'chrono-node'`
+        : ''
+    }
 
 ${FORMAT_HELPERS}
 

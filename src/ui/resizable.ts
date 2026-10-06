@@ -193,25 +193,43 @@ export const resizable = <Msg>(
             ),
           ),
         ],
-        props.withHandle === true
-          ? [
-              h.div(
-                [
-                  h.Class(
-                    'z-10 flex h-4 w-3 items-center justify-center rounded-xs border bg-border',
-                  ),
-                ],
-                [
-                  Icon.gripVertical<Msg>(
-                    {
-                      class: cn('size-2.5', vertical ? 'rotate-90' : undefined),
-                    },
-                    h,
-                  ),
-                ],
+        [
+          // Invisible ±6px hit target — the visible line stays 1px but the
+          // strip drags from anywhere near it.
+          h.div(
+            [
+              h.AriaHidden(true),
+              h.Class(
+                vertical
+                  ? 'absolute inset-x-0 -inset-y-1.5'
+                  : 'absolute inset-y-0 -inset-x-1.5',
               ),
-            ]
-          : [],
+            ],
+            [],
+          ),
+          ...(props.withHandle === true
+            ? [
+                h.div(
+                  [
+                    h.Class(
+                      'z-10 flex h-4 w-3 items-center justify-center rounded-xs border bg-border',
+                    ),
+                  ],
+                  [
+                    Icon.gripVertical<Msg>(
+                      {
+                        class: cn(
+                          'size-2.5',
+                          vertical ? 'rotate-90' : undefined,
+                        ),
+                      },
+                      h,
+                    ),
+                  ],
+                ),
+              ]
+            : []),
+        ],
       ),
       panel({ size: 100 - size, children: props.second }, h),
     ],
@@ -450,14 +468,41 @@ export const resizableGroup = <Msg>(
             ),
           ),
         ],
-        props.withHandles === true
-          ? [
-              Icon.gripVertical<Msg>(
-                { class: cn('size-3', vertical ? 'rotate-90' : undefined) },
-                h,
+        [
+          h.div(
+            [
+              h.AriaHidden(true),
+              h.Class(
+                vertical
+                  ? 'absolute inset-x-0 -inset-y-1.5'
+                  : 'absolute inset-y-0 -inset-x-1.5',
               ),
-            ]
-          : [],
+            ],
+            [],
+          ),
+          ...(props.withHandles === true
+            ? [
+                h.div(
+                  [
+                    h.Class(
+                      'z-10 flex h-4 w-3 items-center justify-center rounded-xs border bg-border',
+                    ),
+                  ],
+                  [
+                    Icon.gripVertical<Msg>(
+                      {
+                        class: cn(
+                          'size-2.5',
+                          vertical ? 'rotate-90' : undefined,
+                        ),
+                      },
+                      h,
+                    ),
+                  ],
+                ),
+              ]
+            : []),
+        ],
       ),
     )
   })

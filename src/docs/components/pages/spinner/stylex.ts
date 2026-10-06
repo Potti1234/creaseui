@@ -40,6 +40,7 @@ const styles = stylex.create({
     flexShrink: 0,
     justifyContent: 'flex-end',
   },
+  push: { marginInlineStart: 'auto' },
   spinnerIcon: { flexShrink: 0 },
   iconMd: { height: '1rem', width: '1rem' },
   srOnly: {
@@ -288,6 +289,8 @@ const fixtureView = <Msg>(
                       InputGroup.inputGroupButton(
                         {
                           variant: 'default',
+                          size: 'icon-sm',
+                          layoutStyle: styles.push,
                           children: [
                             Icon.arrowUp(
                               { class: className(styles.iconMd) },

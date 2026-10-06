@@ -106,9 +106,13 @@ const calendarView = (
         : {}),
       ...(fixture.weekNumbers === true ? { weekNumbers: true } : {}),
       ...(fixture.direction === 'rtl' ? { direction: 'rtl' as const } : {}),
-      ...(fixture.roomy === true
-        ? { class: '[--cell-size:--spacing(10)]' }
-        : {}),
+      ...(fixture.layout === 'presets'
+        ? { class: 'p-0 [--cell-size:--spacing(9.5)]' }
+        : fixture.layout === 'time'
+          ? { class: 'p-0' }
+          : fixture.roomy === true
+            ? { class: '[--cell-size:--spacing(10)]' }
+            : {}),
     },
     h,
   )
@@ -138,6 +142,7 @@ const timeFieldView = (
                       {
                         id: field === 'start' ? 'time-from' : 'time-to',
                         type: 'time',
+                        step: '1',
                         value:
                           field === 'start' ? model.startTime : model.endTime,
                         onInput: value =>
@@ -146,6 +151,8 @@ const timeFieldView = (
                             : Message.ChangedEndTime({ value }),
                         ariaLabel:
                           field === 'start' ? 'Start Time' : 'End Time',
+                        class:
+                          'appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none',
                       },
                       h,
                     ),

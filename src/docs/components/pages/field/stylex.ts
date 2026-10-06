@@ -82,6 +82,7 @@ type FieldPreviewModel = Readonly<
       plan: string
       environment: string
       price: readonly [number, number]
+      priceSlider: Slider.MultiModel
     }
 >
 
@@ -92,13 +93,8 @@ const toMsg = <Msg>(onMessageJson: (json: string) => Msg) => ({
     onMessageJson(
       JSON.stringify({ _tag: 'ToggledFieldCheck', field, isChecked }),
     ),
-  price: (values: readonly [number, number]): Msg =>
-    onMessageJson(
-      JSON.stringify({
-        _tag: 'ChangedFieldPrice',
-        values: [values[0], values[1]],
-      }),
-    ),
+  slider: (message: Slider.MultiMessage): Msg =>
+    onMessageJson(JSON.stringify({ _tag: 'GotFieldSliderMessage', message })),
   select: (which: string, message: Select.Message): Msg =>
     onMessageJson(
       JSON.stringify({ _tag: 'GotFieldSelectMessage', which, message }),
@@ -562,11 +558,9 @@ const fieldView = <Msg>(
             ),
             Slider.rangeSlider(
               {
+                model: model.priceSlider,
                 values: [lo, hi],
-                min: 0,
-                max: 1000,
-                step: 10,
-                onInput: values => msg.price(values),
+                toParentMessage: message => msg.slider(message),
                 ariaLabels: ['Minimum price', 'Maximum price'],
                 layoutStyle: styles.sliderTop,
               },

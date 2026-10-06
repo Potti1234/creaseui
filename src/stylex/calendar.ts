@@ -288,6 +288,7 @@ const styles = stylex.create({
     backgroundColor: tokens.background,
     width: 'fit-content',
   },
+  rootFlush: { padding: 0 },
   week: { display: 'flex', marginTop: '0.5rem', width: '100%' },
   weekday: {
     borderRadius: tokens.controlRadius,
@@ -319,12 +320,41 @@ const styles = stylex.create({
 })
 
 export type CalendarViewOptions = Readonly<{
+  /** 'dropdown' keeps the heading button that drills into the month/year
+   * pickers. 'label' renders plain text — no button, no chevron. */
+  captionLayout?: 'label' | 'dropdown'
+  /** 'flush' removes the root padding — the calendar's own frame inside a
+   * card, mirroring `p-0` on the Tailwind skin. */
+  density?: 'default' | 'flush'
   direction?: 'ltr' | 'rtl'
   layoutStyle?: ComponentLayoutStyle
   range?: CalendarBehavior.CalendarRange
   size?: 'default' | 'comfortable'
   weekNumbers?: boolean
 }>
+
+const captionHeading = <Msg>(
+  heading: Readonly<{ id: string; text: string }>,
+  headingButton: ReadonlyArray<ChildAttribute>,
+  options: CalendarViewOptions,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  options.captionLayout === 'label'
+    ? h.div(
+        [h.Id(heading.id), h.Class(className(styles.heading))],
+        [heading.text],
+      )
+    : h.button(
+        [
+          ...headingButton,
+          h.Id(heading.id),
+          h.Class(className(styles.captionButton)),
+        ],
+        [
+          heading.text,
+          Icon.chevronDown({ class: className(styles.captionIcon) }, h),
+        ],
+      )
 const navigationButton = <Msg>(
   attributes: ReadonlyArray<ChildAttribute>,
   direction: 'previous' | 'next',
@@ -428,7 +458,13 @@ const daysView = <Msg>(
       h.Style({
         '--cell-size': options.size === 'comfortable' ? '2.5rem' : '2rem',
       }),
-      h.Class(className(styles.root, options.layoutStyle)),
+      h.Class(
+        className(
+          styles.root,
+          options.density === 'flush' && styles.rootFlush,
+          options.layoutStyle,
+        ),
+      ),
     ],
     [
       h.div(
@@ -449,16 +485,11 @@ const daysView = <Msg>(
           h.div(
             [h.Class(className(styles.caption))],
             [
-              h.button(
-                [
-                  ...attributes.headingButton,
-                  h.Id(attributes.heading.id),
-                  h.Class(className(styles.captionButton)),
-                ],
-                [
-                  attributes.heading.text,
-                  Icon.chevronDown({ class: className(styles.captionIcon) }, h),
-                ],
+              captionHeading(
+                attributes.heading,
+                attributes.headingButton,
+                options,
+                h,
               ),
             ],
           ),
@@ -496,7 +527,13 @@ const pickerView = <Msg>(
       h.Style({
         '--cell-size': options.size === 'comfortable' ? '2.5rem' : '2rem',
       }),
-      h.Class(className(styles.root, options.layoutStyle)),
+      h.Class(
+        className(
+          styles.root,
+          options.density === 'flush' && styles.rootFlush,
+          options.layoutStyle,
+        ),
+      ),
     ],
     [
       h.div(
@@ -505,16 +542,11 @@ const pickerView = <Msg>(
           h.div(
             [h.Class(className(styles.caption))],
             [
-              h.button(
-                [
-                  ...attributes.headingButton,
-                  h.Id(attributes.heading.id),
-                  h.Class(className(styles.captionButton)),
-                ],
-                [
-                  attributes.heading.text,
-                  Icon.chevronDown({ class: className(styles.captionIcon) }, h),
-                ],
+              captionHeading(
+                attributes.heading,
+                attributes.headingButton,
+                options,
+                h,
               ),
             ],
           ),
@@ -561,7 +593,13 @@ const yearsView = <Msg>(
       h.Style({
         '--cell-size': options.size === 'comfortable' ? '2.5rem' : '2rem',
       }),
-      h.Class(className(styles.root, options.layoutStyle)),
+      h.Class(
+        className(
+          styles.root,
+          options.density === 'flush' && styles.rootFlush,
+          options.layoutStyle,
+        ),
+      ),
     ],
     [
       h.div(
@@ -639,6 +677,12 @@ export type CalendarProps<Msg> = Readonly<{
   model: Model
   maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>
   toParentMessage: (message: Message) => Msg
+  /** 'dropdown' keeps the heading button that drills into the month/year
+   * pickers. 'label' renders plain text — no button, no chevron. */
+  captionLayout?: 'label' | 'dropdown'
+  /** 'flush' removes the root padding — the calendar's own frame inside a
+   * card, mirroring `p-0` on the Tailwind skin. */
+  density?: 'default' | 'flush'
   direction?: 'ltr' | 'rtl'
   range?: CalendarBehavior.CalendarRange
   layoutStyle?: ComponentLayoutStyle
@@ -665,6 +709,10 @@ export const calendar = <Msg>(
         calendarView(
           attributes,
           {
+            ...(props.captionLayout === undefined
+              ? {}
+              : { captionLayout: props.captionLayout }),
+            ...(props.density === undefined ? {} : { density: props.density }),
             ...(props.direction === undefined
               ? {}
               : { direction: props.direction }),

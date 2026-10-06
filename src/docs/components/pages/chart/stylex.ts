@@ -66,9 +66,9 @@ const styles = stylex.create({
     lineHeight: '1.25rem',
     marginBottom: '0.75rem',
   },
-  chart: { maxWidth: '36rem' },
+  chart: { marginInline: 'auto', maxWidth: '36rem' },
   chartHost: { height: '16rem', width: '100%' },
-  demoCard: { maxWidth: '36rem', width: '100%' },
+  demoCard: { marginInline: 'auto', maxWidth: '36rem', width: '100%' },
   demoRow: {
     alignItems: { default: 'stretch', '@media (min-width: 640px)': 'center' },
     display: 'flex',
@@ -109,10 +109,16 @@ const styles = stylex.create({
     lineHeight: '1rem',
   },
   demoTotal: { fontSize: '1.125rem', fontWeight: 700, lineHeight: 1 },
-  frame: { gap: '0.75rem', display: 'grid', maxWidth: '36rem', width: '100%' },
+  frame: {
+    gap: '0.75rem',
+    display: 'grid',
+    marginInline: 'auto',
+    maxWidth: '36rem',
+    width: '100%',
+  },
   areaChart: { marginBottom: '1rem' },
   row: { gap: '1rem', display: 'flex', flexWrap: 'wrap' },
-  stack: { maxWidth: '36rem', width: '100%' },
+  stack: { marginInline: 'auto', maxWidth: '36rem', width: '100%' },
 })
 
 const table = <Msg>(h: HtmlBuilder<Msg>) =>

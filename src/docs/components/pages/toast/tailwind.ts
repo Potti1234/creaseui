@@ -1,83 +1,194 @@
-import { Schema as S } from 'effect'
+import { Effect, Option, Schema as S } from 'effect'
 import { Command } from 'foldkit'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
+
 import { definePreviewProgram } from '@/docs/components/pages/authored-page'
+import {
+  toastFixtures,
+  toastTitle,
+  type ToastButtonSpec,
+  type ToastFixture,
+} from '@/docs/components/pages/toast/shared'
 import * as Button from '@/ui/button'
 import * as Toast from '@/ui/toast'
-const Message = defineMessageUnion({
-  ShowedToastPreview: {},
+
+const GotToastPreviewMessage = defineMessageUnion({
+  ClickedToastButton: { index: S.Number },
+  CompletedPromiseToast: {},
   GotToastPreviewMessage: {
     message: S.Union([Toast.Message, Toast.ActivatedToastAction]),
   },
 })
-type Message = typeof Message.Type
-const Model = S.Struct({
+type PreviewMessage = typeof GotToastPreviewMessage.Type
+
+const PreviewModel = S.Struct({
   _docsPage: S.Literal('toast'),
-  exampleIndex: S.Number,
   notifications: Toast.Model,
+  pendingPromiseId: S.Option(S.String),
 })
-type Model = typeof Model.Type
-export const toastTailwindPreviewProgram = definePreviewProgram<Model, Message>(
-  {
-    Model,
-    Message,
-    init: index => ({
-      _docsPage: 'toast',
-      exampleIndex: index,
-      notifications: Toast.init({ id: `docs-toast-${String(index)}` }),
-    }),
-    update: (model, message) => {
-      const { model: notifications, commands: notificationsCommands__ } =
-        message._tag === 'ShowedToastPreview'
-          ? Toast.show(
-              model.notifications,
-              model.exampleIndex === 0
-                ? Toast.success({
-                    title: 'Event has been created',
-                    description: 'Sunday at 9:00 AM',
-                    actionLabel: 'Undo',
-                    sticky: false,
-                    duration: '4 seconds',
-                  })
-                : Toast.error({
-                    title: 'Could not save changes',
-                    description: 'Try again in a moment.',
-                    actionLabel: 'Undo',
-                    sticky: true,
-                    duration: '4 seconds',
-                  }),
-            )
-          : Toast.update(model.notifications, message.message)
-      const commands = notificationsCommands__ ?? []
-      return {
-        model: { ...model, notifications },
-        commands: Command.mapMessages(commands, next =>
-          Message['GotToastPreviewMessage']({ message: next }),
-        ),
-      }
+type PreviewModel = typeof PreviewModel.Type
+
+const variantFactory = (
+  button: ToastButtonSpec,
+): ((input: Toast.ToastInput) => Toast.ShowInput) => {
+  switch (button.variant) {
+    case 'default':
+      return Toast.plain
+    case 'success':
+      return Toast.success
+    case 'info':
+      return Toast.info
+    case 'warning':
+      return Toast.warning
+    case 'error':
+      return Toast.error
+    case 'promise':
+      return Toast.info
+  }
+}
+
+const showInputFor = (button: ToastButtonSpec): Toast.ShowInput => {
+  if (button.variant === 'promise') {
+    return Toast.info({ title: 'Loading...', sticky: true })
+  }
+  return variantFactory(button)({
+    title: toastTitle(button.variant),
+    ...(button.description === undefined
+      ? {}
+      : { description: button.description }),
+    ...(button.actionLabel === undefined
+      ? {}
+      : { actionLabel: button.actionLabel }),
+    ...(button.position === undefined ? {} : { position: button.position }),
+  })
+}
+
+const ResolvePromise = Command.define('ResolveToastPromise', {
+  messages: [GotToastPreviewMessage.CompletedPromiseToast],
+  execute: Effect.sleep('1200 millis').pipe(
+    Effect.as(GotToastPreviewMessage.CompletedPromiseToast()),
+  ),
+})
+
+const mapToast = (
+  model: PreviewModel,
+  result: ReturnType<typeof Toast.update>,
+): {
+  model: PreviewModel
+  commands: ReadonlyArray<Command.Command<PreviewMessage>>
+} => ({
+  model: { ...model, notifications: result.model },
+  commands: Command.mapMessages(result.commands ?? [], next =>
+    GotToastPreviewMessage.GotToastPreviewMessage({ message: next }),
+  ),
+})
+
+const buttonView = (
+  button: ToastButtonSpec,
+  index: number,
+  h: HtmlBuilder<PreviewMessage>,
+): Html =>
+  Button.button(
+    {
+      onClick: GotToastPreviewMessage.ClickedToastButton({ index }),
+      variant: 'outline',
+      children: [button.label],
     },
-    view: (_index, model, h) =>
-      h.div(
-        [],
-        [
-          Button.button(
-            {
-              onClick: Message['ShowedToastPreview']({}),
-              children: ['Show toast'],
-            },
-            h,
-          ),
-          Toast.toast(
-            {
-              model: model.notifications,
-              toParentMessage: message =>
-                Message['GotToastPreviewMessage']({ message }),
-              ariaLabel: 'Toast notifications',
-              ...(model.exampleIndex === 0 ? {} : { class: 'mb-24' }),
-            },
-            h,
-          ),
-        ],
+    h,
+  )
+
+const fixtureView = (
+  fixture: ToastFixture,
+  fixtureIndex: number,
+  model: PreviewModel,
+  h: HtmlBuilder<PreviewMessage>,
+): Html => {
+  const offset = toastFixtures
+    .slice(0, fixtureIndex)
+    .reduce((total, candidate) => total + candidate.buttons.length, 0)
+  return h.div(
+    [
+      h.Class(
+        fixture.wrap === 'center'
+          ? 'flex flex-wrap justify-center gap-2'
+          : 'flex flex-wrap gap-2',
       ),
+    ],
+    fixture.buttons
+      .map((button, index) => buttonView(button, offset + index, h))
+      .concat([
+        Toast.toast(
+          {
+            model: model.notifications,
+            toParentMessage: message =>
+              GotToastPreviewMessage.GotToastPreviewMessage({ message }),
+            ariaLabel: 'Toast notifications',
+          },
+          h,
+        ),
+      ]),
+  )
+}
+
+export const toastTailwindPreviewProgram = definePreviewProgram<
+  PreviewModel,
+  PreviewMessage
+>({
+  Model: PreviewModel,
+  Message: GotToastPreviewMessage,
+  init: () => ({
+    _docsPage: 'toast',
+    notifications: Toast.init({ id: 'docs-toast-preview' }),
+    pendingPromiseId: Option.none(),
+  }),
+  update: (model, message) => {
+    switch (message._tag) {
+      case 'ClickedToastButton': {
+        const button = toastFixtures
+          .flatMap(fixture => fixture.buttons)
+          .at(message.index)
+        if (button === undefined) {
+          return { model }
+        }
+        const result = Toast.show(model.notifications, showInputFor(button))
+        const mapped = mapToast(model, result)
+        const commands = mapped.commands ?? []
+        if (button.variant !== 'promise') {
+          return mapped
+        }
+        const next = mapped.model
+        return {
+          model: {
+            ...next,
+            pendingPromiseId: Option.fromNullishOr(
+              next.notifications.entries.at(-1)?.id,
+            ),
+          },
+          commands: [...commands, ResolvePromise()],
+        }
+      }
+      case 'CompletedPromiseToast':
+        return Option.match(model.pendingPromiseId, {
+          onNone: () => ({ model }),
+          onSome: id =>
+            mapToast(
+              { ...model, pendingPromiseId: Option.none() },
+              Toast.updateToast(model.notifications, id, {
+                title: 'Event has been created',
+                variant: 'Success',
+                sticky: false,
+                duration: '4 seconds',
+              }),
+            ),
+        })
+      case 'GotToastPreviewMessage':
+        return mapToast(
+          model,
+          Toast.update(model.notifications, message.message),
+        )
+    }
   },
-)
+  view: (index, model, h) =>
+    fixtureView(toastFixtures[index] ?? toastFixtures[0], index, model, h),
+})

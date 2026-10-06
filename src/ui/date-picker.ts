@@ -54,7 +54,9 @@ export const updateForRtl = (
       : message,
   )
 
-const TRIGGER_CLASS = 'w-[240px] justify-start text-left font-normal'
+// `align-top` removes the baseline strut the primitive's block wrapper divs add
+// below the inline-flex trigger, which otherwise nudges the trigger upward.
+const TRIGGER_CLASS = 'w-[240px] justify-start text-left font-normal align-top'
 
 const PANEL_CLASS =
   'z-50 w-auto rounded-md border bg-popover p-0 text-popover-foreground shadow-md outline-hidden transition duration-200 ease-out data-[closed]:opacity-0 data-[closed]:scale-95 max-sm:!fixed max-sm:!inset-x-3 max-sm:!bottom-3 max-sm:!top-auto max-sm:!w-auto max-sm:!transform-none max-sm:!z-[100]'

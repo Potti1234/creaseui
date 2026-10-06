@@ -21,7 +21,9 @@ import { normalizeRange } from '@/lib/calendar'
    The committed range, the in-progress first click (`pendingStart`), and the
    span-cap window live in this Model — the embedded foldkit Calendar renders
    the day grid and emits `SelectedDate` per click, which `update` folds into
-   range commits (commit → close, first click → pending + constraint window).
+   range commits (first click → pending + constraint window; a completed
+   commit keeps the popover open so the range can keep being adjusted, matching
+   the docs Range Picker rather than astryx's close-on-commit).
 
    PORT NOTE: foldkit's calendar renders a single month; astryx defaults to
    two. `numberOfMonths` accepts 1|2 but clamps to one month. */
@@ -249,24 +251,16 @@ const clearPending = (model: Model): Model => {
 
 const commitRange = (model: Model, range: Range): UpdateReturn => {
   const normalized = normalizeRange(range)
-  const closed = clearPending({
+  const committed = clearPending({
     ...model,
     value: Option.some(normalized),
     calendar: CalendarPrimitive.focusDate(model.calendar, normalized.start),
   })
-  const result = PopoverPrimitive.update(
-    closed.popover,
-    PopoverPrimitive.Message.RequestedClose(),
-  )
   return {
     model: {
-      ...closed,
-      popover: result.model,
-      calendar: CalendarPrimitive.dropToDays(closed.calendar),
+      ...committed,
+      calendar: CalendarPrimitive.dropToDays(committed.calendar),
     },
-    commands: Command.mapMessages(result.commands ?? [], message =>
-      Message.GotPopoverMessage({ message }),
-    ),
     outMessage: OutMessage.ChangedValue({ value: Option.some(normalized) }),
   }
 }

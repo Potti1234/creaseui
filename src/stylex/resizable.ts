@@ -98,6 +98,20 @@ const styles = stylex.create({
     height: 1,
     width: '100%',
   },
+  hitHorizontal: {
+    position: 'absolute',
+    bottom: 0,
+    left: '-0.375rem',
+    right: '-0.375rem',
+    top: 0,
+  },
+  hitVertical: {
+    position: 'absolute',
+    bottom: '-0.375rem',
+    left: 0,
+    right: 0,
+    top: '-0.375rem',
+  },
   grip: {
     borderColor: tokens.border,
     borderRadius: complexTokens.smallRadius,
@@ -151,36 +165,51 @@ const handleView = <Msg>(
         ),
       ),
     ],
-    props.withHandle
-      ? props.gripWrapped
-        ? [
-            h.div(
-              [h.Class(className(styles.grip))],
-              [
-                Icon.gripVertical<Msg>(
-                  {
-                    class: className(
-                      styles.iconSm,
-                      props.vertical && styles.iconVertical,
-                    ),
-                  },
-                  h,
-                ),
-              ],
+    [
+      // Invisible ±6px hit target — the visible line stays 1px but the strip
+      // drags from anywhere near it.
+      h.span(
+        [
+          h.AriaHidden(true),
+          h.Class(
+            className(
+              props.vertical ? styles.hitVertical : styles.hitHorizontal,
             ),
-          ]
-        : [
-            Icon.gripVertical<Msg>(
-              {
-                class: className(
-                  styles.icon,
-                  props.vertical && styles.iconVertical,
-                ),
-              },
-              h,
-            ),
-          ]
-      : [],
+          ),
+        ],
+        [],
+      ),
+      ...(props.withHandle
+        ? props.gripWrapped
+          ? [
+              h.div(
+                [h.Class(className(styles.grip))],
+                [
+                  Icon.gripVertical<Msg>(
+                    {
+                      class: className(
+                        styles.iconSm,
+                        props.vertical && styles.iconVertical,
+                      ),
+                    },
+                    h,
+                  ),
+                ],
+              ),
+            ]
+          : [
+              Icon.gripVertical<Msg>(
+                {
+                  class: className(
+                    styles.icon,
+                    props.vertical && styles.iconVertical,
+                  ),
+                },
+                h,
+              ),
+            ]
+        : []),
+    ],
   )
 
 export type ResizableProps<Msg> = Readonly<{
@@ -516,7 +545,7 @@ export const resizableGroup = <Msg>(
           disabled: props.disabled === true,
           attributes,
           withHandle: props.withHandles === true,
-          gripWrapped: false,
+          gripWrapped: true,
         },
         h,
       ),

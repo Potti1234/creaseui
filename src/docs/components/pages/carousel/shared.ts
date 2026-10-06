@@ -48,7 +48,7 @@ export const carouselFixtures: Readonly<Array<CarouselFixture>> = [
     description: 'A vertical carousel stacks slides along the Y axis.',
     count: 5,
     label: 'Vertical slides',
-    itemSize: 'third',
+    itemSize: 'full',
     orientation: 'vertical',
   },
   {
@@ -101,14 +101,23 @@ const slideSource = (
   renderer: 'tailwind' | 'stylex',
 ): string => {
   const isSx = renderer === 'stylex'
-  const card = `Card.card({
+  const vertical = fixture.orientation === 'vertical'
+  const card = `Card.card({${
+    vertical
+      ? isSx
+        ? `
+                layoutStyle: styles.verticalCard,`
+        : `
+                class: 'h-full',`
+      : ''
+  }
                 children: [
                   Card.cardContent({${
                     isSx
                       ? `
-                    layoutStyle: styles.cardContent as ComponentLayoutStyle,`
+                    layoutStyle: styles.${vertical ? 'cardContentVertical' : 'cardContent'} as ComponentLayoutStyle,`
                       : `
-                    class: 'flex aspect-square items-center justify-center p-6 text-4xl font-semibold',`
+                    class: 'flex ${vertical ? 'h-full' : 'aspect-square'} items-center justify-center p-6 text-4xl font-semibold',`
                   }
                     children: [String(index + 1)],
                   }, h),
@@ -142,8 +151,10 @@ const carouselPropsSource = (
     parts.push(`plugins: [Autoplay({ delay: 2000, stopOnInteraction: true })],`)
   parts.push(
     renderer === 'stylex'
-      ? 'layoutStyle: styles.carousel,'
-      : `class: 'w-full',`,
+      ? fixture.orientation === 'vertical'
+        ? 'layoutStyle: [styles.carousel, styles.verticalCarousel],'
+        : 'layoutStyle: styles.carousel,'
+      : `class: '${fixture.orientation === 'vertical' ? 'w-full h-[200px]' : 'w-full'}',`,
   )
   return parts.join('\n        ')
 }
@@ -179,9 +190,16 @@ const viewBodySource = (
 
 const stylexStylesSource = (fixture: CarouselFixture): string => {
   const parts: Array<string> = [`  carousel: { width: '100%' },`]
-  parts.push(
-    `  cardContent: { alignItems: 'center', aspectRatio: '1/1', display: 'flex', fontSize: '2.25rem', lineHeight: '2.5rem', fontWeight: 600, justifyContent: 'center', padding: '1.5rem' },`,
-  )
+  if (fixture.orientation === 'vertical')
+    parts.push(
+      `  verticalCarousel: { height: '12.5rem' },`,
+      `  verticalCard: { height: '100%' },`,
+      `  cardContentVertical: { alignItems: 'center', display: 'flex', fontSize: '2.25rem', lineHeight: '2.5rem', fontWeight: 600, height: '100%', justifyContent: 'center', padding: '1.5rem' },`,
+    )
+  else
+    parts.push(
+      `  cardContent: { alignItems: 'center', aspectRatio: '1/1', display: 'flex', fontSize: '2.25rem', lineHeight: '2.5rem', fontWeight: 600, justifyContent: 'center', padding: '1.5rem' },`,
+    )
   if (fixture.padded === true)
     parts.push(`  slidePadding: { padding: '0.5rem' },`)
   if (fixture.status === true)

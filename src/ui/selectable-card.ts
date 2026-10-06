@@ -8,7 +8,7 @@ import {
   type CardPadding,
   type CardVariant,
 } from '@/lib/card-surface'
-import { pressableAttributes } from '@/lib/clickable-card'
+import { pressableAttributes } from '@/lib/card-pressable'
 import { cn } from '@/lib/utils'
 
 /* Ported from Meta Astryx SelectableCard.tsx — a card that toggles between
@@ -23,7 +23,7 @@ export type {
   CardPadding,
   CardVariant,
 } from '@/lib/card-surface'
-export { Message } from '@/lib/clickable-card'
+export { Message } from '@/lib/card-pressable'
 
 const HOVER_GUARD = '[@media(hover:hover)]:'
 

@@ -13,8 +13,11 @@ export type LightboxFixture = Readonly<{
 
 /* Example set ported from Meta Astryx
    packages/cli/assets/templates/blocks/components/Lightbox/*.tsx — same
-   demos, same labels/captions; astryx's template-assets stand in as stable
-   public URLs (picsum photos, MDN's CC0 flower video). */
+   demos, same labels/captions. Every image is verified public domain or
+   CC0 and self-hosted under public/lightbox/: van Gogh's Starry Night
+   (1889, expired copyright) and NASA's Apollo 17 Blue Marble, Viking Mars
+   mosaic and Hubble Ultra Deep Field (US-government works). The video is
+   MDN's CC0 flower. */
 export const lightboxFixtures: ReadonlyArray<LightboxFixture> = [
   {
     title: 'Lightbox',
@@ -45,17 +48,17 @@ export const lightboxFixtures: ReadonlyArray<LightboxFixture> = [
   },
 ]
 
-export const coastMedia: LightboxMedia = {
-  src: 'https://picsum.photos/seed/coastline/1280/720',
-  alt: 'Coastal shoreline with ocean waves',
-  caption:
-    'A scenic coastline with waves rolling onto a sandy beach beneath a clear sky.',
+export const starryNightMedia: LightboxMedia = {
+  src: '/lightbox/starry-night.jpg',
+  alt: 'The Starry Night by Vincent van Gogh',
+  caption: 'Vincent van Gogh, The Starry Night (1889). Public domain.',
 }
 
 export const zoomMedia: LightboxMedia = {
-  src: 'https://picsum.photos/seed/coastline/1280/720',
-  alt: 'Coastal shoreline with ocean waves',
-  caption: 'A scenic coastline. Double-click to zoom in and drag to pan.',
+  src: '/lightbox/hubble-deep-field.jpg',
+  alt: 'Hubble Ultra Deep Field showing thousands of galaxies',
+  caption:
+    'NASA Hubble Ultra Deep Field. Double-click to zoom in and drag to pan.',
 }
 
 export const videoMedia: LightboxMedia = {
@@ -66,28 +69,19 @@ export const videoMedia: LightboxMedia = {
 }
 
 export const galleryMedia: ReadonlyArray<LightboxMedia> = [
+  starryNightMedia,
   {
-    src: 'https://picsum.photos/seed/backpack/640/640',
-    alt: 'Backpack',
-    caption: 'A backpack displayed on a neutral background.',
+    src: '/lightbox/blue-marble.jpg',
+    alt: 'Earth photographed from Apollo 17',
+    caption: 'NASA Apollo 17, The Blue Marble (1972). Public domain.',
   },
   {
-    src: 'https://picsum.photos/seed/building/640/640',
-    alt: 'Modern building',
-    caption: 'A modern building with a contemporary architectural design.',
-  },
-  {
-    src: 'https://picsum.photos/seed/coastline/1280/720',
-    alt: 'Coastal shoreline with ocean waves',
+    src: '/lightbox/mars.jpg',
+    alt: 'Mars and Valles Marineris imaged by Viking',
     caption:
-      'A scenic coastline with waves rolling onto a sandy beach beneath a clear sky.',
+      'NASA Viking orbiter mosaic of Mars and Valles Marineris. Public domain.',
   },
-  {
-    src: 'https://picsum.photos/seed/lakeside/640/640',
-    alt: 'Illustrated lakeside landscape at sunset',
-    caption:
-      'A stylized landscape illustration featuring pink clouds reflected over a calm lake at sunset.',
-  },
+  zoomMedia,
 ]
 
 export const mediaFor = (
@@ -95,7 +89,7 @@ export const mediaFor = (
 ): LightboxMedia | ReadonlyArray<LightboxMedia> => {
   switch (kind) {
     case 'showcase':
-      return coastMedia
+      return starryNightMedia
     case 'gallery':
       return galleryMedia
     case 'video':
@@ -115,7 +109,7 @@ const emitMedia = (items: ReadonlyArray<LightboxMedia>): string =>
 ${items
   .map(
     item =>
-      `    { src: '${item.src}', alt: '${sq(item.alt)}',${item.type === undefined ? '' : ` type: '${item.type}',`}${item.caption === undefined ? '' : ` caption: '${sq(item.caption)}'`} },`,
+      `    { src: '${item.src.startsWith('/') ? `https://creaseui.com${item.src}` : item.src}', alt: '${sq(item.alt)}',${item.type === undefined ? '' : ` type: '${item.type}',`}${item.caption === undefined ? '' : ` caption: '${sq(item.caption)}'`} },`,
   )
   .join('\n')}
   ]`

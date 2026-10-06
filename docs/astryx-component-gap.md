@@ -8,7 +8,7 @@ Crease UI already covers the shadcn/ui catalog (65 components). Astryx shares a
 large middle layer with shadcn (buttons, dialogs, popovers, tables, ...) but adds
 a second generation of components that shadcn does not ship: layout primitives,
 status indicators, token inputs, segmented date/time inputs, navigation chrome,
-and agent-era displays (ChatReasoning, LogStream, PowerSearch).
+and agent-era displays (ChatReasoning, LogStream).
 
 ## Coverage status
 
@@ -60,7 +60,7 @@ Astryx name → Crease UI equivalent.
 | Table                               | `table`, `data-table`                                 |
 | TextArea                            | `textarea`                                            |
 | TextInput                           | `input`                                               |
-| Toast                               | `toast`, `sonner`                                     |
+| Toast                               | `toast`                                               |
 | ToggleButton                        | `toggle`                                              |
 | ToggleButtonGroup                   | `toggle-group`                                        |
 | Tooltip                             | `tooltip`                                             |
@@ -108,7 +108,6 @@ Batches are work units; slugs are the Crease UI names.
 | `center`          | `Center`                    | Max-width centering.                                   |
 | `section`         | `Section`                   | Page section w/ heading slot.                          |
 | `visually-hidden` | `VisuallyHidden`            | sr-only utility.                                       |
-| `app-shell`       | `AppShell`                  | App scaffold (nav/main slots).                         |
 
 **Status & display**
 
@@ -120,14 +119,13 @@ Batches are work units; slugs are the Crease UI names.
 | `circular-progress` | `CircularProgress` (lab)                                 | Ring progress, determinate + indeterminate.                   |
 | `thumbnail`         | `Thumbnail`                                              | Media frame w/ fallback.                                      |
 | `avatar-group`      | `AvatarGroup` + `AvatarGroupOverflow`, `AvatarStatusDot` | Grouped avatars w/ overflow + status dot.                     |
-| `token`             | `Token`                                                  | Pill/chip used by Tokenizer/PowerSearch.                      |
+| `token`             | `Token`                                                  | Pill/chip used by Tokenizer.                                  |
 
 **Cards, banners & metadata**
 
 | Slug              | Astryx source                       | Notes                                   |
 | ----------------- | ----------------------------------- | --------------------------------------- |
 | `banner`          | `Banner`                            | Page-level dismissible notice.          |
-| `clickable-card`  | `ClickableCard`                     | Whole-card link/button.                 |
 | `selectable-card` | `SelectableCard`                    | Card with selection affordance.         |
 | `metadata-list`   | `MetadataList` + `MetadataListItem` | Term/description grid.                  |
 | `more-menu`       | `MoreMenu`                          | “…” overflow menu trigger.              |
@@ -136,27 +134,26 @@ Batches are work units; slugs are the Crease UI names.
 
 **Inputs**
 
-| Slug               | Astryx source                       | Notes                                                       |
-| ------------------ | ----------------------------------- | ----------------------------------------------------------- |
-| `checkbox-list`    | `CheckboxList` + `CheckboxListItem` | Checkbox group with list semantics.                         |
-| `file-input`       | `FileInput`                         | File select/dropzone.                                       |
-| `number-input`     | `NumberInput`                       | Stepper input.                                              |
-| `time-input`       | `TimeInput`                         | Segmented time entry.                                       |
-| `list-input`       | `ListInput` (lab)                   | Freeform list-entry input.                                  |
-| `date-input`       | `DateInput`                         | Segmented date entry (distinct from `date-picker` popover). |
-| `date-range-input` | `DateRangeInput`                    | Two-segment range entry.                                    |
-| `date-time-input`  | `DateTimeInput`                     | Date + time segments.                                       |
-| `tokenizer`        | `Tokenizer`                         | Token/chip entry input.                                     |
-| `multi-selector`   | `MultiSelector`                     | Multi-value selector w/ tokens.                             |
+| Slug               | Astryx source     | Notes                                                       |
+| ------------------ | ----------------- | ----------------------------------------------------------- |
+| `file-input`       | `FileInput`       | File select/dropzone.                                       |
+| `number-input`     | `NumberInput`     | Stepper input.                                              |
+| `time-input`       | `TimeInput`       | Segmented time entry.                                       |
+| `list-input`       | `ListInput` (lab) | Freeform list-entry input.                                  |
+| `date-input`       | `DateInput`       | Segmented date entry (distinct from `date-picker` popover). |
+| `date-range-input` | `DateRangeInput`  | Two-segment range entry.                                    |
+| `date-time-input`  | `DateTimeInput`   | Date + time segments.                                       |
+| `tokenizer`        | `Tokenizer`       | Token/chip entry input.                                     |
+| `multi-selector`   | `MultiSelector`   | Multi-value selector w/ tokens.                             |
 
 **Selection & disclosure**
 
-| Slug                | Astryx source                               | Notes                                                                   |
-| ------------------- | ------------------------------------------- | ----------------------------------------------------------------------- |
-| `segmented-control` | `SegmentedControl` + `SegmentedControlItem` | iOS-style sliding segment picker (distinct visual from `toggle-group`). |
-| `stepper`           | `Stepper` + `Step`                          | Multi-step progress, orientations, statuses, collapse.                  |
-| `toolbar`           | `Toolbar`                                   | Action/formatting toolbar w/ groups.                                    |
-| `info-tip`          | `InfoTip` (lab)                             | Icon-triggered tooltip.                                                 |
+| Slug                | Astryx source                               | Notes                                                                               |
+| ------------------- | ------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `segmented-control` | `SegmentedControl` + `SegmentedControlItem` | Covered by `tabs` (`icon` + `isLabelHidden` per tab); standalone component removed. |
+| `stepper`           | `Stepper` + `Step`                          | Multi-step progress, orientations, statuses, collapse.                              |
+| `toolbar`           | `Toolbar`                                   | Action/formatting toolbar w/ groups.                                                |
+| `info-tip`          | `InfoTip` (lab)                             | Icon-triggered tooltip.                                                             |
 
 **Overlays & guided UI**
 
@@ -169,19 +166,18 @@ Batches are work units; slugs are the Crease UI names.
 
 **Navigation chrome**
 
-| Slug        | Astryx source                             | Notes                                            |
-| ----------- | ----------------------------------------- | ------------------------------------------------ |
-| `top-nav`   | `TopNav` + mega menu pieces               | Header nav w/ dropdown + mega menu.              |
-| `side-nav`  | `SideNav` + section/heading/item/collapse | Left product nav (lighter than `sidebar` shell). |
-| `tree-list` | `TreeList`                                | Expandable tree view.                            |
+| Slug        | Astryx source                             | Notes                                               |
+| ----------- | ----------------------------------------- | --------------------------------------------------- |
+| `top-nav`   | `TopNav` + mega menu pieces               | Header nav w/ dropdown + mega menu.                 |
+| `side-nav`  | `SideNav` + section/heading/item/collapse | Covered by `sidebar`; standalone component removed. |
+| `tree-list` | `TreeList`                                | Expandable tree view.                               |
 
 **Composite & agent-era**
 
-| Slug             | Astryx source         | Notes                                   |
-| ---------------- | --------------------- | --------------------------------------- |
-| `power-search`   | `PowerSearch`         | Faceted filter search w/ token editors. |
-| `transfer-list`  | `TransferList` (lab)  | Dual-list move control.                 |
-| `log-stream`     | `LogStream` (lab)     | Scrolling log display w/ levels.        |
-| `timestamp`      | `Timestamp`           | Absolute/relative time display.         |
-| `timer`          | `Timer`               | Live elapsed/countdown.                 |
-| `chat-reasoning` | `ChatReasoning` (lab) | Collapsible reasoning trace block.      |
+| Slug             | Astryx source         | Notes                              |
+| ---------------- | --------------------- | ---------------------------------- |
+| `transfer-list`  | `TransferList` (lab)  | Dual-list move control.            |
+| `log-stream`     | `LogStream` (lab)     | Scrolling log display w/ levels.   |
+| `timestamp`      | `Timestamp`           | Absolute/relative time display.    |
+| `timer`          | `Timer`               | Live elapsed/countdown.            |
+| `chat-reasoning` | `ChatReasoning` (lab) | Collapsible reasoning trace block. |

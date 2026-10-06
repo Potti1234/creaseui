@@ -302,6 +302,7 @@ export const inputGroupButton = <Msg>(
             ...button,
             h.DataAttribute('slot', 'input-group-button'),
             h.DataAttribute('size', p.size ?? 'xs'),
+            ...(p.ariaLabel === undefined ? [] : [h.AriaLabel(p.ariaLabel)]),
             h.Class(
               className(
                 ...buttonVisualStyles({
@@ -343,6 +344,7 @@ export type InputGroupInputProps<Msg> = Readonly<{
   placeholder?: string
   type?: string
   name?: string
+  step?: string
   isDisabled?: boolean
   isInvalid?: boolean
   ariaLabel?: string
@@ -360,6 +362,7 @@ export const inputGroupInput = <Msg>(
       ? []
       : [h.OnKeyDown(key => p.onKeyDown!(key))]),
     h.Type(p.type ?? 'text'),
+    ...(p.step === undefined ? [] : [h.Step(p.step)]),
     ...(p.name === undefined ? [] : [h.Name(p.name)]),
     ...(p.placeholder === undefined ? [] : [h.Placeholder(p.placeholder)]),
     ...(p.ariaLabel === undefined ? [] : [h.AriaLabel(p.ariaLabel)]),

@@ -1,6 +1,5 @@
 import { installStyleXExamplePreviewProvider } from '@/docs/components/catalog'
 import { accordionStyleXPreview } from '@/docs/components/pages/accordion/stylex'
-import { appShellStyleXPreview } from '@/docs/components/pages/app-shell/stylex'
 import { centerStyleXPreview } from '@/docs/components/pages/center/stylex'
 import { gridStyleXPreview } from '@/docs/components/pages/grid/stylex'
 import { sectionStyleXPreview } from '@/docs/components/pages/section/stylex'
@@ -35,7 +34,6 @@ import { textareaStyleXPreview } from '@/docs/components/pages/textarea/stylex'
 import { toggleStyleXPreview } from '@/docs/components/pages/toggle/stylex'
 import { toggleGroupStyleXPreview } from '@/docs/components/pages/toggle-group/stylex'
 import { checkboxStyleXPreview } from '@/docs/components/pages/checkbox/stylex'
-import { checkboxListStyleXPreview } from '@/docs/components/pages/checkbox-list/stylex'
 import { circularProgressStyleXPreview } from '@/docs/components/pages/circular-progress/stylex'
 import { fileInputStyleXPreview } from '@/docs/components/pages/file-input/stylex'
 import { listInputStyleXPreview } from '@/docs/components/pages/list-input/stylex'
@@ -54,7 +52,6 @@ import { dialogStyleXPreview } from '@/docs/components/pages/dialog/stylex'
 import { alertDialogStyleXPreview } from '@/docs/components/pages/alert-dialog/stylex'
 import { drawerStyleXPreview } from '@/docs/components/pages/drawer/stylex'
 import { lightboxStyleXPreview } from '@/docs/components/pages/lightbox/stylex'
-import { bottomSheetStyleXPreview } from '@/docs/components/pages/bottom-sheet/stylex'
 import { mobileNavStyleXPreview } from '@/docs/components/pages/mobile-nav/stylex'
 import { tourStyleXPreview } from '@/docs/components/pages/tour/stylex'
 import { sheetStyleXPreview } from '@/docs/components/pages/sheet/stylex'
@@ -87,7 +84,6 @@ import { carouselStyleXPreview } from '@/docs/components/pages/carousel/stylex'
 import { chartStyleXPreview } from '@/docs/components/pages/chart/stylex'
 import { chatReasoningStyleXPreview } from '@/docs/components/pages/chat-reasoning/stylex'
 import { logStreamStyleXPreview } from '@/docs/components/pages/log-stream/stylex'
-import { powerSearchStyleXPreview } from '@/docs/components/pages/power-search/stylex'
 import { timerStyleXPreview } from '@/docs/components/pages/timer/stylex'
 import { timestampStyleXPreview } from '@/docs/components/pages/timestamp/stylex'
 import { transferListStyleXPreview } from '@/docs/components/pages/transfer-list/stylex'
@@ -99,21 +95,17 @@ import { fieldStyleXPreview } from '@/docs/components/pages/field/stylex'
 import { formStyleXPreview } from '@/docs/components/pages/form/stylex'
 import { inputGroupStyleXPreview } from '@/docs/components/pages/input-group/stylex'
 import { sidebarStyleXPreview } from '@/docs/components/pages/sidebar/stylex'
-import { sonnerStyleXPreview } from '@/docs/components/pages/sonner/stylex'
 import { statStyleXPreview } from '@/docs/components/pages/stat/stylex'
 import { statusDotStyleXPreview } from '@/docs/components/pages/status-dot/stylex'
 import { thumbnailStyleXPreview } from '@/docs/components/pages/thumbnail/stylex'
 import { toastStyleXPreview } from '@/docs/components/pages/toast/stylex'
 import { bannerStyleXPreview } from '@/docs/components/pages/banner/stylex'
-import { clickableCardStyleXPreview } from '@/docs/components/pages/clickable-card/stylex'
 import { fieldStatusStyleXPreview } from '@/docs/components/pages/field-status/stylex'
 import { infoTipStyleXPreview } from '@/docs/components/pages/info-tip/stylex'
 import { metadataListStyleXPreview } from '@/docs/components/pages/metadata-list/stylex'
 import { moreMenuStyleXPreview } from '@/docs/components/pages/more-menu/stylex'
 import { overflowListStyleXPreview } from '@/docs/components/pages/overflow-list/stylex'
-import { segmentedControlStyleXPreview } from '@/docs/components/pages/segmented-control/stylex'
 import { selectableCardStyleXPreview } from '@/docs/components/pages/selectable-card/stylex'
-import { sideNavStyleXPreview } from '@/docs/components/pages/side-nav/stylex'
 import { stepperStyleXPreview } from '@/docs/components/pages/stepper/stylex'
 import { tokenStyleXPreview } from '@/docs/components/pages/token/stylex'
 import { toolbarStyleXPreview } from '@/docs/components/pages/toolbar/stylex'
@@ -122,7 +114,6 @@ import { treeListStyleXPreview } from '@/docs/components/pages/tree-list/stylex'
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview)
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview)
-installStyleXExamplePreviewProvider('app-shell', appShellStyleXPreview)
 installStyleXExamplePreviewProvider('aspect-ratio', aspectRatioStyleXPreview)
 installStyleXExamplePreviewProvider('avatar', avatarStyleXPreview)
 installStyleXExamplePreviewProvider('avatar-group', avatarGroupStyleXPreview)
@@ -221,22 +212,15 @@ installStyleXExamplePreviewProvider('grid', gridStyleXPreview)
 installStyleXExamplePreviewProvider('input-group', inputGroupStyleXPreview)
 installStyleXExamplePreviewProvider('section', sectionStyleXPreview)
 installStyleXExamplePreviewProvider('sidebar', sidebarStyleXPreview)
-installStyleXExamplePreviewProvider('sonner', sonnerStyleXPreview)
 installStyleXExamplePreviewProvider('stack', stackStyleXPreview)
 installStyleXExamplePreviewProvider('stat', statStyleXPreview)
 installStyleXExamplePreviewProvider('status-dot', statusDotStyleXPreview)
 installStyleXExamplePreviewProvider('thumbnail', thumbnailStyleXPreview)
 installStyleXExamplePreviewProvider('toast', toastStyleXPreview)
 installStyleXExamplePreviewProvider('banner', bannerStyleXPreview)
-installStyleXExamplePreviewProvider('bottom-sheet', bottomSheetStyleXPreview)
 installStyleXExamplePreviewProvider(
   'chat-reasoning',
   chatReasoningStyleXPreview,
-)
-installStyleXExamplePreviewProvider('checkbox-list', checkboxListStyleXPreview)
-installStyleXExamplePreviewProvider(
-  'clickable-card',
-  clickableCardStyleXPreview,
 )
 installStyleXExamplePreviewProvider('field-status', fieldStatusStyleXPreview)
 installStyleXExamplePreviewProvider('file-input', fileInputStyleXPreview)
@@ -249,16 +233,10 @@ installStyleXExamplePreviewProvider('mobile-nav', mobileNavStyleXPreview)
 installStyleXExamplePreviewProvider('more-menu', moreMenuStyleXPreview)
 installStyleXExamplePreviewProvider('number-input', numberInputStyleXPreview)
 installStyleXExamplePreviewProvider('overflow-list', overflowListStyleXPreview)
-installStyleXExamplePreviewProvider('power-search', powerSearchStyleXPreview)
-installStyleXExamplePreviewProvider(
-  'segmented-control',
-  segmentedControlStyleXPreview,
-)
 installStyleXExamplePreviewProvider(
   'selectable-card',
   selectableCardStyleXPreview,
 )
-installStyleXExamplePreviewProvider('side-nav', sideNavStyleXPreview)
 installStyleXExamplePreviewProvider('stepper', stepperStyleXPreview)
 installStyleXExamplePreviewProvider('time-input', timeInputStyleXPreview)
 installStyleXExamplePreviewProvider('timer', timerStyleXPreview)

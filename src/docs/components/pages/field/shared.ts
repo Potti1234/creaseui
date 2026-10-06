@@ -202,7 +202,11 @@ const emitModel = (fixture: FieldFixture): string => {
   const fields: string[] = []
   for (const key of textFieldsFor(kind)) fields.push(`${key}: S.String`)
   for (const key of checkFieldsFor(kind)) fields.push(`${key}: S.Boolean`)
-  if (uses.slider) fields.push('price: S.Tuple([S.Number, S.Number])')
+  if (uses.slider)
+    fields.push(
+      'price: S.Tuple([S.Number, S.Number])',
+      'priceSlider: Slider.MultiModel',
+    )
   if (kind === 'demo' || kind === 'rtl') {
     fields.push(
       'monthSelect: Select.Model',
@@ -234,7 +238,7 @@ const emitMessages = (fixture: FieldFixture): string => {
   if (checkFieldsFor(kind).length > 0)
     members.push('ToggledFieldCheck: { field: S.String, isChecked: S.Boolean }')
   if (uses.slider)
-    members.push('ChangedFieldPrice: { values: S.Tuple([S.Number, S.Number]) }')
+    members.push('GotFieldSliderMessage: { message: Slider.MultiMessage }')
   if (kind === 'demo' || kind === 'rtl')
     members.push(
       "GotFieldSelectMessage: { which: S.Literals(['month', 'year']), message: Select.Message }",
@@ -264,7 +268,11 @@ const emitInit = (fixture: FieldFixture): string => {
   for (const key of textFieldsFor(kind)) fields.push(`${key}: ''`)
   for (const key of checkFieldsFor(kind))
     fields.push(`${key}: ${String(checkSeeds[key])}`)
-  if (uses.slider) fields.push('price: [200, 800]')
+  if (uses.slider)
+    fields.push(
+      'price: [200, 800]',
+      "priceSlider: Slider.initMulti({ id: 'field-price', thumbs: 2, min: 0, max: 1000, step: 10 })",
+    )
   if (kind === 'demo' || kind === 'rtl') {
     fields.push(
       "monthSelect: Select.init({ id: 'field-month', isAnimated: true })",
@@ -303,8 +311,29 @@ const emitUpdate = (fixture: FieldFixture): string => {
     cases.push(`case 'ToggledFieldCheck':
       return { model: { ...model, [message.field]: message.isChecked } }`)
   if (uses.slider)
-    cases.push(`case 'ChangedFieldPrice':
-      return { model: { ...model, price: message.values } }`)
+    cases.push(`case 'GotFieldSliderMessage': {
+      const next = Slider.updateMulti(model.priceSlider, message.message)
+      const change = Option.fromNullishOr(next.outMessage)
+      return {
+        model: {
+          ...model,
+          priceSlider: next.model,
+          price: Option.match(change, {
+            onNone: () => model.price,
+            onSome: out => {
+              const values = Slider.updateMultiValue(model.price, out.index, out.value, {
+                min: model.priceSlider.min,
+                max: model.priceSlider.max,
+                step: model.priceSlider.step,
+              })
+              return [values[0] ?? model.price[0], values[1] ?? model.price[1]]
+            },
+          }),
+        },
+        commands: Command.mapMessages(next.commands ?? [], next =>
+          Message.GotFieldSliderMessage({ message: next })),
+      }
+    }`)
   if (kind === 'demo' || kind === 'rtl') {
     cases.push(`case 'GotFieldSelectMessage': {
       const which = message.which
@@ -513,7 +542,7 @@ const emitBody = (fixture: FieldFixture, isStyleX: boolean): string => {
       return `Field.field({ ${layoutProp(isStyleX ? 'styles.pageXs' : 'w-full max-w-xs')} children: [
     Field.fieldTitle({ children: ['Price Range'] }, h),
     Field.fieldDescription({ children: [h.span([], ['Set your budget range ($', h.span([${wrap(isStyleX ? 'styles.valueSpan' : 'font-medium tabular-nums')}], [String(model.price[0])]), ' - ', h.span([${wrap(isStyleX ? 'styles.valueSpan' : 'font-medium tabular-nums')}], [String(model.price[1])]), ').'])] }, h),
-    Slider.rangeSlider({ values: model.price, min: 0, max: 1000, step: 10, onInput: values => Message.ChangedFieldPrice({ values: [values[0], values[1]] }), ariaLabels: ['Minimum price', 'Maximum price'], ${layoutProp(isStyleX ? 'styles.sliderTop' : 'mt-2 w-full')} }, h),
+    Slider.rangeSlider({ model: model.priceSlider, values: model.price, toParentMessage: message => Message.GotFieldSliderMessage({ message }), ariaLabels: ['Minimum price', 'Maximum price'], ${layoutProp(isStyleX ? 'styles.sliderTop' : 'mt-2 w-full')} }, h),
   ] }, h)`
     case 'fieldset':
       return `Field.fieldSet({ ${layoutProp(isStyleX ? 'styles.pageSm' : 'w-full max-w-sm')} children: [
@@ -636,7 +665,7 @@ const emitBody = (fixture: FieldFixture, isStyleX: boolean): string => {
 const emitApplication = (fixture: FieldFixture, isStyleX: boolean): string => {
   const uses = kindUses(fixture.kind)
   const effectImports =
-    uses.select || uses.radio
+    uses.select || uses.radio || uses.slider
       ? "import { Option, Schema as S } from 'effect'"
       : "import { Schema as S } from 'effect'"
   const items = emitItemConsts(fixture)
@@ -652,6 +681,18 @@ ${emitImports(fixture, isStyleX)}${items === '' ? '' : `\n\n${items}`}`,
     messages: emitMessages(fixture),
     init: emitInit(fixture),
     update: emitUpdate(fixture),
+    ...(kindUses(fixture.kind).slider
+      ? {
+          subscriptions: `export const subscriptions = Subscription.aggregate<Model, Message>()(
+  Slider.multiThumbSubscriptions<Model, Message>({
+    id: 'field-price',
+    thumbCount: 2,
+    toChildModel: model => model.priceSlider,
+    toParentMessage: message => Message.GotFieldSliderMessage({ message }),
+  }),
+)`,
+        }
+      : {}),
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Field — ${fixture.title}',
   body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [

@@ -235,6 +235,8 @@ const fixtureView = (fixture: SpinnerFixture, h: HtmlBuilder<Got>): Html => {
                       InputGroup.inputGroupButton(
                         {
                           variant: 'default',
+                          size: 'icon-sm',
+                          class: 'ml-auto',
                           children: [
                             Icon.arrowUp({}, h),
                             h.span([h.Class('sr-only')], ['Send']),

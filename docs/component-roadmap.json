@@ -51,20 +51,37 @@
       "registry": "verified"
     },
     "classificationOverrides": {
-      "adapted": { "behavior": "adapted", "composition": "adapted" },
-      "recipe": { "composition": "adapted" },
-      "legacy": { "behavior": "adapted", "composition": "adapted" }
+      "adapted": {
+        "behavior": "adapted",
+        "composition": "adapted"
+      },
+      "recipe": {
+        "composition": "adapted"
+      },
+      "legacy": {
+        "behavior": "adapted",
+        "composition": "adapted"
+      }
     },
     "componentOverrides": {
-      "button": { "accessibility": "verified" },
+      "button": {
+        "accessibility": "verified"
+      },
       "dialog": {
         "behavior": "verified",
         "accessibility": "verified",
         "composition": "verified"
       },
-      "input": { "accessibility": "verified" },
-      "select": { "behavior": "verified", "accessibility": "verified" },
-      "sheet": { "composition": "verified" }
+      "input": {
+        "accessibility": "verified"
+      },
+      "select": {
+        "behavior": "verified",
+        "accessibility": "verified"
+      },
+      "sheet": {
+        "composition": "verified"
+      }
     },
     "evidence": {
       "button": ["e2e/site.spec.ts#flagship-accessibility"],
@@ -151,5 +168,11 @@
       "reason": "Uses accessible native scrollbars rather than decorative custom scrollbar parts."
     }
   ],
-  "missing": []
+  "missing": [
+    {
+      "component": "sonner",
+      "priority": "P0",
+      "strategy": "Covered by toast \u2014 the sonner and toast implementations were already identical; toast is the single notification component and owns the former sonner docs examples."
+    }
+  ]
 }

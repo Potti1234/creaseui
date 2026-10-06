@@ -6,6 +6,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineView } from 'foldkit/submodel'
 
 import {
+  canonicalComponentSlug,
   componentPage,
   componentTitle,
   example,
@@ -73,27 +74,30 @@ export const Message = S.Union([
 ])
 export type Message = typeof Message.Type
 
-export const init = (slug?: string): Model => ({
-  slug: slug ?? '',
-  // One spare slot at the end: the hero preview on top of the page re-renders
-  // the first example but keeps its own state.
-  examples: Array.from(
-    {
-      length:
-        (definitions[slug ?? '']?.examples.length ?? 0) === 0
-          ? 0
-          : (definitions[slug ?? '']?.examples.length ?? 0) + 1,
-    },
-    (_, index) => {
-      const program = authoredPages[slug ?? '']?.previewProgram
-      if (program === undefined)
-        throw new Error(`Missing preview program for ${slug ?? ''}`)
-      return program.init(index)
-    },
-  ),
-  renderer: 'tailwind',
-  copiedCode: null,
-})
+export const init = (slug?: string): Model => {
+  const canonicalSlug = canonicalComponentSlug(slug ?? '')
+  return {
+    slug: canonicalSlug,
+    // One spare slot at the end: the hero preview on top of the page re-renders
+    // the first example but keeps its own state.
+    examples: Array.from(
+      {
+        length:
+          (definitions[canonicalSlug]?.examples.length ?? 0) === 0
+            ? 0
+            : (definitions[canonicalSlug]?.examples.length ?? 0) + 1,
+      },
+      (_, index) => {
+        const program = authoredPages[canonicalSlug]?.previewProgram
+        if (program === undefined)
+          throw new Error(`Missing preview program for ${canonicalSlug}`)
+        return program.init(index)
+      },
+    ),
+    renderer: 'tailwind',
+    copiedCode: null,
+  }
+}
 
 type UpdateReturn = Update.Return<Model, Message>
 
@@ -186,6 +190,7 @@ export const componentKind = (slug: string): ComponentKind | undefined => {
 }
 
 export const titleFor = componentTitle
+export { canonicalComponentSlug }
 
 const exportOverrides: Readonly<Record<string, string>> = {
   'alert-dialog': 'alertDialog',
@@ -460,10 +465,7 @@ export const view = (
       apiDescription:
         definition.apiDescription ??
         `${name} is source-owned after installation. Its public model, messages, update function, and view helpers are documented directly in the installed TypeScript source.`,
-      apiEntries:
-        slug === 'toast'
-          ? (componentApi.sonner ?? [])
-          : (componentApi[slug] ?? []),
+      apiEntries: componentApi[slug] ?? [],
     },
     h,
   )

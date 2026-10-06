@@ -105,11 +105,30 @@ const PICKER_BUTTON_CLASS = cn(
 )
 
 export type CalendarViewOptions = Readonly<{
+  /** 'dropdown' keeps the heading button that drills into the month/year
+   * pickers. 'label' renders plain text — no button, no chevron. */
+  captionLayout?: 'label' | 'dropdown'
   class?: string
   direction?: 'ltr' | 'rtl'
   range?: CalendarBehavior.CalendarRange
   weekNumbers?: boolean
 }>
+
+const captionHeading = <Msg>(
+  heading: Readonly<{ id: string; text: string }>,
+  headingButton: ReadonlyArray<ChildAttribute>,
+  options: CalendarViewOptions,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  options.captionLayout === 'label'
+    ? h.div(
+        [h.Id(heading.id), h.Class('text-sm font-medium select-none')],
+        [heading.text],
+      )
+    : h.button(
+        [...headingButton, h.Id(heading.id), h.Class(CAPTION_BUTTON_CLASS)],
+        [heading.text, Icon.chevronDown({ class: 'size-3.5' }, h)],
+      )
 
 const navigationButton = <Msg>(
   attributes: ReadonlyArray<ChildAttribute>,
@@ -163,16 +182,11 @@ const daysView = <Msg>(
           h.div(
             [h.Class(CAPTION_CLASS)],
             [
-              h.button(
-                [
-                  ...attributes.headingButton,
-                  h.Id(attributes.heading.id),
-                  h.Class(CAPTION_BUTTON_CLASS),
-                ],
-                [
-                  attributes.heading.text,
-                  Icon.chevronDown({ class: 'size-3.5' }, h),
-                ],
+              captionHeading(
+                attributes.heading,
+                attributes.headingButton,
+                options,
+                h,
               ),
             ],
           ),
@@ -274,16 +288,11 @@ const monthsView = <Msg>(
           h.div(
             [h.Class(CAPTION_CLASS)],
             [
-              h.button(
-                [
-                  ...attributes.headingButton,
-                  h.Id(attributes.heading.id),
-                  h.Class(CAPTION_BUTTON_CLASS),
-                ],
-                [
-                  attributes.heading.text,
-                  Icon.chevronDown({ class: 'size-3.5' }, h),
-                ],
+              captionHeading(
+                attributes.heading,
+                attributes.headingButton,
+                options,
+                h,
               ),
             ],
           ),
@@ -391,6 +400,9 @@ export type CalendarProps<Msg> = Readonly<{
   model: Model
   maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>
   toParentMessage: (message: Message) => Msg
+  /** 'dropdown' keeps the heading button that drills into the month/year
+   * pickers. 'label' renders plain text — no button, no chevron. */
+  captionLayout?: 'label' | 'dropdown'
   class?: string
   direction?: 'ltr' | 'rtl'
   range?: CalendarBehavior.CalendarRange
@@ -417,6 +429,9 @@ export const calendar = <Msg>(
         calendarView(
           attributes,
           {
+            ...(props.captionLayout === undefined
+              ? {}
+              : { captionLayout: props.captionLayout }),
             ...(props.class === undefined ? {} : { class: props.class }),
             ...(props.direction === undefined
               ? {}

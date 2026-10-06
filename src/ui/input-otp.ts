@@ -37,6 +37,44 @@ const normalize = (value: string, length: number, pattern: RegExp): string =>
     .slice(0, length)
     .join('')
 
+/* Selection state lives in the DOM, not the model: foldkit cannot read the
+   input's selectionStart/End, so these inline handlers mirror the real
+   selection onto the slots — data-active='caret' on the cell holding the
+   caret, 'selected' on every cell inside a range — and show that cell's
+   caret wrap. Never render data-active from the model or re-renders would
+   desync it. */
+const syncActive = (ref: string): string =>
+  `const s=${ref}.selectionStart,e=${ref}.selectionEnd;` +
+  `${ref}.parentElement.querySelectorAll('[data-slot="input-otp-slot"]')` +
+  '.forEach((d,i)=>{' +
+  "const a=s===e?i===s?'caret':'':i>=s&&i<e?'selected':'';" +
+  "a?d.setAttribute('data-active',a):d.removeAttribute('data-active');" +
+  "d.lastElementChild.style.display=a==='caret'?'flex':''})"
+
+const SYNC_ACTIVE = syncActive('this')
+
+/* focus can fire before the browser settles the caret position, so the
+   mirror runs one frame later. */
+const FOCUS_ACTIVE = `const t=this;requestAnimationFrame(()=>{${syncActive('t')}})`
+
+const CLEAR_ACTIVE =
+  'this.parentElement.querySelectorAll(\'[data-slot="input-otp-slot"]\')' +
+  ".forEach(d=>{d.removeAttribute('data-active');" +
+  "d.lastElementChild.style.display=''})"
+
+/* A click lands on the covering input, so map its x position back to the
+   slot beneath it: select that character so typing overwrites it directly,
+   or collapse the caret at the end of the value past the filled cells. A
+   drag that already formed a range is kept. */
+const SNAP_TO_SLOT =
+  'if(this.selectionStart===this.selectionEnd){' +
+  'const ds=this.parentElement.querySelectorAll(\'[data-slot="input-otp-slot"]\'),' +
+  'v=this.value.length;let i=v;' +
+  'ds.forEach((d,j)=>{const r=d.getBoundingClientRect();' +
+  'if(event.clientX>=r.left&&event.clientX<r.right)i=j});' +
+  'i<v?this.setSelectionRange(i,i+1):this.setSelectionRange(v,v)}' +
+  SYNC_ACTIVE
+
 export const inputOtp = <Msg>(
   props: InputOtpProps<Msg>,
   h: HtmlBuilder<Msg>,
@@ -68,12 +106,11 @@ export const inputOtp = <Msg>(
           : []),
         ...(props.name === undefined ? [] : [h.Name(props.name)]),
         h.OnInput(next => props.onInput(normalize(next, length, pattern))),
-        // The fake caret always renders at value.length; pin the real caret
-        // there too so arrow keys / mid-string clicks can't desync them.
-        h.Attribute(
-          'onselect',
-          'if(this.selectionStart===this.selectionEnd)this.setSelectionRange(this.value.length,this.value.length)',
-        ),
+        h.Attribute('onselect', SYNC_ACTIVE),
+        h.Attribute('onkeyup', SYNC_ACTIVE),
+        h.Attribute('onfocus', FOCUS_ACTIVE),
+        h.Attribute('onblur', CLEAR_ACTIVE),
+        h.Attribute('onmouseup', SNAP_TO_SLOT),
         h.Class(
           'peer absolute inset-0 z-10 size-full cursor-text opacity-0 disabled:cursor-not-allowed',
         ),
@@ -86,15 +123,13 @@ export const inputOtp = <Msg>(
         ],
         Array.from({ length }, (_, index) => {
           const character = value[index]
-          const isActive = value.length === index
           const slot = h.div(
             [
               h.DataAttribute('slot', 'input-otp-slot'),
-              h.DataAttribute('active', String(isActive)),
               h.Class(
                 cn(
                   'relative flex size-9 items-center justify-center border-y border-r border-input text-sm shadow-xs transition-all first:rounded-l-md first:border-l last:rounded-r-md',
-                  'peer-focus-within:border-ring peer-focus-within:ring-[3px] peer-focus-within:ring-ring/50',
+                  'data-[active]:z-10 data-[active]:border-ring data-[active]:ring-[3px] data-[active]:ring-ring/50',
                   'peer-aria-invalid:border-destructive peer-aria-invalid:ring-destructive/20 dark:peer-aria-invalid:ring-destructive/40',
                   'peer-disabled:opacity-50',
                   props.slotClass,
@@ -103,27 +138,23 @@ export const inputOtp = <Msg>(
             ],
             [
               character ?? '',
-              ...(isActive
-                ? [
-                    h.div(
-                      [
-                        h.Class(
-                          'pointer-events-none absolute inset-0 flex items-center justify-center',
-                        ),
-                      ],
-                      [
-                        h.div(
-                          [
-                            h.Class(
-                              'h-4 w-px animate-caret-blink bg-foreground duration-1000 motion-reduce:animate-none',
-                            ),
-                          ],
-                          [],
-                        ),
-                      ],
-                    ),
-                  ]
-                : []),
+              h.div(
+                [
+                  h.Class(
+                    'pointer-events-none absolute inset-0 hidden items-center justify-center',
+                  ),
+                ],
+                [
+                  h.div(
+                    [
+                      h.Class(
+                        'h-4 w-px animate-caret-blink bg-foreground duration-1000 motion-reduce:animate-none',
+                      ),
+                    ],
+                    [],
+                  ),
+                ],
+              ),
             ],
           )
 

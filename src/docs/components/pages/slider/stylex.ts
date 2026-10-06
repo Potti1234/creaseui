@@ -43,9 +43,17 @@ const styles = stylex.create({
 
 interface PreviewShape {
   readonly slider: Slider.Model
+  readonly multiModels: Readonly<Record<string, Slider.MultiModel>>
   readonly value: number
   readonly values: Readonly<Record<string, ReadonlyArray<number>>>
 }
+
+const FALLBACK_MULTI_MODEL = Slider.initMulti({
+  id: 'docs-slider-stylex-fallback',
+  thumbs: 1,
+  min: 0,
+  max: 1,
+})
 
 const instanceView = <Msg>(
   instance: SliderInstance,
@@ -55,16 +63,14 @@ const instanceView = <Msg>(
 ): Html =>
   Slider.multiSlider(
     {
+      model: model.multiModels[instance.id] ?? FALLBACK_MULTI_MODEL,
       values: model.values[instance.id] ?? instance.values,
-      min: instance.min,
-      max: instance.max,
-      step: instance.step,
-      onInput: values =>
+      toParentMessage: message =>
         onMessageJson(
           JSON.stringify({
-            _tag: 'ChangedSliderValues',
+            _tag: 'GotMultiMessage',
             id: instance.id,
-            values,
+            message,
           }),
         ),
       ...(instance.orientation === 'vertical'

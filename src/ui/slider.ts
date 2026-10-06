@@ -1,13 +1,20 @@
-﻿import type { Html, HtmlBuilder } from 'foldkit/html'
+﻿import { Option } from 'effect'
+
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import { Slider as SliderPrimitive } from '@foldkit/ui'
 
 import {
+  initMulti,
+  MultiMessage,
+  MultiModel,
+  MultiOutMessage,
+  multiThumbSubscriptions,
   normalizeMultiValues,
-  normalizeRange,
-  normalizeRangeValues,
+  reflectMultiRange,
+  toThumbValue,
+  updateMulti,
   updateMultiValue,
-  updateRangeValue,
 } from '@/lib/slider'
 import { cn } from '@/lib/utils'
 
@@ -26,6 +33,19 @@ export const subscriptions = SliderPrimitive.subscriptions
 export const subscriptionsForRoot = SliderPrimitive.subscriptionsForRoot
 export const fractionOfValue = SliderPrimitive.fractionOfValue
 
+export {
+  initMulti,
+  MultiMessage,
+  MultiModel,
+  MultiOutMessage,
+  multiThumbSubscriptions,
+  normalizeMultiValues,
+  reflectMultiRange,
+  toThumbValue,
+  updateMulti,
+  updateMultiValue,
+}
+
 const ROOT_CLASS =
   'relative flex w-full touch-none items-center select-none data-[disabled]:opacity-50 data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-44 data-[orientation=vertical]:w-auto data-[orientation=vertical]:flex-col'
 
@@ -43,6 +63,12 @@ const THUMB_CLASS =
 
 const LABEL_CLASS = 'text-sm leading-none font-medium select-none'
 
+/* Multi-thumb sliders share one visual track; each thumb still needs its own
+   foldkit Slider model so drag state and key focus stay independent. The
+   primitive measures drags against the element carrying its
+   data-slider-track-id, so every thumb renders a zero-area track overlay (it
+   can never receive a pointer) that reports the shared track's geometry. */
+
 export type SliderProps<Msg> = Readonly<{
   model: Model
   value: number
@@ -56,125 +82,39 @@ export type SliderProps<Msg> = Readonly<{
   class?: string
 }>
 
-export type RangeSliderProps<Msg> = Readonly<{
-  values: readonly [number, number]
-  min: number
-  max: number
-  step?: number
-  onInput: (values: readonly [number, number]) => Msg
+export type MultiSliderProps<Msg> = Readonly<{
+  model: MultiModel
+  values: readonly number[]
+  toParentMessage: (message: MultiMessage) => Msg
   orientation?: 'horizontal' | 'vertical'
   direction?: 'ltr' | 'rtl'
-  ariaLabels?: readonly [string, string]
-  formatValue?: (value: number, index: 0 | 1) => string
+  ariaLabels?: readonly string[]
+  formatValue?: (value: number, index: number) => string
   isDisabled?: boolean
   isReadOnly?: boolean
   name?: string
   class?: string
 }>
 
-/** A controlled two-thumb slider. Native range inputs retain keyboard and
- * form semantics while the parent remains the sole owner of state. */
+export type RangeSliderProps<Msg> = Readonly<
+  Omit<MultiSliderProps<Msg>, 'values'> & {
+    values: readonly [number, number]
+  }
+>
+
+/** A two-thumb slider: `multiSlider` with a tuple value, matching the range
+ * field shape. Init its model with `initMulti({ thumbs: 2, ... })`. */
 export const rangeSlider = <Msg>(
   props: RangeSliderProps<Msg>,
   h: HtmlBuilder<Msg>,
-): Html => {
-  const range = normalizeRange(props.min, props.max, props.step)
-  const [lower, upper] = normalizeRangeValues(props.values, range)
-  const span = Math.max(range.max - range.min, 1)
-  const start = ((lower - range.min) / span) * 100
-  const end = ((upper - range.min) / span) * 100
-  const orientation = props.orientation ?? 'horizontal'
-  const input = (index: 0 | 1, value: number): Html =>
-    h.input([
-      h.Type('range'),
-      h.Min(String(range.min)),
-      h.Max(String(range.max)),
-      h.Step(String(range.step)),
-      h.Value(String(value)),
-      h.AriaLabel(
-        props.ariaLabels?.[index] ??
-          (index === 0 ? 'Minimum value' : 'Maximum value'),
-      ),
-      ...(props.formatValue === undefined
-        ? []
-        : [h.AriaValuetext(props.formatValue(value, index))]),
-      ...(props.isReadOnly === true ? [h.AriaReadonly(true)] : []),
-      h.Disabled(props.isDisabled ?? false),
-      ...(props.name === undefined
-        ? []
-        : [h.Name(`${props.name}[${String(index)}]`)]),
-      h.OnInput(next =>
-        props.onInput(
-          props.isReadOnly === true
-            ? [lower, upper]
-            : updateRangeValue([lower, upper], index, Number(next), range),
-        ),
-      ),
-      h.Class(
-        cn(
-          'absolute m-0 appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:size-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:border-primary [&::-webkit-slider-thumb]:bg-white',
-          orientation === 'horizontal'
-            ? 'inset-x-0 top-1/2 h-4 w-full -translate-y-1/2'
-            : 'inset-y-0 left-1/2 h-full w-4 -translate-x-1/2 [writing-mode:vertical-lr] [direction:rtl]',
-        ),
-      ),
-    ])
-  return h.div(
-    [
-      h.DataAttribute('slot', 'slider'),
-      h.DataAttribute('orientation', orientation),
-      ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
-      ...(props.isDisabled === true ? [h.DataAttribute('disabled', '')] : []),
-      ...(props.isReadOnly === true ? [h.DataAttribute('readonly', '')] : []),
-      h.Class(
-        cn(
-          'relative touch-none select-none data-[disabled]:opacity-50',
-          orientation === 'horizontal' ? 'h-5 w-full' : 'h-44 w-5',
-          props.class,
-        ),
-      ),
-    ],
-    [
-      h.div(
-        [
-          h.DataAttribute('slot', 'slider-track'),
-          h.Class(
-            cn(
-              'absolute rounded-full bg-muted',
-              orientation === 'horizontal'
-                ? 'inset-x-0 top-1/2 h-1.5 -translate-y-1/2'
-                : 'inset-y-0 left-1/2 w-1.5 -translate-x-1/2',
-            ),
-          ),
-        ],
-        [
-          h.div(
-            [
-              h.DataAttribute('slot', 'slider-range'),
-              h.Class('absolute rounded-full bg-primary'),
-              h.Style(
-                orientation === 'horizontal'
-                  ? {
-                      left: `${start}%`,
-                      right: `${100 - end}%`,
-                      insetBlock: '0',
-                    }
-                  : {
-                      bottom: `${start}%`,
-                      top: `${100 - end}%`,
-                      insetInline: '0',
-                    },
-              ),
-            ],
-            [],
-          ),
-        ],
-      ),
-      input(0, lower),
-      input(1, upper),
-    ],
+): Html =>
+  multiSlider(
+    {
+      ...props,
+      ariaLabels: props.ariaLabels ?? ['Minimum value', 'Maximum value'],
+    },
+    h,
   )
-}
 
 export const slider = <Msg>(
   props: SliderProps<Msg>,
@@ -253,81 +193,155 @@ Subscriptions: Slider.subscriptions
 View: Slider.slider({ model: model.volume, value: model.volumeValue, toParentMessage: GotSliderMessage, ariaLabel: 'Volume' })
 */
 
-export type MultiSliderProps<Msg> = Readonly<{
-  values: readonly number[]
-  min: number
-  max: number
-  step?: number
-  onInput: (values: readonly number[]) => Msg
-  orientation?: 'horizontal' | 'vertical'
-  direction?: 'ltr' | 'rtl'
-  ariaLabels?: readonly string[]
-  isDisabled?: boolean
-  isReadOnly?: boolean
-  name?: string
-  class?: string
-}>
-
-/** A controlled N-thumb slider. Fills run between consecutive thumbs; a single
- * thumb fills from the range minimum. */
+/** An N-thumb slider on the foldkit Slider primitive: one primitive model per
+ * thumb, a shared track whose presses move the nearest thumb, and fills
+ * between consecutive thumbs. `values` stays parent-owned; thumb changes
+ * arrive as `MultiOutMessage.ChangedThumbValue` out messages. */
 export const multiSlider = <Msg>(
   props: MultiSliderProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const range = normalizeRange(props.min, props.max, props.step)
+  const model = props.model
+  const orientation = props.orientation ?? 'horizontal'
+  const horizontal = orientation === 'horizontal'
+  const range = { min: model.min, max: model.max, step: model.step }
   const values = normalizeMultiValues(props.values, range)
   const span = Math.max(range.max - range.min, 1)
-  const orientation = props.orientation ?? 'horizontal'
-  const rtl = props.direction === 'rtl' && orientation === 'horizontal'
-  const percent = (value: number): number => ((value - range.min) / span) * 100
+  const isInteractive = props.isDisabled !== true && props.isReadOnly !== true
+  const displayValues = values.map(value => toThumbValue(model, value))
+  const displayFractions = displayValues.map(
+    value => ((value - range.min) / span) * 100,
+  )
+  const minFraction =
+    ((toThumbValue(model, range.min) - range.min) / span) * 100
   const segments: ReadonlyArray<readonly [number, number]> =
-    values.length === 0
+    displayFractions.length === 0
       ? []
-      : values.length === 1
-        ? [[range.min, values[0] ?? range.min]]
-        : values
-            .slice(0, -1)
-            .map((value, index) => [value, values[index + 1] ?? value])
-  const input = (index: number, value: number): Html =>
-    h.input([
-      h.Type('range'),
-      h.Min(String(range.min)),
-      h.Max(String(range.max)),
-      h.Step(String(range.step)),
-      h.Value(String(value)),
-      h.AriaLabel(props.ariaLabels?.[index] ?? `Value ${String(index + 1)}`),
-      ...(props.isReadOnly === true ? [h.AriaReadonly(true)] : []),
-      h.Disabled(props.isDisabled ?? false),
-      ...(props.name === undefined
-        ? []
-        : [h.Name(`${props.name}[${String(index)}]`)]),
-      h.OnInput(next =>
-        props.onInput(
-          props.isReadOnly === true
-            ? values
-            : updateMultiValue(values, index, Number(next), range),
-        ),
-      ),
-      h.Class(
-        cn(
-          'absolute m-0 appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:size-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:border-primary [&::-webkit-slider-thumb]:bg-white',
-          orientation === 'horizontal'
-            ? 'inset-x-0 top-1/2 h-4 w-full -translate-y-1/2'
-            : 'inset-y-0 left-1/2 h-full w-4 -translate-x-1/2 [writing-mode:vertical-lr] [direction:rtl]',
-        ),
-      ),
-    ])
+      : displayFractions.length === 1
+        ? [
+            [
+              Math.min(displayFractions[0] ?? minFraction, minFraction),
+              Math.max(displayFractions[0] ?? minFraction, minFraction),
+            ],
+          ]
+        : displayFractions.slice(0, -1).map((fraction, index) => {
+            const next = displayFractions[index + 1] ?? fraction
+            return [Math.min(fraction, next), Math.max(fraction, next)]
+          })
+  const pressedTrack = (
+    _pointerType: string,
+    button: number,
+    _screenX: number,
+    _screenY: number,
+    _timeStamp: number,
+    clientX: number,
+    clientY: number,
+    _pointerId: number,
+    target: EventTarget | null,
+  ): Option.Option<MultiMessage> => {
+    if (button !== 0 || !isInteractive || !(target instanceof Element)) {
+      return Option.none()
+    }
+    const rect = target.getBoundingClientRect()
+    const fraction = horizontal
+      ? rect.width === 0
+        ? 0
+        : (clientX - rect.left) / rect.width
+      : rect.height === 0
+        ? 0
+        : (rect.bottom - clientY) / rect.height
+    const value = range.min + Math.min(Math.max(fraction, 0), 1) * span
+    let index = 0
+    displayValues.forEach((display, i) => {
+      if (
+        Math.abs(display - value) <
+        Math.abs((displayValues[index] ?? display) - value)
+      ) {
+        index = i
+      }
+    })
+    return Option.some(
+      MultiMessage.PressedTrack({
+        index,
+        value,
+        originValue: displayValues[index] ?? value,
+      }),
+    )
+  }
+  const thumbViews = model.thumbs.slice(0, values.length).map((thumb, index) =>
+    h.submodel({
+      slotId: thumb.id,
+      model: thumb,
+      view: SliderPrimitive.view,
+      viewInputs: {
+        value: displayValues[index] ?? range.min,
+        orientation: horizontal ? 'Horizontal' : 'Vertical',
+        isDisabled: props.isDisabled ?? false,
+        isReadOnly: props.isReadOnly ?? false,
+        ariaLabel: props.ariaLabels?.[index] ?? `Value ${String(index + 1)}`,
+        ...(props.formatValue === undefined
+          ? {}
+          : {
+              formatValue: (value: number) =>
+                props.formatValue?.(
+                  model.mirrored ? model.min + model.max - value : value,
+                  index,
+                ) ?? '',
+            }),
+        ...(props.name === undefined
+          ? {}
+          : { name: `${props.name}[${String(index)}]` }),
+        toView: ({ track, thumb, hiddenInput }) => {
+          const hs = h
+          return hs.div(
+            [hs.Class('contents')],
+            [
+              /* The primitive measures drag distance against the track
+                 element it rendered, so the hidden copy must cover the same
+                 box as the visual track while letting presses fall through
+                 to the shared track below. */
+              hs.div(
+                [hs.Class('pointer-events-none absolute inset-0')],
+                [
+                  hs.div(
+                    [...track, hs.AriaHidden(true), hs.Class('h-full w-full')],
+                    [],
+                  ),
+                ],
+              ),
+              hs.span(
+                [
+                  ...thumb,
+                  hs.DataAttribute('slot', 'slider-thumb'),
+                  hs.Class(THUMB_CLASS),
+                  /* The primitive reports the display-space value; under
+                       mirroring (RTL) report the true value instead. */
+                  ...(model.mirrored
+                    ? [hs.AriaValuenow(values[index] ?? range.min)]
+                    : []),
+                ],
+                [],
+              ),
+              ...(props.name === undefined ? [] : [hs.input([...hiddenInput])]),
+            ],
+          )
+        },
+      },
+      toParentMessage: message =>
+        props.toParentMessage(MultiMessage.GotThumbMessage({ index, message })),
+    }),
+  )
   return h.div(
     [
       h.DataAttribute('slot', 'slider'),
       h.DataAttribute('orientation', orientation),
-      ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
+      ...(props.direction === 'rtl' ? [h.Dir('rtl')] : []),
       ...(props.isDisabled === true ? [h.DataAttribute('disabled', '')] : []),
       ...(props.isReadOnly === true ? [h.DataAttribute('readonly', '')] : []),
       h.Class(
         cn(
           'relative touch-none select-none data-[disabled]:opacity-50',
-          orientation === 'horizontal' ? 'h-5 w-full' : 'h-44 w-5',
+          horizontal ? 'h-5 w-full' : 'h-44 w-5',
           props.class,
         ),
       ),
@@ -336,47 +350,46 @@ export const multiSlider = <Msg>(
       h.div(
         [
           h.DataAttribute('slot', 'slider-track'),
+          ...(isInteractive
+            ? [
+                h.OnPointerDown((...args) =>
+                  Option.map(pressedTrack(...args), props.toParentMessage),
+                ),
+              ]
+            : []),
           h.Class(
             cn(
               'absolute rounded-full bg-muted',
-              orientation === 'horizontal'
+              horizontal
                 ? 'inset-x-0 top-1/2 h-1.5 -translate-y-1/2'
                 : 'inset-y-0 left-1/2 w-1.5 -translate-x-1/2',
             ),
           ),
         ],
-        segments.map(([lower, upper]) => {
-          const start = percent(lower)
-          const end = percent(upper)
-          return h.div(
+        segments.map(([start, end]) =>
+          h.div(
             [
               h.DataAttribute('slot', 'slider-range'),
-              h.Class('absolute rounded-full bg-primary'),
+              h.Class('pointer-events-none absolute rounded-full bg-primary'),
               h.Style(
-                orientation === 'horizontal'
-                  ? rtl
-                    ? {
-                        right: `${start}%`,
-                        left: `${100 - end}%`,
-                        insetBlock: '0',
-                      }
-                    : {
-                        left: `${start}%`,
-                        right: `${100 - end}%`,
-                        insetBlock: '0',
-                      }
+                horizontal
+                  ? {
+                      left: `${String(start)}%`,
+                      right: `${String(100 - end)}%`,
+                      insetBlock: '0',
+                    }
                   : {
-                      bottom: `${start}%`,
-                      top: `${100 - end}%`,
+                      bottom: `${String(start)}%`,
+                      top: `${String(100 - end)}%`,
                       insetInline: '0',
                     },
               ),
             ],
             [],
-          )
-        }),
+          ),
+        ),
       ),
-      ...values.map((value, index) => input(index, value)),
+      ...thumbViews,
     ],
   )
 }

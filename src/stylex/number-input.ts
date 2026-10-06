@@ -1,8 +1,10 @@
 /* Ported from Meta Astryx NumberInput (packages/core/src/NumberInput) —
    examples and visual spec adapted to Crease UI tokens.
 
-   PORT-NOTE: astryx's `isWheelEnabled` scroll-stepping is dropped — foldkit's
-   `OnWheel` handler does not expose the wheel direction. Astrx
+   PORT-NOTE: astryx's `isWheelEnabled` scroll-stepping runs DOM-side —
+   foldkit's `OnWheel` carries no delta, so the inline `onwheel` handler
+   (focused input only) dispatches the ArrowUp/ArrowDown the keydown path
+   already turns into Stepped. Astrx
    duration-fast (130ms) maps to interactionTokens.motionFast (150ms);
    accent/accent-muted map to tokens.ring + color-mix over Crease tokens. */
 
@@ -212,23 +214,29 @@ const styles = stylex.create({
   steppers: {
     overflow: 'hidden',
     alignSelf: 'stretch',
+    borderEndEndRadius: '5px',
     borderInlineStartColor: tokens.input,
     borderInlineStartStyle: 'solid',
     borderInlineStartWidth: 1,
+    borderStartEndRadius: '5px',
     display: 'flex',
     flexDirection: 'column',
     flexShrink: 0,
     marginBlockEnd: '-0.25rem',
     marginBlockStart: '-0.25rem',
-    width: '1rem',
+    marginInlineEnd: '-0.5rem',
+    width: '1.75rem',
   },
   stepperButton: {
     alignItems: 'center',
     backgroundColor: {
       default: tokens.background,
-      ':hover': tokens.muted,
+      ':hover': tokens.accent,
     },
-    color: tokens.mutedForeground,
+    color: {
+      default: tokens.mutedForeground,
+      ':hover': tokens.accentForeground,
+    },
     cursor: {
       default: interactionTokens.cursorAction,
       ':disabled': interactionTokens.cursorDefault,
@@ -311,8 +319,8 @@ const styles = stylex.create({
     width: '1rem',
   },
   stepperIcon: {
-    height: '0.625rem',
-    width: '0.625rem',
+    height: '0.875rem',
+    width: '0.875rem',
   },
 })
 
@@ -511,6 +519,12 @@ const view = defineView<Model, Message, NumberInputViewInputs>(
       ...(props.isDisabled === true || props.isReadOnly === true
         ? []
         : [
+            // foldkit's OnWheel has no delta — dispatch the ArrowUp/ArrowDown
+            // the keydown handler already maps to Stepped, focused input only.
+            h.Attribute(
+              'onwheel',
+              "if(document.activeElement===this){event.preventDefault();this.dispatchEvent(new KeyboardEvent('keydown',{key:event.deltaY<0?'ArrowUp':'ArrowDown',cancelable:true}))}",
+            ),
             h.OnKeyDownPreventDefault(key => {
               if (key === 'ArrowUp') {
                 return canStep(1, { value, min: props.min, max: props.max })

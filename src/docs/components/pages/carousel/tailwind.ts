@@ -44,13 +44,14 @@ const slideView = (
   index: number,
   h: HtmlBuilder<Message>,
 ) => {
+  const vertical = fixture.orientation === 'vertical'
   const card = Card.card(
     {
+      ...(vertical ? { class: 'h-full' } : {}),
       children: [
         Card.cardContent(
           {
-            class:
-              'flex aspect-square items-center justify-center p-6 text-4xl font-semibold',
+            class: `flex ${vertical ? 'h-full' : 'aspect-square'} items-center justify-center p-6 text-4xl font-semibold`,
             children: [String(index + 1)],
           },
           h,
@@ -83,7 +84,7 @@ const carouselView = (
             plugins: [Autoplay({ delay: 2000, stopOnInteraction: true })],
           }
         : {}),
-      class: 'w-full',
+      class: fixture.orientation === 'vertical' ? 'w-full h-[200px]' : 'w-full',
       items: Array.from({ length: fixture.count }, (_, index) =>
         slideView(fixture, index, h),
       ),

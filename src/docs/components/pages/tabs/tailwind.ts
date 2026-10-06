@@ -60,14 +60,15 @@ const tabConfig = (
 ): {
   value: string
   label: Html | string
+  icon?: Html
+  isLabelHidden?: boolean
   content: Html | string
   isDisabled?: boolean
 } => ({
   value: tab.value,
-  label:
-    tab.icon === undefined
-      ? tab.label
-      : h.span([], [Icon.icon(tab.icon, { class: 'size-4' }, h), tab.label]),
+  label: tab.label,
+  ...(tab.icon === undefined ? {} : { icon: Icon.icon(tab.icon, {}, h) }),
+  ...(tab.isLabelHidden === true ? { isLabelHidden: true } : {}),
   content: tab.card === undefined ? tab.content : cardView(tab.card, h),
   ...(tab.isDisabled === true ? { isDisabled: true } : {}),
 })

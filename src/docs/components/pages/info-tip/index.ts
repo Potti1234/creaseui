@@ -14,7 +14,7 @@ export const infoTipPage = authoredPage({
     architecture:
       'A single-purpose trigger wired straight into the shared TooltipBehavior: pointer down focuses and opens immediately so the tip is reachable on touch screens, where a plain button trigger would swallow the tap. Model, Message, and update are the tooltip submodel re-exported.',
     styling:
-      'The trigger is a bare inline-flex button: 2px padding, full rounding, muted icon color that deepens on hover under (hover: hover), and a focus-visible ring. The icon size maps 1:1 to icon sizes (12/16/20/24px). The tooltip panel and arrow reuse the shared overlay styling.',
+      'The trigger is a bare inline-flex button: 2px padding, full rounding, muted icon color that deepens on hover under (hover: hover), and a focus-visible ring. The icon size maps 1:1 to icon sizes (12/14/16/18px, matching the text scale xs/sm/base/lg). The tooltip panel and arrow reuse the shared overlay styling.',
     accessibility:
       'The trigger is a real button with an aria-label ("More information" by default — override it to name what the tip explains), Tab-reachable, with the panel linked via aria-describedby and Escape dismissal.',
     keyboard: [

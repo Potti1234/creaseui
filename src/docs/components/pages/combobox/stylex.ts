@@ -19,6 +19,7 @@ import { className } from '@/stylex/style'
 
 const styles = stylex.create({
   row: { gap: '0.5rem', alignItems: 'center', display: 'flex' },
+  clearButton: { position: 'relative', zIndex: 50 },
   stack: { gap: '0.5rem', display: 'grid' },
   icon: { height: '1rem', width: '1rem' },
   itemCol: { display: 'flex', flexDirection: 'column' },
@@ -313,15 +314,32 @@ export const comboboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         [h.Class(className(styles.row))],
         [
           combo,
-          Button.button(
-            {
-              variant: 'ghost',
-              size: 'icon',
-              ariaLabel: 'Clear selection',
-              onClick: onMessageJson(JSON.stringify({ _tag: 'ClickedClear' })),
-              children: [Icon.icon('x', { class: className(styles.icon) }, h)],
-            },
-            h,
+          // See the Tailwind preview: the button must sit above the combobox's
+          // z-40 backdrop and dispatch on mousedown (before the input blur
+          // closes the popup) or the clear never reaches the update.
+          h.div(
+            [
+              h.Class(className(styles.clearButton)),
+              h.OnMouseDown(
+                onMessageJson(JSON.stringify({ _tag: 'ClickedClear' })),
+              ),
+            ],
+            [
+              Button.button(
+                {
+                  variant: 'ghost',
+                  size: 'icon',
+                  ariaLabel: 'Clear selection',
+                  onClick: onMessageJson(
+                    JSON.stringify({ _tag: 'ClickedClear' }),
+                  ),
+                  children: [
+                    Icon.icon('x', { class: className(styles.icon) }, h),
+                  ],
+                },
+                h,
+              ),
+            ],
           ),
         ],
       )

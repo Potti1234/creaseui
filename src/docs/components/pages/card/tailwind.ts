@@ -41,6 +41,16 @@ const spacingOptions: ReadonlyArray<{ value: SpacingValue; label: string }> = [
   { value: '8', label: '32px' },
 ]
 
+// Tailwind only generates arbitrary-value utilities for literals it can scan,
+// so every option needs its own literal — interpolating spacing(5)/spacing(8)
+// at runtime produces classes Tailwind never emitted rules for.
+const spacingClass: Record<SpacingValue, string> = {
+  '4': '[--card-spacing:--spacing(4)]',
+  '5': '[--card-spacing:--spacing(5)]',
+  '6': '[--card-spacing:--spacing(6)]',
+  '8': '[--card-spacing:--spacing(8)]',
+}
+
 const loginCard = <Msg>(
   opts: Readonly<{
     rtl?: boolean
@@ -67,7 +77,7 @@ const loginCard = <Msg>(
         }
   return Card.card(
     {
-      class: `w-full max-w-sm${opts.spacing === undefined ? '' : ` [--card-spacing:--spacing(${opts.spacing})]`}`,
+      class: `w-full max-w-sm${opts.spacing === undefined ? '' : ` ${spacingClass[opts.spacing]}`}`,
       children: [
         Card.cardHeader(
           {

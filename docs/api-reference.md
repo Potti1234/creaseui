@@ -50,18 +50,6 @@ Source: [`src/ui/alert.ts`](../src/ui/alert.ts)
 | `alertTitle` | function | `alertTitle<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` |
 | `alertDescription` | function | `alertDescription<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` |
 
-## App Shell
-
-Source: [`src/ui/app-shell.ts`](../src/ui/app-shell.ts)
-
-| Export | Kind | Signature |
-| --- | --- | --- |
-| `AppShellVariant` | type | `AppShellVariant = 'elevated' \| 'wash' \| 'surface' \| 'section'` |
-| `AppShellHeight` | type | `AppShellHeight = 'fill' \| 'auto'` |
-| `AppShellSpacing` | type | `AppShellSpacing = 0 \| 0.5 \| 1 \| 1.5 \| 2 \| 3 \| 4 \| 5 \| 6 \| 8 \| 10` |
-| `AppShellProps` | type | `AppShellProps = Readonly<{ variant?: AppShellVariant; banner?: Html; topNav?: Html; sideNav?: Html; contentPadding?: AppShellSpacing; height?: AppShellHeight; skipLinkLabel?: string; mainId?: string; children?: ReadonlyArray<Html \| string>; class?: string; }>` |
-| `appShell` | function | `appShell<Msg>(props: AppShellProps, h: HtmlBuilder<Msg>): Html` |
-
 ## Aspect Ratio
 
 Source: [`src/ui/aspect-ratio.ts`](../src/ui/aspect-ratio.ts)
@@ -168,47 +156,6 @@ Source: [`src/ui/blockquote.ts`](../src/ui/blockquote.ts)
 | `BlockquoteProps` | type | `BlockquoteProps = Readonly<{ children: ReadonlyArray<Html \| string>; cite?: string; class?: string; }>` |
 | `blockquote` | function | `blockquote<Msg>(props: BlockquoteProps, h: HtmlBuilder<Msg>): Html` |
 
-## Bottom Sheet
-
-Source: [`src/ui/bottom-sheet.ts`](../src/ui/bottom-sheet.ts)
-
-| Export | Kind | Signature |
-| --- | --- | --- |
-| `Model` | value | `Model: value` |
-| `Model` | type | `Model = typeof Model.Type` |
-| `Message` | value | `Message: value` |
-| `Message` | type | `Message = typeof Message.Type` |
-| `OutMessage` | value | `OutMessage: value` |
-| `OutMessage` | type | `OutMessage = typeof OutMessage.Type` |
-| `SwitcherModel` | value | `SwitcherModel: value` |
-| `SwitcherModel` | type | `SwitcherModel = typeof SwitcherModel.Type` |
-| `SwitcherMessage` | value | `SwitcherMessage: value` |
-| `SwitcherMessage` | type | `SwitcherMessage = typeof SwitcherMessage.Type` |
-| `SwitcherOutMessage` | value | `SwitcherOutMessage: value` |
-| `SwitcherOutMessage` | type | `SwitcherOutMessage = typeof SwitcherOutMessage.Type` |
-| `SheetState` | value | `SheetState: value` |
-| `SheetState` | type | `SheetState = typeof SheetState.Type` |
-| `BottomSheetSnapPoint` | re-export | `export { BottomSheetSnapPoint } from '@/lib/bottom-sheet'` |
-| `SheetHeight` | re-export | `export { SheetHeight } from '@/lib/bottom-sheet'` |
-| `SheetPurpose` | re-export | `export { SheetPurpose } from '@/lib/bottom-sheet'` |
-| `init` | value | `init: value` |
-| `update` | value | `update: value` |
-| `open` | value | `open: value` |
-| `close` | value | `close: value` |
-| `initSwitcher` | value | `initSwitcher: value` |
-| `updateSwitcher` | value | `updateSwitcher: value` |
-| `openSheet` | value | `openSheet: value` |
-| `closeSwitcher` | value | `closeSwitcher: value` |
-| `OVERSCROLL_PADDING` | value | `OVERSCROLL_PADDING: value` |
-| `HEIGHT_BUDGETS` | value | `HEIGHT_BUDGETS: value` |
-| `isSheetDragCandidate` | function | `isSheetDragCandidate(target: unknown): false \| 'handle' \| 'arm'` |
-| `SheetDragDispatch` | type | `SheetDragDispatch<Msg> = Readonly<{ started: (frame: { y: number; timeStamp: number; armOnly: boolean; }) => Msg; dragged: (frame: { y: number; timeStamp: number; detents: number[]; }) => Msg; ended: (frame: { y: number; timeStamp: number; detents: number[]; …` |
-| `BottomSheetProps` | type | `BottomSheetProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label: string; content: Html; class?: string; }>` |
-| `bottomSheet` | function | `bottomSheet<Msg>(props: BottomSheetProps<Msg>, h: HtmlBuilder<Msg>): Html` |
-| `SwitcherSheetContent` | type | `SwitcherSheetContent = Readonly<{ id: string; content: Html; }>` |
-| `BottomSheetSwitcherProps` | type | `BottomSheetSwitcherProps<Msg> = Readonly<{ model: SwitcherModel; toParentMessage: (message: SwitcherMessage) => Msg; sheets: ReadonlyArray<SwitcherSheetContent>; class?: string; }>` |
-| `bottomSheetSwitcher` | function | `bottomSheetSwitcher<Msg>(props: BottomSheetSwitcherProps<Msg>, h: HtmlBuilder<Msg>): Html` |
-
 ## Breadcrumb
 
 Source: [`src/ui/breadcrumb.ts`](../src/ui/breadcrumb.ts)
@@ -293,9 +240,9 @@ Source: [`src/ui/calendar.ts`](../src/ui/calendar.ts)
 | `reflectDisabledDates` | value | `reflectDisabledDates: value` |
 | `reflectDisabledDaysOfWeek` | value | `reflectDisabledDaysOfWeek: value` |
 | `dropToDays` | value | `dropToDays: value` |
-| `CalendarViewOptions` | type | `CalendarViewOptions = Readonly<{ class?: string; direction?: 'ltr' \| 'rtl'; range?: CalendarBehavior.CalendarRange; weekNumbers?: boolean; }>` |
+| `CalendarViewOptions` | type | `CalendarViewOptions = Readonly<{ captionLayout?: 'label' \| 'dropdown'; class?: string; direction?: 'ltr' \| 'rtl'; range?: CalendarBehavior.CalendarRange; weekNumbers?: boolean; }>` |
 | `calendarView` | function | `calendarView<Msg>(attributes: CalendarPrimitive.CalendarAttributes, options: CalendarViewOptions, h: HtmlBuilder<Msg>): Html` |
-| `CalendarProps` | type | `CalendarProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; class?: string; direction?: 'ltr' \| 'rtl'; range?: CalendarBehavior.CalendarRange; weekNumbers?: boolean;…` |
+| `CalendarProps` | type | `CalendarProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; captionLayout?: 'label' \| 'dropdown'; class?: string; direction?: 'ltr' \| 'rtl'; range?: CalendarBehavior…` |
 | `calendar` | function | `calendar<Msg>(props: CalendarProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Card
@@ -393,29 +340,13 @@ Source: [`src/ui/chat-reasoning.ts`](../src/ui/chat-reasoning.ts)
 | `ChatReasoningProps` | type | `ChatReasoningProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; children: ReadonlyArray<Html \| string>; label?: string; duration?: string; isStreaming?: boolean; preview?: string; class?: string; }>` |
 | `chatReasoning` | function | `chatReasoning<Msg>(props: ChatReasoningProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
-## Checkbox List
-
-Source: [`src/ui/checkbox-list.ts`](../src/ui/checkbox-list.ts)
-
-| Export | Kind | Signature |
-| --- | --- | --- |
-| `CheckboxListDensity` | re-export | `export { CheckboxListDensity } from ` |
-| `CheckboxListEntry` | re-export | `export { CheckboxListEntry } from ` |
-| `CheckboxListItem` | re-export | `export { CheckboxListItem } from ` |
-| `CheckboxListProps` | re-export | `export { CheckboxListProps } from ` |
-| `checkboxListDivider` | re-export | `export { checkboxListDivider } from '@/lib/checkbox-list'` |
-| `InputStatus` | re-export | `export { InputStatus } from '@/lib/input-status'` |
-| `checkboxListItem` | function | `checkboxListItem<Msg>(item: CheckboxListItem<Msg>, h: HtmlBuilder<Msg>, options?: Readonly<{ id?: string; density?: CheckboxListDensity; isDisabled?: boolean; isReadOnly?: boolean; }>): Html` |
-| `CheckboxListUiProps` | type | `CheckboxListUiProps<Msg> = CheckboxListProps<Msg> & Readonly<{ class?: string; }>` |
-| `checkboxList` | function | `checkboxList<Msg>(props: CheckboxListUiProps<Msg>, h: HtmlBuilder<Msg>): Html` |
-
 ## Checkbox
 
 Source: [`src/ui/checkbox.ts`](../src/ui/checkbox.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `CheckboxProps` | type | `CheckboxProps<Msg> = CheckboxBehaviorProps<Msg> & Readonly<{ class?: string; }>` |
+| `CheckboxProps` | type | `CheckboxProps<Msg> = CheckboxBehaviorProps<Msg> & Readonly<{ class?: string; tabindex?: number; }>` |
 | `checkbox` | function | `checkbox<Msg>(props: CheckboxProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Circular Progress
@@ -428,19 +359,6 @@ Source: [`src/ui/circular-progress.ts`](../src/ui/circular-progress.ts)
 | `CircularProgressSize` | type | `CircularProgressSize = 'sm' \| 'md' \| 'lg'` |
 | `CircularProgressProps` | type | `CircularProgressProps = Readonly<{ value?: number; max?: number; label: string; isLabelHidden?: boolean; hasValueLabel?: boolean; formatValueLabel?: (value: number, max: number) => string; children?: ReadonlyArray<Html>; size?: CircularProgressSize; variant?:…` |
 | `circularProgress` | function | `circularProgress<Msg>(props: CircularProgressProps, h: HtmlBuilder<Msg>): Html` |
-
-## Clickable Card
-
-Source: [`src/ui/clickable-card.ts`](../src/ui/clickable-card.ts)
-
-| Export | Kind | Signature |
-| --- | --- | --- |
-| `CardElevation` | re-export | `export { CardElevation } from '@/lib/card-surface'` |
-| `CardPadding` | re-export | `export { CardPadding } from '@/lib/card-surface'` |
-| `CardVariant` | re-export | `export { CardVariant } from '@/lib/card-surface'` |
-| `Message` | re-export | `export { Message } from '@/lib/clickable-card'` |
-| `ClickableCardProps` | type | `ClickableCardProps<Msg> = Readonly<{ label: string; onClick?: Msg; href?: string; target?: string; isDisabled?: boolean; children?: ReadonlyArray<Html \| string>; padding?: CardPadding; variant?: CardVariant; elevation?: CardElevation; width?: string; height?:…` |
-| `clickableCard` | function | `clickableCard<Msg>(props: ClickableCardProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Code Block
 
@@ -963,7 +881,7 @@ Source: [`src/ui/input-group.ts`](../src/ui/input-group.ts)
 | `InputGroupButtonProps` | type | `InputGroupButtonProps<Msg> = Omit<ButtonProps<Msg>, 'size' \| 'class'> & Readonly<{ size?: InputGroupButtonVariants['size']; class?: string; }>` |
 | `inputGroupButton` | function | `inputGroupButton<Msg>(props: InputGroupButtonProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `inputGroupText` | function | `inputGroupText<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` |
-| `InputGroupInputProps` | type | `InputGroupInputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; onKeyDown?: (key: string) => Msg; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; ariaLabel?: string; class?: str…` |
+| `InputGroupInputProps` | type | `InputGroupInputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; onKeyDown?: (key: string) => Msg; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; ariaLabel?: string; step?: stri…` |
 | `inputGroupInput` | function | `inputGroupInput<Msg>(props: InputGroupInputProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `InputGroupTextareaProps` | type | `InputGroupTextareaProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; placeholder?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; ariaLabel?: string; class?: string; }>` |
 | `inputGroupTextarea` | function | `inputGroupTextarea<Msg>(props: InputGroupTextareaProps<Msg>, h: HtmlBuilder<Msg>): Html` |
@@ -1400,46 +1318,6 @@ Source: [`src/ui/popover.ts`](../src/ui/popover.ts)
 | `PopoverProps` | type | `PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; triggerClass?: string; content: Html \| string; align?: PopoverAlign; side?: PopoverSide; class?: string; direction?: 'ltr' \| 'rtl'; focusSelector?…` |
 | `popover` | function | `popover<Msg>(props: PopoverProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
-## Power Search
-
-Source: [`src/ui/power-search.ts`](../src/ui/power-search.ts)
-
-| Export | Kind | Signature |
-| --- | --- | --- |
-| `EnumItem` | type | `EnumItem = Readonly<{ value: string; label: string; }>` |
-| `PowerSearchEntity` | type | `PowerSearchEntity = Readonly<{ id: string; label: string; photo?: string; }>` |
-| `SearchableItem` | type | `SearchableItem = Readonly<{ id: string; label: string; photo?: string; auxiliaryData?: unknown; }>` |
-| `SearchSource` | type | `SearchSource = Readonly<{ search: (query: string) => ReadonlyArray<SearchableItem>; bootstrap?: () => ReadonlyArray<SearchableItem>; }>` |
-| `DateTimeRangePart` | type | `DateTimeRangePart = Readonly<{ type: 'NOW'; }> \| Readonly<{ type: 'ABSOLUTE'; unixSeconds: number; }> \| Readonly<{ type: 'RELATIVE'; backValue: number; unit: 'second' \| 'minute' \| 'hour' \| 'day' \| 'week' \| 'month' \| 'year'; }>` |
-| `DateTimeRange` | type | `DateTimeRange = Readonly<{ start: DateTimeRangePart; end: DateTimeRangePart; }>` |
-| `OperatorValue` | type | `OperatorValue = Readonly<{ type: 'empty'; }> \| Readonly<{ type: 'string'; searchSource?: SearchSource; }> \| Readonly<{ type: 'string_list'; searchSource?: SearchSource; }> \| Readonly<{ type: 'integer'; }> \| Readonly<{ type: 'float'; }> \| Readonly<{ type: 'tim…` |
-| `RelativeDateFilterPreset` | type | `RelativeDateFilterPreset = Readonly<{ key: string; label: string; range: DateTimeRange; }>` |
-| `PowerSearchOperator` | type | `PowerSearchOperator = Readonly<{ key: string; value: OperatorValue; }> & (Readonly<{ label: string; }> \| Readonly<{ i18nKey: string; }>)` |
-| `PowerSearchField` | type | `PowerSearchField = Readonly<{ key: string; label: string; operators: ReadonlyArray<PowerSearchOperator>; icon?: string; defaultOperator?: string; group?: string; description?: string; typeaheadAliases?: ReadonlyArray<string>; typeaheadMinQueryLength?: number;…` |
-| `FilterValue` | type | `FilterValue = Readonly<{ type: 'empty'; }> \| Readonly<{ type: 'string'; value: string; }> \| Readonly<{ type: 'string_list'; value: ReadonlyArray<string>; }> \| Readonly<{ type: 'integer'; value: number; }> \| Readonly<{ type: 'float'; value: number; }> \| Readon…` |
-| `PowerSearchFilter` | type | `PowerSearchFilter = Readonly<{ field: string; operator: string; value: FilterValue; isReadOnly?: boolean; }>` |
-| `PartialFilter` | type | `PartialFilter = Readonly<{ field: string; operator?: string; value?: FilterValue; }>` |
-| `PowerSearchConfig` | type | `PowerSearchConfig = Readonly<{ name: string; fields: ReadonlyArray<PowerSearchField>; contentSearchFieldKey?: string; }>` |
-| `PowerSearchChangeType` | type | `PowerSearchChangeType = 'add' \| 'edit' \| 'remove'` |
-| `resolveOperatorLabel` | function | `resolveOperatorLabel(operator: PowerSearchOperator): string` |
-| `InternalPowerSearchConfig` | type | `InternalPowerSearchConfig = Readonly<{ name: string; fields: ReadonlyArray<PowerSearchField>; contentSearchFieldKey?: string; fieldsByKey: ReadonlyMap<string, PowerSearchField>; nonContentSearchFields: ReadonlyArray<PowerSearchField>; contentSearchField?: Pow…` |
-| `createInternalConfig` | function | `createInternalConfig(config: PowerSearchConfig): InternalPowerSearchConfig` |
-| `resolveDateTimeRangePart` | function | `resolveDateTimeRangePart(part: DateTimeRangePart, nowSeconds: number = Date.now() / 1000): number` |
-| `formatFilterValue` | function | `formatFilterValue(config: InternalPowerSearchConfig, operatorValue: OperatorValue, filterValue: FilterValue \| undefined, maxLength: number): string` |
-| `PowerSearchSuggestion` | type | `PowerSearchSuggestion = Readonly<{ kind: 'group'; label: string; }> \| Readonly<{ kind: 'field'; field: PowerSearchField; }> \| Readonly<{ kind: 'operator'; field: PowerSearchField; operator: PowerSearchOperator; label: string; }> \| Readonly<{ kind: 'value'; fi…` |
-| `FieldDefinition` | type | `FieldDefinition = Readonly<{ key: string; type: FieldDefinitionType; label?: string; enumValues?: ReadonlyArray<EnumItem>; }>` |
-| `createPowerSearchConfig` | function | `createPowerSearchConfig(definitions: ReadonlyArray<FieldDefinition>, configName?: string): { config: PowerSearchConfig; applyFilters: <Row extends Record<string, unknown>>(filters: ReadonlyArray<PowerSearchFilter>, data: ReadonlyArray<Row>) => Row[]; }` |
-| `Model` | value | `Model: value` |
-| `Model` | type | `Model = typeof Model.Type` |
-| `init` | function | `init(config: { id: string; }): Model` |
-| `Message` | value | `Message: value` |
-| `Message` | type | `Message = typeof Message.Type` |
-| `OutMessage` | value | `OutMessage: value` |
-| `OutMessage` | type | `OutMessage = typeof OutMessage.Type` |
-| `update` | function | `update(model: Model, message: Message, config: InternalPowerSearchConfig, filters: ReadonlyArray<PowerSearchFilter>, resultCount: number \| null = null): UpdateReturn` |
-| `PowerSearchProps` | type | `PowerSearchProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; filters: ReadonlyArray<PowerSearchFilter>; config: InternalPowerSearchConfig; placeholder?: string; valueMaxLength?: number; resultCount?: number; hasClear?: boolean;…` |
-| `powerSearch` | function | `powerSearch<Msg>(props: PowerSearchProps<Msg>, h: HtmlBuilder<Msg>): Html` |
-
 ## Progress
 
 Source: [`src/ui/progress.ts`](../src/ui/progress.ts)
@@ -1509,25 +1387,6 @@ Source: [`src/ui/section.ts`](../src/ui/section.ts)
 | `SectionProps` | type | `SectionProps = Readonly<{ variant?: SectionVariant; dividers?: ReadonlyArray<SectionDivider>; padding?: SectionSpacing; paddingInline?: SectionSpacing; paddingInlineStart?: SectionSpacing; paddingInlineEnd?: SectionSpacing; paddingBlock?: SectionSpacing; padd…` |
 | `section` | function | `section<Msg>(props: SectionProps, h: HtmlBuilder<Msg>): Html` |
 
-## Segmented Control
-
-Source: [`src/ui/segmented-control.ts`](../src/ui/segmented-control.ts)
-
-| Export | Kind | Signature |
-| --- | --- | --- |
-| `Message` | re-export | `export { Message } from ` |
-| `Model` | re-export | `export { Model } from ` |
-| `init` | re-export | `export { init } from ` |
-| `OutMessage` | re-export | `export { OutMessage } from ` |
-| `SegmentedControlSize` | type | `SegmentedControlSize = 'sm' \| 'md' \| 'lg'` |
-| `SegmentedControlLayout` | type | `SegmentedControlLayout = 'hug' \| 'fill'` |
-| `SegmentedControlItem` | type | `SegmentedControlItem<Value extends string = string> = Readonly<{ value: Value; label: string; icon?: Html; isLabelHidden?: boolean; isDisabled?: boolean; }>` |
-| `SegmentedControlProps` | type | `SegmentedControlProps<Value extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; value: Value; ariaLabel: string; options: ReadonlyArray<SegmentedControlItem<Value>>; size?: SegmentedControlSize; layout?: SegmentedContro…` |
-| `SegmentedControlBundle` | type | `SegmentedControlBundle<Value extends string> = Readonly<{ update: ReturnType<typeof createBehavior<Value>>['update']; segmentedControl: <Msg>(props: SegmentedControlProps<Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>` |
-| `create` | function | `create<Value extends string = string>(): SegmentedControlBundle<Value>` |
-| `update` | value | `update: value` |
-| `segmentedControl` | value | `segmentedControl: value` |
-
 ## Select
 
 Source: [`src/ui/select.ts`](../src/ui/select.ts)
@@ -1558,7 +1417,7 @@ Source: [`src/ui/selectable-card.ts`](../src/ui/selectable-card.ts)
 | `CardElevation` | re-export | `export { CardElevation } from '@/lib/card-surface'` |
 | `CardPadding` | re-export | `export { CardPadding } from '@/lib/card-surface'` |
 | `CardVariant` | re-export | `export { CardVariant } from '@/lib/card-surface'` |
-| `Message` | re-export | `export { Message } from '@/lib/clickable-card'` |
+| `Message` | re-export | `export { Message } from '@/lib/card-pressable'` |
 | `SelectableCardProps` | type | `SelectableCardProps<Msg> = Readonly<{ label: string; isSelected: boolean; onChange?: Msg; isDisabled?: boolean; children?: ReadonlyArray<Html \| string>; padding?: CardPadding; variant?: CardVariant; elevation?: CardElevation; width?: string; height?: string; …` |
 | `selectableCard` | function | `selectableCard<Msg>(props: SelectableCardProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
@@ -1583,11 +1442,30 @@ Source: [`src/ui/sheet.ts`](../src/ui/sheet.ts)
 | `Message` | type | `Message = typeof Message.Type` |
 | `OutMessage` | value | `OutMessage: value` |
 | `OutMessage` | type | `OutMessage = typeof OutMessage.Type` |
+| `SwitcherModel` | value | `SwitcherModel: value` |
+| `SwitcherModel` | type | `SwitcherModel = typeof SwitcherModel.Type` |
+| `SwitcherMessage` | value | `SwitcherMessage: value` |
+| `SwitcherMessage` | type | `SwitcherMessage = typeof SwitcherMessage.Type` |
+| `SwitcherOutMessage` | value | `SwitcherOutMessage: value` |
+| `SwitcherOutMessage` | type | `SwitcherOutMessage = typeof SwitcherOutMessage.Type` |
+| `SheetState` | value | `SheetState: value` |
+| `SheetState` | type | `SheetState = typeof SheetState.Type` |
+| `SheetHeight` | re-export | `export { SheetHeight } from '@/lib/sheet'` |
+| `SheetPurpose` | re-export | `export { SheetPurpose } from '@/lib/sheet'` |
+| `SheetSnapPoint` | re-export | `export { SheetSnapPoint } from '@/lib/sheet'` |
 | `init` | value | `init: value` |
 | `update` | value | `update: value` |
 | `open` | value | `open: value` |
 | `close` | value | `close: value` |
+| `initSwitcher` | value | `initSwitcher: value` |
+| `updateSwitcher` | value | `updateSwitcher: value` |
+| `openSheet` | value | `openSheet: value` |
+| `closeSwitcher` | value | `closeSwitcher: value` |
+| `OVERSCROLL_PADDING` | value | `OVERSCROLL_PADDING: value` |
+| `HEIGHT_BUDGETS` | value | `HEIGHT_BUDGETS: value` |
 | `SheetSide` | type | `SheetSide = 'top' \| 'right' \| 'bottom' \| 'left'` |
+| `isSheetDragCandidate` | function | `isSheetDragCandidate(target: unknown): false \| 'handle' \| 'arm'` |
+| `SheetDragDispatch` | type | `SheetDragDispatch<Msg> = Readonly<{ started: (frame: { y: number; timeStamp: number; armOnly: boolean; }) => Msg; dragged: (frame: { y: number; timeStamp: number; detents: number[]; }) => Msg; ended: (frame: { y: number; timeStamp: number; detents: number[]; …` |
 | `SheetSlots` | type | `SheetSlots = Readonly<{ closeButton: ReadonlyArray<ChildAttribute>; initialFocusAttributes: () => ReadonlyArray<ChildAttribute>; }>` |
 | `SheetPartProps` | type | `SheetPartProps = Readonly<{ children: ReadonlyArray<Html \| string>; class?: string; }>` |
 | `SheetTextPartProps` | type | `SheetTextPartProps = SheetPartProps & Readonly<{ attributes: ReadonlyArray<ChildAttribute>; }>` |
@@ -1599,32 +1477,9 @@ Source: [`src/ui/sheet.ts`](../src/ui/sheet.ts)
 | `SheetParts` | type | `SheetParts<Msg> = Readonly<{ header: (props: SheetPartProps) => Html; title: (props: Omit<SheetTextPartProps, 'attributes'>) => Html; description: (props: Omit<SheetTextPartProps, 'attributes'>) => Html; footer: (props: SheetPartProps) => Html; close: (props?…` |
 | `SheetProps` | type | `SheetProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description?: string; content?: (slots: SheetSlots) => ReadonlyArray<Html>; footer?: (slots: SheetSlots) => ReadonlyArray<Html>; layout?: (parts: SheetParts<…` |
 | `sheet` | function | `sheet<Msg>(props: SheetProps<Msg>, h: HtmlBuilder<Msg>): Html` |
-
-## Side Nav
-
-Source: [`src/ui/side-nav.ts`](../src/ui/side-nav.ts)
-
-| Export | Kind | Signature |
-| --- | --- | --- |
-| `Message` | re-export | `export { Message } from '@/lib/side-nav'` |
-| `Model` | re-export | `export { Model } from '@/lib/side-nav'` |
-| `OutMessage` | re-export | `export { OutMessage } from '@/lib/side-nav'` |
-| `HEADING_MENU_KEY` | re-export | `export { HEADING_MENU_KEY } from '@/lib/side-nav'` |
-| `flyoutKey` | re-export | `export { flyoutKey } from '@/lib/side-nav'` |
-| `init` | re-export | `export { init } from '@/lib/side-nav'` |
-| `isItemCollapsed` | re-export | `export { isItemCollapsed } from '@/lib/side-nav'` |
-| `menuFor` | re-export | `export { menuFor } from '@/lib/side-nav'` |
-| `update` | re-export | `export { update } from '@/lib/side-nav'` |
-| `visibleWidth` | re-export | `export { visibleWidth } from '@/lib/side-nav'` |
-| `InitConfig` | re-export | `export { InitConfig } from '@/lib/side-nav'` |
-| `SideNavItemData` | type | `SideNavItemData = Readonly<{ id: string; label: string; icon?: string; selectedIcon?: string; isSelected?: boolean; isDisabled?: boolean; href?: string; onSelect?: boolean; endContent?: Html; actions?: Html; children?: ReadonlyArray<SideNavItemData>; defaultC…` |
-| `SideNavMenuItemData` | type | `SideNavMenuItemData = Readonly<{ label: string; href?: string; onSelect?: boolean; icon?: string; isDisabled?: boolean; }>` |
-| `SideNavHeadingData` | type | `SideNavHeadingData = Readonly<{ heading: string; icon?: Html; headingHref?: string; superheading?: string; superheadingHref?: string; subheading?: string; subheadingHref?: string; headerEndContent?: Html; menu?: ReadonlyArray<SideNavMenuItemData>; }>` |
-| `SideNavSectionData` | type | `SideNavSectionData = Readonly<{ title?: string; subtitle?: string; isHeaderHidden?: boolean; endContent?: Html; items: ReadonlyArray<SideNavItemData>; }>` |
-| `ViewInputs` | type | `ViewInputs = Readonly<{ items?: ReadonlyArray<SideNavItemData>; sections?: ReadonlyArray<SideNavSectionData>; heading?: SideNavHeadingData; topContent?: Html; footer?: Html; footerIcons?: Html; hasCollapseButton?: boolean; footerCollapseButton?: boolean; size…` |
-| `view` | value | `view: value` |
-| `SideNavProps` | type | `SideNavProps<Msg> = ViewInputs & Readonly<{ model: SideNavLib.Model; toParentMessage: (message: SideNavLib.Message) => Msg; }>` |
-| `sideNav` | function | `sideNav<Msg>(props: SideNavProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+| `SwitcherSheetContent` | type | `SwitcherSheetContent = Readonly<{ id: string; content: Html; }>` |
+| `SheetSwitcherProps` | type | `SheetSwitcherProps<Msg> = Readonly<{ model: SwitcherModel; toParentMessage: (message: SwitcherMessage) => Msg; sheets: ReadonlyArray<SwitcherSheetContent>; class?: string; }>` |
+| `sheetSwitcher` | function | `sheetSwitcher<Msg>(props: SheetSwitcherProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Sidebar
 
@@ -1702,22 +1557,22 @@ Source: [`src/ui/slider.ts`](../src/ui/slider.ts)
 | `subscriptions` | value | `subscriptions: value` |
 | `subscriptionsForRoot` | value | `subscriptionsForRoot: value` |
 | `fractionOfValue` | value | `fractionOfValue: value` |
+| `initMulti` | re-export | `export { initMulti } from ` |
+| `MultiMessage` | re-export | `export { MultiMessage } from ` |
+| `MultiModel` | re-export | `export { MultiModel } from ` |
+| `MultiOutMessage` | re-export | `export { MultiOutMessage } from ` |
+| `multiThumbSubscriptions` | re-export | `export { multiThumbSubscriptions } from ` |
+| `normalizeMultiValues` | re-export | `export { normalizeMultiValues } from ` |
+| `reflectMultiRange` | re-export | `export { reflectMultiRange } from ` |
+| `toThumbValue` | re-export | `export { toThumbValue } from ` |
+| `updateMulti` | re-export | `export { updateMulti } from ` |
+| `updateMultiValue` | re-export | `export { updateMultiValue } from ` |
 | `SliderProps` | type | `SliderProps<Msg> = Readonly<{ model: Model; value: number; toParentMessage: (message: Message) => Msg; label?: string; ariaLabel?: string; formatValue?: (value: number) => string; isDisabled?: boolean; isReadOnly?: boolean; name?: string; class?: string; }>` |
-| `RangeSliderProps` | type | `RangeSliderProps<Msg> = Readonly<{ values: readonly [ number, number ]; min: number; max: number; step?: number; onInput: (values: readonly [ number, number ]) => Msg; orientation?: 'horizontal' \| 'vertical'; direction?: 'ltr' \| 'rtl'; ariaLabels?: readonly […` |
+| `MultiSliderProps` | type | `MultiSliderProps<Msg> = Readonly<{ model: MultiModel; values: readonly number[]; toParentMessage: (message: MultiMessage) => Msg; orientation?: 'horizontal' \| 'vertical'; direction?: 'ltr' \| 'rtl'; ariaLabels?: readonly string[]; formatValue?: (value: number,…` |
+| `RangeSliderProps` | type | `RangeSliderProps<Msg> = Readonly<Omit<MultiSliderProps<Msg>, 'values'> & { values: readonly [ number, number ]; }>` |
 | `rangeSlider` | function | `rangeSlider<Msg>(props: RangeSliderProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `slider` | function | `slider<Msg>(props: SliderProps<Msg>, h: HtmlBuilder<Msg>): Html` |
-| `MultiSliderProps` | type | `MultiSliderProps<Msg> = Readonly<{ values: readonly number[]; min: number; max: number; step?: number; onInput: (values: readonly number[]) => Msg; orientation?: 'horizontal' \| 'vertical'; direction?: 'ltr' \| 'rtl'; ariaLabels?: readonly string[]; isDisabled?…` |
 | `multiSlider` | function | `multiSlider<Msg>(props: MultiSliderProps<Msg>, h: HtmlBuilder<Msg>): Html` |
-
-## Sonner
-
-Source: [`src/ui/sonner.ts`](../src/ui/sonner.ts)
-
-| Export | Kind | Signature |
-| --- | --- | --- |
-| `*` | re-export | `export * from '@/lib/toast'` |
-| `SonnerProps` | type | `SonnerProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; ariaLabel?: string; pausePolicy?: 'none' \| 'pointer'; class?: string; entryClass?: string; position?: Position; }>` |
-| `sonner` | function | `sonner<Msg>(props: SonnerProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Spinner
 
@@ -1839,7 +1694,7 @@ Source: [`src/ui/tabs.ts`](../src/ui/tabs.ts)
 | `tabsListVariants` | value | `tabsListVariants: value` |
 | `TabsListVariants` | type | `TabsListVariants = VariantProps<typeof tabsListVariants>` |
 | `TabsOrientation` | type | `TabsOrientation = 'horizontal' \| 'vertical'` |
-| `TabConfig` | type | `TabConfig<Value extends string = string> = Readonly<{ value: Value; label: Html \| string; content: Html \| string; isDisabled?: boolean; }>` |
+| `TabConfig` | type | `TabConfig<Value extends string = string> = Readonly<{ value: Value; label: Html \| string; icon?: Html; isLabelHidden?: boolean; content: Html \| string; isDisabled?: boolean; }>` |
 | `TabsProps` | type | `TabsProps<Value extends string, Msg> = Readonly<{ model: Model; selectedValue: Value; toParentMessage: (message: Message) => Msg; tabs: ReadonlyArray<TabConfig<Value>>; ariaLabel?: string; orientation?: TabsOrientation; direction?: 'ltr' \| 'rtl'; variant?: Ta…` |
 | `TabsBundle` | type | `TabsBundle<Value extends string> = Readonly<{ update: ReturnType<typeof TabsPrimitive.create<Value>>['update']; tabs: <Msg>(props: TabsProps<Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>` |
 | `create` | function | `create<Value extends string = string>(): TabsBundle<Value>` |
@@ -1949,8 +1804,9 @@ Source: [`src/ui/toast.ts`](../src/ui/toast.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `*` | re-export | `export * from '@/ui/sonner'` |
-| `toast` | re-export | `export { sonner as toast } from '@/ui/sonner'` |
+| `*` | re-export | `export * from '@/lib/toast'` |
+| `ToastProps` | type | `ToastProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; ariaLabel?: string; pausePolicy?: 'none' \| 'pointer'; class?: string; entryClass?: string; position?: Position; }>` |
+| `toast` | function | `toast<Msg>(props: ToastProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Toggle Group
 

@@ -5,6 +5,7 @@ import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
 import { Listbox as ListboxPrimitive } from '@foldkit/ui'
 
 import * as Icon from '@/lib/icon'
+import * as Checkbox from '@/stylex/checkbox'
 import {
   Message,
   Model,
@@ -290,39 +291,6 @@ const styles = stylex.create({
   },
   itemDisabled: { opacity: 0.5, pointerEvents: 'none' },
   itemContent: { display: 'contents' },
-  itemRow: { gap: '0.5rem', alignItems: 'center', display: 'flex' },
-  checkboxBox: {
-    borderColor: tokens.input,
-    borderRadius: foundationTokens.radiusSm,
-    borderStyle: 'solid',
-    borderWidth: 1,
-    alignItems: 'center',
-    backgroundColor: 'transparent',
-    color: tokens.primaryForeground,
-    display: 'flex',
-    flexShrink: 0,
-    justifyContent: 'center',
-    transitionDuration: interactionTokens.motionFast,
-    transitionProperty: 'background-color, border-color',
-    transitionTimingFunction: interactionTokens.easingStandard,
-    height: '1rem',
-    width: '1rem',
-  },
-  checkboxBoxChecked: {
-    borderColor: tokens.primary,
-    backgroundColor: tokens.primary,
-  },
-  checkboxIconHidden: {
-    color: tokens.primaryForeground,
-    opacity: 0,
-    height: '0.75rem',
-    width: '0.75rem',
-  },
-  checkboxIcon: {
-    color: tokens.primaryForeground,
-    height: '0.75rem',
-    width: '0.75rem',
-  },
   groupHeading: {
     paddingBlock: '0.375rem',
     paddingInline: '0.5rem',
@@ -446,40 +414,6 @@ const statusIcon = <Msg>(
         { class: className(styles.iconSize) },
         h,
       ),
-    ],
-  )
-
-const checkboxBox = <Msg>(
-  checked: boolean,
-  indeterminate: boolean,
-  h: HtmlBuilder<Msg>,
-): Html =>
-  h.span(
-    [
-      h.Class(
-        className(
-          styles.checkboxBox,
-          (checked || indeterminate) && styles.checkboxBoxChecked,
-        ),
-      ),
-      h.AriaHidden(true),
-    ],
-    [
-      checked || indeterminate
-        ? Icon.icon(
-            checked ? 'check' : 'minus',
-            {
-              class: className(styles.checkboxIcon),
-            },
-            h,
-          )
-        : Icon.icon(
-            'check',
-            {
-              class: className(styles.checkboxIconHidden),
-            },
-            h,
-          ),
     ],
   )
 
@@ -635,12 +569,16 @@ export const multiSelector = <Msg>(
                 h.Class(className(styles.itemContent)),
               ],
               [
-                h.span(
-                  [h.Class(className(styles.itemRow))],
-                  [
-                    checkboxBox(allSelected, someSelected, h),
-                    props.selectAllLabel ?? 'Select all',
-                  ],
+                Checkbox.checkbox(
+                  {
+                    id: `${model.id}-opt-select-all`,
+                    isChecked: allSelected,
+                    isIndeterminate: someSelected,
+                    isReadOnly: true,
+                    label: props.selectAllLabel ?? 'Select all',
+                    tabindex: -1,
+                  },
+                  h,
                 ),
               ],
             ),
@@ -657,9 +595,15 @@ export const multiSelector = <Msg>(
                 h.Class(className(styles.itemContent)),
               ],
               [
-                h.span(
-                  [h.Class(className(styles.itemRow))],
-                  [checkboxBox(context.isSelected, false, h), labelFor(value)],
+                Checkbox.checkbox(
+                  {
+                    id: `${model.id}-opt-${value}`,
+                    isChecked: context.isSelected,
+                    isReadOnly: true,
+                    label: labelFor(value),
+                    tabindex: -1,
+                  },
+                  h,
                 ),
               ],
             ),

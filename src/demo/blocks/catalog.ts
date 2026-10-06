@@ -105,6 +105,12 @@ export const BLOCKS: ReadonlyArray<BlockDefinition> = [
     category: 'sidebar' as const,
   })),
   {
+    name: 'app-shell-01',
+    description:
+      'An app shell with a top navigation, sidebar and elevated content.',
+    category: 'sidebar',
+  },
+  {
     name: 'login-03',
     description: 'A centered login form on a muted background.',
     category: 'login',

@@ -4,7 +4,9 @@ import type { Attribute, Html, HtmlBuilder } from 'foldkit/html'
 export type CheckboxBehaviorProps<Msg> = Readonly<{
   id: string
   isChecked: boolean
-  onToggle: (isChecked: boolean) => Msg
+  /** Optional only because a read-only checkbox is decorative and its
+   *  toggle can never fire. */
+  onToggle?: (isChecked: boolean) => Msg
   label?: Html | string
   description?: Html | string
   isDisabled?: boolean
@@ -34,7 +36,11 @@ export const renderCheckbox = <Msg>(
     {
       id: props.id,
       isChecked: props.isChecked,
-      onToggle: props.onToggle,
+      onToggle:
+        props.onToggle ??
+        (() => {
+          throw new Error('checkbox: a toggleable checkbox needs onToggle')
+        }),
       isDisabled: props.isDisabled ?? false,
       isReadOnly: props.isReadOnly ?? false,
       isIndeterminate: props.isIndeterminate ?? false,

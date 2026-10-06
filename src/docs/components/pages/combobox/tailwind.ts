@@ -1,4 +1,4 @@
-import { Effect, Option, Schema as S } from 'effect'
+import { Option, Schema as S } from 'effect'
 import { Command } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
@@ -33,20 +33,6 @@ const PreviewModel = S.Struct({
   autoHighlight: S.Boolean,
 })
 type PreviewModel = typeof PreviewModel.Type
-
-// Dispatches BlurredInput as a command so it lands after the open animation
-// fold — a same-tick Closed/BlurredInput is ignored while isOpen is still false.
-const CloseComboboxAfterClear = Command.define('CloseComboboxAfterClear', {
-  messages: [PreviewMessages.GotComboboxPreviewMessage],
-  execute: Effect.succeed(
-    PreviewMessages.GotComboboxPreviewMessage({
-      message: Combobox.Message.BlurredInput({
-        restingInputValue: '',
-        isClearable: true,
-      }),
-    }),
-  ),
-})
 
 const AutoHighlightCombobox = Combobox.create<string>({ autoHighlight: true })
 const MultiCombobox = Combobox.createMulti<string>({ autoHighlight: true })
@@ -327,22 +313,31 @@ export const comboboxTailwindPreviewProgram = definePreviewProgram<
           },
         }
       case 'ClickedClear': {
-        const next = Combobox.update(
-          model.combobox,
-          Combobox.Message.UpdatedInputValue({ value: '' }),
-        )
+        // Close once via BlurredInput, which restores the empty resting
+        // value — routing UpdatedInputValue would reopen the popup first
+        // (its typing semantics open the listbox) and flash the options
+        // before the deferred close lands.
+        const next = model.combobox.isOpen
+          ? Combobox.update(
+              model.combobox,
+              Combobox.Message.BlurredInput({
+                restingInputValue: '',
+                isClearable: true,
+              }),
+            )
+          : {
+              model: { ...model.combobox, inputValue: '' },
+              commands: [],
+            }
         return {
           model: {
             ...model,
             combobox: next.model,
             maybeValue: Option.none(),
           },
-          commands: [
-            ...Command.mapMessages(next.commands ?? [], child =>
-              PreviewMessages.GotComboboxPreviewMessage({ message: child }),
-            ),
-            CloseComboboxAfterClear(),
-          ],
+          commands: Command.mapMessages(next.commands ?? [], child =>
+            PreviewMessages.GotComboboxPreviewMessage({ message: child }),
+          ),
         }
       }
     }
@@ -369,15 +364,27 @@ export const comboboxTailwindPreviewProgram = definePreviewProgram<
           [h.Class('flex items-center gap-2')],
           [
             combo,
-            Button.button(
-              {
-                variant: 'ghost',
-                size: 'icon',
-                ariaLabel: 'Clear selection',
-                onClick: PreviewMessages.ClickedClear(),
-                children: [Icon.icon('x', { class: 'size-4' }, h)],
-              },
-              h,
+            // The open combobox renders a fixed z-40 backdrop that covers
+            // this button, so the clear would only restore the selection
+            // instead of running. Keep the button above it and dispatch on
+            // mousedown, which lands before the input blur closes the popup.
+            h.div(
+              [
+                h.Class('relative z-50'),
+                h.OnMouseDown(PreviewMessages.ClickedClear()),
+              ],
+              [
+                Button.button(
+                  {
+                    variant: 'ghost',
+                    size: 'icon',
+                    ariaLabel: 'Clear selection',
+                    onClick: PreviewMessages.ClickedClear(),
+                    children: [Icon.icon('x', { class: 'size-4' }, h)],
+                  },
+                  h,
+                ),
+              ],
             ),
           ],
         )

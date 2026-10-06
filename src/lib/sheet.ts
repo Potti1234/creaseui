@@ -14,13 +14,15 @@ import { defineMessageUnion } from 'foldkit/message'
 import * as Mount from 'foldkit/mount'
 import { Dialog } from '@foldkit/ui'
 
-/* Renderer-neutral state + pure geometry for the BottomSheet port of Meta
-   Astryx's BottomSheet: detent offsets, magnetic drags, flick/overshoot
-   dismissal, scrim opacity coupling, and a shared-dialog sheet switcher. */
+/* Renderer-neutral state + pure geometry for the Sheet port: the foldkit
+   Dialog submodel drives every edge panel, and Meta Astryx's BottomSheet
+   gesture engine layers on top when the sheet sits on the bottom edge —
+   detent offsets, magnetic drags, flick/overshoot dismissal, scrim opacity
+   coupling, and a shared-dialog sheet switcher. */
 
 // ——— Geometry (ported from astryx packages/core/src/BottomSheet/snapOffsets.ts)
 
-export type BottomSheetSnapPoint = number | string
+export type SheetSnapPoint = number | string
 export const SnapPoint = S.Union([S.Number, S.String])
 
 /** Detents whose resting offsets land within this many px of each other are
@@ -69,7 +71,7 @@ export const HEIGHT_BUDGETS: Readonly<
 const SNAP_POINT_PATTERN = /^(\d+(?:\.\d+)?|\.\d+)(px|%)$/i
 
 const parseSnapPoint = (
-  point: BottomSheetSnapPoint,
+  point: SheetSnapPoint,
   viewportPx: number,
 ): number | null => {
   if (typeof point === 'number') {
@@ -87,11 +89,11 @@ const parseSnapPoint = (
   return unit.toLowerCase() === '%' ? (value / 100) * viewportPx : value
 }
 
-export const isValidSnapPoint = (point: BottomSheetSnapPoint): boolean =>
+export const isValidSnapPoint = (point: SheetSnapPoint): boolean =>
   parseSnapPoint(point, 1) !== null
 
 export const resolveSnapPoints = (
-  points: ReadonlyArray<BottomSheetSnapPoint>,
+  points: ReadonlyArray<SheetSnapPoint>,
   viewportPx: number,
 ): number[] =>
   A.filterMap(points, point => {
@@ -419,7 +421,7 @@ export const Model = S.Struct({
 export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
-  GotBottomSheetDialogMessage: { message: Dialog.Message },
+  GotSheetDialogMessage: { message: Dialog.Message },
   RequestedSheetDismiss: {},
   StartedSheetDrag: { y: S.Number, timeStamp: S.Number, armOnly: S.Boolean },
   DraggedSheet: {
@@ -445,7 +447,7 @@ export type InitConfig = Dialog.InitConfig &
     purpose?: SheetPurpose
     hasScrim?: boolean
     height?: SheetHeight
-    snapPoints?: ReadonlyArray<BottomSheetSnapPoint>
+    snapPoints?: ReadonlyArray<SheetSnapPoint>
   }>
 
 export const init = (config: InitConfig): Model => ({
@@ -469,13 +471,13 @@ const mapDialogResult = (
   return {
     model: { ...model, dialog },
     commands: Command.mapMessages(commands, message =>
-      Message['GotBottomSheetDialogMessage']({ message }),
+      Message['GotSheetDialogMessage']({ message }),
     ),
     ...(outMessage === undefined ? {} : { outMessage }),
   }
 }
 
-const ExitSheet = Command.define('BottomSheetExit', {
+const ExitSheet = Command.define('SheetExit', {
   messages: [Message.CompletedSheetExit],
   execute: Effect.as(
     Effect.sleep(Duration.millis(320)),
@@ -499,7 +501,7 @@ const requestClose = (model: Model): UpdateReturn => {
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
-    case 'GotBottomSheetDialogMessage': {
+    case 'GotSheetDialogMessage': {
       if (
         model.purpose === 'required' &&
         message.message._tag === 'RequestedClose'
@@ -635,7 +637,7 @@ export type SwitcherInitConfig = Dialog.InitConfig &
         label: string
         purpose?: SheetPurpose
         height?: SheetHeight
-        snapPoints?: ReadonlyArray<BottomSheetSnapPoint>
+        snapPoints?: ReadonlyArray<SheetSnapPoint>
       }>
     >
   }>
@@ -731,7 +733,8 @@ export const updateSwitcher = (
       if (target === undefined) return { model }
       if (
         model.activeSheetId._tag === 'Some' &&
-        model.activeSheetId.value === message.sheetId
+        model.activeSheetId.value === message.sheetId &&
+        model.dialog.isOpen
       ) {
         return { model }
       }
@@ -745,11 +748,17 @@ export const updateSwitcher = (
             id,
             {
               ...sheet,
-              gesture: {
-                ...sheet.gesture,
-                dragPhase: 'Idle',
-                dragStartY: Option.none(),
-              },
+              gesture:
+                // The incoming sheet always re-enters fully open: a stale
+                // settle (e.g. the slide-down offset left by the last
+                // dismiss) would otherwise keep it parked below the fold.
+                id === message.sheetId
+                  ? { ...initGesture(), sheetHeight: sheet.gesture.sheetHeight }
+                  : {
+                      ...sheet.gesture,
+                      dragPhase: 'Idle' as const,
+                      dragStartY: Option.none(),
+                    },
             },
           ]),
         ),
@@ -844,7 +853,7 @@ export const closeSwitcher = (model: SwitcherModel): SwitcherUpdateReturn =>
 
 /** Observes a panel's rendered height (the measured box includes the
     OVERSCROLL_PADDING that hangs below the viewport edge). */
-export const ObserveSheet = Mount.defineStream('ObserveBottomSheetPanel', {
+export const ObserveSheet = Mount.defineStream('ObserveSheetPanel', {
   messages: [Message.MeasuredSheet],
   execute: ({ element }) =>
     Stream.callback<typeof Message.MeasuredSheet.Type>(queue =>
@@ -870,7 +879,7 @@ export const ObserveSheet = Mount.defineStream('ObserveBottomSheetPanel', {
 })
 
 export const ObserveSwitcherSheet = Mount.defineStream(
-  'ObserveBottomSheetSwitcherPanel',
+  'ObserveSheetSwitcherPanel',
   {
     args: { sheetId: S.String },
     messages: [SwitcherMessage.MeasuredSheet],
