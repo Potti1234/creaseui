@@ -319,13 +319,19 @@ const styles = stylex.create({
       ':hover': complexTokens.sidebarAccentRing,
     },
   },
+  /* Mirrors the blocks demos' `bg-primary text-primary-foreground
+     hover:bg-primary/90 hover:text-primary-foreground` menu-button classes:
+     primary colors on the default (normal-weight) button, not Tailwind's
+     font-semibold `primary` variant which no demo uses. */
   menuButtonPrimary: {
-    backgroundColor: { default: tokens.primary, ':hover': tokens.primary },
+    backgroundColor: {
+      default: tokens.primary,
+      ':hover': tokens.primaryHover,
+    },
     color: {
       default: tokens.primaryForeground,
       ':hover': tokens.primaryForeground,
     },
-    fontWeight: 600,
   },
   menuButtonSm: {
     fontSize: '0.75rem',
