@@ -9,6 +9,8 @@ import { overlayStyles } from './overlay-tokens.stylex'
 import type { ComponentLayoutStyle } from './contracts'
 import { themedAnchor } from './overlay-boundary'
 import { className } from './style'
+import { complexTokens } from './complex-tokens.stylex'
+import { tokens } from './tokens.stylex'
 
 const styles = stylex.create({
   content: {
@@ -17,12 +19,30 @@ const styles = stylex.create({
     overflowY: 'auto',
     width: '18rem',
   },
+  /* TW sidebarMenuButtonVariants() trigger inside a shrink-wrap
+     ('relative inline-flex') parent: content-width, menu-button look. */
   sidebarTrigger: {
     padding: '0.5rem',
     display: 'flex',
     textAlign: 'left',
-    minHeight: '2rem',
-    width: '100%',
+    height: '2rem',
+    width: 'fit-content',
+    gap: '0.5rem',
+    borderRadius: tokens.controlRadius,
+    alignItems: 'center',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+    outlineStyle: 'none',
+    backgroundColor: {
+      default: tokens.transparent,
+      ':hover': complexTokens.sidebarAccent,
+    },
+    color: {
+      default: complexTokens.sidebarForeground,
+      ':hover': complexTokens.sidebarAccentForeground,
+    },
   },
 })
 

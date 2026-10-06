@@ -43,6 +43,8 @@ import { separator } from '@/stylex/separator'
 import * as stylex from '@stylexjs/stylex'
 import * as BaseIcon from '@/lib/icon'
 import { className } from '@/stylex/style'
+import { complexTokens } from '@/stylex/complex-tokens.stylex'
+import * as DropdownMenu from '@/stylex/dropdown-menu'
 
 /* Mirrors TW searchForm: form > sidebar-group(py-0) > group-content(relative)
    > sr-only label + sidebarInput(pl-8) + absolutely positioned search icon. */
@@ -111,6 +113,53 @@ const searchStyles = stylex.create({
     width: '1rem',
     height: '1rem',
   },
+  /* TW sidebar-06 dropdown trigger: sidebarMenuButtonVariants inside a
+     shrink-wrap parent (content width); data-[open] keeps accent. */
+  menuTrigger: {
+    padding: '0.5rem',
+    alignItems: 'center',
+    display: 'inline-flex',
+    textAlign: 'left',
+    height: '2rem',
+    width: 'fit-content',
+    gap: '0.5rem',
+    borderRadius: '.375rem',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+    outlineStyle: 'none',
+    cursor: 'pointer',
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': complexTokens.sidebarAccent,
+    },
+    color: {
+      default: complexTokens.sidebarForeground,
+      ':hover': complexTokens.sidebarAccentForeground,
+    },
+  },
+  menuTriggerOpen: {
+    padding: '0.5rem',
+    alignItems: 'center',
+    display: 'inline-flex',
+    textAlign: 'left',
+    height: '2rem',
+    width: 'fit-content',
+    gap: '0.5rem',
+    borderRadius: '.375rem',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+    outlineStyle: 'none',
+    cursor: 'pointer',
+    backgroundColor: {
+      default: complexTokens.sidebarAccent,
+      ':hover': complexTokens.sidebarAccent,
+    },
+    color: complexTokens.sidebarAccentForeground,
+  },
 })
 
 export const Model = S.Struct({
@@ -123,7 +172,7 @@ export const Model = S.Struct({
   selectedDate: S.Option(CalendarDate.CalendarDate),
   dialog: Dialog.Model,
   popover: Popover.Model,
-  submenus: S.Array(Popover.Model),
+  submenus: S.Array(DropdownMenu.Model),
 })
 export type Model = typeof Model.Type
 
@@ -150,7 +199,7 @@ export const Message = defineMessageUnion({
   },
   GotStyleXSidebarSubmenu: {
     index: S.Number,
-    message: Popover.Message,
+    message: DropdownMenu.Message,
   },
 })
 export type Message = typeof Message.Type
@@ -175,7 +224,7 @@ export const init = (): Model => ({
     isAnimated: true,
   }),
   submenus: docs.navMain.map((_, index) =>
-    Popover.init({ id: 'stylex-submenu-' + index }),
+    DropdownMenu.init({ id: 'stylex-submenu-' + index }),
   ),
   popover: Popover.init({ id: 'stylex-sidebar-popover' }),
 })
@@ -252,15 +301,13 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       GotStyleXSidebarSubmenu: ({ index, message: child }) => {
         const current = model.submenus[index]
         if (current === undefined) return { model: model }
-        const { model: popover, commands: popoverCommands__ } = Popover.update(
-          current,
-          child,
-        )
-        const commands = popoverCommands__ ?? []
+        const { model: submenu, commands: submenuCommands__ } =
+          DropdownMenu.update(current, child)
+        const commands = submenuCommands__ ?? []
         return {
           model: {
             ...model,
-            submenus: model.submenus.map((p, i) => (i === index ? popover : p)),
+            submenus: model.submenus.map((p, i) => (i === index ? submenu : p)),
           },
           commands: Command.mapMessages(commands, message =>
             Message['GotStyleXSidebarSubmenu']({ index, message }),
@@ -708,30 +755,42 @@ const documentation = (
                 const submenu = model.submenus[index]
                 return submenu === undefined
                   ? h.empty
-                  : Popover.popover(
+                  : Sidebar.sidebarMenuItem(
                       {
-                        variant: 'sidebar',
-                        model: submenu,
-                        toParentMessage: message =>
-                          Message['GotStyleXSidebarSubmenu']({
-                            index,
-                            message,
-                          }),
-                        trigger: inline(
-                          {
-                            width: 'full',
-                            align: 'center',
-                            justify: 'between',
-                            children: [
-                              blockLabel(g.title, h),
-                              icon({ name: 'ellipsis' }, h),
-                            ],
-                          },
-                          h,
-                        ),
-                        content: subItems(labels, model, h),
-                        side: 'right',
-                        align: 'start',
+                        children: [
+                          DropdownMenu.dropdownMenu<string, Message>(
+                            {
+                              model: submenu,
+                              toParentMessage: message =>
+                                Message['GotStyleXSidebarSubmenu']({
+                                  index,
+                                  message,
+                                }),
+                              trigger: h.span(
+                                [h.Class(className(searchStyles.contents))],
+                                [
+                                  g.title,
+                                  BaseIcon.icon(
+                                    'ellipsis',
+                                    {
+                                      class: className(searchStyles.chevron),
+                                    },
+                                    h,
+                                  ),
+                                ],
+                              ),
+                              triggerStyle: submenu.isOpen
+                                ? searchStyles.menuTriggerOpen
+                                : searchStyles.menuTrigger,
+                              items: labels,
+                              itemToConfig: title => ({ label: title }),
+                              side: 'right',
+                              align: 'start',
+                              ariaLabel: g.title + ' submenu',
+                            },
+                            h,
+                          ),
+                        ],
                       },
                       h,
                     )

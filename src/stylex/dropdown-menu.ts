@@ -225,6 +225,9 @@ export type DropdownMenuProps<Item extends string, Msg> = Readonly<{
   trigger: Html | string
   placement?: 'inline' | 'sidebarAction'
   triggerLayoutStyle?: ComponentLayoutStyle
+  /* Full StyleX styles for the trigger button (e.g. the sidebar menu-button
+     look used by sidebar-06); takes precedence over triggerButtonVariant. */
+  triggerStyle?: StaticStyles
   /** Give the trigger a Button recipe look (e.g. an icon-only more-actions). */
   triggerButtonVariant?: ButtonVariant
   triggerButtonSize?: ButtonSize
@@ -631,8 +634,10 @@ export const dropdownMenu = <Item extends string, Msg>(
             className(
               reset.button,
               joinStyles.join,
-              ...(props.triggerButtonVariant === undefined &&
-              props.triggerButtonSize === undefined
+              ...(props.triggerStyle === undefined ? [] : [props.triggerStyle]),
+              ...(props.triggerStyle !== undefined ||
+              (props.triggerButtonVariant === undefined &&
+                props.triggerButtonSize === undefined)
                 ? []
                 : buttonVisualStyles({
                     variant: props.triggerButtonVariant ?? 'default',
