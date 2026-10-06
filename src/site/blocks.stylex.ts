@@ -152,7 +152,8 @@ const styles = stylex.create({
     padding: '.375rem .75rem',
   },
   path: {
-    fontFamily: 'ui-monospace, monospace',
+    fontFamily:
+      'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
     fontSize: '.75rem',
     lineHeight: '1rem',
     color: tokens.mutedForeground,
@@ -177,7 +178,8 @@ const styles = stylex.create({
   file: {
     textAlign: 'left',
     padding: '.25rem .5rem',
-    fontFamily: 'ui-monospace, monospace',
+    fontFamily:
+      'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
     fontSize: '.75rem',
     lineHeight: '1rem',
     overflow: 'hidden',

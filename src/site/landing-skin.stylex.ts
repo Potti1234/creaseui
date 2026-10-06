@@ -230,7 +230,8 @@ const styles = stylex.create({
     flexWrap: 'wrap',
   },
   code: {
-    fontFamily: 'ui-monospace, monospace',
+    fontFamily:
+      'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
     fontSize: '.875rem',
     lineHeight: '1.25rem',
     overflowWrap: 'anywhere',
@@ -282,7 +283,8 @@ const styles = stylex.create({
     borderWidth: 1,
     borderColor: 'var(--border)',
     padding: '1rem',
-    fontFamily: 'ui-monospace, monospace',
+    fontFamily:
+      'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
     fontSize: '.75rem',
     lineHeight: 1.625,
   },
@@ -319,7 +321,8 @@ const styles = stylex.create({
   },
   footerLink: { color: { default: 'inherit', ':hover': 'var(--foreground)' } },
   revision: {
-    fontFamily: 'ui-monospace, monospace',
+    fontFamily:
+      'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
     color: { default: 'inherit', ':hover': 'var(--foreground)' },
   },
   icon: { width: '1rem', height: '1rem' },

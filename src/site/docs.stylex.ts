@@ -284,7 +284,8 @@ const styles = stylex.create({
   },
   kindTag: {
     flexShrink: 0,
-    fontFamily: 'ui-monospace, monospace',
+    fontFamily:
+      'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
     fontSize: '.75rem',
     lineHeight: '1rem',
     color: tokens.mutedForeground,
@@ -329,7 +330,8 @@ const styles = stylex.create({
     minWidth: 0,
     maxWidth: '100%',
     overflowX: 'auto',
-    fontFamily: 'ui-monospace, monospace',
+    fontFamily:
+      'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
     fontSize: '13px',
     lineHeight: '1.5rem',
   },
@@ -369,7 +371,8 @@ const styles = stylex.create({
     minWidth: 0,
     maxWidth: '100%',
     overflowX: 'auto',
-    fontFamily: 'ui-monospace, monospace',
+    fontFamily:
+      'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
     fontSize: '13px',
     lineHeight: '1.5rem',
   },
@@ -510,14 +513,16 @@ const styles = stylex.create({
   },
   cellMuted: { color: tokens.mutedForeground },
   cellMono: {
-    fontFamily: 'ui-monospace, monospace',
+    fontFamily:
+      'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
     fontSize: '.75rem',
     lineHeight: '1rem',
     fontWeight: 500,
     verticalAlign: 'top',
   },
   cellSignature: {
-    fontFamily: 'ui-monospace, monospace',
+    fontFamily:
+      'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
     fontSize: '.75rem',
     lineHeight: '1.25rem',
     whiteSpace: 'normal',
@@ -536,7 +541,8 @@ const styles = stylex.create({
     borderBottomColor: tokens.border,
   },
   mono: {
-    fontFamily: 'ui-monospace, monospace',
+    fontFamily:
+      'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
     fontSize: '.75rem',
     lineHeight: '1rem',
     whiteSpace: 'normal',
