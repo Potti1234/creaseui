@@ -26,6 +26,7 @@ const styles = stylex.create({
     fontSize: { default: '1rem', '@media (min-width: 768px)': '0.875rem' },
     lineHeight: { default: '1.5rem', '@media (min-width: 768px)': '1.25rem' },
     outlineStyle: 'none',
+    '::placeholder': { color: tokens.mutedForeground },
     transitionDuration: interactionTokens.motionFast,
     transitionProperty: 'color, box-shadow',
     minHeight: '4rem',

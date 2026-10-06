@@ -37,9 +37,9 @@ const styles = stylex.create({
     fontWeight: 600,
     lineHeight: 1.4,
   },
-  valueSm: { fontSize: '1.25rem' },
-  valueMd: { fontSize: '1.5rem' },
-  valueLg: { fontSize: '1.875rem' },
+  valueSm: { fontSize: '1.25rem', lineHeight: '1.75rem' },
+  valueMd: { fontSize: '1.5rem', lineHeight: '2rem' },
+  valueLg: { fontSize: '1.875rem', lineHeight: '2.25rem' },
   delta: {
     gap: '0.25rem',
     alignItems: 'center',

@@ -22,6 +22,7 @@ const styles = stylex.create({
     flexDirection: 'column',
     justifyContent: 'center',
     textAlign: 'center',
+    textWrap: 'balance',
     minWidth: 0,
   },
   header: {
