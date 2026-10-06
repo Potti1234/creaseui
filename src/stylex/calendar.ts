@@ -127,7 +127,7 @@ const styles = stylex.create({
     position: 'relative',
     textAlign: 'center',
     height: 'var(--cell-size)',
-    width: 'var(--cell-size)',
+    width: 'var(--cell-width, var(--cell-size))',
   },
   dayRange: { backgroundColor: tokens.accent },
   dayRangeMiddle: { borderRadius: '0px' },
@@ -303,7 +303,7 @@ const styles = stylex.create({
     fontWeight: 400,
     justifyContent: 'center',
     height: 'var(--cell-size)',
-    width: 'var(--cell-size)',
+    width: 'var(--cell-width, var(--cell-size))',
   },
   weekNumber: {
     alignItems: 'center',
@@ -331,6 +331,8 @@ export type CalendarViewOptions = Readonly<{
   layoutStyle?: ComponentLayoutStyle
   range?: CalendarBehavior.CalendarRange
   size?: 'default' | 'comfortable'
+  /** Overrides --cell-size directly (e.g. TW sidebar-15's w-[33px] cells). */
+  cellWidth?: string
   weekNumbers?: boolean
 }>
 
@@ -458,6 +460,7 @@ const daysView = <Msg>(
       h.DataAttribute('slot', 'calendar'),
       h.Style({
         '--cell-size': options.size === 'comfortable' ? '2.5rem' : '2rem',
+        '--cell-width': options.cellWidth ?? 'var(--cell-size)',
       }),
       h.Class(
         className(
@@ -527,6 +530,7 @@ const pickerView = <Msg>(
       h.DataAttribute('slot', 'calendar'),
       h.Style({
         '--cell-size': options.size === 'comfortable' ? '2.5rem' : '2rem',
+        '--cell-width': options.cellWidth ?? 'var(--cell-size)',
       }),
       h.Class(
         className(
@@ -593,6 +597,7 @@ const yearsView = <Msg>(
       h.DataAttribute('slot', 'calendar'),
       h.Style({
         '--cell-size': options.size === 'comfortable' ? '2.5rem' : '2rem',
+        '--cell-width': options.cellWidth ?? 'var(--cell-size)',
       }),
       h.Class(
         className(
@@ -688,6 +693,8 @@ export type CalendarProps<Msg> = Readonly<{
   range?: CalendarBehavior.CalendarRange
   layoutStyle?: ComponentLayoutStyle
   size?: 'default' | 'comfortable'
+  /** Overrides --cell-size directly (e.g. TW sidebar-15's w-[33px] cells). */
+  cellWidth?: string
   weekNumbers?: boolean
   previousMonthLabel?: string
   nextMonthLabel?: string
@@ -722,6 +729,9 @@ export const calendar = <Msg>(
               ? {}
               : { layoutStyle: props.layoutStyle }),
             ...(props.size === undefined ? {} : { size: props.size }),
+            ...(props.cellWidth === undefined
+              ? {}
+              : { cellWidth: props.cellWidth }),
             ...(props.weekNumbers === undefined
               ? {}
               : { weekNumbers: props.weekNumbers }),

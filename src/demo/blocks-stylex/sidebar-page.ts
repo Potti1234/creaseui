@@ -84,6 +84,29 @@ const searchStyles = stylex.create({
   headerInput: { height: '2rem', paddingInlineStart: '1.75rem' },
   /* TW-08/16 navSecondary 'mt-auto' — pins the group to the sidebar bottom. */
   autoTop: { marginTop: 'auto' },
+  /* TW-15 'mx-0' separator — kills its default horizontal margin. */
+  separatorFlush: { marginInline: 0 },
+  /* TW-15 calendar groups sit in 'py-0' sidebarGroups; the calendar itself
+     in a 'px-0' group. sidebarGroup only accepts layout styles, so these
+     clone styles.group with the padding side zeroed. */
+  groupFlatX: {
+    padding: '0.5rem',
+    paddingInline: 0,
+    display: 'flex',
+    flexDirection: 'column',
+    position: 'relative',
+    minWidth: 0,
+    width: '100%',
+  },
+  groupFlatY: {
+    padding: '0.5rem',
+    paddingBlock: 0,
+    display: 'flex',
+    flexDirection: 'column',
+    position: 'relative',
+    minWidth: 0,
+    width: '100%',
+  },
   /* TW brand logo box 'flex aspect-square size-8 rounded-lg
      bg-sidebar-primary text-sidebar-primary-foreground'. */
   brandIconBox: {
@@ -966,6 +989,8 @@ const expandable = (
   initiallyOpen = false,
   name?: string,
   shape: ExpandableShape = 'menu',
+  flatGroup = false,
+  emoji?: string,
 ): Html => {
   const isOpen = model.expanded[id] ?? initiallyOpen
   const trailing =
@@ -1020,6 +1045,9 @@ const expandable = (
         [
           ...leading,
           ...(name === undefined ? [] : [icon({ name }, h)]),
+          /* TW workspace rows carry emoji + name as two spans so the name
+             truncates with ellipsis and spacing matches exactly. */
+          ...(emoji === undefined ? [] : [h.span([], [emoji])]),
           blockLabel(label, h),
           ...trailing,
         ],
@@ -1030,9 +1058,19 @@ const expandable = (
   )
   /* TW nests menu-button collapsibles inside sidebarMenuItem; the
      group-label variant (sidebar-02) is wrapped in its own sidebarGroup. */
-  return shape === 'label'
-    ? Sidebar.sidebarGroup({ children: [disclosure] }, h)
-    : Sidebar.sidebarMenuItem({ children: [disclosure] }, h)
+  if (shape === 'label')
+    return flatGroup
+      ? /* TW-15 calendar groups use 'py-0' — clone the group chrome. */
+        h.div(
+          [
+            h.DataAttribute('slot', 'sidebar-group'),
+            h.DataAttribute('sidebar', 'group'),
+            h.Class(className(searchStyles.groupFlatY)),
+          ],
+          [disclosure],
+        )
+      : Sidebar.sidebarGroup({ children: [disclosure] }, h)
+  return Sidebar.sidebarMenuItem({ children: [disclosure] }, h)
 }
 /* TW team switcher: w-fit px-1.5 menu-button [size-5 logo box + name +
    chevron-down] opening the team dropdown (teams + Add team). */
@@ -1815,7 +1853,7 @@ const favoriteItem = (
       children: [
         Sidebar.sidebarMenuButton(
           {
-            children: [h.span([], [fav.emoji]), h.span([], [fav.name])],
+            children: [h.span([], [fav.emoji]), blockLabel(fav.name, h)],
             tooltip: fav.name,
             href: fav.url,
           },
@@ -1827,6 +1865,28 @@ const favoriteItem = (
     h,
   )
 }
+/* TW dimmed trailing 'More' row (ellipsis icon + label). */
+const moreRow = (h: HtmlBuilder<Message>): Html =>
+  Sidebar.sidebarMenuItem(
+    {
+      children: [
+        Sidebar.sidebarMenuButton(
+          {
+            children: [
+              BaseIcon.icon(
+                'ellipsis',
+                { class: className(searchStyles.dimmedButton) },
+                h,
+              ),
+              h.span([h.Class(className(searchStyles.dimmedButton))], ['More']),
+            ],
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  )
 /* TW favorites group: label + menu(items + trailing 'More' dimmed row). */
 const favoritesNav = (
   model: Model,
@@ -1843,29 +1903,7 @@ const favoritesNav = (
               ...workspace.favorites.map((f, index) =>
                 favoriteItem(f, index, dropdown, model, h),
               ),
-              Sidebar.sidebarMenuItem(
-                {
-                  children: [
-                    Sidebar.sidebarMenuButton(
-                      {
-                        children: [
-                          BaseIcon.icon(
-                            'ellipsis',
-                            { class: className(searchStyles.dimmedButton) },
-                            h,
-                          ),
-                          h.span(
-                            [h.Class(className(searchStyles.dimmedButton))],
-                            ['More'],
-                          ),
-                        ],
-                      },
-                      h,
-                    ),
-                  ],
-                },
-                h,
-              ),
+              moreRow(h),
             ],
           },
           h,
@@ -1902,19 +1940,27 @@ const workspaceNav = (
         favoritesNav(model, h, id === '10'),
         group(
           'Workspaces',
-          workspace.workspaces.map(w =>
-            expandable(
-              w.name,
-              w.emoji + ' ' + w.name,
-              subItems(
-                w.pages.map(p => p.emoji + ' ' + p.name),
+          [
+            ...workspace.workspaces.map(w =>
+              expandable(
+                w.name,
+                w.name,
+                subItems(
+                  w.pages.map(p => p.emoji + ' ' + p.name),
+                  model,
+                  h,
+                ),
                 model,
                 h,
+                false,
+                undefined,
+                'menu',
+                false,
+                w.emoji,
               ),
-              model,
-              h,
             ),
-          ),
+            moreRow(h),
+          ],
           h,
         ),
         group(
@@ -2052,16 +2098,39 @@ const calendarNav = (
   Sidebar.sidebarContent(
     {
       children: [
-        Calendar.calendar(
-          {
-            model: model.calendar,
-            maybeSelectedDate: model.selectedDate,
-            toParentMessage: message =>
-              Message['GotStyleXSidebarCalendar']({ message }),
-          },
+        /* TW-15: calendar inside a 'px-0' group, then an mx-0 separator. */
+        h.div(
+          [
+            h.DataAttribute('slot', 'sidebar-group'),
+            h.DataAttribute('sidebar', 'group'),
+            h.Class(className(searchStyles.groupFlatX)),
+          ],
+          [
+            Sidebar.sidebarGroupContent(
+              {
+                children: [
+                  Calendar.calendar(
+                    {
+                      model: model.calendar,
+                      maybeSelectedDate: model.selectedDate,
+                      toParentMessage: message =>
+                        Message['GotStyleXSidebarCalendar']({ message }),
+                      /* TW-15 sizes right-sidebar cells to w-[33px]. */
+                      cellWidth: '2.0625rem',
+                    },
+                    h,
+                  ),
+                ],
+              },
+              h,
+            ),
+          ],
+        ),
+        Sidebar.sidebarSeparator(
+          { layoutStyle: searchStyles.separatorFlush },
           h,
         ),
-        ...CALENDAR_GROUPS.map((g, index) =>
+        ...CALENDAR_GROUPS.flatMap((g, index) => [
           expandable(
             'calendar-group-' + index,
             g.name,
@@ -2123,20 +2192,39 @@ const calendarNav = (
             index === 0,
             undefined,
             'label',
+            true,
           ),
-        ),
+          /* TW-15 puts an 'mx-0' separator after EVERY calendar group. */
+          Sidebar.sidebarSeparator(
+            { layoutStyle: searchStyles.separatorFlush },
+            h,
+          ),
+        ]),
       ],
     },
     h,
   ),
+  /* TW-15 footer: sidebarMenu > menuItem > menuButton [plus, 'New Calendar']. */
   Sidebar.sidebarFooter(
     {
       children: [
-        button(
+        Sidebar.sidebarMenu(
           {
-            children: ['New Calendar'],
-            leadingIcon: icon({ name: 'plus' }, h),
-            variant: 'ghost',
+            children: [
+              Sidebar.sidebarMenuItem(
+                {
+                  children: [
+                    Sidebar.sidebarMenuButton(
+                      {
+                        children: [icon({ name: 'plus' }, h), 'New Calendar'],
+                      },
+                      h,
+                    ),
+                  ],
+                },
+                h,
+              ),
+            ],
           },
           h,
         ),
