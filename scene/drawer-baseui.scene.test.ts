@@ -17,10 +17,6 @@ import * as TailwindDrawer from '@/ui/drawer'
  *  - Drawer.Trigger, detached handles, imperative actions, trigger
  *    aria-controls (~4 tests): creaseui has no trigger part — the parent
  *    opens the drawer through Drawer.open.
- *  - Snap points (~30 tests): no snapPoints prop or model state. An it.todo
- *    marks the missing capability.
- *  - Nested drawers (~15 tests): presence tracking and nested-swipe
- *    arbitration are runtime/layout behaviors the scene DSL cannot reach.
  *  - CloseWatcher, cancelable onOpenChange / eventDetails (~10 tests):
  *    foldkit models close requests as Messages, not cancelable events.
  *  - Drawer.SwipeArea / swipe-to-open (~30 tests): no swipe-to-open
@@ -32,14 +28,14 @@ import * as TailwindDrawer from '@/ui/drawer'
  *    (~25 tests): creaseui has no provider, indent, or keyboard parts.
  *  - Content swipe-ignore attrs, dev-mode warnings, render-prop payloads,
  *    React internals (StrictMode, refs, owner stack, React 17).
- *  - modal={false} / dismissible / keepMounted props and entrance/exit
- *    animation timing (runtime driven).
  *
  * Deviation: the scene DSL has no pointermove, pointerleave, or dialog
- * `cancel` steps, so DraggedDrawer and CancelledDrawerDrag are fed through
+ * `cancel` steps, so DraggedSwipe and CancelledSwipe are fed through
  * Scene.Subscription.emit — the same dispatch path a real subscription
- * message takes. Mid-drag models are built with the real update for
- * `Scene.given` setup.
+ * message takes. EndedSwipe is also emitted directly when a test needs a
+ * deterministic release timestamp (scene pointerUp synthesizes 0).
+ * ResizeObserver / MutationObserver mounts are resolved once via
+ * Scene.Mount.resolve, which delivers their initial measurement.
  */
 
 type Model = Readonly<{ drawer: DrawerBehavior.Model }>
@@ -60,7 +56,7 @@ type DrawerModule = Readonly<{
       description?: string
       content?: (slots: DrawerSlots) => ReadonlyArray<Html>
       footer?: (slots: DrawerSlots) => ReadonlyArray<Html>
-      direction?: 'top' | 'right' | 'bottom' | 'left'
+      showSwipeHandle?: boolean
     }>,
     h: HtmlBuilder<Msg>,
   ) => Html
@@ -94,8 +90,10 @@ const openButton = Scene.role('button', { name: 'Open drawer' })
 const cancelButton = Scene.role('button', { name: 'Cancel' })
 const drawerDialog = Scene.role('dialog')
 const overlay = Scene.selector('[data-slot="drawer-overlay"]')
+const viewport = Scene.selector('[data-slot="drawer-viewport"]')
+const popup = Scene.selector('[data-slot="drawer-popup"]')
 const content = Scene.selector('[data-slot="drawer-content"]')
-const handle = Scene.selector('[data-slot="drawer-handle"]')
+const handle = Scene.selector('[data-slot="drawer-swipe-handle"]')
 const drawerTitle = Scene.selector('[data-slot="drawer-title"]')
 const drawerDescription = Scene.selector('[data-slot="drawer-description"]')
 const drawerRoot = Scene.selector('[data-slot="drawer-root"]')
@@ -114,23 +112,74 @@ const resolveAcquireResources = Scene.Mount.resolve(
 )
 // NOTE: `Scene.Mount.expectEnded` steps are single-use — applying one
 // consumes its matcher list, so a shared instance silently no-ops in the
-// next scene. Build a fresh step for each test.
+// next scene. Build fresh steps for each test.
 const expectAcquireEnded = () =>
   Scene.Mount.expectEnded(DialogPrimitive.AcquireResources)
 
-const emitDragged = (offset: number, timeStamp: number) =>
-  Scene.Subscription.emit<Message>({
-    _tag: 'GotDrawerMessage',
-    message: DrawerBehavior.Message.DraggedDrawer({ offset, timeStamp }),
-  })
-
-const emitCancelled = Scene.Subscription.emit<Message>({
+/** The observer mounts the drawer registers while open: popup + viewport
+    measurement (ResizeObserver) and nested-drawer tracking
+    (MutationObserver). Resolving them once delivers the initial
+    measurement messages. */
+// Mount.resolve folds the mount's boundary messageMappers over the result
+// message; defineStream mounts rendered through `Mount.mapMessage` carry no
+// boundary lift, so the parent wrapper is applied here instead.
+const drawerMessage = (message: DrawerBehavior.Message): Message => ({
   _tag: 'GotDrawerMessage',
-  message: DrawerBehavior.Message.CancelledDrawerDrag(),
+  message,
 })
 
+const resolveObservers = (
+  popupSize: { width: number; height: number } = { width: 400, height: 300 },
+) => [
+  Scene.Mount.resolve(
+    DrawerBehavior.ObserveViewport,
+    drawerMessage(
+      DrawerBehavior.Message.MeasuredViewport({
+        width: 800,
+        height: 600,
+        rootFontSize: 16,
+      }),
+    ),
+  ),
+  Scene.Mount.resolve(
+    DrawerBehavior.ObservePopup,
+    drawerMessage(DrawerBehavior.Message.MeasuredPopup(popupSize)),
+  ),
+  Scene.Mount.resolve(
+    DrawerBehavior.ObserveNestedDrawers,
+    drawerMessage(
+      DrawerBehavior.Message.NestedDrawersChanged({
+        count: 0,
+        frontmostHeight: 0,
+        swiping: false,
+        progress: 0,
+      }),
+    ),
+  ),
+]
+
+const expectObserversEnded = () => [
+  Scene.Mount.expectEnded(DrawerBehavior.ObserveViewport),
+  Scene.Mount.expectEnded(DrawerBehavior.ObservePopup),
+  Scene.Mount.expectEnded(DrawerBehavior.ObserveNestedDrawers),
+]
+
+const emit = (message: DrawerBehavior.Message) =>
+  Scene.Subscription.emit<Message>({
+    _tag: 'GotDrawerMessage',
+    message,
+  })
+
+const emitDragged = (x: number, y: number, timeStamp: number) =>
+  emit(DrawerBehavior.Message.DraggedSwipe({ x, y, timeStamp }))
+
+const emitEnded = (x: number, y: number, timeStamp: number) =>
+  emit(DrawerBehavior.Message.EndedSwipe({ x, y, timeStamp }))
+
+const emitCancelled = emit(DrawerBehavior.Message.CancelledSwipe())
+
 /** Runs the shared open flow: click the trigger, acknowledge the dialog
- *  mount, and land on a fully open drawer. */
+ *  mount, feed the observer measurements, and land on a fully open drawer. */
 const openDrawer = (
   ...rest: ReadonlyArray<Scene.Step<Model, Message, DrawerBehavior.OutMessage>>
 ) => [
@@ -139,34 +188,35 @@ const openDrawer = (
   Scene.expectOutMessage(DrawerBehavior.OutMessage.Opened()),
   resolveShowDialog,
   resolveAcquireResources,
+  ...resolveObservers(),
   Scene.expect(content).toExist(),
   ...rest,
 ]
 
-/** Asserts the drawer is visually open: content, overlay, handle, and the
+/** Asserts the drawer is visually open: popup, overlay, handle, and the
  *  open data attributes are all present. */
 const expectOpen = () => [
   Scene.expect(drawerDialog).toHaveAttr('data-open', ''),
+  Scene.expect(viewport).toExist(),
   Scene.expect(overlay).toExist(),
+  Scene.expect(popup).toExist(),
   Scene.expect(content).toExist(),
   Scene.expect(handle).toExist(),
 ]
 
 /** Asserts the drawer is visually closed: the dialog stays mounted but the
- *  overlay/content/handle are gone. */
+ *  viewport/overlay/popup tree is gone. */
 const expectClosed = () => [
   Scene.expect(drawerDialog).not.toHaveAttr('data-open'),
+  Scene.expect(viewport).toBeAbsent(),
   Scene.expect(overlay).toBeAbsent(),
+  Scene.expect(popup).toBeAbsent(),
   Scene.expect(content).toBeAbsent(),
   Scene.expect(handle).toBeAbsent(),
 ]
 
 const verifyRenderer = (name: string, Drawer: DrawerModule) => {
-  const view = (
-    model: Model,
-    h: HtmlBuilder<Message>,
-    direction?: 'top' | 'right' | 'bottom' | 'left',
-  ) =>
+  const view = (model: Model, h: HtmlBuilder<Message>) =>
     h.div(
       [],
       [
@@ -183,7 +233,8 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
             }),
             title: 'Move goal',
             description: 'Set your daily activity goal.',
-            direction,
+            showSwipeHandle: true,
+            content: () => [h.p([], ['Drawer body'])],
             footer: slots => [h.button([...slots.closeButton], ['Cancel'])],
           },
           h,
@@ -191,25 +242,48 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
       ],
     )
 
-  const openModel = (id: string): Model => ({
-    drawer: DrawerBehavior.open(DrawerBehavior.init({ id })).model,
+  const openModel = (
+    id: string,
+    config: Partial<DrawerBehavior.InitConfig> = {},
+  ): Model => ({
+    drawer: DrawerBehavior.open(DrawerBehavior.init({ id, ...config })).model,
   })
 
-  const draggingModel = (id: string, offset: number, timeStamp = 60): Model => {
-    const started = DrawerBehavior.update(
-      openModel(id).drawer,
-      DrawerBehavior.Message.StartedDrawerDrag({
-        position: 400,
-        timeStamp: 0,
-      }),
-    )
-    return {
-      drawer: DrawerBehavior.update(
-        started.model,
-        DrawerBehavior.Message.DraggedDrawer({ offset, timeStamp }),
+  /** Model mid-swipe: opened, measured, started at `start`, dragged to
+      `current`. */
+  const draggingModel = (
+    id: string,
+    config: Partial<DrawerBehavior.InitConfig>,
+    start: { x: number; y: number },
+    current: { x: number; y: number },
+    timeStamp = 100,
+  ): Model => ({
+    drawer: DrawerBehavior.update(
+      DrawerBehavior.update(
+        DrawerBehavior.update(
+          DrawerBehavior.update(
+            openModel(id, config).drawer,
+            DrawerBehavior.Message.MeasuredViewport({
+              width: 800,
+              height: 600,
+              rootFontSize: 16,
+            }),
+          ).model,
+          DrawerBehavior.Message.MeasuredPopup({ width: 400, height: 300 }),
+        ).model,
+        DrawerBehavior.Message.StartedSwipe({
+          x: start.x,
+          y: start.y,
+          timeStamp: 0,
+        }),
       ).model,
-    }
-  }
+      DrawerBehavior.Message.DraggedSwipe({
+        x: current.x,
+        y: current.y,
+        timeStamp,
+      }),
+    ).model,
+  })
 
   describe(`${name} Drawer (Base UI port)`, () => {
     describe('ARIA attributes', () => {
@@ -231,6 +305,7 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           { update, view },
           Scene.given(openModel('aria-labelledby')),
           resolveAcquireResources,
+          ...resolveObservers(),
           Scene.expect(drawerDialog).toHaveAttr(
             'aria-labelledby',
             'aria-labelledby-dialog-title',
@@ -248,77 +323,227 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           { update, view },
           Scene.given(openModel('aria-modal')),
           resolveAcquireResources,
+          ...resolveObservers(),
           Scene.expect(drawerDialog).toHaveAttr('aria-modal', 'true'),
         )
       })
 
-      it('exposes the drawer description element id', () => {
+      it('points aria-describedby at the drawer description', () => {
         Scene.scene(
           { update, view },
           Scene.given(openModel('aria-desc')),
           resolveAcquireResources,
+          ...resolveObservers(),
           Scene.expect(drawerDescription).toExist(),
           Scene.expect(drawerDescription).toHaveAttr(
             'id',
             'aria-desc-dialog-description',
           ),
-        )
-      })
-
-      // DIVERGENCE: Base UI's popup emits aria-describedby whenever a
-      // description is rendered. The foldkit dialog supports the same link
-      // via the `hasDescription` view input, but creaseui's drawer view never
-      // sets it, so the attribute is missing even though the description
-      // element (and its id) exist.
-      it.fails('points aria-describedby at the drawer description', () => {
-        Scene.scene(
-          { update, view },
-          Scene.given(openModel('aria-desc-fails')),
-          resolveAcquireResources,
-          Scene.expect(drawerDescription).toExist(),
           Scene.expect(drawerDialog).toHaveAttr(
             'aria-describedby',
-            'aria-desc-fails-dialog-description',
+            'aria-desc-dialog-description',
           ),
         )
       })
     })
 
-    describe('prop: direction', () => {
+    describe('prop: swipeDirection', () => {
       const directions = [
-        { direction: 'bottom' as const, transform: 'translateY(120px)' },
-        { direction: 'top' as const, transform: 'translateY(-120px)' },
-        { direction: 'right' as const, transform: 'translateX(120px)' },
-        { direction: 'left' as const, transform: 'translateX(-120px)' },
+        {
+          direction: 'down' as const,
+          axis: 'y',
+          var: '--drawer-swipe-movement-y',
+          value: '120px',
+          from: { x: 200, y: 400 },
+          to: { x: 200, y: 520 },
+        },
+        {
+          direction: 'up' as const,
+          axis: 'y',
+          var: '--drawer-swipe-movement-y',
+          value: '-120px',
+          from: { x: 200, y: 400 },
+          to: { x: 200, y: 280 },
+        },
+        {
+          direction: 'right' as const,
+          axis: 'x',
+          var: '--drawer-swipe-movement-x',
+          value: '120px',
+          from: { x: 200, y: 400 },
+          to: { x: 320, y: 400 },
+        },
+        {
+          direction: 'left' as const,
+          axis: 'x',
+          var: '--drawer-swipe-movement-x',
+          value: '-120px',
+          from: { x: 200, y: 400 },
+          to: { x: 80, y: 400 },
+        },
       ]
-      directions.forEach(({ direction, transform }) => {
-        it(`translates the popup toward the ${direction} edge while dragging`, () => {
-          Scene.scene(
-            {
-              update,
-              view: (model, h) => view(model, h, direction),
-            },
-            Scene.given(draggingModel(`dir-${direction}`, 120)),
-            resolveAcquireResources,
-            Scene.expect(content).toHaveAttr(
-              'data-vaul-drawer-direction',
-              direction,
-            ),
-            Scene.expect(content).toHaveStyle('transform', transform),
-          )
-        })
-      })
+      directions.forEach(
+        ({ direction, axis, var: variable, value, from, to }) => {
+          it(`translates the popup toward the ${direction} edge while swiping`, () => {
+            Scene.scene(
+              { update, view },
+              Scene.given(
+                draggingModel(
+                  `dir-${direction}`,
+                  { swipeDirection: direction },
+                  from,
+                  to,
+                ),
+              ),
+              resolveAcquireResources,
+              ...resolveObservers(),
+              Scene.expect(popup).toHaveAttr('data-swipe-direction', direction),
+              Scene.expect(popup).toHaveAttr('data-swipe-axis', axis),
+              Scene.expect(popup).toHaveAttr('data-swiping', ''),
+              Scene.expect(popup).toHaveStyle(variable, value),
+            )
+          })
+        },
+      )
 
-      it('defaults to the bottom direction', () => {
+      it('defaults to the down direction', () => {
         Scene.scene(
           { update, view },
-          Scene.given(draggingModel('dir-default', 80)),
-          resolveAcquireResources,
-          Scene.expect(content).toHaveAttr(
-            'data-vaul-drawer-direction',
-            'bottom',
+          Scene.given(
+            draggingModel(
+              'dir-default',
+              {},
+              { x: 200, y: 400 },
+              { x: 200, y: 480 },
+            ),
           ),
-          Scene.expect(content).toHaveStyle('transform', 'translateY(80px)'),
+          resolveAcquireResources,
+          ...resolveObservers(),
+          Scene.expect(popup).toHaveAttr('data-swipe-direction', 'down'),
+          Scene.expect(popup).toHaveStyle('--drawer-swipe-movement-y', '80px'),
+        )
+      })
+    })
+
+    describe('prop: modal', () => {
+      it('renders the overlay and data-modal for the default modal drawer', () => {
+        Scene.scene(
+          { update, view },
+          Scene.given(openModel('modal')),
+          resolveAcquireResources,
+          ...resolveObservers(),
+          Scene.expect(overlay).toExist(),
+          Scene.expect(viewport).toHaveAttr('data-modal', 'true'),
+        )
+      })
+
+      it('renders the overlay for trap-focus modality', () => {
+        Scene.scene(
+          { update, view },
+          Scene.given(openModel('modal-trap', { modal: 'trap-focus' })),
+          resolveAcquireResources,
+          ...resolveObservers(),
+          Scene.expect(overlay).toExist(),
+          Scene.expect(viewport).toHaveAttr('data-modal', 'trap-focus'),
+        )
+      })
+
+      it('skips the overlay and keeps the page interactive when modal is false', () => {
+        Scene.scene(
+          { update, view },
+          Scene.given(openModel('modal-false', { modal: false })),
+          resolveAcquireResources,
+          ...resolveObservers(),
+          Scene.expect(overlay).toBeAbsent(),
+          Scene.expect(viewport).toHaveAttr('data-modal', 'false'),
+          Scene.expect(popup).toExist(),
+        )
+      })
+    })
+
+    describe('prop: disablePointerDismissal', () => {
+      it('renders the overlay without a dismiss handler', () => {
+        Scene.scene(
+          { update, view },
+          Scene.given(
+            openModel('no-dismiss', { disablePointerDismissal: true }),
+          ),
+          resolveAcquireResources,
+          ...resolveObservers(),
+          // The overlay exists but carries no click/backdrop wiring, so
+          // presses on it cannot dismiss the drawer.
+          Scene.expect(overlay).toExist(),
+          Scene.expect(overlay).not.toHaveHandler('click'),
+          Scene.expect(overlay).not.toHaveHandler('pointerdown'),
+          ...expectOpen(),
+        )
+      })
+    })
+
+    describe('prop: snapPoints', () => {
+      it('marks the popup and overlay when snap points are configured', () => {
+        Scene.scene(
+          { update, view },
+          Scene.given(openModel('snap', { snapPoints: ['10rem', 1] })),
+          resolveAcquireResources,
+          ...resolveObservers({ width: 400, height: 600 }),
+          Scene.expect(popup).toHaveAttr('data-snap-points', ''),
+          Scene.expect(overlay).toHaveAttr('data-snap-points', ''),
+          Scene.expect(popup).not.toHaveAttr('data-expanded'),
+        )
+      })
+
+      it('marks the popup expanded at the full-height snap point', () => {
+        Scene.scene(
+          { update, view },
+          Scene.given(
+            openModel('snap-expanded', {
+              snapPoints: ['10rem', 1],
+              defaultSnapPoint: 1,
+            }),
+          ),
+          resolveAcquireResources,
+          ...resolveObservers({ width: 400, height: 600 }),
+          Scene.expect(popup).toHaveAttr('data-expanded', ''),
+          Scene.expect(popup).toHaveStyle('--drawer-snap-point-offset', '0px'),
+        )
+      })
+
+      it('settles on the nearest snap point when a drag ends', () => {
+        Scene.scene(
+          { update, view },
+          Scene.given(openModel('snap-settle', { snapPoints: ['10rem', 1] })),
+          resolveAcquireResources,
+          ...resolveObservers({ width: 400, height: 600 }),
+          Scene.expect(popup).toHaveStyle(
+            '--drawer-snap-point-offset',
+            '440px',
+          ),
+          Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
+          Scene.expectHandled(),
+          // Drag up 300px: target offset 140, closer to 0 (expanded) than
+          // to the 440px '10rem' point.
+          emitDragged(200, 100, 500),
+          emitEnded(200, 100, 800),
+          Scene.expectHandled(),
+          Scene.expect(popup).not.toHaveAttr('data-swiping'),
+          Scene.expect(popup).toHaveAttr('data-expanded', ''),
+          Scene.expect(popup).toHaveStyle('--drawer-snap-point-offset', '0px'),
+          ...expectOpen(),
+        )
+      })
+
+      it('moves the popup with a snap-aware drag and reports progress', () => {
+        Scene.scene(
+          { update, view },
+          Scene.given(openModel('snap-drag', { snapPoints: ['10rem', 1] })),
+          resolveAcquireResources,
+          ...resolveObservers({ width: 400, height: 600 }),
+          Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
+          Scene.expectHandled(),
+          emitDragged(200, 480, 200),
+          Scene.expect(popup).toHaveAttr('data-swiping', ''),
+          Scene.expect(popup).toHaveStyle('--drawer-swipe-progress', '1'),
         )
       })
     })
@@ -337,12 +562,14 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           { update, view },
           Scene.given(openModel('close-button')),
           resolveAcquireResources,
+          ...resolveObservers(),
           ...expectOpen(),
           Scene.click(cancelButton),
           Scene.expectHandled(),
           Scene.expectOutMessage(DrawerBehavior.OutMessage.Closed()),
           resolveCloseDialog,
           expectAcquireEnded(),
+          ...expectObserversEnded(),
           ...expectClosed(),
         )
       })
@@ -352,11 +579,13 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           { update, view },
           Scene.given(openModel('outside-press')),
           resolveAcquireResources,
+          ...resolveObservers(),
           Scene.click(overlay),
           Scene.expectHandled(),
           Scene.expectOutMessage(DrawerBehavior.OutMessage.Closed()),
           resolveCloseDialog,
           expectAcquireEnded(),
+          ...expectObserversEnded(),
           ...expectClosed(),
         )
       })
@@ -369,6 +598,7 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           { update, view },
           Scene.given(openModel('escape')),
           resolveAcquireResources,
+          ...resolveObservers(),
           Scene.expect(drawerDialog).toHaveHandler('cancel'),
         )
       })
@@ -385,63 +615,150 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           Scene.expect(drawerDescription).toBeAbsent(),
         )
       })
+
+      it('defaults initial focus to the popup element', () => {
+        Scene.scene(
+          { update, view },
+          Scene.given(openModel('initial-focus')),
+          resolveAcquireResources,
+          ...resolveObservers(),
+          Scene.expect(popup).toHaveAttr('tabindex', '-1'),
+        )
+      })
     })
 
     describe('swipe gestures', () => {
-      it('starts a swipe drag from the handle on primary pointer down', () => {
+      it('starts a swipe from the swipe handle on primary pointer down', () => {
         Scene.scene(
           { update, view },
           Scene.given(openModel('drag-start')),
           resolveAcquireResources,
+          ...resolveObservers(),
           Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
           Scene.expectHandled(),
-          Scene.expect(handle).toHaveAttr('data-drag-phase', 'Dragging'),
+          Scene.expect(popup).toHaveAttr('data-swiping', ''),
           ...expectOpen(),
         )
       })
 
-      it('does not start a swipe drag on non-primary pointer down', () => {
+      it('starts a swipe anywhere on the popup', () => {
+        Scene.scene(
+          { update, view },
+          Scene.given(openModel('drag-popup')),
+          resolveAcquireResources,
+          ...resolveObservers(),
+          Scene.pointerDown(popup, { screenX: 200, screenY: 400 }),
+          Scene.expectHandled(),
+          Scene.expect(popup).toHaveAttr('data-swiping', ''),
+        )
+      })
+
+      it('does not start a swipe on non-primary pointer down', () => {
         Scene.scene(
           { update, view },
           Scene.given(openModel('drag-secondary')),
           resolveAcquireResources,
+          ...resolveObservers(),
           Scene.pointerDown(handle, {
             button: 2,
             screenX: 200,
             screenY: 400,
           }),
           Scene.expectIgnored(),
-          Scene.expect(handle).toHaveAttr('data-drag-phase', 'Idle'),
+          Scene.expect(popup).not.toHaveAttr('data-swiping'),
           ...expectOpen(),
         )
       })
 
-      it('applies the drag offset to the popup transform while swiping', () => {
+      it('does not start a swipe outside the popup', () => {
+        Scene.scene(
+          { update, view },
+          Scene.given(openModel('drag-viewport')),
+          resolveAcquireResources,
+          ...resolveObservers(),
+          Scene.pointerDown(viewport, { screenX: 20, screenY: 20 }),
+          Scene.expectIgnored(),
+          Scene.expect(popup).not.toHaveAttr('data-swiping'),
+        )
+      })
+
+      it('does not start a swipe from interactive elements', () => {
+        Scene.scene(
+          { update, view },
+          Scene.given(openModel('drag-button')),
+          resolveAcquireResources,
+          ...resolveObservers(),
+          Scene.pointerDown(cancelButton, { screenX: 200, screenY: 400 }),
+          Scene.expectIgnored(),
+          Scene.expect(popup).not.toHaveAttr('data-swiping'),
+        )
+      })
+
+      it('blocks non-touch swipes starting inside drawer content', () => {
+        Scene.scene(
+          { update, view },
+          Scene.given(openModel('drag-content')),
+          resolveAcquireResources,
+          ...resolveObservers(),
+          Scene.pointerDown(drawerTitle, {
+            pointerType: 'mouse',
+            screenX: 200,
+            screenY: 400,
+          }),
+          Scene.expectIgnored(),
+          Scene.expect(popup).not.toHaveAttr('data-swiping'),
+        )
+      })
+
+      it('allows touch swipes starting inside drawer content', () => {
+        Scene.scene(
+          { update, view },
+          Scene.given(openModel('drag-content-touch')),
+          resolveAcquireResources,
+          ...resolveObservers(),
+          Scene.pointerDown(drawerTitle, {
+            pointerType: 'touch',
+            screenX: 200,
+            screenY: 400,
+          }),
+          Scene.expectHandled(),
+          Scene.expect(popup).toHaveAttr('data-swiping', ''),
+        )
+      })
+
+      it('writes swipe movement and progress CSS vars while swiping', () => {
         Scene.scene(
           { update, view },
           Scene.given(openModel('drag-offset')),
           resolveAcquireResources,
+          ...resolveObservers(),
           Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
           Scene.expectHandled(),
-          emitDragged(80, 100),
-          Scene.expect(content).toHaveStyle('transform', 'translateY(80px)'),
-          Scene.expect(handle).toHaveAttr('data-drag-phase', 'Dragging'),
+          emitDragged(200, 480, 100),
+          Scene.expect(popup).toHaveStyle('--drawer-swipe-movement-y', '80px'),
+          Scene.expect(popup).toHaveStyle(
+            '--drawer-swipe-progress',
+            '0.26666666666666666',
+          ),
+          Scene.expect(popup).toHaveAttr('data-swiping', ''),
           ...expectOpen(),
         )
       })
 
-      // DIVERGENCE (intentional): Base UI applies sqrt damping so the popup
-      // can overshoot past its edge while swiping away from the dismiss
-      // direction. creaseui clamps the offset at zero instead.
-      it('clamps the popup transform when swiped in the non-dismiss direction', () => {
+      it('sqrt-damps the popup transform when swiped away from the dismiss edge', () => {
         Scene.scene(
           { update, view },
           Scene.given(openModel('drag-clamp')),
           resolveAcquireResources,
+          ...resolveObservers(),
           Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
           Scene.expectHandled(),
-          emitDragged(-40, 100),
-          Scene.expect(content).toHaveStyle('transform', 'translateY(0px)'),
+          emitDragged(200, 360, 100),
+          // -40 raw → -sqrt(40) damped off-direction travel.
+          Scene.expect(popup).toHaveStyle(
+            '--drawer-swipe-movement-y',
+            `${String(-Math.sqrt(40))}px`,
+          ),
           ...expectOpen(),
         )
       })
@@ -451,31 +768,50 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           { update, view },
           Scene.given(openModel('drag-short')),
           resolveAcquireResources,
+          ...resolveObservers(),
           Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
           Scene.expectHandled(),
-          emitDragged(50, 400),
+          emitDragged(200, 450, 400),
           Scene.pointerUp(handle),
           Scene.expectHandled(),
-          Scene.expect(handle).toHaveAttr('data-drag-phase', 'Idle'),
-          Scene.expect(content).toHaveStyle('transform', 'translateY(0px)'),
+          Scene.expect(popup).not.toHaveAttr('data-swiping'),
+          Scene.expect(popup).toHaveStyle('--drawer-swipe-movement-y', '0px'),
           ...expectOpen(),
         )
       })
 
-      it('closes an uncontrolled drawer after a slow long drag', () => {
+      it('uses a size-based dismiss threshold (half the popup)', () => {
         Scene.scene(
           { update, view },
-          Scene.given(openModel('drag-long')),
+          Scene.given(openModel('size-threshold')),
           resolveAcquireResources,
+          ...resolveObservers(),
           Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
           Scene.expectHandled(),
-          emitDragged(150, 1000),
+          // 160 > 150 (half of the measured 300px popup).
+          emitDragged(200, 560, 1000),
           Scene.pointerUp(handle),
           Scene.expectHandled(),
           Scene.expectOutMessage(DrawerBehavior.OutMessage.Closed()),
           resolveCloseDialog,
           expectAcquireEnded(),
+          ...expectObserversEnded(),
           ...expectClosed(),
+        )
+      })
+
+      it('keeps the drawer open below the size-based threshold', () => {
+        Scene.scene(
+          { update, view },
+          Scene.given(openModel('below-threshold')),
+          resolveAcquireResources,
+          ...resolveObservers(),
+          Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
+          Scene.expectHandled(),
+          emitDragged(200, 540, 1000),
+          Scene.pointerUp(handle),
+          Scene.expectHandled(),
+          ...expectOpen(),
         )
       })
 
@@ -484,14 +820,20 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           { update, view },
           Scene.given(openModel('drag-flick')),
           resolveAcquireResources,
-          Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
-          Scene.expectHandled(),
-          emitDragged(40, 50),
-          Scene.pointerUp(handle),
-          Scene.expectHandled(),
+          ...resolveObservers(),
+          emit(
+            DrawerBehavior.Message.StartedSwipe({
+              x: 200,
+              y: 400,
+              timeStamp: 1,
+            }),
+          ),
+          emitDragged(200, 440, 50),
+          emitEnded(200, 440, 51),
           Scene.expectOutMessage(DrawerBehavior.OutMessage.Closed()),
           resolveCloseDialog,
           expectAcquireEnded(),
+          ...expectObserversEnded(),
           ...expectClosed(),
         )
       })
@@ -501,28 +843,18 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           { update, view },
           Scene.given(openModel('drag-reverse')),
           resolveAcquireResources,
-          Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
-          Scene.expectHandled(),
-          emitDragged(80, 400),
-          emitDragged(20, 450),
-          Scene.pointerUp(handle),
-          Scene.expectHandled(),
-          Scene.expect(handle).toHaveAttr('data-drag-phase', 'Idle'),
-          ...expectOpen(),
-        )
-      })
-
-      it('ends the swipe drag on primary button release mid-gesture', () => {
-        Scene.scene(
-          { update, view },
-          Scene.given(openModel('drag-release')),
-          resolveAcquireResources,
-          Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
-          Scene.expectHandled(),
-          emitDragged(60, 300),
-          Scene.pointerUp(handle),
-          Scene.expectHandled(),
-          Scene.expect(handle).toHaveAttr('data-drag-phase', 'Idle'),
+          ...resolveObservers(),
+          emit(
+            DrawerBehavior.Message.StartedSwipe({
+              x: 200,
+              y: 400,
+              timeStamp: 1,
+            }),
+          ),
+          emitDragged(200, 480, 300),
+          emitDragged(200, 420, 320),
+          emitEnded(200, 420, 340),
+          Scene.expect(popup).not.toHaveAttr('data-swiping'),
           ...expectOpen(),
         )
       })
@@ -532,28 +864,27 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           { update, view },
           Scene.given(openModel('drag-cancel')),
           resolveAcquireResources,
+          ...resolveObservers(),
           Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
           Scene.expectHandled(),
-          emitDragged(150, 400),
+          emitDragged(200, 550, 400),
           emitCancelled,
-          Scene.expect(handle).toHaveAttr('data-drag-phase', 'Idle'),
-          ...expectOpen(),
-          Scene.pointerUp(handle),
-          Scene.expectIgnored(),
+          Scene.expect(popup).not.toHaveAttr('data-swiping'),
           ...expectOpen(),
         )
       })
 
-      it('does not open on an in-place press-release without movement', () => {
+      it('does not dismiss on an in-place press-release without movement', () => {
         Scene.scene(
           { update, view },
           Scene.given(openModel('drag-inplace')),
           resolveAcquireResources,
+          ...resolveObservers(),
           Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
           Scene.expectHandled(),
           Scene.pointerUp(handle),
           Scene.expectHandled(),
-          Scene.expect(handle).toHaveAttr('data-drag-phase', 'Idle'),
+          Scene.expect(popup).not.toHaveAttr('data-swiping'),
           ...expectOpen(),
         )
       })
@@ -563,59 +894,68 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           { update, view },
           Scene.given(openModel('drag-stationary')),
           resolveAcquireResources,
+          ...resolveObservers(),
           Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
           Scene.expectHandled(),
-          emitDragged(0, 100),
-          Scene.expect(content).toHaveStyle('transform', 'translateY(0px)'),
+          emitDragged(200, 400, 100),
+          Scene.expect(popup).toHaveStyle('--drawer-swipe-movement-y', '0px'),
           ...expectOpen(),
         )
       })
 
-      it('does not start pointer swipes while a closed drawer remains mounted', () => {
+      it('does not render gesture handlers while closed', () => {
         Scene.scene(
           { update, view },
           Scene.given({ drawer: DrawerBehavior.init({ id: 'swipe-closed' }) }),
           Scene.expect(drawerRoot).toExist(),
           Scene.expect(drawerRoot).not.toHaveHandler('pointerdown'),
-          Scene.expect(handle).toBeAbsent(),
+          Scene.expect(viewport).toBeAbsent(),
           ...expectClosed(),
         )
       })
 
-      // DIVERGENCE (intentional): Base UI lets a swipe start anywhere on the
-      // viewport/popup. creaseui only starts a drag from the handle.
-      it('does not start pointer swipes from the popup content', () => {
+      it('ignores a new swipe while a nested drawer is open', () => {
         Scene.scene(
           { update, view },
-          Scene.given(openModel('swipe-content')),
+          Scene.given(openModel('nested-open')),
           resolveAcquireResources,
-          Scene.expect(content).not.toHaveHandler('pointerdown'),
-          Scene.expect(drawerTitle).not.toHaveHandler('pointerdown'),
-          Scene.expect(overlay).not.toHaveHandler('pointerdown'),
-          ...expectOpen(),
-        )
-      })
-
-      // DIVERGENCE: Base UI's default swipe threshold is size-based (half the
-      // popup dimension — a 200px popup needs ~100px). creaseui uses a fixed
-      // 120px distance, so a 110px drag stays open.
-      it.fails('uses a size-based swipe threshold', () => {
-        Scene.scene(
-          { update, view },
-          Scene.given(openModel('size-threshold')),
-          resolveAcquireResources,
+          ...resolveObservers(),
+          emit(
+            DrawerBehavior.Message.NestedDrawersChanged({
+              count: 1,
+              frontmostHeight: 320,
+              swiping: false,
+              progress: 0,
+            }),
+          ),
+          Scene.expect(popup).toHaveAttr('data-nested-drawer-open', ''),
+          // The pointerdown still produces StartedSwipe — the model ignores
+          // it, so the popup stays out of the swiping state.
           Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
           Scene.expectHandled(),
-          emitDragged(110, 300),
-          Scene.pointerUp(handle),
-          Scene.expectHandled(),
-          Scene.expectOutMessage(DrawerBehavior.OutMessage.Closed()),
+          Scene.expect(popup).not.toHaveAttr('data-swiping'),
         )
       })
 
-      it.todo('settles on the nearest snap point when a drag ends')
-
-      it.todo('defaults initial focus to the popup element')
+      it('tracks nested drawer swipe progress on the parent', () => {
+        Scene.scene(
+          { update, view },
+          Scene.given(openModel('nested-swipe')),
+          resolveAcquireResources,
+          ...resolveObservers(),
+          emit(
+            DrawerBehavior.Message.NestedDrawersChanged({
+              count: 1,
+              frontmostHeight: 320,
+              swiping: true,
+              progress: 0.6,
+            }),
+          ),
+          Scene.expect(popup).toHaveAttr('data-nested-drawer-open', ''),
+          Scene.expect(popup).toHaveAttr('data-nested-drawer-swiping', ''),
+          Scene.expect(popup).toHaveStyle('--drawer-swipe-progress', '0.6'),
+        )
+      })
     })
   })
 }

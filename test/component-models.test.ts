@@ -249,22 +249,29 @@ describe('stateful component models', () => {
     assert.equal(Sidebar.init({ defaultOpen: false }).isOpen, false)
   })
 
-  it('tracks drawer drag distance and resets below the dismissal threshold', () => {
-    const model = Drawer.init({ id: 'filters', isAnimated: true })
+  it('tracks drawer swipe deltas and settles below the dismissal threshold', () => {
+    const open = Drawer.open(
+      Drawer.init({ id: 'filters', isAnimated: true }),
+    ).model
     const op14__ = Drawer.update(
-      model,
-      Drawer.Message.StartedDrawerDrag({ position: 20, timeStamp: 0 }),
+      open,
+      Drawer.Message.StartedSwipe({ x: 0, y: 20, timeStamp: 0 }),
     )
     const started = op14__.model
     const op15__ = Drawer.update(
       started,
-      Drawer.Message.DraggedDrawer({ offset: 80, timeStamp: 200 }),
+      Drawer.Message.DraggedSwipe({ x: 0, y: 26, timeStamp: 200 }),
     )
     const dragged = op15__.model
-    const op16__ = Drawer.update(dragged, Drawer.Message.EndedDrawerDrag())
+    assert.equal(dragged.swipe.phase, 'Swiping')
+    assert.equal(dragged.swipe.deltaY, 6)
+    const op16__ = Drawer.update(
+      dragged,
+      Drawer.Message.EndedSwipe({ x: 0, y: 26, timeStamp: 400 }),
+    )
     const settled = op16__.model
-    assert.equal(settled.dragOffset, 0)
-    assert.equal(Option.isNone(settled.dragStart), true)
-    assert.equal(settled.snapDecision, 'ReturnOpen')
+    assert.equal(settled.swipe.phase, 'Idle')
+    assert.equal(settled.swipe.deltaY, 0)
+    assert.equal(settled.dialog.isOpen, true)
   })
 })

@@ -1359,14 +1359,16 @@ test('drawer documents its child model and preserves modal focus behavior', asyn
   const trigger = hero.getByRole('button', { name: 'Open Drawer' })
 
   await trigger.click()
-  const heroDrawer = page.locator('#docs-drawer-6')
+  const heroDrawer = page.locator('#docs-drawer-0')
   await expect(heroDrawer).toBeVisible()
-  await expect(heroDrawer.locator('[data-slot="drawer-handle"]')).toBeVisible()
+  await expect(
+    heroDrawer.locator('[data-slot="drawer-swipe-handle"]'),
+  ).toBeVisible()
   await expect(heroDrawer.locator('[data-slot="drawer-title"]')).toHaveText(
     'Move goal',
   )
   await expect(
-    page.locator('#scrollable-content, #sides, #responsive-dialog, #rtl'),
+    page.locator('#scrollable-content, #position, #responsive-dialog, #rtl'),
   ).toHaveCount(4)
 
   await page.keyboard.press('Escape')
@@ -1377,11 +1379,11 @@ test('drawer documents its child model and preserves modal focus behavior', asyn
   await scrollSection
     .getByRole('button', { name: 'Scrollable Content', exact: true })
     .click()
-  const scrollDrawer = page.locator('#docs-drawer-2')
+  const scrollDrawer = page.locator('#docs-drawer-5')
   await expect(scrollDrawer).toBeVisible()
   await expect(
-    scrollDrawer.locator('[data-slot="drawer-content"]'),
-  ).toHaveAttribute('data-vaul-drawer-direction', 'right')
+    scrollDrawer.locator('[data-slot="drawer-popup"]'),
+  ).toHaveAttribute('data-swipe-direction', 'right')
   const scrollRegion = scrollDrawer.locator('.overflow-y-auto')
   await expect(scrollRegion).toBeVisible()
   const scrollMetrics = await scrollRegion.evaluate(node => ({
@@ -1392,18 +1394,18 @@ test('drawer documents its child model and preserves modal focus behavior', asyn
   await page.keyboard.press('Escape')
   await expect(scrollDrawer).toBeHidden()
 
-  const sidesSection = page.locator('#sides')
+  const sidesSection = page.locator('#position')
   await sidesSection.getByRole('button', { name: 'left', exact: true }).click()
-  const sidesDrawer = page.locator('#docs-drawer-3')
+  const sidesDrawer = page.locator('#docs-drawer-2')
   await expect(
-    sidesDrawer.locator('[data-slot="drawer-content"]'),
-  ).toHaveAttribute('data-vaul-drawer-direction', 'left')
+    sidesDrawer.locator('[data-slot="drawer-popup"]'),
+  ).toHaveAttribute('data-swipe-direction', 'left')
   await page.keyboard.press('Escape')
   await expect(sidesDrawer).toBeHidden()
-  await sidesSection.getByRole('button', { name: 'top', exact: true }).click()
+  await sidesSection.getByRole('button', { name: 'up', exact: true }).click()
   await expect(
-    sidesDrawer.locator('[data-slot="drawer-content"]'),
-  ).toHaveAttribute('data-vaul-drawer-direction', 'top')
+    sidesDrawer.locator('[data-slot="drawer-popup"]'),
+  ).toHaveAttribute('data-swipe-direction', 'up')
   await page.keyboard.press('Escape')
   await expect(sidesDrawer).toBeHidden()
 
@@ -1413,7 +1415,7 @@ test('drawer documents its child model and preserves modal focus behavior', asyn
     exact: true,
   })
   await editTrigger.click()
-  const responsiveDialog = page.locator('#docs-drawer-dialog-4')
+  const responsiveDialog = page.locator('#docs-drawer-dialog-9')
   await expect(responsiveDialog).toBeVisible()
   await expect(responsiveDialog.locator('input[id$="-name"]')).toHaveValue(
     'Pedro Duarte',
@@ -1423,7 +1425,7 @@ test('drawer documents its child model and preserves modal focus behavior', asyn
   await page.setViewportSize({ width: 500, height: 800 })
   await page.waitForTimeout(400)
   await editTrigger.click()
-  const responsiveDrawer = page.locator('#docs-drawer-4')
+  const responsiveDrawer = page.locator('#docs-drawer-9')
   await expect(responsiveDrawer).toBeVisible()
   await expect(responsiveDrawer.locator('input[id$="-name"]')).toHaveValue(
     'Pedro Duarte',
@@ -1435,7 +1437,7 @@ test('drawer documents its child model and preserves modal focus behavior', asyn
   const rtlSection = page.locator('#rtl')
   const rtlTrigger = rtlSection.getByRole('button', { name: 'افتح الدرج' })
   await rtlTrigger.click()
-  const rtlDrawer = page.locator('#docs-drawer-5')
+  const rtlDrawer = page.locator('#docs-drawer-10')
   await expect(rtlDrawer).toBeVisible()
   await expect(rtlDrawer.locator('[dir="rtl"]')).toHaveCount(1)
   await expect(rtlDrawer).toContainText('350')
@@ -1457,8 +1459,8 @@ test('drawer documents its child model and preserves modal focus behavior', asyn
   const sideDrawer = page.locator('#docs-drawer-1')
   await expect(sideDrawer).toBeVisible()
   await expect(
-    sideDrawer.locator('[data-slot="drawer-content"]'),
-  ).toHaveAttribute('data-vaul-drawer-direction', 'right')
+    sideDrawer.locator('[data-slot="drawer-popup"]'),
+  ).toHaveAttribute('data-swipe-direction', 'right')
   await page.keyboard.press('Escape')
   await expect(sideDrawer).toBeHidden()
   await expect(sideTrigger).toBeFocused()
