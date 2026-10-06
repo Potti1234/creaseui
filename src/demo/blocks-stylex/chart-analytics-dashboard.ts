@@ -301,7 +301,7 @@ export const chartAnalyticsDashboard = <Message>(
                     h,
                   ),
                 ],
-                spacing: 'sm',
+                spacing: 'md',
               },
               h,
             ),
