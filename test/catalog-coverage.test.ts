@@ -221,7 +221,7 @@ describe('component catalog coverage', () => {
   it('documents Foldkit architecture instead of assigning state to every component', () => {
     assert.equal(componentKind('button'), 'helper')
     assert.equal(componentKind('dialog'), 'submodel')
-    assert.equal(componentKind('toast'), 'recipe')
+    assert.equal(componentKind('toast'), 'submodel')
     for (const shell of [
       'src/docs/component-page.ts',
       'src/site/docs.stylex.ts',
