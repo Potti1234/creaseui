@@ -251,6 +251,13 @@ const styles = stylex.create({
          go flush so their size-8 box is centered content. */
       [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: 0,
     },
+    /* TW 'group-has-data-[sidebar=menu-action]/menu-item:pr-8' — buttons
+       leave room for a trailing menu-action button. */
+    paddingInlineEnd: {
+      default: null,
+      [stylex.when.siblingAfter('[data-sidebar="menu-action"]', sidebarScope)]:
+        '2rem',
+    },
     borderRadius: tokens.controlRadius,
     gap: '0.5rem',
     overflow: 'hidden',
@@ -1190,6 +1197,8 @@ export const sidebarMenuAction = <Msg>(
           reset.button,
           styles.menuAction,
           props.showOnHover === true && styles.menuActionHover,
+          /* marker so menuButton's siblingAfter pr-8 rule can see us */
+          sidebarScope,
           props.layoutStyle,
         ),
       ),
