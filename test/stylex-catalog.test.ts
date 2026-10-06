@@ -64,6 +64,11 @@ const intentionallyRemovedStylingExports = new Map<string, ReadonlySet<string>>(
  *  theming surface; visual choices stay on named variants. */
 const sanctionedStaticStyleEscapes = new Map<string, ReadonlySet<string>>([
   ['input', new Set(['InputProps.inputStyle'])],
+  ['dropdown-menu', new Set(['DropdownMenuProps.triggerStyle'])],
+  [
+    'sidebar',
+    new Set(['SidebarTriggerProps.iconStyle', 'SidebarInputProps.inputStyle']),
+  ],
 ])
 
 const parse = (path: string): ts.SourceFile =>

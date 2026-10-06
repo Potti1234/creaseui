@@ -151,8 +151,9 @@ describe('TanStack Table Foldkit adapter', () => {
     assert.doesNotMatch(recipe, /className\??\s*:/u)
     assert.doesNotMatch(recipe, /style\??\s*:/u)
     assert.match(showcase, /tanStackDataTable\(props, h\)/u)
-    assert.match(dashboard, /tanStackDataTable<DashboardRow, Message>/u)
-    assert.doesNotMatch(dashboard, /@\/stylex\/data-table/u)
+    /* TW featured-page uses the plain dataTable recipe — the StyleX port
+       mirrors it 1:1 instead of the TanStack adapter. */
+    assert.match(dashboard, /dataTable<DashboardRow, Message>/u)
   })
 
   it('commits persisted widths only when pointer resizing ends and keeps committed reset state visible', () => {
