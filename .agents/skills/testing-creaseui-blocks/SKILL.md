@@ -10,6 +10,19 @@ description: How to e2e-test creaseui (/blocks gallery + preview pages) on this 
 - `npm run dev -- --host 127.0.0.1 --port 4173` (playwright.config expects 4173). node_modules already installed.
 - Routes: `/blocks` gallery (31 `[data-block]` sections, each an iframe `src=/blocks/preview/{renderer}--{name}`); `/blocks/preview/{tailwind|stylex}--{name}` renders full-viewport WITHOUT site header.
 
+## Dual-renderer dev sites (feat/separate-renderer-sites)
+
+- TWO vite servers run side by side: `npx vite --port 5173` (Tailwind site, default mode)
+  and `npx vite --mode stylex --port 5174` (StyleX site; `--mode stylex` selects
+  `src/entry-stylex.ts`). Docs pages live on both: `/docs/components/<slug>` renders the
+  page in that site's renderer — no need to toggle "Preview styling engine" anymore.
+- Block previews: `http://localhost:5173/blocks/preview/tailwind--<name>` vs
+  `http://localhost:5174/blocks/preview/stylex--<name>`.
+- Quantitative parity: `node scripts/parity-blocks-preview.tmp.cjs <name...>` writes
+  tw/sx/diff PNGs to /tmp/parity/previews and prints pixelmatch counts (AA noise floor ≈
+  <50px at 1440×900). Its `stableShot` retries goto+innerText up to 5× — reuse that pattern
+  against the foldkit stale-route flake.
+
 ## Exact viewport sizes on this box
 
 Chrome clamps window width >= ~532px, so window resizing cannot reach 390px mobile. Instead:
@@ -32,6 +45,8 @@ Typing immediately after clicking a focused input can lose the first keystrokes 
 ## console/error inspection
 
 - `browser_console` returns only your script's eval result, NOT page console history. Inject `window.__errs` hooks per page (`error` + `unhandledrejection` listeners) and read them back; load-time pageerrors are covered by `npx playwright test e2e/blocks.spec.ts`.
+- `browser_console` multi-statement scripts return `undefined` even though they execute — end with a single expression or re-query state in a follow-up call.
+- `require('playwright')` resolves relative to the SCRIPT path, not cwd — put ad-hoc .cjs probes inside the repo (e.g. `scripts/*.tmp.cjs`) so they pick up the repo's node_modules.
 - Benign noise: foldkit perf WARNINGS ("Slow view/patch ... budget"), ECharts `grid.containLabel` deprecation notes. `No Issues` in the DevTools issues pane is a good quick signal.
 
 ## Block-specific click targets
@@ -76,6 +91,8 @@ Every docs page renders a heading-less "hero" = the FIRST example, as the 2nd ch
 
 The "View Code"/"Hide Code" control is a `<label for>` bound to a hidden `input[type=checkbox]#example-code-<slug>`. A real label `.click()` toggles it (fires foldkit change) — `.click()` on the input directly does NOT. The label's DOM rect may sit below the visible "View Code" text; if a tool click on the text doesn't toggle, call `label.click()` via console. All code text is inside `diffs-container.shadowRoot` (light-DOM textContent finds nothing). Generated code is a complete standalone program: imports → Model → tagged messages → `Update.Return` init/update w/ outMessage→lastAction → view w/ the fixture's items verbatim (labels, icons, submenu arrays, direction, trigger text) → Runtime.run.
 
+Post-fix SX structure (commit aa7ebb2+): SX docs render TWO overlapping `<label for="example-code-<id>">` siblings — "View Code" (display:flex default) and "Hide Code" (display:none) — swapping computed display when the checkbox checks; the `input[type=checkbox]#example-code-<id>` sits AFTER the gated elements (StyleX `:has(~ .scope:checked)` gating). TW uses ONE label whose two `<span>`s swap via peer-checked CSS — different DOM, same UX. Hero checkbox id = `example-code-hero-<slug-of-hero-title>` (hero titled "Basic" → `example-code-hero-basic`, NOT `hero-<page-slug>`); enumerate `input[id^="example-code-"]` to map ids — hero/section checkboxes are independent. An expanded strip pushes the label below the fold — `label.scrollIntoView({block:'center'})` before the collapse click is fine.
+
 ## dropdown-menu fixture map (12 sections)
 
 Basic "Open" | Submenu "Open" (Invite users›) | Shortcuts "Open" (kbd-hint spans + "Name window" isDisabled inside More-tools submenu) | Icons "Open" | Checkboxes "View options" (Status Bar/Activity Bar checked) | Checkboxes Icons "Notifications" | Radio Group "Open" (Top/Bottom/Right) | Radio Icons "Payment Method" | Destructive "Actions" (red Delete) | Avatar "LP" round trigger | Complex "Complex Menu" (kitchen-sink) | RTL "افتح القائمة" dir=rtl.
@@ -105,7 +122,7 @@ When Chrome runs maximized at `--force-device-scale-factor=2` (real 3264x2440, C
 
 ## hover:none environment — hover-reveal states UNVERIFIABLE visually
 
-This box's Chrome is launched as a coarse-pointer device: `matchMedia('(hover:hover)') === false`.
+This box's Chrome was historically launched as a coarse-pointer device: `matchMedia('(hover:hover)') === false`. An Oct 2026 session observed `hover:hover=true` (devicePixelRatio 2, innerWidth 1568) — re-check `matchMedia` per session before trusting either behavior.
 Tailwind v4 gates ALL `hover:`/`group-hover:` utilities behind `@media (hover:hover)` → they can never fire here.
 
 - Sonner dismiss X (`opacity-0 group-hover:opacity-100`) never appears on hover. Verify via `focus:opacity-100` instead: `el.focus()` reveals it for screenshots.
