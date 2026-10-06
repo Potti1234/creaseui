@@ -11,6 +11,7 @@ import {
   drawerLorem,
   drawerRtlCopy,
   drawerSides,
+  usesDirectionTriggers,
 } from '@/docs/components/pages/drawer/shared'
 import * as Chart from '@/lib/echarts'
 import * as Button from '@/stylex/button'
@@ -56,7 +57,7 @@ const styles = stylex.create({
     fontSize: '0.875rem',
     lineHeight: '1.25rem',
   },
-  scrollBody: { paddingInline: '1rem', overflowY: 'auto' },
+  scrollBody: { padding: '1rem', flex: '1', overflowY: 'auto' },
   lorem: { lineHeight: 'normal', marginBlockEnd: '1rem' },
   triggerRow: { gap: '0.5rem', display: 'flex', flexWrap: 'wrap' },
   compact: { maxWidth: '24rem' },
@@ -98,10 +99,28 @@ const styles = stylex.create({
     textAlign: 'center',
   },
   rtlBody: { paddingInline: '1rem', paddingBlockEnd: 0 },
+  fillWrap: { padding: '1rem', flex: '1' },
+  fillY: { backgroundColor: 'var(--muted)', height: '20rem', width: '100%' },
+  fillX: { backgroundColor: 'var(--muted)', height: '100%', width: '100%' },
+  snapGrid: {
+    padding: '1rem',
+    flex: '1',
+    gap: '0.75rem',
+    display: 'grid',
+    overflowY: 'auto',
+  },
+  snapBlock: { backgroundColor: 'var(--muted)', height: '3rem' },
+  snapPanel: { maxHeight: 'calc(100dvh - 1rem)' },
+  sizeDown: { height: '16rem' },
+  sizeUp: { height: '50vh' },
+  sizeLeft: { width: '36rem' },
+  sizeRight: { width: '20rem' },
 })
 
 type PreviewModel = Readonly<{
   drawer: Drawer.Model
+  drawer2: Drawer.Model
+  drawer3: Drawer.Model
   dialog: Dialog.Model
   side: DrawerSide
   goal: number
@@ -118,11 +137,39 @@ const msg = <Msg>(
 const scrollableContent = <Msg>(h: HtmlBuilder<Msg>): Html =>
   h.div(
     [h.Class(className(styles.scrollBody))],
-    Array.from({ length: 10 }).map((_, index) =>
+    Array.from({ length: 20 }).map((_, index) =>
       h.p(
         [h.Key(String(index)), h.Class(className(reset.text, styles.lorem))],
         [drawerLorem],
       ),
+    ),
+  )
+
+/** Plain muted fill block — sized off the preview's current direction (the
+    stylex equivalent of the tailwind `group-data-[swipe-axis=…]` classes). */
+const mutedBlock = <Msg>(side: DrawerSide, h: HtmlBuilder<Msg>): Html =>
+  h.div(
+    [h.Class(className(styles.fillWrap))],
+    [
+      h.div(
+        [
+          h.Class(
+            className(
+              side === 'up' || side === 'down' ? styles.fillY : styles.fillX,
+            ),
+          ),
+        ],
+        [],
+      ),
+    ],
+  )
+
+/** Grid of muted blocks used by the snap-points example. */
+const snapBlocks = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.div(
+    [h.Class(className(styles.snapGrid))],
+    Array.from({ length: 16 }).map((_, index) =>
+      h.div([h.Key(String(index)), h.Class(className(styles.snapBlock))], []),
     ),
   )
 
@@ -263,6 +310,76 @@ const rtlContent = <Msg>(
 
 type Slots<Msg> = Parameters<NonNullable<Drawer.DrawerProps<Msg>['footer']>>[0]
 
+const closeOnlyFooter = <Msg>(
+  slots: Slots<Msg>,
+  h: HtmlBuilder<Msg>,
+): ReadonlyArray<Html> => [
+  h.button(
+    [
+      ...slots.closeButton,
+      h.Type('button'),
+      h.Class(className(reset.button, styles.cancel)),
+    ],
+    ['Close'],
+  ),
+]
+
+const primaryButton = <Msg>(
+  label: string,
+  onClick: Msg,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  h.button(
+    [
+      h.Type('button'),
+      h.OnClick(onClick),
+      h.Class(className(reset.button, styles.action)),
+    ],
+    [label],
+  )
+
+/** One nested drawer level — renders its own footer with either the next
+    nested drawer or a plain close button at the deepest level. */
+const nestedDrawerView = <Msg>(
+  model: PreviewModel,
+  onMessageJson: (json: string) => Msg,
+  h: HtmlBuilder<Msg>,
+  depth: 2 | 3,
+): Html => {
+  const drawerModel = depth === 2 ? model.drawer2 : model.drawer3
+  const tag =
+    depth === 2 ? 'GotDrawer2PreviewMessage' : 'GotDrawer3PreviewMessage'
+  const title = depth === 2 ? 'Nested drawer' : 'Third drawer'
+  const description =
+    depth === 2
+      ? 'The parent drawer stays mounted behind this one.'
+      : 'This is the frontmost drawer in the stack.'
+  return Drawer.drawer(
+    {
+      model: drawerModel,
+      toParentMessage: (message: Drawer.Message): Msg =>
+        msg(onMessageJson, tag, { message }),
+      title,
+      description,
+      content: () => [mutedBlock(model.side, h)],
+      footer: slots => [
+        ...(depth === 2
+          ? [
+              primaryButton(
+                'Open third drawer',
+                msg(onMessageJson, 'OpenedNested3'),
+                h,
+              ),
+              nestedDrawerView(model, onMessageJson, h, 3),
+            ]
+          : []),
+        ...closeOnlyFooter(slots, h),
+      ],
+    },
+    h,
+  )
+}
+
 const footerActions = <Msg>(
   slots: Slots<Msg>,
   h: HtmlBuilder<Msg>,
@@ -305,7 +422,6 @@ const drawerView = <Msg>(
       return Drawer.drawer(
         {
           ...shared,
-          direction: fixture.kind === 'side' ? 'right' : 'bottom',
           title: 'Move goal',
           description: 'Set your daily activity goal.',
           content: () => [goalContent(h)],
@@ -317,7 +433,6 @@ const drawerView = <Msg>(
       return Drawer.drawer(
         {
           ...shared,
-          direction: 'right',
           title: 'Move Goal',
           content: () => [scrollableContent(h)],
           footer: slots => footerActions(slots, h, 'Submit', 'Cancel'),
@@ -328,10 +443,82 @@ const drawerView = <Msg>(
       return Drawer.drawer(
         {
           ...shared,
-          direction: model.side,
           title: 'Move Goal',
-          content: () => [scrollableContent(h)],
+          content: () => [mutedBlock(model.side, h)],
           footer: slots => footerActions(slots, h, 'Submit', 'Cancel'),
+        },
+        h,
+      )
+    case 'swipe-handle':
+      return Drawer.drawer(
+        {
+          ...shared,
+          showSwipeHandle: true,
+          title: 'Drawer',
+          description: 'Drawer with a swipe handle.',
+          content: () => [mutedBlock(model.side, h)],
+        },
+        h,
+      )
+    case 'custom-size':
+      return Drawer.drawer(
+        {
+          ...shared,
+          layoutStyle:
+            model.side === 'down'
+              ? styles.sizeDown
+              : model.side === 'up'
+                ? styles.sizeUp
+                : model.side === 'left'
+                  ? styles.sizeLeft
+                  : styles.sizeRight,
+          title: `${model.side} drawer`,
+          description: 'Drawer with a custom size.',
+          content: () => [scrollableContent(h)],
+          footer: slots => closeOnlyFooter(slots, h),
+        },
+        h,
+      )
+    case 'snap-points':
+      return Drawer.drawer(
+        {
+          ...shared,
+          showSwipeHandle: true,
+          layoutStyle: styles.snapPanel,
+          title: 'Snap points',
+          description:
+            'Drag the drawer to snap between a compact peek and a near full-height view.',
+          content: () => [snapBlocks(h)],
+        },
+        h,
+      )
+    case 'nested':
+      return Drawer.drawer(
+        {
+          ...shared,
+          showSwipeHandle: true,
+          title: 'Drawer',
+          description: 'Open another drawer from the same direction.',
+          content: () => [mutedBlock(model.side, h)],
+          footer: slots => [
+            primaryButton(
+              'Open nested drawer',
+              msg(onMessageJson, 'OpenedNested2'),
+              h,
+            ),
+            nestedDrawerView(model, onMessageJson, h, 2),
+            ...closeOnlyFooter(slots, h),
+          ],
+        },
+        h,
+      )
+    case 'non-modal':
+      return Drawer.drawer(
+        {
+          ...shared,
+          title: 'Non Modal Drawer',
+          content: () => [mutedBlock(model.side, h)],
+          footer: slots => closeOnlyFooter(slots, h),
         },
         h,
       )
@@ -402,29 +589,28 @@ export const drawerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   const fixture = drawerFixtures[exampleIndex]
   if (fixture === undefined) return undefined
   const preview = model as PreviewModel
-  const trigger =
-    fixture.kind === 'sides'
-      ? h.div(
-          [h.Class(className(styles.triggerRow))],
-          drawerSides.map(side =>
-            Button.button(
-              {
-                variant: 'outline',
-                onClick: msg(onMessageJson, 'OpenedDrawerSide', { side }),
-                children: [side],
-              },
-              h,
-            ),
+  const trigger = usesDirectionTriggers(fixture.kind)
+    ? h.div(
+        [h.Class(className(styles.triggerRow))],
+        drawerSides.map(side =>
+          Button.button(
+            {
+              variant: 'outline',
+              onClick: msg(onMessageJson, 'OpenedDrawerSide', { side }),
+              children: [side],
+            },
+            h,
           ),
-        )
-      : Button.button(
-          {
-            variant: 'outline',
-            onClick: msg(onMessageJson, 'OpenedDrawerPreview'),
-            children: [fixture.triggerLabel],
-          },
-          h,
-        )
+        ),
+      )
+    : Button.button(
+        {
+          variant: 'outline',
+          onClick: msg(onMessageJson, 'OpenedDrawerPreview'),
+          children: [fixture.triggerLabel],
+        },
+        h,
+      )
   return h.div(
     [],
     [trigger, drawerView(exampleIndex, fixture, preview, onMessageJson, h)],
