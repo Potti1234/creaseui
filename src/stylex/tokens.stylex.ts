@@ -42,7 +42,11 @@ export const tokens = stylex.defineVars({
   outlineHover: 'var(--stylex-outline-hover)',
   primaryHover: 'color-mix(in oklab, var(--primary) 90%, transparent)',
   secondaryHover: 'color-mix(in oklab, var(--secondary) 80%, transparent)',
-  border: 'var(--border)',
+  /* Tailwind's @theme-inline build bakes --color-* to the base-theme
+     literals: the bare border color (from `* { border-color: var(--color-border) }`)
+     resolves at :root, so it does not follow the board preset. `border-input`,
+     `ring-ring`, and `border-border` emit raw vars and stay preset-scoped. */
+  border: 'var(--color-border)',
   input: 'var(--input)',
   ring: 'var(--ring)',
   radius: 'var(--radius)',

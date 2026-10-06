@@ -9,6 +9,22 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+/* Tailwind's @theme-inline build bakes --color-* to the base-theme literals,
+   so border/input/ring colors do not follow the board preset on the Tailwind
+   site. Mirror those static tokens here for parity; every other color token
+   keeps resolving the preset-scoped raw vars like Tailwind's utilities do. */
+:root {
+  --color-border: oklch(0.922 0 0);
+  --color-input: oklch(0.922 0 0);
+  --color-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --color-border: oklch(1 0 0 / 10%);
+  --color-input: oklch(1 0 0 / 15%);
+  --color-ring: oklch(0.556 0 0);
+}
+
 body {
   margin: 0;
   background: var(--background);
@@ -54,4 +70,84 @@ body {
   .theme-toggle-icon {
     transition-duration: 0ms;
   }
+}
+
+/* Board icon previews render every library's svg inside one span; the active
+   library is revealed by the board's data-icon-library attribute. Mirrors
+   styles.css, which the Tailwind renderer loads instead of this file. */
+.crease-preview-icon > svg {
+  display: none;
+}
+
+.create-board-theme[data-icon-library='lucide'] .crease-preview-icon-lucide,
+.create-board-theme[data-icon-library='hugeicons']
+  .crease-preview-icon-hugeicons,
+.create-board-theme[data-icon-library='tabler'] .crease-preview-icon-tabler,
+.create-board-theme[data-icon-library='phosphor'] .crease-preview-icon-phosphor,
+.create-board-theme[data-icon-library='remixicon']
+  .crease-preview-icon-remixicon,
+[data-crease-board-theme][data-icon-library='lucide']
+  .crease-preview-icon-lucide,
+[data-crease-board-theme][data-icon-library='hugeicons']
+  .crease-preview-icon-hugeicons,
+[data-crease-board-theme][data-icon-library='tabler']
+  .crease-preview-icon-tabler,
+[data-crease-board-theme][data-icon-library='phosphor']
+  .crease-preview-icon-phosphor,
+[data-crease-board-theme][data-icon-library='remixicon']
+  .crease-preview-icon-remixicon {
+  display: block;
+}
+
+/* StyleX cannot express ancestor data-state selectors. Keep icon-collapse
+   visibility structural and scoped to the renderer boundary. */
+[data-slot='sidebar-wrapper'][data-renderer='stylex'][data-state='collapsed']
+  [data-collapsible='icon']
+  :is(
+    [data-sidebar='group-label'],
+    [data-sidebar='group-action'],
+    [data-sidebar='input'],
+    [data-sidebar='menu-action'],
+    [data-sidebar='menu-badge'],
+    [data-sidebar='menu-sub']
+  ) {
+  display: none;
+}
+
+[data-slot='sidebar-wrapper'][data-renderer='stylex'][data-state='collapsed']
+  [data-collapsible='icon']
+  [data-sidebar='brand'] {
+  padding-inline: 0.125rem;
+}
+
+[data-slot='sidebar-wrapper'][data-renderer='stylex']
+  :is(
+    [data-sidebar='menu-button'],
+    [data-sidebar='menu-action'],
+    [data-sidebar='trigger']
+  )
+  > svg {
+  flex-shrink: 0;
+  height: 1rem;
+  width: 1rem;
+}
+
+[data-slot='sidebar-wrapper'][data-renderer='stylex'][data-state='collapsed']
+  [data-collapsible='icon']
+  [data-sidebar='menu-button'] {
+  height: 2rem;
+  padding: 0.5rem;
+  width: 2rem;
+}
+
+[data-slot='sidebar-wrapper'][data-renderer='stylex'][data-state='collapsed']
+  [data-collapsible='icon']
+  [data-sidebar='menu-button'][data-size='lg'] {
+  padding: 0;
+}
+
+[data-slot='sidebar-wrapper'][data-renderer='stylex']
+  [data-sidebar='menu-item']:is(:hover, :focus-within)
+  [data-sidebar='menu-action'][data-show-on-hover] {
+  opacity: 1;
 }

@@ -63,7 +63,9 @@ const variants = stylex.create({
     color: tokens.destructive,
   },
   outline: {
-    borderColor: tokens.border,
+    /* TW emits border-border (var(--border), preset-scoped), not the static
+       --color-border default. */
+    borderColor: 'var(--border)',
     backgroundColor: tokens.transparent,
     color: tokens.foreground,
   },

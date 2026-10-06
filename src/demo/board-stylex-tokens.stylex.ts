@@ -3,7 +3,10 @@ import * as stylex from '@stylexjs/stylex'
 export const boardTokens = stylex.defineVars({
   boardBackground: 'var(--background)',
   boardMuted: 'var(--muted)',
-  boardMutedForeground: 'var(--muted-foreground)',
+  /* Outside the board scope (customizer panel, always dark chrome) this
+     resolves the .dark --muted-foreground literal; inside the board the
+     scoped theme aliases it back to var(--muted-foreground). */
+  boardMutedForeground: 'oklch(0.708 0 0)',
   border: 'rgb(255 255 255 / 0.1)',
   error: 'oklch(0.704 0.191 22.216)',
   focus: 'rgb(255 255 255 / 0.3)',

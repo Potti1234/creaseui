@@ -521,12 +521,12 @@ const styles = stylex.create({
     color: complexTokens.sidebarAccentForeground,
   },
   containerBorderLeft: {
-    borderLeftColor: tokens.border,
+    borderLeftColor: complexTokens.sidebarBorder,
     borderLeftStyle: 'solid',
     borderLeftWidth: 1,
   },
   containerBorderRight: {
-    borderRightColor: tokens.border,
+    borderRightColor: complexTokens.sidebarBorder,
     borderRightStyle: 'solid',
     borderRightWidth: 1,
   },

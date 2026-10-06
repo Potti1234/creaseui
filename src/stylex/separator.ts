@@ -5,7 +5,8 @@ import { className } from './style'
 import { tokens } from './tokens.stylex'
 
 const styles = stylex.create({
-  base: { backgroundColor: tokens.border, flexShrink: 0 },
+  /* TW emits bg-border (var(--border), preset-scoped). */
+  base: { backgroundColor: 'var(--border)', flexShrink: 0 },
   horizontal: { height: '1px', width: '100%' },
   vertical: { height: '100%', width: '1px' },
 })

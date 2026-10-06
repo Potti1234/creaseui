@@ -248,6 +248,7 @@ export const overlayStyles = stylex.create({
     fontSize: '0.75rem',
     lineHeight: '1rem',
     position: 'relative',
+    textWrap: 'balance',
     zIndex: 50,
     width: 'fit-content',
   },

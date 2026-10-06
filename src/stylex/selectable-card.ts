@@ -55,7 +55,8 @@ const styles = stylex.create({
     opacity: 0.5,
   },
   bordered: {
-    borderColor: tokens.border,
+    /* TW cardSurfaceClass emits border-border (var(--border), preset-scoped). */
+    borderColor: 'var(--border)',
     borderStyle: 'solid',
     borderWidth: 1,
   },
