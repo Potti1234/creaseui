@@ -534,12 +534,12 @@ const styles = stylex.create({
     borderRightStyle: 'solid',
     borderRightWidth: 1,
   },
-  /* TW sidebar-04 'ml-0 border-l-0 px-1.5' — flattens the default sub indent. */
+  /* TW sidebar-04 'ml-0 border-l-0 px-1.5' — flattens the default sub
+     indent but keeps the base translate-x-px nudge. */
   subFlat: {
     marginInlineStart: 0,
     borderLeftWidth: 0,
     paddingInline: '0.375rem',
-    transform: 'none',
   },
   subMd: { fontSize: '0.875rem', lineHeight: '1.25rem' },
   subSm: { fontSize: '0.75rem', lineHeight: '1rem' },
