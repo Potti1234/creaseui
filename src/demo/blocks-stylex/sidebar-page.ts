@@ -401,7 +401,12 @@ const searchStyles = stylex.create({
   },
   /* TW navUser trigger: sidebarMenuButtonVariants({size:'lg', open accent}). */
   userTrigger: {
-    padding: '.5rem',
+    padding: {
+      default: '.5rem',
+      /* TW 'md:p-0' on the rail footer's lg menu-button — the icon-
+         collapsed rail renders a bare size-8 avatar button. */
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: 0,
+    },
     borderRadius: tokens.controlRadius,
     gap: '.5rem',
     overflow: 'hidden',
@@ -419,14 +424,24 @@ const searchStyles = stylex.create({
     outlineStyle: 'none',
     textAlign: 'left',
     whiteSpace: 'nowrap',
-    width: '100%',
+    /* TW 'group-data-[collapsible=icon]:size-8!' */
+    width: {
+      default: '100%',
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: '2rem',
+    },
     fontSize: '.875rem',
     lineHeight: '1.25rem',
-    height: '3rem',
+    height: {
+      default: '3rem',
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: '2rem',
+    },
     cursor: 'pointer',
   },
   userTriggerOpen: {
-    padding: '.5rem',
+    padding: {
+      default: '.5rem',
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: 0,
+    },
     borderRadius: tokens.controlRadius,
     gap: '.5rem',
     overflow: 'hidden',
@@ -437,10 +452,16 @@ const searchStyles = stylex.create({
     outlineStyle: 'none',
     textAlign: 'left',
     whiteSpace: 'nowrap',
-    width: '100%',
+    width: {
+      default: '100%',
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: '2rem',
+    },
     fontSize: '.875rem',
     lineHeight: '1.25rem',
-    height: '3rem',
+    height: {
+      default: '3rem',
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: '2rem',
+    },
     cursor: 'pointer',
   },
   /* TW avatar 'size-8 rounded-lg' + muted fallback. */
