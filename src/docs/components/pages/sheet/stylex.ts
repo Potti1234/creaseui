@@ -66,18 +66,25 @@ const styles = stylex.create({
     display: 'flex',
     flexDirection: 'column',
   },
-  sheetHeading: { fontSize: '1rem', fontWeight: 600, lineHeight: '1.5rem' },
+  sheetHeading: {
+    fontSize: '1rem',
+    fontWeight: 600,
+    lineHeight: '1.5rem',
+    margin: 0,
+  },
   sheetHeadingCapitalize: {
     fontSize: '1rem',
     fontWeight: 600,
     lineHeight: '1.5rem',
     textTransform: 'capitalize',
+    margin: 0,
   },
-  sheetText: { fontSize: '0.875rem', lineHeight: '1.25rem' },
+  sheetText: { fontSize: '0.875rem', lineHeight: '1.25rem', margin: 0 },
   sheetMeta: {
     color: 'var(--muted-foreground)',
     fontSize: '0.75rem',
     lineHeight: '1rem',
+    margin: 0,
   },
   filterRows: { gap: '0.5rem', display: 'flex', flexDirection: 'column' },
   stackTight: { gap: '0.25rem', display: 'flex', flexDirection: 'column' },
@@ -96,7 +103,12 @@ const styles = stylex.create({
     flexDirection: 'column',
     maxWidth: '28rem',
   },
-  pageHeading: { fontSize: '1rem', fontWeight: 600, lineHeight: '1.5rem' },
+  pageHeading: {
+    fontSize: '1rem',
+    fontWeight: 600,
+    lineHeight: '1.5rem',
+    margin: 0,
+  },
   timeRow: { gap: '0.5rem', alignItems: 'center', display: 'flex' },
   timeLabel: { fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem' },
   timeMeta: {
@@ -112,18 +124,24 @@ const styles = stylex.create({
     display: 'flex',
   },
   stepTextWrap: { flexBasis: '0%', flexGrow: 1, flexShrink: 1 },
-  stepLabel: { fontSize: '0.875rem', lineHeight: '1.25rem' },
+  stepLabel: { fontSize: '0.875rem', lineHeight: '1.25rem', margin: 0 },
   stepDetail: {
     color: 'var(--muted-foreground)',
     fontSize: '0.75rem',
     lineHeight: '1rem',
+    margin: 0,
   },
   stepDistance: {
     color: 'var(--muted-foreground)',
     fontSize: '0.75rem',
     lineHeight: '1rem',
   },
-  itemLabel: { fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem' },
+  itemLabel: {
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    lineHeight: '1.25rem',
+    margin: 0,
+  },
 })
 
 interface PreviewShape {
