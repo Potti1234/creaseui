@@ -86,6 +86,18 @@ const searchStyles = stylex.create({
   autoTop: { marginTop: 'auto' },
   /* TW-15 'mx-0' separator — kills its default horizontal margin. */
   separatorFlush: { marginInline: 0 },
+  /* TW-02 wraps its nav groups in 'gap-0' sidebarContent — clone the
+     content chrome with zero gap (sidebarContent only takes layoutStyle). */
+  contentFlat: {
+    gap: 0,
+    overflow: 'auto',
+    display: 'flex',
+    flexBasis: '0%',
+    flexDirection: 'column',
+    flexGrow: 1,
+    flexShrink: 1,
+    minHeight: 0,
+  },
   /* TW-15 calendar groups sit in 'py-0' sidebarGroups; the calendar itself
      in a 'px-0' group. sidebarGroup only accepts layout styles, so these
      clone styles.group with the padding side zeroed. */
@@ -1053,6 +1065,9 @@ const expandable = (
         ],
       ),
       content,
+      /* TW-15 calendar group labels are 'w-full' (flatGroup); TW-02's are
+         content-width, the sidebarLabel default. */
+      ...(flatGroup ? { triggerLayoutStyle: searchStyles.fullWidth } : {}),
     },
     h,
   )
@@ -1397,212 +1412,223 @@ const documentation = (
   id: string,
   model: Model,
   h: HtmlBuilder<Message>,
-): ReadonlyArray<Html> => [
-  ...(id === '14'
-    ? []
-    : [
-        brand(
-          'Documentation',
-          id === '01' || id === '02' ? 'v1.0.1' : 'v1.0.0',
-          h,
-          false,
-          ['01', '02', '05'].includes(id) ? [searchForm(id, model, h)] : [],
-        ),
-      ]),
-  Sidebar.sidebarContent(
-    {
-      children:
-        id === '03' || id === '04' || id === '14'
-          ? [
-              /* TW-03/04/14: always-open groups — menuItem = [font-medium
+): ReadonlyArray<Html> => {
+  /* TW-02 wraps its nav groups in a 'gap-0' sidebarContent; every other
+     docs variant keeps the default gap-2 container. */
+  const wrapContent = (children: ReadonlyArray<Html>): Html =>
+    id === '02'
+      ? h.div(
+          [
+            h.DataAttribute('slot', 'sidebar-content'),
+            h.DataAttribute('sidebar', 'content'),
+            h.Class(className(searchStyles.contentFlat)),
+          ],
+          [...children],
+        )
+      : Sidebar.sidebarContent({ children }, h)
+  return [
+    ...(id === '14'
+      ? []
+      : [
+          brand(
+            'Documentation',
+            id === '01' || id === '02' ? 'v1.0.1' : 'v1.0.0',
+            h,
+            false,
+            ['01', '02', '05'].includes(id) ? [searchForm(id, model, h)] : [],
+          ),
+        ]),
+    wrapContent(
+      id === '03' || id === '04' || id === '14'
+        ? [
+            /* TW-03/04/14: always-open groups — menuItem = [font-medium
                  menuButton title, sidebarMenuSub items]; 04 uses gap-2
                  menu + flattened sub; 14 adds a 'Table of Contents' label. */
-              Sidebar.sidebarGroup(
-                {
-                  children: [
-                    ...(id === '14'
-                      ? [
-                          Sidebar.sidebarGroupLabel(
-                            { children: ['Table of Contents'] },
-                            h,
-                          ),
-                        ]
-                      : []),
-                    Sidebar.sidebarMenu(
-                      {
-                        ...(id === '04' ? { variant: 'loose' as const } : {}),
-                        children: docs.navMain.map(g =>
-                          Sidebar.sidebarMenuItem(
-                            {
-                              children: [
-                                Sidebar.sidebarMenuButton(
+            Sidebar.sidebarGroup(
+              {
+                children: [
+                  ...(id === '14'
+                    ? [
+                        Sidebar.sidebarGroupLabel(
+                          { children: ['Table of Contents'] },
+                          h,
+                        ),
+                      ]
+                    : []),
+                  Sidebar.sidebarMenu(
+                    {
+                      ...(id === '04' ? { variant: 'loose' as const } : {}),
+                      children: docs.navMain.map(g =>
+                        Sidebar.sidebarMenuItem(
+                          {
+                            children: [
+                              Sidebar.sidebarMenuButton(
+                                {
+                                  children: [g.title],
+                                  href: '#',
+                                  weight: 'medium',
+                                },
+                                h,
+                              ),
+                              subItems(
+                                g.items.map(i => i.title),
+                                model,
+                                h,
+                                id === '04',
+                              ),
+                            ],
+                          },
+                          h,
+                        ),
+                      ),
+                    },
+                    h,
+                  ),
+                ],
+              },
+              h,
+            ),
+          ]
+        : docs.navMain.map((g, index) => {
+            const labels = g.items.map(i => i.title)
+            if (id === '02' || id === '05')
+              return expandable(
+                g.title,
+                g.title,
+                id === '02'
+                  ? docItems(labels, model, h)
+                  : subItems(labels, model, h),
+                model,
+                h,
+                id === '02',
+                undefined,
+                id === '02' ? 'label' : 'plusMinus',
+              )
+            if (id === '06') {
+              const submenu = model.submenus[index]
+              return submenu === undefined
+                ? h.empty
+                : Sidebar.sidebarMenuItem(
+                    {
+                      children: [
+                        DropdownMenu.dropdownMenu<string, Message>(
+                          {
+                            model: submenu,
+                            toParentMessage: message =>
+                              Message['GotStyleXSidebarSubmenu']({
+                                index,
+                                message,
+                              }),
+                            trigger: h.span(
+                              [h.Class(className(searchStyles.contents))],
+                              [
+                                g.title,
+                                BaseIcon.icon(
+                                  'ellipsis',
                                   {
-                                    children: [g.title],
-                                    href: '#',
-                                    weight: 'medium',
+                                    class: className(searchStyles.chevron),
                                   },
                                   h,
                                 ),
-                                subItems(
-                                  g.items.map(i => i.title),
-                                  model,
-                                  h,
-                                  id === '04',
-                                ),
                               ],
-                            },
-                            h,
-                          ),
+                            ),
+                            triggerStyle: submenu.isOpen
+                              ? searchStyles.menuTriggerOpen
+                              : searchStyles.menuTrigger,
+                            items: labels,
+                            itemToConfig: title => ({ label: title }),
+                            side: 'right',
+                            align: 'start',
+                            ariaLabel: g.title + ' submenu',
+                          },
+                          h,
                         ),
-                      },
-                      h,
-                    ),
-                  ],
-                },
+                      ],
+                    },
+                    h,
+                  )
+            }
+            if (id === '01')
+              return group(
+                g.title,
+                labels
+                  .filter(l =>
+                    l.toLowerCase().includes(model.query.toLowerCase()),
+                  )
+                  .map(l => item(l, model, h)),
                 h,
-              ),
-            ]
-          : docs.navMain.map((g, index) => {
-              const labels = g.items.map(i => i.title)
-              if (id === '02' || id === '05')
-                return expandable(
-                  g.title,
-                  g.title,
-                  id === '02'
-                    ? docItems(labels, model, h)
-                    : subItems(labels, model, h),
-                  model,
-                  h,
-                  id === '02',
-                  undefined,
-                  id === '02' ? 'label' : 'plusMinus',
-                )
-              if (id === '06') {
-                const submenu = model.submenus[index]
-                return submenu === undefined
-                  ? h.empty
-                  : Sidebar.sidebarMenuItem(
-                      {
-                        children: [
-                          DropdownMenu.dropdownMenu<string, Message>(
-                            {
-                              model: submenu,
-                              toParentMessage: message =>
-                                Message['GotStyleXSidebarSubmenu']({
-                                  index,
-                                  message,
-                                }),
-                              trigger: h.span(
-                                [h.Class(className(searchStyles.contents))],
-                                [
-                                  g.title,
-                                  BaseIcon.icon(
-                                    'ellipsis',
-                                    {
-                                      class: className(searchStyles.chevron),
-                                    },
-                                    h,
-                                  ),
+              )
+            return group(g.title, [subItems(labels, model, h)], h)
+          }),
+    ),
+    ...(id === '06'
+      ? [
+          Sidebar.sidebarFooter(
+            {
+              children: [
+                box(
+                  {
+                    surface: 'card',
+                    radius: 'lg',
+                    padding: 'md',
+                    children: [
+                      stack(
+                        {
+                          gap: 'sm',
+                          children: [
+                            text(
+                              {
+                                children: ['Subscribe to our newsletter'],
+                                variant: 'label',
+                              },
+                              h,
+                            ),
+                            text(
+                              {
+                                children: [
+                                  'Opt-in to receive updates and news about the sidebar.',
                                 ],
-                              ),
-                              triggerStyle: submenu.isOpen
-                                ? searchStyles.menuTriggerOpen
-                                : searchStyles.menuTrigger,
-                              items: labels,
-                              itemToConfig: title => ({ label: title }),
-                              side: 'right',
-                              align: 'start',
-                              ariaLabel: g.title + ' submenu',
-                            },
-                            h,
-                          ),
-                        ],
-                      },
-                      h,
-                    )
-              }
-              if (id === '01')
-                return group(
-                  g.title,
-                  labels
-                    .filter(l =>
-                      l.toLowerCase().includes(model.query.toLowerCase()),
-                    )
-                    .map(l => item(l, model, h)),
+                                tone: 'secondary',
+                              },
+                              h,
+                            ),
+                            Sidebar.sidebarInput(
+                              {
+                                id: 'newsletter-email',
+                                type: 'email',
+                                value: model.query,
+                                onInput: value =>
+                                  Message['ChangedStyleXSidebarSearch']({
+                                    value,
+                                  }),
+                                placeholder: 'Email',
+                              },
+                              h,
+                            ),
+                            button(
+                              {
+                                children: ['Subscribe'],
+                                size: 'sm',
+                                layoutStyle: searchStyles.fullWidth,
+                              },
+                              h,
+                            ),
+                          ],
+                        },
+                        h,
+                      ),
+                    ],
+                  },
                   h,
-                )
-              return group(g.title, [subItems(labels, model, h)], h)
-            }),
-    },
-    h,
-  ),
-  ...(id === '06'
-    ? [
-        Sidebar.sidebarFooter(
-          {
-            children: [
-              box(
-                {
-                  surface: 'card',
-                  radius: 'lg',
-                  padding: 'md',
-                  children: [
-                    stack(
-                      {
-                        gap: 'sm',
-                        children: [
-                          text(
-                            {
-                              children: ['Subscribe to our newsletter'],
-                              variant: 'label',
-                            },
-                            h,
-                          ),
-                          text(
-                            {
-                              children: [
-                                'Opt-in to receive updates and news about the sidebar.',
-                              ],
-                              tone: 'secondary',
-                            },
-                            h,
-                          ),
-                          Sidebar.sidebarInput(
-                            {
-                              id: 'newsletter-email',
-                              type: 'email',
-                              value: model.query,
-                              onInput: value =>
-                                Message['ChangedStyleXSidebarSearch']({
-                                  value,
-                                }),
-                              placeholder: 'Email',
-                            },
-                            h,
-                          ),
-                          button(
-                            {
-                              children: ['Subscribe'],
-                              size: 'sm',
-                              layoutStyle: searchStyles.fullWidth,
-                            },
-                            h,
-                          ),
-                        ],
-                      },
-                      h,
-                    ),
-                  ],
-                },
-                h,
-              ),
-            ],
-          },
-          h,
-        ),
-      ]
-    : []),
-]
+                ),
+              ],
+            },
+            h,
+          ),
+        ]
+      : []),
+  ]
+}
 const application = (
   id: string,
   model: Model,

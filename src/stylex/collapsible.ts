@@ -51,7 +51,9 @@ const styles = stylex.create({
     display: 'flex',
     textAlign: 'left',
     height: '2rem',
-    width: '100%',
+    /* TW GROUP_LABEL_CLASS is content-width ('flex h-8 shrink-0 ...' with
+       no w-full); TW-15 calendar labels pass 'w-full' via layoutStyle. */
+    width: 'fit-content',
     flexShrink: 0,
     borderRadius: tokens.controlRadius,
     fontSize: '0.875rem',
