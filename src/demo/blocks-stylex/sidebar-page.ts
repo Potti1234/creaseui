@@ -1489,77 +1489,101 @@ const documentation = (
               h,
             ),
           ]
-        : docs.navMain.map((g, index) => {
-            const labels = g.items.map(i => i.title)
-            if (id === '02' || id === '05')
-              return expandable(
-                g.title,
-                g.title,
-                id === '02'
-                  ? docItems(labels, model, h)
-                  : subItems(labels, model, h),
-                model,
-                h,
-                id === '02',
-                undefined,
-                id === '02' ? 'label' : 'plusMinus',
-              )
-            if (id === '06') {
-              const submenu = model.submenus[index]
-              return submenu === undefined
-                ? h.empty
-                : Sidebar.sidebarMenuItem(
-                    {
-                      children: [
-                        DropdownMenu.dropdownMenu<string, Message>(
-                          {
-                            model: submenu,
-                            toParentMessage: message =>
-                              Message['GotStyleXSidebarSubmenu']({
-                                index,
-                                message,
-                              }),
-                            trigger: h.span(
-                              [h.Class(className(searchStyles.contents))],
-                              [
-                                g.title,
-                                BaseIcon.icon(
-                                  'ellipsis',
-                                  {
-                                    class: className(searchStyles.chevron),
-                                  },
-                                  h,
-                                ),
-                              ],
-                            ),
-                            triggerStyle: submenu.isOpen
-                              ? searchStyles.menuTriggerOpen
-                              : searchStyles.menuTrigger,
-                            items: labels,
-                            itemToConfig: title => ({ label: title }),
-                            side: 'right',
-                            align: 'start',
-                            ariaLabel: g.title + ' submenu',
-                          },
-                          h,
-                        ),
-                      ],
-                    },
+        : id === '05'
+          ? /* TW-05: one sidebarGroup > sidebarMenu > menuItem[disclosure]
+               per nav section — the group gives the px-2 inset and the
+               menu the gap-1 spacing the bare content children lack. */
+            [
+              group(
+                '',
+                docs.navMain.map(g =>
+                  expandable(
+                    g.title,
+                    g.title,
+                    subItems(
+                      g.items.map(i => i.title),
+                      model,
+                      h,
+                    ),
+                    model,
                     h,
-                  )
-            }
-            if (id === '01')
-              return group(
-                g.title,
-                labels
-                  .filter(l =>
-                    l.toLowerCase().includes(model.query.toLowerCase()),
-                  )
-                  .map(l => item(l, model, h)),
+                    false,
+                    undefined,
+                    'plusMinus',
+                  ),
+                ),
                 h,
-              )
-            return group(g.title, [subItems(labels, model, h)], h)
-          }),
+              ),
+            ]
+          : docs.navMain.map((g, index) => {
+              const labels = g.items.map(i => i.title)
+              if (id === '02')
+                return expandable(
+                  g.title,
+                  g.title,
+                  docItems(labels, model, h),
+                  model,
+                  h,
+                  id === '02',
+                  undefined,
+                  'label',
+                )
+              if (id === '06') {
+                const submenu = model.submenus[index]
+                return submenu === undefined
+                  ? h.empty
+                  : Sidebar.sidebarMenuItem(
+                      {
+                        children: [
+                          DropdownMenu.dropdownMenu<string, Message>(
+                            {
+                              model: submenu,
+                              toParentMessage: message =>
+                                Message['GotStyleXSidebarSubmenu']({
+                                  index,
+                                  message,
+                                }),
+                              trigger: h.span(
+                                [h.Class(className(searchStyles.contents))],
+                                [
+                                  g.title,
+                                  BaseIcon.icon(
+                                    'ellipsis',
+                                    {
+                                      class: className(searchStyles.chevron),
+                                    },
+                                    h,
+                                  ),
+                                ],
+                              ),
+                              triggerStyle: submenu.isOpen
+                                ? searchStyles.menuTriggerOpen
+                                : searchStyles.menuTrigger,
+                              items: labels,
+                              itemToConfig: title => ({ label: title }),
+                              side: 'right',
+                              align: 'start',
+                              ariaLabel: g.title + ' submenu',
+                            },
+                            h,
+                          ),
+                        ],
+                      },
+                      h,
+                    )
+              }
+              if (id === '01')
+                return group(
+                  g.title,
+                  labels
+                    .filter(l =>
+                      l.toLowerCase().includes(model.query.toLowerCase()),
+                    )
+                    .map(l => item(l, model, h)),
+                  h,
+                )
+              return group(g.title, [subItems(labels, model, h)], h)
+            }),
     ),
     ...(id === '06'
       ? [
