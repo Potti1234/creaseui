@@ -168,11 +168,5 @@
       "reason": "Uses accessible native scrollbars rather than decorative custom scrollbar parts."
     }
   ],
-  "missing": [
-    {
-      "component": "sonner",
-      "priority": "P0",
-      "strategy": "Covered by toast \u2014 the sonner and toast implementations were already identical; toast is the single notification component and owns the former sonner docs examples."
-    }
-  ]
+  "missing": []
 }
