@@ -276,12 +276,15 @@ const styles = stylex.create({
     paddingTop: 0,
   },
   title: {
+    margin: 0,
     fontSize: '1rem',
     fontWeight: 500,
     color: tokens.foreground,
   },
   description: {
+    margin: 0,
     fontSize: '0.875rem',
+    lineHeight: '1.25rem',
     color: tokens.mutedForeground,
     textWrap: 'balance',
   },
