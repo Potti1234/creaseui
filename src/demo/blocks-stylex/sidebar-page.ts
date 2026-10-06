@@ -694,14 +694,22 @@ const documentation = (
   Sidebar.sidebarContent(
     {
       children:
-        id === '03' || id === '04'
+        id === '03' || id === '04' || id === '14'
           ? [
-              /* TW-03/04: always-open groups — menuItem = [font-medium
+              /* TW-03/04/14: always-open groups — menuItem = [font-medium
                  menuButton title, sidebarMenuSub items]; 04 uses gap-2
-                 menu + flattened sub. */
+                 menu + flattened sub; 14 adds a 'Table of Contents' label. */
               Sidebar.sidebarGroup(
                 {
                   children: [
+                    ...(id === '14'
+                      ? [
+                          Sidebar.sidebarGroupLabel(
+                            { children: ['Table of Contents'] },
+                            h,
+                          ),
+                        ]
+                      : []),
                     Sidebar.sidebarMenu(
                       {
                         ...(id === '04' ? { variant: 'loose' as const } : {}),
