@@ -5,6 +5,7 @@ import * as CalendarDate from 'foldkit/calendar'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import { data as docs } from '@/demo/blocks/sidebar-01'
+import { data as docs05 } from '@/demo/blocks/sidebar-05'
 import { data as app } from '@/demo/blocks/sidebar-07'
 import { data as mail } from '@/demo/blocks/sidebar-09'
 import { data as workspace } from '@/demo/blocks/sidebar-10'
@@ -424,11 +425,9 @@ const searchStyles = stylex.create({
     outlineStyle: 'none',
     textAlign: 'left',
     whiteSpace: 'nowrap',
-    /* TW 'group-data-[collapsible=icon]:size-8!' */
-    width: {
-      default: '100%',
-      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: '2rem',
-    },
+    /* TW keeps w-full when collapsed: 'md:h-8 md:p-0' only clips the
+       height — the avatar sits left and the chevrons icon right. */
+    width: '100%',
     fontSize: '.875rem',
     lineHeight: '1.25rem',
     height: {
@@ -452,10 +451,7 @@ const searchStyles = stylex.create({
     outlineStyle: 'none',
     textAlign: 'left',
     whiteSpace: 'nowrap',
-    width: {
-      default: '100%',
-      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: '2rem',
-    },
+    width: '100%',
     fontSize: '.875rem',
     lineHeight: '1.25rem',
     height: {
@@ -1311,6 +1307,13 @@ const navUser = (
                             [h.Class(className(searchStyles.userAvatar))],
                             ['CU'],
                           ),
+                          /* TW keeps the 'ml-auto' chevrons-up-down visible
+                             beside the avatar in the collapsed rail. */
+                          BaseIcon.icon(
+                            'chevrons-up-down',
+                            { class: className(searchStyles.endIcon) },
+                            h,
+                          ),
                         ]
                       : [
                           h.div(
@@ -1618,11 +1621,13 @@ const documentation = (
         : id === '05'
           ? /* TW-05: one sidebarGroup > sidebarMenu > menuItem[disclosure]
                per nav section — the group gives the px-2 inset and the
-               menu the gap-1 spacing the bare content children lack. */
+               menu the gap-1 spacing the bare content children lack.
+               TW-05's own navMain adds the trailing 'Community' group, so
+               this variant reads its own data, not docs.navMain. */
             [
               group(
                 '',
-                docs.navMain.map(g =>
+                docs05.navMain.map(g =>
                   expandable(
                     g.title,
                     g.title,

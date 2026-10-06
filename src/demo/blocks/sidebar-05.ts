@@ -49,7 +49,7 @@ type NavGroup = Readonly<{
 }>
 
 // This is sample data copied from the source block.
-const data = {
+export const data = {
   navMain: [
     {
       title: 'Getting Started',
