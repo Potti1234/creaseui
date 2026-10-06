@@ -1309,6 +1309,23 @@ const navUser = (
                             [h.Class(className(searchStyles.userAvatar))],
                             ['CU'],
                           ),
+                          /* TW keeps the 'grid flex-1' text wrapper in the
+                             collapsed rail too — it shrinks to 0 width but
+                             still takes the second gap-2 slot before the
+                             chevrons icon. */
+                          h.div(
+                            [h.Class(className(searchStyles.userText))],
+                            [
+                              h.span(
+                                [h.Class(className(searchStyles.userName))],
+                                ['CreaseUI'],
+                              ),
+                              h.span(
+                                [h.Class(className(searchStyles.userEmail))],
+                                ['m@example.com'],
+                              ),
+                            ],
+                          ),
                           /* TW keeps the 'ml-auto' chevrons-up-down visible
                              beside the avatar in the collapsed rail. */
                           BaseIcon.icon(
