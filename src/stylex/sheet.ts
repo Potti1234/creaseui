@@ -236,7 +236,6 @@ const styles = stylex.create({
     transitionProperty: 'transform, opacity, height',
     transitionTimingFunction: interactionTokens.easingStandard,
     willChange: 'transform, opacity',
-    maxWidth: '640px',
     minHeight: 0,
     width: '100%',
   },

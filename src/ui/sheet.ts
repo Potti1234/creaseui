@@ -78,7 +78,7 @@ const SCRIM_CLASS =
 const POSITIONER_CLASS =
   'pointer-events-none absolute inset-x-0 bottom-0 flex justify-center'
 const BOTTOM_SHEET_CLASS =
-  'pointer-events-auto relative box-border flex w-full max-w-[640px] min-h-0 flex-col overflow-hidden border-x border-t border-border bg-background shadow-lg outline-none will-change-transform rounded-t-2xl transition-[transform,opacity,height] duration-300 ease-[cubic-bezier(0.24,1,0.4,1)] data-[closed]:translate-y-full data-[closed]:ease-[cubic-bezier(0.3,0,0.6,0.6)] starting:translate-y-full motion-reduce:transition-none'
+  'pointer-events-auto relative box-border flex w-full min-h-0 flex-col overflow-hidden border-x border-t border-border bg-background shadow-lg outline-none will-change-transform rounded-t-2xl transition-[transform,opacity,height] duration-300 ease-[cubic-bezier(0.24,1,0.4,1)] data-[closed]:translate-y-full data-[closed]:ease-[cubic-bezier(0.3,0,0.6,0.6)] starting:translate-y-full motion-reduce:transition-none'
 const HANDLE_BAR_CLASS =
   'absolute inset-x-0 top-0 z-[1] flex h-6 touch-none cursor-grab items-center justify-center bg-gradient-to-b from-background from-60% to-transparent'
 const HANDLE_PILL_CLASS = 'h-1 w-8 rounded-full bg-border'
