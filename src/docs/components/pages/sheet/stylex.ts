@@ -67,24 +67,24 @@ const styles = stylex.create({
     flexDirection: 'column',
   },
   sheetHeading: {
+    margin: 0,
     fontSize: '1rem',
     fontWeight: 600,
     lineHeight: '1.5rem',
-    margin: 0,
   },
   sheetHeadingCapitalize: {
+    margin: 0,
     fontSize: '1rem',
     fontWeight: 600,
     lineHeight: '1.5rem',
     textTransform: 'capitalize',
-    margin: 0,
   },
-  sheetText: { fontSize: '0.875rem', lineHeight: '1.25rem', margin: 0 },
+  sheetText: { margin: 0, fontSize: '0.875rem', lineHeight: '1.25rem' },
   sheetMeta: {
+    margin: 0,
     color: 'var(--muted-foreground)',
     fontSize: '0.75rem',
     lineHeight: '1rem',
-    margin: 0,
   },
   filterRows: { gap: '0.5rem', display: 'flex', flexDirection: 'column' },
   stackTight: { gap: '0.25rem', display: 'flex', flexDirection: 'column' },
@@ -104,10 +104,10 @@ const styles = stylex.create({
     maxWidth: '28rem',
   },
   pageHeading: {
+    margin: 0,
     fontSize: '1rem',
     fontWeight: 600,
     lineHeight: '1.5rem',
-    margin: 0,
   },
   timeRow: { gap: '0.5rem', alignItems: 'center', display: 'flex' },
   timeLabel: { fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem' },
@@ -124,12 +124,12 @@ const styles = stylex.create({
     display: 'flex',
   },
   stepTextWrap: { flexBasis: '0%', flexGrow: 1, flexShrink: 1 },
-  stepLabel: { fontSize: '0.875rem', lineHeight: '1.25rem', margin: 0 },
+  stepLabel: { margin: 0, fontSize: '0.875rem', lineHeight: '1.25rem' },
   stepDetail: {
+    margin: 0,
     color: 'var(--muted-foreground)',
     fontSize: '0.75rem',
     lineHeight: '1rem',
-    margin: 0,
   },
   stepDistance: {
     color: 'var(--muted-foreground)',
@@ -137,10 +137,10 @@ const styles = stylex.create({
     lineHeight: '1rem',
   },
   itemLabel: {
+    margin: 0,
     fontSize: '0.875rem',
     fontWeight: 500,
     lineHeight: '1.25rem',
-    margin: 0,
   },
 })
 
