@@ -19,12 +19,16 @@ export const overlayStyles = stylex.create({
   },
   close: {
     borderColor: tokens.transparent,
-    borderRadius: tokens.controlRadius,
+    /* TW 'rounded-xs' (2px) — keeps the focus ring's rounded-square shape. */
+    borderRadius: '2px',
     borderStyle: 'solid',
     backgroundColor: tokens.transparent,
     boxShadow: {
       default: tokens.shadowNone,
-      ':focus-visible': tokens.focusRingShadow,
+      /* TW 'focus:ring-2 focus:ring-offset-2 focus:ring-ring' — a 2px
+         background-offset then a 2px full-alpha ring (not the shared
+         3px/50% focusRingShadow). */
+      ':focus': '0 0 0 2px var(--background), 0 0 0 4px var(--ring)',
     },
     cursor: interactionTokens.cursorAction,
     opacity: { default: 0.7, ':hover': 1 },
