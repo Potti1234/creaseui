@@ -1203,12 +1203,53 @@ export const ObservePopup = Mount.defineStream('ObserveDrawerPopup', {
     ),
 })
 
-/** ResizeObserver on the viewport — feeds viewport size + root font size. */
+const NESTED_POPUP_SELECTOR = '[data-slot="drawer-popup"]'
+
+/** A nested drawer's <dialog> is a DOM descendant of the parent's faded
+    content, and ancestor `opacity` compositing can't be escaped by any
+    descendant CSS. `popover` promotes the dialog to the top layer — the
+    same escape hatch shadcn/Base UI get by portaling — while DOM ancestry
+    (inert scoping, the parent's nested-drawer watcher) is unchanged.
+    `manual` keeps dismissal on our own message flow: no light-dismiss
+    would hide the dialog while the model still shows it open. */
+const hoistNestedDialog = (element: HTMLElement): (() => void) | undefined => {
+  const dialog = element.closest('dialog')
+  if (dialog === null || dialog.closest(NESTED_POPUP_SELECTOR) === null) {
+    return undefined
+  }
+  if (typeof dialog.showPopover !== 'function') return undefined
+  try {
+    dialog.setAttribute('popover', 'manual')
+    dialog.showPopover()
+  } catch {
+    return undefined
+  }
+  return () => {
+    try {
+      dialog.hidePopover()
+    } catch {
+      // A re-render may drop the element before cleanup runs.
+    }
+    dialog.removeAttribute('popover')
+  }
+}
+
+/** ResizeObserver on the viewport — feeds viewport size + root font size.
+    Also promotes a nested drawer's dialog to the top layer so it escapes
+    the parent content's fade (see hoistNestedDialog). */
 export const ObserveViewport = Mount.defineStream('ObserveDrawerViewport', {
   messages: [Message.MeasuredViewport],
   execute: ({ element }) =>
     Stream.callback<typeof Message.MeasuredViewport.Type>(queue =>
       Effect.gen(function* () {
+        yield* Effect.acquireRelease(
+          Effect.sync(() =>
+            element instanceof HTMLElement
+              ? hoistNestedDialog(element)
+              : undefined,
+          ),
+          release => Effect.sync(() => release?.()),
+        )
         yield* Effect.acquireRelease(
           Effect.sync(() => {
             if (!(element instanceof HTMLElement)) return undefined
@@ -1237,8 +1278,6 @@ export const ObserveViewport = Mount.defineStream('ObserveDrawerViewport', {
       }),
     ),
 })
-
-const NESTED_POPUP_SELECTOR = '[data-slot="drawer-popup"]'
 
 /** Watches nested drawer popups inside this popup subtree and reports the
     frontmost child's height + swipe progress — the Base UI
