@@ -65,9 +65,9 @@ const styles = stylex.create({
   },
   content: { overflowY: 'visible' },
   iconXsm: { height: '0.75rem', width: '0.75rem' },
-  iconSm: { height: '1rem', width: '1rem' },
-  iconMd: { height: '1.25rem', width: '1.25rem' },
-  iconLg: { height: '1.5rem', width: '1.5rem' },
+  iconSm: { height: '0.875rem', width: '0.875rem' },
+  iconMd: { height: '1rem', width: '1rem' },
+  iconLg: { height: '1.125rem', width: '1.125rem' },
 })
 
 export type InfoTipSize = 'xsm' | 'sm' | 'md' | 'lg'
@@ -99,7 +99,7 @@ export type InfoTipProps<Msg> = Readonly<{
   content: Html | string
   /** Accessible name for the trigger button. Defaults to 'More information'. */
   label?: string
-  /** Info icon size: xsm 12px, sm 16px, md 20px, lg 24px. */
+  /** Info icon size: xsm 12px, sm 14px, md 16px, lg 18px. */
   size?: InfoTipSize
   side?: InfoTipSide
   align?: InfoTipAlign

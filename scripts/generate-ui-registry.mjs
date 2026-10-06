@@ -45,7 +45,6 @@ const categories = {
     'message-scroller',
     'progress',
     'skeleton',
-    'sonner',
     'spinner',
     'toast',
   ]),

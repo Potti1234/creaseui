@@ -13,6 +13,7 @@ export interface TabsTabSpec {
   readonly content: string
   readonly isDisabled?: boolean
   readonly icon?: string
+  readonly isLabelHidden?: boolean
   readonly card?: TabsCardSpec
 }
 
@@ -22,6 +23,7 @@ export type TabsKind =
   | 'vertical'
   | 'disabled'
   | 'icons'
+  | 'icon-only'
   | 'rtl'
   | 'manual'
 
@@ -188,6 +190,36 @@ export const tabsFixtures: Readonly<[TabsFixture, ...Array<TabsFixture>]> = [
     ],
   },
   {
+    title: 'Icon Only',
+    description:
+      'Compact triggers render only an icon while the hidden label stays the accessible name.',
+    kind: 'icon-only',
+    ariaLabel: 'View mode',
+    tabs: [
+      {
+        value: 'grid',
+        label: 'Grid',
+        content: '',
+        icon: 'layout-grid',
+        isLabelHidden: true,
+      },
+      {
+        value: 'list',
+        label: 'List',
+        content: '',
+        icon: 'list',
+        isLabelHidden: true,
+      },
+      {
+        value: 'table',
+        label: 'Table',
+        content: '',
+        icon: 'table',
+        isLabelHidden: true,
+      },
+    ],
+  },
+  {
     title: 'RTL',
     description:
       'Horizontal tab order and arrow direction mirror in right-to-left contexts.',
@@ -248,15 +280,11 @@ const tabEntry = (
   isStyleX: boolean,
   indent: string,
 ): string => {
-  const label =
-    tab.icon === undefined
-      ? `'${esc(tab.label)}'`
-      : `h.span([], [Icon.icon('${tab.icon}', ${isStyleX ? '{}' : "{ class: 'size-4' }"}, h), '${esc(tab.label)}'])`
   const content =
     tab.card === undefined
       ? `'${esc(tab.content)}'`
       : cardContent(tab.card, isStyleX, `${indent}  `)
-  return `${indent}{ value: '${tab.value}', label: ${label}, content: ${content}${tab.isDisabled === true ? ', isDisabled: true' : ''} },`
+  return `${indent}{ value: '${tab.value}', label: '${esc(tab.label)}', content: ${content}${tab.icon === undefined ? '' : `, icon: Icon.icon('${tab.icon}', {}, h)`}${tab.isLabelHidden === true ? ', isLabelHidden: true' : ''}${tab.isDisabled === true ? ', isDisabled: true' : ''} },`
 }
 
 const emitSource = (

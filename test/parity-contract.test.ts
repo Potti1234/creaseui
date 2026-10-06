@@ -25,6 +25,7 @@ const registry = readJson<{
 }>('src/ui/registry.json')
 const roadmap = readJson<{
   verifiedAgainst: { commit: string }
+  missing: ReadonlyArray<{ component: string }>
 }>('docs/component-roadmap.json')
 const upstream = readJson<{
   commit: string
@@ -55,21 +56,23 @@ describe('multidimensional component parity', () => {
       .sort()
 
     assert.deepEqual(contractNames, registryNames)
+    const intentionallyMissing = new Set(
+      roadmap.missing.map(entry => entry.component),
+    )
     assert.deepEqual(
-      upstream.components.filter(name => !registryNames.includes(name)),
+      upstream.components.filter(
+        name =>
+          !registryNames.includes(name) && !intentionallyMissing.has(name),
+      ),
       [],
     )
     assert.deepEqual(parity.summary.creaseOnlyRecipes, [
-      'app-shell',
       'avatar-group',
       'banner',
       'blockquote',
-      'bottom-sheet',
       'center',
       'chat-reasoning',
-      'checkbox-list',
       'circular-progress',
-      'clickable-card',
       'code',
       'code-block',
       'data-table',
@@ -95,11 +98,8 @@ describe('multidimensional component parity', () => {
       'multi-selector',
       'number-input',
       'overflow-list',
-      'power-search',
       'section',
-      'segmented-control',
       'selectable-card',
-      'side-nav',
       'stack',
       'stat',
       'status-dot',

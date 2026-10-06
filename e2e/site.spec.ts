@@ -397,7 +397,6 @@ test('authored helper pages publish complete application source', async ({
     'skeleton',
     'slider',
     'spinner',
-    'sonner',
     'switch',
     'tabs',
     'table',
@@ -3308,118 +3307,78 @@ test('message scroller covers every upstream core-concept section in both render
   )
 })
 
-for (const route of ['sonner', 'toast'] as const) {
-  test(`${route} shows and dismisses an accessible notification`, async ({
-    page,
-  }) => {
-    await page.goto(`/docs/components/${route}`)
-    if (route === 'sonner') {
-      const hero = page.locator('[aria-label="Basic preview"]')
-      await hero.getByRole('button', { name: 'Show Toast' }).click()
-      const heroViewport = hero.getByRole('region', {
-        name: 'Sonner notifications',
-      })
-      const status = heroViewport.getByRole('status')
-      await expect(status.first()).toContainText('Event has been created')
-      await expect(status.first()).toContainText(
-        'Sunday, December 03, 2023 at 9:00 AM',
-      )
-      await status.first().getByRole('button', { name: 'Undo' }).click()
-      await expect(status.first()).toBeHidden()
+test('toast shows and dismisses an accessible notification', async ({
+  page,
+}) => {
+  await page.goto('/docs/components/toast')
+  {
+    const hero = page.locator('[aria-label="Basic preview"]')
+    await hero.getByRole('button', { name: 'Show Toast' }).click()
+    const heroViewport = hero.getByRole('region', {
+      name: 'Toast notifications',
+    })
+    const status = heroViewport.getByRole('status')
+    await expect(status.first()).toContainText('Event has been created')
+    await expect(status.first()).toContainText(
+      'Sunday, December 03, 2023 at 9:00 AM',
+    )
+    await status.first().getByRole('button', { name: 'Undo' }).click()
+    await expect(status.first()).toBeHidden()
 
-      for (const id of ['types', 'description', 'position']) {
-        await expect(page.locator(`#${id}`)).toBeVisible()
-      }
-
-      const types = page.locator('#types')
-      const typesViewport = types.getByRole('region', {
-        name: 'Sonner notifications',
-      })
-      await types.getByRole('button', { name: 'Error' }).click()
-      await expect(typesViewport.getByRole('alert')).toContainText(
-        'Event has not been created',
-      )
-      await types.getByRole('button', { name: 'Success' }).click()
-      await expect(typesViewport.getByRole('status')).toContainText(
-        'Event has been created',
-      )
-
-      await types.getByRole('button', { name: 'Promise' }).click()
-      await expect(typesViewport.getByRole('status').last()).toContainText(
-        'Loading...',
-      )
-      await expect(typesViewport.getByRole('status').last()).toContainText(
-        'Event has been created',
-        { timeout: 4000 },
-      )
-
-      await page
-        .locator('#description')
-        .getByRole('button', { name: 'Show Toast' })
-        .click()
-      await expect(
-        page
-          .locator('#description')
-          .getByRole('region', { name: 'Sonner notifications' })
-          .getByRole('status')
-          .last(),
-      ).toContainText('Monday, January 3rd at 6:00pm')
-
-      await page
-        .locator('#position')
-        .getByRole('button', { name: 'Top Left' })
-        .click()
-      const topLeft = page.locator('[data-position="top-left"]')
-      await expect(topLeft.getByRole('status').last()).toContainText(
-        'Event has been created',
-      )
-
-      await visitRenderer(page, 'StyleX')
-      for (const id of ['types', 'description', 'position']) {
-        await expect(page.locator(`#${id}`)).toBeVisible()
-      }
-      await expect(page.locator('#types code')).toContainText('@/stylex/sonner')
-    } else {
-      const example = page.locator('#sticky-error')
-      await example.getByRole('button', { name: 'Show toast' }).click()
-      const viewport = page.getByRole('region', {
-        name: 'Toast notifications',
-      })
-      const alert = viewport.getByRole('alert')
-      await expect(alert).toContainText('Could not save changes')
-      await alert.getByRole('button', { name: 'Undo' }).click()
-      await expect(alert).toBeHidden()
-      await example.getByRole('button', { name: 'Show toast' }).click()
-      await expect(alert).toBeVisible()
-      await alert.getByRole('button', { name: 'Dismiss notification' }).click()
-      await expect(alert).toBeHidden()
-      await expect(example.locator('code')).toContainText('Command.mapMessages')
-      await expect(example.locator('code')).toContainText('.show(')
-
-      const timed = page.locator('#timed-notification')
-      const show = timed.getByRole('button', { name: 'Show toast' })
-      await show.click()
-      await show.click()
-      const statuses = viewport.getByRole('status')
-      await expect(statuses).toHaveCount(2)
-      await statuses.first().hover()
-      await page.waitForTimeout(850)
-      await expect(statuses).toHaveCount(2)
-      await page.mouse.move(0, 0)
-      await expect(statuses).toHaveCount(0, { timeout: 6000 })
-
-      await visitRenderer(page, 'StyleX')
-      await expect(page.locator('#timed-notification')).toBeVisible()
-      await expect(page.locator('#sticky-error')).toBeVisible()
-      await expect(page.locator('#stylex-specimen')).toHaveCount(0)
-      await expect(example.locator('code')).toContainText('@/stylex/toast')
-      await example.getByRole('button', { name: 'Show toast' }).click()
-      await expect(viewport.getByRole('alert')).toContainText(
-        'Could not save changes',
-      )
+    for (const id of ['types', 'description', 'position']) {
+      await expect(page.locator(`#${id}`)).toBeVisible()
     }
-  })
-}
+
+    const types = page.locator('#types')
+    const typesViewport = types.getByRole('region', {
+      name: 'Toast notifications',
+    })
+    await types.getByRole('button', { name: 'Error' }).click()
+    await expect(typesViewport.getByRole('alert')).toContainText(
+      'Event has not been created',
+    )
+    await types.getByRole('button', { name: 'Success' }).click()
+    await expect(typesViewport.getByRole('status')).toContainText(
+      'Event has been created',
+    )
+
+    await types.getByRole('button', { name: 'Promise' }).click()
+    await expect(typesViewport.getByRole('status').last()).toContainText(
+      'Loading...',
+    )
+    await expect(typesViewport.getByRole('status').last()).toContainText(
+      'Event has been created',
+      { timeout: 4000 },
+    )
+
+    await page
+      .locator('#description')
+      .getByRole('button', { name: 'Show Toast' })
+      .click()
+    await expect(
+      page
+        .locator('#description')
+        .getByRole('region', { name: 'Toast notifications' })
+        .getByRole('status')
+        .last(),
+    ).toContainText('Monday, January 3rd at 6:00pm')
+
+    await page
+      .locator('#position')
+      .getByRole('button', { name: 'Top Left' })
+      .click()
+    const topLeft = page.locator('[data-position="top-left"]')
+    await expect(topLeft.getByRole('status').last()).toContainText(
+      'Event has been created',
+    )
+
+    await visitRenderer(page, 'StyleX')
+    for (const id of ['types', 'description', 'position']) {
+      await expect(page.locator(`#${id}`)).toBeVisible()
+    }
+    await expect(page.locator('#types code')).toContainText('@/stylex/toast')
+  }
+})
 
 test('calendar sections mirror shadcn examples in both renderers', async ({
   page,

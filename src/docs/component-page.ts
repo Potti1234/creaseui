@@ -14,7 +14,12 @@ import type {
 } from '@/docs/components/page-definition'
 
 import { COMPONENTS, apiPurpose, toSlug } from '@/docs/component-metadata'
-export { COMPONENTS, componentTitle, toSlug } from '@/docs/component-metadata'
+export {
+  COMPONENTS,
+  canonicalComponentSlug,
+  componentTitle,
+  toSlug,
+} from '@/docs/component-metadata'
 
 export type ExampleConfig<Msg> = Readonly<{
   title: string

@@ -127,7 +127,7 @@ const familyChart = (
 ): Html | undefined =>
   isChartFamilyKind(kind)
     ? h.div(
-        [h.Class('w-full max-w-xl')],
+        [h.Class('mx-auto w-full max-w-xl')],
         [
           Chart.eChart(
             {
@@ -181,7 +181,7 @@ export const chartTailwindPreviewProgram = definePreviewProgram<Model, Message>(
       if (kind === 'demo')
         return Card.card(
           {
-            class: 'w-full max-w-xl',
+            class: 'mx-auto w-full max-w-xl',
             children: [
               Card.cardHeader(
                 {
@@ -320,7 +320,7 @@ export const chartTailwindPreviewProgram = definePreviewProgram<Model, Message>(
         )
       if (kind === 'rtl')
         return h.div(
-          [h.Dir('rtl'), h.Class('w-full max-w-xl')],
+          [h.Dir('rtl'), h.Class('mx-auto w-full max-w-xl')],
           [
             Chart.eChart(
               {
@@ -338,7 +338,7 @@ export const chartTailwindPreviewProgram = definePreviewProgram<Model, Message>(
         )
       if (kind !== undefined && isChartUpstreamKind(kind))
         return h.div(
-          [h.Class('w-full max-w-xl')],
+          [h.Class('mx-auto w-full max-w-xl')],
           [
             Chart.eChart(
               {
@@ -355,10 +355,10 @@ export const chartTailwindPreviewProgram = definePreviewProgram<Model, Message>(
           ],
         )
       if (kind === 'bar-svg')
-        return Chart.barChart({ class: 'max-w-xl', data: chartData }, h)
+        return Chart.barChart({ class: 'mx-auto max-w-xl', data: chartData }, h)
       if (kind === 'area-svg')
         return h.div(
-          [h.Class('w-full max-w-xl space-y-4')],
+          [h.Class('mx-auto w-full max-w-xl space-y-4')],
           [
             Chart.areaChart({ data: chartData.map(item => item.value) }, h),
             Chart.chartLegend(
@@ -373,7 +373,7 @@ export const chartTailwindPreviewProgram = definePreviewProgram<Model, Message>(
         )
       if (kind === 'lifecycle')
         return h.div(
-          [h.Class('w-full max-w-xl space-y-3')],
+          [h.Class('mx-auto w-full max-w-xl space-y-3')],
           [
             h.button(
               [
@@ -401,7 +401,7 @@ export const chartTailwindPreviewProgram = definePreviewProgram<Model, Message>(
         )
       if (kind === 'states')
         return h.div(
-          [h.Class('grid w-full max-w-xl gap-3')],
+          [h.Class('mx-auto grid w-full max-w-xl gap-3')],
           [
             Chart.eChart(
               {

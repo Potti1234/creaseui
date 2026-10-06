@@ -352,6 +352,7 @@ const nodeNeeds = (
 ): Readonly<{
   menu?: 'demo' | 'conversation'
   inputs: Array<InputField>
+  groupedInput: boolean
   select: boolean
   popover: boolean
   tooltip: boolean
@@ -361,6 +362,7 @@ const nodeNeeds = (
   const needs: {
     menu?: 'demo' | 'conversation'
     inputs: Array<InputField>
+    groupedInput: boolean
     select: boolean
     popover: boolean
     tooltip: boolean
@@ -368,6 +370,7 @@ const nodeNeeds = (
     icons: boolean
   } = {
     inputs: [],
+    groupedInput: false,
     select: false,
     popover: false,
     tooltip: false,
@@ -387,9 +390,11 @@ const nodeNeeds = (
         return
       case 'input':
         needs.inputs.push(node.field)
+        needs.groupedInput = true
         return
       case 'inputGroup':
         needs.inputs.push('message')
+        needs.groupedInput = true
         needs.tooltip = true
         needs.icons = true
         needs.voice = needs.voice || node.voiceToggle
@@ -544,12 +549,17 @@ const buttonSource = (node: BgButton, isRtl: boolean): string => {
         }, h)`
 }
 
-const inputSource = (node: BgInput): string =>
+const inputSource = (node: BgInput, renderer: 'tailwind' | 'stylex'): string =>
   `Input.input({
           id: '${node.field}',
           value: model.${node.field},
           onInput: value => Message['${FIELD_MESSAGE[node.field]}']({ value }),
           placeholder: '${esc(node.placeholder)}',
+          ${
+            renderer === 'stylex'
+              ? 'layoutStyle: styles.groupHeight,'
+              : `class: 'h-9',`
+          }
         }, h)`
 
 const inputGroupSource = (
@@ -586,6 +596,7 @@ const inputGroupSource = (
             ariaLabel: 'Voice Mode',
           }, h)`
   return `InputGroup.inputGroup({
+        ${isSx ? 'layoutStyle: styles.groupHeight,' : `class: 'h-9',`}
         children: [
           InputGroup.inputGroupInput({
             id: 'message',
@@ -686,7 +697,7 @@ const nodeSource = (
     case 'separator':
       return `${pad}ButtonGroup.buttonGroupSeparator({}, h)`
     case 'input':
-      return `${pad}${inputSource(node)}`
+      return `${pad}${inputSource(node, renderer)}`
     case 'inputGroup':
       return `${pad}${inputGroupSource(node.voiceToggle, renderer)}`
     case 'select':
@@ -761,6 +772,7 @@ const stylexStylesSource = (fixture: ButtonGroupFixture): string => {
     parts.push(
       `  captionIcon: { fontSize: '0.875rem', lineHeight: '1.25rem' },`,
     )
+  if (needs.groupedInput) parts.push(`  groupHeight: { height: '2.25rem' },`)
   if (needs.popover)
     parts.push(
       `  popoverBody: { display: 'grid', fontSize: '0.875rem', lineHeight: '1.25rem', gap: '0.75rem' },`,

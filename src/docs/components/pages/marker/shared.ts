@@ -74,7 +74,7 @@ const kindUsesIcon = (kind: MarkerKind): boolean =>
   kind === 'linksAndButtons'
 const kindUsesSpinner = (kind: MarkerKind): boolean =>
   kind === 'demo' || kind === 'status'
-const kindUsesSonner = (kind: MarkerKind): boolean => kind === 'linksAndButtons'
+const kindUsesToast = (kind: MarkerKind): boolean => kind === 'linksAndButtons'
 
 const emitImports = (fixture: MarkerFixture, isStyleX: boolean): string => {
   const base = isStyleX ? 'stylex' : 'ui'
@@ -90,8 +90,8 @@ const emitImports = (fixture: MarkerFixture, isStyleX: boolean): string => {
     parts.push(`import * as Icon from '@/lib/icon'`)
   }
   parts.push(`import * as Marker from '@/${base}/marker'`)
-  if (kindUsesSonner(fixture.kind)) {
-    parts.push(`import * as Sonner from '@/${base}/sonner'`)
+  if (kindUsesToast(fixture.kind)) {
+    parts.push(`import * as Toast from '@/${base}/toast'`)
   }
   if (kindUsesSpinner(fixture.kind)) {
     parts.push(`import * as Spinner from '@/${base}/spinner'`)
@@ -131,8 +131,8 @@ const emitStyles = (fixture: MarkerFixture): string => {
 
 const emitModel = (fixture: MarkerFixture): string => {
   const fields: Array<string> = []
-  if (kindUsesSonner(fixture.kind)) {
-    fields.push('  notifications: Sonner.Model,')
+  if (kindUsesToast(fixture.kind)) {
+    fields.push('  notifications: Toast.Model,')
   }
   const struct =
     fields.length === 0
@@ -143,10 +143,10 @@ const emitModel = (fixture: MarkerFixture): string => {
 
 const emitMessages = (fixture: MarkerFixture): string => {
   const fields: Array<string> = []
-  if (kindUsesSonner(fixture.kind)) {
+  if (kindUsesToast(fixture.kind)) {
     fields.push(
       '  ClickedRevert: {},',
-      '  GotSonnerMessage: { message: S.Union([Sonner.Message, Sonner.ActivatedToastAction]) },',
+      '  GotToastMessage: { message: S.Union([Toast.Message, Toast.ActivatedToastAction]) },',
     )
   }
   if (fields.length === 0) {
@@ -165,29 +165,29 @@ export type Message = typeof Message.Type`
 
 const emitInit = (fixture: MarkerFixture): string => {
   const fields: Array<string> = []
-  if (kindUsesSonner(fixture.kind)) {
-    fields.push("notifications: Sonner.init({ id: 'marker-notifications' })")
+  if (kindUsesToast(fixture.kind)) {
+    fields.push("notifications: Toast.init({ id: 'marker-notifications' })")
   }
   return `export const init = (): Update.Return<Model, Message> => ({ model: { ${fields.join(', ')} } })`
 }
 
 const emitUpdate = (fixture: MarkerFixture): string => {
   const entries: Array<string> = []
-  if (kindUsesSonner(fixture.kind)) {
+  if (kindUsesToast(fixture.kind)) {
     entries.push(
       `    case 'ClickedRevert': {
-      const result = Sonner.show(model.notifications, Sonner.info({ title: 'You clicked the revert button' }))
+      const result = Toast.show(model.notifications, Toast.info({ title: 'You clicked the revert button' }))
       return {
         model: { ...model, notifications: result.model },
-        commands: Command.mapMessages(result.commands ?? [], next => Message.GotSonnerMessage({ message: next })),
+        commands: Command.mapMessages(result.commands ?? [], next => Message.GotToastMessage({ message: next })),
       }
     }`,
-      `    case 'GotSonnerMessage': {
-      const { model: notifications, commands: notificationCommands__ } = Sonner.update(model.notifications, message.message)
+      `    case 'GotToastMessage': {
+      const { model: notifications, commands: notificationCommands__ } = Toast.update(model.notifications, message.message)
       const commands = notificationCommands__ ?? []
       return {
         model: { ...model, notifications },
-        commands: Command.mapMessages(commands, next => Message.GotSonnerMessage({ message: next })),
+        commands: Command.mapMessages(commands, next => Message.GotToastMessage({ message: next })),
       }
     }`,
     )
@@ -365,9 +365,9 @@ const emitBody = (fixture: MarkerFixture, isStyleX: boolean): string => {
           ${content('Revert this change')},
         ],
       }, h),
-      Sonner.sonner({
+      Toast.toast({
         model: model.notifications,
-        toParentMessage: message => Message.GotSonnerMessage({ message }),
+        toParentMessage: message => Message.GotToastMessage({ message }),
       }, h),
     ]),`
   }

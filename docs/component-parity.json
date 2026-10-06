@@ -23,18 +23,14 @@
   ],
   "summary": {
     "upstreamItems": 62,
-    "registryItems": 120,
+    "registryItems": 112,
     "creaseOnlyRecipes": [
-      "app-shell",
       "avatar-group",
       "banner",
       "blockquote",
-      "bottom-sheet",
       "center",
       "chat-reasoning",
-      "checkbox-list",
       "circular-progress",
-      "clickable-card",
       "code",
       "code-block",
       "data-table",
@@ -60,11 +56,8 @@
       "multi-selector",
       "number-input",
       "overflow-list",
-      "power-search",
       "section",
-      "segmented-control",
       "selectable-card",
-      "side-nav",
       "stack",
       "stat",
       "status-dot",
@@ -138,24 +131,6 @@
         "src/ui/alert-dialog.ts",
         "src/ui/registry.json#alert-dialog",
         "/docs/components/alert-dialog"
-      ]
-    },
-    {
-      "component": "app-shell",
-      "upstream": false,
-      "classification": "full",
-      "dimensions": {
-        "visual": "unverified",
-        "behavior": "partial",
-        "accessibility": "partial",
-        "composition": "partial",
-        "documentation": "verified",
-        "registry": "verified"
-      },
-      "evidence": [
-        "src/ui/app-shell.ts",
-        "src/ui/registry.json#app-shell",
-        "/docs/components/app-shell"
       ]
     },
     {
@@ -282,24 +257,6 @@
         "src/ui/blockquote.ts",
         "src/ui/registry.json#blockquote",
         "/docs/components/blockquote"
-      ]
-    },
-    {
-      "component": "bottom-sheet",
-      "upstream": false,
-      "classification": "full",
-      "dimensions": {
-        "visual": "unverified",
-        "behavior": "partial",
-        "accessibility": "partial",
-        "composition": "partial",
-        "documentation": "verified",
-        "registry": "verified"
-      },
-      "evidence": [
-        "src/ui/bottom-sheet.ts",
-        "src/ui/registry.json#bottom-sheet",
-        "/docs/components/bottom-sheet"
       ]
     },
     {
@@ -502,24 +459,6 @@
       ]
     },
     {
-      "component": "checkbox-list",
-      "upstream": false,
-      "classification": "full",
-      "dimensions": {
-        "visual": "unverified",
-        "behavior": "partial",
-        "accessibility": "partial",
-        "composition": "partial",
-        "documentation": "verified",
-        "registry": "verified"
-      },
-      "evidence": [
-        "src/ui/checkbox-list.ts",
-        "src/ui/registry.json#checkbox-list",
-        "/docs/components/checkbox-list"
-      ]
-    },
-    {
       "component": "circular-progress",
       "upstream": false,
       "classification": "full",
@@ -535,24 +474,6 @@
         "src/ui/circular-progress.ts",
         "src/ui/registry.json#circular-progress",
         "/docs/components/circular-progress"
-      ]
-    },
-    {
-      "component": "clickable-card",
-      "upstream": false,
-      "classification": "full",
-      "dimensions": {
-        "visual": "unverified",
-        "behavior": "partial",
-        "accessibility": "partial",
-        "composition": "partial",
-        "documentation": "verified",
-        "registry": "verified"
-      },
-      "evidence": [
-        "src/ui/clickable-card.ts",
-        "src/ui/registry.json#clickable-card",
-        "/docs/components/clickable-card"
       ]
     },
     {
@@ -1477,24 +1398,6 @@
       ]
     },
     {
-      "component": "power-search",
-      "upstream": false,
-      "classification": "full",
-      "dimensions": {
-        "visual": "unverified",
-        "behavior": "partial",
-        "accessibility": "partial",
-        "composition": "partial",
-        "documentation": "verified",
-        "registry": "verified"
-      },
-      "evidence": [
-        "src/ui/power-search.ts",
-        "src/ui/registry.json#power-search",
-        "/docs/components/power-search"
-      ]
-    },
-    {
       "component": "progress",
       "upstream": true,
       "classification": "full",
@@ -1585,24 +1488,6 @@
       ]
     },
     {
-      "component": "segmented-control",
-      "upstream": false,
-      "classification": "full",
-      "dimensions": {
-        "visual": "unverified",
-        "behavior": "partial",
-        "accessibility": "partial",
-        "composition": "partial",
-        "documentation": "verified",
-        "registry": "verified"
-      },
-      "evidence": [
-        "src/ui/segmented-control.ts",
-        "src/ui/registry.json#segmented-control",
-        "/docs/components/segmented-control"
-      ]
-    },
-    {
       "component": "select",
       "upstream": true,
       "classification": "full",
@@ -1677,24 +1562,6 @@
       ]
     },
     {
-      "component": "side-nav",
-      "upstream": false,
-      "classification": "full",
-      "dimensions": {
-        "visual": "unverified",
-        "behavior": "partial",
-        "accessibility": "partial",
-        "composition": "partial",
-        "documentation": "verified",
-        "registry": "verified"
-      },
-      "evidence": [
-        "src/ui/side-nav.ts",
-        "src/ui/registry.json#side-nav",
-        "/docs/components/side-nav"
-      ]
-    },
-    {
       "component": "sidebar",
       "upstream": true,
       "classification": "full",
@@ -1746,24 +1613,6 @@
         "src/ui/slider.ts",
         "src/ui/registry.json#slider",
         "/docs/components/slider"
-      ]
-    },
-    {
-      "component": "sonner",
-      "upstream": true,
-      "classification": "full",
-      "dimensions": {
-        "visual": "unverified",
-        "behavior": "partial",
-        "accessibility": "partial",
-        "composition": "partial",
-        "documentation": "verified",
-        "registry": "verified"
-      },
-      "evidence": [
-        "src/ui/sonner.ts",
-        "src/ui/registry.json#sonner",
-        "/docs/components/sonner"
       ]
     },
     {

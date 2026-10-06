@@ -16,7 +16,6 @@
 - Accordion: /docs/components/accordion — install with `npx creaseui add accordion`
 - Alert Dialog: /docs/components/alert-dialog — install with `npx creaseui add alert-dialog`
 - Alert: /docs/components/alert — install with `npx creaseui add alert`
-- App Shell: /docs/components/app-shell — install with `npx creaseui add app-shell`
 - Aspect Ratio: /docs/components/aspect-ratio — install with `npx creaseui add aspect-ratio`
 - Attachment: /docs/components/attachment — install with `npx creaseui add attachment`
 - Avatar Group: /docs/components/avatar-group — install with `npx creaseui add avatar-group`
@@ -24,7 +23,6 @@
 - Badge: /docs/components/badge — install with `npx creaseui add badge`
 - Banner: /docs/components/banner — install with `npx creaseui add banner`
 - Blockquote: /docs/components/blockquote — install with `npx creaseui add blockquote`
-- Bottom Sheet: /docs/components/bottom-sheet — install with `npx creaseui add bottom-sheet`
 - Breadcrumb: /docs/components/breadcrumb — install with `npx creaseui add breadcrumb`
 - Bubble: /docs/components/bubble — install with `npx creaseui add bubble`
 - Button Group: /docs/components/button-group — install with `npx creaseui add button-group`
@@ -35,10 +33,8 @@
 - Center: /docs/components/center — install with `npx creaseui add center`
 - Chart: /docs/components/chart — install with `npx creaseui add chart`
 - Chat Reasoning: /docs/components/chat-reasoning — install with `npx creaseui add chat-reasoning`
-- Checkbox List: /docs/components/checkbox-list — install with `npx creaseui add checkbox-list`
 - Checkbox: /docs/components/checkbox — install with `npx creaseui add checkbox`
 - Circular Progress: /docs/components/circular-progress — install with `npx creaseui add circular-progress`
-- Clickable Card: /docs/components/clickable-card — install with `npx creaseui add clickable-card`
 - Code Block: /docs/components/code-block — install with `npx creaseui add code-block`
 - Code: /docs/components/code — install with `npx creaseui add code`
 - Collapsible: /docs/components/collapsible — install with `npx creaseui add collapsible`
@@ -90,22 +86,18 @@
 - Overflow List: /docs/components/overflow-list — install with `npx creaseui add overflow-list`
 - Pagination: /docs/components/pagination — install with `npx creaseui add pagination`
 - Popover: /docs/components/popover — install with `npx creaseui add popover`
-- Power Search: /docs/components/power-search — install with `npx creaseui add power-search`
 - Progress: /docs/components/progress — install with `npx creaseui add progress`
 - Radio Group: /docs/components/radio-group — install with `npx creaseui add radio-group`
 - Resizable: /docs/components/resizable — install with `npx creaseui add resizable`
 - Scroll Area: /docs/components/scroll-area — install with `npx creaseui add scroll-area`
 - Section: /docs/components/section — install with `npx creaseui add section`
-- Segmented Control: /docs/components/segmented-control — install with `npx creaseui add segmented-control`
 - Select: /docs/components/select — install with `npx creaseui add select`
 - Selectable Card: /docs/components/selectable-card — install with `npx creaseui add selectable-card`
 - Separator: /docs/components/separator — install with `npx creaseui add separator`
 - Sheet: /docs/components/sheet — install with `npx creaseui add sheet`
-- Side Nav: /docs/components/side-nav — install with `npx creaseui add side-nav`
 - Sidebar: /docs/components/sidebar — install with `npx creaseui add sidebar`
 - Skeleton: /docs/components/skeleton — install with `npx creaseui add skeleton`
 - Slider: /docs/components/slider — install with `npx creaseui add slider`
-- Sonner: /docs/components/sonner — install with `npx creaseui add sonner`
 - Spinner: /docs/components/spinner — install with `npx creaseui add spinner`
 - Stack: /docs/components/stack — install with `npx creaseui add stack`
 - Stat: /docs/components/stat — install with `npx creaseui add stat`
@@ -189,20 +181,6 @@ Examples: Basic, Account updated successfully, Destructive, Payment failed, Acti
 - `alertIcon<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
 - `alertTitle<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
 - `alertDescription<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
-
-### App Shell
-
-A CreaseUI App Shell component for Foldkit.
-
-Source: `src/ui/app-shell.ts`
-
-Examples: App Shell, AppShell — Top Nav Only, AppShell — Side Nav Only, AppShell — Content Only, AppShell — Top Nav with Side Nav, AppShell — With Banner
-
-- `AppShellVariant = 'elevated' | 'wash' | 'surface' | 'section'` (type)
-- `AppShellHeight = 'fill' | 'auto'` (type)
-- `AppShellSpacing = 0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10` (type)
-- `AppShellProps = Readonly<{ variant?: AppShellVariant; banner?: Html; topNav?: Html; sideNav?: Html; contentPadding?: AppShellSpacing; height?: AppShellHeight; skipLinkLabel?: string; mainId?: string; children?: ReadonlyArray<Html | string>; class?: string; }>` (type)
-- `appShell<Msg>(props: AppShellProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Aspect Ratio
 
@@ -324,49 +302,6 @@ Examples: Blockquote — Showcase, Blockquote — With Attribution, Blockquote �
 - `BlockquoteProps = Readonly<{ children: ReadonlyArray<Html | string>; cite?: string; class?: string; }>` (type)
 - `blockquote<Msg>(props: BlockquoteProps, h: HtmlBuilder<Msg>): Html` (function)
 
-### Bottom Sheet
-
-A CreaseUI Bottom Sheet component for Foldkit.
-
-Source: `src/ui/bottom-sheet.ts`
-
-Examples: Bottom Sheet, Bottom Sheet — Height variants, Bottom Sheet — No scrim, Bottom Sheet — Snap points, Bottom Sheet — Mobile keyboard, Bottom Sheet Switcher, Bottom Sheet Switcher — Review flow
-
-- `Model: value` (value)
-- `Model = typeof Model.Type` (type)
-- `Message: value` (value)
-- `Message = typeof Message.Type` (type)
-- `OutMessage: value` (value)
-- `OutMessage = typeof OutMessage.Type` (type)
-- `SwitcherModel: value` (value)
-- `SwitcherModel = typeof SwitcherModel.Type` (type)
-- `SwitcherMessage: value` (value)
-- `SwitcherMessage = typeof SwitcherMessage.Type` (type)
-- `SwitcherOutMessage: value` (value)
-- `SwitcherOutMessage = typeof SwitcherOutMessage.Type` (type)
-- `SheetState: value` (value)
-- `SheetState = typeof SheetState.Type` (type)
-- `export { BottomSheetSnapPoint } from '@/lib/bottom-sheet'` (re-export)
-- `export { SheetHeight } from '@/lib/bottom-sheet'` (re-export)
-- `export { SheetPurpose } from '@/lib/bottom-sheet'` (re-export)
-- `init: value` (value)
-- `update: value` (value)
-- `open: value` (value)
-- `close: value` (value)
-- `initSwitcher: value` (value)
-- `updateSwitcher: value` (value)
-- `openSheet: value` (value)
-- `closeSwitcher: value` (value)
-- `OVERSCROLL_PADDING: value` (value)
-- `HEIGHT_BUDGETS: value` (value)
-- `isSheetDragCandidate(target: unknown): false | 'handle' | 'arm'` (function)
-- `SheetDragDispatch<Msg> = Readonly<{ started: (frame: { y: number; timeStamp: number; armOnly: boolean; }) => Msg; dragged: (frame: { y: number; timeStamp: number; detents: number[]; }) => Msg; ended: (frame: { y: number; timeStamp: number; detents: number[]; …` (type)
-- `BottomSheetProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; label: string; content: Html; class?: string; }>` (type)
-- `bottomSheet<Msg>(props: BottomSheetProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
-- `SwitcherSheetContent = Readonly<{ id: string; content: Html; }>` (type)
-- `BottomSheetSwitcherProps<Msg> = Readonly<{ model: SwitcherModel; toParentMessage: (message: SwitcherMessage) => Msg; sheets: ReadonlyArray<SwitcherSheetContent>; class?: string; }>` (type)
-- `bottomSheetSwitcher<Msg>(props: BottomSheetSwitcherProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
-
 ### Breadcrumb
 
 A CreaseUI Breadcrumb component for Foldkit.
@@ -461,9 +396,9 @@ Examples: Demo, Persian / Hijri / Jalali Calendar, Basic, Range Calendar, Month 
 - `reflectDisabledDates: value` (value)
 - `reflectDisabledDaysOfWeek: value` (value)
 - `dropToDays: value` (value)
-- `CalendarViewOptions = Readonly<{ class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarBehavior.CalendarRange; weekNumbers?: boolean; }>` (type)
+- `CalendarViewOptions = Readonly<{ captionLayout?: 'label' | 'dropdown'; class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarBehavior.CalendarRange; weekNumbers?: boolean; }>` (type)
 - `calendarView<Msg>(attributes: CalendarPrimitive.CalendarAttributes, options: CalendarViewOptions, h: HtmlBuilder<Msg>): Html` (function)
-- `CalendarProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarBehavior.CalendarRange; weekNumbers?: boolean;…` (type)
+- `CalendarProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; captionLayout?: 'label' | 'dropdown'; class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarBehavior…` (type)
 - `calendar<Msg>(props: CalendarProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Card
@@ -571,24 +506,6 @@ Examples: Chat Reasoning, Expanded, Streaming, Custom Label, In a Message
 - `ChatReasoningProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; children: ReadonlyArray<Html | string>; label?: string; duration?: string; isStreaming?: boolean; preview?: string; class?: string; }>` (type)
 - `chatReasoning<Msg>(props: ChatReasoningProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
-### Checkbox List
-
-A CreaseUI Checkbox List component for Foldkit.
-
-Source: `src/ui/checkbox-list.ts`
-
-Examples: Checkbox List, CheckboxList — Select All With Indeterminate, CheckboxList — With End Content
-
-- `export { CheckboxListDensity } from ` (re-export)
-- `export { CheckboxListEntry } from ` (re-export)
-- `export { CheckboxListItem } from ` (re-export)
-- `export { CheckboxListProps } from ` (re-export)
-- `export { checkboxListDivider } from '@/lib/checkbox-list'` (re-export)
-- `export { InputStatus } from '@/lib/input-status'` (re-export)
-- `checkboxListItem<Msg>(item: CheckboxListItem<Msg>, h: HtmlBuilder<Msg>, options?: Readonly<{ id?: string; density?: CheckboxListDensity; isDisabled?: boolean; isReadOnly?: boolean; }>): Html` (function)
-- `CheckboxListUiProps<Msg> = CheckboxListProps<Msg> & Readonly<{ class?: string; }>` (type)
-- `checkboxList<Msg>(props: CheckboxListUiProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
-
 ### Checkbox
 
 A CreaseUI Checkbox component for Foldkit.
@@ -597,7 +514,7 @@ Source: `src/ui/checkbox.ts`
 
 Examples: Demo, Invalid State, Basic, Description, Disabled, Group, Table, RTL, Indeterminate, Read only
 
-- `CheckboxProps<Msg> = CheckboxBehaviorProps<Msg> & Readonly<{ class?: string; }>` (type)
+- `CheckboxProps<Msg> = CheckboxBehaviorProps<Msg> & Readonly<{ class?: string; tabindex?: number; }>` (type)
 - `checkbox<Msg>(props: CheckboxProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Circular Progress
@@ -612,21 +529,6 @@ Examples: Circular Progress, Circular Progress — Value Label, Circular Progres
 - `CircularProgressSize = 'sm' | 'md' | 'lg'` (type)
 - `CircularProgressProps = Readonly<{ value?: number; max?: number; label: string; isLabelHidden?: boolean; hasValueLabel?: boolean; formatValueLabel?: (value: number, max: number) => string; children?: ReadonlyArray<Html>; size?: CircularProgressSize; variant?:…` (type)
 - `circularProgress<Msg>(props: CircularProgressProps, h: HtmlBuilder<Msg>): Html` (function)
-
-### Clickable Card
-
-A CreaseUI Clickable Card component for Foldkit.
-
-Source: `src/ui/clickable-card.ts`
-
-Examples: ClickableCard, ClickableCard — Elevated, ClickableCardWithNestedButton
-
-- `export { CardElevation } from '@/lib/card-surface'` (re-export)
-- `export { CardPadding } from '@/lib/card-surface'` (re-export)
-- `export { CardVariant } from '@/lib/card-surface'` (re-export)
-- `export { Message } from '@/lib/clickable-card'` (re-export)
-- `ClickableCardProps<Msg> = Readonly<{ label: string; onClick?: Msg; href?: string; target?: string; isDisabled?: boolean; children?: ReadonlyArray<Html | string>; padding?: CardPadding; variant?: CardVariant; elevation?: CardElevation; width?: string; height?:…` (type)
-- `clickableCard<Msg>(props: ClickableCardProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Code Block
 
@@ -1026,7 +928,7 @@ Examples: Payment Method, Input, Textarea, Select, Slider, Fieldset, Checkbox, R
 - `FieldProps = Slot & Readonly<{ orientation?: FieldVariants['orientation']; isInvalid?: boolean; isDisabled?: boolean; direction?: 'ltr' | 'rtl'; }>` (type)
 - `field<Msg>(props: FieldProps, h: HtmlBuilder<Msg>): Html` (function)
 - `fieldContent<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
-- `FieldLabelProps = Slot & Readonly<{ for?: string; }>` (type)
+- `FieldLabelProps = Slot & Readonly<{ for?: string; id?: string; }>` (type)
 - `fieldLabel<Msg>(props: FieldLabelProps, h: HtmlBuilder<Msg>): Html` (function)
 - `fieldTitle<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html` (function)
 - `fieldDescription<Msg>(props: Slot & Readonly<{ id?: string; }>, h: HtmlBuilder<Msg>): Html` (function)
@@ -1201,7 +1103,7 @@ Examples: Basic, Align, Icon, Text, Button, Kbd, Dropdown, Spinner, Textarea, Cu
 - `InputGroupButtonProps<Msg> = Omit<ButtonProps<Msg>, 'size' | 'class'> & Readonly<{ size?: InputGroupButtonVariants['size']; class?: string; }>` (type)
 - `inputGroupButton<Msg>(props: InputGroupButtonProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `inputGroupText<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` (function)
-- `InputGroupInputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; onKeyDown?: (key: string) => Msg; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; ariaLabel?: string; class?: str…` (type)
+- `InputGroupInputProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; onKeyDown?: (key: string) => Msg; placeholder?: string; type?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; ariaLabel?: string; step?: stri…` (type)
 - `inputGroupInput<Msg>(props: InputGroupInputProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `InputGroupTextareaProps<Msg> = Readonly<{ id: string; value: string; onInput: (value: string) => Msg; placeholder?: string; name?: string; isDisabled?: boolean; isInvalid?: boolean; ariaLabel?: string; class?: string; }>` (type)
 - `inputGroupTextarea<Msg>(props: InputGroupTextareaProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
@@ -1274,7 +1176,7 @@ Source: `src/ui/label.ts`
 
 Examples: Basic, Label in Field, RTL
 
-- `LabelProps = Readonly<{ for?: string; isRequired?: boolean; isDisabled?: boolean; class?: string; children: ReadonlyArray<Html | string>; }>` (type)
+- `LabelProps = Readonly<{ for?: string; id?: string; isRequired?: boolean; isDisabled?: boolean; class?: string; children: ReadonlyArray<Html | string>; }>` (type)
 - `label<Msg>(props: LabelProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Lightbox
@@ -1688,48 +1590,6 @@ Examples: Basic, Align, With Form, Interactive content, Right aligned, RTL
 - `PopoverProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; triggerClass?: string; content: Html | string; align?: PopoverAlign; side?: PopoverSide; class?: string; direction?: 'ltr' | 'rtl'; focusSelector?…` (type)
 - `popover<Msg>(props: PopoverProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
-### Power Search
-
-A CreaseUI Power Search component for Foldkit.
-
-Source: `src/ui/power-search.ts`
-
-Examples: Power Search, PowerSearch — Content Search, PowerSearch — Preset Filters, PowerSearch — Full Featured, PowerSearch — Search with Table
-
-- `EnumItem = Readonly<{ value: string; label: string; }>` (type)
-- `PowerSearchEntity = Readonly<{ id: string; label: string; photo?: string; }>` (type)
-- `SearchableItem = Readonly<{ id: string; label: string; photo?: string; auxiliaryData?: unknown; }>` (type)
-- `SearchSource = Readonly<{ search: (query: string) => ReadonlyArray<SearchableItem>; bootstrap?: () => ReadonlyArray<SearchableItem>; }>` (type)
-- `DateTimeRangePart = Readonly<{ type: 'NOW'; }> | Readonly<{ type: 'ABSOLUTE'; unixSeconds: number; }> | Readonly<{ type: 'RELATIVE'; backValue: number; unit: 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year'; }>` (type)
-- `DateTimeRange = Readonly<{ start: DateTimeRangePart; end: DateTimeRangePart; }>` (type)
-- `OperatorValue = Readonly<{ type: 'empty'; }> | Readonly<{ type: 'string'; searchSource?: SearchSource; }> | Readonly<{ type: 'string_list'; searchSource?: SearchSource; }> | Readonly<{ type: 'integer'; }> | Readonly<{ type: 'float'; }> | Readonly<{ type: 'tim…` (type)
-- `RelativeDateFilterPreset = Readonly<{ key: string; label: string; range: DateTimeRange; }>` (type)
-- `PowerSearchOperator = Readonly<{ key: string; value: OperatorValue; }> & (Readonly<{ label: string; }> | Readonly<{ i18nKey: string; }>)` (type)
-- `PowerSearchField = Readonly<{ key: string; label: string; operators: ReadonlyArray<PowerSearchOperator>; icon?: string; defaultOperator?: string; group?: string; description?: string; typeaheadAliases?: ReadonlyArray<string>; typeaheadMinQueryLength?: number;…` (type)
-- `FilterValue = Readonly<{ type: 'empty'; }> | Readonly<{ type: 'string'; value: string; }> | Readonly<{ type: 'string_list'; value: ReadonlyArray<string>; }> | Readonly<{ type: 'integer'; value: number; }> | Readonly<{ type: 'float'; value: number; }> | Readon…` (type)
-- `PowerSearchFilter = Readonly<{ field: string; operator: string; value: FilterValue; isReadOnly?: boolean; }>` (type)
-- `PartialFilter = Readonly<{ field: string; operator?: string; value?: FilterValue; }>` (type)
-- `PowerSearchConfig = Readonly<{ name: string; fields: ReadonlyArray<PowerSearchField>; contentSearchFieldKey?: string; }>` (type)
-- `PowerSearchChangeType = 'add' | 'edit' | 'remove'` (type)
-- `resolveOperatorLabel(operator: PowerSearchOperator): string` (function)
-- `InternalPowerSearchConfig = Readonly<{ name: string; fields: ReadonlyArray<PowerSearchField>; contentSearchFieldKey?: string; fieldsByKey: ReadonlyMap<string, PowerSearchField>; nonContentSearchFields: ReadonlyArray<PowerSearchField>; contentSearchField?: Pow…` (type)
-- `createInternalConfig(config: PowerSearchConfig): InternalPowerSearchConfig` (function)
-- `resolveDateTimeRangePart(part: DateTimeRangePart, nowSeconds: number = Date.now() / 1000): number` (function)
-- `formatFilterValue(config: InternalPowerSearchConfig, operatorValue: OperatorValue, filterValue: FilterValue | undefined, maxLength: number): string` (function)
-- `PowerSearchSuggestion = Readonly<{ kind: 'group'; label: string; }> | Readonly<{ kind: 'field'; field: PowerSearchField; }> | Readonly<{ kind: 'operator'; field: PowerSearchField; operator: PowerSearchOperator; label: string; }> | Readonly<{ kind: 'value'; fi…` (type)
-- `FieldDefinition = Readonly<{ key: string; type: FieldDefinitionType; label?: string; enumValues?: ReadonlyArray<EnumItem>; }>` (type)
-- `createPowerSearchConfig(definitions: ReadonlyArray<FieldDefinition>, configName?: string): { config: PowerSearchConfig; applyFilters: <Row extends Record<string, unknown>>(filters: ReadonlyArray<PowerSearchFilter>, data: ReadonlyArray<Row>) => Row[]; }` (function)
-- `Model: value` (value)
-- `Model = typeof Model.Type` (type)
-- `init(config: { id: string; }): Model` (function)
-- `Message: value` (value)
-- `Message = typeof Message.Type` (type)
-- `OutMessage: value` (value)
-- `OutMessage = typeof OutMessage.Type` (type)
-- `update(model: Model, message: Message, config: InternalPowerSearchConfig, filters: ReadonlyArray<PowerSearchFilter>, resultCount: number | null = null): UpdateReturn` (function)
-- `PowerSearchProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; filters: ReadonlyArray<PowerSearchFilter>; config: InternalPowerSearchConfig; placeholder?: string; valueMaxLength?: number; resultCount?: number; hasClear?: boolean;…` (type)
-- `powerSearch<Msg>(props: PowerSearchProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
-
 ### Progress
 
 A CreaseUI Progress component for Foldkit.
@@ -1809,27 +1669,6 @@ Examples: Section — Variants, Section — Default with Wash, Section — With 
 - `SectionProps = Readonly<{ variant?: SectionVariant; dividers?: ReadonlyArray<SectionDivider>; padding?: SectionSpacing; paddingInline?: SectionSpacing; paddingInlineStart?: SectionSpacing; paddingInlineEnd?: SectionSpacing; paddingBlock?: SectionSpacing; padd…` (type)
 - `section<Msg>(props: SectionProps, h: HtmlBuilder<Msg>): Html` (function)
 
-### Segmented Control
-
-A CreaseUI Segmented Control component for Foldkit.
-
-Source: `src/ui/segmented-control.ts`
-
-Examples: Segmented Control, With Icons, Icon Only, Fill Layout, Disabled Item
-
-- `export { Message } from ` (re-export)
-- `export { Model } from ` (re-export)
-- `export { init } from ` (re-export)
-- `export { OutMessage } from ` (re-export)
-- `SegmentedControlSize = 'sm' | 'md' | 'lg'` (type)
-- `SegmentedControlLayout = 'hug' | 'fill'` (type)
-- `SegmentedControlItem<Value extends string = string> = Readonly<{ value: Value; label: string; icon?: Html; isLabelHidden?: boolean; isDisabled?: boolean; }>` (type)
-- `SegmentedControlProps<Value extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; value: Value; ariaLabel: string; options: ReadonlyArray<SegmentedControlItem<Value>>; size?: SegmentedControlSize; layout?: SegmentedContro…` (type)
-- `SegmentedControlBundle<Value extends string> = Readonly<{ update: ReturnType<typeof createBehavior<Value>>['update']; segmentedControl: <Msg>(props: SegmentedControlProps<Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>` (type)
-- `create<Value extends string = string>(): SegmentedControlBundle<Value>` (function)
-- `update: value` (value)
-- `segmentedControl: value` (value)
-
 ### Select
 
 A CreaseUI Select component for Foldkit.
@@ -1864,7 +1703,7 @@ Examples: SelectableCard, SelectableCard — Elevated, SelectableCardMulti
 - `export { CardElevation } from '@/lib/card-surface'` (re-export)
 - `export { CardPadding } from '@/lib/card-surface'` (re-export)
 - `export { CardVariant } from '@/lib/card-surface'` (re-export)
-- `export { Message } from '@/lib/clickable-card'` (re-export)
+- `export { Message } from '@/lib/card-pressable'` (re-export)
 - `SelectableCardProps<Msg> = Readonly<{ label: string; isSelected: boolean; onChange?: Msg; isDisabled?: boolean; children?: ReadonlyArray<Html | string>; padding?: CardPadding; variant?: CardVariant; elevation?: CardElevation; width?: string; height?: string; …` (type)
 - `selectableCard<Msg>(props: SelectableCardProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
@@ -1885,7 +1724,7 @@ A CreaseUI Sheet component for Foldkit.
 
 Source: `src/ui/sheet.ts`
 
-Examples: Basic, Side, No Close Button, RTL
+Examples: Basic, Side, No Close Button, RTL, Bottom, Bottom — Height Variants, Bottom — No Scrim, Bottom — Snap Points, Bottom — Mobile Keyboard, Switcher, Switcher — Review Flow
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -1893,11 +1732,30 @@ Examples: Basic, Side, No Close Button, RTL
 - `Message = typeof Message.Type` (type)
 - `OutMessage: value` (value)
 - `OutMessage = typeof OutMessage.Type` (type)
+- `SwitcherModel: value` (value)
+- `SwitcherModel = typeof SwitcherModel.Type` (type)
+- `SwitcherMessage: value` (value)
+- `SwitcherMessage = typeof SwitcherMessage.Type` (type)
+- `SwitcherOutMessage: value` (value)
+- `SwitcherOutMessage = typeof SwitcherOutMessage.Type` (type)
+- `SheetState: value` (value)
+- `SheetState = typeof SheetState.Type` (type)
+- `export { SheetHeight } from '@/lib/sheet'` (re-export)
+- `export { SheetPurpose } from '@/lib/sheet'` (re-export)
+- `export { SheetSnapPoint } from '@/lib/sheet'` (re-export)
 - `init: value` (value)
 - `update: value` (value)
 - `open: value` (value)
 - `close: value` (value)
+- `initSwitcher: value` (value)
+- `updateSwitcher: value` (value)
+- `openSheet: value` (value)
+- `closeSwitcher: value` (value)
+- `OVERSCROLL_PADDING: value` (value)
+- `HEIGHT_BUDGETS: value` (value)
 - `SheetSide = 'top' | 'right' | 'bottom' | 'left'` (type)
+- `isSheetDragCandidate(target: unknown): false | 'handle' | 'arm'` (function)
+- `SheetDragDispatch<Msg> = Readonly<{ started: (frame: { y: number; timeStamp: number; armOnly: boolean; }) => Msg; dragged: (frame: { y: number; timeStamp: number; detents: number[]; }) => Msg; ended: (frame: { y: number; timeStamp: number; detents: number[]; …` (type)
 - `SheetSlots = Readonly<{ closeButton: ReadonlyArray<ChildAttribute>; initialFocusAttributes: () => ReadonlyArray<ChildAttribute>; }>` (type)
 - `SheetPartProps = Readonly<{ children: ReadonlyArray<Html | string>; class?: string; }>` (type)
 - `SheetTextPartProps = SheetPartProps & Readonly<{ attributes: ReadonlyArray<ChildAttribute>; }>` (type)
@@ -1909,34 +1767,9 @@ Examples: Basic, Side, No Close Button, RTL
 - `SheetParts<Msg> = Readonly<{ header: (props: SheetPartProps) => Html; title: (props: Omit<SheetTextPartProps, 'attributes'>) => Html; description: (props: Omit<SheetTextPartProps, 'attributes'>) => Html; footer: (props: SheetPartProps) => Html; close: (props?…` (type)
 - `SheetProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description?: string; content?: (slots: SheetSlots) => ReadonlyArray<Html>; footer?: (slots: SheetSlots) => ReadonlyArray<Html>; layout?: (parts: SheetParts<…` (type)
 - `sheet<Msg>(props: SheetProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
-
-### Side Nav
-
-A CreaseUI Side Nav component for Foldkit.
-
-Source: `src/ui/side-nav.ts`
-
-Examples: Side Nav, Main, Documents, SideNav — End Content, Navigation, SideNav — Header with Menu, SideNav — Nested Items, SideNavCollapseButton — Basic, SideNavCollapseButton, SideNavHeading — Basic, SideNavHeading, SideNavItem — Basic, SideNavItem, SideNavSection — Basic, Overview, Account, SideNavSection
-
-- `export { Message } from '@/lib/side-nav'` (re-export)
-- `export { Model } from '@/lib/side-nav'` (re-export)
-- `export { OutMessage } from '@/lib/side-nav'` (re-export)
-- `export { HEADING_MENU_KEY } from '@/lib/side-nav'` (re-export)
-- `export { flyoutKey } from '@/lib/side-nav'` (re-export)
-- `export { init } from '@/lib/side-nav'` (re-export)
-- `export { isItemCollapsed } from '@/lib/side-nav'` (re-export)
-- `export { menuFor } from '@/lib/side-nav'` (re-export)
-- `export { update } from '@/lib/side-nav'` (re-export)
-- `export { visibleWidth } from '@/lib/side-nav'` (re-export)
-- `export { InitConfig } from '@/lib/side-nav'` (re-export)
-- `SideNavItemData = Readonly<{ id: string; label: string; icon?: string; selectedIcon?: string; isSelected?: boolean; isDisabled?: boolean; href?: string; onSelect?: boolean; endContent?: Html; actions?: Html; children?: ReadonlyArray<SideNavItemData>; defaultC…` (type)
-- `SideNavMenuItemData = Readonly<{ label: string; href?: string; onSelect?: boolean; icon?: string; isDisabled?: boolean; }>` (type)
-- `SideNavHeadingData = Readonly<{ heading: string; icon?: Html; headingHref?: string; superheading?: string; superheadingHref?: string; subheading?: string; subheadingHref?: string; headerEndContent?: Html; menu?: ReadonlyArray<SideNavMenuItemData>; }>` (type)
-- `SideNavSectionData = Readonly<{ title?: string; subtitle?: string; isHeaderHidden?: boolean; endContent?: Html; items: ReadonlyArray<SideNavItemData>; }>` (type)
-- `ViewInputs = Readonly<{ items?: ReadonlyArray<SideNavItemData>; sections?: ReadonlyArray<SideNavSectionData>; heading?: SideNavHeadingData; topContent?: Html; footer?: Html; footerIcons?: Html; hasCollapseButton?: boolean; footerCollapseButton?: boolean; size…` (type)
-- `view: value` (value)
-- `SideNavProps<Msg> = ViewInputs & Readonly<{ model: SideNavLib.Model; toParentMessage: (message: SideNavLib.Message) => Msg; }>` (type)
-- `sideNav<Msg>(props: SideNavProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `SwitcherSheetContent = Readonly<{ id: string; content: Html; }>` (type)
+- `SheetSwitcherProps<Msg> = Readonly<{ model: SwitcherModel; toParentMessage: (message: SwitcherMessage) => Msg; sheets: ReadonlyArray<SwitcherSheetContent>; class?: string; }>` (type)
+- `sheetSwitcher<Msg>(props: SheetSwitcherProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Sidebar
 
@@ -2020,24 +1853,22 @@ Examples: Basic, Range, Multiple Thumbs, Vertical, Controlled, Disabled, RTL
 - `subscriptions: value` (value)
 - `subscriptionsForRoot: value` (value)
 - `fractionOfValue: value` (value)
+- `export { initMulti } from ` (re-export)
+- `export { MultiMessage } from ` (re-export)
+- `export { MultiModel } from ` (re-export)
+- `export { MultiOutMessage } from ` (re-export)
+- `export { multiThumbSubscriptions } from ` (re-export)
+- `export { normalizeMultiValues } from ` (re-export)
+- `export { reflectMultiRange } from ` (re-export)
+- `export { toThumbValue } from ` (re-export)
+- `export { updateMulti } from ` (re-export)
+- `export { updateMultiValue } from ` (re-export)
 - `SliderProps<Msg> = Readonly<{ model: Model; value: number; toParentMessage: (message: Message) => Msg; label?: string; ariaLabel?: string; formatValue?: (value: number) => string; isDisabled?: boolean; isReadOnly?: boolean; name?: string; class?: string; }>` (type)
-- `RangeSliderProps<Msg> = Readonly<{ values: readonly [ number, number ]; min: number; max: number; step?: number; onInput: (values: readonly [ number, number ]) => Msg; orientation?: 'horizontal' | 'vertical'; direction?: 'ltr' | 'rtl'; ariaLabels?: readonly […` (type)
+- `MultiSliderProps<Msg> = Readonly<{ model: MultiModel; values: readonly number[]; toParentMessage: (message: MultiMessage) => Msg; orientation?: 'horizontal' | 'vertical'; direction?: 'ltr' | 'rtl'; ariaLabels?: readonly string[]; formatValue?: (value: number,…` (type)
+- `RangeSliderProps<Msg> = Readonly<Omit<MultiSliderProps<Msg>, 'values'> & { values: readonly [ number, number ]; }>` (type)
 - `rangeSlider<Msg>(props: RangeSliderProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `slider<Msg>(props: SliderProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
-- `MultiSliderProps<Msg> = Readonly<{ values: readonly number[]; min: number; max: number; step?: number; onInput: (values: readonly number[]) => Msg; orientation?: 'horizontal' | 'vertical'; direction?: 'ltr' | 'rtl'; ariaLabels?: readonly string[]; isDisabled?…` (type)
 - `multiSlider<Msg>(props: MultiSliderProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
-
-### Sonner
-
-A CreaseUI Sonner component for Foldkit.
-
-Source: `src/ui/sonner.ts`
-
-Examples: Basic, Types, Description, Position
-
-- `export * from '@/lib/toast'` (re-export)
-- `SonnerProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; ariaLabel?: string; pausePolicy?: 'none' | 'pointer'; class?: string; entryClass?: string; position?: Position; }>` (type)
-- `sonner<Msg>(props: SonnerProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Spinner
 
@@ -2163,7 +1994,7 @@ A CreaseUI Tabs component for Foldkit.
 
 Source: `src/ui/tabs.ts`
 
-Examples: Basic, Line, Vertical, Disabled, Icons, RTL, Manual with disabled tab
+Examples: Basic, Line, Vertical, Disabled, Icons, Icon Only, RTL, Manual with disabled tab
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -2175,7 +2006,7 @@ Examples: Basic, Line, Vertical, Disabled, Icons, RTL, Manual with disabled tab
 - `tabsListVariants: value` (value)
 - `TabsListVariants = VariantProps<typeof tabsListVariants>` (type)
 - `TabsOrientation = 'horizontal' | 'vertical'` (type)
-- `TabConfig<Value extends string = string> = Readonly<{ value: Value; label: Html | string; content: Html | string; isDisabled?: boolean; }>` (type)
+- `TabConfig<Value extends string = string> = Readonly<{ value: Value; label: Html | string; icon?: Html; isLabelHidden?: boolean; content: Html | string; isDisabled?: boolean; }>` (type)
 - `TabsProps<Value extends string, Msg> = Readonly<{ model: Model; selectedValue: Value; toParentMessage: (message: Message) => Msg; tabs: ReadonlyArray<TabConfig<Value>>; ariaLabel?: string; orientation?: TabsOrientation; direction?: 'ltr' | 'rtl'; variant?: Ta…` (type)
 - `TabsBundle<Value extends string> = Readonly<{ update: ReturnType<typeof TabsPrimitive.create<Value>>['update']; tabs: <Msg>(props: TabsProps<Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>` (type)
 - `create<Value extends string = string>(): TabsBundle<Value>` (function)
@@ -2297,10 +2128,11 @@ A CreaseUI Toast component for Foldkit.
 
 Source: `src/ui/toast.ts`
 
-Examples: Timed notification, Sticky error
+Examples: Basic, Types, Description, Position
 
-- `export * from '@/ui/sonner'` (re-export)
-- `export { sonner as toast } from '@/ui/sonner'` (re-export)
+- `export * from '@/lib/toast'` (re-export)
+- `ToastProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; ariaLabel?: string; pausePolicy?: 'none' | 'pointer'; class?: string; entryClass?: string; position?: Position; }>` (type)
+- `toast<Msg>(props: ToastProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Toggle Group
 

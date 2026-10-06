@@ -19,15 +19,22 @@ const styles = stylex.create({
   },
   group: { alignItems: 'center', display: 'flex' },
   slot: {
-    borderColor: tokens.input,
+    borderColor: {
+      default: tokens.input,
+      ':is([data-active])': tokens.ring,
+    },
     borderStyle: 'solid',
     alignItems: 'center',
-    boxShadow: foundationTokens.shadowXs,
+    boxShadow: {
+      default: foundationTokens.shadowXs,
+      ':is([data-active])': tokens.focusRingShadow,
+    },
     display: 'flex',
     fontSize: '0.875rem',
     justifyContent: 'center',
     lineHeight: '1.25rem',
     position: 'relative',
+    zIndex: { default: null, ':is([data-active])': 10 },
     borderBottomLeftRadius: {
       default: 0,
       ':first-child': foundationTokens.radiusMd,
@@ -60,7 +67,7 @@ const styles = stylex.create({
   caretWrap: {
     inset: 0,
     alignItems: 'center',
-    display: 'flex',
+    display: 'none',
     justifyContent: 'center',
     pointerEvents: 'none',
     position: 'absolute',
@@ -115,6 +122,45 @@ const normalize = (value: string, length: number, pattern: RegExp): string =>
     })
     .slice(0, length)
     .join('')
+
+/* Selection state lives in the DOM, not the model: foldkit cannot read the
+   input's selectionStart/End, so these inline handlers mirror the real
+   selection onto the slots — data-active='caret' on the cell holding the
+   caret, 'selected' on every cell inside a range — and show that cell's
+   caret wrap. Never render data-active from the model or re-renders would
+   desync it. */
+const syncActive = (ref: string): string =>
+  `const s=${ref}.selectionStart,e=${ref}.selectionEnd;` +
+  `${ref}.parentElement.querySelectorAll('[data-slot="input-otp-slot"]')` +
+  '.forEach((d,i)=>{' +
+  "const a=s===e?i===s?'caret':'':i>=s&&i<e?'selected':'';" +
+  "a?d.setAttribute('data-active',a):d.removeAttribute('data-active');" +
+  "d.lastElementChild.style.display=a==='caret'?'flex':''})"
+
+const SYNC_ACTIVE = syncActive('this')
+
+/* focus can fire before the browser settles the caret position, so the
+   mirror runs one frame later. */
+const FOCUS_ACTIVE = `const t=this;requestAnimationFrame(()=>{${syncActive('t')}})`
+
+const CLEAR_ACTIVE =
+  'this.parentElement.querySelectorAll(\'[data-slot="input-otp-slot"]\')' +
+  ".forEach(d=>{d.removeAttribute('data-active');" +
+  "d.lastElementChild.style.display=''})"
+
+/* A click lands on the covering input, so map its x position back to the
+   slot beneath it: select that character so typing overwrites it directly,
+   or collapse the caret at the end of the value past the filled cells. A
+   drag that already formed a range is kept. */
+const SNAP_TO_SLOT =
+  'if(this.selectionStart===this.selectionEnd){' +
+  'const ds=this.parentElement.querySelectorAll(\'[data-slot="input-otp-slot"]\'),' +
+  'v=this.value.length;let i=v;' +
+  'ds.forEach((d,j)=>{const r=d.getBoundingClientRect();' +
+  'if(event.clientX>=r.left&&event.clientX<r.right)i=j});' +
+  'i<v?this.setSelectionRange(i,i+1):this.setSelectionRange(v,v)}' +
+  SYNC_ACTIVE
+
 export const inputOtp = <Msg>(
   p: InputOtpProps<Msg>,
   h: HtmlBuilder<Msg>,
@@ -145,10 +191,11 @@ export const inputOtp = <Msg>(
           : []),
         ...(p.name === undefined ? [] : [h.Name(p.name)]),
         h.OnInput(next => p.onInput(normalize(next, length, pattern))),
-        h.Attribute(
-          'onselect',
-          'if(this.selectionStart===this.selectionEnd)this.setSelectionRange(this.value.length,this.value.length)',
-        ),
+        h.Attribute('onselect', SYNC_ACTIVE),
+        h.Attribute('onkeyup', SYNC_ACTIVE),
+        h.Attribute('onfocus', FOCUS_ACTIVE),
+        h.Attribute('onblur', CLEAR_ACTIVE),
+        h.Attribute('onmouseup', SNAP_TO_SLOT),
         h.Class(className(reset.input, styles.input)),
       ]),
       h.div(
@@ -158,12 +205,10 @@ export const inputOtp = <Msg>(
           h.Class(className(styles.group, p.groupLayoutStyle)),
         ],
         Array.from({ length }, (_, index) => {
-          const character = value[index],
-            isActive = value.length === index
+          const character = value[index]
           const slot = h.div(
             [
               h.DataAttribute('slot', 'input-otp-slot'),
-              h.DataAttribute('active', String(isActive)),
               h.Class(
                 className(
                   styles.slot,
@@ -174,14 +219,10 @@ export const inputOtp = <Msg>(
             ],
             [
               character ?? '',
-              ...(isActive
-                ? [
-                    h.div(
-                      [h.Class(className(styles.caretWrap))],
-                      [h.div([h.Class(className(styles.caret))], [])],
-                    ),
-                  ]
-                : []),
+              h.div(
+                [h.Class(className(styles.caretWrap))],
+                [h.div([h.Class(className(styles.caret))], [])],
+              ),
             ],
           )
           const separator = p.separator?.(index)

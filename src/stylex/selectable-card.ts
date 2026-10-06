@@ -8,7 +8,7 @@ import type {
   CardPadding,
   CardVariant,
 } from '@/lib/card-surface'
-import { pressableAttributes } from '@/lib/clickable-card'
+import { pressableAttributes } from '@/lib/card-pressable'
 import type { ComponentLayoutStyle } from './contracts'
 import { interactionTokens } from './interaction-tokens.stylex.const'
 import { className } from './style'
@@ -27,7 +27,7 @@ export type {
   CardPadding,
   CardVariant,
 } from '@/lib/card-surface'
-export { Message } from '@/lib/clickable-card'
+export { Message } from '@/lib/card-pressable'
 
 /* Press/hover tint is painted by a ::after layer on the card itself,
    matching the Tailwind after:* utilities. */

@@ -20,8 +20,12 @@ const recipes = new Set(roadmap.classifications.recipe)
 const legacy = new Set(roadmap.classifications.legacy)
 const upstreamNames = new Set(upstream.components)
 
+const intentionallyMissing = new Set(
+  roadmap.missing.map(entry => entry.component),
+)
 const missing = upstream.components.filter(
-  component => !registryNames.includes(component),
+  component =>
+    !registryNames.includes(component) && !intentionallyMissing.has(component),
 )
 if (missing.length > 0) {
   throw new Error(

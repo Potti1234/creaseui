@@ -110,7 +110,13 @@ const fixtureView = (
             {
               isInvalid: true,
               children: [
-                Field.fieldLabel({ children: ['Fruit'] }, h),
+                Field.fieldLabel(
+                  {
+                    for: `${model.select.id}-button`,
+                    children: ['Fruit'],
+                  },
+                  h,
+                ),
                 select,
                 Field.fieldError({ children: ['Please select a fruit.'] }, h),
               ],

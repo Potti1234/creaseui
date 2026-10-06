@@ -376,7 +376,7 @@ export const menubarSpecs: Record<
       label: 'More',
       items: [
         { id: 'settings', label: 'Settings', icon: 'settings' },
-        { id: 'help', label: 'Help', icon: 'help-circle' },
+        { id: 'help', label: 'Help', icon: 'circle-question-mark' },
         {
           id: 'delete',
           label: 'Delete',

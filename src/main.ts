@@ -85,7 +85,7 @@ export const Message = defineMessageUnion({
   ToggledBlockCode: { block: S.String },
   LoadedBlockCode: {
     block: S.String,
-    renderer: Page.CreateRenderer,
+    renderer: Page.Renderer,
     primary: S.String,
     files: S.Record(S.String, S.String),
   },
@@ -217,7 +217,7 @@ const ScrollToFragment = Command.define('ScrollToFragment', {
 })
 
 const LoadBlockCode = Command.define('LoadBlockCode', {
-  args: { renderer: Page.CreateRenderer, name: S.String },
+  args: { renderer: Page.Renderer, name: S.String },
   messages: [Message.LoadedBlockCode],
   execute: ({ renderer, name }) =>
     Effect.promise(() => BlocksIndexPage.loadBlockSources(renderer, name)).pipe(
@@ -628,10 +628,11 @@ export const update = (model: Model, message: Message): UpdateReturn =>
         const { model: catalogDocs, commands: catalogDocsCommands__ } =
           ComponentCatalog.update(currentPage.docs, childMessage)
         const commands = catalogDocsCommands__ ?? []
+        const nextModel = modifyFields(model, {
+          page: () => modifyFields(currentPage, { docs: () => catalogDocs }),
+        })
         return {
-          model: modifyFields(model, {
-            page: () => modifyFields(currentPage, { docs: () => catalogDocs }),
-          }),
+          model: nextModel,
           commands: Command.mapMessages(commands, next =>
             Message.GotCatalogDocsMessage({ message: next }),
           ),
@@ -713,9 +714,9 @@ const landingView = defineView<Landing.Model, Landing.Message>(Landing.view)
 const catalogDocsView = defineView<
   ComponentCatalog.Model,
   ComponentCatalog.Message,
-  { slug: string; dark: boolean }
->((catalogModel, { slug, dark }, h) =>
-  ComponentCatalog.view(catalogModel, slug, dark, h),
+  { slug: string; dark: boolean; renderer: Page.Renderer }
+>((catalogModel, { slug, dark, renderer }, h) =>
+  ComponentCatalog.view({ ...catalogModel, renderer }, slug, dark, h),
 )
 const blocksRegistryView = defineView<Blocks.Model, Blocks.Message, string>(
   (blocksModel, blockId, h) => Blocks.view(blocksModel, blockId, h),
@@ -1036,7 +1037,11 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
                 slotId: `docs-${component}`,
                 model: model.page.docs,
                 view: catalogDocsView,
-                viewInputs: { slug: component, dark: model.isDark },
+                viewInputs: {
+                  slug: ComponentCatalog.canonicalComponentSlug(component),
+                  dark: model.isDark,
+                  renderer,
+                },
                 toParentMessage: (message: ComponentCatalog.Message): Message =>
                   Message.GotCatalogDocsMessage({ message }),
               }),

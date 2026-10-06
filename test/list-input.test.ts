@@ -31,7 +31,7 @@ test('add/remove emit announcements and item out messages', () => {
   const added = update(
     model,
     Message.AddRequested({
-      createItem: () => ({ id: 'g-9', name: '', email: '' }),
+      item: { id: 'g-9', name: '', email: '' },
       itemName: 'guest',
       position: 3,
     }),

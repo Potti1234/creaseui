@@ -1,41 +1,76 @@
 import * as stylex from '@stylexjs/stylex'
-import type { HtmlBuilder } from 'foldkit/html'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+
 import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import {
+  toastFixtures,
+  type ToastFixture,
+} from '@/docs/components/pages/toast/shared'
 import * as Button from '@/stylex/button'
 import * as Toast from '@/stylex/toast'
-const styles = stylex.create({ secondViewport: { marginBottom: '6rem' } })
+import { className } from '@/stylex/style'
+
+const styles = stylex.create({
+  wrap: { gap: '0.5rem', display: 'flex', flexWrap: 'wrap' },
+  wrapCenter: { justifyContent: 'center' },
+})
+
+interface PreviewShape {
+  readonly notifications: Toast.Model
+  readonly pendingPromiseId?: unknown
+}
 
 export const toastStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
-  _index: number,
+  exampleIndex: number,
   model: unknown,
-  send: (json: string) => Msg,
+  onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
-) => {
-  const m = model as { exampleIndex: number; notifications: Toast.Model }
-  const notifications = m.notifications
-  const message = (value: object) => send(JSON.stringify(value))
+): Html => {
+  const preview = model as PreviewShape
+  const fixture: ToastFixture = toastFixtures[exampleIndex] ?? toastFixtures[0]
+  const offset = toastFixtures
+    .slice(0, exampleIndex)
+    .reduce((total, candidate) => total + candidate.buttons.length, 0)
   return h.div(
-    [],
     [
-      Button.button(
-        {
-          onClick: message({ _tag: 'ShowedToastPreview' }),
-          children: ['Show toast'],
-        },
-        h,
-      ),
-      Toast.toast(
-        {
-          model: notifications,
-          toParentMessage: next =>
-            message({ _tag: 'GotToastPreviewMessage', message: next }),
-          ariaLabel: 'Toast notifications',
-          ...(m.exampleIndex === 0
-            ? {}
-            : { layoutStyle: styles.secondViewport }),
-        },
-        h,
+      h.Class(
+        className(
+          styles.wrap,
+          ...(fixture.wrap === 'center' ? [styles.wrapCenter] : []),
+        ),
       ),
     ],
+    fixture.buttons
+      .map((button, index) =>
+        Button.button(
+          {
+            onClick: onMessageJson(
+              JSON.stringify({
+                _tag: 'ClickedToastButton',
+                index: offset + index,
+              }),
+            ),
+            variant: 'outline',
+            children: [button.label],
+          },
+          h,
+        ),
+      )
+      .concat([
+        Toast.toast(
+          {
+            model: preview.notifications,
+            toParentMessage: message =>
+              onMessageJson(
+                JSON.stringify({
+                  _tag: 'GotToastPreviewMessage',
+                  message,
+                }),
+              ),
+            ariaLabel: 'Toast notifications',
+          },
+          h,
+        ),
+      ]),
   )
 }

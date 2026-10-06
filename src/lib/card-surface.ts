@@ -1,5 +1,5 @@
 /* Shared astryx Card surface geometry for the interactive card components.
-   Keeps ClickableCard and SelectableCard on identical box math in the Tailwind
+   Keeps SelectableCard on identical box math in the Tailwind
    renderer: radius-container (rounded-xl), border-inside-padding compensation
    (a bordered variant subtracts the 1px border from every padding side so the
    total inset stays constant), and the two-layer

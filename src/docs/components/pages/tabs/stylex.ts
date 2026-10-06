@@ -64,20 +64,17 @@ export const tabsStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
       ariaLabel: fixture.ariaLabel,
       tabs: fixture.tabs.map((tab: TabsTabSpec) => ({
         value: tab.value,
-        label:
-          tab.icon === undefined
-            ? tab.label
-            : h.span(
-                [],
-                [
-                  Icon.icon(
-                    tab.icon,
-                    { class: stylex.props(styles.iconSize).className ?? '' },
-                    h,
-                  ),
-                  tab.label,
-                ],
+        label: tab.label,
+        ...(tab.icon === undefined
+          ? {}
+          : {
+              icon: Icon.icon(
+                tab.icon,
+                { class: stylex.props(styles.iconSize).className ?? '' },
+                h,
               ),
+            }),
+        ...(tab.isLabelHidden === true ? { isLabelHidden: true } : {}),
         content: tab.card === undefined ? tab.content : cardView(tab.card, h),
         ...(tab.isDisabled === true ? { isDisabled: true } : {}),
       })),

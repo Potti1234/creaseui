@@ -14,7 +14,7 @@ export const resizableFixtures = [
     title: 'Vertical',
     kind: 'single',
     direction: 'vertical',
-    withHandle: false,
+    withHandle: true,
     initialSize: 25,
     ariaLabel: 'Resize header and content',
     first: 'Header',

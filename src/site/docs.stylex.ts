@@ -16,7 +16,12 @@ import { reset } from '@/stylex/reset'
 import { className } from '@/stylex/style'
 import { tokens } from '../stylex/tokens.stylex'
 
-export { COMPONENTS, componentTitle, toSlug } from '@/docs/component-metadata'
+export {
+  COMPONENTS,
+  canonicalComponentSlug,
+  componentTitle,
+  toSlug,
+} from '@/docs/component-metadata'
 export type {
   ComponentPageConfig,
   ExampleConfig,

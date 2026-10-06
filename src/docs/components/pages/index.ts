@@ -2,7 +2,6 @@ import type { AuthoredPage } from '@/docs/components/pages/authored-page'
 import { accordionPage } from '@/docs/components/pages/accordion'
 import { alertPage } from '@/docs/components/pages/alert'
 import { alertDialogPage } from '@/docs/components/pages/alert-dialog'
-import { appShellPage } from '@/docs/components/pages/app-shell'
 import { aspectRatioPage } from '@/docs/components/pages/aspect-ratio'
 import { attachmentPage } from '@/docs/components/pages/attachment'
 import { avatarPage } from '@/docs/components/pages/avatar'
@@ -10,7 +9,6 @@ import { avatarGroupPage } from '@/docs/components/pages/avatar-group'
 import { badgePage } from '@/docs/components/pages/badge'
 import { bannerPage } from '@/docs/components/pages/banner'
 import { blockquotePage } from '@/docs/components/pages/blockquote'
-import { bottomSheetPage } from '@/docs/components/pages/bottom-sheet'
 import { breadcrumbPage } from '@/docs/components/pages/breadcrumb'
 import { bubblePage } from '@/docs/components/pages/bubble'
 import { buttonPage } from '@/docs/components/pages/button'
@@ -22,9 +20,7 @@ import { chartPage } from '@/docs/components/pages/chart'
 import { centerPage } from '@/docs/components/pages/center'
 import { chatReasoningPage } from '@/docs/components/pages/chat-reasoning'
 import { checkboxPage } from '@/docs/components/pages/checkbox'
-import { checkboxListPage } from '@/docs/components/pages/checkbox-list'
 import { circularProgressPage } from '@/docs/components/pages/circular-progress'
-import { clickableCardPage } from '@/docs/components/pages/clickable-card'
 import { codePage } from '@/docs/components/pages/code'
 import { codeBlockPage } from '@/docs/components/pages/code-block'
 import { collapsiblePage } from '@/docs/components/pages/collapsible'
@@ -76,23 +72,19 @@ import { numberInputPage } from '@/docs/components/pages/number-input'
 import { overflowListPage } from '@/docs/components/pages/overflow-list'
 import { paginationPage } from '@/docs/components/pages/pagination'
 import { popoverPage } from '@/docs/components/pages/popover'
-import { powerSearchPage } from '@/docs/components/pages/power-search'
 import { progressPage } from '@/docs/components/pages/progress'
 import { radioGroupPage } from '@/docs/components/pages/radio-group'
 import { resizablePage } from '@/docs/components/pages/resizable'
 import { scrollAreaPage } from '@/docs/components/pages/scroll-area'
 import { sectionPage } from '@/docs/components/pages/section'
-import { segmentedControlPage } from '@/docs/components/pages/segmented-control'
 import { selectableCardPage } from '@/docs/components/pages/selectable-card'
 import { separatorPage } from '@/docs/components/pages/separator'
 import { selectPage } from '@/docs/components/pages/select'
 import { sheetPage } from '@/docs/components/pages/sheet'
-import { sideNavPage } from '@/docs/components/pages/side-nav'
 import { sidebarPage } from '@/docs/components/pages/sidebar'
 import { skeletonPage } from '@/docs/components/pages/skeleton'
 import { sliderPage } from '@/docs/components/pages/slider'
 import { spinnerPage } from '@/docs/components/pages/spinner'
-import { sonnerPage } from '@/docs/components/pages/sonner'
 import { stackPage } from '@/docs/components/pages/stack'
 import { statPage } from '@/docs/components/pages/stat'
 import { statusDotPage } from '@/docs/components/pages/status-dot'
@@ -126,7 +118,6 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       accordionPage,
       alertPage,
       alertDialogPage,
-      appShellPage,
       aspectRatioPage,
       attachmentPage,
       avatarPage,
@@ -134,7 +125,6 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       badgePage,
       bannerPage,
       blockquotePage,
-      bottomSheetPage,
       breadcrumbPage,
       bubblePage,
       buttonPage,
@@ -146,9 +136,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       centerPage,
       chatReasoningPage,
       checkboxPage,
-      checkboxListPage,
       circularProgressPage,
-      clickableCardPage,
       codePage,
       codeBlockPage,
       collapsiblePage,
@@ -200,23 +188,19 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       overflowListPage,
       paginationPage,
       popoverPage,
-      powerSearchPage,
       progressPage,
       radioGroupPage,
       resizablePage,
       scrollAreaPage,
       sectionPage,
-      segmentedControlPage,
       selectableCardPage,
       separatorPage,
       selectPage,
       sheetPage,
-      sideNavPage,
       sidebarPage,
       skeletonPage,
       sliderPage,
       spinnerPage,
-      sonnerPage,
       stackPage,
       statPage,
       statusDotPage,

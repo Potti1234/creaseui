@@ -11,6 +11,7 @@ export type ContextMenuFixture = Readonly<{
   peopleValue?: string
   themeValue?: string
   direction?: 'ltr' | 'rtl'
+  keepOpenOnCheckableSelect?: boolean
 }>
 
 export const contextMenuFixtures: ReadonlyArray<ContextMenuFixture> = [
@@ -111,7 +112,8 @@ export const contextMenuFixtures: ReadonlyArray<ContextMenuFixture> = [
   {
     title: 'Checkboxes',
     description:
-      "kind: 'checkbox' items carry checked state; the parent owns the toggle.",
+      "kind: 'checkbox' items carry checked state; the parent owns the toggle. keepOpenOnCheckableSelect keeps the menu open between picks.",
+    keepOpenOnCheckableSelect: true,
     checkedValues: ['bookmarks-bar', 'developer-tools'],
     items: [
       {
@@ -131,7 +133,8 @@ export const contextMenuFixtures: ReadonlyArray<ContextMenuFixture> = [
   {
     title: 'Radio',
     description:
-      'Independent radio groups keep one selection each, scoped by group.',
+      'Independent radio groups keep one selection each, scoped by group. keepOpenOnCheckableSelect keeps the menu open between picks.',
+    keepOpenOnCheckableSelect: true,
     peopleValue: 'pedro',
     themeValue: 'system',
     items: [
@@ -416,6 +419,7 @@ ${[
         ariaLabel: '${fixture.title} menu',
         items: [${topLevelValues}]${specs.some(spec => spec.submenu !== undefined) ? ' as ReadonlyArray<Item>' : ''},
         ${itemToConfigSource}
+        ${fixture.keepOpenOnCheckableSelect === true ? 'keepOpenOnCheckableSelect: true,' : ''}
         ${fixture.direction === 'rtl' ? "direction: 'rtl'," : ''}
       }, h),
       h.p([h.Role('status'), h.Class('text-sm text-muted-foreground')], [

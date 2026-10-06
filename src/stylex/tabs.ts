@@ -21,6 +21,10 @@ export type TabsOrientation = 'horizontal' | 'vertical'
 export type TabConfig<Value extends string = string> = Readonly<{
   value: Value
   label: Html | string
+  /** Icon element displayed before the label. */
+  icon?: Html
+  /** Visually hides the label while keeping it as the trigger's accessible name. */
+  isLabelHidden?: boolean
   content: Html | string
   isDisabled?: boolean
 }>
@@ -101,6 +105,22 @@ const styles = stylex.create({
     '::after': { opacity: 1 },
   },
   disabled: { opacity: 0.5, pointerEvents: 'none' },
+  iconBox: {
+    alignItems: 'center',
+    display: 'inline-flex',
+    flexShrink: 0,
+    justifyContent: 'center',
+  },
+  srOnly: {
+    margin: -1,
+    padding: 0,
+    overflow: 'hidden',
+    clipPath: 'inset(50%)',
+    position: 'absolute',
+    whiteSpace: 'nowrap',
+    height: 1,
+    width: 1,
+  },
   content: { flex: '1', outlineStyle: 'none' },
 })
 export const tabsListVariants = (o: TabsListVariants = {}): string =>
@@ -200,7 +220,22 @@ const renderTabs = <Value extends string, Msg>(
                             ),
                           ),
                         ],
-                        [config.label],
+                        [
+                          ...(config.icon === undefined
+                            ? []
+                            : [
+                                h.span(
+                                  [h.Class(className(styles.iconBox))],
+                                  [config.icon],
+                                ),
+                              ]),
+                          config.isLabelHidden === true
+                            ? h.span(
+                                [h.Class(className(styles.srOnly))],
+                                [config.label],
+                              )
+                            : config.label,
+                        ],
                       ),
                     ]
               }),

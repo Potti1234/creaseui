@@ -1,5 +1,5 @@
 import { Option, Schema as S } from 'effect'
-import { Command } from 'foldkit'
+import { Command, Subscription } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -25,7 +25,7 @@ import * as Textarea from '@/ui/textarea'
 const FieldPreviewMessage = defineMessageUnion({
   ChangedFieldText: { field: S.String, value: S.String },
   ToggledFieldCheck: { field: S.String, isChecked: S.Boolean },
-  ChangedFieldPrice: { values: S.Tuple([S.Number, S.Number]) },
+  GotFieldSliderMessage: { message: Slider.MultiMessage },
   GotFieldSelectMessage: {
     which: S.Literals(['month', 'year', 'department']),
     message: Select.Message,
@@ -87,6 +87,7 @@ const FieldPreviewModel = S.Struct({
   plan: S.String,
   environment: S.String,
   price: S.Tuple([S.Number, S.Number]),
+  priceSlider: Slider.MultiModel,
   sameAsShipping: S.Boolean,
   hardDisks: S.Boolean,
   externalDisks: S.Boolean,
@@ -629,14 +630,10 @@ const fieldView = (
             ),
             Slider.rangeSlider(
               {
+                model: model.priceSlider,
                 values: [lo, hi],
-                min: 0,
-                max: 1000,
-                step: 10,
-                onInput: values =>
-                  FieldPreviewMessage.ChangedFieldPrice({
-                    values: [values[0], values[1]],
-                  }),
+                toParentMessage: message =>
+                  FieldPreviewMessage.GotFieldSliderMessage({ message }),
                 ariaLabels: ['Minimum price', 'Maximum price'],
                 class: 'mt-2 w-full',
               },
@@ -1107,6 +1104,13 @@ export const fieldTailwindPreviewProgram = definePreviewProgram<
     plan: 'monthly',
     environment: 'kubernetes',
     price: [200, 800],
+    priceSlider: Slider.initMulti({
+      id: `docs-field-${String(index)}-price`,
+      thumbs: 2,
+      min: 0,
+      max: 1000,
+      step: 10,
+    }),
     sameAsShipping: true,
     hardDisks: true,
     externalDisks: false,
@@ -1124,14 +1128,53 @@ export const fieldTailwindPreviewProgram = definePreviewProgram<
         return { model: { ...model, [message.field]: message.value } }
       case 'ToggledFieldCheck':
         return { model: { ...model, [message.field]: message.isChecked } }
-      case 'ChangedFieldPrice':
-        return { model: { ...model, price: message.values } }
+      case 'GotFieldSliderMessage': {
+        const next = Slider.updateMulti(model.priceSlider, message.message)
+        const change = Option.fromNullishOr(next.outMessage)
+        return {
+          model: {
+            ...model,
+            priceSlider: next.model,
+            price: Option.match(change, {
+              onNone: () => model.price,
+              onSome: out => {
+                const next = Slider.updateMultiValue(
+                  model.price,
+                  out.index,
+                  out.value,
+                  {
+                    min: model.priceSlider.min,
+                    max: model.priceSlider.max,
+                    step: model.priceSlider.step,
+                  },
+                )
+                return [next[0] ?? model.price[0], next[1] ?? model.price[1]]
+              },
+            }),
+          },
+          commands: Command.mapMessages(next.commands ?? [], next =>
+            FieldPreviewMessage.GotFieldSliderMessage({ message: next }),
+          ),
+        }
+      }
       case 'GotFieldSelectMessage':
         return applySelect(model, message.which, message.message)
       case 'GotFieldRadioMessage':
         return applyRadio(model, message.which, message.message)
     }
   },
+  subscriptions: Subscription.aggregate<
+    FieldPreviewModel,
+    FieldPreviewMessage
+  >()(
+    Slider.multiThumbSubscriptions<FieldPreviewModel, FieldPreviewMessage>({
+      id: 'docs-field-price',
+      thumbCount: 2,
+      toChildModel: model => model.priceSlider,
+      toParentMessage: message =>
+        FieldPreviewMessage.GotFieldSliderMessage({ message }),
+    }),
+  ),
   view: (index, model, h) => {
     const fixture = fieldFixtures[index] ?? fieldFixtures[0]!
     return fieldView(fixture, model, h)

@@ -4,6 +4,7 @@ import type { ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 import { Animation, Dialog as DialogPrimitive } from '@foldkit/ui'
 import { describe, it } from 'vitest'
 
+import * as SheetBehavior from '@/lib/sheet'
 import * as StyleXDialog from '@/stylex/dialog'
 import * as StyleXSheet from '@/stylex/sheet'
 import * as TailwindDialog from '@/ui/dialog'
@@ -57,6 +58,7 @@ type Message = Readonly<
   | { _tag: 'ChangedDescription'; description: string | undefined }
   | { _tag: 'InteractedInsidePanel' }
   | { _tag: 'GotDialogMessage'; message: DialogPrimitive.Message }
+  | { _tag: 'GotSheetMessage'; message: SheetBehavior.Message }
 >
 
 const mapDialogCommands = (
@@ -112,6 +114,30 @@ const update = (model: Model, message: Message) => {
           lastDialogMessage: message.message._tag,
         },
         commands: mapDialogCommands(result.commands),
+        outMessage: result.outMessage,
+      }
+    }
+    case 'GotSheetMessage': {
+      const result = SheetBehavior.update(
+        { ...SheetBehavior.init({ id: 'test-sheet' }), dialog: model.dialog },
+        message.message,
+      )
+      if (model.declineClose && result.outMessage?._tag === 'Closed') {
+        return { model }
+      }
+      return {
+        model: {
+          ...model,
+          dialog: result.model.dialog,
+          lastDialogMessage:
+            message.message._tag === 'GotSheetDialogMessage'
+              ? message.message.message._tag
+              : message.message._tag,
+        },
+        commands: Command.mapMessages(result.commands ?? [], next => ({
+          _tag: 'GotSheetMessage' as const,
+          message: next,
+        })),
         outMessage: result.outMessage,
       }
     }
@@ -186,10 +212,11 @@ type DialogModule = Readonly<{
 }>
 
 type SheetModule = Readonly<{
+  init: (config: SheetBehavior.InitConfig) => SheetBehavior.Model
   sheet: <Msg>(
     props: Readonly<{
-      model: DialogPrimitive.Model
-      toParentMessage: (message: DialogPrimitive.Message) => Msg
+      model: SheetBehavior.Model
+      toParentMessage: (message: SheetBehavior.Message) => Msg
       title: string
       description?: string
       side?: 'top' | 'right' | 'bottom' | 'left'
@@ -1103,9 +1130,12 @@ const verifyRenderer = (
               ),
               Sheet.sheet(
                 {
-                  model: model.dialog,
+                  model: {
+                    ...Sheet.init({ id: 'test-sheet' }),
+                    dialog: model.dialog,
+                  },
                   toParentMessage: message => ({
-                    _tag: 'GotDialogMessage',
+                    _tag: 'GotSheetMessage',
                     message,
                   }),
                   title: 'Sheet title',

@@ -102,6 +102,7 @@ interface InputGroupPreviewShape {
   readonly popover: Popover.Model
   readonly isFavorite: boolean
   readonly isCopied: boolean
+  readonly isPasswordShown: boolean
 }
 
 export const inputGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
@@ -175,7 +176,7 @@ export const inputGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           ),
         trigger,
         triggerLayoutStyle,
-        ariaLabel,
+        triggerAriaLabel: ariaLabel,
         align: 'end',
         items,
         itemToConfig: item => ({ label: item }),
@@ -251,16 +252,32 @@ export const inputGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                   {
                     children: [
                       in_('alignEnd', 'inline-end-input', {
-                        type: 'password',
+                        type: m.isPasswordShown ? 'text' : 'password',
                         placeholder: 'Enter password',
                       }),
                       InputGroup.inputGroupAddon(
                         {
                           align: 'inline-end',
                           children: [
-                            Icon.icon(
-                              'eye-off',
-                              { class: className(styles.iconMd) },
+                            InputGroup.inputGroupButton(
+                              {
+                                size: 'icon-xs',
+                                ariaLabel: m.isPasswordShown
+                                  ? 'Hide password'
+                                  : 'Show password',
+                                onClick: onMessageJson(
+                                  JSON.stringify({
+                                    _tag: 'ClickedShowPassword',
+                                  }),
+                                ),
+                                children: [
+                                  Icon.icon(
+                                    m.isPasswordShown ? 'eye' : 'eye-off',
+                                    { class: className(styles.iconMd) },
+                                    h,
+                                  ),
+                                ],
+                              },
                               h,
                             ),
                           ],
@@ -345,9 +362,18 @@ export const inputGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                                     {
                                       size: 'icon-xs',
                                       layoutStyle: styles.push,
+                                      ariaLabel: 'Copy',
+                                      onClick: onMessageJson(
+                                        JSON.stringify({
+                                          _tag: 'ClickedCopy',
+                                          text:
+                                            m.values['alignBlockTextarea'] ??
+                                            '',
+                                        }),
+                                      ),
                                       children: [
                                         Icon.icon(
-                                          'copy',
+                                          m.isCopied ? 'check' : 'copy',
                                           { class: className(styles.iconMd) },
                                           h,
                                         ),
@@ -680,7 +706,10 @@ export const inputGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                           size: 'icon-xs',
                           ariaLabel: 'Copy',
                           onClick: onMessageJson(
-                            JSON.stringify({ _tag: 'ClickedCopy' }),
+                            JSON.stringify({
+                              _tag: 'ClickedCopy',
+                              text: m.values['buttonCopy'] ?? '',
+                            }),
                           ),
                           children: [
                             m.isCopied
@@ -877,7 +906,17 @@ export const inputGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                       dropdownMenu(
                         1,
                         'Search in',
-                        'Search In... ⌄',
+                        h.span(
+                          [],
+                          [
+                            'Search In...',
+                            Icon.icon(
+                              'chevron-down',
+                              { class: className(styles.iconMd) },
+                              h,
+                            ),
+                          ],
+                        ),
                         styles.menuTrigger as ComponentLayoutStyle,
                         SEARCH_MENU_ITEMS,
                       ),

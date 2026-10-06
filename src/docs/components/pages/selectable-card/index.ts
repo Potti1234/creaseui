@@ -10,7 +10,7 @@ export const selectableCardPage = authoredPage({
   definition: {
     kind: 'helper',
     description:
-      'A card that toggles between selected and unselected states with an accent border. For navigation use Clickable Card.',
+      'A card that toggles between selected and unselected states with an accent border.',
     architecture:
       'Selectable Card is a stateless render helper: the parent Model owns `isSelected` and the card emits the configured `onChange` message when toggled — by pointer, Space, or Enter on the hidden checkbox.',
     apiHref:

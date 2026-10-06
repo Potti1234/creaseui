@@ -137,6 +137,9 @@ export const dropdownMenuTailwindPreviewProgram = definePreviewProgram<
                     Icon.icon(name, { class: 'size-4' }, h),
                   )
             },
+            ...(fixture.keepOpenOnCheckableSelect === true
+              ? { keepOpenOnCheckableSelect: true }
+              : {}),
             ...(fixture.direction === 'rtl'
               ? { direction: 'rtl' as const }
               : {}),

@@ -61,7 +61,7 @@ const styles = stylex.create({
   },
 })
 export type CheckboxProps<Msg> = CheckboxBehaviorProps<Msg> &
-  Readonly<{ layoutStyle?: ComponentLayoutStyle }>
+  Readonly<{ layoutStyle?: ComponentLayoutStyle; tabindex?: number }>
 export const checkbox = <Msg>(
   p: CheckboxProps<Msg>,
   h: HtmlBuilder<Msg>,
@@ -81,6 +81,7 @@ export const checkbox = <Msg>(
             p.isDisabled === true && styles.disabled,
           ),
         ),
+        ...(p.tabindex === undefined ? [] : [h.Tabindex(p.tabindex)]),
       ],
       indicator: [h.Class(className(styles.indicator))],
       text: [h.Class(className(styles.text))],

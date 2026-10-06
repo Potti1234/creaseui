@@ -92,6 +92,9 @@ export const dropdownMenuStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
               ? { label: item }
               : resolveItemConfig(spec, state, name => Icon.icon(name, {}, h))
           },
+          ...(fixture.keepOpenOnCheckableSelect === true
+            ? { keepOpenOnCheckableSelect: true }
+            : {}),
           ...(fixture.direction === 'rtl' ? { direction: 'rtl' as const } : {}),
         },
         h,

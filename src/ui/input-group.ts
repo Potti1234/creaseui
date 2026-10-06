@@ -148,6 +148,7 @@ export const inputGroupButton = <Msg>(
       ...(props.isDisabled === undefined
         ? {}
         : { isDisabled: props.isDisabled }),
+      ...(props.ariaLabel === undefined ? {} : { ariaLabel: props.ariaLabel }),
       class: cn(
         inputGroupButtonVariants({ size: props.size ?? 'xs' }),
         props.class,
@@ -192,6 +193,7 @@ export type InputGroupInputProps<Msg> = Readonly<{
   isDisabled?: boolean
   isInvalid?: boolean
   ariaLabel?: string
+  step?: string
   class?: string
 }>
 
@@ -210,6 +212,7 @@ export const inputGroupInput = <Msg>(
       ? []
       : [h.OnKeyDown(key => props.onKeyDown!(key))]),
     h.Type(props.type ?? 'text'),
+    ...(props.step === undefined ? [] : [h.Step(props.step)]),
     ...(props.name === undefined ? [] : [h.Name(props.name)]),
     ...(props.placeholder === undefined
       ? []

@@ -116,6 +116,7 @@ export const Message = defineMessageUnion({
   SelectedItem: {
     item: S.String,
     index: S.Number,
+    staysOpenOnSelect: S.Boolean,
   },
 })
 export type Message = typeof Message.Type
@@ -175,8 +176,16 @@ export const create = <Item extends string = string>() => ({
     updateTyped<Item>(model, Message.OpenedAt({ x, y })),
   close: (model: Model): UpdateReturn<Item> =>
     updateTyped<Item>(model, Message.Closed()),
-  selectItem: (model: Model, item: Item, index: number): UpdateReturn<Item> =>
-    updateTyped<Item>(model, Message.SelectedItem({ item, index })),
+  selectItem: (
+    model: Model,
+    item: Item,
+    index: number,
+    staysOpenOnSelect = false,
+  ): UpdateReturn<Item> =>
+    updateTyped<Item>(
+      model,
+      Message.SelectedItem({ item, index, staysOpenOnSelect }),
+    ),
 })
 
 export const update = create().update
@@ -232,6 +241,9 @@ export type DropdownMenuProps<Item extends string, Msg> = Readonly<{
   openOnContextMenu?: boolean
   direction?: 'ltr' | 'rtl'
   contentLayoutStyle?: ComponentLayoutStyle
+  /** When true, selecting a checkbox or radio item toggles it without
+   * closing the menu, so several entries can be edited in one open. */
+  keepOpenOnCheckableSelect?: boolean
 }>
 
 const positionClass = (
@@ -311,6 +323,7 @@ const menuKey = <Item extends string>(
   itemToConfig: (item: Item) => DropdownMenuItemConfig<Item>,
   key: string,
   direction: 'ltr' | 'rtl' = 'ltr',
+  keepOpenOnCheckableSelect = false,
 ): Message | undefined => {
   const toBehavior = (
     item: Item,
@@ -318,6 +331,9 @@ const menuKey = <Item extends string>(
   ): Behavior.MenuItemBehavior<Item> => ({
     label: typeof config.label === 'string' ? config.label : item,
     isDisabled: config.isDisabled === true,
+    staysOpenOnSelect:
+      keepOpenOnCheckableSelect &&
+      (config.kind === 'checkbox' || config.kind === 'radio'),
     ...(config.submenu === undefined
       ? {}
       : {
@@ -353,6 +369,7 @@ export const dropdownMenu = <Item extends string, Msg>(
       props.itemToConfig,
       key,
       props.direction,
+      props.keepOpenOnCheckableSelect,
     )
     return message === undefined
       ? Option.none()
@@ -419,13 +436,25 @@ export const dropdownMenu = <Item extends string, Msg>(
           ? []
           : [
               h.OnClick(
-                props.toParentMessage(Message.SelectedItem({ item, index })),
+                props.toParentMessage(
+                  Message.SelectedItem({
+                    item,
+                    index,
+                    staysOpenOnSelect:
+                      props.keepOpenOnCheckableSelect === true &&
+                      (config.kind === 'checkbox' || config.kind === 'radio'),
+                  }),
+                ),
               ),
             ]),
         h.Class(
           cn(
             ITEM_CLASS,
-            config.isInset ? styles.inset : undefined,
+            config.isInset ||
+              config.kind === 'checkbox' ||
+              config.kind === 'radio'
+              ? styles.inset
+              : undefined,
             config.variant === 'destructive' ? styles.destructive : undefined,
           ),
         ),
@@ -622,6 +651,7 @@ export const dropdownMenu = <Item extends string, Msg>(
                   props.itemToConfig,
                   key,
                   props.direction,
+                  props.keepOpenOnCheckableSelect,
                 )
               : props.triggerIsDisabled === true
                 ? undefined

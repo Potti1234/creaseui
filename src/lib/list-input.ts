@@ -96,11 +96,12 @@ export const init = (config: InitConfig): Model => ({
 })
 
 export const Message = defineMessageUnion({
-  /* The item factory rides the message: it is a view-supplied callback and
-     update invokes it exactly once per dispatch (astryx calls createItem()
-     inside the click handler). */
+  /* The new item rides the message: messages must be data because previews
+     route them through JSON.stringify, which drops function payloads
+     (astryx invokes createItem() inside the click handler; the view samples
+     it when it builds the Add intent). */
   AddRequested: {
-    createItem: S.Unknown,
+    item: S.Unknown,
     itemName: S.String,
     position: S.Number,
   },
@@ -150,9 +151,7 @@ export const update = (model: Model, message: Message): UpdateReturn => {
             `Added ${message.itemName} ${message.position}.`,
           ),
         },
-        outMessage: OutMessage.ItemAdded({
-          item: (message.createItem as () => unknown)(),
-        }),
+        outMessage: OutMessage.ItemAdded({ item: message.item }),
       }
     case 'RemoveRequested':
       return {

@@ -57,6 +57,9 @@ const styles = stylex.create({
       ':is([data-disabled], [aria-disabled="true"])': 0.5,
     },
     outlineStyle: 'none',
+    // Removes the baseline strut the primitive's block wrapper divs add below
+    // the inline-flex trigger, which otherwise nudges the trigger upward.
+    verticalAlign: 'top',
     whiteSpace: 'nowrap',
     height: '2.25rem',
   },

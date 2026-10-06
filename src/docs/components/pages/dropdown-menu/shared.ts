@@ -25,6 +25,7 @@ export type DropdownMenuFixture = Readonly<{
   checkedValues?: ReadonlyArray<string>
   radioValue?: string
   direction?: 'ltr' | 'rtl'
+  keepOpenOnCheckableSelect?: boolean
 }>
 
 export const dropdownMenuFixtures: Readonly<
@@ -113,7 +114,8 @@ export const dropdownMenuFixtures: Readonly<
   {
     title: 'Checkboxes',
     description:
-      "kind: 'checkbox' items carry checked state; isInset leaves room for the check indicator.",
+      "kind: 'checkbox' items carry checked state; isInset leaves room for the check indicator. keepOpenOnCheckableSelect keeps the menu open between picks.",
+    keepOpenOnCheckableSelect: true,
     trigger: { kind: 'button', label: 'View options' },
     checkedValues: ['status-bar', 'activity-bar'],
     items: [
@@ -131,7 +133,8 @@ export const dropdownMenuFixtures: Readonly<
   {
     title: 'Checkboxes Icons',
     description:
-      'Checkbox items with leading icons, like notification filters.',
+      'Checkbox items with leading icons, like notification filters. keepOpenOnCheckableSelect keeps the menu open between picks.',
+    keepOpenOnCheckableSelect: true,
     trigger: { kind: 'button', label: 'Notifications' },
     checkedValues: ['comments'],
     items: [
@@ -158,7 +161,8 @@ export const dropdownMenuFixtures: Readonly<
   {
     title: 'Radio Group',
     description:
-      "kind: 'radio' items implement a single selection within the menu.",
+      "kind: 'radio' items implement a single selection within the menu. keepOpenOnCheckableSelect keeps the menu open between picks.",
+    keepOpenOnCheckableSelect: true,
     trigger: { kind: 'button', label: 'Open' },
     radioValue: 'top',
     items: [
@@ -175,7 +179,8 @@ export const dropdownMenuFixtures: Readonly<
   {
     title: 'Radio Icons',
     description:
-      'Radio items with icons for a single-choice picker, like payment methods.',
+      'Radio items with icons for a single-choice picker, like payment methods. keepOpenOnCheckableSelect keeps the menu open between picks.',
+    keepOpenOnCheckableSelect: true,
     trigger: { kind: 'button', label: 'Payment Method' },
     radioValue: 'card',
     items: [
@@ -554,6 +559,7 @@ ${updateExtra}
         ariaLabel: '${fixture.title} menu',
         items: [${topLevelValues}]${specs.some(spec => spec.submenu !== undefined) ? ' as ReadonlyArray<Item>' : ''},
         ${itemToConfigSource}
+        ${fixture.keepOpenOnCheckableSelect === true ? 'keepOpenOnCheckableSelect: true,' : ''}
         ${fixture.direction === 'rtl' ? "direction: 'rtl'," : ''}
       }, h),
       h.p([h.Role('status'), h.Class('text-sm')], [Option.match(model.maybeLastAction, { onNone: () => 'No action selected', onSome: value => \`Selected: \${configs[value].label}\` })]),

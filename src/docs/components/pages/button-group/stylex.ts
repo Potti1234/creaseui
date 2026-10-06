@@ -128,6 +128,8 @@ const styles = stylex.create({
   inputGroupInput: { display: 'flex' },
   inputGroupInputEnd: { display: 'flex', paddingRight: '0.5rem' },
   inputGroupAddon: { order: 9999 },
+  // grouped controls sit next to h-9 (2.25rem) buttons
+  groupHeight: { height: '2.25rem' },
   inputGroupAddonButton: { order: 9999, marginRight: '-0.45rem' },
   tooltipTrigger: { color: tokens.mutedForeground },
   popoverBody: {
@@ -402,21 +404,22 @@ const nodeView = <Msg>(
               JSON.stringify({ _tag: FIELD_TAG[node.field], value }),
             ),
           placeholder: node.placeholder,
-          ...(ctx === undefined
-            ? {}
-            : {
-                layoutStyle: [
-                  joinStyle(ctx),
-                  styles.inputFlex,
-                ] as ComponentLayoutStyle,
-              }),
+          layoutStyle: (ctx === undefined
+            ? styles.groupHeight
+            : [
+                joinStyle(ctx),
+                styles.inputFlex,
+                styles.groupHeight,
+              ]) as ComponentLayoutStyle,
         },
         h,
       )
     case 'inputGroup':
       return InputGroup.inputGroup(
         {
-          ...(ctx === undefined ? {} : { layoutStyle: joinStyle(ctx) }),
+          layoutStyle: (ctx === undefined
+            ? styles.groupHeight
+            : [joinStyle(ctx), styles.groupHeight]) as ComponentLayoutStyle,
           children: [
             InputGroup.inputGroupInput(
               {

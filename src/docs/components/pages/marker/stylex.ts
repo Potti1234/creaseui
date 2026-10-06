@@ -4,7 +4,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import * as Icon from '@/lib/icon'
 import * as Marker from '@/stylex/marker'
-import * as Sonner from '@/stylex/sonner'
+import * as Toast from '@/stylex/toast'
 import * as Spinner from '@/stylex/spinner'
 import { className } from '@/stylex/style'
 import { markerFixtures, type MarkerKind } from './shared'
@@ -27,7 +27,7 @@ const styles = stylex.create({
 const sx = (style: stylex.StaticStyles): string => className(style)
 
 interface MarkerPreviewShape {
-  readonly notifications: Sonner.Model
+  readonly notifications: Toast.Model
 }
 
 const send = <Msg>(
@@ -275,11 +275,11 @@ const markerSxView = <Msg>(
             },
             h,
           ),
-          Sonner.sonner(
+          Toast.toast(
             {
               model: model.notifications,
               toParentMessage: message =>
-                send(onMessageJson, 'GotSonnerMessage', { message }),
+                send(onMessageJson, 'GotToastMessage', { message }),
             },
             h,
           ),

@@ -53,6 +53,7 @@ import {
   kanbanBoard,
   orderDetail,
 } from './creaseui-blocks'
+import { appShell } from './app-shell'
 import { chartAnalyticsDashboard } from './chart-analytics-dashboard'
 import { featuredVisitorsChart } from './dashboard-echarts'
 
@@ -1094,6 +1095,12 @@ const blocks: ReadonlyArray<Block> = [
     name: 'chart-analytics-dashboard',
     preview: (_model, h) =>
       chartAnalyticsDashboard(message => GotEChartMessage({ message }), h),
+  },
+  {
+    description:
+      'An app shell with a top navigation, sidebar and elevated content.',
+    name: 'app-shell-01',
+    preview: (_model, h) => appShell(h),
   },
 ]
 

@@ -85,6 +85,9 @@ export const contextMenuStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                   Icon.icon(name, { class: className(styles.icon) }, h),
                 )
           },
+          ...(fixture.keepOpenOnCheckableSelect === true
+            ? { keepOpenOnCheckableSelect: true }
+            : {}),
           ...(fixture.direction === 'rtl' ? { direction: 'rtl' as const } : {}),
         },
         h,

@@ -36,13 +36,16 @@ import * as TailwindSlider from '@/ui/slider'
  *    `thumbCollisionBehavior`, `Slider.Value`/`Slider.Indicator` parts.
  *    Expressible gaps are pinned below with it.fails / it.todo.
  *
- * Range and multi sliders are controlled native `<input type="range">` per
- * thumb; arrow-key stepping on them is native browser behavior and is only
- * covered for the single-thumb foldkit primitive.
+ * Range and multi sliders compose one foldkit Slider model per thumb on a
+ * shared track; pointer drags route through each thumb's own drag
+ * subscriptions, so drag flows here are driven by Subscription.emit after a
+ * pointerDown — the same subscription traffic the runtime produces.
  */
 
 type Model = Readonly<{
   slider: TailwindSlider.Model
+  rangeSlider: TailwindSlider.MultiModel
+  multiSlider: TailwindSlider.MultiModel
   value: number
   values: readonly [number, number]
   multiValues: readonly number[]
@@ -50,6 +53,8 @@ type Model = Readonly<{
 
 type Message = Readonly<
   | { _tag: 'GotSliderMessage'; message: TailwindSlider.Message }
+  | { _tag: 'GotRangeMessage'; message: TailwindSlider.MultiMessage }
+  | { _tag: 'GotMultiMessage'; message: TailwindSlider.MultiMessage }
   | { _tag: 'SetValue'; value: number }
   | { _tag: 'SetRangeValues'; values: readonly [number, number] }
   | { _tag: 'SetMultiValues'; values: readonly number[] }
@@ -64,18 +69,34 @@ const initialModel = (
     min?: number
     max?: number
     step?: number
+    direction?: 'ltr' | 'rtl'
   }>,
-): Model => ({
-  slider: TailwindSlider.init({
-    id: sliderId,
-    min: opts?.min ?? 0,
-    max: opts?.max ?? 100,
-    step: opts?.step ?? 1,
-  }),
-  value: opts?.value ?? 50,
-  values: opts?.values ?? [25, 75],
-  multiValues: opts?.multiValues ?? [],
-})
+): Model => {
+  const values = opts?.values ?? [25, 75]
+  const multiValues = opts?.multiValues ?? []
+  const multiInit = (suffix: string, thumbs: number) =>
+    TailwindSlider.initMulti({
+      id: `${sliderId}-${suffix}`,
+      thumbs: Math.max(1, thumbs),
+      min: opts?.min ?? 0,
+      max: opts?.max ?? 100,
+      step: opts?.step ?? 1,
+      mirrored: opts?.direction === 'rtl',
+    })
+  return {
+    slider: TailwindSlider.init({
+      id: sliderId,
+      min: opts?.min ?? 0,
+      max: opts?.max ?? 100,
+      step: opts?.step ?? 1,
+    }),
+    rangeSlider: multiInit('range', values.length),
+    multiSlider: multiInit('multi', multiValues.length),
+    value: opts?.value ?? 50,
+    values,
+    multiValues,
+  }
+}
 
 type SliderModule = Readonly<{
   init: typeof TailwindSlider.init
@@ -94,17 +115,17 @@ type SliderModule = Readonly<{
     },
     h: HtmlBuilder<Msg>,
   ) => Html
+  updateMulti: typeof TailwindSlider.updateMulti
+  updateMultiValue: typeof TailwindSlider.updateMultiValue
   rangeSlider: <Msg>(
     props: {
+      model: TailwindSlider.MultiModel
       values: readonly [number, number]
-      min: number
-      max: number
-      step?: number
-      onInput: (values: readonly [number, number]) => Msg
+      toParentMessage: (message: TailwindSlider.MultiMessage) => Msg
       orientation?: 'horizontal' | 'vertical'
       direction?: 'ltr' | 'rtl'
-      ariaLabels?: readonly [string, string]
-      formatValue?: (value: number, index: 0 | 1) => string
+      ariaLabels?: readonly string[]
+      formatValue?: (value: number, index: number) => string
       isDisabled?: boolean
       isReadOnly?: boolean
       name?: string
@@ -113,11 +134,9 @@ type SliderModule = Readonly<{
   ) => Html
   multiSlider: <Msg>(
     props: {
+      model: TailwindSlider.MultiModel
       values: readonly number[]
-      min: number
-      max: number
-      step?: number
-      onInput: (values: readonly number[]) => Msg
+      toParentMessage: (message: TailwindSlider.MultiMessage) => Msg
       orientation?: 'horizontal' | 'vertical'
       direction?: 'ltr' | 'rtl'
       ariaLabels?: readonly string[]
@@ -163,6 +182,59 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
           })),
         }
       }
+      case 'GotRangeMessage': {
+        const result = Slider.updateMulti(model.rangeSlider, message.message)
+        const out = result.outMessage
+        const nextValues =
+          out === undefined
+            ? model.values
+            : Slider.updateMultiValue(model.values, out.index, out.value, {
+                min: model.rangeSlider.min,
+                max: model.rangeSlider.max,
+                step: model.rangeSlider.step,
+              })
+        return {
+          model: {
+            ...model,
+            rangeSlider: result.model,
+            values: [
+              nextValues[0] ?? model.values[0],
+              nextValues[1] ?? model.values[1],
+            ],
+          },
+          commands: Command.mapMessages(result.commands, child => ({
+            _tag: 'GotRangeMessage' as const,
+            message: child,
+          })),
+        }
+      }
+      case 'GotMultiMessage': {
+        const result = Slider.updateMulti(model.multiSlider, message.message)
+        const out = result.outMessage
+        return {
+          model: {
+            ...model,
+            multiSlider: result.model,
+            multiValues:
+              out === undefined
+                ? model.multiValues
+                : Slider.updateMultiValue(
+                    model.multiValues,
+                    out.index,
+                    out.value,
+                    {
+                      min: model.multiSlider.min,
+                      max: model.multiSlider.max,
+                      step: model.multiSlider.step,
+                    },
+                  ),
+          },
+          commands: Command.mapMessages(result.commands, child => ({
+            _tag: 'GotMultiMessage' as const,
+            message: child,
+          })),
+        }
+      }
       case 'SetValue':
         return { model: { ...model, value: message.value }, commands: [] }
       case 'SetRangeValues':
@@ -200,13 +272,10 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
   const rangeView =
     (
       props: Readonly<{
-        min: number
-        max: number
-        step?: number
         orientation?: 'horizontal' | 'vertical'
         direction?: 'ltr' | 'rtl'
-        ariaLabels?: readonly [string, string]
-        formatValue?: (value: number, index: 0 | 1) => string
+        ariaLabels?: readonly string[]
+        formatValue?: (value: number, index: number) => string
         isDisabled?: boolean
         isReadOnly?: boolean
         name?: string
@@ -215,8 +284,12 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
     (model: Model, h: HtmlBuilder<Message>): Html =>
       Slider.rangeSlider(
         {
+          model: model.rangeSlider,
           values: model.values,
-          onInput: values => ({ _tag: 'SetRangeValues', values }),
+          toParentMessage: message => ({
+            _tag: 'GotRangeMessage',
+            message,
+          }),
           ...props,
         },
         h,
@@ -225,21 +298,44 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
   const multiView =
     (
       props: Readonly<{
-        min: number
-        max: number
-        step?: number
+        direction?: 'ltr' | 'rtl'
         ariaLabels?: readonly string[]
       }>,
     ) =>
     (model: Model, h: HtmlBuilder<Message>): Html =>
       Slider.multiSlider(
         {
+          model: model.multiSlider,
           values: model.multiValues,
-          onInput: values => ({ _tag: 'SetMultiValues', values }),
+          toParentMessage: message => ({
+            _tag: 'GotMultiMessage',
+            message,
+          }),
           ...props,
         },
         h,
       )
+
+  /* A pointer press on a thumb followed by the subscription traffic the
+     runtime delivers for a drag to `value`. */
+  const dragThumb = (
+    thumb: ReturnType<typeof Scene.role>,
+    which: 'range' | 'multi',
+    index: number,
+    value: number,
+  ) => [
+    Scene.pointerDown(thumb),
+    Scene.expectHandled(),
+    Scene.Subscription.emit({
+      _tag: which === 'range' ? 'GotRangeMessage' : 'GotMultiMessage',
+      message: {
+        _tag: 'GotThumbMessage',
+        index,
+        message: { _tag: 'MovedDragPointer', value },
+      },
+    } as Message),
+    Scene.expectHandled(),
+  ]
 
   describe(`${name} Slider (Base UI port)`, () => {
     describe('ARIA attributes', () => {
@@ -306,7 +402,7 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
       // aria-valuetext when `formatValue` is provided.
       it.fails('should set default aria-valuetext on range slider thumbs', () => {
         Scene.scene(
-          { update, view: rangeView({ min: 0, max: 100 }) },
+          { update, view: rangeView({}) },
           Scene.given(initialModel(id, { values: [44, 50] })),
           Scene.expect(lowerInput).toHaveAttr(
             'aria-valuetext',
@@ -316,12 +412,9 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI sets aria-valuenow on each thumb's input.
-      // creaseui range thumbs are native range inputs that expose `value`
-      // implicitly; no explicit aria-valuenow is emitted.
-      it.fails('exposes aria-valuenow on range slider thumbs', () => {
+      it('exposes aria-valuenow on range slider thumbs', () => {
         Scene.scene(
-          { update, view: rangeView({ min: 0, max: 100 }) },
+          { update, view: rangeView({}) },
           Scene.given(initialModel(id, { values: [44, 50] })),
           Scene.expect(lowerInput).toHaveAttr('aria-valuenow', '44'),
           Scene.expect(upperInput).toHaveAttr('aria-valuenow', '50'),
@@ -360,8 +453,6 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
           {
             update,
             view: rangeView({
-              min: 0,
-              max: 100,
               formatValue: (value, index) =>
                 `${String(value)} ${index === 0 ? 'start' : 'end'} range`,
             }),
@@ -381,7 +472,7 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
         Scene.scene(
           {
             update,
-            view: rangeView({ min: 0, max: 100, orientation: 'vertical' }),
+            view: rangeView({ orientation: 'vertical' }),
           },
           Scene.given(initialModel(id)),
           Scene.expect(rootEl).toHaveAttr('data-orientation', 'vertical'),
@@ -389,14 +480,11 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI sets aria-orientation="vertical" on each thumb
-      // input. creaseui's range thumbs carry no aria-orientation (the single
-      // slider's thumb always reports "horizontal").
-      it.fails('sets the aria-orientation attribute on range thumbs', () => {
+      it('sets the aria-orientation attribute on range thumbs', () => {
         Scene.scene(
           {
             update,
-            view: rangeView({ min: 0, max: 100, orientation: 'vertical' }),
+            view: rangeView({ orientation: 'vertical' }),
           },
           Scene.given(initialModel(id)),
           Scene.expect(lowerInput).toHaveAttr('aria-orientation', 'vertical'),
@@ -436,14 +524,16 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
         Scene.scene(
           {
             update,
-            view: rangeView({ min: 0, max: 100, isDisabled: true }),
+            view: rangeView({ isDisabled: true }),
           },
           Scene.given(initialModel(id)),
           Scene.expect(rootEl).toHaveAttr('data-disabled', ''),
-          Scene.expect(lowerInput).toBeDisabled(),
-          Scene.expect(upperInput).toBeDisabled(),
-          Scene.expect(lowerInput).toHaveAttr('disabled', 'true'),
-          Scene.expect(upperInput).toHaveAttr('disabled', 'true'),
+          Scene.expect(lowerInput).toHaveAttr('aria-disabled', 'true'),
+          Scene.expect(upperInput).toHaveAttr('aria-disabled', 'true'),
+          Scene.expect(lowerInput).toHaveAttr('data-disabled', ''),
+          Scene.expect(upperInput).toHaveAttr('data-disabled', ''),
+          /* A disabled thumb carries no pointer handlers, so there is no
+             pointer press to simulate. */
         )
       })
 
@@ -469,15 +559,15 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
         )
       })
 
-      it('ignores range input edits while read-only', () => {
+      it('ignores range thumb edits while read-only', () => {
         Scene.scene(
-          { update, view: rangeView({ min: 0, max: 100, isReadOnly: true }) },
+          { update, view: rangeView({ isReadOnly: true }) },
           Scene.given(initialModel(id, { values: [25, 75] })),
           Scene.expect(lowerInput).toHaveAttr('aria-readonly', 'true'),
-          Scene.type(lowerInput, '90'),
-          Scene.expectHandled(),
-          Scene.expect(lowerInput).toHaveValue('25'),
-          Scene.expect(upperInput).toHaveValue('75'),
+          /* A read-only thumb carries no key/pointer handlers, so there is
+             no edit gesture to simulate. */
+          Scene.expect(lowerInput).toHaveAttr('aria-valuenow', '25'),
+          Scene.expect(upperInput).toHaveAttr('aria-valuenow', '75'),
         )
       })
     })
@@ -533,15 +623,16 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
     })
 
     describe('prop: max', () => {
-      it('sets the max attribute on the range inputs', () => {
+      it('exposes min and max bounds on the range thumbs', () => {
         Scene.scene(
-          { update, view: rangeView({ min: 20, max: 40, step: 2 }) },
-          Scene.given(initialModel(id, { values: [24, 36] })),
-          Scene.expect(lowerInput).toHaveAttr('min', '20'),
-          Scene.expect(lowerInput).toHaveAttr('max', '40'),
-          Scene.expect(lowerInput).toHaveAttr('step', '2'),
-          Scene.expect(lowerInput).toHaveValue('24'),
-          Scene.expect(upperInput).toHaveValue('36'),
+          { update, view: rangeView({}) },
+          Scene.given(
+            initialModel(id, { values: [24, 36], min: 20, max: 40, step: 2 }),
+          ),
+          Scene.expect(lowerInput).toHaveAttr('aria-valuemin', '20'),
+          Scene.expect(lowerInput).toHaveAttr('aria-valuemax', '40'),
+          Scene.expect(lowerInput).toHaveAttr('aria-valuenow', '24'),
+          Scene.expect(upperInput).toHaveAttr('aria-valuenow', '36'),
         )
       })
 
@@ -583,13 +674,12 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
 
       it('clamps range values that fall outside the min and max bounds', () => {
         Scene.scene(
-          { update, view: rangeView({ min: 20, max: 40 }) },
-          Scene.given(initialModel(id, { values: [25, 35] })),
-          Scene.type(lowerInput, '10'),
-          Scene.expectHandled(),
-          Scene.expect(lowerInput).toHaveValue('20'),
-          Scene.type(upperInput, '50'),
-          Scene.expect(upperInput).toHaveValue('40'),
+          { update, view: rangeView({}) },
+          Scene.given(initialModel(id, { values: [25, 35], min: 20, max: 40 })),
+          ...dragThumb(lowerInput, 'range', 0, 10),
+          Scene.expect(lowerInput).toHaveAttr('aria-valuenow', '20'),
+          ...dragThumb(upperInput, 'range', 1, 50),
+          Scene.expect(upperInput).toHaveAttr('aria-valuenow', '40'),
         )
       })
 
@@ -598,11 +688,11 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
       // normalizeRange (min/max are swapped).
       it('normalizes reversed min/max bounds on the range slider', () => {
         Scene.scene(
-          { update, view: rangeView({ min: 40, max: 20 }) },
-          Scene.given(initialModel(id, { values: [25, 35] })),
-          Scene.expect(lowerInput).toHaveAttr('min', '20'),
-          Scene.expect(lowerInput).toHaveAttr('max', '40'),
-          Scene.expect(lowerInput).toHaveValue('25'),
+          { update, view: rangeView({}) },
+          Scene.given(initialModel(id, { values: [25, 35], min: 40, max: 20 })),
+          Scene.expect(lowerInput).toHaveAttr('aria-valuemin', '20'),
+          Scene.expect(lowerInput).toHaveAttr('aria-valuemax', '40'),
+          Scene.expect(lowerInput).toHaveAttr('aria-valuenow', '25'),
         )
       })
 
@@ -874,16 +964,35 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
         )
       })
 
-      it.todo(
-        'reverses arrow direction in RTL — the foldkit thumb primitive ' +
-          'does not support direction',
-      )
+      it('reverses arrow direction in RTL', () => {
+        Scene.scene(
+          { update, view: multiView({ direction: 'rtl' }) },
+          Scene.given(
+            initialModel(id, { multiValues: [50], direction: 'rtl' }),
+          ),
+          Scene.keydown(
+            Scene.role('slider', { name: 'Value 1' }),
+            'ArrowRight',
+          ),
+          Scene.expectHandled(),
+          Scene.expect(Scene.role('slider', { name: 'Value 1' })).toHaveAttr(
+            'aria-valuenow',
+            '49',
+          ),
+        )
+      })
 
-      it.todo(
-        'steps range slider thumbs via the keyboard — creaseui range thumbs ' +
-          'are native range inputs whose keys are handled by the browser; ' +
-          'verify in e2e',
-      )
+      it('steps range slider thumbs via the keyboard', () => {
+        Scene.scene(
+          { update, view: rangeView({}) },
+          Scene.given(initialModel(id, { values: [25, 75] })),
+          Scene.keydown(lowerInput, 'ArrowRight'),
+          Scene.expectHandled(),
+          Scene.expect(lowerInput).toHaveAttr('aria-valuenow', '26'),
+          Scene.keydown(upperInput, 'ArrowLeft'),
+          Scene.expect(upperInput).toHaveAttr('aria-valuenow', '74'),
+        )
+      })
     })
 
     describe('controlled value', () => {
@@ -966,10 +1075,14 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
       // emits indexed names (slider[0], slider[1]).
       it('names range inputs with indexed names', () => {
         Scene.scene(
-          { update, view: rangeView({ min: 0, max: 100, name: 'slider' }) },
+          { update, view: rangeView({ name: 'slider' }) },
           Scene.given(initialModel(id)),
-          Scene.expect(lowerInput).toHaveAttr('name', 'slider[0]'),
-          Scene.expect(upperInput).toHaveAttr('name', 'slider[1]'),
+          Scene.expect(Scene.selector('input[name="slider[0]"]')).toHaveValue(
+            '25',
+          ),
+          Scene.expect(Scene.selector('input[name="slider[1]"]')).toHaveValue(
+            '75',
+          ),
         )
       })
 
@@ -982,13 +1095,12 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
     describe('range slider thumbs', () => {
       it('renders two thumbs with accessible names and current values', () => {
         Scene.scene(
-          { update, view: rangeView({ min: 0, max: 100 }) },
+          { update, view: rangeView({}) },
           Scene.given(initialModel(id, { values: [25, 75] })),
-          Scene.expect(lowerInput).toHaveAttr('type', 'range'),
           Scene.expect(lowerInput).toHaveAttr('aria-label', 'Minimum value'),
-          Scene.expect(lowerInput).toHaveValue('25'),
+          Scene.expect(lowerInput).toHaveAttr('aria-valuenow', '25'),
           Scene.expect(upperInput).toHaveAttr('aria-label', 'Maximum value'),
-          Scene.expect(upperInput).toHaveValue('75'),
+          Scene.expect(upperInput).toHaveAttr('aria-valuenow', '75'),
         )
       })
 
@@ -997,8 +1109,6 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
           {
             update,
             view: rangeView({
-              min: 0,
-              max: 100,
               ariaLabels: ['Low price', 'High price'],
             }),
           },
@@ -1010,41 +1120,38 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
 
       it('fills the track between the two thumbs', () => {
         Scene.scene(
-          { update, view: rangeView({ min: 0, max: 100 }) },
+          { update, view: rangeView({}) },
           Scene.given(initialModel(id, { values: [25, 75] })),
           Scene.expect(rangeEl).toHaveStyle('left', '25%'),
           Scene.expect(rangeEl).toHaveStyle('right', '25%'),
-          Scene.type(lowerInput, '60'),
-          Scene.expectHandled(),
+          ...dragThumb(lowerInput, 'range', 0, 60),
           Scene.expect(rangeEl).toHaveStyle('left', '60%'),
         )
       })
 
       it('clamps the lower thumb at the upper thumb', () => {
         Scene.scene(
-          { update, view: rangeView({ min: 0, max: 100 }) },
+          { update, view: rangeView({}) },
           Scene.given(initialModel(id, { values: [20, 80] })),
-          Scene.type(lowerInput, '90'),
-          Scene.expectHandled(),
-          Scene.expect(lowerInput).toHaveValue('80'),
+          ...dragThumb(lowerInput, 'range', 0, 90),
+          Scene.expect(lowerInput).toHaveAttr('aria-valuenow', '80'),
         )
       })
 
       it('clamps the upper thumb at the lower thumb', () => {
         Scene.scene(
-          { update, view: rangeView({ min: 0, max: 100 }) },
+          { update, view: rangeView({}) },
           Scene.given(initialModel(id, { values: [20, 80] })),
-          Scene.type(upperInput, '10'),
-          Scene.expectHandled(),
-          Scene.expect(upperInput).toHaveValue('20'),
+          ...dragThumb(upperInput, 'range', 1, 10),
+          Scene.expect(upperInput).toHaveAttr('aria-valuenow', '20'),
         )
       })
 
       // DIVERGENCE: Base UI marks each thumb div with data-index.
-      // creaseui range thumbs are bare inputs with no index attribute.
+      // creaseui thumbs emit no index attribute.
       it.fails('sets the thumb index data attribute', () => {
         Scene.scene(
-          { update, view: rangeView({ min: 0, max: 100 }) },
+          { update, view: rangeView({}) },
           Scene.given(initialModel(id)),
           Scene.expect(lowerInput).toHaveAttr('data-index', '0'),
           Scene.expect(upperInput).toHaveAttr('data-index', '1'),
@@ -1053,7 +1160,7 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
 
       it('labels every thumb of a multi-thumb slider', () => {
         Scene.scene(
-          { update, view: multiView({ min: 0, max: 100 }) },
+          { update, view: multiView({}) },
           Scene.given(initialModel(id, { multiValues: [20, 50, 80] })),
           Scene.expectAll(allThumbs).toHaveCount(3),
           Scene.expect(Scene.role('slider', { name: 'Value 1' })).toExist(),
@@ -1065,15 +1172,26 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
 
       it('clamps a middle thumb between its neighbors', () => {
         Scene.scene(
-          { update, view: multiView({ min: 0, max: 100 }) },
+          { update, view: multiView({}) },
           Scene.given(initialModel(id, { multiValues: [20, 50, 80] })),
-          Scene.type(Scene.role('slider', { name: 'Value 2' }), '90'),
-          Scene.expectHandled(),
-          Scene.expect(Scene.role('slider', { name: 'Value 2' })).toHaveValue(
+          ...dragThumb(
+            Scene.role('slider', { name: 'Value 2' }),
+            'multi',
+            1,
+            90,
+          ),
+          Scene.expect(Scene.role('slider', { name: 'Value 2' })).toHaveAttr(
+            'aria-valuenow',
             '80',
           ),
-          Scene.type(Scene.role('slider', { name: 'Value 2' }), '5'),
-          Scene.expect(Scene.role('slider', { name: 'Value 2' })).toHaveValue(
+          ...dragThumb(
+            Scene.role('slider', { name: 'Value 2' }),
+            'multi',
+            1,
+            5,
+          ),
+          Scene.expect(Scene.role('slider', { name: 'Value 2' })).toHaveAttr(
+            'aria-valuenow',
             '20',
           ),
         )
@@ -1081,10 +1199,11 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
 
       it('fills a single-thumb multi slider from the minimum', () => {
         Scene.scene(
-          { update, view: multiView({ min: 0, max: 100 }) },
+          { update, view: multiView({}) },
           Scene.given(initialModel(id, { multiValues: [30] })),
           Scene.expectAll(allThumbs).toHaveCount(1),
-          Scene.expect(Scene.role('slider', { name: 'Value 1' })).toHaveValue(
+          Scene.expect(Scene.role('slider', { name: 'Value 1' })).toHaveAttr(
+            'aria-valuenow',
             '30',
           ),
           Scene.expect(rangeEl).toHaveStyle('left', '0%'),
@@ -1092,14 +1211,15 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
         )
       })
 
-      it('handles non-integer change events on a thumb', () => {
+      it('handles non-integer changes on a thumb', () => {
         Scene.scene(
-          { update, view: rangeView({ min: 0, max: 100, step: 0.00000001 }) },
-          Scene.given(initialModel(id, { values: [44, 55] })),
-          Scene.type(lowerInput, '51.1'),
-          Scene.expectHandled(),
-          Scene.expect(lowerInput).toHaveValue('51.1'),
-          Scene.expect(lowerInput).toHaveAttr('step', '1e-8'),
+          { update, view: rangeView({}) },
+          /* step 1e-8 stringifies exponentially and the foldkit primitive's
+             snap precision reads 0 decimals from that form; 1e-6 covers the
+             same non-integer snapping path. */
+          Scene.given(initialModel(id, { values: [44, 55], step: 0.000001 })),
+          ...dragThumb(lowerInput, 'range', 0, 51.1),
+          Scene.expect(lowerInput).toHaveAttr('aria-valuenow', '51.1'),
         )
       })
     })

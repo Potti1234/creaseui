@@ -497,13 +497,13 @@ const staticSource = (
     ...(renderer === 'stylex'
       ? {
           componentImports:
-            "import * as stylex from '@stylexjs/stylex'\nconst styles = stylex.create({ chart: { maxWidth: '36rem' }, stack: { width: '100%', maxWidth: '36rem' } })",
+            "import * as stylex from '@stylexjs/stylex'\nconst styles = stylex.create({ chart: { marginInline: 'auto', maxWidth: '36rem' }, stack: { marginInline: 'auto', maxWidth: '36rem', width: '100%' } })",
         }
       : {}),
     viewBody:
       kind === 'bar-svg'
-        ? `Chart.barChart({ ${renderer === 'stylex' ? 'layoutStyle: styles.chart' : "class: 'max-w-xl'"}, data: [{ label: 'Jan', value: 186 }, { label: 'Feb', value: 305 }, { label: 'Mar', value: 237 }, { label: 'Apr', value: 273 }, { label: 'May', value: 209 }, { label: 'Jun', value: 314 }] }, h)`
-        : `${renderer === 'stylex' ? "h.div([h.Class(stylex.props(styles.stack).className ?? '')]" : "h.div([h.Class('w-full max-w-xl space-y-4')]"}, [Chart.areaChart({ data: [186, 305, 237, 273, 209, 314] }, h), Chart.chartLegend({ config: { visitors: { label: 'Visitors', color: 'var(--chart-2)' } } }, h)])`,
+        ? `Chart.barChart({ ${renderer === 'stylex' ? 'layoutStyle: styles.chart' : "class: 'mx-auto max-w-xl'"}, data: [{ label: 'Jan', value: 186 }, { label: 'Feb', value: 305 }, { label: 'Mar', value: 237 }, { label: 'Apr', value: 273 }, { label: 'May', value: 209 }, { label: 'Jun', value: 314 }] }, h)`
+        : `${renderer === 'stylex' ? "h.div([h.Class(stylex.props(styles.stack).className ?? '')]" : "h.div([h.Class('mx-auto w-full max-w-xl space-y-4')]"}, [Chart.areaChart({ data: [186, 305, 237, 273, 209, 314] }, h), Chart.chartLegend({ config: { visitors: { label: 'Visitors', color: 'var(--chart-2)' } } }, h)])`,
   })
 
 const familyRegistration = (kind: ChartFamilyKind): string => {

@@ -197,19 +197,35 @@ export const drawer = <Msg>(
                             ),
                             hd.Class(
                               cn(
-                                'shrink-0 touch-none rounded-full bg-muted',
-                                direction === 'top' || direction === 'bottom'
-                                  ? 'mx-auto my-4 h-2 w-[100px]'
-                                  : 'my-auto h-[100px] w-2',
-                                direction === 'left'
-                                  ? 'order-last ml-auto mr-2'
-                                  : direction === 'right'
-                                    ? 'mr-auto ml-2'
-                                    : undefined,
+                                'absolute z-[1] flex touch-none cursor-grab items-center justify-center',
+                                direction === 'bottom' &&
+                                  'inset-x-0 top-0 h-6 bg-gradient-to-b from-background from-60% to-transparent',
+                                direction === 'top' &&
+                                  'inset-x-0 bottom-0 h-6 bg-gradient-to-t from-background from-60% to-transparent',
+                                direction === 'left' &&
+                                  'inset-y-0 right-0 w-6 bg-gradient-to-l from-background from-60% to-transparent',
+                                direction === 'right' &&
+                                  'inset-y-0 left-0 w-6 bg-gradient-to-r from-background from-60% to-transparent',
                               ),
                             ),
                           ],
-                          [],
+                          [
+                            hd.div(
+                              [
+                                hd.DataAttribute('slot', 'drawer-handle-pill'),
+                                hd.Class(
+                                  cn(
+                                    'rounded-full bg-border',
+                                    direction === 'top' ||
+                                      direction === 'bottom'
+                                      ? 'h-1 w-8'
+                                      : 'w-1 h-8',
+                                  ),
+                                ),
+                              ],
+                              [],
+                            ),
+                          ],
                         ),
                         hd.div(
                           [

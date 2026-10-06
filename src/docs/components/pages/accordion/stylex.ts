@@ -13,7 +13,7 @@ import * as Card from '@/stylex/card'
 import { className } from '@/stylex/style'
 
 const styles = stylex.create({
-  card: { maxWidth: '24rem', width: '100%' },
+  card: { maxWidth: '24rem', width: '100%', marginInline: 'auto' },
   frame: { maxWidth: '28rem', width: '100%' },
 })
 

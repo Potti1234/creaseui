@@ -49,6 +49,10 @@ export type TabsOrientation = 'horizontal' | 'vertical'
 export type TabConfig<Value extends string = string> = Readonly<{
   value: Value
   label: Html | string
+  /** Icon element displayed before the label. */
+  icon?: Html
+  /** Visually hides the label while keeping it as the trigger's accessible name. */
+  isLabelHidden?: boolean
   content: Html | string
   isDisabled?: boolean
 }>
@@ -129,7 +133,23 @@ const renderTabs = <Value extends string, Msg>(
                             : [ht.Dir(props.direction)]),
                           ht.Class(cn(TRIGGER_CLASS, props.triggerClass)),
                         ],
-                        [config.label],
+                        [
+                          ...(config.icon === undefined
+                            ? []
+                            : [
+                                ht.span(
+                                  [
+                                    ht.Class(
+                                      'inline-flex shrink-0 items-center justify-center [&_svg]:size-4',
+                                    ),
+                                  ],
+                                  [config.icon],
+                                ),
+                              ]),
+                          config.isLabelHidden === true
+                            ? ht.span([ht.Class('sr-only')], [config.label])
+                            : config.label,
+                        ],
                       ),
                     ]
               }),

@@ -69,13 +69,47 @@ export const header = <Msg>(
             [h.AriaLabel('Site navigation'), h.Class(skin.nav)],
             navLinks(),
           ),
-          h.a(
+          h.div(
+            [h.Class(skin.actions)],
             [
-              h.Href(props.counterpartHref),
-              h.Class(skin.other),
-              h.AriaLabel(`View this page in ${otherRendererLabel}`),
+              h.a(
+                [
+                  h.Href(props.counterpartHref),
+                  h.Class(skin.other),
+                  h.AriaLabel(`View this page in ${otherRendererLabel}`),
+                ],
+                [otherRendererLabel, ' ↗'],
+              ),
+              h.a(
+                [
+                  h.Href('https://github.com/Potti1234/creaseui'),
+                  h.Target('_blank'),
+                  h.Rel('noopener noreferrer'),
+                  h.AriaLabel('GitHub repository'),
+                  h.Title('GitHub repository'),
+                  h.Class(skin.iconLink),
+                ],
+                [Icon.icon('github', { class: skin.icon }, h)],
+              ),
+              h.button(
+                [
+                  h.Type('button'),
+                  h.OnClick(props.onThemeToggle),
+                  h.AriaLabel(themeLabel),
+                  h.Title(themeLabel),
+                  h.Class(skin.theme),
+                ],
+                [
+                  h.span(
+                    [h.Class(skin.themeIconWrap)],
+                    [
+                      Icon.icon('sun', { class: skin.themeIconSun }, h),
+                      Icon.icon('moon', { class: skin.themeIconMoon }, h),
+                    ],
+                  ),
+                ],
+              ),
             ],
-            [otherRendererLabel, ' ↗'],
           ),
           h.details(
             [h.Class(skin.mobile)],
@@ -89,16 +123,6 @@ export const header = <Msg>(
                 navLinks(),
               ),
             ],
-          ),
-          h.button(
-            [
-              h.Type('button'),
-              h.OnClick(props.onThemeToggle),
-              h.AriaLabel(themeLabel),
-              h.Title(themeLabel),
-              h.Class(skin.theme),
-            ],
-            [Icon.icon(props.isDark ? 'sun' : 'moon', { class: skin.icon }, h)],
           ),
         ],
       ),

@@ -6,10 +6,17 @@ export const skin = {
   nav: 'hidden items-center gap-6 sm:flex',
   link: 'text-sm font-medium text-muted-foreground transition-colors hover:text-foreground',
   active: 'text-sm font-medium text-foreground transition-colors',
-  other:
-    'ml-auto text-xs font-medium text-muted-foreground hover:text-foreground',
+  other: 'text-xs font-medium text-muted-foreground hover:text-foreground',
+  actions: 'ml-auto flex items-center gap-1 sm:gap-2',
   theme:
-    'inline-flex size-10 shrink-0 items-center justify-center rounded-md hover:bg-accent focus-visible:outline-2 focus-visible:outline-ring',
+    'group relative inline-flex size-10 shrink-0 items-center justify-center rounded-md text-foreground outline-none transition-[color,background-color,transform] duration-200 hover:bg-accent hover:text-accent-foreground focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-[0.96]',
+  iconLink:
+    'inline-flex size-10 shrink-0 items-center justify-center rounded-md text-foreground outline-none transition-[color,background-color,transform] duration-200 hover:bg-accent hover:text-accent-foreground focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-[0.96]',
+  themeIconWrap: 'relative size-4',
+  themeIconSun:
+    'theme-toggle-icon absolute inset-0 size-4 scale-100 opacity-100 transition-[scale,opacity] duration-200 ease-[cubic-bezier(0.2,0,0,1)] dark:scale-25 dark:opacity-0',
+  themeIconMoon:
+    'theme-toggle-icon absolute inset-0 size-4 scale-25 opacity-0 transition-[scale,opacity] duration-200 ease-[cubic-bezier(0.2,0,0,1)] dark:scale-100 dark:opacity-100',
   mobile: 'relative sm:hidden',
   summary:
     'flex size-10 cursor-pointer list-none items-center justify-center rounded-md hover:bg-accent',

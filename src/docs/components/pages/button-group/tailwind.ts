@@ -230,12 +230,16 @@ const nodeView = (
           value: model[node.field],
           onInput: value => FIELD_MESSAGE[node.field](value),
           placeholder: node.placeholder,
+          // grouped controls sit next to h-9 buttons
+          class: 'h-9',
         },
         h,
       )
     case 'inputGroup':
       return InputGroup.inputGroup(
         {
+          // grouped controls sit next to h-9 buttons
+          class: 'h-9',
           children: [
             InputGroup.inputGroupInput(
               {

@@ -25,10 +25,10 @@ import { renderer } from '@/site/config'
 export const Landing = taggedStruct('LandingPage', {
   landing: LandingFeature.Model,
 })
-export const CreateRenderer = S.Literals(['tailwind', 'stylex'])
-export type CreateRenderer = typeof CreateRenderer.Type
+export const Renderer = S.Literals(['tailwind', 'stylex'])
+export type Renderer = typeof Renderer.Type
 export const Create = taggedStruct('CreatePage', {
-  renderer: CreateRenderer,
+  renderer: Renderer,
   tailwindBoard: BoardFeature.Model,
   styleXBoard: BoardConstrained.Model,
 })
@@ -44,7 +44,7 @@ export const BlockCodePanel = S.Struct({
 })
 export type BlockCodePanel = typeof BlockCodePanel.Type
 export const BlocksIndex = taggedStruct('BlocksIndexPage', {
-  renderer: CreateRenderer,
+  renderer: Renderer,
   category: BlockCategory,
   codeBlocks: S.Record(S.String, BlockCodePanel),
   copiedCode: CopyFeedback.Model,
@@ -59,7 +59,7 @@ export const Block = taggedStruct('BlockPage', {
   tailwindFeatured: BlocksTailwindFeature.Model,
 })
 export const Charts = taggedStruct('ChartsPage', {
-  renderer: CreateRenderer,
+  renderer: Renderer,
   area: ChartsArea.Model,
   bar: ChartsBar.Model,
   line: ChartsLine.Model,

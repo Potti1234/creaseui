@@ -191,8 +191,14 @@ type TooltipRow = Readonly<{
   color?: string
 }>
 
-const tooltipRowHtml = (row: TooltipRow): string => {
-  const label = row.seriesName || row.name || ''
+const tooltipRowHtml = (row: TooltipRow, preferName: boolean): string => {
+  // Item-triggered tooltips describe the datum (pie slice, radar series) —
+  // seriesName is an auto-generated 'series0' when the series is unnamed.
+  // Axis-triggered tooltips describe the series; the category name is the
+  // heading.
+  const label = preferName
+    ? row.name || row.seriesName || ''
+    : row.seriesName || row.name || ''
   const value = Array.isArray(row.value) ? row.value[1] : row.value
 
   return `<div style="display:flex;align-items:center;gap:6px;min-width:8rem">
@@ -234,7 +240,8 @@ export const shadcnTooltip = (
       ? `<div style="font-weight:500;margin-bottom:4px;color:var(--foreground)">${heading}</div>`
       : ''
 
-    return `${headingHtml}${rows.map(tooltipRowHtml).join('')}`
+    const itemTooltip = config.trigger === 'item'
+    return `${headingHtml}${rows.map(row => tooltipRowHtml(row, itemTooltip)).join('')}`
   },
 })
 

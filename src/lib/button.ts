@@ -43,7 +43,11 @@ const content = <Msg>(
   ...(props.isLoading === true && props.loadingContent !== undefined
     ? [
         h.span(
-          [h.DataAttribute('slot', 'button-loading'), h.AriaHidden(true)],
+          [
+            h.DataAttribute('slot', 'button-loading'),
+            h.AriaHidden(true),
+            h.Style({ display: 'contents' }),
+          ],
           [...props.loadingContent],
         ),
       ]
@@ -56,7 +60,13 @@ const content = <Msg>(
           [props.leadingIcon],
         ),
       ]),
-  h.span([h.DataAttribute('slot', 'button-content')], [...props.children]),
+  h.span(
+    [
+      h.DataAttribute('slot', 'button-content'),
+      h.Style({ display: 'contents' }),
+    ],
+    [...props.children],
+  ),
   ...(props.trailingIcon === undefined
     ? []
     : [

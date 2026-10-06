@@ -250,7 +250,7 @@ const bodySource = (
   switch (fixture.kind) {
     case 'card':
       return `Card.card({
-      ${renderer === 'tailwind' ? `class: 'w-full max-w-sm',` : 'layoutStyle: styles.card,'}
+      ${renderer === 'tailwind' ? `class: 'mx-auto w-full max-w-sm',` : 'layoutStyle: styles.card,'}
       children: [
         Card.cardHeader({ children: [
           Card.cardTitle({ children: ['${accordionCardCopy.title}'] }, h),
@@ -279,7 +279,9 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
   const isStyleX = renderer === 'stylex'
   const styleEntries: Array<string> = []
   if (isStyleX && fixture.kind === 'card') {
-    styleEntries.push(`  card: { maxWidth: '24rem', width: '100%' },`)
+    styleEntries.push(
+      `  card: { maxWidth: '24rem', width: '100%', marginInline: 'auto' },`,
+    )
   }
   if (isStyleX && fixture.kind === 'rtl') {
     styleEntries.push(`  frame: { maxWidth: '28rem', width: '100%' },`)

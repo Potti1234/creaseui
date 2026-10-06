@@ -203,7 +203,12 @@ const calendarView = <Msg>(
         : {}),
       ...(fixture.weekNumbers === true ? { weekNumbers: true } : {}),
       ...(fixture.direction === 'rtl' ? { direction: 'rtl' as const } : {}),
-      ...(fixture.roomy === true ? { size: 'comfortable' as const } : {}),
+      ...(fixture.layout === 'presets' || fixture.layout === 'time'
+        ? { density: 'flush' as const }
+        : {}),
+      ...(fixture.roomy === true || fixture.layout === 'presets'
+        ? { size: 'comfortable' as const }
+        : {}),
     },
     h,
   )
@@ -234,6 +239,7 @@ const timeFieldView = <Msg>(
                       {
                         id: field === 'start' ? 'time-from' : 'time-to',
                         type: 'time',
+                        step: '1',
                         value:
                           field === 'start'
                             ? preview.startTime
@@ -440,6 +446,16 @@ export const calendarStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         size: 'sm',
         layoutStyle: styles.cardFitBare as ComponentLayoutStyle,
         children: [
+          /* StyleX cannot address ::-webkit-calendar-picker-indicator; the
+             raw rule hides the native picker icon the same way upstream's
+             appearance-none class does. */
+          h.style(
+            [],
+            [
+              "input[type='time'] { appearance: none; }\n" +
+                "input[type='time']::-webkit-calendar-picker-indicator { display: none; }",
+            ],
+          ),
           Card.cardContent(
             { children: [calendarView(fixture, preview, onMessageJson, h)] },
             h,

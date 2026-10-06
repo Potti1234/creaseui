@@ -327,6 +327,11 @@ const view = defineView<Model, Message, FileInputViewInputs>(
             ...attributes.input,
             h.AriaHidden(true),
             h.Tabindex(-1),
+            /* The TriggerClicked command activates this input with
+               input.click() — stop that synthetic click from bubbling back
+               to the dropzone's own OnClick, which would dispatch
+               TriggerClicked again in a loop. */
+            h.OnClick(Message.Noop(), { propagation: 'Stop' }),
             ...(props.name === undefined ? [] : [h.Name(props.name)]),
           ]),
           ...(isDropzone ? dropzoneContent : compactContent),

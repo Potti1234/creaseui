@@ -10,19 +10,19 @@ import {
 } from '@/docs/components/pages/marker/shared'
 import * as Icon from '@/lib/icon'
 import * as Marker from '@/ui/marker'
-import * as Sonner from '@/ui/sonner'
+import * as Toast from '@/ui/toast'
 import * as Spinner from '@/ui/spinner'
 
 const MarkerPreviewModel = S.Struct({
   _docsPage: S.Literal('marker'),
-  notifications: Sonner.Model,
+  notifications: Toast.Model,
 })
 type MarkerPreviewModel = S.Schema.Type<typeof MarkerPreviewModel>
 
 const MarkerPreviewMessage = defineMessageUnion({
   ClickedRevert: {},
-  GotSonnerMessage: {
-    message: S.Union([Sonner.Message, Sonner.ActivatedToastAction]),
+  GotToastMessage: {
+    message: S.Union([Toast.Message, Toast.ActivatedToastAction]),
   },
 })
 type MarkerPreviewMessage = typeof MarkerPreviewMessage.Type
@@ -263,11 +263,11 @@ const markerView = (
             },
             h,
           ),
-          Sonner.sonner(
+          Toast.toast(
             {
               model: model.notifications,
               toParentMessage: message =>
-                MarkerPreviewMessage.GotSonnerMessage({ message }),
+                MarkerPreviewMessage.GotToastMessage({ message }),
             },
             h,
           ),
@@ -284,31 +284,31 @@ export const markerTailwindPreviewProgram = definePreviewProgram<
   Message: MarkerPreviewMessage,
   init: () => ({
     _docsPage: 'marker',
-    notifications: Sonner.init({ id: 'marker-notifications' }),
+    notifications: Toast.init({ id: 'marker-notifications' }),
   }),
   update: (model, message) => {
     switch (message._tag) {
       case 'ClickedRevert': {
-        const result = Sonner.show(
+        const result = Toast.show(
           model.notifications,
-          Sonner.info({ title: 'You clicked the revert button' }),
+          Toast.info({ title: 'You clicked the revert button' }),
         )
         return {
           model: { ...model, notifications: result.model },
           commands: Command.mapMessages(result.commands ?? [], next =>
-            MarkerPreviewMessage.GotSonnerMessage({ message: next }),
+            MarkerPreviewMessage.GotToastMessage({ message: next }),
           ),
         }
       }
-      case 'GotSonnerMessage': {
-        const { model: notifications, commands } = Sonner.update(
+      case 'GotToastMessage': {
+        const { model: notifications, commands } = Toast.update(
           model.notifications,
           message.message,
         )
         return {
           model: { ...model, notifications },
           commands: Command.mapMessages(commands ?? [], next =>
-            MarkerPreviewMessage.GotSonnerMessage({ message: next }),
+            MarkerPreviewMessage.GotToastMessage({ message: next }),
           ),
         }
       }

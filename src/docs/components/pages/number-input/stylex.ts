@@ -138,7 +138,12 @@ export const numberInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
       const fixtureEntry = fixture.entries[entryIndex] ?? fixture.entries[0]!
       return NumberInput.numberInput(
         {
-          model: entry.input,
+          ...entryProps(
+            fixtureEntry,
+            entry.input,
+            entry.value as Option.Option<number>,
+            entryIndex,
+          ),
           toParentMessage: message =>
             onMessageJson(
               JSON.stringify({
@@ -147,30 +152,6 @@ export const numberInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                 message,
               }),
             ),
-          id: `docs-number-input-${fixtureEntry.id}`,
-          label: fixtureEntry.label,
-          value: entry.value as number | null,
-          ...(fixtureEntry.placeholder === undefined
-            ? {}
-            : { placeholder: fixtureEntry.placeholder }),
-          ...(fixtureEntry.units === undefined
-            ? {}
-            : { units: fixtureEntry.units }),
-          ...(fixtureEntry.min === undefined ? {} : { min: fixtureEntry.min }),
-          ...(fixtureEntry.max === undefined ? {} : { max: fixtureEntry.max }),
-          ...(fixtureEntry.description === undefined
-            ? {}
-            : { description: fixtureEntry.description }),
-          ...(fixtureEntry.status === undefined
-            ? {}
-            : { status: fixtureEntry.status }),
-          ...(fixtureEntry.formatValue === 'items'
-            ? { formatValue: (number: number) => `${String(number)} items` }
-            : {}),
-          ...(fixtureEntry.hasClear === true ? { hasClear: true } : {}),
-          ...(fixtureEntry.hasNumberSteppers === true
-            ? { hasNumberSteppers: true }
-            : {}),
         },
         h,
       )

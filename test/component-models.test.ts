@@ -11,7 +11,7 @@ import * as DropdownMenu from '../src/ui/dropdown-menu.ts'
 import * as HoverCard from '../src/ui/hover-card.ts'
 import * as Resizable from '../src/ui/resizable.ts'
 import * as Sidebar from '../src/ui/sidebar.ts'
-import * as Sonner from '../src/ui/sonner.ts'
+import * as Sonner from '../src/ui/toast.ts'
 
 describe('stateful component models', () => {
   it('bounds carousel navigation at the available slides', () => {

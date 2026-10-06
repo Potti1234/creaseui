@@ -21,11 +21,17 @@ type ListPreviewModel = typeof ListPreviewModel.Type
 
 const item = (
   spec: ListItemSpec,
+  fixture: ListFixture,
   h: HtmlBuilder<InteractedWithListPreview>,
 ): Html =>
   List.listItem(
     {
       label: spec.label,
+      // listItem is context-free — forward the parent list's shared config.
+      ...(fixture.listStyle === undefined
+        ? {}
+        : { listStyle: fixture.listStyle }),
+      ...(fixture.hasDividers === true ? { hasDividers: true } : {}),
       ...(spec.description === undefined
         ? {}
         : { description: spec.description }),
@@ -55,7 +61,7 @@ const renderFixture = (
 ): Html =>
   List.list(
     {
-      children: fixture.items.map(spec => item(spec, h)),
+      children: fixture.items.map(spec => item(spec, fixture, h)),
       ...(fixture.listStyle === undefined
         ? {}
         : { listStyle: fixture.listStyle }),

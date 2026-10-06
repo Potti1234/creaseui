@@ -1,7 +1,8 @@
 import type { Update } from 'foldkit'
 import { Duration, Effect, Schema as S } from 'effect'
 import * as Command from 'foldkit/command'
-import { HoverIntent as HoverIntentPrimitive } from '@foldkit/ui'
+import * as Mount from 'foldkit/mount'
+import { Anchor, HoverIntent as HoverIntentPrimitive } from '@foldkit/ui'
 import { defineMessageUnion } from 'foldkit/message'
 
 /* The open/close intent state machine is the foldkit HoverIntent primitive;
@@ -58,6 +59,48 @@ export const WaitBeforeClosing = Command.define('WaitBeforeClosingHoverCard', {
     Effect.sleep(`${delayMs} millis`).pipe(
       Effect.as(Message.CompletedWaitBeforeClosingHoverCard({ version })),
     ),
+})
+
+/* The shared anchor middleware clamps every panel to its clipping ancestor
+   with inline max-height + overflow-y: auto, which puts a scrollbar inside
+   the card. A hover card should size to its content and never scroll, so the
+   observer strips the clamp properties whenever the middleware writes them. */
+export const AnchorHoverCard = Mount.define('HoverCardAnchor', {
+  args: { buttonId: S.String, anchor: Anchor.AnchorConfig },
+  messages: [Message.CompletedHoverCardAnchor],
+  execute: ({ element, buttonId, anchor }) =>
+    Effect.gen(function* () {
+      yield* Effect.acquireRelease(
+        Effect.sync(() =>
+          Anchor.anchorSetup(element, {
+            buttonId,
+            anchor,
+            interceptTab: false,
+          }),
+        ),
+        cleanup => Effect.sync(cleanup),
+      )
+      const unclamp = () => {
+        if (element instanceof HTMLElement) {
+          element.style.removeProperty('max-height')
+          element.style.removeProperty('overflow-y')
+          element.style.removeProperty('overscroll-behavior')
+        }
+      }
+      yield* Effect.acquireRelease(
+        Effect.sync(() => {
+          unclamp()
+          const observer = new MutationObserver(unclamp)
+          observer.observe(element, {
+            attributes: true,
+            attributeFilter: ['style'],
+          })
+          return () => observer.disconnect()
+        }),
+        cleanup => Effect.sync(cleanup),
+      )
+      return Message.CompletedHoverCardAnchor()
+    }),
 })
 
 type UpdateReturn = Update.Return<Model, Message>

@@ -28,6 +28,8 @@ export type ContextMenuProps<Item extends string, Msg> = Readonly<{
   ariaLabel?: string
   class?: string
   direction?: 'ltr' | 'rtl'
+  /** Checkbox and radio items toggle without closing the menu. */
+  keepOpenOnCheckableSelect?: boolean
 }>
 
 export const contextMenu = <Item extends string, Msg>(
@@ -42,6 +44,9 @@ export const contextMenu = <Item extends string, Msg>(
       items: props.items,
       itemToConfig: props.itemToConfig,
       openOnContextMenu: true,
+      ...(props.keepOpenOnCheckableSelect === undefined
+        ? {}
+        : { keepOpenOnCheckableSelect: props.keepOpenOnCheckableSelect }),
       ...(props.direction === undefined ? {} : { direction: props.direction }),
       ...(props.class === undefined ? {} : { triggerClass: props.class }),
       ...(props.ariaLabel === undefined ? {} : { ariaLabel: props.ariaLabel }),

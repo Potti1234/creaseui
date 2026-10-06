@@ -58,23 +58,6 @@
       ]
     },
     {
-      "name": "app-shell",
-      "type": "registry:ui",
-      "title": "App Shell",
-      "description": "A CreaseUI App Shell component for Foldkit.",
-      "registryDependencies": [
-        "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/utils"
-      ],
-      "files": [
-        {
-          "path": "app-shell.ts",
-          "type": "registry:ui",
-          "target": "@ui/app-shell.ts"
-        }
-      ]
-    },
-    {
       "name": "aspect-ratio",
       "type": "registry:ui",
       "title": "Aspect Ratio",
@@ -199,23 +182,6 @@
           "path": "blockquote.ts",
           "type": "registry:ui",
           "target": "@ui/blockquote.ts"
-        }
-      ]
-    },
-    {
-      "name": "bottom-sheet",
-      "type": "registry:ui",
-      "title": "Bottom Sheet",
-      "description": "A CreaseUI Bottom Sheet component for Foldkit.",
-      "registryDependencies": [
-        "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/utils"
-      ],
-      "files": [
-        {
-          "path": "bottom-sheet.ts",
-          "type": "registry:ui",
-          "target": "@ui/bottom-sheet.ts"
         }
       ]
     },
@@ -408,24 +374,6 @@
       ]
     },
     {
-      "name": "checkbox-list",
-      "type": "registry:ui",
-      "title": "Checkbox List",
-      "description": "A CreaseUI Checkbox List component for Foldkit.",
-      "registryDependencies": [
-        "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/icons",
-        "Potti1234/creaseui/utils"
-      ],
-      "files": [
-        {
-          "path": "checkbox-list.ts",
-          "type": "registry:ui",
-          "target": "@ui/checkbox-list.ts"
-        }
-      ]
-    },
-    {
       "name": "checkbox",
       "type": "registry:ui",
       "title": "Checkbox",
@@ -457,23 +405,6 @@
           "path": "circular-progress.ts",
           "type": "registry:ui",
           "target": "@ui/circular-progress.ts"
-        }
-      ]
-    },
-    {
-      "name": "clickable-card",
-      "type": "registry:ui",
-      "title": "Clickable Card",
-      "description": "A CreaseUI Clickable Card component for Foldkit.",
-      "registryDependencies": [
-        "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/utils"
-      ],
-      "files": [
-        {
-          "path": "clickable-card.ts",
-          "type": "registry:ui",
-          "target": "@ui/clickable-card.ts"
         }
       ]
     },
@@ -1296,6 +1227,7 @@
       "title": "Multi Selector",
       "description": "A CreaseUI Multi Selector component for Foldkit.",
       "registryDependencies": [
+        "Potti1234/creaseui/checkbox",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils"
@@ -1417,24 +1349,6 @@
       ]
     },
     {
-      "name": "power-search",
-      "type": "registry:ui",
-      "title": "Power Search",
-      "description": "A CreaseUI Power Search component for Foldkit.",
-      "registryDependencies": [
-        "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/icons",
-        "Potti1234/creaseui/utils"
-      ],
-      "files": [
-        {
-          "path": "power-search.ts",
-          "type": "registry:ui",
-          "target": "@ui/power-search.ts"
-        }
-      ]
-    },
-    {
       "name": "progress",
       "type": "registry:ui",
       "title": "Progress",
@@ -1522,23 +1436,6 @@
       ]
     },
     {
-      "name": "segmented-control",
-      "type": "registry:ui",
-      "title": "Segmented Control",
-      "description": "A CreaseUI Segmented Control component for Foldkit.",
-      "registryDependencies": [
-        "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/utils"
-      ],
-      "files": [
-        {
-          "path": "segmented-control.ts",
-          "type": "registry:ui",
-          "target": "@ui/segmented-control.ts"
-        }
-      ]
-    },
-    {
       "name": "select",
       "type": "registry:ui",
       "title": "Select",
@@ -1609,24 +1506,6 @@
       ]
     },
     {
-      "name": "side-nav",
-      "type": "registry:ui",
-      "title": "Side Nav",
-      "description": "A CreaseUI Side Nav component for Foldkit.",
-      "registryDependencies": [
-        "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/icons",
-        "Potti1234/creaseui/utils"
-      ],
-      "files": [
-        {
-          "path": "side-nav.ts",
-          "type": "registry:ui",
-          "target": "@ui/side-nav.ts"
-        }
-      ]
-    },
-    {
       "name": "sidebar",
       "type": "registry:ui",
       "title": "Sidebar",
@@ -1679,25 +1558,6 @@
           "path": "slider.ts",
           "type": "registry:ui",
           "target": "@ui/slider.ts"
-        }
-      ]
-    },
-    {
-      "name": "sonner",
-      "type": "registry:ui",
-      "title": "Sonner",
-      "description": "A CreaseUI Sonner component for Foldkit.",
-      "registryDependencies": [
-        "Potti1234/creaseui/button",
-        "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/icons",
-        "Potti1234/creaseui/utils"
-      ],
-      "files": [
-        {
-          "path": "sonner.ts",
-          "type": "registry:ui",
-          "target": "@ui/sonner.ts"
         }
       ]
     },
@@ -1961,8 +1821,10 @@
       "title": "Toast",
       "description": "A CreaseUI Toast component for Foldkit.",
       "registryDependencies": [
+        "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/sonner"
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
       ],
       "files": [
         {

@@ -28,13 +28,62 @@ const styles = stylex.create({
     zIndex: 50,
   },
   dragging: { transitionProperty: 'none' },
-  handleHorizontal: {
-    height: '0.5rem',
-    marginBlock: '1rem',
-    marginInline: 'auto',
-    width: '6.25rem',
+  handleBar: {
+    alignItems: 'center',
+    display: 'flex',
+    justifyContent: 'center',
+    position: 'absolute',
+    touchAction: 'none',
+    zIndex: 1,
   },
-  handleVertical: { height: '6.25rem', marginBlock: 'auto', width: '0.5rem' },
+  handleBarBottom: {
+    backgroundImage:
+      'linear-gradient(to bottom, var(--background) 60%, transparent)',
+    cursor: interactionTokens.cursorResizeVertical,
+    height: '1.5rem',
+    insetBlockStart: 0,
+    insetInlineEnd: 0,
+    insetInlineStart: 0,
+  },
+  handleBarTop: {
+    backgroundImage:
+      'linear-gradient(to top, var(--background) 60%, transparent)',
+    cursor: interactionTokens.cursorResizeVertical,
+    height: '1.5rem',
+    insetBlockEnd: 0,
+    insetInlineEnd: 0,
+    insetInlineStart: 0,
+  },
+  handleBarLeft: {
+    backgroundImage:
+      'linear-gradient(to left, var(--background) 60%, transparent)',
+    cursor: interactionTokens.cursorResizeHorizontal,
+    insetBlockEnd: 0,
+    insetBlockStart: 0,
+    insetInlineEnd: 0,
+    width: '1.5rem',
+  },
+  handleBarRight: {
+    backgroundImage:
+      'linear-gradient(to right, var(--background) 60%, transparent)',
+    cursor: interactionTokens.cursorResizeHorizontal,
+    insetBlockEnd: 0,
+    insetBlockStart: 0,
+    insetInlineStart: 0,
+    width: '1.5rem',
+  },
+  handlePillHorizontal: {
+    backgroundColor: tokens.border,
+    borderRadius: foundationTokens.radiusFull,
+    height: '0.25rem',
+    width: '2rem',
+  },
+  handlePillVertical: {
+    backgroundColor: tokens.border,
+    borderRadius: foundationTokens.radiusFull,
+    height: '2rem',
+    width: '0.25rem',
+  },
   left: {
     borderRightWidth: 1,
     bottom: 0,
@@ -76,6 +125,7 @@ import { Dialog as DialogPrimitive } from '@foldkit/ui'
 import * as DrawerBehavior from '@/lib/drawer'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
+import { foundationTokens } from './foundations-tokens.stylex'
 import { overlayStyles } from './overlay-tokens.stylex'
 import type { ComponentLayoutStyle } from './contracts'
 import { className } from './style'
@@ -259,15 +309,34 @@ export const drawer = <Msg>(
                                   : Option.none(),
                             ),
                             hd.Class(
-                              cn(
-                                overlayStyles.media,
-                                direction === 'top' || direction === 'bottom'
-                                  ? styles.handleHorizontal
-                                  : styles.handleVertical,
+                              className(
+                                styles.handleBar,
+                                direction === 'bottom'
+                                  ? styles.handleBarBottom
+                                  : direction === 'top'
+                                    ? styles.handleBarTop
+                                    : direction === 'left'
+                                      ? styles.handleBarLeft
+                                      : styles.handleBarRight,
                               ),
                             ),
                           ],
-                          [],
+                          [
+                            hd.div(
+                              [
+                                hd.DataAttribute('slot', 'drawer-handle-pill'),
+                                hd.Class(
+                                  className(
+                                    direction === 'top' ||
+                                      direction === 'bottom'
+                                      ? styles.handlePillHorizontal
+                                      : styles.handlePillVertical,
+                                  ),
+                                ),
+                              ],
+                              [],
+                            ),
+                          ],
                         ),
                         hd.div(
                           [

@@ -66,7 +66,11 @@ const labelSxView = <Msg>(
             h,
           ),
           Label.label(
-            { for: 'terms', children: ['Accept terms and conditions'] },
+            {
+              id: 'terms-label',
+              for: 'terms',
+              children: ['Accept terms and conditions'],
+            },
             h,
           ),
         ],
@@ -83,7 +87,14 @@ const labelSxView = <Msg>(
             },
             h,
           ),
-          Label.label({ for: 'terms-rtl', children: [labelRtlCopy.label] }, h),
+          Label.label(
+            {
+              id: 'terms-rtl-label',
+              for: 'terms-rtl',
+              children: [labelRtlCopy.label],
+            },
+            h,
+          ),
         ],
       )
     case 'field':
@@ -182,7 +193,7 @@ const labelSxView = <Msg>(
                                         children: [
                                           Field.fieldLabel(
                                             {
-                                              for: 'checkout-exp-month',
+                                              for: `${model.month.id}-button`,
                                               children: ['Month'],
                                             },
                                             h,
@@ -217,7 +228,7 @@ const labelSxView = <Msg>(
                                         children: [
                                           Field.fieldLabel(
                                             {
-                                              for: 'checkout-exp-year',
+                                              for: `${model.year.id}-button`,
                                               children: ['Year'],
                                             },
                                             h,
@@ -318,6 +329,7 @@ const labelSxView = <Msg>(
                                       ),
                                       Field.fieldLabel(
                                         {
+                                          id: 'checkout-same-as-shipping-label',
                                           for: 'checkout-same-as-shipping',
                                           children: [
                                             'Same as shipping address',
