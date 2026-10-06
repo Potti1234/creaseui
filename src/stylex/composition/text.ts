@@ -1,6 +1,7 @@
 import * as stylex from '@stylexjs/stylex'
 import type { Attribute, Html, HtmlBuilder } from 'foldkit/html'
 
+import { reset } from '../reset'
 import { className } from '../style'
 import { tokens } from '../tokens.stylex'
 import { compositionTokens } from './composition-tokens.stylex.const'
@@ -110,6 +111,8 @@ const styles = stylex.create({
   toneDanger: { color: tokens.destructive },
   tonePrimary: { color: tokens.foreground },
   toneSecondary: { color: tokens.mutedForeground },
+  // reset.text zeroes fontWeight; <strong> keeps the UA 'bolder' like Tailwind.
+  strongWeight: { fontWeight: 'bolder' },
 })
 
 const element = <Message>(
@@ -188,7 +191,20 @@ export const text = <Message>(
   return element(
     props.as ?? 'span',
     [
-      h.Class(className(variant, tone, ...align, ...measure, ...numeric)),
+      /* Tailwind's preflight zeroes UA margins/padding on every element; the
+         StyleX build has no global reset, so text elements (h1-h4, p) need
+         reset.text or their default margin-block leaks into every stack. */
+      h.Class(
+        className(
+          reset.text,
+          props.as === 'strong' ? styles.strongWeight : null,
+          variant,
+          tone,
+          ...align,
+          ...measure,
+          ...numeric,
+        ),
+      ),
       ...Object.entries(props.data ?? {}).map(([name, value]) =>
         h.DataAttribute(name, value),
       ),
