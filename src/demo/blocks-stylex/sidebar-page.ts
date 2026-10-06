@@ -85,6 +85,30 @@ const searchStyles = stylex.create({
   rightTrigger: { marginInlineStart: 'auto', marginInlineEnd: '-.25rem' },
   triggerIcon: { transform: 'rotate(180deg)' },
   headerSeparator: { height: '1rem', marginInlineEnd: '.5rem' },
+  /* TW collapsible chevrons: 'ml-auto size-4 shrink-0 transition-transform
+     rotate-90' (trailing) and 'size-4 shrink-0' (leading, file tree). */
+  chevron: {
+    marginInlineStart: 'auto',
+    flexShrink: 0,
+    width: '1rem',
+    height: '1rem',
+    transitionProperty: 'transform',
+    transitionDuration: '.2s',
+  },
+  chevronLead: {
+    flexShrink: 0,
+    width: '1rem',
+    height: '1rem',
+    transitionProperty: 'transform',
+    transitionDuration: '.2s',
+  },
+  chevronOpen: { transform: 'rotate(90deg)' },
+  endIcon: {
+    marginInlineStart: 'auto',
+    flexShrink: 0,
+    width: '1rem',
+    height: '1rem',
+  },
 })
 
 export const Model = S.Struct({
@@ -287,9 +311,11 @@ const subItems = (
   labels: ReadonlyArray<string>,
   model: Model,
   h: HtmlBuilder<Message>,
+  flat = false,
 ): Html =>
   Sidebar.sidebarMenuSub(
     {
+      ...(flat ? { variant: 'flat' as const } : {}),
       children: labels
         .filter(label =>
           label.toLowerCase().includes(model.query.toLowerCase()),
@@ -315,6 +341,22 @@ const subItems = (
     },
     h,
   )
+/* TW sidebar-02 collapsible content: plain menu items, no sub indent. */
+const docItems = (
+  labels: ReadonlyArray<string>,
+  model: Model,
+  h: HtmlBuilder<Message>,
+): Html =>
+  Sidebar.sidebarMenu(
+    {
+      children: labels
+        .filter(label =>
+          label.toLowerCase().includes(model.query.toLowerCase()),
+        )
+        .map(label => item(label, model, h)),
+    },
+    h,
+  )
 const group = (
   title: string,
   children: ReadonlyArray<Html>,
@@ -329,6 +371,7 @@ const group = (
     },
     h,
   )
+type ExpandableShape = 'menu' | 'chevronLead' | 'plusMinus' | 'label'
 const expandable = (
   id: string,
   label: string,
@@ -337,37 +380,75 @@ const expandable = (
   h: HtmlBuilder<Message>,
   initiallyOpen = false,
   name?: string,
-): Html =>
-  collapsible(
-    {
-      variant: 'sidebar',
-      id: 'stylex-group-' + id.replaceAll(/[^a-z0-9]/gi, '-'),
-      isOpen: model.expanded[id] ?? initiallyOpen,
-      onToggle: isOpen => Message['ChangedStyleXSidebarGroup']({ id, isOpen }),
-      trigger: inline(
-        {
-          align: 'center',
-          gap: 'sm',
-          children: [
-            ...(name === undefined ? [] : [icon({ name }, h)]),
-            blockLabel(label, h),
-            icon(
+  shape: ExpandableShape = 'menu',
+): Html => {
+  const isOpen = model.expanded[id] ?? initiallyOpen
+  const trailing =
+    shape === 'plusMinus'
+      ? [
+          BaseIcon.icon(
+            isOpen ? 'minus' : 'plus',
+            {
+              class: className(searchStyles.endIcon),
+            },
+            h,
+          ),
+        ]
+      : shape === 'chevronLead'
+        ? []
+        : [
+            BaseIcon.icon(
+              'chevron-right',
               {
-                name:
-                  (model.expanded[id] ?? initiallyOpen)
-                    ? 'chevron-down'
-                    : 'chevron-right',
+                class: className(
+                  searchStyles.chevron,
+                  isOpen && searchStyles.chevronOpen,
+                ),
               },
               h,
             ),
-          ],
-        },
-        h,
+          ]
+  const leading =
+    shape === 'chevronLead'
+      ? [
+          BaseIcon.icon(
+            'chevron-right',
+            {
+              class: className(
+                searchStyles.chevronLead,
+                isOpen && searchStyles.chevronOpen,
+              ),
+            },
+            h,
+          ),
+        ]
+      : []
+  const disclosure = collapsible(
+    {
+      variant: shape === 'label' ? 'sidebarLabel' : 'sidebar',
+      id: 'stylex-group-' + id.replaceAll(/[^a-z0-9]/gi, '-'),
+      isOpen,
+      onToggle: next =>
+        Message['ChangedStyleXSidebarGroup']({ id, isOpen: next }),
+      trigger: h.span(
+        [h.Class('contents')],
+        [
+          ...leading,
+          ...(name === undefined ? [] : [icon({ name }, h)]),
+          blockLabel(label, h),
+          ...trailing,
+        ],
       ),
       content,
     },
     h,
   )
+  /* TW nests menu-button collapsibles inside sidebarMenuItem; the
+     group-label variant (sidebar-02) is wrapped in its own sidebarGroup. */
+  return shape === 'label'
+    ? Sidebar.sidebarGroup({ children: [disclosure] }, h)
+    : Sidebar.sidebarMenuItem({ children: [disclosure] }, h)
+}
 const user = (h: HtmlBuilder<Message>, collapsed: boolean): Html =>
   Sidebar.sidebarFooter(
     {
@@ -563,56 +644,108 @@ const documentation = (
       ]),
   Sidebar.sidebarContent(
     {
-      children: docs.navMain.map((g, index) => {
-        const labels = g.items.map(i => i.title)
-        if (id === '02' || id === '05')
-          return expandable(
-            g.title,
-            g.title,
-            subItems(labels, model, h),
-            model,
-            h,
-            id === '02',
-          )
-        if (id === '06') {
-          const submenu = model.submenus[index]
-          return submenu === undefined
-            ? h.empty
-            : Popover.popover(
+      children:
+        id === '03' || id === '04'
+          ? [
+              /* TW-03/04: always-open groups — menuItem = [font-medium
+                 menuButton title, sidebarMenuSub items]; 04 uses gap-2
+                 menu + flattened sub. */
+              Sidebar.sidebarGroup(
                 {
-                  variant: 'sidebar',
-                  model: submenu,
-                  toParentMessage: message =>
-                    Message['GotStyleXSidebarSubmenu']({ index, message }),
-                  trigger: inline(
-                    {
-                      width: 'full',
-                      align: 'center',
-                      justify: 'between',
-                      children: [
-                        blockLabel(g.title, h),
-                        icon({ name: 'ellipsis' }, h),
-                      ],
-                    },
-                    h,
-                  ),
-                  content: subItems(labels, model, h),
-                  side: 'right',
-                  align: 'start',
+                  children: [
+                    Sidebar.sidebarMenu(
+                      {
+                        ...(id === '04' ? { variant: 'loose' as const } : {}),
+                        children: docs.navMain.map(g =>
+                          Sidebar.sidebarMenuItem(
+                            {
+                              children: [
+                                Sidebar.sidebarMenuButton(
+                                  {
+                                    children: [g.title],
+                                    href: '#',
+                                    weight: 'medium',
+                                  },
+                                  h,
+                                ),
+                                subItems(
+                                  g.items.map(i => i.title),
+                                  model,
+                                  h,
+                                  id === '04',
+                                ),
+                              ],
+                            },
+                            h,
+                          ),
+                        ),
+                      },
+                      h,
+                    ),
+                  ],
                 },
                 h,
-              )
-        }
-        if (id === '01')
-          return group(
-            g.title,
-            labels
-              .filter(l => l.toLowerCase().includes(model.query.toLowerCase()))
-              .map(l => item(l, model, h)),
-            h,
-          )
-        return group(g.title, [subItems(labels, model, h)], h)
-      }),
+              ),
+            ]
+          : docs.navMain.map((g, index) => {
+              const labels = g.items.map(i => i.title)
+              if (id === '02' || id === '05')
+                return expandable(
+                  g.title,
+                  g.title,
+                  id === '02'
+                    ? docItems(labels, model, h)
+                    : subItems(labels, model, h),
+                  model,
+                  h,
+                  id === '02',
+                  undefined,
+                  id === '02' ? 'label' : 'plusMinus',
+                )
+              if (id === '06') {
+                const submenu = model.submenus[index]
+                return submenu === undefined
+                  ? h.empty
+                  : Popover.popover(
+                      {
+                        variant: 'sidebar',
+                        model: submenu,
+                        toParentMessage: message =>
+                          Message['GotStyleXSidebarSubmenu']({
+                            index,
+                            message,
+                          }),
+                        trigger: inline(
+                          {
+                            width: 'full',
+                            align: 'center',
+                            justify: 'between',
+                            children: [
+                              blockLabel(g.title, h),
+                              icon({ name: 'ellipsis' }, h),
+                            ],
+                          },
+                          h,
+                        ),
+                        content: subItems(labels, model, h),
+                        side: 'right',
+                        align: 'start',
+                      },
+                      h,
+                    )
+              }
+              if (id === '01')
+                return group(
+                  g.title,
+                  labels
+                    .filter(l =>
+                      l.toLowerCase().includes(model.query.toLowerCase()),
+                    )
+                    .map(l => item(l, model, h)),
+                  h,
+                )
+              return group(g.title, [subItems(labels, model, h)], h)
+            }),
     },
     h,
   ),
@@ -807,6 +940,7 @@ const tree = (
           h,
           false,
           'folder',
+          'chevronLead',
         )
       }),
     },
@@ -1081,7 +1215,23 @@ export const view = (
                   group(
                     'Changes',
                     files.changes.map(c =>
-                      item(c.file + ' ' + c.state, model, h, 'file'),
+                      Sidebar.sidebarMenuItem(
+                        {
+                          children: [
+                            Sidebar.sidebarMenuButton(
+                              {
+                                children: [icon({ name: 'file' }, h), c.file],
+                              },
+                              h,
+                            ),
+                            Sidebar.sidebarMenuBadge(
+                              { children: [c.state] },
+                              h,
+                            ),
+                          ],
+                        },
+                        h,
+                      ),
                     ),
                     h,
                   ),

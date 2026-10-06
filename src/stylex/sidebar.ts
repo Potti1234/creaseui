@@ -218,6 +218,8 @@ const styles = stylex.create({
     minWidth: 0,
     width: '100%',
   },
+  /* TW sidebar-04 'gap-2' menu override. */
+  menuLoose: { gap: '0.5rem' },
   menuAction: {
     padding: 0,
     borderRadius: tokens.controlRadius,
@@ -276,6 +278,7 @@ const styles = stylex.create({
     color: complexTokens.sidebarAccentForeground,
     fontWeight: 500,
   },
+  menuButtonMedium: { fontWeight: 500 },
   menuButtonDefault: {
     fontSize: '0.875rem',
     lineHeight: '1.25rem',
@@ -529,6 +532,13 @@ const styles = stylex.create({
     borderRightColor: complexTokens.sidebarBorder,
     borderRightStyle: 'solid',
     borderRightWidth: 1,
+  },
+  /* TW sidebar-04 'ml-0 border-l-0 px-1.5' — flattens the default sub indent. */
+  subFlat: {
+    marginInlineStart: 0,
+    borderLeftWidth: 0,
+    paddingInline: '0.375rem',
+    transform: 'none',
   },
   subMd: { fontSize: '0.875rem', lineHeight: '1.25rem' },
   subSm: { fontSize: '0.75rem', lineHeight: '1rem' },
@@ -1009,12 +1019,23 @@ export const sidebarGroupContent = slotDiv(
   'group-content',
   styles.groupContent,
 )
-export const sidebarMenu = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html =>
+export type SidebarMenuProps = Slot & Readonly<{ variant?: 'loose' }>
+export const sidebarMenu = <Msg>(
+  props: SidebarMenuProps,
+  h: HtmlBuilder<Msg>,
+): Html =>
   h.ul(
     [
       h.DataAttribute('slot', 'sidebar-menu'),
       h.DataAttribute('sidebar', 'menu'),
-      h.Class(className(reset.list, styles.menu, props.layoutStyle)),
+      h.Class(
+        className(
+          reset.list,
+          styles.menu,
+          props.variant === 'loose' && styles.menuLoose,
+          props.layoutStyle,
+        ),
+      ),
     ],
     [...props.children],
   )
@@ -1055,6 +1076,8 @@ export type SidebarMenuButtonProps<Msg> = Readonly<{
   isActive?: boolean
   variant?: SidebarMenuButtonVariants['variant']
   size?: SidebarMenuButtonVariants['size']
+  /* TW 'font-medium' class override (sidebar-03/04 group titles). */
+  weight?: 'medium'
   tooltip?: string
   layoutStyle?: ComponentLayoutStyle
 }>
@@ -1085,6 +1108,7 @@ export const sidebarMenuButton = <Msg>(
         props.variant === 'primary' && styles.menuButtonPrimary,
         menuSizes[size],
         props.isActive === true && styles.menuButtonActive,
+        props.weight === 'medium' && styles.menuButtonMedium,
         props.layoutStyle,
       ),
     ),
@@ -1210,12 +1234,23 @@ export const sidebarMenuSkeleton = <Msg>(
     ],
   )
 }
-export const sidebarMenuSub = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html =>
+export type SidebarMenuSubProps = Slot & Readonly<{ variant?: 'flat' }>
+export const sidebarMenuSub = <Msg>(
+  props: SidebarMenuSubProps,
+  h: HtmlBuilder<Msg>,
+): Html =>
   h.ul(
     [
       h.DataAttribute('slot', 'sidebar-menu-sub'),
       h.DataAttribute('sidebar', 'menu-sub'),
-      h.Class(className(reset.list, styles.sub, props.layoutStyle)),
+      h.Class(
+        className(
+          reset.list,
+          styles.sub,
+          props.variant === 'flat' && styles.subFlat,
+          props.layoutStyle,
+        ),
+      ),
     ],
     [...props.children],
   )

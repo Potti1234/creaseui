@@ -8,18 +8,64 @@ import type { StaticStyles } from '@stylexjs/stylex'
 import type { ComponentLayoutStyle } from './contracts'
 import { className } from './style'
 import { interactionTokens } from './interaction-tokens.stylex.const'
+import { complexTokens } from './complex-tokens.stylex'
+import { tokens } from './tokens.stylex'
+import { sidebarScope } from './sidebar.markers.stylex'
 
 const styles = stylex.create({
   content: { overflow: 'hidden' },
   root: { display: 'block' },
   trigger: { cursor: interactionTokens.cursorAction },
+  /* TW triggerClass: sidebarMenuButtonVariants() — full menu-button look. */
   sidebarTrigger: {
     padding: '0.5rem',
     alignItems: 'center',
     display: 'flex',
     textAlign: 'left',
-    minHeight: '2rem',
+    height: '2rem',
+    width: {
+      default: '100%',
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: '2rem',
+    },
+    gap: '0.5rem',
+    borderRadius: tokens.controlRadius,
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+    outlineStyle: 'none',
+    backgroundColor: {
+      default: tokens.transparent,
+      ':hover': complexTokens.sidebarAccent,
+      ':active': complexTokens.sidebarAccent,
+    },
+    color: {
+      default: complexTokens.sidebarForeground,
+      ':hover': complexTokens.sidebarAccentForeground,
+    },
+  },
+  /* TW GROUP_LABEL_CLASS (sidebar-02): group-label styled collapsible trigger. */
+  sidebarLabelTrigger: {
+    paddingInline: '0.5rem',
+    alignItems: 'center',
+    display: 'flex',
+    textAlign: 'left',
+    height: '2rem',
     width: '100%',
+    flexShrink: 0,
+    borderRadius: tokens.controlRadius,
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+    fontWeight: 500,
+    outlineStyle: 'none',
+    backgroundColor: {
+      default: tokens.transparent,
+      ':hover': complexTokens.sidebarAccent,
+    },
+    color: {
+      default: complexTokens.sidebarForeground,
+      ':hover': complexTokens.sidebarAccentForeground,
+    },
   },
 })
 
@@ -39,7 +85,7 @@ export type CollapsibleProps<Msg> = Readonly<{
   content: Html | string
   isDisabled?: boolean
   ariaLabel?: string
-  variant?: 'default' | 'sidebar'
+  variant?: 'default' | 'sidebar' | 'sidebarLabel'
   layoutStyle?: ComponentLayoutStyle
   triggerLayoutStyle?: ComponentLayoutStyle
   contentLayoutStyle?: ComponentLayoutStyle
@@ -75,6 +121,8 @@ export const collapsible = <Msg>(
                     reset.button,
                     styles.trigger,
                     props.variant === 'sidebar' && styles.sidebarTrigger,
+                    props.variant === 'sidebarLabel' &&
+                      styles.sidebarLabelTrigger,
                     props.triggerLayoutStyle,
                   ),
                 ),
