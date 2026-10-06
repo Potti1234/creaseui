@@ -43,6 +43,7 @@ import * as BaseIcon from '@/lib/icon'
 import { className } from '@/stylex/style'
 import { complexTokens } from '../../stylex/complex-tokens.stylex'
 import { tokens } from '../../stylex/tokens.stylex'
+import { foundationTokens } from '../../stylex/foundations-tokens.stylex'
 import * as Switch from '@/stylex/switch'
 import * as DropdownMenu from '@/stylex/dropdown-menu'
 
@@ -255,6 +256,191 @@ const searchStyles = stylex.create({
     position: 'sticky',
     top: 0,
   },
+  /* TW navUser trigger: sidebarMenuButtonVariants({size:'lg', open accent}). */
+  userTrigger: {
+    padding: '.5rem',
+    borderRadius: tokens.controlRadius,
+    gap: '.5rem',
+    overflow: 'hidden',
+    alignItems: 'center',
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': complexTokens.sidebarAccent,
+      ':active': complexTokens.sidebarAccent,
+    },
+    color: {
+      default: complexTokens.sidebarForeground,
+      ':hover': complexTokens.sidebarAccentForeground,
+    },
+    display: 'flex',
+    outlineStyle: 'none',
+    textAlign: 'left',
+    whiteSpace: 'nowrap',
+    width: '100%',
+    fontSize: '.875rem',
+    lineHeight: '1.25rem',
+    height: '3rem',
+    cursor: 'pointer',
+  },
+  userTriggerOpen: {
+    padding: '.5rem',
+    borderRadius: tokens.controlRadius,
+    gap: '.5rem',
+    overflow: 'hidden',
+    alignItems: 'center',
+    backgroundColor: complexTokens.sidebarAccent,
+    color: complexTokens.sidebarAccentForeground,
+    display: 'flex',
+    outlineStyle: 'none',
+    textAlign: 'left',
+    whiteSpace: 'nowrap',
+    width: '100%',
+    fontSize: '.875rem',
+    lineHeight: '1.25rem',
+    height: '3rem',
+    cursor: 'pointer',
+  },
+  /* TW avatar 'size-8 rounded-lg' + muted fallback. */
+  userAvatar: {
+    display: 'flex',
+    width: '2rem',
+    height: '2rem',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '.5rem',
+    backgroundColor: foundationTokens.muted,
+    color: tokens.mutedForeground,
+    flexShrink: 0,
+    fontSize: '.75rem',
+    fontWeight: 500,
+  },
+  /* TW 'grid flex-1 text-left text-sm leading-tight'. */
+  userText: {
+    display: 'grid',
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: '0%',
+    minWidth: 0,
+    textAlign: 'left',
+    fontSize: '.875rem',
+    lineHeight: '1.25rem',
+  },
+  userName: {
+    fontWeight: 500,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  userEmail: {
+    fontSize: '.75rem',
+    lineHeight: '1rem',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  chevronTd: {
+    marginInlineStart: 'auto',
+    width: '1rem',
+    height: '1rem',
+    flexShrink: 0,
+  },
+  /* TW-12/15 right-sidebar user header 'h-16 border-b' (+ base header
+     styles: flex-col gap-2 p-2 — rendered as plain slot div since
+     borders aren't a ComponentLayoutStyle). */
+  userHeader: {
+    height: '4rem',
+    borderBottomWidth: 1,
+    borderBottomStyle: 'solid',
+    borderBottomColor: complexTokens.sidebarBorder,
+    padding: '.5rem',
+    gap: '.5rem',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  /* TW team switcher trigger: sidebarMenuButtonVariants 'w-fit px-1.5'. */
+  teamTrigger: {
+    padding: '.5rem',
+    paddingInline: '.375rem',
+    alignItems: 'center',
+    display: 'inline-flex',
+    textAlign: 'left',
+    height: '2rem',
+    width: 'fit-content',
+    gap: '.5rem',
+    borderRadius: tokens.controlRadius,
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    fontSize: '.875rem',
+    lineHeight: '1.25rem',
+    outlineStyle: 'none',
+    cursor: 'pointer',
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': complexTokens.sidebarAccent,
+    },
+    color: {
+      default: complexTokens.sidebarForeground,
+      ':hover': complexTokens.sidebarAccentForeground,
+    },
+  },
+  teamTriggerOpen: {
+    padding: '.5rem',
+    paddingInline: '.375rem',
+    alignItems: 'center',
+    display: 'inline-flex',
+    textAlign: 'left',
+    height: '2rem',
+    width: 'fit-content',
+    gap: '.5rem',
+    borderRadius: tokens.controlRadius,
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    fontSize: '.875rem',
+    lineHeight: '1.25rem',
+    outlineStyle: 'none',
+    cursor: 'pointer',
+    backgroundColor: complexTokens.sidebarAccent,
+    color: complexTokens.sidebarAccentForeground,
+  },
+  /* TW 'size-5 rounded-md bg-sidebar-primary' logo box. */
+  teamIconBox: {
+    display: 'flex',
+    aspectRatio: '1 / 1',
+    width: '1.25rem',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '.375rem',
+    backgroundColor: complexTokens.sidebarPrimary,
+    color: complexTokens.sidebarPrimaryForeground,
+    flexShrink: 0,
+  },
+  iconXs: { width: '.75rem', height: '.75rem', flexShrink: 0 },
+  teamName: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontWeight: 500,
+  },
+  /* TW-10 dropdown team item 'size-6 rounded-xs border' icon box. */
+  teamItemIcon: {
+    display: 'flex',
+    width: '1.5rem',
+    height: '1.5rem',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '.25rem',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: tokens.border,
+    backgroundColor: tokens.background,
+    flexShrink: 0,
+  },
+  chevronSm: {
+    width: '1rem',
+    height: '1rem',
+    flexShrink: 0,
+    opacity: 0.5,
+  },
   menuTriggerOpen: {
     padding: '0.5rem',
     alignItems: 'center',
@@ -290,6 +476,9 @@ export const Model = S.Struct({
   dialog: Dialog.Model,
   popover: Popover.Model,
   submenus: S.Array(DropdownMenu.Model),
+  teamMenu: DropdownMenu.Model,
+  userMenu: DropdownMenu.Model,
+  activeTeamIndex: S.Number,
 })
 export type Model = typeof Model.Type
 
@@ -321,6 +510,12 @@ export const Message = defineMessageUnion({
     index: S.Number,
     message: DropdownMenu.Message,
   },
+  GotStyleXSidebarTeamMenu: {
+    message: DropdownMenu.Message,
+  },
+  GotStyleXSidebarUserMenu: {
+    message: DropdownMenu.Message,
+  },
 })
 export type Message = typeof Message.Type
 export const init = (): Model => ({
@@ -348,7 +543,28 @@ export const init = (): Model => ({
     DropdownMenu.init({ id: 'stylex-submenu-' + index }),
   ),
   popover: Popover.init({ id: 'stylex-sidebar-popover' }),
+  teamMenu: DropdownMenu.init({ id: 'stylex-sidebar-team' }),
+  userMenu: DropdownMenu.init({ id: 'stylex-sidebar-user' }),
+  activeTeamIndex: 0,
 })
+type TeamItem = 'team-0' | 'team-1' | 'team-2' | 'add-team'
+const TEAM_ITEMS: ReadonlyArray<TeamItem> = [
+  'team-0',
+  'team-1',
+  'team-2',
+  'add-team',
+]
+type UserItem = 'upgrade' | 'account' | 'billing' | 'notifications' | 'log-out'
+const USER_ITEMS: ReadonlyArray<UserItem> = [
+  'upgrade',
+  'account',
+  'billing',
+  'notifications',
+  'log-out',
+]
+const TeamMenu = DropdownMenu.create<TeamItem>()
+const UserMenu = DropdownMenu.create<UserItem>()
+
 type UpdateReturn = Update.Return<Model, Message>
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
@@ -435,6 +651,39 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           },
           commands: Command.mapMessages(commands, message =>
             Message['GotStyleXSidebarSubmenu']({ index, message }),
+          ),
+        }
+      },
+      GotStyleXSidebarTeamMenu: ({ message: child }) => {
+        const {
+          model: teamMenu,
+          commands: teamMenuCommands__,
+          outMessage: teamMenuOut__,
+        } = TeamMenu.update(model.teamMenu, child)
+        const commands = teamMenuCommands__ ?? []
+        const selected =
+          teamMenuOut__ !== undefined && teamMenuOut__._tag === 'Selected'
+            ? teamMenuOut__.value
+            : undefined
+        const activeTeamIndex =
+          selected !== undefined && selected.startsWith('team-')
+            ? Number(selected.slice(5))
+            : model.activeTeamIndex
+        return {
+          model: { ...model, teamMenu, activeTeamIndex },
+          commands: Command.mapMessages(commands, message =>
+            Message['GotStyleXSidebarTeamMenu']({ message }),
+          ),
+        }
+      },
+      GotStyleXSidebarUserMenu: ({ message: child }) => {
+        const { model: userMenu, commands: userMenuCommands__ } =
+          UserMenu.update(model.userMenu, child)
+        const commands = userMenuCommands__ ?? []
+        return {
+          model: { ...model, userMenu },
+          commands: Command.mapMessages(commands, message =>
+            Message['GotStyleXSidebarUserMenu']({ message }),
           ),
         }
       },
@@ -622,53 +871,85 @@ const expandable = (
     ? Sidebar.sidebarGroup({ children: [disclosure] }, h)
     : Sidebar.sidebarMenuItem({ children: [disclosure] }, h)
 }
-const user = (h: HtmlBuilder<Message>, collapsed: boolean): Html =>
-  Sidebar.sidebarFooter(
+/* TW team switcher: w-fit px-1.5 menu-button [size-5 logo box + name +
+   chevron-down] opening the team dropdown (teams + Add team). */
+const teamSwitcher = (model: Model, h: HtmlBuilder<Message>): Html => {
+  const team = workspace.teams[model.activeTeamIndex] ?? workspace.teams[0]
+  if (team === undefined) return h.div([], [])
+  const teamIcon = (logo: string): Html =>
+    h.div(
+      [h.Class(className(searchStyles.teamIconBox))],
+      [BaseIcon.icon(logo, { class: className(searchStyles.iconXs) }, h)],
+    )
+  return Sidebar.sidebarMenu(
     {
       children: [
-        Sidebar.sidebarMenu(
+        Sidebar.sidebarMenuItem(
           {
             children: [
-              Sidebar.sidebarMenuItem(
+              DropdownMenu.dropdownMenu<TeamItem, Message>(
                 {
-                  children: [
-                    Sidebar.sidebarMenuButton(
-                      {
-                        children: [
-                          badge({ children: ['CU'], variant: 'secondary' }, h),
-                          ...(collapsed
-                            ? []
-                            : [
-                                stack(
-                                  {
-                                    gap: 'none',
-                                    children: [
-                                      text(
-                                        {
-                                          children: ['CreaseUI'],
-                                          variant: 'label',
-                                        },
-                                        h,
-                                      ),
-                                      text(
-                                        {
-                                          children: ['m@example.com'],
-                                          variant: 'caption',
-                                        },
-                                        h,
-                                      ),
-                                    ],
-                                  },
-                                  h,
-                                ),
-                              ]),
+                  model: model.teamMenu,
+                  toParentMessage: message =>
+                    Message['GotStyleXSidebarTeamMenu']({ message }),
+                  trigger: h.span(
+                    [h.Class(className(searchStyles.contents))],
+                    [
+                      teamIcon(team.logo),
+                      h.span(
+                        [h.Class(className(searchStyles.teamName))],
+                        [team.name],
+                      ),
+                      BaseIcon.icon(
+                        'chevron-down',
+                        { class: className(searchStyles.chevronSm) },
+                        h,
+                      ),
+                    ],
+                  ),
+                  triggerStyle: model.teamMenu.isOpen
+                    ? searchStyles.teamTriggerOpen
+                    : searchStyles.teamTrigger,
+                  items: TEAM_ITEMS,
+                  itemToConfig: item => {
+                    if (item === 'add-team') {
+                      return {
+                        label: 'Add team',
+                        icon: h.div(
+                          [h.Class(className(searchStyles.teamItemIcon))],
+                          [
+                            BaseIcon.icon(
+                              'plus',
+                              { class: className(searchStyles.iconXs) },
+                              h,
+                            ),
+                          ],
+                        ),
+                        group: '',
+                      }
+                    }
+                    const index =
+                      item === 'team-0' ? 0 : item === 'team-1' ? 1 : 2
+                    const t = workspace.teams[index]
+                    return {
+                      label: t?.name ?? '',
+                      icon: h.div(
+                        [h.Class(className(searchStyles.teamItemIcon))],
+                        [
+                          BaseIcon.icon(
+                            t?.logo ?? 'command',
+                            { class: className(searchStyles.iconXs) },
+                            h,
+                          ),
                         ],
-                        tooltip: 'CreaseUI account',
-                        size: 'lg',
-                      },
-                      h,
-                    ),
-                  ],
+                      ),
+                      shortcut: `⌘${index + 1}`,
+                      group: 'Teams',
+                    }
+                  },
+                  side: 'bottom',
+                  align: 'start',
+                  ariaLabel: 'Switch team',
                 },
                 h,
               ),
@@ -677,6 +958,121 @@ const user = (h: HtmlBuilder<Message>, collapsed: boolean): Html =>
           h,
         ),
       ],
+    },
+    h,
+  )
+}
+/* TW navUser: lg menu-button [avatar + name/email + chevronsUpDown]
+   opening the user dropdown (Upgrade/Account/Billing/Notifications/Log out). */
+const navUser = (
+  model: Model,
+  h: HtmlBuilder<Message>,
+  collapsed = false,
+  side: 'left' | 'right' | 'top' = 'right',
+): Html =>
+  Sidebar.sidebarMenu(
+    {
+      children: [
+        Sidebar.sidebarMenuItem(
+          {
+            children: [
+              DropdownMenu.dropdownMenu<UserItem, Message>(
+                {
+                  model: model.userMenu,
+                  toParentMessage: message =>
+                    Message['GotStyleXSidebarUserMenu']({ message }),
+                  trigger: h.span(
+                    [h.Class(className(searchStyles.contents))],
+                    collapsed
+                      ? [
+                          h.div(
+                            [h.Class(className(searchStyles.userAvatar))],
+                            ['CU'],
+                          ),
+                        ]
+                      : [
+                          h.div(
+                            [h.Class(className(searchStyles.userAvatar))],
+                            ['CU'],
+                          ),
+                          h.div(
+                            [h.Class(className(searchStyles.userText))],
+                            [
+                              h.span(
+                                [h.Class(className(searchStyles.userName))],
+                                ['CreaseUI'],
+                              ),
+                              h.span(
+                                [h.Class(className(searchStyles.userEmail))],
+                                ['m@example.com'],
+                              ),
+                            ],
+                          ),
+                          BaseIcon.icon(
+                            'chevrons-up-down',
+                            { class: className(searchStyles.chevronTd) },
+                            h,
+                          ),
+                        ],
+                  ),
+                  triggerStyle: model.userMenu.isOpen
+                    ? searchStyles.userTriggerOpen
+                    : searchStyles.userTrigger,
+                  items: USER_ITEMS,
+                  itemToConfig: item =>
+                    M.value(item).pipe(
+                      M.withReturnType<
+                        DropdownMenu.DropdownMenuItemConfig<UserItem>
+                      >(),
+                      M.when('upgrade', () => ({
+                        label: 'Upgrade to Pro',
+                        icon: BaseIcon.icon('sparkles', {}, h),
+                        group: 'CreaseUI · m@example.com',
+                      })),
+                      M.when('account', () => ({
+                        label: 'Account',
+                        icon: BaseIcon.icon('badge-check', {}, h),
+                        group: 'Account',
+                      })),
+                      M.when('billing', () => ({
+                        label: 'Billing',
+                        icon: BaseIcon.icon('credit-card', {}, h),
+                        group: 'Account',
+                      })),
+                      M.when('notifications', () => ({
+                        label: 'Notifications',
+                        icon: BaseIcon.icon('bell', {}, h),
+                        group: 'Account',
+                      })),
+                      M.when('log-out', () => ({
+                        label: 'Log out',
+                        icon: BaseIcon.icon('log-out', {}, h),
+                        group: '',
+                      })),
+                      M.exhaustive,
+                    ),
+                  side,
+                  align: 'start',
+                  ariaLabel: 'User menu',
+                },
+                h,
+              ),
+            ],
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  )
+const user = (
+  model: Model,
+  h: HtmlBuilder<Message>,
+  collapsed: boolean,
+): Html =>
+  Sidebar.sidebarFooter(
+    {
+      children: [navUser(model, h, collapsed)],
     },
     h,
   )
@@ -1064,7 +1460,7 @@ const application = (
       },
       h,
     ),
-    user(h, collapsed),
+    user(model, h, collapsed),
   ]
 }
 const workspaceNav = (
@@ -1148,8 +1544,16 @@ const tree = (
 const calendarNav = (
   model: Model,
   h: HtmlBuilder<Message>,
+  userSide: 'left' | 'right' = 'right',
 ): ReadonlyArray<Html> => [
-  user(h, false),
+  /* TW-12/15-right: navUser inside a 'h-16 border-b' sidebar header. */
+  h.div(
+    [
+      h.DataAttribute('slot', 'sidebar-header'),
+      h.Class(className(searchStyles.userHeader)),
+    ],
+    [navUser(model, h, false, userSide)],
+  ),
   Sidebar.sidebarContent(
     {
       children: [
@@ -1428,7 +1832,14 @@ export const view = (
                     },
                     h,
                   ),
-                  user(h, !model.isMobileOpen),
+                  Sidebar.sidebarFooter(
+                    {
+                      children: [
+                        navUser(model, h, !model.isMobileOpen, 'right'),
+                      ],
+                    },
+                    h,
+                  ),
                 ],
               ),
               h.div(
@@ -1598,7 +2009,7 @@ export const view = (
             ),
           ]
         : id === '12'
-          ? calendarNav(model, h)
+          ? calendarNav(model, h, 'right')
           : id === '10' || id === '15'
             ? workspaceNav(model, h)
             : isApp
@@ -1687,7 +2098,7 @@ export const view = (
             {
               side: 'right',
               collapsible: 'offcanvas',
-              children: calendarNav(model, h),
+              children: calendarNav(model, h, 'left'),
             },
             h,
           ),
