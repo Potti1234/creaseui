@@ -17,7 +17,6 @@ import * as Calendar from '@/stylex/calendar'
 import * as Dialog from '@/stylex/dialog'
 import * as Popover from '@/stylex/popover'
 import { collapsible } from '@/stylex/collapsible'
-import { box, inline, stack, text } from '@/stylex/composition'
 import { icon } from '@/stylex/composition/icon'
 import {
   settingsLayout,
@@ -86,6 +85,42 @@ const searchStyles = stylex.create({
   autoTop: { marginTop: 'auto' },
   /* TW-15 'mx-0' separator — kills its default horizontal margin. */
   separatorFlush: { marginInline: 0 },
+  /* TW-06 newsletter card: card('gap-2 py-4 shadow-none') > header px-4
+     (title text-sm + description) + content px-4 > grid gap-2.5 form. */
+  optCard: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '.5rem',
+    paddingBlock: '1.25rem',
+    backgroundColor: tokens.card,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: tokens.border,
+    borderRadius: '.75rem',
+    fontSize: '.875rem',
+  },
+  optHead: { display: 'grid', gap: '.25rem', paddingInline: '1.25rem' },
+  optTitle: { fontSize: '.875rem', lineHeight: '1.25rem', fontWeight: 500 },
+  optDesc: {
+    fontSize: '.875rem',
+    lineHeight: '1.25rem',
+    color: tokens.mutedForeground,
+  },
+  optBody: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '.75rem',
+    paddingInline: '1.25rem',
+  },
+  optGrid: { display: 'grid', gap: '.625rem' },
+  /* TW brand 'flex flex-col gap-0.5 leading-none' + font-medium title. */
+  brandStack: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '.125rem',
+    lineHeight: 1,
+  },
+  brandTitle: { fontSize: '.875rem', fontWeight: 500, lineHeight: 1 },
   /* TW-02 wraps its nav groups in 'gap-0' sidebarContent — clone the
      content chrome with zero gap (sidebarContent only takes layoutStyle). */
   contentFlat: {
@@ -1321,24 +1356,21 @@ const brand = (
                           ...(collapsed
                             ? []
                             : [
-                                stack(
-                                  {
-                                    gap: 'none',
-                                    children: [
-                                      text(
-                                        { children: [label], variant: 'label' },
-                                        h,
-                                      ),
-                                      text(
-                                        {
-                                          children: [detail],
-                                          variant: 'caption',
-                                        },
-                                        h,
-                                      ),
-                                    ],
-                                  },
-                                  h,
+                                /* TW 'flex flex-col gap-0.5 leading-none' —
+                                   font-medium title + plain detail span. */
+                                h.div(
+                                  [h.Class(className(searchStyles.brandStack))],
+                                  [
+                                    h.span(
+                                      [
+                                        h.Class(
+                                          className(searchStyles.brandTitle),
+                                        ),
+                                      ],
+                                      [label],
+                                    ),
+                                    h.span([], [detail]),
+                                  ],
                                 ),
                               ]),
                         ],
@@ -1515,135 +1547,149 @@ const documentation = (
                 h,
               ),
             ]
-          : docs.navMain.map((g, index) => {
-              const labels = g.items.map(i => i.title)
-              if (id === '02')
-                return expandable(
-                  g.title,
-                  g.title,
-                  docItems(labels, model, h),
-                  model,
-                  h,
-                  id === '02',
-                  undefined,
-                  'label',
-                )
-              if (id === '06') {
-                const submenu = model.submenus[index]
-                return submenu === undefined
-                  ? h.empty
-                  : Sidebar.sidebarMenuItem(
-                      {
-                        children: [
-                          DropdownMenu.dropdownMenu<string, Message>(
-                            {
-                              model: submenu,
-                              toParentMessage: message =>
-                                Message['GotStyleXSidebarSubmenu']({
-                                  index,
-                                  message,
-                                }),
-                              trigger: h.span(
-                                [h.Class(className(searchStyles.contents))],
-                                [
-                                  g.title,
-                                  BaseIcon.icon(
-                                    'ellipsis',
-                                    {
-                                      class: className(searchStyles.chevron),
-                                    },
-                                    h,
+          : id === '06'
+            ? /* TW-06: one sidebarGroup > sidebarMenu > menuItem[dropdown]
+               per nav section — group px-2 inset + menu gap-1 parity. */
+              [
+                group(
+                  '',
+                  docs.navMain.map((g, index) => {
+                    const submenu = model.submenus[index]
+                    return submenu === undefined
+                      ? h.empty
+                      : Sidebar.sidebarMenuItem(
+                          {
+                            children: [
+                              DropdownMenu.dropdownMenu<string, Message>(
+                                {
+                                  model: submenu,
+                                  toParentMessage: message =>
+                                    Message['GotStyleXSidebarSubmenu']({
+                                      index,
+                                      message,
+                                    }),
+                                  trigger: h.span(
+                                    [h.Class(className(searchStyles.contents))],
+                                    [
+                                      g.title,
+                                      BaseIcon.icon(
+                                        'ellipsis',
+                                        {
+                                          class: className(
+                                            searchStyles.chevron,
+                                          ),
+                                        },
+                                        h,
+                                      ),
+                                    ],
                                   ),
-                                ],
+                                  triggerStyle: submenu.isOpen
+                                    ? searchStyles.menuTriggerOpen
+                                    : searchStyles.menuTrigger,
+                                  items: g.items.map(i => i.title),
+                                  itemToConfig: title => ({ label: title }),
+                                  side: 'right',
+                                  align: 'start',
+                                  ariaLabel: g.title + ' submenu',
+                                },
+                                h,
                               ),
-                              triggerStyle: submenu.isOpen
-                                ? searchStyles.menuTriggerOpen
-                                : searchStyles.menuTrigger,
-                              items: labels,
-                              itemToConfig: title => ({ label: title }),
-                              side: 'right',
-                              align: 'start',
-                              ariaLabel: g.title + ' submenu',
-                            },
-                            h,
-                          ),
-                        ],
-                      },
-                      h,
-                    )
-              }
-              if (id === '01')
-                return group(
-                  g.title,
-                  labels
-                    .filter(l =>
-                      l.toLowerCase().includes(model.query.toLowerCase()),
-                    )
-                    .map(l => item(l, model, h)),
+                            ],
+                          },
+                          h,
+                        )
+                  }),
                   h,
-                )
-              return group(g.title, [subItems(labels, model, h)], h)
-            }),
+                ),
+              ]
+            : docs.navMain.map((g, index) => {
+                const labels = g.items.map(i => i.title)
+                if (id === '02')
+                  return expandable(
+                    g.title,
+                    g.title,
+                    docItems(labels, model, h),
+                    model,
+                    h,
+                    id === '02',
+                    undefined,
+                    'label',
+                  )
+                if (id === '01')
+                  return group(
+                    g.title,
+                    labels
+                      .filter(l =>
+                        l.toLowerCase().includes(model.query.toLowerCase()),
+                      )
+                      .map(l => item(l, model, h)),
+                    h,
+                  )
+                return group(g.title, [subItems(labels, model, h)], h)
+              }),
     ),
     ...(id === '06'
       ? [
           Sidebar.sidebarFooter(
             {
               children: [
-                box(
-                  {
-                    surface: 'card',
-                    radius: 'lg',
-                    padding: 'md',
-                    children: [
-                      stack(
-                        {
-                          gap: 'sm',
-                          children: [
-                            text(
-                              {
-                                children: ['Subscribe to our newsletter'],
-                                variant: 'label',
-                              },
-                              h,
-                            ),
-                            text(
-                              {
-                                children: [
-                                  'Opt-in to receive updates and news about the sidebar.',
-                                ],
-                                tone: 'secondary',
-                              },
-                              h,
-                            ),
-                            Sidebar.sidebarInput(
-                              {
-                                id: 'newsletter-email',
-                                type: 'email',
-                                value: model.query,
-                                onInput: value =>
-                                  Message['ChangedStyleXSidebarSearch']({
-                                    value,
-                                  }),
-                                placeholder: 'Email',
-                              },
-                              h,
-                            ),
-                            button(
-                              {
-                                children: ['Subscribe'],
-                                size: 'sm',
-                                layoutStyle: searchStyles.fullWidth,
-                              },
-                              h,
+                /* TW-06 opt-in card (gap-2 py-4, px-4 header/content). */
+                h.div(
+                  [h.Class(className(searchStyles.optCard))],
+                  [
+                    h.div(
+                      [h.Class(className(searchStyles.optHead))],
+                      [
+                        h.div(
+                          [h.Class(className(searchStyles.optTitle))],
+                          ['Subscribe to our newsletter'],
+                        ),
+                        h.div(
+                          [h.Class(className(searchStyles.optDesc))],
+                          [
+                            'Opt-in to receive updates and news about the sidebar.',
+                          ],
+                        ),
+                      ],
+                    ),
+                    h.div(
+                      [h.Class(className(searchStyles.optBody))],
+                      [
+                        h.form(
+                          [],
+                          [
+                            h.div(
+                              [h.Class(className(searchStyles.optGrid))],
+                              [
+                                Sidebar.sidebarInput(
+                                  {
+                                    id: 'newsletter-email',
+                                    type: 'email',
+                                    value: model.query,
+                                    onInput: value =>
+                                      Message['ChangedStyleXSidebarSearch']({
+                                        value,
+                                      }),
+                                    placeholder: 'Email',
+                                  },
+                                  h,
+                                ),
+                                button(
+                                  {
+                                    children: ['Subscribe'],
+                                    size: 'sm',
+                                    radius: 'md',
+                                    layoutStyle: searchStyles.fullWidth,
+                                  },
+                                  h,
+                                ),
+                              ],
                             ),
                           ],
-                        },
-                        h,
-                      ),
-                    ],
-                  },
-                  h,
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ],
             },

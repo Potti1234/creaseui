@@ -194,6 +194,12 @@ const shape = stylex.create({
   rounded: { borderRadius: foundationTokens.radiusFull },
 })
 
+/* TW 'rounded-md' — for flat buttons that lose their radius when a
+   size preset would otherwise carry it (sidebar-06 'Subscribe'). */
+const cornerRadius = stylex.create({
+  md: { borderRadius: foundationTokens.radiusMdCap10 },
+})
+
 type _VariantMapIsExhaustive = Assert<
   HasExactlyKeys<typeof variants, ButtonVariant>
 >
@@ -218,6 +224,8 @@ export type ButtonProps<Msg> = ButtonBehaviorProps<Msg> &
     iconInset?: 'start' | 'end'
     /** Fully rounded pill shape (upstream `rounded-full`). */
     rounded?: boolean
+    /** Explicit corner radius when the default doesn't apply. */
+    radius?: 'md'
     /** Parent-layout positioning only. Add visual choices as named variants. */
     layoutStyle?: ComponentLayoutStyle
   }>
@@ -258,6 +266,7 @@ export const button = <Msg>(
           (props.isDisabled === true || props.isLoading === true) &&
             base.disabled,
           props.rounded === true && shape.rounded,
+          props.radius === 'md' && cornerRadius.md,
           ...(props.iconInset === undefined
             ? []
             : [iconInsetFor(size, props.iconInset)]),
