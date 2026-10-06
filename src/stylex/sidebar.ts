@@ -810,6 +810,7 @@ export type SidebarTriggerProps<Msg> = Readonly<{
   onClick: Msg
   onMobileClick?: Msg
   layoutStyle?: ComponentLayoutStyle
+  iconStyle?: StaticStyles
 }>
 export const sidebarTrigger = <Msg>(
   props: SidebarTriggerProps<Msg>,
@@ -832,7 +833,10 @@ export const sidebarTrigger = <Msg>(
         ),
       ],
       [
-        Icon.panelLeft<Msg>({ class: className(styles.triggerIcon) }, h),
+        Icon.panelLeft<Msg>(
+          { class: className(styles.triggerIcon, props.iconStyle) },
+          h,
+        ),
         h.span([h.Class(className(styles.srOnly))], ['Toggle Sidebar']),
       ],
     )

@@ -31,6 +31,15 @@ import {
   mailPanel,
 } from '@/stylex/composition/sidebar-block'
 import * as Sidebar from '@/stylex/sidebar'
+import {
+  breadcrumb,
+  breadcrumbItem,
+  breadcrumbLink,
+  breadcrumbList,
+  breadcrumbPage,
+  breadcrumbSeparator,
+} from '@/stylex/breadcrumb'
+import { separator } from '@/stylex/separator'
 import * as stylex from '@stylexjs/stylex'
 import * as BaseIcon from '@/lib/icon'
 import { className } from '@/stylex/style'
@@ -71,6 +80,11 @@ const searchStyles = stylex.create({
     height: '1rem',
     flexShrink: 0,
   },
+  /* TW trigger '-ml-1' / '-mr-1 ml-auto rotate-180' + separator 'mr-2 h-4'. */
+  trigger: { marginInlineStart: '-.25rem' },
+  rightTrigger: { marginInlineStart: 'auto', marginInlineEnd: '-.25rem' },
+  triggerIcon: { transform: 'rotate(180deg)' },
+  headerSeparator: { height: '1rem', marginInlineEnd: '.5rem' },
 })
 
 export const Model = S.Struct({
@@ -870,9 +884,86 @@ const trigger = (h: HtmlBuilder<Message>): Html =>
     {
       onClick: Message['ToggledStyleXSidebar'](),
       onMobileClick: Message['ToggledStyleXMobileSidebar'](),
+      layoutStyle: searchStyles.trigger,
     },
     h,
   )
+/* sidebar-14 puts its trigger on the right (sidebar is on the right):
+   TW '-mr-1 ml-auto rotate-180'. */
+const rightTrigger = (h: HtmlBuilder<Message>): Html =>
+  Sidebar.sidebarTrigger(
+    {
+      onClick: Message['ToggledStyleXSidebar'](),
+      onMobileClick: Message['ToggledStyleXMobileSidebar'](),
+      layoutStyle: searchStyles.rightTrigger,
+      iconStyle: searchStyles.triggerIcon,
+    },
+    h,
+  )
+/* TW header: separator(vertical, 'mr-2 h-4') between trigger and breadcrumb. */
+const headerSeparator = (h: HtmlBuilder<Message>): Html =>
+  separator(
+    {
+      orientation: 'vertical',
+      layoutStyle: searchStyles.headerSeparator,
+    },
+    h,
+  )
+const crumb = (
+  label: string,
+  isPage: boolean,
+  h: HtmlBuilder<Message>,
+): ReadonlyArray<Html> =>
+  isPage
+    ? [
+        breadcrumbItem(
+          {
+            children: [breadcrumbPage({ children: [label] }, h)],
+          },
+          h,
+        ),
+      ]
+    : [
+        breadcrumbItem(
+          {
+            children: [breadcrumbLink({ href: '#', children: [label] }, h)],
+          },
+          h,
+        ),
+        breadcrumbSeparator({}, h),
+      ]
+/* Per-variant breadcrumb trails, mirroring each Tailwind preview header. */
+const crumbTrail = (
+  id: string,
+  active: string,
+  h: HtmlBuilder<Message>,
+): Html => {
+  const trail: ReadonlyArray<string> =
+    id === '09'
+      ? ['All Inboxes', 'Inbox']
+      : id === '11'
+        ? ['src', 'ui', 'button.ts']
+        : id === '12'
+          ? ['October 2024']
+          : id === '10' || id === '15'
+            ? ['Project Management & Task Tracking']
+            : ['Build Your Application', active]
+  return breadcrumb(
+    {
+      children: [
+        breadcrumbList(
+          {
+            children: trail.flatMap((label, index) =>
+              crumb(label, index === trail.length - 1, h),
+            ),
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  )
+}
 const settingsContent = (model: Model, h: HtmlBuilder<Message>): Html =>
   settingsLayout(
     Sidebar.sidebar(
@@ -1030,30 +1121,9 @@ export const view = (
           : [
               blockHeader(
                 [
-                  ...(id === '14' ? [] : [trigger(h)]),
-                  box(
-                    {
-                      visibility: 'desktop',
-                      children: [
-                        text(
-                          {
-                            children: [
-                              id === '09'
-                                ? 'All Inboxes'
-                                : id === '11'
-                                  ? 'src › ui'
-                                  : 'Build Your Application',
-                            ],
-                            tone: 'secondary',
-                          },
-                          h,
-                        ),
-                      ],
-                    },
-                    h,
-                  ),
-                  text({ children: [title], variant: 'label' }, h),
-                  ...(id === '14' ? [trigger(h)] : []),
+                  ...(id === '14' ? [] : [trigger(h), headerSeparator(h)]),
+                  crumbTrail(id, title, h),
+                  ...(id === '14' ? [rightTrigger(h)] : []),
                   ...(id === '10'
                     ? [
                         Popover.popover(

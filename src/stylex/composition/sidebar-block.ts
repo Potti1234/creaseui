@@ -8,7 +8,7 @@ import { tokens } from '../tokens.stylex'
 
 const styles = stylex.create({
   header: {
-    gap: '1rem',
+    gap: '.5rem',
     paddingInline: '1rem',
     alignItems: 'center',
     display: 'flex',
