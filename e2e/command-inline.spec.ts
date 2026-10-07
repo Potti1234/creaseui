@@ -17,6 +17,27 @@ for (const renderer of ['tailwind', 'stylex'] as const) {
       exact: true,
     })
     await expect(dialog.getByRole('option')).toHaveCount(3)
+    const panel = dialog.locator('[data-slot="dialog-content"]')
+    const closeButton = dialog.getByRole('button', {
+      name: 'Close',
+      exact: true,
+    })
+    await expect(panel).toBeFocused()
+    await expect(closeButton).not.toBeFocused()
+    await expect
+      .poll(() =>
+        closeButton.evaluate(node => getComputedStyle(node).boxShadow),
+      )
+      .toBe('none')
+    await page.keyboard.press('Tab')
+    await expect(dialog.getByRole('combobox')).toBeFocused()
+    await page.keyboard.press('Shift+Tab')
+    await expect(closeButton).toBeFocused()
+    await expect
+      .poll(() =>
+        closeButton.evaluate(node => getComputedStyle(node).boxShadow),
+      )
+      .not.toBe('none')
     const list = dialog.getByRole('listbox')
     await expect
       .poll(() => list.evaluate(node => getComputedStyle(node).position))

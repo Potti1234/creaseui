@@ -14,6 +14,7 @@ const styles = stylex.create({
     padding: '1.5rem',
     gap: '1rem',
     display: 'grid',
+    outlineStyle: 'none',
     maxWidth: '32rem',
   },
   /* TW settings dialog: 'overflow-hidden p-0 md:max-h-[560px]
@@ -241,7 +242,6 @@ export const dialog = <Msg>(
             hd.button(
               [
                 ...closeButton,
-                ...(initialFocusClaimed ? [] : initialFocusAttributes()),
                 hd.Type('button'),
                 hd.DataAttribute('slot', 'dialog-close'),
                 hd.AriaLabel(partProps.ariaLabel ?? 'Close'),

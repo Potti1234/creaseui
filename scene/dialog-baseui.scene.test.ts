@@ -938,7 +938,7 @@ const verifyRenderer = (
       })
 
       describe('prop: initialFocus', () => {
-        it('defaults initial focus to the close button via the marker attribute', () => {
+        it('defaults initial focus to the panel without highlighting the close button', () => {
           Scene.scene(
             { update, view },
             Scene.given(initialModel()),
@@ -964,14 +964,14 @@ const verifyRenderer = (
               DialogPrimitive.AcquireResources,
               DialogPrimitive.Message.SucceededAcquireResources(),
             ),
-            Scene.expect(closeButton).toHaveAttr(
+            Scene.expect(closeButton).not.toHaveAttr(
+              'data-foldkit-dialog-initial-focus',
+            ),
+            Scene.expect(panel).toHaveAttr(
               'data-foldkit-dialog-initial-focus',
               '',
             ),
-            Scene.expect(panel).not.toHaveAttr(
-              'data-foldkit-dialog-initial-focus',
-            ),
-            Scene.expect(panel).not.toHaveAttr('tabindex'),
+            Scene.expect(panel).toHaveAttr('tabindex', '-1'),
           )
         })
 

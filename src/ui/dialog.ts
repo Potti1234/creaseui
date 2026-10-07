@@ -36,7 +36,7 @@ const OVERLAY_CLASS =
   'fixed inset-0 z-50 bg-black/50 transition duration-200 ease-out motion-reduce:transition-none data-[closed]:opacity-0'
 
 const CONTENT_CLASS =
-  'bg-background relative z-50 grid w-full max-w-[calc(100%-2rem)] gap-4 rounded-lg border p-6 shadow-lg sm:max-w-lg transition duration-200 ease-out motion-reduce:transition-none data-[closed]:opacity-0 data-[closed]:scale-95'
+  'bg-background relative z-50 grid w-full max-w-[calc(100%-2rem)] gap-4 rounded-lg border p-6 shadow-lg outline-none sm:max-w-lg transition duration-200 ease-out motion-reduce:transition-none data-[closed]:opacity-0 data-[closed]:scale-95'
 
 const HEADER_CLASS = 'flex flex-col gap-2 text-center sm:text-left'
 
@@ -200,7 +200,6 @@ export const dialog = <Msg>(
             hd.button(
               [
                 ...closeButton,
-                ...(initialFocusClaimed ? [] : initialFocusAttributes()),
                 hd.Type('button'),
                 hd.DataAttribute('slot', 'dialog-close'),
                 hd.AriaLabel(partProps.ariaLabel ?? 'Close'),
