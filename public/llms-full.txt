@@ -622,7 +622,6 @@ Examples: Demo, Basic, Shortcuts, Groups, Scrollable, RTL
 - `OutMessage: value` (value)
 - `OutMessage<Item extends string = string> = ComboboxPrimitive.OutMessage<Item>` (type)
 - `init: value` (value)
-- `update: value` (value)
 - `CommandItemConfig = Readonly<{ content: Html | string; searchText?: string; shortcut?: Html | string; class?: string; isDisabled?: boolean; }>` (type)
 - `CommandProps<Item extends string, Msg> = Readonly<{ model: Model; maybeSelectedValue: Option.Option<Item>; restingInputValue: string; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => CommandItemConfig; plac…` (type)
 - `commandGroupHeading<Msg>(content: Html | string, className: string | undefined, h: HtmlBuilder<Msg>): Html` (function)
@@ -631,6 +630,7 @@ Examples: Demo, Basic, Shortcuts, Groups, Scrollable, RTL
 - `commandEmpty<Msg>(content: Html | string, className: string | undefined, h: HtmlBuilder<Msg>): Html` (function)
 - `CommandBundle<Item extends string> = Readonly<{ update: ComboboxPrimitive.Bundle<Item>['update']; selectItem: ComboboxPrimitive.Bundle<Item>['selectItem']; open: ComboboxPrimitive.Bundle<Item>['open']; close: ComboboxPrimitive.Bundle<Item>['close']; command: …` (type)
 - `create<Item extends string = string>(): CommandBundle<Item>` (function)
+- `update: value` (value)
 - `command: value` (value)
 - `commandPalette: value` (value)
 

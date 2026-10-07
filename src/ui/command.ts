@@ -3,7 +3,11 @@ import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
 
 import { Combobox as ComboboxPrimitive } from '@foldkit/ui'
 
-import { filterCommandItems } from '@/lib/command'
+import {
+  createInlineCommandView,
+  filterCommandItems,
+  retainCommandQuery,
+} from '@/lib/command'
 import * as Icon from '@/lib/icon'
 import { cn } from '@/lib/utils'
 
@@ -11,16 +15,13 @@ import { cn } from '@/lib/utils'
    single-select Combobox submodel.
 
    Command's selected/highlighted state maps to foldkit's data-active
-   attribute. Disabled styling uses data-disabled, and the anchored list uses
-   a finite data-closed transition. Pass isAnimated: true to init.
+   attribute. The search input and results form one always-visible surface.
 
    PORT NOTE: global cmd-k dialog wiring is intentionally not included;
    consumers compose commandPalette with the dialog wrapper.
 
-   PORT NOTE: foldkit Combobox exposes the input-wrapper suffix as a toggle
-   button, so the decorative search icon is rendered through that button and
-   visually ordered before the input. Per-item attributes are not exposed;
-   command-item is therefore placed on the inner content span. */
+   Foldkit owns typed query, active-item, and selection updates; the command
+   view keeps results in document flow and lets Escape reach its parent dialog. */
 
 export const Model = ComboboxPrimitive.Model
 export type Model = typeof Model.Type
@@ -31,7 +32,6 @@ export type OutMessage<Item extends string = string> =
   ComboboxPrimitive.OutMessage<Item>
 
 export const init = ComboboxPrimitive.init
-export const update = ComboboxPrimitive.create<string>().update
 
 const ROOT_CLASS =
   'flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground'
@@ -44,10 +44,10 @@ const INPUT_CLASS =
 const SEARCH_BUTTON_CLASS =
   'order-first shrink-0 opacity-50 outline-none focus-visible:ring-ring/50 focus-visible:ring-[3px]'
 
-const CONTENT_CLASS =
-  'z-50 w-(--button-width) overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md transition duration-200 ease-out data-[closed]:opacity-0 data-[closed]:scale-95'
+const CONTENT_CLASS = 'w-full overflow-hidden'
 
-const LIST_CLASS = 'max-h-[300px] scroll-py-1 overflow-x-hidden overflow-y-auto'
+const LIST_CLASS =
+  'max-h-[300px] scroll-py-1 overflow-x-hidden overflow-y-auto p-1'
 
 const ITEM_CLASS =
   "relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[active]:bg-accent data-[active]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground"
@@ -58,8 +58,6 @@ const GROUP_CLASS =
 const SEPARATOR_CLASS = '-mx-1 h-px bg-border'
 
 const SHORTCUT_CLASS = 'ml-auto text-xs tracking-widest text-muted-foreground'
-
-const BACKDROP_CLASS = 'fixed inset-0 z-40'
 
 export type CommandItemConfig = Readonly<{
   content: Html | string
@@ -142,7 +140,7 @@ export const commandEmpty = <Msg>(
 }
 
 const renderCommand = <Item extends string, Msg>(
-  commandPrimitive: ComboboxPrimitive.Bundle<Item>,
+  commandView: ReturnType<typeof createInlineCommandView<Item>>,
   props: CommandProps<Item, Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
@@ -170,7 +168,7 @@ const renderCommand = <Item extends string, Msg>(
   const control = h.submodel({
     slotId: props.model.id,
     model: props.model,
-    view: commandPrimitive.view,
+    view: commandView,
     viewInputs: {
       maybeSelectedValue: props.maybeSelectedValue,
       restingInputValue: props.restingInputValue,
@@ -207,17 +205,13 @@ const renderCommand = <Item extends string, Msg>(
       ]),
       buttonContent: Icon.search({ class: 'size-4' }, h),
       buttonClassName: SEARCH_BUTTON_CLASS,
-      buttonAttributes: childAttributes([hc.AriaLabel('Toggle command list')]),
-      openOnFocus: true,
       itemsClassName: CONTENT_CLASS,
       itemsAttributes: childAttributes([
         hc.DataAttribute('slot', 'command-list'),
       ]),
       itemsScrollClassName: LIST_CLASS,
-      backdropClassName: BACKDROP_CLASS,
       className: cn(ROOT_CLASS, props.class),
       attributes: childAttributes([hc.DataAttribute('slot', 'command')]),
-      anchor: { placement: 'bottom-start', gap: 0 },
       ...(props.itemGroupKey === undefined
         ? {}
         : {
@@ -285,16 +279,20 @@ export type CommandBundle<Item extends string> = Readonly<{
 
 export const create = <Item extends string = string>(): CommandBundle<Item> => {
   const primitive = ComboboxPrimitive.create<Item>()
+  const commandView = createInlineCommandView<Item>()
   return {
-    update: primitive.update,
-    selectItem: primitive.selectItem,
+    update: (model, message) =>
+      retainCommandQuery(model, primitive.update(model, message)),
+    selectItem: (model, item, displayText) =>
+      retainCommandQuery(model, primitive.selectItem(model, item, displayText)),
     open: primitive.open,
     close: primitive.close,
-    command: (props, h) => renderCommand(primitive, props, h),
+    command: (props, h) => renderCommand(commandView, props, h),
   }
 }
 
 const StringCommand = create<string>()
+export const update = StringCommand.update
 export const command = StringCommand.command
 export const commandPalette = command
 

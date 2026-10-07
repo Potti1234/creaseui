@@ -3,18 +3,23 @@ import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
 
 import { Combobox as ComboboxPrimitive } from '@foldkit/ui'
 
-import { filterCommandItems } from '@/lib/command'
+import {
+  createInlineCommandView,
+  filterCommandItems,
+  retainCommandQuery,
+} from '@/lib/command'
 import * as Icon from '@/lib/icon'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import { overlayStyles } from './overlay-tokens.stylex'
 import type { ComponentLayoutStyle } from './contracts'
-import { themedAnchor } from './overlay-boundary'
 import { className } from './style'
 import { reset } from './reset'
 
 const styles = stylex.create({
   contents: { display: 'contents' },
+  list: { overflow: 'hidden', width: '100%' },
+  searchIcon: { opacity: 0.5, order: -1 },
   empty: {
     paddingBlock: '1.5rem',
     fontSize: '0.875rem',
@@ -32,16 +37,13 @@ const cn = (...values: ReadonlyArray<unknown>): string =>
    single-select Combobox submodel.
 
    Command's selected/highlighted state maps to foldkit's data-active
-   attribute. Disabled styling uses data-disabled, and the anchored list uses
-   a finite data-closed transition. Pass isAnimated: true to init.
+   attribute. The search input and results form one always-visible surface.
 
    PORT NOTE: global cmd-k dialog wiring is intentionally not included;
    consumers compose commandPalette with the dialog wrapper.
 
-   PORT NOTE: foldkit Combobox exposes the input-wrapper suffix as a toggle
-   button, so the decorative search icon is rendered through that button and
-   visually ordered before the input. Per-item attributes are not exposed;
-   command-item is therefore placed on the inner content span. */
+   Foldkit owns typed query, active-item, and selection updates; the command
+   view keeps results in document flow and lets Escape reach its parent dialog. */
 
 export const Model = ComboboxPrimitive.Model
 export type Model = typeof Model.Type
@@ -52,7 +54,6 @@ export type OutMessage<Item extends string = string> =
   ComboboxPrimitive.OutMessage<Item>
 
 export const init = ComboboxPrimitive.init
-export const update = ComboboxPrimitive.create<string>().update
 
 const ROOT_CLASS = overlayStyles.root
 
@@ -62,7 +63,7 @@ const INPUT_CLASS = overlayStyles.input
 
 const SEARCH_BUTTON_CLASS = overlayStyles.icon
 
-const CONTENT_CLASS = overlayStyles.panel
+const CONTENT_CLASS = styles.list
 
 const LIST_CLASS = overlayStyles.list
 
@@ -73,8 +74,6 @@ const GROUP_CLASS = overlayStyles.group
 const SEPARATOR_CLASS = overlayStyles.separator
 
 const SHORTCUT_CLASS = overlayStyles.shortcut
-
-const BACKDROP_CLASS = overlayStyles.backdrop
 
 export type CommandItemConfig = Readonly<{
   content: Html | string
@@ -111,7 +110,7 @@ export const commandGroupHeading = <Msg>(
   return h.span(
     [
       h.DataAttribute('slot', 'command-group-heading'),
-      h.Class(cn(layoutStyle)),
+      h.Class(cn(overlayStyles.label, layoutStyle)),
     ],
     [content],
   )
@@ -160,7 +159,7 @@ export const commandEmpty = <Msg>(
 }
 
 const renderCommand = <Item extends string, Msg>(
-  commandPrimitive: ComboboxPrimitive.Bundle<Item>,
+  commandView: ReturnType<typeof createInlineCommandView<Item>>,
   props: CommandProps<Item, Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
@@ -188,7 +187,7 @@ const renderCommand = <Item extends string, Msg>(
   const control = h.submodel({
     slotId: props.model.id,
     model: props.model,
-    view: commandPrimitive.view,
+    view: commandView,
     viewInputs: {
       maybeSelectedValue: props.maybeSelectedValue,
       restingInputValue: props.restingInputValue,
@@ -227,18 +226,14 @@ const renderCommand = <Item extends string, Msg>(
         hc.DataAttribute('slot', 'command-input-wrapper'),
       ]),
       buttonContent: Icon.search({ class: className(overlayStyles.icon) }, h),
-      buttonClassName: className(reset.button, SEARCH_BUTTON_CLASS),
-      buttonAttributes: childAttributes([hc.AriaLabel('Toggle command list')]),
-      openOnFocus: true,
+      buttonClassName: className(SEARCH_BUTTON_CLASS, styles.searchIcon),
       itemsClassName: className(CONTENT_CLASS),
       itemsAttributes: childAttributes([
         hc.DataAttribute('slot', 'command-list'),
       ]),
       itemsScrollClassName: className(reset.list, LIST_CLASS),
-      backdropClassName: className(BACKDROP_CLASS),
       className: cn(ROOT_CLASS, props.layoutStyle),
       attributes: childAttributes([hc.DataAttribute('slot', 'command')]),
-      anchor: themedAnchor({ placement: 'bottom-start', gap: 0 }),
       ...(props.itemGroupKey === undefined
         ? {}
         : {
@@ -304,15 +299,19 @@ export type CommandBundle<Item extends string> = Readonly<{
 }>
 export const create = <Item extends string = string>(): CommandBundle<Item> => {
   const primitive = ComboboxPrimitive.create<Item>()
+  const commandView = createInlineCommandView<Item>()
   return {
-    update: primitive.update,
-    selectItem: primitive.selectItem,
+    update: (model, message) =>
+      retainCommandQuery(model, primitive.update(model, message)),
+    selectItem: (model, item, displayText) =>
+      retainCommandQuery(model, primitive.selectItem(model, item, displayText)),
     open: primitive.open,
     close: primitive.close,
-    command: (props, h) => renderCommand(primitive, props, h),
+    command: (props, h) => renderCommand(commandView, props, h),
   }
 }
 const StringCommand = create<string>()
+export const update = StringCommand.update
 export const command = StringCommand.command
 export const commandPalette = command
 

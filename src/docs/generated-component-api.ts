@@ -1315,11 +1315,6 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "init: value"
     },
     {
-      "name": "update",
-      "kind": "value",
-      "signature": "update: value"
-    },
-    {
       "name": "CommandItemConfig",
       "kind": "type",
       "signature": "CommandItemConfig = Readonly<{ content: Html | string; searchText?: string; shortcut?: Html | string; class?: string; isDisabled?: boolean; }>"
@@ -1358,6 +1353,11 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "create",
       "kind": "function",
       "signature": "create<Item extends string = string>(): CommandBundle<Item>"
+    },
+    {
+      "name": "update",
+      "kind": "value",
+      "signature": "update: value"
     },
     {
       "name": "command",

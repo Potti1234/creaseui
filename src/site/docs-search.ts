@@ -1,10 +1,8 @@
-import { Effect, Option, Schema as S } from 'effect'
+import { Option, Schema as S } from 'effect'
 import { Command, Subscription } from 'foldkit'
 import type { Update } from 'foldkit'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import * as Dom from 'foldkit/dom'
-import * as Render from 'foldkit/render'
 
 import { authoredPages } from '@/docs/components/pages'
 import * as Icon from '@/lib/icon'
@@ -34,7 +32,6 @@ export const Message = defineMessageUnion({
   PressedSearchShortcut: {},
   GotDialogMessage: { message: Dialog.Message },
   GotCommandMessage: { message: CommandMenu.Message },
-  CompletedRestoreSearchFocus: {},
 })
 export type Message = typeof Message.Type
 
@@ -55,29 +52,6 @@ export const init = (): Model => ({
 
 type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>
 
-// Tabbing may remove the anchored list that received focus. Preserve the
-// enclosing dialog's focus when that happens, using Foldkit's DOM command seam.
-const RestoreSearchFocus = Command.define('RestoreSearchFocus', {
-  messages: [Message.CompletedRestoreSearchFocus],
-  execute: Render.afterPaint.pipe(
-    Effect.andThen(
-      Effect.gen(function* () {
-        const isOpen =
-          document.querySelector<HTMLDialogElement>('#site-docs-search-dialog')
-            ?.open === true
-        const isFocusInside =
-          document.activeElement?.closest('#site-docs-search-dialog') !== null
-        if (isOpen && !isFocusInside)
-          yield* Dom.focus(
-            '#site-docs-search-dialog [data-slot="dialog-close"]',
-          )
-      }),
-    ),
-    Effect.catch(() => Effect.void),
-    Effect.as(Message.CompletedRestoreSearchFocus()),
-  ),
-})
-
 const close = (model: Model): UpdateReturn => {
   const next = Dialog.close(model.dialog)
   return {
@@ -90,8 +64,6 @@ const close = (model: Model): UpdateReturn => {
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
-    case 'CompletedRestoreSearchFocus':
-      return { model }
     case 'OpenedSearch':
     case 'PressedSearchShortcut': {
       if (message._tag === 'PressedSearchShortcut' && model.dialog.isOpen)
@@ -123,18 +95,11 @@ export const update = (model: Model, message: Message): UpdateReturn => {
           outMessage: OutMessage.SelectedDoc({ slug: next.outMessage.value }),
         }
       }
-      // Escape in the combobox should dismiss the whole search dialog.
-      if (message.message._tag === 'Closed') return close(updated)
       return {
         model: updated,
-        commands: [
-          ...Command.mapMessages(next.commands ?? [], message =>
-            Message.GotCommandMessage({ message }),
-          ),
-          ...(message.message._tag === 'BlurredInput'
-            ? [RestoreSearchFocus()]
-            : []),
-        ],
+        commands: Command.mapMessages(next.commands ?? [], message =>
+          Message.GotCommandMessage({ message }),
+        ),
       }
     }
   }

@@ -26,6 +26,16 @@ for (const renderer of ['tailwind', 'stylex'] as const) {
     })
     await expect(query).toBeFocused()
     await expect(page.getByRole('option')).toHaveCount(COMPONENTS.length)
+    const list = dialog.getByRole('listbox')
+    await expect
+      .poll(() => list.evaluate(node => getComputedStyle(node).position))
+      .toBe('static')
+    await expect(
+      dialog.getByRole('button', { name: 'Toggle command list' }),
+    ).toHaveCount(0)
+    await page.keyboard.press('Tab')
+    await expect(list).toBeVisible()
+    await expect(page.getByRole('option')).toHaveCount(COMPONENTS.length)
     await query.fill('no-such-doc-page-xyz')
     await expect(dialog.getByRole('status')).toHaveText(
       'No documentation pages found. Try another search.',

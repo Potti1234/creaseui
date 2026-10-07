@@ -114,7 +114,7 @@ const styles = stylex.create({
     fontWeight: 500,
     lineHeight: '1.25rem',
   },
-  searchResults: { minWidth: 0, minHeight: '350px' },
+  searchResults: { minWidth: 0 },
   searchResult: {
     display: 'flex',
     width: '100%',

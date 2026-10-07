@@ -13,7 +13,7 @@ export const skin = {
   searchLabel: 'hidden lg:inline',
   searchShortcut:
     'ml-auto hidden rounded border bg-background px-1 text-[10px] font-medium leading-5 lg:inline-flex',
-  searchResults: 'min-w-0 min-h-[350px]',
+  searchResults: 'min-w-0',
   searchResult: 'flex w-full min-w-0 items-center gap-3 py-1',
   searchResultIcon: 'size-4 shrink-0 text-muted-foreground',
   searchResultCopy: 'flex min-w-0 flex-1 flex-col gap-1',

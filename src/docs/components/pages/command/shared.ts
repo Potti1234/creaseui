@@ -236,5 +236,6 @@ export const commandExamples = (
       ? {}
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
+    keepIdsCanonical: true,
     code: commandSource(fixture, renderer),
   }))
