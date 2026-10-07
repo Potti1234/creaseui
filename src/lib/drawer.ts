@@ -1205,38 +1205,47 @@ export const ObservePopup = Mount.defineStream('ObserveDrawerPopup', {
 
 const NESTED_POPUP_SELECTOR = '[data-slot="drawer-popup"]'
 
-/** A nested drawer's <dialog> is a DOM descendant of the parent's faded
-    content, and ancestor `opacity` compositing can't be escaped by any
-    descendant CSS. `popover` promotes the dialog to the top layer — the
-    same escape hatch shadcn/Base UI get by portaling — while DOM ancestry
-    (inert scoping, the parent's nested-drawer watcher) is unchanged.
-    `manual` keeps dismissal on our own message flow: no light-dismiss
-    would hide the dialog while the model still shows it open. */
+/** A nested drawer's <dialog> is a DOM descendant of the parent drawer's
+    styled subtree: ancestor `opacity` (the nested-open content fade),
+    `transform`/`filter` (the popup's stack shrink) and clipping all
+    composite over it, and no descendant CSS can escape that — the same
+    problem shadcn/Base UI solve by portaling the child out. foldkit
+    renders the dialog in place, so the viewport's mount relocates the
+    element itself: appended as a direct child of the PARENT dialog it
+    leaves the styled subtree while staying inside that dialog, which
+    keeps modal-stack inert scoping (ancestors of the topmost dialog stay
+    un-inerted), Escape routing, and the parent's dialog-scoped
+    nested-drawer watcher working unchanged. The vnode keeps patching the
+    moved element by reference; on unmount we restore it so the dialog is
+    back under its real parent before snabbdom ever needs to detach it. */
 const hoistNestedDialog = (element: HTMLElement): (() => void) | undefined => {
   const dialog = element.closest('dialog')
-  if (dialog === null || dialog.closest(NESTED_POPUP_SELECTOR) === null) {
-    return undefined
-  }
-  if (typeof dialog.showPopover !== 'function') return undefined
-  try {
-    dialog.setAttribute('popover', 'manual')
-    dialog.showPopover()
-  } catch {
-    return undefined
-  }
+  const parentDialog = dialog?.closest(NESTED_POPUP_SELECTOR)?.closest('dialog')
+  if (dialog === null || parentDialog == null) return undefined
+  const originalParent = dialog.parentNode
+  if (originalParent === null) return undefined
+  const originalNextSibling = dialog.nextSibling
+  parentDialog.appendChild(dialog)
   return () => {
     try {
-      dialog.hidePopover()
+      if (
+        originalNextSibling !== null &&
+        originalNextSibling.parentNode === originalParent
+      ) {
+        originalParent.insertBefore(dialog, originalNextSibling)
+      } else {
+        originalParent.appendChild(dialog)
+      }
     } catch {
-      // A re-render may drop the element before cleanup runs.
+      // A re-render may drop the host before cleanup runs.
     }
-    dialog.removeAttribute('popover')
   }
 }
 
 /** ResizeObserver on the viewport — feeds viewport size + root font size.
-    Also promotes a nested drawer's dialog to the top layer so it escapes
-    the parent content's fade (see hoistNestedDialog). */
+    Also relocates a nested drawer's dialog out of the parent's styled
+    subtree so it escapes the parent's fade/stack transforms (see
+    hoistNestedDialog). */
 export const ObserveViewport = Mount.defineStream('ObserveDrawerViewport', {
   messages: [Message.MeasuredViewport],
   execute: ({ element }) =>
@@ -1279,9 +1288,13 @@ export const ObserveViewport = Mount.defineStream('ObserveDrawerViewport', {
     ),
 })
 
-/** Watches nested drawer popups inside this popup subtree and reports the
+/** Watches nested drawer popups inside this dialog subtree and reports the
     frontmost child's height + swipe progress — the Base UI
-    nestedSwipeProgressStore / presence plumbing expressed over the DOM. */
+    nestedSwipeProgressStore / presence plumbing expressed over the DOM.
+    Scoped to the owning <dialog> rather than the content element the mount
+    lives on: nested dialogs are relocated to be direct children of this
+    dialog (see hoistNestedDialog), so they leave the content subtree but
+    stay inside the dialog's. */
 export const ObserveNestedDrawers = Mount.defineStream('ObserveNestedDrawers', {
   messages: [Message.NestedDrawersChanged],
   execute: ({ element }) =>
@@ -1290,13 +1303,18 @@ export const ObserveNestedDrawers = Mount.defineStream('ObserveNestedDrawers', {
         yield* Effect.acquireRelease(
           Effect.sync(() => {
             if (!(element instanceof HTMLElement)) return undefined
+            const ownDialog = element.closest('dialog')
+            const scope = ownDialog ?? element
             const emit = () => {
               const children = Array.from(
-                element.querySelectorAll(NESTED_POPUP_SELECTOR),
+                scope.querySelectorAll(NESTED_POPUP_SELECTOR),
               ).filter(
                 child =>
                   child instanceof HTMLElement &&
                   !child.hidden &&
+                  // scoped to the dialog subtree this drawer's own popup is a
+                  // descendant too — only count popups of other dialogs
+                  child.closest('dialog') !== ownDialog &&
                   child.closest('[data-closed]') === null,
               )
               let frontmostHeight = 0
@@ -1325,7 +1343,7 @@ export const ObserveNestedDrawers = Mount.defineStream('ObserveNestedDrawers', {
               )
             }
             const observer = new MutationObserver(emit)
-            observer.observe(element, {
+            observer.observe(scope, {
               subtree: true,
               childList: true,
               attributes: true,
