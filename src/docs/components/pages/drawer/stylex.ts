@@ -415,6 +415,8 @@ const drawerView = <Msg>(
     model: model.drawer,
     toParentMessage: (message: Drawer.Message): Msg =>
       msg(onMessageJson, 'GotDrawerPreviewMessage', { message }),
+    title: 'Move goal',
+    description: 'Set your daily activity goal.',
   } as const
   switch (fixture.kind) {
     case 'goal':
@@ -422,8 +424,6 @@ const drawerView = <Msg>(
       return Drawer.drawer(
         {
           ...shared,
-          title: 'Move goal',
-          description: 'Set your daily activity goal.',
           content: () => [goalContent(h)],
           footer: slots => footerActions(slots, h, 'Save goal', 'Cancel'),
         },
