@@ -16,6 +16,8 @@ export const header = <Msg>(
     route: AppRoute
     isDark: boolean
     onThemeToggle: Msg
+    onSearchOpen: Msg
+    isSearchOpen: boolean
     counterpartHref: string
   }>,
   h: HtmlBuilder<Msg>,
@@ -72,6 +74,23 @@ export const header = <Msg>(
           h.div(
             [h.Class(skin.actions)],
             [
+              h.button(
+                [
+                  h.Type('button'),
+                  h.Id('site-docs-search-trigger'),
+                  h.OnClick(props.onSearchOpen),
+                  h.AriaLabel('Search documentation'),
+                  h.AriaHasPopup('dialog'),
+                  h.AriaExpanded(props.isSearchOpen),
+                  h.AriaControls('site-docs-search-dialog'),
+                  h.Class(skin.searchTrigger),
+                ],
+                [
+                  Icon.icon('search', { class: skin.icon }, h),
+                  h.span([h.Class(skin.searchLabel)], ['Search docs…']),
+                  h.kbd([h.Class(skin.searchShortcut)], ['Ctrl/⌘ K']),
+                ],
+              ),
               h.a(
                 [
                   h.Href(props.counterpartHref),

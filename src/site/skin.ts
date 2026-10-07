@@ -8,6 +8,19 @@ export const skin = {
   active: 'text-sm font-medium text-foreground transition-colors',
   other: 'text-xs font-medium text-muted-foreground hover:text-foreground',
   actions: 'ml-auto flex items-center gap-1 sm:gap-2',
+  searchTrigger:
+    'inline-flex size-10 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-md border bg-muted/30 text-sm text-muted-foreground outline-none transition-colors hover:bg-muted/60 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none lg:h-9 lg:w-60 lg:justify-start lg:px-3',
+  searchLabel: 'hidden lg:inline',
+  searchShortcut:
+    'ml-auto hidden rounded border bg-background px-1 text-[10px] font-medium leading-5 lg:inline-flex',
+  searchResults: 'min-w-0 min-h-[350px]',
+  searchResult: 'flex w-full min-w-0 items-center gap-3 py-1',
+  searchResultIcon: 'size-4 shrink-0 text-muted-foreground',
+  searchResultCopy: 'flex min-w-0 flex-1 flex-col gap-1',
+  searchResultTitle: 'text-sm font-medium',
+  searchResultDescription: 'truncate text-xs text-foreground/75',
+  searchHelp:
+    'text-muted-foreground flex w-full flex-wrap items-center justify-between gap-3 border-t pt-3 text-xs',
   theme:
     'group relative inline-flex size-10 shrink-0 items-center justify-center rounded-md text-foreground outline-none transition-[color,background-color,transform] duration-200 hover:bg-accent hover:text-accent-foreground focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-[0.96]',
   iconLink:

@@ -33,6 +33,7 @@ import * as CopyFeedback from '@/docs/copy-feedback'
 import * as CodeFile from '@/lib/code-file'
 import * as Page from '@/app/page'
 import * as Chrome from '@/site/chrome'
+import * as DocsSearch from '@/site/docs-search'
 import { counterpartUrl, renderer } from '@/site/config'
 import {
   AppRoute,
@@ -54,6 +55,7 @@ export const Model = S.Struct({
   currentUrl: S.String,
   isDark: S.Boolean,
   page: Page.Page,
+  docsSearch: DocsSearch.Model,
 })
 export type Model = typeof Model.Type
 
@@ -140,6 +142,7 @@ export const Message = defineMessageUnion({
   GotCatalogDocsMessage: {
     message: ComponentCatalog.Message,
   },
+  GotDocsSearchMessage: { message: DocsSearch.Message },
 })
 export type Message = typeof Message.Type
 
@@ -156,6 +159,7 @@ export const init: Runtime.RoutingApplicationInit<Model, Message, Flags> = (
       currentUrl: urlToString(url),
       isDark: flags.isDark,
       page: Page.init(route),
+      docsSearch: DocsSearch.init(),
     },
     commands: Option.isSome(url.hash)
       ? [ScrollToFragment({ hash: url.hash.value })]
@@ -241,6 +245,27 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       CompletedLoadExternal: () => ({ model: model }),
       CompletedApplyTheme: () => ({ model: model }),
       IgnoredBlocksPreviewInput: () => ({ model: model }),
+      GotDocsSearchMessage: ({ message }) => {
+        const next = DocsSearch.update(model.docsSearch, message)
+        return {
+          model: { ...model, docsSearch: next.model },
+          commands: [
+            ...Command.mapMessages(next.commands ?? [], message =>
+              Message.GotDocsSearchMessage({ message }),
+            ),
+            ...(next.outMessage?._tag === 'SelectedDoc'
+              ? [
+                  NavigateInternal({
+                    url: new URL(
+                      componentDocsPath(next.outMessage.slug),
+                      model.currentUrl,
+                    ).href,
+                  }),
+                ]
+              : []),
+          ],
+        }
+      },
 
       ChangedBlocksCategory: ({ category }) =>
         model.page._tag === 'BlocksIndexPage'
@@ -665,6 +690,11 @@ const boardStyleXSubscriptions = {
 }
 
 export const subscriptions = Subscription.aggregate<Model, Message>()(
+  Subscription.lift(DocsSearch.subscriptions)<Model, Message>({
+    toChildModel: model => model.docsSearch,
+    toParentMessage: message => Message.GotDocsSearchMessage({ message }),
+    when: model => model.route._tag !== 'Block',
+  }),
   Subscription.lift(Board.subscriptions)<Model, Message>({
     toChildModel: model =>
       model.page._tag === 'CreatePage'
@@ -710,6 +740,9 @@ const boardStyleXView = defineView<BoardStyleX.Model, BoardStyleX.Message>(
 )
 const landingView = defineView<Landing.Model, Landing.Message, boolean>(
   (landingModel, isDark, h) => Landing.view(landingModel, h, isDark),
+)
+const docsSearchView = defineView<DocsSearch.Model, DocsSearch.Message>(
+  DocsSearch.view,
 )
 const catalogDocsView = defineView<
   ComponentCatalog.Model,
@@ -1076,11 +1109,22 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => {
                 route: model.route,
                 isDark: model.isDark,
                 onThemeToggle: Message.ClickedThemeToggle(),
+                onSearchOpen: Message.GotDocsSearchMessage({
+                  message: DocsSearch.Message.OpenedSearch(),
+                }),
+                isSearchOpen: model.docsSearch.dialog.isOpen,
                 counterpartHref: counterpartUrl(new URL(model.currentUrl)),
               },
               h,
             ),
             pageView(model, h),
+            h.submodel({
+              slotId: 'site-docs-search',
+              model: model.docsSearch,
+              view: docsSearchView,
+              toParentMessage: message =>
+                Message.GotDocsSearchMessage({ message }),
+            }),
           ],
         ),
   }

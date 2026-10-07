@@ -4,7 +4,9 @@ import { fromString } from 'foldkit/url'
 import { describe, it } from 'vitest'
 
 import * as Landing from '@/demo/landing'
+import * as Tour from '@/site/landing-tour'
 import * as Chart from '@/lib/echarts'
+import { Combobox as ComboboxPrimitive } from '@foldkit/ui'
 import { init, update, view } from '@/main'
 
 const modelAt = (path: string) => {
@@ -34,6 +36,18 @@ describe('application scenes', () => {
             hostId: 'landing-hero-chart',
           }),
         }),
+      ),
+      Scene.Mount.resolve(
+        Chart.MountChart,
+        Tour.Message.GotChart({
+          message: Chart.ChartMessage.ChartMounted({
+            hostId: 'landing-explore-chart',
+          }),
+        }),
+      ),
+      Scene.Mount.resolve(
+        ComboboxPrimitive.AttachComboboxPreventBlur,
+        ComboboxPrimitive.Message.CompletedAttachComboboxPreventBlur(),
       ),
     )
   })
