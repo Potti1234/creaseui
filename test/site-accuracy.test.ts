@@ -38,7 +38,9 @@ describe('public site facts', () => {
   })
 
   it('publishes an available registry command without stale landing copy', () => {
-    const landing = readFileSync('src/demo/landing.ts', 'utf8')
+    const landing =
+      readFileSync('src/demo/landing.ts', 'utf8') +
+      readFileSync('src/site/landing-tour.ts', 'utf8')
 
     assert.match(
       landing,

@@ -124,6 +124,12 @@ export default defineConfig(({ mode }) => {
               '@/site/skin': source('site/skin.stylex.ts'),
               '@/site/landing-skin': source('site/landing-skin.stylex.ts'),
               '@/site/landing-ui': source('site/landing-ui.stylex.ts'),
+              '@/site/landing-tour-skin': source(
+                'site/landing-tour-skin.stylex.ts',
+              ),
+              '@/site/landing-tour-ui': source(
+                'site/landing-tour-ui.stylex.ts',
+              ),
               '@/docs/component-page': source('site/docs.stylex.ts'),
               '@/demo/blocks/index-page': source('site/blocks.stylex.ts'),
             }

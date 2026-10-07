@@ -43,10 +43,16 @@ test('landing content, theme, accessibility, and desktop visuals', async ({
   ).toHaveAttribute('href', '/docs/components/accordion')
   await expect(page.getByText('registry available')).toBeVisible()
   await expect(
-    page.getByText(String(COMPONENT_COUNT), { exact: true }),
+    page.getByRole('link', {
+      name: `Browse ${String(COMPONENT_COUNT)} components`,
+    }),
   ).toBeVisible()
-  await expect(page.getByText('70', { exact: true })).toBeVisible()
-  await expect(page.getByText('16', { exact: true })).toBeVisible()
+  await expect(
+    page.getByRole('heading', { name: 'See what you can build.' }),
+  ).toBeVisible()
+  await expect(
+    page.getByRole('heading', { name: 'Make it yours.' }),
+  ).toBeVisible()
   await expect(
     page.getByRole('link', { name: /Source revision/u }),
   ).toBeVisible()

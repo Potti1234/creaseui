@@ -1,20 +1,16 @@
+import { tourSkin } from '@/site/landing-tour-skin'
 import type { Update } from 'foldkit'
 import { Match as M, Schema as S } from 'effect'
-import type { Command } from 'foldkit'
+import { Command } from 'foldkit'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import { modifyFields } from 'foldkit/struct'
+import { defineView } from 'foldkit/submodel'
 
 import * as Chart from '@/lib/echarts'
 import { heroChart } from '@/site/landing-ui'
-import { renderer } from '@/site/config'
-import * as Icon from '@/lib/icon'
-import {
-  CHART_EXAMPLE_COUNT,
-  COMPONENT_COUNT,
-  SHOWCASE_CARD_COUNT,
-  SIDEBAR_BLOCK_COUNT,
-} from '@/lib/project-facts'
+import * as Tour from '@/site/landing-tour'
+import { SHOWCASE_CARD_COUNT } from '@/lib/project-facts'
 import { componentDocsPath, createPath } from '@/route'
 import { landingSkin } from '@/site/landing-skin'
 import { badge } from '@/site/landing-ui'
@@ -29,16 +25,14 @@ import {
 } from '@/site/landing-ui'
 import { input } from '@/site/landing-ui'
 import { kbd } from '@/site/landing-ui'
-import { separator } from '@/site/landing-ui'
 
-/* The crease/ui landing page (route: /). Copy and structure follow
-   brand/LANDING.md. Interactive bits: the before/after comparison slider;
-   everything else is static or a standalone chart. */
+/* Both site renderers share this landing page and its interactive tour. */
 
 // MODEL
 
 export const Model = S.Struct({
   comparePercent: S.Number,
+  tour: Tour.Model,
 })
 export type Model = typeof Model.Type
 
@@ -50,12 +44,13 @@ export const Message = defineMessageUnion({
   GotChartMessage: {
     message: Chart.ChartMessage,
   },
+  GotTourMessage: { message: Tour.Message },
 })
 export type Message = typeof Message.Type
 
 // INIT
 
-export const init = (): Model => ({ comparePercent: 50 })
+export const init = (): Model => ({ comparePercent: 50, tour: Tour.init() })
 
 // UPDATE
 
@@ -70,6 +65,15 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       }),
       ChangedDemoEmail: () => ({ model: model }),
       GotChartMessage: () => ({ model: model }),
+      GotTourMessage: ({ message }) => {
+        const next = Tour.update(model.tour, message)
+        return {
+          model: { ...model, tour: next.model },
+          commands: Command.mapMessages(next.commands ?? [], message =>
+            Message.GotTourMessage({ message }),
+          ),
+        }
+      },
     }),
   )
 
@@ -219,7 +223,15 @@ const heroCollage = (h: HtmlBuilder<Message>): Html => {
               badge({ children: ['New'] }, h),
               badge({ variant: 'secondary', children: ['Beta'] }, h),
               badge({ variant: 'outline', children: ['MIT'] }, h),
-              badge({ variant: 'destructive', children: ['Deprecated'] }, h),
+              badge(
+                {
+                  variant: 'destructive',
+                  children: [
+                    h.span([h.Class(tourSkin.deprecatedInk)], ['Deprecated']),
+                  ],
+                },
+                h,
+              ),
               h.div(
                 [h.Class(landingSkin.keyHints)],
                 [kbd({ children: ['⌘'] }, h), kbd({ children: ['B'] }, h)],
@@ -347,252 +359,58 @@ const comparisonSlider = (model: Model, h: HtmlBuilder<Message>): Html => {
   )
 }
 
-const howItWorks = (h: HtmlBuilder<Message>): Html => {
-  const layer = (name: string, role: string): Html =>
-    h.div(
-      [h.Class(landingSkin.layer)],
-      [
-        h.span([h.Class(landingSkin.label)], [name]),
-        h.span([h.Class(landingSkin.muted)], [role]),
-      ],
-    )
-
-  return h.section(
-    [h.Class(landingSkin.band)],
-    [
-      h.div(
-        [h.Class(landingSkin.columns)],
-        [
-          h.div(
-            [h.Class(landingSkin.stack)],
-            [
-              sectionHeading(
-                'Three layers, no magic.',
-                'foldkit UI provides behavior and accessibility. crease/ui is the styled layer you copy into your project. Your app owns all of it.',
-                h,
-              ),
-              h.div(
-                [h.Class(landingSkin.grid)],
-                [
-                  layer(
-                    'foldkit UI',
-                    'Headless primitives — behavior, ARIA, focus.',
-                  ),
-                  layer(
-                    'crease/ui',
-                    'The visible layer — class strings you already know.',
-                  ),
-                  layer(
-                    'Your app',
-                    'Model, update, view. No hidden state anywhere.',
-                  ),
-                ],
-              ),
-            ],
-          ),
-          h.div(
-            [h.Class(landingSkin.stackTight)],
-            [
-              h.div(
-                [h.Class(landingSkin.installCard)],
-                [
-                  h.div(
-                    [h.Class(landingSkin.installRow)],
-                    [
-                      h.code(
-                        [h.Class(landingSkin.code)],
-                        [
-                          renderer === 'stylex'
-                            ? "import { button } from '@/stylex/button'"
-                            : 'npx --yes shadcn@latest add Potti1234/creaseui/button --yes',
-                        ],
-                      ),
-                      badge(
-                        {
-                          variant: 'secondary',
-                          children: [
-                            renderer === 'stylex'
-                              ? 'source available'
-                              : 'registry available',
-                          ],
-                        },
-                        h,
-                      ),
-                    ],
-                  ),
-                  separator({}, h),
-                  h.p(
-                    [h.Class(landingSkin.muted)],
-                    [
-                      renderer === 'stylex'
-                        ? 'Copy the StyleX component and its local dependencies into your project. Configure the compiler and theme variables; no Tailwind reset is needed.'
-                        : 'The registry copies the component and its local dependencies into your project. The installed source is yours to rename, adapt, or extend.',
-                    ],
-                  ),
-                ],
-              ),
-              h.ul(
-                [h.Class(landingSkin.checks)],
-                [
-                  h.li(
-                    [h.Class(landingSkin.check)],
-                    [
-                      Icon.check({ class: landingSkin.icon }, h),
-                      'You own the code — no dependency to babysit.',
-                    ],
-                  ),
-                  h.li(
-                    [h.Class(landingSkin.check)],
-                    [
-                      Icon.check({ class: landingSkin.icon }, h),
-                      'shadcn-compatible tokens — your theme drops in.',
-                    ],
-                  ),
-                  h.li(
-                    [h.Class(landingSkin.check)],
-                    [
-                      Icon.check({ class: landingSkin.icon }, h),
-                      'Stateful components expose explicit Foldkit models and messages.',
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
-      ),
-    ],
-  )
-}
-
-const numbers = (h: HtmlBuilder<Message>): Html => {
-  const stat = (value: string, label: string, href: string): Html =>
-    h.a(
-      [h.Href(href), h.Class(landingSkin.stat)],
-      [
-        h.span([h.Class(landingSkin.statValue)], [value]),
-        h.span([h.Class(landingSkin.muted)], [label]),
-      ],
-    )
-
-  return h.section(
-    [h.Class(landingSkin.section)],
-    [
-      sectionHeading(
-        'Every component you expect.',
-        'Ported from shadcn/ui with the class strings you already know — plus the whole chart collection rebuilt on Apache ECharts, because Recharts is React-only.',
-        h,
-      ),
-      h.div(
-        [h.Class(landingSkin.stats)],
-        [
-          stat(
-            String(COMPONENT_COUNT),
-            'components — buttons to dialogs to tables',
-            '/docs/components/accordion',
-          ),
-          stat(
-            String(CHART_EXAMPLE_COUNT),
-            'charts on Apache ECharts, canvas-rendered',
-            '/charts/area',
-          ),
-          stat(
-            String(SIDEBAR_BLOCK_COUNT),
-            'application blocks — full sidebar shells',
-            '/blocks/sidebar',
-          ),
-        ],
-      ),
-    ],
-  )
-}
-
-const honestSection = (model: Model, h: HtmlBuilder<Message>): Html => {
-  return h.section(
-    [h.Class(landingSkin.band)],
-    [
-      h.div(
-        [h.Class(landingSkin.columns)],
-        [
-          h.div(
-            [h.Class(landingSkin.stack)],
-            [
-              sectionHeading(
-                'No hidden state. Really, none.',
-                'foldkit is an Elm-architecture framework: every dialog, dropdown and slider lives in your Model, changes through your update, renders from your view. You wire it explicitly — that is the cost. In exchange: state you can see, replay, and test.',
-                h,
-              ),
-              h.p(
-                [h.Class(landingSkin.muted)],
-                ['If that paragraph made you nod, you are home.'],
-              ),
-            ],
-          ),
-          h.pre(
-            [h.Attribute('tabindex', '0'), h.Class(landingSkin.snippet)],
-            [
-              h.code(
-                [],
-                [
-                  [
-                    '// the dialog is in YOUR model',
-                    "dialog: Dialog.init({ id: 'confirm', isAnimated: true })",
-                    '',
-                    '// opening it is YOUR update arm',
-                    'ClickedDelete: () =>',
-                    '  applyDialog(model, Dialog.open(model.dialog))',
-                    '',
-                    '// rendering it is YOUR view call',
-                    'Dialog.dialog({',
-                    '  model: model.dialog,',
-                    "  title: 'Are you absolutely sure?',",
-                    '  footer: slots => [...],',
-                    '})',
-                  ].join('\n'),
-                ],
-              ),
-            ],
-          ),
-        ],
-      ),
-    ],
-  )
-}
-
 const faq = (h: HtmlBuilder<Message>): Html => {
-  const item = (question: string, answer: string): Html =>
-    h.div(
-      [h.Class(landingSkin.faqItem)],
-      [
-        h.h3([h.Class(landingSkin.label)], [question]),
-        h.p([h.Class(landingSkin.muted)], [answer]),
-      ],
-    )
-
-  return h.section(
-    [h.Class(landingSkin.section)],
+  const questions = [
     [
-      sectionHeading('Questions, answered.', '', h),
+      'Do I need React?',
+      'Crease UI is built for Foldkit. Its components use Foldkit models, messages, and view functions.',
+    ],
+    [
+      'Can I use my shadcn theme?',
+      'Yes. Crease uses the same CSS token contract, including --background, --primary, and --radius.',
+    ],
+    [
+      'Where does accessibility come from?',
+      'Foldkit UI provides the headless behavior, keyboard navigation, focus management, and ARIA attributes. Crease adds the styling.',
+    ],
+    [
+      'Is it free to use?',
+      'The components and registry source are MIT licensed. Crease UI is an independent project, with credit to shadcn/ui.',
+    ],
+  ] as const
+  return h.section(
+    [h.Class(tourSkin.faq)],
+    [
       h.div(
-        [h.Class(landingSkin.faqGrid)],
+        [h.Class(tourSkin.faqIntro)],
         [
-          item(
-            'Is this affiliated with shadcn?',
-            'No. crease/ui is an independent MIT reimplementation of the design system on foldkit, with gratitude. The name shadcn/ui belongs to its author.',
-          ),
-          item(
-            'Do I need React?',
-            'No. No React, no JSX, no virtual-DOM interop. foldkit only.',
-          ),
-          item(
-            'Is it accessible?',
-            'Behavior and ARIA come from foldkit UI’s headless primitives; crease/ui adds the styling layer on top.',
-          ),
-          item(
-            'Can I use my shadcn theme?',
-            'Yes — crease/ui uses shadcn’s CSS token contract (--background, --primary, --radius and friends), so existing themes drop in unchanged.',
+          h.h2([h.Class(tourSkin.faqTitle)], ['A few practical things.']),
+          h.p(
+            [h.Class(tourSkin.faqCopy)],
+            ['The details before you get started.'],
           ),
         ],
+      ),
+      h.div(
+        [],
+        questions.map(([question, answer]) =>
+          h.details(
+            [h.Class(tourSkin.faqItem)],
+            [
+              h.summary(
+                [h.Class(tourSkin.faqSummary)],
+                [
+                  question,
+                  h.span(
+                    [h.AriaHidden(true), h.Class(tourSkin.faqIcon)],
+                    ['+'],
+                  ),
+                ],
+              ),
+              h.p([h.Class(tourSkin.faqAnswer)], [answer]),
+            ],
+          ),
+        ),
       ),
     ],
   )
@@ -658,15 +476,27 @@ const footer = (h: HtmlBuilder<Message>): Html => {
 
 // VIEW
 
-export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
+const tourView = defineView<Tour.Model, Tour.Message, boolean>(
+  (model, isDark, h) => Tour.view(model, h, isDark),
+)
+
+export const view = (
+  model: Model,
+  h: HtmlBuilder<Message>,
+  isDark = false,
+): Html => {
   return h.div(
     [],
     [
       hero(h),
       comparisonSlider(model, h),
-      howItWorks(h),
-      numbers(h),
-      honestSection(model, h),
+      h.submodel({
+        slotId: 'landing-tour',
+        model: model.tour,
+        view: tourView,
+        viewInputs: isDark,
+        toParentMessage: message => Message.GotTourMessage({ message }),
+      }),
       faq(h),
       footer(h),
     ],

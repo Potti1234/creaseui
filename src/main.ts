@@ -708,7 +708,9 @@ const boardView = defineView<Board.Model, Board.Message>(Board.view)
 const boardStyleXView = defineView<BoardStyleX.Model, BoardStyleX.Message>(
   BoardStyleX.view,
 )
-const landingView = defineView<Landing.Model, Landing.Message>(Landing.view)
+const landingView = defineView<Landing.Model, Landing.Message, boolean>(
+  (landingModel, isDark, h) => Landing.view(landingModel, h, isDark),
+)
 const catalogDocsView = defineView<
   ComponentCatalog.Model,
   ComponentCatalog.Message,
@@ -921,6 +923,7 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
                 slotId: 'landing',
                 model: model.page.landing,
                 view: landingView,
+                viewInputs: model.isDark,
                 toParentMessage: (message: Landing.Message): Message =>
                   Message.GotLandingMessage({ message }),
               }),
