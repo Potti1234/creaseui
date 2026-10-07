@@ -86,7 +86,8 @@ export const createShowcaseTabs = <Value extends string>() => {
         {
           ...props,
           class: 'min-w-0 gap-4',
-          listClass: 'max-w-full overflow-x-auto',
+          listClass: 'max-w-full',
+          triggerClass: 'px-1.5 sm:px-2',
           contentClass: 'min-w-0 outline-none',
         },
         h,

@@ -32,7 +32,6 @@ export const tourSkin = {
     'overflow-hidden rounded-xl bg-background shadow-[0_0_0_1px_var(--border)]',
   iframe: 'block h-[620px] w-full border-0 bg-background sm:h-[680px]',
   showcaseBody: 'relative flex min-w-0 flex-col gap-4',
-  showcasePicker: 'self-start md:absolute md:-top-0.5 md:right-0 md:z-10',
   showcaseFooter: 'flex flex-wrap items-center justify-between gap-x-6 gap-y-2',
   mutedSmall: 'text-sm text-muted-foreground',
   showcaseLinks: 'flex items-center gap-5',

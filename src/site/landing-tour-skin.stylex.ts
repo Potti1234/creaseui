@@ -226,25 +226,6 @@ const styles = stylex.create({
     flexDirection: 'column',
     gap: '1rem',
   },
-  showcasePicker: {
-    alignSelf: 'flex-start',
-    position: {
-      default: null,
-      '@media (min-width: 768px)': 'absolute',
-    },
-    top: {
-      default: null,
-      '@media (min-width: 768px)': '-0.125rem',
-    },
-    right: {
-      default: null,
-      '@media (min-width: 768px)': '0rem',
-    },
-    zIndex: {
-      default: null,
-      '@media (min-width: 768px)': 10,
-    },
-  },
   showcaseFooter: {
     display: 'flex',
     flexWrap: 'wrap',

@@ -48,7 +48,6 @@ const appPalette = Palette.create<string>()
 export const Model = S.Struct({
   showcase: Showcase,
   tabs: Tabs.Model,
-  showcaseColor: Color,
   studioColor: Color,
   studioRadius: S.String,
   studioFont: S.String,
@@ -75,7 +74,6 @@ export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
   GotShowcaseTabs: { message: Tabs.Message },
-  SelectedShowcaseColor: { color: Color },
   SelectedStudioColor: { color: Color },
   ChangedStudioSetting: { field: StudioField, value: S.String },
   ToggledStudioNotifications: { isChecked: S.Boolean },
@@ -105,7 +103,6 @@ export type Message = typeof Message.Type
 export const init = (): Model => ({
   showcase: 'dashboard',
   tabs: Tabs.init({ id: 'landing-showcase' }),
-  showcaseColor: 'neutral',
   studioColor: 'emerald',
   studioRadius: 'large',
   studioFont: 'inter',
@@ -183,9 +180,6 @@ export const update = (
           ),
         }
       },
-      SelectedShowcaseColor: ({ color }) => ({
-        model: { ...model, showcaseColor: color },
-      }),
       SelectedStudioColor: ({ color }) => ({
         model: { ...model, studioColor: color },
       }),
@@ -425,28 +419,21 @@ const sectionHeader = (
 
 const colorPicker = (
   selected: typeof Color.Type,
-  studio: boolean,
   h: HtmlBuilder<Message>,
 ): Html =>
   h.div(
     [
       h.Role('group'),
-      h.AriaLabel(
-        studio ? 'Theme studio accent color' : 'Showcase accent color',
-      ),
+      h.AriaLabel('Theme studio accent color'),
       h.Class(tourSkin.colorPicker),
     ],
     COLORS.map(color =>
       h.button(
         [
           h.Type('button'),
-          h.AriaLabel(`${studio ? 'Studio' : 'Showcase'} ${color.label}`),
+          h.AriaLabel(`Studio ${color.label}`),
           h.AriaPressed(String(selected === color.value)),
-          h.OnClick(
-            studio
-              ? Message.SelectedStudioColor({ color: color.value })
-              : Message.SelectedShowcaseColor({ color: color.value }),
-          ),
+          h.OnClick(Message.SelectedStudioColor({ color: color.value })),
           h.Class(tourSkin.colorButton),
         ],
         [
@@ -479,11 +466,10 @@ const themeConfig = (
   radius,
   font,
 })
-const previewUrl = (model: Model, block: string, isDark: boolean): string =>
-  `/blocks/preview/${renderer}--${block}?preset=${Preset.encodePreset(themeConfig(model.showcaseColor))}&appearance=${isDark ? 'dark' : 'light'}`
+const previewUrl = (block: string, isDark: boolean): string =>
+  `/blocks/preview/${renderer}--${block}?preset=${Preset.encodePreset(themeConfig('neutral'))}&appearance=${isDark ? 'dark' : 'light'}`
 
 const showcaseFrame = (
-  model: Model,
   app: (typeof APPS)[number],
   isDark: boolean,
   h: HtmlBuilder<Message>,
@@ -513,9 +499,9 @@ const showcaseFrame = (
         [h.Class(tourSkin.frameContent)],
         [
           h.keyed('iframe')(
-            `${app.block}-${model.showcaseColor}-${isDark}`,
+            `${app.block}-${isDark}`,
             [
-              h.Src(previewUrl(model, app.block, isDark)),
+              h.Src(previewUrl(app.block, isDark)),
               h.Title(`${app.label} application preview`),
               h.Attribute('loading', 'lazy'),
               h.Class(tourSkin.iframe),
@@ -544,10 +530,6 @@ const showcaseView = (
       h.div(
         [h.Class(tourSkin.showcaseBody)],
         [
-          h.div(
-            [h.Class(tourSkin.showcasePicker)],
-            [colorPicker(model.showcaseColor, false, h)],
-          ),
           showcaseTabs.tabs(
             {
               model: model.tabs,
@@ -559,7 +541,7 @@ const showcaseView = (
                 label: app.label,
                 content:
                   app.value === model.showcase
-                    ? showcaseFrame(model, app, isDark, h)
+                    ? showcaseFrame(app, isDark, h)
                     : h.empty,
               })),
             },
@@ -581,7 +563,7 @@ const showcaseView = (
                   ),
                   h.a(
                     [
-                      h.Href(previewUrl(model, selected.block, isDark)),
+                      h.Href(previewUrl(selected.block, isDark)),
                       h.Class(tourSkin.subtleLink),
                     ],
                     ['Open example', icon('arrow-up-right', h)],
@@ -669,7 +651,7 @@ const studioView = (
                 [h.Class(tourSkin.gridTight)],
                 [
                   h.p([h.Class(tourSkin.label)], ['Accent color']),
-                  colorPicker(model.studioColor, true, h),
+                  colorPicker(model.studioColor, h),
                 ],
               ),
               choices(

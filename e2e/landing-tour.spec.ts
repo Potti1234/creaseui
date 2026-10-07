@@ -24,12 +24,9 @@ for (const renderer of ['tailwind', 'stylex'] as const) {
       'src',
       new RegExp(`/blocks/preview/${renderer}--creaseui-inbox-table`),
     )
-    await page
-      .getByRole('button', { name: 'Showcase Blue', exact: true })
-      .click()
     await expect(
-      page.getByRole('button', { name: 'Showcase Blue', exact: true }),
-    ).toHaveAttribute('aria-pressed', 'true')
+      page.getByRole('group', { name: 'Showcase accent color' }),
+    ).toHaveCount(0)
 
     await page
       .getByRole('button', { name: 'Studio Violet', exact: true })
@@ -136,6 +133,15 @@ for (const renderer of ['tailwind', 'stylex'] as const) {
     for (const mode of ['light', 'dark']) {
       if (mode === 'dark')
         await page.getByRole('button', { name: 'Switch to dark mode' }).click()
+      await page.evaluate(async () => {
+        // Audit the final theme colors after CSS transitions have settled.
+        await Promise.all(
+          document
+            .getAnimations()
+            .filter(animation => animation instanceof CSSTransition)
+            .map(animation => animation.finished.catch(() => undefined)),
+        )
+      })
       const results = await new AxeBuilder({ page })
         .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
         .analyze()
