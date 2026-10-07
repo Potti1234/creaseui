@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -62,6 +63,8 @@ const variants = stylex.create({
     color: tokens.destructive,
   },
   outline: {
+    /* TW emits border-border (var(--border), preset-scoped), not the static
+       --color-border default. */
     borderColor: tokens.border,
     backgroundColor: tokens.transparent,
     color: tokens.foreground,
@@ -142,6 +145,7 @@ export const badge = <Msg>(props: BadgeProps, h: HtmlBuilder<Msg>): Html => {
   const attributes = [
     h.Class(
       className(
+        reset.link,
         base.root,
         variants[variant],
         ...(props.href === undefined ? [] : [anchor[variant]]),

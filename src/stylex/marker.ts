@@ -1,5 +1,5 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
-import type { StaticStyles } from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import type { ComponentLayoutStyle } from './contracts'
@@ -139,13 +139,17 @@ export const marker = <Msg>(
     ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
     h.Class(
       className(
+        element === 'button'
+          ? reset.button
+          : element === 'a'
+            ? reset.link
+            : undefined,
         styles.root,
         styles[props.variant ?? 'default'],
         ...(props.direction === 'column' ? [styles.column] : []),
         ...(element === 'div' ? [] : [styles.interactive]),
         ...(element === 'a' ? [styles.interactiveAnchor] : []),
-        // eslint-disable-next-line no-restricted-syntax -- reason: defaultMarker is stylex.props-compatible but absent from the narrow StaticStyles surface.
-        stylex.defaultMarker() as unknown as StaticStyles,
+        stylex.defaultMarker(),
         props.layoutStyle,
       ),
     ),

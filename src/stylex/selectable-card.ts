@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import { Option } from 'effect'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
@@ -54,6 +55,7 @@ const styles = stylex.create({
     opacity: 0.5,
   },
   bordered: {
+    /* TW cardSurfaceClass emits border-border (var(--border), preset-scoped). */
     borderColor: tokens.border,
     borderStyle: 'solid',
     borderWidth: 1,
@@ -232,7 +234,7 @@ export const selectableCard = <Msg>(
     ],
     [
       h.input([
-        h.Class(className(styles.srOnly)),
+        h.Class(className(reset.input, styles.srOnly)),
         h.DataAttribute('pressable-control', 'true'),
         h.Type('checkbox'),
         h.Checked(props.isSelected),

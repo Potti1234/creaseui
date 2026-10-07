@@ -1,3 +1,5 @@
+import { previewLayout } from '@/docs/components/preview-layout.stylex'
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -116,7 +118,7 @@ export const inputOtpStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
             layoutStyle: styles.controlledOtp,
           }),
           h.p(
-            [h.Class(className(styles.status))],
+            [h.Class(className(reset.text, styles.status))],
             [
               m.values['controlled'] === undefined ||
               m.values['controlled'] === ''
@@ -204,7 +206,10 @@ export const inputOtpStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                           {
                             children: [
                               h.a(
-                                [h.Href('#'), h.Class(className(styles.link))],
+                                [
+                                  h.Href('#'),
+                                  h.Class(className(reset.link, styles.link)),
+                                ],
                                 [
                                   'I no longer have access to this email address.',
                                 ],
@@ -240,7 +245,10 @@ export const inputOtpStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                           [
                             'Having trouble signing in? ',
                             h.a(
-                              [h.Href('#'), h.Class(className(styles.link))],
+                              [
+                                h.Href('#'),
+                                h.Class(className(reset.link, styles.link)),
+                              ],
                               ['Contact support'],
                             ),
                           ],
@@ -260,7 +268,7 @@ export const inputOtpStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
     case 'rtl': {
       const t = inputOtpRtlCopy
       return h.div(
-        [h.Dir('rtl'), h.Class('contents')],
+        [h.Dir('rtl'), h.Class(className(previewLayout.contents))],
         [
           Field.field(
             {

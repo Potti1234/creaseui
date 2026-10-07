@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import { Option } from 'effect'
 import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
 
@@ -223,6 +224,7 @@ const renderSelect = <Item, Value extends string, Msg>(
       ],
     ),
     buttonClassName: cn(
+      reset.button,
       TRIGGER_CLASS,
       styles.trigger,
       joinStyles.join,
@@ -250,7 +252,7 @@ const renderSelect = <Item, Value extends string, Msg>(
       hs.Tabindex(0),
       hs.DataAttribute('slot', 'select-content'),
     ]),
-    itemsScrollClassName: className(VIEWPORT_CLASS),
+    itemsScrollClassName: className(reset.list, VIEWPORT_CLASS),
     backdropClassName: className(BACKDROP_CLASS),
     backdropAttributes: childAttributes([
       hs.DataAttribute('slot', 'select-backdrop'),

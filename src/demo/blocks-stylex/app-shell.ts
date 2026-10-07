@@ -3,6 +3,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import { foundationTokens } from '../../stylex/foundations-tokens.stylex'
 import { icon } from '@/stylex/composition/icon'
+import { reset } from '@/stylex/reset'
 import { className } from '@/stylex/style'
 import { tokens } from '../../stylex/tokens.stylex'
 
@@ -172,7 +173,7 @@ const styles = stylex.create({
 
 const navLogo = <Msg>(h: HtmlBuilder<Msg>): Html =>
   h.a(
-    [h.Href('#'), h.Class(className(styles.logoLink))],
+    [h.Href('#'), h.Class(className(reset.link, styles.logoLink))],
     [
       h.span([h.Class(className(styles.logoChip))], [icon({ name: 'box' }, h)]),
       h.span([h.Class(className(styles.logoText))], ['Acme Inc']),
@@ -188,7 +189,10 @@ const topNavItem = <Msg>(
     [
       h.Href('#'),
       h.Class(
-        className(selected ? styles.topNavItemSelected : styles.topNavItem),
+        className(
+          reset.link,
+          selected ? styles.topNavItemSelected : styles.topNavItem,
+        ),
       ),
     ],
     [label],
@@ -219,7 +223,12 @@ const sideNavItem = <Msg>(
   h.a(
     [
       h.Href('#'),
-      h.Class(className(selected ? styles.navItemSelected : styles.navItem)),
+      h.Class(
+        className(
+          reset.link,
+          selected ? styles.navItemSelected : styles.navItem,
+        ),
+      ),
     ],
     [icon({ name: iconName }, h), label],
   )
@@ -289,7 +298,10 @@ export const appShell = <Msg>(h: HtmlBuilder<Msg>): Html =>
     [h.Class(className(styles.root))],
     [
       h.a(
-        [h.Href('#app-shell-01-main'), h.Class(className(styles.skipLink))],
+        [
+          h.Href('#app-shell-01-main'),
+          h.Class(className(reset.link, styles.skipLink)),
+        ],
         ['Skip to content'],
       ),
       h.header([], [topNav(h)]),

@@ -27,7 +27,7 @@
     "format:check": "oxfmt --check",
     "format:staged": "lint-staged --max-arg-length 4000",
     "dev": "vite",
-    "build": "vite build",
+    "build": "npm run build:tailwind && npm run build:stylex",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "test": "npm run test:lint-package && npm run test:unit && npm run test:scene",
@@ -46,8 +46,8 @@
     "parity:upstream": "node scripts/sync-upstream-parity.mjs",
     "parity:upstream:update": "node scripts/sync-upstream-parity.mjs --update",
     "preset:build": "tsx scripts/materialize-create-preset.ts",
-    "lint": "eslint src test scene e2e scripts packages/lint playwright.config.ts vite.config.ts --quiet",
-    "lint:design-system": "eslint src/ui src/stylex src/demo src/docs/components/pages --max-warnings 386",
+    "lint": "eslint src test scene e2e scripts packages/lint playwright.config.ts playwright.sites.config.ts vite.config.ts --quiet",
+    "lint:design-system": "eslint src/ui src/stylex src/demo src/docs/components/pages --max-warnings 373",
     "test:lint-package": "node --test packages/lint/test/*.test.js",
     "lint:composition": "oxlint src/demo/board-constrained.ts src/demo/blocks-stylex src/stylex/composition && node scripts/check-constrained-composition.mjs && node --test --import tsx --import ./test/setup.ts test/stylex-composition.test.ts test/stylex-blocks-composition.test.ts",
     "lint:stylex-templates": "node scripts/check-stylex-template-system.mjs && node --test --import tsx --import ./test/setup.ts test/stylex-template-system.test.ts",
@@ -63,7 +63,14 @@
     "registry:install-local": "node scripts/install-local-registry.mjs",
     "test:registry": "node scripts/verify-registry-install.mjs",
     "parity:names": "node scripts/check-upstream-parity.mjs",
-    "component:create": "node scripts/create-component.mjs"
+    "component:create": "node scripts/create-component.mjs",
+    "dev:tailwind": "vite --mode tailwind",
+    "dev:stylex": "vite --mode stylex",
+    "build:tailwind": "vite build --mode tailwind",
+    "build:stylex": "vite build --mode stylex",
+    "preview:tailwind": "vite preview --mode tailwind",
+    "preview:stylex": "vite preview --mode stylex",
+    "test:sites": "npm run build && playwright test --config playwright.sites.config.ts"
   },
   "lint-staged": {
     "*": "oxfmt --write --no-error-on-unmatched-pattern"

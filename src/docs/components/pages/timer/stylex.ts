@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -101,7 +102,7 @@ const timerView = <Msg>(
       )
     case 'inline':
       return h.p(
-        [h.Class(className(styles.body))],
+        [h.Class(className(reset.text, styles.body))],
         [
           'Processing for ',
           Timer.timer(

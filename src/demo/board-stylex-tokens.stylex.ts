@@ -3,7 +3,10 @@ import * as stylex from '@stylexjs/stylex'
 export const boardTokens = stylex.defineVars({
   boardBackground: 'var(--background)',
   boardMuted: 'var(--muted)',
-  boardMutedForeground: 'var(--muted-foreground)',
+  /* Outside the board scope (customizer panel, always dark chrome) this
+     resolves the .dark --muted-foreground literal; inside the board the
+     scoped theme aliases it back to var(--muted-foreground). */
+  boardMutedForeground: 'oklch(0.708 0 0)',
   border: 'rgb(255 255 255 / 0.1)',
   error: 'oklch(0.704 0.191 22.216)',
   focus: 'rgb(255 255 255 / 0.3)',
@@ -12,6 +15,8 @@ export const boardTokens = stylex.defineVars({
   markerPrimary: 'oklch(0.922 0 0)',
   markerZinc: 'oklch(0.705 0.015 286.067)',
   panel: 'rgb(40 40 40)',
+  panelShadow:
+    '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1), 0 0 0 1px rgb(255 255 255 / 0.1)',
   panelField: 'rgb(255 255 255 / 0.035)',
   panelInput: 'rgb(0 0 0 / 0.2)',
   panelPopover: 'rgb(58 58 58)',
@@ -20,6 +25,7 @@ export const boardTokens = stylex.defineVars({
   selected: 'rgb(255 255 255 / 0.15)',
   success: 'oklch(0.627 0.194 149.214)',
   text: 'white',
+  textInverse: 'rgb(0 0 0)',
   textMuted: 'rgb(255 255 255 / 0.8)',
   textSubtle: 'rgb(255 255 255 / 0.35)',
   transparent: 'transparent',

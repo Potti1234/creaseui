@@ -1,3 +1,4 @@
+import { previewLayout } from '@/docs/components/preview-layout.stylex'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -70,7 +71,7 @@ export const accordionStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
 ): Html => {
   const fixture = accordionFixtures[exampleIndex] ?? accordionFixtures[0]
   return h.div(
-    [h.Class('w-full max-w-xl')],
+    [h.Class(className(previewLayout.wide))],
     [
       fixtureView(
         fixture,

@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import { Popover as PopoverPrimitive } from '@foldkit/ui'
@@ -8,6 +9,8 @@ import { overlayStyles } from './overlay-tokens.stylex'
 import type { ComponentLayoutStyle } from './contracts'
 import { themedAnchor } from './overlay-boundary'
 import { className } from './style'
+import { complexTokens } from './complex-tokens.stylex'
+import { tokens } from './tokens.stylex'
 
 const styles = stylex.create({
   content: {
@@ -16,12 +19,30 @@ const styles = stylex.create({
     overflowY: 'auto',
     width: '18rem',
   },
+  /* TW sidebarMenuButtonVariants() trigger inside a shrink-wrap
+     ('relative inline-flex') parent: content-width, menu-button look. */
   sidebarTrigger: {
     padding: '0.5rem',
+    borderRadius: tokens.controlRadius,
+    gap: '0.5rem',
+    overflow: 'hidden',
+    alignItems: 'center',
+    backgroundColor: {
+      default: tokens.transparent,
+      ':hover': complexTokens.sidebarAccent,
+    },
+    color: {
+      default: complexTokens.sidebarForeground,
+      ':hover': complexTokens.sidebarAccentForeground,
+    },
     display: 'flex',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+    outlineStyle: 'none',
     textAlign: 'left',
-    minHeight: '2rem',
-    width: '100%',
+    whiteSpace: 'nowrap',
+    height: '2rem',
+    width: 'fit-content',
   },
 })
 
@@ -108,6 +129,7 @@ export const popover = <Msg>(
                 hp.AriaHasPopup('dialog'),
                 hp.Class(
                   cn(
+                    reset.button,
                     props.variant === 'sidebar' && styles.sidebarTrigger,
                     props.triggerLayoutStyle,
                   ),

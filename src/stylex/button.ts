@@ -18,6 +18,7 @@ import type {
 import { joinStyles } from './button-group-join.stylex'
 import { foundationTokens } from './foundations-tokens.stylex'
 import { className } from './style'
+import { reset } from './reset'
 import { tokens } from './tokens.stylex'
 import { interactionTokens } from './interaction-tokens.stylex.const'
 
@@ -85,6 +86,7 @@ const variants = stylex.create({
     color: tokens.destructive,
   },
   outline: {
+    /* TW emits border-border (var(--border), preset-scoped). */
     borderColor: tokens.border,
     borderWidth: 1,
     backgroundColor: {
@@ -112,7 +114,7 @@ const variants = stylex.create({
       ':hover': tokens.mutedHover,
     },
     color: {
-      default: null,
+      default: 'inherit',
       ':is([aria-expanded="true"])': tokens.foreground,
       ':hover': tokens.foreground,
     },
@@ -192,6 +194,12 @@ const shape = stylex.create({
   rounded: { borderRadius: foundationTokens.radiusFull },
 })
 
+/* TW 'rounded-md' — for flat buttons that lose their radius when a
+   size preset would otherwise carry it (sidebar-06 'Subscribe'). */
+const cornerRadius = stylex.create({
+  md: { borderRadius: foundationTokens.radiusMdCap10 },
+})
+
 type _VariantMapIsExhaustive = Assert<
   HasExactlyKeys<typeof variants, ButtonVariant>
 >
@@ -216,6 +224,8 @@ export type ButtonProps<Msg> = ButtonBehaviorProps<Msg> &
     iconInset?: 'start' | 'end'
     /** Fully rounded pill shape (upstream `rounded-full`). */
     rounded?: boolean
+    /** Explicit corner radius when the default doesn't apply. */
+    radius?: 'md'
     /** Parent-layout positioning only. Add visual choices as named variants. */
     layoutStyle?: ComponentLayoutStyle
   }>
@@ -229,6 +239,7 @@ export const buttonVisualStyles = ({
   variant?: ButtonVariant
   size?: ButtonSize
 }> = {}): ReadonlyArray<StaticStyles> => [
+  reset.button,
   base.root,
   variants[variant],
   sizes[size],
@@ -247,6 +258,7 @@ export const button = <Msg>(
       ...(props.dataSize === undefined ? [h.DataAttribute('size', size)] : []),
       h.Class(
         className(
+          reset.button,
           base.root,
           joinStyles.join,
           variants[variant],
@@ -254,6 +266,7 @@ export const button = <Msg>(
           (props.isDisabled === true || props.isLoading === true) &&
             base.disabled,
           props.rounded === true && shape.rounded,
+          props.radius === 'md' && cornerRadius.md,
           ...(props.iconInset === undefined
             ? []
             : [iconInsetFor(size, props.iconInset)]),
@@ -290,6 +303,7 @@ export const buttonLink = <Msg>(
       ...(props.dataSize === undefined ? [h.DataAttribute('size', size)] : []),
       h.Class(
         className(
+          reset.button,
           base.root,
           joinStyles.join,
           variants[variant],

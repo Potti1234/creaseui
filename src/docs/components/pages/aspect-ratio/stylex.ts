@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { HtmlBuilder } from 'foldkit/html'
 
@@ -64,6 +65,7 @@ export const aspectRatioStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
     [
       h.Class(
         className(
+          reset.text,
           styles.frame,
           fixture.widthClass.stylex !== 'w24' && styles.frameMedia,
           frameWidth[fixture.widthClass.stylex],
@@ -80,7 +82,7 @@ export const aspectRatioStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
             h.img([
               h.Src(IMAGE_URL),
               h.Alt('Photo'),
-              h.Class(className(styles.image)),
+              h.Class(className(reset.media, styles.image)),
             ]),
           ],
         },

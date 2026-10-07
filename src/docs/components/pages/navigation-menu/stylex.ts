@@ -1,3 +1,5 @@
+import { className } from '@/stylex/style'
+import { reset } from '@/stylex/reset'
 import type { HtmlBuilder } from 'foldkit/html'
 import * as stylex from '@stylexjs/stylex'
 
@@ -64,16 +66,13 @@ const links = <Msg>(
   )
 const content = <Msg>(h: HtmlBuilder<Msg>) =>
   h.ul(
-    [h.Class(stylex.props(styles.content).className ?? '')],
+    [h.Class(className(reset.list, styles.content))],
     [
       h.li(
         [],
         [
           h.a(
-            [
-              h.Href('#'),
-              h.Class(stylex.props(styles.contentLink).className ?? ''),
-            ],
+            [h.Href('#'), h.Class(className(reset.link, styles.contentLink))],
             ['Analytics'],
           ),
         ],
@@ -82,10 +81,7 @@ const content = <Msg>(h: HtmlBuilder<Msg>) =>
         [],
         [
           h.a(
-            [
-              h.Href('#'),
-              h.Class(stylex.props(styles.contentLink).className ?? ''),
-            ],
+            [h.Href('#'), h.Class(className(reset.link, styles.contentLink))],
             ['Reports'],
           ),
         ],
@@ -126,7 +122,7 @@ export const navigationMenuStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                 }),
               ),
             ),
-            h.Class(stylex.props(styles.routeButton).className ?? ''),
+            h.Class(className(reset.button, styles.routeButton)),
           ],
           ['Reflect external route'],
         ),

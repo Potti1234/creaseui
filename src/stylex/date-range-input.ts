@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import { Option } from 'effect'
 
@@ -466,6 +467,7 @@ export const dateRangeInput = <Msg>(
                     ...(isEffectivelyDisabled ? [h.Disabled(true)] : []),
                     h.Class(
                       className(
+                        reset.button,
                         styles.iconButton,
                         isEffectivelyDisabled && styles.iconButtonDisabled,
                       ),
@@ -491,6 +493,7 @@ export const dateRangeInput = <Msg>(
                     ...(isBusy ? [h.AriaBusy(true)] : []),
                     h.Class(
                       className(
+                        reset.button,
                         styles.trigger,
                         displayValue === '' && styles.triggerPlaceholder,
                       ),
@@ -508,7 +511,7 @@ export const dateRangeInput = <Msg>(
                           h.AriaLabel(`Clear ${label}`),
                           h.Tabindex(-1),
                           h.OnClick(toParentMessage(Message.ClearedValue())),
-                          h.Class(className(styles.clearButton)),
+                          h.Class(className(reset.button, styles.clearButton)),
                         ],
                         [
                           Icon.icon(
@@ -597,6 +600,7 @@ export const dateRangeInput = <Msg>(
                                         ),
                                         h.Class(
                                           className(
+                                            reset.button,
                                             styles.presetButton,
                                             isActive &&
                                               styles.presetButtonActive,
@@ -693,7 +697,10 @@ export const dateRangeInput = <Msg>(
         ? []
         : [
             h.p(
-              [h.Id(descriptionId), h.Class(className(styles.description))],
+              [
+                h.Id(descriptionId),
+                h.Class(className(reset.text, styles.description)),
+              ],
               [description],
             ),
           ]),

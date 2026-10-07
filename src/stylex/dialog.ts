@@ -7,6 +7,7 @@ import type { StaticStyles } from '@stylexjs/stylex'
 import { overlayStyles } from './overlay-tokens.stylex'
 import type { ComponentLayoutStyle } from './contracts'
 import { className } from './style'
+import { reset } from './reset'
 
 const styles = stylex.create({
   content: {
@@ -15,12 +16,31 @@ const styles = stylex.create({
     display: 'grid',
     maxWidth: '32rem',
   },
+  /* TW settings dialog: 'overflow-hidden p-0 md:max-h-[560px]
+     md:max-w-[700px] lg:max-w-[800px]' on a w-full panel. */
   settings: {
-    maxHeight: 'calc(100svh - 2rem)',
+    padding: 0,
+    overflow: 'hidden',
+    maxHeight: {
+      default: 'calc(100svh - 2rem)',
+      '@media (min-width: 768px)': '35rem',
+    },
     maxWidth: 'min(50rem, calc(100vw - 2rem))',
-    overflowY: 'auto',
+    width: '100%',
   },
-  icon: { height: '1rem', width: '1rem' },
+  /* TW restores header spacing as '[&_header]:px-6 [&_header]:pt-6' —
+     margins on the header give the same visual inside the p-0 panel. */
+  settingsHeaderMargin: {
+    marginInline: '1.5rem',
+    marginTop: '1.5rem',
+  },
+  icon: {
+    display: 'block',
+    flexShrink: 0,
+    verticalAlign: 'middle',
+    height: '1rem',
+    width: '1rem',
+  },
 })
 
 const isStaticStyle = (value: unknown): value is StaticStyles =>
@@ -111,7 +131,7 @@ export const dialogTitle = <Msg>(
     [
       ...props.attributes,
       h.DataAttribute('slot', 'dialog-title'),
-      h.Class(cn(TITLE_CLASS, props.layoutStyle)),
+      h.Class(cn(reset.text, TITLE_CLASS, props.layoutStyle)),
     ],
     [...props.children],
   )
@@ -124,7 +144,7 @@ export const dialogDescription = <Msg>(
     [
       ...props.attributes,
       h.DataAttribute('slot', 'dialog-description'),
-      h.Class(cn(DESCRIPTION_CLASS, props.layoutStyle)),
+      h.Class(cn(reset.text, DESCRIPTION_CLASS, props.layoutStyle)),
     ],
     [...props.children],
   )
@@ -176,7 +196,7 @@ const xIcon = <Msg>(h: HtmlBuilder<Msg>): Html => {
       h.StrokeWidth('2'),
       h.StrokeLinecap('round'),
       h.StrokeLinejoin('round'),
-      h.Class(className(styles.icon)),
+      h.Class(className(reset.svg, styles.icon)),
       h.AriaHidden(true),
     ],
     [h.path([h.D('M18 6 6 18')], []), h.path([h.D('m6 6 12 12')], [])],
@@ -225,7 +245,7 @@ export const dialog = <Msg>(
                 hd.Type('button'),
                 hd.DataAttribute('slot', 'dialog-close'),
                 hd.AriaLabel(partProps.ariaLabel ?? 'Close'),
-                hd.Class(cn(CLOSE_CLASS, partProps.layoutStyle)),
+                hd.Class(cn(reset.button, CLOSE_CLASS, partProps.layoutStyle)),
               ],
               [...(partProps.children ?? [xIcon(h)])],
             ),
@@ -234,6 +254,9 @@ export const dialog = <Msg>(
         }
         const content = props.layout?.(parts) ?? [
           parts.header({
+            ...(props.size === 'settings'
+              ? { layoutStyle: styles.settingsHeaderMargin }
+              : {}),
             children: [
               parts.title({ children: [props.title] }),
               ...(props.description === undefined

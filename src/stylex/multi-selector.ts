@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 
 import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
@@ -664,6 +665,7 @@ export const multiSelector = <Msg>(
       ],
     ),
     buttonClassName: className(
+      reset.button,
       variant === 'ghost' ? styles.triggerGhost : styles.trigger,
       props.isDisabled === true &&
         (variant === 'ghost'
@@ -730,7 +732,10 @@ export const multiSelector = <Msg>(
         ? []
         : [
             h.p(
-              [h.Id(descriptionId), h.Class(className(styles.description))],
+              [
+                h.Id(descriptionId),
+                h.Class(className(reset.text, styles.description)),
+              ],
               [props.description],
             ),
           ]),

@@ -24,7 +24,7 @@ const styles = stylex.create({
     borderRadius: 'calc(var(--radius) - 2px)',
     alignItems: 'center',
     backgroundColor: { default: 'transparent', ':hover': 'var(--accent)' },
-    color: { default: null, ':hover': 'var(--accent-foreground)' },
+    color: { default: 'inherit', ':hover': 'var(--accent-foreground)' },
     display: 'inline-flex',
     justifyContent: 'center',
     height: '2rem',

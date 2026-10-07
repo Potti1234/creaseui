@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 /* Ported from Meta Astryx Stepper (packages/core/src/Stepper/Stepper.tsx, Step.tsx) — examples and visual spec adapted to Crease UI tokens. */
 
 import * as stylex from '@stylexjs/stylex'
@@ -683,6 +684,7 @@ export const stepper = <Msg>(
       ? h.empty
       : h.div(
           [
+            h.Class(className()),
             h.Style({
               paddingInlineStart: hasIndicator ? '24px' : '0px',
             }),
@@ -720,7 +722,7 @@ export const stepper = <Msg>(
       [
         h.Type('button'),
         h.AriaLabel(stepAriaLabel(index, step.label, statusText)),
-        h.Class(className(styles.interactive, ...extraStyles)),
+        h.Class(className(reset.button, styles.interactive, ...extraStyles)),
         ...extraAttrs,
         h.OnClick(props.toParentMessage(Message.ClickedStep({ step: index }))),
       ],

@@ -193,6 +193,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                       areaChart(
                         {
                           data: data.map(({ price }) => price),
+                          layoutStyle: styles.chart,
                         },
                         h,
                       ),

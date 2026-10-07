@@ -4,6 +4,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import type { ComponentLayoutStyle } from './contracts'
 import { className } from './style'
+import { reset } from './reset'
 import { foundationTokens } from './foundations-tokens.stylex'
 import { tokens } from './tokens.stylex'
 
@@ -142,7 +143,7 @@ export const cardTitle = <Msg>(
 ): Html => {
   const attributes = [
     h.DataAttribute('slot', 'card-title'),
-    h.Class(className(styles.title, props.layoutStyle)),
+    h.Class(className(reset.text, styles.title, props.layoutStyle)),
   ]
   switch (props.element ?? 'h3') {
     case 'h2':

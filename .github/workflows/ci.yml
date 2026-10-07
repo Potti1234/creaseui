@@ -58,5 +58,8 @@ jobs:
       - name: Build site
         run: npm run build
 
+      - name: Check both renderer sites and standalone StyleX previews
+        run: npx playwright test --config playwright.sites.config.ts
+
       - name: Run browser and accessibility tests
         run: npm run test:e2e

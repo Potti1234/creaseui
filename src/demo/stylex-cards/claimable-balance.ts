@@ -17,7 +17,11 @@ import { tokens } from '../../stylex/tokens.stylex'
 import { cardDemoTokens } from './foundations-card-tokens.stylex'
 
 const styles = stylex.create({
-  balance: { fontSize: '3rem', fontVariantNumeric: 'tabular-nums' },
+  balance: {
+    fontSize: '3rem',
+    fontVariantNumeric: 'tabular-nums',
+    lineHeight: '3rem',
+  },
   pendingDot: {
     borderRadius: cardDemoTokens.round,
     backgroundColor: cardDemoTokens.pendingIndicator,
@@ -99,6 +103,7 @@ export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
                         item(
                           {
                             variant: 'muted',
+                            orientation: 'vertical',
                             children: [
                               itemContent(
                                 {

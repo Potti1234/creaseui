@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 /* Ported from Meta Astryx ListInput (packages/lab/src/ListInput) —
    examples and visual spec adapted to Crease UI tokens.
 
@@ -625,6 +626,7 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
             h.DataAttribute('list-input-remove', ''),
             h.Class(
               className(
+                reset.button,
                 styles.iconButton,
                 mutationsDisabled && styles.iconButtonDisabled,
               ),
@@ -649,6 +651,7 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
                 h.DataAttribute('list-input-reorder', ''),
                 h.Class(
                   className(
+                    reset.button,
                     styles.iconButton,
                     mutationsDisabled && styles.iconButtonDisabled,
                     isActiveReorder && styles.reorderPressed,
@@ -837,7 +840,7 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
               [
                 h.Id(fieldIds.description),
                 h.DataAttribute('slot', 'list-input-description'),
-                h.Class(className(styles.description)),
+                h.Class(className(reset.text, styles.description)),
               ],
               [props.description],
             ),
@@ -858,7 +861,7 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
               h.Role('list'),
               h.AriaLabelledBy(fieldIds.label),
               h.DataAttribute('slot', 'list-input-list'),
-              h.Class(className(styles.list)),
+              h.Class(className(reset.list, styles.list)),
             ],
             total === 0 ? [emptyItem] : rows,
           ),

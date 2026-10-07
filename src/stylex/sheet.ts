@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import { Option } from 'effect'
 import * as Mount from 'foldkit/mount'
 import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
@@ -235,7 +236,6 @@ const styles = stylex.create({
     transitionProperty: 'transform, opacity, height',
     transitionTimingFunction: interactionTokens.easingStandard,
     willChange: 'transform, opacity',
-    maxWidth: '640px',
     minHeight: 0,
     width: '100%',
   },
@@ -567,7 +567,7 @@ export const sheetTitle = <Msg>(
     [
       ...props.attributes,
       h.DataAttribute('slot', 'sheet-title'),
-      h.Class(cn(TITLE_STYLE, props.layoutStyle)),
+      h.Class(cn(reset.text, TITLE_STYLE, props.layoutStyle)),
     ],
     [...props.children],
   )
@@ -579,7 +579,7 @@ export const sheetDescription = <Msg>(
     [
       ...props.attributes,
       h.DataAttribute('slot', 'sheet-description'),
-      h.Class(cn(DESCRIPTION_STYLE, props.layoutStyle)),
+      h.Class(cn(reset.text, DESCRIPTION_STYLE, props.layoutStyle)),
     ],
     [...props.children],
   )
@@ -730,7 +730,7 @@ const buildParts = <Msg>(
           hd.Type('button'),
           hd.DataAttribute('slot', 'sheet-close'),
           hd.AriaLabel(partProps.ariaLabel ?? 'Close'),
-          hd.Class(cn(CLOSE_STYLE, partProps.layoutStyle)),
+          hd.Class(cn(reset.button, CLOSE_STYLE, partProps.layoutStyle)),
         ],
         [
           ...(partProps.children ?? [
@@ -755,7 +755,7 @@ const nonModalParts = <Msg>(hd: HtmlBuilder<Msg>): SheetParts<Msg> => ({
         hd.Type('button'),
         hd.DataAttribute('slot', 'sheet-close'),
         hd.AriaLabel(partProps.ariaLabel ?? 'Close'),
-        hd.Class(cn(CLOSE_STYLE, partProps.layoutStyle)),
+        hd.Class(cn(reset.button, CLOSE_STYLE, partProps.layoutStyle)),
       ],
       [
         ...(partProps.children ?? [

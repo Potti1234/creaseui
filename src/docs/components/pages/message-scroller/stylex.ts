@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import { Effect, Queue, Schema as S, Stream } from 'effect'
 import type { HtmlBuilder } from 'foldkit/html'
@@ -336,7 +337,7 @@ export const messageScrollerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
     if (fixture.kind === 'visibility')
       return [
         h.p(
-          [h.Class(className(styles.following))],
+          [h.Class(className(reset.text, styles.following))],
           [
             preview.visibleIds.length === 0
               ? 'Nothing in view'
@@ -347,7 +348,7 @@ export const messageScrollerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
     if (fixture.kind === 'streaming')
       return [
         h.p(
-          [h.Class(className(styles.following))],
+          [h.Class(className(reset.text, styles.following))],
           [
             preview.scroller.isFollowing
               ? 'Following the live edge'

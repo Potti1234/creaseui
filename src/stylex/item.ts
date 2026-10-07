@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
@@ -12,6 +13,8 @@ type SlotProps = Readonly<{
 export type ItemVariants = Readonly<{
   variant?: 'default' | 'outline' | 'muted' | null
   size?: 'default' | 'sm' | 'xs' | null
+  /** TW demos pass 'flex-col items-stretch' to stack content/footer rows. */
+  orientation?: 'horizontal' | 'vertical' | null
 }>
 export type ItemMediaVariants = Readonly<{
   variant?: 'default' | 'icon' | 'image' | null
@@ -31,8 +34,10 @@ const styles = stylex.create({
     lineHeight: '1.25rem',
     outlineStyle: 'none',
   },
+  /* TW 'border-border' -> var(--border), preset-scoped. */
   outline: { borderColor: tokens.border },
   muted: { backgroundColor: foundationTokens.mutedSoft },
+  vertical: { alignItems: 'stretch', flexDirection: 'column' },
   sm: { gap: '0.625rem', paddingBlock: '0.625rem', paddingInline: '0.75rem' },
   xs: { gap: '0.5rem', paddingBlock: '0.5rem', paddingInline: '0.625rem' },
   media: {
@@ -115,6 +120,7 @@ const styles = stylex.create({
   cols2: { display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))' },
   cols3: { display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))' },
   cols4: { display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))' },
+  /* TW 'bg-border' -> var(--border), preset-scoped. */
   separator: { backgroundColor: tokens.border, height: '1px', width: '100%' },
 })
 const slotDiv =
@@ -126,9 +132,11 @@ const slotDiv =
     )
 export const itemVariants = (o: ItemVariants = {}): string =>
   className(
+    reset.link,
     styles.item,
     o.variant === 'outline' && styles.outline,
     o.variant === 'muted' && styles.muted,
+    o.orientation === 'vertical' && styles.vertical,
     o.size === 'sm' && styles.sm,
     o.size === 'xs' && styles.xs,
   )
@@ -136,6 +144,7 @@ export type ItemProps = SlotProps &
   Readonly<{
     variant?: ItemVariants['variant']
     size?: ItemVariants['size']
+    orientation?: ItemVariants['orientation']
     element?: 'div' | 'li' | 'article' | 'a'
     href?: string
     target?: string
@@ -151,13 +160,14 @@ export const item = <Msg>(p: ItemProps, h: HtmlBuilder<Msg>): Html => {
       h.DataAttribute('size', size),
       h.Class(
         className(
+          reset.link,
           styles.item,
           variant === 'outline' && styles.outline,
           variant === 'muted' && styles.muted,
+          p.orientation === 'vertical' && styles.vertical,
           size === 'sm' && styles.sm,
           size === 'xs' && styles.xs,
-          // eslint-disable-next-line no-restricted-syntax -- reason: defaultMarker is stylex.props-compatible but absent from the narrow StaticStyles surface.
-          stylex.defaultMarker() as unknown as StaticStyles,
+          stylex.defaultMarker(),
           p.layoutStyle,
         ),
       ),
@@ -170,6 +180,7 @@ export const item = <Msg>(p: ItemProps, h: HtmlBuilder<Msg>): Html => {
       : p.element === 'a'
         ? h.a(
             [
+              h.Class(className(reset.link)),
               ...attrs,
               h.Href(p.href ?? '#'),
               ...(p.target === undefined
@@ -229,7 +240,7 @@ export const itemDescription = <Msg>(p: SlotProps, h: HtmlBuilder<Msg>): Html =>
   h.p(
     [
       h.DataAttribute('slot', 'item-description'),
-      h.Class(className(styles.description, p.layoutStyle)),
+      h.Class(className(reset.text, styles.description, p.layoutStyle)),
       h.Style({ WebkitLineClamp: '2' }),
     ],
     [...p.children],

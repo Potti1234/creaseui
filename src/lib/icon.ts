@@ -2,7 +2,6 @@ import { Array, Match as M } from 'effect'
 import type { Attribute, Html, HtmlBuilder } from 'foldkit/html'
 
 import { iconNodes } from '@/lib/icon-nodes'
-import { cn } from '@/lib/utils'
 
 /* Lucide icons rendered through foldkit's SVG constructors, driven by
    lucide-static's icon-nodes data (same icon set shadcn uses). Use the named
@@ -108,7 +107,13 @@ export const icon = <Msg>(
       h.StrokeWidth('2'),
       h.StrokeLinecap('round'),
       h.StrokeLinejoin('round'),
-      h.Class(cn(`lucide lucide-${name}`, config.class)),
+      h.Class(`lucide lucide-${name}${config.class ? ` ${config.class}` : ''}`),
+      h.Attribute('display', 'block'),
+      h.Style({
+        boxSizing: 'border-box',
+        verticalAlign: 'middle',
+        flexShrink: '0',
+      }),
       ...(node.length === 0 ? [h.DataAttribute('icon-missing', name)] : []),
       ...(config.dataIcon === undefined
         ? []

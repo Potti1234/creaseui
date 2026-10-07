@@ -184,8 +184,7 @@ export const message = <Msg>(
         className(
           styles.message,
           align === 'end' && styles.end,
-          // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
-          messageScope as unknown as StaticStyles,
+          messageScope,
           props.layoutStyle,
         ),
       ),

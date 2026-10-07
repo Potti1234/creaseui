@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { Button as ButtonPrimitive } from '@foldkit/ui'
@@ -86,6 +87,7 @@ export const toggle = <Msg>(p: ToggleProps<Msg>, h: HtmlBuilder<Msg>): Html =>
             ...(p.direction === undefined ? [] : [h.Dir(p.direction)]),
             h.Class(
               className(
+                reset.button,
                 styles.root,
                 p.variant === 'outline' && styles.outline,
                 p.size === 'sm' && styles.sm,

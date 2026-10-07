@@ -1,3 +1,4 @@
+import { previewLayout } from '@/docs/components/preview-layout.stylex'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -104,7 +105,7 @@ const menubarSxView = <Msg>(
   const fixture = menubarFixtures[index] ?? menubarFixtures[0]
   const spec = menubarSpecs[fixture.kind]
   return h.div(
-    [h.Class('flex flex-col items-center')],
+    [h.Class(className(previewLayout.centered))],
     [
       Menubar.menubar<string, Msg>(
         {

@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
@@ -40,11 +41,6 @@ const styles = stylex.create({
   },
   actionIcon: { height: '1rem', width: '1rem' },
   itemIcon: { flexShrink: 0, height: '1rem', width: '1rem' },
-  itemLabel: {
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-  },
   accountIcon: { height: '0.875rem', width: '0.875rem' },
   accountAvatar: {
     borderRadius: 'var(--radius)',
@@ -272,10 +268,9 @@ const iconLabel = <Msg>(
   name: string,
   label: string,
   h: HtmlBuilder<Msg>,
-  truncate = false,
 ): ReadonlyArray<Html | string> => [
   Icon.icon(name, { class: cx(styles.itemIcon) }, h),
-  h.span(truncate ? [h.Class(cx(styles.itemLabel))] : [], [label]),
+  Sidebar.sidebarMenuLabel({ children: [label] }, h),
 ]
 
 const actionItems = ['open', 'rename', 'delete'] as const
@@ -727,7 +722,7 @@ const staticPanel = <Msg>(
                     Sidebar.sidebarMenuButton(
                       {
                         isActive: true,
-                        children: iconLabel('gauge', 'Overview', h, true),
+                        children: iconLabel('gauge', 'Overview', h),
                       },
                       h,
                     ),
@@ -750,7 +745,7 @@ const staticPanel = <Msg>(
                         variant: 'outline',
                         layoutStyle:
                           styles.menuButtonActionPad as ComponentLayoutStyle,
-                        children: iconLabel('inbox', 'Inbox', h, true),
+                        children: iconLabel('inbox', 'Inbox', h),
                       },
                       h,
                     ),
@@ -770,7 +765,7 @@ const staticPanel = <Msg>(
                           }),
                         ),
                         variant: 'primary',
-                        children: iconLabel('plus', 'Create project', h, true),
+                        children: iconLabel('plus', 'Create project', h),
                       },
                       h,
                     ),
@@ -856,7 +851,9 @@ const staticPanel = <Msg>(
                                       [
                                         h.Role('status'),
                                         h.AriaLive('polite'),
-                                        h.Class(cx(styles.feedback)),
+                                        h.Class(
+                                          cx(reset.text, styles.feedback),
+                                        ),
                                       ],
                                       [model.feedback],
                                     ),

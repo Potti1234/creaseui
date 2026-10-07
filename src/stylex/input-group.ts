@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { Button as ButtonPrimitive } from '@foldkit/ui'
@@ -305,6 +306,7 @@ export const inputGroupButton = <Msg>(
             ...(p.ariaLabel === undefined ? [] : [h.AriaLabel(p.ariaLabel)]),
             h.Class(
               className(
+                reset.button,
                 ...buttonVisualStyles({
                   variant: p.variant ?? 'ghost',
                   size: 'default',
@@ -370,7 +372,12 @@ export const inputGroupInput = <Msg>(
     ...(p.isInvalid ? [h.AriaInvalid(true)] : []),
     h.DataAttribute('slot', 'input-group-control'),
     h.Class(
-      className(styles.input, p.isDisabled && styles.disabled, p.layoutStyle),
+      className(
+        reset.input,
+        styles.input,
+        p.isDisabled && styles.disabled,
+        p.layoutStyle,
+      ),
     ),
   ])
 export type InputGroupTextareaProps<Msg> = Readonly<{
@@ -402,6 +409,7 @@ export const inputGroupTextarea = <Msg>(
     h.DataAttribute('slot', 'input-group-control'),
     h.Class(
       className(
+        reset.input,
         styles.textarea,
         p.isDisabled && styles.disabled,
         p.mono === true && styles.mono,

@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -129,6 +130,7 @@ export const navigationMenuList = <Msg>(
       h.DataAttribute('layout', props.layout ?? 'inline'),
       h.Class(
         className(
+          reset.list,
           styles.list,
           props.layout === 'scroll' && styles.listScroll,
           props.layout === 'responsive' && styles.listResponsive,
@@ -162,6 +164,7 @@ export const navigationMenuLink = <Msg>(
         : []),
       h.Class(
         className(
+          reset.link,
           styles.link,
           props.isActive === true && styles.linkActive,
           props.layoutStyle,

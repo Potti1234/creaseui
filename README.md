@@ -10,7 +10,7 @@ does not require React or JSX.
 
 The repository currently contains:
 
-- 65 UI modules, from buttons and fields to dialogs, calendars, and sidebars
+- 120 UI modules, from buttons and fields to dialogs, calendars, and sidebars
 - 33 component cards reproducing the shadcn/ui create-board showcase
 - 70 Apache ECharts examples styled in the same design language
 - 16 complete sidebar block examples
@@ -22,8 +22,18 @@ Requirements: a current Node.js release and npm.
 
 ```sh
 npm install
-npm run dev
+npm run dev:tailwind # http://localhost:5173
+npm run dev:stylex   # http://localhost:5174 (in a second terminal)
 ```
+
+The two sites share content and routes: `creaseui.com` renders Tailwind and
+`stylex.creaseui.com` renders StyleX. The header links to the same URL on the
+other site. The StyleX site loads no Tailwind CSS or global element reset.
+
+`npm run build` produces `dist/tailwind` and `dist/stylex`. Use
+`npm run preview:tailwind` (port 4173) and `npm run preview:stylex` (port 4174)
+to inspect the production builds. `npm run dev` and `npm run preview` default
+to Tailwind. See [site architecture and hosting](docs/site-architecture.md).
 
 Foldkit DevTools is available through the **DEV** badge in the bottom-right
 corner of the site. Local development supports time travel; the published site
@@ -34,19 +44,11 @@ Before submitting a change, run:
 
 ```sh
 npm run check
+npm run test:sites # build both sites and check all 120 component pages
 ```
 
-The registry publishes the component catalog, shared utilities, and the Crease
-theme. The dedicated CLI keeps the common workflow concise:
-
-```sh
-npx creaseui doctor
-npx creaseui init
-npx creaseui add button dialog
-npx creaseui diff dialog
-```
-
-The underlying shadcn CLI remains available directly:
+The registry distributes the Tailwind components, shared utilities, and the
+Crease theme through the shadcn CLI:
 
 ```sh
 npx --yes shadcn@latest add Potti1234/creaseui/button --yes
@@ -57,6 +59,12 @@ Registry items copy their source into a Foldkit application so the resulting cod
 stays owned and editable by that application. The registry does not replace the
 consumer's Foldkit or Effect versions; consult the compatibility matrix before
 installing across a Foldkit API upgrade.
+
+The StyleX components in `src/stylex` are currently copied from this checkout;
+they are not included in `registry.json`. See the
+[StyleX authoring contract](src/stylex/README.md) for setup requirements.
+The local CLI can also be run from a consumer directory with
+`node /path/to/creaseui/scripts/crease.mjs doctor` (or `init`, `add`, `diff`).
 
 For side-by-side development, install from this checkout without pushing first:
 

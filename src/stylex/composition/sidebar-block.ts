@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import { Stream } from 'effect'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
@@ -7,7 +8,7 @@ import { tokens } from '../tokens.stylex'
 
 const styles = stylex.create({
   header: {
-    gap: '1rem',
+    gap: '.5rem',
     paddingInline: '1rem',
     alignItems: 'center',
     display: 'flex',
@@ -23,6 +24,10 @@ const styles = stylex.create({
     zIndex: 20,
     top: 0,
   },
+  /* TW-13's settings main header has no bottom border. */
+  borderless: { borderBottomWidth: 0 },
+  /* TW-15/16 site headers use 'h-14' instead of the default h-16. */
+  compact: { height: '3.5rem' },
   label: {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -55,6 +60,56 @@ const styles = stylex.create({
     borderRadius: tokens.radius,
     backgroundColor: foundationTokens.muted,
     opacity: 0.5,
+  },
+  /* TW sidebar-10 document body 'flex flex-1 flex-col gap-4 px-4 py-10'
+     with 'mx-auto max-w-3xl' panels (h-24 + h-full). */
+  docBody: {
+    padding: '1rem',
+    gap: '1rem',
+    paddingBlock: '2.5rem',
+    alignItems: 'center',
+    display: 'flex',
+    flexDirection: 'column',
+    flexGrow: 1,
+    minHeight: 0,
+    minWidth: 0,
+  },
+  /* TW sidebar-15 document body 'flex flex-1 flex-col gap-4 p-4'
+     with 'mx-auto max-w-3xl' panels (h-24 + h-[100vh]). */
+  docBodyTall: {
+    padding: '1rem',
+    gap: '1rem',
+    alignItems: 'center',
+    display: 'flex',
+    flexDirection: 'column',
+    flexGrow: 1,
+    minHeight: 0,
+    minWidth: 0,
+  },
+  docRow: {
+    borderRadius: foundationTokens.radiusXl,
+    backgroundColor: foundationTokens.muted,
+    flexShrink: 0,
+    opacity: 0.5,
+    height: '6rem',
+    maxWidth: '48rem',
+    width: '100%',
+  },
+  docFill: {
+    borderRadius: foundationTokens.radiusXl,
+    backgroundColor: foundationTokens.muted,
+    opacity: 0.5,
+    height: '100%',
+    maxWidth: '48rem',
+    width: '100%',
+  },
+  docFillTall: {
+    borderRadius: foundationTokens.radiusXl,
+    backgroundColor: foundationTokens.muted,
+    opacity: 0.5,
+    height: '100vh',
+    maxWidth: '48rem',
+    width: '100%',
   },
   tile: { aspectRatio: '16 / 9' },
   fill: { flexGrow: 1, minHeight: '24rem' },
@@ -97,9 +152,10 @@ const styles = stylex.create({
     display: 'grid',
     gridTemplateColumns: {
       default: 'minmax(0, 1fr)',
-      '@media (min-width: 768px)': '15rem minmax(0, 1fr)',
+      /* TW-13 settingsSidebar renders a w-64 sidebar root. */
+      '@media (min-width: 768px)': '16rem minmax(0, 1fr)',
     },
-    height: '26rem',
+    height: 'min(30rem, calc(100svh - 6rem))',
     minWidth: 0,
   },
   settingsNavigation: {
@@ -112,15 +168,48 @@ const styles = stylex.create({
     minWidth: 0,
     overflowY: 'auto',
   },
+  /* TW-13 settings body 'flex flex-1 flex-col gap-4 overflow-y-auto
+     p-4 pt-0' with 'aspect-video max-w-3xl' tiles. */
+  docBodySettings: {
+    padding: '1rem',
+    gap: '1rem',
+    alignItems: 'center',
+    display: 'flex',
+    flexDirection: 'column',
+    flexGrow: 1,
+    minHeight: 0,
+    minWidth: 0,
+    overflowY: 'auto',
+    paddingTop: 0,
+  },
+  docTile: {
+    borderRadius: foundationTokens.radiusXl,
+    aspectRatio: '16 / 9',
+    backgroundColor: foundationTokens.muted,
+    opacity: 0.5,
+    maxWidth: '48rem',
+    width: '100%',
+  },
 })
 
 export const blockHeader = <M>(
   children: ReadonlyArray<Html | string>,
   sticky: boolean,
   h: HtmlBuilder<M>,
+  bordered = true,
+  compact = false,
 ): Html =>
   h.header(
-    [h.Class(className(styles.header, sticky && styles.sticky))],
+    [
+      h.Class(
+        className(
+          styles.header,
+          sticky && styles.sticky,
+          !bordered && styles.borderless,
+          compact && styles.compact,
+        ),
+      ),
+    ],
     children,
   )
 export const blockLabel = <M>(label: string, h: HtmlBuilder<M>): Html =>
@@ -173,15 +262,38 @@ export const mailItem = <M>(
   h: HtmlBuilder<M>,
 ): Html =>
   h.button(
-    [h.Type('button'), h.OnClick(onClick), h.Class(className(styles.mailItem))],
+    [
+      h.Type('button'),
+      h.OnClick(onClick),
+      h.Class(className(reset.button, styles.mailItem)),
+    ],
     children,
   )
 export const blockSkeleton = <M>(
-  variant: 'cards' | 'rows' | 'calendar' | 'document',
+  variant:
+    | 'cards'
+    | 'rows'
+    | 'calendar'
+    | 'document'
+    | 'documentTall'
+    | 'settings',
   h: HtmlBuilder<M>,
 ): Html =>
   h.div(
-    [h.AriaHidden(true), h.Class(className(styles.body))],
+    [
+      h.AriaHidden(true),
+      h.Class(
+        className(
+          variant === 'document'
+            ? styles.docBody
+            : variant === 'documentTall'
+              ? styles.docBodyTall
+              : variant === 'settings'
+                ? styles.docBodySettings
+                : styles.body,
+        ),
+      ),
+    ],
     variant === 'cards'
       ? [
           h.div(
@@ -203,10 +315,19 @@ export const blockSkeleton = <M>(
           ]
         : variant === 'document'
           ? [
-              h.div([h.Class(className(styles.skeleton, styles.row))], []),
-              h.div([h.Class(className(styles.skeleton, styles.fill))], []),
+              h.div([h.Class(className(styles.docRow))], []),
+              h.div([h.Class(className(styles.docFill))], []),
             ]
-          : Array.from({ length: 14 }, () =>
-              h.div([h.Class(className(styles.skeleton, styles.row))], []),
-            ),
+          : variant === 'documentTall'
+            ? [
+                h.div([h.Class(className(styles.docRow))], []),
+                h.div([h.Class(className(styles.docFillTall))], []),
+              ]
+            : variant === 'settings'
+              ? Array.from({ length: 10 }, () =>
+                  h.div([h.Class(className(styles.docTile))], []),
+                )
+              : Array.from({ length: 14 }, () =>
+                  h.div([h.Class(className(styles.skeleton, styles.row))], []),
+                ),
   )

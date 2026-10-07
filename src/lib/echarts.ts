@@ -360,6 +360,11 @@ export const MountChart = Mount.define('MountChart', {
         })
       }
 
+      /* Canvas text metrics must be measured after webfonts resolve —
+         mounting earlier races Inter's load and leaves axis/legend labels
+         laid out with the metric-fallback font (shifted ~1px). */
+      yield* Effect.promise(() => document.fonts.ready)
+
       return yield* Effect.acquireRelease(
         Effect.try({
           try: () => {

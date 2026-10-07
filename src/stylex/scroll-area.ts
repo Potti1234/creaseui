@@ -28,7 +28,7 @@ const styles = stylex.create({
     outlineStyle: { default: 'none', ':focus-visible': 'solid' },
     outlineWidth: { default: 0, ':focus-visible': 1 },
     position: 'relative',
-    scrollbarColor: `${tokens.border} ${tokens.transparent}`,
+    scrollbarColor: `var(--border) ${tokens.transparent}`,
     scrollbarWidth: 'thin',
     transitionProperty: 'color, box-shadow',
     height: '100%',

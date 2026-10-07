@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 /* Ported from Meta Astryx FileInput (packages/core/src/FileInput) —
    examples and visual spec adapted to Crease UI tokens.
 
@@ -439,7 +440,7 @@ const view = defineView<Model, Message, FileInputViewInputs>(
                 propagation: 'Stop',
               }),
               h.DataAttribute('slot', 'file-input-status-icon'),
-              h.Class(className(styles.statusIconButton)),
+              h.Class(className(reset.button, styles.statusIconButton)),
             ],
             [
               Icon.icon(
@@ -467,6 +468,7 @@ const view = defineView<Model, Message, FileInputViewInputs>(
       [
         h.button(
           [
+            h.Class(className(reset.button)),
             h.Type('button'),
             h.Tabindex(props.isDisabled === true ? -1 : 0),
             h.AriaLabel(
@@ -498,7 +500,7 @@ const view = defineView<Model, Message, FileInputViewInputs>(
                 propagation: 'Stop',
               }),
               h.DataAttribute('slot', 'file-input-clear'),
-              h.Class(className(styles.clearButton)),
+              h.Class(className(reset.button, styles.clearButton)),
             ],
             [Icon.x({ class: className(styles.iconXs) }, h)],
           )
@@ -609,6 +611,7 @@ const view = defineView<Model, Message, FileInputViewInputs>(
           trigger,
           h.input([
             ...attributes.input,
+            h.Class(className(reset.input, styles.srOnly)),
             h.AriaHidden(true),
             h.Tabindex(-1),
             /* The TriggerClicked command activates this input with
@@ -708,7 +711,7 @@ const view = defineView<Model, Message, FileInputViewInputs>(
                 [
                   h.Id(fieldIds.description),
                   h.DataAttribute('slot', 'file-input-description'),
-                  h.Class(className(styles.description)),
+                  h.Class(className(reset.text, styles.description)),
                 ],
                 [props.description],
               ),

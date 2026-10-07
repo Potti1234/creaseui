@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import { Tooltip as TooltipPrimitive } from '@foldkit/ui'
@@ -121,6 +122,7 @@ export const tooltip = <Msg>(
               [
                 h.button(
                   [
+                    h.Class(className(reset.button)),
                     h.Type('button'),
                     h.Disabled(true),
                     ...(props.ariaLabel === undefined
@@ -128,7 +130,7 @@ export const tooltip = <Msg>(
                       : [h.AriaLabel(props.ariaLabel)]),
                     ...(props.triggerLayoutStyle === undefined
                       ? []
-                      : [h.Class(cn(props.triggerLayoutStyle))]),
+                      : [h.Class(cn(reset.button, props.triggerLayoutStyle))]),
                   ],
                   [props.trigger],
                 ),
@@ -138,6 +140,7 @@ export const tooltip = <Msg>(
         : [
             h.button(
               [
+                h.Class(className(reset.button)),
                 h.Id(triggerId),
                 h.Type('button'),
                 h.AriaDescribedBy(panelId),
@@ -174,7 +177,7 @@ export const tooltip = <Msg>(
                 h.DataAttribute('slot', 'tooltip-trigger'),
                 ...(props.triggerLayoutStyle === undefined
                   ? []
-                  : [h.Class(cn(props.triggerLayoutStyle))]),
+                  : [h.Class(cn(reset.button, props.triggerLayoutStyle))]),
               ],
               [props.trigger],
             ),

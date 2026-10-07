@@ -301,7 +301,7 @@ export const chartAnalyticsDashboard = <Message>(
                     h,
                   ),
                 ],
-                spacing: 'sm',
+                spacing: 'md',
               },
               h,
             ),
@@ -362,9 +362,13 @@ export const chartAnalyticsDashboard = <Message>(
                 Chart.eChart(
                   {
                     size: 'dashboard',
-                    accessibleAlternative: h.p(
-                      [],
-                      ['Monthly recurring revenue trend.'],
+                    accessibleAlternative: text(
+                      {
+                        as: 'p',
+                        variant: 'inherit',
+                        children: ['Monthly recurring revenue trend.'],
+                      },
+                      h,
                     ),
                     ariaLabel: 'Area chart of monthly recurring revenue',
                     hostId: AREA_HOST,
@@ -380,9 +384,15 @@ export const chartAnalyticsDashboard = <Message>(
                 Chart.eChart(
                   {
                     size: 'dashboard',
-                    accessibleAlternative: h.p(
-                      [],
-                      ['Monthly actual and target revenue comparison.'],
+                    accessibleAlternative: text(
+                      {
+                        as: 'p',
+                        variant: 'inherit',
+                        children: [
+                          'Monthly actual and target revenue comparison.',
+                        ],
+                      },
+                      h,
                     ),
                     ariaLabel:
                       'Grouped bar chart comparing actual revenue with target',
@@ -399,9 +409,13 @@ export const chartAnalyticsDashboard = <Message>(
                 Chart.eChart(
                   {
                     size: 'dashboard',
-                    accessibleAlternative: h.p(
-                      [],
-                      ['API and web response-time comparison.'],
+                    accessibleAlternative: text(
+                      {
+                        as: 'p',
+                        variant: 'inherit',
+                        children: ['API and web response-time comparison.'],
+                      },
+                      h,
                     ),
                     ariaLabel: 'Line chart comparing API and web latency',
                     hostId: LINE_HOST,
@@ -416,9 +430,15 @@ export const chartAnalyticsDashboard = <Message>(
                 'Share of new customers by channel',
                 Chart.eChart(
                   {
-                    accessibleAlternative: h.p(
-                      [],
-                      ['New-customer share by acquisition channel.'],
+                    accessibleAlternative: text(
+                      {
+                        as: 'p',
+                        variant: 'inherit',
+                        children: [
+                          'New-customer share by acquisition channel.',
+                        ],
+                      },
+                      h,
                     ),
                     ariaLabel: 'Donut chart of acquisition channels',
                     hostId: PIE_HOST,
@@ -434,9 +454,15 @@ export const chartAnalyticsDashboard = <Message>(
                 'Weighted launch dimensions',
                 Chart.eChart(
                   {
-                    accessibleAlternative: h.p(
-                      [],
-                      ['Weighted product launch-readiness dimensions.'],
+                    accessibleAlternative: text(
+                      {
+                        as: 'p',
+                        variant: 'inherit',
+                        children: [
+                          'Weighted product launch-readiness dimensions.',
+                        ],
+                      },
+                      h,
                     ),
                     ariaLabel: 'Radar chart of product readiness dimensions',
                     hostId: RADAR_HOST,
@@ -452,9 +478,13 @@ export const chartAnalyticsDashboard = <Message>(
                 'Usage by operating category',
                 Chart.eChart(
                   {
-                    accessibleAlternative: h.p(
-                      [],
-                      ['Budget usage by operating category.'],
+                    accessibleAlternative: text(
+                      {
+                        as: 'p',
+                        variant: 'inherit',
+                        children: ['Budget usage by operating category.'],
+                      },
+                      h,
                     ),
                     ariaLabel: 'Radial bar chart of budget usage',
                     hostId: RADIAL_HOST,

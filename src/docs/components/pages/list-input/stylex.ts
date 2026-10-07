@@ -1,3 +1,5 @@
+import { className } from '@/stylex/style'
+import { previewLayout } from '@/docs/components/preview-layout.stylex'
 import { Schema as S } from 'effect'
 import { Command } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
@@ -116,7 +118,7 @@ export const listInputStylexPreviewProgram = definePreviewProgram<
   view: (index, model, h) => {
     const fixture = listInputFixtures[index] ?? listInputFixtures[0]
     return h.div(
-      [h.Class('w-full max-w-2xl')],
+      [h.Class(className(previewLayout.wider))],
       [
         ListInput.listInput(
           {
@@ -177,7 +179,7 @@ export const listInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
     guests: ReadonlyArray<Guest>
   }
   return h.div(
-    [h.Class('w-full max-w-2xl')],
+    [h.Class(className(previewLayout.wider))],
     [
       ListInput.listInput(
         {

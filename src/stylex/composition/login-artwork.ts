@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { className } from '../style'
@@ -21,7 +22,7 @@ export const loginArtwork = <M>(h: HtmlBuilder<M>): Html =>
         h.Alt(''),
         h.Width('200'),
         h.Height('240'),
-        h.Class(className(styles.image)),
+        h.Class(className(reset.media, styles.image)),
       ]),
     ],
   )

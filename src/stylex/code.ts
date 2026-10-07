@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -62,6 +63,7 @@ export const code = <Msg>(props: CodeProps, h: HtmlBuilder<Msg>): Html =>
       h.DataAttribute('color', props.color ?? 'primary'),
       h.Class(
         className(
+          reset.code,
           styles.base,
           colorStyles[props.color ?? 'primary'],
           ...(props.size === undefined ? [] : [sizeStyles[props.size]]),

@@ -19,7 +19,6 @@ import * as TanStackTablePage from '@/demo/blocks-stylex/tanstack-table-page'
 import * as Blocks from '@/demo/blocks/registry'
 import * as Board from '@/demo/board'
 import * as BoardStyleX from '@/demo/board-stylex'
-import * as BoardConstrained from '@/demo/board-constrained'
 import * as Landing from '@/demo/landing'
 import * as ChartsArea from '@/demo/charts/area'
 import * as ChartsBar from '@/demo/charts/bar'
@@ -33,7 +32,8 @@ import * as ComponentCatalog from '@/docs/components/catalog'
 import * as CopyFeedback from '@/docs/copy-feedback'
 import * as CodeFile from '@/lib/code-file'
 import * as Page from '@/app/page'
-import * as Icon from '@/lib/icon'
+import * as Chrome from '@/site/chrome'
+import { counterpartUrl, renderer } from '@/site/config'
 import {
   AppRoute,
   type ChartSection,
@@ -46,14 +46,13 @@ import {
   isChartSection,
   urlToAppRoute,
 } from '@/route'
-import { cn } from '@/lib/utils'
 
 // MODEL
 
 export const Model = S.Struct({
   route: AppRoute,
+  currentUrl: S.String,
   isDark: S.Boolean,
-  renderer: Page.Renderer,
   page: Page.Page,
 })
 export type Model = typeof Model.Type
@@ -62,16 +61,11 @@ export type Model = typeof Model.Type
 
 export const Flags = S.Struct({
   isDark: S.Boolean,
-  renderer: Page.Renderer,
 })
 export type Flags = typeof Flags.Type
 
 export const flags: Effect.Effect<Flags> = Effect.sync(() => ({
   isDark: document.documentElement.classList.contains('dark'),
-  renderer:
-    localStorage.getItem('creaseui-renderer') === 'stylex'
-      ? 'stylex'
-      : 'tailwind',
 }))
 
 // MESSAGE
@@ -86,8 +80,6 @@ export const Message = defineMessageUnion({
   ClickedThemeToggle: {},
   CompletedApplyTheme: {},
   IgnoredBlocksPreviewInput: {},
-  ChangedRenderer: { renderer: Page.Renderer },
-  CompletedApplyRenderer: {},
   ChangedBlocksCategory: { category: Page.BlockCategory },
   ToggledBlockCode: { block: S.String },
   LoadedBlockCode: {
@@ -161,8 +153,8 @@ export const init: Runtime.RoutingApplicationInit<Model, Message, Flags> = (
   return {
     model: {
       route,
+      currentUrl: urlToString(url),
       isDark: flags.isDark,
-      renderer: route._tag === 'BlocksStyleX' ? 'stylex' : flags.renderer,
       page: Page.init(route),
     },
     commands: Option.isSome(url.hash)
@@ -223,16 +215,6 @@ const ScrollToFragment = Command.define('ScrollToFragment', {
     ),
 })
 
-const ApplyRenderer = Command.define('ApplyRenderer', {
-  args: { renderer: Page.Renderer },
-  messages: [Message.CompletedApplyRenderer],
-  execute: ({ renderer }) =>
-    Effect.sync(() => {
-      localStorage.setItem('creaseui-renderer', renderer)
-      return Message.CompletedApplyRenderer()
-    }),
-})
-
 const LoadBlockCode = Command.define('LoadBlockCode', {
   args: { renderer: Page.Renderer, name: S.String },
   messages: [Message.LoadedBlockCode],
@@ -260,29 +242,6 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       CompletedApplyTheme: () => ({ model: model }),
       IgnoredBlocksPreviewInput: () => ({ model: model }),
 
-      CompletedApplyRenderer: () => ({ model: model }),
-
-      ChangedRenderer: ({ renderer }) => {
-        if (model.renderer === renderer) return { model: model }
-        const persist = ApplyRenderer({ renderer })
-        if (model.page._tag !== 'BlocksIndexPage')
-          return {
-            model: { ...model, renderer },
-            commands: [persist],
-          }
-        const page = model.page
-        const open = Object.keys(page.codeBlocks)
-        const codeBlocks = Object.fromEntries(
-          open.map(name => [name, { files: {}, codeFile: '' }]),
-        )
-        return {
-          model: { ...model, renderer, page: { ...page, codeBlocks } },
-          commands: [
-            persist,
-            ...open.map(name => LoadBlockCode({ renderer, name })),
-          ],
-        }
-      },
       ChangedBlocksCategory: ({ category }) =>
         model.page._tag === 'BlocksIndexPage'
           ? {
@@ -307,14 +266,14 @@ export const update = (model: Model, message: Message): UpdateReturn =>
         }
         return {
           model: { ...model, page: { ...page, codeBlocks } },
-          commands: [LoadBlockCode({ renderer: model.renderer, name: block })],
+          commands: [LoadBlockCode({ renderer: page.renderer, name: block })],
         }
       },
       LoadedBlockCode: ({ block, renderer, primary, files }) => {
         if (
           model.page._tag !== 'BlocksIndexPage' ||
           model.page.codeBlocks[block] === undefined ||
-          model.renderer !== renderer
+          model.page.renderer !== renderer
         )
           return { model: model }
         const codeBlocks = {
@@ -410,8 +369,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
         return {
           model: modifyFields(model, {
             route: () => route,
-            renderer: () =>
-              route._tag === 'BlocksStyleX' ? 'stylex' : model.renderer,
+            currentUrl: () => urlToString(url),
             page: () => page,
           }),
           commands: Option.isSome(url.hash)
@@ -672,16 +630,6 @@ export const update = (model: Model, message: Message): UpdateReturn =>
         const nextModel = modifyFields(model, {
           page: () => modifyFields(currentPage, { docs: () => catalogDocs }),
         })
-        if (childMessage._tag === 'ChangedCatalogRenderer')
-          return {
-            model: { ...nextModel, renderer: childMessage.renderer },
-            commands: [
-              ApplyRenderer({ renderer: childMessage.renderer }),
-              ...Command.mapMessages(commands, next =>
-                Message.GotCatalogDocsMessage({ message: next }),
-              ),
-            ],
-          }
         return {
           model: nextModel,
           commands: Command.mapMessages(commands, next =>
@@ -724,7 +672,7 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
         : inactiveBoard,
     toParentMessage: message => Message.GotBoardMessage({ message }),
     when: model =>
-      model.page._tag === 'CreatePage' && model.renderer === 'tailwind',
+      model.page._tag === 'CreatePage' && model.page.renderer === 'tailwind',
   }),
   Subscription.lift(boardStyleXSubscriptions)<Model, Message>({
     toChildModel: model =>
@@ -733,7 +681,7 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
         : inactiveBoardStyleX,
     toParentMessage: message => Message.GotBoardStyleXMessage({ message }),
     when: model =>
-      model.page._tag === 'CreatePage' && model.renderer === 'stylex',
+      model.page._tag === 'CreatePage' && model.page.renderer === 'stylex',
   }),
   Subscription.lift(ComponentCatalog.subscriptions)<Model, Message>({
     toChildModel: model =>
@@ -754,226 +702,12 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
 
 // VIEW
 
-const headerLink = (
-  href: string,
-  label: string,
-  isActive: boolean,
-  className: string,
-  h: HtmlBuilder<Message>,
-): Html => {
-  return h.a(
-    [
-      h.Href(href),
-      h.Class(
-        cn(
-          'text-sm font-medium transition-colors hover:text-foreground',
-          isActive ? 'text-foreground' : 'text-muted-foreground',
-          className,
-        ),
-      ),
-    ],
-    [label],
-  )
-}
-
-const rendererSwitcher = (model: Model, h: HtmlBuilder<Message>): Html =>
-  h.div(
-    [
-      h.Role('group'),
-      h.AriaLabel('Styling engine'),
-      h.Class('flex items-center rounded-md border bg-muted/40 p-0.5'),
-    ],
-    (['tailwind', 'stylex'] as const).map(renderer =>
-      h.button(
-        [
-          h.Type('button'),
-          h.OnClick(Message.ChangedRenderer({ renderer })),
-          h.AriaPressed(model.renderer === renderer ? 'true' : 'false'),
-          h.Class(
-            cn(
-              'min-h-8 rounded-[5px] px-2.5 text-xs font-medium transition-colors focus-visible:ring-2 focus-visible:ring-ring/50',
-              model.renderer === renderer
-                ? 'bg-background text-foreground shadow-xs'
-                : 'text-muted-foreground hover:text-foreground',
-            ),
-          ),
-        ],
-        [renderer === 'tailwind' ? 'Tailwind' : 'StyleX'],
-      ),
-    ),
-  )
-
-const gitHubLink = (h: HtmlBuilder<Message>): Html =>
-  h.a(
-    [
-      h.Href('https://github.com/Potti1234/creaseui'),
-      h.Target('_blank'),
-      h.Rel('noopener noreferrer'),
-      h.AriaLabel('GitHub repository'),
-      h.Title('GitHub repository'),
-      h.Class(
-        'inline-flex size-10 shrink-0 items-center justify-center rounded-md text-foreground outline-none transition-[color,background-color,transform] duration-200 hover:bg-accent hover:text-accent-foreground focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-[0.96]',
-      ),
-    ],
-    [Icon.icon('github', { class: 'size-4' }, h)],
-  )
-
-const themeToggle = (model: Model, h: HtmlBuilder<Message>): Html =>
-  h.button(
-    [
-      h.Type('button'),
-      h.OnClick(Message.ClickedThemeToggle()),
-      h.AriaLabel(
-        model.isDark ? 'Switch to light mode' : 'Switch to dark mode',
-      ),
-      h.Title(model.isDark ? 'Switch to light mode' : 'Switch to dark mode'),
-      h.Class(
-        'group relative inline-flex size-10 shrink-0 items-center justify-center rounded-md text-foreground outline-none transition-[color,background-color,transform] duration-200 hover:bg-accent hover:text-accent-foreground focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-[0.96]',
-      ),
-    ],
-    [
-      h.span(
-        [h.Class('relative size-4')],
-        [
-          Icon.icon(
-            'sun',
-            {
-              class:
-                'theme-toggle-icon absolute inset-0 size-4 scale-100 opacity-100 transition-[scale,opacity] duration-200 ease-[cubic-bezier(0.2,0,0,1)] dark:scale-25 dark:opacity-0',
-            },
-            h,
-          ),
-          Icon.icon(
-            'moon',
-            {
-              class:
-                'theme-toggle-icon absolute inset-0 size-4 scale-25 opacity-0 transition-[scale,opacity] duration-200 ease-[cubic-bezier(0.2,0,0,1)] dark:scale-100 dark:opacity-100',
-            },
-            h,
-          ),
-        ],
-      ),
-    ],
-  )
-
-const header = (model: Model, h: HtmlBuilder<Message>): Html => {
-  const isCharts = model.route._tag === 'Charts'
-
-  return h.header(
-    [h.Class('sticky top-0 z-40 border-b bg-background/95 backdrop-blur')],
-    [
-      h.div(
-        [
-          h.Class(
-            'mx-auto flex h-14 w-full max-w-[1400px] items-center gap-4 px-4 md:gap-6 md:px-8',
-          ),
-        ],
-        [
-          h.a(
-            [h.Href(homePath()), h.Class('text-sm font-semibold')],
-            ['crease/ui'],
-          ),
-          headerLink(
-            componentDocsPath('accordion'),
-            'Docs',
-            model.route._tag === 'ComponentDocs',
-            'hidden sm:inline-flex',
-            h,
-          ),
-          headerLink(
-            createPath(),
-            'Create',
-            model.route._tag === 'Create',
-            'hidden sm:inline-flex',
-            h,
-          ),
-          headerLink(
-            chartsPath('area'),
-            'Charts',
-            isCharts,
-            'hidden sm:inline-flex',
-            h,
-          ),
-          headerLink(
-            blocksIndexPath(),
-            'Blocks',
-            model.route._tag === 'BlocksIndex' ||
-              model.route._tag === 'BlocksStyleX' ||
-              model.route._tag === 'BlocksStyleXTable',
-            'hidden sm:inline-flex',
-            h,
-          ),
-          h.div(
-            [h.Class('ml-auto flex items-center gap-1 sm:gap-2')],
-            [rendererSwitcher(model, h), gitHubLink(h), themeToggle(model, h)],
-          ),
-          h.details(
-            [h.Class('relative sm:hidden')],
-            [
-              h.summary(
-                [
-                  h.AriaLabel('Open site navigation'),
-                  h.Class(
-                    'flex size-10 cursor-pointer list-none items-center justify-center rounded-md hover:bg-accent focus-visible:ring-3 focus-visible:ring-ring/50',
-                  ),
-                ],
-                [Icon.icon('menu', { class: 'size-4' }, h)],
-              ),
-              h.nav(
-                [
-                  h.AriaLabel('Site navigation'),
-                  h.Class(
-                    'absolute top-11 right-0 z-50 grid min-w-44 gap-1 rounded-lg border bg-background p-2 shadow-lg',
-                  ),
-                ],
-                [
-                  headerLink(
-                    componentDocsPath('accordion'),
-                    'Docs',
-                    model.route._tag === 'ComponentDocs',
-                    'rounded-md px-3 py-2 hover:bg-accent',
-                    h,
-                  ),
-                  headerLink(
-                    createPath(),
-                    'Create',
-                    model.route._tag === 'Create',
-                    'rounded-md px-3 py-2 hover:bg-accent',
-                    h,
-                  ),
-                  headerLink(
-                    chartsPath('area'),
-                    'Charts',
-                    isCharts,
-                    'rounded-md px-3 py-2 hover:bg-accent',
-                    h,
-                  ),
-                  headerLink(
-                    blocksIndexPath(),
-                    'Blocks',
-                    model.route._tag === 'BlocksIndex' ||
-                      model.route._tag === 'BlocksStyleX' ||
-                      model.route._tag === 'BlocksStyleXTable',
-                    'rounded-md px-3 py-2 hover:bg-accent',
-                    h,
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
-      ),
-    ],
-  )
-}
-
 /* Page views are plain (model) => Html functions; wrap them once as
    SubmodelViews so h.submodel can embed them with message lifting. */
 const boardView = defineView<Board.Model, Board.Message>(Board.view)
-const boardConstrainedView = defineView<
-  BoardConstrained.Model,
-  BoardConstrained.Message
->(BoardConstrained.view)
+const boardStyleXView = defineView<BoardStyleX.Model, BoardStyleX.Message>(
+  BoardStyleX.view,
+)
 const landingView = defineView<Landing.Model, Landing.Message>(Landing.view)
 const catalogDocsView = defineView<
   ComponentCatalog.Model,
@@ -1011,7 +745,8 @@ const blocksView = (
   h: HtmlBuilder<Message>,
 ): Html => {
   if (model.page._tag !== 'BlockPage') return h.empty
-  const block = resolveBlock(blockId)
+  const resolved = resolveBlock(blockId)
+  const block = resolved === undefined ? undefined : { ...resolved, renderer }
   if (block === undefined) return h.p([], ['Unknown block.'])
   const page = model.page
   if (block.name.startsWith('sidebar-')) {
@@ -1085,7 +820,7 @@ const chartsSectionView = (
 ): Html => {
   if (model.page._tag !== 'ChartsPage') return h.empty
   const page = model.page
-  if (model.renderer === 'stylex') {
+  if (page.renderer === 'stylex') {
     return h.submodel({
       slotId: `charts-stylex-${section}`,
       model: page.styleXCharts,
@@ -1164,51 +899,7 @@ const chartsSectionView = (
   )
 }
 
-const homeView = (h: HtmlBuilder<Message>): Html => {
-  return h.div(
-    [h.Class('mx-auto flex max-w-xl flex-col items-start gap-4 px-8 py-16')],
-    [
-      h.h1([h.Class('text-3xl font-semibold tracking-tight')], ['crease/ui']),
-      h.p(
-        [h.Class('text-muted-foreground')],
-        ['CreaseUI components built on Foldkit UI. Pick a demo:'],
-      ),
-      h.ul(
-        [h.Class('list-disc pl-5 text-sm leading-7')],
-        [
-          h.li(
-            [],
-            [
-              h.a(
-                [h.Href(createPath()), h.Class('underline underline-offset-4')],
-                ['/create — the CreaseUI preview board'],
-              ),
-            ],
-          ),
-          h.li(
-            [],
-            [
-              h.a(
-                [
-                  h.Href(chartsPath('area')),
-                  h.Class('underline underline-offset-4'),
-                ],
-                ['/charts — CreaseUI charts rendered with Apache ECharts'],
-              ),
-            ],
-          ),
-        ],
-      ),
-    ],
-  )
-}
-
-const notFoundView = (path: string, h: HtmlBuilder<Message>): Html => {
-  return h.div(
-    [h.Class('mx-auto max-w-xl px-8 py-16')],
-    [h.p([h.Class('text-muted-foreground')], [`No page at ${path}.`])],
-  )
-}
+const notFoundView = Chrome.notFound
 
 /* Each page subtree is KEYED by route (and by charts section). Without keys,
    snabbdom patches the next page into the previous page's DOM in place; since
@@ -1237,7 +928,7 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
           : keyed('page-not-found', notFoundView('/', h)),
       Create: () =>
         model.page._tag === 'CreatePage'
-          ? model.renderer === 'tailwind'
+          ? model.page.renderer === 'tailwind'
             ? keyed(
                 'page-create-tailwind',
                 h.submodel({
@@ -1253,17 +944,16 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
                 h.submodel({
                   slotId: 'create-board-stylex',
                   model: model.page.styleXBoard,
-                  view: boardConstrainedView,
-                  toParentMessage: (
-                    message: BoardConstrained.Message,
-                  ): Message => Message.GotBoardStyleXMessage({ message }),
+                  view: boardStyleXView,
+                  toParentMessage: (message: BoardStyleX.Message): Message =>
+                    Message.GotBoardStyleXMessage({ message }),
                 }),
               )
           : keyed('page-not-found', notFoundView(createPath(), h)),
       Charts: ({ section }) =>
         isChartSection(section)
           ? keyed(
-              `page-charts-${section}-${model.page._tag === 'ChartsPage' ? model.renderer : 'missing'}`,
+              `page-charts-${section}-${model.page._tag === 'ChartsPage' ? model.page.renderer : 'missing'}`,
               chartsSectionView(model, section, h),
             )
           : keyed('page-not-found', notFoundView(`/charts/${section}`, h)),
@@ -1274,7 +964,6 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
               BlocksIndexPage.view(
                 {
                   ...model.page,
-                  renderer: model.renderer,
                   isDark: model.isDark,
                   onCategory: category =>
                     Message.ChangedBlocksCategory({ category }),
@@ -1301,7 +990,6 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
               BlocksIndexPage.view(
                 {
                   ...model.page,
-                  renderer: model.renderer,
                   isDark: model.isDark,
                   onCategory: category =>
                     Message.ChangedBlocksCategory({ category }),
@@ -1349,7 +1037,7 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
                 viewInputs: {
                   slug: ComponentCatalog.canonicalComponentSlug(component),
                   dark: model.isDark,
-                  renderer: model.renderer,
+                  renderer,
                 },
                 toParentMessage: (message: ComponentCatalog.Message): Message =>
                   Message.GotCatalogDocsMessage({ message }),
@@ -1377,6 +1065,20 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => {
     title,
     body: isFullPage
       ? h.div([], [pageView(model, h)])
-      : h.div([], [header(model, h), pageView(model, h)]),
+      : h.div(
+          [],
+          [
+            Chrome.header(
+              {
+                route: model.route,
+                isDark: model.isDark,
+                onThemeToggle: Message.ClickedThemeToggle(),
+                counterpartHref: counterpartUrl(new URL(model.currentUrl)),
+              },
+              h,
+            ),
+            pageView(model, h),
+          ],
+        ),
   }
 }

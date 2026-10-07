@@ -7,16 +7,13 @@ import { Command } from 'foldkit'
 import { loginArtwork } from '@/stylex/composition/login-artwork'
 import { badge } from '@/stylex/badge'
 import { button } from '@/stylex/button'
-import * as TableState from '@/lib/tanstack-table-state'
+import * as TableState from '@/lib/data-table-state'
 import { fieldSeparator } from '@/stylex/field'
 import { input } from '@/stylex/input'
 import { icon } from '@/stylex/composition/icon'
 import * as ECharts from '@/stylex/integrations/echarts'
 import * as RadioGroup from '@/stylex/radio-group'
-import {
-  tanStackDataTable,
-  type TanStackDataTableColumn,
-} from '@/stylex/tanstack/data-table'
+import { dataTable, type DataTableColumn } from '@/stylex/data-table'
 import {
   box,
   dashboardShell,
@@ -130,20 +127,7 @@ export const init = (): Model => ({
   password: '',
   query: '',
   radioGroup: RadioGroup.init({ id: 'checkout-delivery' }),
-  table: TableState.init({
-    columnOrder: [
-      'select',
-      'header',
-      'type',
-      'status',
-      'target',
-      'reviewer',
-      'actions',
-    ],
-    pageSize: 10,
-    pinnedColumnIds: [],
-    sorting: [],
-  }),
+  table: TableState.init(10),
 })
 type UpdateReturn = Update.Return<Model, Message>
 export const update = (model: Model, message: Message): UpdateReturn => {
@@ -324,19 +308,22 @@ const dashboardRows: ReadonlyArray<DashboardRow> = [
 
 const dashboardColumns = (
   h: HtmlBuilder<Message>,
-): ReadonlyArray<TanStackDataTableColumn<DashboardRow, Message>> => [
-  { id: 'header', header: 'Header', value: row => row.header },
+): ReadonlyArray<DataTableColumn<DashboardRow>> => [
   {
-    id: 'type',
+    key: 'header',
+    header: 'Header',
+    cell: row => row.header,
+    sortValue: row => row.header,
+  },
+  {
+    key: 'type',
     header: 'Section Type',
-    value: row => row.type,
     cell: row =>
       text({ children: [row.type], tone: 'secondary', variant: 'caption' }, h),
   },
   {
-    id: 'status',
+    key: 'status',
     header: 'Status',
-    value: row => row.status,
     cell: row =>
       badge(
         {
@@ -346,12 +333,16 @@ const dashboardColumns = (
         h,
       ),
   },
-  { id: 'target', header: 'Target', value: row => row.target },
-  { id: 'reviewer', header: 'Reviewer', value: row => row.reviewer },
   {
-    id: 'actions',
+    key: 'target',
+    header: 'Target',
+    cell: row => String(row.target),
+    sortValue: row => row.target,
+  },
+  { key: 'reviewer', header: 'Reviewer', cell: row => row.reviewer },
+  {
+    key: 'actions',
     header: '',
-    value: () => '',
     cell: () =>
       button(
         {
@@ -363,21 +354,16 @@ const dashboardColumns = (
         },
         h,
       ),
-    canGroup: false,
-    canHide: false,
-    canSort: false,
+    isHideable: false,
   },
 ]
 
 const dashboardTable = (model: Model, h: HtmlBuilder<Message>): Html =>
-  tanStackDataTable<DashboardRow, Message>(
+  dataTable<DashboardRow, Message>(
     {
       ariaLabel: 'Document sections',
       columns: dashboardColumns(h),
-      enableColumnOrder: false,
       enableColumnVisibility: true,
-      enableDensity: false,
-      enableRowPinning: false,
       enableRowSelection: true,
       filterPlaceholder: 'Filter sections…',
       model: model.table,

@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import { Progress as ProgressPrimitive } from '@foldkit/ui'
 import type { Html, HtmlBuilder } from 'foldkit/html'
@@ -271,6 +272,7 @@ export const circularProgress = <Msg>(
                     h.ViewBox(`0 0 ${diameter} ${diameter}`),
                     h.Class(
                       className(
+                        reset.svg,
                         styles.svg,
                         isIndeterminate
                           ? styles.svgIndeterminate

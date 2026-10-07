@@ -147,7 +147,7 @@ const update = (
   }
 }
 
-type SonnerFn = <Msg>(
+type ToastFn = <Msg>(
   props: {
     model: ToastBehavior.Model
     toParentMessage: (message: ToastBehavior.Message) => Msg
@@ -158,7 +158,7 @@ type SonnerFn = <Msg>(
   h: HtmlBuilder<Msg>,
 ) => Html
 
-type ToastModule = Readonly<{ sonner: SonnerFn }>
+type ToastModule = Readonly<{ toast: ToastFn }>
 
 const DEFAULT: ToastBehavior.ShowInput = ToastBehavior.plain({
   title: 'Saved',
@@ -247,7 +247,7 @@ const makeView =
         triggerButton('dismiss first', { _tag: 'ClickedDismissFirst' }, h),
         triggerButton('dismiss unknown', { _tag: 'ClickedDismissUnknown' }, h),
         triggerButton('dismiss all', { _tag: 'ClickedDismissAll' }, h),
-        Toast.sonner(
+        Toast.toast(
           {
             model: model.toasts,
             toParentMessage: message => ({ _tag: 'GotToastMessage', message }),
@@ -399,8 +399,8 @@ const dismissTimerFires =
     )(simulation)
   }
 
-const toastLocator = Scene.selector('[data-slot="sonner-toast"]')
-const allToasts = Scene.all.selector('[data-slot="sonner-toast"]')
+const toastLocator = Scene.selector('[data-slot="toast-entry"]')
+const allToasts = Scene.all.selector('[data-slot="toast-entry"]')
 const notificationsRegion = Scene.role('region', { name: 'Notifications' })
 const dismissButton = Scene.role('button', { name: 'Dismiss notification' })
 const actionButton = Scene.role('button', { name: 'Undo' })
@@ -512,7 +512,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
             [
               triggerButton('add a', { _tag: 'AddA' }, h),
               triggerButton('dismiss all b', { _tag: 'DismissAllB' }, h),
-              Toast.sonner(
+              Toast.toast(
                 {
                   model: model.a,
                   toParentMessage: message => ({ _tag: 'GotA', message }),
@@ -520,7 +520,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
                 },
                 h,
               ),
-              Toast.sonner(
+              Toast.toast(
                 {
                   model: model.b,
                   toParentMessage: message => ({ _tag: 'GotB', message }),
@@ -908,7 +908,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           Scene.given(initialModel()),
           Scene.expect(notificationsRegion).toExist(),
           Scene.expect(notificationsRegion).toHaveAttr('aria-live', 'polite'),
-          Scene.expect(notificationsRegion).toHaveAttr('data-slot', 'sonner'),
+          Scene.expect(notificationsRegion).toHaveAttr('data-slot', 'toast'),
           Scene.expect(notificationsRegion).toHaveAttr(
             'data-position',
             'bottom-right',

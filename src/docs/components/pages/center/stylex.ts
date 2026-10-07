@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -47,9 +48,12 @@ const showcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
             gap: 2,
             hAlign: 'center',
             children: [
-              h.h4([h.Class(className(styles.heading))], ['Centered content']),
+              h.h4(
+                [h.Class(className(reset.text, styles.heading))],
+                ['Centered content'],
+              ),
               h.p(
-                [h.Class(className(styles.body))],
+                [h.Class(className(reset.text, styles.body))],
                 ['Horizontally and vertically aligned.'],
               ),
             ],
@@ -134,11 +138,11 @@ const insideCardView = <Msg>(h: HtmlBuilder<Msg>): Html =>
                         children: [
                           icon('inbox', { class: className(styles.icon) }, h),
                           h.p(
-                            [h.Class(className(styles.heading))],
+                            [h.Class(className(reset.text, styles.heading))],
                             ['No messages yet'],
                           ),
                           h.p(
-                            [h.Class(className(styles.supporting))],
+                            [h.Class(className(reset.text, styles.supporting))],
                             ['Messages from your team will appear here.'],
                           ),
                         ],

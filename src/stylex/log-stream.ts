@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import { Command, type Update } from 'foldkit'
 import { Option, Schema as S } from 'effect'
 import * as stylex from '@stylexjs/stylex'
@@ -217,10 +218,16 @@ const styles = stylex.create({
     width: '100%',
   },
   rowButtonHover: {
-    backgroundColor: { default: null, ':hover': complexTokens.mutedSurface },
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': complexTokens.mutedSurface,
+    },
   },
   rowButtonHoverTerminal: {
-    backgroundColor: { default: null, ':hover': logStreamTerminalInk.hover },
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': logStreamTerminalInk.hover,
+    },
   },
   timestamp: {
     color: tokens.mutedForeground,
@@ -473,6 +480,7 @@ export const logStream = <Msg>(
           ),
           h.Class(
             className(
+              reset.button,
               styles.row,
               rowVariant,
               styles.rowButton,
@@ -562,7 +570,11 @@ export const logStream = <Msg>(
                 h.Type('button'),
                 h.OnClick(props.toParentMessage(Message.ClickedJumpToLatest())),
                 h.Class(
-                  className(styles.jump, isTerminal && styles.jumpTerminal),
+                  className(
+                    reset.button,
+                    styles.jump,
+                    isTerminal && styles.jumpTerminal,
+                  ),
                 ),
               ],
               ['Jump to latest ↓'],

@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import { Option } from 'effect'
 import * as FoldkitCalendar from 'foldkit/calendar'
 import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
@@ -240,6 +241,7 @@ export const datePicker = <Msg>(
         ? {}
         : { className: className(props.layoutStyle) }),
       triggerClassName: cn(
+        reset.button,
         TRIGGER_CLASS,
         styles.trigger,
         isEmpty ? styles.empty : undefined,
@@ -298,7 +300,7 @@ export const datePicker = <Msg>(
               ? []
               : [h.AriaDescribedBy(errorId)]),
             h.Placeholder('YYYY-MM-DD'),
-            h.Class(className(styles.input)),
+            h.Class(className(reset.input, styles.input)),
           ]),
           picker,
         ],
@@ -310,7 +312,7 @@ export const datePicker = <Msg>(
               [
                 h.Id(errorId),
                 h.Role('alert'),
-                h.Class(className(styles.error)),
+                h.Class(className(reset.text, styles.error)),
               ],
               [props.parseError],
             ),

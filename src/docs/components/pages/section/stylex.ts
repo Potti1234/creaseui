@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -30,15 +31,15 @@ const styles = stylex.create({
 })
 
 const boldBody = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class(className(styles.boldBody))], [text])
+  h.p([h.Class(className(reset.text, styles.boldBody))], [text])
 const supporting = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class(className(styles.supporting))], [text])
+  h.p([h.Class(className(reset.text, styles.supporting))], [text])
 const bodyMuted = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class(className(styles.bodyMuted))], [text])
+  h.p([h.Class(className(reset.text, styles.bodyMuted))], [text])
 const body = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class(className(styles.body))], [text])
+  h.p([h.Class(className(reset.text, styles.body))], [text])
 const display = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class(className(styles.display))], [text])
+  h.p([h.Class(className(reset.text, styles.display))], [text])
 
 const variantsView = <Msg>(h: HtmlBuilder<Msg>): Html => {
   const inner = (title: string, desc: string): Html =>

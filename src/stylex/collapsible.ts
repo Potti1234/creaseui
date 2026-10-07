@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import { Disclosure as DisclosurePrimitive } from '@foldkit/ui'
@@ -7,18 +8,66 @@ import type { StaticStyles } from '@stylexjs/stylex'
 import type { ComponentLayoutStyle } from './contracts'
 import { className } from './style'
 import { interactionTokens } from './interaction-tokens.stylex.const'
+import { complexTokens } from './complex-tokens.stylex'
+import { tokens } from './tokens.stylex'
+import { sidebarScope } from './sidebar.markers.stylex'
 
 const styles = stylex.create({
   content: { overflow: 'hidden' },
   root: { display: 'block' },
   trigger: { cursor: interactionTokens.cursorAction },
+  /* TW triggerClass: sidebarMenuButtonVariants() — full menu-button look. */
   sidebarTrigger: {
     padding: '0.5rem',
+    borderRadius: tokens.controlRadius,
+    gap: '0.5rem',
+    overflow: 'hidden',
     alignItems: 'center',
+    backgroundColor: {
+      default: tokens.transparent,
+      ':hover': complexTokens.sidebarAccent,
+      ':active': complexTokens.sidebarAccent,
+    },
+    color: {
+      default: complexTokens.sidebarForeground,
+      ':hover': complexTokens.sidebarAccentForeground,
+    },
     display: 'flex',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+    outlineStyle: 'none',
     textAlign: 'left',
-    minHeight: '2rem',
-    width: '100%',
+    whiteSpace: 'nowrap',
+    height: '2rem',
+    width: {
+      default: '100%',
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: '2rem',
+    },
+  },
+  /* TW GROUP_LABEL_CLASS (sidebar-02): group-label styled collapsible trigger. */
+  sidebarLabelTrigger: {
+    borderRadius: tokens.controlRadius,
+    paddingInline: '0.5rem',
+    alignItems: 'center',
+    backgroundColor: {
+      default: tokens.transparent,
+      ':hover': complexTokens.sidebarAccent,
+    },
+    color: {
+      default: complexTokens.sidebarForeground,
+      ':hover': complexTokens.sidebarAccentForeground,
+    },
+    display: 'flex',
+    flexShrink: 0,
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    lineHeight: '1.25rem',
+    outlineStyle: 'none',
+    textAlign: 'left',
+    height: '2rem',
+    /* TW GROUP_LABEL_CLASS is content-width ('flex h-8 shrink-0 ...' with
+       no w-full); TW-15 calendar labels pass 'w-full' via layoutStyle. */
+    width: 'fit-content',
   },
 })
 
@@ -38,7 +87,7 @@ export type CollapsibleProps<Msg> = Readonly<{
   content: Html | string
   isDisabled?: boolean
   ariaLabel?: string
-  variant?: 'default' | 'sidebar'
+  variant?: 'default' | 'sidebar' | 'sidebarLabel'
   layoutStyle?: ComponentLayoutStyle
   triggerLayoutStyle?: ComponentLayoutStyle
   contentLayoutStyle?: ComponentLayoutStyle
@@ -71,8 +120,11 @@ export const collapsible = <Msg>(
                 h.DataAttribute('slot', 'collapsible-trigger'),
                 h.Class(
                   cn(
+                    reset.button,
                     styles.trigger,
                     props.variant === 'sidebar' && styles.sidebarTrigger,
+                    props.variant === 'sidebarLabel' &&
+                      styles.sidebarLabelTrigger,
                     props.triggerLayoutStyle,
                   ),
                 ),

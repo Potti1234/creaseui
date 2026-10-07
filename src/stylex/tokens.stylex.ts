@@ -3,6 +3,7 @@ import * as stylex from '@stylexjs/stylex'
 export const tokens = stylex.defineVars({
   background: 'var(--background)',
   foreground: 'var(--foreground)',
+  controlPlaceholder: 'color-mix(in oklab, currentColor 50%, transparent)',
   card: 'var(--card)',
   cardForeground: 'var(--card-foreground)',
   primary: 'var(--primary)',
@@ -41,7 +42,11 @@ export const tokens = stylex.defineVars({
   outlineHover: 'var(--stylex-outline-hover)',
   primaryHover: 'color-mix(in oklab, var(--primary) 90%, transparent)',
   secondaryHover: 'color-mix(in oklab, var(--secondary) 80%, transparent)',
-  border: 'var(--border)',
+  /* Tailwind's @theme-inline build bakes --color-* to the base-theme
+     literals: the bare border color (from `* { border-color: var(--color-border) }`)
+     resolves at :root, so it does not follow the board preset. `border-input`,
+     `ring-ring`, and `border-border` emit raw vars and stay preset-scoped. */
+  border: 'var(--color-border)',
   input: 'var(--input)',
   ring: 'var(--ring)',
   radius: 'var(--radius)',
@@ -49,6 +54,9 @@ export const tokens = stylex.defineVars({
   cardRadius: 'calc(var(--radius) + 4px)',
   focusRingShadow:
     '0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)',
+  /* TW 'focus:ring-2 focus:ring-offset-2 focus:ring-ring' — 2px
+     background-offset then a 2px full-alpha ring. */
+  focusRingOffsetShadow: '0 0 0 2px var(--background), 0 0 0 4px var(--ring)',
   destructiveRingShadow:
     '0 0 0 3px color-mix(in oklab, var(--destructive) 20%, transparent)',
   shadowSm: '0 1px 2px rgb(0 0 0 / 0.05)',
@@ -56,4 +64,6 @@ export const tokens = stylex.defineVars({
   shadowNone: 'none',
   transparent: 'transparent',
   backdrop: 'rgb(0 0 0 / 0.5)',
+  /* shadcn base drawer overlay — 'bg-black/10'. */
+  drawerBackdrop: 'rgb(0 0 0 / 0.1)',
 })

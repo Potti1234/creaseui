@@ -9,7 +9,6 @@ import * as StyleXInput from '@/stylex/input'
 import * as StyleXLabel from '@/stylex/label'
 import * as StyleXNativeSelect from '@/stylex/native-select'
 import * as StyleXSeparator from '@/stylex/separator'
-import { className as stylexClassName } from '@/stylex/style'
 import * as TailwindInput from '@/ui/input'
 import * as TailwindLabel from '@/ui/label'
 import * as TailwindNativeSelect from '@/ui/native-select'
@@ -995,7 +994,7 @@ verifyRenderer(
   },
   {
     props: { layoutStyle: stylexCustomStyle.custom },
-    expectedClass: stylexClassName(stylexCustomStyle.custom),
+    expectedClass: stylex.props(stylexCustomStyle.custom).className ?? '',
     nativeSelectTarget: 'native-select-wrapper',
   },
 )

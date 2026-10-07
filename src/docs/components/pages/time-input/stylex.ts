@@ -1,3 +1,6 @@
+import { reset } from '@/stylex/reset'
+import { className } from '@/stylex/style'
+import { previewLayout } from '@/docs/components/preview-layout.stylex'
 import { Option, Schema as S } from 'effect'
 import { Command } from 'foldkit'
 import type { Html, HtmlBuilder } from 'foldkit/html'
@@ -104,7 +107,7 @@ export const timeInputStylexPreviewProgram = definePreviewProgram<
     const fixture = timeInputFixtures[index] ?? timeInputFixtures[0]
     return h.div(
       [
-        h.Class('flex w-full max-w-md flex-col gap-3'),
+        h.Class(className(previewLayout.compactForm)),
         h.Style({ maxWidth: `${String(fixture.maxWidth)}px` }),
       ],
       [
@@ -112,7 +115,7 @@ export const timeInputStylexPreviewProgram = definePreviewProgram<
           ? []
           : [
               h.p(
-                [h.Class('text-xs text-muted-foreground')],
+                [h.Class(className(reset.text, previewLayout.caption))],
                 [fixture.heading],
               ),
             ]),
@@ -147,13 +150,18 @@ export const timeInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   }
   return h.div(
     [
-      h.Class('flex w-full max-w-md flex-col gap-3'),
+      h.Class(className(previewLayout.compactForm)),
       h.Style({ maxWidth: `${String(fixture.maxWidth)}px` }),
     ],
     [
       ...(fixture.heading === undefined
         ? []
-        : [h.p([h.Class('text-xs text-muted-foreground')], [fixture.heading])]),
+        : [
+            h.p(
+              [h.Class(className(reset.text, previewLayout.caption))],
+              [fixture.heading],
+            ),
+          ]),
       ...previewModel.inputs.map((entry, entryIndex) => {
         const fixtureEntry = fixture.entries[entryIndex] ?? fixture.entries[0]!
         return TimeInput.timeInput(

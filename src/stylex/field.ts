@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import { Fieldset as FieldsetPrimitive } from '@foldkit/ui'
@@ -18,7 +19,7 @@ import {
   fieldVerticalScope,
 } from './field.markers.stylex'
 import { foundationTokens } from './foundations-tokens.stylex'
-import { className } from './style'
+import { className, type Marker } from './style'
 import { tokens } from './tokens.stylex'
 export type { ControlFieldParts, FieldError } from '@/lib/field'
 
@@ -149,7 +150,7 @@ const styles = stylex.create({
       ':has(>[data-slot=field])': 1,
     },
     backgroundColor: {
-      default: null,
+      default: 'transparent',
       ':has([data-checked])': foundationTokens.primaryFaint,
     },
     flexDirection: {
@@ -236,6 +237,7 @@ const styles = stylex.create({
   },
   rule: {
     inset: 0,
+    /* TW's separator() emits bg-border (var(--border), preset-scoped). */
     backgroundColor: tokens.border,
     flexShrink: 0,
     position: 'absolute',
@@ -290,7 +292,7 @@ export const fieldSet = <Msg>(p: FieldSetProps, h: HtmlBuilder<Msg>): Html => {
             [
               ...fieldset,
               h.DataAttribute('slot', 'field-set'),
-              h.Class(className(styles.set, p.layoutStyle)),
+              h.Class(className(reset.fieldset, styles.set, p.layoutStyle)),
             ],
             [...p.children],
           ),
@@ -302,7 +304,7 @@ export const fieldSet = <Msg>(p: FieldSetProps, h: HtmlBuilder<Msg>): Html => {
     [
       h.DataAttribute('slot', 'field-set'),
       ...(p.isDisabled === undefined ? [] : [h.Disabled(p.isDisabled)]),
-      h.Class(className(styles.set, p.layoutStyle)),
+      h.Class(className(reset.fieldset, styles.set, p.layoutStyle)),
     ],
     [...p.children],
   )
@@ -320,6 +322,7 @@ export const fieldLegend = <Msg>(
       h.DataAttribute('variant', p.variant ?? 'legend'),
       h.Class(
         className(
+          reset.text,
           styles.legend,
           p.variant === 'label' && styles.legendLabel,
           p.layoutStyle,
@@ -340,26 +343,18 @@ export const fieldGroup = <Msg>(
       ...(p.variant === undefined
         ? []
         : [h.DataAttribute('variant', p.variant)]),
-      h.Class(
-        className(
-          styles.group,
-          // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
-          fieldGroupScope as unknown as StaticStyles,
-          p.layoutStyle,
-        ),
-      ),
+      h.Class(className(styles.group, fieldGroupScope, p.layoutStyle)),
     ],
     [...p.children],
   )
 const orientationMarker = (
   orientation: NonNullable<FieldVariants['orientation']>,
-): StaticStyles =>
-  // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
-  (orientation === 'horizontal'
+): Marker =>
+  orientation === 'horizontal'
     ? fieldHorizontalScope
     : orientation === 'responsive'
       ? fieldResponsiveScope
-      : fieldVerticalScope) as unknown as StaticStyles
+      : fieldVerticalScope
 export const fieldVariants = (o: FieldVariants = {}): string =>
   className(
     styles.field,
@@ -385,8 +380,7 @@ export const controlField = <Msg>(
               p.error !== undefined ||
               fieldErrorMessages(p.errors).length > 0) &&
               styles.invalid,
-            // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
-            p.isDisabled && (fieldDisabledScope as unknown as StaticStyles),
+            p.isDisabled && fieldDisabledScope,
             orientationMarker(orientation),
             p.layoutStyle,
           ),
@@ -397,9 +391,9 @@ export const controlField = <Msg>(
           className(styles.label, styles.controlLabel, styles.labelDisabled),
         ),
       ],
-      description: [h.Class(className(styles.description))],
-      error: [h.Class(className(styles.error))],
-      errorList: [h.Class(className(styles.errorList))],
+      description: [h.Class(className(reset.text, styles.description))],
+      error: [h.Class(className(reset.text, styles.error))],
+      errorList: [h.Class(className(reset.list, styles.errorList))],
     },
     h,
   )
@@ -426,8 +420,7 @@ export const field = <Msg>(p: FieldProps, h: HtmlBuilder<Msg>): Html => {
           styles.field,
           styles[orientation] as StaticStyles,
           p.isInvalid && styles.invalid,
-          // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
-          p.isDisabled && (fieldDisabledScope as unknown as StaticStyles),
+          p.isDisabled && fieldDisabledScope,
           orientationMarker(orientation),
           p.layoutStyle,
         ),
@@ -460,8 +453,7 @@ export const fieldLabel = <Msg>(
           styles.label,
           styles.fieldLabel,
           styles.labelDisabled,
-          // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
-          fieldLabelScope as unknown as StaticStyles,
+          fieldLabelScope,
           p.weight === 'normal' && styles.fontNormal,
           p.layoutStyle,
         ),
@@ -486,7 +478,12 @@ export const fieldDescription = <Msg>(
       h.DataAttribute('slot', 'field-description'),
       ...(p.id === undefined ? [] : [h.Id(p.id)]),
       h.Class(
-        className(styles.description, styles.descriptionSpacing, p.layoutStyle),
+        className(
+          reset.text,
+          styles.description,
+          styles.descriptionSpacing,
+          p.layoutStyle,
+        ),
       ),
     ],
     [...p.children],
@@ -549,7 +546,7 @@ export const fieldError = <Msg>(
         ? [messages[0] ?? '']
         : [
             h.ul(
-              [h.Class(className(styles.errorList))],
+              [h.Class(className(reset.list, styles.errorList))],
               messages.map(message => h.li([], [message])),
             ),
           ]

@@ -11,6 +11,7 @@ import { overlayStyles } from './overlay-tokens.stylex'
 import type { ComponentLayoutStyle } from './contracts'
 import { themedAnchor } from './overlay-boundary'
 import { className } from './style'
+import { reset } from './reset'
 
 const styles = stylex.create({
   contents: { display: 'contents' },
@@ -214,7 +215,7 @@ const renderCommand = <Item extends string, Msg>(
           ),
         }
       },
-      inputClassName: className(INPUT_CLASS),
+      inputClassName: className(reset.input, INPUT_CLASS),
       inputAttributes: childAttributes([
         hc.DataAttribute('slot', 'command-input'),
       ]),
@@ -226,14 +227,14 @@ const renderCommand = <Item extends string, Msg>(
         hc.DataAttribute('slot', 'command-input-wrapper'),
       ]),
       buttonContent: Icon.search({ class: className(overlayStyles.icon) }, h),
-      buttonClassName: className(SEARCH_BUTTON_CLASS),
+      buttonClassName: className(reset.button, SEARCH_BUTTON_CLASS),
       buttonAttributes: childAttributes([hc.AriaLabel('Toggle command list')]),
       openOnFocus: true,
       itemsClassName: className(CONTENT_CLASS),
       itemsAttributes: childAttributes([
         hc.DataAttribute('slot', 'command-list'),
       ]),
-      itemsScrollClassName: className(LIST_CLASS),
+      itemsScrollClassName: className(reset.list, LIST_CLASS),
       backdropClassName: className(BACKDROP_CLASS),
       className: cn(ROOT_CLASS, props.layoutStyle),
       attributes: childAttributes([hc.DataAttribute('slot', 'command')]),

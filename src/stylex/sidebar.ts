@@ -6,6 +6,8 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as Icon from '@/lib/icon'
 import type { ComponentLayoutStyle } from './contracts'
 import { className } from './style'
+import { reset } from './reset'
+import { sidebarScope } from './sidebar.markers.stylex'
 import { complexTokens } from './complex-tokens.stylex'
 import { foundationTokens } from './foundations-tokens.stylex'
 import { tokens } from './tokens.stylex'
@@ -37,7 +39,10 @@ const styles = stylex.create({
       default: complexTokens.sidebarForeground,
       ':hover': complexTokens.sidebarAccentForeground,
     },
-    display: 'flex',
+    display: {
+      default: 'flex',
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: 'none',
+    },
     justifyContent: 'center',
     outlineStyle: 'none',
     position: 'absolute',
@@ -61,7 +66,10 @@ const styles = stylex.create({
     paddingInline: '0.25rem',
     alignItems: 'center',
     color: complexTokens.sidebarForeground,
-    display: 'flex',
+    display: {
+      default: 'flex',
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: 'none',
+    },
     fontSize: '0.75rem',
     fontVariantNumeric: 'tabular-nums',
     fontWeight: 500,
@@ -120,8 +128,22 @@ const styles = stylex.create({
     fontSize: '0.75rem',
     fontWeight: 500,
     lineHeight: '1rem',
+    opacity: {
+      default: 1,
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: 0,
+    },
     outlineStyle: 'none',
+    transitionDuration: {
+      default: interactionTokens.motionModerate,
+      '@media (prefers-reduced-motion: reduce)': interactionTokens.motionNone,
+    },
+    transitionProperty: 'margin, opacity',
     height: '2rem',
+    marginTop: {
+      default: 0,
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]:
+        '-2rem',
+    },
   },
   header: {
     padding: '0.5rem',
@@ -196,6 +218,8 @@ const styles = stylex.create({
     minWidth: 0,
     width: '100%',
   },
+  /* TW sidebar-04 'gap-2' menu override. */
+  menuLoose: { gap: '0.5rem' },
   menuAction: {
     padding: 0,
     borderRadius: tokens.controlRadius,
@@ -205,7 +229,10 @@ const styles = stylex.create({
       ':hover': complexTokens.sidebarAccent,
     },
     color: complexTokens.sidebarForeground,
-    display: 'flex',
+    display: {
+      default: 'flex',
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: 'none',
+    },
     justifyContent: 'center',
     outlineStyle: 'none',
     position: 'absolute',
@@ -218,7 +245,12 @@ const styles = stylex.create({
     opacity: { default: 0, ':focus-visible': 1, ':hover': 1 },
   },
   menuButton: {
-    padding: '0.5rem',
+    padding: {
+      default: '0.5rem',
+      /* TW 'group-data-[collapsible=icon]:p-0!' — icon-collapsed buttons
+         go flush so their size-8 box is centered content. */
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: 0,
+    },
     borderRadius: tokens.controlRadius,
     gap: '0.5rem',
     overflow: 'hidden',
@@ -233,22 +265,51 @@ const styles = stylex.create({
       ':hover': complexTokens.sidebarAccentForeground,
     },
     display: 'flex',
+    justifyContent: {
+      default: null,
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]:
+        'center',
+    },
     outlineStyle: 'none',
+    /* TW 'group-has-data-[sidebar=menu-action]/menu-item:pr-8' — buttons
+       leave room for a trailing menu-action button. */
+    paddingInlineEnd: {
+      default: null,
+      // eslint-disable-next-line @stylexjs/no-lookahead-selectors -- reason: TW's group-has rule is itself :has() sugar; there is no ancestor alternative to selecting the button that precedes the action.
+      [stylex.when.siblingAfter('[data-sidebar="menu-action"]', sidebarScope)]:
+        '2rem',
+    },
     textAlign: 'left',
+    transitionDuration: {
+      default: interactionTokens.motionModerate,
+      '@media (prefers-reduced-motion: reduce)': interactionTokens.motionNone,
+    },
     transitionProperty: 'width, height, padding',
-    width: '100%',
+    whiteSpace: 'nowrap',
+    width: {
+      default: '100%',
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: '2rem',
+    },
   },
   menuButtonActive: {
     backgroundColor: complexTokens.sidebarAccent,
     color: complexTokens.sidebarAccentForeground,
     fontWeight: 500,
   },
+  menuButtonMedium: { fontWeight: 500 },
   menuButtonDefault: {
     fontSize: '0.875rem',
     lineHeight: '1.25rem',
     height: '2rem',
   },
-  menuButtonLg: { fontSize: '0.875rem', lineHeight: '1.25rem', height: '3rem' },
+  menuButtonLg: {
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+    height: {
+      default: '3rem',
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: '2rem',
+    },
+  },
   menuButtonOutline: {
     backgroundColor: {
       default: tokens.background,
@@ -259,15 +320,42 @@ const styles = stylex.create({
       ':hover': complexTokens.sidebarAccentRing,
     },
   },
+  /* Mirrors the blocks demos' `bg-primary text-primary-foreground
+     hover:bg-primary/90 hover:text-primary-foreground` menu-button classes:
+     primary colors on the default (normal-weight) button, not Tailwind's
+     font-semibold `primary` variant which no demo uses. */
   menuButtonPrimary: {
-    backgroundColor: { default: tokens.primary, ':hover': tokens.primary },
+    backgroundColor: {
+      default: tokens.primary,
+      ':hover': tokens.primaryHover,
+    },
     color: {
       default: tokens.primaryForeground,
       ':hover': tokens.primaryForeground,
     },
-    fontWeight: 600,
   },
-  menuButtonSm: { fontSize: '0.75rem', lineHeight: '1rem', height: '1.75rem' },
+  menuButtonSm: {
+    fontSize: '0.75rem',
+    lineHeight: '1rem',
+    height: {
+      default: '1.75rem',
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: '2rem',
+    },
+  },
+  menuLabel: {
+    overflow: 'hidden',
+    opacity: {
+      default: 1,
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: 0,
+    },
+    textOverflow: 'ellipsis',
+    transitionDuration: {
+      default: interactionTokens.motionModerate,
+      '@media (prefers-reduced-motion: reduce)': interactionTokens.motionNone,
+    },
+    transitionProperty: 'opacity',
+    whiteSpace: 'nowrap',
+  },
   menuItem: { position: 'relative' },
   mobile: {
     backgroundColor: complexTokens.sidebar,
@@ -369,8 +457,9 @@ const styles = stylex.create({
     top: 0,
     width: 'var(--sidebar-width)',
   },
-  sidebarBelowHeader: { height: 'calc(100svh - 4rem)', top: '4rem' },
-  wrapperBelowHeader: { minHeight: 'calc(100svh - 4rem)' },
+  /* TW-16 site header is 'h-(--header-height)' = 3.5rem. */
+  sidebarBelowHeader: { height: 'calc(100svh - 3.5rem)', top: '3.5rem' },
+  wrapperBelowHeader: { minHeight: 'calc(100svh - 3.5rem)' },
   sidebarContainerContained: { position: 'absolute', height: '100%' },
   sidebarContainerFloating: { padding: '0.5rem' },
   sidebarContainerFloatingCollapsed: {
@@ -423,7 +512,10 @@ const styles = stylex.create({
     marginInline: '0.875rem',
     paddingBlock: '0.125rem',
     paddingInline: '0.625rem',
-    display: 'flex',
+    display: {
+      default: 'flex',
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: 'none',
+    },
     flexDirection: 'column',
     transform: 'translateX(1px)',
     borderLeftColor: complexTokens.sidebarBorder,
@@ -457,14 +549,21 @@ const styles = stylex.create({
     color: complexTokens.sidebarAccentForeground,
   },
   containerBorderLeft: {
-    borderLeftColor: tokens.border,
+    borderLeftColor: complexTokens.sidebarBorder,
     borderLeftStyle: 'solid',
     borderLeftWidth: 1,
   },
   containerBorderRight: {
-    borderRightColor: tokens.border,
+    borderRightColor: complexTokens.sidebarBorder,
     borderRightStyle: 'solid',
     borderRightWidth: 1,
+  },
+  /* TW sidebar-04 'ml-0 border-l-0 px-1.5' — flattens the default sub
+     indent but keeps the base translate-x-px nudge. */
+  subFlat: {
+    paddingInline: '0.375rem',
+    marginInlineStart: 0,
+    borderLeftWidth: 0,
   },
   subMd: { fontSize: '0.875rem', lineHeight: '1.25rem' },
   subSm: { fontSize: '0.75rem', lineHeight: '1rem' },
@@ -476,7 +575,7 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundClip: 'padding-box',
     backgroundColor: { default: tokens.transparent, ':hover': tokens.muted },
-    color: { default: null, ':hover': tokens.foreground },
+    color: { default: 'inherit', ':hover': tokens.foreground },
     display: 'inline-flex',
     flexShrink: 0,
     fontSize: '0.875rem',
@@ -630,7 +729,7 @@ export const sidebar = <Msg>(
                           : Option.none(),
                       ),
                     ]),
-                h.Class(className(styles.backdrop)),
+                h.Class(className(reset.button, styles.backdrop)),
               ],
               [],
             ),
@@ -663,7 +762,7 @@ export const sidebar = <Msg>(
                           h.Type('button'),
                           h.AriaLabel('Close sidebar'),
                           h.OnClick(props.onMobileDismiss),
-                          h.Class(className(styles.mobileClose)),
+                          h.Class(className(reset.button, styles.mobileClose)),
                         ],
                         [Icon.x({}, h)],
                       ),
@@ -694,9 +793,11 @@ export const sidebar = <Msg>(
       h.div(
         [
           h.DataAttribute('slot', 'sidebar-container'),
+          h.DataAttribute('collapsible', collapsed ? collapsible : ''),
           h.Class(
             className(
               styles.sidebarContainer,
+              sidebarScope,
               props.belowHeader === true && styles.sidebarBelowHeader,
               props.presentation === 'contained' &&
                 styles.sidebarContainerContained,
@@ -744,6 +845,7 @@ export type SidebarTriggerProps<Msg> = Readonly<{
   onClick: Msg
   onMobileClick?: Msg
   layoutStyle?: ComponentLayoutStyle
+  iconStyle?: StaticStyles
 }>
 export const sidebarTrigger = <Msg>(
   props: SidebarTriggerProps<Msg>,
@@ -756,10 +858,20 @@ export const sidebarTrigger = <Msg>(
         h.DataAttribute('slot', 'sidebar-trigger'),
         h.OnClick(onClick),
         h.Type('button'),
-        h.Class(className(styles.trigger, visibility, props.layoutStyle)),
+        h.Class(
+          className(
+            reset.button,
+            styles.trigger,
+            visibility,
+            props.layoutStyle,
+          ),
+        ),
       ],
       [
-        Icon.panelLeft<Msg>({ class: className(styles.triggerIcon) }, h),
+        Icon.panelLeft<Msg>(
+          { class: className(styles.triggerIcon, props.iconStyle) },
+          h,
+        ),
         h.span([h.Class(className(styles.srOnly))], ['Toggle Sidebar']),
       ],
     )
@@ -794,7 +906,11 @@ export const sidebarRail = <Msg>(
       h.Title('Toggle Sidebar'),
       h.Type('button'),
       h.Class(
-        className(styles.rail, props.side === 'right' && styles.railRight),
+        className(
+          reset.button,
+          styles.rail,
+          props.side === 'right' && styles.railRight,
+        ),
       ),
     ],
     [],
@@ -833,6 +949,7 @@ export type SidebarInputProps<Msg> = Readonly<{
   isDisabled?: boolean
   isInvalid?: boolean
   layoutStyle?: ComponentLayoutStyle
+  inputStyle?: StaticStyles
 }>
 export const sidebarInput = <Msg>(
   props: SidebarInputProps<Msg>,
@@ -852,7 +969,9 @@ export const sidebarInput = <Msg>(
     h.Type(props.type ?? 'text'),
     h.Disabled(props.isDisabled ?? false),
     h.AriaInvalid(props.isInvalid ?? false),
-    h.Class(className(styles.input, props.layoutStyle)),
+    h.Class(
+      className(reset.input, styles.input, props.inputStyle, props.layoutStyle),
+    ),
   ])
 
 export const sidebarHeader = slotDiv('sidebar-header', 'header', styles.header)
@@ -913,7 +1032,7 @@ export const sidebarGroupAction = <Msg>(
       h.DataAttribute('sidebar', 'group-action'),
       ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick)]),
       h.Type('button'),
-      h.Class(className(styles.action, props.layoutStyle)),
+      h.Class(className(reset.button, styles.action, props.layoutStyle)),
     ],
     [
       h.span([h.AriaHidden(true), h.Class(className(styles.actionHalo))], []),
@@ -925,12 +1044,23 @@ export const sidebarGroupContent = slotDiv(
   'group-content',
   styles.groupContent,
 )
-export const sidebarMenu = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html =>
+export type SidebarMenuProps = Slot & Readonly<{ variant?: 'loose' }>
+export const sidebarMenu = <Msg>(
+  props: SidebarMenuProps,
+  h: HtmlBuilder<Msg>,
+): Html =>
   h.ul(
     [
       h.DataAttribute('slot', 'sidebar-menu'),
       h.DataAttribute('sidebar', 'menu'),
-      h.Class(className(styles.menu, props.layoutStyle)),
+      h.Class(
+        className(
+          reset.list,
+          styles.menu,
+          props.variant === 'loose' && styles.menuLoose,
+          props.layoutStyle,
+        ),
+      ),
     ],
     [...props.children],
   )
@@ -957,6 +1087,7 @@ export const sidebarMenuButtonVariants = (
   options: SidebarMenuButtonVariants = {},
 ): string =>
   className(
+    reset.button,
     styles.menuButton,
     options.variant === 'outline' && styles.menuButtonOutline,
     options.variant === 'primary' && styles.menuButtonPrimary,
@@ -970,6 +1101,8 @@ export type SidebarMenuButtonProps<Msg> = Readonly<{
   isActive?: boolean
   variant?: SidebarMenuButtonVariants['variant']
   size?: SidebarMenuButtonVariants['size']
+  /* TW 'font-medium' class override (sidebar-03/04 group titles). */
+  weight?: 'medium'
   tooltip?: string
   layoutStyle?: ComponentLayoutStyle
 }>
@@ -982,18 +1115,25 @@ export const sidebarMenuButton = <Msg>(
     h.DataAttribute('slot', 'sidebar-menu-button'),
     h.DataAttribute('sidebar', 'menu-button'),
     h.DataAttribute('size', size),
-    ...((props.isActive ?? false) ? [h.DataAttribute('active', '')] : []),
+    ...(props.isActive === true
+      ? [
+          h.DataAttribute('active', ''),
+          ...(props.href === undefined ? [] : [h.AriaCurrent('page')]),
+        ]
+      : []),
     ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick)]),
     ...(props.ariaExpanded === undefined
       ? []
       : [h.AriaExpanded(props.ariaExpanded)]),
     h.Class(
       className(
+        reset.button,
         styles.menuButton,
         props.variant === 'outline' && styles.menuButtonOutline,
         props.variant === 'primary' && styles.menuButtonPrimary,
         menuSizes[size],
         props.isActive === true && styles.menuButtonActive,
+        props.weight === 'medium' && styles.menuButtonMedium,
         props.layoutStyle,
       ),
     ),
@@ -1012,6 +1152,7 @@ export const sidebarMenuButton = <Msg>(
   return props.href === undefined
     ? h.button(
         [
+          h.Class(className(reset.button)),
           ...attributes,
           h.Type('button'),
           ...(props.tooltip === undefined
@@ -1022,6 +1163,7 @@ export const sidebarMenuButton = <Msg>(
       )
     : h.a(
         [
+          h.Class(className(reset.link)),
           h.Href(props.href),
           ...attributes,
           ...(props.tooltip === undefined
@@ -1031,6 +1173,16 @@ export const sidebarMenuButton = <Msg>(
         children,
       )
 }
+
+/** Keep label text in the DOM (and accessible name) during icon collapse. */
+export const sidebarMenuLabel = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html =>
+  h.span(
+    [
+      h.DataAttribute('slot', 'sidebar-menu-label'),
+      h.Class(className(styles.menuLabel, props.layoutStyle)),
+    ],
+    [...props.children],
+  )
 
 export type SidebarMenuActionProps<Msg> = SidebarActionProps<Msg> &
   Readonly<{ showOnHover?: boolean }>
@@ -1049,8 +1201,11 @@ export const sidebarMenuAction = <Msg>(
       h.Type('button'),
       h.Class(
         className(
+          reset.button,
           styles.menuAction,
           props.showOnHover === true && styles.menuActionHover,
+          /* marker so menuButton's siblingAfter pr-8 rule can see us */
+          sidebarScope,
           props.layoutStyle,
         ),
       ),
@@ -1106,12 +1261,23 @@ export const sidebarMenuSkeleton = <Msg>(
     ],
   )
 }
-export const sidebarMenuSub = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html =>
+export type SidebarMenuSubProps = Slot & Readonly<{ variant?: 'flat' }>
+export const sidebarMenuSub = <Msg>(
+  props: SidebarMenuSubProps,
+  h: HtmlBuilder<Msg>,
+): Html =>
   h.ul(
     [
       h.DataAttribute('slot', 'sidebar-menu-sub'),
       h.DataAttribute('sidebar', 'menu-sub'),
-      h.Class(className(styles.sub, props.layoutStyle)),
+      h.Class(
+        className(
+          reset.list,
+          styles.sub,
+          props.variant === 'flat' && styles.subFlat,
+          props.layoutStyle,
+        ),
+      ),
     ],
     [...props.children],
   )
@@ -1145,11 +1311,17 @@ export const sidebarMenuSubButton = <Msg>(
       h.DataAttribute('slot', 'sidebar-menu-sub-button'),
       h.DataAttribute('sidebar', 'menu-sub-button'),
       h.DataAttribute('size', size),
-      ...((props.isActive ?? false) ? [h.DataAttribute('active', '')] : []),
+      ...(props.isActive === true
+        ? [
+            h.DataAttribute('active', ''),
+            ...(props.href === undefined ? [] : [h.AriaCurrent('page')]),
+          ]
+        : []),
       ...(props.href === undefined ? [] : [h.Href(props.href)]),
       ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick)]),
       h.Class(
         className(
+          reset.link,
           styles.subButton,
           size === 'sm' ? styles.subSm : styles.subMd,
           props.isActive === true && styles.subButtonActive,

@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import { Match as M, Option, Schema as S } from 'effect'
 import type { Update } from 'foldkit'
 import { Command, Subscription } from 'foldkit'
@@ -346,6 +347,7 @@ const enabledSwitch = (model: Model, h: HtmlBuilder<Message>): Html =>
                 h.DataAttribute('slot', 'switch'),
                 h.Class(
                   className(
+                    reset.button,
                     styles.switchControl,
                     model.isEnabled && styles.switchChecked,
                   ),

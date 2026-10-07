@@ -3,6 +3,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import type { ComponentLayoutStyle } from './contracts'
 import { className } from './style'
+import { reset } from './reset'
 import type {
   TextColor,
   TextDisplay,
@@ -211,9 +212,10 @@ export const heading = <Msg>(
     h.DataAttribute('color', color),
     h.Class(
       className(
+        reset.text,
         colorStyles[color],
         props.type === undefined
-          ? levelStyles[String(props.level) as keyof typeof levelStyles]
+          ? levelStyles[props.level]
           : typeStyles[props.type],
         ...(props.weight === undefined ? [] : [weightStyles[props.weight]]),
         maxLines === 1

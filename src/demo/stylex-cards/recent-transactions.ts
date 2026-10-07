@@ -189,19 +189,15 @@ const transactionRow = (
       children: [
         tableCell(
           {
+            layoutStyle: styles.width10,
             children: [
               h.div(
-                [h.Class(className(styles.width10))],
+                [h.Class(className(styles.transactionMedia))],
                 [
-                  h.div(
-                    [h.Class(className(styles.transactionMedia))],
-                    [
-                      Icon.icon(
-                        transaction.icon,
-                        { class: className(styles.transactionIcon) },
-                        h,
-                      ),
-                    ],
+                  Icon.icon(
+                    transaction.icon,
+                    { class: className(styles.transactionIcon) },
+                    h,
                   ),
                 ],
               ),

@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as stylex from '@stylexjs/stylex'
 
@@ -127,7 +128,7 @@ export const view = <Msg>(h: HtmlBuilder<Msg>): Html => {
                     h.Id('cover-art'),
                     h.Type('file'),
                     h.Accept('image/jpeg,image/png'),
-                    h.Class(className(styles.visuallyHidden)),
+                    h.Class(className(reset.input, styles.visuallyHidden)),
                   ]),
                 ],
               ),

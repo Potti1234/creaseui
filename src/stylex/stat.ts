@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -36,6 +37,7 @@ const styles = stylex.create({
     fontWeight: 600,
     lineHeight: 1.4,
   },
+  /* TW applies inline line-height 1.4 on the value for every size. */
   valueSm: { fontSize: '1.25rem' },
   valueMd: { fontSize: '1.5rem' },
   valueLg: { fontSize: '1.875rem' },
@@ -130,7 +132,7 @@ const deltaGlyph = <Msg>(
       h.StrokeWidth('1.5'),
       h.StrokeLinecap('round'),
       h.StrokeLinejoin('round'),
-      h.Class(className(styles.glyph)),
+      h.Class(className(reset.svg, styles.glyph)),
       h.DataAttribute('slot', 'stat-delta-glyph'),
     ],
     [h.path([h.D(DELTA_GLYPH_PATHS[direction])], [])],

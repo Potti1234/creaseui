@@ -72,7 +72,15 @@ const libraryIcon = <Msg>(
 
 export const spriteDefinitions = <Msg>(h: HtmlBuilder<Msg>): Html =>
   h.svg(
-    [h.Class('absolute size-0 overflow-hidden'), h.AriaHidden(true)],
+    [
+      h.Style({
+        position: 'absolute',
+        width: '0',
+        height: '0',
+        overflow: 'hidden',
+      }),
+      h.AriaHidden(true),
+    ],
     [
       h.defs(
         [],

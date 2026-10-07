@@ -7,7 +7,7 @@ import * as BlocksFeature from '@/demo/blocks/registry'
 import * as BlocksStyleXFeature from '@/demo/blocks-stylex/featured-page'
 import * as TanStackTableFeature from '@/demo/blocks-stylex/tanstack-table-page'
 import * as BoardFeature from '@/demo/board'
-import * as BoardConstrained from '@/demo/board-constrained'
+import * as BoardStyleX from '@/demo/board-stylex'
 import * as LandingFeature from '@/demo/landing'
 import * as ChartsArea from '@/demo/charts/area'
 import * as ChartsBar from '@/demo/charts/bar'
@@ -20,6 +20,7 @@ import * as ChartsStyleX from '@/demo/charts-stylex/page'
 import * as ComponentCatalog from '@/docs/components/catalog'
 import * as CopyFeedback from '@/docs/copy-feedback'
 import type { AppRoute } from '@/route'
+import { renderer } from '@/site/config'
 
 export const Landing = taggedStruct('LandingPage', {
   landing: LandingFeature.Model,
@@ -27,8 +28,9 @@ export const Landing = taggedStruct('LandingPage', {
 export const Renderer = S.Literals(['tailwind', 'stylex'])
 export type Renderer = typeof Renderer.Type
 export const Create = taggedStruct('CreatePage', {
+  renderer: Renderer,
   tailwindBoard: BoardFeature.Model,
-  styleXBoard: BoardConstrained.Model,
+  styleXBoard: BoardStyleX.Model,
 })
 export const BlockCategory = S.Literals([
   'all',
@@ -42,6 +44,7 @@ export const BlockCodePanel = S.Struct({
 })
 export type BlockCodePanel = typeof BlockCodePanel.Type
 export const BlocksIndex = taggedStruct('BlocksIndexPage', {
+  renderer: Renderer,
   category: BlockCategory,
   codeBlocks: S.Record(S.String, BlockCodePanel),
   copiedCode: CopyFeedback.Model,
@@ -56,6 +59,7 @@ export const Block = taggedStruct('BlockPage', {
   tailwindFeatured: BlocksTailwindFeature.Model,
 })
 export const Charts = taggedStruct('ChartsPage', {
+  renderer: Renderer,
   area: ChartsArea.Model,
   bar: ChartsBar.Model,
   line: ChartsLine.Model,
@@ -89,11 +93,13 @@ export const init = (route: AppRoute): Page =>
       Home: () => Landing({ landing: LandingFeature.init() }),
       Create: () =>
         Create({
+          renderer,
           tailwindBoard: BoardFeature.init(),
-          styleXBoard: BoardConstrained.init(),
+          styleXBoard: BoardStyleX.init(),
         }),
       Charts: () =>
         Charts({
+          renderer,
           area: ChartsArea.init(),
           bar: ChartsBar.init(),
           line: ChartsLine.init(),
@@ -105,12 +111,14 @@ export const init = (route: AppRoute): Page =>
         }),
       BlocksIndex: () =>
         BlocksIndex({
+          renderer,
           category: 'all',
           codeBlocks: {},
           copiedCode: null,
         }),
       BlocksStyleX: () =>
         BlocksIndex({
+          renderer,
           category: 'all',
           codeBlocks: {},
           copiedCode: null,

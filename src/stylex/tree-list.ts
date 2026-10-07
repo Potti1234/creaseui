@@ -1,9 +1,9 @@
+import { reset } from '@/stylex/reset'
 /* Ported from Meta Astryx TreeList (packages/core/src/TreeList/) — StyleX
    renderer; visual spec adapted to Crease UI tokens. */
 
 import { Option } from 'effect'
 import * as stylex from '@stylexjs/stylex'
-import type { StaticStyles } from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineView } from 'foldkit/submodel'
 
@@ -342,7 +342,7 @@ const renderItem = <Msg>(
             ),
             { propagation: 'Stop' },
           ),
-          h.Class(className(styles.chevronButton)),
+          h.Class(className(reset.button, styles.chevronButton)),
         ],
         [
           Icon.icon<Msg>(
@@ -389,7 +389,7 @@ const renderItem = <Msg>(
               : [h.AriaDescribedBy(descriptionId)]),
             h.Tabindex(-1),
             h.Id(TreeListBehavior.itemActionDomId(model.id, item.id)),
-            h.Class(className(styles.invisibleAnchor)),
+            h.Class(className(reset.link, styles.invisibleAnchor)),
           ],
           labelAndDescription,
         )
@@ -412,7 +412,7 @@ const renderItem = <Msg>(
                 ),
                 { propagation: 'Stop' },
               ),
-              h.Class(className(styles.invisibleButton)),
+              h.Class(className(reset.button, styles.invisibleButton)),
             ],
             labelAndDescription,
           )
@@ -455,14 +455,7 @@ const renderItem = <Msg>(
           TreeListBehavior.Message.FocusedTreeListItem({ id: item.id }),
         ),
       ),
-      h.Class(
-        className(
-          styles.item,
-          interactive &&
-            // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
-            (treeItemScope as unknown as StaticStyles),
-        ),
-      ),
+      h.Class(className(styles.item, interactive && treeItemScope)),
     ],
     [
       ctx.variant === 'noGuides'
@@ -519,7 +512,7 @@ const renderItem = <Msg>(
       ...(expanded
         ? [
             h.ul(
-              [h.Role('group'), h.Class(className(styles.list))],
+              [h.Role('group'), h.Class(className(reset.list, styles.list))],
               (item.children ?? []).map((child, index) =>
                 renderItem(
                   ctx,
@@ -662,7 +655,7 @@ const render = <Msg>(
       h.ul(
         [
           h.Role('tree'),
-          h.Class(className(styles.list)),
+          h.Class(className(reset.list, styles.list)),
           ...(viewInputs.header === undefined
             ? viewInputs.ariaLabel === undefined
               ? []

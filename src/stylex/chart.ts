@@ -1,17 +1,16 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import * as ECharts from '@/lib/echarts'
+import * as EChartsView from './integrations/echarts'
 import type { ComponentLayoutStyle } from './contracts'
 import { complexTokens } from './complex-tokens.stylex'
 import { className } from './style'
 import { foundationTokens } from './foundations-tokens.stylex'
 import { tokens } from './tokens.stylex'
 
-export type EChartProps<Msg> = Omit<
-  ECharts.ChartProps<Msg>,
-  'accessibleAlternative'
-> &
+export type EChartProps<Msg> = EChartsView.EChartProps<Msg> &
   Readonly<{ accessibleAlternative: Html }>
 export type ChartMessage = ECharts.ChartMessage
 export type ChartTheme = ECharts.ChartTheme
@@ -33,7 +32,7 @@ export const valueAxis = ECharts.valueAxis
 export const eChart = <Msg>(
   props: EChartProps<Msg>,
   h: HtmlBuilder<Msg>,
-): Html => ECharts.chart(props, h)
+): Html => EChartsView.eChart(props, h)
 
 export type ChartSeriesConfig = Readonly<{
   label?: Html | string
@@ -254,7 +253,7 @@ export const barChart = <Msg>(
       h.ViewBox(`0 0 ${String(chartWidth)} ${String(chartHeight)}`),
       h.Role('img'),
       h.AriaLabel('Bar chart'),
-      h.Class(className(styles.chart, props.layoutStyle)),
+      h.Class(className(reset.svg, styles.chart, props.layoutStyle)),
     ],
     [
       ...props.data.map((item, index) => {
@@ -336,7 +335,7 @@ export const areaChart = <Msg>(
       h.ViewBox('0 0 100 50'),
       h.Role('img'),
       h.AriaLabel('Area chart'),
-      h.Class(className(styles.chart, props.layoutStyle)),
+      h.Class(className(reset.svg, styles.chart, props.layoutStyle)),
     ],
     [
       h.defs(
@@ -466,7 +465,7 @@ export const interactiveAreaChart = <Msg>(
       h.ViewBox('0 0 720 260'),
       h.Role('img'),
       h.AriaLabel(props.ariaLabel ?? 'Desktop and mobile visitors over time'),
-      h.Class(className(styles.interactiveChart, props.layoutStyle)),
+      h.Class(className(reset.svg, styles.interactiveChart, props.layoutStyle)),
     ],
     [
       h.defs(
@@ -647,6 +646,7 @@ export const donutChart = <Msg>(
       ),
       h.Class(
         className(
+          reset.svg,
           styles.donut,
           props.size === 'compact' && styles.donutCompact,
           props.layoutStyle,

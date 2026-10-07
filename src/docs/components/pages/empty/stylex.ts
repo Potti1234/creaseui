@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as stylex from '@stylexjs/stylex'
 
@@ -103,7 +104,7 @@ const avatarNode = <Msg>(
 
 const linkRow = <Msg>(label: string, h: HtmlBuilder<Msg>): Html =>
   h.a(
-    [h.Href('#'), h.Class(className(styles.linkRow))],
+    [h.Href('#'), h.Class(className(reset.link, styles.linkRow))],
     [label, Icon.icon('arrow-up-right', {}, h)],
   )
 
@@ -381,7 +382,10 @@ const emptyView = <Msg>(
                       [
                         'Need help? ',
                         h.a(
-                          [h.Href('#'), h.Class(className(styles.helpLink))],
+                          [
+                            h.Href('#'),
+                            h.Class(className(reset.link, styles.helpLink)),
+                          ],
                           ['Contact support'],
                         ),
                       ],

@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -201,7 +202,10 @@ const loginCard = <Msg>(
                         h,
                       ),
                       h.a(
-                        [h.Href('#'), h.Class(className(styles.link))],
+                        [
+                          h.Href('#'),
+                          h.Class(className(reset.link, styles.link)),
+                        ],
                         [copy.forgot],
                       ),
                     ],
@@ -295,7 +299,7 @@ export const cardStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
               {
                 children: [
                   h.ul(
-                    [h.Class(className(styles.list))],
+                    [h.Class(className(reset.list, styles.list))],
                     [
                       h.li(
                         [h.Class(className(styles.li))],
@@ -437,25 +441,25 @@ export const cardStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                     [h.Class(className(styles.edgeScroll))],
                     [
                       h.p(
-                        [],
+                        [h.Class(className(reset.text))],
                         [
                           'These terms govern your use of the workspace, including access to shared documents, project files, and collaboration tools.',
                         ],
                       ),
                       h.p(
-                        [],
+                        [h.Class(className(reset.text))],
                         [
                           'You are responsible for the content you upload and for ensuring that your team has the appropriate permissions to view or edit it.',
                         ],
                       ),
                       h.p(
-                        [],
+                        [h.Class(className(reset.text))],
                         [
                           'We may update features or limits as the service evolves. When those changes materially affect your workflow, we will notify your workspace administrators.',
                         ],
                       ),
                       h.p(
-                        [],
+                        [h.Class(className(reset.text))],
                         [
                           "By continuing, you agree to keep your account credentials secure and to follow your organization's acceptable use policies.",
                         ],
@@ -493,7 +497,7 @@ export const cardStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
             h.img([
               h.Src(IMAGE_URL),
               h.Alt('Event cover'),
-              h.Class(className(styles.cover)),
+              h.Class(className(reset.media, styles.cover)),
             ]),
             Card.cardHeader(
               {

@@ -17,7 +17,7 @@ export const sheetPage = authoredPage({
     composition:
       'Trigger (parent Message)\nSheet submodel\n└── edge panel\n    ├── header / title / description\n    ├── content\n    ├── footer\n    └── close action\n\nbottom side\n└── grab handle + scrollable body\n\nswitcher\n└── one shared dialog hosting multiple bottom sheets',
     styling:
-      'Right and left sheets suit settings or navigation; top sheets suit short contextual workflows. Bottom sheets hug the bottom edge inside a centered 640px column with a top-edge grab handle and rounded top corners; the scrim thins as the sheet slides down to its peek detent. Avoid using a sheet for content that needs the full page.',
+      'Right and left sheets suit settings or navigation; top sheets suit short contextual workflows. Bottom sheets span the full width of the viewport at the bottom edge with a top-edge grab handle and rounded top corners; the scrim thins as the sheet slides down to its peek detent. Avoid using a sheet for content that needs the full page.',
     accessibility:
       'Sheet inherits Dialog’s title/description relationships, focus trap, Escape behavior, and trigger focus restoration. Use initialFocusAttributes once when a specific control should receive focus. Sheets labelled required refuse dismissal while info sheets swipe away; on bottom sheets the visible title may be replaced by an sr-only label when the layout composes its own headings.',
     keyboard: [

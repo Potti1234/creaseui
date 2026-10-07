@@ -30,6 +30,8 @@ const infrastructureNames = new Set([
   'overlay-boundary',
   'overlay-tokens.stylex',
   'radio-group.markers.stylex',
+  'reset',
+  'sidebar.markers.stylex',
   'style',
   'tokens.stylex',
   'tree-list.markers.stylex',
@@ -62,6 +64,11 @@ const intentionallyRemovedStylingExports = new Map<string, ReadonlySet<string>>(
  *  theming surface; visual choices stay on named variants. */
 const sanctionedStaticStyleEscapes = new Map<string, ReadonlySet<string>>([
   ['input', new Set(['InputProps.inputStyle'])],
+  ['dropdown-menu', new Set(['DropdownMenuProps.triggerStyle'])],
+  [
+    'sidebar',
+    new Set(['SidebarTriggerProps.iconStyle', 'SidebarInputProps.inputStyle']),
+  ],
 ])
 
 const parse = (path: string): ts.SourceFile =>
@@ -499,7 +506,7 @@ describe('complete StyleX catalog', () => {
       .sort()
 
     assert.deepEqual(stylexNames, componentNames)
-    assert.equal(componentNames.length, 116)
+    assert.equal(componentNames.length, 112)
   })
 
   it('does not fall back to Tailwind, CVA, or raw authored class strings', () => {

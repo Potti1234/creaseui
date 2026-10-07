@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
@@ -253,7 +254,7 @@ const selectionControl = <Msg>(
             ...checkbox,
             h.Type('button'),
             h.AriaLabel(props.label),
-            h.Class(className(styles.selectionButton)),
+            h.Class(className(reset.button, styles.selectionButton)),
           ],
           [
             h.span(
@@ -333,7 +334,7 @@ export const dataTable = <Row, Msg>(
                   : 'none',
               ),
             ]),
-        h.Class(className(styles.head, column.layoutStyle)),
+        h.Class(className(reset.tableHeading, styles.head, column.layoutStyle)),
       ],
       column.sortValue === undefined
         ? [column.header]
@@ -346,7 +347,7 @@ export const dataTable = <Row, Msg>(
                     DataTableStateMessages.Sorted({ key: column.key }),
                   ),
                 ),
-                h.Class(className(styles.sort)),
+                h.Class(className(reset.button, styles.sort)),
               ],
               [
                 column.header,
@@ -483,6 +484,7 @@ export const dataTable = <Row, Msg>(
                         ),
                         h.Class(
                           className(
+                            reset.button,
                             ...buttonVisualStyles({ variant: 'outline' }),
                             styles.chooserSummary,
                           ),
@@ -500,6 +502,7 @@ export const dataTable = <Row, Msg>(
                       ? [
                           h.button(
                             [
+                              h.Class(className(reset.button)),
                               h.Type('button'),
                               h.Tabindex(-1),
                               h.AriaHidden(true),
@@ -585,7 +588,12 @@ export const dataTable = <Row, Msg>(
                               h.th(
                                 [
                                   h.Scope('col'),
-                                  h.Class(className(styles.selectionCell)),
+                                  h.Class(
+                                    className(
+                                      reset.tableHeading,
+                                      styles.selectionCell,
+                                    ),
+                                  ),
                                 ],
                                 [
                                   selectionControl(
@@ -627,7 +635,7 @@ export const dataTable = <Row, Msg>(
         [h.Class(className(styles.footer))],
         [
           h.p(
-            [h.Class(className(styles.count))],
+            [h.Class(className(reset.text, styles.count))],
             [
               props.enableRowSelection === true
                 ? `${selectedCount} of ${filteredRowCount} row${filteredRowCount === 1 ? '' : 's'} selected.`
@@ -655,7 +663,7 @@ export const dataTable = <Row, Msg>(
                       }),
                     ),
                   ),
-                  h.Class(className(styles.select)),
+                  h.Class(className(reset.input, styles.select)),
                 ],
                 pageSizes.map(size =>
                   h.option([h.Value(String(size))], [String(size)]),
@@ -677,6 +685,7 @@ export const dataTable = <Row, Msg>(
                   ),
                   h.Class(
                     className(
+                      reset.button,
                       ...buttonVisualStyles({ variant: 'outline' }),
                       styles.button,
                     ),
@@ -696,6 +705,7 @@ export const dataTable = <Row, Msg>(
                   ),
                   h.Class(
                     className(
+                      reset.button,
                       ...buttonVisualStyles({ variant: 'outline' }),
                       styles.button,
                     ),
@@ -715,6 +725,7 @@ export const dataTable = <Row, Msg>(
                   ),
                   h.Class(
                     className(
+                      reset.button,
                       ...buttonVisualStyles({ variant: 'outline' }),
                       styles.button,
                     ),
@@ -736,6 +747,7 @@ export const dataTable = <Row, Msg>(
                   ),
                   h.Class(
                     className(
+                      reset.button,
                       ...buttonVisualStyles({ variant: 'outline' }),
                       styles.button,
                     ),

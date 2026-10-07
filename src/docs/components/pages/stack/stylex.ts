@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -41,7 +42,7 @@ const styles = stylex.create({
 })
 
 const supporting = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
-  h.p([h.Class(className(styles.supporting))], [text])
+  h.p([h.Class(className(reset.text, styles.supporting))], [text])
 
 const badge = <Msg>(label: string, h: HtmlBuilder<Msg>): Html =>
   Badge.badge({ variant: 'secondary', children: [label] }, h)
@@ -186,7 +187,10 @@ const fillItemView = <Msg>(h: HtmlBuilder<Msg>): Html =>
                       {
                         gap: 0,
                         children: [
-                          h.p([h.Class(className(styles.name))], [user.name]),
+                          h.p(
+                            [h.Class(className(reset.text, styles.name))],
+                            [user.name],
+                          ),
                           supporting(user.role, h),
                         ],
                       },
@@ -269,13 +273,16 @@ const vBasicView = <Msg>(h: HtmlBuilder<Msg>): Html =>
     {
       gap: 3,
       children: [
-        h.h5([h.Class(className(styles.heading))], ['Weekly Report']),
+        h.h5(
+          [h.Class(className(reset.text, styles.heading))],
+          ['Weekly Report'],
+        ),
         h.p(
-          [h.Class(className(styles.body))],
+          [h.Class(className(reset.text, styles.body))],
           ['VStack arranges its children in a vertical column.'],
         ),
         h.p(
-          [h.Class(className(styles.body))],
+          [h.Class(className(reset.text, styles.body))],
           ['The gap prop controls the spacing between each item.'],
         ),
       ],

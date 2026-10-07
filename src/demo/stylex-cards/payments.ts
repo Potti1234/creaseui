@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import { Match as M, Schema as S } from 'effect'
 import type { Update } from 'foldkit'
 import { Command } from 'foldkit'
@@ -162,7 +163,7 @@ const paymentLink = (
       h.DataAttribute('slot', 'item'),
       h.DataAttribute('variant', 'muted'),
       h.DataAttribute('size', 'default'),
-      h.Class(className(styles.paymentLink)),
+      h.Class(className(reset.link, styles.paymentLink)),
     ],
     [
       itemMedia(
@@ -294,7 +295,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
           {
             children: [
               h.ul(
-                [h.Class(className(styles.paymentList))],
+                [h.Class(className(reset.list, styles.paymentList))],
                 paymentItems.map(payment =>
                   h.li(
                     [],

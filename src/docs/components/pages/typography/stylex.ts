@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -65,7 +66,7 @@ const tableView = <Msg>(a: Article, h: HtmlBuilder<Msg>): Html =>
     [h.Class(className(styles.tableWrap))],
     [
       h.table(
-        [h.Class(className(styles.table))],
+        [h.Class(className(reset.table, styles.table))],
         [
           h.thead(
             [],
@@ -73,8 +74,14 @@ const tableView = <Msg>(a: Article, h: HtmlBuilder<Msg>): Html =>
               h.tr(
                 [h.Class(className(styles.tr))],
                 [
-                  h.th([h.Class(className(styles.th))], [a.treasury]),
-                  h.th([h.Class(className(styles.th))], [a.happiness]),
+                  h.th(
+                    [h.Class(className(reset.tableHeading, styles.th))],
+                    [a.treasury],
+                  ),
+                  h.th(
+                    [h.Class(className(reset.tableHeading, styles.th))],
+                    [a.happiness],
+                  ),
                 ],
               ),
             ],
@@ -113,7 +120,7 @@ const articleView = <Msg>(
             a.kingThought,
             ' ',
             h.a(
-              [h.Class(className(styles.link)), h.Href('#')],
+              [h.Class(className(reset.link, styles.link)), h.Href('#')],
               [a.brilliantPlan],
             ),
             a.taxJokes,
@@ -125,7 +132,7 @@ const articleView = <Msg>(
       Typography.typographyH3({ children: [a.jokeTax] }, h),
       Typography.typographyP({ children: [a.subjectsNotAmused] }, h),
       h.ul(
-        [h.Class(className(styles.list))],
+        [h.Class(className(reset.list, styles.list))],
         a.list.map(item => h.li([h.Class(className(styles.listItem))], [item])),
       ),
       Typography.typographyP({ children: [a.stoppedTelling] }, h),
@@ -156,7 +163,7 @@ const fixtureView = <Msg>(
   }
   if (fixture.kind === 'list') {
     return h.ul(
-      [h.Class(className(styles.list))],
+      [h.Class(className(reset.list, styles.list))],
       typographyArticle.list.map(item =>
         h.li([h.Class(className(styles.listItem))], [item]),
       ),

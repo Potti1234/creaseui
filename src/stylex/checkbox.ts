@@ -1,5 +1,5 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
-import type { StaticStyles } from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as Icon from '@/lib/icon'
 import { type CheckboxBehaviorProps, renderCheckbox } from '@/lib/checkbox'
@@ -73,9 +73,9 @@ export const checkbox = <Msg>(
       control: [
         h.Class(
           className(
+            reset.button,
             styles.control,
-            // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
-            checkboxControlScope as unknown as StaticStyles,
+            checkboxControlScope,
             p.isChecked && styles.checked,
             p.isInvalid === true && styles.invalid,
             p.isDisabled === true && styles.disabled,
@@ -86,7 +86,7 @@ export const checkbox = <Msg>(
       indicator: [h.Class(className(styles.indicator))],
       text: [h.Class(className(styles.text))],
       label: [h.Class(className(styles.label))],
-      description: [h.Class(className(styles.description))],
+      description: [h.Class(className(reset.text, styles.description))],
     },
     p.isIndeterminate === true
       ? Icon.minus({ class: className(styles.icon) }, h)

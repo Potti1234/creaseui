@@ -823,15 +823,15 @@ A CreaseUI Drawer component for Foldkit.
 
 Source: `src/ui/drawer.ts`
 
-Examples: Activity goal, Side drawer, Scrollable Content, Sides, Responsive Dialog, RTL
+Examples: Activity goal, Side drawer, Position, Swipe Handle, Custom Width and Height, Scrollable Content, Snap Points, Nested, Non Modal, Responsive Dialog, RTL
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
 - `GotDialogMessage: value` (value)
-- `StartedDrag: value` (value)
-- `Dragged: value` (value)
-- `EndedDrag: value` (value)
-- `CancelledDrag: value` (value)
+- `StartedSwipe: value` (value)
+- `DraggedSwipe: value` (value)
+- `EndedSwipe: value` (value)
+- `CancelledSwipe: value` (value)
 - `Message: value` (value)
 - `Message = typeof Message.Type` (type)
 - `OutMessage: value` (value)
@@ -840,9 +840,9 @@ Examples: Activity goal, Side drawer, Scrollable Content, Sides, Responsive Dial
 - `update: value` (value)
 - `open: value` (value)
 - `close: value` (value)
-- `DrawerDirection = 'top' | 'right' | 'bottom' | 'left'` (type)
-- `DrawerSlots = Readonly<{ closeButton: ReadonlyArray<ChildAttribute>; }>` (type)
-- `DrawerProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description?: string; content?: (slots: DrawerSlots) => ReadonlyArray<Html>; footer?: (slots: DrawerSlots) => ReadonlyArray<Html>; direction?: DrawerDirecti…` (type)
+- `snapTo: value` (value)
+- `DrawerSlots = Readonly<{ closeButton: ReadonlyArray<ChildAttribute>; initialFocusAttributes: () => ReadonlyArray<ChildAttribute>; }>` (type)
+- `DrawerProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; title: string; description?: string; content?: (slots: DrawerSlots) => ReadonlyArray<Html>; footer?: (slots: DrawerSlots) => ReadonlyArray<Html>; showSwipeHandle?: boolean…` (type)
 - `drawer<Msg>(props: DrawerProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Dropdown Menu

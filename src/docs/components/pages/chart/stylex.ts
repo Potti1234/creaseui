@@ -1,3 +1,5 @@
+import { className } from '@/stylex/style'
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { EChartsOption } from 'echarts/types/dist/shared'
 import type { Html, HtmlBuilder } from 'foldkit/html'
@@ -240,7 +242,8 @@ export const chartStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                               ),
                             ),
                             h.Class(
-                              stylex.props(
+                              className(
+                                reset.button,
                                 styles.demoButton,
                                 activeChart === key
                                   ? styles.demoButtonActive
@@ -248,7 +251,7 @@ export const chartStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                                 buttonIndex === 1
                                   ? styles.demoButtonBorder
                                   : undefined,
-                              ).className ?? '',
+                              ),
                             ),
                           ],
                           [
@@ -289,7 +292,7 @@ export const chartStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                     Chart.eChart(
                       {
                         accessibleAlternative: h.p(
-                          [],
+                          [h.Class(className(reset.text))],
                           [
                             'Daily page views for April: desktop total 7,324, mobile total 7,250.',
                           ],
@@ -353,7 +356,7 @@ export const chartStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         Chart.eChart(
           {
             accessibleAlternative: h.p(
-              [],
+              [h.Class(className(reset.text))],
               ['Bar chart of monthly desktop and mobile values.'],
             ),
             ariaLabel: 'Right-to-left bar chart example',
@@ -371,7 +374,7 @@ export const chartStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         Chart.eChart(
           {
             accessibleAlternative: h.p(
-              [],
+              [h.Class(className(reset.text))],
               ['Bar chart of monthly desktop and mobile values.'],
             ),
             ariaLabel: 'Bar chart example',
@@ -419,7 +422,7 @@ export const chartStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           [
             h.Type('button'),
             h.OnClick(change),
-            h.Class(stylex.props(styles.button).className ?? ''),
+            h.Class(className(reset.button, styles.button)),
           ],
           [variant === 'month' ? 'Show quarters' : 'Show months'],
         ),
@@ -441,7 +444,10 @@ export const chartStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
       [
         Chart.eChart(
           {
-            accessibleAlternative: h.p([], ['Revenue data is loading.']),
+            accessibleAlternative: h.p(
+              [h.Class(className(reset.text))],
+              ['Revenue data is loading.'],
+            ),
             ariaLabel: 'Loading revenue',
             hostId: `${chartHostId}-loading`,
             state: 'loading',
@@ -452,7 +458,7 @@ export const chartStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         Chart.eChart(
           {
             accessibleAlternative: h.p(
-              [],
+              [h.Class(className(reset.text))],
               ['No revenue records are available.'],
             ),
             ariaLabel: 'Empty revenue',
@@ -464,7 +470,10 @@ export const chartStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         ),
         Chart.eChart(
           {
-            accessibleAlternative: h.p([], ['Revenue service is unavailable.']),
+            accessibleAlternative: h.p(
+              [h.Class(className(reset.text))],
+              ['Revenue service is unavailable.'],
+            ),
             ariaLabel: 'Revenue error',
             hostId: `${chartHostId}-error`,
             state: 'error',
@@ -483,7 +492,7 @@ export const chartStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           Chart.eChart(
             {
               accessibleAlternative: h.p(
-                [],
+                [h.Class(className(reset.text))],
                 [`${kind} chart showing the documented values.`],
               ),
               ariaLabel: `${kind} chart example`,

@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -130,7 +131,7 @@ export const paginationContent = <Msg>(
   h.ul(
     [
       h.DataAttribute('slot', 'pagination-content'),
-      h.Class(className(styles.content, props.layoutStyle)),
+      h.Class(className(reset.list, styles.content, props.layoutStyle)),
     ],
     [...props.children],
   )
@@ -174,6 +175,7 @@ export const paginationLink = <Msg>(
       ...(isActive ? [h.DataAttribute('active', 'true')] : []),
       h.Class(
         className(
+          reset.link,
           styles.link,
           sizes[props.size ?? 'icon'],
           isActive && styles.active,
@@ -326,6 +328,7 @@ const actionButton = <Msg>(
       h.DataAttribute('slot', 'pagination-button'),
       h.Class(
         className(
+          reset.button,
           styles.link,
           styles.sizeIcon,
           page === current && styles.actionActive,
@@ -347,7 +350,14 @@ const actionDirection = <Msg>(
       h.OnClick(message),
       h.AriaLabel(`Go to ${direction} page`),
       h.DataAttribute('slot', `pagination-${direction}`),
-      h.Class(className(styles.link, styles.sizeDefault, styles.directionLink)),
+      h.Class(
+        className(
+          reset.button,
+          styles.link,
+          styles.sizeDefault,
+          styles.directionLink,
+        ),
+      ),
     ],
     direction === 'previous'
       ? [

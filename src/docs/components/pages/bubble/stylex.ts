@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import * as stylex from '@stylexjs/stylex'
@@ -62,7 +63,7 @@ const styles = stylex.create({
   iconTrigger: {
     borderRadius: foundationTokens.radiusMd,
     alignItems: 'center',
-    backgroundColor: { default: null, ':hover': 'var(--accent)' },
+    backgroundColor: { default: 'transparent', ':hover': 'var(--accent)' },
     color: {
       default: 'var(--muted-foreground)',
       ':hover': 'var(--accent-foreground)',
@@ -75,7 +76,7 @@ const styles = stylex.create({
   iconTriggerPopover: {
     borderRadius: foundationTokens.radiusMd,
     alignItems: 'center',
-    backgroundColor: { default: null, ':hover': 'var(--accent)' },
+    backgroundColor: { default: 'transparent', ':hover': 'var(--accent)' },
     color: {
       '[aria-expanded="true"]': 'var(--destructive)',
       default: 'var(--muted-foreground)',
@@ -203,11 +204,11 @@ const reactionsView = <Msg>(
                   [h.Class(className(styles.popoverContent))],
                   [
                     h.p(
-                      [h.Class(className(styles.popoverTitle))],
+                      [h.Class(className(reset.text, styles.popoverTitle))],
                       [reactions.title],
                     ),
                     h.p(
-                      [h.Class(className(styles.popoverCopy))],
+                      [h.Class(className(reset.text, styles.popoverCopy))],
                       [reactions.description],
                     ),
                   ],
@@ -271,7 +272,7 @@ const contentView = <Msg>(
                       }),
                     ),
                   ),
-                  h.Class(className(styles.triggerLink)),
+                  h.Class(className(reset.button, styles.triggerLink)),
                 ],
                 [
                   model.open ? 'Show less' : 'Show more',
@@ -365,7 +366,7 @@ export const bubbleStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
       previewModel.lastClicked !== undefined
         ? [
             h.p(
-              [h.Class(className(styles.feedback))],
+              [h.Class(className(reset.text, styles.feedback))],
               [`You clicked: ${previewModel.lastClicked}`],
             ),
           ]

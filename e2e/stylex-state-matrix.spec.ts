@@ -1,3 +1,4 @@
+import { visitRenderer } from './site-navigation'
 import { expect, test } from '@playwright/test'
 import type { Locator } from '@playwright/test'
 
@@ -29,17 +30,14 @@ test('StyleX interaction and theme state matrix', async ({
   test.slow()
   await page.emulateMedia({ reducedMotion: 'no-preference' })
   await page.goto('/docs/components/button')
-  await page
-    .getByRole('group', { name: 'Preview styling engine' })
-    .getByRole('button', { name: 'StyleX' })
-    .click()
+  await visitRenderer(page, 'StyleX')
 
   const button = page
-    .locator('#variants')
-    .getByRole('button', { name: 'Primary' })
+    .locator('#default')
+    .getByRole('button', { name: 'Button', exact: true })
   const disabled = page
-    .locator('#loading')
-    .getByRole('button', { name: 'Save changes' })
+    .locator('#spinner')
+    .getByRole('button', { name: 'Generating' })
 
   const matrix: Record<string, VisualState | Record<string, string>> = {}
   matrix.rest = await visualState(button)
@@ -77,10 +75,7 @@ test('StyleX interaction and theme state matrix', async ({
   expect(matrix.dark.backgroundColor).not.toBe(matrix.rest.backgroundColor)
 
   await page.goto('/create')
-  await page
-    .getByRole('group', { name: 'Create renderer' })
-    .getByRole('button', { name: 'StyleX' })
-    .click()
+  await visitRenderer(page, 'StyleX')
   const themeScope = page.locator('[data-crease-board-theme]')
   await expect(themeScope).toBeVisible()
   const disclosure = themeScope.locator('button[aria-haspopup]').first()

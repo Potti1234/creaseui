@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
@@ -392,6 +393,7 @@ export const listItem = <Msg>(
             ...(isDisabled ? [h.AriaDisabled(true), h.Tabindex(-1)] : []),
             h.Class(
               className(
+                reset.link,
                 styles.invisibleAnchor,
                 isDisabled ? styles.disabledContent : null,
               ),
@@ -408,6 +410,7 @@ export const listItem = <Msg>(
               h.Disabled(isDisabled),
               h.Class(
                 className(
+                  reset.button,
                   styles.invisibleButton,
                   isDisabled ? styles.disabledContent : null,
                 ),

@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import type { ComponentLayoutStyle } from './contracts'
@@ -195,7 +196,7 @@ export const inputOtp = <Msg>(
         h.Attribute('onfocus', FOCUS_ACTIVE),
         h.Attribute('onblur', CLEAR_ACTIVE),
         h.Attribute('onmouseup', SNAP_TO_SLOT),
-        h.Class(className(styles.input)),
+        h.Class(className(reset.input, styles.input)),
       ]),
       h.div(
         [

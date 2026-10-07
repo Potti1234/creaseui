@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import { Command, type Update } from 'foldkit'
 import { Duration, Effect, Option, Schedule, Schema as S, Stream } from 'effect'
 import { Subscription } from 'foldkit'
@@ -464,6 +465,7 @@ export const timestamp = <Msg>(
     [
       h.Class(
         className(
+          reset.text,
           styles.dl,
           hasLabelColumn && hasActionColumn
             ? styles.gridLabelValueAction
@@ -482,7 +484,7 @@ export const timestamp = <Msg>(
           ...(hasLabelColumn
             ? [h.dt([h.Class(className(styles.label))], [line.label ?? ''])]
             : []),
-          h.dd([h.Class(className(styles.value))], [line.value]),
+          h.dd([h.Class(className(reset.text, styles.value))], [line.value]),
           ...(hasActionColumn
             ? [
                 h.div(
@@ -493,7 +495,9 @@ export const timestamp = <Msg>(
                           h.button(
                             [
                               h.Type('button'),
-                              h.Class(className(styles.copyButton)),
+                              h.Class(
+                                className(reset.button, styles.copyButton),
+                              ),
                               h.AriaLabel(
                                 model.copiedValue === line.value
                                   ? 'Copied'

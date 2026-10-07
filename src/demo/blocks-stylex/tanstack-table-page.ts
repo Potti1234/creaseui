@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { Effect, Schema as S, Stream } from 'effect'
 import type { Update } from 'foldkit'
@@ -939,7 +940,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                                   h,
                                 ),
                                 h.pre(
-                                  [h.Class(className(styles.code))],
+                                  [h.Class(className(reset.text, styles.code))],
                                   [JSON.stringify(stateSnapshot, null, 2)],
                                 ),
                               ],

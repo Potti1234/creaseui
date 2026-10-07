@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import type { Update } from 'foldkit'
 import { Match as M, Schema as S } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
@@ -203,7 +204,9 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                               h.a(
                                 [
                                   h.Href('#'),
-                                  h.Class(className(styles.forgotLink)),
+                                  h.Class(
+                                    className(reset.link, styles.forgotLink),
+                                  ),
                                 ],
                                 ['Forgot?'],
                               ),

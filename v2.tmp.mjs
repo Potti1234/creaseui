@@ -1,39 +1,46 @@
 import { chromium } from 'playwright'
 const b = await chromium.launch()
-const p = await b.newPage({ viewport: { width: 1280, height: 1600 } })
-const errors = []
-p.on('pageerror', e => errors.push(String(e)))
-p.on('console', m => {
-  if (m.type() === 'error') errors.push('console: ' + m.text())
-})
-await p.goto('http://localhost:5173/docs/components/input-group#align', {
-  waitUntil: 'networkidle',
-})
-await p.waitForTimeout(1500)
-const ta = p.locator('#block-start-textarea').first()
-await ta.fill("console.log('x');")
-const copies = p.locator('button[aria-label="Copy"]')
-console.log('copy btns:', await copies.count())
-await copies.last().scrollIntoViewIfNeeded()
-await copies.last().click()
-await p.waitForTimeout(800)
-console.log('errors after click:', errors.join('|') || 'none')
-console.log(
-  'copy btns now:',
-  await p.locator('button[aria-label="Copy"]').count(),
-)
-const taGrp = ta.locator('xpath=ancestor::*[@data-slot="input-group"][1]')
-console.log(
-  'grp btns:',
-  await taGrp.locator('button').count(),
-  'aria copy in grp:',
-  await taGrp.locator('button[aria-label]').count(),
-)
-const lastBtn = taGrp.locator('button').last()
-console.log(
-  'last btn attrs:',
-  await lastBtn.evaluate(
-    el => el.getAttributeNames().join(',') + '|' + el.innerHTML.slice(0, 120),
-  ),
-)
+for (const [tag, port] of [
+  ['tw', 5173],
+  ['sx', 5174],
+]) {
+  const p = await b.newPage({ viewport: { width: 1440, height: 900 } })
+  for (let i = 0; i < 8; i++) {
+    await p.goto(`http://localhost:${port}/docs/components/stat`, {
+      waitUntil: 'networkidle',
+    })
+    await p.waitForTimeout(700)
+    if (
+      await p.evaluate(() => document.body.innerText.includes('Total revenue'))
+    )
+      break
+  }
+  const info = await p.evaluate(() => {
+    const pick = s =>
+      [...document.querySelectorAll('*')].find(
+        e => e.childElementCount === 0 && e.textContent?.trim() === s,
+      )
+    const f = e => {
+      const cs = getComputedStyle(e)
+      const r = e.getBoundingClientRect()
+      return {
+        fs: cs.fontSize,
+        lh: cs.lineHeight,
+        fw: cs.fontWeight,
+        color: cs.color,
+        y: +r.y.toFixed(1),
+        ls: cs.letterSpacing,
+        mx: cs.marginInline,
+        my: cs.marginBlock,
+      }
+    }
+    return {
+      label: f(pick('Total revenue')),
+      delta: f(pick('vs. previous 30 days')),
+      val: f(pick('$1.28M')),
+    }
+  })
+  console.log(tag, JSON.stringify(info, null, 1))
+  await p.close()
+}
 await b.close()

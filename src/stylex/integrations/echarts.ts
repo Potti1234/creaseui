@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import { Mount } from 'foldkit'
 import type { Html, HtmlBuilder } from 'foldkit/html'
@@ -155,6 +156,7 @@ export const eChart = <Message>(
                 ...(state === 'loading' ? [h.AriaBusy(true)] : []),
                 h.Class(
                   className(
+                    reset.text,
                     styles.host,
                     styles.status,
                     sizeStyles[props.size ?? 'default'],

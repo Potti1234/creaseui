@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -757,11 +758,11 @@ export const inputGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                       [h.Class(className(styles.popoverContent))],
                       [
                         h.p(
-                          [h.Class(className(styles.popoverTitle))],
+                          [h.Class(className(reset.text, styles.popoverTitle))],
                           ['Your connection is not secure.'],
                         ),
                         h.p(
-                          [],
+                          [h.Class(className(reset.text))],
                           [
                             'You should not enter any sensitive information on this site.',
                           ],
@@ -1117,7 +1118,7 @@ export const inputGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                   h.Placeholder('Autoresize textarea...'),
                   h.Value(m.values['customMessage'] ?? ''),
                   h.OnInput(value => changed('customMessage', value)),
-                  h.Class(className(styles.customArea)),
+                  h.Class(className(reset.input, styles.customArea)),
                 ]),
                 InputGroup.inputGroupAddon(
                   {

@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -180,7 +181,7 @@ export const toggleGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
               children: [
                 'Use ',
                 h.code(
-                  [h.Class(className(styles.inlineCode))],
+                  [h.Class(className(reset.code, styles.inlineCode))],
                   [`font-${preview.selections[group.id]?.[0] ?? 'normal'}`],
                 ),
                 ' to set the font weight.',

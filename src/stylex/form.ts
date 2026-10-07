@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import {
@@ -63,9 +64,9 @@ export const errorSummary = <Msg>(
     p,
     {
       root: [h.Class(className(styles.summary, p.layoutStyle))],
-      title: [h.Class(className(styles.summaryTitle))],
-      list: [h.Class(className(styles.summaryList))],
-      link: [h.Class(className(styles.summaryLink))],
+      title: [h.Class(className(reset.text, styles.summaryTitle))],
+      list: [h.Class(className(reset.list, styles.summaryList))],
+      link: [h.Class(className(reset.link, styles.summaryLink))],
     },
     h,
   )
@@ -85,7 +86,7 @@ export const formDescription = <Msg>(
     [
       ...(p.id === undefined ? [] : [h.Id(p.id)]),
       h.DataAttribute('slot', 'form-description'),
-      h.Class(className(styles.description, p.layoutStyle)),
+      h.Class(className(reset.text, styles.description, p.layoutStyle)),
     ],
     [...p.children],
   )

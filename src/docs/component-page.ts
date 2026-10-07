@@ -1,3 +1,4 @@
+import { heroFrame } from '@/docs/hero-frame'
 import { Stream } from 'effect'
 import { Mount, Subscription } from 'foldkit'
 import type { Html, HtmlBuilder } from 'foldkit/html'
@@ -12,135 +13,13 @@ import type {
   DocsSection,
 } from '@/docs/components/page-definition'
 
-export const COMPONENTS = [
-  'Accordion',
-  'Alert',
-  'Alert Dialog',
-  'Aspect Ratio',
-  'Attachment',
-  'Avatar',
-  'Avatar Group',
-  'Badge',
-  'Banner',
-  'Blockquote',
-  'Breadcrumb',
-  'Button',
-  'Button Group',
-  'Bubble',
-  'Calendar',
-  'Carousel',
-  'Card',
-  'Chart',
-  'Chat Reasoning',
-  'Checkbox',
-  'Center',
-  'Circular Progress',
-  'Code',
-  'Code Block',
-  'Collapsible',
-  'Combobox',
-  'Command',
-  'Context Menu',
-  'Data Table',
-  'Date Input',
-  'Date Picker',
-  'Date Range Input',
-  'Date Time Input',
-  'Dialog',
-  'Direction',
-  'Dropdown Menu',
-  'Drawer',
-  'Empty',
-  'Field',
-  'Field Status',
-  'File Input',
-  'Form',
-  'Grid',
-  'Heading',
-  'Hover Card',
-  'Indicator',
-  'Info Tip',
-  'Input',
-  'Input Group',
-  'Input OTP',
-  'Item',
-  'Kbd',
-  'Label',
-  'Lightbox',
-  'Link',
-  'List',
-  'List Input',
-  'Log Stream',
-  'Markdown',
-  'Marker',
-  'Message',
-  'Message Scroller',
-  'Menubar',
-  'Metadata List',
-  'Mobile Nav',
-  'More Menu',
-  'Multi Selector',
-  'Native Select',
-  'Navigation Menu',
-  'Number Input',
-  'Overflow List',
-  'Pagination',
-  'Popover',
-  'Progress',
-  'Radio Group',
-  'Resizable',
-  'Scroll Area',
-  'Section',
-  'Select',
-  'Selectable Card',
-  'Separator',
-  'Sheet',
-  'Sidebar',
-  'Skeleton',
-  'Slider',
-  'Spinner',
-  'Stack',
-  'Stat',
-  'Status Dot',
-  'Stepper',
-  'Switch',
-  'Table',
-  'Tabs',
-  'Text',
-  'Textarea',
-  'Thumbnail',
-  'Time Input',
-  'Timer',
-  'Timestamp',
-  'Toast',
-  'Toggle',
-  'Toggle Group',
-  'Token',
-  'Tokenizer',
-  'Toolbar',
-  'Tooltip',
-  'Top Nav',
-  'Tour',
-  'Transfer List',
-  'Tree List',
-  'Typography',
-  'Visually Hidden',
-] as const
-
-export const toSlug = (name: string): string =>
-  name.toLowerCase().replaceAll(' ', '-')
-
-/** Removed components whose docs URLs now forward to the page that absorbed
-    them. */
-const COMPONENT_SLUG_ALIASES: Readonly<Record<string, string>> = {
-  'bottom-sheet': 'sheet',
-}
-
-export const canonicalComponentSlug = (slug: string): string =>
-  COMPONENT_SLUG_ALIASES[slug] ?? slug
-
-export const componentTitle = (slug: string): string | undefined =>
-  COMPONENTS.find(name => toSlug(name) === canonicalComponentSlug(slug))
+import { COMPONENTS, apiPurpose, toSlug } from '@/docs/component-metadata'
+export {
+  COMPONENTS,
+  canonicalComponentSlug,
+  componentTitle,
+  toSlug,
+} from '@/docs/component-metadata'
 
 export type ExampleConfig<Msg> = Readonly<{
   title: string
@@ -297,87 +176,15 @@ export type HeroExampleConfig<Msg> = Omit<ExampleConfig<Msg>, 'description'> &
     keepIdsCanonical?: boolean
   }>
 
-const HERO_ID_SUFFIX = '-hero'
-const HERO_ID_REF_ATTRIBUTES = [
-  'for',
-  'form',
-  'list',
-  'headers',
-  'aria-labelledby',
-  'aria-describedby',
-  'aria-details',
-  'aria-controls',
-  'aria-activedescendant',
-  'aria-errormessage',
-  'aria-owns',
-  'aria-flowto',
-] as const
-
-/** Heading-less copy of the first example, rendered directly under the page
-    header like shadcn's unnamed top preview. The hero and the named section
-    render the same example, so element ids could duplicate: the hero rewrites
-    every colliding id (and intra-hero id reference) inside its subtree with a
-    suffix, keeping the canonical ids on the named section. Ids that are
-    already unique — preview programs mint them per state slot — are left
-    canonical: components resolve their own elements with literal
-    `getElementById` lookups (Dialog's ShowDialog, popover anchorSetup, …), and
-    suffixing a model-owned id would make the lookup miss and the component
-    tear itself down (an opening `<dialog>` self-closing ~10ms later). */
 export const hero = <Msg>(
   config: HeroExampleConfig<Msg>,
   h: HtmlBuilder<Msg>,
-): Html => {
-  return h.div(
-    [
-      h.AriaLabel(`${config.title} preview`),
-      h.OnMount({
-        name: `docs-hero-${toSlug(config.title)}`,
-        f: element => {
-          if (!(element instanceof HTMLElement)) return Stream.empty
-          if (config.keepIdsCanonical === true) return Stream.empty
-          const scopedIds = new Set<string>()
-          element.querySelectorAll<HTMLElement>('[id]').forEach(node => {
-            if (node.id.length > 0 && !node.id.endsWith(HERO_ID_SUFFIX))
-              scopedIds.add(node.id)
-          })
-          const rewrittenIds = new Set<string>()
-          scopedIds.forEach(id => {
-            const copies = element.ownerDocument.querySelectorAll<HTMLElement>(
-              `#${CSS.escape(id)}`,
-            )
-            if (copies.length <= 1) return
-            const node = element.querySelector<HTMLElement>(
-              `#${CSS.escape(id)}`,
-            )
-            if (node !== null) {
-              node.id = `${id}${HERO_ID_SUFFIX}`
-              rewrittenIds.add(id)
-            }
-          })
-          HERO_ID_REF_ATTRIBUTES.forEach(attribute => {
-            element
-              .querySelectorAll<HTMLElement>(`[${attribute}]`)
-              .forEach(node => {
-                const value = node.getAttribute(attribute)
-                if (value === null) return
-                const rewritten = value
-                  .split(/\s+/)
-                  .map(token =>
-                    rewrittenIds.has(token)
-                      ? `${token}${HERO_ID_SUFFIX}`
-                      : token,
-                  )
-                  .join(' ')
-                if (rewritten !== value) node.setAttribute(attribute, rewritten)
-              })
-          })
-          return Stream.empty
-        },
-      }),
-    ],
-    [exampleCard(config, `hero-${toSlug(config.title)}`, config.title, h)],
+): Html =>
+  heroFrame(
+    config,
+    exampleCard(config, `hero-${toSlug(config.title)}`, config.title, h),
+    h,
   )
-}
 
 const exampleCard = <Msg>(
   config: HeroExampleConfig<Msg>,
@@ -527,33 +334,9 @@ export type ComponentPageConfig<Msg> = Readonly<{
   apiEntries: ReadonlyArray<ApiEntry>
   sidebarScrolled: Msg
   renderer: 'tailwind' | 'stylex'
-  onRendererChange: (renderer: 'tailwind' | 'stylex') => Msg
 }>
 
 const SIDEBAR_SCROLL_KEY = 'creaseui-docs-sidebar-scroll'
-
-const apiPurpose = (entry: ApiEntry): string => {
-  switch (entry.name) {
-    case 'Model':
-      return 'State owned by the component and stored in the parent model.'
-    case 'Message':
-      return 'Child events delegated through the parent update loop.'
-    case 'OutMessage':
-      return 'Typed events emitted for the parent domain to interpret.'
-    case 'init':
-      return 'Creates the initial component model.'
-    case 'update':
-      return 'Applies a child message and returns state, commands, and optional output.'
-    case 'view':
-      return 'Submodel view embedded with h.submodel.'
-    default:
-      return entry.kind === 'function'
-        ? 'Public operation or render helper.'
-        : entry.kind === 'type'
-          ? 'Public configuration or data contract.'
-          : 'Public schema, message constructor, or compatibility export.'
-  }
-}
 
 export const componentPage = <Msg>(
   config: ComponentPageConfig<Msg>,
@@ -741,35 +524,6 @@ export const componentPage = <Msg>(
                   h.div(
                     [h.Class('flex flex-wrap items-center gap-2')],
                     [
-                      h.div(
-                        [
-                          h.Role('group'),
-                          h.AriaLabel('Preview styling engine'),
-                          h.Class(
-                            'mr-2 inline-flex rounded-md border bg-muted/30 p-0.5',
-                          ),
-                        ],
-                        (['tailwind', 'stylex'] as const).map(renderer =>
-                          h.button(
-                            [
-                              h.Type('button'),
-                              h.OnClick(config.onRendererChange(renderer)),
-                              h.AriaPressed(
-                                config.renderer === renderer ? 'true' : 'false',
-                              ),
-                              h.Class(
-                                cn(
-                                  'min-h-9 rounded-[5px] px-3 text-xs font-medium transition-colors focus-visible:ring-2 focus-visible:ring-ring/50',
-                                  config.renderer === renderer
-                                    ? 'bg-background text-foreground shadow-xs'
-                                    : 'text-muted-foreground hover:text-foreground',
-                                ),
-                              ),
-                            ],
-                            [renderer === 'tailwind' ? 'Tailwind' : 'StyleX'],
-                          ),
-                        ),
-                      ),
                       h.span(
                         [
                           h.Class(

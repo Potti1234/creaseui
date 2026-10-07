@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -70,13 +71,13 @@ export const lightboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                 h.OnClick(
                   msg(onMessageJson, 'ClickedOpenLightboxAt', { index }),
                 ),
-                h.Class(className(styles.thumb)),
+                h.Class(className(reset.button, styles.thumb)),
               ],
               [
                 h.img([
                   h.Src(item.src),
                   h.Alt(item.alt),
-                  h.Class(className(styles.thumbImg)),
+                  h.Class(className(reset.media, styles.thumbImg)),
                 ]),
               ],
             ),

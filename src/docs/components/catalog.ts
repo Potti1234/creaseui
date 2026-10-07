@@ -23,6 +23,7 @@ import type {
 import { componentApi } from '@/docs/generated-component-api'
 import { authoredPages } from '@/docs/components/pages'
 import { RoutedDocsPreviewMessage } from '@/docs/components/pages/authored-page'
+import { renderer } from '@/site/config'
 const stylexExamplePreviewProviders = new Map<
   string,
   StyleXExamplePreviewProvider
@@ -60,15 +61,11 @@ export const GotExampleMessage = taggedStruct('GotCatalogExampleMessage', {
   index: S.Number,
   message: RoutedDocsPreviewMessage,
 })
-export const ChangedRenderer = taggedStruct('ChangedCatalogRenderer', {
-  renderer: S.Literals(['tailwind', 'stylex']),
-})
 export const GotCodeFileMessage = taggedStruct('GotCatalogCodeFileMessage', {
   message: CodeFile.Message,
 })
 export const Message = S.Union([
   GotExampleMessage,
-  ChangedRenderer,
   GotCodeFileMessage,
   CopyFeedback.Message,
 ])
@@ -94,7 +91,7 @@ export const init = (slug?: string): Model => {
         return program.init(index)
       },
     ),
-    renderer: 'tailwind',
+    renderer,
     copiedCode: null,
   }
 }
@@ -102,9 +99,6 @@ export const init = (slug?: string): Model => {
 type UpdateReturn = Update.Return<Model, Message>
 
 export const update = (model: Model, message: Message): UpdateReturn => {
-  if (message._tag === 'ChangedCatalogRenderer') {
-    return { model: { ...model, renderer: message.renderer } }
-  }
   if (message._tag === 'GotCatalogCodeFileMessage') return { model: model }
   if (message._tag !== 'GotCatalogExampleMessage') {
     const { model: copiedCode, commands: copiedCodeCommands__ } =
@@ -419,7 +413,10 @@ export const view = (
       description: definition.description,
       kind,
       architecture: definition.architecture ?? architectureFor(kind, name),
-      installation: `npx creaseui add ${slug}`,
+      installation:
+        renderer === 'stylex'
+          ? `// Copy src/stylex/${slug}.ts and its imports into your project.\n// Configure the StyleX compiler; see src/stylex/README.md.`
+          : `npx shadcn@latest add https://creaseui.com/r/${slug}.json`,
       usage:
         model.renderer === 'stylex'
           ? (definition.usage ?? usageFor(slug, name, kind)).replaceAll(
@@ -455,7 +452,6 @@ export const view = (
       ...(heroExample === undefined ? {} : { heroExample }),
       sidebarScrolled: CopyFeedback.Message.ObservedDocsSidebarScroll(),
       renderer: model.renderer,
-      onRendererChange: renderer => ChangedRenderer({ renderer }),
       composition:
         definition.composition ??
         compositionFor(kind, name, primaryExport(slug)),

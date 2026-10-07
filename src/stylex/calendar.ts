@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Option } from 'effect'
 import { Match as M } from 'effect'
@@ -126,7 +127,7 @@ const styles = stylex.create({
     position: 'relative',
     textAlign: 'center',
     height: 'var(--cell-size)',
-    width: 'var(--cell-size)',
+    width: 'var(--cell-width, var(--cell-size))',
   },
   dayRange: { backgroundColor: tokens.accent },
   dayRangeMiddle: { borderRadius: '0px' },
@@ -302,7 +303,7 @@ const styles = stylex.create({
     fontWeight: 400,
     justifyContent: 'center',
     height: 'var(--cell-size)',
-    width: 'var(--cell-size)',
+    width: 'var(--cell-width, var(--cell-size))',
   },
   weekNumber: {
     alignItems: 'center',
@@ -330,6 +331,8 @@ export type CalendarViewOptions = Readonly<{
   layoutStyle?: ComponentLayoutStyle
   range?: CalendarBehavior.CalendarRange
   size?: 'default' | 'comfortable'
+  /** Overrides --cell-size directly (e.g. TW sidebar-15's w-[33px] cells). */
+  cellWidth?: string
   weekNumbers?: boolean
 }>
 
@@ -348,7 +351,7 @@ const captionHeading = <Msg>(
         [
           ...headingButton,
           h.Id(heading.id),
-          h.Class(className(styles.captionButton)),
+          h.Class(className(reset.button, styles.captionButton)),
         ],
         [
           heading.text,
@@ -362,7 +365,7 @@ const navigationButton = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Html =>
   h.button(
-    [...attributes, h.Class(className(styles.navButton))],
+    [...attributes, h.Class(className(reset.button, styles.navButton))],
     [
       (direction === 'previous') !== (options.direction === 'rtl')
         ? Icon.chevronLeft({ class: className(styles.navIcon) }, h)
@@ -440,7 +443,7 @@ const daysView = <Msg>(
               h.button(
                 [
                   ...cell.buttonAttributes,
-                  h.Class(className(styles.dayButton)),
+                  h.Class(className(reset.button, styles.dayButton)),
                 ],
                 [cell.label],
               ),
@@ -457,6 +460,7 @@ const daysView = <Msg>(
       h.DataAttribute('slot', 'calendar'),
       h.Style({
         '--cell-size': options.size === 'comfortable' ? '2.5rem' : '2rem',
+        '--cell-width': options.cellWidth ?? 'var(--cell-size)',
       }),
       h.Class(
         className(
@@ -526,6 +530,7 @@ const pickerView = <Msg>(
       h.DataAttribute('slot', 'calendar'),
       h.Style({
         '--cell-size': options.size === 'comfortable' ? '2.5rem' : '2rem',
+        '--cell-width': options.cellWidth ?? 'var(--cell-size)',
       }),
       h.Class(
         className(
@@ -567,7 +572,7 @@ const pickerView = <Msg>(
                   h.button(
                     [
                       ...cell.buttonAttributes,
-                      h.Class(className(styles.pickerButton)),
+                      h.Class(className(reset.button, styles.pickerButton)),
                     ],
                     [cell.shortLabel],
                   ),
@@ -592,6 +597,7 @@ const yearsView = <Msg>(
       h.DataAttribute('slot', 'calendar'),
       h.Style({
         '--cell-size': options.size === 'comfortable' ? '2.5rem' : '2rem',
+        '--cell-width': options.cellWidth ?? 'var(--cell-size)',
       }),
       h.Class(
         className(
@@ -646,7 +652,7 @@ const yearsView = <Msg>(
                   h.button(
                     [
                       ...cell.buttonAttributes,
-                      h.Class(className(styles.pickerButton)),
+                      h.Class(className(reset.button, styles.pickerButton)),
                     ],
                     [cell.label],
                   ),
@@ -687,6 +693,8 @@ export type CalendarProps<Msg> = Readonly<{
   range?: CalendarBehavior.CalendarRange
   layoutStyle?: ComponentLayoutStyle
   size?: 'default' | 'comfortable'
+  /** Overrides --cell-size directly (e.g. TW sidebar-15's w-[33px] cells). */
+  cellWidth?: string
   weekNumbers?: boolean
   previousMonthLabel?: string
   nextMonthLabel?: string
@@ -721,6 +729,9 @@ export const calendar = <Msg>(
               ? {}
               : { layoutStyle: props.layoutStyle }),
             ...(props.size === undefined ? {} : { size: props.size }),
+            ...(props.cellWidth === undefined
+              ? {}
+              : { cellWidth: props.cellWidth }),
             ...(props.weekNumbers === undefined
               ? {}
               : { weekNumbers: props.weekNumbers }),

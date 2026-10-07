@@ -30,7 +30,7 @@ Sidebar.sidebarProvider({ state, children: [
 ] }, h)`,
     sections: [
       {
-        id: 'installation',
+        id: 'sidebar-imports',
         title: 'Installation',
         description:
           'Sidebar exports the stateless view helpers and the state module from one entry point. Import the Tailwind or StyleX renderer; the Model and Message contract is shared by both.',

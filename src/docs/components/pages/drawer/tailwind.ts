@@ -11,6 +11,7 @@ import {
   drawerLorem,
   drawerRtlCopy,
   drawerSides,
+  usesDirectionTriggers,
 } from '@/docs/components/pages/drawer/shared'
 import * as Chart from '@/lib/echarts'
 import * as Button from '@/ui/button'
@@ -43,8 +44,12 @@ Chart.registerChart('docs-drawer-rtl-chart', theme => ({
 
 const DrawerPreviewMessageUnion = defineMessageUnion({
   OpenedDrawerPreview: {},
-  OpenedDrawerSide: { side: S.Literals(['top', 'right', 'bottom', 'left']) },
+  OpenedDrawerSide: { side: S.Literals(['up', 'right', 'down', 'left']) },
+  OpenedNested2: {},
+  OpenedNested3: {},
   GotDrawerPreviewMessage: { message: Drawer.Message },
+  GotDrawer2PreviewMessage: { message: Drawer.Message },
+  GotDrawer3PreviewMessage: { message: Drawer.Message },
   GotDialogPreviewMessage: { message: Dialog.Message },
   ChangedViewport: { isDesktop: S.Boolean },
   ChangedName: { value: S.String },
@@ -58,10 +63,24 @@ const DrawerPreviewMessage = S.Union([
 type DrawerPreviewMessage = typeof DrawerPreviewMessage.Type
 const DrawerPreviewModel = S.Struct({
   _docsPage: S.Literal('drawer'),
-  kind: S.Literals(['goal', 'side', 'scroll', 'sides', 'responsive', 'rtl']),
+  kind: S.Literals([
+    'goal',
+    'side',
+    'scroll',
+    'sides',
+    'swipe-handle',
+    'custom-size',
+    'snap-points',
+    'nested',
+    'non-modal',
+    'responsive',
+    'rtl',
+  ]),
   drawer: Drawer.Model,
+  drawer2: Drawer.Model,
+  drawer3: Drawer.Model,
   dialog: Dialog.Model,
-  side: S.Literals(['top', 'right', 'bottom', 'left']),
+  side: S.Literals(['up', 'right', 'down', 'left']),
   isDesktop: S.Boolean,
   name: S.String,
   username: S.String,
@@ -92,12 +111,38 @@ const subscriptions =
 
 const scrollableContent = (h: HtmlBuilder<DrawerPreviewMessage>): Html =>
   h.div(
-    [h.Class('overflow-y-auto px-4')],
-    Array.from({ length: 10 }).map((_, index) =>
+    [h.Class('flex-1 overflow-y-auto p-4')],
+    Array.from({ length: 20 }).map((_, index) =>
       h.p(
         [h.Key(String(index)), h.Class('mb-4 leading-normal')],
         [drawerLorem],
       ),
+    ),
+  )
+
+/** Plain muted fill block — sizes itself off the popup's swipe axis like the
+    shadcn examples (`group-data-[swipe-axis=…]/drawer-popup`). */
+const mutedBlock = (h: HtmlBuilder<DrawerPreviewMessage>): Html =>
+  h.div(
+    [h.Class('flex-1 p-4')],
+    [
+      h.div(
+        [
+          h.Class(
+            'bg-muted group-data-[swipe-axis=x]/drawer-popup:size-full group-data-[swipe-axis=y]/drawer-popup:h-80 group-data-[swipe-axis=y]/drawer-popup:w-full',
+          ),
+        ],
+        [],
+      ),
+    ],
+  )
+
+/** Grid of muted blocks used by the snap-points example. */
+const snapBlocks = (h: HtmlBuilder<DrawerPreviewMessage>): Html =>
+  h.div(
+    [h.Class('grid flex-1 gap-3 overflow-y-auto p-4')],
+    Array.from({ length: 16 }).map((_, index) =>
+      h.div([h.Key(String(index)), h.Class('h-12 bg-muted')], []),
     ),
   )
 
@@ -200,7 +245,10 @@ const rtlContent = (
                     [String(model.goal)],
                   ),
                   h.p(
-                    [h.Class('text-[0.70rem] uppercase text-muted-foreground')],
+                    [
+                      // eslint-disable-next-line shadcn/no-arbitrary-values -- reason: mirrors the shadcn drawer goal example's text-[0.70rem] label verbatim.
+                      h.Class('text-[0.70rem] uppercase text-muted-foreground'),
+                    ],
                     [drawerRtlCopy.calories],
                   ),
                 ],
@@ -285,6 +333,85 @@ const cancelOnlyFooter = (
   ),
 ]
 
+const closeOnlyFooter = (
+  slots: Slots<DrawerPreviewMessage>,
+  h: HtmlBuilder<DrawerPreviewMessage>,
+): ReadonlyArray<Html> => [
+  h.button(
+    [
+      ...slots.closeButton,
+      h.Type('button'),
+      h.Class('rounded-md border px-4 py-2 text-sm'),
+    ],
+    ['Close'],
+  ),
+]
+
+const primaryButton = (
+  label: string,
+  onClick: DrawerPreviewMessage,
+  h: HtmlBuilder<DrawerPreviewMessage>,
+): Html =>
+  h.button(
+    [
+      h.Type('button'),
+      h.OnClick(onClick),
+      h.Class(
+        'rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground',
+      ),
+    ],
+    [label],
+  )
+
+/** One nested drawer level — renders its own footer with either the next
+    nested drawer or a plain close button at the deepest level. */
+const nestedDrawerView = (
+  model: DrawerPreviewModel,
+  h: HtmlBuilder<DrawerPreviewMessage>,
+  depth: 2 | 3,
+): Html => {
+  const drawerModel = depth === 2 ? model.drawer2 : model.drawer3
+  const toMessage =
+    depth === 2
+      ? (message: Drawer.Message): DrawerPreviewMessage =>
+          DrawerPreviewMessageUnion.GotDrawer2PreviewMessage({ message })
+      : (message: Drawer.Message): DrawerPreviewMessage =>
+          DrawerPreviewMessageUnion.GotDrawer3PreviewMessage({ message })
+  const title = depth === 2 ? 'Nested drawer' : 'Third drawer'
+  const description =
+    depth === 2
+      ? 'The parent drawer stays mounted behind this one.'
+      : 'This is the frontmost drawer in the stack.'
+  return Drawer.drawer(
+    {
+      model: drawerModel,
+      toParentMessage: toMessage,
+      title,
+      description,
+      content: () => [mutedBlock(h)],
+      footer: slots => [
+        ...(depth === 2
+          ? [
+              primaryButton(
+                'Open third drawer',
+                DrawerPreviewMessageUnion.OpenedNested3(),
+                h,
+              ),
+              nestedDrawerView(model, h, 3),
+            ]
+          : []),
+        ...closeOnlyFooter(slots, h),
+      ],
+    },
+    h,
+  )
+}
+
+/** Custom-size overrides per swipe direction (shadcn Custom Width and Height). */
+const CUSTOM_SIZE_CLASS =
+  // eslint-disable-next-line shadcn/no-arbitrary-values -- reason: h-[50vh] mirrors the shadcn Custom Height drawer example verbatim.
+  'data-[swipe-direction=down]:h-64 data-[swipe-direction=up]:h-[50vh] data-[swipe-direction=left]:w-xl data-[swipe-direction=right]:w-xs'
+
 const drawerView = (
   index: number,
   fixture: DrawerFixture,
@@ -304,7 +431,6 @@ const drawerView = (
       return Drawer.drawer(
         {
           ...shared,
-          direction: fixture.kind === 'side' ? 'right' : 'bottom',
           content: () => [goalContent(h)],
           footer: slots => footerActions(slots, h, 'Save goal', 'Cancel'),
         },
@@ -314,7 +440,6 @@ const drawerView = (
       return Drawer.drawer(
         {
           ...shared,
-          direction: 'right',
           title: 'Move Goal',
           content: () => [scrollableContent(h)],
           footer: slots => footerActions(slots, h, 'Submit', 'Cancel'),
@@ -325,10 +450,76 @@ const drawerView = (
       return Drawer.drawer(
         {
           ...shared,
-          direction: model.side,
           title: 'Move Goal',
-          content: () => [scrollableContent(h)],
+          content: () => [mutedBlock(h)],
           footer: slots => footerActions(slots, h, 'Submit', 'Cancel'),
+        },
+        h,
+      )
+    case 'swipe-handle':
+      return Drawer.drawer(
+        {
+          ...shared,
+          showSwipeHandle: true,
+          title: 'Drawer',
+          description: 'Drawer with a swipe handle.',
+          content: () => [mutedBlock(h)],
+        },
+        h,
+      )
+    case 'custom-size':
+      return Drawer.drawer(
+        {
+          ...shared,
+          class: CUSTOM_SIZE_CLASS,
+          title: `${model.side} drawer`,
+          description: 'Drawer with a custom size.',
+          content: () => [scrollableContent(h)],
+          footer: slots => closeOnlyFooter(slots, h),
+        },
+        h,
+      )
+    case 'snap-points':
+      return Drawer.drawer(
+        {
+          ...shared,
+          showSwipeHandle: true,
+          // eslint-disable-next-line shadcn/no-arbitrary-values -- reason: the snap-points panel caps at 100dvh-1rem per the shadcn snap-points example.
+          class: 'max-h-[calc(100dvh-1rem)]',
+          title: 'Snap points',
+          description:
+            'Drag the drawer to snap between a compact peek and a near full-height view.',
+          content: () => [snapBlocks(h)],
+        },
+        h,
+      )
+    case 'nested':
+      return Drawer.drawer(
+        {
+          ...shared,
+          showSwipeHandle: true,
+          title: 'Drawer',
+          description: 'Open another drawer from the same direction.',
+          content: () => [mutedBlock(h)],
+          footer: slots => [
+            primaryButton(
+              'Open nested drawer',
+              DrawerPreviewMessageUnion.OpenedNested2(),
+              h,
+            ),
+            nestedDrawerView(model, h, 2),
+            ...closeOnlyFooter(slots, h),
+          ],
+        },
+        h,
+      )
+    case 'non-modal':
+      return Drawer.drawer(
+        {
+          ...shared,
+          title: 'Non Modal Drawer',
+          content: () => [mutedBlock(h)],
+          footer: slots => closeOnlyFooter(slots, h),
         },
         h,
       )
@@ -386,7 +577,7 @@ const triggerView = (
   index: number,
   h: HtmlBuilder<DrawerPreviewMessage>,
 ): Html => {
-  if (fixture.kind === 'sides') {
+  if (usesDirectionTriggers(fixture.kind)) {
     return h.div(
       [h.Class('flex flex-wrap gap-2')],
       drawerSides.map(side =>
@@ -411,29 +602,60 @@ const triggerView = (
   )
 }
 
+/** Per-example Drawer.init config — swipeDirection baked for single-trigger
+    kinds; direction-triggered kinds set it on open. */
+const drawerInitFor = (fixture: DrawerFixture, id: string): Drawer.Model => {
+  const common = { id, isAnimated: true }
+  switch (fixture.kind) {
+    case 'side':
+      return Drawer.init({ ...common, swipeDirection: 'right' })
+    case 'snap-points':
+      return Drawer.init({ ...common, snapPoints: ['31rem', 1] })
+    case 'non-modal':
+      return Drawer.init({
+        ...common,
+        swipeDirection: 'right',
+        modal: false,
+        disablePointerDismissal: true,
+      })
+    case 'rtl':
+      return Drawer.init({ ...common, swipeDirection: 'left' })
+    default:
+      return Drawer.init(common)
+  }
+}
+
 export const drawerTailwindPreviewProgram = definePreviewProgram<
   DrawerPreviewModel,
   DrawerPreviewMessage
 >({
   Model: DrawerPreviewModel,
   Message: DrawerPreviewMessage,
-  init: index => ({
-    _docsPage: 'drawer',
-    kind: (drawerFixtures[index] ?? drawerFixtures[0]!).kind,
-    drawer: Drawer.init({
-      id: `docs-drawer-${String(index)}`,
-      isAnimated: true,
-    }),
-    dialog: Dialog.init({
-      id: `docs-drawer-dialog-${String(index)}`,
-      isAnimated: true,
-    }),
-    side: 'bottom',
-    isDesktop: isDesktop(),
-    name: 'Pedro Duarte',
-    username: '@peduarte',
-    goal: 350,
-  }),
+  init: index => {
+    const fixture = drawerFixtures[index] ?? drawerFixtures[0]!
+    return {
+      _docsPage: 'drawer' as const,
+      kind: fixture.kind,
+      drawer: drawerInitFor(fixture, `docs-drawer-${String(index)}`),
+      drawer2: Drawer.init({
+        id: `docs-drawer-${String(index)}-nested-2`,
+        isAnimated: true,
+      }),
+      drawer3: Drawer.init({
+        id: `docs-drawer-${String(index)}-nested-3`,
+        isAnimated: true,
+      }),
+      dialog: Dialog.init({
+        id: `docs-drawer-dialog-${String(index)}`,
+        isAnimated: true,
+      }),
+      side: 'down' as const,
+      isDesktop: isDesktop(),
+      name: 'Pedro Duarte',
+      username: '@peduarte',
+      goal: 350,
+    }
+  },
   update: (model, message) => {
     switch (message._tag) {
       case 'OpenedDrawerPreview': {
@@ -460,11 +682,56 @@ export const drawerTailwindPreviewProgram = definePreviewProgram<
       }
       case 'OpenedDrawerSide': {
         const next = { ...model, side: message.side }
-        const result = Drawer.open(next.drawer)
+        const result = Drawer.open({
+          ...next.drawer,
+          swipeDirection: message.side,
+        })
         return {
           model: { ...next, drawer: result.model },
           commands: Command.mapMessages(result.commands ?? [], n =>
             DrawerPreviewMessageUnion.GotDrawerPreviewMessage({ message: n }),
+          ),
+        }
+      }
+      case 'OpenedNested2': {
+        const result = Drawer.open({
+          ...model.drawer2,
+          swipeDirection: model.side,
+        })
+        return {
+          model: { ...model, drawer2: result.model },
+          commands: Command.mapMessages(result.commands ?? [], n =>
+            DrawerPreviewMessageUnion.GotDrawer2PreviewMessage({ message: n }),
+          ),
+        }
+      }
+      case 'OpenedNested3': {
+        const result = Drawer.open({
+          ...model.drawer3,
+          swipeDirection: model.side,
+        })
+        return {
+          model: { ...model, drawer3: result.model },
+          commands: Command.mapMessages(result.commands ?? [], n =>
+            DrawerPreviewMessageUnion.GotDrawer3PreviewMessage({ message: n }),
+          ),
+        }
+      }
+      case 'GotDrawer2PreviewMessage': {
+        const result = Drawer.update(model.drawer2, message.message)
+        return {
+          model: { ...model, drawer2: result.model },
+          commands: Command.mapMessages(result.commands ?? [], n =>
+            DrawerPreviewMessageUnion.GotDrawer2PreviewMessage({ message: n }),
+          ),
+        }
+      }
+      case 'GotDrawer3PreviewMessage': {
+        const result = Drawer.update(model.drawer3, message.message)
+        return {
+          model: { ...model, drawer3: result.model },
+          commands: Command.mapMessages(result.commands ?? [], n =>
+            DrawerPreviewMessageUnion.GotDrawer3PreviewMessage({ message: n }),
           ),
         }
       }

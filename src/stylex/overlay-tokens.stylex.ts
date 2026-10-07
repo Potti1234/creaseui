@@ -1,7 +1,8 @@
 import * as stylex from '@stylexjs/stylex'
 
-import { tokens } from './tokens.stylex'
+import { complexTokens } from './complex-tokens.stylex'
 import { interactionTokens } from './interaction-tokens.stylex.const'
+import { tokens } from './tokens.stylex'
 
 /** Canonical roles shared by dialogs, menus, pickers, and transient feedback. */
 export const overlayStyles = stylex.create({
@@ -19,12 +20,16 @@ export const overlayStyles = stylex.create({
   },
   close: {
     borderColor: tokens.transparent,
-    borderRadius: tokens.controlRadius,
+    /* TW 'rounded-xs' (2px) — keeps the focus ring's rounded-square shape. */
+    borderRadius: complexTokens.smallRadius,
     borderStyle: 'solid',
     backgroundColor: tokens.transparent,
     boxShadow: {
       default: tokens.shadowNone,
-      ':focus-visible': tokens.focusRingShadow,
+      /* TW 'focus:ring-2 focus:ring-offset-2 focus:ring-ring' — a 2px
+         background-offset then a 2px full-alpha ring (not the shared
+         3px/50% focusRingShadow). */
+      ':focus': tokens.focusRingOffsetShadow,
     },
     cursor: interactionTokens.cursorAction,
     opacity: { default: 0.7, ':hover': 1 },
@@ -248,6 +253,7 @@ export const overlayStyles = stylex.create({
     fontSize: '0.75rem',
     lineHeight: '1rem',
     position: 'relative',
+    textWrap: 'balance',
     zIndex: 50,
     width: 'fit-content',
   },

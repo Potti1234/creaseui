@@ -6,9 +6,14 @@ export type DrawerKind =
   | 'side'
   | 'scroll'
   | 'sides'
+  | 'swipe-handle'
+  | 'custom-size'
+  | 'snap-points'
+  | 'nested'
+  | 'non-modal'
   | 'responsive'
   | 'rtl'
-export type DrawerSide = 'top' | 'right' | 'bottom' | 'left'
+export type DrawerSide = 'up' | 'right' | 'down' | 'left'
 
 export type DrawerFixture = Readonly<{
   title: string
@@ -17,6 +22,15 @@ export type DrawerFixture = Readonly<{
   kind: DrawerKind
   triggerLabel: string
 }>
+
+/** Kinds that render one trigger button per swipe direction (shadcn's
+    Position / Scrollable / Swipe Handle / Custom size / Nested examples). */
+export const usesDirectionTriggers = (kind: DrawerKind): boolean =>
+  kind === 'sides' ||
+  kind === 'scroll' ||
+  kind === 'swipe-handle' ||
+  kind === 'custom-size' ||
+  kind === 'nested'
 
 export const drawerFixtures: ReadonlyArray<DrawerFixture> = [
   {
@@ -33,18 +47,53 @@ export const drawerFixtures: ReadonlyArray<DrawerFixture> = [
     triggerLabel: 'Open right drawer',
   },
   {
-    title: 'Scrollable Content',
-    description:
-      'Long copy scrolls inside a right-hand drawer while the footer stays put.',
-    kind: 'scroll',
-    triggerLabel: 'Scrollable Content',
-  },
-  {
-    title: 'Sides',
+    title: 'Position',
     description:
       'One drawer model plus a direction field opens from any of the four edges.',
     kind: 'sides',
     triggerLabel: 'Sides',
+  },
+  {
+    title: 'Swipe Handle',
+    description:
+      'The Base UI swipe handle pill; drags start anywhere on the popup, interactive controls excluded.',
+    kind: 'swipe-handle',
+    triggerLabel: 'Swipe Handle',
+  },
+  {
+    title: 'Custom Width and Height',
+    description:
+      'Per-direction popup overrides: 16rem down, 50vh up, 36rem left, 20rem right.',
+    kind: 'custom-size',
+    triggerLabel: 'Custom Size',
+  },
+  {
+    title: 'Scrollable Content',
+    description:
+      'Long copy scrolls inside the drawer while the footer stays put — from any edge.',
+    kind: 'scroll',
+    triggerLabel: 'Scrollable Content',
+  },
+  {
+    title: 'Snap Points',
+    description:
+      'snapPoints [31rem, 1] with the swipe handle — drag to snap between a compact peek and full height.',
+    kind: 'snap-points',
+    triggerLabel: 'Open Snap Drawer',
+  },
+  {
+    title: 'Nested',
+    description:
+      'Three stacked drawers; the parent scales down and dims while a child is open.',
+    kind: 'nested',
+    triggerLabel: 'Nested',
+  },
+  {
+    title: 'Non Modal',
+    description:
+      'modal={false} + disablePointerDismissal keeps the page interactive behind a right drawer.',
+    kind: 'non-modal',
+    triggerLabel: 'Non Modal',
   },
   {
     title: 'Responsive Dialog',
@@ -63,9 +112,9 @@ export const drawerFixtures: ReadonlyArray<DrawerFixture> = [
 ]
 
 export const drawerSides: ReadonlyArray<DrawerSide> = [
-  'top',
+  'up',
   'right',
-  'bottom',
+  'down',
   'left',
 ]
 
@@ -102,6 +151,16 @@ const emitStyles = `const styles = stylex.create({
   counterFlex: { flex: '1 1 0%', textAlign: 'center' },
   fieldGrid: { display: 'grid', gap: '1rem', paddingInline: '1rem' },
   compact: { maxWidth: '24rem' },
+  fillWrap: { flex: '1 1 0%', padding: '1rem' },
+  fillY: { backgroundColor: 'var(--muted)', height: '20rem', width: '100%' },
+  fillX: { backgroundColor: 'var(--muted)', height: '100%', width: '100%' },
+  snapGrid: { display: 'grid', flex: '1 1 0%', gap: '0.75rem', overflowY: 'auto', padding: '1rem' },
+  snapBlock: { backgroundColor: 'var(--muted)', height: '3rem' },
+  snapPanel: { maxHeight: 'calc(100dvh - 1rem)' },
+  sizeDown: { height: '16rem' },
+  sizeUp: { height: '50vh' },
+  sizeLeft: { width: '36rem' },
+  sizeRight: { width: '20rem' },
 })`
 
 const sq = (value: string): string => value.replaceAll("'", "\\'")
@@ -119,14 +178,56 @@ const emitContent = (fixture: DrawerFixture, isStyleX: boolean): string => {
         ]),
       ],`
     case 'scroll':
-    case 'sides':
       return `content: () => [
         h.div(
-          [h.Class(${cls('overflow-y-auto px-4', 'styles.scrollBody')})],
+          [h.Class(${cls('flex-1 overflow-y-auto p-4', 'styles.scrollBody')})],
+          Array.from({ length: 20 }).map((_, index) =>
+            h.p([h.Key(String(index)), h.Class(${cls('mb-4 leading-normal', 'styles.lorem')})], [
+              '${drawerLorem}',
+            ]),
+          ),
+        ),
+      ],`
+    case 'sides':
+    case 'swipe-handle':
+    case 'nested':
+      return `content: () => [
+        h.div([h.Class(${cls('flex-1 p-4', 'styles.fillWrap')})], [
+          h.div([h.Class(${
+            isStyleX
+              ? "className(model.side === 'up' || model.side === 'down' ? styles.fillY : styles.fillX)"
+              : "'bg-muted group-data-[swipe-axis=x]/drawer-popup:size-full group-data-[swipe-axis=y]/drawer-popup:h-80 group-data-[swipe-axis=y]/drawer-popup:w-full'"
+          })], []),
+        ]),
+      ],`
+    case 'non-modal':
+      // Fixed 'right' direction — the model carries no `side` field.
+      return `content: () => [
+        h.div([h.Class(${cls('flex-1 p-4', 'styles.fillWrap')})], [
+          h.div([h.Class(${
+            isStyleX
+              ? 'className(styles.fillX)'
+              : "'bg-muted group-data-[swipe-axis=x]/drawer-popup:size-full group-data-[swipe-axis=y]/drawer-popup:h-80 group-data-[swipe-axis=y]/drawer-popup:w-full'"
+          })], []),
+        ]),
+      ],`
+    case 'custom-size':
+      return `content: () => [
+        h.div(
+          [h.Class(${cls('flex-1 overflow-y-auto p-4', 'styles.scrollBody')})],
           Array.from({ length: 10 }).map((_, index) =>
             h.p([h.Key(String(index)), h.Class(${cls('mb-4 leading-normal', 'styles.lorem')})], [
               '${drawerLorem}',
             ]),
+          ),
+        ),
+      ],`
+    case 'snap-points':
+      return `content: () => [
+        h.div(
+          [h.Class(${cls('grid flex-1 gap-3 overflow-y-auto p-4', 'styles.snapGrid')})],
+          Array.from({ length: 16 }).map((_, index) =>
+            h.div([h.Key(String(index)), h.Class(${cls('h-12 bg-muted', 'styles.snapBlock')})], []),
           ),
         ),
       ],`
@@ -201,6 +302,13 @@ const emitFooter = (fixture: DrawerFixture, isStyleX: boolean): string => {
         ${primary('Submit')},
         ${outline('Cancel')},
       ],`
+    case 'custom-size':
+    case 'non-modal':
+      return `footer: slots => [${outline('Close')}],`
+    case 'swipe-handle':
+    case 'snap-points':
+    case 'nested':
+      return ''
     case 'rtl':
       return `footer: slots => [
         ${primary(drawerRtlCopyEmit.submit)},
@@ -213,10 +321,27 @@ const emitFooter = (fixture: DrawerFixture, isStyleX: boolean): string => {
 
 const drawerRtlCopyEmit = { submit: 'إرسال', cancel: 'إلغاء' } as const
 
-const drawerInitExtra = (fixture: DrawerFixture): string => {
+/** Extra Drawer.init config for the emitted example source. */
+const drawerInitConfig = (fixture: DrawerFixture): string => {
   switch (fixture.kind) {
-    case 'sides':
-      return ", side: 'bottom'"
+    case 'side':
+      return ", swipeDirection: 'right'"
+    case 'snap-points':
+      return ", snapPoints: ['31rem', 1]"
+    case 'non-modal':
+      return ", swipeDirection: 'right', modal: false, disablePointerDismissal: true"
+    case 'rtl':
+      return ", swipeDirection: 'left'"
+    default:
+      return ''
+  }
+}
+
+const drawerInitExtra = (fixture: DrawerFixture): string => {
+  if (fixture.kind === 'nested')
+    return ", side: 'down', drawer2: Drawer.init({ id: 'drawer-nested-2', isAnimated: true }), drawer3: Drawer.init({ id: 'drawer-nested-3', isAnimated: true })"
+  if (usesDirectionTriggers(fixture.kind)) return ", side: 'down'"
+  switch (fixture.kind) {
     case 'responsive':
       return ", dialog: Dialog.init({ id: 'responsive-dialog', isAnimated: true }), isDesktop: window.matchMedia('(min-width: 768px)').matches, name: 'Pedro Duarte', username: '@peduarte'"
     case 'rtl':
@@ -227,9 +352,11 @@ const drawerInitExtra = (fixture: DrawerFixture): string => {
 }
 
 const drawerModelFields = (fixture: DrawerFixture): string => {
+  if (fixture.kind === 'nested')
+    return ", side: S.Literals(['up', 'right', 'down', 'left']), drawer2: Drawer.Model, drawer3: Drawer.Model"
+  if (usesDirectionTriggers(fixture.kind))
+    return ", side: S.Literals(['up', 'right', 'down', 'left'])"
   switch (fixture.kind) {
-    case 'sides':
-      return ", side: S.Literals(['top', 'right', 'bottom', 'left'])"
     case 'responsive':
       return ', dialog: Dialog.Model, isDesktop: S.Boolean, name: S.String, username: S.String'
     case 'rtl':
@@ -240,9 +367,17 @@ const drawerModelFields = (fixture: DrawerFixture): string => {
 }
 
 const drawerExtraMessages = (fixture: DrawerFixture, tag: string): string => {
+  if (fixture.kind === 'nested')
+    return `\nexport const ClickedOpenSide = taggedStruct('ClickedOpenSide${tag}', { side: S.Literals(['up', 'right', 'down', 'left']) });
+export const OpenedNested2 = taggedStruct('OpenedNested2${tag}');
+export const OpenedNested3 = taggedStruct('OpenedNested3${tag}');
+export const GotDrawer2Message = taggedStruct('GotDrawer2Message${tag}', { message: Drawer.Message });
+export const GotDrawer3Message = taggedStruct('GotDrawer3Message${tag}', { message: Drawer.Message });`
+  if (usesDirectionTriggers(fixture.kind))
+    return `\nexport const ClickedOpenSide = taggedStruct('ClickedOpenSide${tag}', { side: S.Literals(['up', 'right', 'down', 'left']) });`
   switch (fixture.kind) {
     case 'sides':
-      return `\nexport const ClickedOpenSide = taggedStruct('ClickedOpenSide${tag}', { side: S.Literals(['top', 'right', 'bottom', 'left']) });`
+      return `\nexport const ClickedOpenSide = taggedStruct('ClickedOpenSide${tag}', { side: S.Literals(['up', 'right', 'down', 'left']) });`
     case 'responsive':
       return `\nexport const ChangedViewport = taggedStruct('ChangedViewport${tag}', { isDesktop: S.Boolean });
 export const ChangedName = taggedStruct('ChangedName${tag}', { value: S.String });
@@ -256,6 +391,9 @@ export const GotDialogMessage = taggedStruct('GotDialogMessage${tag}', { message
 }
 
 const drawerUnionExtras = (fixture: DrawerFixture): string => {
+  if (fixture.kind === 'nested')
+    return ', ClickedOpenSide, OpenedNested2, OpenedNested3, GotDrawer2Message, GotDrawer3Message'
+  if (usesDirectionTriggers(fixture.kind)) return ', ClickedOpenSide'
   switch (fixture.kind) {
     case 'sides':
       return ', ClickedOpenSide'
@@ -269,6 +407,25 @@ const drawerUnionExtras = (fixture: DrawerFixture): string => {
 }
 
 const drawerUpdateCases = (fixture: DrawerFixture, tag: string): string => {
+  if (fixture.kind === 'nested')
+    return `    case 'OpenedNested2${tag}': {
+      const nested = { ...model.drawer2, swipeDirection: model.side }
+      const result = Drawer.open(nested)
+      return { model: { ...model, drawer2: result.model }, commands: Command.mapMessages(result.commands, next => GotDrawer2Message({ message: next })) }
+    }
+    case 'OpenedNested3${tag}': {
+      const nested = { ...model.drawer3, swipeDirection: model.side }
+      const result = Drawer.open(nested)
+      return { model: { ...model, drawer3: result.model }, commands: Command.mapMessages(result.commands, next => GotDrawer3Message({ message: next })) }
+    }
+    case 'GotDrawer2Message${tag}': {
+      const result = Drawer.update(model.drawer2, message.message)
+      return { model: { ...model, drawer2: result.model }, commands: Command.mapMessages(result.commands, next => GotDrawer2Message({ message: next })) }
+    }
+    case 'GotDrawer3Message${tag}': {
+      const result = Drawer.update(model.drawer3, message.message)
+      return { model: { ...model, drawer3: result.model }, commands: Command.mapMessages(result.commands, next => GotDrawer3Message({ message: next })) }
+    }`
   switch (fixture.kind) {
     case 'responsive':
       return `    case 'GotDialogMessage${tag}':
@@ -326,7 +483,6 @@ const emitView = (fixture: DrawerFixture, isStyleX: boolean): string => {
   switch (fixture.kind) {
     case 'goal':
     case 'side':
-    case 'scroll':
       return `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Drawer — ${sq(fixture.title)}',
   body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
@@ -334,7 +490,6 @@ const emitView = (fixture: DrawerFixture, isStyleX: boolean): string => {
     Drawer.drawer({
       model: model.drawer,
       toParentMessage: message => GotDrawerMessage({ message }),
-      direction: '${fixture.kind === 'side' || fixture.kind === 'scroll' ? 'right' : 'bottom'}',
       title: 'Move goal',
       description: 'Set your daily activity goal.',
       ${emitContent(fixture, isStyleX)}
@@ -342,21 +497,77 @@ const emitView = (fixture: DrawerFixture, isStyleX: boolean): string => {
     }, h),
   ]),
 })`
+    case 'swipe-handle':
+    case 'custom-size':
     case 'sides':
+    case 'scroll':
       return `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Drawer — ${sq(fixture.title)}',
   body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
     h.div([h.Class(${cls('flex flex-wrap gap-2', 'styles.triggerRow')})],
-      (['top', 'right', 'bottom', 'left'] as const).map(side =>
+      (['up', 'right', 'down', 'left'] as const).map(side =>
+        Button.button({ variant: 'outline', onClick: ClickedOpenSide({ side }), children: [side] }, h),
+      ),
+    ),
+    Drawer.drawer({
+      model: model.drawer,
+      toParentMessage: message => GotDrawerMessage({ message }),${emitDrawerProps(fixture, isStyleX)}
+      ${emitContent(fixture, isStyleX)}
+      ${emitFooter(fixture, isStyleX)}
+    }, h),
+  ]),
+})`
+    case 'nested':
+      return `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+  title: 'Drawer — ${sq(fixture.title)}',
+  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+    h.div([h.Class(${cls('flex flex-wrap gap-2', 'styles.triggerRow')})],
+      (['up', 'right', 'down', 'left'] as const).map(side =>
         Button.button({ variant: 'outline', onClick: ClickedOpenSide({ side }), children: [side] }, h),
       ),
     ),
     Drawer.drawer({
       model: model.drawer,
       toParentMessage: message => GotDrawerMessage({ message }),
-      direction: model.side,
-      title: 'Move Goal',
-      description: 'Set your daily activity goal.',
+      showSwipeHandle: true,
+      title: 'Drawer',
+      description: 'Open another drawer from the same direction.',
+      ${emitContent(fixture, isStyleX)}
+      footer: slots => [
+        h.button([h.Type('button'), h.OnClick(OpenedNested2()), h.Class(${cls('rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground', 'styles.action')})], ['Open nested drawer']),
+        Drawer.drawer({
+          model: model.drawer2,
+          toParentMessage: message => GotDrawer2Message({ message }),
+          title: 'Nested drawer',
+          description: 'The parent drawer stays mounted behind this one.',
+          ${emitContent(fixture, isStyleX)}
+          footer: slots2 => [
+            h.button([h.Type('button'), h.OnClick(OpenedNested3()), h.Class(${cls('rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground', 'styles.action')})], ['Open third drawer']),
+            Drawer.drawer({
+              model: model.drawer3,
+              toParentMessage: message => GotDrawer3Message({ message }),
+              title: 'Third drawer',
+              description: 'This is the frontmost drawer in the stack.',
+              ${emitContent(fixture, isStyleX)}
+              footer: slots3 => [h.button([...slots3.closeButton, h.Type('button'), h.Class(${cls('rounded-md border px-4 py-2 text-sm', 'styles.cancel')})], ['Close'])],
+            }, h),
+            h.button([...slots2.closeButton, h.Type('button'), h.Class(${cls('rounded-md border px-4 py-2 text-sm', 'styles.cancel')})], ['Close']),
+          ],
+        }, h),
+        h.button([...slots.closeButton, h.Type('button'), h.Class(${cls('rounded-md border px-4 py-2 text-sm', 'styles.cancel')})], ['Close']),
+      ],
+    }, h),
+  ]),
+})`
+    case 'snap-points':
+    case 'non-modal':
+      return `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+  title: 'Drawer — ${sq(fixture.title)}',
+  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+    Button.button({ variant: 'outline', onClick: ClickedOpenDrawer(), children: ['${sq(fixture.triggerLabel)}'] }, h),
+    Drawer.drawer({
+      model: model.drawer,
+      toParentMessage: message => GotDrawerMessage({ message }),${emitDrawerProps(fixture, isStyleX)}
       ${emitContent(fixture, isStyleX)}
       ${emitFooter(fixture, isStyleX)}
     }, h),
@@ -403,6 +614,46 @@ const emitView = (fixture: DrawerFixture, isStyleX: boolean): string => {
   }
 }
 
+/** Per-kind props emitted into the Drawer.drawer call (direction-dependent
+    classes, showSwipeHandle, titles). */
+const emitDrawerProps = (fixture: DrawerFixture, isStyleX: boolean): string => {
+  switch (fixture.kind) {
+    case 'swipe-handle':
+      return `\n      showSwipeHandle: true,
+      title: 'Drawer',
+      description: 'Drawer with a swipe handle.',`
+    case 'custom-size':
+      return `\n      title: \`\${model.side} drawer\`,
+      description: 'Drawer with a custom size.',
+      ${
+        isStyleX
+          ? `layoutStyle:
+        model.side === 'down'
+          ? styles.sizeDown
+          : model.side === 'up'
+            ? styles.sizeUp
+            : model.side === 'left'
+              ? styles.sizeLeft
+              : styles.sizeRight,`
+          : "class: 'data-[swipe-direction=down]:h-64 data-[swipe-direction=up]:h-[50vh] data-[swipe-direction=left]:w-xl data-[swipe-direction=right]:w-xs',"
+      }`
+    case 'sides':
+    case 'scroll':
+      return `\n      title: 'Move Goal',
+      description: 'Set your daily activity goal.',`
+    case 'snap-points':
+      return `\n      showSwipeHandle: true,
+      title: 'Snap points',
+      description: 'Drag the drawer to snap between a compact peek and a near full-height view.',
+      ${isStyleX ? 'layoutStyle: styles.snapPanel,' : "class: 'max-h-[calc(100dvh-1rem)]',"}`
+    case 'non-modal':
+      return `\n      title: 'Non Modal Drawer',`
+    default:
+      return `\n      title: 'Move goal',
+      description: 'Set your daily activity goal.',`
+  }
+}
+
 const source = (
   fixture: DrawerFixture,
   _index: number,
@@ -413,7 +664,7 @@ const source = (
   const openCase =
     fixture.kind === 'responsive'
       ? 'ClickedOpenResponsive'
-      : fixture.kind === 'sides'
+      : usesDirectionTriggers(fixture.kind)
         ? 'ClickedOpenSide'
         : 'ClickedOpenDrawer'
   return foldkitApplication({
@@ -422,7 +673,7 @@ const source = (
     model: `export const Model = S.Struct({ drawer: Drawer.Model${drawerModelFields(fixture)} })
 export type Model = typeof Model.Type`,
     messages: `import { taggedStruct } from 'foldkit/schema'
-${fixture.kind === 'sides' ? '' : `export const ${openCase} = taggedStruct('${openCase}${tag}');\n`}export const GotDrawerMessage = taggedStruct('GotDrawerMessage${tag}', { message: Drawer.Message });${drawerExtraMessages(fixture, tag)}
+${usesDirectionTriggers(fixture.kind) ? '' : `export const ${openCase} = taggedStruct('${openCase}${tag}');\n`}export const GotDrawerMessage = taggedStruct('GotDrawerMessage${tag}', { message: Drawer.Message });${drawerExtraMessages(fixture, tag)}
 export const Message = S.Union([${openCase}, GotDrawerMessage${drawerUnionExtras(fixture)}${fixture.kind === 'rtl' ? ', Chart.ChartMessage' : ''}])
 export type Message = typeof Message.Type`,
     init:
@@ -437,7 +688,7 @@ export type Message = typeof Message.Type`,
   }))
   return { model: { drawer: Drawer.init({ id: 'drawer-${tag.toLowerCase()}', isAnimated: true }), goal: 350 } }
 }`
-        : `export const init = (): Update.Return<Model, Message> => ({ model: { drawer: Drawer.init({ id: 'drawer-${tag.toLowerCase()}', isAnimated: true })${drawerInitExtra(fixture)} } })`,
+        : `export const init = (): Update.Return<Model, Message> => ({ model: { drawer: Drawer.init({ id: 'drawer-${tag.toLowerCase()}', isAnimated: true${drawerInitConfig(fixture)} })${drawerInitExtra(fixture)} } })`,
     update: `const mapDrawer = (
   model: Model,
   result: ReturnType<typeof Drawer.update>,
@@ -462,9 +713,12 @@ export const update = (
 ): Update.Return<Model, Message> => {
   switch (message._tag) {
     case '${openCase}${tag}':${
-      fixture.kind === 'sides'
+      usesDirectionTriggers(fixture.kind)
         ? `
-      return mapDrawer({ ...model, side: message.side }, Drawer.open(model.drawer))`
+      return mapDrawer(
+        { ...model, side: message.side },
+        Drawer.open({ ...model.drawer, swipeDirection: message.side }),
+      )`
         : fixture.kind === 'responsive'
           ? `
       return model.isDesktop

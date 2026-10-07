@@ -1,3 +1,6 @@
+import { reset } from '@/stylex/reset'
+import { className } from '@/stylex/style'
+import { previewLayout } from '@/docs/components/preview-layout.stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
@@ -25,11 +28,7 @@ const toEntries = (
       ? {}
       : {
           detail: h.pre(
-            [
-              h.Class(
-                'm-0 whitespace-pre-wrap font-mono text-sm leading-[1.7]',
-              ),
-            ],
+            [h.Class(className(reset.text, previewLayout.log))],
             [row.detailText],
           ),
         }),
@@ -67,10 +66,10 @@ export const logStreamStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   const isFollowing = preview.stream.scroller.isFollowing
   const baseCount = fixture.entries.length
   return h.div(
-    [h.Class('flex flex-col gap-3')],
+    [h.Class(className(previewLayout.compactStack))],
     [
       h.div(
-        [h.Class('flex items-center gap-2')],
+        [h.Class(className(previewLayout.row))],
         [
           StatusDot.statusDot(
             {
@@ -80,7 +79,7 @@ export const logStreamStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
             h,
           ),
           h.span(
-            [h.Class('flex-1 text-xs leading-5 text-muted-foreground')],
+            [h.Class(className(previewLayout.status))],
             [`${String(preview.entries.length)} rows`],
           ),
           Button.button(

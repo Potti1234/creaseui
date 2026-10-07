@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -73,7 +74,7 @@ export const chatReasoningStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                   children: [
                     reasoningView(fixture, preview, onMessageJson, h),
                     h.p(
-                      [h.Class(className(styles.reply))],
+                      [h.Class(className(reset.text, styles.reply))],
                       [
                         'There are 42 valid planting arrangements over 3 years.',
                       ],

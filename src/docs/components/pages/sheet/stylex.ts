@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -65,15 +66,22 @@ const styles = stylex.create({
     display: 'flex',
     flexDirection: 'column',
   },
-  sheetHeading: { fontSize: '1rem', fontWeight: 600, lineHeight: '1.5rem' },
+  sheetHeading: {
+    margin: 0,
+    fontSize: '1rem',
+    fontWeight: 600,
+    lineHeight: '1.5rem',
+  },
   sheetHeadingCapitalize: {
+    margin: 0,
     fontSize: '1rem',
     fontWeight: 600,
     lineHeight: '1.5rem',
     textTransform: 'capitalize',
   },
-  sheetText: { fontSize: '0.875rem', lineHeight: '1.25rem' },
+  sheetText: { margin: 0, fontSize: '0.875rem', lineHeight: '1.25rem' },
   sheetMeta: {
+    margin: 0,
     color: 'var(--muted-foreground)',
     fontSize: '0.75rem',
     lineHeight: '1rem',
@@ -95,7 +103,12 @@ const styles = stylex.create({
     flexDirection: 'column',
     maxWidth: '28rem',
   },
-  pageHeading: { fontSize: '1rem', fontWeight: 600, lineHeight: '1.5rem' },
+  pageHeading: {
+    margin: 0,
+    fontSize: '1rem',
+    fontWeight: 600,
+    lineHeight: '1.5rem',
+  },
   timeRow: { gap: '0.5rem', alignItems: 'center', display: 'flex' },
   timeLabel: { fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem' },
   timeMeta: {
@@ -111,8 +124,9 @@ const styles = stylex.create({
     display: 'flex',
   },
   stepTextWrap: { flexBasis: '0%', flexGrow: 1, flexShrink: 1 },
-  stepLabel: { fontSize: '0.875rem', lineHeight: '1.25rem' },
+  stepLabel: { margin: 0, fontSize: '0.875rem', lineHeight: '1.25rem' },
   stepDetail: {
+    margin: 0,
     color: 'var(--muted-foreground)',
     fontSize: '0.75rem',
     lineHeight: '1rem',
@@ -122,7 +136,12 @@ const styles = stylex.create({
     fontSize: '0.75rem',
     lineHeight: '1rem',
   },
-  itemLabel: { fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem' },
+  itemLabel: {
+    margin: 0,
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    lineHeight: '1.25rem',
+  },
 })
 
 interface PreviewShape {
@@ -208,7 +227,7 @@ const instanceView = <Msg>(
       h.div(
         [h.Class(className(styles.loremWrap))],
         LOREM.map(paragraph =>
-          h.p([h.Class(className(styles.paragraph))], [paragraph]),
+          h.p([h.Class(className(reset.text, styles.paragraph))], [paragraph]),
         ),
       ),
     )
@@ -242,7 +261,7 @@ const instanceView = <Msg>(
                 [
                   ...slots.closeButton,
                   h.Type('button'),
-                  h.Class(className(styles.footerSave)),
+                  h.Class(className(reset.button, styles.footerSave)),
                 ],
                 [instance.footer!.save],
               ),
@@ -251,7 +270,7 @@ const instanceView = <Msg>(
                   ...slots.closeButton,
                   ...slots.initialFocusAttributes(),
                   h.Type('button'),
-                  h.Class(className(styles.footerCancel)),
+                  h.Class(className(reset.button, styles.footerCancel)),
                 ],
                 [instance.footer!.cancel],
               ),

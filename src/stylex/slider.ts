@@ -1,4 +1,5 @@
 import { Option } from 'effect'
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { Slider as SliderPrimitive } from '@foldkit/ui'
@@ -243,7 +244,9 @@ export const slider = <Msg>(
               ],
               [],
             ),
-            ...(props.name === undefined ? [] : [h.input([...hiddenInput])]),
+            ...(props.name === undefined
+              ? []
+              : [h.input([h.Class(className(reset.input)), ...hiddenInput])]),
           ],
         )
         return props.label === undefined
@@ -395,7 +398,9 @@ export const multiSlider = <Msg>(
                 ],
                 [],
               ),
-              ...(props.name === undefined ? [] : [h.input([...hiddenInput])]),
+              ...(props.name === undefined
+                ? []
+                : [h.input([h.Class(className(reset.input)), ...hiddenInput])]),
             ],
           ),
       },

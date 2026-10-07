@@ -8,7 +8,8 @@ not install or replace `effect`, `foldkit`, `@foldkit/ui`, or
 `@effect/platform-browser`; the application owns those framework versions.
 This prevents a component install from creating a nested, older Foldkit copy.
 
-Crease UI `0.1.x` is currently validated against the Foldkit `0.137.x` API.
+The validation baseline is the one recorded in `compatibility.json` and the
+lockfile; successful reports from other versions do not change that baseline.
 Foldkit 0.128 moved durable selection and checked values to parent models;
 Crease UI components follow that controlled-state architecture.
 
@@ -54,6 +55,12 @@ npx --yes shadcn@latest add Potti1234/creaseui/button --yes
 npx --yes shadcn@latest add Potti1234/creaseui/accordion --yes
 npx --yes shadcn@latest add Potti1234/creaseui/dialog --yes
 ```
+
+These registry items install the Tailwind renderer from `src/ui`. The StyleX
+renderer in `src/stylex` is not yet distributed through this registry. Copy its
+source and referenced modules from the checkout, configure the StyleX compiler,
+and supply the CSS theme variables described in its
+[authoring contract](../src/stylex/README.md).
 
 Every UI item declares `crease-theme` as a registry dependency. Installing a
 component therefore also installs the complete background, card, popover,

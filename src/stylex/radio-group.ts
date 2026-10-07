@@ -1,5 +1,5 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
-import type { StaticStyles } from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import {
   type RadioGroupBehaviorProps,
@@ -106,9 +106,9 @@ export const radioGroup = <Msg>(
       item: state => [
         h.Class(
           className(
+            reset.button,
             styles.item,
-            // eslint-disable-next-line no-restricted-syntax -- reason: defineMarker scopes are stylex.props-compatible but absent from the narrow StaticStyles surface.
-            radioItemScope as unknown as StaticStyles,
+            radioItemScope,
             state.isDisabled && styles.disabled,
             p.options[state.index]?.isInvalid === true && styles.invalid,
           ),
@@ -117,7 +117,7 @@ export const radioGroup = <Msg>(
       indicator: [h.Class(className(styles.indicator))],
       text: [h.Class(className(styles.text))],
       label: [h.Class(className(styles.label))],
-      description: [h.Class(className(styles.description))],
+      description: [h.Class(className(reset.text, styles.description))],
     },
     (isSelected, indicatorH) =>
       isSelected

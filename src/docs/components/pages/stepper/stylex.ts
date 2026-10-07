@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -130,12 +131,18 @@ const contentFor = <Msg>(
                             ],
                           ),
                           h.p(
-                            [h.Class(className(styles.cardMeta))],
+                            [h.Class(className(reset.text, styles.cardMeta))],
                             [
                               'Build command ',
-                              h.code([], ['vite build']),
+                              h.code(
+                                [h.Class(className(reset.code))],
+                                ['vite build'],
+                              ),
                               ' · Output ',
-                              h.code([], ['dist']),
+                              h.code(
+                                [h.Class(className(reset.code))],
+                                ['dist'],
+                              ),
                               ' · Node 22',
                             ],
                           ),
@@ -292,7 +299,10 @@ export const stepperStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
       : h.div(
           [h.Class(className(styles.panel))],
           [
-            h.p([h.Class(className(styles.panelHeading))], [panel.heading]),
+            h.p(
+              [h.Class(className(reset.text, styles.panelHeading))],
+              [panel.heading],
+            ),
             panelNode(panel, panelIndex, preview, toParent, h),
           ],
         ),

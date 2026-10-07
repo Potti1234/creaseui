@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import { Effect, Match as M, Option, Schema as S } from 'effect'
@@ -57,6 +58,10 @@ import { cardDemoTokens } from './stylex-cards/foundations-card-tokens.stylex'
 import { interactionCardTokens } from './stylex-cards/interaction-card-tokens.stylex'
 import { interactionTokens } from '../stylex/interaction-tokens.stylex.const'
 
+/* The customizer panel always renders dark chrome; the global .dark class
+   supplies the dark token values its descendants' var() references resolve. */
+const darkThemeClass = 'dark'
+
 const stylexVariableName = (variable: string): string =>
   variable.replace(/^var\((--[^,)]+).*/, '$1')
 
@@ -86,7 +91,7 @@ const scopedStyleXThemeCss = (): string => {
       tokens.secondaryHover,
       'color-mix(in oklab, var(--secondary) 80%, transparent)',
     ],
-    [tokens.border, 'var(--border)'],
+    [tokens.border, 'var(--color-border)'],
     [tokens.input, 'var(--input)'],
     [tokens.ring, 'var(--ring)'],
     [tokens.radius, 'var(--radius)'],
@@ -177,7 +182,7 @@ const scopedStyleXThemeCss = (): string => {
     [boardTokens.boardMuted, 'var(--muted)'],
     [boardTokens.boardMutedForeground, 'var(--muted-foreground)'],
     [cardTokens.muted, 'var(--muted)'],
-    [cardDemoTokens.pendingIndicator, 'var(--chart-4)'],
+    /* TW hardcodes bg-yellow-500 for the pending dot — preset-immune literal. */
     [cardDemoTokens.artworkSurface, 'var(--muted)'],
     [cardDemoTokens.artworkForeground, 'var(--muted-foreground)'],
     [
@@ -219,7 +224,7 @@ const scopedStyleXThemeCss = (): string => {
 const styles = stylex.create({
   applyButton: {
     borderColor: boardTokens.border,
-    borderRadius: tokens.cardRadius,
+    borderRadius: foundationTokens.radiusMd,
     borderStyle: 'solid',
     borderWidth: 1,
     backgroundColor: {
@@ -227,7 +232,9 @@ const styles = stylex.create({
       ':hover': boardTokens.hover,
     },
     color: boardTokens.text,
+    fontSize: '0.875rem',
     fontWeight: 500,
+    lineHeight: '1.25rem',
     height: '2.25rem',
     width: '100%',
   },
@@ -256,7 +263,7 @@ const styles = stylex.create({
     },
   },
   choice: {
-    borderRadius: tokens.cardRadius,
+    borderRadius: foundationTokens.radiusMd,
     paddingInline: '0.75rem',
     alignItems: 'center',
     backgroundColor: {
@@ -292,13 +299,20 @@ const styles = stylex.create({
     gridColumnStart: 'span 2',
   },
   copyButton: {
-    borderRadius: tokens.cardRadius,
+    borderRadius: foundationTokens.radiusMd,
+    gap: '0.375rem',
+    paddingInline: '0.625rem',
+    alignItems: 'center',
     backgroundColor: {
       default: boardTokens.text,
       ':hover': boardTokens.textMuted,
     },
-    color: boardTokens.panel,
+    color: boardTokens.textInverse,
+    display: 'inline-flex',
+    fontSize: '0.875rem',
     fontWeight: 500,
+    justifyContent: 'center',
+    lineHeight: '1.25rem',
     position: 'relative',
     height: '2.25rem',
     width: '100%',
@@ -317,13 +331,10 @@ const styles = stylex.create({
     width: '1rem',
   },
   customizer: {
-    borderColor: boardTokens.border,
     borderRadius: boardTokens.panelRadius,
-    borderStyle: 'solid',
-    borderWidth: 1,
     overflow: 'hidden',
     backgroundColor: boardTokens.panel,
-    boxShadow: tokens.shadowCard,
+    boxShadow: boardTokens.panelShadow,
     color: boardTokens.text,
     display: 'flex',
     flexDirection: 'column',
@@ -426,7 +437,7 @@ const styles = stylex.create({
   },
   panelCode: {
     borderColor: boardTokens.border,
-    borderRadius: tokens.cardRadius,
+    borderRadius: foundationTokens.radiusLg,
     borderStyle: 'solid',
     borderWidth: 1,
     overflow: 'hidden',
@@ -463,7 +474,7 @@ const styles = stylex.create({
   },
   pickerTrigger: {
     borderColor: boardTokens.border,
-    borderRadius: tokens.cardRadius,
+    borderRadius: foundationTokens.radiusLg,
     borderStyle: 'solid',
     borderWidth: 1,
     paddingInline: '0.75rem',
@@ -491,7 +502,7 @@ const styles = stylex.create({
   popoverSize: { width: '18rem' },
   presetButton: {
     borderColor: boardTokens.border,
-    borderRadius: tokens.cardRadius,
+    borderRadius: foundationTokens.radiusLg,
     borderStyle: 'solid',
     borderWidth: 1,
     listStyle: 'none',
@@ -1196,6 +1207,7 @@ export const presetCustomizer = (
                       ),
                       h.Class(
                         className(
+                          reset.button,
                           styles.choice,
                           isSelected && styles.choiceSelected,
                         ),
@@ -1227,7 +1239,7 @@ export const presetCustomizer = (
     )
 
   return h.aside(
-    [h.Class(className(styles.customizer))],
+    [h.Class(darkThemeClass + ' ' + className(styles.customizer))],
     [
       h.div(
         [h.Class(className(styles.customizerHeader))],
@@ -1235,7 +1247,7 @@ export const presetCustomizer = (
           h.div(
             [h.Class(className(styles.customizerHeaderInner))],
             [
-              h.h1([h.Class(className(styles.title))], ['Menu']),
+              h.h1([h.Class(className(reset.text, styles.title))], ['Menu']),
               Icon.icon('menu', { class: className(styles.iconMenu) }, h),
             ],
           ),
@@ -1325,13 +1337,13 @@ export const presetCustomizer = (
                       Message['ChangedCreatePresetInput']({ value }),
                     ),
                     h.Placeholder('Paste code or CreaseUI URL'),
-                    h.Class(className(styles.fieldInput)),
+                    h.Class(className(reset.input, styles.fieldInput)),
                   ]),
                   h.button(
                     [
                       h.Type('button'),
                       h.OnClick(Message['AppliedCreatePresetInput']()),
-                      h.Class(className(styles.applyButton)),
+                      h.Class(className(reset.button, styles.applyButton)),
                     ],
                     ['Apply Preset'],
                   ),
@@ -1339,7 +1351,7 @@ export const presetCustomizer = (
                     ? []
                     : [
                         h.p(
-                          [h.Class(className(styles.error))],
+                          [h.Class(className(reset.text, styles.error))],
                           [model.presetError],
                         ),
                       ]),
@@ -1351,7 +1363,7 @@ export const presetCustomizer = (
             [
               h.Type('button'),
               h.OnClick(Message['ClickedShuffleCreatePreset']()),
-              h.Class(className(styles.applyButton)),
+              h.Class(className(reset.button, styles.applyButton)),
             ],
             ['Shuffle'],
           ),
@@ -1359,7 +1371,7 @@ export const presetCustomizer = (
             [
               h.Type('button'),
               h.OnClick(Message['ClickedCopyCreatePreset']()),
-              h.Class(className(styles.copyButton)),
+              h.Class(className(reset.button, styles.copyButton)),
             ],
             [
               Icon.icon(

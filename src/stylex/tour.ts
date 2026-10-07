@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 /* Ported from Meta Astryx Tour (packages/lab/src/Tour/) — examples and visual spec adapted to Crease UI tokens. */
 
 import * as stylex from '@stylexjs/stylex'
@@ -269,7 +270,7 @@ export const tour = <Msg>(props: TourProps<Msg>, h: HtmlBuilder<Msg>): Html => {
       h.h4(
         [
           h.DataAttribute('slot', 'tour-heading'),
-          h.Class(className(styles.heading)),
+          h.Class(className(reset.text, styles.heading)),
         ],
         [step.heading],
       ),
@@ -329,7 +330,7 @@ export const tour = <Msg>(props: TourProps<Msg>, h: HtmlBuilder<Msg>): Html => {
           h.DataAttribute('slot', 'tour-close'),
           h.AriaLabel('Close tour'),
           h.OnClick(send(Message.RequestedDismiss({ source: 'close' }))),
-          h.Class(className(styles.close)),
+          h.Class(className(reset.button, styles.close)),
         ],
         [Icon.x({ class: className(styles.closeIcon) }, h)],
       ),

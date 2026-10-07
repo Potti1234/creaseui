@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import { Option } from 'effect'
 import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
 
@@ -228,7 +229,7 @@ const buildBaseViewInputs = <Item, Value extends string, Msg>(
         ),
       }
     },
-    inputClassName: className(INPUT_CLASS, styles.inputFix),
+    inputClassName: className(reset.input, INPUT_CLASS, styles.inputFix),
     inputAttributes: childAttributes([
       hc.DataAttribute('slot', 'command-input'),
     ]),
@@ -249,7 +250,7 @@ const buildBaseViewInputs = <Item, Value extends string, Msg>(
     itemsAttributes: childAttributes([
       hc.DataAttribute('slot', 'command-list'),
     ]),
-    itemsScrollClassName: className(LIST_CLASS),
+    itemsScrollClassName: className(reset.list, LIST_CLASS),
     backdropClassName: className(BACKDROP_CLASS),
     backdropAttributes: childAttributes([
       hc.DataAttribute('slot', 'combobox-backdrop'),
@@ -301,9 +302,7 @@ const buildBaseViewInputs = <Item, Value extends string, Msg>(
       ? {}
       : {
           buttonContent: hc.span([], [props.trigger.content]),
-          ...(props.trigger.layoutStyle === undefined
-            ? {}
-            : { buttonClassName: className(props.trigger.layoutStyle) }),
+          buttonClassName: className(reset.button, props.trigger.layoutStyle),
           buttonAttributes: childAttributes(
             props.trigger.ariaLabel === undefined
               ? []

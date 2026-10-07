@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import { Command, type Update } from 'foldkit'
 import { Effect, Option, Schema as S } from 'effect'
 import { DragAndDrop as Dnd } from '@foldkit/ui'
@@ -882,6 +883,7 @@ export const transferList = <Msg>(
           : [h.DataAttribute('transfer-list-action', config.dataAction)]),
         h.Class(
           className(
+            reset.button,
             ...buttonVisualStyles({ variant: 'ghost', size: 'icon-xs' }),
             styles.iconButton,
           ),
@@ -970,6 +972,7 @@ export const transferList = <Msg>(
         ),
         h.Class(
           className(
+            reset.button,
             ...buttonVisualStyles({ variant: 'ghost', size: 'icon-xs' }),
             styles.iconButton,
             styles.reorderHandle,
@@ -1111,7 +1114,7 @@ export const transferList = <Msg>(
           ? h.ul(
               [
                 h.Role('list'),
-                h.Class(className(styles.list)),
+                h.Class(className(reset.list, styles.list)),
                 ...(side === 'selected' && isReorderable
                   ? [h.DataAttribute('droppable-id', containerId)]
                   : []),
@@ -1174,6 +1177,7 @@ export const transferList = <Msg>(
         h.DataAttribute('transfer-list-header-action', 'true'),
         h.Class(
           className(
+            reset.button,
             ...buttonVisualStyles({ variant: 'link' }),
             styles.headerAction,
           ),
@@ -1252,6 +1256,7 @@ export const transferList = <Msg>(
                               h.AriaLabel('Clear search'),
                               h.Class(
                                 className(
+                                  reset.button,
                                   ...buttonVisualStyles({
                                     variant: 'ghost',
                                     size: 'icon-xs',

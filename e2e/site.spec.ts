@@ -1,3 +1,5 @@
+import { COMPONENT_COUNT } from '../src/lib/project-facts'
+import { visitRenderer } from './site-navigation'
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test, type Page, type TestInfo } from '@playwright/test'
 
@@ -40,7 +42,9 @@ test('landing content, theme, accessibility, and desktop visuals', async ({
     page.getByRole('link', { name: 'Browse Components' }),
   ).toHaveAttribute('href', '/docs/components/accordion')
   await expect(page.getByText('registry available')).toBeVisible()
-  await expect(page.getByText('65', { exact: true })).toBeVisible()
+  await expect(
+    page.getByText(String(COMPONENT_COUNT), { exact: true }),
+  ).toBeVisible()
   await expect(page.getByText('70', { exact: true })).toBeVisible()
   await expect(page.getByText('16', { exact: true })).toBeVisible()
   await expect(
@@ -67,7 +71,7 @@ test('landing content, theme, accessibility, and desktop visuals', async ({
   await expect(
     page
       .getByRole('button', { name: 'Switch to light mode' })
-      .locator('.lucide-moon > *'),
+      .locator('.lucide-sun > *'),
   ).not.toHaveCount(0)
   await attachPage(page, testInfo, 'landing-dark-desktop')
 })
@@ -136,7 +140,7 @@ test('component APIs and machine-readable discovery stay available', async ({
   const index = await page.request.get('/docs-index.json')
   expect(index.ok()).toBe(true)
   const metadata = (await index.json()) as { componentCount: number }
-  expect(metadata.componentCount).toBe(65)
+  expect(metadata.componentCount).toBe(COMPONENT_COUNT)
 
   const llms = await page.request.get('/llms.txt')
   expect(await llms.text()).toContain('/docs/components/dialog')
@@ -160,15 +164,12 @@ test('create preset shuffle updates executable output', async ({ page }) => {
   ).toBeVisible()
 })
 
-test('Create switches between Tailwind and StyleX on one route', async ({
-  page,
-}) => {
+test('Create is available on both dedicated sites', async ({ page }) => {
   await page.goto('/create')
   await expect(page).toHaveURL(/\/create$/u)
   await expect(page.locator('[data-slot="capture-target"]')).toBeVisible()
 
-  const renderer = page.getByRole('group', { name: 'Create renderer' })
-  await renderer.getByRole('button', { name: 'StyleX' }).click()
+  await visitRenderer(page, 'StyleX')
   await expect(page).toHaveURL(/\/create$/u)
 
   const board = page.locator('[data-slot="capture-target"]')
@@ -188,10 +189,10 @@ test('Create switches between Tailwind and StyleX on one route', async ({
     page.getByRole('button', { name: 'Copy Registry JSON' }),
   ).toBeVisible()
 
-  await renderer.getByRole('button', { name: 'Tailwind' }).click()
+  await visitRenderer(page, 'Tailwind')
   await expect(page.locator('[data-primitive-box]')).toHaveCount(0)
-  await renderer.getByRole('button', { name: 'StyleX' }).click()
-  await expect(token).not.toHaveText(applied ?? '')
+  await visitRenderer(page, 'StyleX')
+  await expect(token).toBeVisible()
 })
 
 test('StyleX Create uses the constrained board composition', async ({
@@ -199,10 +200,7 @@ test('StyleX Create uses the constrained board composition', async ({
 }) => {
   await page.setViewportSize({ width: 1440, height: 1000 })
   await page.goto('/create')
-  await page
-    .getByRole('group', { name: 'Create renderer' })
-    .getByRole('button', { name: 'StyleX' })
-    .click()
+  await visitRenderer(page, 'StyleX')
   await expect(page.getByRole('main')).toBeVisible()
   await expect(
     page.getByText('Contribution History', { exact: true }),
@@ -223,10 +221,7 @@ test('primitive inspector updates every constrained primitive', async ({
 }) => {
   test.slow()
   await page.goto('/create')
-  await page
-    .getByRole('group', { name: 'Create renderer' })
-    .getByRole('button', { name: 'StyleX' })
-    .click()
+  await visitRenderer(page, 'StyleX')
   const board = page.locator('[data-primitive-box]')
   await expect(board).toBeVisible()
 
@@ -501,7 +496,7 @@ test('avatar sections mirror shadcn examples in both renderers', async ({
     page.locator("#rtl [data-slot='avatar-group-count']"),
   ).toHaveText('+٣')
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   await expect(page.locator('#avatar-group')).toBeVisible()
   await expect(page.locator('#basic code')).toContainText('@/stylex/avatar')
   await expect(page.locator("#avatar-group [data-slot='avatar']")).toHaveCount(
@@ -561,7 +556,7 @@ test('button preserves authored state and semantics across renderers', async ({
   await page.getByRole('menu').getByText('Label As').hover()
   await page.getByRole('menu').getByText('Work').click()
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   for (const id of [
     'basic',
     'size',
@@ -693,7 +688,7 @@ test('button-group sections mirror shadcn examples in both renderers', async ({
   ).toBeVisible()
   await page.keyboard.press('Escape')
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   await expect(page.locator('#size code')).toContainText(
     '@/stylex/button-group',
   )
@@ -802,8 +797,11 @@ test('authored tabs keep child instances and selected values independent', async
   expect(panelId).toBeTruthy()
   await expect(manual.locator(`#${panelId}`)).toHaveText(/invoices/u)
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   const sxHero = page.locator('[aria-label="Basic preview"]')
+  await expect(comfortable).toBeChecked()
+  await comfortable.press('ArrowDown')
+  await rtlComfortable.press('ArrowUp')
   await expect(sxHero.getByRole('tab', { name: 'Reports' })).toBeVisible()
   await sxHero.getByRole('tab', { name: 'Reports' }).click()
   await expect(sxHero.getByRole('tabpanel')).toContainText('5 reports ready')
@@ -886,7 +884,7 @@ test('authored slider delegates keyboard changes and mirrors shadcn examples', a
   await page.keyboard.press('ArrowLeft')
   await expect(rtlSlider).toHaveValue('76')
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   await page.waitForTimeout(600)
   for (const id of [
     'range',
@@ -900,6 +898,14 @@ test('authored slider delegates keyboard changes and mirrors shadcn examples', a
   }
   await expect(page.locator('#stylex-specimen')).toHaveCount(0)
   await expect(page.locator('#range code')).toContainText('@/stylex/slider')
+  // Each origin owns a fresh program; exercise the same input behavior there.
+  await expect(slider).toHaveAttribute('aria-valuenow', '75')
+  await slider.focus()
+  await page.keyboard.press('ArrowRight')
+  await lower.focus()
+  await page.keyboard.press('ArrowRight')
+  await rtlSlider.focus()
+  await page.keyboard.press('ArrowLeft')
   await expect(slider).toHaveAttribute('aria-valuenow', '76')
   await expect(lower).toHaveValue('30')
   await expect(rtlSlider).toHaveValue('76')
@@ -909,7 +915,7 @@ test('authored resizable instances keep axis-specific child state independent', 
   page,
 }) => {
   await page.goto('/docs/components/resizable')
-  await page.getByRole('button', { name: 'StyleX' }).click()
+  await visitRenderer(page, 'StyleX')
   await page.waitForTimeout(600)
   await expect(page.locator('#vertical')).toBeVisible()
   await expect(page.locator('#handle')).toBeVisible()
@@ -1006,7 +1012,7 @@ test('carousel sections mirror shadcn examples in both renderers', async ({
     page.locator('#rtl').locator("div[dir='rtl']").first(),
   ).toBeVisible()
 
-  await page.getByRole('button', { name: 'StyleX' }).click()
+  await visitRenderer(page, 'StyleX')
   for (const id of ['sizes', 'options', 'rtl']) {
     await expect(page.locator(`[id="${id}"]`)).toBeVisible()
   }
@@ -1169,7 +1175,7 @@ test('dialog matches upstream sections, restores focus, and scrolls long content
   await expect(rtlDialog).toBeHidden()
   await expect(rtlTrigger).toBeFocused()
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   for (const id of ['compact-confirmation', 'custom-close-button', 'rtl']) {
     await expect(page.locator(`#${id}`)).toBeVisible()
   }
@@ -1264,11 +1270,17 @@ test('alert dialog matches upstream sections and keeps async consequences parent
   await expect(example.getByRole('status')).toHaveText('Project deleted.')
   await expect(trigger).toBeFocused()
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   await expect(page.locator('#async-deletion')).toBeVisible()
   await expect(page.locator('#rtl')).toBeVisible()
   await expect(page.locator('#stylex-specimen')).toHaveCount(0)
   await expect(example.locator('code')).toContainText('@/stylex/alert-dialog')
+  await expect(example.getByRole('status')).toHaveText('No action taken.')
+  await trigger.click()
+  await page
+    .getByRole('alertdialog')
+    .getByRole('button', { name: 'Delete project', exact: true })
+    .click()
   await expect(example.getByRole('status')).toHaveText('Project deleted.')
 })
 
@@ -1332,7 +1344,7 @@ test('sheet compound parts preserve focus and accessible structure', async ({
   await page.keyboard.press('Escape')
   await expect(rtlSheet).toBeHidden()
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   for (const id of ['side', 'no-close-button', 'rtl']) {
     await expect(page.locator(`#${id}`)).toBeVisible()
   }
@@ -1347,14 +1359,20 @@ test('drawer documents its child model and preserves modal focus behavior', asyn
   const trigger = hero.getByRole('button', { name: 'Open Drawer' })
 
   await trigger.click()
-  const heroDrawer = page.locator('#docs-drawer-6')
+  // Hero reuses fixture 0's content on a spare preview-model slot (index 11),
+  // so its dialog id is docs-drawer-11.
+  const heroDrawer = page.locator('#docs-drawer-11')
   await expect(heroDrawer).toBeVisible()
-  await expect(heroDrawer.locator('[data-slot="drawer-handle"]')).toBeVisible()
+  // shadcn's Base UI drawer renders the swipe handle only via showSwipeHandle
+  // — the goal fixture leaves it off.
+  await expect(
+    heroDrawer.locator('[data-slot="drawer-swipe-handle"]'),
+  ).toHaveCount(0)
   await expect(heroDrawer.locator('[data-slot="drawer-title"]')).toHaveText(
     'Move goal',
   )
   await expect(
-    page.locator('#scrollable-content, #sides, #responsive-dialog, #rtl'),
+    page.locator('#scrollable-content, #position, #responsive-dialog, #rtl'),
   ).toHaveCount(4)
 
   await page.keyboard.press('Escape')
@@ -1363,13 +1381,13 @@ test('drawer documents its child model and preserves modal focus behavior', asyn
 
   const scrollSection = page.locator('#scrollable-content')
   await scrollSection
-    .getByRole('button', { name: 'Scrollable Content', exact: true })
+    .getByRole('button', { name: 'right', exact: true })
     .click()
-  const scrollDrawer = page.locator('#docs-drawer-2')
+  const scrollDrawer = page.locator('#docs-drawer-5')
   await expect(scrollDrawer).toBeVisible()
   await expect(
-    scrollDrawer.locator('[data-slot="drawer-content"]'),
-  ).toHaveAttribute('data-vaul-drawer-direction', 'right')
+    scrollDrawer.locator('[data-slot="drawer-popup"]'),
+  ).toHaveAttribute('data-swipe-direction', 'right')
   const scrollRegion = scrollDrawer.locator('.overflow-y-auto')
   await expect(scrollRegion).toBeVisible()
   const scrollMetrics = await scrollRegion.evaluate(node => ({
@@ -1380,18 +1398,18 @@ test('drawer documents its child model and preserves modal focus behavior', asyn
   await page.keyboard.press('Escape')
   await expect(scrollDrawer).toBeHidden()
 
-  const sidesSection = page.locator('#sides')
+  const sidesSection = page.locator('#position')
   await sidesSection.getByRole('button', { name: 'left', exact: true }).click()
-  const sidesDrawer = page.locator('#docs-drawer-3')
+  const sidesDrawer = page.locator('#docs-drawer-2')
   await expect(
-    sidesDrawer.locator('[data-slot="drawer-content"]'),
-  ).toHaveAttribute('data-vaul-drawer-direction', 'left')
+    sidesDrawer.locator('[data-slot="drawer-popup"]'),
+  ).toHaveAttribute('data-swipe-direction', 'left')
   await page.keyboard.press('Escape')
   await expect(sidesDrawer).toBeHidden()
-  await sidesSection.getByRole('button', { name: 'top', exact: true }).click()
+  await sidesSection.getByRole('button', { name: 'up', exact: true }).click()
   await expect(
-    sidesDrawer.locator('[data-slot="drawer-content"]'),
-  ).toHaveAttribute('data-vaul-drawer-direction', 'top')
+    sidesDrawer.locator('[data-slot="drawer-popup"]'),
+  ).toHaveAttribute('data-swipe-direction', 'up')
   await page.keyboard.press('Escape')
   await expect(sidesDrawer).toBeHidden()
 
@@ -1401,7 +1419,7 @@ test('drawer documents its child model and preserves modal focus behavior', asyn
     exact: true,
   })
   await editTrigger.click()
-  const responsiveDialog = page.locator('#docs-drawer-dialog-4')
+  const responsiveDialog = page.locator('#docs-drawer-dialog-9')
   await expect(responsiveDialog).toBeVisible()
   await expect(responsiveDialog.locator('input[id$="-name"]')).toHaveValue(
     'Pedro Duarte',
@@ -1411,7 +1429,7 @@ test('drawer documents its child model and preserves modal focus behavior', asyn
   await page.setViewportSize({ width: 500, height: 800 })
   await page.waitForTimeout(400)
   await editTrigger.click()
-  const responsiveDrawer = page.locator('#docs-drawer-4')
+  const responsiveDrawer = page.locator('#docs-drawer-9')
   await expect(responsiveDrawer).toBeVisible()
   await expect(responsiveDrawer.locator('input[id$="-name"]')).toHaveValue(
     'Pedro Duarte',
@@ -1423,7 +1441,7 @@ test('drawer documents its child model and preserves modal focus behavior', asyn
   const rtlSection = page.locator('#rtl')
   const rtlTrigger = rtlSection.getByRole('button', { name: 'افتح الدرج' })
   await rtlTrigger.click()
-  const rtlDrawer = page.locator('#docs-drawer-5')
+  const rtlDrawer = page.locator('#docs-drawer-10')
   await expect(rtlDrawer).toBeVisible()
   await expect(rtlDrawer.locator('[dir="rtl"]')).toHaveCount(1)
   await expect(rtlDrawer).toContainText('350')
@@ -1433,7 +1451,7 @@ test('drawer documents its child model and preserves modal focus behavior', asyn
   await expect(rtlDrawer).toBeHidden()
   await expect(rtlTrigger).toBeFocused()
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   await expect(page.locator('#scrollable-content')).toBeVisible()
   await expect(page.locator('#stylex-specimen')).toHaveCount(0)
   await expect(scrollSection.locator('code')).toContainText('@/stylex/drawer')
@@ -1445,8 +1463,8 @@ test('drawer documents its child model and preserves modal focus behavior', asyn
   const sideDrawer = page.locator('#docs-drawer-1')
   await expect(sideDrawer).toBeVisible()
   await expect(
-    sideDrawer.locator('[data-slot="drawer-content"]'),
-  ).toHaveAttribute('data-vaul-drawer-direction', 'right')
+    sideDrawer.locator('[data-slot="drawer-popup"]'),
+  ).toHaveAttribute('data-swipe-direction', 'right')
   await page.keyboard.press('Escape')
   await expect(sideDrawer).toBeHidden()
   await expect(sideTrigger).toBeFocused()
@@ -1456,7 +1474,7 @@ test('popover delegates disclosure commands and mirrors shadcn examples', async 
   page,
 }) => {
   await page.goto('/docs/components/popover')
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   await page.waitForTimeout(600)
 
   const hero = page.locator('[aria-label="Basic preview"]')
@@ -1537,15 +1555,16 @@ test('drawer handle supports mouse cancellation and touch threshold dismissal', 
 }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/docs/components/drawer')
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
-  const example = page.locator('[aria-label="Activity goal preview"]')
-  const trigger = example.getByRole('button', { name: 'Open Drawer' })
+  await visitRenderer(page, 'StyleX')
+  const example = page.locator('#swipe-handle')
+  const trigger = example.getByRole('button', { name: 'down', exact: true })
   await trigger.click()
 
-  const drawer = page.locator('#docs-drawer-6')
-  const root = example.locator('[data-slot="drawer-root"]')
-  const panel = drawer.locator('[data-slot="drawer-content"]')
-  let handle = drawer.locator('[data-slot="drawer-handle"]')
+  const drawer = page.locator('#docs-drawer-3')
+  const viewport = page.locator('[data-slot="drawer-viewport"]')
+  const panel = drawer.locator('[data-slot="drawer-popup"]')
+  let handle = drawer.locator('[data-slot="drawer-swipe-handle"]')
+  await expect(handle).toBeVisible()
   await expect(panel).toHaveCSS('transition-property', 'none')
 
   await handle.dispatchEvent('pointerdown', {
@@ -1554,36 +1573,32 @@ test('drawer handle supports mouse cancellation and touch threshold dismissal', 
     screenX: 100,
     screenY: 100,
   })
-  handle = drawer.locator('[data-slot="drawer-handle"]')
-  await expect(handle).toHaveAttribute('data-drag-phase', 'Dragging')
-  await root.dispatchEvent('pointermove', {
+  await expect(panel).toHaveAttribute('data-swiping', '')
+  await viewport.dispatchEvent('pointermove', {
     pointerType: 'mouse',
     screenX: 100,
     screenY: 150,
   })
-  await root.dispatchEvent('pointerleave', { pointerType: 'mouse' })
+  await viewport.dispatchEvent('pointerleave', { pointerType: 'mouse' })
   await expect(drawer).toBeVisible()
-  await expect(drawer.locator('[data-slot="drawer-handle"]')).toHaveAttribute(
-    'data-drag-phase',
-    'Idle',
-  )
+  await expect(panel).not.toHaveAttribute('data-swiping', '')
 
-  handle = drawer.locator('[data-slot="drawer-handle"]')
+  handle = drawer.locator('[data-slot="drawer-swipe-handle"]')
   await handle.dispatchEvent('pointerdown', {
     pointerType: 'touch',
     button: 0,
     screenX: 100,
     screenY: 100,
   })
-  await root.dispatchEvent('pointermove', {
+  await viewport.dispatchEvent('pointermove', {
     pointerType: 'touch',
     screenX: 100,
-    screenY: 240,
+    screenY: 600,
   })
-  await root.dispatchEvent('pointerup', {
+  await viewport.dispatchEvent('pointerup', {
     pointerType: 'touch',
     screenX: 100,
-    screenY: 240,
+    screenY: 600,
   })
   await expect(drawer).toBeHidden()
   await expect(trigger).toBeFocused()
@@ -1594,7 +1609,7 @@ test('sheet renders every edge from view input with Dialog focus behavior', asyn
 }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/docs/components/sheet')
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
 
   for (const [id, side] of [
     ['compound-layout', 'right'],
@@ -1692,7 +1707,7 @@ test('hover-card sections match upstream variants in both renderers', async ({
   await expect(rtlPanel.locator('[dir="rtl"]')).toContainText('سماعات لاسلكية')
   await expect(rtlPanel).toContainText('٩٩.٩٩ $')
 
-  await page.getByRole('button', { name: 'StyleX' }).click()
+  await visitRenderer(page, 'StyleX')
   const sxHero = page.locator('[aria-label="Basic preview"]')
   await sxHero
     .getByRole('button', { name: 'Preview the CreaseUI profile' })
@@ -1709,7 +1724,7 @@ test('tooltip opens from keyboard focus and dismisses without moving focus', asy
   page,
 }) => {
   await page.goto('/docs/components/tooltip')
-  await page.getByRole('button', { name: 'StyleX' }).click()
+  await visitRenderer(page, 'StyleX')
   for (const id of [
     'side',
     'with-keyboard-shortcut',
@@ -1801,7 +1816,7 @@ test('select persists a typed OutMessage selection', async ({ page }) => {
     rtl.getByRole('button', { name: 'Example select' }),
   ).toContainText('جزر')
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   const sxHero = page.locator('[aria-label="Basic preview"]')
   const sxTrigger = sxHero.getByRole('button', { name: 'Example select' })
   await sxTrigger.click()
@@ -1815,7 +1830,7 @@ test('tooltip rejects stale hover timers and pointer-induced touch focus', async
 }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/docs/components/tooltip')
-  await page.getByRole('button', { name: 'StyleX' }).click()
+  await visitRenderer(page, 'StyleX')
   const example = page.locator('#side')
   const trigger = example.getByRole('button', { name: 'Top', exact: true })
   const panel = page.locator('[data-slot="tooltip-content"]')
@@ -1961,7 +1976,7 @@ test('command dialogs filter and select items per section', async ({
   page,
 }) => {
   await page.goto('/docs/components/command')
-  await page.getByRole('button', { name: 'StyleX' }).click()
+  await visitRenderer(page, 'StyleX')
   for (const section of [
     '#basic',
     '#shortcuts',
@@ -2022,7 +2037,7 @@ test('dropdown menu exposes typed selection wiring and keyboard behavior', async
   page,
 }) => {
   await page.goto('/docs/components/dropdown-menu')
-  await page.getByRole('button', { name: 'StyleX' }).click()
+  await visitRenderer(page, 'StyleX')
   await expect(page.locator('[aria-label="Basic preview"]')).toBeVisible()
   for (const section of [
     '#basic',
@@ -2135,7 +2150,7 @@ test('context menu sections anchor, toggle, and select per fixture', async ({
 }) => {
   await page.setViewportSize({ width: 900, height: 720 })
   await page.goto('/docs/components/context-menu')
-  await page.getByRole('button', { name: 'StyleX' }).click()
+  await visitRenderer(page, 'StyleX')
   for (const section of [
     '#basic',
     '#submenu',
@@ -2232,7 +2247,7 @@ test('navigation menu distinguishes semantic links from stateful disclosures', a
   page,
 }) => {
   await page.goto('/docs/components/navigation-menu')
-  await page.getByRole('button', { name: 'StyleX' }).click()
+  await visitRenderer(page, 'StyleX')
   await expect(page.locator('#semantic-links')).toBeVisible()
   await expect(page.locator('#popover-disclosure')).toBeVisible()
   await expect(page.locator('#responsive-fallback')).toBeVisible()
@@ -2293,7 +2308,7 @@ test('menubar documents independent targeted child models', async ({
   page,
 }) => {
   await page.goto('/docs/components/menubar')
-  await page.getByRole('button', { name: 'StyleX' }).click()
+  await visitRenderer(page, 'StyleX')
   await expect(page.locator('#coordinated-menus')).toBeVisible()
   await expect(page.locator('#shortcut-hints')).toBeVisible()
   await expect(page.locator('#rtl-switching')).toBeVisible()
@@ -2346,7 +2361,7 @@ test('pagination keeps routing and in-place actions parent controlled', async ({
   page,
 }) => {
   await page.goto('/docs/components/pagination')
-  await page.getByRole('button', { name: 'StyleX' }).click()
+  await visitRenderer(page, 'StyleX')
   await expect(page.locator('#addressable-pages')).toBeVisible()
   await expect(page.locator('#in-place-results')).toBeVisible()
   await expect(page.locator('#compact-neighborhood')).toBeVisible()
@@ -2520,7 +2535,7 @@ test('breadcrumb sections mirror shadcn examples in both renderers', async ({
   await expect(page.getByRole('menuitem', { name: 'Themes' })).toBeVisible()
   await page.keyboard.press('Escape')
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   await expect(page.locator('#basic code')).toContainText('@/stylex/breadcrumb')
   const stylexNav = page
     .locator('#basic')
@@ -2567,7 +2582,7 @@ test('alert requires explicit severity and announcement policy', async ({
   await expect(rtl.locator("[dir='rtl']")).toHaveCount(1)
   await expect(rtl.locator('[data-slot="alert"]')).toHaveCount(2)
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   await expect(page.locator('#basic')).toBeVisible()
   await expect(page.locator('#destructive')).toBeVisible()
   await expect(page.locator('#action')).toBeVisible()
@@ -2596,7 +2611,7 @@ test('aspect ratio keeps upstream-named examples and geometry across renderers',
   await expect(page.locator('#rtl figcaption')).toContainText('منظر طبيعي جميل')
   await expect(page.locator('#square img')).toBeVisible()
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   await expect(page.locator('#square')).toBeVisible()
   await expect(page.locator('#portrait')).toBeVisible()
   await expect(page.locator('#rtl')).toBeVisible()
@@ -2640,7 +2655,7 @@ test('badge keeps authored variants across renderers', async ({ page }) => {
   await expect(blue).toHaveCSS('background-color', 'oklch(0.97 0.014 254.604)')
   await expect(page.locator('#rtl div[dir]')).toHaveAttribute('dir', 'rtl')
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   await expect(page.locator('#variants')).toBeVisible()
   await expect(page.locator('#custom-colors')).toBeVisible()
   await expect(page.locator('#stylex-specimen')).toHaveCount(0)
@@ -2668,7 +2683,7 @@ test('kbd keeps semantic key notation across renderers', async ({ page }) => {
     page.locator('#shortcut').locator('kbd[data-slot="kbd-group"]'),
   ).toBeVisible()
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   await expect(page.locator('#key')).toBeVisible()
   await expect(page.locator('#shortcut')).toBeVisible()
   await expect(page.locator('#stylex-specimen')).toHaveCount(0)
@@ -2689,7 +2704,7 @@ test('label keeps native control association across renderers', async ({
   await page.locator('#input-label label[data-slot="label"]').click()
   await expect(email).toBeFocused()
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   await expect(page.locator('#input-label')).toBeVisible()
   await expect(page.locator('#supporting-text')).toBeVisible()
   await expect(page.locator('#stylex-specimen')).toHaveCount(0)
@@ -2713,7 +2728,7 @@ test('marker keeps authored variants and annotation semantics across renderers',
     'true',
   )
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   await expect(page.locator('#separator')).toBeVisible()
   await expect(page.locator('#with-icon')).toBeVisible()
   await expect(page.locator('#border')).toBeVisible()
@@ -2739,7 +2754,7 @@ test('separator keeps decorative and semantic boundaries across renderers', asyn
     'vertical',
   )
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   await expect(horizontal).toBeVisible()
   await expect(vertical).toBeVisible()
   await expect(page.locator('#stylex-specimen')).toHaveCount(0)
@@ -2804,7 +2819,7 @@ test('typography mirrors the shadcn example set across renderers', async ({
   ).toBeVisible()
   await expect(rtl.locator('li')).toHaveCount(3)
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   await page.waitForTimeout(600)
   await expect(
     hero.getByRole('heading', {
@@ -2831,15 +2846,15 @@ test('sidebar documents persistence and toggles derived shell state', async ({
   await expect(provider).toHaveAttribute('data-state', 'collapsed')
   await expect(example.locator('code')).toContainText('Sidebar.shortcut')
   await expect(example.locator('code')).toContainText('Command.mapMessages')
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   await expect(page.locator('#application-shell')).toBeVisible()
   await expect(page.locator('#floating-sidebar')).toBeVisible()
   await expect(page.locator('#stylex-specimen')).toHaveCount(0)
-  await expect(provider).toHaveAttribute('data-state', 'collapsed')
+  await expect(provider).toHaveAttribute('data-state', 'expanded')
   await expect(example.locator('code')).toContainText('@/stylex/sidebar')
   await expect(trigger).toHaveCount(1)
   await trigger.click()
-  await expect(provider).toHaveAttribute('data-state', 'expanded')
+  await expect(provider).toHaveAttribute('data-state', 'collapsed')
 })
 
 test('accordion matches upstream examples and enforces state rules', async ({
@@ -2893,7 +2908,7 @@ test('accordion matches upstream examples and enforces state rules', async ({
   }
   await expect(page.locator('#card')).toContainText('Subscription & Billing')
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   for (const id of [
     'basic',
     'multiple',
@@ -2907,8 +2922,7 @@ test('accordion matches upstream examples and enforces state rules', async ({
   await expect(page.locator('#stylex-specimen')).toHaveCount(0)
   await expect(page.locator('#basic code')).toContainText('@/stylex/accordion')
 
-  // Renderer toggle preserves the shared example model: the Tailwind click
-  // opened item-2, so the StyleX render starts with it open.
+  // The other origin starts its own model and obeys the same single-open rule.
   const stylexBasic = page.locator('#basic')
   const stylexPassword = stylexBasic.getByRole('button', {
     name: 'How do I reset my password?',
@@ -2916,8 +2930,10 @@ test('accordion matches upstream examples and enforces state rules', async ({
   const stylexSubscription = stylexBasic.getByRole('button', {
     name: 'Can I change my subscription plan?',
   })
+  await expect(stylexPassword).toHaveAttribute('aria-expanded', 'true')
+  await expect(stylexSubscription).toHaveAttribute('aria-expanded', 'false')
+  await stylexSubscription.click()
   await expect(stylexPassword).toHaveAttribute('aria-expanded', 'false')
-  await expect(stylexSubscription).toHaveAttribute('aria-expanded', 'true')
   await stylexPassword.click()
   await expect(stylexPassword).toHaveAttribute('aria-expanded', 'true')
   await expect(stylexSubscription).toHaveAttribute('aria-expanded', 'false')
@@ -2958,8 +2974,10 @@ test('attachment sections mirror shadcn examples with working actions', async ({
   await page.keyboard.press('Escape')
   await expect(dialog).toBeHidden()
 
-  await page.getByRole('button', { name: 'StyleX' }).click()
+  await visitRenderer(page, 'StyleX')
   await expect(page.locator('#states')).toBeVisible()
+  await expect(states.locator('[data-slot="attachment"]')).toHaveCount(5)
+  await states.getByRole('button', { name: 'Remove selected-file.pdf' }).click()
   await expect(page.locator('#states [data-slot="attachment"]')).toHaveCount(4)
   await expect(
     page.locator('#states [data-slot="attachment-title"]', {
@@ -3059,7 +3077,7 @@ test('bubble sections mirror shadcn examples in both renderers', async ({
   ).toBeVisible()
   await page.keyboard.press('Escape')
 
-  await page.getByRole('button', { name: 'StyleX' }).click()
+  await visitRenderer(page, 'StyleX')
   await expect(page.locator('[id="variants"] code')).toContainText(
     '@/stylex/bubble',
   )
@@ -3081,7 +3099,7 @@ test('item preserves semantic collections and structured metadata', async ({
   page,
 }) => {
   await page.goto('/docs/components/item')
-  await page.getByRole('button', { name: 'StyleX' }).click()
+  await visitRenderer(page, 'StyleX')
   await expect(page.locator('#collection')).toBeVisible()
   await expect(page.locator('#outlined')).toBeVisible()
   await expect(page.locator('#header-and-footer')).toBeVisible()
@@ -3101,7 +3119,7 @@ test('scroll area preserves labeled native overflow on both axes', async ({
   page,
 }) => {
   await page.goto('/docs/components/scroll-area')
-  await page.getByRole('button', { name: 'StyleX' }).click()
+  await visitRenderer(page, 'StyleX')
   await page.waitForTimeout(600)
   await expect(page.locator('#horizontal')).toBeVisible()
   await expect(page.locator('#rtl')).toBeVisible()
@@ -3139,7 +3157,7 @@ test('message scroller covers every upstream core-concept section in both render
   page,
 }) => {
   await page.goto('/docs/components/message-scroller')
-  await page.getByRole('button', { name: 'StyleX' }).click()
+  await visitRenderer(page, 'StyleX')
   for (const id of [
     'anchoring-turns',
     'group-chat',
@@ -3357,7 +3375,7 @@ test('toast shows and dismisses an accessible notification', async ({
       'Event has been created',
     )
 
-    await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+    await visitRenderer(page, 'StyleX')
     for (const id of ['types', 'description', 'position']) {
       await expect(page.locator(`#${id}`)).toBeVisible()
     }
@@ -3454,7 +3472,7 @@ test('calendar sections mirror shadcn examples in both renderers', async ({
   await expect(rtl).toContainText('Juli 2026')
   await expect(rtl).toContainText('Mo')
 
-  await page.getByRole('button', { name: 'StyleX' }).click()
+  await visitRenderer(page, 'StyleX')
   for (const id of ['basic', 'presets', 'week-numbers', 'rtl']) {
     await expect(page.locator(`[id="${id}"]`)).toBeVisible()
   }
@@ -3547,11 +3565,11 @@ test('date picker covers every upstream section in both renderers', async ({
   await expect(input.locator('code')).toContainText('@/ui/date-picker')
   await expect(input.locator('code')).toContainText('PressedKeyInInput')
 
-  // StyleX renderer parity.
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
-  await expect(inputField).toHaveValue('July 20, 2025')
+  // The StyleX origin starts with the authored initial values.
+  await visitRenderer(page, 'StyleX')
+  await expect(inputField).toHaveValue('June 01, 2025')
   await expect(
-    range.getByRole('button', { name: /Jan 10, 2026/ }),
+    range.getByRole('button', { name: /Jan 20, 2026/ }),
   ).toBeVisible()
   await expect(input.locator('code')).toContainText('@/stylex/date-picker')
   await inputField.press('ArrowDown')
@@ -3570,7 +3588,7 @@ test('direction preserves RTL and nested LTR semantics across renderers', async 
   await expect(rtl.locator('[dir="rtl"]')).toContainText('التالي')
   await expect(mixed.locator('[dir="rtl"]')).toContainText('الإصدار')
   await expect(mixed.locator('[dir="ltr"]')).toContainText('v0.148.2')
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   await expect(page.locator('#stylex-specimen')).toHaveCount(0)
   await expect(rtl.locator('[dir="rtl"]')).toContainText('التالي')
   await expect(mixed.locator('[dir="ltr"]')).toContainText('v0.148.2')
@@ -3581,7 +3599,7 @@ test('chart documents SVG recipes and the complete ECharts family showcase', asy
   page,
 }) => {
   await page.goto('/docs/components/chart')
-  await page.getByRole('button', { name: 'StyleX' }).click()
+  await visitRenderer(page, 'StyleX')
   await expect(page.locator('#monthly-revenue')).toBeVisible()
   await expect(page.locator('#traffic-trend')).toBeVisible()
   await expect(page.locator('#echarts-lifecycle')).toBeVisible()
@@ -3669,7 +3687,7 @@ test('chart documents SVG recipes and the complete ECharts family showcase', asy
     await expect(example.locator('code')).toContainText('@/stylex/chart')
   }
 
-  await page.getByRole('button', { name: 'Tailwind', exact: true }).click()
+  await visitRenderer(page, 'Tailwind')
   await expect(page.locator('#area-chart code')).toContainText('@/ui/chart')
   await expect(
     page.locator('[id$="-chart"] [data-slot="echart"] canvas'),
@@ -3691,7 +3709,7 @@ test('presentational helpers preserve native semantics and controlled OTP state'
   page,
 }) => {
   await page.goto('/docs/components/card')
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   await expect(page.locator('#basic')).toBeVisible()
   await expect(page.locator('#size')).toBeVisible()
   await expect(page.locator('#spacing')).toBeVisible()
@@ -3765,7 +3783,7 @@ test('data table filters and sorts through its interaction model', async ({
     .fill('failed')
   await expect(rtl).toContainText('r@example.com')
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   for (const id of [
     'sortable-payments',
     'filter-and-paginate',
@@ -3776,6 +3794,14 @@ test('data table filters and sorts through its interaction model', async ({
   }
   await expect(page.locator('#stylex-specimen')).toHaveCount(0)
   await expect(sortable.locator('code')).toContainText('@/stylex/data-table')
+  await expect(amountHeader).toHaveAttribute('aria-sort', 'none')
+  await sortable.getByRole('button', { name: 'Amount' }).click()
+  await sortable.getByRole('button', { name: 'Amount' }).click()
+  await sortable
+    .locator('button')
+    .filter({ hasText: /^Next$/ })
+    .click()
+  await filtered.getByRole('searchbox').fill('failed')
   await expect(amountHeader).toHaveAttribute('aria-sort', 'descending')
   await expect(sortable).toContainText('Page 2 of 2')
   await expect(
@@ -3879,7 +3905,7 @@ test('controlled helper pages own and update compact local preview state', async
   await expect(page.locator("#rtl [dir='rtl']").first()).toBeVisible()
   await expect(page.locator('#rtl')).toContainText('المشاركة عبر الأجهزة')
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   for (const id of switchSectionIds) {
     await expect(page.locator(`#${id}`)).toBeVisible()
   }
@@ -3940,7 +3966,7 @@ test('controlled helper pages own and update compact local preview state', async
     rtl.getByRole('button', { name: 'Toggle bookmark' }),
   ).toContainText('إشارة مرجعية')
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   for (const id of sectionIds) {
     await expect(page.locator(`#${id}`)).toBeVisible()
   }
@@ -4023,7 +4049,7 @@ test('controlled helper pages own and update compact local preview state', async
     rtlSection.getByRole('button', { name: 'قائمة' }),
   ).toHaveAttribute('aria-pressed', 'false')
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   await page.waitForTimeout(600)
   const sxHero = page.locator('[aria-label="Basic preview"]')
   const sxGroupItalic = sxHero.getByRole('button', { name: 'Toggle italic' })
@@ -4123,7 +4149,7 @@ test('controlled helper pages own and update compact local preview state', async
   })
   expect(submittedNotes).toBe('First line\nSecond line')
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   for (const id of textareaSectionIds) {
     await expect(page.locator(`#${id}`)).toBeVisible()
   }
@@ -4223,13 +4249,13 @@ test('input sections match upstream variants in both renderers', async ({
   await expect(inputRtl.locator("div[dir='rtl']").first()).toBeVisible()
   await expect(inputRtl.getByText('مفتاح API', { exact: true })).toBeVisible()
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   for (const id of ['field', 'invalid', 'disabled', 'form', 'rtl']) {
     await expect(page.locator(`#${id}`)).toBeVisible()
   }
   await expect(page.locator('#stylex-specimen')).toHaveCount(0)
   await expect(page.locator('#field code')).toContainText('@/stylex/input')
-  await expect(username).toHaveValue('potti')
+  await expect(username).toHaveValue('')
   await username.fill('stylex-potti')
   await expect(username).toHaveValue('stylex-potti')
   await expect(
@@ -4329,7 +4355,7 @@ test('input-group sections match upstream variants in both renderers', async ({
   await expect(rtl.getByText('١٢ نتيجة', { exact: true })).toBeVisible()
   await expect(rtl.getByRole('button', { name: 'نشر' })).toBeVisible()
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   for (const id of [
     'align',
     'icon',
@@ -4348,7 +4374,7 @@ test('input-group sections match upstream variants in both renderers', async ({
   await expect(page.locator('#align code')).toContainText(
     '@/stylex/input-group',
   )
-  await expect(heroInput).toHaveValue('docs')
+  await expect(heroInput).toHaveValue('')
   await heroInput.fill('stylex-docs')
   await expect(heroInput).toHaveValue('stylex-docs')
 })
@@ -4450,7 +4476,7 @@ test('input-otp sections match upstream variants in both renderers', async ({
     '123456',
   )
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   for (const id of [
     'pattern',
     'separator',
@@ -4468,9 +4494,10 @@ test('input-otp sections match upstream variants in both renderers', async ({
   await expect(page.locator('#pattern code')).toContainText(
     '@/stylex/input-otp',
   )
-  await expect(heroOtp).toHaveValue('65432')
+  await expect(heroOtp).toHaveValue('123456')
   await heroOtp.fill('12x345')
   await expect(heroOtp).toHaveValue('12345')
+  await controlledOtp.fill('112233')
   await expect(
     controlled.getByText('You entered: 112233', { exact: true }),
   ).toBeVisible()
@@ -4574,7 +4601,7 @@ test('item sections match upstream variants in both renderers', async ({
   await expect(rtl.getByText('عنصر أساسي', { exact: true })).toBeVisible()
   await expect(rtl.getByRole('button', { name: 'إجراء' })).toBeVisible()
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   for (const id of [
     'variant',
     'size',
@@ -4645,7 +4672,7 @@ test('kbd sections match upstream variants in both renderers', async ({
   await expect(rtl.locator("div[dir='rtl']").first()).toBeVisible()
   await expect(rtl.getByText('⌃', { exact: true })).toBeVisible()
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   for (const id of ['group', 'button', 'tooltip', 'input-group', 'rtl']) {
     await expect(page.locator(`#${id}`)).toBeVisible()
   }
@@ -4707,7 +4734,7 @@ test('label sections match upstream variants in both renderers', async ({
     rtl.getByText('قبول الشروط والأحكام', { exact: true }),
   ).toBeVisible()
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   for (const id of ['label-in-field', 'rtl']) {
     await expect(page.locator(`#${id}`)).toBeVisible()
   }
@@ -4786,7 +4813,7 @@ test('marker sections match upstream variants in both renderers', async ({
     links.getByText('You clicked the revert button', { exact: true }),
   ).toBeVisible()
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   for (const id of [
     'variants',
     'status',
@@ -4849,7 +4876,7 @@ test('skeleton sections match upstream variants in both renderers', async ({
   await expect(rtl.locator("[dir='rtl']").first()).toBeVisible()
   await expect(rtl.locator("[data-slot='skeleton']")).toHaveCount(3)
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   for (const id of ['avatar', 'card', 'text', 'form', 'table', 'rtl']) {
     await expect(page.locator(`#${id}`)).toBeVisible()
   }
@@ -4896,7 +4923,7 @@ test('separator sections match upstream variants in both renderers', async ({
     rtl.getByText('الأساس لنظام التصميم الخاص بك', { exact: true }),
   ).toBeVisible()
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   for (const id of ['vertical', 'menu', 'list', 'rtl']) {
     await expect(page.locator(`#${id}`)).toBeVisible()
   }
@@ -4952,7 +4979,7 @@ test('native-select sections match upstream variants in both renderers', async (
   await expect(rtl.locator('select')).toHaveAttribute('dir', 'rtl')
   await expect(rtl.locator('option', { hasText: 'اختر الحالة' })).toHaveCount(1)
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   for (const id of ['groups', 'disabled', 'invalid', 'rtl']) {
     await expect(page.locator(`#${id}`)).toBeVisible()
   }
@@ -5043,7 +5070,7 @@ test('message sections match upstream variants in both renderers', async ({
     attachment.getByText('Thanks. Looks good.', { exact: true }),
   ).toBeVisible()
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   for (const id of [
     'avatar',
     'group',
@@ -5144,7 +5171,7 @@ test('menubar sections match upstream variants in both renderers', async ({
   await expect(rtl.locator("[dir='rtl']").first()).toBeVisible()
   await expect(rtl.getByText('ملف', { exact: true })).toBeVisible()
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   for (const id of ['checkbox', 'radio', 'submenu', 'with-icons', 'rtl']) {
     await expect(page.locator(`#${id}`)).toBeVisible()
   }
@@ -5199,7 +5226,7 @@ test('collapsible preserves controlled linkage, external changes, and disabled p
   await trigger.click()
   await expect(trigger).toHaveAttribute('aria-expanded', 'true')
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   for (const id of ['details', 'open-by-default', 'disabled']) {
     await expect(page.locator(`#${id}`)).toBeVisible()
   }
@@ -5284,7 +5311,7 @@ test('progress sections match upstream variants and normalize custom ranges', as
     await narrow.evaluate(element => element.getBoundingClientRect().width),
   ).toBeLessThanOrEqual(100)
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   for (const id of sectionIds) {
     await expect(page.locator(`#${id}`)).toBeVisible()
   }
@@ -5328,7 +5355,7 @@ test('skeleton and spinner expose explicit loading semantics with reduced motion
     page.locator('#rtl').locator('[data-slot="skeleton"]').first(),
   ).toBeVisible()
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   await page.waitForTimeout(600)
   await expect(page.locator('#avatar')).toBeVisible()
   await expect(page.locator('#card')).toBeVisible()
@@ -5372,7 +5399,7 @@ test('skeleton and spinner expose explicit loading semantics with reduced motion
   await expect(rtl.locator("div[dir='rtl']")).toBeVisible()
   await expect(rtl).toContainText('جاري معالجة الدفع...')
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   await page.waitForTimeout(600)
   for (const id of [
     'customization',
@@ -5455,7 +5482,7 @@ test('empty sections match upstream variants in both renderers', async ({
   ).toBeVisible()
   await expect(rtl.getByRole('button', { name: 'إنشاء مشروع' })).toBeVisible()
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   await expect(page.locator('#stylex-specimen')).toHaveCount(0)
   await expect(page.locator('#outline code')).toContainText('@/stylex/empty')
   await expect(
@@ -5468,7 +5495,7 @@ test('message exposes live author metadata and parent-owned keyboard actions', a
   page,
 }) => {
   await page.goto('/docs/components/message')
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   await expect(page.locator('#incoming')).toBeVisible()
   await expect(page.locator('#outgoing')).toBeVisible()
   await expect(page.locator('#live-recovery')).toBeVisible()
@@ -5535,7 +5562,7 @@ test('table preserves native captions, scoped headers, overflow, and empty rows'
   await expect(rtl).toBeVisible()
   await expect(rtl.getByRole('cell', { name: 'مدفوع' }).first()).toBeVisible()
 
-  await page.getByRole('button', { name: 'StyleX', exact: true }).click()
+  await visitRenderer(page, 'StyleX')
   await expect(page.locator('#component-inventory')).toBeVisible()
   await expect(page.locator('#footer')).toBeVisible()
   await expect(page.locator('#dense-overflow')).toBeVisible()
@@ -5653,10 +5680,7 @@ test('checkbox shares controlled mixed, read-only, and form semantics', async ({
   await expect(readOnly).toBeChecked()
   await assertAccessible(page)
 
-  await page
-    .getByRole('group', { name: 'Preview styling engine' })
-    .getByRole('button', { name: 'StyleX' })
-    .click()
+  await visitRenderer(page, 'StyleX')
   for (const id of [
     'invalid-state',
     'basic',
@@ -5672,6 +5696,8 @@ test('checkbox shares controlled mixed, read-only, and form semantics', async ({
   }
   await expect(page.locator('#stylex-specimen')).toHaveCount(0)
   await expect(page.locator('#basic code')).toContainText('@/stylex/checkbox')
+  await expect(terms).not.toBeChecked()
+  await terms.press('Space')
   await expect(terms).toBeChecked()
   await terms.press('Space')
   await expect(terms).not.toBeChecked()
@@ -5723,10 +5749,7 @@ test('switch shares controlled read-only form and RTL semantics', async ({
   )
   await assertAccessible(page)
 
-  await page
-    .getByRole('group', { name: 'Preview styling engine' })
-    .getByRole('button', { name: 'StyleX' })
-    .click()
+  await visitRenderer(page, 'StyleX')
   for (const id of ['notifications', 'small', 'disabled', 'read-only', 'rtl']) {
     await expect(page.locator(`#${id}`)).toBeVisible()
   }
@@ -5773,10 +5796,7 @@ test('radio group isolates roving focus from parent-owned selection', async ({
   await expect(rtlDefault).toBeChecked()
   await assertAccessible(page)
 
-  await page
-    .getByRole('group', { name: 'Preview styling engine' })
-    .getByRole('button', { name: 'StyleX' })
-    .click()
+  await visitRenderer(page, 'StyleX')
   for (const id of [
     'description',
     'choice-card',
@@ -5793,6 +5813,9 @@ test('radio group isolates roving focus from parent-owned selection', async ({
     '@/stylex/radio-group',
   )
   const sxHero = page.locator('[aria-label="Basic preview"]')
+  await expect(comfortable).toBeChecked()
+  await comfortable.press('ArrowDown')
+  await rtlComfortable.press('ArrowUp')
   await expect(sxHero.getByRole('radio', { name: /Compact/u })).toBeChecked()
   await sxHero.getByRole('radio', { name: /Default/u }).click()
   await expect(sxHero.getByRole('radio', { name: /Default/u })).toBeChecked()
@@ -5908,11 +5931,11 @@ test('field sections match upstream variants in both renderers', async ({
   )
   await expect(responsive.getByRole('button', { name: 'Submit' })).toBeVisible()
 
-  await page
-    .getByRole('group', { name: 'Preview styling engine' })
-    .getByRole('button', { name: 'StyleX' })
-    .click()
+  await visitRenderer(page, 'StyleX')
   await expect(page.locator('#stylex-specimen')).toHaveCount(0)
+  await expect(username).toHaveValue('')
+  await username.fill('Max Leiter')
+  await choiceCard.getByRole('radio', { name: /Virtual Machine/ }).click()
   await expect(username).toHaveValue('Max Leiter')
   await expect(page.locator('#select code')).toContainText('@/stylex/field')
   await expect(
@@ -5961,10 +5984,7 @@ test('form preserves native metadata and focuses linked validation feedback', as
   )
   await assertAccessible(page)
 
-  await page
-    .getByRole('group', { name: 'Preview styling engine' })
-    .getByRole('button', { name: 'StyleX' })
-    .click()
+  await visitRenderer(page, 'StyleX')
   await expect(page.locator('#stylex-specimen')).toHaveCount(0)
   for (const id of ['newsletter-signup', 'error-summary', 'async-validation']) {
     await expect(page.locator(`#${id}`)).toBeVisible()
@@ -5973,6 +5993,7 @@ test('form preserves native metadata and focuses linked validation feedback', as
     '@/stylex/form',
   )
   await expect(newsletter).toHaveAttribute('name', 'email')
+  await signIn.getByRole('button', { name: 'Sign in' }).click()
   await expect(signInEmail).toHaveAttribute('aria-invalid', 'true')
   await expect(
     signIn.getByRole('alert', { name: 'Fix the following error' }),

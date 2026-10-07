@@ -1,3 +1,4 @@
+import { reset } from '@/stylex/reset'
 import { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as stylex from '@stylexjs/stylex'
@@ -65,7 +66,7 @@ export const dateInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
     h.div([h.Class(className(styles.stack))], [...children])
 
   const supporting = (text: string): Html =>
-    h.p([h.Class(className(styles.supporting))], [text])
+    h.p([h.Class(className(reset.text, styles.supporting))], [text])
 
   const firstValue = preview.inputs[0]?.value ?? Option.none()
   const selectedText = Option.match(firstValue, {

@@ -29,7 +29,7 @@ describe('StyleX component authoring contract', () => {
     const adapter = readFileSync('src/stylex/style.ts', 'utf8')
     const contract = readFileSync('src/stylex/contracts.ts', 'utf8')
 
-    assert.match(adapter, /ReadonlyArray<StaticStyles>/u)
+    assert.match(adapter, /ReadonlyArray<StaticStyles \| Marker>/u)
     assert.doesNotMatch(adapter, /StyleXStyles/u)
     assert.match(contract, /ComponentLayoutStyle = StaticStyles/u)
     assert.match(contract, /_InlineLayoutStyleIsRejected/u)
@@ -180,9 +180,9 @@ describe('StyleX component authoring contract', () => {
     const stylex = readFileSync('src/stylex/drawer.ts', 'utf8')
 
     assert.match(behavior, /import \{ Dialog \} from '@foldkit\/ui'/u)
-    assert.match(behavior, /SnapDecision/u)
-    assert.match(behavior, /dragVelocity/u)
-    assert.match(behavior, /CancelledDrawerDrag/u)
+    assert.match(behavior, /ReleaseDecision/u)
+    assert.match(behavior, /releaseVelocity/u)
+    assert.match(behavior, /CancelledSwipe/u)
     assert.match(tailwind, /@\/lib\/drawer/u)
     assert.match(stylex, /@\/lib\/drawer/u)
     assert.doesNotMatch(stylex, /from ['"]@\/ui\/drawer['"]/u)
