@@ -399,16 +399,7 @@ export const dropdownMenu = <Item extends string, Msg>(
                     'absolute left-2 flex size-3.5 items-center justify-center',
                   ),
                 ],
-                [
-                  checked
-                    ? config.kind === 'checkbox'
-                      ? Icon.check<Msg>({ class: 'size-4' }, h)
-                      : Icon.circleIcon<Msg>(
-                          { class: 'size-2 fill-current' },
-                          h,
-                        )
-                    : '',
-                ],
+                [checked ? Icon.check<Msg>({ class: 'size-4' }, h) : ''],
               ),
             ]
           : []),

@@ -470,15 +470,10 @@ export const dropdownMenu = <Item extends string, Msg>(
                 [h.Class(className(styles.indicator))],
                 [
                   checked
-                    ? config.kind === 'checkbox'
-                      ? Icon.check<Msg>(
-                          { class: className(overlayStyles.icon) },
-                          h,
-                        )
-                      : Icon.circleIcon<Msg>(
-                          { class: className(overlayStyles.icon) },
-                          h,
-                        )
+                    ? Icon.check<Msg>(
+                        { class: className(overlayStyles.icon) },
+                        h,
+                      )
                     : '',
                 ],
               ),
