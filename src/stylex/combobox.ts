@@ -16,6 +16,10 @@ import { className } from './style'
 
 const styles = stylex.create({
   contents: { display: 'contents' },
+  content: {
+    minWidth: '8rem',
+    width: 'var(--button-width)',
+  },
   inputWrapperFix: {
     position: 'relative',
     height: { default: '2.25rem', ':is([data-size="sm"])': '2rem' },
@@ -246,7 +250,7 @@ const buildBaseViewInputs = <Item, Value extends string, Msg>(
       hc.DataAttribute('size', props.size ?? 'default'),
     ]),
     openOnFocus: true,
-    itemsClassName: className(CONTENT_CLASS),
+    itemsClassName: className(CONTENT_CLASS, styles.content),
     itemsAttributes: childAttributes([
       hc.DataAttribute('slot', 'command-list'),
     ]),
