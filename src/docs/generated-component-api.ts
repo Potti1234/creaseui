@@ -2648,7 +2648,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "HoverCardProps",
       "kind": "type",
-      "signature": "HoverCardProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; content: Html | string; align?: HoverCardAlign; side?: HoverCardSide; isDisabled?: boolean; ariaLabel?: string; triggerClass?: string; class?: s…"
+      "signature": "HoverCardProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; content: Html | string; triggerButtonVariant?: Button.ButtonVariants['variant']; triggerButtonSize?: Button.ButtonVariants['size']; align?: Hove…"
     },
     {
       "name": "hoverCard",
@@ -3061,9 +3061,14 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "LinkVariants = VariantProps<typeof linkVariants>"
     },
     {
+      "name": "LinkVariant",
+      "kind": "type",
+      "signature": "LinkVariant = 'default' | 'underlined'"
+    },
+    {
       "name": "LinkProps",
       "kind": "type",
-      "signature": "LinkProps<Msg> = Readonly<{ children: ReadonlyArray<Html | string>; href?: string; label?: string; hasUnderline?: boolean; isDisabled?: boolean; isExternalLink?: boolean; newTabLabel?: string; target?: string; rel?: string; download?: string; onClick?: Msg; t…"
+      "signature": "LinkProps<Msg> = Readonly<{ children: ReadonlyArray<Html | string>; href?: string; label?: string; variant?: LinkVariant; hasUnderline?: boolean; isDisabled?: boolean; isExternalLink?: boolean; newTabLabel?: string; target?: string; rel?: string; download?: s…"
     },
     {
       "name": "link",
@@ -6205,7 +6210,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "TooltipProps",
       "kind": "type",
-      "signature": "TooltipProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; content: Html | string; align?: TooltipAlign; side?: TooltipSide; isDisabled?: boolean; ariaLabel?: string; triggerClass?: string; class?: string;…"
+      "signature": "TooltipProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; content: Html | string; align?: TooltipAlign; side?: TooltipSide; isDisabled?: boolean; ariaLabel?: string; triggerClass?: string; class?: string; showArrow?: boolean; ga…"
     },
     {
       "name": "tooltip",

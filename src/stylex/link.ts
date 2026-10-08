@@ -1,8 +1,9 @@
 import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
-import type { Html, HtmlBuilder } from 'foldkit/html'
+import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 
 import * as Icon from '@/lib/icon'
+import * as Tooltip from './tooltip'
 
 import type { ComponentLayoutStyle } from './contracts'
 import { foundationTokens } from './foundations-tokens.stylex'
@@ -45,10 +46,6 @@ const computeTargetAndRel = (
 const styles = stylex.create({
   base: {
     gap: '2px',
-    textDecorationLine: {
-      default: 'none',
-      ':hover': 'underline',
-    },
     alignItems: 'center',
     cursor: {
       default: interactionTokens.cursorAction,
@@ -59,6 +56,10 @@ const styles = stylex.create({
     fontSize: 'inherit',
     fontWeight: 'inherit',
     lineHeight: 'inherit',
+    textDecorationLine: {
+      default: 'none',
+      ':hover': 'underline',
+    },
     transitionDuration: interactionTokens.motionFast,
     transitionProperty: 'color, text-decoration',
     transitionTimingFunction: interactionTokens.easingStandard,
@@ -172,7 +173,18 @@ export type LinkProps<Msg> = Readonly<{
   rel?: string
   download?: string
   onClick?: Msg
-  tooltip?: string
+  /** The parent owns the Tooltip model and routes its messages through Tooltip.update. */
+  tooltip?: Pick<
+    Tooltip.TooltipProps<Msg>,
+    | 'model'
+    | 'toParentMessage'
+    | 'content'
+    | 'side'
+    | 'align'
+    | 'showArrow'
+    | 'gap'
+    | 'offset'
+  >
   isStandalone?: boolean
   type?: TextType
   size?: TextSize
@@ -235,70 +247,84 @@ export const link = <Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html => {
     ...(hasUnderline ? [styles.hasUnderline] : []),
   ]
 
-  if (renderAsButton) {
-    return h.button(
+  const renderLink = (
+    attributes: ReadonlyArray<Attribute<Msg> | ChildAttribute>,
+  ): Html => {
+    if (renderAsButton) {
+      return h.button(
+        [
+          ...attributes,
+          h.DataAttribute('slot', 'link'),
+          h.DataAttribute('variant', variant),
+          h.DataAttribute('color', color),
+          h.Type('button'),
+          h.Class(
+            className(
+              reset.button,
+              ...sharedStyles,
+              styles.buttonReset,
+              ...(isDisabled ? [] : [styles.pressedBackground]),
+              props.layoutStyle,
+            ),
+          ),
+          ...(isDisabled
+            ? [h.AriaDisabled(true), h.Tabindex(-1), h.Disabled(true)]
+            : []),
+          ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick)]),
+          ...(props.label === undefined ? [] : [h.AriaLabel(props.label)]),
+        ],
+        sharedContent,
+      )
+    }
+
+    if (isDisabled) {
+      return h.a(
+        [
+          ...attributes,
+          h.DataAttribute('slot', 'link'),
+          h.DataAttribute('variant', variant),
+          h.DataAttribute('color', color),
+          h.Class(className(reset.link, ...sharedStyles, props.layoutStyle)),
+          h.AriaDisabled(true),
+          h.Tabindex(-1),
+          ...(props.label === undefined ? [] : [h.AriaLabel(props.label)]),
+        ],
+        sharedContent,
+      )
+    }
+
+    return h.a(
       [
+        ...attributes,
         h.DataAttribute('slot', 'link'),
         h.DataAttribute('variant', variant),
         h.DataAttribute('color', color),
-        h.Type('button'),
         h.Class(
           className(
-            reset.button,
+            reset.link,
             ...sharedStyles,
-            styles.buttonReset,
-            ...(isDisabled ? [] : [styles.pressedBackground]),
+            styles.pressedBackground,
             props.layoutStyle,
           ),
         ),
-        ...(isDisabled
-          ? [h.AriaDisabled(true), h.Tabindex(-1), h.Disabled(true)]
-          : []),
+        h.Href(props.href ?? ''),
+        ...(target === undefined ? [] : [h.Target(target)]),
+        ...(rel === undefined ? [] : [h.Rel(rel)]),
+        ...(props.download === undefined ? [] : [h.Download(props.download)]),
         ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick)]),
         ...(props.label === undefined ? [] : [h.AriaLabel(props.label)]),
-        ...(props.tooltip === undefined ? [] : [h.Title(props.tooltip)]),
       ],
       sharedContent,
     )
   }
-
-  if (isDisabled) {
-    return h.a(
-      [
-        h.DataAttribute('slot', 'link'),
-        h.DataAttribute('variant', variant),
-        h.DataAttribute('color', color),
-        h.Class(className(reset.link, ...sharedStyles, props.layoutStyle)),
-        h.AriaDisabled(true),
-        h.Tabindex(-1),
-        ...(props.label === undefined ? [] : [h.AriaLabel(props.label)]),
-        ...(props.tooltip === undefined ? [] : [h.Title(props.tooltip)]),
-      ],
-      sharedContent,
-    )
-  }
-
-  return h.a(
-    [
-      h.DataAttribute('slot', 'link'),
-      h.DataAttribute('variant', variant),
-      h.DataAttribute('color', color),
-      h.Class(
-        className(
-          reset.link,
-          ...sharedStyles,
-          styles.pressedBackground,
-          props.layoutStyle,
-        ),
-      ),
-      h.Href(props.href ?? ''),
-      ...(target === undefined ? [] : [h.Target(target)]),
-      ...(rel === undefined ? [] : [h.Rel(rel)]),
-      ...(props.download === undefined ? [] : [h.Download(props.download)]),
-      ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick)]),
-      ...(props.label === undefined ? [] : [h.AriaLabel(props.label)]),
-      ...(props.tooltip === undefined ? [] : [h.Title(props.tooltip)]),
-    ],
-    sharedContent,
-  )
+  return props.tooltip === undefined
+    ? renderLink([])
+    : Tooltip.tooltip(
+        {
+          ...props.tooltip,
+          isDisabled,
+          renderTrigger: renderLink,
+        },
+        h,
+      )
 }

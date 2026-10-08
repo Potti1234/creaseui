@@ -1,4 +1,5 @@
 import { Schema as S } from 'effect'
+import { Command } from 'foldkit'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
@@ -8,17 +9,23 @@ import {
   type LinkFixture,
 } from '@/docs/components/pages/link/shared'
 import * as Link from '@/ui/link'
+import * as Tooltip from '@/ui/tooltip'
 import * as Text from '@/ui/text'
 
-const InteractedWithLinkPreview = defineMessageUnion({
-  InteractedWithLinkPreview: {},
+const LinkPreviewMessage = defineMessageUnion({
+  GotLinkTooltipMessage: { index: S.Number, message: Tooltip.Message },
 })
-type InteractedWithLinkPreview = typeof InteractedWithLinkPreview.Type
-const LinkPreviewModel = S.Struct({ _docsPage: S.Literal('link') })
+type LinkPreviewMessage = typeof LinkPreviewMessage.Type
+const LinkPreviewModel = S.Struct({
+  _docsPage: S.Literal('link'),
+  tooltips: S.Array(Tooltip.Model),
+})
 type LinkPreviewModel = typeof LinkPreviewModel.Type
 
 const renderFixture = <Msg>(
   fixture: LinkFixture,
+  tooltips: ReadonlyArray<Tooltip.Model>,
+  onTooltipMessage: (index: number, message: Tooltip.Message) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
   switch (fixture.kind) {
@@ -86,7 +93,11 @@ const renderFixture = <Msg>(
             {
               href: url,
               isStandalone: true,
-              tooltip: tip,
+              tooltip: {
+                model: tooltips[index]!,
+                toParentMessage: message => onTooltipMessage(index, message),
+                content: tip,
+              },
               ...(index === 2 ? { color: 'secondary' as const } : {}),
               children: [label],
             },
@@ -99,12 +110,47 @@ const renderFixture = <Msg>(
 
 export const linkTailwindPreviewProgram = definePreviewProgram<
   LinkPreviewModel,
-  InteractedWithLinkPreview
+  LinkPreviewMessage
 >({
   Model: LinkPreviewModel,
-  Message: InteractedWithLinkPreview,
-  init: () => ({ _docsPage: 'link' }),
-  update: model => ({ model: model }),
-  view: (index, _model, h) =>
-    renderFixture(linkFixtures[index] ?? linkFixtures[0], h),
+  Message: LinkPreviewMessage,
+  init: exampleIndex => ({
+    _docsPage: 'link',
+    tooltips:
+      (linkFixtures[exampleIndex] ?? linkFixtures[0]).kind === 'tooltips'
+        ? Array.from({ length: 3 }, (_, index) =>
+            Tooltip.init({
+              id: `docs-link-tooltip-${String(exampleIndex)}-${String(index)}`,
+              showDelay: 400,
+            }),
+          )
+        : [],
+  }),
+  update: (model, message) => {
+    const current = model.tooltips[message.index]
+    if (current === undefined) return { model }
+    const result = Tooltip.update(current, message.message)
+    return {
+      model: {
+        ...model,
+        tooltips: model.tooltips.map((tip, index) =>
+          index === message.index ? result.model : tip,
+        ),
+      },
+      commands: Command.mapMessages(result.commands ?? [], next =>
+        LinkPreviewMessage.GotLinkTooltipMessage({
+          index: message.index,
+          message: next,
+        }),
+      ),
+    }
+  },
+  view: (index, model, h) =>
+    renderFixture(
+      linkFixtures[index] ?? linkFixtures[0],
+      model.tooltips,
+      (index, message) =>
+        LinkPreviewMessage.GotLinkTooltipMessage({ index, message }),
+      h,
+    ),
 })

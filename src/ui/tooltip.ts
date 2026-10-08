@@ -1,4 +1,4 @@
-﻿import type { Html, HtmlBuilder } from 'foldkit/html'
+﻿import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 
 import { Tooltip as TooltipPrimitive } from '@foldkit/ui'
 import { Option } from 'effect'
@@ -51,7 +51,6 @@ const ARROW_CLASS =
 export type TooltipProps<Msg> = Readonly<{
   model: Model
   toParentMessage: (message: Message) => Msg
-  trigger: Html | string
   content: Html | string
   align?: TooltipAlign
   side?: TooltipSide
@@ -63,7 +62,17 @@ export type TooltipProps<Msg> = Readonly<{
   gap?: number
   offset?: number
   portal?: boolean
-}>
+}> &
+  (
+    | Readonly<{ trigger: Html | string; renderTrigger?: undefined }>
+    | Readonly<{
+        trigger?: undefined
+        /** Attach tooltip behavior to an existing link or control without nesting buttons. */
+        renderTrigger: (
+          attributes: ReadonlyArray<Attribute<Msg> | ChildAttribute>,
+        ) => Html
+      }>
+  )
 
 export const tooltip = <Msg>(
   props: TooltipProps<Msg>,
@@ -75,6 +84,13 @@ export const tooltip = <Msg>(
   const triggerId = `${props.model.id}-trigger`
   const panelId = `${props.model.id}-panel`
   const disabled = props.isDisabled ?? false
+  const renderTrigger = (
+    attributes: ReadonlyArray<Attribute<Msg> | ChildAttribute>,
+    children: ReadonlyArray<Html | string>,
+  ): Html =>
+    props.renderTrigger === undefined
+      ? h.button(attributes, children)
+      : props.renderTrigger(attributes)
   const send = props.toParentMessage
   const anchor = {
     placement,
@@ -82,8 +98,14 @@ export const tooltip = <Msg>(
     ...(props.offset === undefined ? {} : { offset: props.offset }),
     ...(props.portal === undefined ? {} : { portal: props.portal }),
   }
-  return h.div(
-    [h.DataAttribute('slot', 'tooltip')],
+  const root = props.renderTrigger === undefined ? h.div : h.span
+  return root(
+    [
+      h.DataAttribute('slot', 'tooltip'),
+      ...(props.renderTrigger === undefined
+        ? []
+        : [h.Class('relative inline-flex')]),
+    ],
     [
       ...(disabled
         ? [
@@ -110,10 +132,11 @@ export const tooltip = <Msg>(
                 ),
               ],
               [
-                h.button(
+                renderTrigger(
                   [
-                    h.Type('button'),
-                    h.Disabled(true),
+                    ...(props.renderTrigger === undefined
+                      ? [h.Type('button'), h.Disabled(true)]
+                      : []),
                     ...(props.ariaLabel === undefined
                       ? []
                       : [h.AriaLabel(props.ariaLabel)]),
@@ -121,18 +144,19 @@ export const tooltip = <Msg>(
                       ? []
                       : [h.Class(cn(props.triggerClass))]),
                   ],
-                  [props.trigger],
+                  [props.trigger ?? ''],
                 ),
               ],
             ),
           ]
         : [
-            h.button(
+            renderTrigger(
               [
                 h.Id(triggerId),
-                h.Type('button'),
+                ...(props.renderTrigger === undefined
+                  ? [h.Type('button'), h.Disabled(false)]
+                  : []),
                 h.AriaDescribedBy(panelId),
-                h.Disabled(false),
                 ...(props.ariaLabel === undefined
                   ? []
                   : [h.AriaLabel(props.ariaLabel)]),
@@ -167,12 +191,12 @@ export const tooltip = <Msg>(
                   ? []
                   : [h.Class(cn(props.triggerClass))]),
               ],
-              [props.trigger],
+              [props.trigger ?? ''],
             ),
           ]),
       ...(props.model.isOpen
         ? [
-            h.div(
+            root(
               [
                 h.Id(panelId),
                 h.Role('tooltip'),
@@ -194,7 +218,15 @@ export const tooltip = <Msg>(
                 ),
                 h.DataAttribute('open', ''),
                 h.DataAttribute('slot', 'tooltip-content'),
-                h.Class(cn(CONTENT_CLASS, 'group', props.class)),
+                h.Class(
+                  cn(
+                    CONTENT_CLASS,
+                    'group',
+                    props.renderTrigger !== undefined &&
+                      'w-max max-w-[min(20rem,calc(100vw-2rem))]',
+                    props.class,
+                  ),
+                ),
               ],
               [
                 props.content,

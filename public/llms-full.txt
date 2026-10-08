@@ -1053,7 +1053,7 @@ Examples: Basic, Sides, RTL
 - `reflectCloseDelay: value` (value)
 - `HoverCardSide = 'top' | 'right' | 'bottom' | 'left'` (type)
 - `HoverCardAlign = 'start' | 'center' | 'end'` (type)
-- `HoverCardProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; content: Html | string; align?: HoverCardAlign; side?: HoverCardSide; isDisabled?: boolean; ariaLabel?: string; triggerClass?: string; class?: s…` (type)
+- `HoverCardProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; content: Html | string; triggerButtonVariant?: Button.ButtonVariants['variant']; triggerButtonSize?: Button.ButtonVariants['size']; align?: Hove…` (type)
 - `hoverCard<Msg>(props: HoverCardProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Indicator
@@ -1218,11 +1218,12 @@ A CreaseUI Link component for Foldkit.
 
 Source: `src/ui/link.ts`
 
-Examples: Link, Link — Inline Text, Link — External Links, Link — With Tooltips
+Examples: Link, Link — Inline Text, Link — External Links, Link — Underlined, Link — With Tooltips
 
 - `linkVariants: value` (value)
 - `LinkVariants = VariantProps<typeof linkVariants>` (type)
-- `LinkProps<Msg> = Readonly<{ children: ReadonlyArray<Html | string>; href?: string; label?: string; hasUnderline?: boolean; isDisabled?: boolean; isExternalLink?: boolean; newTabLabel?: string; target?: string; rel?: string; download?: string; onClick?: Msg; t…` (type)
+- `LinkVariant = 'default' | 'underlined'` (type)
+- `LinkProps<Msg> = Readonly<{ children: ReadonlyArray<Html | string>; href?: string; label?: string; variant?: LinkVariant; hasUnderline?: boolean; isDisabled?: boolean; isExternalLink?: boolean; newTabLabel?: string; target?: string; rel?: string; download?: s…` (type)
 - `link<Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### List Input
@@ -2375,7 +2376,7 @@ Examples: Basic, Side, With Keyboard Shortcut, Disabled Button, RTL
 - `reflectCloseDelay: value` (value)
 - `TooltipSide = 'top' | 'right' | 'bottom' | 'left'` (type)
 - `TooltipAlign = 'start' | 'center' | 'end'` (type)
-- `TooltipProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; content: Html | string; align?: TooltipAlign; side?: TooltipSide; isDisabled?: boolean; ariaLabel?: string; triggerClass?: string; class?: string;…` (type)
+- `TooltipProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; content: Html | string; align?: TooltipAlign; side?: TooltipSide; isDisabled?: boolean; ariaLabel?: string; triggerClass?: string; class?: string; showArrow?: boolean; ga…` (type)
 - `tooltip<Msg>(props: TooltipProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Top Nav

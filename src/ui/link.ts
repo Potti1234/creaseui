@@ -1,7 +1,8 @@
 import { type VariantProps, cva } from 'class-variance-authority'
-import type { Html, HtmlBuilder } from 'foldkit/html'
+import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 
 import * as Icon from '@/lib/icon'
+import * as Tooltip from './tooltip'
 import { cn } from '@/lib/utils'
 import type {
   TextColor,
@@ -87,7 +88,18 @@ export type LinkProps<Msg> = Readonly<{
   rel?: string
   download?: string
   onClick?: Msg
-  tooltip?: string
+  /** The parent owns the Tooltip model and routes its messages through Tooltip.update. */
+  tooltip?: Pick<
+    Tooltip.TooltipProps<Msg>,
+    | 'model'
+    | 'toParentMessage'
+    | 'content'
+    | 'side'
+    | 'align'
+    | 'showArrow'
+    | 'gap'
+    | 'offset'
+  >
   isStandalone?: boolean
   type?: TextType
   size?: TextSize
@@ -144,61 +156,75 @@ export const link = <Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html => {
     props.class,
   )
 
-  if (renderAsButton) {
-    return h.button(
-      [
-        h.DataAttribute('slot', 'link'),
-        h.DataAttribute('variant', variant),
-        h.DataAttribute('color', color),
-        h.Type('button'),
-        h.Class(
-          cn(
-            linkClass,
-            'bg-transparent border-none p-0',
-            ...(isDisabled ? [] : ['active:bg-foreground/10']),
+  const renderLink = (
+    attributes: ReadonlyArray<Attribute<Msg> | ChildAttribute>,
+  ): Html => {
+    if (renderAsButton) {
+      return h.button(
+        [
+          ...attributes,
+          h.DataAttribute('slot', 'link'),
+          h.DataAttribute('variant', variant),
+          h.DataAttribute('color', color),
+          h.Type('button'),
+          h.Class(
+            cn(
+              linkClass,
+              'bg-transparent border-none p-0',
+              ...(isDisabled ? [] : ['active:bg-foreground/10']),
+            ),
           ),
-        ),
-        ...(isDisabled
-          ? [h.AriaDisabled(true), h.Tabindex(-1), h.Disabled(true)]
-          : []),
-        ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick)]),
-        ...(props.label === undefined ? [] : [h.AriaLabel(props.label)]),
-        ...(props.tooltip === undefined ? [] : [h.Title(props.tooltip)]),
-      ],
-      sharedContent,
-    )
-  }
+          ...(isDisabled
+            ? [h.AriaDisabled(true), h.Tabindex(-1), h.Disabled(true)]
+            : []),
+          ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick)]),
+          ...(props.label === undefined ? [] : [h.AriaLabel(props.label)]),
+        ],
+        sharedContent,
+      )
+    }
 
-  if (isDisabled) {
+    if (isDisabled) {
+      return h.a(
+        [
+          ...attributes,
+          h.DataAttribute('slot', 'link'),
+          h.DataAttribute('variant', variant),
+          h.DataAttribute('color', color),
+          h.Class(linkClass),
+          h.AriaDisabled(true),
+          h.Tabindex(-1),
+          ...(props.label === undefined ? [] : [h.AriaLabel(props.label)]),
+        ],
+        sharedContent,
+      )
+    }
+
     return h.a(
       [
+        ...attributes,
         h.DataAttribute('slot', 'link'),
         h.DataAttribute('variant', variant),
         h.DataAttribute('color', color),
-        h.Class(linkClass),
-        h.AriaDisabled(true),
-        h.Tabindex(-1),
+        h.Class(cn(linkClass, 'active:bg-foreground/10')),
+        h.Href(props.href ?? ''),
+        ...(target === undefined ? [] : [h.Target(target)]),
+        ...(rel === undefined ? [] : [h.Rel(rel)]),
+        ...(props.download === undefined ? [] : [h.Download(props.download)]),
+        ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick)]),
         ...(props.label === undefined ? [] : [h.AriaLabel(props.label)]),
-        ...(props.tooltip === undefined ? [] : [h.Title(props.tooltip)]),
       ],
       sharedContent,
     )
   }
-
-  return h.a(
-    [
-      h.DataAttribute('slot', 'link'),
-      h.DataAttribute('variant', variant),
-      h.DataAttribute('color', color),
-      h.Class(cn(linkClass, 'active:bg-foreground/10')),
-      h.Href(props.href ?? ''),
-      ...(target === undefined ? [] : [h.Target(target)]),
-      ...(rel === undefined ? [] : [h.Rel(rel)]),
-      ...(props.download === undefined ? [] : [h.Download(props.download)]),
-      ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick)]),
-      ...(props.label === undefined ? [] : [h.AriaLabel(props.label)]),
-      ...(props.tooltip === undefined ? [] : [h.Title(props.tooltip)]),
-    ],
-    sharedContent,
-  )
+  return props.tooltip === undefined
+    ? renderLink([])
+    : Tooltip.tooltip(
+        {
+          ...props.tooltip,
+          isDisabled,
+          renderTrigger: renderLink,
+        },
+        h,
+      )
 }

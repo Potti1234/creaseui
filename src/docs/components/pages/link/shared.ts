@@ -1,5 +1,8 @@
 import type { DocsExample } from '@/docs/components/page-definition'
-import { staticComponentApplication } from '@/docs/components/pages/authored-page'
+import {
+  foldkitApplication,
+  staticComponentApplication,
+} from '@/docs/components/pages/authored-page'
 
 export type LinkExampleKind =
   | 'showcase'
@@ -95,7 +98,7 @@ const viewBody = (fixture: LinkFixture, isStyleX: boolean): string => {
         tooltipLinks
           .map(
             ([label, url, tip], index) =>
-              `Link.link({ href: '${url}', isStandalone: true, tooltip: '${tip}'${index === 2 ? ", color: 'secondary'" : ''}, children: ['${label}'] }, h)`,
+              `Link.link({ href: '${url}', isStandalone: true, tooltip: { model: model.tooltips[${index}]!, toParentMessage: message => Message.GotLinkTooltipMessage({ index: ${index}, message }), content: '${tip}' }${index === 2 ? ", color: 'secondary'" : ''}, children: ['${label}'] }, h)`,
           )
           .join(',\n        '),
       )
@@ -119,7 +122,10 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
   if (fixture.kind === 'inline') {
     imports.push(`import * as Text from '@/${base}/text'`)
   }
-  const needsStack = fixture.kind === 'external' || fixture.kind === 'tooltips'
+  if (fixture.kind === 'tooltips') {
+    return tooltipApplication(fixture, renderer)
+  }
+  const needsStack = fixture.kind === 'external'
   const componentImports = [
     ...imports,
     ...(isStyleX && needsStack
@@ -133,6 +139,56 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
     exampleName: fixture.title,
     ...(componentImports === '' ? {} : { componentImports }),
     viewBody: viewBody(fixture, isStyleX),
+  })
+}
+
+const tooltipApplication = (
+  fixture: LinkFixture,
+  renderer: 'tailwind' | 'stylex',
+): string => {
+  const isStyleX = renderer === 'stylex'
+  const base = isStyleX ? 'stylex' : 'ui'
+  return foldkitApplication({
+    title: fixture.title,
+    imports: `import { Schema as S } from 'effect'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
+import { type Document, type HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import * as Link from '@/${base}/link'
+import * as Tooltip from '@/${base}/tooltip'
+${
+  isStyleX
+    ? `import * as stylex from '@stylexjs/stylex'
+import { className } from '@/stylex/style'
+const styles = stylex.create({ ${stylexStyles} })`
+    : ''
+}`,
+    model: `export const Model = S.Struct({ tooltips: S.Array(Tooltip.Model) })
+export type Model = typeof Model.Type`,
+    messages: `export const Message = defineMessageUnion({
+  GotLinkTooltipMessage: { index: S.Number, message: Tooltip.Message },
+})
+export type Message = typeof Message.Type`,
+    init: `export const init = (): Update.Return<Model, Message> => ({
+  model: { tooltips: Array.from({ length: 3 }, (_, index) =>
+    Tooltip.init({ id: 'link-tooltip-' + String(index), showDelay: 400 })) },
+})`,
+    update: `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
+  const current = model.tooltips[message.index]
+  if (current === undefined) return { model }
+  const result = Tooltip.update(current, message.message)
+  return {
+    model: { ...model, tooltips: model.tooltips.map((tip, index) => index === message.index ? result.model : tip) },
+    commands: Command.mapMessages(result.commands ?? [], next =>
+      Message.GotLinkTooltipMessage({ index: message.index, message: next })),
+  }
+}`,
+    view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+  title: 'Link with tooltips',
+  body: h.main([h.Class('mx-auto max-w-md p-8')], [
+    ${viewBody(fixture, isStyleX)},
+  ]),
+})`,
   })
 }
 

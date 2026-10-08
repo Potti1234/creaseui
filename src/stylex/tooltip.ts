@@ -20,6 +20,11 @@ import { className } from './style'
 
 const styles = stylex.create({
   content: { overflowY: 'visible' },
+  customContent: {
+    maxWidth: 'min(20rem, calc(100vw - 2rem))',
+    width: 'max-content',
+  },
+  customRoot: { display: 'inline-flex', position: 'relative' },
   disabledTrigger: { display: 'inline-block', width: 'fit-content' },
 })
 
@@ -66,7 +71,6 @@ const ARROW_CLASS = overlayStyles.arrow
 export type TooltipProps<Msg> = Readonly<{
   model: Model
   toParentMessage: (message: Message) => Msg
-  trigger: Html | string
   content: Html | string
   align?: TooltipAlign
   side?: TooltipSide
@@ -82,7 +86,17 @@ export type TooltipProps<Msg> = Readonly<{
   offset?: number
   /** Only the theme-safe inline mode is supported by the StyleX boundary. */
   portal?: false
-}>
+}> &
+  (
+    | Readonly<{ trigger: Html | string; renderTrigger?: undefined }>
+    | Readonly<{
+        trigger?: undefined
+        /** Attach tooltip behavior to an existing link or control without nesting buttons. */
+        renderTrigger: (
+          attributes: ReadonlyArray<Attribute<Msg> | ChildAttribute>,
+        ) => Html
+      }>
+  )
 
 export const tooltip = <Msg>(
   props: TooltipProps<Msg>,
@@ -101,33 +115,41 @@ export const tooltip = <Msg>(
     attributes: ReadonlyArray<Attribute<Msg> | ChildAttribute>,
     children: ReadonlyArray<Html | string>,
   ): Html =>
-    hasButtonTrigger
-      ? Button.button(
-          {
-            variant: props.triggerButtonVariant ?? 'default',
-            size: props.triggerButtonSize ?? 'default',
-            isDisabled: disabled,
-            slot: disabled ? 'button' : 'tooltip-trigger',
-            buttonAttributes: attributes,
-            ...(props.ariaLabel === undefined
-              ? {}
-              : { ariaLabel: props.ariaLabel }),
-            ...(props.triggerLayoutStyle === undefined
-              ? {}
-              : { layoutStyle: props.triggerLayoutStyle }),
-            children,
-          },
-          h,
-        )
-      : h.button(attributes, children)
+    props.renderTrigger !== undefined
+      ? props.renderTrigger(attributes)
+      : hasButtonTrigger
+        ? Button.button(
+            {
+              variant: props.triggerButtonVariant ?? 'default',
+              size: props.triggerButtonSize ?? 'default',
+              isDisabled: disabled,
+              slot: disabled ? 'button' : 'tooltip-trigger',
+              buttonAttributes: attributes,
+              ...(props.ariaLabel === undefined
+                ? {}
+                : { ariaLabel: props.ariaLabel }),
+              ...(props.triggerLayoutStyle === undefined
+                ? {}
+                : { layoutStyle: props.triggerLayoutStyle }),
+              children,
+            },
+            h,
+          )
+        : h.button(attributes, children)
   const send = props.toParentMessage
   const anchor = themedAnchor({
     placement,
     gap: props.gap ?? 4,
     ...(props.offset === undefined ? {} : { offset: props.offset }),
   })
-  return h.div(
-    [h.DataAttribute('slot', 'tooltip')],
+  const root = props.renderTrigger === undefined ? h.div : h.span
+  return root(
+    [
+      h.DataAttribute('slot', 'tooltip'),
+      ...(props.renderTrigger === undefined
+        ? []
+        : [h.Class(className(styles.customRoot))]),
+    ],
     [
       ...(disabled
         ? [
@@ -156,16 +178,17 @@ export const tooltip = <Msg>(
               [
                 renderTrigger(
                   [
-                    ...(hasButtonTrigger
+                    ...(hasButtonTrigger || props.renderTrigger !== undefined
                       ? []
                       : [h.Class(cn(reset.button, props.triggerLayoutStyle))]),
-                    h.Type('button'),
-                    h.Disabled(true),
+                    ...(props.renderTrigger === undefined
+                      ? [h.Type('button'), h.Disabled(true)]
+                      : []),
                     ...(props.ariaLabel === undefined
                       ? []
                       : [h.AriaLabel(props.ariaLabel)]),
                   ],
-                  [props.trigger],
+                  [props.trigger ?? ''],
                 ),
               ],
             ),
@@ -173,13 +196,14 @@ export const tooltip = <Msg>(
         : [
             renderTrigger(
               [
-                ...(hasButtonTrigger
+                ...(hasButtonTrigger || props.renderTrigger !== undefined
                   ? []
                   : [h.Class(cn(reset.button, props.triggerLayoutStyle))]),
                 h.Id(triggerId),
-                h.Type('button'),
+                ...(props.renderTrigger === undefined
+                  ? [h.Type('button'), h.Disabled(false)]
+                  : []),
                 h.AriaDescribedBy(panelId),
-                h.Disabled(false),
                 ...(props.ariaLabel === undefined
                   ? []
                   : [h.AriaLabel(props.ariaLabel)]),
@@ -211,12 +235,12 @@ export const tooltip = <Msg>(
                 ),
                 h.DataAttribute('slot', 'tooltip-trigger'),
               ],
-              [props.trigger],
+              [props.trigger ?? ''],
             ),
           ]),
       ...(props.model.isOpen
         ? [
-            h.div(
+            root(
               [
                 h.Id(panelId),
                 h.Role('tooltip'),
@@ -239,7 +263,12 @@ export const tooltip = <Msg>(
                 h.DataAttribute('open', ''),
                 h.DataAttribute('slot', 'tooltip-content'),
                 h.Class(
-                  cn(overlayStyles.tooltip, CONTENT_CLASS, props.layoutStyle),
+                  cn(
+                    overlayStyles.tooltip,
+                    CONTENT_CLASS,
+                    props.renderTrigger !== undefined && styles.customContent,
+                    props.layoutStyle,
+                  ),
                 ),
               ],
               [

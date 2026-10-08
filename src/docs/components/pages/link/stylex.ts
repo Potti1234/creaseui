@@ -7,6 +7,7 @@ import {
   type LinkFixture,
 } from '@/docs/components/pages/link/shared'
 import * as Link from '@/stylex/link'
+import type * as Tooltip from '@/stylex/tooltip'
 import { className } from '@/stylex/style'
 import * as Text from '@/stylex/text'
 
@@ -21,6 +22,8 @@ const styles = stylex.create({
 
 const renderFixture = <Msg>(
   fixture: LinkFixture,
+  tooltips: ReadonlyArray<Tooltip.Model>,
+  onTooltipMessage: (index: number, message: Tooltip.Message) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
   switch (fixture.kind) {
@@ -88,7 +91,11 @@ const renderFixture = <Msg>(
             {
               href: url,
               isStandalone: true,
-              tooltip: tip,
+              tooltip: {
+                model: tooltips[index]!,
+                toParentMessage: message => onTooltipMessage(index, message),
+                content: tip,
+              },
               ...(index === 2 ? { color: 'secondary' as const } : {}),
               children: [label],
             },
@@ -101,7 +108,16 @@ const renderFixture = <Msg>(
 
 export const linkStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
-  _model: unknown,
-  _onMessageJson: (messageJson: string) => Msg,
+  model: unknown,
+  onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
-) => renderFixture(linkFixtures[exampleIndex] ?? linkFixtures[0], h)
+) =>
+  renderFixture(
+    linkFixtures[exampleIndex] ?? linkFixtures[0],
+    (model as { tooltips: ReadonlyArray<Tooltip.Model> }).tooltips,
+    (index, message) =>
+      onMessageJson(
+        JSON.stringify({ _tag: 'GotLinkTooltipMessage', index, message }),
+      ),
+    h,
+  )
