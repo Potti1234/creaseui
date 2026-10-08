@@ -64,7 +64,7 @@ export const inputFieldKeys: Readonly<
   fieldGroup: ['name', 'email'],
   disabled: ['disabled'],
   invalid: ['invalid'],
-  file: ['file'],
+  file: [],
   inline: ['search'],
   grid: ['firstName', 'lastName'],
   required: ['required'],
@@ -110,6 +110,9 @@ const emitImports = (fixture: InputFixture, isStyleX: boolean): string => {
   if (fixture.kind === 'inputGroup') {
     parts.push(`import * as InputGroup from '@/${base}/input-group'`)
   }
+  if (fixture.kind === 'file') {
+    parts.push(`import * as FileInput from '@/${base}/file-input'`)
+  }
   parts.push(`import * as Input from '@/${base}/input'`)
   if (kindUsesSelect(fixture.kind)) {
     parts.push(`import * as Select from '@/${base}/select'`)
@@ -121,7 +124,9 @@ const emitImports = (fixture: InputFixture, isStyleX: boolean): string => {
 }
 
 const emitStyles = (fixture: InputFixture): string => {
-  const extras: Array<string> = []
+  const extras: Array<string> = [
+    "  frame: { width: '100%', maxWidth: '24rem' },",
+  ]
   if (fixture.kind === 'form') {
     extras.push("  form: { width: '100%', maxWidth: '24rem' },")
   }
@@ -150,42 +155,76 @@ ${extras.join('\n')}
 }
 
 const emitModel = (fixture: InputFixture): string =>
-  kindUsesSelect(fixture.kind)
+  fixture.kind === 'file'
     ? `export const Model = S.Struct({
+  picture: FileInput.Model,
+  files: S.Array(S.Unknown),
+})
+export type Model = typeof Model.Type`
+    : kindUsesSelect(fixture.kind)
+      ? `export const Model = S.Struct({
   values: S.Record(S.String, S.String),
   country: Select.Model,
   maybeCountry: S.Option(S.String),
 })
 export type Model = typeof Model.Type`
-    : `export const Model = S.Struct({ values: S.Record(S.String, S.String) })
+      : `export const Model = S.Struct({ values: S.Record(S.String, S.String) })
 export type Model = typeof Model.Type`
 
 const emitMessages = (fixture: InputFixture): string =>
-  kindUsesSelect(fixture.kind)
+  fixture.kind === 'file'
     ? `export const Message = defineMessageUnion({
+  GotFileInputMessage: { message: FileInput.Message },
+})
+export type Message = typeof Message.Type`
+    : kindUsesSelect(fixture.kind)
+      ? `export const Message = defineMessageUnion({
   ChangedInputValue: { field: S.String, value: S.String },
   GotSelectMessage: { message: Select.Message },
 })
 export type Message = typeof Message.Type`
-    : `export const Message = defineMessageUnion({
+      : `export const Message = defineMessageUnion({
   ChangedInputValue: { field: S.String, value: S.String },
 })
 export type Message = typeof Message.Type`
 
 const emitInit = (fixture: InputFixture): string =>
-  kindUsesSelect(fixture.kind)
+  fixture.kind === 'file'
     ? `export const init = (): Update.Return<Model, Message> => ({
+  model: { picture: FileInput.init({ id: 'picture' }), files: [] },
+})`
+    : kindUsesSelect(fixture.kind)
+      ? `export const init = (): Update.Return<Model, Message> => ({
   model: {
     values: {},
     country: Select.init({ id: 'form-country' }),
     maybeCountry: Option.some('us'),
   },
 })`
-    : `export const init = (): Update.Return<Model, Message> => ({ model: { values: {} } })`
+      : `export const init = (): Update.Return<Model, Message> => ({ model: { values: {} } })`
 
 const emitUpdate = (fixture: InputFixture): string =>
-  kindUsesSelect(fixture.kind)
+  fixture.kind === 'file'
     ? `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
+  switch (message._tag) {
+    case 'GotFileInputMessage': {
+      const next = FileInput.update(model.picture, message.message)
+      const files = next.outMessage === undefined
+        ? model.files
+        : next.outMessage._tag === 'ChangedValue'
+          ? [...next.outMessage.files]
+          : []
+      return {
+        model: { ...model, picture: next.model, files },
+        commands: Command.mapMessages(next.commands ?? [], message =>
+          Message.GotFileInputMessage({ message }),
+        ),
+      }
+    }
+  }
+}`
+    : kindUsesSelect(fixture.kind)
+      ? `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
     case 'ChangedInputValue':
       return { model: { ...model, values: { ...model.values, [message.field]: message.value } } }
@@ -203,7 +242,7 @@ const emitUpdate = (fixture: InputFixture): string =>
     }
   }
 }`
-    : `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
+      : `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
     case 'ChangedInputValue':
       return { model: { ...model, values: { ...model.values, [message.field]: message.value } } }
@@ -298,11 +337,14 @@ const emitBody = (fixture: InputFixture, isStyleX: boolean): string => {
         ],
       }, h)`
     case 'file':
-      return `    ${emitFieldRow([
-        label('picture', 'Picture'),
-        emitInput('file', 'picture', `\n          type: 'file',`),
-        desc('Select a picture to upload.'),
-      ])}`
+      return `    FileInput.fileInput({
+      model: model.picture,
+      toParentMessage: message => Message.GotFileInputMessage({ message }),
+      id: model.picture.id,
+      label: 'Picture',
+      description: 'Select a picture to upload.',
+      value: model.files as ReadonlyArray<File>,
+    }, h)`
     case 'inline':
       return `    Field.field({
         orientation: 'horizontal',
@@ -482,6 +524,9 @@ const COUNTRIES = [
       : isStyleX
         ? "stylex.props(styles.page).className ?? ''"
         : "'flex min-h-screen items-center justify-center p-8'"
+  const frameClass = isStyleX
+    ? "stylex.props(styles.frame).className ?? ''"
+    : "'w-full max-w-sm'"
   return foldkitApplication({
     title: `Input — ${fixture.title}`,
     imports: `${effectImports}
@@ -493,7 +538,9 @@ ${emitImports(fixture, isStyleX)}${isStyleX ? emitStyles(fixture) : ''}${consts}
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Input — ${fixture.title}',
   body: h.main([h.Class(${pageClass})], [
+    h.div([h.Class(${frameClass})], [
 ${emitBody(fixture, isStyleX)}
+    ]),
   ]),
 })`,
   })

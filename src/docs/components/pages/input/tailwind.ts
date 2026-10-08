@@ -4,6 +4,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page'
+import type { PreviewProgram } from '@/docs/components/pages/authored-page'
 import {
   inputCountries,
   inputFixtures,
@@ -14,21 +15,25 @@ import * as Badge from '@/ui/badge'
 import * as Button from '@/ui/button'
 import * as ButtonGroup from '@/ui/button-group'
 import * as Field from '@/ui/field'
+import * as FileInput from '@/ui/file-input'
 import * as Input from '@/ui/input'
 import * as InputGroup from '@/ui/input-group'
 import * as Select from '@/ui/select'
 
-const InputPreviewMessage = defineMessageUnion({
+export const InputPreviewMessage = defineMessageUnion({
   ChangedInputValue: { field: S.String, value: S.String },
   GotSelectMessage: { message: Select.Message },
+  GotFileInputMessage: { message: FileInput.Message },
 })
-type InputPreviewMessage = typeof InputPreviewMessage.Type
+export type InputPreviewMessage = typeof InputPreviewMessage.Type
 
 const InputPreviewModel = S.Struct({
   _docsPage: S.Literal('input'),
   values: S.Record(S.String, S.String),
   country: Select.Model,
   maybeCountry: S.Option(S.String),
+  picture: FileInput.Model,
+  files: S.Array(S.Unknown),
 })
 type InputPreviewModel = typeof InputPreviewModel.Type
 
@@ -179,13 +184,15 @@ const inputView = (
         h,
       )
     case 'file':
-      return Field.field(
+      return FileInput.fileInput(
         {
-          children: [
-            lbl('picture', ['Picture'], h),
-            textIn(model, 'file', 'picture', { type: 'file' }, h),
-            dsc('Select a picture to upload.', h),
-          ],
+          model: model.picture,
+          toParentMessage: message =>
+            InputPreviewMessage.GotFileInputMessage({ message }),
+          id: model.picture.id,
+          label: 'Picture',
+          description: 'Select a picture to upload.',
+          value: model.files as ReadonlyArray<File>,
         },
         h,
       )
@@ -521,10 +528,10 @@ const inputView = (
   }
 }
 
-export const inputTailwindPreviewProgram = definePreviewProgram<
+export const inputPreviewProgram: PreviewProgram<
   InputPreviewModel,
   InputPreviewMessage
->({
+> = {
   Model: InputPreviewModel,
   Message: InputPreviewMessage,
   init: index => ({
@@ -532,9 +539,26 @@ export const inputTailwindPreviewProgram = definePreviewProgram<
     values: {},
     country: Select.init({ id: `docs-input-${String(index)}-country` }),
     maybeCountry: Option.some('us'),
+    picture: FileInput.init({ id: `docs-input-${String(index)}-picture` }),
+    files: [],
   }),
   update: (model, message) => {
     switch (message._tag) {
+      case 'GotFileInputMessage': {
+        const next = FileInput.update(model.picture, message.message)
+        const files =
+          next.outMessage === undefined
+            ? model.files
+            : next.outMessage._tag === 'ChangedValue'
+              ? [...next.outMessage.files]
+              : []
+        return {
+          model: { ...model, picture: next.model, files },
+          commands: Command.mapMessages(next.commands ?? [], message =>
+            InputPreviewMessage.GotFileInputMessage({ message }),
+          ),
+        }
+      }
       case 'ChangedInputValue':
         return {
           model: {
@@ -566,5 +590,11 @@ export const inputTailwindPreviewProgram = definePreviewProgram<
     }
   },
   view: (index, model, h) =>
-    inputView(inputFixtures[index] ?? inputFixtures[0], model, h),
-})
+    h.div(
+      [h.Class('w-full max-w-sm')],
+      [inputView(inputFixtures[index] ?? inputFixtures[0], model, h)],
+    ),
+}
+
+export const inputTailwindPreviewProgram =
+  definePreviewProgram(inputPreviewProgram)

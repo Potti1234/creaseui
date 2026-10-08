@@ -1,8 +1,11 @@
 import * as stylex from '@stylexjs/stylex'
-import type { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import { definePreviewProgram } from '@/docs/components/pages/authored-page'
+import {
+  InputPreviewMessage,
+  inputPreviewProgram,
+} from '@/docs/components/pages/input/tailwind'
 import {
   inputCountries,
   inputFixtures,
@@ -13,6 +16,7 @@ import * as Badge from '@/stylex/badge'
 import * as Button from '@/stylex/button'
 import * as ButtonGroup from '@/stylex/button-group'
 import * as Field from '@/stylex/field'
+import * as FileInput from '@/stylex/file-input'
 import * as Input from '@/stylex/input'
 import * as InputGroup from '@/stylex/input-group'
 import * as Select from '@/stylex/select'
@@ -20,6 +24,7 @@ import { className } from '@/stylex/style'
 import type { ComponentLayoutStyle } from '@/stylex/contracts'
 
 const styles = stylex.create({
+  frame: { width: '100%', maxWidth: '24rem' },
   gridTwo: {
     gap: '1rem',
     display: 'grid',
@@ -36,11 +41,7 @@ const styles = stylex.create({
   destructive: { color: 'var(--destructive)' },
 })
 
-interface InputPreviewShape {
-  readonly values: Readonly<Record<string, string>>
-  readonly country: Select.Model
-  readonly maybeCountry: Option.Option<string>
-}
+type InputPreviewShape = ReturnType<typeof inputPreviewProgram.init>
 
 const toMsg =
   <Msg>(onMessageJson: (messageJson: string) => Msg) =>
@@ -77,14 +78,15 @@ const textIn = <Msg>(
     h,
   )
 
-export const inputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+const inputView = <Msg>(
   exampleIndex: number,
-  model: unknown,
+  model: InputPreviewShape,
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
+  onFileInputMessage: (message: FileInput.Message) => Msg,
 ): Html => {
   const fixture = inputFixtures[exampleIndex] ?? inputFixtures[0]
-  const m = model as InputPreviewShape
+  const m = model
 
   switch (fixture.kind) {
     case 'basic':
@@ -207,13 +209,14 @@ export const inputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         h,
       )
     case 'file':
-      return Field.field(
+      return FileInput.fileInput(
         {
-          children: [
-            lbl('picture', ['Picture'], h),
-            textIn(m, 'file', 'picture', onMessageJson, { type: 'file' }, h),
-            dsc('Select a picture to upload.', h),
-          ],
+          model: m.picture,
+          toParentMessage: onFileInputMessage,
+          id: m.picture.id,
+          label: 'Picture',
+          description: 'Select a picture to upload.',
+          value: m.files as ReadonlyArray<File>,
         },
         h,
       )
@@ -562,3 +565,20 @@ export const inputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
       )
   }
 }
+
+export const inputStylexPreviewProgram = definePreviewProgram({
+  ...inputPreviewProgram,
+  view: (index, model, h) =>
+    h.div(
+      [h.Class(className(styles.frame))],
+      [
+        inputView(
+          index,
+          model,
+          json => JSON.parse(json) as InputPreviewMessage,
+          h,
+          message => InputPreviewMessage.GotFileInputMessage({ message }),
+        ),
+      ],
+    ),
+})
