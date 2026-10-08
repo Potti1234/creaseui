@@ -27,6 +27,7 @@ const infrastructureNames = new Set([
   'log-stream-terminal-ink.stylex',
   'log-stream-terminal.stylex',
   'message.markers.stylex',
+  'map.markers.stylex',
   'overlay-boundary',
   'overlay-tokens.stylex',
   'radio-group.markers.stylex',
@@ -506,7 +507,7 @@ describe('complete StyleX catalog', () => {
       .sort()
 
     assert.deepEqual(stylexNames, componentNames)
-    assert.equal(componentNames.length, 112)
+    assert.equal(componentNames.length, 122)
   })
 
   it('does not fall back to Tailwind, CVA, or raw authored class strings', () => {

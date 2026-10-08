@@ -62,6 +62,16 @@ export * as Link from './link.js'
 export * as ListInput from './list-input.js'
 export * as List from './list.js'
 export * as LogStream from './log-stream.js'
+export * as MapArc from './map-arc.js'
+export * as MapCluster from './map-cluster.js'
+export * as MapControls from './map-controls.js'
+export * as MapGeojson from './map-geojson.js'
+export * as MapLocalization from './map-localization.js'
+export * as MapMarker from './map-marker.js'
+export * as MapPopup from './map-popup.js'
+export * as MapRoute from './map-route.js'
+export * as MapStyles from './map-styles.js'
+export * as Map from './map.js'
 export * as Markdown from './markdown.js'
 export * as Marker from './marker.js'
 export * as Menubar from './menubar.js'
@@ -177,6 +187,16 @@ export const STYLEX_COMPONENT_NAMES = [
   'list-input',
   'list',
   'log-stream',
+  'map-arc',
+  'map-cluster',
+  'map-controls',
+  'map-geojson',
+  'map-localization',
+  'map-marker',
+  'map-popup',
+  'map-route',
+  'map-styles',
+  'map',
   'markdown',
   'marker',
   'menubar',
