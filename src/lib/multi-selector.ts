@@ -1,10 +1,10 @@
-import { Schema as S } from 'effect'
+import { Option, Schema as S } from 'effect'
 
 import type { Update } from 'foldkit'
 import * as Command from 'foldkit/command'
 import { defineMessageUnion } from 'foldkit/message'
 
-import { Listbox as ListboxPrimitive } from '@foldkit/ui'
+import { Listbox as ListboxPrimitive, Popover } from '@foldkit/ui'
 
 /* Ported from Meta Astryx MultiSelector (packages/core/src/MultiSelector/)
    — examples and visual spec adapted to Crease UI tokens.
@@ -22,11 +22,16 @@ export const Model = S.Struct({
    *  init and refreshed via `reflectOptions` when options change. */
   optionValues: S.Array(S.String),
   listbox: ListboxPrimitive.Multi.Model,
+  query: S.String,
+  popover: Popover.Model,
 })
 export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
   GotListboxMessage: { message: ListboxPrimitive.Message },
+  GotPopoverMessage: { message: Popover.Message },
+  ChangedSearch: { query: S.String },
+  ClickedSelectAll: { optionValues: S.Array(S.String) },
   ClickedClearAll: {},
 })
 export type Message = typeof Message.Type
@@ -51,6 +56,11 @@ export const init = (
   id: config.id,
   values: [...(config.values ?? [])],
   optionValues: [...(config.optionValues ?? [])],
+  query: '',
+  popover: Popover.init({
+    id: `${config.id}-listbox`,
+    isAnimated: config.isAnimated ?? true,
+  }),
   listbox: ListboxPrimitive.Multi.init({
     id: `${config.id}-listbox`,
     isAnimated: config.isAnimated ?? true,
@@ -89,7 +99,13 @@ const toggleSelectAll = (
   const allSelected =
     allValues.length > 0 &&
     allValues.every(value => model.values.includes(value))
-  return emitChange(model, allSelected ? [] : allValues)
+  if (allValues.length === 0) return { model }
+  return emitChange(
+    model,
+    allSelected
+      ? model.values.filter(value => !allValues.includes(value))
+      : [...new Set([...model.values, ...allValues])],
+  )
 }
 
 const toggleValue = (
@@ -145,6 +161,46 @@ export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
     case 'GotListboxMessage':
       return liftListbox(model, message.message)
+    case 'GotPopoverMessage': {
+      const result = Popover.update(model.popover, message.message)
+      const isOpen = result.model.isOpen
+      // Popover owns positioning, dismissal, animation, and focus. The
+      // embedded listbox supplies option navigation and selection only here.
+      const listbox =
+        isOpen === model.popover.isOpen
+          ? model.listbox
+          : {
+              ...model.listbox,
+              isOpen,
+              maybeActiveItemIndex: Option.none(),
+              searchQuery: '',
+            }
+      return {
+        model: {
+          ...model,
+          popover: result.model,
+          listbox,
+          query: isOpen ? model.query : '',
+        },
+        commands: Command.mapMessages(result.commands ?? [], next =>
+          Message.GotPopoverMessage({ message: next }),
+        ),
+      }
+    }
+    case 'ChangedSearch':
+      return {
+        model: {
+          ...model,
+          query: message.query,
+          listbox: {
+            ...model.listbox,
+            maybeActiveItemIndex: Option.none(),
+            searchQuery: '',
+          },
+        },
+      }
+    case 'ClickedSelectAll':
+      return toggleSelectAll(model, message.optionValues)
     case 'ClickedClearAll':
       return model.values.length === 0 ? { model } : emitChange(model, [])
   }

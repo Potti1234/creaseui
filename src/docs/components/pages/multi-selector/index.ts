@@ -12,7 +12,7 @@ export const multiSelectorPage = authoredPage({
     description:
       'A multi-select field whose trigger summarizes the selection as a count, comma-separated labels, or badges, with checkbox options (optionally sectioned) in an anchored popover.',
     architecture:
-      'Multi Selector is a foldkit submodel. The child Model owns the committed value array plus an embedded foldkit Multi listbox for the trigger button and anchored option panel; ChangedValues OutMessages carry each toggle. reflect/reflectOptions sync external selections and the select-all option set.',
+      'Multi Selector is a foldkit submodel. The child Model owns the committed value array plus an embedded foldkit Multi listbox for navigation and an optional searchable Popover; ChangedValues OutMessages carry each toggle. reflect/reflectOptions sync external selections and the select-all option set.',
     apiHref:
       'https://github.com/Potti1234/creaseui/blob/main/src/ui/multi-selector.ts',
     styling:
@@ -26,7 +26,10 @@ export const multiSelectorPage = authoredPage({
         'Moves the active option without changing the selection.',
       ],
       ['Enter', 'Toggles the active option; the panel stays open.'],
-      ['Type', 'Typeahead jumps to matching options while the panel is open.'],
+      [
+        'Type',
+        'The search field filters option labels; plain lists support typeahead.',
+      ],
       ['Escape', 'Closes the panel and returns focus to the trigger.'],
     ],
     composition:

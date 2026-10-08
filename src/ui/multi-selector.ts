@@ -17,6 +17,7 @@ import {
   update,
 } from '@/lib/multi-selector'
 import { cn } from '@/lib/utils'
+import { filterOptions, searchablePopover } from '@/lib/multi-selector-view'
 
 /* Ported from Meta Astryx MultiSelector (packages/core/src/MultiSelector/)
    — examples and visual spec adapted to Crease UI tokens.
@@ -26,13 +27,8 @@ import { cn } from '@/lib/utils'
    lives in src/lib/multi-selector.ts; the select-all row is a
    SELECT_ALL_VALUE pseudo-option folded by the lib update.
 
-   PORT NOTE: `hasSearch` has no injectable input slot — foldkit's listbox
-   panel renders items only. The primitive's built-in typeahead search is
-   active while the panel is open instead.
-   PORT NOTE: `presentation: 'bottom-sheet'` renders as the same anchored
-   popover — foldkit anchors panels to the trigger, not the viewport edge.
-   PORT NOTE: select-all toggles the full option set (a filtered subset
-   can't be observed from outside the primitive). */
+   Searchable selectors compose a Popover with a search input and the
+   listbox's navigation/selection model. */
 
 export {
   Message,
@@ -228,13 +224,17 @@ export const multiSelector = <Msg>(
       : statusMessageId,
   ].filter((id): id is string => id !== undefined)
 
+  const visibleOptions =
+    props.hasSearch === true
+      ? filterOptions(flatOptions, model.query)
+      : flatOptions
   const hasSelection = model.values.length > 0
   const allSelected =
-    flatOptions.length > 0 &&
-    flatOptions.every(option => model.values.includes(option.value))
+    visibleOptions.length > 0 &&
+    visibleOptions.every(option => model.values.includes(option.value))
   const someSelected =
     !allSelected &&
-    flatOptions.some(option => model.values.includes(option.value))
+    visibleOptions.some(option => model.values.includes(option.value))
 
   const labelView = props.isLabelHidden
     ? h.label(
@@ -457,14 +457,39 @@ export const multiSelector = <Msg>(
     ...(props.htmlName === undefined ? {} : { name: props.htmlName }),
   }
 
-  const listboxView = h.submodel({
-    slotId: model.listbox.id,
-    model: model.listbox,
-    view: listboxBundle.view,
-    viewInputs,
-    toParentMessage: message =>
-      toParent(Message.GotListboxMessage({ message })),
-  })
+  const listboxView =
+    props.hasSearch === true
+      ? searchablePopover(
+          {
+            model,
+            toParentMessage: toParent,
+            inputs: viewInputs,
+            options: flatOptions,
+            label: props.label,
+            hasSearch: true,
+            ...(props.searchPlaceholder === undefined
+              ? {}
+              : { searchPlaceholder: props.searchPlaceholder }),
+            visual: {
+              search: [h.Class('sticky top-0 z-10 border-b bg-popover p-2')],
+              input: [
+                h.Class(
+                  'h-8 w-full min-w-0 rounded-sm border-0 bg-transparent px-2 text-sm text-foreground outline-ring placeholder:text-muted-foreground',
+                ),
+              ],
+              empty: [h.Class('p-4 text-center text-sm text-muted-foreground')],
+            },
+          },
+          h,
+        )
+      : h.submodel({
+          slotId: model.listbox.id,
+          model: model.listbox,
+          view: listboxBundle.view,
+          viewInputs,
+          toParentMessage: message =>
+            toParent(Message.GotListboxMessage({ message })),
+        })
 
   return h.div(
     [

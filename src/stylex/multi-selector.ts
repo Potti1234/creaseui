@@ -6,6 +6,7 @@ import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
 import { Listbox as ListboxPrimitive } from '@foldkit/ui'
 
 import * as Icon from '@/lib/icon'
+import { filterOptions, searchablePopover } from '@/lib/multi-selector-view'
 import * as Checkbox from '@/stylex/checkbox'
 import {
   Message,
@@ -271,6 +272,35 @@ const styles = stylex.create({
     overflowY: 'auto',
     width: 'var(--button-width)',
   },
+  search: {
+    padding: '0.5rem',
+    borderColor: tokens.border,
+    backgroundColor: foundationTokens.popover,
+    position: 'sticky',
+    zIndex: 1,
+    borderBottomStyle: 'solid',
+    borderBottomWidth: 1,
+    top: 0,
+  },
+  searchInput: {
+    borderRadius: foundationTokens.radiusSm,
+    borderWidth: 0,
+    paddingInline: '0.5rem',
+    backgroundColor: tokens.transparent,
+    color: tokens.foreground,
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+    outlineColor: tokens.ring,
+    height: '2rem',
+    minWidth: 0,
+    width: '100%',
+  },
+  empty: {
+    padding: '1rem',
+    color: tokens.mutedForeground,
+    fontSize: '0.875rem',
+    textAlign: 'center',
+  },
   viewport: { padding: '0.25rem', width: '100%' },
   item: {
     borderRadius: foundationTokens.radiusSm,
@@ -448,13 +478,17 @@ export const multiSelector = <Msg>(
       : statusMessageId,
   ].filter((id): id is string => id !== undefined)
 
+  const visibleOptions =
+    props.hasSearch === true
+      ? filterOptions(flatOptions, model.query)
+      : flatOptions
   const hasSelection = model.values.length > 0
   const allSelected =
-    flatOptions.length > 0 &&
-    flatOptions.every(option => model.values.includes(option.value))
+    visibleOptions.length > 0 &&
+    visibleOptions.every(option => model.values.includes(option.value))
   const someSelected =
     !allSelected &&
-    flatOptions.some(option => model.values.includes(option.value))
+    visibleOptions.some(option => model.values.includes(option.value))
 
   const labelView = props.isLabelHidden
     ? h.label(
@@ -711,14 +745,35 @@ export const multiSelector = <Msg>(
     ...(props.htmlName === undefined ? {} : { name: props.htmlName }),
   }
 
-  const listboxView = h.submodel({
-    slotId: model.listbox.id,
-    model: model.listbox,
-    view: listboxBundle.view,
-    viewInputs,
-    toParentMessage: message =>
-      toParent(Message.GotListboxMessage({ message })),
-  })
+  const listboxView =
+    props.hasSearch === true
+      ? searchablePopover(
+          {
+            model,
+            toParentMessage: toParent,
+            inputs: viewInputs,
+            options: flatOptions,
+            label: props.label,
+            hasSearch: true,
+            ...(props.searchPlaceholder === undefined
+              ? {}
+              : { searchPlaceholder: props.searchPlaceholder }),
+            visual: {
+              search: [h.Class(className(styles.search))],
+              input: [h.Class(className(styles.searchInput))],
+              empty: [h.Class(className(styles.empty))],
+            },
+          },
+          h,
+        )
+      : h.submodel({
+          slotId: model.listbox.id,
+          model: model.listbox,
+          view: listboxBundle.view,
+          viewInputs,
+          toParentMessage: message =>
+            toParent(Message.GotListboxMessage({ message })),
+        })
 
   return h.div(
     [

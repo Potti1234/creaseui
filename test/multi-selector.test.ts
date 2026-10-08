@@ -2,6 +2,8 @@ import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
 import * as MultiSelector from '../src/lib/multi-selector.ts'
+import { filterOptions } from '../src/lib/multi-selector-view.ts'
+import { Option } from 'effect'
 
 describe('MultiSelector submodel', () => {
   it('initializes with seeded values and option set', () => {
@@ -47,5 +49,60 @@ describe('MultiSelector submodel', () => {
       MultiSelector.Message.ClickedClearAll({}),
     )
     assert.equal(again.outMessage === undefined, true)
+  })
+
+  it('search matches labels case-insensitively and ignores surrounding spaces', () => {
+    assert.deepEqual(
+      filterOptions(
+        [
+          { value: 'us', label: 'United States' },
+          { value: 'uk', label: 'United Kingdom' },
+          { value: 'de', label: 'Germany' },
+        ],
+        ' UNITED ',
+      ).map(option => option.value),
+      ['us', 'uk'],
+    )
+  })
+
+  it('changing the query retains selections and clears a stale active option', () => {
+    const model = MultiSelector.init({ id: 'countries', values: ['de'] })
+    const next = MultiSelector.update(
+      {
+        ...model,
+        listbox: { ...model.listbox, maybeActiveItemIndex: Option.some(9) },
+      },
+      MultiSelector.Message.ChangedSearch({ query: 'united' }),
+    )
+    assert.deepEqual(next.model.values, ['de'])
+    assert.equal(next.model.query, 'united')
+    assert.ok(Option.isNone(next.model.listbox.maybeActiveItemIndex))
+    assert.equal(next.outMessage, undefined)
+  })
+
+  it('select-all toggles filtered options while preserving hidden selections', () => {
+    const model = MultiSelector.init({
+      id: 'countries',
+      values: ['de', 'us'],
+      optionValues: ['de', 'us', 'uk'],
+    })
+    const message = MultiSelector.Message.ClickedSelectAll({
+      optionValues: ['us', 'uk'],
+    })
+    const selected = MultiSelector.update(model, message)
+    assert.deepEqual(selected.model.values, ['de', 'us', 'uk'])
+    const cleared = MultiSelector.update(selected.model, message)
+    assert.deepEqual(cleared.model.values, ['de'])
+    assert.deepEqual(cleared.outMessage, {
+      _tag: 'ChangedValues',
+      values: ['de'],
+    })
+    assert.deepEqual(
+      MultiSelector.update(
+        cleared.model,
+        MultiSelector.Message.ClickedSelectAll({ optionValues: [] }),
+      ).model.values,
+      ['de'],
+    )
   })
 })
