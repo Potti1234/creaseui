@@ -234,17 +234,25 @@ const styles = stylex.create({
   },
   panel: {
     padding: 0,
+    maxWidth: 'calc(100vw - 2rem)',
     width: 'auto',
   },
-  popoverLayout: { display: 'flex' },
+  popoverLayout: {
+    display: 'flex',
+    flexDirection: { default: 'column', '@media (min-width: 640px)': 'row' },
+  },
   presetSidebar: {
+    borderBlockEndColor: tokens.input,
+    borderBlockEndStyle: 'solid',
+    borderBlockEndWidth: { default: 1, '@media (min-width: 640px)': 0 },
     borderInlineEndColor: tokens.input,
     borderInlineEndStyle: 'solid',
-    borderInlineEndWidth: 1,
-    display: 'flex',
+    borderInlineEndWidth: { default: 0, '@media (min-width: 640px)': 1 },
+    display: { default: 'grid', '@media (min-width: 640px)': 'flex' },
     flexDirection: 'column',
     gap: '0.25rem',
-    minWidth: '8.75rem',
+    gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+    minWidth: { default: 0, '@media (min-width: 640px)': '8.75rem' },
     padding: '0.75rem',
   },
   presetButton: {
@@ -552,6 +560,7 @@ export const dateRangeInput = <Msg>(
                   h.div(
                     [
                       ...panel,
+                      h.DataAttribute('slot', 'popover-content'),
                       h.Class(className(overlayStyles.panel, styles.panel)),
                     ],
                     [

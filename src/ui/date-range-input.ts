@@ -116,12 +116,12 @@ const STATUS_MESSAGE_CLASS: Readonly<
 }
 
 const PANEL_CLASS =
-  'z-50 w-auto rounded-md border bg-popover p-0 text-popover-foreground shadow-md outline-hidden transition duration-200 ease-out data-[closed]:opacity-0 data-[closed]:scale-95'
+  'z-50 w-auto max-w-[calc(100vw-2rem)] rounded-md border bg-popover p-0 text-popover-foreground shadow-md outline-hidden transition duration-200 ease-out data-[closed]:opacity-0 data-[closed]:scale-95'
 
-const POPOVER_LAYOUT_CLASS = 'flex'
+const POPOVER_LAYOUT_CLASS = 'flex flex-col sm:flex-row'
 
 const PRESET_SIDEBAR_CLASS =
-  'flex min-w-35 flex-col gap-1 border-e border-input p-3'
+  'grid min-w-0 grid-cols-2 gap-1 border-b border-input p-3 sm:flex sm:min-w-35 sm:flex-col sm:border-e sm:border-b-0'
 
 const PRESET_BUTTON_CLASS =
   'block w-full cursor-pointer rounded-md bg-transparent px-2 py-1 text-start text-sm text-foreground outline-hidden transition-colors hover:bg-accent disabled:cursor-default disabled:text-muted-foreground disabled:opacity-50 aria-[current=true]:bg-accent aria-[current=true]:text-accent-foreground'
@@ -339,7 +339,11 @@ export const dateRangeInput = <Msg>(
               ? [
                   h.div([...backdrop, h.Class(BACKDROP_CLASS)], []),
                   h.div(
-                    [...panel, h.Class(PANEL_CLASS)],
+                    [
+                      ...panel,
+                      h.DataAttribute('slot', 'popover-content'),
+                      h.Class(PANEL_CLASS),
+                    ],
                     [
                       h.div(
                         [
