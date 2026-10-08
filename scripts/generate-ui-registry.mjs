@@ -26,6 +26,18 @@ const title = name =>
     .join(' ')
 
 const categories = {
+  Maps: new Set([
+    'map',
+    'map-controls',
+    'map-marker',
+    'map-popup',
+    'map-route',
+    'map-arc',
+    'map-geojson',
+    'map-cluster',
+    'map-styles',
+    'map-localization',
+  ]),
   'Data display': new Set([
     'avatar',
     'badge',
@@ -114,6 +126,10 @@ const libraryItems = {
   '@/lib/time-input': 'time-input-core',
   '@/lib/input-status': 'input-status',
   '@/lib/echarts': 'echarts-adapter',
+  '@/lib/map-runtime': 'map-adapter',
+  '@/lib/map-view': 'map-adapter',
+  '@/lib/map-style': 'map-adapter',
+  '@/lib/map-layers': 'map-adapter',
 }
 const consumerFrameworkPackages = new Set([
   '@effect/platform-browser',

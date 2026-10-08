@@ -7,6 +7,8 @@ All notable changes to Crease UI are recorded here. The project follows
 
 ### Added
 
+- Composable MapLibre maps, controls, markers, popups, routes, arcs, GeoJSON,
+  clustering, basemap palettes, and localization in Tailwind and StyleX.
 - A first-class `crease` CLI with `init`, `add`, `diff`, `upgrade`, and `doctor`
   workflows.
 - Foldkit Scene tests and Playwright desktop/mobile accessibility contracts.

@@ -73,6 +73,16 @@
 - List Input: /docs/components/list-input — install with `npx creaseui add list-input`
 - List: /docs/components/list — install with `npx creaseui add list`
 - Log Stream: /docs/components/log-stream — install with `npx creaseui add log-stream`
+- Map Arc: /docs/components/map-arc — install with `npx creaseui add map-arc`
+- Map Cluster: /docs/components/map-cluster — install with `npx creaseui add map-cluster`
+- Map Controls: /docs/components/map-controls — install with `npx creaseui add map-controls`
+- Map Geojson: /docs/components/map-geojson — install with `npx creaseui add map-geojson`
+- Map Localization: /docs/components/map-localization — install with `npx creaseui add map-localization`
+- Map Marker: /docs/components/map-marker — install with `npx creaseui add map-marker`
+- Map Popup: /docs/components/map-popup — install with `npx creaseui add map-popup`
+- Map Route: /docs/components/map-route — install with `npx creaseui add map-route`
+- Map Styles: /docs/components/map-styles — install with `npx creaseui add map-styles`
+- Map: /docs/components/map — install with `npx creaseui add map`
 - Markdown: /docs/components/markdown — install with `npx creaseui add markdown`
 - Marker: /docs/components/marker — install with `npx creaseui add marker`
 - Menubar: /docs/components/menubar — install with `npx creaseui add menubar`

@@ -23,7 +23,7 @@
   ],
   "summary": {
     "upstreamItems": 62,
-    "registryItems": 112,
+    "registryItems": 122,
     "creaseOnlyRecipes": [
       "avatar-group",
       "banner",
@@ -49,6 +49,16 @@
       "list",
       "list-input",
       "log-stream",
+      "map",
+      "map-arc",
+      "map-cluster",
+      "map-controls",
+      "map-geojson",
+      "map-localization",
+      "map-marker",
+      "map-popup",
+      "map-route",
+      "map-styles",
       "markdown",
       "metadata-list",
       "mobile-nav",
@@ -1125,6 +1135,206 @@
         "src/ui/log-stream.ts",
         "src/ui/registry.json#log-stream",
         "/docs/components/log-stream"
+      ]
+    },
+    {
+      "component": "map",
+      "upstream": false,
+      "classification": "adapted",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "adapted",
+        "accessibility": "partial",
+        "composition": "adapted",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/map.ts",
+        "src/ui/registry.json#map",
+        "/docs/components/map",
+        "test/map.test.ts",
+        "scene/map.scene.test.ts"
+      ]
+    },
+    {
+      "component": "map-arc",
+      "upstream": false,
+      "classification": "adapted",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "adapted",
+        "accessibility": "partial",
+        "composition": "adapted",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/map-arc.ts",
+        "src/ui/registry.json#map-arc",
+        "/docs/components/map-arc",
+        "test/map.test.ts",
+        "scene/map.scene.test.ts"
+      ]
+    },
+    {
+      "component": "map-cluster",
+      "upstream": false,
+      "classification": "adapted",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "adapted",
+        "accessibility": "partial",
+        "composition": "adapted",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/map-cluster.ts",
+        "src/ui/registry.json#map-cluster",
+        "/docs/components/map-cluster",
+        "test/map.test.ts",
+        "scene/map.scene.test.ts"
+      ]
+    },
+    {
+      "component": "map-controls",
+      "upstream": false,
+      "classification": "adapted",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "adapted",
+        "accessibility": "partial",
+        "composition": "adapted",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/map-controls.ts",
+        "src/ui/registry.json#map-controls",
+        "/docs/components/map-controls",
+        "test/map.test.ts",
+        "scene/map.scene.test.ts"
+      ]
+    },
+    {
+      "component": "map-geojson",
+      "upstream": false,
+      "classification": "adapted",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "adapted",
+        "accessibility": "partial",
+        "composition": "adapted",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/map-geojson.ts",
+        "src/ui/registry.json#map-geojson",
+        "/docs/components/map-geojson",
+        "test/map.test.ts",
+        "scene/map.scene.test.ts"
+      ]
+    },
+    {
+      "component": "map-localization",
+      "upstream": false,
+      "classification": "adapted",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "adapted",
+        "accessibility": "partial",
+        "composition": "adapted",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/map-localization.ts",
+        "src/ui/registry.json#map-localization",
+        "/docs/components/map-localization",
+        "test/map.test.ts",
+        "scene/map.scene.test.ts"
+      ]
+    },
+    {
+      "component": "map-marker",
+      "upstream": false,
+      "classification": "adapted",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "adapted",
+        "accessibility": "partial",
+        "composition": "adapted",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/map-marker.ts",
+        "src/ui/registry.json#map-marker",
+        "/docs/components/map-marker",
+        "test/map.test.ts",
+        "scene/map.scene.test.ts"
+      ]
+    },
+    {
+      "component": "map-popup",
+      "upstream": false,
+      "classification": "adapted",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "adapted",
+        "accessibility": "partial",
+        "composition": "adapted",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/map-popup.ts",
+        "src/ui/registry.json#map-popup",
+        "/docs/components/map-popup",
+        "test/map.test.ts",
+        "scene/map.scene.test.ts"
+      ]
+    },
+    {
+      "component": "map-route",
+      "upstream": false,
+      "classification": "adapted",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "adapted",
+        "accessibility": "partial",
+        "composition": "adapted",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/map-route.ts",
+        "src/ui/registry.json#map-route",
+        "/docs/components/map-route",
+        "test/map.test.ts",
+        "scene/map.scene.test.ts"
+      ]
+    },
+    {
+      "component": "map-styles",
+      "upstream": false,
+      "classification": "adapted",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "adapted",
+        "accessibility": "partial",
+        "composition": "adapted",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/map-styles.ts",
+        "src/ui/registry.json#map-styles",
+        "/docs/components/map-styles",
+        "test/map.test.ts",
+        "scene/map.scene.test.ts"
       ]
     },
     {

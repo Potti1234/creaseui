@@ -7,11 +7,7 @@
       "title": "Time Input State",
       "description": "Time parsing, segment selection, constraints, and Foldkit submodels for Time Input.",
       "files": [
-        {
-          "path": "time-input.ts",
-          "type": "registry:lib",
-          "target": "@lib/time-input.ts"
-        }
+        { "path": "time-input.ts", "type": "registry:lib", "target": "@lib/time-input.ts" }
       ]
     },
     {
@@ -20,11 +16,7 @@
       "title": "Input Status",
       "description": "Shared status messages and icons for Crease input components.",
       "files": [
-        {
-          "path": "input-status.ts",
-          "type": "registry:lib",
-          "target": "@lib/input-status.ts"
-        }
+        { "path": "input-status.ts", "type": "registry:lib", "target": "@lib/input-status.ts" }
       ]
     },
     {
@@ -456,6 +448,37 @@
           "path": "toast.ts",
           "type": "registry:lib",
           "target": "@lib/toast.ts"
+        }
+      ]
+    },
+    {
+      "name": "map-adapter",
+      "type": "registry:lib",
+      "title": "Foldkit MapLibre Adapter",
+      "description": "OpenFreeMap lifecycle, overlays, Crease UI palettes, and localization for both map renderers.",
+      "dependencies": [
+        "maplibre-gl@^6.13.0"
+      ],
+      "files": [
+        {
+          "path": "map-runtime.ts",
+          "type": "registry:lib",
+          "target": "@lib/map-runtime.ts"
+        },
+        {
+          "path": "map-style.ts",
+          "type": "registry:lib",
+          "target": "@lib/map-style.ts"
+        },
+        {
+          "path": "map-view.ts",
+          "type": "registry:lib",
+          "target": "@lib/map-view.ts"
+        },
+        {
+          "path": "map-layers.ts",
+          "type": "registry:lib",
+          "target": "@lib/map-layers.ts"
         }
       ]
     }

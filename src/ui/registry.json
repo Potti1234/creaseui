@@ -748,6 +748,7 @@
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/input-status",
         "Potti1234/creaseui/utils"
       ],
       "files": [
@@ -1025,6 +1026,7 @@
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/input-status",
         "Potti1234/creaseui/utils"
       ],
       "files": [
@@ -1066,6 +1068,180 @@
           "path": "log-stream.ts",
           "type": "registry:ui",
           "target": "@ui/log-stream.ts"
+        }
+      ]
+    },
+    {
+      "name": "map-arc",
+      "type": "registry:ui",
+      "title": "Map Arc",
+      "description": "A CreaseUI Map Arc component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/map-adapter"
+      ],
+      "files": [
+        {
+          "path": "map-arc.ts",
+          "type": "registry:ui",
+          "target": "@ui/map-arc.ts"
+        }
+      ]
+    },
+    {
+      "name": "map-cluster",
+      "type": "registry:ui",
+      "title": "Map Cluster",
+      "description": "A CreaseUI Map Cluster component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/map-adapter"
+      ],
+      "files": [
+        {
+          "path": "map-cluster.ts",
+          "type": "registry:ui",
+          "target": "@ui/map-cluster.ts"
+        }
+      ]
+    },
+    {
+      "name": "map-controls",
+      "type": "registry:ui",
+      "title": "Map Controls",
+      "description": "A CreaseUI Map Controls component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/map",
+        "Potti1234/creaseui/map-adapter"
+      ],
+      "files": [
+        {
+          "path": "map-controls.ts",
+          "type": "registry:ui",
+          "target": "@ui/map-controls.ts"
+        }
+      ]
+    },
+    {
+      "name": "map-geojson",
+      "type": "registry:ui",
+      "title": "Map Geojson",
+      "description": "A CreaseUI Map Geojson component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/map-adapter"
+      ],
+      "files": [
+        {
+          "path": "map-geojson.ts",
+          "type": "registry:ui",
+          "target": "@ui/map-geojson.ts"
+        }
+      ]
+    },
+    {
+      "name": "map-localization",
+      "type": "registry:ui",
+      "title": "Map Localization",
+      "description": "A CreaseUI Map Localization component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/map-adapter"
+      ],
+      "files": [
+        {
+          "path": "map-localization.ts",
+          "type": "registry:ui",
+          "target": "@ui/map-localization.ts"
+        }
+      ]
+    },
+    {
+      "name": "map-marker",
+      "type": "registry:ui",
+      "title": "Map Marker",
+      "description": "A CreaseUI Map Marker component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/map",
+        "Potti1234/creaseui/map-adapter"
+      ],
+      "files": [
+        {
+          "path": "map-marker.ts",
+          "type": "registry:ui",
+          "target": "@ui/map-marker.ts"
+        }
+      ]
+    },
+    {
+      "name": "map-popup",
+      "type": "registry:ui",
+      "title": "Map Popup",
+      "description": "A CreaseUI Map Popup component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/map",
+        "Potti1234/creaseui/map-adapter"
+      ],
+      "files": [
+        {
+          "path": "map-popup.ts",
+          "type": "registry:ui",
+          "target": "@ui/map-popup.ts"
+        }
+      ]
+    },
+    {
+      "name": "map-route",
+      "type": "registry:ui",
+      "title": "Map Route",
+      "description": "A CreaseUI Map Route component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/map-adapter"
+      ],
+      "files": [
+        {
+          "path": "map-route.ts",
+          "type": "registry:ui",
+          "target": "@ui/map-route.ts"
+        }
+      ]
+    },
+    {
+      "name": "map-styles",
+      "type": "registry:ui",
+      "title": "Map Styles",
+      "description": "A CreaseUI Map Styles component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/map-adapter"
+      ],
+      "files": [
+        {
+          "path": "map-styles.ts",
+          "type": "registry:ui",
+          "target": "@ui/map-styles.ts"
+        }
+      ]
+    },
+    {
+      "name": "map",
+      "type": "registry:ui",
+      "title": "Map",
+      "description": "A CreaseUI Map component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/map-adapter",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "map.ts",
+          "type": "registry:ui",
+          "target": "@ui/map.ts"
         }
       ]
     },

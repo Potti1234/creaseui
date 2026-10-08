@@ -6,7 +6,7 @@
     "date": "2026-09-02"
   },
   "documentation": {
-    "complete": ["all 65 registry components"],
+    "complete": ["all 122 registry components"],
     "next": []
   },
   "classifications": {
@@ -21,7 +21,17 @@
       "resizable",
       "scroll-area",
       "slider",
-      "tooltip"
+      "tooltip",
+      "map",
+      "map-controls",
+      "map-marker",
+      "map-popup",
+      "map-route",
+      "map-arc",
+      "map-geojson",
+      "map-cluster",
+      "map-styles",
+      "map-localization"
     ],
     "recipe": ["data-table", "date-picker", "typography"],
     "legacy": []
@@ -91,7 +101,17 @@
       ],
       "input": ["e2e/site.spec.ts#flagship-accessibility"],
       "select": ["e2e/site.spec.ts#flagship-accessibility"],
-      "sheet": ["e2e/site.spec.ts#sheet-compound-parts"]
+      "sheet": ["e2e/site.spec.ts#sheet-compound-parts"],
+      "map": ["test/map.test.ts", "scene/map.scene.test.ts"],
+      "map-controls": ["test/map.test.ts", "scene/map.scene.test.ts"],
+      "map-marker": ["test/map.test.ts", "scene/map.scene.test.ts"],
+      "map-popup": ["test/map.test.ts", "scene/map.scene.test.ts"],
+      "map-route": ["test/map.test.ts", "scene/map.scene.test.ts"],
+      "map-arc": ["test/map.test.ts", "scene/map.scene.test.ts"],
+      "map-geojson": ["test/map.test.ts", "scene/map.scene.test.ts"],
+      "map-cluster": ["test/map.test.ts", "scene/map.scene.test.ts"],
+      "map-styles": ["test/map.test.ts", "scene/map.scene.test.ts"],
+      "map-localization": ["test/map.test.ts", "scene/map.scene.test.ts"]
     }
   },
   "fidelity": [
@@ -172,7 +192,7 @@
     {
       "component": "sonner",
       "priority": "P0",
-      "strategy": "Covered by toast \u2014 the sonner and toast implementations were already identical; toast is the single notification component and owns the former sonner docs examples."
+      "strategy": "Covered by toast — the sonner and toast implementations were already identical; toast is the single notification component and owns the former sonner docs examples."
     }
   ]
 }

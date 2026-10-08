@@ -8,6 +8,7 @@ projects:
 - [Foldkit](https://github.com/foldkit/foldkit) and Foldkit UI supply the runtime,
   application architecture, and accessible interaction primitives.
 - [Apache ECharts](https://github.com/apache/echarts) powers chart rendering.
+- [mapcn](https://www.mapcn.dev/docs/basic-map) informs the map family and its composition API (reviewed 2026-10-08). The implementation uses Foldkit mounts and declarative overlays rather than React context and portals. [MapLibre GL JS](https://maplibre.org/) renders [OpenFreeMap](https://openfreemap.org/) tiles; Crease UI exposes 18 semantic palette tokens for map customization.
 - [Lucide](https://github.com/lucide-icons/lucide) supplies icons.
 
 The initial prototype was assembled from the public shadcn/ui site and registry

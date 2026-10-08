@@ -1034,6 +1034,110 @@ Source: [`src/ui/log-stream.ts`](../src/ui/log-stream.ts)
 | `LogStreamProps` | type | `LogStreamProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; entries: ReadonlyArray<LogEntry>; variant?: 'default' \| 'terminal'; maxHeight?: number \| string; hasTimestamps?: boolean; label?: string; renderEntry?: (entry: LogEntry…` |
 | `logStream` | function | `logStream<Msg>(props: LogStreamProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
+## Map Arc
+
+Source: [`src/ui/map-arc.ts`](../src/ui/map-arc.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `mapArc` | re-export | `export { mapArc } from '@/lib/map-layers'` |
+| `arcCoordinates` | re-export | `export { arcCoordinates } from '@/lib/map-layers'` |
+| `MapArcProps` | re-export | `export { MapArcProps } from '@/lib/map-layers'` |
+
+## Map Cluster
+
+Source: [`src/ui/map-cluster.ts`](../src/ui/map-cluster.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `mapClusterLayer` | re-export | `export { mapClusterLayer } from '@/lib/map-layers'` |
+| `MapClusterLayerProps` | re-export | `export { MapClusterLayerProps } from '@/lib/map-layers'` |
+
+## Map Controls
+
+Source: [`src/ui/map-controls.ts`](../src/ui/map-controls.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `MapControlsProps` | re-export | `export { MapControlsProps } from '@/lib/map-view'` |
+| `mapControls` | function | `mapControls<Msg>(props: MapControlsProps, h: HtmlBuilder<Msg>): Html` |
+
+## Map Geojson
+
+Source: [`src/ui/map-geojson.ts`](../src/ui/map-geojson.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `mapGeoJSON` | re-export | `export { mapGeoJSON } from '@/lib/map-layers'` |
+| `MapGeoJSONProps` | re-export | `export { MapGeoJSONProps } from '@/lib/map-layers'` |
+
+## Map Localization
+
+Source: [`src/ui/map-localization.ts`](../src/ui/map-localization.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `localizeMapLabel` | re-export | `export { localizeMapLabel } from '@/lib/map-style'` |
+| `MAP_TRANSLATIONS` | re-export | `export { MAP_TRANSLATIONS } from '@/lib/map-style'` |
+| `mapTranslations` | re-export | `export { mapTranslations } from '@/lib/map-style'` |
+| `MapTranslations` | re-export | `export { MapTranslations } from '@/lib/map-style'` |
+
+## Map Marker
+
+Source: [`src/ui/map-marker.ts`](../src/ui/map-marker.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `MapMarkerProps` | re-export | `export { MapMarkerProps } from '@/lib/map-view'` |
+| `mapMarker` | function | `mapMarker<Msg>(props: MapMarkerProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+| `markerContent` | function | `markerContent<Msg>(props: Readonly<{ children: ReadonlyArray<Html \| string>; }>, h: HtmlBuilder<Msg>): Html` |
+| `markerLabel` | function | `markerLabel<Msg>(props: Readonly<{ children: ReadonlyArray<Html \| string>; }>, h: HtmlBuilder<Msg>): Html` |
+| `markerTooltip` | function | `markerTooltip<Msg>(props: Readonly<{ children: ReadonlyArray<Html \| string>; }>, h: HtmlBuilder<Msg>): Html` |
+
+## Map Popup
+
+Source: [`src/ui/map-popup.ts`](../src/ui/map-popup.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `MapPopupProps` | re-export | `export { MapPopupProps } from '@/lib/map-view'` |
+| `mapPopup` | function | `mapPopup<Msg>(props: MapPopupProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Map Route
+
+Source: [`src/ui/map-route.ts`](../src/ui/map-route.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `mapRoute` | re-export | `export { mapRoute } from '@/lib/map-layers'` |
+| `MapRouteProps` | re-export | `export { MapRouteProps } from '@/lib/map-layers'` |
+
+## Map Styles
+
+Source: [`src/ui/map-styles.ts`](../src/ui/map-styles.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `createMapStyle` | re-export | `export { createMapStyle } from '@/lib/map-style'` |
+| `MAP_PALETTES` | re-export | `export { MAP_PALETTES } from '@/lib/map-style'` |
+| `OPENFREEMAP_STYLES` | re-export | `export { OPENFREEMAP_STYLES } from '@/lib/map-style'` |
+| `readMapPalette` | re-export | `export { readMapPalette } from '@/lib/map-style'` |
+| `MapPalette` | re-export | `export { MapPalette } from '@/lib/map-style'` |
+
+## Map
+
+Source: [`src/ui/map.ts`](../src/ui/map.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `MapMessage` | re-export | `export { MapMessage } from '@/lib/map-runtime'` |
+| `MapConfig` | re-export | `export { MapConfig } from '@/lib/map-runtime'` |
+| `MapViewport` | re-export | `export { MapViewport } from '@/lib/map-runtime'` |
+| `OPENFREEMAP_STYLES` | re-export | `export { OPENFREEMAP_STYLES } from '@/lib/map-style'` |
+| `mapSkin` | value | `mapSkin: MapSkin` |
+| `MapProps` | type | `MapProps<Msg> = MapViewProps<Msg> & Readonly<{ class?: string; }>` |
+| `map` | function | `map<Msg>(props: MapProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
 ## Markdown
 
 Source: [`src/ui/markdown.ts`](../src/ui/markdown.ts)

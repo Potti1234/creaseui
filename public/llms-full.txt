@@ -71,6 +71,16 @@
 - List Input: /docs/components/list-input — install with `npx creaseui add list-input`
 - List: /docs/components/list — install with `npx creaseui add list`
 - Log Stream: /docs/components/log-stream — install with `npx creaseui add log-stream`
+- Map Arc: /docs/components/map-arc — install with `npx creaseui add map-arc`
+- Map Cluster: /docs/components/map-cluster — install with `npx creaseui add map-cluster`
+- Map Controls: /docs/components/map-controls — install with `npx creaseui add map-controls`
+- Map Geojson: /docs/components/map-geojson — install with `npx creaseui add map-geojson`
+- Map Localization: /docs/components/map-localization — install with `npx creaseui add map-localization`
+- Map Marker: /docs/components/map-marker — install with `npx creaseui add map-marker`
+- Map Popup: /docs/components/map-popup — install with `npx creaseui add map-popup`
+- Map Route: /docs/components/map-route — install with `npx creaseui add map-route`
+- Map Styles: /docs/components/map-styles — install with `npx creaseui add map-styles`
+- Map: /docs/components/map — install with `npx creaseui add map`
 - Markdown: /docs/components/markdown — install with `npx creaseui add markdown`
 - Marker: /docs/components/marker — install with `npx creaseui add marker`
 - Menubar: /docs/components/menubar — install with `npx creaseui add menubar`
@@ -1275,6 +1285,130 @@ Examples: Build logs, Log results, Controlled follow
 - `update(model: Model, message: Message): UpdateReturn` (function)
 - `LogStreamProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; entries: ReadonlyArray<LogEntry>; variant?: 'default' | 'terminal'; maxHeight?: number | string; hasTimestamps?: boolean; label?: string; renderEntry?: (entry: LogEntry…` (type)
 - `logStream<Msg>(props: LogStreamProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Map Arc
+
+A CreaseUI Map Arc component for Foldkit.
+
+Source: `src/ui/map-arc.ts`
+
+Examples: City connection, Reverse curvature
+
+- `export { mapArc } from '@/lib/map-layers'` (re-export)
+- `export { arcCoordinates } from '@/lib/map-layers'` (re-export)
+- `export { MapArcProps } from '@/lib/map-layers'` (re-export)
+
+### Map Cluster
+
+A CreaseUI Map Cluster component for Foldkit.
+
+Source: `src/ui/map-cluster.ts`
+
+Examples: Clustered locations, Custom cluster styling
+
+- `export { mapClusterLayer } from '@/lib/map-layers'` (re-export)
+- `export { MapClusterLayerProps } from '@/lib/map-layers'` (re-export)
+
+### Map Controls
+
+A CreaseUI Map Controls component for Foldkit.
+
+Source: `src/ui/map-controls.ts`
+
+Examples: Navigation controls, Location and fullscreen
+
+- `export { MapControlsProps } from '@/lib/map-view'` (re-export)
+- `mapControls<Msg>(props: MapControlsProps, h: HtmlBuilder<Msg>): Html` (function)
+
+### Map Geojson
+
+A CreaseUI Map Geojson component for Foldkit.
+
+Source: `src/ui/map-geojson.ts`
+
+Examples: Region overlay, Blank map and outlines
+
+- `export { mapGeoJSON } from '@/lib/map-layers'` (re-export)
+- `export { MapGeoJSONProps } from '@/lib/map-layers'` (re-export)
+
+### Map Localization
+
+A CreaseUI Map Localization component for Foldkit.
+
+Source: `src/ui/map-localization.ts`
+
+Examples: Localized map, Control translations
+
+- `export { localizeMapLabel } from '@/lib/map-style'` (re-export)
+- `export { MAP_TRANSLATIONS } from '@/lib/map-style'` (re-export)
+- `export { mapTranslations } from '@/lib/map-style'` (re-export)
+- `export { MapTranslations } from '@/lib/map-style'` (re-export)
+
+### Map Marker
+
+A CreaseUI Map Marker component for Foldkit.
+
+Source: `src/ui/map-marker.ts`
+
+Examples: Markers and labels, Draggable marker
+
+- `export { MapMarkerProps } from '@/lib/map-view'` (re-export)
+- `mapMarker<Msg>(props: MapMarkerProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `markerContent<Msg>(props: Readonly<{ children: ReadonlyArray<Html | string>; }>, h: HtmlBuilder<Msg>): Html` (function)
+- `markerLabel<Msg>(props: Readonly<{ children: ReadonlyArray<Html | string>; }>, h: HtmlBuilder<Msg>): Html` (function)
+- `markerTooltip<Msg>(props: Readonly<{ children: ReadonlyArray<Html | string>; }>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Map Popup
+
+A CreaseUI Map Popup component for Foldkit.
+
+Source: `src/ui/map-popup.ts`
+
+Examples: Marker popup, Standalone popup
+
+- `export { MapPopupProps } from '@/lib/map-view'` (re-export)
+- `mapPopup<Msg>(props: MapPopupProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Map Route
+
+A CreaseUI Map Route component for Foldkit.
+
+Source: `src/ui/map-route.ts`
+
+Examples: Route between landmarks, Dashed route
+
+- `export { mapRoute } from '@/lib/map-layers'` (re-export)
+- `export { MapRouteProps } from '@/lib/map-layers'` (re-export)
+
+### Map Styles
+
+A CreaseUI Map Styles component for Foldkit.
+
+Source: `src/ui/map-styles.ts`
+
+Examples: Basemap styles, Custom palette
+
+- `export { createMapStyle } from '@/lib/map-style'` (re-export)
+- `export { MAP_PALETTES } from '@/lib/map-style'` (re-export)
+- `export { OPENFREEMAP_STYLES } from '@/lib/map-style'` (re-export)
+- `export { readMapPalette } from '@/lib/map-style'` (re-export)
+- `export { MapPalette } from '@/lib/map-style'` (re-export)
+
+### Map
+
+A CreaseUI Map component for Foldkit.
+
+Source: `src/ui/map.ts`
+
+Examples: Basic map, Controlled viewport
+
+- `export { MapMessage } from '@/lib/map-runtime'` (re-export)
+- `export { MapConfig } from '@/lib/map-runtime'` (re-export)
+- `export { MapViewport } from '@/lib/map-runtime'` (re-export)
+- `export { OPENFREEMAP_STYLES } from '@/lib/map-style'` (re-export)
+- `mapSkin: MapSkin` (value)
+- `MapProps<Msg> = MapViewProps<Msg> & Readonly<{ class?: string; }>` (type)
+- `map<Msg>(props: MapProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Markdown
 

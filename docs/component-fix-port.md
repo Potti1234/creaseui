@@ -40,10 +40,10 @@ snippet now puts those styles on its own layout element.
 
 ## Remaining copied additions
 
-The map component family, map documentation, theme editor, theming guide, and
-their integration/dependency changes remain uncommitted for separate review.
-They are present in the working tree and visible through `git diff` and
-`git status`.
+The map component family and its documentation/registry integration were
+subsequently imported in four commits. See [Map component port](map-component-port.md).
+The theme editor, theming guide, and their integration changes remain
+uncommitted and visible through `git diff` and `git status`.
 
 ## Validation
 

@@ -3247,6 +3247,196 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "logStream<Msg>(props: LogStreamProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "map-arc": [
+    {
+      "name": "mapArc",
+      "kind": "re-export",
+      "signature": "export { mapArc } from '@/lib/map-layers'"
+    },
+    {
+      "name": "arcCoordinates",
+      "kind": "re-export",
+      "signature": "export { arcCoordinates } from '@/lib/map-layers'"
+    },
+    {
+      "name": "MapArcProps",
+      "kind": "re-export",
+      "signature": "export { MapArcProps } from '@/lib/map-layers'"
+    }
+  ],
+  "map-cluster": [
+    {
+      "name": "mapClusterLayer",
+      "kind": "re-export",
+      "signature": "export { mapClusterLayer } from '@/lib/map-layers'"
+    },
+    {
+      "name": "MapClusterLayerProps",
+      "kind": "re-export",
+      "signature": "export { MapClusterLayerProps } from '@/lib/map-layers'"
+    }
+  ],
+  "map-controls": [
+    {
+      "name": "MapControlsProps",
+      "kind": "re-export",
+      "signature": "export { MapControlsProps } from '@/lib/map-view'"
+    },
+    {
+      "name": "mapControls",
+      "kind": "function",
+      "signature": "mapControls<Msg>(props: MapControlsProps, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "map-geojson": [
+    {
+      "name": "mapGeoJSON",
+      "kind": "re-export",
+      "signature": "export { mapGeoJSON } from '@/lib/map-layers'"
+    },
+    {
+      "name": "MapGeoJSONProps",
+      "kind": "re-export",
+      "signature": "export { MapGeoJSONProps } from '@/lib/map-layers'"
+    }
+  ],
+  "map-localization": [
+    {
+      "name": "localizeMapLabel",
+      "kind": "re-export",
+      "signature": "export { localizeMapLabel } from '@/lib/map-style'"
+    },
+    {
+      "name": "MAP_TRANSLATIONS",
+      "kind": "re-export",
+      "signature": "export { MAP_TRANSLATIONS } from '@/lib/map-style'"
+    },
+    {
+      "name": "mapTranslations",
+      "kind": "re-export",
+      "signature": "export { mapTranslations } from '@/lib/map-style'"
+    },
+    {
+      "name": "MapTranslations",
+      "kind": "re-export",
+      "signature": "export { MapTranslations } from '@/lib/map-style'"
+    }
+  ],
+  "map-marker": [
+    {
+      "name": "MapMarkerProps",
+      "kind": "re-export",
+      "signature": "export { MapMarkerProps } from '@/lib/map-view'"
+    },
+    {
+      "name": "mapMarker",
+      "kind": "function",
+      "signature": "mapMarker<Msg>(props: MapMarkerProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "markerContent",
+      "kind": "function",
+      "signature": "markerContent<Msg>(props: Readonly<{ children: ReadonlyArray<Html | string>; }>, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "markerLabel",
+      "kind": "function",
+      "signature": "markerLabel<Msg>(props: Readonly<{ children: ReadonlyArray<Html | string>; }>, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "markerTooltip",
+      "kind": "function",
+      "signature": "markerTooltip<Msg>(props: Readonly<{ children: ReadonlyArray<Html | string>; }>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "map-popup": [
+    {
+      "name": "MapPopupProps",
+      "kind": "re-export",
+      "signature": "export { MapPopupProps } from '@/lib/map-view'"
+    },
+    {
+      "name": "mapPopup",
+      "kind": "function",
+      "signature": "mapPopup<Msg>(props: MapPopupProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "map-route": [
+    {
+      "name": "mapRoute",
+      "kind": "re-export",
+      "signature": "export { mapRoute } from '@/lib/map-layers'"
+    },
+    {
+      "name": "MapRouteProps",
+      "kind": "re-export",
+      "signature": "export { MapRouteProps } from '@/lib/map-layers'"
+    }
+  ],
+  "map-styles": [
+    {
+      "name": "createMapStyle",
+      "kind": "re-export",
+      "signature": "export { createMapStyle } from '@/lib/map-style'"
+    },
+    {
+      "name": "MAP_PALETTES",
+      "kind": "re-export",
+      "signature": "export { MAP_PALETTES } from '@/lib/map-style'"
+    },
+    {
+      "name": "OPENFREEMAP_STYLES",
+      "kind": "re-export",
+      "signature": "export { OPENFREEMAP_STYLES } from '@/lib/map-style'"
+    },
+    {
+      "name": "readMapPalette",
+      "kind": "re-export",
+      "signature": "export { readMapPalette } from '@/lib/map-style'"
+    },
+    {
+      "name": "MapPalette",
+      "kind": "re-export",
+      "signature": "export { MapPalette } from '@/lib/map-style'"
+    }
+  ],
+  "map": [
+    {
+      "name": "MapMessage",
+      "kind": "re-export",
+      "signature": "export { MapMessage } from '@/lib/map-runtime'"
+    },
+    {
+      "name": "MapConfig",
+      "kind": "re-export",
+      "signature": "export { MapConfig } from '@/lib/map-runtime'"
+    },
+    {
+      "name": "MapViewport",
+      "kind": "re-export",
+      "signature": "export { MapViewport } from '@/lib/map-runtime'"
+    },
+    {
+      "name": "OPENFREEMAP_STYLES",
+      "kind": "re-export",
+      "signature": "export { OPENFREEMAP_STYLES } from '@/lib/map-style'"
+    },
+    {
+      "name": "mapSkin",
+      "kind": "value",
+      "signature": "mapSkin: MapSkin"
+    },
+    {
+      "name": "MapProps",
+      "kind": "type",
+      "signature": "MapProps<Msg> = MapViewProps<Msg> & Readonly<{ class?: string; }>"
+    },
+    {
+      "name": "map",
+      "kind": "function",
+      "signature": "map<Msg>(props: MapProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "markdown": [
     {
       "name": "init",
