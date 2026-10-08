@@ -5,6 +5,7 @@ import { Dialog as DialogPrimitive } from '@foldkit/ui'
 
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
+import { buttonVisualStyles } from './button'
 import { overlayStyles } from './overlay-tokens.stylex'
 import type { ComponentLayoutStyle } from './contracts'
 import { className } from './style'
@@ -17,38 +18,60 @@ import {
 export * from '@/lib/alert-dialog'
 
 const styles = stylex.create({
-  action: {
-    borderColor: tokens.transparent,
-    borderRadius: tokens.controlRadius,
-    paddingInline: '0.75rem',
-    alignItems: 'center',
-    backgroundColor: tokens.primary,
-    color: tokens.primaryForeground,
-    display: 'inline-flex',
-    justifyContent: 'center',
-    height: '2rem',
+  media: {
+    backgroundColor: tokens.muted,
+    marginBottom: '0.5rem',
   },
-  actionDestructive: {
-    borderColor: tokens.transparent,
-    borderRadius: tokens.controlRadius,
-    paddingInline: '0.75rem',
-    alignItems: 'center',
-    backgroundColor: tokens.softDestructiveSurface,
-    color: tokens.destructive,
-    display: 'inline-flex',
-    justifyContent: 'center',
-    height: '2rem',
+  defaultMedia: {
+    gridRow: {
+      default: 'auto',
+      '@media (min-width: 640px)': 'span 2',
+    },
   },
-  cancel: {
-    borderColor: tokens.border,
-    borderRadius: tokens.controlRadius,
-    paddingInline: '0.75rem',
+  header: {
+    gap: '0.375rem',
     alignItems: 'center',
-    backgroundColor: tokens.background,
-    color: tokens.foreground,
-    display: 'inline-flex',
-    justifyContent: 'center',
-    height: '2rem',
+    display: 'grid',
+    gridTemplateRows: 'auto 1fr',
+    justifyItems: 'center',
+    textAlign: 'center',
+  },
+  headerWithMedia: {
+    columnGap: '1.5rem',
+    gridTemplateRows: 'auto auto 1fr',
+  },
+  defaultHeader: {
+    alignItems: {
+      default: 'center',
+      '@media (min-width: 640px)': 'start',
+    },
+    justifyItems: {
+      default: 'center',
+      '@media (min-width: 640px)': 'start',
+    },
+    textAlign: {
+      default: 'center',
+      '@media (min-width: 640px)': 'left',
+    },
+  },
+  defaultHeaderWithMedia: {
+    gridTemplateRows: {
+      default: 'auto auto 1fr',
+      '@media (min-width: 640px)': 'auto 1fr',
+    },
+  },
+  title: {
+    lineHeight: '1.75rem',
+  },
+  defaultTitleWithMedia: {
+    gridColumnStart: {
+      default: 'auto',
+      '@media (min-width: 640px)': '2',
+    },
+  },
+  smallFooter: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
   },
   mediaDestructive: {
     backgroundColor: tokens.softDestructiveSurface,
@@ -58,7 +81,13 @@ const styles = stylex.create({
     padding: '1.5rem',
     gap: '1rem',
     display: 'grid',
-    maxWidth: '32rem',
+    maxWidth: {
+      default: 'calc(100% - 2rem)',
+      '@media (min-width: 640px)': '32rem',
+    },
+  },
+  smallContent: {
+    maxWidth: '20rem',
   },
 })
 
@@ -179,14 +208,29 @@ export const alertDialog = <Msg>(
                     hd.DataAttribute('slot', 'alert-dialog-content'),
                     hd.DataAttribute('size', size),
                     hd.Class(
-                      cn(overlayStyles.panel, CONTENT_CLASS, props.layoutStyle),
+                      cn(
+                        overlayStyles.panel,
+                        CONTENT_CLASS,
+                        size === 'sm' && styles.smallContent,
+                        props.layoutStyle,
+                      ),
                     ),
                   ],
                   [
                     hd.div(
                       [
                         hd.DataAttribute('slot', 'alert-dialog-header'),
-                        hd.Class(className(HEADER_CLASS)),
+                        hd.Class(
+                          cn(
+                            HEADER_CLASS,
+                            styles.header,
+                            props.media !== undefined && styles.headerWithMedia,
+                            size === 'default' && styles.defaultHeader,
+                            size === 'default' &&
+                              props.media !== undefined &&
+                              styles.defaultHeaderWithMedia,
+                          ),
+                        ),
                       ],
                       [
                         ...(props.media === undefined
@@ -201,6 +245,8 @@ export const alertDialog = <Msg>(
                                   hd.Class(
                                     cn(
                                       MEDIA_CLASS,
+                                      styles.media,
+                                      size === 'default' && styles.defaultMedia,
                                       props.mediaVariant === 'destructive' &&
                                         styles.mediaDestructive,
                                     ),
@@ -213,7 +259,16 @@ export const alertDialog = <Msg>(
                           [
                             hd.Id(DialogPrimitive.titleId(props.model)),
                             hd.DataAttribute('slot', 'alert-dialog-title'),
-                            hd.Class(className(reset.text, TITLE_CLASS)),
+                            hd.Class(
+                              cn(
+                                reset.text,
+                                TITLE_CLASS,
+                                styles.title,
+                                size === 'default' &&
+                                  props.media !== undefined &&
+                                  styles.defaultTitleWithMedia,
+                              ),
+                            ),
                           ],
                           [props.title],
                         ),
@@ -233,7 +288,9 @@ export const alertDialog = <Msg>(
                     hd.div(
                       [
                         hd.DataAttribute('slot', 'alert-dialog-footer'),
-                        hd.Class(className(FOOTER_CLASS)),
+                        hd.Class(
+                          cn(FOOTER_CLASS, size === 'sm' && styles.smallFooter),
+                        ),
                       ],
                       [
                         hd.button(
@@ -249,8 +306,7 @@ export const alertDialog = <Msg>(
                             hd.DataAttribute('slot', 'alert-dialog-cancel'),
                             hd.Class(
                               cn(
-                                reset.button,
-                                styles.cancel,
+                                ...buttonVisualStyles({ variant: 'outline' }),
                                 props.cancelLayoutStyle,
                               ),
                             ),
@@ -270,10 +326,9 @@ export const alertDialog = <Msg>(
                             hd.DataAttribute('slot', 'alert-dialog-action'),
                             hd.Class(
                               cn(
-                                reset.button,
-                                props.actionVariant === 'destructive'
-                                  ? styles.actionDestructive
-                                  : styles.action,
+                                ...buttonVisualStyles({
+                                  variant: props.actionVariant ?? 'default',
+                                }),
                                 props.actionLayoutStyle,
                               ),
                             ),
