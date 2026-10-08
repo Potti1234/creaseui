@@ -148,6 +148,15 @@ const styles = stylex.create({
     borderTopRightRadius: tokens.controlRadius,
   },
   dayRangeSingle: { borderRadius: tokens.controlRadius },
+  dayRangeEndpointButton: {
+    backgroundColor: { default: tokens.primary, ':hover': tokens.primary },
+    color: {
+      default: tokens.primaryForeground,
+      [stylex.when.ancestor(':is([data-outside-month])', dayScope)]:
+        tokens.primaryForeground,
+      ':hover': tokens.primaryForeground,
+    },
+  },
   grid: { borderCollapse: 'collapse', outlineStyle: 'none', width: '100%' },
   headerRow: { display: 'flex' },
   heading: { fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem' },
@@ -459,7 +468,16 @@ const daysView = <Msg>(
               h.button(
                 [
                   ...cell.buttonAttributes,
-                  h.Class(className(reset.button, styles.dayButton)),
+                  h.Class(
+                    className(
+                      reset.button,
+                      styles.dayButton,
+                      (position === 'start' ||
+                        position === 'end' ||
+                        position === 'single') &&
+                        styles.dayRangeEndpointButton,
+                    ),
+                  ),
                 ],
                 [cell.label],
               ),

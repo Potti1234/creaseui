@@ -86,6 +86,9 @@ const isoWeekNumber = (date: FoldkitCalendar.CalendarDate): number => {
   )
 }
 
+const DAY_RANGE_ENDPOINT_BUTTON_CLASS =
+  'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground dark:hover:bg-primary dark:hover:text-primary-foreground group-data-[outside-month]/day:text-primary-foreground'
+
 const DAY_CELL_CLASS =
   'group/day relative aspect-square size-(--cell-size) p-0 text-center select-none data-[today]:rounded-md data-[today]:bg-accent data-[today]:text-accent-foreground data-[outside-month]:text-muted-foreground data-[disabled]:text-muted-foreground data-[disabled]:opacity-50 data-[range=middle]:rounded-none data-[range=middle]:bg-accent data-[range=start]:rounded-l-md data-[range=start]:bg-accent data-[range=end]:rounded-r-md data-[range=end]:bg-accent data-[range=single]:rounded-md data-[range=single]:bg-accent'
 
@@ -236,30 +239,36 @@ const daysView = <Msg>(
                           ),
                         ]
                       : []),
-                    ...week.cells.map(cell =>
-                      h.div(
+                    ...week.cells.map(cell => {
+                      const position = CalendarBehavior.rangePosition(
+                        cell.date,
+                        options.range,
+                      )
+                      return h.div(
                         [
                           ...cell.cellAttributes,
-                          h.DataAttribute(
-                            'range',
-                            CalendarBehavior.rangePosition(
-                              cell.date,
-                              options.range,
-                            ),
-                          ),
+                          h.DataAttribute('range', position),
                           h.Class(DAY_CELL_CLASS),
                         ],
                         [
                           h.button(
                             [
                               ...cell.buttonAttributes,
-                              h.Class(DAY_BUTTON_CLASS),
+                              h.Class(
+                                cn(
+                                  DAY_BUTTON_CLASS,
+                                  (position === 'start' ||
+                                    position === 'end' ||
+                                    position === 'single') &&
+                                    DAY_RANGE_ENDPOINT_BUTTON_CLASS,
+                                ),
+                              ),
                             ],
                             [cell.label],
                           ),
                         ],
-                      ),
-                    ),
+                      )
+                    }),
                   ],
                 ),
               ),
