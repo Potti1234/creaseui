@@ -486,7 +486,7 @@ const textExprSource = (
 const collapsibleBodySource = (renderer: 'tailwind' | 'stylex'): string => {
   const chevronClass =
     renderer === 'stylex'
-      ? `{ class: className(styles.chevron) }`
+      ? `{ class: className(styles.chevron, model.open && styles.chevronExpanded) }`
       : `{ class: 'size-4' }`
   const triggerClass =
     renderer === 'stylex'
@@ -685,7 +685,8 @@ const stylexStylesSource = (fixture: BubbleFixture): string => {
     parts.push(`\n  preLine: { whiteSpace: 'pre-line' },`)
   if (needsCollapsible(fixture)) {
     parts.push(
-      `\n  chevron: { fontSize: '1rem', lineHeight: '1.5rem' },`,
+      `\n  chevron: { height: '1rem', width: '1rem', transform: 'rotate(0deg)', transitionProperty: 'transform', transitionDuration: { default: interactionTokens.motionFast, '@media (prefers-reduced-motion: reduce)': interactionTokens.motionNone }, transitionTimingFunction: interactionTokens.easingStandard },`,
+      `\n  chevronExpanded: { transform: 'rotate(180deg)' },`,
       `\n  triggerLink: { alignItems: 'center', color: 'var(--muted-foreground)', display: 'inline-flex', gap: '0.25rem', padding: 0 },`,
     )
   }
@@ -716,7 +717,7 @@ const componentImports = (
   const lines: Array<string> = []
   if (renderer === 'stylex')
     lines.push(`import * as stylex from '@stylexjs/stylex'
-import { className } from '@/stylex/style'
+import { className } from '@/stylex/style'${needsCollapsible(fixture) ? "\nimport { interactionTokens } from '@/stylex/interaction-tokens.stylex.const'" : ''}
 
 ${stylexStylesSource(fixture)}`)
   if (

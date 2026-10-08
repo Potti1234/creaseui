@@ -19,6 +19,7 @@ import * as Popover from '@/stylex/popover'
 import * as Tooltip from '@/stylex/tooltip'
 import type { ComponentLayoutStyle } from '@/stylex/contracts'
 import { foundationTokens } from '../../../../stylex/foundations-tokens.stylex'
+import { interactionTokens } from '../../../../stylex/interaction-tokens.stylex.const'
 import { className } from '@/stylex/style'
 
 const styles = stylex.create({
@@ -47,7 +48,18 @@ const styles = stylex.create({
     width: '100%',
   },
   preLine: { whiteSpace: 'pre-line' },
-  chevron: { height: '1rem', width: '1rem' },
+  chevron: {
+    transform: 'rotate(0deg)',
+    transitionDuration: {
+      default: interactionTokens.motionFast,
+      '@media (prefers-reduced-motion: reduce)': interactionTokens.motionNone,
+    },
+    transitionProperty: 'transform',
+    transitionTimingFunction: interactionTokens.easingStandard,
+    height: '1rem',
+    width: '1rem',
+  },
+  chevronExpanded: { transform: 'rotate(180deg)' },
   triggerLink: {
     padding: 0,
     gap: '0.25rem',
@@ -278,7 +290,12 @@ const contentView = <Msg>(
                   model.open ? 'Show less' : 'Show more',
                   Icon.icon(
                     'chevron-down',
-                    { class: className(styles.chevron) },
+                    {
+                      class: className(
+                        styles.chevron,
+                        model.open && styles.chevronExpanded,
+                      ),
+                    },
                     h,
                   ),
                 ],
