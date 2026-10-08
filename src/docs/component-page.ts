@@ -13,7 +13,12 @@ import type {
   DocsSection,
 } from '@/docs/components/page-definition'
 
-import { COMPONENTS, apiPurpose, toSlug } from '@/docs/component-metadata'
+import {
+  COMPONENTS,
+  COMPONENT_GROUPS,
+  apiPurpose,
+  toSlug,
+} from '@/docs/component-metadata'
 export {
   COMPONENTS,
   canonicalComponentSlug,
@@ -32,6 +37,7 @@ export type ExampleConfig<Msg> = Readonly<{
   onCopy: Msg
   isCopied: boolean
   previewClass?: string
+  previewLayout?: 'full-bleed'
   dark: boolean
   codeFileMessage: (message: CodeFile.Message) => Msg
 }>
@@ -197,9 +203,11 @@ const exampleCard = <Msg>(
     [
       h.div(
         [
+          h.DataAttribute('example-preview', ''),
           h.Class(
             cn(
               'flex min-h-64 items-center justify-center p-6 sm:p-10',
+              config.previewLayout === 'full-bleed' && 'p-0 sm:p-0',
               config.previewClass,
             ),
           ),
@@ -420,9 +428,20 @@ export const componentPage = <Msg>(
               h.Class('max-h-[55vh] overflow-y-auto border-t p-2'),
             ],
             [
-              h.ul(
-                [h.Class('grid grid-cols-2 gap-0.5 sm:grid-cols-3')],
-                COMPONENTS.map(navItem),
+              ...COMPONENT_GROUPS.map(group =>
+                h.div(
+                  [h.Class('mb-4')],
+                  [
+                    h.p(
+                      [h.Class('mb-2 px-2 text-sm font-semibold')],
+                      [group.label],
+                    ),
+                    h.ul(
+                      [h.Class('grid grid-cols-2 gap-0.5 sm:grid-cols-3')],
+                      group.components.map(navItem),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -463,8 +482,21 @@ export const componentPage = <Msg>(
           h.nav(
             [h.AriaLabel('Component navigation')],
             [
-              h.p([h.Class('mb-3 px-2 text-sm font-semibold')], ['Components']),
-              h.ul([h.Class('space-y-0.5')], COMPONENTS.map(navItem)),
+              ...COMPONENT_GROUPS.map(group =>
+                h.div(
+                  [h.Class('mb-6')],
+                  [
+                    h.p(
+                      [h.Class('mb-3 px-2 text-sm font-semibold')],
+                      [group.label],
+                    ),
+                    h.ul(
+                      [h.Class('space-y-0.5')],
+                      group.components.map(navItem),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ],

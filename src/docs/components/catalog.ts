@@ -370,6 +370,9 @@ export const view = (
           ...(config.previewClass === undefined
             ? {}
             : { previewClass: config.previewClass }),
+          ...(config.previewLayout === undefined
+            ? {}
+            : { previewLayout: config.previewLayout }),
         },
         h,
       )
@@ -403,6 +406,9 @@ export const view = (
             ...(heroEntry.config.previewClass === undefined
               ? {}
               : { previewClass: heroEntry.config.previewClass }),
+            ...(heroEntry.config.previewLayout === undefined
+              ? {}
+              : { previewLayout: heroEntry.config.previewLayout }),
           },
           h,
         )

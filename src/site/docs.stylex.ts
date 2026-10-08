@@ -6,7 +6,12 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as CodeFile from '@/lib/code-file'
 import * as Icon from '@/lib/icon'
 import { componentDocsPath } from '@/route'
-import { COMPONENTS, toSlug, apiPurpose } from '@/docs/component-metadata'
+import {
+  COMPONENTS,
+  COMPONENT_GROUPS,
+  toSlug,
+  apiPurpose,
+} from '@/docs/component-metadata'
 import { heroFrame } from '@/docs/hero-frame'
 import type {
   ComponentPageConfig,
@@ -31,6 +36,7 @@ export type {
 } from '../docs/component-page'
 
 const styles = stylex.create({
+  navGroup: { marginBottom: '1.5rem' },
   layout: {
     marginInline: 'auto',
     display: 'grid',
@@ -335,6 +341,7 @@ const styles = stylex.create({
     },
   },
   stretch: { justifyContent: 'stretch' },
+  fullBleedPreview: { padding: 0 },
   code: {
     position: 'relative',
     minWidth: 0,
@@ -729,6 +736,7 @@ const exampleCard = <Msg>(
               styles.preview,
               styles.timePickerPreviewOverflow,
               config.previewClass === 'justify-stretch' && styles.stretch,
+              config.previewLayout === 'full-bleed' && styles.fullBleedPreview,
             ),
           ),
         ],
@@ -982,9 +990,28 @@ export const componentPage = <Msg>(
               h.Class(className(styles.mobileNavOuter)),
             ],
             [
-              h.ul(
-                [h.Class(className(reset.list, styles.mobileNav))],
-                COMPONENTS.map(navItem),
+              ...COMPONENT_GROUPS.map(group =>
+                h.div(
+                  [h.Class(className(styles.navGroup))],
+                  [
+                    h.p(
+                      [
+                        h.Class(
+                          className(
+                            reset.text,
+                            styles.label,
+                            styles.labelIndent,
+                          ),
+                        ),
+                      ],
+                      [group.label],
+                    ),
+                    h.ul(
+                      [h.Class(className(reset.list, styles.mobileNav))],
+                      group.components.map(navItem),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -1020,17 +1047,28 @@ export const componentPage = <Msg>(
           h.nav(
             [h.AriaLabel('Component navigation')],
             [
-              h.p(
-                [
-                  h.Class(
-                    className(reset.text, styles.label, styles.labelIndent),
-                  ),
-                ],
-                ['Components'],
-              ),
-              h.ul(
-                [h.Class(className(reset.list, styles.navList))],
-                COMPONENTS.map(navItem),
+              ...COMPONENT_GROUPS.map(group =>
+                h.div(
+                  [h.Class(className(styles.navGroup))],
+                  [
+                    h.p(
+                      [
+                        h.Class(
+                          className(
+                            reset.text,
+                            styles.label,
+                            styles.labelIndent,
+                          ),
+                        ),
+                      ],
+                      [group.label],
+                    ),
+                    h.ul(
+                      [h.Class(className(reset.list, styles.navList))],
+                      group.components.map(navItem),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

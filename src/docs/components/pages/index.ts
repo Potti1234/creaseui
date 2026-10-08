@@ -1,4 +1,14 @@
 import type { AuthoredPage } from '@/docs/components/pages/authored-page'
+import { mapPage } from '@/docs/components/pages/map'
+import { mapControlsPage } from '@/docs/components/pages/map-controls'
+import { mapMarkerPage } from '@/docs/components/pages/map-marker'
+import { mapPopupPage } from '@/docs/components/pages/map-popup'
+import { mapRoutePage } from '@/docs/components/pages/map-route'
+import { mapArcPage } from '@/docs/components/pages/map-arc'
+import { mapGeojsonPage } from '@/docs/components/pages/map-geojson'
+import { mapClusterPage } from '@/docs/components/pages/map-cluster'
+import { mapStylesPage } from '@/docs/components/pages/map-styles'
+import { mapLocalizationPage } from '@/docs/components/pages/map-localization'
 import { accordionPage } from '@/docs/components/pages/accordion'
 import { alertPage } from '@/docs/components/pages/alert'
 import { alertDialogPage } from '@/docs/components/pages/alert-dialog'
@@ -115,6 +125,16 @@ import { visuallyHiddenPage } from '@/docs/components/pages/visually-hidden'
 export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
   ...Object.fromEntries(
     [
+      mapPage,
+      mapControlsPage,
+      mapMarkerPage,
+      mapPopupPage,
+      mapRoutePage,
+      mapArcPage,
+      mapGeojsonPage,
+      mapClusterPage,
+      mapStylesPage,
+      mapLocalizationPage,
       accordionPage,
       alertPage,
       alertDialogPage,

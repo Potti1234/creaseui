@@ -9,6 +9,7 @@ export type DocsExample = Readonly<{
   ) => Html
   code: string
   previewClass?: string
+  previewLayout?: 'full-bleed'
   /** Rendered only as the page hero — no named example section. */
   heroOnly?: boolean
   /** When this example also renders as the page hero, keep its DOM ids

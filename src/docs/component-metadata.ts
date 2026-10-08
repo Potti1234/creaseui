@@ -58,6 +58,16 @@ export const COMPONENTS = [
   'List',
   'List Input',
   'Log Stream',
+  'Map',
+  'Map Controls',
+  'Map Marker',
+  'Map Popup',
+  'Map Route',
+  'Map Arc',
+  'Map GeoJSON',
+  'Map Cluster',
+  'Map Styles',
+  'Map Localization',
   'Markdown',
   'Marker',
   'Message',
@@ -112,6 +122,27 @@ export const COMPONENTS = [
   'Tree List',
   'Typography',
   'Visually Hidden',
+] as const
+
+export const MAP_COMPONENTS = [
+  'Map',
+  'Map Controls',
+  'Map Marker',
+  'Map Popup',
+  'Map Route',
+  'Map Arc',
+  'Map GeoJSON',
+  'Map Cluster',
+  'Map Styles',
+  'Map Localization',
+] as const
+
+export const COMPONENT_GROUPS = [
+  {
+    label: 'Components',
+    components: COMPONENTS.filter(name => !name.startsWith('Map')),
+  },
+  { label: 'Maps', components: MAP_COMPONENTS },
 ] as const
 
 export const toSlug = (name: string): string =>

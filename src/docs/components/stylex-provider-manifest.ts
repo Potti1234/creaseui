@@ -1,4 +1,33 @@
 import { installStyleXExamplePreviewProvider } from '@/docs/components/catalog'
+import { mapStyleXPreview } from '@/docs/components/pages/map/stylex'
+installStyleXExamplePreviewProvider('map', mapStyleXPreview('map'))
+installStyleXExamplePreviewProvider(
+  'map-controls',
+  mapStyleXPreview('map-controls'),
+)
+installStyleXExamplePreviewProvider(
+  'map-marker',
+  mapStyleXPreview('map-marker'),
+)
+installStyleXExamplePreviewProvider('map-popup', mapStyleXPreview('map-popup'))
+installStyleXExamplePreviewProvider('map-route', mapStyleXPreview('map-route'))
+installStyleXExamplePreviewProvider('map-arc', mapStyleXPreview('map-arc'))
+installStyleXExamplePreviewProvider(
+  'map-geojson',
+  mapStyleXPreview('map-geojson'),
+)
+installStyleXExamplePreviewProvider(
+  'map-cluster',
+  mapStyleXPreview('map-cluster'),
+)
+installStyleXExamplePreviewProvider(
+  'map-styles',
+  mapStyleXPreview('map-styles'),
+)
+installStyleXExamplePreviewProvider(
+  'map-localization',
+  mapStyleXPreview('map-localization'),
+)
 import { accordionStyleXPreview } from '@/docs/components/pages/accordion/stylex'
 import { centerStyleXPreview } from '@/docs/components/pages/center/stylex'
 import { gridStyleXPreview } from '@/docs/components/pages/grid/stylex'
