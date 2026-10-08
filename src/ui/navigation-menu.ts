@@ -135,9 +135,9 @@ export const navigationMenuDisclosure = <Msg>(
         props.class,
       ),
       content: props.content,
-      class: 'w-auto min-w-64 p-2',
+      class: 'w-max min-w-[min(16rem,calc(100vw-2rem))]',
       align: 'start',
-      focusSelector: 'a',
+      focusSelector: '[data-slot="popover-content"] a',
     },
     h,
   )

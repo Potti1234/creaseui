@@ -22,7 +22,7 @@ const styles = stylex.create({
     padding: '1rem',
     maxHeight: '24rem',
     overflowY: 'auto',
-    width: '18rem',
+    width: 'max-content',
   },
   /* TW sidebarMenuButtonVariants() trigger inside a shrink-wrap
      ('relative inline-flex') parent: content-width, menu-button look. */

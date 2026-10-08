@@ -213,7 +213,7 @@ export const overlayStyles = stylex.create({
     },
     transitionTimingFunction: interactionTokens.easingStandard,
     zIndex: 50,
-    maxWidth: 'calc(100% - 2rem)',
+    maxWidth: 'calc(100vw - 2rem)',
     width: '100%',
   },
   panelContent: {

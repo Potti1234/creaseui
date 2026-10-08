@@ -201,7 +201,7 @@ const exampleCard = <Msg>(
   return h.div(
     [
       h.Class(
-        'overflow-hidden rounded-lg border bg-background [&:has([data-slot=hover-card-content])]:overflow-visible',
+        'overflow-hidden rounded-lg border bg-background [&:has([data-slot=hover-card-content])]:overflow-visible [&:has([data-slot=popover-content])]:overflow-visible',
       ),
     ],
     [

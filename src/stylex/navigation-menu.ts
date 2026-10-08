@@ -17,7 +17,10 @@ type Slot = Readonly<{
 export type NavigationMenuLayout = 'inline' | 'scroll' | 'responsive'
 
 const styles = stylex.create({
-  content: { padding: '0.5rem', minWidth: '16rem', width: 'auto' },
+  content: {
+    minWidth: 'min(16rem, calc(100vw - 2rem))',
+    width: 'max-content',
+  },
   disclosureIcon: {
     position: 'relative',
     transitionDuration: {
@@ -214,9 +217,10 @@ export const navigationMenuDisclosure = <Msg>(
         ],
       ),
       triggerLayoutStyle: styles.link as ComponentLayoutStyle,
-      content: h.div([h.Class(className(styles.content))], [props.content]),
+      content: props.content,
+      layoutStyle: styles.content,
       align: 'start',
-      focusSelector: 'a',
+      focusSelector: '[data-slot="popover-content"] a',
     },
     h,
   )
