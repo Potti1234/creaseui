@@ -307,23 +307,27 @@ const styles = stylex.create({
   timePickerFrameOverflow: {
     overflow: {
       default: 'hidden',
-      ':has([data-slot="popover-content"] [data-slot="calendar"])': 'visible',
+      ':has([data-slot="popover-content"])': 'visible',
       ':has([data-slot="time-input"] [data-slot="select-content"])': 'visible',
       ':has([data-slot="hover-card-content"])': 'visible',
+      ':has([data-slot="multi-selector"] [data-slot="select-content"])':
+        'visible',
     },
   },
   timePickerPreviewOverflow: {
     overflowX: {
       default: 'auto',
-      ':has([data-slot="popover-content"] [data-slot="calendar"])': 'visible',
+      ':has([data-slot="popover-content"])': 'visible',
       ':has([data-slot="time-input"] [data-slot="select-content"])': 'visible',
       ':has([data-slot="hover-card-content"])': 'visible',
+      ':has([data-slot="multi-selector"] [data-slot="select-content"])':
+        'visible',
     },
   },
   frame: {
     overflow: {
       default: 'hidden',
-      ':has([data-slot="popover-content"] [data-slot="calendar"])': 'visible',
+      ':has([data-slot="popover-content"])': 'visible',
     },
     borderStyle: 'solid',
     borderWidth: 1,
@@ -339,7 +343,7 @@ const styles = stylex.create({
     padding: { default: '1.5rem', '@media (min-width: 640px)': '2.5rem' },
     overflowX: {
       default: 'auto',
-      ':has([data-slot="popover-content"] [data-slot="calendar"])': 'visible',
+      ':has([data-slot="popover-content"])': 'visible',
     },
   },
   stretch: { justifyContent: 'stretch' },
