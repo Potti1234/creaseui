@@ -31,6 +31,20 @@ const styles = stylex.create({
     height: '2rem',
     minHeight: 0,
   },
+  item: {
+    textAlign: 'start',
+    paddingRight: '2rem',
+  },
+  indicator: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    height: '0.875rem',
+    marginLeft: 0,
+    right: '0.5rem',
+    width: '0.875rem',
+  },
+  indicatorSelected: { opacity: 1 },
   iconDim: { opacity: 0.5 },
 })
 
@@ -191,7 +205,7 @@ const renderSelect = <Item, Value extends string, Msg>(
       const item = itemForValue(value)
       const config = item === undefined ? undefined : props.itemToConfig?.(item)
       return {
-        className: cn(ITEM_CLASS, config?.layoutStyle),
+        className: cn(ITEM_CLASS, styles.item, config?.layoutStyle),
         content: hs.span(
           [
             hs.DataAttribute('slot', 'select-item'),
@@ -201,7 +215,14 @@ const renderSelect = <Item, Value extends string, Msg>(
             hs.span(
               [
                 hs.DataAttribute('slot', 'select-item-indicator'),
-                hs.Class(className(INDICATOR_CLASS)),
+                hs.Class(
+                  cn(
+                    INDICATOR_CLASS,
+                    styles.indicator,
+                    Option.contains(props.maybeSelectedValue, value) &&
+                      styles.indicatorSelected,
+                  ),
+                ),
               ],
               [Icon.check({ class: className(overlayStyles.icon) }, h)],
             ),
