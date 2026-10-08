@@ -1403,8 +1403,10 @@
       "title": "Multi Selector",
       "description": "A CreaseUI Multi Selector component for Foldkit.",
       "registryDependencies": [
+        "Potti1234/creaseui/button",
         "Potti1234/creaseui/checkbox",
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/drawer",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils"
       ],

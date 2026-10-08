@@ -6,8 +6,15 @@ import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
 import { Listbox as ListboxPrimitive } from '@foldkit/ui'
 
 import * as Icon from '@/lib/icon'
-import { filterOptions, searchablePopover } from '@/lib/multi-selector-view'
+import {
+  drawerTrigger,
+  filterOptions,
+  optionContent,
+  searchablePopover,
+} from '@/lib/multi-selector-view'
 import * as Checkbox from '@/stylex/checkbox'
+import * as Drawer from '@/stylex/drawer'
+import * as Button from '@/stylex/button'
 import {
   Message,
   Model,
@@ -300,6 +307,12 @@ const styles = stylex.create({
     color: tokens.mutedForeground,
     fontSize: '0.875rem',
     textAlign: 'center',
+  },
+  drawerBody: {
+    padding: '1rem',
+    overscrollBehavior: 'contain',
+    maxHeight: '60dvh',
+    overflowY: 'auto',
   },
   viewport: { padding: '0.25rem', width: '100%' },
   item: {
@@ -745,35 +758,91 @@ export const multiSelector = <Msg>(
     ...(props.htmlName === undefined ? {} : { name: props.htmlName }),
   }
 
-  const listboxView =
-    props.hasSearch === true
-      ? searchablePopover(
+  const contentProps = {
+    model,
+    toParentMessage: toParent,
+    inputs: viewInputs,
+    options: flatOptions,
+    label: props.label,
+    hasSearch: props.hasSearch ?? false,
+    ...(props.searchPlaceholder === undefined
+      ? {}
+      : { searchPlaceholder: props.searchPlaceholder }),
+    visual: {
+      search: [h.Class(className(styles.search))],
+      input: [h.Class(className(styles.searchInput))],
+      empty: [h.Class(className(styles.empty))],
+    },
+  }
+  const drawerView = (): Html =>
+    h.div(
+      [
+        ...(viewInputs.attributes ?? []),
+        h.Class(className(styles.listboxFrame)),
+      ],
+      [
+        drawerTrigger(
+          { ...contentProps, labelId, isDisabled: props.isDisabled ?? false },
+          h,
+        ),
+        ...(props.htmlName === undefined
+          ? []
+          : (model.values.length === 0 ? [''] : model.values).map(value =>
+              h.input([
+                h.Type('hidden'),
+                h.Name(props.htmlName!),
+                h.Value(value),
+              ]),
+            )),
+        Drawer.drawer(
           {
-            model,
-            toParentMessage: toParent,
-            inputs: viewInputs,
-            options: flatOptions,
-            label: props.label,
-            hasSearch: true,
-            ...(props.searchPlaceholder === undefined
+            model: model.drawer,
+            toParentMessage: message =>
+              toParent(Message.GotDrawerMessage({ message })),
+            title: props.label,
+            ...(props.description === undefined
               ? {}
-              : { searchPlaceholder: props.searchPlaceholder }),
-            visual: {
-              search: [h.Class(className(styles.search))],
-              input: [h.Class(className(styles.searchInput))],
-              empty: [h.Class(className(styles.empty))],
-            },
+              : { description: props.description }),
+            content: slots => [
+              h.div(
+                [h.Class(className(styles.drawerBody))],
+                [
+                  optionContent(
+                    {
+                      ...contentProps,
+                      closeMessage: Message.RequestedCloseDrawer(),
+                      initialFocusAttributes: slots.initialFocusAttributes(),
+                    },
+                    h,
+                  ),
+                ],
+              ),
+            ],
+            footer: slots => [
+              Button.button(
+                { children: ['Done'], buttonAttributes: slots.closeButton },
+                h,
+              ),
+            ],
           },
           h,
-        )
-      : h.submodel({
-          slotId: model.listbox.id,
-          model: model.listbox,
-          view: listboxBundle.view,
-          viewInputs,
-          toParentMessage: message =>
-            toParent(Message.GotListboxMessage({ message })),
-        })
+        ),
+      ],
+    )
+
+  const listboxView =
+    props.presentation === 'bottom-sheet'
+      ? drawerView()
+      : props.hasSearch === true
+        ? searchablePopover(contentProps, h)
+        : h.submodel({
+            slotId: model.listbox.id,
+            model: model.listbox,
+            view: listboxBundle.view,
+            viewInputs,
+            toParentMessage: message =>
+              toParent(Message.GotListboxMessage({ message })),
+          })
 
   return h.div(
     [

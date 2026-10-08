@@ -1,11 +1,11 @@
-import { Option } from 'effect'
-
 import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
 
 import { Listbox as ListboxPrimitive } from '@foldkit/ui'
 
 import * as Icon from '@/lib/icon'
 import * as Checkbox from '@/ui/checkbox'
+import * as Drawer from '@/ui/drawer'
+import * as Button from '@/ui/button'
 import {
   Message,
   Model,
@@ -17,7 +17,12 @@ import {
   update,
 } from '@/lib/multi-selector'
 import { cn } from '@/lib/utils'
-import { filterOptions, searchablePopover } from '@/lib/multi-selector-view'
+import {
+  drawerTrigger,
+  filterOptions,
+  optionContent,
+  searchablePopover,
+} from '@/lib/multi-selector-view'
 
 /* Ported from Meta Astryx MultiSelector (packages/core/src/MultiSelector/)
    — examples and visual spec adapted to Crease UI tokens.
@@ -457,39 +462,96 @@ export const multiSelector = <Msg>(
     ...(props.htmlName === undefined ? {} : { name: props.htmlName }),
   }
 
-  const listboxView =
-    props.hasSearch === true
-      ? searchablePopover(
+  const contentProps = {
+    model,
+    toParentMessage: toParent,
+    inputs: viewInputs,
+    options: flatOptions,
+    label: props.label,
+    hasSearch: props.hasSearch ?? false,
+    ...(props.searchPlaceholder === undefined
+      ? {}
+      : { searchPlaceholder: props.searchPlaceholder }),
+    visual: {
+      search: [h.Class('sticky top-0 z-10 border-b bg-popover p-2')],
+      input: [
+        h.Class(
+          'h-8 w-full min-w-0 rounded-sm border-0 bg-transparent px-2 text-sm text-foreground outline-ring placeholder:text-muted-foreground',
+        ),
+      ],
+      empty: [h.Class('p-4 text-center text-sm text-muted-foreground')],
+    },
+  }
+  const drawerView = (): Html =>
+    h.div(
+      [...(viewInputs.attributes ?? []), h.Class('flex w-full flex-col')],
+      [
+        drawerTrigger(
+          { ...contentProps, labelId, isDisabled: props.isDisabled ?? false },
+          h,
+        ),
+        ...(props.htmlName === undefined
+          ? []
+          : (model.values.length === 0 ? [''] : model.values).map(value =>
+              h.input([
+                h.Type('hidden'),
+                h.Name(props.htmlName!),
+                h.Value(value),
+              ]),
+            )),
+        Drawer.drawer(
           {
-            model,
-            toParentMessage: toParent,
-            inputs: viewInputs,
-            options: flatOptions,
-            label: props.label,
-            hasSearch: true,
-            ...(props.searchPlaceholder === undefined
+            model: model.drawer,
+            toParentMessage: message =>
+              toParent(Message.GotDrawerMessage({ message })),
+            title: props.label,
+            ...(props.description === undefined
               ? {}
-              : { searchPlaceholder: props.searchPlaceholder }),
-            visual: {
-              search: [h.Class('sticky top-0 z-10 border-b bg-popover p-2')],
-              input: [
-                h.Class(
-                  'h-8 w-full min-w-0 rounded-sm border-0 bg-transparent px-2 text-sm text-foreground outline-ring placeholder:text-muted-foreground',
-                ),
-              ],
-              empty: [h.Class('p-4 text-center text-sm text-muted-foreground')],
-            },
+              : { description: props.description }),
+            content: slots => [
+              h.div(
+                [
+                  h.Class(
+                    'max-h-[60dvh] overflow-y-auto overscroll-contain p-4',
+                  ),
+                ],
+                [
+                  optionContent(
+                    {
+                      ...contentProps,
+                      closeMessage: Message.RequestedCloseDrawer(),
+                      initialFocusAttributes: slots.initialFocusAttributes(),
+                    },
+                    h,
+                  ),
+                ],
+              ),
+            ],
+            footer: slots => [
+              Button.button(
+                { children: ['Done'], buttonAttributes: slots.closeButton },
+                h,
+              ),
+            ],
           },
           h,
-        )
-      : h.submodel({
-          slotId: model.listbox.id,
-          model: model.listbox,
-          view: listboxBundle.view,
-          viewInputs,
-          toParentMessage: message =>
-            toParent(Message.GotListboxMessage({ message })),
-        })
+        ),
+      ],
+    )
+
+  const listboxView =
+    props.presentation === 'bottom-sheet'
+      ? drawerView()
+      : props.hasSearch === true
+        ? searchablePopover(contentProps, h)
+        : h.submodel({
+            slotId: model.listbox.id,
+            model: model.listbox,
+            view: listboxBundle.view,
+            viewInputs,
+            toParentMessage: message =>
+              toParent(Message.GotListboxMessage({ message })),
+          })
 
   return h.div(
     [

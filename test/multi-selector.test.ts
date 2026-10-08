@@ -105,4 +105,24 @@ describe('MultiSelector submodel', () => {
       ['de'],
     )
   })
+
+  it('drawer opening and dismissal synchronize the list while retaining choices', () => {
+    const model = MultiSelector.init({ id: 'teams', values: ['design'] })
+    const opened = MultiSelector.update(
+      model,
+      MultiSelector.Message.RequestedOpenDrawer({ initialIndex: 1 }),
+    )
+    assert.equal(opened.model.drawer.dialog.isOpen, true)
+    assert.equal(opened.model.listbox.isOpen, true)
+    assert.deepEqual(opened.model.listbox.maybeActiveItemIndex, Option.some(1))
+    const closed = MultiSelector.update(
+      { ...opened.model, query: 'design' },
+      MultiSelector.Message.RequestedCloseDrawer(),
+    )
+    assert.equal(closed.model.drawer.dialog.isOpen, false)
+    assert.equal(closed.model.listbox.isOpen, false)
+    assert.deepEqual(closed.model.values, ['design'])
+    assert.equal(closed.model.query, '')
+    assert.equal(closed.outMessage, undefined)
+  })
 })

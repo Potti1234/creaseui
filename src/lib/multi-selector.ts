@@ -4,7 +4,8 @@ import type { Update } from 'foldkit'
 import * as Command from 'foldkit/command'
 import { defineMessageUnion } from 'foldkit/message'
 
-import { Listbox as ListboxPrimitive, Popover } from '@foldkit/ui'
+import { Dialog, Listbox as ListboxPrimitive, Popover } from '@foldkit/ui'
+import * as Drawer from './drawer'
 
 /* Ported from Meta Astryx MultiSelector (packages/core/src/MultiSelector/)
    — examples and visual spec adapted to Crease UI tokens.
@@ -24,6 +25,7 @@ export const Model = S.Struct({
   listbox: ListboxPrimitive.Multi.Model,
   query: S.String,
   popover: Popover.Model,
+  drawer: Drawer.Model,
 })
 export type Model = typeof Model.Type
 
@@ -32,6 +34,9 @@ export const Message = defineMessageUnion({
   GotPopoverMessage: { message: Popover.Message },
   ChangedSearch: { query: S.String },
   ClickedSelectAll: { optionValues: S.Array(S.String) },
+  RequestedOpenDrawer: { initialIndex: S.optionalKey(S.Number) },
+  RequestedCloseDrawer: {},
+  GotDrawerMessage: { message: Drawer.Message },
   ClickedClearAll: {},
 })
 export type Message = typeof Message.Type
@@ -59,6 +64,10 @@ export const init = (
   query: '',
   popover: Popover.init({
     id: `${config.id}-listbox`,
+    isAnimated: config.isAnimated ?? true,
+  }),
+  drawer: Drawer.init({
+    id: `${config.id}-drawer`,
     isAnimated: config.isAnimated ?? true,
   }),
   listbox: ListboxPrimitive.Multi.init({
@@ -201,6 +210,55 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       }
     case 'ClickedSelectAll':
       return toggleSelectAll(model, message.optionValues)
+    case 'RequestedOpenDrawer': {
+      if (model.drawer.dialog.isOpen) return { model }
+      const result = Drawer.open(model.drawer)
+      return {
+        model: {
+          ...model,
+          drawer: result.model,
+          listbox: {
+            ...model.listbox,
+            isOpen: true,
+            searchQuery: '',
+            maybeActiveItemIndex: Option.fromUndefinedOr(message.initialIndex),
+          },
+        },
+        commands: Command.mapMessages(result.commands ?? [], next =>
+          Message.GotDrawerMessage({ message: next }),
+        ),
+      }
+    }
+    case 'RequestedCloseDrawer':
+      return update(
+        model,
+        Message.GotDrawerMessage({
+          message: Drawer.Message.GotDrawerDialogMessage({
+            message: Dialog.Message.RequestedClose(),
+          }),
+        }),
+      )
+    case 'GotDrawerMessage': {
+      const result = Drawer.update(model.drawer, message.message)
+      const isOpen = result.model.dialog.isOpen
+      return {
+        model: {
+          ...model,
+          drawer: result.model,
+          query: isOpen ? model.query : '',
+          listbox: {
+            ...model.listbox,
+            isOpen,
+            maybeActiveItemIndex: isOpen
+              ? model.listbox.maybeActiveItemIndex
+              : Option.none(),
+          },
+        },
+        commands: Command.mapMessages(result.commands ?? [], next =>
+          Message.GotDrawerMessage({ message: next }),
+        ),
+      }
+    }
     case 'ClickedClearAll':
       return model.values.length === 0 ? { model } : emitChange(model, [])
   }

@@ -24,6 +24,7 @@ type ContentProps<Msg> = Readonly<{
   hasSearch: boolean
   searchPlaceholder?: string
   closeMessage: Message
+  initialFocusAttributes?: ReadonlyArray<ChildAttribute>
   visual: Readonly<{
     search: ReadonlyArray<Attribute<Msg> | ChildAttribute>
     input: ReadonlyArray<Attribute<Msg> | ChildAttribute>
@@ -35,6 +36,46 @@ export const searchId = (model: Model): string => `${model.listbox.id}-search`
 export const itemsId = (model: Model): string => `${model.listbox.id}-items`
 const itemId = (model: Model, index: number): string =>
   `${model.listbox.id}-item-${String(index)}`
+
+export const drawerTrigger = <Msg>(
+  props: Pick<ContentProps<Msg>, 'model' | 'inputs' | 'toParentMessage'> &
+    Readonly<{ labelId: string; isDisabled: boolean }>,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const { model, inputs, toParentMessage: send } = props
+  return h.button(
+    [
+      h.Id(Listbox.Multi.buttonId(model.listbox.id)),
+      h.Type('button'),
+      h.AriaLabelledBy(props.labelId),
+      h.AriaHasPopup('dialog'),
+      h.AriaExpanded(model.drawer.dialog.isOpen),
+      h.AriaControls(model.drawer.dialog.id),
+      ...(inputs.buttonAttributes ?? []),
+      ...(inputs.buttonClassName === undefined
+        ? []
+        : [h.Class(inputs.buttonClassName)]),
+      ...(props.isDisabled
+        ? [h.Disabled(true)]
+        : [
+            h.OnClick(send(Message.RequestedOpenDrawer({}))),
+            h.OnKeyDownPreventDefault(key =>
+              key === 'ArrowDown' || key === 'ArrowUp'
+                ? Option.some(
+                    send(
+                      Message.RequestedOpenDrawer({
+                        initialIndex:
+                          key === 'ArrowDown' ? 0 : inputs.items.length - 1,
+                      }),
+                    ),
+                  )
+                : Option.none(),
+            ),
+          ]),
+    ],
+    [inputs.buttonContent],
+  )
+}
 
 /** Render an option list independently of its popover/drawer presentation. */
 export const optionContent = <Msg>(
@@ -196,6 +237,7 @@ export const optionContent = <Msg>(
                   h.Value(model.query),
                   h.OnInput(query => send(Message.ChangedSearch({ query }))),
                   h.OnKeyDownPreventDefault(key => keyMessage(key, true)),
+                  ...(props.initialFocusAttributes ?? []),
                 ]),
               ],
             ),
@@ -211,6 +253,7 @@ export const optionContent = <Msg>(
           ...activeAttributes,
           ...(inputs.isReadOnly === true ? [h.AriaReadonly(true)] : []),
           h.OnKeyDownPreventDefault(key => keyMessage(key, false)),
+          ...(props.hasSearch ? [] : (props.initialFocusAttributes ?? [])),
           ...(inputs.itemsScrollClassName === undefined
             ? []
             : [h.Class(inputs.itemsScrollClassName)]),
