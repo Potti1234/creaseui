@@ -17,6 +17,10 @@ import { tokens } from './tokens.stylex'
 
 const styles = stylex.create({
   contents: { display: 'contents' },
+  content: {
+    minWidth: '8rem',
+    width: 'var(--button-width)',
+  },
   trigger: {
     boxShadow: {
       default: foundationTokens.shadowXs,
@@ -266,7 +270,7 @@ const renderSelect = <Item, Value extends string, Msg>(
         : []),
     ]),
     ...buildAnchor(props, values),
-    itemsClassName: className(CONTENT_CLASS),
+    itemsClassName: className(CONTENT_CLASS, styles.content),
     itemsAttributes: childAttributes([
       // Upstream 0.164 stamps tabindex="-1" on the listbox; Base UI parity
       // expects the popup listbox to remain tabbable, so restore tabindex="0".
