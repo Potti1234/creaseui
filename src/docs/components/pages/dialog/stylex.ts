@@ -17,21 +17,6 @@ import * as Input from '@/stylex/input'
 import { className } from '@/stylex/style'
 
 const styles = stylex.create({
-  action: {
-    borderColor: 'var(--border)',
-    borderRadius: '0.375rem',
-    borderStyle: 'solid',
-    borderWidth: '1px',
-    paddingBlock: '0.5rem',
-    paddingInline: '1rem',
-    fontSize: '0.875rem',
-    lineHeight: '1.25rem',
-  },
-  confirm: {
-    borderColor: 'var(--primary)',
-    backgroundColor: 'var(--primary)',
-    color: 'var(--primary-foreground)',
-  },
   compact: { maxWidth: '24rem' },
   shareWidth: { maxWidth: '28rem' },
   scrollArea: {
@@ -153,7 +138,11 @@ const outlineAction = <Msg>(
       ...slots.closeButton,
       ...(initialFocus ? slots.initialFocusAttributes() : []),
       h.Type('button'),
-      h.Class(className(reset.button, styles.action)),
+      h.Class(
+        className(
+          ...Button.buttonVisualStyles({ variant: 'outline', size: 'lg' }),
+        ),
+      ),
     ],
     [label],
   )
@@ -167,7 +156,7 @@ const primaryAction = <Msg>(
     [
       ...slots.closeButton,
       h.Type('button'),
-      h.Class(className(reset.button, styles.action, styles.confirm)),
+      h.Class(className(...Button.buttonVisualStyles({ size: 'lg' }))),
     ],
     [label],
   )
@@ -317,7 +306,14 @@ export const dialogStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                         ...parts.closeButtonAttributes,
                         ...parts.initialFocusAttributes(),
                         h.Type('button'),
-                        h.Class(className(reset.button, styles.action)),
+                        h.Class(
+                          className(
+                            ...Button.buttonVisualStyles({
+                              variant: 'outline',
+                              size: 'lg',
+                            }),
+                          ),
+                        ),
                       ],
                       ['إلغاء'],
                     ),
@@ -327,9 +323,7 @@ export const dialogStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                         h.Type('button'),
                         h.Class(
                           className(
-                            reset.button,
-                            styles.action,
-                            styles.confirm,
+                            ...Button.buttonVisualStyles({ size: 'lg' }),
                           ),
                         ),
                       ],

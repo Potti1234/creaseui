@@ -11,6 +11,7 @@ import {
   dialogRtlFields,
   dialogShareUrl,
 } from '@/docs/components/pages/dialog/shared'
+import { cn } from '@/lib/utils'
 import * as Button from '@/ui/button'
 import * as Dialog from '@/ui/dialog'
 import * as Field from '@/ui/field'
@@ -114,7 +115,12 @@ const outlineAction = (
       ...slots.closeButton,
       ...(initialFocus ? slots.initialFocusAttributes() : []),
       h.Type('button'),
-      h.Class('rounded-md border px-4 py-2 text-sm'),
+      h.Class(
+        cn(
+          Button.buttonVariants({ variant: 'outline', size: 'lg' }),
+          'transition-colors motion-reduce:transition-none',
+        ),
+      ),
     ],
     [label],
   )
@@ -129,7 +135,10 @@ const primaryAction = (
       ...slots.closeButton,
       h.Type('button'),
       h.Class(
-        'rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground',
+        cn(
+          Button.buttonVariants({ size: 'lg' }),
+          'transition-colors motion-reduce:transition-none',
+        ),
       ),
     ],
     [label],
@@ -259,7 +268,15 @@ const dialogView = (
                         ...parts.closeButtonAttributes,
                         ...parts.initialFocusAttributes(),
                         h.Type('button'),
-                        h.Class('rounded-md border px-4 py-2 text-sm'),
+                        h.Class(
+                          cn(
+                            Button.buttonVariants({
+                              variant: 'outline',
+                              size: 'lg',
+                            }),
+                            'transition-colors motion-reduce:transition-none',
+                          ),
+                        ),
                       ],
                       ['إلغاء'],
                     ),
@@ -268,7 +285,10 @@ const dialogView = (
                         ...parts.closeButtonAttributes,
                         h.Type('button'),
                         h.Class(
-                          'rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground',
+                          cn(
+                            Button.buttonVariants({ size: 'lg' }),
+                            'transition-colors motion-reduce:transition-none',
+                          ),
                         ),
                       ],
                       ['حفظ التغييرات'],

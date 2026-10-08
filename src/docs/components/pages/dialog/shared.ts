@@ -108,8 +108,6 @@ export const dialogRtlFields = [
 ] as const
 
 const emitStyles = `const styles = stylex.create({
-  action: { borderColor: 'var(--border)', borderRadius: '0.375rem', borderStyle: 'solid', borderWidth: '1px', paddingBlock: '0.5rem', paddingInline: '1rem', fontSize: '0.875rem', lineHeight: '1.25rem' },
-  confirm: { backgroundColor: 'var(--primary)', borderRadius: '0.375rem', color: 'var(--primary-foreground)', paddingBlock: '0.5rem', paddingInline: '1rem', fontSize: '0.875rem', lineHeight: '1.25rem' },
   compact: { maxWidth: '24rem' },
   shareWidth: { maxWidth: '28rem' },
   scrollArea: { marginInline: '-1rem', maxHeight: '50vh', overflowY: 'auto', paddingInline: '1rem' },
@@ -172,9 +170,20 @@ const emitContent = (fixture: DialogFixture, isStyleX: boolean): string => {
   }
 }
 
+const emitActionClass = (
+  isStyleX: boolean,
+  variant: 'default' | 'outline',
+): string => {
+  const options =
+    variant === 'outline'
+      ? "{ variant: 'outline', size: 'lg' }"
+      : "{ size: 'lg' }"
+  return isStyleX
+    ? `className(...Button.buttonVisualStyles(${options}))`
+    : `cn(Button.buttonVariants(${options}), 'transition-colors motion-reduce:transition-none')`
+}
+
 const emitFooter = (fixture: DialogFixture, isStyleX: boolean): string => {
-  const cls = (tailwind: string, stylexRef: string) =>
-    isStyleX ? `className(${stylexRef})` : `'${tailwind}'`
   switch (fixture.kind) {
     case 'profile':
       return `footer: slots => [
@@ -182,12 +191,12 @@ const emitFooter = (fixture: DialogFixture, isStyleX: boolean): string => {
           ...slots.closeButton,
           ...slots.initialFocusAttributes(),
           h.Type('button'),
-          h.Class(${cls('rounded-md border px-4 py-2 text-sm', 'styles.action')}),
+          h.Class(${emitActionClass(isStyleX, 'outline')}),
         ], ['Cancel']),
         h.button([
           ...slots.closeButton,
           h.Type('button'),
-          h.Class(${cls('rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground', 'styles.confirm')}),
+          h.Class(${emitActionClass(isStyleX, 'default')}),
         ], ['Save changes']),
       ],`
     case 'compact':
@@ -196,12 +205,12 @@ const emitFooter = (fixture: DialogFixture, isStyleX: boolean): string => {
           ...slots.closeButton,
           ...slots.initialFocusAttributes(),
           h.Type('button'),
-          h.Class(${cls('rounded-md border px-4 py-2 text-sm', 'styles.action')}),
+          h.Class(${emitActionClass(isStyleX, 'outline')}),
         ], ['Back']),
         h.button([
           ...slots.closeButton,
           h.Type('button'),
-          h.Class(${cls('rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground', 'styles.confirm')}),
+          h.Class(${emitActionClass(isStyleX, 'default')}),
         ], ['Confirm']),
       ],`
     case 'share':
@@ -209,7 +218,7 @@ const emitFooter = (fixture: DialogFixture, isStyleX: boolean): string => {
         h.button([
           ...slots.closeButton,
           h.Type('button'),
-          h.Class(${cls('rounded-md border px-4 py-2 text-sm', 'styles.action')}),
+          h.Class(${emitActionClass(isStyleX, 'outline')}),
         ], ['Close']),
       ],`
     case 'sticky':
@@ -217,7 +226,7 @@ const emitFooter = (fixture: DialogFixture, isStyleX: boolean): string => {
         h.button([
           ...slots.closeButton,
           h.Type('button'),
-          h.Class(${cls('rounded-md border px-4 py-2 text-sm', 'styles.action')}),
+          h.Class(${emitActionClass(isStyleX, 'outline')}),
         ], ['Close']),
       ],`
     case 'noClose':
@@ -271,12 +280,12 @@ const emitRtlLayout = (isStyleX: boolean): string => {
                 ...parts.closeButtonAttributes,
                 ...parts.initialFocusAttributes(),
                 h.Type('button'),
-                h.Class(${cls('rounded-md border px-4 py-2 text-sm', 'styles.action')}),
+                h.Class(${emitActionClass(isStyleX, 'outline')}),
               ], ['إلغاء']),
               h.button([
                 ...parts.closeButtonAttributes,
                 h.Type('button'),
-                h.Class(${cls('rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground', 'styles.confirm')}),
+                h.Class(${emitActionClass(isStyleX, 'default')}),
               ], ['حفظ التغييرات']),
             ],
           }),
@@ -304,7 +313,7 @@ const dialogSource = (
     imports: `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-${isStyleX ? "\nimport * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\n" : ''}
+${isStyleX ? "\nimport * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\n" : fixture.kind === 'noClose' || fixture.kind === 'scroll' ? '' : "\nimport { cn } from '@/lib/utils'\n"}
 import * as Button from '@/${isStyleX ? 'stylex' : 'ui'}/button'
 import * as Dialog from '@/${isStyleX ? 'stylex' : 'ui'}/dialog'${inputs || fixture.kind === 'share' ? `\nimport * as Field from '@/${isStyleX ? 'stylex' : 'ui'}/field'\nimport * as Input from '@/${isStyleX ? 'stylex' : 'ui'}/input'` : ''}${isStyleX ? `\n\n${emitStyles}` : ''}`,
     model: `export const Model = S.Struct({ dialog: Dialog.Model${inputs ? ', name: S.String, username: S.String' : ''} })
