@@ -139,7 +139,7 @@ export const messageScrollerButton = <Msg>(
       h.Tabindex(isActive ? 0 : -1),
       h.Class(
         cn(
-          'absolute left-1/2 z-10 flex size-8 -translate-x-1/2 items-center justify-center rounded-md border bg-background text-foreground transition-[transform,opacity] duration-200 data-[active=false]:pointer-events-none data-[active=false]:scale-95 data-[active=false]:opacity-0 data-[direction=end]:bottom-4 data-[direction=start]:top-4 data-[direction=start]:[&_svg]:rotate-180',
+          'absolute left-1/2 z-10 flex size-8 -translate-x-1/2 cursor-pointer items-center justify-center rounded-md border bg-background text-foreground transition-[transform,opacity,background-color] duration-200 hover:bg-muted data-[active=false]:pointer-events-none data-[active=false]:scale-95 data-[active=false]:opacity-0 data-[direction=end]:bottom-4 data-[direction=start]:top-4 data-[direction=start]:[&_svg]:rotate-180',
           props.class,
         ),
       ),
