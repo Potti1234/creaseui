@@ -36,6 +36,12 @@ export const init = TooltipBehavior.init
 export const update = TooltipBehavior.update
 
 const styles = stylex.create({
+  root: {
+    alignItems: 'center',
+    display: 'inline-flex',
+    flexShrink: 0,
+    verticalAlign: 'middle',
+  },
   trigger: {
     margin: 0,
     padding: '0.125rem',
@@ -117,7 +123,7 @@ export const infoTip = <Msg>(
   const anchor = themedAnchor({ placement, gap: 4 })
 
   return h.div(
-    [h.DataAttribute('slot', 'info-tip')],
+    [h.DataAttribute('slot', 'info-tip'), h.Class(className(styles.root))],
     [
       h.button(
         [

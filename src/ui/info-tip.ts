@@ -86,7 +86,10 @@ export const infoTip = <Msg>(
   const anchor = { placement, gap: 4 }
 
   return h.div(
-    [h.DataAttribute('slot', 'info-tip')],
+    [
+      h.DataAttribute('slot', 'info-tip'),
+      h.Class('inline-flex shrink-0 items-center align-middle'),
+    ],
     [
       h.button(
         [
