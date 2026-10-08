@@ -107,6 +107,7 @@ const styles = stylex.create({
     pointerEvents: { default: null, ':is([aria-disabled])': 'none' },
     transitionDuration: interactionTokens.motionFast,
     transitionProperty: 'color, box-shadow',
+    zIndex: { default: 0, ':is([data-dragging])': 2, ':focus': 1 },
     height: '1rem',
     width: '1rem',
   },
@@ -183,7 +184,7 @@ export const rangeSlider = <Msg>(
   multiSlider(
     {
       ...props,
-      ariaLabels: props.ariaLabels ?? ['Minimum value', 'Maximum value'],
+      ariaLabels: props.ariaLabels ?? ['First value', 'Second value'],
     },
     h,
   )
@@ -268,8 +269,8 @@ export const slider = <Msg>(
 
 /** An N-thumb slider on the foldkit Slider primitive: one primitive model per
  * thumb, a shared track whose presses move the nearest thumb, and fills
- * between consecutive thumbs. `values` stays parent-owned; thumb changes
- * arrive as `MultiOutMessage.ChangedThumbValue` out messages. */
+ * between the lowest and highest values. Thumbs keep their identity and can
+ * cross. `values` stays parent-owned; thumb changes arrive as `MultiOutMessage.ChangedThumbValue` out messages. */
 export const multiSlider = <Msg>(
   props: MultiSliderProps<Msg>,
   h: HtmlBuilder<Msg>,
@@ -297,10 +298,7 @@ export const multiSlider = <Msg>(
               Math.max(displayFractions[0] ?? minFraction, minFraction),
             ],
           ]
-        : displayFractions.slice(0, -1).map((fraction, index) => {
-            const next = displayFractions[index + 1] ?? fraction
-            return [Math.min(fraction, next), Math.max(fraction, next)]
-          })
+        : [[Math.min(...displayFractions), Math.max(...displayFractions)]]
   const pressedTrack = (
     _pointerType: string,
     button: number,

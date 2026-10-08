@@ -42,7 +42,7 @@ export const normalizeRangeValues = (
 ): readonly [number, number] => {
   const first = snapRangeValue(values[0], range)
   const second = snapRangeValue(values[1], range)
-  return first <= second ? [first, second] : [second, first]
+  return [first, second]
 }
 
 export const updateRangeValue = (
@@ -52,16 +52,13 @@ export const updateRangeValue = (
   range: NormalizedRange,
 ): readonly [number, number] => {
   const next = snapRangeValue(nextValue, range)
-  return index === 0
-    ? [Math.min(next, values[1]), values[1]]
-    : [values[0], Math.max(next, values[0])]
+  return index === 0 ? [next, values[1]] : [values[0], next]
 }
 
 export const normalizeMultiValues = (
   values: readonly number[],
   range: NormalizedRange,
-): readonly number[] =>
-  values.map(value => snapRangeValue(value, range)).sort((a, b) => a - b)
+): readonly number[] => values.map(value => snapRangeValue(value, range))
 
 export const updateMultiValue = (
   values: readonly number[],
@@ -69,10 +66,7 @@ export const updateMultiValue = (
   nextValue: number,
   range: NormalizedRange,
 ): readonly number[] => {
-  const lowerBound = index === 0 ? range.min : (values[index - 1] ?? range.min)
-  const upperBound =
-    index === values.length - 1 ? range.max : (values[index + 1] ?? range.max)
-  const next = clamp(snapRangeValue(nextValue, range), lowerBound, upperBound)
+  const next = snapRangeValue(nextValue, range)
   return values.map((value, i) => (i === index ? next : value))
 }
 

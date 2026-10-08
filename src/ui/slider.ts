@@ -59,7 +59,7 @@ const TRACK_CLASS =
 const FILLED_TRACK_CLASS = 'absolute bg-primary h-full'
 
 const THUMB_CLASS =
-  'block size-4 shrink-0 rounded-full border border-primary bg-white shadow-sm ring-ring/50 transition-[color,box-shadow] hover:ring-4 focus-visible:ring-4 focus-visible:outline-hidden aria-disabled:pointer-events-none aria-disabled:opacity-50'
+  'block size-4 shrink-0 focus:z-10 data-[dragging]:z-20 rounded-full border border-primary bg-white shadow-sm ring-ring/50 transition-[color,box-shadow] hover:ring-4 focus-visible:ring-4 focus-visible:outline-hidden aria-disabled:pointer-events-none aria-disabled:opacity-50'
 
 const LABEL_CLASS = 'text-sm leading-none font-medium select-none'
 
@@ -111,7 +111,7 @@ export const rangeSlider = <Msg>(
   multiSlider(
     {
       ...props,
-      ariaLabels: props.ariaLabels ?? ['Minimum value', 'Maximum value'],
+      ariaLabels: props.ariaLabels ?? ['First value', 'Second value'],
     },
     h,
   )
@@ -195,8 +195,8 @@ View: Slider.slider({ model: model.volume, value: model.volumeValue, toParentMes
 
 /** An N-thumb slider on the foldkit Slider primitive: one primitive model per
  * thumb, a shared track whose presses move the nearest thumb, and fills
- * between consecutive thumbs. `values` stays parent-owned; thumb changes
- * arrive as `MultiOutMessage.ChangedThumbValue` out messages. */
+ * between the lowest and highest values. Thumbs keep their identity and can
+ * cross. `values` stays parent-owned; thumb changes arrive as `MultiOutMessage.ChangedThumbValue` out messages. */
 export const multiSlider = <Msg>(
   props: MultiSliderProps<Msg>,
   h: HtmlBuilder<Msg>,
@@ -224,10 +224,7 @@ export const multiSlider = <Msg>(
               Math.max(displayFractions[0] ?? minFraction, minFraction),
             ],
           ]
-        : displayFractions.slice(0, -1).map((fraction, index) => {
-            const next = displayFractions[index + 1] ?? fraction
-            return [Math.min(fraction, next), Math.max(fraction, next)]
-          })
+        : [[Math.min(...displayFractions), Math.max(...displayFractions)]]
   const pressedTrack = (
     _pointerType: string,
     button: number,

@@ -154,8 +154,8 @@ const rangeEl = Scene.selector('[data-slot="slider-range"]')
 const allRanges = Scene.all.selector('[data-slot="slider-range"]')
 const thumbEl = Scene.selector('[data-slot="slider-thumb"]')
 const hiddenInput = Scene.selector('input[type="hidden"]')
-const lowerInput = Scene.role('slider', { name: 'Minimum value' })
-const upperInput = Scene.role('slider', { name: 'Maximum value' })
+const lowerInput = Scene.role('slider', { name: 'First value' })
+const upperInput = Scene.role('slider', { name: 'Second value' })
 const allThumbs = Scene.all.role('slider')
 
 const verifyRenderer = (name: string, Slider: SliderModule) => {
@@ -705,7 +705,7 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
     describe('prop: minStepsBetweenValues', () => {
       it.todo(
         'should enforce a minimum difference between range slider values — ' +
-          'creaseui has no minStepsBetweenValues prop (thumbs may touch but not cross)',
+          'creaseui has no minStepsBetweenValues prop (thumbs may touch and cross)',
       )
     })
 
@@ -1093,13 +1093,25 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
     })
 
     describe('range slider thumbs', () => {
+      it('moves the first dot from 1 past 3 to 4 on a 0–5 scale', () => {
+        Scene.scene(
+          { update, view: rangeView({}) },
+          Scene.given(initialModel(id, { min: 0, max: 5, values: [1, 3] })),
+          ...dragThumb(lowerInput, 'range', 0, 4),
+          Scene.expect(lowerInput).toHaveAttr('aria-valuenow', '4'),
+          Scene.expect(upperInput).toHaveAttr('aria-valuenow', '3'),
+          Scene.expect(rangeEl).toHaveStyle('left', '60%'),
+          Scene.expect(rangeEl).toHaveStyle('right', '20%'),
+        )
+      })
+
       it('renders two thumbs with accessible names and current values', () => {
         Scene.scene(
           { update, view: rangeView({}) },
           Scene.given(initialModel(id, { values: [25, 75] })),
-          Scene.expect(lowerInput).toHaveAttr('aria-label', 'Minimum value'),
+          Scene.expect(lowerInput).toHaveAttr('aria-label', 'First value'),
           Scene.expect(lowerInput).toHaveAttr('aria-valuenow', '25'),
-          Scene.expect(upperInput).toHaveAttr('aria-label', 'Maximum value'),
+          Scene.expect(upperInput).toHaveAttr('aria-label', 'Second value'),
           Scene.expect(upperInput).toHaveAttr('aria-valuenow', '75'),
         )
       })
@@ -1129,21 +1141,27 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
         )
       })
 
-      it('clamps the lower thumb at the upper thumb', () => {
+      it('lets the first thumb cross the second without swapping identities', () => {
         Scene.scene(
           { update, view: rangeView({}) },
           Scene.given(initialModel(id, { values: [20, 80] })),
           ...dragThumb(lowerInput, 'range', 0, 90),
-          Scene.expect(lowerInput).toHaveAttr('aria-valuenow', '80'),
+          Scene.expect(lowerInput).toHaveAttr('aria-valuenow', '90'),
+          Scene.expect(upperInput).toHaveAttr('aria-valuenow', '80'),
+          Scene.expect(rangeEl).toHaveStyle('left', '80%'),
+          Scene.expect(rangeEl).toHaveStyle('right', '10%'),
         )
       })
 
-      it('clamps the upper thumb at the lower thumb', () => {
+      it('lets the second thumb cross the first without swapping identities', () => {
         Scene.scene(
           { update, view: rangeView({}) },
           Scene.given(initialModel(id, { values: [20, 80] })),
           ...dragThumb(upperInput, 'range', 1, 10),
-          Scene.expect(upperInput).toHaveAttr('aria-valuenow', '20'),
+          Scene.expect(upperInput).toHaveAttr('aria-valuenow', '10'),
+          Scene.expect(lowerInput).toHaveAttr('aria-valuenow', '20'),
+          Scene.expect(rangeEl).toHaveStyle('left', '10%'),
+          Scene.expect(rangeEl).toHaveStyle('right', '80%'),
         )
       })
 
@@ -1166,11 +1184,11 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
           Scene.expect(Scene.role('slider', { name: 'Value 1' })).toExist(),
           Scene.expect(Scene.role('slider', { name: 'Value 2' })).toExist(),
           Scene.expect(Scene.role('slider', { name: 'Value 3' })).toExist(),
-          Scene.expectAll(allRanges).toHaveCount(2),
+          Scene.expectAll(allRanges).toHaveCount(1),
         )
       })
 
-      it('clamps a middle thumb between its neighbors', () => {
+      it('lets the middle thumb cross both neighbors and fills the outermost range', () => {
         Scene.scene(
           { update, view: multiView({}) },
           Scene.given(initialModel(id, { multiValues: [20, 50, 80] })),
@@ -1182,8 +1200,10 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
           ),
           Scene.expect(Scene.role('slider', { name: 'Value 2' })).toHaveAttr(
             'aria-valuenow',
-            '80',
+            '90',
           ),
+          Scene.expect(rangeEl).toHaveStyle('left', '20%'),
+          Scene.expect(rangeEl).toHaveStyle('right', '10%'),
           ...dragThumb(
             Scene.role('slider', { name: 'Value 2' }),
             'multi',
@@ -1192,8 +1212,18 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
           ),
           Scene.expect(Scene.role('slider', { name: 'Value 2' })).toHaveAttr(
             'aria-valuenow',
+            '5',
+          ),
+          Scene.expect(Scene.role('slider', { name: 'Value 1' })).toHaveAttr(
+            'aria-valuenow',
             '20',
           ),
+          Scene.expect(Scene.role('slider', { name: 'Value 3' })).toHaveAttr(
+            'aria-valuenow',
+            '80',
+          ),
+          Scene.expect(rangeEl).toHaveStyle('left', '5%'),
+          Scene.expect(rangeEl).toHaveStyle('right', '20%'),
         )
       })
 
