@@ -592,7 +592,7 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
         )
       })
 
-      it('dismisses on outside press', () => {
+      it('dismisses on outside press by default', () => {
         Scene.scene(
           { update, view },
           Scene.given(openModel('outside-press')),

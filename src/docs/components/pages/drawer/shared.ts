@@ -77,7 +77,7 @@ export const drawerFixtures: ReadonlyArray<DrawerFixture> = [
   {
     title: 'Snap Points',
     description:
-      'snapPoints [31rem, 1] with the swipe handle — drag to snap between a compact peek and full height.',
+      'snapPoints [31rem, 1] — drag to snap between a compact peek and full height.',
     kind: 'snap-points',
     triggerLabel: 'Open Snap Drawer',
   },
@@ -545,7 +545,6 @@ const emitView = (fixture: DrawerFixture, isStyleX: boolean): string => {
     Drawer.drawer({
       model: model.drawer,
       toParentMessage: message => GotDrawerMessage({ message }),
-      showSwipeHandle: true,
       title: 'Drawer',
       description: 'Open another drawer from the same direction.',
       ${emitContent(fixture, isStyleX)}

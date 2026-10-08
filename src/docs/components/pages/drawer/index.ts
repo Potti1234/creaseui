@@ -15,11 +15,11 @@ export const drawerPage = authoredPage({
       'Drawer composes the canonical Dialog Model with a shared finite drag phase and snap decision. Offset and velocity remain transient child state; threshold, fling, cancellation, focus, and animation Commands all flow through Drawer.update.',
     apiHref: 'https://foldkit.dev/ui/drawer',
     composition:
-      'Trigger (parent Message)\nDrawer submodel\n├── modal dialog lifecycle\n├── drag gesture state\n└── panel\n    ├── handle\n    ├── title / description\n    ├── content\n    └── footer actions',
+      'Trigger (parent Message)\nDrawer submodel\n├── modal dialog lifecycle\n├── drag gesture state\n└── panel\n    ├── optional handle\n    ├── title / description\n    ├── content\n    └── footer actions',
     styling:
       'Bottom drawers work well on touch-first layouts. Side drawers suit wider screens. Only transform is updated during a drag, and reduced-motion mode removes the settling transition.',
     accessibility:
-      'The nested Dialog supplies naming, focus containment, Escape dismissal, and trigger focus restoration. The drag handle is decorative; every workflow still needs ordinary keyboard-operable close controls.',
+      'The nested Dialog supplies naming, focus containment, Escape dismissal, and trigger focus restoration. Outside clicks dismiss the drawer by default; set disablePointerDismissal: true to keep it open. The visible drag handle supports mouse and touch gestures; every workflow still needs ordinary keyboard-operable close controls.',
     keyboard: [
       [
         'Tab / Shift+Tab',

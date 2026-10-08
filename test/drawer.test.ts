@@ -448,6 +448,27 @@ describe('update: snap points', () => {
 })
 
 describe('nested + measurement plumbing', () => {
+  it('preserves the full stack depth and the parent height while stacking', () => {
+    const model = measured(init())
+    const change = Drawer.Message.NestedDrawersChanged({
+      count: 2,
+      frontmostHeight: 420,
+      swiping: false,
+      progress: 0,
+    })
+    const nested = Drawer.update(model, change).model
+    assert.equal(Object.keys(nested.nestedDrawerHeights).length, 2)
+    assert.equal(Drawer.frontmostNestedHeight(nested), 420)
+    assert.equal(Drawer.update(nested, change).model, nested)
+    assert.equal(
+      Drawer.update(
+        nested,
+        Drawer.Message.MeasuredPopup({ width: 400, height: 350 }),
+      ).model.popupHeight,
+      300,
+    )
+  })
+
   it('tracks nested drawer presence from NestedDrawersChanged', () => {
     const model = measured(init())
     const nested = Drawer.update(

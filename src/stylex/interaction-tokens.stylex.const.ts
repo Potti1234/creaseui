@@ -27,7 +27,7 @@ export const interactionTokens = stylex.defineConsts({
   cursorGrab: 'grab',
   cursorGrabbing: 'grabbing',
   easingDrawerOverlay: 'cubic-bezier(0.32, 0.72, 0, 1)',
-  easingDrawerPopup: 'cubic-bezier(0.22, 1, 0.36, 1)',
+  easingDrawerPopup: 'cubic-bezier(0.32, 0.72, 0, 1)',
   easingDrawerContent: 'cubic-bezier(0.45, 1.005, 0, 1.005)',
   motionDrawer: '450ms',
   motionDrawerRelease: 'calc(var(--drawer-swipe-strength) * 400ms)',

@@ -36,7 +36,7 @@ const styles = stylex.create({
     inset: 0,
     zIndex: 50,
     userSelect: 'none',
-    pointerEvents: { default: 'none', ':is([data-modal=true])': 'auto' },
+    pointerEvents: 'none',
   },
   popup: {
     pointerEvents: 'auto',
@@ -48,6 +48,7 @@ const styles = stylex.create({
     height: 'var(--drawer-content-height)',
     maxHeight: 'var(--drawer-content-max-height, none)',
     minHeight: 0,
+    minWidth: 0,
     width: 'var(--drawer-content-width, auto)',
     backgroundColor: foundationTokens.popover,
     color: foundationTokens.popoverForeground,
@@ -65,7 +66,7 @@ const styles = stylex.create({
       ':is([data-leave])': 'var(--closed-transform)',
     },
     opacity: { default: 1, ':is([data-leave])': 0.9999 },
-    overflowX: 'hidden',
+    overflowX: 'clip',
     overflowY: {
       default: 'visible',
       ':is([data-nested-drawer-open])': 'hidden',
@@ -197,32 +198,37 @@ const styles = stylex.create({
     zIndex: 10,
     display: 'flex',
     flexShrink: 0,
+    touchAction: 'none',
     cursor: {
       default: interactionTokens.cursorGrab,
       ':active': interactionTokens.cursorGrabbing,
     },
     opacity: 1,
-    transitionProperty: 'opacity',
+    transitionProperty: {
+      default: 'opacity',
+      '@media (prefers-reduced-motion: reduce)': 'none',
+    },
     transitionDuration: interactionTokens.motionModerate,
     '::after': {
+      content: '""',
       display: 'block',
       flexShrink: 0,
       borderRadius: foundationTokens.radiusFull,
-      backgroundColor: tokens.muted,
+      backgroundColor: foundationTokens.mutedForeground50,
     },
   },
   handleDimmed: { opacity: 0 },
   handleAxisY: {
-    height: '0.75rem',
+    height: '1.5rem',
     width: '100%',
     justifyContent: 'center',
-    '::after': { height: '0.25rem', width: '6rem' },
+    '::after': { height: '0.25rem', width: '3rem' },
   },
   handleAxisX: {
     height: '100%',
-    width: '0.75rem',
+    width: '1.5rem',
     alignItems: 'center',
-    '::after': { height: '6rem', width: '0.25rem' },
+    '::after': { height: '3rem', width: '0.25rem' },
   },
   handleDown: { alignItems: 'flex-end' },
   handleUp: { alignItems: 'flex-start' },
@@ -234,6 +240,7 @@ const styles = stylex.create({
     flexDirection: 'column',
     flex: 1,
     minHeight: 0,
+    minWidth: 0,
     overflowX: 'hidden',
     overflowY: 'hidden',
     overscrollBehavior: 'contain',
@@ -349,7 +356,7 @@ export type DrawerProps<Msg> = Readonly<{
   description?: string
   content?: (slots: DrawerSlots) => ReadonlyArray<Html>
   footer?: (slots: DrawerSlots) => ReadonlyArray<Html>
-  /** Renders the swipe handle pill (shadcn `showSwipeHandle`). */
+  /** Shows the swipe handle by default; set false to hide it. */
   showSwipeHandle?: boolean
   layoutStyle?: ComponentLayoutStyle
 }>
@@ -732,7 +739,7 @@ export const drawer = <Msg>(
                             ),
                           ],
                           [
-                            ...(props.showSwipeHandle === true
+                            ...(props.showSwipeHandle !== false
                               ? [
                                   hd.div(
                                     [

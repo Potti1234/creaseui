@@ -479,7 +479,6 @@ const drawerView = <Msg>(
       return Drawer.drawer(
         {
           ...shared,
-          showSwipeHandle: true,
           title: 'Drawer',
           description: 'Open another drawer from the same direction.',
           content: () => [mutedBlock(model.side, h)],

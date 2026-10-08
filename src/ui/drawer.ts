@@ -37,11 +37,10 @@ export const snapTo = DrawerBehavior.snapTo
 const OVERLAY_CLASS =
   'fixed inset-0 z-50 min-h-dvh bg-black/10 opacity-[max(var(--drawer-overlay-min-opacity,0),calc(1-var(--drawer-swipe-progress)))] transition-opacity duration-450 ease-[cubic-bezier(0.32,0.72,0,1)] select-none supports-backdrop-filter:backdrop-blur-xs data-[closed]:opacity-0 data-[leave]:pointer-events-none data-[leave]:opacity-0 data-[leave]:duration-[calc(var(--drawer-swipe-strength)*400ms)] data-[snap-points]:[--drawer-overlay-min-opacity:0.5] data-[swiping]:duration-0 supports-[-webkit-touch-callout:none]:absolute motion-reduce:transition-none'
 
-const VIEWPORT_CLASS =
-  'pointer-events-none fixed inset-0 z-50 select-none data-[modal=true]:pointer-events-auto'
+const VIEWPORT_CLASS = 'pointer-events-none fixed inset-0 z-50 select-none'
 
 const POPUP_BASE_CLASS =
-  'group/drawer-popup pointer-events-auto fixed z-50 m-(--drawer-inset,0px) flex h-(--drawer-content-height) max-h-(--drawer-content-max-height,none) min-h-0 w-(--drawer-content-width,auto) transform-[translate3d(var(--translate-x,0px),var(--translate-y,0px),0)_scale(var(--stack-scale))] flex-col bg-popover text-sm text-popover-foreground transition-[transform,height,opacity,filter] duration-450 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform outline-none select-none [interpolate-size:allow-keywords] motion-reduce:transition-none'
+  'group/drawer-popup pointer-events-auto fixed z-50 m-(--drawer-inset,0px) flex h-(--drawer-content-height) max-h-(--drawer-content-max-height,none) min-h-0 min-w-0 w-(--drawer-content-width,auto) transform-[translate3d(var(--translate-x,0px),var(--translate-y,0px),0)_scale(var(--stack-scale))] flex-col overflow-x-clip bg-popover text-sm text-popover-foreground transition-[transform,height,opacity,filter] duration-450 ease-[cubic-bezier(0.32,0.72,0,1)] will-change-transform outline-none select-none [interpolate-size:allow-keywords] motion-reduce:transition-none'
 
 const POPUP_NESTED_CLASS =
   'data-[nested-drawer-open]:overflow-hidden data-[nested-drawer-open]:brightness-95'
@@ -80,10 +79,10 @@ const POPUP_RIGHT_CLASS =
    child. The model already knows every flag per drawer, so each child
    applies its own values statically. */
 const SWIPE_HANDLE_BASE_CLASS =
-  'relative z-10 flex shrink-0 cursor-grab transition-opacity duration-200 active:cursor-grabbing after:block after:shrink-0 after:rounded-full after:bg-muted'
+  'relative z-10 flex shrink-0 touch-none cursor-grab transition-opacity duration-200 active:cursor-grabbing after:block after:shrink-0 after:rounded-full after:bg-muted-foreground/50 motion-reduce:transition-none'
 const SWIPE_HANDLE_AXIS_Y_CLASS =
-  'h-3 w-full justify-center after:h-1 after:w-24'
-const SWIPE_HANDLE_AXIS_X_CLASS = 'h-full w-3 items-center after:h-24 after:w-1'
+  'h-6 w-full justify-center after:h-1 after:w-12'
+const SWIPE_HANDLE_AXIS_X_CLASS = 'h-full w-6 items-center after:h-12 after:w-1'
 const SWIPE_HANDLE_DIRECTION_CLASS = {
   down: 'items-end',
   up: 'items-start',
@@ -92,7 +91,7 @@ const SWIPE_HANDLE_DIRECTION_CLASS = {
 } as const
 
 const CONTENT_BASE_CLASS =
-  'flex min-h-0 flex-1 flex-col overflow-hidden overscroll-contain rounded-[inherit] transition-opacity duration-300 ease-[cubic-bezier(0.45,1.005,0,1.005)] select-text'
+  'flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden overscroll-contain rounded-[inherit] transition-opacity duration-300 ease-[cubic-bezier(0.45,1.005,0,1.005)] select-text motion-reduce:transition-none'
 
 const HEADER_BASE_CLASS = 'flex shrink-0 flex-col gap-0.5 p-4 pb-0'
 const HEADER_RESPONSIVE_CLASS = 'md:gap-0.5 md:text-left'
@@ -149,7 +148,7 @@ export type DrawerProps<Msg> = Readonly<{
   description?: string
   content?: (slots: DrawerSlots) => ReadonlyArray<Html>
   footer?: (slots: DrawerSlots) => ReadonlyArray<Html>
-  /** Renders the swipe handle pill (shadcn `showSwipeHandle`). */
+  /** Shows the swipe handle by default; set false to hide it. */
   showSwipeHandle?: boolean
   class?: string
 }>
@@ -434,7 +433,7 @@ export const drawer = <Msg>(
                             ),
                           ],
                           [
-                            ...(props.showSwipeHandle
+                            ...(props.showSwipeHandle !== false
                               ? [
                                   hd.div(
                                     [

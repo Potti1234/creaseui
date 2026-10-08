@@ -1072,14 +1072,26 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       if (model.swipe.phase !== 'Swiping') return { model }
       return applyReleaseDecision(model, releaseInputFor(model, message))
     }
-    case 'MeasuredPopup':
+    case 'MeasuredPopup': {
+      // A stacked vertical popup adopts the frontmost drawer's height. Keep
+      // its own measurement stable instead of feeding each animation frame
+      // back into the CSS height that is currently being interpolated.
+      const height =
+        nestedCount(model) > 0 &&
+        (model.swipeDirection === 'down' || model.swipeDirection === 'up')
+          ? model.popupHeight
+          : message.height
+      if (model.popupWidth === message.width && model.popupHeight === height) {
+        return { model }
+      }
       return {
         model: {
           ...model,
           popupWidth: message.width,
-          popupHeight: message.height,
+          popupHeight: height,
         },
       }
+    }
     case 'MeasuredViewport':
       return {
         model: {
@@ -1093,11 +1105,24 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       // The mount reports the whole observed child set each change; rebuild
       // the record from it. `frontmostHeight`/`swiping`/`progress` come from
       // the frontmost open child's popup.
+      if (
+        nestedCount(model) === message.count &&
+        (message.count === 0 ||
+          frontmostHeight(model) === message.frontmostHeight) &&
+        model.nestedSwiping === message.swiping &&
+        model.nestedSwipeProgress === message.progress
+      ) {
+        return { model }
+      }
       return {
         model: {
           ...model,
-          nestedDrawerHeights:
-            message.count > 0 ? { frontmost: message.frontmostHeight } : {},
+          nestedDrawerHeights: Object.fromEntries(
+            Array.from({ length: message.count }, (_, index) => [
+              String(index),
+              message.frontmostHeight,
+            ]),
+          ),
           nestedSwiping: message.swiping,
           nestedSwipeProgress: message.progress,
         },
@@ -1247,9 +1272,11 @@ const hoistNestedDialog = (element: HTMLElement): (() => void) | undefined => {
     subtree so it escapes the parent's fade/stack transforms (see
     hoistNestedDialog). */
 export const ObserveViewport = Mount.defineStream('ObserveDrawerViewport', {
-  messages: [Message.MeasuredViewport],
+  messages: [Message.MeasuredViewport, Message.CancelledSwipe],
   execute: ({ element }) =>
-    Stream.callback<typeof Message.MeasuredViewport.Type>(queue =>
+    Stream.callback<
+      typeof Message.MeasuredViewport.Type | typeof Message.CancelledSwipe.Type
+    >(queue =>
       Effect.gen(function* () {
         yield* Effect.acquireRelease(
           Effect.sync(() =>
@@ -1257,6 +1284,34 @@ export const ObserveViewport = Mount.defineStream('ObserveDrawerViewport', {
               ? hoistNestedDialog(element)
               : undefined,
           ),
+          release => Effect.sync(() => release?.()),
+        )
+        yield* Effect.acquireRelease(
+          Effect.sync(() => {
+            if (!(element instanceof HTMLElement)) return undefined
+            let captured: { handle: HTMLElement; pointerId: number } | undefined
+            const onPointerDown = (event: PointerEvent) => {
+              if (event.button !== 0 || !(event.target instanceof Element))
+                return
+              const handle = event.target.closest(
+                '[data-slot="drawer-swipe-handle"]',
+              )
+              if (!(handle instanceof HTMLElement)) return
+              handle.setPointerCapture(event.pointerId)
+              captured = { handle, pointerId: event.pointerId }
+            }
+            const onPointerCancel = () =>
+              Queue.offerUnsafe(queue, Message.CancelledSwipe())
+            element.addEventListener('pointerdown', onPointerDown)
+            element.addEventListener('pointercancel', onPointerCancel)
+            return () => {
+              element.removeEventListener('pointerdown', onPointerDown)
+              element.removeEventListener('pointercancel', onPointerCancel)
+              if (captured?.handle.hasPointerCapture(captured.pointerId)) {
+                captured.handle.releasePointerCapture(captured.pointerId)
+              }
+            }
+          }),
           release => Effect.sync(() => release?.()),
         )
         yield* Effect.acquireRelease(
@@ -1305,6 +1360,7 @@ export const ObserveNestedDrawers = Mount.defineStream('ObserveNestedDrawers', {
             if (!(element instanceof HTMLElement)) return undefined
             const ownDialog = element.closest('dialog')
             const scope = ownDialog ?? element
+            let previous: typeof Message.NestedDrawersChanged.Type | undefined
             const emit = () => {
               const children = Array.from(
                 scope.querySelectorAll(NESTED_POPUP_SELECTOR),
@@ -1315,32 +1371,39 @@ export const ObserveNestedDrawers = Mount.defineStream('ObserveNestedDrawers', {
                   // scoped to the dialog subtree this drawer's own popup is a
                   // descendant too — only count popups of other dialogs
                   child.closest('dialog') !== ownDialog &&
-                  child.closest('[data-closed]') === null,
+                  // Count entering drawers immediately, and restore the
+                  // parent as the child starts leaving. Ancestor transition
+                  // flags must never determine a child's presence.
+                  !child.hasAttribute('data-leave'),
               )
-              let frontmostHeight = 0
-              let swiping = false
-              let progress = 0
-              for (const child of children) {
-                if (!(child instanceof HTMLElement)) continue
-                frontmostHeight = Math.max(frontmostHeight, child.offsetHeight)
-                if (child.hasAttribute('data-swiping')) swiping = true
-                const raw = child.style.getPropertyValue(
-                  '--drawer-swipe-progress',
-                )
-                const value = Number.parseFloat(raw)
-                if (Number.isFinite(value)) {
-                  progress = Math.max(progress, value)
-                }
-              }
-              Queue.offerUnsafe(
-                queue,
-                Message.NestedDrawersChanged({
-                  count: children.length,
-                  frontmostHeight,
-                  swiping,
-                  progress,
-                }),
+              const frontmost = children.at(-1)
+              const frontmostHeight =
+                frontmost instanceof HTMLElement ? frontmost.offsetHeight : 0
+              const swiping = frontmost?.hasAttribute('data-swiping') ?? false
+              const value = Number.parseFloat(
+                frontmost instanceof HTMLElement
+                  ? frontmost.style.getPropertyValue('--drawer-swipe-progress')
+                  : '',
               )
+              const progress = Number.isFinite(value) ? value : 0
+              const next = Message.NestedDrawersChanged({
+                count: children.length,
+                frontmostHeight,
+                swiping,
+                progress,
+              })
+              // Patching the parent's own CSS variables also triggers this
+              // observer. Do not dispatch a second render for unchanged
+              // child state; it would compete with the animation frames.
+              if (
+                previous?.count === next.count &&
+                previous.frontmostHeight === next.frontmostHeight &&
+                previous.swiping === next.swiping &&
+                previous.progress === next.progress
+              )
+                return
+              previous = next
+              Queue.offerUnsafe(queue, next)
             }
             const observer = new MutationObserver(emit)
             observer.observe(scope, {
@@ -1351,6 +1414,7 @@ export const ObserveNestedDrawers = Mount.defineStream('ObserveNestedDrawers', {
                 'data-swiping',
                 'data-open',
                 'data-closed',
+                'data-leave',
                 'hidden',
                 'style',
               ],
