@@ -17,7 +17,7 @@ const styles = stylex.create({
     height: '100%',
     width: '100%',
   },
-  group: { alignItems: 'center', display: 'flex' },
+  group: { alignItems: 'center', display: 'flex', pointerEvents: 'none' },
   slot: {
     borderColor: {
       default: tokens.input,
@@ -139,6 +139,15 @@ const syncActive = (ref: string): string =>
 
 const SYNC_ACTIVE = syncActive('this')
 
+/* Select the next filled digit after an insertion so continued typing
+   replaces it even when the code is already at maxlength. Deletions retain
+   their native caret position so the removed character can be re-entered. */
+const ADVANCE_SELECTION =
+  'if(!event.isComposing&&event.inputType?.startsWith("insert")&&' +
+  'this.selectionStart===this.selectionEnd&&this.selectionStart<this.value.length){' +
+  'const s=this.selectionStart;this.setSelectionRange(s,s+1)}' +
+  SYNC_ACTIVE
+
 /* focus can fire before the browser settles the caret position, so the
    mirror runs one frame later. */
 const FOCUS_ACTIVE = `const t=this;requestAnimationFrame(()=>{${syncActive('t')}})`
@@ -151,15 +160,18 @@ const CLEAR_ACTIVE =
 /* A click lands on the covering input, so map its x position back to the
    slot beneath it: select that character so typing overwrites it directly,
    or collapse the caret at the end of the value past the filled cells. A
-   drag that already formed a range is kept. */
+   drag that already formed a range is kept. Defer the mapping until the
+   browser has settled the native mouseup selection. */
 const SNAP_TO_SLOT =
-  'if(this.selectionStart===this.selectionEnd){' +
-  'const ds=this.parentElement.querySelectorAll(\'[data-slot="input-otp-slot"]\'),' +
-  'v=this.value.length;let i=v;' +
+  'const t=this,x=event.clientX;requestAnimationFrame(()=>{' +
+  'if(t.selectionStart===t.selectionEnd){' +
+  'const ds=t.parentElement.querySelectorAll(\'[data-slot="input-otp-slot"]\'),' +
+  'v=t.value.length;let i=v;' +
   'ds.forEach((d,j)=>{const r=d.getBoundingClientRect();' +
-  'if(event.clientX>=r.left&&event.clientX<r.right)i=j});' +
-  'i<v?this.setSelectionRange(i,i+1):this.setSelectionRange(v,v)}' +
-  SYNC_ACTIVE
+  'if(x>=r.left&&x<r.right)i=j});' +
+  'i<v?t.setSelectionRange(i,i+1):t.setSelectionRange(v,v)}' +
+  syncActive('t') +
+  '})'
 
 export const inputOtp = <Msg>(
   p: InputOtpProps<Msg>,
@@ -191,6 +203,7 @@ export const inputOtp = <Msg>(
           : []),
         ...(p.name === undefined ? [] : [h.Name(p.name)]),
         h.OnInput(next => p.onInput(normalize(next, length, pattern))),
+        h.Attribute('oninput', ADVANCE_SELECTION),
         h.Attribute('onselect', SYNC_ACTIVE),
         h.Attribute('onkeyup', SYNC_ACTIVE),
         h.Attribute('onfocus', FOCUS_ACTIVE),
