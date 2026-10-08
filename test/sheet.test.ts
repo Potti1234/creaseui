@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 
 import * as Sheet from '../src/lib/sheet.ts'
+import { Option } from 'effect'
 
 test('computeDetentOffsets sorts, dedupes, and always starts at 0', () => {
   const offsets = Sheet.computeDetentOffsets(800, [400, 96])
@@ -93,4 +94,99 @@ test('a required sheet refuses dismiss', () => {
   const openResult = Sheet.open(required).model
   const dismissed = Sheet.close(openResult).model
   assert.equal(dismissed.dialog.isOpen, openResult.dialog.isOpen)
+})
+
+test('standalone sheets and switchers animate by default while respecting an explicit opt-out', () => {
+  assert.equal(Sheet.init({ id: 'animated' }).dialog.isAnimated, true)
+  assert.equal(
+    Sheet.initSwitcher({ id: 'flow', sheets: [] }).dialog.isAnimated,
+    true,
+  )
+  assert.equal(
+    Sheet.init({ id: 'instant', isAnimated: false }).dialog.isAnimated,
+    false,
+  )
+})
+
+test('a tap while arming a drag preserves the current peek detent', () => {
+  const gesture = Sheet.startDrag(
+    {
+      ...Sheet.initGesture(),
+      sheetHeight: 800,
+      settledOffset: 704,
+      settledLayoutOffset: 704,
+    },
+    { y: 100, timeStamp: 0 },
+    true,
+  )
+  const settled = Sheet.settleDrag(
+    gesture,
+    { y: 101, timeStamp: 100 },
+    [0, 400, 704],
+    true,
+    704,
+  )
+  assert.equal(settled.gesture.settledOffset, 704)
+  assert.equal(settled.gesture.settledLayoutOffset, 0)
+})
+
+test('late pointer cancellation leaves an already-settled sheet untouched', () => {
+  const model = {
+    ...Sheet.init({ id: 'peek' }),
+    gesture: {
+      ...Sheet.initGesture(),
+      sheetHeight: 800,
+      settledOffset: 704,
+      settledLayoutOffset: 704,
+    },
+  }
+  const cancelled = Sheet.update(
+    model,
+    Sheet.Message.CancelledSheetDrag({ detents: [0, 400, 704] }),
+  ).model
+  assert.equal(cancelled, model)
+})
+
+test('switcher retention ignores stale completions during quick back and forth navigation', () => {
+  const model = Sheet.initSwitcher({
+    id: 'flow',
+    sheets: [
+      { id: 'one', label: 'One' },
+      { id: 'two', label: 'Two' },
+    ],
+  })
+  const first = Sheet.openSheet(model, 'one').model
+  const second = Sheet.openSheet(first, 'two').model
+  const back = Sheet.openSheet(second, 'one').model
+  const stale = Sheet.updateSwitcher(
+    back,
+    Sheet.SwitcherMessage.CompletedRetainedSheet({
+      generation: second.switchGeneration,
+    }),
+  ).model
+  assert.equal(Option.getOrThrow(stale.previousSheetId), 'two')
+  const finished = Sheet.updateSwitcher(
+    stale,
+    Sheet.SwitcherMessage.CompletedRetainedSheet({
+      generation: back.switchGeneration,
+    }),
+  ).model
+  assert.ok(Option.isNone(finished.previousSheetId))
+  assert.equal(Option.getOrThrow(finished.activeSheetId), 'one')
+})
+
+test('reopening a dismissed flow does not retain another copy of its active sheet', () => {
+  const model = Sheet.initSwitcher({
+    id: 'flow',
+    sheets: [
+      { id: 'one', label: 'One' },
+      { id: 'two', label: 'Two' },
+    ],
+  })
+  const first = Sheet.openSheet(model, 'one').model
+  const second = Sheet.openSheet(first, 'two').model
+  const dismissed = Sheet.closeSwitcher(second).model
+  const reopened = Sheet.openSheet(dismissed, 'one').model
+  assert.ok(Option.isNone(reopened.previousSheetId))
+  assert.equal(Option.getOrThrow(reopened.activeSheetId), 'one')
 })

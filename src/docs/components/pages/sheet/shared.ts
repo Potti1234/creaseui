@@ -128,10 +128,10 @@ const instanceViewEmit = (
     : "'grid flex-1 auto-rows-min gap-6 px-4'"
   const loremClass = isStyleX
     ? 'className(styles.loremWrap)'
-    : "'overflow-y-auto px-4'"
+    : "'mx-auto flex min-h-0 w-full max-w-2xl flex-1 flex-col gap-4 overflow-y-auto px-4'"
   const paraClass = isStyleX
     ? 'className(styles.paragraph)'
-    : "'mb-2 leading-relaxed'"
+    : "'text-sm leading-relaxed'"
   if (instance.fields !== undefined) {
     contentLines.push(
       `    h.div([h.Class(${fieldsClass})], [
@@ -232,8 +232,8 @@ import * as Sheet from '@/${lib}/sheet'${
 const styles = stylex.create({
   fieldsWrap: { display: 'grid', flexGrow: 1, gridAutoRows: 'min-content', gap: '1.5rem', paddingInline: '1rem' },
   field: { display: 'grid', gap: '0.75rem' },
-  loremWrap: { overflowY: 'auto', paddingInline: '1rem' },
-  paragraph: { marginBottom: '0.5rem', lineHeight: 1.625 },
+  loremWrap: { display: 'flex', flexDirection: 'column', flex: 1, gap: '1rem', marginInline: 'auto', minHeight: 0, maxWidth: '42rem', overflowY: 'auto', paddingInline: '1rem', width: '100%' },
+  paragraph: { margin: 0, fontSize: '0.875rem', lineHeight: 1.625 },
 })`
         : ''
     }${
@@ -522,7 +522,7 @@ export const switcherSheetIds = {
 const emitFilterContent = (isStyleX: boolean): string => {
   const cls = (tailwind: string, stylexRef: string) =>
     isStyleX ? `className(${stylexRef})` : `'${tailwind}'`
-  return `h.div([h.Class(${cls('flex flex-col gap-4 p-4', 'styles.sheetBody')})], [
+  return `h.div([h.Class(${cls('mx-auto flex w-full max-w-lg flex-col gap-4 p-4', 'styles.sheetBody')})], [
       h.h3([h.Class(${cls('text-base font-semibold', 'styles.sheetHeading')})], ['Filters']),
       Separator.separator({}, h),
       h.div([h.Class(${cls('flex flex-col gap-2', 'styles.filterRows')})], [
@@ -537,7 +537,7 @@ const emitFilterContent = (isStyleX: boolean): string => {
 const emitHeightsContent = (isStyleX: boolean): string => {
   const cls = (tailwind: string, stylexRef: string) =>
     isStyleX ? `className(${stylexRef})` : `'${tailwind}'`
-  return `h.div([h.Class(${cls('flex flex-col gap-4 p-4', 'styles.sheetBody')})], [
+  return `h.div([h.Class(${cls('mx-auto flex w-full max-w-lg flex-col gap-4 p-4', 'styles.sheetBody')})], [
       h.h3([h.Class(${cls('text-base font-semibold capitalize', 'styles.sheetHeading')})], [\`\${model.selectedHeight} height\`]),
       Separator.separator({}, h),
       h.p([h.Class(${cls('text-sm', 'styles.sheetText')})], [heightsCopy[model.selectedHeight]]),
@@ -548,7 +548,7 @@ const emitHeightsContent = (isStyleX: boolean): string => {
 const emitNoScrimContent = (isStyleX: boolean): string => {
   const cls = (tailwind: string, stylexRef: string) =>
     isStyleX ? `className(${stylexRef})` : `'${tailwind}'`
-  return `h.div([h.Class(${cls('flex flex-col gap-4 p-4', 'styles.sheetBody')})], [
+  return `h.div([h.Class(${cls('mx-auto flex w-full max-w-lg flex-col gap-4 p-4', 'styles.sheetBody')})], [
       h.h3([h.Class(${cls('text-base font-semibold', 'styles.sheetHeading')})], ['Central Park']),
       Separator.separator({}, h),
       h.p([h.Class(${cls('text-sm', 'styles.sheetText')})], ['The page remains visible and interactive behind this sheet.']),
@@ -559,7 +559,7 @@ const emitNoScrimContent = (isStyleX: boolean): string => {
 const emitStepsContent = (isStyleX: boolean): string => {
   const cls = (tailwind: string, stylexRef: string) =>
     isStyleX ? `className(${stylexRef})` : `'${tailwind}'`
-  return `h.div([h.Class(${cls('flex flex-col gap-4 p-4', 'styles.sheetBody')})], [
+  return `h.div([h.Class(${cls('mx-auto flex w-full max-w-lg flex-col gap-4 p-4', 'styles.sheetBody')})], [
       h.div([h.Class(${cls('flex flex-col gap-1', 'styles.stackTight')})], [
         h.h3([h.Class(${cls('text-base font-semibold', 'styles.sheetHeading')})], ['Ferry Building']),
         h.div([h.Class(${cls('flex items-center gap-2', 'styles.timeRow')})], [
@@ -593,7 +593,7 @@ const emitKeyboardContent = (isStyleX: boolean): string => {
     `Textarea.textarea({ id: '${id}', label: '${label}', rows: 5, value: model.${id}, onInput: value => ChangedProfileField({ field: '${id}', value }) }, h)`
   return `h.form([
       h.OnSubmit(ClickedDismissSheet()),
-      h.Class(${cls('flex flex-col gap-4 p-4', 'styles.sheetBody')}),
+      h.Class(${cls('mx-auto flex w-full max-w-lg flex-col gap-4 p-4', 'styles.sheetBody')}),
     ], [
       h.h3([h.Class(${cls('text-base font-semibold', 'styles.sheetHeading')})], ['Edit profile']),
       Separator.separator({}, h),
@@ -614,7 +614,7 @@ const emitSwitcherSheets = (isStyleX: boolean): string => {
   const hRow = `h.div([h.Class(${cls('flex justify-end gap-2', 'styles.footerRow')})], [`
   const overview = `{
       id: 'overview',
-      content: h.div([h.Class(${cls('flex flex-col gap-4 p-4', 'styles.sheetBody')})], [
+      content: h.div([h.Class(${cls('mx-auto flex w-full max-w-lg flex-col gap-4 p-4', 'styles.sheetBody')})], [
         h.div([h.Class(${cls('flex flex-col gap-1', 'styles.stackTight')})], [
           h.h3([h.Class(${cls('text-base font-semibold', 'styles.sheetHeading')})], ['Set up notifications']),
           h.p([h.Class(${cls('text-xs text-muted-foreground', 'styles.sheetMeta')})], ['Step 1 of 3']),
@@ -637,7 +637,7 @@ const emitSwitcherSheets = (isStyleX: boolean): string => {
     }`
   const frequency = `{
       id: 'frequency',
-      content: h.div([h.Class(${cls('flex flex-col gap-4 p-4', 'styles.sheetBody')})], [
+      content: h.div([h.Class(${cls('mx-auto flex w-full max-w-lg flex-col gap-4 p-4', 'styles.sheetBody')})], [
         h.div([h.Class(${cls('flex flex-col gap-1', 'styles.stackTight')})], [
           h.h3([h.Class(${cls('text-base font-semibold', 'styles.sheetHeading')})], ['How often?']),
           h.p([h.Class(${cls('text-xs text-muted-foreground', 'styles.sheetMeta')})], ['Step 2 of 3']),
@@ -652,7 +652,7 @@ const emitSwitcherSheets = (isStyleX: boolean): string => {
     }`
   const channels = `{
       id: 'channels',
-      content: h.div([h.Class(${cls('flex flex-col gap-4 p-4', 'styles.sheetBody')})], [
+      content: h.div([h.Class(${cls('mx-auto flex w-full max-w-lg flex-col gap-4 p-4', 'styles.sheetBody')})], [
         h.div([h.Class(${cls('flex flex-col gap-1', 'styles.stackTight')})], [
           h.h3([h.Class(${cls('text-base font-semibold', 'styles.sheetHeading')})], ['Where should we notify you?']),
           h.p([h.Class(${cls('text-xs text-muted-foreground', 'styles.sheetMeta')})], ['Step 3 of 3']),
@@ -678,7 +678,7 @@ const emitReviewSheets = (isStyleX: boolean): string => {
     isStyleX ? `className(${stylexRef})` : `'${tailwind}'`
   const review = `{
       id: 'review',
-      content: h.div([h.Class(${cls('flex flex-col gap-4 p-4', 'styles.sheetBody')})], [
+      content: h.div([h.Class(${cls('mx-auto flex w-full max-w-lg flex-col gap-4 p-4', 'styles.sheetBody')})], [
         h.div([h.Class(${cls('flex flex-col gap-1', 'styles.stackTight')})], [
           h.h3([h.Class(${cls('text-base font-semibold', 'styles.sheetHeading')})], ['Review settings']),
           h.p([h.Class(${cls('text-xs text-muted-foreground', 'styles.sheetMeta')})], ['Daily summaries will be sent by email.']),
@@ -691,7 +691,7 @@ const emitReviewSheets = (isStyleX: boolean): string => {
     }`
   const confirm = `{
       id: 'confirm',
-      content: h.div([h.Class(${cls('flex flex-col gap-4 p-4', 'styles.sheetBody')})], [
+      content: h.div([h.Class(${cls('mx-auto flex w-full max-w-lg flex-col gap-4 p-4', 'styles.sheetBody')})], [
         h.div([h.Class(${cls('flex flex-col gap-1', 'styles.stackTight')})], [
           h.h3([h.Class(${cls('text-base font-semibold', 'styles.sheetHeading')})], ['Confirm settings']),
           h.p([h.Class(${cls('text-xs text-muted-foreground', 'styles.sheetMeta')})], ['Your notification settings are ready to save.']),
@@ -707,7 +707,7 @@ const emitReviewSheets = (isStyleX: boolean): string => {
 
 const emitStyles = `const styles = stylex.create({
   main: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
-  sheetBody: { display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1rem' },
+  sheetBody: { marginInline: 'auto', maxWidth: '32rem', width: '100%', display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1rem' },
   sheetHeading: { fontSize: '1rem', lineHeight: '1.5rem', fontWeight: 600, marginBlock: 0, marginInline: 0 },
   sheetText: { fontSize: '0.875rem', lineHeight: '1.25rem' },
   sheetMeta: { color: 'var(--muted-foreground)', fontSize: '0.75rem', lineHeight: '1rem' },

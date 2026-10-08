@@ -4806,8 +4806,8 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     },
     {
       "name": "isSheetDragCandidate",
-      "kind": "function",
-      "signature": "isSheetDragCandidate(target: unknown): false | 'handle' | 'arm'"
+      "kind": "value",
+      "signature": "isSheetDragCandidate: value"
     },
     {
       "name": "SheetDragDispatch",

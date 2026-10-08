@@ -32,8 +32,19 @@ const styles = stylex.create({
     gridAutoRows: 'min-content',
   },
   field: { gap: '0.75rem', display: 'grid' },
-  loremWrap: { paddingInline: '1rem', overflowY: 'auto' },
-  paragraph: { lineHeight: 1.625, marginBottom: '0.5rem' },
+  loremWrap: {
+    display: 'flex',
+    flexDirection: 'column',
+    flex: 1,
+    gap: '1rem',
+    marginInline: 'auto',
+    minHeight: 0,
+    maxWidth: '42rem',
+    overflowY: 'auto',
+    paddingInline: '1rem',
+    width: '100%',
+  },
+  paragraph: { margin: 0, fontSize: '0.875rem', lineHeight: 1.625 },
   // bottom-sheet examples
   main: {
     padding: '2rem',
@@ -42,6 +53,9 @@ const styles = stylex.create({
     justifyContent: 'center',
   },
   sheetBody: {
+    marginInline: 'auto',
+    maxWidth: '32rem',
+    width: '100%',
     padding: '1rem',
     gap: '1rem',
     display: 'flex',

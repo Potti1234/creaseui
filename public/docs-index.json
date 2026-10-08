@@ -5598,8 +5598,10 @@
       "source": "src/ui/multi-selector.ts",
       "install": "npx creaseui add multi-selector",
       "dependencies": [
+        "Potti1234/creaseui/button",
         "Potti1234/creaseui/checkbox",
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/drawer",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils"
       ],
@@ -6770,8 +6772,8 @@
         },
         {
           "name": "isSheetDragCandidate",
-          "kind": "function",
-          "signature": "isSheetDragCandidate(target: unknown): false | 'handle' | 'arm'"
+          "kind": "value",
+          "signature": "isSheetDragCandidate: value"
         },
         {
           "name": "SheetDragDispatch",

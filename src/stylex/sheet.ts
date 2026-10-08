@@ -23,11 +23,7 @@ import { tokens } from './tokens.stylex'
    coupling, grab handle) engaged when `side` is 'bottom'. The fullscreen
    native <dialog> is the flex positioning context, so each side aligns the
    panel to an edge without fixed panel positioning. Radix slide keyframes are
-   foldkit data-closed CSS transitions.
-   astryx exits the sheet on an accelerate curve (cubic-bezier(0.3,0,0.6,0.6));
-   Crease UI has no accelerate token, so the exit curve is applied via the
-   dynamic style below while the panel is leaving.
-   PORT-NOTE: needs token 'ease-accelerate' = cubic-bezier(0.3,0,0.6,0.6). */
+   foldkit data-closed CSS transitions with the same easing as Drawer. */
 
 const styles = stylex.create({
   // edge panels (shadcn sheet.tsx port)
@@ -51,7 +47,7 @@ const styles = stylex.create({
     transform: { default: 'none', ':is([data-closed])': 'translateX(-100%)' },
     borderRightWidth: 1,
     height: '100%',
-    maxWidth: '24rem',
+    maxWidth: { default: 'none', '@media (min-width: 40rem)': '24rem' },
     width: '75%',
   },
   rightDialog: {
@@ -63,7 +59,7 @@ const styles = stylex.create({
     transform: { default: 'none', ':is([data-closed])': 'translateX(100%)' },
     borderLeftWidth: 1,
     height: '100%',
-    maxWidth: '24rem',
+    maxWidth: { default: 'none', '@media (min-width: 40rem)': '24rem' },
     width: '75%',
   },
   topDialog: {
@@ -75,7 +71,71 @@ const styles = stylex.create({
     transform: { default: 'none', ':is([data-closed])': 'translateY(-100%)' },
     borderBottomWidth: 1,
     height: 'auto',
+    maxHeight: '85dvh',
     width: '100%',
+  },
+  edgePanel: {
+    borderColor: tokens.border,
+    borderStyle: 'solid',
+    borderWidth: 0,
+    gap: '1rem',
+    overflow: 'hidden',
+    backgroundColor: tokens.background,
+    boxShadow: tokens.shadowCard,
+    color: tokens.foreground,
+    display: 'flex',
+    flexDirection: 'column',
+    flexShrink: 0,
+    position: 'relative',
+    transitionDuration: {
+      default: interactionTokens.motionDrawer,
+      '@media (prefers-reduced-motion: reduce)': interactionTokens.motionNone,
+    },
+    transitionProperty: 'transform',
+    transitionTimingFunction: interactionTokens.easingDrawerPopup,
+    willChange: 'transform',
+    zIndex: 50,
+    minHeight: 0,
+  },
+  edgeOverlay: {
+    inset: 0,
+    backgroundColor: tokens.backdrop,
+    opacity: { default: 1, ':is([data-closed])': 0 },
+    position: 'fixed',
+    transitionDuration: {
+      default: interactionTokens.motionDrawer,
+      '@media (prefers-reduced-motion: reduce)': interactionTokens.motionNone,
+    },
+    transitionProperty: 'opacity',
+    transitionTimingFunction: interactionTokens.easingDrawerOverlay,
+    zIndex: 50,
+  },
+  header: {
+    padding: '1rem',
+    gap: '0.375rem',
+    alignSelf: 'center',
+    display: 'flex',
+    flexDirection: 'column',
+    flexShrink: 0,
+    maxWidth: '42rem',
+    width: '100%',
+  },
+  footer: {
+    padding: '1rem',
+    gap: '0.5rem',
+    alignSelf: 'center',
+    display: 'flex',
+    flexDirection: 'column',
+    flexShrink: 0,
+    marginTop: 'auto',
+    maxWidth: '42rem',
+    width: '100%',
+  },
+  title: {
+    color: tokens.foreground,
+    fontSize: '1rem',
+    fontWeight: 600,
+    lineHeight: '1.5rem',
   },
   // bottom sheet (astryx BottomSheet port)
   body: {
@@ -87,10 +147,13 @@ const styles = stylex.create({
     overflowY: 'auto',
   },
   bodyContent: {
+    gap: '1rem',
     boxSizing: 'border-box',
-    display: 'flow-root',
+    display: 'flex',
+    flexDirection: 'column',
     height: '100%',
     minHeight: 'min-content',
+    paddingTop: '1.5rem',
   },
   bottomSheetDialog: {
     padding: 0,
@@ -98,7 +161,6 @@ const styles = stylex.create({
     overscrollBehavior: 'contain',
     backgroundColor: tokens.transparent,
     justifyContent: 'stretch',
-    touchAction: 'none',
   },
   handle: {
     alignItems: 'center',
@@ -112,6 +174,7 @@ const styles = stylex.create({
     justifyContent: 'center',
     position: 'absolute',
     touchAction: 'none',
+    userSelect: 'none',
     zIndex: 1,
     height: '1.5rem',
   },
@@ -201,11 +264,12 @@ const styles = stylex.create({
     backgroundColor: tokens.backdrop,
     position: 'absolute',
     transitionDuration: {
-      default: interactionTokens.motionModerate,
+      default: interactionTokens.motionDrawer,
+      ':is([data-swiping])': interactionTokens.motionNone,
       '@media (prefers-reduced-motion: reduce)': interactionTokens.motionNone,
     },
     transitionProperty: 'opacity',
-    transitionTimingFunction: interactionTokens.easingStandard,
+    transitionTimingFunction: interactionTokens.easingDrawerOverlay,
   },
   bottomSheetPanel: {
     borderColor: tokens.border,
@@ -227,27 +291,34 @@ const styles = stylex.create({
     transform: {
       '@starting-style': 'translateY(100%)',
       default: 'translateY(0)',
-      ':is([data-closed])': 'translateY(100%)',
+      ':is([data-closed], [data-leave])': 'translateY(100%)',
     },
     transitionDuration: {
-      default: interactionTokens.motionSlow,
+      default: interactionTokens.motionDrawer,
       '@media (prefers-reduced-motion: reduce)': interactionTokens.motionNone,
     },
     transitionProperty: 'transform, opacity, height',
-    transitionTimingFunction: interactionTokens.easingStandard,
+    transitionTimingFunction: interactionTokens.easingDrawerPopup,
     willChange: 'transform, opacity',
     minHeight: 0,
     width: '100%',
   },
   retainedPanel: {
+    insetInlineEnd: 0,
+    insetInlineStart: 0,
     opacity: {
       '@starting-style': 1,
       default: 0,
     },
-    transitionDelay: interactionTokens.motionSlow,
-    transitionDuration: interactionTokens.motionSlow,
+    pointerEvents: 'none',
+    position: 'absolute',
+    transitionDuration: {
+      default: interactionTokens.motionDrawer,
+      '@media (prefers-reduced-motion: reduce)': interactionTokens.motionNone,
+    },
     transitionProperty: 'opacity',
-    visibility: 'hidden',
+    transitionTimingFunction: interactionTokens.easingDrawerContent,
+    bottom: 0,
   },
   srOnly: {
     margin: '-1px',
@@ -304,9 +375,9 @@ const DIALOG_STYLE: Readonly<Record<SheetSide, StaticStyles>> = {
   left: styles.leftDialog,
 }
 
-const OVERLAY_STYLE = overlayStyles.overlay
+const OVERLAY_STYLE = styles.edgeOverlay
 
-const CONTENT_STYLE = overlayStyles.panel
+const CONTENT_STYLE = styles.edgePanel
 
 const SIDE_STYLE: Readonly<Record<SheetSide, StaticStyles>> = {
   right: styles.rightPanel,
@@ -336,9 +407,9 @@ const EXIT_TRANSFORM: Readonly<Record<SheetSide, string>> = {
   right: 'translateX(100%)',
 }
 
-const HEADER_STYLE = overlayStyles.header
-const FOOTER_STYLE = overlayStyles.footer
-const TITLE_STYLE = overlayStyles.title
+const HEADER_STYLE = styles.header
+const FOOTER_STYLE = styles.footer
+const TITLE_STYLE = styles.title
 const DESCRIPTION_STYLE = overlayStyles.description
 
 const CLOSE_STYLE = overlayStyles.close
@@ -421,28 +492,19 @@ const panelStyle = (
   const transform = sheetTransform(g, isLeaving, isExiting)
   return {
     ...sheetHeightStyle(g, height),
+    '--sheet-layout-offset': String(gestureLayoutOffset(g)),
+    '--sheet-expanded-height': String(g.sheetHeight),
     paddingBlockEnd: `calc(env(safe-area-inset-bottom, 0px) + ${String(OVERSCROLL_PADDING)}px)`,
     marginBlockEnd: `${String(-OVERSCROLL_PADDING)}px`,
     ...(transform === undefined ? {} : { transform }),
-    ...(g.dragPhase !== 'Idle' ? { transitionProperty: 'none' } : {}),
-    ...(isLeaving || isExiting
-      ? { transitionTimingFunction: 'cubic-bezier(0.3, 0, 0.6, 0.6)' }
-      : {}),
+    ...(g.dragPhase === 'Dragging' ? { transitionProperty: 'none' } : {}),
   }
 }
 
 /** The tap-to-drag promotion guard: a pointerdown on the handle drags
     immediately; one on the body arms a drag only when the body is scrolled to
     the top (astryx bodyProps promotion slop). */
-export const isSheetDragCandidate = (
-  target: unknown,
-): false | 'handle' | 'arm' => {
-  if (!(target instanceof HTMLElement)) return false
-  if (target.closest('[data-slot="sheet-handle"]') !== null) return 'handle'
-  const body = target.closest('[data-slot="sheet-body"]')
-  if (body !== null && body.scrollTop <= 0) return 'arm'
-  return false
-}
+export const isSheetDragCandidate = SheetBehavior.isSheetDragCandidate
 
 export type SheetDragDispatch<Msg> = Readonly<{
   started: (frame: { y: number; timeStamp: number; armOnly: boolean }) => Msg
@@ -450,51 +512,6 @@ export type SheetDragDispatch<Msg> = Readonly<{
   ended: (frame: { y: number; timeStamp: number; detents: number[] }) => Msg
   cancelled: (detents: number[]) => Msg
 }>
-
-const dragStartAttribute = <Msg>(
-  dispatch: SheetDragDispatch<Msg>,
-  h: HtmlBuilder<Msg>,
-): Attribute<Msg> =>
-  h.OnPointerDown(
-    (_pointerType, button, _sx, sy, timeStamp, _cx, _cy, _pid, target) => {
-      if (button !== 0) return Option.none()
-      const candidate = isSheetDragCandidate(target)
-      if (candidate === false) return Option.none()
-      return Option.some(
-        dispatch.started({ y: sy, timeStamp, armOnly: candidate === 'arm' }),
-      )
-    },
-  )
-
-const dragTrackingAttributes = <Msg>(
-  dispatch: SheetDragDispatch<Msg>,
-  detents: ReadonlyArray<number>,
-  enabled: boolean,
-  h: HtmlBuilder<Msg>,
-): ReadonlyArray<Attribute<Msg>> =>
-  enabled
-    ? [
-        h.OnPointerMove((_sx, sy) =>
-          Option.some(
-            dispatch.dragged({
-              y: sy,
-              timeStamp: performance.now(),
-              detents: [...detents],
-            }),
-          ),
-        ),
-        h.OnPointerUp((_sx, sy) =>
-          Option.some(
-            dispatch.ended({
-              y: sy,
-              timeStamp: performance.now(),
-              detents: [...detents],
-            }),
-          ),
-        ),
-        h.OnPointerLeave(() => Option.some(dispatch.cancelled([...detents]))),
-      ]
-    : []
 
 const bottomPanelBody = <Msg>(
   content: ReadonlyArray<Html>,
@@ -797,14 +814,7 @@ export const sheet = <Msg>(
       dismissOffset,
       peek,
     )
-    const swiping = g.dragPhase !== 'Idle'
-
-    const dispatch: SheetDragDispatch<Msg> = {
-      started: frame => send(Message.StartedSheetDrag(frame)),
-      dragged: frame => send(Message.DraggedSheet(frame)),
-      ended: frame => send(Message.EndedSheetDrag(frame)),
-      cancelled: ds => send(Message.CancelledSheetDrag({ detents: ds })),
-    }
+    const swiping = g.dragPhase === 'Dragging'
 
     if (!model.hasScrim) {
       const composed = composeSheetBody(
@@ -828,14 +838,16 @@ export const sheet = <Msg>(
                   h.DataAttribute('slot', 'sheet-panel'),
                   h.DataAttribute('sheet-purpose', model.purpose),
                   h.OnMount(
-                    Mount.mapMessage(SheetBehavior.ObserveSheet(), message =>
-                      send(message),
+                    Mount.mapMessage(
+                      SheetBehavior.ObserveSheet({
+                        height: model.height,
+                        snapPoints: model.snapPoints,
+                      }),
+                      message => send(message),
                     ),
                   ),
                   h.Style(panelStyle(g, model.height, false, model.isExiting)),
                   h.Class(className(styles.bottomSheetPanel)),
-                  dragStartAttribute(dispatch, h),
-                  ...dragTrackingAttributes(dispatch, detents, swiping, h),
                   ...(props.direction === 'rtl' ? [h.Dir('rtl')] : []),
                 ],
                 [
@@ -890,7 +902,6 @@ export const sheet = <Msg>(
                 ),
               ),
               ...(model.purpose === 'required' ? [hd.Role('alertdialog')] : []),
-              ...dragTrackingAttributes(dispatch, detents, swiping, hd),
             ],
             isVisible
               ? [
@@ -899,6 +910,7 @@ export const sheet = <Msg>(
                     [
                       ...(model.purpose === 'info' ? backdrop : []),
                       hd.DataAttribute('slot', 'sheet-scrim'),
+                      ...(swiping ? [hd.DataAttribute('swiping', '')] : []),
                       hd.Class(className(styles.scrim)),
                       hd.Style({ opacity: String(leaving ? 0 : scrimOpacity) }),
                     ],
@@ -923,13 +935,15 @@ export const sheet = <Msg>(
                           hd.DataAttribute('sheet-purpose', model.purpose),
                           hd.OnMount(
                             Mount.mapMessage(
-                              SheetBehavior.ObserveSheet(),
+                              SheetBehavior.ObserveSheet({
+                                height: model.height,
+                                snapPoints: model.snapPoints,
+                              }),
                               message => send(message),
                             ),
                           ),
                           hd.Style(panelStyle(g, model.height, leaving, false)),
                           hd.Class(className(styles.bottomSheetPanel)),
-                          dragStartAttribute(dispatch, hd),
                           ...(props.direction === 'rtl' ? [hd.Dir('rtl')] : []),
                         ],
                         bottomPanelBody(composed.children, hd),
@@ -1089,15 +1103,6 @@ const switcherScrimOpacity = (sheet: SheetState): number => {
   )
 }
 
-const switcherDispatch = <Msg>(
-  send: (message: SwitcherMessage) => Msg,
-): SheetDragDispatch<Msg> => ({
-  started: frame => send(SwitcherMessage.StartedSheetDrag(frame)),
-  dragged: frame => send(SwitcherMessage.DraggedSheet(frame)),
-  ended: frame => send(SwitcherMessage.EndedSheetDrag(frame)),
-  cancelled: ds => send(SwitcherMessage.CancelledSheetDrag({ detents: ds })),
-})
-
 /** One shared dialog hosting several bottom sheets; requesting a sheet slides
     it in over the currently mounted one, which is retained covered and then
     fades (astryx BottomSheetSwitcher). */
@@ -1112,12 +1117,7 @@ export const sheetSwitcher = <Msg>(
   const activeSheet =
     activeId === undefined ? undefined : model.sheets[activeId]
   const swiping =
-    activeSheet !== undefined && activeSheet.gesture.dragPhase !== 'Idle'
-  const dispatch = switcherDispatch(send)
-  const activeDetents =
-    activeSheet === undefined
-      ? [0]
-      : detentsFor(activeSheet.gesture.sheetHeight, activeSheet.snapPoints)
+    activeSheet !== undefined && activeSheet.gesture.dragPhase === 'Dragging'
 
   return h.submodel({
     slotId: model.dialog.id,
@@ -1128,6 +1128,8 @@ export const sheetSwitcher = <Msg>(
         dialog: dialogAttributes,
         backdrop,
         panel: panelAttributes,
+        title,
+        initialFocus,
         isVisible,
       }: DialogPrimitive.RenderInfo) => {
         const hd = h
@@ -1144,13 +1146,19 @@ export const sheetSwitcher = <Msg>(
           return hd.keyed('div')(
             `sheet-${spec.id}-${hidden ? 'retained' : 'active'}`,
             [
-              ...(hidden ? [] : panelAttributes),
+              ...(hidden
+                ? []
+                : [...panelAttributes, ...initialFocus, hd.Tabindex(-1)]),
               hd.DataAttribute('slot', 'sheet-panel'),
               hd.DataAttribute('sheet-id', spec.id),
               hd.DataAttribute('sheet-purpose', sheetState.purpose),
               hd.OnMount(
                 Mount.mapMessage(
-                  SheetBehavior.ObserveSwitcherSheet({ sheetId: spec.id }),
+                  SheetBehavior.ObserveSwitcherSheet({
+                    sheetId: spec.id,
+                    height: sheetState.height,
+                    snapPoints: sheetState.snapPoints,
+                  }),
                   message => send(message),
                 ),
               ),
@@ -1166,7 +1174,6 @@ export const sheetSwitcher = <Msg>(
                 cn(styles.bottomSheetPanel, hidden ? styles.retainedPanel : ''),
               ),
               ...(hidden ? [hd.Inert(true), hd.AriaHidden(true)] : []),
-              dragStartAttribute(dispatch, hd),
             ],
             bottomPanelBody([spec.content], hd),
           )
@@ -1183,14 +1190,18 @@ export const sheetSwitcher = <Msg>(
                 props.layoutStyle,
               ),
             ),
-            ...dragTrackingAttributes(dispatch, activeDetents, swiping, hd),
           ],
           isVisible && activeSheet !== undefined
             ? [
+                hd.h2(
+                  [...title, hd.Class(className(styles.srOnly))],
+                  [activeSheet.label],
+                ),
                 hd.div(
                   [
                     ...(activeSheet.purpose === 'info' ? backdrop : []),
                     hd.DataAttribute('slot', 'sheet-switcher-scrim'),
+                    ...(swiping ? [hd.DataAttribute('swiping', '')] : []),
                     hd.Class(className(styles.scrim)),
                     hd.Style({
                       opacity: String(
@@ -1206,7 +1217,7 @@ export const sheetSwitcher = <Msg>(
                     hd.Class(className(styles.positioner)),
                   ],
                   [
-                    ...(previousId === undefined
+                    ...(previousId === undefined || previousId === activeId
                       ? []
                       : props.sheets
                           .filter(spec => spec.id === previousId)

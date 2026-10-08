@@ -131,9 +131,13 @@ const instanceView = (
   if (instance.loremBody === true) {
     content.push(
       h.div(
-        [h.Class('overflow-y-auto px-4')],
+        [
+          h.Class(
+            'mx-auto flex min-h-0 w-full max-w-2xl flex-1 flex-col gap-4 overflow-y-auto px-4',
+          ),
+        ],
         LOREM.map(paragraph =>
-          h.p([h.Class('mb-2 leading-relaxed')], [paragraph]),
+          h.p([h.Class('text-sm leading-relaxed')], [paragraph]),
         ),
       ),
     )
@@ -403,7 +407,7 @@ const filterContent = (
   h: HtmlBuilder<PreviewMessage>,
 ): Html =>
   h.div(
-    [h.Class('flex flex-col gap-4 p-4')],
+    [h.Class('mx-auto flex w-full max-w-lg flex-col gap-4 p-4')],
     [
       h.h3([h.Class('text-base font-semibold')], ['Filters']),
       Separator.separator({}, h),
@@ -467,7 +471,7 @@ const heightsContent = (
   h: HtmlBuilder<PreviewMessage>,
 ): Html =>
   h.div(
-    [h.Class('flex flex-col gap-4 p-4')],
+    [h.Class('mx-auto flex w-full max-w-lg flex-col gap-4 p-4')],
     [
       h.h3(
         [h.Class('text-base font-semibold capitalize')],
@@ -488,7 +492,7 @@ const heightsContent = (
 
 const noScrimContent = (h: HtmlBuilder<PreviewMessage>): Html =>
   h.div(
-    [h.Class('flex flex-col gap-4 p-4')],
+    [h.Class('mx-auto flex w-full max-w-lg flex-col gap-4 p-4')],
     [
       h.h3([h.Class('text-base font-semibold')], ['Central Park']),
       Separator.separator({}, h),
@@ -509,7 +513,7 @@ const noScrimContent = (h: HtmlBuilder<PreviewMessage>): Html =>
 
 const stepsContent = (h: HtmlBuilder<PreviewMessage>): Html =>
   h.div(
-    [h.Class('flex flex-col gap-4 p-4')],
+    [h.Class('mx-auto flex w-full max-w-lg flex-col gap-4 p-4')],
     [
       h.div(
         [h.Class('flex flex-col gap-1')],
@@ -608,7 +612,7 @@ const keyboardContent = (
   h.form(
     [
       h.OnSubmit(PreviewMessage.ClickedDismissSheetPreview()),
-      h.Class('flex flex-col gap-4 p-4'),
+      h.Class('mx-auto flex w-full max-w-lg flex-col gap-4 p-4'),
     ],
     [
       h.h3([h.Class('text-base font-semibold')], ['Edit profile']),
@@ -659,7 +663,7 @@ const switcherSheet = (
 ): { id: string; content: Html } => ({
   id,
   content: h.div(
-    [h.Class('flex flex-col gap-4 p-4')],
+    [h.Class('mx-auto flex w-full max-w-lg flex-col gap-4 p-4')],
     [
       sheetHead(h, title, meta),
       Separator.separator({}, h),

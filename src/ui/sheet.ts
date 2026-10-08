@@ -57,34 +57,35 @@ const EDGE_DIALOG_CLASS: Readonly<Record<SheetSide, string>> = {
 }
 
 const OVERLAY_CLASS =
-  'fixed inset-0 z-50 bg-black/50 transition duration-200 ease-out data-[closed]:opacity-0 motion-reduce:transition-none'
+  'fixed inset-0 z-50 bg-black/50 transition-opacity duration-450 ease-[cubic-bezier(0.32,0.72,0,1)] data-[closed]:opacity-0 motion-reduce:transition-none'
 
 const CONTENT_CLASS =
-  'relative z-50 flex flex-col gap-4 bg-background shadow-lg transition ease-in-out duration-500 data-[closed]:duration-300 motion-reduce:transition-none'
+  'relative z-50 flex min-h-0 shrink-0 flex-col gap-4 overflow-hidden bg-background shadow-lg transition-transform duration-450 ease-[cubic-bezier(0.32,0.72,0,1)] will-change-transform motion-reduce:transition-none'
 
 const SIDE_CLASS: Readonly<Record<SheetSide, string>> = {
   right: 'h-full w-3/4 border-l data-[closed]:translate-x-full sm:max-w-sm',
   left: 'h-full w-3/4 border-r data-[closed]:-translate-x-full sm:max-w-sm',
-  top: 'h-auto w-full border-b data-[closed]:-translate-y-full',
+  top: 'h-auto max-h-[85dvh] w-full border-b data-[closed]:-translate-y-full',
   bottom: 'h-auto w-full border-t data-[closed]:translate-y-full',
 }
 
 // ——— Bottom sheet (astryx BottomSheet port)
 
 const BOTTOM_DIALOG_CLASS =
-  'bg-transparent p-0 overflow-hidden overscroll-contain touch-none open:block'
+  'bg-transparent p-0 overflow-hidden overscroll-contain open:block'
 const SCRIM_CLASS =
-  'absolute inset-0 bg-black/50 transition-opacity duration-200 ease-out motion-reduce:transition-none'
+  'absolute inset-0 bg-black/50 transition-opacity duration-450 ease-[cubic-bezier(0.32,0.72,0,1)] data-[swiping]:duration-0 motion-reduce:transition-none'
 const POSITIONER_CLASS =
   'pointer-events-none absolute inset-x-0 bottom-0 flex justify-center'
 const BOTTOM_SHEET_CLASS =
-  'pointer-events-auto relative box-border flex w-full min-h-0 flex-col overflow-hidden border-x border-t border-border bg-background shadow-lg outline-none will-change-transform rounded-t-2xl transition-[transform,opacity,height] duration-300 ease-[cubic-bezier(0.24,1,0.4,1)] data-[closed]:translate-y-full data-[closed]:ease-[cubic-bezier(0.3,0,0.6,0.6)] starting:translate-y-full motion-reduce:transition-none'
+  'pointer-events-auto relative box-border flex w-full min-h-0 shrink-0 flex-col overflow-hidden border-x border-t border-border bg-background shadow-lg outline-none will-change-transform rounded-t-2xl transition-[transform,opacity,height] duration-450 ease-[cubic-bezier(0.32,0.72,0,1)] data-[closed]:translate-y-full data-[leave]:translate-y-full starting:translate-y-full motion-reduce:transition-none'
 const HANDLE_BAR_CLASS =
-  'absolute inset-x-0 top-0 z-[1] flex h-6 touch-none cursor-grab items-center justify-center bg-gradient-to-b from-background from-60% to-transparent'
+  'absolute inset-x-0 top-0 z-[1] flex h-6 touch-none cursor-grab items-center justify-center bg-gradient-to-b from-background from-60% to-transparent select-none'
 const HANDLE_PILL_CLASS = 'h-1 w-8 rounded-full bg-border'
 const BODY_CLASS =
   'min-h-0 flex-1 touch-pan-y overflow-y-auto overscroll-contain bg-background'
-const BODY_CONTENT_CLASS = 'flow-root h-full min-h-min box-border'
+const BODY_CONTENT_CLASS =
+  'box-border flex h-full min-h-min flex-col gap-4 pt-6'
 const SR_ONLY_CLASS =
   'absolute m-[-1px] h-px w-px overflow-hidden whitespace-nowrap border-0 p-0 [clip:rect(0,0,0,0)]'
 
@@ -111,8 +112,10 @@ const ENTER_CLASS: Readonly<Record<SheetSide, string>> = {
   right: 'starting:translate-x-full',
 }
 
-const HEADER_CLASS = 'flex flex-col gap-1.5 p-4'
-const FOOTER_CLASS = 'mt-auto flex flex-col gap-2 p-4'
+const HEADER_CLASS =
+  'flex w-full max-w-2xl shrink-0 flex-col gap-1.5 self-center p-4'
+const FOOTER_CLASS =
+  'mt-auto flex w-full max-w-2xl shrink-0 flex-col gap-2 self-center p-4'
 const TITLE_CLASS = 'font-semibold text-foreground'
 const DESCRIPTION_CLASS = 'text-sm text-muted-foreground'
 
@@ -195,26 +198,20 @@ const panelStyle = (
   isExiting: boolean,
 ): Record<string, string> => ({
   ...sheetHeightStyle(g, height),
+  '--sheet-layout-offset': String(gestureLayoutOffset(g)),
+  '--sheet-expanded-height': String(g.sheetHeight),
   paddingBlockEnd: `calc(env(safe-area-inset-bottom, 0px) + ${String(OVERSCROLL_PADDING)}px)`,
   marginBlockEnd: `${String(-OVERSCROLL_PADDING)}px`,
   ...(sheetTransform(g, isLeaving, isExiting) === undefined
     ? {}
     : { transform: sheetTransform(g, isLeaving, isExiting) as string }),
-  ...(g.dragPhase !== 'Idle' ? { transitionProperty: 'none' } : {}),
+  ...(g.dragPhase === 'Dragging' ? { transitionProperty: 'none' } : {}),
 })
 
 /** The tap-to-drag promotion guard: a pointerdown on the handle drags
     immediately; one on the body arms a drag only when the body is scrolled to
     the top (astryx bodyProps promotion slop). */
-export const isSheetDragCandidate = (
-  target: unknown,
-): false | 'handle' | 'arm' => {
-  if (!(target instanceof HTMLElement)) return false
-  if (target.closest('[data-slot="sheet-handle"]') !== null) return 'handle'
-  const body = target.closest('[data-slot="sheet-body"]')
-  if (body !== null && body.scrollTop <= 0) return 'arm'
-  return false
-}
+export const isSheetDragCandidate = SheetBehavior.isSheetDragCandidate
 
 export type SheetDragDispatch<Msg> = Readonly<{
   started: (frame: { y: number; timeStamp: number; armOnly: boolean }) => Msg
@@ -222,53 +219,6 @@ export type SheetDragDispatch<Msg> = Readonly<{
   ended: (frame: { y: number; timeStamp: number; detents: number[] }) => Msg
   cancelled: (detents: number[]) => Msg
 }>
-
-const dragStartAttribute = <Msg>(
-  dispatch: SheetDragDispatch<Msg>,
-  h: HtmlBuilder<Msg>,
-): Attribute<Msg> =>
-  h.OnPointerDown(
-    (_pointerType, button, _sx, sy, timeStamp, _cx, _cy, _pid, target) => {
-      if (button !== 0) return Option.none()
-      const candidate = isSheetDragCandidate(target)
-      if (candidate === false) return Option.none()
-      return Option.some(
-        dispatch.started({ y: sy, timeStamp, armOnly: candidate === 'arm' }),
-      )
-    },
-  )
-
-/** Pointer tracking while a drag is live — attached to the full-viewport
-    dialog so a fast swipe still tracks after the pointer leaves the sheet. */
-const dragTrackingAttributes = <Msg>(
-  dispatch: SheetDragDispatch<Msg>,
-  detents: ReadonlyArray<number>,
-  enabled: boolean,
-  h: HtmlBuilder<Msg>,
-): ReadonlyArray<Attribute<Msg>> =>
-  enabled
-    ? [
-        h.OnPointerMove((_sx, sy) =>
-          Option.some(
-            dispatch.dragged({
-              y: sy,
-              timeStamp: performance.now(),
-              detents: [...detents],
-            }),
-          ),
-        ),
-        h.OnPointerUp((_sx, sy) =>
-          Option.some(
-            dispatch.ended({
-              y: sy,
-              timeStamp: performance.now(),
-              detents: [...detents],
-            }),
-          ),
-        ),
-        h.OnPointerLeave(() => Option.some(dispatch.cancelled([...detents]))),
-      ]
-    : []
 
 const bottomPanelBody = <Msg>(
   content: ReadonlyArray<Html>,
@@ -557,14 +507,7 @@ export const sheet = <Msg>(
       dismissOffset,
       peek,
     )
-    const swiping = g.dragPhase !== 'Idle'
-
-    const dispatch: SheetDragDispatch<Msg> = {
-      started: frame => send(Message.StartedSheetDrag(frame)),
-      dragged: frame => send(Message.DraggedSheet(frame)),
-      ended: frame => send(Message.EndedSheetDrag(frame)),
-      cancelled: ds => send(Message.CancelledSheetDrag({ detents: ds })),
-    }
+    const swiping = g.dragPhase === 'Dragging'
 
     if (!model.hasScrim) {
       const composed = composeSheetBody(
@@ -588,14 +531,16 @@ export const sheet = <Msg>(
                   h.DataAttribute('slot', 'sheet-panel'),
                   h.DataAttribute('sheet-purpose', model.purpose),
                   h.OnMount(
-                    Mount.mapMessage(SheetBehavior.ObserveSheet(), message =>
-                      send(message),
+                    Mount.mapMessage(
+                      SheetBehavior.ObserveSheet({
+                        height: model.height,
+                        snapPoints: model.snapPoints,
+                      }),
+                      message => send(message),
                     ),
                   ),
                   h.Style(panelStyle(g, model.height, false, model.isExiting)),
                   h.Class(cn(BOTTOM_SHEET_CLASS, props.class)),
-                  dragStartAttribute(dispatch, h),
-                  ...dragTrackingAttributes(dispatch, detents, swiping, h),
                   ...(props.direction === 'rtl' ? [h.Dir('rtl')] : []),
                 ],
                 [
@@ -644,7 +589,6 @@ export const sheet = <Msg>(
               hd.DataAttribute('slot', 'sheet'),
               hd.Class(BOTTOM_DIALOG_CLASS),
               ...(model.purpose === 'required' ? [hd.Role('alertdialog')] : []),
-              ...dragTrackingAttributes(dispatch, detents, swiping, hd),
             ],
             isVisible
               ? [
@@ -653,6 +597,7 @@ export const sheet = <Msg>(
                     [
                       ...(model.purpose === 'info' ? backdrop : []),
                       hd.DataAttribute('slot', 'sheet-scrim'),
+                      ...(swiping ? [hd.DataAttribute('swiping', '')] : []),
                       hd.Class(SCRIM_CLASS),
                       hd.Style({ opacity: String(leaving ? 0 : scrimOpacity) }),
                     ],
@@ -677,13 +622,15 @@ export const sheet = <Msg>(
                           hd.DataAttribute('sheet-purpose', model.purpose),
                           hd.OnMount(
                             Mount.mapMessage(
-                              SheetBehavior.ObserveSheet(),
+                              SheetBehavior.ObserveSheet({
+                                height: model.height,
+                                snapPoints: model.snapPoints,
+                              }),
                               message => send(message),
                             ),
                           ),
                           hd.Style(panelStyle(g, model.height, leaving, false)),
                           hd.Class(cn(BOTTOM_SHEET_CLASS, props.class)),
-                          dragStartAttribute(dispatch, hd),
                           ...(props.direction === 'rtl' ? [hd.Dir('rtl')] : []),
                         ],
                         bottomPanelBody(composed.children, hd),
@@ -841,15 +788,6 @@ const switcherScrimOpacity = (sheet: SheetState): number => {
   )
 }
 
-const switcherDispatch = <Msg>(
-  send: (message: SwitcherMessage) => Msg,
-): SheetDragDispatch<Msg> => ({
-  started: frame => send(SwitcherMessage.StartedSheetDrag(frame)),
-  dragged: frame => send(SwitcherMessage.DraggedSheet(frame)),
-  ended: frame => send(SwitcherMessage.EndedSheetDrag(frame)),
-  cancelled: ds => send(SwitcherMessage.CancelledSheetDrag({ detents: ds })),
-})
-
 /** One shared dialog hosting several bottom sheets; requesting a sheet slides
     it in over the currently mounted one, which is retained covered and then
     fades (astryx BottomSheetSwitcher). */
@@ -864,12 +802,7 @@ export const sheetSwitcher = <Msg>(
   const activeSheet =
     activeId === undefined ? undefined : model.sheets[activeId]
   const swiping =
-    activeSheet !== undefined && activeSheet.gesture.dragPhase !== 'Idle'
-  const dispatch = switcherDispatch(send)
-  const activeDetents =
-    activeSheet === undefined
-      ? [0]
-      : detentsFor(activeSheet.gesture.sheetHeight, activeSheet.snapPoints)
+    activeSheet !== undefined && activeSheet.gesture.dragPhase === 'Dragging'
 
   return h.submodel({
     slotId: model.dialog.id,
@@ -880,6 +813,8 @@ export const sheetSwitcher = <Msg>(
         dialog: dialogAttributes,
         backdrop,
         panel: panelAttributes,
+        title,
+        initialFocus,
         isVisible,
       }: DialogPrimitive.RenderInfo) => {
         const hd = h
@@ -896,13 +831,19 @@ export const sheetSwitcher = <Msg>(
           return hd.keyed('div')(
             `sheet-${spec.id}-${hidden ? 'retained' : 'active'}`,
             [
-              ...(hidden ? [] : panelAttributes),
+              ...(hidden
+                ? []
+                : [...panelAttributes, ...initialFocus, hd.Tabindex(-1)]),
               hd.DataAttribute('slot', 'sheet-panel'),
               hd.DataAttribute('sheet-id', spec.id),
               hd.DataAttribute('sheet-purpose', sheetState.purpose),
               hd.OnMount(
                 Mount.mapMessage(
-                  SheetBehavior.ObserveSwitcherSheet({ sheetId: spec.id }),
+                  SheetBehavior.ObserveSwitcherSheet({
+                    sheetId: spec.id,
+                    height: sheetState.height,
+                    snapPoints: sheetState.snapPoints,
+                  }),
                   message => send(message),
                 ),
               ),
@@ -918,12 +859,11 @@ export const sheetSwitcher = <Msg>(
                 cn(
                   BOTTOM_SHEET_CLASS,
                   hidden
-                    ? 'invisible opacity-0 transition-opacity delay-300 duration-300 starting:opacity-100'
+                    ? 'pointer-events-none absolute inset-x-0 bottom-0 opacity-0 transition-opacity starting:opacity-100'
                     : '',
                 ),
               ),
               ...(hidden ? [hd.Inert(true), hd.AriaHidden(true)] : []),
-              dragStartAttribute(dispatch, hd),
             ],
             bottomPanelBody([spec.content], hd),
           )
@@ -934,14 +874,15 @@ export const sheetSwitcher = <Msg>(
             ...dialogAttributes,
             hd.DataAttribute('slot', 'sheet-switcher'),
             hd.Class(cn(BOTTOM_DIALOG_CLASS, props.class)),
-            ...dragTrackingAttributes(dispatch, activeDetents, swiping, hd),
           ],
           isVisible && activeSheet !== undefined
             ? [
+                hd.h2([...title, hd.Class(SR_ONLY_CLASS)], [activeSheet.label]),
                 hd.div(
                   [
                     ...(activeSheet.purpose === 'info' ? backdrop : []),
                     hd.DataAttribute('slot', 'sheet-switcher-scrim'),
+                    ...(swiping ? [hd.DataAttribute('swiping', '')] : []),
                     hd.Class(SCRIM_CLASS),
                     hd.Style({
                       opacity: String(
@@ -957,7 +898,7 @@ export const sheetSwitcher = <Msg>(
                     hd.Class(POSITIONER_CLASS),
                   ],
                   [
-                    ...(previousId === undefined
+                    ...(previousId === undefined || previousId === activeId
                       ? []
                       : props.sheets
                           .filter(spec => spec.id === previousId)

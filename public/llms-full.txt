@@ -1889,7 +1889,7 @@ Examples: Basic, Side, No Close Button, RTL, Bottom, Bottom — Height Variants,
 - `OVERSCROLL_PADDING: value` (value)
 - `HEIGHT_BUDGETS: value` (value)
 - `SheetSide = 'top' | 'right' | 'bottom' | 'left'` (type)
-- `isSheetDragCandidate(target: unknown): false | 'handle' | 'arm'` (function)
+- `isSheetDragCandidate: value` (value)
 - `SheetDragDispatch<Msg> = Readonly<{ started: (frame: { y: number; timeStamp: number; armOnly: boolean; }) => Msg; dragged: (frame: { y: number; timeStamp: number; detents: number[]; }) => Msg; ended: (frame: { y: number; timeStamp: number; detents: number[]; …` (type)
 - `SheetSlots = Readonly<{ closeButton: ReadonlyArray<ChildAttribute>; initialFocusAttributes: () => ReadonlyArray<ChildAttribute>; }>` (type)
 - `SheetPartProps = Readonly<{ children: ReadonlyArray<Html | string>; class?: string; }>` (type)

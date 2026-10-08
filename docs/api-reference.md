@@ -1569,7 +1569,7 @@ Source: [`src/ui/sheet.ts`](../src/ui/sheet.ts)
 | `OVERSCROLL_PADDING` | value | `OVERSCROLL_PADDING: value` |
 | `HEIGHT_BUDGETS` | value | `HEIGHT_BUDGETS: value` |
 | `SheetSide` | type | `SheetSide = 'top' \| 'right' \| 'bottom' \| 'left'` |
-| `isSheetDragCandidate` | function | `isSheetDragCandidate(target: unknown): false \| 'handle' \| 'arm'` |
+| `isSheetDragCandidate` | value | `isSheetDragCandidate: value` |
 | `SheetDragDispatch` | type | `SheetDragDispatch<Msg> = Readonly<{ started: (frame: { y: number; timeStamp: number; armOnly: boolean; }) => Msg; dragged: (frame: { y: number; timeStamp: number; detents: number[]; }) => Msg; ended: (frame: { y: number; timeStamp: number; detents: number[]; …` |
 | `SheetSlots` | type | `SheetSlots = Readonly<{ closeButton: ReadonlyArray<ChildAttribute>; initialFocusAttributes: () => ReadonlyArray<ChildAttribute>; }>` |
 | `SheetPartProps` | type | `SheetPartProps = Readonly<{ children: ReadonlyArray<Html \| string>; class?: string; }>` |

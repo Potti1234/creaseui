@@ -10,6 +10,7 @@ import {
   Stream,
 } from 'effect'
 import * as Command from 'foldkit/command'
+import * as Dom from 'foldkit/dom'
 import { defineMessageUnion } from 'foldkit/message'
 import * as Mount from 'foldkit/mount'
 import { Dialog } from '@foldkit/ui'
@@ -35,6 +36,7 @@ export const PEEK_MAX_HEIGHT_RATIO = 0.25
 export const MIN_PEEK_SCRIM_OPACITY = 0.3
 /** Reserved bottom padding the overscroll lift reveals (px). */
 export const OVERSCROLL_PADDING = 48
+export const SHEET_MOTION_MS = 450
 /** A flick (fast throw) dismisses down / expands up regardless of landing. */
 export const FLICK_VELOCITY = 1.2 // px/ms
 export const FLICK_MIN_DISTANCE = 48 // px traveled during the gesture
@@ -369,10 +371,7 @@ export const settleDrag = (
     dismiss: true,
   })
   if (gesture.dragPhase === 'Arming') {
-    return {
-      gesture: { ...initGesture(), sheetHeight: gesture.sheetHeight },
-      dismiss: false,
-    }
+    return at(gesture.dragBaseOffset)
   }
   const isFlick =
     Math.abs(velocity) > FLICK_VELOCITY && travel > FLICK_MIN_DISTANCE
@@ -451,7 +450,7 @@ export type InitConfig = Dialog.InitConfig &
   }>
 
 export const init = (config: InitConfig): Model => ({
-  dialog: Dialog.init(config),
+  dialog: Dialog.init({ ...config, isAnimated: config.isAnimated ?? true }),
   purpose: config.purpose ?? 'info',
   hasScrim: config.hasScrim ?? true,
   height: config.height ?? 'capped',
@@ -480,7 +479,7 @@ const mapDialogResult = (
 const ExitSheet = Command.define('SheetExit', {
   messages: [Message.CompletedSheetExit],
   execute: Effect.as(
-    Effect.sleep(Duration.millis(320)),
+    Effect.sleep(Duration.millis(SHEET_MOTION_MS)),
     Message.CompletedSheetExit(),
   ),
 })
@@ -531,6 +530,7 @@ export const update = (model: Model, message: Message): UpdateReturn => {
         },
       }
     case 'CancelledSheetDrag': {
+      if (model.gesture.dragPhase === 'Idle') return { model }
       const peek = peekOffsetFor(message.detents, model.gesture.sheetHeight)
       return {
         model: {
@@ -603,10 +603,13 @@ export const SwitcherModel = S.Struct({
   sheets: S.Record(S.String, SheetState),
   activeSheetId: S.Option(S.String),
   previousSheetId: S.Option(S.String),
+  switchGeneration: S.Number,
 })
 export type SwitcherModel = typeof SwitcherModel.Type
 
 export const SwitcherMessage = defineMessageUnion({
+  CompletedRetainedSheet: { generation: S.Number },
+  CompletedFocusSwitcherSheet: {},
   GotSwitcherDialogMessage: { message: Dialog.Message },
   RequestedSheet: { sheetId: S.String },
   RequestedSwitcherDismiss: {},
@@ -643,7 +646,7 @@ export type SwitcherInitConfig = Dialog.InitConfig &
   }>
 
 export const initSwitcher = (config: SwitcherInitConfig): SwitcherModel => ({
-  dialog: Dialog.init(config),
+  dialog: Dialog.init({ ...config, isAnimated: config.isAnimated ?? true }),
   hasScrim: config.hasScrim ?? true,
   sheets: Object.fromEntries(
     config.sheets.map(sheet => [
@@ -660,6 +663,26 @@ export const initSwitcher = (config: SwitcherInitConfig): SwitcherModel => ({
   ),
   activeSheetId: Option.none(),
   previousSheetId: Option.none(),
+  switchGeneration: 0,
+})
+
+const RemoveRetainedSheet = Command.define('RemoveRetainedSheet', {
+  args: { generation: S.Number },
+  messages: [SwitcherMessage.CompletedRetainedSheet],
+  execute: ({ generation }) =>
+    Effect.sleep(Duration.millis(SHEET_MOTION_MS)).pipe(
+      Effect.as(SwitcherMessage.CompletedRetainedSheet({ generation })),
+    ),
+})
+
+const FocusSwitcherSheet = Command.define('FocusSwitcherSheet', {
+  args: { dialogId: S.String },
+  messages: [SwitcherMessage.CompletedFocusSwitcherSheet],
+  execute: ({ dialogId }) =>
+    Dom.focus(`[id="${dialogId}-panel"]`, { preventScroll: true }).pipe(
+      Effect.ignore,
+      Effect.as(SwitcherMessage.CompletedFocusSwitcherSheet()),
+    ),
 })
 
 type SwitcherUpdateReturn = Update.ReturnWithOutMessage<
@@ -707,6 +730,12 @@ export const updateSwitcher = (
   const activeSheet =
     activeId === undefined ? undefined : model.sheets[activeId]
   switch (message._tag) {
+    case 'CompletedRetainedSheet':
+      return message.generation === model.switchGeneration
+        ? { model: { ...model, previousSheetId: Option.none() } }
+        : { model }
+    case 'CompletedFocusSwitcherSheet':
+      return { model }
     case 'GotSwitcherDialogMessage': {
       if (
         activeSheet !== undefined &&
@@ -738,10 +767,14 @@ export const updateSwitcher = (
       ) {
         return { model }
       }
-      const previousId = Option.getOrUndefined(model.activeSheetId)
+      const previousId = model.dialog.isOpen
+        ? Option.getOrUndefined(model.activeSheetId)
+        : undefined
+      const generation = model.switchGeneration + 1
       const nextModel: SwitcherModel = {
         ...model,
         previousSheetId: Option.fromNullishOr(previousId),
+        switchGeneration: generation,
         activeSheetId: Option.some(message.sheetId),
         sheets: Object.fromEntries(
           Object.entries(model.sheets).map(([id, sheet]) => [
@@ -766,7 +799,15 @@ export const updateSwitcher = (
       if (!model.dialog.isOpen) {
         return mapSwitcherDialog(nextModel, Dialog.open(model.dialog))
       }
-      return { model: nextModel }
+      return {
+        model: nextModel,
+        commands: [
+          FocusSwitcherSheet({ dialogId: model.dialog.id }),
+          ...(previousId === undefined
+            ? []
+            : [RemoveRetainedSheet({ generation })]),
+        ],
+      }
     }
     case 'RequestedSwitcherDismiss': {
       if (activeSheet !== undefined && activeSheet.purpose === 'required') {
@@ -794,6 +835,7 @@ export const updateSwitcher = (
       }
     case 'CancelledSheetDrag': {
       if (activeSheet === undefined) return { model }
+      if (activeSheet.gesture.dragPhase === 'Idle') return { model }
       const peek = peekOffsetFor(
         message.detents,
         activeSheet.gesture.sheetHeight,
@@ -851,61 +893,229 @@ export const openSheet = (
 export const closeSwitcher = (model: SwitcherModel): SwitcherUpdateReturn =>
   updateSwitcher(model, SwitcherMessage.RequestedSwitcherDismiss())
 
-/** Observes a panel's rendered height (the measured box includes the
-    OVERSCROLL_PADDING that hangs below the viewport edge). */
-export const ObserveSheet = Mount.defineStream('ObserveSheetPanel', {
-  messages: [Message.MeasuredSheet],
-  execute: ({ element }) =>
-    Stream.callback<typeof Message.MeasuredSheet.Type>(queue =>
-      Effect.gen(function* () {
-        yield* Effect.acquireRelease(
-          Effect.sync(() => {
-            if (!(element instanceof HTMLElement)) return undefined
-            const emit = () =>
-              Queue.offerUnsafe(
-                queue,
-                Message.MeasuredSheet({ height: element.offsetHeight }),
+export const isSheetDragCandidate = (
+  target: unknown,
+): false | 'handle' | 'arm' => {
+  if (!(target instanceof HTMLElement)) return false
+  if (target.closest('[data-slot="sheet-handle"]') !== null) return 'handle'
+  if (
+    target.closest(
+      'input, textarea, select, button, a, [contenteditable], [role="checkbox"], [role="radio"], [role="slider"]',
+    ) !== null
+  )
+    return false
+  const body = target.closest('[data-slot="sheet-body"]')
+  return body !== null && body.scrollTop <= 0 ? 'arm' : false
+}
+
+type PanelDispatch<Msg> = Readonly<{
+  measured: (height: number) => Msg
+  started: (frame: DragFrame & { armOnly: boolean }) => Msg
+  dragged: (frame: DragFrame & { detents: number[] }) => Msg
+  ended: (frame: DragFrame & { detents: number[] }) => Msg
+  cancelled: (detents: number[]) => Msg
+}>
+
+type PanelMessageTag =
+  | 'MeasuredSheet'
+  | 'StartedSheetDrag'
+  | 'DraggedSheet'
+  | 'EndedSheetDrag'
+  | 'CancelledSheetDrag'
+
+/** Keep measurements independent of the animated, collapsed panel height. */
+const observePanel = <Msg>(
+  element: Element,
+  height: SheetHeight,
+  snapPoints: ReadonlyArray<SheetSnapPoint>,
+  dispatch: PanelDispatch<Msg>,
+) =>
+  Stream.callback<Msg>(queue =>
+    Effect.gen(function* () {
+      yield* Effect.acquireRelease(
+        Effect.sync(() => {
+          if (!(element instanceof HTMLElement)) return undefined
+          const body = element.querySelector('[data-slot="sheet-body-content"]')
+          const expandedHeight = () => {
+            const viewport = window.innerHeight
+            if (height === 'hug' && body instanceof HTMLElement) {
+              const style = getComputedStyle(element)
+              const natural =
+                body.scrollHeight +
+                Number.parseFloat(style.paddingBottom) +
+                Number.parseFloat(style.borderTopWidth) +
+                Number.parseFloat(style.borderBottomWidth)
+              return Math.min(
+                natural,
+                HEIGHT_BUDGETS.hug * viewport + OVERSCROLL_PADDING,
               )
-            const resize = new ResizeObserver(emit)
-            resize.observe(element)
-            emit()
-            return resize
-          }),
-          resize => Effect.sync(() => resize?.disconnect()),
-        )
-        return yield* Effect.never
-      }),
+            }
+            if (height === 'capped' || height === 'tall')
+              return HEIGHT_BUDGETS[height] * viewport + OVERSCROLL_PADDING
+            if (typeof height === 'number') return height + OVERSCROLL_PADDING
+            if (/^[\d.]+(?:%|d?vh)$/.test(height))
+              return (
+                (Number.parseFloat(height) / 100) * viewport +
+                OVERSCROLL_PADDING
+              )
+            if (/^[\d.]+px$/.test(height))
+              return Number.parseFloat(height) + OVERSCROLL_PADDING
+            const offset =
+              Number.parseFloat(
+                element.style.getPropertyValue('--sheet-layout-offset'),
+              ) || 0
+            const known =
+              Number.parseFloat(
+                element.style.getPropertyValue('--sheet-expanded-height'),
+              ) || 0
+            return offset > 0 && known > 0 ? known : element.offsetHeight
+          }
+          const detents = () => [
+            ...computeDetentOffsets(
+              expandedHeight(),
+              resolveSnapPoints(snapPoints, window.innerHeight),
+            ),
+          ]
+          let previousHeight = 0
+          const emit = () => {
+            const measured = expandedHeight()
+            if (measured > 0 && measured !== previousHeight) {
+              previousHeight = measured
+              Queue.offerUnsafe(queue, dispatch.measured(measured))
+            }
+          }
+          let pointerId: number | undefined
+          const onDown = (event: PointerEvent) => {
+            if (
+              event.button !== 0 ||
+              !event.isPrimary ||
+              pointerId !== undefined ||
+              element.inert ||
+              element.hasAttribute('data-leave')
+            )
+              return
+            const candidate = isSheetDragCandidate(event.target)
+            if (candidate === false) return
+            if (candidate === 'handle') event.preventDefault()
+            pointerId = event.pointerId
+            element.setPointerCapture(pointerId)
+            Queue.offerUnsafe(
+              queue,
+              dispatch.started({
+                y: event.clientY,
+                timeStamp: event.timeStamp,
+                armOnly: candidate === 'arm',
+              }),
+            )
+          }
+          const onMove = (event: PointerEvent) => {
+            if (event.pointerId !== pointerId) return
+            Queue.offerUnsafe(
+              queue,
+              dispatch.dragged({
+                y: event.clientY,
+                timeStamp: event.timeStamp,
+                detents: detents(),
+              }),
+            )
+          }
+          const onUp = (event: PointerEvent) => {
+            if (event.pointerId !== pointerId) return
+            pointerId = undefined
+            Queue.offerUnsafe(
+              queue,
+              dispatch.ended({
+                y: event.clientY,
+                timeStamp: event.timeStamp,
+                detents: detents(),
+              }),
+            )
+          }
+          const onCancel = (event: PointerEvent) => {
+            if (event.pointerId !== pointerId) return
+            pointerId = undefined
+            Queue.offerUnsafe(queue, dispatch.cancelled(detents()))
+          }
+          const resize = new ResizeObserver(emit)
+          resize.observe(element)
+          if (body !== null) resize.observe(body)
+          window.addEventListener('resize', emit)
+          element.addEventListener('pointerdown', onDown)
+          element.addEventListener('pointermove', onMove)
+          element.addEventListener('pointerup', onUp)
+          element.addEventListener('pointercancel', onCancel)
+          element.addEventListener('lostpointercapture', onCancel)
+          emit()
+          return () => {
+            resize.disconnect()
+            window.removeEventListener('resize', emit)
+            element.removeEventListener('pointerdown', onDown)
+            element.removeEventListener('pointermove', onMove)
+            element.removeEventListener('pointerup', onUp)
+            element.removeEventListener('pointercancel', onCancel)
+            element.removeEventListener('lostpointercapture', onCancel)
+            if (pointerId !== undefined && element.hasPointerCapture(pointerId))
+              element.releasePointerCapture(pointerId)
+          }
+        }),
+        release => Effect.sync(() => release?.()),
+      )
+      return yield* Effect.never
+    }),
+  )
+
+export const ObserveSheet = Mount.defineStream('ObserveSheetPanel', {
+  args: { height: SheetHeight, snapPoints: S.Array(SnapPoint) },
+  messages: [
+    Message.MeasuredSheet,
+    Message.StartedSheetDrag,
+    Message.DraggedSheet,
+    Message.EndedSheetDrag,
+    Message.CancelledSheetDrag,
+  ],
+  execute: ({ element, height, snapPoints }) =>
+    observePanel<Extract<Message, { _tag: PanelMessageTag }>>(
+      element,
+      height,
+      snapPoints,
+      {
+        measured: height => Message.MeasuredSheet({ height }),
+        started: Message.StartedSheetDrag,
+        dragged: Message.DraggedSheet,
+        ended: Message.EndedSheetDrag,
+        cancelled: detents => Message.CancelledSheetDrag({ detents }),
+      },
     ),
 })
 
 export const ObserveSwitcherSheet = Mount.defineStream(
   'ObserveSheetSwitcherPanel',
   {
-    args: { sheetId: S.String },
-    messages: [SwitcherMessage.MeasuredSheet],
-    execute: ({ element, sheetId }) =>
-      Stream.callback<typeof SwitcherMessage.MeasuredSheet.Type>(queue =>
-        Effect.gen(function* () {
-          yield* Effect.acquireRelease(
-            Effect.sync(() => {
-              if (!(element instanceof HTMLElement)) return undefined
-              const emit = () =>
-                Queue.offerUnsafe(
-                  queue,
-                  SwitcherMessage.MeasuredSheet({
-                    sheetId,
-                    height: element.offsetHeight,
-                  }),
-                )
-              const resize = new ResizeObserver(emit)
-              resize.observe(element)
-              emit()
-              return resize
-            }),
-            resize => Effect.sync(() => resize?.disconnect()),
-          )
-          return yield* Effect.never
-        }),
+    args: {
+      sheetId: S.String,
+      height: SheetHeight,
+      snapPoints: S.Array(SnapPoint),
+    },
+    messages: [
+      SwitcherMessage.MeasuredSheet,
+      SwitcherMessage.StartedSheetDrag,
+      SwitcherMessage.DraggedSheet,
+      SwitcherMessage.EndedSheetDrag,
+      SwitcherMessage.CancelledSheetDrag,
+    ],
+    execute: ({ element, sheetId, height, snapPoints }) =>
+      observePanel<Extract<SwitcherMessage, { _tag: PanelMessageTag }>>(
+        element,
+        height,
+        snapPoints,
+        {
+          measured: height =>
+            SwitcherMessage.MeasuredSheet({ sheetId, height }),
+          started: SwitcherMessage.StartedSheetDrag,
+          dragged: SwitcherMessage.DraggedSheet,
+          ended: SwitcherMessage.EndedSheetDrag,
+          cancelled: detents => SwitcherMessage.CancelledSheetDrag({ detents }),
+        },
       ),
   },
 )
