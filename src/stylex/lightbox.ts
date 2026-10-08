@@ -174,6 +174,8 @@ const styles = stylex.create({
       ':focus-visible': 'solid',
     },
     outlineWidth: '2px',
+    touchAction: 'none',
+    userSelect: 'none',
   },
 })
 
@@ -263,13 +265,7 @@ const mediaView = <Msg>(
                 ? Option.some(send(Message.ToggledZoom()))
                 : Option.none(),
             ),
-            h.OnPointerDown((_pointerType, button, screenX, screenY) =>
-              button === 0 && isZoomed
-                ? Option.some(
-                    send(Message.StartedPan({ x: screenX, y: screenY })),
-                  )
-                : Option.none(),
-            ),
+            h.OnMount(LightboxBehavior.mediaMount(send)),
             h.Style({
               cursor: isPanning ? 'grabbing' : isZoomed ? 'grab' : 'zoom-in',
             }),
@@ -329,7 +325,6 @@ export const lightbox = <Msg>(
         isVisible,
       }: DialogPrimitive.RenderInfo) => {
         const hd = h
-        const panAnchored = Option.isSome(model.panAnchor)
         return hd.dialog(
           [
             ...dialogAttributes,
@@ -389,23 +384,6 @@ export const lightbox = <Msg>(
                   [
                     hd.DataAttribute('slot', 'lightbox-container'),
                     hd.Class(className(styles.container)),
-                    hd.OnPointerMove((screenX, screenY) =>
-                      panAnchored
-                        ? Option.some(
-                            send(Message.MovedPan({ x: screenX, y: screenY })),
-                          )
-                        : Option.none(),
-                    ),
-                    hd.OnPointerUp(() =>
-                      panAnchored
-                        ? Option.some(send(Message.EndedPan()))
-                        : Option.none(),
-                    ),
-                    hd.OnPointerLeave(() =>
-                      panAnchored
-                        ? Option.some(send(Message.CancelledPan()))
-                        : Option.none(),
-                    ),
                   ],
                   [
                     hd.div(

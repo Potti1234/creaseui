@@ -5,7 +5,13 @@ import { Option } from 'effect'
 
 import * as Lightbox from '../src/lib/lightbox.ts'
 
-const make = (mediaCount = 4) => Lightbox.init({ id: 'lb', mediaCount })
+const make = (mediaCount = 4) =>
+  Lightbox.update(
+    Lightbox.init({ id: 'lb', mediaCount }),
+    Lightbox.Message.MeasuredMedia({
+      size: { width: 800, height: 600, frameWidth: 800, frameHeight: 600 },
+    }),
+  ).model
 
 test('gallery navigation clamps at bounds and resets zoom', () => {
   const model = make()
@@ -81,4 +87,88 @@ test('open at an index resets transient media state', () => {
   assert.equal(opened.index, 0)
   assert.equal(opened.zoom, 1)
   assert.equal(opened.panX, 0)
+})
+
+test('pointer and keyboard panning stop at the scaled image edges', () => {
+  const zoomed = Lightbox.update(make(), Lightbox.Message.ZoomedIn()).model
+  const keyboard = Lightbox.update(
+    zoomed,
+    Lightbox.Message.PannedBy({ dx: 10000, dy: -10000 }),
+  ).model
+  assert.equal(keyboard.panX, 400)
+  assert.equal(keyboard.panY, -300)
+
+  const started = Lightbox.update(
+    zoomed,
+    Lightbox.Message.StartedPan({ x: 0, y: 0 }),
+  ).model
+  const dragged = Lightbox.update(
+    started,
+    Lightbox.Message.MovedPan({ x: -10000, y: 10000 }),
+  ).model
+  assert.equal(dragged.panX, -400)
+  assert.equal(dragged.panY, 300)
+
+  // Reversing immediately moves away from the edge, even after overshooting.
+  const reversed = Lightbox.update(
+    dragged,
+    Lightbox.Message.MovedPan({ x: -9980, y: 9980 }),
+  ).model
+  assert.equal(reversed.panX, -380)
+  assert.equal(reversed.panY, 280)
+})
+
+test('new media dimensions reclamp offsets and leave fitting axes centered', () => {
+  const model = {
+    ...make(),
+    zoom: Lightbox.ZOOMED_SCALE,
+    panX: 400,
+    panY: -300,
+  }
+  const started = Lightbox.update(
+    model,
+    Lightbox.Message.StartedPan({ x: 0, y: 0 }),
+  ).model
+  const resized = Lightbox.update(
+    started,
+    Lightbox.Message.MeasuredMedia({
+      size: { width: 200, height: 100, frameWidth: 200, frameHeight: 300 },
+    }),
+  ).model
+  assert.equal(resized.panX, 100)
+  assert.equal(resized.panY, 0)
+  const moved = Lightbox.update(
+    resized,
+    Lightbox.Message.MovedPan({ x: -20, y: 20 }),
+  ).model
+  assert.equal(moved.panX, 80)
+  assert.equal(moved.panY, 0)
+})
+
+test('panning waits for the image dimensions and stops after cancellation', () => {
+  const unmeasured = {
+    ...Lightbox.init({ id: 'lb' }),
+    zoom: Lightbox.ZOOMED_SCALE,
+  }
+  const beforeLoad = Lightbox.update(
+    unmeasured,
+    Lightbox.Message.PannedBy({ dx: 100, dy: 100 }),
+  ).model
+  assert.equal(beforeLoad.panX, 0)
+  assert.equal(beforeLoad.panY, 0)
+
+  const started = Lightbox.update(
+    { ...make(), zoom: Lightbox.ZOOMED_SCALE },
+    Lightbox.Message.StartedPan({ x: 0, y: 0 }),
+  ).model
+  const cancelled = Lightbox.update(
+    started,
+    Lightbox.Message.CancelledPan(),
+  ).model
+  const moved = Lightbox.update(
+    cancelled,
+    Lightbox.Message.MovedPan({ x: 100, y: 100 }),
+  ).model
+  assert.equal(moved.panX, 0)
+  assert.equal(moved.panY, 0)
 })
