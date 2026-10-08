@@ -16,6 +16,8 @@ export const update = MenubarBehavior.update
 export type MenubarMenu<Item extends string, Msg> = Readonly<{
   id: string
   label: string
+  isSelected?: boolean
+  onSelect?: Msg
   model: DropdownMenu.Model
   toParentMessage: (message: DropdownMenu.Message) => Msg
   items: ReadonlyArray<Item>
@@ -43,9 +45,9 @@ type LegacyMenubarProps<Item extends string, Msg> = SharedProps<Item, Msg> &
   }>
 
 const ROOT_CLASS =
-  'flex h-9 items-center gap-1 rounded-md border bg-background p-1 shadow-xs'
+  'relative isolate flex h-9 items-center gap-1 rounded-md border bg-background p-1 shadow-xs'
 const TRIGGER_CLASS =
-  'rounded-sm px-2 py-1 text-sm font-medium outline-none hover:bg-accent focus-visible:bg-accent data-[state=open]:bg-accent'
+  'relative z-50 rounded-sm px-2 py-1 text-sm font-medium outline-none hover:bg-accent focus-visible:bg-accent'
 
 const menuView = <Item extends string, Msg>(
   props: SharedProps<Item, Msg>,
@@ -62,17 +64,15 @@ const menuView = <Item extends string, Msg>(
       h.DataAttribute('slot', 'menubar'),
       h.AriaLabel(props.ariaLabel ?? 'Application menu'),
       ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
-      h.Class(cn(ROOT_CLASS, props.class)),
+      // Keep all triggers above the open menu's backdrop in one stacking context.
+      h.Class(cn(ROOT_CLASS, anyOpen && 'z-50', props.class)),
     ],
     props.menus.map((menu, index) =>
       h.div(
         [
           h.Role('none'),
           h.DataAttribute('slot', 'menubar-menu'),
-          // While a menu is open the open menu's backdrop (z-40) would otherwise
-          // sit above the sibling triggers; raise them so clicking or hovering
-          // another trigger can reach it.
-          h.Class(anyOpen ? 'relative z-50' : 'relative'),
+          h.Class('relative'),
           ...menuAttributes(index),
         ],
         [
@@ -83,9 +83,15 @@ const menuView = <Item extends string, Msg>(
               trigger: menu.label,
               triggerTabindex: activeIndex === index ? 0 : -1,
               triggerRole: 'menuitem',
+              triggerIsSelected: menu.isSelected ?? false,
+              ...(menu.onSelect === undefined
+                ? {}
+                : { onTriggerActivate: menu.onSelect }),
               triggerClass: cn(
                 TRIGGER_CLASS,
-                activeIndex === index ? 'bg-accent' : undefined,
+                menu.isSelected
+                  ? 'underline decoration-2 underline-offset-4'
+                  : undefined,
               ),
               items: menu.items,
               itemToConfig: menu.itemToConfig,

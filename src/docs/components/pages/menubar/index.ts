@@ -17,7 +17,7 @@ export const menubarPage = authoredPage({
     composition:
       'Parent Menubar state\n├── active top-level index\n├── File Dropdown Menu Model\n├── Edit Dropdown Menu Model\n└── View Dropdown Menu Model\n    └── each emits typed Action OutMessage',
     styling:
-      'Menubars suit desktop-style applications with stable command categories. On narrow consumer layouts, provide an alternative navigation pattern rather than forcing horizontal overflow.',
+      "Hover and keyboard focus highlight a trigger. Use each menu's parent-owned isSelected and onSelect inputs to underline the last activated category independently of roving focus. Menubars suit desktop-style applications with stable command categories; provide an alternative navigation pattern on narrow consumer layouts.",
     accessibility:
       'The wrapper exposes a named menubar and each child retains menu/menuitem semantics. Horizontal arrows move between top-level menus; vertical arrows remain inside the active child.',
     keyboard: [

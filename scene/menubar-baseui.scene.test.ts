@@ -48,11 +48,13 @@ type Model = Readonly<{
   edit: TailwindDropdownMenu.Model
   view: TailwindDropdownMenu.Model
   layout: string
+  selectedMenu: MenuId | null
 }>
 
 type Message = Readonly<
   | { _tag: 'GotMenuMessage'; target: MenuId; message: Behavior.MenuMessage }
   | { _tag: 'GotMenubarMessage'; message: MenubarBehavior.Message }
+  | { _tag: 'SelectedMenu'; target: MenuId }
 >
 
 const gotMenu =
@@ -74,6 +76,7 @@ const initialModel = (): Model => ({
   edit: TailwindDropdownMenu.init({ id: 'menu-edit' }),
   view: TailwindDropdownMenu.init({ id: 'menu-view' }),
   layout: 'single',
+  selectedMenu: null,
 })
 
 const openMessage: Behavior.MenuMessage = { _tag: 'Opened' }
@@ -87,6 +90,8 @@ const update = (
   message: Message,
 ): { model: Model; commands?: ReadonlyArray<Command.AnyCommand> } => {
   switch (message._tag) {
+    case 'SelectedMenu':
+      return { model: { ...model, selectedMenu: message.target } }
     case 'GotMenuMessage': {
       const op = Behavior.update(model[message.target], message.message)
       const selected = Option.isSome(op.selection)
@@ -229,6 +234,8 @@ const verifyRenderer = (name: string, Menubar: MenubarModule) => {
             {
               id: 'file',
               label: 'File',
+              isSelected: model.selectedMenu === 'file',
+              onSelect: { _tag: 'SelectedMenu', target: 'file' },
               model: model.file,
               toParentMessage: gotMenu('file'),
               items: options?.fileItems ?? FILE_ITEMS,
@@ -237,6 +244,8 @@ const verifyRenderer = (name: string, Menubar: MenubarModule) => {
             {
               id: 'edit',
               label: 'Edit',
+              isSelected: model.selectedMenu === 'edit',
+              onSelect: { _tag: 'SelectedMenu', target: 'edit' },
               model: model.edit,
               toParentMessage: gotMenu('edit'),
               items: EDIT_ITEMS,
@@ -245,6 +254,8 @@ const verifyRenderer = (name: string, Menubar: MenubarModule) => {
             {
               id: 'view',
               label: 'View',
+              isSelected: model.selectedMenu === 'view',
+              onSelect: { _tag: 'SelectedMenu', target: 'view' },
               model: model.view,
               toParentMessage: gotMenu('view'),
               items: VIEW_ITEMS,
@@ -256,6 +267,42 @@ const verifyRenderer = (name: string, Menubar: MenubarModule) => {
       )
 
   describe(`${name} Menubar (Base UI port)`, () => {
+    describe('controlled selection', () => {
+      it('starts unselected and retains only the last clicked menu through hover and dismissal', () => {
+        Scene.scene(
+          { update, view: fixtureView() },
+          Scene.given(initialModel()),
+          Scene.expect(fileTrigger).not.toHaveAttr('aria-current'),
+          Scene.expect(editTrigger).not.toHaveAttr('aria-current'),
+          Scene.click(fileTrigger),
+          Scene.expect(fileTrigger).toHaveAttr('aria-current', 'true'),
+          Scene.hover(menuWrap(1)),
+          Scene.expect(fileTrigger).toHaveAttr('aria-current', 'true'),
+          Scene.expect(editTrigger).not.toHaveAttr('aria-current'),
+          Scene.click(editTrigger),
+          Scene.expect(fileTrigger).not.toHaveAttr('aria-current'),
+          Scene.expect(editTrigger).toHaveAttr('aria-current', 'true'),
+          Scene.expect(editMenu).toBeAbsent(),
+        )
+      })
+
+      it('selects on keyboard activation and keeps selection separate from focus movement', () => {
+        Scene.scene(
+          { update, view: fixtureView() },
+          Scene.given(initialModel()),
+          Scene.keydown(fileTrigger, 'Enter'),
+          Scene.expect(fileTrigger).toHaveAttr('aria-current', 'true'),
+          Scene.keydown(menuWrap(0), 'ArrowRight'),
+          resolveFocus,
+          Scene.expect(fileTrigger).toHaveAttr('aria-current', 'true'),
+          Scene.expect(editTrigger).not.toHaveAttr('aria-current'),
+          Scene.keydown(editTrigger, ' '),
+          Scene.expect(fileTrigger).not.toHaveAttr('aria-current'),
+          Scene.expect(editTrigger).toHaveAttr('aria-current', 'true'),
+        )
+      })
+    })
+
     describe('role', () => {
       it('sets role="menubar" on the root element', () => {
         Scene.scene(

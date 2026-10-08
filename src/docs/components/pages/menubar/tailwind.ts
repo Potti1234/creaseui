@@ -29,6 +29,7 @@ const MenubarPreviewModel = S.Struct({
   theme: DropdownMenu.Model,
   more: DropdownMenu.Model,
   menubar: Menubar.Model,
+  selectedMenu: S.Option(MenuTarget),
   menuTargets: S.Array(MenuTarget),
   checkedBookmarksBar: S.Boolean,
   checkedFullUrls: S.Boolean,
@@ -41,6 +42,7 @@ const MenubarPreviewModel = S.Struct({
 type MenubarPreviewModel = S.Schema.Type<typeof MenubarPreviewModel>
 
 const MenubarPreviewMessage = defineMessageUnion({
+  SelectedMenubarMenu: { target: MenuTarget },
   GotMenuMessage: { target: MenuTarget, message: DropdownMenu.Message },
   GotMenubarMessage: { message: Menubar.Message },
 })
@@ -130,6 +132,7 @@ export const menubarTailwindPreviewProgram = definePreviewProgram<
       theme: DropdownMenu.init({ id: `menu-theme-${String(index)}` }),
       more: DropdownMenu.init({ id: `menu-more-${String(index)}` }),
       menubar: Menubar.init({ id: `application-menubar-${String(index)}` }),
+      selectedMenu: Option.none(),
       menuTargets: menubarSpecs[fixture.kind].map(menu => menu.target),
       checkedBookmarksBar: false,
       checkedFullUrls: true,
@@ -142,6 +145,10 @@ export const menubarTailwindPreviewProgram = definePreviewProgram<
   },
   update: (model, message) => {
     switch (message._tag) {
+      case 'SelectedMenubarMenu':
+        return {
+          model: { ...model, selectedMenu: Option.some(message.target) },
+        }
       case 'GotMenuMessage': {
         const menuOp = ActionMenu.update(model[message.target], message.message)
         const commands = menuOp.commands ?? []
@@ -218,6 +225,10 @@ export const menubarTailwindPreviewProgram = definePreviewProgram<
             menus: spec.map(menu => ({
               id: `menu-${menu.target}-${String(index)}`,
               label: menu.label,
+              isSelected: Option.contains(model.selectedMenu, menu.target),
+              onSelect: MenubarPreviewMessage.SelectedMenubarMenu({
+                target: menu.target,
+              }),
               model: model[menu.target],
               ...(menu.contentWidth === undefined
                 ? {}

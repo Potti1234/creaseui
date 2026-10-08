@@ -511,6 +511,8 @@ const emitMenu = (menu: MenubarSpecMenu, isStyleX: boolean): string => {
   return `{
 ${indent}  id: 'menu-${menu.target}',
 ${indent}  label: '${sq(menu.label)}',
+${indent}  isSelected: Option.contains(model.selectedMenu, '${menu.target}'),
+${indent}  onSelect: Message.SelectedMenubarMenu({ target: '${menu.target}' }),
 ${indent}  model: model.${menu.target},${widthProp}
 ${indent}  toParentMessage: message => Message.GotMenuMessage({ target: '${menu.target}', message }),
 ${indent}  items: [${menu.items.map(item => `'${item.id}'`).join(', ')}],
@@ -562,6 +564,7 @@ export const Model = S.Struct({
   theme: DropdownMenu.Model,
   more: DropdownMenu.Model,
   menubar: Menubar.Model,
+  selectedMenu: S.Option(MenuTarget),
   checkedBookmarksBar: S.Boolean,
   checkedFullUrls: S.Boolean,
   checkedStrikethrough: S.Boolean,
@@ -573,6 +576,7 @@ export const Model = S.Struct({
 export type Model = typeof Model.Type`
 
 const emitMessages = (): string => `export const Message = defineMessageUnion({
+  SelectedMenubarMenu: { target: MenuTarget },
   GotMenuMessage: { target: MenuTarget, message: DropdownMenu.Message },
   GotMenubarMessage: { message: Menubar.Message },
 })
@@ -588,6 +592,7 @@ const emitInit =
   theme: DropdownMenu.init({ id: 'menu-theme' }),
   more: DropdownMenu.init({ id: 'menu-more' }),
   menubar: Menubar.init({ id: 'application-menubar' }),
+  selectedMenu: Option.none(),
   checkedBookmarksBar: false,
   checkedFullUrls: true,
   checkedStrikethrough: true,
@@ -629,6 +634,8 @@ const applySelection = (model: Model, value: string): Model => {
 
 export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
+    case 'SelectedMenubarMenu':
+      return { model: { ...model, selectedMenu: Option.some(message.target) } }
     case 'GotMenuMessage': {
       const menuOp__ = ActionMenu.update(model[message.target], message.message)
       const menu = menuOp__.model

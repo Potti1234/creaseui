@@ -154,6 +154,9 @@ export type DropdownMenuProps<Item extends string, Msg> = Readonly<{
   /** aria-label on the trigger button — icon-only triggers need one. */
   triggerAriaLabel?: string
   triggerIsDisabled?: boolean
+  triggerIsSelected?: boolean
+  /** Selection of the trigger itself, separate from choosing a menu command. */
+  onTriggerActivate?: Msg
   items: ReadonlyArray<Item>
   itemToConfig: (item: Item) => DropdownMenuItemConfig<Item>
   align?: DropdownMenuAlign
@@ -510,6 +513,21 @@ export const dropdownMenu = <Item extends string, Msg>(
           h.Id(`${props.model.id}-trigger`),
           h.AriaExpanded(props.model.isOpen),
           h.AriaControls(`${props.model.id}-content`),
+          ...(props.triggerIsSelected === true
+            ? [h.DataAttribute('selected', ''), h.AriaCurrent('true')]
+            : []),
+          ...(props.onTriggerActivate === undefined ||
+          props.triggerIsDisabled === true
+            ? []
+            : [
+                h.OnClick(props.onTriggerActivate),
+                h.OnKeyDownPreventDefault(key =>
+                  (key === 'Enter' || key === ' ') &&
+                  props.onTriggerActivate !== undefined
+                    ? Option.some(props.onTriggerActivate)
+                    : Option.none(),
+                ),
+              ]),
           ...(props.triggerIsDisabled === true
             ? []
             : props.openOnContextMenu === true

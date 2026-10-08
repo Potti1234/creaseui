@@ -3610,7 +3610,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "MenubarMenu",
       "kind": "type",
-      "signature": "MenubarMenu<Item extends string, Msg> = Readonly<{ id: string; label: string; model: DropdownMenu.Model; toParentMessage: (message: DropdownMenu.Message) => Msg; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => DropdownMenu.DropdownMenuItemConfig<Ite…"
+      "signature": "MenubarMenu<Item extends string, Msg> = Readonly<{ id: string; label: string; isSelected?: boolean; onSelect?: Msg; model: DropdownMenu.Model; toParentMessage: (message: DropdownMenu.Message) => Msg; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => D…"
     },
     {
       "name": "MenubarProps",

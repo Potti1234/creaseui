@@ -1,5 +1,6 @@
 import { previewLayout } from '@/docs/components/preview-layout.stylex'
 import * as stylex from '@stylexjs/stylex'
+import { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
@@ -32,6 +33,7 @@ interface MenubarPreviewShape {
   readonly theme: DropdownMenu.Model
   readonly more: DropdownMenu.Model
   readonly menubar: Menubar.Model
+  readonly selectedMenu: Option.Option<string>
   readonly checkedBookmarksBar: boolean
   readonly checkedFullUrls: boolean
   readonly checkedStrikethrough: boolean
@@ -118,6 +120,10 @@ const menubarSxView = <Msg>(
           menus: spec.map(menu => ({
             id: `sx-menu-${menu.target}-${String(index)}`,
             label: menu.label,
+            isSelected: Option.contains(model.selectedMenu, menu.target),
+            onSelect: send(onMessageJson, 'SelectedMenubarMenu', {
+              target: menu.target,
+            }),
             model: model[menu.target],
             ...(menu.contentWidth === undefined
               ? {}

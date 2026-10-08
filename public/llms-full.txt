@@ -1469,7 +1469,7 @@ Examples: Basic, Checkbox, Radio, Submenu, With Icons, RTL
 - `OutMessage = MenubarBehavior.OutMessage` (type)
 - `init: value` (value)
 - `update: value` (value)
-- `MenubarMenu<Item extends string, Msg> = Readonly<{ id: string; label: string; model: DropdownMenu.Model; toParentMessage: (message: DropdownMenu.Message) => Msg; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => DropdownMenu.DropdownMenuItemConfig<Ite…` (type)
+- `MenubarMenu<Item extends string, Msg> = Readonly<{ id: string; label: string; isSelected?: boolean; onSelect?: Msg; model: DropdownMenu.Model; toParentMessage: (message: DropdownMenu.Message) => Msg; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => D…` (type)
 - `MenubarProps<Item extends string, Msg> = SharedProps<Item, Msg> & Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; }>` (type)
 - `menubar<Item extends string, Msg>(props: MenubarProps<Item, Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `menubar<Item extends string, Msg>(props: LegacyMenubarProps<Item, Msg>, h: HtmlBuilder<Msg>): Html` (function)

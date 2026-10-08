@@ -29,8 +29,11 @@ const styles = stylex.create({
     backgroundColor: tokens.background,
     boxShadow: tokens.shadowSm,
     display: 'flex',
+    isolation: 'isolate',
+    position: 'relative',
     height: '2.25rem',
   },
+  rootRaised: { zIndex: 50 },
   trigger: {
     borderRadius: foundationTokens.radiusSm,
     paddingBlock: '0.25rem',
@@ -44,28 +47,23 @@ const styles = stylex.create({
     fontWeight: 500,
     lineHeight: '1.25rem',
     outlineStyle: 'none',
-  },
-  triggerActive: {
-    borderRadius: foundationTokens.radiusSm,
-    paddingBlock: '0.25rem',
-    paddingInline: '0.5rem',
-    backgroundColor: {
-      default: tokens.accent,
-      ':focus-visible': tokens.accent,
-      ':hover': tokens.accent,
+    position: 'relative',
+    textDecorationLine: {
+      default: 'none',
+      ':is([data-selected])': 'underline',
     },
-    fontSize: '0.875rem',
-    fontWeight: 500,
-    lineHeight: '1.25rem',
-    outlineStyle: 'none',
+    textDecorationThickness: '2px',
+    textUnderlineOffset: '0.25rem',
+    zIndex: 50,
   },
   menuHost: { position: 'relative' },
-  menuHostRaised: { zIndex: 50 },
 })
 
 export type MenubarMenu<Item extends string, Msg> = Readonly<{
   id: string
   label: string
+  isSelected?: boolean
+  onSelect?: Msg
   model: DropdownMenu.Model
   toParentMessage: (message: DropdownMenu.Message) => Msg
   items: ReadonlyArray<Item>
@@ -97,19 +95,20 @@ const menuView = <Item extends string, Msg>(
       h.DataAttribute('slot', 'menubar'),
       h.AriaLabel(props.ariaLabel ?? 'Application menu'),
       ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
-      h.Class(className(styles.root, props.layoutStyle)),
+      h.Class(
+        className(
+          styles.root,
+          props.menus.some(menu => menu.model.isOpen) && styles.rootRaised,
+          props.layoutStyle,
+        ),
+      ),
     ],
     props.menus.map((menu, index) =>
       h.div(
         [
           h.Role('none'),
           h.DataAttribute('slot', 'menubar-menu'),
-          h.Class(
-            className(
-              styles.menuHost,
-              props.menus.some(m => m.model.isOpen) && styles.menuHostRaised,
-            ),
-          ),
+          h.Class(className(styles.menuHost)),
           ...menuAttributes(index),
         ],
         [
@@ -118,11 +117,13 @@ const menuView = <Item extends string, Msg>(
               model: menu.model,
               toParentMessage: menu.toParentMessage,
               trigger: menu.label,
-              triggerLayoutStyle: (activeIndex === index
-                ? styles.triggerActive
-                : styles.trigger) as ComponentLayoutStyle,
+              triggerStyle: styles.trigger,
               triggerTabindex: activeIndex === index ? 0 : -1,
               triggerRole: 'menuitem',
+              triggerIsSelected: menu.isSelected ?? false,
+              ...(menu.onSelect === undefined
+                ? {}
+                : { onTriggerActivate: menu.onSelect }),
               items: menu.items,
               itemToConfig: menu.itemToConfig,
               ...(menu.contentLayoutStyle === undefined
