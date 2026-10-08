@@ -112,7 +112,11 @@ writeFileSync(
       name: 'creaseui-registry-consumer',
       private: true,
       type: 'module',
-      scripts: sourcePackage.scripts,
+      // The registry publishes Tailwind source; this consumer has no StyleX site entry.
+      scripts: {
+        ...sourcePackage.scripts,
+        build: sourcePackage.scripts['build:tailwind'],
+      },
       dependencies: {
         ...sourcePackage.dependencies,
         ...frameworkVersions,
