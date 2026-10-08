@@ -162,7 +162,7 @@ Sidebar.sidebarMenuBadge({ children: ['24'] }, h)`,
         id: 'submenu',
         title: 'Submenus',
         description:
-          'Use SidebarMenuSub inside a menu item, then compose sub-items and sub-buttons. A submenu is hidden in icon-collapse mode, so the parent item must still expose the destination or disclosure affordance.',
+          'Use SidebarMenuSub inside a menu item, then compose sub-items and sub-buttons. In the application shell, Documentation shows inline subitems when expanded and an icon-only dropdown on hover or keyboard activation when collapsed.',
         code: `Sidebar.sidebarMenuSub({ children: items.map(item =>
   Sidebar.sidebarMenuSubItem({ children: [
     Sidebar.sidebarMenuSubButton({

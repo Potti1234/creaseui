@@ -194,8 +194,8 @@ export const sidebar = <Msg>(
               'group-data-[collapsible=offcanvas]:w-0',
               'group-data-[side=right]:rotate-180',
               variant === 'floating' || variant === 'inset'
-                ? 'group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]'
-                : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon)',
+                ? 'md:group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]'
+                : 'md:group-data-[collapsible=icon]:w-(--sidebar-width-icon)',
             ),
           ),
         ],
@@ -213,8 +213,8 @@ export const sidebar = <Msg>(
                 ? 'left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]'
                 : 'right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]',
               variant === 'floating' || variant === 'inset'
-                ? 'p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]'
-                : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l',
+                ? 'p-2 md:group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]'
+                : 'md:group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l',
               props.class,
             ),
           ),
@@ -376,7 +376,7 @@ export const sidebarInput = <Msg>(
     h.Class(
       cn(
         INPUT_CLASS,
-        'h-8 w-full bg-background shadow-none group-data-[collapsible=icon]:hidden',
+        'h-8 w-full bg-background shadow-none md:group-data-[collapsible=icon]:hidden',
         props.class,
       ),
     ),
@@ -420,7 +420,7 @@ export const sidebarSeparator = <Msg>(
 export const sidebarContent = slotDiv(
   'sidebar-content',
   'content',
-  'flex min-h-0 flex-1 flex-col gap-2 overflow-auto group-data-[collapsible=icon]:overflow-hidden',
+  'flex min-h-0 flex-1 flex-col gap-2 overflow-auto md:group-data-[collapsible=icon]:overflow-hidden',
 )
 
 export const sidebarGroup = slotDiv(
@@ -432,7 +432,7 @@ export const sidebarGroup = slotDiv(
 export const sidebarGroupLabel = slotDiv(
   'sidebar-group-label',
   'group-label',
-  'flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium text-sidebar-foreground/70 ring-sidebar-ring outline-hidden transition-[margin,opacity] duration-200 ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0 group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0',
+  'flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium text-sidebar-foreground/70 ring-sidebar-ring outline-hidden transition-[margin,opacity] duration-200 ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0 md:group-data-[collapsible=icon]:-mt-8 md:group-data-[collapsible=icon]:opacity-0',
 )
 
 export type SidebarActionProps<Msg> = Slot &
@@ -454,7 +454,7 @@ export const sidebarGroupAction = <Msg>(
         cn(
           'absolute top-3.5 right-3 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground ring-sidebar-ring outline-hidden transition-transform hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0',
           'after:absolute after:-inset-2 md:after:hidden',
-          'group-data-[collapsible=icon]:hidden',
+          'md:group-data-[collapsible=icon]:hidden',
           props.class,
         ),
       ),
@@ -495,7 +495,7 @@ export const sidebarMenuItem = <Msg>(
 }
 
 export const sidebarMenuButtonVariants = cva(
-  'peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm ring-sidebar-ring outline-hidden transition-[width,height,padding] group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active]:bg-sidebar-accent data-[active]:font-medium data-[active]:text-sidebar-accent-foreground data-[open]:hover:bg-sidebar-accent data-[open]:hover:text-sidebar-accent-foreground [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0',
+  'peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm ring-sidebar-ring outline-hidden transition-[width,height,padding] group-has-data-[sidebar=menu-action]/menu-item:pr-8 md:group-data-[collapsible=icon]:size-8! md:group-data-[collapsible=icon]:p-2! hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active]:bg-sidebar-accent data-[active]:font-medium data-[active]:text-sidebar-accent-foreground data-[open]:hover:bg-sidebar-accent data-[open]:hover:text-sidebar-accent-foreground [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0',
   {
     variants: {
       variant: {
@@ -508,7 +508,7 @@ export const sidebarMenuButtonVariants = cva(
       size: {
         default: 'h-8 text-sm',
         sm: 'h-7 text-xs',
-        lg: 'h-12 text-sm group-data-[collapsible=icon]:p-0!',
+        lg: 'h-12 text-sm md:group-data-[collapsible=icon]:p-0!',
       },
     },
     defaultVariants: {
@@ -568,7 +568,7 @@ export const sidebarMenuButton = <Msg>(
             [
               h.Role('tooltip'),
               h.Class(
-                'pointer-events-none fixed left-[calc(var(--sidebar-width-icon)+0.5rem)] z-50 hidden whitespace-nowrap rounded-md bg-primary px-2 py-1 text-xs text-primary-foreground opacity-0 shadow-md transition-opacity group-data-[collapsible=icon]:peer-hover/menu-button:block group-data-[collapsible=icon]:peer-hover/menu-button:opacity-100 group-data-[collapsible=icon]:peer-focus-visible/menu-button:block group-data-[collapsible=icon]:peer-focus-visible/menu-button:opacity-100',
+                'pointer-events-none fixed left-[calc(var(--sidebar-width-icon)+0.5rem)] z-50 hidden whitespace-nowrap rounded-md bg-primary px-2 py-1 text-xs text-primary-foreground opacity-0 shadow-md transition-opacity md:group-data-[collapsible=icon]:peer-hover/menu-button:block md:group-data-[collapsible=icon]:peer-hover/menu-button:opacity-100 md:group-data-[collapsible=icon]:peer-focus-visible/menu-button:block md:group-data-[collapsible=icon]:peer-focus-visible/menu-button:opacity-100',
               ),
             ],
             [props.tooltip],
@@ -621,7 +621,7 @@ export const sidebarMenuAction = <Msg>(
           'peer-data-[size=sm]/menu-button:top-1',
           'peer-data-[size=default]/menu-button:top-1.5',
           'peer-data-[size=lg]/menu-button:top-2.5',
-          'group-data-[collapsible=icon]:hidden',
+          'md:group-data-[collapsible=icon]:hidden',
           (props.showOnHover ?? false) &&
             'group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 peer-data-[active]/menu-button:text-sidebar-accent-foreground data-[open]:opacity-100 md:opacity-0',
           props.class,
@@ -635,7 +635,7 @@ export const sidebarMenuAction = <Msg>(
 export const sidebarMenuBadge = slotDiv(
   'sidebar-menu-badge',
   'menu-badge',
-  'pointer-events-none absolute right-1 flex h-5 min-w-5 items-center justify-center rounded-md px-1 text-xs font-medium text-sidebar-foreground tabular-nums select-none peer-hover/menu-button:text-sidebar-accent-foreground peer-data-[active]/menu-button:text-sidebar-accent-foreground peer-data-[size=sm]/menu-button:top-1 peer-data-[size=default]/menu-button:top-1.5 peer-data-[size=lg]/menu-button:top-2.5 group-data-[collapsible=icon]:hidden',
+  'pointer-events-none absolute right-1 flex h-5 min-w-5 items-center justify-center rounded-md px-1 text-xs font-medium text-sidebar-foreground tabular-nums select-none peer-hover/menu-button:text-sidebar-accent-foreground peer-data-[active]/menu-button:text-sidebar-accent-foreground peer-data-[size=sm]/menu-button:top-1 peer-data-[size=default]/menu-button:top-1.5 peer-data-[size=lg]/menu-button:top-2.5 md:group-data-[collapsible=icon]:hidden',
 )
 
 export type SidebarMenuSkeletonProps = Readonly<{
@@ -692,7 +692,7 @@ export const sidebarMenuSub = <Msg>(props: Slot, h: HtmlBuilder<Msg>): Html => {
       h.Class(
         cn(
           'mx-3.5 flex min-w-0 translate-x-px flex-col gap-1 border-l border-sidebar-border px-2.5 py-0.5',
-          'group-data-[collapsible=icon]:hidden',
+          'md:group-data-[collapsible=icon]:hidden',
           props.class,
         ),
       ),
@@ -744,7 +744,7 @@ export const sidebarMenuSubButton = <Msg>(
           'data-[active]:bg-sidebar-accent data-[active]:text-sidebar-accent-foreground',
           size === 'sm' && 'text-xs',
           size === 'md' && 'text-sm',
-          'group-data-[collapsible=icon]:hidden',
+          'md:group-data-[collapsible=icon]:hidden',
           props.class,
         ),
       ),

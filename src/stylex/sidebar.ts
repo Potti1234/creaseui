@@ -252,7 +252,10 @@ const styles = stylex.create({
       [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: 0,
     },
     borderRadius: tokens.controlRadius,
-    gap: '0.5rem',
+    gap: {
+      default: '0.5rem',
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: 0,
+    },
     overflow: 'hidden',
     alignItems: 'center',
     backgroundColor: {
@@ -706,7 +709,10 @@ export const sidebar = <Msg>(
   return h.div(
     [
       h.DataAttribute('state', state),
-      h.DataAttribute('collapsible', collapsed ? collapsible : ''),
+      h.DataAttribute(
+        'collapsible',
+        collapsed && !props.isMobileOpen ? collapsible : '',
+      ),
       h.DataAttribute('variant', variant),
       h.DataAttribute('side', side),
       h.DataAttribute('slot', 'sidebar'),

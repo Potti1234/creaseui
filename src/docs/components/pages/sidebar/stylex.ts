@@ -2,6 +2,7 @@ import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
+import { Option } from 'effect'
 
 import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
@@ -11,6 +12,7 @@ import {
 import * as DropdownMenu from '@/stylex/dropdown-menu'
 import * as Icon from '@/lib/icon'
 import * as Sidebar from '@/stylex/sidebar'
+import { sidebarScope } from '../../../../stylex/sidebar.markers.stylex'
 import type { ComponentLayoutStyle } from '@/stylex/contracts'
 import { className } from '@/stylex/style'
 
@@ -42,6 +44,12 @@ const styles = stylex.create({
   actionIcon: { height: '1rem', width: '1rem' },
   itemIcon: { flexShrink: 0, height: '1rem', width: '1rem' },
   accountIcon: { height: '0.875rem', width: '0.875rem' },
+  collapsedHidden: {
+    display: {
+      default: null,
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: 'none',
+    },
+  },
   accountAvatar: {
     borderRadius: 'var(--radius)',
     placeItems: 'center',
@@ -82,7 +90,11 @@ const styles = stylex.create({
   brand: {
     gap: '0.5rem',
     paddingBlock: '0.25rem',
-    paddingInline: '0.5rem',
+    paddingInline: {
+      default: '0.5rem',
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]:
+        '0.125rem',
+    },
     alignItems: 'center',
     display: 'flex',
   },
@@ -209,7 +221,10 @@ const styles = stylex.create({
     width: '100%',
   },
   accountTriggerButton: {
-    padding: '0.5rem',
+    padding: {
+      default: '0.5rem',
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: 0,
+    },
     borderRadius: 'calc(var(--radius) - 2px)',
     gap: '0.5rem',
     overflow: 'hidden',
@@ -227,10 +242,33 @@ const styles = stylex.create({
     lineHeight: '1.25rem',
     outlineStyle: 'none',
     textAlign: 'left',
-    width: '100%',
+    width: {
+      default: '100%',
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: '2rem',
+    },
+  },
+  documentationButton: {
+    borderRadius: 'var(--radius)',
+    padding: '0.5rem',
+    alignItems: 'center',
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': 'var(--sidebar-accent)',
+    },
+    color: 'var(--sidebar-foreground)',
+    cursor: 'pointer',
+    display: 'flex',
+    justifyContent: 'center',
+    height: '2rem',
+    width: '2rem',
   },
   badgeAccent: { color: 'var(--sidebar-accent-foreground)' },
-  menuButtonActionPad: { paddingRight: '2rem' },
+  menuButtonActionPad: {
+    paddingRight: {
+      default: '2rem',
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: 0,
+    },
+  },
   learnChevron: {
     flexShrink: 0,
     transitionDuration: '150ms',
@@ -275,6 +313,7 @@ const iconLabel = <Msg>(
 
 const actionItems = ['open', 'rename', 'delete'] as const
 const accountItems = ['profile', 'settings', 'sign out'] as const
+const documentationItems = ['Introduction', 'Components', 'Changelog'] as const
 const actionLabel = (action: string): string =>
   action[0]?.toUpperCase() + action.slice(1)
 const actionMenu = <Msg>(
@@ -286,7 +325,7 @@ const actionMenu = <Msg>(
   h.div(
     [
       h.DataAttribute('sidebar', 'menu-action'),
-      h.Class(cx(styles.actionAnchor)),
+      h.Class(cx(styles.actionAnchor, styles.collapsedHidden)),
     ],
     [
       DropdownMenu.dropdownMenu(
@@ -400,11 +439,85 @@ const primaryNavigation = <Msg>(
 }
 
 const nestedNavigation = <Msg>(
-  model: { learnOpen: boolean },
+  model: {
+    learnOpen: boolean
+    learnMenu: DropdownMenu.Model
+    sidebar?: Sidebar.Model
+  },
   send: (json: string) => Msg,
   h: HtmlBuilder<Msg>,
-): Html =>
-  Sidebar.sidebarMenu(
+  dropdownSide: DropdownMenu.DropdownMenuSide = 'right',
+): Html => {
+  if (model.sidebar && !model.sidebar.isOpen && !model.sidebar.isMobileOpen) {
+    const menuMessage = (message: DropdownMenu.Message) =>
+      send(
+        JSON.stringify({ _tag: 'GotSidebarPreviewLearnMenuMessage', message }),
+      )
+    return Sidebar.sidebarMenu(
+      {
+        children: [
+          Sidebar.sidebarMenuItem(
+            {
+              children: [
+                h.div(
+                  [
+                    h.DataAttribute(
+                      'sidebar-documentation',
+                      model.learnMenu.id,
+                    ),
+                    h.OnMouseEnter(
+                      send(
+                        JSON.stringify({ _tag: 'EnteredSidebarPreviewLearn' }),
+                      ),
+                    ),
+                    h.OnMouseLeave(
+                      send(JSON.stringify({ _tag: 'LeftSidebarPreviewLearn' })),
+                    ),
+                    h.OnKeyDownPreventDefault(key =>
+                      model.learnMenu.isOpen &&
+                      (key === 'Escape' || key === 'Enter' || key === ' ')
+                        ? Option.some(
+                            send(
+                              JSON.stringify({
+                                _tag: 'SuppressedSidebarPreviewLearnHover',
+                              }),
+                            ),
+                          )
+                        : Option.none(),
+                    ),
+                  ],
+                  [
+                    DropdownMenu.dropdownMenu(
+                      {
+                        model: model.learnMenu,
+                        toParentMessage: menuMessage,
+                        trigger: Icon.icon(
+                          'book-open',
+                          { class: cx(styles.itemIcon) },
+                          h,
+                        ),
+                        triggerStyle: styles.documentationButton,
+                        triggerAriaLabel: 'Documentation',
+                        ariaLabel: 'Documentation sections',
+                        side: dropdownSide,
+                        align: 'start',
+                        items: documentationItems,
+                        itemToConfig: label => ({ label }),
+                      },
+                      h,
+                    ),
+                  ],
+                ),
+              ],
+            },
+            h,
+          ),
+        ],
+      },
+      h,
+    )
+  }
+  return Sidebar.sidebarMenu(
     {
       children: [
         Sidebar.sidebarMenuItem(
@@ -469,6 +582,7 @@ const nestedNavigation = <Msg>(
     },
     h,
   )
+}
 
 const account = <Msg>(
   model: { accountMenu: DropdownMenu.Model },
@@ -491,14 +605,18 @@ const account = <Msg>(
                         message,
                       }),
                     ),
-                  triggerLayoutStyle:
-                    styles.accountTriggerButton as ComponentLayoutStyle,
+                  triggerStyle: styles.accountTriggerButton,
+                  triggerAriaLabel: 'Account menu',
                   trigger: h.span(
                     [h.Class(cx(styles.accountTrigger))],
                     [
                       h.span([h.Class(cx(styles.accountAvatar))], ['AL']),
                       h.span(
-                        [h.Class(cx(styles.accountCopy))],
+                        [
+                          h.Class(
+                            cx(styles.accountCopy, styles.collapsedHidden),
+                          ),
+                        ],
                         [
                           h.span(
                             [h.Class(cx(styles.accountName))],
@@ -510,7 +628,12 @@ const account = <Msg>(
                           ),
                         ],
                       ),
-                      Icon.chevronsUpDown({ class: cx(styles.accountIcon) }, h),
+                      Icon.chevronsUpDown(
+                        {
+                          class: cx(styles.accountIcon, styles.collapsedHidden),
+                        },
+                        h,
+                      ),
                     ],
                   ),
                   ariaLabel: 'Account menu',
@@ -532,14 +655,17 @@ const account = <Msg>(
 
 const sidebarBody = <Msg>(
   model: {
+    sidebar: Sidebar.Model
     actionMenu: DropdownMenu.Model
     accountMenu: DropdownMenu.Model
+    learnMenu: DropdownMenu.Model
     query: string
     learnOpen: boolean
   },
   send: (json: string) => Msg,
   onQuery: (value: string) => Msg,
   h: HtmlBuilder<Msg>,
+  side: Sidebar.SidebarSide = 'left',
 ): ReadonlyArray<Html | string> => [
   Sidebar.sidebarHeader(
     {
@@ -548,7 +674,10 @@ const sidebarBody = <Msg>(
           [h.DataAttribute('sidebar', 'brand'), h.Class(cx(styles.brand))],
           [
             h.span([h.Class(cx(styles.brandMark))], ['C']),
-            h.span([h.Class(cx(styles.brandName))], ['Crease Workspace']),
+            h.span(
+              [h.Class(cx(styles.brandName, styles.collapsedHidden))],
+              ['Crease Workspace'],
+            ),
           ],
         ),
         Sidebar.sidebarInput(
@@ -585,7 +714,16 @@ const sidebarBody = <Msg>(
             children: [
               Sidebar.sidebarGroupLabel({ children: ['Learn'] }, h),
               Sidebar.sidebarGroupContent(
-                { children: [nestedNavigation(model, send, h)] },
+                {
+                  children: [
+                    nestedNavigation(
+                      model,
+                      send,
+                      h,
+                      side === 'right' ? 'left' : 'right',
+                    ),
+                  ],
+                },
                 h,
               ),
             ],
@@ -624,6 +762,7 @@ const shell = <Msg>(
     sidebar: Sidebar.Model
     actionMenu: DropdownMenu.Model
     accountMenu: DropdownMenu.Model
+    learnMenu: DropdownMenu.Model
     query: string
     learnOpen: boolean
   },
@@ -662,7 +801,7 @@ const shell = <Msg>(
         Sidebar.Message.SetMobileOpen({ isOpen: false }),
       ),
       children: [
-        ...sidebarBody(model, send, queryMessage, h),
+        ...sidebarBody(model, send, queryMessage, h, side),
         Sidebar.sidebarRail({ onClick: desktopToggle, side }, h),
       ],
     },
@@ -705,6 +844,7 @@ const staticPanel = <Msg>(
   model: {
     actionMenu: DropdownMenu.Model
     accountMenu: DropdownMenu.Model
+    learnMenu: DropdownMenu.Model
     learnOpen: boolean
     feedback: string
   },
@@ -892,6 +1032,7 @@ export const sidebarStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         model as {
           actionMenu: DropdownMenu.Model
           accountMenu: DropdownMenu.Model
+          learnMenu: DropdownMenu.Model
           learnOpen: boolean
           feedback: string
         },
@@ -904,6 +1045,7 @@ export const sidebarStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           sidebar: Sidebar.Model
           actionMenu: DropdownMenu.Model
           accountMenu: DropdownMenu.Model
+          learnMenu: DropdownMenu.Model
           query: string
           learnOpen: boolean
         },

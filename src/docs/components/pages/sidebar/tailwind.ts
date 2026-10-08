@@ -1,7 +1,9 @@
-import { Option, Schema as S } from 'effect'
+import { Effect, Option, Schema as S } from 'effect'
 import { Command, Subscription } from 'foldkit'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
+import * as Dom from 'foldkit/dom'
+import * as Render from 'foldkit/render'
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
@@ -17,6 +19,11 @@ const Message = defineMessageUnion({
   ChangedSidebarPreviewQuery: { value: S.String },
   GotSidebarPreviewActionMenuMessage: { message: DropdownMenu.Message },
   GotSidebarPreviewAccountMenuMessage: { message: DropdownMenu.Message },
+  GotSidebarPreviewLearnMenuMessage: { message: DropdownMenu.Message },
+  CompletedSidebarPreviewLearnFocus: {},
+  EnteredSidebarPreviewLearn: {},
+  LeftSidebarPreviewLearn: {},
+  SuppressedSidebarPreviewLearnHover: {},
   CreatedSidebarPreviewProject: {},
   ToggledSidebarPreviewLearn: {},
 })
@@ -26,15 +33,30 @@ const Model = S.Struct({
   sidebar: Sidebar.Model,
   actionMenu: DropdownMenu.Model,
   accountMenu: DropdownMenu.Model,
+  learnMenu: DropdownMenu.Model,
   feedback: S.String,
   query: S.String,
   learnOpen: S.Boolean,
+  learnHoverDismissed: S.Boolean,
 })
 type Model = typeof Model.Type
 
 const ActionMenu = DropdownMenu.create<string>()
 const actionItems = ['open', 'rename', 'delete'] as const
 const accountItems = ['profile', 'settings', 'sign out'] as const
+const documentationItems = ['Introduction', 'Components', 'Changelog'] as const
+const FocusDocumentation = Command.define('FocusSidebarDocumentation', {
+  args: { id: S.String, isOpen: S.Boolean },
+  messages: [Message.CompletedSidebarPreviewLearnFocus],
+  execute: ({ id, isOpen }) =>
+    Effect.gen(function* () {
+      yield* Render.afterPaint
+      yield* Dom.focus(
+        `[data-sidebar-documentation="${id}"] ${isOpen ? '[role="menu"]' : '[data-slot="dropdown-menu-trigger"]'}`,
+      ).pipe(Effect.catch(() => Effect.void))
+      return Message.CompletedSidebarPreviewLearnFocus()
+    }),
+})
 const actionLabel = (action: string): string =>
   action[0]?.toUpperCase() + action.slice(1)
 
@@ -64,7 +86,7 @@ const actionMenu = (
     [
       h.DataAttribute('sidebar', 'menu-action'),
       h.Class(
-        'absolute right-1 top-1.5 z-30 group-data-[collapsible=icon]:hidden',
+        'absolute right-1 top-1.5 z-30 md:group-data-[collapsible=icon]:hidden',
       ),
     ],
     [
@@ -163,6 +185,7 @@ const account = (model: Model, h: HtmlBuilder<Message>): Html =>
               DropdownMenu.dropdownMenu(
                 {
                   model: model.accountMenu,
+                  triggerAriaLabel: 'Account menu',
                   toParentMessage: message =>
                     Message['GotSidebarPreviewAccountMenuMessage']({ message }),
                   trigger: h.span(
@@ -179,7 +202,7 @@ const account = (model: Model, h: HtmlBuilder<Message>): Html =>
                       h.span(
                         [
                           h.Class(
-                            'grid min-w-0 flex-1 text-left leading-tight',
+                            'grid min-w-0 flex-1 text-left leading-tight md:group-data-[collapsible=icon]:hidden',
                           ),
                         ],
                         [
@@ -197,11 +220,14 @@ const account = (model: Model, h: HtmlBuilder<Message>): Html =>
                           ),
                         ],
                       ),
-                      Icon.chevronsUpDown({}, h),
+                      Icon.chevronsUpDown(
+                        { class: 'md:group-data-[collapsible=icon]:hidden' },
+                        h,
+                      ),
                     ],
                   ),
                   triggerClass:
-                    'peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-none hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring [&>svg]:size-4 [&>svg]:shrink-0',
+                    'peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-none hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring md:group-data-[collapsible=icon]:size-8 md:group-data-[collapsible=icon]:p-0 [&>svg]:size-4 [&>svg]:shrink-0',
                   ariaLabel: 'Account menu',
                   side: 'top',
                   align: 'start',
@@ -219,8 +245,65 @@ const account = (model: Model, h: HtmlBuilder<Message>): Html =>
     h,
   )
 
-const nestedNavigation = (model: Model, h: HtmlBuilder<Message>): Html =>
-  Sidebar.sidebarMenu(
+const nestedNavigation = (
+  model: Model,
+  h: HtmlBuilder<Message>,
+  dropdownSide: DropdownMenu.DropdownMenuSide = 'right',
+): Html => {
+  if (!model.sidebar.isOpen && !model.sidebar.isMobileOpen) {
+    const menuMessage = (message: DropdownMenu.Message) =>
+      Message.GotSidebarPreviewLearnMenuMessage({ message })
+    return Sidebar.sidebarMenu(
+      {
+        children: [
+          Sidebar.sidebarMenuItem(
+            {
+              children: [
+                h.div(
+                  [
+                    h.DataAttribute(
+                      'sidebar-documentation',
+                      model.learnMenu.id,
+                    ),
+                    h.OnMouseEnter(Message.EnteredSidebarPreviewLearn()),
+                    h.OnMouseLeave(Message.LeftSidebarPreviewLearn()),
+                    h.OnKeyDownPreventDefault(key =>
+                      model.learnMenu.isOpen &&
+                      (key === 'Escape' || key === 'Enter' || key === ' ')
+                        ? Option.some(
+                            Message.SuppressedSidebarPreviewLearnHover(),
+                          )
+                        : Option.none(),
+                    ),
+                  ],
+                  [
+                    DropdownMenu.dropdownMenu(
+                      {
+                        model: model.learnMenu,
+                        toParentMessage: menuMessage,
+                        trigger: Icon.icon('book-open', { class: 'size-4' }, h),
+                        triggerClass: Sidebar.sidebarMenuButtonVariants(),
+                        triggerAriaLabel: 'Documentation',
+                        ariaLabel: 'Documentation sections',
+                        side: dropdownSide,
+                        align: 'start',
+                        items: documentationItems,
+                        itemToConfig: label => ({ label }),
+                      },
+                      h,
+                    ),
+                  ],
+                ),
+              ],
+            },
+            h,
+          ),
+        ],
+      },
+      h,
+    )
+  }
+  return Sidebar.sidebarMenu(
     {
       children: [
         Sidebar.sidebarMenuItem(
@@ -282,11 +365,13 @@ const nestedNavigation = (model: Model, h: HtmlBuilder<Message>): Html =>
     },
     h,
   )
+}
 
 const sidebarBody = (
   model: Model,
   h: HtmlBuilder<Message>,
   detailed = true,
+  side: Sidebar.SidebarSide = 'left',
 ): ReadonlyArray<Html | string> => [
   Sidebar.sidebarHeader(
     {
@@ -295,7 +380,7 @@ const sidebarBody = (
           [
             h.DataAttribute('sidebar', 'brand'),
             h.Class(
-              'flex items-center gap-2 px-2 py-1 group-data-[collapsible=icon]:px-0.5',
+              'flex items-center gap-2 px-2 py-1 md:group-data-[collapsible=icon]:px-0.5',
             ),
           ],
           [
@@ -308,7 +393,11 @@ const sidebarBody = (
               ['C'],
             ),
             h.span(
-              [h.Class('truncate text-sm font-semibold')],
+              [
+                h.Class(
+                  'truncate text-sm font-semibold md:group-data-[collapsible=icon]:hidden',
+                ),
+              ],
               ['Crease Workspace'],
             ),
           ],
@@ -353,7 +442,15 @@ const sidebarBody = (
                   children: [
                     Sidebar.sidebarGroupLabel({ children: ['Learn'] }, h),
                     Sidebar.sidebarGroupContent(
-                      { children: [nestedNavigation(model, h)] },
+                      {
+                        children: [
+                          nestedNavigation(
+                            model,
+                            h,
+                            side === 'right' ? 'left' : 'right',
+                          ),
+                        ],
+                      },
                       h,
                     ),
                   ],
@@ -418,7 +515,7 @@ const shell = (
         message: Sidebar.Message.SetMobileOpen({ isOpen: false }),
       }),
       children: [
-        ...sidebarBody(model, h),
+        ...sidebarBody(model, h, true, side),
         Sidebar.sidebarRail({ onClick: desktopToggle }, h),
       ],
     },
@@ -650,9 +747,14 @@ export const sidebarTailwindPreviewProgram = definePreviewProgram<
       id: `docs-sidebar-account-${String(index)}`,
       isAnimated: false,
     }),
+    learnMenu: DropdownMenu.init({
+      id: `docs-sidebar-learn-${String(index)}`,
+      isAnimated: false,
+    }),
     feedback: '',
     query: '',
     learnOpen: true,
+    learnHoverDismissed: false,
   }),
   update: (model, message) => {
     switch (message._tag) {
@@ -663,7 +765,14 @@ export const sidebarTailwindPreviewProgram = definePreviewProgram<
         )
         const commands = sidebarCommands__ ?? []
         return {
-          model: { ...model, sidebar },
+          model: {
+            ...model,
+            sidebar,
+            learnMenu:
+              sidebar.isOpen || sidebar.isMobileOpen
+                ? { ...model.learnMenu, isOpen: false }
+                : model.learnMenu,
+          },
           commands: Command.mapMessages(commands, next =>
             Message['GotSidebarPreviewMessage']({ message: next }),
           ),
@@ -715,6 +824,56 @@ export const sidebarTailwindPreviewProgram = definePreviewProgram<
           ),
         }
       }
+      case 'GotSidebarPreviewLearnMenuMessage': {
+        const result = ActionMenu.update(model.learnMenu, message.message)
+        return {
+          model: {
+            ...model,
+            learnMenu: result.model,
+            learnHoverDismissed: result.model.isOpen
+              ? false
+              : model.learnHoverDismissed,
+            ...(result.outMessage === undefined
+              ? {}
+              : { feedback: `${result.outMessage.value} selected` }),
+          },
+          commands: [
+            ...Command.mapMessages(result.commands ?? [], next =>
+              Message.GotSidebarPreviewLearnMenuMessage({ message: next }),
+            ),
+            ...(result.model.isOpen !== model.learnMenu.isOpen
+              ? [
+                  FocusDocumentation({
+                    id: model.learnMenu.id,
+                    isOpen: result.model.isOpen,
+                  }),
+                ]
+              : []),
+          ],
+        }
+      }
+      case 'EnteredSidebarPreviewLearn': {
+        if (model.learnHoverDismissed || model.learnMenu.isOpen)
+          return { model }
+        const result = ActionMenu.update(
+          model.learnMenu,
+          DropdownMenu.Message.Opened(),
+        )
+        return {
+          model: { ...model, learnMenu: result.model },
+          commands: [
+            FocusDocumentation({ id: model.learnMenu.id, isOpen: true }),
+          ],
+        }
+      }
+      case 'LeftSidebarPreviewLearn':
+        return model.learnMenu.isOpen
+          ? { model }
+          : { model: { ...model, learnHoverDismissed: false } }
+      case 'SuppressedSidebarPreviewLearnHover':
+        return { model: { ...model, learnHoverDismissed: true } }
+      case 'CompletedSidebarPreviewLearnFocus':
+        return { model }
       case 'CreatedSidebarPreviewProject':
         return { model: { ...model, feedback: 'Project created' } }
       case 'ToggledSidebarPreviewLearn':
