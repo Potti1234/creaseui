@@ -24,7 +24,8 @@ const styles = stylex.create({
   destructive: {
     backgroundColor: {
       default: tokens.transparent,
-      ':is([data-active], [data-selected])': tokens.softDestructiveSurface,
+      ':is([data-active="true"], [data-selected])':
+        tokens.softDestructiveSurface,
       ':hover': tokens.softDestructiveSurface,
     },
     color: tokens.destructive,

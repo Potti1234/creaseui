@@ -385,7 +385,7 @@ export const dropdownMenu = <Item extends string, Msg>(
               ? 'pl-8'
               : undefined,
             config.variant === 'destructive'
-              ? 'text-destructive data-[active=true]:bg-destructive/10'
+              ? 'text-destructive data-[active=true]:bg-destructive/10 data-[active=true]:text-destructive'
               : undefined,
           ),
         ),
