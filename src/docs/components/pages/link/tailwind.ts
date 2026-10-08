@@ -27,6 +27,16 @@ const renderFixture = <Msg>(
         { href: '#', isStandalone: true, children: ['Documentation'] },
         h,
       )
+    case 'underlined':
+      return Link.link(
+        {
+          href: '#',
+          variant: 'underlined',
+          isStandalone: true,
+          children: ['Underlined documentation'],
+        },
+        h,
+      )
     case 'inline':
       return Text.text(
         {
@@ -55,7 +65,7 @@ const renderFixture = <Msg>(
               href: url,
               isExternalLink: true,
               isStandalone: true,
-              ...(underlined ? { hasUnderline: true } : {}),
+              ...(underlined ? { variant: 'underlined' as const } : {}),
               children: [label],
             },
             h,

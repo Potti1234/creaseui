@@ -45,7 +45,7 @@ const computeTargetAndRel = (
 const styles = stylex.create({
   base: {
     gap: '2px',
-    textDecoration: {
+    textDecorationLine: {
       default: 'none',
       ':hover': 'underline',
     },
@@ -70,7 +70,7 @@ const styles = stylex.create({
     position: 'relative',
   },
   hasUnderline: {
-    textDecoration: 'underline',
+    textDecorationLine: 'underline',
   },
   disabled: {
     cursor: interactionTokens.cursorDefault,
@@ -157,10 +157,13 @@ const linkColorStyles = stylex.create({
   },
 })
 
+export type LinkVariant = 'default' | 'underlined'
+
 export type LinkProps<Msg> = Readonly<{
   children: ReadonlyArray<Html | string>
   href?: string
   label?: string
+  variant?: LinkVariant
   hasUnderline?: boolean
   isDisabled?: boolean
   isExternalLink?: boolean
@@ -182,6 +185,8 @@ export type LinkProps<Msg> = Readonly<{
 
 export const link = <Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html => {
   const color = props.color ?? 'accent'
+  const variant = props.variant ?? 'default'
+  const hasUnderline = variant === 'underlined' || props.hasUnderline === true
   const isDisabled = props.isDisabled ?? false
   const isExternalLink = props.isExternalLink ?? false
   const newTabLabel = props.newTabLabel ?? '(opens in new tab)'
@@ -227,13 +232,14 @@ export const link = <Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html => {
     linkColorStyles[color],
     styles.focusVisible,
     ...(isDisabled ? [styles.disabled] : []),
-    ...(props.hasUnderline === true ? [styles.hasUnderline] : []),
+    ...(hasUnderline ? [styles.hasUnderline] : []),
   ]
 
   if (renderAsButton) {
     return h.button(
       [
         h.DataAttribute('slot', 'link'),
+        h.DataAttribute('variant', variant),
         h.DataAttribute('color', color),
         h.Type('button'),
         h.Class(
@@ -260,6 +266,7 @@ export const link = <Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html => {
     return h.a(
       [
         h.DataAttribute('slot', 'link'),
+        h.DataAttribute('variant', variant),
         h.DataAttribute('color', color),
         h.Class(className(reset.link, ...sharedStyles, props.layoutStyle)),
         h.AriaDisabled(true),
@@ -274,6 +281,7 @@ export const link = <Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html => {
   return h.a(
     [
       h.DataAttribute('slot', 'link'),
+      h.DataAttribute('variant', variant),
       h.DataAttribute('color', color),
       h.Class(
         className(

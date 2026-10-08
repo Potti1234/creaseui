@@ -40,6 +40,7 @@ export const linkVariants = cva(
   'inline-flex items-center gap-0.5 [font:inherit] cursor-pointer transition-[color,text-decoration] duration-150 outline-none no-underline focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-ring focus-visible:outline-offset-[3px] aria-disabled:cursor-default',
   {
     variants: {
+      variant: { default: '', underlined: 'underline' },
       color: {
         primary:
           'text-foreground [@media(hover:hover)]:hover:text-foreground/85',
@@ -71,10 +72,13 @@ export type LinkVariants = VariantProps<typeof linkVariants>
 const hoverUnderline =
   '[@media(hover:hover)]:[&:hover:not(:disabled,[aria-disabled="true"])]:underline'
 
+export type LinkVariant = 'default' | 'underlined'
+
 export type LinkProps<Msg> = Readonly<{
   children: ReadonlyArray<Html | string>
   href?: string
   label?: string
+  variant?: LinkVariant
   hasUnderline?: boolean
   isDisabled?: boolean
   isExternalLink?: boolean
@@ -96,6 +100,8 @@ export type LinkProps<Msg> = Readonly<{
 
 export const link = <Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html => {
   const color = props.color ?? 'accent'
+  const variant = props.variant ?? 'default'
+  const hasUnderline = variant === 'underlined' || props.hasUnderline === true
   const isDisabled = props.isDisabled ?? false
   const isExternalLink = props.isExternalLink ?? false
   const newTabLabel = props.newTabLabel ?? '(opens in new tab)'
@@ -128,12 +134,13 @@ export const link = <Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html => {
 
   const linkClass = cn(
     linkVariants({
+      variant,
       color,
-      ...(props.hasUnderline === true ? { hasUnderline: true } : {}),
+      ...(hasUnderline ? { hasUnderline: true } : {}),
       ...(props.isStandalone === true ? { isStandalone: true } : {}),
       ...(isDisabled ? { isDisabled: true } : {}),
     }),
-    props.hasUnderline === true ? undefined : hoverUnderline,
+    hasUnderline ? undefined : hoverUnderline,
     props.class,
   )
 
@@ -141,6 +148,7 @@ export const link = <Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html => {
     return h.button(
       [
         h.DataAttribute('slot', 'link'),
+        h.DataAttribute('variant', variant),
         h.DataAttribute('color', color),
         h.Type('button'),
         h.Class(
@@ -165,6 +173,7 @@ export const link = <Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html => {
     return h.a(
       [
         h.DataAttribute('slot', 'link'),
+        h.DataAttribute('variant', variant),
         h.DataAttribute('color', color),
         h.Class(linkClass),
         h.AriaDisabled(true),
@@ -179,6 +188,7 @@ export const link = <Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html => {
   return h.a(
     [
       h.DataAttribute('slot', 'link'),
+      h.DataAttribute('variant', variant),
       h.DataAttribute('color', color),
       h.Class(cn(linkClass, 'active:bg-foreground/10')),
       h.Href(props.href ?? ''),

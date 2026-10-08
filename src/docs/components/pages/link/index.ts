@@ -15,7 +15,7 @@ export const linkPage = authoredPage({
       'Link is a stateless render helper. The parent supplies href, underline, external-link, and color inputs per render; it returns Html directly.',
     apiHref: 'https://github.com/Potti1234/creaseui/blob/main/src/ui/link.ts',
     styling:
-      'Inline links inherit surrounding text size; standalone links take the compact label size. Underlines appear on hover by default and can be pinned with hasUnderline.',
+      'Inline links inherit surrounding text size; standalone links take the compact label size. Underlines appear on hover by default and can be pinned with the underlined variant (or hasUnderline for compatibility).',
     accessibility:
       'External links announce "(opens in new tab)" to screen readers and mark up noopener/noreferrer automatically. Disabled links are removed from the tab order.',
     keyboard: [

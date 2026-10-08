@@ -1,7 +1,12 @@
 import type { DocsExample } from '@/docs/components/page-definition'
 import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
-export type LinkExampleKind = 'showcase' | 'inline' | 'external' | 'tooltips'
+export type LinkExampleKind =
+  | 'showcase'
+  | 'inline'
+  | 'external'
+  | 'underlined'
+  | 'tooltips'
 
 export type LinkFixture = Readonly<{
   title: string
@@ -27,6 +32,12 @@ export const linkFixtures: Readonly<[LinkFixture, ...Array<LinkFixture>]> = [
     title: 'Link — External Links',
     description: 'External links with automatic icon and accessibility label',
     kind: 'external',
+  },
+  {
+    title: 'Link \u2014 Underlined',
+    description:
+      'A persistent underline for links that should stand out in text.',
+    kind: 'underlined',
   },
   {
     title: 'Link — With Tooltips',
@@ -59,6 +70,8 @@ const viewBody = (fixture: LinkFixture, isStyleX: boolean): string => {
   switch (fixture.kind) {
     case 'showcase':
       return `Link.link({ href: '#', isStandalone: true, children: ['Documentation'] }, h)`
+    case 'underlined':
+      return `Link.link({ href: '#', variant: 'underlined', isStandalone: true, children: ['Underlined documentation'] }, h)`
     case 'inline':
       return `Text.text(
       { type: 'body', display: 'block', children: [
@@ -73,7 +86,7 @@ const viewBody = (fixture: LinkFixture, isStyleX: boolean): string => {
         externalLinks
           .map(
             ([label, url, underlined]) =>
-              `Link.link({ href: '${url}', isExternalLink: true, isStandalone: true${underlined ? ', hasUnderline: true' : ''}, children: ['${label}'] }, h)`,
+              `Link.link({ href: '${url}', isExternalLink: true, isStandalone: true${underlined ? ", variant: 'underlined'" : ''}, children: ['${label}'] }, h)`,
           )
           .join(',\n        '),
       )
