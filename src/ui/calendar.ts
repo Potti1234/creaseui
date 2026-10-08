@@ -91,6 +91,7 @@ const DAY_CELL_CLASS =
 
 const DAY_BUTTON_CLASS = cn(
   buttonVariants({ variant: 'ghost', size: 'icon' }),
+  'group-data-[selected]/day:hover:bg-primary group-data-[selected]/day:hover:text-primary-foreground dark:group-data-[selected]/day:hover:bg-primary dark:group-data-[selected]/day:hover:text-primary-foreground',
   'flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 leading-none font-normal group-data-[focused]/day:relative group-data-[focused]/day:z-10 group-data-[focused]/day:border-ring group-data-[focused]/day:ring-[3px] group-data-[focused]/day:ring-ring/50 group-data-[selected]/day:bg-primary group-data-[selected]/day:text-primary-foreground group-data-[outside-month]/day:text-muted-foreground group-data-[disabled]/day:pointer-events-none group-data-[disabled]/day:opacity-50 dark:hover:text-accent-foreground',
 )
 
@@ -101,6 +102,7 @@ const PICKER_CELL_CLASS =
 
 const PICKER_BUTTON_CLASS = cn(
   buttonVariants({ variant: 'ghost' }),
+  'group-data-[selected]/cell:hover:bg-primary group-data-[selected]/cell:hover:text-primary-foreground dark:group-data-[selected]/cell:hover:bg-primary dark:group-data-[selected]/cell:hover:text-primary-foreground',
   'h-(--cell-size) w-full px-2 font-normal group-data-[focused]/cell:relative group-data-[focused]/cell:z-10 group-data-[focused]/cell:border-ring group-data-[focused]/cell:ring-[3px] group-data-[focused]/cell:ring-ring/50 group-data-[selected]/cell:bg-primary group-data-[selected]/cell:text-primary-foreground group-data-[disabled]/cell:pointer-events-none group-data-[disabled]/cell:opacity-50',
 )
 

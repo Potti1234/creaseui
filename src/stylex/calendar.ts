@@ -69,7 +69,11 @@ const styles = stylex.create({
     backgroundColor: {
       default: tokens.transparent,
       [stylex.when.ancestor(':is([data-selected])', dayScope)]: tokens.primary,
-      ':hover': tokens.muted,
+      ':hover': {
+        default: tokens.muted,
+        [stylex.when.ancestor(':is([data-selected])', dayScope)]:
+          tokens.primary,
+      },
     },
     boxShadow: {
       default: tokens.shadowNone,
@@ -83,7 +87,11 @@ const styles = stylex.create({
         tokens.mutedForeground,
       [stylex.when.ancestor(':is([data-selected])', dayScope)]:
         tokens.primaryForeground,
-      ':hover': tokens.foreground,
+      ':hover': {
+        default: tokens.foreground,
+        [stylex.when.ancestor(':is([data-selected])', dayScope)]:
+          tokens.primaryForeground,
+      },
     },
     display: 'flex',
     flexDirection: 'column',
@@ -222,7 +230,11 @@ const styles = stylex.create({
     backgroundColor: {
       default: tokens.transparent,
       [stylex.when.ancestor(':is([data-selected])', cellScope)]: tokens.primary,
-      ':hover': tokens.muted,
+      ':hover': {
+        default: tokens.muted,
+        [stylex.when.ancestor(':is([data-selected])', cellScope)]:
+          tokens.primary,
+      },
     },
     boxShadow: {
       default: tokens.shadowNone,
@@ -234,7 +246,11 @@ const styles = stylex.create({
       default: tokens.foreground,
       [stylex.when.ancestor(':is([data-selected])', cellScope)]:
         tokens.primaryForeground,
-      ':hover': tokens.foreground,
+      ':hover': {
+        default: tokens.foreground,
+        [stylex.when.ancestor(':is([data-selected])', cellScope)]:
+          tokens.primaryForeground,
+      },
     },
     display: 'inline-flex',
     flexShrink: 0,
