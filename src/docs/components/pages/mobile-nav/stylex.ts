@@ -21,7 +21,7 @@ const styles = stylex.create({
     alignItems: 'center',
     display: 'flex',
     justifyContent: 'center',
-    minHeight: '100vh',
+    minHeight: '10rem',
   },
   headerRow: { gap: '0.75rem', alignItems: 'center', display: 'flex' },
   pageTitle: { fontSize: '1rem', fontWeight: 700, lineHeight: '1.5rem' },

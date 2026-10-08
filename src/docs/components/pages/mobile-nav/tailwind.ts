@@ -201,7 +201,7 @@ export const mobileNavTailwindPreviewProgram = definePreviewProgram<
   view: (index, model, h) => {
     const fixture = fixtureFor(index)
     return h.main(
-      [h.Class('flex min-h-screen items-center justify-center p-8')],
+      [h.Class('flex min-h-40 items-center justify-center p-8')],
       [
         trigger(fixture, model, h),
         MobileNav.mobileNav(

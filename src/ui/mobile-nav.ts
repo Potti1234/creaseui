@@ -78,6 +78,7 @@ export const mobileNav = <Msg>(
         dialog: dialogAttributes,
         backdrop,
         panel,
+        initialFocus,
         closeButton,
         isVisible,
       }: DialogPrimitive.RenderInfo) => {
@@ -102,6 +103,8 @@ export const mobileNav = <Msg>(
                 hd.div(
                   [
                     ...panel,
+                    ...initialFocus,
+                    hd.Tabindex(-1),
                     hd.DataAttribute('slot', 'mobile-nav-drawer'),
                     hd.DataAttribute('side', side),
                     hd.Style({ maxWidth: `${String(width)}px` }),
