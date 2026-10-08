@@ -9,7 +9,6 @@ import {
   hoverCardRtlSides,
   hoverCardSides,
 } from '@/docs/components/pages/hover-card/shared'
-import * as Button from '@/ui/button'
 import * as HoverCard from '@/ui/hover-card'
 
 const HoverCardPreviewMessage = defineMessageUnion({
@@ -25,7 +24,7 @@ type HoverCardPreviewModel = typeof HoverCardPreviewModel.Type
 
 const basicCard = <Msg>(h: HtmlBuilder<Msg>): Html =>
   h.div(
-    [h.Class('flex w-64 flex-col gap-0.5')],
+    [h.Class('flex w-full flex-col gap-0.5')],
     [
       h.div([h.Class('font-semibold')], ['@creaseui']),
       h.div(
@@ -55,7 +54,7 @@ const sideCard =
 
 const rtlCard = <Msg>(h: HtmlBuilder<Msg>): Html =>
   h.div(
-    [h.Dir('rtl'), h.Class('flex w-64 flex-col gap-1')],
+    [h.Dir('rtl'), h.Class('flex w-full flex-col gap-1')],
     [
       h.div([h.Class('font-semibold')], ['سماعات لاسلكية']),
       h.div([h.Class('text-sm text-muted-foreground')], ['٩٩.٩٩ $']),
@@ -114,10 +113,8 @@ export const hoverCardTailwindPreviewProgram = definePreviewProgram<
           model: firstCard,
           toParentMessage: message =>
             HoverCardPreviewMessage.GotHoverCardMessage({ index: 0, message }),
-          trigger: Button.button(
-            { variant: 'link', children: ['Hover Here'] },
-            h,
-          ),
+          trigger: 'Hover Here',
+          triggerButtonVariant: 'link',
           ariaLabel: 'Preview the CreaseUI profile',
           content: basicCard(h),
         },
@@ -137,10 +134,8 @@ export const hoverCardTailwindPreviewProgram = definePreviewProgram<
                   index: cardIndex,
                   message,
                 }),
-              trigger: Button.button(
-                { variant: 'outline', children: [entry.label] },
-                h,
-              ),
+              trigger: entry.label,
+              triggerButtonVariant: 'outline',
               ariaLabel: `Hover card on the ${entry.side} side`,
               side: entry.side,
               content: rtlCard(h),
@@ -162,13 +157,8 @@ export const hoverCardTailwindPreviewProgram = definePreviewProgram<
                 index: cardIndex,
                 message,
               }),
-            trigger: Button.button(
-              {
-                variant: 'outline',
-                children: [side.charAt(0).toUpperCase() + side.slice(1)],
-              },
-              h,
-            ),
+            trigger: side.charAt(0).toUpperCase() + side.slice(1),
+            triggerButtonVariant: 'outline',
             ariaLabel: `Hover card on the ${side} side`,
             side,
             content: sideCard(side)(h),

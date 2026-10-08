@@ -309,6 +309,7 @@ const styles = stylex.create({
       default: 'hidden',
       ':has([data-slot="popover-content"] [data-slot="calendar"])': 'visible',
       ':has([data-slot="time-input"] [data-slot="select-content"])': 'visible',
+      ':has([data-slot="hover-card-content"])': 'visible',
     },
   },
   timePickerPreviewOverflow: {
@@ -316,6 +317,7 @@ const styles = stylex.create({
       default: 'auto',
       ':has([data-slot="popover-content"] [data-slot="calendar"])': 'visible',
       ':has([data-slot="time-input"] [data-slot="select-content"])': 'visible',
+      ':has([data-slot="hover-card-content"])': 'visible',
     },
   },
   frame: {

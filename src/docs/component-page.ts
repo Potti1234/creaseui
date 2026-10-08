@@ -199,7 +199,11 @@ const exampleCard = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Html => {
   return h.div(
-    [h.Class('overflow-hidden rounded-lg border bg-background')],
+    [
+      h.Class(
+        'overflow-hidden rounded-lg border bg-background [&:has([data-slot=hover-card-content])]:overflow-visible',
+      ),
+    ],
     [
       h.div(
         [

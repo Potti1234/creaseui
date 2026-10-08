@@ -8,7 +8,6 @@ import {
   hoverCardRtlSides,
   hoverCardSides,
 } from '@/docs/components/pages/hover-card/shared'
-import * as Button from '@/stylex/button'
 import * as HoverCard from '@/stylex/hover-card'
 import { className } from '@/stylex/style'
 
@@ -23,7 +22,7 @@ const styles = stylex.create({
     gap: '0.125rem',
     display: 'flex',
     flexDirection: 'column',
-    width: '16rem',
+    width: '100%',
   },
   gapSm: { gap: '0.25rem', display: 'flex', flexDirection: 'column' },
   heading: { fontWeight: 600 },
@@ -67,10 +66,8 @@ export const hoverCardStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
       {
         model: firstCard,
         toParentMessage: toMsg(onMessageJson, 0),
-        trigger: Button.button(
-          { variant: 'link', children: ['Hover Here'] },
-          h,
-        ),
+        trigger: 'Hover Here',
+        triggerButtonVariant: 'link',
         ariaLabel: 'Preview the CreaseUI profile',
         content: h.div(
           [h.Class(className(styles.content))],
@@ -100,10 +97,8 @@ export const hoverCardStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           {
             model: hoverCard,
             toParentMessage: toMsg(onMessageJson, cardIndex),
-            trigger: Button.button(
-              { variant: 'outline', children: [entry.label] },
-              h,
-            ),
+            trigger: entry.label,
+            triggerButtonVariant: 'outline',
             ariaLabel: `Hover card on the ${entry.side} side`,
             side: entry.side,
             content: h.div(
@@ -128,13 +123,8 @@ export const hoverCardStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         {
           model: hoverCard,
           toParentMessage: toMsg(onMessageJson, cardIndex),
-          trigger: Button.button(
-            {
-              variant: 'outline',
-              children: [side.charAt(0).toUpperCase() + side.slice(1)],
-            },
-            h,
-          ),
+          trigger: side.charAt(0).toUpperCase() + side.slice(1),
+          triggerButtonVariant: 'outline',
           ariaLabel: `Hover card on the ${side} side`,
           side,
           content: h.div(

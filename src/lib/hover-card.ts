@@ -71,13 +71,52 @@ export const AnchorHoverCard = Mount.define('HoverCardAnchor', {
   execute: ({ element, buttonId, anchor }) =>
     Effect.gen(function* () {
       yield* Effect.acquireRelease(
-        Effect.sync(() =>
-          Anchor.anchorSetup(element, {
-            buttonId,
-            anchor,
-            interceptTab: false,
-          }),
-        ),
+        Effect.sync(() => {
+          const owner = element.getRootNode() as Document | ShadowRoot
+          const viewport = element.ownerDocument.defaultView
+          let cleanup = () => {}
+          const position = () => {
+            cleanup()
+            const button = owner.getElementById(buttonId)
+            const rect = button?.getBoundingClientRect()
+            const placement = anchor.placement ?? 'bottom'
+            const isHorizontal =
+              placement.startsWith('left') || placement.startsWith('right')
+            const padding = anchor.padding
+            const horizontalPadding =
+              typeof padding === 'number'
+                ? padding
+                : Math.max(padding?.left ?? 0, padding?.right ?? 0)
+            const availableWidth =
+              rect === undefined || viewport === null
+                ? Infinity
+                : Math.max(rect.left, viewport.innerWidth - rect.right) -
+                  (anchor.gap ?? 0) -
+                  horizontalPadding
+            // Flip handles opposite sides, but cannot switch axes when neither
+            // horizontal side has room for a readable card.
+            const resolvedPlacement: Anchor.AnchorConfig['placement'] =
+              isHorizontal &&
+              availableWidth < element.getBoundingClientRect().width
+                ? placement.endsWith('-start')
+                  ? 'bottom-start'
+                  : placement.endsWith('-end')
+                    ? 'bottom-end'
+                    : 'bottom'
+                : placement
+            cleanup = Anchor.anchorSetup(element, {
+              buttonId,
+              anchor: { ...anchor, placement: resolvedPlacement },
+              interceptTab: false,
+            })
+          }
+          position()
+          viewport?.addEventListener('resize', position)
+          return () => {
+            viewport?.removeEventListener('resize', position)
+            cleanup()
+          }
+        }),
         cleanup => Effect.sync(cleanup),
       )
       const unclamp = () => {

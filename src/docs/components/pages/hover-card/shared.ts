@@ -45,13 +45,12 @@ import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 ${isStyleX ? "\nimport * as stylex from '@stylexjs/stylex'\n" : ''}
-import * as Button from '@/${isStyleX ? 'stylex' : 'ui'}/button'
 import * as HoverCard from '@/${isStyleX ? 'stylex' : 'ui'}/hover-card'${
       isStyleX
         ? `
 
 const styles = stylex.create({
-  content: { display: 'flex', width: '16rem', flexDirection: 'column', gap: '0.125rem' },
+  content: { display: 'flex', width: '100%', flexDirection: 'column', gap: '0.125rem' },
   heading: { fontWeight: 600 },
   meta: { marginBlockStart: '0.25rem', fontSize: '0.75rem', lineHeight: '1rem', color: 'var(--muted-foreground)' },
 })`
@@ -79,9 +78,10 @@ export type Message = typeof Message.Type`,
     HoverCard.hoverCard({
       model: model.hoverCard,
       toParentMessage: message => Message.GotHoverCardMessage({ message }),
-      trigger: Button.button({ variant: 'link', children: ['Hover Here'] }, h),
+      trigger: 'Hover Here',
+      triggerButtonVariant: 'link',
       ariaLabel: 'Preview the CreaseUI profile',
-      content: h.div([h.Class(${isStyleX ? "stylex.props(styles.content).className ?? ''" : "'flex w-64 flex-col gap-0.5'"})], [
+      content: h.div([h.Class(${isStyleX ? "stylex.props(styles.content).className ?? ''" : "'flex w-full flex-col gap-0.5'"})], [
         h.div([h.Class(${isStyleX ? "stylex.props(styles.heading).className ?? ''" : "'font-semibold'"})], ['@creaseui']),
         h.div([], ['UI components for Foldkit, built with TypeScript and Effect.']),
         h.div([h.Class(${isStyleX ? "stylex.props(styles.meta).className ?? ''" : "'mt-1 text-xs text-muted-foreground'"})], ['Available in Tailwind and StyleX']),
@@ -108,7 +108,7 @@ const emitRow = (kind: 'sides' | 'rtl', isStyleX: boolean): string => {
           h.h4([h.Class(${isStyleX ? "stylex.props(styles.heading).className ?? ''" : "'font-medium'"})], ['Hover Card']),
           h.p([], ['This hover card appears on the ' + entry + ' side of the trigger.']),
         ]),`
-      : `content: h.div([h.Dir('rtl'), h.Class(${isStyleX ? "stylex.props(styles.rtlContent).className ?? ''" : "'flex w-64 flex-col gap-1'"})], [
+      : `content: h.div([h.Dir('rtl'), h.Class(${isStyleX ? "stylex.props(styles.rtlContent).className ?? ''" : "'flex w-full flex-col gap-1'"})], [
           h.div([h.Class(${isStyleX ? "stylex.props(styles.heading).className ?? ''" : "'font-semibold'"})], ['سماعات لاسلكية']),
           h.div([h.Class(${isStyleX ? "stylex.props(styles.muted).className ?? ''" : "'text-sm text-muted-foreground'"})], ['٩٩.٩٩ $']),
         ]),`
@@ -119,7 +119,6 @@ import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 ${isStyleX ? "\nimport * as stylex from '@stylexjs/stylex'\n" : ''}
-import * as Button from '@/${isStyleX ? 'stylex' : 'ui'}/button'
 import * as HoverCard from '@/${isStyleX ? 'stylex' : 'ui'}/hover-card'${
       isStyleX
         ? `
@@ -128,7 +127,7 @@ const styles = stylex.create({
   row: { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0.5rem' },
   gapSm: { display: 'flex', flexDirection: 'column', gap: '0.25rem' },
   heading: { fontWeight: 500 },
-  rtlContent: { display: 'flex', width: '16rem', flexDirection: 'column', gap: '0.25rem' },
+  rtlContent: { display: 'flex', width: '100%', flexDirection: 'column', gap: '0.25rem' },
   muted: { fontSize: '0.875rem', lineHeight: '1.25rem', color: 'var(--muted-foreground)' },
 })`
         : ''
@@ -161,7 +160,8 @@ export type Message = typeof Message.Type`,
       HoverCard.hoverCard({
         model: model.hoverCards[index]!,
         toParentMessage: message => Message.GotHoverCardMessage({ index, message }),
-        trigger: Button.button({ variant: 'outline', children: [entry${kind === 'sides' ? '' : '.label'}] }, h),
+        trigger: entry${kind === 'sides' ? '' : '.label'},
+        triggerButtonVariant: 'outline',
         ariaLabel: 'Hover card on the ' + ${sideExpr} + ' side',
         side: ${sideExpr},
         ${card}
