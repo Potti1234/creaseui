@@ -110,5 +110,6 @@ export const fileInputExamples = (
   fileInputFixtures.map((fixture, index) => ({
     title: fixture.title,
     description: fixture.description,
+    keepIdsCanonical: true,
     code: source(index, renderer),
   }))

@@ -1,10 +1,8 @@
 import { Schema as S } from 'effect'
 import { Command } from 'foldkit'
-import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page'
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import { fileInputFixtures } from '@/docs/components/pages/file-input/shared'
 import * as FileInput from '@/stylex/file-input'
 
@@ -70,7 +68,7 @@ export const fileInputStylexPreviewProgram = definePreviewProgram<
             model: model.input,
             toParentMessage: message =>
               GotFileInputMessage.GotFileInputMessage({ message }),
-            id: `docs-file-input-${String(index)}`,
+            id: model.input.id,
             label: fixture.label,
             ...(fixture.placeholder === undefined
               ? {}
@@ -86,40 +84,3 @@ export const fileInputStylexPreviewProgram = definePreviewProgram<
     )
   },
 })
-
-export const fileInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
-  exampleIndex: number,
-  model: unknown,
-  onMessageJson: (messageJson: string) => Msg,
-  h: HtmlBuilder<Msg>,
-): Html => {
-  const fixture = fileInputFixtures[exampleIndex] ?? fileInputFixtures[0]
-  const previewModel = model as {
-    input: FileInput.Model
-    files: ReadonlyArray<unknown>
-  }
-  return h.div(
-    [h.Style({ width: `${String(fixture.width)}px` })],
-    [
-      FileInput.fileInput(
-        {
-          model: previewModel.input,
-          toParentMessage: message =>
-            onMessageJson(
-              JSON.stringify({ _tag: 'GotFileInputMessage', message }),
-            ),
-          id: `docs-file-input-${String(exampleIndex)}`,
-          label: fixture.label,
-          ...(fixture.placeholder === undefined
-            ? {}
-            : { placeholder: fixture.placeholder }),
-          ...(fixture.helperText === undefined
-            ? {}
-            : { description: fixture.helperText }),
-          value: previewModel.files as ReadonlyArray<File>,
-        },
-        h,
-      ),
-    ],
-  )
-}

@@ -71,6 +71,7 @@ export type ErasedPreviewProgram = Readonly<{
 
 export const RoutedDocsPreviewMessage = defineMessageUnion({
   RoutedDocsPreviewMessage: { messageJson: S.String },
+  RoutedNativeDocsPreviewMessage: { message: S.Unknown },
 })
 export type RoutedDocsPreviewMessage = typeof RoutedDocsPreviewMessage.Type
 
@@ -89,7 +90,9 @@ export const definePreviewProgram = <Model, Message>(
       const routed = message as RoutedDocsPreviewMessage
       const nextOp__ = program.update(
         model as Model,
-        JSON.parse(routed.messageJson) as Message,
+        (routed._tag === 'RoutedNativeDocsPreviewMessage'
+          ? routed.message
+          : JSON.parse(routed.messageJson)) as Message,
       )
       const next = nextOp__.model
       const commands = nextOp__.commands ?? []
@@ -99,8 +102,8 @@ export const definePreviewProgram = <Model, Message>(
       const routedCommands = Command.mapMessages(
         commands as ReadonlyArray<Command.Command<Message> & { effect: never }>,
         childMessage =>
-          RoutedDocsPreviewMessage.RoutedDocsPreviewMessage({
-            messageJson: JSON.stringify(childMessage),
+          RoutedDocsPreviewMessage.RoutedNativeDocsPreviewMessage({
+            message: childMessage,
           }),
       )
       return { model: next, commands: routedCommands }
@@ -112,8 +115,8 @@ export const definePreviewProgram = <Model, Message>(
         view: childView,
         viewInputs: { exampleIndex },
         toParentMessage: message =>
-          RoutedDocsPreviewMessage.RoutedDocsPreviewMessage({
-            messageJson: JSON.stringify(message),
+          RoutedDocsPreviewMessage.RoutedNativeDocsPreviewMessage({
+            message,
           }),
       }),
     ...(program.subscriptions === undefined
@@ -125,8 +128,8 @@ export const definePreviewProgram = <Model, Message>(
           >({
             toChildModel: model => model as Model,
             toParentMessage: message =>
-              RoutedDocsPreviewMessage.RoutedDocsPreviewMessage({
-                messageJson: JSON.stringify(message),
+              RoutedDocsPreviewMessage.RoutedNativeDocsPreviewMessage({
+                message,
               }),
           }),
         }),

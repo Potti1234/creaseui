@@ -23,6 +23,7 @@ import type {
 import { componentApi } from '@/docs/generated-component-api'
 import { authoredPages } from '@/docs/components/pages'
 import { RoutedDocsPreviewMessage } from '@/docs/components/pages/authored-page'
+import type { ErasedPreviewProgram } from '@/docs/components/pages/authored-page'
 import { renderer } from '@/site/config'
 const stylexExamplePreviewProviders = new Map<
   string,
@@ -34,6 +35,16 @@ export const installStyleXExamplePreviewProvider = (
   provider: StyleXExamplePreviewProvider,
 ): void => {
   stylexExamplePreviewProviders.set(slug, provider)
+}
+
+const stylexPreviewViews = new Map<string, ErasedPreviewProgram['view']>()
+
+/** Typed views preserve native payloads while sharing the page's update logic. */
+export const installStyleXPreviewView = (
+  slug: string,
+  view: ErasedPreviewProgram['view'],
+): void => {
+  stylexPreviewViews.set(slug, view)
 }
 
 const definitions: PageDefinitions = {
@@ -288,9 +299,12 @@ export const view = (
   const kind = kindFor(slug, definition)
   const stylexExamples = definition.stylexExamples
   const stylexExamplePreviewProvider = stylexExamplePreviewProviders.get(slug)
+  const nativeStylexPreviewView = stylexPreviewViews.get(slug)
   if (
     model.renderer === 'stylex' &&
-    (stylexExamples === undefined || stylexExamplePreviewProvider === undefined)
+    (stylexExamples === undefined ||
+      (stylexExamplePreviewProvider === undefined &&
+        !stylexPreviewViews.has(slug)))
   ) {
     throw new Error(`Missing StyleX example parity for ${slug}`)
   }
@@ -310,10 +324,13 @@ export const view = (
       model.examples[stateIndex] ?? program.init(contentIndex)
     const previewView = defineView<unknown, RoutedDocsPreviewMessage>(
       (previewModel, previewBuilder) =>
-        program.view(contentIndex, previewModel, previewBuilder),
+        model.renderer === 'stylex' && nativeStylexPreviewView !== undefined
+          ? nativeStylexPreviewView(contentIndex, previewModel, previewBuilder)
+          : program.view(contentIndex, previewModel, previewBuilder),
     )
     if (
       model.renderer === 'stylex' &&
+      !stylexPreviewViews.has(slug) &&
       stylexExamples !== undefined &&
       stylexExamplePreviewProvider !== undefined
     ) {

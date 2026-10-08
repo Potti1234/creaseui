@@ -1,4 +1,7 @@
-import { installStyleXExamplePreviewProvider } from '@/docs/components/catalog'
+import {
+  installStyleXExamplePreviewProvider,
+  installStyleXPreviewView,
+} from '@/docs/components/catalog'
 import { mapStyleXPreview } from '@/docs/components/pages/map/stylex'
 installStyleXExamplePreviewProvider('map', mapStyleXPreview('map'))
 installStyleXExamplePreviewProvider(
@@ -64,7 +67,7 @@ import { toggleStyleXPreview } from '@/docs/components/pages/toggle/stylex'
 import { toggleGroupStyleXPreview } from '@/docs/components/pages/toggle-group/stylex'
 import { checkboxStyleXPreview } from '@/docs/components/pages/checkbox/stylex'
 import { circularProgressStyleXPreview } from '@/docs/components/pages/circular-progress/stylex'
-import { fileInputStyleXPreview } from '@/docs/components/pages/file-input/stylex'
+import { fileInputStylexPreviewProgram } from '@/docs/components/pages/file-input/stylex'
 import { listInputStyleXPreview } from '@/docs/components/pages/list-input/stylex'
 import { numberInputStyleXPreview } from '@/docs/components/pages/number-input/stylex'
 import { timeInputStyleXPreview } from '@/docs/components/pages/time-input/stylex'
@@ -252,7 +255,7 @@ installStyleXExamplePreviewProvider(
   chatReasoningStyleXPreview,
 )
 installStyleXExamplePreviewProvider('field-status', fieldStatusStyleXPreview)
-installStyleXExamplePreviewProvider('file-input', fileInputStyleXPreview)
+installStyleXPreviewView('file-input', fileInputStylexPreviewProgram.view)
 installStyleXExamplePreviewProvider('info-tip', infoTipStyleXPreview)
 installStyleXExamplePreviewProvider('lightbox', lightboxStyleXPreview)
 installStyleXExamplePreviewProvider('list-input', listInputStyleXPreview)

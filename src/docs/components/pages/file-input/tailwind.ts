@@ -68,7 +68,7 @@ export const fileInputTailwindPreviewProgram = definePreviewProgram<
             model: model.input,
             toParentMessage: message =>
               GotFileInputMessage.GotFileInputMessage({ message }),
-            id: `docs-file-input-${String(index)}`,
+            id: model.input.id,
             label: fixture.label,
             ...(fixture.placeholder === undefined
               ? {}
