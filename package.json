@@ -91,6 +91,7 @@
     "embla-carousel": "^8.6.0",
     "embla-carousel-autoplay": "^8.6.0",
     "foldkit": "0.164.0",
+    "maplibre-gl": "^6.13.0",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.3.1"
   },
