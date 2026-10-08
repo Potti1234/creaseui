@@ -203,6 +203,7 @@ const styles = stylex.create({
       '@media (min-width: 768px)': '1.25rem',
     },
     outlineStyle: 'none',
+    resize: 'none',
     minHeight: '4rem',
     width: '100%',
   },

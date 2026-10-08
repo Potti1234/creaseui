@@ -255,7 +255,7 @@ export const inputGroupTextarea = <Msg>(
     h.DataAttribute('slot', 'input-group-control'),
     h.Class(
       cn(
-        'field-sizing-content min-h-16 w-full flex-1 rounded-none border-0 bg-transparent px-3 py-2 text-base shadow-none outline-none placeholder:text-muted-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-transparent',
+        'field-sizing-content min-h-16 w-full flex-1 resize-none rounded-none border-0 bg-transparent px-3 py-2 text-base shadow-none outline-none placeholder:text-muted-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-transparent',
         props.class,
       ),
     ),
