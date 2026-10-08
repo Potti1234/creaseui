@@ -299,7 +299,10 @@ const styles = stylex.create({
     color: tokens.mutedForeground,
   },
   frame: {
-    overflow: 'hidden',
+    overflow: {
+      default: 'hidden',
+      ':has([data-slot="popover-content"] [data-slot="calendar"])': 'visible',
+    },
     borderStyle: 'solid',
     borderWidth: 1,
     borderColor: tokens.border,
@@ -312,7 +315,10 @@ const styles = stylex.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: { default: '1.5rem', '@media (min-width: 640px)': '2.5rem' },
-    overflowX: 'auto',
+    overflowX: {
+      default: 'auto',
+      ':has([data-slot="popover-content"] [data-slot="calendar"])': 'visible',
+    },
   },
   stretch: { justifyContent: 'stretch' },
   code: {

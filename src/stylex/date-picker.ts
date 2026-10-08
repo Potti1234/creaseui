@@ -20,7 +20,7 @@ const styles = stylex.create({
   contents: { display: 'contents' },
   icon: { flexShrink: 0 },
   empty: { color: tokens.mutedForeground },
-  panel: { padding: 0, width: 'auto' },
+  panel: { padding: 0, maxWidth: 'calc(100vw - 2rem)', width: 'auto' },
   trigger: {
     fontWeight: 400,
     justifyContent: 'flex-start',
@@ -91,11 +91,19 @@ const styles = stylex.create({
     lineHeight: '1.25rem',
   },
   mobileDialog: {
-    position: { default: null, '@media (max-width: 639px)': 'fixed' },
+    position: {
+      default: null,
+      // eslint-disable-next-line @stylexjs/valid-styles -- Override Foldkit's inline positioning for the mobile dialog.
+      '@media (max-width: 639px)': 'fixed !important',
+    },
     bottom: { default: null, '@media (max-width: 639px)': '0.75rem' },
-    left: { default: null, '@media (max-width: 639px)': '0.75rem' },
+    left: { default: null, '@media (max-width: 639px)': '0.75rem !important' },
+    maxWidth: {
+      default: null,
+      '@media (max-width: 639px)': 'calc(100vw - 1.5rem)',
+    },
     right: { default: null, '@media (max-width: 639px)': '0.75rem' },
-    top: { default: null, '@media (max-width: 639px)': 'auto' },
+    top: { default: null, '@media (max-width: 639px)': 'auto !important' },
     width: { default: null, '@media (max-width: 639px)': 'auto' },
   },
 })
