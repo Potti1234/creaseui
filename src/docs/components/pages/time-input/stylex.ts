@@ -42,6 +42,9 @@ const entryProps = (
   id: `docs-time-input-${entry.id}`,
   label: entry.label,
   value: Option.getOrNull(value),
+  ...(entry.presentation === undefined
+    ? {}
+    : { presentation: entry.presentation }),
   ...(entry.placeholder === undefined
     ? {}
     : { placeholder: entry.placeholder }),
@@ -178,6 +181,9 @@ export const timeInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
             id: `docs-time-input-${fixtureEntry.id}`,
             label: fixtureEntry.label,
             value: Option.getOrNull(entry.value),
+            ...(fixtureEntry.presentation === undefined
+              ? {}
+              : { presentation: fixtureEntry.presentation }),
             ...(fixtureEntry.placeholder === undefined
               ? {}
               : { placeholder: fixtureEntry.placeholder }),

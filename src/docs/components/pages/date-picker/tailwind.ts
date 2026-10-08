@@ -15,7 +15,7 @@ import * as Calendar from '@/ui/calendar'
 import * as DatePicker from '@/ui/date-picker'
 import * as Field from '@/ui/field'
 import * as Icon from '@/lib/icon'
-import * as Input from '@/ui/input'
+import * as TimeInput from '@/ui/time-input'
 import * as InputGroup from '@/ui/input-group'
 import * as Popover from '@/ui/popover'
 
@@ -25,7 +25,7 @@ const Message = defineMessageUnion({
   GotPopoverMessage: { message: Popover.Message },
   ChangedInput: { value: S.String },
   PressedKeyInInput: { key: S.String },
-  ChangedTime: { value: S.String },
+  GotTimeInputMessage: { message: TimeInput.Message },
 })
 type Message = typeof Message.Type
 
@@ -40,6 +40,7 @@ const Model = S.Struct({
   rangeEnd: S.Option(FoldkitCalendar.CalendarDate),
   inputValue: S.String,
   timeValue: S.String,
+  timeInput: TimeInput.Model,
 })
 type Model = typeof Model.Type
 
@@ -184,7 +185,8 @@ export const datePickerTailwindPreviewProgram = definePreviewProgram<
           : kind === 'natural'
             ? 'In 2 days'
             : '',
-      timeValue: '10:30:00',
+      timeValue: '10:30',
+      timeInput: TimeInput.init({ id: `docs-date-picker-time-${index}` }),
     }
   },
   update: (model, message) => {
@@ -322,8 +324,22 @@ export const datePickerTailwindPreviewProgram = definePreviewProgram<
           ),
         }
       }
-      case 'ChangedTime':
-        return { model: { ...model, timeValue: message.value }, commands: [] }
+      case 'GotTimeInputMessage': {
+        const next = TimeInput.update(model.timeInput, message.message)
+        return {
+          model: {
+            ...model,
+            timeInput: next.model,
+            timeValue:
+              next.outMessage === undefined
+                ? model.timeValue
+                : Option.getOrElse(next.outMessage.value, () => ''),
+          },
+          commands: Command.mapMessages(next.commands ?? [], child =>
+            Message.GotTimeInputMessage({ message: child }),
+          ),
+        }
+      }
     }
   },
   view: (index, model, h) => {
@@ -409,13 +425,17 @@ const pickerView = (
   if (kind === 'time') {
     return Field.fieldGroup(
       {
-        class: 'mx-auto max-w-xs flex-row',
+        class: 'mx-auto w-full max-w-sm flex-row flex-wrap items-start',
         children: [
           Field.field(
             {
+              class: 'w-44',
               children: [
                 Field.fieldLabel(
-                  { for: 'date-picker-optional', children: ['Date'] },
+                  {
+                    for: DatePicker.triggerId(model.datePicker.id),
+                    children: ['Date'],
+                  },
                   h,
                 ),
                 picker,
@@ -425,20 +445,27 @@ const pickerView = (
           ),
           Field.field(
             {
-              class: 'w-32',
+              class: 'w-36',
               children: [
                 Field.fieldLabel(
-                  { for: 'time-picker-optional', children: ['Time'] },
+                  {
+                    for: TimeInput.pickerButtonId(model.timeInput),
+                    children: ['Time'],
+                  },
                   h,
                 ),
-                Input.input(
+                TimeInput.timeInput(
                   {
+                    model: model.timeInput,
+                    toParentMessage: message =>
+                      Message.GotTimeInputMessage({ message }),
                     id: 'time-picker-optional',
+                    label: 'Time',
+                    isLabelHidden: true,
+                    presentation: 'select',
+                    hourFormat: '24h',
+                    name: 'time',
                     value: model.timeValue,
-                    onInput: value => Message.ChangedTime({ value }),
-                    type: 'time',
-                    class:
-                      'w-32 appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none',
                   },
                   h,
                 ),

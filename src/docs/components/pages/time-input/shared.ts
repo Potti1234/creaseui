@@ -10,6 +10,7 @@ export type TimeInputFixtureEntry = Readonly<{
   max?: string
   increment?: number
   hourFormat?: '12h' | '24h'
+  presentation?: 'input' | 'select'
   hasSeconds?: boolean
   hasClear?: boolean
   isDisabled?: boolean
@@ -34,7 +35,7 @@ export const timeInputFixtures: Readonly<
   {
     title: 'Time Input',
     description:
-      'A time input that uses the browser/OS picker on touch by default and CreaseUI typed entry on fine pointers.',
+      'A styled text input for flexible time entry. Use the selector presentation for hour and minute dropdowns.',
     maxWidth: 400,
     entries: [{ id: 'time', label: 'Time', placeholder: 'Select a time' }],
   },
@@ -122,6 +123,47 @@ export const timeInputFixtures: Readonly<
       },
     ],
   },
+  {
+    title: 'Hour and Minute Picker',
+    description:
+      'Styled hour and minute dropdowns with keyboard selection. Supports 24-hour time, AM/PM, seconds, and time windows.',
+    maxWidth: 400,
+    entries: [
+      {
+        id: 'picker-24h',
+        label: '24-hour time',
+        presentation: 'select',
+        hourFormat: '24h',
+        initialValue: '10:30',
+        hasClear: true,
+      },
+      {
+        id: 'picker-12h',
+        label: '12-hour time with seconds',
+        presentation: 'select',
+        hasSeconds: true,
+        initialValue: '14:30:45',
+      },
+      {
+        id: 'picker-constrained',
+        label: 'Business hours',
+        presentation: 'select',
+        hourFormat: '24h',
+        initialValue: '10:30',
+        min: '09:15',
+        max: '17:45',
+        description: 'Available from 09:15 to 17:45',
+      },
+      {
+        id: 'picker-disabled',
+        label: 'Disabled picker',
+        presentation: 'select',
+        hourFormat: '24h',
+        initialValue: '10:30',
+        isDisabled: true,
+      },
+    ],
+  },
 ]
 
 const ui = (renderer: 'tailwind' | 'stylex'): string =>
@@ -135,6 +177,7 @@ const timeInputCallSource = (
             model: model.inputs[${slot}]!.input,
             toParentMessage: message => GotTimeInputMessage({ index: ${slot}, message }),
             id: '${entry.id}',
+            ${entry.presentation === undefined ? '' : `presentation: '${entry.presentation}',`}
             label: '${entry.label}',${entry.placeholder === undefined ? '' : `\n            placeholder: '${entry.placeholder}',`}${entry.min === undefined ? '' : `\n            min: '${entry.min}',`}${entry.max === undefined ? '' : `\n            max: '${entry.max}',`}${entry.increment === undefined ? '' : `\n            increment: ${entry.increment},`}${entry.hourFormat === undefined ? '' : `\n            hourFormat: '${entry.hourFormat}',`}${entry.hasSeconds === true ? '\n            hasSeconds: true,' : ''}${entry.hasClear === true ? '\n            hasClear: true,' : ''}${entry.isDisabled === true ? '\n            isDisabled: true,' : ''}${entry.description === undefined ? '' : `\n            description: '${entry.description}',`}${entry.status === undefined ? '' : `\n            status: { type: '${entry.status.type}', message: '${entry.status.message}' },`}
             value: model.inputs[${slot}]!.value.pipe(Option.getOrNull),
           },

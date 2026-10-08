@@ -197,26 +197,22 @@ ${triggerContentEmit}
   body: h.main([], [
     ${
       isTime
-        ? `Field.fieldGroup({ children: [
-      Field.field({ children: [
-        Field.fieldLabel({ for: 'date-picker-optional', children: ['Date'] }, h),
+        ? `${isStyleX ? `h.div([h.Class(className(styles.timeRow))], [` : `Field.fieldGroup({ class: 'mx-auto w-full max-w-sm flex-row flex-wrap items-start', children: [`}
+      Field.field({ ${isStyleX ? `layoutStyle: styles.dateField` : `class: 'w-44'`}, children: [
+        Field.fieldLabel({ for: DatePicker.triggerId(model.datePicker.id), children: ['Date'] }, h),
         ${datePickerCall},
       ] }, h),
-      Field.field({ ${isStyleX ? `layoutStyle: styles.timeField` : `class: 'w-32'`}, children: [
-        Field.fieldLabel({ for: 'time-picker-optional', children: ['Time'] }, h),
-        Input.input({
-          id: 'time-picker-optional',
+      Field.field({ ${isStyleX ? `layoutStyle: styles.timeField` : `class: 'w-36'`}, children: [
+        Field.fieldLabel({ for: TimeInput.pickerButtonId(model.timeInput), children: ['Time'] }, h),
+        TimeInput.timeInput({
+          model: model.timeInput,
+          toParentMessage: message => GotTimeInputMessage({ message }),
+          id: 'time-picker-optional', label: 'Time', isLabelHidden: true,
+          presentation: 'select', hourFormat: '24h', name: 'time',
           value: model.timeValue,
-          onInput: value => ChangedTime({ value }),
-          type: 'time',${
-            isStyleX
-              ? ''
-              : `
-          class: 'w-32 appearance-none bg-background [&::-webkit-calendar-picker-indicator]:hidden',`
-          }
         }, h),
       ] }, h),
-    ] }, h)`
+    ${isStyleX ? '])' : '] }, h)'}`
         : pickerBlock
     },
   ]),
@@ -244,7 +240,7 @@ import * as Field from '@/${dir}/field'`
     }${
       isTime
         ? `
-import * as Input from '@/${dir}/input'`
+import * as TimeInput from '@/${dir}/time-input'`
         : ''
     }${
       withChevron
@@ -269,8 +265,9 @@ const styles = stylex.create({
   fieldWrap: { width: '11rem', marginInline: 'auto' },${
     isTime
       ? `
-  timeField: { width: '8rem' },
-  timeRow: { display: 'flex', flexDirection: 'row', gap: '0.5rem', marginInline: 'auto', maxWidth: '20rem' },`
+  timeField: { width: '9rem' },
+  dateField: { width: '11rem' },
+  timeRow: { display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '0.5rem', marginInline: 'auto', maxWidth: '22rem' },`
       : ''
   }
 })`
@@ -283,7 +280,9 @@ ${FORMAT_HELPERS}`,
   selectedDate: S.Option(FoldkitCalendar.CalendarDate),${
     isTime
       ? `
-  timeValue: S.String,`
+  timeValue: S.String,` +
+        `
+  timeInput: TimeInput.Model,`
       : ''
   }
 })
@@ -292,10 +291,10 @@ export type Model = typeof Model.Type`,
 export const GotDatePickerMessage = taggedStruct('GotDatePickerMessage', { message: DatePicker.Message });${
       isTime
         ? `
-export const ChangedTime = taggedStruct('ChangedTime', { value: S.String });`
+export const GotTimeInputMessage = taggedStruct('GotTimeInputMessage', { message: TimeInput.Message });`
         : ''
     }
-export const Message = S.Union([GotDatePickerMessage${isTime ? ', ChangedTime' : ''}])
+export const Message = S.Union([GotDatePickerMessage${isTime ? ', GotTimeInputMessage' : ''}])
 export type Message = typeof Message.Type`,
     init: `export const init = (): Update.Return<Model, Message> => ({
   model: {
@@ -303,7 +302,8 @@ export type Message = typeof Message.Type`,
     selectedDate: Option.none(),${
       isTime
         ? `
-    timeValue: '10:30:00',`
+    timeValue: '10:30',
+    timeInput: TimeInput.init({ id: 'docs-date-picker-time' }),`
         : ''
     }
   },
@@ -321,8 +321,13 @@ export type Message = typeof Message.Type`,
     }${
       isTime
         ? `
-    case 'ChangedTime':
-      return { model: { ...model, timeValue: message.value }, commands: [] }`
+    case 'GotTimeInputMessage': {
+      const next = TimeInput.update(model.timeInput, message.message)
+      return {
+        model: { ...model, timeInput: next.model, timeValue: next.outMessage === undefined ? model.timeValue : Option.getOrElse(next.outMessage.value, () => '') },
+        commands: Command.mapMessages(next.commands ?? [], child => GotTimeInputMessage({ message: child })),
+      }
+    }`
         : ''
     }
   }

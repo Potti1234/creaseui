@@ -2,9 +2,8 @@ import { reset } from '@/stylex/reset'
 /* Ported from Meta Astryx TimeInput (packages/core/src/TimeInput) —
    examples and visual spec adapted to Crease UI tokens.
 
-   PORT-NOTE: astryx's `presentation`/`nativePicker` surface switching
-   (native OS picker, adaptive bottom sheet) is out of scope — this port
-   renders the typed-entry field only. Astrx duration-fast (130ms) maps to
+   Typed entry and optional styled segment selectors share a controlled ISO
+   value. Astrx duration-fast (130ms) maps to
    interactionTokens.motionFast (150ms); accent/accent-muted map to
    tokens.ring + color-mix over Crease tokens. */
 
@@ -28,10 +27,15 @@ import {
   formatDisplayTime,
   isTimeInRange,
   Message,
+  pickerButtonId,
+  resolveTimePart,
+  timePartOptions,
+  timePartValue,
   resolveTimeDraft,
   resolveTimeInputCommit,
   type Model,
   type TimeInputCommit,
+  type TimePart,
 } from '@/lib/time-input'
 
 import type { ComponentLayoutStyle } from './contracts'
@@ -39,12 +43,30 @@ import { foundationTokens } from './foundations-tokens.stylex'
 import { interactionTokens } from './interaction-tokens.stylex.const'
 import { className } from './style'
 import { tokens } from './tokens.stylex'
+import * as Select from './select'
 
-export { init, Model, Message, OutMessage, update } from '@/lib/time-input'
+export {
+  init,
+  Model,
+  Message,
+  OutMessage,
+  update,
+  pickerButtonId,
+} from '@/lib/time-input'
 export type { TimeValue } from '@/lib/time-input'
 export type { InputStatus } from '@/lib/input-status'
 
 const styles = stylex.create({
+  picker: {
+    gap: '0.125rem',
+    alignItems: 'center',
+    display: 'flex',
+    flexGrow: 1,
+    fontVariantNumeric: 'tabular-nums',
+    minWidth: 0,
+  },
+  pickerWrapper: { gap: '0.25rem', height: '2.25rem' },
+  pickerSeparator: { color: tokens.mutedForeground },
   field: {
     gap: '0.25rem',
     display: 'flex',
@@ -85,6 +107,7 @@ const styles = stylex.create({
     position: 'relative',
     zIndex: 0,
   },
+  pickerStatusWrapperOpen: { zIndex: 50 },
   wrapper: {
     borderRadius: foundationTokens.radiusMd,
     borderStyle: 'solid',
@@ -293,6 +316,8 @@ export type TimeInputProps<Msg> = Readonly<{
   id: string
   label: Html | string
   value?: string | null
+  /** Styled segment selectors, or flexible typed entry (default). */
+  presentation?: 'input' | 'select'
   isLabelHidden?: boolean
   description?: Html | string
   isOptional?: boolean
@@ -379,6 +404,8 @@ const view = defineView<Model, Message, TimeInputViewInputs>(
     const commit = commitResolution(props, model)
     const includeSeconds = props.hasSeconds === true
     const hourFormat = props.hourFormat ?? '12h'
+    const isSelect = props.presentation === 'select'
+    const focusId = isSelect ? pickerButtonId(model) : fieldIds.input
 
     const describedBy =
       [
@@ -397,7 +424,7 @@ const view = defineView<Model, Message, TimeInputViewInputs>(
 
     const fieldLabel = h.label(
       [
-        h.For(fieldIds.input),
+        h.For(focusId),
         h.Id(fieldIds.label),
         h.DataAttribute('slot', 'time-input-label'),
         h.Class(
@@ -511,6 +538,77 @@ const view = defineView<Model, Message, TimeInputViewInputs>(
           ]),
     ])
 
+    const parts: ReadonlyArray<TimePart> = [
+      'hour',
+      'minute',
+      ...(includeSeconds ? ['second' as const] : []),
+      ...(hourFormat === '12h' ? ['period' as const] : []),
+    ]
+    const picker = isSelect
+      ? h.div(
+          [
+            h.DataAttribute('slot', 'time-input-picker'),
+            h.Class(className(styles.picker)),
+          ],
+          parts.flatMap((part, index) => [
+            ...(index > 0 && part !== 'period'
+              ? [
+                  h.span(
+                    [
+                      h.AriaHidden(true),
+                      h.Class(className(styles.pickerSeparator)),
+                    ],
+                    [':'],
+                  ),
+                ]
+              : []),
+            Select.select(
+              {
+                model: model.parts[part],
+                maybeSelectedValue: timePartValue(value, part, hourFormat),
+                toParentMessage: message =>
+                  Message.GotPartMessage({
+                    part,
+                    message,
+                    context: {
+                      value: value ?? null,
+                      hourFormat,
+                      hasSeconds: includeSeconds,
+                      min: props.min ?? null,
+                      max: props.max ?? null,
+                    },
+                  }),
+                items: timePartOptions(part, hourFormat),
+                itemToValue: item => item,
+                itemToLabel: item => item,
+                itemToConfig: item => ({
+                  isDisabled:
+                    resolveTimePart(value, part, item, {
+                      hourFormat,
+                      hasSeconds: includeSeconds,
+                      min: props.min,
+                      max: props.max,
+                    }) === null,
+                }),
+                itemGroupKey: () => part,
+                groupToHeading: () =>
+                  part === 'period'
+                    ? 'AM / PM'
+                    : `${part[0]?.toUpperCase()}${part.slice(1)}`,
+                placeholder: '--',
+                ariaLabel: `${props['aria-label'] ?? (typeof props.label === 'string' ? props.label : 'Time')} ${part === 'period' ? 'AM or PM' : part}`,
+                isDisabled:
+                  props.isDisabled === true || props.isLoading === true,
+                isReadOnly: props.isReadOnly ?? false,
+                isInvalid,
+                variant: 'ghost',
+              },
+              h,
+            ),
+          ]),
+        )
+      : input
+
     const clearButton =
       props.hasClear === true &&
       value !== undefined &&
@@ -519,13 +617,13 @@ const view = defineView<Model, Message, TimeInputViewInputs>(
         ? h.button(
             [
               h.Type('button'),
-              h.Tabindex(-1),
+              h.Tabindex(isSelect ? 0 : -1),
               h.AriaLabel(
                 `Clear ${typeof props.label === 'string' ? props.label : 'time'}`,
               ),
               h.OnClick(Message.ClearRequested(), {
                 propagation: 'Stop',
-                focusSelector: `#${fieldIds.input}`,
+                focusSelector: `#${focusId}`,
               }),
               h.DataAttribute('slot', 'time-input-clear'),
               h.Class(className(reset.button, styles.clearButton)),
@@ -570,6 +668,7 @@ const view = defineView<Model, Message, TimeInputViewInputs>(
           className(
             styles.wrapper,
             heightStyle[size],
+            isSelect && styles.pickerWrapper,
             props.isDisabled === true
               ? styles.wrapperDisabled
               : status === undefined
@@ -584,7 +683,25 @@ const view = defineView<Model, Message, TimeInputViewInputs>(
       ],
       [
         clockIcon,
-        input,
+        isSelect ? picker : input,
+        ...(isSelect && props.name !== undefined
+          ? [
+              h.input([
+                h.Type('hidden'),
+                h.Name(props.name),
+                h.Value(
+                  value === undefined
+                    ? ''
+                    : formatDisplayTime(value, {
+                        hourFormat: '24h',
+                        hasSeconds: includeSeconds,
+                      }),
+                ),
+                h.Disabled(props.isDisabled === true),
+                h.DataAttribute('slot', 'time-input-value'),
+              ]),
+            ]
+          : []),
         ...(clearButton === undefined ? [] : [clearButton]),
         ...(statusIcon === undefined ? [] : [statusIcon]),
       ],
@@ -646,6 +763,15 @@ const view = defineView<Model, Message, TimeInputViewInputs>(
     return h.div(
       [
         h.DataAttribute('slot', 'time-input'),
+        ...(isSelect
+          ? [
+              h.Role('group'),
+              h.AriaLabelledBy(fieldIds.label),
+              ...(describedBy === undefined
+                ? []
+                : [h.AriaDescribedBy(describedBy)]),
+            ]
+          : []),
         h.Class(className(styles.field, props.layoutStyle)),
       ],
       [
@@ -665,7 +791,14 @@ const view = defineView<Model, Message, TimeInputViewInputs>(
         h.div(
           [
             h.DataAttribute('slot', 'time-input-status-wrapper'),
-            h.Class(className(styles.statusWrapper)),
+            h.Class(
+              className(
+                styles.statusWrapper,
+                isSelect &&
+                  Object.values(model.parts).some(part => part.isOpen) &&
+                  styles.pickerStatusWrapperOpen,
+              ),
+            ),
           ],
           [wrapper, ...statusLayer],
         ),

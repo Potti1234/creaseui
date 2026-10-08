@@ -16,7 +16,30 @@ import { className } from './style'
 import { tokens } from './tokens.stylex'
 
 const styles = stylex.create({
+  ghostTrigger: {
+    borderRadius: foundationTokens.radiusSm,
+    borderWidth: 0,
+    gap: '0.25rem',
+    insetBlock: { default: null, '::before': '-0.375rem' },
+    insetInline: { default: null, '::before': 0 },
+    paddingBlock: 0,
+    paddingInline: '0.25rem',
+    backgroundColor: { default: 'transparent', ':hover': tokens.muted },
+    boxShadow: {
+      default: tokens.shadowNone,
+      ':focus-visible': tokens.focusRingShadow,
+    },
+    content: { default: null, '::before': '""' },
+    fontVariantNumeric: 'tabular-nums',
+    fontWeight: 400,
+    justifyContent: 'center',
+    position: { default: 'relative', '::before': 'absolute' },
+    height: '1.75rem',
+    minWidth: '2.5rem',
+  },
   contents: { display: 'contents' },
+  ghostContent: { outlineStyle: 'none' },
+  ghostViewport: { maxHeight: '16rem', overflowY: 'auto' },
   content: {
     minWidth: '8rem',
     width: 'var(--button-width)',
@@ -123,6 +146,7 @@ export type SelectProps<Item, Value extends string, Msg> = Readonly<{
   itemToLabel: (item: Item) => string
   itemToConfig?: (item: Item) => SelectItemConfig
   placeholder?: string
+  variant?: 'default' | 'ghost'
   triggerLayoutStyle?: ComponentLayoutStyle
   size?: SelectSize
   ariaLabel?: string
@@ -255,6 +279,7 @@ const renderSelect = <Item, Value extends string, Msg>(
       joinStyles.join,
       joinStyles.triggerFit,
       joinStyles.triggerRadiusBack,
+      props.variant === 'ghost' && styles.ghostTrigger,
       props.triggerLayoutStyle,
     ),
     isDisabled: props.isDisabled ?? false,
@@ -270,14 +295,22 @@ const renderSelect = <Item, Value extends string, Msg>(
         : []),
     ]),
     ...buildAnchor(props, values),
-    itemsClassName: className(CONTENT_CLASS, styles.content),
+    itemsClassName: className(
+      CONTENT_CLASS,
+      styles.content,
+      props.variant === 'ghost' && styles.ghostContent,
+    ),
     itemsAttributes: childAttributes([
       // Upstream 0.164 stamps tabindex="-1" on the listbox; Base UI parity
       // expects the popup listbox to remain tabbable, so restore tabindex="0".
       hs.Tabindex(0),
       hs.DataAttribute('slot', 'select-content'),
     ]),
-    itemsScrollClassName: className(reset.list, VIEWPORT_CLASS),
+    itemsScrollClassName: className(
+      reset.list,
+      VIEWPORT_CLASS,
+      props.variant === 'ghost' && styles.ghostViewport,
+    ),
     backdropClassName: className(BACKDROP_CLASS),
     backdropAttributes: childAttributes([
       hs.DataAttribute('slot', 'select-backdrop'),

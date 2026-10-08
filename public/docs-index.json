@@ -5447,6 +5447,7 @@
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/input-status",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -7632,6 +7633,9 @@
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/input-status",
+        "Potti1234/creaseui/select",
+        "Potti1234/creaseui/time-input-core",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -7639,7 +7643,8 @@
         "TimeInput — Constrained",
         "TimeInput — Formats",
         "TimeInput — Increment",
-        "TimeInput — States"
+        "TimeInput — States",
+        "Hour and Minute Picker"
       ],
       "api": [
         {
@@ -7668,6 +7673,11 @@
           "signature": "export { update } from '@/lib/time-input'"
         },
         {
+          "name": "pickerButtonId",
+          "kind": "re-export",
+          "signature": "export { pickerButtonId } from '@/lib/time-input'"
+        },
+        {
           "name": "TimeValue",
           "kind": "re-export",
           "signature": "export { TimeValue } from '@/lib/time-input'"
@@ -7680,7 +7690,7 @@
         {
           "name": "TimeInputProps",
           "kind": "type",
-          "signature": "TimeInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; id: string; label: Html | string; value?: string | null; isLabelHidden?: boolean; description?: Html | string; isOptional?: boolean; isRequired?: boolean; isDisabled?: …"
+          "signature": "TimeInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; id: string; label: Html | string; value?: string | null; presentation?: 'input' | 'select'; isLabelHidden?: boolean; description?: Html | string; isOptional?: boolean; …"
         },
         {
           "name": "TimeInputViewInputs",

@@ -5550,6 +5550,11 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "export { update } from '@/lib/time-input'"
     },
     {
+      "name": "pickerButtonId",
+      "kind": "re-export",
+      "signature": "export { pickerButtonId } from '@/lib/time-input'"
+    },
+    {
       "name": "TimeValue",
       "kind": "re-export",
       "signature": "export { TimeValue } from '@/lib/time-input'"
@@ -5562,7 +5567,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "TimeInputProps",
       "kind": "type",
-      "signature": "TimeInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; id: string; label: Html | string; value?: string | null; isLabelHidden?: boolean; description?: Html | string; isOptional?: boolean; isRequired?: boolean; isDisabled?: …"
+      "signature": "TimeInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; id: string; label: Html | string; value?: string | null; presentation?: 'input' | 'select'; isLabelHidden?: boolean; description?: Html | string; isOptional?: boolean; …"
     },
     {
       "name": "TimeInputViewInputs",

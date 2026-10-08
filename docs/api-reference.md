@@ -1751,9 +1751,10 @@ Source: [`src/ui/time-input.ts`](../src/ui/time-input.ts)
 | `Message` | re-export | `export { Message } from '@/lib/time-input'` |
 | `OutMessage` | re-export | `export { OutMessage } from '@/lib/time-input'` |
 | `update` | re-export | `export { update } from '@/lib/time-input'` |
+| `pickerButtonId` | re-export | `export { pickerButtonId } from '@/lib/time-input'` |
 | `TimeValue` | re-export | `export { TimeValue } from '@/lib/time-input'` |
 | `InputStatus` | re-export | `export { InputStatus } from '@/lib/input-status'` |
-| `TimeInputProps` | type | `TimeInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; id: string; label: Html \| string; value?: string \| null; isLabelHidden?: boolean; description?: Html \| string; isOptional?: boolean; isRequired?: boolean; isDisabled?: …` |
+| `TimeInputProps` | type | `TimeInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; id: string; label: Html \| string; value?: string \| null; presentation?: 'input' \| 'select'; isLabelHidden?: boolean; description?: Html \| string; isOptional?: boolean; …` |
 | `TimeInputViewInputs` | type | `TimeInputViewInputs = Omit<TimeInputProps<never>, 'model' \| 'toParentMessage'>` |
 | `timeInput` | function | `timeInput<Msg>(props: TimeInputProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 

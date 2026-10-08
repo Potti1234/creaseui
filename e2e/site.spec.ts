@@ -3498,6 +3498,7 @@ test('calendar sections mirror shadcn examples in both renderers', async ({
 test('date picker covers every upstream section in both renderers', async ({
   page,
 }) => {
+  test.setTimeout(60_000)
   const pageErrors: Array<string> = []
   page.on('pageerror', error => pageErrors.push(error.message))
   await page.goto('/docs/components/date-picker')
@@ -3558,9 +3559,17 @@ test('date picker covers every upstream section in both renderers', async ({
   await expect(page.locator('[data-slot="popover-content"]')).toBeVisible()
   await page.keyboard.press('Escape')
 
-  // Time picker: date field plus a time input.
+  // Time picker: styled hour/minute listboxes emit the canonical form value.
   const time = page.locator('#time-picker')
-  await expect(time.locator('input[type="time"]')).toBeVisible()
+  await expect(time.locator('input[type="time"]')).toHaveCount(0)
+  await expect(
+    time.getByRole('button', { name: 'Time hour', exact: true }),
+  ).toContainText('10')
+  await time.getByRole('button', { name: 'Time hour', exact: true }).click()
+  await page.getByRole('option', { name: '14', exact: true }).click()
+  await time.getByRole('button', { name: 'Time minute', exact: true }).click()
+  await page.getByRole('option', { name: '45', exact: true }).click()
+  await expect(time.locator('input[name="time"]')).toHaveValue('14:45')
 
   // RTL: Arabic labels and dir=rtl inside the example.
   const rtl = page.locator('#rtl')
@@ -3582,6 +3591,11 @@ test('date picker covers every upstream section in both renderers', async ({
   await expect(page.locator('[data-slot="popover-content"]')).toBeVisible()
   await page.keyboard.press('Escape')
   await page.waitForTimeout(100)
+  await time.getByRole('button', { name: 'Time hour', exact: true }).click()
+  await page.getByRole('option', { name: '16', exact: true }).click()
+  await time.getByRole('button', { name: 'Time minute', exact: true }).click()
+  await page.getByRole('option', { name: '15', exact: true }).click()
+  await expect(time.locator('input[name="time"]')).toHaveValue('16:15')
   expect(pageErrors).toEqual([])
 })
 

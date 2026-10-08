@@ -37,6 +37,9 @@ const entryProps = (
   id: `docs-time-input-${entry.id}`,
   label: entry.label,
   value: Option.getOrNull(value),
+  ...(entry.presentation === undefined
+    ? {}
+    : { presentation: entry.presentation }),
   ...(entry.placeholder === undefined
     ? {}
     : { placeholder: entry.placeholder }),

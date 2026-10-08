@@ -2064,16 +2064,17 @@ A CreaseUI Time Input component for Foldkit.
 
 Source: `src/ui/time-input.ts`
 
-Examples: Time Input, TimeInput — Constrained, TimeInput — Formats, TimeInput — Increment, TimeInput — States
+Examples: Time Input, TimeInput — Constrained, TimeInput — Formats, TimeInput — Increment, TimeInput — States, Hour and Minute Picker
 
 - `export { init } from '@/lib/time-input'` (re-export)
 - `export { Model } from '@/lib/time-input'` (re-export)
 - `export { Message } from '@/lib/time-input'` (re-export)
 - `export { OutMessage } from '@/lib/time-input'` (re-export)
 - `export { update } from '@/lib/time-input'` (re-export)
+- `export { pickerButtonId } from '@/lib/time-input'` (re-export)
 - `export { TimeValue } from '@/lib/time-input'` (re-export)
 - `export { InputStatus } from '@/lib/input-status'` (re-export)
-- `TimeInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; id: string; label: Html | string; value?: string | null; isLabelHidden?: boolean; description?: Html | string; isOptional?: boolean; isRequired?: boolean; isDisabled?: …` (type)
+- `TimeInputProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; id: string; label: Html | string; value?: string | null; presentation?: 'input' | 'select'; isLabelHidden?: boolean; description?: Html | string; isOptional?: boolean; …` (type)
 - `TimeInputViewInputs = Omit<TimeInputProps<never>, 'model' | 'toParentMessage'>` (type)
 - `timeInput<Msg>(props: TimeInputProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 

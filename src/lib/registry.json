@@ -2,11 +2,40 @@
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "items": [
     {
+      "name": "time-input-core",
+      "type": "registry:lib",
+      "title": "Time Input State",
+      "description": "Time parsing, segment selection, constraints, and Foldkit submodels for Time Input.",
+      "files": [
+        {
+          "path": "time-input.ts",
+          "type": "registry:lib",
+          "target": "@lib/time-input.ts"
+        }
+      ]
+    },
+    {
+      "name": "input-status",
+      "type": "registry:lib",
+      "title": "Input Status",
+      "description": "Shared status messages and icons for Crease input components.",
+      "files": [
+        {
+          "path": "input-status.ts",
+          "type": "registry:lib",
+          "target": "@lib/input-status.ts"
+        }
+      ]
+    },
+    {
       "name": "utils",
       "type": "registry:lib",
       "title": "Class Name Utility",
       "description": "The clsx and tailwind-merge class name helper used by Crease UI.",
-      "dependencies": ["clsx@^2.1.1", "tailwind-merge@^3.3.1"],
+      "dependencies": [
+        "clsx@^2.1.1",
+        "tailwind-merge@^3.3.1"
+      ],
       "files": [
         {
           "path": "utils.ts",

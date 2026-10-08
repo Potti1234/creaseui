@@ -13,7 +13,7 @@ import * as Calendar from '@/stylex/calendar'
 import * as DatePicker from '@/stylex/date-picker'
 import * as Field from '@/stylex/field'
 import * as Icon from '@/lib/icon'
-import * as Input from '@/stylex/input'
+import * as TimeInput from '@/stylex/time-input'
 import * as InputGroup from '@/stylex/input-group'
 import * as Popover from '@/stylex/popover'
 import type { ComponentLayoutStyle } from '@/stylex/contracts'
@@ -74,12 +74,14 @@ const styles = stylex.create({
   fieldNatural: { marginInline: 'auto', maxWidth: '20rem' },
   timeRow: {
     marginInline: 'auto',
+    alignItems: 'flex-start',
     flexDirection: 'row',
-    maxWidth: '20rem',
+    flexWrap: 'wrap',
+    maxWidth: '22rem',
+    width: '100%',
   },
-  timeField: { width: '5.625rem' },
-  timeInput: { minWidth: 0 },
-  fullField: { width: '12.625rem' },
+  timeField: { width: '9rem' },
+  fullField: { width: '11rem' },
   centerRow: { gap: '0.5rem', alignItems: 'center', display: 'flex' },
   iconRow: { alignItems: 'center', display: 'flex' },
 })
@@ -94,6 +96,7 @@ interface Preview {
   rangeEnd: Option.Option<FoldkitCalendar.CalendarDate>
   inputValue: string
   timeValue: string
+  timeInput: TimeInput.Model
 }
 
 const MONTH_NAMES = [
@@ -350,7 +353,10 @@ export const datePickerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
               layoutStyle: styles.fullField,
               children: [
                 Field.fieldLabel(
-                  { for: 'date-picker-optional', children: ['Date'] },
+                  {
+                    for: DatePicker.triggerId(preview.datePicker.id),
+                    children: ['Date'],
+                  },
                   h,
                 ),
                 picker(kind, preview, onMessageJson, h),
@@ -363,19 +369,29 @@ export const datePickerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
               layoutStyle: styles.timeField,
               children: [
                 Field.fieldLabel(
-                  { for: 'time-picker-optional', children: ['Time'] },
+                  {
+                    for: TimeInput.pickerButtonId(preview.timeInput),
+                    children: ['Time'],
+                  },
                   h,
                 ),
-                Input.input(
+                TimeInput.timeInput(
                   {
-                    id: 'time-picker-optional',
-                    layoutStyle: styles.timeInput as ComponentLayoutStyle,
-                    value: preview.timeValue,
-                    onInput: value =>
+                    model: preview.timeInput,
+                    toParentMessage: message =>
                       onMessageJson(
-                        JSON.stringify({ _tag: 'ChangedTime', value }),
+                        JSON.stringify({
+                          _tag: 'GotTimeInputMessage',
+                          message,
+                        }),
                       ),
-                    type: 'time',
+                    id: 'time-picker-optional',
+                    label: 'Time',
+                    isLabelHidden: true,
+                    presentation: 'select',
+                    hourFormat: '24h',
+                    name: 'time',
+                    value: preview.timeValue,
                   },
                   h,
                 ),

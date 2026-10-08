@@ -76,6 +76,7 @@ export type SelectProps<Item, Value extends string, Msg> = Readonly<{
   itemToLabel: (item: Item) => string
   itemToConfig?: (item: Item) => SelectItemConfig
   placeholder?: string
+  variant?: 'default' | 'ghost'
   triggerClass?: string
   size?: SelectSize
   ariaLabel?: string
@@ -188,7 +189,12 @@ const renderSelect = <Item, Value extends string, Msg>(
         Icon.chevronDown({ class: 'size-4 opacity-50' }, h),
       ],
     ),
-    buttonClassName: cn(TRIGGER_CLASS, props.triggerClass),
+    buttonClassName: cn(
+      TRIGGER_CLASS,
+      props.variant === 'ghost' &&
+        'relative min-w-10 justify-center gap-1 rounded-sm border-0 bg-transparent px-1 py-0 font-normal tabular-nums shadow-none hover:bg-muted dark:bg-transparent dark:hover:bg-muted data-[size=default]:h-7 data-[size=sm]:h-7 before:absolute before:inset-x-0 before:-inset-y-1.5 before:content-[""]',
+      props.triggerClass,
+    ),
     isDisabled: props.isDisabled ?? false,
     isReadOnly: props.isReadOnly ?? false,
     isInvalid: props.isInvalid ?? false,
@@ -202,14 +208,20 @@ const renderSelect = <Item, Value extends string, Msg>(
         : []),
     ]),
     ...buildAnchor(props, values),
-    itemsClassName: CONTENT_CLASS,
+    itemsClassName: cn(
+      CONTENT_CLASS,
+      props.variant === 'ghost' && 'outline-none',
+    ),
     itemsAttributes: childAttributes([
       // Upstream 0.164 stamps tabindex="-1" on the listbox; Base UI parity
       // expects the popup listbox to remain tabbable, so restore tabindex="0".
       hs.Tabindex(0),
       hs.DataAttribute('slot', 'select-content'),
     ]),
-    itemsScrollClassName: VIEWPORT_CLASS,
+    itemsScrollClassName: cn(
+      VIEWPORT_CLASS,
+      props.variant === 'ghost' && 'max-h-64 overflow-y-auto',
+    ),
     backdropClassName: BACKDROP_CLASS,
     backdropAttributes: childAttributes([
       hs.DataAttribute('slot', 'select-backdrop'),

@@ -1,9 +1,8 @@
 /* Ported from Meta Astryx TimeInput (packages/core/src/TimeInput) —
    examples and visual spec adapted to Crease UI tokens.
 
-   PORT-NOTE: astryx's `presentation`/`nativePicker` surface switching
-   (native OS picker, adaptive bottom sheet) is out of scope — this port
-   renders the typed-entry field only. */
+   Typed entry and the optional hour/minute selector use the same controlled
+   ISO time value; selector interaction is owned by Foldkit Listbox. */
 
 import { Option } from 'effect'
 import { defineView } from 'foldkit/submodel'
@@ -25,14 +24,27 @@ import {
   isTimeInRange,
   Message,
   parseISOTime,
+  pickerButtonId,
+  resolveTimePart,
+  timePartOptions,
+  timePartValue,
   resolveTimeDraft,
   resolveTimeInputCommit,
   type Model,
   type TimeInputCommit,
+  type TimePart,
 } from '@/lib/time-input'
 import { cn } from '@/lib/utils'
+import * as Select from '@/ui/select'
 
-export { init, Model, Message, OutMessage, update } from '@/lib/time-input'
+export {
+  init,
+  Model,
+  Message,
+  OutMessage,
+  update,
+  pickerButtonId,
+} from '@/lib/time-input'
 export type { TimeValue } from '@/lib/time-input'
 export type { InputStatus } from '@/lib/input-status'
 
@@ -51,6 +63,8 @@ export type TimeInputProps<Msg> = Readonly<{
   label: Html | string
   /** The committed value owned by the parent, as "HH:MM" / "HH:MM:SS". */
   value?: string | null
+  /** Styled segment selectors, or flexible typed entry (default). */
+  presentation?: 'input' | 'select'
   isLabelHidden?: boolean
   description?: Html | string
   isOptional?: boolean
@@ -140,6 +154,8 @@ const view = defineView<Model, Message, TimeInputViewInputs>(
     const commit = commitResolution(props, model)
     const includeSeconds = props.hasSeconds === true
     const hourFormat = props.hourFormat ?? '12h'
+    const isSelect = props.presentation === 'select'
+    const focusId = isSelect ? pickerButtonId(model) : fieldIds.input
 
     const describedBy =
       [
@@ -158,7 +174,7 @@ const view = defineView<Model, Message, TimeInputViewInputs>(
 
     const fieldLabel = h.label(
       [
-        h.For(fieldIds.input),
+        h.For(focusId),
         h.Id(fieldIds.label),
         h.DataAttribute('slot', 'time-input-label'),
         h.Class(
@@ -271,6 +287,74 @@ const view = defineView<Model, Message, TimeInputViewInputs>(
           ]),
     ])
 
+    const parts: ReadonlyArray<TimePart> = [
+      'hour',
+      'minute',
+      ...(includeSeconds ? ['second' as const] : []),
+      ...(hourFormat === '12h' ? ['period' as const] : []),
+    ]
+    const picker = isSelect
+      ? h.div(
+          [
+            h.DataAttribute('slot', 'time-input-picker'),
+            h.Class('flex min-w-0 flex-1 items-center gap-0.5 tabular-nums'),
+          ],
+          parts.flatMap((part, index) => [
+            ...(index > 0 && part !== 'period'
+              ? [
+                  h.span(
+                    [h.AriaHidden(true), h.Class('text-muted-foreground')],
+                    [':'],
+                  ),
+                ]
+              : []),
+            Select.select(
+              {
+                model: model.parts[part],
+                maybeSelectedValue: timePartValue(value, part, hourFormat),
+                toParentMessage: message =>
+                  Message.GotPartMessage({
+                    part,
+                    message,
+                    context: {
+                      value: value ?? null,
+                      hourFormat,
+                      hasSeconds: includeSeconds,
+                      min: props.min ?? null,
+                      max: props.max ?? null,
+                    },
+                  }),
+                items: timePartOptions(part, hourFormat),
+                itemToValue: item => item,
+                itemToLabel: item => item,
+                itemToConfig: item => ({
+                  isDisabled:
+                    resolveTimePart(value, part, item, {
+                      hourFormat,
+                      hasSeconds: includeSeconds,
+                      min: props.min,
+                      max: props.max,
+                    }) === null,
+                }),
+                itemGroupKey: () => part,
+                groupToHeading: () =>
+                  part === 'period'
+                    ? 'AM / PM'
+                    : `${part[0]?.toUpperCase()}${part.slice(1)}`,
+                placeholder: '--',
+                ariaLabel: `${props['aria-label'] ?? (typeof props.label === 'string' ? props.label : 'Time')} ${part === 'period' ? 'AM or PM' : part}`,
+                isDisabled:
+                  props.isDisabled === true || props.isLoading === true,
+                isReadOnly: props.isReadOnly ?? false,
+                isInvalid,
+                variant: 'ghost',
+              },
+              h,
+            ),
+          ]),
+        )
+      : input
+
     const clearButton =
       props.hasClear === true &&
       value !== undefined &&
@@ -279,13 +363,13 @@ const view = defineView<Model, Message, TimeInputViewInputs>(
         ? h.button(
             [
               h.Type('button'),
-              h.Tabindex(-1),
+              h.Tabindex(isSelect ? 0 : -1),
               h.AriaLabel(
                 `Clear ${typeof props.label === 'string' ? props.label : 'time'}`,
               ),
               h.OnClick(Message.ClearRequested(), {
                 propagation: 'Stop',
-                focusSelector: `#${fieldIds.input}`,
+                focusSelector: `#${focusId}`,
               }),
               h.DataAttribute('slot', 'time-input-clear'),
               h.Class(
@@ -331,6 +415,7 @@ const view = defineView<Model, Message, TimeInputViewInputs>(
           cn(
             'relative z-[1] flex w-full items-center gap-2 rounded-md border bg-background px-2 py-1 transition-[border-color,box-shadow] duration-150',
             heightStyles[size],
+            isSelect && 'h-9 gap-1',
             props.status?.type === 'error'
               ? 'border-destructive'
               : props.status?.type === 'warning'
@@ -349,7 +434,25 @@ const view = defineView<Model, Message, TimeInputViewInputs>(
       ],
       [
         clockIcon,
-        input,
+        isSelect ? picker : input,
+        ...(isSelect && props.name !== undefined
+          ? [
+              h.input([
+                h.Type('hidden'),
+                h.Name(props.name),
+                h.Value(
+                  value === undefined
+                    ? ''
+                    : formatDisplayTime(value, {
+                        hourFormat: '24h',
+                        hasSeconds: includeSeconds,
+                      }),
+                ),
+                h.Disabled(props.isDisabled === true),
+                h.DataAttribute('slot', 'time-input-value'),
+              ]),
+            ]
+          : []),
         ...(clearButton === undefined ? [] : [clearButton]),
         ...(statusIcon === undefined ? [] : [statusIcon]),
       ],
@@ -413,6 +516,15 @@ const view = defineView<Model, Message, TimeInputViewInputs>(
     return h.div(
       [
         h.DataAttribute('slot', 'time-input'),
+        ...(isSelect
+          ? [
+              h.Role('group'),
+              h.AriaLabelledBy(fieldIds.label),
+              ...(describedBy === undefined
+                ? []
+                : [h.AriaDescribedBy(describedBy)]),
+            ]
+          : []),
         h.Class(cn('flex w-full flex-col gap-1', props.class)),
       ],
       [
@@ -432,7 +544,14 @@ const view = defineView<Model, Message, TimeInputViewInputs>(
         h.div(
           [
             h.DataAttribute('slot', 'time-input-status-wrapper'),
-            h.Class('relative z-0 flex flex-col'),
+            h.Class(
+              cn(
+                'relative z-0 flex flex-col',
+                isSelect &&
+                  Object.values(model.parts).some(part => part.isOpen) &&
+                  'z-50',
+              ),
+            ),
           ],
           [wrapper, ...statusLayer],
         ),

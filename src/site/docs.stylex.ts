@@ -298,6 +298,20 @@ const styles = stylex.create({
     lineHeight: '1rem',
     color: tokens.mutedForeground,
   },
+  timePickerFrameOverflow: {
+    overflow: {
+      default: 'hidden',
+      ':has([data-slot="popover-content"] [data-slot="calendar"])': 'visible',
+      ':has([data-slot="time-input"] [data-slot="select-content"])': 'visible',
+    },
+  },
+  timePickerPreviewOverflow: {
+    overflowX: {
+      default: 'auto',
+      ':has([data-slot="popover-content"] [data-slot="calendar"])': 'visible',
+      ':has([data-slot="time-input"] [data-slot="select-content"])': 'visible',
+    },
+  },
   frame: {
     overflow: {
       default: 'hidden',
@@ -705,7 +719,7 @@ const exampleCard = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Html =>
   h.div(
-    [h.Class(className(styles.frame))],
+    [h.Class(className(styles.frame, styles.timePickerFrameOverflow))],
     [
       h.div(
         [
@@ -713,6 +727,7 @@ const exampleCard = <Msg>(
           h.Class(
             className(
               styles.preview,
+              styles.timePickerPreviewOverflow,
               config.previewClass === 'justify-stretch' && styles.stretch,
             ),
           ),

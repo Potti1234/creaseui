@@ -111,6 +111,8 @@ const registryAddress = item => `Potti1234/creaseui/${item}`
 const libraryItems = {
   '@/lib/utils': 'utils',
   '@/lib/icon': 'icons',
+  '@/lib/time-input': 'time-input-core',
+  '@/lib/input-status': 'input-status',
   '@/lib/echarts': 'echarts-adapter',
 }
 const consumerFrameworkPackages = new Set([

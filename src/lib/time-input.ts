@@ -1,6 +1,7 @@
 import { Option, Schema as S } from 'effect'
-import type { Update } from 'foldkit'
+import { Command, type Update } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
+import { Listbox } from '@foldkit/ui'
 
 /* Ported from Meta Astryx TimeInput (packages/core/src/TimeInput) — typed time
    parsing ("2:30 PM", "2pm", "1430"), 12h/24h display, minute stepping, and
@@ -175,10 +176,138 @@ export const resolveTimeInputCommit = (
 
 /* --- Submodel ----------------------------------------------------------- */
 
+export const TimePart = S.Literals(['hour', 'minute', 'second', 'period'])
+export type TimePart = typeof TimePart.Type
+
+export type TimePickerOptions = Readonly<{
+  hourFormat: '12h' | '24h'
+  hasSeconds: boolean
+  min?: string | undefined
+  max?: string | undefined
+}>
+
+/** Changes one segment, preserving the others and respecting the time window. */
+export const resolveTimePart = (
+  value: string | null | undefined,
+  part: TimePart,
+  selected: string,
+  options: TimePickerOptions,
+): string | null => {
+  const base = parseISOTime(value ?? '') ??
+    parseISOTime(options.min ?? '') ?? {
+      minutes: 0,
+      seconds: 0,
+    }
+  let hour = Math.floor(base.minutes / 60)
+  let minute = base.minutes % 60
+  let second = options.hasSeconds ? base.seconds : 0
+  const number = /^\d{1,2}$/u.test(selected) ? Number(selected) : NaN
+  switch (part) {
+    case 'hour':
+      if (options.hourFormat === '12h') {
+        if (number < 1 || number > 12 || !Number.isInteger(number)) return null
+        hour = (number % 12) + (hour >= 12 ? 12 : 0)
+      } else {
+        if (number < 0 || number > 23 || !Number.isInteger(number)) return null
+        hour = number
+      }
+      break
+    case 'minute':
+    case 'second':
+      if (number < 0 || number > 59 || !Number.isInteger(number)) return null
+      if (part === 'minute') minute = number
+      else if (options.hasSeconds) second = number
+      else return null
+      break
+    case 'period':
+      if (selected !== 'AM' && selected !== 'PM') return null
+      hour = (hour % 12) + (selected === 'PM' ? 12 : 0)
+      break
+  }
+  const candidate = hour * 3600 + minute * 60 + second
+  const secondsOf = (time: string | undefined, fallback: number): number => {
+    const parsed = parseISOTime(time ?? '')
+    return parsed === null ? fallback : parsed.minutes * 60 + parsed.seconds
+  }
+  const minimumSeconds = secondsOf(options.min, 0)
+  const maximumSeconds = secondsOf(options.max, 86399)
+  const minimum = options.hasSeconds
+    ? minimumSeconds
+    : Math.ceil(minimumSeconds / 60) * 60
+  const maximum = options.hasSeconds
+    ? maximumSeconds
+    : Math.floor(maximumSeconds / 60) * 60
+  if (minimum > maximum) return null
+  const clamped = Math.min(maximum, Math.max(minimum, candidate))
+  // Hours at the edge of a window remain selectable, e.g. 10:00 -> 10:15.
+  // Other segments never silently change the value the user just selected.
+  if (clamped !== candidate) {
+    if (part === 'hour' && Math.floor(clamped / 3600) !== hour) return null
+    if (part === 'period' && clamped >= 43200 !== hour >= 12) return null
+    if (part === 'minute' || part === 'second') return null
+  }
+  return formatISOTime(
+    Math.floor(clamped / 60),
+    clamped % 60,
+    options.hasSeconds,
+  )
+}
+
+export const timePartValue = (
+  value: string | null | undefined,
+  part: TimePart,
+  hourFormat: '12h' | '24h',
+): Option.Option<string> => {
+  const parsed = parseISOTime(value ?? '')
+  if (parsed === null) return Option.none()
+  const hour = Math.floor(parsed.minutes / 60)
+  switch (part) {
+    case 'hour':
+      return Option.some(pad2(hourFormat === '12h' ? hour % 12 || 12 : hour))
+    case 'minute':
+      return Option.some(pad2(parsed.minutes % 60))
+    case 'second':
+      return Option.some(pad2(parsed.seconds))
+    case 'period':
+      return Option.some(hour >= 12 ? 'PM' : 'AM')
+  }
+}
+
+export const timePartOptions = (
+  part: TimePart,
+  hourFormat: '12h' | '24h',
+): ReadonlyArray<string> =>
+  part === 'period'
+    ? ['AM', 'PM']
+    : Array.from(
+        { length: part === 'hour' ? (hourFormat === '12h' ? 12 : 24) : 60 },
+        (_, index) =>
+          pad2(index + (part === 'hour' && hourFormat === '12h' ? 1 : 0)),
+      )
+
+const PickerContext = S.Struct({
+  value: S.NullOr(S.String),
+  hourFormat: S.Literals(['12h', '24h']),
+  hasSeconds: S.Boolean,
+  min: S.NullOr(S.String),
+  max: S.NullOr(S.String),
+})
+
+const PartSelect = Listbox.create<string, string>()
+
+export const pickerButtonId = (model: Model): string =>
+  Listbox.buttonId(model.parts.hour.id)
+
 export const Model = S.Struct({
   id: S.String,
   pendingInput: S.Option(S.String),
   isFocused: S.Boolean,
+  parts: S.Struct({
+    hour: Listbox.Model,
+    minute: Listbox.Model,
+    second: Listbox.Model,
+    period: Listbox.Model,
+  }),
 })
 export type Model = typeof Model.Type
 
@@ -187,6 +316,12 @@ export const init = (config: InitConfig): Model => ({
   id: config.id,
   pendingInput: Option.none(),
   isFocused: false,
+  parts: {
+    hour: Listbox.init({ id: `${config.id}-hour` }),
+    minute: Listbox.init({ id: `${config.id}-minute` }),
+    second: Listbox.init({ id: `${config.id}-second` }),
+    period: Listbox.init({ id: `${config.id}-period` }),
+  },
 })
 
 export const TimeInputCommitResolution = S.Union([
@@ -213,6 +348,11 @@ export const Message = defineMessageUnion({
   CommitDecided: { resolution: TimeInputCommitResolution },
   Stepped: { value: S.String },
   ClearRequested: {},
+  GotPartMessage: {
+    part: TimePart,
+    message: Listbox.Message,
+    context: PickerContext,
+  },
 })
 export type Message = typeof Message.Type
 
@@ -229,6 +369,45 @@ export type UpdateReturn = Update.ReturnWithOutMessage<
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
+    case 'GotPartMessage': {
+      const next = PartSelect.update(model.parts[message.part], message.message)
+      const context = message.context
+      const selected =
+        next.outMessage === undefined
+          ? null
+          : resolveTimePart(
+              context.value,
+              message.part,
+              next.outMessage.value,
+              {
+                hourFormat: context.hourFormat,
+                hasSeconds: context.hasSeconds,
+                min: context.min ?? undefined,
+                max: context.max ?? undefined,
+              },
+            )
+      return {
+        model: {
+          ...model,
+          parts: { ...model.parts, [message.part]: next.model },
+          ...(selected === null ? {} : { pendingInput: Option.none() }),
+        },
+        commands: Command.mapMessages(next.commands ?? [], child =>
+          Message.GotPartMessage({
+            part: message.part,
+            message: child,
+            context,
+          }),
+        ),
+        ...(selected === null
+          ? {}
+          : {
+              outMessage: OutMessage.ChangedValue({
+                value: Option.some(selected),
+              }),
+            }),
+      }
+    }
     case 'FocusGained':
       return { model: { ...model, isFocused: true } }
     case 'DraftEdited': {
