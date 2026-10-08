@@ -125,12 +125,15 @@ export const overlayStyles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: tokens.transparent,
-      ':is([data-active], [data-selected])': tokens.accent,
+      // Foldkit uses empty active markers; dropdown menus emit boolean values.
+      ':is([data-active="true"], [data-active=""], [data-selected])':
+        tokens.accent,
       ':hover': tokens.accent,
     },
     color: {
       default: tokens.foreground,
-      ':is([data-active], [data-selected])': tokens.accentForeground,
+      ':is([data-active="true"], [data-active=""], [data-selected])':
+        tokens.accentForeground,
       ':hover': tokens.accentForeground,
     },
     cursor: interactionTokens.cursorDefault,
