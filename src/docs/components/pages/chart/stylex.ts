@@ -1,4 +1,5 @@
 import { className } from '@/stylex/style'
+import * as Button from '@/stylex/button'
 import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { EChartsOption } from 'echarts/types/dist/shared'
@@ -57,17 +58,7 @@ for (const kind of chartUpstreamKinds)
   )
 
 const styles = stylex.create({
-  button: {
-    borderColor: 'var(--border)',
-    borderRadius: 'var(--radius-md)',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    paddingBlock: '0.5rem',
-    paddingInline: '0.75rem',
-    fontSize: '0.875rem',
-    lineHeight: '1.25rem',
-    marginBottom: '0.75rem',
-  },
+  button: { marginBottom: '0.75rem' },
   chart: { marginInline: 'auto', maxWidth: '36rem' },
   chartHost: { height: '16rem', width: '100%' },
   demoCard: { marginInline: 'auto', maxWidth: '36rem', width: '100%' },
@@ -418,13 +409,14 @@ export const chartStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
     return h.div(
       [h.Class(stylex.props(styles.stack).className ?? '')],
       [
-        h.button(
-          [
-            h.Type('button'),
-            h.OnClick(change),
-            h.Class(className(reset.button, styles.button)),
-          ],
-          [variant === 'month' ? 'Show quarters' : 'Show months'],
+        Button.button(
+          {
+            variant: 'outline',
+            buttonAttributes: [h.Type('button'), h.OnClick(change)],
+            layoutStyle: styles.button,
+            children: [variant === 'month' ? 'Show quarters' : 'Show months'],
+          },
+          h,
         ),
         Chart.eChart(
           {

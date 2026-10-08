@@ -1,11 +1,13 @@
 import { Button as ButtonPrimitive } from '@foldkit/ui'
-import type { Attribute, Html, HtmlBuilder } from 'foldkit/html'
+import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 
 export type ButtonType = 'button' | 'submit' | 'reset'
 
 export type ButtonBehaviorProps<Msg> = Readonly<{
   children: ReadonlyArray<Html | string>
   onClick?: Msg
+  /** Native behavior attributes supplied by a composing overlay or dialog. */
+  buttonAttributes?: ReadonlyArray<Attribute<Msg> | ChildAttribute>
   id?: string
   isDisabled?: boolean
   isLoading?: boolean
@@ -79,7 +81,7 @@ const content = <Msg>(
 
 export const renderButton = <Msg>(
   props: ButtonBehaviorProps<Msg>,
-  visualAttributes: ReadonlyArray<Attribute<Msg>>,
+  visualAttributes: ReadonlyArray<Attribute<Msg> | ChildAttribute>,
   h: HtmlBuilder<Msg>,
 ): Html => {
   const isDisabled = props.isDisabled === true || props.isLoading === true
@@ -110,6 +112,7 @@ export const renderButton = <Msg>(
             ...(props.name === undefined ? [] : [h.Name(props.name)]),
             ...(props.value === undefined ? [] : [h.Value(props.value)]),
             ...(props.form === undefined ? [] : [h.FormAttr(props.form)]),
+            ...(props.buttonAttributes ?? []),
             ...visualAttributes,
           ],
           content(props, h),
@@ -121,7 +124,7 @@ export const renderButton = <Msg>(
 
 export const renderButtonLink = <Msg>(
   props: ButtonLinkBehaviorProps,
-  visualAttributes: ReadonlyArray<Attribute<Msg>>,
+  visualAttributes: ReadonlyArray<Attribute<Msg> | ChildAttribute>,
   h: HtmlBuilder<Msg>,
 ): Html =>
   h.a(

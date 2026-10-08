@@ -153,13 +153,13 @@ ${instance.fields.map(field => fieldEmit(field, isStyleX)).join(',\n')}
         h.button([
           ...slots.closeButton,
           h.Type('button'),
-          h.Class(${isStyleX ? 'className(styles.footerSave)' : "'rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground'"}),
+          h.Class(${isStyleX ? "className(...Button.buttonVisualStyles({ size: 'lg' }))" : "'rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground'"}),
         ], ['${escape(instance.footer.save)}']),
         h.button([
           ...slots.closeButton,
           ...slots.initialFocusAttributes(),
           h.Type('button'),
-          h.Class(${isStyleX ? 'className(styles.footerCancel)' : "'rounded-md border px-4 py-2 text-sm'"}),
+          h.Class(${isStyleX ? "className(...Button.buttonVisualStyles({ variant: 'outline', size: 'lg' }))" : "'rounded-md border px-4 py-2 text-sm'"}),
         ], ['${escape(instance.footer.cancel)}']),
       ]`
   return `    Sheet.sheet({
@@ -234,8 +234,6 @@ const styles = stylex.create({
   field: { display: 'grid', gap: '0.75rem' },
   loremWrap: { overflowY: 'auto', paddingInline: '1rem' },
   paragraph: { marginBottom: '0.5rem', lineHeight: 1.625 },
-  footerSave: { borderRadius: '0.375rem', backgroundColor: 'var(--primary)', color: 'var(--primary-foreground)', paddingBlock: '0.5rem', paddingInline: '1rem', fontSize: '0.875rem', lineHeight: '1.25rem' },
-  footerCancel: { borderRadius: '0.375rem', borderColor: 'var(--border)', borderStyle: 'solid', borderWidth: '1px', paddingBlock: '0.5rem', paddingInline: '1rem', fontSize: '0.875rem', lineHeight: '1.25rem' },
 })`
         : ''
     }${

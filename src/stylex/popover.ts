@@ -1,12 +1,17 @@
 import { reset } from '@/stylex/reset'
-import type { Html, HtmlBuilder } from 'foldkit/html'
+import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 
 import { Popover as PopoverPrimitive } from '@foldkit/ui'
 
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import { overlayStyles } from './overlay-tokens.stylex'
-import type { ComponentLayoutStyle } from './contracts'
+import type {
+  ButtonSize,
+  ButtonVariant,
+  ComponentLayoutStyle,
+} from './contracts'
+import * as Button from './button'
 import { themedAnchor } from './overlay-boundary'
 import { className } from './style'
 import { complexTokens } from './complex-tokens.stylex'
@@ -92,6 +97,9 @@ export type PopoverProps<Msg> = Readonly<{
   model: Model
   toParentMessage: (message: Message) => Msg
   trigger: Html | string
+  /** Render with the Crease UI Button component while retaining the popover trigger behavior. */
+  triggerButtonVariant?: ButtonVariant
+  triggerButtonSize?: ButtonSize
   triggerLayoutStyle?: ComponentLayoutStyle
   content: Html | string
   align?: PopoverAlign
@@ -105,6 +113,27 @@ export const popover = <Msg>(
   props: PopoverProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
+  const hasButtonTrigger =
+    props.triggerButtonVariant !== undefined ||
+    props.triggerButtonSize !== undefined
+  const renderTrigger = (
+    attributes: ReadonlyArray<Attribute<Msg> | ChildAttribute>,
+  ): Html =>
+    hasButtonTrigger
+      ? Button.button(
+          {
+            variant: props.triggerButtonVariant ?? 'default',
+            size: props.triggerButtonSize ?? 'default',
+            slot: 'popover-trigger',
+            buttonAttributes: attributes,
+            ...(props.triggerLayoutStyle === undefined
+              ? {}
+              : { layoutStyle: props.triggerLayoutStyle }),
+            children: [props.trigger],
+          },
+          h,
+        )
+      : h.button(attributes, [props.trigger])
   const placement = PLACEMENTS[props.side ?? 'bottom'][props.align ?? 'center']
 
   return h.submodel({
@@ -122,21 +151,22 @@ export const popover = <Msg>(
         return hp.div(
           [hp.DataAttribute('slot', 'popover')],
           [
-            hp.button(
-              [
-                ...button,
-                hp.DataAttribute('slot', 'popover-trigger'),
-                hp.AriaHasPopup('dialog'),
-                hp.Class(
-                  cn(
-                    reset.button,
-                    props.variant === 'sidebar' && styles.sidebarTrigger,
-                    props.triggerLayoutStyle,
-                  ),
-                ),
-              ],
-              [props.trigger],
-            ),
+            renderTrigger([
+              ...button,
+              hp.DataAttribute('slot', 'popover-trigger'),
+              hp.AriaHasPopup('dialog'),
+              ...(hasButtonTrigger
+                ? []
+                : [
+                    hp.Class(
+                      cn(
+                        reset.button,
+                        props.variant === 'sidebar' && styles.sidebarTrigger,
+                        props.triggerLayoutStyle,
+                      ),
+                    ),
+                  ]),
+            ]),
             ...(isVisible
               ? [
                   hp.div(

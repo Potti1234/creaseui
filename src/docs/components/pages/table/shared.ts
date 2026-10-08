@@ -161,7 +161,7 @@ const actionsTable = (isStyleX: boolean): string => {
                 Icon.icon('ellipsis', ${isStyleX ? '{}' : "{ class: 'size-4' }"}, h),
                 h.span([h.Class(${isStyleX ? `stylex.props(styles.srOnly).className ?? ''` : `'sr-only'`})], ['Open menu']),
               ]),
-              ${isStyleX ? 'triggerLayoutStyle: styles.iconTrigger,' : "triggerClass: 'inline-flex size-8 items-center justify-center rounded-md hover:bg-accent',"}
+              ${isStyleX ? "triggerButtonVariant: 'ghost',\n              triggerButtonSize: 'icon-sm'," : "triggerClass: 'inline-flex size-8 items-center justify-center rounded-md hover:bg-accent',"}
               ariaLabel: 'Row actions menu',
               align: 'end',
               items: ['Edit', 'Duplicate', 'Delete'],

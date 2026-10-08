@@ -1,4 +1,5 @@
 import { reset } from '@/stylex/reset'
+import * as Button from '@/stylex/button'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as stylex from '@stylexjs/stylex'
 
@@ -22,18 +23,6 @@ const styles = stylex.create({
   supporting: {
     color: 'var(--muted-foreground)',
     fontSize: '0.875rem',
-    lineHeight: '1.25rem',
-  },
-  button: {
-    borderRadius: 'calc(var(--radius) - 2px)',
-    borderWidth: 0,
-    paddingBlock: '0.25rem',
-    paddingInline: '0.5rem',
-    backgroundColor: 'var(--primary)',
-    color: 'var(--primary-foreground)',
-    cursor: 'pointer',
-    fontSize: '0.875rem',
-    fontWeight: 500,
     lineHeight: '1.25rem',
   },
 })
@@ -125,9 +114,14 @@ export const tokenizerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           label: 'Team Members',
           placeholder: 'Search people...',
           items: [...USERS],
-          endContent: h.button(
-            [h.Type('button'), h.Class(className(reset.button, styles.button))],
-            ['Apply'],
+          endContent: Button.button(
+            {
+              variant: 'default',
+              size: 'sm',
+              buttonAttributes: [h.Type('button')],
+              children: ['Apply'],
+            },
+            h,
           ),
           width: 400,
         }),

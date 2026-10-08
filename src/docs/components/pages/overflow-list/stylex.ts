@@ -26,7 +26,7 @@ const styles = stylex.create({
   framed: {
     padding: '0.5rem',
     borderColor: 'var(--border)',
-    borderRadius: 'var(--radius-md)',
+    borderRadius: 'calc(var(--radius) - 2px)',
     borderStyle: 'dashed',
     borderWidth: '1px',
   },
@@ -38,7 +38,7 @@ const styles = stylex.create({
   card: {
     padding: '0.5rem',
     borderColor: 'var(--border)',
-    borderRadius: 'var(--radius-lg)',
+    borderRadius: 'var(--radius)',
     borderStyle: 'solid',
     borderWidth: '1px',
     backgroundColor: 'var(--card)',
@@ -47,7 +47,7 @@ const styles = stylex.create({
   resizableCard: {
     padding: '0.5rem',
     borderColor: 'var(--border)',
-    borderRadius: 'var(--radius-lg)',
+    borderRadius: 'var(--radius)',
     borderStyle: 'solid',
     borderWidth: '1px',
     overflow: 'hidden',

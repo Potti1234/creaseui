@@ -51,7 +51,7 @@ const styles = stylex.create({
     lineHeight: '1rem',
   },
   inlineCode: {
-    borderRadius: 'var(--radius-md)',
+    borderRadius: 'calc(var(--radius) - 2px)',
     paddingBlock: '0.125rem',
     paddingInline: '0.25rem',
     backgroundColor: 'var(--muted)',

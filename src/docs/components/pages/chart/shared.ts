@@ -451,7 +451,8 @@ import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-import * as Chart from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/chart'`,
+import * as Chart from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/chart'
+import * as Button from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/button'`,
     model: `export const Model = S.Struct({ variant: S.Literals(['month', 'quarter']) })
 export type Model = typeof Model.Type
 
@@ -479,7 +480,7 @@ export type Message = typeof Message.Type`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Revenue chart',
   body: h.main([], [
-    h.button([h.Type('button'), h.OnClick(ChangedRange({ variant: model.variant === 'month' ? 'quarter' : 'month' }))], ['Change range']),
+    Button.button({ variant: 'outline', onClick: ChangedRange({ variant: model.variant === 'month' ? 'quarter' : 'month' }), children: ['Change range'] }, h),
     Chart.eChart({ accessibleAlternative: h.p([], ['Revenue values: January 186, February 305, March 237.']), ariaLabel: 'Revenue by period', hostId, toMessage: message => message, variant: model.variant }, h),
   ]),
 })`,

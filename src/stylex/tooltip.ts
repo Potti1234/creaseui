@@ -1,5 +1,5 @@
 import { reset } from '@/stylex/reset'
-import type { Html, HtmlBuilder } from 'foldkit/html'
+import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 
 import { Tooltip as TooltipPrimitive } from '@foldkit/ui'
 import { Option } from 'effect'
@@ -9,7 +9,12 @@ import * as TooltipBehavior from '@/lib/tooltip'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import { overlayStyles } from './overlay-tokens.stylex'
-import type { ComponentLayoutStyle } from './contracts'
+import type {
+  ButtonSize,
+  ButtonVariant,
+  ComponentLayoutStyle,
+} from './contracts'
+import * as Button from './button'
 import { themedAnchor } from './overlay-boundary'
 import { className } from './style'
 
@@ -67,6 +72,9 @@ export type TooltipProps<Msg> = Readonly<{
   side?: TooltipSide
   isDisabled?: boolean
   ariaLabel?: string
+  /** Render with the Crease UI Button component while retaining tooltip trigger behavior. */
+  triggerButtonVariant?: ButtonVariant
+  triggerButtonSize?: ButtonSize
   triggerLayoutStyle?: ComponentLayoutStyle
   layoutStyle?: ComponentLayoutStyle
   showArrow?: boolean
@@ -86,6 +94,32 @@ export const tooltip = <Msg>(
   const triggerId = `${props.model.id}-trigger`
   const panelId = `${props.model.id}-panel`
   const disabled = props.isDisabled ?? false
+  const hasButtonTrigger =
+    props.triggerButtonVariant !== undefined ||
+    props.triggerButtonSize !== undefined
+  const renderTrigger = (
+    attributes: ReadonlyArray<Attribute<Msg> | ChildAttribute>,
+    children: ReadonlyArray<Html | string>,
+  ): Html =>
+    hasButtonTrigger
+      ? Button.button(
+          {
+            variant: props.triggerButtonVariant ?? 'default',
+            size: props.triggerButtonSize ?? 'default',
+            isDisabled: disabled,
+            slot: disabled ? 'button' : 'tooltip-trigger',
+            buttonAttributes: attributes,
+            ...(props.ariaLabel === undefined
+              ? {}
+              : { ariaLabel: props.ariaLabel }),
+            ...(props.triggerLayoutStyle === undefined
+              ? {}
+              : { layoutStyle: props.triggerLayoutStyle }),
+            children,
+          },
+          h,
+        )
+      : h.button(attributes, children)
   const send = props.toParentMessage
   const anchor = themedAnchor({
     placement,
@@ -120,17 +154,16 @@ export const tooltip = <Msg>(
                 ),
               ],
               [
-                h.button(
+                renderTrigger(
                   [
-                    h.Class(className(reset.button)),
+                    ...(hasButtonTrigger
+                      ? []
+                      : [h.Class(cn(reset.button, props.triggerLayoutStyle))]),
                     h.Type('button'),
                     h.Disabled(true),
                     ...(props.ariaLabel === undefined
                       ? []
                       : [h.AriaLabel(props.ariaLabel)]),
-                    ...(props.triggerLayoutStyle === undefined
-                      ? []
-                      : [h.Class(cn(reset.button, props.triggerLayoutStyle))]),
                   ],
                   [props.trigger],
                 ),
@@ -138,9 +171,11 @@ export const tooltip = <Msg>(
             ),
           ]
         : [
-            h.button(
+            renderTrigger(
               [
-                h.Class(className(reset.button)),
+                ...(hasButtonTrigger
+                  ? []
+                  : [h.Class(cn(reset.button, props.triggerLayoutStyle))]),
                 h.Id(triggerId),
                 h.Type('button'),
                 h.AriaDescribedBy(panelId),
@@ -175,9 +210,6 @@ export const tooltip = <Msg>(
                     : Option.none(),
                 ),
                 h.DataAttribute('slot', 'tooltip-trigger'),
-                ...(props.triggerLayoutStyle === undefined
-                  ? []
-                  : [h.Class(cn(reset.button, props.triggerLayoutStyle))]),
               ],
               [props.trigger],
             ),

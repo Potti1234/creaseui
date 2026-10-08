@@ -290,7 +290,7 @@ const clusterSource = (
         }, h)`
     const triggerProps =
       renderer === 'stylex'
-        ? `\n      triggerLayoutStyle: styles.avatarTrigger as ComponentLayoutStyle,`
+        ? `\n      triggerButtonVariant: 'ghost',\n      triggerButtonSize: 'icon-sm',\n      triggerButtonRounded: true,`
         : `\n      triggerClass: 'rounded-full',`
     return `DropdownMenu.dropdownMenu({
       model: model.menu,
@@ -345,10 +345,7 @@ const stylexStylesSource = (fixture: AvatarFixture): string => {
   const countIcon = needsCountIcon(fixture)
     ? `\n  countIcon: { height: '1rem', width: '1rem' },`
     : ''
-  const avatarTrigger = needsMenu(fixture)
-    ? `\n  avatarTrigger: { borderRadius: '50%' },`
-    : ''
-  return `const styles = stylex.create({${hero}${sizesRow}${badgeIcon}${countIcon}${avatarTrigger}
+  return `const styles = stylex.create({${hero}${sizesRow}${badgeIcon}${countIcon}
 })
 
 `
@@ -365,7 +362,7 @@ const componentImports = (
 
 ${stylexStylesSource(fixture)}`
       : ''
-  return `${stylexBits}import * as Avatar from '@/${ui}/avatar'${needsMenu(fixture) ? `\nimport * as DropdownMenu from '@/${ui}/dropdown-menu'` : ''}${needsIcon(fixture) ? `\nimport * as Icon from '@/lib/icon'` : ''}${renderer === 'stylex' && needsMenu(fixture) ? `\nimport type { ComponentLayoutStyle } from '@/stylex/contracts'` : ''}`
+  return `${stylexBits}import * as Avatar from '@/${ui}/avatar'${needsMenu(fixture) ? `\nimport * as DropdownMenu from '@/${ui}/dropdown-menu'` : ''}${needsIcon(fixture) ? `\nimport * as Icon from '@/lib/icon'` : ''}`
 }
 
 const source = (

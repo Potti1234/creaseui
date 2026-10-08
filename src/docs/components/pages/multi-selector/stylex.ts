@@ -1,4 +1,4 @@
-import { reset } from '@/stylex/reset'
+import * as Button from '@/stylex/button'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as stylex from '@stylexjs/stylex'
 
@@ -24,18 +24,6 @@ const styles = stylex.create({
     width: '100%',
   },
   toolbar: { gap: '0.5rem', alignItems: 'center', display: 'flex' },
-  button: {
-    borderRadius: 'calc(var(--radius) - 2px)',
-    borderWidth: 0,
-    paddingBlock: '0.375rem',
-    paddingInline: '0.75rem',
-    backgroundColor: 'transparent',
-    color: 'var(--foreground)',
-    cursor: 'pointer',
-    fontSize: '0.875rem',
-    fontWeight: 500,
-    lineHeight: '1.25rem',
-  },
 })
 
 type Preview = Readonly<{
@@ -152,9 +140,14 @@ export const multiSelectorStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
       return h.div(
         [h.Class(className(styles.toolbar))],
         [
-          h.button(
-            [h.Type('button'), h.Class(className(reset.button, styles.button))],
-            ['Refresh'],
+          Button.button(
+            {
+              variant: 'ghost',
+              size: 'sm',
+              buttonAttributes: [h.Type('button')],
+              children: ['Refresh'],
+            },
+            h,
           ),
           selectorAt(
             0,
@@ -183,9 +176,14 @@ export const multiSelectorStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
             },
             [...STATUSES],
           ),
-          h.button(
-            [h.Type('button'), h.Class(className(reset.button, styles.button))],
-            ['Export'],
+          Button.button(
+            {
+              variant: 'ghost',
+              size: 'sm',
+              buttonAttributes: [h.Type('button')],
+              children: ['Export'],
+            },
+            h,
           ),
         ],
       )

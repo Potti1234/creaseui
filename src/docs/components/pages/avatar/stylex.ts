@@ -3,7 +3,6 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as stylex from '@stylexjs/stylex'
 
 import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
-import type { ComponentLayoutStyle } from '@/stylex/contracts'
 import {
   avatarFixtures,
   type AvatarClusterSpec,
@@ -35,7 +34,6 @@ const styles = stylex.create({
   },
   badgeIcon: { height: '0.5rem', width: '0.5rem' },
   countIcon: { height: '1rem', width: '1rem' },
-  avatarTrigger: { borderRadius: '50%' },
 })
 
 type PreviewSnapshot = {
@@ -189,7 +187,9 @@ const clusterView = <Msg>(
             },
             h,
           ),
-          triggerLayoutStyle: styles.avatarTrigger as ComponentLayoutStyle,
+          triggerButtonVariant: 'ghost',
+          triggerButtonSize: 'icon-sm',
+          triggerButtonRounded: true,
           items: fixture.menuItems.map(entry => entry.label),
           itemToConfig: item =>
             fixture.menuItems?.find(entry => entry.label === item)

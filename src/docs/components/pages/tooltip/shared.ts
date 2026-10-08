@@ -93,9 +93,7 @@ const tipCall = (
       ? `'${esc(fixture.content)}'`
       : `h.span([], ['${esc(fixture.content)} ', Kbd.kbd({ children: ['${tip.kbd}'] }, h)])`
   const triggerClass = isStyleX
-    ? tip.iconTrigger === true
-      ? '    triggerLayoutStyle: styles.iconTrigger as ComponentLayoutStyle,'
-      : '    triggerLayoutStyle: styles.trigger as ComponentLayoutStyle,'
+    ? `    triggerButtonVariant: 'outline',\n    triggerButtonSize: '${tip.iconTrigger === true ? 'icon' : 'default'}',`
     : tip.iconTrigger === true
       ? "    triggerClass: 'inline-flex size-9 items-center justify-center rounded-md border',"
       : "    triggerClass: 'w-fit rounded-md border px-3 py-2 text-sm capitalize',"
@@ -136,24 +134,17 @@ const emitApplication = (
   const usesIcon = fixture.tips.some(tip => tip.iconTrigger === true)
   const usesKbd = fixture.tips.some(tip => tip.kbd !== undefined)
   const usesRow = fixture.kind === 'sides' || fixture.kind === 'rtl'
-  const stylesBlock = isStyleX
-    ? `\n\nconst styles = stylex.create({${
-        usesRow
-          ? "\n  row: { display: 'flex', flexWrap: 'wrap', gap: '0.5rem' },"
-          : ''
-      }${
-        usesIcon
-          ? "\n  iconTrigger: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '2.25rem', height: '2.25rem', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--border)', borderRadius: 'var(--radius-md)' },"
-          : "\n  trigger: { width: 'fit-content', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--border)', borderRadius: 'var(--radius-md)', padding: '0.5rem 0.75rem', fontSize: '0.875rem', lineHeight: '1.25rem', textTransform: 'capitalize' },"
-      }\n})`
-    : ''
+  const stylesBlock =
+    isStyleX && usesRow
+      ? "\n\nconst styles = stylex.create({ row: { display: 'flex', flexWrap: 'wrap', gap: '0.5rem' } })"
+      : ''
   return foldkitApplication({
     title: `Tooltip — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { taggedStruct } from 'foldkit/schema'
-${isStyleX ? "import * as stylex from '@stylexjs/stylex'\n" : ''}${isStyleX ? "import type { ComponentLayoutStyle } from '@/stylex/contracts'\n" : ''}${isStyleX && usesRow ? "import { className } from '@/stylex/style'\n" : ''}${usesIcon ? `import * as Icon from '@/lib/icon'\n` : ''}${usesKbd ? `import * as Kbd from '@/${base}/kbd'\n` : ''}import * as Tooltip from '@/${base}/tooltip'${stylesBlock}`,
+${isStyleX && usesRow ? "import * as stylex from '@stylexjs/stylex'\n" : ''}${isStyleX && usesRow ? "import { className } from '@/stylex/style'\n" : ''}${usesIcon ? `import * as Icon from '@/lib/icon'\n` : ''}${usesKbd ? `import * as Kbd from '@/${base}/kbd'\n` : ''}import * as Tooltip from '@/${base}/tooltip'${stylesBlock}`,
     model: `export const Model = S.Struct({
   tooltips: S.Record(S.String, Tooltip.Model),
 })

@@ -10,7 +10,6 @@ import {
 } from '@/docs/components/pages/breadcrumb/shared'
 import * as Icon from '@/lib/icon'
 import * as Breadcrumb from '@/stylex/breadcrumb'
-import type { ComponentLayoutStyle } from '@/stylex/contracts'
 import * as DropdownMenu from '@/stylex/dropdown-menu'
 
 const styles = stylex.create({
@@ -19,16 +18,6 @@ const styles = stylex.create({
     gap: '0.25rem',
     alignItems: 'center',
     display: 'flex',
-  },
-  ellipsisTrigger: {
-    borderRadius: 'calc(var(--radius) - 2px)',
-    alignItems: 'center',
-    backgroundColor: { default: 'transparent', ':hover': 'var(--accent)' },
-    color: { default: 'inherit', ':hover': 'var(--accent-foreground)' },
-    display: 'inline-flex',
-    justifyContent: 'center',
-    height: '2rem',
-    width: '2rem',
   },
 })
 
@@ -64,7 +53,8 @@ const menuView = <Msg>(
             ),
       ...(item.kind === 'ellipsisMenu'
         ? {
-            triggerLayoutStyle: styles.ellipsisTrigger as ComponentLayoutStyle,
+            triggerButtonVariant: 'ghost' as const,
+            triggerButtonSize: 'icon-sm' as const,
           }
         : {}),
       items: fixture.menuItems ?? [],

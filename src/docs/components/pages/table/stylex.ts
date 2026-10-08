@@ -33,14 +33,6 @@ const styles = stylex.create({
     height: '6rem',
   },
   menuCell: { display: 'flex', justifyContent: 'flex-end' },
-  iconTrigger: {
-    borderRadius: 'var(--radius-md)',
-    alignItems: 'center',
-    display: 'inline-flex',
-    justifyContent: 'center',
-    height: '2rem',
-    width: '2rem',
-  },
   triggerContent: {
     alignItems: 'center',
     display: 'inline-flex',
@@ -265,8 +257,8 @@ const actionsTable = <Msg>(
                                       ),
                                     ],
                                   ),
-                                  triggerLayoutStyle:
-                                    styles.iconTrigger as ComponentLayoutStyle,
+                                  triggerButtonVariant: 'ghost',
+                                  triggerButtonSize: 'icon-sm',
                                   ariaLabel: `${product} menu`,
                                   align: 'end',
                                   items: ['Edit', 'Duplicate', 'Delete'],

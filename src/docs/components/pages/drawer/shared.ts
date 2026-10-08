@@ -137,8 +137,6 @@ const emitStyles = `const styles = stylex.create({
   body: { paddingInline: '1rem', paddingBlockEnd: '1.5rem', textAlign: 'center' },
   value: { fontSize: '3rem', fontWeight: 700, lineHeight: 1 },
   label: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
-  action: { backgroundColor: 'var(--primary)', borderRadius: '0.375rem', color: 'var(--primary-foreground)', paddingBlock: '0.5rem', paddingInline: '1rem', fontSize: '0.875rem', lineHeight: '1.25rem' },
-  cancel: { borderColor: 'var(--border)', borderRadius: '0.375rem', borderStyle: 'solid', borderWidth: '1px', paddingBlock: '0.5rem', paddingInline: '1rem', fontSize: '0.875rem', lineHeight: '1.25rem' },
   scrollBody: { overflowY: 'auto', paddingInline: '1rem' },
   lorem: { lineHeight: 'normal', marginBlockEnd: '1rem' },
   triggerRow: { display: 'flex', flexWrap: 'wrap', gap: '0.5rem' },
@@ -167,7 +165,13 @@ const sq = (value: string): string => value.replaceAll("'", "\\'")
 
 const emitContent = (fixture: DrawerFixture, isStyleX: boolean): string => {
   const cls = (tailwind: string, stylexRef: string) =>
-    isStyleX ? `className(${stylexRef})` : `'${tailwind}'`
+    isStyleX
+      ? stylexRef === 'styles.action'
+        ? "className(...Button.buttonVisualStyles({ size: 'lg' }))"
+        : stylexRef === 'styles.cancel'
+          ? "className(...Button.buttonVisualStyles({ variant: 'outline', size: 'lg' }))"
+          : `className(${stylexRef})`
+      : `'${tailwind}'`
   switch (fixture.kind) {
     case 'goal':
     case 'side':
@@ -284,7 +288,13 @@ const emitContent = (fixture: DrawerFixture, isStyleX: boolean): string => {
 
 const emitFooter = (fixture: DrawerFixture, isStyleX: boolean): string => {
   const cls = (tailwind: string, stylexRef: string) =>
-    isStyleX ? `className(${stylexRef})` : `'${tailwind}'`
+    isStyleX
+      ? stylexRef === 'styles.action'
+        ? "className(...Button.buttonVisualStyles({ size: 'lg' }))"
+        : stylexRef === 'styles.cancel'
+          ? "className(...Button.buttonVisualStyles({ variant: 'outline', size: 'lg' }))"
+          : `className(${stylexRef})`
+      : `'${tailwind}'`
   const outline = (label: string, initialFocus = false) =>
     `h.button([...slots.closeButton, ${initialFocus ? '...slots.initialFocusAttributes(), ' : ''}h.Type('button'), h.Class(${cls('rounded-md border px-4 py-2 text-sm', 'styles.cancel')})], ['${label}'])`
   const primary = (label: string) =>
@@ -479,7 +489,13 @@ const emitSubscriptions = (
 
 const emitView = (fixture: DrawerFixture, isStyleX: boolean): string => {
   const cls = (tailwind: string, stylexRef: string) =>
-    isStyleX ? `className(${stylexRef})` : `'${tailwind}'`
+    isStyleX
+      ? stylexRef === 'styles.action'
+        ? "className(...Button.buttonVisualStyles({ size: 'lg' }))"
+        : stylexRef === 'styles.cancel'
+          ? "className(...Button.buttonVisualStyles({ variant: 'outline', size: 'lg' }))"
+          : `className(${stylexRef})`
+      : `'${tailwind}'`
   switch (fixture.kind) {
     case 'goal':
     case 'side':

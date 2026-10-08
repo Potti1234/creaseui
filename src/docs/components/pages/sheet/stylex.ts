@@ -34,25 +34,6 @@ const styles = stylex.create({
   field: { gap: '0.75rem', display: 'grid' },
   loremWrap: { paddingInline: '1rem', overflowY: 'auto' },
   paragraph: { lineHeight: 1.625, marginBottom: '0.5rem' },
-  footerSave: {
-    borderRadius: '0.375rem',
-    paddingBlock: '0.5rem',
-    paddingInline: '1rem',
-    backgroundColor: 'var(--primary)',
-    color: 'var(--primary-foreground)',
-    fontSize: '0.875rem',
-    lineHeight: '1.25rem',
-  },
-  footerCancel: {
-    borderColor: 'var(--border)',
-    borderRadius: '0.375rem',
-    borderStyle: 'solid',
-    borderWidth: '1px',
-    paddingBlock: '0.5rem',
-    paddingInline: '1rem',
-    fontSize: '0.875rem',
-    lineHeight: '1.25rem',
-  },
   // bottom-sheet examples
   main: {
     padding: '2rem',
@@ -257,22 +238,26 @@ const instanceView = <Msg>(
         ? {}
         : {
             footer: slots => [
-              h.button(
-                [
-                  ...slots.closeButton,
-                  h.Type('button'),
-                  h.Class(className(reset.button, styles.footerSave)),
-                ],
-                [instance.footer!.save],
+              Button.button(
+                {
+                  size: 'lg',
+                  buttonAttributes: [...slots.closeButton, h.Type('button')],
+                  children: [instance.footer!.save],
+                },
+                h,
               ),
-              h.button(
-                [
-                  ...slots.closeButton,
-                  ...slots.initialFocusAttributes(),
-                  h.Type('button'),
-                  h.Class(className(reset.button, styles.footerCancel)),
-                ],
-                [instance.footer!.cancel],
+              Button.button(
+                {
+                  variant: 'outline',
+                  size: 'lg',
+                  buttonAttributes: [
+                    ...slots.closeButton,
+                    ...slots.initialFocusAttributes(),
+                    h.Type('button'),
+                  ],
+                  children: [instance.footer!.cancel],
+                },
+                h,
               ),
             ],
           }),
@@ -619,7 +604,10 @@ const switcherSheet = <Msg>(
   meta: string,
   body: ReadonlyArray<Html>,
   buttons: ReadonlyArray<Html>,
-): { id: string; content: Html } => ({
+): {
+  id: string
+  content: Html
+} => ({
   id,
   content: h.div(
     [h.Class(className(styles.sheetBody))],
@@ -636,7 +624,10 @@ const switcherSheets = <Msg>(
   model: PreviewShape,
   onMessageJson: (json: string) => Msg,
   h: HtmlBuilder<Msg>,
-): ReadonlyArray<{ id: string; content: Html }> => [
+): ReadonlyArray<{
+  id: string
+  content: Html
+}> => [
   switcherSheet(
     h,
     'overview',
@@ -824,7 +815,10 @@ const switcherSheets = <Msg>(
 const reviewSheets = <Msg>(
   onMessageJson: (json: string) => Msg,
   h: HtmlBuilder<Msg>,
-): ReadonlyArray<{ id: string; content: Html }> => [
+): ReadonlyArray<{
+  id: string
+  content: Html
+}> => [
   switcherSheet(
     h,
     'review',
@@ -909,7 +903,10 @@ const switcherOf = <Msg>(
   model: PreviewShape,
   onMessageJson: (json: string) => Msg,
   h: HtmlBuilder<Msg>,
-  sheets: ReadonlyArray<{ id: string; content: Html }>,
+  sheets: ReadonlyArray<{
+    id: string
+    content: Html
+  }>,
 ): Html =>
   Sheet.sheetSwitcher(
     {

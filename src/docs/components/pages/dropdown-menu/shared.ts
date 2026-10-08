@@ -437,25 +437,15 @@ const source = (
   const topLevelValues = fixtureItems(fixture)
     .map(value => `'${value}'`)
     .join(', ')
-  const imports =
-    [
-      `import { Option, Schema as S } from 'effect'`,
-      `import { Command, Runtime, Subscription, Update } from 'foldkit'`,
-      `import { type Document, type HtmlBuilder } from 'foldkit/html'`,
-      ``,
-      ...(isStyleX
-        ? [
-            `import * as stylex from '@stylexjs/stylex'`,
-            `import type { ComponentLayoutStyle } from '@/stylex/contracts'`,
-          ]
-        : []),
-      ...(usesAvatar ? [`import * as Avatar from '@/${uiDir}/avatar'`] : []),
-      `import * as DropdownMenu from '@/${uiDir}/dropdown-menu'`,
-      ...(usesIcons ? [`import * as Icon from '@/lib/icon'`] : []),
-    ].join('\n') +
-    (isStyleX
-      ? `\n\nconst styles = stylex.create({\n  trigger: { borderColor: 'var(--border)', borderRadius: 'var(--radius-md)', borderStyle: 'solid', borderWidth: '1px', fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 500, padding: '0.5rem 1rem' },\n  triggerAvatar: { borderRadius: '9999px' },\n})`
-      : '')
+  const imports = [
+    `import { Option, Schema as S } from 'effect'`,
+    `import { Command, Runtime, Subscription, Update } from 'foldkit'`,
+    `import { type Document, type HtmlBuilder } from 'foldkit/html'`,
+    ``,
+    ...(usesAvatar ? [`import * as Avatar from '@/${uiDir}/avatar'`] : []),
+    `import * as DropdownMenu from '@/${uiDir}/dropdown-menu'`,
+    ...(usesIcons ? [`import * as Icon from '@/lib/icon'`] : []),
+  ].join('\n')
   const modelExtra = [
     usesCheckbox ? `  checkedValues: S.Array(Item),` : '',
     usesRadio ? `  radioValue: S.Option(Item),` : '',
@@ -555,7 +545,7 @@ ${updateExtra}
         model: model.menu,
         toParentMessage: message => GotMenuMessage({ message }),
         trigger: ${triggerSource},
-        ${isStyleX ? (fixture.trigger.kind === 'avatar' ? 'triggerLayoutStyle: styles.triggerAvatar as ComponentLayoutStyle,' : 'triggerLayoutStyle: styles.trigger as ComponentLayoutStyle,') : fixture.trigger.kind === 'avatar' ? "triggerClass: 'rounded-full'," : "triggerClass: 'rounded-md border px-4 py-2 text-sm font-medium',"}
+        ${isStyleX ? (fixture.trigger.kind === 'avatar' ? "triggerButtonVariant: 'ghost',\n        triggerButtonSize: 'icon-sm',\n        triggerButtonRounded: true," : "triggerButtonVariant: 'outline',") : fixture.trigger.kind === 'avatar' ? "triggerClass: 'rounded-full'," : "triggerClass: 'rounded-md border px-4 py-2 text-sm font-medium',"}
         ariaLabel: '${fixture.title} menu',
         items: [${topLevelValues}]${specs.some(spec => spec.submenu !== undefined) ? ' as ReadonlyArray<Item>' : ''},
         ${itemToConfigSource}

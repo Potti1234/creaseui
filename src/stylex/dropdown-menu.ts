@@ -69,7 +69,7 @@ const cn = (...values: ReadonlyArray<unknown>): string =>
 import type { Update } from 'foldkit'
 import { Option, Schema as S } from 'effect'
 import type { Command } from 'foldkit'
-import type { Html, HtmlBuilder } from 'foldkit/html'
+import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
 import * as Icon from '@/lib/icon'
@@ -77,7 +77,7 @@ import * as Behavior from '@/lib/dropdown-menu-behavior'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import { overlayStyles } from './overlay-tokens.stylex'
-import { buttonVisualStyles } from './button'
+import * as Button from './button'
 import { joinStyles } from './button-group-join.stylex'
 import { separator } from './separator'
 import type {
@@ -229,9 +229,10 @@ export type DropdownMenuProps<Item extends string, Msg> = Readonly<{
   /* Full StyleX styles for the trigger button (e.g. the sidebar menu-button
      look used by sidebar-06); takes precedence over triggerButtonVariant. */
   triggerStyle?: StaticStyles
-  /** Give the trigger a Button recipe look (e.g. an icon-only more-actions). */
+  /** Render the trigger with Crease UI Button (e.g. an icon-only more-actions). */
   triggerButtonVariant?: ButtonVariant
   triggerButtonSize?: ButtonSize
+  triggerButtonRounded?: boolean
   triggerTabindex?: number
   triggerRole?: string
   /** aria-label on the trigger button — icon-only triggers need one. */
@@ -364,6 +365,32 @@ export const dropdownMenu = <Item extends string, Msg>(
   props: DropdownMenuProps<Item, Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
+  const hasButtonTrigger =
+    props.triggerStyle === undefined &&
+    (props.triggerButtonVariant !== undefined ||
+      props.triggerButtonSize !== undefined ||
+      props.triggerButtonRounded !== undefined)
+  const renderTrigger = (
+    attributes: ReadonlyArray<Attribute<Msg> | ChildAttribute>,
+    children: ReadonlyArray<Html | string>,
+  ): Html =>
+    hasButtonTrigger
+      ? Button.button(
+          {
+            variant: props.triggerButtonVariant ?? 'default',
+            size: props.triggerButtonSize ?? 'default',
+            rounded: props.triggerButtonRounded ?? false,
+            isDisabled: props.triggerIsDisabled ?? false,
+            slot: 'dropdown-menu-trigger',
+            buttonAttributes: attributes,
+            ...(props.triggerLayoutStyle === undefined
+              ? {}
+              : { layoutStyle: props.triggerLayoutStyle }),
+            children,
+          },
+          h,
+        )
+      : h.button(attributes, children)
   const anchorX = Option.getOrUndefined(props.model.anchorX)
   const anchorY = Option.getOrUndefined(props.model.anchorY)
   const keyMessage = (key: string) => {
@@ -572,7 +599,7 @@ export const dropdownMenu = <Item extends string, Msg>(
       ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
     ],
     [
-      h.button(
+      renderTrigger(
         [
           h.Type('button'),
           ...(props.triggerRole === undefined
@@ -626,24 +653,18 @@ export const dropdownMenu = <Item extends string, Msg>(
           ...(props.triggerTabindex === undefined
             ? []
             : [h.Tabindex(props.triggerTabindex)]),
-          h.Class(
-            className(
-              reset.button,
-              joinStyles.join,
-              ...(props.triggerStyle === undefined ? [] : [props.triggerStyle]),
-              ...(props.triggerStyle !== undefined ||
-              (props.triggerButtonVariant === undefined &&
-                props.triggerButtonSize === undefined)
-                ? []
-                : buttonVisualStyles({
-                    variant: props.triggerButtonVariant ?? 'default',
-                    size: props.triggerButtonSize ?? 'default',
-                  })),
-              ...(props.triggerLayoutStyle === undefined
-                ? []
-                : [props.triggerLayoutStyle]),
-            ),
-          ),
+          ...(hasButtonTrigger
+            ? []
+            : [
+                h.Class(
+                  className(
+                    reset.button,
+                    joinStyles.join,
+                    props.triggerStyle,
+                    props.triggerLayoutStyle,
+                  ),
+                ),
+              ]),
           h.OnKeyDownPreventDefault((key, modifiers) => {
             const message = props.model.isOpen
               ? menuKey(

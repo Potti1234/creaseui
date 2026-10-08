@@ -38,25 +38,6 @@ const styles = stylex.create({
     fontSize: '0.875rem',
     lineHeight: '1.25rem',
   },
-  action: {
-    borderRadius: '0.375rem',
-    paddingBlock: '0.5rem',
-    paddingInline: '1rem',
-    backgroundColor: 'var(--primary)',
-    color: 'var(--primary-foreground)',
-    fontSize: '0.875rem',
-    lineHeight: '1.25rem',
-  },
-  cancel: {
-    borderColor: 'var(--border)',
-    borderRadius: '0.375rem',
-    borderStyle: 'solid',
-    borderWidth: '1px',
-    paddingBlock: '0.5rem',
-    paddingInline: '1rem',
-    fontSize: '0.875rem',
-    lineHeight: '1.25rem',
-  },
   scrollBody: { padding: '1rem', flex: '1', overflowY: 'auto' },
   lorem: { lineHeight: 'normal', marginBlockEnd: '1rem' },
   triggerRow: { gap: '0.5rem', display: 'flex', flexWrap: 'wrap' },
@@ -314,13 +295,14 @@ const closeOnlyFooter = <Msg>(
   slots: Slots<Msg>,
   h: HtmlBuilder<Msg>,
 ): ReadonlyArray<Html> => [
-  h.button(
-    [
-      ...slots.closeButton,
-      h.Type('button'),
-      h.Class(className(reset.button, styles.cancel)),
-    ],
-    ['Close'],
+  Button.button(
+    {
+      variant: 'outline',
+      size: 'lg',
+      buttonAttributes: [...slots.closeButton, h.Type('button')],
+      children: ['Close'],
+    },
+    h,
   ),
 ]
 
@@ -329,13 +311,13 @@ const primaryButton = <Msg>(
   onClick: Msg,
   h: HtmlBuilder<Msg>,
 ): Html =>
-  h.button(
-    [
-      h.Type('button'),
-      h.OnClick(onClick),
-      h.Class(className(reset.button, styles.action)),
-    ],
-    [label],
+  Button.button(
+    {
+      size: 'lg',
+      buttonAttributes: [h.Type('button'), h.OnClick(onClick)],
+      children: [label],
+    },
+    h,
   )
 
 /** One nested drawer level — renders its own footer with either the next
@@ -386,21 +368,22 @@ const footerActions = <Msg>(
   primary: string,
   outline: string,
 ): ReadonlyArray<Html> => [
-  h.button(
-    [
-      ...slots.closeButton,
-      h.Type('button'),
-      h.Class(className(reset.button, styles.action)),
-    ],
-    [primary],
+  Button.button(
+    {
+      size: 'lg',
+      buttonAttributes: [...slots.closeButton, h.Type('button')],
+      children: [primary],
+    },
+    h,
   ),
-  h.button(
-    [
-      ...slots.closeButton,
-      h.Type('button'),
-      h.Class(className(reset.button, styles.cancel)),
-    ],
-    [outline],
+  Button.button(
+    {
+      variant: 'outline',
+      size: 'lg',
+      buttonAttributes: [...slots.closeButton, h.Type('button')],
+      children: [outline],
+    },
+    h,
   ),
 ]
 
@@ -563,13 +546,14 @@ const drawerView = <Msg>(
                 profileFields(exampleIndex, model, onMessageJson, h),
               ],
               footer: slots => [
-                h.button(
-                  [
-                    ...slots.closeButton,
-                    h.Type('button'),
-                    h.Class(className(reset.button, styles.cancel)),
-                  ],
-                  ['Cancel'],
+                Button.button(
+                  {
+                    variant: 'outline',
+                    size: 'lg',
+                    buttonAttributes: [...slots.closeButton, h.Type('button')],
+                    children: ['Cancel'],
+                  },
+                  h,
                 ),
               ],
             },

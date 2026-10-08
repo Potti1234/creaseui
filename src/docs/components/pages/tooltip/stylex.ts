@@ -7,7 +7,6 @@ import {
   type TooltipTipSpec,
 } from '@/docs/components/pages/tooltip/shared'
 import * as Icon from '@/lib/icon'
-import type { ComponentLayoutStyle } from '@/stylex/contracts'
 import * as Kbd from '@/stylex/kbd'
 import { className } from '@/stylex/style'
 import * as Tooltip from '@/stylex/tooltip'
@@ -17,29 +16,6 @@ const styles = stylex.create({
     gap: '0.5rem',
     display: 'flex',
     flexWrap: 'wrap',
-  },
-  trigger: {
-    borderColor: 'var(--border)',
-    borderRadius: 'var(--radius-md)',
-    borderStyle: 'solid',
-    borderWidth: '1px',
-    paddingBlock: '0.5rem',
-    paddingInline: '0.75rem',
-    fontSize: '0.875rem',
-    lineHeight: '1.25rem',
-    textTransform: 'capitalize',
-    width: 'fit-content',
-  },
-  iconTrigger: {
-    borderColor: 'var(--border)',
-    borderRadius: 'var(--radius-md)',
-    borderStyle: 'solid',
-    borderWidth: '1px',
-    alignItems: 'center',
-    display: 'inline-flex',
-    justifyContent: 'center',
-    height: '2.25rem',
-    width: '2.25rem',
   },
 })
 
@@ -71,9 +47,8 @@ const tipView = <Msg>(
           ? content
           : h.span([], [`${content} `, Kbd.kbd({ children: [tip.kbd] }, h)]),
       side: tip.side ?? 'top',
-      triggerLayoutStyle: (tip.iconTrigger === true
-        ? styles.iconTrigger
-        : styles.trigger) as ComponentLayoutStyle,
+      triggerButtonVariant: 'outline',
+      triggerButtonSize: tip.iconTrigger === true ? 'icon' : 'default',
       ...(tip.isDisabled === true ? { isDisabled: true } : {}),
     },
     h,

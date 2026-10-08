@@ -93,7 +93,7 @@ const styles = stylex.create({
   mobileDialog: {
     position: {
       default: null,
-      // eslint-disable-next-line @stylexjs/valid-styles -- Override Foldkit's inline positioning for the mobile dialog.
+      // eslint-disable-next-line @stylexjs/valid-styles -- reason: Override Foldkit's inline positioning for the mobile dialog.
       '@media (max-width: 639px)': 'fixed !important',
     },
     bottom: { default: null, '@media (max-width: 639px)': '0.75rem' },

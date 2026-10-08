@@ -1,4 +1,5 @@
 import { className } from '@/stylex/style'
+import * as Button from '@/stylex/button'
 import { reset } from '@/stylex/reset'
 import type { HtmlBuilder } from 'foldkit/html'
 import * as stylex from '@stylexjs/stylex'
@@ -9,17 +10,7 @@ import type * as Popover from '@/stylex/popover'
 
 const styles = stylex.create({
   sample: { gap: '0.75rem', display: 'grid' },
-  routeButton: {
-    borderColor: 'var(--border)',
-    borderRadius: '0.25rem',
-    borderStyle: 'solid',
-    borderWidth: '1px',
-    paddingBlock: '0.25rem',
-    paddingInline: '0.75rem',
-    fontSize: '0.875rem',
-    lineHeight: '1.25rem',
-    width: 'max-content',
-  },
+  routeButton: { width: 'max-content' },
   content: { gap: '0.25rem', display: 'grid' },
   contentLink: { padding: '0.5rem', borderRadius: '0.25rem', display: 'block' },
 })
@@ -95,7 +86,10 @@ export const navigationMenuStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ) => {
-  const preview = model as { products: Popover.Model; route: 'home' | 'docs' }
+  const preview = model as {
+    products: Popover.Model
+    route: 'home' | 'docs'
+  }
   const sendPopover = (message: Popover.Message) =>
     onMessageJson(
       JSON.stringify({ _tag: 'GotNavigationPreviewMessage', message }),
@@ -111,20 +105,25 @@ export const navigationMenuStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           ['Home', 'Components', 'Docs'],
           h,
         ),
-        h.button(
-          [
-            h.Type('button'),
-            h.OnClick(
-              onMessageJson(
-                JSON.stringify({
-                  _tag: 'ChangedNavigationRoute',
-                  route: preview.route === 'home' ? 'docs' : 'home',
-                }),
+        Button.button(
+          {
+            variant: 'outline',
+            size: 'sm',
+            buttonAttributes: [
+              h.Type('button'),
+              h.OnClick(
+                onMessageJson(
+                  JSON.stringify({
+                    _tag: 'ChangedNavigationRoute',
+                    route: preview.route === 'home' ? 'docs' : 'home',
+                  }),
+                ),
               ),
-            ),
-            h.Class(className(reset.button, styles.routeButton)),
-          ],
-          ['Reflect external route'],
+            ],
+            layoutStyle: styles.routeButton,
+            children: ['Reflect external route'],
+          },
+          h,
         ),
       ],
     )

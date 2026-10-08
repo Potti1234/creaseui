@@ -51,7 +51,7 @@ const styles = stylex.create({
   gridPanel: { padding: '1rem', overflow: 'auto', height: '100%' },
   filler: { height: '100%' },
   group: {
-    borderRadius: 'var(--radius-lg)',
+    borderRadius: 'var(--radius)',
     borderWidth: 0,
     height: '100%',
     width: '100%',

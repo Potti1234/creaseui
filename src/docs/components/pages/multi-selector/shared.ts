@@ -140,6 +140,7 @@ import * as MultiSelector from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/mul
 const stylexPreamble = `
 import * as stylex from '@stylexjs/stylex'
 import { className } from '@/stylex/style'
+import * as Button from '@/stylex/button'
 
 const styles = stylex.create({
   stack: {
@@ -151,17 +152,6 @@ const styles = stylex.create({
   },
   supporting: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
   toolbar: { alignItems: 'center', display: 'flex', gap: '0.5rem' },
-  button: {
-    backgroundColor: 'transparent',
-    borderRadius: 'calc(var(--radius) - 2px)',
-    borderWidth: 0,
-    color: 'var(--foreground)',
-    cursor: 'pointer',
-    fontSize: '0.875rem', lineHeight: '1.25rem',
-    fontWeight: 500,
-    paddingBlock: '0.375rem',
-    paddingInline: '0.75rem',
-  },
 })`
 
 const stackClass = (isStyleX: boolean): string =>
@@ -176,7 +166,7 @@ const toolbarClass = (isStyleX: boolean): string =>
 
 const buttonClass = (isStyleX: boolean): string =>
   isStyleX
-    ? `h.Class(className(styles.button))`
+    ? `h.Class(className(...Button.buttonVisualStyles({ variant: 'ghost', size: 'sm' })))`
     : `h.Class('rounded-md px-3 py-1.5 text-sm font-medium text-foreground hover:bg-accent')`
 
 const messages = `import { taggedStruct } from 'foldkit/schema'

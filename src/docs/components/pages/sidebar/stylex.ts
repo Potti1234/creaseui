@@ -23,7 +23,7 @@ const styles = stylex.create({
   },
   actionTrigger: { alignItems: 'center', display: 'flex' },
   actionTriggerButton: {
-    borderRadius: 'var(--radius-md)',
+    borderRadius: 'calc(var(--radius) - 2px)',
     alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
@@ -87,7 +87,7 @@ const styles = stylex.create({
     display: 'flex',
   },
   brandMark: {
-    borderRadius: 'var(--radius-md)',
+    borderRadius: 'calc(var(--radius) - 2px)',
     placeItems: 'center',
     backgroundColor: 'var(--sidebar-primary)',
     color: 'var(--sidebar-primary-foreground)',
@@ -210,7 +210,7 @@ const styles = stylex.create({
   },
   accountTriggerButton: {
     padding: '0.5rem',
-    borderRadius: 'var(--radius-md)',
+    borderRadius: 'calc(var(--radius) - 2px)',
     gap: '0.5rem',
     overflow: 'hidden',
     alignItems: 'center',

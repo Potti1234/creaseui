@@ -8,7 +8,6 @@ import {
   type PopoverFixture,
   type PopoverInstance,
 } from '@/docs/components/pages/popover/shared'
-import type { ComponentLayoutStyle } from '@/stylex/contracts'
 import * as Field from '@/stylex/field'
 import * as Input from '@/stylex/input'
 import * as Popover from '@/stylex/popover'
@@ -26,27 +25,6 @@ const styles = stylex.create({
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'center',
-  },
-  trigger: {
-    borderColor: 'var(--border)',
-    borderRadius: 'var(--radius-md)',
-    borderStyle: 'solid',
-    borderWidth: '1px',
-    paddingBlock: '0.5rem',
-    paddingInline: '1rem',
-    fontSize: '0.875rem',
-    fontWeight: 500,
-    lineHeight: '1.25rem',
-  },
-  triggerSm: {
-    borderColor: 'var(--border)',
-    borderRadius: 'var(--radius-md)',
-    borderStyle: 'solid',
-    borderWidth: '1px',
-    paddingBlock: '0.375rem',
-    paddingInline: '0.75rem',
-    fontSize: '0.875rem',
-    lineHeight: '1.25rem',
   },
   panel: { width: '10rem' },
   panelWide: { width: '16rem' },
@@ -117,7 +95,7 @@ const legacyView = <Msg>(
     onMessageJson,
     {
       trigger: 'Open dimensions',
-      triggerLayoutStyle: styles.trigger as ComponentLayoutStyle,
+      triggerButtonVariant: 'outline',
       side,
       align,
       focusSelector: '[data-slot=popover-content] input',
@@ -179,7 +157,7 @@ const formView = <Msg>(
     onMessageJson,
     {
       trigger: 'Open Popover',
-      triggerLayoutStyle: styles.trigger as ComponentLayoutStyle,
+      triggerButtonVariant: 'outline',
       align: 'start',
       layoutStyle: styles.panelWide,
       focusSelector: '[data-slot=popover-content] input',
@@ -213,7 +191,8 @@ const instanceView = <Msg>(
     onMessageJson,
     {
       trigger: instance.trigger,
-      triggerLayoutStyle: styles.triggerSm as ComponentLayoutStyle,
+      triggerButtonVariant: 'outline',
+      triggerButtonSize: 'sm',
       side: instance.side,
       align: instance.align,
       layoutStyle: styles.panel,
@@ -241,7 +220,7 @@ export const popoverStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         onMessageJson,
         {
           trigger: 'Open Popover',
-          triggerLayoutStyle: styles.trigger as ComponentLayoutStyle,
+          triggerButtonVariant: 'outline',
           align: 'start',
           content: headerContent(false, h),
         },

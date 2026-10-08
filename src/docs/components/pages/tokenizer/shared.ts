@@ -112,6 +112,7 @@ import * as Tokenizer from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/tokeniz
 const stylexPreamble = `
 import * as stylex from '@stylexjs/stylex'
 import { className } from '@/stylex/style'
+import * as Button from '@/stylex/button'
 
 const styles = stylex.create({
   stack: {
@@ -122,17 +123,6 @@ const styles = stylex.create({
     width: '100%',
   },
   supporting: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
-  button: {
-    backgroundColor: 'var(--primary)',
-    borderRadius: 'calc(var(--radius) - 2px)',
-    borderWidth: 0,
-    color: 'var(--primary-foreground)',
-    cursor: 'pointer',
-    fontSize: '0.875rem', lineHeight: '1.25rem',
-    fontWeight: 500,
-    paddingBlock: '0.25rem',
-    paddingInline: '0.5rem',
-  },
 })`
 
 const stackClass = (isStyleX: boolean): string =>
@@ -147,7 +137,7 @@ const supportingClass = (isStyleX: boolean): string =>
 
 const buttonClass = (isStyleX: boolean): string =>
   isStyleX
-    ? `h.Class(className(styles.button))`
+    ? `h.Class(className(...Button.buttonVisualStyles({ variant: 'default', size: 'sm' })))`
     : `h.Class('rounded-md bg-primary px-2 py-1 text-sm font-medium text-primary-foreground')`
 
 const messages = `import { taggedStruct } from 'foldkit/schema'
