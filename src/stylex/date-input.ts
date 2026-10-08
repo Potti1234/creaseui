@@ -272,6 +272,7 @@ const styles = stylex.create({
     lineHeight: '1.25rem',
   },
   control: { width: '100%' },
+  panel: { padding: 0, width: 'auto' },
   fieldFit: { width: 'fit-content' },
   invalidAlert: {
     borderWidth: 0,
@@ -626,7 +627,7 @@ export const dateInput = <Msg>(
                         [
                           ...panel,
                           h.DataAttribute('slot', 'date-input-content'),
-                          h.Class(className(overlayStyles.panel)),
+                          h.Class(className(overlayStyles.panel, styles.panel)),
                         ],
                         [
                           h.submodel({
