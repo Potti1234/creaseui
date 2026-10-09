@@ -242,15 +242,6 @@ const account = (model: Model, h: HtmlBuilder<Message>): Html =>
                             [h.Class('truncate text-sm font-medium')],
                             ['Ada Lovelace'],
                           ),
-                          h.span(
-                            [
-                              h.Class(
-                                'truncate text-xs text-sidebar-foreground/70',
-                              ),
-                            ],
-                            ['ada@example.com'],
-                          ),
-                          ,
                         ],
                       ),
                       Icon.chevronsUpDown(

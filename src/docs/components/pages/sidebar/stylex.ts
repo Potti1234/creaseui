@@ -73,14 +73,6 @@ const styles = stylex.create({
     textAlign: 'left',
     minWidth: 0,
   },
-  accountEmail: {
-    overflow: 'hidden',
-    color: 'color-mix(in oklab, var(--sidebar-foreground) 70%, transparent)',
-    fontSize: '0.75rem',
-    lineHeight: '1rem',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-  },
   accountName: {
     overflow: 'hidden',
     fontSize: '0.875rem',
@@ -628,11 +620,6 @@ const account = <Msg>(
                             [h.Class(cx(styles.accountName))],
                             ['Ada Lovelace'],
                           ),
-                          h.span(
-                            [h.Class(cx(styles.accountEmail))],
-                            ['ada@example.com'],
-                          ),
-                          ,
                         ],
                       ),
                       Icon.chevronsUpDown(
