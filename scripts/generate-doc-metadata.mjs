@@ -215,7 +215,10 @@ const llms = `# crease/ui\n\n> CreaseUI provides source-owned components built o
   )
   .join('\n')}\n`
 
-const llmsFull = `${llms}\n## API inventory\n\n${components
+const consumerDocs = ['dashboard-recipe', 'icon-inventory']
+  .map(name => fs.readFileSync(path.join(root, `docs/${name}.md`), 'utf8'))
+  .join('\n\n')
+const llmsFull = `${llms}\n## Application recipes and icon discovery\n\n${consumerDocs}\n## API inventory\n\n${components
   .map(
     component =>
       `### ${component.title}\n\n${component.description}\n\nSource: \`${component.source}\`\n\nExamples: ${component.examples.join(', ')}\n\n${component.api
@@ -238,10 +241,15 @@ const desired = new Map([
   ],
   [
     path.join(root, 'public/llms.txt'),
-    llms.replace(
-      '## Primary documentation',
-      '## Primary documentation\n\n- Getting started: /docs/getting-started.md',
-    ),
+    llms
+      .replace(
+        '## Components',
+        '## Application recipes\n\n- Dashboard, users and settings: /docs/dashboard-recipe.md — install with `Potti1234/creaseui/dashboard-01`\n- Supported icons: /docs/icon-inventory.md\n\n## Components',
+      )
+      .replace(
+        '## Primary documentation',
+        '## Primary documentation\n\n- Getting started: /docs/getting-started.md',
+      ),
   ],
   [path.join(root, 'public/llms-full.txt'), llmsFull],
   [path.join(root, 'src/docs/generated-component-api.ts'), generatedApi],

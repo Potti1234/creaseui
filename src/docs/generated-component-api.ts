@@ -5468,6 +5468,11 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
   ],
   "switch": [
     {
+      "name": "switchIds",
+      "kind": "re-export",
+      "signature": "export { switchIds } from '@/lib/switch'"
+    },
+    {
       "name": "SwitchSize",
       "kind": "type",
       "signature": "SwitchSize = 'sm' | 'default'"

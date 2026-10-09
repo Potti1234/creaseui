@@ -14,6 +14,7 @@
       "source": "src/ui/accordion.ts",
       "install": "npx creaseui add accordion",
       "dependencies": [
+        "Potti1234/creaseui/accordion-state",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils"
@@ -112,6 +113,7 @@
       "source": "src/ui/alert-dialog.ts",
       "install": "npx creaseui add alert-dialog",
       "dependencies": [
+        "Potti1234/creaseui/alert-dialog-behavior",
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -157,6 +159,7 @@
       "install": "npx creaseui add alert",
       "dependencies": [
         "class-variance-authority@^0.7.1",
+        "Potti1234/creaseui/alert-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
       ],
@@ -562,6 +565,7 @@
       "source": "src/ui/banner.ts",
       "install": "npx creaseui add banner",
       "dependencies": [
+        "Potti1234/creaseui/banner-behavior",
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -684,6 +688,7 @@
       "source": "src/ui/breadcrumb.ts",
       "install": "npx creaseui add breadcrumb",
       "dependencies": [
+        "Potti1234/creaseui/breadcrumb-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils"
@@ -905,6 +910,7 @@
       "install": "npx creaseui add button",
       "dependencies": [
         "class-variance-authority@^0.7.1",
+        "Potti1234/creaseui/button-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
       ],
@@ -967,6 +973,7 @@
       "install": "npx creaseui add calendar",
       "dependencies": [
         "Potti1234/creaseui/button",
+        "Potti1234/creaseui/calendar-range",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils"
@@ -1163,6 +1170,7 @@
       "install": "npx creaseui add carousel",
       "dependencies": [
         "embla-carousel@^8.6.0",
+        "Potti1234/creaseui/carousel-lifecycle",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils"
@@ -1515,6 +1523,7 @@
       "source": "src/ui/checkbox.ts",
       "install": "npx creaseui add checkbox",
       "dependencies": [
+        "Potti1234/creaseui/checkbox-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils"
@@ -1596,6 +1605,7 @@
       "install": "npx creaseui add code-block",
       "dependencies": [
         "Potti1234/creaseui/button",
+        "Potti1234/creaseui/code-block-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils"
@@ -1898,6 +1908,7 @@
       "source": "src/ui/command.ts",
       "install": "npx creaseui add command",
       "dependencies": [
+        "Potti1234/creaseui/command-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils"
@@ -2114,6 +2125,7 @@
       "dependencies": [
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/data-table-mechanics",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/input",
         "Potti1234/creaseui/table",
@@ -2158,6 +2170,8 @@
       "dependencies": [
         "Potti1234/creaseui/calendar",
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/date-input-behavior",
+        "Potti1234/creaseui/date-parse-behavior",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils"
       ],
@@ -2252,6 +2266,7 @@
       "dependencies": [
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/calendar",
+        "Potti1234/creaseui/calendar-range",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils"
@@ -2384,6 +2399,8 @@
       "dependencies": [
         "Potti1234/creaseui/calendar",
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/date-parse-behavior",
+        "Potti1234/creaseui/date-range-input-behavior",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils"
       ],
@@ -2485,7 +2502,10 @@
       "dependencies": [
         "Potti1234/creaseui/calendar",
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/date-parse-behavior",
+        "Potti1234/creaseui/date-time-input-behavior",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/time-parse-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -2750,6 +2770,7 @@
       "install": "npx creaseui add drawer",
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/drawer-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -2872,6 +2893,7 @@
       "install": "npx creaseui add dropdown-menu",
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/dropdown-menu-behavior",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/separator",
         "Potti1234/creaseui/utils"
@@ -3101,6 +3123,7 @@
       "dependencies": [
         "class-variance-authority@^0.7.1",
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/field-behavior",
         "Potti1234/creaseui/separator",
         "Potti1234/creaseui/utils"
       ],
@@ -3256,6 +3279,7 @@
       "install": "npx creaseui add file-input",
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/file-input-behavior",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/input-status",
         "Potti1234/creaseui/utils"
@@ -3337,6 +3361,7 @@
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/field",
+        "Potti1234/creaseui/form-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -3550,7 +3575,9 @@
       "source": "src/ui/hover-card.ts",
       "install": "npx creaseui add hover-card",
       "dependencies": [
+        "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/hover-card-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -3743,6 +3770,7 @@
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/tooltip-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -3968,6 +3996,7 @@
       "install": "npx creaseui add input",
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/input-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -4183,6 +4212,7 @@
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/lightbox-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -4276,6 +4306,7 @@
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/text",
+        "Potti1234/creaseui/tooltip",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -4325,6 +4356,7 @@
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/input-status",
+        "Potti1234/creaseui/list-input-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -4469,6 +4501,7 @@
       "install": "npx creaseui add log-stream",
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/message-scroller-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -4913,6 +4946,7 @@
         "Potti1234/creaseui/heading",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/list",
+        "Potti1234/creaseui/markdown-behavior",
         "Potti1234/creaseui/table",
         "Potti1234/creaseui/utils"
       ],
@@ -5086,6 +5120,7 @@
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/dropdown-menu",
+        "Potti1234/creaseui/menubar-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -5169,6 +5204,7 @@
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/message-scroller-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -5337,6 +5373,7 @@
       "install": "npx creaseui add metadata-list",
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/metadata-list-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -5419,6 +5456,7 @@
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/mobile-nav-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -5527,6 +5565,7 @@
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/dropdown-menu",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/more-menu-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -5603,6 +5642,8 @@
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/drawer",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/multi-selector-behavior",
+        "Potti1234/creaseui/multi-selector-view-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -5812,6 +5853,7 @@
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/input-status",
+        "Potti1234/creaseui/number-input-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -5883,6 +5925,7 @@
       "install": "npx creaseui add overflow-list",
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/overflow-list-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -5977,6 +6020,7 @@
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pagination-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -6162,6 +6206,7 @@
       "install": "npx creaseui add progress",
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/progress-normalization",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -6196,6 +6241,7 @@
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/radio-group-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -6532,6 +6578,8 @@
       "source": "src/ui/selectable-card.ts",
       "install": "npx creaseui add selectable-card",
       "dependencies": [
+        "Potti1234/creaseui/card-pressable-behavior",
+        "Potti1234/creaseui/card-surface-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
       ],
@@ -6614,6 +6662,7 @@
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/sheet-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -6864,6 +6913,7 @@
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/sidebar-state",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -7126,6 +7176,7 @@
       "install": "npx creaseui add slider",
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/slider-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -7526,6 +7577,7 @@
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stepper-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -7614,6 +7666,7 @@
       "install": "npx creaseui add switch",
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/switch-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -7626,6 +7679,11 @@
         "RTL"
       ],
       "api": [
+        {
+          "name": "switchIds",
+          "kind": "re-export",
+          "signature": "export { switchIds } from '@/lib/switch'"
+        },
         {
           "name": "SwitchSize",
           "kind": "type",
@@ -7926,6 +7984,7 @@
       "install": "npx creaseui add textarea",
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/textarea-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -8076,6 +8135,7 @@
       "source": "src/ui/timer.ts",
       "install": "npx creaseui add timer",
       "dependencies": [
+        "Potti1234/creaseui/astryx-text-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
       ],
@@ -8146,9 +8206,12 @@
       "source": "src/ui/timestamp.ts",
       "install": "npx creaseui add timestamp",
       "dependencies": [
+        "Potti1234/creaseui/astryx-text-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/hover-card",
+        "Potti1234/creaseui/hover-card-behavior",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/timestamp-format-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -8259,6 +8322,7 @@
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/toast-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -8295,6 +8359,7 @@
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/toggle",
+        "Potti1234/creaseui/toggle-group-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -8466,6 +8531,7 @@
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/tokenizer-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -8550,6 +8616,7 @@
       "install": "npx creaseui add toolbar",
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/toolbar-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -8617,6 +8684,7 @@
       "install": "npx creaseui add tooltip",
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/tooltip-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -8709,6 +8777,8 @@
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/nav-menu-behavior",
+        "Potti1234/creaseui/top-nav-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -8900,6 +8970,7 @@
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/tour-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -9099,6 +9170,7 @@
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/tree-list-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [

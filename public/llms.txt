@@ -13,6 +13,11 @@
 - Machine-readable component index: /docs-index.json
 - Complete API inventory: /llms-full.txt
 
+## Application recipes
+
+- Dashboard, users and settings: /docs/dashboard-recipe.md — install with `Potti1234/creaseui/dashboard-01`
+- Supported icons: /docs/icon-inventory.md
+
 ## Components
 
 - Accordion: /docs/components/accordion — install with `npx creaseui add accordion`

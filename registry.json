@@ -6,6 +6,7 @@
     "registry/theme/registry.json",
     "registry/presets/registry.json",
     "registry/icons/registry.json",
+    "src/recipes/dashboard/registry.json",
     "src/lib/registry.json",
     "src/ui/registry.json"
   ]

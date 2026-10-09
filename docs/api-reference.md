@@ -1761,6 +1761,7 @@ Source: [`src/ui/switch.ts`](../src/ui/switch.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
+| `switchIds` | re-export | `export { switchIds } from '@/lib/switch'` |
 | `SwitchSize` | type | `SwitchSize = 'sm' \| 'default'` |
 | `SwitchProps` | type | `SwitchProps<Msg> = SwitchBehaviorProps<Msg> & Readonly<{ size?: SwitchSize; class?: string; }>` |
 | `switchControl` | function | `switchControl<Msg>(props: SwitchProps<Msg>, h: HtmlBuilder<Msg>): Html` |

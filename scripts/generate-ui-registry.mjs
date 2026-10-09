@@ -249,3 +249,5 @@ writeFileSync(
 console.log(
   `Generated ${items.length} UI registry items and the component catalog.`,
 )
+
+await import('./generate-dashboard-registry.mjs')
