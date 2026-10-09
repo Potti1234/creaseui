@@ -1,5 +1,6 @@
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { basename, join } from 'node:path'
+import { fileOwners, sourceDependencies } from './registry-dependencies.mjs'
 
 const root = process.cwd()
 const uiDirectory = join(root, 'src', 'ui')
@@ -7,14 +8,6 @@ const packageJson = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'))
 const packageVersions = {
   ...packageJson.dependencies,
   ...packageJson.devDependencies,
-}
-
-const packageName = specifier => {
-  if (specifier.startsWith('@')) {
-    return specifier.split('/').slice(0, 2).join('/')
-  }
-
-  return specifier.split('/')[0]
 }
 
 const title = name =>
@@ -111,7 +104,6 @@ const categories = {
     'popover',
     'sheet',
     'tooltip',
-    'tour',
   ]),
 }
 
@@ -120,17 +112,6 @@ const category = name =>
   'Other'
 
 const registryAddress = item => `Potti1234/creaseui/${item}`
-const libraryItems = {
-  '@/lib/utils': 'utils',
-  '@/lib/icon': 'icons',
-  '@/lib/time-input': 'time-input-core',
-  '@/lib/input-status': 'input-status',
-  '@/lib/echarts': 'echarts-adapter',
-  '@/lib/map-runtime': 'map-adapter',
-  '@/lib/map-view': 'map-adapter',
-  '@/lib/map-style': 'map-adapter',
-  '@/lib/map-layers': 'map-adapter',
-}
 const consumerFrameworkPackages = new Set([
   '@effect/platform-browser',
   '@foldkit/ui',
@@ -142,44 +123,78 @@ const files = readdirSync(uiDirectory)
   .filter(file => file.endsWith('.ts') && file !== 'registry.json')
   .sort()
 
+const libraryRegistry = JSON.parse(
+  readFileSync(join(root, 'src/lib/registry.json'), 'utf8'),
+)
+const ownedLibraryFiles = new Set(
+  libraryRegistry.items.flatMap(item => item.files.map(file => file.path)),
+)
+for (const file of readdirSync(join(root, 'src/lib'))
+  .filter(file => file.endsWith('.ts'))
+  .sort()) {
+  if (ownedLibraryFiles.has(file)) continue
+  const name = basename(file, '.ts')
+  libraryRegistry.items.push({
+    name: `${name}-behavior`,
+    type: 'registry:lib',
+    title: `${title(name)} Behavior`,
+    description: `Shared Foldkit behavior and helpers for ${title(name)}.`,
+    files: [{ path: file, type: 'registry:lib', target: `@lib/${file}` }],
+  })
+}
+const owners = fileOwners(root, [
+  { directory: 'src/lib', items: libraryRegistry.items },
+  {
+    directory: 'src/ui',
+    items: files.map(file => ({
+      name: basename(file, '.ts'),
+      files: [{ path: file }],
+    })),
+  },
+])
+const versionedPackages = packages =>
+  [...packages]
+    .filter(dependency => !consumerFrameworkPackages.has(dependency))
+    .sort()
+    .map(dependency =>
+      packageVersions[dependency] === undefined
+        ? dependency
+        : `${dependency}@${packageVersions[dependency]}`,
+    )
+
+// Shared behavior can depend on other behavior. Generate that graph as well.
+for (const item of libraryRegistry.items) {
+  const registry = new Set()
+  const packages = new Set()
+  for (const file of item.files) {
+    const result = sourceDependencies(
+      root,
+      join(root, 'src/lib', file.path),
+      owners,
+      item.name,
+    )
+    result.registry.forEach(dependency => registry.add(dependency))
+    result.packages.forEach(dependency => packages.add(dependency))
+  }
+  const dependencies = versionedPackages(packages)
+  if (dependencies.length) item.dependencies = dependencies
+  else delete item.dependencies
+  if (registry.size) item.registryDependencies = [...registry].sort()
+  else delete item.registryDependencies
+}
+writeFileSync(
+  join(root, 'src/lib/registry.json'),
+  `${JSON.stringify(libraryRegistry, null, 2)}\n`,
+)
+
 const items = files.map(file => {
   const name = basename(file, '.ts')
-  const source = readFileSync(join(uiDirectory, file), 'utf8')
-  const specifiers = Array.from(
-    source.matchAll(/from\s+['"]([^'"]+)['"]/g),
-    match => match[1],
-  )
-  const npmPackages = new Set()
-  const registryDependencies = new Set([registryAddress('crease-theme')])
-
-  for (const specifier of specifiers) {
-    if (libraryItems[specifier] !== undefined) {
-      registryDependencies.add(registryAddress(libraryItems[specifier]))
-      continue
-    }
-
-    if (specifier.startsWith('@/ui/')) {
-      registryDependencies.add(registryAddress(specifier.slice('@/ui/'.length)))
-      continue
-    }
-
-    if (specifier.startsWith('.') || specifier.startsWith('@/')) {
-      continue
-    }
-
-    const dependency = packageName(specifier)
-
-    if (!consumerFrameworkPackages.has(dependency)) {
-      npmPackages.add(dependency)
-    }
-  }
-
-  const dependencies = Array.from(npmPackages)
-    .sort()
-    .map(dependency => {
-      const version = packageVersions[dependency]
-      return version === undefined ? dependency : `${dependency}@${version}`
-    })
+  const graph = sourceDependencies(root, join(uiDirectory, file), owners, name)
+  const registryDependencies = new Set([
+    registryAddress('crease-theme'),
+    ...graph.registry,
+  ])
+  const dependencies = versionedPackages(graph.packages)
 
   return {
     name,

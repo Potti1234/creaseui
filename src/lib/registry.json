@@ -7,7 +7,11 @@
       "title": "Time Input State",
       "description": "Time parsing, segment selection, constraints, and Foldkit submodels for Time Input.",
       "files": [
-        { "path": "time-input.ts", "type": "registry:lib", "target": "@lib/time-input.ts" }
+        {
+          "path": "time-input.ts",
+          "type": "registry:lib",
+          "target": "@lib/time-input.ts"
+        }
       ]
     },
     {
@@ -16,7 +20,11 @@
       "title": "Input Status",
       "description": "Shared status messages and icons for Crease input components.",
       "files": [
-        { "path": "input-status.ts", "type": "registry:lib", "target": "@lib/input-status.ts" }
+        {
+          "path": "input-status.ts",
+          "type": "registry:lib",
+          "target": "@lib/input-status.ts"
+        }
       ]
     },
     {
@@ -41,9 +49,6 @@
       "type": "registry:lib",
       "title": "Foldkit Lucide Icons",
       "description": "Lucide icons rendered with Foldkit's native SVG constructors.",
-      "registryDependencies": [
-        "Potti1234/creaseui/utils"
-      ],
       "files": [
         {
           "path": "icon.ts",
@@ -479,6 +484,486 @@
           "path": "map-layers.ts",
           "type": "registry:lib",
           "target": "@lib/map-layers.ts"
+        }
+      ]
+    },
+    {
+      "name": "astryx-text-behavior",
+      "type": "registry:lib",
+      "title": "Astryx Text Behavior",
+      "description": "Shared Foldkit behavior and helpers for Astryx Text.",
+      "files": [
+        {
+          "path": "astryx-text.ts",
+          "type": "registry:lib",
+          "target": "@lib/astryx-text.ts"
+        }
+      ]
+    },
+    {
+      "name": "banner-behavior",
+      "type": "registry:lib",
+      "title": "Banner Behavior",
+      "description": "Shared Foldkit behavior and helpers for Banner.",
+      "files": [
+        {
+          "path": "banner.ts",
+          "type": "registry:lib",
+          "target": "@lib/banner.ts"
+        }
+      ]
+    },
+    {
+      "name": "card-pressable-behavior",
+      "type": "registry:lib",
+      "title": "Card Pressable Behavior",
+      "description": "Shared Foldkit behavior and helpers for Card Pressable.",
+      "files": [
+        {
+          "path": "card-pressable.ts",
+          "type": "registry:lib",
+          "target": "@lib/card-pressable.ts"
+        }
+      ]
+    },
+    {
+      "name": "card-surface-behavior",
+      "type": "registry:lib",
+      "title": "Card Surface Behavior",
+      "description": "Shared Foldkit behavior and helpers for Card Surface.",
+      "files": [
+        {
+          "path": "card-surface.ts",
+          "type": "registry:lib",
+          "target": "@lib/card-surface.ts"
+        }
+      ]
+    },
+    {
+      "name": "code-block-behavior",
+      "type": "registry:lib",
+      "title": "Code Block Behavior",
+      "description": "Shared Foldkit behavior and helpers for Code Block.",
+      "files": [
+        {
+          "path": "code-block.ts",
+          "type": "registry:lib",
+          "target": "@lib/code-block.ts"
+        }
+      ]
+    },
+    {
+      "name": "code-file-behavior",
+      "type": "registry:lib",
+      "title": "Code File Behavior",
+      "description": "Shared Foldkit behavior and helpers for Code File.",
+      "files": [
+        {
+          "path": "code-file.ts",
+          "type": "registry:lib",
+          "target": "@lib/code-file.ts"
+        }
+      ],
+      "dependencies": [
+        "@pierre/diffs@^1.4.2"
+      ]
+    },
+    {
+      "name": "date-input-behavior",
+      "type": "registry:lib",
+      "title": "Date Input Behavior",
+      "description": "Shared Foldkit behavior and helpers for Date Input.",
+      "files": [
+        {
+          "path": "date-input.ts",
+          "type": "registry:lib",
+          "target": "@lib/date-input.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/date-parse-behavior"
+      ]
+    },
+    {
+      "name": "date-parse-behavior",
+      "type": "registry:lib",
+      "title": "Date Parse Behavior",
+      "description": "Shared Foldkit behavior and helpers for Date Parse.",
+      "files": [
+        {
+          "path": "date-parse.ts",
+          "type": "registry:lib",
+          "target": "@lib/date-parse.ts"
+        }
+      ]
+    },
+    {
+      "name": "date-range-input-behavior",
+      "type": "registry:lib",
+      "title": "Date Range Input Behavior",
+      "description": "Shared Foldkit behavior and helpers for Date Range Input.",
+      "files": [
+        {
+          "path": "date-range-input.ts",
+          "type": "registry:lib",
+          "target": "@lib/date-range-input.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/calendar-range"
+      ]
+    },
+    {
+      "name": "date-time-input-behavior",
+      "type": "registry:lib",
+      "title": "Date Time Input Behavior",
+      "description": "Shared Foldkit behavior and helpers for Date Time Input.",
+      "files": [
+        {
+          "path": "date-time-input.ts",
+          "type": "registry:lib",
+          "target": "@lib/date-time-input.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/date-parse-behavior",
+        "Potti1234/creaseui/time-parse-behavior"
+      ]
+    },
+    {
+      "name": "file-input-behavior",
+      "type": "registry:lib",
+      "title": "File Input Behavior",
+      "description": "Shared Foldkit behavior and helpers for File Input.",
+      "files": [
+        {
+          "path": "file-input.ts",
+          "type": "registry:lib",
+          "target": "@lib/file-input.ts"
+        }
+      ]
+    },
+    {
+      "name": "jalali-behavior",
+      "type": "registry:lib",
+      "title": "Jalali Behavior",
+      "description": "Shared Foldkit behavior and helpers for Jalali.",
+      "files": [
+        {
+          "path": "jalali.ts",
+          "type": "registry:lib",
+          "target": "@lib/jalali.ts"
+        }
+      ]
+    },
+    {
+      "name": "lightbox-behavior",
+      "type": "registry:lib",
+      "title": "Lightbox Behavior",
+      "description": "Shared Foldkit behavior and helpers for Lightbox.",
+      "files": [
+        {
+          "path": "lightbox.ts",
+          "type": "registry:lib",
+          "target": "@lib/lightbox.ts"
+        }
+      ]
+    },
+    {
+      "name": "list-input-behavior",
+      "type": "registry:lib",
+      "title": "List Input Behavior",
+      "description": "Shared Foldkit behavior and helpers for List Input.",
+      "files": [
+        {
+          "path": "list-input.ts",
+          "type": "registry:lib",
+          "target": "@lib/list-input.ts"
+        }
+      ]
+    },
+    {
+      "name": "markdown-behavior",
+      "type": "registry:lib",
+      "title": "Markdown Behavior",
+      "description": "Shared Foldkit behavior and helpers for Markdown.",
+      "files": [
+        {
+          "path": "markdown.ts",
+          "type": "registry:lib",
+          "target": "@lib/markdown.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/code-block-behavior"
+      ]
+    },
+    {
+      "name": "metadata-list-behavior",
+      "type": "registry:lib",
+      "title": "Metadata List Behavior",
+      "description": "Shared Foldkit behavior and helpers for Metadata List.",
+      "files": [
+        {
+          "path": "metadata-list.ts",
+          "type": "registry:lib",
+          "target": "@lib/metadata-list.ts"
+        }
+      ]
+    },
+    {
+      "name": "mobile-nav-behavior",
+      "type": "registry:lib",
+      "title": "Mobile Nav Behavior",
+      "description": "Shared Foldkit behavior and helpers for Mobile Nav.",
+      "files": [
+        {
+          "path": "mobile-nav.ts",
+          "type": "registry:lib",
+          "target": "@lib/mobile-nav.ts"
+        }
+      ]
+    },
+    {
+      "name": "more-menu-behavior",
+      "type": "registry:lib",
+      "title": "More Menu Behavior",
+      "description": "Shared Foldkit behavior and helpers for More Menu.",
+      "files": [
+        {
+          "path": "more-menu.ts",
+          "type": "registry:lib",
+          "target": "@lib/more-menu.ts"
+        }
+      ]
+    },
+    {
+      "name": "multi-selector-view-behavior",
+      "type": "registry:lib",
+      "title": "Multi Selector View Behavior",
+      "description": "Shared Foldkit behavior and helpers for Multi Selector View.",
+      "files": [
+        {
+          "path": "multi-selector-view.ts",
+          "type": "registry:lib",
+          "target": "@lib/multi-selector-view.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/multi-selector-behavior"
+      ]
+    },
+    {
+      "name": "multi-selector-behavior",
+      "type": "registry:lib",
+      "title": "Multi Selector Behavior",
+      "description": "Shared Foldkit behavior and helpers for Multi Selector.",
+      "files": [
+        {
+          "path": "multi-selector.ts",
+          "type": "registry:lib",
+          "target": "@lib/multi-selector.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/drawer-behavior"
+      ]
+    },
+    {
+      "name": "nav-menu-behavior",
+      "type": "registry:lib",
+      "title": "Nav Menu Behavior",
+      "description": "Shared Foldkit behavior and helpers for Nav Menu.",
+      "files": [
+        {
+          "path": "nav-menu.ts",
+          "type": "registry:lib",
+          "target": "@lib/nav-menu.ts"
+        }
+      ]
+    },
+    {
+      "name": "number-input-behavior",
+      "type": "registry:lib",
+      "title": "Number Input Behavior",
+      "description": "Shared Foldkit behavior and helpers for Number Input.",
+      "files": [
+        {
+          "path": "number-input.ts",
+          "type": "registry:lib",
+          "target": "@lib/number-input.ts"
+        }
+      ]
+    },
+    {
+      "name": "overflow-list-behavior",
+      "type": "registry:lib",
+      "title": "Overflow List Behavior",
+      "description": "Shared Foldkit behavior and helpers for Overflow List.",
+      "files": [
+        {
+          "path": "overflow-list.ts",
+          "type": "registry:lib",
+          "target": "@lib/overflow-list.ts"
+        }
+      ]
+    },
+    {
+      "name": "project-facts-behavior",
+      "type": "registry:lib",
+      "title": "Project Facts Behavior",
+      "description": "Shared Foldkit behavior and helpers for Project Facts.",
+      "files": [
+        {
+          "path": "project-facts.ts",
+          "type": "registry:lib",
+          "target": "@lib/project-facts.ts"
+        }
+      ]
+    },
+    {
+      "name": "sheet-behavior",
+      "type": "registry:lib",
+      "title": "Sheet Behavior",
+      "description": "Shared Foldkit behavior and helpers for Sheet.",
+      "files": [
+        {
+          "path": "sheet.ts",
+          "type": "registry:lib",
+          "target": "@lib/sheet.ts"
+        }
+      ]
+    },
+    {
+      "name": "stepper-behavior",
+      "type": "registry:lib",
+      "title": "Stepper Behavior",
+      "description": "Shared Foldkit behavior and helpers for Stepper.",
+      "files": [
+        {
+          "path": "stepper.ts",
+          "type": "registry:lib",
+          "target": "@lib/stepper.ts"
+        }
+      ]
+    },
+    {
+      "name": "tanstack-table-state-behavior",
+      "type": "registry:lib",
+      "title": "Tanstack Table State Behavior",
+      "description": "Shared Foldkit behavior and helpers for Tanstack Table State.",
+      "files": [
+        {
+          "path": "tanstack-table-state.ts",
+          "type": "registry:lib",
+          "target": "@lib/tanstack-table-state.ts"
+        }
+      ]
+    },
+    {
+      "name": "time-parse-behavior",
+      "type": "registry:lib",
+      "title": "Time Parse Behavior",
+      "description": "Shared Foldkit behavior and helpers for Time Parse.",
+      "files": [
+        {
+          "path": "time-parse.ts",
+          "type": "registry:lib",
+          "target": "@lib/time-parse.ts"
+        }
+      ]
+    },
+    {
+      "name": "timestamp-format-behavior",
+      "type": "registry:lib",
+      "title": "Timestamp Format Behavior",
+      "description": "Shared Foldkit behavior and helpers for Timestamp Format.",
+      "files": [
+        {
+          "path": "timestamp-format.ts",
+          "type": "registry:lib",
+          "target": "@lib/timestamp-format.ts"
+        }
+      ]
+    },
+    {
+      "name": "tokenizer-behavior",
+      "type": "registry:lib",
+      "title": "Tokenizer Behavior",
+      "description": "Shared Foldkit behavior and helpers for Tokenizer.",
+      "files": [
+        {
+          "path": "tokenizer.ts",
+          "type": "registry:lib",
+          "target": "@lib/tokenizer.ts"
+        }
+      ]
+    },
+    {
+      "name": "toolbar-behavior",
+      "type": "registry:lib",
+      "title": "Toolbar Behavior",
+      "description": "Shared Foldkit behavior and helpers for Toolbar.",
+      "files": [
+        {
+          "path": "toolbar.ts",
+          "type": "registry:lib",
+          "target": "@lib/toolbar.ts"
+        }
+      ]
+    },
+    {
+      "name": "top-nav-behavior",
+      "type": "registry:lib",
+      "title": "Top Nav Behavior",
+      "description": "Shared Foldkit behavior and helpers for Top Nav.",
+      "files": [
+        {
+          "path": "top-nav.ts",
+          "type": "registry:lib",
+          "target": "@lib/top-nav.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/nav-menu-behavior"
+      ]
+    },
+    {
+      "name": "tour-behavior",
+      "type": "registry:lib",
+      "title": "Tour Behavior",
+      "description": "Shared Foldkit behavior and helpers for Tour.",
+      "files": [
+        {
+          "path": "tour.ts",
+          "type": "registry:lib",
+          "target": "@lib/tour.ts"
+        }
+      ]
+    },
+    {
+      "name": "tree-list-behavior",
+      "type": "registry:lib",
+      "title": "Tree List Behavior",
+      "description": "Shared Foldkit behavior and helpers for Tree List.",
+      "files": [
+        {
+          "path": "tree-list.ts",
+          "type": "registry:lib",
+          "target": "@lib/tree-list.ts"
+        }
+      ]
+    },
+    {
+      "name": "virtual-data-table-state-behavior",
+      "type": "registry:lib",
+      "title": "Virtual Data Table State Behavior",
+      "description": "Shared Foldkit behavior and helpers for Virtual Data Table State.",
+      "files": [
+        {
+          "path": "virtual-data-table-state.ts",
+          "type": "registry:lib",
+          "target": "@lib/virtual-data-table-state.ts"
         }
       ]
     }
