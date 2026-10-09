@@ -2208,26 +2208,6 @@
       ]
     },
     {
-      "name": "tour",
-      "type": "registry:ui",
-      "title": "Tour",
-      "description": "A CreaseUI Tour component for Foldkit.",
-      "registryDependencies": [
-        "Potti1234/creaseui/button",
-        "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/icons",
-        "Potti1234/creaseui/tour-behavior",
-        "Potti1234/creaseui/utils"
-      ],
-      "files": [
-        {
-          "path": "tour.ts",
-          "type": "registry:ui",
-          "target": "@ui/tour.ts"
-        }
-      ]
-    },
-    {
       "name": "transfer-list",
       "type": "registry:ui",
       "title": "Transfer List",

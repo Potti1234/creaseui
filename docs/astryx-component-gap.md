@@ -162,7 +162,6 @@ Batches are work units; slugs are the Crease UI names.
 | `lightbox`     | `Lightbox`                      | Media viewer overlay.                                                                |
 | `bottom-sheet` | `BottomSheet`                   | Mobile sheet w/ snap offsets + switcher (different interaction model than `drawer`). |
 | `mobile-nav`   | `MobileNav` + `MobileNavToggle` | Mobile nav drawer.                                                                   |
-| `tour`         | `Tour` (lab)                    | Anchored step-by-step tour.                                                          |
 
 **Navigation chrome**
 

@@ -23,7 +23,7 @@
   ],
   "summary": {
     "upstreamItems": 62,
-    "registryItems": 122,
+    "registryItems": 121,
     "creaseOnlyRecipes": [
       "avatar-group",
       "banner",
@@ -81,7 +81,6 @@
       "tokenizer",
       "toolbar",
       "top-nav",
-      "tour",
       "transfer-list",
       "tree-list",
       "typography",
@@ -2219,24 +2218,6 @@
         "src/ui/top-nav.ts",
         "src/ui/registry.json#top-nav",
         "/docs/components/top-nav"
-      ]
-    },
-    {
-      "component": "tour",
-      "upstream": false,
-      "classification": "full",
-      "dimensions": {
-        "visual": "unverified",
-        "behavior": "partial",
-        "accessibility": "partial",
-        "composition": "partial",
-        "documentation": "verified",
-        "registry": "verified"
-      },
-      "evidence": [
-        "src/ui/tour.ts",
-        "src/ui/registry.json#tour",
-        "/docs/components/tour"
       ]
     },
     {

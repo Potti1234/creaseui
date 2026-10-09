@@ -116,7 +116,6 @@ import { tokenizerPage } from '@/docs/components/pages/tokenizer'
 import { toolbarPage } from '@/docs/components/pages/toolbar'
 import { tooltipPage } from '@/docs/components/pages/tooltip'
 import { topNavPage } from '@/docs/components/pages/top-nav'
-import { tourPage } from '@/docs/components/pages/tour'
 import { transferListPage } from '@/docs/components/pages/transfer-list'
 import { treeListPage } from '@/docs/components/pages/tree-list'
 import { typographyPage } from '@/docs/components/pages/typography'
@@ -242,7 +241,6 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       toolbarPage,
       tooltipPage,
       topNavPage,
-      tourPage,
       transferListPage,
       treeListPage,
       typographyPage,

@@ -5928,7 +5928,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "ToastProps",
       "kind": "type",
-      "signature": "ToastProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; ariaLabel?: string; pausePolicy?: 'none' | 'pointer'; class?: string; entryClass?: string; position?: Position; }>"
+      "signature": "ToastProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; ariaLabel?: string; pausePolicy?: 'none' | 'pointer'; class?: string; entryClass?: string; position?: Position; stacked?: boolean; expanded?: boolean; }>"
     },
     {
       "name": "toast",
@@ -6358,98 +6358,6 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "topNav",
       "kind": "function",
       "signature": "topNav<Msg>(props: TopNavProps<Msg>, h: HtmlBuilder<Msg>): Html"
-    }
-  ],
-  "tour": [
-    {
-      "name": "Model",
-      "kind": "value",
-      "signature": "Model: value"
-    },
-    {
-      "name": "Model",
-      "kind": "type",
-      "signature": "Model = typeof Model.Type"
-    },
-    {
-      "name": "Message",
-      "kind": "value",
-      "signature": "Message: value"
-    },
-    {
-      "name": "Message",
-      "kind": "type",
-      "signature": "Message = typeof Message.Type"
-    },
-    {
-      "name": "OutMessage",
-      "kind": "value",
-      "signature": "OutMessage: value"
-    },
-    {
-      "name": "OutMessage",
-      "kind": "type",
-      "signature": "OutMessage = typeof OutMessage.Type"
-    },
-    {
-      "name": "TourDismissSource",
-      "kind": "value",
-      "signature": "TourDismissSource: value"
-    },
-    {
-      "name": "TourDismissSource",
-      "kind": "type",
-      "signature": "TourDismissSource = TourBehavior.TourDismissSource"
-    },
-    {
-      "name": "init",
-      "kind": "value",
-      "signature": "init: value"
-    },
-    {
-      "name": "update",
-      "kind": "value",
-      "signature": "update: value"
-    },
-    {
-      "name": "activate",
-      "kind": "value",
-      "signature": "activate: value"
-    },
-    {
-      "name": "deactivate",
-      "kind": "value",
-      "signature": "deactivate: value"
-    },
-    {
-      "name": "HIGHLIGHT_PADDING",
-      "kind": "value",
-      "signature": "HIGHLIGHT_PADDING: value"
-    },
-    {
-      "name": "TourStepPlacement",
-      "kind": "type",
-      "signature": "TourStepPlacement = 'below' | 'above' | 'start' | 'end'"
-    },
-    {
-      "name": "TourStepAlignment",
-      "kind": "type",
-      "signature": "TourStepAlignment = 'start' | 'center' | 'end'"
-    },
-    {
-      "name": "TourStepSpec",
-      "kind": "type",
-      "signature": "TourStepSpec = Readonly<{ id: string; targetId: string; heading: string; content: Html | string; placement?: TourStepPlacement; alignment?: TourStepAlignment; }>"
-    },
-    {
-      "name": "TourProps",
-      "kind": "type",
-      "signature": "TourProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; steps: ReadonlyArray<TourStepSpec>; hasBackdrop?: boolean; isStepCountShown?: boolean; class?: string; }>"
-    },
-    {
-      "name": "tour",
-      "kind": "function",
-      "signature": "tour<Msg>(props: TourProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "transfer-list": [

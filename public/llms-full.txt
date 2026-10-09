@@ -130,7 +130,6 @@
 - Toolbar: /docs/components/toolbar — install with `npx creaseui add toolbar`
 - Tooltip: /docs/components/tooltip — install with `npx creaseui add tooltip`
 - Top Nav: /docs/components/top-nav — install with `npx creaseui add top-nav`
-- Tour: /docs/components/tour — install with `npx creaseui add tour`
 - Transfer List: /docs/components/transfer-list — install with `npx creaseui add transfer-list`
 - Tree List: /docs/components/tree-list — install with `npx creaseui add tree-list`
 - Typography: /docs/components/typography — install with `npx creaseui add typography`
@@ -2717,10 +2716,10 @@ A CreaseUI Toast component for Foldkit.
 
 Source: `src/ui/toast.ts`
 
-Examples: Basic, Types, Description, Position
+Examples: Basic, Types, Description, Stacking and queue, Expanded, Visible limit, Position
 
 - `export * from '@/lib/toast'` (re-export)
-- `ToastProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; ariaLabel?: string; pausePolicy?: 'none' | 'pointer'; class?: string; entryClass?: string; position?: Position; }>` (type)
+- `ToastProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; ariaLabel?: string; pausePolicy?: 'none' | 'pointer'; class?: string; entryClass?: string; position?: Position; stacked?: boolean; expanded?: boolean; }>` (type)
 - `toast<Msg>(props: ToastProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Toggle Group
@@ -2867,33 +2866,6 @@ Examples: Top Nav, TopNav — Centered Navigation, TopNav — Enterprise Dashboa
 - `view: value` (value)
 - `TopNavProps<Msg> = ViewInputs & Readonly<{ model: TopNavLib.Model; toParentMessage: (message: TopNavLib.Message) => Msg; }>` (type)
 - `topNav<Msg>(props: TopNavProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
-
-### Tour
-
-A CreaseUI Tour component for Foldkit.
-
-Source: `src/ui/tour.ts`
-
-Examples: Tour, Tour — Lightweight, Tour — Callout placement
-
-- `Model: value` (value)
-- `Model = typeof Model.Type` (type)
-- `Message: value` (value)
-- `Message = typeof Message.Type` (type)
-- `OutMessage: value` (value)
-- `OutMessage = typeof OutMessage.Type` (type)
-- `TourDismissSource: value` (value)
-- `TourDismissSource = TourBehavior.TourDismissSource` (type)
-- `init: value` (value)
-- `update: value` (value)
-- `activate: value` (value)
-- `deactivate: value` (value)
-- `HIGHLIGHT_PADDING: value` (value)
-- `TourStepPlacement = 'below' | 'above' | 'start' | 'end'` (type)
-- `TourStepAlignment = 'start' | 'center' | 'end'` (type)
-- `TourStepSpec = Readonly<{ id: string; targetId: string; heading: string; content: Html | string; placement?: TourStepPlacement; alignment?: TourStepAlignment; }>` (type)
-- `TourProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; steps: ReadonlyArray<TourStepSpec>; hasBackdrop?: boolean; isStepCountShown?: boolean; class?: string; }>` (type)
-- `tour<Msg>(props: TourProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Transfer List
 

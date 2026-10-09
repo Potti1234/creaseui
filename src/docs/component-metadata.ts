@@ -117,7 +117,6 @@ export const COMPONENTS = [
   'Toolbar',
   'Tooltip',
   'Top Nav',
-  'Tour',
   'Transfer List',
   'Tree List',
   'Typography',

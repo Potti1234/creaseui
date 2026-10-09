@@ -85,7 +85,6 @@ import { alertDialogStyleXPreview } from '@/docs/components/pages/alert-dialog/s
 import { drawerStyleXPreview } from '@/docs/components/pages/drawer/stylex'
 import { lightboxStyleXPreview } from '@/docs/components/pages/lightbox/stylex'
 import { mobileNavStyleXPreview } from '@/docs/components/pages/mobile-nav/stylex'
-import { tourStyleXPreview } from '@/docs/components/pages/tour/stylex'
 import { sheetStyleXPreview } from '@/docs/components/pages/sheet/stylex'
 import { popoverStyleXPreview } from '@/docs/components/pages/popover/stylex'
 import { hoverCardStyleXPreview } from '@/docs/components/pages/hover-card/stylex'
@@ -276,7 +275,6 @@ installStyleXExamplePreviewProvider('timestamp', timestampStyleXPreview)
 installStyleXExamplePreviewProvider('token', tokenStyleXPreview)
 installStyleXExamplePreviewProvider('toolbar', toolbarStyleXPreview)
 installStyleXExamplePreviewProvider('top-nav', topNavStyleXPreview)
-installStyleXExamplePreviewProvider('tour', tourStyleXPreview)
 installStyleXExamplePreviewProvider('transfer-list', transferListStyleXPreview)
 installStyleXExamplePreviewProvider('tree-list', treeListStyleXPreview)
 installStyleXExamplePreviewProvider(

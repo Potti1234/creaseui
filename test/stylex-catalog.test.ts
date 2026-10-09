@@ -35,6 +35,7 @@ const infrastructureNames = new Set([
   'sidebar.markers.stylex',
   'style',
   'tokens.stylex',
+  'thumbnail.markers.stylex',
   'tree-list.markers.stylex',
 ])
 
@@ -507,7 +508,7 @@ describe('complete StyleX catalog', () => {
       .sort()
 
     assert.deepEqual(stylexNames, componentNames)
-    assert.equal(componentNames.length, 122)
+    assert.equal(componentNames.length, 121)
   })
 
   it('does not fall back to Tailwind, CVA, or raw authored class strings', () => {

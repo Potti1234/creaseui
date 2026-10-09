@@ -10,7 +10,7 @@ does not require React or JSX.
 
 The repository currently contains:
 
-- 122 UI modules, including maps, dialogs, calendars, and sidebars
+- 121 UI modules, including maps, dialogs, calendars, and sidebars
 - 33 component cards reproducing the shadcn/ui create-board showcase
 - 70 Apache ECharts examples styled in the same design language
 - 16 complete sidebar block examples
@@ -44,7 +44,7 @@ Before submitting a change, run:
 
 ```sh
 npm run check
-npm run test:sites # build both sites and check all 122 component pages
+npm run test:sites # build both sites and check all 121 component pages
 ```
 
 The registry distributes the Tailwind components, shared utilities, and the

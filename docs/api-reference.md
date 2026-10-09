@@ -1912,7 +1912,7 @@ Source: [`src/ui/toast.ts`](../src/ui/toast.ts)
 | Export | Kind | Signature |
 | --- | --- | --- |
 | `*` | re-export | `export * from '@/lib/toast'` |
-| `ToastProps` | type | `ToastProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; ariaLabel?: string; pausePolicy?: 'none' \| 'pointer'; class?: string; entryClass?: string; position?: Position; }>` |
+| `ToastProps` | type | `ToastProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; ariaLabel?: string; pausePolicy?: 'none' \| 'pointer'; class?: string; entryClass?: string; position?: Position; stacked?: boolean; expanded?: boolean; }>` |
 | `toast` | function | `toast<Msg>(props: ToastProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Toggle Group
@@ -2045,31 +2045,6 @@ Source: [`src/ui/top-nav.ts`](../src/ui/top-nav.ts)
 | `view` | value | `view: value` |
 | `TopNavProps` | type | `TopNavProps<Msg> = ViewInputs & Readonly<{ model: TopNavLib.Model; toParentMessage: (message: TopNavLib.Message) => Msg; }>` |
 | `topNav` | function | `topNav<Msg>(props: TopNavProps<Msg>, h: HtmlBuilder<Msg>): Html` |
-
-## Tour
-
-Source: [`src/ui/tour.ts`](../src/ui/tour.ts)
-
-| Export | Kind | Signature |
-| --- | --- | --- |
-| `Model` | value | `Model: value` |
-| `Model` | type | `Model = typeof Model.Type` |
-| `Message` | value | `Message: value` |
-| `Message` | type | `Message = typeof Message.Type` |
-| `OutMessage` | value | `OutMessage: value` |
-| `OutMessage` | type | `OutMessage = typeof OutMessage.Type` |
-| `TourDismissSource` | value | `TourDismissSource: value` |
-| `TourDismissSource` | type | `TourDismissSource = TourBehavior.TourDismissSource` |
-| `init` | value | `init: value` |
-| `update` | value | `update: value` |
-| `activate` | value | `activate: value` |
-| `deactivate` | value | `deactivate: value` |
-| `HIGHLIGHT_PADDING` | value | `HIGHLIGHT_PADDING: value` |
-| `TourStepPlacement` | type | `TourStepPlacement = 'below' \| 'above' \| 'start' \| 'end'` |
-| `TourStepAlignment` | type | `TourStepAlignment = 'start' \| 'center' \| 'end'` |
-| `TourStepSpec` | type | `TourStepSpec = Readonly<{ id: string; targetId: string; heading: string; content: Html \| string; placement?: TourStepPlacement; alignment?: TourStepAlignment; }>` |
-| `TourProps` | type | `TourProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; steps: ReadonlyArray<TourStepSpec>; hasBackdrop?: boolean; isStepCountShown?: boolean; class?: string; }>` |
-| `tour` | function | `tour<Msg>(props: TourProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Transfer List
 

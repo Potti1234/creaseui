@@ -137,7 +137,6 @@
 - Toolbar: /docs/components/toolbar — install with `npx creaseui add toolbar`
 - Tooltip: /docs/components/tooltip — install with `npx creaseui add tooltip`
 - Top Nav: /docs/components/top-nav — install with `npx creaseui add top-nav`
-- Tour: /docs/components/tour — install with `npx creaseui add tour`
 - Transfer List: /docs/components/transfer-list — install with `npx creaseui add transfer-list`
 - Tree List: /docs/components/tree-list — install with `npx creaseui add tree-list`
 - Typography: /docs/components/typography — install with `npx creaseui add typography`

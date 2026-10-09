@@ -121,7 +121,6 @@ export * as Tokenizer from './tokenizer.js'
 export * as Toolbar from './toolbar.js'
 export * as Tooltip from './tooltip.js'
 export * as TopNav from './top-nav.js'
-export * as Tour from './tour.js'
 export * as TransferList from './transfer-list.js'
 export * as TreeList from './tree-list.js'
 export * as Typography from './typography.js'
@@ -246,7 +245,6 @@ export const STYLEX_COMPONENT_NAMES = [
   'toolbar',
   'tooltip',
   'top-nav',
-  'tour',
   'transfer-list',
   'tree-list',
   'typography',

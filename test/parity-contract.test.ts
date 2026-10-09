@@ -123,7 +123,6 @@ describe('multidimensional component parity', () => {
       'tokenizer',
       'toolbar',
       'top-nav',
-      'tour',
       'transfer-list',
       'tree-list',
       'typography',

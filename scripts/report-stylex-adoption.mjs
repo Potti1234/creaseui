@@ -55,6 +55,12 @@ const boundaryFiles = [
 const boundarySource = boundaryFiles
   .map(file => fs.readFileSync(file, 'utf8'))
   .join('\n')
+const themeBoundaryFile = path.join('src', 'stylex', 'overlay-boundary.ts')
+const componentBoundarySource = boundaryFiles
+  .filter(file => file !== themeBoundaryFile)
+  .map(file => fs.readFileSync(file, 'utf8'))
+  .join('\n')
+const themeBoundarySource = fs.readFileSync(themeBoundaryFile, 'utf8')
 
 const primitiveFiles = ['box', 'grid', 'inline', 'stack', 'text']
 const constrainedSource = fs.readFileSync(
@@ -108,8 +114,12 @@ const report = {
         /(?:eslint|oxlint)-disable|@ts-(?:expect-error|ignore)/gu,
       ) ?? []
     ).length,
-    unsafeBodyPortals: (boundarySource.match(/portal\s*:\s*true/gu) ?? [])
-      .length,
+    unsafeBodyPortals: (
+      componentBoundarySource.match(/portal\s*:\s*true/gu) ?? []
+    ).length,
+    themePreservingPortals: (
+      themeBoundarySource.match(/portal\s*:\s*true/gu) ?? []
+    ).length,
   },
 }
 

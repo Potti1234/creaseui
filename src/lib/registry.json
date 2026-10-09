@@ -929,19 +929,6 @@
       ]
     },
     {
-      "name": "tour-behavior",
-      "type": "registry:lib",
-      "title": "Tour Behavior",
-      "description": "Shared Foldkit behavior and helpers for Tour.",
-      "files": [
-        {
-          "path": "tour.ts",
-          "type": "registry:lib",
-          "target": "@lib/tour.ts"
-        }
-      ]
-    },
-    {
       "name": "tree-list-behavior",
       "type": "registry:lib",
       "title": "Tree List Behavior",
