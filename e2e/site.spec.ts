@@ -3,6 +3,139 @@ import { visitRenderer } from './site-navigation'
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test, type Page, type TestInfo } from '@playwright/test'
 
+test('tour is removed from component navigation and discovery in both renderers', async ({
+  browser,
+}) => {
+  test.setTimeout(60_000)
+  for (const port of [4173, 4174]) {
+    const page = await browser.newPage()
+    await page.goto(
+      `http://127.0.0.1:${String(port)}/docs/components/thumbnail`,
+      { waitUntil: 'domcontentloaded' },
+    )
+    await expect(
+      page.getByRole('heading', { name: 'Thumbnail', level: 1, exact: true }),
+    ).toBeVisible()
+    await expect(page.locator('a[href="/docs/components/tour"]')).toHaveCount(0)
+    await expect(
+      page.locator('a[href="/docs/components/top-nav"]'),
+    ).not.toHaveCount(0)
+    const index = await (
+      await page.request.get(`http://127.0.0.1:${String(port)}/docs-index.json`)
+    ).json()
+    expect(index.componentCount).toBe(121)
+    expect(
+      index.components.some((item: { slug: string }) => item.slug === 'tour'),
+    ).toBe(false)
+    await page.goto(
+      `http://127.0.0.1:${String(port)}/docs/components/top-nav`,
+      { waitUntil: 'domcontentloaded' },
+    )
+    await expect(
+      page.getByRole('heading', { name: 'Top Nav', level: 1, exact: true }),
+    ).toBeVisible()
+    await expect(
+      page
+        .getByRole('navigation', { name: 'Component pagination' })
+        .locator('a[href="/docs/components/transfer-list"]'),
+    ).toHaveCount(1)
+    await expect(page.locator('a[href="/docs/components/tour"]')).toHaveCount(0)
+    await page.close()
+  }
+})
+
+test('thumbnail gallery previews, dismisses and removes media in both renderers', async ({
+  browser,
+}) => {
+  test.setTimeout(120_000)
+  for (const port of [4173, 4174])
+    for (const width of [1440, 390]) {
+      const page = await browser.newPage({ viewport: { width, height: 900 } })
+      const errors: string[] = []
+      page.on('pageerror', error => errors.push(error.message))
+      for (const theme of ['light', 'dark']) {
+        await page.goto('about:blank')
+        await page.goto(
+          `http://127.0.0.1:${String(port)}/docs/components/thumbnail#thumbnail-—-gallery`,
+          { waitUntil: 'domcontentloaded' },
+        )
+        if (
+          (await page
+            .locator('html')
+            .evaluate(el => el.classList.contains('dark'))) !==
+          (theme === 'dark')
+        )
+          await page
+            .getByRole('button', { name: `Switch to ${theme} mode` })
+            .click()
+        const gallery = page.locator('[id="thumbnail-—-gallery"]')
+        await gallery.scrollIntoViewIfNeeded()
+        const thumbs = gallery.locator('[data-slot="thumbnail"]')
+        await expect(thumbs).toHaveCount(4)
+        const first = thumbs.first()
+        const open = first.getByRole('button', { name: /^Open forest/ })
+        const remove = first.getByRole('button', { name: /^Remove forest/ })
+        await first.hover()
+        expect(
+          await remove.evaluate(
+            el => getComputedStyle(el.parentElement!).opacity,
+          ),
+        ).toBe('1')
+        await open.click()
+        const dialog = page.getByRole('dialog')
+        await expect(dialog).toBeVisible()
+        await expect(dialog.getByRole('img')).toHaveAttribute(
+          'alt',
+          'Forest at night under a crescent moon',
+        )
+        await page.keyboard.press('ArrowRight')
+        await expect(dialog.getByRole('img')).toHaveAttribute(
+          'alt',
+          'Misty mountain valley',
+        )
+        await dialog.getByRole('button', { name: 'Close', exact: true }).click()
+        await expect(dialog).toBeHidden()
+        await expect(open).toBeFocused()
+        await page.mouse.move(0, 0)
+        expect(
+          await remove.evaluate(
+            el => getComputedStyle(el.parentElement!).opacity,
+          ),
+        ).toBe('1')
+        await open.press('Enter')
+        await expect(dialog).toBeVisible()
+        await page.keyboard.press('Escape')
+        await expect(dialog).toBeHidden()
+        await remove.click()
+        await expect(thumbs).toHaveCount(3)
+        await expect(dialog).toBeHidden()
+        await thumbs
+          .first()
+          .getByRole('button', { name: /^Open misty/ })
+          .click()
+        await expect(dialog.getByRole('img')).toHaveAttribute(
+          'alt',
+          'Misty mountain valley',
+        )
+        await expect(
+          dialog.locator('[data-slot="lightbox-counter"]'),
+        ).toHaveText('1 / 3')
+        await page.keyboard.press('Escape')
+        for (const count of [2, 1, 0]) {
+          await thumbs.first().hover()
+          await thumbs
+            .first()
+            .getByRole('button', { name: /^Remove / })
+            .click()
+          await expect(thumbs).toHaveCount(count)
+        }
+        await expect(page.getByRole('dialog')).toHaveCount(0)
+      }
+      expect(errors).toEqual([])
+      await page.close()
+    }
+})
+
 const assertAccessible = async (page: Page): Promise<void> => {
   const results = await new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
@@ -26,6 +159,116 @@ const attachPage = async (
     contentType: 'image/png',
   })
 }
+
+test('top nav dropdowns escape preview clipping and stay anchored', async ({
+  browser,
+}) => {
+  test.setTimeout(120_000)
+  for (const [renderer, port] of [
+    ['tailwind', 4173],
+    ['stylex', 4174],
+  ] as const)
+    for (const width of [1440, 390]) {
+      const page = await browser.newPage({
+        viewport: { width, height: 1000 },
+      })
+      const errors: string[] = []
+      page.on('pageerror', error => errors.push(error.message))
+      for (const theme of ['light', 'dark']) {
+        await page.goto(
+          `http://127.0.0.1:${String(port)}/docs/components/top-nav#topnav-—-hover-menu`,
+        )
+        if (
+          (await page
+            .locator('html')
+            .evaluate(el => el.classList.contains('dark'))) !==
+          (theme === 'dark')
+        )
+          await page
+            .getByRole('button', { name: `Switch to ${theme} mode` })
+            .click()
+        const example = page.locator('[id="topnav-—-hover-menu"]')
+        const trigger = example.getByRole('button', {
+          name: 'Products',
+          exact: true,
+        })
+        const panel = example.getByRole('menu', {
+          name: 'Products',
+          exact: true,
+        })
+        await example.evaluate(element =>
+          element.scrollIntoView({ block: 'start', behavior: 'instant' }),
+        )
+        await trigger.hover()
+        await expect(panel).toBeVisible()
+        await expect(trigger).toHaveAttribute('aria-expanded', 'true')
+        await expect(panel.getByRole('menuitem')).toHaveCount(4)
+        const geometry = await panel.evaluate(element => {
+          let preview = element.parentElement
+          while (
+            preview &&
+            !['auto', 'scroll', 'hidden', 'clip'].includes(
+              getComputedStyle(preview).overflowY,
+            )
+          )
+            preview = preview.parentElement
+          const bounds = element.getBoundingClientRect()
+          return {
+            position: getComputedStyle(element).position,
+            background: getComputedStyle(element).backgroundColor,
+            left: bounds.left,
+            right: bounds.right,
+            bottom: bounds.bottom,
+            previewBottom: preview!.getBoundingClientRect().bottom,
+            scrollHeight: preview!.scrollHeight,
+            clientHeight: preview!.clientHeight,
+          }
+        })
+        expect(geometry.position, renderer).toBe('fixed')
+        expect(geometry.background).not.toBe('rgba(0, 0, 0, 0)')
+        expect(geometry.left).toBeGreaterThanOrEqual(0)
+        expect(geometry.right).toBeLessThanOrEqual(width)
+        expect(geometry.bottom).toBeGreaterThan(geometry.previewBottom)
+        expect(geometry.scrollHeight).toBe(geometry.clientHeight)
+        const lastItem = panel.getByRole('menuitem').last()
+        const itemBox = (await lastItem.boundingBox())!
+        expect(itemBox.y + itemBox.height / 2).toBeGreaterThan(
+          geometry.previewBottom,
+        )
+        expect(
+          await lastItem.evaluate(element => {
+            const bounds = element.getBoundingClientRect()
+            const hit = document.elementFromPoint(
+              bounds.left + bounds.width / 2,
+              bounds.top + bounds.height / 2,
+            )
+            return hit !== null && element.contains(hit)
+          }),
+        ).toBe(true)
+        await lastItem.hover()
+        await page.waitForTimeout(300)
+        await expect(panel).toBeVisible()
+        await page.evaluate(() =>
+          window.scrollBy({ top: 80, behavior: 'instant' }),
+        )
+        const triggerBox = (await trigger.boundingBox())!
+        const panelBox = (await panel.boundingBox())!
+        expect(panelBox.y).toBeCloseTo(triggerBox.y + triggerBox.height + 4, 0)
+        await lastItem.click()
+        await expect(panel).toBeHidden()
+        await expect(trigger).toHaveAttribute('aria-expanded', 'false')
+        await page.mouse.move(0, 0)
+        await trigger.focus()
+        await page.keyboard.press('Enter')
+        await expect(panel).toBeVisible()
+        await panel.getByRole('menuitem').first().focus()
+        await page.keyboard.press('Escape')
+        await expect(panel).toBeHidden()
+      }
+      expect(errors).toEqual([])
+      await page.close()
+    }
+})
 
 test('landing content, theme, accessibility, and desktop visuals', async ({
   page,
@@ -1637,6 +1880,50 @@ test('sheet renders every edge from view input with Dialog focus behavior', asyn
   }
 })
 
+test('timestamp auto tooltip fits its content and viewport', async ({
+  page,
+}) => {
+  test.setTimeout(60_000)
+  for (const port of [4173, 4174]) {
+    const preview = await page.context().newPage()
+    await preview.goto(`http://127.0.0.1:${port}/docs/components/timestamp`)
+    const section = preview.locator('[id="timestamp-—-auto"]')
+    for (const width of [1440, 390]) {
+      await preview.setViewportSize({ width, height: 1000 })
+      const trigger = section
+        .locator('[data-slot="hover-card-trigger"]')
+        .first()
+      await trigger.evaluate(element =>
+        element.scrollIntoView({ block: 'center', behavior: 'instant' }),
+      )
+      await trigger.focus()
+      const panel = section.locator('[data-slot="hover-card-content"]')
+      await expect(panel).toBeVisible()
+      await expect(panel).toHaveCSS('visibility', 'visible')
+      await expect(panel).toBeInViewport()
+      const layout = await panel.evaluate(element => {
+        const box = element.getBoundingClientRect()
+        const copy = element.querySelector('button')!.getBoundingClientRect()
+        return {
+          width: element.clientWidth,
+          scrollWidth: element.scrollWidth,
+          left: box.left,
+          right: box.right,
+          copyRight: copy.right,
+        }
+      })
+      expect(layout.scrollWidth).toBeLessThanOrEqual(layout.width + 1)
+      expect(layout.left).toBeGreaterThanOrEqual(0)
+      expect(layout.right).toBeLessThanOrEqual(width)
+      expect(layout.copyRight).toBeLessThanOrEqual(layout.right - 8)
+      await trigger.press('Escape')
+      await expect(panel).toHaveCount(0)
+      await trigger.evaluate(element => element.blur())
+    }
+    await preview.close()
+  }
+})
+
 test('hover-card sections match upstream variants in both renderers', async ({
   page,
 }) => {
@@ -1753,6 +2040,116 @@ test('tooltip opens from keyboard focus and dismisses without moving focus', asy
   await expect(trigger).toBeFocused()
 })
 
+test('toolbar table filters use styled selects and aligned responsive actions', async ({
+  browser,
+}) => {
+  test.setTimeout(120000)
+  for (const port of [4173, 4174])
+    for (const width of [1440, 390]) {
+      const page = await browser.newPage({ viewport: { width, height: 844 } })
+      const errors: string[] = []
+      page.on('pageerror', error => errors.push(error.message))
+      await page.goto(
+        `http://127.0.0.1:${port}/docs/components/toolbar#toolbar-%E2%80%94-table-filter`,
+      )
+      const example = page.locator('[id="toolbar-—-table-filter"]')
+      const toolbar = example.getByRole('toolbar', { name: 'Job filters' })
+      const count = toolbar.locator('[data-slot="toolbar-filter-count"]')
+      const search = toolbar.getByRole('textbox', { name: 'Search jobs' })
+      const status = toolbar.getByRole('button', {
+        name: 'Status',
+        exact: true,
+      })
+      const priority = toolbar.getByRole('button', {
+        name: 'Priority',
+        exact: true,
+      })
+      const customer = toolbar.getByRole('button', {
+        name: 'Customer',
+        exact: true,
+      })
+      const view = toolbar.getByRole('button', {
+        name: 'View options',
+        exact: true,
+      })
+      await expect(toolbar.locator('select')).toHaveCount(0)
+      await expect(toolbar.locator('[data-slot="select-trigger"]')).toHaveCount(
+        3,
+      )
+      await expect(count).toHaveText('5 of 5')
+      const aligned = async () => {
+        const controls = await toolbar
+          .locator('input,[data-slot="select-trigger"],button')
+          .evaluateAll(elements =>
+            elements.map(element => {
+              const bounds = element.getBoundingClientRect()
+              return { top: bounds.top, center: bounds.top + bounds.height / 2 }
+            }),
+          )
+        const countBox = await count.boundingBox()
+        const viewBox = await view.boundingBox()
+        expect(countBox!.y + countBox!.height / 2).toBeCloseTo(
+          viewBox!.y + viewBox!.height / 2,
+          0,
+        )
+        if (width === 1440)
+          for (const control of controls)
+            expect(control.center).toBeCloseTo(
+              viewBox!.y + viewBox!.height / 2,
+              0,
+            )
+        const row = await toolbar.boundingBox()
+        expect(viewBox!.x + viewBox!.width).toBeCloseTo(row!.x + row!.width, 0)
+        expect(row!.x).toBeGreaterThanOrEqual(0)
+        expect(row!.x + row!.width).toBeLessThanOrEqual(width)
+      }
+      await aligned()
+      await priority.click()
+      let panel = page.getByRole('listbox')
+      await panel.getByRole('option', { name: 'High', exact: true }).click()
+      await expect(count).toHaveText('2 of 5')
+      await expect(priority).toHaveText('High')
+      await expect(example.getByRole('row')).toHaveCount(3)
+      await aligned()
+      await status.click()
+      panel = page.getByRole('listbox')
+      await panel.press('Home')
+      await expect(panel).toBeFocused()
+      await panel.press('ArrowDown')
+      await panel.press('Enter')
+      await expect(status).toHaveText('Scheduled')
+      await expect(count).toHaveText('0 of 5')
+      await expect(
+        example.getByText('No jobs match these filters', { exact: true }),
+      ).toBeVisible()
+      await toolbar
+        .getByRole('button', { name: 'Clear all', exact: true })
+        .click()
+      await expect(count).toHaveText('5 of 5')
+      await expect(priority).toHaveText('Priority')
+      await customer.click()
+      await page
+        .getByRole('listbox')
+        .getByRole('option', { name: 'Northgate Dental', exact: true })
+        .click()
+      await expect(count).toHaveText('2 of 5')
+      await search.fill('cooling')
+      await expect(count).toHaveText('1 of 5')
+      await aligned()
+      await toolbar
+        .getByRole('button', { name: 'Clear all', exact: true })
+        .click()
+      await expect(count).toHaveText('5 of 5')
+      await expect(search).toHaveValue('')
+      await expect(customer).toHaveText('Customer')
+      await priority.focus()
+      await priority.press('ArrowRight')
+      await expect(customer).toBeFocused()
+      expect(errors).toEqual([])
+      await page.close()
+    }
+})
+
 test('select persists a typed OutMessage selection', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/docs/components/select')
@@ -1831,6 +2228,51 @@ test('select persists a typed OutMessage selection', async ({ page }) => {
   await expect(page.locator('#groups code')).toContainText('@/stylex/select')
 })
 
+test('timestamp time-zone tooltips anchor to their own triggers', async ({
+  page,
+}) => {
+  test.setTimeout(60_000)
+  for (const port of [4173, 4174]) {
+    const preview = await page.context().newPage()
+    await preview.setViewportSize({ width: 1440, height: 1000 })
+    await preview.goto(`http://127.0.0.1:${port}/docs/components/timestamp`)
+    const section = preview.locator('[id="timestamp-—-tooltip-time-zones"]')
+    const triggers = section.locator('[data-slot="hover-card-trigger"]')
+    await expect(triggers).toHaveCount(3)
+    const ids = await preview
+      .locator('[data-slot="hover-card-trigger"]')
+      .evaluateAll(elements => elements.map(element => element.id))
+    expect(new Set(ids).size).toBe(ids.length)
+    for (let index = 0; index < 3; index++) {
+      const trigger = triggers.nth(index)
+      await trigger.evaluate(element =>
+        element.scrollIntoView({ block: 'center', behavior: 'instant' }),
+      )
+      await preview.mouse.move(0, 0)
+      await trigger.hover()
+      const panel = trigger
+        .locator('..')
+        .locator('[data-slot="hover-card-content"]')
+      await expect(panel).toHaveCSS('visibility', 'visible')
+      await expect(panel).toBeInViewport()
+      await expect(panel).toContainText(['UTC', 'Origin', 'ISO'][index]!)
+      const triggerBox = await trigger.boundingBox()
+      const panelBox = await panel.boundingBox()
+      const distance = Math.min(
+        Math.abs(panelBox!.y + panelBox!.height - triggerBox!.y),
+        Math.abs(panelBox!.y - triggerBox!.y - triggerBox!.height),
+      )
+      expect(distance).toBeLessThan(20)
+      await trigger.focus()
+      await preview.waitForTimeout(200)
+      await trigger.press('Escape')
+      await expect(panel).toHaveCount(0)
+      await preview.mouse.move(0, 0)
+    }
+    await preview.close()
+  }
+})
+
 test('tooltip rejects stale hover timers and pointer-induced touch focus', async ({
   page,
 }) => {
@@ -1869,6 +2311,58 @@ test('tooltip rejects stale hover timers and pointer-induced touch focus', async
   await page.mouse.move(0, 0)
   await page.waitForTimeout(600)
   await expect(panel).toBeHidden()
+})
+
+test('tokenizer clears free text after keyboard and pointer creation', async ({
+  browser,
+}) => {
+  test.setTimeout(90000)
+  for (const port of [4173, 4174]) {
+    const page = await browser.newPage()
+    const errors: string[] = []
+    page.on('pageerror', error => errors.push(error.message))
+    await page.goto(`http://127.0.0.1:${port}/docs/components/tokenizer`)
+    const section = page.locator('#creatable')
+    const inputs = section.getByRole('combobox')
+    for (const index of [0, 1]) {
+      const input = inputs.nth(index)
+      const field = section.locator('[data-slot="tokenizer"]').nth(index)
+      await input.fill('  New tag  ')
+      await input.press('Enter')
+      await expect(
+        field.getByRole('button', { name: 'Remove New tag', exact: true }),
+      ).toBeVisible()
+      await expect(input).toHaveValue('')
+      await expect(input).toBeFocused()
+      if (index === 0) {
+        await input.press('Enter')
+        await expect(
+          field.locator('[data-slot="tokenizer-token-remove"]'),
+        ).toHaveCount(1)
+      }
+      await input.fill('Next tag')
+      await input.press('Enter')
+      await expect(
+        field.getByRole('button', { name: 'Remove Next tag', exact: true }),
+      ).toBeVisible()
+      await expect(input).toHaveValue('')
+      await input.fill('Mouse tag')
+      await page
+        .getByRole('option', { name: 'Create "Mouse tag"', exact: true })
+        .click()
+      await expect(
+        field.getByRole('button', { name: 'Remove Mouse tag', exact: true }),
+      ).toBeVisible()
+      await expect(input).toHaveValue('')
+      await expect(input).toBeFocused()
+      await expect(
+        field.locator('[data-slot="tokenizer-token-remove"]'),
+      ).toHaveCount(3)
+      await input.press('Escape')
+    }
+    expect(errors).toEqual([])
+    await page.close()
+  }
 })
 
 test('combobox filters items and persists its typed selection output', async ({
@@ -2845,6 +3339,123 @@ test('typography mirrors the shadcn example set across renderers', async ({
   await expect(page.locator('#stylex-specimen')).toHaveCount(0)
 })
 
+test('sidebar hover menus allow crossing and close after departure', async ({
+  page,
+}) => {
+  test.setTimeout(60_000)
+  await page.setViewportSize({ width: 1440, height: 1000 })
+  await page.goto('/docs/components/sidebar')
+  for (const renderer of ['Tailwind', 'StyleX'] as const) {
+    if (renderer === 'StyleX') await visitRenderer(page, renderer)
+    for (const id of ['application-shell', 'right-side-and-custom-width']) {
+      const section = page.locator(`#${id}`)
+      await section
+        .locator('[data-slot="sidebar-wrapper"]')
+        .evaluate(element =>
+          element.scrollIntoView({ block: 'center', behavior: 'instant' }),
+        )
+      await section.locator('[data-slot="sidebar-trigger"]:visible').click()
+      await section
+        .locator('[data-slot="sidebar-wrapper"]')
+        .evaluate(element =>
+          element.scrollIntoView({ block: 'center', behavior: 'instant' }),
+        )
+      const trigger = section.getByRole('button', {
+        name: 'Documentation',
+        exact: true,
+      })
+      const menu = section.getByRole('menu', {
+        name: 'Documentation sections',
+        exact: true,
+      })
+      await trigger.evaluate(element =>
+        element.scrollIntoView({ block: 'center', behavior: 'instant' }),
+      )
+      await trigger.hover()
+      await expect(menu).toBeVisible()
+      const geometry = await section.evaluate(element => ({
+        scrollY: window.scrollY,
+        trigger: element
+          .querySelector('[data-sidebar-documentation] button')!
+          .getBoundingClientRect()
+          .toJSON(),
+        panel: element
+          .querySelector('[data-slot="dropdown-menu-content"]')!
+          .getBoundingClientRect()
+          .toJSON(),
+      }))
+      await test.info().attach(`${renderer}-${id}-hover-geometry`, {
+        contentType: 'application/json',
+        body: Buffer.from(JSON.stringify(geometry)),
+      })
+      const item = menu.getByRole('menuitem', { name: 'Components' })
+      await expect(item).toBeInViewport()
+      await item.hover()
+      await page.waitForTimeout(400)
+      await expect(menu).toBeVisible()
+      const bounds = await section
+        .locator('[data-slot="dropdown-menu-content"]')
+        .boundingBox()
+      expect(bounds).not.toBeNull()
+      await page.mouse.move(bounds!.x + bounds!.width + 4, bounds!.y + 20)
+      await page.waitForTimeout(400)
+      await expect(menu).toBeVisible()
+      await page.mouse.move(1400, 800)
+      await trigger.hover()
+      await page.waitForTimeout(400)
+      await expect(menu).toBeVisible()
+      const closeDelay = page.evaluate(
+        id =>
+          new Promise<number>(resolve => {
+            const section = document.getElementById(id)!
+            let departed: number | undefined
+            const move = (event: PointerEvent) => {
+              if (event.clientX === 1400 && event.clientY === 800)
+                departed = performance.now()
+            }
+            const observer = new MutationObserver(() => {
+              if (
+                departed !== undefined &&
+                !section.querySelector('[role="menu"]')
+              ) {
+                observer.disconnect()
+                document.removeEventListener('pointermove', move, true)
+                resolve(performance.now() - departed)
+              }
+            })
+            document.addEventListener('pointermove', move, true)
+            observer.observe(section, { childList: true, subtree: true })
+          }),
+        id,
+      )
+      await page.mouse.move(1400, 800)
+      expect(await closeDelay).toBeGreaterThanOrEqual(250)
+      await expect(menu).toBeHidden()
+
+      await trigger.evaluate(element =>
+        element.scrollIntoView({ block: 'center', behavior: 'instant' }),
+      )
+      await trigger.focus()
+      await page.waitForTimeout(200)
+      await trigger.press('ArrowDown')
+      await expect(menu).toBeVisible()
+      await page.waitForTimeout(400)
+      await expect(menu).toBeVisible()
+      await menu.press('Escape')
+      await expect(menu).toBeHidden()
+      await expect(trigger).toBeFocused()
+      await trigger.evaluate(element =>
+        element.scrollIntoView({ block: 'center', behavior: 'instant' }),
+      )
+      await trigger.hover()
+      await expect(menu).toBeVisible()
+      await menu.getByRole('menuitem', { name: 'Changelog' }).click()
+      await expect(menu).toBeHidden()
+      await expect(trigger).toBeFocused()
+    }
+  }
+})
+
 test('sidebar documents persistence and toggles derived shell state', async ({
   page,
 }) => {
@@ -2867,6 +3478,81 @@ test('sidebar documents persistence and toggles derived shell state', async ({
   await expect(trigger).toHaveCount(1)
   await trigger.click()
   await expect(provider).toHaveAttribute('data-state', 'collapsed')
+})
+
+test('sidebar collapse and expansion use Sheet motion', async ({ page }) => {
+  test.setTimeout(60_000)
+  await page.setViewportSize({ width: 1440, height: 1000 })
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.goto('/docs/components/sidebar')
+  for (const renderer of ['Tailwind', 'StyleX'] as const) {
+    if (renderer === 'StyleX') await visitRenderer(page, renderer)
+    for (const id of [
+      'application-shell',
+      'floating-sidebar',
+      'inset-sidebar',
+      'off-canvas-collapse',
+      'right-side-and-custom-width',
+    ]) {
+      const section = page.locator(`#${id}`)
+      await section.scrollIntoViewIfNeeded()
+      const panel = section.locator('[data-slot="sidebar-container"]')
+      const gap = section.locator('[data-slot="sidebar-gap"]')
+      const trigger = section.locator('[data-slot="sidebar-trigger"]:visible')
+      await trigger.scrollIntoViewIfNeeded()
+      for (const element of [panel, gap]) {
+        await expect(element).toHaveCSS('transition-duration', '0.45s')
+        await expect(element).toHaveCSS(
+          'transition-timing-function',
+          'cubic-bezier(0.32, 0.72, 0, 1)',
+        )
+      }
+      for (const state of ['collapsed', 'expanded']) {
+        const frames = page.evaluate(
+          ({ id, state }) =>
+            new Promise<number[]>(resolve => {
+              const samples: number[] = []
+              const section = document.getElementById(id)!
+              let started: number | undefined
+              const tick = (now: number) => {
+                if (
+                  section
+                    .querySelector('[data-slot="sidebar"]')
+                    ?.getAttribute('data-state') === state
+                ) {
+                  started ??= now
+                  const box = section
+                    .querySelector('[data-slot="sidebar-container"]')!
+                    .getBoundingClientRect()
+                  samples.push(id === 'off-canvas-collapse' ? box.x : box.width)
+                }
+                if (started !== undefined && now - started >= 700)
+                  resolve(samples)
+                else requestAnimationFrame(tick)
+              }
+              requestAnimationFrame(tick)
+            }),
+          { id, state },
+        )
+        await trigger.click()
+        const samples = await frames
+        expect(
+          new Set(samples.map(value => Math.round(value))).size,
+        ).toBeGreaterThan(5)
+        const direction = Math.sign(samples.at(-1)! - samples[0]!)
+        for (let index = 1; index < samples.length; index++) {
+          expect(
+            direction * (samples[index]! - samples[index - 1]!),
+          ).toBeGreaterThanOrEqual(-1)
+        }
+      }
+    }
+  }
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  const panel = page.locator(
+    '#application-shell [data-slot="sidebar-container"]',
+  )
+  await expect(panel).toHaveCSS('transition-duration', '0s')
 })
 
 test('accordion matches upstream examples and enforces state rules', async ({
@@ -3358,10 +4044,10 @@ test('toast shows and dismisses an accessible notification', async ({
     )
 
     await types.getByRole('button', { name: 'Promise' }).click()
-    await expect(typesViewport.getByRole('status').last()).toContainText(
+    await expect(typesViewport.getByRole('status').first()).toContainText(
       'Loading...',
     )
-    await expect(typesViewport.getByRole('status').last()).toContainText(
+    await expect(typesViewport.getByRole('status').first()).toContainText(
       'Event has been created',
       { timeout: 4000 },
     )
@@ -3375,7 +4061,7 @@ test('toast shows and dismisses an accessible notification', async ({
         .locator('#description')
         .getByRole('region', { name: 'Toast notifications' })
         .getByRole('status')
-        .last(),
+        .first(),
     ).toContainText('Monday, January 3rd at 6:00pm')
 
     await page
@@ -3392,6 +4078,222 @@ test('toast shows and dismisses an accessible notification', async ({
       await expect(page.locator(`#${id}`)).toBeVisible()
     }
     await expect(page.locator('#types code')).toContainText('@/stylex/toast')
+  }
+})
+
+test('toast caps its queue and expands the Base UI stack in both renderers', async ({
+  browser,
+}) => {
+  test.setTimeout(90000)
+  for (const port of [4173, 4174]) {
+    const page = await browser.newPage({
+      viewport: { width: 1440, height: 1000 },
+    })
+    await page.goto(`http://127.0.0.1:${port}/docs/components/toast`)
+    const stack = page.locator('#stacking-and-queue')
+    const entries = page.locator('[data-slot="toast-entry"]')
+    const cards = page.locator('[data-slot="toast-entry"]:not([data-limited])')
+    await stack
+      .getByRole('button', { name: 'Add 6 toasts', exact: true })
+      .click()
+    await expect(entries).toHaveCount(6)
+    await expect(cards).toHaveCount(3)
+    await expect(cards.first()).toContainText('Toast 6')
+    await expect(
+      entries.locator('[data-slot="toast-content"][data-behind]'),
+    ).toHaveCount(5)
+    await expect(entries.last()).toHaveAttribute('inert', '')
+    await expect(entries.last()).toHaveCSS('opacity', '0')
+    await cards.first().hover()
+    await expect(cards.first()).toHaveAttribute('data-expanded', '')
+    await expect(cards.first()).toHaveAttribute('data-paused', 'true')
+    await page.waitForTimeout(600)
+    const boxes = await cards.evaluateAll(elements =>
+      elements.map(element => {
+        const rect = element.getBoundingClientRect()
+        const css = getComputedStyle(element)
+        return {
+          top: rect.top,
+          bottom: rect.bottom,
+          height: rect.height,
+          transform: css.transform,
+          duration: css.transitionDuration,
+          easing: css.transitionTimingFunction,
+        }
+      }),
+    )
+    expect(
+      boxes.every(
+        box => box.top >= 0 && box.bottom <= 1000 && box.height >= 54,
+      ),
+    ).toBe(true)
+    expect(boxes[0]!.top - boxes[1]!.bottom).toBeCloseTo(12, 0)
+    expect(boxes[0]!.duration).toBe('0.5s, 0.5s, 0.15s')
+    expect(boxes[0]!.easing).toContain('cubic-bezier(0.22, 1, 0.36, 1)')
+    await cards
+      .first()
+      .getByRole('button', { name: 'Dismiss notification' })
+      .click()
+    await expect(entries).toHaveCount(5)
+    await expect(cards).toHaveCount(3)
+    await expect(cards.first()).toContainText('Toast 5')
+    await expect(cards.last()).toContainText('Toast 3')
+    await expect(cards.last()).toHaveJSProperty('inert', false)
+    await page.mouse.move(0, 0)
+    await cards
+      .first()
+      .getByRole('button', { name: 'Dismiss notification' })
+      .focus()
+    await expect(cards.first()).toHaveAttribute('data-expanded', '')
+    await page.waitForTimeout(200)
+    await page.keyboard.press('Escape')
+    await expect(entries).toHaveCount(4)
+    await stack.getByRole('button', { name: 'Clear toasts' }).click()
+    await expect(entries).toHaveCount(0)
+    await page
+      .locator('#expanded')
+      .getByRole('button', { name: 'Add 6 expanded toasts' })
+      .click()
+    await expect(cards).toHaveCount(3)
+    await page.mouse.move(0, 0)
+    await expect(cards.first()).toHaveAttribute('data-expanded', '')
+    await page
+      .locator('#expanded')
+      .getByRole('button', { name: 'Clear toasts' })
+      .click()
+    await expect(entries).toHaveCount(0)
+    await page
+      .locator('#visible-limit')
+      .getByRole('button', { name: 'Add 6 toasts with limit 5' })
+      .click()
+    await expect(cards).toHaveCount(5)
+    await expect(entries).toHaveCount(6)
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await expect(cards.first()).toHaveCSS('transition-duration', '0s')
+    await page.close()
+  }
+})
+
+test('toast swipes dismiss and keep the hovered stack expanded during promotion', async ({
+  browser,
+}) => {
+  test.setTimeout(120000)
+  for (const port of [4173, 4174]) {
+    const page = await browser.newPage({
+      viewport: { width: 1440, height: 1000 },
+      hasTouch: true,
+    })
+    const errors: string[] = []
+    page.on('pageerror', error => errors.push(error.message))
+    await page.goto(`http://127.0.0.1:${port}/docs/components/toast`)
+    const section = page.locator('#stacking-and-queue')
+    const entries = section.locator('[data-slot="toast-entry"]')
+    const cards = section.locator(
+      '[data-slot="toast-entry"]:not([data-limited])',
+    )
+    await section
+      .getByRole('button', { name: 'Add 6 toasts', exact: true })
+      .click()
+    await expect(cards).toHaveCount(3)
+    await cards.first().hover()
+    await expect(cards.first()).toHaveAttribute('data-expanded', '')
+    await page.waitForTimeout(600)
+    await section.evaluate(element => {
+      document.body.dataset.toastCollapseCount = '0'
+      new MutationObserver(() => {
+        if (
+          element.querySelector(
+            '[data-slot="toast-entry"]:not([data-limited]):not([data-expanded])',
+          )
+        )
+          document.body.dataset.toastCollapseCount = String(
+            Number(document.body.dataset.toastCollapseCount) + 1,
+          )
+      }).observe(element, {
+        subtree: true,
+        childList: true,
+        attributes: true,
+        attributeFilter: ['data-expanded'],
+      })
+    })
+    // Keep the pointer stationary at the dismissed card; remove focus as a
+    // separate reason for expansion so the hover regression stays observable.
+    await cards
+      .last()
+      .getByRole('button', { name: 'Dismiss notification' })
+      .click()
+    await page.evaluate(() => (document.activeElement as HTMLElement)?.blur())
+    await expect(entries).toHaveCount(5)
+    await expect(cards).toHaveCount(3)
+    await expect(cards.first()).toHaveAttribute('data-expanded', '')
+    await page.waitForTimeout(650)
+    expect(
+      await page.locator('body').getAttribute('data-toast-collapse-count'),
+    ).toBe('0')
+    const drag = async (distance: number, escape = false) => {
+      await cards.first().hover()
+      await page.waitForTimeout(550)
+      const card = cards.first()
+      const id = await card.getAttribute('id')
+      const rect = await card.boundingBox()
+      const x = rect!.x + 80,
+        y = rect!.y + rect!.height / 2
+      await page.mouse.move(x, y)
+      await page.mouse.down()
+      await expect(card).toHaveAttribute('data-swiping', '')
+      await page.mouse.move(x + distance, y, { steps: 8 })
+      await expect(card).toHaveCSS('transition-duration', '0s')
+      if (escape) await page.keyboard.press('Escape')
+      await page.mouse.up()
+      return page.locator(`[id="${id}"]`)
+    }
+    const short = await drag(25)
+    await expect(short).not.toHaveAttribute('data-swiping', '')
+    await expect(entries).toHaveCount(5)
+    await expect(short).toHaveCSS('transform', 'matrix(1, 0, 0, 1, 0, 0)')
+    await drag(90, true)
+    await expect(entries).toHaveCount(5)
+    const dismissed = await drag(100)
+    await expect(dismissed).toHaveAttribute('data-swipe-direction', 'right')
+    await expect(dismissed).toHaveAttribute('data-leave', '')
+    await expect(entries).toHaveCount(4)
+    await expect(cards).toHaveCount(3)
+    await expect(cards.first()).toHaveAttribute('data-expanded', '')
+    expect(
+      await page.locator('body').getAttribute('data-toast-collapse-count'),
+    ).toBe('0')
+    await page.mouse.move(0, 0)
+    await expect(cards.first()).not.toHaveAttribute('data-expanded', '')
+    await section.getByRole('button', { name: 'Clear toasts' }).click()
+    await expect(entries).toHaveCount(0)
+    await page.setViewportSize({ width: 390, height: 844 })
+    await section
+      .getByRole('button', { name: 'Add 6 toasts', exact: true })
+      .click()
+    await expect(cards).toHaveCount(3)
+    await page.waitForTimeout(600)
+    const rect = await cards.first().boundingBox()
+    const cdp = await page.context().newCDPSession(page)
+    const point = { x: rect!.x + 70, y: rect!.y + rect!.height / 2 }
+    await cdp.send('Input.dispatchTouchEvent', {
+      type: 'touchStart',
+      touchPoints: [point],
+    })
+    await expect(cards.first()).toHaveAttribute('data-swiping', '')
+    for (const distance of [20, 45, 70, 100])
+      await cdp.send('Input.dispatchTouchEvent', {
+        type: 'touchMove',
+        touchPoints: [{ x: point.x + distance, y: point.y }],
+      })
+    await cdp.send('Input.dispatchTouchEvent', {
+      type: 'touchEnd',
+      touchPoints: [],
+    })
+    await expect(entries).toHaveCount(5)
+    await expect(cards).toHaveCount(3)
+    expect(errors).toEqual([])
+    await cdp.detach()
+    await page.close()
   }
 })
 
@@ -4189,6 +5091,69 @@ test('controlled helper pages own and update compact local preview state', async
   await expect(deploymentNotes).toHaveAttribute('readonly', '')
   await expect(deploymentNotes).toHaveAttribute('data-resize', 'none')
   await expect(page.locator("#rtl [dir='rtl']").first()).toBeVisible()
+})
+
+test('number input steppers preserve focus, formatting, and independent previews', async ({
+  page,
+}) => {
+  test.setTimeout(120_000)
+  for (const width of [1280, 390]) {
+    await page.setViewportSize({ width, height: 900 })
+    for (const renderer of ['Tailwind', 'StyleX'] as const) {
+      await page.goto('/docs/components/number-input')
+      if (renderer === 'StyleX') await visitRenderer(page, renderer)
+      const controls = page.locator('[data-slot="number-input-input"]')
+      const controlIds = await controls.evaluateAll(nodes =>
+        nodes.map(node => node.id),
+      )
+      expect(new Set(controlIds).size).toBe(controlIds.length)
+
+      const hero = page.locator('[aria-label="Number Input preview"]')
+      const input = hero.getByRole('textbox', { name: 'Quantity', exact: true })
+      const namedInput = page.getByRole('textbox', { name: 'Quantity' }).nth(1)
+      const increment = hero.getByRole('button', { name: 'Increment Quantity' })
+      await input.click()
+      await expect(input).toHaveValue('0')
+      const scrollBefore = await page.evaluate(() => scrollY)
+      await increment.click()
+      await expect(input).toHaveValue('1')
+      await expect(input).toBeFocused()
+      await expect(namedInput).toHaveValue('0 items')
+      expect(await page.evaluate(() => scrollY)).toBe(scrollBefore)
+
+      const box = await increment.boundingBox()
+      expect(box).not.toBeNull()
+      await page.mouse.move(box!.x + box!.width / 2, box!.y + box!.height / 2)
+      await page.mouse.down()
+      await expect(input).toBeFocused()
+      await expect(input).toHaveValue('1')
+      await page.mouse.up()
+      await expect(input).toHaveValue('2')
+
+      // A step uses the current draft without requiring a blur first.
+      await input.fill('12')
+      await expect(input).toHaveValue('12')
+      await increment.click()
+      await expect(input).toHaveValue('13')
+      await input.press('ArrowDown')
+      await expect(input).toHaveValue('12')
+      await input.hover()
+      await page.mouse.wheel(0, -100)
+      await expect(input).toHaveValue('13')
+      await expect(input).toBeFocused()
+
+      await namedInput.click()
+      await expect(input).toHaveValue('13 items')
+      await expect(namedInput).toHaveValue('0')
+      await page
+        .getByRole('button', { name: 'Decrement Quantity' })
+        .nth(1)
+        .click()
+      await expect(namedInput).toHaveValue('-1')
+      await expect(namedInput).toBeFocused()
+      await expect(input).toHaveValue('13 items')
+    }
+  }
 })
 
 test('input sections match upstream variants in both renderers', async ({
@@ -6034,4 +6999,153 @@ test('flagship documentation pages have no automated accessibility violations', 
     await page.goto(`/docs/components/${route}`)
     await assertAccessible(page)
   }
+})
+
+test('tokenizer popup keeps its full field size and its end action stays fixed', async ({
+  browser,
+}) => {
+  test.setTimeout(120000)
+  for (const port of [4173, 4174])
+    for (const width of [1440, 390]) {
+      const page = await browser.newPage({ viewport: { width, height: 844 } })
+      const errors: string[] = []
+      page.on('pageerror', error => errors.push(error.message))
+      await page.goto(`http://127.0.0.1:${port}/docs/components/tokenizer`)
+      const section = page.locator('#end-content')
+      const input = section.getByRole('combobox')
+      const field = section.locator('[data-slot="tokenizer-wrapper"]')
+      const apply = section.getByRole('button', { name: 'Apply', exact: true })
+      await input.click()
+      const panel = page.locator(
+        `[id="${await input.getAttribute('aria-controls')}"]`,
+      )
+      await expect(panel).toBeVisible()
+      await expect(panel.getByRole('option')).toHaveCount(6)
+      const fieldBefore = await field.boundingBox()
+      await expect
+        .poll(async () => (await panel.boundingBox())!.width)
+        .toBeCloseTo(fieldBefore!.width, 0)
+      const initial = await panel.boundingBox()
+      const applyBefore = await apply.boundingBox()
+      expect(initial!.width).toBeCloseTo(fieldBefore!.width, 0)
+      expect(initial!.height).toBeGreaterThan(190)
+      expect(
+        await panel.evaluate(
+          element => getComputedStyle(element).backgroundColor,
+        ),
+      ).not.toBe('rgba(0, 0, 0, 0)')
+      await input.fill('Bob')
+      await input.press('ArrowDown')
+      await input.press('Enter')
+      await input.fill('')
+      await expect(
+        section.getByRole('button', { name: 'Remove Bob Smith', exact: true }),
+      ).toBeVisible()
+      for (const name of ['Diana Prince', 'Eve Williams', 'Frank Miller']) {
+        await panel.getByRole('option', { name, exact: true }).click()
+      }
+      await expect(
+        section.locator('[data-slot="tokenizer-token-remove"]'),
+      ).toHaveCount(6)
+      const filled = await panel.boundingBox()
+      const fieldAfter = await field.boundingBox()
+      const applyAfter = await apply.boundingBox()
+      expect(filled!.width).toBeCloseTo(initial!.width, 0)
+      expect(filled!.height).toBeCloseTo(initial!.height, 0)
+      expect(
+        applyAfter!.x + applyAfter!.width - fieldAfter!.x - fieldAfter!.width,
+      ).toBeCloseTo(
+        applyBefore!.x +
+          applyBefore!.width -
+          fieldBefore!.x -
+          fieldBefore!.width,
+        0,
+      )
+      expect(applyAfter!.y - fieldAfter!.y).toBeCloseTo(
+        applyBefore!.y - fieldBefore!.y,
+        0,
+      )
+      expect(fieldAfter!.height).toBeGreaterThan(fieldBefore!.height)
+      expect(fieldAfter!.x + fieldAfter!.width).toBeLessThanOrEqual(width)
+      expect(
+        await page.evaluate(() => document.documentElement.scrollWidth),
+      ).toBe(width)
+      // Put the field near the bottom without scrolling it away on focus.
+      await field.evaluate(element =>
+        window.scrollBy(
+          0,
+          element.getBoundingClientRect().bottom - (window.innerHeight - 24),
+        ),
+      )
+      await expect(panel).toHaveAttribute('data-placement', 'top')
+      expect((await panel.boundingBox())!.height).toBeCloseTo(
+        initial!.height,
+        0,
+      )
+      const above = await panel.boundingBox()
+      expect(above!.y).toBeGreaterThanOrEqual(0)
+      expect(above!.y + above!.height).toBeLessThanOrEqual(844)
+      if (port === 4174) {
+        // An open body portal must track a scoped theme change, then release
+        // its inherited inline variables when the panel unmounts.
+        await section.evaluate(element => {
+          const source = element.querySelector(
+            '[data-slot="command"]',
+          ) as HTMLElement
+          const popup = document.getElementById(
+            element.querySelector('input')!.getAttribute('aria-controls')!,
+          )!
+          const background = getComputedStyle(popup).backgroundColor
+          const sample = document.createElement('span')
+          source.appendChild(sample)
+          const matching: string[] = []
+          for (let index = 0; index < popup.style.length; index++) {
+            const name = popup.style.item(index)
+            const value = popup.style.getPropertyValue(name).trim()
+            if (
+              !name.startsWith('--') ||
+              !CSS.supports('background-color', value)
+            )
+              continue
+            sample.style.backgroundColor = value
+            if (getComputedStyle(sample).backgroundColor === background)
+              matching.push(name)
+          }
+          sample.remove()
+          for (const name of matching)
+            source.style.setProperty(name, 'rgb(20, 40, 60)')
+          source.style.setProperty('--crease-portal-test', 'scoped-theme')
+        })
+        await expect(panel).toHaveCSS('background-color', 'rgb(20, 40, 60)')
+        await expect
+          .poll(() =>
+            panel.evaluate(element =>
+              element.style.getPropertyValue('--crease-portal-test'),
+            ),
+          )
+          .toBe('scoped-theme')
+        const oldPanel = await panel.elementHandle()
+        await input.press('Escape')
+        await expect(panel).toHaveCount(0)
+        expect(
+          await oldPanel!.evaluate(element =>
+            element.style.getPropertyValue('--crease-portal-test'),
+          ),
+        ).toBe('')
+        await section.evaluate(element =>
+          (
+            element.querySelector('[data-slot="command"]') as HTMLElement
+          ).removeAttribute('style'),
+        )
+      } else {
+        await input.press('Escape')
+        await expect(panel).toHaveCount(0)
+      }
+      await input.press('ArrowDown')
+      await expect(panel).toBeVisible()
+      await expect(panel.getByRole('option')).toHaveCount(6)
+      expect((await panel.boundingBox())!.width).toBeCloseTo(initial!.width, 0)
+      expect(errors).toEqual([])
+      await page.close()
+    }
 })
