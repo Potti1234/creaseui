@@ -3,13 +3,16 @@ import {
   cpSync,
   mkdtempSync,
   mkdirSync,
+  readdirSync,
+  existsSync,
   readFileSync,
   writeFileSync,
 } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { join } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
 import { spawn } from 'node:child_process'
 import { createServer } from 'node:http'
+import { moduleSpecifiers } from './registry-dependencies.mjs'
 
 const root = process.cwd()
 const fixture = mkdtempSync(join(tmpdir(), 'creaseui-registry-'))
@@ -18,7 +21,12 @@ const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm'
 const registry = JSON.parse(
   readFileSync(join(root, 'src', 'ui', 'registry.json'), 'utf8'),
 )
-const registryComponentNames = registry.items.map(item => item.name)
+const recipes = JSON.parse(
+  readFileSync(join(root, 'src/recipes/dashboard/registry.json'), 'utf8'),
+)
+const registryComponentNames = [...registry.items, ...recipes.items].map(
+  item => item.name,
+)
 const requestedComponentNames = process.argv.slice(2)
 const unknownComponentNames = requestedComponentNames.filter(
   name => !registryComponentNames.includes(name),
@@ -96,12 +104,7 @@ const run = (command, args) =>
     )
   })
 
-for (const file of [
-  'tsconfig.json',
-  'vite.config.ts',
-  'stylex.config.js',
-  'index.html',
-]) {
+for (const file of ['tsconfig.json']) {
   cpSync(join(root, file), join(fixture, file))
 }
 
@@ -112,16 +115,23 @@ writeFileSync(
       name: 'creaseui-registry-consumer',
       private: true,
       type: 'module',
-      // The registry publishes Tailwind source; this consumer has no StyleX site entry.
       scripts: {
-        ...sourcePackage.scripts,
-        build: sourcePackage.scripts['build:tailwind'],
+        typecheck: 'tsc --noEmit',
+        build: 'vite build',
       },
       dependencies: {
-        ...sourcePackage.dependencies,
         ...frameworkVersions,
+        tailwindcss: sourcePackage.dependencies.tailwindcss,
       },
-      devDependencies: sourcePackage.devDependencies,
+      devDependencies: Object.fromEntries(
+        ['vite', 'typescript', '@foldkit/vite-plugin', '@tailwindcss/vite'].map(
+          name => [
+            name,
+            sourcePackage.devDependencies[name] ??
+              sourcePackage.dependencies[name],
+          ],
+        ),
+      ),
     },
     null,
     2,
@@ -129,6 +139,23 @@ writeFileSync(
 )
 
 mkdirSync(join(fixture, 'src'), { recursive: true })
+writeFileSync(
+  join(fixture, 'index.html'),
+  '<html lang="en"><head><title>Registry consumer</title></head><body><div id="root"></div><script type="module" src="/src/entry.ts"></script></body></html>',
+)
+writeFileSync(
+  join(fixture, 'vite.config.ts'),
+  `
+import { defineConfig } from 'vite'
+import { fileURLToPath } from 'node:url'
+import tailwindcss from '@tailwindcss/vite'
+import { foldkit } from '@foldkit/vite-plugin'
+export default defineConfig({
+  plugins: [tailwindcss(), foldkit({ devToolsMcpPort: false })],
+  resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
+})
+`,
+)
 
 writeFileSync(
   join(fixture, 'components.json'),
@@ -165,7 +192,11 @@ writeFileSync(
 writeFileSync(
   join(fixture, 'src', 'entry.ts'),
   `import './styles.css'\n\n${componentNames
-    .map((name, index) => `import * as Component${index} from '@/ui/${name}'`)
+    .map((name, index) =>
+      name === 'dashboard-01'
+        ? `import * as Component${index} from '@/components/crease-dashboard/entry'`
+        : `import * as Component${index} from '@/ui/${name}'`,
+    )
     .join('\n')}\n\nexport const installedComponents = [${componentNames
     .map((_name, index) => `Component${index}`)
     .join(', ')}]\n`,
@@ -179,6 +210,33 @@ try {
     ...componentNames.map(name => `${registryBaseUrl}/${name}.json`),
     '--yes',
   ])
+  // Check what the CLI actually installed: wrong same-basename rewrites can
+  // typecheck accidentally inside the source repo, but never in this fixture.
+  const verifyImports = directory => {
+    for (const entry of readdirSync(directory, { withFileTypes: true })) {
+      const file = join(directory, entry.name)
+      if (entry.isDirectory()) verifyImports(file)
+      else if (file.endsWith('.ts')) {
+        for (const specifier of moduleSpecifiers(readFileSync(file, 'utf8'))) {
+          if (!specifier.startsWith('@/') && !specifier.startsWith('.'))
+            continue
+          const target = specifier.startsWith('@/')
+            ? resolve(fixture, 'src', specifier.slice(2))
+            : resolve(dirname(file), specifier)
+          assert.notEqual(
+            `${target}.ts`,
+            file,
+            `${file} contains a self-import: ${specifier}`,
+          )
+          assert.ok(
+            existsSync(target) || existsSync(`${target}.ts`),
+            `${file} imports missing ${specifier}`,
+          )
+        }
+      }
+    }
+  }
+  verifyImports(join(fixture, 'src'))
   const installedPackage = JSON.parse(
     readFileSync(join(fixture, 'package.json'), 'utf8'),
   )
