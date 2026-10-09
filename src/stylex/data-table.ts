@@ -49,6 +49,8 @@ export type DataTableProps<Row, Msg> = Readonly<{
   pageSizeOptions?: ReadonlyArray<number>
   mode?: DataTableMode
   rowCount?: number
+  /** Additional filters or bulk actions, between search and column visibility. */
+  toolbarContent?: ReadonlyArray<Html | string>
   layoutStyle?: ComponentLayoutStyle
 }>
 
@@ -435,7 +437,10 @@ export const dataTable = <Row, Msg>(
     ],
     [
       h.div(
-        [h.Class(className(styles.toolbar))],
+        [
+          h.DataAttribute('slot', 'data-table-toolbar'),
+          h.Class(className(styles.toolbar)),
+        ],
         [
           ...(props.filterText === undefined
             ? []
@@ -456,6 +461,7 @@ export const dataTable = <Row, Msg>(
                   h,
                 ),
               ]),
+          ...(props.toolbarContent ?? []),
           ...(props.enableColumnVisibility === true
             ? [
                 h.div(

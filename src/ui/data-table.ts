@@ -43,6 +43,8 @@ export type DataTableProps<Row, Msg> = Readonly<{
   pageSizeOptions?: ReadonlyArray<number>
   mode?: DataTableMode
   rowCount?: number
+  /** Additional filters or bulk actions, between search and column visibility. */
+  toolbarContent?: ReadonlyArray<Html | string>
   class?: string
 }>
 
@@ -148,7 +150,10 @@ export const dataTable = <Row, Msg>(
     ],
     [
       h.div(
-        [h.Class('flex flex-wrap items-center justify-between gap-3')],
+        [
+          h.DataAttribute('slot', 'data-table-toolbar'),
+          h.Class('flex flex-wrap items-center justify-between gap-3'),
+        ],
         [
           ...(props.filterText === undefined
             ? []
@@ -169,6 +174,7 @@ export const dataTable = <Row, Msg>(
                   h,
                 ),
               ]),
+          ...(props.toolbarContent ?? []),
           ...(props.enableColumnVisibility === true
             ? [
                 h.div(
