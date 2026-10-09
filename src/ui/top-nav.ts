@@ -218,8 +218,11 @@ const anchorPositionStyle = (
     ? { top: cover ? 'anchor(top)' : `calc(anchor(top) - ${gap})` }
     : { left: cover ? 'anchor(left)' : 'anchor(left)' }
   return {
-    position: 'absolute',
+    // Match the mega menu: escape ancestor scroll/clipping containers while
+    // keeping the panel in its original theme scope and anchored on scroll.
+    position: 'fixed',
     positionAnchor: anchorId,
+    positionTryFallbacks: 'flip-inline',
     ...sideInset,
     ...alignInset,
   }
@@ -540,15 +543,10 @@ const renderMegaMenu = <Msg>(
                 h.Role('group'),
                 h.AriaLabel(menuData.label),
                 h.Style({
-                  /* The panel anchors to the whole <nav> (astryx: full-width
-                   mega menu). It must be position:fixed — an absolutely
-                   positioned element cannot anchor to an element in its own
-                   containing-block chain (anchor()/anchor-size() resolve to
-                   0, collapsing the panel to trigger width). */
+                  // Mega menus use the whole nav's anchor and width.
                   ...anchorPositionStyle(navAnchorId, 'bottom', {
                     gap: '0px',
                   }),
-                  position: 'fixed',
                   width: 'anchor-size(width)',
                 }),
                 h.OnMouseEnter(emitMenu(NavMenu.Message.EnteredNavMenuPanel())),
