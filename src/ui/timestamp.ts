@@ -382,12 +382,12 @@ export const timestamp = <Msg>(
         cn(
           'm-0 grid items-center gap-x-4 gap-y-2 p-0',
           hasLabelColumn && hasActionColumn
-            ? 'grid-cols-[auto_1fr_auto]'
+            ? 'grid-cols-[auto_minmax(0,1fr)_auto]'
             : hasLabelColumn
-              ? 'grid-cols-[auto_1fr]'
+              ? 'grid-cols-[auto_minmax(0,1fr)]'
               : hasActionColumn
-                ? 'grid-cols-[1fr_auto]'
-                : 'grid-cols-[1fr]',
+                ? 'grid-cols-[minmax(0,1fr)_auto]'
+                : 'grid-cols-[minmax(0,1fr)]',
         ),
       ),
     ],
@@ -410,7 +410,7 @@ export const timestamp = <Msg>(
           h.dd(
             [
               h.Class(
-                'm-0 whitespace-nowrap p-0 text-sm leading-5 font-normal text-foreground',
+                'm-0 min-w-0 whitespace-normal p-0 text-sm leading-5 font-normal text-foreground wrap-anywhere',
               ),
             ],
             [line.value],
@@ -474,6 +474,7 @@ export const timestamp = <Msg>(
       triggerClass:
         'inline cursor-default bg-transparent p-0 font-[inherit] text-left underline decoration-dashed decoration-muted-foreground underline-offset-2',
       content: cardContent,
+      class: 'w-max',
       side: 'top',
       align: 'center',
       ariaLabel: 'Timestamp details',
