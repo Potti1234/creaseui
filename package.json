@@ -31,7 +31,7 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "test": "npm run test:lint-package && npm run test:unit && npm run test:scene",
-    "test:unit": "NODE_OPTIONS='--max-old-space-size=8192' node --test --import tsx --import ./test/setup.ts test/*.test.ts",
+    "test:unit": "node scripts/run-unit-tests.mjs",
     "test:scene": "vitest run",
     "test:e2e": "playwright test",
     "test:browser": "npm run build && playwright test",
