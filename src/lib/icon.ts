@@ -8,6 +8,13 @@ import { iconNodes } from '@/lib/icon-nodes'
    exports; for anything else call `icon('lucide-name', config)` — and add a
    named export here when a component needs it. */
 
+export type IconName = keyof typeof iconNodes
+export const iconNames: ReadonlyArray<IconName> = Object.keys(
+  iconNodes,
+) as IconName[]
+export const hasIcon = (name: string): name is IconName =>
+  Object.hasOwn(iconNodes, name)
+
 type IconTag =
   | 'circle'
   | 'ellipse'
@@ -93,8 +100,12 @@ export const icon = <Msg>(
   config: IconConfig,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const node: IconNode =
-    Object.entries(iconNodes).find(([iconName]) => iconName === name)?.[1] ?? []
+  const isMissing = !hasIcon(name)
+  // A visible question mark and diagnostic attribute make typos discoverable,
+  // while keeping views pure and preserving the requested accessible name.
+  const node: IconNode = hasIcon(name)
+    ? iconNodes[name]
+    : iconNodes['circle-question-mark']
 
   return h.svg(
     [
@@ -114,7 +125,7 @@ export const icon = <Msg>(
         verticalAlign: 'middle',
         flexShrink: '0',
       }),
-      ...(node.length === 0 ? [h.DataAttribute('icon-missing', name)] : []),
+      ...(isMissing ? [h.DataAttribute('icon-missing', name)] : []),
       ...(config.dataIcon === undefined
         ? []
         : [h.DataAttribute('icon', config.dataIcon)]),
@@ -132,6 +143,9 @@ const named =
     icon<Msg>(name, config, h)
 
 export const arrowLeft = named('arrow-left')
+export const banknote = named('banknote')
+export const mousePointer2 = named('mouse-pointer-2')
+export const userCheck = named('user-check')
 export const arrowRight = named('arrow-right')
 export const arrowUpRight = named('arrow-up-right')
 export const badgeCheck = named('badge-check')

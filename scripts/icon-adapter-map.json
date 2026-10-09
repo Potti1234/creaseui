@@ -1,4 +1,32 @@
 {
+  "banknote": {
+    "lucide": "banknote",
+    "tabler": "cash-banknote",
+    "hugeicons": "money-01",
+    "phosphor": "money-wavy",
+    "remixicon": "money-dollar-box-line"
+  },
+  "user-check": {
+    "lucide": "user-check",
+    "tabler": "user-check",
+    "hugeicons": "user-check-01",
+    "phosphor": "user-check",
+    "remixicon": "user-follow-line"
+  },
+  "mouse-pointer-2": {
+    "lucide": "mouse-pointer-2",
+    "tabler": "pointer",
+    "hugeicons": "cursor-01",
+    "phosphor": "cursor",
+    "remixicon": "cursor-line"
+  },
+  "circle-question-mark": {
+    "lucide": "circle-question-mark",
+    "tabler": "help-circle",
+    "hugeicons": "help-circle",
+    "phosphor": "question",
+    "remixicon": "question-line"
+  },
   "arrow-right": {
     "lucide": "arrow-right",
     "tabler": "arrow-right",
@@ -530,5 +558,131 @@
     "hugeicons": "alert-02",
     "phosphor": "warning",
     "remixicon": "error-warning-line"
+  },
+  "arrow-up-right": {
+    "lucide": "arrow-up-right",
+    "tabler": "arrow-up-right",
+    "hugeicons": "arrow-up-right-01",
+    "phosphor": "arrow-up-right",
+    "remixicon": "arrow-right-up-line"
+  },
+  "badge-check": {
+    "lucide": "badge-check",
+    "tabler": "rosette-discount-check",
+    "hugeicons": "checkmark-badge-01",
+    "phosphor": "seal-check",
+    "remixicon": "checkbox-circle-line"
+  },
+  "bookmark": {
+    "lucide": "bookmark",
+    "tabler": "bookmark",
+    "hugeicons": "bookmark-01",
+    "phosphor": "bookmark",
+    "remixicon": "bookmark-line"
+  },
+  "arrow-up": {
+    "lucide": "arrow-up",
+    "tabler": "arrow-up",
+    "hugeicons": "arrow-up-01",
+    "phosphor": "arrow-up",
+    "remixicon": "arrow-up-line"
+  },
+  "calendar-days": {
+    "lucide": "calendar-days",
+    "tabler": "calendar-week",
+    "hugeicons": "calendar-03",
+    "phosphor": "calendar-dots",
+    "remixicon": "calendar-2-line"
+  },
+  "clock": {
+    "lucide": "clock",
+    "tabler": "clock",
+    "hugeicons": "clock-01",
+    "phosphor": "clock",
+    "remixicon": "time-line"
+  },
+  "eye": {
+    "lucide": "eye",
+    "tabler": "eye",
+    "hugeicons": "view",
+    "phosphor": "eye",
+    "remixicon": "eye-line"
+  },
+  "eye-off": {
+    "lucide": "eye-off",
+    "tabler": "eye-off",
+    "hugeicons": "view-off",
+    "phosphor": "eye-slash",
+    "remixicon": "eye-off-line"
+  },
+  "funnel": {
+    "lucide": "funnel",
+    "tabler": "filter",
+    "hugeicons": "filter",
+    "phosphor": "funnel",
+    "remixicon": "filter-line"
+  },
+  "menu": {
+    "lucide": "menu",
+    "tabler": "menu-2",
+    "hugeicons": "menu-01",
+    "phosphor": "list",
+    "remixicon": "menu-line"
+  },
+  "folder": {
+    "lucide": "folder",
+    "tabler": "folder",
+    "hugeicons": "folder-01",
+    "phosphor": "folder-open",
+    "remixicon": "folder-line"
+  },
+  "chart-bar-stacked": {
+    "lucide": "chart-bar-stacked",
+    "tabler": "chart-bar",
+    "hugeicons": "chart-column",
+    "phosphor": "chart-bar",
+    "remixicon": "bar-chart-line"
+  },
+  "settings": {
+    "lucide": "settings",
+    "tabler": "settings",
+    "hugeicons": "settings-01",
+    "phosphor": "gear",
+    "remixicon": "settings-3-line"
+  },
+  "users": {
+    "lucide": "users",
+    "tabler": "users-group",
+    "hugeicons": "user-multiple",
+    "phosphor": "users",
+    "remixicon": "group-line"
+  },
+  "layout-dashboard": {
+    "lucide": "layout-dashboard",
+    "tabler": "layout-dashboard",
+    "hugeicons": "dashboard-square-01",
+    "phosphor": "squares-four",
+    "remixicon": "layout-grid-line"
+  },
+  "move-horizontal": {
+    "lucide": "move-horizontal",
+    "tabler": "arrows-horizontal",
+    "hugeicons": "arrow-horizontal",
+    "phosphor": "arrows-horizontal",
+    "remixicon": "arrow-left-right-line"
+  },
+  "pin": {
+    "lucide": "pin",
+    "tabler": "pin",
+    "hugeicons": "pin",
+    "phosphor": "push-pin",
+    "remixicon": "pushpin-line"
+  },
+  "rotate-ccw": {
+    "lucide": "rotate-ccw",
+    "tabler": "rotate-2",
+    "hugeicons": "rotate-left-01",
+    "phosphor": "arrow-counter-clockwise",
+    "remixicon": "anticlockwise-line"
   }
 }

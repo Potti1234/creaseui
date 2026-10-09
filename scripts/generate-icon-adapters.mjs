@@ -24,6 +24,19 @@ const parser = new XMLParser({
 })
 
 const iconNames = Object.keys(mapping).sort()
+const namedIconExports = [
+  ...fs
+    .readFileSync(path.join(root, 'src/lib/icon.ts'), 'utf8')
+    .matchAll(/export const (\w+) = named\('([^']+)'\)/g),
+]
+  .map(([, exportedName, iconName]) => {
+    if (!mapping[iconName])
+      throw new Error(
+        `Missing adapter mapping for ${exportedName} (${iconName})`,
+      )
+    return `export const ${exportedName} = named('${iconName}');`
+  })
+  .join('\n')
 const allowedTags = new Set(['circle', 'ellipse', 'g', 'path', 'rect'])
 
 const parseChildren = items =>
@@ -60,7 +73,12 @@ type IconDefinition = Readonly<{
 export type IconConfig = Readonly<{
   class?: string;
   ariaLabel?: string;
+  dataIcon?: 'inline-start' | 'inline-end';
 }>;
+
+export type IconName = keyof typeof iconNodes;
+export const iconNames: ReadonlyArray<IconName> = Object.keys(iconNodes) as IconName[];
+export const hasIcon = (name: string): name is IconName => Object.hasOwn(iconNodes, name);
 
 const nodeView = <Msg>(h: HtmlBuilder<Msg>, node: IconNode): Html => {
   const attributes: ReadonlyArray<Attribute<Msg>> = Object.entries(node[1]).map(
@@ -81,7 +99,8 @@ export const icon = <Msg>(
   config: IconConfig,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const definition = (iconNodes as Readonly<Record<string, IconDefinition>>)[name];
+  const isMissing = !hasIcon(name);
+  const definition: IconDefinition = hasIcon(name) ? iconNodes[name] : iconNodes['circle-question-mark'];
   const width = definition?.width ?? 24;
   const height = definition?.height ?? 24;
   return h.svg(
@@ -91,7 +110,8 @@ export const icon = <Msg>(
       h.Width('1em'),
       h.Height('1em'),
       h.Class(cn('crease-icon crease-icon-${library}', \`crease-icon-\${name}\`, config.class)),
-      ...(definition === undefined ? [h.DataAttribute('icon-missing', name)] : []),
+      ...(isMissing ? [h.DataAttribute('icon-missing', name)] : []),
+      ...(config.dataIcon === undefined ? [] : [h.DataAttribute('icon', config.dataIcon)]),
       ...(config.ariaLabel === undefined
         ? [h.AriaHidden(true)]
         : [h.Role('img'), h.AriaLabel(config.ariaLabel)]),
@@ -105,31 +125,7 @@ const named =
   <Msg>(config: IconConfig, h: HtmlBuilder<Msg>): Html =>
     icon(name, config, h);
 
-export const arrowLeft = named('arrow-left');
-export const arrowRight = named('arrow-right');
-export const arrowDown = named('arrow-down');
-export const arrowUp = named('arrow-up');
-export const calendarIcon = named('calendar');
-export const check = named('check');
-export const chevronDown = named('chevron-down');
-export const chevronLeft = named('chevron-left');
-export const chevronRight = named('chevron-right');
-export const chevronUp = named('chevron-up');
-export const chevronsUpDown = named('chevrons-up-down');
-export const circleCheck = named('circle-check');
-export const circleIcon = named('circle');
-export const codeXml = named('code-xml');
-export const gripVertical = named('grip-vertical');
-export const info = named('info');
-export const loaderCircle = named('loader-circle');
-export const minus = named('minus');
-export const moreHorizontal = named('ellipsis');
-export const octagonX = named('octagon-x');
-export const panelLeft = named('panel-left');
-export const plus = named('plus');
-export const search = named('search');
-export const triangleAlert = named('triangle-alert');
-export const x = named('x');
+${namedIconExports}
 `
 
 const desired = new Map()

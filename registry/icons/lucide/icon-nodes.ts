@@ -54,6 +54,42 @@ export const iconNodes = {
       ]
     ]
   },
+  "arrow-up": {
+    "width": 24,
+    "height": 24,
+    "nodes": [
+      [
+        "path",
+        {
+          "fill": "none",
+          "stroke": "currentColor",
+          "stroke-linecap": "round",
+          "stroke-linejoin": "round",
+          "stroke-width": "2",
+          "d": "m5 12l7-7l7 7m-7 7V5"
+        },
+        []
+      ]
+    ]
+  },
+  "arrow-up-right": {
+    "width": 24,
+    "height": 24,
+    "nodes": [
+      [
+        "path",
+        {
+          "fill": "none",
+          "stroke": "currentColor",
+          "stroke-linecap": "round",
+          "stroke-linejoin": "round",
+          "stroke-width": "2",
+          "d": "M7 7h10v10M7 17L17 7"
+        },
+        []
+      ]
+    ]
+  },
   "audio-waveform": {
     "width": 24,
     "height": 24,
@@ -69,6 +105,83 @@ export const iconNodes = {
           "d": "M2 13a2 2 0 0 0 2-2V7a2 2 0 0 1 4 0v13a2 2 0 0 0 4 0V4a2 2 0 0 1 4 0v13a2 2 0 0 0 4 0v-4a2 2 0 0 1 2-2"
         },
         []
+      ]
+    ]
+  },
+  "badge-check": {
+    "width": 24,
+    "height": 24,
+    "nodes": [
+      [
+        "g",
+        {
+          "fill": "none",
+          "stroke": "currentColor",
+          "stroke-linecap": "round",
+          "stroke-linejoin": "round",
+          "stroke-width": "2"
+        },
+        [
+          [
+            "path",
+            {
+              "d": "M3.85 8.62a4 4 0 0 1 4.78-4.77a4 4 0 0 1 6.74 0a4 4 0 0 1 4.78 4.78a4 4 0 0 1 0 6.74a4 4 0 0 1-4.77 4.78a4 4 0 0 1-6.75 0a4 4 0 0 1-4.78-4.77a4 4 0 0 1 0-6.76"
+            },
+            []
+          ],
+          [
+            "path",
+            {
+              "d": "m9 12l2 2l4-4"
+            },
+            []
+          ]
+        ]
+      ]
+    ]
+  },
+  "banknote": {
+    "width": 24,
+    "height": 24,
+    "nodes": [
+      [
+        "g",
+        {
+          "fill": "none",
+          "stroke": "currentColor",
+          "stroke-linecap": "round",
+          "stroke-linejoin": "round",
+          "stroke-width": "2"
+        },
+        [
+          [
+            "rect",
+            {
+              "width": "20",
+              "height": "12",
+              "x": "2",
+              "y": "6",
+              "rx": "2"
+            },
+            []
+          ],
+          [
+            "circle",
+            {
+              "cx": "12",
+              "cy": "12",
+              "r": "2"
+            },
+            []
+          ],
+          [
+            "path",
+            {
+              "d": "M6 12h.01M18 12h.01"
+            },
+            []
+          ]
+        ]
       ]
     ]
   },
@@ -139,6 +252,24 @@ export const iconNodes = {
           "stroke-linejoin": "round",
           "stroke-width": "2",
           "d": "M12 5v16m8.001-2A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2a5 5 0 0 1 4-2z"
+        },
+        []
+      ]
+    ]
+  },
+  "bookmark": {
+    "width": 24,
+    "height": 24,
+    "nodes": [
+      [
+        "path",
+        {
+          "fill": "none",
+          "stroke": "currentColor",
+          "stroke-linecap": "round",
+          "stroke-linejoin": "round",
+          "stroke-width": "2",
+          "d": "M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z"
         },
         []
       ]
@@ -230,6 +361,49 @@ export const iconNodes = {
       ]
     ]
   },
+  "calendar-days": {
+    "width": 24,
+    "height": 24,
+    "nodes": [
+      [
+        "g",
+        {
+          "fill": "none",
+          "stroke": "currentColor",
+          "stroke-linecap": "round",
+          "stroke-linejoin": "round",
+          "stroke-width": "2"
+        },
+        [
+          [
+            "path",
+            {
+              "d": "M8 2v3m8-3v3"
+            },
+            []
+          ],
+          [
+            "rect",
+            {
+              "width": "18",
+              "height": "18",
+              "x": "3",
+              "y": "3",
+              "rx": "2"
+            },
+            []
+          ],
+          [
+            "path",
+            {
+              "d": "M3 9h18M8 13h.01M12 13h.01M16 13h.01M8 17h.01M12 17h.01M16 17h.01"
+            },
+            []
+          ]
+        ]
+      ]
+    ]
+  },
   "car": {
     "width": 24,
     "height": 24,
@@ -273,6 +447,53 @@ export const iconNodes = {
               "cx": "17",
               "cy": "17",
               "r": "2"
+            },
+            []
+          ]
+        ]
+      ]
+    ]
+  },
+  "chart-bar-stacked": {
+    "width": 24,
+    "height": 24,
+    "nodes": [
+      [
+        "g",
+        {
+          "fill": "none",
+          "stroke": "currentColor",
+          "stroke-linecap": "round",
+          "stroke-linejoin": "round",
+          "stroke-width": "2"
+        },
+        [
+          [
+            "path",
+            {
+              "d": "M11 13v4m4-12v4M3 3v16a2 2 0 0 0 2 2h16"
+            },
+            []
+          ],
+          [
+            "rect",
+            {
+              "width": "9",
+              "height": "4",
+              "x": "7",
+              "y": "13",
+              "rx": "1"
+            },
+            []
+          ],
+          [
+            "rect",
+            {
+              "width": "12",
+              "height": "4",
+              "x": "7",
+              "y": "5",
+              "rx": "1"
             },
             []
           ]
@@ -508,6 +729,74 @@ export const iconNodes = {
       ]
     ]
   },
+  "circle-question-mark": {
+    "width": 24,
+    "height": 24,
+    "nodes": [
+      [
+        "g",
+        {
+          "fill": "none",
+          "stroke": "currentColor",
+          "stroke-linecap": "round",
+          "stroke-linejoin": "round",
+          "stroke-width": "2"
+        },
+        [
+          [
+            "circle",
+            {
+              "cx": "12",
+              "cy": "12",
+              "r": "10"
+            },
+            []
+          ],
+          [
+            "path",
+            {
+              "d": "M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3m.08 4h.01"
+            },
+            []
+          ]
+        ]
+      ]
+    ]
+  },
+  "clock": {
+    "width": 24,
+    "height": 24,
+    "nodes": [
+      [
+        "g",
+        {
+          "fill": "none",
+          "stroke": "currentColor",
+          "stroke-linecap": "round",
+          "stroke-linejoin": "round",
+          "stroke-width": "2"
+        },
+        [
+          [
+            "circle",
+            {
+              "cx": "12",
+              "cy": "12",
+              "r": "10"
+            },
+            []
+          ],
+          [
+            "path",
+            {
+              "d": "M12 6v6l4 2"
+            },
+            []
+          ]
+        ]
+      ]
+    ]
+  },
   "code-xml": {
     "width": 24,
     "height": 24,
@@ -625,6 +914,72 @@ export const iconNodes = {
       ]
     ]
   },
+  "eye": {
+    "width": 24,
+    "height": 24,
+    "nodes": [
+      [
+        "g",
+        {
+          "fill": "none",
+          "stroke": "currentColor",
+          "stroke-linecap": "round",
+          "stroke-linejoin": "round",
+          "stroke-width": "2"
+        },
+        [
+          [
+            "path",
+            {
+              "d": "M2.062 12.348a1 1 0 0 1 0-.696a10.75 10.75 0 0 1 19.876 0a1 1 0 0 1 0 .696a10.75 10.75 0 0 1-19.876 0"
+            },
+            []
+          ],
+          [
+            "circle",
+            {
+              "cx": "12",
+              "cy": "12",
+              "r": "3"
+            },
+            []
+          ]
+        ]
+      ]
+    ]
+  },
+  "eye-off": {
+    "width": 24,
+    "height": 24,
+    "nodes": [
+      [
+        "g",
+        {
+          "fill": "none",
+          "stroke": "currentColor",
+          "stroke-linecap": "round",
+          "stroke-linejoin": "round",
+          "stroke-width": "2"
+        },
+        [
+          [
+            "path",
+            {
+              "d": "M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575a1 1 0 0 1 0 .696a10.8 10.8 0 0 1-1.444 2.49m-6.41-.679a3 3 0 0 1-4.242-4.242"
+            },
+            []
+          ],
+          [
+            "path",
+            {
+              "d": "M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151a1 1 0 0 1 0-.696a10.75 10.75 0 0 1 4.446-5.143M2 2l20 20"
+            },
+            []
+          ]
+        ]
+      ]
+    ]
+  },
   "file": {
     "width": 24,
     "height": 24,
@@ -691,6 +1046,24 @@ export const iconNodes = {
       ]
     ]
   },
+  "folder": {
+    "width": 24,
+    "height": 24,
+    "nodes": [
+      [
+        "path",
+        {
+          "fill": "none",
+          "stroke": "currentColor",
+          "stroke-linecap": "round",
+          "stroke-linejoin": "round",
+          "stroke-width": "2",
+          "d": "M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"
+        },
+        []
+      ]
+    ]
+  },
   "frame": {
     "width": 24,
     "height": 24,
@@ -704,6 +1077,24 @@ export const iconNodes = {
           "stroke-linejoin": "round",
           "stroke-width": "2",
           "d": "M22 6H2m20 12H2M6 2v20M18 2v20"
+        },
+        []
+      ]
+    ]
+  },
+  "funnel": {
+    "width": 24,
+    "height": 24,
+    "nodes": [
+      [
+        "path",
+        {
+          "fill": "none",
+          "stroke": "currentColor",
+          "stroke-linecap": "round",
+          "stroke-linejoin": "round",
+          "stroke-width": "2",
+          "d": "M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"
         },
         []
       ]
@@ -1044,6 +1435,68 @@ export const iconNodes = {
       ]
     ]
   },
+  "layout-dashboard": {
+    "width": 24,
+    "height": 24,
+    "nodes": [
+      [
+        "g",
+        {
+          "fill": "none",
+          "stroke": "currentColor",
+          "stroke-linecap": "round",
+          "stroke-linejoin": "round",
+          "stroke-width": "2"
+        },
+        [
+          [
+            "rect",
+            {
+              "width": "7",
+              "height": "9",
+              "x": "3",
+              "y": "3",
+              "rx": "1"
+            },
+            []
+          ],
+          [
+            "rect",
+            {
+              "width": "7",
+              "height": "5",
+              "x": "14",
+              "y": "3",
+              "rx": "1"
+            },
+            []
+          ],
+          [
+            "rect",
+            {
+              "width": "7",
+              "height": "9",
+              "x": "14",
+              "y": "12",
+              "rx": "1"
+            },
+            []
+          ],
+          [
+            "rect",
+            {
+              "width": "7",
+              "height": "5",
+              "x": "3",
+              "y": "16",
+              "rx": "1"
+            },
+            []
+          ]
+        ]
+      ]
+    ]
+  },
   "life-buoy": {
     "width": 24,
     "height": 24,
@@ -1273,6 +1726,24 @@ export const iconNodes = {
       ]
     ]
   },
+  "menu": {
+    "width": 24,
+    "height": 24,
+    "nodes": [
+      [
+        "path",
+        {
+          "fill": "none",
+          "stroke": "currentColor",
+          "stroke-linecap": "round",
+          "stroke-linejoin": "round",
+          "stroke-width": "2",
+          "d": "M4 5h16M4 12h16M4 19h16"
+        },
+        []
+      ]
+    ]
+  },
   "minus": {
     "width": 24,
     "height": 24,
@@ -1286,6 +1757,42 @@ export const iconNodes = {
           "stroke-linejoin": "round",
           "stroke-width": "2",
           "d": "M5 12h14"
+        },
+        []
+      ]
+    ]
+  },
+  "mouse-pointer-2": {
+    "width": 24,
+    "height": 24,
+    "nodes": [
+      [
+        "path",
+        {
+          "fill": "none",
+          "stroke": "currentColor",
+          "stroke-linecap": "round",
+          "stroke-linejoin": "round",
+          "stroke-width": "2",
+          "d": "M4.037 4.688a.495.495 0 0 1 .651-.651l16 6.5a.5.5 0 0 1-.063.947l-6.124 1.58a2 2 0 0 0-1.438 1.435l-1.579 6.126a.5.5 0 0 1-.947.063z"
+        },
+        []
+      ]
+    ]
+  },
+  "move-horizontal": {
+    "width": 24,
+    "height": 24,
+    "nodes": [
+      [
+        "path",
+        {
+          "fill": "none",
+          "stroke": "currentColor",
+          "stroke-linecap": "round",
+          "stroke-linejoin": "round",
+          "stroke-width": "2",
+          "d": "m18 8l4 4l-4 4M2 12h20M6 8l-4 4l4 4"
         },
         []
       ]
@@ -1342,6 +1849,24 @@ export const iconNodes = {
             []
           ]
         ]
+      ]
+    ]
+  },
+  "pin": {
+    "width": 24,
+    "height": 24,
+    "nodes": [
+      [
+        "path",
+        {
+          "fill": "none",
+          "stroke": "currentColor",
+          "stroke-linecap": "round",
+          "stroke-linejoin": "round",
+          "stroke-width": "2",
+          "d": "M12 17v5M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4a1 1 0 0 1 1 1z"
+        },
+        []
       ]
     ]
   },
@@ -1621,6 +2146,38 @@ export const iconNodes = {
       ]
     ]
   },
+  "rotate-ccw": {
+    "width": 24,
+    "height": 24,
+    "nodes": [
+      [
+        "g",
+        {
+          "fill": "none",
+          "stroke": "currentColor",
+          "stroke-linecap": "round",
+          "stroke-linejoin": "round",
+          "stroke-width": "2"
+        },
+        [
+          [
+            "path",
+            {
+              "d": "M3 12a9 9 0 1 0 9-9a9.75 9.75 0 0 0-6.74 2.74L3 8"
+            },
+            []
+          ],
+          [
+            "path",
+            {
+              "d": "M3 3v5h5"
+            },
+            []
+          ]
+        ]
+      ]
+    ]
+  },
   "search": {
     "width": 24,
     "height": 24,
@@ -1670,6 +2227,40 @@ export const iconNodes = {
           "d": "M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11zm7.318-19.539l-10.94 10.939"
         },
         []
+      ]
+    ]
+  },
+  "settings": {
+    "width": 24,
+    "height": 24,
+    "nodes": [
+      [
+        "g",
+        {
+          "fill": "none",
+          "stroke": "currentColor",
+          "stroke-linecap": "round",
+          "stroke-linejoin": "round",
+          "stroke-width": "2"
+        },
+        [
+          [
+            "path",
+            {
+              "d": "M9.671 4.136a2.34 2.34 0 0 1 4.659 0a2.34 2.34 0 0 0 3.319 1.915a2.34 2.34 0 0 1 2.33 4.033a2.34 2.34 0 0 0 0 3.831a2.34 2.34 0 0 1-2.33 4.033a2.34 2.34 0 0 0-3.319 1.915a2.34 2.34 0 0 1-4.659 0a2.34 2.34 0 0 0-3.32-1.915a2.34 2.34 0 0 1-2.33-4.033a2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"
+            },
+            []
+          ],
+          [
+            "circle",
+            {
+              "cx": "12",
+              "cy": "12",
+              "r": "3"
+            },
+            []
+          ]
+        ]
       ]
     ]
   },
@@ -2106,6 +2697,74 @@ export const iconNodes = {
               "x": "2",
               "y": "7",
               "rx": "2"
+            },
+            []
+          ]
+        ]
+      ]
+    ]
+  },
+  "user-check": {
+    "width": 24,
+    "height": 24,
+    "nodes": [
+      [
+        "g",
+        {
+          "fill": "none",
+          "stroke": "currentColor",
+          "stroke-linecap": "round",
+          "stroke-linejoin": "round",
+          "stroke-width": "2"
+        },
+        [
+          [
+            "path",
+            {
+              "d": "m16 11l2 2l4-4m-6 12v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"
+            },
+            []
+          ],
+          [
+            "circle",
+            {
+              "cx": "9",
+              "cy": "7",
+              "r": "4"
+            },
+            []
+          ]
+        ]
+      ]
+    ]
+  },
+  "users": {
+    "width": 24,
+    "height": 24,
+    "nodes": [
+      [
+        "g",
+        {
+          "fill": "none",
+          "stroke": "currentColor",
+          "stroke-linecap": "round",
+          "stroke-linejoin": "round",
+          "stroke-width": "2"
+        },
+        [
+          [
+            "path",
+            {
+              "d": "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M16 3.128a4 4 0 0 1 0 7.744M22 21v-2a4 4 0 0 0-3-3.87"
+            },
+            []
+          ],
+          [
+            "circle",
+            {
+              "cx": "9",
+              "cy": "7",
+              "r": "4"
             },
             []
           ]
