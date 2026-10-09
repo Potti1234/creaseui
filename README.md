@@ -47,12 +47,13 @@ npm run check
 npm run test:sites # build both sites and check all 121 component pages
 ```
 
-The registry distributes the Tailwind components, shared utilities, and the
-Crease theme through the shadcn CLI:
+The registry distributes Tailwind components and their shared utilities, plus
+individual StyleX components, through the shadcn CLI:
 
 ```sh
 npx --yes shadcn@latest add Potti1234/creaseui/button --yes
 npx --yes shadcn@latest add Potti1234/creaseui/dialog --yes
+npx --yes shadcn@latest add Potti1234/creaseui/stylex-button --yes
 ```
 
 Registry items copy their source into a Foldkit application so the resulting code
@@ -60,9 +61,10 @@ stays owned and editable by that application. The registry does not replace the
 consumer's Foldkit or Effect versions; consult the compatibility matrix before
 installing across a Foldkit API upgrade.
 
-The StyleX components in `src/stylex` are currently copied from this checkout;
-they are not included in `registry.json`. See the
-[StyleX authoring contract](src/stylex/README.md) for setup requirements.
+StyleX items install under the configured shadcn UI directory's `stylex`
+subdirectory (for example, `@/ui/stylex`) and keep their component dependencies
+in the registry. Configure the StyleX compiler and provide the theme variables
+described in the [StyleX authoring contract](src/stylex/README.md).
 The local CLI can also be run from a consumer directory with
 `node /path/to/creaseui/scripts/crease.mjs doctor` (or `init`, `add`, `diff`).
 

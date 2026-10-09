@@ -438,13 +438,13 @@ export const view = (
       architecture: definition.architecture ?? architectureFor(kind, name),
       installation:
         renderer === 'stylex'
-          ? `// Copy src/stylex/${slug}.ts and its imports into your project.\n// Configure the StyleX compiler; see src/stylex/README.md.`
-          : `npx shadcn@latest add https://creaseui.com/r/${slug}.json`,
+          ? `npx shadcn@latest add Potti1234/creaseui/stylex-${slug}`
+          : `npx shadcn@latest add Potti1234/creaseui/${slug}`,
       usage:
         model.renderer === 'stylex'
           ? (definition.usage ?? usageFor(slug, name, kind)).replaceAll(
               `@/ui/${slug}`,
-              `@/stylex/${slug}`,
+              `@/ui/stylex/${slug}`,
             )
           : (definition.usage ?? usageFor(slug, name, kind)),
       ...(definition.sections === undefined

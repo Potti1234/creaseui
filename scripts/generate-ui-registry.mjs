@@ -251,3 +251,4 @@ console.log(
 )
 
 await import('./generate-dashboard-registry.mjs')
+await import('./generate-stylex-registry.mjs')

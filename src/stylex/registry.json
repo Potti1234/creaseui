@@ -1,0 +1,4303 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "stylex-accordion",
+      "type": "registry:ui",
+      "title": "Accordion",
+      "description": "The StyleX Accordion component for Foldkit.",
+      "files": [
+        {
+          "path": "accordion.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/accordion.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/accordion-state",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-alert-dialog",
+      "type": "registry:ui",
+      "title": "Alert Dialog",
+      "description": "The StyleX Alert Dialog component for Foldkit.",
+      "files": [
+        {
+          "path": "alert-dialog.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/alert-dialog.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/alert-dialog-behavior",
+        "Potti1234/creaseui/stylex-button",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-overlay-tokens-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-alert",
+      "type": "registry:ui",
+      "title": "Alert",
+      "description": "The StyleX Alert component for Foldkit.",
+      "files": [
+        {
+          "path": "alert.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/alert.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/alert-behavior",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-aspect-ratio",
+      "type": "registry:ui",
+      "title": "Aspect Ratio",
+      "description": "The StyleX Aspect Ratio component for Foldkit.",
+      "files": [
+        {
+          "path": "aspect-ratio.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/aspect-ratio.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-style"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-astryx-text",
+      "type": "registry:lib",
+      "title": "StyleX Astryx Text Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "astryx-text.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/astryx-text.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ]
+    },
+    {
+      "name": "stylex-attachment-markers-stylex",
+      "type": "registry:lib",
+      "title": "StyleX Attachment Markers Stylex Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "attachment.markers.stylex.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/attachment.markers.stylex.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-attachment",
+      "type": "registry:ui",
+      "title": "Attachment",
+      "description": "The StyleX Attachment component for Foldkit.",
+      "files": [
+        {
+          "path": "attachment.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/attachment.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-attachment-markers-stylex",
+        "Potti1234/creaseui/stylex-button",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-message-markers-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-avatar-group",
+      "type": "registry:ui",
+      "title": "Avatar Group",
+      "description": "The StyleX Avatar Group component for Foldkit.",
+      "files": [
+        {
+          "path": "avatar-group.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/avatar-group.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-complex-tokens-stylex",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-avatar-markers-stylex",
+      "type": "registry:lib",
+      "title": "StyleX Avatar Markers Stylex Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "avatar.markers.stylex.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/avatar.markers.stylex.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-avatar",
+      "type": "registry:ui",
+      "title": "Avatar",
+      "description": "The StyleX Avatar component for Foldkit.",
+      "files": [
+        {
+          "path": "avatar.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/avatar.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-avatar-markers-stylex",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-badge",
+      "type": "registry:ui",
+      "title": "Badge",
+      "description": "The StyleX Badge component for Foldkit.",
+      "files": [
+        {
+          "path": "badge.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/badge.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-banner",
+      "type": "registry:ui",
+      "title": "Banner",
+      "description": "The StyleX Banner component for Foldkit.",
+      "files": [
+        {
+          "path": "banner.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/banner.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/banner-behavior",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-button",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-blockquote",
+      "type": "registry:ui",
+      "title": "Blockquote",
+      "description": "The StyleX Blockquote component for Foldkit.",
+      "files": [
+        {
+          "path": "blockquote.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/blockquote.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-breadcrumb",
+      "type": "registry:ui",
+      "title": "Breadcrumb",
+      "description": "The StyleX Breadcrumb component for Foldkit.",
+      "files": [
+        {
+          "path": "breadcrumb.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/breadcrumb.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/breadcrumb-behavior",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-bubble-markers-stylex",
+      "type": "registry:lib",
+      "title": "StyleX Bubble Markers Stylex Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "bubble.markers.stylex.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/bubble.markers.stylex.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-bubble",
+      "type": "registry:ui",
+      "title": "Bubble",
+      "description": "The StyleX Bubble component for Foldkit.",
+      "files": [
+        {
+          "path": "bubble.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/bubble.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-bubble-markers-stylex",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-message-markers-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-button-group-join-stylex",
+      "type": "registry:lib",
+      "title": "StyleX Button Group Join Stylex Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "button-group-join.stylex.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/button-group-join.stylex.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex"
+      ]
+    },
+    {
+      "name": "stylex-button-group",
+      "type": "registry:ui",
+      "title": "Button Group",
+      "description": "The StyleX Button Group component for Foldkit.",
+      "files": [
+        {
+          "path": "button-group.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/button-group.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-button-group-join-stylex",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-button",
+      "type": "registry:ui",
+      "title": "Button",
+      "description": "The StyleX Button component for Foldkit.",
+      "files": [
+        {
+          "path": "button.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/button.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/button-behavior",
+        "Potti1234/creaseui/stylex-button-group-join-stylex",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-calendar-markers-stylex",
+      "type": "registry:lib",
+      "title": "StyleX Calendar Markers Stylex Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "calendar.markers.stylex.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/calendar.markers.stylex.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-calendar",
+      "type": "registry:ui",
+      "title": "Calendar",
+      "description": "The StyleX Calendar component for Foldkit.",
+      "files": [
+        {
+          "path": "calendar.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/calendar.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/calendar-range",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-calendar-markers-stylex",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-card-markers-stylex",
+      "type": "registry:lib",
+      "title": "StyleX Card Markers Stylex Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "card.markers.stylex.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/card.markers.stylex.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-card",
+      "type": "registry:ui",
+      "title": "Card",
+      "description": "The StyleX Card component for Foldkit.",
+      "files": [
+        {
+          "path": "card.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/card.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-carousel",
+      "type": "registry:ui",
+      "title": "Carousel",
+      "description": "The StyleX Carousel component for Foldkit.",
+      "files": [
+        {
+          "path": "carousel.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/carousel.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0",
+        "embla-carousel@^8.6.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/carousel-lifecycle",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-center",
+      "type": "registry:ui",
+      "title": "Center",
+      "description": "The StyleX Center component for Foldkit.",
+      "files": [
+        {
+          "path": "center.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/center.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-style"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-chart",
+      "type": "registry:ui",
+      "title": "Chart",
+      "description": "The StyleX Chart component for Foldkit.",
+      "files": [
+        {
+          "path": "chart.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/chart.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/echarts-adapter",
+        "Potti1234/creaseui/stylex-complex-tokens-stylex",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-integrations-echarts",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-chat-reasoning",
+      "type": "registry:ui",
+      "title": "Chat Reasoning",
+      "description": "The StyleX Chat Reasoning component for Foldkit.",
+      "files": [
+        {
+          "path": "chat-reasoning.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/chat-reasoning.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-checkbox-markers-stylex",
+      "type": "registry:lib",
+      "title": "StyleX Checkbox Markers Stylex Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "checkbox.markers.stylex.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/checkbox.markers.stylex.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-checkbox",
+      "type": "registry:ui",
+      "title": "Checkbox",
+      "description": "The StyleX Checkbox component for Foldkit.",
+      "files": [
+        {
+          "path": "checkbox.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/checkbox.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/checkbox-behavior",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-checkbox-markers-stylex",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-circular-progress",
+      "type": "registry:ui",
+      "title": "Circular Progress",
+      "description": "The StyleX Circular Progress component for Foldkit.",
+      "files": [
+        {
+          "path": "circular-progress.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/circular-progress.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-complex-tokens-stylex",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-code-block",
+      "type": "registry:ui",
+      "title": "Code Block",
+      "description": "The StyleX Code Block component for Foldkit.",
+      "files": [
+        {
+          "path": "code-block.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/code-block.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/code-block-behavior",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-button",
+        "Potti1234/creaseui/stylex-complex-tokens-stylex",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-code",
+      "type": "registry:ui",
+      "title": "Code",
+      "description": "The StyleX Code component for Foldkit.",
+      "files": [
+        {
+          "path": "code.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/code.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-collapsible",
+      "type": "registry:ui",
+      "title": "Collapsible",
+      "description": "The StyleX Collapsible component for Foldkit.",
+      "files": [
+        {
+          "path": "collapsible.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/collapsible.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-complex-tokens-stylex",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-sidebar-markers-stylex",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-combobox",
+      "type": "registry:ui",
+      "title": "Combobox",
+      "description": "The StyleX Combobox component for Foldkit.",
+      "files": [
+        {
+          "path": "combobox.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/combobox.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-overlay-boundary",
+        "Potti1234/creaseui/stylex-overlay-tokens-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-command",
+      "type": "registry:ui",
+      "title": "Command",
+      "description": "The StyleX Command component for Foldkit.",
+      "files": [
+        {
+          "path": "command.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/command.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/command-behavior",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-overlay-tokens-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-complex-tokens-stylex",
+      "type": "registry:lib",
+      "title": "StyleX Complex Tokens Stylex Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "complex-tokens.stylex.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/complex-tokens.stylex.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-composition-box",
+      "type": "registry:lib",
+      "title": "StyleX Composition Box Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/box.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/composition/box.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-composition-composition-theme-stylex",
+        "Potti1234/creaseui/stylex-composition-element",
+        "Potti1234/creaseui/stylex-composition-semantic-theme-stylex",
+        "Potti1234/creaseui/stylex-composition-space",
+        "Potti1234/creaseui/stylex-composition-types",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ]
+    },
+    {
+      "name": "stylex-composition-chart-tab",
+      "type": "registry:lib",
+      "title": "StyleX Composition Chart Tab Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/chart-tab.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/composition/chart-tab.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ]
+    },
+    {
+      "name": "stylex-composition-composition-theme-stylex",
+      "type": "registry:lib",
+      "title": "StyleX Composition Composition Theme Stylex Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/composition-theme.stylex.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/composition/composition-theme.stylex.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-composition-composition-tokens-stylex-const",
+      "type": "registry:lib",
+      "title": "StyleX Composition Composition Tokens Stylex Const Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/composition-tokens.stylex.const.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/composition/composition-tokens.stylex.const.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-composition-element",
+      "type": "registry:lib",
+      "title": "StyleX Composition Element Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/element.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/composition/element.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-composition-types"
+      ]
+    },
+    {
+      "name": "stylex-composition-evaluations",
+      "type": "registry:lib",
+      "title": "StyleX Composition Evaluations Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/evaluations.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/composition/evaluations.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-composition-templates"
+      ]
+    },
+    {
+      "name": "stylex-composition-grid",
+      "type": "registry:lib",
+      "title": "StyleX Composition Grid Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/grid.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/composition/grid.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-composition-composition-theme-stylex",
+        "Potti1234/creaseui/stylex-composition-element",
+        "Potti1234/creaseui/stylex-composition-semantic-layout-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-composition-space",
+        "Potti1234/creaseui/stylex-composition-types",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ]
+    },
+    {
+      "name": "stylex-composition-icon",
+      "type": "registry:lib",
+      "title": "StyleX Composition Icon Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/icon.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/composition/icon.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-style"
+      ]
+    },
+    {
+      "name": "stylex-composition-index",
+      "type": "registry:lib",
+      "title": "StyleX Composition Index Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/index.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/composition/index.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-composition-box",
+        "Potti1234/creaseui/stylex-composition-composition-theme-stylex",
+        "Potti1234/creaseui/stylex-composition-evaluations",
+        "Potti1234/creaseui/stylex-composition-grid",
+        "Potti1234/creaseui/stylex-composition-inline",
+        "Potti1234/creaseui/stylex-composition-recipes",
+        "Potti1234/creaseui/stylex-composition-semantic-layout",
+        "Potti1234/creaseui/stylex-composition-semantic-theme-stylex",
+        "Potti1234/creaseui/stylex-composition-semantic-themes",
+        "Potti1234/creaseui/stylex-composition-stack",
+        "Potti1234/creaseui/stylex-composition-templates",
+        "Potti1234/creaseui/stylex-composition-text",
+        "Potti1234/creaseui/stylex-composition-theme",
+        "Potti1234/creaseui/stylex-composition-types"
+      ]
+    },
+    {
+      "name": "stylex-composition-inline",
+      "type": "registry:lib",
+      "title": "StyleX Composition Inline Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/inline.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/composition/inline.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-composition-element",
+        "Potti1234/creaseui/stylex-composition-space",
+        "Potti1234/creaseui/stylex-composition-types",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ]
+    },
+    {
+      "name": "stylex-composition-login-artwork",
+      "type": "registry:lib",
+      "title": "StyleX Composition Login Artwork Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/login-artwork.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/composition/login-artwork.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style"
+      ]
+    },
+    {
+      "name": "stylex-composition-recipes",
+      "type": "registry:lib",
+      "title": "StyleX Composition Recipes Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/recipes.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/composition/recipes.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-composition-semantic-layout",
+        "Potti1234/creaseui/stylex-composition-theme",
+        "Potti1234/creaseui/stylex-composition-types-internal"
+      ]
+    },
+    {
+      "name": "stylex-composition-semantic-layout-tokens-stylex-const",
+      "type": "registry:lib",
+      "title": "StyleX Composition Semantic Layout Tokens Stylex Const Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/semantic-layout-tokens.stylex.const.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/composition/semantic-layout-tokens.stylex.const.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-composition-semantic-layout",
+      "type": "registry:lib",
+      "title": "StyleX Composition Semantic Layout Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/semantic-layout.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/composition/semantic-layout.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-composition-box",
+        "Potti1234/creaseui/stylex-composition-grid",
+        "Potti1234/creaseui/stylex-composition-inline",
+        "Potti1234/creaseui/stylex-composition-stack",
+        "Potti1234/creaseui/stylex-composition-text",
+        "Potti1234/creaseui/stylex-composition-types"
+      ]
+    },
+    {
+      "name": "stylex-composition-semantic-theme-stylex",
+      "type": "registry:lib",
+      "title": "StyleX Composition Semantic Theme Stylex Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/semantic-theme.stylex.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/composition/semantic-theme.stylex.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-composition-semantic-themes",
+      "type": "registry:lib",
+      "title": "StyleX Composition Semantic Themes Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/semantic-themes.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/composition/semantic-themes.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-composition-semantic-theme-stylex"
+      ]
+    },
+    {
+      "name": "stylex-composition-sidebar-block",
+      "type": "registry:lib",
+      "title": "StyleX Composition Sidebar Block Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/sidebar-block.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/composition/sidebar-block.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ]
+    },
+    {
+      "name": "stylex-composition-space",
+      "type": "registry:lib",
+      "title": "StyleX Composition Space Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/space.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/composition/space.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-composition-composition-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-composition-semantic-theme-stylex",
+        "Potti1234/creaseui/stylex-composition-types"
+      ]
+    },
+    {
+      "name": "stylex-composition-stack",
+      "type": "registry:lib",
+      "title": "StyleX Composition Stack Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/stack.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/composition/stack.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-composition-element",
+        "Potti1234/creaseui/stylex-composition-space",
+        "Potti1234/creaseui/stylex-composition-types",
+        "Potti1234/creaseui/stylex-style"
+      ]
+    },
+    {
+      "name": "stylex-composition-templates",
+      "type": "registry:lib",
+      "title": "StyleX Composition Templates Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/templates.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/composition/templates.ts"
+        }
+      ]
+    },
+    {
+      "name": "stylex-composition-text",
+      "type": "registry:lib",
+      "title": "StyleX Composition Text Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/text.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/composition/text.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-composition-composition-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-composition-semantic-theme-stylex",
+        "Potti1234/creaseui/stylex-composition-types",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ]
+    },
+    {
+      "name": "stylex-composition-theme",
+      "type": "registry:lib",
+      "title": "StyleX Composition Theme Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/theme.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/composition/theme.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-composition-semantic-themes",
+        "Potti1234/creaseui/stylex-composition-types"
+      ]
+    },
+    {
+      "name": "stylex-composition-types-internal",
+      "type": "registry:lib",
+      "title": "StyleX Composition Types Internal Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/types-internal.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/composition/types-internal.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-composition-semantic-layout",
+        "Potti1234/creaseui/stylex-composition-types"
+      ]
+    },
+    {
+      "name": "stylex-composition-types",
+      "type": "registry:lib",
+      "title": "StyleX Composition Types Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/types.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/composition/types.ts"
+        }
+      ]
+    },
+    {
+      "name": "stylex-context-menu",
+      "type": "registry:ui",
+      "title": "Context Menu",
+      "description": "The StyleX Context Menu component for Foldkit.",
+      "files": [
+        {
+          "path": "context-menu.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/context-menu.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-dropdown-menu"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-contracts",
+      "type": "registry:lib",
+      "title": "StyleX Contracts Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "contracts.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/contracts.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-data-table",
+      "type": "registry:ui",
+      "title": "Data Table",
+      "description": "The StyleX Data Table component for Foldkit.",
+      "files": [
+        {
+          "path": "data-table.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/data-table.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/data-table-mechanics",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-button",
+        "Potti1234/creaseui/stylex-complex-tokens-stylex",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-input",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-table",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-date-input",
+      "type": "registry:ui",
+      "title": "Date Input",
+      "description": "The StyleX Date Input component for Foldkit.",
+      "files": [
+        {
+          "path": "date-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/date-input.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/date-input-behavior",
+        "Potti1234/creaseui/date-parse-behavior",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-calendar",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-overlay-boundary",
+        "Potti1234/creaseui/stylex-overlay-tokens-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-date-picker",
+      "type": "registry:ui",
+      "title": "Date Picker",
+      "description": "The StyleX Date Picker component for Foldkit.",
+      "files": [
+        {
+          "path": "date-picker.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/date-picker.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/calendar-range",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-calendar",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-overlay-boundary",
+        "Potti1234/creaseui/stylex-overlay-tokens-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-date-range-input",
+      "type": "registry:ui",
+      "title": "Date Range Input",
+      "description": "The StyleX Date Range Input component for Foldkit.",
+      "files": [
+        {
+          "path": "date-range-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/date-range-input.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/date-parse-behavior",
+        "Potti1234/creaseui/date-range-input-behavior",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-calendar",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-overlay-boundary",
+        "Potti1234/creaseui/stylex-overlay-tokens-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-date-time-input",
+      "type": "registry:ui",
+      "title": "Date Time Input",
+      "description": "The StyleX Date Time Input component for Foldkit.",
+      "files": [
+        {
+          "path": "date-time-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/date-time-input.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/date-parse-behavior",
+        "Potti1234/creaseui/date-time-input-behavior",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-calendar",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-overlay-boundary",
+        "Potti1234/creaseui/stylex-overlay-tokens-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex",
+        "Potti1234/creaseui/time-parse-behavior"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-dialog",
+      "type": "registry:ui",
+      "title": "Dialog",
+      "description": "The StyleX Dialog component for Foldkit.",
+      "files": [
+        {
+          "path": "dialog.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/dialog.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-overlay-tokens-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-direction",
+      "type": "registry:ui",
+      "title": "Direction",
+      "description": "The StyleX Direction component for Foldkit.",
+      "files": [
+        {
+          "path": "direction.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/direction.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-style"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-drawer",
+      "type": "registry:ui",
+      "title": "Drawer",
+      "description": "The StyleX Drawer component for Foldkit.",
+      "files": [
+        {
+          "path": "drawer.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/drawer.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/drawer-behavior",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-overlay-tokens-stylex",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-dropdown-menu",
+      "type": "registry:ui",
+      "title": "Dropdown Menu",
+      "description": "The StyleX Dropdown Menu component for Foldkit.",
+      "files": [
+        {
+          "path": "dropdown-menu.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/dropdown-menu.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/dropdown-menu-behavior",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-button",
+        "Potti1234/creaseui/stylex-button-group-join-stylex",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-overlay-tokens-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-separator",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-empty",
+      "type": "registry:ui",
+      "title": "Empty",
+      "description": "The StyleX Empty component for Foldkit.",
+      "files": [
+        {
+          "path": "empty.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/empty.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-field-status",
+      "type": "registry:ui",
+      "title": "Field Status",
+      "description": "The StyleX Field Status component for Foldkit.",
+      "files": [
+        {
+          "path": "field-status.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/field-status.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-field-markers-stylex",
+      "type": "registry:lib",
+      "title": "StyleX Field Markers Stylex Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "field.markers.stylex.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/field.markers.stylex.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-field",
+      "type": "registry:ui",
+      "title": "Field",
+      "description": "The StyleX Field component for Foldkit.",
+      "files": [
+        {
+          "path": "field.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/field.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/field-behavior",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-field-markers-stylex",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-file-input",
+      "type": "registry:ui",
+      "title": "File Input",
+      "description": "The StyleX File Input component for Foldkit.",
+      "files": [
+        {
+          "path": "file-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/file-input.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/file-input-behavior",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/input-status",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-form",
+      "type": "registry:ui",
+      "title": "Form",
+      "description": "The StyleX Form component for Foldkit.",
+      "files": [
+        {
+          "path": "form.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/form.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/form-behavior",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-field",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-foundations-tokens-stylex",
+      "type": "registry:lib",
+      "title": "StyleX Foundations Tokens Stylex Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "foundations-tokens.stylex.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/foundations-tokens.stylex.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-grid",
+      "type": "registry:ui",
+      "title": "Grid",
+      "description": "The StyleX Grid component for Foldkit.",
+      "files": [
+        {
+          "path": "grid.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/grid.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-style"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-heading",
+      "type": "registry:ui",
+      "title": "Heading",
+      "description": "The StyleX Heading component for Foldkit.",
+      "files": [
+        {
+          "path": "heading.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/heading.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-text",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-hover-card",
+      "type": "registry:ui",
+      "title": "Hover Card",
+      "description": "The StyleX Hover Card component for Foldkit.",
+      "files": [
+        {
+          "path": "hover-card.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/hover-card.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/hover-card-behavior",
+        "Potti1234/creaseui/stylex-button",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-overlay-boundary",
+        "Potti1234/creaseui/stylex-overlay-tokens-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-indicator",
+      "type": "registry:ui",
+      "title": "Indicator",
+      "description": "The StyleX Indicator component for Foldkit.",
+      "files": [
+        {
+          "path": "indicator.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/indicator.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-info-tip",
+      "type": "registry:ui",
+      "title": "Info Tip",
+      "description": "The StyleX Info Tip component for Foldkit.",
+      "files": [
+        {
+          "path": "info-tip.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/info-tip.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-overlay-boundary",
+        "Potti1234/creaseui/stylex-overlay-tokens-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex",
+        "Potti1234/creaseui/tooltip-behavior"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-input-group",
+      "type": "registry:ui",
+      "title": "Input Group",
+      "description": "The StyleX Input Group component for Foldkit.",
+      "files": [
+        {
+          "path": "input-group.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/input-group.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-button",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-input-otp",
+      "type": "registry:ui",
+      "title": "Input Otp",
+      "description": "The StyleX Input Otp component for Foldkit.",
+      "files": [
+        {
+          "path": "input-otp.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/input-otp.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-input",
+      "type": "registry:ui",
+      "title": "Input",
+      "description": "The StyleX Input component for Foldkit.",
+      "files": [
+        {
+          "path": "input.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/input.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/input-behavior",
+        "Potti1234/creaseui/stylex-button-group-join-stylex",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-integrations-echarts",
+      "type": "registry:lib",
+      "title": "StyleX Integrations Echarts Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "integrations/echarts.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/integrations/echarts.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/echarts-adapter",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ]
+    },
+    {
+      "name": "stylex-interaction-tokens-stylex-const",
+      "type": "registry:lib",
+      "title": "StyleX Interaction Tokens Stylex Const Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "interaction-tokens.stylex.const.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/interaction-tokens.stylex.const.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-item",
+      "type": "registry:ui",
+      "title": "Item",
+      "description": "The StyleX Item component for Foldkit.",
+      "files": [
+        {
+          "path": "item.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/item.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-kbd",
+      "type": "registry:ui",
+      "title": "Kbd",
+      "description": "The StyleX Kbd component for Foldkit.",
+      "files": [
+        {
+          "path": "kbd.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/kbd.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-label",
+      "type": "registry:ui",
+      "title": "Label",
+      "description": "The StyleX Label component for Foldkit.",
+      "files": [
+        {
+          "path": "label.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/label.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-style"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-lightbox",
+      "type": "registry:ui",
+      "title": "Lightbox",
+      "description": "The StyleX Lightbox component for Foldkit.",
+      "files": [
+        {
+          "path": "lightbox.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/lightbox.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/lightbox-behavior",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-link",
+      "type": "registry:ui",
+      "title": "Link",
+      "description": "The StyleX Link component for Foldkit.",
+      "files": [
+        {
+          "path": "link.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/link.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-text",
+        "Potti1234/creaseui/stylex-tokens-stylex",
+        "Potti1234/creaseui/stylex-tooltip"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-list-input",
+      "type": "registry:ui",
+      "title": "List Input",
+      "description": "The StyleX List Input component for Foldkit.",
+      "files": [
+        {
+          "path": "list-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/list-input.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/input-status",
+        "Potti1234/creaseui/list-input-behavior",
+        "Potti1234/creaseui/stylex-button",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-list",
+      "type": "registry:ui",
+      "title": "List",
+      "description": "The StyleX List component for Foldkit.",
+      "files": [
+        {
+          "path": "list.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/list.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-log-stream-terminal-ink-stylex",
+      "type": "registry:lib",
+      "title": "StyleX Log Stream Terminal Ink Stylex Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "log-stream-terminal-ink.stylex.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/log-stream-terminal-ink.stylex.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-log-stream-terminal-stylex",
+      "type": "registry:lib",
+      "title": "StyleX Log Stream Terminal Stylex Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "log-stream-terminal.stylex.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/log-stream-terminal.stylex.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ]
+    },
+    {
+      "name": "stylex-log-stream",
+      "type": "registry:ui",
+      "title": "Log Stream",
+      "description": "The StyleX Log Stream component for Foldkit.",
+      "files": [
+        {
+          "path": "log-stream.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/log-stream.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/message-scroller-behavior",
+        "Potti1234/creaseui/stylex-complex-tokens-stylex",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-log-stream-terminal-ink-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-map-arc",
+      "type": "registry:ui",
+      "title": "Map Arc",
+      "description": "The StyleX Map Arc component for Foldkit.",
+      "files": [
+        {
+          "path": "map-arc.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/map-arc.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/map-adapter"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-map-cluster",
+      "type": "registry:ui",
+      "title": "Map Cluster",
+      "description": "The StyleX Map Cluster component for Foldkit.",
+      "files": [
+        {
+          "path": "map-cluster.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/map-cluster.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/map-adapter"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-map-controls",
+      "type": "registry:ui",
+      "title": "Map Controls",
+      "description": "The StyleX Map Controls component for Foldkit.",
+      "files": [
+        {
+          "path": "map-controls.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/map-controls.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/map-adapter",
+        "Potti1234/creaseui/stylex-map"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-map-geojson",
+      "type": "registry:ui",
+      "title": "Map Geojson",
+      "description": "The StyleX Map Geojson component for Foldkit.",
+      "files": [
+        {
+          "path": "map-geojson.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/map-geojson.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/map-adapter"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-map-localization",
+      "type": "registry:ui",
+      "title": "Map Localization",
+      "description": "The StyleX Map Localization component for Foldkit.",
+      "files": [
+        {
+          "path": "map-localization.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/map-localization.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/map-adapter"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-map-marker",
+      "type": "registry:ui",
+      "title": "Map Marker",
+      "description": "The StyleX Map Marker component for Foldkit.",
+      "files": [
+        {
+          "path": "map-marker.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/map-marker.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/map-adapter",
+        "Potti1234/creaseui/stylex-map"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-map-popup",
+      "type": "registry:ui",
+      "title": "Map Popup",
+      "description": "The StyleX Map Popup component for Foldkit.",
+      "files": [
+        {
+          "path": "map-popup.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/map-popup.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/map-adapter",
+        "Potti1234/creaseui/stylex-map"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-map-route",
+      "type": "registry:ui",
+      "title": "Map Route",
+      "description": "The StyleX Map Route component for Foldkit.",
+      "files": [
+        {
+          "path": "map-route.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/map-route.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/map-adapter"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-map-styles",
+      "type": "registry:ui",
+      "title": "Map Styles",
+      "description": "The StyleX Map Styles component for Foldkit.",
+      "files": [
+        {
+          "path": "map-styles.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/map-styles.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/map-adapter"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-map-markers-stylex",
+      "type": "registry:lib",
+      "title": "StyleX Map Markers Stylex Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "map.markers.stylex.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/map.markers.stylex.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-map",
+      "type": "registry:ui",
+      "title": "Map",
+      "description": "The StyleX Map component for Foldkit.",
+      "files": [
+        {
+          "path": "map.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/map.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/map-adapter",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-map-markers-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-markdown",
+      "type": "registry:ui",
+      "title": "Markdown",
+      "description": "The StyleX Markdown component for Foldkit.",
+      "files": [
+        {
+          "path": "markdown.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/markdown.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/markdown-behavior",
+        "Potti1234/creaseui/stylex-blockquote",
+        "Potti1234/creaseui/stylex-code",
+        "Potti1234/creaseui/stylex-code-block",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-heading",
+        "Potti1234/creaseui/stylex-list",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-table",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-marker",
+      "type": "registry:ui",
+      "title": "Marker",
+      "description": "The StyleX Marker component for Foldkit.",
+      "files": [
+        {
+          "path": "marker.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/marker.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-menubar",
+      "type": "registry:ui",
+      "title": "Menubar",
+      "description": "The StyleX Menubar component for Foldkit.",
+      "files": [
+        {
+          "path": "menubar.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/menubar.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/menubar-behavior",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-dropdown-menu",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-message-scroller",
+      "type": "registry:ui",
+      "title": "Message Scroller",
+      "description": "The StyleX Message Scroller component for Foldkit.",
+      "files": [
+        {
+          "path": "message-scroller.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/message-scroller.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/message-scroller-behavior",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-message-markers-stylex",
+      "type": "registry:lib",
+      "title": "StyleX Message Markers Stylex Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "message.markers.stylex.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/message.markers.stylex.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-message",
+      "type": "registry:ui",
+      "title": "Message",
+      "description": "The StyleX Message component for Foldkit.",
+      "files": [
+        {
+          "path": "message.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/message.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-message-markers-stylex",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-metadata-list",
+      "type": "registry:ui",
+      "title": "Metadata List",
+      "description": "The StyleX Metadata List component for Foldkit.",
+      "files": [
+        {
+          "path": "metadata-list.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/metadata-list.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/metadata-list-behavior",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-mobile-nav",
+      "type": "registry:ui",
+      "title": "Mobile Nav",
+      "description": "The StyleX Mobile Nav component for Foldkit.",
+      "files": [
+        {
+          "path": "mobile-nav.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/mobile-nav.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/mobile-nav-behavior",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-overlay-tokens-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-more-menu",
+      "type": "registry:ui",
+      "title": "More Menu",
+      "description": "The StyleX More Menu component for Foldkit.",
+      "files": [
+        {
+          "path": "more-menu.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/more-menu.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/more-menu-behavior",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-dropdown-menu",
+        "Potti1234/creaseui/stylex-style"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-multi-selector",
+      "type": "registry:ui",
+      "title": "Multi Selector",
+      "description": "The StyleX Multi Selector component for Foldkit.",
+      "files": [
+        {
+          "path": "multi-selector.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/multi-selector.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/multi-selector-behavior",
+        "Potti1234/creaseui/multi-selector-view-behavior",
+        "Potti1234/creaseui/stylex-button",
+        "Potti1234/creaseui/stylex-checkbox",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-drawer",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-overlay-boundary",
+        "Potti1234/creaseui/stylex-overlay-tokens-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-native-select",
+      "type": "registry:ui",
+      "title": "Native Select",
+      "description": "The StyleX Native Select component for Foldkit.",
+      "files": [
+        {
+          "path": "native-select.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/native-select.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-navigation-menu",
+      "type": "registry:ui",
+      "title": "Navigation Menu",
+      "description": "The StyleX Navigation Menu component for Foldkit.",
+      "files": [
+        {
+          "path": "navigation-menu.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/navigation-menu.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-complex-tokens-stylex",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-popover",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-number-input",
+      "type": "registry:ui",
+      "title": "Number Input",
+      "description": "The StyleX Number Input component for Foldkit.",
+      "files": [
+        {
+          "path": "number-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/number-input.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/input-status",
+        "Potti1234/creaseui/number-input-behavior",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-overflow-list",
+      "type": "registry:ui",
+      "title": "Overflow List",
+      "description": "The StyleX Overflow List component for Foldkit.",
+      "files": [
+        {
+          "path": "overflow-list.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/overflow-list.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/overflow-list-behavior",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-style"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-overlay-boundary",
+      "type": "registry:lib",
+      "title": "StyleX Overlay Boundary Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "overlay-boundary.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/overlay-boundary.ts"
+        }
+      ]
+    },
+    {
+      "name": "stylex-overlay-tokens-stylex",
+      "type": "registry:lib",
+      "title": "StyleX Overlay Tokens Stylex Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "overlay-tokens.stylex.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/overlay-tokens.stylex.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-complex-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ]
+    },
+    {
+      "name": "stylex-pagination",
+      "type": "registry:ui",
+      "title": "Pagination",
+      "description": "The StyleX Pagination component for Foldkit.",
+      "files": [
+        {
+          "path": "pagination.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/pagination.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pagination-behavior",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-popover",
+      "type": "registry:ui",
+      "title": "Popover",
+      "description": "The StyleX Popover component for Foldkit.",
+      "files": [
+        {
+          "path": "popover.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/popover.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-button",
+        "Potti1234/creaseui/stylex-complex-tokens-stylex",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-overlay-boundary",
+        "Potti1234/creaseui/stylex-overlay-tokens-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-progress",
+      "type": "registry:ui",
+      "title": "Progress",
+      "description": "The StyleX Progress component for Foldkit.",
+      "files": [
+        {
+          "path": "progress.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/progress.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/progress-normalization",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-radio-group-markers-stylex",
+      "type": "registry:lib",
+      "title": "StyleX Radio Group Markers Stylex Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "radio-group.markers.stylex.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/radio-group.markers.stylex.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-radio-group",
+      "type": "registry:ui",
+      "title": "Radio Group",
+      "description": "The StyleX Radio Group component for Foldkit.",
+      "files": [
+        {
+          "path": "radio-group.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/radio-group.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/radio-group-behavior",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-radio-group-markers-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-reset",
+      "type": "registry:lib",
+      "title": "StyleX Reset Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "reset.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/reset.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ]
+    },
+    {
+      "name": "stylex-resizable",
+      "type": "registry:ui",
+      "title": "Resizable",
+      "description": "The StyleX Resizable component for Foldkit.",
+      "files": [
+        {
+          "path": "resizable.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/resizable.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-complex-tokens-stylex",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-scroll-area",
+      "type": "registry:ui",
+      "title": "Scroll Area",
+      "description": "The StyleX Scroll Area component for Foldkit.",
+      "files": [
+        {
+          "path": "scroll-area.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/scroll-area.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-section",
+      "type": "registry:ui",
+      "title": "Section",
+      "description": "The StyleX Section component for Foldkit.",
+      "files": [
+        {
+          "path": "section.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/section.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-select",
+      "type": "registry:ui",
+      "title": "Select",
+      "description": "The StyleX Select component for Foldkit.",
+      "files": [
+        {
+          "path": "select.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/select.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-button-group-join-stylex",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-overlay-boundary",
+        "Potti1234/creaseui/stylex-overlay-tokens-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-selectable-card",
+      "type": "registry:ui",
+      "title": "Selectable Card",
+      "description": "The StyleX Selectable Card component for Foldkit.",
+      "files": [
+        {
+          "path": "selectable-card.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/selectable-card.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/card-pressable-behavior",
+        "Potti1234/creaseui/card-surface-behavior",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-separator",
+      "type": "registry:ui",
+      "title": "Separator",
+      "description": "The StyleX Separator component for Foldkit.",
+      "files": [
+        {
+          "path": "separator.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/separator.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-sheet",
+      "type": "registry:ui",
+      "title": "Sheet",
+      "description": "The StyleX Sheet component for Foldkit.",
+      "files": [
+        {
+          "path": "sheet.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/sheet.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/sheet-behavior",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-overlay-tokens-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-sidebar-markers-stylex",
+      "type": "registry:lib",
+      "title": "StyleX Sidebar Markers Stylex Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "sidebar.markers.stylex.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/sidebar.markers.stylex.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-sidebar",
+      "type": "registry:ui",
+      "title": "Sidebar",
+      "description": "The StyleX Sidebar component for Foldkit.",
+      "files": [
+        {
+          "path": "sidebar.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/sidebar.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/sidebar-state",
+        "Potti1234/creaseui/stylex-complex-tokens-stylex",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-sidebar-markers-stylex",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-skeleton",
+      "type": "registry:ui",
+      "title": "Skeleton",
+      "description": "The StyleX Skeleton component for Foldkit.",
+      "files": [
+        {
+          "path": "skeleton.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/skeleton.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-style"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-slider",
+      "type": "registry:ui",
+      "title": "Slider",
+      "description": "The StyleX Slider component for Foldkit.",
+      "files": [
+        {
+          "path": "slider.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/slider.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/slider-behavior",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-spinner",
+      "type": "registry:ui",
+      "title": "Spinner",
+      "description": "The StyleX Spinner component for Foldkit.",
+      "files": [
+        {
+          "path": "spinner.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/spinner.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-stack",
+      "type": "registry:ui",
+      "title": "Stack",
+      "description": "The StyleX Stack component for Foldkit.",
+      "files": [
+        {
+          "path": "stack.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/stack.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-stat",
+      "type": "registry:ui",
+      "title": "Stat",
+      "description": "The StyleX Stat component for Foldkit.",
+      "files": [
+        {
+          "path": "stat.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/stat.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-status-dot",
+      "type": "registry:ui",
+      "title": "Status Dot",
+      "description": "The StyleX Status Dot component for Foldkit.",
+      "files": [
+        {
+          "path": "status-dot.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/status-dot.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-stepper",
+      "type": "registry:ui",
+      "title": "Stepper",
+      "description": "The StyleX Stepper component for Foldkit.",
+      "files": [
+        {
+          "path": "stepper.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/stepper.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stepper-behavior",
+        "Potti1234/creaseui/stylex-button",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-style",
+      "type": "registry:lib",
+      "title": "StyleX Style Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "style.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/style.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-switch",
+      "type": "registry:ui",
+      "title": "Switch",
+      "description": "The StyleX Switch component for Foldkit.",
+      "files": [
+        {
+          "path": "switch.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/switch.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex",
+        "Potti1234/creaseui/switch-behavior"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-table",
+      "type": "registry:ui",
+      "title": "Table",
+      "description": "The StyleX Table component for Foldkit.",
+      "files": [
+        {
+          "path": "table.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/table.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-complex-tokens-stylex",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-tabs",
+      "type": "registry:ui",
+      "title": "Tabs",
+      "description": "The StyleX Tabs component for Foldkit.",
+      "files": [
+        {
+          "path": "tabs.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/tabs.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-tanstack-data-table-stylex",
+      "type": "registry:lib",
+      "title": "StyleX Tanstack Data Table Stylex Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "tanstack/data-table.stylex.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/tanstack/data-table.stylex.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-complex-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ]
+    },
+    {
+      "name": "stylex-tanstack-data-table",
+      "type": "registry:lib",
+      "title": "StyleX Tanstack Data Table Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "tanstack/data-table.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/tanstack/data-table.ts"
+        }
+      ],
+      "dependencies": [
+        "@tanstack/table-core@8.21.3"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-button",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tanstack-data-table-stylex",
+        "Potti1234/creaseui/tanstack-table-state-behavior"
+      ]
+    },
+    {
+      "name": "stylex-text",
+      "type": "registry:ui",
+      "title": "Text",
+      "description": "The StyleX Text component for Foldkit.",
+      "files": [
+        {
+          "path": "text.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/text.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-textarea",
+      "type": "registry:ui",
+      "title": "Textarea",
+      "description": "The StyleX Textarea component for Foldkit.",
+      "files": [
+        {
+          "path": "textarea.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/textarea.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex",
+        "Potti1234/creaseui/textarea-behavior"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-thumbnail-markers-stylex",
+      "type": "registry:lib",
+      "title": "StyleX Thumbnail Markers Stylex Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "thumbnail.markers.stylex.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/thumbnail.markers.stylex.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-thumbnail",
+      "type": "registry:ui",
+      "title": "Thumbnail",
+      "description": "The StyleX Thumbnail component for Foldkit.",
+      "files": [
+        {
+          "path": "thumbnail.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/thumbnail.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-complex-tokens-stylex",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-thumbnail-markers-stylex",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-time-input",
+      "type": "registry:ui",
+      "title": "Time Input",
+      "description": "The StyleX Time Input component for Foldkit.",
+      "files": [
+        {
+          "path": "time-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/time-input.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/input-status",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-select",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex",
+        "Potti1234/creaseui/time-input-core"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-timer",
+      "type": "registry:ui",
+      "title": "Timer",
+      "description": "The StyleX Timer component for Foldkit.",
+      "files": [
+        {
+          "path": "timer.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/timer.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-astryx-text",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-style"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-timestamp",
+      "type": "registry:ui",
+      "title": "Timestamp",
+      "description": "The StyleX Timestamp component for Foldkit.",
+      "files": [
+        {
+          "path": "timestamp.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/timestamp.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/hover-card-behavior",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-astryx-text",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-hover-card",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex",
+        "Potti1234/creaseui/timestamp-format-behavior"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-toast",
+      "type": "registry:ui",
+      "title": "Toast",
+      "description": "The StyleX Toast component for Foldkit.",
+      "files": [
+        {
+          "path": "toast.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/toast.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-button",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex",
+        "Potti1234/creaseui/toast-behavior"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-toggle-group",
+      "type": "registry:ui",
+      "title": "Toggle Group",
+      "description": "The StyleX Toggle Group component for Foldkit.",
+      "files": [
+        {
+          "path": "toggle-group.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/toggle-group.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-toggle",
+        "Potti1234/creaseui/stylex-tokens-stylex",
+        "Potti1234/creaseui/toggle-group-behavior"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-toggle",
+      "type": "registry:ui",
+      "title": "Toggle",
+      "description": "The StyleX Toggle component for Foldkit.",
+      "files": [
+        {
+          "path": "toggle.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/toggle.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-token",
+      "type": "registry:ui",
+      "title": "Token",
+      "description": "The StyleX Token component for Foldkit.",
+      "files": [
+        {
+          "path": "token.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/token.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-complex-tokens-stylex",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-tokenizer",
+      "type": "registry:ui",
+      "title": "Tokenizer",
+      "description": "The StyleX Tokenizer component for Foldkit.",
+      "files": [
+        {
+          "path": "tokenizer.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/tokenizer.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-overlay-boundary",
+        "Potti1234/creaseui/stylex-overlay-tokens-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex",
+        "Potti1234/creaseui/tokenizer-behavior"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-tokens-stylex",
+      "type": "registry:lib",
+      "title": "StyleX Tokens Stylex Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "tokens.stylex.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/tokens.stylex.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-toolbar",
+      "type": "registry:ui",
+      "title": "Toolbar",
+      "description": "The StyleX Toolbar component for Foldkit.",
+      "files": [
+        {
+          "path": "toolbar.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/toolbar.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex",
+        "Potti1234/creaseui/toolbar-behavior"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-tooltip",
+      "type": "registry:ui",
+      "title": "Tooltip",
+      "description": "The StyleX Tooltip component for Foldkit.",
+      "files": [
+        {
+          "path": "tooltip.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/tooltip.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-button",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-overlay-boundary",
+        "Potti1234/creaseui/stylex-overlay-tokens-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/tooltip-behavior"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-top-nav",
+      "type": "registry:ui",
+      "title": "Top Nav",
+      "description": "The StyleX Top Nav component for Foldkit.",
+      "files": [
+        {
+          "path": "top-nav.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/top-nav.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/nav-menu-behavior",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex",
+        "Potti1234/creaseui/top-nav-behavior"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-transfer-list",
+      "type": "registry:ui",
+      "title": "Transfer List",
+      "description": "The StyleX Transfer List component for Foldkit.",
+      "files": [
+        {
+          "path": "transfer-list.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/transfer-list.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-button",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-input",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-tree-list-markers-stylex",
+      "type": "registry:lib",
+      "title": "StyleX Tree List Markers Stylex Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "tree-list.markers.stylex.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/tree-list.markers.stylex.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-tree-list",
+      "type": "registry:ui",
+      "title": "Tree List",
+      "description": "The StyleX Tree List component for Foldkit.",
+      "files": [
+        {
+          "path": "tree-list.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/tree-list.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex",
+        "Potti1234/creaseui/stylex-tree-list-markers-stylex",
+        "Potti1234/creaseui/tree-list-behavior"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-typography",
+      "type": "registry:ui",
+      "title": "Typography",
+      "description": "The StyleX Typography component for Foldkit.",
+      "files": [
+        {
+          "path": "typography.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/typography.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-virtual-data-table-stylex",
+      "type": "registry:lib",
+      "title": "StyleX Virtual Data Table Stylex Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "virtual/data-table.stylex.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/virtual/data-table.stylex.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-complex-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ]
+    },
+    {
+      "name": "stylex-virtual-data-table",
+      "type": "registry:lib",
+      "title": "StyleX Virtual Data Table Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "virtual/data-table.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/virtual/data-table.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-virtual-data-table-stylex",
+        "Potti1234/creaseui/virtual-data-table-state-behavior"
+      ]
+    },
+    {
+      "name": "stylex-visually-hidden",
+      "type": "registry:ui",
+      "title": "Visually Hidden",
+      "description": "The StyleX Visually Hidden component for Foldkit.",
+      "files": [
+        {
+          "path": "visually-hidden.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/visually-hidden.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    }
+  ]
+}

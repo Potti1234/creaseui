@@ -2,11 +2,12 @@
 
 ## Consuming StyleX components
 
-The StyleX renderer is currently distributed as source in this checkout, not
-through `registry.json`. Copy the components together with their referenced
-StyleX and shared `src/lib` modules. Configure the StyleX compiler with the
-semantics in [`stylex.config.js`](../../stylex.config.js) and provide the theme
-variables referenced by `tokens.stylex.ts`, `foundations-tokens.stylex.ts`, and
+Install a component and its source dependencies from the registry, for example
+`Potti1234/creaseui/stylex-button`. Registry files install under a `stylex`
+subdirectory of the configured shadcn UI directory (for example, `@/ui/stylex`
+when `aliases.ui` is `@/ui`); configure the StyleX compiler with the semantics in
+[`stylex.config.js`](../../stylex.config.js) and provide the theme variables
+referenced by `tokens.stylex.ts`, `foundations-tokens.stylex.ts`, and
 `complex-tokens.stylex.ts` (the light and dark variable blocks in
 [`src/theme.css`](../theme.css) are a starting point). The application owns
 its document font, line height, and background.

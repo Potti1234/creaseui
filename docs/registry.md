@@ -13,8 +13,12 @@ lockfile; successful reports from other versions do not change that baseline.
 Foldkit 0.128 moved durable selection and checked values to parent models;
 Crease UI components follow that controlled-state architecture.
 
-Crease UI uses shadcn's public GitHub registry transport. The registry can be
-inspected and validated directly:
+Crease UI's public registry is the `Potti1234/creaseui` GitHub repository. The
+shadcn CLI reads its root `registry.json`; use the owner/repository/item address
+form for installs. The `creaseui.com` website is the documentation site, not a
+separate `/r/*.json` registry host.
+
+Inspect and validate the registry with:
 
 ```sh
 npx shadcn@latest registry validate Potti1234/creaseui
@@ -56,10 +60,20 @@ npx --yes shadcn@latest add Potti1234/creaseui/accordion --yes
 npx --yes shadcn@latest add Potti1234/creaseui/dialog --yes
 ```
 
-These registry items install the Tailwind renderer from `src/ui`. The StyleX
-renderer in `src/stylex` is not yet distributed through this registry. Copy its
-source and referenced modules from the checkout, configure the StyleX compiler,
-and supply the CSS theme variables described in its
+The same item address is used by the component pages and the local `crease`
+CLI. For example, `Potti1234/creaseui/button` resolves the `button` item from
+this repository's root registry.
+
+The items above install the Tailwind renderer from `src/ui`. StyleX components
+are available as `stylex-<component>` items, for example:
+
+```sh
+npx --yes shadcn@latest add Potti1234/creaseui/stylex-button --yes
+```
+
+StyleX files install in a `stylex` subdirectory of the configured `ui` alias
+(for example, `@/ui/stylex`); the registry resolves their shared source
+dependencies. Configure the StyleX compiler and supply the CSS theme variables described in the
 [authoring contract](../src/stylex/README.md).
 
 Every UI item declares `crease-theme` as a registry dependency. Installing a
