@@ -1,5 +1,8 @@
 import type { DocsExample } from '@/docs/components/page-definition'
-import { staticComponentApplication } from '@/docs/components/pages/authored-page'
+import {
+  foldkitApplication,
+  staticComponentApplication,
+} from '@/docs/components/pages/authored-page'
 
 /* Same-origin inline data URIs matching astryx's Thumbnail blocks. */
 export const NIGHT_FOREST =
@@ -236,6 +239,8 @@ const itemBlock = (item: ThumbnailItem, isStyleX: boolean): string => {
 
 const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
   const fixture = thumbnailFixtures[index] ?? thumbnailFixtures[0]
+  if (fixture.items.some(item => item.hasClick || item.hasRemove))
+    return interactiveSource(fixture, renderer)
   const isStyleX = renderer === 'stylex'
   const componentImports = thumbnailImports(isStyleX)
   const sectionLabel = (text: string) =>
@@ -280,6 +285,111 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
     exampleName: fixture.title,
     componentImports,
     viewBody,
+  })
+}
+
+const interactiveSource = (
+  fixture: ThumbnailFixture,
+  renderer: 'tailwind' | 'stylex',
+): string => {
+  const skin = renderer === 'stylex' ? 'stylex' : 'ui'
+  const cls = (tw: string, sx: string) =>
+    renderer === 'stylex'
+      ? `stylex.props(styles.${sx}).className ?? ''`
+      : `'${tw}'`
+  const items = fixture.items
+    .map(
+      item =>
+        `{ ${Object.entries(item)
+          .map(
+            ([key, value]) =>
+              `${key}: ${key === 'src' ? uriConstName(String(value)) : JSON.stringify(value)}`,
+          )
+          .join(', ')} }`,
+    )
+    .join(',\n  ')
+  return foldkitApplication({
+    title: fixture.title,
+    imports: `import { Schema as S } from 'effect'
+import { Command, Runtime, Subscription, type Update } from 'foldkit'
+import { type Document, type HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import * as Thumbnail from '@/${skin}/thumbnail'
+import * as Lightbox from '@/${skin}/lightbox'
+${thumbnailImports(renderer === 'stylex')}`,
+    model: `const Item = S.Struct({
+  src: S.optionalKey(S.String), alt: S.optionalKey(S.String), label: S.String,
+  caption: S.optionalKey(S.String), isLoading: S.optionalKey(S.Boolean),
+  isDisabled: S.optionalKey(S.Boolean), hasRemove: S.optionalKey(S.Boolean),
+  showRemoveOn: S.optionalKey(S.Literals(['always', 'hover'])),
+  hasClick: S.optionalKey(S.Boolean),
+})
+export const Model = S.Struct({ items: S.Array(Item), lightbox: Lightbox.Model })
+export type Model = typeof Model.Type`,
+    messages: `export const Message = defineMessageUnion({
+  OpenedThumbnail: { label: S.String },
+  RemovedThumbnail: { label: S.String },
+  GotLightboxMessage: { message: Lightbox.Message },
+})
+export type Message = typeof Message.Type`,
+    init: `export const init = (): Update.Return<Model, Message> => ({ model: {
+  items: [${items}],
+  lightbox: Lightbox.init({ id: 'thumbnail-preview', mediaCount: ${String(fixture.items.length)} }),
+} })`,
+    update: `const mapLightbox = (model: Model, result: ReturnType<typeof Lightbox.update>): Update.Return<Model, Message> => ({
+  model: { ...model, lightbox: result.model },
+  commands: Command.mapMessages(result.commands ?? [], message => Message.GotLightboxMessage({ message })),
+})
+export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
+  switch (message._tag) {
+    case 'OpenedThumbnail': {
+      const index = model.items.findIndex(item => item.label === message.label)
+      const item = model.items[index]
+      if (!item?.hasClick || item.isDisabled || item.isLoading) return { model }
+      return mapLightbox(model, Lightbox.open(model.lightbox, index))
+    }
+    case 'RemovedThumbnail': {
+      const item = model.items.find(item => item.label === message.label)
+      if (!item?.hasRemove || item.isDisabled) return { model }
+      const items = model.items.filter(item => item.label !== message.label)
+      return { model: { ...model, items, lightbox: {
+        ...model.lightbox, mediaCount: Math.max(1, items.length),
+        index: Math.min(model.lightbox.index, Math.max(0, items.length - 1)),
+      } } }
+    }
+    case 'GotLightboxMessage':
+      return mapLightbox(model, Lightbox.update(model.lightbox, message.message))
+  }
+}`,
+    view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => {
+  const itemView = (item: Model['items'][number]) => Thumbnail.thumbnail({
+    ...item,
+    ...(item.hasClick ? { onClick: Message.OpenedThumbnail({ label: item.label }) } : {}),
+    ...(item.hasRemove ? { onRemove: Message.RemovedThumbnail({ label: item.label }) } : {}),
+  }, h)
+  const row = (items: Model['items']) => h.div([h.Class(${cls('flex flex-wrap items-end gap-3', 'row')})], items.map(itemView))
+  return {
+    title: '${fixture.title}',
+    body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+      h.div([h.Class(${cls('flex flex-col gap-4', 'column')})], [
+        ${
+          fixture.layout === 'sections'
+            ? `h.span([h.Class(${cls('text-xs text-muted-foreground', 'caption')})], ['Enabled']),
+        row(model.items.filter(item => !item.isDisabled)),
+        h.span([h.Class(${cls('text-xs text-muted-foreground', 'caption')})], ['Disabled']),
+        row(model.items.filter(item => item.isDisabled)),`
+            : `h.span([h.Class(${cls('text-xs text-muted-foreground', 'caption')})], [${JSON.stringify(fixture.heading ?? '')}]),
+        row(model.items),`
+        }
+        ...(model.items.some(item => item.hasClick) ? [Lightbox.lightbox({
+          model: model.lightbox,
+          toParentMessage: message => Message.GotLightboxMessage({ message }),
+          media: model.items.map(item => ({ src: item.src ?? '', alt: item.alt ?? item.label, caption: item.label })),
+        }, h)] : []),
+      ]),
+    ]),
+  }
+}`,
   })
 }
 

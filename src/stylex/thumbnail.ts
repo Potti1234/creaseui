@@ -9,15 +9,14 @@ import { foundationTokens } from './foundations-tokens.stylex'
 import { interactionTokens } from './interaction-tokens.stylex.const'
 import { className } from './style'
 import { tokens } from './tokens.stylex'
+import { thumbnailScope } from './thumbnail.markers.stylex'
 
 /* Ported from Meta Astryx Thumbnail (packages/core/src/Thumbnail/Thumbnail.tsx) —
    examples and visual spec adapted to Crease UI tokens. Two documented
-   deviations: (1) astryx reveals the remove button when the *group* is hovered
-   — StyleX here has no ancestor markers, so the slot reveals on its own hover
-   and on coarse pointers only (see PORT-NOTE); (2) astryx's scrim overlay and
+   deviations: (1) astryx's scrim overlay and
    hover tints use overlay tokens that do not exist here, so the remove button
    and upload overlay use complexTokens.overlaySurface (foreground 50%);
-   (3) the remove button's coarse-pointer hit inset (::after) is dropped — the
+   (2) the remove button's coarse-pointer hit inset (::after) is dropped — the
    lint forbids outer pseudo-element styles (PORT-NOTE). */
 
 const spinFrames = stylex.keyframes({
@@ -79,7 +78,8 @@ const styles = stylex.create({
   removeSlotHover: {
     opacity: {
       default: 0,
-      ':hover': 1,
+      [stylex.when.ancestor(':focus-within', thumbnailScope)]: 1,
+      [stylex.when.ancestor(':hover', thumbnailScope)]: 1,
       '@media (pointer: coarse)': 1,
     },
   },
@@ -268,6 +268,7 @@ export const thumbnail = <Msg>(
       h.DataAttribute('slot', 'thumbnail'),
       h.Class(
         className(
+          thumbnailScope,
           styles.container,
           isDisabled && styles.disabled,
           props.layoutStyle,

@@ -9,6 +9,8 @@ import {
 import { className } from '@/stylex/style'
 import { tokens } from '../../../../stylex/tokens.stylex'
 import * as Thumbnail from '@/stylex/thumbnail'
+import * as Lightbox from '@/stylex/lightbox'
+import * as Preview from './state'
 
 const styles = stylex.create({
   column: { gap: '1rem', display: 'flex', flexDirection: 'column' },
@@ -33,7 +35,11 @@ const styles = stylex.create({
   },
 })
 
-const itemView = <Msg>(item: ThumbnailItem, noop: Msg, h: HtmlBuilder<Msg>) =>
+const itemView = <Msg>(
+  item: ThumbnailItem,
+  emit: (message: Preview.Message) => Msg,
+  h: HtmlBuilder<Msg>,
+) =>
   Thumbnail.thumbnail(
     {
       ...(item.src === undefined ? {} : { src: item.src }),
@@ -41,8 +47,20 @@ const itemView = <Msg>(item: ThumbnailItem, noop: Msg, h: HtmlBuilder<Msg>) =>
       label: item.label,
       ...(item.isLoading === true ? { isLoading: true } : {}),
       ...(item.isDisabled === true ? { isDisabled: true } : {}),
-      ...(item.hasRemove === true ? { onRemove: noop } : {}),
-      ...(item.hasClick === true ? { onClick: noop } : {}),
+      ...(item.hasRemove === true
+        ? {
+            onRemove: emit(
+              Preview.Message.RemovedThumbnail({ label: item.label }),
+            ),
+          }
+        : {}),
+      ...(item.hasClick === true
+        ? {
+            onClick: emit(
+              Preview.Message.OpenedThumbnail({ label: item.label }),
+            ),
+          }
+        : {}),
       ...(item.showRemoveOn === 'always'
         ? { showRemoveOn: 'always' as const }
         : {}),
@@ -52,34 +70,34 @@ const itemView = <Msg>(item: ThumbnailItem, noop: Msg, h: HtmlBuilder<Msg>) =>
 
 export const thumbnailStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
   exampleIndex: number,
-  _model: unknown,
+  model: unknown,
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ) => {
   const fixture = thumbnailFixtures[exampleIndex] ?? thumbnailFixtures[0]
-  const noop = onMessageJson(
-    JSON.stringify({ _tag: 'InteractedWithThumbnailPreview' }),
-  )
+  const preview = model as Preview.Model
+  const emit = (message: Preview.Message): Msg =>
+    onMessageJson(JSON.stringify(message))
   const caption = (text: string) =>
     h.span([h.Class(className(styles.caption))], [text])
   const itemBlock = (item: ThumbnailItem) =>
     item.caption === undefined
-      ? itemView(item, noop, h)
+      ? itemView(item, emit, h)
       : h.div(
           [h.Class(className(styles.item))],
-          [itemView(item, noop, h), caption(item.caption)],
+          [itemView(item, emit, h), caption(item.caption)],
         )
   if (fixture.layout === 'single')
-    return itemView(fixture.items[0] ?? { label: '' }, noop, h)
+    return itemView(preview.items[0] ?? { label: '' }, emit, h)
   if (fixture.layout === 'sections') {
     const sections = [
       {
         label: fixture.items[0]?.caption ?? 'Enabled',
-        items: fixture.items.slice(0, 2),
+        items: preview.items.filter(item => !item.isDisabled),
       },
       {
         label: fixture.items[2]?.caption ?? 'Disabled',
-        items: fixture.items.slice(2),
+        items: preview.items.filter(item => item.isDisabled),
       },
     ]
     return h.div(
@@ -91,7 +109,7 @@ export const thumbnailStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
             caption(section.label),
             h.div(
               [h.Class(className(styles.rowCenter))],
-              section.items.map(item => itemView(item, noop, h)),
+              section.items.map(item => itemView(item, emit, h)),
             ),
           ],
         ),
@@ -104,8 +122,27 @@ export const thumbnailStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
       caption(fixture.heading ?? ''),
       h.div(
         [h.Class(className(styles.row))],
-        fixture.items.map(item => itemBlock(item)),
+        preview.items.map(item => itemBlock(item)),
       ),
+      ...(preview.items.some(item => item.hasClick)
+        ? [
+            Lightbox.lightbox(
+              {
+                model: preview.lightbox,
+                toParentMessage: message =>
+                  emit(
+                    Preview.Message.GotThumbnailLightboxMessage({ message }),
+                  ),
+                media: preview.items.map(item => ({
+                  src: item.src ?? '',
+                  alt: item.alt ?? item.label,
+                  caption: item.label,
+                })),
+              },
+              h,
+            ),
+          ]
+        : []),
     ],
   )
 }

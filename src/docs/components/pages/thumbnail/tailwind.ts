@@ -1,6 +1,4 @@
-import { Schema as S } from 'effect'
 import type { HtmlBuilder } from 'foldkit/html'
-import { defineMessageUnion } from 'foldkit/message'
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
@@ -8,17 +6,10 @@ import {
   type ThumbnailItem,
 } from '@/docs/components/pages/thumbnail/shared'
 import * as Thumbnail from '@/ui/thumbnail'
+import * as Lightbox from '@/ui/lightbox'
+import * as Preview from './state'
 
-const InteractedWithThumbnailPreview = defineMessageUnion({
-  InteractedWithThumbnailPreview: {},
-})
-type InteractedWithThumbnailPreview = typeof InteractedWithThumbnailPreview.Type
-const ThumbnailPreviewModel = S.Struct({ _docsPage: S.Literal('thumbnail') })
-type ThumbnailPreviewModel = typeof ThumbnailPreviewModel.Type
-
-const NO_OP = InteractedWithThumbnailPreview.InteractedWithThumbnailPreview()
-
-const itemView = <Msg>(item: ThumbnailItem, noop: Msg, h: HtmlBuilder<Msg>) =>
+const itemView = (item: ThumbnailItem, h: HtmlBuilder<Preview.Message>) =>
   Thumbnail.thumbnail(
     {
       ...(item.src === undefined ? {} : { src: item.src }),
@@ -26,8 +17,12 @@ const itemView = <Msg>(item: ThumbnailItem, noop: Msg, h: HtmlBuilder<Msg>) =>
       label: item.label,
       ...(item.isLoading === true ? { isLoading: true } : {}),
       ...(item.isDisabled === true ? { isDisabled: true } : {}),
-      ...(item.hasRemove === true ? { onRemove: noop } : {}),
-      ...(item.hasClick === true ? { onClick: noop } : {}),
+      ...(item.hasRemove === true
+        ? { onRemove: Preview.Message.RemovedThumbnail({ label: item.label }) }
+        : {}),
+      ...(item.hasClick === true
+        ? { onClick: Preview.Message.OpenedThumbnail({ label: item.label }) }
+        : {}),
       ...(item.showRemoveOn === 'always'
         ? { showRemoveOn: 'always' as const }
         : {}),
@@ -38,46 +33,44 @@ const itemView = <Msg>(item: ThumbnailItem, noop: Msg, h: HtmlBuilder<Msg>) =>
 const caption = <Msg>(text: string, h: HtmlBuilder<Msg>) =>
   h.span([h.Class('text-xs text-muted-foreground')], [text])
 
-const itemBlock = <Msg>(item: ThumbnailItem, noop: Msg, h: HtmlBuilder<Msg>) =>
+const itemBlock = (item: ThumbnailItem, h: HtmlBuilder<Preview.Message>) =>
   item.caption === undefined
-    ? itemView(item, noop, h)
+    ? itemView(item, h)
     : h.div(
         [h.Class('flex flex-col items-center gap-1')],
-        [itemView(item, noop, h), caption(item.caption, h)],
+        [itemView(item, h), caption(item.caption, h)],
       )
 
-const rowWrap = <Msg>(
+const rowWrap = (
   items: ReadonlyArray<ThumbnailItem>,
-  noop: Msg,
-  h: HtmlBuilder<Msg>,
+  h: HtmlBuilder<Preview.Message>,
 ) =>
   h.div(
     [h.Class('flex flex-wrap items-end gap-3')],
-    items.map(item => itemBlock(item, noop, h)),
+    items.map(item => itemBlock(item, h)),
   )
 
 export const thumbnailTailwindPreviewProgram = definePreviewProgram<
-  ThumbnailPreviewModel,
-  InteractedWithThumbnailPreview
+  Preview.Model,
+  Preview.Message
 >({
-  Model: ThumbnailPreviewModel,
-  Message: InteractedWithThumbnailPreview,
-  init: () => ({ _docsPage: 'thumbnail' }),
-  update: model => ({ model: model }),
-  view: (index, _model, h) => {
+  Model: Preview.Model,
+  Message: Preview.Message,
+  init: Preview.init,
+  update: Preview.update,
+  view: (index, model, h) => {
     const fixture = thumbnailFixtures[index] ?? thumbnailFixtures[0]
-    const noop = NO_OP as never
     if (fixture.layout === 'single')
-      return itemView(fixture.items[0] ?? { label: '' }, noop, h)
+      return itemView(model.items[0] ?? { label: '' }, h)
     if (fixture.layout === 'sections') {
       const sections = [
         {
           label: fixture.items[0]?.caption ?? 'Enabled',
-          items: fixture.items.slice(0, 2),
+          items: model.items.filter(item => !item.isDisabled),
         },
         {
           label: fixture.items[2]?.caption ?? 'Disabled',
-          items: fixture.items.slice(2),
+          items: model.items.filter(item => item.isDisabled),
         },
       ]
       return h.div(
@@ -89,7 +82,7 @@ export const thumbnailTailwindPreviewProgram = definePreviewProgram<
               caption(section.label, h),
               h.div(
                 [h.Class('flex items-center gap-3')],
-                section.items.map(item => itemView(item, noop, h)),
+                section.items.map(item => itemView(item, h)),
               ),
             ],
           ),
@@ -98,7 +91,27 @@ export const thumbnailTailwindPreviewProgram = definePreviewProgram<
     }
     return h.div(
       [h.Class('flex flex-col gap-4')],
-      [caption(fixture.heading ?? '', h), rowWrap(fixture.items, noop, h)],
+      [
+        caption(fixture.heading ?? '', h),
+        rowWrap(model.items, h),
+        ...(model.items.some(item => item.hasClick)
+          ? [
+              Lightbox.lightbox(
+                {
+                  model: model.lightbox,
+                  toParentMessage: message =>
+                    Preview.Message.GotThumbnailLightboxMessage({ message }),
+                  media: model.items.map(item => ({
+                    src: item.src ?? '',
+                    alt: item.alt ?? item.label,
+                    caption: item.label,
+                  })),
+                },
+                h,
+              ),
+            ]
+          : []),
+      ],
     )
   },
 })
