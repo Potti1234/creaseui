@@ -145,7 +145,16 @@ const toggleValue = (model: Model, value: string): UpdateReturn => {
   }
   if (value.startsWith(CREATE_ID_PREFIX)) {
     const created = value.slice(CREATE_ID_PREFIX.length)
-    return addToken(model, { id: created, label: created })
+    const added = addToken(model, { id: created, label: created })
+    return added.outMessage === undefined
+      ? added
+      : {
+          ...added,
+          model: {
+            ...added.model,
+            combobox: { ...added.model.combobox, inputValue: '' },
+          },
+        }
   }
   return addToken(model, {
     id: value,
