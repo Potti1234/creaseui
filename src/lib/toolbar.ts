@@ -168,7 +168,13 @@ export const FocusToolbarItems = Mount.defineStream('FocusToolbarItems', {
             }
 
             const onKeyDown = (event: KeyboardEvent): void => {
-              if (event.ctrlKey || event.metaKey || event.altKey) return
+              if (
+                event.defaultPrevented ||
+                event.ctrlKey ||
+                event.metaKey ||
+                event.altKey
+              )
+                return
 
               const horizontal = orientation === 'horizontal'
               const rtl =

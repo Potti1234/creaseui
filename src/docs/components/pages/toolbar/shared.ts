@@ -254,11 +254,28 @@ const filterBody = (isStyleX: boolean): string => `Toolbar.toolbar({
       dividers: ['bottom'],
       toParentMessage: m => GotToolbarMessage({ message: m }),
       startContent: [
-        Input.input({ id: 'filter-search', label: 'Search jobs', placeholder: 'Search', value: model.search, onInput: v => ChangedSearch({ value: v }),${isStyleX ? ' layoutStyle: styles.searchInput,' : ` class: 'w-40',`} }, h),
-        NativeSelect.nativeSelect({ id: 'status-filter', label: 'Status', value: model.status, onChange: v => ChangedClause({ field: 'status', value: v }), options: [{ value: '', label: 'Status' }, ...STATUS_OPTIONS] }, h),
-        NativeSelect.nativeSelect({ id: 'priority-filter', label: 'Priority', value: model.priority, onChange: v => ChangedClause({ field: 'priority', value: v }), options: [{ value: '', label: 'Priority' }, ...PRIORITY_OPTIONS] }, h),
-        h.span([h.Class('text-muted-foreground text-xs')], [\`\${resultsFor(model).length} of \${JOBS.length}\`]),
-        Button.button({ variant: 'link', size: 'sm', onClick: ClickedClearFilters(), children: ['Clear all'] }, h),
+        h.div([${isStyleX ? 'h.Class(className(styles.filterRow))' : "h.Class('flex w-full min-w-0 flex-wrap items-center gap-2')"}], [
+          Input.input({ id: 'filter-search', ariaLabel: 'Search jobs', placeholder: 'Search', value: model.search, onInput: v => ChangedSearch({ value: v }),${isStyleX ? ' layoutStyle: styles.searchInput,' : ` class: 'w-36',`} }, h),
+          ...FILTER_FIELDS.map(field => FilterSelect.select({
+            model: model.filterSelects[field.key],
+            maybeSelectedValue: model[field.key] === '' ? Option.none() : Option.some(model[field.key]),
+            ariaLabel: field.label,
+            placeholder: field.label,
+            size: 'sm',
+            ${isStyleX ? 'triggerLayoutStyle: styles[field.key]' : 'triggerClass: FILTER_WIDTH[field.key]'},
+            items: ['', ...field.options],
+            itemToValue: value => value,
+            itemToLabel: value => value === '' ? field.label : value,
+            toParentMessage: message => GotFilterSelectMessage({ field: field.key, message }),
+          }, h)),
+          h.div([${isStyleX ? 'h.Class(className(styles.filterActions))' : "h.Class('ms-auto flex shrink-0 items-center gap-2')"}], [
+            h.span([${isStyleX ? 'h.Class(className(styles.readout))' : "h.Class('text-muted-foreground text-xs tabular-nums whitespace-nowrap')"}], [\`\${resultsFor(model).length} of \${JOBS.length}\`]),
+            ...(model.search !== '' || FILTER_FIELDS.some(field => model[field.key] !== '')
+              ? [Button.button({ variant: 'link', size: 'sm', onClick: ClickedClearFilters(), children: ['Clear all'] }, h)]
+              : []),
+            Button.button({ variant: 'ghost', size: 'icon-sm', ariaLabel: 'View options', leadingIcon: Icon.icon('columns-3-cog', {}, h), children: [] }, h),
+          ]),
+        ]),
       ],
     }, h)`
 
@@ -272,16 +289,13 @@ const emitSource = (fixture: ToolbarFixture, isStyleX: boolean): string => {
 
   const filterDecls = hasFilter
     ? `type Job = Readonly<{ id: string; job: string; customer: string; status: string; priority: string }>
+type FilterField = 'status' | 'priority' | 'customer'
 
 const JOBS: ReadonlyArray<Job> = ${JSON.stringify(JOBS, null, 2)}
 
-const STATUS_OPTIONS: ReadonlyArray<Readonly<{ value: string; label: string }>> = [
-  ${(FILTER_FIELDS[0]?.options ?? []).map(option => `{ value: '${option}', label: '${option}' }`).join(',\n  ')},
-]
-
-const PRIORITY_OPTIONS: ReadonlyArray<Readonly<{ value: string; label: string }>> = [
-  ${(FILTER_FIELDS[1]?.options ?? []).map(option => `{ value: '${option}', label: '${option}' }`).join(',\n  ')},
-]
+const FILTER_FIELDS: ReadonlyArray<Readonly<{ key: FilterField; label: string; options: ReadonlyArray<string> }>> = ${JSON.stringify(FILTER_FIELDS, null, 2)}
+const FilterSelect = Select.create<string>()
+${isStyleX ? '' : "const FILTER_WIDTH = { status: 'w-32', priority: 'w-24', customer: 'w-40' } as const\n"}
 
 `
     : ''
@@ -304,7 +318,8 @@ const PRIORITY_OPTIONS: ReadonlyArray<Readonly<{ value: string; label: string }>
   search: S.String,
   status: S.String,
   priority: S.String,
-  customer: S.String,`
+  customer: S.String,
+  filterSelects: S.Struct({ status: Select.Model, priority: Select.Model, customer: Select.Model }),`
           : ''
       }
 })
@@ -331,7 +346,7 @@ export type Model = typeof Model.Type`
     ...(hasFilter
       ? [
           `export const ChangedSearch = taggedStruct('ChangedSearch${tag}', { value: S.String })
-export const ChangedClause = taggedStruct('ChangedClause${tag}', { field: S.String, value: S.String })
+export const GotFilterSelectMessage = taggedStruct('GotFilterSelectMessage${tag}', { field: S.Literals(['status', 'priority', 'customer']), message: Select.Message })
 export const ClickedClearFilters = taggedStruct('ClickedClearFilters${tag}', {})`,
         ]
       : []),
@@ -341,7 +356,7 @@ export const ClickedClearFilters = taggedStruct('ClickedClearFilters${tag}', {})
     ...(hasTabs ? ['GotTabsMessage'] : []),
     ...(hasBulk ? ['ClickedDeselectAll'] : []),
     ...(hasFilter
-      ? ['ChangedSearch', 'ChangedClause', 'ClickedClearFilters']
+      ? ['ChangedSearch', 'GotFilterSelectMessage', 'ClickedClearFilters']
       : []),
   ]
 
@@ -363,7 +378,12 @@ export const ClickedClearFilters = taggedStruct('ClickedClearFilters${tag}', {})
     search: '',
     status: '',
     priority: '',
-    customer: '',`
+    customer: '',
+    filterSelects: {
+      status: Select.init({ id: 'toolbar-filter-status', isAnimated: true }),
+      priority: Select.init({ id: 'toolbar-filter-priority', isAnimated: true }),
+      customer: Select.init({ id: 'toolbar-filter-customer', isAnimated: true }),
+    },`
       : ''
   }
   },
@@ -398,8 +418,17 @@ export const ClickedClearFilters = taggedStruct('ClickedClearFilters${tag}', {})
       ? [
           `    case 'ChangedSearch${tag}':
       return { model: { ...model, search: message.value } }
-    case 'ChangedClause${tag}':
-      return { model: { ...model, [message.field]: message.value } }
+    case 'GotFilterSelectMessage${tag}': {
+      const next = Select.update(model.filterSelects[message.field], message.message)
+      return {
+        model: {
+          ...model,
+          filterSelects: { ...model.filterSelects, [message.field]: next.model },
+          ...(next.outMessage?._tag === 'Selected' ? { [message.field]: next.outMessage.value } : {}),
+        },
+        commands: Command.mapMessages(next.commands ?? [], nextMessage => GotFilterSelectMessage({ field: message.field, message: nextMessage })),
+      }
+    }
     case 'ClickedClearFilters${tag}':
       return { model: { ...model, search: '', status: '', priority: '', customer: '' } }`,
         ]
@@ -409,14 +438,15 @@ export const ClickedClearFilters = taggedStruct('ClickedClearFilters${tag}', {})
   const toolbarBody =
     fixture.kind === 'filter' ? filterBody(isStyleX) : SIMPLE_BODY[fixture.kind]
 
-  const toolbarCalls: string =
-    fixture.kind === 'sizes'
+  const toolbarCalls: string = hasFilter
+    ? `h.div([${isStyleX ? 'h.Class(className(styles.filterWidth))' : "h.Class('w-full max-w-190')"}], [\n${toolbarBody}\n    ])`
+    : fixture.kind === 'sizes'
       ? `h.div([h.Class('flex w-[500px] flex-col gap-4')], [\n${SIMPLE_BODY.sizes}\n    ])`
       : `${fixture.kind === 'threeSlot' || fixture.kind === 'cardHeader' || fixture.kind === 'tabs' ? `h.div([h.Class('w-[${fixture.width}px]')], [\n` : ''}${toolbarBody}${fixture.kind === 'threeSlot' || fixture.kind === 'cardHeader' || fixture.kind === 'tabs' ? '\n    ])' : ''}`
 
   return foldkitApplication({
     title: fixture.title,
-    imports: `import { Schema as S } from 'effect'
+    imports: `import { ${hasFilter ? 'Option, ' : ''}Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { taggedStruct } from 'foldkit/schema'
@@ -436,13 +466,24 @@ ${
     }${
       hasFilter
         ? `import * as Input from '@/${lib}/input'
-import * as NativeSelect from '@/${lib}/native-select'
+import * as Select from '@/${lib}/select'
 `
         : ''
     }${
       hasFilter && isStyleX
         ? `import * as stylex from '@stylexjs/stylex'
-const styles = stylex.create({ searchInput: { width: '10rem' } })
+import { className } from '@/stylex/style'
+import { tokens } from '@/stylex/tokens.stylex'
+const styles = stylex.create({
+  filterWidth: { maxWidth: '47.5rem', minWidth: 0, width: '100%' },
+  searchInput: { width: '9rem' },
+  status: { width: '8rem' },
+  priority: { width: '6rem' },
+  customer: { width: '10rem' },
+  filterRow: { display: 'flex', width: '100%', minWidth: 0, flexWrap: 'wrap', alignItems: 'center', gap: '0.5rem' },
+  filterActions: { display: 'flex', flexShrink: 0, alignItems: 'center', gap: '0.5rem', marginInlineStart: 'auto' },
+  readout: { color: tokens.mutedForeground, fontSize: '0.75rem', lineHeight: '1rem', whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums' },
+})
 `
         : ''
     }`,
@@ -469,7 +510,8 @@ ${updateCases.join('\n')}
           .toLowerCase()
           .includes(model.search.toLowerCase())) &&
       (model.status === '' || job.status === model.status) &&
-      (model.priority === '' || job.priority === model.priority),
+      (model.priority === '' || job.priority === model.priority) &&
+      (model.customer === '' || job.customer === model.customer),
   )
 
 `

@@ -1,3 +1,4 @@
+import { Option } from 'effect'
 import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
@@ -15,7 +16,7 @@ import { badge } from '@/stylex/badge'
 import { button } from '@/stylex/button'
 import { checkbox } from '@/stylex/checkbox'
 import { input } from '@/stylex/input'
-import { nativeSelect } from '@/stylex/native-select'
+import * as Select from '@/stylex/select'
 import {
   table,
   tableBody,
@@ -46,7 +47,25 @@ const styles = stylex.create({
   w600: { width: '600px' },
   w500: { width: '500px' },
   w640: { width: '640px' },
-  w760: { width: '760px' },
+  w760: { maxWidth: '100%', minWidth: 0, width: '760px' },
+  filterRow: {
+    gap: '0.5rem',
+    alignItems: 'center',
+    display: 'flex',
+    flexWrap: 'wrap',
+    minWidth: 0,
+    width: '100%',
+  },
+  filterActions: {
+    gap: '0.5rem',
+    alignItems: 'center',
+    display: 'flex',
+    flexShrink: 0,
+    marginInlineStart: 'auto',
+  },
+  status: { width: '8rem' },
+  priority: { width: '6rem' },
+  customer: { width: '10rem' },
   column: { gap: '1rem', display: 'flex', flexDirection: 'column' },
   body: { padding: '1rem', height: '10rem' },
   bodySm: { padding: '1rem', height: '8rem' },
@@ -59,10 +78,11 @@ const styles = stylex.create({
   readout: {
     color: tokens.mutedForeground,
     fontSize: '0.75rem',
+    fontVariantNumeric: 'tabular-nums',
     lineHeight: '1rem',
     whiteSpace: 'nowrap',
   },
-  searchWidth: { width: '10rem' },
+  searchWidth: { width: '9rem' },
   headCheck: { width: '2rem' },
   emptyState: {
     padding: '2rem',
@@ -99,7 +119,10 @@ interface PreviewShape {
   readonly status: string
   readonly priority: string
   readonly customer: string
+  readonly filterSelects: Readonly<Record<FilterField, Select.Model>>
 }
+
+const FilterSelect = Select.create<string>()
 
 const heading = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
   h.h4([h.Class(className(reset.text, styles.heading))], [text])
@@ -225,7 +248,7 @@ const bodyFor = <Msg>(
   toToggle: (id: string, isChecked: boolean) => Msg,
   deselectAll: Msg,
   toChangedSearch: (value: string) => Msg,
-  toChangedClause: (field: FilterField, value: string) => Msg,
+  toFilterSelectMessage: (field: FilterField, message: Select.Message) => Msg,
   clearFilters: Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
@@ -445,55 +468,74 @@ const bodyFor = <Msg>(
               dividers: ['bottom'],
               toParentMessage: toToolbarMessage,
               startContent: [
-                input<Msg>(
-                  {
-                    id: 'filter-search',
-                    label: 'Search jobs',
-                    placeholder: 'Search',
-                    value: model.search,
-                    onInput: value => toChangedSearch(value),
-                    layoutStyle: styles.searchWidth,
-                  },
-                  h,
-                ),
-                ...FILTER_FIELDS.map(field =>
-                  nativeSelect<Msg>(
-                    {
-                      id: `filter-${field.key}`,
-                      label: field.label,
-                      value: model[field.key],
-                      onChange: value => toChangedClause(field.key, value),
-                      size: 'sm',
-                      options: [
-                        { value: '', label: field.label },
-                        ...field.options.map(option => ({
-                          value: option,
-                          label: option,
-                        })),
-                      ],
-                    },
-                    h,
-                  ),
-                ),
-                h.span(
-                  [h.Class(className(styles.readout))],
-                  [`${results.length} of ${JOBS.length}`],
-                ),
-                ...(hasFilters
-                  ? [
-                      button<Msg>(
+                h.div(
+                  [h.Class(className(styles.filterRow))],
+                  [
+                    input<Msg>(
+                      {
+                        id: 'filter-search',
+                        ariaLabel: 'Search jobs',
+                        placeholder: 'Search',
+                        value: model.search,
+                        onInput: value => toChangedSearch(value),
+                        layoutStyle: styles.searchWidth,
+                      },
+                      h,
+                    ),
+                    ...FILTER_FIELDS.map(field =>
+                      FilterSelect.select(
                         {
-                          variant: 'link',
+                          model: model.filterSelects[field.key],
+                          ariaLabel: field.label,
+                          placeholder: field.label,
+                          maybeSelectedValue:
+                            model[field.key] === ''
+                              ? Option.none()
+                              : Option.some(model[field.key]),
+                          toParentMessage: message =>
+                            toFilterSelectMessage(field.key, message),
                           size: 'sm',
-                          onClick: clearFilters,
-                          children: ['Clear all'],
+                          triggerLayoutStyle: styles[field.key],
+                          items: ['', ...field.options],
+                          itemToValue: value => value,
+                          itemToLabel: value =>
+                            value === '' ? field.label : value,
                         },
                         h,
                       ),
-                    ]
-                  : []),
+                    ),
+                    h.div(
+                      [
+                        h.DataAttribute('slot', 'toolbar-filter-actions'),
+                        h.Class(className(styles.filterActions)),
+                      ],
+                      [
+                        h.span(
+                          [
+                            h.DataAttribute('slot', 'toolbar-filter-count'),
+                            h.Class(className(styles.readout)),
+                          ],
+                          [`${results.length} of ${JOBS.length}`],
+                        ),
+                        ...(hasFilters
+                          ? [
+                              button<Msg>(
+                                {
+                                  variant: 'link',
+                                  size: 'sm',
+                                  onClick: clearFilters,
+                                  children: ['Clear all'],
+                                },
+                                h,
+                              ),
+                            ]
+                          : []),
+                        ghostIconButton('columns-3-cog', 'View options', h),
+                      ],
+                    ),
+                  ],
+                ),
               ],
-              endContent: [ghostIconButton('columns-3-cog', 'View options', h)],
             },
             h,
           ),
@@ -541,7 +583,7 @@ export const toolbarStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
     (id, isChecked) => send('ToggledJobRow', { id, isChecked }),
     send('ClickedDeselectAll'),
     value => send('ChangedSearch', { value }),
-    (field, value) => send('ChangedClause', { field, value }),
+    (field, message) => send('GotFilterSelectMessage', { field, message }),
     send('ClickedClearFilters'),
     h,
   )

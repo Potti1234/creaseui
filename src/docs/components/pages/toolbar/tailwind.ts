@@ -1,4 +1,4 @@
-import { Schema as S } from 'effect'
+import { Option, Schema as S } from 'effect'
 import { Command } from 'foldkit'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
@@ -8,7 +8,6 @@ import {
   FILTER_FIELDS,
   JOBS,
   toolbarFixtures,
-  type FilterField,
   type Job,
 } from '@/docs/components/pages/toolbar/shared'
 import * as Icon from '@/lib/icon'
@@ -16,7 +15,7 @@ import { badge } from '@/ui/badge'
 import { button } from '@/ui/button'
 import { checkbox } from '@/ui/checkbox'
 import { input } from '@/ui/input'
-import { nativeSelect } from '@/ui/native-select'
+import * as Select from '@/ui/select'
 import {
   table,
   tableBody,
@@ -34,9 +33,9 @@ const PreviewMessage = defineMessageUnion({
   ToggledJobRow: { id: S.String, isChecked: S.Boolean },
   ClickedDeselectAll: {},
   ChangedSearch: { value: S.String },
-  ChangedClause: {
+  GotFilterSelectMessage: {
     field: S.Literals(['status', 'priority', 'customer']),
-    value: S.String,
+    message: Select.Message,
   },
   ClickedClearFilters: {},
 })
@@ -51,8 +50,20 @@ const PreviewModel = S.Struct({
   status: S.String,
   priority: S.String,
   customer: S.String,
+  filterSelects: S.Struct({
+    status: Select.Model,
+    priority: Select.Model,
+    customer: Select.Model,
+  }),
 })
 type PreviewModel = typeof PreviewModel.Type
+
+const FilterSelect = Select.create<string>()
+const FILTER_WIDTH = {
+  status: 'w-32',
+  priority: 'w-24',
+  customer: 'w-40',
+} as const
 
 const heading = (text: string, h: HtmlBuilder<PreviewMessage>): Html =>
   h.h4([h.Class('text-base font-medium')], [text])
@@ -378,7 +389,7 @@ const bodyFor = (
         model.priority !== '' ||
         model.customer !== ''
       return h.div(
-        [h.Class('w-190 rounded-xl border bg-card')],
+        [h.Class('w-190 max-w-full min-w-0 rounded-xl border bg-card')],
         [
           Toolbar.toolbar<PreviewMessage>(
             {
@@ -387,59 +398,80 @@ const bodyFor = (
               dividers: ['bottom'],
               toParentMessage: toolbarMessage,
               startContent: [
-                input<PreviewMessage>(
-                  {
-                    id: 'filter-search',
-                    label: 'Search jobs',
-                    placeholder: 'Search',
-                    value: model.search,
-                    onInput: value => PreviewMessage.ChangedSearch({ value }),
-                    class: 'w-40',
-                  },
-                  h,
-                ),
-                ...FILTER_FIELDS.map(field =>
-                  nativeSelect<PreviewMessage>(
-                    {
-                      id: `filter-${field.key}`,
-                      label: field.label,
-                      value: model[field.key],
-                      onChange: value =>
-                        PreviewMessage.ChangedClause({
-                          field: field.key as FilterField,
-                          value,
-                        }),
-                      size: 'sm',
-                      options: [
-                        { value: '', label: field.label },
-                        ...field.options.map(option => ({
-                          value: option,
-                          label: option,
-                        })),
-                      ],
-                    },
-                    h,
-                  ),
-                ),
-                h.span(
-                  [h.Class('text-muted-foreground text-xs whitespace-nowrap')],
-                  [`${results.length} of ${JOBS.length}`],
-                ),
-                ...(hasFilters
-                  ? [
-                      button<PreviewMessage>(
+                h.div(
+                  [h.Class('flex w-full min-w-0 flex-wrap items-center gap-2')],
+                  [
+                    input<PreviewMessage>(
+                      {
+                        id: 'filter-search',
+                        ariaLabel: 'Search jobs',
+                        placeholder: 'Search',
+                        value: model.search,
+                        onInput: value =>
+                          PreviewMessage.ChangedSearch({ value }),
+                        class: 'w-36',
+                      },
+                      h,
+                    ),
+                    ...FILTER_FIELDS.map(field =>
+                      FilterSelect.select(
                         {
-                          variant: 'link',
+                          model: model.filterSelects[field.key],
+                          ariaLabel: field.label,
+                          placeholder: field.label,
+                          maybeSelectedValue:
+                            model[field.key] === ''
+                              ? Option.none()
+                              : Option.some(model[field.key]),
+                          toParentMessage: message =>
+                            PreviewMessage.GotFilterSelectMessage({
+                              field: field.key,
+                              message,
+                            }),
                           size: 'sm',
-                          onClick: PreviewMessage.ClickedClearFilters(),
-                          children: ['Clear all'],
+                          triggerClass: FILTER_WIDTH[field.key],
+                          items: ['', ...field.options],
+                          itemToValue: value => value,
+                          itemToLabel: value =>
+                            value === '' ? field.label : value,
                         },
                         h,
                       ),
-                    ]
-                  : []),
+                    ),
+                    h.div(
+                      [
+                        h.DataAttribute('slot', 'toolbar-filter-actions'),
+                        h.Class('ms-auto flex shrink-0 items-center gap-2'),
+                      ],
+                      [
+                        h.span(
+                          [
+                            h.DataAttribute('slot', 'toolbar-filter-count'),
+                            h.Class(
+                              'text-muted-foreground text-xs tabular-nums whitespace-nowrap',
+                            ),
+                          ],
+                          [`${results.length} of ${JOBS.length}`],
+                        ),
+                        ...(hasFilters
+                          ? [
+                              button<PreviewMessage>(
+                                {
+                                  variant: 'link',
+                                  size: 'sm',
+                                  onClick: PreviewMessage.ClickedClearFilters(),
+                                  children: ['Clear all'],
+                                },
+                                h,
+                              ),
+                            ]
+                          : []),
+                        ghostIconButton('columns-3-cog', 'View options', h),
+                      ],
+                    ),
+                  ],
+                ),
               ],
-              endContent: [ghostIconButton('columns-3-cog', 'View options', h)],
             },
             h,
           ),
@@ -487,6 +519,20 @@ export const toolbarTailwindPreviewProgram = definePreviewProgram<
       status: '',
       priority: '',
       customer: '',
+      filterSelects: {
+        status: Select.init({
+          id: `docs-toolbar-${index}-filter-status`,
+          isAnimated: true,
+        }),
+        priority: Select.init({
+          id: `docs-toolbar-${index}-filter-priority`,
+          isAnimated: true,
+        }),
+        customer: Select.init({
+          id: `docs-toolbar-${index}-filter-customer`,
+          isAnimated: true,
+        }),
+      },
     }
   },
   update: (model, message) => {
@@ -523,10 +569,30 @@ export const toolbarTailwindPreviewProgram = definePreviewProgram<
         return { model: { ...model, selectedRows: [] } }
       case 'ChangedSearch':
         return { model: { ...model, search: message.value } }
-      case 'ChangedClause':
+      case 'GotFilterSelectMessage': {
+        const next = Select.update(
+          model.filterSelects[message.field],
+          message.message,
+        )
         return {
-          model: { ...model, [message.field]: message.value },
+          model: {
+            ...model,
+            filterSelects: {
+              ...model.filterSelects,
+              [message.field]: next.model,
+            },
+            ...(next.outMessage?._tag === 'Selected'
+              ? { [message.field]: next.outMessage.value }
+              : {}),
+          },
+          commands: Command.mapMessages(next.commands ?? [], messageNext =>
+            PreviewMessage.GotFilterSelectMessage({
+              field: message.field,
+              message: messageNext,
+            }),
+          ),
         }
+      }
       case 'ClickedClearFilters':
         return {
           model: {
