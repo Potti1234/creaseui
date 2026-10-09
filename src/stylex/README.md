@@ -66,6 +66,9 @@ Anchored overlays must use `themedAnchor` from `overlay-boundary.ts`. Scoped
 Create themes rely on CSS inheritance, so Foldkit's default body portal is not
 safe here. Do not add `portal: true` locally; a clipping requirement needs a
 reviewed theme-copying portal at the shared boundary.
+Use `themedComboboxPanel` for a combobox popup that must escape clipping; it
+copies inherited theme variables before portaling and tracks ancestor theme
+changes until the popup unmounts.
 
 Durations, easing, cursors, and press behavior come from
 `interaction-tokens.stylex.const.ts`. Raw values are lint errors. Suppressions

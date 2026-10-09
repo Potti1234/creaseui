@@ -76,3 +76,70 @@ retained alongside the successful rechecks.
 
 Detailed logs, probe results, and screenshots are retained in the ignored
 `output/port-validation` directory.
+
+## Follow-up import on 2026-10-09
+
+Source: `C:\Users\lukas\Downloads\creaseuicomponent-fixes\creaseuicomponent-fixes`.
+Starting commit: `5ee4f0b`.
+
+Imported the ten dashboard findings documented in
+[checklist-dashboard-hardening.md](../checklist-dashboard-hardening.md) and the
+component changes recorded in source browser reports 17-31. The original
+`checklist-hardening.md` was unchanged. The source also retires Tour; its source,
+exports, routes, registry entry, and generated discovery metadata were removed
+together. The previously committed fixes remain in place, and existing stashes
+were preserved.
+
+Each logical fix or addition has its own commit; browser regression coverage is
+recorded separately. Generated files were rebuilt from the combined source.
+
+| Commit    | Change                                                                  |
+| --------- | ----------------------------------------------------------------------- |
+| `42bbd5b` | fix(test): run unit tests portably with worker heap limits              |
+| `a34a161` | fix(avatar): meet contrast requirements for fallback text               |
+| `4b11d11` | fix(registry): derive complete dependency graphs from source imports    |
+| `e3650b1` | fix(data-table): compose custom filters in the shared toolbar           |
+| `5ce41d1` | fix(data-table): filter columns without sortable accessors              |
+| `312e63b` | fix(chart): expose precise axis and grid composition types              |
+| `375daa4` | fix(icons): publish complete adapter inventories and visible fallbacks  |
+| `13e56e3` | fix(switch): support composed labels and descriptions                   |
+| `32f462b` | feat(dashboard): add a complete installable application recipe          |
+| `dcf798a` | fix(registry): verify clean consumer imports and dependencies           |
+| `dc26eef` | fix(number-input): step from pending edits without losing focus         |
+| `6f150f1` | fix(sidebar): synchronize collapse motion across all elements           |
+| `bb78b87` | fix(sheet): prevent focus scrolling from fighting panel slides          |
+| `b3e7017` | fix(sheet): animate backdrop fading and release transitions             |
+| `83d9f05` | fix(sidebar): keep hover menus open across the pointer bridge           |
+| `89aa7a0` | fix(sidebar): keep the profile footer compact and aligned               |
+| `034c0d6` | fix(timestamp): size detail cards naturally and wrap long values        |
+| `f1f58e3` | fix(timestamp): isolate detail-card IDs across examples                 |
+| `7a97cdd` | fix(toast): restore stacked layouts, visible limits and timer ownership |
+| `916e3be` | fix(toast): enable pointer capture for swipe dismissal                  |
+| `f4d3ad3` | fix(tokenizer): anchor full-width popups and preserve portal themes     |
+| `69133e8` | fix(tokenizer): clear successful creation queries for the next token    |
+| `55737f1` | fix(toolbar): handle embedded controls and responsive filter layouts    |
+| `7fdf76b` | fix(top-nav): keep anchored panels outside clipping containers          |
+| `4e724ca` | fix(thumbnail): wire previews, removal and scoped hover controls        |
+| `9f6d6ad` | fix(catalog): remove the retired Tour component and discovery entries   |
+| `3c989ed` | test(docs): cover the imported component hardening fixes                |
+| `09ab485` | fix(icons): preserve supplied public aliases during regeneration        |
+
+Validation of the combined checkout:
+
+- Full TypeScript check, ESLint, formatting, and generated API/discovery checks
+  passed.
+- All 479 unit tests passed, including copyable documentation compilation.
+- All 44 scene suites passed: 1,598 passing tests, 292 existing expected failures,
+  and 470 existing TODO cases.
+- Tailwind and StyleX production builds passed.
+- Thirteen imported browser journeys passed across both renderers, covering avatar
+  contrast, Tour removal, thumbnails, top navigation, timestamps, toolbar filters,
+  tokenizers, toast stacks, swipe dismissal, and number-input stepper focus.
+- The clean registry consumer installed all 121 components and dashboard-01,
+  passed installed-import checks and six TypeScript checks across all five icon
+  adapters, and built successfully with consumer-only dependencies.
+- The icon inventory retains all 240 supplied default names and 98 shared adapter
+  names within the existing bundle budget.
+
+Logs and browser artifacts are retained under the ignored `output/new-port-*`
+paths and Playwright output directories.
