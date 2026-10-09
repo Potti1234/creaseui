@@ -3,6 +3,8 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import { type SwitchBehaviorProps, renderSwitch } from '@/lib/switch'
 import { cn } from '@/lib/utils'
 
+export { switchIds } from '@/lib/switch'
+
 export type SwitchSize = 'sm' | 'default'
 
 const SWITCH_CLASS =
