@@ -260,7 +260,7 @@ export const toast = <Msg>(
               fallback,
               props.model.id,
               props.toParentMessage,
-              false,
+              Option.isSome(props.model.maybeSwipeConfig),
               props.pausePolicy !== 'none',
             ),
           ),
