@@ -139,15 +139,16 @@ const view = defineView<Model, Message, NumberInputViewInputs>(
     const isInvalid =
       props.status?.type === 'error' || pendingIsInvalid(props, model)
     const value = props.value ?? undefined
+    const commit = commitResolution(props, model)
+    const stepValue = commit.kind === 'commit' ? commit.value : value
     const stepper = (direction: 1 | -1) =>
       getSteppedValue(direction, {
-        value,
+        value: stepValue,
         step: props.step,
         min: props.min,
         max: props.max,
         isIntegerOnly: props.isIntegerOnly,
       })
-    const commit = commitResolution(props, model)
 
     const describedBy =
       [
@@ -238,12 +239,20 @@ const view = defineView<Model, Message, NumberInputViewInputs>(
             ),
             h.OnKeyDownPreventDefault(key => {
               if (key === 'ArrowUp') {
-                return canStep(1, { value, min: props.min, max: props.max })
+                return canStep(1, {
+                  value: stepValue,
+                  min: props.min,
+                  max: props.max,
+                })
                   ? Option.some(Message.Stepped({ value: stepper(1) }))
                   : Option.none()
               }
               if (key === 'ArrowDown') {
-                return canStep(-1, { value, min: props.min, max: props.max })
+                return canStep(-1, {
+                  value: stepValue,
+                  min: props.min,
+                  max: props.max,
+                })
                   ? Option.some(Message.Stepped({ value: stepper(-1) }))
                   : Option.none()
               }
@@ -345,11 +354,13 @@ const view = defineView<Model, Message, NumberInputViewInputs>(
                     props.isDisabled === true ||
                       props.isReadOnly === true ||
                       !canStep(delta, {
-                        value,
+                        value: stepValue,
                         min: props.min,
                         max: props.max,
                       }),
                   ),
+                  // Stepping edits the focused input; do not blur it on press.
+                  h.Attribute('onmousedown', 'event.preventDefault()'),
                   h.OnClick(Message.Stepped({ value: stepper(delta) }), {
                     propagation: 'Stop',
                     focusSelector: `#${fieldIds.input}`,

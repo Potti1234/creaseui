@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+import { Option } from 'effect'
 
 import {
   parseLocaleNumber,
@@ -74,4 +75,20 @@ test('update lifts commits and clears into ChangedValue out messages', () => {
   assert.equal(committed.outMessage?._tag, 'ChangedValue')
   const cleared = update(model, Message.ClearRequested())
   assert.equal(cleared.outMessage?._tag, 'ChangedValue')
+})
+
+test('stepping an edited input keeps it focused until the user leaves', () => {
+  const focused = update(init({ id: 'quantity' }), Message.FocusGained()).model
+  const editing = update(focused, Message.DraftEdited({ text: '12' })).model
+  const stepped = update(editing, Message.Stepped({ value: 13 }))
+  assert.equal(stepped.model.isFocused, true)
+  assert.equal(Option.isNone(stepped.model.pendingInput), true)
+  assert.equal(Option.getOrNull(stepped.outMessage!.value), 13)
+
+  const blurred = update(
+    stepped.model,
+    Message.CommitDecided({ resolution: { _tag: 'revert' } }),
+  )
+  assert.equal(blurred.model.isFocused, false)
+  assert.equal(blurred.outMessage, undefined)
 })

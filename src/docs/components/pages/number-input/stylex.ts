@@ -38,7 +38,7 @@ const entryProps = (
   model: input,
   toParentMessage: message =>
     GotNumberInputMessage.GotNumberInputMessage({ index: entryIndex, message }),
-  id: `docs-number-input-${entry.id}`,
+  id: input.id,
   label: entry.label,
   value: Option.getOrNull(value),
   ...(entry.placeholder === undefined
@@ -69,7 +69,9 @@ export const numberInputStylexPreviewProgram = definePreviewProgram<
     return {
       _docsPage: 'number-input',
       inputs: fixture.entries.map(entry => ({
-        input: NumberInput.init({ id: `docs-number-input-${entry.id}` }),
+        input: NumberInput.init({
+          id: `docs-number-input-${String(index)}-${entry.id}`,
+        }),
         value:
           entry.initialValue === undefined
             ? Option.none()
