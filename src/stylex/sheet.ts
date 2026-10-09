@@ -157,6 +157,7 @@ const styles = stylex.create({
   },
   bottomSheetDialog: {
     padding: 0,
+    // Keep focus/scroll anchoring from scrolling against the panel's slide.
     overflow: 'clip',
     overscrollBehavior: 'contain',
     backgroundColor: tokens.transparent,
@@ -262,6 +263,10 @@ const styles = stylex.create({
   scrim: {
     inset: 0,
     backgroundColor: tokens.backdrop,
+    opacity: {
+      default: 'var(--sheet-scrim-opacity)',
+      ':is([data-closed])': 0,
+    },
     position: 'absolute',
     transitionDuration: {
       default: interactionTokens.motionDrawer,
@@ -290,8 +295,8 @@ const styles = stylex.create({
     position: 'relative',
     transform: {
       '@starting-style': 'translateY(100%)',
-      default: 'translateY(0)',
-      ':is([data-closed], [data-leave])': 'translateY(100%)',
+      default: 'none',
+      ':is([data-closed])': 'translateY(100%)',
     },
     transitionDuration: {
       default: interactionTokens.motionDrawer,
@@ -912,7 +917,9 @@ export const sheet = <Msg>(
                       hd.DataAttribute('slot', 'sheet-scrim'),
                       ...(swiping ? [hd.DataAttribute('swiping', '')] : []),
                       hd.Class(className(styles.scrim)),
-                      hd.Style({ opacity: String(leaving ? 0 : scrimOpacity) }),
+                      hd.Style({
+                        '--sheet-scrim-opacity': String(scrimOpacity),
+                      }),
                     ],
                     [],
                   ),
@@ -1204,8 +1211,8 @@ export const sheetSwitcher = <Msg>(
                     ...(swiping ? [hd.DataAttribute('swiping', '')] : []),
                     hd.Class(className(styles.scrim)),
                     hd.Style({
-                      opacity: String(
-                        leaving ? 0 : switcherScrimOpacity(activeSheet),
+                      '--sheet-scrim-opacity': String(
+                        switcherScrimOpacity(activeSheet),
                       ),
                     }),
                   ],

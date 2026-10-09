@@ -149,6 +149,7 @@ for (const width of [390, 1440]) {
   test(`sheet drag settles and closes with Drawer easing at ${width}px`, async ({
     page,
   }) => {
+    await page.emulateMedia({ reducedMotion: 'no-preference' })
     await page.setViewportSize({ width, height: 1000 })
     const errors: string[] = []
     page.on('pageerror', error => errors.push(error.message))
@@ -191,13 +192,119 @@ for (const width of [390, 1440]) {
     await expect(activePanels(page)).toHaveCount(0)
     await page.getByRole('button', { name: 'Open sheet', exact: true }).click()
     await settled(page)
-    await page.keyboard.press('Escape')
-    await expect(activePanels(page)).toHaveAttribute('data-leave', '')
-    await expect(activePanels(page)).toHaveCSS(
-      'transition-timing-function',
-      'cubic-bezier(0.32, 0.72, 0, 1)',
+    // Arm before Escape so a brief leave phase cannot finish before the check.
+    const leaving = page.evaluate(
+      () =>
+        new Promise<string>(resolve => {
+          const panel = document.querySelector<HTMLElement>(
+            '[data-slot="sheet-panel"]',
+          )!
+          const observer = new MutationObserver(() => {
+            if (panel.hasAttribute('data-leave')) {
+              observer.disconnect()
+              resolve(getComputedStyle(panel).transitionTimingFunction)
+            }
+          })
+          observer.observe(panel, {
+            attributes: true,
+            attributeFilter: ['data-leave'],
+          })
+        }),
     )
+    await page.keyboard.press('Escape')
+    expect(await leaving).toBe('cubic-bezier(0.32, 0.72, 0, 1)')
     await expect(activePanels(page)).toHaveCount(0)
     expect(errors).toEqual([])
+  })
+
+  test(`bottom sheets ease into view without dialog scrolling at ${width}px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 1000 })
+    await page.emulateMedia({ reducedMotion: 'no-preference' })
+    await gotoSheets(page)
+    for (const name of [
+      'Bottom',
+      'Open sheet',
+      'Open hug',
+      'Open capped',
+      'Open tall',
+    ]) {
+      const trigger = page.getByRole('button', { name, exact: true })
+      await trigger.scrollIntoViewIfNeeded()
+      // Observe the actual entrance, including its first focused frame.
+      const frames = page.evaluate(
+        () =>
+          new Promise<
+            Array<{
+              top: number
+              height: number
+              scrollTop: number
+              opacity: number
+            }>
+          >(resolve => {
+            const samples: Array<{
+              top: number
+              height: number
+              scrollTop: number
+              opacity: number
+            }> = []
+            let started: number | undefined
+            const tick = (now: number) => {
+              const panel = document.querySelector<HTMLElement>(
+                '[data-slot="sheet-panel"]',
+              )
+              const dialog = panel?.closest('dialog')
+              if (panel && dialog?.open) {
+                started ??= now
+                const box = panel.getBoundingClientRect()
+                samples.push({
+                  top: box.top,
+                  height: box.height,
+                  scrollTop: dialog.scrollTop,
+                  opacity: Number.parseFloat(
+                    getComputedStyle(
+                      dialog.querySelector('[data-slot="sheet-scrim"]')!,
+                    ).opacity,
+                  ),
+                })
+              }
+              if (started !== undefined && now - started >= 800)
+                resolve(samples)
+              else requestAnimationFrame(tick)
+            }
+            requestAnimationFrame(tick)
+          }),
+      )
+      await trigger.click()
+      const samples = await frames
+      expect(samples.length).toBeGreaterThan(10)
+      expect(samples.every(frame => frame.scrollTop === 0)).toBe(true)
+      const first = samples[0]!
+      const last = samples.at(-1)!
+      expect(first.top).toBeGreaterThanOrEqual(999)
+      expect(first.top - last.top).toBeGreaterThan(last.height * 0.8)
+      const intermediate = samples.filter(
+        frame => frame.top > last.top + 2 && frame.top < first.top - 2,
+      )
+      expect(
+        new Set(intermediate.map(frame => Math.round(frame.top))).size,
+      ).toBeGreaterThan(5)
+      expect(
+        samples.some(frame => frame.opacity > 0.05 && frame.opacity < 0.95),
+      ).toBe(true)
+      expect(first.opacity).toBe(0)
+      expect(last.opacity).toBe(1)
+      for (let index = 1; index < samples.length; index++) {
+        expect(samples[index]!.top - samples[index - 1]!.top).toBeLessThan(1)
+      }
+      const panel = await settled(page)
+      await expect(panel).toHaveCSS(
+        'transition-timing-function',
+        'cubic-bezier(0.32, 0.72, 0, 1)',
+      )
+      await close(page)
+      await expect(trigger).toBeFocused()
+    }
   })
 }

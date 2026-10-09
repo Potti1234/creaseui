@@ -71,14 +71,15 @@ const SIDE_CLASS: Readonly<Record<SheetSide, string>> = {
 
 // ——— Bottom sheet (astryx BottomSheet port)
 
+// Keep focus/scroll anchoring from scrolling against the panel's slide.
 const BOTTOM_DIALOG_CLASS =
   'bg-transparent p-0 overflow-clip overscroll-contain open:block'
 const SCRIM_CLASS =
-  'absolute inset-0 bg-black/50 transition-opacity duration-450 ease-[cubic-bezier(0.32,0.72,0,1)] data-[swiping]:duration-0 motion-reduce:transition-none'
+  'absolute inset-0 bg-black/50 opacity-[var(--sheet-scrim-opacity)] transition-opacity duration-450 ease-[cubic-bezier(0.32,0.72,0,1)] data-[closed]:opacity-0 data-[swiping]:duration-0 motion-reduce:transition-none'
 const POSITIONER_CLASS =
   'pointer-events-none absolute inset-x-0 bottom-0 flex justify-center'
 const BOTTOM_SHEET_CLASS =
-  'pointer-events-auto relative box-border flex w-full min-h-0 shrink-0 flex-col overflow-hidden border-x border-t border-border bg-background shadow-lg outline-none will-change-transform rounded-t-2xl transition-[transform,opacity,height] duration-450 ease-[cubic-bezier(0.32,0.72,0,1)] data-[closed]:translate-y-full data-[leave]:translate-y-full starting:translate-y-full motion-reduce:transition-none'
+  'pointer-events-auto relative box-border flex w-full min-h-0 shrink-0 flex-col overflow-hidden border-x border-t border-border bg-background shadow-lg outline-none will-change-transform rounded-t-2xl transition-[transform,translate,scale,rotate,opacity,height] duration-450 ease-[cubic-bezier(0.32,0.72,0,1)] data-[closed]:translate-y-full starting:translate-y-full motion-reduce:transition-none'
 const HANDLE_BAR_CLASS =
   'absolute inset-x-0 top-0 z-[1] flex h-6 touch-none cursor-grab items-center justify-center bg-gradient-to-b from-background from-60% to-transparent select-none'
 const HANDLE_PILL_CLASS = 'h-1 w-8 rounded-full bg-border'
@@ -599,7 +600,9 @@ export const sheet = <Msg>(
                       hd.DataAttribute('slot', 'sheet-scrim'),
                       ...(swiping ? [hd.DataAttribute('swiping', '')] : []),
                       hd.Class(SCRIM_CLASS),
-                      hd.Style({ opacity: String(leaving ? 0 : scrimOpacity) }),
+                      hd.Style({
+                        '--sheet-scrim-opacity': String(scrimOpacity),
+                      }),
                     ],
                     [],
                   ),
@@ -885,8 +888,8 @@ export const sheetSwitcher = <Msg>(
                     ...(swiping ? [hd.DataAttribute('swiping', '')] : []),
                     hd.Class(SCRIM_CLASS),
                     hd.Style({
-                      opacity: String(
-                        leaving ? 0 : switcherScrimOpacity(activeSheet),
+                      '--sheet-scrim-opacity': String(
+                        switcherScrimOpacity(activeSheet),
                       ),
                     }),
                   ],
