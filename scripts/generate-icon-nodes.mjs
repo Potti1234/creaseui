@@ -59,7 +59,8 @@ const referencedIconNames = sourcePaths.flatMap(path => {
   return names
 })
 const requestedIconNames = Array.from(
-  new Set([...adapterNames, ...referencedIconNames]),
+  // Preserve the supplied public inventory, including names unused by local demos.
+  new Set([...adapterNames, ...referencedIconNames, 'currency', 'pen']),
 ).sort()
 const missingIconNames = requestedIconNames.filter(
   name => catalog[name] === undefined,
