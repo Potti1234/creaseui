@@ -46,7 +46,7 @@ const styles = stylex.create({
     inset: 0,
     alignItems: 'center',
     backgroundColor: foundationTokens.muted,
-    color: tokens.mutedForeground,
+    color: tokens.foreground,
     display: 'flex',
     fontSize: {
       default: '0.875rem',
@@ -86,7 +86,7 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: foundationTokens.muted,
     boxShadow: `0 0 0 2px ${tokens.background}`,
-    color: tokens.mutedForeground,
+    color: tokens.foreground,
     display: 'flex',
     flexShrink: 0,
     fontSize: '0.875rem',
