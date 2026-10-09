@@ -12,6 +12,9 @@ import {
   type Position,
   type Variant,
   Message as ToastMessages,
+  stackLayout,
+  contentMount,
+  viewportMount,
 } from '@/lib/toast'
 import type { StaticStyles } from '@stylexjs/stylex'
 
@@ -32,7 +35,13 @@ const styles = stylex.create({
     },
     flexShrink: 0,
   },
-  body: { gap: '0.25rem', display: 'grid', flexGrow: 1 },
+  body: {
+    gap: '0.25rem',
+    display: 'grid',
+    flexGrow: 1,
+    overflowWrap: 'anywhere',
+    minWidth: 0,
+  },
   description: {
     color: tokens.mutedForeground,
     fontSize: '0.875rem',
@@ -49,51 +58,79 @@ const styles = stylex.create({
   icon: { flexShrink: 0, height: '1rem', marginTop: '0.125rem', width: '1rem' },
   title: { fontSize: '0.875rem', fontWeight: 600, lineHeight: '1.25rem' },
   toast: {
-    padding: '1rem',
     borderColor: tokens.border,
-    borderRadius: tokens.radius,
+    borderRadius: tokens.cardRadius,
     borderStyle: 'solid',
     borderWidth: 1,
-    gap: '0.75rem',
-    overflow: 'hidden',
-    alignItems: 'flex-start',
     backgroundColor: tokens.background,
     boxShadow: tokens.shadowCard,
     color: tokens.foreground,
-    display: 'flex',
     pointerEvents: 'auto',
-    position: 'relative',
+    position: 'absolute',
     transitionDuration: {
-      default: interactionTokens.motionFast,
+      default: interactionTokens.motionToast,
       '@media (prefers-reduced-motion: reduce)': interactionTokens.motionNone,
     },
-    transitionProperty: 'opacity, transform',
-    paddingRight: '2rem',
+    transitionProperty: 'transform, opacity, height',
+    transitionTimingFunction: interactionTokens.easingToast,
+    left: 0,
     width: '100%',
+    '::after': {
+      content: "''",
+      position: 'absolute',
+      height: 13,
+      left: 0,
+      width: '100%',
+    },
   },
   viewport: {
-    padding: '1rem',
-    gap: '0.5rem',
-    display: 'flex',
-    flexDirection: 'column',
+    outline: 'none',
     pointerEvents: 'none',
     position: 'fixed',
     zIndex: 100,
-    maxHeight: '100vh',
-    maxWidth: { default: '100%', '@media (min-width: 640px)': '26.25rem' },
-    width: { default: '100%', '@media (min-width: 640px)': '22.25rem' },
-  },
-  viewportBottom: {
-    flexDirection: {
-      default: 'column-reverse',
-      '@media (min-width: 640px)': 'column',
+    maxHeight: 'calc(100dvh - 2rem)',
+    maxWidth: '24rem',
+    width: {
+      default: 'calc(100% - 2rem)',
+      '@media (min-width: 640px)': '100%',
     },
   },
-  viewportLeft: { left: 0 },
+  stage: { position: 'relative', width: '100%' },
+  content: {
+    padding: '1rem',
+    gap: '0.75rem',
+    overflow: 'hidden',
+    alignItems: 'flex-start',
+    display: 'flex',
+    position: 'relative',
+    transitionDuration: {
+      default: interactionTokens.motionToastContent,
+      '@media (prefers-reduced-motion: reduce)': interactionTokens.motionNone,
+    },
+    transitionProperty: 'opacity',
+    transitionTimingFunction: interactionTokens.easingToastContent,
+    paddingRight: '2rem',
+  },
+  entryTop: { transformOrigin: 'top', top: 0, '::after': { bottom: '100%' } },
+  entryBottom: {
+    transformOrigin: 'bottom',
+    bottom: 0,
+    '::after': { top: '100%' },
+  },
+  limited: { pointerEvents: 'none' },
+  swipeEnabled: { touchAction: 'pan-y' },
+  swiping: {
+    cursor: interactionTokens.cursorGrabbing,
+    transitionDuration: interactionTokens.motionNone,
+    userSelect: 'none',
+  },
+  front: { '::after': { display: 'none' } },
+  expanded: { overflowY: 'auto' },
+  viewportLeft: { left: '1rem' },
   viewportCenter: { transform: 'translateX(-50%)', left: '50%' },
-  viewportRight: { right: 0 },
-  viewportTop: { top: 0 },
-  viewportBottomEdge: { bottom: 0 },
+  viewportRight: { right: '1rem' },
+  viewportTop: { top: '1rem' },
+  viewportBottomEdge: { bottom: '1rem' },
   visuallyClosed: { opacity: 0 },
 })
 
@@ -134,23 +171,11 @@ const positionStyle = (position: Position): ReadonlyArray<StaticStyles> => {
     case 'top-right':
       return [styles.viewportRight, styles.viewportTop]
     case 'bottom-left':
-      return [
-        styles.viewportLeft,
-        styles.viewportBottomEdge,
-        styles.viewportBottom,
-      ]
+      return [styles.viewportLeft, styles.viewportBottomEdge]
     case 'bottom-center':
-      return [
-        styles.viewportCenter,
-        styles.viewportBottomEdge,
-        styles.viewportBottom,
-      ]
+      return [styles.viewportCenter, styles.viewportBottomEdge]
     case 'bottom-right':
-      return [
-        styles.viewportRight,
-        styles.viewportBottomEdge,
-        styles.viewportBottom,
-      ]
+      return [styles.viewportRight, styles.viewportBottomEdge]
   }
 }
 
@@ -162,6 +187,8 @@ export type ToastProps<Msg> = Readonly<{
   layoutStyle?: ComponentLayoutStyle
   entryLayoutStyle?: ComponentLayoutStyle
   position?: Position
+  stacked?: boolean
+  expanded?: boolean
 }>
 
 /** Mirrors the upstream Toast view's animation attributes so the entry
@@ -194,16 +221,15 @@ const animationAttributes = <Msg>(
 
 /** `data-closed` phases (enter start, leave end) fade the entry via the
  *  existing opacity/transform transition. */
-const isVisuallyClosed = (entry: Entry): boolean =>
-  entry.animation.transitionState === 'EnterStart' ||
-  entry.animation.transitionState === 'LeaveAnimating'
-
 const entryView = <Msg>(
-  entry: Entry,
+  item: ReturnType<typeof stackLayout>['entries'][number],
+  position: Position,
+  expanded: boolean,
   props: ToastProps<Msg>,
   h: HtmlBuilder<Msg>,
-): Html =>
-  h.article(
+): Html => {
+  const { entry, limited, behind } = item
+  return h.article(
     [
       h.Key(entry.id),
       h.Id(entry.id),
@@ -211,92 +237,119 @@ const entryView = <Msg>(
       h.DataAttribute('slot', 'toast-entry'),
       h.DataAttribute('variant', entry.payload.variant.toLowerCase()),
       h.DataAttribute('paused', String(entry.isHovered)),
-      ...(props.pausePolicy === 'none' || Option.isNone(entry.maybeDuration)
-        ? []
-        : [
-            h.OnMouseEnter(
-              props.toParentMessage(
-                ToastMessages.HoveredEntry({ entryId: entry.id }),
-              ),
+      h.Inert(limited),
+      ...(item.swiping ? [h.DataAttribute('swiping', '')] : []),
+      ...(item.swipeDirection
+        ? [
+            h.DataAttribute(
+              'swipe-direction',
+              item.swipeDirection.toLowerCase(),
             ),
-            h.OnMouseLeave(
-              props.toParentMessage(
-                ToastMessages.LeftEntry({ entryId: entry.id }),
-              ),
-            ),
-          ]),
+          ]
+        : []),
+      ...(limited ? [h.DataAttribute('limited', ''), h.AriaHidden(true)] : []),
+      ...(expanded ? [h.DataAttribute('expanded', '')] : []),
+      h.Style(item.style),
       ...animationAttributes(entry, h),
       h.Class(
         className(
           styles.toast,
-          isVisuallyClosed(entry) ? styles.visuallyClosed : undefined,
+          position.startsWith('top') ? styles.entryTop : styles.entryBottom,
+          limited ? styles.limited : undefined,
+          Option.isSome(props.model.maybeSwipeConfig)
+            ? styles.swipeEnabled
+            : undefined,
+          item.swiping ? styles.swiping : undefined,
+          item.index === 0 ? styles.front : undefined,
           props.entryLayoutStyle,
         ),
       ),
     ],
     [
-      ...(variantIcon(entry.payload.variant, h) === undefined
-        ? []
-        : [variantIcon(entry.payload.variant, h)!]),
       h.div(
-        [h.Class(className(styles.body))],
         [
-          h.div([h.Class(className(styles.title))], [entry.payload.title]),
-          ...(entry.payload.description === undefined
-            ? []
-            : [
-                h.div(
-                  [h.Class(className(styles.description))],
-                  [entry.payload.description],
-                ),
-              ]),
-        ],
-      ),
-      ...(entry.payload.actionLabel === undefined
-        ? []
-        : [
-            h.button(
-              [
-                h.Type('button'),
-                h.OnClick(
-                  props.toParentMessage(ActivatedToastAction({ id: entry.id })),
-                ),
-                h.Class(
-                  className(
-                    ...buttonVisualStyles({ variant: 'outline', size: 'sm' }),
-                    styles.action,
-                  ),
-                ),
-              ],
-              [entry.payload.actionLabel],
-            ),
-          ]),
-      h.button(
-        [
-          h.Type('button'),
-          h.AriaLabel('Dismiss notification'),
-          h.OnClick(
-            props.toParentMessage(
-              ToastMessages.Dismissed({ entryId: entry.id }),
-            ),
-          ),
+          h.DataAttribute('slot', 'toast-content'),
+          ...(behind ? [h.DataAttribute('behind', '')] : []),
+          ...(expanded ? [h.DataAttribute('expanded', '')] : []),
+          h.OnMount(contentMount(entry.id, props.toParentMessage)),
           h.Class(
             className(
-              ...buttonVisualStyles({ variant: 'ghost', size: 'icon-xs' }),
-              styles.dismiss,
+              styles.content,
+              behind ? styles.visuallyClosed : undefined,
             ),
           ),
         ],
-        [Icon.x<Msg>({}, h)],
+        [
+          ...(variantIcon(entry.payload.variant, h) === undefined
+            ? []
+            : [variantIcon(entry.payload.variant, h)!]),
+          h.div(
+            [h.Class(className(styles.body))],
+            [
+              h.div([h.Class(className(styles.title))], [entry.payload.title]),
+              ...(entry.payload.description === undefined
+                ? []
+                : [
+                    h.div(
+                      [h.Class(className(styles.description))],
+                      [entry.payload.description],
+                    ),
+                  ]),
+            ],
+          ),
+          ...(entry.payload.actionLabel === undefined
+            ? []
+            : [
+                h.button(
+                  [
+                    h.Type('button'),
+                    h.OnClick(
+                      props.toParentMessage(
+                        ActivatedToastAction({ id: entry.id }),
+                      ),
+                    ),
+                    h.Class(
+                      className(
+                        ...buttonVisualStyles({
+                          variant: 'outline',
+                          size: 'sm',
+                        }),
+                        styles.action,
+                      ),
+                    ),
+                  ],
+                  [entry.payload.actionLabel],
+                ),
+              ]),
+          h.button(
+            [
+              h.Type('button'),
+              h.AriaLabel('Dismiss notification'),
+              h.OnClick(
+                props.toParentMessage(
+                  ToastMessages.Dismissed({ entryId: entry.id }),
+                ),
+              ),
+              h.Class(
+                className(
+                  ...buttonVisualStyles({ variant: 'ghost', size: 'icon-xs' }),
+                  styles.dismiss,
+                ),
+              ),
+            ],
+            [Icon.x<Msg>({}, h)],
+          ),
+        ],
       ),
     ],
   )
+}
 
 export const toast = <Msg>(
   props: ToastProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const fallback = props.position ?? 'bottom-right'
+  const fallback = props.position ?? props.model.position
   const entryPosition = (entry: Entry): Position =>
     entry.payload.position ?? fallback
   const positions = POSITION_ORDER.filter(position =>
@@ -304,25 +357,55 @@ export const toast = <Msg>(
   )
   return h.div(
     [h.DataAttribute('slot', 'toast-root')],
-    (positions.length === 0 ? [fallback] : positions).map(position =>
-      h.section(
+    (positions.length === 0 ? [fallback] : positions).map(position => {
+      const expanded =
+        props.stacked === false ||
+        props.expanded === true ||
+        props.model.hoveredPositions.includes(position) ||
+        props.model.focusedPositions.includes(position)
+      const layout = stackLayout(props.model, position, expanded, fallback)
+      return h.section(
         [
           h.AriaLabel(props.ariaLabel ?? 'Notifications'),
           h.AriaLive('polite'),
+          h.Key(position),
+          h.Tabindex(-1),
+          h.OnMount(
+            viewportMount(
+              position,
+              fallback,
+              props.model.id,
+              props.toParentMessage,
+              false,
+              props.pausePolicy !== 'none',
+            ),
+          ),
           h.DataAttribute('slot', 'toast'),
           h.DataAttribute('position', position),
+          h.Style({ height: `${layout.height}px` }),
           h.Class(
             className(
               styles.viewport,
               ...positionStyle(position),
+              expanded && layout.height > props.model.viewportHeight - 32
+                ? styles.expanded
+                : undefined,
               props.layoutStyle,
             ),
           ),
         ],
-        props.model.entries
-          .filter(entry => entryPosition(entry) === position)
-          .map(entry => entryView(entry, props, h)),
-      ),
-    ),
+        [
+          h.div(
+            [
+              h.Class(className(styles.stage)),
+              h.Style({ height: `${layout.height}px` }),
+            ],
+            layout.entries.map(item =>
+              entryView(item, position, expanded, props, h),
+            ),
+          ),
+        ],
+      )
+    }),
   )
 }

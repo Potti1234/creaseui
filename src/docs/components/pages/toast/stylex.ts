@@ -68,6 +68,7 @@ export const toastStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
                 }),
               ),
             ariaLabel: 'Toast notifications',
+            stacked: fixture.stacked !== false,
           },
           h,
         ),

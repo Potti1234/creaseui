@@ -31,4 +31,8 @@ export const interactionTokens = stylex.defineConsts({
   easingDrawerContent: 'cubic-bezier(0.45, 1.005, 0, 1.005)',
   motionDrawer: '450ms',
   motionDrawerRelease: 'calc(var(--drawer-swipe-strength) * 400ms)',
+  motionToast: '500ms, 500ms, 150ms',
+  motionToastContent: '250ms',
+  easingToast: 'cubic-bezier(0.22, 1, 0.36, 1), ease, ease',
+  easingToastContent: 'cubic-bezier(0.22, 1, 0.36, 1)',
 } as const)

@@ -11,6 +11,9 @@ import {
   type Position,
   type Variant,
   Message as ToastMessages,
+  stackLayout,
+  contentMount,
+  viewportMount,
 } from '@/lib/toast'
 import { buttonVariants } from '@/ui/button'
 
@@ -46,23 +49,20 @@ const POSITION_ORDER: ReadonlyArray<Position> = [
 
 const positionClass = (position: Position): string => {
   const base =
-    'pointer-events-none fixed z-[100] flex max-h-screen w-full flex-col gap-2 p-4 sm:w-[356px] sm:max-w-[420px]'
+    'pointer-events-none fixed z-[100] w-[calc(100%-2rem)] max-w-sm max-h-[calc(100dvh-2rem)] outline-none sm:w-full'
   switch (position) {
     case 'top-left':
-      return cn(base, 'left-0 top-0')
+      return cn(base, 'left-4 top-4')
     case 'top-center':
-      return cn(base, 'left-1/2 top-0 -translate-x-1/2')
+      return cn(base, 'left-1/2 top-4 -translate-x-1/2')
     case 'top-right':
-      return cn(base, 'right-0 top-0')
+      return cn(base, 'right-4 top-4')
     case 'bottom-left':
-      return cn(base, 'bottom-0 left-0 flex-col-reverse sm:flex-col')
+      return cn(base, 'bottom-4 left-4')
     case 'bottom-center':
-      return cn(
-        base,
-        'bottom-0 left-1/2 -translate-x-1/2 flex-col-reverse sm:flex-col',
-      )
+      return cn(base, 'bottom-4 left-1/2 -translate-x-1/2')
     case 'bottom-right':
-      return cn(base, 'bottom-0 right-0 flex-col-reverse sm:flex-col')
+      return cn(base, 'bottom-4 right-4')
   }
 }
 
@@ -74,6 +74,9 @@ export type ToastProps<Msg> = Readonly<{
   class?: string
   entryClass?: string
   position?: Position
+  /** Set false to keep the visible cards expanded instead of stacked. */
+  stacked?: boolean
+  expanded?: boolean
 }>
 
 /** Mirrors the upstream Toast view's animation attributes so the entry
@@ -106,16 +109,15 @@ const animationAttributes = <Msg>(
 
 /** `data-closed` phases (enter start, leave end) fade the entry via the
  *  existing opacity/transform transition. */
-const isVisuallyClosed = (entry: Entry): boolean =>
-  entry.animation.transitionState === 'EnterStart' ||
-  entry.animation.transitionState === 'LeaveAnimating'
-
 const entryView = <Msg>(
-  entry: Entry,
+  item: ReturnType<typeof stackLayout>['entries'][number],
+  position: Position,
+  expanded: boolean,
   props: ToastProps<Msg>,
   h: HtmlBuilder<Msg>,
-): Html =>
-  h.article(
+): Html => {
+  const { entry, limited, behind } = item
+  return h.article(
     [
       h.Key(entry.id),
       h.Id(entry.id),
@@ -123,92 +125,115 @@ const entryView = <Msg>(
       h.DataAttribute('slot', 'toast-entry'),
       h.DataAttribute('variant', entry.payload.variant.toLowerCase()),
       h.DataAttribute('paused', String(entry.isHovered)),
-      ...(props.pausePolicy === 'none' || Option.isNone(entry.maybeDuration)
-        ? []
-        : [
-            h.OnMouseEnter(
-              props.toParentMessage(
-                ToastMessages.HoveredEntry({ entryId: entry.id }),
-              ),
+      h.Inert(limited),
+      ...(item.swiping ? [h.DataAttribute('swiping', '')] : []),
+      ...(item.swipeDirection
+        ? [
+            h.DataAttribute(
+              'swipe-direction',
+              item.swipeDirection.toLowerCase(),
             ),
-            h.OnMouseLeave(
-              props.toParentMessage(
-                ToastMessages.LeftEntry({ entryId: entry.id }),
-              ),
-            ),
-          ]),
+          ]
+        : []),
+      ...(limited ? [h.DataAttribute('limited', ''), h.AriaHidden(true)] : []),
+      ...(expanded ? [h.DataAttribute('expanded', '')] : []),
+      h.Style(item.style),
       ...animationAttributes(entry, h),
       h.Class(
         cn(
-          'group pointer-events-auto relative flex w-full items-start gap-3 overflow-hidden rounded-lg border bg-popover p-4 pr-8 text-popover-foreground shadow-lg transition-[opacity,transform] duration-200 motion-reduce:transition-none',
-          isVisuallyClosed(entry) && 'opacity-0',
+          "group absolute left-0 w-full rounded-2xl border bg-popover text-popover-foreground shadow-lg [transition:transform_500ms_cubic-bezier(0.22,1,0.36,1),opacity_500ms,height_150ms] motion-reduce:transition-none! motion-reduce:duration-0! data-swiping:duration-0! data-swiping:select-none data-swiping:cursor-grabbing after:absolute after:left-0 after:h-[13px] after:w-full after:content-['']",
+          Option.isSome(props.model.maybeSwipeConfig) && 'touch-pan-y',
+          position.startsWith('top')
+            ? 'top-0 origin-top after:bottom-full'
+            : 'bottom-0 origin-bottom after:top-full',
+          limited ? 'pointer-events-none' : 'pointer-events-auto',
+          item.index === 0 && 'after:hidden',
           props.entryClass,
         ),
       ),
     ],
     [
-      ...(variantIcon(entry.payload.variant, h) === undefined
-        ? []
-        : [variantIcon(entry.payload.variant, h)!]),
       h.div(
-        [h.Class('grid flex-1 gap-1')],
         [
-          h.div([h.Class('text-sm font-semibold')], [entry.payload.title]),
-          ...(entry.payload.description === undefined
-            ? []
-            : [
-                h.div(
-                  [h.Class('text-sm text-muted-foreground')],
-                  [entry.payload.description],
-                ),
-              ]),
-        ],
-      ),
-      ...(entry.payload.actionLabel === undefined
-        ? []
-        : [
-            h.button(
-              [
-                h.Type('button'),
-                h.OnClick(
-                  props.toParentMessage(ActivatedToastAction({ id: entry.id })),
-                ),
-                h.Class(
-                  cn(
-                    buttonVariants({ variant: 'outline', size: 'sm' }),
-                    'shrink-0 bg-transparent hover:bg-secondary',
-                  ),
-                ),
-              ],
-              [entry.payload.actionLabel],
-            ),
-          ]),
-      h.button(
-        [
-          h.Type('button'),
-          h.AriaLabel('Dismiss notification'),
-          h.OnClick(
-            props.toParentMessage(
-              ToastMessages.Dismissed({ entryId: entry.id }),
-            ),
-          ),
+          h.DataAttribute('slot', 'toast-content'),
+          ...(behind ? [h.DataAttribute('behind', '')] : []),
+          ...(expanded ? [h.DataAttribute('expanded', '')] : []),
+          h.OnMount(contentMount(entry.id, props.toParentMessage)),
           h.Class(
             cn(
-              buttonVariants({ variant: 'ghost', size: 'icon-xs' }),
-              'absolute top-2 right-2 p-1 text-foreground/50 transition-opacity motion-reduce:transition-none hover:text-foreground focus:opacity-100',
+              'relative flex items-start gap-3 overflow-hidden p-4 pr-8 transition-opacity duration-250 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none',
+              behind && 'opacity-0',
             ),
           ),
         ],
-        [Icon.x<Msg>({ class: 'size-4' }, h)],
+        [
+          ...(variantIcon(entry.payload.variant, h) === undefined
+            ? []
+            : [variantIcon(entry.payload.variant, h)!]),
+          h.div(
+            [h.Class('grid min-w-0 flex-1 gap-1 wrap-anywhere')],
+            [
+              h.div([h.Class('text-sm font-semibold')], [entry.payload.title]),
+              ...(entry.payload.description === undefined
+                ? []
+                : [
+                    h.div(
+                      [h.Class('text-sm text-muted-foreground')],
+                      [entry.payload.description],
+                    ),
+                  ]),
+            ],
+          ),
+          ...(entry.payload.actionLabel === undefined
+            ? []
+            : [
+                h.button(
+                  [
+                    h.Type('button'),
+                    h.OnClick(
+                      props.toParentMessage(
+                        ActivatedToastAction({ id: entry.id }),
+                      ),
+                    ),
+                    h.Class(
+                      cn(
+                        buttonVariants({ variant: 'outline', size: 'sm' }),
+                        'shrink-0 bg-transparent hover:bg-secondary',
+                      ),
+                    ),
+                  ],
+                  [entry.payload.actionLabel],
+                ),
+              ]),
+          h.button(
+            [
+              h.Type('button'),
+              h.AriaLabel('Dismiss notification'),
+              h.OnClick(
+                props.toParentMessage(
+                  ToastMessages.Dismissed({ entryId: entry.id }),
+                ),
+              ),
+              h.Class(
+                cn(
+                  buttonVariants({ variant: 'ghost', size: 'icon-xs' }),
+                  'absolute top-2 right-2 p-1 text-foreground/50 transition-opacity motion-reduce:transition-none hover:text-foreground focus:opacity-100',
+                ),
+              ),
+            ],
+            [Icon.x<Msg>({ class: 'size-4' }, h)],
+          ),
+        ],
       ),
     ],
   )
+}
 
 export const toast = <Msg>(
   props: ToastProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const fallback = props.position ?? 'bottom-right'
+  const fallback = props.position ?? props.model.position
   const entryPosition = (entry: Entry): Position =>
     entry.payload.position ?? fallback
   const positions = POSITION_ORDER.filter(position =>
@@ -216,19 +241,54 @@ export const toast = <Msg>(
   )
   return h.div(
     [h.DataAttribute('slot', 'toast-root')],
-    (positions.length === 0 ? [fallback] : positions).map(position =>
-      h.section(
+    (positions.length === 0 ? [fallback] : positions).map(position => {
+      const expanded =
+        props.stacked === false ||
+        props.expanded === true ||
+        props.model.hoveredPositions.includes(position) ||
+        props.model.focusedPositions.includes(position)
+      const layout = stackLayout(props.model, position, expanded, fallback)
+      return h.section(
         [
           h.AriaLabel(props.ariaLabel ?? 'Notifications'),
           h.AriaLive('polite'),
+          h.Key(position),
+          h.Tabindex(-1),
+          h.OnMount(
+            viewportMount(
+              position,
+              fallback,
+              props.model.id,
+              props.toParentMessage,
+              false,
+              props.pausePolicy !== 'none',
+            ),
+          ),
           h.DataAttribute('slot', 'toast'),
           h.DataAttribute('position', position),
-          h.Class(cn(positionClass(position), props.class)),
+          h.Style({ height: `${layout.height}px` }),
+          h.Class(
+            cn(
+              positionClass(position),
+              expanded &&
+                layout.height > props.model.viewportHeight - 32 &&
+                'overflow-y-auto',
+              props.class,
+            ),
+          ),
         ],
-        props.model.entries
-          .filter(entry => entryPosition(entry) === position)
-          .map(entry => entryView(entry, props, h)),
-      ),
-    ),
+        [
+          h.div(
+            [
+              h.Class('relative w-full'),
+              h.Style({ height: `${layout.height}px` }),
+            ],
+            layout.entries.map(item =>
+              entryView(item, position, expanded, props, h),
+            ),
+          ),
+        ],
+      )
+    }),
   )
 }

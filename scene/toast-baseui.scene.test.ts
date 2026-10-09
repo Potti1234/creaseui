@@ -44,10 +44,10 @@ import * as TailwindToast from '@/ui/toast'
  *  - `render=` / childless render-prop and element-substitution cases in
  *    ToastAction/ToastTitle/ToastDescription/ToastArrow (foldkit fixes
  *    the rendered element).
- *  - All ToastRoot swipe/drag-dismissal tests: thresholds, axis locking,
- *    multi-direction swipes, `data-swiping`/`data-swipe-direction`,
- *    swipe-ignore attributes, touch-capture — no pointer streams in the
- *    scene DSL.
+ *  - Real pointer capture and hover geometry are covered by browser tests;
+ *    horizontal thresholds, cancellation, and queue promotion have model
+ *    tests. The scene DSL has no native pointer streams or layout geometry.
+ *    Vertical and multi-direction swipes remain outside the primitive API.
  *  - ToastPositioner anchoring/`--toast-index` offsets, ToastArrow, and
  *    ToastPortal — creaseui positions each entry into a named position
  *    section instead of floating-ui anchoring, and renders no portal.
@@ -67,8 +67,9 @@ import * as TailwindToast from '@/ui/toast'
  *  - `manager.promise(...)` loading/success/error lifecycle — creaseui
  *    exposes variant helpers (`success`/`error`/…) + `updateToast` for the
  *    resolved state instead.
- *  - Provider-level `timeout`/`limit` props — there is no provider;
- *    duration is per-entry and there is no cap on visible toasts.
+ *  - Provider configuration is expressed through `init`, including duration
+ *    and a default visible limit of three. Limited entries pause their timers
+ *    until promoted, preserving a queue instead of expiring unseen.
  *  - "in dialog" aria-hidden interplay — Dialog+Toast composition is not
  *    a vnode-level concern here.
  *  - Event-object payloads (`eventDetails.cancel()`, modifier reporting)
@@ -103,6 +104,66 @@ const initialModel = (): Model => ({
 })
 
 type ToastUpdateReturn = ReturnType<typeof ToastBehavior.update>
+
+/** Supply the observers' initial facts and acknowledge their cleanup between
+ * Scene steps. Real ResizeObserver/focus behavior is exercised in the browser. */
+const toastScene = <M, Msg, Out = undefined>(
+  config: {
+    update: (
+      model: M,
+      message: Msg,
+    ) => {
+      model: M
+      commands?: ReadonlyArray<Scene.AnyCommand>
+      outMessage?: Out
+    }
+    view: (model: M, h: HtmlBuilder<Msg>) => Html
+  },
+  ...steps: ReadonlyArray<
+    Scene.SceneStep<NoInfer<M>, NoInfer<Msg>, NoInfer<Out>>
+  >
+): void => {
+  const definitions = [
+    ToastBehavior.ObserveToastViewport,
+    ToastBehavior.ObserveToast,
+  ]
+  const selectors = ['[data-slot="toast"]', '[data-slot="toast-content"]']
+  let counts = [0, 0]
+  const observers = (simulation: Scene.SceneSimulation<M, Msg, Out>) => {
+    let next = simulation
+    for (const [index, definition] of definitions.entries()) {
+      const count = Scene.findAll(next.html, selectors[index]!).length
+      for (let removed = count; removed < counts[index]!; removed += 1)
+        next = Scene.Mount.expectEnded(definition)(next)
+      counts[index] = count
+    }
+    for (const pending of next.mounts) {
+      const entryId = String(pending.args?.['entryId'] ?? '')
+      const modelId = String(pending.args?.['modelId'] ?? entryId)
+      const message =
+        pending.name === 'ObserveToastContent'
+          ? ToastBehavior.Message.MeasuredToast({ entryId, height: 74 })
+          : ToastBehavior.Message.ChangedToastViewportFocus({
+              position: pending.args?.['position'] as ToastBehavior.Position,
+              fallbackPosition: pending.args?.[
+                'fallbackPosition'
+              ] as ToastBehavior.Position,
+              focused: false,
+            })
+      const parent = {
+        _tag: modelId.startsWith('lane-a')
+          ? 'GotA'
+          : modelId.startsWith('lane-b')
+            ? 'GotB'
+            : 'GotToastMessage',
+        message,
+      }
+      next = Scene.Mount.resolve(pending, parent)(next)
+    }
+    return next
+  }
+  Scene.scene(config, ...steps.flatMap(step => [step, observers]))
+}
 
 const foldToast = (model: Model, result: ToastUpdateReturn) => ({
   model: { ...model, toasts: result.model },
@@ -320,8 +381,7 @@ const seededModel = (
   ...entries: ReadonlyArray<ToastBehavior.Entry>
 ): Model => ({
   toasts: {
-    id: 'toasts',
-    defaultDuration: Duration.seconds(4),
+    ...ToastBehavior.init({ id: 'toasts' }),
     entries: [...entries],
     nextEntryKey: entries.length,
     maybeSwipeConfig: Option.none(),
@@ -411,7 +471,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
       // DIVERGENCE (intentional): Base UI's default timeout is 5000ms
       // (Toast.Provider default); creaseui follows Sonner's 4000ms default.
       it('adds a toast to the viewport that auto-dismisses after the default timeout', () => {
-        Scene.scene(
+        toastScene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
           Scene.expect(toastLocator).toBeAbsent(),
@@ -444,7 +504,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
       // creaseui ids are always generated, so a second show appends a
       // second entry; `updateToast` is the equivalent "same toast" path.
       it('appends a second toast rather than upserting (no caller-specified ids)', () => {
-        Scene.scene(
+        toastScene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add sticky' })),
@@ -454,10 +514,10 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           Scene.expectHandled(),
           settleAllAnimations,
           Scene.expectAll(allToasts).toHaveCount(2),
-          Scene.expect(Scene.nth(allToasts, 0)).toContainText(
+          Scene.expect(Scene.nth(allToasts, 1)).toContainText(
             'Could not save changes',
           ),
-          Scene.expect(Scene.nth(allToasts, 1)).toContainText('Still here'),
+          Scene.expect(Scene.nth(allToasts, 0)).toContainText('Still here'),
         )
       })
 
@@ -530,7 +590,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
               ),
             ],
           )
-        Scene.scene(
+        toastScene(
           { update: dualUpdate, view: dualView },
           Scene.given({
             a: ToastBehavior.init({ id: 'lane-a' }),
@@ -559,7 +619,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
 
     describe('option: timeout', () => {
       it('dismisses the toast after the specified timeout', () => {
-        Scene.scene(
+        toastScene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add timed' })),
@@ -583,7 +643,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
       // schedules WaitBeforeDismissal, which removes the entry the moment
       // the timer completes.
       it.fails('does not auto-dismiss when the timeout is 0', () => {
-        Scene.scene(
+        toastScene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add zero' })),
@@ -594,7 +654,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
       })
 
       it('never schedules a timer for sticky toasts', () => {
-        Scene.scene(
+        toastScene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add sticky' })),
@@ -611,7 +671,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
 
     describe('option: onClose', () => {
       it('emits DismissedToast when the toast is closed', () => {
-        Scene.scene(
+        toastScene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add sticky' })),
@@ -633,7 +693,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
       })
 
       it('emits DismissedToast when the toast auto-dismisses', () => {
-        Scene.scene(
+        toastScene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add timed' })),
@@ -651,7 +711,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
 
     describe('update', () => {
       it('updates the toast', () => {
-        Scene.scene(
+        toastScene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add sticky' })),
@@ -666,7 +726,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
       })
 
       it('resets the auto-dismiss timer when updating with the same timeout value', () => {
-        Scene.scene(
+        toastScene(
           { update, view: makeView(Toast) },
           // The seeded entry stands in for a toast whose v1 timer is in
           // flight — seeding keeps no Command pending so the stale
@@ -705,7 +765,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
       })
 
       it('auto-dismisses when a sticky toast gains a timeout', () => {
-        Scene.scene(
+        toastScene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add sticky' })),
@@ -733,7 +793,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
 
     describe('close', () => {
       it('closes a toast when its dismiss button is clicked', () => {
-        Scene.scene(
+        toastScene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add sticky' })),
@@ -751,7 +811,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
       })
 
       it('closes all toasts', () => {
-        Scene.scene(
+        toastScene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add sticky' })),
@@ -772,7 +832,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
       // for every entry once its leave transition settles, so bulk
       // dismissals are observable per-toast now.
       it('emits a dismissal message for every toast closed by dismissAll', () => {
-        Scene.scene(
+        toastScene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add sticky' })),
@@ -796,7 +856,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
       })
 
       it('is a no-op when dismissing an id that is not showing', () => {
-        Scene.scene(
+        toastScene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add sticky' })),
@@ -812,13 +872,20 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
 
     describe('timers', () => {
       it('pauses timers when hovering', () => {
-        Scene.scene(
+        toastScene(
           { update, view: makeView(Toast) },
           // Seeded non-sticky entry — a pending Command would block the
           // hover interaction, so the in-flight timer is model state only.
           Scene.given(seededModel(entryOf('toasts-entry-0', TIMED))),
-          Scene.hover(toastLocator),
-          Scene.expectHandled(),
+          Scene.Subscription.emit({
+            _tag: 'GotToastMessage',
+            message: ToastBehavior.Message.ChangedToastViewportPointer({
+              position: 'bottom-right',
+              fallbackPosition: 'bottom-right',
+              hovered: true,
+              pause: true,
+            }),
+          }),
           Scene.expect(toastLocator).toHaveAttr('data-paused', 'true'),
           // The in-flight timer still completes, but HoveredEntry bumped
           // pendingDismissVersion so the v0 completion is stale — the
@@ -835,23 +902,31 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
       })
 
       it('resumes timers when not hovering', () => {
-        Scene.scene(
+        toastScene(
           { update, view: makeView(Toast) },
           Scene.given(seededModel(entryOf('toasts-entry-0', TIMED))),
-          Scene.hover(toastLocator),
-          Scene.expectHandled(),
-          Scene.expect(toastLocator).toHaveAttr('data-paused', 'true'),
-          // The DSL has no mouseleave/unhover step — emit the LeftEntry
-          // the OnMouseLeave handler dispatches (wiring asserted via
-          // toHaveHandler below).
           Scene.Subscription.emit({
             _tag: 'GotToastMessage',
-            message: ToastPrimitive.Message.LeftEntry({
-              entryId: 'toasts-entry-0',
+            message: ToastBehavior.Message.ChangedToastViewportPointer({
+              position: 'bottom-right',
+              fallbackPosition: 'bottom-right',
+              hovered: true,
+              pause: true,
+            }),
+          }),
+          Scene.expect(toastLocator).toHaveAttr('data-paused', 'true'),
+          // Native pointer tracking lives in the viewport Mount; feed its
+          // fact directly because Scene has no browser layout or pointer capture.
+          Scene.Subscription.emit({
+            _tag: 'GotToastMessage',
+            message: ToastBehavior.Message.ChangedToastViewportPointer({
+              position: 'bottom-right',
+              fallbackPosition: 'bottom-right',
+              hovered: false,
+              pause: true,
             }),
           }),
           Scene.expect(toastLocator).toHaveAttr('data-paused', 'false'),
-          Scene.expect(toastLocator).toHaveHandler('mouseleave'),
           // HoveredEntry and LeftEntry each bumped the version, so the
           // re-armed timer runs under v2.
           Scene.Command.expectHas(
@@ -871,7 +946,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
       // opt-out via `pausePolicy` and is skipped entirely for sticky
       // entries (there is no timer to pause).
       it('does not wire pause handlers when pausePolicy is none', () => {
-        Scene.scene(
+        toastScene(
           { update, view: makeView(Toast, { pausePolicy: 'none' }) },
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add' })),
@@ -884,7 +959,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
       })
 
       it('does not wire pause handlers on sticky toasts', () => {
-        Scene.scene(
+        toastScene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add sticky' })),
@@ -903,7 +978,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
 
     describe('ARIA attributes', () => {
       it('renders the viewport as a labelled polite live region', () => {
-        Scene.scene(
+        toastScene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
           Scene.expect(notificationsRegion).toExist(),
@@ -920,7 +995,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
       // aria-atomic="false" and aria-relevant="additions text" so
       // additions read as a group; creaseui emits aria-live only.
       it.fails('marks the live region aria-atomic=false and aria-relevant="additions text"', () => {
-        Scene.scene(
+        toastScene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
           Scene.expect(notificationsRegion).toHaveAttr('aria-atomic', 'false'),
@@ -932,7 +1007,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
       })
 
       it('maps each entry to a live-region role by variant', () => {
-        Scene.scene(
+        toastScene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add sticky' })),
@@ -970,7 +1045,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
       // the live announcement. creaseui collapses both into a single
       // role=status|alert article with no dialog semantics.
       it.fails('renders the toast root as role=dialog with aria-modal=false', () => {
-        Scene.scene(
+        toastScene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add sticky' })),
@@ -985,7 +1060,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
       // creaseui renders title text in an unlabelled div — the article has
       // no accessible name at all.
       it.fails('wires aria-labelledby from the rendered title', () => {
-        Scene.scene(
+        toastScene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add sticky' })),
@@ -996,7 +1071,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
 
       // DIVERGENCE: same gap for aria-describedby / Toast.Description.
       it.fails('wires aria-describedby from the rendered description', () => {
-        Scene.scene(
+        toastScene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add sticky' })),
@@ -1010,7 +1085,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
       // keydown step throws — the assertion encodes the Base UI
       // expectation for when the capability lands.
       it.fails('closes the toast when Escape is pressed', () => {
-        Scene.scene(
+        toastScene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add sticky' })),
@@ -1021,7 +1096,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
       })
 
       it('gives the dismiss control an accessible name', () => {
-        Scene.scene(
+        toastScene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add' })),
@@ -1038,7 +1113,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
 
     describe('<Toast.Action />', () => {
       it('performs an action when clicked', () => {
-        Scene.scene(
+        toastScene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add sticky action' })),
@@ -1061,7 +1136,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
       })
 
       it('does not render if the toast has no action', () => {
-        Scene.scene(
+        toastScene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add timed' })),
@@ -1081,7 +1156,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
       // always renders (Base UI's "does not render if it has no children"
       // has no analogue — title is a required field).
       it('always renders the title', () => {
-        Scene.scene(
+        toastScene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add' })),
@@ -1095,7 +1170,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
 
     describe('<Toast.Description />', () => {
       it('renders the description when provided', () => {
-        Scene.scene(
+        toastScene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add' })),
@@ -1107,7 +1182,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
       })
 
       it('does not render a description element when none is provided', () => {
-        Scene.scene(
+        toastScene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add timed' })),
@@ -1123,11 +1198,68 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
     })
 
     describe('<Toast.Content />', () => {
-      it.todo(
-        'marks content behind the frontmost toast with data-behind / ' +
-          'reflects data-expanded on viewport hover — creaseui has no ' +
-          'expanded/frontmost state (entries pause individually)',
-      )
+      it('exposes drag state and movement while retaining the expanded stack', () => {
+        const entry = {
+          ...entryOf('toasts-entry-0', STICKY_INFO),
+          swipeState: ToastPrimitive.SwipeState.Dragging({
+            pointerId: 1,
+            startX: 100,
+            currentX: 130,
+          }),
+        }
+        const model = seededModel(entry)
+        toastScene(
+          { update, view: makeView(Toast) },
+          Scene.given({
+            toasts: {
+              ...model.toasts,
+              maybeSwipeConfig: ToastBehavior.init({ id: 'toasts' })
+                .maybeSwipeConfig,
+              hoveredPositions: ['bottom-right'],
+            },
+          }),
+          Scene.expect(toastLocator).toHaveAttr('data-swiping', ''),
+          Scene.expect(toastLocator).toHaveAttr('data-expanded', ''),
+          Scene.expect(toastLocator).toHaveAttr(
+            'data-swipe-direction',
+            'right',
+          ),
+          Scene.expect(toastLocator).toHaveStyle(
+            'transform',
+            'translateX(30px) translateY(0px) scale(1)',
+          ),
+        )
+      })
+      it('hides content behind the newest card and expands the stack on hover', () => {
+        toastScene(
+          { update, view: makeView(Toast) },
+          Scene.given(
+            seededModel(
+              entryOf('toasts-entry-0', STICKY_INFO),
+              entryOf('toasts-entry-1', STICKY_ERROR),
+            ),
+          ),
+          Scene.expect(
+            Scene.selector('#toasts-entry-0 [data-slot="toast-content"]'),
+          ).toHaveAttr('data-behind', ''),
+          Scene.Subscription.emit({
+            _tag: 'GotToastMessage',
+            message: ToastBehavior.Message.ChangedToastViewportPointer({
+              position: 'bottom-right',
+              fallbackPosition: 'bottom-right',
+              hovered: true,
+              pause: true,
+            }),
+          }),
+          Scene.expect(
+            Scene.selector('#toasts-entry-0 [data-slot="toast-content"]'),
+          ).toHaveAttr('data-expanded', ''),
+          Scene.expect(Scene.selector('#toasts-entry-1')).toHaveAttr(
+            'data-expanded',
+            '',
+          ),
+        )
+      })
     })
 
     describe('positioning', () => {
@@ -1135,7 +1267,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
       // placement: an entry may override the viewport position and lands
       // in the matching section.
       it('renders an entry under its own position section', () => {
-        Scene.scene(
+        toastScene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add sticky' })),
@@ -1167,12 +1299,8 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
     })
 
     describe('ordering', () => {
-      // DIVERGENCE: Base UI keeps toasts newest-first, so toasts[0] in the
-      // DOM is the most recent entry. creaseui appends entries and renders
-      // oldest-first, relying on the viewport's flex direction (e.g.
-      // flex-col-reverse on bottom edges) for visual placement.
-      it.fails('renders the newest toast first', () => {
-        Scene.scene(
+      it('renders the newest toast first', () => {
+        toastScene(
           { update, view: makeView(Toast) },
           Scene.given(initialModel()),
           Scene.click(Scene.role('button', { name: 'add sticky' })),
@@ -1196,16 +1324,34 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
         'manager.promise(...) loading→success/error lifecycle — no ' +
           'promise API; updateToast covers the resolved-state update',
       )
-      it.todo(
-        'provider limit marks excess toasts data-limited — no limit option',
-      )
+      it('marks overflow cards as limited and keeps exactly three visible', () => {
+        toastScene(
+          { update, view: makeView(Toast) },
+          Scene.given(
+            seededModel(
+              ...Array.from({ length: 6 }, (_, index) =>
+                entryOf(`toasts-entry-${index}`, STICKY_INFO),
+              ),
+            ),
+          ),
+          Scene.expectAll(
+            Scene.all.selector('[data-slot="toast-entry"]:not([data-limited])'),
+          ).toHaveCount(3),
+          Scene.expectAll(
+            Scene.all.selector('[data-slot="toast-entry"][data-limited]'),
+          ).toHaveCount(3),
+          Scene.expect(Scene.selector('#toasts-entry-0')).toHaveAttr(
+            'aria-hidden',
+            'true',
+          ),
+        )
+      })
       it.todo(
         'provider-level default timeout applying to toasts added ' +
           'afterwards — there is no provider; duration is per-entry',
       )
       it.todo(
-        'viewport focus management (F6 to focus, Tab cycling, focus ' +
-          'guards) — creaseui has no focus model and the DSL has no real focus',
+        'Tab cycling and focus guards — F6, focus expansion and Escape are covered in the browser',
       )
     })
   })

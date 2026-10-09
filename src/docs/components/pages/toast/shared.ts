@@ -24,6 +24,10 @@ export type ToastButtonSpec = Readonly<{
   variant: ToastVariant
   description?: string
   actionLabel?: string
+  count?: number
+  sticky?: boolean
+  numbered?: boolean
+  dismissAll?: boolean
   position?:
     | 'top-left'
     | 'top-center'
@@ -37,6 +41,8 @@ export type ToastFixture = Readonly<{
   title: string
   heroOnly?: boolean
   wrap?: 'start' | 'center'
+  stacked?: boolean
+  limit?: number
   buttons: Readonly<[ToastButtonSpec, ...Array<ToastButtonSpec>]>
 }>
 
@@ -90,6 +96,58 @@ export const toastFixtures: Readonly<[ToastFixture, ...Array<ToastFixture>]> = [
     ],
   },
   {
+    title: 'Stacking and queue',
+    buttons: [
+      {
+        label: 'Add toast',
+        variant: 'default',
+        numbered: true,
+        sticky: true,
+        description: 'Hover or focus the stack to expand it.',
+      },
+      {
+        label: 'Add 6 toasts',
+        variant: 'default',
+        count: 6,
+        numbered: true,
+        sticky: true,
+        description: 'Dismiss a visible toast to reveal the next queued one.',
+      },
+      { label: 'Clear toasts', variant: 'default', dismissAll: true },
+    ],
+  },
+  {
+    title: 'Expanded',
+    stacked: false,
+    buttons: [
+      {
+        label: 'Add 6 expanded toasts',
+        variant: 'default',
+        count: 6,
+        numbered: true,
+        sticky: true,
+        description:
+          'Only the newest three are visible. The rest wait in the queue.',
+      },
+      { label: 'Clear toasts', variant: 'default', dismissAll: true },
+    ],
+  },
+  {
+    title: 'Visible limit',
+    limit: 5,
+    buttons: [
+      {
+        label: 'Add 6 toasts with limit 5',
+        variant: 'default',
+        count: 6,
+        numbered: true,
+        sticky: true,
+        description: 'This stack displays up to five toasts.',
+      },
+      { label: 'Clear toasts', variant: 'default', dismissAll: true },
+    ],
+  },
+  {
     title: 'Position',
     wrap: 'center',
     buttons: [
@@ -107,13 +165,19 @@ const factoryName = (variant: ToastVariant): string =>
   variant === 'promise' ? 'info' : variant === 'default' ? 'plain' : variant
 
 const showCallEmit = (button: ToastButtonSpec): string => {
+  if (button.dismissAll) return 'Toast.dismissAll(model.notifications)'
   if (button.variant === 'promise') {
     return `Toast.show(model.notifications, Toast.info({
         title: 'Loading...',
         sticky: true,
       }))`
   }
-  const props = [`title: '${toastTitle(button.variant)}'`]
+  const props = [
+    button.numbered
+      ? 'title: `Toast ${model.notifications.nextEntryKey + 1}`'
+      : `title: '${toastTitle(button.variant)}'`,
+  ]
+  if (button.sticky) props.push('sticky: true')
   if (button.description !== undefined) {
     props.push(`description: '${button.description}'`)
   }
@@ -182,7 +246,7 @@ export const Message = S.Union([${[...clickTags, 'GotToastMessage', ...(hasPromi
 export type Message = typeof Message.Type`,
     init: `export const init = (): Update.Return<Model, Message> => ({
   model: {
-    notifications: Toast.init({ id: 'toast-${tag.toLowerCase()}' }),${
+    notifications: Toast.init({ id: 'toast-${tag.toLowerCase()}', limit: ${fixture.limit ?? 3} }),${
       hasPromise
         ? `
     pendingPromiseId: Option.none(),`
@@ -232,6 +296,18 @@ ${fixture.buttons
       }
     }`
     }
+    if ((button.count ?? 1) > 1) {
+      return `    case 'ClickedShow${index}${tag}': {
+      let next = model
+      const commands: Array<Command.Command<Message>> = []
+      for (let index = 0; index < ${button.count}; index += 1) {
+        const result = mapToast(next, ${showCallEmit(button).replaceAll('model.notifications', 'next.notifications')})
+        next = result.model
+        commands.push(...(result.commands ?? []))
+      }
+      return { model: next, commands }
+    }`
+    }
     return `    case 'ClickedShow${index}${tag}':
       return mapToast(model, ${showCallEmit(button)})`
   })
@@ -268,6 +344,7 @@ ${fixture.buttons.map((button, index) => buttonEmit(button, index)).join(',\n')}
       model: model.notifications,
       toParentMessage: message => GotToastMessage({ message }),
       ariaLabel: 'Toast notifications',
+      stacked: ${fixture.stacked !== false},
     }, h),
   ]),
 })`,

@@ -120,12 +120,14 @@ ${config.namespace}.${config.slug}({
   apiHref: 'https://foldkit.dev/guide/effects',
   composition: `Parent Model\n└── ${config.title} Model\n    ├── stable keyed entries\n    ├── variant + payload + duration\n    ├── optional action → parent Message\n    └── dismiss/timer Message + OutMessage`,
   styling:
-    'The fixed viewport stacks keyed notifications. Prefer brief titles, useful descriptions, and one clear action; sticky notifications require an obvious dismissal route.',
+    'Toast.init({ id, limit: 3 }) caps visible notifications; the newest appear first and older entries wait with their timers paused. Cards stack by default and expand on hover or focus, remaining expanded while dismissals move cards beneath the pointer. Drag a card toward the screen edge to dismiss it; short or cancelled drags snap back. Buttons remain clickable. Configure swipeToDismiss with direction and threshold, or false to disable it. Set stacked: false on Toast.toast to keep cards expanded. Both renderers use the Base UI 500 ms cubic-bezier(0.22, 1, 0.36, 1) movement with 150 ms height transitions. Sticky notifications require an obvious dismissal route.',
   accessibility:
     'The viewport is a named polite live region. Error entries use alert while other variants use status. Actions and dismiss controls are real, labeled buttons.',
   keyboard: [
+    ['F6', 'Focuses the notification viewport and expands its stack.'],
     ['Tab', 'Moves to an action or dismiss button in a visible notification.'],
     ['Enter / Space', 'Runs the focused action or dismisses the entry.'],
+    ['Escape', 'Dismisses the focused notification.'],
   ],
   examples: notificationExamples(config, 'tailwind'),
 })

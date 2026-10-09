@@ -124,6 +124,7 @@ const fixtureView = (
             toParentMessage: message =>
               GotToastPreviewMessage.GotToastPreviewMessage({ message }),
             ariaLabel: 'Toast notifications',
+            stacked: fixture.stacked !== false,
           },
           h,
         ),
@@ -137,9 +138,12 @@ export const toastTailwindPreviewProgram = definePreviewProgram<
 >({
   Model: PreviewModel,
   Message: GotToastPreviewMessage,
-  init: () => ({
+  init: index => ({
     _docsPage: 'toast',
-    notifications: Toast.init({ id: 'docs-toast-preview' }),
+    notifications: Toast.init({
+      id: `docs-toast-preview-${index}`,
+      limit: toastFixtures[index]?.limit ?? 3,
+    }),
     pendingPromiseId: Option.none(),
   }),
   update: (model, message) => {
@@ -151,9 +155,26 @@ export const toastTailwindPreviewProgram = definePreviewProgram<
         if (button === undefined) {
           return { model }
         }
-        const result = Toast.show(model.notifications, showInputFor(button))
-        const mapped = mapToast(model, result)
-        const commands = mapped.commands ?? []
+        if (button.dismissAll)
+          return mapToast(model, Toast.dismissAll(model.notifications))
+        let current = model
+        const batchCommands: Array<Command.Command<PreviewMessage>> = []
+        for (let index = 0; index < (button.count ?? 1); index += 1) {
+          const result = mapToast(
+            current,
+            Toast.show(current.notifications, {
+              ...showInputFor(button),
+              ...(button.sticky ? { sticky: true } : {}),
+              ...(button.numbered
+                ? { title: `Toast ${current.notifications.nextEntryKey + 1}` }
+                : {}),
+            }),
+          )
+          current = result.model
+          batchCommands.push(...result.commands)
+        }
+        const mapped = { model: current, commands: batchCommands }
+        const commands = batchCommands
         if (button.variant !== 'promise') {
           return mapped
         }
