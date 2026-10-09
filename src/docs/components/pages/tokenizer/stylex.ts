@@ -16,8 +16,9 @@ const styles = stylex.create({
   stack: {
     gap: '1rem',
     display: 'grid',
+    gridTemplateColumns: 'minmax(0, 1fr)',
     maxWidth: '25rem',
-    minWidth: '15rem',
+    minWidth: 0,
     width: '100%',
   },
   supporting: {

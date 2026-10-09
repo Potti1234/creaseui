@@ -14,6 +14,7 @@ import {
   init,
   reflect,
   reflectItems,
+  panelMount,
   update,
 } from '@/lib/tokenizer'
 import { cn } from '@/lib/utils'
@@ -57,7 +58,7 @@ const OPTIONAL_CLASS = 'text-sm text-muted-foreground'
    height auto; wrapperWithTokens drops padding to 3px for border
    concentricity (radius-1 tokens inside radius-2 wrapper). */
 const WRAPPER_CLASS =
-  'relative flex w-full cursor-text flex-wrap items-center gap-1 rounded-md border border-input bg-transparent px-2 py-1 shadow-xs transition-[color,box-shadow] outline-none hover:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--input)_30%,transparent)] focus-within:border-ring focus-within:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--ring)_50%,transparent)] aria-disabled:cursor-default aria-disabled:opacity-50 data-[invalid=true]:border-destructive dark:bg-input/30 dark:data-[invalid=true]:focus-within:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--destructive)_40%,transparent)] data-[invalid=true]:focus-within:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--destructive)_20%,transparent)]'
+  'relative flex w-full cursor-text items-center gap-1 rounded-md border border-input bg-transparent px-2 py-1 shadow-xs transition-[color,box-shadow] outline-none hover:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--input)_30%,transparent)] focus-within:border-ring focus-within:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--ring)_50%,transparent)] aria-disabled:cursor-default aria-disabled:opacity-50 data-[invalid=true]:border-destructive dark:bg-input/30 dark:data-[invalid=true]:focus-within:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--destructive)_40%,transparent)] data-[invalid=true]:focus-within:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--destructive)_20%,transparent)]'
 
 const WRAPPER_WITH_TOKENS_CLASS =
   'px-[calc(0.25rem-1px)] py-[calc(0.25rem-1px)]'
@@ -125,15 +126,14 @@ const LIST_CLASS =
   'max-h-[300px] scroll-py-1 overflow-x-hidden overflow-y-auto p-1'
 
 const CONTENT_CLASS =
-  'z-50 w-(--button-width) min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md transition duration-200 ease-out motion-reduce:transition-none data-[closed]:opacity-0 data-[closed]:scale-95'
+  'z-50 w-(--button-width) min-w-[8rem] max-w-[calc(100vw-2rem)] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md transition duration-200 ease-out motion-reduce:transition-none data-[closed]:opacity-0 data-[closed]:scale-95'
 
 const BACKDROP_CLASS = 'fixed inset-0 z-40'
 
 const CLEAR_BUTTON_CLASS =
   'inline-flex size-5 shrink-0 items-center justify-center rounded-sm text-muted-foreground outline-hidden transition-colors hover:bg-accent hover:text-foreground [&>svg]:size-3.5'
 
-const END_SECTION_CLASS =
-  'absolute top-1/2 flex -translate-y-1/2 items-center gap-2 ltr:right-2 rtl:left-2'
+const END_SECTION_CLASS = 'flex shrink-0 items-center gap-2 self-start'
 
 const STATUS_ICON_CLASS: Readonly<
   Record<'error' | 'warning' | 'success', string>
@@ -365,7 +365,12 @@ export const tokenizer = <Msg>(
     ]),
     openOnFocus: props.hasEntriesOnFocus ?? true,
     itemsClassName: CONTENT_CLASS,
-    itemsAttributes: childAttributes([h.DataAttribute('slot', 'command-list')]),
+    itemsAttributes: childAttributes([
+      h.DataAttribute('slot', 'command-list'),
+      h.OnMount(
+        panelMount(model.id, { placement: 'bottom-start', gap: 4 }, toParent),
+      ),
+    ]),
     itemsScrollClassName: LIST_CLASS,
     backdropClassName: BACKDROP_CLASS,
     backdropAttributes: childAttributes([
@@ -411,6 +416,7 @@ export const tokenizer = <Msg>(
         ),
       ),
       h.DataAttribute('slot', 'tokenizer-wrapper'),
+      h.Id(`${model.id}-wrapper`),
       ...(isDisabled ? [h.AriaDisabled(true)] : []),
       ...(isInvalid ? [h.DataAttribute('invalid', 'true')] : []),
       ...(describedBy.length === 0
@@ -418,63 +424,96 @@ export const tokenizer = <Msg>(
         : [h.AriaDescribedBy(describedBy.join(' '))]),
     ],
     [
-      ...(props.hasStartIcon === true
+      h.div(
+        [
+          h.DataAttribute('slot', 'tokenizer-content'),
+          h.Class(
+            cn(
+              'flex min-w-0 flex-1 flex-wrap items-center gap-1',
+              isTruncated && TRUNCATED_CLASS,
+            ),
+          ),
+        ],
+        [
+          ...(props.hasStartIcon === true
+            ? [
+                h.span(
+                  [
+                    h.Class(START_ICON_CLASS),
+                    h.AriaHidden(true),
+                    ...(model.tokens.length > 0
+                      ? [h.Class('ml-[calc(0.5rem-0.25rem+1px)]')]
+                      : []),
+                  ],
+                  [Icon.search({ class: 'size-4' }, h)],
+                ),
+              ]
+            : []),
+          ...model.tokens.map((token, index) =>
+            tokenChip(token, index, size, isDisabled, toParent, h),
+          ),
+          comboboxView,
+        ],
+      ),
+      ...((props.hasClear === true && model.tokens.length > 0 && !isDisabled) ||
+      props.resultCount !== undefined ||
+      props.endContent !== undefined ||
+      (props.status !== undefined &&
+        props.status.type !== 'error' &&
+        statusVariant === 'attached')
         ? [
-            h.span(
+            h.div(
               [
-                h.Class(START_ICON_CLASS),
-                h.AriaHidden(true),
-                ...(model.tokens.length > 0
-                  ? [h.Class('ml-[calc(0.5rem-0.25rem+1px)]')]
+                h.DataAttribute('slot', 'tokenizer-end'),
+                h.Class(END_SECTION_CLASS),
+              ],
+              [
+                ...(props.hasClear === true &&
+                model.tokens.length > 0 &&
+                !isDisabled
+                  ? [
+                      h.button(
+                        [
+                          h.Type('button'),
+                          h.Class(CLEAR_BUTTON_CLASS),
+                          h.AriaLabel('Clear all'),
+                          h.DataAttribute('slot', 'tokenizer-clear'),
+                          h.OnClick(toParent(Message.ClickedClearAll())),
+                        ],
+                        [Icon.x({ class: 'size-3.5' }, h)],
+                      ),
+                    ]
+                  : []),
+                ...(props.resultCount === undefined
+                  ? []
+                  : [
+                      h.span(
+                        [
+                          h.Class('shrink-0 text-sm text-muted-foreground'),
+                          h.DataAttribute('slot', 'tokenizer-result-count'),
+                        ],
+                        [props.resultCount],
+                      ),
+                    ]),
+                ...(props.endContent === undefined ? [] : [props.endContent]),
+                ...(props.status !== undefined &&
+                props.status.type !== 'error' &&
+                statusVariant === 'attached'
+                  ? [statusIcon(props.status.type, h)]
                   : []),
               ],
-              [Icon.search({ class: 'size-4' }, h)],
             ),
           ]
-        : []),
-      ...model.tokens.map((token, index) =>
-        tokenChip(token, index, size, isDisabled, toParent, h),
-      ),
-      comboboxView,
-      ...(props.hasClear === true && model.tokens.length > 0 && !isDisabled
-        ? [
-            h.button(
-              [
-                h.Type('button'),
-                h.Class(CLEAR_BUTTON_CLASS),
-                h.AriaLabel('Clear all'),
-                h.DataAttribute('slot', 'tokenizer-clear'),
-                h.OnClick(toParent(Message.ClickedClearAll())),
-              ],
-              [Icon.x({ class: 'size-3.5' }, h)],
-            ),
-          ]
-        : []),
-      ...(props.resultCount === undefined
-        ? []
-        : [
-            h.span(
-              [
-                h.Class('shrink-0 text-sm text-muted-foreground'),
-                h.DataAttribute('slot', 'tokenizer-result-count'),
-              ],
-              [props.resultCount],
-            ),
-          ]),
-      ...(props.endContent === undefined ? [] : [props.endContent]),
-      ...(props.status !== undefined &&
-      props.status.type !== 'error' &&
-      statusVariant === 'attached'
-        ? [statusIcon(props.status.type, h)]
         : []),
     ],
   )
 
   return h.div(
     [
-      h.Class(cn('flex flex-col gap-1.5')),
+      h.Class(cn('flex max-w-full min-w-0 flex-col gap-1.5')),
       h.DataAttribute('slot', 'tokenizer'),
       h.Id(model.id),
+      ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
       ...(props.width === undefined
         ? []
         : [h.Style({ width: `${props.width}px` })]),

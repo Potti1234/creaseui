@@ -51,7 +51,12 @@ for (const file of files) {
     }
   })
 
-  if (file.startsWith(path.join('src', 'stylex'))) {
+  // The shared boundary owns the explicit theme-copying portal. Component
+  // files must continue to use that boundary and cannot opt into body portals.
+  if (
+    file.startsWith(path.join('src', 'stylex')) &&
+    file !== path.join('src', 'stylex', 'overlay-boundary.ts')
+  ) {
     if (/portal\s*:\s*true/u.test(source)) {
       errors.push(`${file}: StyleX overlays may not opt into the body portal`)
     }

@@ -2,6 +2,7 @@ import { Option, Schema as S } from 'effect'
 
 import type { Update } from 'foldkit'
 import * as Command from 'foldkit/command'
+import * as Mount from 'foldkit/mount'
 import { defineMessageUnion } from 'foldkit/message'
 
 import { Combobox as ComboboxPrimitive } from '@foldkit/ui'
@@ -46,6 +47,19 @@ export const Message = defineMessageUnion({
   ClickedOverflow: {},
 })
 export type Message = typeof Message.Type
+
+/** Use the complete field as the anchor, rather than the shrinking input slot.
+ * Pass this through itemsAttributes to replace the primitive's default Mount;
+ * its positioning, collision handling and prevent-blur behavior stay intact. */
+export const panelMount = <Msg>(
+  id: string,
+  anchor: ComboboxPrimitive.AnchorConfig,
+  send: (message: Message) => Msg,
+) =>
+  Mount.mapMessage(
+    ComboboxPrimitive.AnchorCombobox({ buttonId: `${id}-wrapper`, anchor }),
+    message => send(Message.GotComboboxMessage({ message })),
+  )
 
 export const OutMessage = defineMessageUnion({
   ChangedTokens: { tokens: S.Array(Token) },

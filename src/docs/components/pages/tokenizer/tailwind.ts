@@ -158,7 +158,10 @@ export const tokenizerTailwindPreviewProgram = definePreviewProgram<
         h,
       )
     const stack = (children: ReadonlyArray<Html>): Html =>
-      h.div([h.Class('grid w-full max-w-100 min-w-60 gap-4')], [...children])
+      h.div(
+        [h.Class('grid w-full max-w-100 min-w-0 grid-cols-1 gap-4')],
+        [...children],
+      )
     switch (fixture.kind) {
       case 'showcase':
         return stack([
