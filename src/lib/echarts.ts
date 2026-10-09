@@ -15,7 +15,12 @@ import {
 } from 'echarts/components'
 import * as echarts from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
-import type { EChartsOption } from 'echarts/types/dist/shared'
+import type {
+  EChartsOption,
+  GridOption,
+  XAXisOption,
+  YAXisOption,
+} from 'echarts/types/dist/shared'
 import { Effect, Option, Schema as S } from 'effect'
 import { Command, Mount } from 'foldkit'
 import type { Html, HtmlBuilder } from 'foldkit/html'
@@ -129,14 +134,20 @@ export const resolveTheme = (element: HTMLElement): ChartTheme => {
 
 // SHADCN LOOK HELPERS — shared bits builders compose into their options
 
+export type CategoryAxisOptions = Extract<XAXisOption, { type?: 'category' }>
+export type ValueAxisOptions = Extract<YAXisOption, { type?: 'value' }>
+
 /** Muted 12px axis labels, no axis/tick lines — shadcn's XAxis look.
  *  Area/line charts render edge-to-edge (boundaryGap false, recharts-style);
  *  bar charts pass boundaryGap: true. */
 export const categoryAxis = (
   theme: ChartTheme,
   data: ReadonlyArray<string>,
-  config: Readonly<{ boundaryGap?: boolean }> = {},
-): NonNullable<EChartsOption['xAxis']> => ({
+  config: Readonly<{
+    boundaryGap?: boolean
+    axisLabel?: CategoryAxisOptions['axisLabel']
+  }> = {},
+): CategoryAxisOptions => ({
   type: 'category',
   data: [...data],
   boundaryGap: config.boundaryGap ?? false,
@@ -147,14 +158,18 @@ export const categoryAxis = (
     fontSize: 12,
     fontFamily: theme.fontFamily,
     margin: 10,
+    ...config.axisLabel,
   },
 })
 
 /** Hidden-by-default value axis with dashed splitlines — shadcn's grid look. */
 export const valueAxis = (
   theme: ChartTheme,
-  config: Readonly<{ showLabels?: boolean }> = {},
-): NonNullable<EChartsOption['yAxis']> => ({
+  config: Readonly<{
+    showLabels?: boolean
+    axisLabel?: ValueAxisOptions['axisLabel']
+  }> = {},
+): ValueAxisOptions => ({
   type: 'value',
   axisLine: { show: false },
   axisTick: { show: false },
@@ -163,6 +178,7 @@ export const valueAxis = (
     color: theme.mutedForeground,
     fontSize: 12,
     fontFamily: theme.fontFamily,
+    ...config.axisLabel,
   },
   splitLine: { lineStyle: { color: theme.border, type: 'dashed' } },
 })
@@ -175,12 +191,13 @@ export const compactGrid = (
     top?: number
     bottom?: number
   }> = {},
-): NonNullable<EChartsOption['grid']> => ({
+): GridOption => ({
   left: config.left ?? 12,
   right: config.right ?? 12,
   top: config.top ?? 12,
   bottom: config.bottom ?? 24,
-  containLabel: true,
+  outerBoundsMode: 'same',
+  outerBoundsContain: 'axisLabel',
 })
 
 type TooltipRow = Readonly<{
