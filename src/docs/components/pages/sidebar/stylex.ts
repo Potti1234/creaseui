@@ -3,6 +3,8 @@ import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { Option } from 'effect'
+import * as Mount from 'foldkit/mount'
+import { ObserveDocumentationHover } from './hover'
 
 import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
@@ -465,13 +467,17 @@ const nestedNavigation = <Msg>(
                       'sidebar-documentation',
                       model.learnMenu.id,
                     ),
-                    h.OnMouseEnter(
-                      send(
-                        JSON.stringify({ _tag: 'EnteredSidebarPreviewLearn' }),
+                    h.OnMount(
+                      Mount.mapMessage(ObserveDocumentationHover({}), message =>
+                        send(
+                          JSON.stringify({
+                            _tag:
+                              message._tag === 'Entered'
+                                ? 'EnteredSidebarPreviewLearn'
+                                : 'LeftSidebarPreviewLearn',
+                          }),
+                        ),
                       ),
-                    ),
-                    h.OnMouseLeave(
-                      send(JSON.stringify({ _tag: 'LeftSidebarPreviewLearn' })),
                     ),
                     h.OnKeyDownPreventDefault(key =>
                       model.learnMenu.isOpen &&
@@ -626,6 +632,7 @@ const account = <Msg>(
                             [h.Class(cx(styles.accountEmail))],
                             ['ada@example.com'],
                           ),
+                          ,
                         ],
                       ),
                       Icon.chevronsUpDown(

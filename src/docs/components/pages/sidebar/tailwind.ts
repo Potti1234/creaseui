@@ -1,9 +1,12 @@
 import { Effect, Option, Schema as S } from 'effect'
-import { Command, Subscription } from 'foldkit'
+import { Command, Subscription, type Update } from 'foldkit'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import * as Dom from 'foldkit/dom'
 import * as Render from 'foldkit/render'
+import * as Mount from 'foldkit/mount'
+import { HoverIntent } from '@foldkit/ui'
+import { ObserveDocumentationHover } from './hover'
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
@@ -20,6 +23,7 @@ const Message = defineMessageUnion({
   GotSidebarPreviewActionMenuMessage: { message: DropdownMenu.Message },
   GotSidebarPreviewAccountMenuMessage: { message: DropdownMenu.Message },
   GotSidebarPreviewLearnMenuMessage: { message: DropdownMenu.Message },
+  GotSidebarPreviewLearnHoverMessage: { message: HoverIntent.Message },
   CompletedSidebarPreviewLearnFocus: {},
   EnteredSidebarPreviewLearn: {},
   LeftSidebarPreviewLearn: {},
@@ -37,7 +41,7 @@ const Model = S.Struct({
   feedback: S.String,
   query: S.String,
   learnOpen: S.Boolean,
-  learnHoverDismissed: S.Boolean,
+  learnHover: HoverIntent.Model,
 })
 type Model = typeof Model.Type
 
@@ -53,10 +57,38 @@ const FocusDocumentation = Command.define('FocusSidebarDocumentation', {
       yield* Render.afterPaint
       yield* Dom.focus(
         `[data-sidebar-documentation="${id}"] ${isOpen ? '[role="menu"]' : '[data-slot="dropdown-menu-trigger"]'}`,
+        { preventScroll: true },
       ).pipe(Effect.catch(() => Effect.void))
       return Message.CompletedSidebarPreviewLearnFocus()
     }),
 })
+const updateLearnHover = (
+  model: Model,
+  message: HoverIntent.Message,
+): Update.Return<Model, Message> => {
+  const result = HoverIntent.update(model.learnHover, message)
+  const opened = result.outMessage?._tag === 'Opened'
+  const closed = result.outMessage?._tag === 'Closed'
+  return {
+    model: {
+      ...model,
+      learnHover: result.model,
+      learnMenu: opened
+        ? ActionMenu.open(model.learnMenu).model
+        : closed
+          ? ActionMenu.close(model.learnMenu).model
+          : model.learnMenu,
+    },
+    commands: [
+      ...Command.mapMessages(result.commands ?? [], next =>
+        Message.GotSidebarPreviewLearnHoverMessage({ message: next }),
+      ),
+      ...(opened && !model.learnMenu.isOpen
+        ? [FocusDocumentation({ id: model.learnMenu.id, isOpen: true })]
+        : []),
+    ],
+  }
+}
 const actionLabel = (action: string): string =>
   action[0]?.toUpperCase() + action.slice(1)
 
@@ -218,6 +250,7 @@ const account = (model: Model, h: HtmlBuilder<Message>): Html =>
                             ],
                             ['ada@example.com'],
                           ),
+                          ,
                         ],
                       ),
                       Icon.chevronsUpDown(
@@ -265,8 +298,15 @@ const nestedNavigation = (
                       'sidebar-documentation',
                       model.learnMenu.id,
                     ),
-                    h.OnMouseEnter(Message.EnteredSidebarPreviewLearn()),
-                    h.OnMouseLeave(Message.LeftSidebarPreviewLearn()),
+                    h.OnMount(
+                      Mount.mapMessage(
+                        ObserveDocumentationHover({}),
+                        message =>
+                          message._tag === 'Entered'
+                            ? Message.EnteredSidebarPreviewLearn()
+                            : Message.LeftSidebarPreviewLearn(),
+                      ),
+                    ),
                     h.OnKeyDownPreventDefault(key =>
                       model.learnMenu.isOpen &&
                       (key === 'Escape' || key === 'Enter' || key === ' ')
@@ -754,7 +794,7 @@ export const sidebarTailwindPreviewProgram = definePreviewProgram<
     feedback: '',
     query: '',
     learnOpen: true,
-    learnHoverDismissed: false,
+    learnHover: HoverIntent.init({ openDelay: 0, closeDelay: 300 }),
   }),
   update: (model, message) => {
     switch (message._tag) {
@@ -768,6 +808,15 @@ export const sidebarTailwindPreviewProgram = definePreviewProgram<
           model: {
             ...model,
             sidebar,
+            learnHover:
+              sidebar.isOpen || sidebar.isMobileOpen
+                ? {
+                    ...HoverIntent.close(model.learnHover).model,
+                    isTriggerHovered: false,
+                    isPanelHovered: false,
+                    isDismissed: false,
+                  }
+                : model.learnHover,
             learnMenu:
               sidebar.isOpen || sidebar.isMobileOpen
                 ? { ...model.learnMenu, isOpen: false }
@@ -830,9 +879,9 @@ export const sidebarTailwindPreviewProgram = definePreviewProgram<
           model: {
             ...model,
             learnMenu: result.model,
-            learnHoverDismissed: result.model.isOpen
-              ? false
-              : model.learnHoverDismissed,
+            learnHover: result.model.isOpen
+              ? model.learnHover
+              : HoverIntent.close(model.learnHover).model,
             ...(result.outMessage === undefined
               ? {}
               : { feedback: `${result.outMessage.value} selected` }),
@@ -852,26 +901,19 @@ export const sidebarTailwindPreviewProgram = definePreviewProgram<
           ],
         }
       }
-      case 'EnteredSidebarPreviewLearn': {
-        if (model.learnHoverDismissed || model.learnMenu.isOpen)
-          return { model }
-        const result = ActionMenu.update(
-          model.learnMenu,
-          DropdownMenu.Message.Opened(),
-        )
-        return {
-          model: { ...model, learnMenu: result.model },
-          commands: [
-            FocusDocumentation({ id: model.learnMenu.id, isOpen: true }),
-          ],
-        }
-      }
+      case 'EnteredSidebarPreviewLearn':
+        return updateLearnHover(model, HoverIntent.Message.EnteredTrigger())
       case 'LeftSidebarPreviewLearn':
-        return model.learnMenu.isOpen
-          ? { model }
-          : { model: { ...model, learnHoverDismissed: false } }
+        return updateLearnHover(model, HoverIntent.Message.LeftTrigger())
+      case 'GotSidebarPreviewLearnHoverMessage':
+        return updateLearnHover(model, message.message)
       case 'SuppressedSidebarPreviewLearnHover':
-        return { model: { ...model, learnHoverDismissed: true } }
+        return {
+          model: {
+            ...model,
+            learnHover: HoverIntent.close(model.learnHover).model,
+          },
+        }
       case 'CompletedSidebarPreviewLearnFocus':
         return { model }
       case 'CreatedSidebarPreviewProject':
