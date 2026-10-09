@@ -45,7 +45,9 @@ export const projectDataTable = <Row>(
   const isServer = props.mode === 'server'
   const columns: Array<ColumnDef<Row>> = props.columns.map(column => ({
     id: column.key,
-    accessorFn: column.sortValue,
+    // TanStack skips global filtering for columns without an accessor. Search
+    // must still work when every displayed column is deliberately unsortable.
+    accessorFn: column.sortValue ?? (row => props.filterText?.(row) ?? ''),
     enableSorting: column.sortValue !== undefined,
   }))
   const table = createTable<Row>({

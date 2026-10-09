@@ -124,6 +124,18 @@ describe('data table interaction model', () => {
     assert.equal(projection.selectedRowCount, 1)
   })
 
+  it('filters when all visible columns are unsortable', () => {
+    const projection = projectDataTable({
+      columns: [{ key: 'name' }],
+      filterText: row => row.name,
+      model: { ...DataTable.init(), filter: 'Nobody' },
+      rowKey: row => row.id,
+      rows: [{ id: '1', name: 'Ada' }],
+    })
+    assert.equal(projection.filteredRowCount, 0)
+    assert.deepEqual(projection.rows, [])
+  })
+
   it('uses the shared framework-neutral TanStack adapter and semantic Table helpers', () => {
     const adapter = readFileSync('src/lib/data-table-adapter.ts', 'utf8')
     assert.match(adapter, /from '@tanstack\/table-core'/u)
