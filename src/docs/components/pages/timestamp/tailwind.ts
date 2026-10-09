@@ -26,6 +26,7 @@ const stampValue = (spec: TimestampStampSpec['value']): string | number =>
 
 const initStamps = (
   fixture: TimestampFixture,
+  fixtureIndex: number,
 ): ReadonlyArray<Timestamp.Model> => {
   let stampIndex = 0
   return fixture.sections.flatMap(section =>
@@ -33,7 +34,7 @@ const initStamps = (
       const index = stampIndex
       stampIndex += 1
       return Timestamp.init({
-        id: `docs-timestamp-${String(index)}`,
+        id: `docs-timestamp-${String(fixtureIndex)}-${String(index)}`,
         value: stampValue(stamp.value),
         ...(stamp.format === undefined ? {} : { format: stamp.format }),
       })
@@ -108,7 +109,10 @@ export const timestampTailwindPreviewProgram = definePreviewProgram<Model, Got>(
     Message: Got,
     init: index => ({
       _docsPage: 'timestamp',
-      stamps: initStamps(timestampFixtures[index] ?? timestampFixtures[0]),
+      stamps: initStamps(
+        timestampFixtures[index] ?? timestampFixtures[0],
+        index,
+      ),
     }),
     update: (model, message) => {
       switch (message._tag) {
