@@ -243,7 +243,7 @@ Sidebar.sidebarRail({
 \-- SidebarInset
     \-- SidebarTrigger + application content`,
     styling:
-      'Sidebar uses the semantic sidebar color tokens and provider-owned width variables. Tailwind descendants respond through data selectors; StyleX receives layout state explicitly where selector inheritance is not available. Keep transitions between 150 and 250 milliseconds and preserve reduced-motion behavior.',
+      'Sidebar uses the semantic sidebar color tokens and provider-owned width variables. Tailwind descendants respond through data selectors; StyleX receives layout state explicitly where selector inheritance is not available. Collapse and expansion use the same 450-millisecond easing as Sheet, with transitions disabled for reduced motion.',
     accessibility:
       'Use links for navigation and buttons for commands. Triggers and the rail have accessible names, actions remain focusable when visually deferred, and mobile disclosure includes a named aside and dismiss backdrop. Tooltips supplement icon labels but never replace an accessible name.',
     keyboard: [

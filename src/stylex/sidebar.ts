@@ -134,10 +134,11 @@ const styles = stylex.create({
     },
     outlineStyle: 'none',
     transitionDuration: {
-      default: interactionTokens.motionModerate,
+      default: interactionTokens.motionDrawer,
       '@media (prefers-reduced-motion: reduce)': interactionTokens.motionNone,
     },
     transitionProperty: 'margin, opacity',
+    transitionTimingFunction: interactionTokens.easingDrawerPopup,
     height: '2rem',
     marginTop: {
       default: 0,
@@ -284,10 +285,11 @@ const styles = stylex.create({
     },
     textAlign: 'left',
     transitionDuration: {
-      default: interactionTokens.motionModerate,
+      default: interactionTokens.motionDrawer,
       '@media (prefers-reduced-motion: reduce)': interactionTokens.motionNone,
     },
     transitionProperty: 'width, height, padding',
+    transitionTimingFunction: interactionTokens.easingDrawerPopup,
     whiteSpace: 'nowrap',
     width: {
       default: '100%',
@@ -433,8 +435,12 @@ const styles = stylex.create({
     backgroundColor: tokens.transparent,
     display: { default: 'none', '@media (min-width: 768px)': 'block' },
     position: 'relative',
-    transitionDuration: interactionTokens.motionModerate,
+    transitionDuration: {
+      default: interactionTokens.motionDrawer,
+      '@media (prefers-reduced-motion: reduce)': interactionTokens.motionNone,
+    },
     transitionProperty: 'width',
+    transitionTimingFunction: interactionTokens.easingDrawerPopup,
     width: 'var(--sidebar-width)',
   },
   sidebarGapCollapsedIcon: { width: 'var(--sidebar-width-icon)' },
@@ -451,8 +457,12 @@ const styles = stylex.create({
   sidebarContainer: {
     display: { default: 'none', '@media (min-width: 768px)': 'flex' },
     position: 'fixed',
-    transitionDuration: interactionTokens.motionModerate,
+    transitionDuration: {
+      default: interactionTokens.motionDrawer,
+      '@media (prefers-reduced-motion: reduce)': interactionTokens.motionNone,
+    },
     transitionProperty: 'left, right, width, transform',
+    transitionTimingFunction: interactionTokens.easingDrawerPopup,
     zIndex: 10,
     bottom: 0,
     height: '100svh',
