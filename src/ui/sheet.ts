@@ -72,7 +72,7 @@ const SIDE_CLASS: Readonly<Record<SheetSide, string>> = {
 // ——— Bottom sheet (astryx BottomSheet port)
 
 const BOTTOM_DIALOG_CLASS =
-  'bg-transparent p-0 overflow-hidden overscroll-contain open:block'
+  'bg-transparent p-0 overflow-clip overscroll-contain open:block'
 const SCRIM_CLASS =
   'absolute inset-0 bg-black/50 transition-opacity duration-450 ease-[cubic-bezier(0.32,0.72,0,1)] data-[swiping]:duration-0 motion-reduce:transition-none'
 const POSITIONER_CLASS =

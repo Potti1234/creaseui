@@ -157,7 +157,7 @@ const styles = stylex.create({
   },
   bottomSheetDialog: {
     padding: 0,
-    overflow: 'hidden',
+    overflow: 'clip',
     overscrollBehavior: 'contain',
     backgroundColor: tokens.transparent,
     justifyContent: 'stretch',
