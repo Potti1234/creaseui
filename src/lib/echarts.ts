@@ -1,20 +1,4 @@
-import {
-  BarChart,
-  LineChart,
-  PieChart,
-  RadarChart,
-  ScatterChart,
-} from 'echarts/charts'
-import {
-  DatasetComponent,
-  GridComponent,
-  LegendComponent,
-  PolarComponent,
-  RadarComponent,
-  TooltipComponent,
-} from 'echarts/components'
-import * as echarts from 'echarts/core'
-import { CanvasRenderer } from 'echarts/renderers'
+import type * as echarts from 'echarts/core'
 import type {
   EChartsOption,
   GridOption,
@@ -39,29 +23,42 @@ import { cn } from '@/lib/utils'
      apply), applies the builder's option, and keeps the chart responsive via
      ResizeObserver. Canvas cannot resolve CSS variables, so series colors are
      resolved to concrete values here; the DOM-based tooltip CAN use CSS vars.
-   - Theme tokens are resolved once at mount (the demo is light-mode; a theme
-     switcher would re-mount or re-sync). */
+   - Chart modules load only when a chart mounts. Theme tokens are re-read when
+     a class, style, or data-theme attribute changes on the host or an ancestor. */
 
-let registered = false
+let echartsPromise: Promise<typeof import('echarts/core')> | undefined
 
-const ensureRegistered = (): void => {
-  if (!registered) {
-    echarts.use([
-      LineChart,
-      BarChart,
-      PieChart,
-      RadarChart,
-      ScatterChart,
-      GridComponent,
-      TooltipComponent,
-      LegendComponent,
-      PolarComponent,
-      RadarComponent,
-      DatasetComponent,
-      CanvasRenderer,
+const loadECharts = (): Promise<typeof import('echarts/core')> => {
+  if (echartsPromise === undefined) {
+    echartsPromise = Promise.all([
+      import('echarts/core'),
+      import('echarts/charts'),
+      import('echarts/components'),
+      import('echarts/renderers'),
     ])
-    registered = true
+      .then(([echartsRuntime, charts, components, renderers]) => {
+        echartsRuntime.use([
+          charts.LineChart,
+          charts.BarChart,
+          charts.PieChart,
+          charts.RadarChart,
+          charts.ScatterChart,
+          components.GridComponent,
+          components.TooltipComponent,
+          components.LegendComponent,
+          components.PolarComponent,
+          components.RadarComponent,
+          components.DatasetComponent,
+          renderers.CanvasRenderer,
+        ])
+        return echartsRuntime
+      })
+      .catch(error => {
+        echartsPromise = undefined
+        throw error
+      })
   }
+  return echartsPromise
 }
 
 // THEME — design tokens resolved from the mount element
@@ -286,11 +283,17 @@ export const legendOptions = shadcnLegend
 export const areaGradient = (
   color: string,
   config: Readonly<{ from?: number; to?: number }> = {},
-): NonNullable<object> =>
-  new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+): NonNullable<object> => ({
+  type: 'linear',
+  x: 0,
+  y: 0,
+  x2: 0,
+  y2: 1,
+  colorStops: [
     { offset: 0, color: colorWithOpacity(color, config.from ?? 0.8) },
     { offset: 1, color: colorWithOpacity(color, config.to ?? 0.1) },
-  ])
+  ],
+})
 
 /** Applies opacity to a theme color. Theme colors arrive as resolved rgb()/
  *  rgba() strings (see resolveTheme), so this emits plain rgba() — the only
@@ -340,6 +343,23 @@ const applyOption = (
   }
 }
 
+const observeTheme = (
+  element: HTMLElement,
+  onChange: () => void,
+): MutationObserver => {
+  const observer = new MutationObserver(onChange)
+  let ancestor: HTMLElement | null = element
+  while (ancestor !== null) {
+    observer.observe(ancestor, {
+      attributes: true,
+      attributeFilter: ['class', 'style', 'data-theme'],
+    })
+    if (ancestor === document.documentElement) break
+    ancestor = ancestor.parentElement
+  }
+  return observer
+}
+
 // MESSAGES
 
 export const ChartMessage = defineMessageUnion({
@@ -383,31 +403,53 @@ export const MountChart = Mount.define('MountChart', {
       yield* Effect.promise(() => document.fonts.ready)
 
       return yield* Effect.acquireRelease(
-        Effect.try({
-          try: () => {
-            ensureRegistered()
-            const chart = echarts.init(element, undefined, {
+        Effect.tryPromise({
+          try: async () => {
+            const echartsRuntime = await loadECharts()
+            const chart = echartsRuntime.init(element, undefined, {
               renderer: 'canvas',
             })
             let resizeFrame = 0
+            let themeFrame = 0
             const resizeObserver = new ResizeObserver(() => {
               cancelAnimationFrame(resizeFrame)
               resizeFrame = requestAnimationFrame(() => chart.resize())
             })
+            let lastTheme = JSON.stringify(resolveTheme(element))
+            const themeObserver = observeTheme(element, () => {
+              cancelAnimationFrame(themeFrame)
+              themeFrame = requestAnimationFrame(() => {
+                const theme = resolveTheme(element)
+                const nextTheme = JSON.stringify(theme)
+                if (nextTheme !== lastTheme) {
+                  lastTheme = nextTheme
+                  const builder = buildersByHostId.get(hostId)
+                  if (builder) chart.setOption(builder(theme, variant), true)
+                }
+              })
+            })
             resizeObserver.observe(element)
             chartsByHostId.set(hostId, chart)
             applyOption(hostId, chart, variant)
-            return { chart, resizeFrame: () => resizeFrame, resizeObserver }
+            return {
+              chart,
+              resizeFrame: () => resizeFrame,
+              themeFrame: () => themeFrame,
+              resizeObserver,
+              themeObserver,
+            }
           },
           catch: error =>
             error instanceof Error
               ? error
               : new Error(`Chart mount failed: ${error}`),
         }),
-        ({ chart, resizeFrame, resizeObserver }) =>
+        ({ chart, resizeFrame, themeFrame, resizeObserver, themeObserver }) =>
           Effect.sync(() => {
             cancelAnimationFrame(resizeFrame())
+            cancelAnimationFrame(themeFrame())
             resizeObserver.disconnect()
+            themeObserver.disconnect()
             chart.dispose()
             chartsByHostId.delete(hostId)
           }),

@@ -29,7 +29,7 @@ const styles = stylex.create({
     flexShrink: 0,
     outlineStyle: 'none',
     transitionDuration: interactionTokens.motionFast,
-    transitionProperty: 'all',
+    transitionProperty: 'background-color, border-color, box-shadow',
     transitionTimingFunction: interactionTokens.easingDefault,
     height: '1.15rem',
     width: '2rem',

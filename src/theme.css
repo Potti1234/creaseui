@@ -31,6 +31,7 @@
   --stylex-outline-surface: var(--background);
   --stylex-outline-hover: var(--accent);
   --border: oklch(0.922 0 0);
+  --color-border: var(--border);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
   --chart-1: oklch(0.646 0.222 41.116);
@@ -84,6 +85,7 @@
   --stylex-outline-surface: color-mix(in oklab, var(--input) 30%, transparent);
   --stylex-outline-hover: color-mix(in oklab, var(--input) 50%, transparent);
   --border: oklch(1 0 0 / 10%);
+  --color-border: var(--border);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);
   --chart-1: oklch(0.488 0.243 264.376);

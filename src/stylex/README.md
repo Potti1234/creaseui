@@ -8,9 +8,10 @@ subdirectory of the configured shadcn UI directory (for example, `@/ui/stylex`
 when `aliases.ui` is `@/ui`); configure the StyleX compiler with the semantics in
 [`stylex.config.js`](../../stylex.config.js) and provide the theme variables
 referenced by `tokens.stylex.ts`, `foundations-tokens.stylex.ts`, and
-`complex-tokens.stylex.ts` (the light and dark variable blocks in
-[`src/theme.css`](../theme.css) are a starting point). The application owns
-its document font, line height, and background.
+`complex-tokens.stylex.ts`. The light and dark variable blocks in
+[`src/theme.css`](../theme.css) include the required StyleX aliases and can be
+used as a starting point; the application owns its document font, line height,
+and background.
 
 Components must not depend on Tailwind preflight. The `className()` adapter
 supplies `border-box` sizing and accepts static styles and StyleX markers.

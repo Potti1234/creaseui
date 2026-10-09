@@ -166,8 +166,11 @@ OutMessage back into its Model. Browser persistence belongs in flags or
 Commands, never in a component's `init` or view.
 
 The repository's end-to-end proof creates a disposable Foldkit/Vite consumer,
-installs the items from GitHub, and runs its typecheck and production build:
+installs the locally built registry items, and runs its typecheck and
+production build. The default run also installs StyleX Button, Data Table, and
+ECharts integration items. Pass item names to target a smaller install:
 
 ```sh
 npm run test:registry
+npm run test:registry -- stylex-data-table stylex-integrations-echarts
 ```

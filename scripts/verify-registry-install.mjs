@@ -24,9 +24,14 @@ const registry = JSON.parse(
 const recipes = JSON.parse(
   readFileSync(join(root, 'src/recipes/dashboard/registry.json'), 'utf8'),
 )
-const registryComponentNames = [...registry.items, ...recipes.items].map(
+const stylexRegistry = JSON.parse(
+  readFileSync(join(root, 'src/stylex/registry.json'), 'utf8'),
+)
+const stylexItemNames = new Set(stylexRegistry.items.map(item => item.name))
+const defaultComponentNames = [...registry.items, ...recipes.items].map(
   item => item.name,
 )
+const registryComponentNames = [...defaultComponentNames, ...stylexItemNames]
 const requestedComponentNames = process.argv.slice(2)
 const unknownComponentNames = requestedComponentNames.filter(
   name => !registryComponentNames.includes(name),
@@ -38,7 +43,12 @@ assert.deepEqual(
 )
 const componentNames =
   requestedComponentNames.length === 0
-    ? registryComponentNames
+    ? [
+        ...defaultComponentNames,
+        'stylex-button',
+        'stylex-data-table',
+        'stylex-integrations-echarts',
+      ]
     : requestedComponentNames
 const sourcePackage = JSON.parse(
   readFileSync(join(root, 'package.json'), 'utf8'),
@@ -107,6 +117,7 @@ const run = (command, args) =>
 for (const file of ['tsconfig.json']) {
   cpSync(join(root, file), join(fixture, file))
 }
+cpSync(join(root, 'stylex.config.js'), join(fixture, 'stylex.config.js'))
 
 writeFileSync(
   join(fixture, 'package.json'),
@@ -124,13 +135,17 @@ writeFileSync(
         tailwindcss: sourcePackage.dependencies.tailwindcss,
       },
       devDependencies: Object.fromEntries(
-        ['vite', 'typescript', '@foldkit/vite-plugin', '@tailwindcss/vite'].map(
-          name => [
-            name,
-            sourcePackage.devDependencies[name] ??
-              sourcePackage.dependencies[name],
-          ],
-        ),
+        [
+          'vite',
+          'typescript',
+          '@foldkit/vite-plugin',
+          '@tailwindcss/vite',
+          '@stylexjs/unplugin',
+        ].map(name => [
+          name,
+          sourcePackage.devDependencies[name] ??
+            sourcePackage.dependencies[name],
+        ]),
       ),
     },
     null,
@@ -149,9 +164,11 @@ writeFileSync(
 import { defineConfig } from 'vite'
 import { fileURLToPath } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
+import stylex from '@stylexjs/unplugin'
 import { foldkit } from '@foldkit/vite-plugin'
+import { stylexCompilerOptions } from './stylex.config.js'
 export default defineConfig({
-  plugins: [tailwindcss(), foldkit({ devToolsMcpPort: false })],
+  plugins: [tailwindcss(), stylex.vite(stylexCompilerOptions), foldkit({ devToolsMcpPort: false })],
   resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
 })
 `,
@@ -184,7 +201,11 @@ writeFileSync(
   )}\n`,
 )
 
-writeFileSync(join(fixture, 'src', 'styles.css'), '@import "tailwindcss";\n')
+cpSync(join(root, 'src', 'theme.css'), join(fixture, 'src', 'theme.css'))
+writeFileSync(
+  join(fixture, 'src', 'styles.css'),
+  '@import "tailwindcss";\n@import "./theme.css";\n',
+)
 writeFileSync(
   join(fixture, 'src', 'vite-env.d.ts'),
   '/// <reference types="vite/client" />\n',
@@ -195,7 +216,12 @@ writeFileSync(
     .map((name, index) =>
       name === 'dashboard-01'
         ? `import * as Component${index} from '@/components/crease-dashboard/entry'`
-        : `import * as Component${index} from '@/ui/${name}'`,
+        : stylexItemNames.has(name)
+          ? `import * as Component${index} from '${stylexRegistry.items
+              .find(item => item.name === name)
+              .files[0].target.replace(/^@ui/u, '@/ui')
+              .replace(/\.ts$/u, '')}'`
+          : `import * as Component${index} from '@/ui/${name}'`,
     )
     .join('\n')}\n\nexport const installedComponents = [${componentNames
     .map((_name, index) => `Component${index}`)
