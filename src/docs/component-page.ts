@@ -6,7 +6,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as CodeFile from '@/lib/code-file'
 import * as Icon from '@/lib/icon'
 import { cn } from '@/lib/utils'
-import { componentDocsPath, gettingStartedPath } from '@/route'
+import { componentDocsPath, gettingStartedPath, themingPath } from '@/route'
 import type { ApiEntry } from '@/docs/generated-component-api'
 import type {
   ComponentKind,
@@ -379,21 +379,42 @@ export const componentPage = <Msg>(
       ],
     )
   }
-  const gettingStartedNavItem = h.li(
-    [],
-    [
-      h.a(
-        [
-          h.Href(gettingStartedPath()),
-          h.AriaCurrent('false'),
-          h.Class(
-            'block rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground',
-          ),
-        ],
-        ['Get Started'],
-      ),
-    ],
-  )
+  const guideNavItems = () =>
+    h.ul(
+      [h.Class('mb-4 space-y-0.5')],
+      [
+        h.li(
+          [],
+          [
+            h.a(
+              [
+                h.Href(gettingStartedPath()),
+                h.AriaCurrent('false'),
+                h.Class(
+                  'block rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground',
+                ),
+              ],
+              ['Get Started'],
+            ),
+          ],
+        ),
+        h.li(
+          [],
+          [
+            h.a(
+              [
+                h.Href(themingPath()),
+                h.AriaCurrent('false'),
+                h.Class(
+                  'block rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground',
+                ),
+              ],
+              ['Theming'],
+            ),
+          ],
+        ),
+      ],
+    )
 
   const currentIndex = COMPONENT_NAV_ORDER.findIndex(
     name => name === config.name,
@@ -451,7 +472,7 @@ export const componentPage = <Msg>(
               h.Class('max-h-[55vh] overflow-y-auto border-t p-2'),
             ],
             [
-              h.ul([h.Class('mb-4')], [gettingStartedNavItem]),
+              guideNavItems(),
               ...COMPONENT_GROUPS.map(group =>
                 h.div(
                   [h.Class('mb-4')],
@@ -506,7 +527,7 @@ export const componentPage = <Msg>(
           h.nav(
             [h.AriaLabel('Component navigation')],
             [
-              h.ul([h.Class('mb-6')], [gettingStartedNavItem]),
+              guideNavItems(),
               ...COMPONENT_GROUPS.map(group =>
                 h.div(
                   [h.Class('mb-6')],

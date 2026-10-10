@@ -19,6 +19,7 @@ import * as ChartsTooltip from '@/demo/charts/tooltip'
 import * as ChartsStyleX from '@/demo/charts-stylex/page'
 import * as ComponentCatalog from '@/docs/components/catalog'
 import * as CopyFeedback from '@/docs/copy-feedback'
+import * as CodeBlock from '@/ui/code-block'
 import type { AppRoute } from '@/route'
 import { renderer } from '@/site/config'
 
@@ -72,7 +73,12 @@ export const Charts = taggedStruct('ChartsPage', {
 export const CatalogDocs = taggedStruct('CatalogDocsPage', {
   docs: ComponentCatalog.Model,
 })
-export const GettingStarted = taggedStruct('GettingStartedPage')
+export const GettingStarted = taggedStruct('GettingStartedPage', {
+  codeBlock: CodeBlock.Model,
+})
+export const Theming = taggedStruct('ThemingPage', {
+  codeBlock: CodeBlock.Model,
+})
 export const NotFound = taggedStruct('NotFoundPage')
 
 export const Page = S.Union([
@@ -84,6 +90,7 @@ export const Page = S.Union([
   Charts,
   CatalogDocs,
   GettingStarted,
+  Theming,
   NotFound,
 ])
 export type Page = typeof Page.Type
@@ -138,7 +145,8 @@ export const init = (route: AppRoute): Page =>
         ComponentCatalog.hasCatalogPage(component)
           ? CatalogDocs({ docs: ComponentCatalog.init(component) })
           : NotFound(),
-      GettingStarted: () => GettingStarted(),
+      GettingStarted: () => GettingStarted({ codeBlock: CodeBlock.init() }),
+      Theming: () => Theming({ codeBlock: CodeBlock.init() }),
       NotFound: () => NotFound(),
     }),
   )

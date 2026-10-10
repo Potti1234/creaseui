@@ -135,6 +135,11 @@ export default defineConfig(({ mode }) => {
               '@/docs/getting-started-view': source(
                 'site/getting-started.stylex.ts',
               ),
+              '@/ui/code': source('stylex/code.ts'),
+              '@/ui/code-block': source('stylex/code-block.ts'),
+              '@/ui/heading': source('stylex/heading.ts'),
+              '@/ui/text': source('stylex/text.ts'),
+              '@/ui/typography': source('stylex/typography.ts'),
               '@/demo/blocks/index-page': source('site/blocks.stylex.ts'),
             }
           : {}),

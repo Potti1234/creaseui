@@ -5,7 +5,7 @@ import { Mount, Subscription } from 'foldkit'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as CodeFile from '@/lib/code-file'
 import * as Icon from '@/lib/icon'
-import { componentDocsPath, gettingStartedPath } from '@/route'
+import { componentDocsPath, gettingStartedPath, themingPath } from '@/route'
 import {
   COMPONENT_GROUPS,
   COMPONENT_NAV_ORDER,
@@ -959,19 +959,38 @@ export const componentPage = <Msg>(
         ),
       ],
     )
-  const gettingStartedNavItem = h.li(
-    [],
-    [
-      h.a(
-        [
-          h.Href(gettingStartedPath()),
-          h.AriaCurrent('false'),
-          h.Class(className(reset.link, styles.navLink)),
-        ],
-        ['Get Started'],
-      ),
-    ],
-  )
+  const guideNavItems = () =>
+    h.ul(
+      [h.Class(className(reset.list, styles.navList, styles.navGroup))],
+      [
+        h.li(
+          [],
+          [
+            h.a(
+              [
+                h.Href(gettingStartedPath()),
+                h.AriaCurrent('false'),
+                h.Class(className(reset.link, styles.navLink)),
+              ],
+              ['Get Started'],
+            ),
+          ],
+        ),
+        h.li(
+          [],
+          [
+            h.a(
+              [
+                h.Href(themingPath()),
+                h.AriaCurrent('false'),
+                h.Class(className(reset.link, styles.navLink)),
+              ],
+              ['Theming'],
+            ),
+          ],
+        ),
+      ],
+    )
   const position = COMPONENT_NAV_ORDER.findIndex(name => name === config.name)
   const previous = COMPONENT_NAV_ORDER[position - 1]
   const next = COMPONENT_NAV_ORDER[position + 1]
@@ -1006,14 +1025,7 @@ export const componentPage = <Msg>(
               h.Class(className(styles.mobileNavOuter)),
             ],
             [
-              h.ul(
-                [
-                  h.Class(
-                    className(reset.list, styles.navList, styles.navGroup),
-                  ),
-                ],
-                [gettingStartedNavItem],
-              ),
+              guideNavItems(),
               ...COMPONENT_GROUPS.map(group =>
                 h.div(
                   [h.Class(className(styles.navGroup))],
@@ -1071,14 +1083,7 @@ export const componentPage = <Msg>(
           h.nav(
             [h.AriaLabel('Component navigation')],
             [
-              h.ul(
-                [
-                  h.Class(
-                    className(reset.list, styles.navList, styles.navGroup),
-                  ),
-                ],
-                [gettingStartedNavItem],
-              ),
+              guideNavItems(),
               ...COMPONENT_GROUPS.map(group =>
                 h.div(
                   [h.Class(className(styles.navGroup))],

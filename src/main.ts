@@ -32,6 +32,7 @@ import * as ComponentCatalog from '@/docs/components/catalog'
 import * as GettingStartedPage from '@/docs/getting-started-view'
 import * as CopyFeedback from '@/docs/copy-feedback'
 import * as CodeFile from '@/lib/code-file'
+import * as CodeBlock from '@/ui/code-block'
 import * as Page from '@/app/page'
 import * as Chrome from '@/site/chrome'
 import * as DocsSearch from '@/site/docs-search'
@@ -44,6 +45,7 @@ import {
   chartsPath,
   componentDocsPath,
   gettingStartedPath,
+  themingPath,
   createPath,
   homePath,
   isChartSection,
@@ -144,6 +146,7 @@ export const Message = defineMessageUnion({
   GotCatalogDocsMessage: {
     message: ComponentCatalog.Message,
   },
+  GotDocsGuideCodeBlockMessage: { message: CodeBlock.Message },
   GotDocsSearchMessage: { message: DocsSearch.Message },
 })
 export type Message = typeof Message.Type
@@ -664,6 +667,28 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           ),
         }
       },
+
+      GotDocsGuideCodeBlockMessage: ({ message: childMessage }) => {
+        const currentPage = model.page
+        if (
+          currentPage._tag !== 'GettingStartedPage' &&
+          currentPage._tag !== 'ThemingPage'
+        ) {
+          return { model: model }
+        }
+        const { model: codeBlock, commands: codeBlockCommands__ } =
+          CodeBlock.update(currentPage.codeBlock, childMessage)
+        const commands = codeBlockCommands__ ?? []
+        const page = modifyFields(currentPage, {
+          codeBlock: () => codeBlock,
+        })
+        return {
+          model: modifyFields(model, { page: () => page }),
+          commands: Command.mapMessages(commands, next =>
+            Message.GotDocsGuideCodeBlockMessage({ message: next }),
+          ),
+        }
+      },
     }),
   )
 
@@ -1087,8 +1112,32 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
             ),
       GettingStarted: () =>
         model.page._tag === 'GettingStartedPage'
-          ? keyed('page-getting-started', GettingStartedPage.view(h))
+          ? keyed(
+              'page-getting-started',
+              GettingStartedPage.view(
+                {
+                  model: model.page.codeBlock,
+                  toParentMessage: message =>
+                    Message.GotDocsGuideCodeBlockMessage({ message }),
+                },
+                h,
+              ),
+            )
           : keyed('page-not-found', notFoundView(gettingStartedPath(), h)),
+      Theming: () =>
+        model.page._tag === 'ThemingPage'
+          ? keyed(
+              'page-theming',
+              GettingStartedPage.themingView(
+                {
+                  model: model.page.codeBlock,
+                  toParentMessage: message =>
+                    Message.GotDocsGuideCodeBlockMessage({ message }),
+                },
+                h,
+              ),
+            )
+          : keyed('page-not-found', notFoundView(themingPath(), h)),
       NotFound: ({ path }) => keyed('page-not-found', notFoundView(path, h)),
     }),
   )
@@ -1103,7 +1152,9 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => {
       ? `${ComponentCatalog.titleFor(model.route.component) ?? 'Not Found'} - crease/ui`
       : model.route._tag === 'GettingStarted'
         ? 'Get Started - crease/ui'
-        : 'crease/ui'
+        : model.route._tag === 'Theming'
+          ? 'Theming - crease/ui'
+          : 'crease/ui'
 
   return {
     title,

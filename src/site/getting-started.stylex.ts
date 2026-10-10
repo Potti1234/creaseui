@@ -1,7 +1,8 @@
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { view as gettingStartedView } from '@/docs/getting-started-content'
+import { view as docsGuideView } from '@/docs/getting-started-content'
+import type * as CodeBlock from '@/ui/code-block'
 import { reset } from '@/stylex/reset'
 import { className } from '@/stylex/style'
 import { tokens } from '@/stylex/tokens.stylex'
@@ -82,50 +83,16 @@ const styles = stylex.create({
     alignItems: 'center',
     gap: '.5rem',
     marginBottom: '1rem',
-    color: tokens.mutedForeground,
-    fontSize: '.875rem',
-    lineHeight: '1.25rem',
-  },
-  title: {
-    color: tokens.foreground,
-    fontSize: '2.25rem',
-    lineHeight: '2.5rem',
-    fontWeight: 600,
-    letterSpacing: '-.035em',
-    textWrap: 'balance',
   },
   lead: {
     maxWidth: '70ch',
     marginTop: '1rem',
-    color: tokens.mutedForeground,
-    fontSize: '1rem',
-    lineHeight: '1.75rem',
   },
   section: {
     display: 'flex',
     flexDirection: 'column',
     gap: '1rem',
     scrollMarginTop: '6rem',
-  },
-  heading: {
-    color: tokens.foreground,
-    fontSize: '1.25rem',
-    lineHeight: '1.75rem',
-    fontWeight: 600,
-    letterSpacing: '-.025em',
-  },
-  subheading: {
-    color: tokens.foreground,
-    paddingTop: '.5rem',
-    fontSize: '1rem',
-    lineHeight: '1.5rem',
-    fontWeight: 600,
-  },
-  paragraph: {
-    maxWidth: '75ch',
-    color: tokens.mutedForeground,
-    fontSize: '.875rem',
-    lineHeight: '1.75rem',
   },
   list: {
     display: 'flex',
@@ -136,28 +103,6 @@ const styles = stylex.create({
     fontSize: '.875rem',
     lineHeight: '1.75rem',
     listStyleType: 'disc',
-  },
-  code: {
-    maxWidth: '100%',
-    overflowX: 'auto',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderColor: tokens.border,
-    borderRadius: '.5rem',
-    backgroundColor: 'color-mix(in oklab, var(--muted) 35%, transparent)',
-    padding: '1rem',
-    color: tokens.foreground,
-    fontFamily:
-      'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
-    fontSize: '13px',
-    lineHeight: '1.5rem',
-    whiteSpace: 'pre',
-  },
-  inlineCode: {
-    fontFamily:
-      'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
-    fontSize: '13px',
-    lineHeight: '1.5rem',
   },
   link: {
     color: { default: tokens.foreground, ':hover': tokens.foreground },
@@ -215,9 +160,38 @@ const styles = stylex.create({
   tocList: {
     display: 'grid',
     gap: '.5rem',
-    color: tokens.mutedForeground,
-    fontSize: '.875rem',
-    lineHeight: '1.25rem',
+  },
+  tokenTableWrapper: {
+    borderColor: tokens.border,
+    borderRadius: '.5rem',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    overflowX: 'auto',
+  },
+  tokenTable: {
+    borderCollapse: 'collapse',
+    minWidth: '34rem',
+    width: '100%',
+  },
+  tokenHead: {
+    backgroundColor: 'color-mix(in oklab, var(--muted) 40%, transparent)',
+    borderBlockEndColor: tokens.border,
+    borderBlockEndStyle: 'solid',
+    borderBlockEndWidth: 1,
+    paddingBlock: '.5rem',
+    paddingInline: '.75rem',
+    textAlign: 'start',
+  },
+  tokenCell: {
+    borderBlockEndColor: tokens.border,
+    borderBlockEndStyle: 'solid',
+    borderBlockEndWidth: 1,
+    paddingBlock: '.5rem',
+    paddingInline: '.75rem',
+    verticalAlign: 'top',
+  },
+  tokenName: {
+    whiteSpace: 'nowrap',
   },
 })
 
@@ -231,15 +205,9 @@ const classes = {
   main: className(styles.main),
   content: className(styles.content),
   breadcrumb: className(reset.text, styles.breadcrumb),
-  title: className(reset.text, styles.title),
   lead: className(reset.text, styles.lead),
   section: className(styles.section),
-  heading: className(reset.text, styles.heading),
-  subheading: className(reset.text, styles.subheading),
-  paragraph: className(reset.text, styles.paragraph),
   list: className(reset.list, styles.list),
-  code: className(styles.code),
-  inlineCode: className(reset.code, styles.inlineCode),
   link: className(reset.link, styles.link),
   navLink: className(reset.link, styles.navLink),
   navActive: className(styles.navActive),
@@ -249,7 +217,24 @@ const classes = {
   toc: className(styles.toc),
   tocLabel: className(reset.text, styles.tocLabel),
   tocList: className(reset.list, styles.tocList),
+  tokenTableWrapper: className(styles.tokenTableWrapper),
+  tokenTable: className(styles.tokenTable),
+  tokenHead: className(reset.text, styles.tokenHead),
+  tokenCell: className(reset.text, styles.tokenCell),
+  tokenName: className(styles.tokenName),
 } satisfies Readonly<Record<string, string>>
 
-export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
-  gettingStartedView(h, classes)
+export type DocsGuideCodeProps<Msg> = Readonly<{
+  model: CodeBlock.Model
+  toParentMessage: (message: CodeBlock.Message) => Msg
+}>
+
+export const view = <Msg>(
+  codeBlock: DocsGuideCodeProps<Msg>,
+  h: HtmlBuilder<Msg>,
+): Html => docsGuideView('getting-started', h, classes, codeBlock)
+
+export const themingView = <Msg>(
+  codeBlock: DocsGuideCodeProps<Msg>,
+  h: HtmlBuilder<Msg>,
+): Html => docsGuideView('theming', h, classes, codeBlock)

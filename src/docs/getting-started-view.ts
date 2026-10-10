@@ -1,6 +1,7 @@
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { view as gettingStartedView } from '@/docs/getting-started-content'
+import { view as docsGuideView } from '@/docs/getting-started-content'
+import type * as CodeBlock from '@/ui/code-block'
 
 const styles = {
   layout:
@@ -13,17 +14,10 @@ const styles = {
     'hidden border-r px-5 py-10 lg:sticky lg:top-14 lg:block lg:h-[calc(100vh-3.5rem)] lg:overflow-y-auto',
   main: 'min-w-0 px-5 py-10 sm:px-8 lg:px-12 lg:py-14',
   content: 'mx-auto flex max-w-4xl flex-col gap-12',
-  breadcrumb:
-    'mb-4 flex flex-wrap items-center gap-2 text-sm text-muted-foreground',
-  title: 'text-4xl font-semibold tracking-[-0.035em] text-balance',
-  lead: 'mt-4 max-w-[70ch] text-base leading-7 text-muted-foreground',
+  breadcrumb: 'mb-4 flex flex-wrap items-center gap-2',
+  lead: 'mt-4 max-w-[70ch]',
   section: 'scroll-mt-24 space-y-4',
-  heading: 'text-xl font-semibold tracking-tight',
-  subheading: 'pt-2 text-base font-semibold tracking-tight',
-  paragraph: 'max-w-[75ch] text-sm leading-7 text-muted-foreground',
   list: 'space-y-2 pl-5 text-sm leading-7 text-muted-foreground [&>li]:list-disc',
-  code: 'max-w-full overflow-x-auto rounded-lg border bg-muted/35 p-4 font-mono text-[13px] leading-6',
-  inlineCode: 'font-mono text-[13px] leading-6',
   link: 'text-foreground underline decoration-border underline-offset-4 hover:decoration-foreground',
   navLink:
     'block rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground',
@@ -33,8 +27,25 @@ const styles = {
   navList: 'space-y-0.5',
   toc: 'hidden px-5 py-10 lg:sticky lg:top-14 lg:block lg:h-[calc(100vh-3.5rem)] lg:overflow-y-auto',
   tocLabel: 'mb-3 text-sm font-semibold',
-  tocList: 'space-y-2 text-sm text-muted-foreground',
+  tocList: 'space-y-2',
+  tokenTableWrapper: 'overflow-x-auto rounded-lg border',
+  tokenTable: 'w-full min-w-[34rem] border-collapse',
+  tokenHead: 'border-b bg-muted/40 px-3 py-2 text-left',
+  tokenCell: 'border-b px-3 py-2 align-top last:border-b-0',
+  tokenName: 'whitespace-nowrap',
 } as const
 
-export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
-  gettingStartedView(h, styles)
+export type DocsGuideCodeProps<Msg> = Readonly<{
+  model: CodeBlock.Model
+  toParentMessage: (message: CodeBlock.Message) => Msg
+}>
+
+export const view = <Msg>(
+  codeBlock: DocsGuideCodeProps<Msg>,
+  h: HtmlBuilder<Msg>,
+): Html => docsGuideView('getting-started', h, styles, codeBlock)
+
+export const themingView = <Msg>(
+  codeBlock: DocsGuideCodeProps<Msg>,
+  h: HtmlBuilder<Msg>,
+): Html => docsGuideView('theming', h, styles, codeBlock)

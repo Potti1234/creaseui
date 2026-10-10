@@ -28,6 +28,7 @@ export const header = <Msg>(
       label: 'Docs',
       active:
         props.route._tag === 'GettingStarted' ||
+        props.route._tag === 'Theming' ||
         props.route._tag === 'ComponentDocs',
     },
     {
