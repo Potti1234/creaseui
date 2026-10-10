@@ -8,7 +8,9 @@ import { defineMessageUnion } from 'foldkit/message'
 import * as Preset from '@/demo/create-preset'
 import * as Chart from '@/lib/echarts'
 import * as Icon from '@/lib/icon'
+import { MapMessage } from '@/lib/map-runtime'
 import { COMPONENT_COUNT, CHART_EXAMPLE_COUNT } from '@/lib/project-facts'
+import { componentDocsPath } from '@/route'
 import {
   button,
   buttonLink,
@@ -24,6 +26,12 @@ import {
   createShowcaseTabs,
   numberCell,
   exploreChart,
+  map,
+  mapControls,
+  mapMarker,
+  markerContent,
+  markerTooltip,
+  mapRoute,
   studioThemeCss,
 } from '@/site/landing-tour-ui'
 import { renderer } from '@/site/config'
@@ -94,6 +102,7 @@ export const Message = defineMessageUnion({
   ChangedChartPeriod: { period: Period },
   ChangedChartSeries: { series: Series },
   GotChart: { message: Chart.ChartMessage },
+  GotMap: { message: MapMessage },
   ClickedCopyInstall: {},
   CompletedCopyInstall: { success: S.Boolean },
   ClearedCopyFeedback: {},
@@ -349,6 +358,7 @@ export const update = (
         ),
       }),
       GotChart: () => ({ model }),
+      GotMap: () => ({ model }),
       ClickedCopyInstall: () => ({ model, commands: [CopyInstall({})] }),
       CompletedCopyInstall: ({ success }) => ({
         model: { ...model, copied: success },
@@ -1636,6 +1646,97 @@ const chartView = (model: Model, h: HtmlBuilder<Message>): Html => {
   )
 }
 
+const mapView = (isDark: boolean, h: HtmlBuilder<Message>): Html => {
+  const liveMap = map(
+    {
+      center: [11.576124, 48.137154],
+      zoom: 13,
+      theme: isDark ? 'dark' : 'light',
+      language: 'en',
+      ariaLabel: 'Map of central Munich, Germany',
+      toMessage: message => Message.GotMap({ message }),
+      children: [
+        mapControls(
+          { position: 'top-right', showFullscreen: true, language: 'en' },
+          h,
+        ),
+        mapRoute(
+          {
+            id: 'landing-munich-route',
+            coordinates: [
+              [11.576124, 48.137154],
+              [11.577248, 48.142751],
+            ],
+            color: '#0f766e',
+            width: 4,
+          },
+          h,
+        ),
+        mapMarker(
+          {
+            id: 'landing-marienplatz',
+            longitude: 11.576124,
+            latitude: 48.137154,
+            ariaLabel: 'Marienplatz, Munich',
+            children: [
+              markerContent({ children: ['1'] }, h),
+              markerTooltip({ children: ['Marienplatz'] }, h),
+            ],
+          },
+          h,
+        ),
+        mapMarker(
+          {
+            id: 'landing-odeonsplatz',
+            longitude: 11.577248,
+            latitude: 48.142751,
+            ariaLabel: 'Odeonsplatz, Munich',
+            children: [
+              markerContent({ children: ['2'] }, h),
+              markerTooltip({ children: ['Odeonsplatz'] }, h),
+            ],
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  )
+
+  return h.section(
+    [h.Id('map-preview'), h.Class(tourSkin.section)],
+    [
+      sectionHeader(
+        'An interactive map, built from parts.',
+        'A live OpenFreeMap basemap with controls, a route, and named markers. Each layer is composed in the view, with no map API key.',
+        h,
+      ),
+      liveMap,
+      h.div(
+        [h.Class(tourSkin.showcaseFooter)],
+        [
+          h.p(
+            [h.Class(tourSkin.mutedSmall)],
+            ['Pan, zoom, or focus a marker with your keyboard.'],
+          ),
+          h.div(
+            [h.Class(tourSkin.showcaseLinks)],
+            [
+              h.a(
+                [
+                  h.Href(componentDocsPath('map')),
+                  h.Class(tourSkin.subtleLink),
+                ],
+                ['Explore map docs', icon('arrow-up-right', h)],
+              ),
+            ],
+          ),
+        ],
+      ),
+    ],
+  )
+}
+
 const gettingStartedView = (model: Model, h: HtmlBuilder<Message>): Html =>
   h.section(
     [h.Id('get-started'), h.Class(tourSkin.section)],
@@ -1742,6 +1843,7 @@ export const view = (
       stateView(model, h),
       playgroundView(model, h),
       chartView(model, h),
+      mapView(isDark, h),
       gettingStartedView(model, h),
     ],
   )

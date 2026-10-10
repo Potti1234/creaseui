@@ -23,6 +23,10 @@ export * as Combobox from '@/stylex/combobox'
 export * as Palette from '@/stylex/command'
 export * as DateRange from '@/stylex/date-range-input'
 export * as Table from '@/stylex/table'
+export { map } from '@/stylex/map'
+export { mapControls } from '@/stylex/map-controls'
+export { mapMarker, markerContent, markerTooltip } from '@/stylex/map-marker'
+export { mapRoute } from '@/stylex/map-route'
 
 // Rebind aliases where the preset is applied so descendants resolve the
 // preview's variables, rather than the variables inherited from :root.

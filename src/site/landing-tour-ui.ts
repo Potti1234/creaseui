@@ -16,6 +16,10 @@ export * as Combobox from '@/ui/combobox'
 export * as Palette from '@/ui/command'
 export * as DateRange from '@/ui/date-range-input'
 export * as Table from '@/ui/table'
+export { map } from '@/ui/map'
+export { mapControls } from '@/ui/map-controls'
+export { mapMarker, markerContent, markerTooltip } from '@/ui/map-marker'
+export { mapRoute } from '@/ui/map-route'
 
 export const studioThemeCss = (): string => ''
 
