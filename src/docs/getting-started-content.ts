@@ -159,7 +159,6 @@ export const view = <Msg>(
             ],
             [
               h.div([h.Class(styles.navGroup)], [getStartedLink(true)]),
-              ...sidebarGroups(true),
             ],
           ),
         ],
@@ -171,7 +170,6 @@ export const view = <Msg>(
             [h.AriaLabel('Documentation navigation')],
             [
               h.div([h.Class(styles.navGroup)], [getStartedLink(true)]),
-              ...sidebarGroups(false),
             ],
           ),
         ],
