@@ -29,6 +29,7 @@ import * as ChartsRadial from '@/demo/charts/radial'
 import * as ChartsTooltip from '@/demo/charts/tooltip'
 import * as ChartsStyleX from '@/demo/charts-stylex/page'
 import * as ComponentCatalog from '@/docs/components/catalog'
+import * as GettingStartedPage from '@/docs/getting-started-view'
 import * as CopyFeedback from '@/docs/copy-feedback'
 import * as CodeFile from '@/lib/code-file'
 import * as Page from '@/app/page'
@@ -42,6 +43,7 @@ import {
   blocksStyleXTablePath,
   chartsPath,
   componentDocsPath,
+  gettingStartedPath,
   createPath,
   homePath,
   isChartSection,
@@ -1083,6 +1085,10 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
               'page-not-found',
               notFoundView(`/docs/components/${component}`, h),
             ),
+      GettingStarted: () =>
+        model.page._tag === 'GettingStartedPage'
+          ? keyed('page-getting-started', GettingStartedPage.view(h))
+          : keyed('page-not-found', notFoundView(gettingStartedPath(), h)),
       NotFound: ({ path }) => keyed('page-not-found', notFoundView(path, h)),
     }),
   )
@@ -1095,7 +1101,9 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => {
   const title =
     model.route._tag === 'ComponentDocs'
       ? `${ComponentCatalog.titleFor(model.route.component) ?? 'Not Found'} - crease/ui`
-      : 'crease/ui'
+      : model.route._tag === 'GettingStarted'
+        ? 'Get Started - crease/ui'
+        : 'crease/ui'
 
   return {
     title,

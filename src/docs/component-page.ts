@@ -6,7 +6,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as CodeFile from '@/lib/code-file'
 import * as Icon from '@/lib/icon'
 import { cn } from '@/lib/utils'
-import { componentDocsPath } from '@/route'
+import { componentDocsPath, gettingStartedPath } from '@/route'
 import type { ApiEntry } from '@/docs/generated-component-api'
 import type {
   ComponentKind,
@@ -379,6 +379,21 @@ export const componentPage = <Msg>(
       ],
     )
   }
+  const gettingStartedNavItem = h.li(
+    [],
+    [
+      h.a(
+        [
+          h.Href(gettingStartedPath()),
+          h.AriaCurrent('false'),
+          h.Class(
+            'block rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground',
+          ),
+        ],
+        ['Get Started'],
+      ),
+    ],
+  )
 
   const currentIndex = COMPONENT_NAV_ORDER.findIndex(
     name => name === config.name,
@@ -428,7 +443,7 @@ export const componentPage = <Msg>(
         [
           h.summary(
             [h.Class('cursor-pointer px-4 py-3 text-sm font-semibold')],
-            ['Browse components'],
+            ['Browse docs'],
           ),
           h.nav(
             [
@@ -436,6 +451,7 @@ export const componentPage = <Msg>(
               h.Class('max-h-[55vh] overflow-y-auto border-t p-2'),
             ],
             [
+              h.ul([h.Class('mb-4')], [gettingStartedNavItem]),
               ...COMPONENT_GROUPS.map(group =>
                 h.div(
                   [h.Class('mb-4')],
@@ -490,6 +506,7 @@ export const componentPage = <Msg>(
           h.nav(
             [h.AriaLabel('Component navigation')],
             [
+              h.ul([h.Class('mb-6')], [gettingStartedNavItem]),
               ...COMPONENT_GROUPS.map(group =>
                 h.div(
                   [h.Class('mb-6')],
@@ -528,7 +545,7 @@ export const componentPage = <Msg>(
                     [
                       h.a(
                         [
-                          h.Href(componentDocsPath('accordion')),
+                          h.Href(gettingStartedPath()),
                           h.Class('hover:text-foreground'),
                         ],
                         ['Docs'],

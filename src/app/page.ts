@@ -72,6 +72,7 @@ export const Charts = taggedStruct('ChartsPage', {
 export const CatalogDocs = taggedStruct('CatalogDocsPage', {
   docs: ComponentCatalog.Model,
 })
+export const GettingStarted = taggedStruct('GettingStartedPage')
 export const NotFound = taggedStruct('NotFoundPage')
 
 export const Page = S.Union([
@@ -82,6 +83,7 @@ export const Page = S.Union([
   Block,
   Charts,
   CatalogDocs,
+  GettingStarted,
   NotFound,
 ])
 export type Page = typeof Page.Type
@@ -136,6 +138,7 @@ export const init = (route: AppRoute): Page =>
         ComponentCatalog.hasCatalogPage(component)
           ? CatalogDocs({ docs: ComponentCatalog.init(component) })
           : NotFound(),
+      GettingStarted: () => GettingStarted(),
       NotFound: () => NotFound(),
     }),
   )

@@ -52,6 +52,7 @@ export const AppRoute = defineRouteUnion({
   BlocksStyleX: {},
   BlocksStyleXTable: {},
   Block: { blockId: S.String },
+  GettingStarted: {},
   ComponentDocs: { component: S.String },
   NotFound: { path: S.String },
 })
@@ -111,6 +112,12 @@ const componentDocsRouter = pipe(
   Route.mapTo(AppRoute.ComponentDocs),
 )
 
+const gettingStartedRouter = pipe(
+  literal('docs'),
+  slash(literal('getting-started')),
+  Route.mapTo(AppRoute.GettingStarted),
+)
+
 const routeParser = Route.oneOf(
   createRouter,
   chartsRouter,
@@ -120,6 +127,7 @@ const routeParser = Route.oneOf(
   blocksRootRouter,
   blocksStyleXTableRouter,
   blocksStyleXRouter,
+  gettingStartedRouter,
   componentDocsRouter,
   homeRouter,
 )
@@ -151,3 +159,5 @@ export const blockPath = (blockId: string): string => blockRouter({ blockId })
 
 export const componentDocsPath = (component: string): string =>
   componentDocsRouter({ component })
+
+export const gettingStartedPath = (): string => gettingStartedRouter()

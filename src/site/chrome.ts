@@ -3,7 +3,7 @@ import * as Icon from '@/lib/icon'
 import {
   type AppRoute,
   homePath,
-  componentDocsPath,
+  gettingStartedPath,
   createPath,
   chartsPath,
   blocksIndexPath,
@@ -24,9 +24,11 @@ export const header = <Msg>(
 ): Html => {
   const links = [
     {
-      href: componentDocsPath('accordion'),
+      href: gettingStartedPath(),
       label: 'Docs',
-      active: props.route._tag === 'ComponentDocs',
+      active:
+        props.route._tag === 'GettingStarted' ||
+        props.route._tag === 'ComponentDocs',
     },
     {
       href: createPath(),

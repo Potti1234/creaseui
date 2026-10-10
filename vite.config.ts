@@ -132,6 +132,9 @@ export default defineConfig(({ mode }) => {
                 'site/landing-tour-ui.stylex.ts',
               ),
               '@/docs/component-page': source('site/docs.stylex.ts'),
+              '@/docs/getting-started-view': source(
+                'site/getting-started.stylex.ts',
+              ),
               '@/demo/blocks/index-page': source('site/blocks.stylex.ts'),
             }
           : {}),
