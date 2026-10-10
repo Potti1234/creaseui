@@ -428,23 +428,21 @@ export const view = <Msg>(
       ],
     )
   const sidebarGroups = (isMobile: boolean) =>
-    isGettingStarted
-      ? []
-      : COMPONENT_GROUPS.map(group =>
+    COMPONENT_GROUPS.map(group =>
+      h.div(
+        [h.Class(styles.navGroup)],
+        [
           h.div(
-            [h.Class(styles.navGroup)],
-            [
-              h.div(
-                [h.Class(styles.navLabel)],
-                [text([group.label], { type: 'label', color: 'primary' })],
-              ),
-              h.ul(
-                [h.Class(isMobile ? styles.mobileNav : styles.navList)],
-                group.components.map(componentLink),
-              ),
-            ],
+            [h.Class(styles.navLabel)],
+            [text([group.label], { type: 'label', color: 'primary' })],
           ),
-        )
+          h.ul(
+            [h.Class(isMobile ? styles.mobileNav : styles.navList)],
+            group.components.map(componentLink),
+          ),
+        ],
+      ),
+    )
   const externalLink = (href: string, label: string): Html =>
     h.a(
       [
