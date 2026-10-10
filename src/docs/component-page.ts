@@ -14,8 +14,8 @@ import type {
 } from '@/docs/components/page-definition'
 
 import {
-  COMPONENTS,
   COMPONENT_GROUPS,
+  COMPONENT_NAV_ORDER,
   apiPurpose,
   toSlug,
 } from '@/docs/component-metadata'
@@ -380,9 +380,13 @@ export const componentPage = <Msg>(
     )
   }
 
-  const currentIndex = COMPONENTS.findIndex(name => name === config.name)
-  const previous = currentIndex > 0 ? COMPONENTS[currentIndex - 1] : undefined
-  const next = currentIndex >= 0 ? COMPONENTS[currentIndex + 1] : undefined
+  const currentIndex = COMPONENT_NAV_ORDER.findIndex(
+    name => name === config.name,
+  )
+  const previous =
+    currentIndex > 0 ? COMPONENT_NAV_ORDER[currentIndex - 1] : undefined
+  const next =
+    currentIndex >= 0 ? COMPONENT_NAV_ORDER[currentIndex + 1] : undefined
   const toc: ReadonlyArray<readonly [string, string]> = [
     ['architecture', 'Architecture'],
     ['installation', 'Installation'],

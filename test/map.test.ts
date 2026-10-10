@@ -9,6 +9,7 @@ import {
 } from '../src/lib/map-style.ts'
 import { arcCoordinates } from '../src/lib/map-layers.ts'
 import {
+  COMPONENTS,
   COMPONENT_GROUPS,
   MAP_COMPONENTS,
 } from '../src/docs/component-metadata.ts'
@@ -131,19 +132,47 @@ describe('map palettes and localization', () => {
 })
 
 describe('map composition', () => {
-  it('keeps all ten map pages together without duplicates in other groups', () => {
+  it('groups documentation pages without duplicates and keeps maps together', () => {
     assert.equal(MAP_COMPONENTS.length, 10)
+    const groupedComponents = COMPONENT_GROUPS.flatMap(
+      group => group.components,
+    )
+    assert.equal(new Set(groupedComponents).size, COMPONENTS.length)
+    assert.deepEqual([...groupedComponents].sort(), [...COMPONENTS].sort())
     assert.deepEqual(
-      COMPONENT_GROUPS.map(group => group.label),
-      ['Components', 'Maps'],
+      COMPONENT_GROUPS.find(group => group.label === 'Maps')?.components,
+      MAP_COMPONENTS,
     )
-    assert.deepEqual(COMPONENT_GROUPS[1].components, MAP_COMPONENTS)
+    assert.deepEqual(
+      COMPONENT_GROUPS.find(group => group.label === 'Date & Time')?.components,
+      [
+        'Calendar',
+        'Date Input',
+        'Date Picker',
+        'Date Range Input',
+        'Date Time Input',
+        'Time Input',
+        'Timer',
+        'Timestamp',
+      ],
+    )
+    assert.deepEqual(
+      COMPONENT_GROUPS.find(group => group.label === 'Chat & Messaging')
+        ?.components,
+      [
+        'Attachment',
+        'Bubble',
+        'Chat Reasoning',
+        'Log Stream',
+        'Message',
+        'Message Scroller',
+      ],
+    )
     assert.ok(
-      COMPONENT_GROUPS[0].components.every(
-        name => !MAP_COMPONENTS.some(map => map === name),
-      ),
+      COMPONENT_GROUPS.find(
+        group => group.label === 'Content',
+      )?.components.some(name => name === 'Markdown'),
     )
-    assert.ok(COMPONENT_GROUPS[0].components.includes('Markdown'))
   })
   it('keeps arc endpoints and takes the short path across the antimeridian', () => {
     const points = arcCoordinates({

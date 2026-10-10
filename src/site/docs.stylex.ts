@@ -7,8 +7,8 @@ import * as CodeFile from '@/lib/code-file'
 import * as Icon from '@/lib/icon'
 import { componentDocsPath } from '@/route'
 import {
-  COMPONENTS,
   COMPONENT_GROUPS,
+  COMPONENT_NAV_ORDER,
   toSlug,
   apiPurpose,
 } from '@/docs/component-metadata'
@@ -959,9 +959,9 @@ export const componentPage = <Msg>(
         ),
       ],
     )
-  const position = COMPONENTS.findIndex(name => name === config.name)
-  const previous = COMPONENTS[position - 1]
-  const next = COMPONENTS[position + 1]
+  const position = COMPONENT_NAV_ORDER.findIndex(name => name === config.name)
+  const previous = COMPONENT_NAV_ORDER[position - 1]
+  const next = COMPONENT_NAV_ORDER[position + 1]
   const toc = [
     ['architecture', 'Architecture'],
     ['installation', 'Installation'],
