@@ -1,0 +1,73 @@
+[
+  {
+    "from": "src/stylex",
+    "to": "src/pleat",
+    "pattern": "-name '*.ts'",
+    "nameMap": {
+      "data-table.stylex.ts": "data-table.pleat.ts",
+      "board-tokens.stylex.ts": "board-tokens.pleat.ts"
+    },
+    "exclude": [
+      "style.ts",
+      "contracts.ts",
+      "tokens.stylex.ts",
+      "foundations-tokens.stylex.ts",
+      "complex-tokens.stylex.ts",
+      "interaction-tokens.stylex.const.ts",
+      "board-tokens.stylex.ts"
+    ]
+  },
+  {
+    "from": "src/demo/blocks-stylex",
+    "to": "src/demo/blocks-pleat",
+    "pattern": "-name '*.ts'",
+    "nameMap": {
+      "tanstack-table-page.stylex.ts": "tanstack-table-page.pleat.ts"
+    },
+    "importMap": [
+      ["\\./tanstack-table-page\\.stylex'", "./tanstack-table-page.pleat'"]
+    ]
+  },
+  {
+    "from": "src/demo/stylex-cards",
+    "to": "src/demo/pleat-cards",
+    "pattern": "-name '*.ts'"
+  },
+  {
+    "from": "src/demo/charts-stylex",
+    "to": "src/demo/charts-pleat",
+    "pattern": "-name '*.ts'"
+  },
+  {
+    "from": "src/demo",
+    "to": "src/demo",
+    "depth": 1,
+    "pattern": "-name '*-stylex.ts'",
+    "exclude": ["board-stylex-tokens.stylex.ts"],
+    "importMap": [
+      ["\\./stylex-cards/", "./pleat-cards/"],
+      ["\\./board-stylex-tokens'", "./board-pleat-tokens'"]
+    ]
+  },
+  {
+    "from": "src/site",
+    "to": "src/site",
+    "depth": 1,
+    "pattern": "-name '*.stylex.ts'",
+    "suffix": ".pleat.ts"
+  },
+  {
+    "from": "src/docs/components",
+    "to": "src/docs/components",
+    "depth": 1,
+    "pattern": "-name '*.stylex.ts'",
+    "suffix": ".pleat.ts"
+  },
+  {
+    "from": "src/docs/components/pages",
+    "to": "src/docs/components/pages",
+    "pattern": "-name 'stylex.ts'",
+    "rename": true,
+    "suffix": ".pleat.ts"
+  }
+]
