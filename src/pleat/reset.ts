@@ -1,0 +1,85 @@
+import { Style, When } from '@pleat/core'
+import { tokens } from './tokens'
+
+/** Element defaults, applied before component recipes. No global reset needed. */
+export const reset = {
+  button: Style.make({
+    margin: 0,
+    padding: 0,
+    borderRadius: '0px',
+    borderStyle: 'solid',
+    borderWidth: 0,
+    backgroundColor: tokens.transparent,
+    color: 'inherit',
+    fontFamily: 'inherit',
+    fontFeatureSettings: 'inherit',
+    fontSize: 'inherit',
+    fontVariationSettings: 'inherit',
+    fontWeight: 'inherit',
+    letterSpacing: 'inherit',
+    lineHeight: 'inherit',
+    textDecorationLine: 'none',
+    textTransform: 'none',
+  }),
+  input: Style.make({
+    margin: 0,
+    padding: 0,
+    borderRadius: '0px',
+    borderStyle: 'solid',
+    borderWidth: 0,
+    backgroundColor: tokens.transparent,
+    color: 'inherit',
+    fontFamily: 'inherit',
+    fontFeatureSettings: 'inherit',
+    fontSize: 'inherit',
+    fontVariationSettings: 'inherit',
+    fontWeight: 'inherit',
+    letterSpacing: 'inherit',
+    lineHeight: 'inherit',
+  }).pipe(
+    Style.when(When.placeholder, {
+      color: tokens.controlPlaceholder,
+      opacity: 1,
+    }),
+  ),
+  list: Style.make({ margin: 0, padding: 0, listStyleType: 'none' }),
+  link: Style.make({ color: 'inherit', textDecorationLine: 'none' }),
+  text: Style.make({
+    margin: 0,
+    padding: 0,
+    fontFamily: 'inherit',
+    fontSize: 'inherit',
+    fontWeight: 'inherit',
+    lineHeight: 'inherit',
+  }),
+  fieldset: Style.make({ margin: 0, padding: 0, borderWidth: 0, minWidth: 0 }),
+  media: Style.make({
+    display: 'block',
+    verticalAlign: 'middle',
+    height: 'auto',
+    maxWidth: '100%',
+  }),
+  svg: Style.make({ display: 'block', verticalAlign: 'middle' }),
+  table: Style.make({
+    borderColor: 'inherit',
+    borderCollapse: 'collapse',
+    borderSpacing: 0,
+    textIndent: 0,
+  }),
+  tableHeading: Style.make({ padding: 0, textAlign: 'inherit' }),
+  rule: Style.make({
+    margin: 0,
+    borderStyle: 'solid',
+    borderWidth: 0,
+    color: 'inherit',
+    borderTopWidth: 1,
+    height: 0,
+  }),
+  code: Style.make({
+    fontFamily:
+      'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+    fontFeatureSettings: 'normal',
+    fontSize: '1em',
+    fontVariationSettings: 'normal',
+  }),
+}
