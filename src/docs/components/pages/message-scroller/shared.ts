@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type MessageScrollerKind =
@@ -860,9 +861,9 @@ const MESSAGE_FIELDS: Partial<Record<MessageScrollerKind, string>> = {
 
 const source = (
   fixture: MessageScrollerFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isSx = renderer === 'stylex'
+  const isSx = renderer !== 'tailwind'
   const kind = fixture.kind
   const needsEffect = COMMANDS[kind] !== undefined
   const needsMount = kind === 'visibility'
@@ -992,11 +993,16 @@ const frameInner = (isSx: boolean): string => `h.div(
         ],
       )`
 
-export const messageScrollerExamples = (
-  renderer: 'tailwind' | 'stylex',
+const messageScrollerExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   messageScrollerFixtures.map(fixture => ({
     title: fixture.title,
     description: fixture.description,
     code: source(fixture, renderer),
   }))
+
+export const messageScrollerExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, messageScrollerExamplesFor(renderer))

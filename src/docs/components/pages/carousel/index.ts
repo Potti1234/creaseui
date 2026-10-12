@@ -25,5 +25,6 @@ export const carouselPage = authoredPage({
     ],
     examples: carouselExamples('tailwind'),
     stylexExamples: carouselExamples('stylex'),
+    pleatExamples: carouselExamples('pleat'),
   },
 })

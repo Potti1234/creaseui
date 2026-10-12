@@ -27,5 +27,6 @@ export const inputOtpPage = authoredPage({
     ],
     examples: inputOtpExamples('tailwind'),
     stylexExamples: inputOtpExamples('stylex'),
+    pleatExamples: inputOtpExamples('pleat'),
   },
 })

@@ -25,5 +25,6 @@ export const linkPage = authoredPage({
     ],
     examples: linkExamples('tailwind'),
     stylexExamples: linkExamples('stylex'),
+    pleatExamples: linkExamples('pleat'),
   },
 })

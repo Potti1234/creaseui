@@ -26,5 +26,6 @@ export const attachmentPage = authoredPage({
     ],
     examples: attachmentExamples('tailwind'),
     stylexExamples: attachmentExamples('stylex'),
+    pleatExamples: attachmentExamples('pleat'),
   },
 })

@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export interface RadioGroupOptionSpec {
@@ -231,9 +232,9 @@ ${emitGroup(fixture, isStyleX, '      ')},
 
 const emitApplication = (
   fixture: RadioGroupFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const base = isStyleX ? 'stylex' : 'ui'
   const needsField = fixture.kind === 'fieldset'
   const stylesBlock = isStyleX
@@ -297,8 +298,8 @@ ${emitBody(fixture, isStyleX)}
   })
 }
 
-export const radioGroupExamples = (
-  renderer: 'tailwind' | 'stylex',
+const radioGroupExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   radioGroupFixtures.map(fixture => ({
     title: fixture.title,
@@ -308,3 +309,8 @@ export const radioGroupExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer),
   }))
+
+export const radioGroupExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, radioGroupExamplesFor(renderer))

@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 import type { AstryxTextColor, AstryxTextType } from '@/lib/astryx-text'
 import type { TimestampFormat, TimestampTooltipEntry } from '@/ui/timestamp'
@@ -316,9 +317,9 @@ export const timestampViewCall = (
 
 const timestampSource = (
   fixture: TimestampFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
 
   let stampIndex = 0
   const sectionBodies = fixture.sections.map(section => {
@@ -446,11 +447,16 @@ export type Message = typeof Message.Type`,
   })
 }
 
-export const timestampExamples = (
-  renderer: 'tailwind' | 'stylex',
+const timestampExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   timestampFixtures.map(fixture => ({
     title: fixture.title,
     description: fixture.description,
     code: timestampSource(fixture, renderer),
   }))
+
+export const timestampExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, timestampExamplesFor(renderer))

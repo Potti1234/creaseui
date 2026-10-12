@@ -27,5 +27,6 @@ export const sectionPage = authoredPage({
       'Section renders a <section> landmark — give landmark regions an accessible heading inside so they are navigable by assistive technology.',
     examples: tailwindExamples,
     stylexExamples: sectionExamples('stylex'),
+    pleatExamples: sectionExamples('pleat'),
   },
 })

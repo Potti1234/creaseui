@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type InputGroupKind =
@@ -898,8 +899,8 @@ ${emitBody(fixture, isStyleX)}
   })
 }
 
-export const inputGroupExamples = (
-  renderer: 'tailwind' | 'stylex',
+const inputGroupExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   inputGroupFixtures.map(fixture => ({
     title: fixture.title,
@@ -907,5 +908,10 @@ export const inputGroupExamples = (
       ? {}
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
-    code: emitApplication(fixture, renderer === 'stylex'),
+    code: emitApplication(fixture, renderer !== 'tailwind'),
   }))
+
+export const inputGroupExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, inputGroupExamplesFor(renderer))

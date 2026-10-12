@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type DateRangeInputFixture = Readonly<{
@@ -64,13 +65,16 @@ const VALIDATION_FIELDS = [
   },
 ] as const
 
-const imports = (renderer: 'tailwind' | 'stylex', extra: string): string =>
+const imports = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+  extra: string,
+): string =>
   `import { Option, Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import * as Calendar from 'foldkit/calendar'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-import * as DateRangeInput from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/date-range-input'${extra}`
+import * as DateRangeInput from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/date-range-input'${extra}`
 
 const stylexPreamble = `
 import * as stylex from '@stylexjs/stylex'
@@ -116,9 +120,9 @@ const singleUpdate = `export const update = (model: Model, message: Message): Up
 
 const presetsSource = (
   fixture: DateRangeInputFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const isShowcase = fixture.example === 'DateRangeInputShowcase'
   const days = presetDaysFor(fixture.example)
   const presetLines = days
@@ -183,9 +187,9 @@ ${presetLines}
 
 const validationSource = (
   fixture: DateRangeInputFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const fieldLines = VALIDATION_FIELDS.map(
     f =>
       `  { label: '${f.label}', value: { start: '${f.value.start}', end: '${f.value.end}' }, status: { type: '${f.status.type}', message: '${f.status.message}' } },`,
@@ -260,14 +264,14 @@ ${fieldLines}
 
 const dateRangeInputSource = (
   fixture: DateRangeInputFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string =>
   fixture.kind === 'validation'
     ? validationSource(fixture, renderer)
     : presetsSource(fixture, renderer)
 
-export const dateRangeInputExamples = (
-  renderer: 'tailwind' | 'stylex',
+const dateRangeInputExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   dateRangeInputFixtures.map((fixture, index) => ({
     title: fixture.title,
@@ -278,3 +282,8 @@ export const dateRangeInputExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: dateRangeInputSource(fixture, renderer),
   }))
+
+export const dateRangeInputExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, dateRangeInputExamplesFor(renderer))

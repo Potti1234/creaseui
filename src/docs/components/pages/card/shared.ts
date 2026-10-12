@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import {
   foldkitApplication,
   staticComponentApplication,
@@ -62,11 +63,11 @@ export const cardRtlCopy = {
   google: 'تسجيل الدخول باستخدام Google',
 } as const
 
-const ui = (renderer: 'tailwind' | 'stylex'): string =>
-  renderer === 'stylex' ? 'stylex' : 'ui'
+const ui = (renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat'): string =>
+  renderer !== 'tailwind' ? 'stylex' : 'ui'
 
 const cls = (
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
   tailwindValue: string,
   ...styleKeys: ReadonlyArray<string>
 ): string =>
@@ -75,7 +76,7 @@ const cls = (
     : `h.Class(stylex.props(${styleKeys.map(k => `styles.${k}`).join(', ')}).className ?? '')`
 
 const prop = (
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
   tailwindValue: string,
   styleKey: string,
 ): string =>
@@ -147,7 +148,7 @@ const loginCardSource = (
   opts: Readonly<{
     rtl: boolean
     spacingVar?: 'none' | 'static' | 'dynamic'
-    renderer: 'tailwind' | 'stylex'
+    renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat'
   }>,
 ): string => {
   const copy = opts.rtl
@@ -225,7 +226,7 @@ const loginCardSource = (
 }
 
 const smallCardSource = (
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => `Card.card({
   size: 'sm',
   ${renderer === 'tailwind' ? `class: 'mx-auto w-full max-w-xs',` : `layoutStyle: styles.smallCard,`}
@@ -264,7 +265,9 @@ const smallCardSource = (
   ],
 }, h)`
 
-const edgeCardSource = (renderer: 'tailwind' | 'stylex'): string => `Card.card({
+const edgeCardSource = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => `Card.card({
   ${renderer === 'tailwind' ? `class: 'mx-auto w-full max-w-sm',` : `layoutStyle: styles.edgeCard,`}
   children: [
     Card.cardHeader({ children: [
@@ -293,7 +296,9 @@ const edgeCardSource = (renderer: 'tailwind' | 'stylex'): string => `Card.card({
   ],
 }, h)`
 
-const imageCardSource = (renderer: 'tailwind' | 'stylex'): string => {
+const imageCardSource = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const cardExpr = `Card.card({
   ${
     renderer === 'tailwind'
@@ -325,7 +330,7 @@ const imageCardSource = (renderer: 'tailwind' | 'stylex'): string => {
 
 const fixtureImports = (
   fixture: CardFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const base = [
     `import * as Button from '@/${ui(renderer)}/button'`,
@@ -333,7 +338,7 @@ const fixtureImports = (
     `import * as Label from '@/${ui(renderer)}/label'`,
   ]
   const stylesImport =
-    renderer === 'stylex'
+    renderer !== 'tailwind'
       ? `\n${stylexImports(styleKeysFor(fixture.kind))}`
       : ''
   switch (fixture.kind) {
@@ -390,7 +395,10 @@ const viewWrapper = (
   ),
 })`
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = cardFixtures[index] ?? cardFixtures[0]
   const imports = [
     `import { Schema as S } from 'effect'`,
@@ -411,7 +419,7 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
         init: loginInit,
         update: loginUpdate,
         view: viewWrapper(
-          `h.div(${fixture.kind === 'rtl' ? (renderer === 'stylex' ? `[h.Dir('rtl'), ${cls(renderer, '', 'frame')}]` : `[h.Dir('rtl'), h.Class('w-full max-w-sm')]`) : `[]`}, [
+          `h.div(${fixture.kind === 'rtl' ? (renderer !== 'tailwind' ? `[h.Dir('rtl'), ${cls(renderer, '', 'frame')}]` : `[h.Dir('rtl'), h.Class('w-full max-w-sm')]`) : `[]`}, [
         ${loginCardSource({
           rtl: fixture.kind === 'rtl',
           spacingVar: 'none',
@@ -568,11 +576,16 @@ export const update = (
   }
 }
 
-export const cardExamples = (
-  renderer: 'tailwind' | 'stylex',
+const cardExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   cardFixtures.map((fixture, index) => ({
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
   }))
+
+export const cardExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, cardExamplesFor(renderer))

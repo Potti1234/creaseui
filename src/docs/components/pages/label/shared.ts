@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type LabelKind = 'demo' | 'field' | 'rtl'
@@ -463,9 +464,9 @@ const emitBody = (fixture: LabelFixture, isStyleX: boolean): string => {
 
 const emitApplication = (
   fixture: LabelFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const stylesBlock = isStyleX ? emitStyles(fixture) : ''
   const bodyStart = isStyleX
     ? `h.main([h.Class(stylex.props(styles.page).className ?? '')], [`
@@ -493,8 +494,8 @@ const emitApplication = (
   })
 }
 
-export const labelExamples = (
-  renderer: 'tailwind' | 'stylex',
+const labelExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   labelFixtures.map(fixture => ({
     title: fixture.title,
@@ -504,3 +505,8 @@ export const labelExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer),
   }))
+
+export const labelExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, labelExamplesFor(renderer))

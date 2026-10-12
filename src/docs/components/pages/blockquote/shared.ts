@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 export type BlockquoteExampleKind = 'showcase' | 'withCite' | 'testimonials'
@@ -106,9 +107,12 @@ const stylexStyles = (fixture: BlockquoteExampleKind): string => {
   }
 }
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = blockquoteFixtures[index] ?? blockquoteFixtures[0]
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const imports: string[] = []
   if (isStyleX) {
     imports.push(
@@ -136,8 +140,8 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
   })
 }
 
-export const blockquoteExamples = (
-  renderer: 'tailwind' | 'stylex',
+const blockquoteExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   blockquoteFixtures.map((fixture, index) => ({
     title: fixture.title,
@@ -146,3 +150,8 @@ export const blockquoteExamples = (
       : { description: fixture.description }),
     code: source(index, renderer),
   }))
+
+export const blockquoteExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, blockquoteExamplesFor(renderer))

@@ -26,5 +26,6 @@ export const transferListPage = authoredPage({
     ],
     examples: transferListExamples('tailwind'),
     stylexExamples: transferListExamples('stylex'),
+    pleatExamples: transferListExamples('pleat'),
   },
 })

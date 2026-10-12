@@ -1,3 +1,5 @@
+import { pleatExamples } from '@/docs/components/pleat-source'
+import type { DocsExample } from '@/docs/components/page-definition'
 import { mapDocsExamples } from '@/docs/components/pages/map/source'
 export const mapFixtures = [
   {
@@ -11,5 +13,10 @@ export const mapFixtures = [
       'Pan and zoom, read the viewport, then reset it from the application model.',
   },
 ] as const
-export const mapExamples = (renderer: 'tailwind' | 'stylex') =>
+const mapExamplesFor = (renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat') =>
   mapDocsExamples('map', mapFixtures, renderer)
+
+export const mapExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, mapExamplesFor(renderer))

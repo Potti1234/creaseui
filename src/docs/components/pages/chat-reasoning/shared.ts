@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type ChatReasoningFixture = Readonly<{
@@ -89,9 +90,9 @@ const styles = stylex.create({
 
 const reasoningSource = (
   fixture: ChatReasoningFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const componentModule = isStyleX
     ? '@/stylex/chat-reasoning'
     : '@/ui/chat-reasoning'
@@ -186,8 +187,8 @@ export type Message = typeof Message.Type`,
   })
 }
 
-export const chatReasoningExamples = (
-  renderer: 'tailwind' | 'stylex',
+const chatReasoningExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   chatReasoningFixtures.map((fixture, index) => ({
     title: fixture.title,
@@ -195,3 +196,8 @@ export const chatReasoningExamples = (
     code: reasoningSource(fixture, renderer),
     ...(index === 0 ? {} : {}),
   }))
+
+export const chatReasoningExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, chatReasoningExamplesFor(renderer))

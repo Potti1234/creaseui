@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type DropdownMenuItemSpec = Readonly<{
@@ -423,10 +424,10 @@ const allItemSpecs = (
 
 const source = (
   fixture: DropdownMenuFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const uiDir = isStyleX ? 'stylex' : 'ui'
   const specs = allItemSpecs(fixture)
   const usesIcons = specs.some(spec => spec.icon !== undefined)
@@ -559,11 +560,16 @@ ${updateExtra}
   })
 }
 
-export const dropdownMenuExamples = (
-  renderer: 'tailwind' | 'stylex',
+const dropdownMenuExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   dropdownMenuFixtures.map(fixture => ({
     title: fixture.title,
     description: fixture.description,
     code: source(fixture, renderer),
   }))
+
+export const dropdownMenuExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, dropdownMenuExamplesFor(renderer))

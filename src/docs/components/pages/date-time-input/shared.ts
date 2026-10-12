@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type DateTimeInputFixture = Readonly<{
@@ -68,13 +69,16 @@ export const VALIDATION_FIELDS = [
   },
 ] as const
 
-const imports = (renderer: 'tailwind' | 'stylex', extra: string): string =>
+const imports = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+  extra: string,
+): string =>
   `import { Option, Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import * as Calendar from 'foldkit/calendar'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-import * as DateTimeInput from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/date-time-input'${extra}`
+import * as DateTimeInput from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/date-time-input'${extra}`
 
 const stylexPreamble = `
 import * as stylex from '@stylexjs/stylex'
@@ -103,9 +107,9 @@ export type Message = typeof Message.Type`
 
 const singleSource = (
   fixture: DateTimeInputFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   return foldkitApplication({
     title: `DateTimeInput — ${fixture.title}`,
     imports: imports(renderer, isStyleX ? stylexPreamble : ''),
@@ -178,9 +182,9 @@ const INITIAL_DATE = DateTimeInput.dateFromISO('${fixture.initialValue.date}')`
 
 const validationSource = (
   fixture: DateTimeInputFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const fieldLines = VALIDATION_FIELDS.map(
     f =>
       `  { label: '${f.label}', value: { date: '${f.value.date}', time: '${f.value.time}' }, status: { type: '${f.status.type}', message: '${f.status.message}' } },`,
@@ -252,14 +256,14 @@ ${fieldLines}
 
 const dateTimeInputSource = (
   fixture: DateTimeInputFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string =>
   fixture.kind === 'validation'
     ? validationSource(fixture, renderer)
     : singleSource(fixture, renderer)
 
-export const dateTimeInputExamples = (
-  renderer: 'tailwind' | 'stylex',
+const dateTimeInputExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   dateTimeInputFixtures.map((fixture, index) => ({
     title: fixture.title,
@@ -270,3 +274,8 @@ export const dateTimeInputExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: dateTimeInputSource(fixture, renderer),
   }))
+
+export const dateTimeInputExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, dateTimeInputExamplesFor(renderer))

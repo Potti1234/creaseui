@@ -21,5 +21,6 @@ export const listInputPage = authoredPage({
       'role=list rows carry posinset/setsize; reorder is a labelled toggle button with arrow-key moves and a grabbed/dropped live announcement stream.',
     examples: listInputExamples('tailwind'),
     stylexExamples: listInputExamples('stylex'),
+    pleatExamples: listInputExamples('pleat'),
   },
 })

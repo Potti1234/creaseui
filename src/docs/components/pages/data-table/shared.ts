@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type Payment = Readonly<{
@@ -53,10 +54,10 @@ export const dataTableFixtures = [
 
 const source = (
   fixture: (typeof dataTableFixtures)[number],
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
-  const stylex = renderer === 'stylex'
+  const stylex = renderer !== 'tailwind'
   const filterPlaceholder = fixture.rtl
     ? 'بحث في المدفوعات...'
     : 'Filter payments…'
@@ -98,8 +99,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   })
 }
 
-export const dataTableExamples = (
-  renderer: 'tailwind' | 'stylex',
+const dataTableExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   dataTableFixtures.map(fixture => ({
     title: fixture.title,
@@ -107,3 +108,8 @@ export const dataTableExamples = (
     code: source(fixture, renderer),
     previewClass: 'justify-stretch',
   }))
+
+export const dataTableExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, dataTableExamplesFor(renderer))

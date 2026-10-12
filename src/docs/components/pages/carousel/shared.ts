@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type CarouselFixture = Readonly<{
@@ -98,9 +99,9 @@ const itemSizeSource = (fixture: CarouselFixture): string => {
 
 const slideSource = (
   fixture: CarouselFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isSx = renderer === 'stylex'
+  const isSx = renderer !== 'tailwind'
   const vertical = fixture.orientation === 'vertical'
   const card = `Card.card({${
     vertical
@@ -135,7 +136,7 @@ const slideSource = (
 
 const carouselPropsSource = (
   fixture: CarouselFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const parts: Array<string> = [
     'model: model.carousel,',
@@ -150,7 +151,7 @@ const carouselPropsSource = (
   if (fixture.autoplay === true)
     parts.push(`plugins: [Autoplay({ delay: 2000, stopOnInteraction: true })],`)
   parts.push(
-    renderer === 'stylex'
+    renderer !== 'tailwind'
       ? fixture.orientation === 'vertical'
         ? 'layoutStyle: [styles.carousel, styles.verticalCarousel],'
         : 'layoutStyle: styles.carousel,'
@@ -161,7 +162,7 @@ const carouselPropsSource = (
 
 const viewBodySource = (
   fixture: CarouselFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const carousel = `Carousel.carousel({
         ${carouselPropsSource(fixture, renderer)}
@@ -177,11 +178,11 @@ const viewBodySource = (
       : carousel
   if (fixture.status !== true) return body
   return `h.div(
-    [h.Class(${renderer === 'stylex' ? 'className(styles.apiWrap)' : `'mx-auto max-w-xs'`})],
+    [h.Class(${renderer !== 'tailwind' ? 'className(styles.apiWrap)' : `'mx-auto max-w-xs'`})],
     [
       ${body},
       h.p(
-        [h.Class(${renderer === 'stylex' ? 'className(styles.apiStatus)' : `'py-2 text-center text-sm text-muted-foreground'`})],
+        [h.Class(${renderer !== 'tailwind' ? 'className(styles.apiStatus)' : `'py-2 text-center text-sm text-muted-foreground'`})],
         [\`Slide \${model.carousel.index + 1} of \${model.carousel.count}\`],
       ),
     ],
@@ -215,9 +216,9 @@ ${parts.join('\n')}
 
 const source = (
   f: CarouselFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const sx = renderer === 'stylex'
+  const sx = renderer !== 'tailwind'
   const tag = f.title.replaceAll(/[^a-zA-Z0-9]/g, '')
   return foldkitApplication({
     title: `Carousel — ${f.title}`,
@@ -272,8 +273,8 @@ export type Message = typeof Message.Type`,
   })
 }
 
-export const carouselExamples = (
-  renderer: 'tailwind' | 'stylex',
+const carouselExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   carouselFixtures.map(fixture => ({
     title: fixture.title,
@@ -281,3 +282,8 @@ export const carouselExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: source(fixture, renderer),
   }))
+
+export const carouselExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, carouselExamplesFor(renderer))

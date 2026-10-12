@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 export type SeparatorKind = 'demo' | 'vertical' | 'menu' | 'list' | 'rtl'
 
@@ -214,9 +215,9 @@ const emitStyles = (fixture: SeparatorFixture): string => {
 
 const emitApplication = (
   fixture: SeparatorFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const stylexStylesBlock = isStyleX
     ? `\n\nconst styles = stylex.create({
 ${emitStyles(fixture)}
@@ -250,8 +251,8 @@ ${emitBody(fixture, isStyleX)}
   })
 }
 
-export const separatorExamples = (
-  renderer: 'tailwind' | 'stylex',
+const separatorExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   separatorFixtures.map(fixture => ({
     title: fixture.title,
@@ -261,3 +262,8 @@ export const separatorExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer),
   }))
+
+export const separatorExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, separatorExamplesFor(renderer))

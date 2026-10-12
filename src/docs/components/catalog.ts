@@ -47,6 +47,27 @@ export const installStyleXPreviewView = (
   stylexPreviewViews.set(slug, view)
 }
 
+const pleatExamplePreviewProviders = new Map<
+  string,
+  StyleXExamplePreviewProvider
+>()
+
+export const installPleatExamplePreviewProvider = (
+  slug: string,
+  provider: StyleXExamplePreviewProvider,
+): void => {
+  pleatExamplePreviewProviders.set(slug, provider)
+}
+
+const pleatPreviewViews = new Map<string, ErasedPreviewProgram['view']>()
+
+export const installPleatPreviewView = (
+  slug: string,
+  view: ErasedPreviewProgram['view'],
+): void => {
+  pleatPreviewViews.set(slug, view)
+}
+
 const definitions: PageDefinitions = {
   ...Object.fromEntries(
     Object.values(authoredPages).map(page => [page.slug, page.definition]),
@@ -63,7 +84,7 @@ const localPrograms = Object.values(authoredPages).flatMap(page =>
 export const Model = S.Struct({
   slug: S.String,
   examples: S.Array(S.Unknown),
-  renderer: S.Literals(['tailwind', 'stylex']),
+  renderer: S.Literals(['tailwind', 'stylex', 'pleat']),
   copiedCode: CopyFeedback.Model,
 })
 export type Model = typeof Model.Type
@@ -300,6 +321,9 @@ export const view = (
   const stylexExamples = definition.stylexExamples
   const stylexExamplePreviewProvider = stylexExamplePreviewProviders.get(slug)
   const nativeStylexPreviewView = stylexPreviewViews.get(slug)
+  const pleatExamples = definition.pleatExamples
+  const pleatExamplePreviewProvider = pleatExamplePreviewProviders.get(slug)
+  const nativePleatPreviewView = pleatPreviewViews.get(slug)
   if (
     model.renderer === 'stylex' &&
     (stylexExamples === undefined ||
@@ -308,10 +332,20 @@ export const view = (
   ) {
     throw new Error(`Missing StyleX example parity for ${slug}`)
   }
+  if (
+    model.renderer === 'pleat' &&
+    (pleatExamples === undefined ||
+      (pleatExamplePreviewProvider === undefined &&
+        !pleatPreviewViews.has(slug)))
+  ) {
+    throw new Error(`Missing pleat example parity for ${slug}`)
+  }
   const authoredExamples =
-    model.renderer === 'stylex' && stylexExamples !== undefined
-      ? stylexExamples
-      : definition.examples
+    model.renderer === 'pleat' && pleatExamples !== undefined
+      ? pleatExamples
+      : model.renderer === 'stylex' && stylexExamples !== undefined
+        ? stylexExamples
+        : definition.examples
   const authoredProgram = authoredPages[slug]?.previewProgram
 
   // stateIndex selects the preview-model slot; contentIndex selects which
@@ -326,8 +360,35 @@ export const view = (
       (previewModel, previewBuilder) =>
         model.renderer === 'stylex' && nativeStylexPreviewView !== undefined
           ? nativeStylexPreviewView(contentIndex, previewModel, previewBuilder)
-          : program.view(contentIndex, previewModel, previewBuilder),
+          : model.renderer === 'pleat' && nativePleatPreviewView !== undefined
+            ? nativePleatPreviewView(contentIndex, previewModel, previewBuilder)
+            : program.view(contentIndex, previewModel, previewBuilder),
     )
+    if (
+      model.renderer === 'pleat' &&
+      !pleatPreviewViews.has(slug) &&
+      pleatExamples !== undefined &&
+      pleatExamplePreviewProvider !== undefined
+    ) {
+      return h.submodel({
+        slotId: `docs-${slug}-pleat-example-${String(stateIndex)}`,
+        model: exampleModel,
+        view: defineView<unknown, RoutedDocsPreviewMessage>(
+          (pleatModel, pleatBuilder) =>
+            pleatExamplePreviewProvider(
+              contentIndex,
+              pleatModel,
+              messageJson =>
+                RoutedDocsPreviewMessage.RoutedDocsPreviewMessage({
+                  messageJson,
+                }),
+              pleatBuilder,
+            ) ?? pleatBuilder.div([], []),
+        ),
+        toParentMessage: (message): Message =>
+          GotExampleMessage({ index: stateIndex, message }),
+      })
+    }
     if (
       model.renderer === 'stylex' &&
       !stylexPreviewViews.has(slug) &&
@@ -437,16 +498,16 @@ export const view = (
       kind,
       architecture: definition.architecture ?? architectureFor(kind, name),
       installation:
-        renderer === 'stylex'
-          ? `npx shadcn@latest add Potti1234/creaseui/stylex-${slug}`
-          : `npx shadcn@latest add Potti1234/creaseui/${slug}`,
+        renderer === 'tailwind'
+          ? `npx shadcn@latest add Potti1234/creaseui/${slug}`
+          : `npx shadcn@latest add Potti1234/creaseui/${renderer}-${slug}`,
       usage:
-        model.renderer === 'stylex'
-          ? (definition.usage ?? usageFor(slug, name, kind)).replaceAll(
+        model.renderer === 'tailwind'
+          ? (definition.usage ?? usageFor(slug, name, kind))
+          : (definition.usage ?? usageFor(slug, name, kind)).replaceAll(
               `@/ui/${slug}`,
-              `@/ui/stylex/${slug}`,
-            )
-          : (definition.usage ?? usageFor(slug, name, kind)),
+              `@/${model.renderer}/${slug}`,
+            ),
       ...(definition.sections === undefined
         ? {}
         : { sections: definition.sections }),
@@ -480,7 +541,7 @@ export const view = (
         compositionFor(kind, name, primaryExport(slug)),
       examples: renderedExamples,
       apiHref: definition.apiHref ?? 'https://foldkit.dev/ui/overview',
-      sourceHref: `https://github.com/Potti1234/creaseui/blob/main/src/${model.renderer === 'stylex' ? 'stylex' : 'ui'}/${slug}.ts`,
+      sourceHref: `https://github.com/Potti1234/creaseui/blob/main/src/${model.renderer === 'tailwind' ? 'ui' : model.renderer}/${slug}.ts`,
       apiDescription:
         definition.apiDescription ??
         `${name} is source-owned after installation. Its public model, messages, update function, and view helpers are documented directly in the installed TypeScript source.`,

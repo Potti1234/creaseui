@@ -26,5 +26,6 @@ export const accordionPage = authoredPage({
     ],
     examples: accordionExamples('tailwind'),
     stylexExamples: accordionExamples('stylex'),
+    pleatExamples: accordionExamples('pleat'),
   },
 })

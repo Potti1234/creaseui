@@ -33,5 +33,6 @@ export const hoverCardPage = authoredPage({
     ],
     examples: hoverCardExamples('tailwind'),
     stylexExamples: hoverCardExamples('stylex'),
+    pleatExamples: hoverCardExamples('pleat'),
   },
 })

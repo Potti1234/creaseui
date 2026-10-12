@@ -21,5 +21,6 @@ export const headingPage = authoredPage({
       'Keep levels sequential (h1 to h2 to h3) so assistive technology gets a coherent outline. The standalone accessibilityLevel input can decouple semantics when a page outline demands it.',
     examples: headingExamples('tailwind'),
     stylexExamples: headingExamples('stylex'),
+    pleatExamples: headingExamples('pleat'),
   },
 })

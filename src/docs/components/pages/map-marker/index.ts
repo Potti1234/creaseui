@@ -42,5 +42,6 @@ mapMarker({ id: 'gate', longitude: 11.576124, latitude: 48.137154, ariaLabel: 'M
     ],
     examples: mapMarkerExamples('tailwind'),
     stylexExamples: mapMarkerExamples('stylex'),
+    pleatExamples: mapMarkerExamples('pleat'),
   },
 })

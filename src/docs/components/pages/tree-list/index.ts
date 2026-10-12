@@ -39,5 +39,6 @@ export const treeListPage = authoredPage({
     ],
     examples: treeListExamples('tailwind'),
     stylexExamples: treeListExamples('stylex'),
+    pleatExamples: treeListExamples('pleat'),
   },
 })

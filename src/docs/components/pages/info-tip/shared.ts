@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 // InfoTip ships no blocks under packages/cli/assets/templates/blocks — the
@@ -135,9 +136,9 @@ ${tipCall(fixture.tips[0]!, isStyleX, '    ')},
 
 const emitApplication = (
   fixture: InfoTipFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const base = isStyleX ? 'stylex' : 'ui'
   const stylesBlock = isStyleX
     ? `\n\nconst styles = stylex.create({
@@ -210,8 +211,8 @@ ${emitBody(fixture, isStyleX)}
   })
 }
 
-export const infoTipExamples = (
-  renderer: 'tailwind' | 'stylex',
+const infoTipExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   infoTipFixtures.map(fixture => ({
     title: fixture.title,
@@ -221,3 +222,8 @@ export const infoTipExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer),
   }))
+
+export const infoTipExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, infoTipExamplesFor(renderer))

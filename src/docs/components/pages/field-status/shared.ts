@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 export type FieldStatusItemSpec = Readonly<{
@@ -63,9 +64,12 @@ export const fieldStatusFixtures: Readonly<
 const itemSource = (item: FieldStatusItemSpec): string =>
   `FieldStatus.fieldStatus({ type: '${item.type}', message: '${item.message}', variant: '${item.variant ?? 'attached'}' }, h)`
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = fieldStatusFixtures[index] ?? fieldStatusFixtures[0]
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const wrapperOpen = isStyleX
     ? `h.div([h.Class(stylex.props(styles.stack).className ?? '')], [`
     : `h.div([h.Class('flex flex-col gap-4')], [`
@@ -85,11 +89,16 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
   })
 }
 
-export const fieldStatusExamples = (
-  renderer: 'tailwind' | 'stylex',
+const fieldStatusExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   fieldStatusFixtures.map((fixture, index) => ({
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
   }))
+
+export const fieldStatusExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, fieldStatusExamplesFor(renderer))

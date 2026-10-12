@@ -21,5 +21,6 @@ export const visuallyHiddenPage = authoredPage({
       'This is an accessibility primitive: use it for icon-button labels, polite/assertive live regions announcing visual-only changes, and headings that give AT users navigation landmarks.',
     examples: visuallyHiddenExamples('tailwind'),
     stylexExamples: visuallyHiddenExamples('stylex'),
+    pleatExamples: visuallyHiddenExamples('pleat'),
   },
 })

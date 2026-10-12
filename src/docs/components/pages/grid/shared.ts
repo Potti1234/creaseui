@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import {
   foldkitApplication,
   staticComponentApplication,
@@ -191,7 +192,9 @@ const gallerySource = `const CARDS = [
   { title: 'Patterns', description: 'Common UI composition patterns.' },
 ]`
 
-const emitShowcase = (renderer: 'tailwind' | 'stylex'): string => {
+const emitShowcase = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const card = renderer === 'tailwind' ? cardTw : cardSx
   return `Grid.grid(
       { columns: 3, gap: 2, width: 400, children: [
@@ -203,7 +206,9 @@ const emitShowcase = (renderer: 'tailwind' | 'stylex'): string => {
     )`
 }
 
-const emitSpanning = (renderer: 'tailwind' | 'stylex'): string => {
+const emitSpanning = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const label = renderer === 'tailwind' ? labelTw : labelSx
   const supporting = renderer === 'tailwind' ? supportingTw : supportingSx
   const card = renderer === 'tailwind' ? cardTw : cardSx
@@ -242,7 +247,9 @@ const emitSpanning = (renderer: 'tailwind' | 'stylex'): string => {
     )`
 }
 
-const emitDashboard = (renderer: 'tailwind' | 'stylex'): string => {
+const emitDashboard = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const label = renderer === 'tailwind' ? labelTw : labelSx
   const supporting = renderer === 'tailwind' ? supportingTw : supportingSx
   const card = renderer === 'tailwind' ? cardTw : cardSx
@@ -265,7 +272,9 @@ const emitDashboard = (renderer: 'tailwind' | 'stylex'): string => {
     )`
 }
 
-const emitGallery = (renderer: 'tailwind' | 'stylex'): string => {
+const emitGallery = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const label = renderer === 'tailwind' ? labelTw : labelSx
   const supporting = renderer === 'tailwind' ? supportingTw : supportingSx
   const card = renderer === 'tailwind' ? cardTw : cardSx
@@ -280,7 +289,9 @@ const emitGallery = (renderer: 'tailwind' | 'stylex'): string => {
     )`
 }
 
-const emitSpanColumns = (renderer: 'tailwind' | 'stylex'): string => {
+const emitSpanColumns = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const body = renderer === 'tailwind' ? bodyTw : bodySx
   const tall = renderer === 'tailwind' ? tallCardTw : tallCardSx
   return `Grid.grid(
@@ -298,7 +309,9 @@ const emitSpanColumns = (renderer: 'tailwind' | 'stylex'): string => {
     )`
 }
 
-const emitSpanShowcase = (renderer: 'tailwind' | 'stylex'): string => {
+const emitSpanShowcase = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const body = renderer === 'tailwind' ? bodyTw : bodySx
   const tall = renderer === 'tailwind' ? tallCardTw : tallCardSx
   const card = renderer === 'tailwind' ? cardTw : cardSx
@@ -326,8 +339,10 @@ const emitSpanShowcase = (renderer: 'tailwind' | 'stylex'): string => {
 /* The auto-fit demo is interactive (astryx uses useResizable), so it emits a
    complete foldkit application wiring crease Resizable's percent-based
    two-panel group — the grid lives in the first panel and reflows on drag. */
-const emitAutoFit = (renderer: 'tailwind' | 'stylex'): string => {
-  const mod = renderer === 'stylex' ? 'stylex' : 'ui'
+const emitAutoFit = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
+  const mod = renderer !== 'tailwind' ? 'stylex' : 'ui'
   const label = renderer === 'tailwind' ? labelTw : labelSx
   const supporting = renderer === 'tailwind' ? supportingTw : supportingSx
   const card = renderer === 'tailwind' ? cardTw : cardSx
@@ -385,7 +400,7 @@ const emitAutoFit = (renderer: 'tailwind' | 'stylex'): string => {
   ]),
 })`
   const stylesSource =
-    renderer === 'stylex'
+    renderer !== 'tailwind'
       ? `import * as stylex from '@stylexjs/stylex'
 
 const styles = stylex.create({
@@ -451,7 +466,7 @@ export type Message = typeof Message.Type`,
 
 const emitBody = (
   fixture: GridFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   switch (fixture.kind) {
     case 'showcase':
@@ -521,15 +536,18 @@ ${entries.join(',\n')},
 })`
 }
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = gridFixtures[index] ?? gridFixtures[0]
   if (fixture.kind === 'autoFit') return emitAutoFit(renderer)
-  const mod = renderer === 'stylex' ? 'stylex' : 'ui'
+  const mod = renderer !== 'tailwind' ? 'stylex' : 'ui'
   const componentImports = [
     `import * as Card from '@/${mod}/card'`,
     usesStack(fixture.kind) ? `import * as Stack from '@/${mod}/stack'` : '',
     extraSourceFor(fixture.kind),
-    renderer === 'stylex' ? stylexStylesFor(fixture.kind) : '',
+    renderer !== 'tailwind' ? stylexStylesFor(fixture.kind) : '',
   ]
     .filter(Boolean)
     .join('\n')
@@ -543,8 +561,8 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
   })
 }
 
-export const gridExamples = (
-  renderer: 'tailwind' | 'stylex',
+const gridExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   gridFixtures.map((fixture, index) => ({
     title: fixture.title,
@@ -553,3 +571,8 @@ export const gridExamples = (
       : { description: fixture.description }),
     code: source(index, renderer),
   }))
+
+export const gridExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, gridExamplesFor(renderer))

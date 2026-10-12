@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type CommandFixture = Readonly<{
@@ -117,9 +118,9 @@ const commandItems: ReadonlyArray<CommandItem> = [\n${lines.join('\n')}\n]`
 
 const commandSource = (
   fixture: CommandFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const dir = renderer === 'stylex' ? 'stylex' : 'ui'
+  const dir = renderer !== 'tailwind' ? 'stylex' : 'ui'
   const items = itemsForFixture(fixture)
   const placeholder =
     fixture.kind === 'rtl'
@@ -227,8 +228,8 @@ export type Message = typeof Message.Type`,
   })
 }
 
-export const commandExamples = (
-  renderer: 'tailwind' | 'stylex',
+const commandExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   commandFixtures.map(fixture => ({
     title: fixture.title,
@@ -239,3 +240,8 @@ export const commandExamples = (
     keepIdsCanonical: true,
     code: commandSource(fixture, renderer),
   }))
+
+export const commandExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, commandExamplesFor(renderer))

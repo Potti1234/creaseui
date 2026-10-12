@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type MetadataListItemSpec = Readonly<{
@@ -101,10 +102,13 @@ const itemSource = (item: MetadataListItemSpec): string => {
       ] }, h)`
 }
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = metadataListFixtures[index] ?? metadataListFixtures[0]
   const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
-  const uiDir = renderer === 'stylex' ? 'stylex' : 'ui'
+  const uiDir = renderer !== 'tailwind' ? 'stylex' : 'ui'
   const usesBadge = fixture.items.some(item => item.tokens !== undefined)
   const listArgs = [
     'model: model.list',
@@ -170,11 +174,16 @@ export type Message = typeof Message.Type`,
   })
 }
 
-export const metadataListExamples = (
-  renderer: 'tailwind' | 'stylex',
+const metadataListExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   metadataListFixtures.map((fixture, index) => ({
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
   }))
+
+export const metadataListExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, metadataListExamplesFor(renderer))

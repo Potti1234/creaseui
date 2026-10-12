@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type TextareaKind =
@@ -206,9 +207,9 @@ const emitInit = (fixture: TextareaFixture): string => {
 
 const emitApplication = (
   fixture: TextareaFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const stylesBlock = isStyleX
     ? `\n\nconst styles = stylex.create({\n${emitStyles(fixture)}\n})`
     : ''
@@ -243,8 +244,8 @@ ${emitBody(fixture, isStyleX)}
   })
 }
 
-export const textareaExamples = (
-  renderer: 'tailwind' | 'stylex',
+const textareaExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   textareaFixtures.map(fixture => ({
     title: fixture.title,
@@ -254,3 +255,8 @@ export const textareaExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer),
   }))
+
+export const textareaExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, textareaExamplesFor(renderer))

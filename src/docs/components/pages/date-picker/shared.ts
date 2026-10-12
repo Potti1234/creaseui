@@ -1,5 +1,6 @@
 import { DatePart, type LocaleConfig } from 'foldkit/calendar'
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type DatePickerFixtureKind =
@@ -131,9 +132,9 @@ const PARSE_NATURAL = `const parseNaturalDate = (value: string, today: FoldkitCa
    DatePicker model driven by the parent-owned selectedDate. */
 const pickerSource = (
   fixture: DatePickerFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const dir = isStyleX ? 'stylex' : 'ui'
   const kind = fixture.kind
   const isRtl = kind === 'rtl'
@@ -338,8 +339,10 @@ export type Message = typeof Message.Type`,
 
 /* Range: parent-owned endpoints rendered through the Calendar's range option,
    opened from a Popover trigger. */
-const rangeSource = (renderer: 'tailwind' | 'stylex'): string => {
-  const isStyleX = renderer === 'stylex'
+const rangeSource = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
+  const isStyleX = renderer !== 'tailwind'
   const dir = isStyleX ? 'stylex' : 'ui'
   return foldkitApplication({
     title: 'Date Picker — Range Picker',
@@ -486,9 +489,9 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
    DatePicker trigger; typing parses free text into the selected date. */
 const inputLikeSource = (
   fixture: DatePickerFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const dir = isStyleX ? 'stylex' : 'ui'
   const isNatural = fixture.kind === 'natural'
   const label = isNatural ? 'Schedule Date' : 'Subscription Date'
@@ -634,7 +637,7 @@ export const init = (): Update.Return<Model, Message> => ({
 
 const sourceFor = (
   fixture: DatePickerFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string =>
   fixture.kind === 'range'
     ? rangeSource(renderer)
@@ -642,11 +645,16 @@ const sourceFor = (
       ? inputLikeSource(fixture, renderer)
       : pickerSource(fixture, renderer)
 
-export const datePickerExamples = (
-  renderer: 'tailwind' | 'stylex',
+const datePickerExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   datePickerFixtures.map(fixture => ({
     title: fixture.title,
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: sourceFor(fixture, renderer),
   }))
+
+export const datePickerExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, datePickerExamplesFor(renderer))

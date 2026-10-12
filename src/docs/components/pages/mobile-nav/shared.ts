@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type MobileNavKind =
@@ -225,9 +226,9 @@ const emitTrigger = (fixture: MobileNavFixture, isStyleX: boolean): string => {
 
 const source = (
   fixture: MobileNavFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const u = isStyleX ? 'stylex' : 'ui'
   const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
   const usesIcons =
@@ -290,8 +291,8 @@ export const update = (
   })
 }
 
-export const mobileNavExamples = (
-  renderer: 'tailwind' | 'stylex',
+const mobileNavExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   mobileNavFixtures.map((fixture, index) => ({
     title: fixture.title,
@@ -301,3 +302,8 @@ export const mobileNavExamples = (
       : { description: fixture.description }),
     code: source(fixture, renderer),
   }))
+
+export const mobileNavExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, mobileNavExamplesFor(renderer))

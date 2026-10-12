@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type AttachmentItemSpec = Readonly<{
@@ -382,14 +383,14 @@ ${fixture.rows
 
 const mediaChildrenSource = (
   fixture: AttachmentFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const iconFallback =
-    renderer === 'stylex'
+    renderer !== 'tailwind'
       ? `Icon.icon(item.icon ?? 'file', { class: stylex.props(styles.mediaIcon).className ?? '' }, h)`
       : `Icon.icon(item.icon ?? 'file', {}, h)`
   const imgSource =
-    renderer === 'stylex'
+    renderer !== 'tailwind'
       ? `h.img([h.Src(item.src), h.Alt(item.name), h.Class(stylex.props(styles.mediaImg).className ?? '')])`
       : `h.img([h.Src(item.src), h.Alt(item.name)])`
   const imgOrIcon = needsAnySrc(fixture)
@@ -411,7 +412,7 @@ const actionOnClickSource = (fixture: AttachmentFixture): string => {
 
 const itemChildrenSource = (
   fixture: AttachmentFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => `[
       Attachment.attachmentMedia({ ${needsAnySrc(fixture) ? `variant: item.src === undefined ? 'icon' as const : 'image' as const, ` : ''}children: [
         ${mediaChildrenSource(fixture, renderer)},
@@ -430,7 +431,7 @@ const itemChildrenSource = (
         Attachment.attachmentAction({
           onClick: ${actionOnClickSource(fixture)},
           label: action.label,
-          children: [Icon.icon(action.icon, ${renderer === 'stylex' ? `{ class: stylex.props(styles.actionIcon).className ?? '' }` : '{}'}, h)],
+          children: [Icon.icon(action.icon, ${renderer !== 'tailwind' ? `{ class: stylex.props(styles.actionIcon).className ?? '' }` : '{}'}, h)],
         }, h),
       ) }, h)]),`
           : ''
@@ -445,16 +446,16 @@ const itemChildrenSource = (
 const attachmentCallSource = (
   fixture: AttachmentFixture,
   row: AttachmentRowSpec,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const widthProp =
     row.grouped === true
       ? row.itemWidth === undefined
         ? ''
-        : renderer === 'stylex'
+        : renderer !== 'tailwind'
           ? `layoutStyle: styles.itemWidth,`
           : `class: '${row.itemWidth}',`
-      : renderer === 'stylex'
+      : renderer !== 'tailwind'
         ? `layoutStyle: styles.fullWidth,`
         : `class: 'w-full',`
   return `Attachment.attachment({${
@@ -480,24 +481,24 @@ const attachmentCallSource = (
 const rowSource = (
   fixture: AttachmentFixture,
   row: AttachmentRowSpec,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const filtered = needsRemove(fixture)
     ? `${row.name}.filter(item => !model.removed.includes(item.name))`
     : row.name
   const mapBody = `${filtered}.map(item =>\n    ${attachmentCallSource(fixture, row, renderer)},\n  )`
   if (row.grouped === true) {
-    return `Attachment.attachmentGroup({${row.groupFullWidth === true ? (renderer === 'stylex' ? ' layoutStyle: styles.fullWidth,' : ` class: 'w-full',`) : ''} children: ${mapBody} }, h)`
+    return `Attachment.attachmentGroup({${row.groupFullWidth === true ? (renderer !== 'tailwind' ? ' layoutStyle: styles.fullWidth,' : ` class: 'w-full',`) : ''} children: ${mapBody} }, h)`
   }
   return `...${mapBody}`
 }
 
 const bodySource = (
   fixture: AttachmentFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const frameAttr =
-    renderer === 'stylex'
+    renderer !== 'tailwind'
       ? `[h.Class(stylex.props(styles.frame).className ?? '')]`
       : `[h.Class('${fixture.frame === 'plain' ? 'mx-auto w-full max-w-sm py-12' : `mx-auto flex w-full max-w-sm flex-col ${fixture.frame} py-12`}')]`
   const rows = fixture.rows.map(
@@ -547,11 +548,11 @@ ${frameDecl}${fullWidth}${itemWidth}${mediaImg}${mediaIcon}${actionIcon}
 
 const componentImports = (
   fixture: AttachmentFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const ui = renderer === 'stylex' ? 'stylex' : 'ui'
+  const ui = renderer !== 'tailwind' ? 'stylex' : 'ui'
   const stylexBits =
-    renderer === 'stylex'
+    renderer !== 'tailwind'
       ? `import * as stylex from '@stylexjs/stylex'
 
 ${stylexStylesSource(fixture)}`
@@ -561,7 +562,7 @@ ${stylexStylesSource(fixture)}`
 
 const source = (
   fixture: AttachmentFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const dialog = needsDialog(fixture)
   const removed = needsRemove(fixture)
@@ -672,8 +673,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   })
 }
 
-export const attachmentExamples = (
-  renderer: 'tailwind' | 'stylex',
+const attachmentExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   attachmentFixtures.map(fixture => ({
     title: fixture.title,
@@ -681,3 +682,8 @@ export const attachmentExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: source(fixture, renderer),
   }))
+
+export const attachmentExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, attachmentExamplesFor(renderer))

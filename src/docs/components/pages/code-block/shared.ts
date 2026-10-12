@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type CodeBlockExampleKind =
@@ -257,9 +258,9 @@ const emitBody = (fixture: CodeBlockFixture, isStyleX: boolean): string => {
 
 const emitApplication = (
   fixture: CodeBlockFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const base = isStyleX ? 'stylex' : 'ui'
   const stylesBlock = isStyleX
     ? `\n\nconst styles = stylex.create({${
@@ -328,8 +329,8 @@ ${emitBody(fixture, isStyleX)}
   })
 }
 
-export const codeBlockExamples = (
-  renderer: 'tailwind' | 'stylex',
+const codeBlockExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   codeBlockFixtures.map(fixture => ({
     title: fixture.title,
@@ -338,3 +339,8 @@ export const codeBlockExamples = (
       : { description: fixture.description }),
     code: emitApplication(fixture, renderer),
   }))
+
+export const codeBlockExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, codeBlockExamplesFor(renderer))

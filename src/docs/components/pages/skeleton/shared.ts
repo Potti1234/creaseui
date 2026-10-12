@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type SkeletonKind =
@@ -173,9 +174,9 @@ const emitStyles = (kind: SkeletonKind): string => {
 
 const emitApplication = (
   fixture: SkeletonFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const base = isStyleX ? 'stylex' : 'ui'
   const cardImport =
     fixture.kind === 'card' ? `\nimport * as Card from '@/${base}/card'` : ''
@@ -208,8 +209,8 @@ ${emitMarkup(fixture.kind, isStyleX)}
   })
 }
 
-export const skeletonExamples = (
-  renderer: 'tailwind' | 'stylex',
+const skeletonExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   skeletonFixtures.map(fixture => ({
     title: fixture.title,
@@ -219,3 +220,8 @@ export const skeletonExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer),
   }))
+
+export const skeletonExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, skeletonExamplesFor(renderer))

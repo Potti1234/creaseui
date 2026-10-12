@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type MessageKind =
@@ -466,9 +467,9 @@ ${inner}${tail}
 
 const emitApplication = (
   fixture: MessageFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const stylesBlock = isStyleX
     ? `\nconst styles = stylex.create({\n${emitStyles(fixture)}\n})\n`
     : ''
@@ -500,8 +501,8 @@ ${emitBody(fixture, isStyleX)}
   })
 }
 
-export const messageExamples = (
-  renderer: 'tailwind' | 'stylex',
+const messageExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   messageFixtures.map(fixture => ({
     title: fixture.title,
@@ -511,3 +512,8 @@ export const messageExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer),
   }))
+
+export const messageExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, messageExamplesFor(renderer))

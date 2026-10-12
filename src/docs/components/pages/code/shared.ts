@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 export type CodeExampleKind = 'showcase' | 'textSizes' | 'inline' | 'various'
@@ -121,9 +122,12 @@ const stylexStyles = (fixture: CodeExampleKind): string => {
   return parts.join(',\n  ')
 }
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = codeFixtures[index] ?? codeFixtures[0]
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const base = isStyleX ? 'stylex' : 'ui'
   const imports: string[] = []
   if (isStyleX) {
@@ -161,8 +165,8 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
   })
 }
 
-export const codeExamples = (
-  renderer: 'tailwind' | 'stylex',
+const codeExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   codeFixtures.map((fixture, index) => ({
     title: fixture.title,
@@ -171,3 +175,8 @@ export const codeExamples = (
       : { description: fixture.description }),
     code: source(index, renderer),
   }))
+
+export const codeExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, codeExamplesFor(renderer))

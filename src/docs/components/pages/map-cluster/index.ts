@@ -42,5 +42,6 @@ mapClusterLayer({ id: 'locations', data: '/data/locations.geojson', clusterRadiu
     ],
     examples: mapClusterExamples('tailwind'),
     stylexExamples: mapClusterExamples('stylex'),
+    pleatExamples: mapClusterExamples('pleat'),
   },
 })

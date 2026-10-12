@@ -21,5 +21,6 @@ export const selectableCardPage = authoredPage({
       'The required `label` names the hidden checkbox input. Space toggles it natively and Enter is wired as an additional toggle.',
     examples: selectableCardExamples('tailwind'),
     stylexExamples: selectableCardExamples('stylex'),
+    pleatExamples: selectableCardExamples('pleat'),
   },
 })

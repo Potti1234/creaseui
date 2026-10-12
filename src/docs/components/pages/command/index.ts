@@ -31,5 +31,6 @@ export const commandPage = authoredPage({
     ],
     examples: commandExamples('tailwind'),
     stylexExamples: commandExamples('stylex'),
+    pleatExamples: commandExamples('pleat'),
   },
 })

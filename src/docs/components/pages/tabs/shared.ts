@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export interface TabsCardSpec {
@@ -289,9 +290,9 @@ const tabEntry = (
 
 const emitSource = (
   fixture: TabsFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const base = isStyleX ? 'stylex' : 'ui'
   const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
   const usesCard = fixture.tabs.some(tab => tab.card !== undefined)
@@ -360,8 +361,8 @@ ${fixture.tabs.map(tab => tabEntry(tab, isStyleX, '        ')).join('\n')}
   })
 }
 
-export const tabsExamples = (
-  renderer: 'tailwind' | 'stylex',
+const tabsExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   tabsFixtures.map(fixture => ({
     title: fixture.title,
@@ -371,3 +372,8 @@ export const tabsExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitSource(fixture, renderer),
   }))
+
+export const tabsExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, tabsExamplesFor(renderer))

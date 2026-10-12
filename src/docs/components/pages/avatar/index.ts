@@ -22,5 +22,6 @@ export const avatarPage = authoredPage({
       'Image alt text names the represented person or object. The fallback remains visible while loading and after failure without producing duplicate image announcements.',
     examples: avatarExamples('tailwind'),
     stylexExamples: avatarExamples('stylex'),
+    pleatExamples: avatarExamples('pleat'),
   },
 })

@@ -21,5 +21,6 @@ export const blockquotePage = authoredPage({
       'Renders a semantic blockquote element; cite labels render as attribution text so assistive tech can associate the source.',
     examples: blockquoteExamples('tailwind'),
     stylexExamples: blockquoteExamples('stylex'),
+    pleatExamples: blockquoteExamples('pleat'),
   },
 })

@@ -26,5 +26,6 @@ export const calendarPage = authoredPage({
     ],
     examples: calendarExamples('tailwind'),
     stylexExamples: calendarExamples('stylex'),
+    pleatExamples: calendarExamples('pleat'),
   },
 })

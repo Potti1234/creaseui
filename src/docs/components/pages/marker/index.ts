@@ -21,5 +21,6 @@ export const markerPage = authoredPage({
       'Choose purpose explicitly: annotation maps to note, status uses a polite live status, and decorative hides the whole marker. MarkerIcon is always decorative.',
     examples: markerExamples('tailwind'),
     stylexExamples: markerExamples('stylex'),
+    pleatExamples: markerExamples('pleat'),
   },
 })

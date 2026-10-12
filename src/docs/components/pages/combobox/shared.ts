@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type ComboboxFixture = Readonly<{
@@ -324,12 +325,12 @@ const comboboxCall = (fixture: ComboboxFixture, isStyleX: boolean): string => {
 
 const comboboxSource = (
   fixture: ComboboxFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   if (fixture.kind === 'multiple') {
     return multipleSource(fixture, renderer)
   }
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const dir = isStyleX ? 'stylex' : 'ui'
   const isClear = fixture.kind === 'clear'
   const isAuto = fixture.kind === 'autoHighlight'
@@ -460,9 +461,9 @@ ${itemsCode(fixture.kind)}`,
 
 const multipleSource = (
   fixture: ComboboxFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const dir = isStyleX ? 'stylex' : 'ui'
   return foldkitApplication({
     title: `Combobox — ${fixture.title}`,
@@ -599,8 +600,8 @@ export type Message = typeof Message.Type`,
   })
 }
 
-export const comboboxExamples = (
-  renderer: 'tailwind' | 'stylex',
+const comboboxExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   comboboxFixtures.map(fixture => ({
     title: fixture.title,
@@ -610,3 +611,8 @@ export const comboboxExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: comboboxSource(fixture, renderer),
   }))
+
+export const comboboxExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, comboboxExamplesFor(renderer))

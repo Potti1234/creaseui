@@ -71,5 +71,6 @@ map({ ariaLabel: 'Custom map', toMessage: message => message, styles: { light: '
     ],
     examples: mapStylesExamples('tailwind'),
     stylexExamples: mapStylesExamples('stylex'),
+    pleatExamples: mapStylesExamples('pleat'),
   },
 })

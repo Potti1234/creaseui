@@ -28,5 +28,6 @@ export const dropdownMenuPage = authoredPage({
     ],
     examples: dropdownMenuExamples('tailwind'),
     stylexExamples: dropdownMenuExamples('stylex'),
+    pleatExamples: dropdownMenuExamples('pleat'),
   },
 })

@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type SheetSide = 'top' | 'right' | 'bottom' | 'left'
@@ -1115,17 +1116,17 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
 
 const emitBottomSource = (
   fixture: BottomSheetFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
   return foldkitApplication({
     title: `Sheet — ${fixture.title}`,
-    imports: emitImports(fixture, renderer === 'stylex'),
+    imports: emitImports(fixture, renderer !== 'tailwind'),
     model: emitModelFields(fixture),
     messages: emitMessages(fixture, tag),
     init: emitInit(fixture, tag),
     update: emitUpdate(fixture, tag),
-    view: emitView(fixture, renderer === 'stylex'),
+    view: emitView(fixture, renderer !== 'tailwind'),
   })
 }
 
@@ -1136,15 +1137,15 @@ export const sheetDocFixtures: ReadonlyArray<SheetDocFixture> = [
   ...bottomSheetFixtures,
 ]
 
-export const sheetExamples = (
-  renderer: 'tailwind' | 'stylex',
+const sheetExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   sheetDocFixtures.map(fixture =>
     'instances' in fixture
       ? {
           title: fixture.title,
           ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
-          code: emitSource(fixture, renderer === 'stylex'),
+          code: emitSource(fixture, renderer !== 'tailwind'),
         }
       : {
           title: fixture.title,
@@ -1154,3 +1155,8 @@ export const sheetExamples = (
           code: emitBottomSource(fixture, renderer),
         },
   )
+
+export const sheetExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, sheetExamplesFor(renderer))

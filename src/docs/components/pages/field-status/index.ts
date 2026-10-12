@@ -21,5 +21,6 @@ export const fieldStatusPage = authoredPage({
       'Detached messages lead with a status icon so meaning is not conveyed by color alone. CreaseUI renders these messages statically; applications should provide a live region when dynamic status changes need to be announced.',
     examples: fieldStatusExamples('tailwind'),
     stylexExamples: fieldStatusExamples('stylex'),
+    pleatExamples: fieldStatusExamples('pleat'),
   },
 })

@@ -20,5 +20,6 @@ export const badgePage = authoredPage({
       'Badge text should make sense without color. Do not use a badge as the only label for an interactive control.',
     examples: badgeExamples('tailwind'),
     stylexExamples: badgeExamples('stylex'),
+    pleatExamples: badgeExamples('pleat'),
   },
 })

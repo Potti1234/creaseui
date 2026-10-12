@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type AvatarItemSpec = Readonly<{
@@ -189,12 +190,12 @@ const needsIcon = (fixture: AvatarFixture): boolean =>
 
 const badgeSource = (
   item: AvatarItemSpec,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   if (item.badge === 'green')
-    return `\n        Avatar.avatarBadge({ ${renderer === 'stylex' ? `tone: 'success'` : `class: 'bg-green-600 dark:bg-green-800'`} }, h),`
+    return `\n        Avatar.avatarBadge({ ${renderer !== 'tailwind' ? `tone: 'success'` : `class: 'bg-green-600 dark:bg-green-800'`} }, h),`
   if (item.badge === 'icon')
-    return `\n        Avatar.avatarBadge({ children: [Icon.icon('plus', ${renderer === 'stylex' ? `{ class: stylex.props(styles.badgeIcon).className ?? '' }` : '{}'}, h)] }, h),`
+    return `\n        Avatar.avatarBadge({ children: [Icon.icon('plus', ${renderer !== 'tailwind' ? `{ class: stylex.props(styles.badgeIcon).className ?? '' }` : '{}'}, h)] }, h),`
   return ''
 }
 
@@ -202,24 +203,24 @@ const itemCallSource = (
   item: AvatarItemSpec,
   overlap: boolean,
   grouped: boolean,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const sizeProp =
     item.size === undefined ? '' : `\n      size: '${item.size}',`
   const avatarGrayscale =
     item.grayscale === 'avatar'
-      ? renderer === 'stylex'
+      ? renderer !== 'tailwind'
         ? `\n      grayscale: true,`
         : `\n      class: 'grayscale',`
       : ''
   const imageGrayscale =
     item.grayscale === 'image'
-      ? renderer === 'stylex'
+      ? renderer !== 'tailwind'
         ? `\n          grayscale: true,`
         : `\n          class: 'grayscale',`
       : ''
   const groupProps =
-    renderer === 'stylex' && grouped
+    renderer !== 'tailwind' && grouped
       ? `\n      ring: true,${overlap ? '\n      overlap: true,' : ''}`
       : ''
   return `Avatar.avatar({${sizeProp}${avatarGrayscale}${groupProps}
@@ -241,19 +242,19 @@ const itemCallSource = (
 
 const countSource = (
   cluster: AvatarClusterSpec,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   if (cluster.count !== undefined)
     return `\n        Avatar.avatarGroupCount({ children: ['${cluster.count}'] }, h),`
   if (cluster.countIcon === true)
-    return `\n        Avatar.avatarGroupCount({ children: [Icon.icon('plus', ${renderer === 'stylex' ? `{ class: stylex.props(styles.countIcon).className ?? '' }` : '{}'}, h)] }, h),`
+    return `\n        Avatar.avatarGroupCount({ children: [Icon.icon('plus', ${renderer !== 'tailwind' ? `{ class: stylex.props(styles.countIcon).className ?? '' }` : '{}'}, h)] }, h),`
   return ''
 }
 
 const clusterSource = (
   fixture: AvatarFixture,
   cluster: AvatarClusterSpec,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   if (cluster.grouped === true) {
     const hasCount = cluster.count !== undefined || cluster.countIcon === true
@@ -265,7 +266,7 @@ const clusterSource = (
       .join('')
     const grayscale =
       cluster.grayscale === true
-        ? renderer === 'stylex'
+        ? renderer !== 'tailwind'
           ? `\n      grayscale: true,`
           : `\n      class: 'grayscale',`
         : ''
@@ -289,7 +290,7 @@ const clusterSource = (
           children: ['${item.fallback}'],
         }, h)`
     const triggerProps =
-      renderer === 'stylex'
+      renderer !== 'tailwind'
         ? `\n      triggerButtonVariant: 'ghost',\n      triggerButtonSize: 'icon-sm',\n      triggerButtonRounded: true,`
         : `\n      triggerClass: 'rounded-full',`
     return `DropdownMenu.dropdownMenu({
@@ -315,14 +316,14 @@ const clusterSource = (
 
 const bodySource = (
   fixture: AvatarFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const clusters = fixture.clusters
     .map(cluster => `      ${clusterSource(fixture, cluster, renderer)}`)
     .join(',\n')
   if (fixture.frame === 'plain') return clusters
   const frameAttr =
-    renderer === 'stylex'
+    renderer !== 'tailwind'
       ? `[h.Class(stylex.props(${fixture.frame === 'sizesRow' ? 'styles.sizesRow' : 'styles.hero'}).className ?? '')${fixture.rtl === true ? ", h.Dir('rtl')" : ''}]`
       : `[h.Class('${fixture.frame === 'sizesRow' ? 'flex flex-wrap items-center gap-2 grayscale' : 'flex flex-row flex-wrap items-center gap-6 md:gap-12'}')${fixture.rtl === true ? `, h.Dir('rtl')` : ''}]`
   return `h.div(${frameAttr}, [
@@ -353,11 +354,11 @@ const stylexStylesSource = (fixture: AvatarFixture): string => {
 
 const componentImports = (
   fixture: AvatarFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const ui = renderer === 'stylex' ? 'stylex' : 'ui'
+  const ui = renderer !== 'tailwind' ? 'stylex' : 'ui'
   const stylexBits =
-    renderer === 'stylex'
+    renderer !== 'tailwind'
       ? `import * as stylex from '@stylexjs/stylex'
 
 ${stylexStylesSource(fixture)}`
@@ -367,7 +368,7 @@ ${stylexStylesSource(fixture)}`
 
 const source = (
   fixture: AvatarFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string =>
   foldkitApplication({
     title: `Avatar — ${fixture.title}`,
@@ -449,8 +450,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
 })`,
   })
 
-export const avatarExamples = (
-  renderer: 'tailwind' | 'stylex',
+const avatarExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   avatarFixtures.map(fixture => ({
     title: fixture.title,
@@ -458,3 +459,8 @@ export const avatarExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: source(fixture, renderer),
   }))
+
+export const avatarExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, avatarExamplesFor(renderer))

@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import {
   foldkitApplication,
   staticComponentApplication,
@@ -237,11 +238,14 @@ const itemBlock = (item: ThumbnailItem, isStyleX: boolean): string => {
         )`
 }
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = thumbnailFixtures[index] ?? thumbnailFixtures[0]
   if (fixture.items.some(item => item.hasClick || item.hasRemove))
     return interactiveSource(fixture, renderer)
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const componentImports = thumbnailImports(isStyleX)
   const sectionLabel = (text: string) =>
     `h.span([h.Class(${isStyleX ? "stylex.props(styles.caption).className ?? ''" : "'text-xs text-muted-foreground'"})], ['${text}'])`
@@ -290,11 +294,11 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
 
 const interactiveSource = (
   fixture: ThumbnailFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const skin = renderer === 'stylex' ? 'stylex' : 'ui'
+  const skin = renderer !== 'tailwind' ? 'stylex' : 'ui'
   const cls = (tw: string, sx: string) =>
-    renderer === 'stylex'
+    renderer !== 'tailwind'
       ? `stylex.props(styles.${sx}).className ?? ''`
       : `'${tw}'`
   const items = fixture.items
@@ -316,7 +320,7 @@ import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import * as Thumbnail from '@/${skin}/thumbnail'
 import * as Lightbox from '@/${skin}/lightbox'
-${thumbnailImports(renderer === 'stylex')}`,
+${thumbnailImports(renderer !== 'tailwind')}`,
     model: `const Item = S.Struct({
   src: S.optionalKey(S.String), alt: S.optionalKey(S.String), label: S.String,
   caption: S.optionalKey(S.String), isLoading: S.optionalKey(S.Boolean),
@@ -393,11 +397,16 @@ export const update = (model: Model, message: Message): Update.Return<Model, Mes
   })
 }
 
-export const thumbnailExamples = (
-  renderer: 'tailwind' | 'stylex',
+const thumbnailExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   thumbnailFixtures.map((fixture, index) => ({
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
   }))
+
+export const thumbnailExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, thumbnailExamplesFor(renderer))

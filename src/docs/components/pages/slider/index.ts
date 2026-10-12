@@ -28,5 +28,6 @@ export const sliderPage = authoredPage({
     ],
     examples: sliderExamples('tailwind'),
     stylexExamples: sliderExamples('stylex'),
+    pleatExamples: sliderExamples('pleat'),
   },
 })

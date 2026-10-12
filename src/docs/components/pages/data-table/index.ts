@@ -29,5 +29,6 @@ export const dataTablePage = authoredPage({
     ],
     examples: dataTableExamples('tailwind'),
     stylexExamples: dataTableExamples('stylex'),
+    pleatExamples: dataTableExamples('pleat'),
   },
 })

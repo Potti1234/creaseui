@@ -27,5 +27,6 @@ export const mobileNavPage = authoredPage({
     ],
     examples: mobileNavExamples('tailwind'),
     stylexExamples: mobileNavExamples('stylex'),
+    pleatExamples: mobileNavExamples('pleat'),
   },
 })

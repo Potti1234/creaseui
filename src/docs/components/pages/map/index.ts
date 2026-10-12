@@ -42,5 +42,6 @@ map({ center: [11.576124, 48.137154], zoom: 11, ariaLabel: 'Munich', toMessage: 
     ],
     examples: mapExamples('tailwind'),
     stylexExamples: mapExamples('stylex'),
+    pleatExamples: mapExamples('pleat'),
   },
 })

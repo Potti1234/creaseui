@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type TGItem = Readonly<{
@@ -431,8 +432,8 @@ ${viewBodyEmit(fixture, isStyleX)},
   })
 }
 
-export const toggleGroupExamples = (
-  renderer: 'tailwind' | 'stylex',
+const toggleGroupExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   toggleGroupFixtures.map(fixture => ({
     title: fixture.title,
@@ -440,5 +441,10 @@ export const toggleGroupExamples = (
       ? {}
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
-    code: emitSource(fixture, renderer === 'stylex'),
+    code: emitSource(fixture, renderer !== 'tailwind'),
   }))
+
+export const toggleGroupExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, toggleGroupExamplesFor(renderer))

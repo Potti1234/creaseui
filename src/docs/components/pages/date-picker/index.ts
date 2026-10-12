@@ -30,5 +30,6 @@ export const datePickerPage = authoredPage({
     ],
     examples: datePickerExamples('tailwind'),
     stylexExamples: datePickerExamples('stylex'),
+    pleatExamples: datePickerExamples('pleat'),
   },
 })

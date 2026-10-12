@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 const IMAGE_URL = 'https://avatar.vercel.sh/creaseui'
@@ -43,9 +44,12 @@ export const aspectRatioFixtures: Readonly<
   },
 ]
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = aspectRatioFixtures[index] ?? aspectRatioFixtures[0]
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const componentImports = isStyleX
     ? `import * as stylex from '@stylexjs/stylex'
 import type { ComponentLayoutStyle } from '@/stylex/contracts'
@@ -88,11 +92,16 @@ import { className } from '@/stylex/style'`
   })
 }
 
-export const aspectRatioExamples = (
-  renderer: 'tailwind' | 'stylex',
+const aspectRatioExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   aspectRatioFixtures.map((fixture, index) => ({
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
   }))
+
+export const aspectRatioExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, aspectRatioExamplesFor(renderer))

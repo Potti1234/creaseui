@@ -18,5 +18,6 @@ export const tokenPage = authoredPage({
       'The remove button stops propagation so the token’s own click/link is not triggered; `isLabelHidden` keeps the label as aria-label.',
     examples: tokenExamples('tailwind'),
     stylexExamples: tokenExamples('stylex'),
+    pleatExamples: tokenExamples('pleat'),
   },
 })

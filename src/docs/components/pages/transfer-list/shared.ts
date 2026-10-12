@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 import type { TransferListOption } from '@/ui/transfer-list'
 
@@ -284,9 +285,9 @@ const listCall = (fixture: TransferListFixture, suffix: '' | '2'): string => {
 
 const transferListSource = (
   fixture: TransferListFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const ns = 'TransferList'
   const isPair = fixture.layout === 'empty-pair'
   /* The astryx Empty story pairs an empty-selection list with a search that
@@ -449,8 +450,8 @@ export const init = (): Update.Return<Model, Message> => ({
   })
 }
 
-export const transferListExamples = (
-  renderer: 'tailwind' | 'stylex',
+const transferListExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   transferListFixtures.map(fixture => ({
     title: fixture.title,
@@ -460,3 +461,8 @@ export const transferListExamples = (
        it shrink-to-fits to ~one word. Stretch keeps it full width. */
     previewClass: 'justify-stretch',
   }))
+
+export const transferListExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, transferListExamplesFor(renderer))

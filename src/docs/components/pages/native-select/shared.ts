@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type NativeSelectKind =
@@ -168,9 +169,9 @@ const emitBody = (fixture: NativeSelectFixture, isStyleX: boolean): string => {
 
 const emitApplication = (
   fixture: NativeSelectFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   return foldkitApplication({
     title: `Native Select — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
@@ -201,8 +202,8 @@ ${emitBody(fixture, isStyleX)}
   })
 }
 
-export const nativeSelectExamples = (
-  renderer: 'tailwind' | 'stylex',
+const nativeSelectExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   nativeSelectFixtures.map(fixture => ({
     title: fixture.title,
@@ -212,3 +213,8 @@ export const nativeSelectExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer),
   }))
+
+export const nativeSelectExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, nativeSelectExamplesFor(renderer))

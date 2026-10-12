@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export const sidebarFixtures = [
@@ -56,7 +57,7 @@ export type SidebarFixtureKind = (typeof sidebarFixtures)[number]['kind']
 
 const viewFor = (
   kind: SidebarFixtureKind,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const variant = kind === 'floating' || kind === 'inset' ? kind : 'sidebar'
   const collapsible = kind === 'offcanvas' ? 'offcanvas' : 'icon'
@@ -113,18 +114,18 @@ return {
       Sidebar.sidebarRail({ onClick: desktopToggle }, h),
     ] }, h),
     Sidebar.sidebarInset({ variant: '${variant}', state, children: [
-      h.header([h.Class(${renderer === 'stylex' ? "stylex.props(styles.header).className ?? ''" : "'flex h-12 items-center gap-2 border-b px-4'"})], [Sidebar.sidebarTrigger({ onClick: desktopToggle, onMobileClick: mobileToggle }, h), h.strong([], ['Workspace'])]),
-      h.main([h.Class(${renderer === 'stylex' ? "stylex.props(styles.main).className ?? ''" : "'p-6'"})], ['Application content']),
+      h.header([h.Class(${renderer !== 'tailwind' ? "stylex.props(styles.header).className ?? ''" : "'flex h-12 items-center gap-2 border-b px-4'"})], [Sidebar.sidebarTrigger({ onClick: desktopToggle, onMobileClick: mobileToggle }, h), h.strong([], ['Workspace'])]),
+      h.main([h.Class(${renderer !== 'tailwind' ? "stylex.props(styles.main).className ?? ''" : "'p-6'"})], ['Application content']),
     ] }, h),
   ] }, h),
 }`
 }
 
 const source = (
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
   kind: SidebarFixtureKind,
 ): string => {
-  const sx = renderer === 'stylex'
+  const sx = renderer !== 'tailwind'
   return foldkitApplication({
     title: `Sidebar - ${kind}`,
     imports: `import { Schema as S } from 'effect'
@@ -193,11 +194,16 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => {
   })
 }
 
-export const sidebarExamples = (
-  renderer: 'tailwind' | 'stylex',
+const sidebarExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   sidebarFixtures.map(fixture => ({
     ...fixture,
     previewClass: 'justify-stretch',
     code: source(renderer, fixture.kind),
   }))
+
+export const sidebarExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, sidebarExamplesFor(renderer))

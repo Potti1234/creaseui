@@ -20,5 +20,6 @@ export const progressPage = authoredPage({
       'The component exposes progressbar semantics and clamps determinate values to 0–100. Indeterminate progress omits aria-valuenow.',
     examples: progressExamples('tailwind'),
     stylexExamples: progressExamples('stylex'),
+    pleatExamples: progressExamples('pleat'),
   },
 })

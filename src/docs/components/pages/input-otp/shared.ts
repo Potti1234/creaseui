@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type InputOtpKind =
@@ -311,8 +312,8 @@ ${emitStyles(fixture)}
   })
 }
 
-export const inputOtpExamples = (
-  renderer: 'tailwind' | 'stylex',
+const inputOtpExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   inputOtpFixtures.map(fixture => ({
     title: fixture.title,
@@ -320,5 +321,10 @@ export const inputOtpExamples = (
       ? {}
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
-    code: emitApplication(fixture, renderer === 'stylex'),
+    code: emitApplication(fixture, renderer !== 'tailwind'),
   }))
+
+export const inputOtpExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, inputOtpExamplesFor(renderer))

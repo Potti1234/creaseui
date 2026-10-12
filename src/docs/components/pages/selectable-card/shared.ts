@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import {
   controlledStringApplication,
   foldkitApplication,
@@ -79,11 +80,11 @@ export const selectableCardTags: ReadonlyArray<SelectableTag> = [
   { id: 'go', name: 'Go', variant: 'teal' },
 ]
 
-const ui = (renderer: 'tailwind' | 'stylex'): string =>
-  renderer === 'stylex' ? 'stylex' : 'ui'
+const ui = (renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat'): string =>
+  renderer !== 'tailwind' ? 'stylex' : 'ui'
 
 const cls = (
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
   tailwindValue: string,
   styleKey: string,
 ): string =>
@@ -107,7 +108,7 @@ const stylexImports = (keys: ReadonlyArray<StylexStyleKey>): string =>
   `import * as stylex from '@stylexjs/stylex'\n\nconst styles = stylex.create({\n${keys.map(k => `  ${k}: ${STYLEX_STYLES[k]},`).join('\n')}\n})`
 
 const planCardSource = (
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
   elevated: boolean,
 ): string => `SelectableCard.selectableCard({
           label: plan.name,
@@ -130,14 +131,14 @@ const planCardSource = (
 
 const singleSelectSource = (
   index: number,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const fixture = selectableCardFixtures[index] ?? selectableCardFixtures[0]
   const elevated = fixture.kind === 'elevated'
   const plans = elevated ? selectableCardElevatedPlans : selectableCardPlans
   const componentImports = [
     `const plans = ${JSON.stringify(plans)}`,
-    ...(renderer === 'stylex'
+    ...(renderer !== 'tailwind'
       ? [
           stylexImports(
             elevated
@@ -165,11 +166,13 @@ const singleSelectSource = (
   })
 }
 
-const multiSource = (renderer: 'tailwind' | 'stylex'): string => {
+const multiSource = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = selectableCardFixtures[2] ?? selectableCardFixtures[0]
   const componentImports = [
     `const tags = ${JSON.stringify(selectableCardTags)} as const`,
-    ...(renderer === 'stylex' ? [stylexImports(['grid3', 'bodyBold'])] : []),
+    ...(renderer !== 'tailwind' ? [stylexImports(['grid3', 'bodyBold'])] : []),
   ].join('\n')
   return foldkitApplication({
     title: `SelectableCard — ${fixture.title}`,
@@ -224,18 +227,26 @@ export type Message = typeof Message.Type`,
   })
 }
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = selectableCardFixtures[index] ?? selectableCardFixtures[0]
   return fixture.kind === 'multi'
     ? multiSource(renderer)
     : singleSelectSource(index, renderer)
 }
 
-export const selectableCardExamples = (
-  renderer: 'tailwind' | 'stylex',
+const selectableCardExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   selectableCardFixtures.map((fixture, index) => ({
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
   }))
+
+export const selectableCardExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, selectableCardExamplesFor(renderer))

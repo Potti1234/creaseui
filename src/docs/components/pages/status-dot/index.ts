@@ -21,5 +21,6 @@ export const statusDotPage = authoredPage({
       'A color-only dot is not accessible in isolation (WCAG 2.1 SC 1.4.1). The required label becomes the aria-label; add a non-color mark (icon) or adjacent text when the status must be distinguishable without color.',
     examples: statusDotExamples('tailwind'),
     stylexExamples: statusDotExamples('stylex'),
+    pleatExamples: statusDotExamples('pleat'),
   },
 })

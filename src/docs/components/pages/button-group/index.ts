@@ -22,5 +22,6 @@ export const buttonGroupPage = authoredPage({
       'The wrapper exposes role=group and every child retains native button semantics. Button labels must remain unambiguous when read without visual position.',
     examples: buttonGroupExamples('tailwind'),
     stylexExamples: buttonGroupExamples('stylex'),
+    pleatExamples: buttonGroupExamples('pleat'),
   },
 })

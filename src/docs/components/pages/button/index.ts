@@ -24,5 +24,6 @@ export const buttonPage = authoredPage({
     ],
     examples: buttonExamples('tailwind'),
     stylexExamples: buttonExamples('stylex'),
+    pleatExamples: buttonExamples('pleat'),
   },
 })

@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import {
   foldkitApplication,
   staticComponentApplication,
@@ -44,7 +45,7 @@ export const paginationFixtures = [
 
 const linkSource = (
   fixture: { title: string; siblingCount: number },
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string =>
   staticComponentApplication({
     componentName: 'Pagination',
@@ -62,7 +63,7 @@ const linkSource = (
   })
 const actionSource = (
   fixture: { title: string; page: number },
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string =>
   foldkitApplication({
     title: `Pagination — ${fixture.title}`,
@@ -71,7 +72,7 @@ import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
-import * as Pagination from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/pagination'`,
+import * as Pagination from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/pagination'`,
     model: `export const Model = S.Struct({ page: S.Number })
 export type Model = typeof Model.Type`,
     messages: `import { defineMessageUnion } from 'foldkit/message'
@@ -108,7 +109,9 @@ const numberedItems = (
     )
     .join(',\n')
 
-const simpleSource = (renderer: 'tailwind' | 'stylex'): string =>
+const simpleSource = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string =>
   staticComponentApplication({
     componentName: 'Pagination',
     componentSlug: 'pagination',
@@ -121,7 +124,9 @@ ${numberedItems([1, 2, 3, 4, 5], 2)}
 ] }, h)`,
   })
 
-const rtlSource = (renderer: 'tailwind' | 'stylex'): string =>
+const rtlSource = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string =>
   staticComponentApplication({
     componentName: 'Pagination',
     componentSlug: 'pagination',
@@ -143,8 +148,10 @@ ${numberedItems([1, 2, 3], 2)},
 ] }, h)`,
   })
 
-const iconsOnlySource = (renderer: 'tailwind' | 'stylex'): string => {
-  const isStyleX = renderer === 'stylex'
+const iconsOnlySource = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
+  const isStyleX = renderer !== 'tailwind'
   return foldkitApplication({
     title: 'Pagination — Icons Only',
     imports: `import { Option, Schema as S } from 'effect'
@@ -255,8 +262,8 @@ export type Message = typeof Message.Type`,
   })
 }
 
-export const paginationExamples = (
-  renderer: 'tailwind' | 'stylex',
+const paginationExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   paginationFixtures.map(fixture => ({
     title: fixture.title,
@@ -272,3 +279,8 @@ export const paginationExamples = (
               ? iconsOnlySource(renderer)
               : rtlSource(renderer),
   }))
+
+export const paginationExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, paginationExamplesFor(renderer))

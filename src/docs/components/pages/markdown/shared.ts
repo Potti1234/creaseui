@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 import type { MarkdownSource } from '@/lib/markdown'
 
@@ -188,9 +189,9 @@ const emitBody = (fixture: MarkdownFixture, isStyleX: boolean): string => {
 
 const emitApplication = (
   fixture: MarkdownFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const base = isStyleX ? 'stylex' : 'ui'
   return foldkitApplication({
     title: `Markdown — ${fixture.title}`,
@@ -239,8 +240,8 @@ ${emitBody(fixture, isStyleX)}
   })
 }
 
-export const markdownExamples = (
-  renderer: 'tailwind' | 'stylex',
+const markdownExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   markdownFixtures.map(fixture => ({
     title: fixture.title,
@@ -249,3 +250,8 @@ export const markdownExamples = (
       : { description: fixture.description }),
     code: emitApplication(fixture, renderer),
   }))
+
+export const markdownExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, markdownExamplesFor(renderer))

@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 import type { LightboxMedia } from '@/ui/lightbox'
 
@@ -158,10 +159,10 @@ const emitView = (fixture: LightboxFixture, isStyleX: boolean): string => {
 const source = (
   fixture: LightboxFixture,
   _index: number,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const isGallery = fixture.kind === 'gallery'
   const imports = `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
@@ -208,8 +209,8 @@ export const update = (
   })
 }
 
-export const lightboxExamples = (
-  renderer: 'tailwind' | 'stylex',
+const lightboxExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   lightboxFixtures.map((fixture, index) => ({
     title: fixture.title,
@@ -219,3 +220,8 @@ export const lightboxExamples = (
       : { description: fixture.description }),
     code: source(fixture, index, renderer),
   }))
+
+export const lightboxExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, lightboxExamplesFor(renderer))

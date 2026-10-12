@@ -36,5 +36,6 @@ export const multiSelectorPage = authoredPage({
       'Parent Model\n├── MultiSelector child Model (values + embedded Multi listbox)\n└── ChangedValues OutMessage → parent domain state\n    ├── hasSelectAll inserts a pseudo-option toggling the option set\n    ├── options accept flat entries or { title, options } sections\n    └── triggerDisplay renders count / labels / badges in the trigger',
     examples: multiSelectorExamples('tailwind'),
     stylexExamples: multiSelectorExamples('stylex'),
+    pleatExamples: multiSelectorExamples('pleat'),
   },
 })

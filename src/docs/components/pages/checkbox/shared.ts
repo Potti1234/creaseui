@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import {
   controlledBooleanApplication,
   foldkitApplication,
@@ -131,7 +132,7 @@ export const checkboxFixtures: ReadonlyArray<CheckboxFixture> = [
 
 const singleSource = (
   fixture: CheckboxFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string =>
   controlledBooleanApplication({
     componentName: 'Checkbox',
@@ -153,15 +154,17 @@ const singleSource = (
 }, h)${fixture.rtl === true ? '])' : ''},`,
   })
 
-const groupSource = (renderer: 'tailwind' | 'stylex'): string =>
+const groupSource = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string =>
   foldkitApplication({
     title: 'Checkbox — group',
     imports: `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-import * as Checkbox from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/checkbox'
-import * as Field from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/field'`,
+import * as Checkbox from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/checkbox'
+import * as Field from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/field'`,
     model: `export const Model = S.Struct({
   disks: S.Boolean,
   external: S.Boolean,
@@ -205,15 +208,17 @@ export type Message = typeof Message.Type`,
 })`,
   })
 
-const tableSource = (renderer: 'tailwind' | 'stylex'): string =>
+const tableSource = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string =>
   foldkitApplication({
     title: 'Checkbox — table selection',
     imports: `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-import * as Checkbox from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/checkbox'
-import * as Table from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/table'`,
+import * as Checkbox from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/checkbox'
+import * as Table from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/table'`,
     model: `export const Model = S.Struct({ selected: S.Array(S.String) })
 export type Model = typeof Model.Type
 
@@ -271,8 +276,8 @@ export type Message = typeof Message.Type`,
 })`,
   })
 
-export const checkboxExamples = (
-  renderer: 'tailwind' | 'stylex',
+const checkboxExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   checkboxFixtures.map(fixture => ({
     title: fixture.title,
@@ -287,3 +292,8 @@ export const checkboxExamples = (
           ? tableSource(renderer)
           : singleSource(fixture, renderer),
   }))
+
+export const checkboxExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, checkboxExamplesFor(renderer))

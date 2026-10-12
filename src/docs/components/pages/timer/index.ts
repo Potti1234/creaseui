@@ -20,5 +20,6 @@ export const timerPage = authoredPage({
       'Renders a semantic <time> element whose dateTime attribute carries the ISO 8601 duration (PT{S}S). The visible text and dateTime update together on each tick.',
     examples: timerExamples('tailwind'),
     stylexExamples: timerExamples('stylex'),
+    pleatExamples: timerExamples('pleat'),
   },
 })

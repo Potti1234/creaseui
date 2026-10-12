@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type PopoverSide = 'top' | 'right' | 'bottom' | 'left'
@@ -105,10 +106,10 @@ const escape = (value: string): string => value.replaceAll(`'`, `\\'`)
 
 const legacySource = (
   fixture: { title: string; side: string; align: string },
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   return foldkitApplication({
     title: `Popover — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
@@ -168,8 +169,10 @@ const styles = stylex.create({
 })
 `
 
-const basicSource = (renderer: 'tailwind' | 'stylex'): string => {
-  const isStyleX = renderer === 'stylex'
+const basicSource = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
+  const isStyleX = renderer !== 'tailwind'
   return foldkitApplication({
     title: 'Popover — Basic',
     imports: `import { Schema as S } from 'effect'
@@ -232,9 +235,9 @@ export type Message = typeof Message.Type`,
 
 const multiSource = (
   fixture: { title: string; instances: ReadonlyArray<PopoverInstance> },
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
   const headerEmit = (
     text: string,
@@ -335,8 +338,10 @@ ${fixture.instances.map(popoverEmit).join(',\n')}
   })
 }
 
-const formSource = (renderer: 'tailwind' | 'stylex'): string => {
-  const isStyleX = renderer === 'stylex'
+const formSource = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
+  const isStyleX = renderer !== 'tailwind'
   const fieldEmit = (
     id: string,
     label: string,
@@ -435,8 +440,8 @@ ${fieldEmit('height', 'Height', '25px')},
   })
 }
 
-export const popoverExamples = (
-  renderer: 'tailwind' | 'stylex',
+const popoverExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   popoverFixtures.map(fixture => ({
     title: fixture.title,
@@ -450,3 +455,8 @@ export const popoverExamples = (
             ? formSource(renderer)
             : multiSource(fixture, renderer),
   }))
+
+export const popoverExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, popoverExamplesFor(renderer))

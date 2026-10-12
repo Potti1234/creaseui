@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import {
   foldkitApplication,
   staticComponentApplication,
@@ -142,12 +143,12 @@ export const needsMenu = (fixture: BreadcrumbFixture): boolean =>
 const menuCallSource = (
   item: BreadcrumbItemSpec,
   fixture: BreadcrumbFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const trigger =
     item.kind === 'ellipsisMenu'
       ? `Breadcrumb.breadcrumbEllipsis({}, h)`
-      : renderer === 'stylex'
+      : renderer !== 'tailwind'
         ? `h.span([h.Class(className(styles.dropdownTrigger))], [
               '${esc(item.kind === 'dropdown' ? item.label : '')}',
               Icon.icon('chevron-down', { class: className(styles.chevron) }, h),
@@ -158,7 +159,7 @@ const menuCallSource = (
             )`
   const triggerProps =
     item.kind === 'ellipsisMenu'
-      ? renderer === 'stylex'
+      ? renderer !== 'tailwind'
         ? `\n            triggerButtonVariant: 'ghost',\n            triggerButtonSize: 'icon-sm',`
         : `\n            triggerClass: 'inline-flex size-8 items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground',`
       : ''
@@ -177,7 +178,7 @@ const menuCallSource = (
 const itemContentSource = (
   item: BreadcrumbItemSpec,
   fixture: BreadcrumbFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   switch (item.kind) {
     case 'link':
@@ -197,7 +198,7 @@ const itemContentSource = (
 
 const separatorSource = (
   fixture: BreadcrumbFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const children =
     fixture.separator === 'dot' ? `children: [Icon.icon('dot', {}, h)], ` : ''
@@ -207,7 +208,7 @@ const separatorSource = (
 
 const viewBodySource = (
   fixture: BreadcrumbFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const separator = separatorSource(fixture, renderer)
   const children = fixture.items
@@ -237,10 +238,10 @@ const usesIcon = (fixture: BreadcrumbFixture): boolean =>
 
 const componentImports = (
   fixture: BreadcrumbFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const stylexBits =
-    renderer === 'stylex'
+    renderer !== 'tailwind'
       ? `import { className } from '@/stylex/style'
 ${
   fixture.items.some(item => item.kind === 'dropdown')
@@ -253,12 +254,12 @@ const styles = stylex.create({
     : ''
 }`
       : ''
-  return `${stylexBits}${needsMenu(fixture) ? `import * as DropdownMenu from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/dropdown-menu'\n` : ''}${usesIcon(fixture) ? `import * as Icon from '@/lib/icon'` : ''}`
+  return `${stylexBits}${needsMenu(fixture) ? `import * as DropdownMenu from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/dropdown-menu'\n` : ''}${usesIcon(fixture) ? `import * as Icon from '@/lib/icon'` : ''}`
 }
 
 const source = (
   fixture: BreadcrumbFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const viewBody = viewBodySource(fixture, renderer)
   const imports = componentImports(fixture, renderer)
@@ -280,8 +281,8 @@ const source = (
     imports: `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-${renderer === 'stylex' ? `import * as stylex from '@stylexjs/stylex'\n` : ''}
-import * as Breadcrumb from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/breadcrumb'
+${renderer !== 'tailwind' ? `import * as stylex from '@stylexjs/stylex'\n` : ''}
+import * as Breadcrumb from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/breadcrumb'
 ${imports}`,
     model: `export const Model = S.Struct({
   menu: DropdownMenu.Model,
@@ -324,8 +325,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   })
 }
 
-export const breadcrumbExamples = (
-  renderer: 'tailwind' | 'stylex',
+const breadcrumbExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   breadcrumbFixtures.map(fixture => ({
     title: fixture.title,
@@ -333,3 +334,8 @@ export const breadcrumbExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: source(fixture, renderer),
   }))
+
+export const breadcrumbExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, breadcrumbExamplesFor(renderer))

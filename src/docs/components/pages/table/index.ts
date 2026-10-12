@@ -22,5 +22,6 @@ export const tablePage = authoredPage({
       'Use TableHead for header cells and add a caption when the table needs an accessible name or explanation.',
     examples: tableExamples('tailwind'),
     stylexExamples: tableExamples('stylex'),
+    pleatExamples: tableExamples('pleat'),
   },
 })

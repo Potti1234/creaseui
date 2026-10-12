@@ -27,5 +27,6 @@ export const infoTipPage = authoredPage({
     ],
     examples: infoTipExamples('tailwind'),
     stylexExamples: infoTipExamples('stylex'),
+    pleatExamples: infoTipExamples('pleat'),
   },
 })

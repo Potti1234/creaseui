@@ -39,5 +39,6 @@ export const dateInputPage = authoredPage({
       'Parent Model\n├── DateInput child Model (value + pending text + embedded DatePicker)\n└── ChangedValue OutMessage → parent domain state\n    ├── min/max/disabled dates live on the embedded calendar (init or reflectConstraints)\n    └── format prop controls display of the committed value only',
     examples: dateInputExamples('tailwind'),
     stylexExamples: dateInputExamples('stylex'),
+    pleatExamples: dateInputExamples('pleat'),
   },
 })

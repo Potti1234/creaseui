@@ -1,3 +1,5 @@
+import { pleatExamples } from '@/docs/components/pleat-source'
+import type { DocsExample } from '@/docs/components/page-definition'
 import { mapDocsExamples } from '@/docs/components/pages/map/source'
 export const mapControlsFixtures = [
   {
@@ -11,5 +13,11 @@ export const mapControlsFixtures = [
       'Move controls to another corner and request your location on demand.',
   },
 ] as const
-export const mapControlsExamples = (renderer: 'tailwind' | 'stylex') =>
-  mapDocsExamples('map-controls', mapControlsFixtures, renderer)
+const mapControlsExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+) => mapDocsExamples('map-controls', mapControlsFixtures, renderer)
+
+export const mapControlsExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, mapControlsExamplesFor(renderer))

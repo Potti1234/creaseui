@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type TimeInputFixtureEntry = Readonly<{
@@ -166,8 +167,8 @@ export const timeInputFixtures: Readonly<
   },
 ]
 
-const ui = (renderer: 'tailwind' | 'stylex'): string =>
-  renderer === 'stylex' ? 'stylex' : 'ui'
+const ui = (renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat'): string =>
+  renderer !== 'tailwind' ? 'stylex' : 'ui'
 
 const timeInputCallSource = (
   entry: TimeInputFixtureEntry,
@@ -205,7 +206,10 @@ const viewSource = (fixture: TimeInputFixture): string => {
 })`
 }
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = timeInputFixtures[index] ?? timeInputFixtures[0]
   return foldkitApplication({
     title: `TimeInput — ${fixture.title}`,
@@ -256,11 +260,16 @@ export type Message = typeof Message.Type`,
   })
 }
 
-export const timeInputExamples = (
-  renderer: 'tailwind' | 'stylex',
+const timeInputExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   timeInputFixtures.map((fixture, index) => ({
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
   }))
+
+export const timeInputExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, timeInputExamplesFor(renderer))

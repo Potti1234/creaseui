@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type SwitchKind =
@@ -274,9 +275,9 @@ const emitStyles = (fixture: SwitchFixture): string => {
 
 const emitApplication = (
   fixture: SwitchFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const stylesBlock = isStyleX
     ? `\n\nconst styles = stylex.create({\n${emitStyles(fixture)}\n})`
     : ''
@@ -314,8 +315,8 @@ ${emitBody(fixture, isStyleX)}
   })
 }
 
-export const switchExamples = (
-  renderer: 'tailwind' | 'stylex',
+const switchExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   switchFixtures.map(fixture => ({
     title: fixture.title,
@@ -325,3 +326,8 @@ export const switchExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer),
   }))
+
+export const switchExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, switchExamplesFor(renderer))

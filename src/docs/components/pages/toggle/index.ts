@@ -21,5 +21,6 @@ export const togglePage = authoredPage({
     keyboard: [['Enter / Space', 'Toggles the focused pressed button.']],
     examples: toggleExamples('tailwind'),
     stylexExamples: toggleExamples('stylex'),
+    pleatExamples: toggleExamples('pleat'),
   },
 })

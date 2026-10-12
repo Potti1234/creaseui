@@ -21,5 +21,6 @@ export const markdownPage = authoredPage({
       'Markdown semantics map to native elements (headings, lists, blockquotes, tables); citation chips resolve to accessible labels with their source titles.',
     examples: markdownExamples('tailwind'),
     stylexExamples: markdownExamples('stylex'),
+    pleatExamples: markdownExamples('pleat'),
   },
 })

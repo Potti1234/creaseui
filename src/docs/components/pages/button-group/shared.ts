@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import {
   foldkitApplication,
   staticComponentApplication,
@@ -549,14 +550,17 @@ const buttonSource = (node: BgButton, isRtl: boolean): string => {
         }, h)`
 }
 
-const inputSource = (node: BgInput, renderer: 'tailwind' | 'stylex'): string =>
+const inputSource = (
+  node: BgInput,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string =>
   `Input.input({
           id: '${node.field}',
           value: model.${node.field},
           onInput: value => Message['${FIELD_MESSAGE[node.field]}']({ value }),
           placeholder: '${esc(node.placeholder)}',
           ${
-            renderer === 'stylex'
+            renderer !== 'tailwind'
               ? 'layoutStyle: styles.groupHeight,'
               : `class: 'h-9',`
           }
@@ -564,9 +568,9 @@ const inputSource = (node: BgInput, renderer: 'tailwind' | 'stylex'): string =>
 
 const inputGroupSource = (
   voiceToggle: boolean,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isSx = renderer === 'stylex'
+  const isSx = renderer !== 'tailwind'
   const addon = voiceToggle
     ? `InputGroup.inputGroupAddon({
             align: 'inline-end',
@@ -615,7 +619,9 @@ const inputGroupSource = (
       }, h)`
 }
 
-const selectSource = (renderer: 'tailwind' | 'stylex'): string =>
+const selectSource = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string =>
   `Select.select({
           model: model.select,
           maybeSelectedValue: model.maybeCurrency,
@@ -625,13 +631,13 @@ const selectSource = (renderer: 'tailwind' | 'stylex'): string =>
           itemToValue: item => item.value,
           itemToLabel: item => \`\${item.value} \${item.label}\`,
           ariaLabel: 'Currency',
-          ${renderer === 'stylex' ? '' : `triggerClass: 'font-mono',`}
+          ${renderer !== 'tailwind' ? '' : `triggerClass: 'font-mono',`}
         }, h)`
 
 const dropdownSource = (
   node: Readonly<{ t: 'dropdown'; menu: 'demo' | 'conversation' }>,
   fixture: ButtonGroupFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const isRtl = fixture.direction === 'rtl'
   const trigger =
@@ -639,7 +645,7 @@ const dropdownSource = (
       ? `Icon.icon('ellipsis', { ariaLabel: ${isRtl ? "'مزيد من الخيارات'" : "'More Options'"} }, h)`
       : `Icon.icon('chevron-down', { ariaLabel: 'Options' }, h)`
   const triggerStyling =
-    renderer === 'stylex'
+    renderer !== 'tailwind'
       ? `triggerButtonVariant: 'outline',
           triggerButtonSize: ${node.menu === 'demo' ? "'icon'" : "'default'"},`
       : node.menu === 'demo'
@@ -659,37 +665,39 @@ ${itemToConfigBody(node.menu, fixture)}
         }, h)`
 }
 
-const popoverSource = (renderer: 'tailwind' | 'stylex'): string =>
+const popoverSource = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string =>
   `Popover.popover({
           model: model.popover,
           toParentMessage: message =>
             Message['GotPopoverMessage']({ message }),
           trigger: Icon.icon('chevron-down', { ariaLabel: 'Open Popover' }, h),
-          ${renderer === 'stylex' ? '' : `triggerClass: 'inline-flex size-9 items-center justify-center rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground',`}
+          ${renderer !== 'tailwind' ? '' : `triggerClass: 'inline-flex size-9 items-center justify-center rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground',`}
           align: 'end',
-          content: h.div([h.Class(${renderer === 'stylex' ? 'className(styles.popoverBody)' : `'grid gap-3 text-sm'`})], [
-            h.div([h.Class(${renderer === 'stylex' ? 'className(styles.popoverHead)' : `'grid gap-1'`})], [
-              h.p([h.Class(${renderer === 'stylex' ? 'className(styles.popoverTitle)' : `'text-sm font-medium'`})], ['Start a new task with Copilot']),
-              h.p([h.Class(${renderer === 'stylex' ? 'className(styles.popoverCopy)' : `'text-sm text-muted-foreground'`})], ['Describe your task in natural language.']),
+          content: h.div([h.Class(${renderer !== 'tailwind' ? 'className(styles.popoverBody)' : `'grid gap-3 text-sm'`})], [
+            h.div([h.Class(${renderer !== 'tailwind' ? 'className(styles.popoverHead)' : `'grid gap-1'`})], [
+              h.p([h.Class(${renderer !== 'tailwind' ? 'className(styles.popoverTitle)' : `'text-sm font-medium'`})], ['Start a new task with Copilot']),
+              h.p([h.Class(${renderer !== 'tailwind' ? 'className(styles.popoverCopy)' : `'text-sm text-muted-foreground'`})], ['Describe your task in natural language.']),
             ]),
             Textarea.textarea({
               id: 'task',
               value: model.task,
               onInput: value => Message['ChangedTask']({ value }),
               placeholder: 'I need to...',
-              ${renderer === 'stylex' ? `resize: 'none',` : `class: 'resize-none',`}
+              ${renderer !== 'tailwind' ? `resize: 'none',` : `class: 'resize-none',`}
             }, h),
-            h.p([h.Class(${renderer === 'stylex' ? 'className(styles.popoverCopy)' : `'text-xs text-muted-foreground'`})], ['Copilot will open a pull request for review.']),
+            h.p([h.Class(${renderer !== 'tailwind' ? 'className(styles.popoverCopy)' : `'text-xs text-muted-foreground'`})], ['Copilot will open a pull request for review.']),
           ]),
         }, h)`
 
 const nodeSource = (
   node: BgNode,
   fixture: ButtonGroupFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
   depth = 2,
 ): string => {
-  const isSx = renderer === 'stylex'
+  const isSx = renderer !== 'tailwind'
   const pad = '  '.repeat(depth)
   switch (node.t) {
     case 'button':
@@ -721,15 +729,15 @@ ${pad}}, h)`
 
 const viewBodySource = (
   fixture: ButtonGroupFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isSx = renderer === 'stylex'
+  const isSx = renderer !== 'tailwind'
   const groupProps = [
     fixture.orientation === 'vertical' ? `orientation: 'vertical',` : '',
     fixture.ariaLabel === undefined
       ? ''
       : `ariaLabel: '${esc(fixture.ariaLabel)}',`,
-    fixture.rounded === true && renderer !== 'stylex'
+    fixture.rounded === true && renderer === 'tailwind'
       ? `class: '[--radius:9999rem]',`
       : '',
   ]
@@ -795,12 +803,12 @@ ${parts.join('\n')}
 
 const componentImports = (
   fixture: ButtonGroupFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const needs = nodeNeeds(fixture.nodes)
-  const ui = renderer === 'stylex' ? 'stylex' : 'ui'
+  const ui = renderer !== 'tailwind' ? 'stylex' : 'ui'
   const lines: Array<string> = []
-  const sxStyles = renderer === 'stylex' ? stylexStylesSource(fixture) : ''
+  const sxStyles = renderer !== 'tailwind' ? stylexStylesSource(fixture) : ''
   if (sxStyles !== '') lines.push(sxStyles.trimEnd())
   lines.push(`import * as Button from '@/${ui}/button'`)
   if (needs.icons) lines.push(`import * as Icon from '@/lib/icon'`)
@@ -971,7 +979,7 @@ const isDynamic = (fixture: ButtonGroupFixture): boolean => {
 
 const dynamicSource = (
   fixture: ButtonGroupFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const needs = nodeNeeds(fixture.nodes)
   const consts: Array<string> = []
@@ -993,7 +1001,7 @@ const dynamicSource = (
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-import * as ButtonGroup from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/button-group'
+import * as ButtonGroup from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/button-group'
 ${componentImports(fixture, renderer)}`,
     model: `export const Model = S.Struct({
 ${modelFields(needs).join('\n')}
@@ -1027,7 +1035,7 @@ ${updateCases(needs).join('\n')}
 
 const source = (
   fixture: ButtonGroupFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string =>
   isDynamic(fixture)
     ? dynamicSource(fixture, renderer)
@@ -1040,8 +1048,8 @@ const source = (
         viewBody: viewBodySource(fixture, renderer),
       })
 
-export const buttonGroupExamples = (
-  renderer: 'tailwind' | 'stylex',
+const buttonGroupExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   buttonGroupFixtures.map(fixture => ({
     title: fixture.title,
@@ -1049,3 +1057,8 @@ export const buttonGroupExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: source(fixture, renderer),
   }))
+
+export const buttonGroupExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, buttonGroupExamplesFor(renderer))

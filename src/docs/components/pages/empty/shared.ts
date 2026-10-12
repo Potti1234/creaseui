@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import {
   foldkitApplication,
   staticComponentApplication,
@@ -311,8 +312,8 @@ ${emitBody(fixture, isStyleX)
 })`,
   })
 
-export const emptyExamples = (
-  renderer: 'tailwind' | 'stylex',
+const emptyExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   emptyFixtures.map(fixture => ({
     title: fixture.title,
@@ -322,13 +323,18 @@ export const emptyExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code:
       fixture.kind === 'inputGroup'
-        ? emitInputGroupApplication(fixture, renderer === 'stylex')
+        ? emitInputGroupApplication(fixture, renderer !== 'tailwind')
         : staticComponentApplication({
             componentName: 'Empty',
             componentSlug: 'empty',
             renderer,
             exampleName: fixture.title,
-            componentImports: emitImports(fixture, renderer === 'stylex'),
-            viewBody: emitBody(fixture, renderer === 'stylex'),
+            componentImports: emitImports(fixture, renderer !== 'tailwind'),
+            viewBody: emitBody(fixture, renderer !== 'tailwind'),
           }),
   }))
+
+export const emptyExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, emptyExamplesFor(renderer))

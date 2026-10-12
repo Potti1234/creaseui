@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 /* Astryx Stack/HStack/VStack/StackItem example blocks ported 1:1. Astryx
@@ -186,7 +187,9 @@ const emitDirection = (badge: (label: string) => string): string =>
       h,
     )`
 
-const emitAlignment = (renderer: 'tailwind' | 'stylex'): string => {
+const emitAlignment = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const supporting = renderer === 'tailwind' ? supportingTw : supportingSx
   return `Stack.stack(
       {
@@ -216,7 +219,9 @@ const emitAlignment = (renderer: 'tailwind' | 'stylex'): string => {
     )`
 }
 
-const emitFillItem = (renderer: 'tailwind' | 'stylex'): string => {
+const emitFillItem = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const name = renderer === 'tailwind' ? nameTw : nameSx
   const supporting = renderer === 'tailwind' ? supportingTw : supportingSx
   return `Stack.vStack(
@@ -257,7 +262,9 @@ const emitHBasic = (badge: (label: string) => string): string =>
       h,
     )`
 
-const emitHShowcase = (renderer: 'tailwind' | 'stylex'): string => {
+const emitHShowcase = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const supporting = renderer === 'tailwind' ? supportingTw : supportingSx
   const badge = badgeFor
   return `Stack.vStack(
@@ -275,7 +282,9 @@ const emitHShowcase = (renderer: 'tailwind' | 'stylex'): string => {
     )`
 }
 
-const emitVBasic = (renderer: 'tailwind' | 'stylex'): string => {
+const emitVBasic = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const heading =
     renderer === 'tailwind'
       ? `h.h5([h.Class('text-xs font-semibold')], ['Weekly Report'])`
@@ -294,7 +303,9 @@ const emitVBasic = (renderer: 'tailwind' | 'stylex'): string => {
     )`
 }
 
-const emitVShowcase = (renderer: 'tailwind' | 'stylex'): string => {
+const emitVShowcase = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const supporting = renderer === 'tailwind' ? supportingTw : supportingSx
   const badge = badgeFor
   return `Stack.hStack(
@@ -315,7 +326,7 @@ const emitVShowcase = (renderer: 'tailwind' | 'stylex'): string => {
 }
 
 const emitItemFill = (
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
   maxWidth: number,
   trailing: boolean,
 ): string => {
@@ -341,7 +352,7 @@ const emitItemFill = (
 
 const emitBody = (
   fixture: StackFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const badge = badgeFor
   switch (fixture.kind) {
@@ -436,16 +447,19 @@ const extraSourceFor = (kind: StackFixture['kind']): string => {
   }
 }
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = stackFixtures[index] ?? stackFixtures[0]
-  const mod = renderer === 'stylex' ? 'stylex' : 'ui'
+  const mod = renderer !== 'tailwind' ? 'stylex' : 'ui'
   const componentImports = [
     usesBadge(fixture.kind) ? `import * as Badge from '@/${mod}/badge'` : '',
     usesButton(fixture.kind) ? `import * as Button from '@/${mod}/button'` : '',
     usesCard(fixture.kind) ? `import * as Card from '@/${mod}/card'` : '',
     usesAvatar(fixture.kind) ? `import * as Avatar from '@/${mod}/avatar'` : '',
     extraSourceFor(fixture.kind),
-    renderer === 'stylex' ? stylexStylesFor(fixture.kind) : '',
+    renderer !== 'tailwind' ? stylexStylesFor(fixture.kind) : '',
   ]
     .filter(Boolean)
     .join('\n')
@@ -459,11 +473,16 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
   })
 }
 
-export const stackExamples = (
-  renderer: 'tailwind' | 'stylex',
+const stackExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   stackFixtures.map((fixture, index) => ({
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
   }))
+
+export const stackExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, stackExamplesFor(renderer))

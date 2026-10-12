@@ -22,5 +22,6 @@ export const alertPage = authoredPage({
       'announcement="static" adds no live-region role. "status" maps to polite status semantics for non-urgent updates. "alert" maps to assertive alert semantics and is reserved for urgent failures.',
     examples: alertExamples('tailwind'),
     stylexExamples: alertExamples('stylex'),
+    pleatExamples: alertExamples('pleat'),
   },
 })

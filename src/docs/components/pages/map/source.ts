@@ -10,7 +10,7 @@ export const mapExampleSource = (
   slug: string,
   index: number,
   title: string,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat',
 ): string => {
   const folder = renderer === 'stylex' ? 'stylex' : 'ui'
   const primary =
@@ -94,7 +94,7 @@ export const mapExampleSource = (
 export const mapDocsExamples = (
   slug: string,
   fixtures: ReadonlyArray<Readonly<{ title: string; description: string }>>,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   fixtures.map((fixture, index) => ({
     ...fixture,

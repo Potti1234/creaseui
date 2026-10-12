@@ -15,5 +15,6 @@ export const toastPage = authoredPage({
     ...base,
     examples: toastExamples('tailwind'),
     stylexExamples: toastExamples('stylex'),
+    pleatExamples: toastExamples('pleat'),
   },
 })

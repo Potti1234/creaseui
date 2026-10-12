@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type SliderInstance = Readonly<{
@@ -80,9 +81,9 @@ const styles = stylex.create({
 
 const sliderSource = (
   fixture: { title: string; initialValue: number; isDisabled: boolean },
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
   return foldkitApplication({
     title: `Slider — ${fixture.title}`,
@@ -172,9 +173,9 @@ const multiSource = (
     vertical?: boolean
     controlled?: boolean
   },
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
   const initEmit = (instance: SliderInstance): string =>
     `Slider.initMulti({
@@ -324,8 +325,8 @@ ${fixture.instances
   })
 }
 
-export const sliderExamples = (
-  renderer: 'tailwind' | 'stylex',
+const sliderExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   sliderFixtures.map(fixture => ({
     title: fixture.title,
@@ -334,3 +335,8 @@ export const sliderExamples = (
         ? sliderSource(fixture, renderer)
         : multiSource(fixture, renderer),
   }))
+
+export const sliderExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, sliderExamplesFor(renderer))

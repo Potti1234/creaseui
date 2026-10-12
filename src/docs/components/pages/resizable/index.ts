@@ -25,5 +25,6 @@ export const resizablePage = authoredPage({
     ],
     examples: resizableExamples('tailwind'),
     stylexExamples: resizableExamples('stylex'),
+    pleatExamples: resizableExamples('pleat'),
   },
 })

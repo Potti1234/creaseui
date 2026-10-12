@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 import type { AccordionType } from '@/lib/accordion-state'
 
@@ -209,8 +210,8 @@ ${items
   .join('\n')}
 ]`
 
-const ui = (renderer: 'tailwind' | 'stylex'): string =>
-  renderer === 'stylex' ? 'stylex' : 'ui'
+const ui = (renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat'): string =>
+  renderer !== 'tailwind' ? 'stylex' : 'ui'
 
 const stylexImports = (entries: ReadonlyArray<string>): string =>
   `import * as stylex from '@stylexjs/stylex'
@@ -221,7 +222,7 @@ ${entries.join('\n')}
 
 const viewInputsSource = (
   fixture: AccordionFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   if (fixture.kind === 'borders') {
     return renderer === 'tailwind'
@@ -233,7 +234,7 @@ const viewInputsSource = (
 
 const submodelSource = (
   fixture: AccordionFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => `h.submodel({
       slotId: 'docs-accordion',
       model: model.accordion,
@@ -244,7 +245,7 @@ const submodelSource = (
 
 const bodySource = (
   fixture: AccordionFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const sub = submodelSource(fixture, renderer)
   switch (fixture.kind) {
@@ -274,9 +275,12 @@ const bodySource = (
   }
 }
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = accordionFixtures[index] ?? accordionFixtures[0]
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const styleEntries: Array<string> = []
   if (isStyleX && fixture.kind === 'card') {
     styleEntries.push(
@@ -350,11 +354,16 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   })
 }
 
-export const accordionExamples = (
-  renderer: 'tailwind' | 'stylex',
+const accordionExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   accordionFixtures.map((fixture, index) => ({
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
   }))
+
+export const accordionExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, accordionExamplesFor(renderer))

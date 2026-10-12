@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type NumberInputFixtureEntry = Readonly<{
@@ -123,8 +124,8 @@ export const numberInputFixtures: Readonly<
   },
 ]
 
-const ui = (renderer: 'tailwind' | 'stylex'): string =>
-  renderer === 'stylex' ? 'stylex' : 'ui'
+const ui = (renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat'): string =>
+  renderer !== 'tailwind' ? 'stylex' : 'ui'
 
 const numberInputCallSource = (
   entry: NumberInputFixtureEntry,
@@ -159,7 +160,10 @@ const viewSource = (fixture: NumberInputFixture): string => {
 })`
 }
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = numberInputFixtures[index] ?? numberInputFixtures[0]
   return foldkitApplication({
     title: `NumberInput — ${fixture.title}`,
@@ -210,11 +214,16 @@ export type Message = typeof Message.Type`,
   })
 }
 
-export const numberInputExamples = (
-  renderer: 'tailwind' | 'stylex',
+const numberInputExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   numberInputFixtures.map((fixture, index) => ({
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
   }))
+
+export const numberInputExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, numberInputExamplesFor(renderer))

@@ -21,5 +21,6 @@ export const fieldPage = authoredPage({
       'Prefer controlField so label, description, and alert IDs cannot drift. Forward its typed controlId, describedBy, invalid, and disabled values to the control. Low-level parts remain available for unusual compositions but require manual linkage.',
     examples: fieldExamples('tailwind'),
     stylexExamples: fieldExamples('stylex'),
+    pleatExamples: fieldExamples('pleat'),
   },
 })

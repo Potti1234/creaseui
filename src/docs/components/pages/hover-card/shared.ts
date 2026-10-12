@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type HoverCardKind = 'basic' | 'sides' | 'rtl'
@@ -179,8 +180,8 @@ const emitApplication = (
     ? emitSingle(isStyleX)
     : emitRow(fixture.kind, isStyleX)
 
-export const hoverCardExamples = (
-  renderer: 'tailwind' | 'stylex',
+const hoverCardExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   hoverCardFixtures.map(fixture => ({
     title: fixture.title,
@@ -188,5 +189,10 @@ export const hoverCardExamples = (
       ? {}
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
-    code: emitApplication(fixture, renderer === 'stylex'),
+    code: emitApplication(fixture, renderer !== 'tailwind'),
   }))
+
+export const hoverCardExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, hoverCardExamplesFor(renderer))

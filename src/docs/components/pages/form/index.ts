@@ -28,5 +28,6 @@ export const formPage = authoredPage({
     ],
     examples: formExamples('tailwind'),
     stylexExamples: formExamples('stylex'),
+    pleatExamples: formExamples('pleat'),
   },
 })

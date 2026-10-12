@@ -1,5 +1,6 @@
 import { DatePart, type LocaleConfig } from 'foldkit/calendar'
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export const germanCalendarLocale: LocaleConfig = {
@@ -184,9 +185,9 @@ const bookedDatesSource = `
 
 const calendarPropsSource = (
   f: CalendarFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isSx = renderer === 'stylex'
+  const isSx = renderer !== 'tailwind'
   const parts: Array<string> = [
     `model: model.calendar`,
     `maybeSelectedDate: ${f.layout === 'range' ? 'Option.none()' : 'model.selectedDate'}`,
@@ -214,25 +215,27 @@ const calendarPropsSource = (
 
 const calendarViewSource = (
   f: CalendarFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => `Calendar.calendar({
             ${calendarPropsSource(f, renderer)},
           }, h)`
 
 const borderedSource = (
   f: CalendarFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
   inner: string,
 ): string => {
   const wrapped = `h.div(
-          [h.Class(${renderer === 'stylex' ? 'className(styles.bordered)' : `'rounded-lg border w-fit'`})],
+          [h.Class(${renderer !== 'tailwind' ? 'className(styles.bordered)' : `'rounded-lg border w-fit'`})],
           [${inner}],
         )`
   return wrapped
 }
 
-const presetsSource = (renderer: 'tailwind' | 'stylex'): string => {
-  const isSx = renderer === 'stylex'
+const presetsSource = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
+  const isSx = renderer !== 'tailwind'
   return `Card.card({
           ${isSx ? 'layoutStyle: styles.cardFit,' : `class: 'mx-auto w-fit max-w-[300px]',`}
           size: 'sm',
@@ -262,7 +265,7 @@ const presetsSource = (renderer: 'tailwind' | 'stylex'): string => {
 
 const timeFieldSource = (
   field: 'start' | 'end',
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const label = field === 'start' ? 'Start Time' : 'End Time'
   const id = field === 'start' ? 'time-from' : 'time-to'
@@ -284,14 +287,14 @@ const timeFieldSource = (
                                 Message['${msg}']({ value }),
                               ariaLabel: '${label}',
                               ${
-                                renderer === 'stylex'
+                                renderer !== 'tailwind'
                                   ? ''
                                   : `class: 'appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none',`
                               }
                             }, h),
                             InputGroup.inputGroupAddon({
                               children: [
-                                Icon.icon('clock', ${renderer === 'stylex' ? '{ class: className(styles.icon) }' : `{ class: 'size-4 text-muted-foreground' }`}, h),
+                                Icon.icon('clock', ${renderer !== 'tailwind' ? '{ class: className(styles.icon) }' : `{ class: 'size-4 text-muted-foreground' }`}, h),
                               ],
                             }, h),
                           ],
@@ -304,9 +307,9 @@ const timeFieldSource = (
 
 const timePickerSource = (
   f: CalendarFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isSx = renderer === 'stylex'
+  const isSx = renderer !== 'tailwind'
   return `Card.card({
           ${isSx ? 'layoutStyle: styles.cardFit,' : `class: 'mx-auto w-fit',`}
           size: 'sm',
@@ -342,13 +345,13 @@ const timePickerSource = (
 
 const viewBodySource = (
   fixture: CalendarFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   if (fixture.layout === 'presets') return presetsSource(renderer)
   if (fixture.layout === 'time') return timePickerSource(fixture, renderer)
   const calendar = calendarViewSource(fixture, renderer)
   if (fixture.card === true) {
-    const isSx = renderer === 'stylex'
+    const isSx = renderer !== 'tailwind'
     return `Card.card({
           ${isSx ? 'layoutStyle: styles.cardFit,' : `class: 'mx-auto w-fit p-0',`}
           children: [
@@ -383,9 +386,9 @@ const needsFor = (f: CalendarFixture): Needs => ({
 
 const componentImports = (
   needs: Needs,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const root = renderer === 'stylex' ? 'stylex' : 'ui'
+  const root = renderer !== 'tailwind' ? 'stylex' : 'ui'
   const imports: Array<string> = []
   if (needs.card) imports.push(`import * as Card from '@/${root}/card'`)
   if (needs.presets) imports.push(`import * as Button from '@/${root}/button'`)
@@ -394,7 +397,7 @@ const componentImports = (
     imports.push(`import * as InputGroup from '@/${root}/input-group'`)
     imports.push(`import * as Icon from '@/lib/icon'`)
   }
-  if (renderer === 'stylex')
+  if (renderer !== 'tailwind')
     imports.push(
       `import * as stylex from '@stylexjs/stylex'`,
       `import { className } from '@/stylex/style'`,
@@ -424,9 +427,9 @@ ${parts.join('\n')}
 
 const jalaliSource = (
   f: CalendarFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isSx = renderer === 'stylex'
+  const isSx = renderer !== 'tailwind'
   const dayButton = isSx
     ? `const jalaliDayButton = (
   cell: JalaliCell,
@@ -706,7 +709,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
 
 const source = (
   f: CalendarFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   if (f.layout === 'jalali') return jalaliSource(f, renderer)
   const needs = needsFor(f)
@@ -817,8 +820,8 @@ import * as FoldkitCalendar from 'foldkit/calendar'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
-import * as Calendar from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/calendar'
-${componentImports(needs, renderer)}${renderer === 'stylex' ? stylesSource(f) : ''}`,
+import * as Calendar from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/calendar'
+${componentImports(needs, renderer)}${renderer !== 'tailwind' ? stylesSource(f) : ''}`,
     model: `${localeDecl}export const Model = S.Struct({
 ${modelFields}
 })
@@ -852,8 +855,8 @@ ${updateCases}
   })
 }
 
-export const calendarExamples = (
-  renderer: 'tailwind' | 'stylex',
+const calendarExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   calendarFixtures.map(fixture => ({
     title: fixture.title,
@@ -864,3 +867,8 @@ export const calendarExamples = (
       : { sectionId: fixture.sectionId }),
     code: source(fixture, renderer),
   }))
+
+export const calendarExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, calendarExamplesFor(renderer))

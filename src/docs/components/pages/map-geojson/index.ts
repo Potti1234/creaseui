@@ -41,5 +41,6 @@ mapGeoJSON({ id: 'regions', data: '/data/regions.geojson', interactive: true }, 
     ],
     examples: mapGeojsonExamples('tailwind'),
     stylexExamples: mapGeojsonExamples('stylex'),
+    pleatExamples: mapGeojsonExamples('pleat'),
   },
 })

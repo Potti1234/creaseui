@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type MenubarKind =
@@ -696,9 +697,9 @@ ${spec.map(menu => emitMenu(menu, isStyleX)).join(',\n')}
 
 const emitApplication = (
   fixture: MenubarFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const stylesBlock = isStyleX ? emitStyles(fixture) : ''
   const bodyStart = isStyleX
     ? `h.main([h.Class(stylex.props(styles.page).className ?? '')], [`
@@ -731,8 +732,8 @@ ${stylesBlock}`
   })
 }
 
-export const menubarExamples = (
-  renderer: 'tailwind' | 'stylex',
+const menubarExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   menubarFixtures.map(fixture => ({
     title: fixture.title,
@@ -742,3 +743,8 @@ export const menubarExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer),
   }))
+
+export const menubarExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, menubarExamplesFor(renderer))

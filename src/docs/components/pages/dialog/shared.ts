@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type DialogFixtureKind =
@@ -302,10 +303,10 @@ const sq = (value: string): string => value.replaceAll("'", "\\'")
 const dialogSource = (
   fixture: DialogFixture,
   _index: number,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const inputs = hasInputs(fixture.kind)
   const rtl = fixture.kind === 'rtl'
   return foldkitApplication({
@@ -378,8 +379,8 @@ ${emitMaxWidth(fixture, isStyleX)}${fixture.kind === 'noClose' ? '      showClos
   })
 }
 
-export const dialogExamples = (
-  renderer: 'tailwind' | 'stylex',
+const dialogExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   dialogFixtures.map((fixture, index) => ({
     title: fixture.title,
@@ -389,3 +390,8 @@ export const dialogExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: dialogSource(fixture, index, renderer),
   }))
+
+export const dialogExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, dialogExamplesFor(renderer))

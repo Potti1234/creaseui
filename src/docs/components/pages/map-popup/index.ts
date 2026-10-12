@@ -43,5 +43,6 @@ mapPopup({ longitude: 11.576124, latitude: 48.137154, ariaLabel: 'Place details'
     ],
     examples: mapPopupExamples('tailwind'),
     stylexExamples: mapPopupExamples('stylex'),
+    pleatExamples: mapPopupExamples('pleat'),
   },
 })

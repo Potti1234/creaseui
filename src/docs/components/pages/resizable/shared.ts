@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export const resizableFixtures = [
@@ -61,9 +62,9 @@ const singleSource = (
     first: string
     second: string
   },
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
   return foldkitApplication({
     title: `Resizable — ${fixture.title}`,
@@ -128,9 +129,9 @@ const nestedSource = (
     second: string
     third: string
   },
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
   const panelEmit = (label: string): string =>
     `h.div([h.Class(${isStyleX ? 'className(styles.panel, styles.label)' : "'flex size-full items-center justify-center p-6 font-semibold'"})], ['${label}'])`
@@ -223,8 +224,8 @@ export type Message = typeof Message.Type`,
   })
 }
 
-export const resizableExamples = (
-  renderer: 'tailwind' | 'stylex',
+const resizableExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   resizableFixtures.map(fixture => ({
     title: fixture.title,
@@ -233,3 +234,8 @@ export const resizableExamples = (
         ? singleSource(fixture, renderer)
         : nestedSource(fixture, renderer),
   }))
+
+export const resizableExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, resizableExamplesFor(renderer))

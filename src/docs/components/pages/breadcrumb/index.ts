@@ -26,5 +26,6 @@ export const breadcrumbPage = authoredPage({
     ],
     examples: breadcrumbExamples('tailwind'),
     stylexExamples: breadcrumbExamples('stylex'),
+    pleatExamples: breadcrumbExamples('pleat'),
   },
 })

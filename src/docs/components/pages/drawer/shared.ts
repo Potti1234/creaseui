@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type DrawerKind =
@@ -672,10 +673,10 @@ const emitDrawerProps = (fixture: DrawerFixture, isStyleX: boolean): string => {
 const source = (
   fixture: DrawerFixture,
   _index: number,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const openCase =
     fixture.kind === 'responsive'
       ? 'ClickedOpenResponsive'
@@ -762,8 +763,8 @@ export const update = (
   })
 }
 
-export const drawerExamples = (
-  renderer: 'tailwind' | 'stylex',
+const drawerExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   drawerFixtures.map((fixture, index) => ({
     title: fixture.title,
@@ -773,3 +774,8 @@ export const drawerExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: source(fixture, index, renderer),
   }))
+
+export const drawerExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, drawerExamplesFor(renderer))

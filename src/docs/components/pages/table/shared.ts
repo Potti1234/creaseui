@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import {
   foldkitApplication,
   staticComponentApplication,
@@ -291,7 +292,7 @@ ${parts.join('\n')}
 
 const emitStatic = (
   fixture: TableFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string =>
   staticComponentApplication({
     componentName: 'Table',
@@ -299,13 +300,15 @@ const emitStatic = (
     renderer,
     exampleName: fixture.title,
     componentImports:
-      (renderer === 'stylex' ? `${sxStyles(fixture)}` : '') +
+      (renderer !== 'tailwind' ? `${sxStyles(fixture)}` : '') +
       dataSource(fixture.kind),
-    viewBody: staticBody(fixture.kind, renderer === 'stylex'),
+    viewBody: staticBody(fixture.kind, renderer !== 'tailwind'),
   })
 
-const emitActions = (renderer: 'tailwind' | 'stylex'): string => {
-  const isStyleX = renderer === 'stylex'
+const emitActions = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
+  const isStyleX = renderer !== 'tailwind'
   const base = isStyleX ? 'stylex' : 'ui'
   return foldkitApplication({
     title: 'Table — Actions',
@@ -375,8 +378,8 @@ ${actionsTable(isStyleX)
   })
 }
 
-export const tableExamples = (
-  renderer: 'tailwind' | 'stylex',
+const tableExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   tableFixtures.map(fixture => ({
     title: fixture.title,
@@ -389,3 +392,8 @@ export const tableExamples = (
         ? emitActions(renderer)
         : emitStatic(fixture, renderer),
   }))
+
+export const tableExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, tableExamplesFor(renderer))

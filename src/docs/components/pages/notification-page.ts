@@ -16,7 +16,7 @@ const application = (
   example: string,
   variant: Toast.Variant,
   sticky: boolean,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat',
 ): string => {
   const factory = variant.toLowerCase()
   return foldkitApplication({
@@ -79,7 +79,7 @@ export const update = (model: Model, message: Message): Update.Return<Model, Mes
 
 export const notificationExamples = (
   config: NotificationConfig,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat',
 ) =>
   [
     {

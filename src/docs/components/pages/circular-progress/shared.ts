@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 export type CircularProgressItem = Readonly<{
@@ -119,9 +120,12 @@ const itemSource = (item: CircularProgressItem): string => {
   return `CircularProgress.circularProgress({ ${props.join(', ')} }, h)`
 }
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = circularProgressFixtures[index] ?? circularProgressFixtures[0]
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const componentImports = isStyleX
     ? `import * as stylex from '@stylexjs/stylex'
 
@@ -151,11 +155,16 @@ const styles = stylex.create({ row: { display: 'flex', gap: '1.5rem', alignItems
   })
 }
 
-export const circularProgressExamples = (
-  renderer: 'tailwind' | 'stylex',
+const circularProgressExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   circularProgressFixtures.map((fixture, index) => ({
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
   }))
+
+export const circularProgressExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, circularProgressExamplesFor(renderer))

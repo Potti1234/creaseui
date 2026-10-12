@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type MultiSelectorFixture = Readonly<{
@@ -130,12 +131,15 @@ export const TEAMS = [
   { value: 'operations', label: 'Operations' },
 ] as const
 
-const imports = (renderer: 'tailwind' | 'stylex', extra: string): string =>
+const imports = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+  extra: string,
+): string =>
   `import { Option, Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-import * as MultiSelector from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/multi-selector'${extra}`
+import * as MultiSelector from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/multi-selector'${extra}`
 
 const stylexPreamble = `
 import * as stylex from '@stylexjs/stylex'
@@ -397,9 +401,9 @@ const initFor = (fixture: MultiSelectorFixture): string => {
 
 const multiSelectorSource = (
   fixture: MultiSelectorFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   return foldkitApplication({
     title: `MultiSelector — ${fixture.title}`,
     imports: imports(renderer, isStyleX ? stylexPreamble : ''),
@@ -422,8 +426,8 @@ const multiSelectorSource = (
   })
 }
 
-export const multiSelectorExamples = (
-  renderer: 'tailwind' | 'stylex',
+const multiSelectorExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   multiSelectorFixtures.map(fixture => ({
     title: fixture.title,
@@ -433,3 +437,8 @@ export const multiSelectorExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: multiSelectorSource(fixture, renderer),
   }))
+
+export const multiSelectorExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, multiSelectorExamplesFor(renderer))

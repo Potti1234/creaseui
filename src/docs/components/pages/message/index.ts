@@ -21,5 +21,6 @@ export const messagePage = authoredPage({
       'Render transcript updates in an appropriately labeled log when they arrive live. Sender names and delivery state must be text, not color alone.',
     examples: messageExamples('tailwind'),
     stylexExamples: messageExamples('stylex'),
+    pleatExamples: messageExamples('pleat'),
   },
 })

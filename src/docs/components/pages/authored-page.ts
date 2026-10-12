@@ -305,7 +305,7 @@ export const statelessComponentApplication = (
   config: Readonly<{
     componentName: string
     componentSlug: string
-    renderer?: 'tailwind' | 'stylex'
+    renderer?: 'tailwind' | 'stylex' | 'pleat' | 'pleat'
     exampleName: string
     componentImports?: string
     viewBody: string
@@ -318,7 +318,7 @@ import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
-import * as ${config.componentName} from '@/${config.renderer === 'stylex' ? 'stylex' : 'ui'}/${config.componentSlug}'${
+import * as ${config.componentName} from '@/${config.renderer === 'tailwind' || config.renderer === undefined ? 'ui' : config.renderer}/${config.componentSlug}'${
       config.componentImports === undefined
         ? ''
         : `\n${config.componentImports}`
@@ -359,7 +359,7 @@ export const staticComponentApplication = (
   config: Readonly<{
     componentName: string
     componentSlug: string
-    renderer?: 'tailwind' | 'stylex'
+    renderer?: 'tailwind' | 'stylex' | 'pleat' | 'pleat'
     exampleName: string
     componentImports?: string
     viewBody: string
@@ -372,7 +372,7 @@ import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
-import * as ${config.componentName} from '@/${config.renderer === 'stylex' ? 'stylex' : 'ui'}/${config.componentSlug}'${
+import * as ${config.componentName} from '@/${config.renderer === 'tailwind' || config.renderer === undefined ? 'ui' : config.renderer}/${config.componentSlug}'${
       config.componentImports === undefined
         ? ''
         : `\n${config.componentImports}`
@@ -408,7 +408,7 @@ export const controlledTextApplication = (
   config: Readonly<{
     componentName: 'Input' | 'Textarea'
     componentSlug: 'input' | 'textarea'
-    renderer?: 'tailwind' | 'stylex'
+    renderer?: 'tailwind' | 'stylex' | 'pleat' | 'pleat'
     exampleName: string
     field: string
     initialValue: string
@@ -423,7 +423,7 @@ import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
-import * as ${config.componentName} from '@/${config.renderer === 'stylex' ? 'stylex' : 'ui'}/${config.componentSlug}'${
+import * as ${config.componentName} from '@/${config.renderer === 'tailwind' || config.renderer === undefined ? 'ui' : config.renderer}/${config.componentSlug}'${
       config.componentImports === undefined
         ? ''
         : `\n${config.componentImports}`
@@ -459,7 +459,7 @@ export const controlledBooleanApplication = (
   config: Readonly<{
     componentName: string
     componentSlug: string
-    renderer?: 'tailwind' | 'stylex'
+    renderer?: 'tailwind' | 'stylex' | 'pleat' | 'pleat'
     exampleName: string
     field: string
     initialValue: boolean
@@ -475,7 +475,7 @@ import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
-import * as ${config.componentName} from '@/${config.renderer === 'stylex' ? 'stylex' : 'ui'}/${config.componentSlug}'`,
+import * as ${config.componentName} from '@/${config.renderer === 'tailwind' || config.renderer === undefined ? 'ui' : config.renderer}/${config.componentSlug}'`,
     model: `export const Model = S.Struct({ ${config.field}: S.Boolean })
 export type Model = typeof Model.Type`,
     messages: `import { taggedStruct } from 'foldkit/schema'
@@ -507,7 +507,7 @@ export const controlledStringApplication = (
   config: Readonly<{
     componentName: string
     componentSlug: string
-    renderer?: 'tailwind' | 'stylex'
+    renderer?: 'tailwind' | 'stylex' | 'pleat' | 'pleat'
     exampleName: string
     field: string
     initialValue: string
@@ -527,7 +527,7 @@ import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
-import * as ${config.componentName} from '@/${config.renderer === 'stylex' ? 'stylex' : 'ui'}/${config.componentSlug}'${
+import * as ${config.componentName} from '@/${config.renderer === 'tailwind' || config.renderer === undefined ? 'ui' : config.renderer}/${config.componentSlug}'${
       config.componentImports === undefined
         ? ''
         : `\n${config.componentImports}`

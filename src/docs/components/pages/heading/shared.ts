@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 export type HeadingExampleKind =
@@ -151,9 +152,12 @@ const stylexStyles = (fixture: HeadingFixture): string => {
   }
 }
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = headingFixtures[index] ?? headingFixtures[0]
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const base = isStyleX ? 'stylex' : 'ui'
   const imports: string[] = []
   if (isStyleX) {
@@ -185,8 +189,8 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
   })
 }
 
-export const headingExamples = (
-  renderer: 'tailwind' | 'stylex',
+const headingExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   headingFixtures.map((fixture, index) => ({
     title: fixture.title,
@@ -195,3 +199,8 @@ export const headingExamples = (
       : { description: fixture.description }),
     code: source(index, renderer),
   }))
+
+export const headingExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, headingExamplesFor(renderer))

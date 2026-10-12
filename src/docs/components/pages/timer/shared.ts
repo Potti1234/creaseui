@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type TimerFixture = Readonly<{
@@ -47,9 +48,9 @@ export const timerFixtures: Readonly<[TimerFixture, ...Array<TimerFixture>]> = [
 
 const timerSource = (
   fixture: TimerFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const hasClock = fixture.layout === 'showcase' || fixture.layout === 'formats'
   const supporting = (text: string): string =>
     isStyleX
@@ -256,11 +257,16 @@ export type Message = typeof Message.Type`,
   })
 }
 
-export const timerExamples = (
-  renderer: 'tailwind' | 'stylex',
+const timerExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   timerFixtures.map(fixture => ({
     title: fixture.title,
     description: fixture.description,
     code: timerSource(fixture, renderer),
   }))
+
+export const timerExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, timerExamplesFor(renderer))

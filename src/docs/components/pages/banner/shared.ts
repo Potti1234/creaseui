@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 import type { BannerStatus } from '@/lib/banner'
 
@@ -232,15 +233,18 @@ const bannerSource = (
       }, h)`
 }
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = bannerFixtures[index] ?? bannerFixtures[0]
   const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
-  const uiDir = renderer === 'stylex' ? 'stylex' : 'ui'
+  const uiDir = renderer !== 'tailwind' ? 'stylex' : 'ui'
   const usesButton = fixture.banners.some(
     banner => banner.endActionLabel !== undefined,
   )
   const stackAttrs =
-    renderer === 'stylex'
+    renderer !== 'tailwind'
       ? `[h.Class(stylex.props(styles.stack).className ?? '')${fixture.maxWidth === undefined ? '' : `, h.Style({ maxWidth: '${String(fixture.maxWidth)}px' })`}]`
       : `[h.Class('flex flex-col gap-3')${fixture.maxWidth === undefined ? '' : `, h.Style({ maxWidth: '${String(fixture.maxWidth)}px' })`}]`
   return foldkitApplication({
@@ -250,7 +254,7 @@ import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
 import * as Banner from '@/${uiDir}/banner'${usesButton ? `\nimport * as Button from '@/${uiDir}/button'` : ''}${
-      renderer === 'stylex'
+      renderer !== 'tailwind'
         ? `\nimport * as stylex from '@stylexjs/stylex'\n\nconst styles = stylex.create({\n  stack: { display: 'flex', flexDirection: 'column', gap: '0.75rem' },\n})`
         : ''
     }`,
@@ -298,11 +302,16 @@ export type Message = typeof Message.Type`,
   })
 }
 
-export const bannerExamples = (
-  renderer: 'tailwind' | 'stylex',
+const bannerExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   bannerFixtures.map((fixture, index) => ({
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
   }))
+
+export const bannerExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, bannerExamplesFor(renderer))

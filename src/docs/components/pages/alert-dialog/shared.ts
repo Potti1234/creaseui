@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 type DialogSpec = Readonly<{
@@ -212,12 +213,12 @@ const asyncApplySource = `const applyDialog = (model: Model, result: ReturnType<
 
 const source = (
   fixture: AlertDialogFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const rtl = fixture.kind === 'rtl'
   const pending = fixture.async
   const needsIcon = fixture.dialogs.some(spec => spec.mediaIcon !== undefined)
-  const ui = renderer === 'stylex' ? 'stylex' : 'ui'
+  const ui = renderer !== 'tailwind' ? 'stylex' : 'ui'
 
   const model =
     pending !== undefined
@@ -262,7 +263,7 @@ export const update = (model: Model, message: Message): Update.Return<Model, Mes
 }`
 
   const frame = rtl
-    ? renderer === 'stylex'
+    ? renderer !== 'tailwind'
       ? `h.div([h.Dir('rtl'), h.Class(stylex.props(styles.frame).className ?? '')], [\n      ${triggerSource(fixture.dialogs[0], 'ClickedOpen')},\n      ${dialogSource(fixture.dialogs[0], 'dialog', 'GotAlertDialogMessage', undefined)},\n      ${triggerSource(fixture.dialogs[1]!, 'ClickedOpenSmall')},\n      ${dialogSource(fixture.dialogs[1]!, 'dialogSmall', 'GotAlertDialogSmallMessage', undefined)},\n    ])`
       : `h.div([h.Dir('rtl'), h.Class('flex flex-wrap items-center justify-center gap-3')], [\n      ${triggerSource(fixture.dialogs[0], 'ClickedOpen')},\n      ${dialogSource(fixture.dialogs[0], 'dialog', 'GotAlertDialogMessage', undefined)},\n      ${triggerSource(fixture.dialogs[1]!, 'ClickedOpenSmall')},\n      ${dialogSource(fixture.dialogs[1]!, 'dialogSmall', 'GotAlertDialogSmallMessage', undefined)},\n    ])`
     : `${triggerSource(fixture.dialogs[0], 'ClickedOpen')},\n    ${dialogSource(fixture.dialogs[0], 'dialog', 'GotAlertDialogMessage', pending)}${pending !== undefined ? `,\n    h.p([h.Role('status')], [model.status === 'deleted' ? '${esc(pending.completeLabel)}' : 'No action taken.'])` : ''}`
@@ -279,22 +280,27 @@ export const update = (model: Model, message: Message): Update.Return<Model, Mes
     imports: `import ${pending !== undefined ? `{ Effect, Schema as S }` : `{ Schema as S }`} from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-${rtl && renderer === 'stylex' ? `import * as stylex from '@stylexjs/stylex'\n\n` : ''}
+${rtl && renderer !== 'tailwind' ? `import * as stylex from '@stylexjs/stylex'\n\n` : ''}
 import * as AlertDialog from '@/${ui}/alert-dialog'
 import * as Button from '@/${ui}/button'${needsIcon ? `\nimport * as Icon from '@/lib/icon'` : ''}`,
     model,
     messages,
     init,
     update,
-    view: `${rtl && renderer === 'stylex' ? `const styles = stylex.create({ frame: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: '0.75rem' } })\n\n` : ''}${view}`,
+    view: `${rtl && renderer !== 'tailwind' ? `const styles = stylex.create({ frame: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: '0.75rem' } })\n\n` : ''}${view}`,
   })
 }
 
-export const alertDialogExamples = (
-  renderer: 'tailwind' | 'stylex',
+const alertDialogExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   alertDialogFixtures.map(fixture => ({
     title: fixture.title,
     description: fixture.description,
     code: source(fixture, renderer),
   }))
+
+export const alertDialogExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, alertDialogExamplesFor(renderer))

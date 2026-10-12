@@ -22,5 +22,6 @@ export const itemPage = authoredPage({
       'ItemGroup supplies list semantics and Item supplies listitem semantics. Preserve a useful title even when media is decorative.',
     examples: itemExamples('tailwind'),
     stylexExamples: itemExamples('stylex'),
+    pleatExamples: itemExamples('pleat'),
   },
 })

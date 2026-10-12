@@ -1,5 +1,6 @@
 import type { AlertAnnouncement, AlertSeverity } from '@/lib/alert'
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 export type AlertPreviewAlert = Readonly<{
@@ -109,10 +110,10 @@ export const alertFixtures: Readonly<[AlertFixture, ...Array<AlertFixture>]> = [
 const alertSource = (
   item: AlertPreviewAlert,
   colors: string | undefined,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const actionClass =
-    renderer === 'stylex'
+    renderer !== 'tailwind'
       ? `stylex.props(styles.action).className ?? ''`
       : `'col-start-2 mt-2'`
   const action =
@@ -123,7 +124,7 @@ const alertSource = (
       Button.button({ size: 'sm', children: ['${item.actionLabel}'] }, h),
     ]),`
   const classLine =
-    renderer === 'stylex'
+    renderer !== 'tailwind'
       ? ''
       : colors === undefined
         ? ''
@@ -140,22 +141,25 @@ const alertSource = (
   }, h)`
 }
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = alertFixtures[index] ?? alertFixtures[0]
   const usesAction = fixture.alerts.some(item => item.actionLabel !== undefined)
   const componentImports = [
     `import * as Icon from '@/lib/icon'`,
     ...(usesAction
       ? [
-          `import * as Button from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/button'`,
+          `import * as Button from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/button'`,
         ]
       : []),
-    ...(renderer === 'stylex'
+    ...(renderer !== 'tailwind'
       ? [`import * as stylex from '@stylexjs/stylex'`]
       : []),
   ].join('\n')
   const styles =
-    renderer === 'stylex'
+    renderer !== 'tailwind'
       ? `\nconst styles = stylex.create({ wrap: { display: 'grid', gap: '1rem', maxWidth: '28rem', width: '100%' }, action: { gridColumnStart: 2, marginTop: '0.5rem' } })\n`
       : ''
   const inner = fixture.alerts
@@ -164,7 +168,7 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
   const dirAttr =
     fixture.direction === 'rtl' ? `h.Dir('${fixture.direction}'), ` : ''
   const wrapClass =
-    renderer === 'stylex'
+    renderer !== 'tailwind'
       ? `h.Class(stylex.props(styles.wrap).className ?? '')`
       : `h.Class('grid w-full max-w-md gap-4')`
   const viewBody = `h.div(
@@ -183,11 +187,16 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
   })
 }
 
-export const alertExamples = (
-  renderer: 'tailwind' | 'stylex',
+const alertExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   alertFixtures.map((fixture, index) => ({
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
   }))
+
+export const alertExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, alertExamplesFor(renderer))

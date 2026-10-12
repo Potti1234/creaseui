@@ -20,5 +20,6 @@ export const codePage = authoredPage({
       'Renders a semantic code element so assistive technology announces the content as code.',
     examples: codeExamples('tailwind'),
     stylexExamples: codeExamples('stylex'),
+    pleatExamples: codeExamples('pleat'),
   },
 })

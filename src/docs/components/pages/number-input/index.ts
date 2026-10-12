@@ -21,5 +21,6 @@ export const numberInputPage = authoredPage({
       'The input uses inputmode=decimal with an aria-describedby chain covering description and status; steppers and clear use labelled buttons.',
     examples: numberInputExamples('tailwind'),
     stylexExamples: numberInputExamples('stylex'),
+    pleatExamples: numberInputExamples('pleat'),
   },
 })

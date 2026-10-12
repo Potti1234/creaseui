@@ -20,5 +20,6 @@ export const spinnerPage = authoredPage({
       'Provide label for a standalone spinner, or set isDecorative when a surrounding status already names the operation. Reduced-motion mode keeps the icon still.',
     examples: spinnerExamples('tailwind'),
     stylexExamples: spinnerExamples('stylex'),
+    pleatExamples: spinnerExamples('pleat'),
   },
 })

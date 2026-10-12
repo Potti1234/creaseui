@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import {
   foldkitApplication,
   statelessComponentApplication,
@@ -294,7 +295,7 @@ const needsSpinnerImport = (item: ButtonItemSpec): boolean =>
 
 const itemSource = (
   item: ButtonItemSpec,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const props: Array<string> = []
   if (item.variant !== undefined) props.push(`variant: '${item.variant}'`)
@@ -308,7 +309,7 @@ const itemSource = (
   const inset =
     item.icon !== undefined ? (item.iconPosition ?? 'start') : item.spinner
   if (
-    renderer === 'stylex' &&
+    renderer !== 'tailwind' &&
     inset !== undefined &&
     item.size !== 'icon' &&
     item.size !== 'icon-xs' &&
@@ -322,7 +323,7 @@ const itemSource = (
 
 const itemsViewSource = (
   fixture: ButtonFixture & { kind: 'items' },
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const classes =
     renderer === 'tailwind'
@@ -338,7 +339,9 @@ ${items},
     ])`
 }
 
-const sizesViewSource = (renderer: 'tailwind' | 'stylex'): string => {
+const sizesViewSource = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const tiers = buttonSizeTiers
     .map(tier => {
       const text = itemSource(
@@ -374,7 +377,9 @@ ${tiers},
     ])`
 }
 
-const buttonGroupViewSource = (renderer: 'tailwind' | 'stylex'): string => {
+const buttonGroupViewSource = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const iconBtn = (icon: string, label: string): string =>
     `Button.button({ variant: 'outline', size: 'icon', ariaLabel: '${label}', children: [Icon.icon('${icon}', {}, h)] }, h)`
   const menuConfig =
@@ -426,8 +431,10 @@ export type MenuItem =
   | (typeof menuItems)[number]
   | (typeof labelItems)[number]`
 
-const buttonGroupImports = (renderer: 'tailwind' | 'stylex'): string => {
-  const mod = renderer === 'stylex' ? '@/stylex' : '@/ui'
+const buttonGroupImports = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
+  const mod = renderer !== 'tailwind' ? '@/stylex' : '@/ui'
   return [
     `import * as Button from '${mod}/button'`,
     `import * as ButtonGroup from '${mod}/button-group'`,
@@ -441,7 +448,9 @@ const buttonGroupImports = (renderer: 'tailwind' | 'stylex'): string => {
     .join('\n')
 }
 
-const buttonGroupApplication = (renderer: 'tailwind' | 'stylex'): string =>
+const buttonGroupApplication = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string =>
   foldkitApplication({
     title: 'Button — Button Group',
     imports: [
@@ -535,7 +544,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
 
 const exampleCode = (
   fixture: ButtonFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   switch (fixture.kind) {
     case 'link':
@@ -550,7 +559,7 @@ const exampleCode = (
       return buttonGroupApplication(renderer)
     case 'sizes': {
       const imports =
-        renderer === 'stylex'
+        renderer !== 'tailwind'
           ? `import * as stylex from '@stylexjs/stylex'\nimport * as Icon from '@/lib/icon'\n\nconst styles = stylex.create({\n  tiers: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '2rem' },\n  group: { display: 'flex', alignItems: 'flex-start', gap: '0.5rem' },\n})`
           : `import * as Icon from '@/lib/icon'`
       return statelessComponentApplication({
@@ -569,10 +578,10 @@ const exampleCode = (
           : []),
         ...(fixture.items.some(needsSpinnerImport)
           ? [
-              `import * as Spinner from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/spinner'`,
+              `import * as Spinner from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/spinner'`,
             ]
           : []),
-        ...(renderer === 'stylex' && fixture.items.length > 1
+        ...(renderer !== 'tailwind' && fixture.items.length > 1
           ? [
               `import * as stylex from '@stylexjs/stylex'`,
               '',
@@ -592,11 +601,16 @@ const exampleCode = (
   }
 }
 
-export const buttonExamples = (
-  renderer: 'tailwind' | 'stylex',
+const buttonExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   buttonFixtures.map(fixture => ({
     title: fixture.title,
     description: fixture.description,
     code: exampleCode(fixture, renderer),
   }))
+
+export const buttonExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, buttonExamplesFor(renderer))

@@ -20,5 +20,6 @@ export const listPage = authoredPage({
       'List renders a semantic list element so assistive technology announces item count; interactive rows stay keyboard focusable.',
     examples: listExamples('tailwind'),
     stylexExamples: listExamples('stylex'),
+    pleatExamples: listExamples('pleat'),
   },
 })

@@ -39,5 +39,6 @@ export const dateTimeInputPage = authoredPage({
       'Parent Model\n├── DateTimeInput child Model ({date, time} + two embedded Popovers + DatePicker)\n├── timeOptionInterval → listbox of preset times\n└── ChangedValue OutMessage → parent domain state',
     examples: dateTimeInputExamples('tailwind'),
     stylexExamples: dateTimeInputExamples('stylex'),
+    pleatExamples: dateTimeInputExamples('pleat'),
   },
 })

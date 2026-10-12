@@ -19,5 +19,6 @@ export const circularProgressPage = authoredPage({
       'The svg carries role="progressbar" with aria-valuemin/max/now in determinate mode; the label is sr-only unless `isLabelHidden` is false. Reduced-motion slows the spin.',
     examples: circularProgressExamples('tailwind'),
     stylexExamples: circularProgressExamples('stylex'),
+    pleatExamples: circularProgressExamples('pleat'),
   },
 })

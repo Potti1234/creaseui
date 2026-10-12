@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import {
   foldkitApplication,
   staticComponentApplication,
@@ -888,12 +889,15 @@ const applySource = (
   return { model: { ...model, ${modelField}: result.model, maybeSelectedId }, commands };
 };`
 
-const navSource = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const navSource = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = topNavFixtures[index] ?? topNavFixtures[0]
   if (fixture.kind !== 'navs') {
     return ''
   }
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const ui = isStyleX ? 'stylex' : 'ui'
   const multi = fixture.navs.length > 1
   const fields = fixture.navs.map((_nav, i) => `nav${i}`)
@@ -983,13 +987,13 @@ const megaItemCallSource = (item: TopNavFixtureMegaItem): string => {
 
 const standaloneSource = (
   index: number,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const fixture = topNavFixtures[index] ?? topNavFixtures[0]
   if (fixture.kind === 'navs') {
     return ''
   }
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const ui = isStyleX ? 'stylex' : 'ui'
   const needsIcon = fixtureNeedsIcon(fixture)
   const viewBody =
@@ -1014,15 +1018,18 @@ const standaloneSource = (
   })
 }
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = topNavFixtures[index] ?? topNavFixtures[0]
   return fixture.kind === 'navs'
     ? navSource(index, renderer)
     : standaloneSource(index, renderer)
 }
 
-export const topNavExamples = (
-  renderer: 'tailwind' | 'stylex',
+const topNavExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   topNavFixtures.map((fixture, index) => ({
     title: fixture.title,
@@ -1032,3 +1039,8 @@ export const topNavExamples = (
       : { description: fixture.description }),
     code: source(index, renderer),
   }))
+
+export const topNavExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, topNavExamplesFor(renderer))

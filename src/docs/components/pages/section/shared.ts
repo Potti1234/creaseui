@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 /* Astryx Section example blocks ported 1:1. astryx display-3 (29px/36px) →
@@ -72,7 +73,9 @@ const headingTw = (child: string): string =>
   `h.h4([h.Class('text-sm font-semibold')], [${child}])`
 const headingSx = boldBodySx
 
-const emitVariants = (renderer: 'tailwind' | 'stylex'): string => {
+const emitVariants = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const bold = renderer === 'tailwind' ? boldBodyTw : boldBodySx
   const supporting = renderer === 'tailwind' ? supportingTw : supportingSx
   const inner = (title: string, desc: string): string =>
@@ -93,7 +96,9 @@ const emitVariants = (renderer: 'tailwind' | 'stylex'): string => {
       ] }, h)`
 }
 
-const emitWash = (renderer: 'tailwind' | 'stylex'): string => {
+const emitWash = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const display = renderer === 'tailwind' ? displayTw : displaySx
   const supporting = renderer === 'tailwind' ? supportingTw : supportingSx
   const bodyMuted = renderer === 'tailwind' ? bodyMutedTw : bodyMutedSx
@@ -131,7 +136,9 @@ const emitWash = (renderer: 'tailwind' | 'stylex'): string => {
       ] }, h)`
 }
 
-const emitDividers = (renderer: 'tailwind' | 'stylex'): string => {
+const emitDividers = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const heading = renderer === 'tailwind' ? headingTw : headingSx
   const bodyMuted = renderer === 'tailwind' ? bodyMutedTw : bodyMutedSx
   const row = (title: string, desc: string, dividers: string): string =>
@@ -150,7 +157,7 @@ const emitDividers = (renderer: 'tailwind' | 'stylex'): string => {
 
 const emitBody = (
   fixture: SectionFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   switch (fixture.kind) {
     case 'variants':
@@ -186,9 +193,12 @@ ${entries.join(',\n')},
 })`
 }
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = sectionFixtures[index] ?? sectionFixtures[0]
-  const mod = renderer === 'stylex' ? 'stylex' : 'ui'
+  const mod = renderer !== 'tailwind' ? 'stylex' : 'ui'
   const componentImports = [
     `import * as Stack from '@/${mod}/stack'`,
     fixture.kind === 'wash'
@@ -197,7 +207,7 @@ import { icon } from '@/lib/icon'
 
 ${featuresSource}`
       : '',
-    renderer === 'stylex' ? stylexStylesFor(fixture.kind) : '',
+    renderer !== 'tailwind' ? stylexStylesFor(fixture.kind) : '',
   ]
     .filter(Boolean)
     .join('\n')
@@ -211,8 +221,8 @@ ${featuresSource}`
   })
 }
 
-export const sectionExamples = (
-  renderer: 'tailwind' | 'stylex',
+const sectionExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   sectionFixtures.map((fixture, index) => ({
     title: fixture.title,
@@ -221,3 +231,8 @@ export const sectionExamples = (
       : { description: fixture.description }),
     code: source(index, renderer),
   }))
+
+export const sectionExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, sectionExamplesFor(renderer))

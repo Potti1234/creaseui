@@ -21,5 +21,6 @@ export const fileInputPage = authoredPage({
       'The trigger is a labelled button that activates a visually-hidden native file input; validation failures surface as error status text.',
     examples: fileInputExamples('tailwind'),
     stylexExamples: fileInputExamples('stylex'),
+    pleatExamples: fileInputExamples('pleat'),
   },
 })

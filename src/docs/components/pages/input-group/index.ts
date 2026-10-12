@@ -21,5 +21,6 @@ export const inputGroupPage = authoredPage({
       'The group role communicates association, but the input still needs its own accessible label. Decorative addons should not duplicate that name.',
     examples: inputGroupExamples('tailwind'),
     stylexExamples: inputGroupExamples('stylex'),
+    pleatExamples: inputGroupExamples('pleat'),
   },
 })

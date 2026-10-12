@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type LogFixtureEntry = Readonly<{
@@ -239,9 +240,9 @@ export const logStreamLiveScript: ReadonlyArray<Omit<LogFixtureEntry, 'id'>> = [
 
 const logStreamSource = (
   fixture: LogStreamFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const ns = isStyleX ? 'LogStreamStyleX' : 'LogStream'
   const entriesLiteral = JSON.stringify(
     fixture.entries.map(({ detailText: _detailText, ...entry }) => entry),
@@ -469,11 +470,16 @@ export const init = (): Update.Return<Model, Message> => ({
   })
 }
 
-export const logStreamExamples = (
-  renderer: 'tailwind' | 'stylex',
+const logStreamExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   logStreamFixtures.map(fixture => ({
     title: fixture.title,
     description: fixture.description,
     code: logStreamSource(fixture, renderer),
   }))
+
+export const logStreamExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, logStreamExamplesFor(renderer))
