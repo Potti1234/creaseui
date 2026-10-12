@@ -61,7 +61,7 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [
       stylex.vite(stylexCompilerOptions),
-      ...(isTailwind ? [] : [tailwindcss()]),
+      ...(isTailwind ? [tailwindcss()] : []),
       {
         name: 'creaseui:site-entry',
         transformIndexHtml: {

@@ -516,9 +516,6 @@ const matchesQuery = (option: TransferListOption, query: string): boolean => {
   )
 }
 
-const CONTAINER_DOWN = '@container (max-width: 40rem)'
-const CONTAINER_UP = '@container (min-width: 40rem)'
-
 const styles = {
   root: Style.make({
     gap: 0,
@@ -590,7 +587,7 @@ const styles = {
     gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)',
     minWidth: 0,
   }).pipe(
-    Style.when(When.pseudo('[CONTAINER_DOWN]'), {
+    Style.when(When.container('(max-width: 40rem)'), {
       gridTemplateColumns: 'minmax(0, 1fr)',
     }),
   ),
@@ -609,7 +606,7 @@ const styles = {
     borderInlineStartStyle: 'solid',
     borderInlineStartWidth: 1,
   }).pipe(
-    Style.when(When.pseudo('[CONTAINER_DOWN]'), {
+    Style.when(When.container('(max-width: 40rem)'), {
       borderBlockStartWidth: 1,
       borderInlineStartWidth: 0,
     }),
@@ -626,7 +623,7 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
   }).pipe(
-    Style.when(When.pseudo('[CONTAINER_DOWN]'), {
+    Style.when(When.container('(max-width: 40rem)'), {
       backgroundColor: tokens.background,
     }),
   ),
@@ -651,7 +648,7 @@ const styles = {
     minBlockSize: '12rem',
     overflowY: 'auto',
   }).pipe(
-    Style.when(When.pseudo('[CONTAINER_DOWN]'), {
+    Style.when(When.container('(max-width: 40rem)'), {
       scrollbarGutter: 'auto',
       overscrollBehavior: 'auto',
       maxBlockSize: 'none',
@@ -735,7 +732,9 @@ const styles = {
     justifyContent: 'center',
     minBlockSize: '12rem',
     textAlign: 'center',
-  }).pipe(Style.when(When.pseudo('[CONTAINER_DOWN]'), { minBlockSize: 0 })),
+  }).pipe(
+    Style.when(When.container('(max-width: 40rem)'), { minBlockSize: 0 }),
+  ),
   emptyText: Style.make({
     color: tokens.mutedForeground,
     fontSize: '0.75rem',

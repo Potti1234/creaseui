@@ -42,7 +42,7 @@ const complexTokensSpec = Token.make(
     chart4Soft5: Token.color,
     destructiveSoft6: Token.color,
   },
-  { prefix: 'crease-' },
+  { prefix: 'crease-complex-' },
 )
 
 export const complexTokens = complexTokensSpec

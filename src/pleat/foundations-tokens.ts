@@ -16,11 +16,11 @@ const foundationTokensSpec = Token.make(
     inputDark: Token.color,
     mutedSoft: Token.color,
     shadowXs: Token.value,
-    shadowNone: Token.color,
+    shadowNone: Token.value,
     checkboxRadius: Token.length,
     radiusSm: Token.length,
     radiusMd: Token.length,
-    radiusLg: Token.color,
+    radiusLg: Token.length,
     radiusXl: Token.length,
     radiusBase: Token.length,
     radiusNested: Token.length,
@@ -50,7 +50,7 @@ const foundationTokensSpec = Token.make(
     nativeOptionSurface: Token.color,
     nativeOptionInk: Token.color,
   },
-  { prefix: 'crease-' },
+  { prefix: 'crease-fnd-' },
 )
 
 export const foundationTokens = foundationTokensSpec

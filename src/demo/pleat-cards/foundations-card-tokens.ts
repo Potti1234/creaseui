@@ -8,7 +8,7 @@ const spec = Token.make(
     round: Token.length,
     cameraPattern: Token.value,
   },
-  { prefix: 'crease-' },
+  { prefix: 'crease-card-' },
 )
 export const cardDemoTokensTheme = Theme.make(spec, {
   pendingIndicator: 'oklch(0.795 0.184 86.047)',

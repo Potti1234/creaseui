@@ -117,9 +117,16 @@ const styles = {
   }).pipe(
     Style.when(When.focusWithin, { borderColor: tokens.ring }),
     Style.when(When.data('drag-over'), { borderColor: tokens.ring }),
-    Style.when(When.pseudo(':hover:not(:focus-within):not([data-drag-over])'), {
-      boxShadow: `inset 0 0 0 2px color-mix(in srgb, ${tokens.ring} 20%, transparent)`,
-    }),
+    Style.when(
+      When.all(
+        When.hover,
+        When.not(When.focusWithin),
+        When.not(When.data('drag-over')),
+      ),
+      {
+        boxShadow: `inset 0 0 0 2px color-mix(in srgb, ${tokens.ring} 20%, transparent)`,
+      },
+    ),
   ),
   dropzoneActive: Style.make({
     backgroundColor: `color-mix(in oklab, ${tokens.primary} 10%, transparent)`,
@@ -137,7 +144,7 @@ const styles = {
     height: '2rem',
   }).pipe(
     Style.when(When.focusWithin, { borderColor: tokens.ring }),
-    Style.when(When.pseudo(':hover:not(:focus-within)'), {
+    Style.when(When.all(When.hover, When.not(When.focusWithin)), {
       boxShadow: `inset 0 0 0 2px color-mix(in srgb, ${tokens.ring} 20%, transparent)`,
     }),
   ),

@@ -134,7 +134,7 @@ const styles = {
       borderColor: tokens.ring,
       boxShadow: `inset 0 0 0 2px color-mix(in srgb, ${tokens.ring} 20%, transparent)`,
     }),
-    Style.when(When.pseudo(':hover:not(:focus-within)'), {
+    Style.when(When.all(When.hover, When.not(When.focusWithin)), {
       boxShadow: `inset 0 0 0 2px color-mix(in srgb, ${tokens.input} 30%, transparent)`,
     }),
   ),

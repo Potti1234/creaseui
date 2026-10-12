@@ -882,7 +882,9 @@ const styles = {
     outlineStyle: 'none',
   }).pipe(
     Style.when(When.focusVisible, { boxShadow: '0 0 0 2px var(--ring)' }),
-    Style.when(When.pseudo('::-webkit-details-marker'), { display: 'none' }),
+    Style.when(When.pseudoElement('::-webkit-details-marker'), {
+      display: 'none',
+    }),
   ),
   faqIcon: Style.make({
     fontSize: '1.125rem',

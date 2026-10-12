@@ -871,7 +871,9 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
     toParentMessage: message => Message.GotTanStackTableMessage({ message }),
     when: model => model.page._tag === 'BlocksStyleXTablePage',
   }),
-  Subscription.lift(TanStackTablePleatPage.subscriptions)<Model, Message>({
+  Subscription.lift({
+    pleatContainerEvents: TanStackTablePleatPage.subscriptions.containerEvents!,
+  })<Model, Message>({
     toChildModel: model =>
       model.page._tag === 'BlocksStyleXTablePage'
         ? model.page.pleatTable

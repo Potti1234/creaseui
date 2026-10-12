@@ -25,7 +25,7 @@ const spec = Token.make(
     typeSupportingLeading: Token.number,
     typeSupportingSize: Token.length,
   },
-  { prefix: 'crease-' },
+  { prefix: 'crease-sem-' },
 )
 export const semanticSystemThemeTheme = Theme.make(spec, {
   contentForm: '24rem',

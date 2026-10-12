@@ -53,8 +53,6 @@ export type {
 } from '@/lib/list-input'
 export type { InputStatus } from '@/lib/input-status'
 
-const containerQuery = '@container list-input (max-width: 640px)'
-
 const styles = {
   field: Style.make({
     gap: '0.25rem',
@@ -106,7 +104,11 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     listStyleType: 'none',
-  }).pipe(Style.when(When.pseudo('[containerQuery]'), { gap: '2rem' })),
+  }).pipe(
+    Style.when(When.container('(max-width: 640px)', 'list-input'), {
+      gap: '2rem',
+    }),
+  ),
   item: Style.make({
     display: 'flex',
     flexDirection: 'column',
@@ -118,16 +120,26 @@ const styles = {
     columnGap: '0.25rem',
     display: 'grid',
     minWidth: 0,
-  }).pipe(Style.when(When.pseudo('[containerQuery]'), { rowGap: '0.5rem' })),
+  }).pipe(
+    Style.when(When.container('(max-width: 640px)', 'list-input'), {
+      rowGap: '0.5rem',
+    }),
+  ),
   fields: Style.make({
     alignItems: 'end',
     columnGap: '0.25rem',
     display: 'grid',
     rowGap: '0.5rem',
     minWidth: 0,
-  }).pipe(Style.when(When.pseudo('[containerQuery]'), { display: 'contents' })),
+  }).pipe(
+    Style.when(When.container('(max-width: 640px)', 'list-input'), {
+      display: 'contents',
+    }),
+  ),
   fieldCell: Style.make({ gridColumn: 'auto', minWidth: 0 }).pipe(
-    Style.when(When.pseudo('[containerQuery]'), { gridColumn: '1' }),
+    Style.when(When.container('(max-width: 640px)', 'list-input'), {
+      gridColumn: '1',
+    }),
   ),
   columnLabel: Style.make({
     color: tokens.foreground,
@@ -137,10 +149,14 @@ const styles = {
     lineHeight: '1.25rem',
     marginBlockEnd: '0.125rem',
   }).pipe(
-    Style.when(When.pseudo('[containerQuery]'), { marginBlockEnd: '0.25rem' }),
+    Style.when(When.container('(max-width: 640px)', 'list-input'), {
+      marginBlockEnd: '0.25rem',
+    }),
   ),
   repeatedColumnLabel: Style.make({ display: 'none' }).pipe(
-    Style.when(When.pseudo('[containerQuery]'), { display: 'block' }),
+    Style.when(When.container('(max-width: 640px)', 'list-input'), {
+      display: 'block',
+    }),
   ),
   cellContent: Style.make({ minWidth: 0 }),
   controlCell: Style.make({
@@ -151,13 +167,13 @@ const styles = {
     minHeight: '2rem',
   }),
   removeControlCell: Style.make({ gridColumn: 'auto', gridRow: 'auto' }).pipe(
-    Style.when(When.pseudo('[containerQuery]'), {
+    Style.when(When.container('(max-width: 640px)', 'list-input'), {
       gridColumn: '2',
       gridRow: '1',
     }),
   ),
   reorderControlCell: Style.make({ gridColumn: 'auto', gridRow: 'auto' }).pipe(
-    Style.when(When.pseudo('[containerQuery]'), {
+    Style.when(When.container('(max-width: 640px)', 'list-input'), {
       gridColumn: '3',
       gridRow: '1',
     }),
@@ -192,7 +208,9 @@ const styles = {
   iconMd: Style.make({ height: '1rem', width: '1rem' }),
   iconSm: Style.make({ height: '0.75rem', width: '0.75rem' }),
   itemStatus: Style.make({ marginBlockStart: '0.25rem', minWidth: 0 }).pipe(
-    Style.when(When.pseudo('[containerQuery]'), { marginBlockStart: 0 }),
+    Style.when(When.container('(max-width: 640px)', 'list-input'), {
+      marginBlockStart: 0,
+    }),
   ),
   actionRow: Style.make({
     alignItems: 'center',

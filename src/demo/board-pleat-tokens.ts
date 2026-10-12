@@ -26,7 +26,7 @@ const spec = Token.make(
     textSubtle: Token.color,
     transparent: Token.color,
   },
-  { prefix: 'crease-' },
+  { prefix: 'crease-board-' },
 )
 export const boardTokensTheme = Theme.make(spec, {
   boardBackground: 'var(--background)',

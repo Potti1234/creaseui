@@ -3,7 +3,7 @@ import { complexTokens } from '../complex-tokens'
 import { interactionTokens } from '../interaction-tokens'
 import { tokens } from '../tokens'
 
-const spin = Global.keyframes('data-table.stylex-spin', {
+const spin = Global.keyframes('data-table-stylex-spin', {
   to: { transform: 'rotate(360deg)' },
 })
 

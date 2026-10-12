@@ -7,7 +7,7 @@ const spec = Token.make(
     roundRadius: Token.length,
     usageAccent: Token.color,
   },
-  { prefix: 'crease-' },
+  { prefix: 'crease-icard-' },
 )
 export const interactionCardTokensTheme = Theme.make(spec, {
   qrBackground: 'oklch(1 0 0)',

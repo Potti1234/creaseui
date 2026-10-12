@@ -1,7 +1,7 @@
 import { Global, Token, Theme } from '@pleat/core'
 const spec = Token.make(
   { muted: Token.color, positive: Token.color, transparent: Token.color },
-  { prefix: 'crease-' },
+  { prefix: 'crease-ccard-' },
 )
 export const cardTokensTheme = Theme.make(spec, {
   muted: 'var(--muted)',

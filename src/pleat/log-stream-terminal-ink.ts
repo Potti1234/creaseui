@@ -13,7 +13,7 @@ const spec = Token.make(
     textDim: Token.color,
     warn: Token.color,
   },
-  { prefix: 'crease-' },
+  { prefix: 'crease-ink-' },
 )
 export const logStreamTerminalInkTheme = Theme.make(spec, {
   detailSurface: '#0e0e10',

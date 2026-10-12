@@ -59,10 +59,10 @@ const styles = {
     Style.when(When.within(messageScope, When.data('align', 'end')), {
       alignSelf: 'flex-end',
     }),
-    Style.when(When.pseudo(':has(> a):hover'), {
+    Style.when(When.all(When.pseudo(':has(> a)'), When.hover), {
       backgroundColor: `color-mix(in oklab, ${tokens.muted} 50%, transparent)`,
     }),
-    Style.when(When.pseudo(':has(> button):hover'), {
+    Style.when(When.all(When.pseudo(':has(> button)'), When.hover), {
       backgroundColor: `color-mix(in oklab, ${tokens.muted} 50%, transparent)`,
     }),
     Style.when(When.focusWithin, { boxShadow: foundationTokens.ringShadow1 }),

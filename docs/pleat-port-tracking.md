@@ -55,15 +55,48 @@ can nest same-slot descendants).
 - [x] Study pleat API + creaseui renderer architecture
 - [x] Vendor @pleat/core + @pleat/foldkit (file: deps, csstype added)
 - [x] Token layer generated (tokens/foundations/complex/board) — kinds inferred
-- [ ] Interaction tokens (const file)
-- [ ] reset.ts, contracts.ts, style.ts adapter, markers
-- [ ] Codemod `scripts/pleat/stylex-to-pleat.mjs`
-- [ ] Port src/pleat components (batches)
-- [ ] Renderer wiring (config, vite, entry, css)
-- [ ] Site skins (skin/docs/docs-search-ui/landing/blocks/getting-started)
-- [ ] Docs previews + shared emitters + manifest + catalog dispatch
-- [ ] Demo layers (blocks-pleat, pleat-cards, charts-pleat, board-pleat)
-- [ ] main.ts touchpoints (Create/Charts/Blocks pages)
-- [ ] Registry/tests/lint/e2e updates
-- [ ] npm run check + 3-site visual parity
+- [x] Interaction tokens (const file)
+- [x] reset.ts, contracts.ts, style.ts adapter, markers
+- [x] Codemod `scripts/pleat/stylex-to-pleat.mjs`
+- [x] Port src/pleat components (batches)
+- [x] Renderer wiring (config, vite, entry, css)
+- [x] Site skins (skin/docs/docs-search-ui/landing/blocks/getting-started)
+- [x] Docs previews + shared emitters + manifest + catalog dispatch
+- [x] Demo layers (blocks-pleat, pleat-cards, charts-pleat, board-pleat)
+- [x] main.ts touchpoints (Create/Charts/Blocks pages)
+- [x] Registry/tests/lint/e2e updates (src/pleat in lint:design-system scope; pleat project in playwright.sites.config.ts)
+- [x] npm run check + 3-site visual parity
 - [ ] PR
+
+## Runtime fixes found by browser verification (post-port)
+
+- `Token.color` rejects non-color literals (`'none'`, `'var(--radius)'`) — re-kinded to
+  `Token.value`/`Token.length` (shadowNone, radius, radiusLg, cardRadius, panelShadow,
+  panelRadius, panelInnerRadius).
+- `When.pseudo()` takes only a single `:pseudo` — compound selectors decomposed to
+  `When.all(When.hover, When.not(...))`; pseudo-elements to `When.pseudoElement`.
+- `[container]` keys → `When.container(query)` / `When.container(query, 'name')`.
+- `Global.keyframes` names must be lowercase/digits/dashes — no dots.
+- `Subscription.aggregate` rejects duplicate keys — pleat subscription records use
+  prefixed keys (`pleatContainerEvents`, `boardPleat*`).
+- `vite.config.ts` tailwind plugin gate must be `isTailwind ? [tailwindcss()] : []`
+  (both non-tailwind modes deliberately omit it; the tailwind-leak check guards).
+- Token-name collisions: every `Token.make` spec shared `prefix: 'crease-'`, so
+  `boardTokens.border`, `inkTokens.hover`, etc. emitted `--crease-border`/`--crease-hover`
+  at `:root` and overrode the base theme (invisible white borders on docs pages).
+  Each non-base spec now has a unique prefix (`crease-board-`, `crease-fnd-`,
+  `crease-complex-`, `crease-sem-`, `crease-comp-`, `crease-ink-`, `crease-card-`,
+  `crease-icard-`, `crease-ccard-`), mirroring stylex `defineVars` hash isolation.
+  `src/pleat/board-tokens.ts` was an unused codemod artifact duplicating
+  `src/demo/board-pleat-tokens.ts` — deleted.
+
+## Verification status
+
+- `npm run check`: all stages pass except pre-existing main-broken items
+  (echarts eslint errors, 375/373 design-system warning budget, chart-lifecycle
+  unit test — identical at base commit 0968bd8).
+- `npm run build` (all 3 modes) green; zero pageerrors on home, /create,
+  /docs/components/*, /charts/area on all three sites.
+- Screenshot parity: pleat docs/data-table/log-stream/charts/create match stylex
+  chrome (borderless sidebar + bordered example frames); counterpart links cycle
+  tailwind↔stylex↔pleat correctly.

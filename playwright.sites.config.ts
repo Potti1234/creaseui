@@ -26,6 +26,10 @@ export default defineConfig({
       name: 'stylex',
       use: { ...devices['Desktop Chrome'], baseURL: 'http://127.0.0.1:4174' },
     },
+    {
+      name: 'pleat',
+      use: { ...devices['Desktop Chrome'], baseURL: 'http://127.0.0.1:4175' },
+    },
   ],
   webServer: [
     {
@@ -36,6 +40,11 @@ export default defineConfig({
     {
       command: 'npm run preview:stylex -- --host 127.0.0.1',
       url: 'http://127.0.0.1:4174',
+      reuseExistingServer: !process.env.CI,
+    },
+    {
+      command: 'npm run preview:pleat -- --host 127.0.0.1',
+      url: 'http://127.0.0.1:4175',
       reuseExistingServer: !process.env.CI,
     },
   ],
