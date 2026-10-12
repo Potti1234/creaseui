@@ -14,10 +14,10 @@ import * as Icon from '@/lib/icon'
 import { buttonVisualStyles } from './button'
 import type { ComponentLayoutStyle } from './contracts'
 import { input } from './input'
+import * as Pagination from './pagination'
 import { className } from './style'
 import { complexTokens } from './complex-tokens.stylex'
 import { foundationTokens } from './foundations-tokens.stylex'
-import { interactionTokens } from './interaction-tokens.stylex.const'
 import { tokens } from './tokens.stylex'
 import * as Table from './table'
 
@@ -61,15 +61,6 @@ const SHADOW_MD =
   'rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px'
 
 const styles = stylex.create({
-  button: {
-    paddingInline: '0.75rem',
-    transform: {
-      default: 'scale(1)',
-      ':active': interactionTokens.pressTransformTactile,
-    },
-    transitionProperty: 'transform, background-color',
-    height: '2.5rem',
-  },
   cell: {
     paddingBlock: '0.75rem',
     paddingInline: '0.75rem',
@@ -205,9 +196,11 @@ const styles = stylex.create({
   },
   sortIcon: {
     color: tokens.mutedForeground,
+    flexShrink: 0,
     height: '0.875rem',
     width: '0.875rem',
   },
+  sortArrowActive: { color: tokens.primary },
   tableShell: {
     borderColor: tokens.border,
     borderRadius: tokens.controlRadius,
@@ -353,9 +346,45 @@ export const dataTable = <Row, Msg>(
               ],
               [
                 column.header,
-                Icon.chevronsUpDown<Msg>(
-                  { class: className(styles.sortIcon) },
-                  h,
+                h.svg(
+                  [
+                    h.ViewBox('0 0 24 24'),
+                    h.Fill('none'),
+                    h.Stroke('currentColor'),
+                    h.StrokeWidth('2'),
+                    h.StrokeLinecap('round'),
+                    h.StrokeLinejoin('round'),
+                    h.AriaHidden(true),
+                    h.Class(className(styles.sortIcon)),
+                  ],
+                  [
+                    h.path(
+                      [
+                        h.D('m7 15 5 5 5-5'),
+                        h.Class(
+                          className(
+                            props.model.sortKey === column.key &&
+                              props.model.sortDirection === 'descending' &&
+                              styles.sortArrowActive,
+                          ),
+                        ),
+                      ],
+                      [],
+                    ),
+                    h.path(
+                      [
+                        h.D('m7 9 5-5 5 5'),
+                        h.Class(
+                          className(
+                            props.model.sortKey === column.key &&
+                              props.model.sortDirection === 'ascending' &&
+                              styles.sortArrowActive,
+                          ),
+                        ),
+                      ],
+                      [],
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -679,87 +708,28 @@ export const dataTable = <Row, Msg>(
                 [h.Class(className(styles.pageLabel))],
                 [`Page ${page + 1} of ${pageCount}`],
               ),
-              h.button(
+              h.div(
+                [],
                 [
-                  h.Type('button'),
-                  h.AriaLabel('First page'),
-                  h.Disabled(page === 0),
-                  h.OnClick(
-                    props.toParentMessage(
-                      DataTableStateMessages.ChangedPage({ page: 0 }),
-                    ),
-                  ),
-                  h.Class(
-                    className(
-                      reset.button,
-                      ...buttonVisualStyles({ variant: 'outline' }),
-                      styles.button,
-                    ),
+                  Pagination.paginationPages(
+                    {
+                      page: page + 1,
+                      totalPages: pageCount,
+                      siblingCount: 0,
+                      ariaLabel: `${props.ariaLabel ?? 'Rows'} pagination`,
+                      navigation: {
+                        kind: 'action',
+                        onNavigate: page =>
+                          props.toParentMessage(
+                            DataTableStateMessages.ChangedPage({
+                              page: page - 1,
+                            }),
+                          ),
+                      },
+                    },
+                    h,
                   ),
                 ],
-                ['First'],
-              ),
-              h.button(
-                [
-                  h.Type('button'),
-                  h.AriaLabel('Previous page'),
-                  h.Disabled(page === 0),
-                  h.OnClick(
-                    props.toParentMessage(
-                      DataTableStateMessages.ChangedPage({ page: page - 1 }),
-                    ),
-                  ),
-                  h.Class(
-                    className(
-                      reset.button,
-                      ...buttonVisualStyles({ variant: 'outline' }),
-                      styles.button,
-                    ),
-                  ),
-                ],
-                ['Previous'],
-              ),
-              h.button(
-                [
-                  h.Type('button'),
-                  h.AriaLabel('Next page'),
-                  h.Disabled(page >= pageCount - 1),
-                  h.OnClick(
-                    props.toParentMessage(
-                      DataTableStateMessages.ChangedPage({ page: page + 1 }),
-                    ),
-                  ),
-                  h.Class(
-                    className(
-                      reset.button,
-                      ...buttonVisualStyles({ variant: 'outline' }),
-                      styles.button,
-                    ),
-                  ),
-                ],
-                ['Next'],
-              ),
-              h.button(
-                [
-                  h.Type('button'),
-                  h.AriaLabel('Last page'),
-                  h.Disabled(page >= pageCount - 1),
-                  h.OnClick(
-                    props.toParentMessage(
-                      DataTableStateMessages.ChangedPage({
-                        page: pageCount - 1,
-                      }),
-                    ),
-                  ),
-                  h.Class(
-                    className(
-                      reset.button,
-                      ...buttonVisualStyles({ variant: 'outline' }),
-                      styles.button,
-                    ),
-                  ),
-                ],
-                ['Last'],
               ),
             ],
           ),

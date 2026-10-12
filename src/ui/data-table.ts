@@ -12,6 +12,7 @@ import * as Icon from '@/lib/icon'
 import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/ui/button'
 import { input } from '@/ui/input'
+import * as Pagination from '@/ui/pagination'
 import * as Table from '@/ui/table'
 
 export * from '@/lib/data-table-state'
@@ -369,12 +370,53 @@ export const dataTable = <Row, Msg>(
                                         ],
                                         [
                                           column.header,
-                                          Icon.chevronsUpDown<Msg>(
-                                            {
-                                              class:
-                                                'size-3.5 text-muted-foreground',
-                                            },
-                                            h,
+                                          h.svg(
+                                            [
+                                              h.ViewBox('0 0 24 24'),
+                                              h.Fill('none'),
+                                              h.Stroke('currentColor'),
+                                              h.StrokeWidth('2'),
+                                              h.StrokeLinecap('round'),
+                                              h.StrokeLinejoin('round'),
+                                              h.AriaHidden(true),
+                                              h.Class(
+                                                'size-3.5 shrink-0 text-muted-foreground',
+                                              ),
+                                            ],
+                                            [
+                                              h.path(
+                                                [
+                                                  h.D('m7 15 5 5 5-5'),
+                                                  h.Class(
+                                                    cn(
+                                                      props.model.sortKey ===
+                                                        column.key &&
+                                                        props.model
+                                                          .sortDirection ===
+                                                          'descending' &&
+                                                        'text-primary',
+                                                    ),
+                                                  ),
+                                                ],
+                                                [],
+                                              ),
+                                              h.path(
+                                                [
+                                                  h.D('m7 9 5-5 5 5'),
+                                                  h.Class(
+                                                    cn(
+                                                      props.model.sortKey ===
+                                                        column.key &&
+                                                        props.model
+                                                          .sortDirection ===
+                                                          'ascending' &&
+                                                        'text-primary',
+                                                    ),
+                                                  ),
+                                                ],
+                                                [],
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
@@ -525,81 +567,28 @@ export const dataTable = <Row, Msg>(
                 [h.Class('whitespace-nowrap text-sm font-medium tabular-nums')],
                 [`Page ${page + 1} of ${pageCount}`],
               ),
-              h.button(
+              h.div(
+                [],
                 [
-                  h.Type('button'),
-                  h.AriaLabel('First page'),
-                  h.Disabled(page === 0),
-                  h.OnClick(
-                    props.toParentMessage(
-                      DataTableStateMessages.ChangedPage({ page: 0 }),
-                    ),
-                  ),
-                  h.Class(
-                    cn(
-                      buttonVariants({ variant: 'outline' }),
-                      'h-10 px-3 font-medium transition-transform active:scale-[0.96]',
-                    ),
+                  Pagination.paginationPages(
+                    {
+                      page: page + 1,
+                      totalPages: pageCount,
+                      siblingCount: 0,
+                      ariaLabel: `${props.ariaLabel ?? 'Rows'} pagination`,
+                      navigation: {
+                        kind: 'action',
+                        onNavigate: page =>
+                          props.toParentMessage(
+                            DataTableStateMessages.ChangedPage({
+                              page: page - 1,
+                            }),
+                          ),
+                      },
+                    },
+                    h,
                   ),
                 ],
-                ['First'],
-              ),
-              h.button(
-                [
-                  h.Type('button'),
-                  h.Disabled(page === 0),
-                  h.OnClick(
-                    props.toParentMessage(
-                      DataTableStateMessages.ChangedPage({ page: page - 1 }),
-                    ),
-                  ),
-                  h.Class(
-                    cn(
-                      buttonVariants({ variant: 'outline' }),
-                      'h-10 px-3 font-medium transition-transform active:scale-[0.96]',
-                    ),
-                  ),
-                ],
-                ['Previous'],
-              ),
-              h.button(
-                [
-                  h.Type('button'),
-                  h.Disabled(page >= pageCount - 1),
-                  h.OnClick(
-                    props.toParentMessage(
-                      DataTableStateMessages.ChangedPage({ page: page + 1 }),
-                    ),
-                  ),
-                  h.Class(
-                    cn(
-                      buttonVariants({ variant: 'outline' }),
-                      'h-10 px-3 font-medium transition-transform active:scale-[0.96]',
-                    ),
-                  ),
-                ],
-                ['Next'],
-              ),
-              h.button(
-                [
-                  h.Type('button'),
-                  h.AriaLabel('Last page'),
-                  h.Disabled(page >= pageCount - 1),
-                  h.OnClick(
-                    props.toParentMessage(
-                      DataTableStateMessages.ChangedPage({
-                        page: pageCount - 1,
-                      }),
-                    ),
-                  ),
-                  h.Class(
-                    cn(
-                      buttonVariants({ variant: 'outline' }),
-                      'h-10 px-3 font-medium transition-transform active:scale-[0.96]',
-                    ),
-                  ),
-                ],
-                ['Last'],
               ),
             ],
           ),

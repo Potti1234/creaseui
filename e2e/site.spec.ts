@@ -4671,6 +4671,162 @@ test('presentational helpers preserve native semantics and controlled OTP state'
   await expect(email).toBeFocused()
 })
 
+test('data table highlights only the active sort arrow in both renderers and themes', async ({
+  browser,
+}) => {
+  test.setTimeout(120_000)
+  for (const port of [4173, 4174]) {
+    const page = await browser.newPage()
+    const errors: string[] = []
+    page.on('pageerror', error => errors.push(error.message))
+    for (const theme of ['light', 'dark']) {
+      await page.goto('about:blank')
+      await page.goto(
+        `http://127.0.0.1:${String(port)}/docs/components/data-table`,
+      )
+      if (
+        (await page
+          .locator('html')
+          .evaluate(el => el.classList.contains('dark'))) !==
+        (theme === 'dark')
+      ) {
+        await page
+          .getByRole('button', { name: `Switch to ${theme} mode` })
+          .click()
+      }
+      const table = page.locator('#sortable-payments')
+      const expectArrows = async (
+        name: string,
+        direction: 'none' | 'ascending' | 'descending',
+      ) => {
+        const header = table.getByRole('columnheader', { name, exact: true })
+        await expect(header).toHaveAttribute('aria-sort', direction)
+        const icon = header.locator('svg')
+        await expect(icon).toHaveAttribute('aria-hidden', 'true')
+        const mutedColor = await icon.evaluate(el => getComputedStyle(el).color)
+        const arrows = icon.locator('path')
+        await expect(arrows).toHaveCount(2)
+        for (const [index, arrowDirection] of [
+          'descending',
+          'ascending',
+        ].entries()) {
+          if (direction === arrowDirection) {
+            await expect(arrows.nth(index)).not.toHaveCSS('stroke', mutedColor)
+          } else {
+            await expect(arrows.nth(index)).toHaveCSS('stroke', mutedColor)
+          }
+        }
+      }
+      await expectArrows('Amount', 'none')
+      await expectArrows('Email', 'none')
+      const amountButton = table.getByRole('button', {
+        name: 'Amount',
+        exact: true,
+      })
+      await amountButton.click()
+      await expectArrows('Amount', 'ascending')
+      await expectArrows('Email', 'none')
+      await amountButton.press('Space')
+      await expectArrows('Amount', 'descending')
+      await table.getByRole('button', { name: 'Email', exact: true }).click()
+      await expectArrows('Amount', 'none')
+      await expectArrows('Email', 'ascending')
+    }
+    expect(errors).toEqual([])
+    await page.close()
+  }
+})
+
+for (const width of [1440, 390]) {
+  test(`data table uses controlled pagination at ${String(width)}px in both renderers`, async ({
+    browser,
+  }) => {
+    test.setTimeout(120_000)
+    for (const port of [4173, 4174]) {
+      const page = await browser.newPage({ viewport: { width, height: 900 } })
+      const errors: string[] = []
+      page.on('pageerror', error => errors.push(error.message))
+      await page.goto(
+        `http://127.0.0.1:${String(port)}/docs/components/data-table`,
+      )
+      const table = page.locator('#filter-and-paginate')
+      const pagination = table.getByRole('navigation', {
+        name: 'Payments pagination',
+      })
+      const previous = pagination.getByRole('button', {
+        name: 'Go to previous page',
+      })
+      const next = pagination.getByRole('button', { name: 'Go to next page' })
+      const current = pagination.locator('[aria-current="page"]')
+      await expect(pagination).toHaveAttribute('data-slot', 'pagination')
+      await expect(previous).toBeDisabled()
+      await expect(current).toHaveText('1')
+      await pagination
+        .getByRole('button', { name: 'Go to page 2', exact: true })
+        .click()
+      await expect(current).toHaveText('2')
+      await expect(table).toContainText('Page 2 of 2')
+      await expect(next).toBeDisabled()
+      await previous.press('Enter')
+      await expect(current).toHaveText('1')
+      await next.click()
+      await expect(current).toHaveText('2')
+      await table.getByLabel('Rows per page').selectOption('10')
+      await expect(current).toHaveText('1')
+      await expect(table.getByRole('row')).toHaveCount(7)
+      await expect(next).toBeDisabled()
+      await table.getByRole('searchbox').fill('no-matching-payment')
+      await expect(table).toContainText('No results.')
+      await expect(table).toContainText('Page 1 of 1')
+      await expect(previous).toBeDisabled()
+      await expect(next).toBeDisabled()
+
+      const server = page.locator('#server-owned-query')
+      const serverPagination = server.getByRole('navigation', {
+        name: 'Payments pagination',
+      })
+      await serverPagination
+        .getByRole('button', { name: 'Go to page 9', exact: true })
+        .click()
+      await expect(server).toContainText('Page 9 of 9')
+      await expect(
+        serverPagination.locator('[aria-current="page"]'),
+      ).toHaveText('9')
+      await expect(
+        serverPagination.getByRole('button', { name: 'Go to next page' }),
+      ).toBeDisabled()
+      await serverPagination
+        .getByRole('button', { name: 'Go to previous page' })
+        .click()
+      await expect(server).toContainText('Page 8 of 9')
+      await expect(
+        serverPagination.locator('[data-slot="pagination-ellipsis"]'),
+      ).toHaveCount(1)
+      const bounds = await serverPagination.evaluate(el => {
+        const navigation = el.getBoundingClientRect()
+        const table = el
+          .closest('[data-slot="data-table"]')!
+          .getBoundingClientRect()
+        return {
+          navigationLeft: navigation.left,
+          navigationRight: navigation.right,
+          tableLeft: table.left,
+          tableRight: table.right,
+        }
+      })
+      expect(bounds.navigationLeft).toBeGreaterThanOrEqual(bounds.tableLeft - 1)
+      expect(bounds.navigationRight).toBeLessThanOrEqual(bounds.tableRight + 1)
+      await serverPagination
+        .getByRole('button', { name: 'Go to page 1', exact: true })
+        .click()
+      await expect(server).toContainText('Page 1 of 9')
+      await expect(page).toHaveURL(/\/docs\/components\/data-table$/u)
+      expect(errors).toEqual([])
+      await page.close()
+    }
+  })
+}
+
 test('data table filters and sorts through its interaction model', async ({
   page,
 }) => {
