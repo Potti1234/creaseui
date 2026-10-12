@@ -1,4 +1,5 @@
-import { Style, When } from '@pleat/core'
+import { Style } from '@pleat/core'
+import type { When } from '@pleat/core'
 import {
   cssClass,
   className as pleatClassName,
