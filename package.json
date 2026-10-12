@@ -27,7 +27,7 @@
     "format:check": "oxfmt --check",
     "format:staged": "lint-staged --max-arg-length 4000",
     "dev": "vite",
-    "build": "npm run build:tailwind && npm run build:stylex",
+    "build": "npm run build:tailwind && npm run build:stylex && npm run build:pleat",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "test": "npm run test:lint-package && npm run test:unit && npm run test:scene",
@@ -70,7 +70,10 @@
     "build:stylex": "vite build --mode stylex",
     "preview:tailwind": "vite preview --mode tailwind",
     "preview:stylex": "vite preview --mode stylex",
-    "test:sites": "npm run build && playwright test --config playwright.sites.config.ts"
+    "test:sites": "npm run build && playwright test --config playwright.sites.config.ts",
+    "dev:pleat": "vite --mode pleat",
+    "build:pleat": "vite build --mode pleat",
+    "preview:pleat": "vite preview --mode pleat"
   },
   "lint-staged": {
     "*": "oxfmt --write --no-error-on-unmatched-pattern"
@@ -93,7 +96,10 @@
     "foldkit": "0.164.0",
     "maplibre-gl": "^6.13.0",
     "tailwind-merge": "^3.3.1",
-    "tailwindcss": "^4.3.1"
+    "tailwindcss": "^4.3.1",
+    "@pleat/core": "file:packages/pleat-core",
+    "@pleat/foldkit": "file:packages/pleat-foldkit",
+    "csstype": "^3.2.3"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
