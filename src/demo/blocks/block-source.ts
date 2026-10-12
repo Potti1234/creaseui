@@ -1,4 +1,4 @@
-type BlockRenderer = 'tailwind' | 'stylex'
+type BlockRenderer = 'tailwind' | 'stylex' | 'pleat' | 'pleat'
 
 const rawBlockSources = import.meta.glob(
   [
@@ -36,7 +36,7 @@ export const blockSourcePath = (
 ): string => {
   const stem =
     SHARED_STEMS[name] ?? (renderer === 'tailwind' ? name : 'sidebar-page')
-  const dir = renderer === 'stylex' ? 'blocks-stylex' : 'blocks'
+  const dir = renderer === 'tailwind' ? 'blocks' : `blocks-${renderer}`
   return `/src/demo/${dir}/${stem}.ts`
 }
 
@@ -82,7 +82,12 @@ const dependencyPaths = (
   name: string,
   source: string,
 ): ReadonlyArray<string> => {
-  const otherRendererDir = renderer === 'stylex' ? '/src/ui/' : '/src/stylex/'
+  const otherRendererDirs: ReadonlyArray<string> =
+    renderer === 'tailwind'
+      ? ['/src/stylex/', '/src/pleat/']
+      : renderer === 'stylex'
+        ? ['/src/ui/', '/src/pleat/']
+        : ['/src/ui/', '/src/stylex/']
   const deps: string[] = []
   for (const match of source.matchAll(IMPORT_SPECIFIER)) {
     const specifier = match[1] ?? match[2]
@@ -96,7 +101,7 @@ const dependencyPaths = (
       continue
     }
     // The other renderer's component tree is never part of this block.
-    if (path.startsWith(otherRendererDir)) continue
+    if (otherRendererDirs.some(dir => path.startsWith(dir))) continue
     deps.push(path)
   }
   return deps

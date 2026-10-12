@@ -123,9 +123,12 @@ export const BLOCKS: ReadonlyArray<BlockDefinition> = [
 ]
 export const resolveBlock = (
   blockId: string,
-): Readonly<{ renderer: 'tailwind' | 'stylex'; name: string }> | undefined => {
+):
+  | Readonly<{ renderer: 'tailwind' | 'stylex' | 'pleat'; name: string }>
+  | undefined => {
   const [prefix, ...parts] = blockId.split('--')
-  const renderer = prefix === 'stylex' ? 'stylex' : 'tailwind'
+  const renderer =
+    prefix === 'pleat' ? 'pleat' : prefix === 'stylex' ? 'stylex' : 'tailwind'
   const requestedName = parts.length ? parts.join('--') : `sidebar-${blockId}`
   const name = requestedName.replace(/^astryx-/u, 'creaseui-')
   return BLOCKS.some(block => block.name === name)

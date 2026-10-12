@@ -3,11 +3,15 @@ import { taggedStruct } from 'foldkit/schema'
 
 import * as BlocksTailwindFeature from '@/demo/blocks/featured-page'
 import * as SidebarStyleX from '@/demo/blocks-stylex/sidebar-page'
+import * as SidebarPleat from '@/demo/blocks-pleat/sidebar-page'
 import * as BlocksFeature from '@/demo/blocks/registry'
 import * as BlocksStyleXFeature from '@/demo/blocks-stylex/featured-page'
+import * as BlocksPleatFeature from '@/demo/blocks-pleat/featured-page'
 import * as TanStackTableFeature from '@/demo/blocks-stylex/tanstack-table-page'
+import * as TanStackTablePleatFeature from '@/demo/blocks-pleat/tanstack-table-page'
 import * as BoardFeature from '@/demo/board'
 import * as BoardStyleX from '@/demo/board-stylex'
+import * as BoardPleat from '@/demo/board-pleat'
 import * as LandingFeature from '@/demo/landing'
 import * as ChartsArea from '@/demo/charts/area'
 import * as ChartsBar from '@/demo/charts/bar'
@@ -17,6 +21,7 @@ import * as ChartsRadar from '@/demo/charts/radar'
 import * as ChartsRadial from '@/demo/charts/radial'
 import * as ChartsTooltip from '@/demo/charts/tooltip'
 import * as ChartsStyleX from '@/demo/charts-stylex/page'
+import * as ChartsPleat from '@/demo/charts-pleat/page'
 import * as ComponentCatalog from '@/docs/components/catalog'
 import * as CopyFeedback from '@/docs/copy-feedback'
 import * as CodeBlock from '@/ui/code-block'
@@ -26,12 +31,13 @@ import { renderer } from '@/site/config'
 export const Landing = taggedStruct('LandingPage', {
   landing: LandingFeature.Model,
 })
-export const Renderer = S.Literals(['tailwind', 'stylex'])
+export const Renderer = S.Literals(['tailwind', 'stylex', 'pleat'])
 export type Renderer = typeof Renderer.Type
 export const Create = taggedStruct('CreatePage', {
   renderer: Renderer,
   tailwindBoard: BoardFeature.Model,
   styleXBoard: BoardStyleX.Model,
+  pleatBoard: BoardPleat.Model,
 })
 export const BlockCategory = S.Literals([
   'all',
@@ -51,12 +57,16 @@ export const BlocksIndex = taggedStruct('BlocksIndexPage', {
   copiedCode: CopyFeedback.Model,
 })
 export const BlocksStyleXTable = taggedStruct('BlocksStyleXTablePage', {
+  renderer: Renderer,
   table: TanStackTableFeature.Model,
+  pleatTable: TanStackTablePleatFeature.Model,
 })
 export const Block = taggedStruct('BlockPage', {
   blocks: BlocksFeature.Model,
   styleXSidebar: SidebarStyleX.Model,
   styleXFeatured: BlocksStyleXFeature.Model,
+  pleatSidebar: SidebarPleat.Model,
+  pleatFeatured: BlocksPleatFeature.Model,
   tailwindFeatured: BlocksTailwindFeature.Model,
 })
 export const Charts = taggedStruct('ChartsPage', {
@@ -69,6 +79,7 @@ export const Charts = taggedStruct('ChartsPage', {
   radial: ChartsRadial.Model,
   tooltip: ChartsTooltip.Model,
   styleXCharts: ChartsStyleX.Model,
+  pleatCharts: ChartsPleat.Model,
 })
 export const CatalogDocs = taggedStruct('CatalogDocsPage', {
   docs: ComponentCatalog.Model,
@@ -105,6 +116,7 @@ export const init = (route: AppRoute): Page =>
           renderer,
           tailwindBoard: BoardFeature.init(),
           styleXBoard: BoardStyleX.init(),
+          pleatBoard: BoardPleat.init(),
         }),
       Charts: () =>
         Charts({
@@ -117,6 +129,7 @@ export const init = (route: AppRoute): Page =>
           radial: ChartsRadial.init(),
           tooltip: ChartsTooltip.init(),
           styleXCharts: ChartsStyleX.init(),
+          pleatCharts: ChartsPleat.init(),
         }),
       BlocksIndex: () =>
         BlocksIndex({
@@ -133,12 +146,18 @@ export const init = (route: AppRoute): Page =>
           copiedCode: null,
         }),
       BlocksStyleXTable: () =>
-        BlocksStyleXTable({ table: TanStackTableFeature.init() }),
+        BlocksStyleXTable({
+          renderer,
+          table: TanStackTableFeature.init(),
+          pleatTable: TanStackTablePleatFeature.init(),
+        }),
       Block: () =>
         Block({
           blocks: BlocksFeature.init(),
           styleXSidebar: SidebarStyleX.init(),
           styleXFeatured: BlocksStyleXFeature.init(),
+          pleatSidebar: SidebarPleat.init(),
+          pleatFeatured: BlocksPleatFeature.init(),
           tailwindFeatured: BlocksTailwindFeature.init(),
         }),
       ComponentDocs: ({ component }) =>

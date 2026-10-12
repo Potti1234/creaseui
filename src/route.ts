@@ -155,7 +155,7 @@ export const chartsPath = (section: ChartSection): string =>
 export const blocksIndexPath = (): string => blocksRootRouter()
 
 export const blockPreviewPath = (
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat',
   name: string,
 ): string => blockPreviewRouter({ blockId: `${renderer}--${name}` })
 
