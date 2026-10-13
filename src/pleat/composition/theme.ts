@@ -7,6 +7,9 @@ import {
   compactSemanticTheme,
   expressiveSemanticTheme,
 } from './semantic-themes'
+import { complexTokensTheme } from '../complex-tokens'
+import { foundationTokensTheme } from '../foundations-tokens'
+import { tokensTheme } from '../tokens'
 import type { PrimitiveChildren } from './types'
 
 export const SEMANTIC_THEME_NAMES = [
@@ -19,6 +22,8 @@ export type SemanticThemeName = (typeof SEMANTIC_THEME_NAMES)[number]
 export type ThemeScopeProps = Readonly<{
   children: PrimitiveChildren
   theme?: SemanticThemeName | undefined
+  /** Re-resolve every theme role against a `.dark` palette for this subtree. */
+  colorScheme?: 'dark' | undefined
 }>
 
 export const themeScope = <Message>(
@@ -32,8 +37,22 @@ export const themeScope = <Message>(
   }[props.theme ?? 'comfortable']
   return h.div(
     [
-      ...css(...Theme.bindings(theme)),
+      ...css(
+        ...Theme.bindings(theme),
+        // Role variables are bound at :root; rebinding them here makes
+        // derived roles follow the subtree palette.
+        ...(props.colorScheme === 'dark'
+          ? [
+              ...Theme.bindings(tokensTheme),
+              ...Theme.bindings(foundationTokensTheme),
+              ...Theme.bindings(complexTokensTheme),
+            ]
+          : []),
+      ),
       h.DataAttribute('semantic-theme', props.theme ?? 'comfortable'),
+      ...(props.colorScheme === 'dark'
+        ? [h.Class('dark'), h.DataAttribute('color-scheme', 'dark')]
+        : []),
     ],
     props.children,
   )

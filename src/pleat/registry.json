@@ -1168,10 +1168,13 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/pleat-complex-tokens",
         "Potti1234/creaseui/pleat-composition-semantic-themes",
         "Potti1234/creaseui/pleat-composition-types",
         "Potti1234/creaseui/pleat-core",
-        "Potti1234/creaseui/pleat-foldkit"
+        "Potti1234/creaseui/pleat-foldkit",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -2556,6 +2559,9 @@
           "type": "registry:lib",
           "target": "@ui/pleat/overlay-boundary.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/overlay-boundary-behavior"
       ]
     },
     {
@@ -2573,6 +2579,7 @@
       "registryDependencies": [
         "Potti1234/creaseui/pleat-complex-tokens",
         "Potti1234/creaseui/pleat-core",
+        "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-tokens"
       ]

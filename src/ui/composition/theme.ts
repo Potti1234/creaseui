@@ -5,18 +5,25 @@ export const themeScope = <M>(
   props: Readonly<{
     children: ReadonlyArray<Html | string>
     theme?: SemanticThemeName | undefined
+    /** Re-resolve every theme role against a `.dark` palette for this subtree. */
+    colorScheme?: 'dark' | undefined
   }>,
   h: HtmlBuilder<M>,
 ): Html =>
   h.div(
     [
       h.DataAttribute('semantic-theme', props.theme ?? 'default'),
+      ...(props.colorScheme === 'dark'
+        ? [h.DataAttribute('color-scheme', 'dark')]
+        : []),
       h.Class(
-        props.theme === 'compact'
-          ? '[--block-space-md:0.75rem] [--block-space-sm:0.5rem] [--block-space-lg:1rem]'
-          : props.theme === 'expressive'
-            ? '[--block-space-md:1.25rem] [--block-space-sm:0.75rem] [--block-space-lg:2rem]'
-            : '[--block-space-md:1rem] [--block-space-sm:0.75rem] [--block-space-lg:1.5rem]',
+        `${props.colorScheme === 'dark' ? 'dark [color-scheme:dark] ' : ''}${
+          props.theme === 'compact'
+            ? '[--block-space-md:0.75rem] [--block-space-sm:0.5rem] [--block-space-lg:1rem]'
+            : props.theme === 'expressive'
+              ? '[--block-space-md:1.25rem] [--block-space-sm:0.75rem] [--block-space-lg:2rem]'
+              : '[--block-space-md:1rem] [--block-space-sm:0.75rem] [--block-space-lg:1.5rem]'
+        }`,
       ),
     ],
     props.children,

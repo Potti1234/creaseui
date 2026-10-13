@@ -966,6 +966,32 @@
           "target": "@lib/layout-properties.ts"
         }
       ]
+    },
+    {
+      "name": "overlay-boundary-behavior",
+      "type": "registry:lib",
+      "title": "Overlay Boundary Behavior",
+      "description": "Shared Foldkit behavior and helpers for Overlay Boundary.",
+      "files": [
+        {
+          "path": "overlay-boundary.ts",
+          "type": "registry:lib",
+          "target": "@lib/overlay-boundary.ts"
+        }
+      ]
+    },
+    {
+      "name": "theme-roles-behavior",
+      "type": "registry:lib",
+      "title": "Theme Roles Behavior",
+      "description": "Shared Foldkit behavior and helpers for Theme Roles.",
+      "files": [
+        {
+          "path": "theme-roles.ts",
+          "type": "registry:lib",
+          "target": "@lib/theme-roles.ts"
+        }
+      ]
     }
   ]
 }

@@ -1562,6 +1562,7 @@
       "description": "A CreaseUI Popover component for Foldkit.",
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/overlay-boundary-behavior",
         "Potti1234/creaseui/utils"
       ],
       "files": [

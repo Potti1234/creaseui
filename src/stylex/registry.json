@@ -1335,8 +1335,12 @@
         "@stylexjs/stylex@^0.19.0"
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/stylex-complex-tokens-stylex",
         "Potti1234/creaseui/stylex-composition-semantic-themes",
-        "Potti1234/creaseui/stylex-composition-types"
+        "Potti1234/creaseui/stylex-composition-types",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-tokens-stylex",
+        "Potti1234/creaseui/theme-roles-behavior"
       ]
     },
     {
@@ -2975,6 +2979,9 @@
           "type": "registry:lib",
           "target": "@ui/stylex/overlay-boundary.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/overlay-boundary-behavior"
       ]
     },
     {
@@ -2994,6 +3001,7 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/stylex-complex-tokens-stylex",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
         "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
         "Potti1234/creaseui/stylex-tokens-stylex"
       ]
