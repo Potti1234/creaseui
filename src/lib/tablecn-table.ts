@@ -178,7 +178,9 @@ export const filteredTasks = (model: Model): Array<Task> => {
     )
       return false
     if (model.createdFrom !== '' || model.createdTo !== '') {
-      const day = task.createdAt.toISOString().slice(0, 10)
+      const day = new Date(createdAtMs(task.createdAt))
+        .toISOString()
+        .slice(0, 10)
       if (model.createdFrom !== '' && day < model.createdFrom) return false
       if (model.createdTo !== '' && day > model.createdTo) return false
     }
@@ -198,6 +200,11 @@ const priorityRank: Record<TaskPriority, number> = {
   high: 2,
 }
 
+const createdAtMs = (createdAt: Task['createdAt']): number =>
+  createdAt instanceof Date
+    ? createdAt.getTime()
+    : Date.parse(String(createdAt))
+
 const sortValue = (task: Task, id: string): string | number => {
   switch (id) {
     case 'code':
@@ -211,7 +218,7 @@ const sortValue = (task: Task, id: string): string | number => {
     case 'estimatedHours':
       return task.estimatedHours
     case 'createdAt':
-      return task.createdAt.getTime()
+      return createdAtMs(task.createdAt)
     default:
       return 0
   }
