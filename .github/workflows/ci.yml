@@ -35,6 +35,9 @@ jobs:
       - name: Validate registry
         run: npm run registry:build
 
+      - name: Verify packed @creaseui/lint in fresh consumers
+        run: npm run lint:consumers
+
   browser:
     runs-on: ubuntu-latest
     timeout-minutes: 45

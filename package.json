@@ -73,7 +73,8 @@
     "test:sites": "npm run build && playwright test --config playwright.sites.config.ts",
     "dev:pleat": "vite --mode pleat",
     "build:pleat": "vite build --mode pleat",
-    "preview:pleat": "vite preview --mode pleat"
+    "preview:pleat": "vite preview --mode pleat",
+    "lint:consumers": "node scripts/verify-lint-consumer.mjs"
   },
   "lint-staged": {
     "*": "oxfmt --write --no-error-on-unmatched-pattern"

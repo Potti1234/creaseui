@@ -43,9 +43,9 @@ export const creaseui = (options = {}) => {
     settings: { creaseui: strict },
   }
   const strictLevel = 'error'
-  const rendererRules = { pleat, stylex, tailwind }[strict.renderer]({
+  const rendererConfig = { pleat, stylex, tailwind }[strict.renderer]({
     files: raw,
-  }).rules
+  })
 
   const entries = [
     {
@@ -81,8 +81,9 @@ export const creaseui = (options = {}) => {
       ...shared,
       files: raw,
       name: '@creaseui/lint/strict/implementation',
+      plugins: { ...rendererConfig.plugins, crease: plugin },
       rules: {
-        ...rendererRules,
+        ...rendererConfig.rules,
         ...levels(['component-contract', 'no-unverifiable-ui'], strictLevel),
       },
     })
