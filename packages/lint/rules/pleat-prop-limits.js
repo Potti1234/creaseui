@@ -12,6 +12,13 @@ const matchesProperty = (name, pattern) =>
       ? name.startsWith(pattern.slice(0, -1))
       : name === pattern
 
+const PLEAT_CORE = '@pleat/core'
+
+const importedName = specifier =>
+  specifier.imported.type === 'Identifier'
+    ? specifier.imported.name
+    : String(specifier.imported.value)
+
 const CSS_WIDE_KEYWORDS = new Set(['inherit', 'initial', 'revert', 'unset'])
 
 const literalString = node => {
@@ -55,42 +62,127 @@ export const pleatPropLimits = {
     if (tokenFiles.some(pattern => pattern.test(filename))) return {}
     const entries = Object.entries(propLimits)
     if (entries.length === 0) return {}
-    const checkObject = objectNode => {
-      for (const property of objectNode.properties) {
-        if (property.type !== 'Property') continue
-        const name = propertyName(property.key)
-        if (name === null) continue
-        for (const [pattern, spec] of entries) {
-          if (!matchesProperty(name, pattern)) continue
-          const value = literalString(property.value)
-          if (
-            value !== null &&
-            !CSS_WIDE_KEYWORDS.has(value) &&
-            !(spec.limit ?? []).includes(value)
-          ) {
-            context.report({
-              node: property.value,
-              messageId: 'limit',
-              data: { property: name, value, reason: spec.reason ?? '' },
-            })
+    const sourceCode = context.sourceCode ?? context.getSourceCode()
+
+    const findVariable = (node, name) => {
+      let scope = sourceCode.getScope(node)
+      while (scope) {
+        const variable = scope.set.get(name)
+        if (variable) return variable
+        scope = scope.upper
+      }
+      return null
+    }
+
+    const isPleatCoreImport = definition =>
+      definition.type === 'ImportBinding' &&
+      definition.parent.source.value === PLEAT_CORE
+
+    // `Style` (or an alias) imported from @pleat/core, or `P.Style` where P is
+    // a namespace import of @pleat/core. Shadowed or unrelated bindings named
+    // `Style` resolve to other definitions and are ignored.
+    const isStyleModule = node => {
+      if (node.type === 'Identifier') {
+        const variable = findVariable(node, node.name)
+        const definition = variable?.defs[0]
+        return (
+          definition !== undefined &&
+          isPleatCoreImport(definition) &&
+          definition.node.type === 'ImportSpecifier' &&
+          importedName(definition.node) === 'Style'
+        )
+      }
+      if (
+        node.type === 'MemberExpression' &&
+        !node.computed &&
+        node.object.type === 'Identifier' &&
+        propertyName(node.property) === 'Style'
+      ) {
+        const variable = findVariable(node.object, node.object.name)
+        const definition = variable?.defs[0]
+        return (
+          definition !== undefined &&
+          isPleatCoreImport(definition) &&
+          definition.node.type === 'ImportNamespaceSpecifier'
+        )
+      }
+      return false
+    }
+
+    // Follows local `const` declarations and object spreads back to the
+    // object literals that hold the declarations.
+    const declarationObjects = (node, seen = new Set()) => {
+      if (node === null || node === undefined || seen.has(node)) return []
+      seen.add(node)
+      if (node.type === 'ObjectExpression') return [node]
+      if (
+        node.type === 'TSAsExpression' ||
+        node.type === 'TSSatisfiesExpression'
+      )
+        return declarationObjects(node.expression, seen)
+      if (node.type === 'Identifier') {
+        const variable = findVariable(node, node.name)
+        const definition = variable?.defs[0]
+        if (
+          variable?.defs.length === 1 &&
+          definition.type === 'Variable' &&
+          definition.parent.kind === 'const' &&
+          definition.node.id.type === 'Identifier'
+        )
+          return declarationObjects(definition.node.init, seen)
+      }
+      return []
+    }
+
+    const checkDeclarations = (node, seen = new Set()) => {
+      for (const objectNode of declarationObjects(node, seen)) {
+        for (const property of objectNode.properties) {
+          if (property.type === 'SpreadElement') {
+            checkDeclarations(property.argument, seen)
+            continue
           }
+          if (property.type !== 'Property') continue
+          const name = propertyName(property.key)
+          if (name === null) continue
+          checkValue(name, property.value)
         }
       }
     }
+
+    const checkValue = (name, valueNode) => {
+      for (const [pattern, spec] of entries) {
+        if (!matchesProperty(name, pattern)) continue
+        const value = literalString(valueNode)
+        if (
+          value !== null &&
+          !CSS_WIDE_KEYWORDS.has(value) &&
+          !(spec.limit ?? []).includes(value)
+        ) {
+          context.report({
+            node: valueNode,
+            messageId: 'limit',
+            data: { property: name, value, reason: spec.reason ?? '' },
+          })
+        }
+      }
+    }
+
     return {
       CallExpression(node) {
+        const callee = node.callee
+        if (callee.type !== 'MemberExpression' || callee.computed) return
+        const method = propertyName(callee.property)
+        if (method !== 'make' && method !== 'when') return
+        if (!isStyleModule(callee.object)) return
+        // Style.make(declarations); Style.when(condition, declarations) and
+        // Style.when(self, condition, declarations) take declarations last.
+        const argument =
+          method === 'make' ? node.arguments[0] : node.arguments.at(-1)
         if (
-          node.callee.type === 'MemberExpression' &&
-          !node.callee.computed &&
-          node.callee.object.type === 'Identifier' &&
-          node.callee.object.name === 'Style' &&
-          node.callee.property.type === 'Identifier' &&
-          node.callee.property.name === 'make'
-        ) {
-          for (const argument of node.arguments) {
-            if (argument.type === 'ObjectExpression') checkObject(argument)
-          }
-        }
+          argument !== undefined &&
+          node.arguments.length >= (method === 'make' ? 1 : 2)
+        )
+          checkDeclarations(argument)
       },
     }
   },
