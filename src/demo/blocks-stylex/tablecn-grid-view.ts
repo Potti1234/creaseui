@@ -1213,7 +1213,9 @@ const contextMenu = (model: Grid.Model, h: HtmlBuilder<Grid.Message>): Html => {
 
 /* ---------- grid ---------- */
 
-const VIEWPORT_HEIGHT = 600
+/* reference: height = max(400, window.innerHeight - 150) */
+const viewportHeightPx = (model: Grid.Model): number =>
+  Math.max(400, model.viewportHeight - 150)
 const OVERSCAN = 5
 
 export const gridView = (
@@ -1224,10 +1226,11 @@ export const gridView = (
   const columns = visibleCols(model)
   const rowH = Grid.rowHeightPx(model.rowHeight)
   const totalHeight = people.length * rowH
+  const viewHeight = viewportHeightPx(model)
   const startIndex = Math.max(0, Math.floor(model.scrollTop / rowH) - OVERSCAN)
   const endIndex = Math.min(
     people.length,
-    Math.ceil((model.scrollTop + VIEWPORT_HEIGHT) / rowH) + OVERSCAN,
+    Math.ceil((model.scrollTop + viewHeight) / rowH) + OVERSCAN,
   )
   const gridWidth = columns.reduce((acc, c) => acc + c.width, SELECT_COL_WIDTH)
   const isSelected = (row: number, column: string): boolean =>
@@ -1252,25 +1255,6 @@ export const gridView = (
       h.DataAttribute('slot', 'grid-wrapper'),
       h.Dir(model.direction),
       h.Class(className(st.c135)),
-      h.OnMount(
-        Grid.gridKeysMount(mount => {
-          if (mount._tag === 'GridKeydown')
-            return Grid.Message.GridKey({
-              key: mount.key,
-              ctrl: mount.ctrl,
-              shift: mount.shift,
-              meta: mount.meta,
-            })
-          if (mount._tag === 'GridContextMenu')
-            return Grid.Message.OpenedContextMenu({
-              x: mount.x,
-              y: mount.y,
-              row: mount.row,
-              column: mount.column,
-            })
-          return Grid.Message.Scrolled({ scrollTop: mount.scrollTop })
-        }),
-      ),
     ],
     [
       searchOverlay(model, h),
@@ -1283,7 +1267,32 @@ export const gridView = (
           h.DataAttribute('slot', 'grid'),
           h.Tabindex(0),
           h.Class(className(st.c136)),
-          h.Style({ maxHeight: `${String(VIEWPORT_HEIGHT)}px` }),
+          h.Style({ maxHeight: `${String(viewHeight)}px` }),
+          /* mount on the scroller: scroll events don't bubble, and toolbar
+             inputs outside it can't leak ctrl/meta combos into grid keys */
+          h.OnMount(
+            Grid.gridKeysMount(mount => {
+              if (mount._tag === 'GridKeydown')
+                return Grid.Message.GridKey({
+                  key: mount.key,
+                  ctrl: mount.ctrl,
+                  shift: mount.shift,
+                  meta: mount.meta,
+                })
+              if (mount._tag === 'GridContextMenu')
+                return Grid.Message.OpenedContextMenu({
+                  x: mount.x,
+                  y: mount.y,
+                  row: mount.row,
+                  column: mount.column,
+                })
+              if (mount._tag === 'GridViewportHeight')
+                return Grid.Message.SetViewportHeight({
+                  height: mount.height,
+                })
+              return Grid.Message.Scrolled({ scrollTop: mount.scrollTop })
+            }),
+          ),
         ],
         [
           /* header */
@@ -1536,7 +1545,11 @@ export const gridView = (
                                 Grid.Message.ChangedDraft({ value }),
                               ),
                               h.Class(className(st.c157)),
-                              h.Attribute('autofocus', 'true'),
+                              h.OnMount(
+                                Grid.gridEditorFocusMount(() =>
+                                  Grid.Message.CompletedEditorFocus({}),
+                                ),
+                              ),
                             ])
                           : cellContent(person, column, h),
                       ],

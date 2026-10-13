@@ -26,6 +26,7 @@ export const CellRange = S.Struct({
 export type CellRange = typeof CellRange.Type
 
 export const Model = S.Struct({
+  viewportHeight: S.Number,
   rows: S.Array(S.Any),
   columnOrder: S.Array(S.String),
   hiddenColumnIds: S.Array(S.String),
@@ -64,6 +65,7 @@ export const Message = defineMessageUnion({
   ChangedDraft: { value: S.String },
   CommittedDraft: { move: S.String },
   CanceledEdit: {},
+  CompletedEditorFocus: {},
   SetCellValue: { row: S.Number, column: S.String, value: S.String },
   ToggledCellBoolean: { row: S.Number, column: S.String },
   ClearedSelection: {},
@@ -102,6 +104,7 @@ export const Message = defineMessageUnion({
   Undo: {},
   Redo: {},
   SetDirection: { direction: S.Literals(['ltr', 'rtl']) },
+  SetViewportHeight: { height: S.Number },
   GridKey: {
     key: S.String,
     ctrl: S.Boolean,
@@ -149,6 +152,7 @@ export const init = (count = 500): Model => ({
   futureStates: [],
   direction: 'ltr',
   scrollTop: 0,
+  viewportHeight: 400,
 })
 
 export const rowHeightPx = (id: string): number =>
@@ -327,6 +331,8 @@ export const update = (model: Model, message: Message): Model => {
     }
     case 'CanceledEdit':
       return { ...model, editingCell: emptyCell, draftValue: '' }
+    case 'CompletedEditorFocus':
+      return model
     case 'SetCellValue':
       return commitCell(model, message.row, message.column, message.value)
     case 'ToggledCellBoolean': {
@@ -562,6 +568,8 @@ export const update = (model: Model, message: Message): Model => {
       )
     case 'Scrolled':
       return { ...model, scrollTop: message.scrollTop }
+    case 'SetViewportHeight':
+      return { ...model, viewportHeight: message.height }
   }
 }
 
@@ -674,6 +682,11 @@ const MountMessage = defineMessageUnion({
   GridScrolled: {
     scrollTop: S.Number,
   },
+  GridViewportHeight: { height: S.Number },
+})
+
+const EditorMountMessage = defineMessageUnion({
+  GridEditorFocused: {},
 })
 export type MountMessage = typeof MountMessage.Type
 
@@ -683,6 +696,7 @@ export const GridKeys = Mount.defineStream('TablecnGridKeys', {
     MountMessage.GridKeydown,
     MountMessage.GridContextMenu,
     MountMessage.GridScrolled,
+    MountMessage.GridViewportHeight,
   ],
   execute: ({ element }) =>
     Stream.callback<MountMessage>(queue =>
@@ -698,15 +712,10 @@ export const GridKeys = Mount.defineStream('TablecnGridKeys', {
                   target.tagName === 'TEXTAREA' ||
                   target.isContentEditable)
               const printable = event.key.length === 1
-              /* when an editor is open only Enter/Escape/Tab + ctrl combos
-                 belong to the grid */
-              if (inEditor && printable && !event.ctrlKey && !event.metaKey)
-                return
-              if (
-                inEditor &&
-                !['Enter', 'Escape', 'Tab'].includes(event.key) &&
-                !(event.ctrlKey || event.metaKey)
-              )
+              /* while an input/editor owns the event only Enter/Escape/Tab
+                 belong to the grid — printable keys and ctrl/meta text
+                 combos (select-all, undo, find) stay with the input */
+              if (inEditor && !['Enter', 'Escape', 'Tab'].includes(event.key))
                 return
               const handled =
                 event.ctrlKey ||
@@ -767,10 +776,23 @@ export const GridKeys = Mount.defineStream('TablecnGridKeys', {
                 MountMessage.GridScrolled({ scrollTop: element.scrollTop }),
               )
             }
+            const onResize = (): void => {
+              Queue.offerUnsafe(
+                queue,
+                MountMessage.GridViewportHeight({
+                  height: window.innerHeight,
+                }),
+              )
+            }
+            Queue.offerUnsafe(
+              queue,
+              MountMessage.GridViewportHeight({ height: window.innerHeight }),
+            )
             element.addEventListener('keydown', onKeyDown)
             element.addEventListener('contextmenu', onContextMenu)
             element.addEventListener('scroll', onScroll, { passive: true })
-            return { onKeyDown, onContextMenu, onScroll }
+            window.addEventListener('resize', onResize)
+            return { onKeyDown, onContextMenu, onScroll, onResize }
           }),
           resource =>
             Effect.sync(() => {
@@ -779,6 +801,7 @@ export const GridKeys = Mount.defineStream('TablecnGridKeys', {
               element.removeEventListener('keydown', resource.onKeyDown)
               element.removeEventListener('contextmenu', resource.onContextMenu)
               element.removeEventListener('scroll', resource.onScroll)
+              window.removeEventListener('resize', resource.onResize)
             }),
         )
         return yield* Effect.never
@@ -789,6 +812,24 @@ export const GridKeys = Mount.defineStream('TablecnGridKeys', {
 export const gridKeysMount = <Msg>(
   toParentMessage: (message: MountMessage) => Msg,
 ) => Mount.mapMessage(GridKeys({}), toParentMessage)
+
+/* autofocus only applies on initial page load; a one-shot mount focuses the
+   editor element when the cell editor enters the DOM */
+export const FocusCellEditor = Mount.define('FocusCellEditor', {
+  args: {},
+  messages: [EditorMountMessage.GridEditorFocused],
+  execute: ({ element }) =>
+    Effect.sync(() => {
+      if (element instanceof HTMLElement) element.focus()
+      return EditorMountMessage.GridEditorFocused({})
+    }),
+})
+
+export const gridEditorFocusMount = <Msg>(toParentMessage: () => Msg) =>
+  Mount.mapMessage(
+    FocusCellEditor({}),
+    toParentMessage as (message: typeof EditorMountMessage.Type) => Msg,
+  )
 
 const blankPerson = (id: string): Person => ({
   id,
