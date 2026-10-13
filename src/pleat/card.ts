@@ -107,7 +107,8 @@ export const card = <Msg>(props: CardProps, h: HtmlBuilder<Msg>): Html => {
     h.DataAttribute('size', props.size ?? 'default'),
     h.Style({
       '--card-spacing':
-        props.spacing ?? (props.size === 'sm' ? '1rem' : '1.5rem'),
+        props.spacing ??
+        (props.size === 'sm' ? '1rem' : 'var(--card-spacing-default, 1.5rem)'),
       '--card-title-fs': props.size === 'sm' ? '0.875rem' : '1rem',
     }),
     h.Class(

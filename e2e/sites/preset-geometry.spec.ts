@@ -1,7 +1,8 @@
 import { expect, test, type Page } from '@playwright/test'
 
-/* R2 waves 1-2: Create styles apply to every control and selection role,
-   not only Button/Input, in every renderer. Radio indicators and Switch
+/* R2 waves 1-3: Create styles apply to every control and selection role,
+   not only Button/Input, in every renderer; list and menu rows follow
+   shape and size. Radio indicators and Switch
    tracks keep their circular/pill contract. */
 const CONTROLS = [
   'button',
@@ -13,7 +14,8 @@ const CONTROLS = [
 ] as const
 const SINGLE_LINE = CONTROLS.filter(slot => slot !== 'textarea')
 const SELECTION = ['checkbox', 'radio-group-item', 'switch'] as const
-const MEASURED = [...CONTROLS, ...SELECTION, 'card']
+const ROWS = ['item', 'sidebar-menu-button'] as const
+const MEASURED = [...CONTROLS, ...SELECTION, ...ROWS, 'card']
 
 type Measured = Readonly<{
   radius: number
@@ -21,6 +23,7 @@ type Measured = Readonly<{
   shadow: string
   height: number
   fontSize: number
+  paddingTop: number
 }>
 
 const measure = (page: Page, slots: ReadonlyArray<string>) =>
@@ -42,6 +45,7 @@ const measure = (page: Page, slots: ReadonlyArray<string>) =>
             shadow: style.boxShadow,
             height: element.getBoundingClientRect().height,
             fontSize: Number.parseFloat(style.fontSize),
+            paddingTop: Number.parseFloat(style.paddingTop),
           },
         ]
       }),
@@ -71,7 +75,7 @@ const expectations: Readonly<
   Record<string, (measured: Record<string, Measured>) => void>
 > = {
   lyra: m => {
-    for (const slot of [...CONTROLS, 'checkbox', 'card'])
+    for (const slot of [...CONTROLS, 'checkbox', ...ROWS, 'card'])
       expect(m[slot]!.radius, slot).toBe(0)
     expect(m['radio-group-item']!.radius).toBeGreaterThan(4)
     expect(m.switch!.radius).toBeGreaterThan(4)
@@ -81,6 +85,7 @@ const expectations: Readonly<
       expect(m[slot]!.radius, slot).toBeGreaterThan(100)
     expect(m.textarea!.radius).toBeGreaterThan(8)
     expect(m.card!.radius).toBeGreaterThan(14)
+    for (const slot of ROWS) expect(m[slot]!.radius, slot).toBeGreaterThan(8)
   },
   vega: m => {
     for (const slot of [...CONTROLS, ...SELECTION, 'card'])
@@ -98,8 +103,10 @@ const expectations: Readonly<
     for (const slot of CONTROLS) expect(m[slot]!.fontSize, slot).toBe(13)
   },
   rhea: m => {
-    for (const slot of SINGLE_LINE)
+    for (const slot of [...SINGLE_LINE, ...ROWS])
       expect(m[slot]!.height, slot).toBeGreaterThanOrEqual(40)
+    // Region spacing grows instead of collapsing to a 4px panel inset.
+    expect(m.card!.paddingTop).toBeGreaterThan(24)
   },
 }
 
