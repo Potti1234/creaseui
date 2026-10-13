@@ -468,7 +468,16 @@ const styles = {
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
   }),
+  pickerChoiceLabel: Style.make({
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  }),
   pickerContent: Style.make({
+    borderColor: boardTokens.border,
+    borderRadius: 'inherit',
+    borderStyle: 'solid',
+    borderWidth: 1,
     padding: '0.5rem',
     backgroundColor: boardTokens.panelPopover,
     color: boardTokens.text,
@@ -1184,6 +1193,8 @@ export const presetCustomizer = (
           Message['GotCreatePresetPickerMessage']({ field, message }),
         side: 'right',
         align: 'start',
+        portal: true,
+        surface: 'bare',
         triggerLayoutStyle: styles.pickerTriggerLayout,
         trigger: h.div(
           [h.Class(className(styles.pickerTrigger))],
@@ -1237,7 +1248,7 @@ export const presetCustomizer = (
                     ],
                     [
                       h.span(
-                        [h.Class(className(styles.pickerValue))],
+                        [h.Class(className(styles.pickerChoiceLabel))],
                         [titleCase(value)],
                       ),
                       ...(isSelected

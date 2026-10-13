@@ -1,6 +1,6 @@
 import { Effect, Schema as S } from 'effect'
 import * as Mount from 'foldkit/mount'
-import { Anchor, Combobox } from '@foldkit/ui'
+import { Anchor, Combobox, Popover } from '@foldkit/ui'
 
 /**
  * StyleX themes in Crease may be scoped below the document root. Foldkit's
@@ -112,3 +112,36 @@ export const themedComboboxPanel = <Msg>(
   anchor: Anchor.AnchorConfig,
   send: (message: Combobox.Message) => Msg,
 ) => Mount.mapMessage(AnchorThemedCombobox({ buttonId, anchor }), send)
+
+/** Popover anchoring with an explicit theme-preserving portal, for panels that
+ * must escape a clipping (overflow) ancestor. */
+export const AnchorThemedPopover = Mount.define('AnchorThemedPopover', {
+  args: { buttonId: S.String, anchor: Anchor.AnchorConfig },
+  messages: [Popover.Message.CompletedAnchorPopover],
+  execute: ({ element, buttonId, anchor }) =>
+    Effect.gen(function* () {
+      yield* Effect.acquireRelease(
+        Effect.sync(() => {
+          if (!(element instanceof HTMLElement)) return () => {}
+          const releaseTheme = inheritPortalTheme(element)
+          const releaseAnchor = Anchor.anchorSetup(element, {
+            buttonId,
+            anchor: { ...anchor, portal: true },
+            interceptTab: false,
+          })
+          return () => {
+            releaseAnchor()
+            releaseTheme()
+          }
+        }),
+        release => Effect.sync(release),
+      )
+      return Popover.Message.CompletedAnchorPopover()
+    }),
+})
+
+export const themedPopoverPanel = <Msg>(
+  buttonId: string,
+  anchor: Anchor.AnchorConfig,
+  send: (message: Popover.Message) => Msg,
+) => Mount.mapMessage(AnchorThemedPopover({ buttonId, anchor }), send)

@@ -11,7 +11,7 @@ import type {
   ComponentLayoutStyle,
 } from './contracts'
 import * as Button from './button'
-import { themedAnchor } from './overlay-boundary'
+import { themedAnchor, themedPopoverPanel } from './overlay-boundary'
 import { className } from './style'
 import { complexTokens } from './complex-tokens'
 import { tokens } from './tokens'
@@ -22,6 +22,11 @@ const styles = {
     maxHeight: '24rem',
     overflowY: 'auto',
     width: 'max-content',
+  }),
+  bare: Style.make({
+    padding: 0,
+    backgroundColor: tokens.transparent,
+    borderWidth: 0,
   }),
   sidebarTrigger: Style.make({
     padding: '0.5rem',
@@ -103,6 +108,10 @@ export type PopoverProps<Msg> = Readonly<{
   layoutStyle?: ComponentLayoutStyle | undefined
   direction?: 'ltr' | 'rtl'
   focusSelector?: string
+  /** Portal the panel (theme preserved) so it escapes clipping ancestors. */
+  portal?: boolean
+  /** 'bare' drops the panel surface so the content supplies its own. */
+  surface?: 'default' | 'bare'
 }>
 
 export const popover = <Msg>(
@@ -176,6 +185,17 @@ export const popover = <Msg>(
                   hp.div(
                     [
                       ...panel,
+                      ...(props.portal === true
+                        ? [
+                            hp.OnMount(
+                              themedPopoverPanel(
+                                `${props.model.id}-button`,
+                                { placement, gap: 4 },
+                                props.toParentMessage,
+                              ),
+                            ),
+                          ]
+                        : []),
                       hp.DataAttribute('slot', 'popover-content'),
                       ...(props.direction === undefined
                         ? []
@@ -184,6 +204,7 @@ export const popover = <Msg>(
                         cn(
                           overlayStyles.panel,
                           CONTENT_CLASS,
+                          props.surface === 'bare' ? styles.bare : undefined,
                           props.layoutStyle,
                         ),
                       ),
