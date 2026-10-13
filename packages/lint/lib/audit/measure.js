@@ -209,6 +209,43 @@ export const measurePage = ({ exceptions, minimumTarget }) => {
       )
   }
 
+  // Numeric contracts come from component metadata (Stat slots) or an
+  // explicit `data-numeric` opt-in; arbitrary digits are never guessed.
+  for (const element of document.querySelectorAll(
+    '[data-slot="stat-value"],[data-slot="stat-delta"],[data-numeric]',
+  )) {
+    if (!visible(element)) continue
+    count('numeric-text')
+    const style = getComputedStyle(element)
+    if (!style.fontVariantNumeric.includes('tabular-nums'))
+      report(
+        'numeric-text',
+        element,
+        'error',
+        `font-variant-numeric: ${style.fontVariantNumeric}`,
+        'tabular-nums',
+        'Use the component numeric text role (tabular numerals) so changing values keep their width.',
+      )
+    const align = element.getAttribute('data-numeric')
+    if (align && align !== 'true') {
+      const physical =
+        style.textAlign === 'start' || style.textAlign === 'end'
+          ? (style.textAlign === 'end') === (style.direction === 'rtl')
+            ? 'left'
+            : 'right'
+          : style.textAlign
+      if (physical !== align)
+        report(
+          'numeric-text',
+          element,
+          'error',
+          `text-align: ${style.textAlign} (${style.direction})`,
+          `text-align: ${align}`,
+          "Set the column or text alignment option (for example DataTable `align: 'right'`) instead of relying on inherited alignment.",
+        )
+    }
+  }
+
   const context = document
     .createElement('canvas')
     .getContext('2d', { willReadFrequently: true })

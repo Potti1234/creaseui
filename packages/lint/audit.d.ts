@@ -7,6 +7,7 @@ export type AuditRule =
   | 'overlay-bounds'
   | 'target-size'
   | 'text-contrast'
+  | 'numeric-text'
 export declare const AUDIT_RULES: ReadonlyArray<AuditRule>
 
 /** Minimal page surface used by state callbacks (Playwright's Page satisfies it). */

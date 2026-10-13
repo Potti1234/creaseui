@@ -18,6 +18,7 @@ export const AUDIT_RULES = Object.freeze([
   'overlay-bounds',
   'target-size',
   'text-contrast',
+  'numeric-text',
 ])
 const SEVERITY_RANK = { warning: 1, error: 2 }
 const BROAD_SELECTORS = new Set(['*', 'html', 'body', ':root'])

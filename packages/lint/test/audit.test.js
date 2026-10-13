@@ -81,6 +81,7 @@ test(
     const dialog = report.results.find(result => result.state === 'dialog-open')
     assert.ok(dialog.checked['overlay-bounds'] >= 1)
     assert.ok(dialog.checked['text-contrast'] > 0)
+    assert.equal(dialog.checked['numeric-text'], 2)
   },
 )
 
@@ -98,8 +99,16 @@ test(
       'overlay-bounds',
       'target-size',
       'text-contrast',
+      'numeric-text',
     ])
       assert.ok(rules.has(rule), `missing ${rule}`)
+    assert.deepEqual(
+      report.findings
+        .filter(finding => finding.rule === 'numeric-text')
+        .map(finding => finding.selector)
+        .sort(),
+      ['#misaligned', '#proportional'],
+    )
     const contrast = report.findings.find(
       finding => finding.rule === 'text-contrast',
     )

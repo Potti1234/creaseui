@@ -72,7 +72,11 @@ A state with `run` must also declare `expect`; if that check fails, the case
 counts as unvisited instead of passing.
 
 Rules: `accessible-name`, `label-reference`, `document-overflow`,
-`overlay-bounds`, `target-size` (warning) and `text-contrast`. Contrast is
+`overlay-bounds`, `target-size` (warning), `text-contrast` and
+`numeric-text`. `numeric-text` applies only where a contract declares
+numbers: Stat value/delta slots and elements marked `data-numeric` (or
+`data-numeric="right"` etc. to also check alignment); it requires tabular
+numerals and the declared physical alignment in LTR and RTL. Contrast is
 measured against the actual composited background. Gradients, images and
 partial opacity are reported as unresolved rather than guessed. Frames and
 open shadow roots are listed as unsupported.
