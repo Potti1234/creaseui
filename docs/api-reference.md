@@ -24,6 +24,23 @@ Source: [`src/ui/accordion.ts`](../src/ui/accordion.ts)
 | `AccordionProps` | type | `AccordionProps<Msg> = ViewInputs & Readonly<{ model: AccordionBehavior.Model; toParentMessage: (message: AccordionBehavior.Message) => Msg; }>` |
 | `accordion` | function | `accordion<Msg>(props: AccordionProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
+## Action Bar
+
+Source: [`src/ui/action-bar.ts`](../src/ui/action-bar.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `ActionBarAlign` | re-export | `export { ActionBarAlign } from ` |
+| `ActionBarOrientation` | re-export | `export { ActionBarOrientation } from ` |
+| `ActionBarSide` | re-export | `export { ActionBarSide } from ` |
+| `ActionBarProps` | type | `ActionBarProps<Msg> = Readonly<{ open: boolean; side?: ActionBarSide; align?: ActionBarAlign; alignOffset?: number; sideOffset?: number; orientation?: ActionBarOrientation; toParentMessage?: (message: Message \| ToolbarMessage) => Msg; children: ReadonlyArray<…` |
+| `actionBar` | function | `actionBar<Msg>(props: ActionBarProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+| `actionBarSelection` | function | `actionBarSelection<Msg>(props: Readonly<{ children: ReadonlyArray<Html \| string>; class?: string; }>, h: HtmlBuilder<Msg>): Html` |
+| `actionBarGroup` | function | `actionBarGroup<Msg>(props: Readonly<{ children: ReadonlyArray<Html \| string>; orientation?: ActionBarOrientation; class?: string; }>, h: HtmlBuilder<Msg>): Html` |
+| `actionBarItem` | function | `actionBarItem<Msg>(props: Readonly<{ onSelect?: Msg; variant?: 'default' \| 'destructive'; isDisabled?: boolean; children: ReadonlyArray<Html \| string>; class?: string; ariaLabel?: string; }>, h: HtmlBuilder<Msg>): Html` |
+| `actionBarClose` | function | `actionBarClose<Msg>(props: Readonly<{ onClose?: Msg; children?: ReadonlyArray<Html \| string>; class?: string; ariaLabel?: string; }>, h: HtmlBuilder<Msg>): Html` |
+| `actionBarSeparator` | function | `actionBarSeparator<Msg>(props: Readonly<{ orientation?: ActionBarOrientation; class?: string; }>, h: HtmlBuilder<Msg>): Html` |
+
 ## Alert Dialog
 
 Source: [`src/ui/alert-dialog.ts`](../src/ui/alert-dialog.ts)

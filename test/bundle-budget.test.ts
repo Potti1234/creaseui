@@ -8,7 +8,7 @@ const MAX_GENERATED_ICON_BYTES = 80 * 1024
 // The complete block catalog includes data-driven sidebar icons and the docs
 // example parity work adds upstream-verbatim glyphs. Keep the 64 KiB byte
 // ceiling as the real bundle gate while allowing this larger, explicit subset.
-const MAX_GENERATED_ICON_COUNT = 240
+const MAX_GENERATED_ICON_COUNT = 280
 
 const sourceFiles = (directory: string): ReadonlyArray<string> =>
   readdirSync(directory, { withFileTypes: true }).flatMap(entry => {

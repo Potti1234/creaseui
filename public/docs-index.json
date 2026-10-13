@@ -4,7 +4,7 @@
     "src/ui/registry.json",
     "src/ui/*.ts"
   ],
-  "componentCount": 121,
+  "componentCount": 122,
   "components": [
     {
       "slug": "accordion",
@@ -102,6 +102,78 @@
           "name": "accordion",
           "kind": "function",
           "signature": "accordion<Msg>(props: AccordionProps<Msg>, h: HtmlBuilder<Msg>): Html"
+        }
+      ]
+    },
+    {
+      "slug": "action-bar",
+      "title": "Action Bar",
+      "description": "A CreaseUI Action Bar component for Foldkit.",
+      "docs": "/docs/components/action-bar",
+      "source": "src/ui/action-bar.ts",
+      "install": "npx creaseui add action-bar",
+      "dependencies": [
+        "Potti1234/creaseui/action-bar-behavior",
+        "Potti1234/creaseui/button",
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/toolbar-behavior",
+        "Potti1234/creaseui/utils"
+      ],
+      "examples": [
+        "Basic",
+        "Top",
+        "Vertical"
+      ],
+      "api": [
+        {
+          "name": "ActionBarAlign",
+          "kind": "re-export",
+          "signature": "export { ActionBarAlign } from "
+        },
+        {
+          "name": "ActionBarOrientation",
+          "kind": "re-export",
+          "signature": "export { ActionBarOrientation } from "
+        },
+        {
+          "name": "ActionBarSide",
+          "kind": "re-export",
+          "signature": "export { ActionBarSide } from "
+        },
+        {
+          "name": "ActionBarProps",
+          "kind": "type",
+          "signature": "ActionBarProps<Msg> = Readonly<{ open: boolean; side?: ActionBarSide; align?: ActionBarAlign; alignOffset?: number; sideOffset?: number; orientation?: ActionBarOrientation; toParentMessage?: (message: Message | ToolbarMessage) => Msg; children: ReadonlyArray<…"
+        },
+        {
+          "name": "actionBar",
+          "kind": "function",
+          "signature": "actionBar<Msg>(props: ActionBarProps<Msg>, h: HtmlBuilder<Msg>): Html"
+        },
+        {
+          "name": "actionBarSelection",
+          "kind": "function",
+          "signature": "actionBarSelection<Msg>(props: Readonly<{ children: ReadonlyArray<Html | string>; class?: string; }>, h: HtmlBuilder<Msg>): Html"
+        },
+        {
+          "name": "actionBarGroup",
+          "kind": "function",
+          "signature": "actionBarGroup<Msg>(props: Readonly<{ children: ReadonlyArray<Html | string>; orientation?: ActionBarOrientation; class?: string; }>, h: HtmlBuilder<Msg>): Html"
+        },
+        {
+          "name": "actionBarItem",
+          "kind": "function",
+          "signature": "actionBarItem<Msg>(props: Readonly<{ onSelect?: Msg; variant?: 'default' | 'destructive'; isDisabled?: boolean; children: ReadonlyArray<Html | string>; class?: string; ariaLabel?: string; }>, h: HtmlBuilder<Msg>): Html"
+        },
+        {
+          "name": "actionBarClose",
+          "kind": "function",
+          "signature": "actionBarClose<Msg>(props: Readonly<{ onClose?: Msg; children?: ReadonlyArray<Html | string>; class?: string; ariaLabel?: string; }>, h: HtmlBuilder<Msg>): Html"
+        },
+        {
+          "name": "actionBarSeparator",
+          "kind": "function",
+          "signature": "actionBarSeparator<Msg>(props: Readonly<{ orientation?: ActionBarOrientation; class?: string; }>, h: HtmlBuilder<Msg>): Html"
         }
       ]
     },

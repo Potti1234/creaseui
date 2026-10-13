@@ -29,6 +29,7 @@ const categories = [
   ['dashboard', 'Dashboards'],
   ['sidebar', 'Sidebars'],
   ['login', 'Authentication'],
+  ['table', 'Tables'],
 ] as const
 const fileLabel = (path: string): string => path.replace('/src/', '')
 const fileBasename = (path: string): string =>

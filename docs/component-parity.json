@@ -23,8 +23,9 @@
   ],
   "summary": {
     "upstreamItems": 62,
-    "registryItems": 121,
+    "registryItems": 122,
     "creaseOnlyRecipes": [
+      "action-bar",
       "avatar-group",
       "banner",
       "blockquote",
@@ -104,6 +105,24 @@
         "src/ui/accordion.ts",
         "src/ui/registry.json#accordion",
         "/docs/components/accordion"
+      ]
+    },
+    {
+      "component": "action-bar",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/action-bar.ts",
+        "src/ui/registry.json#action-bar",
+        "/docs/components/action-bar"
       ]
     },
     {

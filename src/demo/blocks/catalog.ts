@@ -19,7 +19,7 @@ const BLOCK_DESCRIPTIONS: Readonly<Record<string, string>> = {
   '16': 'A sidebar with a sticky site header.',
 }
 
-export type BlockCategory = 'all' | 'dashboard' | 'sidebar' | 'login'
+export type BlockCategory = 'all' | 'dashboard' | 'sidebar' | 'login' | 'table'
 export type BlockDefinition = Readonly<{
   name: string
   description: string
@@ -92,6 +92,12 @@ export const BLOCKS: ReadonlyArray<BlockDefinition> = [
     description:
       'A browsable catalog grid with search, filter tabs and a real empty state.',
     category: 'dashboard',
+  },
+  {
+    name: 'tablecn',
+    description:
+      "sadmann7/tablecn's data table and data grid with a diceui-style action bar for row multi-select.",
+    category: 'table',
   },
   {
     name: 'chart-analytics-dashboard',

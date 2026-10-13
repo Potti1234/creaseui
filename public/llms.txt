@@ -21,6 +21,7 @@
 ## Components
 
 - Accordion: /docs/components/accordion — install with `npx creaseui add accordion`
+- Action Bar: /docs/components/action-bar — install with `npx creaseui add action-bar`
 - Alert Dialog: /docs/components/alert-dialog — install with `npx creaseui add alert-dialog`
 - Alert: /docs/components/alert — install with `npx creaseui add alert`
 - Aspect Ratio: /docs/components/aspect-ratio — install with `npx creaseui add aspect-ratio`

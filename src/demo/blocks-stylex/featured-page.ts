@@ -1,4 +1,5 @@
 import { taggedStruct } from 'foldkit/schema'
+import { defineView } from 'foldkit/submodel'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { Option, Schema as S } from 'effect'
 import type { Update } from 'foldkit'
@@ -56,6 +57,7 @@ import {
 import { appShell } from './app-shell'
 import { chartAnalyticsDashboard } from './chart-analytics-dashboard'
 import { featuredVisitorsChart } from './dashboard-echarts'
+import * as TablecnPage from './tablecn-page'
 
 type Block = Readonly<{
   description: string
@@ -74,6 +76,7 @@ export const Model = S.Struct({
   query: S.String,
   radioGroup: RadioGroup.Model,
   table: TableState.Model,
+  tablecn: TablecnPage.Model,
 })
 export type Model = typeof Model.Type
 export const ChangedEmail = taggedStruct('ChangedBlockEmail', {
@@ -103,6 +106,9 @@ export const GotRadioGroupMessage = taggedStruct('GotBlockRadioGroupMessage', {
 export const GotEChartMessage = taggedStruct('GotBlocksStyleXEChartMessage', {
   message: ECharts.ChartMessage,
 })
+export const GotTablecnMessage = taggedStruct('GotBlockTablecnMessage', {
+  message: TablecnPage.Message,
+})
 export const Message = S.Union([
   TableState.Message,
   GotEChartMessage,
@@ -115,6 +121,7 @@ export const Message = S.Union([
   SelectedMailThread,
   ChangedCheckoutField,
   GotRadioGroupMessage,
+  GotTablecnMessage,
 ])
 export type Message = typeof Message.Type
 export const init = (): Model => ({
@@ -128,10 +135,23 @@ export const init = (): Model => ({
   query: '',
   radioGroup: RadioGroup.init({ id: 'checkout-delivery' }),
   table: TableState.init(10),
+  tablecn: TablecnPage.init(),
 })
 type UpdateReturn = Update.Return<Model, Message>
 export const update = (model: Model, message: Message): UpdateReturn => {
   if (message._tag === 'GotBlocksStyleXEChartMessage') return { model: model }
+  if (message._tag === 'GotBlockTablecnMessage') {
+    const { model: tablecn, commands: tablecnCommands__ } = TablecnPage.update(
+      model.tablecn,
+      message.message,
+    )
+    return {
+      model: { ...model, tablecn },
+      commands: Command.mapMessages(tablecnCommands__ ?? [], childMessage =>
+        GotTablecnMessage({ message: childMessage }),
+      ),
+    }
+  }
   if (message._tag === 'ChangedBlockEmail')
     return { model: { ...model, email: message.value } }
   if (message._tag === 'ChangedBlockPassword')
@@ -1101,7 +1121,23 @@ const blocks: ReadonlyArray<Block> = [
     name: 'app-shell-01',
     preview: (_model, h) => appShell(h),
   },
+  {
+    description:
+      "sadmann7/tablecn's data table and data grid with a diceui-style action bar.",
+    name: 'tablecn',
+    preview: (model, h) =>
+      h.submodel({
+        slotId: 'tablecn',
+        model: model.tablecn,
+        view: tablecnView,
+        toParentMessage: message => GotTablecnMessage({ message }),
+      }),
+  },
 ]
+
+const tablecnView = defineView<TablecnPage.Model, TablecnPage.Message>(
+  TablecnPage.view,
+)
 
 export const viewBlock = (
   model: Model,

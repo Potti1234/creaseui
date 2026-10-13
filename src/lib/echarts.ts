@@ -26,9 +26,9 @@ import { cn } from '@/lib/utils'
    - Chart modules load only when a chart mounts. Theme tokens are re-read when
      a class, style, or data-theme attribute changes on the host or an ancestor. */
 
-let echartsPromise: Promise<typeof import('echarts/core')> | undefined
+let echartsPromise: Promise<typeof echarts> | undefined
 
-const loadECharts = (): Promise<typeof import('echarts/core')> => {
+const loadECharts = (): Promise<typeof echarts> => {
   if (echartsPromise === undefined) {
     echartsPromise = Promise.all([
       import('echarts/core'),
@@ -405,8 +405,8 @@ export const MountChart = Mount.define('MountChart', {
       return yield* Effect.acquireRelease(
         Effect.tryPromise({
           try: async () => {
-            const echartsRuntime = await loadECharts()
-            const chart = echartsRuntime.init(element, undefined, {
+            const echarts = await loadECharts()
+            const chart = echarts.init(element, undefined, {
               renderer: 'canvas',
             })
             let resizeFrame = 0

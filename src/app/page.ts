@@ -38,6 +38,7 @@ export const BlockCategory = S.Literals([
   'dashboard',
   'sidebar',
   'login',
+  'table',
 ])
 export const BlockCodePanel = S.Struct({
   files: S.Record(S.String, S.String),

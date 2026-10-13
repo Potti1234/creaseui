@@ -53,7 +53,10 @@ import {
   kanbanBoard,
   orderDetail,
 } from './creaseui-blocks'
+import { defineView } from 'foldkit/submodel'
+
 import { appShell } from './app-shell'
+import * as TablecnPage from './tablecn-page'
 import { chartAnalyticsDashboard } from './chart-analytics-dashboard'
 import { featuredVisitorsChart } from './dashboard-echarts'
 
@@ -74,6 +77,7 @@ export const Model = S.Struct({
   query: S.String,
   radioGroup: RadioGroup.Model,
   table: TableState.Model,
+  tablecn: TablecnPage.Model,
 })
 export type Model = typeof Model.Type
 export const ChangedEmail = taggedStruct('ChangedBlockEmail', {
@@ -100,6 +104,9 @@ export const ChangedCheckoutField = taggedStruct('ChangedCheckoutField', {
 export const GotRadioGroupMessage = taggedStruct('GotBlockRadioGroupMessage', {
   message: RadioGroup.Message,
 })
+export const GotTablecnMessage = taggedStruct('GotBlockTablecnMessage', {
+  message: TablecnPage.Message,
+})
 export const GotEChartMessage = taggedStruct('GotBlocksStyleXEChartMessage', {
   message: ECharts.ChartMessage,
 })
@@ -115,6 +122,7 @@ export const Message = S.Union([
   SelectedMailThread,
   ChangedCheckoutField,
   GotRadioGroupMessage,
+  GotTablecnMessage,
 ])
 export type Message = typeof Message.Type
 export const init = (): Model => ({
@@ -128,6 +136,7 @@ export const init = (): Model => ({
   query: '',
   radioGroup: RadioGroup.init({ id: 'checkout-delivery' }),
   table: TableState.init(10),
+  tablecn: TablecnPage.init(),
 })
 type UpdateReturn = Update.Return<Model, Message>
 export const update = (model: Model, message: Message): UpdateReturn => {
@@ -172,6 +181,18 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       },
       commands: Command.mapMessages(commands, childMessage =>
         GotRadioGroupMessage({ message: childMessage }),
+      ),
+    }
+  }
+  if (message._tag === 'GotBlockTablecnMessage') {
+    const { model: tablecn, commands: tablecnCommands__ } = TablecnPage.update(
+      model.tablecn,
+      message.message,
+    )
+    return {
+      model: { ...model, tablecn },
+      commands: Command.mapMessages(tablecnCommands__ ?? [], childMessage =>
+        GotTablecnMessage({ message: childMessage }),
       ),
     }
   }
@@ -1102,7 +1123,23 @@ const blocks: ReadonlyArray<Block> = [
     name: 'app-shell-01',
     preview: (_model, h) => appShell(h),
   },
+  {
+    description:
+      "sadmann7/tablecn's data table and data grid with a diceui-style action bar.",
+    name: 'tablecn',
+    preview: (model, h) =>
+      h.submodel({
+        slotId: 'tablecn',
+        model: model.tablecn,
+        view: tablecnView,
+        toParentMessage: message => GotTablecnMessage({ message }),
+      }),
+  },
 ]
+
+const tablecnView = defineView<TablecnPage.Model, TablecnPage.Message>(
+  TablecnPage.view,
+)
 
 export const viewBlock = (
   model: Model,
