@@ -215,7 +215,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                         children: [
                           fieldLabel(
                             {
-                              for: 'payout-threshold-currency',
+                              for: 'payout-threshold-currency-button',
                               children: ['Preferred Currency'],
                             },
                             h,

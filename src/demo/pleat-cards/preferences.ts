@@ -178,7 +178,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                       children: [
                         fieldLabel(
                           {
-                            for: 'preferences-currency',
+                            for: 'preferences-currency-button',
                             children: ['Default Currency'],
                           },
                           h,

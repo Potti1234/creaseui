@@ -305,7 +305,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                             children: [
                               fieldLabel(
                                 {
-                                  for: 'transfer-funds-from-account',
+                                  for: 'transfer-funds-from-account-button',
                                   children: ['From Account'],
                                 },
                                 h,
@@ -333,7 +333,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                             children: [
                               fieldLabel(
                                 {
-                                  for: 'transfer-funds-to-account',
+                                  for: 'transfer-funds-to-account-button',
                                   children: ['To Account'],
                                 },
                                 h,

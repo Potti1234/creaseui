@@ -156,7 +156,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                             children: [
                               fieldLabel(
                                 {
-                                  for: 'stock-performance-ticker',
+                                  for: 'stock-performance-ticker-button',
                                   children: ['Ticker'],
                                 },
                                 h,
