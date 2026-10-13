@@ -116,3 +116,32 @@ can nest same-slot descendants).
 - Screenshot parity: pleat docs/data-table/log-stream/charts/create match stylex
   chrome (borderless sidebar + bordered example frames); counterpart links cycle
   tailwind↔stylex↔pleat correctly.
+
+## PR #27 review findings (pleat-pr-27.md) — status
+
+- P1 `:is(> X)` inside `:has()` — fixed at 0f140b9 (`When.pseudo(':has(> X)')`, 15 sites).
+- P1 uncompilable emitted doc programs — `src/docs/components/styled-repair.ts`
+  post-pass repairs emitted sx/pl programs (missing imports/styles entries,
+  `ComponentLayoutStyle` casts incl. `layoutStyle:` props and ternary/array
+  cases); emitters fixed at the source where feasible (banner/link/metadata-list/
+  selectable-card/tabs shells, grid duplicate `shell`, carousel array layoutStyle,
+  drawer ternary cast, bubble `interaction-tokens.const` import mapping).
+- P1 closed layout contract — `src/pleat/contracts.ts` branded
+  `ComponentLayoutStyle` + `layoutStyle()` validating the 29-property allowlist;
+  `src/stylex/contracts.ts` gained the same `layoutStyle()` constructor.
+- P1 registry — `scripts/generate-pleat-registry.mjs` generates 178 `pleat-*`
+  items (121 components + vendored `pleat-core`/`pleat-foldkit` lib items);
+  wired into `registry.json` include, `generate-ui-registry.mjs`,
+  `verify-registry-install.mjs` consumer test, README + docs/registry.md.
+- P2 lint — `packages/lint` exports `pleat()` config + new `pleat-prop-limits`
+  rule; `stylex-component-contract` gained `layoutConstructors`; wired for
+  `src/pleat/**` and page emitters in eslint.config.js.
+- P2 renderer-native shells — page `h.main` shells emit `styles.page`/
+  `shell`/`shellPlain` for sx+pl; inner example-content Tailwind classes remain
+  (pre-existing stylex debt, same on both renderers).
+- P2 attribution — LICENSE + VENDORED.md in packages/pleat-core and
+  packages/pleat-foldkit.
+- Coverage — `test/stylex-catalog.test.ts` gained a Pleat describe block
+  (component parity, no tailwind fallback, export/prop parity, no string class
+  props); new `e2e/pleat-preflight.spec.ts` + `e2e/fixtures/pleat-preflight/`
+  mirrors the stylex preflight-independence suite (2/2 pass).
