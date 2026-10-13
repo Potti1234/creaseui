@@ -145,3 +145,21 @@ can nest same-slot descendants).
   (component parity, no tailwind fallback, export/prop parity, no string class
   props); new `e2e/pleat-preflight.spec.ts` + `e2e/fixtures/pleat-preflight/`
   mirrors the stylex preflight-independence suite (2/2 pass).
+
+## PR #27 round-three review (pleat-pr-27-round-three.md) — status
+
+- Data Table parity — `DataTableColumn.align` (`left`/`center`/`right`) in
+  `src/pleat/data-table.ts` + `src/stylex/data-table.ts`, applied to heading
+  and data cells; docs preview and emitted copied programs both use
+  `align: 'right'` (no `ComponentLayoutStyle` casts, no `columns(h)`).
+  Browser-verified: amount `th`/`td` compute `text-align: right` on sx + pl.
+- Drawer lint — popup-scoped `drawerTokens.bleedBackground` in
+  `src/pleat/tokens.ts` (declared on `[data-slot="drawer-popup"]`, value
+  `var(--drawer-bleed-background, var(--popover))`); the four raw fallbacks
+  in `src/pleat/drawer.ts` now use the token. Override verified: setting
+  `--drawer-bleed-background` on an ancestor recolors `::after`. Pleat
+  diagnostics now name `src/pleat/tokens.ts` / `interaction-tokens.ts`.
+- Windows — copied-program emitter launched via
+  `process.execPath --import tsx` (no `npx`); registry generator compares the
+  separator-normalized relative path to `src/server.ts`. Regenerated
+  manifests are byte-identical and contain no `server.ts`.
