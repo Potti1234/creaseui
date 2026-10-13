@@ -1,7 +1,8 @@
 import { expect, test, type Page } from '@playwright/test'
 
-/* R2 wave 1: Create styles apply to every control role, not only
-   Button/Input, in every renderer. */
+/* R2 waves 1-2: Create styles apply to every control and selection role,
+   not only Button/Input, in every renderer. Radio indicators keep their
+   circular contract. */
 const CONTROLS = [
   'button',
   'input',
@@ -11,6 +12,8 @@ const CONTROLS = [
   'input-group',
 ] as const
 const SINGLE_LINE = CONTROLS.filter(slot => slot !== 'textarea')
+const SELECTION = ['checkbox', 'radio-group-item'] as const
+const MEASURED = [...CONTROLS, ...SELECTION, 'card']
 
 type Measured = Readonly<{
   radius: number
@@ -59,8 +62,9 @@ const expectations: Readonly<
   Record<string, (measured: Record<string, Measured>) => void>
 > = {
   lyra: m => {
-    for (const slot of [...CONTROLS, 'card'])
+    for (const slot of [...CONTROLS, 'checkbox', 'card'])
       expect(m[slot]!.radius, slot).toBe(0)
+    expect(m['radio-group-item']!.radius).toBeGreaterThan(4)
   },
   maia: m => {
     for (const slot of SINGLE_LINE)
@@ -69,15 +73,15 @@ const expectations: Readonly<
     expect(m.card!.radius).toBeGreaterThan(14)
   },
   vega: m => {
-    for (const slot of [...CONTROLS, 'card'])
+    for (const slot of [...CONTROLS, ...SELECTION, 'card'])
       expect(m[slot]!.shadow, slot).toBe('none')
   },
   luma: m => {
-    for (const slot of [...CONTROLS, 'card'])
+    for (const slot of [...CONTROLS, ...SELECTION, 'card'])
       expect(m[slot]!.shadow, slot).not.toBe('none')
   },
   sera: m => {
-    for (const slot of [...CONTROLS, 'card'])
+    for (const slot of [...CONTROLS, ...SELECTION, 'card'])
       expect(m[slot]!.border, slot).toBe(2)
   },
   mira: m => {
@@ -97,13 +101,13 @@ for (const [style, check] of Object.entries(expectations)) {
     await expect
       .poll(async () => {
         try {
-          check(await measure(page, [...CONTROLS, 'card']))
+          check(await measure(page, MEASURED))
           return true
         } catch {
           return false
         }
       })
       .toBe(true)
-    check(await measure(page, [...CONTROLS, 'card']))
+    check(await measure(page, MEASURED))
   })
 }
