@@ -4,6 +4,7 @@ import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
 import { Combobox as ComboboxPrimitive } from '@foldkit/ui'
 
 import * as Icon from '@/lib/icon'
+import { themedAnchor, themedComboboxPanel } from '@/lib/overlay-boundary'
 import { cn } from '@/lib/utils'
 
 /* shadcn's combobox is a Popover + Command composition rather than a
@@ -156,6 +157,8 @@ type CommonProps<Item, Value extends string, Msg> = Omit<
   'maybeSelectedValue' | 'restingInputValue'
 >
 
+const ANCHOR = { placement: 'bottom-start', gap: 4 } as const
+
 const buildBaseViewInputs = <Item, Value extends string, Msg>(
   props: CommonProps<Item, Value, Msg>,
   values: ReadonlyArray<Value>,
@@ -212,6 +215,13 @@ const buildBaseViewInputs = <Item, Value extends string, Msg>(
     itemsClassName: CONTENT_CLASS,
     itemsAttributes: childAttributes([
       hc.DataAttribute('slot', 'command-list'),
+      hc.OnMount(
+        themedComboboxPanel(
+          `${props.model.id}-input-wrapper`,
+          ANCHOR,
+          props.toParentMessage,
+        ),
+      ),
     ]),
     itemsScrollClassName: LIST_CLASS,
     backdropClassName: BACKDROP_CLASS,
@@ -223,7 +233,7 @@ const buildBaseViewInputs = <Item, Value extends string, Msg>(
       hc.DataAttribute('slot', 'command'),
       ...(props.direction === undefined ? [] : [hc.Dir(props.direction)]),
     ]),
-    anchor: { placement: 'bottom-start', gap: 4 },
+    anchor: themedAnchor(ANCHOR),
     isDisabled: props.isDisabled ?? false,
     isReadOnly: props.isReadOnly ?? false,
     isInvalid: props.isInvalid ?? false,
