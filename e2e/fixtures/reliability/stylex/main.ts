@@ -15,6 +15,7 @@ import { heading } from '@/stylex/heading'
 import { input } from '@/stylex/input'
 import { nativeSelect } from '@/stylex/native-select'
 import { popover } from '@/stylex/popover'
+import { stat } from '@/stylex/stat'
 import { switchControl } from '@/stylex/switch'
 import {
   table,
@@ -24,11 +25,14 @@ import {
   tableHead,
   tableCell,
 } from '@/stylex/table'
+import { tabs, update as tabsUpdate } from '@/stylex/tabs'
 import { text } from '@/stylex/text'
 import { textarea } from '@/stylex/textarea'
 
 import { runActionsText } from '../actions'
+import { runDashboard } from '../dashboard'
 import { runScopeOverlay } from '../scope'
+import { runSettings } from '../settings'
 import { runMixedForm } from '../shared'
 import { runSurfacesData } from '../surfaces'
 import { installThemeVariables } from '../theme'
@@ -50,3 +54,5 @@ runSurfacesData({
   tableCell,
 })
 runScopeOverlay({ button, popover, themeScope })
+runSettings({ tabs, tabsUpdate, switchControl })
+runDashboard({ stat })

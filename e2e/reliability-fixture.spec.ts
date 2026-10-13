@@ -51,6 +51,10 @@ const CONTROLS = {
   cardTitle: '#surfaces-data [data-slot="card-title"]',
   tableHead: '#surfaces-data th',
   tableCell: '#surfaces-data td',
+  tabsList: '#settings [data-slot="tabs-list"]',
+  tabsTrigger: '#settings [data-slot="tabs-trigger"]',
+  stat: '#dashboard [data-slot="stat"]',
+  statValue: '#dashboard [data-slot="stat-value"]',
 } as const
 
 const SCOPED = {
@@ -237,6 +241,46 @@ test.describe('shared mixed-form fixture', () => {
         rest,
         hover: await action.evaluate(e => getComputedStyle(e).backgroundColor),
       })
+      expect(errors).toEqual([])
+    })
+
+  for (const renderer of RENDERERS)
+    test(`${renderer}: settings tabs and dashboard stats`, async ({ page }) => {
+      const errors: Array<string> = []
+      page.on('pageerror', error => errors.push(error.message))
+      await page.setViewportSize({ width: 1000, height: 800 })
+      await page.goto(servers.get(renderer)!.resolvedUrls!.local[0]!)
+      const tablist = page.getByRole('tablist', { name: 'Settings sections' })
+      const profile = tablist.getByRole('tab', { name: 'Profile' })
+      const notifications = tablist.getByRole('tab', { name: 'Notifications' })
+      await expect(profile).toHaveAttribute('aria-selected', 'true')
+      await expect(page.getByText('Public profile details.')).toBeVisible()
+      await profile.focus()
+      await page.keyboard.press('ArrowRight')
+      await expect(notifications).toBeFocused()
+      await expect(notifications).toHaveAttribute('aria-selected', 'true')
+      await expect(page.getByText('Public profile details.')).toHaveCount(0)
+      const digest = page.getByRole('switch', { name: 'Weekly digest' })
+      await digest.click()
+      await expect(digest).toHaveAttribute('aria-checked', 'true')
+      await expect(page.locator('#settings-status')).toHaveText('Digest on')
+
+      const values = page.locator('#dashboard [data-slot="stat-value"]')
+      await expect(values).toHaveCount(3)
+      for (const numeric of await values.evaluateAll(elements =>
+        elements.map(element => getComputedStyle(element).fontVariantNumeric),
+      ))
+        expect(numeric).toContain('tabular-nums')
+      await page.setViewportSize({ width: 390, height: 844 })
+      await expect
+        .poll(() =>
+          page.evaluate(
+            () =>
+              document.documentElement.scrollWidth -
+              document.documentElement.clientWidth,
+          ),
+        )
+        .toBeLessThanOrEqual(0)
       expect(errors).toEqual([])
     })
 

@@ -17,6 +17,7 @@ import { heading } from '@/ui/heading'
 import { input } from '@/ui/input'
 import { nativeSelect } from '@/ui/native-select'
 import { popover } from '@/ui/popover'
+import { stat } from '@/ui/stat'
 import { switchControl } from '@/ui/switch'
 import {
   table,
@@ -26,11 +27,14 @@ import {
   tableHead,
   tableCell,
 } from '@/ui/table'
+import { tabs, update as tabsUpdate } from '@/ui/tabs'
 import { text } from '@/ui/text'
 import { textarea } from '@/ui/textarea'
 
 import { runActionsText } from '../actions'
+import { runDashboard } from '../dashboard'
 import { runScopeOverlay } from '../scope'
+import { runSettings } from '../settings'
 import { runMixedForm } from '../shared'
 import { runSurfacesData } from '../surfaces'
 
@@ -50,3 +54,5 @@ runSurfacesData({
   tableCell,
 })
 runScopeOverlay({ button, popover, themeScope })
+runSettings({ tabs, tabsUpdate, switchControl })
+runDashboard({ stat })

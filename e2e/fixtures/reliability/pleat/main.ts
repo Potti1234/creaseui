@@ -15,6 +15,7 @@ import { heading } from '@/pleat/heading'
 import { input } from '@/pleat/input'
 import { nativeSelect } from '@/pleat/native-select'
 import { popover } from '@/pleat/popover'
+import { stat } from '@/pleat/stat'
 import { switchControl } from '@/pleat/switch'
 import {
   table,
@@ -24,11 +25,14 @@ import {
   tableHead,
   tableCell,
 } from '@/pleat/table'
+import { tabs, update as tabsUpdate } from '@/pleat/tabs'
 import { text } from '@/pleat/text'
 import { textarea } from '@/pleat/textarea'
 
 import { runActionsText } from '../actions'
+import { runDashboard } from '../dashboard'
 import { runScopeOverlay } from '../scope'
+import { runSettings } from '../settings'
 import { runMixedForm } from '../shared'
 import { runSurfacesData } from '../surfaces'
 import { installThemeVariables } from '../theme'
@@ -50,3 +54,5 @@ runSurfacesData({
   tableCell,
 })
 runScopeOverlay({ button, popover, themeScope })
+runSettings({ tabs, tabsUpdate, switchControl })
+runDashboard({ stat })
