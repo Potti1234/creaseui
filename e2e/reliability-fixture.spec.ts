@@ -47,6 +47,10 @@ const CONTROLS = {
   heading: '#actions-text h2',
   badge: '#actions-text [data-slot="badge"]',
   alert: '#actions-text [data-slot="alert"]',
+  card: '#surfaces-data [data-slot="card"]',
+  cardTitle: '#surfaces-data [data-slot="card-title"]',
+  tableHead: '#surfaces-data th',
+  tableCell: '#surfaces-data td',
 } as const
 
 const measure = (page: Page) =>
@@ -67,6 +71,8 @@ const measure = (page: Page) =>
           .map(value => `${String(Math.round(value * 100) / 100)}px`)
           .join(' '),
         weight: style.fontWeight,
+        padding: `${style.paddingTop} ${style.paddingInlineStart}`,
+        shadow: style.boxShadow !== 'none',
         border: style.borderTopWidth,
         fontSize: style.fontSize,
       }
@@ -155,6 +161,17 @@ test.describe('shared mixed-form fixture', () => {
         page.locator('#actions-text [data-slot="badge"]'),
       ).toHaveText('Month')
       await expect(page.getByRole('status')).toHaveText('Showing Month')
+
+      const invoices = page.locator('#surfaces-data table')
+      await expect(
+        page.getByRole('heading', { level: 3, name: 'Invoices' }),
+      ).toBeVisible()
+      await expect(invoices.getByRole('columnheader')).toHaveText([
+        'Invoice',
+        'Status',
+        'Amount',
+      ])
+      await expect(invoices.locator('tbody').getByRole('row')).toHaveCount(3)
       expect(errors).toEqual([])
     })
 

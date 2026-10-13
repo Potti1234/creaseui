@@ -2,3 +2,4 @@
 @source '../../../../src/ui';
 @source '../shared.ts';
 @source '../actions.ts';
+@source '../surfaces.ts';
