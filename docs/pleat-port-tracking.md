@@ -163,3 +163,20 @@ can nest same-slot descendants).
   `process.execPath --import tsx` (no `npx`); registry generator compares the
   separator-normalized relative path to `src/server.ts`. Regenerated
   manifests are byte-identical and contain no `server.ts`.
+
+## /create settings pickers (sx + pl)
+
+- Root cause: StyleX/Pleat popovers stay in the themed subtree
+  (`THEMED_OVERLAY_PORTAL = false`), so the create pickers rendered inside the
+  customizer's `overflow: auto` column and were clipped; Tailwind portals.
+- Fix: opt-in `portal: true` on `src/{stylex,pleat}/popover.ts` mounts
+  `AnchorThemedPopover` (`Anchor.anchorSetup` with `portal: true` +
+  `inheritPortalTheme`), used only by the ten create pickers. Other overlays
+  keep the scoped-theme behavior.
+- Parity: `surface: 'bare'` drops the default white panel surface so the dark
+  picker content matches Tailwind's `bg-[#3a3a3a] p-2 border-white/10`;
+  option labels use plain truncation (Tailwind `truncate`), not the bold
+  trigger value style.
+- Browser-verified on tw/sx/pl: all ten pickers open under
+  `#foldkit-portal-root`, selecting an option updates the value and closes
+  the panel, zero pageerrors.
