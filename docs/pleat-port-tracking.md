@@ -90,6 +90,22 @@ can nest same-slot descendants).
   `src/pleat/board-tokens.ts` was an unused codemod artifact duplicating
   `src/demo/board-pleat-tokens.ts` — deleted.
 
+## E2E parity findings (testing agent, fixed in cae5596)
+
+- Reset styles must live in `pleat.globals`, not atoms: `Style.make` resets emit
+  into `pleat.atoms` sorted AFTER component atoms, so `padding:0`/`margin:0`
+  clobbered component spacing everywhere. `reset.ts` now emits
+  `Global.rule('.crease-reset-*')` per entry (globals layer < atoms layer).
+- `stylex.when.siblingAfter(cond, marker)` emits `:has(~ .marker<cond>)` —
+  the element precedes the marker. `When.precededBy` is the inverted sibling
+  direction; translate siblingAfter to
+  `When.pseudo(':has(~ .${marker.className}<selector>'))`.
+- Never carry renderer-name strings across skin copies verbatim — /blocks
+  labelled itself StyleX and loaded stylex-- iframes.
+- Pre-existing stylex bug ported faithfully (not fixed): /create customizer
+  field-picker popover renders inline inside overflow:hidden aside on both
+  stylex and pleat; tailwind portals it to #foldkit-portal-root.
+
 ## Verification status
 
 - `npm run check`: all stages pass except pre-existing main-broken items
