@@ -242,3 +242,35 @@
     stroke-dashoffset: -302%;
   }
 }
+
+/* diceui ActionBar entrance — animate-in fade-in-0 zoom-in-95 +
+   slide-in-from-{top,bottom}-4 250ms cubic-bezier(0.16,1,0.3,1). */
+.crease-action-bar-in {
+  animation: crease-action-bar-in 250ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes crease-action-bar-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.crease-action-bar-in[data-side='top'] {
+  animation-name: crease-action-bar-in-top;
+}
+
+@keyframes crease-action-bar-in-top {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}

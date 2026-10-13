@@ -21,6 +21,26 @@
       ]
     },
     {
+      "name": "action-bar",
+      "type": "registry:ui",
+      "title": "Action Bar",
+      "description": "A CreaseUI Action Bar component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/action-bar-behavior",
+        "Potti1234/creaseui/button",
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/toolbar-behavior",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "action-bar.ts",
+          "type": "registry:ui",
+          "target": "@ui/action-bar.ts"
+        }
+      ]
+    },
+    {
       "name": "alert-dialog",
       "type": "registry:ui",
       "title": "Alert Dialog",

@@ -953,6 +953,64 @@
           "target": "@lib/virtual-data-table-state.ts"
         }
       ]
+    },
+    {
+      "name": "action-bar-behavior",
+      "type": "registry:lib",
+      "title": "Action Bar Behavior",
+      "description": "Shared Foldkit behavior and helpers for Action Bar.",
+      "files": [
+        {
+          "path": "action-bar.ts",
+          "type": "registry:lib",
+          "target": "@lib/action-bar.ts"
+        }
+      ]
+    },
+    {
+      "name": "tablecn-data-behavior",
+      "type": "registry:lib",
+      "title": "Tablecn Data Behavior",
+      "description": "Shared Foldkit behavior and helpers for Tablecn Data.",
+      "files": [
+        {
+          "path": "tablecn-data.ts",
+          "type": "registry:lib",
+          "target": "@lib/tablecn-data.ts"
+        }
+      ]
+    },
+    {
+      "name": "tablecn-grid-behavior",
+      "type": "registry:lib",
+      "title": "Tablecn Grid Behavior",
+      "description": "Shared Foldkit behavior and helpers for Tablecn Grid.",
+      "files": [
+        {
+          "path": "tablecn-grid.ts",
+          "type": "registry:lib",
+          "target": "@lib/tablecn-grid.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/tablecn-data-behavior"
+      ]
+    },
+    {
+      "name": "tablecn-table-behavior",
+      "type": "registry:lib",
+      "title": "Tablecn Table Behavior",
+      "description": "Shared Foldkit behavior and helpers for Tablecn Table.",
+      "files": [
+        {
+          "path": "tablecn-table.ts",
+          "type": "registry:lib",
+          "target": "@lib/tablecn-table.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/tablecn-data-behavior"
+      ]
     }
   ]
 }

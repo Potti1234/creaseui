@@ -1,6 +1,7 @@
 import type { ApiEntry } from './generated-component-api'
 export const COMPONENTS = [
   'Accordion',
+  'Action Bar',
   'Alert',
   'Alert Dialog',
   'Aspect Ratio',
@@ -157,6 +158,7 @@ type ComponentGroupLabel = (typeof COMPONENT_GROUP_ORDER)[number]
 
 const COMPONENT_GROUP_BY_NAME = {
   Accordion: 'Collections',
+  'Action Bar': 'Actions & Menus',
   Alert: 'Feedback & Status',
   'Alert Dialog': 'Overlays',
   'Aspect Ratio': 'Layout',

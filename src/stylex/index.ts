@@ -5,6 +5,7 @@
  * `Message`, `init`, and `update`, so flat star exports would be ambiguous.
  */
 export * as Accordion from './accordion.js'
+export * as ActionBar from './action-bar.js'
 export * as AlertDialog from './alert-dialog.js'
 export * as Alert from './alert.js'
 export * as AspectRatio from './aspect-ratio.js'
@@ -129,6 +130,7 @@ export * as VisuallyHidden from './visually-hidden.js'
 /** Canonical registry order. Additions and removals are checked in CI. */
 export const STYLEX_COMPONENT_NAMES = [
   'accordion',
+  'action-bar',
   'alert-dialog',
   'alert',
   'aspect-ratio',

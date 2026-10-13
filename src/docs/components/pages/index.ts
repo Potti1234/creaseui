@@ -10,6 +10,7 @@ import { mapClusterPage } from '@/docs/components/pages/map-cluster'
 import { mapStylesPage } from '@/docs/components/pages/map-styles'
 import { mapLocalizationPage } from '@/docs/components/pages/map-localization'
 import { accordionPage } from '@/docs/components/pages/accordion'
+import { actionBarPage } from '@/docs/components/pages/action-bar'
 import { alertPage } from '@/docs/components/pages/alert'
 import { alertDialogPage } from '@/docs/components/pages/alert-dialog'
 import { aspectRatioPage } from '@/docs/components/pages/aspect-ratio'
@@ -121,8 +122,8 @@ import { treeListPage } from '@/docs/components/pages/tree-list'
 import { typographyPage } from '@/docs/components/pages/typography'
 import { visuallyHiddenPage } from '@/docs/components/pages/visually-hidden'
 
-export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
-  ...Object.fromEntries(
+export const authoredPages: Readonly<Record<string, AuthoredPage>> =
+  Object.fromEntries(
     [
       mapPage,
       mapControlsPage,
@@ -135,6 +136,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       mapStylesPage,
       mapLocalizationPage,
       accordionPage,
+      actionBarPage,
       alertPage,
       alertDialogPage,
       aspectRatioPage,
@@ -246,5 +248,4 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       typographyPage,
       visuallyHiddenPage,
     ].map(page => [page.slug, page]),
-  ),
-}
+  )
