@@ -152,6 +152,16 @@ Toasts die before the click→console round-trip completes. Arm a MutationObserv
 - Tailwind `separator()`: `data-slot="separator"`, `data-orientation`, `aria-orientation`, `shrink-0 bg-border`
 - StyleX equivalents: atomic classes literally named `input__styles.input`, `button__base.root`, `separator__styles.base` + component-scoped overrides like `transfer-list__styles.searchInput`
 
+## tablecn data-grid specifics
+
+- **Context economy**: the grid preview dumps a huge stripped DOM per screenshot. Prefer `browser_console` probes over `screenshot`/`read_dom`: row additions show as `document.querySelector('[aria-label="Data grid"]').scrollHeight` delta (~+36px/row at Short height); selection as `document.querySelectorAll('[aria-selected="true"]').length`; the virtualized window via first/last rendered `[data-row-index]` values or `scrollTop`/`scrollHeight`.
+- **Virtualization / scroll-listener bugs**: always wheel-scroll deep into the BODY (not the header) and confirm rows still render. `h.OnMount` scroll listeners must sit on the inner `overflow-auto` scroller — scroll events do NOT bubble, so a wrapper-level mount leaves the model pinned to the first ~22 rows and the grid renders blank below.
+- **Keyboard-shortcut leak check**: with the grid keydown mount on the scroller/wrapper, ctrl-combos typed inside toolbar Filter inputs can still hit grid shortcuts. Repro: Filter → type in Name input → Ctrl+A → selects all filtered rows instead of input text. Check both renderers.
+
+## StyleX docs parity crashes
+
+`catalog.ts` throws `Missing StyleX example parity for <slug>` when a slug has `stylexExamples` but no entry in `stylexExamplePreviewProviders`/`stylexPreviewViews` (`stylex-provider-manifest.ts`) — the whole docs route hard-crashes to the foldkit crash view. A crashed docs route does NOT mean the block preview is broken (`/blocks/preview/stylex--*` is a separate code path) — keep testing it.
+
 ## Stress-test signatures learned across the 120-component docs pass
 
 - **Tiny icon triggers (~24px)** — '...' menus, stepper chevrons, chip × buttons have
