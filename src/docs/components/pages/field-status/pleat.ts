@@ -1,7 +1,7 @@
 import { Style } from '@pleat/core'
 import type { HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import { fieldStatusFixtures } from '@/docs/components/pages/field-status/shared'
 import * as FieldStatus from '@/pleat/field-status'
 import { className } from '@/pleat/style'
@@ -16,7 +16,7 @@ const styles = {
   }),
 }
 
-export const fieldStatusStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const fieldStatusPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   _model: unknown,
   _onMessageJson: (messageJson: string) => Msg,

@@ -3,7 +3,7 @@ import { className } from '@/pleat/style'
 import { reset } from '@/pleat/reset'
 import { Option } from 'effect'
 import type { HtmlBuilder } from 'foldkit/html'
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   dropdownMenuFixtures,
   fixtureItems,
@@ -27,7 +27,7 @@ const styles = {
   }),
 }
 
-export const dropdownMenuStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const dropdownMenuPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

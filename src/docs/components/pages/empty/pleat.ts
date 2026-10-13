@@ -1,7 +1,7 @@
 import { Style, When } from '@pleat/core'
 import { reset } from '@/pleat/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import type { ComponentLayoutStyle } from '@/pleat/contracts'
 import {
   type EmptyFixture,
@@ -447,7 +447,7 @@ const emptyView = <Msg>(
   }
 }
 
-export const emptyStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const emptyPleatPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

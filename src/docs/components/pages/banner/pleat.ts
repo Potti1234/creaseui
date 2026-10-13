@@ -2,7 +2,7 @@ import { Style } from '@pleat/core'
 import { reset } from '@/pleat/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import { bannerFixtures } from '@/docs/components/pages/banner/shared'
 import * as Banner from '@/pleat/banner'
 import * as Button from '@/pleat/button'
@@ -60,7 +60,7 @@ const detailChildren = <Msg>(h: HtmlBuilder<Msg>): Html =>
     ],
   )
 
-export const bannerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const bannerPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

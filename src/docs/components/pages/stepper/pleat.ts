@@ -2,7 +2,7 @@ import { Style } from '@pleat/core'
 import { reset } from '@/pleat/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   stepperFixtures,
   type StepperFixturePanel,
@@ -299,7 +299,7 @@ const panelNode = <Msg>(
     h,
   )
 
-export const stepperStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const stepperPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

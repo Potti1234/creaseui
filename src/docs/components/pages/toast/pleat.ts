@@ -1,7 +1,7 @@
 import { Style } from '@pleat/core'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   toastFixtures,
   type ToastFixture,
@@ -20,7 +20,7 @@ interface PreviewShape {
   readonly pendingPromiseId?: unknown
 }
 
-export const toastStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const toastPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

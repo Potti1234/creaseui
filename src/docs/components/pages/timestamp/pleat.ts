@@ -1,7 +1,7 @@
 import { Style } from '@pleat/core'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import type { ComponentLayoutStyle } from '@/pleat/contracts'
 import {
   timestampFixtures,
@@ -109,7 +109,7 @@ const timestampView = <Msg>(
   return h.div([h.Class(className(styles.page))], sections)
 }
 
-export const timestampStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const timestampPleatPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

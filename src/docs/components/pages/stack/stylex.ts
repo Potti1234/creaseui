@@ -2,7 +2,7 @@ import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   stackAlignmentRows,
   stackFixtures,
@@ -396,7 +396,7 @@ const previewFor = <Msg>(fixture: StackFixture, h: HtmlBuilder<Msg>): Html => {
   }
 }
 
-export const stackStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const stackStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   _model: unknown,
   _onMessageJson: (messageJson: string) => Msg,

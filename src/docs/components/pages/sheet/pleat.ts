@@ -4,7 +4,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import { Option } from 'effect'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   type BottomSheetFixture,
   directionSteps,
@@ -307,7 +307,7 @@ const instanceView = <Msg>(
   )
 }
 
-export const sheetStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const sheetPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

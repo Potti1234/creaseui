@@ -2,7 +2,7 @@ import { Style } from '@pleat/core'
 import { reset } from '@/pleat/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   type SectionFixture,
   sectionFeatures,
@@ -225,7 +225,7 @@ const viewFor = <Msg>(fixture: SectionFixture, h: HtmlBuilder<Msg>): Html => {
   }
 }
 
-export const sectionStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const sectionPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   _model: unknown,
   _onMessageJson: (messageJson: string) => Msg,

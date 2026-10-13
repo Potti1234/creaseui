@@ -1,7 +1,7 @@
 import { Style } from '@pleat/core'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   blockquoteFixtures,
   QUOTE_1,
@@ -76,7 +76,7 @@ const renderFixture = <Msg>(
   }
 }
 
-export const blockquoteStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const blockquotePleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   _model: unknown,
   _onMessageJson: (messageJson: string) => Msg,

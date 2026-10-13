@@ -2,7 +2,7 @@ import { Style, When } from '@pleat/core'
 import { reset } from '@/pleat/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import { cardFixtures, cardRtlCopy } from '@/docs/components/pages/card/shared'
 import * as Badge from '@/pleat/badge'
 import * as Button from '@/pleat/button'
@@ -261,7 +261,7 @@ const loginCard = <Msg>(
   )
 }
 
-export const cardStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const cardPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

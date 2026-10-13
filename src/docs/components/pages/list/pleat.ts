@@ -2,7 +2,7 @@ import { Schema as S } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   listFixtures,
   type ListFixture,
@@ -75,7 +75,7 @@ const renderFixture = <Msg>(
     h,
   )
 
-export const listStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const listPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   _model: unknown,
   onMessageJson: (messageJson: string) => Msg,

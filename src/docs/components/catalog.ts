@@ -18,21 +18,18 @@ import * as CodeFile from '@/lib/code-file'
 import type {
   ComponentKind,
   PageDefinitions,
-  StyleXExamplePreviewProvider,
+  ExamplePreviewProvider,
 } from '@/docs/components/page-definition'
 import { componentApi } from '@/docs/generated-component-api'
 import { authoredPages } from '@/docs/components/pages'
 import { RoutedDocsPreviewMessage } from '@/docs/components/pages/authored-page'
 import type { ErasedPreviewProgram } from '@/docs/components/pages/authored-page'
 import { renderer } from '@/site/config'
-const stylexExamplePreviewProviders = new Map<
-  string,
-  StyleXExamplePreviewProvider
->()
+const stylexExamplePreviewProviders = new Map<string, ExamplePreviewProvider>()
 
-export const installStyleXExamplePreviewProvider = (
+export const installExamplePreviewProvider = (
   slug: string,
-  provider: StyleXExamplePreviewProvider,
+  provider: ExamplePreviewProvider,
 ): void => {
   stylexExamplePreviewProviders.set(slug, provider)
 }
@@ -47,14 +44,11 @@ export const installStyleXPreviewView = (
   stylexPreviewViews.set(slug, view)
 }
 
-const pleatExamplePreviewProviders = new Map<
-  string,
-  StyleXExamplePreviewProvider
->()
+const pleatExamplePreviewProviders = new Map<string, ExamplePreviewProvider>()
 
 export const installPleatExamplePreviewProvider = (
   slug: string,
-  provider: StyleXExamplePreviewProvider,
+  provider: ExamplePreviewProvider,
 ): void => {
   pleatExamplePreviewProviders.set(slug, provider)
 }

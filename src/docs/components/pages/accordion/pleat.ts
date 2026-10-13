@@ -2,7 +2,7 @@ import { Style } from '@pleat/core'
 import { previewLayout } from '@/docs/components/preview-layout.pleat'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   accordionCardCopy,
   accordionFixtures,
@@ -24,7 +24,7 @@ const fixtureView = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Html => {
   const submodel = h.submodel({
-    slotId: 'docs-stylex-accordion',
+    slotId: 'docs-pleat-accordion',
     model: accordionModel,
     view: Accordion.view,
     viewInputs: {
@@ -63,7 +63,7 @@ const fixtureView = <Msg>(
   }
 }
 
-export const accordionStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const accordionPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

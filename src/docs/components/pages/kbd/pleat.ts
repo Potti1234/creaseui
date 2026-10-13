@@ -2,7 +2,7 @@ import { Style } from '@pleat/core'
 import { reset } from '@/pleat/reset'
 import type { HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import type { ComponentLayoutStyle } from '@/pleat/contracts'
 import * as Button from '@/pleat/button'
 import * as ButtonGroup from '@/pleat/button-group'
@@ -269,7 +269,7 @@ const kbdSxView = <Msg>(
   }
 }
 
-export const kbdStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const kbdPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

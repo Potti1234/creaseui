@@ -1,7 +1,7 @@
 import { Style } from '@pleat/core'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   sliderFixtures,
   type SliderFixture,
@@ -53,7 +53,7 @@ interface PreviewShape {
 }
 
 const FALLBACK_MULTI_MODEL = Slider.initMulti({
-  id: 'docs-slider-stylex-fallback',
+  id: 'docs-slider-pleat-fallback',
   thumbs: 1,
   min: 0,
   max: 1,
@@ -121,7 +121,7 @@ const multiView = <Msg>(
   return h.div([h.Class(className(styles.slider))], sliders)
 }
 
-export const sliderStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const sliderPleatPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

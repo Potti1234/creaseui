@@ -3,7 +3,7 @@ import { className } from '@/stylex/style'
 import { previewLayout } from '@/docs/components/preview-layout.stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   logStreamFixtures,
   logStreamLiveScript,
@@ -34,7 +34,7 @@ const toEntries = (
         }),
   }))
 
-export const logStreamStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const logStreamStyleXPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

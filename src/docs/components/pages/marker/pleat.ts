@@ -1,7 +1,7 @@
 import { Style } from '@pleat/core'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import * as Icon from '@/lib/icon'
 import * as Marker from '@/pleat/marker'
 import * as Toast from '@/pleat/toast'
@@ -288,7 +288,7 @@ const markerSxView = <Msg>(
   }
 }
 
-export const markerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const markerPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

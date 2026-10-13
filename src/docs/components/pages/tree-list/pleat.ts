@@ -2,7 +2,7 @@ import { Style } from '@pleat/core'
 import { previewLayout } from '@/docs/components/preview-layout.pleat'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   treeListFixtures,
   type TreeListFixtureItem,
@@ -72,7 +72,7 @@ const decorateItems = <Msg>(
       : { children: decorateItems(item.children, h) }),
   }))
 
-export const treeListStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const treeListPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,
@@ -84,7 +84,7 @@ export const treeListStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
     const key = `tree-${String(index)}`
     const treeModel = trees[key] ?? TreeList.init({ id: key })
     const submodel = h.submodel({
-      slotId: `docs-stylex-tree-list-${String(index)}`,
+      slotId: `docs-pleat-tree-list-${String(index)}`,
       model: treeModel,
       view: TreeList.view,
       viewInputs: {

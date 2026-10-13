@@ -7,7 +7,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page'
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   timeInputFixtures,
   type TimeInputFixtureEntry,
@@ -61,7 +61,7 @@ const entryProps = (
   ...(entry.status === undefined ? {} : { status: entry.status }),
 })
 
-export const timeInputStylexPreviewProgram = definePreviewProgram<
+export const timeInputPleatPreviewProgram = definePreviewProgram<
   TimeInputPreviewModel,
   GotTimeInputMessage
 >({
@@ -138,7 +138,7 @@ export const timeInputStylexPreviewProgram = definePreviewProgram<
   },
 })
 
-export const timeInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const timeInputPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

@@ -1,7 +1,7 @@
 import { Style } from '@pleat/core'
 import type { HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   checkboxFixtures,
   checkboxGroupItems,
@@ -18,7 +18,7 @@ const styles = {
   descOffset: Style.make({ marginTop: '-0.375rem' }),
 }
 
-export const checkboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const checkboxPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

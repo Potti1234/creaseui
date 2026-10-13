@@ -1,7 +1,7 @@
 import * as stylex from '@stylexjs/stylex'
 import type { HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   thumbnailFixtures,
   type ThumbnailItem,
@@ -68,7 +68,7 @@ const itemView = <Msg>(
     h,
   )
 
-export const thumbnailStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const thumbnailStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

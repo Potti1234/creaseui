@@ -2,7 +2,7 @@ import { Style, When } from '@pleat/core'
 import { reset } from '@/pleat/reset'
 import { Option } from 'effect'
 import type { HtmlBuilder } from 'foldkit/html'
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   calendarFixtures,
   type CalendarFixture,
@@ -399,7 +399,7 @@ const jalaliView = <Msg>(
   )
 }
 
-export const calendarStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const calendarPleatPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

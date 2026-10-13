@@ -2,7 +2,7 @@ import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   scrollAreaFixtures,
   scrollAreaItems,
@@ -55,7 +55,7 @@ const styles = stylex.create({
   },
 })
 
-export const scrollAreaStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const scrollAreaStyleXPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   _model: unknown,
   _onMessageJson: (messageJson: string) => Msg,

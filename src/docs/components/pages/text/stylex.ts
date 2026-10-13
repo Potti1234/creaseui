@@ -2,7 +2,7 @@ import * as stylex from '@stylexjs/stylex'
 import type { HtmlBuilder } from 'foldkit/html'
 import type { Html } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   LONG_TEXT,
   textFixtures,
@@ -315,7 +315,7 @@ const renderFixture = <Msg>(
   }
 }
 
-export const textStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const textStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   _model: unknown,
   _onMessageJson: (messageJson: string) => Msg,

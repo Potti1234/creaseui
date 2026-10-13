@@ -3,7 +3,7 @@ import { previewLayout } from '@/docs/components/preview-layout.pleat'
 import { reset } from '@/pleat/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   inputOtpFixtures,
   inputOtpRtlCopy,
@@ -57,7 +57,7 @@ interface InputOtpPreviewShape {
   readonly values: { readonly [key: string]: string }
 }
 
-export const inputOtpStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const inputOtpPleatPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (json: string) => Msg,

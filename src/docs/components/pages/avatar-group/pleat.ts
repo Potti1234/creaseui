@@ -1,7 +1,7 @@
 import { Style } from '@pleat/core'
 import type { HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import type { ComponentLayoutStyle } from '@/pleat/contracts'
 import {
   avatarGroupFixtures,
@@ -156,7 +156,7 @@ const statusSectionView = <Msg>(h: HtmlBuilder<Msg>) =>
     ),
   )
 
-export const avatarGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const avatarGroupPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   _model: unknown,
   onMessageJson: (messageJson: string) => Msg,

@@ -3,7 +3,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import * as stylex from '@stylexjs/stylex'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   alertDialogFixtures,
   type AlertDialogFixture,
@@ -91,7 +91,7 @@ const dialogView = <Msg>(
     h,
   )
 
-export const alertDialogStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const alertDialogStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

@@ -3,7 +3,7 @@ import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   inputOtpFixtures,
   inputOtpRtlCopy,
@@ -46,7 +46,7 @@ interface InputOtpPreviewShape {
   readonly values: { readonly [key: string]: string }
 }
 
-export const inputOtpStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const inputOtpStyleXPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (json: string) => Msg,

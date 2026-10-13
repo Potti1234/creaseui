@@ -2,7 +2,7 @@ import { Style } from '@pleat/core'
 import { reset } from '@/pleat/reset'
 import type { HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   statFixtures,
   type StatItem,
@@ -71,7 +71,7 @@ const inCard = <Msg>(item: StatItem, h: HtmlBuilder<Msg>) =>
     h,
   )
 
-export const statStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const statPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   _model: unknown,
   _onMessageJson: (messageJson: string) => Msg,

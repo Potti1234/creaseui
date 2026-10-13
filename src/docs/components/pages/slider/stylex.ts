@@ -1,7 +1,7 @@
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   sliderFixtures,
   type SliderFixture,
@@ -117,7 +117,7 @@ const multiView = <Msg>(
   return h.div([h.Class(className(styles.slider))], sliders)
 }
 
-export const sliderStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const sliderStyleXPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

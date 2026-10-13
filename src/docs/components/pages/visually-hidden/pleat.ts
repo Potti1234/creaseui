@@ -2,7 +2,7 @@ import { Style } from '@pleat/core'
 import { reset } from '@/pleat/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   type VisuallyHiddenFixture,
   vhActions,
@@ -376,7 +376,7 @@ const viewFor = <Msg>(
   }
 }
 
-export const visuallyHiddenStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const visuallyHiddenPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

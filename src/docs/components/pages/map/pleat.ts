@@ -1,5 +1,5 @@
 import { Style } from '@pleat/core'
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import { renderDemo } from '@/docs/components/pages/map/preview'
 import type {
   MapDemoComponents,
@@ -58,8 +58,8 @@ const components: MapDemoComponents = {
   label: Label.label,
   text: Text.text,
 }
-export const mapStyleXPreview =
-  (slug: string): StyleXExamplePreviewProvider =>
+export const mapPleatPreview =
+  (slug: string): ExamplePreviewProvider =>
   (index, model, onMessageJson, h) =>
     renderDemo(
       slug,

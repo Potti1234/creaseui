@@ -2,7 +2,7 @@ import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   inputGroupFixtures,
   inputGroupRtlCopy,
@@ -105,7 +105,7 @@ interface InputGroupPreviewShape {
   readonly isPasswordShown: boolean
 }
 
-export const inputGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const inputGroupStyleXPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (json: string) => Msg,

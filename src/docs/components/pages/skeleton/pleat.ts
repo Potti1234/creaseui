@@ -1,7 +1,7 @@
 import { Style } from '@pleat/core'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import { skeletonFixtures } from '@/docs/components/pages/skeleton/shared'
 import * as Card from '@/pleat/card'
 import * as Skeleton from '@/pleat/skeleton'
@@ -89,7 +89,7 @@ const demoRow = <Msg>(rtl: boolean, h: HtmlBuilder<Msg>): Html =>
     ],
   )
 
-export const skeletonStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const skeletonPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   _model: unknown,
   _onMessageJson: (messageJson: string) => Msg,

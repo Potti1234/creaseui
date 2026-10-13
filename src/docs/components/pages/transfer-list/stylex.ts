@@ -3,7 +3,7 @@ import { className } from '@/stylex/style'
 import { previewLayout } from '@/docs/components/preview-layout.stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import { transferListFixtures } from '@/docs/components/pages/transfer-list/shared'
 import * as TransferList from '@/stylex/transfer-list'
 
@@ -43,7 +43,7 @@ const cleanOptions = (
       : { disabledMessage: row.disabledMessage }),
   }))
 
-export const transferListStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const transferListStyleXPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

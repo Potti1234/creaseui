@@ -3,7 +3,7 @@ import { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as stylex from '@stylexjs/stylex'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   contextMenuFixtures,
   fixtureItems,
@@ -45,7 +45,7 @@ type Preview = Readonly<{
   themeValue: Option.Option<string>
 }>
 
-export const contextMenuStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const contextMenuStyleXPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

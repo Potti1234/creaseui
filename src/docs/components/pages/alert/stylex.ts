@@ -1,7 +1,7 @@
 import * as stylex from '@stylexjs/stylex'
 import type { HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import type { ComponentLayoutStyle } from '@/stylex/contracts'
 import { className } from '@/stylex/style'
 import { alertFixtures } from '@/docs/components/pages/alert/shared'
@@ -20,7 +20,7 @@ const styles = stylex.create({
   },
 })
 
-export const alertStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const alertStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   _model: unknown,
   _onMessageJson: (messageJson: string) => Msg,

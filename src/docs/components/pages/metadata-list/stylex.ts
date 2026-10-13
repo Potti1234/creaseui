@@ -1,7 +1,7 @@
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   metadataListFixtures,
   type MetadataListItemSpec,
@@ -40,7 +40,7 @@ const itemChildren = <Msg>(
         ),
       ]
 
-export const metadataListStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const metadataListStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

@@ -2,7 +2,7 @@ import * as stylex from '@stylexjs/stylex'
 import type { Option } from 'effect'
 import type { HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import * as Button from '@/stylex/button'
 import * as Checkbox from '@/stylex/checkbox'
 import * as Field from '@/stylex/field'
@@ -417,7 +417,7 @@ const labelSxView = <Msg>(
   }
 }
 
-export const labelStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const labelStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

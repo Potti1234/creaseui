@@ -2,7 +2,7 @@ import { Style } from '@pleat/core'
 import { reset } from '@/pleat/reset'
 import { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   contextMenuFixtures,
   fixtureItems,
@@ -48,7 +48,7 @@ type Preview = Readonly<{
   themeValue: Option.Option<string>
 }>
 
-export const contextMenuStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const contextMenuPleatPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

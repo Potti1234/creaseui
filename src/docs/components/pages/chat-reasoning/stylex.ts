@@ -2,7 +2,7 @@ import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   chatReasoningFixtures,
   type ChatReasoningFixture,
@@ -54,7 +54,7 @@ const reasoningView = <Msg>(
     h,
   )
 
-export const chatReasoningStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const chatReasoningStyleXPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

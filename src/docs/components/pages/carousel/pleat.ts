@@ -2,7 +2,7 @@ import { Style } from '@pleat/core'
 import { reset } from '@/pleat/reset'
 import Autoplay from 'embla-carousel-autoplay'
 import type { HtmlBuilder } from 'foldkit/html'
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   carouselFixtures,
   type CarouselFixture,
@@ -70,7 +70,7 @@ const itemSizeOf = (
   return 100
 }
 
-export const carouselStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const carouselPleatPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

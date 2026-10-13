@@ -3,7 +3,7 @@ import { previewLayout } from '@/docs/components/preview-layout.pleat'
 import { reset } from '@/pleat/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   itemFixtures,
   itemModels,
@@ -197,7 +197,7 @@ const demoStack = <Msg>(
   )
 }
 
-export const itemStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const itemPleatPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

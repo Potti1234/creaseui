@@ -2,7 +2,7 @@ import { Style } from '@pleat/core'
 import { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   radioGroupFixtures,
   type RadioGroupFixture,
@@ -45,7 +45,7 @@ const group = <Msg>(
     h,
   )
 
-export const radioGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const radioGroupPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

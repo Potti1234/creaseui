@@ -1,7 +1,7 @@
 import * as stylex from '@stylexjs/stylex'
 import type { HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   checkboxFixtures,
   checkboxGroupItems,
@@ -26,7 +26,7 @@ const styles = stylex.create({
   },
 })
 
-export const checkboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const checkboxStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

@@ -1,7 +1,7 @@
 import { Style } from '@pleat/core'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import type { ComponentLayoutStyle } from '@/pleat/contracts'
 import {
   spinnerFixtures,
@@ -370,7 +370,7 @@ const fixtureView = <Msg>(
   }
 }
 
-export const spinnerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const spinnerPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   _model: unknown,
   onMessageJson: (messageJson: string) => Msg,

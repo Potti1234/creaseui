@@ -3,7 +3,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import * as stylex from '@stylexjs/stylex'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   collapsibleFixtures,
   fileTree,
@@ -181,7 +181,7 @@ type Preview = Readonly<{
   open: ReadonlyArray<string>
 }>
 
-export const collapsibleStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const collapsibleStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

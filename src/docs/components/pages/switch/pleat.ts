@@ -1,7 +1,7 @@
 import { Style } from '@pleat/core'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import { switchFixtures } from '@/docs/components/pages/switch/shared'
 import * as Field from '@/pleat/field'
 import * as Label from '@/pleat/label'
@@ -142,7 +142,7 @@ const choiceCard = <Msg>(
     h,
   )
 
-export const switchStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const switchPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

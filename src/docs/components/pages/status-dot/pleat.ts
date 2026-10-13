@@ -1,7 +1,7 @@
 import { Style } from '@pleat/core'
 import type { HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   statusDotFixtures,
   type StatusDotItem,
@@ -25,7 +25,7 @@ const statusDotItem = <Msg>(item: StatusDotItem, h: HtmlBuilder<Msg>) =>
     h,
   )
 
-export const statusDotStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const statusDotPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   _model: unknown,
   _onMessageJson: (messageJson: string) => Msg,

@@ -2,7 +2,7 @@ import { Style } from '@pleat/core'
 import type { HtmlBuilder } from 'foldkit/html'
 import type { Html } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   LONG_TEXT,
   textFixtures,
@@ -312,7 +312,7 @@ const renderFixture = <Msg>(
   }
 }
 
-export const textStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const textPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   _model: unknown,
   _onMessageJson: (messageJson: string) => Msg,

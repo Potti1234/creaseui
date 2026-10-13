@@ -1,7 +1,7 @@
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   tabsFixtures,
   type TabsCardSpec,
@@ -47,7 +47,7 @@ const cardView = <Msg>(card: TabsCardSpec, h: HtmlBuilder<Msg>): Html =>
     h,
   )
 
-export const tabsStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const tabsStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

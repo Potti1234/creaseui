@@ -2,7 +2,7 @@ import { Style } from '@pleat/core'
 import { reset } from '@/pleat/reset'
 import type { HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import { aspectRatioFixtures } from '@/docs/components/pages/aspect-ratio/shared'
 import * as AspectRatio from '@/pleat/aspect-ratio'
 import type { ComponentLayoutStyle } from '@/pleat/contracts'
@@ -52,7 +52,7 @@ const frameWidth = {
   w24: styles.w24,
 } as const
 
-export const aspectRatioStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const aspectRatioPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   _model: unknown,
   _onMessageJson: (messageJson: string) => Msg,
@@ -65,8 +65,8 @@ export const aspectRatioStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
         className(
           reset.text,
           styles.frame,
-          fixture.widthClass.stylex !== 'w24' && styles.frameMedia,
-          frameWidth[fixture.widthClass.stylex],
+          fixture.widthClass.styled !== 'w24' && styles.frameMedia,
+          frameWidth[fixture.widthClass.styled],
         ),
       ),
       ...(fixture.direction === 'rtl' ? [h.Dir('rtl')] : []),

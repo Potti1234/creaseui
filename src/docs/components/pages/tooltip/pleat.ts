@@ -1,7 +1,7 @@
 import { Style } from '@pleat/core'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   tooltipFixtures,
   type TooltipTipSpec,
@@ -50,7 +50,7 @@ const tipView = <Msg>(
     h,
   )
 
-export const tooltipStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const tooltipPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

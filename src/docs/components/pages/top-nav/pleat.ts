@@ -1,7 +1,7 @@
 import { Style } from '@pleat/core'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   topNavFixtures,
   type TopNavFixture,
@@ -182,7 +182,7 @@ const decorateEndItem = <Msg>(
   }
 }
 
-export const topNavStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const topNavPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,
@@ -242,7 +242,7 @@ export const topNavStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
     const key = `nav-${String(index)}`
     const navModel = navs[key] ?? TopNav.init({ id: key })
     return h.submodel({
-      slotId: `docs-stylex-top-nav-${String(index)}`,
+      slotId: `docs-pleat-top-nav-${String(index)}`,
       model: navModel,
       view: TopNav.view,
       viewInputs: {

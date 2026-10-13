@@ -3,7 +3,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import * as stylex from '@stylexjs/stylex'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   type DrawerFixture,
   type DrawerSide,
@@ -563,7 +563,7 @@ const drawerView = <Msg>(
   }
 }
 
-export const drawerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const drawerStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

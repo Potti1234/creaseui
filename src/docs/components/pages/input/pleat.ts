@@ -566,7 +566,7 @@ const inputView = <Msg>(
   }
 }
 
-export const inputStylexPreviewProgram = definePreviewProgram({
+export const inputPleatPreviewProgram = definePreviewProgram({
   ...inputPreviewProgram,
   view: (index, model, h) =>
     h.div(

@@ -10,7 +10,7 @@ export type AspectRatioFixture = Readonly<{
   ratioExpr: string
   direction?: 'rtl'
   caption?: string
-  widthClass: { tailwind: string; stylex: 'w12' | 'w10' | 'w24' }
+  widthClass: { tailwind: string; styled: 'w12' | 'w10' | 'w24' }
 }>
 
 export const aspectRatioFixtures: Readonly<
@@ -22,7 +22,7 @@ export const aspectRatioFixtures: Readonly<
     ratioExpr: '1 / 1',
     widthClass: {
       tailwind: 'w-full max-w-48 overflow-hidden rounded-lg bg-muted',
-      stylex: 'w12',
+      styled: 'w12',
     },
   },
   {
@@ -31,7 +31,7 @@ export const aspectRatioFixtures: Readonly<
     ratioExpr: '9 / 16',
     widthClass: {
       tailwind: 'w-full max-w-40 overflow-hidden rounded-lg bg-muted',
-      stylex: 'w10',
+      styled: 'w10',
     },
   },
   {
@@ -40,7 +40,7 @@ export const aspectRatioFixtures: Readonly<
     ratioExpr: '16 / 9',
     direction: 'rtl',
     caption: 'منظر طبيعي جميل',
-    widthClass: { tailwind: 'w-full max-w-sm', stylex: 'w24' },
+    widthClass: { tailwind: 'w-full max-w-sm', styled: 'w24' },
   },
 ]
 
@@ -57,7 +57,7 @@ import { className } from '@/stylex/style'`
     : ''
   const styles = isStyleX
     ? `\nconst styles = stylex.create({
-  frame: { maxWidth: '${fixture.widthClass.stylex === 'w12' ? '12rem' : fixture.widthClass.stylex === 'w10' ? '10rem' : '24rem'}', width: '100%'${fixture.widthClass.stylex === 'w24' ? '' : `, borderRadius: 'var(--radius)', backgroundColor: 'var(--muted)', overflow: 'hidden'`} },
+  frame: { maxWidth: '${fixture.widthClass.styled === 'w12' ? '12rem' : fixture.widthClass.styled === 'w10' ? '10rem' : '24rem'}', width: '100%'${fixture.widthClass.styled === 'w24' ? '' : `, borderRadius: 'var(--radius)', backgroundColor: 'var(--muted)', overflow: 'hidden'`} },
   ratioBox: { borderRadius: 'var(--radius)', backgroundColor: 'var(--muted)', overflow: 'hidden' },
   content: { borderRadius: 'var(--radius)', objectFit: 'cover', width: '100%', height: '100%' },
   caption: { marginTop: '0.5rem', textAlign: 'center', fontSize: '0.875rem', lineHeight: '1.25rem', color: 'var(--muted-foreground)' },

@@ -4,7 +4,7 @@ import { Effect, Queue, Schema as S, Stream } from 'effect'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import * as Mount from 'foldkit/mount'
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   messageScrollerFixtures,
   type MessageScrollerFixture,
@@ -192,7 +192,7 @@ const toolbarButton = <Msg>(
     h,
   )
 
-export const messageScrollerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const messageScrollerPleatPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

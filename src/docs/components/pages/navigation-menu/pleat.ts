@@ -3,7 +3,7 @@ import { className } from '@/pleat/style'
 import * as Button from '@/pleat/button'
 import { reset } from '@/pleat/reset'
 import type { HtmlBuilder } from 'foldkit/html'
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import * as NavigationMenu from '@/pleat/navigation-menu'
 import type * as Popover from '@/pleat/popover'
 
@@ -83,7 +83,7 @@ const content = <Msg>(h: HtmlBuilder<Msg>) =>
     ],
   )
 
-export const navigationMenuStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const navigationMenuPleatPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

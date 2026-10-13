@@ -18,7 +18,7 @@ export type SelectFixture = Readonly<{
   items: ReadonlyArray<SelectItem>
   groups: boolean
   triggerClass?: string
-  triggerWidthStylex?: string
+  triggerWidthClass?: string
   isDisabled?: boolean
   rtl?: boolean
 }>
@@ -118,7 +118,7 @@ export const selectFixtures: Readonly<
     items: fruitItems,
     groups: true,
     triggerClass: wide,
-    triggerWidthStylex: 'triggerWide',
+    triggerWidthClass: 'triggerWide',
   },
   {
     title: 'Align Item With Trigger',
@@ -128,7 +128,7 @@ export const selectFixtures: Readonly<
     items: alignItems,
     groups: false,
     triggerClass: wide,
-    triggerWidthStylex: 'triggerWide',
+    triggerWidthClass: 'triggerWide',
   },
   {
     title: 'Groups',
@@ -138,7 +138,7 @@ export const selectFixtures: Readonly<
     items: groupedItems,
     groups: true,
     triggerClass: wide,
-    triggerWidthStylex: 'triggerWide',
+    triggerWidthClass: 'triggerWide',
   },
   {
     title: 'Scrollable',
@@ -148,7 +148,7 @@ export const selectFixtures: Readonly<
     items: timezoneItems,
     groups: true,
     triggerClass: 'w-full max-w-64',
-    triggerWidthStylex: 'triggerWider',
+    triggerWidthClass: 'triggerWider',
   },
   {
     title: 'Disabled',
@@ -160,7 +160,7 @@ export const selectFixtures: Readonly<
     ),
     groups: true,
     triggerClass: wide,
-    triggerWidthStylex: 'triggerWide',
+    triggerWidthClass: 'triggerWide',
     isDisabled: true,
   },
   {
@@ -175,7 +175,7 @@ export const selectFixtures: Readonly<
     ],
     groups: true,
     triggerClass: wide,
-    triggerWidthStylex: 'triggerWide',
+    triggerWidthClass: 'triggerWide',
   },
   {
     title: 'RTL',
@@ -185,7 +185,7 @@ export const selectFixtures: Readonly<
     items: rtlItems,
     groups: true,
     triggerClass: 'w-32',
-    triggerWidthStylex: 'triggerSmall',
+    triggerWidthClass: 'triggerSmall',
     rtl: true,
   },
 ]
@@ -241,7 +241,7 @@ const emitSource = (fixture: SelectFixture, isStyleX: boolean): string => {
     direction: 'rtl',`
         : ''
     }
-    ${isStyleX ? `triggerLayoutStyle: styles.${fixture.triggerWidthStylex ?? 'triggerWide'},` : `triggerClass: '${fixture.triggerClass ?? wide}',`}${
+    ${isStyleX ? `triggerLayoutStyle: styles.${fixture.triggerWidthClass ?? 'triggerWide'},` : `triggerClass: '${fixture.triggerClass ?? wide}',`}${
       fixture.kind === 'alignItem'
         ? `
     position: model.alignItem ? 'item-aligned' : 'popper',`

@@ -24,7 +24,7 @@ export type DocsExample = Readonly<{
   sectionId?: string
 }>
 
-export type StyleXExamplePreviewProvider = <Msg>(
+export type ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

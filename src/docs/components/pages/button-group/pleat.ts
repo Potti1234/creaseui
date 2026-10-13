@@ -3,7 +3,7 @@ import { reset } from '@/pleat/reset'
 import { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   buttonGroupFixtures,
   type ButtonGroupFixture,
@@ -660,7 +660,7 @@ const fixtureView = <Msg>(
   return fixture.direction === 'rtl' ? h.div([h.Dir('rtl')], [group]) : group
 }
 
-export const buttonGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const buttonGroupPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

@@ -3,7 +3,7 @@ import * as Button from '@/stylex/button'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as stylex from '@stylexjs/stylex'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   SKILLS,
   USERS,
@@ -32,7 +32,7 @@ type Preview = Readonly<{
   tokenizers: ReadonlyArray<Tokenizer.Model>
 }>
 
-export const tokenizerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const tokenizerStyleXPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

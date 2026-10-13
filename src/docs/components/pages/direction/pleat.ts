@@ -1,7 +1,7 @@
 import { Style } from '@pleat/core'
 import { className } from '@/pleat/style'
 import type { HtmlBuilder } from 'foldkit/html'
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import * as Button from '@/pleat/button'
 import * as Direction from '@/pleat/direction'
 import type { ComponentLayoutStyle } from '@/pleat/contracts'
@@ -19,7 +19,7 @@ const styles = {
     lineHeight: '1.25rem',
   }),
 }
-export const directionStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const directionPleatPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (json: string) => Msg,

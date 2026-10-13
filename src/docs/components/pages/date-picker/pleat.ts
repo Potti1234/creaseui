@@ -2,7 +2,7 @@ import { Style } from '@pleat/core'
 import { Option } from 'effect'
 import type * as FoldkitCalendar from 'foldkit/calendar'
 import type { HtmlBuilder } from 'foldkit/html'
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   arabicCalendarLocale,
   datePickerFixtures,
@@ -194,7 +194,7 @@ const picker = <Msg>(
   )
 }
 
-export const datePickerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const datePickerPleatPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (json: string) => Msg,

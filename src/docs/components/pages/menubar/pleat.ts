@@ -3,7 +3,7 @@ import { previewLayout } from '@/docs/components/preview-layout.pleat'
 import { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   checkboxField,
   menubarFixtures,
@@ -156,7 +156,7 @@ const menubarSxView = <Msg>(
   )
 }
 
-export const menubarStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const menubarPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

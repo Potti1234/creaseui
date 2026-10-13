@@ -2,7 +2,7 @@ import { Style } from '@pleat/core'
 import type { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import { paginationFixtures } from '@/docs/components/pages/pagination/shared'
 import * as Field from '@/pleat/field'
 import * as Pagination from '@/pleat/pagination'
@@ -130,7 +130,7 @@ const iconsOnlyView = <Msg>(
     ],
   )
 
-export const paginationStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const paginationPleatPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

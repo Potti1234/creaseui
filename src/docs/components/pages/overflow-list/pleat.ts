@@ -2,7 +2,7 @@ import { Style } from '@pleat/core'
 import { reset } from '@/pleat/reset'
 import { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   badgeToneVariant,
   itemLabels,
@@ -175,7 +175,7 @@ const frame = <Msg>(
   }
 }
 
-export const overflowListStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const overflowListPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

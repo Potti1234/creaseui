@@ -2,7 +2,7 @@ import { Style } from '@pleat/core'
 import type { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   selectFixtures,
   type SelectFixture,
@@ -26,7 +26,7 @@ interface SelectPreviewShape {
   readonly alignItem: boolean
 }
 
-export const selectStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const selectPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,
@@ -67,11 +67,11 @@ export const selectStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
           }
         : {}),
       ...(fixture.rtl === true ? { direction: 'rtl' as const } : {}),
-      ...(fixture.triggerWidthStylex === undefined
+      ...(fixture.triggerWidthClass === undefined
         ? {}
         : {
             triggerLayoutStyle:
-              styles[fixture.triggerWidthStylex as keyof typeof styles],
+              styles[fixture.triggerWidthClass as keyof typeof styles],
           }),
     },
     h,

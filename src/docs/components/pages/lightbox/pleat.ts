@@ -2,7 +2,7 @@ import { Style } from '@pleat/core'
 import { reset } from '@/pleat/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   galleryMedia,
   lightboxFixtures,
@@ -48,7 +48,7 @@ const msg = <Msg>(
   fields?: Record<string, unknown>,
 ): Msg => onMessageJson(JSON.stringify({ _tag: tag, ...fields }))
 
-export const lightboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const lightboxPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

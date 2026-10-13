@@ -6,7 +6,7 @@ import { defineMessageUnion } from 'foldkit/message'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page'
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   listInputFixtures,
   type Guest,
@@ -67,7 +67,7 @@ const guestColumns = <Msg>(
   },
 ]
 
-export const listInputStylexPreviewProgram = definePreviewProgram<
+export const listInputPleatPreviewProgram = definePreviewProgram<
   ListInputPreviewModel,
   GotListInputMessage
 >({
@@ -167,7 +167,7 @@ export const listInputStylexPreviewProgram = definePreviewProgram<
   },
 })
 
-export const listInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const listInputPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

@@ -2,7 +2,7 @@ import { Style } from '@pleat/core'
 import { reset } from '@/pleat/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   toggleGroupFixtures,
   type TGFixture,
@@ -164,7 +164,7 @@ const groupView = <Msg>(
     h,
   )
 
-export const toggleGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const toggleGroupPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

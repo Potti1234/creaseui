@@ -2,7 +2,7 @@ import { Style, When } from '@pleat/core'
 import { reset } from '@/pleat/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   listItems,
   menuItems,
@@ -101,7 +101,7 @@ const card = <Msg>(
     ],
   )
 
-export const separatorStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const separatorPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   _model: unknown,
   _onMessageJson: (messageJson: string) => Msg,

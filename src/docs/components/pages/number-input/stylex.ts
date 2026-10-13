@@ -6,7 +6,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page'
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   numberInputFixtures,
   type NumberInputFixtureEntry,
@@ -124,7 +124,7 @@ export const numberInputStylexPreviewProgram = definePreviewProgram<
   },
 })
 
-export const numberInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const numberInputStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

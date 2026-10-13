@@ -1,7 +1,7 @@
 import { Style, When } from '@pleat/core'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   avatarFixtures,
   type AvatarClusterSpec,
@@ -207,7 +207,7 @@ const clusterView = <Msg>(
   )
 }
 
-export const avatarStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const avatarPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

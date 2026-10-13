@@ -3,7 +3,7 @@ import { Option } from 'effect'
 import { reset } from '@/pleat/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   FILTER_FIELDS,
   JOBS,
@@ -565,7 +565,7 @@ const bodyFor = <Msg>(
   }
 }
 
-export const toolbarStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const toolbarPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

@@ -2,7 +2,7 @@ import { reset } from '@/stylex/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as stylex from '@stylexjs/stylex'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import type { ComponentLayoutStyle } from '@/stylex/contracts'
 import {
   type EmptyFixture,
@@ -443,7 +443,7 @@ const emptyView = <Msg>(
   }
 }
 
-export const emptyStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const emptyStyleXPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

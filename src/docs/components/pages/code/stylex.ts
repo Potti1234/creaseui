@@ -1,7 +1,7 @@
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   codeFixtures,
   type CodeFixture,
@@ -153,7 +153,7 @@ const renderFixture = <Msg>(
   }
 }
 
-export const codeStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const codeStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   _model: unknown,
   _onMessageJson: (messageJson: string) => Msg,

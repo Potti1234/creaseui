@@ -1,7 +1,7 @@
 import { Style } from '@pleat/core'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   type BadgeItem,
   badgeFixtures,
@@ -100,7 +100,7 @@ const badgeItem = <Msg>(item: BadgeItem, h: HtmlBuilder<Msg>): Html => {
   )
 }
 
-export const badgeStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const badgePleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   _model: unknown,
   _onMessageJson: (messageJson: string) => Msg,

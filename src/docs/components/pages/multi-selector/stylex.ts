@@ -2,7 +2,7 @@ import * as Button from '@/stylex/button'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as stylex from '@stylexjs/stylex'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   ALL_COLUMNS,
   COLUMNS,
@@ -30,7 +30,7 @@ type Preview = Readonly<{
   selectors: ReadonlyArray<MultiSelector.Model>
 }>
 
-export const multiSelectorStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const multiSelectorStyleXPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

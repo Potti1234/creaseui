@@ -1,7 +1,7 @@
 import * as stylex from '@stylexjs/stylex'
 import type { HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   indicatorFixtures,
   type IndicatorItem,
@@ -41,7 +41,7 @@ const indicatorItem = <Msg>(item: IndicatorItem, h: HtmlBuilder<Msg>) => {
       : Indicator.radioIndicator(base, h)
 }
 
-export const indicatorStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const indicatorStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   _model: unknown,
   _onMessageJson: (messageJson: string) => Msg,

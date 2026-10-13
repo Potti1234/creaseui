@@ -2,7 +2,7 @@ import { Style } from '@pleat/core'
 import { reset } from '@/pleat/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   popoverFixtures,
   type PopoverFixture,
@@ -202,7 +202,7 @@ const instanceView = <Msg>(
     h,
   )
 
-export const popoverStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const popoverPleatPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

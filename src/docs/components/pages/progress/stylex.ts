@@ -1,7 +1,7 @@
 import * as stylex from '@stylexjs/stylex'
 import type { HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import { progressFixtures } from '@/docs/components/pages/progress/shared'
 import * as Field from '@/stylex/field'
 import * as Progress from '@/stylex/progress'
@@ -63,7 +63,7 @@ const labelField = <Msg>(
     h,
   )
 
-export const progressStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const progressStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

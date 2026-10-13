@@ -1,7 +1,7 @@
 import { Style } from '@pleat/core'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   resizableFixtures,
   type ResizableFixture,
@@ -94,7 +94,7 @@ const nestedView = <Msg>(
     h,
   )
 
-export const resizableStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const resizablePleatPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

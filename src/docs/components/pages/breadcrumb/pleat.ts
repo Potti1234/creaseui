@@ -2,7 +2,7 @@ import { Style } from '@pleat/core'
 import { className } from '@/pleat/style'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   breadcrumbFixtures,
   type BreadcrumbFixture,
@@ -87,7 +87,7 @@ const itemContentView = <Msg>(
   }
 }
 
-export const breadcrumbStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const breadcrumbPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

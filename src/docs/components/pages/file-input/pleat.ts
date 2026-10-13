@@ -20,7 +20,7 @@ const FileInputPreviewModel = S.Struct({
 })
 type FileInputPreviewModel = typeof FileInputPreviewModel.Type
 
-export const fileInputStylexPreviewProgram = definePreviewProgram<
+export const fileInputPleatPreviewProgram = definePreviewProgram<
   FileInputPreviewModel,
   GotFileInputMessage
 >({

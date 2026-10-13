@@ -3,7 +3,7 @@ import { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as stylex from '@stylexjs/stylex'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   comboboxCountries,
   comboboxFixtures,
@@ -103,7 +103,7 @@ const labelFor =
   (value: string): string =>
     items.find(item => item.value === value)?.label ?? value
 
-export const comboboxStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const comboboxStyleXPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

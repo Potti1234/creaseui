@@ -2,7 +2,7 @@ import { Style } from '@pleat/core'
 import { reset } from '@/pleat/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   dialogFixtures,
   dialogLorem,
@@ -164,7 +164,7 @@ const primaryAction = <Msg>(
     [label],
   )
 
-export const dialogStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const dialogPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

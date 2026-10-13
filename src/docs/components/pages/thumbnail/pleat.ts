@@ -1,7 +1,7 @@
 import { Style } from '@pleat/core'
 import type { HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   thumbnailFixtures,
   type ThumbnailItem,
@@ -76,7 +76,7 @@ const itemView = <Msg>(
     h,
   )
 
-export const thumbnailStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const thumbnailPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

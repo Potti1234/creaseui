@@ -2,7 +2,7 @@ import { Style } from '@pleat/core'
 import type { Option } from 'effect'
 import type { HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import * as Button from '@/pleat/button'
 import * as Checkbox from '@/pleat/checkbox'
 import * as Field from '@/pleat/field'
@@ -417,7 +417,7 @@ const labelSxView = <Msg>(
   }
 }
 
-export const labelStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const labelPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

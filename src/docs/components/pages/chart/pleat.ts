@@ -5,7 +5,7 @@ import { reset } from '@/pleat/reset'
 import type { EChartsOption } from 'echarts/types/dist/shared'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import type { ComponentLayoutStyle } from '@/pleat/contracts'
 import {
   chartData,
@@ -187,7 +187,7 @@ const table = <Msg>(h: HtmlBuilder<Msg>) =>
 const frame = <Msg>(children: ReadonlyArray<Html>, h: HtmlBuilder<Msg>): Html =>
   h.div([h.Class(className(styles.frame))], children)
 
-export const chartStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const chartPleatPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

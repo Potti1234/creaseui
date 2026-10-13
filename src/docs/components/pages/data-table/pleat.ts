@@ -1,6 +1,6 @@
 import { Style } from '@pleat/core'
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   dataTableFixtures,
   payments,
@@ -37,7 +37,7 @@ const columns = (
   },
 ]
 
-export const dataTableStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const dataTablePleatPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

@@ -2,7 +2,7 @@ import { Style } from '@pleat/core'
 import { reset } from '@/pleat/reset'
 import * as Button from '@/pleat/button'
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   SKILLS,
   USERS,
@@ -31,7 +31,7 @@ type Preview = Readonly<{
   tokenizers: ReadonlyArray<Tokenizer.Model>
 }>
 
-export const tokenizerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const tokenizerPleatPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

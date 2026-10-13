@@ -2,7 +2,7 @@ import * as stylex from '@stylexjs/stylex'
 import { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   buttonFixtures,
   buttonGroupItemIcon,
@@ -322,7 +322,7 @@ const fixtureHtml = <Msg>(
   }
 }
 
-export const buttonStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const buttonStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

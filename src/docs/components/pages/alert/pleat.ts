@@ -1,7 +1,7 @@
 import { Style } from '@pleat/core'
 import type { HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import type { ComponentLayoutStyle } from '@/pleat/contracts'
 import { className } from '@/pleat/style'
 import { alertFixtures } from '@/docs/components/pages/alert/shared'
@@ -25,7 +25,7 @@ const styles = {
   }),
 }
 
-export const alertStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const alertPleatPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   _model: unknown,
   _onMessageJson: (messageJson: string) => Msg,

@@ -1,7 +1,7 @@
 import { Style } from '@pleat/core'
 import type { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   commandFixtures,
   itemsForFixture,
@@ -25,7 +25,7 @@ type Preview = Readonly<{
   maybeValue: Option.Option<string>
 }>
 
-export const commandStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const commandPleatPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,
