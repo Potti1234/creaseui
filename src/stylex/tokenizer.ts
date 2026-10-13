@@ -772,7 +772,10 @@ export const tokenizer = <Msg>(
       labelView,
       isLayerExpanded
         ? h.div(
-            [h.Class(className(styles.layerRoot))],
+            [
+              h.Class(className(styles.layerRoot)),
+              h.DataAttribute('slot', 'tokenizer-layer'),
+            ],
             [
               h.div(
                 [

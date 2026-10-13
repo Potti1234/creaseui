@@ -81,6 +81,7 @@ export const statusDot = <Msg>(
 ): Html =>
   h.span(
     [
+      h.DataAttribute('slot', 'status-dot'),
       h.Class(
         className(
           base.root,

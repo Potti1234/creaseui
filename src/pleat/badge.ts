@@ -128,6 +128,8 @@ export type BadgeProps = Readonly<{
 export const badge = <Msg>(props: BadgeProps, h: HtmlBuilder<Msg>): Html => {
   const variant = props.variant ?? 'default'
   const attributes = [
+    h.DataAttribute('slot', 'badge'),
+    h.DataAttribute('variant', variant),
     h.Class(
       className(
         reset.link,
