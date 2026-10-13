@@ -43,7 +43,8 @@ import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { taggedStruct } from 'foldkit/schema'
 
-import * as ActionBar from '@/${sep}/action-bar'`,
+import * as ActionBar from '@/${sep}/action-bar'
+import * as Icon from '@/lib/icon'`,
     model: `export const Model = S.Struct({ selected: S.Number })
 export type Model = typeof Model.Type`,
     messages: `export const ToggledSelection = taggedStruct('ToggledSelection')
@@ -96,7 +97,11 @@ export type Message = typeof Message.Type`,
               h,
             ),
             ActionBar.actionBarClose(
-              { onClose: ClosedActionBar({}) },
+              {
+                onClose: ClosedActionBar({}),
+                ariaLabel: 'Clear selection',
+                children: [Icon.icon('x', { class: 'size-4' }, h)],
+              },
               h,
             ),
           ],

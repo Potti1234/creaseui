@@ -32,6 +32,7 @@ installStyleXExamplePreviewProvider(
   mapStyleXPreview('map-localization'),
 )
 import { accordionStyleXPreview } from '@/docs/components/pages/accordion/stylex'
+import { actionBarStylexPreviewProgram } from '@/docs/components/pages/action-bar/stylex'
 import { centerStyleXPreview } from '@/docs/components/pages/center/stylex'
 import { gridStyleXPreview } from '@/docs/components/pages/grid/stylex'
 import { sectionStyleXPreview } from '@/docs/components/pages/section/stylex'
@@ -144,6 +145,7 @@ import { topNavStyleXPreview } from '@/docs/components/pages/top-nav/stylex'
 import { treeListStyleXPreview } from '@/docs/components/pages/tree-list/stylex'
 
 installStyleXExamplePreviewProvider('accordion', accordionStyleXPreview)
+installStyleXPreviewView('action-bar', actionBarStylexPreviewProgram.view)
 installStyleXExamplePreviewProvider('alert', alertStyleXPreview)
 installStyleXExamplePreviewProvider('aspect-ratio', aspectRatioStyleXPreview)
 installStyleXExamplePreviewProvider('avatar', avatarStyleXPreview)

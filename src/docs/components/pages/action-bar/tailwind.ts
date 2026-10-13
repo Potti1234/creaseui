@@ -6,6 +6,7 @@ import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import type { ActionBarFixture } from '@/docs/components/pages/action-bar/shared'
 import { actionBarFixtures } from '@/docs/components/pages/action-bar/shared'
 import * as ActionBar from '@/ui/action-bar'
+import * as Icon from '@/lib/icon'
 import * as Button from '@/ui/button'
 
 const ActionBarPreviewMessage = defineMessageUnion({
@@ -50,7 +51,11 @@ const previewBar = (
           h,
         ),
         ActionBar.actionBarClose(
-          { onClose: ActionBarPreviewMessage.ClosedActionBar({}) },
+          {
+            onClose: ActionBarPreviewMessage.ClosedActionBar({}),
+            ariaLabel: 'Clear selection',
+            children: [Icon.icon('x', { class: 'size-4' }, h)],
+          },
           h,
         ),
       ],
