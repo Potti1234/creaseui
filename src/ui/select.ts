@@ -4,6 +4,7 @@ import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
 import { Listbox as ListboxPrimitive } from '@foldkit/ui'
 
 import * as Icon from '@/lib/icon'
+import { themedAnchor, themedListboxPanel } from '@/lib/overlay-boundary'
 import { cn } from '@/lib/utils'
 
 /* Ported from shadcn/ui select.tsx on top of foldkit's single-select
@@ -143,6 +144,7 @@ const renderSelect = <Item, Value extends string, Msg>(
     onSome: labelForValue,
   })
 
+  const { anchor } = buildAnchor(props, values)
   const viewInputs: ListboxPrimitive.ViewInputs<Value, Value> = {
     maybeSelectedValue: props.maybeSelectedValue,
     items: values,
@@ -207,7 +209,7 @@ const renderSelect = <Item, Value extends string, Msg>(
         ? [hs.DataAttribute('placeholder', '')]
         : []),
     ]),
-    ...buildAnchor(props, values),
+    anchor: themedAnchor(anchor),
     itemsClassName: cn(
       CONTENT_CLASS,
       props.variant === 'ghost' && 'outline-none',
@@ -217,6 +219,13 @@ const renderSelect = <Item, Value extends string, Msg>(
       // expects the popup listbox to remain tabbable, so restore tabindex="0".
       hs.Tabindex(0),
       hs.DataAttribute('slot', 'select-content'),
+      hs.OnMount(
+        themedListboxPanel(
+          `${props.model.id}-button`,
+          anchor,
+          props.toParentMessage,
+        ),
+      ),
     ]),
     itemsScrollClassName: cn(
       VIEWPORT_CLASS,
