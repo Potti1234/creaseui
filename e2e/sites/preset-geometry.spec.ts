@@ -1,5 +1,8 @@
 import { expect, test, type Page } from '@playwright/test'
 
+import { STYLES } from '../../src/demo/create-preset'
+import { selectStyle } from './create-helpers'
+
 /* R2 waves 1-5: Create styles apply to every control and selection role,
    not only Button/Input, in every renderer; list and menu rows follow
    shape and size, and tabs/disclosure triggers follow shape. Radio indicators and Switch
@@ -63,25 +66,6 @@ const measure = (page: Page, slots: ReadonlyArray<string>) =>
     )
   }, slots) as Promise<Record<string, Measured>>
 
-/* Under parallel load a click can land on a neighbouring option while the
-   panel settles, so retry until the trigger reports the requested style. */
-const selectStyle = async (page: Page, style: string): Promise<void> => {
-  const trigger = page.locator('#create-style-picker-button')
-  await expect(async () => {
-    if ((await trigger.getAttribute('aria-expanded')) !== 'true')
-      await trigger.click()
-    await page
-      .locator('#create-style-picker-panel button', {
-        hasText: new RegExp(`^${style}$`, 'i'),
-      })
-      .first()
-      .click({ timeout: 5000 })
-    await expect(trigger).toContainText(new RegExp(style, 'i'), {
-      timeout: 2000,
-    })
-  }).toPass({ timeout: 30_000 })
-}
-
 const expectations: Readonly<
   Record<string, (measured: Record<string, Measured>) => void>
 > = {
@@ -135,6 +119,12 @@ const expectations: Readonly<
     expect(m['table-cell']!.paddingTop).toBeGreaterThan(8)
   },
 }
+
+test('every non-baseline preset has geometry expectations', () => {
+  expect(Object.keys(expectations).sort()).toEqual(
+    STYLES.filter(style => style !== 'nova').sort(),
+  )
+})
 
 for (const [style, check] of Object.entries(expectations)) {
   test(`${style} style reaches every control role`, async ({ page }) => {

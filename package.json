@@ -71,6 +71,7 @@
     "preview:tailwind": "vite preview --mode tailwind",
     "preview:stylex": "vite preview --mode stylex",
     "test:sites": "npm run build && playwright test --config playwright.sites.config.ts",
+    "test:presets": "playwright test --config playwright.sites.config.ts preset-matrix preset-geometry overlay-surfaces theme-scope",
     "dev:pleat": "vite --mode pleat",
     "build:pleat": "vite build --mode pleat",
     "preview:pleat": "vite preview --mode pleat",

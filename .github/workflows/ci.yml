@@ -61,8 +61,18 @@ jobs:
       - name: Build site
         run: npm run build
 
-      - name: Check both renderer sites and standalone StyleX previews
+      - name: Check all renderer sites, preset matrix and overlay contracts
         run: npx playwright test --config playwright.sites.config.ts
+
+      - name: Upload renderer site report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: renderer-sites-report
+          path: |
+            playwright-report/sites
+            test-results/sites
+          retention-days: 14
 
       - name: Run browser and accessibility tests
         run: npm run test:e2e
