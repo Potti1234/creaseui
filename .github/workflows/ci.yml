@@ -58,6 +58,9 @@ jobs:
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
 
+      - name: Run rendered audit fixtures
+        run: npm run test:lint-audit
+
       - name: Build site
         run: npm run build
 

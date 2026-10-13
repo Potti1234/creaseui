@@ -16,6 +16,7 @@ import { CreaseConfigError } from '../lib/strict/ownership.js'
 const USAGE = `Usage:
   creaseui-lint init   --renderer <tailwind|stylex|pleat> --components <dir> [--root <dir>] [--manifest crease.lock.json] [--dry-run]
   creaseui-lint doctor [--config creaseui-lint.config.mjs] [--root <dir>]
+  creaseui-lint audit  --config creaseui-lint.audit.mjs [--output report.json] [--report-only]
 
 Exit codes: 0 ok, 1 findings, 2 invalid setup.`
 
@@ -274,6 +275,50 @@ const doctor = async values => {
   return findings.length === 0 ? 0 : 1
 }
 
+/* Browser tooling loads only for `audit`, never from the lint entry points. */
+const audit = async values => {
+  if (!values.config) {
+    console.error('creaseui-lint audit: --config <file> is required')
+    return 2
+  }
+  const { AuditSetupError, loadAuditConfig, runAudit } =
+    await import('../lib/audit/index.js')
+  const configPath = path.resolve(values.config)
+  try {
+    const report = await runAudit(await loadAuditConfig(configPath), {
+      reportOnly: values['report-only'],
+      searchFrom: [path.dirname(configPath), process.cwd()],
+    })
+    for (const finding of report.findings)
+      console.log(
+        `${finding.severity} ${finding.rule} [${finding.case} ${finding.theme} ${finding.viewport} ${finding.direction} ${finding.state}] ${finding.selector}: ${finding.measured} (expected ${finding.expected}). ${finding.fix}`,
+      )
+    for (const result of report.results.filter(
+      result => result.status === 'unvisited',
+    ))
+      console.error(
+        `incomplete [${result.case} ${result.theme} ${result.viewport} ${result.direction} ${result.state}]: ${result.reason}`,
+      )
+    for (const exception of report.exceptions.unused)
+      console.warn(
+        `unused exception ${exception.rule} ${exception.selector} (${exception.owner})`,
+      )
+    const { coverage } = report
+    console.log(
+      `audit: ${coverage.checked} checked, ${coverage.failed} failed, ${coverage.unresolved} unresolved, ${coverage.unsupported} unsupported, ${coverage.unvisited} unvisited, ${coverage.excluded} excluded`,
+    )
+    if (values.output)
+      writeFileSync(values.output, `${JSON.stringify(report, null, 2)}\n`)
+    return report.exitCode
+  } catch (error) {
+    if (error instanceof AuditSetupError) {
+      console.error(error.message)
+      return 2
+    }
+    throw error
+  }
+}
+
 const main = async () => {
   const [command, ...rest] = process.argv.slice(2)
   const { values } = parseArgs({
@@ -284,12 +329,15 @@ const main = async () => {
       config: { type: 'string' },
       'dry-run': { type: 'boolean' },
       manifest: { type: 'string' },
+      output: { type: 'string' },
+      'report-only': { type: 'boolean' },
       renderer: { type: 'string' },
       root: { type: 'string' },
     },
   })
   if (command === 'init') return init(values)
   if (command === 'doctor') return doctor(values)
+  if (command === 'audit') return audit(values)
   console.error(USAGE)
   return 2
 }

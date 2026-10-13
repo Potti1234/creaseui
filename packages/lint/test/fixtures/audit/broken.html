@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Broken page</title>
+    <style>
+      body { margin: 0; font: 16px/1.5 system-ui, sans-serif; background: #fff; color: #111; }
+      #icon-only { width: 40px; height: 40px; }
+      #wide { width: 2000px; height: 10px; }
+      #faint { color: #bbb; }
+      #gradient-text { background-image: linear-gradient(#fff, #eee); }
+      #menu { position: fixed; top: 10px; left: -200px; width: 300px; height: 100px; background: #fff; }
+      #tiny { width: 16px; height: 16px; padding: 0; font-size: 10px; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <button type="button" id="icon-only"></button>
+      <input id="email" aria-describedby="missing-help" />
+      <p id="faint">Low contrast supporting text</p>
+      <p id="gradient-text">Text over a gradient</p>
+      <div id="wide"></div>
+      <div id="menu" role="menu"><span>Menu</span></div>
+      <button type="button" id="tiny">x</button>
+      <iframe title="Embedded content" srcdoc="<p>frame</p>"></iframe>
+    </main>
+  </body>
+</html>

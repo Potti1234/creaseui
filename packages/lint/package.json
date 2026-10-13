@@ -8,12 +8,18 @@
     ".": {
       "types": "./index.d.ts",
       "default": "./index.js"
+    },
+    "./audit": {
+      "types": "./audit.d.ts",
+      "default": "./audit.js"
     }
   },
   "types": "./index.d.ts",
   "files": [
     "index.js",
     "index.d.ts",
+    "audit.js",
+    "audit.d.ts",
     "creaseui.js",
     "bin",
     "docs",
@@ -26,7 +32,8 @@
   },
   "peerDependencies": {
     "eslint": ">=9.30",
-    "typescript": ">=5.8"
+    "typescript": ">=5.8",
+    "playwright": ">=1.40"
   },
   "dependencies": {
     "@shadcn/lint": "^0.1.0",
@@ -35,5 +42,10 @@
   },
   "bin": {
     "creaseui-lint": "./bin/creaseui-lint.js"
+  },
+  "peerDependenciesMeta": {
+    "playwright": {
+      "optional": true
+    }
   }
 }
