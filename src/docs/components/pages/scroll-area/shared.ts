@@ -47,7 +47,7 @@ const tagsBody = (
       h.h4([h.Class(className(styles.tagsHeading))], ['${fixture.heading}']),
       ...scrollAreaTags.map(tag => h.div([], [
         h.div([h.Class(className(styles.tag))], [tag]),
-        Separator.separator({ layoutStyle: styles.separator }, h),
+        Separator.separator({ layoutStyle: layoutStyle({ marginBlock: "0.5rem" }) }, h),
       ])),
     ]),
     ],
@@ -89,7 +89,7 @@ const body = (
     : horizontalBody(renderer)
 
 const styleImports = `import * as stylex from '@stylexjs/stylex'
-import { className } from '@/stylex/style'
+import { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'
 const styles = stylex.create({
   tagsFrame: { height: '18rem', width: '12rem', borderColor: 'var(--border)', borderRadius: '0.375rem', borderStyle: 'solid', borderWidth: 1, overflow: 'hidden' },
   tagsContent: { padding: '1rem' },

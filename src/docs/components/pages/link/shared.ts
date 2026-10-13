@@ -107,7 +107,7 @@ const viewBody = (fixture: LinkFixture, isStyleX: boolean): string => {
 }
 
 const stylexStyles =
-  "column: { alignItems: 'flex-start', display: 'flex', flexDirection: 'column', gap: '0.5rem' }"
+  "column: { alignItems: 'flex-start', display: 'flex', flexDirection: 'column', gap: '0.5rem' },\n  page: { marginInline: 'auto', maxWidth: '28rem', padding: '2rem' }"
 
 const source = (
   index: number,
@@ -189,7 +189,7 @@ export type Message = typeof Message.Type`,
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Link with tooltips',
-  body: h.main([h.Class('mx-auto max-w-md p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.page)' : "'mx-auto max-w-md p-8'"})], [
     ${viewBody(fixture, isStyleX)},
   ]),
 })`,

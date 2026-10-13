@@ -530,7 +530,10 @@ const emitImports = (fixture: MenubarFixture, isStyleX: boolean): string => {
     "import { defineMessageUnion } from 'foldkit/message'",
   ]
   if (isStyleX) {
-    parts.push('', "import * as stylex from '@stylexjs/stylex'")
+    parts.push(
+      '',
+      "import * as stylex from '@stylexjs/stylex'\nimport { layoutStyle } from '@/stylex/contracts'",
+    )
   }
   parts.push(`import * as DropdownMenu from '@/${base}/dropdown-menu'`)
   if (fixture.kind === 'icons') {
@@ -688,7 +691,7 @@ const emitBody = (fixture: MenubarFixture, isStyleX: boolean): string => {
     ariaLabel: 'Application menu',${direction}
     model: model.menubar,
     toParentMessage: message => Message.GotMenubarMessage({ message }),
-    ${isStyleX ? 'layoutStyle: styles.menubar,' : "class: 'w-72',"}
+    ${isStyleX ? 'layoutStyle: layoutStyle({ width: "18rem" }),' : "class: 'w-72',"}
     menus: [
 ${spec.map(menu => emitMenu(menu, isStyleX)).join(',\n')}
     ],
@@ -703,9 +706,10 @@ const emitApplication = (
   const stylesBlock = isStyleX ? emitStyles(fixture) : ''
   const bodyStart = isStyleX
     ? `h.main([h.Class(stylex.props(styles.page).className ?? '')], [`
-    : `h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [`
+    : `h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [`
   const pageStyle = isStyleX
     ? `const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   page: { display: 'flex', minHeight: '100vh', alignItems: 'flex-start', justifyContent: 'center', padding: '2rem' },${
     stylesBlock === ''
       ? ''

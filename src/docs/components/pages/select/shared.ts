@@ -305,6 +305,7 @@ ${itemsSource(fixture.items)}
 ${
   isStyleX
     ? `const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   triggerWide: { width: '100%', maxWidth: '12rem' },
   triggerWider: { width: '100%', maxWidth: '16rem' },
   triggerSmall: { width: '8rem' },
@@ -381,7 +382,7 @@ export type Message = typeof Message.Type`,
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Select — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
 ${body},
   ]),
 })`,

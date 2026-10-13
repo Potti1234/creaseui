@@ -134,7 +134,7 @@ const source = (
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-${usesBadge ? `import * as Badge from '@/${uiDir}/badge'\n` : ''}import * as MetadataList from '@/${uiDir}/metadata-list'`,
+${usesBadge ? `import * as Badge from '@/${uiDir}/badge'\n` : ''}import * as MetadataList from '@/${uiDir}/metadata-list'${renderer !== 'tailwind' ? "\nimport { className } from '@/stylex/style'\nimport * as stylex from '@stylexjs/stylex'\n\nconst styles = stylex.create({ page: { marginInline: 'auto', width: '100%', maxWidth: '42rem', padding: '2rem' } })" : ''}`,
     model: `export const Model = S.Struct({
   list: MetadataList.Model,
 })
@@ -161,7 +161,7 @@ export type Message = typeof Message.Type`,
   const layout = MetadataList.resolveLayout({ ${layoutArgs} });
   return {
     title: 'Metadata List — ${fixture.title}',
-    body: h.main([h.Class('mx-auto w-full max-w-2xl p-8')], [
+    body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.page)' : "'mx-auto w-full max-w-2xl p-8'"})], [
       MetadataList.metadataList({
       ${listArgs},
         children: [

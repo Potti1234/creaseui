@@ -1,6 +1,8 @@
 import type { DocsExample } from '@/docs/components/page-definition'
 import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
+const emitShellStyles =
+  "import * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\n\nconst shellStyles = stylex.create({\n  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },\n})"
 
 export type MoreMenuItemSpec = Readonly<{
   type?: 'action'
@@ -208,9 +210,9 @@ export type Message = typeof Message.Type`,
     }
   }
 }`,
-    view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+    view: `${renderer !== 'tailwind' ? emitShellStyles + '\n\n' : ''}export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'More Menu — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen flex-col items-center justify-center gap-4 p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(shellStyles.shell)' : "'flex min-h-screen flex-col items-center justify-center gap-4 p-8'"})], [
     MoreMenu.moreMenu({
       model: model.menu,
       toParentMessage: message => GotMenuMessage({ message }),${fixture.variant === undefined ? '' : `\n      variant: '${fixture.variant}',`}${fixture.label === undefined ? '' : `\n      label: '${fixture.label}',`}

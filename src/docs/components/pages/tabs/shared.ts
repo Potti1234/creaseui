@@ -300,7 +300,7 @@ const emitSource = (
   const values = fixture.tabs.map(tab => `'${tab.value}'`).join(', ')
   const sxBlock =
     isStyleX && usesCard
-      ? `\nconst styles = stylex.create({\n  cardText: { fontSize: '0.875rem', lineHeight: '1.25rem', color: 'var(--muted-foreground)' },\n  demoWidth: { width: '25rem' },\n})`
+      ? `\nconst styles = stylex.create({\n  cardText: { fontSize: '0.875rem', lineHeight: '1.25rem', color: 'var(--muted-foreground)' },\n  demoWidth: { width: '25rem' },\n  page: { marginInline: 'auto', maxWidth: '36rem', padding: '2rem' },\n})`
       : ''
   return foldkitApplication({
     title: `Tabs — ${fixture.title}`,
@@ -308,7 +308,7 @@ const emitSource = (
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-${isStyleX ? "import * as stylex from '@stylexjs/stylex'\n" : ''}${usesCard ? `import * as Card from '@/${base}/card'\n` : ''}${usesIcon ? `import * as Icon from '@/lib/icon'\n` : ''}import * as Tabs from '@/${base}/tabs'${sxBlock}`,
+${isStyleX ? "import * as stylex from '@stylexjs/stylex'\nimport { layoutStyle } from '@/stylex/contracts'\n" : ''}${usesCard ? `import * as Card from '@/${base}/card'\n` : ''}${usesIcon ? `import * as Icon from '@/lib/icon'\n` : ''}import * as Tabs from '@/${base}/tabs'${sxBlock}`,
     model: `export const TabValue = S.Literals([${values}])
 export type TabValue = typeof TabValue.Type
 const ExampleTabs = Tabs.create<TabValue>()
@@ -346,7 +346,7 @@ export type Message = typeof Message.Type`,
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Tabs — ${fixture.title}',
-  body: h.main([h.Class('mx-auto max-w-xl p-8')], [
+  body: h.main([h.Class(${isStyleX ? "stylex.props(styles.page).className ?? ''" : "'mx-auto max-w-xl p-8'"})], [
     ExampleTabs.tabs({
       model: model.tabs,
       selectedValue: model.selectedTab,
@@ -354,7 +354,7 @@ export type Message = typeof Message.Type`,
       ariaLabel: '${esc(fixture.ariaLabel)}',
       tabs: [
 ${fixture.tabs.map(tab => tabEntry(tab, isStyleX, '        ')).join('\n')}
-      ],${fixture.variant === 'line' ? "\n      variant: 'line'," : ''}${fixture.orientation === 'vertical' ? "\n      orientation: 'vertical'," : ''}${fixture.rtl === true ? "\n      direction: 'rtl'," : ''}${fixture.kind === 'demo' ? (isStyleX ? '\n      layoutStyle: styles.demoWidth,' : "\n      class: 'w-100',") : ''}
+      ],${fixture.variant === 'line' ? "\n      variant: 'line'," : ''}${fixture.orientation === 'vertical' ? "\n      orientation: 'vertical'," : ''}${fixture.rtl === true ? "\n      direction: 'rtl'," : ''}${fixture.kind === 'demo' ? (isStyleX ? '\n      layoutStyle: layoutStyle({ width: "25rem" }),' : "\n      class: 'w-100',") : ''}
     }, h),
   ]),
 })`,

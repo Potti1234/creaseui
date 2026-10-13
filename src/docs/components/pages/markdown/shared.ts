@@ -2,6 +2,8 @@ import type { DocsExample } from '@/docs/components/page-definition'
 import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 import type { MarkdownSource } from '@/lib/markdown'
+const emitShellStyles =
+  "import * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\n\nconst shellStyles = stylex.create({\n  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },\n})"
 
 export type MarkdownExampleKind =
   | 'showcase'
@@ -231,9 +233,9 @@ export type Message = typeof Message.Type`,
     }
   }
 }`,
-    view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+    view: `${isStyleX ? emitShellStyles + '\n\n' : ''}export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Markdown — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen justify-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(shellStyles.shell)' : "'flex min-h-screen justify-center p-8'"})], [
 ${emitBody(fixture, isStyleX)}
   ]),
 })`,

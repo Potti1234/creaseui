@@ -561,7 +561,7 @@ const inputSource = (
           placeholder: '${esc(node.placeholder)}',
           ${
             renderer !== 'tailwind'
-              ? 'layoutStyle: styles.groupHeight,'
+              ? 'layoutStyle: layoutStyle({ height: "2.25rem" }),'
               : `class: 'h-9',`
           }
         }, h)`
@@ -600,7 +600,7 @@ const inputGroupSource = (
             ariaLabel: 'Voice Mode',
           }, h)`
   return `InputGroup.inputGroup({
-        ${isSx ? 'layoutStyle: styles.groupHeight,' : `class: 'h-9',`}
+        ${isSx ? 'layoutStyle: layoutStyle({ height: "2.25rem" }),' : `class: 'h-9',`}
         children: [
           InputGroup.inputGroupInput({
             id: 'message',
@@ -792,9 +792,10 @@ const stylexStylesSource = (fixture: ButtonGroupFixture): string => {
     ? ''
     : `import * as stylex from '@stylexjs/stylex'
 import { foundationTokens } from '@/stylex/foundations-tokens.stylex'
-import { className } from '@/stylex/style'
+import { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'
 
 const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
 ${parts.join('\n')}
 })
 
@@ -1026,7 +1027,7 @@ ${updateCases(needs).join('\n')}
 }`,
     view: `${consts.join('\n')}export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Button Group — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     ${viewBodySource(fixture, renderer)},
   ]),
 })`,

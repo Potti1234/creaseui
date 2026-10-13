@@ -169,6 +169,7 @@ const cx = (...values: ReadonlyArray<unknown>): string =>
   className(...values.filter(isStaticStyle))
 
 const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   column: {
     display: 'flex',
     flexDirection: 'column',
@@ -948,7 +949,7 @@ const scrollerFrame = (model: Model, h: HtmlBuilder<Message>) =>
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Message Scroller — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${isSx ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     h.div([h.Class(${isSx ? 'cx(styles.column)' : `'flex w-full max-w-md flex-col gap-3'`})], [
       ${toolbar}${header}
       scrollerFrame(model, h),

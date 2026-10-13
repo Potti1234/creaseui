@@ -376,7 +376,7 @@ ${tags
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'TreeList — ${fixture.title}',
-  body: h.main([h.Class('mx-auto flex min-h-screen w-full max-w-xl p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'mx-auto flex min-h-screen w-full max-w-xl p-8'"})], [
     ${
       multi
         ? `h.div([h.Class(${isStyleX ? "stylex.props(styles.wrap).className ?? ''" : "'flex items-start gap-6'"})], [

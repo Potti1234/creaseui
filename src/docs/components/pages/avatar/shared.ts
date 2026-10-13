@@ -444,7 +444,7 @@ const menuItems = ['Profile', 'Billing', 'Settings', 'Log out'] as const
 }
 export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Avatar — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     ${bodySource(fixture, renderer)},
   ]),
 })`,

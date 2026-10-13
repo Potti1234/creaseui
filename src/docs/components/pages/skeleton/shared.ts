@@ -84,7 +84,7 @@ const emitMarkup = (kind: SkeletonKind, isStyleX: boolean): string => {
       ]),
     ])`
     case 'card':
-      return `    Card.card({${isStyleX ? ' layoutStyle: styles.card,' : ` class: 'w-full max-w-xs',`}
+      return `    Card.card({${isStyleX ? ' layoutStyle: layoutStyle({ width: "100%", maxWidth: "20rem" }),' : ` class: 'w-full max-w-xs',`}
       children: [
         Card.cardHeader({
           children: [
@@ -182,6 +182,7 @@ const emitApplication = (
     fixture.kind === 'card' ? `\nimport * as Card from '@/${base}/card'` : ''
   const stylesBlock = isStyleX
     ? `\n\nconst styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
 ${emitStyles(fixture.kind)}
 })`
     : ''
@@ -192,7 +193,7 @@ import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { taggedStruct } from 'foldkit/schema'
 ${isStyleX ? `import * as stylex from '@stylexjs/stylex'` : ''}${cardImport}
-import * as Skeleton from '@/${base}/skeleton'${isStyleX ? `\nimport { className } from '@/stylex/style'` : ''}${stylesBlock}`,
+import * as Skeleton from '@/${base}/skeleton'${isStyleX ? `\nimport { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'` : ''}${stylesBlock}`,
     model: `export const Model = S.Struct({})
 export type Model = typeof Model.Type`,
     messages: `export const NoOp = taggedStruct('NoOp')
@@ -202,7 +203,7 @@ export type Message = typeof Message.Type`,
     update: `export const update = (model: Model, _message: Message): Update.Return<Model, Message> => ({ model })`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Skeleton — ${fixture.title.replaceAll("'", "\\'")}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
 ${emitMarkup(fixture.kind, isStyleX)}
   ]),
 })`,

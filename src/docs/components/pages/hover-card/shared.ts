@@ -51,6 +51,7 @@ import * as HoverCard from '@/${isStyleX ? 'stylex' : 'ui'}/hover-card'${
         ? `
 
 const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   content: { display: 'flex', width: '100%', flexDirection: 'column', gap: '0.125rem' },
   heading: { fontWeight: 600 },
   meta: { marginBlockStart: '0.25rem', fontSize: '0.75rem', lineHeight: '1rem', color: 'var(--muted-foreground)' },
@@ -75,7 +76,7 @@ export type Message = typeof Message.Type`,
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Hover Card — Basic',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     HoverCard.hoverCard({
       model: model.hoverCard,
       toParentMessage: message => Message.GotHoverCardMessage({ message }),
@@ -125,6 +126,7 @@ import * as HoverCard from '@/${isStyleX ? 'stylex' : 'ui'}/hover-card'${
         ? `
 
 const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   row: { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0.5rem' },
   gapSm: { display: 'flex', flexDirection: 'column', gap: '0.25rem' },
   heading: { fontWeight: 500 },
@@ -156,7 +158,7 @@ export type Message = typeof Message.Type`,
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Hover Card — ${kind === 'sides' ? 'Sides' : 'RTL'}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     h.div([h.Class(${isStyleX ? "stylex.props(styles.row).className ?? ''" : "'flex flex-wrap justify-center gap-2'"})], SIDES.map((entry, index) =>
       HoverCard.hoverCard({
         model: model.hoverCards[index]!,

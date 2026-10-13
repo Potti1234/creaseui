@@ -494,7 +494,7 @@ export type Message = typeof Message.Type`,
 ): Update.Return<Model, Message> => ({ model: model })`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Message — ${sq(fixture.title)}',
-  body: h.main([h.Class('flex min-h-screen items-start justify-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-start justify-center p-8'"})], [
 ${emitBody(fixture, isStyleX)}
   ]),
 })`,

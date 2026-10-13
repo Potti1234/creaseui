@@ -332,6 +332,7 @@ import * as stylex from '@stylexjs/stylex'
 import { className } from '@/stylex/style'
 
 const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', flexDirection: 'column', gap: '1rem', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   targetInner: {
     display: 'flex',
     width: '20rem',
@@ -408,7 +409,7 @@ ${[
   }
   return {
     title: 'Context Menu — ${fixture.title}',
-    body: h.main([h.Class('flex min-h-screen flex-col items-center justify-center gap-4 p-8')], [
+    body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen flex-col items-center justify-center gap-4 p-8'"})], [
       ContextMenu.contextMenu({
         model: model.menu,
         toParentMessage: message => GotMenuMessage({ message }),

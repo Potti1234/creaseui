@@ -284,7 +284,13 @@ const comboboxCall = (fixture: ComboboxFixture, isStyleX: boolean): string => {
         ? `trigger: {
           content: Icon.chevronsUpDown({ class: className(styles.chevron) }, h),
           ariaLabel: 'Toggle options',
-          layoutStyle: styles.toggleButton,
+          layoutStyle: layoutStyle({
+    height: "1.5rem",
+    width: "1.5rem",
+    flexShrink: 0,
+    alignSelf: "center",
+    marginInlineEnd: "0.25rem",
+  }),
         },`
         : `trigger: {
           content: Icon.chevronsUpDown({ class: 'size-4 opacity-50' }, h),
@@ -403,7 +409,7 @@ import { type Document, type HtmlBuilder } from 'foldkit/html'
 ${
   isStyleX && isPopup
     ? `import * as stylex from '@stylexjs/stylex'
-import { className } from '@/stylex/style'
+import { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'
 `
     : ''
 }import * as Combobox from '@/${dir}/combobox'${
@@ -474,7 +480,7 @@ import { type Document, type HtmlBuilder } from 'foldkit/html'
 ${
   isStyleX
     ? `import * as stylex from '@stylexjs/stylex'
-import { className } from '@/stylex/style'
+import { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'
 `
     : ''
 }import * as Combobox from '@/${dir}/combobox'

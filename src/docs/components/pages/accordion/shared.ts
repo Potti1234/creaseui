@@ -215,8 +215,10 @@ const ui = (renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat'): string =>
 
 const stylexImports = (entries: ReadonlyArray<string>): string =>
   `import * as stylex from '@stylexjs/stylex'
+import { layoutStyle } from '@/stylex/contracts'
 
 const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', marginInline: 'auto', maxWidth: '36rem', minHeight: '100vh', padding: '2rem', width: '100%' },
 ${entries.join('\n')}
 })`
 
@@ -251,7 +253,7 @@ const bodySource = (
   switch (fixture.kind) {
     case 'card':
       return `Card.card({
-      ${renderer === 'tailwind' ? `class: 'mx-auto w-full max-w-sm',` : 'layoutStyle: styles.card,'}
+      ${renderer === 'tailwind' ? `class: 'mx-auto w-full max-w-sm',` : 'layoutStyle: layoutStyle({ maxWidth: "24rem", width: "100%", marginInline: "auto" }),'}
       children: [
         Card.cardHeader({ children: [
           Card.cardTitle({ children: ['${accordionCardCopy.title}'] }, h),
@@ -347,7 +349,7 @@ export const update = (model: Model, message: Message): Update.Return<Model, Mes
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Accordion — ${fixture.title}',
-  body: h.main([h.Class('mx-auto flex min-h-screen w-full max-w-xl items-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'mx-auto flex min-h-screen w-full max-w-xl items-center p-8'"})], [
     ${bodySource(fixture, renderer).split('\n').join('\n    ')},
   ]),
 })`,

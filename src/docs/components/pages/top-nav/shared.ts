@@ -856,7 +856,7 @@ const viewInputsSource = (nav: TopNavFixtureNav, isStyleX: boolean): string => {
   if (nav.width600 === true) {
     fields.push(
       isStyleX
-        ? `layoutStyle: styles.navWidth600`
+        ? `layoutStyle: layoutStyle({ maxWidth: "100%", width: "600px" })`
         : `class: 'w-150 max-w-full'`,
     )
   }
@@ -927,8 +927,10 @@ const navSource = (
   const stylexStyles =
     isStyleX && needsWidth600
       ? `import * as stylex from '@stylexjs/stylex'
+import { layoutStyle } from '@/stylex/contracts'
 
 const styles = stylex.create({
+  shell: { display: 'flex', flexDirection: 'column', gap: '1.5rem', marginInline: 'auto', maxWidth: '48rem', minHeight: '100vh', padding: '2rem', width: '100%' },
   navWidth600: { maxWidth: '100%', width: '600px' },
 })`
       : ''
@@ -964,7 +966,7 @@ ${tags
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'TopNav — ${fixture.title}',
-  body: h.main([h.Class('mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-6 p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-6 p-8'"})], [
     ${bodyWrapper},
   ]),
 })`,

@@ -374,7 +374,7 @@ export const update = (model: Model, message: Message): Update.Return<Model, Mes
   const row = (items: Model['items']) => h.div([h.Class(${cls('flex flex-wrap items-end gap-3', 'row')})], items.map(itemView))
   return {
     title: '${fixture.title}',
-    body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+    body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
       h.div([h.Class(${cls('flex flex-col gap-4', 'column')})], [
         ${
           fixture.layout === 'sections'

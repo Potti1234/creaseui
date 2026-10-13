@@ -231,6 +231,7 @@ import * as Sheet from '@/${lib}/sheet'${
         ? `
 
 const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   fieldsWrap: { display: 'grid', flexGrow: 1, gridAutoRows: 'min-content', gap: '1.5rem', paddingInline: '1rem' },
   field: { display: 'grid', gap: '0.75rem' },
   loremWrap: { display: 'flex', flexDirection: 'column', flex: 1, gap: '1rem', marginInline: 'auto', minHeight: 0, maxWidth: '42rem', overflowY: 'auto', paddingInline: '1rem', width: '100%' },
@@ -335,7 +336,7 @@ ${
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Sheet — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     h.div([h.Class('flex flex-wrap gap-2')], [
 ${fixture.instances
   .map(
@@ -707,6 +708,7 @@ const emitReviewSheets = (isStyleX: boolean): string => {
 }
 
 const emitStyles = `const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   main: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   sheetBody: { marginInline: 'auto', maxWidth: '32rem', width: '100%', display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1rem' },
   sheetHeading: { fontSize: '1rem', lineHeight: '1.5rem', fontWeight: 600, marginBlock: 0, marginInline: 0 },

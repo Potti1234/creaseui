@@ -66,7 +66,7 @@ const source = (
     imports: `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-${stylex ? "import * as stylex from '@stylexjs/stylex'\nimport type { ComponentLayoutStyle } from '@/stylex/contracts'\n" : ''}
+${stylex ? "import * as stylex from '@stylexjs/stylex'\nimport { layoutStyle } from '@/stylex/contracts'\nimport type { ComponentLayoutStyle } from '@/stylex/contracts'\n" : ''}
 import * as DataTable from '@/${stylex ? 'stylex' : 'ui'}/data-table'`,
     model: `type Payment = Readonly<{ id: string; status: string; email: string; amount: number }>
 

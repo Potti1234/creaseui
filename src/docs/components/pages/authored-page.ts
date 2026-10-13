@@ -249,6 +249,24 @@ const dedupeNamedImports = (code: string): string => {
  * Callers own every behavior-bearing section; this helper only keeps the
  * standard application boundary consistent across documentation pages.
  */
+/**
+ * StyleX/pleat emitted applications replace the example-shell Tailwind classes
+ * with a real generated class; the declarations and their optional import are
+ * emitted alongside the program's component imports.
+ */
+const EMIT_SHELL_STYLES = `const shellStyles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
+  shellPlain: { marginInline: 'auto', maxWidth: '28rem', padding: '2rem' },
+})
+`
+
+const emitShellBlock = (componentImports: string | undefined): string =>
+  `${componentImports !== undefined && componentImports.includes('@stylexjs/stylex') ? '' : "\nimport * as stylex from '@stylexjs/stylex'"}\n\n${EMIT_SHELL_STYLES}`
+
+const isStyled = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | undefined,
+): boolean => renderer !== undefined && renderer !== 'tailwind'
+
 export const foldkitApplication = ({
   title,
   imports,
@@ -322,7 +340,7 @@ import * as ${config.componentName} from '@/${config.renderer === 'tailwind' || 
       config.componentImports === undefined
         ? ''
         : `\n${config.componentImports}`
-    }`,
+    }${isStyled(config.renderer) ? emitShellBlock(config.componentImports) : ''}`,
     model: `export const Model = S.Struct({
   clickCount: S.Number,
 })
@@ -344,7 +362,7 @@ export type Message = typeof Message.Type`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: '${config.componentName} — ${config.exampleName}',
   body: h.main(
-    [h.Class('flex min-h-screen items-center justify-center p-8')],
+    [h.Class(${isStyled(config.renderer) ? "stylex.props(shellStyles.shell).className ?? ''" : "'flex min-h-screen items-center justify-center p-8'"})],
     [
 ${config.viewBody
   .split('\n')
@@ -376,7 +394,7 @@ import * as ${config.componentName} from '@/${config.renderer === 'tailwind' || 
       config.componentImports === undefined
         ? ''
         : `\n${config.componentImports}`
-    }`,
+    }${isStyled(config.renderer) ? emitShellBlock(config.componentImports) : ''}`,
     model: `export const Model = S.Struct({})
 export type Model = typeof Model.Type`,
     messages: `import { taggedStruct } from 'foldkit/schema'
@@ -393,7 +411,7 @@ export type Message = typeof Message.Type`,
     view: `export const view = (_model: Model, h: HtmlBuilder<Message>): Document => ({
   title: '${config.componentName} — ${config.exampleName}',
   body: h.main(
-    [h.Class('flex min-h-screen items-center justify-center p-8')],
+    [h.Class(${isStyled(config.renderer) ? "stylex.props(shellStyles.shell).className ?? ''" : "'flex min-h-screen items-center justify-center p-8'"})],
     [
 ${config.viewBody
   .split('\n')
@@ -427,7 +445,7 @@ import * as ${config.componentName} from '@/${config.renderer === 'tailwind' || 
       config.componentImports === undefined
         ? ''
         : `\n${config.componentImports}`
-    }`,
+    }${isStyled(config.renderer) ? emitShellBlock(config.componentImports) : ''}`,
     model: `export const Model = S.Struct({ ${config.field}: S.String })
 export type Model = typeof Model.Type`,
     messages: `import { taggedStruct } from 'foldkit/schema'
@@ -446,7 +464,7 @@ export type Message = typeof Message.Type`,
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: '${config.componentName} — ${config.exampleName}',
-  body: h.main([h.Class('mx-auto max-w-md p-8')], [
+  body: h.main([h.Class(${isStyled(config.renderer) ? "stylex.props(shellStyles.shellPlain).className ?? ''" : "'mx-auto max-w-md p-8'"})], [
 ${config.viewBody
   .split('\n')
   .map(line => `    ${line}`)
@@ -475,7 +493,7 @@ import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
-import * as ${config.componentName} from '@/${config.renderer === 'tailwind' || config.renderer === undefined ? 'ui' : config.renderer}/${config.componentSlug}'`,
+import * as ${config.componentName} from '@/${config.renderer === 'tailwind' || config.renderer === undefined ? 'ui' : config.renderer}/${config.componentSlug}'${isStyled(config.renderer) ? emitShellBlock(config.componentImports) : ''}`,
     model: `export const Model = S.Struct({ ${config.field}: S.Boolean })
 export type Model = typeof Model.Type`,
     messages: `import { taggedStruct } from 'foldkit/schema'
@@ -494,7 +512,7 @@ export type Message = typeof Message.Type`,
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: '${config.componentName} — ${config.exampleName}',
-  body: h.main([h.Class('mx-auto max-w-md p-8')], [
+  body: h.main([h.Class(${isStyled(config.renderer) ? "stylex.props(shellStyles.shellPlain).className ?? ''" : "'mx-auto max-w-md p-8'"})], [
 ${config.viewBody
   .split('\n')
   .map(line => `    ${line}`)
@@ -531,7 +549,7 @@ import * as ${config.componentName} from '@/${config.renderer === 'tailwind' || 
       config.componentImports === undefined
         ? ''
         : `\n${config.componentImports}`
-    }`,
+    }${isStyled(config.renderer) ? emitShellBlock(config.componentImports) : ''}`,
     model: `export const Model = S.Struct({ ${config.field}: S.String })
 export type Model = typeof Model.Type`,
     messages: `import { taggedStruct } from 'foldkit/schema'
@@ -550,7 +568,7 @@ export type Message = typeof Message.Type`,
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: '${config.componentName} — ${config.exampleName}',
-  body: h.main([h.Class('mx-auto max-w-md p-8')], [
+  body: h.main([h.Class(${isStyled(config.renderer) ? "stylex.props(shellStyles.shellPlain).className ?? ''" : "'mx-auto max-w-md p-8'"})], [
 ${config.viewBody
   .split('\n')
   .map(line => `    ${line}`)

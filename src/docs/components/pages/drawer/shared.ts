@@ -135,6 +135,7 @@ export const drawerRtlCopy = {
 } as const
 
 const emitStyles = `const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   body: { paddingInline: '1rem', paddingBlockEnd: '1.5rem', textAlign: 'center' },
   value: { fontSize: '3rem', fontWeight: 700, lineHeight: 1 },
   label: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },
@@ -467,7 +468,7 @@ const emitImports = (fixture: DrawerFixture, isStyleX: boolean): string => {
   return `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-${isStyleX ? "\nimport * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\n" : ''}
+${isStyleX ? "\nimport * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'\n" : ''}
 import * as Button from '@/${isStyleX ? 'stylex' : 'ui'}/button'
 import * as Drawer from '@/${isStyleX ? 'stylex' : 'ui'}/drawer'${extra === '' ? '' : `\n${extra}`}${isStyleX ? `\n\n${emitStyles}` : ''}`
 }
@@ -502,7 +503,7 @@ const emitView = (fixture: DrawerFixture, isStyleX: boolean): string => {
     case 'side':
       return `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Drawer — ${sq(fixture.title)}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     Button.button({ variant: 'outline', onClick: ClickedOpenDrawer(), children: ['${sq(fixture.triggerLabel)}'] }, h),
     Drawer.drawer({
       model: model.drawer,
@@ -520,7 +521,7 @@ const emitView = (fixture: DrawerFixture, isStyleX: boolean): string => {
     case 'scroll':
       return `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Drawer — ${sq(fixture.title)}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     h.div([h.Class(${cls('flex flex-wrap gap-2', 'styles.triggerRow')})],
       (['up', 'right', 'down', 'left'] as const).map(side =>
         Button.button({ variant: 'outline', onClick: ClickedOpenSide({ side }), children: [side] }, h),
@@ -537,7 +538,7 @@ const emitView = (fixture: DrawerFixture, isStyleX: boolean): string => {
     case 'nested':
       return `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Drawer — ${sq(fixture.title)}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     h.div([h.Class(${cls('flex flex-wrap gap-2', 'styles.triggerRow')})],
       (['up', 'right', 'down', 'left'] as const).map(side =>
         Button.button({ variant: 'outline', onClick: ClickedOpenSide({ side }), children: [side] }, h),
@@ -579,7 +580,7 @@ const emitView = (fixture: DrawerFixture, isStyleX: boolean): string => {
     case 'non-modal':
       return `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Drawer — ${sq(fixture.title)}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     Button.button({ variant: 'outline', onClick: ClickedOpenDrawer(), children: ['${sq(fixture.triggerLabel)}'] }, h),
     Drawer.drawer({
       model: model.drawer,
@@ -592,14 +593,14 @@ const emitView = (fixture: DrawerFixture, isStyleX: boolean): string => {
     case 'responsive':
       return `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Drawer — ${sq(fixture.title)}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     Button.button({ variant: 'outline', onClick: ClickedOpenResponsive(), children: ['${sq(fixture.triggerLabel)}'] }, h),
     Dialog.dialog({
       model: model.dialog,
       toParentMessage: message => GotDialogMessage({ message }),
       title: 'Edit profile',
       description: 'Make changes to your profile here. Click save when you\\'re done.',
-      ${isStyleX ? 'layoutStyle: styles.compact,' : "class: 'sm:max-w-sm',"}
+      ${isStyleX ? 'layoutStyle: layoutStyle({ maxWidth: "24rem" }),' : "class: 'sm:max-w-sm',"}
       ${emitContent(fixture, isStyleX)}
     }, h),
     Drawer.drawer({
@@ -615,7 +616,7 @@ const emitView = (fixture: DrawerFixture, isStyleX: boolean): string => {
     case 'rtl':
       return `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Drawer — ${sq(fixture.title)}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     Button.button({ variant: 'outline', onClick: ClickedOpenDrawer(), children: ['${sq(fixture.triggerLabel)}'] }, h),
     Drawer.drawer({
       model: model.drawer,
@@ -644,13 +645,13 @@ const emitDrawerProps = (fixture: DrawerFixture, isStyleX: boolean): string => {
       ${
         isStyleX
           ? `layoutStyle:
-        model.side === 'down'
+        (model.side === 'down'
           ? styles.sizeDown
           : model.side === 'up'
             ? styles.sizeUp
             : model.side === 'left'
               ? styles.sizeLeft
-              : styles.sizeRight,`
+              : styles.sizeRight) as ComponentLayoutStyle,`
           : "class: 'data-[swipe-direction=down]:h-64 data-[swipe-direction=up]:h-[50vh] data-[swipe-direction=left]:w-xl data-[swipe-direction=right]:w-xs',"
       }`
     case 'sides':
@@ -661,7 +662,7 @@ const emitDrawerProps = (fixture: DrawerFixture, isStyleX: boolean): string => {
       return `\n      showSwipeHandle: true,
       title: 'Snap points',
       description: 'Drag the drawer to snap between a compact peek and a near full-height view.',
-      ${isStyleX ? 'layoutStyle: styles.snapPanel,' : "class: 'max-h-[calc(100dvh-1rem)]',"}`
+      ${isStyleX ? 'layoutStyle: layoutStyle({ maxHeight: "calc(100dvh - 1rem)" }),' : "class: 'max-h-[calc(100dvh-1rem)]',"}`
     case 'non-modal':
       return `\n      title: 'Non Modal Drawer',`
     default:

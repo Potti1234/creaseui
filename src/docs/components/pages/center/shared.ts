@@ -70,7 +70,9 @@ const emitHorizontal = (
                 ${icon(name)},
               ] }, h)`
   const cardClass =
-    renderer === 'tailwind' ? `class: 'w-[520px]'` : `layoutStyle: styles.card`
+    renderer === 'tailwind'
+      ? `class: 'w-[520px]'`
+      : `layoutStyle: layoutStyle({ width: '32.5rem' })`
   return `Card.card(
       { size: 'sm', ${cardClass}, children: [
         Card.cardContent({ children: [
@@ -109,7 +111,9 @@ const emitInsideCard = (
       ? `h.p([h.Class('text-xs text-muted-foreground')], ['Messages from your team will appear here.'])`
       : `h.p([h.Class(stylex.props(styles.body).className ?? '')], ['Messages from your team will appear here.'])`
   const cardClass =
-    renderer === 'tailwind' ? `class: 'w-[400px]'` : `layoutStyle: styles.card`
+    renderer === 'tailwind'
+      ? `class: 'w-[400px]'`
+      : `layoutStyle: layoutStyle({ width: '25rem' })`
   return `Card.card(
       { size: 'sm', ${cardClass}, children: [
         Card.cardContent({ children: [
@@ -171,6 +175,7 @@ const stylexStylesFor = (kind: CenterFixture['kind']): string => {
   }
   if (entries.length === 0) return ''
   return `import * as stylex from '@stylexjs/stylex'
+import { layoutStyle } from '@/stylex/contracts'
 
 const styles = stylex.create({
 ${entries.join(',\n')},

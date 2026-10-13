@@ -101,6 +101,7 @@ const STYLEX_STYLES = {
   price: `{ fontSize: '1.125rem', lineHeight: '1.75rem', fontWeight: 600 }`,
   bodyBold: `{ fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 700 }`,
   supporting: `{ fontSize: '0.75rem', lineHeight: '1rem', color: 'var(--muted-foreground)' }`,
+  page: `{ marginInline: 'auto', maxWidth: '28rem', padding: '2rem' }`,
 } as const
 type StylexStyleKey = keyof typeof STYLEX_STYLES
 
@@ -172,7 +173,9 @@ const multiSource = (
   const fixture = selectableCardFixtures[2] ?? selectableCardFixtures[0]
   const componentImports = [
     `const tags = ${JSON.stringify(selectableCardTags)} as const`,
-    ...(renderer !== 'tailwind' ? [stylexImports(['grid3', 'bodyBold'])] : []),
+    ...(renderer !== 'tailwind'
+      ? [stylexImports(['grid3', 'bodyBold', 'page'])]
+      : []),
   ].join('\n')
   return foldkitApplication({
     title: `SelectableCard — ${fixture.title}`,
@@ -208,7 +211,7 @@ export type Message = typeof Message.Type`,
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'SelectableCard — ${fixture.title}',
-  body: h.main([h.Class('mx-auto max-w-md p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? "stylex.props(styles.page).className ?? ''" : "'mx-auto max-w-md p-8'"})], [
     h.div([${cls(renderer, 'grid grid-cols-3 gap-2 w-[25rem]', 'grid3')}],
       tags.map(tag =>
         SelectableCard.selectableCard({

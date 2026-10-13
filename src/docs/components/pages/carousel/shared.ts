@@ -107,7 +107,7 @@ const slideSource = (
     vertical
       ? isSx
         ? `
-                layoutStyle: styles.verticalCard,`
+                layoutStyle: layoutStyle({ height: "100%" }),`
         : `
                 class: 'h-full',`
       : ''
@@ -153,8 +153,8 @@ const carouselPropsSource = (
   parts.push(
     renderer !== 'tailwind'
       ? fixture.orientation === 'vertical'
-        ? 'layoutStyle: [styles.carousel, styles.verticalCarousel],'
-        : 'layoutStyle: styles.carousel,'
+        ? 'layoutStyle: layoutStyle({ width: "100%", height: "12.5rem" }),'
+        : 'layoutStyle: layoutStyle({ width: "100%" }),'
       : `class: '${fixture.orientation === 'vertical' ? 'w-full h-[200px]' : 'w-full'}',`,
   )
   return parts.join('\n        ')
@@ -210,6 +210,7 @@ const stylexStylesSource = (fixture: CarouselFixture): string => {
     )
   return `
 const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', marginInline: 'auto', maxWidth: '20rem', minHeight: '100vh', padding: '2rem' },
 ${parts.join('\n')}
 });`
 }
@@ -233,7 +234,7 @@ import * as Carousel from '@/${sx ? 'stylex' : 'ui'}/carousel'${
         ? `
 import * as stylex from '@stylexjs/stylex'
 import type { ComponentLayoutStyle } from '@/stylex/contracts'
-import { className } from '@/stylex/style'${stylexStylesSource(f)}`
+import { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'${stylexStylesSource(f)}`
         : ''
     }`,
     model: `export const Model = S.Struct({ carousel: Carousel.Model })
@@ -264,7 +265,7 @@ export type Message = typeof Message.Type`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Carousel — ${f.title}',
   body: h.main(
-    [h.Class('mx-auto flex min-h-screen max-w-xs items-center p-8')],
+    [h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'mx-auto flex min-h-screen max-w-xs items-center p-8'"})],
     [
     ${viewBodySource(f, renderer)},
     ],

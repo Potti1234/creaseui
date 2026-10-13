@@ -182,6 +182,7 @@ const emitImports = (fixture: FieldFixture, isStyleX: boolean): string => {
 import { className } from '@/stylex/style'
 
 const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   page: { maxWidth: '28rem', width: '100%' },
   pageXs: { maxWidth: '20rem', width: '100%' },
   pageSm: { maxWidth: '24rem', width: '100%' },
@@ -696,7 +697,7 @@ ${emitImports(fixture, isStyleX)}${items === '' ? '' : `\n\n${items}`}`,
       : {}),
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Field — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
 ${emitBody(fixture, isStyleX)
   .split('\n')
   .map(line => `    ${line}`)

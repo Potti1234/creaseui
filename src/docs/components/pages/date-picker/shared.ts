@@ -199,11 +199,11 @@ ${triggerContentEmit}
     ${
       isTime
         ? `${isStyleX ? `h.div([h.Class(className(styles.timeRow))], [` : `Field.fieldGroup({ class: 'mx-auto w-full max-w-sm flex-row flex-wrap items-start', children: [`}
-      Field.field({ ${isStyleX ? `layoutStyle: styles.dateField` : `class: 'w-44'`}, children: [
+      Field.field({ ${isStyleX ? `layoutStyle: layoutStyle({ width: "11rem" })` : `class: 'w-44'`}, children: [
         Field.fieldLabel({ for: DatePicker.triggerId(model.datePicker.id), children: ['Date'] }, h),
         ${datePickerCall},
       ] }, h),
-      Field.field({ ${isStyleX ? `layoutStyle: styles.timeField` : `class: 'w-36'`}, children: [
+      Field.field({ ${isStyleX ? `layoutStyle: layoutStyle({ width: "9rem" })` : `class: 'w-36'`}, children: [
         Field.fieldLabel({ for: TimeInput.pickerButtonId(model.timeInput), children: ['Time'] }, h),
         TimeInput.timeInput({
           model: model.timeInput,
@@ -229,7 +229,7 @@ import { type Document, type HtmlBuilder } from 'foldkit/html'
 ${
   isStyleX
     ? `import * as stylex from '@stylexjs/stylex'
-import { className } from '@/stylex/style'
+import { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'
 
 `
     : ''
@@ -354,7 +354,7 @@ import { type Document, type HtmlBuilder } from 'foldkit/html'
 ${
   isStyleX
     ? `import * as stylex from '@stylexjs/stylex'
-import { className } from '@/stylex/style'
+import { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'
 
 `
     : ''
@@ -448,7 +448,7 @@ export const init = (): Update.Return<Model, Message> => ({
 export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Date Picker — Range Picker',
   body: h.main([], [
-    Field.field({ ${isStyleX ? `layoutStyle: styles.field` : `class: 'mx-auto w-60'`}, children: [
+    Field.field({ ${isStyleX ? `layoutStyle: layoutStyle({ width: "15rem", marginInline: "auto" })` : `class: 'mx-auto w-60'`}, children: [
       Field.fieldLabel({ for: 'date-picker-range', children: ['Date Picker Range'] }, h),
       Popover.popover({
         model: model.popover,
@@ -511,7 +511,7 @@ import { type Document, type HtmlBuilder } from 'foldkit/html'
 ${
   isStyleX
     ? `import * as stylex from '@stylexjs/stylex'
-import { className } from '@/stylex/style'
+import { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'
 
 `
     : ''
@@ -605,7 +605,7 @@ export const init = (): Update.Return<Model, Message> => ({
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Date Picker — ${fixture.title}',
   body: h.main([], [
-    Field.field({ ${isStyleX ? `layoutStyle: styles.field` : `class: 'mx-auto ${isNatural ? 'max-w-xs' : 'w-48'}'`}, children: [
+    Field.field({ ${isStyleX ? `layoutStyle: layoutStyle({ width: "15rem", marginInline: "auto" })` : `class: 'mx-auto ${isNatural ? 'max-w-xs' : 'w-48'}'`}, children: [
       Field.fieldLabel({ for: '${inputId}', children: ['${label}'] }, h),
       InputGroup.inputGroup({ children: [
         InputGroup.inputGroupInput({

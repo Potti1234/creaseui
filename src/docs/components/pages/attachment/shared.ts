@@ -453,10 +453,10 @@ const attachmentCallSource = (
       ? row.itemWidth === undefined
         ? ''
         : renderer !== 'tailwind'
-          ? `layoutStyle: styles.itemWidth,`
+          ? `layoutStyle: layoutStyle({ width: "16rem" }),`
           : `class: '${row.itemWidth}',`
       : renderer !== 'tailwind'
-        ? `layoutStyle: styles.fullWidth,`
+        ? `layoutStyle: layoutStyle({ width: "100%" }),`
         : `class: 'w-full',`
   return `Attachment.attachment({${
     needsState(fixture)
@@ -488,7 +488,7 @@ const rowSource = (
     : row.name
   const mapBody = `${filtered}.map(item =>\n    ${attachmentCallSource(fixture, row, renderer)},\n  )`
   if (row.grouped === true) {
-    return `Attachment.attachmentGroup({${row.groupFullWidth === true ? (renderer !== 'tailwind' ? ' layoutStyle: styles.fullWidth,' : ` class: 'w-full',`) : ''} children: ${mapBody} }, h)`
+    return `Attachment.attachmentGroup({${row.groupFullWidth === true ? (renderer !== 'tailwind' ? ' layoutStyle: layoutStyle({ width: "100%" }),' : ` class: 'w-full',`) : ''} children: ${mapBody} }, h)`
   }
   return `...${mapBody}`
 }
@@ -540,6 +540,7 @@ const stylexStylesSource = (fixture: AttachmentFixture): string => {
     ? `\n  actionIcon: { flexShrink: 0, height: '0.75rem', width: '0.75rem' },`
     : ''
   return `const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
 ${frameDecl}${fullWidth}${itemWidth}${mediaImg}${mediaIcon}${actionIcon}
 })
 
@@ -554,6 +555,7 @@ const componentImports = (
   const stylexBits =
     renderer !== 'tailwind'
       ? `import * as stylex from '@stylexjs/stylex'
+import { layoutStyle } from '@/stylex/contracts'
 
 ${stylexStylesSource(fixture)}`
       : ''
@@ -666,7 +668,7 @@ export type Message = typeof Message.Type`,
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Attachment — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     ${bodySource(fixture, renderer)},
   ]),
 })`,

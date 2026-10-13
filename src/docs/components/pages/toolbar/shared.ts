@@ -256,7 +256,7 @@ const filterBody = (isStyleX: boolean): string => `Toolbar.toolbar({
       toParentMessage: m => GotToolbarMessage({ message: m }),
       startContent: [
         h.div([${isStyleX ? 'h.Class(className(styles.filterRow))' : "h.Class('flex w-full min-w-0 flex-wrap items-center gap-2')"}], [
-          Input.input({ id: 'filter-search', ariaLabel: 'Search jobs', placeholder: 'Search', value: model.search, onInput: v => ChangedSearch({ value: v }),${isStyleX ? ' layoutStyle: styles.searchInput,' : ` class: 'w-36',`} }, h),
+          Input.input({ id: 'filter-search', ariaLabel: 'Search jobs', placeholder: 'Search', value: model.search, onInput: v => ChangedSearch({ value: v }),${isStyleX ? ' layoutStyle: layoutStyle({ width: "9rem" }),' : ` class: 'w-36',`} }, h),
           ...FILTER_FIELDS.map(field => FilterSelect.select({
             model: model.filterSelects[field.key],
             maybeSelectedValue: model[field.key] === '' ? Option.none() : Option.some(model[field.key]),
@@ -473,9 +473,10 @@ import * as Select from '@/${lib}/select'
     }${
       hasFilter && isStyleX
         ? `import * as stylex from '@stylexjs/stylex'
-import { className } from '@/stylex/style'
+import { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'
 import { tokens } from '@/stylex/tokens.stylex'
 const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   filterWidth: { maxWidth: '47.5rem', minWidth: 0, width: '100%' },
   searchInput: { width: '9rem' },
   status: { width: '8rem' },
@@ -519,7 +520,7 @@ ${updateCases.join('\n')}
         : ''
     }export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: '${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     ${toolbarCalls},
   ]),
 })`,

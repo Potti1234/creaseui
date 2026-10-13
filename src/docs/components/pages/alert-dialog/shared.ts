@@ -270,7 +270,7 @@ export const update = (model: Model, message: Message): Update.Return<Model, Mes
 
   const view = `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Alert Dialog — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     ${frame},
   ]),
 })`

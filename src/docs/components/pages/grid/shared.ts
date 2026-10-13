@@ -138,7 +138,7 @@ const tallCardTw = (children: string): string =>
               ] }, h),
             ] }, h)`
 const tallCardSx = (children: string): string =>
-  `Card.card({ size: 'sm', layoutStyle: styles.tallCard, children: [
+  `Card.card({ size: 'sm', layoutStyle: layoutStyle({ height: "5rem" }), children: [
               Card.cardContent({ children: [
                 ${children},
               ] }, h)],
@@ -353,7 +353,7 @@ const emitAutoFit = (
   const groupProp =
     renderer === 'tailwind'
       ? `class: 'h-full w-full border-0'`
-      : `layoutStyle: styles.group`
+      : `layoutStyle: layoutStyle({ height: "100%", width: "100%" })`
   const resizableCall = `Resizable.resizable(
             {
               model: model.resizable,
@@ -393,7 +393,7 @@ const emitAutoFit = (
   title: 'Grid — Responsive Auto-Fit',
   body: h.main([${
     renderer === 'tailwind'
-      ? `h.Class('flex min-h-screen items-center justify-center p-8')`
+      ? `h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})`
       : `h.Class(stylex.props(styles.shellWrap).className ?? '')`
   }], [
     ${viewBody},
@@ -402,6 +402,7 @@ const emitAutoFit = (
   const stylesSource =
     renderer !== 'tailwind'
       ? `import * as stylex from '@stylexjs/stylex'
+import { layoutStyle } from '@/stylex/contracts'
 
 const styles = stylex.create({
   shell: {
@@ -530,8 +531,10 @@ const stylexStylesFor = (kind: GridFixture['kind']): string => {
   }
   if (entries.length === 0) return ''
   return `import * as stylex from '@stylexjs/stylex'
+import { layoutStyle } from '@/stylex/contracts'
 
 const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
 ${entries.join(',\n')},
 })`
 }

@@ -19,9 +19,11 @@ export const formFixtures = [
   },
 ] as const
 const imports = (renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat') =>
-  `import { Effect, Schema as S } from 'effect'\nimport { Command, Runtime, Subscription, Update } from 'foldkit'\nimport { type Document, type HtmlBuilder } from 'foldkit/html'\nimport { defineMessageUnion } from 'foldkit/message'\n${renderer !== 'tailwind' ? "import * as stylex from '@stylexjs/stylex'\n\nconst styles = stylex.create({ form: { maxWidth: '24rem', width: '100%' } })\n" : ''}\nimport * as Button from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/button'\nimport * as Field from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/field'\nimport * as Form from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/form'\nimport * as Input from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/input'`
+  `import { Effect, Schema as S } from 'effect'\nimport { Command, Runtime, Subscription, Update } from 'foldkit'\nimport { type Document, type HtmlBuilder } from 'foldkit/html'\nimport { defineMessageUnion } from 'foldkit/message'\n${renderer !== 'tailwind' ? "import * as stylex from '@stylexjs/stylex'\nimport { layoutStyle } from '@/stylex/contracts'\n\nconst styles = stylex.create({ form: { maxWidth: '24rem', width: '100%' } })\n" : ''}\nimport * as Button from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/button'\nimport * as Field from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/field'\nimport * as Form from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/form'\nimport * as Input from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/input'`
 const layout = (r: 'tailwind' | 'stylex' | 'pleat') =>
-  r === 'stylex' ? 'layoutStyle: styles.form,' : "class: 'w-full max-w-sm',"
+  r !== 'tailwind'
+    ? 'layoutStyle: layoutStyle({ maxWidth: "24rem", width: "100%" }),'
+    : "class: 'w-full max-w-sm',"
 const newsletter = (r: 'tailwind' | 'stylex' | 'pleat') =>
   foldkitApplication({
     title: 'Form — Newsletter signup',

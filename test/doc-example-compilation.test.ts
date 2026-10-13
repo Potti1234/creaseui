@@ -38,6 +38,7 @@ describe('copyable documentation applications', () => {
       > = [
         ['tw', page.definition.examples],
         ['sx', page.definition.stylexExamples ?? []],
+        ['pl', page.definition.pleatExamples ?? []],
       ]
       for (const [variant, examples] of variants) {
         examples.forEach((example, index) => {
@@ -84,18 +85,28 @@ describe('copyable documentation applications', () => {
           )
     }
 
-    const program = ts.createProgram({
-      rootNames: [...sources.keys()],
-      options,
-      host,
-    })
-    const diagnostics = ts
-      .getPreEmitDiagnostics(program)
-      .filter(
-        diagnostic =>
-          diagnostic.file !== undefined &&
-          sources.has(resolve(diagnostic.file.fileName)),
+    // One program per chunk: a single program over every emitted example
+    // exhausts the default heap, while a shared compiler host keeps dependency
+    // declaration files parsed once across chunks.
+    const allFiles = [...sources.keys()]
+    const chunkSize = 150
+    const diagnostics: ts.Diagnostic[] = []
+    for (let offset = 0; offset < allFiles.length; offset += chunkSize) {
+      const program = ts.createProgram({
+        rootNames: allFiles.slice(offset, offset + chunkSize),
+        options,
+        host,
+      })
+      diagnostics.push(
+        ...ts
+          .getPreEmitDiagnostics(program)
+          .filter(
+            diagnostic =>
+              diagnostic.file !== undefined &&
+              sources.has(resolve(diagnostic.file.fileName)),
+          ),
       )
+    }
     const report = diagnostics.map(diagnostic => {
       const file = diagnostic.file!
       const position = file.getLineAndCharacterOfPosition(diagnostic.start ?? 0)

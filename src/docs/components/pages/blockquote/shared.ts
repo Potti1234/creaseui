@@ -76,7 +76,7 @@ const viewBody = (fixture: BlockquoteFixture, isStyleX: boolean): string => {
         ${testimonialCards
           .map(
             ([cite, quote], index) => `Card.card(
-          {${index === 2 ? (isStyleX ? ' layoutStyle: styles.spanningCard,' : " class: 'sm:col-span-2',") : ''} children: [
+          {${index === 2 ? (isStyleX ? ' layoutStyle: layoutStyle({ gridColumn: "1 / -1" }),' : " class: 'sm:col-span-2',") : ''} children: [
             Card.cardContent(
               {
                 children: [
@@ -117,7 +117,7 @@ const source = (
   if (isStyleX) {
     imports.push(
       `import * as stylex from '@stylexjs/stylex'`,
-      `import { className } from '@/stylex/style'`,
+      `import { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'`,
     )
   }
   if (fixture.kind === 'testimonials') {

@@ -223,7 +223,7 @@ const blockCall = (block: CodeBlockSpec, isStyleX: boolean): string => {
     props.push(`maxHeight: ${String(block.maxHeight)}`)
   }
   if (isStyleX) {
-    props.push('layoutStyle: styles.block')
+    props.push('layoutStyle: layoutStyle({ width: "100%" })')
   } else {
     props.push("class: 'w-full'")
   }
@@ -275,7 +275,7 @@ const emitApplication = (
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { taggedStruct } from 'foldkit/schema'
-${isStyleX ? "import * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\n" : ''}import * as CodeBlock from '@/${base}/code-block'${stylesBlock}
+${isStyleX ? "import * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'\n" : ''}import * as CodeBlock from '@/${base}/code-block'${stylesBlock}
 
 ${codeConsts(fixture)}`,
     model: `export const Model = S.Struct({
@@ -322,7 +322,7 @@ ${fixture.blocks
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'CodeBlock — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
 ${emitBody(fixture, isStyleX)}
   ]),
 })`,

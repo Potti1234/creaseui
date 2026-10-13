@@ -161,7 +161,7 @@ import { taggedStruct } from 'foldkit/schema'
 ${
   isStyleX
     ? `import * as stylex from '@stylexjs/stylex'
-import { className } from '@/stylex/style'
+import { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'
 `
     : ''
 }import * as Field from '@/${isStyleX ? 'stylex' : 'ui'}/field'
@@ -178,6 +178,7 @@ ${
   isStyleX
     ? `
 const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   row: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' },
   field: { width: 'fit-content' },
   trigger: { width: '5rem' },
@@ -231,9 +232,9 @@ export type Message = typeof Message.Type`,
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Pagination — Icons Only',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     h.div([h.Class(${isStyleX ? 'className(styles.row)' : "'flex items-center justify-between gap-4'"})], [
-      Field.field({ orientation: 'horizontal', ${isStyleX ? 'layoutStyle: styles.field' : "class: 'w-fit'"}, children: [
+      Field.field({ orientation: 'horizontal', ${isStyleX ? 'layoutStyle: layoutStyle({ width: "fit-content" })' : "class: 'w-fit'"}, children: [
         Field.fieldLabel({ for: 'select-rows-per-page', children: ['Rows per page'] }, h),
         RowsSelect.select({
           model: model.select,
@@ -246,7 +247,7 @@ export type Message = typeof Message.Type`,
           ${isStyleX ? 'triggerLayoutStyle: styles.trigger' : "triggerClass: 'w-20'"},
         }, h),
       ] }, h),
-      Pagination.pagination({ ariaLabel: 'Pagination', ${isStyleX ? 'layoutStyle: styles.pagination' : "class: 'mx-0 w-auto'"}, children: [
+      Pagination.pagination({ ariaLabel: 'Pagination', ${isStyleX ? 'layoutStyle: layoutStyle({ marginInline: 0, width: "auto" })' : "class: 'mx-0 w-auto'"}, children: [
         Pagination.paginationContent({ children: [
           Pagination.paginationItem({ children: [
             Pagination.paginationPrevious({ href: '#' }, h),

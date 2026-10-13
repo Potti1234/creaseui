@@ -255,7 +255,7 @@ import { type Document, type HtmlBuilder } from 'foldkit/html'
 
 import * as Banner from '@/${uiDir}/banner'${usesButton ? `\nimport * as Button from '@/${uiDir}/button'` : ''}${
       renderer !== 'tailwind'
-        ? `\nimport * as stylex from '@stylexjs/stylex'\n\nconst styles = stylex.create({\n  stack: { display: 'flex', flexDirection: 'column', gap: '0.75rem' },\n})`
+        ? `\nimport * as stylex from '@stylexjs/stylex'\n\nconst styles = stylex.create({\n  stack: { display: 'flex', flexDirection: 'column', gap: '0.75rem' },\n  page: { marginInline: 'auto', maxWidth: '48rem', padding: '2rem', width: '100%' },\n})`
         : ''
     }`,
     model: `export const Model = S.Struct({
@@ -293,7 +293,7 @@ export type Message = typeof Message.Type`,
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Banner — ${fixture.title}',
-  body: h.main([h.Class('mx-auto w-full max-w-3xl p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? "stylex.props(styles.page).className ?? ''" : "'mx-auto w-full max-w-3xl p-8'"})], [
     h.div(${stackAttrs}, [
       ${fixture.banners.map((banner, i) => bannerSource(banner, i, tag)).join(',\n      ')},
     ]),

@@ -129,7 +129,7 @@ const viewBody = (fixture: HeadingFixture, isStyleX: boolean): string => {
             ],
           ),
         ] }, h),
-      ]${isStyleX ? ', layoutStyle: styles.card' : ", class: 'w-75'"} }, h)`
+      ]${isStyleX ? ', layoutStyle: layoutStyle({ width: "300px" })' : ", class: 'w-75'"} }, h)`
   }
 }
 
@@ -163,7 +163,7 @@ const source = (
   if (isStyleX) {
     imports.push(
       `import * as stylex from '@stylexjs/stylex'`,
-      `import { className } from '@/stylex/style'`,
+      `import { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'`,
     )
   }
   if (fixture.kind === 'pageHierarchy' || fixture.kind === 'cardGrid') {

@@ -108,7 +108,8 @@ const STYLEX_STYLES = {
 type StylexStyleKey = keyof typeof STYLEX_STYLES
 
 const stylexImports = (keys: ReadonlyArray<StylexStyleKey>): string =>
-  `import * as stylex from '@stylexjs/stylex'\nimport type { ComponentLayoutStyle } from '@/stylex/contracts'\n\nconst styles = stylex.create({\n${keys.map(k => `  ${k}: ${STYLEX_STYLES[k]},`).join('\n')}\n})`
+  `import * as stylex from '@stylexjs/stylex'
+import { layoutStyle } from '@/stylex/contracts'\nimport type { ComponentLayoutStyle } from '@/stylex/contracts'\n\nconst styles = stylex.create({\n${keys.map(k => `  ${k}: ${STYLEX_STYLES[k]},`).join('\n')}\n})`
 
 const styleKeysFor = (
   kind: CardFixture['kind'],
@@ -179,7 +180,7 @@ const loginCardSource = (
       ? opts.spacingVar === 'dynamic'
         ? 'class: `w-full max-w-sm ${spacingClasses[model.spacing]}`,'
         : `class: 'w-full max-w-sm${spacingPart}',`
-      : `layoutStyle: styles.frame,`
+      : `layoutStyle: layoutStyle({ maxWidth: "24rem", width: "100%" }),`
   const inputBlock = (
     id: string,
     label: string,
@@ -217,8 +218,8 @@ const loginCardSource = (
       Button.button({ variant: 'outline', class: 'w-full', children: ['${copy.google}'] }, h),
     ] }, h)`
         : `Card.cardFooter({ layoutStyle: styles.footerCol as ComponentLayoutStyle, children: [
-      Button.button({ layoutStyle: styles.wFull, children: ['${copy.login}'] }, h),
-      Button.button({ variant: 'outline', layoutStyle: styles.wFull, children: ['${copy.google}'] }, h),
+      Button.button({ layoutStyle: layoutStyle({ width: "100%" }), children: ['${copy.login}'] }, h),
+      Button.button({ variant: 'outline', layoutStyle: layoutStyle({ width: "100%" }), children: ['${copy.google}'] }, h),
     ] }, h)`
     }
   ],
@@ -229,7 +230,7 @@ const smallCardSource = (
   renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => `Card.card({
   size: 'sm',
-  ${renderer === 'tailwind' ? `class: 'mx-auto w-full max-w-xs',` : `layoutStyle: styles.smallCard,`}
+  ${renderer === 'tailwind' ? `class: 'mx-auto w-full max-w-xs',` : `layoutStyle: layoutStyle({ marginInline: "auto", maxWidth: "20rem", width: "100%" }),`}
   children: [
     Card.cardHeader({ children: [
       Card.cardTitle({ children: ['Scheduled reports'] }, h),
@@ -258,8 +259,8 @@ const smallCardSource = (
       Button.button({ variant: 'outline', size: 'sm', class: 'w-full', children: ["See what's new"] }, h),
     ] }, h)`
         : `Card.cardFooter({ layoutStyle: styles.footerCol as ComponentLayoutStyle, children: [
-      Button.button({ size: 'sm', layoutStyle: styles.wFull, children: ['Set up scheduled reports'] }, h),
-      Button.button({ variant: 'outline', size: 'sm', layoutStyle: styles.wFull, children: ["See what's new"] }, h),
+      Button.button({ size: 'sm', layoutStyle: layoutStyle({ width: "100%" }), children: ['Set up scheduled reports'] }, h),
+      Button.button({ variant: 'outline', size: 'sm', layoutStyle: layoutStyle({ width: "100%" }), children: ["See what's new"] }, h),
     ] }, h)`
     }
   ],
@@ -268,7 +269,7 @@ const smallCardSource = (
 const edgeCardSource = (
   renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => `Card.card({
-  ${renderer === 'tailwind' ? `class: 'mx-auto w-full max-w-sm',` : `layoutStyle: styles.edgeCard,`}
+  ${renderer === 'tailwind' ? `class: 'mx-auto w-full max-w-sm',` : `layoutStyle: layoutStyle({ marginInline: "auto", maxWidth: "24rem", width: "100%" }),`}
   children: [
     Card.cardHeader({ children: [
       Card.cardTitle({ children: ['Terms of Service'] }, h),
@@ -385,10 +386,11 @@ const loginUpdate = `export const update = (
 
 const viewWrapper = (
   body: string,
+  styled: boolean,
 ): string => `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Card — Login',
   body: h.main(
-    [h.Class('flex min-h-screen items-center justify-center p-8')],
+    [h.Class(${styled ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})],
     [
       ${body.split('\n').join('\n      ')}
     ],
@@ -428,6 +430,7 @@ const source = (
           .split('\n')
           .join('\n        ')},
       ])`,
+          renderer !== 'tailwind',
         ),
       })
     case 'spacing': {
@@ -515,7 +518,7 @@ export const update = (
         view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Card — Spacing',
   body: h.main(
-    [h.Class('flex min-h-screen items-center justify-center p-8')],
+    [h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})],
     [
       h.div([${cls(renderer, 'grid w-full max-w-sm gap-4', 'loginWrap')}], [
         SpacingToggleGroup.toggleGroup({
@@ -534,8 +537,8 @@ export const update = (
                 .join('\n        ')
             : loginCardSource({ rtl: false, spacingVar: 'none', renderer })
                 .replace(
-                  'layoutStyle: styles.frame,',
-                  'layoutStyle: styles.frame,\n  spacing: `\${Number(model.spacing) * 4}px`,',
+                  'layoutStyle: layoutStyle({ maxWidth: "24rem", width: "100%" }),',
+                  'layoutStyle: layoutStyle({ maxWidth: "24rem", width: "100%" }),\n  spacing: `\${Number(model.spacing) * 4}px`,',
                 )
                 .split('\n')
                 .join('\n        ')

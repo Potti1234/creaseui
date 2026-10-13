@@ -109,6 +109,7 @@ export const dialogRtlFields = [
 ] as const
 
 const emitStyles = `const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   compact: { maxWidth: '24rem' },
   shareWidth: { maxWidth: '28rem' },
   scrollArea: { marginInline: '-1rem', maxHeight: '50vh', overflowY: 'auto', paddingInline: '1rem' },
@@ -243,11 +244,11 @@ const emitMaxWidth = (fixture: DialogFixture, isStyleX: boolean): string => {
     case 'compact':
     case 'rtl':
       return isStyleX
-        ? '      layoutStyle: styles.compact,\n'
+        ? '      layoutStyle: layoutStyle({ maxWidth: "24rem" }),\n'
         : "      class: 'sm:max-w-sm',\n"
     case 'share':
       return isStyleX
-        ? '      layoutStyle: styles.shareWidth,\n'
+        ? '      layoutStyle: layoutStyle({ maxWidth: "28rem" }),\n'
         : "      class: 'sm:max-w-md',\n"
     default:
       return ''
@@ -314,7 +315,7 @@ const dialogSource = (
     imports: `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-${isStyleX ? "\nimport * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\n" : fixture.kind === 'noClose' || fixture.kind === 'scroll' ? '' : "\nimport { cn } from '@/lib/utils'\n"}
+${isStyleX ? "\nimport * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'\n" : fixture.kind === 'noClose' || fixture.kind === 'scroll' ? '' : "\nimport { cn } from '@/lib/utils'\n"}
 import * as Button from '@/${isStyleX ? 'stylex' : 'ui'}/button'
 import * as Dialog from '@/${isStyleX ? 'stylex' : 'ui'}/dialog'${inputs || fixture.kind === 'share' ? `\nimport * as Field from '@/${isStyleX ? 'stylex' : 'ui'}/field'\nimport * as Input from '@/${isStyleX ? 'stylex' : 'ui'}/input'` : ''}${isStyleX ? `\n\n${emitStyles}` : ''}`,
     model: `export const Model = S.Struct({ dialog: Dialog.Model${inputs ? ', name: S.String, username: S.String' : ''} })
@@ -359,7 +360,7 @@ export const update = (
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Dialog — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     Button.button({
       onClick: ClickedOpen(),${fixture.triggerVariant === 'outline' ? "\n      variant: 'outline'," : ''}
       children: ['${fixture.triggerLabel}'],

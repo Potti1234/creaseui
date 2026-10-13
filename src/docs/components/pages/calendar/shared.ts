@@ -237,7 +237,7 @@ const presetsSource = (
 ): string => {
   const isSx = renderer !== 'tailwind'
   return `Card.card({
-          ${isSx ? 'layoutStyle: styles.cardFit,' : `class: 'mx-auto w-fit max-w-[300px]',`}
+          ${isSx ? 'layoutStyle: layoutStyle({ marginInline: "auto", maxWidth: "18.75rem", width: "fit-content" }),' : `class: 'mx-auto w-fit max-w-[300px]',`}
           size: 'sm',
           children: [
             Card.cardContent({
@@ -254,7 +254,7 @@ const presetsSource = (
                   variant: 'outline',
                   size: 'sm',
                   onClick: Message.ClickedPreset({ days: preset.days }),
-                  ${isSx ? 'layoutStyle: styles.presetButton,' : `class: 'flex-1',`}
+                  ${isSx ? 'layoutStyle: layoutStyle({ flexGrow: "1" }),' : `class: 'flex-1',`}
                   children: [preset.label],
                 }, h),
               ),
@@ -311,7 +311,7 @@ const timePickerSource = (
 ): string => {
   const isSx = renderer !== 'tailwind'
   return `Card.card({
-          ${isSx ? 'layoutStyle: styles.cardFit,' : `class: 'mx-auto w-fit',`}
+          ${isSx ? 'layoutStyle: layoutStyle({ marginInline: "auto", maxWidth: "18.75rem", width: "fit-content" }),' : `class: 'mx-auto w-fit',`}
           size: 'sm',
           children: [${
             isSx
@@ -353,7 +353,7 @@ const viewBodySource = (
   if (fixture.card === true) {
     const isSx = renderer !== 'tailwind'
     return `Card.card({
-          ${isSx ? 'layoutStyle: styles.cardFit,' : `class: 'mx-auto w-fit p-0',`}
+          ${isSx ? 'layoutStyle: layoutStyle({ marginInline: "auto", maxWidth: "18.75rem", width: "fit-content" }),' : `class: 'mx-auto w-fit p-0',`}
           children: [
             Card.cardContent({
               children: [${calendar}],
@@ -400,7 +400,7 @@ const componentImports = (
   if (renderer !== 'tailwind')
     imports.push(
       `import * as stylex from '@stylexjs/stylex'`,
-      `import { className } from '@/stylex/style'`,
+      `import { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'`,
     )
   return imports.join('\n')
 }
@@ -421,6 +421,7 @@ const stylesSource = (f: CalendarFixture): string => {
   if (parts.length === 0) return ''
   return `
 const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
 ${parts.join('\n')}
 });`
 }
@@ -525,7 +526,7 @@ import {
 // below implements the upstream Persian example via the conversion helpers.${
       isSx
         ? `
-import { className } from '@/stylex/style'
+import { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 
@@ -535,6 +536,7 @@ const cx = (...values: ReadonlyArray<unknown>): string =>
   className(...values.filter(isStaticStyle))
 
 const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   container: {
     borderColor: 'var(--border)',
     borderRadius: '0.5rem',
@@ -700,7 +702,7 @@ const jalaliView = (model: Model, h: HtmlBuilder<Message>) => {
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Calendar — ${f.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     jalaliView(model, h),
   ]),
 })`,
@@ -848,7 +850,7 @@ ${updateCases}
 }`,
     view: `${helpers}export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Calendar — ${f.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     ${viewBodySource(f, renderer)},
   ]),
 })`,

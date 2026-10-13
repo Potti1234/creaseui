@@ -175,6 +175,7 @@ const emitLiveRegion = (
       ? `import * as stylex from '@stylexjs/stylex'
 
 const styles = stylex.create({
+  shell: { alignItems: 'flex-start', display: 'flex', flexDirection: 'column', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   shellWrap: {
     alignItems: 'flex-start',
     display: 'flex',
@@ -200,7 +201,7 @@ const styles = stylex.create({
               ])`
   const wrapClass =
     renderer === 'tailwind'
-      ? `h.Class('flex min-h-screen flex-col items-start justify-center p-8')`
+      ? `h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen flex-col items-start justify-center p-8'"})`
       : `h.Class(stylex.props(styles.shellWrap).className ?? '')`
   return foldkitApplication({
     title: 'VisuallyHidden — Live Region',
@@ -348,6 +349,7 @@ const stylexStylesFor = (kind: VisuallyHiddenFixture['kind']): string => {
   return `import * as stylex from '@stylexjs/stylex'
 
 const styles = stylex.create({
+  shell: { alignItems: 'flex-start', display: 'flex', flexDirection: 'column', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
 ${entries.join(',\n')},
 })`
 }

@@ -71,7 +71,10 @@ const emitImports = (fixture: InputOtpFixture, isStyleX: boolean): string => {
     "import { defineMessageUnion } from 'foldkit/message'",
   ]
   if (isStyleX) {
-    parts.push('', "import * as stylex from '@stylexjs/stylex'")
+    parts.push(
+      '',
+      "import * as stylex from '@stylexjs/stylex'\nimport { layoutStyle } from '@/stylex/contracts'",
+    )
   }
   if (kindUsesButton(fixture.kind)) {
     parts.push(`import * as Button from '@/${base}/button'`)
@@ -240,7 +243,7 @@ const emitBody = (fixture: InputOtpFixture, isStyleX: boolean): string => {
         }, h)`
       const footerField = `Field.field({
           children: [
-            Button.button({ type: 'submit', ${isStyleX ? 'layoutStyle: styles.submit' : "class: 'w-full'"}, children: ['Verify'] }, h),
+            Button.button({ type: 'submit', ${isStyleX ? 'layoutStyle: layoutStyle({ width: "100%" })' : "class: 'w-full'"}, children: ['Verify'] }, h),
             h.div([h.Class(${isStyleX ? "stylex.props(styles.support).className ?? ''" : "'text-sm text-muted-foreground'"})], [
               'Having trouble signing in? ',
               h.a([h.Href('#'), h.Class(${isStyleX ? "stylex.props(styles.link).className ?? ''" : "'underline underline-offset-4 transition-colors hover:text-primary'"})], ['Contact support']),
@@ -289,13 +292,14 @@ const emitApplication = (
 ): string => {
   const stylesBlock = isStyleX
     ? `const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '1rem' },
   page: { display: 'flex', minHeight: '100vh', alignItems: 'center', justifyContent: 'center', padding: '1rem' },
 ${emitStyles(fixture)}
 })\n\n`
     : ''
   const bodyStart = isStyleX
     ? `h.main([h.Class(stylex.props(styles.page).className ?? '')], [`
-    : `h.main([h.Class('flex min-h-screen items-center justify-center p-4')], [`
+    : `h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-4'"})], [`
   return foldkitApplication({
     title: `Input OTP — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'\n${emitImports(fixture, isStyleX)}\n\n${stylesBlock}`,

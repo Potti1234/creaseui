@@ -83,6 +83,7 @@ import { taggedStruct } from 'foldkit/schema'
 import { className } from '@/stylex/style'
 
 const styles = stylex.create({
+  shell: { alignItems: 'flex-start', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   page: { display: 'flex', flexDirection: 'column', gap: '0.5rem', maxWidth: '36rem', width: '100%' },
   message: { display: 'flex', flexDirection: 'column', gap: '0.5rem' },
   reply: { color: 'var(--foreground)', fontSize: '0.875rem', lineHeight: '1.5rem' },
@@ -178,7 +179,7 @@ export type Message = typeof Message.Type`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Chat Reasoning — ${fixture.title}',
   body: h.main(
-    [h.Class('flex min-h-screen items-start justify-center p-8')],
+    [h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-start justify-center p-8'"})],
     [
       ${viewBody.split('\n').join('\n      ')},
     ],

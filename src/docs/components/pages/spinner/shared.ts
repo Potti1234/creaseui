@@ -42,7 +42,7 @@ const itemBody = (
     : "h.Class('w-full max-w-xs')"
   const dir = rtl ? "h.Dir('rtl'), " : ''
   const endContent = isSx
-    ? `Item.itemContent({ layoutStyle: styles.itemEnd, children: [
+    ? `Item.itemContent({ layoutStyle: layoutStyle({ marginInlineStart: "auto" }), children: [
     h.span([h.Class(stylex.props(styles.amount).className ?? '')], ['${t.amount}']),
   ] }, h)`
     : `Item.itemContent({ class: 'flex-none justify-end', children: [
@@ -161,7 +161,7 @@ const inputGroupBody = (
       'Validating...',
       InputGroup.inputGroupButton({ variant: 'default', size: 'icon-sm', ${
         renderer !== 'tailwind'
-          ? 'layoutStyle: styles.itemEnd'
+          ? 'layoutStyle: layoutStyle({ marginInlineStart: "auto" })'
           : "class: 'ml-auto'"
       }, children: [
         Icon.arrowUp({}, h),
@@ -238,7 +238,8 @@ const spinnerExamplesFor = (
           ? `${EXTRA_IMPORTS[fixture.kind].replaceAll('@/ui/', `@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/`)}\n`
           : '') +
         (renderer !== 'tailwind'
-          ? `import * as stylex from '@stylexjs/stylex'\n${SX_STYLES}`
+          ? `import * as stylex from '@stylexjs/stylex'
+import { layoutStyle } from '@/stylex/contracts'\n${SX_STYLES}`
           : ''),
       viewBody: `${body(fixture, renderer)},`,
     }),

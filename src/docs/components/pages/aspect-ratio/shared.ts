@@ -53,7 +53,7 @@ const source = (
   const componentImports = isStyleX
     ? `import * as stylex from '@stylexjs/stylex'
 import type { ComponentLayoutStyle } from '@/stylex/contracts'
-import { className } from '@/stylex/style'`
+import { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'`
     : ''
   const styles = isStyleX
     ? `\nconst styles = stylex.create({

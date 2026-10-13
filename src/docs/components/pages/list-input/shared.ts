@@ -1,6 +1,8 @@
 import type { DocsExample } from '@/docs/components/page-definition'
 import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
+const emitShellStyles =
+  "import * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\n\nconst shellStyles = stylex.create({\n  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },\n})"
 
 export type Guest = Readonly<{ id: string; name: string; email: string }>
 
@@ -167,9 +169,9 @@ ${guestLines}
   },
 ]
 
-export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+${renderer !== 'tailwind' ? emitShellStyles + '\n\n' : ''}export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: '${fixture.title}',
-  body: h.main([h.Class('mx-auto flex min-h-screen w-full max-w-2xl items-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(shellStyles.shell)' : "'mx-auto flex min-h-screen w-full max-w-2xl items-center p-8'"})], [
     ListInput.listInput(
       {
         model: model.input,

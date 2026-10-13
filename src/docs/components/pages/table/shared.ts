@@ -110,7 +110,7 @@ const invoiceTable = (kind: TableKind, isStyleX: boolean): string => {
     : 'A list of your recent invoices.'
   const total = rtl ? 'المجموع' : 'Total'
   const headCalls = [
-    `Table.tableHead({ ${isStyleX ? 'layoutStyle: styles.invoiceHead, ' : "class: 'w-[100px]', "}children: ['${heads[0] ?? ''}'] }, h)`,
+    `Table.tableHead({ ${isStyleX ? 'layoutStyle: layoutStyle({ width: "6.25rem" }), ' : "class: 'w-[100px]', "}children: ['${heads[0] ?? ''}'] }, h)`,
     `Table.tableHead({ children: ['${heads[1] ?? ''}'] }, h)`,
     `Table.tableHead({ children: ['${heads[2] ?? ''}'] }, h)`,
     `Table.tableHead({ ${isStyleX ? '' : "class: 'text-right', "}children: [${rightCell(isStyleX, `'${heads[3] ?? 'Amount'}'`)}] }, h)`,
@@ -131,7 +131,7 @@ const invoiceTable = (kind: TableKind, isStyleX: boolean): string => {
     Table.tableCell({ colspan: 3, children: ['${total}'] }, h),
     Table.tableCell({ ${isStyleX ? '' : "class: 'text-right', "}children: [${rightCell(isStyleX, `'$2,500.00'`)}] }, h),
   ] }, h)] }, h)`
-  const table = `Table.table({ ${isStyleX ? 'layoutStyle: styles.table, ' : ''}children: [
+  const table = `Table.table({ ${isStyleX ? 'layoutStyle: layoutStyle({ maxWidth: "36rem" }), ' : ''}children: [
     Table.tableCaption({ children: ['${caption}'] }, h),
     Table.tableHeader({ children: [Table.tableRow({ children: [
       ${headCalls.join(',\n      ')},
@@ -185,7 +185,7 @@ const staticBody = (kind: TableKind, isStyleX: boolean): string => {
     case 'rtl':
       return invoiceTable(kind, isStyleX)
     case 'inventory':
-      return `Table.table({ ${isStyleX ? 'layoutStyle: styles.table, ' : "class: 'max-w-xl', "}children: [
+      return `Table.table({ ${isStyleX ? 'layoutStyle: layoutStyle({ maxWidth: "36rem" }), ' : "class: 'max-w-xl', "}children: [
     Table.tableCaption({ children: ['Foldkit ownership by component.'] }, h),
     Table.tableHeader({ children: [Table.tableRow({ children: [
       Table.tableHead({ children: ['Component'] }, h),
@@ -198,7 +198,7 @@ const staticBody = (kind: TableKind, isStyleX: boolean): string => {
       ] }, h)) }, h),
   ] }, h)`
     case 'dense':
-      return `Table.table({ ${isStyleX ? 'layoutStyle: styles.dense, ' : "class: 'min-w-[44rem] text-xs', "}children: [
+      return `Table.table({ ${isStyleX ? 'layoutStyle: layoutStyle({ minWidth: "44rem" }), ' : "class: 'min-w-[44rem] text-xs', "}children: [
     Table.tableCaption({ children: ['Deployment inventory with intentionally wide columns.'] }, h),
     Table.tableHeader({ children: [Table.tableRow({ children: ['Service', 'Owner', 'Region', 'Status', 'Last deployment'].map(label =>
       Table.tableHead({ ${isStyleX ? '' : "class: 'h-8 p-1', "}children: [label] }, h)) }, h)] }, h),
@@ -209,7 +209,7 @@ const staticBody = (kind: TableKind, isStyleX: boolean): string => {
     ] }, h)] }, h),
   ] }, h)`
     case 'empty':
-      return `Table.table({ ${isStyleX ? 'layoutStyle: styles.table, ' : "class: 'max-w-xl', "}children: [
+      return `Table.table({ ${isStyleX ? 'layoutStyle: layoutStyle({ maxWidth: "36rem" }), ' : "class: 'max-w-xl', "}children: [
     Table.tableCaption({ children: ['Filtered component inventory.'] }, h),
     Table.tableHeader({ children: [Table.tableRow({ children: [
       Table.tableHead({ children: ['Component'] }, h),
@@ -284,8 +284,10 @@ const sxStyles = (fixture: TableFixture): string => {
     )
   }
   return `import * as stylex from '@stylexjs/stylex'
+import { layoutStyle } from '@/stylex/contracts'
 
 const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
 ${parts.join('\n')}
 })`
 }
@@ -368,7 +370,7 @@ export type Message = typeof Message.Type`,
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Table — Actions',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
 ${actionsTable(isStyleX)
   .split('\n')
   .map(line => `  ${line}`)

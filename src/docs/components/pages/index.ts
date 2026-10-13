@@ -1,4 +1,5 @@
 import type { AuthoredPage } from '@/docs/components/pages/authored-page'
+import { repairStyled } from '@/docs/components/styled-repair'
 import { mapPage } from '@/docs/components/pages/map'
 import { mapControlsPage } from '@/docs/components/pages/map-controls'
 import { mapMarkerPage } from '@/docs/components/pages/map-marker'
@@ -245,6 +246,22 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       treeListPage,
       typographyPage,
       visuallyHiddenPage,
-    ].map(page => [page.slug, page]),
+    ].map(page => [
+      page.slug,
+      {
+        ...page,
+        definition: {
+          ...page.definition,
+          stylexExamples: page.definition.stylexExamples?.map(example => ({
+            ...example,
+            code: repairStyled(example.code, 'stylex'),
+          })),
+          pleatExamples: page.definition.pleatExamples?.map(example => ({
+            ...example,
+            code: repairStyled(example.code, 'pleat'),
+          })),
+        },
+      },
+    ]),
   ),
 }

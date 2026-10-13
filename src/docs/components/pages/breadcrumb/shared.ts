@@ -247,6 +247,7 @@ ${
   fixture.items.some(item => item.kind === 'dropdown')
     ? `
 const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   chevron: { fontSize: '0.875rem', lineHeight: '1.25rem' },
   dropdownTrigger: { alignItems: 'center', display: 'flex', gap: '0.25rem' },
 })
@@ -318,7 +319,7 @@ export type Message = typeof Message.Type`,
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Breadcrumb — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     ${viewBody},
   ]),
 })`,

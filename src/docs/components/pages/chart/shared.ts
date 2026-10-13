@@ -501,12 +501,12 @@ const staticSource = (
     ...(renderer !== 'tailwind'
       ? {
           componentImports:
-            "import * as stylex from '@stylexjs/stylex'\nconst styles = stylex.create({ chart: { marginInline: 'auto', maxWidth: '36rem' }, stack: { marginInline: 'auto', maxWidth: '36rem', width: '100%' } })",
+            "import * as stylex from '@stylexjs/stylex'\nimport { layoutStyle } from '@/stylex/contracts'\nconst styles = stylex.create({ chart: { marginInline: 'auto', maxWidth: '36rem' }, stack: { marginInline: 'auto', maxWidth: '36rem', width: '100%' } })",
         }
       : {}),
     viewBody:
       kind === 'bar-svg'
-        ? `Chart.barChart({ ${renderer !== 'tailwind' ? 'layoutStyle: styles.chart' : "class: 'mx-auto max-w-xl'"}, data: [{ label: 'Jan', value: 186 }, { label: 'Feb', value: 305 }, { label: 'Mar', value: 237 }, { label: 'Apr', value: 273 }, { label: 'May', value: 209 }, { label: 'Jun', value: 314 }] }, h)`
+        ? `Chart.barChart({ ${renderer !== 'tailwind' ? 'layoutStyle: layoutStyle({ marginInline: "auto", maxWidth: "36rem" })' : "class: 'mx-auto max-w-xl'"}, data: [{ label: 'Jan', value: 186 }, { label: 'Feb', value: 305 }, { label: 'Mar', value: 237 }, { label: 'Apr', value: 273 }, { label: 'May', value: 209 }, { label: 'Jun', value: 314 }] }, h)`
         : `${renderer !== 'tailwind' ? "h.div([h.Class(stylex.props(styles.stack).className ?? '')]" : "h.div([h.Class('mx-auto w-full max-w-xl space-y-4')]"}, [Chart.areaChart({ data: [186, 305, 237, 273, 209, 314] }, h), Chart.chartLegend({ config: { visitors: { label: 'Visitors', color: 'var(--chart-2)' } } }, h)])`,
   })
 
@@ -730,7 +730,7 @@ const tooltipSource = (
     ...(renderer !== 'tailwind'
       ? {
           componentImports:
-            "import * as stylex from '@stylexjs/stylex'\nconst styles = stylex.create({ row: { display: 'flex', flexWrap: 'wrap', gap: '1rem' } })",
+            "import * as stylex from '@stylexjs/stylex'\nimport { layoutStyle } from '@/stylex/contracts'\nconst styles = stylex.create({ row: { display: 'flex', flexWrap: 'wrap', gap: '1rem' } })",
         }
       : {}),
     viewBody: `${renderer !== 'tailwind' ? "h.div([h.Class(stylex.props(styles.row).className ?? '')]" : "h.div([h.Class('flex flex-wrap gap-4')]"}, [

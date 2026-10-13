@@ -534,7 +534,7 @@ export type Message = typeof GotMenuMessage.Type`,
 export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Button — Button Group',
   body: h.main(
-    [h.Class('flex min-h-screen items-center justify-center p-8')],
+    [h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})],
     [
       ${buttonGroupViewSource(renderer)},
     ],

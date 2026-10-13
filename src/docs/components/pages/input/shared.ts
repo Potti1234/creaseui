@@ -94,7 +94,10 @@ const emitImports = (fixture: InputFixture, isStyleX: boolean): string => {
     "import { defineMessageUnion } from 'foldkit/message'",
   ]
   if (isStyleX) {
-    parts.push('', "import * as stylex from '@stylexjs/stylex'")
+    parts.push(
+      '',
+      "import * as stylex from '@stylexjs/stylex'\nimport { layoutStyle } from '@/stylex/contracts'",
+    )
   }
   if (kindUsesButton(fixture.kind)) {
     parts.push(`import * as Button from '@/${base}/button'`)
@@ -401,7 +404,7 @@ const emitBody = (fixture: InputFixture, isStyleX: boolean): string => {
         label(
           'input-badge',
           null,
-          `'Webhook URL ', Badge.badge({ variant: 'secondary', ${isStyleX ? 'layoutStyle: styles.push' : "class: 'ml-auto'"}, children: ['Beta'] }, h)`,
+          `'Webhook URL ', Badge.badge({ variant: 'secondary', ${isStyleX ? 'layoutStyle: layoutStyle({ marginInlineStart: "auto" })' : "class: 'ml-auto'"}, children: ['Beta'] }, h)`,
         ),
         emitInput(
           'webhookUrl',

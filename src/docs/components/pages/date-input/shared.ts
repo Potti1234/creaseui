@@ -73,6 +73,7 @@ import * as stylex from '@stylexjs/stylex'
 import { className } from '@/stylex/style'
 
 const styles = stylex.create({
+  shell: { alignItems: 'flex-start', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   stack: {
     display: 'grid',
     gap: '1rem',
@@ -156,7 +157,7 @@ export type Model = typeof Model.Type`,
     update: singleUpdate,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'DateInput — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-start justify-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-start justify-center p-8'"})], [
     h.div([${stackClass(isStyleX)}], [${
       isClearable || isDescription
         ? `
@@ -204,7 +205,7 @@ const WINDOW_LABEL = \`\${MONTH_NAME} 8 – 21, \${String(TODAY.year)}\``,
     update: singleUpdate,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'DateInput — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-start justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-start justify-center p-8'"})], [
     h.div([${stackClass(isStyleX)}], [
       h.p([${supportingClass(isStyleX)}], [
         Option.match(model.dateInput.value, {
@@ -281,7 +282,7 @@ const FORMATS = [
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'DateInput — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-start justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-start justify-center p-8'"})], [
     h.div([${stackClass(isStyleX)}], [
       h.p([${supportingClass(isStyleX)}], [
         'The same committed date, displayed with different formats.',
@@ -348,7 +349,7 @@ const FIELDS = [
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'DateInput — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-start justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-start justify-center p-8'"})], [
     h.div([${stackClass(isStyleX)}], [
       ...FIELDS.map((field, i) =>
         DateInput.dateInput({

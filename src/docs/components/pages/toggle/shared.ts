@@ -284,7 +284,7 @@ const emitApplication = (
     update: emitUpdate(fixture),
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Toggle — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
 ${emitBody(fixture, isStyleX)}
   ]),
 })`,

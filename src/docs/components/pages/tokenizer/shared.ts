@@ -119,6 +119,7 @@ import { className } from '@/stylex/style'
 import * as Button from '@/stylex/button'
 
 const styles = stylex.create({
+  shell: { alignItems: 'flex-start', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   stack: {
     display: 'grid',
     gap: '1rem',
@@ -329,7 +330,7 @@ const singleSource = (
     update,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Tokenizer — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-start justify-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-start justify-center p-8'"})], [
     h.div([${stackClass(isStyleX)}], [${
       note === ''
         ? ''
@@ -364,7 +365,7 @@ const creatableSource = (
     update,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Tokenizer — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-start justify-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-start justify-center p-8'"})], [
     h.div([${stackClass(isStyleX)}], [
       h.p([${supportingClass(isStyleX)}], ['Free-text only']),
       Tokenizer.tokenizer({
@@ -424,7 +425,7 @@ const FIELDS = [
     update,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Tokenizer — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-start justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-start justify-center p-8'"})], [
     h.div([${stackClass(isStyleX)}], [
       ...FIELDS.map((field, i) =>
         Tokenizer.tokenizer({
