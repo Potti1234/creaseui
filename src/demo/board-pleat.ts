@@ -57,6 +57,7 @@ import { cardDemoTokens } from './pleat-cards/foundations-card-tokens'
 import { interactionCardTokens } from './pleat-cards/interaction-card-tokens'
 import { interactionTokens } from '../pleat/interaction-tokens'
 
+import { scopedRoleDeclarations } from '@/theme/roles'
 import { layoutStyle } from '@/pleat/contracts'
 /* The customizer panel always renders dark chrome; the global .dark class
    supplies the dark token values its descendants' var() references resolve. */
@@ -69,117 +70,6 @@ const scopedPleatThemeCss = (): string => {
   const aliases: ReadonlyArray<
     readonly [{ toString(): string }, { toString(): string }]
   > = [
-    [tokens.background, 'var(--background)'],
-    [tokens.foreground, 'var(--foreground)'],
-    [tokens.card, 'var(--card)'],
-    [tokens.cardForeground, 'var(--card-foreground)'],
-    [tokens.primary, 'var(--primary)'],
-    [tokens.primaryForeground, 'var(--primary-foreground)'],
-    [tokens.secondary, 'var(--secondary)'],
-    [tokens.secondaryForeground, 'var(--secondary-foreground)'],
-    [tokens.mutedForeground, 'var(--muted-foreground)'],
-    [tokens.accent, 'var(--accent)'],
-    [tokens.accentForeground, 'var(--accent-foreground)'],
-    [tokens.destructive, 'var(--destructive)'],
-    [
-      tokens.destructiveHover,
-      'color-mix(in oklab, var(--destructive) 90%, transparent)',
-    ],
-    [
-      tokens.primaryHover,
-      'color-mix(in oklab, var(--primary) 90%, transparent)',
-    ],
-    [
-      tokens.secondaryHover,
-      'color-mix(in oklab, var(--secondary) 80%, transparent)',
-    ],
-    [tokens.border, 'var(--color-border)'],
-    [tokens.input, 'var(--input)'],
-    [tokens.ring, 'var(--ring)'],
-    [tokens.radius, 'var(--radius)'],
-    [tokens.controlRadius, 'calc(var(--radius) - 2px)'],
-    [tokens.cardRadius, 'calc(var(--radius) + 4px)'],
-    [
-      tokens.focusRingShadow,
-      '0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)',
-    ],
-    [
-      tokens.destructiveRingShadow,
-      '0 0 0 3px color-mix(in oklab, var(--destructive) 20%, transparent)',
-    ],
-    [foundationTokens.muted, 'var(--muted)'],
-    [foundationTokens.popover, 'var(--popover)'],
-    [foundationTokens.popoverForeground, 'var(--popover-foreground)'],
-    [
-      foundationTokens.destructiveSoft,
-      'color-mix(in oklab, var(--destructive) 10%, transparent)',
-    ],
-    [
-      foundationTokens.destructiveMuted,
-      'color-mix(in oklab, var(--destructive) 80%, transparent)',
-    ],
-    [
-      foundationTokens.primarySoft,
-      'color-mix(in oklab, var(--primary) 10%, transparent)',
-    ],
-    [
-      foundationTokens.foregroundMuted,
-      'color-mix(in oklab, var(--foreground) 60%, transparent)',
-    ],
-    [
-      foundationTokens.foregroundSoft,
-      'color-mix(in oklab, var(--foreground) 10%, transparent)',
-    ],
-    [
-      foundationTokens.ringSoft,
-      'color-mix(in oklab, var(--ring) 50%, transparent)',
-    ],
-    [
-      foundationTokens.destructiveRingSoft,
-      'color-mix(in oklab, var(--destructive) 20%, transparent)',
-    ],
-    [
-      foundationTokens.inputDark,
-      'color-mix(in oklab, var(--input) 30%, transparent)',
-    ],
-    [
-      foundationTokens.mutedSoft,
-      'color-mix(in oklab, var(--muted) 50%, transparent)',
-    ],
-    [foundationTokens.radiusSm, 'calc(var(--radius) - 4px)'],
-    [foundationTokens.radiusMd, 'calc(var(--radius) - 2px)'],
-    [foundationTokens.radiusLg, 'var(--radius)'],
-    [foundationTokens.radiusXl, 'calc(var(--radius) + 4px)'],
-    [complexTokens.sidebar, 'var(--sidebar)'],
-    [complexTokens.sidebarForeground, 'var(--sidebar-foreground)'],
-    [complexTokens.sidebarPrimary, 'var(--sidebar-primary)'],
-    [
-      complexTokens.sidebarPrimaryForeground,
-      'var(--sidebar-primary-foreground)',
-    ],
-    [complexTokens.sidebarAccent, 'var(--sidebar-accent)'],
-    [complexTokens.sidebarAccentForeground, 'var(--sidebar-accent-foreground)'],
-    [complexTokens.sidebarBorder, 'var(--sidebar-border)'],
-    [complexTokens.sidebarRing, 'var(--sidebar-ring)'],
-    [complexTokens.chart1, 'var(--chart-1)'],
-    [complexTokens.chart2, 'var(--chart-2)'],
-    [complexTokens.chart3, 'var(--chart-3)'],
-    [complexTokens.chart4, 'var(--chart-4)'],
-    [complexTokens.chart5, 'var(--chart-5)'],
-    [
-      complexTokens.mutedSurface,
-      'color-mix(in oklab, var(--muted) 50%, transparent)',
-    ],
-    [
-      complexTokens.accentSurface,
-      'color-mix(in oklab, var(--accent) 50%, transparent)',
-    ],
-    [complexTokens.focusOutline, '1px solid var(--ring)'],
-    [complexTokens.resizeShadow, '0 0 0 1px var(--ring)'],
-    [
-      complexTokens.overlaySurface,
-      'color-mix(in oklab, var(--foreground) 50%, transparent)',
-    ],
     [boardTokens.boardBackground, 'var(--background)'],
     [boardTokens.boardMuted, 'var(--muted)'],
     [boardTokens.boardMutedForeground, 'var(--muted-foreground)'],
@@ -196,9 +86,27 @@ const scopedPleatThemeCss = (): string => {
     [interactionCardTokens.usageAccent, 'var(--chart-1)'],
     [compositionTheme.canvas, 'var(--muted)'],
   ]
-  const declarations = aliases
-    .map(([variable, value]) => `${pleatVariableName(variable)}:${value}`)
+  const roleDeclarations = (
+    [
+      ['tokens', tokens],
+      ['foundationTokens', foundationTokens],
+      ['complexTokens', complexTokens],
+    ] as const
+  )
+    .map(([group, vars]) =>
+      scopedRoleDeclarations(group, role =>
+        pleatVariableName(
+          (vars as unknown as Record<string, string>)[role] ?? '',
+        ),
+      ),
+    )
     .join(';')
+  const declarations = [
+    roleDeclarations,
+    ...aliases.map(
+      ([variable, value]) => `${pleatVariableName(variable)}:${value}`,
+    ),
+  ].join(';')
   const inspectorDeclarations: ReadonlyArray<
     readonly [{ toString(): string }, { toString(): string }]
   > = [

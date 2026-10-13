@@ -38,6 +38,8 @@ One row per contract; status uses the existing quality vocabulary
 
 ## Contracts
 
-| Package | Contract                 | Status   | Commit    | Evidence  | Remaining |
-| ------- | ------------------------ | -------- | --------- | --------- | --------- |
-| R0      | Baseline + plans in repo | verified | `5373ec0` | this file | —         |
+| Package | Contract                                                                                            | Status      | Commit      | Evidence                                                                                                                                 | Remaining                                                       |
+| ------- | --------------------------------------------------------------------------------------------------- | ----------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| R0      | Baseline + plans in repo                                                                            | verified    | `5373ec0`   | this file                                                                                                                                | —                                                               |
+| R1      | Canonical role groups (`src/theme/roles.ts`) + schema validation                                    | in-progress | see git log | `test/theme-roles.test.ts` (StyleX literals and Pleat specs match canonical roles; validator rejects unknown/missing/kind/cycle/version) | Tailwind binding check, preset resolver order, palette contrast |
+| R1      | Scoped state colors: Create board rebinds every role of `tokens`/`foundationTokens`/`complexTokens` | verified    | see git log | `e2e/sites/theme-scope.spec.ts` (Emerald + Blue hover chromatic in TW/SX/PL)                                                             | overlay/nested-scope lifecycle tests                            |
