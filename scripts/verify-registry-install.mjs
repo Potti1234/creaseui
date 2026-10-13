@@ -27,7 +27,12 @@ const recipes = JSON.parse(
 const stylexRegistry = JSON.parse(
   readFileSync(join(root, 'src/stylex/registry.json'), 'utf8'),
 )
-const stylexItemNames = new Set(stylexRegistry.items.map(item => item.name))
+const pleatRegistry = JSON.parse(
+  readFileSync(join(root, 'src/pleat/registry.json'), 'utf8'),
+)
+const stylexItemNames = new Set(
+  [...stylexRegistry.items, ...pleatRegistry.items].map(item => item.name),
+)
 const defaultComponentNames = [...registry.items, ...recipes.items].map(
   item => item.name,
 )
@@ -48,6 +53,7 @@ const componentNames =
         'stylex-button',
         'stylex-data-table',
         'stylex-integrations-echarts',
+        'pleat-button',
       ]
     : requestedComponentNames
 const sourcePackage = JSON.parse(

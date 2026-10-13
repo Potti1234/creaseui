@@ -54,6 +54,7 @@ individual StyleX components, through the shadcn CLI:
 npx --yes shadcn@latest add Potti1234/creaseui/button --yes
 npx --yes shadcn@latest add Potti1234/creaseui/dialog --yes
 npx --yes shadcn@latest add Potti1234/creaseui/stylex-button --yes
+npx --yes shadcn@latest add Potti1234/creaseui/pleat-button --yes
 ```
 
 Registry items copy their source into a Foldkit application so the resulting code
@@ -65,6 +66,10 @@ StyleX items install under the configured shadcn UI directory's `stylex`
 subdirectory (for example, `@/ui/stylex`) and keep their component dependencies
 in the registry. Configure the StyleX compiler and provide the theme variables
 described in the [StyleX authoring contract](src/stylex/README.md).
+`pleat-*` items install under the `pleat` subdirectory and pull in
+`pleat-core`/`pleat-foldkit` items containing the vendored `@pleat/*` sources
+at `@/lib/pleat/*` — see [docs/registry.md](docs/registry.md) for the import
+alias step.
 The local CLI can also be run from a consumer directory with
 `node /path/to/creaseui/scripts/crease.mjs doctor` (or `init`, `add`, `diff`).
 

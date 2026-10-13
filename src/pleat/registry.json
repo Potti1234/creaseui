@@ -1,0 +1,3773 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "pleat-accordion",
+      "type": "registry:ui",
+      "title": "Accordion",
+      "description": "The Pleat Accordion component for Foldkit.",
+      "files": [
+        {
+          "path": "accordion.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/accordion.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/accordion-state",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-alert-dialog",
+      "type": "registry:ui",
+      "title": "Alert Dialog",
+      "description": "The Pleat Alert Dialog component for Foldkit.",
+      "files": [
+        {
+          "path": "alert-dialog.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/alert-dialog.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/alert-dialog-behavior",
+        "Potti1234/creaseui/pleat-button",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-overlay-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-alert",
+      "type": "registry:ui",
+      "title": "Alert",
+      "description": "The Pleat Alert component for Foldkit.",
+      "files": [
+        {
+          "path": "alert.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/alert.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/alert-behavior",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-aspect-ratio",
+      "type": "registry:ui",
+      "title": "Aspect Ratio",
+      "description": "The Pleat Aspect Ratio component for Foldkit.",
+      "files": [
+        {
+          "path": "aspect-ratio.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/aspect-ratio.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-style",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-astryx-text",
+      "type": "registry:lib",
+      "title": "Pleat Astryx Text Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "astryx-text.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/astryx-text.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-attachment-markers",
+      "type": "registry:lib",
+      "title": "Pleat Attachment Markers Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "attachment.markers.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/attachment.markers.ts"
+        }
+      ],
+      "registryDependencies": [
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-attachment",
+      "type": "registry:ui",
+      "title": "Attachment",
+      "description": "The Pleat Attachment component for Foldkit.",
+      "files": [
+        {
+          "path": "attachment.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/attachment.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-attachment-markers",
+        "Potti1234/creaseui/pleat-button",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-message-markers",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-avatar-group",
+      "type": "registry:ui",
+      "title": "Avatar Group",
+      "description": "The Pleat Avatar Group component for Foldkit.",
+      "files": [
+        {
+          "path": "avatar-group.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/avatar-group.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-complex-tokens",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-avatar-markers",
+      "type": "registry:lib",
+      "title": "Pleat Avatar Markers Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "avatar.markers.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/avatar.markers.ts"
+        }
+      ],
+      "registryDependencies": [
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-avatar",
+      "type": "registry:ui",
+      "title": "Avatar",
+      "description": "The Pleat Avatar component for Foldkit.",
+      "files": [
+        {
+          "path": "avatar.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/avatar.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-avatar-markers",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-badge",
+      "type": "registry:ui",
+      "title": "Badge",
+      "description": "The Pleat Badge component for Foldkit.",
+      "files": [
+        {
+          "path": "badge.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/badge.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-banner",
+      "type": "registry:ui",
+      "title": "Banner",
+      "description": "The Pleat Banner component for Foldkit.",
+      "files": [
+        {
+          "path": "banner.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/banner.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/banner-behavior",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-button",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-blockquote",
+      "type": "registry:ui",
+      "title": "Blockquote",
+      "description": "The Pleat Blockquote component for Foldkit.",
+      "files": [
+        {
+          "path": "blockquote.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/blockquote.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-breadcrumb",
+      "type": "registry:ui",
+      "title": "Breadcrumb",
+      "description": "The Pleat Breadcrumb component for Foldkit.",
+      "files": [
+        {
+          "path": "breadcrumb.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/breadcrumb.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/breadcrumb-behavior",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-bubble-markers",
+      "type": "registry:lib",
+      "title": "Pleat Bubble Markers Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "bubble.markers.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/bubble.markers.ts"
+        }
+      ],
+      "registryDependencies": [
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-bubble",
+      "type": "registry:ui",
+      "title": "Bubble",
+      "description": "The Pleat Bubble component for Foldkit.",
+      "files": [
+        {
+          "path": "bubble.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/bubble.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-bubble-markers",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-message-markers",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-button-group-join",
+      "type": "registry:lib",
+      "title": "Pleat Button Group Join Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "button-group-join.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/button-group-join.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-button-group",
+      "type": "registry:ui",
+      "title": "Button Group",
+      "description": "The Pleat Button Group component for Foldkit.",
+      "files": [
+        {
+          "path": "button-group.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/button-group.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-button-group-join",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-button",
+      "type": "registry:ui",
+      "title": "Button",
+      "description": "The Pleat Button component for Foldkit.",
+      "files": [
+        {
+          "path": "button.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/button.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/button-behavior",
+        "Potti1234/creaseui/pleat-button-group-join",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core",
+        "pleat-foldkit"
+      ]
+    },
+    {
+      "name": "pleat-calendar-markers",
+      "type": "registry:lib",
+      "title": "Pleat Calendar Markers Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "calendar.markers.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/calendar.markers.ts"
+        }
+      ],
+      "registryDependencies": [
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-calendar",
+      "type": "registry:ui",
+      "title": "Calendar",
+      "description": "The Pleat Calendar component for Foldkit.",
+      "files": [
+        {
+          "path": "calendar.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/calendar.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/calendar-range",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-calendar-markers",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-card-markers",
+      "type": "registry:lib",
+      "title": "Pleat Card Markers Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "card.markers.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/card.markers.ts"
+        }
+      ],
+      "registryDependencies": [
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-card",
+      "type": "registry:ui",
+      "title": "Card",
+      "description": "The Pleat Card component for Foldkit.",
+      "files": [
+        {
+          "path": "card.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/card.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-carousel",
+      "type": "registry:ui",
+      "title": "Carousel",
+      "description": "The Pleat Carousel component for Foldkit.",
+      "files": [
+        {
+          "path": "carousel.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/carousel.ts"
+        }
+      ],
+      "dependencies": [
+        "embla-carousel@^8.6.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/carousel-lifecycle",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-center",
+      "type": "registry:ui",
+      "title": "Center",
+      "description": "The Pleat Center component for Foldkit.",
+      "files": [
+        {
+          "path": "center.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/center.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-style",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-chart",
+      "type": "registry:ui",
+      "title": "Chart",
+      "description": "The Pleat Chart component for Foldkit.",
+      "files": [
+        {
+          "path": "chart.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/chart.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/echarts-adapter",
+        "Potti1234/creaseui/pleat-complex-tokens",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-integrations-echarts",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-chat-reasoning",
+      "type": "registry:ui",
+      "title": "Chat Reasoning",
+      "description": "The Pleat Chat Reasoning component for Foldkit.",
+      "files": [
+        {
+          "path": "chat-reasoning.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/chat-reasoning.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-checkbox-markers",
+      "type": "registry:lib",
+      "title": "Pleat Checkbox Markers Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "checkbox.markers.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/checkbox.markers.ts"
+        }
+      ],
+      "registryDependencies": [
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-checkbox",
+      "type": "registry:ui",
+      "title": "Checkbox",
+      "description": "The Pleat Checkbox component for Foldkit.",
+      "files": [
+        {
+          "path": "checkbox.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/checkbox.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/checkbox-behavior",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-checkbox-markers",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-circular-progress",
+      "type": "registry:ui",
+      "title": "Circular Progress",
+      "description": "The Pleat Circular Progress component for Foldkit.",
+      "files": [
+        {
+          "path": "circular-progress.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/circular-progress.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-complex-tokens",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-code-block",
+      "type": "registry:ui",
+      "title": "Code Block",
+      "description": "The Pleat Code Block component for Foldkit.",
+      "files": [
+        {
+          "path": "code-block.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/code-block.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/code-block-behavior",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-button",
+        "Potti1234/creaseui/pleat-complex-tokens",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-code",
+      "type": "registry:ui",
+      "title": "Code",
+      "description": "The Pleat Code component for Foldkit.",
+      "files": [
+        {
+          "path": "code.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/code.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-collapsible",
+      "type": "registry:ui",
+      "title": "Collapsible",
+      "description": "The Pleat Collapsible component for Foldkit.",
+      "files": [
+        {
+          "path": "collapsible.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/collapsible.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-complex-tokens",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-sidebar-markers",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-combobox",
+      "type": "registry:ui",
+      "title": "Combobox",
+      "description": "The Pleat Combobox component for Foldkit.",
+      "files": [
+        {
+          "path": "combobox.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/combobox.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-overlay-boundary",
+        "Potti1234/creaseui/pleat-overlay-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-command",
+      "type": "registry:ui",
+      "title": "Command",
+      "description": "The Pleat Command component for Foldkit.",
+      "files": [
+        {
+          "path": "command.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/command.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/command-behavior",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-overlay-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-complex-tokens",
+      "type": "registry:lib",
+      "title": "Pleat Complex Tokens Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "complex-tokens.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/complex-tokens.ts"
+        }
+      ],
+      "registryDependencies": [
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-composition-box",
+      "type": "registry:lib",
+      "title": "Pleat Composition Box Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/box.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/composition/box.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-composition-composition-theme",
+        "Potti1234/creaseui/pleat-composition-element",
+        "Potti1234/creaseui/pleat-composition-semantic-theme",
+        "Potti1234/creaseui/pleat-composition-space",
+        "Potti1234/creaseui/pleat-composition-types",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-composition-chart-tab",
+      "type": "registry:lib",
+      "title": "Pleat Composition Chart Tab Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/chart-tab.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/composition/chart-tab.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-composition-composition-theme",
+      "type": "registry:lib",
+      "title": "Pleat Composition Composition Theme Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/composition-theme.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/composition/composition-theme.ts"
+        }
+      ],
+      "registryDependencies": [
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-composition-composition-tokens-const",
+      "type": "registry:lib",
+      "title": "Pleat Composition Composition Tokens Const Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/composition-tokens.const.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/composition/composition-tokens.const.ts"
+        }
+      ]
+    },
+    {
+      "name": "pleat-composition-element",
+      "type": "registry:lib",
+      "title": "Pleat Composition Element Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/element.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/composition/element.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-composition-types"
+      ]
+    },
+    {
+      "name": "pleat-composition-evaluations",
+      "type": "registry:lib",
+      "title": "Pleat Composition Evaluations Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/evaluations.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/composition/evaluations.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-composition-templates"
+      ]
+    },
+    {
+      "name": "pleat-composition-grid",
+      "type": "registry:lib",
+      "title": "Pleat Composition Grid Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/grid.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/composition/grid.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-composition-composition-theme",
+        "Potti1234/creaseui/pleat-composition-element",
+        "Potti1234/creaseui/pleat-composition-semantic-layout-tokens-const",
+        "Potti1234/creaseui/pleat-composition-space",
+        "Potti1234/creaseui/pleat-composition-types",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-composition-icon",
+      "type": "registry:lib",
+      "title": "Pleat Composition Icon Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/icon.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/composition/icon.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-style",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-composition-index",
+      "type": "registry:lib",
+      "title": "Pleat Composition Index Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/index.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/composition/index.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-composition-box",
+        "Potti1234/creaseui/pleat-composition-composition-theme",
+        "Potti1234/creaseui/pleat-composition-evaluations",
+        "Potti1234/creaseui/pleat-composition-grid",
+        "Potti1234/creaseui/pleat-composition-inline",
+        "Potti1234/creaseui/pleat-composition-recipes",
+        "Potti1234/creaseui/pleat-composition-semantic-layout",
+        "Potti1234/creaseui/pleat-composition-semantic-theme",
+        "Potti1234/creaseui/pleat-composition-semantic-themes",
+        "Potti1234/creaseui/pleat-composition-stack",
+        "Potti1234/creaseui/pleat-composition-templates",
+        "Potti1234/creaseui/pleat-composition-text",
+        "Potti1234/creaseui/pleat-composition-theme",
+        "Potti1234/creaseui/pleat-composition-types"
+      ]
+    },
+    {
+      "name": "pleat-composition-inline",
+      "type": "registry:lib",
+      "title": "Pleat Composition Inline Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/inline.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/composition/inline.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-composition-element",
+        "Potti1234/creaseui/pleat-composition-space",
+        "Potti1234/creaseui/pleat-composition-types",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-composition-login-artwork",
+      "type": "registry:lib",
+      "title": "Pleat Composition Login Artwork Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/login-artwork.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/composition/login-artwork.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-composition-recipes",
+      "type": "registry:lib",
+      "title": "Pleat Composition Recipes Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/recipes.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/composition/recipes.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-composition-semantic-layout",
+        "Potti1234/creaseui/pleat-composition-theme",
+        "Potti1234/creaseui/pleat-composition-types-internal"
+      ]
+    },
+    {
+      "name": "pleat-composition-semantic-layout-tokens-const",
+      "type": "registry:lib",
+      "title": "Pleat Composition Semantic Layout Tokens Const Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/semantic-layout-tokens.const.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/composition/semantic-layout-tokens.const.ts"
+        }
+      ]
+    },
+    {
+      "name": "pleat-composition-semantic-layout",
+      "type": "registry:lib",
+      "title": "Pleat Composition Semantic Layout Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/semantic-layout.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/composition/semantic-layout.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-composition-box",
+        "Potti1234/creaseui/pleat-composition-grid",
+        "Potti1234/creaseui/pleat-composition-inline",
+        "Potti1234/creaseui/pleat-composition-stack",
+        "Potti1234/creaseui/pleat-composition-text",
+        "Potti1234/creaseui/pleat-composition-types"
+      ]
+    },
+    {
+      "name": "pleat-composition-semantic-theme",
+      "type": "registry:lib",
+      "title": "Pleat Composition Semantic Theme Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/semantic-theme.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/composition/semantic-theme.ts"
+        }
+      ],
+      "registryDependencies": [
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-composition-semantic-themes",
+      "type": "registry:lib",
+      "title": "Pleat Composition Semantic Themes Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/semantic-themes.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/composition/semantic-themes.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-composition-semantic-theme",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-composition-sidebar-block",
+      "type": "registry:lib",
+      "title": "Pleat Composition Sidebar Block Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/sidebar-block.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/composition/sidebar-block.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-composition-space",
+      "type": "registry:lib",
+      "title": "Pleat Composition Space Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/space.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/composition/space.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-composition-composition-tokens-const",
+        "Potti1234/creaseui/pleat-composition-semantic-theme",
+        "Potti1234/creaseui/pleat-composition-types",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-composition-stack",
+      "type": "registry:lib",
+      "title": "Pleat Composition Stack Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/stack.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/composition/stack.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-composition-element",
+        "Potti1234/creaseui/pleat-composition-space",
+        "Potti1234/creaseui/pleat-composition-types",
+        "Potti1234/creaseui/pleat-style",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-composition-templates",
+      "type": "registry:lib",
+      "title": "Pleat Composition Templates Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/templates.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/composition/templates.ts"
+        }
+      ]
+    },
+    {
+      "name": "pleat-composition-text",
+      "type": "registry:lib",
+      "title": "Pleat Composition Text Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/text.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/composition/text.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-composition-composition-tokens-const",
+        "Potti1234/creaseui/pleat-composition-semantic-theme",
+        "Potti1234/creaseui/pleat-composition-types",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-composition-theme",
+      "type": "registry:lib",
+      "title": "Pleat Composition Theme Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/theme.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/composition/theme.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-composition-semantic-themes",
+        "Potti1234/creaseui/pleat-composition-types",
+        "pleat-core",
+        "pleat-foldkit"
+      ]
+    },
+    {
+      "name": "pleat-composition-types-internal",
+      "type": "registry:lib",
+      "title": "Pleat Composition Types Internal Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/types-internal.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/composition/types-internal.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-composition-semantic-layout",
+        "Potti1234/creaseui/pleat-composition-types"
+      ]
+    },
+    {
+      "name": "pleat-composition-types",
+      "type": "registry:lib",
+      "title": "Pleat Composition Types Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "composition/types.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/composition/types.ts"
+        }
+      ]
+    },
+    {
+      "name": "pleat-context-menu",
+      "type": "registry:ui",
+      "title": "Context Menu",
+      "description": "The Pleat Context Menu component for Foldkit.",
+      "files": [
+        {
+          "path": "context-menu.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/context-menu.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-dropdown-menu"
+      ]
+    },
+    {
+      "name": "pleat-contracts",
+      "type": "registry:lib",
+      "title": "Pleat Contracts Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "contracts.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/contracts.ts"
+        }
+      ],
+      "registryDependencies": [
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-data-table",
+      "type": "registry:ui",
+      "title": "Data Table",
+      "description": "The Pleat Data Table component for Foldkit.",
+      "files": [
+        {
+          "path": "data-table.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/data-table.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/data-table-mechanics",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-button",
+        "Potti1234/creaseui/pleat-complex-tokens",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-input",
+        "Potti1234/creaseui/pleat-pagination",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-table",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-date-input",
+      "type": "registry:ui",
+      "title": "Date Input",
+      "description": "The Pleat Date Input component for Foldkit.",
+      "files": [
+        {
+          "path": "date-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/date-input.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/date-input-behavior",
+        "Potti1234/creaseui/date-parse-behavior",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-calendar",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-overlay-boundary",
+        "Potti1234/creaseui/pleat-overlay-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-date-picker",
+      "type": "registry:ui",
+      "title": "Date Picker",
+      "description": "The Pleat Date Picker component for Foldkit.",
+      "files": [
+        {
+          "path": "date-picker.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/date-picker.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/calendar-range",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-calendar",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-overlay-boundary",
+        "Potti1234/creaseui/pleat-overlay-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-date-range-input",
+      "type": "registry:ui",
+      "title": "Date Range Input",
+      "description": "The Pleat Date Range Input component for Foldkit.",
+      "files": [
+        {
+          "path": "date-range-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/date-range-input.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/date-parse-behavior",
+        "Potti1234/creaseui/date-range-input-behavior",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-calendar",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-overlay-boundary",
+        "Potti1234/creaseui/pleat-overlay-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-date-time-input",
+      "type": "registry:ui",
+      "title": "Date Time Input",
+      "description": "The Pleat Date Time Input component for Foldkit.",
+      "files": [
+        {
+          "path": "date-time-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/date-time-input.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/date-parse-behavior",
+        "Potti1234/creaseui/date-time-input-behavior",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-calendar",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-overlay-boundary",
+        "Potti1234/creaseui/pleat-overlay-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "Potti1234/creaseui/time-parse-behavior",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-dialog",
+      "type": "registry:ui",
+      "title": "Dialog",
+      "description": "The Pleat Dialog component for Foldkit.",
+      "files": [
+        {
+          "path": "dialog.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/dialog.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-overlay-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-direction",
+      "type": "registry:ui",
+      "title": "Direction",
+      "description": "The Pleat Direction component for Foldkit.",
+      "files": [
+        {
+          "path": "direction.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/direction.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-style"
+      ]
+    },
+    {
+      "name": "pleat-drawer",
+      "type": "registry:ui",
+      "title": "Drawer",
+      "description": "The Pleat Drawer component for Foldkit.",
+      "files": [
+        {
+          "path": "drawer.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/drawer.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/drawer-behavior",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-overlay-tokens",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-dropdown-menu",
+      "type": "registry:ui",
+      "title": "Dropdown Menu",
+      "description": "The Pleat Dropdown Menu component for Foldkit.",
+      "files": [
+        {
+          "path": "dropdown-menu.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/dropdown-menu.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/dropdown-menu-behavior",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-button",
+        "Potti1234/creaseui/pleat-button-group-join",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-overlay-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-separator",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-empty",
+      "type": "registry:ui",
+      "title": "Empty",
+      "description": "The Pleat Empty component for Foldkit.",
+      "files": [
+        {
+          "path": "empty.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/empty.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-field-status",
+      "type": "registry:ui",
+      "title": "Field Status",
+      "description": "The Pleat Field Status component for Foldkit.",
+      "files": [
+        {
+          "path": "field-status.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/field-status.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-field-markers",
+      "type": "registry:lib",
+      "title": "Pleat Field Markers Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "field.markers.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/field.markers.ts"
+        }
+      ],
+      "registryDependencies": [
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-field",
+      "type": "registry:ui",
+      "title": "Field",
+      "description": "The Pleat Field component for Foldkit.",
+      "files": [
+        {
+          "path": "field.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/field.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/field-behavior",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-field-markers",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-file-input",
+      "type": "registry:ui",
+      "title": "File Input",
+      "description": "The Pleat File Input component for Foldkit.",
+      "files": [
+        {
+          "path": "file-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/file-input.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/file-input-behavior",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/input-status",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-form",
+      "type": "registry:ui",
+      "title": "Form",
+      "description": "The Pleat Form component for Foldkit.",
+      "files": [
+        {
+          "path": "form.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/form.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/form-behavior",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-field",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-foundations-tokens",
+      "type": "registry:lib",
+      "title": "Pleat Foundations Tokens Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "foundations-tokens.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/foundations-tokens.ts"
+        }
+      ],
+      "registryDependencies": [
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-grid",
+      "type": "registry:ui",
+      "title": "Grid",
+      "description": "The Pleat Grid component for Foldkit.",
+      "files": [
+        {
+          "path": "grid.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/grid.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-style",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-heading",
+      "type": "registry:ui",
+      "title": "Heading",
+      "description": "The Pleat Heading component for Foldkit.",
+      "files": [
+        {
+          "path": "heading.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/heading.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-text",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-hover-card",
+      "type": "registry:ui",
+      "title": "Hover Card",
+      "description": "The Pleat Hover Card component for Foldkit.",
+      "files": [
+        {
+          "path": "hover-card.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/hover-card.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/hover-card-behavior",
+        "Potti1234/creaseui/pleat-button",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-overlay-boundary",
+        "Potti1234/creaseui/pleat-overlay-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-indicator",
+      "type": "registry:ui",
+      "title": "Indicator",
+      "description": "The Pleat Indicator component for Foldkit.",
+      "files": [
+        {
+          "path": "indicator.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/indicator.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-info-tip",
+      "type": "registry:ui",
+      "title": "Info Tip",
+      "description": "The Pleat Info Tip component for Foldkit.",
+      "files": [
+        {
+          "path": "info-tip.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/info-tip.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-overlay-boundary",
+        "Potti1234/creaseui/pleat-overlay-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "Potti1234/creaseui/tooltip-behavior",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-input-group",
+      "type": "registry:ui",
+      "title": "Input Group",
+      "description": "The Pleat Input Group component for Foldkit.",
+      "files": [
+        {
+          "path": "input-group.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/input-group.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-button",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-input-otp",
+      "type": "registry:ui",
+      "title": "Input Otp",
+      "description": "The Pleat Input Otp component for Foldkit.",
+      "files": [
+        {
+          "path": "input-otp.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/input-otp.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-input",
+      "type": "registry:ui",
+      "title": "Input",
+      "description": "The Pleat Input component for Foldkit.",
+      "files": [
+        {
+          "path": "input.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/input.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/input-behavior",
+        "Potti1234/creaseui/pleat-button-group-join",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-integrations-echarts",
+      "type": "registry:lib",
+      "title": "Pleat Integrations Echarts Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "integrations/echarts.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/integrations/echarts.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/echarts-adapter",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-interaction-tokens",
+      "type": "registry:lib",
+      "title": "Pleat Interaction Tokens Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "interaction-tokens.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/interaction-tokens.ts"
+        }
+      ]
+    },
+    {
+      "name": "pleat-item",
+      "type": "registry:ui",
+      "title": "Item",
+      "description": "The Pleat Item component for Foldkit.",
+      "files": [
+        {
+          "path": "item.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/item.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-kbd",
+      "type": "registry:ui",
+      "title": "Kbd",
+      "description": "The Pleat Kbd component for Foldkit.",
+      "files": [
+        {
+          "path": "kbd.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/kbd.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-label",
+      "type": "registry:ui",
+      "title": "Label",
+      "description": "The Pleat Label component for Foldkit.",
+      "files": [
+        {
+          "path": "label.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/label.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-style",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-lightbox",
+      "type": "registry:ui",
+      "title": "Lightbox",
+      "description": "The Pleat Lightbox component for Foldkit.",
+      "files": [
+        {
+          "path": "lightbox.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/lightbox.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/lightbox-behavior",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-link",
+      "type": "registry:ui",
+      "title": "Link",
+      "description": "The Pleat Link component for Foldkit.",
+      "files": [
+        {
+          "path": "link.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/link.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-text",
+        "Potti1234/creaseui/pleat-tokens",
+        "Potti1234/creaseui/pleat-tooltip",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-list-input",
+      "type": "registry:ui",
+      "title": "List Input",
+      "description": "The Pleat List Input component for Foldkit.",
+      "files": [
+        {
+          "path": "list-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/list-input.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/input-status",
+        "Potti1234/creaseui/list-input-behavior",
+        "Potti1234/creaseui/pleat-button",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-list",
+      "type": "registry:ui",
+      "title": "List",
+      "description": "The Pleat List component for Foldkit.",
+      "files": [
+        {
+          "path": "list.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/list.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-log-stream-terminal-ink",
+      "type": "registry:lib",
+      "title": "Pleat Log Stream Terminal Ink Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "log-stream-terminal-ink.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/log-stream-terminal-ink.ts"
+        }
+      ],
+      "registryDependencies": [
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-log-stream-terminal",
+      "type": "registry:lib",
+      "title": "Pleat Log Stream Terminal Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "log-stream-terminal.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/log-stream-terminal.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-log-stream",
+      "type": "registry:ui",
+      "title": "Log Stream",
+      "description": "The Pleat Log Stream component for Foldkit.",
+      "files": [
+        {
+          "path": "log-stream.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/log-stream.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/message-scroller-behavior",
+        "Potti1234/creaseui/pleat-complex-tokens",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-log-stream-terminal-ink",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-map-arc",
+      "type": "registry:ui",
+      "title": "Map Arc",
+      "description": "The Pleat Map Arc component for Foldkit.",
+      "files": [
+        {
+          "path": "map-arc.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/map-arc.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/map-adapter"
+      ]
+    },
+    {
+      "name": "pleat-map-cluster",
+      "type": "registry:ui",
+      "title": "Map Cluster",
+      "description": "The Pleat Map Cluster component for Foldkit.",
+      "files": [
+        {
+          "path": "map-cluster.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/map-cluster.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/map-adapter"
+      ]
+    },
+    {
+      "name": "pleat-map-controls",
+      "type": "registry:ui",
+      "title": "Map Controls",
+      "description": "The Pleat Map Controls component for Foldkit.",
+      "files": [
+        {
+          "path": "map-controls.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/map-controls.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/map-adapter",
+        "Potti1234/creaseui/pleat-map"
+      ]
+    },
+    {
+      "name": "pleat-map-geojson",
+      "type": "registry:ui",
+      "title": "Map Geojson",
+      "description": "The Pleat Map Geojson component for Foldkit.",
+      "files": [
+        {
+          "path": "map-geojson.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/map-geojson.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/map-adapter"
+      ]
+    },
+    {
+      "name": "pleat-map-localization",
+      "type": "registry:ui",
+      "title": "Map Localization",
+      "description": "The Pleat Map Localization component for Foldkit.",
+      "files": [
+        {
+          "path": "map-localization.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/map-localization.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/map-adapter"
+      ]
+    },
+    {
+      "name": "pleat-map-marker",
+      "type": "registry:ui",
+      "title": "Map Marker",
+      "description": "The Pleat Map Marker component for Foldkit.",
+      "files": [
+        {
+          "path": "map-marker.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/map-marker.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/map-adapter",
+        "Potti1234/creaseui/pleat-map"
+      ]
+    },
+    {
+      "name": "pleat-map-popup",
+      "type": "registry:ui",
+      "title": "Map Popup",
+      "description": "The Pleat Map Popup component for Foldkit.",
+      "files": [
+        {
+          "path": "map-popup.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/map-popup.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/map-adapter",
+        "Potti1234/creaseui/pleat-map"
+      ]
+    },
+    {
+      "name": "pleat-map-route",
+      "type": "registry:ui",
+      "title": "Map Route",
+      "description": "The Pleat Map Route component for Foldkit.",
+      "files": [
+        {
+          "path": "map-route.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/map-route.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/map-adapter"
+      ]
+    },
+    {
+      "name": "pleat-map-styles",
+      "type": "registry:ui",
+      "title": "Map Styles",
+      "description": "The Pleat Map Styles component for Foldkit.",
+      "files": [
+        {
+          "path": "map-styles.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/map-styles.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/map-adapter"
+      ]
+    },
+    {
+      "name": "pleat-map-markers",
+      "type": "registry:lib",
+      "title": "Pleat Map Markers Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "map.markers.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/map.markers.ts"
+        }
+      ],
+      "registryDependencies": [
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-map",
+      "type": "registry:ui",
+      "title": "Map",
+      "description": "The Pleat Map component for Foldkit.",
+      "files": [
+        {
+          "path": "map.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/map.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/map-adapter",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-map-markers",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-markdown",
+      "type": "registry:ui",
+      "title": "Markdown",
+      "description": "The Pleat Markdown component for Foldkit.",
+      "files": [
+        {
+          "path": "markdown.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/markdown.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/markdown-behavior",
+        "Potti1234/creaseui/pleat-blockquote",
+        "Potti1234/creaseui/pleat-code",
+        "Potti1234/creaseui/pleat-code-block",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-heading",
+        "Potti1234/creaseui/pleat-list",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-table",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-marker",
+      "type": "registry:ui",
+      "title": "Marker",
+      "description": "The Pleat Marker component for Foldkit.",
+      "files": [
+        {
+          "path": "marker.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/marker.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-menubar",
+      "type": "registry:ui",
+      "title": "Menubar",
+      "description": "The Pleat Menubar component for Foldkit.",
+      "files": [
+        {
+          "path": "menubar.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/menubar.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/menubar-behavior",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-dropdown-menu",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-message-scroller",
+      "type": "registry:ui",
+      "title": "Message Scroller",
+      "description": "The Pleat Message Scroller component for Foldkit.",
+      "files": [
+        {
+          "path": "message-scroller.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/message-scroller.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/message-scroller-behavior",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-message-markers",
+      "type": "registry:lib",
+      "title": "Pleat Message Markers Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "message.markers.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/message.markers.ts"
+        }
+      ],
+      "registryDependencies": [
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-message",
+      "type": "registry:ui",
+      "title": "Message",
+      "description": "The Pleat Message component for Foldkit.",
+      "files": [
+        {
+          "path": "message.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/message.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-message-markers",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-metadata-list",
+      "type": "registry:ui",
+      "title": "Metadata List",
+      "description": "The Pleat Metadata List component for Foldkit.",
+      "files": [
+        {
+          "path": "metadata-list.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/metadata-list.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/metadata-list-behavior",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-mobile-nav",
+      "type": "registry:ui",
+      "title": "Mobile Nav",
+      "description": "The Pleat Mobile Nav component for Foldkit.",
+      "files": [
+        {
+          "path": "mobile-nav.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/mobile-nav.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/mobile-nav-behavior",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-overlay-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-more-menu",
+      "type": "registry:ui",
+      "title": "More Menu",
+      "description": "The Pleat More Menu component for Foldkit.",
+      "files": [
+        {
+          "path": "more-menu.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/more-menu.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/more-menu-behavior",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-dropdown-menu",
+        "Potti1234/creaseui/pleat-style",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-multi-selector",
+      "type": "registry:ui",
+      "title": "Multi Selector",
+      "description": "The Pleat Multi Selector component for Foldkit.",
+      "files": [
+        {
+          "path": "multi-selector.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/multi-selector.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/multi-selector-behavior",
+        "Potti1234/creaseui/multi-selector-view-behavior",
+        "Potti1234/creaseui/pleat-button",
+        "Potti1234/creaseui/pleat-checkbox",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-drawer",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-overlay-boundary",
+        "Potti1234/creaseui/pleat-overlay-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-native-select",
+      "type": "registry:ui",
+      "title": "Native Select",
+      "description": "The Pleat Native Select component for Foldkit.",
+      "files": [
+        {
+          "path": "native-select.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/native-select.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-navigation-menu",
+      "type": "registry:ui",
+      "title": "Navigation Menu",
+      "description": "The Pleat Navigation Menu component for Foldkit.",
+      "files": [
+        {
+          "path": "navigation-menu.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/navigation-menu.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-complex-tokens",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-popover",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-number-input",
+      "type": "registry:ui",
+      "title": "Number Input",
+      "description": "The Pleat Number Input component for Foldkit.",
+      "files": [
+        {
+          "path": "number-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/number-input.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/input-status",
+        "Potti1234/creaseui/number-input-behavior",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-overflow-list",
+      "type": "registry:ui",
+      "title": "Overflow List",
+      "description": "The Pleat Overflow List component for Foldkit.",
+      "files": [
+        {
+          "path": "overflow-list.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/overflow-list.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/overflow-list-behavior",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-style",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-overlay-boundary",
+      "type": "registry:lib",
+      "title": "Pleat Overlay Boundary Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "overlay-boundary.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/overlay-boundary.ts"
+        }
+      ]
+    },
+    {
+      "name": "pleat-overlay-tokens",
+      "type": "registry:lib",
+      "title": "Pleat Overlay Tokens Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "overlay-tokens.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/overlay-tokens.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-complex-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-pagination",
+      "type": "registry:ui",
+      "title": "Pagination",
+      "description": "The Pleat Pagination component for Foldkit.",
+      "files": [
+        {
+          "path": "pagination.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/pagination.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pagination-behavior",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-popover",
+      "type": "registry:ui",
+      "title": "Popover",
+      "description": "The Pleat Popover component for Foldkit.",
+      "files": [
+        {
+          "path": "popover.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/popover.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-button",
+        "Potti1234/creaseui/pleat-complex-tokens",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-overlay-boundary",
+        "Potti1234/creaseui/pleat-overlay-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-progress",
+      "type": "registry:ui",
+      "title": "Progress",
+      "description": "The Pleat Progress component for Foldkit.",
+      "files": [
+        {
+          "path": "progress.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/progress.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "Potti1234/creaseui/progress-normalization",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-radio-group-markers",
+      "type": "registry:lib",
+      "title": "Pleat Radio Group Markers Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "radio-group.markers.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/radio-group.markers.ts"
+        }
+      ],
+      "registryDependencies": [
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-radio-group",
+      "type": "registry:ui",
+      "title": "Radio Group",
+      "description": "The Pleat Radio Group component for Foldkit.",
+      "files": [
+        {
+          "path": "radio-group.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/radio-group.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-radio-group-markers",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "Potti1234/creaseui/radio-group-behavior",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-reset",
+      "type": "registry:lib",
+      "title": "Pleat Reset Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "reset.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/reset.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core",
+        "pleat-foldkit"
+      ]
+    },
+    {
+      "name": "pleat-resizable",
+      "type": "registry:ui",
+      "title": "Resizable",
+      "description": "The Pleat Resizable component for Foldkit.",
+      "files": [
+        {
+          "path": "resizable.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/resizable.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-complex-tokens",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-scroll-area",
+      "type": "registry:ui",
+      "title": "Scroll Area",
+      "description": "The Pleat Scroll Area component for Foldkit.",
+      "files": [
+        {
+          "path": "scroll-area.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/scroll-area.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-section",
+      "type": "registry:ui",
+      "title": "Section",
+      "description": "The Pleat Section component for Foldkit.",
+      "files": [
+        {
+          "path": "section.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/section.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-select",
+      "type": "registry:ui",
+      "title": "Select",
+      "description": "The Pleat Select component for Foldkit.",
+      "files": [
+        {
+          "path": "select.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/select.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-button-group-join",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-overlay-boundary",
+        "Potti1234/creaseui/pleat-overlay-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-selectable-card",
+      "type": "registry:ui",
+      "title": "Selectable Card",
+      "description": "The Pleat Selectable Card component for Foldkit.",
+      "files": [
+        {
+          "path": "selectable-card.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/selectable-card.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/card-pressable-behavior",
+        "Potti1234/creaseui/card-surface-behavior",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-separator",
+      "type": "registry:ui",
+      "title": "Separator",
+      "description": "The Pleat Separator component for Foldkit.",
+      "files": [
+        {
+          "path": "separator.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/separator.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-sheet",
+      "type": "registry:ui",
+      "title": "Sheet",
+      "description": "The Pleat Sheet component for Foldkit.",
+      "files": [
+        {
+          "path": "sheet.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/sheet.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-overlay-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "Potti1234/creaseui/sheet-behavior",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-sidebar-markers",
+      "type": "registry:lib",
+      "title": "Pleat Sidebar Markers Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "sidebar.markers.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/sidebar.markers.ts"
+        }
+      ],
+      "registryDependencies": [
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-sidebar",
+      "type": "registry:ui",
+      "title": "Sidebar",
+      "description": "The Pleat Sidebar component for Foldkit.",
+      "files": [
+        {
+          "path": "sidebar.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/sidebar.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-complex-tokens",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-sidebar-markers",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "Potti1234/creaseui/sidebar-state",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-skeleton",
+      "type": "registry:ui",
+      "title": "Skeleton",
+      "description": "The Pleat Skeleton component for Foldkit.",
+      "files": [
+        {
+          "path": "skeleton.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/skeleton.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-style",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-slider",
+      "type": "registry:ui",
+      "title": "Slider",
+      "description": "The Pleat Slider component for Foldkit.",
+      "files": [
+        {
+          "path": "slider.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/slider.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "Potti1234/creaseui/slider-behavior",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-spinner",
+      "type": "registry:ui",
+      "title": "Spinner",
+      "description": "The Pleat Spinner component for Foldkit.",
+      "files": [
+        {
+          "path": "spinner.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/spinner.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-stack",
+      "type": "registry:ui",
+      "title": "Stack",
+      "description": "The Pleat Stack component for Foldkit.",
+      "files": [
+        {
+          "path": "stack.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/stack.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-stat",
+      "type": "registry:ui",
+      "title": "Stat",
+      "description": "The Pleat Stat component for Foldkit.",
+      "files": [
+        {
+          "path": "stat.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/stat.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-status-dot",
+      "type": "registry:ui",
+      "title": "Status Dot",
+      "description": "The Pleat Status Dot component for Foldkit.",
+      "files": [
+        {
+          "path": "status-dot.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/status-dot.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-stepper",
+      "type": "registry:ui",
+      "title": "Stepper",
+      "description": "The Pleat Stepper component for Foldkit.",
+      "files": [
+        {
+          "path": "stepper.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/stepper.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-button",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "Potti1234/creaseui/stepper-behavior",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-style",
+      "type": "registry:lib",
+      "title": "Pleat Style Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "style.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/style.ts"
+        }
+      ],
+      "registryDependencies": [
+        "pleat-core",
+        "pleat-foldkit"
+      ]
+    },
+    {
+      "name": "pleat-switch",
+      "type": "registry:ui",
+      "title": "Switch",
+      "description": "The Pleat Switch component for Foldkit.",
+      "files": [
+        {
+          "path": "switch.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/switch.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "Potti1234/creaseui/switch-behavior",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-table",
+      "type": "registry:ui",
+      "title": "Table",
+      "description": "The Pleat Table component for Foldkit.",
+      "files": [
+        {
+          "path": "table.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/table.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-complex-tokens",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-tabs",
+      "type": "registry:ui",
+      "title": "Tabs",
+      "description": "The Pleat Tabs component for Foldkit.",
+      "files": [
+        {
+          "path": "tabs.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/tabs.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-tanstack-data-table-pleat",
+      "type": "registry:lib",
+      "title": "Pleat Tanstack Data Table Pleat Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "tanstack/data-table.pleat.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/tanstack/data-table.pleat.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-complex-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-tanstack-data-table",
+      "type": "registry:lib",
+      "title": "Pleat Tanstack Data Table Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "tanstack/data-table.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/tanstack/data-table.ts"
+        }
+      ],
+      "dependencies": [
+        "@tanstack/table-core@8.21.3"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-button",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tanstack-data-table-pleat",
+        "Potti1234/creaseui/tanstack-table-state-behavior"
+      ]
+    },
+    {
+      "name": "pleat-text",
+      "type": "registry:ui",
+      "title": "Text",
+      "description": "The Pleat Text component for Foldkit.",
+      "files": [
+        {
+          "path": "text.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/text.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-textarea",
+      "type": "registry:ui",
+      "title": "Textarea",
+      "description": "The Pleat Textarea component for Foldkit.",
+      "files": [
+        {
+          "path": "textarea.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/textarea.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "Potti1234/creaseui/textarea-behavior",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-thumbnail-markers",
+      "type": "registry:lib",
+      "title": "Pleat Thumbnail Markers Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "thumbnail.markers.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/thumbnail.markers.ts"
+        }
+      ],
+      "registryDependencies": [
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-thumbnail",
+      "type": "registry:ui",
+      "title": "Thumbnail",
+      "description": "The Pleat Thumbnail component for Foldkit.",
+      "files": [
+        {
+          "path": "thumbnail.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/thumbnail.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-complex-tokens",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-thumbnail-markers",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-time-input",
+      "type": "registry:ui",
+      "title": "Time Input",
+      "description": "The Pleat Time Input component for Foldkit.",
+      "files": [
+        {
+          "path": "time-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/time-input.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/input-status",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-select",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "Potti1234/creaseui/time-input-core",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-timer",
+      "type": "registry:ui",
+      "title": "Timer",
+      "description": "The Pleat Timer component for Foldkit.",
+      "files": [
+        {
+          "path": "timer.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/timer.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-astryx-text",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-style",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-timestamp",
+      "type": "registry:ui",
+      "title": "Timestamp",
+      "description": "The Pleat Timestamp component for Foldkit.",
+      "files": [
+        {
+          "path": "timestamp.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/timestamp.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/hover-card-behavior",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-astryx-text",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-hover-card",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "Potti1234/creaseui/timestamp-format-behavior",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-toast",
+      "type": "registry:ui",
+      "title": "Toast",
+      "description": "The Pleat Toast component for Foldkit.",
+      "files": [
+        {
+          "path": "toast.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/toast.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-button",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "Potti1234/creaseui/toast-behavior",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-toggle-group",
+      "type": "registry:ui",
+      "title": "Toggle Group",
+      "description": "The Pleat Toggle Group component for Foldkit.",
+      "files": [
+        {
+          "path": "toggle-group.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/toggle-group.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-toggle",
+        "Potti1234/creaseui/pleat-tokens",
+        "Potti1234/creaseui/toggle-group-behavior",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-toggle",
+      "type": "registry:ui",
+      "title": "Toggle",
+      "description": "The Pleat Toggle component for Foldkit.",
+      "files": [
+        {
+          "path": "toggle.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/toggle.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-token",
+      "type": "registry:ui",
+      "title": "Token",
+      "description": "The Pleat Token component for Foldkit.",
+      "files": [
+        {
+          "path": "token.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/token.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-complex-tokens",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-tokenizer",
+      "type": "registry:ui",
+      "title": "Tokenizer",
+      "description": "The Pleat Tokenizer component for Foldkit.",
+      "files": [
+        {
+          "path": "tokenizer.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/tokenizer.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-overlay-boundary",
+        "Potti1234/creaseui/pleat-overlay-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "Potti1234/creaseui/tokenizer-behavior",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-tokens",
+      "type": "registry:lib",
+      "title": "Pleat Tokens Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "tokens.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/tokens.ts"
+        }
+      ],
+      "registryDependencies": [
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-toolbar",
+      "type": "registry:ui",
+      "title": "Toolbar",
+      "description": "The Pleat Toolbar component for Foldkit.",
+      "files": [
+        {
+          "path": "toolbar.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/toolbar.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "Potti1234/creaseui/toolbar-behavior",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-tooltip",
+      "type": "registry:ui",
+      "title": "Tooltip",
+      "description": "The Pleat Tooltip component for Foldkit.",
+      "files": [
+        {
+          "path": "tooltip.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/tooltip.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-button",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-overlay-boundary",
+        "Potti1234/creaseui/pleat-overlay-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/tooltip-behavior",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-top-nav",
+      "type": "registry:ui",
+      "title": "Top Nav",
+      "description": "The Pleat Top Nav component for Foldkit.",
+      "files": [
+        {
+          "path": "top-nav.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/top-nav.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/nav-menu-behavior",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "Potti1234/creaseui/top-nav-behavior",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-transfer-list",
+      "type": "registry:ui",
+      "title": "Transfer List",
+      "description": "The Pleat Transfer List component for Foldkit.",
+      "files": [
+        {
+          "path": "transfer-list.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/transfer-list.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-button",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-input",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-tree-list-markers",
+      "type": "registry:lib",
+      "title": "Pleat Tree List Markers Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "tree-list.markers.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/tree-list.markers.ts"
+        }
+      ],
+      "registryDependencies": [
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-tree-list",
+      "type": "registry:ui",
+      "title": "Tree List",
+      "description": "The Pleat Tree List component for Foldkit.",
+      "files": [
+        {
+          "path": "tree-list.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/tree-list.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "Potti1234/creaseui/pleat-tree-list-markers",
+        "Potti1234/creaseui/tree-list-behavior",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-typography",
+      "type": "registry:ui",
+      "title": "Typography",
+      "description": "The Pleat Typography component for Foldkit.",
+      "files": [
+        {
+          "path": "typography.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/typography.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-virtual-data-table-pleat",
+      "type": "registry:lib",
+      "title": "Pleat Virtual Data Table Pleat Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "virtual/data-table.pleat.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/virtual/data-table.pleat.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-complex-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-tokens",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-virtual-data-table",
+      "type": "registry:lib",
+      "title": "Pleat Virtual Data Table Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "virtual/data-table.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/virtual/data-table.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-virtual-data-table-pleat",
+        "Potti1234/creaseui/virtual-data-table-state-behavior"
+      ]
+    },
+    {
+      "name": "pleat-visually-hidden",
+      "type": "registry:ui",
+      "title": "Visually Hidden",
+      "description": "The Pleat Visually Hidden component for Foldkit.",
+      "files": [
+        {
+          "path": "visually-hidden.ts",
+          "type": "registry:ui",
+          "target": "@ui/pleat/visually-hidden.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "pleat-core"
+      ]
+    },
+    {
+      "name": "pleat-core",
+      "type": "registry:lib",
+      "title": "Pleat Core",
+      "description": "The vendored @pleat/core sources used by Pleat components. Pleat is not published to npm; install this item and map '@pleat/core' to the installed @lib/pleat/core sources (tsconfig paths or bundler alias).",
+      "files": [
+        {
+          "path": "packages/pleat-core/src/calc.ts",
+          "type": "registry:lib",
+          "target": "@lib/pleat/core/src/calc.ts"
+        },
+        {
+          "path": "packages/pleat-core/src/color.ts",
+          "type": "registry:lib",
+          "target": "@lib/pleat/core/src/color.ts"
+        },
+        {
+          "path": "packages/pleat-core/src/declarations.ts",
+          "type": "registry:lib",
+          "target": "@lib/pleat/core/src/declarations.ts"
+        },
+        {
+          "path": "packages/pleat-core/src/global.ts",
+          "type": "registry:lib",
+          "target": "@lib/pleat/core/src/global.ts"
+        },
+        {
+          "path": "packages/pleat-core/src/hash.ts",
+          "type": "registry:lib",
+          "target": "@lib/pleat/core/src/hash.ts"
+        },
+        {
+          "path": "packages/pleat-core/src/index.ts",
+          "type": "registry:lib",
+          "target": "@lib/pleat/core/src/index.ts"
+        },
+        {
+          "path": "packages/pleat-core/src/property.ts",
+          "type": "registry:lib",
+          "target": "@lib/pleat/core/src/property.ts"
+        },
+        {
+          "path": "packages/pleat-core/src/recipe.ts",
+          "type": "registry:lib",
+          "target": "@lib/pleat/core/src/recipe.ts"
+        },
+        {
+          "path": "packages/pleat-core/src/sheet.ts",
+          "type": "registry:lib",
+          "target": "@lib/pleat/core/src/sheet.ts"
+        },
+        {
+          "path": "packages/pleat-core/src/style.ts",
+          "type": "registry:lib",
+          "target": "@lib/pleat/core/src/style.ts"
+        },
+        {
+          "path": "packages/pleat-core/src/theme.ts",
+          "type": "registry:lib",
+          "target": "@lib/pleat/core/src/theme.ts"
+        },
+        {
+          "path": "packages/pleat-core/src/token.ts",
+          "type": "registry:lib",
+          "target": "@lib/pleat/core/src/token.ts"
+        },
+        {
+          "path": "packages/pleat-core/src/var.ts",
+          "type": "registry:lib",
+          "target": "@lib/pleat/core/src/var.ts"
+        },
+        {
+          "path": "packages/pleat-core/src/when.ts",
+          "type": "registry:lib",
+          "target": "@lib/pleat/core/src/when.ts"
+        }
+      ]
+    },
+    {
+      "name": "pleat-foldkit",
+      "type": "registry:lib",
+      "title": "Pleat Foldkit",
+      "description": "The vendored @pleat/foldkit sources used by Pleat components. Pleat is not published to npm; install this item and map '@pleat/foldkit' to the installed @lib/pleat/foldkit sources (tsconfig paths or bundler alias).",
+      "files": [
+        {
+          "path": "packages/pleat-foldkit/src/index.ts",
+          "type": "registry:lib",
+          "target": "@lib/pleat/foldkit/src/index.ts"
+        },
+        {
+          "path": "packages/pleat-foldkit/src/server.ts",
+          "type": "registry:lib",
+          "target": "@lib/pleat/foldkit/src/server.ts"
+        }
+      ]
+    }
+  ]
+}

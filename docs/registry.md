@@ -76,6 +76,20 @@ StyleX files install in a `stylex` subdirectory of the configured `ui` alias
 dependencies. Configure the StyleX compiler and supply the CSS theme variables described in the
 [authoring contract](../src/stylex/README.md).
 
+Pleat components are available as `pleat-<component>` items, for example:
+
+```sh
+npx --yes shadcn@latest add Potti1234/creaseui/pleat-button --yes
+```
+
+Pleat files install in a `pleat` subdirectory of the configured `ui` alias.
+Pleat itself is not published to npm, so `pleat-*` component items declare
+`pleat-core` and `pleat-foldkit` registry dependencies that install the
+vendored `@pleat/core` and `@pleat/foldkit` sources into `@/lib/pleat/core`
+and `@/lib/pleat/foldkit`. Map the `@pleat/core` and `@pleat/foldkit` import
+specifiers to those installed sources through tsconfig `paths` or the bundler
+alias of your choice.
+
 Every UI item declares `crease-theme` as a registry dependency. Installing a
 component therefore also installs the complete background, card, popover,
 control, chart, sidebar, and radius token contract into the configured Tailwind
