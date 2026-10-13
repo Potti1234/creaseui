@@ -155,7 +155,7 @@ const styles = {
       content: '""',
       position: 'absolute',
       pointerEvents: 'none',
-      backgroundColor: 'var(--drawer-bleed-background, var(--popover))',
+      backgroundColor: drawerTokens.bleedBackground,
       insetInlineStart: 0,
       insetInlineEnd: 0,
       height: 'var(--bleed)',
@@ -167,7 +167,7 @@ const styles = {
       content: '""',
       position: 'absolute',
       pointerEvents: 'none',
-      backgroundColor: 'var(--drawer-bleed-background, var(--popover))',
+      backgroundColor: drawerTokens.bleedBackground,
       insetInlineStart: 0,
       insetInlineEnd: 0,
       height: 'var(--bleed)',
@@ -179,7 +179,7 @@ const styles = {
       content: '""',
       position: 'absolute',
       pointerEvents: 'none',
-      backgroundColor: 'var(--drawer-bleed-background, var(--popover))',
+      backgroundColor: drawerTokens.bleedBackground,
       insetBlockStart: 0,
       insetBlockEnd: 0,
       width: 'var(--bleed)',
@@ -191,7 +191,7 @@ const styles = {
       content: '""',
       position: 'absolute',
       pointerEvents: 'none',
-      backgroundColor: 'var(--drawer-bleed-background, var(--popover))',
+      backgroundColor: drawerTokens.bleedBackground,
       insetBlockStart: 0,
       insetBlockEnd: 0,
       width: 'var(--bleed)',
@@ -309,7 +309,7 @@ import { foundationTokens } from './foundations-tokens'
 import { overlayStyles } from './overlay-tokens'
 import type { ComponentLayoutStyle } from './contracts'
 import { className } from './style'
-import { tokens } from './tokens'
+import { drawerTokens, tokens } from './tokens'
 import { interactionTokens } from './interaction-tokens'
 
 export const Model = DrawerBehavior.Model

@@ -121,3 +121,18 @@ export const tokensTheme = Theme.make(tokensSpec, {
 })
 
 Global.theme(tokensTheme)
+
+const drawerTokensSpec = Token.make(
+  { bleedBackground: Token.color },
+  { prefix: 'crease-drawer-' },
+)
+
+/** Drawer-owned tokens, scoped to the popup so per-drawer overrides resolve. */
+export const drawerTokens = drawerTokensSpec
+
+Global.theme(
+  Theme.make(drawerTokensSpec, {
+    bleedBackground: 'var(--drawer-bleed-background, var(--popover))',
+  }),
+  { selector: '[data-slot="drawer-popup"]' },
+)
