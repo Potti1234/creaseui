@@ -93,13 +93,16 @@ const scopedPleatThemeCss = (): string => {
       ['complexTokens', complexTokens],
     ] as const
   )
-    .map(([group, vars]) =>
-      scopedRoleDeclarations(group, role =>
-        pleatVariableName(
-          (vars as unknown as Record<string, string>)[role] ?? '',
+    .map(([group, vars]) => {
+      const names = new Map(
+        Object.entries(vars).flatMap(([role, value]) =>
+          typeof value === 'string' ? [[role, value] as const] : [],
         ),
-      ),
-    )
+      )
+      return scopedRoleDeclarations(group, role =>
+        pleatVariableName(names.get(role) ?? ''),
+      )
+    })
     .join(';')
   const declarations = [
     roleDeclarations,
