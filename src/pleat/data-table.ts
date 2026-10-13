@@ -62,6 +62,7 @@ const SHADOW_MD =
   'rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px'
 
 const styles = {
+  alignLeft: Style.make({ textAlign: 'left' }),
   alignCenter: Style.make({ textAlign: 'center' }),
   alignRight: Style.make({ textAlign: 'right' }),
   cell: Style.make({
@@ -125,7 +126,7 @@ const styles = {
     paddingInline: '0.5rem',
     color: tokens.foreground,
     fontWeight: 500,
-    textAlign: 'left',
+    textAlign: 'start',
     verticalAlign: 'middle',
     height: '2.5rem',
   }),
@@ -297,7 +298,9 @@ const columnAlignStyle = (align: DataTableColumn<unknown>['align']) =>
     ? styles.alignRight
     : align === 'center'
       ? styles.alignCenter
-      : undefined
+      : align === 'left'
+        ? styles.alignLeft
+        : undefined
 
 export const dataTable = <Row, Msg>(
   props: DataTableProps<Row, Msg>,

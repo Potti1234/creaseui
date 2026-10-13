@@ -36,7 +36,7 @@ const columns = (
   {
     key: 'amount',
     header: rtl ? 'المبلغ' : 'Amount',
-    class: 'text-right',
+    align: 'right',
     cell: row => `$${row.amount.toFixed(2)}`,
     sortValue: row => row.amount,
   },

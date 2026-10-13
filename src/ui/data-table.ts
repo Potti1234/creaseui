@@ -23,6 +23,7 @@ export type DataTableColumn<Row> = Readonly<{
   cell: (row: Row) => Html | string
   sortValue?: (row: Row) => string | number
   isHideable?: boolean
+  align?: 'left' | 'center' | 'right'
   class?: string
 }>
 
@@ -97,6 +98,9 @@ const selectionControl = <Msg>(
     },
     h,
   )
+
+const columnAlignClass = (align: DataTableColumn<unknown>['align']) =>
+  align === undefined ? undefined : `text-${align}`
 
 export const dataTable = <Row, Msg>(
   props: DataTableProps<Row, Msg>,
@@ -346,7 +350,8 @@ export const dataTable = <Row, Msg>(
                                       ]),
                                   h.Class(
                                     cn(
-                                      'h-10 px-2 text-left align-middle font-medium text-foreground',
+                                      'h-10 px-2 text-start align-middle font-medium text-foreground',
+                                      columnAlignClass(column.align),
                                       column.class,
                                     ),
                                   ),
@@ -506,6 +511,7 @@ export const dataTable = <Row, Msg>(
                                       h.Class(
                                         cn(
                                           'whitespace-nowrap p-3 align-middle',
+                                          columnAlignClass(column.align),
                                           column.class,
                                         ),
                                       ),

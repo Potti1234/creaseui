@@ -86,7 +86,7 @@ export type Message = typeof Message.Type`,
     view: `const columns: ReadonlyArray<DataTable.DataTableColumn<Payment>> = [
   { key: 'status', header: '${fixture.rtl ? 'الحالة' : 'Status'}', cell: row => row.status, sortValue: row => row.status },
   { key: 'email', header: '${fixture.rtl ? 'البريد الإلكتروني' : 'Email'}', cell: row => row.email, sortValue: row => row.email },
-  { key: 'amount', header: '${fixture.rtl ? 'المبلغ' : 'Amount'}', ${stylex ? "align: 'right'" : "class: 'text-right'"}, cell: row => \`$\${row.amount.toFixed(2)}\`, sortValue: row => row.amount },
+  { key: 'amount', header: '${fixture.rtl ? 'المبلغ' : 'Amount'}', align: 'right', cell: row => \`$\${row.amount.toFixed(2)}\`, sortValue: row => row.amount },
 ]
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
