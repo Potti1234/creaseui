@@ -1,0 +1,372 @@
+import {
+  FORBIDDEN_PROPS,
+  HTML_ONLY_CHILDREN,
+  LAYOUT_CONSTRUCTORS,
+  LAYOUT_PROPERTIES,
+  isLayoutSlot,
+  isPlacementUtility,
+} from './contracts.js'
+import { isAssertion, unwrap } from './resolver.js'
+
+/** Map import bindings of a file to installed (receipt) export records. */
+export const createComponentIndex = (context, strict, analysis) => {
+  const bindings = new Map()
+  const imports = []
+
+  const collect = program => {
+    if (strict === null) return
+    for (const declaration of program.body) {
+      if (
+        declaration.type !== 'ImportDeclaration' ||
+        declaration.importKind === 'type'
+      )
+        continue
+      const file = strict.modules.resolve(
+        declaration.source.value,
+        context.filename,
+      )
+      if (file === null) continue
+      for (const specifier of declaration.specifiers) {
+        if (specifier.importKind === 'type') continue
+        const variable = analysis.variableOf(specifier.local)
+        if (variable === null) continue
+        if (specifier.type === 'ImportNamespaceSpecifier') {
+          bindings.set(variable, { namespace: file })
+          continue
+        }
+        const name =
+          specifier.type === 'ImportDefaultSpecifier'
+            ? 'default'
+            : (specifier.imported.name ?? specifier.imported.value)
+        const record = recordAt(file, name)
+        if (record !== undefined) {
+          bindings.set(variable, { record })
+          imports.push({ record, specifier })
+        }
+      }
+    }
+  }
+
+  const recordAt = (file, name) => {
+    const origin = strict.modules.exportOrigin(file, name)
+    return origin === null
+      ? undefined
+      : strict.ownership.exportsOf(origin.file)?.get(origin.name)
+  }
+
+  const memberRecord = member => {
+    if (member?.type !== 'MemberExpression' || member.computed) return undefined
+    if (member.object.type !== 'Identifier') return undefined
+    const entry = bindings.get(analysis.variableOf(member.object))
+    return entry?.namespace === undefined
+      ? undefined
+      : recordAt(entry.namespace, member.property.name)
+  }
+
+  const callRecord = callee => {
+    callee = unwrap(callee)
+    for (
+      let depth = 0;
+      depth < 8 && callee?.type === 'Identifier';
+      depth += 1
+    ) {
+      const entry = bindings.get(analysis.variableOf(callee))
+      if (entry?.record !== undefined) return entry.record
+      callee = unwrap(analysis.constInit(callee))
+    }
+    return callee?.type === 'MemberExpression'
+      ? memberRecord(callee)
+      : undefined
+  }
+
+  return { callRecord, collect, imports, memberRecord }
+}
+
+const label = record => `\`${record.name}\` (${record.contract})`
+
+/** Static class tokens of a value, or null when they cannot be resolved. */
+const classValues = (analysis, node, seen = new Set()) => {
+  node = unwrap(node)
+  if (node === null || node === undefined) return []
+  if (node.type === 'Literal' && typeof node.value === 'string')
+    return [node.value]
+  if (node.type === 'TemplateLiteral' && node.expressions.length === 0)
+    return [node.quasis[0].value.cooked]
+  if (node.type === 'Identifier' && node.name === 'undefined') return []
+  if (node.type === 'Identifier') {
+    const init = analysis.constInit(node)
+    if (init === null || seen.has(init)) return null
+    seen.add(init)
+    return classValues(analysis, init, seen)
+  }
+  if (node.type === 'ConditionalExpression') {
+    const both = [
+      classValues(analysis, node.consequent, seen),
+      classValues(analysis, node.alternate, seen),
+    ]
+    return both.includes(null) ? null : both.flat()
+  }
+  if (node.type === 'LogicalExpression') {
+    const right = classValues(analysis, node.right, seen)
+    if (node.operator === '&&') return right
+    const left = classValues(analysis, node.left, seen)
+    return left === null || right === null ? null : [...left, ...right]
+  }
+  return null
+}
+
+/**
+ * Findings for one contracted component call. `violation` findings belong
+ * to component-contract, `unverifiable` ones to no-unverifiable-ui.
+ */
+export const analyzeCall = ({ analysis, call, context, record, strict }) => {
+  const findings = []
+  const violation = (node, message) =>
+    findings.push({ kind: 'violation', message, node })
+  const unverifiable = (node, message) =>
+    findings.push({ kind: 'unverifiable', message, node })
+  const renderer = strict?.renderer ?? 'tailwind'
+  const props = call.arguments[record.propsArgument]
+  if (props === undefined) return findings
+
+  const typedFields = node => {
+    if (!analysis.hasTypes) return null
+    try {
+      const type = analysis.checker.getTypeAtLocation(
+        analysis.services.esTreeNodeToTSNodeMap.get(node),
+      )
+      if ((type.flags & 1) !== 0 || (type.flags & 2) !== 0) return null
+      if (analysis.checker.getIndexInfosOfType(type).length > 0) return null
+      return type.getProperties().map(property => property.getName())
+    } catch {
+      return null
+    }
+  }
+
+  const opaque = (node, entries) => {
+    const fields = typedFields(node)
+    const name = context.sourceCode.getText(node)
+    if (fields === null) {
+      unverifiable(
+        node,
+        `Props \`${name}\` passed to ${label(record)} cannot be resolved; spread a local object or give it a closed type without UI fields.`,
+      )
+      return
+    }
+    for (const field of fields) {
+      if (
+        FORBIDDEN_PROPS.has(field) ||
+        (field === 'class' && renderer !== 'tailwind')
+      )
+        violation(
+          node,
+          `\`${field}\` reaches ${label(record)} through \`${name}\`; appearance belongs to named variants.`,
+        )
+      else if (field === 'class' || isLayoutSlot(field))
+        unverifiable(
+          node,
+          `\`${field}\` reaches ${label(record)} through \`${name}\` and its value cannot be checked against the placement contract.`,
+        )
+    }
+    entries.size
+  }
+
+  const read = (node, seen) => {
+    const entries = new Map()
+    if (isAssertion(node)) {
+      unverifiable(
+        node,
+        `Props for ${label(record)} use a type assertion; asserted UI props cannot be verified.`,
+      )
+      return entries
+    }
+    node = unwrap(node)
+    if (node?.type === 'Identifier') {
+      const init = analysis.constInit(node)
+      if (init !== null && !seen.has(init)) {
+        seen.add(init)
+        return read(init, seen)
+      }
+      opaque(node, entries)
+      return entries
+    }
+    if (node?.type === 'ConditionalExpression') {
+      for (const branch of [node.consequent, node.alternate])
+        for (const [key, values] of read(branch, seen))
+          entries.set(key, [...(entries.get(key) ?? []), ...values])
+      return entries
+    }
+    if (node?.type !== 'ObjectExpression') {
+      opaque(node, entries)
+      return entries
+    }
+    for (const property of node.properties) {
+      if (property.type === 'SpreadElement') {
+        for (const [key, values] of read(property.argument, seen))
+          entries.set(key, values)
+        continue
+      }
+      const key = property.computed
+        ? analysis.resolveString(property.key)
+        : property.key.type === 'Identifier'
+          ? property.key.name
+          : String(property.key.value)
+      if (key === null) {
+        unverifiable(
+          property.key,
+          `A computed prop key on ${label(record)} cannot be resolved.`,
+        )
+        continue
+      }
+      entries.set(key, [property.value])
+    }
+    return entries
+  }
+
+  const checkLayoutCall = (callNode, seen) => {
+    for (const argument of callNode.arguments) {
+      const object = unwrap(argument)
+      if (object?.type !== 'ObjectExpression') continue
+      for (const property of object.properties) {
+        if (property.type === 'SpreadElement') {
+          unverifiable(
+            property,
+            `A spread inside a placement value for ${label(record)} cannot be verified.`,
+          )
+          continue
+        }
+        const key = property.computed
+          ? analysis.resolveString(property.key)
+          : property.key.type === 'Identifier'
+            ? property.key.name
+            : String(property.key.value)
+        if (key === null)
+          unverifiable(
+            property.key,
+            `A computed placement property cannot be resolved.`,
+          )
+        else if (!LAYOUT_PROPERTIES.has(key))
+          violation(
+            property,
+            `\`${key}\` is not a placement property; ${label(record)} owns its padding, gap, typography, color, border, radius, shadow, opacity and motion.`,
+          )
+      }
+      seen.add(object)
+    }
+  }
+
+  const checkLayout = (node, slot, seen = new Set()) => {
+    if (isAssertion(node)) {
+      unverifiable(
+        node,
+        `The \`${slot}\` value for ${label(record)} is forged with a type assertion.`,
+      )
+      return
+    }
+    node = unwrap(node)
+    if (node === null || node === undefined || seen.has(node)) return
+    seen.add(node)
+    if (node.type === 'Identifier' && node.name === 'undefined') return
+    if (node.type === 'Identifier') {
+      const init = analysis.constInit(node)
+      if (init !== null) return checkLayout(init, slot, seen)
+      unverifiable(
+        node,
+        `The \`${slot}\` value \`${node.name}\` for ${label(record)} cannot be resolved to layoutStyle()/layoutWhen().`,
+      )
+      return
+    }
+    if (node.type === 'ConditionalExpression') {
+      checkLayout(node.consequent, slot, seen)
+      checkLayout(node.alternate, slot, seen)
+      return
+    }
+    if (node.type === 'LogicalExpression') {
+      if (node.operator !== '&&') checkLayout(node.left, slot, seen)
+      checkLayout(node.right, slot, seen)
+      return
+    }
+    if (node.type === 'ArrayExpression') {
+      for (const element of node.elements) checkLayout(element, slot, seen)
+      return
+    }
+    if (node.type === 'CallExpression' && node.callee.type === 'Identifier') {
+      const definition = analysis.variableOf(node.callee)?.defs[0]
+      const imported =
+        definition?.type === 'ImportBinding' &&
+        definition.node.type === 'ImportSpecifier'
+          ? (definition.node.imported.name ?? definition.node.imported.value)
+          : undefined
+      if (imported !== undefined && LAYOUT_CONSTRUCTORS.has(imported)) {
+        checkLayoutCall(node, seen)
+        return
+      }
+    }
+    violation(
+      node,
+      `\`${slot}\` on ${label(record)} accepts only layoutStyle()/layoutWhen() placement values, not arbitrary style objects or factories.`,
+    )
+  }
+
+  for (const [key, values] of read(props, new Set())) {
+    for (const value of values) {
+      if (FORBIDDEN_PROPS.has(key)) {
+        violation(
+          value,
+          `\`${key}\` is an appearance override on ${label(record)}; use a named variant or composition prop.`,
+        )
+      } else if (key === 'class') {
+        if (renderer !== 'tailwind') {
+          violation(
+            value,
+            `\`class\` is not part of the ${renderer} contract of ${label(record)}; use layoutStyle() for placement.`,
+          )
+          continue
+        }
+        const tokens = classValues(analysis, value)
+        if (tokens === null) {
+          unverifiable(
+            value,
+            `The \`class\` value for ${label(record)} cannot be resolved to static placement utilities.`,
+          )
+          continue
+        }
+        const appearance = tokens
+          .flatMap(token => token.trim().split(/\s+/u))
+          .filter(token => token !== '' && !isPlacementUtility(token))
+        if (appearance.length > 0)
+          violation(
+            value,
+            `\`${appearance.join(' ')}\` on ${label(record)} is not a placement utility; parents own arrangement and named variants own appearance.`,
+          )
+      } else if (isLayoutSlot(key)) {
+        checkLayout(value, key)
+      } else if (
+        key === 'children' &&
+        HTML_ONLY_CHILDREN.has(record.contract)
+      ) {
+        const array = unwrap(value)
+        for (const element of array?.type === 'ArrayExpression'
+          ? array.elements
+          : [])
+          if (
+            (element?.type === 'Literal' &&
+              typeof element.value === 'string') ||
+            element?.type === 'TemplateLiteral'
+          )
+            violation(
+              element,
+              `Direct string children in ${label(record)}; render text through Text or a typography helper.`,
+            )
+      } else if (Array.isArray(record.variants[key])) {
+        const choice = analysis.resolveString(value)
+        if (choice !== null && !record.variants[key].includes(choice))
+          violation(
+            value,
+            `\`${key}: '${choice}'\` is not a ${label(record)} variant (allowed: ${record.variants[key].join(', ')}).`,
+          )
+      }
+    }
+  }
+  return findings
+}

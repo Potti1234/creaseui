@@ -7,7 +7,12 @@ import { noStylexEscape } from './rules/no-stylex-escape.js'
 import { pleatPropLimits } from './rules/pleat-prop-limits.js'
 import { preferCompositionPrimitives } from './rules/prefer-composition-primitives.js'
 import { requireStaticClass } from './rules/require-static-class.js'
+import { strictRules } from './rules/strict/index.js'
 import { stylexComponentContract } from './rules/stylex-component-contract.js'
+
+export { STRICT_RULE_IDS, creaseui } from './creaseui.js'
+export { CreaseConfigError } from './lib/strict/ownership.js'
+export { createStrictContext } from './lib/strict/context.js'
 
 export const rules = {
   'no-component-restyle': noComponentRestyle,
@@ -17,6 +22,7 @@ export const rules = {
   'prefer-composition-primitives': preferCompositionPrimitives,
   'require-static-class': requireStaticClass,
   'stylex-component-contract': stylexComponentContract,
+  ...strictRules,
 }
 
 export const plugin = {

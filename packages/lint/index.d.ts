@@ -60,3 +60,74 @@ export const constrainedStylex: (
 ) => Linter.Config
 
 export default plugin
+
+export type StrictRenderer = 'tailwind' | 'stylex' | 'pleat'
+export type CreaseFileRole =
+  | 'renderer'
+  | 'behavior'
+  | 'theme'
+  | 'adapter'
+  | 'setup'
+
+export interface CreaseReceiptExport {
+  file: string
+  name: string
+  contract?: string
+  renderKind?: 'helper' | 'submodel' | 'non-rendering'
+  visibility?: 'public' | 'implementation'
+  propsArgument?: number
+  builderArgument?: number
+  variants?: Record<string, string[]>
+}
+
+export interface CreaseReceipt {
+  schemaVersion: 1
+  policyVersion: 'crease-default-v1'
+  renderer: StrictRenderer
+  artifacts: Array<{
+    id: string
+    version?: string
+    files: Array<{ path: string; role: CreaseFileRole; rawRendering?: boolean }>
+    exports?: CreaseReceiptExport[]
+  }>
+}
+
+export interface CreaseExtension {
+  id: string
+  reason: string
+  role: CreaseFileRole
+  files: string[]
+  contract?: string
+  rawRendering?: boolean
+  exports?: Array<Omit<CreaseReceiptExport, 'file'> & { file: string }>
+}
+
+export interface CreaseUIOptions {
+  /** Absolute project root; ownership paths resolve against it. */
+  rootDir: string
+  renderer?: StrictRenderer
+  preset?: 'strict' | 'migration'
+  /** Legacy files linted at warning level; required for `preset: 'migration'`. */
+  migrationFiles?: string[]
+  files?: string[]
+  tsconfig?: string | string[]
+  manifest?: string | CreaseReceipt
+  policy?: 'crease-default-v1'
+  extensions?: CreaseExtension[]
+}
+
+export declare const STRICT_RULE_IDS: readonly [
+  'no-raw-controls',
+  'no-raw-composition',
+  'no-unapproved-renderer',
+  'no-application-styles',
+  'component-contract',
+  'no-unverifiable-ui',
+]
+export declare class CreaseConfigError extends Error {
+  readonly problems: string[]
+}
+export declare const createStrictContext: (
+  options: CreaseUIOptions & { typeInformation?: 'required' | 'syntactic' },
+) => unknown
+export declare const creaseui: (options: CreaseUIOptions) => Linter.Config[]
