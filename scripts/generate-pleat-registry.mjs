@@ -4,6 +4,7 @@ import { fileOwners, sourceDependencies } from './registry-dependencies.mjs'
 
 const root = process.cwd()
 const directory = join(root, 'src', 'pleat')
+const vendorDirectory = join(root, 'packages')
 const packageJson = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'))
 const packageVersions = {
   ...packageJson.dependencies,
@@ -95,6 +96,7 @@ const vendorItems = [
     target: '@lib/pleat/core',
     title: 'Pleat Core',
     name: 'pleat-core',
+    dependencies: ['csstype@^3.2.3'],
   },
   {
     package: 'pleat-foldkit',
@@ -107,18 +109,32 @@ const vendorItems = [
   name: vendor.name,
   type: 'registry:lib',
   title: vendor.title,
+  ...(vendor.dependencies ? { dependencies: vendor.dependencies } : {}),
   description: `The vendored @pleat/${vendor.package.replace('pleat-', '')} sources used by Pleat components. Pleat is not published to npm; install this item and map '@pleat/${vendor.package.replace('pleat-', '')}' to the installed ${vendor.target} sources (tsconfig paths or bundler alias).`,
-  files: collectTypeScriptFiles(vendor.source).map(path => {
-    const relativePath = relative(vendor.source, path).replaceAll('\\', '/')
-    return {
-      path: join('packages', vendor.package, relativePath),
-      type: 'registry:lib',
-      target: `${vendor.target}/${relativePath}`,
-    }
-  }),
+  files: [
+    // The ./server entry targets Foldkit's experimental SSR API and is not
+    // needed by installed components.
+    ...collectTypeScriptFiles(vendor.source)
+      .filter(path => !path.endsWith('/src/server.ts'))
+      .map(path => {
+        const relativePath = relative(vendor.source, path).replaceAll('\\', '/')
+        return {
+          path: relative(vendorDirectory, path).replaceAll('\\', '/'),
+          type: 'registry:lib',
+          target: `${vendor.target}/${relativePath}`,
+        }
+      }),
+    // Upstream attribution travels with the installed sources.
+    ...['LICENSE', 'VENDORED.md'].map(file => ({
+      path: relative(vendorDirectory, join(vendor.source, file)).replaceAll(
+        '\\',
+        '/',
+      ),
+      type: 'registry:file',
+      target: `${vendor.target}/${file}`,
+    })),
+  ],
 }))
-
-items.push(...vendorItems)
 
 const libraryRegistry = JSON.parse(
   readFileSync(join(root, 'src', 'lib', 'registry.json'), 'utf8'),
@@ -139,11 +155,17 @@ for (const item of items) {
   const source = readFileSync(sourcePath, 'utf8')
   if (source.includes("'@pleat/core'"))
     item.registryDependencies = [
-      ...new Set([...(item.registryDependencies ?? []), 'pleat-core']),
+      ...new Set([
+        ...(item.registryDependencies ?? []),
+        'Potti1234/creaseui/pleat-core',
+      ]),
     ].sort()
   if (source.includes("'@pleat/foldkit'"))
     item.registryDependencies = [
-      ...new Set([...(item.registryDependencies ?? []), 'pleat-foldkit']),
+      ...new Set([
+        ...(item.registryDependencies ?? []),
+        'Potti1234/creaseui/pleat-foldkit',
+      ]),
     ].sort()
 }
 
@@ -151,6 +173,20 @@ writeFileSync(
   join(directory, 'registry.json'),
   `${JSON.stringify(
     { $schema: 'https://ui.shadcn.com/schema/registry.json', items },
+    null,
+    2,
+  )}\n`,
+)
+
+// shadcn rejects parent-directory traversal, so the vendored sources get
+// their own manifest next to them in packages/.
+writeFileSync(
+  join(vendorDirectory, 'registry.json'),
+  `${JSON.stringify(
+    {
+      $schema: 'https://ui.shadcn.com/schema/registry.json',
+      items: vendorItems,
+    },
     null,
     2,
   )}\n`,

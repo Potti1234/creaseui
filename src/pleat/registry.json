@@ -17,12 +17,12 @@
         "Potti1234/creaseui/accordion-state",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -41,11 +41,11 @@
         "Potti1234/creaseui/alert-dialog-behavior",
         "Potti1234/creaseui/pleat-button",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-overlay-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -63,10 +63,10 @@
       "registryDependencies": [
         "Potti1234/creaseui/alert-behavior",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -83,8 +83,8 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-contracts",
-        "Potti1234/creaseui/pleat-style",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-core",
+        "Potti1234/creaseui/pleat-style"
       ]
     },
     {
@@ -100,8 +100,8 @@
         }
       ],
       "registryDependencies": [
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-core",
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -117,7 +117,7 @@
         }
       ],
       "registryDependencies": [
-        "pleat-core"
+        "Potti1234/creaseui/pleat-core"
       ]
     },
     {
@@ -136,13 +136,13 @@
         "Potti1234/creaseui/pleat-attachment-markers",
         "Potti1234/creaseui/pleat-button",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-message-markers",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -160,12 +160,12 @@
       "registryDependencies": [
         "Potti1234/creaseui/pleat-complex-tokens",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -181,7 +181,7 @@
         }
       ],
       "registryDependencies": [
-        "pleat-core"
+        "Potti1234/creaseui/pleat-core"
       ]
     },
     {
@@ -199,11 +199,11 @@
       "registryDependencies": [
         "Potti1234/creaseui/pleat-avatar-markers",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -220,11 +220,11 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -244,11 +244,11 @@
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-button",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -265,10 +265,10 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -287,11 +287,11 @@
         "Potti1234/creaseui/breadcrumb-behavior",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -307,7 +307,7 @@
         }
       ],
       "registryDependencies": [
-        "pleat-core"
+        "Potti1234/creaseui/pleat-core"
       ]
     },
     {
@@ -325,13 +325,13 @@
       "registryDependencies": [
         "Potti1234/creaseui/pleat-bubble-markers",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-message-markers",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -347,8 +347,8 @@
         }
       ],
       "registryDependencies": [
-        "Potti1234/creaseui/pleat-foundations-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-core",
+        "Potti1234/creaseui/pleat-foundations-tokens"
       ]
     },
     {
@@ -366,10 +366,10 @@
       "registryDependencies": [
         "Potti1234/creaseui/pleat-button-group-join",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -388,13 +388,13 @@
         "Potti1234/creaseui/button-behavior",
         "Potti1234/creaseui/pleat-button-group-join",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
+        "Potti1234/creaseui/pleat-foldkit",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core",
-        "pleat-foldkit"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -410,7 +410,7 @@
         }
       ],
       "registryDependencies": [
-        "pleat-core"
+        "Potti1234/creaseui/pleat-core"
       ]
     },
     {
@@ -430,10 +430,10 @@
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-calendar-markers",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -449,7 +449,7 @@
         }
       ],
       "registryDependencies": [
-        "pleat-core"
+        "Potti1234/creaseui/pleat-core"
       ]
     },
     {
@@ -466,11 +466,11 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -492,10 +492,10 @@
         "Potti1234/creaseui/carousel-lifecycle",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -512,8 +512,8 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-contracts",
-        "Potti1234/creaseui/pleat-style",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-core",
+        "Potti1234/creaseui/pleat-style"
       ]
     },
     {
@@ -532,12 +532,12 @@
         "Potti1234/creaseui/echarts-adapter",
         "Potti1234/creaseui/pleat-complex-tokens",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-integrations-echarts",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -555,12 +555,12 @@
       "registryDependencies": [
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -576,7 +576,7 @@
         }
       ],
       "registryDependencies": [
-        "pleat-core"
+        "Potti1234/creaseui/pleat-core"
       ]
     },
     {
@@ -596,12 +596,12 @@
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-checkbox-markers",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -619,12 +619,12 @@
       "registryDependencies": [
         "Potti1234/creaseui/pleat-complex-tokens",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -645,12 +645,12 @@
         "Potti1234/creaseui/pleat-button",
         "Potti1234/creaseui/pleat-complex-tokens",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -667,11 +667,11 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -689,12 +689,12 @@
       "registryDependencies": [
         "Potti1234/creaseui/pleat-complex-tokens",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-sidebar-markers",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -712,13 +712,13 @@
       "registryDependencies": [
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-overlay-boundary",
         "Potti1234/creaseui/pleat-overlay-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -737,10 +737,10 @@
         "Potti1234/creaseui/command-behavior",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-overlay-tokens",
         "Potti1234/creaseui/pleat-reset",
-        "Potti1234/creaseui/pleat-style",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-style"
       ]
     },
     {
@@ -756,7 +756,7 @@
         }
       ],
       "registryDependencies": [
-        "pleat-core"
+        "Potti1234/creaseui/pleat-core"
       ]
     },
     {
@@ -777,10 +777,10 @@
         "Potti1234/creaseui/pleat-composition-semantic-theme",
         "Potti1234/creaseui/pleat-composition-space",
         "Potti1234/creaseui/pleat-composition-types",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -796,12 +796,12 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -817,7 +817,7 @@
         }
       ],
       "registryDependencies": [
-        "pleat-core"
+        "Potti1234/creaseui/pleat-core"
       ]
     },
     {
@@ -883,10 +883,10 @@
         "Potti1234/creaseui/pleat-composition-semantic-layout-tokens-const",
         "Potti1234/creaseui/pleat-composition-space",
         "Potti1234/creaseui/pleat-composition-types",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -903,8 +903,8 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/icons",
-        "Potti1234/creaseui/pleat-style",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-core",
+        "Potti1234/creaseui/pleat-style"
       ]
     },
     {
@@ -952,9 +952,9 @@
         "Potti1234/creaseui/pleat-composition-element",
         "Potti1234/creaseui/pleat-composition-space",
         "Potti1234/creaseui/pleat-composition-types",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -970,10 +970,10 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-reset",
-        "Potti1234/creaseui/pleat-style",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-style"
       ]
     },
     {
@@ -1041,7 +1041,7 @@
         }
       ],
       "registryDependencies": [
-        "pleat-core"
+        "Potti1234/creaseui/pleat-core"
       ]
     },
     {
@@ -1058,7 +1058,7 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-composition-semantic-theme",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-core"
       ]
     },
     {
@@ -1074,11 +1074,11 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -1097,7 +1097,7 @@
         "Potti1234/creaseui/pleat-composition-composition-tokens-const",
         "Potti1234/creaseui/pleat-composition-semantic-theme",
         "Potti1234/creaseui/pleat-composition-types",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-core"
       ]
     },
     {
@@ -1116,8 +1116,8 @@
         "Potti1234/creaseui/pleat-composition-element",
         "Potti1234/creaseui/pleat-composition-space",
         "Potti1234/creaseui/pleat-composition-types",
-        "Potti1234/creaseui/pleat-style",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-core",
+        "Potti1234/creaseui/pleat-style"
       ]
     },
     {
@@ -1149,10 +1149,10 @@
         "Potti1234/creaseui/pleat-composition-composition-tokens-const",
         "Potti1234/creaseui/pleat-composition-semantic-theme",
         "Potti1234/creaseui/pleat-composition-types",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -1170,8 +1170,8 @@
       "registryDependencies": [
         "Potti1234/creaseui/pleat-composition-semantic-themes",
         "Potti1234/creaseui/pleat-composition-types",
-        "pleat-core",
-        "pleat-foldkit"
+        "Potti1234/creaseui/pleat-core",
+        "Potti1234/creaseui/pleat-foldkit"
       ]
     },
     {
@@ -1234,7 +1234,8 @@
         }
       ],
       "registryDependencies": [
-        "pleat-core"
+        "Potti1234/creaseui/layout-properties",
+        "Potti1234/creaseui/pleat-core"
       ]
     },
     {
@@ -1255,14 +1256,14 @@
         "Potti1234/creaseui/pleat-button",
         "Potti1234/creaseui/pleat-complex-tokens",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-input",
         "Potti1234/creaseui/pleat-pagination",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
         "Potti1234/creaseui/pleat-table",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -1283,14 +1284,14 @@
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-calendar",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-overlay-boundary",
         "Potti1234/creaseui/pleat-overlay-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -1310,12 +1311,12 @@
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-calendar",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-overlay-boundary",
         "Potti1234/creaseui/pleat-overlay-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -1336,14 +1337,14 @@
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-calendar",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-overlay-boundary",
         "Potti1234/creaseui/pleat-overlay-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -1364,6 +1365,7 @@
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-calendar",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-overlay-boundary",
@@ -1371,8 +1373,7 @@
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
         "Potti1234/creaseui/pleat-tokens",
-        "Potti1234/creaseui/time-parse-behavior",
-        "pleat-core"
+        "Potti1234/creaseui/time-parse-behavior"
       ]
     },
     {
@@ -1389,10 +1390,10 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-overlay-tokens",
         "Potti1234/creaseui/pleat-reset",
-        "Potti1234/creaseui/pleat-style",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-style"
       ]
     },
     {
@@ -1427,12 +1428,12 @@
       "registryDependencies": [
         "Potti1234/creaseui/drawer-behavior",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-overlay-tokens",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -1453,13 +1454,13 @@
         "Potti1234/creaseui/pleat-button",
         "Potti1234/creaseui/pleat-button-group-join",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-overlay-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-separator",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -1476,11 +1477,11 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -1498,9 +1499,9 @@
       "registryDependencies": [
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -1516,7 +1517,7 @@
         }
       ],
       "registryDependencies": [
-        "pleat-core"
+        "Potti1234/creaseui/pleat-core"
       ]
     },
     {
@@ -1534,12 +1535,12 @@
       "registryDependencies": [
         "Potti1234/creaseui/field-behavior",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-field-markers",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -1559,12 +1560,12 @@
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/input-status",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -1582,12 +1583,12 @@
       "registryDependencies": [
         "Potti1234/creaseui/form-behavior",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-field",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -1603,7 +1604,7 @@
         }
       ],
       "registryDependencies": [
-        "pleat-core"
+        "Potti1234/creaseui/pleat-core"
       ]
     },
     {
@@ -1620,8 +1621,8 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-contracts",
-        "Potti1234/creaseui/pleat-style",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-core",
+        "Potti1234/creaseui/pleat-style"
       ]
     },
     {
@@ -1638,11 +1639,11 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
         "Potti1234/creaseui/pleat-text",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -1661,13 +1662,13 @@
         "Potti1234/creaseui/hover-card-behavior",
         "Potti1234/creaseui/pleat-button",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-overlay-boundary",
         "Potti1234/creaseui/pleat-overlay-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -1685,12 +1686,12 @@
       "registryDependencies": [
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -1708,6 +1709,7 @@
       "registryDependencies": [
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-overlay-boundary",
@@ -1715,8 +1717,7 @@
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
         "Potti1234/creaseui/pleat-tokens",
-        "Potti1234/creaseui/tooltip-behavior",
-        "pleat-core"
+        "Potti1234/creaseui/tooltip-behavior"
       ]
     },
     {
@@ -1734,12 +1735,12 @@
       "registryDependencies": [
         "Potti1234/creaseui/pleat-button",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -1756,12 +1757,12 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -1780,11 +1781,11 @@
         "Potti1234/creaseui/input-behavior",
         "Potti1234/creaseui/pleat-button-group-join",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -1802,10 +1803,10 @@
       "registryDependencies": [
         "Potti1234/creaseui/echarts-adapter",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -1835,11 +1836,11 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -1856,11 +1857,11 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -1877,8 +1878,8 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-contracts",
-        "Potti1234/creaseui/pleat-style",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-core",
+        "Potti1234/creaseui/pleat-style"
       ]
     },
     {
@@ -1897,12 +1898,12 @@
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/lightbox-behavior",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -1920,14 +1921,14 @@
       "registryDependencies": [
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
         "Potti1234/creaseui/pleat-text",
         "Potti1234/creaseui/pleat-tokens",
-        "Potti1234/creaseui/pleat-tooltip",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tooltip"
       ]
     },
     {
@@ -1948,12 +1949,12 @@
         "Potti1234/creaseui/list-input-behavior",
         "Potti1234/creaseui/pleat-button",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -1970,12 +1971,12 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -1991,7 +1992,7 @@
         }
       ],
       "registryDependencies": [
-        "pleat-core"
+        "Potti1234/creaseui/pleat-core"
       ]
     },
     {
@@ -2007,8 +2008,8 @@
         }
       ],
       "registryDependencies": [
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-core",
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -2027,13 +2028,13 @@
         "Potti1234/creaseui/message-scroller-behavior",
         "Potti1234/creaseui/pleat-complex-tokens",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-log-stream-terminal-ink",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -2196,7 +2197,7 @@
         }
       ],
       "registryDependencies": [
-        "pleat-core"
+        "Potti1234/creaseui/pleat-core"
       ]
     },
     {
@@ -2214,13 +2215,13 @@
       "registryDependencies": [
         "Potti1234/creaseui/map-adapter",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-map-markers",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -2242,14 +2243,14 @@
         "Potti1234/creaseui/pleat-code",
         "Potti1234/creaseui/pleat-code-block",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-heading",
         "Potti1234/creaseui/pleat-list",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
         "Potti1234/creaseui/pleat-table",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -2266,11 +2267,11 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -2288,11 +2289,11 @@
       "registryDependencies": [
         "Potti1234/creaseui/menubar-behavior",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-dropdown-menu",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -2311,11 +2312,11 @@
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/message-scroller-behavior",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -2331,7 +2332,7 @@
         }
       ],
       "registryDependencies": [
-        "pleat-core"
+        "Potti1234/creaseui/pleat-core"
       ]
     },
     {
@@ -2348,11 +2349,11 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-message-markers",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -2370,11 +2371,11 @@
       "registryDependencies": [
         "Potti1234/creaseui/metadata-list-behavior",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -2393,13 +2394,13 @@
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/mobile-nav-behavior",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-overlay-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -2418,9 +2419,9 @@
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/more-menu-behavior",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-dropdown-menu",
-        "Potti1234/creaseui/pleat-style",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-style"
       ]
     },
     {
@@ -2442,6 +2443,7 @@
         "Potti1234/creaseui/pleat-button",
         "Potti1234/creaseui/pleat-checkbox",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-drawer",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
@@ -2449,8 +2451,7 @@
         "Potti1234/creaseui/pleat-overlay-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -2468,12 +2469,12 @@
       "registryDependencies": [
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -2492,12 +2493,12 @@
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-complex-tokens",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-popover",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -2517,12 +2518,12 @@
         "Potti1234/creaseui/input-status",
         "Potti1234/creaseui/number-input-behavior",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -2540,8 +2541,8 @@
       "registryDependencies": [
         "Potti1234/creaseui/overflow-list-behavior",
         "Potti1234/creaseui/pleat-contracts",
-        "Potti1234/creaseui/pleat-style",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-core",
+        "Potti1234/creaseui/pleat-style"
       ]
     },
     {
@@ -2571,9 +2572,9 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-complex-tokens",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-interaction-tokens",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -2592,11 +2593,11 @@
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pagination-behavior",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -2615,12 +2616,12 @@
         "Potti1234/creaseui/pleat-button",
         "Potti1234/creaseui/pleat-complex-tokens",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-overlay-boundary",
         "Potti1234/creaseui/pleat-overlay-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -2637,12 +2638,12 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-style",
         "Potti1234/creaseui/pleat-tokens",
-        "Potti1234/creaseui/progress-normalization",
-        "pleat-core"
+        "Potti1234/creaseui/progress-normalization"
       ]
     },
     {
@@ -2658,7 +2659,7 @@
         }
       ],
       "registryDependencies": [
-        "pleat-core"
+        "Potti1234/creaseui/pleat-core"
       ]
     },
     {
@@ -2676,14 +2677,14 @@
       "registryDependencies": [
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-radio-group-markers",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
         "Potti1234/creaseui/pleat-tokens",
-        "Potti1234/creaseui/radio-group-behavior",
-        "pleat-core"
+        "Potti1234/creaseui/radio-group-behavior"
       ]
     },
     {
@@ -2699,9 +2700,9 @@
         }
       ],
       "registryDependencies": [
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core",
-        "pleat-foldkit"
+        "Potti1234/creaseui/pleat-core",
+        "Potti1234/creaseui/pleat-foldkit",
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -2720,10 +2721,10 @@
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-complex-tokens",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -2740,9 +2741,9 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -2759,9 +2760,9 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -2780,13 +2781,13 @@
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-button-group-join",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-overlay-boundary",
         "Potti1234/creaseui/pleat-overlay-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -2805,12 +2806,12 @@
         "Potti1234/creaseui/card-pressable-behavior",
         "Potti1234/creaseui/card-surface-behavior",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -2827,9 +2828,9 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -2847,14 +2848,14 @@
       "registryDependencies": [
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-overlay-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
         "Potti1234/creaseui/pleat-tokens",
-        "Potti1234/creaseui/sheet-behavior",
-        "pleat-core"
+        "Potti1234/creaseui/sheet-behavior"
       ]
     },
     {
@@ -2870,7 +2871,7 @@
         }
       ],
       "registryDependencies": [
-        "pleat-core"
+        "Potti1234/creaseui/pleat-core"
       ]
     },
     {
@@ -2889,14 +2890,14 @@
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-complex-tokens",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-sidebar-markers",
         "Potti1234/creaseui/pleat-style",
         "Potti1234/creaseui/pleat-tokens",
-        "Potti1234/creaseui/sidebar-state",
-        "pleat-core"
+        "Potti1234/creaseui/sidebar-state"
       ]
     },
     {
@@ -2913,10 +2914,10 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
-        "Potti1234/creaseui/pleat-style",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-style"
       ]
     },
     {
@@ -2933,13 +2934,13 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
         "Potti1234/creaseui/pleat-tokens",
-        "Potti1234/creaseui/slider-behavior",
-        "pleat-core"
+        "Potti1234/creaseui/slider-behavior"
       ]
     },
     {
@@ -2957,10 +2958,10 @@
       "registryDependencies": [
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -2977,9 +2978,9 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-reset",
-        "Potti1234/creaseui/pleat-style",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-style"
       ]
     },
     {
@@ -2996,10 +2997,10 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -3016,11 +3017,11 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -3039,13 +3040,13 @@
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-button",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
         "Potti1234/creaseui/pleat-tokens",
-        "Potti1234/creaseui/stepper-behavior",
-        "pleat-core"
+        "Potti1234/creaseui/stepper-behavior"
       ]
     },
     {
@@ -3061,8 +3062,8 @@
         }
       ],
       "registryDependencies": [
-        "pleat-core",
-        "pleat-foldkit"
+        "Potti1234/creaseui/pleat-core",
+        "Potti1234/creaseui/pleat-foldkit"
       ]
     },
     {
@@ -3079,13 +3080,13 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
         "Potti1234/creaseui/pleat-tokens",
-        "Potti1234/creaseui/switch-behavior",
-        "pleat-core"
+        "Potti1234/creaseui/switch-behavior"
       ]
     },
     {
@@ -3103,10 +3104,10 @@
       "registryDependencies": [
         "Potti1234/creaseui/pleat-complex-tokens",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -3123,11 +3124,11 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -3144,9 +3145,10 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-complex-tokens",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-interaction-tokens",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -3187,10 +3189,10 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -3207,13 +3209,13 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
         "Potti1234/creaseui/pleat-tokens",
-        "Potti1234/creaseui/textarea-behavior",
-        "pleat-core"
+        "Potti1234/creaseui/textarea-behavior"
       ]
     },
     {
@@ -3229,7 +3231,7 @@
         }
       ],
       "registryDependencies": [
-        "pleat-core"
+        "Potti1234/creaseui/pleat-core"
       ]
     },
     {
@@ -3248,13 +3250,13 @@
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-complex-tokens",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
         "Potti1234/creaseui/pleat-thumbnail-markers",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -3273,14 +3275,14 @@
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/input-status",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-select",
         "Potti1234/creaseui/pleat-style",
         "Potti1234/creaseui/pleat-tokens",
-        "Potti1234/creaseui/time-input-core",
-        "pleat-core"
+        "Potti1234/creaseui/time-input-core"
       ]
     },
     {
@@ -3298,8 +3300,8 @@
       "registryDependencies": [
         "Potti1234/creaseui/pleat-astryx-text",
         "Potti1234/creaseui/pleat-contracts",
-        "Potti1234/creaseui/pleat-style",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-core",
+        "Potti1234/creaseui/pleat-style"
       ]
     },
     {
@@ -3319,13 +3321,13 @@
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-astryx-text",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-hover-card",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
         "Potti1234/creaseui/pleat-tokens",
-        "Potti1234/creaseui/timestamp-format-behavior",
-        "pleat-core"
+        "Potti1234/creaseui/timestamp-format-behavior"
       ]
     },
     {
@@ -3344,11 +3346,11 @@
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-button",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-style",
         "Potti1234/creaseui/pleat-tokens",
-        "Potti1234/creaseui/toast-behavior",
-        "pleat-core"
+        "Potti1234/creaseui/toast-behavior"
       ]
     },
     {
@@ -3365,13 +3367,13 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
         "Potti1234/creaseui/pleat-toggle",
         "Potti1234/creaseui/pleat-tokens",
-        "Potti1234/creaseui/toggle-group-behavior",
-        "pleat-core"
+        "Potti1234/creaseui/toggle-group-behavior"
       ]
     },
     {
@@ -3388,11 +3390,11 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -3411,12 +3413,12 @@
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-complex-tokens",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -3434,6 +3436,7 @@
       "registryDependencies": [
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-overlay-boundary",
@@ -3441,8 +3444,7 @@
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
         "Potti1234/creaseui/pleat-tokens",
-        "Potti1234/creaseui/tokenizer-behavior",
-        "pleat-core"
+        "Potti1234/creaseui/tokenizer-behavior"
       ]
     },
     {
@@ -3458,7 +3460,7 @@
         }
       ],
       "registryDependencies": [
-        "pleat-core"
+        "Potti1234/creaseui/pleat-core"
       ]
     },
     {
@@ -3475,10 +3477,10 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-style",
         "Potti1234/creaseui/pleat-tokens",
-        "Potti1234/creaseui/toolbar-behavior",
-        "pleat-core"
+        "Potti1234/creaseui/toolbar-behavior"
       ]
     },
     {
@@ -3496,12 +3498,12 @@
       "registryDependencies": [
         "Potti1234/creaseui/pleat-button",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-overlay-boundary",
         "Potti1234/creaseui/pleat-overlay-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/tooltip-behavior",
-        "pleat-core"
+        "Potti1234/creaseui/tooltip-behavior"
       ]
     },
     {
@@ -3520,13 +3522,13 @@
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/nav-menu-behavior",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
         "Potti1234/creaseui/pleat-tokens",
-        "Potti1234/creaseui/top-nav-behavior",
-        "pleat-core"
+        "Potti1234/creaseui/top-nav-behavior"
       ]
     },
     {
@@ -3545,12 +3547,12 @@
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-button",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-input",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -3566,7 +3568,7 @@
         }
       ],
       "registryDependencies": [
-        "pleat-core"
+        "Potti1234/creaseui/pleat-core"
       ]
     },
     {
@@ -3584,14 +3586,14 @@
       "registryDependencies": [
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
         "Potti1234/creaseui/pleat-tokens",
         "Potti1234/creaseui/pleat-tree-list-markers",
-        "Potti1234/creaseui/tree-list-behavior",
-        "pleat-core"
+        "Potti1234/creaseui/tree-list-behavior"
       ]
     },
     {
@@ -3608,11 +3610,11 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -3629,9 +3631,9 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/pleat-complex-tokens",
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-interaction-tokens",
-        "Potti1234/creaseui/pleat-tokens",
-        "pleat-core"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -3668,105 +3670,9 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-reset",
-        "Potti1234/creaseui/pleat-style",
-        "pleat-core"
-      ]
-    },
-    {
-      "name": "pleat-core",
-      "type": "registry:lib",
-      "title": "Pleat Core",
-      "description": "The vendored @pleat/core sources used by Pleat components. Pleat is not published to npm; install this item and map '@pleat/core' to the installed @lib/pleat/core sources (tsconfig paths or bundler alias).",
-      "files": [
-        {
-          "path": "packages/pleat-core/src/calc.ts",
-          "type": "registry:lib",
-          "target": "@lib/pleat/core/src/calc.ts"
-        },
-        {
-          "path": "packages/pleat-core/src/color.ts",
-          "type": "registry:lib",
-          "target": "@lib/pleat/core/src/color.ts"
-        },
-        {
-          "path": "packages/pleat-core/src/declarations.ts",
-          "type": "registry:lib",
-          "target": "@lib/pleat/core/src/declarations.ts"
-        },
-        {
-          "path": "packages/pleat-core/src/global.ts",
-          "type": "registry:lib",
-          "target": "@lib/pleat/core/src/global.ts"
-        },
-        {
-          "path": "packages/pleat-core/src/hash.ts",
-          "type": "registry:lib",
-          "target": "@lib/pleat/core/src/hash.ts"
-        },
-        {
-          "path": "packages/pleat-core/src/index.ts",
-          "type": "registry:lib",
-          "target": "@lib/pleat/core/src/index.ts"
-        },
-        {
-          "path": "packages/pleat-core/src/property.ts",
-          "type": "registry:lib",
-          "target": "@lib/pleat/core/src/property.ts"
-        },
-        {
-          "path": "packages/pleat-core/src/recipe.ts",
-          "type": "registry:lib",
-          "target": "@lib/pleat/core/src/recipe.ts"
-        },
-        {
-          "path": "packages/pleat-core/src/sheet.ts",
-          "type": "registry:lib",
-          "target": "@lib/pleat/core/src/sheet.ts"
-        },
-        {
-          "path": "packages/pleat-core/src/style.ts",
-          "type": "registry:lib",
-          "target": "@lib/pleat/core/src/style.ts"
-        },
-        {
-          "path": "packages/pleat-core/src/theme.ts",
-          "type": "registry:lib",
-          "target": "@lib/pleat/core/src/theme.ts"
-        },
-        {
-          "path": "packages/pleat-core/src/token.ts",
-          "type": "registry:lib",
-          "target": "@lib/pleat/core/src/token.ts"
-        },
-        {
-          "path": "packages/pleat-core/src/var.ts",
-          "type": "registry:lib",
-          "target": "@lib/pleat/core/src/var.ts"
-        },
-        {
-          "path": "packages/pleat-core/src/when.ts",
-          "type": "registry:lib",
-          "target": "@lib/pleat/core/src/when.ts"
-        }
-      ]
-    },
-    {
-      "name": "pleat-foldkit",
-      "type": "registry:lib",
-      "title": "Pleat Foldkit",
-      "description": "The vendored @pleat/foldkit sources used by Pleat components. Pleat is not published to npm; install this item and map '@pleat/foldkit' to the installed @lib/pleat/foldkit sources (tsconfig paths or bundler alias).",
-      "files": [
-        {
-          "path": "packages/pleat-foldkit/src/index.ts",
-          "type": "registry:lib",
-          "target": "@lib/pleat/foldkit/src/index.ts"
-        },
-        {
-          "path": "packages/pleat-foldkit/src/server.ts",
-          "type": "registry:lib",
-          "target": "@lib/pleat/foldkit/src/server.ts"
-        }
+        "Potti1234/creaseui/pleat-style"
       ]
     }
   ]

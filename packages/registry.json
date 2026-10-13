@@ -1,0 +1,119 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "pleat-core",
+      "type": "registry:lib",
+      "title": "Pleat Core",
+      "dependencies": [
+        "csstype@^3.2.3"
+      ],
+      "description": "The vendored @pleat/core sources used by Pleat components. Pleat is not published to npm; install this item and map '@pleat/core' to the installed @lib/pleat/core sources (tsconfig paths or bundler alias).",
+      "files": [
+        {
+          "path": "pleat-core/src/calc.ts",
+          "type": "registry:lib",
+          "target": "@lib/pleat/core/src/calc.ts"
+        },
+        {
+          "path": "pleat-core/src/color.ts",
+          "type": "registry:lib",
+          "target": "@lib/pleat/core/src/color.ts"
+        },
+        {
+          "path": "pleat-core/src/declarations.ts",
+          "type": "registry:lib",
+          "target": "@lib/pleat/core/src/declarations.ts"
+        },
+        {
+          "path": "pleat-core/src/global.ts",
+          "type": "registry:lib",
+          "target": "@lib/pleat/core/src/global.ts"
+        },
+        {
+          "path": "pleat-core/src/hash.ts",
+          "type": "registry:lib",
+          "target": "@lib/pleat/core/src/hash.ts"
+        },
+        {
+          "path": "pleat-core/src/index.ts",
+          "type": "registry:lib",
+          "target": "@lib/pleat/core/src/index.ts"
+        },
+        {
+          "path": "pleat-core/src/property.ts",
+          "type": "registry:lib",
+          "target": "@lib/pleat/core/src/property.ts"
+        },
+        {
+          "path": "pleat-core/src/recipe.ts",
+          "type": "registry:lib",
+          "target": "@lib/pleat/core/src/recipe.ts"
+        },
+        {
+          "path": "pleat-core/src/sheet.ts",
+          "type": "registry:lib",
+          "target": "@lib/pleat/core/src/sheet.ts"
+        },
+        {
+          "path": "pleat-core/src/style.ts",
+          "type": "registry:lib",
+          "target": "@lib/pleat/core/src/style.ts"
+        },
+        {
+          "path": "pleat-core/src/theme.ts",
+          "type": "registry:lib",
+          "target": "@lib/pleat/core/src/theme.ts"
+        },
+        {
+          "path": "pleat-core/src/token.ts",
+          "type": "registry:lib",
+          "target": "@lib/pleat/core/src/token.ts"
+        },
+        {
+          "path": "pleat-core/src/var.ts",
+          "type": "registry:lib",
+          "target": "@lib/pleat/core/src/var.ts"
+        },
+        {
+          "path": "pleat-core/src/when.ts",
+          "type": "registry:lib",
+          "target": "@lib/pleat/core/src/when.ts"
+        },
+        {
+          "path": "pleat-core/LICENSE",
+          "type": "registry:file",
+          "target": "@lib/pleat/core/LICENSE"
+        },
+        {
+          "path": "pleat-core/VENDORED.md",
+          "type": "registry:file",
+          "target": "@lib/pleat/core/VENDORED.md"
+        }
+      ]
+    },
+    {
+      "name": "pleat-foldkit",
+      "type": "registry:lib",
+      "title": "Pleat Foldkit",
+      "description": "The vendored @pleat/foldkit sources used by Pleat components. Pleat is not published to npm; install this item and map '@pleat/foldkit' to the installed @lib/pleat/foldkit sources (tsconfig paths or bundler alias).",
+      "files": [
+        {
+          "path": "pleat-foldkit/src/index.ts",
+          "type": "registry:lib",
+          "target": "@lib/pleat/foldkit/src/index.ts"
+        },
+        {
+          "path": "pleat-foldkit/LICENSE",
+          "type": "registry:file",
+          "target": "@lib/pleat/foldkit/LICENSE"
+        },
+        {
+          "path": "pleat-foldkit/VENDORED.md",
+          "type": "registry:file",
+          "target": "@lib/pleat/foldkit/VENDORED.md"
+        }
+      ]
+    }
+  ]
+}
