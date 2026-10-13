@@ -1,4 +1,3 @@
-import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
@@ -6,10 +5,7 @@ import {
   payments,
   type Payment,
 } from '@/docs/components/pages/data-table/shared'
-import type { ComponentLayoutStyle } from '@/stylex/contracts'
 import * as DataTable from '@/stylex/data-table'
-
-const styles = stylex.create({ amount: { textAlign: 'right' } })
 
 const columns = (
   rtl: boolean,
@@ -29,7 +25,7 @@ const columns = (
   {
     key: 'amount',
     header: rtl ? 'المبلغ' : 'Amount',
-    layoutStyle: styles.amount as ComponentLayoutStyle,
+    align: 'right',
     cell: row => `$${row.amount.toFixed(2)}`,
     sortValue: row => row.amount,
   },

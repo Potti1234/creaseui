@@ -29,6 +29,7 @@ export type DataTableColumn<Row> = Readonly<{
   cell: (row: Row) => Html | string
   sortValue?: (row: Row) => string | number
   isHideable?: boolean
+  align?: 'left' | 'center' | 'right'
   layoutStyle?: ComponentLayoutStyle | undefined
 }>
 export type DataTableProps<Row, Msg> = Readonly<{
@@ -61,6 +62,8 @@ const SHADOW_MD =
   'rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px'
 
 const styles = {
+  alignCenter: Style.make({ textAlign: 'center' }),
+  alignRight: Style.make({ textAlign: 'right' }),
   cell: Style.make({
     paddingBlock: '0.75rem',
     paddingInline: '0.75rem',
@@ -289,6 +292,13 @@ const selectionControl = <Msg>(
     h,
   )
 
+const columnAlignStyle = (align: DataTableColumn<unknown>['align']) =>
+  align === 'right'
+    ? styles.alignRight
+    : align === 'center'
+      ? styles.alignCenter
+      : undefined
+
 export const dataTable = <Row, Msg>(
   props: DataTableProps<Row, Msg>,
   h: HtmlBuilder<Msg>,
@@ -340,7 +350,14 @@ export const dataTable = <Row, Msg>(
                   : 'none',
               ),
             ]),
-        h.Class(className(reset.tableHeading, styles.head, column.layoutStyle)),
+        h.Class(
+          className(
+            reset.tableHeading,
+            styles.head,
+            columnAlignStyle(column.align),
+            column.layoutStyle,
+          ),
+        ),
       ],
       column.sortValue === undefined
         ? [column.header]
@@ -455,7 +472,15 @@ export const dataTable = <Row, Msg>(
                 : []),
               ...visibleColumns.map(column =>
                 h.td(
-                  [h.Class(className(styles.cell, column.layoutStyle))],
+                  [
+                    h.Class(
+                      className(
+                        styles.cell,
+                        columnAlignStyle(column.align),
+                        column.layoutStyle,
+                      ),
+                    ),
+                  ],
                   [column.cell(row)],
                 ),
               ),

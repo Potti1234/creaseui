@@ -1,4 +1,3 @@
-import { Style } from '@pleat/core'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
@@ -6,12 +5,7 @@ import {
   payments,
   type Payment,
 } from '@/docs/components/pages/data-table/shared'
-import type { ComponentLayoutStyle } from '@/pleat/contracts'
 import * as DataTable from '@/pleat/data-table'
-
-const styles = {
-  amount: Style.make({ textAlign: 'right' }),
-}
 
 const columns = (
   rtl: boolean,
@@ -31,7 +25,7 @@ const columns = (
   {
     key: 'amount',
     header: rtl ? 'المبلغ' : 'Amount',
-    layoutStyle: styles.amount as ComponentLayoutStyle,
+    align: 'right',
     cell: row => `$${row.amount.toFixed(2)}`,
     sortValue: row => row.amount,
   },
