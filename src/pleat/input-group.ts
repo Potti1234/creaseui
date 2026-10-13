@@ -42,15 +42,15 @@ const styles = {
     Style.when(When.has(When.pseudo(':is([data-slot][aria-invalid="true"])')), {
       borderColor: tokens.destructive,
     }),
-    Style.when(When.has(When.pseudo(':is(> [data-align="block-end"])')), {
+    Style.when(When.pseudo(':has(> [data-align="block-end"])'), {
       flexDirection: 'column',
       height: 'auto',
     }),
-    Style.when(When.has(When.pseudo(':is(> [data-align="block-start"])')), {
+    Style.when(When.pseudo(':has(> [data-align="block-start"])'), {
       flexDirection: 'column',
       height: 'auto',
     }),
-    Style.when(When.has(When.pseudo(':is(> textarea)')), { height: 'auto' }),
+    Style.when(When.pseudo(':has(> textarea)'), { height: 'auto' }),
   ),
   radiusXl: Style.make({ borderRadius: foundationTokens.radius2xl }),
   radiusFull: Style.make({ borderRadius: foundationTokens.radiusFull }),
@@ -68,16 +68,16 @@ const styles = {
     userSelect: 'none',
   }),
   inlineStart: Style.make({ order: -9999, paddingLeft: '0.75rem' }).pipe(
-    Style.when(When.has(When.pseudo(':is(> button)')), {
+    Style.when(When.pseudo(':has(> button)'), {
       marginLeft: '-0.45rem',
     }),
-    Style.when(When.has(When.pseudo(':is(> kbd)')), { marginLeft: '-0.35rem' }),
+    Style.when(When.pseudo(':has(> kbd)'), { marginLeft: '-0.35rem' }),
   ),
   inlineEnd: Style.make({ order: 9999, paddingRight: '0.75rem' }).pipe(
-    Style.when(When.has(When.pseudo(':is(> button)')), {
+    Style.when(When.pseudo(':has(> button)'), {
       marginRight: '-0.45rem',
     }),
-    Style.when(When.has(When.pseudo(':is(> kbd)')), {
+    Style.when(When.pseudo(':has(> kbd)'), {
       marginRight: '-0.35rem',
     }),
   ),

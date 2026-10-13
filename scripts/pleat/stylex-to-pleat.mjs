@@ -81,7 +81,13 @@ function condFor(key, file) {
 
   // :has(X) / :not(X) with an inner attribute or state selector
   const hasM = inner.match(/^:has\((.+)\)$/s)
-  if (hasM) return `When.has(${condFor(hasM[1].trim(), file)})`
+  if (hasM) {
+    const innerArg = hasM[1].trim()
+    // A leading combinator is a relative selector valid only directly inside
+    // :has(); wrapping it in :is() breaks the selector, so emit it verbatim.
+    if (/^[>~+]/.test(innerArg)) return `When.pseudo(${sq(inner)})`
+    return `When.has(${condFor(innerArg, file)})`
+  }
   const notM = inner.match(/^:not\((.+)\)$/s)
   if (notM) return `When.not(${condFor(notM[1].trim(), file)})`
 

@@ -39,10 +39,10 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
   }).pipe(
-    Style.when(When.has(When.pseudo(':is(>[data-slot=checkbox-group])')), {
+    Style.when(When.pseudo(':has(>[data-slot=checkbox-group])'), {
       gap: '0.75rem',
     }),
-    Style.when(When.has(When.pseudo(':is(>[data-slot=radio-group])')), {
+    Style.when(When.pseudo(':has(>[data-slot=radio-group])'), {
       gap: '0.75rem',
     }),
   ),
@@ -76,7 +76,7 @@ const styles = {
   ),
   vertical: Style.make({ flexDirection: 'column' }),
   horizontal: Style.make({ alignItems: 'center', flexDirection: 'row' }).pipe(
-    Style.when(When.has(When.pseudo(':is(>[data-slot=field-content])')), {
+    Style.when(When.pseudo(':has(>[data-slot=field-content])'), {
       alignItems: 'flex-start',
     }),
   ),
@@ -88,7 +88,7 @@ const styles = {
     Style.when(
       When.all(
         When.container('(min-width: 28rem)', 'field-group'),
-        When.has(When.pseudo(':is(> [data-slot="field-content"])')),
+        When.pseudo(':has(> [data-slot="field-content"])'),
       ),
       { alignItems: 'flex-start' },
     ),
@@ -149,7 +149,7 @@ const styles = {
       borderColor: tokens.primary,
       backgroundColor: foundationTokens.primaryFaint,
     }),
-    Style.when(When.has(When.pseudo(':is(>[data-slot=field])')), {
+    Style.when(When.pseudo(':has(>[data-slot=field])'), {
       borderRadius: foundationTokens.radiusMd,
       borderStyle: 'solid',
       borderWidth: 1,

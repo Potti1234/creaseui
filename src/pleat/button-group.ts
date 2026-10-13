@@ -14,7 +14,7 @@ const styles = {
     display: 'flex',
     width: 'fit-content',
   }).pipe(
-    Style.when(When.has(When.pseudo(':is(> [data-slot=button-group])')), {
+    Style.when(When.pseudo(':has(> [data-slot=button-group])'), {
       gap: '0.5rem',
     }),
     Style.when(

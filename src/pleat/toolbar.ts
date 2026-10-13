@@ -108,14 +108,12 @@ const styles = {
   vertical: Style.make({ alignItems: 'stretch', flexDirection: 'column' }),
   slot: Style.make({ alignItems: 'center', display: 'flex', minWidth: 0 }),
   slotEdgeComp: Style.empty.pipe(
-    Style.when(
-      When.has(When.pseudo(':is(> [data-crease-edge-comp]:last-child)')),
-      { marginInlineEnd: 'calc(-1 * 0.5rem)' },
-    ),
-    Style.when(
-      When.has(When.pseudo(':is(> [data-crease-edge-comp]:first-child)')),
-      { marginInlineStart: 'calc(-1 * 0.5rem)' },
-    ),
+    Style.when(When.pseudo(':has(> [data-crease-edge-comp]:last-child)'), {
+      marginInlineEnd: 'calc(-1 * 0.5rem)',
+    }),
+    Style.when(When.pseudo(':has(> [data-crease-edge-comp]:first-child)'), {
+      marginInlineStart: 'calc(-1 * 0.5rem)',
+    }),
   ),
   centerSlot: Style.make({ overflow: 'hidden', justifyContent: 'center' }),
   endSlot: Style.make({ justifyContent: 'flex-end' }),
