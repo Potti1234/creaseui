@@ -67,6 +67,12 @@ jobs:
       - name: Check all renderer sites, preset matrix and overlay contracts
         run: npx playwright test --config playwright.sites.config.ts
 
+      - name: Install Firefox and WebKit
+        run: npx playwright install --with-deps firefox webkit
+
+      - name: Run cross-browser critical interactions
+        run: npm run test:cross-browser
+
       - name: Upload renderer site report
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v7
@@ -75,6 +81,8 @@ jobs:
           path: |
             playwright-report/sites
             test-results/sites
+            playwright-report/cross-browser
+            test-results/cross-browser
           retention-days: 14
 
       - name: Run browser and accessibility tests

@@ -49,6 +49,7 @@
     "lint": "eslint src test scene e2e scripts packages/lint playwright.config.ts playwright.sites.config.ts vite.config.ts --quiet",
     "lint:design-system": "eslint src/ui src/stylex src/pleat src/demo src/docs/components/pages --max-warnings 373",
     "test:lint-package": "node --test packages/lint/test/*.test.js",
+    "test:cross-browser": "playwright test --config playwright.cross-browser.config.ts",
     "test:lint-audit": "node --test packages/lint/test/audit.test.js",
     "lint:composition": "oxlint src/demo/board-constrained.ts src/demo/blocks-stylex src/stylex/composition && node scripts/check-constrained-composition.mjs && node --test --import tsx --import ./test/setup.ts test/stylex-composition.test.ts test/stylex-blocks-composition.test.ts",
     "lint:stylex-templates": "node scripts/check-stylex-template-system.mjs && node --test --import tsx --import ./test/setup.ts test/stylex-template-system.test.ts",
