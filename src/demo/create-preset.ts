@@ -327,7 +327,7 @@ const CONTROL_SLOTS = [
 ] as const
 const SINGLE_LINE_SLOTS = CONTROL_SLOTS.filter(slot => slot !== 'textarea')
 const SURFACE_SLOTS = ['card'] as const
-const SELECTION_SLOTS = ['checkbox', 'radio-group-item'] as const
+const SELECTION_SLOTS = ['checkbox', 'radio-group-item', 'switch'] as const
 
 const where = (slots: ReadonlyArray<string>): string =>
   `:where(${slots

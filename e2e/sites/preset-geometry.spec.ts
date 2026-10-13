@@ -1,8 +1,8 @@
 import { expect, test, type Page } from '@playwright/test'
 
 /* R2 waves 1-2: Create styles apply to every control and selection role,
-   not only Button/Input, in every renderer. Radio indicators keep their
-   circular contract. */
+   not only Button/Input, in every renderer. Radio indicators and Switch
+   tracks keep their circular/pill contract. */
 const CONTROLS = [
   'button',
   'input',
@@ -12,7 +12,7 @@ const CONTROLS = [
   'input-group',
 ] as const
 const SINGLE_LINE = CONTROLS.filter(slot => slot !== 'textarea')
-const SELECTION = ['checkbox', 'radio-group-item'] as const
+const SELECTION = ['checkbox', 'radio-group-item', 'switch'] as const
 const MEASURED = [...CONTROLS, ...SELECTION, 'card']
 
 type Measured = Readonly<{
@@ -48,14 +48,23 @@ const measure = (page: Page, slots: ReadonlyArray<string>) =>
     )
   }, slots) as Promise<Record<string, Measured>>
 
+/* Under parallel load a click can land on a neighbouring option while the
+   panel settles, so retry until the trigger reports the requested style. */
 const selectStyle = async (page: Page, style: string): Promise<void> => {
-  await page.locator('#create-style-picker-button').click()
-  await page
-    .locator('#create-style-picker-panel button', {
-      hasText: new RegExp(`^${style}$`, 'i'),
+  const trigger = page.locator('#create-style-picker-button')
+  await expect(async () => {
+    if ((await trigger.getAttribute('aria-expanded')) !== 'true')
+      await trigger.click()
+    await page
+      .locator('#create-style-picker-panel button', {
+        hasText: new RegExp(`^${style}$`, 'i'),
+      })
+      .first()
+      .click({ timeout: 5000 })
+    await expect(trigger).toContainText(new RegExp(style, 'i'), {
+      timeout: 2000,
     })
-    .first()
-    .click()
+  }).toPass({ timeout: 30_000 })
 }
 
 const expectations: Readonly<
@@ -65,6 +74,7 @@ const expectations: Readonly<
     for (const slot of [...CONTROLS, 'checkbox', 'card'])
       expect(m[slot]!.radius, slot).toBe(0)
     expect(m['radio-group-item']!.radius).toBeGreaterThan(4)
+    expect(m.switch!.radius).toBeGreaterThan(4)
   },
   maia: m => {
     for (const slot of SINGLE_LINE)
