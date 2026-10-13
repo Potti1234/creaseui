@@ -252,14 +252,22 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
         ...page,
         definition: {
           ...page.definition,
-          stylexExamples: page.definition.stylexExamples?.map(example => ({
-            ...example,
-            code: repairStyled(example.code, 'stylex'),
-          })),
-          pleatExamples: page.definition.pleatExamples?.map(example => ({
-            ...example,
-            code: repairStyled(example.code, 'pleat'),
-          })),
+          ...(page.definition.stylexExamples === undefined
+            ? {}
+            : {
+                stylexExamples: page.definition.stylexExamples.map(example => ({
+                  ...example,
+                  code: repairStyled(example.code, 'stylex'),
+                })),
+              }),
+          ...(page.definition.pleatExamples === undefined
+            ? {}
+            : {
+                pleatExamples: page.definition.pleatExamples.map(example => ({
+                  ...example,
+                  code: repairStyled(example.code, 'pleat'),
+                })),
+              }),
         },
       },
     ]),

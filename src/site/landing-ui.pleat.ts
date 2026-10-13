@@ -2,6 +2,7 @@ import { Style } from '@pleat/core'
 import type { HtmlBuilder } from 'foldkit/html'
 import type { ChartProps } from '@/lib/echarts'
 import { eChart } from '@/pleat/integrations/echarts'
+import { layoutStyle } from '@/pleat/contracts'
 export { badge } from '@/pleat/badge'
 export { button, buttonLink } from '@/pleat/button'
 export {
@@ -17,7 +18,7 @@ export { kbd } from '@/pleat/kbd'
 export { separator } from '@/pleat/separator'
 
 const styles = {
-  chart: Style.make({ height: '8rem' }),
+  chart: layoutStyle({ height: '8rem' }),
 }
 export const heroChart = <Msg>(
   props: Omit<ChartProps<Msg>, 'class'>,

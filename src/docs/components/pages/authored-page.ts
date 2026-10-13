@@ -493,7 +493,7 @@ import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
-import * as ${config.componentName} from '@/${config.renderer === 'tailwind' || config.renderer === undefined ? 'ui' : config.renderer}/${config.componentSlug}'${isStyled(config.renderer) ? emitShellBlock(config.componentImports) : ''}`,
+import * as ${config.componentName} from '@/${config.renderer === 'tailwind' || config.renderer === undefined ? 'ui' : config.renderer}/${config.componentSlug}'${isStyled(config.renderer) ? emitShellBlock(undefined) : ''}`,
     model: `export const Model = S.Struct({ ${config.field}: S.Boolean })
 export type Model = typeof Model.Type`,
     messages: `import { taggedStruct } from 'foldkit/schema'

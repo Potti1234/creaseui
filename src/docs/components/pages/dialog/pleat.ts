@@ -15,9 +15,10 @@ import * as Field from '@/pleat/field'
 import * as Input from '@/pleat/input'
 import { className } from '@/pleat/style'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
-  compact: Style.make({ maxWidth: '24rem' }),
-  shareWidth: Style.make({ maxWidth: '28rem' }),
+  compact: layoutStyle({ maxWidth: '24rem' }),
+  shareWidth: layoutStyle({ maxWidth: '28rem' }),
   scrollArea: Style.make({
     marginInline: '-1rem',
     paddingInline: '1rem',

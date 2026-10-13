@@ -8,11 +8,12 @@ import * as Progress from '@/pleat/progress'
 import * as Slider from '@/pleat/slider'
 import { className } from '@/pleat/style'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
-  track60: Style.make({ width: '60%' }),
-  wide: Style.make({ maxWidth: '24rem', width: '100%' }),
-  specimenWide: Style.make({ maxWidth: '28rem', width: '100%' }),
-  specimenNarrow: Style.make({ width: '6rem' }),
+  track60: layoutStyle({ width: '60%' }),
+  wide: layoutStyle({ maxWidth: '24rem', width: '100%' }),
+  specimenWide: layoutStyle({ maxWidth: '28rem', width: '100%' }),
+  specimenNarrow: layoutStyle({ width: '6rem' }),
   pushEnd: Style.make({ marginInlineStart: 'auto' }),
   stack: Style.make({
     gap: '1rem',

@@ -21,6 +21,7 @@ import { className } from '@/pleat/style'
 import type { ComponentLayoutStyle } from '@/pleat/contracts'
 import type * as DropdownMenuModel from '@/pleat/dropdown-menu'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   triggerBorderTransparent: Style.make({ borderColor: tokens.transparent }),
   stackMd: Style.make({
@@ -51,7 +52,7 @@ const styles = {
     maxWidth: '28rem',
     width: '100%',
   }),
-  group: Style.make({ maxWidth: '24rem' }),
+  group: layoutStyle({ maxWidth: '24rem' }),
   headerImg: Style.make({
     borderRadius: 'calc(var(--radius) - 4px)',
     aspectRatio: '1 / 1',
@@ -73,12 +74,12 @@ const styles = {
     textAlign: 'center',
   }),
   avatarStack: Style.make({ display: 'flex' }),
-  avatarOverlap: Style.make({ marginRight: '-0.5rem' }),
-  avatar65: Style.make({ height: '1.625rem', width: '1.625rem' }),
-  icon4: Style.make({ height: '1rem', width: '1rem' }),
-  icon5: Style.make({ height: '1.25rem', width: '1.25rem' }),
-  iconBtn4: Style.make({ flexShrink: 0, height: '1rem', width: '1rem' }),
-  menuItem: Style.make({ width: '100%' }),
+  avatarOverlap: layoutStyle({ marginRight: '-0.5rem' }),
+  avatar65: layoutStyle({ height: '1.625rem', width: '1.625rem' }),
+  icon4: layoutStyle({ height: '1rem', width: '1rem' }),
+  icon5: layoutStyle({ height: '1.25rem', width: '1.25rem' }),
+  iconBtn4: layoutStyle({ flexShrink: 0, height: '1rem', width: '1rem' }),
+  menuItem: layoutStyle({ width: '100%' }),
   triggerContent: Style.make({
     gap: '0.5rem',
     alignItems: 'center',

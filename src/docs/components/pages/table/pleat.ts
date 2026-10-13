@@ -16,9 +16,10 @@ import * as DropdownMenu from '@/pleat/dropdown-menu'
 import * as Icon from '@/lib/icon'
 import * as Table from '@/pleat/table'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
-  table: Style.make({ maxWidth: '36rem' }),
-  invoiceHead: Style.make({ width: '6.25rem' }),
+  table: layoutStyle({ maxWidth: '36rem' }),
+  invoiceHead: layoutStyle({ width: '6.25rem' }),
   medium: Style.make({ fontWeight: 500 }),
   right: Style.make({ textAlign: 'right' }),
   dense: Style.make({

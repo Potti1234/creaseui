@@ -14,15 +14,16 @@ import * as Collapsible from '@/pleat/collapsible'
 import * as Input from '@/pleat/input'
 import { className } from '@/pleat/style'
 
+import { layoutStyle } from '@/pleat/contracts'
 /* ComponentLayoutStyle only carries positioning props; visual styling lives on
    the trigger/content Html children. */
 const styles = {
-  cardSm: Style.make({
+  cardSm: layoutStyle({
     marginInline: 'auto',
     maxWidth: '24rem',
     width: '100%',
   }),
-  cardXs: Style.make({
+  cardXs: layoutStyle({
     marginInline: 'auto',
     maxWidth: '20rem',
     width: '100%',

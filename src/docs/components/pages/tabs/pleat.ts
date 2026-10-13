@@ -12,9 +12,10 @@ import * as Card from '@/pleat/card'
 import * as Icon from '@/lib/icon'
 import * as Tabs from '@/pleat/tabs'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   iconSize: Style.make({ flexShrink: 0, height: '1rem', width: '1rem' }),
-  demoWidth: Style.make({ width: '25rem' }),
+  demoWidth: layoutStyle({ width: '25rem' }),
 }
 
 const Bundle = Tabs.create<string>()

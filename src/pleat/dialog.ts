@@ -8,6 +8,7 @@ import type { ComponentLayoutStyle } from './contracts'
 import { className } from './style'
 import { reset } from './reset'
 
+import { layoutStyle } from './contracts'
 const styles = {
   content: Style.make({
     padding: '1.5rem',
@@ -23,7 +24,7 @@ const styles = {
     maxWidth: 'min(50rem, calc(100vw - 2rem))',
     width: '100%',
   }).pipe(Style.when(When.minWidth('768px'), { maxHeight: '35rem' })),
-  settingsHeaderMargin: Style.make({
+  settingsHeaderMargin: layoutStyle({
     marginInline: '1.5rem',
     marginTop: '1.5rem',
   }),

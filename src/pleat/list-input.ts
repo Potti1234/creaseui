@@ -36,6 +36,7 @@ import { interactionTokens } from './interaction-tokens'
 import { className } from './style'
 import { tokens } from './tokens'
 
+import { layoutStyle } from './contracts'
 export {
   init,
   Model,
@@ -285,7 +286,7 @@ const styles = {
     flexShrink: 0,
     height: '1.25rem',
   }),
-  addButtonFill: Style.make({ width: '100%' }),
+  addButtonFill: layoutStyle({ width: '100%' }),
 }
 
 export type ListInputProps<T, Msg> = Readonly<{

@@ -23,6 +23,7 @@ import * as Select from '@/pleat/select'
 import { className } from '@/pleat/style'
 import type { ComponentLayoutStyle } from '@/pleat/contracts'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   frame: Style.make({ width: '100%', maxWidth: '24rem' }),
   gridTwo: Style.make({
@@ -36,7 +37,7 @@ const styles = {
     maxWidth: '24rem',
   }),
   form: Style.make({ maxWidth: '24rem', width: '100%' }),
-  push: Style.make({ marginInlineStart: 'auto' }),
+  push: layoutStyle({ marginInlineStart: 'auto' }),
   iconMd: Style.make({ height: '1rem', width: '1rem' }),
   destructive: Style.make({ color: 'var(--destructive)' }),
 }

@@ -16,8 +16,9 @@ import * as InputGroup from '@/pleat/input-group'
 import * as Kbd from '@/pleat/kbd'
 import { className } from '@/pleat/style'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
-  empty: Style.make({ maxWidth: '36rem', width: '100%' }),
+  empty: layoutStyle({ maxWidth: '36rem', width: '100%' }),
   dashedBox: Style.make({
     borderColor: 'var(--border)',
     borderStyle: 'dashed',
@@ -27,13 +28,13 @@ const styles = {
     backgroundColor: 'color-mix(in oklab, var(--muted) 30%, transparent)',
     height: '100%',
   }),
-  avatarSize: Style.make({ height: '3rem', width: '3rem' }),
+  avatarSize: layoutStyle({ height: '3rem', width: '3rem' }),
   avatarImgAspect: Style.make({
     borderRadius: 0,
     aspectRatio: '1 / 1',
     objectFit: 'fill',
   }),
-  avatarSizeOverlap: Style.make({
+  avatarSizeOverlap: layoutStyle({
     marginInlineEnd: '-0.5rem',
     height: '3rem',
     width: '3rem',
@@ -56,7 +57,7 @@ const styles = {
   }),
   buttonIcon: Style.make({ flexShrink: 0, height: '1rem', width: '1rem' }),
   addonIcon: Style.make({ height: '1rem', width: '1rem' }),
-  inputWidth: Style.make({ width: '75%' }),
+  inputWidth: layoutStyle({ width: '75%' }),
   helpLink: Style.make({ textDecoration: 'underline' }),
 }
 

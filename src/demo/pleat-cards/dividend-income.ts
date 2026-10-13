@@ -20,6 +20,7 @@ import {
 } from '@/pleat/item'
 import { className } from '@/pleat/style'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   visuallyHidden: Style.make({
     overflow: 'hidden',
@@ -33,8 +34,8 @@ const styles = {
   chart: Style.make({ display: 'none', height: '2rem', width: '6rem' }).pipe(
     Style.when(When.minWidth('768px'), { display: 'block' }),
   ),
-  chartSize: Style.make({ height: '2rem', width: '6rem' }),
-  closeButton: Style.make({ height: '2rem', width: '2rem' }),
+  chartSize: layoutStyle({ height: '2rem', width: '6rem' }),
+  closeButton: layoutStyle({ height: '2rem', width: '2rem' }),
   amount: Style.make({
     display: 'none',
     fontSize: '0.875rem',

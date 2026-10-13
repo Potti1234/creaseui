@@ -22,6 +22,7 @@ import * as Slider from '@/pleat/slider'
 import { textarea } from '@/pleat/textarea'
 import { className } from '@/pleat/style'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   action: Style.make({ display: 'grid', width: '100%' }),
   amount: Style.make({
@@ -35,8 +36,8 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
   }),
-  closeButton: Style.make({ height: '2rem', width: '2rem' }),
-  full: Style.make({ width: '100%' }),
+  closeButton: layoutStyle({ height: '2rem', width: '2rem' }),
+  full: layoutStyle({ width: '100%' }),
   icon: Style.make({
     display: 'inline-flex',
     flexShrink: 0,
@@ -48,7 +49,7 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
   }),
-  notes: Style.make({ minHeight: '6.25rem' }),
+  notes: layoutStyle({ minHeight: '6.25rem' }),
   srOnly: Style.make({
     overflow: 'hidden',
     clip: 'rect(0, 0, 0, 0)',

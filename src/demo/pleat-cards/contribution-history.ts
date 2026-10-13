@@ -15,6 +15,7 @@ import { reset } from '@/pleat/reset'
 import { className } from '@/pleat/style'
 import { tokens } from '../../pleat/tokens'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   eyebrow: Style.make({
     color: tokens.mutedForeground,
@@ -34,7 +35,7 @@ const styles = {
     fontSize: '0.875rem',
     lineHeight: '1.25rem',
   }),
-  chart: Style.make({ height: '12.5rem', width: '100%' }),
+  chart: layoutStyle({ height: '12.5rem', width: '100%' }),
   summaryGrid: Style.make({
     gap: '0.75rem',
     display: 'grid',
@@ -46,7 +47,7 @@ const styles = {
     }),
   ),
   footer: Style.make({ paddingBlock: '0.625rem' }),
-  fullWidth: Style.make({ width: '100%' }),
+  fullWidth: layoutStyle({ width: '100%' }),
 }
 
 const chartData = [

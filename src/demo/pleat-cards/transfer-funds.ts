@@ -30,8 +30,9 @@ import { separator } from '@/pleat/separator'
 import { className } from '@/pleat/style'
 import { tokens } from '../../pleat/tokens'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
-  button: Style.make({ width: '100%' }),
+  button: layoutStyle({ width: '100%' }),
   fields: Style.make({
     gap: '1.3125rem',
     display: 'flex',

@@ -20,13 +20,14 @@ import { cardTokens } from './complex-card-tokens'
 import { tokens } from '../../pleat/tokens'
 import { interactionTokens } from '../../pleat/interaction-tokens'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   content: Style.make({
     gap: '1rem',
     display: 'flex',
     flexDirection: 'column',
   }),
-  flex: Style.make({ flexGrow: 1 }),
+  flex: layoutStyle({ flexGrow: 1 }),
   footer: Style.make({ paddingBlock: '0.625rem' }),
   label: Style.make({
     color: tokens.mutedForeground,

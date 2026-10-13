@@ -30,6 +30,7 @@ import { reset } from '@/pleat/reset'
 import { className } from '@/pleat/style'
 import { tokens } from '../../pleat/tokens'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   amount: Style.make({
     fontSize: '1.875rem',
@@ -52,7 +53,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
   }),
-  flex: Style.make({ flexGrow: 1 }),
+  flex: layoutStyle({ flexGrow: 1 }),
   footer: Style.make({
     gap: '0.75rem',
     display: 'flex',

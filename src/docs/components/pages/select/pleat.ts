@@ -12,10 +12,11 @@ import * as Field from '@/pleat/field'
 import * as Select from '@/pleat/select'
 import * as Switch from '@/pleat/switch'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
-  triggerWide: Style.make({ maxWidth: '12rem', width: '100%' }),
-  triggerWider: Style.make({ maxWidth: '16rem', width: '100%' }),
-  triggerSmall: Style.make({ width: '8rem' }),
+  triggerWide: layoutStyle({ maxWidth: '12rem', width: '100%' }),
+  triggerWider: layoutStyle({ maxWidth: '16rem', width: '100%' }),
+  triggerSmall: layoutStyle({ width: '8rem' }),
 }
 
 const Bundle = Select.create<string>()

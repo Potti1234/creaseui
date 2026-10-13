@@ -953,6 +953,19 @@
           "target": "@lib/virtual-data-table-state.ts"
         }
       ]
+    },
+    {
+      "name": "layout-properties",
+      "type": "registry:lib",
+      "title": "Component Layout Properties",
+      "description": "The closed parent-layout property allowlist enforced by component layoutStyle slots.",
+      "files": [
+        {
+          "path": "layout-properties.ts",
+          "type": "registry:lib",
+          "target": "@lib/layout-properties.ts"
+        }
+      ]
     }
   ]
 }

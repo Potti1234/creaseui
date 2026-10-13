@@ -12,10 +12,11 @@ import * as Field from '@/pleat/field'
 import { className } from '@/pleat/style'
 import * as Table from '@/pleat/table'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   wide: Style.make({ maxWidth: '24rem', width: '100%' }),
   wide2xl: Style.make({ maxWidth: '42rem', width: '100%' }),
-  descOffset: Style.make({ marginTop: '-0.375rem' }),
+  descOffset: layoutStyle({ marginTop: '-0.375rem' }),
 }
 
 export const checkboxPleatPreview: ExamplePreviewProvider = <Msg>(

@@ -8,11 +8,12 @@ import * as Label from '@/pleat/label'
 import { className } from '@/pleat/style'
 import * as Switch from '@/pleat/switch'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   row: Style.make({ gap: '0.5rem', alignItems: 'center', display: 'flex' }),
-  wide: Style.make({ maxWidth: '24rem', width: '100%' }),
-  fit: Style.make({ width: 'fit-content' }),
-  narrow: Style.make({ width: '10rem' }),
+  wide: layoutStyle({ maxWidth: '24rem', width: '100%' }),
+  fit: layoutStyle({ width: 'fit-content' }),
+  narrow: layoutStyle({ width: '10rem' }),
 }
 
 interface SwitchPreviewShape {

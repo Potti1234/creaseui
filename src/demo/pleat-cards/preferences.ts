@@ -21,6 +21,7 @@ import * as Select from '@/pleat/select'
 import * as Switch from '@/pleat/switch'
 import { className } from '@/pleat/style'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   fieldGroup: Style.make({
     gap: '1.375rem',
@@ -28,15 +29,15 @@ const styles = {
     flexDirection: 'column',
     width: '100%',
   }),
-  full: Style.make({ width: '100%' }),
+  full: layoutStyle({ width: '100%' }),
   icon: Style.make({
     display: 'inline-flex',
     flexShrink: 0,
     height: '1rem',
     width: '1rem',
   }),
-  push: Style.make({ marginLeft: 'auto' }),
-  separator: Style.make({ marginBlock: '-1rem' }),
+  push: layoutStyle({ marginLeft: 'auto' }),
+  separator: layoutStyle({ marginBlock: '-1rem' }),
   srOnly: Style.make({
     overflow: 'hidden',
     clip: 'rect(0, 0, 0, 0)',
@@ -45,7 +46,7 @@ const styles = {
     height: '1px',
     width: '1px',
   }),
-  switch: Style.make({ order: 2, marginLeft: 'auto' }),
+  switch: layoutStyle({ order: 2, marginLeft: 'auto' }),
 }
 
 const currencies = [

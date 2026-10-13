@@ -11,6 +11,7 @@ import * as Heading from '@/pleat/heading'
 import { className } from '@/pleat/style'
 import * as Text from '@/pleat/text'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   column: Style.make({
     gap: '0.5rem',
@@ -42,7 +43,7 @@ const styles = {
     maxWidth: '400px',
     width: '100%',
   }),
-  card: Style.make({ width: '300px' }),
+  card: layoutStyle({ width: '300px' }),
 }
 
 const renderFixture = <Msg>(

@@ -17,6 +17,7 @@ import * as Button from '@/pleat/button'
 import { className } from '@/pleat/style'
 import * as TopNav from '@/pleat/top-nav'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   page: Style.make({ maxWidth: '48rem', width: '100%' }),
   multiWrap: Style.make({
@@ -51,7 +52,7 @@ const styles = {
   menuItemIcon: Style.make({ height: '1.25rem', width: '1.25rem' }),
   itemIcon: Style.make({ flexShrink: 0, height: '1rem', width: '1rem' }),
   endIcon: Style.make({ height: '1.25rem', width: '1.25rem' }),
-  navWidth600: Style.make({ maxWidth: '100%', width: '600px' }),
+  navWidth600: layoutStyle({ maxWidth: '100%', width: '600px' }),
 }
 
 const decorateMenuItem = <Msg>(

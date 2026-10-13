@@ -17,6 +17,7 @@ import {
 } from '@/pleat/sidebar'
 import { className } from '@/pleat/style'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   content: Style.make({ gap: 0, display: 'flex', flexDirection: 'column' }),
   grid: Style.make({
@@ -25,9 +26,9 @@ const styles = {
     display: 'grid',
     gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
   }),
-  provider: Style.make({ minHeight: 0 }),
+  provider: layoutStyle({ minHeight: 0 }),
   separator: Style.make({ width: 'auto' }),
-  sidebar: Style.make({ width: '100%' }),
+  sidebar: layoutStyle({ width: '100%' }),
 }
 
 type NavItem = Readonly<{

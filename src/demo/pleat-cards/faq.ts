@@ -10,9 +10,10 @@ import { button } from '@/pleat/button'
 import { card, cardContent, cardFooter } from '@/pleat/card'
 import * as Tabs from '@/pleat/tabs'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
-  fullWidth: Style.make({ width: '100%' }),
-  trigger: Style.make({ flexBasis: '0%', flexGrow: 1 }),
+  fullWidth: layoutStyle({ width: '100%' }),
+  trigger: layoutStyle({ flexBasis: '0%', flexGrow: 1 }),
 }
 
 type Question = Readonly<{

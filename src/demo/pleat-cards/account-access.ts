@@ -27,6 +27,7 @@ import {
 import { className } from '@/pleat/style'
 import { tokens } from '../../pleat/tokens'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   dangerIcon: Style.make({ color: tokens.destructive }),
   clamp: Style.make({
@@ -55,7 +56,7 @@ const styles = {
     flexDirection: 'column',
     width: '100%',
   }),
-  fullWidth: Style.make({ width: '100%' }),
+  fullWidth: layoutStyle({ width: '100%' }),
 }
 
 export const Model = S.Struct({

@@ -11,6 +11,7 @@ import * as InfoTip from '@/pleat/info-tip'
 import { input } from '@/pleat/input'
 import { className } from '@/pleat/style'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   row: Style.make({
     gap: '1rem',
@@ -34,7 +35,7 @@ const styles = {
     lineHeight: '1.25rem',
   }),
   text: Style.make({ fontSize: '0.875rem', lineHeight: '1.25rem' }),
-  input: Style.make({ width: '14rem' }),
+  input: layoutStyle({ width: '14rem' }),
 }
 
 interface PreviewShape {

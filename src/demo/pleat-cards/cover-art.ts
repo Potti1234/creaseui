@@ -9,6 +9,7 @@ import { className } from '@/pleat/style'
 import { tokens } from '../../pleat/tokens'
 import { interactionTokens } from '../../pleat/interaction-tokens'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   content: Style.make({
     gap: '0.75rem',
@@ -25,7 +26,7 @@ const styles = {
     textTransform: 'uppercase',
   }),
   artwork: Style.make({ aspectRatio: '1 / 1' }),
-  artworkFill: Style.make({ height: '100%', width: '100%' }),
+  artworkFill: layoutStyle({ height: '100%', width: '100%' }),
   artworkLabel: Style.make({
     alignItems: 'center',
     cursor: interactionTokens.cursorAction,

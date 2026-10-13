@@ -13,6 +13,7 @@ import * as Blockquote from '@/pleat/blockquote'
 import * as Card from '@/pleat/card'
 import { className } from '@/pleat/style'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   column: Style.make({
     gap: '1rem',
@@ -26,7 +27,7 @@ const styles = {
     gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
     maxWidth: '640px',
   }),
-  spanningCard: Style.make({
+  spanningCard: layoutStyle({
     gridColumnEnd: 'span 2',
     gridColumnStart: 'span 2',
   }),

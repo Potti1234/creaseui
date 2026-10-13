@@ -47,6 +47,7 @@ import { tokens } from '../../pleat/tokens'
 import * as Switch from '@/pleat/switch'
 import * as DropdownMenu from '@/pleat/dropdown-menu'
 
+import { layoutStyle } from '@/pleat/contracts'
 /* Mirrors TW searchForm: form > sidebar-group(py-0) > group-content(relative)
    > sr-only label + sidebarInput(pl-8) + absolutely positioned search icon. */
 const searchStyles = {
@@ -81,8 +82,8 @@ const searchStyles = {
     Style.when(When.minWidth('640px'), { width: 'auto' }),
   ),
   headerInput: Style.make({ paddingInlineStart: '1.75rem', height: '2rem' }),
-  autoTop: Style.make({ marginTop: 'auto' }),
-  separatorFlush: Style.make({ marginInline: 0 }),
+  autoTop: layoutStyle({ marginTop: 'auto' }),
+  separatorFlush: layoutStyle({ marginInline: 0 }),
   optCard: Style.make({
     borderColor: tokens.border,
     borderRadius: foundationTokens.radiusXl,
@@ -200,8 +201,8 @@ const searchStyles = {
     top: '50%',
     width: '1rem',
   }),
-  trigger: Style.make({ marginInlineStart: '-.25rem' }),
-  trigger8: Style.make({ height: '2rem', width: '2rem' }),
+  trigger: layoutStyle({ marginInlineStart: '-.25rem' }),
+  trigger8: layoutStyle({ height: '2rem', width: '2rem' }),
   siteHeader16: Style.make({
     alignItems: 'center',
     backgroundColor: tokens.background,
@@ -223,12 +224,12 @@ const searchStyles = {
     height: '3.5rem',
     width: '100%',
   }),
-  rightTrigger: Style.make({
+  rightTrigger: layoutStyle({
     marginInlineEnd: '-.25rem',
     marginInlineStart: 'auto',
   }),
   triggerIcon: Style.make({ transform: 'rotate(180deg)' }),
-  headerSeparator: Style.make({ marginInlineEnd: '.5rem', height: '1rem' }),
+  headerSeparator: layoutStyle({ marginInlineEnd: '.5rem', height: '1rem' }),
   chevron: Style.make({
     flexShrink: 0,
     marginInlineStart: 'auto',
@@ -275,7 +276,7 @@ const searchStyles = {
       color: complexTokens.sidebarAccentForeground,
     }),
   ),
-  fullWidth: Style.make({ width: '100%' }),
+  fullWidth: layoutStyle({ width: '100%' }),
   mailRow: Style.make({
     display: 'flex',
     flexDirection: 'row',
@@ -581,7 +582,7 @@ const searchStyles = {
     display: 'none',
     fontWeight: 500,
   }).pipe(Style.when(When.minWidth('768px'), { display: 'inline-block' })),
-  headerIconButton: Style.make({ height: '1.75rem', width: '1.75rem' }),
+  headerIconButton: layoutStyle({ height: '1.75rem', width: '1.75rem' }),
   rowAction: Style.make({
     padding: 0,
     borderRadius: tokens.controlRadius,

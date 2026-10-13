@@ -10,6 +10,7 @@ import { complexTokens } from './complex-tokens'
 import { tokens } from './tokens'
 import { interactionTokens } from './interaction-tokens'
 
+import { layoutStyle } from './contracts'
 type Slot = Readonly<{
   layoutStyle?: ComponentLayoutStyle | undefined
   children: ReadonlyArray<Html | string>
@@ -17,7 +18,7 @@ type Slot = Readonly<{
 export type NavigationMenuLayout = 'inline' | 'scroll' | 'responsive'
 
 const styles = {
-  content: Style.make({
+  content: layoutStyle({
     minWidth: 'min(16rem, calc(100vw - 2rem))',
     width: 'max-content',
   }),

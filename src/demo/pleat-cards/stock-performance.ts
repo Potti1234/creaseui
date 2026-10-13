@@ -19,8 +19,9 @@ import * as Select from '@/pleat/select'
 import { separator } from '@/pleat/separator'
 import { className } from '@/pleat/style'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
-  chart: Style.make({ height: '12.5rem', width: '100%' }),
+  chart: layoutStyle({ height: '12.5rem', width: '100%' }),
   content: Style.make({
     gap: '1rem',
     display: 'flex',

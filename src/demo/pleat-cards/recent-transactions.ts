@@ -22,6 +22,7 @@ import { className } from '@/pleat/style'
 import { cardTokens } from './complex-card-tokens'
 import { tokens } from '../../pleat/tokens'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   amount: Style.make({
     fontSize: '0.875rem',
@@ -62,7 +63,7 @@ const styles = {
     height: '1px',
     width: '1px',
   }),
-  width10: Style.make({ width: '2.5rem' }),
+  width10: layoutStyle({ width: '2.5rem' }),
   width8: Style.make({ width: '2rem' }),
 }
 

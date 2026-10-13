@@ -14,6 +14,7 @@ import type { ComponentLayoutStyle } from '@/pleat/contracts'
 import { className } from '@/pleat/style'
 import { tokens } from '../../../../pleat/tokens'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   card: Style.make({
     gap: '1rem',
@@ -61,7 +62,7 @@ const styles = {
     display: 'none',
     flexDirection: 'column',
   }).pipe(Style.when(When.minWidth('768px'), { display: 'flex' })),
-  menuItemStretch: Style.make({ alignSelf: 'stretch' }),
+  menuItemStretch: layoutStyle({ alignSelf: 'stretch' }),
   hiddenBelowMdSep: Style.make({ alignSelf: 'stretch', display: 'none' }).pipe(
     Style.when(When.minWidth('768px'), { display: 'block' }),
   ),

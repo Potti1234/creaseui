@@ -15,6 +15,7 @@ import * as Dialog from '@/pleat/dialog'
 import * as Spinner from '@/pleat/spinner'
 import { className } from '@/pleat/style'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   frame: Style.make({
     gap: '0.5rem',
@@ -40,8 +41,8 @@ const styles = {
     maxWidth: '24rem',
     width: '100%',
   }),
-  fullWidth: Style.make({ width: '100%' }),
-  itemWidth: Style.make({ width: '16rem' }),
+  fullWidth: layoutStyle({ width: '100%' }),
+  itemWidth: layoutStyle({ width: '16rem' }),
   mediaImg: Style.make({ aspectRatio: '1', objectFit: 'cover', width: '100%' }),
   mediaIcon: Style.make({ height: '1rem', width: '1rem' }),
   actionIcon: Style.make({

@@ -15,8 +15,9 @@ import * as Field from '@/pleat/field'
 import * as InputOtp from '@/pleat/input-otp'
 import { className } from '@/pleat/style'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
-  controlledOtp: Style.make({
+  controlledOtp: layoutStyle({
     marginBottom: '0.5rem',
     minHeight: 0,
     minWidth: 0,
@@ -33,7 +34,7 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
   }),
-  submit: Style.make({ width: '100%' }),
+  submit: layoutStyle({ width: '100%' }),
   support: Style.make({
     color: 'var(--muted-foreground)',
     fontSize: '0.875rem',
@@ -43,14 +44,14 @@ const styles = {
     textDecorationLine: 'underline',
     textUnderlineOffset: '4px',
   }),
-  card: Style.make({
+  card: layoutStyle({
     marginInline: 'auto',
     maxWidth: '28rem',
     width: 'fit-content',
   }),
   medium: Style.make({ fontWeight: 500 }),
-  fieldFit: Style.make({ width: 'fit-content' }),
-  fieldRtl: Style.make({ marginInline: 'auto', maxWidth: '20rem' }),
+  fieldFit: layoutStyle({ width: 'fit-content' }),
+  fieldRtl: layoutStyle({ marginInline: 'auto', maxWidth: '20rem' }),
 }
 
 interface InputOtpPreviewShape {

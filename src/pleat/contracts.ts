@@ -1,5 +1,7 @@
 import { Style } from '@pleat/core'
-import type { Declarations, Properties } from '@pleat/core'
+import type { Declarations, Properties, When } from '@pleat/core'
+
+import { COMPONENT_LAYOUT_PROPERTY_NAMES } from '@/lib/layout-properties'
 
 /**
  * The only Pleat properties accepted at a component call site.
@@ -54,39 +56,7 @@ export type ComponentLayoutStyle = Style.Style & {
   readonly [componentLayoutBrand]: 'ComponentLayoutStyle'
 }
 
-const LAYOUT_PROPERTY_NAMES: ReadonlySet<string> = new Set([
-  'aspectRatio',
-  'alignSelf',
-  'flexBasis',
-  'flexGrow',
-  'flexShrink',
-  'gridArea',
-  'gridColumn',
-  'gridColumnEnd',
-  'gridColumnStart',
-  'gridRow',
-  'gridRowEnd',
-  'gridRowStart',
-  'height',
-  'justifySelf',
-  'margin',
-  'marginBlock',
-  'marginBlockEnd',
-  'marginBlockStart',
-  'marginBottom',
-  'marginInline',
-  'marginInlineEnd',
-  'marginInlineStart',
-  'marginLeft',
-  'marginRight',
-  'marginTop',
-  'maxHeight',
-  'maxWidth',
-  'minHeight',
-  'minWidth',
-  'order',
-  'width',
-])
+const LAYOUT_PROPERTY_NAMES = COMPONENT_LAYOUT_PROPERTY_NAMES
 
 /**
  * The only way to construct a {@link ComponentLayoutStyle}: the property
@@ -105,6 +75,20 @@ export const layoutStyle = (
   }
   return Style.make(declarations as Declarations) as ComponentLayoutStyle
 }
+
+/**
+ * Adds a conditional (media, container, state) branch to a
+ * {@link ComponentLayoutStyle} while keeping the closed layout contract:
+ * the branch declarations are validated exactly like {@link layoutStyle}.
+ */
+export const layoutWhen =
+  (condition: When.Condition, declarations: ComponentLayoutProperties) =>
+  (self: ComponentLayoutStyle): ComponentLayoutStyle =>
+    Style.when(
+      self,
+      condition,
+      layoutStyle(declarations),
+    ) as ComponentLayoutStyle
 
 type _RawStyleIsNotLayout = Assert<
   Style.Style extends ComponentLayoutStyle ? false : true

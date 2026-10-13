@@ -16,6 +16,7 @@ import * as Item from '@/pleat/item'
 import * as Spinner from '@/pleat/spinner'
 import { className } from '@/pleat/style'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   wrap: Style.make({ maxWidth: '20rem', width: '100%' }),
   wrapMd: Style.make({ maxWidth: '28rem', width: '100%' }),
@@ -40,8 +41,8 @@ const styles = {
     flexShrink: 0,
     justifyContent: 'flex-end',
   }),
-  push: Style.make({ marginInlineStart: 'auto' }),
-  spinnerIcon: Style.make({ flexShrink: 0 }),
+  push: layoutStyle({ marginInlineStart: 'auto' }),
+  spinnerIcon: layoutStyle({ flexShrink: 0 }),
   iconMd: Style.make({ height: '1rem', width: '1rem' }),
   srOnly: Style.make({
     margin: '-1px',

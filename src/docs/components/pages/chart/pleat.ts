@@ -25,6 +25,7 @@ import * as Card from '@/pleat/card'
 import * as Chart from '@/pleat/chart'
 import * as Table from '@/pleat/table'
 
+import { layoutStyle } from '@/pleat/contracts'
 Chart.registerChart(chartHostId, (theme, variant): EChartsOption => ({
   grid: Chart.compactGrid(),
   series: [
@@ -58,10 +59,10 @@ for (const kind of chartUpstreamKinds)
   )
 
 const styles = {
-  button: Style.make({ marginBottom: '0.75rem' }),
-  chart: Style.make({ marginInline: 'auto', maxWidth: '36rem' }),
+  button: layoutStyle({ marginBottom: '0.75rem' }),
+  chart: layoutStyle({ marginInline: 'auto', maxWidth: '36rem' }),
   chartHost: Style.make({ height: '16rem', width: '100%' }),
-  demoCard: Style.make({
+  demoCard: layoutStyle({
     marginInline: 'auto',
     maxWidth: '36rem',
     width: '100%',
@@ -127,7 +128,7 @@ const styles = {
     maxWidth: '36rem',
     width: '100%',
   }),
-  areaChart: Style.make({ marginBottom: '1rem' }),
+  areaChart: layoutStyle({ marginBottom: '1rem' }),
   row: Style.make({ gap: '1rem', display: 'flex', flexWrap: 'wrap' }),
   stack: Style.make({ marginInline: 'auto', maxWidth: '36rem', width: '100%' }),
 }

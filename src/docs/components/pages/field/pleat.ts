@@ -23,10 +23,11 @@ import * as Textarea from '@/pleat/textarea'
 import { className } from '@/pleat/style'
 import type { ComponentLayoutStyle } from '@/pleat/contracts'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   page: Style.make({ maxWidth: '28rem', width: '100%' }),
-  pageXs: Style.make({ maxWidth: '20rem', width: '100%' }),
-  pageSm: Style.make({ maxWidth: '24rem', width: '100%' }),
+  pageXs: layoutStyle({ maxWidth: '20rem', width: '100%' }),
+  pageSm: layoutStyle({ maxWidth: '24rem', width: '100%' }),
   pageLg: Style.make({ maxWidth: '32rem', width: '100%' }),
   grid3: Style.make({
     gap: '1rem',
@@ -39,12 +40,12 @@ const styles = {
     gridTemplateColumns: 'repeat(2, 1fr)',
   }),
   gapSm: Style.make({ gap: '0.75rem' }),
-  fitWidth: Style.make({ width: 'fit-content' }),
+  fitWidth: layoutStyle({ width: 'fit-content' }),
   valueSpan: Style.make({
     fontVariantNumeric: 'tabular-nums',
     fontWeight: 500,
   }),
-  sliderTop: Style.make({ marginBlockStart: '0.5rem', width: '100%' }),
+  sliderTop: layoutStyle({ marginBlockStart: '0.5rem', width: '100%' }),
 }
 
 type TextKey =

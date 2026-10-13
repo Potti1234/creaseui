@@ -15,6 +15,7 @@ import { reset } from '@/pleat/reset'
 import { tokens } from '@/pleat/tokens'
 import { foundationTokens } from '@/pleat/foundations-tokens'
 
+import { layoutStyle, layoutWhen } from '@/pleat/contracts'
 export { badge } from '@/pleat/badge'
 export { switchControl } from '@/pleat/switch'
 export * as Tabs from '@/pleat/tabs'
@@ -92,9 +93,9 @@ const styles = {
     height: '2.5rem',
     backgroundColor: 'var(--background)',
   }),
-  tabs: Style.make({ minWidth: 0 }),
-  tabsList: Style.make({ maxWidth: '100%', marginBottom: '.5rem' }),
-  tabsContent: Style.make({ minWidth: 0 }),
+  tabs: layoutStyle({ minWidth: 0 }),
+  tabsList: layoutStyle({ maxWidth: '100%', marginBottom: '.5rem' }),
+  tabsContent: layoutStyle({ minWidth: 0 }),
   number: Style.make({
     textAlign: 'right',
     fontVariantNumeric: 'tabular-nums',
@@ -103,8 +104,8 @@ const styles = {
     whiteSpace: 'nowrap',
   }),
   chartRegion: Style.make({ marginTop: '1.25rem', width: '100%' }),
-  chart: Style.make({ height: '260px' }).pipe(
-    Style.when(When.minWidth('640px'), { height: '320px' }),
+  chart: layoutStyle({ height: '260px' }).pipe(
+    layoutWhen(When.minWidth('640px'), { height: '320px' }),
   ),
 }
 

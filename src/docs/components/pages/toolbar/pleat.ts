@@ -30,6 +30,7 @@ import * as Toolbar from '@/pleat/toolbar'
 import { className } from '@/pleat/style'
 import { tokens } from '../../../../pleat/tokens'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   card: Style.make({
     borderColor: tokens.border,
@@ -44,10 +45,10 @@ const styles = {
     height: '1rem',
     width: '1rem',
   }),
-  w600: Style.make({ width: '600px' }),
-  w500: Style.make({ width: '500px' }),
-  w640: Style.make({ width: '640px' }),
-  w760: Style.make({ maxWidth: '100%', minWidth: 0, width: '760px' }),
+  w600: layoutStyle({ width: '600px' }),
+  w500: layoutStyle({ width: '500px' }),
+  w640: layoutStyle({ width: '640px' }),
+  w760: layoutStyle({ maxWidth: '100%', minWidth: 0, width: '760px' }),
   filterRow: Style.make({
     gap: '0.5rem',
     alignItems: 'center',
@@ -63,9 +64,9 @@ const styles = {
     flexShrink: 0,
     marginInlineStart: 'auto',
   }),
-  status: Style.make({ width: '8rem' }),
-  priority: Style.make({ width: '6rem' }),
-  customer: Style.make({ width: '10rem' }),
+  status: layoutStyle({ width: '8rem' }),
+  priority: layoutStyle({ width: '6rem' }),
+  customer: layoutStyle({ width: '10rem' }),
   column: Style.make({ gap: '1rem', display: 'flex', flexDirection: 'column' }),
   body: Style.make({ padding: '1rem', height: '10rem' }),
   bodySm: Style.make({ padding: '1rem', height: '8rem' }),
@@ -82,8 +83,8 @@ const styles = {
     lineHeight: '1rem',
     whiteSpace: 'nowrap',
   }),
-  searchWidth: Style.make({ width: '9rem' }),
-  headCheck: Style.make({ width: '2rem' }),
+  searchWidth: layoutStyle({ width: '9rem' }),
+  headCheck: layoutStyle({ width: '2rem' }),
   emptyState: Style.make({
     padding: '2rem',
     gap: '0.75rem',

@@ -340,10 +340,7 @@ const boundImportNames = (code: string): Map<string, Set<string>> => {
     const clause = match[1]!.trim()
     const names = modules.get(match[2]!) ?? new Set<string>()
     const braces = clause.match(/\{([\s\S]*)\}/)
-    const clauseRest =
-      braces === null
-        ? clause
-        : `${clause.slice(0, braces.index)}${clause.slice(braces.index + braces[0].length)}`
+    const clauseRest = braces === null ? clause : clause.replace(braces[0], '')
     if (braces !== null) {
       for (const part of braces[1]!.split(',')) {
         const local = part

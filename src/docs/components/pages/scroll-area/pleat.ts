@@ -12,6 +12,7 @@ import * as ScrollArea from '@/pleat/scroll-area'
 import * as Separator from '@/pleat/separator'
 import { className } from '@/pleat/style'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   tagsFrame: Style.make({
     borderColor: 'var(--border)',
@@ -30,7 +31,7 @@ const styles = {
     marginBottom: '1rem',
   }),
   tag: Style.make({ fontSize: '0.875rem', lineHeight: '1.25rem' }),
-  separator: Style.make({ marginBlock: '0.5rem' }),
+  separator: layoutStyle({ marginBlock: '0.5rem' }),
   horizontalFrame: Style.make({
     padding: '1rem',
     borderColor: 'var(--border)',

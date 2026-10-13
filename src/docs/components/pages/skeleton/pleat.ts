@@ -7,30 +7,31 @@ import * as Card from '@/pleat/card'
 import * as Skeleton from '@/pleat/skeleton'
 import { className } from '@/pleat/style'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   row: Style.make({ gap: '1rem', alignItems: 'center', display: 'flex' }),
-  circleLg: Style.make({ height: '3rem', width: '3rem' }),
-  circleSm: Style.make({ flexShrink: 0, height: '2.5rem', width: '2.5rem' }),
+  circleLg: layoutStyle({ height: '3rem', width: '3rem' }),
+  circleSm: layoutStyle({ flexShrink: 0, height: '2.5rem', width: '2.5rem' }),
   lines: Style.make({ display: 'block' }),
   linesGrid: Style.make({ gap: '0.5rem', display: 'grid' }),
-  lineWide: Style.make({
+  lineWide: layoutStyle({
     height: '1rem',
     marginBottom: '0.5rem',
     width: '15.625rem',
   }),
-  lineMid: Style.make({ height: '1rem', width: '12.5rem' }),
-  line150: Style.make({ height: '1rem', width: '9.375rem' }),
-  line100: Style.make({ height: '1rem', width: '6.25rem' }),
+  lineMid: layoutStyle({ height: '1rem', width: '12.5rem' }),
+  line150: layoutStyle({ height: '1rem', width: '9.375rem' }),
+  line100: layoutStyle({ height: '1rem', width: '6.25rem' }),
   avatarRow: Style.make({
     gap: '1rem',
     alignItems: 'center',
     display: 'flex',
     width: 'fit-content',
   }),
-  card: Style.make({ maxWidth: '20rem', width: '100%' }),
-  lineTwoThirds: Style.make({ height: '1rem', width: '66.666667%' }),
-  lineHalf: Style.make({ height: '1rem', width: '50%' }),
-  media: Style.make({ aspectRatio: '16 / 9', width: '100%' }),
+  card: layoutStyle({ maxWidth: '20rem', width: '100%' }),
+  lineTwoThirds: layoutStyle({ height: '1rem', width: '66.666667%' }),
+  lineHalf: layoutStyle({ height: '1rem', width: '50%' }),
+  media: layoutStyle({ aspectRatio: '16 / 9', width: '100%' }),
   textStack: Style.make({
     gap: '0.5rem',
     display: 'flex',
@@ -38,8 +39,8 @@ const styles = {
     maxWidth: '20rem',
     width: '100%',
   }),
-  lineFull: Style.make({ height: '1rem', width: '100%' }),
-  lineThreeQuarters: Style.make({ height: '1rem', width: '75%' }),
+  lineFull: layoutStyle({ height: '1rem', width: '100%' }),
+  lineThreeQuarters: layoutStyle({ height: '1rem', width: '75%' }),
   formStack: Style.make({
     gap: '1.75rem',
     display: 'flex',
@@ -52,10 +53,10 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
   }),
-  labelA: Style.make({ height: '1rem', width: '5rem' }),
-  labelB: Style.make({ height: '1rem', width: '6rem' }),
-  inputFull: Style.make({ height: '2rem', width: '100%' }),
-  buttonBar: Style.make({ height: '2rem', width: '6rem' }),
+  labelA: layoutStyle({ height: '1rem', width: '5rem' }),
+  labelB: layoutStyle({ height: '1rem', width: '6rem' }),
+  inputFull: layoutStyle({ height: '2rem', width: '100%' }),
+  buttonBar: layoutStyle({ height: '2rem', width: '6rem' }),
   tableStack: Style.make({
     gap: '0.5rem',
     display: 'flex',
@@ -64,14 +65,14 @@ const styles = {
     width: '100%',
   }),
   tableRow: Style.make({ gap: '1rem', display: 'flex' }),
-  cellGrow: Style.make({
+  cellGrow: layoutStyle({
     flexBasis: '0%',
     flexGrow: 1,
     flexShrink: 1,
     height: '1rem',
   }),
-  cellW24: Style.make({ height: '1rem', width: '6rem' }),
-  cellW20: Style.make({ height: '1rem', width: '5rem' }),
+  cellW24: layoutStyle({ height: '1rem', width: '6rem' }),
+  cellW20: layoutStyle({ height: '1rem', width: '5rem' }),
 }
 
 const demoRow = <Msg>(rtl: boolean, h: HtmlBuilder<Msg>): Html =>

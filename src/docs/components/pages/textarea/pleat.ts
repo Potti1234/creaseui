@@ -8,8 +8,9 @@ import * as Field from '@/pleat/field'
 import { className } from '@/pleat/style'
 import * as Textarea from '@/pleat/textarea'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
-  wide: Style.make({ maxWidth: '20rem', width: '100%' }),
+  wide: layoutStyle({ maxWidth: '20rem', width: '100%' }),
   stack: Style.make({ gap: '0.5rem', display: 'grid', width: '100%' }),
   stackWide: Style.make({
     gap: '0.5rem',

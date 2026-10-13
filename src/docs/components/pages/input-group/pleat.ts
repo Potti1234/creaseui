@@ -17,6 +17,7 @@ import * as Spinner from '@/pleat/spinner'
 import { className } from '@/pleat/style'
 import type { ComponentLayoutStyle } from '@/pleat/contracts'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   stack: Style.make({
     gap: '1.5rem',
@@ -42,8 +43,8 @@ const styles = {
     maxWidth: '24rem',
     width: '100%',
   }),
-  group: Style.make({ maxWidth: '20rem' }),
-  groupWide: Style.make({ maxWidth: '24rem' }),
+  group: layoutStyle({ maxWidth: '20rem' }),
+  groupWide: layoutStyle({ maxWidth: '24rem' }),
   iconMd: Style.make({ height: '1rem', width: '1rem' }),
   kbdFix: Style.make({
     borderRadius: 'calc(var(--radius) - 5px)',
@@ -56,8 +57,8 @@ const styles = {
     fontFamily:
       'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
   }),
-  codeArea: Style.make({ minHeight: '200px' }),
-  push: Style.make({ marginLeft: 'auto' }),
+  codeArea: layoutStyle({ minHeight: '200px' }),
+  push: layoutStyle({ marginLeft: 'auto' }),
   iconButton: Style.make({
     borderRadius: 'calc(var(--radius) - 5px)',
     alignItems: 'center',

@@ -13,6 +13,7 @@ import * as Input from '@/pleat/input'
 import * as Popover from '@/pleat/popover'
 import { className } from '@/pleat/style'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   wrap: Style.make({
     gap: '1.5rem',
@@ -26,8 +27,8 @@ const styles = {
     flexWrap: 'wrap',
     justifyContent: 'center',
   }),
-  panel: Style.make({ width: '10rem' }),
-  panelWide: Style.make({ width: '16rem' }),
+  panel: layoutStyle({ width: '10rem' }),
+  panelWide: layoutStyle({ width: '16rem' }),
   content: Style.make({ gap: '0.5rem', display: 'grid' }),
   contentWide: Style.make({ gap: '1rem', display: 'grid' }),
   heading: Style.make({ fontWeight: 500 }),
@@ -36,7 +37,7 @@ const styles = {
     fontSize: '0.875rem',
     lineHeight: '1.25rem',
   }),
-  labelHalf: Style.make({ width: '50%' }),
+  labelHalf: layoutStyle({ width: '50%' }),
 }
 
 interface PreviewShape {

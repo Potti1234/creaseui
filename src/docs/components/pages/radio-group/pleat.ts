@@ -10,11 +10,12 @@ import {
 import * as Field from '@/pleat/field'
 import * as RadioGroup from '@/pleat/radio-group'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
-  fit: Style.make({ width: 'fit-content' }),
-  wide: Style.make({ maxWidth: '24rem', width: '100%' }),
-  wideXs: Style.make({ maxWidth: '20rem', width: '100%' }),
-  descOffset: Style.make({ marginTop: '-0.375rem' }),
+  fit: layoutStyle({ width: 'fit-content' }),
+  wide: layoutStyle({ maxWidth: '24rem', width: '100%' }),
+  wideXs: layoutStyle({ maxWidth: '20rem', width: '100%' }),
+  descOffset: layoutStyle({ marginTop: '-0.375rem' }),
 }
 
 type PreviewModel = Readonly<{

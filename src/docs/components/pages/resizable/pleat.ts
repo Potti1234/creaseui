@@ -9,9 +9,10 @@ import {
 import * as Resizable from '@/pleat/resizable'
 import { className } from '@/pleat/style'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
-  group: Style.make({ height: '13rem', maxWidth: '28rem', width: '100%' }),
-  groupTall: Style.make({ height: '16rem', maxWidth: '28rem', width: '100%' }),
+  group: layoutStyle({ height: '13rem', maxWidth: '28rem', width: '100%' }),
+  groupTall: layoutStyle({ height: '16rem', maxWidth: '28rem', width: '100%' }),
   panel: Style.make({
     padding: '1.5rem',
     alignItems: 'center',

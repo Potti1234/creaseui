@@ -14,6 +14,7 @@ import * as Card from '@/pleat/card'
 import * as Center from '@/pleat/center'
 import * as Stack from '@/pleat/stack'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   heading: Style.make({
     fontSize: '0.875rem',
@@ -36,8 +37,8 @@ const styles = {
     width: '1.5rem',
   }),
   iconBtn4: Style.make({ flexShrink: 0, height: '1rem', width: '1rem' }),
-  cardWide: Style.make({ width: '32.5rem' }),
-  cardNarrow: Style.make({ width: '25rem' }),
+  cardWide: layoutStyle({ width: '32.5rem' }),
+  cardNarrow: layoutStyle({ width: '25rem' }),
 }
 
 const showcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>

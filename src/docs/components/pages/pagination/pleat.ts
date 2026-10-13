@@ -9,6 +9,7 @@ import * as Pagination from '@/pleat/pagination'
 import * as Select from '@/pleat/select'
 import { className } from '@/pleat/style'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   row: Style.make({
     gap: '1rem',
@@ -16,9 +17,9 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
   }),
-  field: Style.make({ width: 'fit-content' }),
-  trigger: Style.make({ width: '5rem' }),
-  pagination: Style.make({ marginInline: 0, width: 'auto' }),
+  field: layoutStyle({ width: 'fit-content' }),
+  trigger: layoutStyle({ width: '5rem' }),
+  pagination: layoutStyle({ marginInline: 0, width: 'auto' }),
 }
 
 const rowsItems = [

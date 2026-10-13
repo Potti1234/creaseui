@@ -7,9 +7,10 @@ import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import * as NavigationMenu from '@/pleat/navigation-menu'
 import type * as Popover from '@/pleat/popover'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   sample: Style.make({ gap: '0.75rem', display: 'grid' }),
-  routeButton: Style.make({ width: 'max-content' }),
+  routeButton: layoutStyle({ width: 'max-content' }),
   content: Style.make({ gap: '0.25rem', display: 'grid' }),
   contentLink: Style.make({
     padding: '0.5rem',

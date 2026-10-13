@@ -3,6 +3,7 @@ import { complexTokens } from '../complex-tokens'
 import { interactionTokens } from '../interaction-tokens'
 import { tokens } from '../tokens'
 
+import { layoutStyle } from '../contracts'
 const spin = Global.keyframes('data-table-stylex-spin', {
   to: { transform: 'rotate(360deg)' },
 })
@@ -328,7 +329,7 @@ export const styles = {
     width: '100%',
   }).pipe(Style.when(When.focusVisible, { outlineColor: tokens.ring })),
   filterActions: Style.make({ gap: '0.25rem', display: 'flex' }),
-  filterApply: Style.make({ flexBasis: '0%', flexGrow: 1, flexShrink: 1 }),
+  filterApply: layoutStyle({ flexBasis: '0%', flexGrow: 1, flexShrink: 1 }),
   panelHeading: Style.make({
     alignItems: 'center',
     color: tokens.mutedForeground,

@@ -34,6 +34,7 @@ import {
 } from './table'
 import { tokens } from './tokens'
 
+import { layoutStyle, layoutWhen } from './contracts'
 export {
   init,
   Message,
@@ -110,7 +111,7 @@ const styles = {
     borderTopStyle: 'solid',
     borderTopWidth: '1px',
   }),
-  blockIndent: Style.make({ marginInline: '-0.5rem' }),
+  blockIndent: layoutStyle({ marginInline: '-0.5rem' }),
   citationLabel: Style.make({
     borderColor: tokens.border,
     borderRadius: foundationTokens.radiusMd,
@@ -190,19 +191,19 @@ const styles = {
 // ---------------------------------------------------------------------------
 
 const spacing = {
-  headingMajorDefault: Style.make({
+  headingMajorDefault: layoutStyle({
     marginBlockEnd: '0.75rem',
     marginBlockStart: '1.5rem',
   }).pipe(
-    Style.when(When.lastChild, { marginBlockEnd: 0 }),
-    Style.when(When.firstChild, { marginBlockStart: 0 }),
+    layoutWhen(When.lastChild, { marginBlockEnd: 0 }),
+    layoutWhen(When.firstChild, { marginBlockStart: 0 }),
   ),
-  headingMinorDefault: Style.make({
+  headingMinorDefault: layoutStyle({
     marginBlockEnd: '0.5rem',
     marginBlockStart: '1rem',
   }).pipe(
-    Style.when(When.lastChild, { marginBlockEnd: 0 }),
-    Style.when(When.firstChild, { marginBlockStart: 0 }),
+    layoutWhen(When.lastChild, { marginBlockEnd: 0 }),
+    layoutWhen(When.firstChild, { marginBlockStart: 0 }),
   ),
   paragraphDefault: Style.make({
     marginBlockEnd: '0.75rem',
@@ -218,12 +219,12 @@ const spacing = {
     Style.when(When.lastChild, { marginBlockEnd: 0 }),
     Style.when(When.firstChild, { marginBlockStart: 0 }),
   ),
-  blockquoteDefault: Style.make({
+  blockquoteDefault: layoutStyle({
     marginBlockEnd: '1rem',
     marginBlockStart: '1rem',
   }).pipe(
-    Style.when(When.lastChild, { marginBlockEnd: 0 }),
-    Style.when(When.firstChild, { marginBlockStart: 0 }),
+    layoutWhen(When.lastChild, { marginBlockEnd: 0 }),
+    layoutWhen(When.firstChild, { marginBlockStart: 0 }),
   ),
   listDefault: Style.make({
     marginBlockEnd: '0.75rem',
@@ -253,19 +254,19 @@ const spacing = {
     Style.when(When.lastChild, { marginBlockEnd: 0 }),
     Style.when(When.firstChild, { marginBlockStart: 0 }),
   ),
-  headingMajorCompact: Style.make({
+  headingMajorCompact: layoutStyle({
     marginBlockEnd: '0.5rem',
     marginBlockStart: '1rem',
   }).pipe(
-    Style.when(When.lastChild, { marginBlockEnd: 0 }),
-    Style.when(When.firstChild, { marginBlockStart: 0 }),
+    layoutWhen(When.lastChild, { marginBlockEnd: 0 }),
+    layoutWhen(When.firstChild, { marginBlockStart: 0 }),
   ),
-  headingMinorCompact: Style.make({
+  headingMinorCompact: layoutStyle({
     marginBlockEnd: '0.25rem',
     marginBlockStart: '0.75rem',
   }).pipe(
-    Style.when(When.lastChild, { marginBlockEnd: 0 }),
-    Style.when(When.firstChild, { marginBlockStart: 0 }),
+    layoutWhen(When.lastChild, { marginBlockEnd: 0 }),
+    layoutWhen(When.firstChild, { marginBlockStart: 0 }),
   ),
   paragraphCompact: Style.make({
     marginBlockEnd: '0.25rem',
@@ -281,12 +282,12 @@ const spacing = {
     Style.when(When.lastChild, { marginBlockEnd: 0 }),
     Style.when(When.firstChild, { marginBlockStart: 0 }),
   ),
-  blockquoteCompact: Style.make({
+  blockquoteCompact: layoutStyle({
     marginBlockEnd: '0.5rem',
     marginBlockStart: '0.5rem',
   }).pipe(
-    Style.when(When.lastChild, { marginBlockEnd: 0 }),
-    Style.when(When.firstChild, { marginBlockStart: 0 }),
+    layoutWhen(When.lastChild, { marginBlockEnd: 0 }),
+    layoutWhen(When.firstChild, { marginBlockStart: 0 }),
   ),
   listCompact: Style.make({
     marginBlockEnd: '0.25rem',

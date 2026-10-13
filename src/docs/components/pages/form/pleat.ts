@@ -6,8 +6,9 @@ import * as Field from '@/pleat/field'
 import * as Form from '@/pleat/form'
 import * as Input from '@/pleat/input'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
-  form: Style.make({ maxWidth: '24rem', width: '100%' }),
+  form: layoutStyle({ maxWidth: '24rem', width: '100%' }),
 }
 
 type PreviewModel = {

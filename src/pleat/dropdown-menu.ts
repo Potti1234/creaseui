@@ -57,7 +57,7 @@ const styles = {
     width: 'max-content',
     zIndex: 50,
   }),
-  separatorMargins: Style.make({ marginBlock: '0.25rem' }),
+  separatorMargins: layoutStyle({ marginBlock: '0.25rem' }),
   shortcut: Style.make({
     color: tokens.mutedForeground,
     fontSize: '0.75rem',
@@ -95,6 +95,7 @@ import { reset } from './reset'
 import { tokens } from './tokens'
 import { interactionTokens } from './interaction-tokens'
 
+import { layoutStyle } from './contracts'
 export const Model = S.Struct({
   id: S.String,
   isOpen: S.Boolean,

@@ -19,6 +19,7 @@ import type { ComponentLayoutStyle } from '@/pleat/contracts'
 import { className } from '@/pleat/style'
 import { tokens } from '../../../../pleat/tokens'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   triggerRow: Style.make({
     alignItems: 'center',
@@ -32,8 +33,8 @@ const styles = {
     height: '1rem',
     width: '1rem',
   }),
-  trigger: Style.make({ width: '11rem' }),
-  demoTrigger: Style.make({ width: '11rem' }),
+  trigger: layoutStyle({ width: '11rem' }),
+  demoTrigger: layoutStyle({ width: '11rem' }),
   rangeTrigger: Style.make({
     borderColor: tokens.input,
     borderRadius: 'calc(var(--radius) - 2px)',
@@ -72,10 +73,10 @@ const styles = {
     height: '1px',
     width: '1px',
   }),
-  field44: Style.make({ marginInline: 'auto', width: '11rem' }),
-  field48: Style.make({ marginInline: 'auto', width: '12rem' }),
-  field60: Style.make({ marginInline: 'auto', width: '15rem' }),
-  fieldNatural: Style.make({ marginInline: 'auto', maxWidth: '20rem' }),
+  field44: layoutStyle({ marginInline: 'auto', width: '11rem' }),
+  field48: layoutStyle({ marginInline: 'auto', width: '12rem' }),
+  field60: layoutStyle({ marginInline: 'auto', width: '15rem' }),
+  fieldNatural: layoutStyle({ marginInline: 'auto', maxWidth: '20rem' }),
   timeRow: Style.make({
     marginInline: 'auto',
     alignItems: 'flex-start',
@@ -84,8 +85,8 @@ const styles = {
     maxWidth: '22rem',
     width: '100%',
   }),
-  timeField: Style.make({ width: '9rem' }),
-  fullField: Style.make({ width: '11rem' }),
+  timeField: layoutStyle({ width: '9rem' }),
+  fullField: layoutStyle({ width: '11rem' }),
   centerRow: Style.make({
     gap: '0.5rem',
     alignItems: 'center',

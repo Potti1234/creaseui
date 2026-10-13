@@ -12,8 +12,9 @@ import * as Accordion from '@/pleat/accordion'
 import * as Card from '@/pleat/card'
 import { className } from '@/pleat/style'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
-  card: Style.make({ maxWidth: '24rem', width: '100%', marginInline: 'auto' }),
+  card: layoutStyle({ maxWidth: '24rem', width: '100%', marginInline: 'auto' }),
   frame: Style.make({ maxWidth: '28rem', width: '100%' }),
 }
 

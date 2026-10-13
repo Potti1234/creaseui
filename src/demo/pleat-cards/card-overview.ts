@@ -6,6 +6,7 @@ import { card, cardContent, cardDescription, cardTitle } from '@/pleat/card'
 import { barChart } from '@/pleat/chart'
 import { className } from '@/pleat/style'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   grid: Style.make({
     gap: '0.75rem',
@@ -48,7 +49,7 @@ const styles = {
     justifyContent: 'space-between',
   }),
   chart: Style.make({ fontSize: '0.625rem', height: '5rem', width: '100%' }),
-  chartSize: Style.make({ height: '5rem', width: '100%' }),
+  chartSize: layoutStyle({ height: '5rem', width: '100%' }),
 }
 
 const activityData = [

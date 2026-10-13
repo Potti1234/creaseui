@@ -10,6 +10,7 @@ import {
 import * as Slider from '@/pleat/slider'
 import { className } from '@/pleat/style'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   slider: Style.make({ maxWidth: '20rem', width: '100%' }),
   verticalWrap: Style.make({
@@ -42,7 +43,7 @@ const styles = {
     fontSize: '0.875rem',
     lineHeight: '1.25rem',
   }),
-  verticalSlider: Style.make({ height: '10rem' }),
+  verticalSlider: layoutStyle({ height: '10rem' }),
 }
 
 interface PreviewShape {

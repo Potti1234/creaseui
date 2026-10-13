@@ -15,6 +15,7 @@ import { foundationTokens } from '../../pleat/foundations-tokens'
 import { tokens } from '../../pleat/tokens'
 import { interactionCardTokens } from './interaction-card-tokens'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   battery: Style.make({
     gap: '0.25rem',
@@ -29,7 +30,7 @@ const styles = {
     width: '100%',
   }),
   body: Style.make({ gap: '1rem', display: 'flex', flexDirection: 'column' }),
-  chart: Style.make({ height: '8.75rem', width: '100%' }),
+  chart: layoutStyle({ height: '8.75rem', width: '100%' }),
   label: Style.make({
     color: tokens.mutedForeground,
     fontSize: '0.875rem',

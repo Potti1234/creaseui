@@ -11,6 +11,7 @@ import {
 import * as CodeBlock from '@/pleat/code-block'
 import { className } from '@/pleat/style'
 
+import { layoutStyle } from '@/pleat/contracts'
 const Message = defineMessageUnion({
   GotCodeBlockMessage: { id: S.String, message: CodeBlock.Message },
 })
@@ -24,7 +25,7 @@ const styles = {
     maxWidth: '400px',
     width: '100%',
   }),
-  block: Style.make({ width: '100%' }),
+  block: layoutStyle({ width: '100%' }),
 }
 
 type PreviewModel = Readonly<{

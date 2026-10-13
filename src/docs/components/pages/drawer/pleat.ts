@@ -20,6 +20,7 @@ import * as Field from '@/pleat/field'
 import * as Input from '@/pleat/input'
 import { className } from '@/pleat/style'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   body: Style.make({
     paddingInline: '1rem',
@@ -40,7 +41,7 @@ const styles = {
   scrollBody: Style.make({ padding: '1rem', flex: '1', overflowY: 'auto' }),
   lorem: Style.make({ lineHeight: 'normal', marginBlockEnd: '1rem' }),
   triggerRow: Style.make({ gap: '0.5rem', display: 'flex', flexWrap: 'wrap' }),
-  compact: Style.make({ maxWidth: '24rem' }),
+  compact: layoutStyle({ maxWidth: '24rem' }),
   counterRow: Style.make({
     gap: '0.5rem',
     alignItems: 'center',
@@ -102,11 +103,11 @@ const styles = {
     overflowY: 'auto',
   }),
   snapBlock: Style.make({ backgroundColor: 'var(--muted)', height: '3rem' }),
-  snapPanel: Style.make({ maxHeight: 'calc(100dvh - 1rem)' }),
-  sizeDown: Style.make({ height: '16rem' }),
-  sizeUp: Style.make({ height: '50vh' }),
-  sizeLeft: Style.make({ width: '36rem' }),
-  sizeRight: Style.make({ width: '20rem' }),
+  snapPanel: layoutStyle({ maxHeight: 'calc(100dvh - 1rem)' }),
+  sizeDown: layoutStyle({ height: '16rem' }),
+  sizeUp: layoutStyle({ height: '50vh' }),
+  sizeLeft: layoutStyle({ width: '36rem' }),
+  sizeRight: layoutStyle({ width: '20rem' }),
 }
 
 type PreviewModel = Readonly<{

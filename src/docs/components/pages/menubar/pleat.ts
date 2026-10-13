@@ -1,4 +1,4 @@
-import { Style } from '@pleat/core'
+import type { Style } from '@pleat/core'
 import { previewLayout } from '@/docs/components/preview-layout.pleat'
 import { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
@@ -16,10 +16,11 @@ import type * as DropdownMenu from '@/pleat/dropdown-menu'
 import * as Menubar from '@/pleat/menubar'
 import { className } from '@/pleat/style'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
-  menubar: Style.make({ width: '18rem' }),
-  content44: Style.make({ width: '11rem' }),
-  content64: Style.make({ width: '16rem' }),
+  menubar: layoutStyle({ width: '18rem' }),
+  content44: layoutStyle({ width: '11rem' }),
+  content64: layoutStyle({ width: '16rem' }),
 }
 
 const sx = (style: Style.Style): string => className(style)

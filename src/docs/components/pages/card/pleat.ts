@@ -14,12 +14,13 @@ import * as ToggleGroup from '@/pleat/toggle-group'
 import type { ComponentLayoutStyle } from '@/pleat/contracts'
 import { className } from '@/pleat/style'
 
+import { layoutStyle } from '@/pleat/contracts'
 const IMAGE_URL = 'https://avatar.vercel.sh/creaseui'
 type SpacingValue = '4' | '5' | '6' | '8'
 
 const styles = {
-  frame: Style.make({ maxWidth: '24rem', width: '100%' }),
-  smallCard: Style.make({
+  frame: layoutStyle({ maxWidth: '24rem', width: '100%' }),
+  smallCard: layoutStyle({
     marginInline: 'auto',
     maxWidth: '20rem',
     width: '100%',
@@ -48,7 +49,7 @@ const styles = {
     flexDirection: 'column',
     width: '100%',
   }),
-  wFull: Style.make({ width: '100%' }),
+  wFull: layoutStyle({ width: '100%' }),
   list: Style.make({
     gap: '0.5rem',
     listStyle: 'none',
@@ -64,12 +65,12 @@ const styles = {
     flexShrink: 0,
     marginTop: '0.125rem',
   }),
-  edgeCard: Style.make({
+  edgeCard: layoutStyle({
     marginInline: 'auto',
     maxWidth: '24rem',
     width: '100%',
   }),
-  edgeContent: Style.make({
+  edgeContent: layoutStyle({
     marginBlockEnd: 'calc(var(--card-spacing, 1.5rem) * -1)',
   }),
   edgeScroll: Style.make({

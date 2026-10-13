@@ -18,6 +18,7 @@ import { input } from '@/pleat/input'
 import { className } from '@/pleat/style'
 import { tokens } from '../../../../pleat/tokens'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   frame400: Style.make({ width: '400px' }),
   panelRow: Style.make({ gap: '3rem', display: 'flex', flexWrap: 'wrap' }),
@@ -37,7 +38,7 @@ const styles = {
   }),
   row: Style.make({ gap: '0.75rem', display: 'flex' }),
   rowSm: Style.make({ gap: '0.5rem', display: 'flex' }),
-  fullWidth: Style.make({ width: '100%' }),
+  fullWidth: layoutStyle({ width: '100%' }),
   cardStack: Style.make({
     gap: '0.5rem',
     display: 'flex',

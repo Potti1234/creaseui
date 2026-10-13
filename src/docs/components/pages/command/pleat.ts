@@ -12,9 +12,10 @@ import * as CommandMenu from '@/pleat/command'
 import * as Dialog from '@/pleat/dialog'
 import { className } from '@/pleat/style'
 
+import { layoutStyle } from '@/pleat/contracts'
 const styles = {
   stack: Style.make({ gap: '1rem', display: 'flex', flexDirection: 'column' }),
-  fit: Style.make({ width: 'fit-content' }),
+  fit: layoutStyle({ width: 'fit-content' }),
   icon: Style.make({ height: '1rem', width: '1rem' }),
   itemRow: Style.make({ gap: '0.5rem', alignItems: 'center', display: 'flex' }),
 }

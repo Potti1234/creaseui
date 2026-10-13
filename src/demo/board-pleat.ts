@@ -57,6 +57,7 @@ import { cardDemoTokens } from './pleat-cards/foundations-card-tokens'
 import { interactionCardTokens } from './pleat-cards/interaction-card-tokens'
 import { interactionTokens } from '../pleat/interaction-tokens'
 
+import { layoutStyle } from '@/pleat/contracts'
 /* The customizer panel always renders dark chrome; the global .dark class
    supplies the dark token values its descendants' var() references resolve. */
 const darkThemeClass = 'dark'
@@ -504,7 +505,7 @@ const styles = {
     paddingBottom: '0.625rem',
     width: '100%',
   }).pipe(Style.when(When.hover, { backgroundColor: boardTokens.hover })),
-  pickerTriggerLayout: Style.make({
+  pickerTriggerLayout: layoutStyle({
     height: '4.125rem',
     minWidth: 0,
     width: '100%',
@@ -516,7 +517,7 @@ const styles = {
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
   }),
-  popoverSize: Style.make({ width: '18rem' }),
+  popoverSize: layoutStyle({ width: '18rem' }),
   presetButton: Style.make({
     borderColor: boardTokens.border,
     borderRadius: foundationTokens.radiusLg,
@@ -546,8 +547,8 @@ const styles = {
     width: '100%',
   }),
   root: Style.make({ position: 'relative', minHeight: 'calc(100vh - 3.5rem)' }),
-  scrollArea: Style.make({ flexGrow: 1, minHeight: 0 }),
-  scrollChoices: Style.make({ maxHeight: '20rem' }),
+  scrollArea: layoutStyle({ flexGrow: 1, minHeight: 0 }),
+  scrollChoices: layoutStyle({ maxHeight: '20rem' }),
   section: Style.make({ display: 'flex', flexDirection: 'column' }),
   title: Style.make({
     fontSize: '0.875rem',
