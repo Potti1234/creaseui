@@ -384,7 +384,9 @@ const styles = {
     }),
   ),
   stretch: Style.make({ justifyContent: 'stretch' }),
-  fullBleedPreview: Style.make({ padding: 0 }),
+  fullBleedPreview: Style.make({ padding: 0 }).pipe(
+    Style.when(When.minWidth('640px'), { padding: 0 }),
+  ),
   code: Style.make({
     position: 'relative',
     minWidth: 0,
