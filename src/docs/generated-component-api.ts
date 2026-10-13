@@ -1456,7 +1456,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "DataTableColumn",
       "kind": "type",
-      "signature": "DataTableColumn<Row> = Readonly<{ key: string; header: string; cell: (row: Row) => Html | string; sortValue?: (row: Row) => string | number; isHideable?: boolean; class?: string; }>"
+      "signature": "DataTableColumn<Row> = Readonly<{ key: string; header: string; cell: (row: Row) => Html | string; sortValue?: (row: Row) => string | number; isHideable?: boolean; align?: 'left' | 'center' | 'right'; class?: string; }>"
     },
     {
       "name": "DataTableProps",

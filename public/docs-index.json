@@ -2147,7 +2147,7 @@
         {
           "name": "DataTableColumn",
           "kind": "type",
-          "signature": "DataTableColumn<Row> = Readonly<{ key: string; header: string; cell: (row: Row) => Html | string; sortValue?: (row: Row) => string | number; isHideable?: boolean; class?: string; }>"
+          "signature": "DataTableColumn<Row> = Readonly<{ key: string; header: string; cell: (row: Row) => Html | string; sortValue?: (row: Row) => string | number; isHideable?: boolean; align?: 'left' | 'center' | 'right'; class?: string; }>"
         },
         {
           "name": "DataTableProps",
@@ -6105,6 +6105,7 @@
       "install": "npx creaseui add popover",
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/overlay-boundary-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [

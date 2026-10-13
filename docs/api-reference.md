@@ -483,7 +483,7 @@ Source: [`src/ui/data-table.ts`](../src/ui/data-table.ts)
 | Export | Kind | Signature |
 | --- | --- | --- |
 | `*` | re-export | `export * from '@/lib/data-table-state'` |
-| `DataTableColumn` | type | `DataTableColumn<Row> = Readonly<{ key: string; header: string; cell: (row: Row) => Html \| string; sortValue?: (row: Row) => string \| number; isHideable?: boolean; class?: string; }>` |
+| `DataTableColumn` | type | `DataTableColumn<Row> = Readonly<{ key: string; header: string; cell: (row: Row) => Html \| string; sortValue?: (row: Row) => string \| number; isHideable?: boolean; align?: 'left' \| 'center' \| 'right'; class?: string; }>` |
 | `DataTableProps` | type | `DataTableProps<Row, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; rows: ReadonlyArray<Row>; columns: ReadonlyArray<DataTableColumn<Row>>; rowKey: (row: Row) => string; filterText?: (row: Row) => string; filterPlaceholder?: string…` |
 | `dataTable` | function | `dataTable<Row, Msg>(props: DataTableProps<Row, Msg>, h: HtmlBuilder<Msg>): Html` |
 
