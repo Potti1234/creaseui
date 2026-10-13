@@ -108,6 +108,7 @@ export const popover = <Msg>(
                           `${props.model.id}-button`,
                           { placement, gap: 4 },
                           props.toParentMessage,
+                          props.focusSelector,
                         ),
                       ),
                       hp.DataAttribute('slot', 'popover-content'),

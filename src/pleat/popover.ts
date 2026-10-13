@@ -192,6 +192,7 @@ export const popover = <Msg>(
                                 `${props.model.id}-button`,
                                 { placement, gap: 4 },
                                 props.toParentMessage,
+                                props.focusSelector,
                               ),
                             ),
                           ]
