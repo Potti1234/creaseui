@@ -188,6 +188,7 @@ export const alertDialog = <Msg>(
                       cn(
                         overlayStyles.panel,
                         CONTENT_CLASS,
+                        overlayStyles.modal,
                         size === 'sm' && styles.smallContent,
                         props.layoutStyle,
                       ),

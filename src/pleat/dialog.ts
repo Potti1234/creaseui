@@ -281,6 +281,7 @@ export const dialog = <Msg>(
                       cn(
                         overlayStyles.panel,
                         CONTENT_CLASS,
+                        overlayStyles.modal,
                         props.size === 'settings' && styles.settings,
                         props.layoutStyle,
                       ),

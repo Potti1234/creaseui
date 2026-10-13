@@ -194,6 +194,10 @@ export const overlayStyles = stylex.create({
   },
   /* Menus, popovers, selects and comboboxes: shadcn `rounded-md bg-popover
      shadow-md`. Dialogs keep the larger panel radius. */
+  /* Dialogs and sheets: shadcn `shadow-lg`. */
+  modal: {
+    boxShadow: foundationTokens.shadowLg,
+  },
   floating: {
     borderRadius: tokens.controlRadius,
     backgroundColor: foundationTokens.popover,
