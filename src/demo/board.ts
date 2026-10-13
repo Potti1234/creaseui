@@ -1079,7 +1079,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
     ],
   )
 
-  return h.div(
+  return h.main(
     [h.Class('relative min-h-[calc(100vh-3.5rem)]')],
     [
       h.style([], [Preset.presetCss(model.preset)]),
