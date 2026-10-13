@@ -1,8 +1,8 @@
 import { expect, test, type Page } from '@playwright/test'
 
-/* R2 waves 1-3: Create styles apply to every control and selection role,
+/* R2 waves 1-5: Create styles apply to every control and selection role,
    not only Button/Input, in every renderer; list and menu rows follow
-   shape and size. Radio indicators and Switch
+   shape and size, and tabs/disclosure triggers follow shape. Radio indicators and Switch
    tracks keep their circular/pill contract. */
 const CONTROLS = [
   'button',
@@ -15,10 +15,13 @@ const CONTROLS = [
 const SINGLE_LINE = CONTROLS.filter(slot => slot !== 'textarea')
 const SELECTION = ['checkbox', 'radio-group-item', 'switch'] as const
 const ROWS = ['item', 'sidebar-menu-button'] as const
+const TABS = ['tabs-list', 'tabs-trigger'] as const
 const MEASURED = [
   ...CONTROLS,
   ...SELECTION,
   ...ROWS,
+  ...TABS,
+  'accordion-trigger',
   'card',
   'table-cell',
   'badge',
@@ -82,7 +85,14 @@ const expectations: Readonly<
   Record<string, (measured: Record<string, Measured>) => void>
 > = {
   lyra: m => {
-    for (const slot of [...CONTROLS, 'checkbox', ...ROWS, 'card'])
+    for (const slot of [
+      ...CONTROLS,
+      'checkbox',
+      ...ROWS,
+      ...TABS,
+      'accordion-trigger',
+      'card',
+    ])
       expect(m[slot]!.radius, slot).toBe(0)
     expect(m['radio-group-item']!.radius).toBeGreaterThan(4)
     expect(m.switch!.radius).toBeGreaterThan(4)
@@ -95,6 +105,8 @@ const expectations: Readonly<
     expect(m.textarea!.radius).toBeGreaterThan(8)
     expect(m.card!.radius).toBeGreaterThan(14)
     for (const slot of ROWS) expect(m[slot]!.radius, slot).toBeGreaterThan(8)
+    for (const slot of TABS) expect(m[slot]!.radius, slot).toBeGreaterThan(100)
+    expect(m['accordion-trigger']!.radius).toBeGreaterThan(8)
   },
   vega: m => {
     for (const slot of [...CONTROLS, ...SELECTION, 'card'])
