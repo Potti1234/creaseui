@@ -17,6 +17,7 @@ export const stylexComponentContract = {
           componentImports: { type: 'array', items: { type: 'string' } },
           ignoreImports: { type: 'array', items: { type: 'string' } },
           layoutProperties: { type: 'array', items: { type: 'string' } },
+          layoutConstructors: { type: 'array', items: { type: 'string' } },
         },
         additionalProperties: false,
       },
@@ -38,6 +39,12 @@ export const stylexComponentContract = {
       'layoutStyle',
       '*LayoutStyle',
     ]
+    const layoutConstructors = new Set(options.layoutConstructors ?? [])
+    const acceptsLayoutValue = value =>
+      isStaticStyleReference(value, tracker.variables) ||
+      (value.type === 'CallExpression' &&
+        value.callee.type === 'Identifier' &&
+        layoutConstructors.has(value.callee.name))
     const isLayoutProperty = name =>
       layoutProperties.some(pattern =>
         pattern.startsWith('*')
@@ -59,10 +66,7 @@ export const stylexComponentContract = {
           })
         }
         for (const [property, value] of call.properties) {
-          if (
-            isLayoutProperty(property) &&
-            !isStaticStyleReference(value, tracker.variables)
-          ) {
+          if (isLayoutProperty(property) && !acceptsLayoutValue(value)) {
             context.report({
               node: value,
               messageId: 'dynamic',

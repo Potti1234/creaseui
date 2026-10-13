@@ -3,7 +3,7 @@ import test from 'node:test'
 
 import { Linter } from 'eslint'
 
-import { constrainedStylex, plugin, stylex, tailwind } from '../index.js'
+import { constrainedStylex, pleat, plugin, stylex, tailwind } from '../index.js'
 
 const verify = (code, rule, options = []) => {
   const linter = new Linter({ configType: 'flat' })
@@ -152,4 +152,96 @@ test('flat config helpers expose separate Tailwind and StyleX policies', () => {
   assert.equal(constrained.name, '@creaseui/lint/stylex-constrained')
   assert.ok('shadcn/no-raw-colors' in tailwindConfig.rules)
   assert.ok('@stylexjs/valid-styles' in stylexConfig.rules)
+})
+
+test('pleat-prop-limits rejects raw values outside token files', () => {
+  const messages = verify(
+    `
+    const styles = {
+      root: Style.make({ color: '#ff0000', marginTop: '1rem' }),
+    }
+  `,
+    'pleat-prop-limits',
+    [
+      {
+        propLimits: {
+          color: {
+            limit: ['transparent', 'currentColor'],
+            reason: 'Use a semantic token.',
+          },
+        },
+      },
+    ],
+  )
+  assert.equal(messages.length, 1)
+  assert.match(messages[0].message, /color/u)
+})
+
+test('pleat-prop-limits allows token files and CSS-wide keywords', () => {
+  const keywordMessages = verify(
+    `
+    const styles = {
+      root: Style.make({ color: 'inherit' }),
+    }
+  `,
+    'pleat-prop-limits',
+    [
+      {
+        propLimits: { color: { limit: ['transparent'], reason: 'x' } },
+      },
+    ],
+  )
+  assert.equal(keywordMessages.length, 0)
+
+  const linter = new Linter({ configType: 'flat' })
+  const tokenMessages = linter.verify(
+    `
+    const styles = {
+      root: Style.make({ color: '#ff0000' }),
+    }
+  `,
+    [
+      {
+        files: ['**/*.ts'],
+        languageOptions: { ecmaVersion: 2022, sourceType: 'module' },
+        plugins: { crease: plugin },
+        rules: {
+          'crease/pleat-prop-limits': [
+            'error',
+            {
+              propLimits: { color: { limit: ['transparent'], reason: 'x' } },
+              tokenFiles: ['/foundations'],
+            },
+          ],
+        },
+      },
+    ],
+    { filename: 'src/pleat/foundations-tokens.ts' },
+  )
+  assert.equal(tokenMessages.length, 0)
+})
+
+test('stylex-component-contract accepts layoutStyle constructor calls for pleat', () => {
+  const messages = verify(
+    `
+    import { button } from '@/pleat/button'
+    import { layoutStyle } from '@/pleat/contracts'
+    button({ layoutStyle: layoutStyle({ width: '100%' }), children: ['Save'] }, h)
+  `,
+    'stylex-component-contract',
+    [
+      {
+        componentImports: ['^@/pleat(?:/|$)'],
+        layoutConstructors: ['layoutStyle'],
+      },
+    ],
+  )
+  assert.equal(messages.length, 0)
+})
+
+test('pleat config exposes the Pleat styling policy', () => {
+  const pleatConfig = pleat({ files: ['src/pleat/**/*.ts'] })
+  assert.equal(pleatConfig.name, '@creaseui/lint/pleat')
+  assert.ok('crease/pleat-prop-limits' in pleatConfig.rules)
+  assert.ok('crease/stylex-component-contract' in pleatConfig.rules)
 })

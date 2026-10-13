@@ -38,6 +38,14 @@ export interface StyleXOptions extends CommonOptions {
   styleResolution?: 'application-order' | 'property-specificity'
 }
 
+export interface PleatOptions extends CommonOptions {
+  inlineStyles?: 'allow' | 'forbid'
+  layoutConstructors?: string[]
+  layoutProperties?: string[]
+  propLimits?: Record<string, unknown>
+  tokenFiles?: string[]
+}
+
 export interface ConstrainedStyleXOptions {
   files?: string[]
 }
@@ -46,6 +54,7 @@ export const rules: Record<string, Rule.RuleModule>
 export const plugin: ESLint.Plugin
 export const tailwind: (options?: TailwindOptions) => Linter.Config
 export const stylex: (options?: StyleXOptions) => Linter.Config
+export const pleat: (options?: PleatOptions) => Linter.Config
 export const constrainedStylex: (
   options?: ConstrainedStyleXOptions,
 ) => Linter.Config
