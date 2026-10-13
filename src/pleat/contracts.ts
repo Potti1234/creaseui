@@ -1,17 +1,114 @@
-import type { Style } from '@pleat/core'
+import { Style } from '@pleat/core'
+import type { Declarations, Properties } from '@pleat/core'
 
 /**
- * The only styles accepted at a component call site: properties that position
- * a component in its parent without changing its color, typography, internal
- * spacing, shape, or interaction states. Visual changes belong in a named
- * component variant instead.
+ * The only Pleat properties accepted at a component call site.
  *
- * Pleat styles are opaque, so this contract is documentation-level: the same
- * property allowlist as the StyleX port applies (aspectRatio, alignSelf,
- * flexBasis/Grow/Shrink, gridArea/Column/Row, height/width, justifySelf,
- * margins, max/min sizes, order).
+ * These properties position a component in its parent without changing the
+ * component's color, typography, internal spacing, shape, or interaction
+ * states. Visual changes belong in a named component variant instead.
  */
-export type ComponentLayoutStyle = Style.Style
+export type ComponentLayoutProperties = Pick<
+  Properties,
+  | 'aspectRatio'
+  | 'alignSelf'
+  | 'flexBasis'
+  | 'flexGrow'
+  | 'flexShrink'
+  | 'gridArea'
+  | 'gridColumn'
+  | 'gridColumnEnd'
+  | 'gridColumnStart'
+  | 'gridRow'
+  | 'gridRowEnd'
+  | 'gridRowStart'
+  | 'height'
+  | 'justifySelf'
+  | 'margin'
+  | 'marginBlock'
+  | 'marginBlockEnd'
+  | 'marginBlockStart'
+  | 'marginBottom'
+  | 'marginInline'
+  | 'marginInlineEnd'
+  | 'marginInlineStart'
+  | 'marginLeft'
+  | 'marginRight'
+  | 'marginTop'
+  | 'maxHeight'
+  | 'maxWidth'
+  | 'minHeight'
+  | 'minWidth'
+  | 'order'
+  | 'width'
+>
+
+declare const componentLayoutBrand: unique symbol
+
+/**
+ * A {@link Style.Style} proven to contain only {@link ComponentLayoutProperties}.
+ * Only {@link layoutStyle} produces this type, so a raw `Style.make` result —
+ * which may restyle the component — is rejected at the call site.
+ */
+export type ComponentLayoutStyle = Style.Style & {
+  readonly [componentLayoutBrand]: 'ComponentLayoutStyle'
+}
+
+const LAYOUT_PROPERTY_NAMES: ReadonlySet<string> = new Set([
+  'aspectRatio',
+  'alignSelf',
+  'flexBasis',
+  'flexGrow',
+  'flexShrink',
+  'gridArea',
+  'gridColumn',
+  'gridColumnEnd',
+  'gridColumnStart',
+  'gridRow',
+  'gridRowEnd',
+  'gridRowStart',
+  'height',
+  'justifySelf',
+  'margin',
+  'marginBlock',
+  'marginBlockEnd',
+  'marginBlockStart',
+  'marginBottom',
+  'marginInline',
+  'marginInlineEnd',
+  'marginInlineStart',
+  'marginLeft',
+  'marginRight',
+  'marginTop',
+  'maxHeight',
+  'maxWidth',
+  'minHeight',
+  'minWidth',
+  'order',
+  'width',
+])
+
+/**
+ * The only way to construct a {@link ComponentLayoutStyle}: the property
+ * allowlist is enforced at the type level by {@link ComponentLayoutProperties}
+ * and at runtime for untyped callers.
+ */
+export const layoutStyle = (
+  declarations: ComponentLayoutProperties,
+): ComponentLayoutStyle => {
+  for (const property of Object.keys(declarations)) {
+    if (!LAYOUT_PROPERTY_NAMES.has(property)) {
+      throw new Error(
+        `layoutStyle only accepts parent-layout properties, got "${property}"`,
+      )
+    }
+  }
+  return Style.make(declarations as Declarations) as ComponentLayoutStyle
+}
+
+type _RawStyleIsNotLayout = Assert<
+  Style.Style extends ComponentLayoutStyle ? false : true
+>
 
 export const BUTTON_VARIANTS = [
   'default',

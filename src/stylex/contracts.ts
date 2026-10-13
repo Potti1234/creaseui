@@ -1,3 +1,4 @@
+import { create } from '@stylexjs/stylex'
 import type {
   CSSProperties,
   InlineStyles,
@@ -12,7 +13,7 @@ import type {
  * component's color, typography, internal spacing, shape, or interaction
  * states. Visual changes belong in a named component variant instead.
  */
-type ComponentLayoutProperties = Pick<
+export type ComponentLayoutProperties = Pick<
   CSSProperties,
   | 'aspectRatio'
   | 'alignSelf'
@@ -48,6 +49,15 @@ type ComponentLayoutProperties = Pick<
 >
 
 export type ComponentLayoutStyle = StaticStyles<ComponentLayoutProperties>
+
+/**
+ * Constructs a {@link ComponentLayoutStyle} from the closed property
+ * allowlist — the emitted-documentation and call-site equivalent of the
+ * type-level contract, mirroring the Pleat `layoutStyle` constructor.
+ */
+export const layoutStyle = (
+  declarations: ComponentLayoutProperties,
+): ComponentLayoutStyle => create({ root: declarations }).root
 
 export const BUTTON_VARIANTS = [
   'default',
