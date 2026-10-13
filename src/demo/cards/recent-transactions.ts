@@ -207,7 +207,16 @@ const transactionRow = (
                   model: menu,
                   toParentMessage: message =>
                     Message.GotMenuMessage({ index, message }),
-                  trigger: Icon.moreHorizontal({}, h),
+                  trigger: h.span(
+                    [],
+                    [
+                      Icon.moreHorizontal({}, h),
+                      h.span(
+                        [h.Class('sr-only')],
+                        [`Actions for ${transaction.merchant}`],
+                      ),
+                    ],
+                  ),
                   triggerClass: MENU_TRIGGER_CLASS,
                   items: ACTIONS,
                   itemToConfig: action => ({

@@ -247,7 +247,6 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                             [
                               fieldLabel(
                                 {
-                                  for: 'payout-threshold-amount',
                                   children: ['Minimum Payout Amount'],
                                 },
                                 h,

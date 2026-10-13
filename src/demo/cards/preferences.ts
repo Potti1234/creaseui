@@ -118,7 +118,10 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                         variant: 'ghost',
                         size: 'icon',
                         class: 'size-8 bg-muted',
-                        children: [Icon.icon('x', {}, h)],
+                        children: [
+                          Icon.icon('x', {}, h),
+                          h.span([h.Class('sr-only')], ['Close Preferences']),
+                        ],
                       },
                       h,
                     ),
