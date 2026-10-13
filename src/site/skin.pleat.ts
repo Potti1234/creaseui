@@ -22,9 +22,10 @@ const styles = {
     width: '100%',
     maxWidth: '1400px',
     alignItems: 'center',
-    gap: '1rem',
+    gap: '.5rem',
     paddingInline: '1rem',
   }).pipe(
+    Style.when(When.minWidth('400px'), { gap: '1rem' }),
     Style.when(When.minWidth('768px'), {
       gap: '1.5rem',
       paddingInline: '2rem',
