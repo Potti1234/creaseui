@@ -109,7 +109,7 @@ export type PopoverProps<Msg> = Readonly<{
   direction?: 'ltr' | 'rtl'
   focusSelector?: string
   /** Portal the panel (theme preserved) so it escapes clipping ancestors. */
-  portal?: boolean
+  portal?: 'themed'
   /** 'bare' drops the panel surface so the content supplies its own. */
   surface?: 'default' | 'bare'
 }>
@@ -185,7 +185,7 @@ export const popover = <Msg>(
                   hp.div(
                     [
                       ...panel,
-                      ...(props.portal === true
+                      ...(props.portal === 'themed'
                         ? [
                             hp.OnMount(
                               themedPopoverPanel(

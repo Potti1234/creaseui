@@ -1079,7 +1079,7 @@ export const presetCustomizer = (
           Message['GotCreatePresetPickerMessage']({ field, message }),
         side: 'right',
         align: 'start',
-        portal: true,
+        portal: 'themed',
         surface: 'bare',
         triggerLayoutStyle: styles.pickerTriggerLayout,
         trigger: h.div(
