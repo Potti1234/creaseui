@@ -461,6 +461,7 @@ const daysView = <Msg>(
               h.button(
                 [
                   ...cell.buttonAttributes,
+                  h.DataAttribute('slot', 'calendar-day'),
                   h.Class(
                     className(
                       reset.button,

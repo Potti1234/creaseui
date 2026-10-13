@@ -22,6 +22,7 @@ const MEASURED = [
   ...ROWS,
   ...TABS,
   'accordion-trigger',
+  'calendar-day',
   'card',
   'table-cell',
   'badge',
@@ -91,6 +92,7 @@ const expectations: Readonly<
       ...ROWS,
       ...TABS,
       'accordion-trigger',
+      'calendar-day',
       'card',
     ])
       expect(m[slot]!.radius, slot).toBe(0)
@@ -107,6 +109,7 @@ const expectations: Readonly<
     for (const slot of ROWS) expect(m[slot]!.radius, slot).toBeGreaterThan(8)
     for (const slot of TABS) expect(m[slot]!.radius, slot).toBeGreaterThan(100)
     expect(m['accordion-trigger']!.radius).toBeGreaterThan(8)
+    expect(m['calendar-day']!.radius).toBeGreaterThan(100)
   },
   vega: m => {
     for (const slot of [...CONTROLS, ...SELECTION, 'card'])
