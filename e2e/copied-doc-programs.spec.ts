@@ -23,8 +23,9 @@ test.describe('Copied documentation programs', () => {
     test.setTimeout(900_000)
     rmSync(root, { recursive: true, force: true })
     execFileSync(
-      'npx',
+      process.execPath,
       [
+        '--import',
         'tsx',
         'e2e/fixtures/copied-programs/emit.ts',
         root,
