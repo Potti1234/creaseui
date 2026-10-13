@@ -121,6 +121,8 @@ export const measurePage = ({ exceptions, minimumTarget }) => {
   for (const element of document.querySelectorAll(
     '[aria-labelledby],[aria-describedby],[aria-errormessage],label[for]',
   )) {
+    // Closed overlays may keep references to content they render when open.
+    if (!visible(element)) continue
     for (const attribute of [
       'aria-labelledby',
       'aria-describedby',
