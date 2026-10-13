@@ -1,6 +1,7 @@
 import { Style, When } from '@pleat/core'
 import { complexTokens } from './complex-tokens'
 import { interactionTokens } from './interaction-tokens'
+import { foundationTokens } from './foundations-tokens'
 import { tokens } from './tokens'
 
 /** Canonical roles shared by dialogs, menus, pickers, and transient feedback. */
@@ -171,6 +172,13 @@ export const overlayStyles = {
       transitionProperty: 'none',
     }),
   ),
+  /* Menus, popovers, selects and comboboxes: shadcn `rounded-md bg-popover
+     shadow-md`. Dialogs keep the larger panel radius. */
+  floating: Style.make({
+    borderRadius: tokens.controlRadius,
+    backgroundColor: foundationTokens.popover,
+    boxShadow: foundationTokens.shadowMd,
+  }),
   panel: Style.make({
     borderColor: tokens.border,
     borderRadius: tokens.radius,

@@ -246,7 +246,11 @@ const buildBaseViewInputs = <Item, Value extends string, Msg>(
       hc.DataAttribute('size', props.size ?? 'default'),
     ]),
     openOnFocus: true,
-    itemsClassName: className(CONTENT_CLASS, styles.content),
+    itemsClassName: className(
+      CONTENT_CLASS,
+      overlayStyles.floating,
+      styles.content,
+    ),
     itemsAttributes: childAttributes([
       hc.DataAttribute('slot', 'command-list'),
     ]),

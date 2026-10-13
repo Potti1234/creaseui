@@ -297,6 +297,7 @@ const renderSelect = <Item, Value extends string, Msg>(
     ...buildAnchor(props, values),
     itemsClassName: className(
       CONTENT_CLASS,
+      overlayStyles.floating,
       styles.content,
       props.variant === 'ghost' && styles.ghostContent,
     ),

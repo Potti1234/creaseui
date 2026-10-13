@@ -204,6 +204,7 @@ export const popover = <Msg>(
                         cn(
                           overlayStyles.panel,
                           CONTENT_CLASS,
+                          overlayStyles.floating,
                           props.surface === 'bare' ? styles.bare : undefined,
                           props.layoutStyle,
                         ),

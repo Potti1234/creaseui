@@ -542,7 +542,9 @@ export const dropdownMenu = <Item extends string, Msg>(
             `${typeof config.label === 'string' ? config.label : 'Submenu'} submenu`,
           ),
           h.Id(`${props.model.id}-submenu-${String(index)}`),
-          h.Class(cn(SUBMENU_CLASS, styles.submenuPanel)),
+          h.Class(
+            cn(SUBMENU_CLASS, overlayStyles.floating, styles.submenuPanel),
+          ),
           // Anchored to the parent item and rendered outside the scrollable
           // panel so the panel's overflow-y clip can't hide it.
           h.Style({
@@ -754,6 +756,7 @@ export const dropdownMenu = <Item extends string, Msg>(
                 h.Class(
                   cn(
                     CONTENT_CLASS,
+                    overlayStyles.floating,
                     styles.menuContent,
                     ...(anchorX !== undefined
                       ? []
