@@ -645,13 +645,13 @@ const emitDrawerProps = (fixture: DrawerFixture, isStyleX: boolean): string => {
       ${
         isStyleX
           ? `layoutStyle:
-        (model.side === 'down'
+        model.side === 'down'
           ? styles.sizeDown
           : model.side === 'up'
             ? styles.sizeUp
             : model.side === 'left'
               ? styles.sizeLeft
-              : styles.sizeRight) as ComponentLayoutStyle,`
+              : styles.sizeRight,`
           : "class: 'data-[swipe-direction=down]:h-64 data-[swipe-direction=up]:h-[50vh] data-[swipe-direction=left]:w-xl data-[swipe-direction=right]:w-xs',"
       }`
     case 'sides':

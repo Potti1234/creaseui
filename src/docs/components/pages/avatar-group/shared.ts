@@ -157,7 +157,7 @@ const avatarSource = (
       ? `[Avatar.avatarFallback({ children: ['${initials(entry.name)}'] }, h)]`
       : `[Avatar.avatarImage({ src: ${uriConstName(entry.src)}, alt: '${entry.name}', model: { status: 'loaded' } }, h)]`
   return isStyleX
-    ? `Avatar.avatar({ size: '${size}', layoutStyle: styles.${size === 'lg' ? 'memberLg' : size === 'sm' ? 'memberSm' : 'memberDefault'} as ComponentLayoutStyle, children: ${children} }, h)`
+    ? `Avatar.avatar({ size: '${size}', ring: true, layoutStyle: layoutStyle({ marginInlineStart: '${size === 'lg' ? '-0.625rem' : size === 'sm' ? '-0.375rem' : '-0.5rem'}' }), children: ${children} }, h)`
     : `Avatar.avatar({ size: '${size}', children: ${children} }, h)`
 }
 

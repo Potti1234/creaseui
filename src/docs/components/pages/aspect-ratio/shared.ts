@@ -52,13 +52,12 @@ const source = (
   const isStyleX = renderer !== 'tailwind'
   const componentImports = isStyleX
     ? `import * as stylex from '@stylexjs/stylex'
-import type { ComponentLayoutStyle } from '@/stylex/contracts'
-import { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'`
+import { className } from '@/stylex/style'`
     : ''
   const styles = isStyleX
     ? `\nconst styles = stylex.create({
   frame: { maxWidth: '${fixture.widthClass.styled === 'w12' ? '12rem' : fixture.widthClass.styled === 'w10' ? '10rem' : '24rem'}', width: '100%'${fixture.widthClass.styled === 'w24' ? '' : `, borderRadius: 'var(--radius)', backgroundColor: 'var(--muted)', overflow: 'hidden'`} },
-  ratioBox: { borderRadius: 'var(--radius)', backgroundColor: 'var(--muted)', overflow: 'hidden' },
+  ratioBox: { borderRadius: 'var(--radius)', backgroundColor: 'var(--muted)', overflow: 'hidden', width: '100%', height: '100%' },
   content: { borderRadius: 'var(--radius)', objectFit: 'cover', width: '100%', height: '100%' },
   caption: { marginTop: '0.5rem', textAlign: 'center', fontSize: '0.875rem', lineHeight: '1.25rem', color: 'var(--muted-foreground)' },
 })\n`
@@ -76,8 +75,7 @@ import { className } from '@/stylex/style'\nimport { layoutStyle } from '@/style
       [
         AspectRatio.aspectRatio({
           ratio: ${fixture.ratioExpr},
-          ${renderer === 'tailwind' ? `class: 'rounded-lg bg-muted overflow-hidden',` : 'layoutStyle: styles.ratioBox as ComponentLayoutStyle,'}
-          children: [${imgExpr}],
+          ${renderer === 'tailwind' ? `class: 'rounded-lg bg-muted overflow-hidden',\n          children: [${imgExpr}],` : `children: [h.div([h.Class(className(styles.ratioBox))], [${imgExpr}])],`}
         }, h)${caption}
       ],
     )`

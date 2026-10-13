@@ -263,7 +263,7 @@ const filterBody = (isStyleX: boolean): string => `Toolbar.toolbar({
             ariaLabel: field.label,
             placeholder: field.label,
             size: 'sm',
-            ${isStyleX ? 'triggerLayoutStyle: styles[field.key]' : 'triggerClass: FILTER_WIDTH[field.key]'},
+            ${isStyleX ? 'triggerLayoutStyle: FILTER_LAYOUT[field.key]' : 'triggerClass: FILTER_WIDTH[field.key]'},
             items: ['', ...field.options],
             itemToValue: value => value,
             itemToLabel: value => value === '' ? field.label : value,
@@ -296,7 +296,7 @@ const JOBS: ReadonlyArray<Job> = ${JSON.stringify(JOBS, null, 2)}
 
 const FILTER_FIELDS: ReadonlyArray<Readonly<{ key: FilterField; label: string; options: ReadonlyArray<string> }>> = ${JSON.stringify(FILTER_FIELDS, null, 2)}
 const FilterSelect = Select.create<string>()
-${isStyleX ? '' : "const FILTER_WIDTH = { status: 'w-32', priority: 'w-24', customer: 'w-40' } as const\n"}
+${isStyleX ? "const FILTER_LAYOUT = { status: layoutStyle({ width: '8rem' }), priority: layoutStyle({ width: '6rem' }), customer: layoutStyle({ width: '10rem' }) } as const\n" : "const FILTER_WIDTH = { status: 'w-32', priority: 'w-24', customer: 'w-40' } as const\n"}
 
 `
     : ''
@@ -479,9 +479,6 @@ const styles = stylex.create({
   shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   filterWidth: { maxWidth: '47.5rem', minWidth: 0, width: '100%' },
   searchInput: { width: '9rem' },
-  status: { width: '8rem' },
-  priority: { width: '6rem' },
-  customer: { width: '10rem' },
   filterRow: { display: 'flex', width: '100%', minWidth: 0, flexWrap: 'wrap', alignItems: 'center', gap: '0.5rem' },
   filterActions: { display: 'flex', flexShrink: 0, alignItems: 'center', gap: '0.5rem', marginInlineStart: 'auto' },
   readout: { color: tokens.mutedForeground, fontSize: '0.75rem', lineHeight: '1rem', whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums' },

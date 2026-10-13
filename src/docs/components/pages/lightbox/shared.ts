@@ -143,7 +143,7 @@ const emitView = (fixture: LightboxFixture, isStyleX: boolean): string => {
         ]),
       ),
     )`
-      : `Button.button({ variant: 'outline', onClick: ClickedOpenLightbox(), ${isStyleX ? 'layoutStyle: styles.triggerButton as ComponentLayoutStyle, ' : ''}children: ['${sq(fixture.triggerLabel)}'] }, h)`
+      : `Button.button({ variant: 'outline', onClick: ClickedOpenLightbox(), children: ['${sq(fixture.triggerLabel)}'] }, h)`
   return `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Lightbox — ${sq(fixture.title)}',
   body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [

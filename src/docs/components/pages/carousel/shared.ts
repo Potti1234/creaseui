@@ -116,11 +116,11 @@ const slideSource = (
                   Card.cardContent({${
                     isSx
                       ? `
-                    layoutStyle: styles.${vertical ? 'cardContentVertical' : 'cardContent'} as ComponentLayoutStyle,`
+                    children: [h.div([h.Class(className(styles.${vertical ? 'cardContentVertical' : 'cardContent'}))], [String(index + 1)])],`
                       : `
-                    class: 'flex ${vertical ? 'h-full' : 'aspect-square'} items-center justify-center p-6 text-4xl font-semibold',`
+                    class: 'flex ${vertical ? 'h-full' : 'aspect-square'} items-center justify-center p-6 text-4xl font-semibold',
+                    children: [String(index + 1)],`
                   }
-                    children: [String(index + 1)],
                   }, h),
                 ],
               }, h)`

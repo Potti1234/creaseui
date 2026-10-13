@@ -101,7 +101,7 @@ const STYLEX_STYLES = {
   edgeContent: `{ marginBlockEnd: 'calc(var(--card-spacing, 1.5rem) * -1)' }`,
   edgeScroll: `{ marginInline: 'calc(var(--card-spacing, 1.5rem) * -1)', maxHeight: '12rem', overflowY: 'scroll', borderTopWidth: 1, borderTopStyle: 'solid', borderTopColor: 'var(--border)', backgroundColor: 'color-mix(in oklab, var(--muted) 50%, transparent)', paddingInline: 'var(--card-spacing, 1.5rem)', paddingBlock: '1rem', fontSize: '0.875rem', lineHeight: 1.625, display: 'flex', flexDirection: 'column', gap: '1rem' }`,
   edgeFooterInner: `{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', width: '100%' }`,
-  imageWrap: `{ position: 'relative', marginInline: 'auto', maxWidth: '24rem', width: '100%' }`,
+  imageWrap: `{ position: 'relative' }`,
   overlay: `{ position: 'absolute', inset: 0, zIndex: 30, aspectRatio: '16 / 9', backgroundColor: 'color-mix(in oklab, var(--color-black, #000) 35%, transparent)' }`,
   cover: `{ position: 'relative', zIndex: 20, aspectRatio: '16 / 9', width: '100%', objectFit: 'cover', filter: 'grayscale(100%) brightness(0.6)' }`,
 } as const
@@ -217,9 +217,11 @@ const loginCardSource = (
       Button.button({ class: 'w-full', children: ['${copy.login}'] }, h),
       Button.button({ variant: 'outline', class: 'w-full', children: ['${copy.google}'] }, h),
     ] }, h)`
-        : `Card.cardFooter({ layoutStyle: styles.footerCol as ComponentLayoutStyle, children: [
-      Button.button({ layoutStyle: layoutStyle({ width: "100%" }), children: ['${copy.login}'] }, h),
-      Button.button({ variant: 'outline', layoutStyle: layoutStyle({ width: "100%" }), children: ['${copy.google}'] }, h),
+        : `Card.cardFooter({ children: [
+      h.div([h.Class(stylex.props(styles.footerCol).className ?? '')], [
+        Button.button({ layoutStyle: layoutStyle({ width: "100%" }), children: ['${copy.login}'] }, h),
+        Button.button({ variant: 'outline', layoutStyle: layoutStyle({ width: "100%" }), children: ['${copy.google}'] }, h),
+      ]),
     ] }, h)`
     }
   ],
@@ -258,9 +260,11 @@ const smallCardSource = (
       Button.button({ size: 'sm', class: 'w-full', children: ['Set up scheduled reports'] }, h),
       Button.button({ variant: 'outline', size: 'sm', class: 'w-full', children: ["See what's new"] }, h),
     ] }, h)`
-        : `Card.cardFooter({ layoutStyle: styles.footerCol as ComponentLayoutStyle, children: [
-      Button.button({ size: 'sm', layoutStyle: layoutStyle({ width: "100%" }), children: ['Set up scheduled reports'] }, h),
-      Button.button({ variant: 'outline', size: 'sm', layoutStyle: layoutStyle({ width: "100%" }), children: ["See what's new"] }, h),
+        : `Card.cardFooter({ children: [
+      h.div([h.Class(stylex.props(styles.footerCol).className ?? '')], [
+        Button.button({ size: 'sm', layoutStyle: layoutStyle({ width: "100%" }), children: ['Set up scheduled reports'] }, h),
+        Button.button({ variant: 'outline', size: 'sm', layoutStyle: layoutStyle({ width: "100%" }), children: ["See what's new"] }, h),
+      ]),
     ] }, h)`
     }
   ],
@@ -289,9 +293,11 @@ const edgeCardSource = (
       Button.button({ variant: 'outline', children: ['Decline'] }, h),
       Button.button({ children: ['Accept'] }, h),
     ] }, h)`
-        : `Card.cardFooter({ layoutStyle: styles.edgeFooterInner as ComponentLayoutStyle, children: [
-      Button.button({ variant: 'outline', children: ['Decline'] }, h),
-      Button.button({ children: ['Accept'] }, h),
+        : `Card.cardFooter({ children: [
+      h.div([h.Class(stylex.props(styles.edgeFooterInner).className ?? '')], [
+        Button.button({ variant: 'outline', children: ['Decline'] }, h),
+        Button.button({ children: ['Accept'] }, h),
+      ]),
     ] }, h)`
     },
   ],
@@ -305,15 +311,25 @@ const imageCardSource = (
     renderer === 'tailwind'
       ? `class: 'relative mx-auto w-full max-w-sm pt-0',`
       : `density: 'flush',
-  layoutStyle: styles.imageWrap as ComponentLayoutStyle,`
+  layoutStyle: layoutStyle({ marginInline: 'auto', maxWidth: '24rem', width: '100%' }),`
   }
-  children: [
+  children: [${
+    renderer === 'tailwind'
+      ? ''
+      : `
+    h.div([h.Class(stylex.props(styles.imageWrap).className ?? '')], [`
+  }
     h.div([${cls(renderer, 'absolute inset-0 z-30 aspect-video bg-black/35', 'overlay')}]),
     h.img([
       h.Src('${IMAGE_URL}'),
       h.Alt('Event cover'),
       ${cls(renderer, 'relative z-20 aspect-video w-full object-cover brightness-60 grayscale dark:brightness-40', 'cover')},
-    ]),
+    ]),${
+      renderer === 'tailwind'
+        ? ''
+        : `
+    ]),`
+    }
     Card.cardHeader({ children: [
       Card.cardAction({ children: [
         Badge.badge({ variant: 'secondary', children: ['Featured'] }, h),
