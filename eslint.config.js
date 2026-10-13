@@ -60,6 +60,21 @@ const stylexPropLimits = {
   },
 }
 
+const pleatPropLimits = Object.fromEntries(
+  Object.entries(stylexPropLimits).map(([property, spec]) => [
+    property,
+    {
+      ...spec,
+      reason: spec.reason
+        .replace(
+          'interaction-tokens.stylex.const.ts',
+          'src/pleat/interaction-tokens.ts',
+        )
+        .replace('tokens.stylex.ts', 'src/pleat/tokens.ts'),
+    },
+  ]),
+)
+
 export default tseslint.config(
   {
     ignores: [
@@ -152,7 +167,7 @@ export default tseslint.config(
       'src/demo/blocks-pleat/**/*.{ts,tsx}',
       'src/demo/charts-pleat/**/*.{ts,tsx}',
     ],
-    propLimits: stylexPropLimits,
+    propLimits: pleatPropLimits,
     tokenFiles: [
       '/foundations',
       '/tokens',
