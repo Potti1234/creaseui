@@ -41,6 +41,12 @@ const CONTROLS = {
   input: 'input#name',
   textarea: 'textarea#bio',
   select: 'select#plan',
+  groupStart: '#actions-text [role="group"] button:first-child',
+  groupMiddle: '#actions-text [role="group"] button:nth-child(2)',
+  groupEnd: '#actions-text [role="group"] button:last-child',
+  heading: '#actions-text h2',
+  badge: '#actions-text [data-slot="badge"]',
+  alert: '#actions-text [data-slot="alert"]',
 } as const
 
 const measure = (page: Page) =>
@@ -49,9 +55,18 @@ const measure = (page: Page) =>
       const element = document.querySelector(selector)
       if (!element) return null
       const style = getComputedStyle(element)
+      const box = element.getBoundingClientRect()
       return {
-        height: Math.round(element.getBoundingClientRect().height),
-        radius: style.borderTopLeftRadius,
+        height: Math.round(box.height),
+        // Rendered radius: CSS clamps corners to half the shorter side, so
+        // 32px and 9999px pills draw the same shape.
+        radius: [style.borderTopLeftRadius, style.borderTopRightRadius]
+          .map(value =>
+            Math.min(parseFloat(value), Math.min(box.width, box.height) / 2),
+          )
+          .map(value => `${String(Math.round(value * 100) / 100)}px`)
+          .join(' '),
+        weight: style.fontWeight,
         border: style.borderTopWidth,
         fontSize: style.fontSize,
       }
@@ -133,6 +148,13 @@ test.describe('shared mixed-form fixture', () => {
         'Saved Ada on pro with updates',
       )
       await expect(name).not.toHaveAttribute('aria-invalid', 'true')
+
+      const range = page.getByRole('group', { name: 'Calendar range' })
+      await range.getByRole('button', { name: 'Month' }).click()
+      await expect(
+        page.locator('#actions-text [data-slot="badge"]'),
+      ).toHaveText('Month')
+      await expect(page.getByRole('status')).toHaveText('Showing Month')
       expect(errors).toEqual([])
     })
 
@@ -141,6 +163,10 @@ test.describe('shared mixed-form fixture', () => {
     expect(reference).toBeDefined()
     for (const control of Object.values(reference!))
       expect(control).not.toBeNull()
+    // Joined button-group edges: only the outer corners stay rounded.
+    expect(reference!.groupMiddle!.radius).toBe('0px 0px')
+    expect(reference!.groupStart!.radius).toMatch(/^[1-9][\d.]*px 0px$/u)
+    expect(reference!.groupEnd!.radius).toMatch(/^0px [1-9][\d.]*px$/u)
     expect(measurements.get('stylex')).toEqual(reference)
     expect(measurements.get('pleat')).toEqual(reference)
   })
