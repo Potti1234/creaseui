@@ -329,6 +329,7 @@ const SINGLE_LINE_SLOTS = CONTROL_SLOTS.filter(slot => slot !== 'textarea')
 const SURFACE_SLOTS = ['card'] as const
 const SELECTION_SLOTS = ['checkbox', 'radio-group-item', 'switch'] as const
 const ROW_SLOTS = ['item', 'sidebar-menu-button'] as const
+const CELL_SLOTS = ['table-cell'] as const
 
 const where = (slots: ReadonlyArray<string>): string =>
   `:where(${slots
@@ -340,10 +341,10 @@ const STYLE_RULES: Readonly<Record<string, string>> = {
   vega: `${where([...CONTROL_SLOTS, ...SELECTION_SLOTS, ...SURFACE_SLOTS])}{box-shadow:none}`,
   maia: `${where(SINGLE_LINE_SLOTS)}{border-radius:9999px}${where(['textarea', ...ROW_SLOTS])}{border-radius:calc(var(--radius) + 0.25rem)}${where(SURFACE_SLOTS)}{border-radius:calc(var(--radius) + 0.5rem)}`,
   lyra: `${where([...CONTROL_SLOTS, 'checkbox', ...ROW_SLOTS, ...SURFACE_SLOTS])}{border-radius:0}`,
-  mira: `${where(SINGLE_LINE_SLOTS)}{min-height:1.75rem}${where(CONTROL_SLOTS)}{font-size:.8125rem}`,
+  mira: `${where(SINGLE_LINE_SLOTS)}{min-height:1.75rem}${where(CONTROL_SLOTS)}{font-size:.8125rem}${where(CELL_SLOTS)}{padding-block:.25rem}`,
   luma: `${where([...CONTROL_SLOTS, ...SELECTION_SLOTS, ...SURFACE_SLOTS])}{box-shadow:0 1px 3px oklch(0 0 0/.08)}`,
   sera: `${where([...CONTROL_SLOTS, ...SELECTION_SLOTS, ...SURFACE_SLOTS])}{border-width:2px}`,
-  rhea: `${where([...SINGLE_LINE_SLOTS, ...ROW_SLOTS])}{min-height:2.5rem}:where([data-slot="card"]:not([data-size="sm"])){--card-spacing:1.75rem;--card-spacing-default:1.75rem}`,
+  rhea: `${where([...SINGLE_LINE_SLOTS, ...ROW_SLOTS])}{min-height:2.5rem}:where([data-slot="card"]:not([data-size="sm"])){--card-spacing:1.75rem;--card-spacing-default:1.75rem}${where(CELL_SLOTS)}{padding-block:.75rem}`,
 }
 
 const fontImport = (font: string): string => {

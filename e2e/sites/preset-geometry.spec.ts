@@ -15,7 +15,14 @@ const CONTROLS = [
 const SINGLE_LINE = CONTROLS.filter(slot => slot !== 'textarea')
 const SELECTION = ['checkbox', 'radio-group-item', 'switch'] as const
 const ROWS = ['item', 'sidebar-menu-button'] as const
-const MEASURED = [...CONTROLS, ...SELECTION, ...ROWS, 'card']
+const MEASURED = [
+  ...CONTROLS,
+  ...SELECTION,
+  ...ROWS,
+  'card',
+  'table-cell',
+  'badge',
+]
 
 type Measured = Readonly<{
   radius: number
@@ -79,6 +86,8 @@ const expectations: Readonly<
       expect(m[slot]!.radius, slot).toBe(0)
     expect(m['radio-group-item']!.radius).toBeGreaterThan(4)
     expect(m.switch!.radius).toBeGreaterThan(4)
+    // Badges keep their pill purpose even in the square style.
+    expect(m.badge!.radius).toBeGreaterThan(4)
   },
   maia: m => {
     for (const slot of SINGLE_LINE)
@@ -101,12 +110,14 @@ const expectations: Readonly<
   },
   mira: m => {
     for (const slot of CONTROLS) expect(m[slot]!.fontSize, slot).toBe(13)
+    expect(m['table-cell']!.paddingTop).toBeLessThan(8)
   },
   rhea: m => {
     for (const slot of [...SINGLE_LINE, ...ROWS])
       expect(m[slot]!.height, slot).toBeGreaterThanOrEqual(40)
     // Region spacing grows instead of collapsing to a 4px panel inset.
     expect(m.card!.paddingTop).toBeGreaterThan(24)
+    expect(m['table-cell']!.paddingTop).toBeGreaterThan(8)
   },
 }
 
