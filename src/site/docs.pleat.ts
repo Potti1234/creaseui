@@ -431,7 +431,7 @@ const styles = {
     paddingBottom: '2.75rem',
     maskImage: 'linear-gradient(to bottom, black 35%, transparent 100%)',
   }).pipe(
-    Style.when(When.precededBy(codeToggleScope, When.checked), {
+    Style.when(When.pseudo(`:has(~ .${codeToggleScope.className}:checked)`), {
       maxHeight: 'none',
       maskImage: 'none',
     }),
@@ -509,12 +509,12 @@ const styles = {
     Style.when(When.focusVisible, { boxShadow: tokens.focusRingShadow }),
   ),
   viewCodeToggle: Style.make({ display: 'flex' }).pipe(
-    Style.when(When.precededBy(codeToggleScope, When.checked), {
+    Style.when(When.pseudo(`:has(~ .${codeToggleScope.className}:checked)`), {
       display: 'none',
     }),
   ),
   hideCodeToggle: Style.make({ display: 'none' }).pipe(
-    Style.when(When.precededBy(codeToggleScope, When.checked), {
+    Style.when(When.pseudo(`:has(~ .${codeToggleScope.className}:checked)`), {
       display: 'flex',
     }),
   ),

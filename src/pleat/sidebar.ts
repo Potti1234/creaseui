@@ -283,7 +283,9 @@ const styles = {
     }),
     Style.when(When.active, { backgroundColor: complexTokens.sidebarAccent }),
     Style.when(
-      When.precededBy(sidebarScope, When.data('sidebar', 'menu-action')),
+      When.pseudo(
+        `:has(~ .${sidebarScope.className}[data-sidebar="menu-action"])`,
+      ),
       { paddingInlineEnd: '2rem' },
     ),
     Style.when(When.reducedMotion, {

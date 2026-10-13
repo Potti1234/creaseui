@@ -1,4 +1,5 @@
 import { Style, When } from '@pleat/core'
+import type { ClassName } from '@pleat/foldkit'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import {
@@ -223,7 +224,7 @@ export const buttonVisualStyles = ({
 }: Readonly<{
   variant?: ButtonVariant
   size?: ButtonSize
-}> = {}): ReadonlyArray<Style.Style> => [
+}> = {}): ReadonlyArray<Style.Style | ClassName> => [
   reset.button,
   base.root,
   variants[variant],

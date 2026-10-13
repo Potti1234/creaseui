@@ -238,7 +238,7 @@ export const view = <Msg>(props: Props<Msg>, h: HtmlBuilder<Msg>): Html =>
   h.main(
     [
       h.DataAttribute('page', 'blocks'),
-      h.DataAttribute('renderer', 'stylex'),
+      h.DataAttribute('renderer', 'pleat'),
       h.Class(className(styles.page)),
     ],
     [
@@ -252,7 +252,7 @@ export const view = <Msg>(props: Props<Msg>, h: HtmlBuilder<Msg>): Html =>
           h.p(
             [h.Class(className(reset.text, styles.description))],
             [
-              'Complete sidebars, dashboards and login layouts. Explore live StyleX previews you can open full screen.',
+              'Complete sidebars, dashboards and login layouts. Explore live Pleat previews you can open full screen.',
             ],
           ),
           h.div(
@@ -298,7 +298,7 @@ export const view = <Msg>(props: Props<Msg>, h: HtmlBuilder<Msg>): Html =>
       h.p(
         [h.Role('status'), h.Class(className(reset.text, styles.status))],
         [
-          `${BLOCKS.filter(b => props.category === 'all' || b.category === props.category).length} blocks · StyleX`,
+          `${BLOCKS.filter(b => props.category === 'all' || b.category === props.category).length} blocks · Pleat`,
         ],
       ),
       ...BLOCKS.filter(
@@ -355,10 +355,10 @@ export const view = <Msg>(props: Props<Msg>, h: HtmlBuilder<Msg>): Html =>
                     ),
                     h.a(
                       [
-                        h.Href(blockPreviewPath('stylex', block.name)),
+                        h.Href(blockPreviewPath('pleat', block.name)),
                         h.Attribute('target', '_blank'),
                         h.Rel('noopener noreferrer'),
-                        h.AriaLabel(`Open ${block.name} in StyleX`),
+                        h.AriaLabel(`Open ${block.name} in Pleat`),
                         h.Class(className(reset.link, styles.button)),
                       ],
                       ['Open ↗'],
@@ -369,10 +369,10 @@ export const view = <Msg>(props: Props<Msg>, h: HtmlBuilder<Msg>): Html =>
             ),
             panel === undefined
               ? h.keyed('iframe')(
-                  `stylex-${block.name}-${props.isDark}`,
+                  `pleat-${block.name}-${props.isDark}`,
                   [
-                    h.Src(blockPreviewPath('stylex', block.name)),
-                    h.Title(`${block.name} — StyleX preview`),
+                    h.Src(blockPreviewPath('pleat', block.name)),
+                    h.Title(`${block.name} — Pleat preview`),
                     h.Attribute('loading', 'lazy'),
                     h.Class(className(styles.frame)),
                   ],
@@ -392,7 +392,7 @@ export const view = <Msg>(props: Props<Msg>, h: HtmlBuilder<Msg>): Html =>
                           [
                             (
                               selectedPath ||
-                              blockSourcePath('stylex', block.name)
+                              blockSourcePath('pleat', block.name)
                             ).slice(1),
                           ],
                         ),
