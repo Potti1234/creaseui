@@ -53,6 +53,39 @@ const CONTROLS = {
   tableCell: '#surfaces-data td',
 } as const
 
+const SCOPED = {
+  action: '#dark-scope [data-slot="button"]',
+  panel: '[data-slot="popover-content"]',
+} as const
+
+const scopedColors = (page: Page) =>
+  page.evaluate(selectors => {
+    const read = (selector: string) => {
+      const element = document.querySelector(selector)
+      if (!element) return null
+      const style = getComputedStyle(element)
+      return {
+        background: style.backgroundColor,
+        color: style.color,
+        radius: style.borderTopLeftRadius,
+        shadow: style.boxShadow !== 'none',
+      }
+    }
+    return { action: read(selectors.action), panel: read(selectors.panel) }
+  }, SCOPED)
+
+const cssVariable = (page: Page, name: string) =>
+  page.evaluate(variable => {
+    const probe = document.createElement('div')
+    probe.style.backgroundColor = `var(${variable})`
+    document
+      .querySelector('#dark-scope [data-color-scheme="dark"]')!
+      .append(probe)
+    const value = getComputedStyle(probe).backgroundColor
+    probe.remove()
+    return value
+  }, name)
+
 const measure = (page: Page) =>
   page.evaluate(controls => {
     const read = (selector: string) => {
@@ -90,6 +123,13 @@ test.describe('shared mixed-form fixture', () => {
   const servers = new Map<Renderer, PreviewServer>()
   const outputs: Array<string> = []
   const measurements = new Map<Renderer, Awaited<ReturnType<typeof measure>>>()
+  const scoped = new Map<
+    Renderer,
+    Readonly<{
+      rest: Awaited<ReturnType<typeof scopedColors>>
+      hover: string
+    }>
+  >()
 
   test.beforeAll(async () => {
     test.setTimeout(240_000)
@@ -172,6 +212,31 @@ test.describe('shared mixed-form fixture', () => {
         'Amount',
       ])
       await expect(invoices.locator('tbody').getByRole('row')).toHaveCount(3)
+
+      const action = page.locator(SCOPED.action).first()
+      const trigger = page.getByRole('button', { name: 'Scoped details' })
+      await trigger.click()
+      await expect(page.locator(SCOPED.panel)).toBeVisible()
+      const rest = await scopedColors(page)
+      expect(rest.action?.background).toBe(await cssVariable(page, '--primary'))
+      expect(rest.panel?.background).toBe(await cssVariable(page, '--popover'))
+      await page.keyboard.press('Escape')
+      await expect(page.locator(SCOPED.panel)).toBeHidden()
+      await expect(trigger).toBeFocused()
+      await action.hover()
+      // Sample the settled hover colour, not a mid-transition frame.
+      await action.evaluate(element =>
+        Promise.all(
+          element.getAnimations().map(animation => animation.finished),
+        ),
+      )
+      await expect
+        .poll(() => action.evaluate(e => getComputedStyle(e).backgroundColor))
+        .not.toBe(rest.action?.background)
+      scoped.set(renderer, {
+        rest,
+        hover: await action.evaluate(e => getComputedStyle(e).backgroundColor),
+      })
       expect(errors).toEqual([])
     })
 
@@ -186,5 +251,12 @@ test.describe('shared mixed-form fixture', () => {
     expect(reference!.groupEnd!.radius).toMatch(/^0px [1-9][\d.]*px$/u)
     expect(measurements.get('stylex')).toEqual(reference)
     expect(measurements.get('pleat')).toEqual(reference)
+  })
+
+  test('scoped dark subtree resolves rest, hover and overlay roles alike', () => {
+    const reference = scoped.get('tailwind')
+    expect(reference).toBeDefined()
+    expect(scoped.get('stylex')).toEqual(reference)
+    expect(scoped.get('pleat')).toEqual(reference)
   })
 })

@@ -12,9 +12,11 @@ import {
   cardContent,
 } from '@/ui/card'
 import { checkbox } from '@/ui/checkbox'
+import { themeScope } from '@/ui/composition/theme'
 import { heading } from '@/ui/heading'
 import { input } from '@/ui/input'
 import { nativeSelect } from '@/ui/native-select'
+import { popover } from '@/ui/popover'
 import { switchControl } from '@/ui/switch'
 import {
   table,
@@ -28,6 +30,7 @@ import { text } from '@/ui/text'
 import { textarea } from '@/ui/textarea'
 
 import { runActionsText } from '../actions'
+import { runScopeOverlay } from '../scope'
 import { runMixedForm } from '../shared'
 import { runSurfacesData } from '../surfaces'
 
@@ -46,3 +49,4 @@ runSurfacesData({
   tableHead,
   tableCell,
 })
+runScopeOverlay({ button, popover, themeScope })

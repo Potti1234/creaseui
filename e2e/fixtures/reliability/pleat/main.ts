@@ -10,9 +10,11 @@ import {
   cardContent,
 } from '@/pleat/card'
 import { checkbox } from '@/pleat/checkbox'
+import { themeScope } from '@/pleat/composition/theme'
 import { heading } from '@/pleat/heading'
 import { input } from '@/pleat/input'
 import { nativeSelect } from '@/pleat/native-select'
+import { popover } from '@/pleat/popover'
 import { switchControl } from '@/pleat/switch'
 import {
   table,
@@ -26,6 +28,7 @@ import { text } from '@/pleat/text'
 import { textarea } from '@/pleat/textarea'
 
 import { runActionsText } from '../actions'
+import { runScopeOverlay } from '../scope'
 import { runMixedForm } from '../shared'
 import { runSurfacesData } from '../surfaces'
 import { installThemeVariables } from '../theme'
@@ -46,3 +49,4 @@ runSurfacesData({
   tableHead,
   tableCell,
 })
+runScopeOverlay({ button, popover, themeScope })

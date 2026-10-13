@@ -10,9 +10,11 @@ import {
   cardContent,
 } from '@/stylex/card'
 import { checkbox } from '@/stylex/checkbox'
+import { themeScope } from '@/stylex/composition/theme'
 import { heading } from '@/stylex/heading'
 import { input } from '@/stylex/input'
 import { nativeSelect } from '@/stylex/native-select'
+import { popover } from '@/stylex/popover'
 import { switchControl } from '@/stylex/switch'
 import {
   table,
@@ -26,6 +28,7 @@ import { text } from '@/stylex/text'
 import { textarea } from '@/stylex/textarea'
 
 import { runActionsText } from '../actions'
+import { runScopeOverlay } from '../scope'
 import { runMixedForm } from '../shared'
 import { runSurfacesData } from '../surfaces'
 import { installThemeVariables } from '../theme'
@@ -46,3 +49,4 @@ runSurfacesData({
   tableHead,
   tableCell,
 })
+runScopeOverlay({ button, popover, themeScope })
