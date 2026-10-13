@@ -115,7 +115,11 @@ const vendorItems = [
     // The ./server entry targets Foldkit's experimental SSR API and is not
     // needed by installed components.
     ...collectTypeScriptFiles(vendor.source)
-      .filter(path => !path.endsWith('/src/server.ts'))
+      .filter(
+        path =>
+          relative(vendor.source, path).replaceAll('\\', '/') !==
+          'src/server.ts',
+      )
       .map(path => {
         const relativePath = relative(vendor.source, path).replaceAll('\\', '/')
         return {
