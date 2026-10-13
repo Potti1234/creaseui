@@ -313,15 +313,34 @@ export const presetCss = (config: Config): string => {
   return `${theme}${enhancements}${style}${icons}`
 }
 
+/* Preset geometry is declared per semantic role group rather than per
+   component, so every control (not only Button/Input) follows the style.
+   Controls nested in an Input Group defer to the group's own frame. */
+const CONTROL_SLOTS = [
+  'button',
+  'input',
+  'textarea',
+  'select-trigger',
+  'native-select',
+  'input-group',
+] as const
+const SINGLE_LINE_SLOTS = CONTROL_SLOTS.filter(slot => slot !== 'textarea')
+const SURFACE_SLOTS = ['card'] as const
+
+const where = (slots: ReadonlyArray<string>): string =>
+  `:where(${slots
+    .map(slot => `[data-slot="${slot}"]:not([data-slot="input-group"] *)`)
+    .join(',')})`
+
 const STYLE_RULES: Readonly<Record<string, string>> = {
   nova: '',
-  vega: ':where([data-slot="button"],[data-slot="input"],[data-slot="card"]){box-shadow:none}',
-  maia: ':where([data-slot="button"],[data-slot="input"]){border-radius:9999px}:where([data-slot="card"]){border-radius:calc(var(--radius) + 0.5rem)}',
-  lyra: ':where([data-slot="button"],[data-slot="input"],[data-slot="card"]){border-radius:0}',
-  mira: ':where([data-slot="button"],[data-slot="input"]){min-height:1.75rem;font-size:.8125rem}',
-  luma: ':where([data-slot="button"],[data-slot="input"],[data-slot="card"]){box-shadow:0 1px 3px oklch(0 0 0/.08)}',
-  sera: ':where([data-slot="button"],[data-slot="input"],[data-slot="card"]){border-width:2px}',
-  rhea: ':where([data-slot="button"],[data-slot="input"]){min-height:2.5rem}:where([data-slot="card"]){padding:.25rem}',
+  vega: `${where([...CONTROL_SLOTS, ...SURFACE_SLOTS])}{box-shadow:none}`,
+  maia: `${where(SINGLE_LINE_SLOTS)}{border-radius:9999px}${where(['textarea'])}{border-radius:calc(var(--radius) + 0.25rem)}${where(SURFACE_SLOTS)}{border-radius:calc(var(--radius) + 0.5rem)}`,
+  lyra: `${where([...CONTROL_SLOTS, ...SURFACE_SLOTS])}{border-radius:0}`,
+  mira: `${where(SINGLE_LINE_SLOTS)}{min-height:1.75rem}${where(CONTROL_SLOTS)}{font-size:.8125rem}`,
+  luma: `${where([...CONTROL_SLOTS, ...SURFACE_SLOTS])}{box-shadow:0 1px 3px oklch(0 0 0/.08)}`,
+  sera: `${where([...CONTROL_SLOTS, ...SURFACE_SLOTS])}{border-width:2px}`,
+  rhea: `${where(SINGLE_LINE_SLOTS)}{min-height:2.5rem}${where(SURFACE_SLOTS)}{padding:.25rem}`,
 }
 
 const fontImport = (font: string): string => {
