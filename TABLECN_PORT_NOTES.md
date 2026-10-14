@@ -46,3 +46,10 @@ Grid (tablecn-grid-view.ts ~L691 gridView): root add h-dvh; grid scroll area add
 
 - User report: page-size select froze page. Root causes: (1) formatDate(task.createdAt) crashed when createdAt arrives as string (model serialization — same reason createdAtMs exists) → defensive Date.parse fallback, both renderers. (2) foldkit Listbox with isAnimated:true never completes LeaveAnimating on the Selected path (DetectMovementOrAnimationEnd race never resolves; only affects option-select close, backdrop close works) → pageSizeSelect now isAnimated:false. NOTE: same latent freeze exists in ALL creaseui Selects with isAnimated:true (docs page repros it) — foldkit-level bug, out of scope.
 - Verified tw+sx: select opens, option click closes listbox, value+rows update, page stays clickable.
+
+### Progress update 7 — ROOT CAUSE FOUND (creaseui, not foldkit)
+
+- Freeze: option click during enter → SelectedItem → LeaveStart + commands [FocusButton, WaitForPaint] — returned to outer update but NEVER forked (__cmdLog showed only InspectLatest/ScrollToTop).
+- Root cause: src/main.ts GotBlocksTailwindMessage + GotBlocksStyleXMessage destructured `.model` only — dropped ALL child commands. Leave stuck LeaveStart; backdrop has no OnClick while isLeaving → dead page. Model preservation kept broken state across reloads.
+- Fix bfcbfd9d: map child commands + restore isAnimated:true. Verified TW+SX fast/slow: stuck=false. No foldkit bug — no upstream PR needed.
+- foldkit work branch: devin/listbox-select-leave-freeze + f63 repro page exist if ever needed. Debug patches remain in node_modules dists (harmless). Probes: scripts/*.tmp.cjs.
