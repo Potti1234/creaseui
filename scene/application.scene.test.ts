@@ -6,6 +6,7 @@ import { describe, it } from 'vitest'
 import * as Landing from '@/demo/landing'
 import * as Tour from '@/site/landing-tour'
 import * as Chart from '@/lib/echarts'
+import { MapMessage, MountMap } from '@/lib/map-runtime'
 import { Combobox as ComboboxPrimitive } from '@foldkit/ui'
 import { init, update, view } from '@/main'
 
@@ -48,6 +49,10 @@ describe('application scenes', () => {
       Scene.Mount.resolve(
         ComboboxPrimitive.AttachComboboxPreventBlur,
         ComboboxPrimitive.Message.CompletedAttachComboboxPreventBlur(),
+      ),
+      Scene.Mount.resolve(
+        MountMap,
+        Tour.Message.GotMap({ message: MapMessage.MapLoaded() }),
       ),
     )
   })
