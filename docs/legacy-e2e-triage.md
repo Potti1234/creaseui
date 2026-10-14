@@ -38,18 +38,21 @@ The `browser` job on the same commit failed 1 of 672 (667 passed, 4 skipped): `[
 | site: item semantic collections                                                               | `#collection` replaced by shadcn `#group` and `#header`                                                                                        | spec checks the list/listitem structure and header in both renderers                                                                                 |
 | site: menubar child models                                                                    | crease-only fixtures replaced by shadcn fixtures                                                                                               | `02c61a1`                                                                                                                                            |
 
-## Remaining (first error on the current build)
+## Fixed after the 2-worker run
 
-Open product finding: `item({ element: 'a' })` always adds `role="listitem"` (all three renderers), so a link Item loses its link role. The Item hero link can't be found as a link. shadcn sets no role on Item. Fixing it changes the semantics of grouped link items, so it needs a decision.
+| Test                                          | Cause                                                                                                                            | Fix                                                                                                                                 |
+| --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| site: item sections                           | `element: 'a'` added `role="listitem"`, hiding the link role; avatar/image examples have two Invite buttons and code text        | product fix `dfe03ff` (link Items keep their native role; div/article Items keep `listitem` inside ItemGroup lists); spec `3dd2cce` |
+| application: public catalog a11y scan         | Docs link now opens `/docs/getting-started`                                                                                      | `13d69e8`: spec opens Accordion from Getting Started                                                                                |
+| application: dialog contract                  | trigger is shadcn `Open Dialog`, not `Open profile`                                                                              | `13d69e8`                                                                                                                           |
+| blocks: StyleX sidebar disclosure             | dropdown entries are `menuitem`s; calendars are buttons with a static indicator (shadcn sidebar-12)                              | `60c04ae`                                                                                                                           |
+| site: Foldkit-native docs contained on mobile | label is `Browse docs`                                                                                                           | `e30eb28`                                                                                                                           |
+| site: button-group sections                   | `#inputgroup` renamed `#input-group`; icon-only Add/Remove and Voice Mode had no name                                            | product fix + spec `ca8c837`                                                                                                        |
+| site: sidebar hover menus                     | menu near the viewport bottom only tried an inline flip and rendered off-screen                                                  | product fix `34c0e8c`: menus and submenus also try block flips                                                                      |
+| stylex-preflight: light overlays              | Escape closes the command dialog (shadcn CommandDialog), so `Close` was never visible                                            | `0384c07`                                                                                                                           |
+| stylex-template-system: dashboard recipe      | data table `ariaLabel` was on the wrapper div (StyleX/Pleat) or dropped (Tailwind); mobile `nav` locator also matched pagination | product fix `b09dc75` (name goes on the `<table>`); spec `c6ffd2f`                                                                  |
+| stylex-template-system: dashboard axe         | shadcn destructive Badge `#e7000b` on `bg-destructive/10` is 4:1                                                                 | `8f992de`: added to the accepted shadcn pairs (palette unchanged)                                                                   |
 
-| Test                                          | First error                                         |
-| --------------------------------------------- | --------------------------------------------------- |
-| site: item sections                           | hero link has `role="listitem"` (see finding above) |
-| application: public catalog a11y scan         | URL not `/docs/components/accordion`                |
-| application: dialog contract                  | no `Open profile` button                            |
-| blocks: StyleX sidebar disclosure             | no `Installation` link                              |
-| site: Foldkit-native docs contained on mobile | no `Browse components` text                         |
-| site: button-group sections                   | `#inputgroup` voice toggle aria-pressed             |
-| site: sidebar hover menus                     | menu item in viewport                               |
-| stylex-preflight: light overlays              | `Close` button                                      |
-| stylex-template-system (2)                    | dashboard recipe table / recipe list                |
+## Remaining
+
+None known; pending the full 2-worker rerun.
