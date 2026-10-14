@@ -11,6 +11,7 @@ import { defineMessageUnion } from 'foldkit/message'
 
 import { dateToISO } from '@/lib/date-parse'
 import * as DateRangeInput from '@/lib/date-range-input'
+import * as MultiSlider from '@/lib/slider'
 import {
   generateTasks,
   type Task,
@@ -73,6 +74,7 @@ export const Model = S.Struct({
   actionBarMenu: S.String,
   createdRange: DateRangeInput.Model,
   pageSizeSelect: Listbox.Model,
+  hoursSlider: MultiSlider.MultiModel,
 })
 export type Model = typeof Model.Type
 
@@ -82,6 +84,8 @@ export const Message = defineMessageUnion({
   ToggledPriorityFilter: { value: S.String },
   ChangedHoursMin: { value: S.String },
   ChangedHoursMax: { value: S.String },
+  ClearedHoursFilter: {},
+  ClearedCreatedRange: {},
   ChangedCreatedFrom: { value: S.String },
   ChangedCreatedTo: { value: S.String },
   ClearedFilters: {},
@@ -119,51 +123,79 @@ export const Message = defineMessageUnion({
   CompletedExport: {},
   GotCreatedRangeMessage: { message: DateRangeInput.Message },
   GotPageSizeSelectMessage: { message: Listbox.Message },
+  GotHoursSliderMessage: { message: MultiSlider.MultiMessage },
 })
 export type Message = typeof Message.Type
 
 const today = (): Calendar.CalendarDate =>
   Calendar.fromDateInZone(new Date(), 'UTC')
 
-export const init = (taskCount = 100): Model => ({
-  tasks: generateTasks(taskCount),
-  sorting: [{ id: 'createdAt', desc: true }],
-  titleQuery: '',
-  statusFilter: [],
-  priorityFilter: [],
-  hoursMin: 0,
-  hoursMax: 0,
-  hasHoursFilter: false,
-  createdFrom: '',
-  createdTo: '',
-  pageIndex: 0,
-  pageSize: 10,
-  selectedIds: [],
-  anchorId: '',
-  hiddenColumnIds: [],
-  openPanel: 'none',
-  headerMenuColumnId: '',
-  rowMenuRowId: '',
-  updateSheetTaskId: '',
-  draftTitle: '',
-  draftLabel: 'bug',
-  draftStatus: 'todo',
-  draftPriority: 'low',
-  draftHours: '',
-  deleteDialogIds: [],
-  dataMode: 'server',
-  filterMode: 'plain',
-  direction: 'ltr',
-  actionBarMenu: '',
-  createdRange: DateRangeInput.init({
-    id: 'tablecn-created-range',
-    today: today(),
-  }),
-  pageSizeSelect: Listbox.init({
-    id: 'tablecn-page-size',
-    isAnimated: true,
-  }),
-})
+const boundsOf = (
+  tasks: ReadonlyArray<Task>,
+): Readonly<{ min: number; max: number }> => {
+  let min = Number.POSITIVE_INFINITY
+  let max = Number.NEGATIVE_INFINITY
+  for (const task of tasks) {
+    if (task.estimatedHours < min) min = task.estimatedHours
+    if (task.estimatedHours > max) max = task.estimatedHours
+  }
+  return Number.isFinite(min) ? { min, max } : { min: 0, max: 100 }
+}
+
+export const hoursBounds = (
+  model: Model,
+): Readonly<{ min: number; max: number }> => boundsOf(taskArray(model))
+
+export const init = (taskCount = 100): Model => {
+  const tasks = generateTasks(taskCount)
+  const bounds = boundsOf(tasks)
+  return {
+    tasks,
+    sorting: [{ id: 'createdAt', desc: true }],
+    titleQuery: '',
+    statusFilter: [],
+    priorityFilter: [],
+    hoursMin: 0,
+    hoursMax: 0,
+    hasHoursFilter: false,
+    createdFrom: '',
+    createdTo: '',
+    pageIndex: 0,
+    pageSize: 10,
+    selectedIds: [],
+    anchorId: '',
+    hiddenColumnIds: [],
+    openPanel: 'none',
+    headerMenuColumnId: '',
+    rowMenuRowId: '',
+    updateSheetTaskId: '',
+    draftTitle: '',
+    draftLabel: 'bug',
+    draftStatus: 'todo',
+    draftPriority: 'low',
+    draftHours: '',
+    deleteDialogIds: [],
+    dataMode: 'server',
+    filterMode: 'plain',
+    direction: 'ltr',
+    actionBarMenu: '',
+    createdRange: DateRangeInput.init({
+      id: 'tablecn-created-range',
+      today: today(),
+    }),
+    pageSizeSelect: Listbox.init({
+      id: 'tablecn-page-size',
+      isAnimated: true,
+    }),
+    hoursSlider: MultiSlider.initMulti({
+      id: 'tablecn-hours-slider',
+      thumbs: 2,
+      min: bounds.min,
+      max: bounds.max,
+      step: 1,
+    }),
+  }
+}
 
 const taskArray = (model: Model): Array<Task> => model.tasks as Array<Task>
 
@@ -344,6 +376,24 @@ const updateModel = (model: Model, message: Message): Model => {
         hoursMax: Number.isNaN(value) ? 0 : value,
       })
     }
+    case 'ClearedHoursFilter':
+      return resetPage({
+        ...model,
+        hasHoursFilter: false,
+        hoursMin: 0,
+        hoursMax: 0,
+      })
+    case 'ClearedCreatedRange':
+      return resetPage({
+        ...model,
+        createdFrom: '',
+        createdTo: '',
+        createdRange: {
+          ...model.createdRange,
+          value: Option.none(),
+          pendingStart: Option.none(),
+        },
+      })
     case 'ChangedCreatedFrom':
       return resetPage({ ...model, createdFrom: message.value })
     case 'ChangedCreatedTo':
@@ -564,7 +614,14 @@ const updateModel = (model: Model, message: Message): Model => {
     case 'SetFilterMode':
       return { ...model, filterMode: message.mode }
     case 'SetDirection':
-      return { ...model, direction: message.direction }
+      return {
+        ...model,
+        direction: message.direction,
+        hoursSlider: {
+          ...model.hoursSlider,
+          mirrored: message.direction === 'rtl',
+        },
+      }
     case 'SetActionBarMenu':
       return {
         ...model,
@@ -675,6 +732,29 @@ export const update = (model: Model, message: Message): UpdateReturn => {
         ),
       }
     }
+    case 'GotHoursSliderMessage': {
+      const next = MultiSlider.updateMulti(model.hoursSlider, message.message)
+      const out = Option.fromNullishOr(next.outMessage)
+      const thumbPatch = Option.match(out, {
+        onNone: () => ({}),
+        onSome: changed =>
+          changed._tag === 'ChangedThumbValue'
+            ? changed.index === 0
+              ? { hasHoursFilter: true, hoursMin: changed.value }
+              : { hasHoursFilter: true, hoursMax: changed.value }
+            : {},
+      })
+      return {
+        model: resetPage({
+          ...model,
+          hoursSlider: next.model,
+          ...thumbPatch,
+        }),
+        commands: Command.mapMessages(next.commands ?? [], nested =>
+          Message.GotHoursSliderMessage({ message: nested }),
+        ),
+      }
+    }
     case 'GotPageSizeSelectMessage': {
       const next = pageSizeListbox.update(model.pageSizeSelect, message.message)
       const selectedValue = Option.match(
@@ -702,3 +782,15 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       return { model: updateModel(model, message) }
   }
 }
+
+/* Thumb drag subscriptions for the Est. Hours range slider — lifted through
+   the block pages into the root aggregate in main.ts. The `id` prefixes the
+   record's entry names: each mounted copy (tailwind/stylex × table/grid)
+   needs a unique one so aggregate keys don't collide. */
+export const sliderSubscriptions = (id: string) =>
+  MultiSlider.multiThumbSubscriptions<Model, Message>({
+    id,
+    thumbCount: 2,
+    toChildModel: model => model.hoursSlider,
+    toParentMessage: message => Message.GotHoursSliderMessage({ message }),
+  })

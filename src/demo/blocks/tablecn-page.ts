@@ -18,8 +18,10 @@ import {
 } from '@/ui/action-bar'
 import { button } from '@/ui/button'
 import { checkbox } from '@/ui/checkbox'
+import * as Calendar from '@/ui/calendar'
 import * as DateRangeInput from '@/ui/date-range-input'
 import * as Select from '@/ui/select'
+import * as Slider from '@/ui/slider'
 import { icon } from '@/lib/icon'
 import * as TableState from '@/lib/tablecn-table'
 import * as Grid from '@/lib/tablecn-grid'
@@ -675,31 +677,22 @@ const facetedFilter = (
                   h.Role('menuitemcheckbox'),
                   h.AriaChecked(selected.includes(option.value)),
                   h.OnClick(toggle(option.value)),
-                  h.Class(MENU_ITEM_CLASS),
+                  h.Class(cn(MENU_ITEM_CLASS, 'pl-2')),
                 ],
                 [
-                  h.span(
-                    [
-                      h.Class(
-                        cn(
-                          'border-primary absolute left-2 flex size-4 items-center justify-center rounded-sm border',
-                          selected.includes(option.value)
-                            ? 'bg-primary text-primary-foreground'
-                            : 'opacity-50 [&_svg]:invisible',
-                        ),
-                      ),
-                    ],
-                    [icon('check', { class: 'size-3.5' }, h)],
-                  ),
                   icon(option.iconName, {}, h),
                   h.span([], [option.label]),
                   h.span(
                     [
                       h.Class(
-                        'ml-auto font-mono text-xs text-muted-foreground',
+                        'ml-auto flex items-center justify-center font-mono text-xs text-muted-foreground',
                       ),
                     ],
-                    [String(counts.get(option.value) ?? 0)],
+                    [
+                      selected.includes(option.value)
+                        ? icon('check', { class: 'size-4' }, h)
+                        : String(counts.get(option.value) ?? 0),
+                    ],
                   ),
                 ],
               ),
@@ -768,6 +761,11 @@ const rangeFilter = (
         : []),
     ],
   )
+  const bounds = TableState.hoursBounds(model)
+  const sliderValues: readonly [number, number] = [
+    model.hasHoursFilter && model.hoursMin > 0 ? model.hoursMin : bounds.min,
+    model.hasHoursFilter && model.hoursMax > 0 ? model.hoursMax : bounds.max,
+  ]
   return TRIGGER_PANEL(
     isOpen,
     trigger,
@@ -778,43 +776,77 @@ const rangeFilter = (
         h.Class(cn(PANEL_CLASS, 'start-0 w-56 p-3')),
       ],
       [
-        h.div([h.Class('mb-2 text-sm font-medium')], ['Estimated hours']),
         h.div(
-          [h.Class('flex items-center gap-2')],
+          [h.Class('flex flex-col gap-3')],
           [
-            h.input([
-              h.Type('number'),
-              h.Placeholder('Min'),
-              h.Class(
-                'border-input h-8 w-full rounded-md border bg-transparent px-2 text-sm shadow-xs outline-none focus-visible:ring-1 focus-visible:ring-ring',
-              ),
-              h.Value(model.hasHoursFilter ? String(model.hoursMin) : ''),
-              h.OnInput(value =>
-                TableState.Message.ChangedHoursMin({
-                  value,
-                }),
-              ),
-            ]),
-            h.span([h.Class('text-muted-foreground')], ['–']),
-            h.input([
-              h.Type('number'),
-              h.Placeholder('Max'),
-              h.Class(
-                'border-input h-8 w-full rounded-md border bg-transparent px-2 text-sm shadow-xs outline-none focus-visible:ring-1 focus-visible:ring-ring',
-              ),
-              h.Value(
-                model.hasHoursFilter && model.hoursMax > 0
-                  ? String(model.hoursMax)
-                  : '',
-              ),
-              h.OnInput(value =>
-                TableState.Message.ChangedHoursMax({
-                  value,
-                }),
-              ),
-            ]),
+            h.div([h.Class('text-sm font-medium')], ['Estimated hours']),
+            h.div(
+              [h.Class('flex items-center gap-2')],
+              [
+                h.input([
+                  h.Type('number'),
+                  h.Placeholder(String(bounds.min)),
+                  h.Min(String(bounds.min)),
+                  h.Max(String(bounds.max)),
+                  h.Class(
+                    'border-input h-8 w-full rounded-md border bg-transparent px-2 text-sm shadow-xs outline-none focus-visible:ring-1 focus-visible:ring-ring',
+                  ),
+                  h.Value(String(sliderValues[0])),
+                  h.OnInput(value =>
+                    TableState.Message.ChangedHoursMin({
+                      value,
+                    }),
+                  ),
+                ]),
+                h.input([
+                  h.Type('number'),
+                  h.Placeholder(String(bounds.max)),
+                  h.Min(String(bounds.min)),
+                  h.Max(String(bounds.max)),
+                  h.Class(
+                    'border-input h-8 w-full rounded-md border bg-transparent px-2 text-sm shadow-xs outline-none focus-visible:ring-1 focus-visible:ring-ring',
+                  ),
+                  h.Value(String(sliderValues[1])),
+                  h.OnInput(value =>
+                    TableState.Message.ChangedHoursMax({
+                      value,
+                    }),
+                  ),
+                ]),
+              ],
+            ),
+            Slider.rangeSlider(
+              {
+                model: model.hoursSlider,
+                values: sliderValues,
+                toParentMessage: message =>
+                  TableState.Message.GotHoursSliderMessage({ message }),
+                direction: model.direction,
+                ariaLabels: ['Minimum hours', 'Maximum hours'],
+              },
+              h,
+            ),
           ],
         ),
+        ...(model.hasHoursFilter
+          ? [
+              h.div(
+                [h.Class('border-t mt-3 border-border pt-3')],
+                [
+                  h.button(
+                    [
+                      h.Type('button'),
+                      h.OnClick(TableState.Message.ClearedHoursFilter({})),
+                      h.Class(
+                        'border-input inline-flex h-8 w-full items-center justify-center rounded-md border bg-transparent px-2.5 text-sm font-medium shadow-xs transition-colors hover:bg-accent',
+                      ),
+                    ],
+                    ['Clear'],
+                  ),
+                ],
+              ),
+            ]
+          : []),
       ],
     ),
     h,
@@ -866,6 +898,10 @@ const dateRangeFilter = (
         : []),
     ],
   )
+  const displayRange = Option.match(model.createdRange.pendingStart, {
+    onNone: () => model.createdRange.value,
+    onSome: start => Option.some({ start, end: start }),
+  })
   return TRIGGER_PANEL(
     isOpen,
     trigger,
@@ -873,21 +909,46 @@ const dateRangeFilter = (
     h.div(
       [
         h.DataAttribute('slot', 'popover-content'),
-        h.Class(cn(PANEL_CLASS, 'start-0 w-56 p-3')),
+        h.Class(cn(PANEL_CLASS, 'start-0 w-auto p-0')),
       ],
       [
-        DateRangeInput.dateRangeInput(
+        Calendar.calendar(
           {
-            model: model.createdRange,
+            model: model.createdRange.calendar,
+            maybeSelectedDate: Option.none(),
             toParentMessage: message =>
-              TableState.Message.GotCreatedRangeMessage({ message }),
-            label: 'Created',
-            size: 'sm',
-            hasClear: true,
-            placeholder: 'Pick a range',
+              TableState.Message.GotCreatedRangeMessage({
+                message: DateRangeInput.Message.GotCalendarMessage({
+                  message,
+                }),
+              }),
+            captionLayout: 'dropdown',
+            direction: model.direction,
+            ...(Option.isSome(displayRange)
+              ? { range: displayRange.value }
+              : {}),
           },
           h,
         ),
+        ...(hasRange
+          ? [
+              h.div(
+                [h.Class('border-t border-border p-3')],
+                [
+                  h.button(
+                    [
+                      h.Type('button'),
+                      h.OnClick(TableState.Message.ClearedCreatedRange({})),
+                      h.Class(
+                        'border-input inline-flex h-8 w-full items-center justify-center rounded-md border bg-transparent px-2.5 text-sm font-medium shadow-xs transition-colors hover:bg-accent',
+                      ),
+                    ],
+                    ['Clear'],
+                  ),
+                ],
+              ),
+            ]
+          : []),
       ],
     ),
     h,

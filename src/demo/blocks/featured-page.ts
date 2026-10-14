@@ -2,12 +2,13 @@ import { taggedStruct } from 'foldkit/schema'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { Option, Schema as S } from 'effect'
 import type { Update } from 'foldkit'
-import { Command } from 'foldkit'
+import { Command, Subscription } from 'foldkit'
 
 import { loginArtwork } from '@/ui/composition/login-artwork'
 import { badge } from '@/ui/badge'
 import { button } from '@/ui/button'
 import * as TableState from '@/lib/data-table-state'
+import * as TablecnState from '@/lib/tablecn-table'
 import { fieldSeparator } from '@/ui/field'
 import { input } from '@/ui/input'
 import { icon } from '@/ui/composition/icon'
@@ -148,6 +149,24 @@ export const init = (): Model => ({
   tablecnGrid: TablecnPage.init('data-grid'),
 })
 type UpdateReturn = Update.Return<Model, Message>
+
+/* Est. Hours range-slider thumb drags inside the tablecn blocks. */
+export const subscriptions = Subscription.aggregate<Model, Message>()(
+  Subscription.lift(TablecnState.sliderSubscriptions('featuredTwTablecnHours'))<
+    Model,
+    Message
+  >({
+    toChildModel: model => model.tablecn.table,
+    toParentMessage: message => GotTablecnMessage({ message }),
+  }),
+  Subscription.lift(
+    TablecnState.sliderSubscriptions('featuredTwTablecnGridHours'),
+  )<Model, Message>({
+    toChildModel: model => model.tablecnGrid.table,
+    toParentMessage: message => GotTablecnGridMessage({ message }),
+  }),
+)
+
 export const update = (model: Model, message: Message): UpdateReturn => {
   if (message._tag === 'GotBlocksStyleXEChartMessage') return { model: model }
   if (message._tag === 'ChangedBlockEmail')

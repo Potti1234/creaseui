@@ -706,6 +706,8 @@ const inactiveBoard = Board.init()
 const inactiveBoardStyleX = BoardStyleX.init()
 const inactiveCatalogDocs = ComponentCatalog.init()
 const inactiveTanStackTablePage = TanStackTablePage.init()
+const inactiveTailwindFeatured = BlocksTailwindPage.init()
+const inactiveStyleXFeatured = BlocksStyleXPage.init()
 
 // Both boards compose the same slider subscription names. Prefix the StyleX
 // record here so Foldkit can host both without weakening duplicate-key checks.
@@ -762,6 +764,22 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
         : inactiveTanStackTablePage,
     toParentMessage: message => Message.GotTanStackTableMessage({ message }),
     when: model => model.page._tag === 'BlocksStyleXTablePage',
+  }),
+  Subscription.lift(BlocksTailwindPage.subscriptions)<Model, Message>({
+    toChildModel: model =>
+      model.page._tag === 'BlockPage'
+        ? model.page.tailwindFeatured
+        : inactiveTailwindFeatured,
+    toParentMessage: message => Message.GotBlocksTailwindMessage({ message }),
+    when: model => model.page._tag === 'BlockPage',
+  }),
+  Subscription.lift(BlocksStyleXPage.subscriptions)<Model, Message>({
+    toChildModel: model =>
+      model.page._tag === 'BlockPage'
+        ? model.page.styleXFeatured
+        : inactiveStyleXFeatured,
+    toParentMessage: message => Message.GotBlocksStyleXMessage({ message }),
+    when: model => model.page._tag === 'BlockPage',
   }),
 )
 

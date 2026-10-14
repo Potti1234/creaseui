@@ -26,8 +26,10 @@ import { button } from '@/stylex/button'
 import { checkbox } from '@/stylex/checkbox'
 import { icon } from '@/stylex/composition/icon'
 import { reset } from '@/stylex/reset'
+import * as Calendar from '@/stylex/calendar'
 import * as DateRangeInput from '@/stylex/date-range-input'
 import * as Select from '@/stylex/select'
+import * as Slider from '@/stylex/slider'
 import * as TableState from '@/lib/tablecn-table'
 import * as Grid from '@/lib/tablecn-grid'
 import type { Task } from '@/lib/tablecn-data'
@@ -400,21 +402,6 @@ const st = stylex.create({
   },
   c32: { padding: '0rem', insetInlineStart: '0rem', width: '12.5rem' },
   c33: { padding: '0.25rem', maxHeight: '18rem', overflowY: 'auto' },
-  c34: {
-    borderColor: tokens.border,
-    borderRadius: foundationTokens.radiusSm,
-    borderStyle: 'solid',
-    borderWidth: '1px',
-    alignItems: 'center',
-    display: 'flex',
-    insetInlineStart: '0.5rem',
-    justifyContent: 'center',
-    position: 'absolute',
-    height: '1rem',
-    width: '1rem',
-  },
-  c35: { backgroundColor: tokens.primary, color: tokens.primaryForeground },
-  c36: { opacity: '0.5' },
   c37: {
     color: tokens.mutedForeground,
     fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
@@ -472,6 +459,43 @@ const st = stylex.create({
     width: '100%',
   },
   c44: { color: tokens.mutedForeground },
+  pl2: { paddingInlineStart: '0.5rem' },
+  panelAuto: { padding: '0rem', insetInlineStart: '0rem', width: 'auto' },
+  rowSel: { backgroundColor: tokens.muted },
+  col3: { gap: '0.75rem', display: 'flex', flexDirection: 'column' },
+  footerTop: {
+    borderTopColor: tokens.border,
+    borderTopStyle: 'solid',
+    borderTopWidth: '1px',
+    marginTop: '0.75rem',
+    paddingTop: '0.75rem',
+  },
+  footerPad: {
+    padding: '0.75rem',
+    borderTopColor: tokens.border,
+    borderTopStyle: 'solid',
+    borderTopWidth: '1px',
+  },
+  clearBtn: {
+    borderColor: tokens.border,
+    borderRadius: foundationTokens.radiusMd,
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    paddingInline: '0.625rem',
+    alignItems: 'center',
+    backgroundColor: { default: 'transparent', ':hover': tokens.accent },
+    boxShadow: foundationTokens.shadowXs,
+    display: 'inline-flex',
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    justifyContent: 'center',
+    lineHeight: '1.25rem',
+    transitionDuration: interactionTokens.motionFast,
+    transitionProperty: 'color, background-color, border-color, box-shadow',
+    whiteSpace: 'nowrap',
+    height: '2rem',
+    width: '100%',
+  },
   c45: {
     borderColor: tokens.border,
     borderRadius: foundationTokens.radiusMd,
@@ -802,6 +826,7 @@ const st = stylex.create({
     minHeight: '0',
   },
   c99: {
+    borderCollapse: 'collapse',
     captionSide: 'bottom',
     fontSize: '0.875rem',
     lineHeight: '1.25rem',
@@ -826,7 +851,7 @@ const st = stylex.create({
     transitionProperty: 'color, background-color, border-color, box-shadow',
     borderBottomColor: tokens.border,
     borderBottomStyle: 'solid',
-    borderBottomWidth: '1px',
+    borderBottomWidth: { default: '1px', ':last-child': '0px' },
   },
   c104: { padding: '0.5rem', verticalAlign: 'middle' },
   c105: { minWidth: '0rem' },
@@ -847,7 +872,6 @@ const st = stylex.create({
   icon13: { display: 'inline-flex' },
   icon14: { display: 'inline-flex' },
   icon15: { display: 'inline-flex' },
-  icon16: { display: 'inline-flex', fontSize: '0.875rem' },
   icon17: { display: 'inline-flex' },
   icon18: { display: 'inline-flex' },
   icon19: { display: 'inline-flex' },
@@ -1546,25 +1570,9 @@ const facetedFilter = (
                   h.Role('menuitemcheckbox'),
                   h.AriaChecked(selected.includes(option.value)),
                   h.OnClick(toggle(option.value)),
-                  h.Class(className(reset.button, MENU_ITEM_CLASS)),
+                  h.Class(className(reset.button, MENU_ITEM_CLASS, st.pl2)),
                 ],
                 [
-                  h.span(
-                    [
-                      h.Class(
-                        className(
-                          st.c34,
-                          selected.includes(option.value) ? st.c35 : st.c36,
-                        ),
-                      ),
-                    ],
-                    [
-                      h.span(
-                        [h.Class(className(st.icon16))],
-                        [icon({ name: 'check', size: 'sm' }, h)],
-                      ),
-                    ],
-                  ),
                   h.span(
                     [h.Class(className(st.icon17))],
                     [icon({ name: option.iconName, size: 'sm' }, h)],
@@ -1572,7 +1580,11 @@ const facetedFilter = (
                   h.span([], [option.label]),
                   h.span(
                     [h.Class(className(st.c37))],
-                    [String(counts.get(option.value) ?? 0)],
+                    [
+                      selected.includes(option.value)
+                        ? icon({ name: 'check', size: 'sm' }, h)
+                        : String(counts.get(option.value) ?? 0),
+                    ],
                   ),
                 ],
               ),
@@ -1633,6 +1645,11 @@ const rangeFilter = (
         : []),
     ],
   )
+  const bounds = TableState.hoursBounds(model)
+  const sliderValues: readonly [number, number] = [
+    model.hasHoursFilter && model.hoursMin > 0 ? model.hoursMin : bounds.min,
+    model.hasHoursFilter && model.hoursMax > 0 ? model.hoursMax : bounds.max,
+  ]
   return TRIGGER_PANEL(
     isOpen,
     trigger,
@@ -1643,39 +1660,71 @@ const rangeFilter = (
         h.Class(className(PANEL_CLASS, st.c41)),
       ],
       [
-        h.div([h.Class(className(st.c42))], ['Estimated hours']),
         h.div(
-          [h.Class(className(st.c17))],
+          [h.Class(className(st.col3))],
           [
-            h.input([
-              h.Type('number'),
-              h.Placeholder('Min'),
-              h.Class(className(reset.input, st.c43)),
-              h.Value(model.hasHoursFilter ? String(model.hoursMin) : ''),
-              h.OnInput(value =>
-                TableState.Message.ChangedHoursMin({
-                  value,
-                }),
-              ),
-            ]),
-            h.span([h.Class(className(st.c44))], ['–']),
-            h.input([
-              h.Type('number'),
-              h.Placeholder('Max'),
-              h.Class(className(reset.input, st.c43)),
-              h.Value(
-                model.hasHoursFilter && model.hoursMax > 0
-                  ? String(model.hoursMax)
-                  : '',
-              ),
-              h.OnInput(value =>
-                TableState.Message.ChangedHoursMax({
-                  value,
-                }),
-              ),
-            ]),
+            h.div([h.Class(className(st.c42))], ['Estimated hours']),
+            h.div(
+              [h.Class(className(st.c17))],
+              [
+                h.input([
+                  h.Type('number'),
+                  h.Placeholder(String(bounds.min)),
+                  h.Min(String(bounds.min)),
+                  h.Max(String(bounds.max)),
+                  h.Class(className(reset.input, st.c43)),
+                  h.Value(String(sliderValues[0])),
+                  h.OnInput(value =>
+                    TableState.Message.ChangedHoursMin({
+                      value,
+                    }),
+                  ),
+                ]),
+                h.input([
+                  h.Type('number'),
+                  h.Placeholder(String(bounds.max)),
+                  h.Min(String(bounds.min)),
+                  h.Max(String(bounds.max)),
+                  h.Class(className(reset.input, st.c43)),
+                  h.Value(String(sliderValues[1])),
+                  h.OnInput(value =>
+                    TableState.Message.ChangedHoursMax({
+                      value,
+                    }),
+                  ),
+                ]),
+              ],
+            ),
+            Slider.rangeSlider(
+              {
+                model: model.hoursSlider,
+                values: sliderValues,
+                toParentMessage: message =>
+                  TableState.Message.GotHoursSliderMessage({ message }),
+                direction: model.direction,
+                ariaLabels: ['Minimum hours', 'Maximum hours'],
+              },
+              h,
+            ),
           ],
         ),
+        ...(model.hasHoursFilter
+          ? [
+              h.div(
+                [h.Class(className(st.footerTop))],
+                [
+                  h.button(
+                    [
+                      h.Type('button'),
+                      h.OnClick(TableState.Message.ClearedHoursFilter({})),
+                      h.Class(className(reset.button, st.clearBtn)),
+                    ],
+                    ['Clear'],
+                  ),
+                ],
+              ),
+            ]
+          : []),
       ],
     ),
     h,
@@ -1718,6 +1767,10 @@ const dateRangeFilter = (
         : []),
     ],
   )
+  const displayRange = Option.match(model.createdRange.pendingStart, {
+    onNone: () => model.createdRange.value,
+    onSome: start => Option.some({ start, end: start }),
+  })
   return TRIGGER_PANEL(
     isOpen,
     trigger,
@@ -1725,21 +1778,44 @@ const dateRangeFilter = (
     h.div(
       [
         h.DataAttribute('slot', 'popover-content'),
-        h.Class(className(PANEL_CLASS, st.c41)),
+        h.Class(className(PANEL_CLASS, st.panelAuto)),
       ],
       [
-        DateRangeInput.dateRangeInput(
+        Calendar.calendar(
           {
-            model: model.createdRange,
+            model: model.createdRange.calendar,
+            maybeSelectedDate: Option.none(),
             toParentMessage: message =>
-              TableState.Message.GotCreatedRangeMessage({ message }),
-            label: 'Created',
-            size: 'sm',
-            hasClear: true,
-            placeholder: 'Pick a range',
+              TableState.Message.GotCreatedRangeMessage({
+                message: DateRangeInput.Message.GotCalendarMessage({
+                  message,
+                }),
+              }),
+            captionLayout: 'dropdown',
+            direction: model.direction,
+            ...(Option.isSome(displayRange)
+              ? { range: displayRange.value }
+              : {}),
           },
           h,
         ),
+        ...(hasRange
+          ? [
+              h.div(
+                [h.Class(className(st.footerPad))],
+                [
+                  h.button(
+                    [
+                      h.Type('button'),
+                      h.OnClick(TableState.Message.ClearedCreatedRange({})),
+                      h.Class(className(reset.button, st.clearBtn)),
+                    ],
+                    ['Clear'],
+                  ),
+                ],
+              ),
+            ]
+          : []),
       ],
     ),
     h,
@@ -2626,7 +2702,12 @@ const tasksTable = (model: TableState.Model, h: HtmlBuilder<Message>): Html => {
                           ? 'selected'
                           : 'unselected',
                       ),
-                      h.Class(className(st.c103)),
+                      h.Class(
+                        className(
+                          st.c103,
+                          model.selectedIds.includes(task.id) && st.rowSel,
+                        ),
+                      ),
                     ],
                     columns.map(column =>
                       h.td(
