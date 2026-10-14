@@ -448,9 +448,7 @@ test('Create is available on both dedicated sites', async ({ page }) => {
   await expect(token).toBeVisible()
 })
 
-test('StyleX Create uses the constrained board composition', async ({
-  page,
-}) => {
+test('StyleX Create renders the full board composition', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 })
   await page.goto('/create')
   await visitRenderer(page, 'StyleX')
