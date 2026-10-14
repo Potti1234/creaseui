@@ -29,7 +29,7 @@
     "dev": "vite",
     "build": "npm run build:tailwind && npm run build:stylex && npm run build:pleat",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "node --max-old-space-size=8192 ./node_modules/typescript/bin/tsc --noEmit",
     "test": "npm run test:lint-package && npm run test:unit && npm run test:scene",
     "test:unit": "node scripts/run-unit-tests.mjs",
     "test:scene": "vitest run",
