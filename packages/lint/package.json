@@ -12,6 +12,10 @@
     "./audit": {
       "types": "./audit.d.ts",
       "default": "./audit.js"
+    },
+    "./rendered": {
+      "types": "./rendered.d.ts",
+      "default": "./rendered.js"
     }
   },
   "types": "./index.d.ts",
@@ -20,6 +24,8 @@
     "index.d.ts",
     "audit.js",
     "audit.d.ts",
+    "rendered.js",
+    "rendered.d.ts",
     "creaseui.js",
     "bin",
     "docs",

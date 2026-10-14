@@ -94,3 +94,33 @@ coverage. `--report-only` reports findings without failing on them, but
 incomplete runs still exit `2`. Exceptions need `rule`, a specific
 `selector`, `reason` and `owner`, with an optional case `scope`. Broad
 selectors are rejected, and unused exceptions are reported.
+
+## Host-page SDK (`@creaseui/lint/rendered`)
+
+For tests that already drive the app, `@creaseui/lint/rendered` measures the
+current document with the same engine and rules as `creaseui-lint audit`. The
+caller owns navigation, themes and interactions; the SDK never imports
+Playwright, and any page object with `url()` and `evaluate()` works.
+
+```js
+import { expectUI } from '@creaseui/lint/rendered'
+
+test('settings dialog', async ({ page }, testInfo) => {
+  await page.goto('/settings')
+  await page.getByRole('button', { name: 'Edit profile' }).click()
+  await expectUI(page, testInfo, { state: 'dialog-open' })
+})
+```
+
+`auditUI(page, { policy, state, timeout })` returns a report whose `outcome` is
+`passed`, `failed` or `incomplete`. Unresolved or unsupported content (gradient
+text, frames, open shadow roots) makes the report `incomplete`, which takes
+precedence over findings, so `assertUI`/`expectUI` never pass it. Exceptions
+need `rule`, a non-page-wide `selector`, `owner` and `reason`.
+
+Migration from the earlier local LintApple adapter: the SDK keeps the
+`auditUI`/`assertUI`/`expectUI`/`createUIPolicy`/`renderedRuleIds` surface and
+the minimal host-page interface, but uses the bundled audit engine instead of
+the optional `lintapple` peer (which required Node 22). Typography, spacing and
+copy policies from that adapter are not ported; reports gain `coverage` and
+`outcome`, and policy exceptions now require an owner.

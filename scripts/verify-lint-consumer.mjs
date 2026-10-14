@@ -262,7 +262,7 @@ for (const consumer of consumers) {
     [
       '--input-type=module',
       '-e',
-      "import { creaseui, STRICT_RULE_IDS } from '@creaseui/lint'; if (typeof creaseui !== 'function' || STRICT_RULE_IDS.length !== 6) process.exit(1)",
+      "import { creaseui, STRICT_RULE_IDS } from '@creaseui/lint'; import { auditUI, renderedRuleIds } from '@creaseui/lint/rendered'; import { AUDIT_RULES } from '@creaseui/lint/audit'; if (typeof creaseui !== 'function' || STRICT_RULE_IDS.length !== 6 || typeof auditUI !== 'function' || renderedRuleIds !== AUDIT_RULES) process.exit(1)",
     ],
     { cwd: root, encoding: 'utf8' },
   )
