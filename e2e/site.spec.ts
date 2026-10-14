@@ -1810,26 +1810,46 @@ test('sheet renders every edge from view input with Dialog focus behavior', asyn
 }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/docs/components/sheet')
-  await visitRenderer(page, 'StyleX')
-
-  for (const [id, side] of [
-    ['compound-layout', 'right'],
-    ['bottom-task', 'bottom'],
-    ['top-sheet', 'top'],
-    ['left-sheet', 'left'],
-  ] as const) {
-    const example = page.locator(`#${id}`)
-    const trigger = example.getByRole('button', { name: `Open ${side} sheet` })
-    await trigger.click()
-    const sheet = page.getByRole('dialog')
-    const panel = sheet.locator('[data-slot="sheet-content"]')
-    await expect(panel).toBeVisible()
-    await expect(sheet.getByRole('button', { name: 'Cancel' })).toBeFocused()
-    await expect(panel).toHaveCSS('transition-property', 'none')
-    await page.keyboard.press('Escape')
-    await expect(sheet).toBeHidden()
-    await expect(trigger).toBeFocused()
+  const assertEdges = async () => {
+    for (const side of ['Top', 'Right', 'Bottom', 'Left']) {
+      const trigger = page
+        .locator('#side')
+        .getByRole('button', { name: side, exact: true })
+      await trigger.click()
+      const sheet = page.locator('dialog[open][data-slot="sheet"]')
+      // Bottom uses the bottom-sheet structure (sheet-panel with a handle).
+      const panel = sheet.locator(
+        side === 'Bottom'
+          ? '[data-slot="sheet-panel"]'
+          : '[data-slot="sheet-content"]',
+      )
+      await expect(panel).toBeVisible()
+      await expect(sheet).toHaveAccessibleName(/.+/)
+      await expect(sheet.getByRole('button', { name: 'Cancel' })).toBeFocused()
+      // Reduced motion: either no transitioned property or zero duration.
+      const motion = await panel.evaluate(element => {
+        const style = getComputedStyle(element)
+        return {
+          property: style.transitionProperty,
+          durations: style.transitionDuration
+            .split(',')
+            .map(value => value.trim()),
+        }
+      })
+      expect(
+        motion.property === 'none' ||
+          motion.durations.every(value => value === '0s'),
+      ).toBe(true)
+      await page.keyboard.press('Escape')
+      await expect(sheet).toBeHidden()
+      await expect(trigger).toBeFocused()
+    }
   }
+  await assertEdges()
+
+  await visitRenderer(page, 'StyleX')
+  await expect(page.locator('#stylex-specimen')).toHaveCount(0)
+  await assertEdges()
 })
 
 test('timestamp auto tooltip fits its content and viewport', async ({
@@ -4609,14 +4629,18 @@ test('presentational helpers preserve native semantics and controlled OTP state'
   await expect(page.locator('#horizontal').getByRole('separator')).toHaveCount(
     0,
   )
+  // shadcn's separator fixtures are decorative (see the separator spec).
+  await expect(page.locator('#vertical').getByRole('separator')).toHaveCount(0)
   await expect(
-    page.locator('#vertical').getByRole('separator'),
-  ).toHaveAttribute('aria-orientation', 'vertical')
+    page.locator('#vertical [data-slot="separator"]').first(),
+  ).toHaveAttribute('data-orientation', 'vertical')
 
   await page.goto('/docs/components/label')
-  const email = page.locator('#docs-email')
-  await page.locator('#input-label label[data-slot="label"]').click()
-  await expect(email).toBeFocused()
+  await page
+    .locator('#label-in-field')
+    .getByText('Name on Card', { exact: true })
+    .click()
+  await expect(page.locator('#checkout-card-name')).toBeFocused()
 })
 
 test('data table highlights only the active sort arrow in both renderers and themes', async ({
@@ -6582,38 +6606,35 @@ test('empty sections match upstream variants in both renderers', async ({
   await expect(page.locator('#rtl').locator('[dir="rtl"]')).toHaveCount(1)
 })
 
-test('message exposes live author metadata and parent-owned keyboard actions', async ({
+test('message exposes author metadata and parent-owned keyboard actions', async ({
   page,
 }) => {
   await page.goto('/docs/components/message')
-  await visitRenderer(page, 'StyleX')
-  await expect(page.locator('#incoming')).toBeVisible()
-  await expect(page.locator('#outgoing')).toBeVisible()
-  await expect(page.locator('#live-recovery')).toBeVisible()
-  await expect(page.locator('#stylex-specimen')).toHaveCount(0)
-  await expect(
-    page.locator('#incoming').locator('[data-slot="message-author"]'),
-  ).toHaveText('Ada')
-  await expect(
-    page.locator('#outgoing').locator('[data-slot="message-metadata"]'),
-  ).toHaveText('Delivered')
+  const assertMessages = async () => {
+    const meta = page.locator('#header-and-footer')
+    await expect(
+      meta.locator('[data-slot="message-header"]').first(),
+    ).toContainText('Olivia')
+    await expect(
+      meta.locator('[data-slot="message-footer"]').first(),
+    ).toContainText('Read')
 
-  const recovery = page.locator('#live-recovery')
-  await expect(
-    recovery.getByRole('log', { name: 'Project conversation' }),
-  ).toBeVisible()
-  await expect(
-    recovery.getByRole('status', { name: 'New message from Ada' }),
-  ).toBeVisible()
-  const action = recovery.getByRole('button', { name: 'Retry delivery' })
-  await action.focus()
-  await page.keyboard.press('Enter')
-  await expect(action).toBeFocused()
-  const row = recovery.locator('[data-slot="message"]')
-  expect(
-    await row.evaluate(element => element.scrollWidth <= element.clientWidth),
-  ).toBe(true)
-  await expect(page.locator('#incoming code')).toContainText('@/stylex/message')
+    const actions = page.locator('#actions')
+    await expect(actions).toContainText('Failed to send')
+    const retry = actions.getByRole('button', { name: 'Retry', exact: true })
+    await retry.focus()
+    await page.keyboard.press('Enter')
+    await expect(retry).toBeFocused()
+    const row = actions.locator('[data-slot="message"]').first()
+    expect(
+      await row.evaluate(element => element.scrollWidth <= element.clientWidth),
+    ).toBe(true)
+  }
+  await assertMessages()
+
+  await visitRenderer(page, 'StyleX')
+  await expect(page.locator('#stylex-specimen')).toHaveCount(0)
+  await assertMessages()
 })
 
 test('table preserves native captions, scoped headers, overflow, and empty rows', async ({
