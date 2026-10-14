@@ -537,7 +537,7 @@ test(
         document.documentElement.clientWidth,
     )
     expect(overflow).toBeLessThanOrEqual(1)
-    await expect(page.getByText('Browse components')).toBeVisible()
+    await expect(page.getByText('Browse docs')).toBeVisible()
     await expect(page.locator('#architecture')).toBeVisible()
   },
 )
