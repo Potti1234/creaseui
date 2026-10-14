@@ -402,6 +402,7 @@ const buttonGroupViewSource = (
         DropdownMenu.dropdownMenu({
           model: model.menu,
           toParentMessage: message => GotMenuMessage.GotMenuMessage({ message }),
+          triggerAriaLabel: 'More options',
           ariaLabel: 'More options',
           ${menuConfig}
           items: menuItems,

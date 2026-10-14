@@ -169,6 +169,7 @@ const buttonGroupHtml = (
                     variant: 'outline',
                     size: 'icon',
                   }),
+                  triggerAriaLabel: 'More options',
                   ariaLabel: 'More options',
                   items: [...buttonGroupMenuItems],
                   itemToConfig: menuItemConfig(model.labelAs, h),

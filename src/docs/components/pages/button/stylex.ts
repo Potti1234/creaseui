@@ -253,6 +253,7 @@ const buttonGroupHtml = <Msg>(
                     styles.triggerBorderTransparent as ComponentLayoutStyle,
                   triggerButtonVariant: 'outline',
                   triggerButtonSize: 'icon',
+                  triggerAriaLabel: 'More options',
                   ariaLabel: 'More options',
                   items: [...buttonGroupMenuItems],
                   itemToConfig: menuItemConfig(model.labelAs, h),
