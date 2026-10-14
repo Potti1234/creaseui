@@ -1714,7 +1714,7 @@ test('popover delegates disclosure commands and mirrors shadcn examples', async 
   await expect(example).toBeVisible()
   await expect(page.locator('#right-aligned')).toBeVisible()
   await expect(page.locator('#stylex-specimen')).toHaveCount(0)
-  await expect(example.locator('code')).toContainText('@/stylex/date-picker')
+  await expect(example.locator('code')).toContainText('@/stylex/popover')
   const trigger = example.getByRole('button', { name: 'Open dimensions' })
   await trigger.click()
   // Foldkit's anchor layer portals positioned content outside the example article.
@@ -2447,7 +2447,9 @@ test('command dialogs filter and select items per section', async ({
   const calculator = page.getByRole('option', { name: /Calculator/u })
   await expect(calculator).toBeVisible()
   await calculator.click()
-  await expect(basicInput).toHaveValue('Calculator')
+  // Like cmdk, selecting keeps the query; the option is marked selected.
+  await expect(calculator).toHaveAttribute('aria-selected', 'true')
+  await expect(basicInput).toHaveValue('calc')
   await page.keyboard.press('Escape')
   await page.keyboard.press('Escape')
 
@@ -2662,12 +2664,9 @@ test('context menu sections anchor, toggle, and select per fixture', async ({
   })
   await expect(fullUrls).toHaveAttribute('aria-checked', 'false')
   await fullUrls.click()
-  await checkboxExample
-    .getByRole('button', { name: 'Right click here' })
-    .click({ button: 'right' })
-  await expect(
-    menu.getByRole('menuitemcheckbox', { name: /Show Full URLs/u }),
-  ).toHaveAttribute('aria-checked', 'true')
+  // Foldkit Menu keeps the menu open after toggling a checkbox item.
+  await expect(menu).toBeVisible()
+  await expect(fullUrls).toHaveAttribute('aria-checked', 'true')
   await page.keyboard.press('Escape')
 
   const radioExample = page.locator('#radio')
@@ -2679,9 +2678,7 @@ test('context menu sections anchor, toggle, and select per fixture', async ({
     menu.getByRole('menuitemradio', { name: /Pedro Duarte/u }),
   ).toHaveAttribute('aria-checked', 'true')
   await menu.getByRole('menuitemradio', { name: /Dark/u }).click()
-  await radioExample
-    .getByRole('button', { name: 'Right click here' })
-    .click({ button: 'right' })
+  await expect(menu).toBeVisible()
   await expect(
     menu.getByRole('menuitemradio', { name: /Pedro Duarte/u }),
   ).toHaveAttribute('aria-checked', 'true')
