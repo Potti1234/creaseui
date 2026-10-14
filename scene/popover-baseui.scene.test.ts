@@ -49,6 +49,7 @@ import { describe, it } from 'vitest'
 import { Animation, Popover as PopoverPrimitive } from '@foldkit/ui'
 
 import * as StyleXPopover from '@/stylex/popover'
+import { AnchorThemedPopover } from '@/lib/overlay-boundary'
 import * as TailwindPopover from '@/ui/popover'
 
 type Model = Readonly<{
@@ -137,16 +138,31 @@ const closeButton = Scene.role('button', { name: 'Close' })
 const panel = Scene.selector('[data-slot="popover-content"]')
 const backdrop = Scene.selector('[data-slot="popover-backdrop"]')
 
-const resolvePanelMounts = Scene.Mount.resolveAll(
-  [
-    PopoverPrimitive.AnchorPopover,
-    PopoverPrimitive.Message.CompletedAnchorPopover(),
-  ],
-  [
+/* Mount.mapMessage lifts are invisible to Scene's boundary folding, so a
+   themed Mount is resolved with the already-lifted parent Message (the same
+   pattern application.scene.test.ts uses for MountChart). The Completed*
+   result is a no-op in the primitive update. */
+const anchorPopoverResolver = (themed: boolean) =>
+  themed
+    ? ([
+        AnchorThemedPopover,
+        {
+          _tag: 'GotPopoverMessage',
+          message: PopoverPrimitive.Message.CompletedAnchorPopover(),
+        },
+      ] as const)
+    : ([
+        PopoverPrimitive.AnchorPopover,
+        PopoverPrimitive.Message.CompletedAnchorPopover(),
+      ] as const)
+const anchorPopover = (themed: boolean) =>
+  themed ? AnchorThemedPopover : PopoverPrimitive.AnchorPopover
+
+const panelResolver = (themed: boolean) =>
+  Scene.Mount.resolveAll(anchorPopoverResolver(themed), [
     PopoverPrimitive.PortalPopoverBackdrop,
     PopoverPrimitive.Message.CompletedPortalPopoverBackdrop(),
-  ],
-)
+  ])
 
 const resolveFocusButton = Scene.Command.resolveAllExact([
   PopoverPrimitive.FocusButton,
@@ -196,8 +212,8 @@ const animationPaintedThenSettled = (
 
 // expectEnded steps are single-use: the closure drains its matchers on the
 // first run, so build a fresh pair for every scene.
-const endedPanelMounts = () => [
-  Scene.Mount.expectEnded(PopoverPrimitive.AnchorPopover),
+const endedPanelMountsFor = (themed: boolean) => () => [
+  Scene.Mount.expectEnded(anchorPopover(themed)),
   Scene.Mount.expectEnded(PopoverPrimitive.PortalPopoverBackdrop),
 ]
 
@@ -243,6 +259,8 @@ type PopoverModuleProps = Readonly<{
 type PopoverModule = Readonly<{
   popover: (props: PopoverModuleProps, h: HtmlBuilder<Message>) => Html
   anchor: (placement: PopoverPlacement) => PopoverPrimitive.AnchorConfig
+  /* Tailwind portals through the theme-carrying AnchorThemedPopover Mount. */
+  themed: boolean
 }>
 
 type ViewOptions = Readonly<{
@@ -286,6 +304,8 @@ const makeView =
 
 const verifyRenderer = (rendererName: string, Module: PopoverModule): void => {
   describe(rendererName, () => {
+    const resolvePanelMounts = panelResolver(Module.themed)
+    const endedPanelMounts = endedPanelMountsFor(Module.themed)
     describe('<Popover.Root />', () => {
       it('should render the children', () => {
         Scene.scene(
@@ -915,7 +935,9 @@ const verifyRenderer = (rendererName: string, Module: PopoverModule): void => {
             Scene.click(trigger),
             Scene.expectHandled(),
             Scene.Mount.expectHas(
-              PopoverPrimitive.AnchorPopover({
+              (Module.themed
+                ? AnchorThemedPopover
+                : PopoverPrimitive.AnchorPopover)({
                 buttonId,
                 anchor: Module.anchor('bottom'),
                 arrowId: popoverArrowId,
@@ -995,7 +1017,9 @@ const verifyRenderer = (rendererName: string, Module: PopoverModule): void => {
           Scene.click(trigger),
           Scene.expectHandled(),
           Scene.Mount.expectHas(
-            PopoverPrimitive.AnchorPopover({
+            (Module.themed
+              ? AnchorThemedPopover
+              : PopoverPrimitive.AnchorPopover)({
               buttonId,
               anchor: Module.anchor('top-end'),
               arrowId: popoverArrowId,
@@ -1009,11 +1033,13 @@ const verifyRenderer = (rendererName: string, Module: PopoverModule): void => {
 }
 
 verifyRenderer('Tailwind', {
+  themed: true,
   popover: (props, h) => TailwindPopover.popover(props, h),
   anchor: placement => ({ placement, gap: 4 }),
 })
 
 verifyRenderer('StyleX', {
+  themed: false,
   popover: (props, h) => StyleXPopover.popover(props, h),
   anchor: placement => ({ placement, gap: 4, portal: false }),
 })

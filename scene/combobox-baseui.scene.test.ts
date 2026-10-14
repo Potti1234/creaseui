@@ -7,6 +7,7 @@ import { describe, it } from 'vitest'
 import { Combobox as ComboboxPrimitive } from '@foldkit/ui'
 
 import * as StyleXCombobox from '@/stylex/combobox'
+import { AnchorThemedCombobox } from '@/lib/overlay-boundary'
 import * as TailwindCombobox from '@/ui/combobox'
 
 /**
@@ -149,11 +150,20 @@ const allGroups = Scene.all.role('group')
 // The items panel mounts two resources when it appears (floating anchor +
 // portaled backdrop) and unmounts them when it disappears. The toggle button
 // mounts a blur-prevent listener with the initial render.
-const resolveOpenedMounts = [
-  Scene.Mount.resolve(
-    ComboboxPrimitive.AnchorCombobox,
-    ComboboxPrimitive.Message.CompletedAnchorCombobox(),
-  ),
+/* Mount.mapMessage lifts are invisible to Scene's boundary folding, so a
+   themed Mount is resolved with the already-lifted parent Message (the same
+   pattern application.scene.test.ts uses for MountChart). The Completed*
+   result is a no-op in the primitive update. */
+const resolveOpenedMountsFor = (themed: boolean) => [
+  themed
+    ? Scene.Mount.resolve(
+        AnchorThemedCombobox,
+        toComboboxMessage(ComboboxPrimitive.Message.CompletedAnchorCombobox()),
+      )
+    : Scene.Mount.resolve(
+        ComboboxPrimitive.AnchorCombobox,
+        ComboboxPrimitive.Message.CompletedAnchorCombobox(),
+      ),
   Scene.Mount.resolve(
     ComboboxPrimitive.PortalComboboxBackdrop,
     ComboboxPrimitive.Message.CompletedPortalComboboxBackdrop(),
@@ -165,9 +175,9 @@ const resolveToggleMount = Scene.Mount.resolve(
 )
 // NOTE: expectEnded consumes its matcher list per call, so this is a
 // factory — every scene needs a fresh step.
-const expectPanelUnmounted = () =>
+const expectPanelUnmountedFor = (themed: boolean) => () =>
   Scene.Mount.expectEnded(
-    ComboboxPrimitive.AnchorCombobox,
+    themed ? AnchorThemedCombobox : ComboboxPrimitive.AnchorCombobox,
     ComboboxPrimitive.PortalComboboxBackdrop,
   )
 const resolveFocusInput = Scene.Command.resolve(
@@ -274,6 +284,9 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
       )
 
   describe(`${name} Combobox (Base UI port)`, () => {
+    const themed = name === 'Tailwind'
+    const resolveOpenedMounts = resolveOpenedMountsFor(themed)
+    const expectPanelUnmounted = expectPanelUnmountedFor(themed)
     describe('ARIA attributes', () => {
       it('wires the input and listbox together while closed', () => {
         Scene.scene(
