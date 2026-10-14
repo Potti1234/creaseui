@@ -722,7 +722,13 @@ const UPDATE_CASES: Record<MessageScrollerKind, string> = {
       }
     }`,
   'opening-position': `    case 'GotScrollerMessage': {
-      const next = MessageScroller.update(model.scroller, message.message)
+      const isMount =
+        message.message._tag === 'ObservedMessageScrollerViewport' &&
+        message.message.reason === 'mount'
+      const next = MessageScroller.update(
+        isMount ? { ...model.scroller, isFollowing: false } : model.scroller,
+        message.message,
+      )
       const commands = next.commands ?? []
       const mapped = Command.mapMessages(commands, child =>
         Message.GotScrollerMessage({ message: child }),

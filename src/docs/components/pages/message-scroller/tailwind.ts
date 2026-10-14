@@ -581,7 +581,18 @@ export const messageScrollerTailwindPreviewProgram = definePreviewProgram<
   update: (model, message) => {
     switch (message._tag) {
       case 'GotScrollerMessage': {
-        const next = MessageScroller.update(model.scroller, message.message)
+        const isOpeningMount =
+          model.kind === 'opening-position' &&
+          message.message._tag === 'ObservedMessageScrollerViewport' &&
+          message.message.reason === 'mount'
+        // The opening position owns the first scroll, so stop following
+        // before the scroller would jump to the end on mount.
+        const next = MessageScroller.update(
+          isOpeningMount
+            ? { ...model.scroller, isFollowing: false }
+            : model.scroller,
+          message.message,
+        )
         const mapped = Command.mapMessages(next.commands ?? [], child =>
           Message.GotScrollerMessage({ message: child }),
         )
