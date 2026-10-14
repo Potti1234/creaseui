@@ -177,9 +177,10 @@ export const AnchorThemedPopover = Mount.define('AnchorThemedPopover', {
     buttonId: S.String,
     anchor: Anchor.AnchorConfig,
     focusSelector: S.optional(S.String),
+    arrowId: S.optional(S.String),
   },
   messages: [Popover.Message.CompletedAnchorPopover],
-  execute: ({ element, buttonId, anchor, focusSelector }) =>
+  execute: ({ element, buttonId, anchor, focusSelector, arrowId }) =>
     Effect.gen(function* () {
       yield* Effect.acquireRelease(
         Effect.sync(() => {
@@ -191,6 +192,7 @@ export const AnchorThemedPopover = Mount.define('AnchorThemedPopover', {
             interceptTab: false,
             focusAfterPosition: true,
             ...(focusSelector === undefined ? {} : { focusSelector }),
+            ...(arrowId === undefined ? {} : { arrowId }),
           })
           return () => {
             releaseAnchor()
@@ -208,12 +210,14 @@ export const themedPopoverPanel = <Msg>(
   anchor: Anchor.AnchorConfig,
   send: (message: Popover.Message) => Msg,
   focusSelector?: string,
+  arrowId?: string,
 ) =>
   Mount.mapMessage(
     AnchorThemedPopover({
       buttonId,
       anchor,
       ...(focusSelector === undefined ? {} : { focusSelector }),
+      ...(arrowId === undefined ? {} : { arrowId }),
     }),
     send,
   )
