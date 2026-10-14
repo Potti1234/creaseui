@@ -7254,7 +7254,10 @@ test('tokenizer popup keeps its full field size and its end action stays fixed',
       await input.press('ArrowDown')
       await expect(panel).toBeVisible()
       await expect(panel.getByRole('option')).toHaveCount(6)
-      expect((await panel.boundingBox())!.width).toBeCloseTo(initial!.width, 0)
+      // the reopened panel zooms in; measure its settled width
+      await expect
+        .poll(async () => (await panel.boundingBox())!.width)
+        .toBeCloseTo(initial!.width, 0)
       expect(errors).toEqual([])
       await page.close()
     }
