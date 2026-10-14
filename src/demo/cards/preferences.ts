@@ -138,7 +138,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
             children: [
               fieldGroup(
                 {
-                  class: 'gap-[22px]',
+                  class: 'gap-5.5',
                   children: [
                     field(
                       {

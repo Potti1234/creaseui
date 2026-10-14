@@ -261,7 +261,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                               onInput: value => Message.UpdatedNotes({ value }),
                               placeholder:
                                 'Add any notes for this payout configuration...',
-                              class: 'min-h-[100px]',
+                              class: 'min-h-25',
                             },
                             h,
                           ),

@@ -605,7 +605,7 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
         side: 'right',
         align: 'start',
         triggerClass:
-          'relative flex h-[66px] w-full items-end justify-between rounded-lg border border-white/10 bg-white/[0.035] px-3 pb-2.5 text-left shadow-none outline-none transition-colors hover:bg-white/[0.06] focus-visible:ring-2 focus-visible:ring-white/30',
+          'relative flex h-16.5 w-full items-end justify-between rounded-lg border border-white/10 bg-white/[0.035] px-3 pb-2.5 text-left shadow-none outline-none transition-colors hover:bg-white/[0.06] focus-visible:ring-2 focus-visible:ring-white/30',
         trigger: h.div(
           [h.Class('flex min-w-0 flex-1 items-end justify-between')],
           [
@@ -675,7 +675,7 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
   return h.aside(
     [
       h.Class(
-        'dark fixed top-[76px] bottom-5 left-5 z-30 flex w-[282px] flex-col overflow-hidden rounded-2xl bg-[#282828] text-white shadow-xl ring-1 ring-white/10 max-lg:right-3 max-lg:left-3 max-lg:w-auto',
+        'dark fixed top-19 bottom-5 left-5 z-30 flex w-70.5 flex-col overflow-hidden rounded-2xl bg-[#282828] text-white shadow-xl ring-1 ring-white/10 max-lg:right-3 max-lg:left-3 max-lg:w-auto',
       ),
     ],
     [
@@ -850,7 +850,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
   const preview = h.div(
     [
       h.Class(
-        'overflow-x-auto overflow-y-hidden bg-muted contain-[paint] [--gap:--spacing(4)] 3xl:[--gap:--spacing(12)] md:[--gap:--spacing(10)] lg:pl-[330px] dark:bg-background',
+        'overflow-x-auto overflow-y-hidden bg-muted contain-[paint] [--gap:--spacing(4)] 3xl:[--gap:--spacing(12)] md:[--gap:--spacing(10)] lg:pl-82.5 dark:bg-background',
       ),
     ],
     [
@@ -860,7 +860,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
           h.div(
             [
               h.Class(
-                'create-board-theme grid w-[2400px] grid-cols-7 items-start gap-(--gap) bg-muted p-(--gap) md:w-[3000px] dark:bg-background *:[div]:gap-(--gap)',
+                'create-board-theme grid w-600 grid-cols-7 items-start gap-(--gap) bg-muted p-(--gap) md:w-750 dark:bg-background *:[div]:gap-(--gap)',
               ),
               h.DataAttribute('crease-style', model.preset.style),
               h.DataAttribute('icon-library', model.preset.iconLibrary),
