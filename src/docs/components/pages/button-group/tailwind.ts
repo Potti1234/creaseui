@@ -265,6 +265,7 @@ const nodeView = (
                         [
                           h.Type('button'),
                           h.AriaPressed(model.voiceEnabled ? 'true' : 'false'),
+                          h.AriaLabel('Voice Mode'),
                           h.DataAttribute('active', String(model.voiceEnabled)),
                           h.OnClick(PreviewMessage.ToggledVoice()),
                           h.Class(

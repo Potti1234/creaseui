@@ -141,8 +141,20 @@ export const buttonGroupFixtures: Readonly<Array<ButtonGroupFixture>> = [
     orientation: 'vertical',
     ariaLabel: 'Media controls',
     nodes: [
-      { t: 'button', icon: 'plus', size: 'icon', variant: 'outline' },
-      { t: 'button', icon: 'minus', size: 'icon', variant: 'outline' },
+      {
+        t: 'button',
+        icon: 'plus',
+        ariaLabel: 'Add',
+        size: 'icon',
+        variant: 'outline',
+      },
+      {
+        t: 'button',
+        icon: 'minus',
+        ariaLabel: 'Remove',
+        size: 'icon',
+        variant: 'outline',
+      },
     ],
   },
   {
@@ -162,6 +174,7 @@ export const buttonGroupFixtures: Readonly<Array<ButtonGroupFixture>> = [
               {
                 t: 'button',
                 icon: 'plus',
+                ariaLabel: 'Add',
                 variant: 'outline',
                 size: 'icon-sm',
               },
@@ -173,7 +186,13 @@ export const buttonGroupFixtures: Readonly<Array<ButtonGroupFixture>> = [
               { t: 'button', label: 'Default', variant: 'outline' },
               { t: 'button', label: 'Button', variant: 'outline' },
               { t: 'button', label: 'Group', variant: 'outline' },
-              { t: 'button', icon: 'plus', variant: 'outline', size: 'icon' },
+              {
+                t: 'button',
+                icon: 'plus',
+                ariaLabel: 'Add',
+                variant: 'outline',
+                size: 'icon',
+              },
             ],
           },
           {
@@ -185,6 +204,7 @@ export const buttonGroupFixtures: Readonly<Array<ButtonGroupFixture>> = [
               {
                 t: 'button',
                 icon: 'plus',
+                ariaLabel: 'Add',
                 variant: 'outline',
                 size: 'icon-lg',
               },
@@ -203,7 +223,13 @@ export const buttonGroupFixtures: Readonly<Array<ButtonGroupFixture>> = [
       {
         t: 'group',
         children: [
-          { t: 'button', icon: 'plus', size: 'icon', variant: 'outline' },
+          {
+            t: 'button',
+            icon: 'plus',
+            ariaLabel: 'Add',
+            size: 'icon',
+            variant: 'outline',
+          },
         ],
       },
       {
@@ -231,7 +257,13 @@ export const buttonGroupFixtures: Readonly<Array<ButtonGroupFixture>> = [
     nodes: [
       { t: 'button', label: 'Button', variant: 'secondary' },
       { t: 'separator' },
-      { t: 'button', icon: 'plus', variant: 'secondary', size: 'icon' },
+      {
+        t: 'button',
+        icon: 'plus',
+        ariaLabel: 'Add',
+        variant: 'secondary',
+        size: 'icon',
+      },
     ],
   },
   {
@@ -253,7 +285,13 @@ export const buttonGroupFixtures: Readonly<Array<ButtonGroupFixture>> = [
       {
         t: 'group',
         children: [
-          { t: 'button', icon: 'plus', size: 'icon', variant: 'outline' },
+          {
+            t: 'button',
+            icon: 'plus',
+            ariaLabel: 'Add',
+            size: 'icon',
+            variant: 'outline',
+          },
         ],
       },
       {
@@ -579,6 +617,7 @@ const inputGroupSource = (
                 [
                   h.Type('button'),
                   h.AriaPressed(model.voiceEnabled ? 'true' : 'false'),
+                  h.AriaLabel('Voice Mode'),
                   h.DataAttribute('active', String(model.voiceEnabled)),
                   h.OnClick(Message.ToggledVoice()),
                   h.Class(${isSx ? 'className(styles.voiceButton)' : "'inline-flex size-6 items-center justify-center rounded-[calc(var(--radius)-5px)] text-muted-foreground data-[active=true]:bg-orange-100 data-[active=true]:text-orange-700 dark:data-[active=true]:bg-orange-800 dark:data-[active=true]:text-orange-100'"}),

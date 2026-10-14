@@ -851,8 +851,9 @@ test('button-group sections mirror shadcn examples in both renderers', async ({
   await input.locator("input[type='text']").fill('query')
   await expect(input.getByRole('button', { name: 'Search' })).toBeVisible()
 
-  const inputGroup = page.locator('#inputgroup')
-  const voice = inputGroup.locator('button[aria-pressed]')
+  const inputGroup = page.locator('#input-group')
+  await expect(inputGroup.getByRole('button', { name: 'Add' })).toBeVisible()
+  const voice = inputGroup.getByRole('button', { name: 'Voice Mode' })
   await expect(voice).toHaveAttribute('aria-pressed', 'false')
   await voice.click()
   await expect(voice).toHaveAttribute('aria-pressed', 'true')
