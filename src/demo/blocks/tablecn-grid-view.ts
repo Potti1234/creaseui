@@ -26,6 +26,7 @@ const TRIGGER_PANEL = (
   onClose: Message,
   panel: Html,
   h: HtmlBuilder<Message>,
+  align: 'start' | 'end' = 'start',
 ): Html =>
   h.div(
     [h.Class('relative')],
@@ -42,7 +43,7 @@ const TRIGGER_PANEL = (
             ]),
             h.div(
               [
-                h.Class(PANEL_CLASS),
+                h.Class(cn(PANEL_CLASS, align === 'end' ? 'end-0' : 'start-0')),
                 h.OnKeyDownPreventDefault(key =>
                   key === 'Escape' ? Option.some(onClose) : Option.none(),
                 ),
@@ -344,6 +345,7 @@ const toolbarButtonPanel = (
   iconName: string,
   panel: Html,
   h: HtmlBuilder<Grid.Message>,
+  align: 'start' | 'end' = 'start',
 ): Html => {
   const isOpen = model.openPanel === panelId
   return TRIGGER_PANEL(
@@ -367,6 +369,7 @@ const toolbarButtonPanel = (
     Grid.Message.SetPanel({ panel: '' }),
     panel,
     h as HtmlBuilder<Message>,
+    align,
   )
 }
 
@@ -498,6 +501,7 @@ const gridToolbar = (model: Grid.Model, h: HtmlBuilder<Grid.Message>): Html =>
           ],
         ),
         h,
+        'end',
       ),
       toolbarButtonPanel(
         model,
@@ -524,7 +528,7 @@ const gridToolbar = (model: Grid.Model, h: HtmlBuilder<Grid.Message>): Html =>
                   h.span(
                     [
                       h.Class(
-                        'absolute left-2 flex size-3.5 items-center justify-center',
+                        'absolute start-2 flex size-3.5 items-center justify-center',
                       ),
                     ],
                     [
@@ -540,6 +544,7 @@ const gridToolbar = (model: Grid.Model, h: HtmlBuilder<Grid.Message>): Html =>
           ],
         ),
         h,
+        'end',
       ),
     ],
   )
@@ -564,7 +569,7 @@ const searchOverlay = (
     [
       h.DataAttribute('slot', 'grid-search'),
       h.Class(
-        'bg-popover absolute top-2 right-2 z-40 flex items-center gap-1 rounded-md border p-1 shadow-md crease-action-bar-in',
+        'bg-popover absolute top-2 end-2 z-40 flex items-center gap-1 rounded-md border p-1 shadow-md crease-action-bar-in',
       ),
     ],
     [

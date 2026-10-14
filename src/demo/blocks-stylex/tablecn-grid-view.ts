@@ -6,6 +6,7 @@
 import { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as stylex from '@stylexjs/stylex'
+import { reset } from '@/stylex/reset'
 import { className } from '@/stylex/style'
 import { tokens } from '@/stylex/tokens.stylex'
 import { foundationTokens } from '@/stylex/foundations-tokens.stylex'
@@ -37,8 +38,16 @@ const st = stylex.create({
     gap: '0.5rem',
     paddingBlock: '0.375rem',
     alignItems: 'center',
-    backgroundColor: { default: null, ':focus': tokens.accent },
-    color: { default: null, ':focus': tokens.accentForeground },
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': tokens.accent,
+      ':focus': tokens.accent,
+    },
+    color: {
+      default: null,
+      ':hover': tokens.accentForeground,
+      ':focus': tokens.accentForeground,
+    },
     cursor: interactionTokens.cursorDefault,
     display: 'flex',
     fontSize: '0.875rem',
@@ -221,10 +230,10 @@ const st = stylex.create({
   c129: {
     alignItems: 'center',
     display: 'flex',
+    insetInlineStart: '0.5rem',
     justifyContent: 'center',
     position: 'absolute',
     height: '0.875rem',
-    left: '0.5rem',
     width: '0.875rem',
   },
   c130: {
@@ -238,9 +247,9 @@ const st = stylex.create({
     backgroundColor: foundationTokens.popover,
     boxShadow: foundationTokens.shadowMd,
     display: 'flex',
+    insetInlineEnd: '0.5rem',
     position: 'absolute',
     zIndex: 40,
-    right: '0.5rem',
     top: '0.5rem',
   },
   c131: {
@@ -263,7 +272,7 @@ const st = stylex.create({
   c133: {
     borderRadius: foundationTokens.radiusSm,
     alignItems: 'center',
-    backgroundColor: { default: null, ':hover': tokens.accent },
+    backgroundColor: { default: 'transparent', ':hover': tokens.accent },
     display: 'inline-flex',
     justifyContent: 'center',
     height: '1.5rem',
@@ -333,7 +342,7 @@ const st = stylex.create({
     paddingBlock: '0.375rem',
     paddingInline: '0.75rem',
     alignItems: 'center',
-    backgroundColor: { default: null, ':hover': tokens.accent },
+    backgroundColor: { default: 'transparent', ':hover': tokens.accent },
     display: 'flex',
     fontSize: '0.875rem',
     fontWeight: 500,
@@ -504,7 +513,7 @@ const st = stylex.create({
     paddingBlock: '0.375rem',
     alignItems: 'center',
     backgroundColor: {
-      default: null,
+      default: 'transparent',
       ':hover': tokens.accent,
       ':focus': tokens.accent,
     },
@@ -531,6 +540,8 @@ const st = stylex.create({
     display: 'inline-flex',
     marginInlineStart: 'auto',
   },
+  panelStart: { insetInlineStart: '0' },
+  panelEnd: { insetInlineEnd: '0' },
   toolPanel: {
     padding: '0.25rem',
     borderRadius: foundationTokens.radiusMd,
@@ -555,6 +566,7 @@ const TRIGGER_PANEL = (
   onClose: Message,
   panel: Html,
   h: HtmlBuilder<Message>,
+  align: 'start' | 'end' = 'start',
 ): Html =>
   h.div(
     [h.Class(className(st.c6))],
@@ -566,12 +578,17 @@ const TRIGGER_PANEL = (
               h.Type('button'),
               h.AriaHidden(true),
               h.Tabindex(-1),
-              h.Class(className(st.c7)),
+              h.Class(className(reset.button, st.c7)),
               h.OnClick(onClose),
             ]),
             h.div(
               [
-                h.Class(className(st.toolPanel)),
+                h.Class(
+                  className(
+                    st.toolPanel,
+                    align === 'end' ? st.panelEnd : st.panelStart,
+                  ),
+                ),
                 h.OnKeyDownPreventDefault(key =>
                   key === 'Escape' ? Option.some(onClose) : Option.none(),
                 ),
@@ -597,7 +614,7 @@ const columnMenuItem =
         h.Role('menuitemcheckbox'),
         h.AriaChecked(checked),
         h.OnClick(onClick),
-        h.Class(className(st.menuItemL)),
+        h.Class(className(reset.button, st.menuItemL)),
       ],
       [
         h.span(
@@ -652,7 +669,7 @@ const columnMenu =
           [
             h.Type('button'),
             h.OnClick(Grid.Message.HidColumn({ column: column.id })),
-            h.Class(className(st.menuItemL)),
+            h.Class(className(reset.button, st.menuItemL)),
           ],
           [
             h.span(
@@ -678,7 +695,7 @@ const toolButton = (
       h.AriaLabel(label),
       h.AriaPressed(String(active)),
       h.OnClick(onClick),
-      h.Class(className(st.c110, active && st.c111)),
+      h.Class(className(reset.button, st.c110, active && st.c111)),
     ],
     [
       h.span(
@@ -805,7 +822,7 @@ const cellContent = (
             h.Type('checkbox'),
             ...(p.isActive === true ? [h.Attribute('checked', 'true')] : []),
             h.Tabindex(-1),
-            h.Class(className(st.c114)),
+            h.Class(className(reset.input, st.c114)),
           ]),
         ],
       )
@@ -861,6 +878,7 @@ const toolbarButtonPanel = (
   iconName: string,
   panel: Html,
   h: HtmlBuilder<Grid.Message>,
+  align: 'start' | 'end' = 'start',
 ): Html => {
   const isOpen = model.openPanel === panelId
   return TRIGGER_PANEL(
@@ -872,7 +890,7 @@ const toolbarButtonPanel = (
         h.AriaHasPopup('menu'),
         h.AriaExpanded(isOpen),
         h.OnClick(Grid.Message.SetPanel({ panel: panelId })),
-        h.Class(className(st.c121, isOpen && st.c111)),
+        h.Class(className(reset.button, st.c121, isOpen && st.c111)),
       ],
       [
         h.span(
@@ -885,6 +903,7 @@ const toolbarButtonPanel = (
     Grid.Message.SetPanel({ panel: '' }),
     panel,
     h as HtmlBuilder<Message>,
+    align,
   )
 }
 
@@ -916,7 +935,7 @@ const gridToolbar = (model: Grid.Model, h: HtmlBuilder<Grid.Message>): Html =>
                   h.span([h.Class(className(st.c125))], [column.header]),
                   h.input([
                     h.Type('text'),
-                    h.Class(className(st.c126)),
+                    h.Class(className(reset.input, st.c126)),
                     h.Value(
                       model.filters.find(f => f.column === column.id)?.value ??
                         '',
@@ -952,7 +971,7 @@ const gridToolbar = (model: Grid.Model, h: HtmlBuilder<Grid.Message>): Html =>
                 [
                   h.Type('button'),
                   h.OnClick(Grid.Message.ToggledSort({ column: column.id })),
-                  h.Class(className(MENU_ITEM_CLASS, st.c15)),
+                  h.Class(className(reset.button, MENU_ITEM_CLASS, st.c15)),
                 ],
                 [
                   h.span(
@@ -976,7 +995,9 @@ const gridToolbar = (model: Grid.Model, h: HtmlBuilder<Grid.Message>): Html =>
                       h.OnClick(
                         Grid.Message.SetSorting({ column: '', desc: false }),
                       ),
-                      h.Class(className(MENU_ITEM_CLASS, st.c128)),
+                      h.Class(
+                        className(reset.button, MENU_ITEM_CLASS, st.c128),
+                      ),
                     ],
                     ['Clear sorting'],
                   ),
@@ -1001,7 +1022,7 @@ const gridToolbar = (model: Grid.Model, h: HtmlBuilder<Grid.Message>): Html =>
                   h.Type('button'),
                   h.AriaChecked(model.rowHeight === entry.id),
                   h.OnClick(Grid.Message.SetRowHeight({ height: entry.id })),
-                  h.Class(className(MENU_ITEM_CLASS, st.c15)),
+                  h.Class(className(reset.button, MENU_ITEM_CLASS, st.c15)),
                 ],
                 [
                   ...(model.rowHeight === entry.id
@@ -1019,6 +1040,7 @@ const gridToolbar = (model: Grid.Model, h: HtmlBuilder<Grid.Message>): Html =>
           ],
         ),
         h,
+        'end',
       ),
       toolbarButtonPanel(
         model,
@@ -1039,7 +1061,7 @@ const gridToolbar = (model: Grid.Model, h: HtmlBuilder<Grid.Message>): Html =>
                   h.OnClick(
                     Grid.Message.ToggledColumnHidden({ column: column.id }),
                   ),
-                  h.Class(className(MENU_ITEM_CLASS, st.c15)),
+                  h.Class(className(reset.button, MENU_ITEM_CLASS, st.c15)),
                 ],
                 [
                   h.span(
@@ -1060,6 +1082,7 @@ const gridToolbar = (model: Grid.Model, h: HtmlBuilder<Grid.Message>): Html =>
           ],
         ),
         h,
+        'end',
       ),
     ],
   )
@@ -1092,7 +1115,7 @@ const searchOverlay = (
         h.Placeholder('Search…'),
         h.Value(model.searchQuery),
         h.OnInput(value => Grid.Message.ChangedSearchQuery({ value })),
-        h.Class(className(st.c131)),
+        h.Class(className(reset.input, st.c131)),
       ]),
       h.span(
         [h.Class(className(st.c132))],
@@ -1107,7 +1130,7 @@ const searchOverlay = (
           h.Type('button'),
           h.AriaLabel('Previous match'),
           h.OnClick(Grid.Message.NavigatedMatch({ direction: 'prev' })),
-          h.Class(className(st.c133)),
+          h.Class(className(reset.button, st.c133)),
         ],
         [
           h.span(
@@ -1121,7 +1144,7 @@ const searchOverlay = (
           h.Type('button'),
           h.AriaLabel('Next match'),
           h.OnClick(Grid.Message.NavigatedMatch({ direction: 'next' })),
-          h.Class(className(st.c133)),
+          h.Class(className(reset.button, st.c133)),
         ],
         [
           h.span(
@@ -1135,7 +1158,7 @@ const searchOverlay = (
           h.Type('button'),
           h.AriaLabel('Close search'),
           h.OnClick(Grid.Message.ToggledSearch({})),
-          h.Class(className(st.c133)),
+          h.Class(className(reset.button, st.c133)),
         ],
         [
           h.span(
@@ -1159,7 +1182,11 @@ const contextMenu = (model: Grid.Model, h: HtmlBuilder<Grid.Message>): Html => {
         h.Role('menuitem'),
         h.OnClick(Grid.Message.AppliedContextAction({ action })),
         h.Class(
-          className(MENU_ITEM_CLASS, iconName === undefined ? st.c15 : st.c15),
+          className(
+            reset.button,
+            MENU_ITEM_CLASS,
+            iconName === undefined ? st.c15 : st.c15,
+          ),
         ),
       ],
       [
@@ -1181,7 +1208,7 @@ const contextMenu = (model: Grid.Model, h: HtmlBuilder<Grid.Message>): Html => {
         h.Type('button'),
         h.AriaHidden(true),
         h.Tabindex(-1),
-        h.Class(className(st.c7)),
+        h.Class(className(reset.button, st.c7)),
         h.OnClick(Grid.Message.ClosedContextMenu({})),
         h.OnContextMenu(Grid.Message.ClosedContextMenu({})),
       ]),
@@ -1328,7 +1355,7 @@ export const gridView = (
                         people.length > 0
                           ? [h.Attribute('checked', 'true')]
                           : []),
-                        h.Class(className(st.c140)),
+                        h.Class(className(reset.input, st.c140)),
                         h.OnClick(
                           Grid.Message.ToggledAllRows({
                             checked:
@@ -1361,7 +1388,7 @@ export const gridView = (
                             h.OnClick(
                               Grid.Message.SetPanel({ panel: panelId }),
                             ),
-                            h.Class(className(st.c142)),
+                            h.Class(className(reset.button, st.c142)),
                           ],
                           [
                             h.span(
@@ -1399,7 +1426,7 @@ export const gridView = (
                                 h.Type('button'),
                                 h.AriaHidden(true),
                                 h.Tabindex(-1),
-                                h.Class(className(st.c7)),
+                                h.Class(className(reset.button, st.c7)),
                                 h.OnClick(Grid.Message.SetPanel({ panel: '' })),
                               ]),
                               columnMenu(column, entry)(h),
@@ -1479,7 +1506,12 @@ export const gridView = (
                           ? [h.Attribute('checked', 'true')]
                           : []),
                         h.Class(
-                          className(st.c150, st.c151, isRowSelected && st.c152),
+                          className(
+                            reset.input,
+                            st.c150,
+                            st.c151,
+                            isRowSelected && st.c152,
+                          ),
                         ),
                         h.OnClick(
                           Grid.Message.SelectedRowIndex({
@@ -1544,7 +1576,7 @@ export const gridView = (
                               h.OnInput(value =>
                                 Grid.Message.ChangedDraft({ value }),
                               ),
-                              h.Class(className(st.c157)),
+                              h.Class(className(reset.input, st.c157)),
                               h.OnMount(
                                 Grid.gridEditorFocusMount(() =>
                                   Grid.Message.CompletedEditorFocus({}),
@@ -1578,7 +1610,7 @@ export const gridView = (
                     [
                       h.Type('button'),
                       h.OnClick(Grid.Message.AddedRow({})),
-                      h.Class(className(st.c159)),
+                      h.Class(className(reset.button, st.c159)),
                     ],
                     [
                       h.div(
