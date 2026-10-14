@@ -2,6 +2,7 @@
    (src/app/components/tasks-table.tsx) + data-grid demo. Tailwind renderer.
    The block owns its state via lib/tablecn-table + lib/tablecn-grid. */
 
+import type { Listbox } from '@foldkit/ui'
 import { Option, Schema as S } from 'effect'
 import { Command } from 'foldkit'
 import type { Update } from 'foldkit'
@@ -538,7 +539,12 @@ const taskCell = (
                   [
                     h.Type('button'),
                     h.Role('menuitem'),
-                    h.Class(cn(MENU_ITEM_CLASS, 'pl-8', 'opacity-50')),
+                    h.AriaHasPopup('menu'),
+                    h.AriaExpanded(model.labelMenuRowId === task.id),
+                    h.OnClick(
+                      TableState.Message.SetLabelMenu({ rowId: task.id }),
+                    ),
+                    h.Class(cn(MENU_ITEM_CLASS, 'pl-8')),
                   ],
                   [
                     icon('tag', {}, h),
@@ -549,6 +555,54 @@ const taskCell = (
                     ),
                   ],
                 ),
+                ...(model.labelMenuRowId === task.id
+                  ? [
+                      h.div(
+                        [
+                          h.Role('menu'),
+                          h.DataAttribute('slot', 'dropdown-menu-sub-content'),
+                          h.Class(
+                            'bg-popover text-popover-foreground absolute end-full top-0 z-50 me-1 w-40 rounded-md border p-1 shadow-md outline-none crease-action-bar-in',
+                          ),
+                        ],
+                        taskLabels.map(option =>
+                          h.button(
+                            [
+                              h.Type('button'),
+                              h.Role('menuitemradio'),
+                              h.AriaChecked(option === task.label),
+                              h.OnClick(
+                                TableState.Message.AppliedTaskLabel({
+                                  taskId: task.id,
+                                  label: option,
+                                }),
+                              ),
+                              h.Class(cn(MENU_ITEM_CLASS, 'capitalize')),
+                            ],
+                            [
+                              h.span(
+                                [
+                                  h.Class(
+                                    'absolute start-2 flex size-3.5 items-center justify-center',
+                                  ),
+                                ],
+                                option === task.label
+                                  ? [
+                                      icon(
+                                        'circle',
+                                        { class: 'size-2 fill-current' },
+                                        h,
+                                      ),
+                                    ]
+                                  : [],
+                              ),
+                              option,
+                            ],
+                          ),
+                        ),
+                      ),
+                    ]
+                  : []),
                 h.div([h.Class(MENU_SEPARATOR_CLASS)], []),
                 h.button(
                   [
@@ -1203,42 +1257,27 @@ const updateSheet = (
   if (model.updateSheetTaskId === '') return h.empty
   const field = (
     label: string,
-    name: string,
+    selectModel: TableState.Model['draftLabelSelect'],
+    selected: string,
     options: ReadonlyArray<string>,
+    toParentMessage: (message: Listbox.Message) => TableState.Message,
   ): Html =>
     h.div(
       [h.Class('grid gap-2')],
       [
         h.label([h.Class('text-sm font-medium leading-none')], [label]),
-        h.select(
-          [
-            h.Name(name),
-            h.Class(
-              'border-input flex h-8 w-full rounded-md border bg-transparent px-2.5 text-sm shadow-xs outline-none focus-visible:ring-1 focus-visible:ring-ring',
-            ),
-            h.OnInput(value =>
-              TableState.Message.ChangedDraftField({
-                field: name,
-                value,
-              }),
-            ),
-          ],
-          options.map(option =>
-            h.option(
-              [
-                h.Value(option),
-                ...(option ===
-                (name === 'label'
-                  ? model.draftLabel
-                  : name === 'status'
-                    ? model.draftStatus
-                    : model.draftPriority)
-                  ? [h.Attribute('selected', '')]
-                  : []),
-              ],
-              [capitalize(option)],
-            ),
-          ),
+        Select.select(
+          {
+            model: selectModel,
+            maybeSelectedValue: Option.some(selected),
+            toParentMessage,
+            items: options,
+            itemToValue: option => option,
+            itemToLabel: option => capitalize(option),
+            triggerClass: 'w-full capitalize',
+            direction: model.direction,
+          },
+          h,
         ),
       ],
     )
@@ -1304,9 +1343,30 @@ const updateSheet = (
                   ]),
                 ],
               ),
-              field('Label', 'label', taskLabels),
-              field('Status', 'status', taskStatuses),
-              field('Priority', 'priority', taskPriorities),
+              field(
+                'Label',
+                model.draftLabelSelect,
+                model.draftLabel,
+                taskLabels,
+                message =>
+                  TableState.Message.GotDraftLabelSelectMessage({ message }),
+              ),
+              field(
+                'Status',
+                model.draftStatusSelect,
+                model.draftStatus,
+                taskStatuses,
+                message =>
+                  TableState.Message.GotDraftStatusSelectMessage({ message }),
+              ),
+              field(
+                'Priority',
+                model.draftPrioritySelect,
+                model.draftPriority,
+                taskPriorities,
+                message =>
+                  TableState.Message.GotDraftPrioritySelectMessage({ message }),
+              ),
               h.div(
                 [h.Class('grid gap-2')],
                 [

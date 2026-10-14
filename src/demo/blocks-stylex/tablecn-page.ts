@@ -2,12 +2,14 @@
    (src/app/components/tasks-table.tsx) + data-grid demo. StyleX renderer.
    The block owns its state via lib/tablecn-table + lib/tablecn-grid. */
 
+import type { Listbox } from '@foldkit/ui'
 import { Option, Schema as S } from 'effect'
 import { Command } from 'foldkit'
 import type { Update } from 'foldkit'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as stylex from '@stylexjs/stylex'
 import { className } from '@/stylex/style'
+import type { ComponentLayoutStyle } from '@/stylex/contracts'
 import { tokens } from '@/stylex/tokens.stylex'
 import { foundationTokens } from '@/stylex/foundations-tokens.stylex'
 import { interactionTokens } from '@/stylex/interaction-tokens.stylex.const'
@@ -25,6 +27,7 @@ import { badge } from '@/stylex/badge'
 import { button } from '@/stylex/button'
 import { checkbox } from '@/stylex/checkbox'
 import { icon } from '@/stylex/composition/icon'
+import * as Icon from '@/lib/icon'
 import { reset } from '@/stylex/reset'
 import * as Calendar from '@/stylex/calendar'
 import * as DateRangeInput from '@/stylex/date-range-input'
@@ -370,8 +373,20 @@ const st = stylex.create({
     width: '2rem',
   },
   c24: { insetInlineEnd: '0rem', width: '10rem' },
-  c25: { opacity: '0.5' },
   c26: { marginInlineStart: 'auto' },
+  subPanel: {
+    insetInlineEnd: '100%',
+    marginInlineEnd: '0.25rem',
+    marginTop: '0rem',
+    top: '0rem',
+    width: '10rem',
+  },
+  radioDot: {
+    fill: 'currentColor',
+    height: '0.5rem',
+    width: '0.5rem',
+  },
+  fullWidth: { width: '100%' },
   c27: {
     borderColor: tokens.border,
     borderRadius: foundationTokens.radiusMd,
@@ -1429,9 +1444,12 @@ const taskCell = (
                   [
                     h.Type('button'),
                     h.Role('menuitem'),
-                    h.Class(
-                      className(reset.button, MENU_ITEM_CLASS, st.c15, st.c25),
+                    h.AriaHasPopup('menu'),
+                    h.AriaExpanded(model.labelMenuRowId === task.id),
+                    h.OnClick(
+                      TableState.Message.SetLabelMenu({ rowId: task.id }),
                     ),
+                    h.Class(className(reset.button, MENU_ITEM_CLASS, st.c15)),
                   ],
                   [
                     h.span(
@@ -1450,6 +1468,56 @@ const taskCell = (
                     ),
                   ],
                 ),
+                ...(model.labelMenuRowId === task.id
+                  ? [
+                      h.div(
+                        [
+                          h.Role('menu'),
+                          h.DataAttribute('slot', 'dropdown-menu-sub-content'),
+                          h.Class(className(PANEL_CLASS, st.subPanel)),
+                        ],
+                        taskLabels.map(option =>
+                          h.button(
+                            [
+                              h.Type('button'),
+                              h.Role('menuitemradio'),
+                              h.AriaChecked(option === task.label),
+                              h.OnClick(
+                                TableState.Message.AppliedTaskLabel({
+                                  taskId: task.id,
+                                  label: option,
+                                }),
+                              ),
+                              h.Class(
+                                className(
+                                  reset.button,
+                                  MENU_ITEM_CLASS,
+                                  st.c15,
+                                ),
+                              ),
+                            ],
+                            [
+                              h.span(
+                                [h.Class(className(st.c8))],
+                                option === task.label
+                                  ? [
+                                      Icon.icon(
+                                        'circle',
+                                        {
+                                          class: className(st.radioDot),
+                                        },
+                                        h,
+                                      ),
+                                    ]
+                                  : [],
+                              ),
+                              capitalize(option),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ]
+                  : []),
                 h.div([h.Class(className(MENU_SEPARATOR_CLASS))], []),
                 h.button(
                   [
@@ -2095,40 +2163,27 @@ const updateSheet = (
   if (model.updateSheetTaskId === '') return h.empty
   const field = (
     label: string,
-    name: string,
+    selectModel: TableState.Model['draftLabelSelect'],
+    selected: string,
     options: ReadonlyArray<string>,
+    toParentMessage: (message: Listbox.Message) => TableState.Message,
   ): Html =>
     h.div(
       [h.Class(className(st.c70))],
       [
         h.label([h.Class(className(st.c71))], [label]),
-        h.select(
-          [
-            h.Name(name),
-            h.Class(className(st.c72)),
-            h.OnInput(value =>
-              TableState.Message.ChangedDraftField({
-                field: name,
-                value,
-              }),
-            ),
-          ],
-          options.map(option =>
-            h.option(
-              [
-                h.Value(option),
-                ...(option ===
-                (name === 'label'
-                  ? model.draftLabel
-                  : name === 'status'
-                    ? model.draftStatus
-                    : model.draftPriority)
-                  ? [h.Attribute('selected', '')]
-                  : []),
-              ],
-              [capitalize(option)],
-            ),
-          ),
+        Select.select(
+          {
+            model: selectModel,
+            maybeSelectedValue: Option.some(selected),
+            toParentMessage,
+            items: options,
+            itemToValue: option => option,
+            itemToLabel: option => capitalize(option),
+            triggerLayoutStyle: st.fullWidth as ComponentLayoutStyle,
+            direction: model.direction,
+          },
+          h,
         ),
       ],
     )
@@ -2190,9 +2245,30 @@ const updateSheet = (
                   ]),
                 ],
               ),
-              field('Label', 'label', taskLabels),
-              field('Status', 'status', taskStatuses),
-              field('Priority', 'priority', taskPriorities),
+              field(
+                'Label',
+                model.draftLabelSelect,
+                model.draftLabel,
+                taskLabels,
+                message =>
+                  TableState.Message.GotDraftLabelSelectMessage({ message }),
+              ),
+              field(
+                'Status',
+                model.draftStatusSelect,
+                model.draftStatus,
+                taskStatuses,
+                message =>
+                  TableState.Message.GotDraftStatusSelectMessage({ message }),
+              ),
+              field(
+                'Priority',
+                model.draftPrioritySelect,
+                model.draftPriority,
+                taskPriorities,
+                message =>
+                  TableState.Message.GotDraftPrioritySelectMessage({ message }),
+              ),
               h.div(
                 [h.Class(className(st.c70))],
                 [

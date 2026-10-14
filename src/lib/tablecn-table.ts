@@ -61,6 +61,7 @@ export const Model = S.Struct({
   openPanel: OpenPanel,
   headerMenuColumnId: S.String,
   rowMenuRowId: S.String,
+  labelMenuRowId: S.String,
   updateSheetTaskId: S.String,
   draftTitle: S.String,
   draftLabel: S.String,
@@ -75,6 +76,9 @@ export const Model = S.Struct({
   createdRange: DateRangeInput.Model,
   pageSizeSelect: Listbox.Model,
   hoursSlider: MultiSlider.MultiModel,
+  draftLabelSelect: Listbox.Model,
+  draftStatusSelect: Listbox.Model,
+  draftPrioritySelect: Listbox.Model,
 })
 export type Model = typeof Model.Type
 
@@ -100,6 +104,8 @@ export const Message = defineMessageUnion({
   SetPanel: { panel: OpenPanel },
   SetHeaderMenu: { columnId: S.String },
   SetRowMenu: { rowId: S.String },
+  SetLabelMenu: { rowId: S.String },
+  AppliedTaskLabel: { taskId: S.String, label: S.String },
   ToggledColumnHidden: { columnId: S.String },
   ToggledRowSelected: { id: S.String, shiftKey: S.Boolean },
   ToggledAllRows: { checked: S.Boolean },
@@ -124,6 +130,9 @@ export const Message = defineMessageUnion({
   GotCreatedRangeMessage: { message: DateRangeInput.Message },
   GotPageSizeSelectMessage: { message: Listbox.Message },
   GotHoursSliderMessage: { message: MultiSlider.MultiMessage },
+  GotDraftLabelSelectMessage: { message: Listbox.Message },
+  GotDraftStatusSelectMessage: { message: Listbox.Message },
+  GotDraftPrioritySelectMessage: { message: Listbox.Message },
 })
 export type Message = typeof Message.Type
 
@@ -168,6 +177,7 @@ export const init = (taskCount = 100): Model => {
     openPanel: 'none',
     headerMenuColumnId: '',
     rowMenuRowId: '',
+    labelMenuRowId: '',
     updateSheetTaskId: '',
     draftTitle: '',
     draftLabel: 'bug',
@@ -194,8 +204,24 @@ export const init = (taskCount = 100): Model => {
       max: bounds.max,
       step: 1,
     }),
+    ...draftSelects(),
   }
 }
+
+const draftSelects = () => ({
+  draftLabelSelect: Listbox.init({
+    id: 'tablecn-draft-label',
+    isAnimated: true,
+  }),
+  draftStatusSelect: Listbox.init({
+    id: 'tablecn-draft-status',
+    isAnimated: true,
+  }),
+  draftPrioritySelect: Listbox.init({
+    id: 'tablecn-draft-priority',
+    isAnimated: true,
+  }),
+})
 
 const taskArray = (model: Model): Array<Task> => model.tasks as Array<Task>
 
@@ -323,6 +349,7 @@ const closePanels = (model: Model): Model => ({
   openPanel: 'none',
   headerMenuColumnId: '',
   rowMenuRowId: '',
+  labelMenuRowId: '',
   actionBarMenu: '',
 })
 
@@ -483,6 +510,7 @@ const updateModel = (model: Model, message: Message): Model => {
         openPanel: model.openPanel === message.panel ? 'none' : message.panel,
         headerMenuColumnId: '',
         rowMenuRowId: '',
+        labelMenuRowId: '',
         actionBarMenu: '',
       }
     case 'SetHeaderMenu':
@@ -492,15 +520,34 @@ const updateModel = (model: Model, message: Message): Model => {
           model.headerMenuColumnId === message.columnId ? '' : message.columnId,
         openPanel: 'none',
         rowMenuRowId: '',
+        labelMenuRowId: '',
         actionBarMenu: '',
       }
     case 'SetRowMenu':
       return {
         ...model,
         rowMenuRowId: model.rowMenuRowId === message.rowId ? '' : message.rowId,
+        labelMenuRowId: '',
         openPanel: 'none',
         headerMenuColumnId: '',
         actionBarMenu: '',
+      }
+    case 'SetLabelMenu':
+      return {
+        ...model,
+        labelMenuRowId:
+          model.labelMenuRowId === message.rowId ? '' : message.rowId,
+      }
+    case 'AppliedTaskLabel':
+      return {
+        ...model,
+        rowMenuRowId: '',
+        labelMenuRowId: '',
+        tasks: taskArray(model).map(task =>
+          task.id === message.taskId
+            ? { ...task, label: message.label as Task['label'] }
+            : task,
+        ),
       }
     case 'ToggledColumnHidden':
       return {
@@ -555,7 +602,7 @@ const updateModel = (model: Model, message: Message): Model => {
       }
     }
     case 'ClosedUpdateSheet':
-      return { ...model, updateSheetTaskId: '' }
+      return { ...model, updateSheetTaskId: '', ...draftSelects() }
     case 'ChangedDraftField': {
       switch (message.field) {
         case 'title':
@@ -692,6 +739,36 @@ type UpdateReturn = Update.Return<Model, Message>
 
 const pageSizeListbox = Listbox.create<string, string>()
 
+/* shared fold for the update-sheet draft selects: each Selected out message
+   writes the chosen value into the matching draft field */
+const foldDraftSelect = (
+  model: Model,
+  listboxMessage: Listbox.Message,
+  field: 'label' | 'status' | 'priority',
+  read: (model: Model) => Listbox.Model,
+  write: (model: Model, nextModel: Listbox.Model) => Model,
+  toParentMessage: (message: Listbox.Message) => Message,
+): UpdateReturn => {
+  const next = pageSizeListbox.update(read(model), listboxMessage)
+  const nextModel = Option.match(Option.fromNullishOr(next.outMessage), {
+    onNone: () => write(model, next.model),
+    onSome: out =>
+      out._tag === 'Selected'
+        ? write(
+            updateModel(
+              model,
+              Message.ChangedDraftField({ field, value: out.value }),
+            ),
+            next.model,
+          )
+        : write(model, next.model),
+  })
+  return {
+    model: nextModel,
+    commands: Command.mapMessages(next.commands ?? [], toParentMessage),
+  }
+}
+
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
     case 'RequestedExport':
@@ -778,6 +855,33 @@ export const update = (model: Model, message: Message): UpdateReturn => {
         ),
       }
     }
+    case 'GotDraftLabelSelectMessage':
+      return foldDraftSelect(
+        model,
+        message.message,
+        'label',
+        m => m.draftLabelSelect,
+        (m, nextModel) => ({ ...m, draftLabelSelect: nextModel }),
+        nested => Message.GotDraftLabelSelectMessage({ message: nested }),
+      )
+    case 'GotDraftStatusSelectMessage':
+      return foldDraftSelect(
+        model,
+        message.message,
+        'status',
+        m => m.draftStatusSelect,
+        (m, nextModel) => ({ ...m, draftStatusSelect: nextModel }),
+        nested => Message.GotDraftStatusSelectMessage({ message: nested }),
+      )
+    case 'GotDraftPrioritySelectMessage':
+      return foldDraftSelect(
+        model,
+        message.message,
+        'priority',
+        m => m.draftPrioritySelect,
+        (m, nextModel) => ({ ...m, draftPrioritySelect: nextModel }),
+        nested => Message.GotDraftPrioritySelectMessage({ message: nested }),
+      )
     default:
       return { model: updateModel(model, message) }
   }
