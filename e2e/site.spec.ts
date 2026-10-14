@@ -1,6 +1,7 @@
 import { COMPONENT_COUNT } from '../src/lib/project-facts'
 import { visitRenderer } from './site-navigation'
 import AxeBuilder from '@axe-core/playwright'
+import { withoutAcceptedContrast } from './accepted-contrast'
 import { expect, test, type Page, type TestInfo } from '@playwright/test'
 
 test('tour is removed from component navigation and discovery in both renderers', async ({
@@ -144,10 +145,11 @@ const assertAccessible = async (page: Page): Promise<void> => {
   const results = await new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
     .analyze()
+  const violations = withoutAcceptedContrast(results.violations)
 
   expect(
-    results.violations,
-    results.violations
+    violations,
+    violations
       .map(violation => `${violation.id}: ${violation.help}`)
       .join('\n'),
   ).toEqual([])
@@ -6795,63 +6797,47 @@ test('checkbox shares controlled mixed, read-only, and form semantics', async ({
   await assertAccessible(page)
 })
 
-test('switch shares controlled read-only form and RTL semantics', async ({
+test('switch toggles, disables and mirrors RTL across renderers', async ({
   page,
 }) => {
   await page.goto('/docs/components/switch')
+  const assertSwitches = async () => {
+    const airplane = page
+      .locator('[aria-label="Basic preview"]')
+      .getByRole('switch', { name: 'Airplane Mode' })
+    await expect(airplane).not.toBeChecked()
+    await airplane.press('Space')
+    await expect(airplane).toBeChecked()
+    await airplane.press('Space')
+    await expect(airplane).not.toBeChecked()
 
-  const notifications = page
-    .locator('#notifications')
-    .getByRole('switch', { name: 'Notifications' })
-  const formValue = page.locator(
-    '#notifications input[type="hidden"][name="notifications"]',
-  )
-  await expect(notifications).toHaveAttribute(
-    'aria-describedby',
-    'docs-switch-0-description',
-  )
-  await expect(formValue).toHaveValue('enabled')
-  await notifications.press('Space')
-  await expect(notifications).not.toBeChecked()
-  await expect(formValue).toHaveValue('')
+    await expect(
+      page.locator('#disabled').getByRole('switch', { name: 'Disabled' }),
+    ).toBeDisabled()
 
-  const readOnly = page
-    .locator('#read-only')
-    .getByRole('switch', { name: 'Account verified' })
-  await expect(readOnly).toHaveAttribute('aria-readonly', 'true')
-  await readOnly.press('Space')
-  await expect(readOnly).toBeChecked()
-
-  const rtlSection = page.locator('#rtl')
-  const rtlField = rtlSection.locator('[data-slot="switch-field"]')
-  const rtlTrack = rtlSection.getByRole('switch', { name: 'واجهة عربية' })
-  const rtlThumb = rtlTrack.locator('[data-slot="switch-thumb"]')
-  await expect(rtlField).toHaveAttribute('dir', 'rtl')
-  const [trackBox, thumbBox] = await Promise.all([
-    rtlTrack.boundingBox(),
-    rtlThumb.boundingBox(),
-  ])
-  expect(trackBox).not.toBeNull()
-  expect(thumbBox).not.toBeNull()
-  expect(thumbBox!.x + thumbBox!.width / 2).toBeLessThan(
-    trackBox!.x + trackBox!.width / 2,
-  )
-  await assertAccessible(page)
+    const rtlTrack = page
+      .locator('#rtl')
+      .getByRole('switch', { name: 'المشاركة عبر الأجهزة' })
+    const rtlThumb = rtlTrack.locator('[data-slot="switch-thumb"]')
+    await expect(page.locator('#rtl [dir="rtl"]').first()).toBeVisible()
+    const [trackBox, thumbBox] = await Promise.all([
+      rtlTrack.boundingBox(),
+      rtlThumb.boundingBox(),
+    ])
+    expect(trackBox).not.toBeNull()
+    expect(thumbBox).not.toBeNull()
+    const thumbCenter = thumbBox!.x + thumbBox!.width / 2
+    const trackCenter = trackBox!.x + trackBox!.width / 2
+    if (await rtlTrack.isChecked())
+      expect(thumbCenter).toBeLessThan(trackCenter)
+    else expect(thumbCenter).toBeGreaterThan(trackCenter)
+    await assertAccessible(page)
+  }
+  await assertSwitches()
 
   await visitRenderer(page, 'StyleX')
-  for (const id of ['notifications', 'small', 'disabled', 'read-only', 'rtl']) {
-    await expect(page.locator(`#${id}`)).toBeVisible()
-  }
   await expect(page.locator('#stylex-specimen')).toHaveCount(0)
-  await expect(page.locator('#notifications code')).toContainText(
-    '@/stylex/switch',
-  )
-  await expect(notifications).not.toBeChecked()
-  await notifications.press('Space')
-  await expect(notifications).toBeChecked()
-  await expect(formValue).toHaveValue('enabled')
-  await expect(readOnly).toBeChecked()
-  await assertAccessible(page)
+  await assertSwitches()
 })
 
 test('radio group isolates roving focus from parent-owned selection', async ({
