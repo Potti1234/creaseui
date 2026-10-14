@@ -79,7 +79,7 @@ jobs:
 
   e2e:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 75
 
     steps:
       - name: Check out repository
@@ -102,6 +102,8 @@ jobs:
 
       - name: Run browser and accessibility tests
         run: npm run test:e2e
+        env:
+          PLAYWRIGHT_WORKERS: 2
 
   cross-browser:
     runs-on: ubuntu-latest
