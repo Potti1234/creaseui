@@ -1564,11 +1564,11 @@ test('drawer documents its child model and preserves modal focus behavior', asyn
   // so its dialog id is docs-drawer-11.
   const heroDrawer = page.locator('#docs-drawer-11')
   await expect(heroDrawer).toBeVisible()
-  // shadcn's Base UI drawer renders the swipe handle only via showSwipeHandle
-  // — the goal fixture leaves it off.
+  // Like shadcn's vaul drawer, bottom drawers render the handle by default
+  // (restored in d6da25c).
   await expect(
     heroDrawer.locator('[data-slot="drawer-swipe-handle"]'),
-  ).toHaveCount(0)
+  ).toHaveCount(1)
   await expect(heroDrawer.locator('[data-slot="drawer-title"]')).toHaveText(
     'Move goal',
   )
