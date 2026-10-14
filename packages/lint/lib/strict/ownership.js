@@ -406,6 +406,71 @@ export const createModuleResolver = ({ rootDir, tsconfig }) => {
     return { file, name }
   }
 
+  /** Bare-package origin (`{ source, name }`) that a local barrel re-exports
+      `name` from, following named, star and import-then-export chains. */
+  const externalOrigin = (file, name, seen = new Set()) => {
+    const key = `${file}#${name}`
+    if (seen.has(key) || seen.size > 50) return null
+    seen.add(key)
+    const sourceFile = parse(file)
+    if (sourceFile === null) return null
+    const follow = (target, imported) => {
+      const next = resolve(target, file)
+      return next === null
+        ? { source: target, name: imported }
+        : externalOrigin(next, imported, seen)
+    }
+    const stars = []
+    for (const statement of sourceFile.statements) {
+      if (!ts.isExportDeclaration(statement)) continue
+      const target =
+        statement.moduleSpecifier !== undefined &&
+        ts.isStringLiteral(statement.moduleSpecifier)
+          ? statement.moduleSpecifier.text
+          : undefined
+      if (statement.exportClause === undefined) {
+        if (target !== undefined) stars.push(target)
+        continue
+      }
+      if (!ts.isNamedExports(statement.exportClause)) continue
+      for (const element of statement.exportClause.elements) {
+        if (element.name.text !== name) continue
+        const local = element.propertyName?.text ?? element.name.text
+        return target === undefined
+          ? importedOrigin(sourceFile, local, follow)
+          : follow(target, local)
+      }
+    }
+    for (const target of stars) {
+      const origin = follow(target, name)
+      if (origin !== null) return origin
+    }
+    return importedOrigin(sourceFile, name, follow)
+  }
+
+  const importedOrigin = (sourceFile, local, follow) => {
+    for (const statement of sourceFile.statements) {
+      if (
+        !ts.isImportDeclaration(statement) ||
+        !ts.isStringLiteral(statement.moduleSpecifier)
+      )
+        continue
+      const bindings = statement.importClause?.namedBindings
+      const target = statement.moduleSpecifier.text
+      if (bindings !== undefined && ts.isNamedImports(bindings))
+        for (const element of bindings.elements)
+          if (element.name.text === local)
+            return follow(target, element.propertyName?.text ?? local)
+      if (
+        bindings !== undefined &&
+        ts.isNamespaceImport(bindings) &&
+        bindings.name.text === local
+      )
+        return follow(target, '*')
+    }
+    return null
+  }
+
   const declares = (file, name) => {
     const sourceFile = parse(file)
     if (sourceFile === null) return false
@@ -433,5 +498,5 @@ export const createModuleResolver = ({ rootDir, tsconfig }) => {
     })
   }
 
-  return { exportOrigin, resolve }
+  return { exportOrigin, externalOrigin, resolve }
 }

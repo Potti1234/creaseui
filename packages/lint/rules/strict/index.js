@@ -148,45 +148,69 @@ export const noUnapprovedRenderer = {
             node,
             `'${source}' renders outside Foldkit's builder; register an adapter for it instead`,
           )
-        const match = /^@foldkit\/ui(?:\/([^/]+))?/u.exec(source)
-        if (match !== null) {
-          for (const specifier of specifiers) {
-            const variable = analysis.variableOf(specifier.local)
-            if (specifier.type === 'ImportNamespaceSpecifier') {
-              headless.set(variable, match[1] ?? '*')
-              continue
-            }
-            const name =
-              specifier.imported?.name ?? specifier.imported?.value ?? 'default'
-            if (match[1] === undefined) headless.set(variable, camel(name))
-            else if (isFoldkitUiRenderExport(match[1], name))
-              report(
-                specifier,
-                `\`${name}\` from '${source}' is an unstyled headless view; use the installed Crease component that wraps it`,
-              )
+        const headlessImport = (specifier, origin, name) => {
+          const match = /^@foldkit\/ui(?:\/([^/]+))?$/u.exec(origin)
+          if (match === null) return
+          const variable = analysis.variableOf(specifier.local)
+          if (name === '*') {
+            headless.set(variable, match[1] ?? '*')
+            return
           }
+          if (match[1] === undefined) headless.set(variable, camel(name))
+          else if (isFoldkitUiRenderExport(match[1], name))
+            report(
+              specifier,
+              `\`${name}\` from '${origin}' is an unstyled headless view; use the installed Crease component that wraps it`,
+            )
+        }
+        const local =
+          strict === null
+            ? null
+            : strict.modules.resolve(source, context.filename)
+        for (const specifier of specifiers) {
+          const name =
+            specifier.type === 'ImportNamespaceSpecifier'
+              ? '*'
+              : (specifier.imported?.name ??
+                specifier.imported?.value ??
+                'default')
+          if (local === null) {
+            headlessImport(specifier, source, name)
+            continue
+          }
+          if (name === '*') continue
+          const origin = strict.modules.externalOrigin(local, name)
+          if (origin !== null)
+            headlessImport(specifier, origin.source, origin.name)
         }
       },
       MemberExpression(node) {
-        if (node.computed) return
         const record = index.memberRecord(node)
         if (record?.visibility === 'implementation')
           implementationOnly(node, record)
+        const keyOf = member =>
+          member.computed
+            ? analysis.resolveString(member.property)
+            : member.property.name
         let module
         if (node.object.type === 'Identifier')
           module = headless.get(analysis.variableOf(node.object))
         else if (
           node.object.type === 'MemberExpression' &&
-          !node.object.computed &&
           node.object.object.type === 'Identifier' &&
           headless.get(analysis.variableOf(node.object.object)) === '*'
-        )
-          module = camel(node.object.property.name)
-        if (
-          module !== undefined &&
-          module !== '*' &&
-          isFoldkitUiRenderExport(module, node.property.name)
-        )
+        ) {
+          const key = keyOf(node.object)
+          module = key === null ? undefined : camel(key)
+        }
+        if (module === undefined || module === '*') return
+        const property = keyOf(node)
+        if (property === null)
+          report(
+            node,
+            `\`${context.sourceCode.getText(node)}\` reads a headless @foldkit/ui module with a key that cannot be resolved; it could select an unstyled view`,
+          )
+        else if (isFoldkitUiRenderExport(module, property))
           report(
             node,
             `\`${context.sourceCode.getText(node)}\` is an unstyled headless view; use the installed Crease component that wraps it`,
@@ -339,6 +363,13 @@ const contractRule = (rule, kind, description) => ({
     const report = (node, message) =>
       context.report({ message: `${message} (${rule})`, node })
     const handlers = {
+      MemberExpression(node) {
+        if (kind === 'unverifiable' && index.unresolvedMember(node))
+          report(
+            node,
+            `\`${context.sourceCode.getText(node)}\` selects a component with a key that cannot be resolved; its UI contract cannot be verified.`,
+          )
+      },
       CallExpression(node) {
         const record = index.callRecord(node.callee)
         if (record !== undefined && record.renderKind === 'helper')
@@ -382,6 +413,7 @@ const contractRule = (rule, kind, description) => ({
           )
       },
       MemberExpression(node) {
+        handlers.MemberExpression(node)
         const member = analysis.builderMember(node)
         if (member === null) return
         if (member.name === null)

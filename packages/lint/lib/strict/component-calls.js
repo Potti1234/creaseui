@@ -54,14 +54,27 @@ export const createComponentIndex = (context, strict, analysis) => {
       : strict.ownership.exportsOf(origin.file)?.get(origin.name)
   }
 
-  const memberRecord = member => {
-    if (member?.type !== 'MemberExpression' || member.computed) return undefined
+  const namespaceOf = member => {
+    if (member?.type !== 'MemberExpression') return undefined
     if (member.object.type !== 'Identifier') return undefined
-    const entry = bindings.get(analysis.variableOf(member.object))
-    return entry?.namespace === undefined
-      ? undefined
-      : recordAt(entry.namespace, member.property.name)
+    return bindings.get(analysis.variableOf(member.object))?.namespace
   }
+
+  /** Record for `Ns.name` or constant computed `Ns['name']`. */
+  const memberRecord = member => {
+    const namespace = namespaceOf(member)
+    if (namespace === undefined) return undefined
+    const name = member.computed
+      ? analysis.resolveString(member.property)
+      : member.property.name
+    return name === null ? undefined : recordAt(namespace, name)
+  }
+
+  /** `Ns[key]` on a component namespace whose key cannot be resolved. */
+  const unresolvedMember = member =>
+    namespaceOf(member) !== undefined &&
+    member.computed &&
+    analysis.resolveString(member.property) === null
 
   const callRecord = callee => {
     callee = unwrap(callee)
@@ -79,7 +92,7 @@ export const createComponentIndex = (context, strict, analysis) => {
       : undefined
   }
 
-  return { callRecord, collect, imports, memberRecord }
+  return { callRecord, collect, imports, memberRecord, unresolvedMember }
 }
 
 const label = record => `\`${record.name}\` (${record.contract})`

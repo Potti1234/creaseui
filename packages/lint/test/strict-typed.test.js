@@ -24,6 +24,10 @@ const support = {
   'builder-barrel': "export * from './builder-alias'\n",
   'builder-barrel-two':
     "export { type AppBuilder as UiBuilder } from './builder-barrel'\n",
+  'headless-barrel': "export { Dialog } from '@foldkit/ui'\n",
+  'headless-barrel-two': "export * from './headless-barrel'\n",
+  'headless-renamed':
+    "import { Dialog as D } from '@foldkit/ui'\nexport { D as Modal }\n",
 }
 
 const cases = {
@@ -50,6 +54,42 @@ const cases = {
   'unrelated-htmlbuilder': [
     "type HtmlBuilder<M> = { button: (attributes: Array<M>, children: Array<string>) => string }\nexport const view = <M>(h: HtmlBuilder<M>): string => h.button([], ['Not Foldkit'])",
     [],
+  ],
+  'headless-direct': [
+    `${header}import { Dialog } from '@foldkit/ui'\nexport const rawView = Dialog.view`,
+    ['crease/no-unapproved-renderer'],
+  ],
+  'headless-computed': [
+    `${header}import { Dialog } from '@foldkit/ui'\nexport const rawView = Dialog['view']`,
+    ['crease/no-unapproved-renderer'],
+  ],
+  'headless-computed-const': [
+    `${header}import { Dialog } from '@foldkit/ui'\nconst key = 'view'\nexport const rawView = Dialog[key]`,
+    ['crease/no-unapproved-renderer'],
+  ],
+  'headless-reexport': [
+    `${header}import { Dialog } from './headless-barrel'\nexport const rawView = Dialog.view`,
+    ['crease/no-unapproved-renderer'],
+  ],
+  'headless-multi-hop': [
+    `${header}import { Dialog } from './headless-barrel-two'\nexport const rawView = Dialog.view`,
+    ['crease/no-unapproved-renderer'],
+  ],
+  'headless-import-export': [
+    `${header}import { Modal } from './headless-renamed'\nexport const rawView = Modal['view']`,
+    ['crease/no-unapproved-renderer'],
+  ],
+  'headless-messages-legal': [
+    "import { Dialog } from './headless-barrel'\nexport const opened = Dialog.Opened\nexport type Model = Dialog.Model",
+    [],
+  ],
+  'styled-computed-asserted': [
+    `${header}import * as Design from '@design/button'\nexport const view = <M>(h: HtmlBuilder<M>): Html => Design['button'](({style:'color:red',children:['Bad']} as any), h)`,
+    ['crease/no-unverifiable-ui'],
+  ],
+  'styled-dynamic-key': [
+    `${header}import * as Design from '@design/button'\nexport const pick = (key: string) => Design[key as 'button']`,
+    ['crease/no-unverifiable-ui'],
   ],
   approved: [
     `${header}import { button } from '@design/button'\nexport const view = <M>(h: HtmlBuilder<M>): Html => button({children:['Good'],variant:'outline'}, h)`,
