@@ -4,9 +4,11 @@
 // package managers) outside this repository.
 import { execFileSync, spawnSync } from 'node:child_process'
 import {
+  existsSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
+  realpathSync,
   rmSync,
   writeFileSync,
 } from 'node:fs'
@@ -21,9 +23,43 @@ const versions = JSON.parse(
 )
 const dep = name =>
   versions.dependencies?.[name] ?? versions.devDependencies?.[name]
+/* Package managers are launched as `node <cli.js>` so this works on Windows,
+   where `npm`/`pnpm` on PATH are .cmd shims that spawn cannot execute. */
+const nodeCli = (name, relative) => {
+  const dirs = (process.env.PATH ?? '').split(path.delimiter).filter(Boolean)
+  const nodeDir = path.dirname(process.execPath)
+  const candidates = [
+    process.env.npm_execpath,
+    ...[nodeDir, ...dirs].flatMap(dir => [
+      path.join(dir, 'node_modules', relative),
+      path.join(dir, '..', 'lib', 'node_modules', relative),
+    ]),
+    ...dirs
+      .map(dir => path.join(dir, name))
+      .filter(file => existsSync(file))
+      .map(file => realpathSync(file)),
+  ]
+  return candidates.find(
+    file =>
+      file !== undefined &&
+      /\.c?js$/u.test(file) &&
+      file.replaceAll('\\', '/').includes(`/${name}/`) &&
+      existsSync(file),
+  )
+}
+const npmCli = nodeCli('npm', 'npm/bin/npm-cli.js')
+const pnpmCli = nodeCli('pnpm', 'pnpm/bin/pnpm.cjs')
+if (npmCli === undefined) {
+  console.error(
+    'MISSING: npm CLI (npm-cli.js) not found next to node or on PATH',
+  )
+  process.exit(2)
+}
+const missing = []
+
 const tarball = execFileSync(
-  'npm',
-  ['pack', '--silent', '--pack-destination', work],
+  process.execPath,
+  [npmCli, 'pack', '--silent', '--pack-destination', work],
   {
     cwd: path.join(repo, 'packages/lint'),
     encoding: 'utf8',
@@ -31,10 +67,20 @@ const tarball = execFileSync(
 ).trim()
 
 const managers = {
-  npm: ['npm', ['install', '--no-audit', '--no-fund', '--loglevel=error']],
+  npm: [
+    process.execPath,
+    [npmCli, 'install', '--no-audit', '--no-fund', '--loglevel=error'],
+  ],
 }
-if (spawnSync('pnpm', ['--version']).status === 0)
-  managers.pnpm = ['pnpm', ['install', '--silent']]
+if (
+  pnpmCli !== undefined &&
+  spawnSync(process.execPath, [pnpmCli, '--version']).status === 0
+)
+  managers.pnpm = [process.execPath, [pnpmCli, 'install', '--silent']]
+else
+  missing.push(
+    'pnpm: not found, so the pnpm consumer was installed with npm and pnpm resolution is NOT verified',
+  )
 
 const consumers = [
   {
@@ -230,6 +276,9 @@ for (const consumer of consumers) {
 if (process.env.KEEP_CONSUMERS === undefined)
   rmSync(work, { force: true, recursive: true })
 else console.log(`kept ${work}`)
+for (const gap of missing) console.warn(`MISSING COVERAGE: ${gap}`)
+if (missing.length > 0 && process.env.CREASE_REQUIRE_ALL_MANAGERS === '1')
+  failures.push(`missing package-manager coverage:\n${missing.join('\n')}`)
 if (failures.length > 0) {
   console.error(`\n${failures.join('\n\n')}`)
   process.exit(1)
