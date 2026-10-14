@@ -24,33 +24,35 @@ The `browser` job on the same commit failed 1 of 672 (667 passed, 4 skipped): `[
 | site: flagship docs accessibility                                                             | **product bug:** icon-only Button Group menu trigger had no name                                                                               | `7330ecd` triggerAriaLabel                                                                                                                           |
 | site: switch                                                                                  | crease-only fixtures (read-only, hidden form value, description) replaced by shadcn fixtures; axe flagged shadcn muted text on the choice card | `226f201` toggle, disabled, RTL thumb; axe ignores only the pairs in `e2e/accepted-contrast.ts` (`a0b3b1a`). Gap: no read-only or form-value fixture |
 | site: collapsible                                                                             | `#details` external-control fixture replaced by shadcn fixtures                                                                                | spec covers click/Space/Enter, aria-controls panel, reduced motion and the aria-disabled trigger in both renderers. Gap: no external-control fixture |
+| site: label                                                                                   | `#input-label` replaced by the shadcn field fixtures                                                                                           | spec clicks labels for an input, a textarea and a checkbox in both renderers                                                                         |
+| site: item semantic collections                                                               | `#collection` replaced by shadcn `#group` and `#header`                                                                                        | spec checks the list/listitem structure and header in both renderers                                                                                 |
 | site: menubar child models                                                                    | crease-only fixtures replaced by shadcn fixtures                                                                                               | `02c61a1`                                                                                                                                            |
 
 ## Remaining (first error on the current build)
 
-| Test                                          | First error                             |
-| --------------------------------------------- | --------------------------------------- |
-| application: public catalog a11y scan         | URL not `/docs/components/accordion`    |
-| application: dialog contract                  | no `Open profile` button                |
-| blocks: StyleX sidebar disclosure             | no `Installation` link                  |
-| site: Foldkit-native docs contained on mobile | no `Browse components` text             |
-| site: authored slider                         | `#range` lower thumb value              |
-| site: button-group sections                   | `#inputgroup` voice toggle aria-pressed |
-| site: command dialogs                         | combobox value `Calculator`             |
-| site: context menu sections                   | `#checkboxes` trigger                   |
-| site: direction                               | `#mixed-direction` LTR text             |
-| site: drawer                                  | `#docs-drawer-11` swipe handle count    |
-| site: hover-card sections                     | `#rtl` trigger `يسار`                   |
-| site: input-group sections                    | `#button` Copy button                   |
-| site: item semantic collections               | `#collection`                           |
-| site: item sections                           | hero profile link                       |
-| site: label                                   | `#input-label`                          |
-| site: marker                                  | `#separator` marker variant             |
-| site: message                                 | `#incoming`                             |
-| site: message scroller                        | layout height `< 80`                    |
-| site: popover                                 | `#interactive-content` code import      |
-| site: presentational helpers / separator      | `#vertical` separator aria-orientation  |
-| site: sheet                                   | `#compound-layout` trigger              |
-| site: sidebar hover menus                     | menu item in viewport                   |
-| stylex-preflight: light overlays              | `Close` button                          |
-| stylex-template-system (2)                    | dashboard recipe table / recipe list    |
+Open product finding: `item({ element: 'a' })` always adds `role="listitem"` (all three renderers), so a link Item loses its link role. The Item hero link can't be found as a link. shadcn sets no role on Item. Fixing it changes the semantics of grouped link items, so it needs a decision.
+
+| Test                                          | First error                                         |
+| --------------------------------------------- | --------------------------------------------------- |
+| site: item sections                           | hero link has `role="listitem"` (see finding above) |
+| application: public catalog a11y scan         | URL not `/docs/components/accordion`                |
+| application: dialog contract                  | no `Open profile` button                            |
+| blocks: StyleX sidebar disclosure             | no `Installation` link                              |
+| site: Foldkit-native docs contained on mobile | no `Browse components` text                         |
+| site: authored slider                         | `#range` lower thumb value                          |
+| site: button-group sections                   | `#inputgroup` voice toggle aria-pressed             |
+| site: command dialogs                         | combobox value `Calculator`                         |
+| site: context menu sections                   | `#checkboxes` trigger                               |
+| site: direction                               | `#mixed-direction` LTR text                         |
+| site: drawer                                  | `#docs-drawer-11` swipe handle count                |
+| site: hover-card sections                     | `#rtl` trigger `يسار`                               |
+| site: input-group sections                    | `#button` Copy button                               |
+| site: marker                                  | `#separator` marker variant                         |
+| site: message                                 | `#incoming`                                         |
+| site: message scroller                        | layout height `< 80`                                |
+| site: popover                                 | `#interactive-content` code import                  |
+| site: presentational helpers / separator      | `#vertical` separator aria-orientation              |
+| site: sheet                                   | `#compound-layout` trigger                          |
+| site: sidebar hover menus                     | menu item in viewport                               |
+| stylex-preflight: light overlays              | `Close` button                                      |
+| stylex-template-system (2)                    | dashboard recipe table / recipe list                |
