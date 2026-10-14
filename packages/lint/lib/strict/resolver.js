@@ -1,6 +1,8 @@
 /* Lexical (scope-manager) and, when available, type-checker resolution of
    Foldkit builders. Nothing is classified by spelling alone. */
 
+import ts from 'typescript'
+
 const TS_WRAPPERS = new Set([
   'TSAsExpression',
   'TSNonNullExpression',
@@ -40,6 +42,8 @@ const importedName = specifier => {
 
 const FOLDKIT_HTML = /^foldkit\/html$/u
 const FOLDKIT = /^foldkit$/u
+const FOLDKIT_HTML_DECLARATION =
+  /[\\/]foldkit[\\/]dist[\\/]html[\\/][^\\/]+\.d\.ts$/u
 
 export const createFileAnalysis = context => {
   const { sourceCode } = context
@@ -57,16 +61,57 @@ export const createFileAnalysis = context => {
       ? findVariable(scopeOf(identifier), identifier.name)
       : null
 
+  /** True when a TypeScript symbol is Foldkit's own `HtmlBuilder` declaration,
+      following import/export aliases and local type aliases. */
+  const symbolIsBuilder = (symbol, seen = new Set()) => {
+    while (symbol !== undefined && symbol.flags & ts.SymbolFlags.Alias) {
+      if (seen.has(symbol)) return false
+      seen.add(symbol)
+      symbol = checker.getAliasedSymbol(symbol)
+    }
+    if (symbol === undefined || seen.has(symbol)) return false
+    seen.add(symbol)
+    for (const declaration of symbol.declarations ?? []) {
+      if (
+        symbol.escapedName === 'HtmlBuilder' &&
+        FOLDKIT_HTML_DECLARATION.test(declaration.getSourceFile().fileName)
+      )
+        return true
+      if (
+        ts.isTypeAliasDeclaration(declaration) &&
+        ts.isTypeReferenceNode(declaration.type) &&
+        symbolIsBuilder(
+          checker.getSymbolAtLocation(declaration.type.typeName),
+          seen,
+        )
+      )
+        return true
+    }
+    return false
+  }
+
   const typedAsBuilder = node => {
     if (!hasTypes) return false
     try {
       const type = checker.getTypeAtLocation(
         services.esTreeNodeToTSNodeMap.get(node),
       )
-      if (type.aliasSymbol?.escapedName === 'HtmlBuilder') return true
-      return /^HtmlBuilder</u.test(checker.typeToString(type))
+      return symbolIsBuilder(type.aliasSymbol) || symbolIsBuilder(type.symbol)
     } catch {
       return false
+    }
+  }
+
+  /** Checker resolution of a type reference name, or undefined without types. */
+  const typedReferenceIsBuilder = name => {
+    if (!hasTypes) return undefined
+    try {
+      const tsNode = services.esTreeNodeToTSNodeMap.get(
+        name.type === 'TSQualifiedName' ? name.right : name,
+      )
+      return symbolIsBuilder(checker.getSymbolAtLocation(tsNode))
+    } catch {
+      return undefined
     }
   }
 
@@ -87,6 +132,8 @@ export const createFileAnalysis = context => {
     if (typeNode?.type !== 'TSTypeReference' || seen.has(typeNode)) return false
     seen.add(typeNode)
     const name = typeNode.typeName
+    const typed = typedReferenceIsBuilder(name)
+    if (typed !== undefined) return typed
     if (name.type === 'TSQualifiedName')
       return (
         name.right.name === 'HtmlBuilder' &&
