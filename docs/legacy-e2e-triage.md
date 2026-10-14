@@ -6,6 +6,8 @@ Baseline: local `CI=1 npx playwright test` on PR #28 (`b120cee`) failed 47 tests
 
 With 4 workers, CI failed 12-16 extra tests that changed from run to run, with browser-session errors (`session closed`, `Target.createTarget`). With `PLAYWRIGHT_WORKERS: 2` (`77b5e6e`), run on `efd38b7`: 261 passed, 23 failed, 1 flaky, 1 did not run in 25.9 min. All 23 failures and the flaky test (`sidebar hover menus`) are in the inherited #27 set below. None of the CI-only failures came back, so they were caused by load.
 
+The `browser` job on the same commit failed 1 of 672 (667 passed, 4 skipped): `[pleat] sheet.spec.ts:228 bottom sheets ease into view without dialog scrolling at 390px`. The job log doesn't include the assertion error, which is only in the uploaded report artifact. Locally the test passes 10/10 on the Pleat build (`--repeat-each=5`, both widths). Unresolved: not classified as flaky until the CI error has been read.
+
 ## Fixed
 
 | Test                                                                                          | Cause                                                                               | Fix                                                      |
