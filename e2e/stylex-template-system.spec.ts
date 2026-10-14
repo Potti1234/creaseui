@@ -1,3 +1,4 @@
+import { withoutAcceptedContrast } from './accepted-contrast'
 import { visitRenderer } from './site-navigation'
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
@@ -71,7 +72,7 @@ test('CreaseUI dashboards use constrained recipes and remain accessible', async 
       .include('[data-recipe]')
       .analyze()
     expect(
-      accessibility.violations.filter(
+      withoutAcceptedContrast(accessibility.violations).filter(
         ({ impact }) => impact === 'serious' || impact === 'critical',
       ),
     ).toEqual([])

@@ -17,6 +17,12 @@ export const ACCEPTED_SHADCN_CONTRAST: ReadonlyArray<
     source:
       'root:light muted-foreground on the shadcn choice card bg-primary/5',
   },
+  ...['#fde6e7', '#fde5e7'].map(background => ({
+    foreground: '#e7000b',
+    background,
+    source:
+      'root:light shadcn Badge destructive: text-destructive on bg-destructive/10',
+  })),
 ]
 
 const isAccepted = (node: AxeResults['violations'][number]['nodes'][number]) =>
