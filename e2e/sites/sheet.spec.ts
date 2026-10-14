@@ -192,31 +192,35 @@ for (const width of [390, 1440]) {
     await expect(activePanels(page)).toHaveCount(0)
     await page.getByRole('button', { name: 'Open sheet', exact: true }).click()
     await settled(page)
-    // Arm before Escape so a brief leave phase cannot finish before the check.
-    const leaving = page.evaluate(
-      () =>
-        new Promise<string>(resolve => {
-          // Query on every mutation: a reopened sheet may render a new panel node.
-          const leavingPanel = () =>
-            document.querySelector<HTMLElement>(
-              '[data-slot="sheet-panel"][data-leave]',
-            )
-          const observer = new MutationObserver(() => {
-            const panel = leavingPanel()
-            if (panel) {
-              observer.disconnect()
-              resolve(getComputedStyle(panel).transitionTimingFunction)
-            }
-          })
-          observer.observe(document.body, {
-            attributes: true,
-            attributeFilter: ['data-leave'],
-            subtree: true,
-          })
-        }),
-    )
+    // Arm and await the observer before Escape: an un-awaited evaluate can be
+    // installed after the brief leave phase has already started.
+    await page.evaluate(() => {
+      delete document.documentElement.dataset.sheetLeave
+      const observer = new MutationObserver(records => {
+        for (const record of records) {
+          const panel = record.target as HTMLElement
+          if (
+            panel.matches('[data-slot="sheet-panel"]') &&
+            panel.hasAttribute('data-leave')
+          ) {
+            observer.disconnect()
+            document.documentElement.dataset.sheetLeave =
+              getComputedStyle(panel).transitionTimingFunction
+            return
+          }
+        }
+      })
+      observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['data-leave'],
+        subtree: true,
+      })
+    })
     await page.keyboard.press('Escape')
-    expect(await leaving).toBe('cubic-bezier(0.32, 0.72, 0, 1)')
+    await expect(page.locator('html')).toHaveAttribute(
+      'data-sheet-leave',
+      'cubic-bezier(0.32, 0.72, 0, 1)',
+    )
     await expect(activePanels(page)).toHaveCount(0)
     expect(errors).toEqual([])
   })
