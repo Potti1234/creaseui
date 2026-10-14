@@ -2271,6 +2271,7 @@
         "Potti1234/creaseui/calendar-range",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/overlay-boundary-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -6489,6 +6490,7 @@
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/overlay-boundary-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
