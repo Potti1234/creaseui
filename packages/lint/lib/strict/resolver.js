@@ -42,6 +42,7 @@ const importedName = specifier => {
 
 const FOLDKIT_HTML = /^foldkit\/html$/u
 const FOLDKIT = /^foldkit$/u
+const DOM_LIB = /[\\/]lib\.dom(?:\.[^\\/]+)?\.d\.ts$|[\\/]@types[\\/]web[\\/]/u
 const FOLDKIT_HTML_DECLARATION =
   /[\\/]foldkit[\\/]dist[\\/]html[\\/][^\\/]+\.d\.ts$/u
 
@@ -305,6 +306,48 @@ export const createFileAnalysis = context => {
     return null
   }
 
+  /** Whether a member's property symbol is declared by the DOM lib; null
+      when the checker cannot tell (no types, `any` receivers). */
+  const domPropertyByType = member => {
+    if (!hasTypes) return null
+    try {
+      const tsNode = services.esTreeNodeToTSNodeMap.get(member)
+      const symbol = checker.getSymbolAtLocation(
+        tsNode.name ?? tsNode.argumentExpression,
+      )
+      if (symbol === undefined) return null
+      return (symbol.declarations ?? []).some(declaration =>
+        DOM_LIB.test(declaration.getSourceFile().fileName),
+      )
+    } catch {
+      return null
+    }
+  }
+
+  /** Receiver bound to an object literal or a type-literal parameter. */
+  const lexicallyPlainRecord = object => {
+    object = unwrap(object)
+    if (object?.type === 'ObjectExpression') return true
+    if (object?.type !== 'Identifier') return false
+    const definition = variableOf(object)?.defs[0]
+    if (
+      definition?.type === 'Variable' &&
+      definition.node.id === definition.name
+    )
+      return unwrap(definition.node.init)?.type === 'ObjectExpression'
+    if (definition?.type === 'Parameter')
+      return (
+        definition.name.typeAnnotation?.typeAnnotation?.type === 'TSTypeLiteral'
+      )
+    return false
+  }
+
+  /** `receiver.prop` that addresses a DOM element/style/class list. */
+  const isDomMember = member => {
+    const typed = domPropertyByType(member)
+    return typed ?? !lexicallyPlainRecord(member.object)
+  }
+
   return {
     builderMember,
     calleeMember,
@@ -314,6 +357,7 @@ export const createFileAnalysis = context => {
     hasTypes,
     isHtmlNamespace,
     isBuilderExpression,
+    isDomMember,
     resolveString,
     services,
     variableOf,

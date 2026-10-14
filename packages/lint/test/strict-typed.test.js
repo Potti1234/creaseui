@@ -91,6 +91,23 @@ const cases = {
     `${header}import * as Design from '@design/button'\nexport const pick = (key: string) => Design[key as 'button']`,
     ['crease/no-unverifiable-ui'],
   ],
+  'business-class-field': [
+    "export const normalizeRecord = (input: { className: string }) => {\n  const record = { ...input }\n  record.className = 'premium'\n  return record\n}",
+    [],
+  ],
+  'business-style-and-class-list': [
+    "type Row = { style: { color: string }; classList: { add: (token: string) => void }; setAttribute: (name: string, value: string) => void }\nexport const tag = (row: Row) => {\n  row.style.color = 'gold'\n  row.classList.add('vip')\n  row.setAttribute('class', 'x')\n}",
+    [],
+  ],
+  'dom-mutation': [
+    "export const paint = (element: HTMLElement) => {\n  element.className = 'x'\n  element.style.color = 'red'\n  element.classList.add('x')\n  element.setAttribute('style', 'color: red')\n}",
+    [
+      'crease/no-application-styles',
+      'crease/no-application-styles',
+      'crease/no-application-styles',
+      'crease/no-application-styles',
+    ],
+  ],
   approved: [
     `${header}import { button } from '@design/button'\nexport const view = <M>(h: HtmlBuilder<M>): Html => button({children:['Good'],variant:'outline'}, h)`,
     [],

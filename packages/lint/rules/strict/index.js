@@ -285,8 +285,9 @@ export const noApplicationStyles = {
             ? target.object.property.name
             : undefined
         if (
-          ['innerHTML', 'outerHTML', 'className', 'style'].includes(name) ||
-          parent === 'style'
+          (['innerHTML', 'outerHTML', 'className', 'style'].includes(name) ||
+            parent === 'style') &&
+          analysis.isDomMember(parent === 'style' ? target.object : target)
         )
           report(
             node,
@@ -313,6 +314,7 @@ export const noApplicationStyles = {
         if (callee.type !== 'MemberExpression' || callee.computed) return
         const method = callee.property.name
         if (method === 'setAttribute') {
+          if (!analysis.isDomMember(callee)) return
           const name = analysis.resolveString(node.arguments[0])
           if (name === null || STYLE_ATTRIBUTE_NAMES.has(name.toLowerCase()))
             report(
@@ -324,7 +326,8 @@ export const noApplicationStyles = {
         } else if (
           callee.object.type === 'MemberExpression' &&
           !callee.object.computed &&
-          callee.object.property.name === 'classList'
+          callee.object.property.name === 'classList' &&
+          analysis.isDomMember(callee.object)
         ) {
           report(
             node,
