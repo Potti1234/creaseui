@@ -1039,26 +1039,28 @@ test('authored slider delegates keyboard changes and mirrors shadcn examples', a
   const range = page.locator('#range')
   const lower = range.getByRole('slider', { name: 'Value 1' })
   const upper = range.getByRole('slider', { name: 'Value 2' })
-  await expect(lower).toHaveValue('25')
-  await expect(upper).toHaveValue('50')
+  await expect(lower).toHaveAttribute('aria-valuenow', '25')
+  await expect(upper).toHaveAttribute('aria-valuenow', '50')
   await lower.focus()
   await page.keyboard.press('ArrowRight')
-  await expect(lower).toHaveValue('30')
+  await expect(lower).toHaveAttribute('aria-valuenow', '30')
 
   const multiple = page.locator('#multiple-thumbs')
   await expect(multiple.getByRole('slider')).toHaveCount(3)
-  await expect(multiple.getByRole('slider', { name: 'Value 3' })).toHaveValue(
-    '70',
-  )
+  await expect(
+    multiple.getByRole('slider', { name: 'Value 3' }),
+  ).toHaveAttribute('aria-valuenow', '70')
 
   const vertical = page.locator('#vertical')
-  const verticalSliders = vertical.locator('[data-orientation="vertical"]')
+  const verticalSliders = vertical.locator(
+    '[data-slot="slider"][data-orientation="vertical"]',
+  )
   await expect(verticalSliders).toHaveCount(2)
   const v1 = vertical.getByRole('slider', { name: 'Value 1' }).first()
-  await expect(v1).toHaveValue('50')
+  await expect(v1).toHaveAttribute('aria-valuenow', '50')
   await v1.focus()
   await page.keyboard.press('ArrowUp')
-  await expect(v1).toHaveValue('51')
+  await expect(v1).toHaveAttribute('aria-valuenow', '51')
 
   const controlled = page.locator('#controlled')
   await expect(controlled).toContainText('Temperature')
@@ -1076,10 +1078,10 @@ test('authored slider delegates keyboard changes and mirrors shadcn examples', a
   const rtl = page.locator('#rtl')
   await expect(rtl.locator("div[dir='rtl']")).toBeVisible()
   const rtlSlider = rtl.getByRole('slider', { name: 'Value 1' })
-  await expect(rtlSlider).toHaveValue('75')
+  await expect(rtlSlider).toHaveAttribute('aria-valuenow', '75')
   await rtlSlider.focus()
   await page.keyboard.press('ArrowLeft')
-  await expect(rtlSlider).toHaveValue('76')
+  await expect(rtlSlider).toHaveAttribute('aria-valuenow', '76')
 
   await visitRenderer(page, 'StyleX')
   await page.waitForTimeout(600)
@@ -1104,8 +1106,8 @@ test('authored slider delegates keyboard changes and mirrors shadcn examples', a
   await rtlSlider.focus()
   await page.keyboard.press('ArrowLeft')
   await expect(slider).toHaveAttribute('aria-valuenow', '76')
-  await expect(lower).toHaveValue('30')
-  await expect(rtlSlider).toHaveValue('76')
+  await expect(lower).toHaveAttribute('aria-valuenow', '30')
+  await expect(rtlSlider).toHaveAttribute('aria-valuenow', '76')
 })
 
 test('authored resizable instances keep axis-specific child state independent', async ({
@@ -3158,8 +3160,13 @@ test('marker keeps authored variants and annotation semantics across renderers',
   page,
 }) => {
   await page.goto('/docs/components/marker')
-  const separator = page.locator('#separator').locator('[data-slot="marker"]')
-  const withIcon = page.locator('#with-icon').locator('[data-slot="marker"]')
+  const separators = page.locator('#separator').locator('[data-slot="marker"]')
+  await expect(separators).toHaveCount(3)
+  const separator = separators.first()
+  const withIcon = page
+    .locator('#with-icon')
+    .locator('[data-slot="marker"]')
+    .first()
   await expect(separator).toHaveAttribute('data-variant', 'separator')
   await expect(separator).toHaveAttribute('role', 'note')
   await expect(withIcon.locator('[data-slot="marker-icon"]')).toHaveAttribute(
@@ -4448,11 +4455,11 @@ test('direction preserves RTL and nested LTR semantics across renderers', async 
   const mixed = page.locator('#mixed-direction')
   await expect(rtl.locator('[dir="rtl"]')).toContainText('التالي')
   await expect(mixed.locator('[dir="rtl"]')).toContainText('الإصدار')
-  await expect(mixed.locator('[dir="ltr"]')).toContainText('v0.148.2')
+  await expect(mixed.locator('[dir="ltr"]')).toContainText(/^v\d+\.\d+\.\d+$/)
   await visitRenderer(page, 'StyleX')
   await expect(page.locator('#stylex-specimen')).toHaveCount(0)
   await expect(rtl.locator('[dir="rtl"]')).toContainText('التالي')
-  await expect(mixed.locator('[dir="ltr"]')).toContainText('v0.148.2')
+  await expect(mixed.locator('[dir="ltr"]')).toContainText(/^v\d+\.\d+\.\d+$/)
   await expect(rtl.locator('code')).toContainText('@/stylex/direction')
 })
 
