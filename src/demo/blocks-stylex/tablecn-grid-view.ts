@@ -195,7 +195,7 @@ const st = stylex.create({
     display: 'flex',
     justifyContent: 'flex-end',
   },
-  c123: { padding: '0.75rem', width: '16rem' },
+  c123: { padding: '0.75rem', width: '18rem' },
   c124: {
     gap: '0.5rem',
     alignItems: 'center',
@@ -223,6 +223,7 @@ const st = stylex.create({
     lineHeight: '1rem',
     outlineStyle: 'none',
     height: '1.75rem',
+    minWidth: 0,
     width: '100%',
   },
   c127: { color: tokens.mutedForeground, marginInlineStart: 'auto' },
@@ -495,6 +496,7 @@ const st = stylex.create({
   },
   colPanel: {
     padding: '0.25rem',
+    borderColor: tokens.border,
     borderRadius: foundationTokens.radiusMd,
     borderStyle: 'solid',
     borderWidth: '1px',
@@ -502,10 +504,12 @@ const st = stylex.create({
     boxShadow: foundationTokens.shadowMd,
     color: foundationTokens.popoverForeground,
     insetInlineStart: '0',
+    outlineStyle: 'none',
     position: 'absolute',
     zIndex: 50,
+    minWidth: '15rem',
     top: '100%',
-    width: '15rem',
+    width: 'auto',
   },
   menuItemL: {
     borderRadius: foundationTokens.radiusSm,
@@ -544,6 +548,7 @@ const st = stylex.create({
   panelEnd: { insetInlineEnd: '0' },
   toolPanel: {
     padding: '0.25rem',
+    borderColor: tokens.border,
     borderRadius: foundationTokens.radiusMd,
     borderStyle: 'solid',
     borderWidth: '1px',
@@ -551,10 +556,12 @@ const st = stylex.create({
     boxShadow: foundationTokens.shadowMd,
     color: foundationTokens.popoverForeground,
     marginBlockStart: '0.25rem',
+    outlineStyle: 'none',
     position: 'absolute',
     zIndex: 50,
+    minWidth: '12rem',
     top: '100%',
-    width: '12rem',
+    width: 'auto',
   },
 })
 const MENU_ITEM_CLASS = st.c4

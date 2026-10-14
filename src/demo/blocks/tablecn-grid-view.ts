@@ -18,7 +18,7 @@ const MENU_ITEM_CLASS =
 const MENU_LABEL_CLASS = 'text-muted-foreground px-2 py-1.5 text-xs font-medium'
 const MENU_SEPARATOR_CLASS = 'bg-border -mx-1 my-1 h-px'
 const PANEL_CLASS =
-  'bg-popover text-popover-foreground absolute top-full z-50 mt-1 w-48 rounded-md border p-1 shadow-md crease-action-bar-in'
+  'bg-popover text-popover-foreground absolute top-full z-50 mt-1 w-fit min-w-48 rounded-md border p-1 shadow-md crease-action-bar-in'
 
 const TRIGGER_PANEL = (
   isOpen: boolean,
@@ -391,7 +391,7 @@ const gridToolbar = (model: Grid.Model, h: HtmlBuilder<Grid.Message>): Html =>
         'Filter',
         'funnel',
         h.div(
-          [h.Class('w-64 p-3')],
+          [h.Class('w-72 p-3')],
           [
             h.div([h.Class('mb-2 text-sm font-medium')], ['Filter']),
             ...visibleCols(model).map(column =>
@@ -405,7 +405,7 @@ const gridToolbar = (model: Grid.Model, h: HtmlBuilder<Grid.Message>): Html =>
                   h.input([
                     h.Type('text'),
                     h.Class(
-                      'border-input h-7 w-full rounded-md border bg-transparent px-2 text-xs outline-none focus-visible:ring-1 focus-visible:ring-ring',
+                      'border-input h-7 w-full min-w-0 rounded-md border bg-transparent px-2 text-xs outline-none focus-visible:ring-1 focus-visible:ring-ring',
                     ),
                     h.Value(
                       model.filters.find(f => f.column === column.id)?.value ??
