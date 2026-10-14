@@ -196,18 +196,22 @@ for (const width of [390, 1440]) {
     const leaving = page.evaluate(
       () =>
         new Promise<string>(resolve => {
-          const panel = document.querySelector<HTMLElement>(
-            '[data-slot="sheet-panel"]',
-          )!
+          // Query on every mutation: a reopened sheet may render a new panel node.
+          const leavingPanel = () =>
+            document.querySelector<HTMLElement>(
+              '[data-slot="sheet-panel"][data-leave]',
+            )
           const observer = new MutationObserver(() => {
-            if (panel.hasAttribute('data-leave')) {
+            const panel = leavingPanel()
+            if (panel) {
               observer.disconnect()
               resolve(getComputedStyle(panel).transitionTimingFunction)
             }
           })
-          observer.observe(panel, {
+          observer.observe(document.body, {
             attributes: true,
             attributeFilter: ['data-leave'],
+            subtree: true,
           })
         }),
     )
@@ -294,7 +298,22 @@ for (const width of [390, 1440]) {
         samples.some(frame => frame.opacity > 0.05 && frame.opacity < 0.95),
       ).toBe(true)
       expect(first.opacity).toBe(0)
-      expect(last.opacity).toBe(1)
+      expect(last.opacity).toBeGreaterThan(0.95)
+      // The sampling window is fixed; a slow runner can end it a frame before
+      // the scrim transition, so the settled value is read once it finishes.
+      await expect
+        .poll(() =>
+          page.evaluate(() =>
+            Number.parseFloat(
+              getComputedStyle(
+                document.querySelector(
+                  'dialog[open] [data-slot="sheet-scrim"]',
+                )!,
+              ).opacity,
+            ),
+          ),
+        )
+        .toBe(1)
       for (let index = 1; index < samples.length; index++) {
         expect(samples[index]!.top - samples[index - 1]!.top).toBeLessThan(1)
       }
