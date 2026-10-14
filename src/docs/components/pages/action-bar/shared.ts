@@ -1,43 +1,64 @@
 import type { DocsExample } from '@/docs/components/page-definition'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
-export type ActionBarKind = 'bottom' | 'top' | 'vertical'
+export type ActionBarVariant = 'basic' | 'positions'
 
 export interface ActionBarFixture {
   readonly title: string
   readonly description?: string
   readonly heroOnly?: boolean
-  readonly kind: ActionBarKind
+  readonly variant: ActionBarVariant
 }
 
 export const actionBarFixtures: Readonly<
   [ActionBarFixture, ...Array<ActionBarFixture>]
 > = [
-  { title: 'Basic', heroOnly: true, kind: 'bottom' },
+  { title: 'Basic', heroOnly: true, variant: 'basic' },
   {
-    title: 'Top',
-    description:
-      'Use side="top" to pin the bar to the top edge of the viewport.',
-    kind: 'top',
-  },
-  {
-    title: 'Vertical',
-    description:
-      'Use orientation="vertical" to stack the selection text above the actions.',
-    kind: 'vertical',
+    title: 'Positions',
+    description: 'side and align anchor the bar to any edge of the viewport.',
+    variant: 'positions',
   },
 ]
 
-export const emitApplication = (
-  fixture: ActionBarFixture,
-  renderer: 'tailwind' | 'stylex',
-): string => {
+const barChildrenEmit = `ActionBar.actionBarSelection(
+              { children: [\`\${String(model.selected)} selected\`] },
+              h,
+            ),
+            ActionBar.actionBarSeparator({}, h),
+            ActionBar.actionBarItem(
+              { onSelect: ClosedActionBar({}), children: ['Mark completed'] },
+              h,
+            ),
+            ActionBar.actionBarItem(
+              { onSelect: ClosedActionBar({}), children: ['Assign'] },
+              h,
+            ),
+            ActionBar.actionBarItem(
+              { onSelect: ClosedActionBar({}), children: ['Archive'] },
+              h,
+            ),
+            ActionBar.actionBarItem(
+              {
+                onSelect: ClosedActionBar({}),
+                variant: 'destructive',
+                children: ['Delete'],
+              },
+              h,
+            ),
+            ActionBar.actionBarClose(
+              {
+                onClose: ClosedActionBar({}),
+                ariaLabel: 'Clear selection',
+                children: [Icon.icon('x', { class: 'size-4' }, h)],
+              },
+              h,
+            ),`
+
+const emitBasic = (renderer: 'tailwind' | 'stylex'): string => {
   const sep = renderer === 'stylex' ? 'stylex' : 'ui'
-  const side = fixture.kind === 'top' ? `, side: 'top'` : ''
-  const orientation =
-    fixture.kind === 'vertical' ? `, orientation: 'vertical'` : ''
   return foldkitApplication({
-    title: `Action Bar — ${fixture.title}`,
+    title: 'Action Bar — Basic',
     imports: `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
@@ -49,12 +70,10 @@ import * as Icon from '@/lib/icon'`,
 export type Model = typeof Model.Type`,
     messages: `export const ToggledSelection = taggedStruct('ToggledSelection')
 export const ClosedActionBar = taggedStruct('ClosedActionBar')
-export const DismissedAction = taggedStruct('DismissedAction')
 export const IgnoredMountMessage = taggedStruct('IgnoredMountMessage')
 export const Message = S.Union([
   ToggledSelection,
   ClosedActionBar,
-  DismissedAction,
   IgnoredMountMessage,
 ])
 export type Message = typeof Message.Type`,
@@ -65,13 +84,12 @@ export type Message = typeof Message.Type`,
       return { model: { ...model, selected: model.selected === 0 ? 3 : 0 } }
     case 'ClosedActionBar':
       return { model: { ...model, selected: 0 } }
-    case 'DismissedAction':
     case 'IgnoredMountMessage':
       return { model }
   }
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
-  title: 'Action Bar — ${fixture.title}',
+  title: 'Action Bar — Basic',
   body: h.main(
     [h.Class('flex min-h-screen items-center justify-center p-8')],
     [
@@ -81,29 +99,13 @@ export type Message = typeof Message.Type`,
       ),
       ActionBar.actionBar(
         {
-          open: model.selected > 0${side}${orientation},
+          open: model.selected > 0,
           toParentMessage: mountMessage =>
             mountMessage._tag === 'RequestedClose'
               ? ClosedActionBar({})
               : IgnoredMountMessage({}),
           children: [
-            ActionBar.actionBarSelection(
-              { children: [\`\${String(model.selected)} selected\`] },
-              h,
-            ),
-            ActionBar.actionBarSeparator({}, h),
-            ActionBar.actionBarItem(
-              { onSelect: ClosedActionBar({}), children: ['Mark done'] },
-              h,
-            ),
-            ActionBar.actionBarClose(
-              {
-                onClose: ClosedActionBar({}),
-                ariaLabel: 'Clear selection',
-                children: [Icon.icon('x', { class: 'size-4' }, h)],
-              },
-              h,
-            ),
+            ${barChildrenEmit}
           ],
         },
         h,
@@ -113,6 +115,121 @@ export type Message = typeof Message.Type`,
 })`,
   })
 }
+
+const emitPositions = (renderer: 'tailwind' | 'stylex'): string => {
+  const sep = renderer === 'stylex' ? 'stylex' : 'ui'
+  return foldkitApplication({
+    title: 'Action Bar — Positions',
+    imports: `import { Schema as S } from 'effect'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
+import { type Document, type HtmlBuilder } from 'foldkit/html'
+import { taggedStruct } from 'foldkit/schema'
+
+import * as ActionBar from '@/${sep}/action-bar'
+import * as Icon from '@/lib/icon'`,
+    model: `const Side = S.Union([S.Literal('top'), S.Literal('bottom')])
+const Align = S.Union([S.Literal('start'), S.Literal('center'), S.Literal('end')])
+export const Model = S.Struct({
+  selected: S.Number,
+  side: Side,
+  align: Align,
+})
+export type Model = typeof Model.Type`,
+    messages: `export const OpenedAt = taggedStruct('OpenedAt', {
+  side: Side,
+  align: Align,
+})
+export const ClosedActionBar = taggedStruct('ClosedActionBar')
+export const IgnoredMountMessage = taggedStruct('IgnoredMountMessage')
+export const Message = S.Union([
+  OpenedAt,
+  ClosedActionBar,
+  IgnoredMountMessage,
+])
+export type Message = typeof Message.Type`,
+    init: `export const init = (): Update.Return<Model, Message> => ({
+  model: { selected: 0, side: 'bottom', align: 'center' },
+})`,
+    update: `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
+  switch (message._tag) {
+    case 'OpenedAt':
+      return {
+        model: {
+          ...model,
+          selected: 3,
+          side: message.side,
+          align: message.align,
+        },
+      }
+    case 'ClosedActionBar':
+      return { model: { ...model, selected: 0 } }
+    case 'IgnoredMountMessage':
+      return { model }
+  }
+}`,
+    view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+  title: 'Action Bar — Positions',
+  body: h.main(
+    [h.Class('flex min-h-screen items-center justify-center p-8')],
+    [
+      h.div(
+        [h.Class('flex flex-wrap justify-center gap-2')],
+        [
+          h.button(
+            [h.Class('rounded-md border px-3 py-2 text-sm'), h.OnClick(OpenedAt({ side: 'top', align: 'start' }))],
+            ['Top Left'],
+          ),
+          h.button(
+            [h.Class('rounded-md border px-3 py-2 text-sm'), h.OnClick(OpenedAt({ side: 'top', align: 'center' }))],
+            ['Top Center'],
+          ),
+          h.button(
+            [h.Class('rounded-md border px-3 py-2 text-sm'), h.OnClick(OpenedAt({ side: 'top', align: 'end' }))],
+            ['Top Right'],
+          ),
+          h.button(
+            [h.Class('rounded-md border px-3 py-2 text-sm'), h.OnClick(OpenedAt({ side: 'bottom', align: 'start' }))],
+            ['Bottom Left'],
+          ),
+          h.button(
+            [h.Class('rounded-md border px-3 py-2 text-sm'), h.OnClick(OpenedAt({ side: 'bottom', align: 'center' }))],
+            ['Bottom Center'],
+          ),
+          h.button(
+            [h.Class('rounded-md border px-3 py-2 text-sm'), h.OnClick(OpenedAt({ side: 'bottom', align: 'end' }))],
+            ['Bottom Right'],
+          ),
+        ],
+      ),
+      ActionBar.actionBar(
+        {
+          open: model.selected > 0,
+          side: model.side,
+          align: model.align,
+          alignOffset: model.align === 'center' ? 0 : 16,
+          toParentMessage: mountMessage =>
+            mountMessage._tag === 'RequestedClose'
+              ? ClosedActionBar({})
+              : IgnoredMountMessage({}),
+          children: [
+            ${barChildrenEmit}
+          ],
+        },
+        h,
+      ),
+    ],
+  ),
+})`,
+  })
+}
+
+export const emitApplication = (
+  fixture: ActionBarFixture,
+  renderer: 'tailwind' | 'stylex',
+): string =>
+  fixture.variant === 'positions'
+    ? emitPositions(renderer)
+    : emitBasic(renderer)
 
 export const actionBarExamples = (
   renderer: 'tailwind' | 'stylex',

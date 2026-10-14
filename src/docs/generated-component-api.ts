@@ -85,11 +85,6 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "export { ActionBarAlign } from "
     },
     {
-      "name": "ActionBarOrientation",
-      "kind": "re-export",
-      "signature": "export { ActionBarOrientation } from "
-    },
-    {
       "name": "ActionBarSide",
       "kind": "re-export",
       "signature": "export { ActionBarSide } from "
@@ -97,7 +92,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "ActionBarProps",
       "kind": "type",
-      "signature": "ActionBarProps<Msg> = Readonly<{ open: boolean; side?: ActionBarSide; align?: ActionBarAlign; alignOffset?: number; sideOffset?: number; orientation?: ActionBarOrientation; toParentMessage?: (message: Message | ToolbarMessage) => Msg; children: ReadonlyArray<…"
+      "signature": "ActionBarProps<Msg> = Readonly<{ open: boolean; side?: ActionBarSide; align?: ActionBarAlign; alignOffset?: number; sideOffset?: number; toParentMessage?: (message: Message | ToolbarMessage) => Msg; children: ReadonlyArray<Html | string>; class?: string; }>"
     },
     {
       "name": "actionBar",
@@ -112,7 +107,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "actionBarGroup",
       "kind": "function",
-      "signature": "actionBarGroup<Msg>(props: Readonly<{ children: ReadonlyArray<Html | string>; orientation?: ActionBarOrientation; class?: string; }>, h: HtmlBuilder<Msg>): Html"
+      "signature": "actionBarGroup<Msg>(props: Readonly<{ children: ReadonlyArray<Html | string>; class?: string; }>, h: HtmlBuilder<Msg>): Html"
     },
     {
       "name": "actionBarItem",
@@ -127,7 +122,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "actionBarSeparator",
       "kind": "function",
-      "signature": "actionBarSeparator<Msg>(props: Readonly<{ orientation?: ActionBarOrientation; class?: string; }>, h: HtmlBuilder<Msg>): Html"
+      "signature": "actionBarSeparator<Msg>(props: Readonly<{ class?: string; }>, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "alert-dialog": [

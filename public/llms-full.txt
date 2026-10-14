@@ -642,18 +642,17 @@ A CreaseUI Action Bar component for Foldkit.
 
 Source: `src/ui/action-bar.ts`
 
-Examples: Basic, Top, Vertical
+Examples: Basic, Positions
 
 - `export { ActionBarAlign } from ` (re-export)
-- `export { ActionBarOrientation } from ` (re-export)
 - `export { ActionBarSide } from ` (re-export)
-- `ActionBarProps<Msg> = Readonly<{ open: boolean; side?: ActionBarSide; align?: ActionBarAlign; alignOffset?: number; sideOffset?: number; orientation?: ActionBarOrientation; toParentMessage?: (message: Message | ToolbarMessage) => Msg; children: ReadonlyArray<…` (type)
+- `ActionBarProps<Msg> = Readonly<{ open: boolean; side?: ActionBarSide; align?: ActionBarAlign; alignOffset?: number; sideOffset?: number; toParentMessage?: (message: Message | ToolbarMessage) => Msg; children: ReadonlyArray<Html | string>; class?: string; }>` (type)
 - `actionBar<Msg>(props: ActionBarProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `actionBarSelection<Msg>(props: Readonly<{ children: ReadonlyArray<Html | string>; class?: string; }>, h: HtmlBuilder<Msg>): Html` (function)
-- `actionBarGroup<Msg>(props: Readonly<{ children: ReadonlyArray<Html | string>; orientation?: ActionBarOrientation; class?: string; }>, h: HtmlBuilder<Msg>): Html` (function)
+- `actionBarGroup<Msg>(props: Readonly<{ children: ReadonlyArray<Html | string>; class?: string; }>, h: HtmlBuilder<Msg>): Html` (function)
 - `actionBarItem<Msg>(props: Readonly<{ onSelect?: Msg; variant?: 'default' | 'destructive'; isDisabled?: boolean; children: ReadonlyArray<Html | string>; class?: string; ariaLabel?: string; }>, h: HtmlBuilder<Msg>): Html` (function)
 - `actionBarClose<Msg>(props: Readonly<{ onClose?: Msg; children?: ReadonlyArray<Html | string>; class?: string; ariaLabel?: string; }>, h: HtmlBuilder<Msg>): Html` (function)
-- `actionBarSeparator<Msg>(props: Readonly<{ orientation?: ActionBarOrientation; class?: string; }>, h: HtmlBuilder<Msg>): Html` (function)
+- `actionBarSeparator<Msg>(props: Readonly<{ class?: string; }>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Alert Dialog
 
