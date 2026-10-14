@@ -293,11 +293,19 @@ export const measurePage = ({ exceptions, minimumTarget }) => {
       continue
     const background = backgroundOf(element)
     if (background.reason) {
-      unresolved.push({
+      const item = {
         rule: 'text-contrast',
         selector: selectorOf(element),
         reason: background.reason,
-      })
+      }
+      const exception = suppressedBy('text-contrast', element)
+      if (exception)
+        excluded.push({
+          ...item,
+          kind: 'unresolved',
+          exception: exception.index,
+        })
+      else unresolved.push(item)
       continue
     }
     count('text-contrast')
@@ -322,18 +330,27 @@ export const measurePage = ({ exceptions, minimumTarget }) => {
       )
   }
 
-  const unsupported = [
-    ...[...document.querySelectorAll('iframe,frame')].map(element => ({
+  const unsupported = []
+  const unsupportedContent = (element, reason) => {
+    const item = {
+      rule: 'unsupported-content',
       selector: selectorOf(element),
-      reason: 'frame content is not inspected',
-    })),
-    ...[...document.querySelectorAll('*')]
-      .filter(element => element.shadowRoot)
-      .map(element => ({
-        selector: selectorOf(element),
-        reason: 'open shadow root content is not inspected',
-      })),
-  ]
+      reason,
+    }
+    const exception = suppressedBy('unsupported-content', element)
+    if (exception)
+      excluded.push({
+        ...item,
+        kind: 'unsupported',
+        exception: exception.index,
+      })
+    else unsupported.push(item)
+  }
+  for (const element of document.querySelectorAll('iframe,frame'))
+    unsupportedContent(element, 'frame content is not inspected')
+  for (const element of document.querySelectorAll('*'))
+    if (element.shadowRoot)
+      unsupportedContent(element, 'open shadow root content is not inspected')
 
   return { findings, excluded, unresolved, unsupported, checked }
 }

@@ -69,7 +69,14 @@ npx creaseui-lint audit --config creaseui-lint.audit.mjs --output audit.json
 Each case runs once per theme × viewport × direction × state in a fresh
 browser context. Theme setup can be `class`, `attribute` or `storage`.
 A state with `run` must also declare `expect`; if that check fails, the case
-counts as unvisited instead of passing.
+counts as unvisited instead of passing. Unresolved measurements (for example
+text over a gradient) and unsupported content (frames, open shadow roots) make
+a combination `incomplete`; any unvisited or incomplete combination exits 2,
+even with `--report-only`. Empty `viewports`, `themes`, `directions` or
+`states` are rejected. To accept a known gap, add an exception with an owner
+and reason (`rule: 'text-contrast'` for unresolved contrast,
+`rule: 'unsupported-content'` for frames/shadow roots); it is recorded under
+`excluded` in the report.
 
 Rules: `accessible-name`, `label-reference`, `document-overflow`,
 `overlay-bounds`, `target-size` (warning), `text-contrast` and

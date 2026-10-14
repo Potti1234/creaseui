@@ -120,9 +120,9 @@ test(
       report.findings.find(finding => finding.rule === 'target-size').severity,
       'warning',
     )
-    // Gradient text cannot be resolved, so it is reported as unresolved, not guessed.
-    assert.ok(report.coverage.unresolved >= 1)
-    assert.ok(report.coverage.unsupported >= 1)
+    assert.equal(report.coverage.complete, true)
+    assert.equal(report.coverage.unresolved, 0)
+    assert.equal(report.coverage.unsupported, 0)
   },
 )
 
@@ -211,5 +211,75 @@ test('invalid configuration exits 2 with a diagnostic', () => {
     const result = audit(source)
     assert.equal(result.status, 2, source)
     assert.match(result.stderr, message)
+  }
+})
+
+const incompleteConfig = (extra = '') => `export default {
+  cases: [{ id: 'incomplete', url: ${JSON.stringify(fixture('incomplete.html'))}, ready: '#app' }],
+  ${extra}
+}
+`
+
+test(
+  'unresolved and unsupported measurements are incomplete, even with findings',
+  { skip },
+  () => {
+    for (const flags of [[], ['--report-only']]) {
+      const { status, report } = audit(incompleteConfig(), ...flags)
+      assert.equal(status, 2, flags.join(' '))
+      assert.equal(report.exitCode, 2)
+      assert.equal(report.coverage.complete, false)
+      assert.equal(report.coverage.incomplete, 1)
+      assert.equal(report.results[0].status, 'incomplete')
+      // Gradient text is reported as unresolved, not guessed.
+      assert.deepEqual(
+        report.results[0].unresolved.map(item => item.selector),
+        ['#gradient-text'],
+      )
+      assert.deepEqual(
+        report.results[0].unsupported.map(item => item.selector),
+        ['#embed'],
+      )
+      assert.ok(report.findings.some(finding => finding.selector === '#faint'))
+    }
+  },
+)
+
+test(
+  'explicit exclusions are recorded and let coverage complete',
+  { skip },
+  () => {
+    const { status, report } = audit(
+      incompleteConfig(`exceptions: [
+      { rule: 'text-contrast', selector: '#gradient-text', reason: 'brand hero is checked visually', owner: 'design' },
+      { rule: 'unsupported-content', selector: '#embed', reason: 'third-party embed', owner: 'platform', scope: 'incomplete' },
+    ]`),
+    )
+    assert.equal(status, 1)
+    assert.equal(report.coverage.complete, true)
+    assert.equal(report.coverage.excluded, 2)
+    assert.deepEqual(report.results[0].excluded.map(item => item.kind).sort(), [
+      'unresolved',
+      'unsupported',
+    ])
+    assert.equal(report.exceptions.unused.length, 0)
+  },
+)
+
+test('empty matrix axes are invalid instead of passing vacuously', () => {
+  const base = `cases: [{ id: 'a', url: ${JSON.stringify(fixture('clean.html'))}AXIS }]`
+  for (const [top, inCase] of [
+    ['viewports: [],', ''],
+    ['themes: [],', ''],
+    ['directions: [],', ''],
+    ['', ', states: []'],
+    ['', ', directions: []'],
+  ]) {
+    const result = audit(
+      `export default { ${top} ${base.replace('AXIS', inCase)} }`,
+    )
+    assert.equal(result.status, 2, `${top}${inCase}`)
+    assert.match(result.stderr, /non-empty array/u)
+    assert.equal(result.report, undefined)
   }
 })

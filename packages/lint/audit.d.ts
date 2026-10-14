@@ -8,6 +8,7 @@ export type AuditRule =
   | 'target-size'
   | 'text-contrast'
   | 'numeric-text'
+  | 'unsupported-content'
 export declare const AUDIT_RULES: ReadonlyArray<AuditRule>
 
 /** Minimal page surface used by state callbacks (Playwright's Page satisfies it). */
@@ -98,6 +99,12 @@ export interface AuditCoverage {
   unresolved: number
   unsupported: number
   unvisited: number
+  /** Combinations measured with unresolved or unsupported required content. */
+  incomplete: number
+  /** Every configured combination; each one has a recorded outcome. */
+  expected: number
+  /** True only when every combination was visited and fully measured. */
+  complete: boolean
   excluded: number
 }
 

@@ -19,6 +19,7 @@ export const AUDIT_RULES = Object.freeze([
   'target-size',
   'text-contrast',
   'numeric-text',
+  'unsupported-content',
 ])
 const SEVERITY_RANK = { warning: 1, error: 2 }
 const BROAD_SELECTORS = new Set(['*', 'html', 'body', ':root'])
@@ -70,6 +71,14 @@ export const normalizeAuditConfig = config => {
   const viewports = config.viewports ?? [
     { name: 'desktop', width: 1440, height: 1000 },
   ]
+  const requireAxis = (value, name) => {
+    if (!Array.isArray(value) || value.length === 0)
+      fail(`${name} must be a non-empty array; an empty axis checks nothing`)
+  }
+  requireAxis(viewports, 'viewports')
+  if (config.themes !== undefined) requireAxis(config.themes, 'themes')
+  if (config.directions !== undefined)
+    requireAxis(config.directions, 'directions')
   viewports.forEach((viewport, index) => {
     if (
       !isRecord(viewport) ||
@@ -89,9 +98,11 @@ export const normalizeAuditConfig = config => {
     if (ids.has(entry.id)) fail(`duplicate case id "${entry.id}"`)
     ids.add(entry.id)
     const directions = entry.directions ?? config.directions ?? ['ltr']
+    requireAxis(directions, `cases[${index}].directions`)
     if (!directions.every(direction => ['ltr', 'rtl'].includes(direction)))
       fail(`cases[${index}].directions must contain "ltr" or "rtl"`)
     const states = entry.states ?? [{ name: 'resting' }]
+    requireAxis(states, `cases[${index}].states`)
     states.forEach((state, stateIndex) => {
       if (!isRecord(state) || !nonEmpty(state.name))
         fail(`cases[${index}].states[${stateIndex}] needs a name`)
@@ -297,9 +308,12 @@ export const runAudit = async (rawConfig, options = {}) => {
                 status:
                   outcome.status === 'unvisited'
                     ? 'unvisited'
-                    : failing.length > 0
-                      ? 'failed'
-                      : 'checked',
+                    : (outcome.unresolved?.length ?? 0) > 0 ||
+                        (outcome.unsupported?.length ?? 0) > 0
+                      ? 'incomplete'
+                      : failing.length > 0
+                        ? 'failed'
+                        : 'checked',
               })
             }
   } finally {
@@ -335,6 +349,7 @@ export const runAudit = async (rawConfig, options = {}) => {
       0,
     ),
     unvisited: results.filter(result => result.status === 'unvisited').length,
+    incomplete: results.filter(result => result.status === 'incomplete').length,
     excluded: results.reduce(
       (total, result) => total + (result.excluded?.length ?? 0),
       0,
@@ -343,12 +358,14 @@ export const runAudit = async (rawConfig, options = {}) => {
   const blocking = findings.filter(
     finding => SEVERITY_RANK[finding.severity] >= failRank,
   )
-  const exitCode =
-    coverage.unvisited > 0
-      ? 2
-      : blocking.length > 0 && !options.reportOnly
-        ? 1
-        : 0
+  coverage.expected = results.length
+  coverage.complete =
+    results.length > 0 && coverage.unvisited === 0 && coverage.incomplete === 0
+  const exitCode = !coverage.complete
+    ? 2
+    : blocking.length > 0 && !options.reportOnly
+      ? 1
+      : 0
   return {
     schemaVersion: AUDIT_SCHEMA_VERSION,
     engine: { ...AUDIT_ENGINE, host: name },
