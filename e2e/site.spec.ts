@@ -3743,20 +3743,25 @@ test('item preserves semantic collections and structured metadata', async ({
   page,
 }) => {
   await page.goto('/docs/components/item')
+  const assertItems = async () => {
+    const group = page.locator('#group')
+    await expect(group.locator('[role=list]')).toHaveCount(1)
+    await expect(group.locator('[role=listitem]')).toHaveCount(3)
+    await expect(
+      group.locator('[role=listitem] [data-slot=item-title]'),
+    ).toHaveCount(3)
+    await expect(
+      page.locator('#header [data-slot=item-header]').first(),
+    ).toBeAttached()
+    await expect(
+      page.locator('#header [data-slot=item-title]').first(),
+    ).toHaveText('v0-1.5-sm')
+  }
+  await assertItems()
+
   await visitRenderer(page, 'StyleX')
-  await expect(page.locator('#collection')).toBeVisible()
-  await expect(page.locator('#outlined')).toBeVisible()
-  await expect(page.locator('#header-and-footer')).toBeVisible()
   await expect(page.locator('#stylex-specimen')).toHaveCount(0)
-  await expect(page.locator('#collection [role=list]')).toHaveCount(1)
-  await expect(page.locator('#collection [role=listitem]')).toHaveCount(2)
-  await expect(
-    page.locator('#header-and-footer [data-slot=item-header]'),
-  ).toContainText('Build #418')
-  await expect(
-    page.locator('#header-and-footer [data-slot=item-footer]'),
-  ).toContainText('2 minutes ago')
-  await expect(page.locator('#collection code')).toContainText('@/stylex/item')
+  await assertItems()
 })
 
 test('scroll area preserves labeled native overflow on both axes', async ({
