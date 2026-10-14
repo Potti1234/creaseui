@@ -117,10 +117,15 @@ const kbdView = (
                     model: model.tooltipA,
                     toParentMessage: message =>
                       KbdPreviewMessage.GotTooltipAMessage({ message }),
-                    trigger: Button.button(
-                      { variant: 'outline', children: ['Save'] },
-                      h,
-                    ),
+                    renderTrigger: attributes =>
+                      Button.button(
+                        {
+                          buttonAttributes: attributes,
+                          variant: 'outline',
+                          children: ['Save'],
+                        },
+                        h,
+                      ),
                     content: h.span(
                       [h.Class('inline-flex items-center gap-1')],
                       ['Save Changes ', Kbd.kbd({ children: ['S'] }, h)],
@@ -133,10 +138,15 @@ const kbdView = (
                     model: model.tooltipB,
                     toParentMessage: message =>
                       KbdPreviewMessage.GotTooltipBMessage({ message }),
-                    trigger: Button.button(
-                      { variant: 'outline', children: ['Print'] },
-                      h,
-                    ),
+                    renderTrigger: attributes =>
+                      Button.button(
+                        {
+                          buttonAttributes: attributes,
+                          variant: 'outline',
+                          children: ['Print'],
+                        },
+                        h,
+                      ),
                     content: h.span(
                       [h.Class('inline-flex items-center gap-1')],
                       [

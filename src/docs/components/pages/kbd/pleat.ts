@@ -145,10 +145,15 @@ const kbdSxView = <Msg>(
                       onMessageJson(
                         JSON.stringify({ _tag: 'GotTooltipAMessage', message }),
                       ),
-                    trigger: Button.button(
-                      { variant: 'outline', children: ['Save'] },
-                      h,
-                    ),
+                    renderTrigger: attributes =>
+                      Button.button(
+                        {
+                          buttonAttributes: attributes,
+                          variant: 'outline',
+                          children: ['Save'],
+                        },
+                        h,
+                      ),
                     content: h.span(
                       [h.Class(sx(styles.tooltipContent))],
                       ['Save Changes ', Kbd.kbd({ children: ['S'] }, h)],
@@ -163,10 +168,15 @@ const kbdSxView = <Msg>(
                       onMessageJson(
                         JSON.stringify({ _tag: 'GotTooltipBMessage', message }),
                       ),
-                    trigger: Button.button(
-                      { variant: 'outline', children: ['Print'] },
-                      h,
-                    ),
+                    renderTrigger: attributes =>
+                      Button.button(
+                        {
+                          buttonAttributes: attributes,
+                          variant: 'outline',
+                          children: ['Print'],
+                        },
+                        h,
+                      ),
                     content: h.span(
                       [h.Class(sx(styles.tooltipContent))],
                       [

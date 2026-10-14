@@ -269,10 +269,12 @@ const emitBody = (fixture: KbdFixture, isStyleX: boolean): string => {
           Tooltip.tooltip({
             model: model.tooltipA,
             toParentMessage: message => Message.GotTooltipAMessage({ message }),
-            trigger: Button.button({
-              variant: 'outline',
-              children: ['Save'],
-            }, h),
+            renderTrigger: attributes =>
+              Button.button({
+                buttonAttributes: attributes,
+                variant: 'outline',
+                children: ['Save'],
+              }, h),
             content: h.span(
               [h.Class(${cls('inline-flex items-center gap-1', 'tooltipContent')})],
               ['Save Changes ', Kbd.kbd({ children: ['S'] }, h)],
@@ -281,10 +283,12 @@ const emitBody = (fixture: KbdFixture, isStyleX: boolean): string => {
           Tooltip.tooltip({
             model: model.tooltipB,
             toParentMessage: message => Message.GotTooltipBMessage({ message }),
-            trigger: Button.button({
-              variant: 'outline',
-              children: ['Print'],
-            }, h),
+            renderTrigger: attributes =>
+              Button.button({
+                buttonAttributes: attributes,
+                variant: 'outline',
+                children: ['Print'],
+              }, h),
             content: h.span(
               [h.Class(${cls('inline-flex items-center gap-1', 'tooltipContent')})],
               [
