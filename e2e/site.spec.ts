@@ -3143,19 +3143,23 @@ test('label keeps native control association across renderers', async ({
   page,
 }) => {
   await page.goto('/docs/components/label')
-  const email = page.locator('#docs-email')
-  await page.locator('#input-label label[data-slot="label"]').click()
-  await expect(email).toBeFocused()
+  const assertLabels = async () => {
+    const field = page.locator('#label-in-field')
+    await field.getByText('Name on Card', { exact: true }).click()
+    await expect(page.locator('#checkout-card-name')).toBeFocused()
+    await field.getByText('Comments', { exact: true }).click()
+    await expect(page.locator('#checkout-comments')).toBeFocused()
+
+    const terms = page.locator('#terms')
+    await expect(terms).toHaveAttribute('aria-checked', 'false')
+    await page.locator('label[for="terms"]').click()
+    await expect(terms).toHaveAttribute('aria-checked', 'true')
+  }
+  await assertLabels()
 
   await visitRenderer(page, 'StyleX')
-  await expect(page.locator('#input-label')).toBeVisible()
-  await expect(page.locator('#supporting-text')).toBeVisible()
   await expect(page.locator('#stylex-specimen')).toHaveCount(0)
-  await expect(page.locator('#input-label code')).toContainText(
-    '@/stylex/label',
-  )
-  await page.locator('#input-label label[data-slot="label"]').click()
-  await expect(email).toBeFocused()
+  await assertLabels()
 })
 
 test('marker keeps authored variants and annotation semantics across renderers', async ({
