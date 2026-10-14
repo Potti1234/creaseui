@@ -345,12 +345,16 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       },
       GotBlocksTailwindMessage: ({ message: child }) => {
         if (model.page._tag !== 'BlockPage') return { model: model }
-        const tailwindFeatured = BlocksTailwindPage.update(
-          model.page.tailwindFeatured,
-          child,
-        ).model
+        const {
+          model: tailwindFeatured,
+          commands: tailwindFeaturedCommands__,
+        } = BlocksTailwindPage.update(model.page.tailwindFeatured, child)
         return {
           model: { ...model, page: { ...model.page, tailwindFeatured } },
+          commands: Command.mapMessages(
+            tailwindFeaturedCommands__ ?? [],
+            nested => Message.GotBlocksTailwindMessage({ message: nested }),
+          ),
         }
       },
       GotSidebarStyleXMessage: ({ message: child }) => {
@@ -449,11 +453,15 @@ export const update = (model: Model, message: Message): UpdateReturn =>
 
       GotBlocksStyleXMessage: ({ message: child }) => {
         if (model.page._tag !== 'BlockPage') return { model: model }
-        const styleXFeatured = BlocksStyleXPage.update(
-          model.page.styleXFeatured,
-          child,
-        ).model
-        return { model: { ...model, page: { ...model.page, styleXFeatured } } }
+        const { model: styleXFeatured, commands: styleXFeaturedCommands__ } =
+          BlocksStyleXPage.update(model.page.styleXFeatured, child)
+        return {
+          model: { ...model, page: { ...model.page, styleXFeatured } },
+          commands: Command.mapMessages(
+            styleXFeaturedCommands__ ?? [],
+            nested => Message.GotBlocksStyleXMessage({ message: nested }),
+          ),
+        }
       },
 
       GotTanStackTableMessage: ({ message: childMessage }) => {
