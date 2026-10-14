@@ -193,10 +193,13 @@ test.describe('Pleat without preflight', () => {
       await expectIndependent(page)
       await page.getByRole('combobox').press('Escape')
       await expect(page.getByRole('option', { name: 'Profile' })).toBeHidden()
-      // Pleat's command lets Escape reach the parent dialog, which is already
-      // closed here; dismiss it again only if it is still open.
-      if (await page.locator('dialog').isVisible())
-        await page.keyboard.press('Escape')
+      // Like shadcn's CommandDialog, Escape in the command closes the dialog.
+      await expect(page.locator('dialog')).toBeHidden()
+      await page.getByRole('button', { name: 'Open command dialog' }).click()
+      await expect(page.getByRole('dialog')).toBeVisible()
+      await page
+        .getByRole('button', { name: 'Close', exact: true })
+        .press('Enter')
       await expect(page.locator('dialog')).toBeHidden()
 
       await page.setViewportSize({ width: 390, height: 844 })
