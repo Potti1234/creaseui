@@ -25,6 +25,9 @@ import { badge } from '@/stylex/badge'
 import { button } from '@/stylex/button'
 import { checkbox } from '@/stylex/checkbox'
 import { icon } from '@/stylex/composition/icon'
+import { reset } from '@/stylex/reset'
+import * as DateRangeInput from '@/stylex/date-range-input'
+import * as Select from '@/stylex/select'
 import * as TableState from '@/lib/tablecn-table'
 import * as Grid from '@/lib/tablecn-grid'
 import type { Task } from '@/lib/tablecn-data'
@@ -238,8 +241,16 @@ const st = stylex.create({
     gap: '0.5rem',
     paddingBlock: '0.375rem',
     alignItems: 'center',
-    backgroundColor: { default: null, ':focus': tokens.accent },
-    color: { default: null, ':focus': tokens.accentForeground },
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': tokens.accent,
+      ':focus': tokens.accent,
+    },
+    color: {
+      default: null,
+      ':hover': tokens.accentForeground,
+      ':focus': tokens.accentForeground,
+    },
     cursor: interactionTokens.cursorDefault,
     display: 'flex',
     fontSize: '0.875rem',
@@ -276,10 +287,10 @@ const st = stylex.create({
   c8: {
     alignItems: 'center',
     display: 'flex',
+    insetInlineStart: '0.5rem',
     justifyContent: 'center',
     position: 'absolute',
     height: '0.875rem',
-    left: '0.5rem',
     width: '0.875rem',
   },
   c10: {
@@ -307,7 +318,7 @@ const st = stylex.create({
     paddingBlock: '0.375rem',
     paddingInline: '0.5rem',
     alignItems: 'center',
-    backgroundColor: { default: null, ':hover': tokens.accent },
+    backgroundColor: { default: 'transparent', ':hover': tokens.accent },
     boxShadow: { default: null, ':focus': `inset 0 0 0 1px ${tokens.ring}` },
     cursor: interactionTokens.cursorAction,
     display: 'flex',
@@ -317,7 +328,7 @@ const st = stylex.create({
     height: '2rem',
     width: 'auto',
   },
-  c14: { left: '0rem', width: '7rem' },
+  c14: { insetInlineStart: '0rem', width: '7rem' },
   c15: { paddingInlineStart: '2rem' },
   c16: {
     color: tokens.mutedForeground,
@@ -349,14 +360,14 @@ const st = stylex.create({
   c23: {
     borderRadius: foundationTokens.radiusMd,
     alignItems: 'center',
-    backgroundColor: { default: null, ':hover': tokens.accent },
+    backgroundColor: { default: 'transparent', ':hover': tokens.accent },
     color: { default: null, ':hover': tokens.accentForeground },
     display: 'inline-flex',
     justifyContent: 'center',
     height: '2rem',
     width: '2rem',
   },
-  c24: { right: '0rem', width: '10rem' },
+  c24: { insetInlineEnd: '0rem', width: '10rem' },
   c25: { opacity: '0.5' },
   c26: { marginInlineStart: 'auto' },
   c27: {
@@ -387,7 +398,7 @@ const st = stylex.create({
     height: '1rem',
     width: '1px',
   },
-  c32: { padding: '0rem', left: '0rem', width: '12.5rem' },
+  c32: { padding: '0rem', insetInlineStart: '0rem', width: '12.5rem' },
   c33: { padding: '0.25rem', maxHeight: '18rem', overflowY: 'auto' },
   c34: {
     borderColor: tokens.border,
@@ -396,10 +407,10 @@ const st = stylex.create({
     borderWidth: '1px',
     alignItems: 'center',
     display: 'flex',
+    insetInlineStart: '0.5rem',
     justifyContent: 'center',
     position: 'absolute',
     height: '1rem',
-    left: '0.5rem',
     width: '1rem',
   },
   c35: { backgroundColor: tokens.primary, color: tokens.primaryForeground },
@@ -436,7 +447,7 @@ const st = stylex.create({
     whiteSpace: 'nowrap',
     height: '2rem',
   },
-  c41: { padding: '0.75rem', left: '0rem', width: '14rem' },
+  c41: { padding: '0.75rem', insetInlineStart: '0rem', width: '14rem' },
   c42: {
     fontSize: '0.875rem',
     fontWeight: 500,
@@ -481,7 +492,7 @@ const st = stylex.create({
     transitionProperty: 'color, background-color, border-color, box-shadow',
     height: '2rem',
   },
-  c46: { right: '0rem', width: '11rem' },
+  c46: { insetInlineEnd: '0rem', width: '11rem' },
   c47: {
     borderColor: tokens.border,
     borderRadius: foundationTokens.radiusMd,
@@ -505,8 +516,8 @@ const st = stylex.create({
     padding: '1rem',
     gap: '0.875rem',
     flexDirection: 'column',
+    insetInlineEnd: '0rem',
     minWidth: '23.75rem',
-    right: '0rem',
     width: 'auto',
   },
   c50: { gap: '0.25rem', display: 'flex', flexDirection: 'column' },
@@ -553,14 +564,14 @@ const st = stylex.create({
   },
   c58: { backgroundColor: tokens.accent, color: tokens.accentForeground },
   c59: {
-    backgroundColor: { default: null, ':hover': tokens.accent },
+    backgroundColor: { default: 'transparent', ':hover': tokens.accent },
     color: tokens.mutedForeground,
   },
   c60: {
     borderRadius: foundationTokens.radiusSm,
     alignItems: 'center',
     backgroundColor: {
-      default: null,
+      default: 'transparent',
       ':hover': `color-mix(in srgb, ${tokens.destructive} 10%, transparent)`,
     },
     color: { default: tokens.mutedForeground, ':hover': tokens.destructive },
@@ -594,7 +605,7 @@ const st = stylex.create({
   c67: {
     borderRadius: foundationTokens.radiusMd,
     alignItems: 'center',
-    backgroundColor: { default: null, ':hover': tokens.accent },
+    backgroundColor: { default: 'transparent', ':hover': tokens.accent },
     color: {
       default: tokens.mutedForeground,
       ':hover': tokens.accentForeground,
@@ -609,7 +620,7 @@ const st = stylex.create({
     gap: '0.5rem',
     display: 'flex',
     flexDirection: 'column',
-    right: '0rem',
+    insetInlineEnd: '0rem',
     width: 'auto',
   },
   c69: {
@@ -720,8 +731,8 @@ const st = stylex.create({
     justifyContent: { default: null, '@media (min-width: 640px)': 'flex-end' },
   },
   c83: {
+    insetInlineStart: '0rem',
     bottom: '100%',
-    left: '0rem',
     marginBottom: '0.25rem',
     top: 'auto',
     width: '9rem',
@@ -776,24 +787,6 @@ const st = stylex.create({
     fontWeight: 500,
     lineHeight: '1.25rem',
     whiteSpace: 'nowrap',
-  },
-  c90: {
-    borderColor: tokens.border,
-    borderRadius: foundationTokens.radiusMd,
-    borderStyle: 'solid',
-    borderWidth: '1px',
-    paddingInline: '0.5rem',
-    backgroundColor: 'transparent',
-    boxShadow: {
-      default: foundationTokens.shadowXs,
-      ':focus-visible': `inset 0 0 0 1px ${tokens.ring}`,
-    },
-    display: 'flex',
-    fontSize: '0.875rem',
-    lineHeight: '1.25rem',
-    outlineStyle: 'none',
-    height: '2rem',
-    width: '4.5rem',
   },
   c91: {
     alignItems: 'center',
@@ -879,7 +872,7 @@ const st = stylex.create({
   c102: { opacity: '1' },
   c103: {
     backgroundColor: {
-      default: null,
+      default: 'transparent',
       ':hover': `color-mix(in srgb, ${tokens.muted} 50%, transparent)`,
     },
     transitionDuration: interactionTokens.motionFast,
@@ -1039,6 +1032,10 @@ export const update = (model: Model, message: Message): UpdateReturn => {
 
 const PANEL_CLASS = st.c0
 
+const tablecnStyles = stylex.create({
+  pageSizeTrigger: { width: '4.5rem' },
+})
+
 const MENU_ITEM_CLASS = st.c1
 
 const MENU_LABEL_CLASS = st.c2
@@ -1064,7 +1061,7 @@ const TRIGGER_PANEL = <Msg>(
               h.Type('button'),
               h.AriaHidden(true),
               h.Tabindex(-1),
-              h.Class(className(st.c7)),
+              h.Class(className(reset.button, st.c7)),
               h.OnClick(onClose),
             ]),
             h.div(
@@ -1096,7 +1093,7 @@ const checkItem = <Msg>(
       h.Role('menuitemcheckbox'),
       h.AriaChecked(isChecked),
       h.OnClick(onSelect),
-      h.Class(className(MENU_ITEM_CLASS)),
+      h.Class(className(reset.button, MENU_ITEM_CLASS)),
     ],
     [
       h.span(
@@ -1295,7 +1292,7 @@ const headerCell = (
             h.OnClick(
               TableState.Message.SetHeaderMenu({ columnId: column.id }),
             ),
-            h.Class(className(st.c13)),
+            h.Class(className(reset.button, st.c13)),
             h.DataAttribute('state', isOpen ? 'open' : 'closed'),
           ],
           [column.header, sortIcon(model, column.id, h)],
@@ -1346,7 +1343,7 @@ const headerCell = (
                           columnId: column.id,
                         }),
                       ),
-                      h.Class(className(MENU_ITEM_CLASS, st.c15)),
+                      h.Class(className(reset.button, MENU_ITEM_CLASS, st.c15)),
                     ],
                     [
                       h.span(
@@ -1442,7 +1439,7 @@ const taskCell = (
                 h.AriaHasPopup('menu'),
                 h.AriaExpanded(isOpen),
                 h.OnClick(TableState.Message.SetRowMenu({ rowId: task.id })),
-                h.Class(className(st.c23)),
+                h.Class(className(reset.button, st.c23)),
                 h.DataAttribute('state', isOpen ? 'open' : 'closed'),
               ],
               [
@@ -1471,7 +1468,7 @@ const taskCell = (
                         taskId: task.id,
                       }),
                     ),
-                    h.Class(className(MENU_ITEM_CLASS, st.c15)),
+                    h.Class(className(reset.button, MENU_ITEM_CLASS, st.c15)),
                   ],
                   [
                     h.span(
@@ -1485,7 +1482,9 @@ const taskCell = (
                   [
                     h.Type('button'),
                     h.Role('menuitem'),
-                    h.Class(className(MENU_ITEM_CLASS, st.c15, st.c25)),
+                    h.Class(
+                      className(reset.button, MENU_ITEM_CLASS, st.c15, st.c25),
+                    ),
                   ],
                   [
                     h.span(
@@ -1515,7 +1514,7 @@ const taskCell = (
                         ids: [task.id],
                       }),
                     ),
-                    h.Class(className(MENU_ITEM_CLASS, st.c15)),
+                    h.Class(className(reset.button, MENU_ITEM_CLASS, st.c15)),
                   ],
                   [
                     h.span(
@@ -1565,7 +1564,7 @@ const facetedFilter = (
       h.AriaHasPopup('menu'),
       h.AriaExpanded(isOpen),
       h.OnClick(TableState.Message.SetPanel({ panel: panelId })),
-      h.Class(className(st.c27, selected.length === 0 && st.c28)),
+      h.Class(className(reset.button, st.c27, selected.length === 0 && st.c28)),
     ],
     [
       h.span(
@@ -1624,7 +1623,7 @@ const facetedFilter = (
                   h.Role('menuitemcheckbox'),
                   h.AriaChecked(selected.includes(option.value)),
                   h.OnClick(toggle(option.value)),
-                  h.Class(className(MENU_ITEM_CLASS)),
+                  h.Class(className(reset.button, MENU_ITEM_CLASS)),
                 ],
                 [
                   h.span(
@@ -1663,7 +1662,7 @@ const facetedFilter = (
                       h.Type('button'),
                       h.Role('menuitem'),
                       h.OnClick(TableState.Message.ClearedFilters({})),
-                      h.Class(className(MENU_ITEM_CLASS, st.c38)),
+                      h.Class(className(reset.button, MENU_ITEM_CLASS, st.c38)),
                     ],
                     ['Clear filters'],
                   ),
@@ -1688,7 +1687,7 @@ const rangeFilter = (
       h.AriaHasPopup('menu'),
       h.AriaExpanded(isOpen),
       h.OnClick(TableState.Message.SetPanel({ panel: 'filter-hours' })),
-      h.Class(className(st.c39, !model.hasHoursFilter && st.c28)),
+      h.Class(className(reset.button, st.c39, !model.hasHoursFilter && st.c28)),
     ],
     [
       h.span(
@@ -1728,7 +1727,7 @@ const rangeFilter = (
             h.input([
               h.Type('number'),
               h.Placeholder('Min'),
-              h.Class(className(st.c43)),
+              h.Class(className(reset.input, st.c43)),
               h.Value(model.hasHoursFilter ? String(model.hoursMin) : ''),
               h.OnInput(value =>
                 TableState.Message.ChangedHoursMin({
@@ -1740,7 +1739,7 @@ const rangeFilter = (
             h.input([
               h.Type('number'),
               h.Placeholder('Max'),
-              h.Class(className(st.c43)),
+              h.Class(className(reset.input, st.c43)),
               h.Value(
                 model.hasHoursFilter && model.hoursMax > 0
                   ? String(model.hoursMax)
@@ -1780,7 +1779,7 @@ const dateRangeFilter = (
       h.AriaHasPopup('menu'),
       h.AriaExpanded(isOpen),
       h.OnClick(TableState.Message.SetPanel({ panel: 'filter-created' })),
-      h.Class(className(st.c39, !hasRange && st.c28)),
+      h.Class(className(reset.button, st.c39, !hasRange && st.c28)),
     ],
     [
       h.span(
@@ -1806,31 +1805,17 @@ const dateRangeFilter = (
         h.Class(className(PANEL_CLASS, st.c41)),
       ],
       [
-        h.div([h.Class(className(st.c42))], ['Created']),
-        h.div(
-          [h.Class(className(st.c17))],
-          [
-            h.input([
-              h.Type('date'),
-              h.Class(className(st.c43)),
-              h.Value(model.createdFrom),
-              h.OnInput(value =>
-                TableState.Message.ChangedCreatedFrom({
-                  value,
-                }),
-              ),
-            ]),
-            h.input([
-              h.Type('date'),
-              h.Class(className(st.c43)),
-              h.Value(model.createdTo),
-              h.OnInput(value =>
-                TableState.Message.ChangedCreatedTo({
-                  value,
-                }),
-              ),
-            ]),
-          ],
+        DateRangeInput.dateRangeInput(
+          {
+            model: model.createdRange,
+            toParentMessage: message =>
+              TableState.Message.GotCreatedRangeMessage({ message }),
+            label: 'Created',
+            size: 'sm',
+            hasClear: true,
+            placeholder: 'Pick a range',
+          },
+          h,
         ),
       ],
     ),
@@ -1850,7 +1835,7 @@ const viewOptions = (
       h.AriaHasPopup('menu'),
       h.AriaExpanded(isOpen),
       h.OnClick(TableState.Message.SetPanel({ panel: 'view-options' })),
-      h.Class(className(st.c45)),
+      h.Class(className(reset.button, st.c45)),
     ],
     [
       h.span(
@@ -1904,7 +1889,7 @@ const sortMenu = (model: TableState.Model, h: HtmlBuilder<Message>): Html => {
       h.AriaHasPopup('dialog'),
       h.AriaExpanded(isOpen),
       h.OnClick(TableState.Message.SetPanel({ panel: 'sort-menu' })),
-      h.Class(className(st.c47)),
+      h.Class(className(reset.button, st.c47)),
     ],
     [
       h.span(
@@ -1982,6 +1967,7 @@ const sortMenu = (model: TableState.Model, h: HtmlBuilder<Message>): Html => {
                               ),
                               h.Class(
                                 className(
+                                  reset.button,
                                   st.c57,
                                   !entry.desc ? st.c58 : st.c59,
                                 ),
@@ -2000,7 +1986,11 @@ const sortMenu = (model: TableState.Model, h: HtmlBuilder<Message>): Html => {
                                 }),
                               ),
                               h.Class(
-                                className(st.c57, entry.desc ? st.c58 : st.c59),
+                                className(
+                                  reset.button,
+                                  st.c57,
+                                  entry.desc ? st.c58 : st.c59,
+                                ),
                               ),
                             ],
                             ['Desc'],
@@ -2012,7 +2002,7 @@ const sortMenu = (model: TableState.Model, h: HtmlBuilder<Message>): Html => {
                               h.OnClick(
                                 TableState.Message.RemovedSort({ index }),
                               ),
-                              h.Class(className(st.c60)),
+                              h.Class(className(reset.button, st.c60)),
                             ],
                             [
                               h.span(
@@ -2092,7 +2082,7 @@ const controlMenu = (
         h.Type('button'),
         h.AriaPressed(String(active)),
         h.OnClick(onClick),
-        h.Class(className(st.c63, active ? st.c64 : st.c65)),
+        h.Class(className(reset.button, st.c63, active ? st.c64 : st.c65)),
       ],
       [
         h.span(
@@ -2110,7 +2100,7 @@ const controlMenu = (
           h.Type('button'),
           h.AriaLabel('Toggle control menu'),
           h.OnClick(TableState.Message.SetPanel({ panel: 'control-menu' })),
-          h.Class(className(st.c67)),
+          h.Class(className(reset.button, st.c67)),
         ],
         [
           h.span(
@@ -2125,7 +2115,7 @@ const controlMenu = (
               h.Type('button'),
               h.AriaHidden(true),
               h.Tabindex(-1),
-              h.Class(className(st.c7)),
+              h.Class(className(reset.button, st.c7)),
               h.OnClick(TableState.Message.SetPanel({ panel: 'none' })),
             ]),
             h.div(
@@ -2268,7 +2258,7 @@ const updateSheet = (
               h.Type('button'),
               h.AriaLabel('Close'),
               h.OnClick(TableState.Message.ClosedUpdateSheet({})),
-              h.Class(className(st.c75)),
+              h.Class(className(reset.button, st.c75)),
             ],
             [
               h.span(
@@ -2295,7 +2285,7 @@ const updateSheet = (
                 [
                   h.label([h.Class(className(st.c71))], ['Title']),
                   h.input([
-                    h.Class(className(st.c72)),
+                    h.Class(className(reset.input, st.c72)),
                     h.Value(model.draftTitle),
                     h.OnInput(value =>
                       TableState.Message.ChangedDraftField({
@@ -2315,7 +2305,7 @@ const updateSheet = (
                   h.label([h.Class(className(st.c71))], ['Estimated Hours']),
                   h.input([
                     h.Type('number'),
-                    h.Class(className(st.c72)),
+                    h.Class(className(reset.input, st.c72)),
                     h.Value(model.draftHours),
                     h.OnInput(value =>
                       TableState.Message.ChangedDraftField({
@@ -2435,7 +2425,7 @@ const tasksActionBar = (
         h.Type('button'),
         h.Role('menuitem'),
         h.OnClick(onSelect),
-        h.Class(className(MENU_ITEM_CLASS, st.c15)),
+        h.Class(className(reset.button, MENU_ITEM_CLASS, st.c15)),
       ],
       [label],
     )
@@ -2474,7 +2464,7 @@ const tasksActionBar = (
                 h.Type('button'),
                 h.AriaHidden(true),
                 h.Tabindex(-1),
-                h.Class(className(st.c7)),
+                h.Class(className(reset.button, st.c7)),
                 h.OnClick(TableState.Message.SetActionBarMenu({ menu: '' })),
               ]),
               h.div(
@@ -2609,7 +2599,10 @@ const pagination = (
         h.AriaLabel(label),
         h.OnClick(onClick),
         ...(isDisabled ? [h.Attribute('disabled', '')] : []),
-        h.Class(className(st.c85) + (extra === undefined ? '' : ' ' + extra)),
+        h.Class(
+          className(reset.button, st.c85) +
+            (extra === undefined ? '' : ' ' + extra),
+        ),
       ],
       [
         h.span(
@@ -2635,27 +2628,20 @@ const pagination = (
             [h.Class(className(st.c17))],
             [
               h.p([h.Class(className(st.c89))], ['Rows per page']),
-              h.select(
-                [
-                  h.AriaLabel('Rows per page'),
-                  h.Class(className(st.c90)),
-                  h.OnInput(value =>
-                    TableState.Message.SetPageSize({
-                      size: Number(value),
-                    }),
-                  ),
-                ],
-                [10, 20, 30, 40, 50].map(size =>
-                  h.option(
-                    [
-                      h.Value(String(size)),
-                      ...(size === model.pageSize
-                        ? [h.Attribute('selected', '')]
-                        : []),
-                    ],
-                    [String(size)],
-                  ),
-                ),
+              Select.select(
+                {
+                  model: model.pageSizeSelect,
+                  maybeSelectedValue: Option.some(String(model.pageSize)),
+                  toParentMessage: message =>
+                    TableState.Message.GotPageSizeSelectMessage({ message }),
+                  items: [10, 20, 30, 40, 50],
+                  itemToValue: size => String(size),
+                  itemToLabel: size => String(size),
+                  size: 'sm',
+                  ariaLabel: 'Rows per page',
+                  triggerLayoutStyle: tablecnStyles.pageSizeTrigger,
+                },
+                h,
               ),
             ],
           ),
@@ -2736,7 +2722,7 @@ const tasksTable = (model: TableState.Model, h: HtmlBuilder<Message>): Html => {
                     value,
                   }),
                 ),
-                h.Class(className(st.c97)),
+                h.Class(className(reset.input, st.c97)),
               ]),
               facetedFilter(
                 model,
@@ -2876,7 +2862,13 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
               h.Role('tab'),
               h.AriaSelected(model.view === tab),
               h.OnClick(SwitchView({ view: tab })),
-              h.Class(className(st.c109, model.view === tab ? st.c64 : st.c65)),
+              h.Class(
+                className(
+                  reset.button,
+                  st.c109,
+                  model.view === tab ? st.c64 : st.c65,
+                ),
+              ),
             ],
             [tab === 'data-table' ? 'Data Table' : 'Data Grid'],
           ),

@@ -18,6 +18,8 @@ import {
 } from '@/ui/action-bar'
 import { button } from '@/ui/button'
 import { checkbox } from '@/ui/checkbox'
+import * as DateRangeInput from '@/ui/date-range-input'
+import * as Select from '@/ui/select'
 import { icon } from '@/lib/icon'
 import * as TableState from '@/lib/tablecn-table'
 import * as Grid from '@/lib/tablecn-grid'
@@ -374,7 +376,7 @@ const headerCell = (
           [
             h.Role('menu'),
             h.DataAttribute('slot', 'dropdown-menu-content'),
-            h.Class(cn(PANEL_CLASS, 'left-0 w-28')),
+            h.Class(cn(PANEL_CLASS, 'start-0 w-28')),
           ],
           [
             checkItem(
@@ -509,7 +511,7 @@ const taskCell = (
               [
                 h.Role('menu'),
                 h.DataAttribute('slot', 'dropdown-menu-content'),
-                h.Class(cn(PANEL_CLASS, 'right-0 w-40')),
+                h.Class(cn(PANEL_CLASS, 'end-0 w-40')),
               ],
               [
                 h.div([h.Class(MENU_LABEL_CLASS)], ['Actions']),
@@ -657,7 +659,7 @@ const facetedFilter = (
       [
         h.Role('menu'),
         h.DataAttribute('slot', 'popover-content'),
-        h.Class(cn(PANEL_CLASS, 'left-0 w-50 p-0')),
+        h.Class(cn(PANEL_CLASS, 'start-0 w-50 p-0')),
       ],
       [
         h.div(
@@ -770,7 +772,7 @@ const rangeFilter = (
     h.div(
       [
         h.DataAttribute('slot', 'popover-content'),
-        h.Class(cn(PANEL_CLASS, 'left-0 w-56 p-3')),
+        h.Class(cn(PANEL_CLASS, 'start-0 w-56 p-3')),
       ],
       [
         h.div([h.Class('mb-2 text-sm font-medium')], ['Estimated hours']),
@@ -868,38 +870,20 @@ const dateRangeFilter = (
     h.div(
       [
         h.DataAttribute('slot', 'popover-content'),
-        h.Class(cn(PANEL_CLASS, 'left-0 w-56 p-3')),
+        h.Class(cn(PANEL_CLASS, 'start-0 w-56 p-3')),
       ],
       [
-        h.div([h.Class('mb-2 text-sm font-medium')], ['Created']),
-        h.div(
-          [h.Class('flex items-center gap-2')],
-          [
-            h.input([
-              h.Type('date'),
-              h.Class(
-                'border-input h-8 w-full rounded-md border bg-transparent px-2 text-sm shadow-xs outline-none focus-visible:ring-1 focus-visible:ring-ring',
-              ),
-              h.Value(model.createdFrom),
-              h.OnInput(value =>
-                TableState.Message.ChangedCreatedFrom({
-                  value,
-                }),
-              ),
-            ]),
-            h.input([
-              h.Type('date'),
-              h.Class(
-                'border-input h-8 w-full rounded-md border bg-transparent px-2 text-sm shadow-xs outline-none focus-visible:ring-1 focus-visible:ring-ring',
-              ),
-              h.Value(model.createdTo),
-              h.OnInput(value =>
-                TableState.Message.ChangedCreatedTo({
-                  value,
-                }),
-              ),
-            ]),
-          ],
+        DateRangeInput.dateRangeInput(
+          {
+            model: model.createdRange,
+            toParentMessage: message =>
+              TableState.Message.GotCreatedRangeMessage({ message }),
+            label: 'Created',
+            size: 'sm',
+            hasClear: true,
+            placeholder: 'Pick a range',
+          },
+          h,
         ),
       ],
     ),
@@ -933,7 +917,7 @@ const viewOptions = (
       [
         h.Role('menu'),
         h.DataAttribute('slot', 'dropdown-menu-content'),
-        h.Class(cn(PANEL_CLASS, 'right-0 w-44')),
+        h.Class(cn(PANEL_CLASS, 'end-0 w-44')),
       ],
       [
         h.div([h.Class(MENU_LABEL_CLASS)], ['Toggle columns']),
@@ -994,9 +978,7 @@ const sortMenu = (model: TableState.Model, h: HtmlBuilder<Message>): Html => {
     h.div(
       [
         h.DataAttribute('slot', 'popover-content'),
-        h.Class(
-          cn(PANEL_CLASS, 'right-0 w-auto min-w-95 flex-col gap-3.5 p-4'),
-        ),
+        h.Class(cn(PANEL_CLASS, 'end-0 w-auto min-w-95 flex-col gap-3.5 p-4')),
       ],
       [
         h.div(
@@ -1565,7 +1547,7 @@ const tasksActionBar = (
                   h.Role('menu'),
                   h.DataAttribute('slot', 'dropdown-menu-content'),
                   h.Class(
-                    cn(PANEL_CLASS, 'bottom-full left-0 top-auto mb-1 w-36'),
+                    cn(PANEL_CLASS, 'bottom-full start-0 top-auto mb-1 w-36'),
                   ),
                 ],
                 [
@@ -1718,29 +1700,18 @@ const pagination = (
                 [h.Class('text-sm font-medium whitespace-nowrap')],
                 ['Rows per page'],
               ),
-              h.select(
-                [
-                  h.AriaLabel('Rows per page'),
-                  h.Class(
-                    'border-input flex h-8 w-18 rounded-md border bg-transparent px-2 text-sm shadow-xs outline-none focus-visible:ring-1 focus-visible:ring-ring',
-                  ),
-                  h.OnInput(value =>
-                    TableState.Message.SetPageSize({
-                      size: Number(value),
-                    }),
-                  ),
-                ],
-                [10, 20, 30, 40, 50].map(size =>
-                  h.option(
-                    [
-                      h.Value(String(size)),
-                      ...(size === model.pageSize
-                        ? [h.Attribute('selected', '')]
-                        : []),
-                    ],
-                    [String(size)],
-                  ),
-                ),
+              Select.select(
+                {
+                  model: model.pageSizeSelect,
+                  maybeSelectedValue: Option.some(String(model.pageSize)),
+                  toParentMessage: message =>
+                    TableState.Message.GotPageSizeSelectMessage({ message }),
+                  items: [10, 20, 30, 40, 50],
+                  itemToValue: size => String(size),
+                  itemToLabel: size => String(size),
+                  triggerClass: 'h-8 w-18',
+                },
+                h,
               ),
             ],
           ),

@@ -2,11 +2,15 @@
    tanstack table state from tablecn/src/app/components/tasks-table.tsx).
    Single open-popover id replaces React's per-component useState. */
 
-import { Effect, Schema as S } from 'effect'
+import { Listbox } from '@foldkit/ui'
+import { Effect, Option, Schema as S } from 'effect'
 import type { Update } from 'foldkit'
 import { Command } from 'foldkit'
+import * as Calendar from 'foldkit/calendar'
 import { defineMessageUnion } from 'foldkit/message'
 
+import { dateToISO } from '@/lib/date-parse'
+import * as DateRangeInput from '@/lib/date-range-input'
 import {
   generateTasks,
   type Task,
@@ -67,6 +71,8 @@ export const Model = S.Struct({
   filterMode: FilterMode,
   direction: S.Literals(['ltr', 'rtl']),
   actionBarMenu: S.String,
+  createdRange: DateRangeInput.Model,
+  pageSizeSelect: Listbox.Model,
 })
 export type Model = typeof Model.Type
 
@@ -111,8 +117,13 @@ export const Message = defineMessageUnion({
   ClosedActionBar: {},
   RequestedExport: {},
   CompletedExport: {},
+  GotCreatedRangeMessage: { message: DateRangeInput.Message },
+  GotPageSizeSelectMessage: { message: Listbox.Message },
 })
 export type Message = typeof Message.Type
+
+const today = (): Calendar.CalendarDate =>
+  Calendar.fromDateInZone(new Date(), 'UTC')
 
 export const init = (taskCount = 100): Model => ({
   tasks: generateTasks(taskCount),
@@ -144,6 +155,14 @@ export const init = (taskCount = 100): Model => ({
   filterMode: 'plain',
   direction: 'ltr',
   actionBarMenu: '',
+  createdRange: DateRangeInput.init({
+    id: 'tablecn-created-range',
+    today: today(),
+  }),
+  pageSizeSelect: Listbox.init({
+    id: 'tablecn-page-size',
+    isAnimated: true,
+  }),
 })
 
 const taskArray = (model: Model): Array<Task> => model.tasks as Array<Task>
@@ -340,6 +359,7 @@ const updateModel = (model: Model, message: Message): Model => {
         hoursMax: 0,
         createdFrom: '',
         createdTo: '',
+        createdRange: { ...model.createdRange, value: Option.none() },
       })
     case 'ToggledSort': {
       const existing = model.sorting.find(
@@ -613,9 +633,12 @@ const ExportTasksCsv = Command.define('ExportTablecnTasksCsv', {
 
 type UpdateReturn = Update.Return<Model, Message>
 
-export const update = (model: Model, message: Message): UpdateReturn =>
-  message._tag === 'RequestedExport'
-    ? {
+const pageSizeListbox = Listbox.create<string, string>()
+
+export const update = (model: Model, message: Message): UpdateReturn => {
+  switch (message._tag) {
+    case 'RequestedExport':
+      return {
         model,
         commands: [
           ExportTasksCsv({
@@ -624,4 +647,58 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           }),
         ],
       }
-    : { model: updateModel(model, message) }
+    case 'GotCreatedRangeMessage': {
+      const next = DateRangeInput.update(model.createdRange, message.message)
+      const rangePatch = Option.match(Option.fromNullishOr(next.outMessage), {
+        onNone: () => ({
+          createdFrom: model.createdFrom,
+          createdTo: model.createdTo,
+        }),
+        onSome: out =>
+          out._tag === 'ChangedValue'
+            ? Option.match(out.value, {
+                onNone: () => ({ createdFrom: '', createdTo: '' }),
+                onSome: range => ({
+                  createdFrom: dateToISO(range.start),
+                  createdTo: dateToISO(range.end),
+                }),
+              })
+            : {
+                createdFrom: model.createdFrom,
+                createdTo: model.createdTo,
+              },
+      })
+      return {
+        model: resetPage({ ...model, createdRange: next.model, ...rangePatch }),
+        commands: Command.mapMessages(next.commands ?? [], nested =>
+          Message.GotCreatedRangeMessage({ message: nested }),
+        ),
+      }
+    }
+    case 'GotPageSizeSelectMessage': {
+      const next = pageSizeListbox.update(model.pageSizeSelect, message.message)
+      const selectedValue = Option.match(
+        Option.fromNullishOr(next.outMessage),
+        {
+          onNone: () => model.pageSize,
+          onSome: out =>
+            out._tag === 'Selected' ? Number(out.value) : model.pageSize,
+        },
+      )
+      return {
+        model: resetPage({
+          ...model,
+          pageSizeSelect: next.model,
+          pageSize: Number.isNaN(selectedValue)
+            ? model.pageSize
+            : selectedValue,
+        }),
+        commands: Command.mapMessages(next.commands ?? [], nested =>
+          Message.GotPageSizeSelectMessage({ message: nested }),
+        ),
+      }
+    }
+    default:
+      return { model: updateModel(model, message) }
+  }
+}
