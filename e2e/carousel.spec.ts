@@ -18,19 +18,19 @@ test.describe('carousel', () => {
     await next.click()
     await expect(previous).toBeEnabled()
     await expect(
-      example.getByRole('group', { name: '2 of 3' }),
+      example.getByRole('group', { name: '2 of 5' }),
     ).toBeInViewport()
 
     const viewport = example.locator('[data-slot="carousel-content"]')
     await viewport.focus()
     await page.keyboard.press('End')
     await expect(
-      example.getByRole('group', { name: '3 of 3' }),
+      example.getByRole('group', { name: '5 of 5' }),
     ).toBeInViewport()
     await expect(next).toBeDisabled()
     await page.keyboard.press('Home')
     await expect(
-      example.getByRole('group', { name: '1 of 3' }),
+      example.getByRole('group', { name: '1 of 5' }),
     ).toBeInViewport()
   })
 
@@ -39,7 +39,7 @@ test.describe('carousel', () => {
   }, testInfo) => {
     await page.goto('/docs/components/carousel')
 
-    const example = page.locator('#two-at-a-time [data-slot="carousel"]')
+    const example = page.locator('#orientation [data-slot="carousel"]')
     const viewport = example.locator('[data-slot="carousel-content"]')
     const container = viewport.locator(':scope > div')
     const next = example.getByRole('button', { name: 'Next slide' })
@@ -84,7 +84,7 @@ test.describe('carousel', () => {
     { tag: '@mobile' },
     async ({ page }) => {
       await page.goto('/docs/components/carousel')
-      const example = page.locator('#single-slide')
+      const example = page.locator('#api')
       const viewport = example.locator('[data-slot="carousel-content"]')
       await viewport.scrollIntoViewIfNeeded()
       const box = await viewport.boundingBox()
@@ -103,7 +103,7 @@ test.describe('carousel', () => {
         type: 'touchEnd',
         touchPoints: [],
       })
-      await expect(example).toContainText('Slide 2 of 3')
+      await expect(example).toContainText('Slide 2 of 5')
     },
   )
 })
