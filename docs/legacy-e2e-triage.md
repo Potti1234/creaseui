@@ -23,6 +23,7 @@ The `browser` job on the same commit failed 1 of 672 (667 passed, 4 skipped): `[
 | site: kbd keeps semantic notation / kbd sections                                              | sections renamed; **product bug:** tooltip triggers nested a Button inside a button                                                            | `dcc240b` renderTrigger + spec update                                                                                                                |
 | site: flagship docs accessibility                                                             | **product bug:** icon-only Button Group menu trigger had no name                                                                               | `7330ecd` triggerAriaLabel                                                                                                                           |
 | site: switch                                                                                  | crease-only fixtures (read-only, hidden form value, description) replaced by shadcn fixtures; axe flagged shadcn muted text on the choice card | `226f201` toggle, disabled, RTL thumb; axe ignores only the pairs in `e2e/accepted-contrast.ts` (`a0b3b1a`). Gap: no read-only or form-value fixture |
+| site: collapsible                                                                             | `#details` external-control fixture replaced by shadcn fixtures                                                                                | spec covers click/Space/Enter, aria-controls panel, reduced motion and the aria-disabled trigger in both renderers. Gap: no external-control fixture |
 | site: menubar child models                                                                    | crease-only fixtures replaced by shadcn fixtures                                                                                               | `02c61a1`                                                                                                                                            |
 
 ## Remaining (first error on the current build)
@@ -35,7 +36,6 @@ The `browser` job on the same commit failed 1 of 672 (667 passed, 4 skipped): `[
 | site: Foldkit-native docs contained on mobile | no `Browse components` text             |
 | site: authored slider                         | `#range` lower thumb value              |
 | site: button-group sections                   | `#inputgroup` voice toggle aria-pressed |
-| site: collapsible                             | `#details` external open button         |
 | site: command dialogs                         | combobox value `Calculator`             |
 | site: context menu sections                   | `#checkboxes` trigger                   |
 | site: direction                               | `#mixed-direction` LTR text             |
