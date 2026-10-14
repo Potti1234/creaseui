@@ -70,7 +70,10 @@ const styles = stylex.create({
   },
 })
 
-export const table = <Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html =>
+export const table = <Msg>(
+  props: SlotProps & Readonly<{ ariaLabel?: string }>,
+  h: HtmlBuilder<Msg>,
+): Html =>
   h.div(
     [
       h.DataAttribute('slot', 'table-container'),
@@ -81,6 +84,9 @@ export const table = <Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html =>
       h.table(
         [
           h.DataAttribute('slot', 'table'),
+          ...(props.ariaLabel === undefined
+            ? []
+            : [h.AriaLabel(props.ariaLabel)]),
           h.Class(className(reset.table, styles.table, props.layoutStyle)),
         ],
         [...props.children],

@@ -489,7 +489,6 @@ export const dataTable = <Row, Msg>(
   return h.div(
     [
       h.DataAttribute('slot', 'data-table'),
-      ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
       h.Class(className(styles.root, props.layoutStyle)),
     ],
     [
@@ -639,6 +638,7 @@ export const dataTable = <Row, Msg>(
         [
           Table.table(
             {
+              ariaLabel: props.ariaLabel,
               children: [
                 h.thead(
                   [],

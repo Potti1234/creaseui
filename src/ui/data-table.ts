@@ -293,6 +293,7 @@ export const dataTable = <Row, Msg>(
         [
           Table.table(
             {
+              ariaLabel: props.ariaLabel,
               class: 'w-full',
               children: [
                 Table.tableHeader(
