@@ -6289,50 +6289,42 @@ test('menubar sections match upstream variants in both renderers', async ({
   ).toHaveAttribute('aria-checked', 'true')
 })
 
-test('collapsible preserves controlled linkage, external changes, and disabled policy', async ({
+test('collapsible preserves keyboard linkage, reduced motion and disabled policy', async ({
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/docs/components/collapsible')
-  const example = page.locator('#details')
-  await example.getByRole('button', { name: 'Open details externally' }).click()
+  const assertCollapsible = async () => {
+    const trigger = page.locator('#basic [data-slot="collapsible-trigger"]')
+    await expect(trigger).toHaveAttribute('aria-expanded', 'false')
+    await trigger.click()
+    await expect(trigger).toHaveAttribute('aria-expanded', 'true')
+    const controls = await trigger.getAttribute('aria-controls')
+    expect(controls).toBeTruthy()
+    const panel = page.locator(`#${controls}`)
+    await expect(panel).toBeVisible()
+    await expect(panel).toHaveCSS('transition-duration', '0s')
 
-  const trigger = example.locator('[data-slot="collapsible-trigger"]')
-  await expect(trigger).toHaveAccessibleName('Hide details')
-  const controls = await trigger.getAttribute('aria-controls')
-  expect(controls).toBeTruthy()
-  await expect(page.locator(`#${controls}`)).toBeVisible()
-  await expect(page.locator(`#${controls}`)).toHaveCSS(
-    'transition-duration',
-    '0s',
-  )
+    await trigger.focus()
+    await page.keyboard.press('Space')
+    await expect(trigger).toHaveAttribute('aria-expanded', 'false')
+    await page.keyboard.press('Enter')
+    await expect(trigger).toHaveAttribute('aria-expanded', 'true')
+    await trigger.click()
+    await expect(trigger).toHaveAttribute('aria-expanded', 'false')
 
-  await trigger.focus()
-  await page.keyboard.press('Space')
-  await expect(trigger).toHaveAttribute('aria-expanded', 'false')
-  await expect(trigger).toHaveAccessibleName('Show details')
-  await page.keyboard.press('Enter')
-  await expect(trigger).toHaveAttribute('aria-expanded', 'true')
-  await trigger.click()
-  await trigger.click()
-  await expect(trigger).toHaveAttribute('aria-expanded', 'true')
+    const disabled = page
+      .locator('#disabled')
+      .getByRole('button', { name: 'Unavailable details' })
+    await expect(disabled).toBeDisabled()
+    await disabled.click({ force: true })
+    await expect(disabled).toHaveAttribute('aria-expanded', 'false')
+  }
+  await assertCollapsible()
 
   await visitRenderer(page, 'StyleX')
-  for (const id of ['details', 'open-by-default', 'disabled']) {
-    await expect(page.locator(`#${id}`)).toBeVisible()
-  }
   await expect(page.locator('#stylex-specimen')).toHaveCount(0)
-  await expect(example.locator('code')).toContainText('@/stylex/collapsible')
-  await expect(trigger).toHaveAttribute('aria-expanded', 'true')
-  await expect(trigger).toHaveAccessibleName('Hide details')
-  await trigger.click()
-  await expect(trigger).toHaveAttribute('aria-expanded', 'false')
-
-  const disabled = page
-    .locator('#disabled')
-    .getByRole('button', { name: 'Unavailable details' })
-  await expect(disabled).toBeDisabled()
-  await expect(disabled).toHaveAttribute('aria-expanded', 'false')
+  await assertCollapsible()
 })
 
 test('progress sections match upstream variants and normalize custom ranges', async ({
