@@ -109,6 +109,9 @@ const expectations: Readonly<
   },
   mira: m => {
     for (const slot of CONTROLS) expect(m[slot]!.fontSize, slot).toBe(13)
+    // Compact density changes geometry, not only type size.
+    for (const slot of SINGLE_LINE)
+      expect(m[slot]!.height, slot).toBeLessThanOrEqual(28)
     expect(m['table-cell']!.paddingTop).toBeLessThan(8)
   },
   rhea: m => {

@@ -344,7 +344,7 @@ const STYLE_RULES: Readonly<Record<string, string>> = {
   vega: `${where([...CONTROL_SLOTS, ...SELECTION_SLOTS, ...SURFACE_SLOTS])}{box-shadow:none}`,
   maia: `${where([...SINGLE_LINE_SLOTS, ...TAB_SLOTS, ...DAY_SLOTS])}{border-radius:9999px}${where(['textarea', ...ROW_SLOTS, ...DISCLOSURE_SLOTS])}{border-radius:calc(var(--radius) + 0.25rem)}${where(SURFACE_SLOTS)}{border-radius:calc(var(--radius) + 0.5rem)}`,
   lyra: `${where([...CONTROL_SLOTS, 'checkbox', ...ROW_SLOTS, ...TAB_SLOTS, ...DISCLOSURE_SLOTS, ...DAY_SLOTS, ...SURFACE_SLOTS])}{border-radius:0}`,
-  mira: `${where(SINGLE_LINE_SLOTS)}{min-height:1.75rem}${where(CONTROL_SLOTS)}{font-size:.8125rem}${where(CELL_SLOTS)}{padding-block:.25rem}`,
+  mira: `${where(SINGLE_LINE_SLOTS)}{height:1.75rem;min-height:0}${where(CONTROL_SLOTS)}{font-size:.8125rem}${where(CELL_SLOTS)}{padding-block:.25rem}`,
   luma: `${where([...CONTROL_SLOTS, ...SELECTION_SLOTS, ...SURFACE_SLOTS])}{box-shadow:0 1px 3px oklch(0 0 0/.08)}`,
   sera: `${where([...CONTROL_SLOTS, ...SELECTION_SLOTS, ...SURFACE_SLOTS])}{border-width:2px}`,
   rhea: `${where([...SINGLE_LINE_SLOTS, ...ROW_SLOTS])}{min-height:2.5rem}:where([data-slot="card"]:not([data-size="sm"])){--card-spacing:1.75rem;--card-spacing-default:1.75rem}${where(CELL_SLOTS)}{padding-block:.75rem}`,
