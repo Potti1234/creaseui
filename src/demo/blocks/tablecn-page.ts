@@ -25,9 +25,15 @@ import * as Select from '@/ui/select'
 import * as Slider from '@/ui/slider'
 import { icon } from '@/lib/icon'
 import * as TableState from '@/lib/tablecn-table'
-import * as Grid from '@/lib/tablecn-grid'
+import * as Grid from '@/lib/data-grid'
 import type { Task } from '@/lib/tablecn-data'
-import { taskLabels, taskPriorities, taskStatuses } from '@/lib/tablecn-data'
+import {
+  generatePeople,
+  personDataGridConfig,
+  taskLabels,
+  taskPriorities,
+  taskStatuses,
+} from '@/lib/tablecn-data'
 import { cn } from '@/lib/utils'
 import { gridView } from '@/demo/blocks/tablecn-grid-view'
 
@@ -65,7 +71,7 @@ export type Message = typeof Message.Type
 export const init = (view: ActiveView = 'data-table'): Model => ({
   view,
   table: TableState.init(100),
-  grid: Grid.init(500),
+  grid: Grid.init(personDataGridConfig, generatePeople(500)),
 })
 
 type UpdateReturn = Update.Return<Model, Message>
@@ -96,7 +102,11 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       return {
         model: {
           ...model,
-          grid: Grid.update(model.grid, message as Grid.Message),
+          grid: Grid.update(
+            model.grid,
+            message as Grid.Message,
+            personDataGridConfig,
+          ),
         },
       }
     return { model }

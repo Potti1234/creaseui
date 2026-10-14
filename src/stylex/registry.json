@@ -31,6 +31,37 @@
       ]
     },
     {
+      "name": "stylex-action-bar",
+      "type": "registry:ui",
+      "title": "Action Bar",
+      "description": "The StyleX Action Bar component for Foldkit.",
+      "files": [
+        {
+          "path": "action-bar.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/action-bar.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/action-bar-behavior",
+        "Potti1234/creaseui/stylex-button",
+        "Potti1234/creaseui/stylex-complex-tokens-stylex",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex",
+        "Potti1234/creaseui/toolbar-behavior"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
       "name": "stylex-alert-dialog",
       "type": "registry:ui",
       "title": "Alert Dialog",
@@ -1403,6 +1434,34 @@
       ],
       "dependencies": [
         "@stylexjs/stylex@^0.19.0"
+      ]
+    },
+    {
+      "name": "stylex-data-grid",
+      "type": "registry:lib",
+      "title": "StyleX Data Grid Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "data-grid.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/data-grid.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/data-grid-behavior",
+        "Potti1234/creaseui/date-parse-behavior",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-calendar",
+        "Potti1234/creaseui/stylex-composition-icon",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
       ]
     },
     {

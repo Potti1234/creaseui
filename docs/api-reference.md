@@ -492,6 +492,14 @@ Source: [`src/ui/context-menu.ts`](../src/ui/context-menu.ts)
 | `ContextMenuProps` | type | `ContextMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => ContextMenuItemConfig<Item>; ariaLabel?: string; class?: string…` |
 | `contextMenu` | function | `contextMenu<Item extends string, Msg>(props: ContextMenuProps<Item, Msg>, h: HtmlBuilder<Msg>): Html` |
 
+## Data Grid
+
+Source: [`src/ui/data-grid.ts`](../src/ui/data-grid.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `dataGrid` | function | `dataGrid<Row>(props: Readonly<{ model: DataGrid.Model; config: DataGridConfig<Row>; }>, h: HtmlBuilder<DataGrid.Message>): Html` |
+
 ## Data Table
 
 Source: [`src/ui/data-table.ts`](../src/ui/data-table.ts)

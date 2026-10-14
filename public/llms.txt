@@ -49,6 +49,7 @@
 - Combobox: /docs/components/combobox — install with `npx creaseui add combobox`
 - Command: /docs/components/command — install with `npx creaseui add command`
 - Context Menu: /docs/components/context-menu — install with `npx creaseui add context-menu`
+- Data Grid: /docs/components/data-grid — install with `npx creaseui add data-grid`
 - Data Table: /docs/components/data-table — install with `npx creaseui add data-table`
 - Date Input: /docs/components/date-input — install with `npx creaseui add date-input`
 - Date Picker: /docs/components/date-picker — install with `npx creaseui add date-picker`

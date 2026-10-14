@@ -119,6 +119,7 @@ import { logStreamStyleXPreview } from '@/docs/components/pages/log-stream/style
 import { timerStyleXPreview } from '@/docs/components/pages/timer/stylex'
 import { timestampStyleXPreview } from '@/docs/components/pages/timestamp/stylex'
 import { transferListStyleXPreview } from '@/docs/components/pages/transfer-list/stylex'
+import { dataGridStylexPreviewProgram } from '@/docs/components/pages/data-grid/stylex'
 import { dataTableStyleXPreview } from '@/docs/components/pages/data-table/stylex'
 import { dateInputStyleXPreview } from '@/docs/components/pages/date-input/stylex'
 import { datePickerStyleXPreview } from '@/docs/components/pages/date-picker/stylex'
@@ -235,6 +236,7 @@ installStyleXExamplePreviewProvider('calendar', calendarStyleXPreview)
 installStyleXExamplePreviewProvider('carousel', carouselStyleXPreview)
 installStyleXExamplePreviewProvider('chart', chartStyleXPreview)
 installStyleXExamplePreviewProvider('center', centerStyleXPreview)
+installStyleXPreviewView('data-grid', dataGridStylexPreviewProgram.view)
 installStyleXExamplePreviewProvider('data-table', dataTableStyleXPreview)
 installStyleXExamplePreviewProvider('date-input', dateInputStyleXPreview)
 installStyleXExamplePreviewProvider('date-picker', datePickerStyleXPreview)

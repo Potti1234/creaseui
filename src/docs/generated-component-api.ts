@@ -1494,6 +1494,13 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "contextMenu<Item extends string, Msg>(props: ContextMenuProps<Item, Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "data-grid": [
+    {
+      "name": "dataGrid",
+      "kind": "function",
+      "signature": "dataGrid<Row>(props: Readonly<{ model: DataGrid.Model; config: DataGridConfig<Row>; }>, h: HtmlBuilder<DataGrid.Message>): Html"
+    }
+  ],
   "data-table": [
     {
       "name": "*",

@@ -546,6 +546,27 @@
       ]
     },
     {
+      "name": "data-grid",
+      "type": "registry:ui",
+      "title": "Data Grid",
+      "description": "A CreaseUI Data Grid component for Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/calendar",
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/data-grid-behavior",
+        "Potti1234/creaseui/date-parse-behavior",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "data-grid.ts",
+          "type": "registry:ui",
+          "target": "@ui/data-grid.ts"
+        }
+      ]
+    },
+    {
       "name": "data-table",
       "type": "registry:ui",
       "title": "Data Table",

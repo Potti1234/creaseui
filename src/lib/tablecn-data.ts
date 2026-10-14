@@ -189,13 +189,8 @@ export const generateTasks = (count: number, seed = 42): Array<Task> => {
 
 /* ---- data-grid people (mirrors tablecn seeds.ts field shapes) ---- */
 
-export interface FileCellData {
-  id: string
-  name: string
-  size: number
-  type: string
-  url: string
-}
+import type { DataGridColumn, DataGridConfig, FileCellData } from './data-grid'
+export type { FileCellData }
 
 export interface Person {
   id: string
@@ -410,4 +405,139 @@ export const generatePeople = (count: number, seed = 12345): Array<Person> => {
       attachments,
     }
   })
+}
+
+/* ---- data-grid column config for the Person demo rows ---- */
+
+export const personDataGridColumns: ReadonlyArray<DataGridColumn<Person>> = [
+  {
+    id: 'name',
+    header: 'Name',
+    iconName: 'text',
+    width: 160,
+    variant: 'text',
+    get: p => p.name ?? '',
+    set: (p, v) => ({ ...p, name: v }),
+  },
+  {
+    id: 'age',
+    header: 'Age',
+    iconName: 'hash',
+    width: 80,
+    variant: 'number',
+    numberMin: 18,
+    numberMax: 100,
+    numberStep: 1,
+    get: p => (p.age === undefined ? '' : String(p.age)),
+    set: (p, v) => ({ ...p, age: Number(v) || undefined }),
+  },
+  {
+    id: 'email',
+    header: 'Email',
+    iconName: 'mail',
+    width: 220,
+    variant: 'text',
+    get: p => p.email ?? '',
+    set: (p, v) => ({ ...p, email: v }),
+  },
+  {
+    id: 'website',
+    header: 'Website',
+    iconName: 'globe',
+    width: 200,
+    variant: 'url',
+    get: p => p.website ?? '',
+    set: (p, v) => ({ ...p, website: v }),
+  },
+  {
+    id: 'notes',
+    header: 'Notes',
+    iconName: 'file-text',
+    width: 320,
+    variant: 'long-text',
+    get: p => p.notes ?? '',
+    set: (p, v) => ({ ...p, notes: v }),
+  },
+  {
+    id: 'salary',
+    header: 'Salary',
+    iconName: 'hash',
+    width: 120,
+    variant: 'number',
+    numberMin: 0,
+    numberStep: 1000,
+    get: p => (p.salary === undefined ? '' : String(p.salary)),
+    set: (p, v) => ({ ...p, salary: Number(v) || undefined }),
+  },
+  {
+    id: 'department',
+    header: 'Department',
+    iconName: 'building-2',
+    width: 160,
+    variant: 'select',
+    options: departments,
+    get: p => p.department ?? '',
+    set: (p, v) => ({ ...p, department: v }),
+  },
+  {
+    id: 'status',
+    header: 'Status',
+    iconName: 'list-checks',
+    width: 140,
+    variant: 'select',
+    options: personStatuses,
+    get: p => p.status ?? '',
+    set: (p, v) => ({ ...p, status: v }),
+  },
+  {
+    id: 'skills',
+    header: 'Skills',
+    iconName: 'tags',
+    width: 200,
+    variant: 'multi-select',
+    options: skills,
+    get: p => (p.skills ?? []).join(', '),
+    getOptions: p => p.skills ?? [],
+    set: (p, v) => ({
+      ...p,
+      skills: v === '' ? [] : v.split(',').map(s => s.trim()),
+    }),
+  },
+  {
+    id: 'isActive',
+    header: 'Active',
+    iconName: 'check-square',
+    width: 90,
+    variant: 'checkbox',
+    get: p => (p.isActive === true ? 'true' : 'false'),
+    getBoolean: p => p.isActive === true,
+    set: (p, v) => ({ ...p, isActive: v === 'true' }),
+  },
+  {
+    id: 'startDate',
+    header: 'Start Date',
+    iconName: 'calendar',
+    width: 140,
+    variant: 'date',
+    get: p => p.startDate ?? '',
+    set: (p, v) => ({ ...p, startDate: v }),
+  },
+  {
+    id: 'attachments',
+    header: 'Attachments',
+    iconName: 'paperclip',
+    width: 180,
+    variant: 'file',
+    maxFiles: 5,
+    get: p => (p.attachments ?? []).map(file => file.name).join(', '),
+    getFiles: p => p.attachments ?? [],
+    setFiles: (p, files) => ({ ...p, attachments: [...files] }),
+    set: (p, v) => (v === '' ? { ...p, attachments: [] } : p),
+  },
+]
+
+export const personDataGridConfig: DataGridConfig<Person> = {
+  columns: personDataGridColumns,
+  rowKey: p => p.id,
+  createRow: key => ({ id: key, skills: [], attachments: [] }),
 }

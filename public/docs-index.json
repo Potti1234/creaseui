@@ -4,7 +4,7 @@
     "src/ui/registry.json",
     "src/ui/*.ts"
   ],
-  "componentCount": 122,
+  "componentCount": 123,
   "components": [
     {
       "slug": "accordion",
@@ -2178,6 +2178,33 @@
           "name": "contextMenu",
           "kind": "function",
           "signature": "contextMenu<Item extends string, Msg>(props: ContextMenuProps<Item, Msg>, h: HtmlBuilder<Msg>): Html"
+        }
+      ]
+    },
+    {
+      "slug": "data-grid",
+      "title": "Data Grid",
+      "description": "A CreaseUI Data Grid component for Foldkit.",
+      "docs": "/docs/components/data-grid",
+      "source": "src/ui/data-grid.ts",
+      "install": "npx creaseui add data-grid",
+      "dependencies": [
+        "Potti1234/creaseui/calendar",
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/data-grid-behavior",
+        "Potti1234/creaseui/date-parse-behavior",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/utils"
+      ],
+      "examples": [
+        "Editable grid",
+        "RTL"
+      ],
+      "api": [
+        {
+          "name": "dataGrid",
+          "kind": "function",
+          "signature": "dataGrid<Row>(props: Readonly<{ model: DataGrid.Model; config: DataGridConfig<Row>; }>, h: HtmlBuilder<DataGrid.Message>): Html"
         }
       ]
     },

@@ -42,6 +42,7 @@
 - Combobox: /docs/components/combobox — install with `npx creaseui add combobox`
 - Command: /docs/components/command — install with `npx creaseui add command`
 - Context Menu: /docs/components/context-menu — install with `npx creaseui add context-menu`
+- Data Grid: /docs/components/data-grid — install with `npx creaseui add data-grid`
 - Data Table: /docs/components/data-table — install with `npx creaseui add data-table`
 - Date Input: /docs/components/date-input — install with `npx creaseui add date-input`
 - Date Picker: /docs/components/date-picker — install with `npx creaseui add date-picker`
@@ -1159,6 +1160,16 @@ Examples: Demo, Basic, Submenu, Shortcuts, Groups, Icons, Checkboxes, Radio, Des
 - `ContextMenuItemConfig<Item extends string = string> = DropdownMenu.DropdownMenuItemConfig<Item>` (type)
 - `ContextMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => ContextMenuItemConfig<Item>; ariaLabel?: string; class?: string…` (type)
 - `contextMenu<Item extends string, Msg>(props: ContextMenuProps<Item, Msg>, h: HtmlBuilder<Msg>): Html` (function)
+
+### Data Grid
+
+A CreaseUI Data Grid component for Foldkit.
+
+Source: `src/ui/data-grid.ts`
+
+Examples: Editable grid, RTL
+
+- `dataGrid<Row>(props: Readonly<{ model: DataGrid.Model; config: DataGridConfig<Row>; }>, h: HtmlBuilder<DataGrid.Message>): Html` (function)
 
 ### Data Table
 

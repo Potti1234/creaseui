@@ -1,6 +1,8 @@
-/* Model for the tablecn data-grid demo (mirrors use-data-grid state:
-   focused/editing cell, selected ranges, sorting, filtering, hidden columns,
-   row height, search overlay, undo/redo, clipboard). */
+/* Skin-neutral model for the data-grid component (mirrors tablecn's
+   use-data-grid state: focused/editing cell, selected ranges, sorting,
+   filtering, hidden columns, row height, search overlay, undo/redo).
+   Row access is injected via DataGridConfig so the model stays serializable
+   and renderer-agnostic. */
 
 import { Calendar as CalendarPrimitive } from '@foldkit/ui'
 import { Effect, Option, Queue, Schema as S, Stream } from 'effect'
@@ -9,11 +11,62 @@ import { defineMessageUnion } from 'foldkit/message'
 import * as Mount from 'foldkit/mount'
 
 import { dateFromISO, dateToISO } from '@/lib/date-parse'
-import {
-  type FileCellData,
-  generatePeople,
-  type Person,
-} from '@/lib/tablecn-data'
+
+export type CellVariant =
+  | 'text'
+  | 'number'
+  | 'long-text'
+  | 'select'
+  | 'multi-select'
+  | 'date'
+  | 'file'
+  | 'checkbox'
+  | 'url'
+
+export type FileCellData = Readonly<{
+  id: string
+  name: string
+  size: number
+  type: string
+  url: string
+}>
+
+/* One column of the grid: presentation fields (header/iconName/width),
+   the cell variant that picks the editor, variant options, and the row
+   accessors the model needs. `get` is the cell's display/filter/sort text;
+   `set` commits a text-style value ('' clears); boolean and file cells use
+   getBoolean/getFiles + setFiles; multi-select reads getOptions and commits
+   a ', '-joined set. */
+export type DataGridColumn<Row> = Readonly<{
+  id: string
+  header: string
+  iconName: string
+  width: number
+  variant: CellVariant
+  options?: ReadonlyArray<string>
+  numberMin?: number
+  numberMax?: number
+  numberStep?: number
+  maxFiles?: number
+  maxFileSize?: number
+  get: (row: Row) => string
+  set?: (row: Row, value: string) => Row
+  getBoolean?: (row: Row) => boolean
+  getOptions?: (row: Row) => ReadonlyArray<string>
+  getFiles?: (row: Row) => ReadonlyArray<FileCellData>
+  setFiles?: (row: Row, files: ReadonlyArray<FileCellData>) => Row
+}>
+
+export type DataGridConfig<Row> = Readonly<{
+  columns: ReadonlyArray<DataGridColumn<Row>>
+  rowKey: (row: Row) => string
+  createRow: (key: string) => Row
+}>
+
+const columnById = <Row>(
+  config: DataGridConfig<Row>,
+  id: string,
+): DataGridColumn<Row> | undefined => config.columns.find(c => c.id === id)
 
 export const ROW_HEIGHTS = [
   { id: 'short', label: 'Short', height: 36 },
@@ -141,26 +194,16 @@ export type Message = typeof Message.Type
 const today = (): Calendar.CalendarDate =>
   Calendar.fromDateInZone(new Date(), 'UTC')
 
-export const init = (count = 500): Model => ({
-  rows: generatePeople(count),
+export const init = <Row>(
+  config: DataGridConfig<Row>,
+  rows: ReadonlyArray<Row>,
+): Model => ({
+  rows,
   cellCalendar: CalendarPrimitive.init({
-    id: 'tablecn-grid-cell-calendar',
+    id: 'data-grid-cell-calendar',
     today: today(),
   }),
-  columnOrder: [
-    'name',
-    'age',
-    'email',
-    'website',
-    'notes',
-    'salary',
-    'department',
-    'status',
-    'skills',
-    'isActive',
-    'startDate',
-    'attachments',
-  ],
+  columnOrder: config.columns.map(column => column.id),
   hiddenColumnIds: [],
   sorting: [],
   filters: [],
@@ -188,73 +231,48 @@ export const init = (count = 500): Model => ({
 export const rowHeightPx = (id: string): number =>
   ROW_HEIGHTS.find(entry => entry.id === id)?.height ?? 36
 
-const personArray = (model: Model): Array<Person> => model.rows as Array<Person>
+const rowsArray = <Row>(model: Model): Array<Row> => model.rows as Array<Row>
 
-export const cellText = (person: Person, column: string): string => {
-  switch (column) {
-    case 'name':
-      return person.name ?? ''
-    case 'age':
-      return person.age === undefined ? '' : String(person.age)
-    case 'email':
-      return person.email ?? ''
-    case 'website':
-      return person.website ?? ''
-    case 'notes':
-      return person.notes ?? ''
-    case 'salary':
-      return person.salary === undefined ? '' : String(person.salary)
-    case 'department':
-      return person.department ?? ''
-    case 'status':
-      return person.status ?? ''
-    case 'skills':
-      return (person.skills ?? []).join(', ')
-    case 'isActive':
-      return person.isActive === true ? 'true' : 'false'
-    case 'startDate':
-      return person.startDate ?? ''
-    case 'attachments':
-      return (person.attachments ?? []).map(file => file.name).join(', ')
-    default:
-      return ''
-  }
-}
+export const cellText = <Row>(
+  row: Row,
+  columnId: string,
+  config: DataGridConfig<Row>,
+): string => columnById(config, columnId)?.get(row) ?? ''
 
-export const filteredPeople = (model: Model): Array<Person> => {
+export const filteredRows = <Row>(
+  model: Model,
+  config: DataGridConfig<Row>,
+): Array<Row> => {
   const active = model.filters.filter(filter => filter.value !== '')
-  return personArray(model).filter(person =>
+  return rowsArray<Row>(model).filter(row =>
     active.every(filter =>
-      cellText(person, filter.column)
+      cellText(row, filter.column, config)
         .toLowerCase()
         .includes(filter.value.toLowerCase()),
     ),
   )
 }
 
-const numericColumns = new Set(['age', 'salary'])
-
-/* columns whose editor edits the draftValue text field */
-const draftEditedColumns = new Set([
-  'name',
-  'age',
-  'email',
-  'website',
-  'notes',
-  'salary',
+/* variants whose editor edits the draftValue text field */
+const draftEditedVariants: ReadonlySet<CellVariant> = new Set([
+  'text',
+  'number',
+  'long-text',
+  'url',
 ])
 
-export const sortedPeople = (
-  people: ReadonlyArray<Person>,
+export const sortedRows = <Row>(
+  rows: ReadonlyArray<Row>,
   sorting: ReadonlyArray<{ id: string; desc: boolean }>,
-): ReadonlyArray<Person> => {
-  if (sorting.length === 0) return people
-  return [...people].sort((a, b) => {
+  config: DataGridConfig<Row>,
+): ReadonlyArray<Row> => {
+  if (sorting.length === 0) return rows
+  return [...rows].sort((a, b) => {
     for (const entry of sorting) {
-      const av = cellText(a, entry.id)
-      const bv = cellText(b, entry.id)
+      const av = cellText(a, entry.id, config)
+      const bv = cellText(b, entry.id, config)
       let cmp: number
-      if (numericColumns.has(entry.id)) {
+      if (columnById(config, entry.id)?.variant === 'number') {
         cmp = (Number(av) || 0) - (Number(bv) || 0)
       } else {
         cmp = av.localeCompare(bv)
@@ -265,76 +283,64 @@ export const sortedPeople = (
   })
 }
 
-const setValue = (person: Person, column: string, value: string): Person => {
-  switch (column) {
-    case 'name':
-      return { ...person, name: value }
-    case 'age':
-      return { ...person, age: Number(value) || undefined }
-    case 'email':
-      return { ...person, email: value }
-    case 'website':
-      return { ...person, website: value }
-    case 'notes':
-      return { ...person, notes: value }
-    case 'salary':
-      return { ...person, salary: Number(value) || undefined }
-    case 'department':
-      return { ...person, department: value }
-    case 'status':
-      return { ...person, status: value }
-    case 'skills':
-      return {
-        ...person,
-        skills: value === '' ? [] : value.split(',').map(s => s.trim()),
-      }
-    case 'startDate':
-      return { ...person, startDate: value }
-    default:
-      return person
-  }
-}
+export const visibleColumnDefs = <Row>(
+  model: Model,
+  config: DataGridConfig<Row>,
+): Array<DataGridColumn<Row>> =>
+  visibleColumns(model)
+    .map(id => columnById(config, id))
+    .filter((c): c is DataGridColumn<Row> => c !== undefined)
 
-const commitCell = (
+const commitCell = <Row>(
   model: Model,
   row: number,
-  column: string,
+  columnId: string,
   value: string,
+  config: DataGridConfig<Row>,
 ): Model => {
-  const people = filteredPeople(model)
-  const target = people[row]
-  if (target === undefined) return model
+  const column = columnById(config, columnId)
+  const target = filteredRows(model, config)[row]
+  if (column === undefined || target === undefined) return model
+  const write = column.set ?? ((r: Row): Row => r)
   const snapshot = model.rows
   return {
     ...model,
     pastStates: [...model.pastStates, snapshot],
     futureStates: [],
-    rows: personArray(model).map(person =>
-      person.id === target.id ? setValue(person, column, value) : person,
+    rows: rowsArray<Row>(model).map(r =>
+      config.rowKey(r) === config.rowKey(target) ? write(r, value) : r,
     ),
   }
 }
 
-const commitFiles = (
+const commitFiles = <Row>(
   model: Model,
   row: number,
-  files: Array<FileCellData>,
+  columnId: string,
+  files: ReadonlyArray<FileCellData>,
+  config: DataGridConfig<Row>,
 ): Model => {
-  const people = filteredPeople(model)
-  const target = people[row]
-  if (target === undefined) return model
+  const column = columnById(config, columnId)
+  const target = filteredRows(model, config)[row]
+  if (column?.setFiles === undefined || target === undefined) return model
+  const writeFiles = column.setFiles
   const snapshot = model.rows
   return {
     ...model,
     pastStates: [...model.pastStates, snapshot],
     futureStates: [],
-    rows: personArray(model).map(person =>
-      person.id === target.id ? { ...person, attachments: files } : person,
+    rows: rowsArray<Row>(model).map(r =>
+      config.rowKey(r) === config.rowKey(target) ? writeFiles(r, files) : r,
     ),
   }
 }
 
-const moveFocus = (model: Model, dRow: number, dColumn: number): Model => {
+const moveFocus = <Row>(
+  model: Model,
+  dRow: number,
+  dColumn: number,
+  config: DataGridConfig<Row>,
+): Model => {
   const columns = visibleColumns(model)
   const columnIndex = columns.indexOf(model.focusedCell.column)
   const nextColumn = Math.min(
@@ -343,7 +349,7 @@ const moveFocus = (model: Model, dRow: number, dColumn: number): Model => {
   )
   const nextRow = Math.min(
     Math.max(model.focusedCell.row + dRow, 0),
-    filteredPeople(model).length - 1,
+    filteredRows(model, config).length - 1,
   )
   return {
     ...model,
@@ -356,7 +362,11 @@ export const visibleColumns = (model: Model): Array<string> =>
 
 const emptyCell = { row: -1, column: '' }
 
-export const update = (model: Model, message: Message): Model => {
+export const update = <Row>(
+  model: Model,
+  message: Message,
+  config: DataGridConfig<Row>,
+): Model => {
   switch (message._tag) {
     case 'FocusedCell':
       return {
@@ -366,30 +376,33 @@ export const update = (model: Model, message: Message): Model => {
         selectionEnd: { row: message.row, column: message.column },
       }
     case 'StartedEditing': {
-      const people = filteredPeople(model)
+      const rows = filteredRows(model, config)
+      const column = columnById(config, message.column)
       /* boolean cells toggle immediately — tablecn's checkbox cell is the
          editor itself, there is no separate edit mode for it */
-      if (message.column === 'isActive') {
-        const target = people[message.row]
+      if (column?.variant === 'checkbox') {
+        const target = rows[message.row]
         if (target === undefined) return model
+        const checked = column.getBoolean?.(target) ?? false
         return commitCell(
           model,
           message.row,
           message.column,
-          target.isActive === true ? 'false' : 'true',
+          checked ? 'false' : 'true',
+          config,
         )
       }
       /* date cells: reopen the cell calendar on the value's month — like
          tablecn's DateCell which seeds react-day-picker with the cell date */
-      const person = people[message.row]
+      const target = rows[message.row]
       const viewDate =
-        person === undefined
+        target === undefined
           ? Option.none()
-          : dateFromISO(cellText(person, message.column))
+          : dateFromISO(cellText(target, message.column, config))
       const cellCalendar =
-        message.column === 'startDate'
+        column?.variant === 'date'
           ? CalendarPrimitive.init({
-              id: 'tablecn-grid-cell-calendar',
+              id: 'data-grid-cell-calendar',
               today: today(),
               ...(Option.isSome(viewDate)
                 ? { initialViewDate: viewDate.value }
@@ -409,19 +422,22 @@ export const update = (model: Model, message: Message): Model => {
       /* draftValue only backs the text-style editors (text, number, url,
          long-text); option/date/file editors commit through their own
          messages, so committing the draft would overwrite with '' */
-      const committed = draftEditedColumns.has(model.editingCell.column)
+      const committed = draftEditedVariants.has(
+        columnById(config, model.editingCell.column)?.variant ?? 'text',
+      )
         ? commitCell(
             model,
             model.editingCell.row,
             model.editingCell.column,
             model.draftValue,
+            config,
           )
         : model
       const moved =
         message.move === 'down'
-          ? moveFocus(committed, 1, 0)
+          ? moveFocus(committed, 1, 0, config)
           : message.move === 'right'
-            ? moveFocus(committed, 0, 1)
+            ? moveFocus(committed, 0, 1, config)
             : committed
       return { ...moved, editingCell: emptyCell }
     }
@@ -430,16 +446,24 @@ export const update = (model: Model, message: Message): Model => {
     case 'CompletedEditorFocus':
       return model
     case 'SetCellValue':
-      return commitCell(model, message.row, message.column, message.value)
-    case 'ToggledCellBoolean': {
-      const people = filteredPeople(model)
-      const target = people[message.row]
-      if (target === undefined) return model
       return commitCell(
         model,
         message.row,
         message.column,
-        target.isActive === true ? 'false' : 'true',
+        message.value,
+        config,
+      )
+    case 'ToggledCellBoolean': {
+      const column = columnById(config, message.column)
+      const target = filteredRows(model, config)[message.row]
+      if (column === undefined || target === undefined) return model
+      const checked = column.getBoolean?.(target) ?? false
+      return commitCell(
+        model,
+        message.row,
+        message.column,
+        checked ? 'false' : 'true',
+        config,
       )
     }
     case 'AppliedCellOption': {
@@ -448,21 +472,28 @@ export const update = (model: Model, message: Message): Model => {
         message.row,
         message.column,
         message.value,
+        config,
       )
       return { ...committed, editingCell: emptyCell, draftValue: '' }
     }
     case 'ToggledCellOption': {
-      const people = filteredPeople(model)
-      const target = people[message.row]
-      if (target === undefined) return model
-      const current = target.skills ?? []
+      const column = columnById(config, message.column)
+      const target = filteredRows(model, config)[message.row]
+      if (column === undefined || target === undefined) return model
+      const current = column.getOptions?.(target) ?? []
       const next = current.includes(message.option)
-        ? current.filter(skill => skill !== message.option)
+        ? current.filter(option => option !== message.option)
         : [...current, message.option]
-      return commitCell(model, message.row, message.column, next.join(', '))
+      return commitCell(
+        model,
+        message.row,
+        message.column,
+        next.join(', '),
+        config,
+      )
     }
     case 'ClearedCellOptions':
-      return commitCell(model, message.row, message.column, '')
+      return commitCell(model, message.row, message.column, '', config)
     case 'GotCellCalendarMessage': {
       const next = CalendarPrimitive.update(
         model.cellCalendar,
@@ -476,6 +507,7 @@ export const update = (model: Model, message: Message): Model => {
               model.editingCell.row,
               model.editingCell.column,
               dateToISO(next.outMessage.date),
+              config,
             )
             return {
               ...committed,
@@ -492,29 +524,36 @@ export const update = (model: Model, message: Message): Model => {
     }
     case 'PickedCellFiles': {
       if (model.editingCell.row === -1) return model
-      const people = filteredPeople(model)
-      const target = people[model.editingCell.row]
-      if (target === undefined) return model
+      const column = columnById(config, model.editingCell.column)
+      const target = filteredRows(model, config)[model.editingCell.row]
+      if (column === undefined || target === undefined) return model
       const next: Array<FileCellData> = message.files.map((file, index) => ({
-        id: `${target.id}-upload-${String(Date.now())}-${String(index)}`,
+        id: `${config.rowKey(target)}-upload-${String(Date.now())}-${String(index)}`,
         name: file.name,
         size: file.size,
         type: file.type,
         url: file.url,
       }))
-      return commitFiles(model, model.editingCell.row, [
-        ...(target.attachments ?? []),
-        ...next,
-      ])
+      return commitFiles(
+        model,
+        model.editingCell.row,
+        model.editingCell.column,
+        [...(column.getFiles?.(target) ?? []), ...next],
+        config,
+      )
     }
     case 'RemovedCellFile': {
-      const people = filteredPeople(model)
-      const target = people[message.row]
-      if (target === undefined) return model
+      const column = columnById(config, message.column)
+      const target = filteredRows(model, config)[message.row]
+      if (column === undefined || target === undefined) return model
       return commitFiles(
         model,
         message.row,
-        (target.attachments ?? []).filter(file => file.id !== message.fileId),
+        message.column,
+        (column.getFiles?.(target) ?? []).filter(
+          file => file.id !== message.fileId,
+        ),
+        config,
       )
     }
     case 'ClearedSelection':
@@ -571,7 +610,7 @@ export const update = (model: Model, message: Message): Model => {
       if (!message.checked) return { ...model, selectedRowIndexes: [] }
       return {
         ...model,
-        selectedRowIndexes: filteredPeople(model).map((_, i) => i),
+        selectedRowIndexes: filteredRows(model, config).map((_, i) => i),
       }
     }
     case 'SetSorting':
@@ -657,33 +696,36 @@ export const update = (model: Model, message: Message): Model => {
       }
       switch (message.action) {
         case 'clear-cell':
-          return commitCell(closed, menu.row, menu.column, '')
+          return commitCell(closed, menu.row, menu.column, '', config)
         case 'add-row-above':
-          return insertRow(closed, menu.row)
+          return insertRow(closed, menu.row, config)
         case 'add-row-below':
-          return insertRow(closed, menu.row + 1)
+          return insertRow(closed, menu.row + 1, config)
         case 'delete-row':
-          return deleteRow(closed, menu.row)
+          return deleteRow(closed, menu.row, config)
         default:
           return closed
       }
     }
     case 'AddedRow':
-      return insertRow(model, filteredPeople(model).length)
+      return insertRow(model, filteredRows(model, config).length, config)
     case 'AddedRowAt':
-      return insertRow(model, message.index)
+      return insertRow(model, message.index, config)
     case 'DeletedRows': {
-      const people = filteredPeople(model)
-      const ids = new Set(
+      const rows = filteredRows(model, config)
+      const keys = new Set(
         message.indexes
-          .map(index => people[index]?.id)
-          .filter((id): id is string => id !== undefined),
+          .map(index => rows[index])
+          .filter((row): row is Row => row !== undefined)
+          .map(row => config.rowKey(row)),
       )
       return {
         ...model,
         pastStates: [...model.pastStates, model.rows],
         futureStates: [],
-        rows: personArray(model).filter(person => !ids.has(person.id)),
+        rows: rowsArray<Row>(model).filter(
+          row => !keys.has(config.rowKey(row)),
+        ),
         selectedRowIndexes: [],
       }
     }
@@ -699,7 +741,7 @@ export const update = (model: Model, message: Message): Model => {
     case 'SetMatchIndex':
       return { ...model, matchIndex: message.index }
     case 'NavigatedMatch': {
-      const matches = searchMatches(model)
+      const matches = searchMatches(model, config)
       if (matches.length === 0) return model
       const delta = message.direction === 'prev' ? -1 : 1
       return {
@@ -736,6 +778,7 @@ export const update = (model: Model, message: Message): Model => {
         message.key,
         message.ctrl || message.meta,
         message.shift,
+        config,
       )
     case 'Scrolled':
       return { ...model, scrollTop: message.scrollTop }
@@ -744,26 +787,27 @@ export const update = (model: Model, message: Message): Model => {
   }
 }
 
-const onGridKey = (
+const onGridKey = <Row>(
   model: Model,
   key: string,
   ctrl: boolean,
   shift: boolean,
+  config: DataGridConfig<Row>,
 ): Model => {
   const isEditing = model.editingCell.row !== -1
   if (ctrl) {
     switch (key.toLowerCase()) {
       case 'f':
-        return update(model, Message.ToggledSearch({}))
+        return update(model, Message.ToggledSearch({}), config)
       case 'z':
         return shift
-          ? update(model, Message.Redo({}))
-          : update(model, Message.Undo({}))
+          ? update(model, Message.Redo({}), config)
+          : update(model, Message.Undo({}), config)
       case 'y':
-        return update(model, Message.Redo({}))
+        return update(model, Message.Redo({}), config)
       case 'a': {
         if (isEditing) return model
-        return update(model, Message.ToggledAllRows({ checked: true }))
+        return update(model, Message.ToggledAllRows({ checked: true }), config)
       }
       default:
         return model
@@ -772,31 +816,32 @@ const onGridKey = (
   if (isEditing) {
     switch (key) {
       case 'Escape':
-        return update(model, Message.CanceledEdit({}))
+        return update(model, Message.CanceledEdit({}), config)
       case 'Enter':
-        return update(model, Message.CommittedDraft({ move: 'down' }))
+        return update(model, Message.CommittedDraft({ move: 'down' }), config)
       case 'Tab':
-        return update(model, Message.CommittedDraft({ move: 'right' }))
+        return update(model, Message.CommittedDraft({ move: 'right' }), config)
       default:
         return model
     }
   }
   switch (key) {
     case 'Escape':
-      if (model.searchOpen) return update(model, Message.ToggledSearch({}))
+      if (model.searchOpen)
+        return update(model, Message.ToggledSearch({}), config)
       if (model.contextMenu.open)
-        return update(model, Message.ClosedContextMenu({}))
-      return update(model, Message.ClearedSelection({}))
+        return update(model, Message.ClosedContextMenu({}), config)
+      return update(model, Message.ClearedSelection({}), config)
     case 'ArrowUp':
-      return moveFocus(model, -1, 0)
+      return moveFocus(model, -1, 0, config)
     case 'ArrowDown':
-      return moveFocus(model, 1, 0)
+      return moveFocus(model, 1, 0, config)
     case 'ArrowLeft':
-      return moveFocus(model, 0, -1)
+      return moveFocus(model, 0, -1, config)
     case 'ArrowRight':
-      return moveFocus(model, 0, 1)
+      return moveFocus(model, 0, 1, config)
     case 'Tab':
-      return moveFocus(model, 0, shift ? -1 : 1)
+      return moveFocus(model, 0, shift ? -1 : 1, config)
     case 'Enter':
     case 'F2':
       if (model.focusedCell.row === -1) return model
@@ -807,18 +852,20 @@ const onGridKey = (
           column: model.focusedCell.column,
           seed: '',
         }),
+        config,
       )
     case 'Delete':
     case 'Backspace': {
       if (model.focusedCell.row === -1) return model
       const rows = [...model.selectedRowIndexes]
       if (rows.length > 1)
-        return update(model, Message.DeletedRows({ indexes: rows }))
+        return update(model, Message.DeletedRows({ indexes: rows }), config)
       return commitCell(
         model,
         model.focusedCell.row,
         model.focusedCell.column,
         '',
+        config,
       )
     }
     default:
@@ -831,6 +878,7 @@ const onGridKey = (
             column: model.focusedCell.column,
             seed: key,
           }),
+          config,
         )
       }
       return model
@@ -1095,49 +1143,53 @@ export const cellFilePickerMount = <Msg>(
   toParentMessage: (message: typeof FilePickerMessage.Type) => Msg,
 ) => Mount.mapMessage(CellFilePicker({}), toParentMessage)
 
-const blankPerson = (id: string): Person => ({
-  id,
-  name: '',
-  skills: [],
-  attachments: [],
-})
-
-const insertRow = (model: Model, index: number): Model => {
-  const people = filteredPeople(model)
-  if (index >= people.length || people[index] === undefined) {
+const insertRow = <Row>(
+  model: Model,
+  index: number,
+  config: DataGridConfig<Row>,
+): Model => {
+  const rows = filteredRows(model, config)
+  const key = `row_new_${String(Date.now())}`
+  if (index >= rows.length || rows[index] === undefined) {
     /* append at end of the underlying array */
     return {
       ...model,
       pastStates: [...model.pastStates, model.rows],
       futureStates: [],
-      rows: [...model.rows, blankPerson(`person_new_${String(Date.now())}`)],
+      rows: [...model.rows, config.createRow(key)],
     }
   }
-  const targetId = people[index]!.id
-  const rawIndex = personArray(model).findIndex(p => p.id === targetId)
-  const rows = [...model.rows]
-  rows.splice(
-    rawIndex === -1 ? rows.length : rawIndex,
+  const targetKey = config.rowKey(rows[index]!)
+  const rawIndex = rowsArray<Row>(model).findIndex(
+    r => config.rowKey(r) === targetKey,
+  )
+  const nextRows = [...model.rows]
+  nextRows.splice(
+    rawIndex === -1 ? nextRows.length : rawIndex,
     0,
-    blankPerson(`person_new_${String(Date.now())}`),
+    config.createRow(key),
   )
   return {
     ...model,
     pastStates: [...model.pastStates, model.rows],
     futureStates: [],
-    rows,
+    rows: nextRows,
   }
 }
 
-const deleteRow = (model: Model, index: number): Model => {
-  const people = filteredPeople(model)
-  const target = people[index]
+const deleteRow = <Row>(
+  model: Model,
+  index: number,
+  config: DataGridConfig<Row>,
+): Model => {
+  const target = filteredRows(model, config)[index]
   if (target === undefined) return model
+  const targetKey = config.rowKey(target)
   return {
     ...model,
     pastStates: [...model.pastStates, model.rows],
     futureStates: [],
-    rows: personArray(model).filter(p => p.id !== target.id),
+    rows: rowsArray<Row>(model).filter(r => config.rowKey(r) !== targetKey),
   }
 }
 
@@ -1146,15 +1198,18 @@ export interface GridMatch {
   column: string
 }
 
-export const searchMatches = (model: Model): Array<GridMatch> => {
+export const searchMatches = <Row>(
+  model: Model,
+  config: DataGridConfig<Row>,
+): Array<GridMatch> => {
   const query = model.searchQuery.trim().toLowerCase()
   if (query === '') return []
   const columns = visibleColumns(model)
   const matches: Array<GridMatch> = []
-  filteredPeople(model).forEach((person, row) => {
+  filteredRows(model, config).forEach((row, rowIndex) => {
     for (const column of columns) {
-      if (cellText(person, column).toLowerCase().includes(query)) {
-        matches.push({ row, column })
+      if (cellText(row, column, config).toLowerCase().includes(query)) {
+        matches.push({ row: rowIndex, column })
       }
     }
   })

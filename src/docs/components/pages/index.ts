@@ -42,6 +42,7 @@ import { dateInputPage } from '@/docs/components/pages/date-input'
 import { datePickerPage } from '@/docs/components/pages/date-picker'
 import { dateRangeInputPage } from '@/docs/components/pages/date-range-input'
 import { dateTimeInputPage } from '@/docs/components/pages/date-time-input'
+import { dataGridPage } from '@/docs/components/pages/data-grid'
 import { dataTablePage } from '@/docs/components/pages/data-table'
 import { directionPage } from '@/docs/components/pages/direction'
 import { dialogPage } from '@/docs/components/pages/dialog'
@@ -168,6 +169,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> =
       datePickerPage,
       dateRangeInputPage,
       dateTimeInputPage,
+      dataGridPage,
       dataTablePage,
       directionPage,
       dialogPage,

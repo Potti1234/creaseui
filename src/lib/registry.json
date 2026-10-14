@@ -978,22 +978,9 @@
           "type": "registry:lib",
           "target": "@lib/tablecn-data.ts"
         }
-      ]
-    },
-    {
-      "name": "tablecn-grid-behavior",
-      "type": "registry:lib",
-      "title": "Tablecn Grid Behavior",
-      "description": "Shared Foldkit behavior and helpers for Tablecn Grid.",
-      "files": [
-        {
-          "path": "tablecn-grid.ts",
-          "type": "registry:lib",
-          "target": "@lib/tablecn-grid.ts"
-        }
       ],
       "registryDependencies": [
-        "Potti1234/creaseui/tablecn-data-behavior"
+        "Potti1234/creaseui/data-grid-behavior"
       ]
     },
     {
@@ -1009,7 +996,26 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/date-parse-behavior",
+        "Potti1234/creaseui/date-range-input-behavior",
+        "Potti1234/creaseui/slider-behavior",
         "Potti1234/creaseui/tablecn-data-behavior"
+      ]
+    },
+    {
+      "name": "data-grid-behavior",
+      "type": "registry:lib",
+      "title": "Data Grid Behavior",
+      "description": "Shared Foldkit behavior and helpers for Data Grid.",
+      "files": [
+        {
+          "path": "data-grid.ts",
+          "type": "registry:lib",
+          "target": "@lib/data-grid.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/date-parse-behavior"
       ]
     }
   ]
