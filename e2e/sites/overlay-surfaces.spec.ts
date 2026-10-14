@@ -94,10 +94,16 @@ for (const { component, slot, open, expected } of cases) {
       .locator('main [aria-label$="preview" i] button:visible')
       .first()
     await expect(trigger).toBeVisible()
+    // Only re-trigger while the surface is still closed: clicking again on a
+    // slow engine (WebKit) toggles an overlay that was about to render.
     await expect(async () => {
-      if (open === 'hover') await trigger.hover()
-      else await trigger.click()
-      expect(await surfaceOf(page, slot)).not.toBeNull()
+      if ((await surfaceOf(page, slot)) === null) {
+        if (open === 'hover') await trigger.hover()
+        else await trigger.click()
+      }
+      await expect
+        .poll(() => surfaceOf(page, slot), { timeout: 2_000 })
+        .not.toBeNull()
     }).toPass({ timeout: 15_000 })
     await expect.poll(() => surfaceOf(page, slot)).toEqual(expected)
   })
