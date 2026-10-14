@@ -3,6 +3,7 @@ import {
   HTML_ONLY_CHILDREN,
   LAYOUT_CONSTRUCTORS,
   LAYOUT_PROPERTIES,
+  isAppearanceSlot,
   isLayoutSlot,
   isPlacementUtility,
 } from './contracts.js'
@@ -169,6 +170,7 @@ export const analyzeCall = ({ analysis, call, context, record, strict }) => {
     for (const field of fields) {
       if (
         FORBIDDEN_PROPS.has(field) ||
+        isAppearanceSlot(field) ||
         (field === 'class' && renderer !== 'tailwind')
       )
         violation(
@@ -323,7 +325,7 @@ export const analyzeCall = ({ analysis, call, context, record, strict }) => {
 
   for (const [key, values] of read(props, new Set())) {
     for (const value of values) {
-      if (FORBIDDEN_PROPS.has(key)) {
+      if (FORBIDDEN_PROPS.has(key) || isAppearanceSlot(key)) {
         violation(
           value,
           `\`${key}\` is an appearance override on ${label(record)}; use a named variant or composition prop.`,

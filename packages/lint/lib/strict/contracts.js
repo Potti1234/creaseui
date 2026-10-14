@@ -60,6 +60,21 @@ export const FORBIDDEN_PROPS = new Set([
   'sx',
 ])
 
+/* Part-specific appearance slots (Popover.triggerClass, Select itemsClassName,
+   Dialog closeButtonAttributes, StyleX inputStyle...). Every `*Style` prop is
+   appearance except layout slots and the finite option fields below. */
+const APPEARANCE_SLOT =
+  /(?:Class|ClassName|Classes|Attributes|Attrs|Style|Styles)$/u
+export const VARIANT_STYLE_FIELDS = new Set([
+  'citationStyle',
+  'timeZoneNameStyle',
+])
+
+export const isAppearanceSlot = name =>
+  APPEARANCE_SLOT.test(name) &&
+  !isLayoutSlot(name) &&
+  !VARIANT_STYLE_FIELDS.has(name)
+
 export const isLayoutSlot = name =>
   name === 'layoutStyle' || /LayoutStyle$/u.test(name)
 
