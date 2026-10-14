@@ -5676,15 +5676,19 @@ test('item sections match upstream variants in both renderers', async ({
 
   const avatar = page.locator('#avatar')
   await expect(avatar.getByText('Evil Rabbit', { exact: true })).toBeVisible()
-  await expect(
-    avatar.getByRole('button', { name: 'Invite', exact: true }),
-  ).toBeVisible()
+  // shadcn item-avatar: an icon-only Invite and a labelled Invite button
+  const invites = avatar.getByRole('button', { name: 'Invite', exact: true })
+  await expect(invites).toHaveCount(2)
+  await expect(invites.first()).toBeVisible()
+  await expect(invites.last()).toBeVisible()
   await expect(
     avatar.getByText('No Team Members', { exact: true }),
   ).toBeVisible()
 
   const image = page.locator('#image')
-  await expect(image.getByText(/Midnight City Lights/)).toBeVisible()
+  await expect(
+    image.locator('[data-slot="item-title"]').getByText(/Midnight City Lights/),
+  ).toBeVisible()
   await expect(image.getByText('3:45', { exact: true })).toBeVisible()
   await expect(image.locator('img')).toHaveCount(3)
 
