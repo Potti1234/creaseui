@@ -456,8 +456,8 @@ test('StyleX Create renders the full board composition', async ({ page }) => {
   await expect(
     page.getByText('Contribution History', { exact: true }),
   ).toBeVisible()
-  await expect(page.locator('[data-primitive-box]')).toBeVisible()
-  await expect(page.locator('[data-primitive-board-grid]')).toBeVisible()
+  await expect(page.locator('[data-slot="capture-target"]')).toBeVisible()
+  await expect(page.locator('[data-primitive-box]')).toHaveCount(0)
 })
 
 test('legacy Create variant routes are removed', async ({ page }) => {
@@ -559,8 +559,13 @@ test('component docs explain the Foldkit integration model', async ({
     'focus restoration',
   )
 
-  await page.goto('/docs/components/toast')
+  await page.goto('/docs/components/breadcrumb')
   await expect(page.getByText('Composed recipe', { exact: true })).toBeVisible()
+
+  await page.goto('/docs/components/toast')
+  await expect(
+    page.getByText('Stateful submodel', { exact: true }),
+  ).toBeVisible()
   await expect(page.locator('#usage')).toContainText('Toast.show')
   await expect(page.locator('#usage')).toContainText('Toast.toast')
   await expect(page.locator('#api-reference')).toContainText(
