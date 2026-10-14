@@ -23,6 +23,13 @@ test('navigates the public catalog and passes an accessibility scan', async ({
   ).toBeVisible()
 
   await page.getByRole('link', { name: 'Docs' }).first().click()
+  await expect(page).toHaveURL(/\/docs\/getting-started$/)
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+
+  await page
+    .getByRole('link', { name: 'Accordion', exact: true })
+    .first()
+    .click()
   await expect(page).toHaveURL(/\/docs\/components\/accordion$/)
   await expect(
     page.getByRole('heading', { level: 1, name: 'Accordion' }),
@@ -59,7 +66,7 @@ test('opens and closes a dialog with its accessible contract intact', async ({
   page,
 }) => {
   await page.goto('/docs/components/dialog')
-  await page.getByRole('button', { name: 'Open profile', exact: true }).click()
+  await page.getByRole('button', { name: 'Open Dialog', exact: true }).click()
 
   const dialog = page.getByRole('dialog', { name: 'Edit profile' })
   await expect(dialog).toBeVisible()
