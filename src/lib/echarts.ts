@@ -11,6 +11,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
 import { cn } from '@/lib/utils'
+import type * as EChartsCore from 'echarts/core'
 
 /* ECharts embedded in foldkit. Where shadcn wraps recharts (React-only), we render the
    same visual language through Apache ECharts:
@@ -26,9 +27,9 @@ import { cn } from '@/lib/utils'
    - Chart modules load only when a chart mounts. Theme tokens are re-read when
      a class, style, or data-theme attribute changes on the host or an ancestor. */
 
-let echartsPromise: Promise<typeof import('echarts/core')> | undefined
+let echartsPromise: Promise<typeof EChartsCore> | undefined
 
-const loadECharts = (): Promise<typeof import('echarts/core')> => {
+const loadECharts = (): Promise<typeof EChartsCore> => {
   if (echartsPromise === undefined) {
     echartsPromise = Promise.all([
       import('echarts/core'),
