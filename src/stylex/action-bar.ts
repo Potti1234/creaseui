@@ -9,12 +9,8 @@ import type { Message } from '@/lib/action-bar'
 import { escapeActionBarMount } from '@/lib/action-bar'
 import type { Message as ToolbarMessage } from '@/lib/toolbar'
 import { focusToolbarItemsMount } from '@/lib/toolbar'
-import type {
-  ActionBarAlign,
-  ActionBarOrientation,
-  ActionBarSide,
-} from '@/lib/action-bar'
-export type { ActionBarAlign, ActionBarOrientation, ActionBarSide }
+import type { ActionBarAlign, ActionBarSide } from '@/lib/action-bar'
+export type { ActionBarAlign, ActionBarSide }
 import { reset } from '@/stylex/reset'
 import { buttonVisualStyles } from '@/stylex/button'
 import type { StaticStyles } from '@stylexjs/stylex'
@@ -59,12 +55,6 @@ const styles = stylex.create({
     alignItems: 'center',
     flexDirection: 'row',
   },
-  rootVertical: {
-    paddingBlock: '0.5rem',
-    paddingInline: '0.375rem',
-    alignItems: 'flex-start',
-    flexDirection: 'column',
-  },
   selection: {
     borderColor: tokens.border,
     borderRadius: foundationTokens.radiusSm,
@@ -85,11 +75,6 @@ const styles = stylex.create({
     outlineStyle: 'none',
   },
   groupHorizontal: { alignItems: 'center' },
-  groupVertical: {
-    alignItems: 'flex-start',
-    flexDirection: 'column',
-    width: '100%',
-  },
   itemDestructive: {
     backgroundColor: {
       default: 'transparent',
@@ -114,7 +99,6 @@ const styles = stylex.create({
     flexShrink: 0,
   },
   separatorHorizontal: { height: '1.5rem', width: '1px' },
-  separatorVertical: { height: '1px', width: '100%' },
 })
 
 export type ActionBarProps<Msg> = Readonly<{
@@ -123,7 +107,6 @@ export type ActionBarProps<Msg> = Readonly<{
   align?: ActionBarAlign
   alignOffset?: number
   sideOffset?: number
-  orientation?: ActionBarOrientation
   toParentMessage?: (message: Message | ToolbarMessage) => Msg
   children: ReadonlyArray<Html | string>
   layoutStyle?: ComponentLayoutStyle
@@ -135,7 +118,6 @@ export const actionBar = <Msg>(
 ): Html => {
   const side = props.side ?? 'bottom'
   const align = props.align ?? 'center'
-  const orientation = props.orientation ?? 'horizontal'
   const sideOffset = props.sideOffset ?? 16
   const alignOffset = props.alignOffset ?? 0
 
@@ -144,26 +126,24 @@ export const actionBar = <Msg>(
   return h.div(
     [
       h.Role('toolbar'),
-      h.AriaOrientation(orientation),
+      h.AriaOrientation('horizontal'),
       h.DataAttribute('slot', 'action-bar'),
       h.DataAttribute('side', side),
       h.DataAttribute('align', align),
-      h.DataAttribute('orientation', orientation),
+      h.DataAttribute('orientation', 'horizontal'),
       ...(props.toParentMessage === undefined
         ? []
         : [
             h.OnMount(escapeActionBarMount(props.toParentMessage)),
             h.OnMount(
-              focusToolbarItemsMount(props.toParentMessage, orientation),
+              focusToolbarItemsMount(props.toParentMessage, 'horizontal'),
             ),
           ]),
       h.Class(
         className(
           styles.root,
           side === 'bottom' ? styles.rootBottom : styles.rootTop,
-          orientation === 'horizontal'
-            ? styles.rootHorizontal
-            : styles.rootVertical,
+          styles.rootHorizontal,
           props.layoutStyle,
         ),
       ),
@@ -196,30 +176,21 @@ export const actionBarSelection = <Msg>(
 export const actionBarGroup = <Msg>(
   props: Readonly<{
     children: ReadonlyArray<Html | string>
-    orientation?: ActionBarOrientation
     layoutStyle?: ComponentLayoutStyle
   }>,
   h: HtmlBuilder<Msg>,
-): Html => {
-  const orientation = props.orientation ?? 'horizontal'
-  return h.div(
+): Html =>
+  h.div(
     [
       h.Role('group'),
       h.DataAttribute('slot', 'action-bar-group'),
-      h.DataAttribute('orientation', orientation),
+      h.DataAttribute('orientation', 'horizontal'),
       h.Class(
-        className(
-          styles.group,
-          orientation === 'horizontal'
-            ? styles.groupHorizontal
-            : styles.groupVertical,
-          props.layoutStyle,
-        ),
+        className(styles.group, styles.groupHorizontal, props.layoutStyle),
       ),
     ],
     [...props.children],
   )
-}
 
 export const actionBarItem = <Msg>(
   props: Readonly<{
@@ -274,28 +245,23 @@ export const actionBarClose = <Msg>(
 
 export const actionBarSeparator = <Msg>(
   props: Readonly<{
-    orientation?: ActionBarOrientation
     layoutStyle?: ComponentLayoutStyle
   }>,
   h: HtmlBuilder<Msg>,
-): Html => {
-  const orientation = props.orientation ?? 'horizontal'
-  return h.div(
+): Html =>
+  h.div(
     [
       h.Role('separator'),
-      h.AriaOrientation(orientation),
+      h.AriaOrientation('horizontal'),
       h.AriaHidden(true),
       h.DataAttribute('slot', 'action-bar-separator'),
       h.Class(
         className(
           styles.separator,
-          orientation === 'horizontal'
-            ? styles.separatorHorizontal
-            : styles.separatorVertical,
+          styles.separatorHorizontal,
           props.layoutStyle,
         ),
       ),
     ],
     [],
   )
-}

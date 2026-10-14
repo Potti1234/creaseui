@@ -9,7 +9,6 @@ import { defineMessageUnion } from 'foldkit/message'
 
 export type ActionBarSide = 'top' | 'bottom'
 export type ActionBarAlign = 'start' | 'center' | 'end'
-export type ActionBarOrientation = 'horizontal' | 'vertical'
 
 export const Message = defineMessageUnion({
   RequestedClose: {},

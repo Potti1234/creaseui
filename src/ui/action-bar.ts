@@ -7,17 +7,13 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import type { Message } from '@/lib/action-bar'
 import { escapeActionBarMount } from '@/lib/action-bar'
-import type {
-  ActionBarAlign,
-  ActionBarOrientation,
-  ActionBarSide,
-} from '@/lib/action-bar'
+import type { ActionBarAlign, ActionBarSide } from '@/lib/action-bar'
 import type { Message as ToolbarMessage } from '@/lib/toolbar'
 import { focusToolbarItemsMount } from '@/lib/toolbar'
 import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/ui/button'
 
-export type { ActionBarAlign, ActionBarOrientation, ActionBarSide }
+export type { ActionBarAlign, ActionBarSide }
 
 export type ActionBarProps<Msg> = Readonly<{
   open: boolean
@@ -25,7 +21,6 @@ export type ActionBarProps<Msg> = Readonly<{
   align?: ActionBarAlign
   alignOffset?: number
   sideOffset?: number
-  orientation?: ActionBarOrientation
   /** Lifts mount messages (Escape listener + roving focus install). */
   toParentMessage?: (message: Message | ToolbarMessage) => Msg
   children: ReadonlyArray<Html | string>
@@ -38,7 +33,6 @@ export const actionBar = <Msg>(
 ): Html => {
   const side = props.side ?? 'bottom'
   const align = props.align ?? 'center'
-  const orientation = props.orientation ?? 'horizontal'
   const sideOffset = props.sideOffset ?? 16
   const alignOffset = props.alignOffset ?? 0
 
@@ -47,17 +41,17 @@ export const actionBar = <Msg>(
   return h.div(
     [
       h.Role('toolbar'),
-      h.AriaOrientation(orientation),
+      h.AriaOrientation('horizontal'),
       h.DataAttribute('slot', 'action-bar'),
       h.DataAttribute('side', side),
       h.DataAttribute('align', align),
-      h.DataAttribute('orientation', orientation),
+      h.DataAttribute('orientation', 'horizontal'),
       ...(props.toParentMessage === undefined
         ? []
         : [
             h.OnMount(escapeActionBarMount(props.toParentMessage)),
             h.OnMount(
-              focusToolbarItemsMount(props.toParentMessage, orientation),
+              focusToolbarItemsMount(props.toParentMessage, 'horizontal'),
             ),
           ]),
       h.Class(
@@ -65,9 +59,7 @@ export const actionBar = <Msg>(
           'fixed z-50 rounded-lg border bg-card shadow-lg outline-none',
           'crease-action-bar-in',
           'motion-reduce:animate-none',
-          orientation === 'horizontal'
-            ? 'flex flex-row items-center gap-2 px-2 py-1.5'
-            : 'flex flex-col items-start gap-2 px-1.5 py-2',
+          'flex flex-row items-center gap-2 px-2 py-1.5',
           props.class,
         ),
       ),
@@ -105,30 +97,19 @@ export const actionBarSelection = <Msg>(
 export const actionBarGroup = <Msg>(
   props: Readonly<{
     children: ReadonlyArray<Html | string>
-    orientation?: ActionBarOrientation
     class?: string
   }>,
   h: HtmlBuilder<Msg>,
-): Html => {
-  const orientation = props.orientation ?? 'horizontal'
-  return h.div(
+): Html =>
+  h.div(
     [
       h.Role('group'),
       h.DataAttribute('slot', 'action-bar-group'),
-      h.DataAttribute('orientation', orientation),
-      h.Class(
-        cn(
-          'flex gap-2 outline-none',
-          orientation === 'horizontal'
-            ? 'items-center'
-            : 'w-full flex-col items-start',
-          props.class,
-        ),
-      ),
+      h.DataAttribute('orientation', 'horizontal'),
+      h.Class(cn('flex items-center gap-2 outline-none', props.class)),
     ],
     [...props.children],
   )
-}
 
 export const actionBarItem = <Msg>(
   props: Readonly<{
@@ -187,26 +168,22 @@ export const actionBarClose = <Msg>(
 
 export const actionBarSeparator = <Msg>(
   props: Readonly<{
-    orientation?: ActionBarOrientation
     class?: string
   }>,
   h: HtmlBuilder<Msg>,
-): Html => {
-  const orientation = props.orientation ?? 'horizontal'
-  return h.div(
+): Html =>
+  h.div(
     [
       h.Role('separator'),
-      h.AriaOrientation(orientation),
+      h.AriaOrientation('horizontal'),
       h.AriaHidden(true),
       h.DataAttribute('slot', 'action-bar-separator'),
       h.Class(
         cn(
-          'bg-border in-data-[slot=action-bar-selection]:ml-0.5 in-data-[slot=action-bar-selection]:h-4 in-data-[slot=action-bar-selection]:w-px',
-          orientation === 'horizontal' ? 'h-6 w-px' : 'h-px w-full',
+          'h-6 w-px bg-border in-data-[slot=action-bar-selection]:ml-0.5 in-data-[slot=action-bar-selection]:h-4 in-data-[slot=action-bar-selection]:w-px',
           props.class,
         ),
       ),
     ],
     [],
   )
-}
