@@ -167,7 +167,8 @@ export const item = <Msg>(p: ItemProps, h: HtmlBuilder<Msg>): Html => {
   const variant = p.variant ?? 'default',
     size = p.size ?? 'default',
     attrs = [
-      h.Role('listitem'),
+      // a link keeps its native role
+      ...(p.element === 'a' ? [] : [h.Role('listitem')]),
       h.DataAttribute('slot', 'item'),
       h.DataAttribute('variant', variant),
       h.DataAttribute('size', size),

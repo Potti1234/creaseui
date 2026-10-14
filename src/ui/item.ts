@@ -56,7 +56,8 @@ export const item = <Msg>(props: ItemProps, h: HtmlBuilder<Msg>): Html => {
   const size = props.size ?? 'default'
 
   const attributes = [
-    h.Role('listitem'),
+    // a link keeps its native role
+    ...(props.element === 'a' ? [] : [h.Role('listitem')]),
     h.DataAttribute('slot', 'item'),
     h.DataAttribute('variant', variant),
     h.DataAttribute('size', size),
