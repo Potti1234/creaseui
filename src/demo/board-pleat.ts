@@ -95,8 +95,8 @@ const scopedPleatThemeCss = (): string => {
   )
     .map(([group, vars]) => {
       const names = new Map(
-        Object.entries(vars).flatMap(([role, value]) =>
-          typeof value === 'string' ? [[role, value] as const] : [],
+        Object.entries(vars).map(
+          ([role, value]) => [role, String(value)] as const,
         ),
       )
       return scopedRoleDeclarations(group, role =>

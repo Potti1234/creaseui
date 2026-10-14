@@ -20,6 +20,17 @@ for (const theme of ['Emerald', 'Blue'] as const) {
       .filter({ hasText: 'Save Threshold' })
       .first()
     const rest = await button.evaluate(e => getComputedStyle(e).backgroundColor)
+    const restChroma = await button.evaluate(e => {
+      const probe = document.createElement('div')
+      probe.style.color = getComputedStyle(e).backgroundColor
+      document.body.append(probe)
+      const [r, g, b] = getComputedStyle(probe)
+        .color.match(/[\d.-]+/g)!
+        .map(Number)
+      probe.remove()
+      return Math.max(r!, g!, b!) - Math.min(r!, g!, b!)
+    })
+    expect(restChroma, `rest ${rest}`).toBeGreaterThan(0.02)
     await button.hover()
     await expect
       .poll(() => button.evaluate(e => getComputedStyle(e).backgroundColor))
