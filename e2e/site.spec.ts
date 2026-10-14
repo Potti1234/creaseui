@@ -5411,7 +5411,9 @@ test('input-group sections match upstream variants in both renderers', async ({
   ).toBeVisible()
 
   const buttons = page.locator('#button')
-  await expect(buttons.getByRole('button', { name: 'Copy' })).toBeVisible()
+  await expect(
+    buttons.getByRole('button', { name: 'Copy', exact: true }),
+  ).toBeVisible()
   await expect(buttons.getByRole('button', { name: 'Search' })).toBeVisible()
 
   const kbd = page.locator('#kbd')
@@ -5421,7 +5423,7 @@ test('input-group sections match upstream variants in both renderers', async ({
   await dropdown.getByRole('button', { name: 'More' }).click()
   await expect(page.getByRole('menuitem', { name: 'Copy path' })).toBeVisible()
   await page.keyboard.press('Escape')
-  await dropdown.getByRole('button', { name: /Search In/ }).click()
+  await dropdown.getByRole('button', { name: /Search In/i }).click()
   await expect(
     page.getByRole('menuitem', { name: 'Documentation' }),
   ).toBeVisible()
