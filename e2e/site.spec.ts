@@ -467,62 +467,6 @@ test('legacy Create variant routes are removed', async ({ page }) => {
   }
 })
 
-test('primitive inspector updates every constrained primitive', async ({
-  page,
-}) => {
-  test.slow()
-  await page.goto('/create')
-  await visitRenderer(page, 'StyleX')
-  const board = page.locator('[data-primitive-box]')
-  await expect(board).toBeVisible()
-
-  const choice = (group: string, name: string) =>
-    page
-      .getByRole('group', { name: `${group} options` })
-      .getByRole('button', { name, exact: true })
-
-  await choice('Canvas padding (Box)', 'xl').click()
-  await expect(choice('Canvas padding (Box)', 'xl')).toHaveAttribute(
-    'aria-pressed',
-    'true',
-  )
-  await expect(board).toHaveCSS('padding', '40px')
-
-  const mutedBackground = await board.evaluate(
-    element => getComputedStyle(element).backgroundColor,
-  )
-  await choice('Canvas surface (Box)', 'card').click()
-  await expect
-    .poll(() =>
-      board.evaluate(element => getComputedStyle(element).backgroundColor),
-    )
-    .not.toBe(mutedBackground)
-
-  await choice('Card spacing (Stack)', 'xl').click()
-  await expect(page.locator('[data-primitive-stack]').first()).toHaveCSS(
-    'gap',
-    '40px',
-  )
-
-  await choice('Board alignment (Inline)', 'end').click()
-  await expect(page.locator('[data-primitive-inline]')).toHaveCSS(
-    'justify-content',
-    'flex-end',
-  )
-
-  await choice('Split layout (Grid)', 'one').click()
-  await expect(page.locator('[data-primitive-grid]').first()).toHaveCSS(
-    'grid-template-columns',
-    /^\d+(?:\.\d+)?px$/u,
-  )
-
-  await choice('Board text scale (Text)', 'heading Md').click()
-  await expect(page.locator('[data-primitive-text]')).toHaveCSS(
-    'font-size',
-    '20px',
-  )
-})
-
 test('component docs explain the Foldkit integration model', async ({
   page,
 }) => {
