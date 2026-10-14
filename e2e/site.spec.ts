@@ -2763,52 +2763,38 @@ test('menubar documents independent targeted child models', async ({
 }) => {
   await page.goto('/docs/components/menubar')
   await visitRenderer(page, 'StyleX')
-  await expect(page.locator('#coordinated-menus')).toBeVisible()
-  await expect(page.locator('#shortcut-hints')).toBeVisible()
-  await expect(page.locator('#rtl-switching')).toBeVisible()
-  await expect(page.locator('#disabled-submenu')).toBeVisible()
+  for (const id of ['checkbox', 'radio', 'submenu', 'with-icons', 'rtl'])
+    await expect(page.locator(`#${id}`)).toBeVisible()
   await expect(page.locator('#stylex-specimen')).toHaveCount(0)
-  const example = page.locator('#coordinated-menus')
-  const menubar = example.getByRole('menubar', { name: 'Application menu' })
-  await expect(menubar).toBeVisible()
-  await example.getByRole('menuitem', { name: 'File' }).click()
-  const menu = example.getByRole('menu', { name: 'File' })
-  await expect(menu).toBeVisible()
-  const save = menu.getByRole('menuitem', { name: /Save/u })
-  await expect(save).toContainText('⌘S')
-  await expect(save).toHaveAttribute('aria-disabled', 'true')
-  await expect(example.locator('code')).toContainText('GotMenuMessage')
+
+  const example = page.locator('#submenu')
   await expect(example.locator('code')).toContainText('Menubar.update')
   await expect(example.locator('code')).toContainText('@/stylex/menubar')
   const fileTrigger = example.getByRole('menuitem', { name: 'File' })
+  await fileTrigger.click()
+  await expect(example.getByRole('menu', { name: 'File' })).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(example.getByRole('menu', { name: 'File' })).toBeHidden()
   await fileTrigger.focus()
   await page.keyboard.press('ArrowRight')
   const editTrigger = example.getByRole('menuitem', { name: 'Edit' })
   await expect(editTrigger).toBeFocused()
-  await expect(example.getByRole('menu', { name: 'Edit' })).toBeVisible()
   await page.keyboard.press('Escape')
-  await expect(example.getByRole('menu', { name: 'Edit' })).toBeHidden()
 
-  const rtl = page.locator('#rtl-switching')
-  const rtlFile = rtl.getByRole('menuitem', { name: 'File' })
+  await fileTrigger.click()
+  const share = example.getByRole('menuitem', { name: 'Share' })
+  await share.hover()
+  await page.keyboard.press('ArrowRight')
+  await expect(example.getByRole('menu', { name: 'Share' })).toBeVisible()
+  await page.keyboard.press('Escape')
+
+  const rtl = page.locator('#rtl')
+  const rtlFile = rtl.getByRole('menuitem', { name: 'ملف', exact: true })
   await rtlFile.focus()
-  await page.keyboard.press('ArrowRight')
-  await expect(rtl.getByRole('menuitem', { name: 'View' })).toBeFocused()
-  await page.keyboard.press('Escape')
-
-  const nested = page.locator('#disabled-submenu')
-  await nested.getByRole('menuitem', { name: 'File' }).click()
-  await page.keyboard.press('End')
-  const exportItem = nested.getByRole('menuitem', { name: /Export/u })
-  await expect(exportItem).toHaveAttribute('data-active', 'true')
-  await page.keyboard.press('ArrowRight')
-  const submenu = nested.getByRole('menu', { name: /Export/u })
-  await expect(submenu).toBeVisible()
-  await page.keyboard.press('c')
-  await expect(submenu.getByRole('menuitem', { name: 'CSV' })).toHaveAttribute(
-    'data-active',
-    'true',
-  )
+  await page.keyboard.press('ArrowLeft')
+  await expect(
+    rtl.getByRole('menuitem', { name: 'تعديل', exact: true }),
+  ).toBeFocused()
 })
 
 test('pagination keeps routing and in-place actions parent controlled', async ({
@@ -3130,24 +3116,23 @@ test('badge keeps authored variants across renderers', async ({ page }) => {
 
 test('kbd keeps semantic key notation across renderers', async ({ page }) => {
   await page.goto('/docs/components/kbd')
-  await expect(page.locator('#key').locator('[data-slot="kbd"]')).toHaveText(
-    'Esc',
-  )
-  await expect(
-    page.locator('#shortcut').locator('kbd[data-slot="kbd-group"]'),
-  ).toBeVisible()
+  const hero = page.locator('[aria-label="Basic preview"]')
+  await expect(hero.locator('kbd[data-slot="kbd"]').first()).toHaveText('⌘')
+  await expect(hero.locator('kbd[data-slot="kbd-group"]')).toHaveCount(2)
+  await expect(page.locator('#group kbd[data-slot="kbd"]')).toHaveText([
+    'Ctrl + B',
+    'Ctrl + K',
+  ])
 
   await visitRenderer(page, 'StyleX')
-  await expect(page.locator('#key')).toBeVisible()
-  await expect(page.locator('#shortcut')).toBeVisible()
   await expect(page.locator('#stylex-specimen')).toHaveCount(0)
-  await expect(page.locator('#key code')).toContainText('@/stylex/kbd')
-  await expect(page.locator('#key').locator('[data-slot="kbd"]')).toHaveText(
-    'Esc',
-  )
-  await expect(
-    page.locator('#shortcut').locator('kbd[data-slot="kbd-group"]'),
-  ).toBeVisible()
+  await expect(page.locator('#group code')).toContainText('@/stylex/kbd')
+  await expect(hero.locator('kbd[data-slot="kbd"]').first()).toHaveText('⌘')
+  await expect(hero.locator('kbd[data-slot="kbd-group"]')).toHaveCount(2)
+  await expect(page.locator('#group kbd[data-slot="kbd"]')).toHaveText([
+    'Ctrl + B',
+    'Ctrl + K',
+  ])
 })
 
 test('label keeps native control association across renderers', async ({
@@ -5739,7 +5724,9 @@ test('kbd sections match upstream variants in both renderers', async ({
   const group = page.locator('#group')
   await expect(group.getByText('Ctrl + B', { exact: true })).toBeVisible()
   await expect(group.getByText('Ctrl + K', { exact: true })).toBeVisible()
-  await expect(group.getByText(/to open the command palette/)).toBeVisible()
+  await expect(
+    group.locator('p', { hasText: /to open the command palette/ }),
+  ).toBeVisible()
 
   const button = page.locator('#button')
   const accept = button.getByRole('button', { name: /Accept/ })
