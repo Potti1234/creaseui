@@ -1773,7 +1773,7 @@ Source: [`src/ui/table.ts`](../src/ui/table.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `table` | function | `table<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` |
+| `table` | function | `table<Msg>(props: SlotProps & Readonly<{ ariaLabel?: string \| undefined; }>, h: HtmlBuilder<Msg>): Html` |
 | `tableHeader` | value | `tableHeader: value` |
 | `tableBody` | value | `tableBody: value` |
 | `tableFooter` | value | `tableFooter: value` |

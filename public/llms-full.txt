@@ -2566,7 +2566,7 @@ Source: `src/ui/table.ts`
 
 Examples: Basic, Footer, Actions, RTL, Component Inventory, Dense overflow, Empty body
 
-- `table<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` (function)
+- `table<Msg>(props: SlotProps & Readonly<{ ariaLabel?: string | undefined; }>, h: HtmlBuilder<Msg>): Html` (function)
 - `tableHeader: value` (value)
 - `tableBody: value` (value)
 - `tableFooter: value` (value)

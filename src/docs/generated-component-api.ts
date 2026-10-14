@@ -5497,7 +5497,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "table",
       "kind": "function",
-      "signature": "table<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html"
+      "signature": "table<Msg>(props: SlotProps & Readonly<{ ariaLabel?: string | undefined; }>, h: HtmlBuilder<Msg>): Html"
     },
     {
       "name": "tableHeader",
