@@ -2,6 +2,10 @@
 
 Baseline: local `CI=1 npx playwright test` on PR #28 (`b120cee`) failed 47 tests, the same set that fails on the #27 CI run. Most are stale specs written for the crease-only docs fixtures before the shadcn 1:1 docs ports, the two-renderer header link, or retired features. A few are real product bugs. Specs are updated to the current fixtures without loosening what they assert; product bugs are fixed in source.
 
+## CI worker count
+
+With 4 workers, CI failed 12-16 extra tests that changed from run to run, with browser-session errors (`session closed`, `Target.createTarget`). With `PLAYWRIGHT_WORKERS: 2` (`77b5e6e`), run on `efd38b7`: 261 passed, 23 failed, 1 flaky, 1 did not run in 25.9 min. All 23 failures and the flaky test (`sidebar hover menus`) are in the inherited #27 set below. None of the CI-only failures came back, so they were caused by load.
+
 ## Fixed
 
 | Test                                                                                          | Cause                                                                               | Fix                                                      |
