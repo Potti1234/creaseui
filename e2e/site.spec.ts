@@ -34,11 +34,15 @@ test('tour is removed from component navigation and discovery in both renderers'
     await expect(
       page.getByRole('heading', { name: 'Top Nav', level: 1, exact: true }),
     ).toBeVisible()
+    const pagination = page.getByRole('navigation', {
+      name: 'Component pagination',
+    })
     await expect(
-      page
-        .getByRole('navigation', { name: 'Component pagination' })
-        .locator('a[href="/docs/components/transfer-list"]'),
-    ).toHaveCount(1)
+      pagination.locator('a[href^="/docs/components/"]'),
+    ).toHaveCount(2)
+    await expect(
+      pagination.locator('a[href="/docs/components/tour"]'),
+    ).toHaveCount(0)
     await expect(page.locator('a[href="/docs/components/tour"]')).toHaveCount(0)
     await page.close()
   }
