@@ -79,7 +79,7 @@ const styles = {
 }
 
 export const table = <Msg>(
-  props: SlotProps & Readonly<{ ariaLabel?: string }>,
+  props: SlotProps & Readonly<{ ariaLabel?: string | undefined }>,
   h: HtmlBuilder<Msg>,
 ): Html =>
   h.div(
