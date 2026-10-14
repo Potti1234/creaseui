@@ -256,14 +256,14 @@ test('StyleX sidebar disclosure, calendar, dropdown and dialog stay interactive'
     .getByRole('button', { name: 'Getting Started', exact: true })
     .click()
   await expect(
-    page.getByRole('link', { name: 'Installation', exact: true }),
+    page.getByRole('menuitem', { name: 'Installation', exact: true }),
   ).toBeVisible()
   await page.keyboard.press('Escape')
   await page.goto('http://127.0.0.1:4174/blocks/preview/stylex--sidebar-12')
-  await page.getByRole('checkbox', { name: 'Family', exact: true }).click()
-  await expect(
-    page.getByRole('checkbox', { name: 'Family', exact: true }),
-  ).toBeChecked()
+  // shadcn sidebar-12 renders calendars as menu buttons with a static indicator
+  const family = page.getByRole('button', { name: 'Family', exact: true })
+  await family.click()
+  await expect(family).toBeFocused()
   await page.goto('http://127.0.0.1:4174/blocks/preview/stylex--sidebar-13')
   await expect(page.getByRole('dialog')).toBeVisible()
   await page.keyboard.press('Escape')
