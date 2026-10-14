@@ -6,10 +6,18 @@
 import { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
+import { dateFromISO } from '@/lib/date-parse'
 import { icon } from '@/lib/icon'
 import * as Grid from '@/lib/tablecn-grid'
-import type { Person } from '@/lib/tablecn-data'
+import {
+  departments,
+  personStatuses,
+  skills as skillOptions,
+  type FileCellData,
+  type Person,
+} from '@/lib/tablecn-data'
 import { cn } from '@/lib/utils'
+import * as Calendar from '@/ui/calendar'
 
 import type { Message } from './tablecn-page'
 
@@ -169,17 +177,30 @@ interface GridColumn {
     | 'checkbox'
     | 'date'
     | 'file'
+  options?: ReadonlyArray<string>
+  numberMin?: number
+  numberMax?: number
+  numberStep?: number
 }
 
 const GRID_COLUMNS: ReadonlyArray<GridColumn> = [
   { id: 'name', header: 'Name', iconName: 'text', width: 160, variant: 'text' },
-  { id: 'age', header: 'Age', iconName: 'hash', width: 80, variant: 'number' },
+  {
+    id: 'age',
+    header: 'Age',
+    iconName: 'hash',
+    width: 80,
+    variant: 'number',
+    numberMin: 18,
+    numberMax: 100,
+    numberStep: 1,
+  },
   {
     id: 'email',
     header: 'Email',
     iconName: 'mail',
     width: 220,
-    variant: 'url',
+    variant: 'text',
   },
   {
     id: 'website',
@@ -201,6 +222,8 @@ const GRID_COLUMNS: ReadonlyArray<GridColumn> = [
     iconName: 'hash',
     width: 120,
     variant: 'number',
+    numberMin: 0,
+    numberStep: 1000,
   },
   {
     id: 'department',
@@ -208,6 +231,7 @@ const GRID_COLUMNS: ReadonlyArray<GridColumn> = [
     iconName: 'building-2',
     width: 160,
     variant: 'select',
+    options: departments,
   },
   {
     id: 'status',
@@ -215,6 +239,7 @@ const GRID_COLUMNS: ReadonlyArray<GridColumn> = [
     iconName: 'list-checks',
     width: 140,
     variant: 'select',
+    options: personStatuses,
   },
   {
     id: 'skills',
@@ -222,6 +247,7 @@ const GRID_COLUMNS: ReadonlyArray<GridColumn> = [
     iconName: 'tags',
     width: 200,
     variant: 'multi-select',
+    options: skillOptions,
   },
   {
     id: 'isActive',
@@ -256,6 +282,7 @@ const columnById = (id: string): GridColumn =>
 const cellContent = (
   person: Grid.Model['rows'][number],
   column: GridColumn,
+  rowIndex: number,
   h: HtmlBuilder<Grid.Message>,
 ): Html | string => {
   const p = person as Person
@@ -277,9 +304,35 @@ const cellContent = (
             h.Type('checkbox'),
             ...(p.isActive === true ? [h.Attribute('checked', 'true')] : []),
             h.Tabindex(-1),
-            h.Class('size-4 accent-primary pointer-events-none'),
+            h.Class('size-4 accent-primary cursor-pointer'),
+            h.OnClick(
+              Grid.Message.ToggledCellBoolean({
+                row: rowIndex,
+                column: column.id,
+              }),
+            ),
           ]),
         ],
+      )
+    case 'url':
+      return h.div(
+        [h.Class('flex h-full w-full items-center px-2 overflow-hidden')],
+        p.website === undefined || p.website === ''
+          ? []
+          : [
+              h.a(
+                [
+                  h.Href(p.website),
+                  h.Target('_blank'),
+                  h.Attribute('rel', 'noopener noreferrer'),
+                  h.Tabindex(-1),
+                  h.Class(
+                    'truncate text-primary underline decoration-primary/30 underline-offset-2 hover:decoration-primary/60',
+                  ),
+                ],
+                [p.website],
+              ),
+            ],
       )
     case 'select':
       return h.div(
@@ -335,6 +388,428 @@ const cellContent = (
       )
   }
 }
+
+/* ---------- cell editors ----------
+   one editor per column variant, matching tablecn's
+   data-grid-cell-variants.tsx (short-text input, number input with
+   min/max/step, long-text textarea popover, select option list,
+   multi-select badge/command popover, checkbox toggle, date calendar
+   popover, file list + upload popover) */
+
+const EDITOR_SCRIM = (
+  onClose: Grid.Message,
+  h: HtmlBuilder<Grid.Message>,
+): Html =>
+  h.button([
+    h.Type('button'),
+    h.AriaHidden(true),
+    h.Tabindex(-1),
+    h.Class('fixed inset-0 z-40 cursor-default bg-transparent'),
+    h.OnClick(onClose),
+  ])
+
+const EDITOR_POPUP_CLASS =
+  'bg-popover text-popover-foreground absolute start-0 top-full z-50 mt-0.5 rounded-md border shadow-md'
+
+const textInputEditor = (
+  model: Grid.Model,
+  column: GridColumn,
+  h: HtmlBuilder<Grid.Message>,
+): Html =>
+  h.input([
+    h.Type('text'),
+    h.Value(model.draftValue),
+    h.OnInput(value => Grid.Message.ChangedDraft({ value })),
+    h.Class(
+      'absolute inset-0 h-full w-full bg-background px-2 text-sm outline-none ring-1 ring-inset ring-ring',
+    ),
+    h.OnMount(
+      Grid.gridEditorFocusMount(() => Grid.Message.CompletedEditorFocus({})),
+    ),
+  ])
+
+const numberInputEditor = (
+  model: Grid.Model,
+  column: GridColumn,
+  h: HtmlBuilder<Grid.Message>,
+): Html =>
+  h.input([
+    h.Type('number'),
+    ...(column.numberMin === undefined
+      ? []
+      : [h.Min(String(column.numberMin))]),
+    ...(column.numberMax === undefined
+      ? []
+      : [h.Max(String(column.numberMax))]),
+    ...(column.numberStep === undefined
+      ? []
+      : [h.Step(String(column.numberStep))]),
+    h.Value(model.draftValue),
+    h.OnInput(value => Grid.Message.ChangedDraft({ value })),
+    h.Class(
+      // eslint-disable-next-line shadcn/no-arbitrary-values -- reason: mirrors tablecn's NumberCell spinner-stripping verbatim.
+      'absolute inset-0 h-full w-full bg-background px-2 text-sm outline-none ring-1 ring-inset ring-ring [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
+    ),
+    h.OnMount(
+      Grid.gridEditorFocusMount(() => Grid.Message.CompletedEditorFocus({})),
+    ),
+  ])
+
+const cellEditor = (
+  model: Grid.Model,
+  person: Person,
+  column: GridColumn,
+  rowIndex: number,
+  h: HtmlBuilder<Grid.Message>,
+): Html => {
+  switch (column.variant) {
+    case 'number':
+      return numberInputEditor(model, column, h)
+    case 'long-text':
+      return h.div(
+        [h.Class('contents')],
+        [
+          EDITOR_SCRIM(Grid.Message.CommittedDraft({ move: 'none' }), h),
+          h.div(
+            [h.Class(cn(EDITOR_POPUP_CLASS, 'w-100 p-0'))],
+            [
+              h.textarea([
+                h.Attribute('placeholder', 'Enter text...'),
+                h.Value(model.draftValue),
+                h.OnInput(value => Grid.Message.ChangedDraft({ value })),
+                h.Class(
+                  'max-h-75 min-h-37.5 w-full resize-none overflow-y-auto rounded-none border-0 bg-transparent p-3 text-sm shadow-none outline-none focus-visible:ring-1 focus-visible:ring-ring',
+                ),
+                h.OnMount(
+                  Grid.gridEditorFocusMount(() =>
+                    Grid.Message.CompletedEditorFocus({}),
+                  ),
+                ),
+              ]),
+            ],
+          ),
+        ],
+      )
+    case 'select':
+      return h.div(
+        [h.Class('contents')],
+        [
+          EDITOR_SCRIM(Grid.Message.CanceledEdit({}), h),
+          h.div(
+            [
+              h.Class(
+                cn(
+                  EDITOR_POPUP_CLASS,
+                  // eslint-disable-next-line shadcn/no-arbitrary-values -- reason: mirrors tablecn's SelectContent anchor-width+16px compensation verbatim.
+                  'w-max min-w-[calc(100%+16px)] max-w-60 p-1',
+                ),
+              ),
+              h.OnMount(
+                Grid.cellEditorPopupFitMount(() =>
+                  Grid.Message.CompletedEditorFocus({}),
+                ),
+              ),
+            ],
+            (column.options ?? []).map(option =>
+              h.button(
+                [
+                  h.Type('button'),
+                  h.Role('option'),
+                  h.AriaSelected(option === Grid.cellText(person, column.id)),
+                  h.OnClick(
+                    Grid.Message.AppliedCellOption({
+                      row: rowIndex,
+                      column: column.id,
+                      value: option,
+                    }),
+                  ),
+                  h.Class(
+                    'relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none select-none hover:bg-accent',
+                  ),
+                ],
+                [
+                  h.span([], [option]),
+                  ...(option === Grid.cellText(person, column.id)
+                    ? [icon('check', { class: 'absolute right-2 size-4' }, h)]
+                    : []),
+                ],
+              ),
+            ),
+          ),
+        ],
+      )
+    case 'multi-select': {
+      const selected = person.skills ?? []
+      const query = model.draftValue.toLowerCase()
+      const options = (column.options ?? []).filter(option =>
+        option.toLowerCase().includes(query),
+      )
+      return h.div(
+        [h.Class('contents')],
+        [
+          EDITOR_SCRIM(Grid.Message.CanceledEdit({}), h),
+          h.div(
+            [
+              h.Class(cn(EDITOR_POPUP_CLASS, 'w-75 p-0')),
+              h.OnMount(
+                Grid.cellEditorPopupFitMount(() =>
+                  Grid.Message.CompletedEditorFocus({}),
+                ),
+              ),
+            ],
+            [
+              h.div(
+                [
+                  h.Class(
+                    'flex min-h-9 flex-wrap items-center gap-1 border-b px-3 py-1.5',
+                  ),
+                ],
+                [
+                  ...selected.map(skill =>
+                    h.span(
+                      [
+                        h.Class(
+                          'bg-secondary inline-flex items-center gap-1 rounded-md px-1.5 py-px text-xs font-medium',
+                        ),
+                      ],
+                      [
+                        skill,
+                        h.button(
+                          [
+                            h.Type('button'),
+                            h.AriaLabel(`Remove ${skill}`),
+                            h.OnClick(
+                              Grid.Message.ToggledCellOption({
+                                row: rowIndex,
+                                column: column.id,
+                                option: skill,
+                              }),
+                            ),
+                          ],
+                          [icon('x', { class: 'size-3' }, h)],
+                        ),
+                      ],
+                    ),
+                  ),
+                  h.input([
+                    h.Type('text'),
+                    h.Value(model.draftValue),
+                    h.Attribute('placeholder', 'Search...'),
+                    h.OnInput(value => Grid.Message.ChangedDraft({ value })),
+                    h.Class(
+                      'min-w-16 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground',
+                    ),
+                    h.OnMount(
+                      Grid.gridEditorFocusMount(() =>
+                        Grid.Message.CompletedEditorFocus({}),
+                      ),
+                    ),
+                  ]),
+                ],
+              ),
+              h.div(
+                [h.Class('max-h-75 overflow-y-auto p-1')],
+                options.length === 0
+                  ? [
+                      h.div(
+                        [
+                          h.Class(
+                            'py-6 text-center text-sm text-muted-foreground',
+                          ),
+                        ],
+                        ['No options found.'],
+                      ),
+                    ]
+                  : options.map(option => {
+                      const checked = selected.includes(option)
+                      return h.button(
+                        [
+                          h.Type('button'),
+                          h.OnClick(
+                            Grid.Message.ToggledCellOption({
+                              row: rowIndex,
+                              column: column.id,
+                              option,
+                            }),
+                          ),
+                          h.Class(
+                            'flex w-full cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none select-none hover:bg-accent',
+                          ),
+                        ],
+                        [
+                          h.span(
+                            [
+                              h.Class(
+                                cn(
+                                  'flex size-4 shrink-0 items-center justify-center rounded-sm border',
+                                  checked
+                                    ? 'border-primary bg-primary text-primary-foreground'
+                                    : 'border-input',
+                                ),
+                              ),
+                            ],
+                            checked
+                              ? [icon('check', { class: 'size-3' }, h)]
+                              : [],
+                          ),
+                          h.span([], [option]),
+                        ],
+                      )
+                    }),
+              ),
+              ...(selected.length > 0
+                ? [
+                    h.div(
+                      [h.Class('border-t p-1')],
+                      [
+                        h.button(
+                          [
+                            h.Type('button'),
+                            h.OnClick(
+                              Grid.Message.ClearedCellOptions({
+                                row: rowIndex,
+                                column: column.id,
+                              }),
+                            ),
+                            h.Class(
+                              'w-full rounded-sm py-1.5 text-sm text-muted-foreground outline-none hover:bg-accent',
+                            ),
+                          ],
+                          ['Clear all'],
+                        ),
+                      ],
+                    ),
+                  ]
+                : []),
+            ],
+          ),
+        ],
+      )
+    }
+    case 'date':
+      return h.div(
+        [h.Class('contents')],
+        [
+          EDITOR_SCRIM(Grid.Message.CanceledEdit({}), h),
+          h.div(
+            [
+              h.Class(cn(EDITOR_POPUP_CLASS, 'w-auto p-0')),
+              h.OnMount(
+                Grid.cellEditorPopupFitMount(() =>
+                  Grid.Message.CompletedEditorFocus({}),
+                ),
+              ),
+            ],
+            [
+              Calendar.calendar(
+                {
+                  model: model.cellCalendar,
+                  maybeSelectedDate: dateFromISO(person.startDate ?? ''),
+                  toParentMessage: message =>
+                    Grid.Message.GotCellCalendarMessage({ message }),
+                  captionLayout: 'dropdown',
+                  direction: model.direction,
+                },
+                h,
+              ),
+            ],
+          ),
+        ],
+      )
+    case 'file': {
+      const files = person.attachments ?? []
+      return h.div(
+        [h.Class('contents')],
+        [
+          EDITOR_SCRIM(Grid.Message.CanceledEdit({}), h),
+          h.div(
+            [
+              h.Class(cn(EDITOR_POPUP_CLASS, 'w-75 p-2')),
+              h.OnMount(
+                Grid.cellEditorPopupFitMount(() =>
+                  Grid.Message.CompletedEditorFocus({}),
+                ),
+              ),
+            ],
+            [
+              ...files.map(file =>
+                h.div(
+                  [
+                    h.Class(
+                      'flex items-center gap-2 rounded-sm px-1 py-1.5 text-sm',
+                    ),
+                  ],
+                  [
+                    icon(
+                      'paperclip',
+                      { class: 'size-3.5 shrink-0 text-muted-foreground' },
+                      h,
+                    ),
+                    h.span([h.Class('flex-1 truncate')], [file.name]),
+                    h.span(
+                      [h.Class('shrink-0 text-xs text-muted-foreground')],
+                      [formatFileSize(file.size)],
+                    ),
+                    h.button(
+                      [
+                        h.Type('button'),
+                        h.AriaLabel(`Remove ${file.name}`),
+                        h.OnClick(
+                          Grid.Message.RemovedCellFile({
+                            row: rowIndex,
+                            column: column.id,
+                            fileId: file.id,
+                          }),
+                        ),
+                        h.Class(
+                          'inline-flex size-5 shrink-0 items-center justify-center rounded-sm outline-none hover:bg-accent',
+                        ),
+                      ],
+                      [icon('x', { class: 'size-3' }, h)],
+                    ),
+                  ],
+                ),
+              ),
+              h.label(
+                [
+                  h.Class(
+                    'mt-1 flex h-20 cursor-pointer flex-col items-center justify-center gap-1 rounded-md border border-dashed text-xs text-muted-foreground transition-colors hover:bg-accent/50',
+                  ),
+                ],
+                [
+                  h.input([
+                    h.Type('file'),
+                    h.Attribute('multiple', ''),
+                    h.Class('hidden'),
+                    h.OnMount(
+                      Grid.cellFilePickerMount(mount =>
+                        mount._tag === 'FilesPicked'
+                          ? Grid.Message.PickedCellFiles({
+                              files: mount.files,
+                            })
+                          : Grid.Message.CanceledEdit({}),
+                      ),
+                    ),
+                  ]),
+                  icon('upload', { class: 'size-4 text-muted-foreground' }, h),
+                  'Click to upload files',
+                  h.span([h.Class('text-xs')], ['Max 5 files, 10MB each']),
+                ],
+              ),
+            ],
+          ),
+        ],
+      )
+    }
+    default:
+      return textInputEditor(model, column, h)
+  }
+}
+
+const formatFileSize = (bytes: number): string =>
+  bytes >= 1024 * 1024
+    ? `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+    : `${Math.max(Math.round(bytes / 1024), 1)} KB`
 
 /* ---------- toolbar ---------- */
 
@@ -1014,28 +1489,14 @@ export const gridView = (
                       ],
                       [
                         isEditing
-                          ? h.input([
-                              h.Type(
-                                column.variant === 'number'
-                                  ? 'number'
-                                  : column.variant === 'date'
-                                    ? 'date'
-                                    : 'text',
-                              ),
-                              h.Value(model.draftValue),
-                              h.OnInput(value =>
-                                Grid.Message.ChangedDraft({ value }),
-                              ),
-                              h.Class(
-                                'absolute inset-0 h-full w-full bg-background px-2 text-sm outline-none ring-1 ring-inset ring-ring',
-                              ),
-                              h.OnMount(
-                                Grid.gridEditorFocusMount(() =>
-                                  Grid.Message.CompletedEditorFocus({}),
-                                ),
-                              ),
-                            ])
-                          : cellContent(person, column, h),
+                          ? cellEditor(
+                              model,
+                              person as Person,
+                              column,
+                              rowIndex,
+                              h,
+                            )
+                          : cellContent(person, column, rowIndex, h),
                       ],
                     )
                   }),

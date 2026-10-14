@@ -12,9 +12,17 @@ import { tokens } from '@/stylex/tokens.stylex'
 import { foundationTokens } from '@/stylex/foundations-tokens.stylex'
 import { interactionTokens } from '@/stylex/interaction-tokens.stylex.const'
 
+import { dateFromISO } from '@/lib/date-parse'
 import { icon } from '@/stylex/composition/icon'
+import * as Icon from '@/lib/icon'
+import * as Calendar from '@/stylex/calendar'
 import * as Grid from '@/lib/tablecn-grid'
-import type { Person } from '@/lib/tablecn-data'
+import {
+  departments,
+  personStatuses,
+  skills as skillOptions,
+  type Person,
+} from '@/lib/tablecn-data'
 
 import type { Message } from './tablecn-page'
 
@@ -111,7 +119,7 @@ const st = stylex.create({
   },
   c114: {
     accentColor: tokens.primary,
-    pointerEvents: 'none',
+    cursor: interactionTokens.cursorAction,
     height: '1rem',
     width: '1rem',
   },
@@ -498,6 +506,239 @@ const st = stylex.create({
     whiteSpace: 'pre-wrap',
     width: 'fit-content',
   },
+  urlWrap: {
+    overflow: 'hidden',
+    paddingInline: '0.5rem',
+    alignItems: 'center',
+    display: 'flex',
+    height: '100%',
+    width: '100%',
+  },
+  urlLink: {
+    overflow: 'hidden',
+    color: tokens.primary,
+    textDecorationLine: 'underline',
+    textDecorationThickness: '1px',
+    textOverflow: 'ellipsis',
+    textUnderlineOffset: '2px',
+    whiteSpace: 'nowrap',
+  },
+  contents: { display: 'contents' },
+  editorScrim: {
+    backgroundColor: 'transparent',
+    cursor: interactionTokens.cursorDefault,
+    insetInlineEnd: 0,
+    insetInlineStart: 0,
+    position: 'fixed',
+    zIndex: 40,
+    bottom: 0,
+    top: 0,
+  },
+  editorPopup: {
+    borderColor: tokens.border,
+    borderRadius: foundationTokens.radiusMd,
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    backgroundColor: foundationTokens.popover,
+    boxShadow: foundationTokens.shadowMd,
+    color: foundationTokens.popoverForeground,
+    insetInlineStart: 0,
+    position: 'absolute',
+    zIndex: 50,
+    marginTop: '0.125rem',
+    top: '100%',
+  },
+  longTextPopup: { padding: 0, width: '400px' },
+  longTextArea: {
+    padding: '0.75rem',
+    borderStyle: 'none',
+    backgroundColor: 'transparent',
+    boxShadow: 'none',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+    outlineStyle: 'none',
+    resize: 'none',
+    maxHeight: '300px',
+    minHeight: '150px',
+    overflowY: 'auto',
+    width: '100%',
+  },
+  selectPopup: {
+    padding: '0.25rem',
+    maxWidth: '240px',
+    minWidth: 'calc(100% + 16px)',
+    width: 'max-content',
+  },
+  selectOption: {
+    borderRadius: foundationTokens.radiusSm,
+    gap: '0.5rem',
+    paddingBlock: '0.375rem',
+    alignItems: 'center',
+    backgroundColor: { default: 'transparent', ':hover': tokens.accent },
+    cursor: interactionTokens.cursorDefault,
+    display: 'flex',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+    outlineStyle: 'none',
+    paddingInlineEnd: '2rem',
+    paddingInlineStart: '0.5rem',
+    position: 'relative',
+    userSelect: 'none',
+    width: '100%',
+  },
+  selectCheck: {
+    insetInlineEnd: '0.5rem',
+    position: 'absolute',
+    height: '1rem',
+    width: '1rem',
+  },
+  multiPopup: { padding: 0, width: '300px' },
+  multiHeader: {
+    gap: '0.25rem',
+    paddingBlock: '0.375rem',
+    paddingInline: '0.75rem',
+    alignItems: 'center',
+    display: 'flex',
+    flexWrap: 'wrap',
+    borderBottomColor: tokens.border,
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+    minHeight: '2.25rem',
+  },
+  multiBadge: {
+    borderRadius: foundationTokens.radiusMd,
+    gap: '0.25rem',
+    paddingBlock: '1px',
+    paddingInline: '0.375rem',
+    alignItems: 'center',
+    backgroundColor: tokens.secondary,
+    display: 'inline-flex',
+    fontSize: '0.75rem',
+    fontWeight: 500,
+    lineHeight: '1rem',
+  },
+  multiSearch: {
+    backgroundColor: 'transparent',
+    flexGrow: 1,
+    fontSize: '0.875rem',
+    outlineStyle: 'none',
+    minWidth: '4rem',
+  },
+  multiList: { padding: '0.25rem', maxHeight: '300px', overflowY: 'auto' },
+  multiEmpty: {
+    paddingBlock: '1.5rem',
+    color: tokens.mutedForeground,
+    fontSize: '0.875rem',
+    textAlign: 'center',
+  },
+  multiOption: {
+    borderRadius: foundationTokens.radiusSm,
+    gap: '0.5rem',
+    paddingBlock: '0.375rem',
+    paddingInline: '0.5rem',
+    alignItems: 'center',
+    backgroundColor: { default: 'transparent', ':hover': tokens.accent },
+    cursor: interactionTokens.cursorDefault,
+    display: 'flex',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+    outlineStyle: 'none',
+    userSelect: 'none',
+    width: '100%',
+  },
+  multiBox: {
+    borderColor: { default: tokens.input, ':checked': tokens.primary },
+    borderRadius: foundationTokens.radiusSm,
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    alignItems: 'center',
+    display: 'flex',
+    flexShrink: 0,
+    justifyContent: 'center',
+    height: '1rem',
+    width: '1rem',
+  },
+  multiBoxChecked: {
+    borderColor: tokens.primary,
+    backgroundColor: tokens.primary,
+    color: tokens.primaryForeground,
+  },
+  multiFooter: {
+    padding: '0.25rem',
+    borderTopColor: tokens.border,
+    borderTopStyle: 'solid',
+    borderTopWidth: '1px',
+  },
+  multiClear: {
+    borderRadius: foundationTokens.radiusSm,
+    paddingBlock: '0.375rem',
+    backgroundColor: { default: 'transparent', ':hover': tokens.accent },
+    color: tokens.mutedForeground,
+    fontSize: '0.875rem',
+    outlineStyle: 'none',
+    width: '100%',
+  },
+  datePopup: { padding: 0, width: 'auto' },
+  filePopup: { padding: '0.5rem', width: '300px' },
+  fileRow: {
+    borderRadius: foundationTokens.radiusSm,
+    gap: '0.5rem',
+    paddingBlock: '0.375rem',
+    paddingInline: '0.25rem',
+    alignItems: 'center',
+    display: 'flex',
+    fontSize: '0.875rem',
+  },
+  fileIcon: {
+    color: tokens.mutedForeground,
+    flexShrink: 0,
+    fontSize: '0.875rem',
+  },
+  fileName: {
+    overflow: 'hidden',
+    flexGrow: 1,
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  fileSize: {
+    color: tokens.mutedForeground,
+    flexShrink: 0,
+    fontSize: '0.75rem',
+  },
+  fileRemove: {
+    borderRadius: foundationTokens.radiusSm,
+    alignItems: 'center',
+    backgroundColor: { default: 'transparent', ':hover': tokens.accent },
+    display: 'inline-flex',
+    flexShrink: 0,
+    justifyContent: 'center',
+    outlineStyle: 'none',
+    height: '1.25rem',
+    width: '1.25rem',
+  },
+  fileDrop: {
+    borderColor: tokens.border,
+    borderRadius: foundationTokens.radiusMd,
+    borderStyle: 'dashed',
+    borderWidth: '1px',
+    gap: '0.25rem',
+    alignItems: 'center',
+    backgroundColor: { default: 'transparent', ':hover': tokens.accent },
+    color: tokens.mutedForeground,
+    cursor: interactionTokens.cursorAction,
+    display: 'flex',
+    flexDirection: 'column',
+    fontSize: '0.75rem',
+    justifyContent: 'center',
+    height: '5rem',
+    marginTop: '0.25rem',
+  },
+  fileHint: { fontSize: '10px' },
+  hidden: { display: 'none' },
+  iconXs: { fontSize: '0.75rem' },
+  numberEditor: {
+    appearance: 'textfield',
+  },
   colPanel: {
     padding: '0.25rem',
     borderColor: tokens.border,
@@ -732,17 +973,30 @@ interface GridColumn {
     | 'checkbox'
     | 'date'
     | 'file'
+  options?: ReadonlyArray<string>
+  numberMin?: number
+  numberMax?: number
+  numberStep?: number
 }
 
 const GRID_COLUMNS: ReadonlyArray<GridColumn> = [
   { id: 'name', header: 'Name', iconName: 'text', width: 160, variant: 'text' },
-  { id: 'age', header: 'Age', iconName: 'hash', width: 80, variant: 'number' },
+  {
+    id: 'age',
+    header: 'Age',
+    iconName: 'hash',
+    width: 80,
+    variant: 'number',
+    numberMin: 18,
+    numberMax: 100,
+    numberStep: 1,
+  },
   {
     id: 'email',
     header: 'Email',
     iconName: 'mail',
     width: 220,
-    variant: 'url',
+    variant: 'text',
   },
   {
     id: 'website',
@@ -764,6 +1018,8 @@ const GRID_COLUMNS: ReadonlyArray<GridColumn> = [
     iconName: 'hash',
     width: 120,
     variant: 'number',
+    numberMin: 0,
+    numberStep: 1000,
   },
   {
     id: 'department',
@@ -771,6 +1027,7 @@ const GRID_COLUMNS: ReadonlyArray<GridColumn> = [
     iconName: 'building-2',
     width: 160,
     variant: 'select',
+    options: departments,
   },
   {
     id: 'status',
@@ -778,6 +1035,7 @@ const GRID_COLUMNS: ReadonlyArray<GridColumn> = [
     iconName: 'list-checks',
     width: 140,
     variant: 'select',
+    options: personStatuses,
   },
   {
     id: 'skills',
@@ -785,6 +1043,7 @@ const GRID_COLUMNS: ReadonlyArray<GridColumn> = [
     iconName: 'tags',
     width: 200,
     variant: 'multi-select',
+    options: skillOptions,
   },
   {
     id: 'isActive',
@@ -819,6 +1078,7 @@ const columnById = (id: string): GridColumn =>
 const cellContent = (
   person: Grid.Model['rows'][number],
   column: GridColumn,
+  rowIndex: number,
   h: HtmlBuilder<Grid.Message>,
 ): Html | string => {
   const p = person as Person
@@ -834,8 +1094,32 @@ const cellContent = (
             ...(p.isActive === true ? [h.Attribute('checked', 'true')] : []),
             h.Tabindex(-1),
             h.Class(className(reset.input, st.c114)),
+            h.OnClick(
+              Grid.Message.ToggledCellBoolean({
+                row: rowIndex,
+                column: column.id,
+              }),
+            ),
           ]),
         ],
+      )
+    case 'url':
+      return h.div(
+        [h.Class(className(st.urlWrap))],
+        p.website === undefined || p.website === ''
+          ? []
+          : [
+              h.a(
+                [
+                  h.Href(p.website),
+                  h.Target('_blank'),
+                  h.Attribute('rel', 'noopener noreferrer'),
+                  h.Tabindex(-1),
+                  h.Class(className(st.urlLink)),
+                ],
+                [p.website],
+              ),
+            ],
       )
     case 'select':
       return h.div(
@@ -879,6 +1163,417 @@ const cellContent = (
       return h.div([h.Class(className(st.c120))], [Grid.cellText(p, column.id)])
   }
 }
+
+/* ---------- cell editors ---------- */
+
+const EDITOR_SCRIM = (
+  onClose: Grid.Message,
+  h: HtmlBuilder<Grid.Message>,
+): Html =>
+  h.button([
+    h.Type('button'),
+    h.AriaHidden(true),
+    h.Tabindex(-1),
+    h.Class(className(reset.button, st.editorScrim)),
+    h.OnClick(onClose),
+  ])
+
+const textInputEditor = (
+  model: Grid.Model,
+  h: HtmlBuilder<Grid.Message>,
+): Html =>
+  h.input([
+    h.Type('text'),
+    h.Value(model.draftValue),
+    h.OnInput(value => Grid.Message.ChangedDraft({ value })),
+    h.Class(className(reset.input, st.c157)),
+    h.OnMount(
+      Grid.gridEditorFocusMount(() => Grid.Message.CompletedEditorFocus({})),
+    ),
+  ])
+
+const numberInputEditor = (
+  model: Grid.Model,
+  column: GridColumn,
+  h: HtmlBuilder<Grid.Message>,
+): Html =>
+  h.input([
+    h.Type('number'),
+    ...(column.numberMin === undefined
+      ? []
+      : [h.Min(String(column.numberMin))]),
+    ...(column.numberMax === undefined
+      ? []
+      : [h.Max(String(column.numberMax))]),
+    ...(column.numberStep === undefined
+      ? []
+      : [h.Step(String(column.numberStep))]),
+    h.Value(model.draftValue),
+    h.OnInput(value => Grid.Message.ChangedDraft({ value })),
+    h.Class(className(reset.input, st.c157, st.numberEditor)),
+    h.OnMount(
+      Grid.gridEditorFocusMount(() => Grid.Message.CompletedEditorFocus({})),
+    ),
+  ])
+
+const cellEditor = (
+  model: Grid.Model,
+  person: Person,
+  column: GridColumn,
+  rowIndex: number,
+  h: HtmlBuilder<Grid.Message>,
+): Html => {
+  switch (column.variant) {
+    case 'number':
+      return numberInputEditor(model, column, h)
+    case 'long-text':
+      return h.div(
+        [h.Class(className(st.contents))],
+        [
+          EDITOR_SCRIM(Grid.Message.CommittedDraft({ move: 'none' }), h),
+          h.div(
+            [
+              h.Class(className(st.editorPopup, st.longTextPopup)),
+              h.OnMount(
+                Grid.cellEditorPopupFitMount(() =>
+                  Grid.Message.CompletedEditorFocus({}),
+                ),
+              ),
+            ],
+            [
+              h.textarea([
+                h.Attribute('placeholder', 'Enter text...'),
+                h.Value(model.draftValue),
+                h.OnInput(value => Grid.Message.ChangedDraft({ value })),
+                h.Class(className(reset.input, st.longTextArea)),
+                h.OnMount(
+                  Grid.gridEditorFocusMount(() =>
+                    Grid.Message.CompletedEditorFocus({}),
+                  ),
+                ),
+              ]),
+            ],
+          ),
+        ],
+      )
+    case 'select':
+      return h.div(
+        [h.Class(className(st.contents))],
+        [
+          EDITOR_SCRIM(Grid.Message.CanceledEdit({}), h),
+          h.div(
+            [
+              h.Class(className(st.editorPopup, st.selectPopup)),
+              h.OnMount(
+                Grid.cellEditorPopupFitMount(() =>
+                  Grid.Message.CompletedEditorFocus({}),
+                ),
+              ),
+            ],
+            (column.options ?? []).map(option =>
+              h.button(
+                [
+                  h.Type('button'),
+                  h.Role('option'),
+                  h.AriaSelected(option === Grid.cellText(person, column.id)),
+                  h.OnClick(
+                    Grid.Message.AppliedCellOption({
+                      row: rowIndex,
+                      column: column.id,
+                      value: option,
+                    }),
+                  ),
+                  h.Class(className(reset.button, st.selectOption)),
+                ],
+                [
+                  h.span([], [option]),
+                  ...(option === Grid.cellText(person, column.id)
+                    ? [
+                        Icon.icon(
+                          'check',
+                          {
+                            class: className(st.selectCheck),
+                          },
+                          h,
+                        ),
+                      ]
+                    : []),
+                ],
+              ),
+            ),
+          ),
+        ],
+      )
+    case 'multi-select': {
+      const selected = person.skills ?? []
+      const query = model.draftValue.toLowerCase()
+      const options = (column.options ?? []).filter(option =>
+        option.toLowerCase().includes(query),
+      )
+      return h.div(
+        [h.Class(className(st.contents))],
+        [
+          EDITOR_SCRIM(Grid.Message.CanceledEdit({}), h),
+          h.div(
+            [
+              h.Class(className(st.editorPopup, st.multiPopup)),
+              h.OnMount(
+                Grid.cellEditorPopupFitMount(() =>
+                  Grid.Message.CompletedEditorFocus({}),
+                ),
+              ),
+            ],
+            [
+              h.div(
+                [h.Class(className(st.multiHeader))],
+                [
+                  ...selected.map(skill =>
+                    h.span(
+                      [h.Class(className(st.multiBadge))],
+                      [
+                        skill,
+                        h.button(
+                          [
+                            h.Type('button'),
+                            h.AriaLabel(`Remove ${skill}`),
+                            h.OnClick(
+                              Grid.Message.ToggledCellOption({
+                                row: rowIndex,
+                                column: column.id,
+                                option: skill,
+                              }),
+                            ),
+                            h.Class(className(reset.button)),
+                          ],
+                          [
+                            Icon.icon(
+                              'x',
+                              {
+                                class: className(st.iconXs),
+                              },
+                              h,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  h.input([
+                    h.Type('text'),
+                    h.Value(model.draftValue),
+                    h.Attribute('placeholder', 'Search...'),
+                    h.OnInput(value => Grid.Message.ChangedDraft({ value })),
+                    h.Class(className(reset.input, st.multiSearch)),
+                    h.OnMount(
+                      Grid.gridEditorFocusMount(() =>
+                        Grid.Message.CompletedEditorFocus({}),
+                      ),
+                    ),
+                  ]),
+                ],
+              ),
+              h.div(
+                [h.Class(className(st.multiList))],
+                options.length === 0
+                  ? [
+                      h.div(
+                        [h.Class(className(st.multiEmpty))],
+                        ['No options found.'],
+                      ),
+                    ]
+                  : options.map(option => {
+                      const checked = selected.includes(option)
+                      return h.button(
+                        [
+                          h.Type('button'),
+                          h.OnClick(
+                            Grid.Message.ToggledCellOption({
+                              row: rowIndex,
+                              column: column.id,
+                              option,
+                            }),
+                          ),
+                          h.Class(className(reset.button, st.multiOption)),
+                        ],
+                        [
+                          h.span(
+                            [
+                              h.Class(
+                                className(
+                                  st.multiBox,
+                                  checked && st.multiBoxChecked,
+                                ),
+                              ),
+                            ],
+                            checked
+                              ? [
+                                  Icon.icon(
+                                    'check',
+                                    {
+                                      class: className(st.iconXs),
+                                    },
+                                    h,
+                                  ),
+                                ]
+                              : [],
+                          ),
+                          h.span([], [option]),
+                        ],
+                      )
+                    }),
+              ),
+              ...(selected.length > 0
+                ? [
+                    h.div(
+                      [h.Class(className(st.multiFooter))],
+                      [
+                        h.button(
+                          [
+                            h.Type('button'),
+                            h.OnClick(
+                              Grid.Message.ClearedCellOptions({
+                                row: rowIndex,
+                                column: column.id,
+                              }),
+                            ),
+                            h.Class(className(reset.button, st.multiClear)),
+                          ],
+                          ['Clear all'],
+                        ),
+                      ],
+                    ),
+                  ]
+                : []),
+            ],
+          ),
+        ],
+      )
+    }
+    case 'date':
+      return h.div(
+        [h.Class(className(st.contents))],
+        [
+          EDITOR_SCRIM(Grid.Message.CanceledEdit({}), h),
+          h.div(
+            [
+              h.Class(className(st.editorPopup, st.datePopup)),
+              h.OnMount(
+                Grid.cellEditorPopupFitMount(() =>
+                  Grid.Message.CompletedEditorFocus({}),
+                ),
+              ),
+            ],
+            [
+              Calendar.calendar(
+                {
+                  model: model.cellCalendar,
+                  maybeSelectedDate: dateFromISO(person.startDate ?? ''),
+                  toParentMessage: message =>
+                    Grid.Message.GotCellCalendarMessage({ message }),
+                  captionLayout: 'dropdown',
+                  direction: model.direction,
+                },
+                h,
+              ),
+            ],
+          ),
+        ],
+      )
+    case 'file': {
+      const files = person.attachments ?? []
+      return h.div(
+        [h.Class(className(st.contents))],
+        [
+          EDITOR_SCRIM(Grid.Message.CanceledEdit({}), h),
+          h.div(
+            [
+              h.Class(className(st.editorPopup, st.filePopup)),
+              h.OnMount(
+                Grid.cellEditorPopupFitMount(() =>
+                  Grid.Message.CompletedEditorFocus({}),
+                ),
+              ),
+            ],
+            [
+              ...files.map(file =>
+                h.div(
+                  [h.Class(className(st.fileRow))],
+                  [
+                    Icon.icon(
+                      'paperclip',
+                      {
+                        class: className(st.fileIcon),
+                      },
+                      h,
+                    ),
+                    h.span([h.Class(className(st.fileName))], [file.name]),
+                    h.span(
+                      [h.Class(className(st.fileSize))],
+                      [formatFileSize(file.size)],
+                    ),
+                    h.button(
+                      [
+                        h.Type('button'),
+                        h.AriaLabel(`Remove ${file.name}`),
+                        h.OnClick(
+                          Grid.Message.RemovedCellFile({
+                            row: rowIndex,
+                            column: column.id,
+                            fileId: file.id,
+                          }),
+                        ),
+                        h.Class(className(reset.button, st.fileRemove)),
+                      ],
+                      [Icon.icon('x', { class: className(st.iconXs) }, h)],
+                    ),
+                  ],
+                ),
+              ),
+              h.label(
+                [h.Class(className(st.fileDrop))],
+                [
+                  h.input([
+                    h.Type('file'),
+                    h.Attribute('multiple', ''),
+                    h.Class(className(st.hidden)),
+                    h.OnMount(
+                      Grid.cellFilePickerMount(mount =>
+                        mount._tag === 'FilesPicked'
+                          ? Grid.Message.PickedCellFiles({
+                              files: mount.files,
+                            })
+                          : Grid.Message.CanceledEdit({}),
+                      ),
+                    ),
+                  ]),
+                  Icon.icon(
+                    'upload',
+                    {
+                      class: className(st.fileIcon),
+                    },
+                    h,
+                  ),
+                  'Click to upload files',
+                  h.span(
+                    [h.Class(className(st.fileHint))],
+                    ['Max 5 files, 10MB each'],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      )
+    }
+    default:
+      return textInputEditor(model, h)
+  }
+}
+
+const formatFileSize = (bytes: number): string =>
+  bytes >= 1024 * 1024
+    ? `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+    : `${Math.max(Math.round(bytes / 1024), 1)} KB`
 
 /* ---------- toolbar ---------- */
 
@@ -1574,26 +2269,14 @@ export const gridView = (
                       ],
                       [
                         isEditing
-                          ? h.input([
-                              h.Type(
-                                column.variant === 'number'
-                                  ? 'number'
-                                  : column.variant === 'date'
-                                    ? 'date'
-                                    : 'text',
-                              ),
-                              h.Value(model.draftValue),
-                              h.OnInput(value =>
-                                Grid.Message.ChangedDraft({ value }),
-                              ),
-                              h.Class(className(reset.input, st.c157)),
-                              h.OnMount(
-                                Grid.gridEditorFocusMount(() =>
-                                  Grid.Message.CompletedEditorFocus({}),
-                                ),
-                              ),
-                            ])
-                          : cellContent(person, column, h),
+                          ? cellEditor(
+                              model,
+                              person as Person,
+                              column,
+                              rowIndex,
+                              h,
+                            )
+                          : cellContent(person, column, rowIndex, h),
                       ],
                     )
                   }),

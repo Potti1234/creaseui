@@ -2,11 +2,18 @@
    focused/editing cell, selected ranges, sorting, filtering, hidden columns,
    row height, search overlay, undo/redo, clipboard). */
 
-import { Effect, Queue, Schema as S, Stream } from 'effect'
+import { Calendar as CalendarPrimitive } from '@foldkit/ui'
+import { Effect, Option, Queue, Schema as S, Stream } from 'effect'
+import * as Calendar from 'foldkit/calendar'
 import { defineMessageUnion } from 'foldkit/message'
 import * as Mount from 'foldkit/mount'
 
-import { generatePeople, type Person } from '@/lib/tablecn-data'
+import { dateFromISO, dateToISO } from '@/lib/date-parse'
+import {
+  type FileCellData,
+  generatePeople,
+  type Person,
+} from '@/lib/tablecn-data'
 
 export const ROW_HEIGHTS = [
   { id: 'short', label: 'Short', height: 36 },
@@ -56,6 +63,7 @@ export const Model = S.Struct({
   futureStates: S.Array(S.Any),
   direction: S.Literals(['ltr', 'rtl']),
   scrollTop: S.Number,
+  cellCalendar: CalendarPrimitive.Model,
 })
 export type Model = typeof Model.Type
 
@@ -68,6 +76,21 @@ export const Message = defineMessageUnion({
   CompletedEditorFocus: {},
   SetCellValue: { row: S.Number, column: S.String, value: S.String },
   ToggledCellBoolean: { row: S.Number, column: S.String },
+  AppliedCellOption: { row: S.Number, column: S.String, value: S.String },
+  ToggledCellOption: { row: S.Number, column: S.String, option: S.String },
+  ClearedCellOptions: { row: S.Number, column: S.String },
+  GotCellCalendarMessage: { message: S.Unknown },
+  PickedCellFiles: {
+    files: S.Array(
+      S.Struct({
+        name: S.String,
+        size: S.Number,
+        type: S.String,
+        url: S.String,
+      }),
+    ),
+  },
+  RemovedCellFile: { row: S.Number, column: S.String, fileId: S.String },
   ClearedSelection: {},
   SelectedCell: { row: S.Number, column: S.String, additive: S.Boolean },
   SelectedRange: { row: S.Number, column: S.String, extend: S.Boolean },
@@ -115,8 +138,15 @@ export const Message = defineMessageUnion({
 })
 export type Message = typeof Message.Type
 
+const today = (): Calendar.CalendarDate =>
+  Calendar.fromDateInZone(new Date(), 'UTC')
+
 export const init = (count = 500): Model => ({
   rows: generatePeople(count),
+  cellCalendar: CalendarPrimitive.init({
+    id: 'tablecn-grid-cell-calendar',
+    today: today(),
+  }),
   columnOrder: [
     'name',
     'age',
@@ -204,6 +234,16 @@ export const filteredPeople = (model: Model): Array<Person> => {
 
 const numericColumns = new Set(['age', 'salary'])
 
+/* columns whose editor edits the draftValue text field */
+const draftEditedColumns = new Set([
+  'name',
+  'age',
+  'email',
+  'website',
+  'notes',
+  'salary',
+])
+
 export const sortedPeople = (
   people: ReadonlyArray<Person>,
   sorting: ReadonlyArray<{ id: string; desc: boolean }>,
@@ -275,6 +315,25 @@ const commitCell = (
   }
 }
 
+const commitFiles = (
+  model: Model,
+  row: number,
+  files: Array<FileCellData>,
+): Model => {
+  const people = filteredPeople(model)
+  const target = people[row]
+  if (target === undefined) return model
+  const snapshot = model.rows
+  return {
+    ...model,
+    pastStates: [...model.pastStates, snapshot],
+    futureStates: [],
+    rows: personArray(model).map(person =>
+      person.id === target.id ? { ...person, attachments: files } : person,
+    ),
+  }
+}
+
 const moveFocus = (model: Model, dRow: number, dColumn: number): Model => {
   const columns = visibleColumns(model)
   const columnIndex = columns.indexOf(model.focusedCell.column)
@@ -306,21 +365,58 @@ export const update = (model: Model, message: Message): Model => {
         selectionAnchor: { row: message.row, column: message.column },
         selectionEnd: { row: message.row, column: message.column },
       }
-    case 'StartedEditing':
+    case 'StartedEditing': {
+      const people = filteredPeople(model)
+      /* boolean cells toggle immediately — tablecn's checkbox cell is the
+         editor itself, there is no separate edit mode for it */
+      if (message.column === 'isActive') {
+        const target = people[message.row]
+        if (target === undefined) return model
+        return commitCell(
+          model,
+          message.row,
+          message.column,
+          target.isActive === true ? 'false' : 'true',
+        )
+      }
+      /* date cells: reopen the cell calendar on the value's month — like
+         tablecn's DateCell which seeds react-day-picker with the cell date */
+      const person = people[message.row]
+      const viewDate =
+        person === undefined
+          ? Option.none()
+          : dateFromISO(cellText(person, message.column))
+      const cellCalendar =
+        message.column === 'startDate'
+          ? CalendarPrimitive.init({
+              id: 'tablecn-grid-cell-calendar',
+              today: today(),
+              ...(Option.isSome(viewDate)
+                ? { initialViewDate: viewDate.value }
+                : {}),
+            })
+          : model.cellCalendar
       return {
         ...model,
+        cellCalendar,
         editingCell: { row: message.row, column: message.column },
         draftValue: message.seed,
       }
+    }
     case 'ChangedDraft':
       return { ...model, draftValue: message.value }
     case 'CommittedDraft': {
-      const committed = commitCell(
-        model,
-        model.editingCell.row,
-        model.editingCell.column,
-        model.draftValue,
-      )
+      /* draftValue only backs the text-style editors (text, number, url,
+         long-text); option/date/file editors commit through their own
+         messages, so committing the draft would overwrite with '' */
+      const committed = draftEditedColumns.has(model.editingCell.column)
+        ? commitCell(
+            model,
+            model.editingCell.row,
+            model.editingCell.column,
+            model.draftValue,
+          )
+        : model
       const moved =
         message.move === 'down'
           ? moveFocus(committed, 1, 0)
@@ -344,6 +440,81 @@ export const update = (model: Model, message: Message): Model => {
         message.row,
         message.column,
         target.isActive === true ? 'false' : 'true',
+      )
+    }
+    case 'AppliedCellOption': {
+      const committed = commitCell(
+        model,
+        message.row,
+        message.column,
+        message.value,
+      )
+      return { ...committed, editingCell: emptyCell, draftValue: '' }
+    }
+    case 'ToggledCellOption': {
+      const people = filteredPeople(model)
+      const target = people[message.row]
+      if (target === undefined) return model
+      const current = target.skills ?? []
+      const next = current.includes(message.option)
+        ? current.filter(skill => skill !== message.option)
+        : [...current, message.option]
+      return commitCell(model, message.row, message.column, next.join(', '))
+    }
+    case 'ClearedCellOptions':
+      return commitCell(model, message.row, message.column, '')
+    case 'GotCellCalendarMessage': {
+      const next = CalendarPrimitive.update(
+        model.cellCalendar,
+        message.message as CalendarPrimitive.Message,
+      )
+      if (next.outMessage !== undefined) {
+        switch (next.outMessage._tag) {
+          case 'SelectedDate': {
+            const committed = commitCell(
+              model,
+              model.editingCell.row,
+              model.editingCell.column,
+              dateToISO(next.outMessage.date),
+            )
+            return {
+              ...committed,
+              cellCalendar: next.model,
+              editingCell: emptyCell,
+              draftValue: '',
+            }
+          }
+          default:
+            break
+        }
+      }
+      return { ...model, cellCalendar: next.model }
+    }
+    case 'PickedCellFiles': {
+      if (model.editingCell.row === -1) return model
+      const people = filteredPeople(model)
+      const target = people[model.editingCell.row]
+      if (target === undefined) return model
+      const next: Array<FileCellData> = message.files.map((file, index) => ({
+        id: `${target.id}-upload-${String(Date.now())}-${String(index)}`,
+        name: file.name,
+        size: file.size,
+        type: file.type,
+        url: file.url,
+      }))
+      return commitFiles(model, model.editingCell.row, [
+        ...(target.attachments ?? []),
+        ...next,
+      ])
+    }
+    case 'RemovedCellFile': {
+      const people = filteredPeople(model)
+      const target = people[message.row]
+      if (target === undefined) return model
+      return commitFiles(
+        model,
+        message.row,
+        (target.attachments ?? []).filter(file => file.id !== message.fileId),
       )
     }
     case 'ClearedSelection':
@@ -830,6 +1001,99 @@ export const gridEditorFocusMount = <Msg>(toParentMessage: () => Msg) =>
     FocusCellEditor({}),
     toParentMessage as (message: typeof EditorMountMessage.Type) => Msg,
   )
+
+/* Radix-style collision fit for editor popups: if the popup would render
+   off the viewport edge, re-anchor it to the cell's other inline edge or
+   flip it above the cell. Pure DOM adjustment — no model state. */
+const EditorPopupFit = Mount.define('EditorPopupFit', {
+  args: {},
+  messages: [EditorMountMessage.GridEditorFocused],
+  execute: ({ element }) =>
+    Effect.sync(() => {
+      if (element instanceof HTMLElement) {
+        const rect = element.getBoundingClientRect()
+        const vw = document.documentElement.clientWidth
+        const vh = document.documentElement.clientHeight
+        if (rect.right > vw - 4) {
+          element.style.insetInlineStart = 'auto'
+          element.style.insetInlineEnd = '0'
+        } else if (rect.left < 4) {
+          element.style.insetInlineEnd = 'auto'
+          element.style.insetInlineStart = '0'
+        }
+        if (rect.bottom > vh - 4) {
+          element.style.top = 'auto'
+          element.style.bottom = '100%'
+          element.style.marginTop = '0'
+          element.style.marginBottom = '0.125rem'
+        }
+      }
+      return EditorMountMessage.GridEditorFocused({})
+    }),
+})
+
+export const cellEditorPopupFitMount = <Msg>(toParentMessage: () => Msg) =>
+  Mount.mapMessage(
+    EditorPopupFit({}),
+    toParentMessage as (message: typeof EditorMountMessage.Type) => Msg,
+  )
+
+const FilePickerMessage = defineMessageUnion({
+  FilesPicked: {
+    files: S.Array(
+      S.Struct({
+        name: S.String,
+        size: S.Number,
+        type: S.String,
+        url: S.String,
+      }),
+    ),
+  },
+})
+
+/* native <input type=file> change → picked File objects become plain
+   FileCellData-shaped payloads the update can store on the row */
+export const CellFilePicker = Mount.defineStream('TablecnGridFilePicker', {
+  args: {},
+  messages: [FilePickerMessage.FilesPicked],
+  execute: ({ element }) =>
+    Stream.callback<typeof FilePickerMessage.Type>(queue =>
+      Effect.gen(function* () {
+        yield* Effect.acquireRelease(
+          Effect.sync(() => {
+            if (!(element instanceof HTMLInputElement)) return undefined
+            const onChange = (): void => {
+              const picked = Array.from(element.files ?? []).map(file => ({
+                name: file.name,
+                size: file.size,
+                type: file.type,
+                url: URL.createObjectURL(file),
+              }))
+              if (picked.length > 0)
+                Queue.offerUnsafe(
+                  queue,
+                  FilePickerMessage.FilesPicked({ files: picked }),
+                )
+              element.value = ''
+            }
+            element.addEventListener('change', onChange)
+            return () => {
+              element.removeEventListener('change', onChange)
+            }
+          }),
+          cleanup =>
+            Effect.sync(() => {
+              cleanup?.()
+            }),
+        )
+        return Effect.void
+      }),
+    ),
+})
+
+export const cellFilePickerMount = <Msg>(
+  toParentMessage: (message: typeof FilePickerMessage.Type) => Msg,
+) => Mount.mapMessage(CellFilePicker({}), toParentMessage)
 
 const blankPerson = (id: string): Person => ({
   id,
