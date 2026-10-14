@@ -80,7 +80,7 @@ export type Message = typeof Message.Type`,
     init: `export const init = (): Update.Return<Model, Message> => ({ model: { table: DataTable.init(5) } })`,
     update: `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
   switch (message._tag) {
-    case 'GotDataTableMessage${tag}': return { model: { ...model, table: DataTable.update(model.table, message.message) } }
+    case 'GotDataTableMessage${tag}': return { model: { ...model, table: DataTable.update(model.table, message.message).model } }
   }
 }`,
     view: `${stylex ? "const styles = stylex.create({ amount: { textAlign: 'right' } })\n\n" : ''}const columns: ReadonlyArray<DataTable.DataTableColumn<Payment>> = [
@@ -100,10 +100,78 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
 
 export const dataTableExamples = (
   renderer: 'tailwind' | 'stylex',
-): ReadonlyArray<DocsExample> =>
-  dataTableFixtures.map(fixture => ({
+): ReadonlyArray<DocsExample> => [
+  ...dataTableFixtures.map(fixture => ({
     title: fixture.title,
     description: fixture.description,
     code: source(fixture, renderer),
     previewClass: 'justify-stretch',
-  }))
+  })),
+  {
+    title: 'Faceted filters',
+    description:
+      'The faceted variant adds tablecn-style chrome: a faceted filter toolbar, multi-column sort menu, view options, and column header menus. Rows stay page-owned; the model tracks filters, sorting, and pagination.',
+    code: facetedSource(renderer),
+    previewClass: 'justify-stretch',
+  },
+]
+
+const facetedSource = (renderer: 'tailwind' | 'stylex'): string => {
+  const stylex = renderer === 'stylex'
+  return foldkitApplication({
+    title: 'Data Table — Faceted filters',
+    imports: `import { Schema as S } from 'effect'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
+import { type Document, type HtmlBuilder } from 'foldkit/html'
+
+import * as DataTable from '@/${stylex ? 'stylex' : 'ui'}/data-table'`,
+    model: `type Payment = Readonly<{ id: string; status: string; email: string; amount: number }>
+
+const payments: ReadonlyArray<Payment> = ${JSON.stringify(payments, null, 2)}
+
+export const Model = S.Struct({ table: DataTable.Model })
+export type Model = typeof Model.Type`,
+    messages: `import { taggedStruct } from 'foldkit/schema'
+export const GotDataTableMessage = taggedStruct('GotDataTableMessageFaceted', { message: DataTable.Message });
+export const Message = S.Union([GotDataTableMessage])
+export type Message = typeof Message.Type`,
+    init: `const config: DataTable.DataTableConfig<Payment> = {
+  columns: [
+    { id: 'status', header: 'Status', get: row => row.status, filterVariant: 'options', options: [
+      { value: 'success', label: 'Success' },
+      { value: 'pending', label: 'Pending' },
+      { value: 'processing', label: 'Processing' },
+      { value: 'failed', label: 'Failed' },
+    ] },
+    { id: 'email', header: 'Email', get: row => row.email },
+    { id: 'amount', header: 'Amount', get: row => String(row.amount), filterVariant: 'range', getNumber: row => row.amount },
+  ],
+  rowKey: row => row.id,
+  searchColumnId: 'email',
+}
+
+export const init = (): Update.Return<Model, Message> => ({ model: { table: DataTable.init(config, payments) } })`,
+    update: `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
+  switch (message._tag) {
+    case 'GotDataTableMessageFaceted': return { model: { ...model, table: DataTable.update(model.table, message.message).model } }
+  }
+}`,
+    view: `const columns: ReadonlyArray<DataTable.DataTableColumn<Payment>> = [
+  { key: 'status', header: 'Status', cell: row => row.status, get: row => row.status, sortValue: row => row.status, filterVariant: 'options', options: [
+    { value: 'success', label: 'Success' },
+    { value: 'pending', label: 'Pending' },
+    { value: 'processing', label: 'Processing' },
+    { value: 'failed', label: 'Failed' },
+  ] },
+  { key: 'email', header: 'Email', cell: row => row.email, get: row => row.email, sortValue: row => row.email },
+  { key: 'amount', header: 'Amount', cell: row => \`$\${row.amount.toFixed(2)}\`, get: row => String(row.amount), sortValue: row => row.amount, filterVariant: 'range', getNumber: row => row.amount },
+]
+
+export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+  title: 'Data Table — Faceted filters',
+  body: h.main([], [h.div([], [
+    DataTable.dataTable({ model: model.table, toParentMessage: message => GotDataTableMessage({ message }), rows: payments, columns, rowKey: row => row.id, variant: 'faceted', searchPlaceholder: 'Filter emails…', searchColumnKey: 'email', rowMenu: false, ariaLabel: 'Payments' }, h),
+  ])]),
+})`,
+  })
+}

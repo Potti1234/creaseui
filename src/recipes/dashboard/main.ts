@@ -254,7 +254,7 @@ export const update = (
       return {
         model: {
           ...model,
-          table: DataTable.update(model.table, message.message),
+          table: DataTable.update(model.table, message.message).model,
         },
       }
     case 'GotChart':

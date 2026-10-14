@@ -9,7 +9,7 @@ import { loginArtwork } from '@/stylex/composition/login-artwork'
 import { badge } from '@/stylex/badge'
 import { button } from '@/stylex/button'
 import * as TableState from '@/lib/data-table-state'
-import * as TablecnState from '@/lib/tablecn-table'
+import { sliderSubscriptions as tablecnSliderSubscriptions } from '@/lib/data-table-state'
 import { fieldSeparator } from '@/stylex/field'
 import { input } from '@/stylex/input'
 import { icon } from '@/stylex/composition/icon'
@@ -151,15 +151,14 @@ type UpdateReturn = Update.Return<Model, Message>
 
 /* Est. Hours range-slider thumb drags inside the tablecn blocks. */
 export const subscriptions = Subscription.aggregate<Model, Message>()(
-  Subscription.lift(TablecnState.sliderSubscriptions('featuredSxTablecnHours'))<
-    Model,
-    Message
-  >({
+  Subscription.lift(
+    tablecnSliderSubscriptions('estimatedHours', 'featuredSxTablecnHours'),
+  )<Model, Message>({
     toChildModel: model => model.tablecn.table,
     toParentMessage: message => GotTablecnMessage({ message }),
   }),
   Subscription.lift(
-    TablecnState.sliderSubscriptions('featuredSxTablecnGridHours'),
+    tablecnSliderSubscriptions('estimatedHours', 'featuredSxTablecnGridHours'),
   )<Model, Message>({
     toChildModel: model => model.tablecnGrid.table,
     toParentMessage: message => GotTablecnGridMessage({ message }),
@@ -233,7 +232,9 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       ),
     }
   }
-  return { model: { ...model, table: TableState.update(model.table, message) } }
+  return {
+    model: { ...model, table: TableState.update(model.table, message).model },
+  }
 }
 
 const metricCard = <Message>(

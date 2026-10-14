@@ -50,7 +50,7 @@ export const dataTableTailwindPreviewProgram = definePreviewProgram<Model, Got>(
     update: (model, message) => ({
       model: {
         ...model,
-        table: DataTable.update(model.table, message.message),
+        table: DataTable.update(model.table, message.message).model,
       },
     }),
     view: (index, model, h) => {

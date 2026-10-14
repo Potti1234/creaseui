@@ -541,3 +541,99 @@ export const personDataGridConfig: DataGridConfig<Person> = {
   rowKey: p => p.id,
   createRow: key => ({ id: key, skills: [], attachments: [] }),
 }
+
+/* ---------- tasks data-table config (faceted data-table component) ---------- */
+
+import type { DataTableConfig } from '@/lib/data-table-state'
+
+const statusRank: Record<TaskStatus, number> = {
+  todo: 0,
+  'in-progress': 1,
+  done: 2,
+  canceled: 3,
+}
+const priorityRank: Record<TaskPriority, number> = {
+  low: 0,
+  medium: 1,
+  high: 2,
+}
+
+export const taskDataTableConfig: DataTableConfig<Task> = {
+  columns: [
+    {
+      id: 'code',
+      header: 'Task',
+      get: task => task.code,
+    },
+    {
+      id: 'title',
+      header: 'Title',
+      get: task => task.title,
+    },
+    {
+      id: 'label',
+      header: 'Labels',
+      get: task => task.label,
+      set: (task, value) => ({ ...task, label: value as TaskLabel }),
+      options: taskLabels.map(value => ({
+        value,
+        label: value[0]!.toUpperCase() + value.slice(1),
+      })),
+    },
+    {
+      id: 'status',
+      header: 'Status',
+      get: task => task.status,
+      sortValue: task => statusRank[task.status] ?? 0,
+      set: (task, value) => ({ ...task, status: value as TaskStatus }),
+      filterVariant: 'options',
+      options: taskStatuses.map(value => ({
+        value,
+        label:
+          value === 'in-progress'
+            ? 'In-Progress'
+            : value[0]!.toUpperCase() + value.slice(1),
+      })),
+    },
+    {
+      id: 'priority',
+      header: 'Priority',
+      get: task => task.priority,
+      sortValue: task => priorityRank[task.priority] ?? 0,
+      set: (task, value) => ({ ...task, priority: value as TaskPriority }),
+      filterVariant: 'options',
+      options: taskPriorities.map(value => ({
+        value,
+        label: value[0]!.toUpperCase() + value.slice(1),
+      })),
+    },
+    {
+      id: 'estimatedHours',
+      header: 'Est. Hours',
+      get: task => String(task.estimatedHours),
+      sortValue: task => task.estimatedHours,
+      getNumber: task => task.estimatedHours,
+      filterVariant: 'range',
+      rangeStep: 1,
+    },
+    {
+      id: 'createdAt',
+      header: 'Created At',
+      get: task =>
+        task.createdAt instanceof Date
+          ? task.createdAt.toISOString().slice(0, 10)
+          : String(task.createdAt),
+      sortValue: task =>
+        task.createdAt instanceof Date
+          ? task.createdAt.getTime()
+          : new Date(task.createdAt).getTime(),
+      getDate: task =>
+        task.createdAt instanceof Date
+          ? task.createdAt.getTime()
+          : new Date(task.createdAt).getTime(),
+      filterVariant: 'date',
+    },
+  ],
+  rowKey: task => task.id,
+  searchColumnId: 'title',
+}
