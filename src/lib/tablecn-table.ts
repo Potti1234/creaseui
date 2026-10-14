@@ -161,7 +161,7 @@ export const init = (taskCount = 100): Model => ({
   }),
   pageSizeSelect: Listbox.init({
     id: 'tablecn-page-size',
-    isAnimated: true,
+    isAnimated: false,
   }),
 })
 

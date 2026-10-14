@@ -1098,12 +1098,15 @@ const priorityBadge = (priority: string, h: HtmlBuilder<Message>): Html =>
     ],
   )
 
-const formatDate = (date: Date): string =>
-  date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
+const formatDate = (date: Date | string): string =>
+  (date instanceof Date ? date : new Date(Date.parse(date))).toLocaleDateString(
+    'en-US',
+    {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    },
+  )
 
 /* column defs used by toolbar + header + view menu */
 interface TableColumn {
