@@ -165,7 +165,7 @@ export type Message = typeof Message.Type`,
         toParentMessage: message => Message.GotHoverCardMessage({ index, message }),
         trigger: entry${kind === 'sides' ? '' : '.label'},
         triggerButtonVariant: 'outline',
-        ariaLabel: 'Hover card on the ' + ${sideExpr} + ' side',
+        ariaLabel: ${kind === 'sides' ? "'Hover card on the ' + entry + ' side'" : 'entry.label'},
         side: ${sideExpr},
         ${card}
       }, h))),

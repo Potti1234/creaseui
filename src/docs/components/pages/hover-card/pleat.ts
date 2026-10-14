@@ -103,7 +103,7 @@ export const hoverCardPleatPreview: ExamplePreviewProvider = <Msg>(
             toParentMessage: toMsg(onMessageJson, cardIndex),
             trigger: entry.label,
             triggerButtonVariant: 'outline',
-            ariaLabel: `Hover card on the ${entry.side} side`,
+            ariaLabel: entry.label,
             side: entry.side,
             content: h.div(
               [h.Dir('rtl'), h.Class(className(styles.content))],

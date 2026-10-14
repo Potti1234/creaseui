@@ -136,7 +136,7 @@ export const hoverCardTailwindPreviewProgram = definePreviewProgram<
                 }),
               trigger: entry.label,
               triggerButtonVariant: 'outline',
-              ariaLabel: `Hover card on the ${entry.side} side`,
+              ariaLabel: entry.label,
               side: entry.side,
               content: rtlCard(h),
             },
