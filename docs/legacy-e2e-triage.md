@@ -53,6 +53,10 @@ The `browser` job on the same commit failed 1 of 672 (667 passed, 4 skipped): `[
 | stylex-template-system: dashboard recipe      | data table `ariaLabel` was on the wrapper div (StyleX/Pleat) or dropped (Tailwind); mobile `nav` locator also matched pagination | product fix `b09dc75` (name goes on the `<table>`); spec `c6ffd2f`                                                                  |
 | stylex-template-system: dashboard axe         | shadcn destructive Badge `#e7000b` on `bg-destructive/10` is 4:1                                                                 | `8f992de`: added to the accepted shadcn pairs (palette unchanged)                                                                   |
 
+## Full local rerun (2 workers, `PLAYWRIGHT_WORKERS=2 npx playwright test`)
+
+On `166872e`: 285 passed, 1 failed (15.2 min). The failure was `site: tokenizer popup keeps its full field size`: the width was read while the reopened panel was still zooming in (398.7 vs 400). Fixed in `82d1fed` by polling the settled width (same 0.5px tolerance). It passed 3/3 with `--repeat-each=3`.
+
 ## Remaining
 
-None known; pending the full 2-worker rerun.
+None.
