@@ -16,6 +16,7 @@ import { themeScope } from '@/ui/composition/theme'
 import { heading } from '@/ui/heading'
 import { input } from '@/ui/input'
 import { nativeSelect } from '@/ui/native-select'
+import { datePicker } from '@/ui/date-picker'
 import { popover } from '@/ui/popover'
 import { stat } from '@/ui/stat'
 import { switchControl } from '@/ui/switch'
@@ -53,6 +54,6 @@ runSurfacesData({
   tableHead,
   tableCell,
 })
-runScopeOverlay({ button, popover, themeScope })
+runScopeOverlay({ button, popover, themeScope, datePicker })
 runSettings({ tabs, tabsUpdate, switchControl })
 runDashboard({ stat })

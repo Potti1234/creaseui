@@ -14,6 +14,7 @@ import { themeScope } from '@/pleat/composition/theme'
 import { heading } from '@/pleat/heading'
 import { input } from '@/pleat/input'
 import { nativeSelect } from '@/pleat/native-select'
+import { datePicker } from '@/pleat/date-picker'
 import { popover } from '@/pleat/popover'
 import { stat } from '@/pleat/stat'
 import { switchControl } from '@/pleat/switch'
@@ -53,6 +54,6 @@ runSurfacesData({
   tableHead,
   tableCell,
 })
-runScopeOverlay({ button, popover, themeScope })
+runScopeOverlay({ button, popover, themeScope, datePicker })
 runSettings({ tabs, tabsUpdate, switchControl })
 runDashboard({ stat })

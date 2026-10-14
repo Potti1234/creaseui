@@ -245,6 +245,47 @@ test.describe('shared mixed-form fixture', () => {
     })
 
   for (const renderer of RENDERERS)
+    test(`${renderer}: date picker panel keeps the nested dark scope`, async ({
+      page,
+    }) => {
+      const errors: Array<string> = []
+      page.on('pageerror', error => errors.push(error.message))
+      await page.goto(servers.get(renderer)!.resolvedUrls!.local[0]!)
+      const trigger = page.locator('#dark-scope').getByRole('button', {
+        name: /Scoped date/u,
+      })
+      await trigger.click()
+      const panel = page.locator('[data-slot="popover-content"]:visible')
+      await expect(panel).toHaveCount(1)
+      await expect(panel.getByRole('grid')).toBeVisible()
+      // In the themed subtree, not a body portal that loses the scope.
+      // Tailwind paints the popover frame, StyleX/Pleat the calendar
+      // (background role) over it; either way it is the dark palette.
+      const darkSurfaces = [
+        await cssVariable(page, '--popover'),
+        await cssVariable(page, '--background'),
+      ]
+      const lightPopover = await page.evaluate(() =>
+        getComputedStyle(document.body).getPropertyValue('--popover').trim(),
+      )
+      expect(darkSurfaces).not.toContain(lightPopover)
+      expect(darkSurfaces).toContain(
+        await panel.evaluate(element => {
+          const grid = element.querySelector('[role="grid"]')
+          return (
+            [element, grid, grid?.parentElement]
+              .map(node => node && getComputedStyle(node).backgroundColor)
+              .find(color => color && color !== 'rgba(0, 0, 0, 0)') ?? ''
+          )
+        }),
+      )
+      await page.keyboard.press('Escape')
+      await expect(panel).toHaveCount(0)
+      await expect(trigger).toBeFocused()
+      expect(errors).toEqual([])
+    })
+
+  for (const renderer of RENDERERS)
     test(`${renderer}: settings tabs and dashboard stats`, async ({ page }) => {
       const errors: Array<string> = []
       page.on('pageerror', error => errors.push(error.message))

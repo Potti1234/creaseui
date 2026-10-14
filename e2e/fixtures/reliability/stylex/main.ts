@@ -14,6 +14,7 @@ import { themeScope } from '@/stylex/composition/theme'
 import { heading } from '@/stylex/heading'
 import { input } from '@/stylex/input'
 import { nativeSelect } from '@/stylex/native-select'
+import { datePicker } from '@/stylex/date-picker'
 import { popover } from '@/stylex/popover'
 import { stat } from '@/stylex/stat'
 import { switchControl } from '@/stylex/switch'
@@ -53,6 +54,6 @@ runSurfacesData({
   tableHead,
   tableCell,
 })
-runScopeOverlay({ button, popover, themeScope })
+runScopeOverlay({ button, popover, themeScope, datePicker })
 runSettings({ tabs, tabsUpdate, switchControl })
 runDashboard({ stat })
