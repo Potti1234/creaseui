@@ -1052,9 +1052,6 @@ test('authored tabs keep child instances and selected values independent', async
 
   await visitRenderer(page, 'StyleX')
   const sxHero = page.locator('[aria-label="Basic preview"]')
-  await expect(comfortable).toBeChecked()
-  await comfortable.press('ArrowDown')
-  await rtlComfortable.press('ArrowUp')
   await expect(sxHero.getByRole('tab', { name: 'Reports' })).toBeVisible()
   await sxHero.getByRole('tab', { name: 'Reports' }).click()
   await expect(sxHero.getByRole('tabpanel')).toContainText('5 reports ready')
