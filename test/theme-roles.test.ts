@@ -143,6 +143,46 @@ describe('validateThemeDefinition', () => {
     )
     assert.equal(THEME_SCHEMA_VERSION, 1)
   })
+  it('rejects values that do not match the role kind, even in partial patches', () => {
+    const errors = (values: Record<string, unknown>) =>
+      validateThemeDefinition(
+        {
+          schemaVersion: THEME_SCHEMA_VERSION,
+          values: values as Record<string, string>,
+        },
+        { partial: true },
+      )
+    for (const values of [
+      { primary: 'definitely-not-a-color' },
+      { radius: 'definitely-not-a-length' },
+      { primary: '' },
+      { primary: '   ' },
+      { primary: 42 },
+      { primary: 'oklch(0.5 0.1 200' },
+      { primary: 'oklch()' },
+      { primary: 'url(evil.png)' },
+      { primary: 'blur(4px)' },
+      { radius: 'calc(1rem + 2px' },
+      { radius: 'oklch(0.5 0.1 200)' },
+      { radius: '1furlong' },
+      { primary: '#12345' },
+      { primary: 'var(--not-a-role)' },
+    ])
+      assert.ok(errors(values).length > 0, JSON.stringify(values))
+    for (const values of [
+      { primary: 'oklch(0.205 0 0)' },
+      { primary: '#0f172a' },
+      { primary: 'transparent' },
+      { primary: 'var(--foreground)' },
+      { ring: 'color-mix(in oklab, var(--primary) 90%, transparent)' },
+      { 'primary-foreground': 'oklch(0.985 0 0 / 80%)' },
+      { radius: '0.625rem' },
+      { radius: '0' },
+      { radius: 'calc(1rem - 2px)' },
+    ])
+      assert.deepEqual(errors(values), [], JSON.stringify(values))
+  })
+
   it('rejects alias cycles', () => {
     assert.deepEqual(
       validateThemeDefinition(

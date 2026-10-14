@@ -228,7 +228,73 @@ export type ThemeDefinition = Readonly<{
 }>
 
 const REFERENCE = /var\(--([a-z0-9-]+)/g
-const COLOR_LITERAL = /^(#|oklch\(|oklab\(|rgb|hsl|color-mix\()/
+
+const COLOR_FUNCTIONS: ReadonlySet<string> = new Set([
+  'rgb',
+  'rgba',
+  'hsl',
+  'hsla',
+  'hwb',
+  'lab',
+  'lch',
+  'oklab',
+  'oklch',
+  'color',
+  'color-mix',
+  'light-dark',
+])
+const LENGTH_FUNCTIONS: ReadonlySet<string> = new Set([
+  'calc',
+  'min',
+  'max',
+  'clamp',
+])
+/** CSS named colors plus `transparent` and `currentColor`. */
+const COLOR_KEYWORDS: ReadonlySet<string> = new Set(
+  'aliceblue antiquewhite aqua aquamarine azure beige bisque black blanchedalmond blue blueviolet brown burlywood cadetblue chartreuse chocolate coral cornflowerblue cornsilk crimson cyan darkblue darkcyan darkgoldenrod darkgray darkgreen darkgrey darkkhaki darkmagenta darkolivegreen darkorange darkorchid darkred darksalmon darkseagreen darkslateblue darkslategray darkslategrey darkturquoise darkviolet deeppink deepskyblue dimgray dimgrey dodgerblue firebrick floralwhite forestgreen fuchsia gainsboro ghostwhite gold goldenrod gray green greenyellow grey honeydew hotpink indianred indigo ivory khaki lavender lavenderblush lawngreen lemonchiffon lightblue lightcoral lightcyan lightgoldenrodyellow lightgray lightgreen lightgrey lightpink lightsalmon lightseagreen lightskyblue lightslategray lightslategrey lightsteelblue lightyellow lime limegreen linen magenta maroon mediumaquamarine mediumblue mediumorchid mediumpurple mediumseagreen mediumslateblue mediumspringgreen mediumturquoise mediumvioletred midnightblue mintcream mistyrose moccasin navajowhite navy oldlace olive olivedrab orange orangered orchid palegoldenrod palegreen paleturquoise palevioletred papayawhip peachpuff peru pink plum powderblue purple rebeccapurple red rosybrown royalblue saddlebrown salmon sandybrown seagreen seashell sienna silver skyblue slateblue slategray slategrey snow springgreen steelblue tan teal thistle tomato turquoise violet wheat white whitesmoke yellow yellowgreen transparent currentcolor'.split(
+    ' ',
+  ),
+)
+const HEX_COLOR = /^#(?:[\da-f]{3,4}|[\da-f]{6}|[\da-f]{8})$/i
+const LENGTH_LITERAL =
+  /^(?:0|-?(?:\d+\.?\d*|\.\d+)(?:px|rem|em|%|ch|ex|vw|vh|vmin|vmax|svh|dvh|lh))$/
+const SINGLE_FUNCTION = /^([a-z-]+)\((.*)\)$/is
+const ALIAS = /^var\(\s*--([a-z0-9-]+)\s*(?:,(.*))?\)$/is
+
+const balanced = (value: string): boolean => {
+  let depth = 0
+  for (const character of value) {
+    if (character === '(') depth += 1
+    else if (character === ')') depth -= 1
+    if (depth < 0) return false
+  }
+  return depth === 0
+}
+
+/** Why `value` is not a valid `kind` value, or null when it is. Aliases
+ *  (`var(--role)`) are checked separately against the resolved theme. */
+const valueProblem = (
+  value: string,
+  kind: 'color' | 'length',
+): string | null => {
+  const trimmed = value.trim()
+  if (trimmed === '') return 'an empty value'
+  if (!balanced(trimmed)) return `malformed ${value} (unbalanced parentheses)`
+  if (ALIAS.test(trimmed)) return null
+  const call = SINGLE_FUNCTION.exec(trimmed)
+  if (call !== null && balanced(call[2] ?? '')) {
+    const name = (call[1] ?? '').toLowerCase()
+    const allowed = kind === 'color' ? COLOR_FUNCTIONS : LENGTH_FUNCTIONS
+    if (!allowed.has(name)) return `unsupported function ${name}() in ${value}`
+    if ((call[2] ?? '').trim() === '') return `empty ${name}() in ${value}`
+    return null
+  }
+  if (kind === 'color')
+    return HEX_COLOR.test(trimmed) || COLOR_KEYWORDS.has(trimmed.toLowerCase())
+      ? null
+      : value
+  return LENGTH_LITERAL.test(trimmed) ? null : value
+}
 
 /** Errors for a theme definition: schema version, unknown or missing
  *  roles, value kinds and alias cycles. Empty when valid. */
@@ -242,10 +308,21 @@ export const validateThemeDefinition = (
   const known = new Set<string>(BASE_THEME_VARIABLES)
   for (const [name, value] of Object.entries(definition.values)) {
     if (!known.has(name)) errors.push(`unknown role --${name}`)
-    if (LENGTH_VARIABLES.has(name) && COLOR_LITERAL.test(value))
-      errors.push(`--${name} expects a length, got ${value}`)
-    if (!LENGTH_VARIABLES.has(name) && /^-?[\d.]+(rem|px|em)$/.test(value))
-      errors.push(`--${name} expects a color, got ${value}`)
+    if (typeof value !== 'string') {
+      errors.push(`--${name} must be a string value`)
+      continue
+    }
+    const kind = LENGTH_VARIABLES.has(name) ? 'length' : 'color'
+    const problem = valueProblem(value, kind)
+    if (problem !== null)
+      errors.push(`--${name} expects a ${kind}, got ${problem}`)
+    for (const [, target] of value.matchAll(REFERENCE))
+      if (
+        target !== undefined &&
+        !(target in definition.values) &&
+        !known.has(target)
+      )
+        errors.push(`--${name} references unresolved alias --${target}`)
   }
   if (!partial)
     for (const name of BASE_THEME_VARIABLES)
@@ -261,7 +338,8 @@ export const validateThemeDefinition = (
       return
     }
     visiting.add(name)
-    for (const [, target] of (definition.values[name] ?? '').matchAll(
+    const raw = definition.values[name]
+    for (const [, target] of (typeof raw === 'string' ? raw : '').matchAll(
       REFERENCE,
     ))
       if (target !== undefined && target in definition.values)
