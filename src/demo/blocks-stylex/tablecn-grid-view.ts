@@ -293,10 +293,12 @@ const st = stylex.create({
     width: '12rem',
   },
   c135: {
+    padding: '0.25rem',
     gap: '0.5rem',
     display: 'flex',
     flexDirection: 'column',
     position: 'relative',
+    height: '100dvh',
     width: '100%',
   },
   c136: {
@@ -304,12 +306,14 @@ const st = stylex.create({
     borderRadius: foundationTokens.radiusMd,
     borderStyle: 'solid',
     borderWidth: '1px',
+    flex: '1',
     overflow: 'auto',
     display: 'grid',
     isolation: 'isolate',
     outlineStyle: { default: null, ':focus': 'none' },
     position: 'relative',
     userSelect: 'none',
+    minHeight: '0',
   },
   c137: {
     backgroundColor: tokens.background,
@@ -1301,7 +1305,6 @@ export const gridView = (
           h.DataAttribute('slot', 'grid'),
           h.Tabindex(0),
           h.Class(className(st.c136)),
-          h.Style({ maxHeight: `${String(viewHeight)}px` }),
           /* mount on the scroller: scroll events don't bubble, and toolbar
              inputs outside it can't leak ctrl/meta combos into grid keys */
           h.OnMount(

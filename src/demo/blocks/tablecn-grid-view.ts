@@ -724,7 +724,7 @@ export const gridView = (
     [
       h.DataAttribute('slot', 'grid-wrapper'),
       h.Dir(model.direction),
-      h.Class('relative flex w-full flex-col gap-2'),
+      h.Class('relative flex h-dvh w-full flex-col gap-2 p-1'),
     ],
     [
       searchOverlay(model, h),
@@ -737,9 +737,8 @@ export const gridView = (
           h.DataAttribute('slot', 'grid'),
           h.Tabindex(0),
           h.Class(
-            'relative isolate grid overflow-auto rounded-md border select-none focus:outline-none',
+            'relative isolate grid min-h-0 flex-1 overflow-auto rounded-md border select-none focus:outline-none',
           ),
-          h.Style({ maxHeight: `${String(viewHeight)}px` }),
           /* mount on the scroller: scroll events don't bubble, and toolbar
              inputs outside it can't leak ctrl/meta combos into grid keys */
           h.OnMount(

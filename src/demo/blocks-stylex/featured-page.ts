@@ -77,6 +77,7 @@ export const Model = S.Struct({
   radioGroup: RadioGroup.Model,
   table: TableState.Model,
   tablecn: TablecnPage.Model,
+  tablecnGrid: TablecnPage.Model,
 })
 export type Model = typeof Model.Type
 export const ChangedEmail = taggedStruct('ChangedBlockEmail', {
@@ -109,6 +110,12 @@ export const GotEChartMessage = taggedStruct('GotBlocksStyleXEChartMessage', {
 export const GotTablecnMessage = taggedStruct('GotBlockTablecnMessage', {
   message: TablecnPage.Message,
 })
+export const GotTablecnGridMessage = taggedStruct(
+  'GotBlockTablecnGridMessage',
+  {
+    message: TablecnPage.Message,
+  },
+)
 export const Message = S.Union([
   TableState.Message,
   GotEChartMessage,
@@ -122,6 +129,7 @@ export const Message = S.Union([
   ChangedCheckoutField,
   GotRadioGroupMessage,
   GotTablecnMessage,
+  GotTablecnGridMessage,
 ])
 export type Message = typeof Message.Type
 export const init = (): Model => ({
@@ -136,6 +144,7 @@ export const init = (): Model => ({
   radioGroup: RadioGroup.init({ id: 'checkout-delivery' }),
   table: TableState.init(10),
   tablecn: TablecnPage.init(),
+  tablecnGrid: TablecnPage.init('data-grid'),
 })
 type UpdateReturn = Update.Return<Model, Message>
 export const update = (model: Model, message: Message): UpdateReturn => {
@@ -149,6 +158,16 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       model: { ...model, tablecn },
       commands: Command.mapMessages(tablecnCommands__ ?? [], childMessage =>
         GotTablecnMessage({ message: childMessage }),
+      ),
+    }
+  }
+  if (message._tag === 'GotBlockTablecnGridMessage') {
+    const { model: tablecnGrid, commands: tablecnGridCommands__ } =
+      TablecnPage.update(model.tablecnGrid, message.message)
+    return {
+      model: { ...model, tablecnGrid },
+      commands: Command.mapMessages(tablecnGridCommands__ ?? [], childMessage =>
+        GotTablecnGridMessage({ message: childMessage }),
       ),
     }
   }
@@ -1123,7 +1142,7 @@ const blocks: ReadonlyArray<Block> = [
   },
   {
     description:
-      "sadmann7/tablecn's data table and data grid with a diceui-style action bar.",
+      "sadmann7/tablecn's data table with a diceui-style action bar for row multi-select.",
     name: 'tablecn',
     preview: (model, h) =>
       h.submodel({
@@ -1131,6 +1150,17 @@ const blocks: ReadonlyArray<Block> = [
         model: model.tablecn,
         view: tablecnView,
         toParentMessage: message => GotTablecnMessage({ message }),
+      }),
+  },
+  {
+    description: "sadmann7/tablecn's editable data grid.",
+    name: 'tablecn-grid',
+    preview: (model, h) =>
+      h.submodel({
+        slotId: 'tablecn-grid',
+        model: model.tablecnGrid,
+        view: tablecnView,
+        toParentMessage: message => GotTablecnGridMessage({ message }),
       }),
   },
 ]

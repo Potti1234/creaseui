@@ -96,7 +96,12 @@ export const BLOCKS: ReadonlyArray<BlockDefinition> = [
   {
     name: 'tablecn',
     description:
-      "sadmann7/tablecn's data table and data grid with a diceui-style action bar for row multi-select.",
+      "sadmann7/tablecn's data table with a diceui-style action bar for row multi-select.",
+    category: 'table',
+  },
+  {
+    name: 'tablecn-grid',
+    description: "sadmann7/tablecn's editable data grid.",
     category: 'table',
   },
   {

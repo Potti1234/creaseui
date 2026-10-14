@@ -582,54 +582,6 @@ const st = stylex.create({
   },
   c61: { gap: '0.5rem', alignItems: 'center', display: 'flex', width: '100%' },
   c62: { gap: '0.375rem' },
-  c63: {
-    borderRadius: foundationTokens.radiusSm,
-    gap: '0.375rem',
-    paddingBlock: '0.25rem',
-    paddingInline: '0.625rem',
-    alignItems: 'center',
-    display: 'flex',
-    fontSize: '0.75rem',
-    fontWeight: 500,
-    lineHeight: '1rem',
-  },
-  c64: {
-    backgroundColor: tokens.background,
-    boxShadow: foundationTokens.shadowSm,
-    color: tokens.foreground,
-  },
-  c65: {
-    color: { default: tokens.mutedForeground, ':hover': tokens.foreground },
-  },
-  c66: { marginInlineStart: 'auto', position: 'relative' },
-  c67: {
-    borderRadius: foundationTokens.radiusMd,
-    alignItems: 'center',
-    backgroundColor: { default: 'transparent', ':hover': tokens.accent },
-    color: {
-      default: tokens.mutedForeground,
-      ':hover': tokens.accentForeground,
-    },
-    display: 'inline-flex',
-    justifyContent: 'center',
-    height: '2rem',
-    width: '2rem',
-  },
-  c68: {
-    padding: '0.5rem',
-    gap: '0.5rem',
-    display: 'flex',
-    flexDirection: 'column',
-    insetInlineEnd: '0rem',
-    width: 'auto',
-  },
-  c69: {
-    padding: '0.125rem',
-    borderRadius: foundationTokens.radiusMd,
-    gap: '0.125rem',
-    backgroundColor: tokens.muted,
-    display: 'inline-flex',
-  },
   c70: { gap: '0.5rem', display: 'grid' },
   c71: { fontSize: '0.875rem', fontWeight: 500, lineHeight: 1 },
   c72: {
@@ -798,20 +750,13 @@ const st = stylex.create({
     whiteSpace: 'nowrap',
   },
   c92: {
+    padding: '0.25rem',
     gap: '0.625rem',
-    overflow: 'auto',
     display: 'flex',
     flexDirection: 'column',
+    height: '100dvh',
     width: '100%',
   },
-  c93: {
-    padding: '0.25rem',
-    gap: '0.5rem',
-    alignItems: 'flex-start',
-    display: 'flex',
-    justifyContent: 'space-between',
-  },
-  c94: { fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem' },
   c95: {
     padding: '0.25rem',
     gap: '0.5rem',
@@ -851,8 +796,10 @@ const st = stylex.create({
     borderRadius: foundationTokens.radiusMd,
     borderStyle: 'solid',
     borderWidth: '1px',
-    overflow: 'hidden',
+    flex: '1',
+    overflow: 'auto',
     isolation: 'isolate',
+    minHeight: '0',
   },
   c99: {
     captionSide: 'bottom',
@@ -884,31 +831,6 @@ const st = stylex.create({
   c104: { padding: '0.5rem', verticalAlign: 'middle' },
   c105: { minWidth: '0rem' },
   c106: { gap: '0.625rem', display: 'flex', flexDirection: 'column' },
-  c107: {
-    gap: '1rem',
-    display: 'flex',
-    flexDirection: 'column',
-    width: '100%',
-  },
-  c108: {
-    padding: '0.25rem',
-    borderRadius: foundationTokens.radiusMd,
-    gap: '0.25rem',
-    alignItems: 'center',
-    backgroundColor: tokens.muted,
-    display: 'inline-flex',
-    width: 'fit-content',
-  },
-  c109: {
-    borderRadius: foundationTokens.radiusSm,
-    paddingBlock: '0.25rem',
-    paddingInline: '0.75rem',
-    fontSize: '0.875rem',
-    fontWeight: 500,
-    lineHeight: '1.25rem',
-    transitionDuration: interactionTokens.motionFast,
-    transitionProperty: 'color, background-color, border-color, box-shadow',
-  },
   icon0: { display: 'inline-flex', fontSize: '1rem' },
   icon1: { display: 'inline-flex' },
   icon2: { display: 'inline-flex' },
@@ -942,8 +864,6 @@ const st = stylex.create({
     fontSize: '1rem',
   },
   icon24: { display: 'inline-flex' },
-  icon25: { display: 'inline-flex' },
-  icon26: { display: 'inline-flex' },
   icon27: { display: 'inline-flex' },
   icon28: { display: 'inline-flex', fontSize: '1rem' },
   icon29: { display: 'inline-flex', fontSize: '0.875rem', opacity: '0.6' },
@@ -984,8 +904,8 @@ export const Message = S.Union([
 ])
 export type Message = typeof Message.Type
 
-export const init = (): Model => ({
-  view: 'data-table',
+export const init = (view: ActiveView = 'data-table'): Model => ({
+  view,
   table: TableState.init(100),
   grid: Grid.init(500),
 })
@@ -1823,6 +1743,27 @@ const dateRangeFilter = (
   )
 }
 
+const dirToggle = (model: TableState.Model, h: HtmlBuilder<Message>): Html =>
+  h.button(
+    [
+      h.Type('button'),
+      h.AriaLabel('Toggle direction'),
+      h.OnClick(
+        TableState.Message.SetDirection({
+          direction: model.direction === 'ltr' ? 'rtl' : 'ltr',
+        }),
+      ),
+      h.Class(className(reset.button, st.c47)),
+    ],
+    [
+      h.span(
+        [h.Class(className(st.icon22))],
+        [icon({ name: 'languages', size: 'sm' }, h)],
+      ),
+      model.direction === 'ltr' ? 'LTR' : 'RTL',
+    ],
+  )
+
 const viewOptions = (
   model: TableState.Model,
   h: HtmlBuilder<Message>,
@@ -2063,132 +2004,6 @@ const sortMenu = (model: TableState.Model, h: HtmlBuilder<Message>): Html => {
       ],
     ),
     h,
-  )
-}
-
-const controlMenu = (
-  model: TableState.Model,
-  h: HtmlBuilder<Message>,
-): Html => {
-  const isOpen = model.openPanel === 'control-menu'
-  const seg = (
-    label: string,
-    iconName: string,
-    active: boolean,
-    onClick: TableState.Message,
-  ): Html =>
-    h.button(
-      [
-        h.Type('button'),
-        h.AriaPressed(String(active)),
-        h.OnClick(onClick),
-        h.Class(className(reset.button, st.c63, active ? st.c64 : st.c65)),
-      ],
-      [
-        h.span(
-          [h.Class(className(st.icon25))],
-          [icon({ name: iconName, size: 'sm' }, h)],
-        ),
-        label,
-      ],
-    )
-  return h.div(
-    [h.Class(className(st.c66))],
-    [
-      h.button(
-        [
-          h.Type('button'),
-          h.AriaLabel('Toggle control menu'),
-          h.OnClick(TableState.Message.SetPanel({ panel: 'control-menu' })),
-          h.Class(className(reset.button, st.c67)),
-        ],
-        [
-          h.span(
-            [h.Class(className(st.icon26))],
-            [icon({ name: 'ellipsis-vertical', size: 'sm' }, h)],
-          ),
-        ],
-      ),
-      ...(isOpen
-        ? [
-            h.button([
-              h.Type('button'),
-              h.AriaHidden(true),
-              h.Tabindex(-1),
-              h.Class(className(reset.button, st.c7)),
-              h.OnClick(TableState.Message.SetPanel({ panel: 'none' })),
-            ]),
-            h.div(
-              [
-                h.DataAttribute('slot', 'popover-content'),
-                h.Class(className(PANEL_CLASS, st.c68)),
-              ],
-              [
-                h.div([h.Class(className(MENU_LABEL_CLASS))], ['Mode']),
-                h.div(
-                  [h.Class(className(st.c69))],
-                  [
-                    seg(
-                      'Server',
-                      'server',
-                      model.dataMode === 'server',
-                      TableState.Message.SetDataMode({ mode: 'server' }),
-                    ),
-                    seg(
-                      'Client',
-                      'monitor-down',
-                      model.dataMode === 'client',
-                      TableState.Message.SetDataMode({ mode: 'client' }),
-                    ),
-                  ],
-                ),
-                h.div([h.Class(className(MENU_LABEL_CLASS))], ['Filter']),
-                h.div(
-                  [h.Class(className(st.c69))],
-                  [
-                    seg(
-                      'Plain',
-                      'funnel',
-                      model.filterMode === 'plain',
-                      TableState.Message.SetFilterMode({ mode: 'plain' }),
-                    ),
-                    seg(
-                      'Advanced',
-                      'sliders-horizontal',
-                      model.filterMode === 'advanced',
-                      TableState.Message.SetFilterMode({ mode: 'advanced' }),
-                    ),
-                    seg(
-                      'Command',
-                      'terminal',
-                      model.filterMode === 'command',
-                      TableState.Message.SetFilterMode({ mode: 'command' }),
-                    ),
-                  ],
-                ),
-                h.div([h.Class(className(MENU_LABEL_CLASS))], ['Direction']),
-                h.div(
-                  [h.Class(className(st.c69))],
-                  [
-                    seg(
-                      'LTR',
-                      'languages',
-                      model.direction === 'ltr',
-                      TableState.Message.SetDirection({ direction: 'ltr' }),
-                    ),
-                    seg(
-                      'RTL',
-                      'languages',
-                      model.direction === 'rtl',
-                      TableState.Message.SetDirection({ direction: 'rtl' }),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ]
-        : []),
-    ],
   )
 }
 
@@ -2700,10 +2515,6 @@ const tasksTable = (model: TableState.Model, h: HtmlBuilder<Message>): Html => {
     ],
     [
       h.div(
-        [h.Class(className(st.c93))],
-        [h.div([h.Class(className(st.c94))], ['Tasks']), controlMenu(model, h)],
-      ),
-      h.div(
         [
           h.DataAttribute('slot', 'data-table-toolbar'),
           h.Class(className(st.c95)),
@@ -2777,7 +2588,7 @@ const tasksTable = (model: TableState.Model, h: HtmlBuilder<Message>): Html => {
           ),
           h.div(
             [h.Class(className(st.c17))],
-            [sortMenu(model, h), viewOptions(model, h)],
+            [sortMenu(model, h), viewOptions(model, h), dirToggle(model, h)],
           ),
         ],
       ),
@@ -2846,37 +2657,7 @@ const tasksTable = (model: TableState.Model, h: HtmlBuilder<Message>): Html => {
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
   const hg = h as HtmlBuilder<Grid.Message>
-  return h.div(
-    [h.Class(className(st.c107))],
-    [
-      h.div(
-        [
-          h.Role('tablist'),
-          h.AriaLabel('tablecn examples'),
-          h.Class(className(st.c108)),
-        ],
-        (['data-table', 'data-grid'] as const).map(tab =>
-          h.button(
-            [
-              h.Type('button'),
-              h.Role('tab'),
-              h.AriaSelected(model.view === tab),
-              h.OnClick(SwitchView({ view: tab })),
-              h.Class(
-                className(
-                  reset.button,
-                  st.c109,
-                  model.view === tab ? st.c64 : st.c65,
-                ),
-              ),
-            ],
-            [tab === 'data-table' ? 'Data Table' : 'Data Grid'],
-          ),
-        ),
-      ),
-      model.view === 'data-table'
-        ? tasksTable(model.table, h)
-        : gridView(model.grid, hg),
-    ],
-  )
+  return model.view === 'data-table'
+    ? tasksTable(model.table, h)
+    : gridView(model.grid, hg)
 }

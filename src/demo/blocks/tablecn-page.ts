@@ -59,8 +59,8 @@ export const Message = S.Union([
 ])
 export type Message = typeof Message.Type
 
-export const init = (): Model => ({
-  view: 'data-table',
+export const init = (view: ActiveView = 'data-table'): Model => ({
+  view,
   table: TableState.init(100),
   grid: Grid.init(500),
 })
@@ -1130,132 +1130,6 @@ const sortMenu = (model: TableState.Model, h: HtmlBuilder<Message>): Html => {
   )
 }
 
-const controlMenu = (
-  model: TableState.Model,
-  h: HtmlBuilder<Message>,
-): Html => {
-  const isOpen = model.openPanel === 'control-menu'
-  const seg = (
-    label: string,
-    iconName: string,
-    active: boolean,
-    onClick: TableState.Message,
-  ): Html =>
-    h.button(
-      [
-        h.Type('button'),
-        h.AriaPressed(String(active)),
-        h.OnClick(onClick),
-        h.Class(
-          cn(
-            'flex items-center gap-1.5 rounded-sm px-2.5 py-1 text-xs font-medium [&_svg]:size-3.5',
-            active
-              ? 'bg-background text-foreground shadow-sm'
-              : 'text-muted-foreground hover:text-foreground',
-          ),
-        ),
-      ],
-      [icon(iconName, {}, h), label],
-    )
-  return h.div(
-    [h.Class('relative ml-auto')],
-    [
-      h.button(
-        [
-          h.Type('button'),
-          h.AriaLabel('Toggle control menu'),
-          h.OnClick(TableState.Message.SetPanel({ panel: 'control-menu' })),
-          h.Class(
-            'inline-flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground [&_svg]:size-4',
-          ),
-        ],
-        [icon('ellipsis-vertical', {}, h)],
-      ),
-      ...(isOpen
-        ? [
-            h.button([
-              h.Type('button'),
-              h.AriaHidden(true),
-              h.Tabindex(-1),
-              h.Class('fixed inset-0 z-40 cursor-default bg-transparent'),
-              h.OnClick(TableState.Message.SetPanel({ panel: 'none' })),
-            ]),
-            h.div(
-              [
-                h.DataAttribute('slot', 'popover-content'),
-                h.Class(
-                  cn(PANEL_CLASS, 'right-0 flex w-auto flex-col gap-2 p-2'),
-                ),
-              ],
-              [
-                h.div([h.Class(MENU_LABEL_CLASS)], ['Mode']),
-                h.div(
-                  [h.Class('bg-muted inline-flex rounded-md p-0.5 gap-0.5')],
-                  [
-                    seg(
-                      'Server',
-                      'server',
-                      model.dataMode === 'server',
-                      TableState.Message.SetDataMode({ mode: 'server' }),
-                    ),
-                    seg(
-                      'Client',
-                      'monitor-down',
-                      model.dataMode === 'client',
-                      TableState.Message.SetDataMode({ mode: 'client' }),
-                    ),
-                  ],
-                ),
-                h.div([h.Class(MENU_LABEL_CLASS)], ['Filter']),
-                h.div(
-                  [h.Class('bg-muted inline-flex rounded-md p-0.5 gap-0.5')],
-                  [
-                    seg(
-                      'Plain',
-                      'funnel',
-                      model.filterMode === 'plain',
-                      TableState.Message.SetFilterMode({ mode: 'plain' }),
-                    ),
-                    seg(
-                      'Advanced',
-                      'sliders-horizontal',
-                      model.filterMode === 'advanced',
-                      TableState.Message.SetFilterMode({ mode: 'advanced' }),
-                    ),
-                    seg(
-                      'Command',
-                      'terminal',
-                      model.filterMode === 'command',
-                      TableState.Message.SetFilterMode({ mode: 'command' }),
-                    ),
-                  ],
-                ),
-                h.div([h.Class(MENU_LABEL_CLASS)], ['Direction']),
-                h.div(
-                  [h.Class('bg-muted inline-flex rounded-md p-0.5 gap-0.5')],
-                  [
-                    seg(
-                      'LTR',
-                      'languages',
-                      model.direction === 'ltr',
-                      TableState.Message.SetDirection({ direction: 'ltr' }),
-                    ),
-                    seg(
-                      'RTL',
-                      'languages',
-                      model.direction === 'rtl',
-                      TableState.Message.SetDirection({ direction: 'rtl' }),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ]
-        : []),
-    ],
-  )
-}
-
 /* ---------- update sheet + delete dialog ---------- */
 
 const updateSheet = (
@@ -1760,6 +1634,23 @@ const pagination = (
   )
 }
 
+const dirToggle = (model: TableState.Model, h: HtmlBuilder<Message>): Html =>
+  h.button(
+    [
+      h.Type('button'),
+      h.AriaLabel('Toggle direction'),
+      h.OnClick(
+        TableState.Message.SetDirection({
+          direction: model.direction === 'ltr' ? 'rtl' : 'ltr',
+        }),
+      ),
+      h.Class(
+        'border-input inline-flex h-8 items-center gap-1.5 rounded-md border bg-transparent px-2.5 text-sm font-medium shadow-xs transition-colors hover:bg-accent [&_svg]:size-4 [&_svg]:text-muted-foreground',
+      ),
+    ],
+    [icon('languages', {}, h), model.direction === 'ltr' ? 'LTR' : 'RTL'],
+  )
+
 /* ---------- the data table ---------- */
 
 const tasksTable = (model: TableState.Model, h: HtmlBuilder<Message>): Html => {
@@ -1770,16 +1661,9 @@ const tasksTable = (model: TableState.Model, h: HtmlBuilder<Message>): Html => {
     [
       h.DataAttribute('slot', 'data-table'),
       h.Dir(model.direction),
-      h.Class('flex w-full flex-col gap-2.5 overflow-auto'),
+      h.Class('flex h-dvh w-full flex-col gap-2.5 p-1'),
     ],
     [
-      h.div(
-        [h.Class('flex items-start justify-between gap-2 p-1')],
-        [
-          h.div([h.Class('text-sm font-medium')], ['Tasks']),
-          controlMenu(model, h),
-        ],
-      ),
       h.div(
         [
           h.DataAttribute('slot', 'data-table-toolbar'),
@@ -1851,12 +1735,12 @@ const tasksTable = (model: TableState.Model, h: HtmlBuilder<Message>): Html => {
           ),
           h.div(
             [h.Class('flex items-center gap-2')],
-            [sortMenu(model, h), viewOptions(model, h)],
+            [sortMenu(model, h), viewOptions(model, h), dirToggle(model, h)],
           ),
         ],
       ),
       h.div(
-        [h.Class('isolate overflow-hidden rounded-md border')],
+        [h.Class('isolate min-h-0 flex-1 overflow-auto rounded-md border')],
         [
           h.table(
             [
@@ -1922,40 +1806,7 @@ const tasksTable = (model: TableState.Model, h: HtmlBuilder<Message>): Html => {
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
   const hg = h as HtmlBuilder<Grid.Message>
-  return h.div(
-    [h.Class('flex w-full flex-col gap-4')],
-    [
-      h.div(
-        [
-          h.Role('tablist'),
-          h.AriaLabel('tablecn examples'),
-          h.Class(
-            'bg-muted inline-flex w-fit items-center gap-1 rounded-md p-1',
-          ),
-        ],
-        (['data-table', 'data-grid'] as const).map(tab =>
-          h.button(
-            [
-              h.Type('button'),
-              h.Role('tab'),
-              h.AriaSelected(model.view === tab),
-              h.OnClick(SwitchView({ view: tab })),
-              h.Class(
-                cn(
-                  'rounded-sm px-3 py-1 text-sm font-medium transition-colors',
-                  model.view === tab
-                    ? 'bg-background text-foreground shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground',
-                ),
-              ),
-            ],
-            [tab === 'data-table' ? 'Data Table' : 'Data Grid'],
-          ),
-        ),
-      ),
-      model.view === 'data-table'
-        ? tasksTable(model.table, h)
-        : gridView(model.grid, hg),
-    ],
-  )
+  return model.view === 'data-table'
+    ? tasksTable(model.table, h)
+    : gridView(model.grid, hg)
 }
