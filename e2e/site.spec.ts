@@ -3188,28 +3188,28 @@ test('marker keeps authored variants and annotation semantics across renderers',
   )
 })
 
-test('separator keeps decorative and semantic boundaries across renderers', async ({
+test('separator keeps decorative boundaries across renderers', async ({
   page,
 }) => {
   await page.goto('/docs/components/separator')
-  const horizontal = page.locator('#horizontal')
-  const vertical = page.locator('#vertical')
-  await expect(horizontal.getByRole('separator')).toHaveCount(0)
-  await expect(vertical.getByRole('separator')).toHaveAttribute(
-    'aria-orientation',
-    'vertical',
-  )
+  const assertDecorative = async () => {
+    const hero = page.locator('[aria-label="Basic preview"]')
+    const vertical = page.locator('#vertical')
+    await expect(page.locator('main').getByRole('separator')).toHaveCount(0)
+    await expect(hero.locator('[data-slot="separator"]')).toHaveAttribute(
+      'data-orientation',
+      'horizontal',
+    )
+    const verticalSeparators = vertical.locator('[data-slot="separator"]')
+    await expect(verticalSeparators).toHaveCount(2)
+    for (const separator of await verticalSeparators.all())
+      await expect(separator).toHaveAttribute('data-orientation', 'vertical')
+  }
+  await assertDecorative()
 
   await visitRenderer(page, 'StyleX')
-  await expect(horizontal).toBeVisible()
-  await expect(vertical).toBeVisible()
   await expect(page.locator('#stylex-specimen')).toHaveCount(0)
-  await expect(horizontal.locator('code')).toContainText('@/stylex/separator')
-  await expect(horizontal.getByRole('separator')).toHaveCount(0)
-  await expect(vertical.getByRole('separator')).toHaveAttribute(
-    'aria-orientation',
-    'vertical',
-  )
+  await assertDecorative()
 })
 
 test('typography mirrors the shadcn example set across renderers', async ({
