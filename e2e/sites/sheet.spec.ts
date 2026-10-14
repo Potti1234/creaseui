@@ -277,7 +277,15 @@ for (const width of [390, 1440]) {
                   ),
                 })
               }
-              if (started !== undefined && now - started >= 800)
+              // Sample until the open transition has actually finished, not for a
+              // fixed window: slow runners deliver too few frames in 800ms.
+              const elapsed = started === undefined ? 0 : now - started
+              const animating =
+                (dialog?.getAnimations({ subtree: true }).length ?? 0) > 0
+              if (
+                started !== undefined &&
+                ((elapsed >= 800 && !animating) || elapsed >= 5000)
+              )
                 resolve(samples)
               else requestAnimationFrame(tick)
             }
@@ -302,22 +310,7 @@ for (const width of [390, 1440]) {
         samples.some(frame => frame.opacity > 0.05 && frame.opacity < 0.95),
       ).toBe(true)
       expect(first.opacity).toBe(0)
-      expect(last.opacity).toBeGreaterThan(0.95)
-      // The sampling window is fixed; a slow runner can end it a frame before
-      // the scrim transition, so the settled value is read once it finishes.
-      await expect
-        .poll(() =>
-          page.evaluate(() =>
-            Number.parseFloat(
-              getComputedStyle(
-                document.querySelector(
-                  'dialog[open] [data-slot="sheet-scrim"]',
-                )!,
-              ).opacity,
-            ),
-          ),
-        )
-        .toBe(1)
+      expect(last.opacity).toBe(1)
       for (let index = 1; index < samples.length; index++) {
         expect(samples[index]!.top - samples[index - 1]!.top).toBeLessThan(1)
       }
