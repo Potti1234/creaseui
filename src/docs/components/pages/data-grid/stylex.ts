@@ -35,7 +35,7 @@ export const dataGridStylexPreviewProgram = definePreviewProgram<
   view: (index, model, h) => {
     const fixture = dataGridFixtures[index] ?? dataGridFixtures[0]!
     return h.div(
-      [h.Class('h-dvh flex flex-col'), ...(fixture.rtl ? [h.Dir('rtl')] : [])],
+      [h.Class('h-140 flex flex-col'), ...(fixture.rtl ? [h.Dir('rtl')] : [])],
       [dataGrid({ model: model.grid, config: docDataGridConfig }, h)],
     )
   },

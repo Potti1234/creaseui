@@ -1130,7 +1130,7 @@ export const dataGrid = <Row>(
           h.DataAttribute('slot', 'grid'),
           h.Tabindex(0),
           h.Class(
-            'relative isolate grid min-h-0 flex-1 overflow-auto rounded-md border select-none focus:outline-none',
+            'relative isolate grid min-h-0 flex-1 content-start overflow-auto rounded-md border select-none focus:outline-none',
           ),
           /* mount on the scroller: scroll events don't bubble, and toolbar
              inputs outside it can't leak ctrl/meta combos into grid keys */
@@ -1234,10 +1234,13 @@ export const dataGrid = <Row>(
                           [
                             icon(
                               column.iconName,
-                              { class: 'size-3.5 text-muted-foreground' },
+                              {
+                                class:
+                                  'size-3.5 shrink-0 text-muted-foreground',
+                              },
                               h,
                             ),
-                            column.header,
+                            h.span([h.Class('truncate')], [column.header]),
                             ...(entry === undefined
                               ? []
                               : [

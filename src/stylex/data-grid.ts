@@ -313,6 +313,7 @@ const st = stylex.create({
     borderWidth: '1px',
     flex: '1',
     overflow: 'auto',
+    alignContent: 'start',
     display: 'grid',
     isolation: 'isolate',
     outlineStyle: { default: null, ':focus': 'none' },
@@ -477,7 +478,13 @@ const st = stylex.create({
   icon46: {
     color: tokens.mutedForeground,
     display: 'inline-flex',
+    flexShrink: 0,
     fontSize: '0.875rem',
+  },
+  colHeadText: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
   },
   icon47: { display: 'inline-flex', fontSize: '0.875rem' },
   icon48: { display: 'inline-flex', fontSize: '0.875rem' },
@@ -2010,7 +2017,10 @@ export const dataGrid = <Row>(
                               [h.Class(className(st.icon46))],
                               [icon({ name: column.iconName, size: 'sm' }, h)],
                             ),
-                            column.header,
+                            h.span(
+                              [h.Class(className(st.colHeadText))],
+                              [column.header],
+                            ),
                             ...(entry === undefined
                               ? []
                               : [
