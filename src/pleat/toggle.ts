@@ -89,6 +89,7 @@ export const toggle = <Msg>(p: ToggleProps<Msg>, h: HtmlBuilder<Msg>): Html =>
           [
             ...button,
             h.DataAttribute('slot', 'toggle'),
+            h.DataAttribute('size', p.size ?? 'default'),
             h.AriaPressed(p.isPressed ? 'true' : 'false'),
             ...(p.id === undefined ? [] : [h.Id(p.id)]),
             ...(p.ariaLabel === undefined ? [] : [h.AriaLabel(p.ariaLabel)]),
