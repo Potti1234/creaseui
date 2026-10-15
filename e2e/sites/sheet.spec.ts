@@ -243,14 +243,15 @@ for (const width of [390, 1440]) {
       // Observe the actual entrance, including its first focused frame.
       const frames = page.evaluate(
         () =>
-          new Promise<
-            Array<{
+          new Promise<{
+            samples: Array<{
               top: number
               height: number
               scrollTop: number
               opacity: number
             }>
-          >(resolve => {
+            fade: { duration: number; quarterOpacity: number } | undefined
+          }>(resolve => {
             const samples: Array<{
               top: number
               height: number
@@ -258,6 +259,7 @@ for (const width of [390, 1440]) {
               opacity: number
             }> = []
             let started: number | undefined
+            let fade: { duration: number; quarterOpacity: number } | undefined
             const tick = (now: number) => {
               const panel = document.querySelector<HTMLElement>(
                 '[data-slot="sheet-panel"]',
@@ -276,6 +278,33 @@ for (const width of [390, 1440]) {
                     ).opacity,
                   ),
                 })
+                // Read the scrim's real fade at a fixed point of its transition:
+                // a slow runner can drop every frame of the mid-fade window.
+                const scrim = dialog.querySelector('[data-slot="sheet-scrim"]')!
+                const transition = fade
+                  ? undefined
+                  : scrim
+                      .getAnimations()
+                      .find(
+                        (animation): animation is CSSTransition =>
+                          animation instanceof CSSTransition &&
+                          animation.transitionProperty === 'opacity' &&
+                          animation.playState === 'running',
+                      )
+                if (transition) {
+                  const duration = Number(
+                    transition.effect!.getComputedTiming().duration,
+                  )
+                  const resumeAt = transition.currentTime
+                  transition.pause()
+                  transition.currentTime = duration * 0.25
+                  const quarterOpacity = Number.parseFloat(
+                    getComputedStyle(scrim).opacity,
+                  )
+                  transition.currentTime = resumeAt
+                  transition.play()
+                  fade = { duration, quarterOpacity }
+                }
               }
               // Sample until the open transition has actually finished, not for a
               // fixed window: slow runners deliver too few frames in 800ms.
@@ -286,14 +315,14 @@ for (const width of [390, 1440]) {
                 started !== undefined &&
                 ((elapsed >= 800 && !animating) || elapsed >= 5000)
               )
-                resolve(samples)
+                resolve({ samples, fade })
               else requestAnimationFrame(tick)
             }
             requestAnimationFrame(tick)
           }),
       )
       await trigger.click()
-      const samples = await frames
+      const { samples, fade } = await frames
       expect(samples.length).toBeGreaterThan(10)
       expect(samples.every(frame => frame.scrollTop === 0)).toBe(true)
       const first = samples[0]!
@@ -306,9 +335,9 @@ for (const width of [390, 1440]) {
       expect(
         new Set(intermediate.map(frame => Math.round(frame.top))).size,
       ).toBeGreaterThan(5)
-      expect(
-        samples.some(frame => frame.opacity > 0.05 && frame.opacity < 0.95),
-      ).toBe(true)
+      expect(fade?.duration).toBe(450)
+      expect(fade!.quarterOpacity).toBeGreaterThan(0.05)
+      expect(fade!.quarterOpacity).toBeLessThan(0.95)
       expect(first.opacity).toBe(0)
       expect(last.opacity).toBe(1)
       for (let index = 1; index < samples.length; index++) {
