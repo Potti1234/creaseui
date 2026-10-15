@@ -77,7 +77,8 @@
     "dev:pleat": "vite --mode pleat",
     "build:pleat": "vite build --mode pleat",
     "preview:pleat": "vite preview --mode pleat",
-    "lint:consumers": "node scripts/verify-lint-consumer.mjs"
+    "lint:consumers": "node scripts/verify-lint-consumer.mjs",
+    "test:strict-consumers": "node scripts/verify-strict-consumers.mjs"
   },
   "lint-staged": {
     "*": "oxfmt --write --no-error-on-unmatched-pattern"

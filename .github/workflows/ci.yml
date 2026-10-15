@@ -38,6 +38,9 @@ jobs:
       - name: Verify packed @creaseui/lint in fresh consumers
         run: npm run lint:consumers
 
+      - name: Lint, typecheck and build strict apps on real registry installs
+        run: npm run test:strict-consumers
+
   browser:
     runs-on: ubuntu-latest
     timeout-minutes: 45
