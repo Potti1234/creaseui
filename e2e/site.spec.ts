@@ -3823,6 +3823,8 @@ test('scroll area preserves labeled native overflow on both axes', async ({
 test('message scroller covers every upstream core-concept section in both renderers', async ({
   page,
 }) => {
+  // ~16s locally; exceeded the 30s default twice on the 2-worker CI runner
+  test.setTimeout(90000)
   await page.goto('/docs/components/message-scroller')
   await visitRenderer(page, 'StyleX')
   for (const id of [
@@ -7105,6 +7107,8 @@ test('form preserves native metadata and focuses linked validation feedback', as
 test('flagship documentation pages have no automated accessibility violations', async ({
   page,
 }) => {
+  // ~16s locally; exceeded the 30s default twice on the 2-worker CI runner
+  test.setTimeout(90000)
   for (const route of ['button', 'dialog', 'input', 'select']) {
     await page.goto(`/docs/components/${route}`)
     await assertAccessible(page)
