@@ -23,8 +23,8 @@ export type SemanticThemeName = (typeof SEMANTIC_THEME_NAMES)[number]
 export type ThemeScopeProps = Readonly<{
   children: PrimitiveChildren
   theme?: SemanticThemeName | undefined
-  /** Re-resolve every theme role against a `.dark` palette for this subtree. */
-  colorScheme?: 'dark' | undefined
+  /** Re-resolve every theme role against the `.dark` or light palette for this subtree. */
+  colorScheme?: 'dark' | 'light' | undefined
 }>
 
 const variableName = (variable: string): string =>
@@ -62,13 +62,18 @@ export const themeScope = <Message>(
     [
       h.Class(stylex.props(theme).className ?? ''),
       h.DataAttribute('semantic-theme', props.theme ?? 'comfortable'),
-      ...(props.colorScheme === 'dark'
-        ? [
-            h.Class(`dark ${stylex.props(theme).className ?? ''}`),
-            h.DataAttribute('color-scheme', 'dark'),
-            h.Attribute('style', `color-scheme:dark;${roleBindings}`),
-          ]
-        : []),
+      ...(props.colorScheme === undefined
+        ? []
+        : [
+            h.Class(
+              `${props.colorScheme} ${stylex.props(theme).className ?? ''}`,
+            ),
+            h.DataAttribute('color-scheme', props.colorScheme),
+            h.Attribute(
+              'style',
+              `color-scheme:${props.colorScheme};${roleBindings}`,
+            ),
+          ]),
     ],
     props.children,
   )

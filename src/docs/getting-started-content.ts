@@ -218,7 +218,8 @@ const STYLEX_THEME_TOKEN_ROWS = [
   ['--stylex-outline-hover', 'Outline button hover surface.'],
 ] as const
 
-const TAILWIND_THEME = `:root {
+const TAILWIND_THEME = `:root,
+.light {
   --background: oklch(0.99 0.01 200);
   --foreground: oklch(0.2 0.03 250);
   --primary: oklch(0.55 0.18 205);
@@ -233,7 +234,8 @@ const TAILWIND_THEME = `:root {
   --primary-foreground: oklch(0.16 0.02 250);
 }`
 
-const STYLEX_THEME_ALIASES = `:root {
+const STYLEX_THEME_ALIASES = `:root,
+.light {
   --stylex-destructive-surface: var(--destructive);
   --stylex-soft-destructive-surface: color-mix(in oklab, var(--destructive) 10%, transparent);
   --stylex-soft-destructive-hover: color-mix(in oklab, var(--destructive) 20%, transparent);

@@ -4,7 +4,9 @@ import themeSource from '@/theme.css?raw'
 export const installThemeVariables = () => {
   const theme = document.createElement('style')
   theme.textContent = [
-    ...themeSource.matchAll(/(?:^|\n)(:root|\.dark)\s*\{[^}]+\}/gu),
+    ...themeSource.matchAll(
+      /(?:^|\n)(?::root|\.dark|\.light)(?:,\s*(?::root|\.dark|\.light))*\s*\{[^}]+\}/gu,
+    ),
   ]
     .map(match => match[0])
     .join('\n')

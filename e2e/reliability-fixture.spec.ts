@@ -373,6 +373,31 @@ test.describe('shared mixed-form fixture', () => {
       expect(new Set(boxes.map(Math.round)).size).toBe(1)
     })
 
+  for (const renderer of RENDERERS)
+    test(`${renderer}: a light scope inside a dark scope re-resolves the light palette`, async ({
+      page,
+    }) => {
+      await page.goto(servers.get(renderer)!.resolvedUrls!.local[0]!)
+      const colors = (name: string) =>
+        page.getByRole('button', { name, exact: true }).evaluate(element => {
+          const style = getComputedStyle(element)
+          return {
+            background: style.backgroundColor,
+            color: style.color,
+            scheme: style.colorScheme,
+          }
+        })
+      const unscoped = await colors('Unscoped action')
+      const dark = await colors('Scoped action')
+      expect(dark.background).not.toBe(unscoped.background)
+      const light = await colors('Light action')
+      expect(light.background).toBe(unscoped.background)
+      expect(light.color).toBe(unscoped.color)
+      expect(light.scheme).toBe('light')
+      const nested = await colors('Nested dark action')
+      expect(nested).toEqual(dark)
+    })
+
   test('installed StyleX and Pleat controls match the Tailwind geometry', () => {
     const reference = measurements.get('tailwind')
     expect(reference).toBeDefined()

@@ -14,7 +14,7 @@ import { defineMessageUnion } from 'foldkit/message'
 export type ScopeKit = Readonly<{
   themeScope: <Msg>(
     props: Readonly<{
-      colorScheme: 'dark'
+      colorScheme: 'dark' | 'light'
       children: ReadonlyArray<Html | string>
     }>,
     h: HtmlBuilder<Msg>,
@@ -80,6 +80,7 @@ const view =
     h.section(
       [h.Id('scope-overlay')],
       [
+        kit.button({ children: ['Unscoped action'] }, h),
         h.div(
           [h.Id('dark-scope')],
           [
@@ -88,6 +89,37 @@ const view =
                 colorScheme: 'dark',
                 children: [
                   kit.button({ children: ['Scoped action'] }, h),
+                  h.div(
+                    [h.Id('light-in-dark')],
+                    [
+                      kit.themeScope(
+                        {
+                          colorScheme: 'light',
+                          children: [
+                            kit.button({ children: ['Light action'] }, h),
+                            h.div(
+                              [h.Id('dark-in-light')],
+                              [
+                                kit.themeScope(
+                                  {
+                                    colorScheme: 'dark',
+                                    children: [
+                                      kit.button(
+                                        { children: ['Nested dark action'] },
+                                        h,
+                                      ),
+                                    ],
+                                  },
+                                  h,
+                                ),
+                              ],
+                            ),
+                          ],
+                        },
+                        h,
+                      ),
+                    ],
+                  ),
                   kit.popover(
                     {
                       model: model.popover,

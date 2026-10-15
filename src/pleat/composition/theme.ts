@@ -1,4 +1,4 @@
-import { Theme } from '@pleat/core'
+import { Style, Theme } from '@pleat/core'
 import { css } from '@pleat/foldkit'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -8,6 +8,7 @@ import {
   expressiveSemanticTheme,
 } from './semantic-themes'
 import { complexTokensTheme } from '../complex-tokens'
+import { className } from '../style'
 import { foundationTokensTheme } from '../foundations-tokens'
 import { tokensTheme } from '../tokens'
 import type { PrimitiveChildren } from './types'
@@ -22,9 +23,14 @@ export type SemanticThemeName = (typeof SEMANTIC_THEME_NAMES)[number]
 export type ThemeScopeProps = Readonly<{
   children: PrimitiveChildren
   theme?: SemanticThemeName | undefined
-  /** Re-resolve every theme role against a `.dark` palette for this subtree. */
-  colorScheme?: 'dark' | undefined
+  /** Re-resolve every theme role against the `.dark` or light palette for this subtree. */
+  colorScheme?: 'dark' | 'light' | undefined
 }>
+
+const SCHEMES = {
+  dark: Style.make({ colorScheme: 'dark' }),
+  light: Style.make({ colorScheme: 'light' }),
+}
 
 export const themeScope = <Message>(
   props: ThemeScopeProps,
@@ -41,7 +47,7 @@ export const themeScope = <Message>(
         ...Theme.bindings(theme),
         // Role variables are bound at :root; rebinding them here makes
         // derived roles follow the subtree palette.
-        ...(props.colorScheme === 'dark'
+        ...(props.colorScheme !== undefined
           ? [
               ...Theme.bindings(tokensTheme),
               ...Theme.bindings(foundationTokensTheme),
@@ -50,9 +56,14 @@ export const themeScope = <Message>(
           : []),
       ),
       h.DataAttribute('semantic-theme', props.theme ?? 'comfortable'),
-      ...(props.colorScheme === 'dark'
-        ? [h.Class('dark'), h.DataAttribute('color-scheme', 'dark')]
-        : []),
+      ...(props.colorScheme === undefined
+        ? []
+        : [
+            h.Class(
+              `${props.colorScheme} ${className(SCHEMES[props.colorScheme])}`,
+            ),
+            h.DataAttribute('color-scheme', props.colorScheme),
+          ]),
     ],
     props.children,
   )
