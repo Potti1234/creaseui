@@ -104,10 +104,22 @@ test.describe('Pleat without preflight', () => {
         }))
     })
 
+  /* Two identical consecutive frames, so a still-settling overlay (focus,
+     scroll into view, late layout) is not compared mid-change. */
+  const settledScreenshot = async (page: Page) => {
+    let previous = await page.screenshot({ animations: 'disabled' })
+    for (let attempt = 0; attempt < 10; attempt += 1) {
+      const next = await page.screenshot({ animations: 'disabled' })
+      if (next.equals(previous)) return next
+      previous = next
+    }
+    throw new Error('The page did not settle between screenshots')
+  }
+
   const expectIndependent = async (page: Page) => {
     // Moving off controls avoids a test-dependent hover style.
     await page.mouse.move(1200, 900)
-    const screenshotWithout = await page.screenshot({ animations: 'disabled' })
+    const screenshotWithout = await settledScreenshot(page)
     const without = await snapshot(page)
     await test.info().attach('without-preflight', {
       body: screenshotWithout,
@@ -116,7 +128,7 @@ test.describe('Pleat without preflight', () => {
     const sheet = await page.addStyleTag({
       content: `@layer base { ${preflight} }`,
     })
-    const screenshotWith = await page.screenshot({ animations: 'disabled' })
+    const screenshotWith = await settledScreenshot(page)
     await test.info().attach('with-preflight', {
       body: screenshotWith,
       contentType: 'image/png',
