@@ -63,8 +63,8 @@ const TRIGGER_STATUS_CLASS: Readonly<
   Record<'error' | 'warning' | 'success', string>
 > = {
   error: 'border-destructive',
-  warning: 'border-chart-4',
-  success: 'border-chart-2',
+  warning: 'border-warning',
+  success: 'border-success',
 }
 
 /* astryx triggerGhost: borderless, auto width, font-medium, hover wash +
@@ -114,16 +114,16 @@ const STATUS_ICON_CLASS: Readonly<
   Record<'error' | 'warning' | 'success', string>
 > = {
   error: 'inline-flex shrink-0 items-center text-destructive [&>svg]:size-4',
-  warning: 'inline-flex shrink-0 items-center text-chart-4 [&>svg]:size-4',
-  success: 'inline-flex shrink-0 items-center text-chart-2 [&>svg]:size-4',
+  warning: 'inline-flex shrink-0 items-center text-warning [&>svg]:size-4',
+  success: 'inline-flex shrink-0 items-center text-success [&>svg]:size-4',
 }
 
 const STATUS_MESSAGE_CLASS: Readonly<
   Record<'error' | 'warning' | 'success', string>
 > = {
   error: 'text-sm text-destructive',
-  warning: 'text-sm text-chart-4',
-  success: 'text-sm text-chart-2',
+  warning: 'text-sm text-warning',
+  success: 'text-sm text-success',
 }
 
 const DESCRIPTION_CLASS = 'text-sm text-muted-foreground'

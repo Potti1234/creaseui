@@ -180,8 +180,8 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
         cn(
           'mt-1 flex items-start gap-1 rounded-lg p-2 text-xs leading-5',
           type === 'error' && 'bg-destructive/10 text-destructive',
-          type === 'warning' && 'bg-chart-4/15 text-chart-4',
-          type === 'success' && 'bg-chart-2/15 text-chart-2',
+          type === 'warning' && 'bg-warning/15 text-warning',
+          type === 'success' && 'bg-success/15 text-success',
         ),
       ),
     ],
@@ -554,8 +554,8 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
                   cn(
                     'pointer-events-none -mt-1 rounded-b-md px-2 pb-2 pt-5 text-xs leading-5',
                     type === 'error' && 'bg-destructive/10 text-destructive',
-                    type === 'warning' && 'bg-chart-4/15 text-chart-4',
-                    type === 'success' && 'bg-chart-2/15 text-chart-2',
+                    type === 'warning' && 'bg-warning/15 text-warning',
+                    type === 'success' && 'bg-success/15 text-success',
                   ),
                 ),
               ],

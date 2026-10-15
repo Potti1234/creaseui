@@ -152,11 +152,11 @@ const TERM_LEVEL: Record<LogStreamLevel, string> = {
 }
 
 /* astryx darkens the warning/error inks for text contrast; Crease's palette
-   ports them onto chart-4/destructive (closest semantic tokens). */
+   ports them onto warning/destructive (closest semantic tokens). */
 const LEVEL: Record<LogStreamLevel, string> = {
   info: 'text-muted-foreground',
   debug: 'text-muted-foreground/60',
-  warn: 'text-chart-4',
+  warn: 'text-warning',
   error: 'text-destructive',
 }
 
@@ -276,7 +276,7 @@ export const logStream = <Msg>(
             entry.level === 'error' &&
               'bg-[color-mix(in_srgb,var(--destructive)_6%,transparent)]',
             entry.level === 'warn' &&
-              'bg-[color-mix(in_srgb,var(--chart-4)_5%,transparent)]',
+              'bg-[color-mix(in_srgb,var(--warning)_5%,transparent)]',
           ),
     )
 

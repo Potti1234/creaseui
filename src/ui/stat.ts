@@ -51,7 +51,7 @@ const DELTA_GLYPH_PATHS: Readonly<Record<StatDeltaDirection, string>> = {
 }
 
 const SENTIMENT_CLASS: Readonly<Record<StatDeltaSentiment, string>> = {
-  positive: 'text-chart-2',
+  positive: 'text-success',
   negative: 'text-destructive',
   neutral: 'text-muted-foreground',
 }

@@ -37,9 +37,9 @@ const STATUS_ICON: Readonly<Record<FieldStatusType, string>> = {
    PORT-NOTE: tokenize as 'warningMuted', 'errorMuted', 'successMuted' +
    'textYellow'/'textRed'/'textGreen'. */
 const STATUS_COLOR: Readonly<Record<FieldStatusType, string>> = {
-  warning: 'bg-chart-4/20 text-chart-4',
+  warning: 'bg-warning/20 text-warning',
   error: 'bg-destructive/20 text-destructive',
-  success: 'bg-chart-2/20 text-chart-2',
+  success: 'bg-success/20 text-success',
 }
 
 export const fieldStatus = <Msg>(

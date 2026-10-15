@@ -68,9 +68,9 @@ const statusColor = {
    the create prop limits, so they apply as inline color-mix values.
    PORT-NOTE: 'warningMuted'/'errorMuted'/'successMuted' status fill tokens. */
 const STATUS_BG: Readonly<Record<FieldStatusType, string>> = {
-  warning: 'color-mix(in oklab, var(--chart-4) 20%, transparent)',
+  warning: 'color-mix(in oklab, var(--warning) 20%, transparent)',
   error: 'color-mix(in oklab, var(--destructive) 20%, transparent)',
-  success: 'color-mix(in oklab, var(--chart-2) 20%, transparent)',
+  success: 'color-mix(in oklab, var(--success) 20%, transparent)',
 }
 
 export const fieldStatus = <Msg>(

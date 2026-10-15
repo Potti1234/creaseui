@@ -42,5 +42,8 @@ export const complexTokens = stylex.defineVars({
   chart4Soft20: 'color-mix(in oklab, var(--chart-4) 20%, transparent)',
   destructiveSoft20: 'color-mix(in oklab, var(--destructive) 20%, transparent)',
   chart4Soft5: 'color-mix(in srgb, var(--chart-4) 5%, transparent)',
+  successSoft20: 'color-mix(in oklab, var(--success) 20%, transparent)',
+  warningSoft20: 'color-mix(in oklab, var(--warning) 20%, transparent)',
+  warningSoft5: 'color-mix(in srgb, var(--warning) 5%, transparent)',
   destructiveSoft6: 'color-mix(in srgb, var(--destructive) 6%, transparent)',
 })

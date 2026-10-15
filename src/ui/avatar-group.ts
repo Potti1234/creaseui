@@ -170,7 +170,7 @@ const resolveStatusDotSize = (size: AvatarStatusDotSize | undefined): number =>
   typeof size === 'number' ? size : ASTRYX_AVATAR_SIZE_PX[size ?? 'md']
 
 const DOT_VARIANT_CLASS: Readonly<Record<AvatarStatusDotVariant, string>> = {
-  success: 'bg-chart-2 text-background',
+  success: 'bg-success text-background',
   neutral: 'bg-background text-muted-foreground',
   error: 'bg-destructive text-background',
 }

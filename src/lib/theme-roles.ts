@@ -20,8 +20,8 @@ export const themeRoleGroups = {
     accentForeground: 'var(--accent-foreground)',
     destructive: 'var(--destructive)',
     alertInfo: 'var(--primary)',
-    alertSuccess: 'var(--chart-2)',
-    alertWarning: 'var(--chart-4)',
+    alertSuccess: 'var(--success)',
+    alertWarning: 'var(--warning)',
     destructiveForeground: 'oklch(0.985 0 0)',
     destructiveHover:
       'color-mix(in oklab, var(--destructive) 90%, transparent)',
@@ -164,6 +164,9 @@ export const themeRoleGroups = {
     destructiveSoft20:
       'color-mix(in oklab, var(--destructive) 20%, transparent)',
     chart4Soft5: 'color-mix(in srgb, var(--chart-4) 5%, transparent)',
+    successSoft20: 'color-mix(in oklab, var(--success) 20%, transparent)',
+    warningSoft20: 'color-mix(in oklab, var(--warning) 20%, transparent)',
+    warningSoft5: 'color-mix(in srgb, var(--warning) 5%, transparent)',
     destructiveSoft6: 'color-mix(in srgb, var(--destructive) 6%, transparent)',
   },
 } as const
@@ -219,6 +222,9 @@ export const BASE_THEME_VARIABLES = [
   'sidebar-ring',
 ] as const
 export type BaseThemeVariable = (typeof BASE_THEME_VARIABLES)[number]
+
+/** Status roles: independent of the chart palette, optional in patches. */
+export const STATUS_THEME_VARIABLES = ['success', 'warning'] as const
 
 const LENGTH_VARIABLES: ReadonlySet<string> = new Set(['radius'])
 
@@ -673,7 +679,10 @@ export const validateThemeDefinition = (
   const errors: Array<string> = []
   if (definition.schemaVersion !== THEME_SCHEMA_VERSION)
     errors.push(`unsupported schemaVersion ${definition.schemaVersion}`)
-  const known = new Set<string>(BASE_THEME_VARIABLES)
+  const known = new Set<string>([
+    ...BASE_THEME_VARIABLES,
+    ...STATUS_THEME_VARIABLES,
+  ])
   for (const [name, value] of Object.entries(definition.values)) {
     if (!known.has(name)) errors.push(`unknown role --${name}`)
     if (typeof value !== 'string') {

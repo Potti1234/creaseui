@@ -40,6 +40,9 @@ const complexTokensSpec = Token.make(
     chart4Soft20: Token.color,
     destructiveSoft20: Token.color,
     chart4Soft5: Token.color,
+    successSoft20: Token.color,
+    warningSoft20: Token.color,
+    warningSoft5: Token.color,
     destructiveSoft6: Token.color,
   },
   { prefix: 'crease-complex-' },
@@ -88,6 +91,9 @@ export const complexTokensTheme = Theme.make(complexTokensSpec, {
   chart4Soft20: 'color-mix(in oklab, var(--chart-4) 20%, transparent)',
   destructiveSoft20: 'color-mix(in oklab, var(--destructive) 20%, transparent)',
   chart4Soft5: 'color-mix(in srgb, var(--chart-4) 5%, transparent)',
+  successSoft20: 'color-mix(in oklab, var(--success) 20%, transparent)',
+  warningSoft20: 'color-mix(in oklab, var(--warning) 20%, transparent)',
+  warningSoft5: 'color-mix(in srgb, var(--warning) 5%, transparent)',
   destructiveSoft6: 'color-mix(in srgb, var(--destructive) 6%, transparent)',
 })
 

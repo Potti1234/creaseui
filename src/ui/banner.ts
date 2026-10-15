@@ -54,9 +54,9 @@ const STATUS_HEADER_TINT: Readonly<
      PORT-NOTE: tokenize status banner fills as 'accentMuted',
      'warningMuted', 'errorMuted', 'successMuted' (20% hue). */
   info: 'bg-primary/20',
-  warning: 'bg-chart-4/20',
+  warning: 'bg-warning/20',
   error: 'bg-destructive/20',
-  success: 'bg-chart-2/20',
+  success: 'bg-success/20',
 }
 
 const ELEVATION: Readonly<Record<BannerBehavior.BannerElevation, string>> = {

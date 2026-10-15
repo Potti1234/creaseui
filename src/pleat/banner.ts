@@ -144,9 +144,9 @@ const STATUS_HEADER_TINT: Readonly<
   Record<BannerBehavior.BannerStatus, string>
 > = {
   info: 'color-mix(in oklab, var(--primary) 20%, transparent)',
-  warning: 'color-mix(in oklab, var(--chart-4) 20%, transparent)',
+  warning: 'color-mix(in oklab, var(--warning) 20%, transparent)',
   error: 'color-mix(in oklab, var(--destructive) 20%, transparent)',
-  success: 'color-mix(in oklab, var(--chart-2) 20%, transparent)',
+  success: 'color-mix(in oklab, var(--success) 20%, transparent)',
 }
 
 const ELEVATION_SHADOW: Readonly<

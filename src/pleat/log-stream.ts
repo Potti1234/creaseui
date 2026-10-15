@@ -186,7 +186,7 @@ const styles = {
     borderBlockEndWidth: 0,
     color: logStreamTerminalInk.text,
   }),
-  rowWarn: Style.make({ backgroundColor: complexTokens.chart4Soft5 }),
+  rowWarn: Style.make({ backgroundColor: complexTokens.warningSoft5 }),
   rowError: Style.make({ backgroundColor: complexTokens.destructiveSoft6 }),
   colsTimeSource: Style.make({
     gridTemplateColumns: '96px 52px 128px minmax(0, 1fr)',
