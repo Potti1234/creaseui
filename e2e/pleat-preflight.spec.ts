@@ -58,7 +58,8 @@ test.describe('Pleat without preflight', () => {
   })
 
   const snapshot = (page: Page) =>
-    page.locator('[data-slot="sidebar-wrapper"]').evaluate(root => {
+    // Document-wide so portaled overlays (menus, dialogs) are compared too.
+    page.evaluate(() => {
       const properties = [
         'width',
         'height',
@@ -82,12 +83,15 @@ test.describe('Pleat without preflight', () => {
         'border-right-width',
         'border-bottom-width',
         'border-left-width',
+        'text-align',
+        'white-space',
+        'outline-style',
         'list-style-type',
         'text-decoration-line',
         'opacity',
         'vertical-align',
       ]
-      return [...root.querySelectorAll('[data-slot], [data-slot] *')]
+      return [...document.querySelectorAll('[data-slot], [data-slot] *')]
         .filter(
           element =>
             element.getClientRects().length > 0 &&
