@@ -284,13 +284,13 @@ export const codeBlock = <Msg>(
                     ? 'whitespace-pre-wrap break-all'
                     : 'whitespace-pre',
                   hasLineNumbers &&
-                    'relative after:absolute after:inset-y-0 after:w-px after:bg-border after:start-[calc(1rem+var(--_codeblock-gutter-width)+0.75rem)] after:pointer-events-none',
+                    'relative after:absolute after:inset-y-0 after:w-px after:bg-border after:start-[calc(1rem+var(--codeblock-gutter-width)+0.75rem)] after:pointer-events-none',
                 ),
               ),
               ...(hasLineNumbers
                 ? [
                     h.Style({
-                      '--_codeblock-gutter-width': `${maxLineDigits}ch`,
+                      '--codeblock-gutter-width': `${maxLineDigits}ch`,
                     }),
                   ]
                 : []),
@@ -303,7 +303,7 @@ export const codeBlock = <Msg>(
                     cn(
                       'leading-[1.4286]',
                       hasLineNumbers &&
-                        'grid grid-cols-[var(--_codeblock-gutter-width)_1fr] gap-x-[calc(0.75rem+1px+1rem)] before:content-[attr(data-line)] before:col-start-1 before:self-start before:text-end before:text-muted-foreground before:select-none before:font-mono',
+                        'grid grid-cols-[var(--codeblock-gutter-width)_1fr] gap-x-[calc(0.75rem+1px+1rem)] before:content-[attr(data-line)] before:col-start-1 before:self-start before:text-end before:text-muted-foreground before:select-none before:font-mono',
                       highlightSet?.has(index + 1) === true &&
                         'bg-primary/10 -mx-4 px-4',
                     ),

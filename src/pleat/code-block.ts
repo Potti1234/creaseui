@@ -207,7 +207,7 @@ const styles = {
       insetBlock: 0,
       backgroundColor: tokens.border,
       content: '""',
-      insetInlineStart: 'calc(1rem + var(--_codeblock-gutter-width) + 0.75rem)',
+      insetInlineStart: 'calc(1rem + var(--codeblock-gutter-width) + 0.75rem)',
       pointerEvents: 'none',
       position: 'absolute',
       width: '1px',
@@ -217,7 +217,7 @@ const styles = {
   lineNumbered: Style.make({
     columnGap: 'calc(0.75rem + 1px + 1rem)',
     display: 'grid',
-    gridTemplateColumns: 'var(--_codeblock-gutter-width) 1fr',
+    gridTemplateColumns: 'var(--codeblock-gutter-width) 1fr',
   }).pipe(
     Style.when(When.before, {
       alignSelf: 'start',
@@ -475,7 +475,7 @@ export const codeBlock = <Msg>(
               ...(hasLineNumbers
                 ? [
                     h.Style({
-                      '--_codeblock-gutter-width': `${maxLineDigits}ch`,
+                      '--codeblock-gutter-width': `${maxLineDigits}ch`,
                     }),
                   ]
                 : []),
