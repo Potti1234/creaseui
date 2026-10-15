@@ -14,6 +14,7 @@ import {
 import { checkbox } from '@/ui/checkbox'
 import { themeScope } from '@/ui/composition/theme'
 import { heading } from '@/ui/heading'
+import { item, itemContent, itemGroup, itemTitle } from '@/ui/item'
 import { input } from '@/ui/input'
 import { nativeSelect } from '@/ui/native-select'
 import { datePicker } from '@/ui/date-picker'
@@ -34,6 +35,7 @@ import { textarea } from '@/ui/textarea'
 
 import { runActionsText } from '../actions'
 import { runDashboard } from '../dashboard'
+import { runItemGroups } from '../items'
 import { runScopeOverlay } from '../scope'
 import { runSettings } from '../settings'
 import { runMixedForm } from '../shared'
@@ -57,3 +59,4 @@ runSurfacesData({
 runScopeOverlay({ button, popover, themeScope, datePicker })
 runSettings({ tabs, tabsUpdate, switchControl })
 runDashboard({ stat })
+runItemGroups({ itemGroup, item, itemContent, itemTitle })

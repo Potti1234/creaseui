@@ -1,3 +1,4 @@
+import AxeBuilder from '@axe-core/playwright'
 import { mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
@@ -323,6 +324,53 @@ test.describe('shared mixed-form fixture', () => {
         )
         .toBeLessThanOrEqual(0)
       expect(errors).toEqual([])
+    })
+
+  for (const renderer of RENDERERS)
+    test(`${renderer}: linked, ordinary and mixed item groups keep list and link semantics`, async ({
+      page,
+    }) => {
+      await page.goto(servers.get(renderer)!.resolvedUrls!.local[0]!)
+      const expected = {
+        'items-linked': { items: 2, links: 2 },
+        'items-ordinary': { items: 2, links: 0 },
+        'items-mixed': { items: 3, links: 2 },
+      } as const
+      for (const [id, counts] of Object.entries(expected)) {
+        const list = page.locator(`#${id}`).getByRole('list')
+        await expect(list).toHaveCount(1)
+        await expect(list.getByRole('listitem')).toHaveCount(counts.items)
+        await expect(list.getByRole('listitem').getByRole('link')).toHaveCount(
+          counts.links,
+        )
+      }
+      const results = await new AxeBuilder({ page })
+        .include('#items')
+        .withRules([
+          'aria-required-children',
+          'aria-required-parent',
+          'list',
+          'listitem',
+        ])
+        .analyze()
+      expect(results.violations).toEqual([])
+      const linked = page.locator('#items-linked').getByRole('link')
+      await linked.first().focus()
+      await page.keyboard.press('Tab')
+      await expect(linked.nth(1)).toBeFocused()
+      const mixed = page.locator('#items-mixed').getByRole('link')
+      await mixed.first().focus()
+      await page.keyboard.press('Tab')
+      await expect(mixed.nth(1)).toBeFocused()
+      await page.keyboard.press('Enter')
+      await expect(page).toHaveURL(/#billing$/u)
+      // The wrapper does not change the link's own geometry.
+      const boxes = await page
+        .locator('#items-mixed [data-slot="item"]')
+        .evaluateAll(elements =>
+          elements.map(element => element.getBoundingClientRect().width),
+        )
+      expect(new Set(boxes.map(Math.round)).size).toBe(1)
     })
 
   test('installed StyleX and Pleat controls match the Tailwind geometry', () => {

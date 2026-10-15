@@ -12,6 +12,7 @@ import {
 import { checkbox } from '@/stylex/checkbox'
 import { themeScope } from '@/stylex/composition/theme'
 import { heading } from '@/stylex/heading'
+import { item, itemContent, itemGroup, itemTitle } from '@/stylex/item'
 import { input } from '@/stylex/input'
 import { nativeSelect } from '@/stylex/native-select'
 import { datePicker } from '@/stylex/date-picker'
@@ -32,6 +33,7 @@ import { textarea } from '@/stylex/textarea'
 
 import { runActionsText } from '../actions'
 import { runDashboard } from '../dashboard'
+import { runItemGroups } from '../items'
 import { runScopeOverlay } from '../scope'
 import { runSettings } from '../settings'
 import { runMixedForm } from '../shared'
@@ -57,3 +59,4 @@ runSurfacesData({
 runScopeOverlay({ button, popover, themeScope, datePicker })
 runSettings({ tabs, tabsUpdate, switchControl })
 runDashboard({ stat })
+runItemGroups({ itemGroup, item, itemContent, itemTitle })

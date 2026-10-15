@@ -115,6 +115,7 @@ const styles = {
     justifyContent: 'space-between',
   }),
   group: Style.make({ display: 'flex', flexDirection: 'column' }),
+  listItem: Style.make({ display: 'contents' }),
   groupSm: Style.make({ gap: '0.625rem' }),
   groupMd: Style.make({ gap: '0.75rem' }),
   groupLg: Style.make({ gap: '1rem' }),
@@ -167,7 +168,6 @@ export const item = <Msg>(p: ItemProps, h: HtmlBuilder<Msg>): Html => {
   const variant = p.variant ?? 'default',
     size = p.size ?? 'default',
     attrs = [
-      // a link keeps its native role
       ...(p.element === 'a' ? [] : [h.Role('listitem')]),
       h.DataAttribute('slot', 'item'),
       h.DataAttribute('variant', variant),
@@ -192,17 +192,28 @@ export const item = <Msg>(p: ItemProps, h: HtmlBuilder<Msg>): Html => {
     : p.element === 'article'
       ? h.article(attrs, children)
       : p.element === 'a'
-        ? h.a(
+        ? // The link keeps its native role inside a list-item wrapper that
+          // does not take part in layout.
+          h.div(
             [
-              h.Class(className(reset.link)),
-              ...attrs,
-              h.Href(p.href ?? '#'),
-              ...(p.target === undefined
-                ? []
-                : [h.Attribute('target', p.target)]),
-              ...(p.rel === undefined ? [] : [h.Rel(p.rel)]),
+              h.Role('listitem'),
+              h.DataAttribute('slot', 'item-listitem'),
+              h.Class(className(styles.listItem)),
             ],
-            children,
+            [
+              h.a(
+                [
+                  h.Class(className(reset.link)),
+                  ...attrs,
+                  h.Href(p.href ?? '#'),
+                  ...(p.target === undefined
+                    ? []
+                    : [h.Attribute('target', p.target)]),
+                  ...(p.rel === undefined ? [] : [h.Rel(p.rel)]),
+                ],
+                children,
+              ),
+            ],
           )
         : h.div(attrs, children)
 }
