@@ -452,6 +452,38 @@ ${Object.entries(pleatAliases)
       init.status === 0,
       init.stdout + init.stderr,
     )
+    const doctor = await run(root, process.execPath, [bin, 'doctor'])
+    expect(
+      label('doctor finds no uncovered rendering exports'),
+      doctor.status === 0 && /0 uncovered UI modules/u.test(doctor.stdout),
+      doctor.stdout + doctor.stderr,
+    )
+    const lock = JSON.parse(
+      readFileSync(path.join(root, 'crease.lock.json'), 'utf8'),
+    )
+    const contracted = lock.artifacts.flatMap(artifact =>
+      artifact.exports.filter(
+        entry =>
+          entry.visibility !== 'implementation' &&
+          (entry.renderKind ?? 'helper') === 'helper',
+      ),
+    )
+    write(
+      path.join(root, 'src/probe/every-export.ts'),
+      `import type { Html, HtmlBuilder } from 'foldkit/html'\n${contracted
+        .map(
+          (entry, index) =>
+            `import { ${entry.name} as probe${index} } from '@/${entry.file.replace(/^src\//u, '').replace(/\.ts$/u, '')}'`,
+        )
+        .join(
+          '\n',
+        )}\n\nexport const views = (h: HtmlBuilder<unknown>): ReadonlyArray<Html> => [\n${contracted
+        .map(
+          (_entry, index) =>
+            `  probe${index}({ children: ['Bad'], class: 'bg-red-500 text-3xl p-0' }, h),`,
+        )
+        .join('\n')}\n]\n`,
+    )
     const eslint = path.join(root, 'node_modules/eslint/bin/eslint.js')
     const good = await run(root, process.execPath, [
       eslint,
@@ -507,6 +539,37 @@ ${Object.entries(pleatAliases)
       JSON.stringify(badRules),
     )
     rmSync(path.join(root, 'src/app/bad.ts'))
+    const every = await run(root, process.execPath, [
+      eslint,
+      '--format',
+      'json',
+      'src/probe/every-export.ts',
+    ])
+    const flagged = new Set(
+      every.stdout.trim() === ''
+        ? []
+        : JSON.parse(every.stdout).flatMap(result =>
+            result.messages.map(message => message.line),
+          ),
+    )
+    const lines = readFileSync(
+      path.join(root, 'src/probe/every-export.ts'),
+      'utf8',
+    ).split('\n')
+    const missed = contracted.filter((_entry, index) => {
+      const line =
+        lines.findIndex(text => text.startsWith(`  probe${index}(`)) + 1
+      return !flagged.has(line)
+    })
+    expect(
+      label(
+        `every contracted export (${contracted.length}) rejects an ad hoc class`,
+      ),
+      contracted.length > 0 && missed.length === 0,
+      missed.map(entry => entry.name).join(', '),
+    )
+    rmSync(path.join(root, 'src/probe/every-export.ts'))
+
     const types = await run(root, npx, [
       'tsc',
       '--noEmit',
