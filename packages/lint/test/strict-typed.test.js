@@ -33,6 +33,7 @@ const support = {
   'design-namespace-two':
     "export { Button as Action } from './design-namespace'\n",
   'plain-namespace': "export * as Values from './plain-values'\n",
+  'headless-star-as': "export * as UI from '@foldkit/ui'\n",
 }
 
 const cases = {
@@ -154,6 +155,18 @@ const cases = {
   ],
   'local-namespace-non-rendering': [
     "import * as Plain from './plain-values'\nconst Values = Plain\nconst { config } = Values\nexport const layout = [Values.config.view, config.view]",
+    [],
+  ],
+  'headless-namespace-export-named': [
+    `${header}import { UI } from './headless-star-as'\nexport const rawView = UI.Dialog.view`,
+    ['crease/no-unapproved-renderer'],
+  ],
+  'headless-namespace-export-namespace': [
+    `${header}import * as Design from './headless-star-as'\nconst { Dialog } = Design.UI\nexport const rawView = Dialog['view']`,
+    ['crease/no-unapproved-renderer'],
+  ],
+  'headless-namespace-export-messages-legal': [
+    "import { UI } from './headless-star-as'\nexport const opened = UI.Dialog.Opened",
     [],
   ],
   'styled-namespace-export-named': [

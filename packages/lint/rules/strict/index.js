@@ -147,6 +147,15 @@ export const noUnapprovedRenderer = {
     /* Headless origins: a @foldkit/ui module name, '*' for the package
        namespace, `{ barrel }` for a local namespace import, `{ view }` for
        an unstyled render export and `{ unresolved }` for an unknown key. */
+    /* `export * as key from` in a local barrel: another barrel, the
+       package namespace or a @foldkit/ui module. */
+    const namespaceOwner = (barrel, key) => {
+      const target = strict.modules.namespaceTarget(barrel, key)
+      if (target === null) return undefined
+      if (target.file !== undefined) return { barrel: target.file }
+      const match = /^@foldkit\/ui(?:\/([^/]+))?$/u.exec(target.source)
+      return match === null ? undefined : (match[1] ?? '*')
+    }
     const memberOf = (owner, key) => {
       if (owner === undefined || owner.view || owner.unresolved)
         return undefined
@@ -157,6 +166,7 @@ export const noUnapprovedRenderer = {
       }
       if (key === null || strict === null) return undefined
       const origin = strict.modules.externalOrigin(owner.barrel, key)
+      if (origin === null) return namespaceOwner(owner.barrel, key)
       const match =
         origin === null
           ? null
@@ -246,6 +256,11 @@ export const noUnapprovedRenderer = {
           const origin = strict.modules.externalOrigin(local, name)
           if (origin !== null)
             headlessImport(specifier, origin.source, origin.name)
+          else {
+            const owner = namespaceOwner(local, name)
+            if (owner !== undefined)
+              headless.set(analysis.variableOf(specifier.local), owner)
+          }
         }
       },
       MemberExpression(node) {

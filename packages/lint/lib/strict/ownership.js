@@ -406,9 +406,10 @@ export const createModuleResolver = ({ rootDir, tsconfig }) => {
     return { file, name }
   }
 
-  /** File that `export * as name from` exposes from `file` (directly or via
-      named/star re-exports), or null. */
-  const namespaceExport = (file, name, seen = new Set()) => {
+  /** Module that `export * as name from` exposes from `file` (directly or
+      via named/star re-exports): `{ file }` when it is local, `{ source }`
+      for a bare package, or null. */
+  const namespaceTarget = (file, name, seen = new Set()) => {
     const key = `${file}#${name}`
     if (seen.has(key) || seen.size > 50) return null
     seen.add(key)
@@ -425,15 +426,16 @@ export const createModuleResolver = ({ rootDir, tsconfig }) => {
       if (target === undefined) continue
       const clause = statement.exportClause
       if (clause === undefined) stars.push(target)
-      else if (ts.isNamespaceExport(clause) && clause.name.text === name)
-        return resolve(target, file)
-      else if (ts.isNamedExports(clause))
+      else if (ts.isNamespaceExport(clause) && clause.name.text === name) {
+        const next = resolve(target, file)
+        return next === null ? { source: target } : { file: next }
+      } else if (ts.isNamedExports(clause))
         for (const element of clause.elements)
           if (element.name.text === name) {
             const next = resolve(target, file)
             return next === null
               ? null
-              : namespaceExport(
+              : namespaceTarget(
                   next,
                   element.propertyName?.text ?? element.name.text,
                   seen,
@@ -442,11 +444,15 @@ export const createModuleResolver = ({ rootDir, tsconfig }) => {
     }
     for (const target of stars) {
       const next = resolve(target, file)
-      const found = next === null ? null : namespaceExport(next, name, seen)
+      const found = next === null ? null : namespaceTarget(next, name, seen)
       if (found !== null) return found
     }
     return null
   }
+
+  /** Local file that `export * as name from` exposes from `file`, or null. */
+  const namespaceExport = (file, name) =>
+    namespaceTarget(file, name)?.file ?? null
 
   /** Bare-package origin (`{ source, name }`) that a local barrel re-exports
       `name` from, following named, star and import-then-export chains. */
@@ -540,5 +546,11 @@ export const createModuleResolver = ({ rootDir, tsconfig }) => {
     })
   }
 
-  return { exportOrigin, externalOrigin, namespaceExport, resolve }
+  return {
+    exportOrigin,
+    externalOrigin,
+    namespaceExport,
+    namespaceTarget,
+    resolve,
+  }
 }
