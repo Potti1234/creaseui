@@ -169,6 +169,30 @@ const cases = {
       'crease/no-application-styles',
     ],
   ],
+  'dom-style-alias': [
+    "export const restyle = (element: HTMLElement) => {\n  const style = element.style\n  style.color = 'red'\n}",
+    ['crease/no-application-styles'],
+  ],
+  'dom-style-destructured': [
+    "export const restyle = (element: HTMLElement) => {\n  const { style, classList: tokens } = element\n  const again = style\n  again.color = 'red'\n  tokens.add('x')\n}",
+    ['crease/no-application-styles', 'crease/no-application-styles'],
+  ],
+  'dom-class-list-alias': [
+    "export const restyle = (element: HTMLElement) => {\n  const tokens = element.classList\n  tokens.toggle('x')\n}",
+    ['crease/no-application-styles'],
+  ],
+  'dom-style-methods': [
+    "export const restyle = (element: HTMLElement) => {\n  element.style.setProperty('color', 'red')\n  const style = element.style\n  style.cssText = 'color: red'\n  style['color'] = 'red'\n}",
+    [
+      'crease/no-application-styles',
+      'crease/no-application-styles',
+      'crease/no-application-styles',
+    ],
+  ],
+  'business-style-alias': [
+    "type Row = { style: { color: string; setProperty: (a: string, b: string) => void }; classList: { add: (token: string) => void } }\nexport const tag = (row: Row) => {\n  const style = row.style\n  style.color = 'gold'\n  style.setProperty('a', 'b')\n  const { classList } = row\n  classList.add('vip')\n}",
+    [],
+  ],
   approved: [
     `${header}import { button } from '@design/button'\nexport const view = <M>(h: HtmlBuilder<M>): Html => button({children:['Good'],variant:'outline'}, h)`,
     [],

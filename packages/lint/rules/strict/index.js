@@ -281,6 +281,9 @@ export const noUnapprovedRenderer = {
   },
 }
 
+const CLASS_LIST_MUTATIONS = new Set(['add', 'remove', 'replace', 'toggle'])
+const STYLE_MUTATIONS = new Set(['removeProperty', 'setProperty'])
+
 export const noApplicationStyles = {
   meta: meta(
     'no-application-styles',
@@ -348,6 +351,14 @@ export const noApplicationStyles = {
             node,
             `Assigning \`${parent === 'style' ? `style.${name}` : name}\` mutates DOM appearance outside the component contracts.`,
           )
+        else if (
+          parent !== 'style' &&
+          analysis.domReceiverKind(target.object) === 'style'
+        )
+          report(
+            node,
+            `Assigning \`${context.sourceCode.getText(target)}\` mutates a DOM style declaration outside the component contracts.`,
+          )
       },
       CallExpression(node) {
         const member = analysis.calleeMember(node.callee)
@@ -379,14 +390,20 @@ export const noApplicationStyles = {
         } else if (method === 'insertAdjacentHTML') {
           report(node, '`insertAdjacentHTML` injects raw HTML.')
         } else if (
-          callee.object.type === 'MemberExpression' &&
-          !callee.object.computed &&
-          callee.object.property.name === 'classList' &&
-          analysis.isDomMember(callee.object)
+          CLASS_LIST_MUTATIONS.has(method) &&
+          analysis.domReceiverKind(callee.object) === 'classList'
         ) {
           report(
             node,
             '`classList` mutation restyles DOM outside the component contracts.',
+          )
+        } else if (
+          STYLE_MUTATIONS.has(method) &&
+          analysis.domReceiverKind(callee.object) === 'style'
+        ) {
+          report(
+            node,
+            `\`${method}\` on a DOM style declaration restyles DOM outside the component contracts.`,
           )
         } else if (
           ['createElement', 'createElementNS'].includes(method) &&

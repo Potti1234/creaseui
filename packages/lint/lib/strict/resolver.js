@@ -348,8 +348,74 @@ export const createFileAnalysis = context => {
     return typed ?? !lexicallyPlainRecord(member.object)
   }
 
+  const DOM_RECEIVERS = {
+    CSSStyleDeclaration: 'style',
+    DOMTokenList: 'classList',
+  }
+
+  /** `'style'`/`'classList'` when an expression is a DOM style declaration
+      or class list, through aliases and destructuring; null otherwise. */
+  const domReceiverKind = (node, seen = new Set()) => {
+    node = unwrap(node)
+    if (node === null || node === undefined) return null
+    if (hasTypes) {
+      try {
+        const type = checker.getTypeAtLocation(
+          services.esTreeNodeToTSNodeMap.get(node),
+        )
+        const symbol = type.getSymbol() ?? type.aliasSymbol
+        const kind = DOM_RECEIVERS[symbol?.getName()]
+        if (
+          kind !== undefined &&
+          (symbol.declarations ?? []).some(declaration =>
+            DOM_LIB.test(declaration.getSourceFile().fileName),
+          )
+        )
+          return kind
+        if (symbol !== undefined && !(type.flags & 1)) return null
+      } catch {
+        /* fall back to the syntactic provenance below */
+      }
+    }
+    if (node.type === 'MemberExpression') {
+      const name = memberName(node)
+      return name === 'style' || name === 'classList'
+        ? isDomMember(node)
+          ? name
+          : null
+        : null
+    }
+    if (node.type !== 'Identifier') return null
+    const variable = variableOf(node)
+    if (variable === null || seen.has(variable)) return null
+    seen.add(variable)
+    const definition = variable.defs[0]
+    const property = definition?.name.parent
+    if (
+      definition?.type === 'Variable' &&
+      property?.type === 'Property' &&
+      property.value === definition.name &&
+      property.parent.type === 'ObjectPattern' &&
+      definition.node.id === property.parent &&
+      definition.node.init !== null
+    ) {
+      const key = property.computed
+        ? resolveString(property.key)
+        : property.key.type === 'Identifier'
+          ? property.key.name
+          : null
+      return (key === 'style' || key === 'classList') &&
+        !lexicallyPlainRecord(definition.node.init)
+        ? key
+        : null
+    }
+    const init = constInit(node)
+    return init === null ? null : domReceiverKind(init, seen)
+  }
+
   return {
     builderMember,
+    domReceiverKind,
     calleeMember,
     checker,
     constInit,
