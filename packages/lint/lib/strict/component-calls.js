@@ -55,45 +55,97 @@ export const createComponentIndex = (context, strict, analysis) => {
       : strict.ownership.exportsOf(origin.file)?.get(origin.name)
   }
 
-  const namespaceOf = member => {
-    if (member?.type !== 'MemberExpression') return undefined
-    if (member.object.type !== 'Identifier') return undefined
-    return bindings.get(analysis.variableOf(member.object))?.namespace
+  const keyOf = member =>
+    member.computed
+      ? analysis.resolveString(member.property)
+      : member.property.type === 'Identifier'
+        ? member.property.name
+        : null
+
+  /** `const { a: b } = init` binding of a variable: `{ init, key }`, with
+      `key: null` when the property cannot be resolved statically. */
+  const destructuring = variable => {
+    const definition = variable?.defs.length === 1 ? variable.defs[0] : null
+    if (definition?.type !== 'Variable') return null
+    if (definition.parent.kind !== 'const') return null
+    const property = definition.name.parent
+    const pattern = property?.parent
+    if (
+      property?.type !== 'Property' ||
+      property.value !== definition.name ||
+      pattern?.type !== 'ObjectPattern' ||
+      definition.node.id !== pattern ||
+      definition.node.init === null
+    )
+      return null
+    const key = property.computed
+      ? analysis.resolveString(property.key)
+      : property.key.type === 'Identifier'
+        ? property.key.name
+        : String(property.key.value)
+    return { init: definition.node.init, key }
   }
 
-  /** Record for `Ns.name` or constant computed `Ns['name']`. */
-  const memberRecord = member => {
-    const namespace = namespaceOf(member)
-    if (namespace === undefined) return undefined
-    const name = member.computed
-      ? analysis.resolveString(member.property)
-      : member.property.name
-    return name === null ? undefined : recordAt(namespace, name)
+  /**
+   * Installed origin of an expression: `{ namespace }`, `{ record }` or
+   * `{ unresolved }`. Follows immutable aliases (`const UI = Design`),
+   * destructuring (`const { button } = Design`) and constant members.
+   */
+  const originOf = (node, depth = 0) => {
+    node = unwrap(node)
+    if (node === null || node === undefined || depth > 12) return undefined
+    if (node.type === 'Identifier') {
+      const variable = analysis.variableOf(node)
+      const entry = bindings.get(variable)
+      if (entry !== undefined) return entry
+      const destructured = destructuring(variable)
+      if (destructured !== null) {
+        const namespace = originOf(destructured.init, depth + 1)?.namespace
+        if (namespace === undefined) return undefined
+        if (destructured.key === null) return { unresolved: true }
+        const record = recordAt(namespace, destructured.key)
+        return record === undefined ? undefined : { record }
+      }
+      const init = analysis.constInit(node)
+      return init === null ? undefined : originOf(init, depth + 1)
+    }
+    if (node.type === 'MemberExpression') {
+      const namespace = originOf(node.object, depth + 1)?.namespace
+      if (namespace === undefined) return undefined
+      const name = keyOf(node)
+      if (name === null) return { unresolved: true }
+      const record = recordAt(namespace, name)
+      return record === undefined ? undefined : { record }
+    }
+    return undefined
   }
+
+  /** Record for `Ns.name` or constant computed `Ns['name']`, through aliases. */
+  const memberRecord = member =>
+    member?.type === 'MemberExpression' ? originOf(member)?.record : undefined
 
   /** `Ns[key]` on a component namespace whose key cannot be resolved. */
   const unresolvedMember = member =>
-    namespaceOf(member) !== undefined &&
+    member?.type === 'MemberExpression' &&
     member.computed &&
-    analysis.resolveString(member.property) === null
+    originOf(member)?.unresolved === true
 
-  const callRecord = callee => {
-    callee = unwrap(callee)
-    for (
-      let depth = 0;
-      depth < 8 && callee?.type === 'Identifier';
-      depth += 1
-    ) {
-      const entry = bindings.get(analysis.variableOf(callee))
-      if (entry?.record !== undefined) return entry.record
-      callee = unwrap(analysis.constInit(callee))
-    }
-    return callee?.type === 'MemberExpression'
-      ? memberRecord(callee)
-      : undefined
+  /** `const { [key]: x } = Ns` on a component namespace with an unknown key. */
+  const unresolvedDestructuring = identifier =>
+    destructuring(analysis.variableOf(identifier))?.key === null &&
+    originOf(identifier)?.unresolved === true
+
+  const callRecord = callee => originOf(callee)?.record
+
+  return {
+    callRecord,
+    collect,
+    destructuring,
+    imports,
+    memberRecord,
+    unresolvedDestructuring,
+    unresolvedMember,
   }
-
-  return { callRecord, collect, imports, memberRecord, unresolvedMember }
 }
 
 const label = record => `\`${record.name}\` (${record.contract})`

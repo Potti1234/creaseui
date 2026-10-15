@@ -28,6 +28,7 @@ const support = {
   'headless-barrel-two': "export * from './headless-barrel'\n",
   'headless-renamed':
     "import { Dialog as D } from '@foldkit/ui'\nexport { D as Modal }\n",
+  'plain-values': "export const config = { view: 'grid' }\n",
 }
 
 const cases = {
@@ -90,6 +91,66 @@ const cases = {
   'styled-dynamic-key': [
     `${header}import * as Design from '@design/button'\nexport const pick = (key: string) => Design[key as 'button']`,
     ['crease/no-unverifiable-ui'],
+  ],
+  'styled-namespace-alias': [
+    `${header}import * as Design from '@design/button'\nconst UI = Design\nexport const view = <M>(h: HtmlBuilder<M>): Html => UI.button(({style:'color:red',children:['Bad']} as any), h)`,
+    ['crease/no-unverifiable-ui'],
+  ],
+  'styled-destructured': [
+    `${header}import * as Design from '@design/button'\nconst { button } = Design\nexport const view = <M>(h: HtmlBuilder<M>): Html => button(({style:'color:red',children:['Bad']} as any), h)`,
+    ['crease/no-unverifiable-ui'],
+  ],
+  'styled-renamed-destructured-alias': [
+    `${header}import * as Design from '@design/button'\nconst UI = Design\nconst { button: action } = UI\nconst run = action\nexport const view = <M>(h: HtmlBuilder<M>): Html => run(({style:'color:red',children:['Bad']} as any), h)`,
+    ['crease/no-unverifiable-ui'],
+  ],
+  'styled-barrel-namespace-alias': [
+    `${header}import * as Design from '@design/index'\nconst UI = Design\nexport const view = <M>(h: HtmlBuilder<M>): Html => UI['button'](({style:'color:red',children:['Bad']} as any), h)`,
+    ['crease/no-unverifiable-ui'],
+  ],
+  'styled-dynamic-destructuring': [
+    `${header}import * as Design from '@design/button'\nexport const pick = (key: string) => {\n  const { [key as 'button']: picked } = Design\n  return picked\n}`,
+    ['crease/no-unverifiable-ui'],
+  ],
+  'styled-appearance-direct': [
+    `${header}import * as Design from '@design/button'\nexport const view = <M>(h: HtmlBuilder<M>): Html => Design.button({children:['Bad'],triggerClass:'text-red-500'}, h)`,
+    ['crease/component-contract'],
+  ],
+  'styled-appearance-alias': [
+    `${header}import * as Design from '@design/button'\nconst Widgets = Design\nexport const view = <M>(h: HtmlBuilder<M>): Html => Widgets.button({children:['Bad'],triggerClass:'text-red-500'}, h)`,
+    ['crease/component-contract'],
+  ],
+  'styled-alias-approved': [
+    `${header}import * as Design from '@design/button'\nconst UI = Design\nconst { button } = UI\nexport const view = <M>(h: HtmlBuilder<M>): Html => button({children:['Good'],variant:'outline'}, h)`,
+    [],
+  ],
+  'unrelated-object-alias': [
+    "const Design = { button: (props: { style: string }) => props.style }\nconst UI = Design\nconst { button } = UI\nexport const view = () => [UI.button({ style: 'x' }), button({ style: 'y' })]",
+    [],
+  ],
+  'headless-alias': [
+    `${header}import { Dialog } from '@foldkit/ui'\nconst Modal = Dialog\nexport const rawView = Modal.view`,
+    ['crease/no-unapproved-renderer'],
+  ],
+  'headless-destructured': [
+    `${header}import { Dialog } from '@foldkit/ui'\nconst { view } = Dialog\nexport const rawView = view`,
+    ['crease/no-unapproved-renderer'],
+  ],
+  'headless-namespace-barrel': [
+    `${header}import * as Headless from './headless-barrel'\nexport const rawView = Headless.Dialog.view`,
+    ['crease/no-unapproved-renderer'],
+  ],
+  'headless-namespace-barrel-alias': [
+    `${header}import * as Headless from './headless-barrel-two'\nconst UI = Headless\nconst { Dialog } = UI\nexport const rawView = Dialog['view']`,
+    ['crease/no-unapproved-renderer'],
+  ],
+  'headless-alias-messages-legal': [
+    "import { Dialog } from '@foldkit/ui'\nimport * as Headless from './headless-barrel'\nconst Modal = Dialog\nconst { Opened } = Dialog\nexport const opened = [Modal.Opened, Opened, Headless.Dialog.Opened]",
+    [],
+  ],
+  'local-namespace-non-rendering': [
+    "import * as Plain from './plain-values'\nconst Values = Plain\nconst { config } = Values\nexport const layout = [Values.config.view, config.view]",
+    [],
   ],
   'business-class-field': [
     "export const normalizeRecord = (input: { className: string }) => {\n  const record = { ...input }\n  record.className = 'premium'\n  return record\n}",

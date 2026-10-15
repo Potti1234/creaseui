@@ -23,7 +23,7 @@ import {
   isFoldkitUiRenderExport,
   tagCategory,
 } from '../../lib/strict/inventory.js'
-import { createFileAnalysis } from '../../lib/strict/resolver.js'
+import { createFileAnalysis, unwrap } from '../../lib/strict/resolver.js'
 
 const meta = (rule, description) => ({
   type: 'problem',
@@ -138,6 +138,65 @@ export const noUnapprovedRenderer = {
         `\`${record.name}\` is an implementation-only render export of ${record.owner} (${record.contract}); application views must use the public styled component`,
       )
     const camel = name => name.charAt(0).toLowerCase() + name.slice(1)
+    const keyOf = member =>
+      member.computed
+        ? analysis.resolveString(member.property)
+        : member.property.type === 'Identifier'
+          ? member.property.name
+          : null
+    /* Headless origins: a @foldkit/ui module name, '*' for the package
+       namespace, `{ barrel }` for a local namespace import, `{ view }` for
+       an unstyled render export and `{ unresolved }` for an unknown key. */
+    const memberOf = (owner, key) => {
+      if (owner === undefined || owner.view || owner.unresolved)
+        return undefined
+      if (owner === '*') return key === null ? undefined : camel(key)
+      if (typeof owner === 'string') {
+        if (key === null) return { unresolved: true }
+        return isFoldkitUiRenderExport(owner, key) ? { view: true } : undefined
+      }
+      if (key === null || strict === null) return undefined
+      const origin = strict.modules.externalOrigin(owner.barrel, key)
+      const match =
+        origin === null
+          ? null
+          : /^@foldkit\/ui(?:\/([^/]+))?$/u.exec(origin.source)
+      if (match === null) return undefined
+      if (match[1] === undefined) return camel(origin.name)
+      return isFoldkitUiRenderExport(match[1], origin.name)
+        ? { view: true }
+        : undefined
+    }
+    /** Follows immutable aliases, destructuring and constant members. */
+    const headlessOf = (node, depth = 0) => {
+      node = unwrap(node)
+      if (node === null || node === undefined || depth > 12) return undefined
+      if (node.type === 'MemberExpression')
+        return memberOf(headlessOf(node.object, depth + 1), keyOf(node))
+      if (node.type !== 'Identifier') return undefined
+      const variable = analysis.variableOf(node)
+      if (headless.has(variable)) return headless.get(variable)
+      const destructured = index.destructuring(variable)
+      if (destructured !== null)
+        return memberOf(
+          headlessOf(destructured.init, depth + 1),
+          destructured.key,
+        )
+      const init = analysis.constInit(node)
+      return init === null ? undefined : headlessOf(init, depth + 1)
+    }
+    const headlessAccess = (node, outcome) => {
+      if (outcome?.unresolved)
+        report(
+          node,
+          `\`${context.sourceCode.getText(node)}\` reads a headless @foldkit/ui module with a key that cannot be resolved; it could select an unstyled view`,
+        )
+      else if (outcome?.view)
+        report(
+          node,
+          `\`${context.sourceCode.getText(node)}\` is an unstyled headless view; use the installed Crease component that wraps it`,
+        )
+    }
     return {
       ImportDeclaration(node) {
         const source = node.source.value
@@ -178,7 +237,12 @@ export const noUnapprovedRenderer = {
             headlessImport(specifier, source, name)
             continue
           }
-          if (name === '*') continue
+          if (name === '*') {
+            headless.set(analysis.variableOf(specifier.local), {
+              barrel: local,
+            })
+            continue
+          }
           const origin = strict.modules.externalOrigin(local, name)
           if (origin !== null)
             headlessImport(specifier, origin.source, origin.name)
@@ -188,33 +252,24 @@ export const noUnapprovedRenderer = {
         const record = index.memberRecord(node)
         if (record?.visibility === 'implementation')
           implementationOnly(node, record)
-        const keyOf = member =>
-          member.computed
-            ? analysis.resolveString(member.property)
-            : member.property.name
-        let module
-        if (node.object.type === 'Identifier')
-          module = headless.get(analysis.variableOf(node.object))
-        else if (
-          node.object.type === 'MemberExpression' &&
-          node.object.object.type === 'Identifier' &&
-          headless.get(analysis.variableOf(node.object.object)) === '*'
-        ) {
-          const key = keyOf(node.object)
-          module = key === null ? undefined : camel(key)
-        }
-        if (module === undefined || module === '*') return
-        const property = keyOf(node)
-        if (property === null)
-          report(
-            node,
-            `\`${context.sourceCode.getText(node)}\` reads a headless @foldkit/ui module with a key that cannot be resolved; it could select an unstyled view`,
-          )
-        else if (isFoldkitUiRenderExport(module, property))
-          report(
-            node,
-            `\`${context.sourceCode.getText(node)}\` is an unstyled headless view; use the installed Crease component that wraps it`,
-          )
+        headlessAccess(node, headlessOf(node))
+      },
+      Property(node) {
+        const pattern = node.parent
+        const declarator = pattern.parent
+        if (
+          pattern.type !== 'ObjectPattern' ||
+          declarator?.type !== 'VariableDeclarator' ||
+          declarator.id !== pattern ||
+          declarator.init === null
+        )
+          return
+        const key = node.computed
+          ? analysis.resolveString(node.key)
+          : node.key.type === 'Identifier'
+            ? node.key.name
+            : String(node.key.value)
+        headlessAccess(node, memberOf(headlessOf(declarator.init), key))
       },
       Program(node) {
         index.collect(node)
@@ -373,6 +428,18 @@ const contractRule = (rule, kind, description) => ({
             `\`${context.sourceCode.getText(node)}\` selects a component with a key that cannot be resolved; its UI contract cannot be verified.`,
           )
       },
+      Property(node) {
+        if (
+          kind === 'unverifiable' &&
+          node.parent.type === 'ObjectPattern' &&
+          node.value?.type === 'Identifier' &&
+          index.unresolvedDestructuring(node.value)
+        )
+          report(
+            node,
+            `\`${context.sourceCode.getText(node)}\` destructures a component with a key that cannot be resolved; its UI contract cannot be verified.`,
+          )
+      },
       CallExpression(node) {
         const record = index.callRecord(node.callee)
         if (record !== undefined && record.renderKind === 'helper')
@@ -431,6 +498,7 @@ const contractRule = (rule, kind, description) => ({
           )
       },
       Property(node) {
+        handlers.Property(node)
         if (node.parent.type !== 'ObjectPattern') return
         const member = analysis.destructuredMember(node)
         if (member?.rest === true)
