@@ -46,6 +46,31 @@ const exportedFunctions = file => {
     true,
   )
   const names = []
+  const isFunction = node =>
+    node !== undefined &&
+    (ts.isArrowFunction(node) || ts.isFunctionExpression(node))
+  /* Local factories whose result is a function (`slotDiv = (...) => (props, h) => ...`). */
+  const factories = new Set()
+  for (const statement of source.statements) {
+    if (ts.isFunctionDeclaration(statement) && statement.name) {
+      const returned = statement.body?.statements.find(ts.isReturnStatement)
+      if (isFunction(returned?.expression)) factories.add(statement.name.text)
+    }
+    if (ts.isVariableStatement(statement))
+      for (const declaration of statement.declarationList.declarations) {
+        const init = declaration.initializer
+        if (
+          ts.isIdentifier(declaration.name) &&
+          isFunction(init) &&
+          isFunction(
+            ts.isBlock(init.body)
+              ? init.body.statements.find(ts.isReturnStatement)?.expression
+              : init.body,
+          )
+        )
+          factories.add(declaration.name.text)
+      }
+  }
   for (const statement of source.statements) {
     const exported = statement.modifiers?.some(
       modifier => modifier.kind === ts.SyntaxKind.ExportKeyword,
@@ -58,8 +83,10 @@ const exportedFunctions = file => {
         if (
           ts.isIdentifier(declaration.name) &&
           declaration.initializer !== undefined &&
-          (ts.isArrowFunction(declaration.initializer) ||
-            ts.isFunctionExpression(declaration.initializer))
+          (isFunction(declaration.initializer) ||
+            (ts.isCallExpression(declaration.initializer) &&
+              ts.isIdentifier(declaration.initializer.expression) &&
+              factories.has(declaration.initializer.expression.text)))
         )
           names.push(declaration.name.text)
   }
