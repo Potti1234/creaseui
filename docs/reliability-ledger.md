@@ -161,3 +161,19 @@ positive/negative regressions.
 - Audit: focus visibility/return, nested radius fit, per-finding screenshots,
   typography/spacing/copy guidance, non-Chromium hosts.
 - Windows and missing-pnpm consumer paths are not run in CI.
+- Found by the follow-up click-through (base `772144c` vs `c66170d`):
+  - Linked Items outside an ItemGroup now get a `role=listitem` wrapper with no
+    list parent, the same orphan role plain Items already had. Item needs to
+    know whether it sits in a group.
+  - StyleX and Pleat linked Items show no focus ring on Tab; Tailwind shows a
+    3px ring. Same on base.
+  - Pleat Item `size=sm` pads 12px instead of 10px 12px, so it is 4px taller.
+    Same on base.
+  - The Alert warning example uses the foreground colour, not `--warning`.
+  - Nova close buttons on the Create board are all 32x32 on Tailwind but a
+    32/36 mix on StyleX and Pleat.
+  - No `lg` control on the Create board, so Mira's 32px size has no browser
+    check.
+- CI-only: the light Pleat no-preflight screenshot comparison failed both CI
+  attempts on `c66170d` and passed on retry on `c3a805a`. Locally it passes
+  (6/6 with `--repeat-each 3`). Cause unknown.
