@@ -272,8 +272,22 @@ const doctor = async values => {
           `${relative} renders UI but is not covered by ${missing.join(', ')}`,
         )
       }
-    } else if (owned.rawRendering && !active('component-contract'))
-      fail(`${relative} (registered ${owned.role}) lost component-contract`)
+    } else {
+      if (owned.rawRendering && !active('component-contract'))
+        fail(`${relative} (registered ${owned.role}) lost component-contract`)
+      if (owned.role === 'renderer' && rendersHtml(file)) {
+        const registered = strict.ownership.exportsOf(file)
+        for (const name of exportedFunctions(file).filter(
+          name => !/(?:Variants?|variants)$/u.test(name),
+        ))
+          if (registered?.get(name) === undefined) {
+            uncovered += 1
+            fail(
+              `${relative}: rendering export \`${name}\` has no contract in the manifest`,
+            )
+          }
+      }
+    }
     const text = readFileSync(file, 'utf8')
     for (const match of text.matchAll(
       /eslint-disable(?:-next-line|-line)?\s+([^\n*]*crease\/[^\n*]*)/gu,
