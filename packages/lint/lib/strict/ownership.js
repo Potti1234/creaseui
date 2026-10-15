@@ -406,6 +406,48 @@ export const createModuleResolver = ({ rootDir, tsconfig }) => {
     return { file, name }
   }
 
+  /** File that `export * as name from` exposes from `file` (directly or via
+      named/star re-exports), or null. */
+  const namespaceExport = (file, name, seen = new Set()) => {
+    const key = `${file}#${name}`
+    if (seen.has(key) || seen.size > 50) return null
+    seen.add(key)
+    const sourceFile = parse(file)
+    if (sourceFile === null) return null
+    const stars = []
+    for (const statement of sourceFile.statements) {
+      if (!ts.isExportDeclaration(statement)) continue
+      const target =
+        statement.moduleSpecifier !== undefined &&
+        ts.isStringLiteral(statement.moduleSpecifier)
+          ? statement.moduleSpecifier.text
+          : undefined
+      if (target === undefined) continue
+      const clause = statement.exportClause
+      if (clause === undefined) stars.push(target)
+      else if (ts.isNamespaceExport(clause) && clause.name.text === name)
+        return resolve(target, file)
+      else if (ts.isNamedExports(clause))
+        for (const element of clause.elements)
+          if (element.name.text === name) {
+            const next = resolve(target, file)
+            return next === null
+              ? null
+              : namespaceExport(
+                  next,
+                  element.propertyName?.text ?? element.name.text,
+                  seen,
+                )
+          }
+    }
+    for (const target of stars) {
+      const next = resolve(target, file)
+      const found = next === null ? null : namespaceExport(next, name, seen)
+      if (found !== null) return found
+    }
+    return null
+  }
+
   /** Bare-package origin (`{ source, name }`) that a local barrel re-exports
       `name` from, following named, star and import-then-export chains. */
   const externalOrigin = (file, name, seen = new Set()) => {
@@ -498,5 +540,5 @@ export const createModuleResolver = ({ rootDir, tsconfig }) => {
     })
   }
 
-  return { exportOrigin, externalOrigin, resolve }
+  return { exportOrigin, externalOrigin, namespaceExport, resolve }
 }

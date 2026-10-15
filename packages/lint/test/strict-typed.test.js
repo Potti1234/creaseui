@@ -29,6 +29,10 @@ const support = {
   'headless-renamed':
     "import { Dialog as D } from '@foldkit/ui'\nexport { D as Modal }\n",
   'plain-values': "export const config = { view: 'grid' }\n",
+  'design-namespace': "export * as Button from '@design/button'\n",
+  'design-namespace-two':
+    "export { Button as Action } from './design-namespace'\n",
+  'plain-namespace': "export * as Values from './plain-values'\n",
 }
 
 const cases = {
@@ -150,6 +154,26 @@ const cases = {
   ],
   'local-namespace-non-rendering': [
     "import * as Plain from './plain-values'\nconst Values = Plain\nconst { config } = Values\nexport const layout = [Values.config.view, config.view]",
+    [],
+  ],
+  'styled-namespace-export-named': [
+    `${header}import { Button } from './design-namespace'\nexport const view = (h: HtmlBuilder<unknown>): Html => Button.button({ children: ['Bad'], triggerClass: 'text-red-500' }, h)`,
+    ['crease/component-contract'],
+  ],
+  'styled-namespace-export-namespace': [
+    `${header}import * as Design from './design-namespace'\nexport const view = (h: HtmlBuilder<unknown>): Html => Design.Button.button({ children: ['Bad'], triggerClass: 'text-red-500' }, h)`,
+    ['crease/component-contract'],
+  ],
+  'styled-namespace-export-renamed': [
+    `${header}import { Action } from './design-namespace-two'\nconst { button } = Action\nexport const view = (h: HtmlBuilder<unknown>): Html => button({ children: ['Bad'], triggerClass: 'text-red-500' }, h)`,
+    ['crease/component-contract'],
+  ],
+  'styled-namespace-export-approved': [
+    `${header}import { Button } from './design-namespace'\nexport const view = (h: HtmlBuilder<unknown>): Html => Button.button({ children: ['Good'], variant: 'outline' }, h)`,
+    [],
+  ],
+  'plain-namespace-export': [
+    "import { Values } from './plain-namespace'\nexport const layout = Values.config.view",
     [],
   ],
   'business-class-field': [

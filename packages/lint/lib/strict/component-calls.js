@@ -43,7 +43,10 @@ export const createComponentIndex = (context, strict, analysis) => {
         if (record !== undefined) {
           bindings.set(variable, { record })
           imports.push({ record, specifier })
+          continue
         }
+        const namespace = strict.modules.namespaceExport(file, name)
+        if (namespace !== null) bindings.set(variable, { namespace })
       }
     }
   }
@@ -61,6 +64,14 @@ export const createComponentIndex = (context, strict, analysis) => {
       : member.property.type === 'Identifier'
         ? member.property.name
         : null
+
+  /** Origin of `Ns.name`: an export record or a nested `export * as` namespace. */
+  const memberOrigin = (namespace, name) => {
+    const record = recordAt(namespace, name)
+    if (record !== undefined) return { record }
+    const nested = strict.modules.namespaceExport(namespace, name)
+    return nested === null ? undefined : { namespace: nested }
+  }
 
   /** `const { a: b } = init` binding of a variable: `{ init, key }`, with
       `key: null` when the property cannot be resolved statically. */
@@ -103,8 +114,7 @@ export const createComponentIndex = (context, strict, analysis) => {
         const namespace = originOf(destructured.init, depth + 1)?.namespace
         if (namespace === undefined) return undefined
         if (destructured.key === null) return { unresolved: true }
-        const record = recordAt(namespace, destructured.key)
-        return record === undefined ? undefined : { record }
+        return memberOrigin(namespace, destructured.key)
       }
       const init = analysis.constInit(node)
       return init === null ? undefined : originOf(init, depth + 1)
@@ -114,8 +124,7 @@ export const createComponentIndex = (context, strict, analysis) => {
       if (namespace === undefined) return undefined
       const name = keyOf(node)
       if (name === null) return { unresolved: true }
-      const record = recordAt(namespace, name)
-      return record === undefined ? undefined : { record }
+      return memberOrigin(namespace, name)
     }
     return undefined
   }
