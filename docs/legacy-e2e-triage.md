@@ -59,6 +59,8 @@ On `166872e`: 285 passed, 1 failed (15.2 min). The failure was `site: tokenizer 
 
 On the `7217fdc` CI run (2 workers), two heavy multi-section tests hit the 30s default timeout on both the first attempt and the retry: `message scroller covers every upstream core-concept section` (stopped at the msg-8 jump poll) and `flagship documentation pages have no automated accessibility violations` (Axe on 4 routes). Both passed on the `c69de52` CI run, and their code didn't change between the two commits. Locally each takes about 16s. They now set `test.setTimeout(90000)`, as the other multi-section tests in `site.spec.ts` already do. No assertions changed. The same run's `drawer documents its child model` failed once with `session closed` and passed on retry.
 
+The `f979899` CI run then timed out `drawer documents its child model` (both attempts) and `stylex header search covers every documentation page` (passed on retry), again at the 30s default. A full local 2-worker run with a JSON reporter passed 286/286. Eighteen tests took more than 15s, and the drawer test took 20.7s (24.7s alone). CI runs this suite about 1.7× slower (25.9m vs. about 15m). The legacy config now uses `timeout: 60_000`, the same as `playwright.sites.config.ts`. Expect timeouts are still 5s, and tests that already set longer timeouts keep them.
+
 ## Remaining
 
 None.
