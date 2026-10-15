@@ -162,9 +162,8 @@ positive/negative regressions.
   typography/spacing/copy guidance, non-Chromium hosts.
 - Windows and missing-pnpm consumer paths are not run in CI.
 - Found by the follow-up click-through (base `772144c` vs `c66170d`):
-  - Linked Items outside an ItemGroup now get a `role=listitem` wrapper with no
-    list parent, the same orphan role plain Items already had. Item needs to
-    know whether it sits in a group.
+  - ~~Linked Items outside an ItemGroup get an orphan `role=listitem`
+    wrapper~~ fixed in R3-F5 below.
   - StyleX and Pleat linked Items show no focus ring on Tab; Tailwind shows a
     3px ring. Same on base.
   - Pleat Item `size=sm` pads 12px instead of 10px 12px, so it is 4px taller.
@@ -177,3 +176,20 @@ positive/negative regressions.
 - CI-only: the light Pleat no-preflight screenshot comparison failed both CI
   attempts on `c66170d` and passed on retry on `c3a805a`. Locally it passes
   (6/6 with `--repeat-each 3`). Cause unknown.
+
+## PR 28 latest repair (2026-10-15)
+
+Source: [latest repair review](reviews/pr-28-latest-repair-review.md). Every
+negative probe below fails on the code before its fix.
+
+| Finding                                           | Fix                                                                                                                                                                                                                                                          | Evidence                                                                                                                                                                                                                                                                                         |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| F1 origin lost through `export * as X from`       | `ownership.js` `namespaceTarget` follows `export * as` through named and star re-exports; styled calls (`Button.button`, `Design.Button.button`, renamed members) and headless views (`UI.Dialog.view`, `const { Dialog } = Design.UI`) resolve through it   | `strict-typed.test.js`: 3 styled + 2 headless namespace-export probes fail on old code; approved calls, `UI.Dialog.Opened` and non-rendering namespaces stay clean                                                                                                                               |
+| F2 factory-created exports had no contract        | `init` registers exports built by local factories (`export const cardHeader = slotDiv(...)`); `doctor` reports any rendering export without a manifest contract                                                                                              | `test:strict-consumers`: doctor reports 0 uncovered modules and every contracted public export rejects an ad hoc class, 3 renderers                                                                                                                                                              |
+| F3 theme grammar gaps                             | Legacy comma `rgb()` cannot mix numbers and percentages, legacy `hsl()` needs percentage saturation/lightness, `color-mix()` rejects two 0% weights, `calc()` `+`/`-` need whitespace on both sides                                                          | `test/theme-roles.test.ts` plus `test/theme-grammar-browser.test.ts`, which checks the validator against Chromium `CSS.supports` (25/25)                                                                                                                                                         |
+| F4 `button({ class: 'h-3' })` was lint-clean      | Controls with named sizes reject `h-*`, `min-h-*`, `max-h-*` and `size-*` classes (any variant) and `height`/`minHeight`/`maxHeight`/block-size keys in `layoutStyle`; width and parent placement (`w-full self-end`) stay valid. Label and Field are exempt | `strict-typed.test.js`: Tailwind `h-3`, `md:size-4` and StyleX/Pleat `layoutStyle({ height })` fail on old code; `w-full self-end` and width-only layoutStyle stay clean. The 12px rendered height is the review's measurement; lint now blocks it, so no new browser geometry test              |
+| F5 standalone linked Item had an orphan list item | ItemGroup wraps each child in `<div role="listitem" data-slot="item-listitem">` with `display: contents`; Item itself carries no list role in any renderer                                                                                                   | `e2e/sites/item-group.spec.ts` (3 sites: every group child is a contents wrapper, standalone Items have no role or list ancestor, Axe list rules on `main`) and reliability fixture standalone plain + linked Items (Axe, focus, Enter), 3 renderers, plus existing linked/ordinary/mixed groups |
+
+Known limit: an ItemSeparator inside an ItemGroup is also wrapped, so it
+counts as an (empty) list item for screen readers. Html children are opaque,
+so ItemGroup cannot tell separators apart.
