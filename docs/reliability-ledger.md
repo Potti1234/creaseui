@@ -173,9 +173,15 @@ positive/negative regressions.
     32/36 mix on StyleX and Pleat.
   - No `lg` control on the Create board, so Mira's 32px size has no browser
     check.
-- CI-only: the light Pleat no-preflight screenshot comparison failed both CI
-  attempts on `c66170d` and passed on retry on `c3a805a`. Locally it passes
-  (6/6 with `--repeat-each 3`). Cause unknown.
+- Fixed: the CI-only light Pleat no-preflight screenshot failure. The test
+  now reports the changed region: 2 pixels at (71, 665-666), the left edge of
+  the first glyph of the "Text as a heading" H2, at the open-menu step. On CI
+  an empty `@layer base {}` stylesheet changes exactly the same 2 pixels, so
+  the cause is the repaint from inserting any stylesheet on CI's software
+  rasterizer, not preflight. The comparison now uses an empty-stylesheet
+  screenshot as the control. Computed styles are now compared document-wide,
+  so portaled menus and dialogs are covered, and font properties are included.
+  Passing on `bfb3a6f` with no retries.
 
 ## PR 28 latest repair (2026-10-15)
 
