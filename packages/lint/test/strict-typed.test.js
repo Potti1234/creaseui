@@ -176,6 +176,26 @@ const cases = {
     "import { Values } from './plain-namespace'\nexport const layout = Values.config.view",
     [],
   ],
+  'tailwind-control-height-override': [
+    `${header}import { button } from '@design/button'\nexport const view = (h: HtmlBuilder<unknown>): Html => button({ children: ['Squashed'], class: 'h-3' }, h)`,
+    ['crease/component-contract'],
+  ],
+  'tailwind-control-size-override': [
+    `${header}import { button } from '@design/button'\nexport const view = (h: HtmlBuilder<unknown>): Html => button({ children: ['Squashed'], class: 'md:size-4' }, h)`,
+    ['crease/component-contract'],
+  ],
+  'tailwind-control-placement': [
+    `${header}import { button } from '@design/button'\nexport const view = (h: HtmlBuilder<unknown>): Html => button({ children: ['Wide'], class: 'w-full self-end' }, h)`,
+    [],
+  ],
+  'styled-control-layout-height': [
+    `${header}import { button } from '@design/button'\nimport { layoutStyle } from '@design/contracts'\nexport const view = (h: HtmlBuilder<unknown>): Html => button({ children: ['Squashed'], layoutStyle: layoutStyle({ height: '12px' }) }, h)`,
+    ['crease/component-contract'],
+  ],
+  'styled-control-layout-width': [
+    `${header}import { button } from '@design/button'\nimport { layoutStyle } from '@design/contracts'\nexport const view = (h: HtmlBuilder<unknown>): Html => button({ children: ['Wide'], layoutStyle: layoutStyle({ width: '100%' }) }, h)`,
+    [],
+  ],
   'business-class-field': [
     "export const normalizeRecord = (input: { className: string }) => {\n  const record = { ...input }\n  record.className = 'premium'\n  return record\n}",
     [],
@@ -223,18 +243,51 @@ const cases = {
   ],
 }
 
+const tailwindRoot = `${root}-tailwind`
 let results
 before(async () => {
   fs.cpSync(fixture, root, { recursive: true })
   const probes = path.join(root, 'src/probes')
   fs.mkdirSync(probes, { recursive: true })
+  /* Tailwind cases need their own manifest: the lock pins one renderer. */
+  fs.cpSync(fixture, tailwindRoot, { recursive: true })
+  const lock = path.join(tailwindRoot, 'crease.lock.json')
+  fs.writeFileSync(
+    lock,
+    JSON.stringify(
+      { ...JSON.parse(fs.readFileSync(lock, 'utf8')), renderer: 'tailwind' },
+      null,
+      2,
+    ),
+  )
+  const tailwindProbes = path.join(tailwindRoot, 'src/probes-tailwind')
+  fs.mkdirSync(tailwindProbes, { recursive: true })
   for (const [name, code] of Object.entries({
     ...support,
     ...Object.fromEntries(
       Object.entries(cases).map(([k, [code]]) => [k, code]),
     ),
   }))
-    fs.writeFileSync(path.join(probes, `${name}.ts`), `${code}\n`)
+    fs.writeFileSync(
+      name.startsWith('tailwind-')
+        ? path.join(tailwindProbes, `${name}.ts`)
+        : path.join(probes, `${name}.ts`),
+      `${code}\n`,
+    )
+  const lint = async (renderer, files) =>
+    (
+      await new ESLint({
+        cwd: tailwindRoot,
+        overrideConfig: creaseui({
+          files: [files],
+          renderer,
+          rootDir: tailwindRoot,
+          tsconfig: './tsconfig.json',
+        }),
+        overrideConfigFile: true,
+      }).lintFiles([files])
+    ).map(result => [path.basename(result.filePath, '.ts'), result.messages])
+  const tailwind = await lint('tailwind', 'src/probes-tailwind/*.ts')
   const eslint = new ESLint({
     cwd: root,
     overrideConfig: creaseui({
@@ -245,14 +298,18 @@ before(async () => {
     }),
     overrideConfigFile: true,
   })
-  results = new Map(
-    (await eslint.lintFiles(['src/probes/*.ts'])).map(result => [
+  results = new Map([
+    ...(await eslint.lintFiles(['src/probes/*.ts'])).map(result => [
       path.basename(result.filePath, '.ts'),
       result.messages,
     ]),
-  )
+    ...tailwind,
+  ])
 })
-after(() => fs.rmSync(root, { force: true, recursive: true }))
+after(() => {
+  fs.rmSync(root, { force: true, recursive: true })
+  fs.rmSync(tailwindRoot, { force: true, recursive: true })
+})
 
 for (const [name, [, expected]] of Object.entries(cases))
   test(`typed strict probe: ${name}`, () => {

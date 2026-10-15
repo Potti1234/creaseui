@@ -144,6 +144,24 @@ export const isPlacementUtility = token => {
   return new RegExp(`^(?:${PLACEMENT_UTILITY.source})$`, 'u').test(bare)
 }
 
+/* Controls with named sizes own their block size; parents may only stretch
+   or place them (w-full, self-end, flex-1...). */
+const GEOMETRY_FREE_CONTROLS = new Set(['control.label', 'control.field'])
+export const ownsGeometry = contract =>
+  typeof contract === 'string' &&
+  contract.startsWith('control.') &&
+  !GEOMETRY_FREE_CONTROLS.has(contract)
+export const OWNED_GEOMETRY_PROPERTIES = new Set([
+  'height',
+  'minHeight',
+  'maxHeight',
+  'blockSize',
+  'minBlockSize',
+  'maxBlockSize',
+])
+export const isOwnedGeometryUtility = token =>
+  /^(?:(?:min-|max-)?h|size)-/u.test(token.replace(VARIANT_PREFIX, ''))
+
 export const CLASS_HELPER_PACKAGES = [
   /^clsx$/u,
   /^classnames$/u,

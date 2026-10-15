@@ -6,6 +6,9 @@ import {
   isAppearanceSlot,
   isLayoutSlot,
   isPlacementUtility,
+  isOwnedGeometryUtility,
+  ownsGeometry,
+  OWNED_GEOMETRY_PROPERTIES,
 } from './contracts.js'
 import { isAssertion, unwrap } from './resolver.js'
 
@@ -321,6 +324,14 @@ export const analyzeCall = ({ analysis, call, context, record, strict }) => {
             property.key,
             `A computed placement property cannot be resolved.`,
           )
+        else if (
+          ownsGeometry(record.contract) &&
+          OWNED_GEOMETRY_PROPERTIES.has(key)
+        )
+          violation(
+            property,
+            `\`${key}\` overrides the named size of ${label(record)}; use its \`size\` option.`,
+          )
         else if (!LAYOUT_PROPERTIES.has(key))
           violation(
             property,
@@ -410,6 +421,16 @@ export const analyzeCall = ({ analysis, call, context, record, strict }) => {
         const appearance = tokens
           .flatMap(token => token.trim().split(/\s+/u))
           .filter(token => token !== '' && !isPlacementUtility(token))
+        const geometry = ownsGeometry(record.contract)
+          ? tokens
+              .flatMap(token => token.trim().split(/\s+/u))
+              .filter(token => isOwnedGeometryUtility(token))
+          : []
+        if (geometry.length > 0)
+          violation(
+            value,
+            `\`${geometry.join(' ')}\` overrides the named size of ${label(record)}; use its \`size\` option.`,
+          )
         if (appearance.length > 0)
           violation(
             value,
