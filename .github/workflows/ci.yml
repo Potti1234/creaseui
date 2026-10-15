@@ -64,6 +64,9 @@ jobs:
       - name: Run rendered audit fixtures
         run: npm run test:lint-audit
 
+      - name: Theme grammar browser oracle
+        run: node scripts/run-unit-tests.mjs test/theme-grammar-browser.test.ts
+
       - name: Build site
         run: npm run build
 

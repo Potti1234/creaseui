@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { existsSync } from 'node:fs'
 import { after, before, describe, it } from 'node:test'
 
 import { chromium, type Browser } from '@playwright/test'
@@ -32,13 +33,17 @@ const accepted = (role: 'primary' | 'radius', value: string): boolean =>
     { partial: true },
   ).length === 0
 
-describe('theme grammar agrees with the browser', () => {
+const skip = existsSync(chromium.executablePath())
+  ? false
+  : 'Chromium is not installed (run `npx playwright install chromium`)'
+
+describe('theme grammar agrees with the browser', { skip }, () => {
   let browser: Browser
   before(async () => {
-    browser = await chromium.launch()
+    if (skip === false) browser = await chromium.launch()
   })
   after(async () => {
-    await browser.close()
+    await browser?.close()
   })
 
   for (const [role, value, valid] of CASES)
