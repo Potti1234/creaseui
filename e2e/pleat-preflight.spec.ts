@@ -120,6 +120,51 @@ test.describe('Pleat without preflight', () => {
     throw new Error('The page did not settle between screenshots')
   }
 
+  // Names the changed region so a CI-only mismatch is diagnosable from the log.
+  const describeDifference = (page: Page, before: Buffer, after: Buffer) =>
+    page.evaluate(
+      async ([before, after]) => {
+        const pixels = async (base64: string) => {
+          const response = await fetch(`data:image/png;base64,${base64}`)
+          const bitmap = await createImageBitmap(await response.blob())
+          const canvas = new OffscreenCanvas(bitmap.width, bitmap.height)
+          const context = canvas.getContext('2d')!
+          context.drawImage(bitmap, 0, 0)
+          return context.getImageData(0, 0, bitmap.width, bitmap.height)
+        }
+        const [a, b] = await Promise.all([pixels(before!), pixels(after!)])
+        let [left, top, right, bottom, count] = [Infinity, Infinity, -1, -1, 0]
+        for (let index = 0; index < a.data.length; index += 4) {
+          if (
+            a.data[index] === b.data[index] &&
+            a.data[index + 1] === b.data[index + 1] &&
+            a.data[index + 2] === b.data[index + 2] &&
+            a.data[index + 3] === b.data[index + 3]
+          )
+            continue
+          const x = (index / 4) % a.width
+          const y = Math.floor(index / 4 / a.width)
+          count += 1
+          left = Math.min(left, x)
+          top = Math.min(top, y)
+          right = Math.max(right, x)
+          bottom = Math.max(bottom, y)
+        }
+        const element = document.elementFromPoint(
+          (left + right) / 2,
+          (top + bottom) / 2,
+        )
+        return {
+          changedPixels: count,
+          box: { left, top, right, bottom },
+          element: element
+            ? `${element.tagName}[${element.closest('[data-slot]')?.getAttribute('data-slot') ?? ''}] ${element.textContent?.trim().slice(0, 40) ?? ''}`
+            : null,
+        }
+      },
+      [before.toString('base64'), after.toString('base64')] as const,
+    )
+
   const expectIndependent = async (page: Page) => {
     // Moving off controls avoids a test-dependent hover style.
     await page.mouse.move(1200, 900)
@@ -138,10 +183,10 @@ test.describe('Pleat without preflight', () => {
       contentType: 'image/png',
     })
     await expect.poll(() => snapshot(page)).toEqual(without)
-    expect(
-      screenshotWith.equals(screenshotWithout),
-      'Preflight must not change the screenshot',
-    ).toBe(true)
+    const difference = screenshotWith.equals(screenshotWithout)
+      ? null
+      : await describeDifference(page, screenshotWithout, screenshotWith)
+    expect(difference, 'Preflight must not change the screenshot').toBeNull()
     await sheet.evaluate(element => element.remove())
   }
 
