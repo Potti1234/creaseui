@@ -56,7 +56,6 @@ export const item = <Msg>(props: ItemProps, h: HtmlBuilder<Msg>): Html => {
   const size = props.size ?? 'default'
 
   const attributes = [
-    ...(props.element === 'a' ? [] : [h.Role('listitem')]),
     h.DataAttribute('slot', 'item'),
     h.DataAttribute('variant', variant),
     h.DataAttribute('size', size),
@@ -70,27 +69,16 @@ export const item = <Msg>(props: ItemProps, h: HtmlBuilder<Msg>): Html => {
     case 'article':
       return h.article(attributes, children)
     case 'a':
-      // The link keeps its native role inside a list-item wrapper that
-      // does not take part in layout.
-      return h.div(
+      return h.a(
         [
-          h.Role('listitem'),
-          h.DataAttribute('slot', 'item-listitem'),
-          h.Class('contents'),
+          ...attributes,
+          h.Href(props.href ?? '#'),
+          ...(props.target === undefined
+            ? []
+            : [h.Attribute('target', props.target)]),
+          ...(props.rel === undefined ? [] : [h.Rel(props.rel)]),
         ],
-        [
-          h.a(
-            [
-              ...attributes,
-              h.Href(props.href ?? '#'),
-              ...(props.target === undefined
-                ? []
-                : [h.Attribute('target', props.target)]),
-              ...(props.rel === undefined ? [] : [h.Rel(props.rel)]),
-            ],
-            children,
-          ),
-        ],
+        children,
       )
     default:
       return h.div(attributes, children)
@@ -185,7 +173,16 @@ export const itemGroup = <Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html => {
       h.DataAttribute('slot', 'item-group'),
       h.Class(cn('group/item-group flex flex-col', props.class)),
     ],
-    [...props.children],
+    [...props.children].map(child =>
+      h.div(
+        [
+          h.Role('listitem'),
+          h.DataAttribute('slot', 'item-listitem'),
+          h.Class('contents'),
+        ],
+        [child],
+      ),
+    ),
   )
 }
 

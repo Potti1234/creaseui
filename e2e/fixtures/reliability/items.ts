@@ -57,40 +57,79 @@ type Model = typeof Model.Type
 const Message = defineMessageUnion({ Noop: {} })
 type Message = typeof Message.Type
 
+/* Items outside an ItemGroup keep their native element semantics. */
+const standaloneItems = (kit: ItemsKit, h: HtmlBuilder<Message>): Html =>
+  h.div(
+    [h.Id('items-standalone')],
+    [
+      kit.item(
+        {
+          variant: 'outline',
+          children: [
+            kit.itemContent(
+              { children: [kit.itemTitle({ children: ['Plain'] }, h)] },
+              h,
+            ),
+          ],
+        },
+        h,
+      ),
+      kit.item(
+        {
+          variant: 'outline',
+          element: 'a',
+          href: '#standalone',
+          children: [
+            kit.itemContent(
+              { children: [kit.itemTitle({ children: ['Linked'] }, h)] },
+              h,
+            ),
+          ],
+        },
+        h,
+      ),
+    ],
+  )
+
 const view =
   (kit: ItemsKit) =>
   (_model: Model, h: HtmlBuilder<Message>): Html =>
     h.section(
       [h.Id('items')],
-      GROUPS.map(({ id, entries }) =>
-        h.div(
-          [h.Id(id)],
-          [
-            kit.itemGroup(
-              {
-                children: entries.map(({ title, href }) =>
-                  kit.item(
-                    {
-                      variant: 'outline',
-                      ...(href === undefined ? {} : { element: 'a', href }),
-                      children: [
-                        kit.itemContent(
-                          {
-                            children: [kit.itemTitle({ children: [title] }, h)],
-                          },
-                          h,
-                        ),
-                      ],
-                    },
-                    h,
+      [
+        ...GROUPS.map(({ id, entries }) =>
+          h.div(
+            [h.Id(id)],
+            [
+              kit.itemGroup(
+                {
+                  children: entries.map(({ title, href }) =>
+                    kit.item(
+                      {
+                        variant: 'outline',
+                        ...(href === undefined ? {} : { element: 'a', href }),
+                        children: [
+                          kit.itemContent(
+                            {
+                              children: [
+                                kit.itemTitle({ children: [title] }, h),
+                              ],
+                            },
+                            h,
+                          ),
+                        ],
+                      },
+                      h,
+                    ),
                   ),
-                ),
-              },
-              h,
-            ),
-          ],
+                },
+                h,
+              ),
+            ],
+          ),
         ),
-      ),
+        standaloneItems(kit, h),
+      ],
     )
 
 export const runItemGroups = (kit: ItemsKit) =>

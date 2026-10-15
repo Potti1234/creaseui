@@ -168,7 +168,6 @@ export const item = <Msg>(p: ItemProps, h: HtmlBuilder<Msg>): Html => {
   const variant = p.variant ?? 'default',
     size = p.size ?? 'default',
     attrs = [
-      ...(p.element === 'a' ? [] : [h.Role('listitem')]),
       h.DataAttribute('slot', 'item'),
       h.DataAttribute('variant', variant),
       h.DataAttribute('size', size),
@@ -192,28 +191,17 @@ export const item = <Msg>(p: ItemProps, h: HtmlBuilder<Msg>): Html => {
     : p.element === 'article'
       ? h.article(attrs, children)
       : p.element === 'a'
-        ? // The link keeps its native role inside a list-item wrapper that
-          // does not take part in layout.
-          h.div(
+        ? h.a(
             [
-              h.Role('listitem'),
-              h.DataAttribute('slot', 'item-listitem'),
-              h.Class(className(styles.listItem)),
+              h.Class(className(reset.link)),
+              ...attrs,
+              h.Href(p.href ?? '#'),
+              ...(p.target === undefined
+                ? []
+                : [h.Attribute('target', p.target)]),
+              ...(p.rel === undefined ? [] : [h.Rel(p.rel)]),
             ],
-            [
-              h.a(
-                [
-                  h.Class(className(reset.link)),
-                  ...attrs,
-                  h.Href(p.href ?? '#'),
-                  ...(p.target === undefined
-                    ? []
-                    : [h.Attribute('target', p.target)]),
-                  ...(p.rel === undefined ? [] : [h.Rel(p.rel)]),
-                ],
-                children,
-              ),
-            ],
+            children,
           )
         : h.div(attrs, children)
 }
@@ -293,7 +281,16 @@ export const itemGroup = <Msg>(p: ItemGroupProps, h: HtmlBuilder<Msg>): Html =>
         ),
       ),
     ],
-    [...p.children],
+    [...p.children].map(child =>
+      h.div(
+        [
+          h.Role('listitem'),
+          h.DataAttribute('slot', 'item-listitem'),
+          h.Class(className(styles.listItem)),
+        ],
+        [child],
+      ),
+    ),
   )
 export type ItemSeparatorProps = Readonly<{
   layoutStyle?: ComponentLayoutStyle | undefined

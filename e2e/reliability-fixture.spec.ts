@@ -327,6 +327,27 @@ test.describe('shared mixed-form fixture', () => {
     })
 
   for (const renderer of RENDERERS)
+    test(`${renderer}: standalone items keep native semantics`, async ({
+      page,
+    }) => {
+      await page.goto(servers.get(renderer)!.resolvedUrls!.local[0]!)
+      const standalone = page.locator('#items-standalone')
+      await expect(standalone.locator('[data-slot="item"]')).toHaveCount(2)
+      await expect(standalone.locator('[role]')).toHaveCount(0)
+      await expect(standalone.getByRole('link')).toHaveCount(1)
+      const results = await new AxeBuilder({ page })
+        .include('#items-standalone')
+        .withRules(['aria-required-parent', 'listitem'])
+        .analyze()
+      expect(results.violations).toEqual([])
+      const link = standalone.getByRole('link')
+      await link.focus()
+      await expect(link).toBeFocused()
+      await link.press('Enter')
+      await expect(page).toHaveURL(/#standalone$/)
+    })
+
+  for (const renderer of RENDERERS)
     test(`${renderer}: linked, ordinary and mixed item groups keep list and link semantics`, async ({
       page,
     }) => {
