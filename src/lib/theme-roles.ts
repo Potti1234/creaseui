@@ -274,7 +274,7 @@ type Token =
   | Readonly<{ type: 'number'; value: number; unit: string; text: string }>
   | Readonly<{ type: 'ident'; text: string }>
   | Readonly<{ type: 'hash'; text: string }>
-  | Readonly<{ type: 'delim'; text: string }>
+  | Readonly<{ type: 'delim'; text: string; spaced: boolean }>
   | Readonly<{
       type: 'function'
       name: string
@@ -352,8 +352,11 @@ const tokenize = (input: string): ReadonlyArray<Token> => {
         continue
       }
       if (',/*+-'.includes(character)) {
+        const spaced =
+          /\s/.test(input.charAt(index - 1)) &&
+          /\s/.test(input.charAt(index + 1))
         index += 1
-        tokens.push({ type: 'delim', text: character })
+        tokens.push({ type: 'delim', text: character, spaced })
         continue
       }
       fail(`unexpected ${JSON.stringify(character)} in ${input}`)
@@ -451,6 +454,8 @@ const mathType = (
     const next = tokens[index]
     if (next?.type !== 'delim' || (next.text !== '+' && next.text !== '-'))
       fail(`unexpected ${next?.text ?? ''} in ${textOf(tokens)}`)
+    if (next?.type === 'delim' && !next.spaced)
+      fail(`${next.text} needs whitespace on both sides in ${textOf(tokens)}`)
     const [right, after] = product(index + 1)
     if (right !== type)
       fail(`cannot add a ${type} and a ${right} in ${textOf(tokens)}`)
@@ -529,6 +534,32 @@ const channels = (
       if (part.length !== 1) fail(`malformed channel in ${token.text}`)
       channel(part[0], spec[index] ?? AMOUNT, token.text)
     })
+    const kinds = legacy
+      .slice(0, 3)
+      .map(([part]) =>
+        part?.type === 'number'
+          ? part.unit === '%'
+            ? 'percent'
+            : part.unit
+          : part?.type,
+      )
+    if (kinds.includes('ident'))
+      fail(`none is not allowed in legacy ${token.name}() in ${token.text}`)
+    if (
+      token.name.startsWith('rgb') &&
+      kinds.includes('percent') &&
+      kinds.includes('')
+    )
+      fail(
+        `legacy ${token.name}() cannot mix numbers and percentages in ${token.text}`,
+      )
+    if (
+      token.name.startsWith('hsl') &&
+      (kinds[1] !== 'percent' || kinds[2] !== 'percent')
+    )
+      fail(
+        `legacy ${token.name}() needs percentage saturation and lightness in ${token.text}`,
+      )
     return
   }
   const [values = [], alpha, ...extra] = splitBy(token.body, '/')
@@ -598,6 +629,7 @@ const color = (
     }
     if (mixed.length !== 2)
       fail(`color-mix() needs two colors in ${token.text}`)
+    const weights: Array<number> = []
     for (const part of mixed) {
       const percentages = part.filter(
         item => item.type === 'number' && item.unit === '%',
@@ -610,11 +642,15 @@ const color = (
           (percentage.value < 0 || percentage.value > 100)
         )
           fail(`percentage out of range in ${token.text}`)
+      for (const percentage of percentages)
+        if (percentage.type === 'number') weights.push(percentage.value)
       color(
         part.filter(item => !percentages.includes(item)),
         references,
       )
     }
+    if (weights.length === 2 && weights[0] === 0 && weights[1] === 0)
+      fail(`color-mix() weights cannot both be 0% in ${token.text}`)
     return
   }
   return fail(`unsupported function ${token.name}() in ${token.text}`)
