@@ -86,6 +86,12 @@ test.describe('Pleat without preflight', () => {
         'text-align',
         'white-space',
         'outline-style',
+        'font-feature-settings',
+        'font-variation-settings',
+        'font-kerning',
+        'font-style',
+        'text-rendering',
+        'text-wrap-mode',
         'list-style-type',
         'text-decoration-line',
         'opacity',
@@ -168,7 +174,20 @@ test.describe('Pleat without preflight', () => {
   const expectIndependent = async (page: Page) => {
     // Moving off controls avoids a test-dependent hover style.
     await page.mouse.move(1200, 900)
+    const untouched = await settledScreenshot(page)
+    /* Inserting any stylesheet repaints the page, and on CI's software
+       rasterizer that repaint alone can move a glyph-edge pixel. An empty
+       sheet is the control, so only preflight's own effect is compared. */
+    const control = await page.addStyleTag({ content: '@layer base {}' })
     const screenshotWithout = await settledScreenshot(page)
+    await control.evaluate(element => element.remove())
+    if (!untouched.equals(screenshotWithout))
+      console.log(
+        'An empty stylesheet alone changed the screenshot:',
+        JSON.stringify(
+          await describeDifference(page, untouched, screenshotWithout),
+        ),
+      )
     const without = await snapshot(page)
     await test.info().attach('without-preflight', {
       body: screenshotWithout,
