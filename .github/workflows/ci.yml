@@ -111,6 +111,14 @@ jobs:
         env:
           PLAYWRIGHT_WORKERS: 2
 
+      - name: Upload e2e failure artifacts
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-test-results
+          path: test-results/playwright
+          retention-days: 7
+
   cross-browser:
     runs-on: ubuntu-latest
     timeout-minutes: 30
