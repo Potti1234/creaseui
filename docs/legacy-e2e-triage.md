@@ -6,7 +6,7 @@ Baseline: local `CI=1 npx playwright test` on PR #28 (`b120cee`) failed 47 tests
 
 With 4 workers, CI failed 12-16 extra tests that changed from run to run, with browser-session errors (`session closed`, `Target.createTarget`). With `PLAYWRIGHT_WORKERS: 2` (`77b5e6e`), run on `efd38b7`: 261 passed, 23 failed, 1 flaky, 1 did not run in 25.9 min. All 23 failures and the flaky test (`sidebar hover menus`) are in the inherited #27 set below. None of the CI-only failures came back, so they were caused by load.
 
-The `browser` job on the same commit failed 1 of 672 (667 passed, 4 skipped): `[pleat] sheet.spec.ts:228 bottom sheets ease into view without dialog scrolling at 390px`. The job log doesn't include the assertion error, which is only in the uploaded report artifact. Locally the test passes 10/10 on the Pleat build (`--repeat-each=5`, both widths). Unresolved: not classified as flaky until the CI error has been read.
+The `browser` job failed 1 of 672 on two runs: `sheet.spec.ts:228 bottom sheets ease into view` at 390px (Pleat on `efd38b7`, Tailwind on `c69de52`), each time on `samples.some(opacity > 0.05 && < 0.95)`. The scrim fades over 450ms with `cubic-bezier(0.32, 0.72, 0, 1)`, so it is only inside that range for about 200ms. Locally, sampling the Tailwind sheet with CDP CPU throttling missed that window in 0/5 runs at 1x and 6x, and 1/5 at 12x. The check now pauses the scrim's running opacity `CSSTransition`, seeks to 25% of its duration, reads the computed opacity, then resumes it. It requires a 450ms duration and an opacity between 0.05 and 0.95, without depending on frame timing. The panel-motion, first-frame and last-frame checks are unchanged. Passed 12/12 locally (3 renderers × 2 widths × 2 repeats).
 
 ## Fixed
 
