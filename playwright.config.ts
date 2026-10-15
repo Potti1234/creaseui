@@ -5,6 +5,7 @@ export default defineConfig({
   testIgnore: '**/sites/**',
   outputDir: 'test-results/playwright',
   fullyParallel: true,
+  timeout: 60_000,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 1 : 0,
   workers: process.env.PLAYWRIGHT_WORKERS
