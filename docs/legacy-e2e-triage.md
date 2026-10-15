@@ -57,6 +57,8 @@ The `browser` job failed 1 of 672 on two runs: `sheet.spec.ts:228 bottom sheets 
 
 On `166872e`: 285 passed, 1 failed (15.2 min). The failure was `site: tokenizer popup keeps its full field size`: the width was read while the reopened panel was still zooming in (398.7 vs 400). Fixed in `82d1fed` by polling the settled width (same 0.5px tolerance). It passed 3/3 with `--repeat-each=3`.
 
+On the `7217fdc` CI run (2 workers), two heavy multi-section tests hit the 30s default timeout on both the first attempt and the retry: `message scroller covers every upstream core-concept section` (stopped at the msg-8 jump poll) and `flagship documentation pages have no automated accessibility violations` (Axe on 4 routes). Both passed on the `c69de52` CI run, and their code didn't change between the two commits. Locally each takes about 16s. They now set `test.setTimeout(90000)`, as the other multi-section tests in `site.spec.ts` already do. No assertions changed. The same run's `drawer documents its child model` failed once with `session closed` and passed on retry.
+
 ## Remaining
 
 None.
