@@ -21,9 +21,22 @@ export default [
 
 Entries: `strict/setup` (typed parser), `strict/application` (all six rules),
 `strict/implementation` (registered raw-rendering files: renderer rules,
-`component-contract`, `no-unverifiable-ui`), `strict/theme`, `strict/setup-entry`
+`no-raw-controls`, `no-raw-composition`, `component-contract`,
+`no-unverifiable-ui`), `strict/theme`, `strict/setup-entry`
 and, only with `preset: 'migration'` plus `migrationFiles`, `strict/migration`
 (same rules at warning level).
+
+A file record with `rawRendering: true` grants raw rendering to the whole
+file. Add `rawElements` to narrow the grant to the native elements the
+implementation needs; any other raw element in that file is reported:
+
+```json
+{ "path": "src/design/glyph.ts", "role": "renderer", "rawRendering": true, "rawElements": ["svg", "path"] }
+```
+
+`creaseui-lint doctor` exits 2 with `coverage feature-only` when a registered
+implementation or UI module is ignored by the ESLint config, loses its Crease
+rules or has rendering exports without a manifest contract.
 
 Configuration problems (relative `rootDir`, renderer conflicts, unsupported
 schema/policy versions, globbed, missing, outside-root or symlinked-out paths,

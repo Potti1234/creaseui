@@ -49,13 +49,19 @@ const rawRule = (rule, category, description) => ({
   meta: meta(rule, description),
   create(context) {
     const strict = strictContextOf(context)
-    if (fileRecord(strict, context.filename)?.rawRendering === true) return {}
+    const record = fileRecord(strict, context.filename)
+    const granted = record?.rawRendering === true ? record.rawElements : null
+    if (granted === undefined) return {}
     const analysis = createFileAnalysis(context)
     const report = (node, tag) => {
       if (tagCategory(tag) !== category) return
+      if (granted?.has(tag)) return
       const contract = TAG_CONTRACTS.get(tag)
       context.report({
-        message: `Raw \`${tag}\` rendering is forbidden in application views (${rule}, contract ${contract}). ${replacementFor(strict, contract, context.filename)} Raw rendering is only allowed in exact implementation files registered in crease.lock.json.`,
+        message:
+          granted === null
+            ? `Raw \`${tag}\` rendering is forbidden in application views (${rule}, contract ${contract}). ${replacementFor(strict, contract, context.filename)} Raw rendering is only allowed in exact implementation files registered in crease.lock.json.`
+            : `Raw \`${tag}\` is outside this implementation's rawElements grant (${[...granted].join(', ')}) in crease.lock.json (${rule}, contract ${contract}). ${replacementFor(strict, contract, context.filename)}`,
         node,
       })
     }

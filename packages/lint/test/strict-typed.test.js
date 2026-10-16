@@ -51,6 +51,14 @@ const support = {
 }
 
 const cases = {
+  'raw-grant-span': [
+    `${header}export const glyph = (h: HtmlBuilder<unknown>): Html => h.span([], ['x'])`,
+    [],
+  ],
+  'raw-grant-control': [
+    `${header}export const glyph = (h: HtmlBuilder<unknown>): Html => h.span([], [h.button([], ['x']), h.div([], [])])`,
+    ['crease/no-raw-composition', 'crease/no-raw-controls'],
+  ],
   'styled-import-export-named': [
     `${header}import { Button } from './design-import-export'\nexport const view = (h: HtmlBuilder<unknown>): Html => Button.button({ children: ['Bad'], triggerClass: 'text-red-500' }, h)`,
     ['crease/component-contract'],
@@ -356,6 +364,20 @@ before(async () => {
   fs.cpSync(fixture, root, { recursive: true })
   const probes = path.join(root, 'src/probes')
   fs.mkdirSync(probes, { recursive: true })
+  /* A narrow raw grant: the glyph helpers may render spans only. */
+  const rootLock = path.join(root, 'crease.lock.json')
+  const manifest = JSON.parse(fs.readFileSync(rootLock, 'utf8'))
+  manifest.artifacts.push({
+    id: 'probe/raw-grant',
+    files: ['raw-grant-span', 'raw-grant-control'].map(name => ({
+      path: `src/probes/${name}.ts`,
+      rawElements: ['span'],
+      rawRendering: true,
+      role: 'renderer',
+    })),
+    exports: [],
+  })
+  fs.writeFileSync(rootLock, JSON.stringify(manifest, null, 2))
   /* Tailwind cases need their own manifest: the lock pins one renderer. */
   fs.cpSync(fixture, tailwindRoot, { recursive: true })
   const lock = path.join(tailwindRoot, 'crease.lock.json')

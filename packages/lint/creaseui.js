@@ -84,7 +84,17 @@ export const creaseui = (options = {}) => {
       plugins: { ...rendererConfig.plugins, crease: plugin },
       rules: {
         ...rendererConfig.rules,
-        ...levels(['component-contract', 'no-unverifiable-ui'], strictLevel),
+        /* Whole-file raw grants skip these; `rawElements` grants are held to
+           exactly the listed elements. */
+        ...levels(
+          [
+            'no-raw-controls',
+            'no-raw-composition',
+            'component-contract',
+            'no-unverifiable-ui',
+          ],
+          strictLevel,
+        ),
       },
     })
   if (theme.length > 0)

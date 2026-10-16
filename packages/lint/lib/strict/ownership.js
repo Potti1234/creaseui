@@ -145,6 +145,23 @@ export const buildOwnership = ({
       )
       return
     }
+    /* `rawElements` narrows a raw grant to the exact native elements the
+       implementation needs, so an SVG helper cannot also render controls. */
+    const rawElements = record.rawElements
+    if (
+      rawElements !== undefined &&
+      (!rawRendering ||
+        !Array.isArray(rawElements) ||
+        rawElements.length === 0 ||
+        !rawElements.every(
+          tag => typeof tag === 'string' && /^[a-z][A-Za-z0-9]*$/u.test(tag),
+        ))
+    ) {
+      problems.push(
+        `${where}: rawElements must be a non-empty list of element names on a raw-rendering file`,
+      )
+      return
+    }
     const existing = files.get(key)
     if (
       existing !== undefined &&
@@ -160,6 +177,9 @@ export const buildOwnership = ({
       owner,
       path: toPosix(path.relative(rootDir, absolute)),
       rawRendering,
+      ...(rawElements === undefined
+        ? {}
+        : { rawElements: new Set(rawElements) }),
       role: record.role,
     })
   }
