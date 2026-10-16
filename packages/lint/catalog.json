@@ -44,7 +44,9 @@
       "category": "overlay",
       "component": "alert-dialog",
       "description": "A CreaseUI Alert Dialog component for Foldkit.",
-      "exports": ["alertDialog"],
+      "exports": [
+        "alertDialog"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/alert-dialog",
       "item": "alert-dialog",
       "renderer": "tailwind",
@@ -72,7 +74,9 @@
       "category": "layout",
       "component": "aspect-ratio",
       "description": "A CreaseUI Aspect Ratio component for Foldkit.",
-      "exports": ["aspectRatio"],
+      "exports": [
+        "aspectRatio"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/aspect-ratio",
       "item": "aspect-ratio",
       "renderer": "tailwind",
@@ -105,7 +109,11 @@
       "category": "other",
       "component": "avatar-group",
       "description": "A CreaseUI Avatar Group component for Foldkit.",
-      "exports": ["avatarGroup", "avatarGroupOverflow", "avatarStatusDot"],
+      "exports": [
+        "avatarGroup",
+        "avatarGroupOverflow",
+        "avatarStatusDot"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/avatar-group",
       "item": "avatar-group",
       "renderer": "tailwind",
@@ -138,7 +146,10 @@
       "category": "data display",
       "component": "badge",
       "description": "A CreaseUI Badge component for Foldkit.",
-      "exports": ["badge", "badgeVariants"],
+      "exports": [
+        "badge",
+        "badgeVariants"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/badge",
       "item": "badge",
       "renderer": "tailwind",
@@ -149,7 +160,14 @@
       "category": "other",
       "component": "banner",
       "description": "A CreaseUI Banner component for Foldkit.",
-      "exports": ["Message", "Model", "OutMessage", "banner", "init", "update"],
+      "exports": [
+        "Message",
+        "Model",
+        "OutMessage",
+        "banner",
+        "init",
+        "update"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/banner",
       "item": "banner",
       "renderer": "tailwind",
@@ -160,7 +178,9 @@
       "category": "other",
       "component": "blockquote",
       "description": "A CreaseUI Blockquote component for Foldkit.",
-      "exports": ["blockquote"],
+      "exports": [
+        "blockquote"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/blockquote",
       "item": "blockquote",
       "renderer": "tailwind",
@@ -224,7 +244,11 @@
       "category": "forms",
       "component": "button",
       "description": "A CreaseUI Button component for Foldkit.",
-      "exports": ["button", "buttonLink", "buttonVariants"],
+      "exports": [
+        "button",
+        "buttonLink",
+        "buttonVariants"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/button",
       "item": "button",
       "renderer": "tailwind",
@@ -280,7 +304,9 @@
       "category": "layout",
       "component": "carousel",
       "description": "A CreaseUI Carousel component for Foldkit.",
-      "exports": ["carousel"],
+      "exports": [
+        "carousel"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/carousel",
       "item": "carousel",
       "renderer": "tailwind",
@@ -291,7 +317,9 @@
       "category": "other",
       "component": "center",
       "description": "A CreaseUI Center component for Foldkit.",
-      "exports": ["center"],
+      "exports": [
+        "center"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/center",
       "item": "center",
       "renderer": "tailwind",
@@ -352,7 +380,9 @@
       "category": "forms",
       "component": "checkbox",
       "description": "A CreaseUI Checkbox component for Foldkit.",
-      "exports": ["checkbox"],
+      "exports": [
+        "checkbox"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/checkbox",
       "item": "checkbox",
       "renderer": "tailwind",
@@ -363,7 +393,9 @@
       "category": "other",
       "component": "circular-progress",
       "description": "A CreaseUI Circular Progress component for Foldkit.",
-      "exports": ["circularProgress"],
+      "exports": [
+        "circularProgress"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/circular-progress",
       "item": "circular-progress",
       "renderer": "tailwind",
@@ -394,7 +426,9 @@
       "category": "other",
       "component": "code",
       "description": "A CreaseUI Code component for Foldkit.",
-      "exports": ["code"],
+      "exports": [
+        "code"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/code",
       "item": "code",
       "renderer": "tailwind",
@@ -405,7 +439,9 @@
       "category": "other",
       "component": "collapsible",
       "description": "A CreaseUI Collapsible component for Foldkit.",
-      "exports": ["collapsible"],
+      "exports": [
+        "collapsible"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/collapsible",
       "item": "collapsible",
       "renderer": "tailwind",
@@ -484,7 +520,9 @@
       "category": "other",
       "component": "data-grid",
       "description": "A CreaseUI Data Grid component for Foldkit.",
-      "exports": ["dataGrid"],
+      "exports": [
+        "dataGrid"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/data-grid",
       "item": "data-grid",
       "renderer": "tailwind",
@@ -495,7 +533,9 @@
       "category": "data display",
       "component": "data-table",
       "description": "A CreaseUI Data Table component for Foldkit.",
-      "exports": ["dataTable"],
+      "exports": [
+        "dataTable"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/data-table",
       "item": "data-table",
       "renderer": "tailwind",
@@ -632,7 +672,9 @@
       "category": "overlay",
       "component": "direction",
       "description": "A CreaseUI Direction component for Foldkit.",
-      "exports": ["direction"],
+      "exports": [
+        "direction"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/direction",
       "item": "direction",
       "renderer": "tailwind",
@@ -711,7 +753,9 @@
       "category": "other",
       "component": "field-status",
       "description": "A CreaseUI Field Status component for Foldkit.",
-      "exports": ["fieldStatus"],
+      "exports": [
+        "fieldStatus"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/field-status",
       "item": "field-status",
       "renderer": "tailwind",
@@ -787,7 +831,10 @@
       "category": "other",
       "component": "grid",
       "description": "A CreaseUI Grid component for Foldkit.",
-      "exports": ["grid", "gridSpan"],
+      "exports": [
+        "grid",
+        "gridSpan"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/grid",
       "item": "grid",
       "renderer": "tailwind",
@@ -798,7 +845,10 @@
       "category": "other",
       "component": "heading",
       "description": "A CreaseUI Heading component for Foldkit.",
-      "exports": ["heading", "headingVariants"],
+      "exports": [
+        "heading",
+        "headingVariants"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/heading",
       "item": "heading",
       "renderer": "tailwind",
@@ -837,7 +887,11 @@
       "category": "other",
       "component": "indicator",
       "description": "A CreaseUI Indicator component for Foldkit.",
-      "exports": ["checkIndicator", "checkboxIndicator", "radioIndicator"],
+      "exports": [
+        "checkIndicator",
+        "checkboxIndicator",
+        "radioIndicator"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/indicator",
       "item": "indicator",
       "renderer": "tailwind",
@@ -886,7 +940,10 @@
       "category": "forms",
       "component": "input-otp",
       "description": "A CreaseUI Input Otp component for Foldkit.",
-      "exports": ["inputOtp", "inputOtpSeparator"],
+      "exports": [
+        "inputOtp",
+        "inputOtpSeparator"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/input-otp",
       "item": "input-otp",
       "renderer": "tailwind",
@@ -897,7 +954,9 @@
       "category": "forms",
       "component": "input",
       "description": "A CreaseUI Input component for Foldkit.",
-      "exports": ["input"],
+      "exports": [
+        "input"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/input",
       "item": "input",
       "renderer": "tailwind",
@@ -933,7 +992,10 @@
       "category": "data display",
       "component": "kbd",
       "description": "A CreaseUI Kbd component for Foldkit.",
-      "exports": ["kbd", "kbdGroup"],
+      "exports": [
+        "kbd",
+        "kbdGroup"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/kbd",
       "item": "kbd",
       "renderer": "tailwind",
@@ -944,7 +1006,9 @@
       "category": "forms",
       "component": "label",
       "description": "A CreaseUI Label component for Foldkit.",
-      "exports": ["label"],
+      "exports": [
+        "label"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/label",
       "item": "label",
       "renderer": "tailwind",
@@ -976,7 +1040,10 @@
       "category": "other",
       "component": "link",
       "description": "A CreaseUI Link component for Foldkit.",
-      "exports": ["link", "linkVariants"],
+      "exports": [
+        "link",
+        "linkVariants"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/link",
       "item": "link",
       "renderer": "tailwind",
@@ -1007,7 +1074,10 @@
       "category": "other",
       "component": "list",
       "description": "A CreaseUI List component for Foldkit.",
-      "exports": ["list", "listItem"],
+      "exports": [
+        "list",
+        "listItem"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/list",
       "item": "list",
       "renderer": "tailwind",
@@ -1037,7 +1107,10 @@
       "category": "maps",
       "component": "map-arc",
       "description": "A CreaseUI Map Arc component for Foldkit.",
-      "exports": ["arcCoordinates", "mapArc"],
+      "exports": [
+        "arcCoordinates",
+        "mapArc"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/map-arc",
       "item": "map-arc",
       "renderer": "tailwind",
@@ -1048,7 +1121,9 @@
       "category": "maps",
       "component": "map-cluster",
       "description": "A CreaseUI Map Cluster component for Foldkit.",
-      "exports": ["mapClusterLayer"],
+      "exports": [
+        "mapClusterLayer"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/map-cluster",
       "item": "map-cluster",
       "renderer": "tailwind",
@@ -1059,7 +1134,9 @@
       "category": "maps",
       "component": "map-controls",
       "description": "A CreaseUI Map Controls component for Foldkit.",
-      "exports": ["mapControls"],
+      "exports": [
+        "mapControls"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/map-controls",
       "item": "map-controls",
       "renderer": "tailwind",
@@ -1070,7 +1147,9 @@
       "category": "maps",
       "component": "map-geojson",
       "description": "A CreaseUI Map Geojson component for Foldkit.",
-      "exports": ["mapGeoJSON"],
+      "exports": [
+        "mapGeoJSON"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/map-geojson",
       "item": "map-geojson",
       "renderer": "tailwind",
@@ -1081,7 +1160,11 @@
       "category": "maps",
       "component": "map-localization",
       "description": "A CreaseUI Map Localization component for Foldkit.",
-      "exports": ["MAP_TRANSLATIONS", "localizeMapLabel", "mapTranslations"],
+      "exports": [
+        "MAP_TRANSLATIONS",
+        "localizeMapLabel",
+        "mapTranslations"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/map-localization",
       "item": "map-localization",
       "renderer": "tailwind",
@@ -1092,7 +1175,12 @@
       "category": "maps",
       "component": "map-marker",
       "description": "A CreaseUI Map Marker component for Foldkit.",
-      "exports": ["mapMarker", "markerContent", "markerLabel", "markerTooltip"],
+      "exports": [
+        "mapMarker",
+        "markerContent",
+        "markerLabel",
+        "markerTooltip"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/map-marker",
       "item": "map-marker",
       "renderer": "tailwind",
@@ -1103,7 +1191,9 @@
       "category": "maps",
       "component": "map-popup",
       "description": "A CreaseUI Map Popup component for Foldkit.",
-      "exports": ["mapPopup"],
+      "exports": [
+        "mapPopup"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/map-popup",
       "item": "map-popup",
       "renderer": "tailwind",
@@ -1114,7 +1204,9 @@
       "category": "maps",
       "component": "map-route",
       "description": "A CreaseUI Map Route component for Foldkit.",
-      "exports": ["mapRoute"],
+      "exports": [
+        "mapRoute"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/map-route",
       "item": "map-route",
       "renderer": "tailwind",
@@ -1141,7 +1233,12 @@
       "category": "maps",
       "component": "map",
       "description": "A CreaseUI Map component for Foldkit.",
-      "exports": ["MapMessage", "OPENFREEMAP_STYLES", "map", "mapSkin"],
+      "exports": [
+        "MapMessage",
+        "OPENFREEMAP_STYLES",
+        "map",
+        "mapSkin"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/map",
       "item": "map",
       "renderer": "tailwind",
@@ -1172,7 +1269,12 @@
       "category": "data display",
       "component": "marker",
       "description": "A CreaseUI Marker component for Foldkit.",
-      "exports": ["marker", "markerContent", "markerIcon", "markerVariants"],
+      "exports": [
+        "marker",
+        "markerContent",
+        "markerIcon",
+        "markerVariants"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/marker",
       "item": "marker",
       "renderer": "tailwind",
@@ -1328,7 +1430,11 @@
       "category": "forms",
       "component": "native-select",
       "description": "A CreaseUI Native Select component for Foldkit.",
-      "exports": ["nativeSelect", "nativeSelectOptGroup", "nativeSelectOption"],
+      "exports": [
+        "nativeSelect",
+        "nativeSelectOptGroup",
+        "nativeSelectOption"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/native-select",
       "item": "native-select",
       "renderer": "tailwind",
@@ -1437,7 +1543,9 @@
       "category": "feedback",
       "component": "progress",
       "description": "A CreaseUI Progress component for Foldkit.",
-      "exports": ["progress"],
+      "exports": [
+        "progress"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/progress",
       "item": "progress",
       "renderer": "tailwind",
@@ -1448,7 +1556,13 @@
       "category": "forms",
       "component": "radio-group",
       "description": "A CreaseUI Radio Group component for Foldkit.",
-      "exports": ["Message", "Model", "init", "radioGroup", "update"],
+      "exports": [
+        "Message",
+        "Model",
+        "init",
+        "radioGroup",
+        "update"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/radio-group",
       "item": "radio-group",
       "renderer": "tailwind",
@@ -1481,7 +1595,9 @@
       "category": "layout",
       "component": "scroll-area",
       "description": "A CreaseUI Scroll Area component for Foldkit.",
-      "exports": ["scrollArea"],
+      "exports": [
+        "scrollArea"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/scroll-area",
       "item": "scroll-area",
       "renderer": "tailwind",
@@ -1492,7 +1608,9 @@
       "category": "other",
       "component": "section",
       "description": "A CreaseUI Section component for Foldkit.",
-      "exports": ["section"],
+      "exports": [
+        "section"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/section",
       "item": "section",
       "renderer": "tailwind",
@@ -1522,7 +1640,10 @@
       "category": "other",
       "component": "selectable-card",
       "description": "A CreaseUI Selectable Card component for Foldkit.",
-      "exports": ["Message", "selectableCard"],
+      "exports": [
+        "Message",
+        "selectableCard"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/selectable-card",
       "item": "selectable-card",
       "renderer": "tailwind",
@@ -1533,7 +1654,9 @@
       "category": "layout",
       "component": "separator",
       "description": "A CreaseUI Separator component for Foldkit.",
-      "exports": ["separator"],
+      "exports": [
+        "separator"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/separator",
       "item": "separator",
       "renderer": "tailwind",
@@ -1616,7 +1739,9 @@
       "category": "feedback",
       "component": "skeleton",
       "description": "A CreaseUI Skeleton component for Foldkit.",
-      "exports": ["skeleton"],
+      "exports": [
+        "skeleton"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/skeleton",
       "item": "skeleton",
       "renderer": "tailwind",
@@ -1662,7 +1787,9 @@
       "category": "feedback",
       "component": "spinner",
       "description": "A CreaseUI Spinner component for Foldkit.",
-      "exports": ["spinner"],
+      "exports": [
+        "spinner"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/spinner",
       "item": "spinner",
       "renderer": "tailwind",
@@ -1673,7 +1800,12 @@
       "category": "other",
       "component": "stack",
       "description": "A CreaseUI Stack component for Foldkit.",
-      "exports": ["hStack", "stack", "stackItem", "vStack"],
+      "exports": [
+        "hStack",
+        "stack",
+        "stackItem",
+        "vStack"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stack",
       "item": "stack",
       "renderer": "tailwind",
@@ -1684,7 +1816,9 @@
       "category": "other",
       "component": "stat",
       "description": "A CreaseUI Stat component for Foldkit.",
-      "exports": ["stat"],
+      "exports": [
+        "stat"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stat",
       "item": "stat",
       "renderer": "tailwind",
@@ -1695,7 +1829,10 @@
       "category": "other",
       "component": "status-dot",
       "description": "A CreaseUI Status Dot component for Foldkit.",
-      "exports": ["statusDot", "statusDotVariants"],
+      "exports": [
+        "statusDot",
+        "statusDotVariants"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/status-dot",
       "item": "status-dot",
       "renderer": "tailwind",
@@ -1706,7 +1843,13 @@
       "category": "other",
       "component": "stepper",
       "description": "A CreaseUI Stepper component for Foldkit.",
-      "exports": ["Message", "Model", "init", "stepper", "update"],
+      "exports": [
+        "Message",
+        "Model",
+        "init",
+        "stepper",
+        "update"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stepper",
       "item": "stepper",
       "renderer": "tailwind",
@@ -1717,7 +1860,11 @@
       "category": "forms",
       "component": "switch",
       "description": "A CreaseUI Switch component for Foldkit.",
-      "exports": ["switch", "switchControl", "switchIds"],
+      "exports": [
+        "switch",
+        "switchControl",
+        "switchIds"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/switch",
       "item": "switch",
       "renderer": "tailwind",
@@ -1768,7 +1915,10 @@
       "category": "other",
       "component": "text",
       "description": "A CreaseUI Text component for Foldkit.",
-      "exports": ["text", "textVariants"],
+      "exports": [
+        "text",
+        "textVariants"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/text",
       "item": "text",
       "renderer": "tailwind",
@@ -1779,7 +1929,9 @@
       "category": "forms",
       "component": "textarea",
       "description": "A CreaseUI Textarea component for Foldkit.",
-      "exports": ["textarea"],
+      "exports": [
+        "textarea"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/textarea",
       "item": "textarea",
       "renderer": "tailwind",
@@ -1790,7 +1942,9 @@
       "category": "other",
       "component": "thumbnail",
       "description": "A CreaseUI Thumbnail component for Foldkit.",
-      "exports": ["thumbnail"],
+      "exports": [
+        "thumbnail"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/thumbnail",
       "item": "thumbnail",
       "renderer": "tailwind",
@@ -1860,7 +2014,9 @@
       "category": "feedback",
       "component": "toast",
       "description": "A CreaseUI Toast component for Foldkit.",
-      "exports": ["toast"],
+      "exports": [
+        "toast"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/toast",
       "item": "toast",
       "renderer": "tailwind",
@@ -1891,7 +2047,10 @@
       "category": "forms",
       "component": "toggle",
       "description": "A CreaseUI Toggle component for Foldkit.",
-      "exports": ["toggle", "toggleVariants"],
+      "exports": [
+        "toggle",
+        "toggleVariants"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/toggle",
       "item": "toggle",
       "renderer": "tailwind",
@@ -1902,7 +2061,9 @@
       "category": "other",
       "component": "token",
       "description": "A CreaseUI Token component for Foldkit.",
-      "exports": ["token"],
+      "exports": [
+        "token"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/token",
       "item": "token",
       "renderer": "tailwind",
@@ -1934,7 +2095,11 @@
       "category": "other",
       "component": "toolbar",
       "description": "A CreaseUI Toolbar component for Foldkit.",
-      "exports": ["Message", "TOOLBAR_EDGE_COMP_ATTR", "toolbar"],
+      "exports": [
+        "Message",
+        "TOOLBAR_EDGE_COMP_ATTR",
+        "toolbar"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/toolbar",
       "item": "toolbar",
       "renderer": "tailwind",
@@ -2058,7 +2223,9 @@
       "category": "other",
       "component": "visually-hidden",
       "description": "A CreaseUI Visually Hidden component for Foldkit.",
-      "exports": ["visuallyHidden"],
+      "exports": [
+        "visuallyHidden"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/visually-hidden",
       "item": "visually-hidden",
       "renderer": "tailwind",
@@ -2108,7 +2275,9 @@
       "category": "overlay",
       "component": "alert-dialog",
       "description": "The StyleX Alert Dialog component for Foldkit.",
-      "exports": ["alertDialog"],
+      "exports": [
+        "alertDialog"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-alert-dialog",
       "item": "stylex-alert-dialog",
       "renderer": "stylex",
@@ -2136,7 +2305,9 @@
       "category": "layout",
       "component": "aspect-ratio",
       "description": "The StyleX Aspect Ratio component for Foldkit.",
-      "exports": ["aspectRatio"],
+      "exports": [
+        "aspectRatio"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-aspect-ratio",
       "item": "stylex-aspect-ratio",
       "renderer": "stylex",
@@ -2169,7 +2340,11 @@
       "category": "other",
       "component": "avatar-group",
       "description": "The StyleX Avatar Group component for Foldkit.",
-      "exports": ["avatarGroup", "avatarGroupOverflow", "avatarStatusDot"],
+      "exports": [
+        "avatarGroup",
+        "avatarGroupOverflow",
+        "avatarStatusDot"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-avatar-group",
       "item": "stylex-avatar-group",
       "renderer": "stylex",
@@ -2202,7 +2377,9 @@
       "category": "data display",
       "component": "badge",
       "description": "The StyleX Badge component for Foldkit.",
-      "exports": ["badge"],
+      "exports": [
+        "badge"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-badge",
       "item": "stylex-badge",
       "renderer": "stylex",
@@ -2213,7 +2390,14 @@
       "category": "other",
       "component": "banner",
       "description": "The StyleX Banner component for Foldkit.",
-      "exports": ["Message", "Model", "OutMessage", "banner", "init", "update"],
+      "exports": [
+        "Message",
+        "Model",
+        "OutMessage",
+        "banner",
+        "init",
+        "update"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-banner",
       "item": "stylex-banner",
       "renderer": "stylex",
@@ -2224,7 +2408,9 @@
       "category": "other",
       "component": "blockquote",
       "description": "The StyleX Blockquote component for Foldkit.",
-      "exports": ["blockquote"],
+      "exports": [
+        "blockquote"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-blockquote",
       "item": "stylex-blockquote",
       "renderer": "stylex",
@@ -2288,7 +2474,11 @@
       "category": "forms",
       "component": "button",
       "description": "The StyleX Button component for Foldkit.",
-      "exports": ["button", "buttonLink", "buttonVisualStyles"],
+      "exports": [
+        "button",
+        "buttonLink",
+        "buttonVisualStyles"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-button",
       "item": "stylex-button",
       "renderer": "stylex",
@@ -2344,7 +2534,9 @@
       "category": "layout",
       "component": "carousel",
       "description": "The StyleX Carousel component for Foldkit.",
-      "exports": ["carousel"],
+      "exports": [
+        "carousel"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-carousel",
       "item": "stylex-carousel",
       "renderer": "stylex",
@@ -2355,7 +2547,9 @@
       "category": "other",
       "component": "center",
       "description": "The StyleX Center component for Foldkit.",
-      "exports": ["center"],
+      "exports": [
+        "center"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-center",
       "item": "stylex-center",
       "renderer": "stylex",
@@ -2416,7 +2610,9 @@
       "category": "forms",
       "component": "checkbox",
       "description": "The StyleX Checkbox component for Foldkit.",
-      "exports": ["checkbox"],
+      "exports": [
+        "checkbox"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-checkbox",
       "item": "stylex-checkbox",
       "renderer": "stylex",
@@ -2427,7 +2623,9 @@
       "category": "other",
       "component": "circular-progress",
       "description": "The StyleX Circular Progress component for Foldkit.",
-      "exports": ["circularProgress"],
+      "exports": [
+        "circularProgress"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-circular-progress",
       "item": "stylex-circular-progress",
       "renderer": "stylex",
@@ -2458,7 +2656,9 @@
       "category": "other",
       "component": "code",
       "description": "The StyleX Code component for Foldkit.",
-      "exports": ["code"],
+      "exports": [
+        "code"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-code",
       "item": "stylex-code",
       "renderer": "stylex",
@@ -2469,7 +2669,9 @@
       "category": "other",
       "component": "collapsible",
       "description": "The StyleX Collapsible component for Foldkit.",
-      "exports": ["collapsible"],
+      "exports": [
+        "collapsible"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-collapsible",
       "item": "stylex-collapsible",
       "renderer": "stylex",
@@ -2545,10 +2747,25 @@
       "title": "Context Menu"
     },
     {
+      "category": "other",
+      "component": "data-grid",
+      "description": "The StyleX Data Grid component for Foldkit.",
+      "exports": [
+        "dataGrid"
+      ],
+      "install": "npx shadcn@latest add Potti1234/creaseui/stylex-data-grid",
+      "item": "stylex-data-grid",
+      "renderer": "stylex",
+      "state": "stateless",
+      "title": "Data Grid"
+    },
+    {
       "category": "data display",
       "component": "data-table",
       "description": "The StyleX Data Table component for Foldkit.",
-      "exports": ["dataTable"],
+      "exports": [
+        "dataTable"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-data-table",
       "item": "stylex-data-table",
       "renderer": "stylex",
@@ -2685,7 +2902,9 @@
       "category": "overlay",
       "component": "direction",
       "description": "The StyleX Direction component for Foldkit.",
-      "exports": ["direction"],
+      "exports": [
+        "direction"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-direction",
       "item": "stylex-direction",
       "renderer": "stylex",
@@ -2764,7 +2983,9 @@
       "category": "other",
       "component": "field-status",
       "description": "The StyleX Field Status component for Foldkit.",
-      "exports": ["fieldStatus"],
+      "exports": [
+        "fieldStatus"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-field-status",
       "item": "stylex-field-status",
       "renderer": "stylex",
@@ -2840,7 +3061,10 @@
       "category": "other",
       "component": "grid",
       "description": "The StyleX Grid component for Foldkit.",
-      "exports": ["grid", "gridSpan"],
+      "exports": [
+        "grid",
+        "gridSpan"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-grid",
       "item": "stylex-grid",
       "renderer": "stylex",
@@ -2851,7 +3075,9 @@
       "category": "other",
       "component": "heading",
       "description": "The StyleX Heading component for Foldkit.",
-      "exports": ["heading"],
+      "exports": [
+        "heading"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-heading",
       "item": "stylex-heading",
       "renderer": "stylex",
@@ -2890,7 +3116,11 @@
       "category": "other",
       "component": "indicator",
       "description": "The StyleX Indicator component for Foldkit.",
-      "exports": ["checkIndicator", "checkboxIndicator", "radioIndicator"],
+      "exports": [
+        "checkIndicator",
+        "checkboxIndicator",
+        "radioIndicator"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-indicator",
       "item": "stylex-indicator",
       "renderer": "stylex",
@@ -2939,7 +3169,10 @@
       "category": "forms",
       "component": "input-otp",
       "description": "The StyleX Input Otp component for Foldkit.",
-      "exports": ["inputOtp", "inputOtpSeparator"],
+      "exports": [
+        "inputOtp",
+        "inputOtpSeparator"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-input-otp",
       "item": "stylex-input-otp",
       "renderer": "stylex",
@@ -2950,7 +3183,9 @@
       "category": "forms",
       "component": "input",
       "description": "The StyleX Input component for Foldkit.",
-      "exports": ["input"],
+      "exports": [
+        "input"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-input",
       "item": "stylex-input",
       "renderer": "stylex",
@@ -2986,7 +3221,10 @@
       "category": "data display",
       "component": "kbd",
       "description": "The StyleX Kbd component for Foldkit.",
-      "exports": ["kbd", "kbdGroup"],
+      "exports": [
+        "kbd",
+        "kbdGroup"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-kbd",
       "item": "stylex-kbd",
       "renderer": "stylex",
@@ -2997,7 +3235,9 @@
       "category": "forms",
       "component": "label",
       "description": "The StyleX Label component for Foldkit.",
-      "exports": ["label"],
+      "exports": [
+        "label"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-label",
       "item": "stylex-label",
       "renderer": "stylex",
@@ -3029,7 +3269,9 @@
       "category": "other",
       "component": "link",
       "description": "The StyleX Link component for Foldkit.",
-      "exports": ["link"],
+      "exports": [
+        "link"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-link",
       "item": "stylex-link",
       "renderer": "stylex",
@@ -3060,7 +3302,10 @@
       "category": "other",
       "component": "list",
       "description": "The StyleX List component for Foldkit.",
-      "exports": ["list", "listItem"],
+      "exports": [
+        "list",
+        "listItem"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-list",
       "item": "stylex-list",
       "renderer": "stylex",
@@ -3090,7 +3335,10 @@
       "category": "maps",
       "component": "map-arc",
       "description": "The StyleX Map Arc component for Foldkit.",
-      "exports": ["arcCoordinates", "mapArc"],
+      "exports": [
+        "arcCoordinates",
+        "mapArc"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-map-arc",
       "item": "stylex-map-arc",
       "renderer": "stylex",
@@ -3101,7 +3349,9 @@
       "category": "maps",
       "component": "map-cluster",
       "description": "The StyleX Map Cluster component for Foldkit.",
-      "exports": ["mapClusterLayer"],
+      "exports": [
+        "mapClusterLayer"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-map-cluster",
       "item": "stylex-map-cluster",
       "renderer": "stylex",
@@ -3112,7 +3362,9 @@
       "category": "maps",
       "component": "map-controls",
       "description": "The StyleX Map Controls component for Foldkit.",
-      "exports": ["mapControls"],
+      "exports": [
+        "mapControls"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-map-controls",
       "item": "stylex-map-controls",
       "renderer": "stylex",
@@ -3123,7 +3375,9 @@
       "category": "maps",
       "component": "map-geojson",
       "description": "The StyleX Map Geojson component for Foldkit.",
-      "exports": ["mapGeoJSON"],
+      "exports": [
+        "mapGeoJSON"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-map-geojson",
       "item": "stylex-map-geojson",
       "renderer": "stylex",
@@ -3134,7 +3388,11 @@
       "category": "maps",
       "component": "map-localization",
       "description": "The StyleX Map Localization component for Foldkit.",
-      "exports": ["MAP_TRANSLATIONS", "localizeMapLabel", "mapTranslations"],
+      "exports": [
+        "MAP_TRANSLATIONS",
+        "localizeMapLabel",
+        "mapTranslations"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-map-localization",
       "item": "stylex-map-localization",
       "renderer": "stylex",
@@ -3145,7 +3403,12 @@
       "category": "maps",
       "component": "map-marker",
       "description": "The StyleX Map Marker component for Foldkit.",
-      "exports": ["mapMarker", "markerContent", "markerLabel", "markerTooltip"],
+      "exports": [
+        "mapMarker",
+        "markerContent",
+        "markerLabel",
+        "markerTooltip"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-map-marker",
       "item": "stylex-map-marker",
       "renderer": "stylex",
@@ -3156,7 +3419,9 @@
       "category": "maps",
       "component": "map-popup",
       "description": "The StyleX Map Popup component for Foldkit.",
-      "exports": ["mapPopup"],
+      "exports": [
+        "mapPopup"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-map-popup",
       "item": "stylex-map-popup",
       "renderer": "stylex",
@@ -3167,7 +3432,9 @@
       "category": "maps",
       "component": "map-route",
       "description": "The StyleX Map Route component for Foldkit.",
-      "exports": ["mapRoute"],
+      "exports": [
+        "mapRoute"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-map-route",
       "item": "stylex-map-route",
       "renderer": "stylex",
@@ -3194,7 +3461,12 @@
       "category": "maps",
       "component": "map",
       "description": "The StyleX Map component for Foldkit.",
-      "exports": ["MapMessage", "OPENFREEMAP_STYLES", "map", "mapSkin"],
+      "exports": [
+        "MapMessage",
+        "OPENFREEMAP_STYLES",
+        "map",
+        "mapSkin"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-map",
       "item": "stylex-map",
       "renderer": "stylex",
@@ -3225,7 +3497,12 @@
       "category": "data display",
       "component": "marker",
       "description": "The StyleX Marker component for Foldkit.",
-      "exports": ["marker", "markerContent", "markerIcon", "markerVariants"],
+      "exports": [
+        "marker",
+        "markerContent",
+        "markerIcon",
+        "markerVariants"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-marker",
       "item": "stylex-marker",
       "renderer": "stylex",
@@ -3381,7 +3658,11 @@
       "category": "forms",
       "component": "native-select",
       "description": "The StyleX Native Select component for Foldkit.",
-      "exports": ["nativeSelect", "nativeSelectOptGroup", "nativeSelectOption"],
+      "exports": [
+        "nativeSelect",
+        "nativeSelectOptGroup",
+        "nativeSelectOption"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-native-select",
       "item": "stylex-native-select",
       "renderer": "stylex",
@@ -3490,7 +3771,9 @@
       "category": "feedback",
       "component": "progress",
       "description": "The StyleX Progress component for Foldkit.",
-      "exports": ["progress"],
+      "exports": [
+        "progress"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-progress",
       "item": "stylex-progress",
       "renderer": "stylex",
@@ -3501,7 +3784,13 @@
       "category": "forms",
       "component": "radio-group",
       "description": "The StyleX Radio Group component for Foldkit.",
-      "exports": ["Message", "Model", "init", "radioGroup", "update"],
+      "exports": [
+        "Message",
+        "Model",
+        "init",
+        "radioGroup",
+        "update"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-radio-group",
       "item": "stylex-radio-group",
       "renderer": "stylex",
@@ -3534,7 +3823,9 @@
       "category": "layout",
       "component": "scroll-area",
       "description": "The StyleX Scroll Area component for Foldkit.",
-      "exports": ["scrollArea"],
+      "exports": [
+        "scrollArea"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-scroll-area",
       "item": "stylex-scroll-area",
       "renderer": "stylex",
@@ -3545,7 +3836,9 @@
       "category": "other",
       "component": "section",
       "description": "The StyleX Section component for Foldkit.",
-      "exports": ["section"],
+      "exports": [
+        "section"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-section",
       "item": "stylex-section",
       "renderer": "stylex",
@@ -3575,7 +3868,10 @@
       "category": "other",
       "component": "selectable-card",
       "description": "The StyleX Selectable Card component for Foldkit.",
-      "exports": ["Message", "selectableCard"],
+      "exports": [
+        "Message",
+        "selectableCard"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-selectable-card",
       "item": "stylex-selectable-card",
       "renderer": "stylex",
@@ -3586,7 +3882,9 @@
       "category": "layout",
       "component": "separator",
       "description": "The StyleX Separator component for Foldkit.",
-      "exports": ["separator"],
+      "exports": [
+        "separator"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-separator",
       "item": "stylex-separator",
       "renderer": "stylex",
@@ -3670,7 +3968,9 @@
       "category": "feedback",
       "component": "skeleton",
       "description": "The StyleX Skeleton component for Foldkit.",
-      "exports": ["skeleton"],
+      "exports": [
+        "skeleton"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-skeleton",
       "item": "stylex-skeleton",
       "renderer": "stylex",
@@ -3716,7 +4016,9 @@
       "category": "feedback",
       "component": "spinner",
       "description": "The StyleX Spinner component for Foldkit.",
-      "exports": ["spinner"],
+      "exports": [
+        "spinner"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-spinner",
       "item": "stylex-spinner",
       "renderer": "stylex",
@@ -3727,7 +4029,12 @@
       "category": "other",
       "component": "stack",
       "description": "The StyleX Stack component for Foldkit.",
-      "exports": ["hStack", "stack", "stackItem", "vStack"],
+      "exports": [
+        "hStack",
+        "stack",
+        "stackItem",
+        "vStack"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-stack",
       "item": "stylex-stack",
       "renderer": "stylex",
@@ -3738,7 +4045,9 @@
       "category": "other",
       "component": "stat",
       "description": "The StyleX Stat component for Foldkit.",
-      "exports": ["stat"],
+      "exports": [
+        "stat"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-stat",
       "item": "stylex-stat",
       "renderer": "stylex",
@@ -3749,7 +4058,9 @@
       "category": "other",
       "component": "status-dot",
       "description": "The StyleX Status Dot component for Foldkit.",
-      "exports": ["statusDot"],
+      "exports": [
+        "statusDot"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-status-dot",
       "item": "stylex-status-dot",
       "renderer": "stylex",
@@ -3760,7 +4071,13 @@
       "category": "other",
       "component": "stepper",
       "description": "The StyleX Stepper component for Foldkit.",
-      "exports": ["Message", "Model", "init", "stepper", "update"],
+      "exports": [
+        "Message",
+        "Model",
+        "init",
+        "stepper",
+        "update"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-stepper",
       "item": "stylex-stepper",
       "renderer": "stylex",
@@ -3771,7 +4088,11 @@
       "category": "forms",
       "component": "switch",
       "description": "The StyleX Switch component for Foldkit.",
-      "exports": ["switch", "switchControl", "switchIds"],
+      "exports": [
+        "switch",
+        "switchControl",
+        "switchIds"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-switch",
       "item": "stylex-switch",
       "renderer": "stylex",
@@ -3822,7 +4143,9 @@
       "category": "other",
       "component": "text",
       "description": "The StyleX Text component for Foldkit.",
-      "exports": ["text"],
+      "exports": [
+        "text"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-text",
       "item": "stylex-text",
       "renderer": "stylex",
@@ -3833,7 +4156,9 @@
       "category": "forms",
       "component": "textarea",
       "description": "The StyleX Textarea component for Foldkit.",
-      "exports": ["textarea"],
+      "exports": [
+        "textarea"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-textarea",
       "item": "stylex-textarea",
       "renderer": "stylex",
@@ -3844,7 +4169,9 @@
       "category": "other",
       "component": "thumbnail",
       "description": "The StyleX Thumbnail component for Foldkit.",
-      "exports": ["thumbnail"],
+      "exports": [
+        "thumbnail"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-thumbnail",
       "item": "stylex-thumbnail",
       "renderer": "stylex",
@@ -3914,7 +4241,9 @@
       "category": "feedback",
       "component": "toast",
       "description": "The StyleX Toast component for Foldkit.",
-      "exports": ["toast"],
+      "exports": [
+        "toast"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-toast",
       "item": "stylex-toast",
       "renderer": "stylex",
@@ -3945,7 +4274,10 @@
       "category": "forms",
       "component": "toggle",
       "description": "The StyleX Toggle component for Foldkit.",
-      "exports": ["toggle", "toggleVariants"],
+      "exports": [
+        "toggle",
+        "toggleVariants"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-toggle",
       "item": "stylex-toggle",
       "renderer": "stylex",
@@ -3956,7 +4288,9 @@
       "category": "other",
       "component": "token",
       "description": "The StyleX Token component for Foldkit.",
-      "exports": ["token"],
+      "exports": [
+        "token"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-token",
       "item": "stylex-token",
       "renderer": "stylex",
@@ -3988,7 +4322,11 @@
       "category": "other",
       "component": "toolbar",
       "description": "The StyleX Toolbar component for Foldkit.",
-      "exports": ["Message", "TOOLBAR_EDGE_COMP_ATTR", "toolbar"],
+      "exports": [
+        "Message",
+        "TOOLBAR_EDGE_COMP_ATTR",
+        "toolbar"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-toolbar",
       "item": "stylex-toolbar",
       "renderer": "stylex",
@@ -4112,7 +4450,9 @@
       "category": "other",
       "component": "visually-hidden",
       "description": "The StyleX Visually Hidden component for Foldkit.",
-      "exports": ["visuallyHidden"],
+      "exports": [
+        "visuallyHidden"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-visually-hidden",
       "item": "stylex-visually-hidden",
       "renderer": "stylex",
@@ -4141,10 +4481,30 @@
       "title": "Accordion"
     },
     {
+      "category": "other",
+      "component": "action-bar",
+      "description": "The Pleat Action Bar component for Foldkit.",
+      "exports": [
+        "actionBar",
+        "actionBarClose",
+        "actionBarGroup",
+        "actionBarItem",
+        "actionBarSelection",
+        "actionBarSeparator"
+      ],
+      "install": "npx shadcn@latest add Potti1234/creaseui/pleat-action-bar",
+      "item": "pleat-action-bar",
+      "renderer": "pleat",
+      "state": "stateless",
+      "title": "Action Bar"
+    },
+    {
       "category": "overlay",
       "component": "alert-dialog",
       "description": "The Pleat Alert Dialog component for Foldkit.",
-      "exports": ["alertDialog"],
+      "exports": [
+        "alertDialog"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-alert-dialog",
       "item": "pleat-alert-dialog",
       "renderer": "pleat",
@@ -4172,7 +4532,9 @@
       "category": "layout",
       "component": "aspect-ratio",
       "description": "The Pleat Aspect Ratio component for Foldkit.",
-      "exports": ["aspectRatio"],
+      "exports": [
+        "aspectRatio"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-aspect-ratio",
       "item": "pleat-aspect-ratio",
       "renderer": "pleat",
@@ -4205,7 +4567,11 @@
       "category": "other",
       "component": "avatar-group",
       "description": "The Pleat Avatar Group component for Foldkit.",
-      "exports": ["avatarGroup", "avatarGroupOverflow", "avatarStatusDot"],
+      "exports": [
+        "avatarGroup",
+        "avatarGroupOverflow",
+        "avatarStatusDot"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-avatar-group",
       "item": "pleat-avatar-group",
       "renderer": "pleat",
@@ -4238,7 +4604,9 @@
       "category": "data display",
       "component": "badge",
       "description": "The Pleat Badge component for Foldkit.",
-      "exports": ["badge"],
+      "exports": [
+        "badge"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-badge",
       "item": "pleat-badge",
       "renderer": "pleat",
@@ -4249,7 +4617,14 @@
       "category": "other",
       "component": "banner",
       "description": "The Pleat Banner component for Foldkit.",
-      "exports": ["Message", "Model", "OutMessage", "banner", "init", "update"],
+      "exports": [
+        "Message",
+        "Model",
+        "OutMessage",
+        "banner",
+        "init",
+        "update"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-banner",
       "item": "pleat-banner",
       "renderer": "pleat",
@@ -4260,7 +4635,9 @@
       "category": "other",
       "component": "blockquote",
       "description": "The Pleat Blockquote component for Foldkit.",
-      "exports": ["blockquote"],
+      "exports": [
+        "blockquote"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-blockquote",
       "item": "pleat-blockquote",
       "renderer": "pleat",
@@ -4324,7 +4701,11 @@
       "category": "forms",
       "component": "button",
       "description": "The Pleat Button component for Foldkit.",
-      "exports": ["button", "buttonLink", "buttonVisualStyles"],
+      "exports": [
+        "button",
+        "buttonLink",
+        "buttonVisualStyles"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-button",
       "item": "pleat-button",
       "renderer": "pleat",
@@ -4380,7 +4761,9 @@
       "category": "layout",
       "component": "carousel",
       "description": "The Pleat Carousel component for Foldkit.",
-      "exports": ["carousel"],
+      "exports": [
+        "carousel"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-carousel",
       "item": "pleat-carousel",
       "renderer": "pleat",
@@ -4391,7 +4774,9 @@
       "category": "other",
       "component": "center",
       "description": "The Pleat Center component for Foldkit.",
-      "exports": ["center"],
+      "exports": [
+        "center"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-center",
       "item": "pleat-center",
       "renderer": "pleat",
@@ -4452,7 +4837,9 @@
       "category": "forms",
       "component": "checkbox",
       "description": "The Pleat Checkbox component for Foldkit.",
-      "exports": ["checkbox"],
+      "exports": [
+        "checkbox"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-checkbox",
       "item": "pleat-checkbox",
       "renderer": "pleat",
@@ -4463,7 +4850,9 @@
       "category": "other",
       "component": "circular-progress",
       "description": "The Pleat Circular Progress component for Foldkit.",
-      "exports": ["circularProgress"],
+      "exports": [
+        "circularProgress"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-circular-progress",
       "item": "pleat-circular-progress",
       "renderer": "pleat",
@@ -4494,7 +4883,9 @@
       "category": "other",
       "component": "code",
       "description": "The Pleat Code component for Foldkit.",
-      "exports": ["code"],
+      "exports": [
+        "code"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-code",
       "item": "pleat-code",
       "renderer": "pleat",
@@ -4505,7 +4896,9 @@
       "category": "other",
       "component": "collapsible",
       "description": "The Pleat Collapsible component for Foldkit.",
-      "exports": ["collapsible"],
+      "exports": [
+        "collapsible"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-collapsible",
       "item": "pleat-collapsible",
       "renderer": "pleat",
@@ -4581,10 +4974,25 @@
       "title": "Context Menu"
     },
     {
+      "category": "other",
+      "component": "data-grid",
+      "description": "The Pleat Data Grid component for Foldkit.",
+      "exports": [
+        "dataGrid"
+      ],
+      "install": "npx shadcn@latest add Potti1234/creaseui/pleat-data-grid",
+      "item": "pleat-data-grid",
+      "renderer": "pleat",
+      "state": "stateless",
+      "title": "Data Grid"
+    },
+    {
       "category": "data display",
       "component": "data-table",
       "description": "The Pleat Data Table component for Foldkit.",
-      "exports": ["dataTable"],
+      "exports": [
+        "dataTable"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-data-table",
       "item": "pleat-data-table",
       "renderer": "pleat",
@@ -4721,7 +5129,9 @@
       "category": "overlay",
       "component": "direction",
       "description": "The Pleat Direction component for Foldkit.",
-      "exports": ["direction"],
+      "exports": [
+        "direction"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-direction",
       "item": "pleat-direction",
       "renderer": "pleat",
@@ -4800,7 +5210,9 @@
       "category": "other",
       "component": "field-status",
       "description": "The Pleat Field Status component for Foldkit.",
-      "exports": ["fieldStatus"],
+      "exports": [
+        "fieldStatus"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-field-status",
       "item": "pleat-field-status",
       "renderer": "pleat",
@@ -4876,7 +5288,10 @@
       "category": "other",
       "component": "grid",
       "description": "The Pleat Grid component for Foldkit.",
-      "exports": ["grid", "gridSpan"],
+      "exports": [
+        "grid",
+        "gridSpan"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-grid",
       "item": "pleat-grid",
       "renderer": "pleat",
@@ -4887,7 +5302,9 @@
       "category": "other",
       "component": "heading",
       "description": "The Pleat Heading component for Foldkit.",
-      "exports": ["heading"],
+      "exports": [
+        "heading"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-heading",
       "item": "pleat-heading",
       "renderer": "pleat",
@@ -4926,7 +5343,11 @@
       "category": "other",
       "component": "indicator",
       "description": "The Pleat Indicator component for Foldkit.",
-      "exports": ["checkIndicator", "checkboxIndicator", "radioIndicator"],
+      "exports": [
+        "checkIndicator",
+        "checkboxIndicator",
+        "radioIndicator"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-indicator",
       "item": "pleat-indicator",
       "renderer": "pleat",
@@ -4975,7 +5396,10 @@
       "category": "forms",
       "component": "input-otp",
       "description": "The Pleat Input Otp component for Foldkit.",
-      "exports": ["inputOtp", "inputOtpSeparator"],
+      "exports": [
+        "inputOtp",
+        "inputOtpSeparator"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-input-otp",
       "item": "pleat-input-otp",
       "renderer": "pleat",
@@ -4986,7 +5410,9 @@
       "category": "forms",
       "component": "input",
       "description": "The Pleat Input component for Foldkit.",
-      "exports": ["input"],
+      "exports": [
+        "input"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-input",
       "item": "pleat-input",
       "renderer": "pleat",
@@ -5022,7 +5448,10 @@
       "category": "data display",
       "component": "kbd",
       "description": "The Pleat Kbd component for Foldkit.",
-      "exports": ["kbd", "kbdGroup"],
+      "exports": [
+        "kbd",
+        "kbdGroup"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-kbd",
       "item": "pleat-kbd",
       "renderer": "pleat",
@@ -5033,7 +5462,9 @@
       "category": "forms",
       "component": "label",
       "description": "The Pleat Label component for Foldkit.",
-      "exports": ["label"],
+      "exports": [
+        "label"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-label",
       "item": "pleat-label",
       "renderer": "pleat",
@@ -5065,7 +5496,9 @@
       "category": "other",
       "component": "link",
       "description": "The Pleat Link component for Foldkit.",
-      "exports": ["link"],
+      "exports": [
+        "link"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-link",
       "item": "pleat-link",
       "renderer": "pleat",
@@ -5096,7 +5529,10 @@
       "category": "other",
       "component": "list",
       "description": "The Pleat List component for Foldkit.",
-      "exports": ["list", "listItem"],
+      "exports": [
+        "list",
+        "listItem"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-list",
       "item": "pleat-list",
       "renderer": "pleat",
@@ -5126,7 +5562,10 @@
       "category": "maps",
       "component": "map-arc",
       "description": "The Pleat Map Arc component for Foldkit.",
-      "exports": ["arcCoordinates", "mapArc"],
+      "exports": [
+        "arcCoordinates",
+        "mapArc"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-map-arc",
       "item": "pleat-map-arc",
       "renderer": "pleat",
@@ -5137,7 +5576,9 @@
       "category": "maps",
       "component": "map-cluster",
       "description": "The Pleat Map Cluster component for Foldkit.",
-      "exports": ["mapClusterLayer"],
+      "exports": [
+        "mapClusterLayer"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-map-cluster",
       "item": "pleat-map-cluster",
       "renderer": "pleat",
@@ -5148,7 +5589,9 @@
       "category": "maps",
       "component": "map-controls",
       "description": "The Pleat Map Controls component for Foldkit.",
-      "exports": ["mapControls"],
+      "exports": [
+        "mapControls"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-map-controls",
       "item": "pleat-map-controls",
       "renderer": "pleat",
@@ -5159,7 +5602,9 @@
       "category": "maps",
       "component": "map-geojson",
       "description": "The Pleat Map Geojson component for Foldkit.",
-      "exports": ["mapGeoJSON"],
+      "exports": [
+        "mapGeoJSON"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-map-geojson",
       "item": "pleat-map-geojson",
       "renderer": "pleat",
@@ -5170,7 +5615,11 @@
       "category": "maps",
       "component": "map-localization",
       "description": "The Pleat Map Localization component for Foldkit.",
-      "exports": ["MAP_TRANSLATIONS", "localizeMapLabel", "mapTranslations"],
+      "exports": [
+        "MAP_TRANSLATIONS",
+        "localizeMapLabel",
+        "mapTranslations"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-map-localization",
       "item": "pleat-map-localization",
       "renderer": "pleat",
@@ -5181,7 +5630,12 @@
       "category": "maps",
       "component": "map-marker",
       "description": "The Pleat Map Marker component for Foldkit.",
-      "exports": ["mapMarker", "markerContent", "markerLabel", "markerTooltip"],
+      "exports": [
+        "mapMarker",
+        "markerContent",
+        "markerLabel",
+        "markerTooltip"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-map-marker",
       "item": "pleat-map-marker",
       "renderer": "pleat",
@@ -5192,7 +5646,9 @@
       "category": "maps",
       "component": "map-popup",
       "description": "The Pleat Map Popup component for Foldkit.",
-      "exports": ["mapPopup"],
+      "exports": [
+        "mapPopup"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-map-popup",
       "item": "pleat-map-popup",
       "renderer": "pleat",
@@ -5203,7 +5659,9 @@
       "category": "maps",
       "component": "map-route",
       "description": "The Pleat Map Route component for Foldkit.",
-      "exports": ["mapRoute"],
+      "exports": [
+        "mapRoute"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-map-route",
       "item": "pleat-map-route",
       "renderer": "pleat",
@@ -5230,7 +5688,12 @@
       "category": "maps",
       "component": "map",
       "description": "The Pleat Map component for Foldkit.",
-      "exports": ["MapMessage", "OPENFREEMAP_STYLES", "map", "mapSkin"],
+      "exports": [
+        "MapMessage",
+        "OPENFREEMAP_STYLES",
+        "map",
+        "mapSkin"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-map",
       "item": "pleat-map",
       "renderer": "pleat",
@@ -5261,7 +5724,12 @@
       "category": "data display",
       "component": "marker",
       "description": "The Pleat Marker component for Foldkit.",
-      "exports": ["marker", "markerContent", "markerIcon", "markerVariants"],
+      "exports": [
+        "marker",
+        "markerContent",
+        "markerIcon",
+        "markerVariants"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-marker",
       "item": "pleat-marker",
       "renderer": "pleat",
@@ -5417,7 +5885,11 @@
       "category": "forms",
       "component": "native-select",
       "description": "The Pleat Native Select component for Foldkit.",
-      "exports": ["nativeSelect", "nativeSelectOptGroup", "nativeSelectOption"],
+      "exports": [
+        "nativeSelect",
+        "nativeSelectOptGroup",
+        "nativeSelectOption"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-native-select",
       "item": "pleat-native-select",
       "renderer": "pleat",
@@ -5526,7 +5998,9 @@
       "category": "feedback",
       "component": "progress",
       "description": "The Pleat Progress component for Foldkit.",
-      "exports": ["progress"],
+      "exports": [
+        "progress"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-progress",
       "item": "pleat-progress",
       "renderer": "pleat",
@@ -5537,7 +6011,13 @@
       "category": "forms",
       "component": "radio-group",
       "description": "The Pleat Radio Group component for Foldkit.",
-      "exports": ["Message", "Model", "init", "radioGroup", "update"],
+      "exports": [
+        "Message",
+        "Model",
+        "init",
+        "radioGroup",
+        "update"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-radio-group",
       "item": "pleat-radio-group",
       "renderer": "pleat",
@@ -5570,7 +6050,9 @@
       "category": "layout",
       "component": "scroll-area",
       "description": "The Pleat Scroll Area component for Foldkit.",
-      "exports": ["scrollArea"],
+      "exports": [
+        "scrollArea"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-scroll-area",
       "item": "pleat-scroll-area",
       "renderer": "pleat",
@@ -5581,7 +6063,9 @@
       "category": "other",
       "component": "section",
       "description": "The Pleat Section component for Foldkit.",
-      "exports": ["section"],
+      "exports": [
+        "section"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-section",
       "item": "pleat-section",
       "renderer": "pleat",
@@ -5611,7 +6095,10 @@
       "category": "other",
       "component": "selectable-card",
       "description": "The Pleat Selectable Card component for Foldkit.",
-      "exports": ["Message", "selectableCard"],
+      "exports": [
+        "Message",
+        "selectableCard"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-selectable-card",
       "item": "pleat-selectable-card",
       "renderer": "pleat",
@@ -5622,7 +6109,9 @@
       "category": "layout",
       "component": "separator",
       "description": "The Pleat Separator component for Foldkit.",
-      "exports": ["separator"],
+      "exports": [
+        "separator"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-separator",
       "item": "pleat-separator",
       "renderer": "pleat",
@@ -5706,7 +6195,9 @@
       "category": "feedback",
       "component": "skeleton",
       "description": "The Pleat Skeleton component for Foldkit.",
-      "exports": ["skeleton"],
+      "exports": [
+        "skeleton"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-skeleton",
       "item": "pleat-skeleton",
       "renderer": "pleat",
@@ -5752,7 +6243,9 @@
       "category": "feedback",
       "component": "spinner",
       "description": "The Pleat Spinner component for Foldkit.",
-      "exports": ["spinner"],
+      "exports": [
+        "spinner"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-spinner",
       "item": "pleat-spinner",
       "renderer": "pleat",
@@ -5763,7 +6256,12 @@
       "category": "other",
       "component": "stack",
       "description": "The Pleat Stack component for Foldkit.",
-      "exports": ["hStack", "stack", "stackItem", "vStack"],
+      "exports": [
+        "hStack",
+        "stack",
+        "stackItem",
+        "vStack"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-stack",
       "item": "pleat-stack",
       "renderer": "pleat",
@@ -5774,7 +6272,9 @@
       "category": "other",
       "component": "stat",
       "description": "The Pleat Stat component for Foldkit.",
-      "exports": ["stat"],
+      "exports": [
+        "stat"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-stat",
       "item": "pleat-stat",
       "renderer": "pleat",
@@ -5785,7 +6285,9 @@
       "category": "other",
       "component": "status-dot",
       "description": "The Pleat Status Dot component for Foldkit.",
-      "exports": ["statusDot"],
+      "exports": [
+        "statusDot"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-status-dot",
       "item": "pleat-status-dot",
       "renderer": "pleat",
@@ -5796,7 +6298,13 @@
       "category": "other",
       "component": "stepper",
       "description": "The Pleat Stepper component for Foldkit.",
-      "exports": ["Message", "Model", "init", "stepper", "update"],
+      "exports": [
+        "Message",
+        "Model",
+        "init",
+        "stepper",
+        "update"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-stepper",
       "item": "pleat-stepper",
       "renderer": "pleat",
@@ -5807,7 +6315,11 @@
       "category": "forms",
       "component": "switch",
       "description": "The Pleat Switch component for Foldkit.",
-      "exports": ["switch", "switchControl", "switchIds"],
+      "exports": [
+        "switch",
+        "switchControl",
+        "switchIds"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-switch",
       "item": "pleat-switch",
       "renderer": "pleat",
@@ -5858,7 +6370,9 @@
       "category": "other",
       "component": "text",
       "description": "The Pleat Text component for Foldkit.",
-      "exports": ["text"],
+      "exports": [
+        "text"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-text",
       "item": "pleat-text",
       "renderer": "pleat",
@@ -5869,7 +6383,9 @@
       "category": "forms",
       "component": "textarea",
       "description": "The Pleat Textarea component for Foldkit.",
-      "exports": ["textarea"],
+      "exports": [
+        "textarea"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-textarea",
       "item": "pleat-textarea",
       "renderer": "pleat",
@@ -5880,7 +6396,9 @@
       "category": "other",
       "component": "thumbnail",
       "description": "The Pleat Thumbnail component for Foldkit.",
-      "exports": ["thumbnail"],
+      "exports": [
+        "thumbnail"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-thumbnail",
       "item": "pleat-thumbnail",
       "renderer": "pleat",
@@ -5950,7 +6468,9 @@
       "category": "feedback",
       "component": "toast",
       "description": "The Pleat Toast component for Foldkit.",
-      "exports": ["toast"],
+      "exports": [
+        "toast"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-toast",
       "item": "pleat-toast",
       "renderer": "pleat",
@@ -5981,7 +6501,10 @@
       "category": "forms",
       "component": "toggle",
       "description": "The Pleat Toggle component for Foldkit.",
-      "exports": ["toggle", "toggleVariants"],
+      "exports": [
+        "toggle",
+        "toggleVariants"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-toggle",
       "item": "pleat-toggle",
       "renderer": "pleat",
@@ -5992,7 +6515,9 @@
       "category": "other",
       "component": "token",
       "description": "The Pleat Token component for Foldkit.",
-      "exports": ["token"],
+      "exports": [
+        "token"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-token",
       "item": "pleat-token",
       "renderer": "pleat",
@@ -6024,7 +6549,11 @@
       "category": "other",
       "component": "toolbar",
       "description": "The Pleat Toolbar component for Foldkit.",
-      "exports": ["Message", "TOOLBAR_EDGE_COMP_ATTR", "toolbar"],
+      "exports": [
+        "Message",
+        "TOOLBAR_EDGE_COMP_ATTR",
+        "toolbar"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-toolbar",
       "item": "pleat-toolbar",
       "renderer": "pleat",
@@ -6148,7 +6677,9 @@
       "category": "other",
       "component": "visually-hidden",
       "description": "The Pleat Visually Hidden component for Foldkit.",
-      "exports": ["visuallyHidden"],
+      "exports": [
+        "visuallyHidden"
+      ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-visually-hidden",
       "item": "pleat-visually-hidden",
       "renderer": "pleat",

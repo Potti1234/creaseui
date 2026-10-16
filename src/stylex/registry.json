@@ -2319,13 +2319,34 @@
     },
     {
       "name": "stylex-data-grid",
-      "type": "registry:lib",
-      "title": "StyleX Data Grid Source",
-      "description": "A shared StyleX source module used by Crease UI components.",
+      "type": "registry:ui",
+      "title": "Data Grid",
+      "description": "The StyleX Data Grid component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "data-grid",
+          "contract": "component.data-grid",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "dataGrid"
+          ],
+          "renderer": "stylex",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "data-grid.ts",
-          "type": "registry:lib",
+          "type": "registry:ui",
           "target": "@ui/stylex/data-grid.ts"
         }
       ],
@@ -2344,6 +2365,9 @@
         "Potti1234/creaseui/stylex-reset",
         "Potti1234/creaseui/stylex-style",
         "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
       ]
     },
     {

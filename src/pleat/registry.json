@@ -61,13 +61,39 @@
     },
     {
       "name": "pleat-action-bar",
-      "type": "registry:lib",
-      "title": "Pleat Action Bar Source",
-      "description": "A shared Pleat source module used by Crease UI components.",
+      "type": "registry:ui",
+      "title": "Action Bar",
+      "description": "The Pleat Action Bar component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "action-bar",
+          "contract": "component.action-bar",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "actionBar",
+            "actionBarClose",
+            "actionBarGroup",
+            "actionBarItem",
+            "actionBarSelection",
+            "actionBarSeparator"
+          ],
+          "renderer": "pleat",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "action-bar.ts",
-          "type": "registry:lib",
+          "type": "registry:ui",
           "target": "@ui/pleat/action-bar.ts"
         }
       ],
@@ -2101,13 +2127,34 @@
     },
     {
       "name": "pleat-data-grid",
-      "type": "registry:lib",
-      "title": "Pleat Data Grid Source",
-      "description": "A shared Pleat source module used by Crease UI components.",
+      "type": "registry:ui",
+      "title": "Data Grid",
+      "description": "The Pleat Data Grid component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "data-grid",
+          "contract": "component.data-grid",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "dataGrid"
+          ],
+          "renderer": "pleat",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "data-grid.ts",
-          "type": "registry:lib",
+          "type": "registry:ui",
           "target": "@ui/pleat/data-grid.ts"
         }
       ],
