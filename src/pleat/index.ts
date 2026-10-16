@@ -5,6 +5,7 @@
  * `Message`, `init`, and `update`, so flat star exports would be ambiguous.
  */
 export * as Accordion from './accordion.js'
+export * as ActionBar from './action-bar.js'
 export * as AlertDialog from './alert-dialog.js'
 export * as Alert from './alert.js'
 export * as AspectRatio from './aspect-ratio.js'
@@ -32,6 +33,7 @@ export * as Collapsible from './collapsible.js'
 export * as Combobox from './combobox.js'
 export * as Command from './command.js'
 export * as ContextMenu from './context-menu.js'
+export * as DataGrid from './data-grid.js'
 export * as DataTable from './data-table.js'
 export * as DateInput from './date-input.js'
 export * as DatePicker from './date-picker.js'
@@ -156,6 +158,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'combobox',
   'command',
   'context-menu',
+  'data-grid',
   'data-table',
   'date-input',
   'date-picker',

@@ -111,6 +111,7 @@ export type DataTableProps<Row, Msg> = Readonly<{
   actionBar?: ReadonlyArray<Html | string>
   /** Faceted variant: noun used in the delete dialog. */
   deleteItemLabel?: string
+  directionLabel?: string
 }>
 
 // The Tailwind `shadow-md` serializes with the theme's base ring/border
@@ -829,6 +830,9 @@ export const dataTable = <Row, Msg>(
 /* ---------- faceted variant (tablecn-style chrome) ---------- */
 
 const fst = stylex.create({
+  lgOnly: {
+    display: { default: 'none', '@media (min-width: 1024px)': 'flex' },
+  },
   badge2: {
     borderColor: 'transparent',
     borderRadius: foundationTokens.radiusSm,
@@ -2727,7 +2731,7 @@ const facetedPagination = <Row, Msg>(
     iconName: string,
     onClick: Msg,
     isDisabled: boolean,
-    extra?: string,
+    largeOnly = false,
   ): Html =>
     h.button(
       [
@@ -2736,8 +2740,7 @@ const facetedPagination = <Row, Msg>(
         h.OnClick(onClick),
         ...(isDisabled ? [h.Attribute('disabled', '')] : []),
         h.Class(
-          className(reset.button, fst.c85) +
-            (extra === undefined ? '' : ' ' + extra),
+          className(reset.button, fst.c85, ...(largeOnly ? [fst.lgOnly] : [])),
         ),
       ],
       [
@@ -2797,7 +2800,7 @@ const facetedPagination = <Row, Msg>(
                 'chevrons-left',
                 emit(DataTableStateMessages.SetPage({ index: 0 })),
                 page === 0,
-                'hidden lg:flex',
+                true,
               ),
               pageBtn(
                 'Go to previous page',
@@ -2816,7 +2819,7 @@ const facetedPagination = <Row, Msg>(
                 'chevrons-right',
                 emit(DataTableStateMessages.SetPage({ index: pageCount - 1 })),
                 page >= pageCount - 1,
-                'hidden lg:flex',
+                true,
               ),
             ],
           ),
