@@ -800,7 +800,13 @@ export const dataTable = <Row, Msg>(
                   h.Class(className(reset.input, styles.select)),
                 ],
                 pageSizes.map(size =>
-                  h.option([h.Value(String(size))], [String(size)]),
+                  h.option(
+                    [
+                      h.Value(String(size)),
+                      h.Class(className(fst.pageSizeOption)),
+                    ],
+                    [String(size)],
+                  ),
                 ),
               ),
               h.span(
@@ -1064,8 +1070,10 @@ const fst = {
     height: '0.875rem',
     width: '0.875rem',
   }),
+  pageSizeOption: Style.make({ paddingBlock: '0' }),
   c10: Style.make({
     paddingInline: '0.5rem',
+    paddingBlock: '0',
     color: tokens.foreground,
     fontWeight: 500,
     textAlign: 'left',
@@ -1076,6 +1084,7 @@ const fst = {
   }),
   c12: Style.make({
     paddingInline: '0.5rem',
+    paddingBlock: '0',
     color: tokens.foreground,
     fontWeight: 500,
     textAlign: 'left',
@@ -1498,6 +1507,7 @@ const fst = {
     Style.when(When.minWidth('640px'), { gap: '1.5rem', flexDirection: 'row' }),
   ),
   c89: Style.make({
+    marginBlock: '0',
     fontSize: '0.875rem',
     fontWeight: 500,
     lineHeight: '1.25rem',
