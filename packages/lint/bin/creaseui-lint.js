@@ -287,9 +287,21 @@ const doctor = async values => {
     ),
     rootDir,
   })
+  let incomplete = 0
   for (const file of sources) {
     const relative = toPosix(path.relative(rootDir, file))
     const owned = strict.ownership.fileFor(file)
+    /* An ignored implementation is unchecked, not approved: registration
+       never switches the authoring rules off. */
+    if (await eslint.isPathIgnored(file)) {
+      if (owned !== undefined || rendersHtml(file)) {
+        incomplete += 1
+        fail(
+          `${relative} is ignored by the ESLint config; its ${owned === undefined ? 'UI module' : `registered ${owned.role}`} is not checked`,
+        )
+      }
+      continue
+    }
     const effective = await eslint.calculateConfigForFile(file)
     const active = ruleId => {
       const setting = effective?.rules?.[`crease/${ruleId}`]
@@ -300,13 +312,16 @@ const doctor = async values => {
       const missing = ruleIds.filter(ruleId => !active(ruleId))
       if (missing.length > 0 && rendersHtml(file)) {
         uncovered += 1
+        incomplete += 1
         fail(
           `${relative} renders UI but is not covered by ${missing.join(', ')}`,
         )
       }
     } else {
-      if (owned.rawRendering && !active('component-contract'))
+      if (owned.rawRendering && !active('component-contract')) {
+        incomplete += 1
         fail(`${relative} (registered ${owned.role}) lost component-contract`)
+      }
       if (owned.role === 'renderer' && rendersHtml(file)) {
         const registered = strict.ownership.exportsOf(file)
         for (const { name, origin, originName } of renderingExports(
@@ -316,6 +331,7 @@ const doctor = async values => {
           const record = registered?.get(name)
           if (record === undefined) {
             uncovered += 1
+            incomplete += 1
             fail(
               `${relative}: rendering export \`${name}\` has no contract in the manifest`,
             )
@@ -357,6 +373,13 @@ const doctor = async values => {
     console.log(
       `note    no installed replacement for: ${missingReplacements.join(', ')} (diagnostics show install commands)`,
     )
+  if (incomplete > 0) {
+    console.log(
+      `coverage feature-only: ${incomplete} implementation or UI files are ignored, lose Crease rules or have unregistered rendering exports; this is not complete design-system enforcement`,
+    )
+    return 2
+  }
+  console.log('coverage complete')
   return findings.length === 0 ? 0 : 1
 }
 

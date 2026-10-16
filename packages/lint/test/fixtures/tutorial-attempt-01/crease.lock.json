@@ -1,0 +1,301 @@
+{
+  "schemaVersion": 1,
+  "policyVersion": "crease-default-v1",
+  "renderer": "tailwind",
+  "artifacts": [
+    {
+      "id": "tasks/primitives",
+      "files": [
+        {
+          "path": "src/design/primitives.ts",
+          "role": "renderer",
+          "rawRendering": true
+        }
+      ],
+      "exports": [
+        {
+          "file": "src/design/primitives.ts",
+          "name": "action",
+          "contract": "tasks.action",
+          "propsArgument": 0,
+          "builderArgument": 1,
+          "variants": {
+            "intent": [
+              "primary",
+              "quiet",
+              "outline"
+            ]
+          }
+        },
+        {
+          "file": "src/design/primitives.ts",
+          "name": "iconAction",
+          "contract": "tasks.iconAction",
+          "propsArgument": 0,
+          "builderArgument": 1,
+          "variants": {}
+        },
+        {
+          "file": "src/design/primitives.ts",
+          "name": "glyph",
+          "contract": "tasks.glyph",
+          "propsArgument": 0,
+          "builderArgument": 1,
+          "variants": {}
+        },
+        {
+          "file": "src/design/primitives.ts",
+          "name": "shortcut",
+          "contract": "tasks.shortcut",
+          "propsArgument": 0,
+          "builderArgument": 1,
+          "variants": {}
+        },
+        {
+          "file": "src/design/primitives.ts",
+          "name": "person",
+          "contract": "tasks.person",
+          "propsArgument": 0,
+          "builderArgument": 1,
+          "variants": {}
+        },
+        {
+          "file": "src/design/primitives.ts",
+          "name": "statusIcon",
+          "contract": "tasks.statusIcon",
+          "propsArgument": 0,
+          "builderArgument": 1,
+          "variants": {}
+        },
+        {
+          "file": "src/design/primitives.ts",
+          "name": "priorityIcon",
+          "contract": "tasks.priorityIcon",
+          "propsArgument": 0,
+          "builderArgument": 1,
+          "variants": {}
+        },
+        {
+          "file": "src/design/primitives.ts",
+          "name": "brand",
+          "contract": "tasks.brand",
+          "propsArgument": 1,
+          "builderArgument": 0,
+          "variants": {}
+        }
+      ]
+    },
+    {
+      "id": "tasks/shell",
+      "files": [
+        {
+          "path": "src/design/shell.ts",
+          "role": "renderer",
+          "rawRendering": true
+        }
+      ],
+      "exports": [
+        {
+          "file": "src/design/shell.ts",
+          "name": "appShell",
+          "contract": "tasks.appShell",
+          "propsArgument": 0,
+          "builderArgument": 1,
+          "variants": {}
+        },
+        {
+          "file": "src/design/shell.ts",
+          "name": "sidebar",
+          "contract": "tasks.sidebar",
+          "propsArgument": 0,
+          "builderArgument": 1,
+          "variants": {}
+        },
+        {
+          "file": "src/design/shell.ts",
+          "name": "pageHeader",
+          "contract": "tasks.pageHeader",
+          "propsArgument": 0,
+          "builderArgument": 1,
+          "variants": {}
+        },
+        {
+          "file": "src/design/shell.ts",
+          "name": "toolbar",
+          "contract": "tasks.toolbar",
+          "propsArgument": 0,
+          "builderArgument": 1,
+          "variants": {}
+        },
+        {
+          "file": "src/design/shell.ts",
+          "name": "feedback",
+          "contract": "tasks.feedback",
+          "propsArgument": 0,
+          "builderArgument": 1,
+          "variants": {}
+        }
+      ]
+    },
+    {
+      "id": "tasks/issue-list",
+      "files": [
+        {
+          "path": "src/design/issue-list.ts",
+          "role": "renderer",
+          "rawRendering": true
+        }
+      ],
+      "exports": [
+        {
+          "file": "src/design/issue-list.ts",
+          "name": "issueCollection",
+          "contract": "tasks.issueCollection",
+          "propsArgument": 0,
+          "builderArgument": 1,
+          "variants": {}
+        },
+        {
+          "file": "src/design/issue-list.ts",
+          "name": "issueGroup",
+          "contract": "tasks.issueGroup",
+          "propsArgument": 0,
+          "builderArgument": 1,
+          "variants": {}
+        },
+        {
+          "file": "src/design/issue-list.ts",
+          "name": "issueRow",
+          "contract": "tasks.issueRow",
+          "propsArgument": 0,
+          "builderArgument": 1,
+          "variants": {}
+        },
+        {
+          "file": "src/design/issue-list.ts",
+          "name": "emptyIssues",
+          "contract": "tasks.emptyIssues",
+          "propsArgument": 0,
+          "builderArgument": 1,
+          "variants": {}
+        }
+      ]
+    },
+    {
+      "id": "tasks/pickers",
+      "files": [
+        {
+          "path": "src/design/pickers.ts",
+          "role": "renderer",
+          "rawRendering": true
+        }
+      ],
+      "exports": [
+        {
+          "file": "src/design/pickers.ts",
+          "name": "statusPicker",
+          "contract": "tasks.statusPicker",
+          "propsArgument": 0,
+          "builderArgument": 1,
+          "variants": {
+            "presentation": [
+              "row",
+              "composer"
+            ]
+          }
+        },
+        {
+          "file": "src/design/pickers.ts",
+          "name": "priorityPicker",
+          "contract": "tasks.priorityPicker",
+          "propsArgument": 0,
+          "builderArgument": 1,
+          "variants": {
+            "presentation": [
+              "row",
+              "composer"
+            ]
+          }
+        },
+        {
+          "file": "src/design/pickers.ts",
+          "name": "assigneePicker",
+          "contract": "tasks.assigneePicker",
+          "propsArgument": 0,
+          "builderArgument": 1,
+          "variants": {
+            "presentation": [
+              "row",
+              "composer"
+            ]
+          }
+        },
+        {
+          "file": "src/design/pickers.ts",
+          "name": "filterPicker",
+          "contract": "tasks.filterPicker",
+          "propsArgument": 0,
+          "builderArgument": 1,
+          "variants": {
+            "presentation": [
+              "row",
+              "composer"
+            ]
+          }
+        },
+        {
+          "file": "src/design/pickers.ts",
+          "name": "displayPicker",
+          "contract": "tasks.displayPicker",
+          "propsArgument": 0,
+          "builderArgument": 1,
+          "variants": {
+            "presentation": [
+              "row",
+              "composer"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "tasks/composer",
+      "files": [
+        {
+          "path": "src/design/composer.ts",
+          "role": "renderer",
+          "rawRendering": true
+        }
+      ],
+      "exports": [
+        {
+          "file": "src/design/composer.ts",
+          "name": "issueComposer",
+          "contract": "tasks.issueComposer",
+          "propsArgument": 0,
+          "builderArgument": 1,
+          "variants": {}
+        },
+        {
+          "file": "src/design/composer.ts",
+          "name": "resetConfirmation",
+          "contract": "tasks.resetConfirmation",
+          "propsArgument": 0,
+          "builderArgument": 1,
+          "variants": {}
+        }
+      ]
+    },
+    {
+      "id": "tasks/entry",
+      "files": [
+        {
+          "path": "src/entry.ts",
+          "role": "setup",
+          "rawRendering": false
+        }
+      ],
+      "exports": []
+    }
+  ]
+}

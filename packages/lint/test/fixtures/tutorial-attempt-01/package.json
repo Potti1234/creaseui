@@ -1,0 +1,34 @@
+{
+  "name": "creaseui-demo",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 5197 --strictPort",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 4190 --strictPort",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src",
+    "contracts": "node scripts/write-contracts.mjs"
+  },
+  "dependencies": {
+    "@effect/platform-browser": "4.0.0-rc.117",
+    "@foldkit/ui": "0.164.0",
+    "@fontsource-variable/inter": "5.2.8",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "effect": "4.0.0-rc.117",
+    "foldkit": "0.164.0",
+    "tailwind-merge": "^3.7.0"
+  },
+  "devDependencies": {
+    "@creaseui/lint": "file:vendor/creaseui-lint-0.1.0.tgz",
+    "@foldkit/vite-plugin": "0.25.0",
+    "@tailwindcss/vite": "4.3.1",
+    "eslint": "10.8.0",
+    "tailwindcss": "4.3.1",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.66.0",
+    "vite": "8.0.16"
+  }
+}
