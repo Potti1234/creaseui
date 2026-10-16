@@ -925,7 +925,7 @@ Source: [`src/ui/item.ts`](../src/ui/item.ts)
 | `itemActions` | value | `itemActions: value` |
 | `itemHeader` | value | `itemHeader: value` |
 | `itemFooter` | value | `itemFooter: value` |
-| `ItemGroupSeparator` | type | `ItemGroupSeparator = Readonly<{ separator: ItemSeparatorProps; }>` |
+| `ItemGroupSeparator` | type | `ItemGroupSeparator = Readonly<{ render: <Msg>(h: HtmlBuilder<Msg>) => Html; }>` |
 | `itemGroupSeparator` | function | `itemGroupSeparator(props: ItemSeparatorProps = {}): ItemGroupSeparator` |
 | `ItemGroupEntry` | type | `ItemGroupEntry = Html \| string \| ItemGroupSeparator` |
 | `ItemGroupProps` | type | `ItemGroupProps = Readonly<{ children: ReadonlyArray<ItemGroupEntry>; class?: string; }>` |

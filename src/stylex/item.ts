@@ -249,12 +249,16 @@ export const itemActions = slotDiv('item-actions', styles.actions)
 export const itemHeader = slotDiv('item-header', styles.header)
 export const itemFooter = slotDiv('item-footer', styles.footer)
 /** Decorative separator between ItemGroup entries; never a list item. */
-export type ItemGroupSeparator = Readonly<{ separator: ItemSeparatorProps }>
+export type ItemGroupSeparator = Readonly<{
+  render: <Msg>(h: HtmlBuilder<Msg>) => Html
+}>
 const groupSeparators = new WeakSet<object>()
 export const itemGroupSeparator = (
   props: ItemSeparatorProps = {},
 ): ItemGroupSeparator => {
-  const entry = { separator: props }
+  const entry: ItemGroupSeparator = {
+    render: h => itemSeparator(props, h),
+  }
   groupSeparators.add(entry)
   return entry
 }
@@ -288,7 +292,7 @@ export const itemGroup = <Msg>(p: ItemGroupProps, h: HtmlBuilder<Msg>): Html =>
     ],
     [...p.children].map(child =>
       isGroupSeparator(child)
-        ? itemSeparator(child.separator, h)
+        ? child.render(h)
         : h.div(
             [
               h.Role('listitem'),

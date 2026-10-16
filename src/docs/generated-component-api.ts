@@ -2940,7 +2940,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "ItemGroupSeparator",
       "kind": "type",
-      "signature": "ItemGroupSeparator = Readonly<{ separator: ItemSeparatorProps; }>"
+      "signature": "ItemGroupSeparator = Readonly<{ render: <Msg>(h: HtmlBuilder<Msg>) => Html; }>"
     },
     {
       "name": "itemGroupSeparator",

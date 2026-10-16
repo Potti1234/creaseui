@@ -1616,7 +1616,7 @@ Examples: Basic, Variant, Size, Icon, Avatar, Image, Group, Header, Link, Dropdo
 - `itemActions: value` (value)
 - `itemHeader: value` (value)
 - `itemFooter: value` (value)
-- `ItemGroupSeparator = Readonly<{ separator: ItemSeparatorProps; }>` (type)
+- `ItemGroupSeparator = Readonly<{ render: <Msg>(h: HtmlBuilder<Msg>) => Html; }>` (type)
 - `itemGroupSeparator(props: ItemSeparatorProps = {}): ItemGroupSeparator` (function)
 - `ItemGroupEntry = Html | string | ItemGroupSeparator` (type)
 - `ItemGroupProps = Readonly<{ children: ReadonlyArray<ItemGroupEntry>; class?: string; }>` (type)
