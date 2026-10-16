@@ -269,3 +269,16 @@ test('init reads the shadcn ui/lib targets and registers the stylesheet entry as
   assert.equal(byPath.has('src/app/main.ts'), false)
   rmSync(directory, { force: true, recursive: true })
 })
+
+test('--help prints usage and unknown options exit 2 with usage', () => {
+  const directory = scratch()
+  for (const args of [['--help'], ['init', '--help'], ['doctor', '-h'], []]) {
+    const result = run(directory, ...args)
+    assert.equal(result.status, 0, args.join(' '))
+    assert.match(result.stdout, /Usage:\n {2}creaseui-lint init/u)
+  }
+  const unknown = run(directory, 'init', '--nope')
+  assert.equal(unknown.status, 2)
+  assert.match(unknown.stderr, /Unknown option '--nope'[\s\S]*Usage:/u)
+  assert.doesNotMatch(unknown.stderr, /\n\s+at /u)
+})

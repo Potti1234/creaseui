@@ -664,6 +664,15 @@ const inspect = values => {
 
 const main = async () => {
   const [command, ...rest] = process.argv.slice(2)
+  if (
+    command === undefined ||
+    ['help', '--help', '-h'].includes(command) ||
+    rest.includes('--help') ||
+    rest.includes('-h')
+  ) {
+    console.log(USAGE)
+    return 0
+  }
   const { values } = parseArgs({
     allowPositionals: false,
     args: rest,
@@ -699,7 +708,9 @@ main().then(
     console.error(
       error instanceof CreaseConfigError
         ? error.message
-        : (error?.stack ?? String(error)),
+        : error?.code?.startsWith('ERR_PARSE_ARGS_')
+          ? `${error.message}\n\n${USAGE}`
+          : (error?.stack ?? String(error)),
     )
     process.exit(2)
   },
