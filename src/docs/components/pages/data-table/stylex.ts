@@ -7,6 +7,7 @@ import {
   facetedDocs,
   type FacetedDocId,
   type Payment,
+  payments,
 } from '@/docs/components/pages/data-table/shared'
 import { icon } from '@/lib/icon'
 import {
@@ -211,7 +212,7 @@ export const dataTableStyleXPreview: ExamplePreviewProvider = <Msg>(
           id: `docs-data-table-${String(index)}`,
           model: preview.table,
           toParentMessage: wrap,
-          rows: preview.rows,
+          rows: payments,
           columns: columns(fixture.rtl),
           rowKey: row => row.id,
           ...(fixture.filter

@@ -9,6 +9,7 @@ import {
   docTableConfig,
   facetedDocs,
   facetedPayments,
+  payments,
   type FacetedDocId,
   type Payment,
 } from '@/docs/components/pages/data-table/shared'
@@ -334,7 +335,7 @@ export const dataTableTailwindPreviewProgram = definePreviewProgram<Model, Got>(
               id: `docs-data-table-${String(index)}`,
               model: model.table,
               toParentMessage: wrapTable,
-              rows: model.rows,
+              rows: payments,
               columns: columns(fixture.rtl),
               rowKey: row => row.id,
               ...(fixture.filter

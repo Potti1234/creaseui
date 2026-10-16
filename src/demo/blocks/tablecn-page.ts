@@ -377,7 +377,7 @@ const PRIORITY_ICONS: Record<string, string> = {
 const LABEL_ICONS: Record<string, string> = {
   bug: 'bug',
   feature: 'sparkles',
-  enhancement: 'arrow-up-circle',
+  enhancement: 'circle-arrow-up',
   documentation: 'book',
 }
 
