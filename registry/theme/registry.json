@@ -131,6 +131,19 @@
           }
         }
       }
+    },
+    {
+      "name": "crease-theme-css",
+      "type": "registry:style",
+      "title": "Crease UI Theme (plain CSS)",
+      "description": "The crease-theme roles, aliases and base layer as a plain stylesheet for StyleX and Pleat projects without Tailwind. Import src/crease-theme.css from your stylesheet or entry.",
+      "files": [
+        {
+          "path": "crease-theme.css",
+          "type": "registry:file",
+          "target": "src/crease-theme.css"
+        }
+      ]
     }
   ]
 }

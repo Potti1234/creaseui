@@ -118,3 +118,41 @@ describe('crease-theme registry item', () => {
     assert.equal(base?.body?.color, 'var(--color-foreground)')
   })
 })
+
+describe('crease-theme-css registry item', () => {
+  const css = readFileSync('registry/theme/crease-theme.css', 'utf8')
+  const defined = new Set(
+    [...css.matchAll(/^ {2}--([a-z0-9-]+):/gmu)].map(match => match[1]),
+  )
+
+  it('defines every theme role the StyleX and Pleat tokens read', () => {
+    for (const tokens of ['src/stylex/tokens.stylex.ts', 'src/pleat/tokens.ts'])
+      for (const [, role] of readFileSync(tokens, 'utf8').matchAll(
+        /var\(--([a-z0-9-]+)/gu,
+      ))
+        if (role !== 'drawer-bleed-background')
+          assert.ok(defined.has(role), `${tokens} reads undefined --${role}`)
+    for (const role of ['font-sans', 'font-mono', 'color-border'])
+      assert.ok(defined.has(role), `--${role}`)
+    assert.doesNotMatch(css, /@theme|@custom-variant|@apply/u)
+  })
+
+  it('is a dependency of every StyleX and Pleat component item', () => {
+    for (const file of ['src/stylex/registry.json', 'src/pleat/registry.json'])
+      for (const item of (
+        JSON.parse(readFileSync(file, 'utf8')) as {
+          items: ReadonlyArray<{
+            name: string
+            type: string
+            registryDependencies?: ReadonlyArray<string>
+          }>
+        }
+      ).items.filter(entry => entry.type === 'registry:ui'))
+        assert.ok(
+          item.registryDependencies?.includes(
+            'Potti1234/creaseui/crease-theme-css',
+          ),
+          `${file} ${item.name}`,
+        )
+  })
+})

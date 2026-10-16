@@ -163,6 +163,8 @@ const owners = fileOwners(root, [
   { directory: 'src/pleat', items },
 ])
 
+const THEME = 'Potti1234/creaseui/crease-theme-css'
+
 for (const item of items) {
   if (vendorItems.some(vendor => vendor.name === item.name)) continue
   const sourcePath = join(directory, item.files[0].path)
@@ -171,6 +173,9 @@ for (const item of items) {
   if (dependencies.length) item.dependencies = dependencies
   if (graph.registry.size)
     item.registryDependencies = [...graph.registry].sort()
+  item.registryDependencies = [
+    ...new Set([...(item.registryDependencies ?? []), THEME]),
+  ].sort()
   const source = readFileSync(sourcePath, 'utf8')
   if (source.includes("'@pleat/core'"))
     item.registryDependencies = [

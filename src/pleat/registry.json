@@ -48,6 +48,7 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/accordion-state",
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -93,6 +94,7 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/alert-dialog-behavior",
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-button",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -141,6 +143,7 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/alert-behavior",
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
@@ -182,6 +185,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-style"
@@ -200,6 +204,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-tokens"
       ]
@@ -217,6 +222,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-core"
       ]
     },
@@ -263,6 +269,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-attachment-markers",
         "Potti1234/creaseui/pleat-button",
         "Potti1234/creaseui/pleat-contracts",
@@ -311,6 +318,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-complex-tokens",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -334,6 +342,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-core"
       ]
     },
@@ -385,6 +394,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-avatar-markers",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -428,6 +438,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
@@ -476,6 +487,7 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/banner-behavior",
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-button",
         "Potti1234/creaseui/pleat-contracts",
@@ -520,6 +532,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-reset",
@@ -569,6 +582,7 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/breadcrumb-behavior",
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -591,6 +605,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-core"
       ]
     },
@@ -632,6 +647,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-bubble-markers",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -656,6 +672,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens"
       ]
@@ -697,6 +714,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-button-group-join",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -744,6 +762,7 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/button-behavior",
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-button-group-join",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -768,6 +787,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-core"
       ]
     },
@@ -824,6 +844,7 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/calendar-range",
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-calendar-markers",
         "Potti1234/creaseui/pleat-contracts",
@@ -846,6 +867,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-core"
       ]
     },
@@ -889,6 +911,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
@@ -935,6 +958,7 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/carousel-lifecycle",
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -979,6 +1003,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-style"
@@ -1037,6 +1062,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/echarts-adapter",
         "Potti1234/creaseui/pleat-complex-tokens",
         "Potti1234/creaseui/pleat-contracts",
@@ -1092,6 +1118,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -1115,6 +1142,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-core"
       ]
     },
@@ -1153,6 +1181,7 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/checkbox-behavior",
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-checkbox-markers",
         "Potti1234/creaseui/pleat-contracts",
@@ -1198,6 +1227,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-complex-tokens",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -1250,6 +1280,7 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/code-block-behavior",
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-button",
         "Potti1234/creaseui/pleat-complex-tokens",
@@ -1296,6 +1327,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
@@ -1338,6 +1370,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-complex-tokens",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -1398,6 +1431,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -1460,6 +1494,7 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/command-behavior",
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -1481,6 +1516,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-core"
       ]
     },
@@ -1497,6 +1533,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-composition-composition-theme",
         "Potti1234/creaseui/pleat-composition-element",
         "Potti1234/creaseui/pleat-composition-semantic-theme",
@@ -1521,6 +1558,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-interaction-tokens",
@@ -1542,6 +1580,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-core"
       ]
     },
@@ -1556,6 +1595,9 @@
           "type": "registry:lib",
           "target": "@ui/pleat/composition/composition-tokens.const.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css"
       ]
     },
     {
@@ -1571,6 +1613,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-composition-types"
       ]
     },
@@ -1587,6 +1630,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-composition-templates"
       ]
     },
@@ -1603,6 +1647,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-composition-composition-theme",
         "Potti1234/creaseui/pleat-composition-element",
         "Potti1234/creaseui/pleat-composition-semantic-layout-tokens-const",
@@ -1627,6 +1672,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-style"
@@ -1645,6 +1691,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-composition-box",
         "Potti1234/creaseui/pleat-composition-composition-theme",
         "Potti1234/creaseui/pleat-composition-evaluations",
@@ -1674,6 +1721,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-composition-element",
         "Potti1234/creaseui/pleat-composition-space",
         "Potti1234/creaseui/pleat-composition-types",
@@ -1695,6 +1743,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-reset",
@@ -1714,6 +1763,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-composition-semantic-layout",
         "Potti1234/creaseui/pleat-composition-theme",
         "Potti1234/creaseui/pleat-composition-types-internal"
@@ -1730,6 +1780,9 @@
           "type": "registry:lib",
           "target": "@ui/pleat/composition/semantic-layout-tokens.const.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css"
       ]
     },
     {
@@ -1745,6 +1798,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-composition-box",
         "Potti1234/creaseui/pleat-composition-grid",
         "Potti1234/creaseui/pleat-composition-inline",
@@ -1766,6 +1820,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-core"
       ]
     },
@@ -1782,6 +1837,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-composition-semantic-theme",
         "Potti1234/creaseui/pleat-core"
       ]
@@ -1799,6 +1855,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-reset",
@@ -1819,6 +1876,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-composition-composition-tokens-const",
         "Potti1234/creaseui/pleat-composition-semantic-theme",
         "Potti1234/creaseui/pleat-composition-types",
@@ -1838,6 +1896,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-composition-element",
         "Potti1234/creaseui/pleat-composition-space",
         "Potti1234/creaseui/pleat-composition-types",
@@ -1856,6 +1915,9 @@
           "type": "registry:lib",
           "target": "@ui/pleat/composition/templates.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css"
       ]
     },
     {
@@ -1871,6 +1933,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-composition-composition-tokens-const",
         "Potti1234/creaseui/pleat-composition-semantic-theme",
         "Potti1234/creaseui/pleat-composition-types",
@@ -1893,6 +1956,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-complex-tokens",
         "Potti1234/creaseui/pleat-composition-semantic-themes",
         "Potti1234/creaseui/pleat-composition-types",
@@ -1916,6 +1980,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-composition-semantic-layout",
         "Potti1234/creaseui/pleat-composition-types"
       ]
@@ -1931,6 +1996,9 @@
           "type": "registry:lib",
           "target": "@ui/pleat/composition/types.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css"
       ]
     },
     {
@@ -1981,6 +2049,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-dropdown-menu"
       ]
@@ -1998,6 +2067,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/layout-properties",
         "Potti1234/creaseui/pleat-core"
       ]
@@ -2036,6 +2106,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/data-table-mechanics",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-button",
@@ -2095,6 +2166,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/date-input-behavior",
         "Potti1234/creaseui/date-parse-behavior",
         "Potti1234/creaseui/icons",
@@ -2166,6 +2238,7 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/calendar-range",
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-calendar",
         "Potti1234/creaseui/pleat-contracts",
@@ -2222,6 +2295,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/date-parse-behavior",
         "Potti1234/creaseui/date-range-input-behavior",
         "Potti1234/creaseui/icons",
@@ -2283,6 +2357,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/date-parse-behavior",
         "Potti1234/creaseui/date-time-input-behavior",
         "Potti1234/creaseui/icons",
@@ -2352,6 +2427,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-overlay-tokens",
@@ -2393,6 +2469,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-style"
       ]
@@ -2449,6 +2526,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/drawer-behavior",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -2508,6 +2586,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/dropdown-menu-behavior",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-button",
@@ -2562,6 +2641,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
@@ -2604,6 +2684,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -2624,6 +2705,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-core"
       ]
     },
@@ -2676,6 +2758,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/field-behavior",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -2727,6 +2810,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/file-input-behavior",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/input-status",
@@ -2781,6 +2865,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/form-behavior",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -2804,6 +2889,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-core"
       ]
     },
@@ -2844,6 +2930,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-style"
@@ -2885,6 +2972,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-reset",
@@ -2947,6 +3035,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/hover-card-behavior",
         "Potti1234/creaseui/pleat-button",
         "Potti1234/creaseui/pleat-contracts",
@@ -2995,6 +3084,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -3049,6 +3139,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -3103,6 +3194,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-button",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -3148,6 +3240,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
@@ -3193,6 +3286,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/input-behavior",
         "Potti1234/creaseui/pleat-button-group-join",
         "Potti1234/creaseui/pleat-contracts",
@@ -3216,6 +3310,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/echarts-adapter",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -3235,6 +3330,9 @@
           "type": "registry:lib",
           "target": "@ui/pleat/interaction-tokens.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css"
       ]
     },
     {
@@ -3283,6 +3381,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
@@ -3326,6 +3425,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
@@ -3370,6 +3470,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-style"
@@ -3422,6 +3523,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/lightbox-behavior",
         "Potti1234/creaseui/pleat-contracts",
@@ -3469,6 +3571,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -3522,6 +3625,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/input-status",
         "Potti1234/creaseui/list-input-behavior",
@@ -3572,6 +3676,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
@@ -3594,6 +3699,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-core"
       ]
     },
@@ -3610,6 +3716,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-tokens"
       ]
@@ -3659,6 +3766,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/message-scroller-behavior",
         "Potti1234/creaseui/pleat-complex-tokens",
         "Potti1234/creaseui/pleat-contracts",
@@ -3706,6 +3814,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/map-adapter"
       ]
     },
@@ -3743,6 +3852,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/map-adapter"
       ]
     },
@@ -3780,6 +3890,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/map-adapter",
         "Potti1234/creaseui/pleat-map"
       ]
@@ -3818,6 +3929,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/map-adapter"
       ]
     },
@@ -3857,6 +3969,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/map-adapter"
       ]
     },
@@ -3897,6 +4010,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/map-adapter",
         "Potti1234/creaseui/pleat-map"
       ]
@@ -3935,6 +4049,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/map-adapter",
         "Potti1234/creaseui/pleat-map"
       ]
@@ -3973,6 +4088,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/map-adapter"
       ]
     },
@@ -4013,6 +4129,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/map-adapter"
       ]
     },
@@ -4029,6 +4146,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-core"
       ]
     },
@@ -4069,6 +4187,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/map-adapter",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -4121,6 +4240,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/markdown-behavior",
         "Potti1234/creaseui/pleat-blockquote",
@@ -4174,6 +4294,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-interaction-tokens",
@@ -4227,6 +4348,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/menubar-behavior",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -4287,6 +4409,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/message-scroller-behavior",
         "Potti1234/creaseui/pleat-contracts",
@@ -4310,6 +4433,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-core"
       ]
     },
@@ -4355,6 +4479,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
@@ -4403,6 +4528,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/metadata-list-behavior",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -4459,6 +4585,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/mobile-nav-behavior",
         "Potti1234/creaseui/pleat-contracts",
@@ -4511,6 +4638,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/more-menu-behavior",
         "Potti1234/creaseui/pleat-contracts",
@@ -4561,6 +4689,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/multi-selector-behavior",
         "Potti1234/creaseui/multi-selector-view-behavior",
@@ -4616,6 +4745,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -4666,6 +4796,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-complex-tokens",
         "Potti1234/creaseui/pleat-contracts",
@@ -4716,6 +4847,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/input-status",
         "Potti1234/creaseui/number-input-behavior",
@@ -4770,6 +4902,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/overflow-list-behavior",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -4789,6 +4922,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/overlay-boundary-behavior"
       ]
     },
@@ -4805,6 +4939,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-complex-tokens",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
@@ -4853,6 +4988,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pagination-behavior",
         "Potti1234/creaseui/pleat-contracts",
@@ -4911,6 +5047,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-button",
         "Potti1234/creaseui/pleat-complex-tokens",
         "Potti1234/creaseui/pleat-contracts",
@@ -4958,6 +5095,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
@@ -4980,6 +5118,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-core"
       ]
     },
@@ -5021,6 +5160,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -5046,6 +5186,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foldkit",
         "Potti1234/creaseui/pleat-tokens"
@@ -5099,6 +5240,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-complex-tokens",
         "Potti1234/creaseui/pleat-contracts",
@@ -5142,6 +5284,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-style",
@@ -5184,6 +5327,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-style",
@@ -5235,6 +5379,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-button-group-join",
         "Potti1234/creaseui/pleat-contracts",
@@ -5284,6 +5429,7 @@
       "registryDependencies": [
         "Potti1234/creaseui/card-pressable-behavior",
         "Potti1234/creaseui/card-surface-behavior",
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
@@ -5329,6 +5475,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-style",
@@ -5397,6 +5544,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -5422,6 +5570,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-core"
       ]
     },
@@ -5483,6 +5632,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-complex-tokens",
         "Potti1234/creaseui/pleat-contracts",
@@ -5530,6 +5680,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
@@ -5599,6 +5750,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
@@ -5643,6 +5795,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -5690,6 +5843,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-reset",
@@ -5730,6 +5884,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-reset",
@@ -5771,6 +5926,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
@@ -5817,6 +5973,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-button",
         "Potti1234/creaseui/pleat-contracts",
@@ -5842,6 +5999,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foldkit"
       ]
@@ -5882,6 +6040,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
@@ -5935,6 +6094,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-complex-tokens",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -5989,6 +6149,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
@@ -6010,6 +6171,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-complex-tokens",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -6033,6 +6195,7 @@
         "@tanstack/table-core@8.21.3"
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-button",
         "Potti1234/creaseui/pleat-reset",
@@ -6077,6 +6240,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-reset",
@@ -6120,6 +6284,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
@@ -6143,6 +6308,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-core"
       ]
     },
@@ -6180,6 +6346,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-complex-tokens",
         "Potti1234/creaseui/pleat-contracts",
@@ -6232,6 +6399,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/input-status",
         "Potti1234/creaseui/pleat-contracts",
@@ -6290,6 +6458,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-astryx-text",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -6345,6 +6514,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/hover-card-behavior",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-astryx-text",
@@ -6392,6 +6562,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-button",
         "Potti1234/creaseui/pleat-contracts",
@@ -6445,6 +6616,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
@@ -6490,6 +6662,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
@@ -6532,6 +6705,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-complex-tokens",
         "Potti1234/creaseui/pleat-contracts",
@@ -6585,6 +6759,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -6611,6 +6786,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-core"
       ]
     },
@@ -6650,6 +6826,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-style",
@@ -6703,6 +6880,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-button",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -6762,6 +6940,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/nav-menu-behavior",
         "Potti1234/creaseui/pleat-contracts",
@@ -6821,6 +7000,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-button",
         "Potti1234/creaseui/pleat-contracts",
@@ -6845,6 +7025,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-core"
       ]
     },
@@ -6895,6 +7076,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
@@ -6951,6 +7133,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
@@ -6972,6 +7155,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-complex-tokens",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-interaction-tokens",
@@ -6991,6 +7175,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-reset",
@@ -7033,6 +7218,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style"

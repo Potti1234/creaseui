@@ -90,10 +90,16 @@ and `@/lib/pleat/foldkit`. Map the `@pleat/core` and `@pleat/foldkit` import
 specifiers to those installed sources through tsconfig `paths` or the bundler
 alias of your choice.
 
-Every UI item declares `crease-theme` as a registry dependency. Installing a
-component therefore also installs the complete background, card, popover,
-control, chart, sidebar, and radius token contract into the configured Tailwind
-stylesheet. To install the shared utility plus the production-tested Alert,
+Every Tailwind UI item declares `crease-theme` as a registry dependency.
+Installing a component therefore also installs the complete background, card,
+popover, control, chart, sidebar, and radius token contract into the configured
+Tailwind stylesheet. `crease-theme` writes Tailwind `@theme` and `cssVars`, so
+StyleX and Pleat items instead declare `crease-theme-css`: the same roles, the
+`--color-*`, `--radius-*` and font aliases the components read, and the
+document base layer as a plain `src/crease-theme.css`. Import it once from the
+app's stylesheet (`@import './crease-theme.css';`) or entry module; `creaseui-lint
+doctor` reports theme roles the installed components read but no stylesheet
+defines. To install the shared utility plus the production-tested Alert,
 Badge, Button, Card, Empty, Input, Item, Separator, and Textarea set at once:
 
 ```sh

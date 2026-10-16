@@ -258,5 +258,6 @@ console.log(
 )
 
 await import('./generate-dashboard-registry.mjs')
+await import('./generate-theme-css.mjs')
 await import('./generate-stylex-registry.mjs')
 await import('./generate-pleat-registry.mjs')

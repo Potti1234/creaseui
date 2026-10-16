@@ -110,6 +110,8 @@ const owners = fileOwners(root, [
   { directory: 'src/stylex', items },
 ])
 
+const THEME = 'Potti1234/creaseui/crease-theme-css'
+
 for (const item of items) {
   const sourcePath = join(directory, item.files[0].path)
   const graph = sourceDependencies(root, sourcePath, owners, item.name)
@@ -117,6 +119,9 @@ for (const item of items) {
   if (dependencies.length) item.dependencies = dependencies
   if (graph.registry.size)
     item.registryDependencies = [...graph.registry].sort()
+  item.registryDependencies = [
+    ...new Set([...(item.registryDependencies ?? []), THEME]),
+  ].sort()
   if (publicFiles.has(item.files[0].path)) {
     item.devDependencies = [
       `@stylexjs/unplugin@${packageVersions['@stylexjs/unplugin']}`,
