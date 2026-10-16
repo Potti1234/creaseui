@@ -266,12 +266,12 @@ export type ItemGroupEntry = Html | string | ItemGroupSeparator
 const isGroupSeparator = (entry: ItemGroupEntry): entry is ItemGroupSeparator =>
   typeof entry === 'object' && entry !== null && groupSeparators.has(entry)
 
-export type ItemGroupProps = Omit<SlotProps, 'children'> &
-  Readonly<{
-    children: ReadonlyArray<ItemGroupEntry>
-    spacing?: 'none' | 'sm' | 'md' | 'lg'
-    columns?: 2 | 3 | 4
-  }>
+export type ItemGroupProps = Readonly<{
+  children: ReadonlyArray<ItemGroupEntry>
+  layoutStyle?: ComponentLayoutStyle
+  spacing?: 'none' | 'sm' | 'md' | 'lg'
+  columns?: 2 | 3 | 4
+}>
 export const itemGroup = <Msg>(p: ItemGroupProps, h: HtmlBuilder<Msg>): Html =>
   h.div(
     [
