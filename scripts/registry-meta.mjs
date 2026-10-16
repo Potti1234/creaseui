@@ -13,18 +13,31 @@ const packageJson = JSON.parse(
 const foldkitVersion = packageJson.dependencies?.foldkit
 const DOCS = 'https://github.com/Potti1234/creaseui/blob/main'
 
-const contractsByItem = new Map()
+/* The same contract `creaseui-lint init` records for the installed exports. */
+const replacedContracts = new Map()
 for (const [contract, item] of CONTRACT_REPLACEMENTS)
-  contractsByItem.set(item, [...(contractsByItem.get(item) ?? []), contract])
+  replacedContracts.set(item, [
+    ...(replacedContracts.get(item) ?? []),
+    contract,
+  ])
+export const contractFor = component =>
+  replacedContracts.get(component)?.[0] ?? `component.${component}`
 
 const exportNames = source =>
   [
-    ...source.matchAll(
-      /^export (?:const|function|class|let) ([A-Za-z_$][\w$]*)/gmu,
+    ...[
+      ...source.matchAll(
+        /^export (?:async )?(?:const|function\*?|class|let) ([A-Za-z_$][\w$]*)/gmu,
+      ),
+    ].map(match => match[1]),
+    ...[...source.matchAll(/^export \{([^}]*)\}/gmu)].flatMap(match =>
+      match[1]
+        .split(',')
+        .map(part => part.trim())
+        .filter(part => part !== '' && !part.startsWith('type '))
+        .map(part => part.split(/\s+as\s+/u).at(-1)),
     ),
-  ]
-    .map(match => match[1])
-    .sort()
+  ].sort()
 
 export const programParts = source =>
   ['Model', 'Message', 'init', 'update', 'subscriptions', 'view'].filter(name =>
@@ -38,7 +51,6 @@ export const programParts = source =>
 export const creaseMeta = ({ category, component, renderer, source }) => {
   const program = programParts(source)
   const stateful = program.includes('Model') && program.includes('update')
-  const contracts = contractsByItem.get(component) ?? []
   const docsPage = `${DOCS}/docs/registry.md`
   return {
     ...(category === undefined ? {} : { categories: [category.toLowerCase()] }),
@@ -48,12 +60,13 @@ export const creaseMeta = ({ category, component, renderer, source }) => {
     meta: {
       crease: {
         component,
-        contracts,
+        contract: contractFor(component),
         framework: 'foldkit',
         frameworkVersion: foldkitVersion,
         program,
         publicExports: exportNames(source),
         renderer,
+        replaces: replacedContracts.get(component) ?? [],
         schemaVersion: 1,
         stateOwnership: stateful ? 'parent-model' : 'stateless',
         stylingOwner: renderer === 'tailwind' ? 'component-classes' : renderer,

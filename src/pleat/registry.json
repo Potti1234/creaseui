@@ -13,19 +13,27 @@
       "meta": {
         "crease": {
           "component": "accordion",
-          "contracts": [
-            "control.disclosure"
-          ],
+          "contract": "control.disclosure",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [
             "view"
           ],
           "publicExports": [
+            "AccordionType",
+            "Message",
+            "Model",
+            "OutMessage",
             "accordion",
+            "init",
+            "reflect",
+            "update",
             "view"
           ],
           "renderer": "pleat",
+          "replaces": [
+            "control.disclosure"
+          ],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -62,7 +70,7 @@
       "meta": {
         "crease": {
           "component": "alert-dialog",
-          "contracts": [],
+          "contract": "component.alert-dialog",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -70,6 +78,7 @@
             "alertDialog"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -105,7 +114,7 @@
       "meta": {
         "crease": {
           "component": "alert",
-          "contracts": [],
+          "contract": "component.alert",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -117,6 +126,7 @@
             "alertVariants"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -150,7 +160,7 @@
       "meta": {
         "crease": {
           "component": "aspect-ratio",
-          "contracts": [],
+          "contract": "component.aspect-ratio",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -158,6 +168,7 @@
             "aspectRatio"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -221,7 +232,7 @@
       "meta": {
         "crease": {
           "component": "attachment",
-          "contracts": [],
+          "contract": "component.attachment",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -238,6 +249,7 @@
             "attachmentVariants"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -275,7 +287,7 @@
       "meta": {
         "crease": {
           "component": "avatar-group",
-          "contracts": [],
+          "contract": "component.avatar-group",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -285,6 +297,7 @@
             "avatarStatusDot"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -336,7 +349,7 @@
       "meta": {
         "crease": {
           "component": "avatar",
-          "contracts": [],
+          "contract": "component.avatar",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [
@@ -358,6 +371,7 @@
             "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "parent-model",
           "stylingOwner": "pleat"
@@ -392,7 +406,7 @@
       "meta": {
         "crease": {
           "component": "badge",
-          "contracts": [],
+          "contract": "component.badge",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -400,6 +414,7 @@
             "badge"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -433,14 +448,20 @@
       "meta": {
         "crease": {
           "component": "banner",
-          "contracts": [],
+          "contract": "component.banner",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
           "publicExports": [
-            "banner"
+            "Message",
+            "Model",
+            "OutMessage",
+            "banner",
+            "init",
+            "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -477,7 +498,7 @@
       "meta": {
         "crease": {
           "component": "blockquote",
-          "contracts": [],
+          "contract": "component.blockquote",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -485,6 +506,7 @@
             "blockquote"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -517,7 +539,7 @@
       "meta": {
         "crease": {
           "component": "breadcrumb",
-          "contracts": [],
+          "contract": "component.breadcrumb",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -532,6 +554,7 @@
             "breadcrumbTrail"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -583,7 +606,7 @@
       "meta": {
         "crease": {
           "component": "bubble",
-          "contracts": [],
+          "contract": "component.bubble",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -595,6 +618,7 @@
             "bubbleVariants"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -648,7 +672,7 @@
       "meta": {
         "crease": {
           "component": "button-group",
-          "contracts": [],
+          "contract": "component.button-group",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -659,6 +683,7 @@
             "buttonGroupVariants"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -692,9 +717,7 @@
       "meta": {
         "crease": {
           "component": "button",
-          "contracts": [
-            "control.button"
-          ],
+          "contract": "control.button",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -704,6 +727,9 @@
             "buttonVisualStyles"
           ],
           "renderer": "pleat",
+          "replaces": [
+            "control.button"
+          ],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -757,7 +783,7 @@
       "meta": {
         "crease": {
           "component": "calendar",
-          "contracts": [],
+          "contract": "component.calendar",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [
@@ -783,6 +809,7 @@
             "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "parent-model",
           "stylingOwner": "pleat"
@@ -834,7 +861,7 @@
       "meta": {
         "crease": {
           "component": "card",
-          "contracts": [],
+          "contract": "component.card",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -848,6 +875,7 @@
             "cardTitle"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -881,7 +909,7 @@
       "meta": {
         "crease": {
           "component": "carousel",
-          "contracts": [],
+          "contract": "component.carousel",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -889,6 +917,7 @@
             "carousel"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -926,9 +955,7 @@
       "meta": {
         "crease": {
           "component": "center",
-          "contracts": [
-            "composition.center"
-          ],
+          "contract": "composition.center",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -936,6 +963,9 @@
             "center"
           ],
           "renderer": "pleat",
+          "replaces": [
+            "composition.center"
+          ],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -966,7 +996,7 @@
       "meta": {
         "crease": {
           "component": "chart",
-          "contracts": [],
+          "contract": "component.chart",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -993,6 +1023,7 @@
             "valueAxis"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -1029,7 +1060,7 @@
       "meta": {
         "crease": {
           "component": "chat-reasoning",
-          "contracts": [],
+          "contract": "component.chat-reasoning",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [
@@ -1047,6 +1078,7 @@
             "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "parent-model",
           "stylingOwner": "pleat"
@@ -1098,7 +1130,7 @@
       "meta": {
         "crease": {
           "component": "checkbox",
-          "contracts": [],
+          "contract": "component.checkbox",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -1106,6 +1138,7 @@
             "checkbox"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -1143,7 +1176,7 @@
       "meta": {
         "crease": {
           "component": "circular-progress",
-          "contracts": [],
+          "contract": "component.circular-progress",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -1151,6 +1184,7 @@
             "circularProgress"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -1186,14 +1220,22 @@
       "meta": {
         "crease": {
           "component": "code-block",
-          "contracts": [],
+          "contract": "component.code-block",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
           "publicExports": [
-            "codeBlock"
+            "Message",
+            "Model",
+            "codeBlock",
+            "codeLines",
+            "flatTokensToLines",
+            "init",
+            "tokenize",
+            "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -1232,7 +1274,7 @@
       "meta": {
         "crease": {
           "component": "code",
-          "contracts": [],
+          "contract": "component.code",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -1240,6 +1282,7 @@
             "code"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -1273,7 +1316,7 @@
       "meta": {
         "crease": {
           "component": "collapsible",
-          "contracts": [],
+          "contract": "component.collapsible",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -1281,6 +1324,7 @@
             "collapsible"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -1316,9 +1360,7 @@
       "meta": {
         "crease": {
           "component": "combobox",
-          "contracts": [
-            "control.combobox"
-          ],
+          "contract": "control.combobox",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [
@@ -1340,6 +1382,9 @@
             "update"
           ],
           "renderer": "pleat",
+          "replaces": [
+            "control.combobox"
+          ],
           "schemaVersion": 1,
           "stateOwnership": "parent-model",
           "stylingOwner": "pleat"
@@ -1376,7 +1421,7 @@
       "meta": {
         "crease": {
           "component": "command",
-          "contracts": [],
+          "contract": "component.command",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [
@@ -1400,6 +1445,7 @@
             "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "parent-model",
           "stylingOwner": "pleat"
@@ -1899,7 +1945,7 @@
       "meta": {
         "crease": {
           "component": "context-menu",
-          "contracts": [],
+          "contract": "component.context-menu",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [
@@ -1921,6 +1967,7 @@
             "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "parent-model",
           "stylingOwner": "pleat"
@@ -1967,7 +2014,7 @@
       "meta": {
         "crease": {
           "component": "data-table",
-          "contracts": [],
+          "contract": "component.data-table",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -1975,6 +2022,7 @@
             "dataTable"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -2015,14 +2063,25 @@
       "meta": {
         "crease": {
           "component": "date-input",
-          "contracts": [],
+          "contract": "component.date-input",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
           "publicExports": [
-            "dateInput"
+            "Message",
+            "Model",
+            "OutMessage",
+            "dateFromISO",
+            "dateInput",
+            "dateToISO",
+            "init",
+            "inputId",
+            "reflect",
+            "reflectConstraints",
+            "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -2063,7 +2122,7 @@
       "meta": {
         "crease": {
           "component": "date-picker",
-          "contracts": [],
+          "contract": "component.date-picker",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [
@@ -2092,6 +2151,7 @@
             "updateForRtl"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "parent-model",
           "stylingOwner": "pleat"
@@ -2129,14 +2189,26 @@
       "meta": {
         "crease": {
           "component": "date-range-input",
-          "contracts": [],
+          "contract": "component.date-range-input",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
           "publicExports": [
-            "dateRangeInput"
+            "Message",
+            "Model",
+            "OutMessage",
+            "dateFromISO",
+            "dateRangeInput",
+            "dateToISO",
+            "formatRangeDisplay",
+            "init",
+            "isPresetSelectable",
+            "reflect",
+            "reflectConstraints",
+            "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -2177,14 +2249,27 @@
       "meta": {
         "crease": {
           "component": "date-time-input",
-          "contracts": [],
+          "contract": "component.date-time-input",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
           "publicExports": [
-            "dateTimeInput"
+            "Message",
+            "Model",
+            "OutMessage",
+            "dateFromISO",
+            "dateTimeInput",
+            "dateToISO",
+            "formatDisplayTime12h",
+            "formatDisplayTime24h",
+            "formatISOTime",
+            "init",
+            "reflect",
+            "reflectConstraints",
+            "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -2226,9 +2311,7 @@
       "meta": {
         "crease": {
           "component": "dialog",
-          "contracts": [
-            "overlay.dialog"
-          ],
+          "contract": "overlay.dialog",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [
@@ -2253,6 +2336,9 @@
             "update"
           ],
           "renderer": "pleat",
+          "replaces": [
+            "overlay.dialog"
+          ],
           "schemaVersion": 1,
           "stateOwnership": "parent-model",
           "stylingOwner": "pleat"
@@ -2285,7 +2371,7 @@
       "meta": {
         "crease": {
           "component": "direction",
-          "contracts": [],
+          "contract": "component.direction",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -2293,6 +2379,7 @@
             "direction"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -2322,7 +2409,7 @@
       "meta": {
         "crease": {
           "component": "drawer",
-          "contracts": [],
+          "contract": "component.drawer",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [
@@ -2348,6 +2435,7 @@
             "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "parent-model",
           "stylingOwner": "pleat"
@@ -2383,7 +2471,7 @@
       "meta": {
         "crease": {
           "component": "dropdown-menu",
-          "contracts": [],
+          "contract": "component.dropdown-menu",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [
@@ -2406,6 +2494,7 @@
             "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "parent-model",
           "stylingOwner": "pleat"
@@ -2445,7 +2534,7 @@
       "meta": {
         "crease": {
           "component": "empty",
-          "contracts": [],
+          "contract": "component.empty",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -2459,6 +2548,7 @@
             "emptyTitle"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -2492,7 +2582,7 @@
       "meta": {
         "crease": {
           "component": "field-status",
-          "contracts": [],
+          "contract": "component.field-status",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -2500,6 +2590,7 @@
             "fieldStatus"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -2548,9 +2639,7 @@
       "meta": {
         "crease": {
           "component": "field",
-          "contracts": [
-            "control.field"
-          ],
+          "contract": "control.field",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -2571,6 +2660,9 @@
             "fieldVariants"
           ],
           "renderer": "pleat",
+          "replaces": [
+            "control.field"
+          ],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -2606,14 +2698,22 @@
       "meta": {
         "crease": {
           "component": "file-input",
-          "contracts": [],
+          "contract": "component.file-input",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
           "publicExports": [
-            "fileInput"
+            "Message",
+            "Model",
+            "OutMessage",
+            "fileInput",
+            "formatFileSize",
+            "init",
+            "update",
+            "validateFiles"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -2651,21 +2751,23 @@
       "meta": {
         "crease": {
           "component": "form",
-          "contracts": [
-            "composition.form"
-          ],
+          "contract": "composition.form",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
           "publicExports": [
             "errorSummary",
             "form",
+            "formControlIds",
             "formDescription",
             "formItem",
             "formLabel",
             "formMessage"
           ],
           "renderer": "pleat",
+          "replaces": [
+            "composition.form"
+          ],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -2717,9 +2819,7 @@
       "meta": {
         "crease": {
           "component": "grid",
-          "contracts": [
-            "composition.grid"
-          ],
+          "contract": "composition.grid",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -2728,6 +2828,9 @@
             "gridSpan"
           ],
           "renderer": "pleat",
+          "replaces": [
+            "composition.grid"
+          ],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -2758,9 +2861,7 @@
       "meta": {
         "crease": {
           "component": "heading",
-          "contracts": [
-            "typography.heading"
-          ],
+          "contract": "typography.heading",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -2768,6 +2869,9 @@
             "heading"
           ],
           "renderer": "pleat",
+          "replaces": [
+            "typography.heading"
+          ],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -2801,7 +2905,7 @@
       "meta": {
         "crease": {
           "component": "hover-card",
-          "contracts": [],
+          "contract": "component.hover-card",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [
@@ -2829,6 +2933,7 @@
             "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "parent-model",
           "stylingOwner": "pleat"
@@ -2866,7 +2971,7 @@
       "meta": {
         "crease": {
           "component": "indicator",
-          "contracts": [],
+          "contract": "component.indicator",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -2876,6 +2981,7 @@
             "radioIndicator"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -2911,7 +3017,7 @@
       "meta": {
         "crease": {
           "component": "info-tip",
-          "contracts": [],
+          "contract": "component.info-tip",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [
@@ -2929,6 +3035,7 @@
             "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "parent-model",
           "stylingOwner": "pleat"
@@ -2967,7 +3074,7 @@
       "meta": {
         "crease": {
           "component": "input-group",
-          "contracts": [],
+          "contract": "component.input-group",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -2982,6 +3089,7 @@
             "inputGroupTextarea"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -3017,7 +3125,7 @@
       "meta": {
         "crease": {
           "component": "input-otp",
-          "contracts": [],
+          "contract": "component.input-otp",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -3026,6 +3134,7 @@
             "inputOtpSeparator"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -3060,9 +3169,7 @@
       "meta": {
         "crease": {
           "component": "input",
-          "contracts": [
-            "control.input"
-          ],
+          "contract": "control.input",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -3070,6 +3177,9 @@
             "input"
           ],
           "renderer": "pleat",
+          "replaces": [
+            "control.input"
+          ],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -3139,7 +3249,7 @@
       "meta": {
         "crease": {
           "component": "item",
-          "contracts": [],
+          "contract": "component.item",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -3159,6 +3269,7 @@
             "itemVariants"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -3192,7 +3303,7 @@
       "meta": {
         "crease": {
           "component": "kbd",
-          "contracts": [],
+          "contract": "component.kbd",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -3201,6 +3312,7 @@
             "kbdGroup"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -3234,9 +3346,7 @@
       "meta": {
         "crease": {
           "component": "label",
-          "contracts": [
-            "control.label"
-          ],
+          "contract": "control.label",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -3244,6 +3354,9 @@
             "label"
           ],
           "renderer": "pleat",
+          "replaces": [
+            "control.label"
+          ],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -3274,7 +3387,7 @@
       "meta": {
         "crease": {
           "component": "lightbox",
-          "contracts": [],
+          "contract": "component.lightbox",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [
@@ -3295,6 +3408,7 @@
             "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "parent-model",
           "stylingOwner": "pleat"
@@ -3331,9 +3445,7 @@
       "meta": {
         "crease": {
           "component": "link",
-          "contracts": [
-            "navigation.link"
-          ],
+          "contract": "navigation.link",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -3341,6 +3453,9 @@
             "link"
           ],
           "renderer": "pleat",
+          "replaces": [
+            "navigation.link"
+          ],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -3378,14 +3493,22 @@
       "meta": {
         "crease": {
           "component": "list-input",
-          "contracts": [],
+          "contract": "component.list-input",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
           "publicExports": [
-            "listInput"
+            "Message",
+            "Model",
+            "OutMessage",
+            "init",
+            "listInput",
+            "moveItem",
+            "resolveColumnTrack",
+            "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -3424,9 +3547,7 @@
       "meta": {
         "crease": {
           "component": "list",
-          "contracts": [
-            "composition.list"
-          ],
+          "contract": "composition.list",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -3435,6 +3556,9 @@
             "listItem"
           ],
           "renderer": "pleat",
+          "replaces": [
+            "composition.list"
+          ],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -3502,7 +3626,7 @@
       "meta": {
         "crease": {
           "component": "log-stream",
-          "contracts": [],
+          "contract": "component.log-stream",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [
@@ -3521,6 +3645,7 @@
             "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "parent-model",
           "stylingOwner": "pleat"
@@ -3558,12 +3683,16 @@
       "meta": {
         "crease": {
           "component": "map-arc",
-          "contracts": [],
+          "contract": "component.map-arc",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
-          "publicExports": [],
+          "publicExports": [
+            "arcCoordinates",
+            "mapArc"
+          ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -3592,12 +3721,15 @@
       "meta": {
         "crease": {
           "component": "map-cluster",
-          "contracts": [],
+          "contract": "component.map-cluster",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
-          "publicExports": [],
+          "publicExports": [
+            "mapClusterLayer"
+          ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -3626,7 +3758,7 @@
       "meta": {
         "crease": {
           "component": "map-controls",
-          "contracts": [],
+          "contract": "component.map-controls",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -3634,6 +3766,7 @@
             "mapControls"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -3663,12 +3796,15 @@
       "meta": {
         "crease": {
           "component": "map-geojson",
-          "contracts": [],
+          "contract": "component.map-geojson",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
-          "publicExports": [],
+          "publicExports": [
+            "mapGeoJSON"
+          ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -3697,12 +3833,17 @@
       "meta": {
         "crease": {
           "component": "map-localization",
-          "contracts": [],
+          "contract": "component.map-localization",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
-          "publicExports": [],
+          "publicExports": [
+            "MAP_TRANSLATIONS",
+            "localizeMapLabel",
+            "mapTranslations"
+          ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -3731,7 +3872,7 @@
       "meta": {
         "crease": {
           "component": "map-marker",
-          "contracts": [],
+          "contract": "component.map-marker",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -3742,6 +3883,7 @@
             "markerTooltip"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -3771,7 +3913,7 @@
       "meta": {
         "crease": {
           "component": "map-popup",
-          "contracts": [],
+          "contract": "component.map-popup",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -3779,6 +3921,7 @@
             "mapPopup"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -3808,12 +3951,15 @@
       "meta": {
         "crease": {
           "component": "map-route",
-          "contracts": [],
+          "contract": "component.map-route",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
-          "publicExports": [],
+          "publicExports": [
+            "mapRoute"
+          ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -3842,12 +3988,18 @@
       "meta": {
         "crease": {
           "component": "map-styles",
-          "contracts": [],
+          "contract": "component.map-styles",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
-          "publicExports": [],
+          "publicExports": [
+            "MAP_PALETTES",
+            "OPENFREEMAP_STYLES",
+            "createMapStyle",
+            "readMapPalette"
+          ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -3892,15 +4044,18 @@
       "meta": {
         "crease": {
           "component": "map",
-          "contracts": [],
+          "contract": "component.map",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
           "publicExports": [
+            "MapMessage",
+            "OPENFREEMAP_STYLES",
             "map",
             "mapSkin"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -3937,14 +4092,22 @@
       "meta": {
         "crease": {
           "component": "markdown",
-          "contracts": [],
+          "contract": "component.markdown",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
           "publicExports": [
-            "markdown"
+            "Message",
+            "Model",
+            "init",
+            "markdown",
+            "parseMarkdownBlocks",
+            "parseMarkdownInline",
+            "sanitizeMarkdownUrl",
+            "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -3986,7 +4149,7 @@
       "meta": {
         "crease": {
           "component": "marker",
-          "contracts": [],
+          "contract": "component.marker",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -3997,6 +4160,7 @@
             "markerVariants"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -4030,7 +4194,7 @@
       "meta": {
         "crease": {
           "component": "menubar",
-          "contracts": [],
+          "contract": "component.menubar",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [
@@ -4049,6 +4213,7 @@
             "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "parent-model",
           "stylingOwner": "pleat"
@@ -4083,7 +4248,7 @@
       "meta": {
         "crease": {
           "component": "message-scroller",
-          "contracts": [],
+          "contract": "component.message-scroller",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [
@@ -4108,6 +4273,7 @@
             "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "parent-model",
           "stylingOwner": "pleat"
@@ -4159,7 +4325,7 @@
       "meta": {
         "crease": {
           "component": "message",
-          "contracts": [],
+          "contract": "component.message",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -4175,6 +4341,7 @@
             "messageMetadata"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -4208,15 +4375,21 @@
       "meta": {
         "crease": {
           "component": "metadata-list",
-          "contracts": [],
+          "contract": "component.metadata-list",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
           "publicExports": [
+            "Message",
+            "Model",
+            "init",
             "metadataList",
-            "metadataListItem"
+            "metadataListItem",
+            "resolveLayout",
+            "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -4251,7 +4424,7 @@
       "meta": {
         "crease": {
           "component": "mobile-nav",
-          "contracts": [],
+          "contract": "component.mobile-nav",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [
@@ -4272,6 +4445,7 @@
             "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "parent-model",
           "stylingOwner": "pleat"
@@ -4309,14 +4483,21 @@
       "meta": {
         "crease": {
           "component": "more-menu",
-          "contracts": [],
+          "contract": "component.more-menu",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
           "publicExports": [
-            "moreMenu"
+            "Message",
+            "Model",
+            "OutMessage",
+            "flattenOptions",
+            "init",
+            "moreMenu",
+            "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -4350,14 +4531,23 @@
       "meta": {
         "crease": {
           "component": "multi-selector",
-          "contracts": [],
+          "contract": "component.multi-selector",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
           "publicExports": [
-            "multiSelector"
+            "Message",
+            "Model",
+            "OutMessage",
+            "SELECT_ALL_VALUE",
+            "init",
+            "multiSelector",
+            "reflect",
+            "reflectOptions",
+            "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -4400,9 +4590,7 @@
       "meta": {
         "crease": {
           "component": "native-select",
-          "contracts": [
-            "control.native-select"
-          ],
+          "contract": "control.native-select",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -4412,6 +4600,9 @@
             "nativeSelectOption"
           ],
           "renderer": "pleat",
+          "replaces": [
+            "control.native-select"
+          ],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -4447,9 +4638,7 @@
       "meta": {
         "crease": {
           "component": "navigation-menu",
-          "contracts": [
-            "navigation.nav"
-          ],
+          "contract": "navigation.nav",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -4461,6 +4650,9 @@
             "navigationMenuList"
           ],
           "renderer": "pleat",
+          "replaces": [
+            "navigation.nav"
+          ],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -4497,14 +4689,20 @@
       "meta": {
         "crease": {
           "component": "number-input",
-          "contracts": [],
+          "contract": "component.number-input",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
           "publicExports": [
-            "numberInput"
+            "Message",
+            "Model",
+            "OutMessage",
+            "init",
+            "numberInput",
+            "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -4542,14 +4740,23 @@
       "meta": {
         "crease": {
           "component": "overflow-list",
-          "contracts": [],
+          "contract": "component.overflow-list",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
           "publicExports": [
-            "overflowList"
+            "Message",
+            "Model",
+            "OutMessage",
+            "collapsedIndices",
+            "computeOverflow",
+            "init",
+            "overflowList",
+            "spacingToPx",
+            "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -4617,7 +4824,7 @@
       "meta": {
         "crease": {
           "component": "pagination",
-          "contracts": [],
+          "contract": "component.pagination",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -4632,6 +4839,7 @@
             "paginationPrevious"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -4667,7 +4875,7 @@
       "meta": {
         "crease": {
           "component": "popover",
-          "contracts": [],
+          "contract": "component.popover",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [
@@ -4689,6 +4897,7 @@
             "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "parent-model",
           "stylingOwner": "pleat"
@@ -4725,9 +4934,7 @@
       "meta": {
         "crease": {
           "component": "progress",
-          "contracts": [
-            "feedback.progress"
-          ],
+          "contract": "feedback.progress",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -4735,6 +4942,9 @@
             "progress"
           ],
           "renderer": "pleat",
+          "replaces": [
+            "feedback.progress"
+          ],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -4785,14 +4995,19 @@
       "meta": {
         "crease": {
           "component": "radio-group",
-          "contracts": [],
+          "contract": "component.radio-group",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
           "publicExports": [
-            "radioGroup"
+            "Message",
+            "Model",
+            "init",
+            "radioGroup",
+            "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -4848,7 +5063,7 @@
       "meta": {
         "crease": {
           "component": "resizable",
-          "contracts": [],
+          "contract": "component.resizable",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [
@@ -4870,6 +5085,7 @@
             "updateGroup"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "parent-model",
           "stylingOwner": "pleat"
@@ -4904,7 +5120,7 @@
       "meta": {
         "crease": {
           "component": "scroll-area",
-          "contracts": [],
+          "contract": "component.scroll-area",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -4912,6 +5128,7 @@
             "scrollArea"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -4943,9 +5160,7 @@
       "meta": {
         "crease": {
           "component": "section",
-          "contracts": [
-            "composition.section"
-          ],
+          "contract": "composition.section",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -4953,6 +5168,9 @@
             "section"
           ],
           "renderer": "pleat",
+          "replaces": [
+            "composition.section"
+          ],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -4984,7 +5202,7 @@
       "meta": {
         "crease": {
           "component": "select",
-          "contracts": [],
+          "contract": "component.select",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [
@@ -5003,6 +5221,7 @@
             "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "parent-model",
           "stylingOwner": "pleat"
@@ -5040,14 +5259,16 @@
       "meta": {
         "crease": {
           "component": "selectable-card",
-          "contracts": [],
+          "contract": "component.selectable-card",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
           "publicExports": [
+            "Message",
             "selectableCard"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -5084,9 +5305,7 @@
       "meta": {
         "crease": {
           "component": "separator",
-          "contracts": [
-            "composition.separator"
-          ],
+          "contract": "composition.separator",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -5094,6 +5313,9 @@
             "separator"
           ],
           "renderer": "pleat",
+          "replaces": [
+            "composition.separator"
+          ],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -5125,7 +5347,7 @@
       "meta": {
         "crease": {
           "component": "sheet",
-          "contracts": [],
+          "contract": "component.sheet",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [
@@ -5161,6 +5383,7 @@
             "updateSwitcher"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "parent-model",
           "stylingOwner": "pleat"
@@ -5214,7 +5437,7 @@
       "meta": {
         "crease": {
           "component": "sidebar",
-          "contracts": [],
+          "contract": "component.sidebar",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -5246,6 +5469,7 @@
             "sidebarTrigger"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -5284,7 +5508,7 @@
       "meta": {
         "crease": {
           "component": "skeleton",
-          "contracts": [],
+          "contract": "component.skeleton",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -5292,6 +5516,7 @@
             "skeleton"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -5324,7 +5549,7 @@
       "meta": {
         "crease": {
           "component": "slider",
-          "contracts": [],
+          "contract": "component.slider",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [
@@ -5337,19 +5562,30 @@
           "publicExports": [
             "Message",
             "Model",
+            "MultiMessage",
+            "MultiModel",
+            "MultiOutMessage",
             "OutMessage",
             "fractionOfValue",
             "init",
+            "initMulti",
             "multiSlider",
+            "multiThumbSubscriptions",
+            "normalizeMultiValues",
             "rangeSlider",
+            "reflectMultiRange",
             "reflectRange",
             "slider",
             "snapAndClamp",
             "subscriptions",
             "subscriptionsForRoot",
-            "update"
+            "toThumbValue",
+            "update",
+            "updateMulti",
+            "updateMultiValue"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "parent-model",
           "stylingOwner": "pleat"
@@ -5385,7 +5621,7 @@
       "meta": {
         "crease": {
           "component": "spinner",
-          "contracts": [],
+          "contract": "component.spinner",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -5393,6 +5629,7 @@
             "spinner"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -5426,9 +5663,7 @@
       "meta": {
         "crease": {
           "component": "stack",
-          "contracts": [
-            "composition.stack"
-          ],
+          "contract": "composition.stack",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -5439,6 +5674,9 @@
             "vStack"
           ],
           "renderer": "pleat",
+          "replaces": [
+            "composition.stack"
+          ],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -5470,7 +5708,7 @@
       "meta": {
         "crease": {
           "component": "stat",
-          "contracts": [],
+          "contract": "component.stat",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -5478,6 +5716,7 @@
             "stat"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -5510,7 +5749,7 @@
       "meta": {
         "crease": {
           "component": "status-dot",
-          "contracts": [],
+          "contract": "component.status-dot",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -5518,6 +5757,7 @@
             "statusDot"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -5551,14 +5791,19 @@
       "meta": {
         "crease": {
           "component": "stepper",
-          "contracts": [],
+          "contract": "component.stepper",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
           "publicExports": [
-            "stepper"
+            "Message",
+            "Model",
+            "init",
+            "stepper",
+            "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -5613,14 +5858,17 @@
       "meta": {
         "crease": {
           "component": "switch",
-          "contracts": [],
+          "contract": "component.switch",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
           "publicExports": [
-            "switchControl"
+            "switch",
+            "switchControl",
+            "switchIds"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -5656,9 +5904,7 @@
       "meta": {
         "crease": {
           "component": "table",
-          "contracts": [
-            "data.table"
-          ],
+          "contract": "data.table",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -5673,6 +5919,9 @@
             "tableRow"
           ],
           "renderer": "pleat",
+          "replaces": [
+            "data.table"
+          ],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -5706,7 +5955,7 @@
       "meta": {
         "crease": {
           "component": "tabs",
-          "contracts": [],
+          "contract": "component.tabs",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [
@@ -5726,6 +5975,7 @@
             "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "parent-model",
           "stylingOwner": "pleat"
@@ -5803,9 +6053,7 @@
       "meta": {
         "crease": {
           "component": "text",
-          "contracts": [
-            "typography.text"
-          ],
+          "contract": "typography.text",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -5813,6 +6061,9 @@
             "text"
           ],
           "renderer": "pleat",
+          "replaces": [
+            "typography.text"
+          ],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -5845,9 +6096,7 @@
       "meta": {
         "crease": {
           "component": "textarea",
-          "contracts": [
-            "control.textarea"
-          ],
+          "contract": "control.textarea",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -5855,6 +6104,9 @@
             "textarea"
           ],
           "renderer": "pleat",
+          "replaces": [
+            "control.textarea"
+          ],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -5906,7 +6158,7 @@
       "meta": {
         "crease": {
           "component": "thumbnail",
-          "contracts": [],
+          "contract": "component.thumbnail",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -5914,6 +6166,7 @@
             "thumbnail"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -5951,14 +6204,21 @@
       "meta": {
         "crease": {
           "component": "time-input",
-          "contracts": [],
+          "contract": "component.time-input",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
           "publicExports": [
-            "timeInput"
+            "Message",
+            "Model",
+            "OutMessage",
+            "init",
+            "pickerButtonId",
+            "timeInput",
+            "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -5997,7 +6257,7 @@
       "meta": {
         "crease": {
           "component": "timer",
-          "contracts": [],
+          "contract": "component.timer",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [
@@ -6016,6 +6276,7 @@
             "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "parent-model",
           "stylingOwner": "pleat"
@@ -6047,7 +6308,7 @@
       "meta": {
         "crease": {
           "component": "timestamp",
-          "contracts": [],
+          "contract": "component.timestamp",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [
@@ -6060,6 +6321,9 @@
           "publicExports": [
             "Message",
             "Model",
+            "formatInstant",
+            "formatRelativeTime",
+            "formatTooltipLines",
             "init",
             "parseValueMs",
             "subscriptions",
@@ -6067,6 +6331,7 @@
             "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "parent-model",
           "stylingOwner": "pleat"
@@ -6105,7 +6370,7 @@
       "meta": {
         "crease": {
           "component": "toast",
-          "contracts": [],
+          "contract": "component.toast",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -6113,6 +6378,7 @@
             "toast"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -6148,20 +6414,24 @@
       "meta": {
         "crease": {
           "component": "toggle-group",
-          "contracts": [],
+          "contract": "component.toggle-group",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [
             "update"
           ],
           "publicExports": [
+            "Message",
+            "Model",
             "create",
+            "init",
             "toggleGroup",
             "toggleGroup",
             "toggleGroup",
             "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -6197,7 +6467,7 @@
       "meta": {
         "crease": {
           "component": "toggle",
-          "contracts": [],
+          "contract": "component.toggle",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -6206,6 +6476,7 @@
             "toggleVariants"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -6239,7 +6510,7 @@
       "meta": {
         "crease": {
           "component": "token",
-          "contracts": [],
+          "contract": "component.token",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -6247,6 +6518,7 @@
             "token"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -6283,14 +6555,23 @@
       "meta": {
         "crease": {
           "component": "tokenizer",
-          "contracts": [],
+          "contract": "component.tokenizer",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
           "publicExports": [
-            "tokenizer"
+            "CREATE_ID_PREFIX",
+            "Message",
+            "Model",
+            "OutMessage",
+            "init",
+            "reflect",
+            "reflectItems",
+            "tokenizer",
+            "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -6345,14 +6626,17 @@
       "meta": {
         "crease": {
           "component": "toolbar",
-          "contracts": [],
+          "contract": "component.toolbar",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
           "publicExports": [
+            "Message",
+            "TOOLBAR_EDGE_COMP_ATTR",
             "toolbar"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -6385,7 +6669,7 @@
       "meta": {
         "crease": {
           "component": "tooltip",
-          "contracts": [],
+          "contract": "component.tooltip",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [
@@ -6405,6 +6689,7 @@
             "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "parent-model",
           "stylingOwner": "pleat"
@@ -6440,20 +6725,30 @@
       "meta": {
         "crease": {
           "component": "top-nav",
-          "contracts": [],
+          "contract": "component.top-nav",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [
             "view"
           ],
           "publicExports": [
+            "HEADING_MENU_KEY",
+            "Message",
+            "Model",
+            "OutMessage",
+            "dropdownMenuKey",
+            "init",
+            "isMenuOpen",
+            "menuFor",
             "topNav",
             "topNavItem",
             "topNavMegaMenuFeaturedCard",
             "topNavMegaMenuItem",
+            "update",
             "view"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -6491,7 +6786,7 @@
       "meta": {
         "crease": {
           "component": "transfer-list",
-          "contracts": [],
+          "contract": "component.transfer-list",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [
@@ -6512,6 +6807,7 @@
             "update"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "parent-model",
           "stylingOwner": "pleat"
@@ -6564,17 +6860,28 @@
       "meta": {
         "crease": {
           "component": "tree-list",
-          "contracts": [],
+          "contract": "component.tree-list",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [
             "view"
           ],
           "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "findInitialTabbableId",
+            "init",
+            "isItemExpanded",
+            "resolveKey",
+            "tabbableId",
             "treeList",
-            "view"
+            "update",
+            "view",
+            "visibleItems"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -6612,7 +6919,7 @@
       "meta": {
         "crease": {
           "component": "typography",
-          "contracts": [],
+          "contract": "component.typography",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -6630,6 +6937,7 @@
             "typographySmall"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
@@ -6703,7 +7011,7 @@
       "meta": {
         "crease": {
           "component": "visually-hidden",
-          "contracts": [],
+          "contract": "component.visually-hidden",
           "framework": "foldkit",
           "frameworkVersion": "0.164.0",
           "program": [],
@@ -6711,6 +7019,7 @@
             "visuallyHidden"
           ],
           "renderer": "pleat",
+          "replaces": [],
           "schemaVersion": 1,
           "stateOwnership": "stateless",
           "stylingOwner": "pleat"
