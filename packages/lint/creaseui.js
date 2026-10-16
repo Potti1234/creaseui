@@ -43,7 +43,10 @@ export const creaseui = (options = {}) => {
     settings: { creaseui: strict },
   }
   const strictLevel = 'error'
+  /* Installed Crease sources are shadcn ports that use arbitrary Tailwind
+     lengths; colours stay checked against the theme. */
   const rendererConfig = { pleat, stylex, tailwind }[strict.renderer]({
+    arbitraryValues: false,
     files: raw,
   })
 
