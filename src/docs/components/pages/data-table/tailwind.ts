@@ -26,12 +26,14 @@ import * as DataTable from '@/ui/data-table'
 
 const Got = defineMessageUnion({
   GotDataTablePreviewMessage: { message: DataTable.Message },
+  GotClassicDataTableMessage: { message: DataTable.Message },
   GotActionBarMount: { message: S.Any },
 })
 type Got = typeof Got.Type
 const Model = S.Struct({
   _docsPage: S.Literal('data-table'),
   table: DataTable.Model,
+  classic: DataTable.Model,
   rows: S.Array(S.Any),
 })
 type Model = typeof Model.Type
@@ -104,6 +106,9 @@ const facetedColumns = (
 
 const wrapTable = (message: DataTable.Message): Got =>
   Got.GotDataTablePreviewMessage({ message })
+
+const wrapClassic = (message: DataTable.Message): Got =>
+  Got.GotClassicDataTableMessage({ message })
 
 const docsActionBar = (model: Model, h: HtmlBuilder<Got>): Html => {
   const selected = new Set(model.table.selectedRowKeys)
@@ -238,9 +243,17 @@ export const dataTableTailwindPreviewProgram = definePreviewProgram<Model, Got>(
     init: () => ({
       _docsPage: 'data-table',
       table: DataTable.init(docTableConfig, facetedPayments),
+      classic: DataTable.init(5),
       rows: facetedPayments,
     }),
     update: (model, message) => {
+      if (message._tag === 'GotClassicDataTableMessage') {
+        const next = DataTable.update(model.classic, message.message)
+        return {
+          model: { ...model, classic: next.model },
+          commands: Command.mapMessages(next.commands ?? [], wrapClassic),
+        }
+      }
       if (message._tag === 'GotActionBarMount') {
         const inner = message.message as { _tag: string }
         return inner._tag === 'RequestedClose'
@@ -333,8 +346,8 @@ export const dataTableTailwindPreviewProgram = definePreviewProgram<Model, Got>(
           DataTable.dataTable(
             {
               id: `docs-data-table-${String(index)}`,
-              model: model.table,
-              toParentMessage: wrapTable,
+              model: model.classic,
+              toParentMessage: wrapClassic,
               rows: payments,
               columns: columns(fixture.rtl),
               rowKey: row => row.id,

@@ -45,6 +45,7 @@ const styles = stylex.create({
 
 type PreviewModel = {
   table: DataTable.Model
+  classic: DataTable.Model
   rows: ReadonlyArray<Payment>
 }
 
@@ -204,14 +205,18 @@ export const dataTableStyleXPreview: ExamplePreviewProvider = <Msg>(
     onMessageJson(
       JSON.stringify({ _tag: 'GotDataTablePreviewMessage', message }),
     )
+  const wrapClassic = (message: DataTable.Message): Msg =>
+    onMessageJson(
+      JSON.stringify({ _tag: 'GotClassicDataTableMessage', message }),
+    )
   if (index < dataTableFixtures.length) {
     const fixture = dataTableFixtures[index]!
     return h.div(fixture.rtl ? [h.Dir('rtl')] : [], [
       DataTable.dataTable(
         {
           id: `docs-data-table-${String(index)}`,
-          model: preview.table,
-          toParentMessage: wrap,
+          model: preview.classic,
+          toParentMessage: wrapClassic,
           rows: payments,
           columns: columns(fixture.rtl),
           rowKey: row => row.id,
