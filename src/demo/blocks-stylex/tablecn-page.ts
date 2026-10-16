@@ -153,12 +153,6 @@ const st = stylex.create({
     fontWeight: 500,
     lineHeight: '1rem',
   },
-  c3: {
-    marginBlock: '0.25rem',
-    marginInline: '-0.25rem',
-    backgroundColor: tokens.border,
-    height: '1px',
-  },
   c6: { position: 'relative' },
   c7: {
     inset: '0',

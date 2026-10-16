@@ -152,12 +152,6 @@ const st = {
     fontWeight: 500,
     lineHeight: '1rem',
   }),
-  c3: Style.make({
-    marginBlock: '0.25rem',
-    marginInline: '-0.25rem',
-    backgroundColor: tokens.border,
-    height: '1px',
-  }),
   c6: Style.make({ position: 'relative' }),
   c7: Style.make({
     inset: '0',
