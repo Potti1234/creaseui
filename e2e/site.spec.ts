@@ -24,7 +24,7 @@ test('tour is removed from component navigation and discovery in both renderers'
     const index = await (
       await page.request.get(`http://127.0.0.1:${String(port)}/docs-index.json`)
     ).json()
-    expect(index.componentCount).toBe(121)
+    expect(index.componentCount).toBe(123)
     expect(
       index.components.some((item: { slug: string }) => item.slug === 'tour'),
     ).toBe(false)
