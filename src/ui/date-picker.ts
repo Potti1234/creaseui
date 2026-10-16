@@ -6,7 +6,7 @@ import { DatePicker as DatePickerPrimitive } from '@foldkit/ui'
 
 import * as Icon from '@/lib/icon'
 import { mirrorNavigationKeyForRtl } from '@/lib/calendar'
-import { themedAnchor } from '@/lib/overlay-boundary'
+import { themedAnchor, themedPopoverPanel } from '@/lib/overlay-boundary'
 import { buttonVariants } from '@/ui/button'
 import { calendarView } from '@/ui/calendar'
 import { cn } from '@/lib/utils'
@@ -164,6 +164,17 @@ export const datePicker = <Msg>(
         props.panelClass,
       ),
       panelAttributes: childAttributes([
+        hd.OnMount(
+          themedPopoverPanel(
+            `${props.model.popover.id}-button`,
+            { placement: 'bottom-start', gap: 4 },
+            message =>
+              props.toParentMessage(
+                DatePickerPrimitive.Message.GotPopoverMessage({ message }),
+              ),
+            `#${props.model.calendar.id}-grid`,
+          ),
+        ),
         hd.DataAttribute('slot', 'popover-content'),
         hd.Role('dialog'),
       ]),

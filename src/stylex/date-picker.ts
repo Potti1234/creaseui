@@ -12,7 +12,7 @@ import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import { overlayStyles } from './overlay-tokens.stylex'
 import type { ComponentLayoutStyle } from './contracts'
-import { themedAnchor } from './overlay-boundary'
+import { themedAnchor, themedPopoverPanel } from './overlay-boundary'
 import { className } from './style'
 import { tokens } from './tokens.stylex'
 
@@ -267,6 +267,17 @@ export const datePicker = <Msg>(
         props.panelLayoutStyle,
       ),
       panelAttributes: childAttributes([
+        hd.OnMount(
+          themedPopoverPanel(
+            `${props.model.popover.id}-button`,
+            { placement: 'bottom-start', gap: 4 },
+            message =>
+              props.toParentMessage(
+                DatePickerPrimitive.Message.GotPopoverMessage({ message }),
+              ),
+            `#${props.model.calendar.id}-grid`,
+          ),
+        ),
         hd.DataAttribute('slot', 'popover-content'),
         hd.Role('dialog'),
       ]),

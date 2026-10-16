@@ -11,7 +11,7 @@ import { mirrorNavigationKeyForRtl } from '@/lib/calendar'
 import { calendarView } from './calendar'
 import { overlayStyles } from './overlay-tokens'
 import type { ComponentLayoutStyle } from './contracts'
-import { themedAnchor } from './overlay-boundary'
+import { themedAnchor, themedPopoverPanel } from './overlay-boundary'
 import { className } from './style'
 import { tokens } from './tokens'
 
@@ -269,6 +269,17 @@ export const datePicker = <Msg>(
         props.panelLayoutStyle,
       ),
       panelAttributes: childAttributes([
+        hd.OnMount(
+          themedPopoverPanel(
+            `${props.model.popover.id}-button`,
+            { placement: 'bottom-start', gap: 4 },
+            message =>
+              props.toParentMessage(
+                DatePickerPrimitive.Message.GotPopoverMessage({ message }),
+              ),
+            `#${props.model.calendar.id}-grid`,
+          ),
+        ),
         hd.DataAttribute('slot', 'popover-content'),
         hd.Role('dialog'),
       ]),
