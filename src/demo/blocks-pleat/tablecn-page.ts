@@ -38,7 +38,6 @@ import {
 } from '@/lib/data-table-state'
 import * as Select from '@/pleat/select'
 import { icon } from '@/pleat/composition/icon'
-import * as Icon from '@/lib/icon'
 import * as Grid from '@/lib/data-grid'
 import type { Task } from '@/lib/tablecn-data'
 import {
@@ -639,8 +638,6 @@ const MENU_ITEM_CLASS = st.c1
 
 const MENU_LABEL_CLASS = st.c2
 
-const MENU_SEPARATOR_CLASS = st.c3
-
 const capitalize = (value: string): string =>
   value.length === 0 ? value : value[0]!.toUpperCase() + value.slice(1)
 
@@ -697,13 +694,6 @@ const formatDate = (date: Date | string): string =>
   )
 
 /* column defs used by toolbar + header + view menu */
-interface TableColumn {
-  id: string
-  header: string
-  sortable: boolean
-  hideable: boolean
-  filterVariant?: string
-}
 /* ---------- columns ---------- */
 
 const COLUMNS = (
