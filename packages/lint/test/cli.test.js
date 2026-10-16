@@ -164,3 +164,32 @@ test('doctor reports the archived tutorial as feature-only coverage', () => {
   )
   rmSync(directory, { force: true, recursive: true })
 })
+
+test('info and inspect report Foldkit facts and actionable gaps', () => {
+  const directory = fileURLToPath(
+    new URL('./fixtures/tutorial-attempt-01/', import.meta.url),
+  )
+  const info = run(directory, 'info', '--json')
+  assert.equal(info.status, 0, info.stdout + info.stderr)
+  const project = JSON.parse(info.stdout)
+  assert.equal(project.renderer, 'tailwind')
+  assert.equal(project.framework.foldkit.declared, '0.164.0')
+  assert.ok(project.artifacts.some(artifact => artifact.id === 'tasks/shell'))
+
+  const shell = run(directory, 'inspect', '--component', 'shell', '--json')
+  assert.equal(shell.status, 0, shell.stdout + shell.stderr)
+  const detail = JSON.parse(shell.stdout)
+  assert.ok(detail.exports.some(record => record.contract === 'tasks.sidebar'))
+  assert.ok(detail.files[0].imports.includes('@/ui/button'))
+  assert.match(detail.stateOwnership, /^stateless/u)
+  assert.ok(
+    detail.limitations.some(entry => /may render raw elements/u.test(entry)),
+  )
+
+  const missing = run(directory, 'inspect', '--component', 'data-table')
+  assert.equal(missing.status, 1)
+  assert.match(
+    missing.stderr,
+    /data-table is not installed in this tailwind project\. Install it with `npx shadcn@latest add Potti1234\/creaseui\/data-table`/u,
+  )
+})

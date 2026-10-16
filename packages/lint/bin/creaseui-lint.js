@@ -13,6 +13,7 @@ import {
 } from '../lib/strict/contracts.js'
 import { createCssAudit, findStylesheets } from '../lib/strict/css.js'
 import { verifyFoundations } from '../lib/strict/foundations.js'
+import { inspectComponent, projectInfo } from '../lib/strict/info.js'
 import { BaselineError, enforcementChanges } from '../lib/strict/scope.js'
 import { CreaseConfigError } from '../lib/strict/ownership.js'
 import { createRenderExports } from '../lib/strict/render-exports.js'
@@ -21,6 +22,8 @@ const USAGE = `Usage:
   creaseui-lint init   --renderer <tailwind|stylex|pleat> --components <dir> [--root <dir>] [--manifest crease.lock.json] [--dry-run]
   creaseui-lint doctor [--config creaseui-lint.config.mjs] [--root <dir>]
   creaseui-lint css    [--config creaseui-lint.config.mjs] [--root <dir>]
+  creaseui-lint info    [--root <dir>] [--manifest crease.lock.json] [--json]
+  creaseui-lint inspect --component <name> [--root <dir>] [--json]
   creaseui-lint scope  --baseline <trusted git ref> [--root <dir>] [--allow-enforcement-changes]
   creaseui-lint audit  --config creaseui-lint.audit.mjs [--output report.json] [--report-only]
 
@@ -501,6 +504,74 @@ const scope = values => {
   return 1
 }
 
+const receiptPath = values => {
+  const rootDir = path.resolve(values.root ?? process.cwd())
+  return {
+    manifest: path.resolve(rootDir, values.manifest ?? 'crease.lock.json'),
+    rootDir,
+  }
+}
+
+const info = values => {
+  const result = projectInfo(receiptPath(values))
+  if (values.json) {
+    console.log(JSON.stringify(result, null, 2))
+    return result.receipt === null ? 2 : 0
+  }
+  for (const [name, version] of Object.entries(result.framework))
+    console.log(
+      `${name.padEnd(12)} ${version.installed ?? 'not installed'} (declared ${version.declared})`,
+    )
+  console.log(`renderer     ${result.renderer ?? 'unknown'}`)
+  console.log(`policy       ${result.policy ?? 'unknown'}`)
+  console.log(
+    `receipt      ${result.receipt ?? 'missing; run creaseui-lint init'}`,
+  )
+  for (const [alias, target] of Object.entries(result.aliases))
+    console.log(`alias        ${alias} -> ${target}`)
+  for (const artifact of result.artifacts)
+    console.log(
+      `installed    ${artifact.id} (${artifact.files.join(', ')}; ${artifact.exports} exports)`,
+    )
+  return result.receipt === null ? 2 : 0
+}
+
+const inspect = values => {
+  if (values.component === undefined) {
+    console.error('inspect needs --component <name>')
+    return 2
+  }
+  const result = inspectComponent({
+    component: values.component,
+    ...receiptPath(values),
+  })
+  if (result.error !== undefined) {
+    if (values.json) console.log(JSON.stringify(result, null, 2))
+    else console.error(result.error)
+    return 1
+  }
+  if (values.json) {
+    console.log(JSON.stringify(result, null, 2))
+    return 0
+  }
+  console.log(`artifact     ${result.artifact} (${result.renderer})`)
+  console.log(`state        ${result.stateOwnership}`)
+  if (result.program.length > 0)
+    console.log(`program      ${result.program.join(', ')}`)
+  console.log(`styling      ${result.stylingOwner}`)
+  for (const file of result.files)
+    console.log(
+      `file         ${file.path} (${file.role}); imports ${file.imports.join(', ') || 'nothing'}`,
+    )
+  for (const record of result.exports)
+    console.log(
+      `export       ${record.name}: ${record.contract ?? record.renderKind}${Object.keys(record.variants).length > 0 ? ` ${JSON.stringify(record.variants)}` : ''}`,
+    )
+  for (const limitation of result.limitations)
+    console.log(`limitation   ${limitation}`)
+  return 0
+}
+
 const main = async () => {
   const [command, ...rest] = process.argv.slice(2)
   const { values } = parseArgs({
@@ -509,7 +580,9 @@ const main = async () => {
     options: {
       'allow-enforcement-changes': { type: 'boolean' },
       baseline: { type: 'string' },
+      component: { type: 'string' },
       components: { type: 'string' },
+      json: { type: 'boolean' },
       config: { type: 'string' },
       'dry-run': { type: 'boolean' },
       manifest: { type: 'string' },
@@ -524,6 +597,8 @@ const main = async () => {
   if (command === 'audit') return audit(values)
   if (command === 'css') return css(values)
   if (command === 'scope') return scope(values)
+  if (command === 'info') return info(values)
+  if (command === 'inspect') return inspect(values)
   console.error(USAGE)
   return 2
 }
