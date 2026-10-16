@@ -131,6 +131,8 @@ export default tseslint.config(
     ignores: [
       'src/demo/**/*stylex*/**',
       'src/demo/**/*stylex*.{ts,tsx}',
+      'src/demo/**/*pleat*/**',
+      'src/demo/**/*pleat*.{ts,tsx}',
       'src/demo/board-constrained.{ts,tsx}',
     ],
     severity: 'warn',
