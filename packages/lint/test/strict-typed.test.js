@@ -34,9 +34,63 @@ const support = {
     "export { Button as Action } from './design-namespace'\n",
   'plain-namespace': "export * as Values from './plain-values'\n",
   'headless-star-as': "export * as UI from '@foldkit/ui'\n",
+  'design-import-export':
+    "import * as Button from '@design/button'\nexport { Button }\n",
+  'design-import-export-renamed':
+    "import * as Button from '@design/button'\nexport { Button as Action }\n",
+  'design-import-export-two':
+    "import { Button } from './design-import-export'\nexport { Button }\n",
+  'headless-namespace-reexport':
+    "import * as UI from '@foldkit/ui'\nexport { UI }\n",
+  'plain-import-export':
+    "import * as Values from './plain-values'\nexport { Values }\n",
+  'type-import-export':
+    "import type * as ButtonTypes from '@design/button'\nexport type { ButtonTypes }\n",
+  'cycle-a': "import { Loop } from './cycle-b'\nexport { Loop }\n",
+  'cycle-b': "import { Loop } from './cycle-a'\nexport { Loop }\n",
 }
 
 const cases = {
+  'styled-import-export-named': [
+    `${header}import { Button } from './design-import-export'\nexport const view = (h: HtmlBuilder<unknown>): Html => Button.button({ children: ['Bad'], triggerClass: 'text-red-500' }, h)`,
+    ['crease/component-contract'],
+  ],
+  'styled-import-export-namespace': [
+    `${header}import * as Design from './design-import-export'\nexport const view = (h: HtmlBuilder<unknown>): Html => Design.Button.button({ children: ['Bad'], triggerClass: 'text-red-500' }, h)`,
+    ['crease/component-contract'],
+  ],
+  'styled-import-export-renamed': [
+    `${header}import { Action } from './design-import-export-renamed'\nexport const view = (h: HtmlBuilder<unknown>): Html => Action.button({ children: ['Bad'], triggerClass: 'text-red-500' }, h)`,
+    ['crease/component-contract'],
+  ],
+  'styled-import-export-multi-hop': [
+    `${header}import { Button } from './design-import-export-two'\nconst { button } = Button\nexport const view = (h: HtmlBuilder<unknown>): Html => button({ children: ['Bad'], triggerClass: 'text-red-500' }, h)`,
+    ['crease/component-contract'],
+  ],
+  'styled-import-export-legal': [
+    `${header}import { Button } from './design-import-export'\nexport const view = (h: HtmlBuilder<unknown>): Html => Button.button({ children: ['Ok'] }, h)`,
+    [],
+  ],
+  'headless-import-export-named': [
+    `${header}import { UI } from './headless-namespace-reexport'\nexport const rawView = UI.Dialog.view`,
+    ['crease/no-unapproved-renderer'],
+  ],
+  'headless-import-export-messages-legal': [
+    "import { UI } from './headless-namespace-reexport'\nexport const opened = UI.Dialog.Opened",
+    [],
+  ],
+  'plain-import-export-legal': [
+    "import { Values } from './plain-import-export'\nexport const layout = Values.config.view",
+    [],
+  ],
+  'type-import-export-legal': [
+    "import type { ButtonTypes } from './type-import-export'\nexport type Props = Parameters<typeof ButtonTypes.button>[0]",
+    [],
+  ],
+  'cycle-import-export-terminates': [
+    "import { Loop } from './cycle-a'\nexport const value = Loop",
+    [],
+  ],
   'raw-direct': [
     `${header}export const view = <M>(h: HtmlBuilder<M>): Html => h.button([], ['Raw'])`,
     ['crease/no-raw-controls'],

@@ -423,8 +423,16 @@ export const createModuleResolver = ({ rootDir, tsconfig }) => {
         ts.isStringLiteral(statement.moduleSpecifier)
           ? statement.moduleSpecifier.text
           : undefined
-      if (target === undefined) continue
       const clause = statement.exportClause
+      if (target === undefined) {
+        if (clause !== undefined && ts.isNamedExports(clause))
+          for (const element of clause.elements)
+            if (element.name.text === name) {
+              const local = element.propertyName?.text ?? element.name.text
+              return importedNamespace(sourceFile, file, local, seen)
+            }
+        continue
+      }
       if (clause === undefined) stars.push(target)
       else if (ts.isNamespaceExport(clause) && clause.name.text === name) {
         const next = resolve(target, file)
@@ -446,6 +454,42 @@ export const createModuleResolver = ({ rootDir, tsconfig }) => {
       const next = resolve(target, file)
       const found = next === null ? null : namespaceTarget(next, name, seen)
       if (found !== null) return found
+    }
+    return null
+  }
+
+  /** Namespace behind a local binding that `file` exports later
+      (`import * as X from …; export { X }` or `import { X } from …`). */
+  const importedNamespace = (sourceFile, file, local, seen) => {
+    for (const statement of sourceFile.statements) {
+      if (
+        !ts.isImportDeclaration(statement) ||
+        !ts.isStringLiteral(statement.moduleSpecifier) ||
+        statement.importClause?.isTypeOnly
+      )
+        continue
+      const target = statement.moduleSpecifier.text
+      const bindings = statement.importClause?.namedBindings
+      if (
+        bindings !== undefined &&
+        ts.isNamespaceImport(bindings) &&
+        bindings.name.text === local
+      ) {
+        const next = resolve(target, file)
+        return next === null ? { source: target } : { file: next }
+      }
+      if (bindings !== undefined && ts.isNamedImports(bindings))
+        for (const element of bindings.elements)
+          if (element.name.text === local && !element.isTypeOnly) {
+            const next = resolve(target, file)
+            return next === null
+              ? null
+              : namespaceTarget(
+                  next,
+                  element.propertyName?.text ?? element.name.text,
+                  seen,
+                )
+          }
     }
     return null
   }
