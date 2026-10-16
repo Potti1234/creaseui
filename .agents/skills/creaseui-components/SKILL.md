@@ -11,6 +11,7 @@ registry. Use the installed source; do not re-create a component that exists.
 ## 1. Read the project
 
 ```sh
+npx creaseui-lint info --catalog  # every installable component for this renderer, with install commands
 npx creaseui-lint info            # renderer, aliases, Foldkit version, installed artifacts
 npx creaseui-lint inspect --component sidebar
 ```

@@ -397,3 +397,29 @@ test('doctor reports theme roles that installed components read but no styleshee
   assert.doesNotMatch(themed.stdout, /no stylesheet defines/u, themed.stdout)
   rmSync(directory, { force: true, recursive: true })
 })
+
+test('info --catalog lists installable components before anything is installed', () => {
+  const directory = mkdtempSync(path.join(tmpdir(), 'creaseui-lint-cli-'))
+  const result = run(
+    directory,
+    'info',
+    '--catalog',
+    '--renderer',
+    'pleat',
+    '--json',
+  )
+  assert.equal(result.status, 0, result.stderr)
+  const { components } = JSON.parse(result.stdout)
+  assert.ok(components.length > 100)
+  assert.ok(components.every(entry => entry.renderer === 'pleat'))
+  const select = components.find(entry => entry.component === 'native-select')
+  assert.equal(
+    select.install,
+    'npx shadcn@latest add Potti1234/creaseui/pleat-native-select',
+  )
+  assert.ok(select.exports.includes('nativeSelect'))
+  const text = run(directory, 'info', '--catalog', '--renderer', 'pleat')
+  assert.match(text.stdout, /\n {2}sidebar {16}/u)
+  assert.match(run(directory, 'info').stdout, /creaseui-lint info --catalog/u)
+  rmSync(directory, { force: true, recursive: true })
+})

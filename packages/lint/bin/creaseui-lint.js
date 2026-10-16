@@ -23,6 +23,7 @@ const USAGE = `Usage:
   creaseui-lint doctor [--config creaseui-lint.config.mjs] [--root <dir>]
   creaseui-lint css    [--config creaseui-lint.config.mjs] [--root <dir>]
   creaseui-lint info    [--root <dir>] [--manifest crease.lock.json] [--json]
+  creaseui-lint info    --catalog [--renderer <tailwind|stylex|pleat>] [--json]
   creaseui-lint inspect --component <name> [--root <dir>] [--json]
   creaseui-lint scope  --baseline <trusted git ref> [--root <dir>] [--allow-enforcement-changes]
   creaseui-lint audit  --config creaseui-lint.audit.mjs [--output report.json] [--report-only]
@@ -675,7 +676,42 @@ const receiptPath = values => {
   }
 }
 
+const catalog = values => {
+  const { components } = JSON.parse(
+    readFileSync(new URL('../catalog.json', import.meta.url), 'utf8'),
+  )
+  const renderer =
+    values.renderer ?? projectInfo(receiptPath(values)).renderer ?? undefined
+  const listed = components.filter(
+    entry => renderer === undefined || entry.renderer === renderer,
+  )
+  if (values.json) {
+    console.log(JSON.stringify({ components: listed, renderer }, null, 2))
+    return 0
+  }
+  let category
+  for (const entry of [...listed].sort(
+    (a, b) =>
+      a.category.localeCompare(b.category) ||
+      a.component.localeCompare(b.component) ||
+      a.renderer.localeCompare(b.renderer),
+  )) {
+    if (entry.category !== category) {
+      category = entry.category
+      console.log(`\n${category}`)
+    }
+    console.log(
+      `  ${entry.component.padEnd(22)} ${entry.exports.slice(0, 4).join(', ')}${entry.exports.length > 4 ? ', …' : ''}${renderer === undefined ? ` [${entry.renderer}]` : ''}\n  ${''.padEnd(22)} ${entry.install}`,
+    )
+  }
+  console.log(
+    `\n${listed.length} components${renderer === undefined ? '' : ` for ${renderer}`}; \`creaseui-lint inspect --component <name>\` details one once installed`,
+  )
+  return 0
+}
+
 const info = values => {
+  if (values.catalog) return catalog(values)
   const result = projectInfo(receiptPath(values))
   if (values.json) {
     console.log(JSON.stringify(result, null, 2))
@@ -696,6 +732,9 @@ const info = values => {
     console.log(
       `installed    ${artifact.id} (${artifact.files.join(', ')}; ${artifact.exports} exports)`,
     )
+  console.log(
+    'catalog      creaseui-lint info --catalog lists every installable component',
+  )
   return result.receipt === null ? 2 : 0
 }
 
@@ -751,6 +790,7 @@ const main = async () => {
     args: rest,
     options: {
       'allow-enforcement-changes': { type: 'boolean' },
+      catalog: { type: 'boolean' },
       baseline: { type: 'string' },
       component: { type: 'string' },
       components: { multiple: true, type: 'string' },
