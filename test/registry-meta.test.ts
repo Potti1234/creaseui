@@ -75,3 +75,38 @@ describe('registry meta.crease', () => {
     assert.deepEqual(tailwind.get('button')?.replaces, ['control.button'])
   })
 })
+
+describe('crease-theme registry item', () => {
+  const theme = (
+    JSON.parse(readFileSync('registry/theme/registry.json', 'utf8')) as {
+      items: ReadonlyArray<{
+        name: string
+        cssVars: Record<'theme' | 'light' | 'dark', Record<string, string>>
+      }>
+    }
+  ).items.find(item => item.name === 'crease-theme')
+  const roles = [
+    ...new Set(
+      [
+        ...readFileSync('src/theme.css', 'utf8').matchAll(
+          /^ {2}--([a-z0-9-]+):/gmu,
+        ),
+      ]
+        .map(match => match[1])
+        .filter(
+          name => !name.startsWith('stylex-') && !name.startsWith('color-'),
+        ),
+    ),
+  ]
+
+  it('installs every semantic role the shared theme defines', () => {
+    assert.ok(theme)
+    for (const mode of ['light', 'dark'] as const)
+      for (const role of roles.filter(
+        role => role !== 'radius' || mode === 'light',
+      ))
+        assert.ok(role in theme.cssVars[mode], `${mode} is missing --${role}`)
+    for (const role of ['success', 'warning'])
+      assert.equal(theme.cssVars.theme[`color-${role}`], `var(--${role})`)
+  })
+})
