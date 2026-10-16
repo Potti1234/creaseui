@@ -153,6 +153,19 @@ test('styling escapes fail', () => {
   )
 })
 
+test('positioning in the parent is a placement property', () => {
+  const messages = lint(`${HEADER}
+    import { stack } from '@design/stack'
+    import { layoutStyle } from '@design/contracts'
+    const pinned = layoutStyle({ position: 'absolute', insetInline: 0, top: '50%' })
+    export const view = <M>(h: HtmlBuilder<M>): Html =>
+      stack({ children: [stack({ layoutStyle: pinned, children: [] }, h)] }, h)`)
+  assert.deepEqual(
+    messages.filter(message => message.ruleId === 'crease/component-contract'),
+    [],
+  )
+})
+
 test('component contract: appearance props, layout values, variants and string children', () => {
   const messages = lint(`${HEADER}
     import { button } from '@design/button'

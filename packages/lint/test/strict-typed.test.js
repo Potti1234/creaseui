@@ -303,6 +303,14 @@ const cases = {
     `${header}import { button } from '@design/button'\nexport const view = (h: HtmlBuilder<unknown>): Html => button({ children: ['Wide'], class: 'w-full self-end' }, h)`,
     [],
   ],
+  'tailwind-control-positioning': [
+    `${header}import { button } from '@design/button'\nexport const view = (h: HtmlBuilder<unknown>): Html => button({ children: ['Close'], class: 'absolute top-2 -right-2 inset-x-0' }, h)`,
+    [],
+  ],
+  'tailwind-control-fixed': [
+    `${header}import { button } from '@design/button'\nexport const view = (h: HtmlBuilder<unknown>): Html => button({ children: ['Pinned'], class: 'fixed top-0' }, h)`,
+    ['crease/component-contract'],
+  ],
   'styled-control-layout-height': [
     `${header}import { button } from '@design/button'\nimport { layoutStyle } from '@design/contracts'\nexport const view = (h: HtmlBuilder<unknown>): Html => button({ children: ['Squashed'], layoutStyle: layoutStyle({ height: '12px' }) }, h)`,
     ['crease/component-contract'],

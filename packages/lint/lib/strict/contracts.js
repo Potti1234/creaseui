@@ -110,6 +110,18 @@ export const LAYOUT_PROPERTIES = new Set([
   'minHeight',
   'minWidth',
   'order',
+  'position',
+  'inset',
+  'insetBlock',
+  'insetBlockEnd',
+  'insetBlockStart',
+  'insetInline',
+  'insetInlineEnd',
+  'insetInlineStart',
+  'top',
+  'right',
+  'bottom',
+  'left',
   'width',
 ])
 
@@ -131,6 +143,8 @@ const PLACEMENT_UTILITY = new RegExp(
     `(?:min-|max-)?[wh]-${SIZE}`,
     `size-${SIZE}`,
     `aspect-(?:auto|square|video)`,
+    `(?:static|relative|absolute|sticky)`,
+    `-?(?:inset(?:-[xy])?|top|right|bottom|left|start|end)-${SIZE}`,
   ]
     .map(pattern => `(?:${pattern})`)
     .join('|'),
