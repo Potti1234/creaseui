@@ -417,6 +417,8 @@ export const analyzeCall = ({
         return
       }
     }
+    /* An owned source passing its own `layoutStyle` prop on. */
+    if (forwarding && node.type === 'MemberExpression') return
     violation(
       node,
       `\`${slot}\` on ${label(record)} accepts only layoutStyle()/layoutWhen() placement values, not arbitrary style objects or factories.`,
@@ -503,6 +505,7 @@ export const analyzeCall = ({
         }
         const tokens = classValues(analysis, value)
         if (tokens === null) {
+          if (forwarding) continue
           unverifiable(
             value,
             `The \`class\` value for ${label(record)} cannot be resolved to static placement utilities.`,
