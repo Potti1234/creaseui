@@ -193,3 +193,52 @@ test('info and inspect report Foldkit facts and actionable gaps', () => {
     /data-table is not installed in this tailwind project\. Install it with `npx shadcn@latest add Potti1234\/creaseui\/data-table`/u,
   )
 })
+
+test('init reads the shadcn ui/lib targets and registers the stylesheet entry as setup', () => {
+  const directory = mkdtempSync(path.join(tmpdir(), 'creaseui-lint-init-'))
+  const file = (name, content) => {
+    mkdirSync(path.dirname(path.join(directory, name)), { recursive: true })
+    writeFileSync(path.join(directory, name), content)
+  }
+  file(
+    'components.json',
+    JSON.stringify({
+      aliases: { lib: '@/lib', ui: '@/ui' },
+      tailwind: { css: 'src/styles.css' },
+    }),
+  )
+  file(
+    'src/ui/button.ts',
+    "import type { Html, HtmlBuilder } from 'foldkit/html'\nexport const button = <M>(h: HtmlBuilder<M>): Html => h.button([], [])\n",
+  )
+  file(
+    'src/lib/icon.ts',
+    "import type { Html, HtmlBuilder } from 'foldkit/html'\nexport const icon = <M>(h: HtmlBuilder<M>): Html => h.span([], [])\n",
+  )
+  file('src/styles.css', '')
+  file('src/entry.ts', "import './styles.css'\n")
+  file('src/app/main.ts', 'export const main = 1\n')
+  const result = run(directory, 'init', '--renderer', 'tailwind')
+  assert.equal(result.status, 0, result.stderr)
+  const receipt = JSON.parse(
+    readFileSync(path.join(directory, 'crease.lock.json'), 'utf8'),
+  )
+  const byPath = new Map(
+    receipt.artifacts.flatMap(artifact =>
+      artifact.files.map(entry => [entry.path, { artifact, entry }]),
+    ),
+  )
+  assert.equal(byPath.get('src/ui/button.ts').entry.role, 'renderer')
+  assert.equal(
+    byPath.get('src/ui/button.ts').artifact.exports[0].contract,
+    'control.button',
+  )
+  assert.equal(byPath.get('src/lib/icon.ts').entry.rawRendering, true)
+  assert.equal(
+    byPath.get('src/lib/icon.ts').artifact.exports[0].visibility,
+    'implementation',
+  )
+  assert.equal(byPath.get('src/entry.ts').entry.role, 'setup')
+  assert.equal(byPath.has('src/app/main.ts'), false)
+  rmSync(directory, { force: true, recursive: true })
+})

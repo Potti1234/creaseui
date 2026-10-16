@@ -19,7 +19,7 @@ import { CreaseConfigError } from '../lib/strict/ownership.js'
 import { createRenderExports } from '../lib/strict/render-exports.js'
 
 const USAGE = `Usage:
-  creaseui-lint init   --renderer <tailwind|stylex|pleat> --components <dir> [--root <dir>] [--manifest crease.lock.json] [--dry-run]
+  creaseui-lint init   --renderer <tailwind|stylex|pleat> [--components <dir>]... [--root <dir>] [--manifest crease.lock.json] [--dry-run]
   creaseui-lint doctor [--config creaseui-lint.config.mjs] [--root <dir>]
   creaseui-lint css    [--config creaseui-lint.config.mjs] [--root <dir>]
   creaseui-lint info    [--root <dir>] [--manifest crease.lock.json] [--json]
@@ -119,18 +119,38 @@ const renderingExports = (renderExports, file) => {
 }
 
 /** Receipt for the components installed in one directory. */
-export const buildReceipt = ({ rootDir, components, renderer }) => {
+export const buildReceipt = ({ rootDir, components, renderer, setup = [] }) => {
   const prefix = renderer === 'tailwind' ? '' : `${renderer}-`
-  const base = path.resolve(rootDir, components)
-  const files = walk(base).sort()
+  /* The first directory holds the components; further directories (the
+     registry's `lib` target) hold their installed implementation helpers. */
+  const [base, ...support] = (
+    Array.isArray(components) ? components : [components]
+  ).map(directory => path.resolve(rootDir, directory))
+  const supportOf = file =>
+    support.find(directory => !path.relative(directory, file).startsWith('..'))
+  const files = [
+    ...new Set([base, ...support].flatMap(directory => walk(directory))),
+  ].sort()
   const describe = file => {
-    const local = toPosix(path.relative(base, file)).replace(SOURCE, '')
+    const helper = supportOf(file)
+    const local = toPosix(path.relative(helper ?? base, file)).replace(
+      SOURCE,
+      '',
+    )
     const item = path.basename(local)
-    const behavior = local.split('/').includes('behavior')
-    const contract = behavior
-      ? `behavior.${item}`
-      : (CONTRACT_BY_ITEM.get(item) ?? `component.${item}`)
-    return { behavior, contract, local }
+    const behavior =
+      helper !== undefined || local.split('/').includes('behavior')
+    const contract =
+      helper !== undefined
+        ? `implementation.${item}`
+        : behavior
+          ? `behavior.${item}`
+          : (CONTRACT_BY_ITEM.get(item) ?? `component.${item}`)
+    return {
+      behavior,
+      contract,
+      local: helper === undefined ? local : `${path.basename(helper)}/${local}`,
+    }
   }
   const installed = new Set(files.map(file => path.resolve(file)))
   const renderExports = createRenderExports({ files, rootDir })
@@ -138,7 +158,14 @@ export const buildReceipt = ({ rootDir, components, renderer }) => {
     const relative = toPosix(path.relative(rootDir, file))
     const { behavior, contract, local } = describe(file)
     const raw = rendersHtml(file)
-    const role = behavior ? 'behavior' : raw ? 'renderer' : 'theme'
+    const role =
+      raw && supportOf(file) !== undefined
+        ? 'renderer'
+        : behavior
+          ? 'behavior'
+          : raw
+            ? 'renderer'
+            : 'theme'
     /* An alias of another installed component keeps that component's
          contract (`export const actionAlias = button`). */
     const contractOf = origin =>
@@ -161,6 +188,20 @@ export const buildReceipt = ({ rootDir, components, renderer }) => {
       id: `crease/${prefix}${local.split('/').join('-')}`,
     }
   })
+  const owned = new Set(files.map(file => path.resolve(file)))
+  for (const file of setup.map(entry => path.resolve(rootDir, entry)))
+    if (!owned.has(file))
+      artifacts.push({
+        exports: [],
+        files: [
+          {
+            path: toPosix(path.relative(rootDir, file)),
+            rawRendering: false,
+            role: 'setup',
+          },
+        ],
+        id: `crease/setup-${toPosix(path.relative(rootDir, file)).replace(SOURCE, '').split('/').join('-')}`,
+      })
   return {
     artifacts,
     policyVersion: POLICY_VERSION,
@@ -197,22 +238,58 @@ const ESLINT_CONFIGS = [
   'eslint.config.mts',
 ]
 
+const aliasDirectory = alias =>
+  typeof alias === 'string' ? alias.replace(/^@\//u, 'src/') : undefined
+
+/* components.json says where shadcn installed the registry files and which
+   stylesheet carries the theme; the files importing it are the app's setup. */
+const installTargets = rootDir => {
+  const file = path.join(rootDir, 'components.json')
+  if (!existsSync(file)) return { components: [], setup: [] }
+  const config = JSON.parse(readFileSync(file, 'utf8'))
+  const components = [config.aliases?.ui, config.aliases?.lib]
+    .map(aliasDirectory)
+    .filter(
+      directory =>
+        directory !== undefined && existsSync(path.join(rootDir, directory)),
+    )
+  const stylesheet = config.tailwind?.css
+  const setup =
+    typeof stylesheet !== 'string'
+      ? []
+      : walk(path.join(rootDir, 'src')).filter(source =>
+          [
+            ...readFileSync(source, 'utf8').matchAll(
+              /^import\s+['"](\.{1,2}\/[^'"]+\.css)['"]/gmu,
+            ),
+          ].some(
+            match =>
+              path.resolve(path.dirname(source), match[1]) ===
+              path.resolve(rootDir, stylesheet),
+          ),
+        )
+  return { components, setup }
+}
+
 const init = values => {
   const rootDir = path.resolve(values.root ?? '.')
   if (!RENDERERS.includes(values.renderer))
     throw new CreaseConfigError([
       `--renderer must be one of ${RENDERERS.join(', ')}`,
     ])
-  if (values.components === undefined)
+  const targets = installTargets(rootDir)
+  const components = values.components ?? targets.components
+  if (components.length === 0)
     throw new CreaseConfigError([
-      '--components <dir> (the installed component directory) is required',
+      '--components <dir> (the installed component directory) is required when components.json has no ui/lib alias',
     ])
   const manifest = values.manifest ?? 'crease.lock.json'
   const tsconfig = existsSync(path.join(rootDir, 'tsconfig.json'))
     ? './tsconfig.json'
     : './jsconfig.json'
   const receipt = buildReceipt({
-    components: values.components,
+    components,
+    setup: targets.setup,
     renderer: values.renderer,
     rootDir,
   })
@@ -581,7 +658,7 @@ const main = async () => {
       'allow-enforcement-changes': { type: 'boolean' },
       baseline: { type: 'string' },
       component: { type: 'string' },
-      components: { type: 'string' },
+      components: { multiple: true, type: 'string' },
       json: { type: 'boolean' },
       config: { type: 'string' },
       'dry-run': { type: 'boolean' },

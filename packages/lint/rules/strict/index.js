@@ -480,7 +480,13 @@ const contractRule = (rule, kind, description) => ({
       },
       CallExpression(node) {
         const record = index.callRecord(node.callee)
-        if (record !== undefined && record.renderKind === 'helper')
+        /* Implementation helpers are only reachable from owned sources
+           (`implementationOnly`), which forward their own props. */
+        if (
+          record !== undefined &&
+          record.renderKind === 'helper' &&
+          record.visibility !== 'implementation'
+        )
           for (const finding of analyzeCall({
             analysis,
             call: node,
