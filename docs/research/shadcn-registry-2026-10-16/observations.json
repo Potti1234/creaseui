@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-16",
+  "tool": "shadcn",
+  "version": "4.21.5",
+  "fixtureSchemaValid": true,
+  "cli": {
+    "metaPreserved": true,
+    "docsPreserved": true,
+    "categoriesPreserved": true,
+    "fileContentsPreserved": true
+  },
+  "mcp": {
+    "tool": "view_items_in_registries",
+    "isError": false,
+    "customMetaVisible": false,
+    "docsVisible": false,
+    "fileContentsVisible": false
+  },
+  "sha256": {
+    "metadata-probe.json": "fc01be2ca657a99c3fa818185e1f03022eeef261d4a943a71f3fb4f19cbbf3c4",
+    "metadata-probe-view.json": "dd19ab0ceb9f223f4316f49aaeb4b022328e6b218b9e70b66f2766561feb0f63",
+    "metadata-probe-mcp.json": "81a6c7625274a2426866bcfcb785a9ef94c255742f5ca24da24f5789d0cab217"
+  }
+}

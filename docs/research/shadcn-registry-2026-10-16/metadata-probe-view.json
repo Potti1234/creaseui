@@ -1,0 +1,36 @@
+[
+  {
+    "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+    "name": "crease-metadata-probe",
+    "title": "Foldkit metadata probe",
+    "description": "Research fixture for Foldkit-aware registry metadata.",
+    "files": [
+      {
+        "path": "probe.ts",
+        "content": "export const creaseMetadataProbe = true",
+        "type": "registry:lib",
+        "target": "@lib/crease-metadata-probe.ts"
+      },
+      {
+        "path": "guide.md",
+        "content": "# Foldkit registry probe",
+        "type": "registry:file",
+        "target": "~/docs/crease/probe.md"
+      }
+    ],
+    "meta": {
+      "crease": {
+        "publicExports": ["sidebar", "sidebarContent"],
+        "component": "sidebar",
+        "agentGuide": "docs/crease/sidebar.md",
+        "stateOwnership": "controlled",
+        "schemaVersion": 1,
+        "renderer": "tailwind",
+        "framework": "foldkit"
+      }
+    },
+    "docs": "Foldkit probe: customize the installed component source and keep global CSS limited to theme/base rules.",
+    "categories": ["foldkit", "navigation"],
+    "type": "registry:item"
+  }
+]
