@@ -130,7 +130,7 @@ describe('Dashboard composition', () => {
     it(`${name} table renders custom filters between search and columns`, () => {
       Scene.scene(
         {
-          update: (model, message) => ({ model: Table.update(model, message) }),
+          update: (model, message) => Table.update(model, message),
           view: (model, h) =>
             Table.dataTable(
               {
