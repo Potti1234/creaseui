@@ -393,6 +393,20 @@ test('doctor reports theme roles that installed components read but no styleshee
     ':root {\n  --color-border: oklch(0.9 0 0);\n}\n',
   )
   writeFileSync(path.join(directory, 'src/entry.ts'), "import './styles.css'\n")
+  writeFileSync(
+    path.join(directory, 'src/styles.css'),
+    '@theme inline {\n  --color-border: var(--border);\n}\n',
+  )
+  writeFileSync(path.join(directory, 'src/entry.ts'), "import './styles.css'\n")
+  assert.match(
+    run(directory, 'doctor').stdout,
+    /reads --color-border, which no stylesheet defines/u,
+    'a Pleat project does not compile @theme',
+  )
+  writeFileSync(
+    path.join(directory, 'src/styles.css'),
+    ':root {\n  --color-border: oklch(0.9 0 0);\n}\n',
+  )
   const themed = run(directory, 'doctor')
   assert.doesNotMatch(themed.stdout, /no stylesheet defines/u, themed.stdout)
   rmSync(directory, { force: true, recursive: true })

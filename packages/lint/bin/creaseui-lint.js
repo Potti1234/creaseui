@@ -526,10 +526,15 @@ const doctor = async values => {
         rootDir,
         Array.isArray(entry) ? entry[0] : entry,
       )
-      return existsSync(file)
-        ? [...readFileSync(file, 'utf8').matchAll(/(--[\w-]+)\s*:/gu)].map(
-            match => match[1],
-          )
+      if (!existsSync(file)) return []
+      const css = readFileSync(file, 'utf8')
+      /* Only Tailwind compiles `@theme` blocks; elsewhere they define nothing. */
+      const effective =
+        strict.ownership.renderer === 'tailwind'
+          ? css
+          : css.replace(/@theme[^{]*\{[^}]*\}/gu, '')
+      return effective
+        ? [...effective.matchAll(/(--[\w-]+)\s*:/gu)].map(match => match[1])
         : []
     }),
   )
