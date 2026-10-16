@@ -27,7 +27,12 @@ const recipes = JSON.parse(
 const stylexRegistry = JSON.parse(
   readFileSync(join(root, 'src/stylex/registry.json'), 'utf8'),
 )
-const stylexItemNames = new Set(stylexRegistry.items.map(item => item.name))
+const pleatRegistry = JSON.parse(
+  readFileSync(join(root, 'src/pleat/registry.json'), 'utf8'),
+)
+const stylexItemNames = new Set(
+  [...stylexRegistry.items, ...pleatRegistry.items].map(item => item.name),
+)
 const defaultComponentNames = [...registry.items, ...recipes.items].map(
   item => item.name,
 )
@@ -48,6 +53,7 @@ const componentNames =
         'stylex-button',
         'stylex-data-table',
         'stylex-integrations-echarts',
+        'pleat-button',
       ]
     : requestedComponentNames
 const sourcePackage = JSON.parse(
@@ -117,6 +123,26 @@ const run = (command, args) =>
 for (const file of ['tsconfig.json']) {
   cpSync(join(root, file), join(fixture, file))
 }
+
+// Pleat is vendored rather than published, so installed @pleat/* sources are
+// mapped the way the registry item descriptions instruct consumers to.
+const pleatAliases = {
+  '@pleat/core': './src/lib/pleat/core/src/index.ts',
+  '@pleat/foldkit': './src/lib/pleat/foldkit/src/index.ts',
+}
+const fixtureTsconfig = JSON.parse(
+  readFileSync(join(fixture, 'tsconfig.json'), 'utf8'),
+)
+fixtureTsconfig.compilerOptions.paths = {
+  ...fixtureTsconfig.compilerOptions.paths,
+  ...Object.fromEntries(
+    Object.entries(pleatAliases).map(([name, path]) => [name, [path]]),
+  ),
+}
+writeFileSync(
+  join(fixture, 'tsconfig.json'),
+  `${JSON.stringify(fixtureTsconfig, null, 2)}\n`,
+)
 cpSync(join(root, 'stylex.config.js'), join(fixture, 'stylex.config.js'))
 
 writeFileSync(
@@ -169,7 +195,17 @@ import { foldkit } from '@foldkit/vite-plugin'
 import { stylexCompilerOptions } from './stylex.config.js'
 export default defineConfig({
   plugins: [tailwindcss(), stylex.vite(stylexCompilerOptions), foldkit({ devToolsMcpPort: false })],
-  resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
+  resolve: {
+    alias: {
+${Object.entries(pleatAliases)
+  .map(
+    ([name, path]) =>
+      `      '${name}': fileURLToPath(new URL('${path}', import.meta.url)),`,
+  )
+  .join('\n')}
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
 })
 `,
 )
@@ -217,7 +253,10 @@ writeFileSync(
       name === 'dashboard-01'
         ? `import * as Component${index} from '@/components/crease-dashboard/entry'`
         : stylexItemNames.has(name)
-          ? `import * as Component${index} from '${stylexRegistry.items
+          ? `import * as Component${index} from '${[
+              ...stylexRegistry.items,
+              ...pleatRegistry.items,
+            ]
               .find(item => item.name === name)
               .files[0].target.replace(/^@ui/u, '@/ui')
               .replace(/\.ts$/u, '')}'`
@@ -225,7 +264,19 @@ writeFileSync(
     )
     .join('\n')}\n\nexport const installedComponents = [${componentNames
     .map((_name, index) => `Component${index}`)
-    .join(', ')}]\n`,
+    .join(', ')}]\n${
+    componentNames.some(name => name.startsWith('pleat-'))
+      ? `
+// Exercise the advertised Pleat layout helpers through the consumer build.
+import { When } from '@pleat/core'
+import { layoutStyle, layoutWhen } from '@/ui/pleat/contracts'
+
+export const installedLayoutStyle = layoutStyle({ width: '100%' }).pipe(
+  layoutWhen(When.minWidth('640px'), { maxWidth: '24rem' }),
+)
+`
+      : ''
+  }`,
 )
 
 try {

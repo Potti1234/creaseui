@@ -1,3 +1,5 @@
+import { pleatExamples } from '@/docs/components/pleat-source'
+import type { DocsExample } from '@/docs/components/page-definition'
 import { mapDocsExamples } from '@/docs/components/pages/map/source'
 export const mapClusterFixtures = [
   {
@@ -11,5 +13,11 @@ export const mapClusterFixtures = [
       'Change the cluster radius and colors to suit your data density.',
   },
 ] as const
-export const mapClusterExamples = (renderer: 'tailwind' | 'stylex') =>
-  mapDocsExamples('map-cluster', mapClusterFixtures, renderer)
+const mapClusterExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+) => mapDocsExamples('map-cluster', mapClusterFixtures, renderer)
+
+export const mapClusterExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, mapClusterExamplesFor(renderer))

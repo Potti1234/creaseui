@@ -319,7 +319,9 @@ const anchorPositionStyle = (
     height: 'max-content',
     maxWidth: 'calc(100vw - 8px)',
     ...(alignTransform === undefined ? {} : { transform: alignTransform }),
-    positionTry: isBlock ? 'flip-block' : 'flip-inline',
+    positionTry: isBlock
+      ? 'flip-block'
+      : 'flip-inline, flip-block, flip-inline flip-block',
     maxHeight: 'calc(100vh - 8px)',
     overflowY: 'auto',
   }
@@ -542,7 +544,9 @@ export const dropdownMenu = <Item extends string, Msg>(
             `${typeof config.label === 'string' ? config.label : 'Submenu'} submenu`,
           ),
           h.Id(`${props.model.id}-submenu-${String(index)}`),
-          h.Class(cn(SUBMENU_CLASS, styles.submenuPanel)),
+          h.Class(
+            cn(SUBMENU_CLASS, overlayStyles.floating, styles.submenuPanel),
+          ),
           // Anchored to the parent item and rendered outside the scrollable
           // panel so the panel's overflow-y clip can't hide it.
           h.Style({
@@ -552,7 +556,7 @@ export const dropdownMenu = <Item extends string, Msg>(
               ? { right: 'anchor(left)', marginRight: '0.25rem' }
               : { left: 'anchor(right)', marginLeft: '0.25rem' }),
             top: 'anchor(top)',
-            positionTry: 'flip-inline',
+            positionTry: 'flip-inline, flip-block, flip-inline flip-block',
             maxHeight: 'calc(100vh - 8px)',
             overflowY: 'auto',
           }),
@@ -754,6 +758,7 @@ export const dropdownMenu = <Item extends string, Msg>(
                 h.Class(
                   cn(
                     CONTENT_CLASS,
+                    overlayStyles.floating,
                     styles.menuContent,
                     ...(anchorX !== undefined
                       ? []

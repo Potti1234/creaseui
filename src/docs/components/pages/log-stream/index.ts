@@ -21,5 +21,6 @@ export const logStreamPage = authoredPage({
       'The region is role="log" whose aria-live channel is polite only while following the tail and off while unfollowed, so a busy stream never floods assistive tech. Expandable rows are disclosure buttons with aria-expanded.',
     examples: logStreamExamples('tailwind'),
     stylexExamples: logStreamExamples('stylex'),
+    pleatExamples: logStreamExamples('pleat'),
   },
 })

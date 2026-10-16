@@ -1,7 +1,7 @@
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import { textareaFixtures } from '@/docs/components/pages/textarea/shared'
 import * as Button from '@/stylex/button'
 import * as Field from '@/stylex/field'
@@ -50,7 +50,7 @@ const ta = <Msg>(
     h,
   )
 
-export const textareaStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const textareaStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

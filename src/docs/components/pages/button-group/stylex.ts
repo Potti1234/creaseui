@@ -4,7 +4,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import * as stylex from '@stylexjs/stylex'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   buttonGroupFixtures,
   type ButtonGroupFixture,
@@ -428,6 +428,7 @@ const nodeView = <Msg>(
                         [
                           h.Type('button'),
                           h.AriaPressed(model.voiceEnabled ? 'true' : 'false'),
+                          h.AriaLabel('Voice Mode'),
                           h.DataAttribute('active', String(model.voiceEnabled)),
                           h.OnClick(
                             onMessageJson(
@@ -659,7 +660,7 @@ const fixtureView = <Msg>(
   return fixture.direction === 'rtl' ? h.div([h.Dir('rtl')], [group]) : group
 }
 
-export const buttonGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const buttonGroupStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

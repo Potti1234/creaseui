@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 export type BadgeIcon = Readonly<{
@@ -291,9 +292,12 @@ const styles = stylex.create({
 })`
 }
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = badgeFixtures[index] ?? badgeFixtures[0]
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const wrapClass = fixture.centered
     ? 'flex w-full flex-wrap justify-center gap-2'
     : 'flex flex-wrap gap-2'
@@ -329,11 +333,16 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
   })
 }
 
-export const badgeExamples = (
-  renderer: 'tailwind' | 'stylex',
+const badgeExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   badgeFixtures.map((fixture, index) => ({
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
   }))
+
+export const badgeExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, badgeExamplesFor(renderer))

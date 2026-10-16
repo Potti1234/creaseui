@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type SliderInstance = Readonly<{
@@ -70,6 +71,7 @@ export type SliderFixture = (typeof sliderFixtures)[number]
 
 const STYLES_BLOCK = `
 const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   slider: { maxWidth: '24rem', width: '100%' },
   verticalWrap: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1.5rem' },
   controlledWrap: { display: 'grid', gap: '0.75rem', maxWidth: '24rem', width: '100%' },
@@ -80,9 +82,9 @@ const styles = stylex.create({
 
 const sliderSource = (
   fixture: { title: string; initialValue: number; isDisabled: boolean },
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
   return foldkitApplication({
     title: `Slider — ${fixture.title}`,
@@ -150,7 +152,7 @@ export type Message = typeof Message.Type`,
 )`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Slider — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     h.div([h.Class(${isStyleX ? 'className(styles.slider)' : "'w-full max-w-xs'"})], [
       Slider.slider({
         model: model.slider,
@@ -172,9 +174,9 @@ const multiSource = (
     vertical?: boolean
     controlled?: boolean
   },
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
   const initEmit = (instance: SliderInstance): string =>
     `Slider.initMulti({
@@ -317,15 +319,15 @@ ${fixture.instances
 )`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Slider — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     ${wrapEmit(fixture.instances.map(i => `      ${sliderEmit(i)}`).join(',\n'))},
   ]),
 })`,
   })
 }
 
-export const sliderExamples = (
-  renderer: 'tailwind' | 'stylex',
+const sliderExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   sliderFixtures.map(fixture => ({
     title: fixture.title,
@@ -334,3 +336,8 @@ export const sliderExamples = (
         ? sliderSource(fixture, renderer)
         : multiSource(fixture, renderer),
   }))
+
+export const sliderExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, sliderExamplesFor(renderer))

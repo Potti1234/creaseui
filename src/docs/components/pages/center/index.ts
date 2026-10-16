@@ -25,5 +25,6 @@ export const centerPage = authoredPage({
       'Center applies no semantics of its own. Empty-state patterns should pair it with a real heading or status text inside.',
     examples: tailwindExamples,
     stylexExamples: centerExamples('stylex'),
+    pleatExamples: centerExamples('pleat'),
   },
 })

@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import {
   controlledStringApplication,
   foldkitApplication,
@@ -79,11 +80,11 @@ export const selectableCardTags: ReadonlyArray<SelectableTag> = [
   { id: 'go', name: 'Go', variant: 'teal' },
 ]
 
-const ui = (renderer: 'tailwind' | 'stylex'): string =>
-  renderer === 'stylex' ? 'stylex' : 'ui'
+const ui = (renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat'): string =>
+  renderer !== 'tailwind' ? 'stylex' : 'ui'
 
 const cls = (
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
   tailwindValue: string,
   styleKey: string,
 ): string =>
@@ -100,6 +101,7 @@ const STYLEX_STYLES = {
   price: `{ fontSize: '1.125rem', lineHeight: '1.75rem', fontWeight: 600 }`,
   bodyBold: `{ fontSize: '0.875rem', lineHeight: '1.25rem', fontWeight: 700 }`,
   supporting: `{ fontSize: '0.75rem', lineHeight: '1rem', color: 'var(--muted-foreground)' }`,
+  page: `{ marginInline: 'auto', maxWidth: '28rem', padding: '2rem' }`,
 } as const
 type StylexStyleKey = keyof typeof STYLEX_STYLES
 
@@ -107,7 +109,7 @@ const stylexImports = (keys: ReadonlyArray<StylexStyleKey>): string =>
   `import * as stylex from '@stylexjs/stylex'\n\nconst styles = stylex.create({\n${keys.map(k => `  ${k}: ${STYLEX_STYLES[k]},`).join('\n')}\n})`
 
 const planCardSource = (
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
   elevated: boolean,
 ): string => `SelectableCard.selectableCard({
           label: plan.name,
@@ -130,14 +132,14 @@ const planCardSource = (
 
 const singleSelectSource = (
   index: number,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const fixture = selectableCardFixtures[index] ?? selectableCardFixtures[0]
   const elevated = fixture.kind === 'elevated'
   const plans = elevated ? selectableCardElevatedPlans : selectableCardPlans
   const componentImports = [
     `const plans = ${JSON.stringify(plans)}`,
-    ...(renderer === 'stylex'
+    ...(renderer !== 'tailwind'
       ? [
           stylexImports(
             elevated
@@ -165,11 +167,15 @@ const singleSelectSource = (
   })
 }
 
-const multiSource = (renderer: 'tailwind' | 'stylex'): string => {
+const multiSource = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = selectableCardFixtures[2] ?? selectableCardFixtures[0]
   const componentImports = [
     `const tags = ${JSON.stringify(selectableCardTags)} as const`,
-    ...(renderer === 'stylex' ? [stylexImports(['grid3', 'bodyBold'])] : []),
+    ...(renderer !== 'tailwind'
+      ? [stylexImports(['grid3', 'bodyBold', 'page'])]
+      : []),
   ].join('\n')
   return foldkitApplication({
     title: `SelectableCard — ${fixture.title}`,
@@ -205,7 +211,7 @@ export type Message = typeof Message.Type`,
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'SelectableCard — ${fixture.title}',
-  body: h.main([h.Class('mx-auto max-w-md p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? "stylex.props(styles.page).className ?? ''" : "'mx-auto max-w-md p-8'"})], [
     h.div([${cls(renderer, 'grid grid-cols-3 gap-2 w-[25rem]', 'grid3')}],
       tags.map(tag =>
         SelectableCard.selectableCard({
@@ -224,18 +230,26 @@ export type Message = typeof Message.Type`,
   })
 }
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = selectableCardFixtures[index] ?? selectableCardFixtures[0]
   return fixture.kind === 'multi'
     ? multiSource(renderer)
     : singleSelectSource(index, renderer)
 }
 
-export const selectableCardExamples = (
-  renderer: 'tailwind' | 'stylex',
+const selectableCardExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   selectableCardFixtures.map((fixture, index) => ({
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
   }))
+
+export const selectableCardExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, selectableCardExamplesFor(renderer))

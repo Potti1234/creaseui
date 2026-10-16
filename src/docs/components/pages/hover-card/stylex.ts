@@ -2,7 +2,7 @@ import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   hoverCardFixtures,
   hoverCardRtlSides,
@@ -51,7 +51,7 @@ const toMsg =
       JSON.stringify({ _tag: 'GotHoverCardMessage', index, message }),
     )
 
-export const hoverCardStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const hoverCardStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,
@@ -99,7 +99,7 @@ export const hoverCardStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
             toParentMessage: toMsg(onMessageJson, cardIndex),
             trigger: entry.label,
             triggerButtonVariant: 'outline',
-            ariaLabel: `Hover card on the ${entry.side} side`,
+            ariaLabel: entry.label,
             side: entry.side,
             content: h.div(
               [h.Dir('rtl'), h.Class(className(styles.content))],

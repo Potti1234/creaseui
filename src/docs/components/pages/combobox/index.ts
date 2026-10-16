@@ -28,5 +28,6 @@ export const comboboxPage = authoredPage({
     ],
     examples: comboboxExamples('tailwind'),
     stylexExamples: comboboxExamples('stylex'),
+    pleatExamples: comboboxExamples('pleat'),
   },
 })

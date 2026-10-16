@@ -4,7 +4,7 @@ import * as Calendar from 'foldkit/calendar'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as stylex from '@stylexjs/stylex'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import { dateRangeInputFixtures } from '@/docs/components/pages/date-range-input/shared'
 import {
   PRESETS_FOR,
@@ -31,7 +31,7 @@ type Preview = Readonly<{
   inputs: ReadonlyArray<DateRangeInput.Model>
 }>
 
-export const dateRangeInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const dateRangeInputStyleXPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

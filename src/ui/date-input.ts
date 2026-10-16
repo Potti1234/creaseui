@@ -75,9 +75,9 @@ const WRAPPER_STATUS_CLASS: Readonly<
   error:
     'border-destructive focus-within:ring-destructive/20 dark:focus-within:ring-destructive/40',
   warning:
-    'border-chart-4 focus-within:ring-chart-4/20 dark:focus-within:ring-chart-4/40',
+    'border-warning focus-within:ring-warning/20 dark:focus-within:ring-warning/40',
   success:
-    'border-chart-2 focus-within:ring-chart-2/20 dark:focus-within:ring-chart-2/40',
+    'border-success focus-within:ring-success/20 dark:focus-within:ring-success/40',
 }
 
 const WRAPPER_SIZE_CLASS: Readonly<Record<'sm' | 'md' | 'lg', string>> = {
@@ -102,16 +102,16 @@ const STATUS_ICON_CLASS: Readonly<
   Record<'error' | 'warning' | 'success', string>
 > = {
   error: 'inline-flex shrink-0 items-center text-destructive [&>svg]:size-4',
-  warning: 'inline-flex shrink-0 items-center text-chart-4 [&>svg]:size-4',
-  success: 'inline-flex shrink-0 items-center text-chart-2 [&>svg]:size-4',
+  warning: 'inline-flex shrink-0 items-center text-warning [&>svg]:size-4',
+  success: 'inline-flex shrink-0 items-center text-success [&>svg]:size-4',
 }
 
 const STATUS_MESSAGE_CLASS: Readonly<
   Record<'error' | 'warning' | 'success', string>
 > = {
   error: 'text-sm text-destructive',
-  warning: 'text-sm text-chart-4',
-  success: 'text-sm text-chart-2',
+  warning: 'text-sm text-warning',
+  success: 'text-sm text-success',
 }
 
 const PANEL_CLASS =

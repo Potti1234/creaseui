@@ -25,5 +25,6 @@ export const tabsPage = authoredPage({
     ],
     examples: tabsExamples('tailwind'),
     stylexExamples: tabsExamples('stylex'),
+    pleatExamples: tabsExamples('pleat'),
   },
 })

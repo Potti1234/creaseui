@@ -1,6 +1,7 @@
 import type { EChartsOption } from 'echarts/types/dist/shared'
 
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import {
   foldkitApplication,
   staticComponentApplication,
@@ -443,7 +444,9 @@ export const chartFixtures = [
   },
 ] as const
 
-const lifecycleSource = (renderer: 'tailwind' | 'stylex'): string =>
+const lifecycleSource = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string =>
   foldkitApplication({
     title: 'Chart — ECharts lifecycle adapter',
     imports: `import type { EChartsOption } from 'echarts/types/dist/shared'
@@ -451,8 +454,8 @@ import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-import * as Chart from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/chart'
-import * as Button from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/button'`,
+import * as Chart from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/chart'
+import * as Button from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/button'`,
     model: `export const Model = S.Struct({ variant: S.Literals(['month', 'quarter']) })
 export type Model = typeof Model.Type
 
@@ -488,23 +491,23 @@ export type Message = typeof Message.Type`,
 
 const staticSource = (
   kind: 'bar-svg' | 'area-svg',
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string =>
   staticComponentApplication({
     componentName: 'Chart',
     componentSlug: 'chart',
     renderer,
     exampleName: kind === 'bar-svg' ? 'Monthly revenue' : 'Traffic trend',
-    ...(renderer === 'stylex'
+    ...(renderer !== 'tailwind'
       ? {
           componentImports:
-            "import * as stylex from '@stylexjs/stylex'\nconst styles = stylex.create({ chart: { marginInline: 'auto', maxWidth: '36rem' }, stack: { marginInline: 'auto', maxWidth: '36rem', width: '100%' } })",
+            "import * as stylex from '@stylexjs/stylex'\nimport { layoutStyle } from '@/stylex/contracts'\nconst styles = stylex.create({ chart: { marginInline: 'auto', maxWidth: '36rem' }, stack: { marginInline: 'auto', maxWidth: '36rem', width: '100%' } })",
         }
       : {}),
     viewBody:
       kind === 'bar-svg'
-        ? `Chart.barChart({ ${renderer === 'stylex' ? 'layoutStyle: styles.chart' : "class: 'mx-auto max-w-xl'"}, data: [{ label: 'Jan', value: 186 }, { label: 'Feb', value: 305 }, { label: 'Mar', value: 237 }, { label: 'Apr', value: 273 }, { label: 'May', value: 209 }, { label: 'Jun', value: 314 }] }, h)`
-        : `${renderer === 'stylex' ? "h.div([h.Class(stylex.props(styles.stack).className ?? '')]" : "h.div([h.Class('mx-auto w-full max-w-xl space-y-4')]"}, [Chart.areaChart({ data: [186, 305, 237, 273, 209, 314] }, h), Chart.chartLegend({ config: { visitors: { label: 'Visitors', color: 'var(--chart-2)' } } }, h)])`,
+        ? `Chart.barChart({ ${renderer !== 'tailwind' ? 'layoutStyle: layoutStyle({ marginInline: "auto", maxWidth: "36rem" })' : "class: 'mx-auto max-w-xl'"}, data: [{ label: 'Jan', value: 186 }, { label: 'Feb', value: 305 }, { label: 'Mar', value: 237 }, { label: 'Apr', value: 273 }, { label: 'May', value: 209 }, { label: 'Jun', value: 314 }] }, h)`
+        : `${renderer !== 'tailwind' ? "h.div([h.Class(stylex.props(styles.stack).className ?? '')]" : "h.div([h.Class('mx-auto w-full max-w-xl space-y-4')]"}, [Chart.areaChart({ data: [186, 305, 237, 273, 209, 314] }, h), Chart.chartLegend({ config: { visitors: { label: 'Visitors', color: 'var(--chart-2)' } } }, h)])`,
   })
 
 const familyRegistration = (kind: ChartFamilyKind): string => {
@@ -526,7 +529,7 @@ const familyRegistration = (kind: ChartFamilyKind): string => {
 
 const familySource = (
   kind: ChartFamilyKind,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string =>
   foldkitApplication({
     title: `Chart — ${kind} chart`,
@@ -535,7 +538,7 @@ import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-import * as Chart from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/chart'`,
+import * as Chart from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/chart'`,
     model: `export const Model = S.Struct({})
 export type Model = typeof Model.Type
 
@@ -593,7 +596,7 @@ const stepRegistration = (
 
 const stepSource = (
   kind: Exclude<ChartUpstreamKind, 'demo' | 'rtl'>,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string =>
   foldkitApplication({
     title: `Chart — ${kind}`,
@@ -602,7 +605,7 @@ import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-import * as Chart from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/chart'`,
+import * as Chart from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/chart'`,
     model: `export const Model = S.Struct({})
 export type Model = typeof Model.Type
 
@@ -621,7 +624,9 @@ export type Message = typeof Message.Type`,
 })`,
   })
 
-const rtlSource = (renderer: 'tailwind' | 'stylex'): string =>
+const rtlSource = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string =>
   foldkitApplication({
     title: 'Chart — RTL',
     imports: `import type { EChartsOption } from 'echarts/types/dist/shared'
@@ -629,7 +634,7 @@ import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-import * as Chart from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/chart'`,
+import * as Chart from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/chart'`,
     model: `export const Model = S.Struct({})
 export type Model = typeof Model.Type
 
@@ -658,7 +663,9 @@ const demoDesktopData =
 const demoMobileData =
   '150, 180, 120, 260, 290, 340, 180, 320, 110, 190, 350, 210, 380, 220, 170, 190, 360, 410, 180, 150, 200, 170, 230, 290, 250, 130, 420, 180, 240, 380'
 
-const demoSource = (renderer: 'tailwind' | 'stylex'): string =>
+const demoSource = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string =>
   foldkitApplication({
     title: 'Chart — interactive bar chart',
     imports: `import type { EChartsOption } from 'echarts/types/dist/shared'
@@ -666,8 +673,8 @@ import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-import * as Card from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/card'
-import * as Chart from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/chart'`,
+import * as Card from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/card'
+import * as Chart from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/chart'`,
     model: `export const Model = S.Struct({ activeChart: S.Literals(['desktop', 'mobile']) })
 export type Model = typeof Model.Type
 
@@ -712,27 +719,29 @@ export type Message = typeof Message.Type`,
 })`,
   })
 
-const tooltipSource = (renderer: 'tailwind' | 'stylex'): string =>
+const tooltipSource = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string =>
   staticComponentApplication({
     componentName: 'Chart',
     componentSlug: 'chart',
     renderer,
     exampleName: 'Tooltip',
-    ...(renderer === 'stylex'
+    ...(renderer !== 'tailwind'
       ? {
           componentImports:
-            "import * as stylex from '@stylexjs/stylex'\nconst styles = stylex.create({ row: { display: 'flex', flexWrap: 'wrap', gap: '1rem' } })",
+            "import * as stylex from '@stylexjs/stylex'\nimport { layoutStyle } from '@/stylex/contracts'\nconst styles = stylex.create({ row: { display: 'flex', flexWrap: 'wrap', gap: '1rem' } })",
         }
       : {}),
-    viewBody: `${renderer === 'stylex' ? "h.div([h.Class(stylex.props(styles.row).className ?? '')]" : "h.div([h.Class('flex flex-wrap gap-4')]"}, [
+    viewBody: `${renderer !== 'tailwind' ? "h.div([h.Class(stylex.props(styles.row).className ?? '')]" : "h.div([h.Class('flex flex-wrap gap-4')]"}, [
     Chart.chartTooltipContent({ config: { desktop: { label: 'Desktop', color: 'var(--chart-3)' } }, label: 'Page Views', items: [{ key: 'desktop', value: '12,486' }] }, h),
     Chart.chartTooltipContent({ config: { chrome: { label: 'Chrome', color: 'var(--chart-3)' }, firefox: { label: 'Firefox', color: 'var(--chart-4)' } }, label: 'Browser', items: [{ key: 'chrome', value: '1,286' }, { key: 'firefox', value: '1,000' }] }, h),
     Chart.chartTooltipContent({ config: { chrome: { label: 'Chrome', color: 'var(--chart-1)' } }, items: [{ key: 'chrome', value: '1,286' }] }, h),
   ])`,
   })
 
-export const chartExamples = (
-  renderer: 'tailwind' | 'stylex',
+const chartExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   chartFixtures.map(fixture => ({
     title: fixture.title,
@@ -759,3 +768,8 @@ export const chartExamples = (
                   ? stepSource(fixture.kind, renderer)
                   : familySource(fixture.kind, renderer),
   }))
+
+export const chartExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, chartExamplesFor(renderer))

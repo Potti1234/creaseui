@@ -1,5 +1,8 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
+const emitShellStyles =
+  "import * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\n\nconst shellStyles = stylex.create({\n  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },\n})"
 
 export type LogFixtureEntry = Readonly<{
   id: string
@@ -239,10 +242,10 @@ export const logStreamLiveScript: ReadonlyArray<Omit<LogFixtureEntry, 'id'>> = [
 
 const logStreamSource = (
   fixture: LogStreamFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
-  const ns = isStyleX ? 'LogStreamStyleX' : 'LogStream'
+  const isStyleX = renderer !== 'tailwind'
+  const ns = renderer === 'stylex' ? 'LogStreamStyleX' : 'LogStream'
   const entriesLiteral = JSON.stringify(
     fixture.entries.map(({ detailText: _detailText, ...entry }) => entry),
     null,
@@ -452,10 +455,10 @@ export const init = (): Update.Return<Model, Message> => ({
     }
   }
 }`,
-    view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+    view: `${isStyleX ? emitShellStyles + '\n\n' : ''}export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: '${fixture.title}',
   body: h.main(
-    [h.Class('flex min-h-screen items-center justify-center p-8')],
+    [h.Class(${renderer !== 'tailwind' ? 'className(shellStyles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})],
     [
       h.div(
         [h.Class('flex w-full max-w-3xl flex-col gap-3')],
@@ -469,11 +472,16 @@ export const init = (): Update.Return<Model, Message> => ({
   })
 }
 
-export const logStreamExamples = (
-  renderer: 'tailwind' | 'stylex',
+const logStreamExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   logStreamFixtures.map(fixture => ({
     title: fixture.title,
     description: fixture.description,
     code: logStreamSource(fixture, renderer),
   }))
+
+export const logStreamExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, logStreamExamplesFor(renderer))

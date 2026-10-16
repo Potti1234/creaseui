@@ -19,5 +19,6 @@ export const thumbnailPage = authoredPage({
       'The frame is a labelled group; the image is aria-hidden when `alt` is empty, and `label`/`alt` combine into the accessible name.',
     examples: thumbnailExamples('tailwind'),
     stylexExamples: thumbnailExamples('stylex'),
+    pleatExamples: thumbnailExamples('pleat'),
   },
 })

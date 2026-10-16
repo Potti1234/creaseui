@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { statelessComponentApplication } from '@/docs/components/pages/authored-page'
 export const directionFixtures = [
   {
@@ -12,8 +13,11 @@ export const directionFixtures = [
       'Nest a local LTR token inside an RTL sentence when the content requires it.',
   },
 ] as const
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
-  const sx = renderer === 'stylex'
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
+  const sx = renderer !== 'tailwind'
   return statelessComponentApplication({
     componentName: 'Direction',
     componentSlug: 'direction',
@@ -26,10 +30,15 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
         : `Direction.direction({ direction: 'rtl', children: ['الإصدار ', ${sx ? "h.span([h.Class(stylex.props(styles.token).className ?? '')], [Direction.direction({ direction: 'ltr', children: ['v0.163.0'] }, h)])" : "Direction.direction({ direction: 'ltr', class: 'inline-block font-mono', children: ['v0.163.0'] }, h)"}] }, h),`,
   })
 }
-export const directionExamples = (
-  renderer: 'tailwind' | 'stylex',
+const directionExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   directionFixtures.map((fixture, index) => ({
     ...fixture,
     code: source(index, renderer),
   }))
+
+export const directionExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, directionExamplesFor(renderer))

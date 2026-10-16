@@ -200,7 +200,7 @@ export const navigationMenuDisclosure = <Msg>(
           h.Class(className(styles.trigger, props.layoutStyle)),
           h.AriaLabel(props.ariaLabel ?? props.label),
           ...(props.pointerIntent === 'hover-and-press' && !props.model.isOpen
-            ? [h.OnMouseEnter(props.toParentMessage(Popover.RequestedOpen()))]
+            ? [h.OnMouseMove(props.toParentMessage(Popover.RequestedOpen()))]
             : []),
         ],
         [

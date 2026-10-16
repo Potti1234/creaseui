@@ -1,7 +1,7 @@
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import type { ComponentLayoutStyle } from '@/stylex/contracts'
 import {
   spinnerFixtures,
@@ -370,7 +370,7 @@ const fixtureView = <Msg>(
   }
 }
 
-export const spinnerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const spinnerStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   _model: unknown,
   onMessageJson: (messageJson: string) => Msg,

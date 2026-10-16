@@ -24,5 +24,6 @@ export const radioGroupPage = authoredPage({
     ],
     examples: radioGroupExamples('tailwind'),
     stylexExamples: radioGroupExamples('stylex'),
+    pleatExamples: radioGroupExamples('pleat'),
   },
 })

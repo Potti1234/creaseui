@@ -43,5 +43,6 @@ mapControls({ showZoom: true, showCompass: true, showFullscreen: true }, h)`,
     ],
     examples: mapControlsExamples('tailwind'),
     stylexExamples: mapControlsExamples('stylex'),
+    pleatExamples: mapControlsExamples('pleat'),
   },
 })

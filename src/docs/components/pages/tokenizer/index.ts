@@ -42,5 +42,6 @@ export const tokenizerPage = authoredPage({
       'Parent Model\n├── Tokenizer child Model (tokens + embedded Multi combobox)\n└── ChangedTokens OutMessage → parent domain state\n    ├── hasCreate offers a free-text create row from the typed query\n    ├── maxEntries hides the input once the cap is reached\n    └── tokenOverflowBehavior collapses the chip row while unfocused',
     examples: tokenizerExamples('tailwind'),
     stylexExamples: tokenizerExamples('stylex'),
+    pleatExamples: tokenizerExamples('pleat'),
   },
 })

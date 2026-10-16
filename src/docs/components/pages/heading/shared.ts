@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 export type HeadingExampleKind =
@@ -128,7 +129,7 @@ const viewBody = (fixture: HeadingFixture, isStyleX: boolean): string => {
             ],
           ),
         ] }, h),
-      ]${isStyleX ? ', layoutStyle: styles.card' : ", class: 'w-75'"} }, h)`
+      ]${isStyleX ? ', layoutStyle: layoutStyle({ width: "300px" })' : ", class: 'w-75'"} }, h)`
   }
 }
 
@@ -151,15 +152,18 @@ const stylexStyles = (fixture: HeadingFixture): string => {
   }
 }
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = headingFixtures[index] ?? headingFixtures[0]
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const base = isStyleX ? 'stylex' : 'ui'
   const imports: string[] = []
   if (isStyleX) {
     imports.push(
       `import * as stylex from '@stylexjs/stylex'`,
-      `import { className } from '@/stylex/style'`,
+      `import { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'`,
     )
   }
   if (fixture.kind === 'pageHierarchy' || fixture.kind === 'cardGrid') {
@@ -185,8 +189,8 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
   })
 }
 
-export const headingExamples = (
-  renderer: 'tailwind' | 'stylex',
+const headingExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   headingFixtures.map((fixture, index) => ({
     title: fixture.title,
@@ -195,3 +199,8 @@ export const headingExamples = (
       : { description: fixture.description }),
     code: source(index, renderer),
   }))
+
+export const headingExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, headingExamplesFor(renderer))

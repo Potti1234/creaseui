@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type FieldKind =
@@ -181,6 +182,7 @@ const emitImports = (fixture: FieldFixture, isStyleX: boolean): string => {
 import { className } from '@/stylex/style'
 
 const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   page: { maxWidth: '28rem', width: '100%' },
   pageXs: { maxWidth: '20rem', width: '100%' },
   pageSm: { maxWidth: '24rem', width: '100%' },
@@ -695,7 +697,7 @@ ${emitImports(fixture, isStyleX)}${items === '' ? '' : `\n\n${items}`}`,
       : {}),
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Field — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
 ${emitBody(fixture, isStyleX)
   .split('\n')
   .map(line => `    ${line}`)
@@ -705,8 +707,8 @@ ${emitBody(fixture, isStyleX)
   })
 }
 
-export const fieldExamples = (
-  renderer: 'tailwind' | 'stylex',
+const fieldExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   fieldFixtures.map(fixture => ({
     title: fixture.title,
@@ -714,5 +716,10 @@ export const fieldExamples = (
       ? {}
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
-    code: emitApplication(fixture, renderer === 'stylex'),
+    code: emitApplication(fixture, renderer !== 'tailwind'),
   }))
+
+export const fieldExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, fieldExamplesFor(renderer))

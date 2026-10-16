@@ -20,5 +20,6 @@ export const gridPage = authoredPage({
       'Grid applies no semantics of its own — it only orders content visually. Keep DOM order meaningful and choose a semantic element with `as` when the grid is a list or landmark.',
     examples: gridExamples('tailwind'),
     stylexExamples: gridExamples('stylex'),
+    pleatExamples: gridExamples('pleat'),
   },
 })

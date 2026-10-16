@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export interface RadioGroupOptionSpec {
@@ -191,10 +192,10 @@ const emitGroup = (
   const layout =
     fixture.width === 'fit'
       ? isStyleX
-        ? '    layoutStyle: styles.fit,'
+        ? '    layoutStyle: layoutStyle({ width: "fit-content" }),'
         : "    class: 'w-fit',"
       : isStyleX
-        ? '    layoutStyle: styles.wide,'
+        ? `    layoutStyle: layoutStyle({ width: '100%', maxWidth: '${fixture.width === 'xs' ? '20rem' : '24rem'}' }),`
         : "    class: 'w-full max-w-sm',"
   return `${indent}RadioGroup.radioGroup({
     model: model.radioGroup,
@@ -211,7 +212,7 @@ ${fixture.options.map(option => `      ${optionLiteral(option)},`).join('\n')}
 const emitBody = (fixture: RadioGroupFixture, isStyleX: boolean): string => {
   if (fixture.kind === 'fieldset') {
     const fieldsetLayout = isStyleX
-      ? '    layoutStyle: styles.wide,'
+      ? `    layoutStyle: layoutStyle({ width: '100%', maxWidth: '${fixture.width === 'xs' ? '20rem' : '24rem'}' }),`
       : "    class: 'w-full max-w-xs',"
     return `  Field.fieldSet({
 ${fieldsetLayout}
@@ -231,13 +232,14 @@ ${emitGroup(fixture, isStyleX, '      ')},
 
 const emitApplication = (
   fixture: RadioGroupFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const base = isStyleX ? 'stylex' : 'ui'
   const needsField = fixture.kind === 'fieldset'
   const stylesBlock = isStyleX
     ? `\n\nconst styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   fit: { width: 'fit-content' },
   wide: { width: '100%', maxWidth: '${fixture.width === 'xs' ? '20rem' : '24rem'}' },
 })`
@@ -248,7 +250,7 @@ const emitApplication = (
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-${isStyleX ? "import * as stylex from '@stylexjs/stylex'\n" : ''}${needsField ? `import * as Field from '@/${base}/field'\n` : ''}import * as RadioGroup from '@/${base}/radio-group'${stylesBlock}`,
+${isStyleX ? "import * as stylex from '@stylexjs/stylex'\nimport { layoutStyle } from '@/stylex/contracts'\n" : ''}${needsField ? `import * as Field from '@/${base}/field'\n` : ''}import * as RadioGroup from '@/${base}/radio-group'${stylesBlock}`,
     model: `export const Model = S.Struct({
   value: S.String,
   radioGroup: RadioGroup.Model,
@@ -290,15 +292,15 @@ export type Message = typeof Message.Type`,
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Radio Group — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
 ${emitBody(fixture, isStyleX)}
   ]),
 })`,
   })
 }
 
-export const radioGroupExamples = (
-  renderer: 'tailwind' | 'stylex',
+const radioGroupExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   radioGroupFixtures.map(fixture => ({
     title: fixture.title,
@@ -308,3 +310,8 @@ export const radioGroupExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer),
   }))
+
+export const radioGroupExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, radioGroupExamplesFor(renderer))

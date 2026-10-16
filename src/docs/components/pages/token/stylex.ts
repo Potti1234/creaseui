@@ -1,7 +1,7 @@
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   tokenFixtures,
   type TokenItem,
@@ -67,7 +67,7 @@ const itemView = <Msg>(item: TokenItem, noop: Msg, h: HtmlBuilder<Msg>) =>
     h,
   )
 
-export const tokenStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const tokenStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   _model: unknown,
   onMessageJson: (messageJson: string) => Msg,

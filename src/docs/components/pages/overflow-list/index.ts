@@ -23,5 +23,6 @@ export const overflowListPage = authoredPage({
       'The measurement row is aria-hidden and inert; collapsed items are removed from the visible row rather than visually hidden, so the indicator is the only path to them.',
     examples: overflowListExamples('tailwind'),
     stylexExamples: overflowListExamples('stylex'),
+    pleatExamples: overflowListExamples('pleat'),
   },
 })

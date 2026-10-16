@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 export type IndicatorItem = Readonly<{
@@ -108,9 +109,12 @@ const itemSource = (item: IndicatorItem): string => {
   return `Indicator.${fn}({ ${props.join(', ')} }, h)`
 }
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = indicatorFixtures[index] ?? indicatorFixtures[0]
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   /* `import * as Indicator` is auto-emitted by staticComponentApplication. */
   const componentImports = isStyleX
     ? [
@@ -146,11 +150,16 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
   })
 }
 
-export const indicatorExamples = (
-  renderer: 'tailwind' | 'stylex',
+const indicatorExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   indicatorFixtures.map((fixture, index) => ({
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
   }))
+
+export const indicatorExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, indicatorExamplesFor(renderer))

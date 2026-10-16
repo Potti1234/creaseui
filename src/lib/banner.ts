@@ -32,13 +32,13 @@ export const STATUS_ROLE: Readonly<Record<BannerStatus, 'alert' | 'status'>> = {
 }
 
 /** astryx IconColor per status mapped onto the alert-hue tokens crease uses
-   for the same severities (accent → primary, warning → chart-4,
-   error → destructive, success → chart-2). */
+   for the same severities (accent → primary, warning → warning,
+   error → destructive, success → success). */
 export const STATUS_TEXT_CLASS: Readonly<Record<BannerStatus, string>> = {
   info: 'text-primary',
-  warning: 'text-chart-4',
+  warning: 'text-warning',
   error: 'text-destructive',
-  success: 'text-chart-2',
+  success: 'text-success',
 }
 
 export const Model = S.Struct({

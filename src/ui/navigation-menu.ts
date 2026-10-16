@@ -114,7 +114,7 @@ export const navigationMenuDisclosure = <Msg>(
           h.Class('flex items-center gap-1'),
           h.AriaLabel(props.ariaLabel ?? props.label),
           ...(props.pointerIntent === 'hover-and-press' && !props.model.isOpen
-            ? [h.OnMouseEnter(props.toParentMessage(Popover.RequestedOpen()))]
+            ? [h.OnMouseMove(props.toParentMessage(Popover.RequestedOpen()))]
             : []),
         ],
         [

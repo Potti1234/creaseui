@@ -99,5 +99,6 @@ Chart.registerChart(hostId, (theme, variant): EChartsOption => ({
       'Every renderer exposes an image role and accessible name. The ECharts adapter requires a meaningful HTML summary or data table because canvas tooltips are supplementary and are not the keyboard-accessible data source.',
     examples: chartExamples('tailwind'),
     stylexExamples: chartExamples('stylex'),
+    pleatExamples: chartExamples('pleat'),
   },
 })

@@ -20,5 +20,6 @@ export const textareaPage = authoredPage({
       'Use a visible label and linked correction guidance. Description IDs are deterministic and emitted only with real description content. Native disabled, read-only, invalid, form, rows, wrapping, and naming behavior is preserved.',
     examples: textareaExamples('tailwind'),
     stylexExamples: textareaExamples('stylex'),
+    pleatExamples: textareaExamples('pleat'),
   },
 })

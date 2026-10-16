@@ -2,7 +2,7 @@ import type { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as stylex from '@stylexjs/stylex'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   commandFixtures,
   itemsForFixture,
@@ -26,7 +26,7 @@ type Preview = Readonly<{
   maybeValue: Option.Option<string>
 }>
 
-export const commandStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const commandStyleXPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

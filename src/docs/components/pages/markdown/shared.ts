@@ -1,6 +1,9 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 import type { MarkdownSource } from '@/lib/markdown'
+const emitShellStyles =
+  "import * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\n\nconst shellStyles = stylex.create({\n  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },\n})"
 
 export type MarkdownExampleKind =
   | 'showcase'
@@ -188,9 +191,9 @@ const emitBody = (fixture: MarkdownFixture, isStyleX: boolean): string => {
 
 const emitApplication = (
   fixture: MarkdownFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const base = isStyleX ? 'stylex' : 'ui'
   return foldkitApplication({
     title: `Markdown — ${fixture.title}`,
@@ -230,17 +233,17 @@ export type Message = typeof Message.Type`,
     }
   }
 }`,
-    view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+    view: `${isStyleX ? emitShellStyles + '\n\n' : ''}export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Markdown — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen justify-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(shellStyles.shell)' : "'flex min-h-screen justify-center p-8'"})], [
 ${emitBody(fixture, isStyleX)}
   ]),
 })`,
   })
 }
 
-export const markdownExamples = (
-  renderer: 'tailwind' | 'stylex',
+const markdownExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   markdownFixtures.map(fixture => ({
     title: fixture.title,
@@ -249,3 +252,8 @@ export const markdownExamples = (
       : { description: fixture.description }),
     code: emitApplication(fixture, renderer),
   }))
+
+export const markdownExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, markdownExamplesFor(renderer))

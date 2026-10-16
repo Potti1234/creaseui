@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type TokenizerFixture = Readonly<{
@@ -102,12 +103,15 @@ export const TAGS = [
   { id: '2', label: 'Engineering' },
 ] as const
 
-const imports = (renderer: 'tailwind' | 'stylex', extra: string): string =>
+const imports = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+  extra: string,
+): string =>
   `import { Option, Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-import * as Tokenizer from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/tokenizer'${extra}`
+import * as Tokenizer from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/tokenizer'${extra}`
 
 const stylexPreamble = `
 import * as stylex from '@stylexjs/stylex'
@@ -115,6 +119,7 @@ import { className } from '@/stylex/style'
 import * as Button from '@/stylex/button'
 
 const styles = stylex.create({
+  shell: { alignItems: 'flex-start', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   stack: {
     display: 'grid',
     gap: '1rem',
@@ -196,9 +201,9 @@ ${ITEMS_SNIPPET}`
 
 const singleSource = (
   fixture: TokenizerFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const initLines = (() => {
     switch (fixture.kind) {
       case 'showcase':
@@ -325,7 +330,7 @@ const singleSource = (
     update,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Tokenizer — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-start justify-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-start justify-center p-8'"})], [
     h.div([${stackClass(isStyleX)}], [${
       note === ''
         ? ''
@@ -341,9 +346,9 @@ const singleSource = (
 
 const creatableSource = (
   fixture: TokenizerFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   return foldkitApplication({
     title: `Tokenizer — ${fixture.title}`,
     imports: imports(renderer, isStyleX ? stylexPreamble : ''),
@@ -360,7 +365,7 @@ const creatableSource = (
     update,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Tokenizer — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-start justify-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-start justify-center p-8'"})], [
     h.div([${stackClass(isStyleX)}], [
       h.p([${supportingClass(isStyleX)}], ['Free-text only']),
       Tokenizer.tokenizer({
@@ -391,9 +396,9 @@ const creatableSource = (
 
 const statesSource = (
   fixture: TokenizerFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   return foldkitApplication({
     title: `Tokenizer — ${fixture.title}`,
     imports: imports(renderer, isStyleX ? stylexPreamble : ''),
@@ -420,7 +425,7 @@ const FIELDS = [
     update,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Tokenizer — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-start justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-start justify-center p-8'"})], [
     h.div([${stackClass(isStyleX)}], [
       ...FIELDS.map((field, i) =>
         Tokenizer.tokenizer({
@@ -443,7 +448,7 @@ const FIELDS = [
 
 const tokenizerSource = (
   fixture: TokenizerFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   switch (fixture.kind) {
     case 'creatable':
@@ -455,8 +460,8 @@ const tokenizerSource = (
   }
 }
 
-export const tokenizerExamples = (
-  renderer: 'tailwind' | 'stylex',
+const tokenizerExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   tokenizerFixtures.map(fixture => ({
     title: fixture.title,
@@ -466,3 +471,8 @@ export const tokenizerExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: tokenizerSource(fixture, renderer),
   }))
+
+export const tokenizerExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, tokenizerExamplesFor(renderer))

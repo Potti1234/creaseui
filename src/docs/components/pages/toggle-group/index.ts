@@ -28,5 +28,6 @@ export const toggleGroupPage = authoredPage({
     ],
     examples: toggleGroupExamples('tailwind'),
     stylexExamples: toggleGroupExamples('stylex'),
+    pleatExamples: toggleGroupExamples('pleat'),
   },
 })

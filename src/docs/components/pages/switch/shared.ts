@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type SwitchKind =
@@ -99,7 +100,7 @@ const emitBody = (fixture: SwitchFixture, isStyleX: boolean): string => {
     case 'description':
       return `  Field.field({
     orientation: 'horizontal',
-    ${isStyleX ? 'layoutStyle: styles.wide' : "class: 'w-full max-w-sm'"},
+    ${isStyleX ? 'layoutStyle: layoutStyle({ width: "100%", maxWidth: "24rem" })' : "class: 'w-full max-w-sm'"},
     children: [
       Field.fieldContent({ children: [
         Field.fieldLabel({
@@ -138,7 +139,7 @@ const emitBody = (fixture: SwitchFixture, isStyleX: boolean): string => {
       ],
     }, h)`
       return `  Field.fieldGroup({
-    ${isStyleX ? 'layoutStyle: styles.wide' : "class: 'w-full max-w-sm'"},
+    ${isStyleX ? 'layoutStyle: layoutStyle({ width: "100%", maxWidth: "24rem" })' : "class: 'w-full max-w-sm'"},
     children: [
       ${card('switch-share', 'Share across devices', 'Focus is shared across devices, and turns off when you leave the app.')},
       ${card('switch-notifications', 'Enable notifications', 'Receive notifications when focus mode is enabled or disabled.')},
@@ -149,7 +150,7 @@ const emitBody = (fixture: SwitchFixture, isStyleX: boolean): string => {
       return `  Field.field({
     orientation: 'horizontal',
     isDisabled: true,
-    ${isStyleX ? 'layoutStyle: styles.fit' : "class: 'w-fit'"},
+    ${isStyleX ? 'layoutStyle: layoutStyle({ width: "fit-content" })' : "class: 'w-fit'"},
     children: [
       ${sw('switch-disabled-unchecked', '\n      isDisabled: true,')},
       Field.fieldLabel({
@@ -163,7 +164,7 @@ const emitBody = (fixture: SwitchFixture, isStyleX: boolean): string => {
       return `  Field.field({
     orientation: 'horizontal',
     isInvalid: true,
-    ${isStyleX ? 'layoutStyle: styles.wide' : "class: 'w-full max-w-sm'"},
+    ${isStyleX ? 'layoutStyle: layoutStyle({ width: "100%", maxWidth: "24rem" })' : "class: 'w-full max-w-sm'"},
     children: [
       Field.fieldContent({ children: [
         Field.fieldLabel({
@@ -195,7 +196,7 @@ const emitBody = (fixture: SwitchFixture, isStyleX: boolean): string => {
       ],
     }, h)`
       return `  Field.fieldGroup({
-    ${isStyleX ? 'layoutStyle: styles.narrow' : "class: 'w-40'"},
+    ${isStyleX ? 'layoutStyle: layoutStyle({ width: "10rem" })' : "class: 'w-40'"},
     children: [
       ${sizeField('switch-size-sm', 'sm', 'Small')},
       ${sizeField('switch-size-default', 'default', 'Default')},
@@ -206,7 +207,7 @@ const emitBody = (fixture: SwitchFixture, isStyleX: boolean): string => {
       return `  Field.field({
     orientation: 'horizontal',
     direction: 'rtl',
-    ${isStyleX ? 'layoutStyle: styles.wide' : "class: 'w-full max-w-sm'"},
+    ${isStyleX ? 'layoutStyle: layoutStyle({ width: "100%", maxWidth: "24rem" })' : "class: 'w-full max-w-sm'"},
     children: [
       Field.fieldContent({ children: [
         Field.fieldLabel({
@@ -243,7 +244,9 @@ const emitImports = (fixture: SwitchFixture, isStyleX: boolean): string => {
     parts.push(`import * as Label from '@/${base}/label'`)
   }
   if (isStyleX) {
-    parts.push(`import { className } from '@/stylex/style'`)
+    parts.push(
+      `import { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'`,
+    )
   }
   return parts.join('\n')
 }
@@ -274,9 +277,9 @@ const emitStyles = (fixture: SwitchFixture): string => {
 
 const emitApplication = (
   fixture: SwitchFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const stylesBlock = isStyleX
     ? `\n\nconst styles = stylex.create({\n${emitStyles(fixture)}\n})`
     : ''
@@ -307,15 +310,15 @@ export type Message = typeof Message.Type`,
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Switch — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
 ${emitBody(fixture, isStyleX)}
   ]),
 })`,
   })
 }
 
-export const switchExamples = (
-  renderer: 'tailwind' | 'stylex',
+const switchExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   switchFixtures.map(fixture => ({
     title: fixture.title,
@@ -325,3 +328,8 @@ export const switchExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer),
   }))
+
+export const switchExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, switchExamplesFor(renderer))

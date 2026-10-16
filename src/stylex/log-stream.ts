@@ -189,7 +189,7 @@ const styles = stylex.create({
     borderBlockEndWidth: 0,
     color: logStreamTerminalInk.text,
   },
-  rowWarn: { backgroundColor: complexTokens.chart4Soft5 },
+  rowWarn: { backgroundColor: complexTokens.warningSoft5 },
   rowError: { backgroundColor: complexTokens.destructiveSoft6 },
   colsTimeSource: {
     gridTemplateColumns: '96px 52px 128px minmax(0, 1fr)',

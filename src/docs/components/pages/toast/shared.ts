@@ -1,6 +1,9 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 import type { NotificationConfig } from '@/docs/components/pages/notification-page'
+const emitShellStyles =
+  "import * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\n\nconst shellStyles = stylex.create({\n  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },\n})"
 
 export const toastConfig: NotificationConfig = {
   slug: 'toast',
@@ -334,9 +337,9 @@ ${fixture.buttons
       return mapToast(model, Toast.update(model.notifications, message.message))
   }
 }`,
-    view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+    view: `${isStyleX ? emitShellStyles + '\n\n' : ''}export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Toast — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(shellStyles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     h.div([h.Class('${wrapClass}')], [
 ${fixture.buttons.map((button, index) => buttonEmit(button, index)).join(',\n')}
     ]),
@@ -351,11 +354,16 @@ ${fixture.buttons.map((button, index) => buttonEmit(button, index)).join(',\n')}
   })
 }
 
-export const toastExamples = (
-  renderer: 'tailwind' | 'stylex',
+const toastExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   toastFixtures.map(fixture => ({
     title: fixture.title,
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
-    code: emitSource(fixture, renderer === 'stylex'),
+    code: emitSource(fixture, renderer !== 'tailwind'),
   }))
+
+export const toastExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, toastExamplesFor(renderer))

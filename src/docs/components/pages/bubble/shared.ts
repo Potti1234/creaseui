@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import {
   foldkitApplication,
   staticComponentApplication,
@@ -477,19 +478,21 @@ const usesIcon = (fixture: BubbleFixture): boolean =>
 
 const textExprSource = (
   text: ReadonlyArray<string>,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string =>
   text.length === 1
     ? `'${esc(text[0] ?? '')}'`
-    : `h.div([h.Class(${renderer === 'stylex' ? 'className(styles.preLine)' : `'whitespace-pre-line'`})], ['${text.map(esc).join('\\n\\n')}'])`
+    : `h.div([h.Class(${renderer !== 'tailwind' ? 'className(styles.preLine)' : `'whitespace-pre-line'`})], ['${text.map(esc).join('\\n\\n')}'])`
 
-const collapsibleBodySource = (renderer: 'tailwind' | 'stylex'): string => {
+const collapsibleBodySource = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const chevronClass =
-    renderer === 'stylex'
+    renderer !== 'tailwind'
       ? `{ class: className(styles.chevron, model.open && styles.chevronExpanded) }`
       : `{ class: 'size-4' }`
   const triggerClass =
-    renderer === 'stylex'
+    renderer !== 'tailwind'
       ? 'className(styles.triggerLink)'
       : `'inline-flex items-center gap-1 p-0 text-muted-foreground underline-offset-4 hover:underline'`
   return `h.div([], [model.open ? reportText : \`\${reportText.slice(0, 180)}...\`]),
@@ -509,10 +512,10 @@ const collapsibleBodySource = (renderer: 'tailwind' | 'stylex'): string => {
 
 const contentSource = (
   bubble: BubbleSpec,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const variantProp =
-    renderer === 'stylex'
+    renderer !== 'tailwind'
       ? ` variant: '${bubble.variant ?? 'default'}' as const,`
       : ''
   const onClick =
@@ -528,7 +531,7 @@ const contentSource = (
 
 const reactionsSource = (
   reactions: BubbleReactionsSpec,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   switch (reactions.kind) {
     case 'emoji': {
@@ -561,12 +564,12 @@ const reactionsSource = (
         }, h)`
     case 'tooltip': {
       const iconClass =
-        renderer === 'stylex' ? `{ class: className(styles.icon) }` : '{}'
+        renderer !== 'tailwind' ? `{ class: className(styles.icon) }` : '{}'
       const triggerProps =
-        renderer === 'stylex'
+        renderer !== 'tailwind'
           ? `triggerLayoutStyle: styles.iconTrigger,`
           : `triggerClass: 'flex size-6 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground',`
-      return `Bubble.bubbleReactions({${renderer === 'stylex' ? '' : ` class: 'p-0',`}
+      return `Bubble.bubbleReactions({${renderer !== 'tailwind' ? '' : ` class: 'p-0',`}
           children: [
             Tooltip.tooltip({
               model: model.tooltip,
@@ -582,23 +585,23 @@ const reactionsSource = (
     }
     case 'popover': {
       const iconClass =
-        renderer === 'stylex'
+        renderer !== 'tailwind'
           ? `{ class: className(styles.icon), ariaLabel: 'Show error details' }`
           : `{ class: 'size-3.5', ariaLabel: 'Show error details' }`
       const triggerProps =
-        renderer === 'stylex'
+        renderer !== 'tailwind'
           ? `triggerLayoutStyle: styles.iconTrigger,`
           : `triggerClass: 'inline-flex size-6 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground aria-expanded:text-destructive',`
       const titleClass =
-        renderer === 'stylex'
+        renderer !== 'tailwind'
           ? 'className(styles.popoverTitle)'
           : `'text-sm font-medium'`
       const descClass =
-        renderer === 'stylex'
+        renderer !== 'tailwind'
           ? 'className(styles.popoverCopy)'
           : `'text-sm text-muted-foreground'`
       const contentClass =
-        renderer === 'stylex'
+        renderer !== 'tailwind'
           ? 'className(styles.popoverContent)'
           : `'grid gap-1'`
       return `Bubble.bubbleReactions({
@@ -622,7 +625,7 @@ const reactionsSource = (
 
 const bubbleSource = (
   bubble: BubbleSpec,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const variantProp =
     bubble.variant === undefined || bubble.variant === 'default'
@@ -643,7 +646,7 @@ const bubbleSource = (
 
 const clusterSource = (
   cluster: BubbleCluster,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string =>
   cluster.grouped === true
     ? `Bubble.bubbleGroup({
@@ -659,7 +662,7 @@ const clusterSource = (
 
 const viewBodySource = (
   fixture: BubbleFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const children = fixture.clusters
     .map(cluster => `      ${clusterSource(cluster, renderer)}`)
@@ -669,7 +672,7 @@ const viewBodySource = (
       ? `,\n      ...(model.lastClicked === undefined\n        ? []\n        : [\n            h.p(\n              [h.Class('text-sm text-muted-foreground')],\n              [\`You clicked: \${model.lastClicked}\`],\n            ),\n          ])`
       : ''
   const frameClass =
-    renderer === 'stylex'
+    renderer !== 'tailwind'
       ? 'className(styles.column)'
       : `'flex w-full max-w-sm flex-col gap-${fixture.gap} py-12'`
   return `h.div([h.Class(${frameClass})], [
@@ -711,11 +714,11 @@ const stylexStylesSource = (fixture: BubbleFixture): string => {
 
 const componentImports = (
   fixture: BubbleFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const ui = renderer === 'stylex' ? 'stylex' : 'ui'
+  const ui = renderer !== 'tailwind' ? 'stylex' : 'ui'
   const lines: Array<string> = []
-  if (renderer === 'stylex')
+  if (renderer !== 'tailwind')
     lines.push(`import * as stylex from '@stylexjs/stylex'
 import { className } from '@/stylex/style'${needsCollapsible(fixture) ? "\nimport { interactionTokens } from '@/stylex/interaction-tokens.stylex.const'" : ''}
 
@@ -816,7 +819,7 @@ const updateCases = (fixture: BubbleFixture): string[] => {
 
 const dynamicSource = (
   fixture: BubbleFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const consts = needsCollapsible(fixture)
     ? `const reportText = '${COLLAPSIBLE_TEXT.map(esc).join('\\n\\n')}'\n\n`
@@ -827,7 +830,7 @@ const dynamicSource = (
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-import * as Bubble from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/bubble'
+import * as Bubble from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/bubble'
 ${componentImports(fixture, renderer)}`,
     model: `export const Model = S.Struct({
 ${modelFields(fixture).join('\n')}
@@ -852,7 +855,7 @@ ${updateCases(fixture).join('\n')}
 }`,
     view: `${consts}export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Bubble — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     ${viewBodySource(fixture, renderer)},
   ]),
 })`,
@@ -861,7 +864,7 @@ ${updateCases(fixture).join('\n')}
 
 const source = (
   fixture: BubbleFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string =>
   isDynamicFixture(fixture)
     ? dynamicSource(fixture, renderer)
@@ -874,8 +877,8 @@ const source = (
         viewBody: viewBodySource(fixture, renderer),
       })
 
-export const bubbleExamples = (
-  renderer: 'tailwind' | 'stylex',
+const bubbleExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   bubbleFixtures.map(fixture => ({
     title: fixture.title,
@@ -883,3 +886,8 @@ export const bubbleExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: source(fixture, renderer),
   }))
+
+export const bubbleExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, bubbleExamplesFor(renderer))

@@ -159,8 +159,8 @@ const view = defineView<Model, Message, FileInputViewInputs>(
                   class: cn(
                     'size-4',
                     status.type === 'error' && 'text-destructive',
-                    status.type === 'warning' && 'text-chart-4',
-                    status.type === 'success' && 'text-chart-2',
+                    status.type === 'warning' && 'text-warning',
+                    status.type === 'success' && 'text-success',
                   ),
                   ariaLabel: statusButtonLabel(status.type),
                 },
@@ -314,9 +314,9 @@ const view = defineView<Model, Message, FileInputViewInputs>(
                 : status?.type === 'error'
                   ? 'border-destructive'
                   : status?.type === 'warning'
-                    ? 'border-chart-4'
+                    ? 'border-warning'
                     : status?.type === 'success'
-                      ? 'border-chart-2'
+                      ? 'border-success'
                       : 'border-input',
             ),
           ),
@@ -374,8 +374,8 @@ const view = defineView<Model, Message, FileInputViewInputs>(
                           'mt-1 flex items-start gap-1 rounded-lg p-2 text-xs leading-5',
                           type === 'error' &&
                             'bg-destructive/10 text-destructive',
-                          type === 'warning' && 'bg-chart-4/15 text-chart-4',
-                          type === 'success' && 'bg-chart-2/15 text-chart-2',
+                          type === 'warning' && 'bg-warning/15 text-warning',
+                          type === 'success' && 'bg-success/15 text-success',
                         ),
                       ),
                     ],
@@ -399,8 +399,8 @@ const view = defineView<Model, Message, FileInputViewInputs>(
                           'pointer-events-none -mt-4 rounded-b-md px-2 pb-2 pt-6 text-xs leading-5',
                           type === 'error' &&
                             'bg-destructive/10 text-destructive',
-                          type === 'warning' && 'bg-chart-4/15 text-chart-4',
-                          type === 'success' && 'bg-chart-2/15 text-chart-2',
+                          type === 'warning' && 'bg-warning/15 text-warning',
+                          type === 'success' && 'bg-success/15 text-success',
                         ),
                       ),
                     ],

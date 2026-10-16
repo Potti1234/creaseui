@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type MessageScrollerKind =
@@ -168,6 +169,7 @@ const cx = (...values: ReadonlyArray<unknown>): string =>
   className(...values.filter(isStaticStyle))
 
 const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   column: {
     display: 'flex',
     flexDirection: 'column',
@@ -720,7 +722,13 @@ const UPDATE_CASES: Record<MessageScrollerKind, string> = {
       }
     }`,
   'opening-position': `    case 'GotScrollerMessage': {
-      const next = MessageScroller.update(model.scroller, message.message)
+      const isMount =
+        message.message._tag === 'ObservedMessageScrollerViewport' &&
+        message.message.reason === 'mount'
+      const next = MessageScroller.update(
+        isMount ? { ...model.scroller, isFollowing: false } : model.scroller,
+        message.message,
+      )
       const commands = next.commands ?? []
       const mapped = Command.mapMessages(commands, child =>
         Message.GotScrollerMessage({ message: child }),
@@ -860,9 +868,9 @@ const MESSAGE_FIELDS: Partial<Record<MessageScrollerKind, string>> = {
 
 const source = (
   fixture: MessageScrollerFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isSx = renderer === 'stylex'
+  const isSx = renderer !== 'tailwind'
   const kind = fixture.kind
   const needsEffect = COMMANDS[kind] !== undefined
   const needsMount = kind === 'visibility'
@@ -947,7 +955,7 @@ const scrollerFrame = (model: Model, h: HtmlBuilder<Message>) =>
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Message Scroller — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${isSx ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     h.div([h.Class(${isSx ? 'cx(styles.column)' : `'flex w-full max-w-md flex-col gap-3'`})], [
       ${toolbar}${header}
       scrollerFrame(model, h),
@@ -992,11 +1000,16 @@ const frameInner = (isSx: boolean): string => `h.div(
         ],
       )`
 
-export const messageScrollerExamples = (
-  renderer: 'tailwind' | 'stylex',
+const messageScrollerExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   messageScrollerFixtures.map(fixture => ({
     title: fixture.title,
     description: fixture.description,
     code: source(fixture, renderer),
   }))
+
+export const messageScrollerExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, messageScrollerExamplesFor(renderer))

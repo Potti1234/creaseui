@@ -12,13 +12,17 @@ import { modifyFields } from 'foldkit/struct'
 
 import * as BlocksTailwindPage from '@/demo/blocks/featured-page'
 import * as SidebarStyleX from '@/demo/blocks-stylex/sidebar-page'
+import * as SidebarPleat from '@/demo/blocks-pleat/sidebar-page'
 import { resolveBlock } from '@/demo/blocks/catalog'
 import * as BlocksIndexPage from '@/demo/blocks/index-page'
 import * as BlocksStyleXPage from '@/demo/blocks-stylex/featured-page'
+import * as BlocksPleatPage from '@/demo/blocks-pleat/featured-page'
 import * as TanStackTablePage from '@/demo/blocks-stylex/tanstack-table-page'
+import * as TanStackTablePleatPage from '@/demo/blocks-pleat/tanstack-table-page'
 import * as Blocks from '@/demo/blocks/registry'
 import * as Board from '@/demo/board'
 import * as BoardStyleX from '@/demo/board-stylex'
+import * as BoardPleat from '@/demo/board-pleat'
 import * as Landing from '@/demo/landing'
 import * as ChartsArea from '@/demo/charts/area'
 import * as ChartsBar from '@/demo/charts/bar'
@@ -28,6 +32,7 @@ import * as ChartsRadar from '@/demo/charts/radar'
 import * as ChartsRadial from '@/demo/charts/radial'
 import * as ChartsTooltip from '@/demo/charts/tooltip'
 import * as ChartsStyleX from '@/demo/charts-stylex/page'
+import * as ChartsPleat from '@/demo/charts-pleat/page'
 import * as ComponentCatalog from '@/docs/components/catalog'
 import * as GettingStartedPage from '@/docs/getting-started-view'
 import * as CopyFeedback from '@/docs/copy-feedback'
@@ -103,9 +108,13 @@ export const Message = defineMessageUnion({
   },
   GotBlocksTailwindMessage: { message: BlocksTailwindPage.Message },
   GotSidebarStyleXMessage: { message: SidebarStyleX.Message },
+  GotSidebarPleatMessage: { message: SidebarPleat.Message },
   GotBoardMessage: { message: Board.Message },
   GotBoardStyleXMessage: {
     message: BoardStyleX.Message,
+  },
+  GotBoardPleatMessage: {
+    message: BoardPleat.Message,
   },
   GotBlocksMessage: {
     message: Blocks.Message,
@@ -113,8 +122,14 @@ export const Message = defineMessageUnion({
   GotBlocksStyleXMessage: {
     message: BlocksStyleXPage.Message,
   },
+  GotBlocksPleatMessage: {
+    message: BlocksPleatPage.Message,
+  },
   GotTanStackTableMessage: {
     message: TanStackTablePage.Message,
+  },
+  GotTanStackTablePleatMessage: {
+    message: TanStackTablePleatPage.Message,
   },
   GotLandingMessage: {
     message: Landing.Message,
@@ -142,6 +157,9 @@ export const Message = defineMessageUnion({
   },
   GotChartsStyleXMessage: {
     message: ChartsStyleX.Message,
+  },
+  GotChartsPleatMessage: {
+    message: ChartsPleat.Message,
   },
   GotCatalogDocsMessage: {
     message: ComponentCatalog.Message,
@@ -369,6 +387,18 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           ),
         }
       },
+      GotSidebarPleatMessage: ({ message: child }) => {
+        if (model.page._tag !== 'BlockPage') return { model: model }
+        const { model: pleatSidebar, commands: pleatSidebarCommands__ } =
+          SidebarPleat.update(model.page.pleatSidebar, child)
+        const commands = pleatSidebarCommands__ ?? []
+        return {
+          model: { ...model, page: { ...model.page, pleatSidebar } },
+          commands: Command.mapMessages(commands, message =>
+            Message.GotSidebarPleatMessage({ message }),
+          ),
+        }
+      },
       ClickedThemeToggle: () => {
         const isDark = !model.isDark
         return {
@@ -463,6 +493,17 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           ),
         }
       },
+      GotBlocksPleatMessage: ({ message: child }) => {
+        if (model.page._tag !== 'BlockPage') return { model: model }
+        const { model: pleatFeatured, commands: pleatFeaturedCommands__ } =
+          BlocksPleatPage.update(model.page.pleatFeatured, child)
+        return {
+          model: { ...model, page: { ...model.page, pleatFeatured } },
+          commands: Command.mapMessages(pleatFeaturedCommands__ ?? [], nested =>
+            Message.GotBlocksPleatMessage({ message: nested }),
+          ),
+        }
+      },
 
       GotTanStackTableMessage: ({ message: childMessage }) => {
         if (model.page._tag !== 'BlocksStyleXTablePage') return { model: model }
@@ -476,6 +517,23 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           }),
           commands: Command.mapMessages(commands, next =>
             Message.GotTanStackTableMessage({ message: next }),
+          ),
+        }
+      },
+
+      GotTanStackTablePleatMessage: ({ message: childMessage }) => {
+        if (model.page._tag !== 'BlocksStyleXTablePage') return { model: model }
+        const currentPage = model.page
+        const { model: pleatTable, commands: tableCommands__ } =
+          TanStackTablePleatPage.update(currentPage.pleatTable, childMessage)
+        const commands = tableCommands__ ?? []
+        return {
+          model: modifyFields(model, {
+            page: () =>
+              modifyFields(currentPage, { pleatTable: () => pleatTable }),
+          }),
+          commands: Command.mapMessages(commands, next =>
+            Message.GotTanStackTablePleatMessage({ message: next }),
           ),
         }
       },
@@ -512,6 +570,24 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           }),
           commands: Command.mapMessages(commands, next =>
             Message.GotBoardStyleXMessage({ message: next }),
+          ),
+        }
+      },
+
+      GotBoardPleatMessage: ({ message: childMessage }) => {
+        if (model.page._tag !== 'CreatePage') return { model: model }
+        const currentPage = model.page
+        const { model: board, commands: boardCommands__ } = BoardPleat.update(
+          currentPage.pleatBoard,
+          childMessage,
+        )
+        const commands = boardCommands__ ?? []
+        return {
+          model: modifyFields(model, {
+            page: () => modifyFields(currentPage, { pleatBoard: () => board }),
+          }),
+          commands: Command.mapMessages(commands, next =>
+            Message.GotBoardPleatMessage({ message: next }),
           ),
         }
       },
@@ -659,6 +735,23 @@ export const update = (model: Model, message: Message): UpdateReturn =>
         }
       },
 
+      GotChartsPleatMessage: ({ message: childMessage }) => {
+        if (model.page._tag !== 'ChartsPage') return { model: model }
+        const currentPage = model.page
+        const { model: charts, commands: chartsCommands__ } =
+          ChartsPleat.update(currentPage.pleatCharts, childMessage)
+        const commands = chartsCommands__ ?? []
+        return {
+          model: modifyFields(model, {
+            page: () =>
+              modifyFields(currentPage, { pleatCharts: () => charts }),
+          }),
+          commands: Command.mapMessages(commands, next =>
+            Message.GotChartsPleatMessage({ message: next }),
+          ),
+        }
+      },
+
       GotCatalogDocsMessage: ({ message: childMessage }) => {
         if (model.page._tag !== 'CatalogDocsPage') return { model: model }
         const currentPage = model.page
@@ -704,10 +797,13 @@ export const update = (model: Model, message: Message): UpdateReturn =>
 
 const inactiveBoard = Board.init()
 const inactiveBoardStyleX = BoardStyleX.init()
+const inactiveBoardPleat = BoardPleat.init()
 const inactiveCatalogDocs = ComponentCatalog.init()
 const inactiveTanStackTablePage = TanStackTablePage.init()
 const inactiveTailwindFeatured = BlocksTailwindPage.init()
 const inactiveStyleXFeatured = BlocksStyleXPage.init()
+const inactivePleatFeatured = BlocksPleatPage.init()
+const inactiveTanStackTablePleatPage = TanStackTablePleatPage.init()
 
 // Both boards compose the same slider subscription names. Prefix the StyleX
 // record here so Foldkit can host both without weakening duplicate-key checks.
@@ -724,6 +820,21 @@ const boardStyleXSubscriptions = {
   styleXPayoutAmountEscape: BoardStyleX.subscriptions.payoutAmountEscape!,
   styleXShadePositionPointer: BoardStyleX.subscriptions.shadePositionPointer!,
   styleXShadePositionEscape: BoardStyleX.subscriptions.shadePositionEscape!,
+}
+
+const boardPleatSubscriptions = {
+  pleatBrightnessPointer: BoardPleat.subscriptions.brightnessPointer!,
+  pleatBrightnessEscape: BoardPleat.subscriptions.brightnessEscape!,
+  pleatColorTempPointer: BoardPleat.subscriptions.colorTempPointer!,
+  pleatColorTempEscape: BoardPleat.subscriptions.colorTempEscape!,
+  pleatVolumePointer: BoardPleat.subscriptions.volumePointer!,
+  pleatVolumeEscape: BoardPleat.subscriptions.volumeEscape!,
+  pleatFadePointer: BoardPleat.subscriptions.fadePointer!,
+  pleatFadeEscape: BoardPleat.subscriptions.fadeEscape!,
+  pleatPayoutAmountPointer: BoardPleat.subscriptions.payoutAmountPointer!,
+  pleatPayoutAmountEscape: BoardPleat.subscriptions.payoutAmountEscape!,
+  pleatShadePositionPointer: BoardPleat.subscriptions.shadePositionPointer!,
+  pleatShadePositionEscape: BoardPleat.subscriptions.shadePositionEscape!,
 }
 
 export const subscriptions = Subscription.aggregate<Model, Message>()(
@@ -749,6 +860,15 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
     toParentMessage: message => Message.GotBoardStyleXMessage({ message }),
     when: model =>
       model.page._tag === 'CreatePage' && model.page.renderer === 'stylex',
+  }),
+  Subscription.lift(boardPleatSubscriptions)<Model, Message>({
+    toChildModel: model =>
+      model.page._tag === 'CreatePage'
+        ? model.page.pleatBoard
+        : inactiveBoardPleat,
+    toParentMessage: message => Message.GotBoardPleatMessage({ message }),
+    when: model =>
+      model.page._tag === 'CreatePage' && model.page.renderer === 'pleat',
   }),
   Subscription.lift(ComponentCatalog.subscriptions)<Model, Message>({
     toChildModel: model =>
@@ -781,6 +901,25 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
     toParentMessage: message => Message.GotBlocksStyleXMessage({ message }),
     when: model => model.page._tag === 'BlockPage',
   }),
+  Subscription.lift(BlocksPleatPage.subscriptions)<Model, Message>({
+    toChildModel: model =>
+      model.page._tag === 'BlockPage'
+        ? model.page.pleatFeatured
+        : inactivePleatFeatured,
+    toParentMessage: message => Message.GotBlocksPleatMessage({ message }),
+    when: model => model.page._tag === 'BlockPage',
+  }),
+  Subscription.lift({
+    pleatContainerEvents: TanStackTablePleatPage.subscriptions.containerEvents!,
+  })<Model, Message>({
+    toChildModel: model =>
+      model.page._tag === 'BlocksStyleXTablePage'
+        ? model.page.pleatTable
+        : inactiveTanStackTablePleatPage,
+    toParentMessage: message =>
+      Message.GotTanStackTablePleatMessage({ message }),
+    when: model => model.page._tag === 'BlocksStyleXTablePage',
+  }),
 )
 
 // VIEW
@@ -790,6 +929,9 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
 const boardView = defineView<Board.Model, Board.Message>(Board.view)
 const boardStyleXView = defineView<BoardStyleX.Model, BoardStyleX.Message>(
   BoardStyleX.view,
+)
+const boardPleatView = defineView<BoardPleat.Model, BoardPleat.Message>(
+  BoardPleat.view,
 )
 const landingView = defineView<Landing.Model, Landing.Message, boolean>(
   (landingModel, isDark, h) => Landing.view(landingModel, h, isDark),
@@ -812,6 +954,11 @@ const blocksStyleXView = defineView<
   BlocksStyleXPage.Message,
   string
 >(BlocksStyleXPage.viewBlock)
+const blocksPleatView = defineView<
+  BlocksPleatPage.Model,
+  BlocksPleatPage.Message,
+  string
+>(BlocksPleatPage.viewBlock)
 const blocksTailwindView = defineView<
   BlocksTailwindPage.Model,
   BlocksTailwindPage.Message,
@@ -822,10 +969,19 @@ const sidebarStyleXView = defineView<
   SidebarStyleX.Message,
   string
 >(SidebarStyleX.view)
+const sidebarPleatView = defineView<
+  SidebarPleat.Model,
+  SidebarPleat.Message,
+  string
+>(SidebarPleat.view)
 const tanStackTableView = defineView<
   TanStackTablePage.Model,
   TanStackTablePage.Message
 >(TanStackTablePage.view)
+const tanStackTablePleatView = defineView<
+  TanStackTablePleatPage.Model,
+  TanStackTablePleatPage.Message
+>(TanStackTablePleatPage.view)
 
 const blocksView = (
   model: Model,
@@ -839,6 +995,15 @@ const blocksView = (
   const page = model.page
   if (block.name.startsWith('sidebar-')) {
     const id = block.name.slice(8)
+    if (block.renderer === 'pleat') {
+      return h.submodel({
+        slotId: 'sidebar-pleat',
+        model: page.pleatSidebar,
+        view: sidebarPleatView,
+        viewInputs: id,
+        toParentMessage: message => Message.GotSidebarPleatMessage({ message }),
+      })
+    }
     return block.renderer === 'stylex'
       ? h.submodel({
           slotId: 'sidebar-stylex',
@@ -855,6 +1020,15 @@ const blocksView = (
           viewInputs: id,
           toParentMessage: message => Message.GotBlocksMessage({ message }),
         })
+  }
+  if (block.renderer === 'pleat') {
+    return h.submodel({
+      slotId: 'featured-pleat',
+      model: page.pleatFeatured,
+      view: blocksPleatView,
+      viewInputs: block.name,
+      toParentMessage: message => Message.GotBlocksPleatMessage({ message }),
+    })
   }
   return block.renderer === 'stylex'
     ? h.submodel({
@@ -900,6 +1074,11 @@ const chartsStyleXView = defineView<
   ChartsStyleX.Message,
   ChartSection
 >(ChartsStyleX.view)
+const chartsPleatView = defineView<
+  ChartsPleat.Model,
+  ChartsPleat.Message,
+  ChartSection
+>(ChartsPleat.view)
 
 const chartsSectionView = (
   model: Model,
@@ -908,6 +1087,16 @@ const chartsSectionView = (
 ): Html => {
   if (model.page._tag !== 'ChartsPage') return h.empty
   const page = model.page
+  if (page.renderer === 'pleat') {
+    return h.submodel({
+      slotId: `charts-pleat-${section}`,
+      model: page.pleatCharts,
+      view: chartsPleatView,
+      viewInputs: section,
+      toParentMessage: (message: ChartsPleat.Message): Message =>
+        Message.GotChartsPleatMessage({ message }),
+    })
+  }
   if (page.renderer === 'stylex') {
     return h.submodel({
       slotId: `charts-stylex-${section}`,
@@ -1028,16 +1217,27 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
                     Message.GotBoardMessage({ message }),
                 }),
               )
-            : keyed(
-                'page-create-stylex',
-                h.submodel({
-                  slotId: 'create-board-stylex',
-                  model: model.page.styleXBoard,
-                  view: boardStyleXView,
-                  toParentMessage: (message: BoardStyleX.Message): Message =>
-                    Message.GotBoardStyleXMessage({ message }),
-                }),
-              )
+            : model.page.renderer === 'stylex'
+              ? keyed(
+                  'page-create-stylex',
+                  h.submodel({
+                    slotId: 'create-board-stylex',
+                    model: model.page.styleXBoard,
+                    view: boardStyleXView,
+                    toParentMessage: (message: BoardStyleX.Message): Message =>
+                      Message.GotBoardStyleXMessage({ message }),
+                  }),
+                )
+              : keyed(
+                  'page-create-pleat',
+                  h.submodel({
+                    slotId: 'create-board-pleat',
+                    model: model.page.pleatBoard,
+                    view: boardPleatView,
+                    toParentMessage: (message: BoardPleat.Message): Message =>
+                      Message.GotBoardPleatMessage({ message }),
+                  }),
+                )
           : keyed('page-not-found', notFoundView(createPath(), h)),
       Charts: ({ section }) =>
         isChartSection(section)
@@ -1100,17 +1300,30 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
           : h.empty,
       BlocksStyleXTable: () =>
         model.page._tag === 'BlocksStyleXTablePage'
-          ? keyed(
-              'page-blocks-stylex-table',
-              h.submodel({
-                slotId: 'blocks-stylex-table',
-                model: model.page.table,
-                view: tanStackTableView,
-                toParentMessage: (
-                  message: TanStackTablePage.Message,
-                ): Message => Message.GotTanStackTableMessage({ message }),
-              }),
-            )
+          ? model.page.renderer === 'pleat'
+            ? keyed(
+                'page-blocks-stylex-table',
+                h.submodel({
+                  slotId: 'blocks-stylex-table',
+                  model: model.page.pleatTable,
+                  view: tanStackTablePleatView,
+                  toParentMessage: (
+                    message: TanStackTablePleatPage.Message,
+                  ): Message =>
+                    Message.GotTanStackTablePleatMessage({ message }),
+                }),
+              )
+            : keyed(
+                'page-blocks-stylex-table',
+                h.submodel({
+                  slotId: 'blocks-stylex-table',
+                  model: model.page.table,
+                  view: tanStackTableView,
+                  toParentMessage: (
+                    message: TanStackTablePage.Message,
+                  ): Message => Message.GotTanStackTableMessage({ message }),
+                }),
+              )
           : keyed('page-not-found', notFoundView(blocksStyleXTablePath(), h)),
       Block: ({ blockId }) =>
         keyed(`page-block-${blockId}`, blocksView(model, blockId, h)),

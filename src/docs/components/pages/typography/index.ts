@@ -20,5 +20,6 @@ export const typographyPage = authoredPage({
       'Choose heading levels according to document outline, not visual size. Inline code and blockquotes retain their native semantics.',
     examples: typographyExamples('tailwind'),
     stylexExamples: typographyExamples('stylex'),
+    pleatExamples: typographyExamples('pleat'),
   },
 })

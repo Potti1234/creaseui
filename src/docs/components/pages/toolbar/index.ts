@@ -27,5 +27,6 @@ export const toolbarPage = authoredPage({
     ],
     examples: toolbarExamples('tailwind'),
     stylexExamples: toolbarExamples('stylex'),
+    pleatExamples: toolbarExamples('pleat'),
   },
 })

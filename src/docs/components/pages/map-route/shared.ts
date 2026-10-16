@@ -1,3 +1,5 @@
+import { pleatExamples } from '@/docs/components/pleat-source'
+import type { DocsExample } from '@/docs/components/page-definition'
 import { mapDocsExamples } from '@/docs/components/pages/map/source'
 export const mapRouteFixtures = [
   {
@@ -9,5 +11,11 @@ export const mapRouteFixtures = [
     description: 'Use a dashed line and custom color for a secondary route.',
   },
 ] as const
-export const mapRouteExamples = (renderer: 'tailwind' | 'stylex') =>
-  mapDocsExamples('map-route', mapRouteFixtures, renderer)
+const mapRouteExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+) => mapDocsExamples('map-route', mapRouteFixtures, renderer)
+
+export const mapRouteExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, mapRouteExamplesFor(renderer))

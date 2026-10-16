@@ -6,6 +6,7 @@ import { DatePicker as DatePickerPrimitive } from '@foldkit/ui'
 
 import * as Icon from '@/lib/icon'
 import { mirrorNavigationKeyForRtl } from '@/lib/calendar'
+import { themedAnchor } from '@/lib/overlay-boundary'
 import { buttonVariants } from '@/ui/button'
 import { calendarView } from '@/ui/calendar'
 import { cn } from '@/lib/utils'
@@ -117,7 +118,7 @@ export const datePicker = <Msg>(
     view: DatePickerPrimitive.view,
     viewInputs: {
       maybeSelectedDate: props.maybeSelectedDate,
-      anchor: { placement: 'bottom-start', gap: 4 },
+      anchor: themedAnchor({ placement: 'bottom-start', gap: 4 }),
       triggerContent:
         props.triggerContent ??
         (maybeDate =>

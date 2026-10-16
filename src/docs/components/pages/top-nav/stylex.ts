@@ -1,7 +1,7 @@
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   topNavFixtures,
   type TopNavFixture,
@@ -186,7 +186,7 @@ const decorateEndItem = <Msg>(
   }
 }
 
-export const topNavStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const topNavStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

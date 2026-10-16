@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type MenubarKind =
@@ -529,7 +530,10 @@ const emitImports = (fixture: MenubarFixture, isStyleX: boolean): string => {
     "import { defineMessageUnion } from 'foldkit/message'",
   ]
   if (isStyleX) {
-    parts.push('', "import * as stylex from '@stylexjs/stylex'")
+    parts.push(
+      '',
+      "import * as stylex from '@stylexjs/stylex'\nimport { layoutStyle } from '@/stylex/contracts'",
+    )
   }
   parts.push(`import * as DropdownMenu from '@/${base}/dropdown-menu'`)
   if (fixture.kind === 'icons') {
@@ -687,7 +691,7 @@ const emitBody = (fixture: MenubarFixture, isStyleX: boolean): string => {
     ariaLabel: 'Application menu',${direction}
     model: model.menubar,
     toParentMessage: message => Message.GotMenubarMessage({ message }),
-    ${isStyleX ? 'layoutStyle: styles.menubar,' : "class: 'w-72',"}
+    ${isStyleX ? 'layoutStyle: layoutStyle({ width: "18rem" }),' : "class: 'w-72',"}
     menus: [
 ${spec.map(menu => emitMenu(menu, isStyleX)).join(',\n')}
     ],
@@ -696,15 +700,16 @@ ${spec.map(menu => emitMenu(menu, isStyleX)).join(',\n')}
 
 const emitApplication = (
   fixture: MenubarFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const stylesBlock = isStyleX ? emitStyles(fixture) : ''
   const bodyStart = isStyleX
     ? `h.main([h.Class(stylex.props(styles.page).className ?? '')], [`
-    : `h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [`
+    : `h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [`
   const pageStyle = isStyleX
     ? `const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   page: { display: 'flex', minHeight: '100vh', alignItems: 'flex-start', justifyContent: 'center', padding: '2rem' },${
     stylesBlock === ''
       ? ''
@@ -731,8 +736,8 @@ ${stylesBlock}`
   })
 }
 
-export const menubarExamples = (
-  renderer: 'tailwind' | 'stylex',
+const menubarExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   menubarFixtures.map(fixture => ({
     title: fixture.title,
@@ -742,3 +747,8 @@ export const menubarExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer),
   }))
+
+export const menubarExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, menubarExamplesFor(renderer))

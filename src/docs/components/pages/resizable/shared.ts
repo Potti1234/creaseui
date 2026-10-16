@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export const resizableFixtures = [
@@ -44,6 +45,7 @@ export type ResizableFixture = (typeof resizableFixtures)[number]
 
 const STYLES_BLOCK = `
 const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   group: { height: '13rem', width: '100%', maxWidth: '28rem' },
   groupTall: { height: '16rem', width: '100%', maxWidth: '28rem' },
   panel: { alignItems: 'center', display: 'flex', height: '100%', justifyContent: 'center', padding: '1.5rem', width: '100%' },
@@ -61,9 +63,9 @@ const singleSource = (
     first: string
     second: string
   },
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
   return foldkitApplication({
     title: `Resizable — ${fixture.title}`,
@@ -75,7 +77,7 @@ ${
   isStyleX
     ? `
 import * as stylex from '@stylexjs/stylex'
-import { className } from '@/stylex/style'
+import { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'
 `
     : ''
 }
@@ -103,7 +105,7 @@ export type Message = typeof Message.Type`,
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Resizable — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     Resizable.resizable({
       model: model.panels,
       toParentMessage: message => GotResizableMessage({ message }),
@@ -111,7 +113,7 @@ export type Message = typeof Message.Type`,
       extent: 448,
       ${fixture.withHandle ? 'withHandle: true,' : ''}
       ariaLabel: '${fixture.ariaLabel}',
-      ${isStyleX ? 'layoutStyle: styles.groupTall' : "class: 'h-64 w-full max-w-md'"},
+      ${isStyleX ? 'layoutStyle: layoutStyle({ height: "16rem", width: "100%", maxWidth: "28rem" })' : "class: 'h-64 w-full max-w-md'"},
       first: h.div([h.Class(${isStyleX ? 'className(styles.panel, styles.label)' : "'flex size-full items-center justify-center p-6 font-semibold'"})], ['${fixture.first}']),
       second: h.div([h.Class(${isStyleX ? 'className(styles.panel, styles.label)' : "'flex size-full items-center justify-center p-6 font-semibold'"})], ['${fixture.second}']),
     }, h),
@@ -128,9 +130,9 @@ const nestedSource = (
     second: string
     third: string
   },
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
   const panelEmit = (label: string): string =>
     `h.div([h.Class(${isStyleX ? 'className(styles.panel, styles.label)' : "'flex size-full items-center justify-center p-6 font-semibold'"})], ['${label}'])`
@@ -144,7 +146,7 @@ ${
   isStyleX
     ? `
 import * as stylex from '@stylexjs/stylex'
-import { className } from '@/stylex/style'
+import { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'
 `
     : ''
 }
@@ -185,7 +187,7 @@ export type Message = typeof Message.Type`,
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Resizable — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     Resizable.resizableGroup({
       model: model.outer,
       toParentMessage: message => GotOuterMessage({ message }),
@@ -197,7 +199,7 @@ export type Message = typeof Message.Type`,
       }
       extent: 448,
       withHandles: true,
-      ${isStyleX ? 'layoutStyle: styles.group' : "class: 'h-52 w-full max-w-md'"},
+      ${isStyleX ? 'layoutStyle: layoutStyle({ height: "13rem", width: "100%", maxWidth: "28rem" })' : "class: 'h-52 w-full max-w-md'"},
       panels: [
         ${panelEmit(fixture.first)},
         Resizable.resizableGroup({
@@ -223,8 +225,8 @@ export type Message = typeof Message.Type`,
   })
 }
 
-export const resizableExamples = (
-  renderer: 'tailwind' | 'stylex',
+const resizableExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   resizableFixtures.map(fixture => ({
     title: fixture.title,
@@ -233,3 +235,8 @@ export const resizableExamples = (
         ? singleSource(fixture, renderer)
         : nestedSource(fixture, renderer),
   }))
+
+export const resizableExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, resizableExamplesFor(renderer))

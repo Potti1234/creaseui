@@ -2,7 +2,7 @@ import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import Autoplay from 'embla-carousel-autoplay'
 import type { HtmlBuilder } from 'foldkit/html'
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   carouselFixtures,
   type CarouselFixture,
@@ -70,7 +70,7 @@ const itemSizeOf = (
   return 100
 }
 
-export const carouselStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const carouselStyleXPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

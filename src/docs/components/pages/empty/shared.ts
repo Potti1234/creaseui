@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import {
   foldkitApplication,
   staticComponentApplication,
@@ -70,6 +71,7 @@ export const emptyRtlCopy = {
 const sq = (value: string): string => value.replaceAll("'", "\\'")
 
 const emitStyles = `const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   empty: { maxWidth: '36rem', width: '100%' },
   dashedBox: {
     borderColor: 'var(--border)',
@@ -105,7 +107,7 @@ const emitBody = (fixture: EmptyFixture, isStyleX: boolean): string => {
   const cls = (tailwind: string, stylexRef: string) =>
     isStyleX ? `className(${stylexRef})` : `'${tailwind}'`
   const emptyProps = isStyleX
-    ? `layoutStyle: styles.empty,`
+    ? `layoutStyle: layoutStyle({ maxWidth: "36rem", width: "100%" }),`
     : `class: 'w-full max-w-xl',`
   const media = (variant: 'icon' | 'default', children: string) =>
     `Empty.emptyMedia({ variant: '${variant}', children: [${children}] }, h)`
@@ -174,7 +176,7 @@ const emitBody = (fixture: EmptyFixture, isStyleX: boolean): string => {
         'This user is currently offline. You can leave a message to notify them or try again later.',
         media(
           'default',
-          `Avatar.avatar({ ${isStyleX ? 'grayscale: true, layoutStyle: styles.avatarSize' : "class: 'size-12 grayscale'"}, children: [
+          `Avatar.avatar({ ${isStyleX ? 'grayscale: true, layoutStyle: layoutStyle({ height: "3rem", width: "3rem" })' : "class: 'size-12 grayscale'"}, children: [
             Avatar.avatarImage({ src: '/logo-mark.svg', alt: '@creaseui', model: { status: 'loaded' } }, h),
             Avatar.avatarFallback({ children: ['LR'] }, h),
           ] }, h)`,
@@ -221,7 +223,7 @@ const emitBody = (fixture: EmptyFixture, isStyleX: boolean): string => {
         Empty.emptyDescription({ children: ['The page you\\'re looking for doesn\\'t exist. Try searching for what you need below.'] }, h),
       ] }, h),
       Empty.emptyContent({ children: [
-        InputGroup.inputGroup({${isStyleX ? ' layoutStyle: styles.inputWidth,' : " class: 'sm:w-3/4',"} children: [
+        InputGroup.inputGroup({${isStyleX ? ' layoutStyle: layoutStyle({ width: "75%" }),' : " class: 'sm:w-3/4',"} children: [
           InputGroup.inputGroupInput({ id: 'empty-search', placeholder: 'Try searching for pages...', value: model.search, onInput: value => ChangedEmptyInputGroup({ value }) }, h),
           InputGroup.inputGroupAddon({ children: [Icon.icon('search', {}, h)] }, h),
           InputGroup.inputGroupAddon({ align: 'inline-end', children: [Kbd.kbd({ children: ['/'] }, h)] }, h),
@@ -268,7 +270,7 @@ const emitImports = (fixture: EmptyFixture, isStyleX: boolean): string => {
     )
   parts.push(`import * as Button from '@/${isStyleX ? 'stylex' : 'ui'}/button'`)
   parts.push(`import * as Icon from '@/lib/icon'`)
-  return `${isStyleX ? `import * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\n\n${emitStyles}\n\n` : ''}${parts.join('\n')}`
+  return `${isStyleX ? `import * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'\n\n${emitStyles}\n\n` : ''}${parts.join('\n')}`
 }
 
 const emitInputGroupApplication = (
@@ -302,7 +304,7 @@ export type Message = typeof Message.Type`,
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Empty — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
 ${emitBody(fixture, isStyleX)
   .split('\n')
   .map(line => `    ${line}`)
@@ -311,8 +313,8 @@ ${emitBody(fixture, isStyleX)
 })`,
   })
 
-export const emptyExamples = (
-  renderer: 'tailwind' | 'stylex',
+const emptyExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   emptyFixtures.map(fixture => ({
     title: fixture.title,
@@ -322,13 +324,18 @@ export const emptyExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code:
       fixture.kind === 'inputGroup'
-        ? emitInputGroupApplication(fixture, renderer === 'stylex')
+        ? emitInputGroupApplication(fixture, renderer !== 'tailwind')
         : staticComponentApplication({
             componentName: 'Empty',
             componentSlug: 'empty',
             renderer,
             exampleName: fixture.title,
-            componentImports: emitImports(fixture, renderer === 'stylex'),
-            viewBody: emitBody(fixture, renderer === 'stylex'),
+            componentImports: emitImports(fixture, renderer !== 'tailwind'),
+            viewBody: emitBody(fixture, renderer !== 'tailwind'),
           }),
   }))
+
+export const emptyExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, emptyExamplesFor(renderer))

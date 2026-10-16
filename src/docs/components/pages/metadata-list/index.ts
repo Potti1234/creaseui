@@ -23,5 +23,6 @@ export const metadataListPage = authoredPage({
       'Terms and descriptions use real dt/dd elements; the show-more toggle exposes aria-expanded and aria-controls on the list.',
     examples: metadataListExamples('tailwind'),
     stylexExamples: metadataListExamples('stylex'),
+    pleatExamples: metadataListExamples('pleat'),
   },
 })

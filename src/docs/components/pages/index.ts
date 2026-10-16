@@ -1,4 +1,5 @@
 import type { AuthoredPage } from '@/docs/components/pages/authored-page'
+import { repairStyled } from '@/docs/components/styled-repair'
 import { mapPage } from '@/docs/components/pages/map'
 import { mapControlsPage } from '@/docs/components/pages/map-controls'
 import { mapMarkerPage } from '@/docs/components/pages/map-marker'
@@ -123,8 +124,8 @@ import { treeListPage } from '@/docs/components/pages/tree-list'
 import { typographyPage } from '@/docs/components/pages/typography'
 import { visuallyHiddenPage } from '@/docs/components/pages/visually-hidden'
 
-export const authoredPages: Readonly<Record<string, AuthoredPage>> =
-  Object.fromEntries(
+export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
+  ...Object.fromEntries(
     [
       mapPage,
       mapControlsPage,
@@ -249,5 +250,30 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> =
       treeListPage,
       typographyPage,
       visuallyHiddenPage,
-    ].map(page => [page.slug, page]),
-  )
+    ].map(page => [
+      page.slug,
+      {
+        ...page,
+        definition: {
+          ...page.definition,
+          ...(page.definition.stylexExamples === undefined
+            ? {}
+            : {
+                stylexExamples: page.definition.stylexExamples.map(example => ({
+                  ...example,
+                  code: repairStyled(example.code, 'stylex'),
+                })),
+              }),
+          ...(page.definition.pleatExamples === undefined
+            ? {}
+            : {
+                pleatExamples: page.definition.pleatExamples.map(example => ({
+                  ...example,
+                  code: repairStyled(example.code, 'pleat'),
+                })),
+              }),
+        },
+      },
+    ]),
+  ),
+}

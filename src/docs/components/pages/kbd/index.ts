@@ -18,5 +18,6 @@ export const kbdPage = authoredPage({
       'Keep the written shortcut understandable and match the actual keyboard interaction. Use Kbd for notation, not as an interactive control.',
     examples: kbdExamples('tailwind'),
     stylexExamples: kbdExamples('stylex'),
+    pleatExamples: kbdExamples('pleat'),
   },
 })

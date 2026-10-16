@@ -23,5 +23,6 @@ export const stepperPage = authoredPage({
     ],
     examples: stepperExamples('tailwind'),
     stylexExamples: stepperExamples('stylex'),
+    pleatExamples: stepperExamples('pleat'),
   },
 })

@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type ProgressKind = 'demo' | 'label' | 'controlled' | 'rtl' | 'specimen'
@@ -312,11 +313,12 @@ const emitSubscriptions = (fixture: ProgressFixture): string | undefined => {
 
 const emitApplication = (
   fixture: ProgressFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const stylesBlock = isStyleX
     ? `\n\nconst styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
 ${emitStyles(fixture)}
 })`
     : ''
@@ -334,15 +336,15 @@ ${emitStyles(fixture)}
       : { subscriptions: emitSubscriptions(fixture) as string }),
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Progress — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
 ${emitBody(fixture, isStyleX)}
   ]),
 })`,
   })
 }
 
-export const progressExamples = (
-  renderer: 'tailwind' | 'stylex',
+const progressExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   progressFixtures.map(fixture => ({
     title: fixture.title,
@@ -352,3 +354,8 @@ export const progressExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer),
   }))
+
+export const progressExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, progressExamplesFor(renderer))

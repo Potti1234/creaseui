@@ -76,10 +76,36 @@ StyleX files install in a `stylex` subdirectory of the configured `ui` alias
 dependencies. Configure the StyleX compiler and supply the CSS theme variables described in the
 [authoring contract](../src/stylex/README.md).
 
-Every UI item declares `crease-theme` as a registry dependency. Installing a
-component therefore also installs the complete background, card, popover,
-control, chart, sidebar, and radius token contract into the configured Tailwind
-stylesheet. To install the shared utility plus the production-tested Alert,
+Pleat components are available as `pleat-<component>` items, for example:
+
+```sh
+npx --yes shadcn@latest add Potti1234/creaseui/pleat-button --yes
+```
+
+Pleat files install in a `pleat` subdirectory of the configured `ui` alias.
+Pleat itself is not published to npm, so `pleat-*` component items declare
+`pleat-core` and `pleat-foldkit` registry dependencies that install the
+vendored `@pleat/core` and `@pleat/foldkit` sources into `@/lib/pleat/core`
+and `@/lib/pleat/foldkit`. Map the `@pleat/core` and `@pleat/foldkit` import
+specifiers to those installed sources through tsconfig `paths` or the bundler
+alias of your choice.
+
+Every Tailwind UI item declares `crease-theme` as a registry dependency.
+Installing a component therefore also installs the complete background, card,
+popover, control, chart, sidebar, and radius token contract into the configured
+Tailwind stylesheet. `crease-theme` writes Tailwind `@theme` and `cssVars`, so
+StyleX and Pleat items instead declare `crease-theme-css`: the same roles, the
+`--color-*`, `--radius-*` and font aliases the components read, and the
+document base layer as a plain `src/crease-theme.css`. Import it once from the
+app's stylesheet (`@import './crease-theme.css';`) or entry module; `creaseui-lint
+doctor` reports theme roles the installed components read but no stylesheet
+defines.
+
+`shadcn add` (4.21.x) fails with `Cannot read properties of undefined (reading
+'proxyOf')` when it merges `crease-theme`'s `cssVars` into an empty stylesheet.
+Tailwind projects start with `@import 'tailwindcss';`, so this only appears in
+a hand-made empty file; give it any content first. `crease-theme-css` ships a
+file and is not affected. To install the shared utility plus the production-tested Alert,
 Badge, Button, Card, Empty, Input, Item, Separator, and Textarea set at once:
 
 ```sh
@@ -107,8 +133,18 @@ npx --yes shadcn@latest add Potti1234/creaseui/button#v0.1.0 --yes
 npx --yes shadcn@latest add Potti1234/creaseui/button#0123456789abcdef0123456789abcdef01234567 --yes
 ```
 
-Prefer a full commit SHA for a reproducible installation. The selected ref also
-applies while the CLI resolves Crease items referenced by that item.
+Prefer a full commit SHA for a reproducible installation. The ref pins only the
+item you name. Crease publishes `registryDependencies` unversioned
+(`Potti1234/creaseui/icons`), and shadcn resolves them against the default
+branch even when the same items are also named with a ref on the command line.
+Checked with `shadcn@latest` (4.21.x) against this repository:
+`pleat-sidebar#<sha>` and the full closure pinned at `#<sha>` both fail with
+`Registry item "pleat-complex-tokens" was not found` while that item exists only
+on the pinned commit.
+
+A ref install therefore works only when every dependency of the item also
+exists, compatibly, on `main`. For a commit whose items are not on `main` yet
+(a pull request), install from a local checkout as described below.
 
 ### Installing from a local checkout
 

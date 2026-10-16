@@ -22,5 +22,6 @@ export const emptyPage = authoredPage({
       'Use a real heading for the title when the empty state is the main content. Action labels should describe what happens next.',
     examples: emptyExamples('tailwind'),
     stylexExamples: emptyExamples('stylex'),
+    pleatExamples: emptyExamples('pleat'),
   },
 })

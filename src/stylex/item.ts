@@ -114,6 +114,7 @@ const styles = stylex.create({
     justifyContent: 'space-between',
   },
   group: { display: 'flex', flexDirection: 'column' },
+  listItem: { display: 'contents' },
   groupSm: { gap: '0.625rem' },
   groupMd: { gap: '0.75rem' },
   groupLg: { gap: '1rem' },
@@ -154,7 +155,6 @@ export const item = <Msg>(p: ItemProps, h: HtmlBuilder<Msg>): Html => {
   const variant = p.variant ?? 'default',
     size = p.size ?? 'default',
     attrs = [
-      h.Role('listitem'),
       h.DataAttribute('slot', 'item'),
       h.DataAttribute('variant', variant),
       h.DataAttribute('size', size),
@@ -248,8 +248,30 @@ export const itemDescription = <Msg>(p: SlotProps, h: HtmlBuilder<Msg>): Html =>
 export const itemActions = slotDiv('item-actions', styles.actions)
 export const itemHeader = slotDiv('item-header', styles.header)
 export const itemFooter = slotDiv('item-footer', styles.footer)
-export type ItemGroupProps = SlotProps &
-  Readonly<{ spacing?: 'none' | 'sm' | 'md' | 'lg'; columns?: 2 | 3 | 4 }>
+/** Decorative separator between ItemGroup entries; never a list item. */
+export type ItemGroupSeparator = Readonly<{
+  render: <Msg>(h: HtmlBuilder<Msg>) => Html
+}>
+const groupSeparators = new WeakSet<object>()
+export const itemGroupSeparator = (
+  props: ItemSeparatorProps = {},
+): ItemGroupSeparator => {
+  const entry: ItemGroupSeparator = {
+    render: h => itemSeparator(props, h),
+  }
+  groupSeparators.add(entry)
+  return entry
+}
+export type ItemGroupEntry = Html | string | ItemGroupSeparator
+const isGroupSeparator = (entry: ItemGroupEntry): entry is ItemGroupSeparator =>
+  typeof entry === 'object' && entry !== null && groupSeparators.has(entry)
+
+export type ItemGroupProps = Readonly<{
+  children: ReadonlyArray<ItemGroupEntry>
+  layoutStyle?: ComponentLayoutStyle
+  spacing?: 'none' | 'sm' | 'md' | 'lg'
+  columns?: 2 | 3 | 4
+}>
 export const itemGroup = <Msg>(p: ItemGroupProps, h: HtmlBuilder<Msg>): Html =>
   h.div(
     [
@@ -268,7 +290,18 @@ export const itemGroup = <Msg>(p: ItemGroupProps, h: HtmlBuilder<Msg>): Html =>
         ),
       ),
     ],
-    [...p.children],
+    [...p.children].map(child =>
+      isGroupSeparator(child)
+        ? child.render(h)
+        : h.div(
+            [
+              h.Role('listitem'),
+              h.DataAttribute('slot', 'item-listitem'),
+              h.Class(className(styles.listItem)),
+            ],
+            [child],
+          ),
+    ),
   )
 export type ItemSeparatorProps = Readonly<{
   layoutStyle?: ComponentLayoutStyle

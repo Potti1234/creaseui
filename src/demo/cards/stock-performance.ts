@@ -141,7 +141,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                         children: [
                           fieldLabel(
                             {
-                              for: 'stock-performance-ticker',
+                              for: 'stock-performance-ticker-button',
                               children: ['Ticker'],
                             },
                             h,
@@ -176,7 +176,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
               areaChart(
                 {
                   data: data.map(({ price }) => price),
-                  class: 'h-[200px] w-full',
+                  class: 'h-50 w-full',
                 },
                 h,
               ),

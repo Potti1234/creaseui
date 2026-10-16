@@ -32,5 +32,6 @@ export const paginationPage = authoredPage({
     ],
     examples: paginationExamples('tailwind'),
     stylexExamples: paginationExamples('stylex'),
+    pleatExamples: paginationExamples('pleat'),
   },
 })

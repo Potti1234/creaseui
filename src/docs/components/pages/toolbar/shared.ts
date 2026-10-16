@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type ToolbarFixtureKind =
@@ -255,14 +256,14 @@ const filterBody = (isStyleX: boolean): string => `Toolbar.toolbar({
       toParentMessage: m => GotToolbarMessage({ message: m }),
       startContent: [
         h.div([${isStyleX ? 'h.Class(className(styles.filterRow))' : "h.Class('flex w-full min-w-0 flex-wrap items-center gap-2')"}], [
-          Input.input({ id: 'filter-search', ariaLabel: 'Search jobs', placeholder: 'Search', value: model.search, onInput: v => ChangedSearch({ value: v }),${isStyleX ? ' layoutStyle: styles.searchInput,' : ` class: 'w-36',`} }, h),
+          Input.input({ id: 'filter-search', ariaLabel: 'Search jobs', placeholder: 'Search', value: model.search, onInput: v => ChangedSearch({ value: v }),${isStyleX ? ' layoutStyle: layoutStyle({ width: "9rem" }),' : ` class: 'w-36',`} }, h),
           ...FILTER_FIELDS.map(field => FilterSelect.select({
             model: model.filterSelects[field.key],
             maybeSelectedValue: model[field.key] === '' ? Option.none() : Option.some(model[field.key]),
             ariaLabel: field.label,
             placeholder: field.label,
             size: 'sm',
-            ${isStyleX ? 'triggerLayoutStyle: styles[field.key]' : 'triggerClass: FILTER_WIDTH[field.key]'},
+            ${isStyleX ? 'triggerLayoutStyle: FILTER_LAYOUT[field.key]' : 'triggerClass: FILTER_WIDTH[field.key]'},
             items: ['', ...field.options],
             itemToValue: value => value,
             itemToLabel: value => value === '' ? field.label : value,
@@ -295,7 +296,7 @@ const JOBS: ReadonlyArray<Job> = ${JSON.stringify(JOBS, null, 2)}
 
 const FILTER_FIELDS: ReadonlyArray<Readonly<{ key: FilterField; label: string; options: ReadonlyArray<string> }>> = ${JSON.stringify(FILTER_FIELDS, null, 2)}
 const FilterSelect = Select.create<string>()
-${isStyleX ? '' : "const FILTER_WIDTH = { status: 'w-32', priority: 'w-24', customer: 'w-40' } as const\n"}
+${isStyleX ? "const FILTER_LAYOUT = { status: layoutStyle({ width: '8rem' }), priority: layoutStyle({ width: '6rem' }), customer: layoutStyle({ width: '10rem' }) } as const\n" : "const FILTER_WIDTH = { status: 'w-32', priority: 'w-24', customer: 'w-40' } as const\n"}
 
 `
     : ''
@@ -472,14 +473,12 @@ import * as Select from '@/${lib}/select'
     }${
       hasFilter && isStyleX
         ? `import * as stylex from '@stylexjs/stylex'
-import { className } from '@/stylex/style'
+import { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'
 import { tokens } from '@/stylex/tokens.stylex'
 const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   filterWidth: { maxWidth: '47.5rem', minWidth: 0, width: '100%' },
   searchInput: { width: '9rem' },
-  status: { width: '8rem' },
-  priority: { width: '6rem' },
-  customer: { width: '10rem' },
   filterRow: { display: 'flex', width: '100%', minWidth: 0, flexWrap: 'wrap', alignItems: 'center', gap: '0.5rem' },
   filterActions: { display: 'flex', flexShrink: 0, alignItems: 'center', gap: '0.5rem', marginInlineStart: 'auto' },
   readout: { color: tokens.mutedForeground, fontSize: '0.75rem', lineHeight: '1rem', whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums' },
@@ -518,15 +517,15 @@ ${updateCases.join('\n')}
         : ''
     }export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: '${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     ${toolbarCalls},
   ]),
 })`,
   })
 }
 
-export const toolbarExamples = (
-  renderer: 'tailwind' | 'stylex',
+const toolbarExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   toolbarFixtures.map(fixture => ({
     title: fixture.title,
@@ -534,5 +533,10 @@ export const toolbarExamples = (
       ? {}
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
-    code: emitSource(fixture, renderer === 'stylex'),
+    code: emitSource(fixture, renderer !== 'tailwind'),
   }))
+
+export const toolbarExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, toolbarExamplesFor(renderer))

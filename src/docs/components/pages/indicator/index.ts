@@ -21,5 +21,6 @@ export const indicatorPage = authoredPage({
       'Each indicator is aria-hidden: the parent control must keep the checkbox/radio role, checked state, and label.',
     examples: indicatorExamples('tailwind'),
     stylexExamples: indicatorExamples('stylex'),
+    pleatExamples: indicatorExamples('pleat'),
   },
 })

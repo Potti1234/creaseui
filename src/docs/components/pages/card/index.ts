@@ -22,5 +22,6 @@ export const cardPage = authoredPage({
       'Card adds no landmark by default. Choose section or article only when the content has the corresponding document meaning and provide a heading.',
     examples: cardExamples('tailwind'),
     stylexExamples: cardExamples('stylex'),
+    pleatExamples: cardExamples('pleat'),
   },
 })

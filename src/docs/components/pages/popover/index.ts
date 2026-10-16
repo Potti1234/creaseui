@@ -30,5 +30,6 @@ export const popoverPage = authoredPage({
     ],
     examples: popoverExamples('tailwind'),
     stylexExamples: popoverExamples('stylex'),
+    pleatExamples: popoverExamples('pleat'),
   },
 })

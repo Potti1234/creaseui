@@ -1,6 +1,6 @@
 import * as stylex from '@stylexjs/stylex'
 import type { HtmlBuilder } from 'foldkit/html'
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import * as Button from '@/stylex/button'
 import * as Field from '@/stylex/field'
 import * as Form from '@/stylex/form'
@@ -15,7 +15,7 @@ type PreviewModel = {
   asyncError: string | null
 }
 
-export const formStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const formStyleXPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   send: (json: string) => Msg,

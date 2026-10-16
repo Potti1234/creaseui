@@ -13,8 +13,8 @@ export const statusDotVariants = cva(
   {
     variants: {
       variant: {
-        success: 'bg-chart-2 text-[oklch(0.985_0_0)]',
-        warning: 'bg-chart-4 text-[oklch(0.205_0_0)]',
+        success: 'bg-success text-[oklch(0.985_0_0)]',
+        warning: 'bg-warning text-[oklch(0.205_0_0)]',
         error: 'bg-destructive text-[oklch(0.985_0_0)]',
         accent: 'bg-primary text-primary-foreground',
         neutral: 'bg-muted-foreground text-background',

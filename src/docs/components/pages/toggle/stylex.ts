@@ -1,7 +1,7 @@
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   toggleFixtures,
   type ToggleItem,
@@ -57,7 +57,7 @@ const itemToggle = <Msg>(
     h,
   )
 
-export const toggleStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const toggleStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

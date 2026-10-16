@@ -9,6 +9,8 @@
     "src/recipes/dashboard/registry.json",
     "src/lib/registry.json",
     "src/ui/registry.json",
-    "src/stylex/registry.json"
+    "src/stylex/registry.json",
+    "src/pleat/registry.json",
+    "packages/registry.json"
   ]
 }

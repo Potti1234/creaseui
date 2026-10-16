@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type InputGroupKind =
@@ -94,7 +95,10 @@ const emitImports = (fixture: InputGroupFixture, isStyleX: boolean): string => {
     "import { defineMessageUnion } from 'foldkit/message'",
   ]
   if (isStyleX) {
-    parts.push('', "import * as stylex from '@stylexjs/stylex'")
+    parts.push(
+      '',
+      "import * as stylex from '@stylexjs/stylex'\nimport { layoutStyle } from '@/stylex/contracts'",
+    )
   }
   if (kindUsesDropdown(fixture.kind)) {
     parts.push(`import * as DropdownMenu from '@/${base}/dropdown-menu'`)
@@ -418,7 +422,7 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
   switch (fixture.kind) {
     case 'demo':
       return `    InputGroup.inputGroup({
-      ${isStyleX ? 'layoutStyle: styles.group' : "class: 'max-w-xs'"},
+      ${isStyleX ? 'layoutStyle: layoutStyle({ maxWidth: "20rem" })' : "class: 'max-w-xs'"},
       children: [
         ${emitInput('demo', 'input-group-demo', "\n        placeholder: 'Search...',")},
         InputGroup.inputGroupAddon({
@@ -501,7 +505,7 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
                         InputGroup.inputGroupText({ children: [${isStyleX ? "h.span([h.Class(stylex.props(styles.monoText).className ?? '')], ['script.js'])" : "h.span([h.Class('font-mono')], ['script.js'])"}] }, h),
                         InputGroup.inputGroupButton({
                           size: 'icon-xs',
-                          ${isStyleX ? 'layoutStyle: styles.push' : "class: 'ml-auto'"},
+                          ${isStyleX ? 'layoutStyle: layoutStyle({ marginInlineStart: "auto" })' : "class: 'ml-auto'"},
                           ariaLabel: 'Copy',
                           onClick: Message.ClickedCopy({ text: model.values['alignBlockTextarea'] ?? '' }),
                           children: [Icon.icon(model.isCopied ? 'check' : 'copy', {}, h)],
@@ -542,7 +546,7 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
                       align: 'block-end',
                       children: [
                         InputGroup.inputGroupText({ children: ['0/280'] }, h),
-                        InputGroup.inputGroupButton({ variant: 'default', size: 'sm', ${isStyleX ? 'layoutStyle: styles.push' : "class: 'ml-auto'"}, children: ['Post'] }, h),
+                        InputGroup.inputGroupButton({ variant: 'default', size: 'sm', ${isStyleX ? 'layoutStyle: layoutStyle({ marginInlineStart: "auto" })' : "class: 'ml-auto'"}, children: ['Post'] }, h),
                       ],
                     }, h),
                   ],
@@ -678,7 +682,7 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
     }
     case 'kbd':
       return `    InputGroup.inputGroup({
-      ${isStyleX ? 'layoutStyle: styles.group' : "class: 'max-w-sm'"},
+      ${isStyleX ? 'layoutStyle: layoutStyle({ maxWidth: "20rem" })' : "class: 'max-w-sm'"},
       children: [
         ${emitInput('kbd', 'kbd-search', "\n        placeholder: 'Search...',")},
         InputGroup.inputGroupAddon({ children: [Icon.icon('search', {}, h)] }, h),
@@ -773,19 +777,19 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
       return `    ${wrapStack(isStyleX, 'grid w-full max-w-md gap-4', [
         `InputGroup.inputGroup({
           children: [
-            ${emitTextarea('textareaCode', 'textarea-code', `\n            placeholder: "console.log('Hello, world!');",\n            ${isStyleX ? 'layoutStyle: styles.codeArea' : "class: 'min-h-[200px]'"},`)},
+            ${emitTextarea('textareaCode', 'textarea-code', `\n            placeholder: "console.log('Hello, world!');",\n            ${isStyleX ? 'layoutStyle: layoutStyle({ minHeight: "200px" })' : "class: 'min-h-[200px]'"},`)},
             InputGroup.inputGroupAddon({
               align: 'block-end',
               children: [
                 InputGroup.inputGroupText({ children: ['Line 1, Column 1'] }, h),
-                InputGroup.inputGroupButton({ size: 'sm', variant: 'default', ${isStyleX ? 'layoutStyle: styles.push' : "class: 'ml-auto'"}, children: ['Run ', Icon.icon('corner-down-left', {}, h)] }, h),
+                InputGroup.inputGroupButton({ size: 'sm', variant: 'default', ${isStyleX ? 'layoutStyle: layoutStyle({ marginInlineStart: "auto" })' : "class: 'ml-auto'"}, children: ['Run ', Icon.icon('corner-down-left', {}, h)] }, h),
               ],
             }, h),
             InputGroup.inputGroupAddon({
               align: 'block-start',
               children: [
                 InputGroup.inputGroupText({ children: [Icon.icon('file-code', {}, h), 'script.js'] }, h),
-                InputGroup.inputGroupButton({ size: 'icon-xs', ${isStyleX ? 'layoutStyle: styles.push' : "class: 'ml-auto'"}, children: [Icon.icon('refresh-cw', {}, h)] }, h),
+                InputGroup.inputGroupButton({ size: 'icon-xs', ${isStyleX ? 'layoutStyle: layoutStyle({ marginInlineStart: "auto" })' : "class: 'ml-auto'"}, children: [Icon.icon('refresh-cw', {}, h)] }, h),
                 InputGroup.inputGroupButton({ size: 'icon-xs', children: [Icon.icon('copy', {}, h)] }, h),
               ],
             }, h),
@@ -805,7 +809,7 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
             ]),
             InputGroup.inputGroupAddon({
               align: 'block-end',
-              children: [InputGroup.inputGroupButton({ size: 'sm', variant: 'default', ${isStyleX ? 'layoutStyle: styles.push' : "class: 'ml-auto'"}, children: ['Submit'] }, h)],
+              children: [InputGroup.inputGroupButton({ size: 'sm', variant: 'default', ${isStyleX ? 'layoutStyle: layoutStyle({ marginInlineStart: "auto" })' : "class: 'ml-auto'"}, children: ['Submit'] }, h)],
             }, h),
           ],
         }, h)`,
@@ -846,7 +850,7 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
                         align: 'block-end',
                         children: [
                           InputGroup.inputGroupText({ children: ['${t.characterCount}'] }, h),
-                          InputGroup.inputGroupButton({ variant: 'default', size: 'sm', ${isStyleX ? 'layoutStyle: styles.push' : "class: 'ml-auto'"}, children: ['${t.post}'] }, h),
+                          InputGroup.inputGroupButton({ variant: 'default', size: 'sm', ${isStyleX ? 'layoutStyle: layoutStyle({ marginInlineStart: "auto" })' : "class: 'ml-auto'"}, children: ['${t.post}'] }, h),
                         ],
                       }, h),
                     ],
@@ -898,8 +902,8 @@ ${emitBody(fixture, isStyleX)}
   })
 }
 
-export const inputGroupExamples = (
-  renderer: 'tailwind' | 'stylex',
+const inputGroupExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   inputGroupFixtures.map(fixture => ({
     title: fixture.title,
@@ -907,5 +911,10 @@ export const inputGroupExamples = (
       ? {}
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
-    code: emitApplication(fixture, renderer === 'stylex'),
+    code: emitApplication(fixture, renderer !== 'tailwind'),
   }))
+
+export const inputGroupExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, inputGroupExamplesFor(renderer))

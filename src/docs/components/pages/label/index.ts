@@ -17,5 +17,6 @@ export const labelPage = authoredPage({
       'Set for to the exact control id. isRequired and isDisabled mirror presentation; native required and disabled semantics remain on the control.',
     examples: labelExamples('tailwind'),
     stylexExamples: labelExamples('stylex'),
+    pleatExamples: labelExamples('pleat'),
   },
 })

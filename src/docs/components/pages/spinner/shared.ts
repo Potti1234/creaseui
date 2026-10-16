@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 export const spinnerFixtures = [
@@ -28,8 +29,11 @@ const styles = stylex.create({
 })
 `
 
-const itemBody = (renderer: 'tailwind' | 'stylex', rtl: boolean): string => {
-  const isSx = renderer === 'stylex'
+const itemBody = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+  rtl: boolean,
+): string => {
+  const isSx = renderer !== 'tailwind'
   const t = rtl
     ? { title: 'جاري معالجة الدفع...', amount: '١٠٠.٠٠ دولار' }
     : { title: 'Processing payment...', amount: '$100.00' }
@@ -38,7 +42,7 @@ const itemBody = (renderer: 'tailwind' | 'stylex', rtl: boolean): string => {
     : "h.Class('w-full max-w-xs')"
   const dir = rtl ? "h.Dir('rtl'), " : ''
   const endContent = isSx
-    ? `Item.itemContent({ layoutStyle: styles.itemEnd, children: [
+    ? `Item.itemContent({ layoutStyle: layoutStyle({ marginInlineStart: "auto" }), children: [
     h.span([h.Class(stylex.props(styles.amount).className ?? '')], ['${t.amount}']),
   ] }, h)`
     : `Item.itemContent({ class: 'flex-none justify-end', children: [
@@ -55,8 +59,10 @@ const itemBody = (renderer: 'tailwind' | 'stylex', rtl: boolean): string => {
 ])`
 }
 
-const customBody = (renderer: 'tailwind' | 'stylex'): string => {
-  const isSx = renderer === 'stylex'
+const customBody = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
+  const isSx = renderer !== 'tailwind'
   return `h.div([h.Class(${
     isSx ? "stylex.props(styles.accent).className ?? ''" : "'text-chart-2'"
   })], [
@@ -64,9 +70,11 @@ const customBody = (renderer: 'tailwind' | 'stylex'): string => {
 ])`
 }
 
-const sizeBody = (renderer: 'tailwind' | 'stylex'): string =>
+const sizeBody = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string =>
   `h.div([h.Class(${
-    renderer === 'stylex'
+    renderer !== 'tailwind'
       ? "stylex.props(styles.row).className ?? ''"
       : "'flex items-center gap-6'"
   })], [
@@ -76,9 +84,11 @@ const sizeBody = (renderer: 'tailwind' | 'stylex'): string =>
   Spinner.spinner({ isDecorative: true, size: 'xl' }, h),
 ])`
 
-const buttonBody = (renderer: 'tailwind' | 'stylex'): string =>
+const buttonBody = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string =>
   `h.div([h.Class(${
-    renderer === 'stylex'
+    renderer !== 'tailwind'
       ? "stylex.props(styles.centerCol).className ?? ''"
       : "'flex flex-col items-center gap-4'"
   })], [
@@ -96,9 +106,11 @@ const buttonBody = (renderer: 'tailwind' | 'stylex'): string =>
   ] }, h),
 ])`
 
-const badgeBody = (renderer: 'tailwind' | 'stylex'): string =>
+const badgeBody = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string =>
   `h.div([h.Class(${
-    renderer === 'stylex'
+    renderer !== 'tailwind'
       ? "stylex.props(styles.rowSm).className ?? ''"
       : "'flex items-center gap-4'"
   })], [
@@ -116,9 +128,11 @@ const badgeBody = (renderer: 'tailwind' | 'stylex'): string =>
   ] }, h),
 ])`
 
-const inputGroupBody = (renderer: 'tailwind' | 'stylex'): string =>
+const inputGroupBody = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string =>
   `h.div([h.Class(${
-    renderer === 'stylex'
+    renderer !== 'tailwind'
       ? "stylex.props(styles.column, styles.wrapMd).className ?? ''"
       : "'flex w-full max-w-md flex-col gap-4'"
   })], [
@@ -146,8 +160,8 @@ const inputGroupBody = (renderer: 'tailwind' | 'stylex'): string =>
       Spinner.spinner({ isDecorative: true }, h),
       'Validating...',
       InputGroup.inputGroupButton({ variant: 'default', size: 'icon-sm', ${
-        renderer === 'stylex'
-          ? 'layoutStyle: styles.itemEnd'
+        renderer !== 'tailwind'
+          ? 'layoutStyle: layoutStyle({ marginInlineStart: "auto" })'
           : "class: 'ml-auto'"
       }, children: [
         Icon.arrowUp({}, h),
@@ -157,7 +171,9 @@ const inputGroupBody = (renderer: 'tailwind' | 'stylex'): string =>
   ] }, h),
 ])`
 
-const emptyBody = (renderer: 'tailwind' | 'stylex'): string =>
+const emptyBody = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string =>
   `Empty.empty({ children: [
   Empty.emptyHeader({ children: [
     Empty.emptyMedia({ variant: 'icon', children: [
@@ -187,7 +203,7 @@ const EXTRA_IMPORTS = {
 
 const body = (
   fixture: SpinnerFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   switch (fixture.kind) {
     case 'item':
@@ -207,8 +223,8 @@ const body = (
   }
 }
 
-export const spinnerExamples = (
-  renderer: 'tailwind' | 'stylex',
+const spinnerExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   spinnerFixtures.map(fixture => ({
     title: fixture.title,
@@ -219,11 +235,17 @@ export const spinnerExamples = (
       exampleName: fixture.title,
       componentImports:
         (EXTRA_IMPORTS[fixture.kind].length > 0
-          ? `${EXTRA_IMPORTS[fixture.kind].replaceAll('@/ui/', `@/${renderer === 'stylex' ? 'stylex' : 'ui'}/`)}\n`
+          ? `${EXTRA_IMPORTS[fixture.kind].replaceAll('@/ui/', `@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/`)}\n`
           : '') +
-        (renderer === 'stylex'
-          ? `import * as stylex from '@stylexjs/stylex'\n${SX_STYLES}`
+        (renderer !== 'tailwind'
+          ? `import * as stylex from '@stylexjs/stylex'
+import { layoutStyle } from '@/stylex/contracts'\n${SX_STYLES}`
           : ''),
       viewBody: `${body(fixture, renderer)},`,
     }),
   }))
+
+export const spinnerExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, spinnerExamplesFor(renderer))

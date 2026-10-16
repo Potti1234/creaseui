@@ -263,5 +263,6 @@ Sidebar.sidebarRail({
     ],
     examples: sidebarExamples('tailwind'),
     stylexExamples: sidebarExamples('stylex'),
+    pleatExamples: sidebarExamples('pleat'),
   },
 })

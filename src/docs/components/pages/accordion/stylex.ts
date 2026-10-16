@@ -2,7 +2,7 @@ import { previewLayout } from '@/docs/components/preview-layout.stylex'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   accordionCardCopy,
   accordionFixtures,
@@ -63,7 +63,7 @@ const fixtureView = <Msg>(
   }
 }
 
-export const accordionStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const accordionStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

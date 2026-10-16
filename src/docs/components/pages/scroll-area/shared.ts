@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 export const scrollAreaTags = Array.from(
@@ -18,7 +19,7 @@ export const scrollAreaFixtures = [
 
 const tagsBody = (
   fixture: { rtl: boolean; heading: string },
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string =>
   renderer === 'tailwind'
     ? `ScrollArea.scrollArea({
@@ -46,14 +47,16 @@ const tagsBody = (
       h.h4([h.Class(className(styles.tagsHeading))], ['${fixture.heading}']),
       ...scrollAreaTags.map(tag => h.div([], [
         h.div([h.Class(className(styles.tag))], [tag]),
-        Separator.separator({ layoutStyle: styles.separator }, h),
+        Separator.separator({ layoutStyle: layoutStyle({ marginBlock: "0.5rem" }) }, h),
       ])),
     ]),
     ],
   }, h),
 ])`
 
-const horizontalBody = (renderer: 'tailwind' | 'stylex'): string =>
+const horizontalBody = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string =>
   renderer === 'tailwind'
     ? `ScrollArea.scrollArea({
   orientation: 'horizontal',
@@ -79,14 +82,14 @@ const horizontalBody = (renderer: 'tailwind' | 'stylex'): string =>
 
 const body = (
   fixture: (typeof scrollAreaFixtures)[number],
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string =>
   fixture.kind === 'tags'
     ? tagsBody(fixture, renderer)
     : horizontalBody(renderer)
 
 const styleImports = `import * as stylex from '@stylexjs/stylex'
-import { className } from '@/stylex/style'
+import { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'
 const styles = stylex.create({
   tagsFrame: { height: '18rem', width: '12rem', borderColor: 'var(--border)', borderRadius: '0.375rem', borderStyle: 'solid', borderWidth: 1, overflow: 'hidden' },
   tagsContent: { padding: '1rem' },
@@ -98,8 +101,8 @@ const styles = stylex.create({
   pill: { borderRadius: '0.375rem', paddingBlock: '0.5rem', paddingInline: '0.75rem', backgroundColor: 'var(--muted)', fontSize: '0.875rem', lineHeight: '1.25rem' },
 })`
 
-export const scrollAreaExamples = (
-  renderer: 'tailwind' | 'stylex',
+const scrollAreaExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   scrollAreaFixtures.map(fixture => ({
     title: fixture.title,
@@ -108,10 +111,15 @@ export const scrollAreaExamples = (
       componentSlug: 'scroll-area',
       renderer,
       exampleName: fixture.title,
-      componentImports: `import * as Separator from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/separator'
+      componentImports: `import * as Separator from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/separator'
 
 const scrollAreaTags = Array.from({ length: 50 }, (_, index) => \`v1.2.0-beta.\${String(50 - index)}\`)
-const scrollAreaItems = Array.from({ length: 8 }, (_, index) => \`Component \${String(index + 1)}\`)${renderer === 'stylex' ? `\n${styleImports}` : ''}`,
+const scrollAreaItems = Array.from({ length: 8 }, (_, index) => \`Component \${String(index + 1)}\`)${renderer !== 'tailwind' ? `\n${styleImports}` : ''}`,
       viewBody: body(fixture, renderer),
     }),
   }))
+
+export const scrollAreaExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, scrollAreaExamplesFor(renderer))

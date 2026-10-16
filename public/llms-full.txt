@@ -1180,7 +1180,7 @@ Source: `src/ui/data-table.ts`
 Examples: Sortable payments, Filter and paginate, Server-owned query, RTL
 
 - `export * from '@/lib/data-table-state'` (re-export)
-- `DataTableColumn<Row> = Readonly<{ key: string; header: string; cell: (row: Row) => Html | string; sortValue?: (row: Row) => string | number; isHideable?: boolean; class?: string; }>` (type)
+- `DataTableColumn<Row> = Readonly<{ key: string; header: string; cell: (row: Row) => Html | string; sortValue?: (row: Row) => string | number; isHideable?: boolean; align?: 'left' | 'center' | 'right'; class?: string; }>` (type)
 - `DataTableProps<Row, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; rows: ReadonlyArray<Row>; columns: ReadonlyArray<DataTableColumn<Row>>; rowKey: (row: Row) => string; filterText?: (row: Row) => string; filterPlaceholder?: string…` (type)
 - `dataTable<Row, Msg>(props: DataTableProps<Row, Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
@@ -1666,7 +1666,11 @@ Examples: Basic, Variant, Size, Icon, Avatar, Image, Group, Header, Link, Dropdo
 - `itemActions: value` (value)
 - `itemHeader: value` (value)
 - `itemFooter: value` (value)
-- `itemGroup<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` (function)
+- `ItemGroupSeparator = Readonly<{ render: <Msg>(h: HtmlBuilder<Msg>) => Html; }>` (type)
+- `itemGroupSeparator(props: ItemSeparatorProps = {}): ItemGroupSeparator` (function)
+- `ItemGroupEntry = Html | string | ItemGroupSeparator` (type)
+- `ItemGroupProps = Readonly<{ children: ReadonlyArray<ItemGroupEntry>; class?: string; }>` (type)
+- `itemGroup<Msg>(props: ItemGroupProps, h: HtmlBuilder<Msg>): Html` (function)
 - `ItemSeparatorProps = Readonly<{ class?: string; }>` (type)
 - `itemSeparator<Msg>(props: ItemSeparatorProps = {}, h: HtmlBuilder<Msg>): Html` (function)
 
@@ -2616,7 +2620,7 @@ Source: `src/ui/table.ts`
 
 Examples: Basic, Footer, Actions, RTL, Component Inventory, Dense overflow, Empty body
 
-- `table<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` (function)
+- `table<Msg>(props: SlotProps & Readonly<{ ariaLabel?: string | undefined; }>, h: HtmlBuilder<Msg>): Html` (function)
 - `tableHeader: value` (value)
 - `tableBody: value` (value)
 - `tableFooter: value` (value)

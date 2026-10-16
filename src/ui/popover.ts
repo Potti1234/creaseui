@@ -2,6 +2,8 @@
 
 import { Popover as PopoverPrimitive } from '@foldkit/ui'
 
+import { themedAnchor, themedPopoverPanel } from '@/lib/overlay-boundary'
+
 import { cn } from '@/lib/utils'
 
 /* Ported from shadcn/ui popover.tsx on top of the foldkit Popover submodel.
@@ -65,7 +67,9 @@ export const popover = <Msg>(
     model: props.model,
     view: PopoverPrimitive.view,
     viewInputs: {
-      anchor: { placement, gap: 4 },
+      // Portaled panels must keep the owning theme scope (e.g. a `.dark`
+      // subtree), so the portal binds inherited variables at the detached root.
+      anchor: themedAnchor({ placement, gap: 4 }),
       ...(props.focusSelector === undefined
         ? {}
         : { focusSelector: props.focusSelector }),
@@ -99,6 +103,15 @@ export const popover = <Msg>(
                   hp.div(
                     [
                       ...panel,
+                      hp.OnMount(
+                        themedPopoverPanel(
+                          `${props.model.id}-button`,
+                          { placement, gap: 4 },
+                          props.toParentMessage,
+                          props.focusSelector,
+                          PopoverPrimitive.arrowId(props.model.id),
+                        ),
+                      ),
                       hp.DataAttribute('slot', 'popover-content'),
                       ...(props.direction === undefined
                         ? []

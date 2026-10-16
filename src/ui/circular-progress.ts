@@ -29,16 +29,16 @@ const SIZE_CONFIG: Readonly<
 
 const FILL_VARIANT_CLASS: Readonly<Record<CircularProgressVariant, string>> = {
   accent: 'stroke-primary',
-  success: 'stroke-chart-2',
-  warning: 'stroke-chart-4',
+  success: 'stroke-success',
+  warning: 'stroke-warning',
   error: 'stroke-destructive',
   neutral: 'stroke-muted-foreground',
 }
 
 const TRACK_VARIANT_CLASS: Readonly<Record<CircularProgressVariant, string>> = {
   accent: 'stroke-primary/20',
-  success: 'stroke-chart-2/20',
-  warning: 'stroke-chart-4/20',
+  success: 'stroke-success/20',
+  warning: 'stroke-warning/20',
   error: 'stroke-destructive/20',
   neutral: 'stroke-muted',
 }

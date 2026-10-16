@@ -397,8 +397,8 @@ const view = defineView<Model, Message, TimeInputViewInputs>(
                   class: cn(
                     'size-4',
                     props.status.type === 'error' && 'text-destructive',
-                    props.status.type === 'warning' && 'text-chart-4',
-                    props.status.type === 'success' && 'text-chart-2',
+                    props.status.type === 'warning' && 'text-warning',
+                    props.status.type === 'success' && 'text-success',
                   ),
                   ariaLabel: statusButtonLabel(props.status.type),
                 },
@@ -419,9 +419,9 @@ const view = defineView<Model, Message, TimeInputViewInputs>(
             props.status?.type === 'error'
               ? 'border-destructive'
               : props.status?.type === 'warning'
-                ? 'border-chart-4'
+                ? 'border-warning'
                 : props.status?.type === 'success'
-                  ? 'border-chart-2'
+                  ? 'border-success'
                   : 'border-input',
             props.isDisabled === true
               ? 'cursor-default opacity-50 shadow-none'
@@ -474,8 +474,8 @@ const view = defineView<Model, Message, TimeInputViewInputs>(
                           'mt-1 flex items-start gap-1 rounded-lg p-2 text-xs leading-5',
                           type === 'error' &&
                             'bg-destructive/10 text-destructive',
-                          type === 'warning' && 'bg-chart-4/15 text-chart-4',
-                          type === 'success' && 'bg-chart-2/15 text-chart-2',
+                          type === 'warning' && 'bg-warning/15 text-warning',
+                          type === 'success' && 'bg-success/15 text-success',
                         ),
                       ),
                     ],
@@ -500,8 +500,8 @@ const view = defineView<Model, Message, TimeInputViewInputs>(
                           attachedOverlap[size],
                           type === 'error' &&
                             'bg-destructive/10 text-destructive',
-                          type === 'warning' && 'bg-chart-4/15 text-chart-4',
-                          type === 'success' && 'bg-chart-2/15 text-chart-2',
+                          type === 'warning' && 'bg-warning/15 text-warning',
+                          type === 'success' && 'bg-success/15 text-success',
                         ),
                       ),
                     ],

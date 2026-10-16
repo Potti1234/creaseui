@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import {
   foldkitApplication,
   staticComponentApplication,
@@ -855,7 +856,7 @@ const viewInputsSource = (nav: TopNavFixtureNav, isStyleX: boolean): string => {
   if (nav.width600 === true) {
     fields.push(
       isStyleX
-        ? `layoutStyle: styles.navWidth600`
+        ? `layoutStyle: layoutStyle({ maxWidth: "100%", width: "600px" })`
         : `class: 'w-150 max-w-full'`,
     )
   }
@@ -888,12 +889,15 @@ const applySource = (
   return { model: { ...model, ${modelField}: result.model, maybeSelectedId }, commands };
 };`
 
-const navSource = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const navSource = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = topNavFixtures[index] ?? topNavFixtures[0]
   if (fixture.kind !== 'navs') {
     return ''
   }
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const ui = isStyleX ? 'stylex' : 'ui'
   const multi = fixture.navs.length > 1
   const fields = fixture.navs.map((_nav, i) => `nav${i}`)
@@ -923,8 +927,10 @@ const navSource = (index: number, renderer: 'tailwind' | 'stylex'): string => {
   const stylexStyles =
     isStyleX && needsWidth600
       ? `import * as stylex from '@stylexjs/stylex'
+import { layoutStyle } from '@/stylex/contracts'
 
 const styles = stylex.create({
+  shell: { display: 'flex', flexDirection: 'column', gap: '1.5rem', marginInline: 'auto', maxWidth: '48rem', minHeight: '100vh', padding: '2rem', width: '100%' },
   navWidth600: { maxWidth: '100%', width: '600px' },
 })`
       : ''
@@ -960,7 +966,7 @@ ${tags
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'TopNav — ${fixture.title}',
-  body: h.main([h.Class('mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-6 p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-6 p-8'"})], [
     ${bodyWrapper},
   ]),
 })`,
@@ -983,13 +989,13 @@ const megaItemCallSource = (item: TopNavFixtureMegaItem): string => {
 
 const standaloneSource = (
   index: number,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const fixture = topNavFixtures[index] ?? topNavFixtures[0]
   if (fixture.kind === 'navs') {
     return ''
   }
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const ui = isStyleX ? 'stylex' : 'ui'
   const needsIcon = fixtureNeedsIcon(fixture)
   const viewBody =
@@ -1014,15 +1020,18 @@ const standaloneSource = (
   })
 }
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = topNavFixtures[index] ?? topNavFixtures[0]
   return fixture.kind === 'navs'
     ? navSource(index, renderer)
     : standaloneSource(index, renderer)
 }
 
-export const topNavExamples = (
-  renderer: 'tailwind' | 'stylex',
+const topNavExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   topNavFixtures.map((fixture, index) => ({
     title: fixture.title,
@@ -1032,3 +1041,8 @@ export const topNavExamples = (
       : { description: fixture.description }),
     code: source(index, renderer),
   }))
+
+export const topNavExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, topNavExamplesFor(renderer))

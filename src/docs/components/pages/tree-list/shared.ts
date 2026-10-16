@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 import type { TreeListVariant } from '@/lib/tree-list'
 
@@ -217,14 +218,17 @@ const usesBadge = (items: ReadonlyArray<TreeListFixtureItem>): boolean =>
 // Generated example source
 // ---------------------------------------------------------------------------
 
-const iconCall = (name: string, renderer: 'tailwind' | 'stylex'): string =>
-  renderer === 'stylex'
+const iconCall = (
+  name: string,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string =>
+  renderer !== 'tailwind'
     ? `Icon.icon('${name}', { class: stylex.props(styles.itemIcon).className ?? '' }, h)`
     : `Icon.icon('${name}', { class: 'size-4' }, h)`
 
 const itemSource = (
   item: TreeListFixtureItem,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const fields: Array<string> = [`id: '${item.id}'`, `label: '${item.label}'`]
   if (item.isExpanded === true) {
@@ -286,9 +290,12 @@ const applySource = (
   return { model: { ...model, ${modelField}: result.model, maybeSelectedId }, commands };
 };`
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = treeListFixtures[index] ?? treeListFixtures[0]
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const ui = isStyleX ? 'stylex' : 'ui'
   const multi = fixture.trees.length > 1
   const fields = multi ? ['treeLineGuides', 'treeNoGuides'] : ['tree']
@@ -369,7 +376,7 @@ ${tags
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'TreeList — ${fixture.title}',
-  body: h.main([h.Class('mx-auto flex min-h-screen w-full max-w-xl p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'mx-auto flex min-h-screen w-full max-w-xl p-8'"})], [
     ${
       multi
         ? `h.div([h.Class(${isStyleX ? "stylex.props(styles.wrap).className ?? ''" : "'flex items-start gap-6'"})], [
@@ -382,8 +389,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   })
 }
 
-export const treeListExamples = (
-  renderer: 'tailwind' | 'stylex',
+const treeListExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   treeListFixtures.map((fixture, index) => ({
     title: fixture.title,
@@ -392,3 +399,8 @@ export const treeListExamples = (
       : { description: fixture.description }),
     code: source(index, renderer),
   }))
+
+export const treeListExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, treeListExamplesFor(renderer))

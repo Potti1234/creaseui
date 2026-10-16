@@ -12,7 +12,7 @@ import type {
   ComponentLayoutStyle,
 } from './contracts'
 import * as Button from './button'
-import { themedAnchor } from './overlay-boundary'
+import { themedAnchor, themedPopoverPanel } from './overlay-boundary'
 import { className } from './style'
 import { complexTokens } from './complex-tokens.stylex'
 import { tokens } from './tokens.stylex'
@@ -23,6 +23,11 @@ const styles = stylex.create({
     maxHeight: '24rem',
     overflowY: 'auto',
     width: 'max-content',
+  },
+  bare: {
+    padding: 0,
+    borderWidth: 0,
+    backgroundColor: tokens.transparent,
   },
   /* TW sidebarMenuButtonVariants() trigger inside a shrink-wrap
      ('relative inline-flex') parent: content-width, menu-button look. */
@@ -107,6 +112,10 @@ export type PopoverProps<Msg> = Readonly<{
   layoutStyle?: ComponentLayoutStyle
   direction?: 'ltr' | 'rtl'
   focusSelector?: string
+  /** Portal the panel (theme preserved) so it escapes clipping ancestors. */
+  portal?: 'themed'
+  /** 'bare' drops the panel surface so the content supplies its own. */
+  surface?: 'default' | 'bare'
 }>
 
 export const popover = <Msg>(
@@ -180,6 +189,18 @@ export const popover = <Msg>(
                   hp.div(
                     [
                       ...panel,
+                      ...(props.portal === 'themed'
+                        ? [
+                            hp.OnMount(
+                              themedPopoverPanel(
+                                `${props.model.id}-button`,
+                                { placement, gap: 4 },
+                                props.toParentMessage,
+                                props.focusSelector,
+                              ),
+                            ),
+                          ]
+                        : []),
                       hp.DataAttribute('slot', 'popover-content'),
                       ...(props.direction === undefined
                         ? []
@@ -188,6 +209,8 @@ export const popover = <Msg>(
                         cn(
                           overlayStyles.panel,
                           CONTENT_CLASS,
+                          overlayStyles.floating,
+                          props.surface === 'bare' ? styles.bare : undefined,
                           props.layoutStyle,
                         ),
                       ),

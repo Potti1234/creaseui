@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type CodeBlockExampleKind =
@@ -222,7 +223,7 @@ const blockCall = (block: CodeBlockSpec, isStyleX: boolean): string => {
     props.push(`maxHeight: ${String(block.maxHeight)}`)
   }
   if (isStyleX) {
-    props.push('layoutStyle: styles.block')
+    props.push('layoutStyle: layoutStyle({ width: "100%" })')
   } else {
     props.push("class: 'w-full'")
   }
@@ -257,9 +258,9 @@ const emitBody = (fixture: CodeBlockFixture, isStyleX: boolean): string => {
 
 const emitApplication = (
   fixture: CodeBlockFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const base = isStyleX ? 'stylex' : 'ui'
   const stylesBlock = isStyleX
     ? `\n\nconst styles = stylex.create({${
@@ -274,7 +275,7 @@ const emitApplication = (
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { taggedStruct } from 'foldkit/schema'
-${isStyleX ? "import * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\n" : ''}import * as CodeBlock from '@/${base}/code-block'${stylesBlock}
+${isStyleX ? "import * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'\n" : ''}import * as CodeBlock from '@/${base}/code-block'${stylesBlock}
 
 ${codeConsts(fixture)}`,
     model: `export const Model = S.Struct({
@@ -321,15 +322,15 @@ ${fixture.blocks
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'CodeBlock — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
 ${emitBody(fixture, isStyleX)}
   ]),
 })`,
   })
 }
 
-export const codeBlockExamples = (
-  renderer: 'tailwind' | 'stylex',
+const codeBlockExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   codeBlockFixtures.map(fixture => ({
     title: fixture.title,
@@ -338,3 +339,8 @@ export const codeBlockExamples = (
       : { description: fixture.description }),
     code: emitApplication(fixture, renderer),
   }))
+
+export const codeBlockExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, codeBlockExamplesFor(renderer))

@@ -21,5 +21,6 @@ export const bubblePage = authoredPage({
       'Render the surrounding transcript as a list or log when messages update live. Alignment and color must not be the only indication of the sender.',
     examples: bubbleExamples('tailwind'),
     stylexExamples: bubbleExamples('stylex'),
+    pleatExamples: bubbleExamples('pleat'),
   },
 })

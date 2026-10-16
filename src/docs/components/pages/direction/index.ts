@@ -19,5 +19,6 @@ export const directionPage = authoredPage({
       'Correct direction improves reading order and punctuation for assistive technology. Do not use CSS flex reversal as a substitute.',
     examples: directionExamples('tailwind'),
     stylexExamples: directionExamples('stylex'),
+    pleatExamples: directionExamples('pleat'),
   },
 })

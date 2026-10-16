@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 const FOLDKIT_SRC = 'https://github.com/foldkit.png'
@@ -156,7 +157,7 @@ const avatarSource = (
       ? `[Avatar.avatarFallback({ children: ['${initials(entry.name)}'] }, h)]`
       : `[Avatar.avatarImage({ src: ${uriConstName(entry.src)}, alt: '${entry.name}', model: { status: 'loaded' } }, h)]`
   return isStyleX
-    ? `Avatar.avatar({ size: '${size}', layoutStyle: styles.${size === 'lg' ? 'memberLg' : size === 'sm' ? 'memberSm' : 'memberDefault'} as ComponentLayoutStyle, children: ${children} }, h)`
+    ? `Avatar.avatar({ size: '${size}', ring: true, layoutStyle: layoutStyle({ marginInlineStart: '${size === 'lg' ? '-0.625rem' : size === 'sm' ? '-0.375rem' : '-0.5rem'}' }), children: ${children} }, h)`
     : `Avatar.avatar({ size: '${size}', children: ${children} }, h)`
 }
 
@@ -201,9 +202,12 @@ const statusDotSource = (isStyleX: boolean): string => `
         ],
       )`
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = avatarGroupFixtures[index] ?? avatarGroupFixtures[0]
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const componentImports = [
     `import * as Avatar from '@/${isStyleX ? 'stylex' : 'ui'}/avatar'`,
     isStyleX
@@ -239,11 +243,16 @@ const styles = stylex.create({ column: { display: 'flex', flexDirection: 'column
   })
 }
 
-export const avatarGroupExamples = (
-  renderer: 'tailwind' | 'stylex',
+const avatarGroupExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   avatarGroupFixtures.map((fixture, index) => ({
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
   }))
+
+export const avatarGroupExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, avatarGroupExamplesFor(renderer))

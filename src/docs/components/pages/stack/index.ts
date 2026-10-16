@@ -25,5 +25,6 @@ export const stackPage = authoredPage({
       'Stack applies no semantics of its own. Choose a meaningful element with `as` (nav, ul, form, …) when the children form a landmark or list.',
     examples: tailwindExamples,
     stylexExamples: stackExamples('stylex'),
+    pleatExamples: stackExamples('pleat'),
   },
 })

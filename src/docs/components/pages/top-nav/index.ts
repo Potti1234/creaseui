@@ -30,5 +30,6 @@ export const topNavPage = authoredPage({
     ],
     examples: topNavExamples('tailwind'),
     stylexExamples: topNavExamples('stylex'),
+    pleatExamples: topNavExamples('pleat'),
   },
 })

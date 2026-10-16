@@ -30,5 +30,6 @@ export const navigationMenuPage = authoredPage({
     ],
     examples: navigationMenuExamples('tailwind'),
     stylexExamples: navigationMenuExamples('stylex'),
+    pleatExamples: navigationMenuExamples('pleat'),
   },
 })

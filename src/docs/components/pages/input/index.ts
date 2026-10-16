@@ -20,5 +20,6 @@ export const inputPage = authoredPage({
       'Provide a visible label. Description IDs are deterministic and emitted only when their element exists; describedBy can add external help or error IDs. Disabled, read-only, invalid, autocomplete, input-mode, form, and naming attributes remain native.',
     examples: inputExamples('tailwind'),
     stylexExamples: inputExamples('stylex'),
+    pleatExamples: inputExamples('pleat'),
   },
 })

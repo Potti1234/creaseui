@@ -23,5 +23,6 @@ export const collapsiblePage = authoredPage({
     ],
     examples: collapsibleExamples('tailwind'),
     stylexExamples: collapsibleExamples('stylex'),
+    pleatExamples: collapsibleExamples('pleat'),
   },
 })

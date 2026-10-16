@@ -144,15 +144,15 @@ const iconTintClass = (
   if (isDisabled) return 'text-muted-foreground opacity-50'
   if (hasStatusGlyph)
     return status === 'success'
-      ? 'text-chart-2'
+      ? 'text-success'
       : status === 'warning'
-        ? 'text-chart-4'
+        ? 'text-warning'
         : status === 'error'
           ? 'text-destructive'
           : 'text-primary'
   if (status === 'accent') return 'text-primary'
-  if (status === 'success') return 'text-chart-2'
-  if (status === 'warning') return 'text-chart-4'
+  if (status === 'success') return 'text-success'
+  if (status === 'warning') return 'text-warning'
   if (status === 'error') return 'text-destructive'
   return progress === 'not-started' ? 'text-muted-foreground' : 'text-primary'
 }
@@ -167,9 +167,9 @@ const numberBadgeColorClass = (
   if (isReached && status === 'accent')
     return 'bg-primary text-primary-foreground'
   if (isReached && status === 'success')
-    return 'bg-chart-2 text-primary-foreground'
+    return 'bg-success text-primary-foreground'
   if (isReached && status === 'warning')
-    return 'bg-chart-4 text-secondary-foreground'
+    return 'bg-warning text-secondary-foreground'
   if (isReached && status === 'error')
     return 'bg-destructive text-primary-foreground'
   if (progress === 'completed' || progress === 'in-progress')

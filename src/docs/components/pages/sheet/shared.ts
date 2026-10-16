@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type SheetSide = 'top' | 'right' | 'bottom' | 'left'
@@ -230,6 +231,7 @@ import * as Sheet from '@/${lib}/sheet'${
         ? `
 
 const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   fieldsWrap: { display: 'grid', flexGrow: 1, gridAutoRows: 'min-content', gap: '1.5rem', paddingInline: '1rem' },
   field: { display: 'grid', gap: '0.75rem' },
   loremWrap: { display: 'flex', flexDirection: 'column', flex: 1, gap: '1rem', marginInline: 'auto', minHeight: 0, maxWidth: '42rem', overflowY: 'auto', paddingInline: '1rem', width: '100%' },
@@ -334,7 +336,7 @@ ${
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Sheet — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     h.div([h.Class('flex flex-wrap gap-2')], [
 ${fixture.instances
   .map(
@@ -706,6 +708,7 @@ const emitReviewSheets = (isStyleX: boolean): string => {
 }
 
 const emitStyles = `const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   main: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   sheetBody: { marginInline: 'auto', maxWidth: '32rem', width: '100%', display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1rem' },
   sheetHeading: { fontSize: '1rem', lineHeight: '1.5rem', fontWeight: 600, marginBlock: 0, marginInline: 0 },
@@ -1115,17 +1118,17 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
 
 const emitBottomSource = (
   fixture: BottomSheetFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
   return foldkitApplication({
     title: `Sheet — ${fixture.title}`,
-    imports: emitImports(fixture, renderer === 'stylex'),
+    imports: emitImports(fixture, renderer !== 'tailwind'),
     model: emitModelFields(fixture),
     messages: emitMessages(fixture, tag),
     init: emitInit(fixture, tag),
     update: emitUpdate(fixture, tag),
-    view: emitView(fixture, renderer === 'stylex'),
+    view: emitView(fixture, renderer !== 'tailwind'),
   })
 }
 
@@ -1136,15 +1139,15 @@ export const sheetDocFixtures: ReadonlyArray<SheetDocFixture> = [
   ...bottomSheetFixtures,
 ]
 
-export const sheetExamples = (
-  renderer: 'tailwind' | 'stylex',
+const sheetExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   sheetDocFixtures.map(fixture =>
     'instances' in fixture
       ? {
           title: fixture.title,
           ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
-          code: emitSource(fixture, renderer === 'stylex'),
+          code: emitSource(fixture, renderer !== 'tailwind'),
         }
       : {
           title: fixture.title,
@@ -1154,3 +1157,8 @@ export const sheetExamples = (
           code: emitBottomSource(fixture, renderer),
         },
   )
+
+export const sheetExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, sheetExamplesFor(renderer))

@@ -19,8 +19,8 @@ export const alertVariants = cva(
         destructive:
           'bg-card text-destructive *:data-[slot=alert-description]:text-destructive/90 [&>svg]:text-current',
         info: 'bg-card text-primary',
-        success: 'bg-card text-chart-2',
-        warning: 'bg-card text-chart-4',
+        success: 'bg-card text-success',
+        warning: 'bg-card text-warning',
         error: 'bg-card text-destructive',
       },
     },

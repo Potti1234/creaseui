@@ -1,19 +1,35 @@
 {
   "name": "@creaseui/lint",
   "version": "0.1.0",
-  "description": "Agent-first lint rules for Foldkit design systems using Tailwind or StyleX.",
+  "description": "Agent-first lint rules for Foldkit design systems using Tailwind, StyleX or Pleat, including the strict creaseui() consumer policy.",
   "license": "MIT",
   "type": "module",
   "exports": {
     ".": {
       "types": "./index.d.ts",
       "default": "./index.js"
+    },
+    "./audit": {
+      "types": "./audit.d.ts",
+      "default": "./audit.js"
+    },
+    "./rendered": {
+      "types": "./rendered.d.ts",
+      "default": "./rendered.js"
     }
   },
   "types": "./index.d.ts",
   "files": [
+    "catalog.json",
     "index.js",
     "index.d.ts",
+    "audit.js",
+    "audit.d.ts",
+    "rendered.js",
+    "rendered.d.ts",
+    "creaseui.js",
+    "bin",
+    "docs",
     "lib",
     "rules",
     "README.md"
@@ -22,10 +38,22 @@
     "node": ">=20.19"
   },
   "peerDependencies": {
-    "eslint": ">=9.30"
+    "eslint": ">=9.30",
+    "typescript": ">=5.8",
+    "playwright": ">=1.40"
   },
   "dependencies": {
     "@shadcn/lint": "^0.1.0",
-    "@stylexjs/eslint-plugin": "^0.19.0"
+    "@stylexjs/eslint-plugin": "^0.19.0",
+    "postcss": "^8.5.6",
+    "typescript-eslint": "^8.66.0"
+  },
+  "bin": {
+    "creaseui-lint": "./bin/creaseui-lint.js"
+  },
+  "peerDependenciesMeta": {
+    "playwright": {
+      "optional": true
+    }
   }
 }

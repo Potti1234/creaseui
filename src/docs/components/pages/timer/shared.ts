@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type TimerFixture = Readonly<{
@@ -47,9 +48,9 @@ export const timerFixtures: Readonly<[TimerFixture, ...Array<TimerFixture>]> = [
 
 const timerSource = (
   fixture: TimerFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const hasClock = fixture.layout === 'showcase' || fixture.layout === 'formats'
   const supporting = (text: string): string =>
     isStyleX
@@ -153,6 +154,7 @@ import { className } from '@/stylex/style'
 import * as Timer from '@/stylex/timer'
 
 const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   page: { display: 'flex', flexDirection: 'column', gap: '1rem' },
   row: { alignItems: 'center', display: 'flex', gap: '1.5rem' },
   column: { display: 'flex', flexDirection: 'column', gap: '0.25rem' },
@@ -247,7 +249,7 @@ export type Message = typeof Message.Type`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: '${fixture.title}',
   body: h.main(
-    [h.Class('flex min-h-screen items-center justify-center p-8')],
+    [h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})],
     [
       ${viewBody.split('\n').join('\n      ')},
     ],
@@ -256,11 +258,16 @@ export type Message = typeof Message.Type`,
   })
 }
 
-export const timerExamples = (
-  renderer: 'tailwind' | 'stylex',
+const timerExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   timerFixtures.map(fixture => ({
     title: fixture.title,
     description: fixture.description,
     code: timerSource(fixture, renderer),
   }))
+
+export const timerExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, timerExamplesFor(renderer))

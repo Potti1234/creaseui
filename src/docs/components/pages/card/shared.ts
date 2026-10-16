@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import {
   foldkitApplication,
   staticComponentApplication,
@@ -62,11 +63,11 @@ export const cardRtlCopy = {
   google: 'تسجيل الدخول باستخدام Google',
 } as const
 
-const ui = (renderer: 'tailwind' | 'stylex'): string =>
-  renderer === 'stylex' ? 'stylex' : 'ui'
+const ui = (renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat'): string =>
+  renderer !== 'tailwind' ? 'stylex' : 'ui'
 
 const cls = (
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
   tailwindValue: string,
   ...styleKeys: ReadonlyArray<string>
 ): string =>
@@ -75,7 +76,7 @@ const cls = (
     : `h.Class(stylex.props(${styleKeys.map(k => `styles.${k}`).join(', ')}).className ?? '')`
 
 const prop = (
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
   tailwindValue: string,
   styleKey: string,
 ): string =>
@@ -100,14 +101,15 @@ const STYLEX_STYLES = {
   edgeContent: `{ marginBlockEnd: 'calc(var(--card-spacing, 1.5rem) * -1)' }`,
   edgeScroll: `{ marginInline: 'calc(var(--card-spacing, 1.5rem) * -1)', maxHeight: '12rem', overflowY: 'scroll', borderTopWidth: 1, borderTopStyle: 'solid', borderTopColor: 'var(--border)', backgroundColor: 'color-mix(in oklab, var(--muted) 50%, transparent)', paddingInline: 'var(--card-spacing, 1.5rem)', paddingBlock: '1rem', fontSize: '0.875rem', lineHeight: 1.625, display: 'flex', flexDirection: 'column', gap: '1rem' }`,
   edgeFooterInner: `{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', width: '100%' }`,
-  imageWrap: `{ position: 'relative', marginInline: 'auto', maxWidth: '24rem', width: '100%' }`,
+  imageWrap: `{ position: 'relative' }`,
   overlay: `{ position: 'absolute', inset: 0, zIndex: 30, aspectRatio: '16 / 9', backgroundColor: 'color-mix(in oklab, var(--color-black, #000) 35%, transparent)' }`,
   cover: `{ position: 'relative', zIndex: 20, aspectRatio: '16 / 9', width: '100%', objectFit: 'cover', filter: 'grayscale(100%) brightness(0.6)' }`,
 } as const
 type StylexStyleKey = keyof typeof STYLEX_STYLES
 
 const stylexImports = (keys: ReadonlyArray<StylexStyleKey>): string =>
-  `import * as stylex from '@stylexjs/stylex'\nimport type { ComponentLayoutStyle } from '@/stylex/contracts'\n\nconst styles = stylex.create({\n${keys.map(k => `  ${k}: ${STYLEX_STYLES[k]},`).join('\n')}\n})`
+  `import * as stylex from '@stylexjs/stylex'
+import { layoutStyle } from '@/stylex/contracts'\nimport type { ComponentLayoutStyle } from '@/stylex/contracts'\n\nconst styles = stylex.create({\n${keys.map(k => `  ${k}: ${STYLEX_STYLES[k]},`).join('\n')}\n})`
 
 const styleKeysFor = (
   kind: CardFixture['kind'],
@@ -147,7 +149,7 @@ const loginCardSource = (
   opts: Readonly<{
     rtl: boolean
     spacingVar?: 'none' | 'static' | 'dynamic'
-    renderer: 'tailwind' | 'stylex'
+    renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat'
   }>,
 ): string => {
   const copy = opts.rtl
@@ -178,7 +180,7 @@ const loginCardSource = (
       ? opts.spacingVar === 'dynamic'
         ? 'class: `w-full max-w-sm ${spacingClasses[model.spacing]}`,'
         : `class: 'w-full max-w-sm${spacingPart}',`
-      : `layoutStyle: styles.frame,`
+      : `layoutStyle: layoutStyle({ maxWidth: "24rem", width: "100%" }),`
   const inputBlock = (
     id: string,
     label: string,
@@ -215,9 +217,11 @@ const loginCardSource = (
       Button.button({ class: 'w-full', children: ['${copy.login}'] }, h),
       Button.button({ variant: 'outline', class: 'w-full', children: ['${copy.google}'] }, h),
     ] }, h)`
-        : `Card.cardFooter({ layoutStyle: styles.footerCol as ComponentLayoutStyle, children: [
-      Button.button({ layoutStyle: styles.wFull, children: ['${copy.login}'] }, h),
-      Button.button({ variant: 'outline', layoutStyle: styles.wFull, children: ['${copy.google}'] }, h),
+        : `Card.cardFooter({ children: [
+      h.div([h.Class(stylex.props(styles.footerCol).className ?? '')], [
+        Button.button({ layoutStyle: layoutStyle({ width: "100%" }), children: ['${copy.login}'] }, h),
+        Button.button({ variant: 'outline', layoutStyle: layoutStyle({ width: "100%" }), children: ['${copy.google}'] }, h),
+      ]),
     ] }, h)`
     }
   ],
@@ -225,10 +229,10 @@ const loginCardSource = (
 }
 
 const smallCardSource = (
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => `Card.card({
   size: 'sm',
-  ${renderer === 'tailwind' ? `class: 'mx-auto w-full max-w-xs',` : `layoutStyle: styles.smallCard,`}
+  ${renderer === 'tailwind' ? `class: 'mx-auto w-full max-w-xs',` : `layoutStyle: layoutStyle({ marginInline: "auto", maxWidth: "20rem", width: "100%" }),`}
   children: [
     Card.cardHeader({ children: [
       Card.cardTitle({ children: ['Scheduled reports'] }, h),
@@ -256,16 +260,20 @@ const smallCardSource = (
       Button.button({ size: 'sm', class: 'w-full', children: ['Set up scheduled reports'] }, h),
       Button.button({ variant: 'outline', size: 'sm', class: 'w-full', children: ["See what's new"] }, h),
     ] }, h)`
-        : `Card.cardFooter({ layoutStyle: styles.footerCol as ComponentLayoutStyle, children: [
-      Button.button({ size: 'sm', layoutStyle: styles.wFull, children: ['Set up scheduled reports'] }, h),
-      Button.button({ variant: 'outline', size: 'sm', layoutStyle: styles.wFull, children: ["See what's new"] }, h),
+        : `Card.cardFooter({ children: [
+      h.div([h.Class(stylex.props(styles.footerCol).className ?? '')], [
+        Button.button({ size: 'sm', layoutStyle: layoutStyle({ width: "100%" }), children: ['Set up scheduled reports'] }, h),
+        Button.button({ variant: 'outline', size: 'sm', layoutStyle: layoutStyle({ width: "100%" }), children: ["See what's new"] }, h),
+      ]),
     ] }, h)`
     }
   ],
 }, h)`
 
-const edgeCardSource = (renderer: 'tailwind' | 'stylex'): string => `Card.card({
-  ${renderer === 'tailwind' ? `class: 'mx-auto w-full max-w-sm',` : `layoutStyle: styles.edgeCard,`}
+const edgeCardSource = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => `Card.card({
+  ${renderer === 'tailwind' ? `class: 'mx-auto w-full max-w-sm',` : `layoutStyle: layoutStyle({ marginInline: "auto", maxWidth: "24rem", width: "100%" }),`}
   children: [
     Card.cardHeader({ children: [
       Card.cardTitle({ children: ['Terms of Service'] }, h),
@@ -285,29 +293,43 @@ const edgeCardSource = (renderer: 'tailwind' | 'stylex'): string => `Card.card({
       Button.button({ variant: 'outline', children: ['Decline'] }, h),
       Button.button({ children: ['Accept'] }, h),
     ] }, h)`
-        : `Card.cardFooter({ layoutStyle: styles.edgeFooterInner as ComponentLayoutStyle, children: [
-      Button.button({ variant: 'outline', children: ['Decline'] }, h),
-      Button.button({ children: ['Accept'] }, h),
+        : `Card.cardFooter({ children: [
+      h.div([h.Class(stylex.props(styles.edgeFooterInner).className ?? '')], [
+        Button.button({ variant: 'outline', children: ['Decline'] }, h),
+        Button.button({ children: ['Accept'] }, h),
+      ]),
     ] }, h)`
     },
   ],
 }, h)`
 
-const imageCardSource = (renderer: 'tailwind' | 'stylex'): string => {
+const imageCardSource = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const cardExpr = `Card.card({
   ${
     renderer === 'tailwind'
       ? `class: 'relative mx-auto w-full max-w-sm pt-0',`
       : `density: 'flush',
-  layoutStyle: styles.imageWrap as ComponentLayoutStyle,`
+  layoutStyle: layoutStyle({ marginInline: 'auto', maxWidth: '24rem', width: '100%' }),`
   }
-  children: [
+  children: [${
+    renderer === 'tailwind'
+      ? ''
+      : `
+    h.div([h.Class(stylex.props(styles.imageWrap).className ?? '')], [`
+  }
     h.div([${cls(renderer, 'absolute inset-0 z-30 aspect-video bg-black/35', 'overlay')}]),
     h.img([
       h.Src('${IMAGE_URL}'),
       h.Alt('Event cover'),
       ${cls(renderer, 'relative z-20 aspect-video w-full object-cover brightness-60 grayscale dark:brightness-40', 'cover')},
-    ]),
+    ]),${
+      renderer === 'tailwind'
+        ? ''
+        : `
+    ]),`
+    }
     Card.cardHeader({ children: [
       Card.cardAction({ children: [
         Badge.badge({ variant: 'secondary', children: ['Featured'] }, h),
@@ -325,7 +347,7 @@ const imageCardSource = (renderer: 'tailwind' | 'stylex'): string => {
 
 const fixtureImports = (
   fixture: CardFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const base = [
     `import * as Button from '@/${ui(renderer)}/button'`,
@@ -333,7 +355,7 @@ const fixtureImports = (
     `import * as Label from '@/${ui(renderer)}/label'`,
   ]
   const stylesImport =
-    renderer === 'stylex'
+    renderer !== 'tailwind'
       ? `\n${stylexImports(styleKeysFor(fixture.kind))}`
       : ''
   switch (fixture.kind) {
@@ -380,17 +402,21 @@ const loginUpdate = `export const update = (
 
 const viewWrapper = (
   body: string,
+  styled: boolean,
 ): string => `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Card — Login',
   body: h.main(
-    [h.Class('flex min-h-screen items-center justify-center p-8')],
+    [h.Class(${styled ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})],
     [
       ${body.split('\n').join('\n      ')}
     ],
   ),
 })`
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = cardFixtures[index] ?? cardFixtures[0]
   const imports = [
     `import { Schema as S } from 'effect'`,
@@ -411,7 +437,7 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
         init: loginInit,
         update: loginUpdate,
         view: viewWrapper(
-          `h.div(${fixture.kind === 'rtl' ? (renderer === 'stylex' ? `[h.Dir('rtl'), ${cls(renderer, '', 'frame')}]` : `[h.Dir('rtl'), h.Class('w-full max-w-sm')]`) : `[]`}, [
+          `h.div(${fixture.kind === 'rtl' ? (renderer !== 'tailwind' ? `[h.Dir('rtl'), ${cls(renderer, '', 'frame')}]` : `[h.Dir('rtl'), h.Class('w-full max-w-sm')]`) : `[]`}, [
         ${loginCardSource({
           rtl: fixture.kind === 'rtl',
           spacingVar: 'none',
@@ -420,6 +446,7 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
           .split('\n')
           .join('\n        ')},
       ])`,
+          renderer !== 'tailwind',
         ),
       })
     case 'spacing': {
@@ -507,7 +534,7 @@ export const update = (
         view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Card — Spacing',
   body: h.main(
-    [h.Class('flex min-h-screen items-center justify-center p-8')],
+    [h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})],
     [
       h.div([${cls(renderer, 'grid w-full max-w-sm gap-4', 'loginWrap')}], [
         SpacingToggleGroup.toggleGroup({
@@ -526,8 +553,8 @@ export const update = (
                 .join('\n        ')
             : loginCardSource({ rtl: false, spacingVar: 'none', renderer })
                 .replace(
-                  'layoutStyle: styles.frame,',
-                  'layoutStyle: styles.frame,\n  spacing: `\${Number(model.spacing) * 4}px`,',
+                  'layoutStyle: layoutStyle({ maxWidth: "24rem", width: "100%" }),',
+                  'layoutStyle: layoutStyle({ maxWidth: "24rem", width: "100%" }),\n  spacing: `\${Number(model.spacing) * 4}px`,',
                 )
                 .split('\n')
                 .join('\n        ')
@@ -568,11 +595,16 @@ export const update = (
   }
 }
 
-export const cardExamples = (
-  renderer: 'tailwind' | 'stylex',
+const cardExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   cardFixtures.map((fixture, index) => ({
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
   }))
+
+export const cardExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, cardExamplesFor(renderer))

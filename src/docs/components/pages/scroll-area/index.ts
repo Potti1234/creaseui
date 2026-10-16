@@ -26,5 +26,6 @@ export const scrollAreaPage = authoredPage({
       'Give meaningful standalone regions an ariaLabel. The default tabindex makes keyboard scrolling available without custom key handlers.',
     examples: tailwindExamples,
     stylexExamples: scrollAreaExamples('stylex'),
+    pleatExamples: scrollAreaExamples('pleat'),
   },
 })

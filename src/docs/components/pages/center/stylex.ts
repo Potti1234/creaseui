@@ -2,7 +2,7 @@ import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   type CenterFixture,
   centerFixtures,
@@ -173,7 +173,7 @@ const viewFor = <Msg>(fixture: CenterFixture, h: HtmlBuilder<Msg>): Html => {
   }
 }
 
-export const centerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const centerStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   _model: unknown,
   _onMessageJson: (messageJson: string) => Msg,

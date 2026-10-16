@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 import type { DataTableConfig } from '@/lib/data-table-state'
 
@@ -64,10 +65,10 @@ export const dataTableFixtures = [
 
 const source = (
   fixture: (typeof dataTableFixtures)[number],
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat',
 ): string => {
   const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
-  const stylex = renderer === 'stylex'
+  const stylex = renderer !== 'tailwind'
   const filterPlaceholder = fixture.rtl
     ? 'بحث في المدفوعات...'
     : 'Filter payments…'
@@ -76,7 +77,6 @@ const source = (
     imports: `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-${stylex ? "import * as stylex from '@stylexjs/stylex'\nimport type { ComponentLayoutStyle } from '@/stylex/contracts'\n" : ''}
 import * as DataTable from '@/${stylex ? 'stylex' : 'ui'}/data-table'`,
     model: `type Payment = Readonly<{ id: string; status: string; email: string; amount: number }>
 
@@ -94,10 +94,10 @@ export type Message = typeof Message.Type`,
     case 'GotDataTableMessage${tag}': return { model: { ...model, table: DataTable.update(model.table, message.message).model } }
   }
 }`,
-    view: `${stylex ? "const styles = stylex.create({ amount: { textAlign: 'right' } })\n\n" : ''}const columns: ReadonlyArray<DataTable.DataTableColumn<Payment>> = [
+    view: `const columns: ReadonlyArray<DataTable.DataTableColumn<Payment>> = [
   { key: 'status', header: '${fixture.rtl ? 'الحالة' : 'Status'}', cell: row => row.status, sortValue: row => row.status },
   { key: 'email', header: '${fixture.rtl ? 'البريد الإلكتروني' : 'Email'}', cell: row => row.email, sortValue: row => row.email },
-  { key: 'amount', header: '${fixture.rtl ? 'المبلغ' : 'Amount'}', ${stylex ? 'layoutStyle: styles.amount as ComponentLayoutStyle, cell: row => `$${row.amount.toFixed(2)}`' : "class: 'text-right', cell: row => `$${row.amount.toFixed(2)}`"}, sortValue: row => row.amount },
+  { key: 'amount', header: '${fixture.rtl ? 'المبلغ' : 'Amount'}', align: 'right', cell: row => \`$\${row.amount.toFixed(2)}\`, sortValue: row => row.amount },
 ]
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
@@ -180,8 +180,8 @@ export const facetedDocs = [
 ] as const
 export type FacetedDocId = (typeof facetedDocs)[number]['id']
 
-export const dataTableExamples = (
-  renderer: 'tailwind' | 'stylex',
+const dataTableExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat',
 ): ReadonlyArray<DocsExample> => [
   ...dataTableFixtures.map(fixture => ({
     title: fixture.title,
@@ -199,9 +199,9 @@ export const dataTableExamples = (
 
 const facetedSource = (
   id: FacetedDocId,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat',
 ): string => {
-  const stylex = renderer === 'stylex'
+  const stylex = renderer !== 'tailwind'
   const mod = `@/${stylex ? 'stylex' : 'ui'}`
   const needsRows = id === 'menu' || id === 'action-bar'
   const needsBar = id === 'action-bar'
@@ -375,3 +375,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
 })`,
   })
 }
+
+export const dataTableExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, dataTableExamplesFor(renderer))

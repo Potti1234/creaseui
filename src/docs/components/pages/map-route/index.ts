@@ -42,5 +42,6 @@ mapRoute({ id: 'route', coordinates: [[11.576124, 48.137154], [11.577248, 48.142
     ],
     examples: mapRouteExamples('tailwind'),
     stylexExamples: mapRouteExamples('stylex'),
+    pleatExamples: mapRouteExamples('pleat'),
   },
 })

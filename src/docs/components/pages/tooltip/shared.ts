@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export interface TooltipTipSpec {
@@ -127,9 +128,9 @@ ${fixture.tips.map(tip => tipCall(tip, fixture, isStyleX, '    ')).join(',\n')}
 
 const emitApplication = (
   fixture: TooltipFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const base = isStyleX ? 'stylex' : 'ui'
   const usesIcon = fixture.tips.some(tip => tip.iconTrigger === true)
   const usesKbd = fixture.tips.some(tip => tip.kbd !== undefined)
@@ -192,15 +193,15 @@ ${fixture.tips
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Tooltip — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
 ${emitBody(fixture, isStyleX)}
   ]),
 })`,
   })
 }
 
-export const tooltipExamples = (
-  renderer: 'tailwind' | 'stylex',
+const tooltipExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   tooltipFixtures.map(fixture => ({
     title: fixture.title,
@@ -210,3 +211,8 @@ export const tooltipExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer),
   }))
+
+export const tooltipExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, tooltipExamplesFor(renderer))

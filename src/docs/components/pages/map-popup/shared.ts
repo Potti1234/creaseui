@@ -1,3 +1,5 @@
+import { pleatExamples } from '@/docs/components/pleat-source'
+import type { DocsExample } from '@/docs/components/page-definition'
 import { mapDocsExamples } from '@/docs/components/pages/map/source'
 export const mapPopupFixtures = [
   {
@@ -11,5 +13,11 @@ export const mapPopupFixtures = [
       'Anchor a popup anywhere on the map and reopen it from the application.',
   },
 ] as const
-export const mapPopupExamples = (renderer: 'tailwind' | 'stylex') =>
-  mapDocsExamples('map-popup', mapPopupFixtures, renderer)
+const mapPopupExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+) => mapDocsExamples('map-popup', mapPopupFixtures, renderer)
+
+export const mapPopupExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, mapPopupExamplesFor(renderer))

@@ -1,6 +1,6 @@
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   dataTableFixtures,
   docStatusOptions,
@@ -65,7 +65,7 @@ const columns = (
   {
     key: 'amount',
     header: rtl ? 'المبلغ' : 'Amount',
-    layoutStyle: styles.amount as ComponentLayoutStyle,
+    align: 'right',
     cell: row => `$${row.amount.toFixed(2)}`,
     sortValue: row => row.amount,
   },
@@ -192,7 +192,7 @@ const docsActionBar = <Msg>(
   )
 }
 
-export const dataTableStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const dataTableStyleXPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

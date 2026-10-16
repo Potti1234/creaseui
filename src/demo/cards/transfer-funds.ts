@@ -194,7 +194,13 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                         variant: 'ghost',
                         size: 'icon',
                         class: 'size-8 bg-muted',
-                        children: [Icon.icon('x', {}, h)],
+                        children: [
+                          Icon.icon('x', {}, h),
+                          h.span(
+                            [h.Class('sr-only')],
+                            ['Close Transfer Funds'],
+                          ),
+                        ],
                       },
                       h,
                     ),
@@ -211,7 +217,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
             children: [
               fieldGroup(
                 {
-                  class: 'gap-[21px]',
+                  class: 'gap-5.25',
                   children: [
                     field(
                       {
@@ -256,7 +262,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                         children: [
                           fieldLabel(
                             {
-                              for: 'transfer-funds-from-account',
+                              for: 'transfer-funds-from-account-button',
                               children: ['From Account'],
                             },
                             h,
@@ -285,7 +291,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                         children: [
                           fieldLabel(
                             {
-                              for: 'transfer-funds-to-account',
+                              for: 'transfer-funds-to-account-button',
                               children: ['To Account'],
                             },
                             h,

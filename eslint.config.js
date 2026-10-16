@@ -1,6 +1,7 @@
 import tseslint from 'typescript-eslint'
 import {
   constrainedStylex,
+  pleat as creasePleat,
   stylex as creaseStylex,
   tailwind as creaseTailwind,
 } from '@creaseui/lint'
@@ -58,6 +59,21 @@ const stylexPropLimits = {
       'Use a semantic cursor token from interaction-tokens.stylex.const.ts.',
   },
 }
+
+const pleatPropLimits = Object.fromEntries(
+  Object.entries(stylexPropLimits).map(([property, spec]) => [
+    property,
+    {
+      ...spec,
+      reason: spec.reason
+        .replace(
+          'interaction-tokens.stylex.const.ts',
+          'src/pleat/interaction-tokens.ts',
+        )
+        .replace('tokens.stylex.ts', 'src/pleat/tokens.ts'),
+    },
+  ]),
+)
 
 export default tseslint.config(
   {
@@ -142,6 +158,29 @@ export default tseslint.config(
     propLimits: {},
     severity: 'warn',
     styleResolution: stylexStyleResolution,
+  }),
+  creasePleat({
+    files: [
+      'src/pleat/**/*.{ts,tsx}',
+      'src/demo/board-pleat.{ts,tsx}',
+      'src/demo/pleat-cards/**/*.{ts,tsx}',
+      'src/demo/blocks-pleat/**/*.{ts,tsx}',
+      'src/demo/charts-pleat/**/*.{ts,tsx}',
+    ],
+    propLimits: pleatPropLimits,
+    tokenFiles: [
+      '/foundations',
+      '/tokens',
+      '/theme',
+      '/markers',
+      '/reset',
+      '/composition/',
+    ],
+  }),
+  creasePleat({
+    files: ['src/docs/components/pages/**/pleat.{ts,tsx}'],
+    propLimits: {},
+    severity: 'warn',
   }),
   constrainedStylex({ files: ['src/demo/board-constrained.{ts,tsx}'] }),
 )

@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type ChatReasoningFixture = Readonly<{
@@ -82,6 +83,7 @@ import { taggedStruct } from 'foldkit/schema'
 import { className } from '@/stylex/style'
 
 const styles = stylex.create({
+  shell: { alignItems: 'flex-start', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   page: { display: 'flex', flexDirection: 'column', gap: '0.5rem', maxWidth: '36rem', width: '100%' },
   message: { display: 'flex', flexDirection: 'column', gap: '0.5rem' },
   reply: { color: 'var(--foreground)', fontSize: '0.875rem', lineHeight: '1.5rem' },
@@ -89,9 +91,9 @@ const styles = stylex.create({
 
 const reasoningSource = (
   fixture: ChatReasoningFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const componentModule = isStyleX
     ? '@/stylex/chat-reasoning'
     : '@/ui/chat-reasoning'
@@ -177,7 +179,7 @@ export type Message = typeof Message.Type`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Chat Reasoning — ${fixture.title}',
   body: h.main(
-    [h.Class('flex min-h-screen items-start justify-center p-8')],
+    [h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-start justify-center p-8'"})],
     [
       ${viewBody.split('\n').join('\n      ')},
     ],
@@ -186,8 +188,8 @@ export type Message = typeof Message.Type`,
   })
 }
 
-export const chatReasoningExamples = (
-  renderer: 'tailwind' | 'stylex',
+const chatReasoningExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   chatReasoningFixtures.map((fixture, index) => ({
     title: fixture.title,
@@ -195,3 +197,8 @@ export const chatReasoningExamples = (
     code: reasoningSource(fixture, renderer),
     ...(index === 0 ? {} : {}),
   }))
+
+export const chatReasoningExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, chatReasoningExamplesFor(renderer))

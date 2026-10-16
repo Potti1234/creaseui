@@ -21,5 +21,6 @@ export const switchPage = authoredPage({
     keyboard: [['Space', 'Toggles the focused switch.']],
     examples: switchExamples('tailwind'),
     stylexExamples: switchExamples('stylex'),
+    pleatExamples: switchExamples('pleat'),
   },
 })

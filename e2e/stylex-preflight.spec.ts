@@ -197,6 +197,10 @@ test.describe('StyleX without preflight', () => {
       await expectIndependent(page)
       await page.getByRole('combobox').press('Escape')
       await expect(page.getByRole('option', { name: 'Profile' })).toBeHidden()
+      // Like shadcn's CommandDialog, Escape in the command closes the dialog.
+      await expect(page.locator('dialog')).toBeHidden()
+      await page.getByRole('button', { name: 'Open command dialog' }).click()
+      await expect(page.getByRole('dialog')).toBeVisible()
       await page
         .getByRole('button', { name: 'Close', exact: true })
         .press('Enter')

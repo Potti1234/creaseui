@@ -18,5 +18,6 @@ export const separatorPage = authoredPage({
       'Keep decorative separators out of the accessibility tree. Use decorative: false only when the boundary itself conveys organization.',
     examples: separatorExamples('tailwind'),
     stylexExamples: separatorExamples('stylex'),
+    pleatExamples: separatorExamples('pleat'),
   },
 })

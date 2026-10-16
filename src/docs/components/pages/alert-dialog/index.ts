@@ -27,5 +27,6 @@ export const alertDialogPage = authoredPage({
     ],
     examples: alertDialogExamples('tailwind'),
     stylexExamples: alertDialogExamples('stylex'),
+    pleatExamples: alertDialogExamples('pleat'),
   },
 })

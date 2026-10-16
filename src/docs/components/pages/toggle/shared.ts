@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export interface ToggleItem {
@@ -268,9 +269,9 @@ const emitStyles = (fixture: ToggleFixture): string => {
 
 const emitApplication = (
   fixture: ToggleFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const stylesBlock = isStyleX
     ? `\n\nconst styles = stylex.create({\n${emitStyles(fixture)}\n})`
     : ''
@@ -283,15 +284,15 @@ const emitApplication = (
     update: emitUpdate(fixture),
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Toggle — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
 ${emitBody(fixture, isStyleX)}
   ]),
 })`,
   })
 }
 
-export const toggleExamples = (
-  renderer: 'tailwind' | 'stylex',
+const toggleExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   toggleFixtures.map(fixture => ({
     title: fixture.title,
@@ -301,3 +302,8 @@ export const toggleExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer),
   }))
+
+export const toggleExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, toggleExamplesFor(renderer))

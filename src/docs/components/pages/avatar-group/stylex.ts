@@ -1,7 +1,7 @@
 import * as stylex from '@stylexjs/stylex'
 import type { HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import type { ComponentLayoutStyle } from '@/stylex/contracts'
 import {
   avatarGroupFixtures,
@@ -152,7 +152,7 @@ const statusSectionView = <Msg>(h: HtmlBuilder<Msg>) =>
     ),
   )
 
-export const avatarGroupStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const avatarGroupStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   _model: unknown,
   onMessageJson: (messageJson: string) => Msg,

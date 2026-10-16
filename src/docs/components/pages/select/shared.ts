@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type SelectItem = Readonly<{
@@ -17,7 +18,7 @@ export type SelectFixture = Readonly<{
   items: ReadonlyArray<SelectItem>
   groups: boolean
   triggerClass?: string
-  triggerWidthStylex?: string
+  triggerWidthClass?: string
   isDisabled?: boolean
   rtl?: boolean
 }>
@@ -117,7 +118,7 @@ export const selectFixtures: Readonly<
     items: fruitItems,
     groups: true,
     triggerClass: wide,
-    triggerWidthStylex: 'triggerWide',
+    triggerWidthClass: 'triggerWide',
   },
   {
     title: 'Align Item With Trigger',
@@ -127,7 +128,7 @@ export const selectFixtures: Readonly<
     items: alignItems,
     groups: false,
     triggerClass: wide,
-    triggerWidthStylex: 'triggerWide',
+    triggerWidthClass: 'triggerWide',
   },
   {
     title: 'Groups',
@@ -137,7 +138,7 @@ export const selectFixtures: Readonly<
     items: groupedItems,
     groups: true,
     triggerClass: wide,
-    triggerWidthStylex: 'triggerWide',
+    triggerWidthClass: 'triggerWide',
   },
   {
     title: 'Scrollable',
@@ -147,7 +148,7 @@ export const selectFixtures: Readonly<
     items: timezoneItems,
     groups: true,
     triggerClass: 'w-full max-w-64',
-    triggerWidthStylex: 'triggerWider',
+    triggerWidthClass: 'triggerWider',
   },
   {
     title: 'Disabled',
@@ -159,7 +160,7 @@ export const selectFixtures: Readonly<
     ),
     groups: true,
     triggerClass: wide,
-    triggerWidthStylex: 'triggerWide',
+    triggerWidthClass: 'triggerWide',
     isDisabled: true,
   },
   {
@@ -174,7 +175,7 @@ export const selectFixtures: Readonly<
     ],
     groups: true,
     triggerClass: wide,
-    triggerWidthStylex: 'triggerWide',
+    triggerWidthClass: 'triggerWide',
   },
   {
     title: 'RTL',
@@ -184,7 +185,7 @@ export const selectFixtures: Readonly<
     items: rtlItems,
     groups: true,
     triggerClass: 'w-32',
-    triggerWidthStylex: 'triggerSmall',
+    triggerWidthClass: 'triggerSmall',
     rtl: true,
   },
 ]
@@ -240,7 +241,7 @@ const emitSource = (fixture: SelectFixture, isStyleX: boolean): string => {
     direction: 'rtl',`
         : ''
     }
-    ${isStyleX ? `triggerLayoutStyle: styles.${fixture.triggerWidthStylex ?? 'triggerWide'},` : `triggerClass: '${fixture.triggerClass ?? wide}',`}${
+    ${isStyleX ? `triggerLayoutStyle: styles.${fixture.triggerWidthClass ?? 'triggerWide'},` : `triggerClass: '${fixture.triggerClass ?? wide}',`}${
       fixture.kind === 'alignItem'
         ? `
     position: model.alignItem ? 'item-aligned' : 'popper',`
@@ -304,6 +305,7 @@ ${itemsSource(fixture.items)}
 ${
   isStyleX
     ? `const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   triggerWide: { width: '100%', maxWidth: '12rem' },
   triggerWider: { width: '100%', maxWidth: '16rem' },
   triggerSmall: { width: '8rem' },
@@ -380,15 +382,15 @@ export type Message = typeof Message.Type`,
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Select — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
 ${body},
   ]),
 })`,
   })
 }
 
-export const selectExamples = (
-  renderer: 'tailwind' | 'stylex',
+const selectExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   selectFixtures.map(fixture => ({
     title: fixture.title,
@@ -396,5 +398,10 @@ export const selectExamples = (
       ? {}
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
-    code: emitSource(fixture, renderer === 'stylex'),
+    code: emitSource(fixture, renderer !== 'tailwind'),
   }))
+
+export const selectExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, selectExamplesFor(renderer))

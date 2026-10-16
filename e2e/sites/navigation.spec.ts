@@ -1,5 +1,15 @@
 import { expect, test } from '@playwright/test'
 
+/* Mirror of RENDERER_ORDER in src/site/config.ts: each site's header links to
+   the next renderer in the cycle. */
+const COUNTERPART: Readonly<
+  Record<string, Readonly<{ label: string; port: number }>>
+> = {
+  tailwind: { label: 'StyleX', port: 4174 },
+  stylex: { label: 'Pleat', port: 4175 },
+  pleat: { label: 'Tailwind', port: 4173 },
+}
+
 for (const viewport of [
   { width: 1440, height: 1000 },
   { width: 390, height: 844 },
@@ -34,13 +44,10 @@ for (const viewport of [
           () => document.documentElement.scrollWidth <= innerWidth,
         ),
       ).toBe(true)
-      const other = info.project.name === 'stylex' ? 'Tailwind' : 'StyleX'
+      const other = COUNTERPART[info.project.name]!
       await expect(
-        page.getByRole('link', { name: `View this page in ${other}` }),
-      ).toHaveAttribute(
-        'href',
-        `http://127.0.0.1:${other === 'StyleX' ? '4174' : '4173'}${route}`,
-      )
+        page.getByRole('link', { name: `View this page in ${other.label}` }),
+      ).toHaveAttribute('href', `http://127.0.0.1:${other.port}${route}`)
       if (route === '/docs/components/button') {
         await page.getByRole('button', { name: 'Switch to dark mode' }).click()
         await expect(page.locator('html')).toHaveClass(/dark/)
@@ -55,9 +62,9 @@ test('client navigation and reload keep the selected site', async ({
   page,
 }, info) => {
   await page.goto('/docs/components/button?test=1#installation')
-  const other = info.project.name === 'stylex' ? 'Tailwind' : 'StyleX'
+  const other = COUNTERPART[info.project.name]!
   await expect(
-    page.getByRole('link', { name: `View this page in ${other}` }),
+    page.getByRole('link', { name: `View this page in ${other.label}` }),
   ).toHaveAttribute(
     'href',
     new RegExp('/docs/components/button\\?test=1#installation$'),

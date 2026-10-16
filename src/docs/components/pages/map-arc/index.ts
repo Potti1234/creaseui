@@ -42,5 +42,6 @@ mapArc({ id: 'connection', from: [11.576124, 48.137154], to: [2.3522, 48.8566], 
     ],
     examples: mapArcExamples('tailwind'),
     stylexExamples: mapArcExamples('stylex'),
+    pleatExamples: mapArcExamples('pleat'),
   },
 })

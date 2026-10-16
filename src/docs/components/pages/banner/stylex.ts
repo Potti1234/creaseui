@@ -2,7 +2,7 @@ import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import { bannerFixtures } from '@/docs/components/pages/banner/shared'
 import * as Banner from '@/stylex/banner'
 import * as Button from '@/stylex/button'
@@ -60,7 +60,7 @@ const detailChildren = <Msg>(h: HtmlBuilder<Msg>): Html =>
     ],
   )
 
-export const bannerStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const bannerStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

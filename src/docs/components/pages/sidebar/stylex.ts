@@ -6,7 +6,7 @@ import { Option } from 'effect'
 import * as Mount from 'foldkit/mount'
 import { ObserveDocumentationHover } from './hover'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   sidebarFixtures,
   type SidebarFixtureKind,
@@ -1013,7 +1013,7 @@ const staticPanel = <Msg>(
   )
 }
 
-export const sidebarStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const sidebarStyleXPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   send: (json: string) => Msg,

@@ -5,7 +5,7 @@ import * as stylex from '@stylexjs/stylex'
 import type { EChartsOption } from 'echarts/types/dist/shared'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import type { ComponentLayoutStyle } from '@/stylex/contracts'
 import {
   chartData,
@@ -169,7 +169,7 @@ const table = <Msg>(h: HtmlBuilder<Msg>) =>
 const frame = <Msg>(children: ReadonlyArray<Html>, h: HtmlBuilder<Msg>): Html =>
   h.div([h.Class(stylex.props(styles.frame).className ?? '')], children)
 
-export const chartStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const chartStyleXPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

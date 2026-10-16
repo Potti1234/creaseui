@@ -2,7 +2,7 @@ import { Schema as S } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   markdownFixtures,
   type MarkdownFixture,
@@ -45,7 +45,7 @@ const renderFixture = <Msg>(
     h,
   )
 
-export const markdownStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const markdownStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

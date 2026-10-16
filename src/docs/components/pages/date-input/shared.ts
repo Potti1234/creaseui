@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type DateInputFixture = Readonly<{
@@ -56,19 +57,23 @@ export const dateInputFixtures: ReadonlyArray<DateInputFixture> = [
   },
 ]
 
-const imports = (renderer: 'tailwind' | 'stylex', extra: string): string =>
+const imports = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+  extra: string,
+): string =>
   `import { Option, Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import * as Calendar from 'foldkit/calendar'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-import * as DateInput from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/date-input'${extra}`
+import * as DateInput from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/date-input'${extra}`
 
 const stylexPreamble = `
 import * as stylex from '@stylexjs/stylex'
 import { className } from '@/stylex/style'
 
 const styles = stylex.create({
+  shell: { alignItems: 'flex-start', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   stack: {
     display: 'grid',
     gap: '1rem',
@@ -109,9 +114,9 @@ const singleUpdate = `export const update = (model: Model, message: Message): Up
 
 const singleSource = (
   fixture: DateInputFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const isClearable = fixture.example === 'DateInputClearable'
   const isDescription = fixture.example === 'DateInputWithDescription'
   const inputCall = `DateInput.dateInput({
@@ -152,7 +157,7 @@ export type Model = typeof Model.Type`,
     update: singleUpdate,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'DateInput — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-start justify-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-start justify-center p-8'"})], [
     h.div([${stackClass(isStyleX)}], [${
       isClearable || isDescription
         ? `
@@ -170,9 +175,9 @@ export type Model = typeof Model.Type`,
 
 const constraintsSource = (
   fixture: DateInputFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   return foldkitApplication({
     title: `DateInput — ${fixture.title}`,
     imports: imports(renderer, isStyleX ? stylexPreamble : ''),
@@ -200,7 +205,7 @@ const WINDOW_LABEL = \`\${MONTH_NAME} 8 – 21, \${String(TODAY.year)}\``,
     update: singleUpdate,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'DateInput — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-start justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-start justify-center p-8'"})], [
     h.div([${stackClass(isStyleX)}], [
       h.p([${supportingClass(isStyleX)}], [
         Option.match(model.dateInput.value, {
@@ -223,9 +228,9 @@ const WINDOW_LABEL = \`\${MONTH_NAME} 8 – 21, \${String(TODAY.year)}\``,
 
 const formatsSource = (
   fixture: DateInputFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   return foldkitApplication({
     title: `DateInput — ${fixture.title}`,
     imports: imports(renderer, isStyleX ? stylexPreamble : ''),
@@ -277,7 +282,7 @@ const FORMATS = [
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'DateInput — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-start justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-start justify-center p-8'"})], [
     h.div([${stackClass(isStyleX)}], [
       h.p([${supportingClass(isStyleX)}], [
         'The same committed date, displayed with different formats.',
@@ -298,9 +303,9 @@ const FORMATS = [
 
 const validationSource = (
   fixture: DateInputFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   return foldkitApplication({
     title: `DateInput — ${fixture.title}`,
     imports: imports(renderer, isStyleX ? stylexPreamble : ''),
@@ -344,7 +349,7 @@ const FIELDS = [
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'DateInput — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-start justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-start justify-center p-8'"})], [
     h.div([${stackClass(isStyleX)}], [
       ...FIELDS.map((field, i) =>
         DateInput.dateInput({
@@ -362,7 +367,7 @@ const FIELDS = [
 
 const dateInputSource = (
   fixture: DateInputFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   switch (fixture.kind) {
     case 'constraints':
@@ -376,8 +381,8 @@ const dateInputSource = (
   }
 }
 
-export const dateInputExamples = (
-  renderer: 'tailwind' | 'stylex',
+const dateInputExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   dateInputFixtures.map((fixture, index) => ({
     title: fixture.title,
@@ -388,3 +393,8 @@ export const dateInputExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: dateInputSource(fixture, renderer),
   }))
+
+export const dateInputExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, dateInputExamplesFor(renderer))

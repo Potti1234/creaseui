@@ -6,6 +6,7 @@ import { Listbox as ListboxPrimitive } from '@foldkit/ui'
 import { describe, it } from 'vitest'
 
 import * as StyleXSelect from '@/stylex/select'
+import { AnchorThemedListbox } from '@/lib/overlay-boundary'
 import * as TailwindSelect from '@/ui/select'
 
 /**
@@ -153,13 +154,25 @@ const option = (name: string) => Scene.role('option', { name })
 const selectValue = Scene.selector('[data-slot="select-value"]')
 const itemIndicator = Scene.all.selector('[data-slot="select-item-indicator"]')
 
+const anchorListboxName = (themed: boolean) =>
+  themed ? 'AnchorThemedListbox' : 'AnchorListbox'
+
 // An opened popup renders two pending mounts; a model injected already-open
 // via Scene.given has no FocusItems command to settle, only these mounts.
-const resolveOpenMounts = () => [
-  Scene.Mount.resolve(
-    ListboxPrimitive.AnchorListbox,
-    ListboxPrimitive.Message.CompletedAnchorListbox(),
-  ),
+/* Mount.mapMessage lifts are invisible to Scene's boundary folding, so a
+   themed Mount is resolved with the already-lifted parent Message (the same
+   pattern application.scene.test.ts uses for MountChart). The Completed*
+   result is a no-op in the primitive update. */
+const resolveOpenMountsFor = (themed: boolean) => () => [
+  themed
+    ? Scene.Mount.resolve(AnchorThemedListbox, {
+        _tag: 'GotSelect' as const,
+        message: ListboxPrimitive.Message.CompletedAnchorListbox(),
+      })
+    : Scene.Mount.resolve(
+        ListboxPrimitive.AnchorListbox,
+        ListboxPrimitive.Message.CompletedAnchorListbox(),
+      ),
   Scene.Mount.resolve(
     ListboxPrimitive.PortalListboxBackdrop,
     ListboxPrimitive.Message.CompletedPortalListboxBackdrop(),
@@ -168,22 +181,22 @@ const resolveOpenMounts = () => [
 
 // An in-scene open additionally leaves a FocusItems command behind;
 // every test that opens the popup settles it before the next interaction.
-const resolveOpenedPopup = () => [
+const resolveOpenedPopupFor = (themed: boolean) => () => [
   Scene.Command.resolve(
     ListboxPrimitive.FocusItems,
     ListboxPrimitive.Message.CompletedFocusItems(),
   ),
-  ...resolveOpenMounts(),
+  ...resolveOpenMountsFor(themed)(),
 ]
 
 // Closing emits a FocusButton command and ends the two popup mounts.
-const acknowledgeClosedPopup = () => [
+const acknowledgeClosedPopupFor = (themed: boolean) => () => [
   Scene.Command.resolve(
     ListboxPrimitive.FocusButton,
     ListboxPrimitive.Message.CompletedFocusButton(),
   ),
   Scene.Mount.expectEnded(
-    { name: 'AnchorListbox' },
+    { name: anchorListboxName(themed) },
     { name: 'PortalListboxBackdrop' },
   ),
 ]
@@ -224,6 +237,10 @@ type ViewOverrides = Readonly<
 
 const verifyRenderer = (name: string, Select: SelectModule) => {
   describe(`${name} Select (Base UI port)`, () => {
+    const themed = name === 'Tailwind'
+    const resolveOpenMounts = resolveOpenMountsFor(themed)
+    const resolveOpenedPopup = resolveOpenedPopupFor(themed)
+    const acknowledgeClosedPopup = acknowledgeClosedPopupFor(themed)
     const update = makeUpdate(Select)
 
     const view =
@@ -571,7 +588,7 @@ const verifyRenderer = (name: string, Select: SelectModule) => {
           Scene.expect(listbox).toBeAbsent(),
           Scene.Command.expectNone(),
           Scene.Mount.expectEnded(
-            { name: 'AnchorListbox' },
+            { name: anchorListboxName(themed) },
             { name: 'PortalListboxBackdrop' },
           ),
         )

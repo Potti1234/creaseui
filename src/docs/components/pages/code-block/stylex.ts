@@ -3,7 +3,7 @@ import { Schema as S } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   codeBlockFixtures,
   type CodeBlockFixture,
@@ -68,7 +68,7 @@ const renderFixture = <Msg>(
   )
 }
 
-export const codeBlockStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const codeBlockStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

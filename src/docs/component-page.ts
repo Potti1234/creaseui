@@ -345,7 +345,7 @@ export type ComponentPageConfig<Msg> = Readonly<{
   apiDescription?: string
   apiEntries: ReadonlyArray<ApiEntry>
   sidebarScrolled: Msg
-  renderer: 'tailwind' | 'stylex'
+  renderer: 'tailwind' | 'stylex' | 'pleat'
 }>
 
 const SIDEBAR_SCROLL_KEY = 'creaseui-docs-sidebar-scroll'

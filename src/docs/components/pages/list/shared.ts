@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 export type ListExampleKind =
@@ -149,9 +150,12 @@ const viewBody = (fixture: ListFixture): string => {
     )`
 }
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = listFixtures[index] ?? listFixtures[0]
-  const base = renderer === 'stylex' ? 'stylex' : 'ui'
+  const base = renderer !== 'tailwind' ? 'stylex' : 'ui'
   const imports: string[] = []
   if (fixture.kind === 'messageList') {
     imports.push(
@@ -169,8 +173,8 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
   })
 }
 
-export const listExamples = (
-  renderer: 'tailwind' | 'stylex',
+const listExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   listFixtures.map((fixture, index) => ({
     title: fixture.title,
@@ -179,3 +183,8 @@ export const listExamples = (
       : { description: fixture.description }),
     code: source(index, renderer),
   }))
+
+export const listExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, listExamplesFor(renderer))

@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import {
   foldkitApplication,
   staticComponentApplication,
@@ -112,7 +113,9 @@ const mutedCardSx = (children: string): string =>
             ${children},
           ])`
 
-const emitShowcase = (renderer: 'tailwind' | 'stylex'): string => {
+const emitShowcase = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const supporting = renderer === 'tailwind' ? supportingTw : supportingSx
   const body = renderer === 'tailwind' ? bodyTw : bodySx
   const card = renderer === 'tailwind' ? mutedCardTw : mutedCardSx
@@ -162,14 +165,17 @@ const emitShowcase = (renderer: 'tailwind' | 'stylex'): string => {
       ] }, h)`
 }
 
-const emitLiveRegion = (renderer: 'tailwind' | 'stylex'): string => {
-  const mod = renderer === 'stylex' ? 'stylex' : 'ui'
+const emitLiveRegion = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
+  const mod = renderer !== 'tailwind' ? 'stylex' : 'ui'
   const supporting = renderer === 'tailwind' ? supportingTw : supportingSx
   const stylesSource =
-    renderer === 'stylex'
+    renderer !== 'tailwind'
       ? `import * as stylex from '@stylexjs/stylex'
 
 const styles = stylex.create({
+  shell: { alignItems: 'flex-start', display: 'flex', flexDirection: 'column', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   shellWrap: {
     alignItems: 'flex-start',
     display: 'flex',
@@ -195,7 +201,7 @@ const styles = stylex.create({
               ])`
   const wrapClass =
     renderer === 'tailwind'
-      ? `h.Class('flex min-h-screen flex-col items-start justify-center p-8')`
+      ? `h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen flex-col items-start justify-center p-8'"})`
       : `h.Class(stylex.props(styles.shellWrap).className ?? '')`
   return foldkitApplication({
     title: 'VisuallyHidden — Live Region',
@@ -248,7 +254,9 @@ export type Message = typeof Message.Type`,
   })
 }
 
-const emitHeading = (renderer: 'tailwind' | 'stylex'): string => {
+const emitHeading = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const supporting = renderer === 'tailwind' ? supportingTw : supportingSx
   const body = renderer === 'tailwind' ? bodyTw : bodySx
   const card = renderer === 'tailwind' ? mutedCardTw : mutedCardSx
@@ -267,7 +275,9 @@ const emitHeading = (renderer: 'tailwind' | 'stylex'): string => {
       ] }, h)`
 }
 
-const emitSupplementary = (renderer: 'tailwind' | 'stylex'): string => {
+const emitSupplementary = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const supporting = renderer === 'tailwind' ? supportingTw : supportingSx
   const body = renderer === 'tailwind' ? bodyTw : bodySx
   const display = renderer === 'tailwind' ? displayTw : displaySx
@@ -297,7 +307,7 @@ const emitSupplementary = (renderer: 'tailwind' | 'stylex'): string => {
 
 const emitBody = (
   fixture: VisuallyHiddenFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   switch (fixture.kind) {
     case 'showcase':
@@ -339,14 +349,18 @@ const stylexStylesFor = (kind: VisuallyHiddenFixture['kind']): string => {
   return `import * as stylex from '@stylexjs/stylex'
 
 const styles = stylex.create({
+  shell: { alignItems: 'flex-start', display: 'flex', flexDirection: 'column', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
 ${entries.join(',\n')},
 })`
 }
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = visuallyHiddenFixtures[index] ?? visuallyHiddenFixtures[0]
   if (fixture.kind === 'liveRegion') return emitLiveRegion(renderer)
-  const mod = renderer === 'stylex' ? 'stylex' : 'ui'
+  const mod = renderer !== 'tailwind' ? 'stylex' : 'ui'
   const componentImports = [
     `import * as Stack from '@/${mod}/stack'`,
     fixture.kind === 'heading' ? `import * as Badge from '@/${mod}/badge'` : '',
@@ -368,7 +382,7 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
         : fixture.kind === 'supplementary'
           ? statsSource
           : '',
-    renderer === 'stylex' ? stylexStylesFor(fixture.kind) : '',
+    renderer !== 'tailwind' ? stylexStylesFor(fixture.kind) : '',
   ]
     .filter(Boolean)
     .join('\n')
@@ -382,8 +396,8 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
   })
 }
 
-export const visuallyHiddenExamples = (
-  renderer: 'tailwind' | 'stylex',
+const visuallyHiddenExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   visuallyHiddenFixtures.map((fixture, index) => ({
     title: fixture.title,
@@ -392,3 +406,8 @@ export const visuallyHiddenExamples = (
       : { description: fixture.description }),
     code: source(index, renderer),
   }))
+
+export const visuallyHiddenExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, visuallyHiddenExamplesFor(renderer))

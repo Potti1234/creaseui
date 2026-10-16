@@ -24,5 +24,6 @@ export const nativeSelectPage = authoredPage({
     ],
     examples: nativeSelectExamples('tailwind'),
     stylexExamples: nativeSelectExamples('stylex'),
+    pleatExamples: nativeSelectExamples('pleat'),
   },
 })

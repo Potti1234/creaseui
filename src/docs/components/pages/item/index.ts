@@ -19,8 +19,9 @@ export const itemPage = authoredPage({
     styling:
       'Use li inside semantic collections and article for standalone feed entries. Variants change surface emphasis without changing document meaning.',
     accessibility:
-      'ItemGroup supplies list semantics and Item supplies listitem semantics. Preserve a useful title even when media is decorative.',
+      'ItemGroup supplies list and list-item semantics; a standalone Item keeps its native element semantics. Preserve a useful title even when media is decorative.',
     examples: itemExamples('tailwind'),
     stylexExamples: itemExamples('stylex'),
+    pleatExamples: itemExamples('pleat'),
   },
 })

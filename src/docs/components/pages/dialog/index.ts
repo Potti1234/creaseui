@@ -26,5 +26,6 @@ export const dialogPage = authoredPage({
     ],
     examples: dialogExamples('tailwind'),
     stylexExamples: dialogExamples('stylex'),
+    pleatExamples: dialogExamples('pleat'),
   },
 })

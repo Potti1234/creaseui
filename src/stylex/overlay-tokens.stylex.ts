@@ -2,6 +2,7 @@ import * as stylex from '@stylexjs/stylex'
 
 import { complexTokens } from './complex-tokens.stylex'
 import { interactionTokens } from './interaction-tokens.stylex.const'
+import { foundationTokens } from './foundations-tokens.stylex'
 import { tokens } from './tokens.stylex'
 
 /** Canonical roles shared by dialogs, menus, pickers, and transient feedback. */
@@ -190,6 +191,17 @@ export const overlayStyles = stylex.create({
     },
     transitionTimingFunction: interactionTokens.easingStandard,
     zIndex: 50,
+  },
+  /* Menus, popovers, selects and comboboxes: shadcn `rounded-md bg-popover
+     shadow-md`. Dialogs keep the larger panel radius. */
+  /* Dialogs and sheets: shadcn `shadow-lg`. */
+  modal: {
+    boxShadow: foundationTokens.shadowLg,
+  },
+  floating: {
+    borderRadius: tokens.controlRadius,
+    backgroundColor: foundationTokens.popover,
+    boxShadow: foundationTokens.shadowMd,
   },
   panel: {
     borderColor: tokens.border,

@@ -3,7 +3,7 @@ import { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as stylex from '@stylexjs/stylex'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   badgeToneVariant,
   itemLabels,
@@ -176,7 +176,7 @@ const frame = <Msg>(
   }
 }
 
-export const overflowListStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const overflowListStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

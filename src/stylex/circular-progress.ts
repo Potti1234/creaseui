@@ -51,8 +51,8 @@ const styles = stylex.create({
   },
   track: { fill: 'none' },
   trackAccent: { stroke: foundationTokens.primarySoft20 },
-  trackSuccess: { stroke: complexTokens.chart2Soft20 },
-  trackWarning: { stroke: complexTokens.chart4Soft20 },
+  trackSuccess: { stroke: complexTokens.successSoft20 },
+  trackWarning: { stroke: complexTokens.warningSoft20 },
   trackError: { stroke: complexTokens.destructiveSoft20 },
   trackNeutral: { stroke: tokens.muted },
   fill: {

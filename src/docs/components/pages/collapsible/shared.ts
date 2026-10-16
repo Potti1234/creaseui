@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import {
   controlledBooleanApplication,
   foldkitApplication,
@@ -82,16 +83,18 @@ export const fileTree = [
   { name: 'public', items: [{ name: 'favicon.ico' }, { name: 'logo.svg' }] },
 ] as const
 
-const basicSource = (renderer: 'tailwind' | 'stylex'): string =>
+const basicSource = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string =>
   foldkitApplication({
     title: 'Collapsible — card panel',
     imports: `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-import * as Button from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/button'
-import * as Card from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/card'
-import * as Collapsible from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/collapsible'
+import * as Button from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/button'
+import * as Card from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/card'
+import * as Collapsible from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/collapsible'
 import * as Icon from '@/lib/icon'`,
     model: `export const Model = S.Struct({ isOpen: S.Boolean })
 export type Model = typeof Model.Type`,
@@ -126,17 +129,19 @@ export type Message = typeof Message.Type`,
 })`,
   })
 
-const settingsSource = (renderer: 'tailwind' | 'stylex'): string =>
+const settingsSource = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string =>
   foldkitApplication({
     title: 'Collapsible — settings panel',
     imports: `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-import * as Card from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/card'
-import * as Collapsible from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/collapsible'
+import * as Card from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/card'
+import * as Collapsible from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/collapsible'
 import * as Icon from '@/lib/icon'
-import * as Input from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/input'`,
+import * as Input from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/input'`,
     model: `export const Model = S.Struct({
   isOpen: S.Boolean,
   top: S.String,
@@ -186,14 +191,16 @@ export type Message = typeof Message.Type`,
 })`,
   })
 
-const treeSource = (renderer: 'tailwind' | 'stylex'): string =>
+const treeSource = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string =>
   foldkitApplication({
     title: 'Collapsible — file tree',
     imports: `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-import * as Collapsible from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/collapsible'
+import * as Collapsible from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/collapsible'
 import * as Icon from '@/lib/icon'`,
     model: `export const Model = S.Struct({ open: S.Array(S.String) })
 export type Model = typeof Model.Type
@@ -239,15 +246,17 @@ export type Message = typeof Message.Type`,
 })`,
   })
 
-const rtlSource = (renderer: 'tailwind' | 'stylex'): string =>
+const rtlSource = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string =>
   foldkitApplication({
     title: 'Collapsible — RTL order card',
     imports: `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-import * as Button from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/button'
-import * as Collapsible from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/collapsible'
+import * as Button from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/button'
+import * as Collapsible from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/collapsible'
 import * as Icon from '@/lib/icon'`,
     model: `export const Model = S.Struct({ isOpen: S.Boolean })
 export type Model = typeof Model.Type`,
@@ -297,7 +306,7 @@ export type Message = typeof Message.Type`,
 
 const singleSource = (
   fixture: CollapsibleFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string =>
   controlledBooleanApplication({
     componentName: 'Collapsible',
@@ -318,8 +327,8 @@ const singleSource = (
 }, h),`,
   })
 
-export const collapsibleExamples = (
-  renderer: 'tailwind' | 'stylex',
+const collapsibleExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   collapsibleFixtures.map(fixture => ({
     title: fixture.title,
@@ -338,3 +347,8 @@ export const collapsibleExamples = (
               ? rtlSource(renderer)
               : singleSource(fixture, renderer),
   }))
+
+export const collapsibleExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, collapsibleExamplesFor(renderer))

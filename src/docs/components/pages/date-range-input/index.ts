@@ -36,5 +36,6 @@ export const dateRangeInputPage = authoredPage({
       'Parent Model\n├── DateRangeInput child Model (range + pendingStart + Calendar + Popover)\n├── presets evaluated at render (getRange)\n└── ChangedValue OutMessage → parent domain state\n    ├── min/max/disabled dates + span caps live on the Model (init or reflectConstraints)\n    └── presets outside the window render disabled, not hidden',
     examples: dateRangeInputExamples('tailwind'),
     stylexExamples: dateRangeInputExamples('stylex'),
+    pleatExamples: dateRangeInputExamples('pleat'),
   },
 })

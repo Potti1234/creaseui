@@ -33,5 +33,6 @@ export const sheetPage = authoredPage({
     ],
     examples: sheetExamples('tailwind'),
     stylexExamples: sheetExamples('stylex'),
+    pleatExamples: sheetExamples('pleat'),
   },
 })

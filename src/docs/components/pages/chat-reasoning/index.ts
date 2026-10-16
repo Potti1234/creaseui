@@ -28,5 +28,6 @@ export const chatReasoningPage = authoredPage({
     ],
     examples: chatReasoningExamples('tailwind'),
     stylexExamples: chatReasoningExamples('stylex'),
+    pleatExamples: chatReasoningExamples('pleat'),
   },
 })

@@ -1,7 +1,7 @@
 // The StyleX build resolves this module to skin.stylex.ts.
 export const skin = {
   header: 'sticky top-0 z-40 border-b bg-background/95 backdrop-blur',
-  bar: 'mx-auto flex min-h-14 w-full max-w-[1400px] items-center gap-4 px-4 md:gap-6 md:px-8',
+  bar: 'mx-auto flex min-h-14 w-full max-w-[1400px] items-center gap-2 px-4 min-[400px]:gap-4 md:gap-6 md:px-8',
   brand: 'shrink-0 text-sm font-semibold',
   nav: 'hidden items-center gap-6 sm:flex',
   link: 'text-sm font-medium text-muted-foreground transition-colors hover:text-foreground',

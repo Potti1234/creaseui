@@ -1,7 +1,7 @@
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import { switchFixtures } from '@/docs/components/pages/switch/shared'
 import * as Field from '@/stylex/field'
 import * as Label from '@/stylex/label'
@@ -153,7 +153,7 @@ const choiceCard = <Msg>(
     h,
   )
 
-export const switchStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const switchStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

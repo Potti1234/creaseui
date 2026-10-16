@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type KbdKind =
@@ -268,10 +269,12 @@ const emitBody = (fixture: KbdFixture, isStyleX: boolean): string => {
           Tooltip.tooltip({
             model: model.tooltipA,
             toParentMessage: message => Message.GotTooltipAMessage({ message }),
-            trigger: Button.button({
-              variant: 'outline',
-              children: ['Save'],
-            }, h),
+            renderTrigger: attributes =>
+              Button.button({
+                buttonAttributes: attributes,
+                variant: 'outline',
+                children: ['Save'],
+              }, h),
             content: h.span(
               [h.Class(${cls('inline-flex items-center gap-1', 'tooltipContent')})],
               ['Save Changes ', Kbd.kbd({ children: ['S'] }, h)],
@@ -280,10 +283,12 @@ const emitBody = (fixture: KbdFixture, isStyleX: boolean): string => {
           Tooltip.tooltip({
             model: model.tooltipB,
             toParentMessage: message => Message.GotTooltipBMessage({ message }),
-            trigger: Button.button({
-              variant: 'outline',
-              children: ['Print'],
-            }, h),
+            renderTrigger: attributes =>
+              Button.button({
+                buttonAttributes: attributes,
+                variant: 'outline',
+                children: ['Print'],
+              }, h),
             content: h.span(
               [h.Class(${cls('inline-flex items-center gap-1', 'tooltipContent')})],
               [
@@ -353,15 +358,16 @@ const emitBody = (fixture: KbdFixture, isStyleX: boolean): string => {
 
 const emitApplication = (
   fixture: KbdFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const stylesBlock = isStyleX ? emitStyles(fixture) : ''
   const bodyStart = isStyleX
     ? `h.main([h.Class(stylex.props(styles.page).className ?? '')], [`
-    : `h.main([h.Class('flex min-h-screen items-center justify-center p-4')], [`
+    : `h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-4'"})], [`
   const pageStyle = isStyleX
     ? `const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '1rem' },
   page: { display: 'flex', minHeight: '100vh', alignItems: 'center', justifyContent: 'center', padding: '1rem' },${
     stylesBlock === ''
       ? ''
@@ -388,8 +394,8 @@ ${stylesBlock}`
   })
 }
 
-export const kbdExamples = (
-  renderer: 'tailwind' | 'stylex',
+const kbdExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   kbdFixtures.map(fixture => ({
     title: fixture.title,
@@ -399,3 +405,8 @@ export const kbdExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer),
   }))
+
+export const kbdExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, kbdExamplesFor(renderer))

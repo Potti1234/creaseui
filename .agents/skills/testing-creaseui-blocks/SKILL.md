@@ -196,3 +196,81 @@ Toasts die before the click→console round-trip completes. Arm a MutationObserv
   top-nav menus). Assert `[data-slot=hover-card]`/`[role=tooltip]` materializes in DOM;
   synthesize `pointerover` on the `*-trigger` WRAPPER only as a fallback (pointerenter
   doesn't bubble).
+
+## Triple-renderer preview servers (branch devin/pleat-renderer)
+
+- THREE preview servers run side by side on BUILT dist: `npx vite preview --mode tailwind` →
+  4173, `--mode stylex` → 4174, `--mode pleat` → 4175 (`vite preview` reads dist/{mode} from
+  disk per request — a server started before a rebuild still serves fresh files).
+- The header counterpart link cycles tailwind→stylex→pleat→tailwind preserving path+query:
+  pleat site shows "Tailwind ↗"→4173, stylex shows "Pleat ↗"→4175, tailwind shows "StyleX ↗"→4174.
+  (`src/site/config.ts` counterpartUrl maps localhost preview ports.)
+- Verify build freshness via dist asset markers (e.g. grep a token prefix like `crease-board-`
+  in dist/pleat/assets) — index.html mtime vs commit time can mislead; the build may embed
+  uncommitted changes and the footer shows `source <sha>+dirty`.
+
+## Computed-style probing beats pixel parity for pleat
+
+- `scripts/style-probe*.tmp.cjs` pattern: getComputedStyle on shared semantic hooks
+  (`data-slot` attrs, h1/h2/table) on BOTH origins and diff values — catches cascade bugs
+  that look like AA noise in pixel diffs (a page-wide 0.5-1.5% diff bbox can be a systemic
+  padding/margin loss, not AA).
+- Pleat emits runtime atom classes (`p<hash>`) into `document.adoptedStyleSheets` (NOT just
+  document.styleSheets) + shadow DOM sheets — enumerate both when auditing applied rules.
+- :has() gates to check on pleat ports: docs frames (`:has(popover-content)` overflow) and
+  the View Code toggle (`:has(~ .pm-code-toggle-scope:checked)` — marker class present on
+  the input but verify the gated RULE was actually emitted, not just the DOM contract).
+
+## Docs search (Ctrl+K) input quirks — worse than generic foldkit race
+
+- Ctrl+K opens #site-docs-search-dialog; the command input is FOCUSABLE but each typed char
+  can drop AND focus falls back to BODY after input events (re-render steals it).
+- The input's position MOVES with dialog state: ~tool_y 282 with a populated list, ~y360 in
+  the "no results" state — a click at the wrong y hits the scrim and CLOSES the dialog.
+  Get the live rect (`input.getBoundingClientRect()`, convert client→tool) before clicking.
+- Short prefixes are safer than full words: "acc" still matches Accordion; click the RESULT
+  row to navigate — don't fight the race for Enter.
+
+## Create-page picker popovers (shared stylex/pleat vs tailwind difference)
+
+- The customizer field rows (Style/Base Color/Radius/etc.) are Popover triggers. On tailwind
+  the panel portals to #foldkit-portal-root (fixed z:50 above the z:40 scrim → visible); on
+  stylex+pleat it renders INLINE inside `aside[overflow:hidden]` (z:30 context) → clipped AND
+  under the scrim → invisible/unclickable. Identical on both — shared regression, verify
+  against tailwind before attributing to pleat.
+
+## Ad-hoc playwright probes
+
+- Put `scripts/*.tmp.cjs` inside the repo so `require('playwright')` resolves repo
+  node_modules. `waitUntil:'load'` + `waitForFunction(innerText includes marker)` — never
+  `networkidle` (lazy iframes/charts keep the network busy on /blocks, /charts).
+- ImageMagick is installed: `compare -metric AE -fuzz 2% a.png b.png diff.png`;
+  `montage -font DejaVu-Sans` for labeled side-by-sides (helvetica is NOT available).
+- For interaction coverage, hook `page.on('pageerror')` + console 'error' BEFORE driving
+  clicks; load-time sweeps alone miss interaction-only failures.
+
+## Sweep-script traps (learned from a 121-page sweep)
+
+- NEVER click elements inside `main nav`/footer: every docs page ends with a
+  prev/next-component nav — a generic "pagination" probe navigates away and the
+  screenshot then shows the NEXT page (produces fake 25% diffs on ~80% of pages).
+  Scope interaction probes to `main > div` content or `data-slot` hooks, and
+  re-screenshot AFTER asserting current URL is still the target route.
+- Dev-server sweep speed: ~5s/page screenshot-only, ~13s/page with widget probes.
+- Map pages (`/docs/components/map*`): MapLibre canvas needs ~2-4s extra for remote
+  OpenFreeMap tiles; screenshot BEFORE tiles land gives false blank/tiny diffs.
+  Also: `previewLayout: 'full-bleed'` is the known padding-override pitfall —
+  verify the frame has padding:0 at ≥640px (media-variant atom vs unconditional
+  override atom ordering is where pleat cascade bugs hide).
+- `/blocks` floods console with ERR_INSUFFICIENT_RESOURCES (32 SPA iframes exceed
+  browser limits) on BOTH sites — browser resource limit, not an app error; verify
+  iframe content visually instead of trusting zero-console goals.
+- Generic "click first button/aria-haspopup" interaction probes pick wrong elements
+  on docs pages (examples have many buttons; first match is rarely THE trigger).
+  Probe by `data-slot="*-trigger"` + expected content slot, and when a widget
+  fails identically on stylex it's a selector problem, not a pleat bug.
+- OTP/number inputs reject letters — type digits when probing them.
+- The landing `/` page has no <main> element — collect()/marker code must tolerate
+  missing main or use document.body.
+- Run playwright from inside the repo dir (scripts/*.tmp.cjs) so require('playwright')
+  resolves; node -e also fails outside the repo.

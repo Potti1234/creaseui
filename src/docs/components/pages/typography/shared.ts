@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 export type TypographyFixture = Readonly<{
@@ -185,9 +186,12 @@ const styles = stylex.create({
 
 /** Emits the full Joke Tax article viewBody (dir=rtl swaps borders/padding to
  * inline-start via the same logical classes upstream uses). */
-const articleBody = (renderer: 'tailwind' | 'stylex', rtl: boolean): string => {
+const articleBody = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+  rtl: boolean,
+): string => {
   const a = rtl ? ARTICLE_AR : ARTICLE
-  const isSx = renderer === 'stylex'
+  const isSx = renderer !== 'tailwind'
   const cls = (tw: string, sxKey?: string): string =>
     isSx
       ? `h.Class(stylex.props(${sxKey === undefined ? 'styles.article' : sxKey}).className ?? '')`
@@ -234,8 +238,10 @@ const articleBody = (renderer: 'tailwind' | 'stylex', rtl: boolean): string => {
 ])`
 }
 
-const tableBody = (renderer: 'tailwind' | 'stylex'): string => {
-  const isSx = renderer === 'stylex'
+const tableBody = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
+  const isSx = renderer !== 'tailwind'
   const a = ARTICLE
   const th = (text: string): string =>
     `h.th([${isSx ? "h.Class(stylex.props(styles.th).className ?? '')" : "h.Class('border px-4 py-2 text-left font-bold')"}], [${str(text)}])`
@@ -255,15 +261,17 @@ const tableBody = (renderer: 'tailwind' | 'stylex'): string => {
 ])`
 }
 
-const listBody = (renderer: 'tailwind' | 'stylex'): string => {
-  const isSx = renderer === 'stylex'
+const listBody = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
+  const isSx = renderer !== 'tailwind'
   return `h.ul([${isSx ? "h.Class(stylex.props(styles.list).className ?? '')" : "h.Class('my-6 ms-6 list-disc [&>li]:mt-2')"}],
   [${ARTICLE.list.map(item => `h.li([], [${str(item)}])`).join(',\n  ')}])`
 }
 
 const source = (
   fixture: TypographyFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string =>
   staticComponentApplication({
     componentName: 'Typography',
@@ -271,7 +279,7 @@ const source = (
     renderer,
     exampleName: fixture.title,
     componentImports:
-      renderer === 'stylex'
+      renderer !== 'tailwind'
         ? `import * as stylex from '@stylexjs/stylex'
 ${STYLES_BLOCK}`
         : '',
@@ -285,8 +293,8 @@ ${STYLES_BLOCK}`
             : `Typography.${fixture.component ?? 'typographyP'}({ children: [${(fixture.children ?? []).map(str).join(', ')}] }, h),`,
   })
 
-export const typographyExamples = (
-  renderer: 'tailwind' | 'stylex',
+const typographyExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   typographyFixtures.map(fixture => ({
     title: fixture.title,
@@ -295,3 +303,8 @@ export const typographyExamples = (
 
 export const typographyArticle = ARTICLE
 export const typographyArticleAr = ARTICLE_AR
+
+export const typographyExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, typographyExamplesFor(renderer))

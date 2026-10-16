@@ -12,7 +12,7 @@ import type {
  * component's color, typography, internal spacing, shape, or interaction
  * states. Visual changes belong in a named component variant instead.
  */
-type ComponentLayoutProperties = Pick<
+export type ComponentLayoutProperties = Pick<
   CSSProperties,
   | 'aspectRatio'
   | 'alignSelf'

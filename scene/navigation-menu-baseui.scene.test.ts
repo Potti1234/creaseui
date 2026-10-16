@@ -5,6 +5,7 @@ import { Popover as PopoverPrimitive } from '@foldkit/ui'
 import { describe, it } from 'vitest'
 
 import * as StyleXNavigationMenu from '@/stylex/navigation-menu'
+import { AnchorThemedPopover } from '@/lib/overlay-boundary'
 import * as TailwindNavigationMenu from '@/ui/navigation-menu'
 
 /**
@@ -168,39 +169,52 @@ const disclosureIcon = Scene.selector('svg.lucide-chevron-down')
 /* The disclosure's open panel mounts an anchor positioner and the backdrop
    mounts a body portal; every scene step that opens a menu resolves both, and
    every close acknowledges their unmount plus the focus-restore Command. */
-const resolveOpenMounts = Scene.Mount.resolveAll(
-  [
-    PopoverPrimitive.AnchorPopover,
-    PopoverPrimitive.Message.CompletedAnchorPopover(),
-  ],
-  [
+/* Mount.mapMessage lifts are invisible to Scene's boundary folding, so a
+   themed Mount is resolved with the already-lifted parent Message (the same
+   pattern application.scene.test.ts uses for MountChart). The Completed*
+   result is a no-op in the primitive update. */
+const anchorPopoverResolver = (
+  themed: boolean,
+  tag: 'GotProductsMessage' | 'GotResourcesMessage' = 'GotProductsMessage',
+) =>
+  themed
+    ? ([
+        AnchorThemedPopover,
+        {
+          _tag: tag,
+          message: PopoverPrimitive.Message.CompletedAnchorPopover(),
+        },
+      ] as const)
+    : ([
+        PopoverPrimitive.AnchorPopover,
+        PopoverPrimitive.Message.CompletedAnchorPopover(),
+      ] as const)
+const anchorPopover = (themed: boolean) =>
+  themed ? AnchorThemedPopover : PopoverPrimitive.AnchorPopover
+
+const resolveOpenMountsFor = (themed: boolean) =>
+  Scene.Mount.resolveAll(anchorPopoverResolver(themed), [
     PopoverPrimitive.PortalPopoverBackdrop,
     PopoverPrimitive.Message.CompletedPortalPopoverBackdrop(),
-  ],
-)
-const resolveBothOpenMounts = Scene.Mount.resolveAll(
-  [
-    PopoverPrimitive.AnchorPopover,
-    PopoverPrimitive.Message.CompletedAnchorPopover(),
-  ],
-  [
-    PopoverPrimitive.AnchorPopover,
-    PopoverPrimitive.Message.CompletedAnchorPopover(),
-  ],
-  [
-    PopoverPrimitive.PortalPopoverBackdrop,
-    PopoverPrimitive.Message.CompletedPortalPopoverBackdrop(),
-  ],
-  [
-    PopoverPrimitive.PortalPopoverBackdrop,
-    PopoverPrimitive.Message.CompletedPortalPopoverBackdrop(),
-  ],
-)
+  ])
+const resolveBothOpenMountsFor = (themed: boolean) =>
+  Scene.Mount.resolveAll(
+    anchorPopoverResolver(themed),
+    anchorPopoverResolver(themed, 'GotResourcesMessage'),
+    [
+      PopoverPrimitive.PortalPopoverBackdrop,
+      PopoverPrimitive.Message.CompletedPortalPopoverBackdrop(),
+    ],
+    [
+      PopoverPrimitive.PortalPopoverBackdrop,
+      PopoverPrimitive.Message.CompletedPortalPopoverBackdrop(),
+    ],
+  )
 /* expectEnded consumes its own matcher list, so it must be built fresh per
    scene — a shared instance silently acknowledges nothing on its second use. */
-const endedOpenMounts = () =>
+const endedOpenMountsFor = (themed: boolean) => () =>
   Scene.Mount.expectEnded(
-    PopoverPrimitive.AnchorPopover,
+    anchorPopover(themed),
     PopoverPrimitive.PortalPopoverBackdrop,
   )
 const resolveFocusRestore = Scene.Command.resolve(
@@ -305,6 +319,10 @@ const controlledView =
 
 const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
   describe(`${name} NavigationMenu (Base UI port)`, () => {
+    const themed = name === 'Tailwind'
+    const resolveOpenMounts = resolveOpenMountsFor(themed)
+    const resolveBothOpenMounts = resolveBothOpenMountsFor(themed)
+    const endedOpenMounts = endedOpenMountsFor(themed)
     describe('ARIA attributes', () => {
       it('renders a navigation landmark containing the list', () => {
         Scene.scene(
@@ -440,7 +458,11 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
     })
 
     describe('interactions', () => {
-      it('opens on hover with mouse input', () => {
+      // Hover-open is wired to OnMouseMove (an OnMouseEnter re-fired when the
+      // backdrop unmounted on Escape and reopened the menu). Scene can only
+      // dispatch mouseenter/mouseover; e2e/sites/popover-sizing.spec.ts covers
+      // real hover-open and the Escape regression in all three renderers.
+      it.skip('opens on hover with mouse input', () => {
         Scene.scene(
           {
             update,
@@ -460,15 +482,15 @@ const verifyRenderer = (name: string, NavigationMenu: NavigationMenuModule) => {
       it('does not wire hover-open under the "press" pointer intent', () => {
         // Base UI opens on hover unconditionally; creaseui makes hover-open an
         // opt-in per disclosure — the press-intent trigger carries no
-        // OnMouseEnter handler at all.
+        // OnMouseMove handler at all.
         Scene.scene(
           {
             update,
             view: menuView(NavigationMenu, { navAriaLabel: 'Primary' }),
           },
           Scene.given(initialModel()),
-          Scene.expect(resourcesHoverLabel).not.toHaveHandler('mouseenter'),
-          Scene.expect(productsHoverLabel).toHaveHandler('mouseenter'),
+          Scene.expect(resourcesHoverLabel).not.toHaveHandler('mousemove'),
+          Scene.expect(productsHoverLabel).toHaveHandler('mousemove'),
         )
       })
 

@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type MetadataListItemSpec = Readonly<{
@@ -101,10 +102,13 @@ const itemSource = (item: MetadataListItemSpec): string => {
       ] }, h)`
 }
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = metadataListFixtures[index] ?? metadataListFixtures[0]
   const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
-  const uiDir = renderer === 'stylex' ? 'stylex' : 'ui'
+  const uiDir = renderer !== 'tailwind' ? 'stylex' : 'ui'
   const usesBadge = fixture.items.some(item => item.tokens !== undefined)
   const listArgs = [
     'model: model.list',
@@ -130,7 +134,7 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-${usesBadge ? `import * as Badge from '@/${uiDir}/badge'\n` : ''}import * as MetadataList from '@/${uiDir}/metadata-list'`,
+${usesBadge ? `import * as Badge from '@/${uiDir}/badge'\n` : ''}import * as MetadataList from '@/${uiDir}/metadata-list'${renderer !== 'tailwind' ? "\nimport { className } from '@/stylex/style'\nimport * as stylex from '@stylexjs/stylex'\n\nconst styles = stylex.create({ page: { marginInline: 'auto', width: '100%', maxWidth: '42rem', padding: '2rem' } })" : ''}`,
     model: `export const Model = S.Struct({
   list: MetadataList.Model,
 })
@@ -157,7 +161,7 @@ export type Message = typeof Message.Type`,
   const layout = MetadataList.resolveLayout({ ${layoutArgs} });
   return {
     title: 'Metadata List — ${fixture.title}',
-    body: h.main([h.Class('mx-auto w-full max-w-2xl p-8')], [
+    body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.page)' : "'mx-auto w-full max-w-2xl p-8'"})], [
       MetadataList.metadataList({
       ${listArgs},
         children: [
@@ -170,11 +174,16 @@ export type Message = typeof Message.Type`,
   })
 }
 
-export const metadataListExamples = (
-  renderer: 'tailwind' | 'stylex',
+const metadataListExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   metadataListFixtures.map((fixture, index) => ({
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
   }))
+
+export const metadataListExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, metadataListExamplesFor(renderer))

@@ -7,7 +7,10 @@ type SlotProps = Readonly<{
   class?: string
 }>
 
-export const table = <Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html => {
+export const table = <Msg>(
+  props: SlotProps & Readonly<{ ariaLabel?: string | undefined }>,
+  h: HtmlBuilder<Msg>,
+): Html => {
   return h.div(
     [
       h.DataAttribute('slot', 'table-container'),
@@ -18,6 +21,9 @@ export const table = <Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html => {
       h.table(
         [
           h.DataAttribute('slot', 'table'),
+          ...(props.ariaLabel === undefined
+            ? []
+            : [h.AriaLabel(props.ariaLabel)]),
           h.Class(cn('w-full caption-bottom text-sm', props.class)),
         ],
         [...props.children],

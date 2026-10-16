@@ -3,7 +3,7 @@ import { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as stylex from '@stylexjs/stylex'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   type FieldFixture,
   fieldDepartments,
@@ -976,7 +976,7 @@ const fieldView = <Msg>(
   }
 }
 
-export const fieldStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const fieldStyleXPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

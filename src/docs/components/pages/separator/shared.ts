@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 export type SeparatorKind = 'demo' | 'vertical' | 'menu' | 'list' | 'rtl'
 
@@ -142,7 +143,7 @@ const emitBody = (fixture: SeparatorFixture, isStyleX: boolean): string => {
         ? `Separator.separator({ orientation: 'vertical' }, h)`
         : `Separator.separator({ orientation: 'vertical', class: 'self-stretch' }, h)`
       const separatorHidden = isStyleX
-        ? `h.div([h.Class(className(styles.hiddenBelowMdBlock))], [\n        Separator.separator({ orientation: 'vertical', layoutStyle: styles.separatorFill }, h),\n      ])`
+        ? `h.div([h.Class(className(styles.hiddenBelowMdBlock))], [\n        Separator.separator({ orientation: 'vertical', layoutStyle: layoutStyle({ height: "100%" }) }, h),\n      ])`
         : `Separator.separator({ orientation: 'vertical', class: 'hidden self-stretch md:block' }, h)`
       return `    h.div([${outer}], [
       h.div([${item}], [
@@ -214,17 +215,18 @@ const emitStyles = (fixture: SeparatorFixture): string => {
 
 const emitApplication = (
   fixture: SeparatorFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const stylexStylesBlock = isStyleX
     ? `\n\nconst styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
 ${emitStyles(fixture)}
 })`
     : ''
   const sep = isStyleX ? 'stylex' : 'ui'
   const classNameImport = isStyleX
-    ? `\nimport { className } from '@/stylex/style'`
+    ? `\nimport { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'`
     : ''
   return foldkitApplication({
     title: `Separator — ${fixture.title}`,
@@ -243,15 +245,15 @@ export type Message = typeof Message.Type`,
     update: `export const update = (model: Model, _message: Message): Update.Return<Model, Message> => ({ model })`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Separator — ${sq(fixture.title)}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
 ${emitBody(fixture, isStyleX)}
   ]),
 })`,
   })
 }
 
-export const separatorExamples = (
-  renderer: 'tailwind' | 'stylex',
+const separatorExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   separatorFixtures.map(fixture => ({
     title: fixture.title,
@@ -261,3 +263,8 @@ export const separatorExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer),
   }))
+
+export const separatorExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, separatorExamplesFor(renderer))

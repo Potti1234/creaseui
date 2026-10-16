@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import {
   foldkitApplication,
   staticComponentApplication,
@@ -106,11 +107,14 @@ const viewBody = (fixture: LinkFixture, isStyleX: boolean): string => {
 }
 
 const stylexStyles =
-  "column: { alignItems: 'flex-start', display: 'flex', flexDirection: 'column', gap: '0.5rem' }"
+  "column: { alignItems: 'flex-start', display: 'flex', flexDirection: 'column', gap: '0.5rem' },\n  page: { marginInline: 'auto', maxWidth: '28rem', padding: '2rem' }"
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = linkFixtures[index] ?? linkFixtures[0]
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const base = isStyleX ? 'stylex' : 'ui'
   const imports: string[] = []
   if (isStyleX) {
@@ -144,9 +148,9 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
 
 const tooltipApplication = (
   fixture: LinkFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const base = isStyleX ? 'stylex' : 'ui'
   return foldkitApplication({
     title: fixture.title,
@@ -185,15 +189,15 @@ export type Message = typeof Message.Type`,
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Link with tooltips',
-  body: h.main([h.Class('mx-auto max-w-md p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.page)' : "'mx-auto max-w-md p-8'"})], [
     ${viewBody(fixture, isStyleX)},
   ]),
 })`,
   })
 }
 
-export const linkExamples = (
-  renderer: 'tailwind' | 'stylex',
+const linkExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   linkFixtures.map((fixture, index) => ({
     title: fixture.title,
@@ -202,3 +206,8 @@ export const linkExamples = (
       : { description: fixture.description }),
     code: source(index, renderer),
   }))
+
+export const linkExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, linkExamplesFor(renderer))

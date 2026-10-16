@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 export type TokenItem = Readonly<{
@@ -189,9 +190,12 @@ const itemSource = (item: TokenItem, isStyleX: boolean): string => {
   return `Token.token({ ${props.join(', ')} }, h)`
 }
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = tokenFixtures[index] ?? tokenFixtures[0]
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const componentImports = [
     `import * as Icon from '@/lib/icon'`,
     isStyleX ? `import { className } from '@/stylex/style'` : '',
@@ -249,11 +253,16 @@ const styles = stylex.create({ column: { display: 'flex', flexDirection: 'column
   })
 }
 
-export const tokenExamples = (
-  renderer: 'tailwind' | 'stylex',
+const tokenExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   tokenFixtures.map((fixture, index) => ({
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
   }))
+
+export const tokenExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, tokenExamplesFor(renderer))

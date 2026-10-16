@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 const IMAGE_URL = 'https://avatar.vercel.sh/creaseui'
@@ -9,7 +10,7 @@ export type AspectRatioFixture = Readonly<{
   ratioExpr: string
   direction?: 'rtl'
   caption?: string
-  widthClass: { tailwind: string; stylex: 'w12' | 'w10' | 'w24' }
+  widthClass: { tailwind: string; styled: 'w12' | 'w10' | 'w24' }
 }>
 
 export const aspectRatioFixtures: Readonly<
@@ -21,7 +22,7 @@ export const aspectRatioFixtures: Readonly<
     ratioExpr: '1 / 1',
     widthClass: {
       tailwind: 'w-full max-w-48 overflow-hidden rounded-lg bg-muted',
-      stylex: 'w12',
+      styled: 'w12',
     },
   },
   {
@@ -30,7 +31,7 @@ export const aspectRatioFixtures: Readonly<
     ratioExpr: '9 / 16',
     widthClass: {
       tailwind: 'w-full max-w-40 overflow-hidden rounded-lg bg-muted',
-      stylex: 'w10',
+      styled: 'w10',
     },
   },
   {
@@ -39,22 +40,24 @@ export const aspectRatioFixtures: Readonly<
     ratioExpr: '16 / 9',
     direction: 'rtl',
     caption: 'منظر طبيعي جميل',
-    widthClass: { tailwind: 'w-full max-w-sm', stylex: 'w24' },
+    widthClass: { tailwind: 'w-full max-w-sm', styled: 'w24' },
   },
 ]
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = aspectRatioFixtures[index] ?? aspectRatioFixtures[0]
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const componentImports = isStyleX
     ? `import * as stylex from '@stylexjs/stylex'
-import type { ComponentLayoutStyle } from '@/stylex/contracts'
 import { className } from '@/stylex/style'`
     : ''
   const styles = isStyleX
     ? `\nconst styles = stylex.create({
-  frame: { maxWidth: '${fixture.widthClass.stylex === 'w12' ? '12rem' : fixture.widthClass.stylex === 'w10' ? '10rem' : '24rem'}', width: '100%'${fixture.widthClass.stylex === 'w24' ? '' : `, borderRadius: 'var(--radius)', backgroundColor: 'var(--muted)', overflow: 'hidden'`} },
-  ratioBox: { borderRadius: 'var(--radius)', backgroundColor: 'var(--muted)', overflow: 'hidden' },
+  frame: { maxWidth: '${fixture.widthClass.styled === 'w12' ? '12rem' : fixture.widthClass.styled === 'w10' ? '10rem' : '24rem'}', width: '100%'${fixture.widthClass.styled === 'w24' ? '' : `, borderRadius: 'var(--radius)', backgroundColor: 'var(--muted)', overflow: 'hidden'`} },
+  ratioBox: { borderRadius: 'var(--radius)', backgroundColor: 'var(--muted)', overflow: 'hidden', width: '100%', height: '100%' },
   content: { borderRadius: 'var(--radius)', objectFit: 'cover', width: '100%', height: '100%' },
   caption: { marginTop: '0.5rem', textAlign: 'center', fontSize: '0.875rem', lineHeight: '1.25rem', color: 'var(--muted-foreground)' },
 })\n`
@@ -72,8 +75,7 @@ import { className } from '@/stylex/style'`
       [
         AspectRatio.aspectRatio({
           ratio: ${fixture.ratioExpr},
-          ${renderer === 'tailwind' ? `class: 'rounded-lg bg-muted overflow-hidden',` : 'layoutStyle: styles.ratioBox as ComponentLayoutStyle,'}
-          children: [${imgExpr}],
+          ${renderer === 'tailwind' ? `class: 'rounded-lg bg-muted overflow-hidden',\n          children: [${imgExpr}],` : `children: [h.div([h.Class(className(styles.ratioBox))], [${imgExpr}])],`}
         }, h)${caption}
       ],
     )`
@@ -88,11 +90,16 @@ import { className } from '@/stylex/style'`
   })
 }
 
-export const aspectRatioExamples = (
-  renderer: 'tailwind' | 'stylex',
+const aspectRatioExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   aspectRatioFixtures.map((fixture, index) => ({
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
   }))
+
+export const aspectRatioExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, aspectRatioExamplesFor(renderer))

@@ -4,7 +4,9 @@
    copied verbatim from shadcn's Tailwind v4 globals.css. Nothing here is
    React-specific: the whole shadcn token system transfers unchanged. */
 
-@custom-variant dark (&:is(.dark *));
+/* The nearest scope wins: a .light scope inside .dark (and a .dark scope
+   inside that) re-resolve the variant. */
+@custom-variant dark (&:is(:is(.dark *):not(.dark .light, .dark .light *), .dark .light .dark *));
 
 @import './theme.css';
 
@@ -32,6 +34,8 @@
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
   --color-chart-5: var(--chart-5);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);

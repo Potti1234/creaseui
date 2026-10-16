@@ -1,6 +1,9 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 import type { TransferListOption } from '@/ui/transfer-list'
+const emitShellStyles =
+  "import * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\n\nconst shellStyles = stylex.create({\n  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },\n})"
 
 export type TransferListFixture = Readonly<{
   title: string
@@ -284,9 +287,9 @@ const listCall = (fixture: TransferListFixture, suffix: '' | '2'): string => {
 
 const transferListSource = (
   fixture: TransferListFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const ns = 'TransferList'
   const isPair = fixture.layout === 'empty-pair'
   /* The astryx Empty story pairs an empty-selection list with a search that
@@ -422,10 +425,10 @@ export const init = (): Update.Return<Model, Message> => ({
       : ''
   }
 )`,
-    view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+    view: `${isStyleX ? emitShellStyles + '\n\n' : ''}export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: '${fixture.title}',
   body: h.main(
-    [h.Class('flex min-h-screen items-center justify-center p-8')],
+    [h.Class(${renderer !== 'tailwind' ? 'className(shellStyles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})],
     [
       h.div(
         [h.Class('flex w-full max-w-3xl flex-col gap-6')],
@@ -449,8 +452,8 @@ export const init = (): Update.Return<Model, Message> => ({
   })
 }
 
-export const transferListExamples = (
-  renderer: 'tailwind' | 'stylex',
+const transferListExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   transferListFixtures.map(fixture => ({
     title: fixture.title,
@@ -460,3 +463,8 @@ export const transferListExamples = (
        it shrink-to-fits to ~one word. Stretch keeps it full width. */
     previewClass: 'justify-stretch',
   }))
+
+export const transferListExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, transferListExamplesFor(renderer))

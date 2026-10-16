@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 import type { AstryxTextColor, AstryxTextType } from '@/lib/astryx-text'
 import type { TimestampFormat, TimestampTooltipEntry } from '@/ui/timestamp'
@@ -316,9 +317,9 @@ export const timestampViewCall = (
 
 const timestampSource = (
   fixture: TimestampFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
 
   let stampIndex = 0
   const sectionBodies = fixture.sections.map(section => {
@@ -382,6 +383,7 @@ import { className } from '@/stylex/style'
 import * as Timestamp from '@/stylex/timestamp'
 
 const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   page: { display: 'flex', flexDirection: 'column', gap: '1rem' },
   section: { display: 'flex', flexDirection: 'column', gap: '0.25rem' },
   row: { alignItems: 'center', display: 'flex', gap: '1rem' },
@@ -432,7 +434,7 @@ export type Message = typeof Message.Type`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: '${fixture.title}',
   body: h.main(
-    [h.Class('flex min-h-screen items-center justify-center p-8')],
+    [h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})],
     [
       h.div(
         [h.Class(${pageClass})],
@@ -446,11 +448,16 @@ export type Message = typeof Message.Type`,
   })
 }
 
-export const timestampExamples = (
-  renderer: 'tailwind' | 'stylex',
+const timestampExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   timestampFixtures.map(fixture => ({
     title: fixture.title,
     description: fixture.description,
     code: timestampSource(fixture, renderer),
   }))
+
+export const timestampExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, timestampExamplesFor(renderer))

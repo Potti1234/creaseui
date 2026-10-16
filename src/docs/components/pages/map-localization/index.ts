@@ -43,5 +43,6 @@ map({ ariaLabel: 'Munich', toMessage: message => message, language: 'en', transl
     ],
     examples: mapLocalizationExamples('tailwind'),
     stylexExamples: mapLocalizationExamples('stylex'),
+    pleatExamples: mapLocalizationExamples('pleat'),
   },
 })

@@ -13,7 +13,7 @@ export type CodePanel = Readonly<{
   codeFile: string
 }>
 export type Props<M> = Readonly<{
-  renderer: 'tailwind' | 'stylex'
+  renderer: 'tailwind' | 'stylex' | 'pleat'
   category: BlockCategory
   isDark: boolean
   codeBlocks: Readonly<Record<string, CodePanel>>
@@ -125,7 +125,7 @@ export const view = <M>(props: Props<M>, h: HtmlBuilder<M>): Html =>
       h.p(
         [h.Role('status'), h.Class('text-sm text-muted-foreground')],
         [
-          `${BLOCKS.filter(b => props.category === 'all' || b.category === props.category).length} blocks · ${props.renderer === 'tailwind' ? 'Tailwind' : 'StyleX'}`,
+          `${BLOCKS.filter(b => props.category === 'all' || b.category === props.category).length} blocks · ${props.renderer === 'tailwind' ? 'Tailwind' : props.renderer === 'stylex' ? 'StyleX' : 'Pleat'}`,
         ],
       ),
       ...BLOCKS.filter(
@@ -192,7 +192,7 @@ export const view = <M>(props: Props<M>, h: HtmlBuilder<M>): Html =>
                         h.Attribute('target', '_blank'),
                         h.Rel('noopener noreferrer'),
                         h.AriaLabel(
-                          `Open ${block.name} in ${props.renderer === 'tailwind' ? 'Tailwind' : 'StyleX'}`,
+                          `Open ${block.name} in ${props.renderer === 'tailwind' ? 'Tailwind' : props.renderer === 'stylex' ? 'StyleX' : 'Pleat'}`,
                         ),
                         h.Class(
                           'inline-flex h-9 shrink-0 items-center rounded-md border bg-background px-3 text-sm font-medium hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring',
@@ -357,7 +357,7 @@ export const view = <M>(props: Props<M>, h: HtmlBuilder<M>): Html =>
                   [
                     h.Src(blockPreviewPath(props.renderer, block.name)),
                     h.Title(
-                      `${block.name} — ${props.renderer === 'tailwind' ? 'Tailwind' : 'StyleX'} preview`,
+                      `${block.name} — ${props.renderer === 'tailwind' ? 'Tailwind' : props.renderer === 'stylex' ? 'StyleX' : 'Pleat'} preview`,
                     ),
                     h.Attribute('loading', 'lazy'),
                     h.Class('h-[800px] w-full rounded-xl border bg-background'),

@@ -20,5 +20,6 @@ export const textPage = authoredPage({
       'Secondary and disabled colors reduce contrast; reserve them for metadata. Strikethrough and truncation must not hide information required to complete a task.',
     examples: textExamples('tailwind'),
     stylexExamples: textExamples('stylex'),
+    pleatExamples: textExamples('pleat'),
   },
 })

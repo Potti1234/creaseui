@@ -21,5 +21,6 @@ export const checkboxPage = authoredPage({
     keyboard: [['Space', 'Toggles the focused checkbox.']],
     examples: checkboxExamples('tailwind'),
     stylexExamples: checkboxExamples('stylex'),
+    pleatExamples: checkboxExamples('pleat'),
   },
 })

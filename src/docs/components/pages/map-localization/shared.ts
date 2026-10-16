@@ -1,3 +1,5 @@
+import { pleatExamples } from '@/docs/components/pleat-source'
+import type { DocsExample } from '@/docs/components/page-definition'
 import { mapDocsExamples } from '@/docs/components/pages/map/source'
 export const mapLocalizationFixtures = [
   {
@@ -11,5 +13,11 @@ export const mapLocalizationFixtures = [
       'Provide custom translations for controls and status messages in your application.',
   },
 ] as const
-export const mapLocalizationExamples = (renderer: 'tailwind' | 'stylex') =>
-  mapDocsExamples('map-localization', mapLocalizationFixtures, renderer)
+const mapLocalizationExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+) => mapDocsExamples('map-localization', mapLocalizationFixtures, renderer)
+
+export const mapLocalizationExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, mapLocalizationExamplesFor(renderer))

@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type InputKind =
@@ -93,7 +94,10 @@ const emitImports = (fixture: InputFixture, isStyleX: boolean): string => {
     "import { defineMessageUnion } from 'foldkit/message'",
   ]
   if (isStyleX) {
-    parts.push('', "import * as stylex from '@stylexjs/stylex'")
+    parts.push(
+      '',
+      "import * as stylex from '@stylexjs/stylex'\nimport { layoutStyle } from '@/stylex/contracts'",
+    )
   }
   if (kindUsesButton(fixture.kind)) {
     parts.push(`import * as Button from '@/${base}/button'`)
@@ -400,7 +404,7 @@ const emitBody = (fixture: InputFixture, isStyleX: boolean): string => {
         label(
           'input-badge',
           null,
-          `'Webhook URL ', Badge.badge({ variant: 'secondary', ${isStyleX ? 'layoutStyle: styles.push' : "class: 'ml-auto'"}, children: ['Beta'] }, h)`,
+          `'Webhook URL ', Badge.badge({ variant: 'secondary', ${isStyleX ? 'layoutStyle: layoutStyle({ marginInlineStart: "auto" })' : "class: 'ml-auto'"}, children: ['Beta'] }, h)`,
         ),
         emitInput(
           'webhookUrl',
@@ -546,8 +550,8 @@ ${emitBody(fixture, isStyleX)}
   })
 }
 
-export const inputExamples = (
-  renderer: 'tailwind' | 'stylex',
+const inputExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   inputFixtures.map(fixture => ({
     title: fixture.title,
@@ -555,5 +559,10 @@ export const inputExamples = (
       ? {}
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
-    code: emitApplication(fixture, renderer === 'stylex'),
+    code: emitApplication(fixture, renderer !== 'tailwind'),
   }))
+
+export const inputExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, inputExamplesFor(renderer))

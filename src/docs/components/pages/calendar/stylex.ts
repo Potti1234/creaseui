@@ -2,7 +2,7 @@ import { reset } from '@/stylex/reset'
 import { Option } from 'effect'
 import * as stylex from '@stylexjs/stylex'
 import type { HtmlBuilder } from 'foldkit/html'
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   calendarFixtures,
   type CalendarFixture,
@@ -391,7 +391,7 @@ const jalaliView = <Msg>(
   )
 }
 
-export const calendarStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const calendarStyleXPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

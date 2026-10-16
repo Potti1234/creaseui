@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type PopoverSide = 'top' | 'right' | 'bottom' | 'left'
@@ -105,16 +106,16 @@ const escape = (value: string): string => value.replaceAll(`'`, `\\'`)
 
 const legacySource = (
   fixture: { title: string; side: string; align: string },
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   return foldkitApplication({
     title: `Popover — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-${isStyleX ? "\nimport * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\n" : ''}
+${isStyleX ? "\nimport * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'\n" : ''}
 import * as Popover from '@/${isStyleX ? 'stylex' : 'ui'}/popover'${isStyleX ? "\n\nconst styles = stylex.create({\n  content: { display: 'grid', gap: '0.5rem' },\n  heading: { fontWeight: 500 },\n  copy: { color: 'var(--muted-foreground)', fontSize: '0.875rem', lineHeight: '1.25rem' },\n  input: { borderColor: 'var(--border)', borderRadius: '0.375rem', borderStyle: 'solid', borderWidth: '1px', paddingBlock: '0.5rem', paddingInline: '0.75rem' },\n})" : ''}`,
     model: `export const Model = S.Struct({ popover: Popover.Model })
 export type Model = typeof Model.Type`,
@@ -135,7 +136,7 @@ export type Message = typeof Message.Type`,
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Popover — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     Popover.popover({
       model: model.popover,
       toParentMessage: message => GotPopoverMessage({ message }),
@@ -156,6 +157,7 @@ export type Message = typeof Message.Type`,
 
 const STYLES_BLOCK = `
 const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   wrap: { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '1.5rem' },
   panel: { width: '10rem' },
   panelWide: { width: '16rem' },
@@ -168,8 +170,10 @@ const styles = stylex.create({
 })
 `
 
-const basicSource = (renderer: 'tailwind' | 'stylex'): string => {
-  const isStyleX = renderer === 'stylex'
+const basicSource = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
+  const isStyleX = renderer !== 'tailwind'
   return foldkitApplication({
     title: 'Popover — Basic',
     imports: `import { Schema as S } from 'effect'
@@ -180,7 +184,7 @@ ${
   isStyleX
     ? `
 import * as stylex from '@stylexjs/stylex'
-import { className } from '@/stylex/style'
+import { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'
 `
     : ''
 }
@@ -213,7 +217,7 @@ export type Message = typeof Message.Type`,
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Popover — Basic',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     Popover.popover({
       model: model.popover,
       toParentMessage: message => GotPopoverMessage({ message }),
@@ -232,9 +236,9 @@ export type Message = typeof Message.Type`,
 
 const multiSource = (
   fixture: { title: string; instances: ReadonlyArray<PopoverInstance> },
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
   const headerEmit = (
     text: string,
@@ -255,10 +259,10 @@ const multiSource = (
         instance.rtl === true
           ? `
       direction: 'rtl',
-      ${isStyleX ? 'layoutStyle: styles.panel,' : "class: 'w-40',"}
+      ${isStyleX ? 'layoutStyle: layoutStyle({ width: "10rem" }),' : "class: 'w-40',"}
       content: ${headerEmit(instance.text, true)},`
           : `
-      ${isStyleX ? 'layoutStyle: styles.panel,' : "class: 'w-40',"}
+      ${isStyleX ? 'layoutStyle: layoutStyle({ width: "10rem" }),' : "class: 'w-40',"}
       content: '${escape(instance.text)}',`
       }
     }, h)`
@@ -272,7 +276,7 @@ ${
   isStyleX
     ? `
 import * as stylex from '@stylexjs/stylex'
-import { className } from '@/stylex/style'
+import { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'
 `
     : ''
 }
@@ -326,7 +330,7 @@ export const update = (
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Popover — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     h.div([h.Class(${isStyleX ? 'className(styles.wrap)' : "'flex flex-wrap justify-center gap-6'"})], [
 ${fixture.instances.map(popoverEmit).join(',\n')}
     ]),
@@ -335,14 +339,16 @@ ${fixture.instances.map(popoverEmit).join(',\n')}
   })
 }
 
-const formSource = (renderer: 'tailwind' | 'stylex'): string => {
-  const isStyleX = renderer === 'stylex'
+const formSource = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
+  const isStyleX = renderer !== 'tailwind'
   const fieldEmit = (
     id: string,
     label: string,
     value: string,
   ): string => `          Field.field({ orientation: 'horizontal', children: [
-            Field.fieldLabel({ for: '${id}', children: ['${label}']${isStyleX ? ', layoutStyle: styles.labelHalf' : ", class: 'w-1/2'"} }, h),
+            Field.fieldLabel({ for: '${id}', children: ['${label}']${isStyleX ? ', layoutStyle: layoutStyle({ width: "50%" })' : ", class: 'w-1/2'"} }, h),
             Input.input({
               id: '${id}',
               value: model.values['${id}'] ?? '${value}',
@@ -359,7 +365,7 @@ ${
   isStyleX
     ? `
 import * as stylex from '@stylexjs/stylex'
-import { className } from '@/stylex/style'
+import { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'
 `
     : ''
 }
@@ -411,7 +417,7 @@ export type Message = typeof Message.Type`,
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Popover — With Form',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     Popover.popover({
       model: model.popover,
       toParentMessage: message => GotPopoverMessage({ message }),
@@ -435,8 +441,8 @@ ${fieldEmit('height', 'Height', '25px')},
   })
 }
 
-export const popoverExamples = (
-  renderer: 'tailwind' | 'stylex',
+const popoverExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   popoverFixtures.map(fixture => ({
     title: fixture.title,
@@ -450,3 +456,8 @@ export const popoverExamples = (
             ? formSource(renderer)
             : multiSource(fixture, renderer),
   }))
+
+export const popoverExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, popoverExamplesFor(renderer))

@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type StepperFixtureStep = Readonly<{
@@ -366,6 +367,7 @@ import { className } from '@/stylex/style'
 ${
   isStyleX
     ? `const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   frame: { width: '${fixture.width ?? 640}px' },
   panelRow: { display: 'flex', flexWrap: 'wrap', gap: '3rem' },
   panel: { width: '220px' },
@@ -419,15 +421,15 @@ export type Message = typeof Message.Type`,
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: '${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
 ${viewInner},
   ]),
 })`,
   })
 }
 
-export const stepperExamples = (
-  renderer: 'tailwind' | 'stylex',
+const stepperExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   stepperFixtures.map(fixture => ({
     title: fixture.title,
@@ -435,5 +437,10 @@ export const stepperExamples = (
       ? {}
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
-    code: emitSource(fixture, renderer === 'stylex'),
+    code: emitSource(fixture, renderer !== 'tailwind'),
   }))
+
+export const stepperExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, stepperExamplesFor(renderer))

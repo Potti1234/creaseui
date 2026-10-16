@@ -28,5 +28,6 @@ export const bannerPage = authoredPage({
     ],
     examples: bannerExamples('tailwind'),
     stylexExamples: bannerExamples('stylex'),
+    pleatExamples: bannerExamples('pleat'),
   },
 })

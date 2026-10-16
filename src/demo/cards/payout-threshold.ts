@@ -145,7 +145,13 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                         variant: 'ghost',
                         size: 'icon',
                         class: 'size-8 bg-muted',
-                        children: [Icon.icon('x', {}, h)],
+                        children: [
+                          Icon.icon('x', {}, h),
+                          h.span(
+                            [h.Class('sr-only')],
+                            ['Close Payout Threshold'],
+                          ),
+                        ],
                       },
                       h,
                     ),
@@ -168,7 +174,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                         children: [
                           fieldLabel(
                             {
-                              for: 'payout-threshold-currency',
+                              for: 'payout-threshold-currency-button',
                               children: ['Preferred Currency'],
                             },
                             h,
@@ -200,7 +206,6 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                             [
                               fieldLabel(
                                 {
-                                  for: 'payout-threshold-amount',
                                   children: ['Minimum Payout Amount'],
                                 },
                                 h,
@@ -256,7 +261,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                               onInput: value => Message.UpdatedNotes({ value }),
                               placeholder:
                                 'Add any notes for this payout configuration...',
-                              class: 'min-h-[100px]',
+                              class: 'min-h-25',
                             },
                             h,
                           ),

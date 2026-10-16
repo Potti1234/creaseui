@@ -1,5 +1,8 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
+const emitShellStyles =
+  "import * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\n\nconst shellStyles = stylex.create({\n  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },\n})"
 
 export type FileInputFixture = Readonly<{
   title: string
@@ -37,13 +40,16 @@ export const fileInputFixtures: Readonly<
   },
 ]
 
-const ui = (renderer: 'tailwind' | 'stylex'): string =>
-  renderer === 'stylex' ? 'stylex' : 'ui'
+const ui = (renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat'): string =>
+  renderer !== 'tailwind' ? 'stylex' : 'ui'
 
 const initConfig = (fixture: FileInputFixture): string =>
   `{ id: 'docs-file-input'${fixture.accept === undefined ? '' : `, accept: '${fixture.accept}'`}${fixture.maxSize === undefined ? '' : `, maxSize: ${fixture.maxSize}`} }`
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = fileInputFixtures[index] ?? fileInputFixtures[0]
   return foldkitApplication({
     title: `FileInput — ${fixture.title}`,
@@ -84,9 +90,9 @@ export type Message = typeof Message.Type`,
     }
   }
 }`,
-    view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+    view: `${renderer !== 'tailwind' ? emitShellStyles + '\n\n' : ''}export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: '${fixture.title}',
-  body: h.main([h.Class('mx-auto flex min-h-screen w-full max-w-md items-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(shellStyles.shell)' : "'mx-auto flex min-h-screen w-full max-w-md items-center p-8'"})], [
     h.div([h.Style({ width: '${String(fixture.width)}px' })], [
       FileInput.fileInput(
         {
@@ -104,8 +110,8 @@ export type Message = typeof Message.Type`,
   })
 }
 
-export const fileInputExamples = (
-  renderer: 'tailwind' | 'stylex',
+const fileInputExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   fileInputFixtures.map((fixture, index) => ({
     title: fixture.title,
@@ -113,3 +119,8 @@ export const fileInputExamples = (
     keepIdsCanonical: true,
     code: source(index, renderer),
   }))
+
+export const fileInputExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, fileInputExamplesFor(renderer))

@@ -1,7 +1,7 @@
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   VALIDATION_FIELDS,
   dateTimeInputFixtures,
@@ -23,7 +23,7 @@ type Preview = Readonly<{
   inputs: ReadonlyArray<DateTimeInput.Model>
 }>
 
-export const dateTimeInputStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const dateTimeInputStyleXPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

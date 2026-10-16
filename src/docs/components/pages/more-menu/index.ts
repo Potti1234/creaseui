@@ -27,5 +27,6 @@ export const moreMenuPage = authoredPage({
     ],
     examples: moreMenuExamples('tailwind'),
     stylexExamples: moreMenuExamples('stylex'),
+    pleatExamples: moreMenuExamples('pleat'),
   },
 })

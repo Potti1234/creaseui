@@ -22,7 +22,11 @@ const styles = stylex.create({
     width: '100%',
     maxWidth: '1400px',
     alignItems: 'center',
-    gap: { default: '1rem', '@media (min-width: 768px)': '1.5rem' },
+    gap: {
+      default: '.5rem',
+      '@media (min-width: 400px)': '1rem',
+      '@media (min-width: 768px)': '1.5rem',
+    },
     paddingInline: { default: '1rem', '@media (min-width: 768px)': '2rem' },
   },
   brand: {

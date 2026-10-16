@@ -1842,6 +1842,7 @@
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/overlay-boundary-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -2240,7 +2241,7 @@
         {
           "name": "DataTableColumn",
           "kind": "type",
-          "signature": "DataTableColumn<Row> = Readonly<{ key: string; header: string; cell: (row: Row) => Html | string; sortValue?: (row: Row) => string | number; isHideable?: boolean; class?: string; }>"
+          "signature": "DataTableColumn<Row> = Readonly<{ key: string; header: string; cell: (row: Row) => Html | string; sortValue?: (row: Row) => string | number; isHideable?: boolean; align?: 'left' | 'center' | 'right'; class?: string; }>"
         },
         {
           "name": "DataTableProps",
@@ -2363,6 +2364,7 @@
         "Potti1234/creaseui/calendar-range",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/overlay-boundary-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -4219,9 +4221,29 @@
           "signature": "itemFooter: value"
         },
         {
+          "name": "ItemGroupSeparator",
+          "kind": "type",
+          "signature": "ItemGroupSeparator = Readonly<{ render: <Msg>(h: HtmlBuilder<Msg>) => Html; }>"
+        },
+        {
+          "name": "itemGroupSeparator",
+          "kind": "function",
+          "signature": "itemGroupSeparator(props: ItemSeparatorProps = {}): ItemGroupSeparator"
+        },
+        {
+          "name": "ItemGroupEntry",
+          "kind": "type",
+          "signature": "ItemGroupEntry = Html | string | ItemGroupSeparator"
+        },
+        {
+          "name": "ItemGroupProps",
+          "kind": "type",
+          "signature": "ItemGroupProps = Readonly<{ children: ReadonlyArray<ItemGroupEntry>; class?: string; }>"
+        },
+        {
           "name": "itemGroup",
           "kind": "function",
-          "signature": "itemGroup<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html"
+          "signature": "itemGroup<Msg>(props: ItemGroupProps, h: HtmlBuilder<Msg>): Html"
         },
         {
           "name": "ItemSeparatorProps",
@@ -6198,6 +6220,7 @@
       "install": "npx creaseui add popover",
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/overlay-boundary-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -6580,6 +6603,7 @@
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/overlay-boundary-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -7824,7 +7848,7 @@
         {
           "name": "table",
           "kind": "function",
-          "signature": "table<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html"
+          "signature": "table<Msg>(props: SlotProps & Readonly<{ ariaLabel?: string | undefined; }>, h: HtmlBuilder<Msg>): Html"
         },
         {
           "name": "tableHeader",

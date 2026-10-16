@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 export type StatItem = Readonly<{
@@ -116,9 +117,12 @@ const statSource = (item: StatItem): string => {
   return `Stat.stat({ ${props.join(', ')} }, h)`
 }
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = statFixtures[index] ?? statFixtures[0]
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const componentImports = [
     `import * as Card from '@/${isStyleX ? 'stylex' : 'ui'}/card'`,
     isStyleX
@@ -163,11 +167,16 @@ const styles = stylex.create({ grid: { display: 'grid', gridTemplateColumns: 're
   })
 }
 
-export const statExamples = (
-  renderer: 'tailwind' | 'stylex',
+const statExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   statFixtures.map((fixture, index) => ({
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
   }))
+
+export const statExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, statExamplesFor(renderer))

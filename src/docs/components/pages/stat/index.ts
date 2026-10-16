@@ -18,5 +18,6 @@ export const statPage = authoredPage({
       'The delta glyph is decorative; the direction is also announced as text ("trending up") for screen readers.',
     examples: statExamples('tailwind'),
     stylexExamples: statExamples('stylex'),
+    pleatExamples: statExamples('pleat'),
   },
 })

@@ -1,5 +1,8 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
+const emitShellStyles =
+  "import * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\n\nconst shellStyles = stylex.create({\n  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },\n})"
 
 export type NumberInputFixtureEntry = Readonly<{
   id: string
@@ -123,8 +126,8 @@ export const numberInputFixtures: Readonly<
   },
 ]
 
-const ui = (renderer: 'tailwind' | 'stylex'): string =>
-  renderer === 'stylex' ? 'stylex' : 'ui'
+const ui = (renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat'): string =>
+  renderer !== 'tailwind' ? 'stylex' : 'ui'
 
 const numberInputCallSource = (
   entry: NumberInputFixtureEntry,
@@ -140,15 +143,15 @@ const numberInputCallSource = (
         h,
       )`
 
-const viewSource = (fixture: NumberInputFixture): string => {
+const viewSource = (fixture: NumberInputFixture, styled: boolean): string => {
   const entries = fixture.entries
     .map((entry, entryIndex) =>
       numberInputCallSource(entry, String(entryIndex)),
     )
     .join(',\n      ')
-  return `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+  return `${styled ? emitShellStyles + '\n\n' : ''}export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: '${fixture.title}',
-  body: h.main([h.Class('mx-auto flex min-h-screen w-full max-w-md items-center p-8')], [
+  body: h.main([h.Class(${styled ? 'className(shellStyles.shell)' : "'mx-auto flex min-h-screen w-full max-w-md items-center p-8'"})], [
     h.div(
       [h.Class('flex flex-col gap-4'), h.Style({ width: '${fixture.width}px' })],
       [
@@ -159,7 +162,10 @@ const viewSource = (fixture: NumberInputFixture): string => {
 })`
 }
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = numberInputFixtures[index] ?? numberInputFixtures[0]
   return foldkitApplication({
     title: `NumberInput — ${fixture.title}`,
@@ -206,15 +212,20 @@ export type Message = typeof Message.Type`,
     }
   }
 }`,
-    view: viewSource(fixture),
+    view: viewSource(fixture, renderer !== 'tailwind'),
   })
 }
 
-export const numberInputExamples = (
-  renderer: 'tailwind' | 'stylex',
+const numberInputExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   numberInputFixtures.map((fixture, index) => ({
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
   }))
+
+export const numberInputExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, numberInputExamplesFor(renderer))

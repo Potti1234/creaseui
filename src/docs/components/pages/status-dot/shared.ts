@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 export type StatusDotItem = Readonly<{
@@ -79,9 +80,12 @@ const itemSource = (item: StatusDotItem): string => {
   return `StatusDot.statusDot({ ${props.join(', ')} }, h)`
 }
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = statusDotFixtures[index] ?? statusDotFixtures[0]
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   /* `import * as StatusDot` is auto-emitted by staticComponentApplication. */
   const componentImports = [
     isStyleX
@@ -133,11 +137,16 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
   })
 }
 
-export const statusDotExamples = (
-  renderer: 'tailwind' | 'stylex',
+const statusDotExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   statusDotFixtures.map((fixture, index) => ({
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
   }))
+
+export const statusDotExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, statusDotExamplesFor(renderer))

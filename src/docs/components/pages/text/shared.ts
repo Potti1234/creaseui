@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 import type {
   TextColor,
@@ -441,9 +442,12 @@ const stylexStyles = (fixture: TextFixture): string => {
   return parts.join(',\n  ')
 }
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = textFixtures[index] ?? textFixtures[0]
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const imports: string[] = []
   if (isStyleX) {
     imports.push(
@@ -476,8 +480,8 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
   })
 }
 
-export const textExamples = (
-  renderer: 'tailwind' | 'stylex',
+const textExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   textFixtures.map((fixture, index) => ({
     title: fixture.title,
@@ -486,3 +490,8 @@ export const textExamples = (
       : { description: fixture.description }),
     code: source(index, renderer),
   }))
+
+export const textExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, textExamplesFor(renderer))

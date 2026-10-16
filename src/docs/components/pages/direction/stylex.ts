@@ -1,6 +1,6 @@
 import * as stylex from '@stylexjs/stylex'
 import type { HtmlBuilder } from 'foldkit/html'
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import * as Button from '@/stylex/button'
 import * as Direction from '@/stylex/direction'
 import type { ComponentLayoutStyle } from '@/stylex/contracts'
@@ -18,7 +18,7 @@ const styles = stylex.create({
     lineHeight: '1.25rem',
   },
 })
-export const directionStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const directionStyleXPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (json: string) => Msg,

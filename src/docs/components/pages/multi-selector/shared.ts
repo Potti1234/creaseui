@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type MultiSelectorFixture = Readonly<{
@@ -130,12 +131,15 @@ export const TEAMS = [
   { value: 'operations', label: 'Operations' },
 ] as const
 
-const imports = (renderer: 'tailwind' | 'stylex', extra: string): string =>
+const imports = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+  extra: string,
+): string =>
   `import { Option, Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-import * as MultiSelector from '@/${renderer === 'stylex' ? 'stylex' : 'ui'}/multi-selector'${extra}`
+import * as MultiSelector from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/multi-selector'${extra}`
 
 const stylexPreamble = `
 import * as stylex from '@stylexjs/stylex'
@@ -143,6 +147,7 @@ import { className } from '@/stylex/style'
 import * as Button from '@/stylex/button'
 
 const styles = stylex.create({
+  shell: { alignItems: 'flex-start', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   stack: {
     display: 'grid',
     gap: '1rem',
@@ -397,9 +402,9 @@ const initFor = (fixture: MultiSelectorFixture): string => {
 
 const multiSelectorSource = (
   fixture: MultiSelectorFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   return foldkitApplication({
     title: `MultiSelector — ${fixture.title}`,
     imports: imports(renderer, isStyleX ? stylexPreamble : ''),
@@ -413,7 +418,7 @@ const multiSelectorSource = (
     update,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'MultiSelector — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-start justify-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-start justify-center p-8'"})], [
     h.div([${stackClass(isStyleX)}], [
       ${callFor(fixture, isStyleX)},
     ]),
@@ -422,8 +427,8 @@ const multiSelectorSource = (
   })
 }
 
-export const multiSelectorExamples = (
-  renderer: 'tailwind' | 'stylex',
+const multiSelectorExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   multiSelectorFixtures.map(fixture => ({
     title: fixture.title,
@@ -433,3 +438,8 @@ export const multiSelectorExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: multiSelectorSource(fixture, renderer),
   }))
+
+export const multiSelectorExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, multiSelectorExamplesFor(renderer))

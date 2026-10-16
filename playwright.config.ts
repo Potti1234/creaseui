@@ -5,9 +5,14 @@ export default defineConfig({
   testIgnore: '**/sites/**',
   outputDir: 'test-results/playwright',
   fullyParallel: true,
+  timeout: 60_000,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 1 : 0,
-  workers: process.env.CI ? 4 : undefined,
+  workers: process.env.PLAYWRIGHT_WORKERS
+    ? Number(process.env.PLAYWRIGHT_WORKERS)
+    : process.env.CI
+      ? 4
+      : undefined,
   reporter: [
     ['line'],
     ['html', { open: 'never', outputFolder: 'playwright-report' }],

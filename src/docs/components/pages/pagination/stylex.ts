@@ -2,7 +2,7 @@ import type { Option } from 'effect'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import { paginationFixtures } from '@/docs/components/pages/pagination/shared'
 import * as Field from '@/stylex/field'
 import * as Pagination from '@/stylex/pagination'
@@ -130,7 +130,7 @@ const iconsOnlyView = <Msg>(
     ],
   )
 
-export const paginationStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const paginationStyleXPreview: ExamplePreviewProvider = <Msg>(
   index: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

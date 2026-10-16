@@ -28,5 +28,6 @@ export const timestampPage = authoredPage({
     ],
     examples: timestampExamples('tailwind'),
     stylexExamples: timestampExamples('stylex'),
+    pleatExamples: timestampExamples('pleat'),
   },
 })

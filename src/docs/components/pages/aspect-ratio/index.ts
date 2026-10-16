@@ -20,5 +20,6 @@ export const aspectRatioPage = authoredPage({
       'The wrapper adds no semantics. Images and media inside it still need appropriate alternative text or captions.',
     examples: aspectRatioExamples('tailwind'),
     stylexExamples: aspectRatioExamples('stylex'),
+    pleatExamples: aspectRatioExamples('pleat'),
   },
 })

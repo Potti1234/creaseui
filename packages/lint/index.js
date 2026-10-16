@@ -4,17 +4,25 @@ import stylexPlugin from '@stylexjs/eslint-plugin'
 import { noComponentRestyle } from './rules/no-component-restyle.js'
 import { noFoldkitInlineStyle } from './rules/no-foldkit-inline-style.js'
 import { noStylexEscape } from './rules/no-stylex-escape.js'
+import { pleatPropLimits } from './rules/pleat-prop-limits.js'
 import { preferCompositionPrimitives } from './rules/prefer-composition-primitives.js'
 import { requireStaticClass } from './rules/require-static-class.js'
+import { strictRules } from './rules/strict/index.js'
 import { stylexComponentContract } from './rules/stylex-component-contract.js'
+
+export { STRICT_RULE_IDS, creaseui } from './creaseui.js'
+export { CreaseConfigError } from './lib/strict/ownership.js'
+export { createStrictContext } from './lib/strict/context.js'
 
 export const rules = {
   'no-component-restyle': noComponentRestyle,
   'no-foldkit-inline-style': noFoldkitInlineStyle,
   'no-stylex-escape': noStylexEscape,
+  'pleat-prop-limits': pleatPropLimits,
   'prefer-composition-primitives': preferCompositionPrimitives,
   'require-static-class': requireStaticClass,
   'stylex-component-contract': stylexComponentContract,
+  ...strictRules,
 }
 
 export const plugin = {
@@ -142,6 +150,39 @@ export const stylex = (options = {}) => {
         {
           allowCreateIn: options.allowCreateIn ?? ['.*'],
           allowPropsIn: options.allowPropsIn ?? ['.*'],
+        },
+      ],
+    },
+  }
+}
+
+export const pleat = (options = {}) => {
+  const severity = severityOf(options.severity)
+  return {
+    name: '@creaseui/lint/pleat',
+    files: options.files ?? ['**/*.{js,jsx,ts,tsx}'],
+    ignores: options.ignores ?? [],
+    plugins: { crease: plugin },
+    rules: {
+      'crease/no-foldkit-inline-style':
+        options.inlineStyles === 'forbid' ? severity : 'off',
+      'crease/pleat-prop-limits': [
+        severity,
+        {
+          propLimits: options.propLimits ?? {},
+          tokenFiles: options.tokenFiles ?? [],
+        },
+      ],
+      'crease/stylex-component-contract': [
+        severity,
+        {
+          componentImports: options.componentImports ?? ['^@/pleat(?:/|$)'],
+          ignoreImports: options.ignoreImports ?? [],
+          layoutConstructors: options.layoutConstructors ?? ['layoutStyle'],
+          layoutProperties: options.layoutProperties ?? [
+            'layoutStyle',
+            '*LayoutStyle',
+          ],
         },
       ],
     },

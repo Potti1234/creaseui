@@ -2,7 +2,7 @@ import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   selectableCardElevatedPlans,
   selectableCardFixtures,
@@ -142,7 +142,7 @@ const view = <Msg>(
   }
 }
 
-export const selectableCardStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const selectableCardStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

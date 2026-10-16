@@ -507,7 +507,7 @@ Source: [`src/ui/data-table.ts`](../src/ui/data-table.ts)
 | Export | Kind | Signature |
 | --- | --- | --- |
 | `*` | re-export | `export * from '@/lib/data-table-state'` |
-| `DataTableColumn` | type | `DataTableColumn<Row> = Readonly<{ key: string; header: string; cell: (row: Row) => Html \| string; sortValue?: (row: Row) => string \| number; isHideable?: boolean; class?: string; }>` |
+| `DataTableColumn` | type | `DataTableColumn<Row> = Readonly<{ key: string; header: string; cell: (row: Row) => Html \| string; sortValue?: (row: Row) => string \| number; isHideable?: boolean; align?: 'left' \| 'center' \| 'right'; class?: string; }>` |
 | `DataTableProps` | type | `DataTableProps<Row, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; rows: ReadonlyArray<Row>; columns: ReadonlyArray<DataTableColumn<Row>>; rowKey: (row: Row) => string; filterText?: (row: Row) => string; filterPlaceholder?: string…` |
 | `dataTable` | function | `dataTable<Row, Msg>(props: DataTableProps<Row, Msg>, h: HtmlBuilder<Msg>): Html` |
 
@@ -949,7 +949,11 @@ Source: [`src/ui/item.ts`](../src/ui/item.ts)
 | `itemActions` | value | `itemActions: value` |
 | `itemHeader` | value | `itemHeader: value` |
 | `itemFooter` | value | `itemFooter: value` |
-| `itemGroup` | function | `itemGroup<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` |
+| `ItemGroupSeparator` | type | `ItemGroupSeparator = Readonly<{ render: <Msg>(h: HtmlBuilder<Msg>) => Html; }>` |
+| `itemGroupSeparator` | function | `itemGroupSeparator(props: ItemSeparatorProps = {}): ItemGroupSeparator` |
+| `ItemGroupEntry` | type | `ItemGroupEntry = Html \| string \| ItemGroupSeparator` |
+| `ItemGroupProps` | type | `ItemGroupProps = Readonly<{ children: ReadonlyArray<ItemGroupEntry>; class?: string; }>` |
+| `itemGroup` | function | `itemGroup<Msg>(props: ItemGroupProps, h: HtmlBuilder<Msg>): Html` |
 | `ItemSeparatorProps` | type | `ItemSeparatorProps = Readonly<{ class?: string; }>` |
 | `itemSeparator` | function | `itemSeparator<Msg>(props: ItemSeparatorProps = {}, h: HtmlBuilder<Msg>): Html` |
 
@@ -1797,7 +1801,7 @@ Source: [`src/ui/table.ts`](../src/ui/table.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `table` | function | `table<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` |
+| `table` | function | `table<Msg>(props: SlotProps & Readonly<{ ariaLabel?: string \| undefined; }>, h: HtmlBuilder<Msg>): Html` |
 | `tableHeader` | value | `tableHeader: value` |
 | `tableBody` | value | `tableBody: value` |
 | `tableFooter` | value | `tableFooter: value` |

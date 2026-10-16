@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type TGItem = Readonly<{
@@ -353,6 +354,7 @@ import * as Field from '@/${lib}/field'`
 ${
   isStyleX
     ? `const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   stack: { display: 'flex', flexDirection: 'column', gap: '1rem' },
   weightItem: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '4rem', height: '4rem', borderRadius: '0.75rem' },
   weightLight: { fontSize: '1.5rem', lineHeight: 1, fontWeight: 300 },
@@ -424,15 +426,15 @@ ${fixture.groups.map(group => `      '${group.id}': [${group.selected.map(value 
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Toggle Group — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
 ${viewBodyEmit(fixture, isStyleX)},
   ]),
 })`,
   })
 }
 
-export const toggleGroupExamples = (
-  renderer: 'tailwind' | 'stylex',
+const toggleGroupExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   toggleGroupFixtures.map(fixture => ({
     title: fixture.title,
@@ -440,5 +442,10 @@ export const toggleGroupExamples = (
       ? {}
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
-    code: emitSource(fixture, renderer === 'stylex'),
+    code: emitSource(fixture, renderer !== 'tailwind'),
   }))
+
+export const toggleGroupExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, toggleGroupExamplesFor(renderer))

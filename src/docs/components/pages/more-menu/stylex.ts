@@ -3,7 +3,7 @@ import { Option } from 'effect'
 import type { HtmlBuilder } from 'foldkit/html'
 import * as stylex from '@stylexjs/stylex'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   fixtureOptions,
   moreMenuFixtures,
@@ -21,7 +21,7 @@ const styles = stylex.create({
   },
 })
 
-export const moreMenuStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const moreMenuStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

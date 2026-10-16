@@ -28,5 +28,6 @@ export const menubarPage = authoredPage({
     ],
     examples: menubarExamples('tailwind'),
     stylexExamples: menubarExamples('stylex'),
+    pleatExamples: menubarExamples('pleat'),
   },
 })

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Clean settings</title>
+    <style>
+      body { margin: 0; font: 16px/1.5 system-ui, sans-serif; background: #fff; color: #111; }
+      html.dark body { background: #111; color: #eee; }
+      main { padding: 24px; box-sizing: border-box; max-width: 100%; }
+      button, input { height: 40px; font: inherit; color: inherit; background: transparent; border: 1px solid currentColor; padding: 0 12px; }
+      #dialog { position: fixed; top: 100px; left: 50%; transform: translateX(-50%); width: min(320px, 90vw); box-sizing: border-box; background: inherit; padding: 16px; border: 1px solid; }
+      html.dark #dialog { background: #111; }
+      [hidden] { display: none !important; }
+    </style>
+  </head>
+  <body>
+    <main id="app">
+      <h1>Settings</h1>
+      <label for="name">Name</label>
+      <input id="name" aria-describedby="name-help" />
+      <p id="name-help">Shown on your public profile.</p>
+      <p data-slot="stat-value" style="font-variant-numeric: tabular-nums">
+        $1,250.00
+      </p>
+      <p
+        data-numeric="right"
+        style="font-variant-numeric: tabular-nums; text-align: right"
+      >
+        42
+      </p>
+      <button
+        id="open"
+        type="button"
+        onclick="document.getElementById('dialog').hidden = false"
+      >
+        Open dialog
+      </button>
+      <div id="dialog" role="dialog" aria-labelledby="dialog-title" hidden>
+        <h2 id="dialog-title">Confirm</h2>
+        <button type="button" onclick="this.parentElement.hidden = true">
+          Close
+        </button>
+      </div>
+    </main>
+  </body>
+</html>

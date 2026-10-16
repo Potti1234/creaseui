@@ -615,3 +615,91 @@ describe('complete StyleX catalog', () => {
     )
   })
 })
+
+const pleatInfrastructureNames = new Set(
+  [...infrastructureNames].map(name =>
+    name.replace(/\.stylex(?:\.const)?$/u, ''),
+  ),
+)
+
+describe('complete Pleat catalog', () => {
+  it('has one implementation for every Crease UI component', () => {
+    const pleatNames = readdirSync('src/pleat')
+      .filter(file => file.endsWith('.ts'))
+      .map(file => file.slice(0, -3))
+      .filter(name => !pleatInfrastructureNames.has(name))
+      .sort()
+
+    assert.deepEqual(pleatNames, componentNames)
+    assert.equal(componentNames.length, 121)
+  })
+
+  it('does not fall back to Tailwind, CVA, or raw authored class strings', () => {
+    for (const name of componentNames) {
+      const source = readFileSync(`src/pleat/${name}.ts`, 'utf8')
+
+      assert.doesNotMatch(source, /class-variance-authority/u, name)
+      assert.doesNotMatch(source, /@\/lib\/utils/u, name)
+      assert.doesNotMatch(source, /\bh\.Class\(\s*['"`]/u, name)
+    }
+  })
+
+  it('preserves the exported TypeScript API of every component', () => {
+    const gaps: Array<string> = []
+
+    for (const name of componentNames) {
+      const uiExports = exportedNames(parse(`src/ui/${name}.ts`))
+      const pleatExports = exportedNames(parse(`src/pleat/${name}.ts`))
+      const allowlist =
+        intentionallyRemovedStylingExports.get(name) ?? new Set()
+      const missing = [...uiExports]
+        .filter(
+          exportName =>
+            !pleatExports.has(exportName) && !allowlist.has(exportName),
+        )
+        .sort()
+
+      if (missing.length > 0) gaps.push(`${name}: ${missing.join(', ')}`)
+    }
+
+    assert.deepEqual(gaps, [], `Missing Pleat exports:\n${gaps.join('\n')}`)
+  })
+
+  it('preserves public component prop names while migrating class hooks', () => {
+    const gaps: Array<string> = []
+
+    for (const name of componentNames) {
+      const uiTypes = publicTypeProperties(parse(`src/ui/${name}.ts`))
+      const pleatTypes = publicTypeProperties(parse(`src/pleat/${name}.ts`))
+
+      for (const [typeName, uiProperties] of uiTypes) {
+        const pleatProperties = pleatTypes.get(typeName)
+        if (pleatProperties === undefined) continue
+        const missing = [...uiProperties]
+          .map(migratedStylePropName)
+          .filter(property => !pleatProperties.has(property))
+          .sort()
+        if (missing.length > 0)
+          gaps.push(`${name}.${typeName}: ${missing.join(', ')}`)
+      }
+    }
+
+    assert.deepEqual(gaps, [], `Missing Pleat props:\n${gaps.join('\n')}`)
+  })
+
+  it('does not expose public string-based class styling props', () => {
+    const violations: Array<string> = []
+
+    for (const name of componentNames) {
+      const findings = publicStringClassProps(parse(`src/pleat/${name}.ts`))
+      if (findings.length > 0)
+        violations.push(`${name}: ${findings.join(', ')}`)
+    }
+
+    assert.deepEqual(
+      violations,
+      [],
+      `Public string class-style props found:\n${violations.join('\n')}`,
+    )
+  })
+})

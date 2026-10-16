@@ -192,27 +192,35 @@ for (const width of [390, 1440]) {
     await expect(activePanels(page)).toHaveCount(0)
     await page.getByRole('button', { name: 'Open sheet', exact: true }).click()
     await settled(page)
-    // Arm before Escape so a brief leave phase cannot finish before the check.
-    const leaving = page.evaluate(
-      () =>
-        new Promise<string>(resolve => {
-          const panel = document.querySelector<HTMLElement>(
-            '[data-slot="sheet-panel"]',
-          )!
-          const observer = new MutationObserver(() => {
-            if (panel.hasAttribute('data-leave')) {
-              observer.disconnect()
-              resolve(getComputedStyle(panel).transitionTimingFunction)
-            }
-          })
-          observer.observe(panel, {
-            attributes: true,
-            attributeFilter: ['data-leave'],
-          })
-        }),
-    )
+    // Arm and await the observer before Escape: an un-awaited evaluate can be
+    // installed after the brief leave phase has already started.
+    await page.evaluate(() => {
+      delete document.documentElement.dataset.sheetLeave
+      const observer = new MutationObserver(records => {
+        for (const record of records) {
+          const panel = record.target as HTMLElement
+          if (
+            panel.matches('[data-slot="sheet-panel"]') &&
+            panel.hasAttribute('data-leave')
+          ) {
+            observer.disconnect()
+            document.documentElement.dataset.sheetLeave =
+              getComputedStyle(panel).transitionTimingFunction
+            return
+          }
+        }
+      })
+      observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['data-leave'],
+        subtree: true,
+      })
+    })
     await page.keyboard.press('Escape')
-    expect(await leaving).toBe('cubic-bezier(0.32, 0.72, 0, 1)')
+    await expect(page.locator('html')).toHaveAttribute(
+      'data-sheet-leave',
+      'cubic-bezier(0.32, 0.72, 0, 1)',
+    )
     await expect(activePanels(page)).toHaveCount(0)
     expect(errors).toEqual([])
   })
@@ -235,14 +243,15 @@ for (const width of [390, 1440]) {
       // Observe the actual entrance, including its first focused frame.
       const frames = page.evaluate(
         () =>
-          new Promise<
-            Array<{
+          new Promise<{
+            samples: Array<{
               top: number
               height: number
               scrollTop: number
               opacity: number
             }>
-          >(resolve => {
+            fade: { duration: number; quarterOpacity: number } | undefined
+          }>(resolve => {
             const samples: Array<{
               top: number
               height: number
@@ -250,6 +259,7 @@ for (const width of [390, 1440]) {
               opacity: number
             }> = []
             let started: number | undefined
+            let fade: { duration: number; quarterOpacity: number } | undefined
             const tick = (now: number) => {
               const panel = document.querySelector<HTMLElement>(
                 '[data-slot="sheet-panel"]',
@@ -268,16 +278,51 @@ for (const width of [390, 1440]) {
                     ).opacity,
                   ),
                 })
+                // Read the scrim's real fade at a fixed point of its transition:
+                // a slow runner can drop every frame of the mid-fade window.
+                const scrim = dialog.querySelector('[data-slot="sheet-scrim"]')!
+                const transition = fade
+                  ? undefined
+                  : scrim
+                      .getAnimations()
+                      .find(
+                        (animation): animation is CSSTransition =>
+                          animation instanceof CSSTransition &&
+                          animation.transitionProperty === 'opacity' &&
+                          animation.playState === 'running',
+                      )
+                if (transition) {
+                  const duration = Number(
+                    transition.effect!.getComputedTiming().duration,
+                  )
+                  const resumeAt = transition.currentTime
+                  transition.pause()
+                  transition.currentTime = duration * 0.25
+                  const quarterOpacity = Number.parseFloat(
+                    getComputedStyle(scrim).opacity,
+                  )
+                  transition.currentTime = resumeAt
+                  transition.play()
+                  fade = { duration, quarterOpacity }
+                }
               }
-              if (started !== undefined && now - started >= 800)
-                resolve(samples)
+              // Sample until the open transition has actually finished, not for a
+              // fixed window: slow runners deliver too few frames in 800ms.
+              const elapsed = started === undefined ? 0 : now - started
+              const animating =
+                (dialog?.getAnimations({ subtree: true }).length ?? 0) > 0
+              if (
+                started !== undefined &&
+                ((elapsed >= 800 && !animating) || elapsed >= 5000)
+              )
+                resolve({ samples, fade })
               else requestAnimationFrame(tick)
             }
             requestAnimationFrame(tick)
           }),
       )
       await trigger.click()
-      const samples = await frames
+      const { samples, fade } = await frames
       expect(samples.length).toBeGreaterThan(10)
       expect(samples.every(frame => frame.scrollTop === 0)).toBe(true)
       const first = samples[0]!
@@ -290,9 +335,9 @@ for (const width of [390, 1440]) {
       expect(
         new Set(intermediate.map(frame => Math.round(frame.top))).size,
       ).toBeGreaterThan(5)
-      expect(
-        samples.some(frame => frame.opacity > 0.05 && frame.opacity < 0.95),
-      ).toBe(true)
+      expect(fade?.duration).toBe(450)
+      expect(fade!.quarterOpacity).toBeGreaterThan(0.05)
+      expect(fade!.quarterOpacity).toBeLessThan(0.95)
       expect(first.opacity).toBe(0)
       expect(last.opacity).toBe(1)
       for (let index = 1; index < samples.length; index++) {

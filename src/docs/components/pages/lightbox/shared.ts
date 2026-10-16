@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 import type { LightboxMedia } from '@/ui/lightbox'
 
@@ -115,6 +116,7 @@ ${items
   ]`
 
 const emitStyles = `const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   thumbGrid: { display: 'grid', gap: '0.5rem', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', width: '8.5rem' },
   thumb: { borderRadius: 'calc(var(--radius) - 2px)', cursor: 'pointer', overflow: 'hidden', padding: 0 },
   thumbImg: { aspectRatio: '1 / 1', display: 'block', height: '100%', objectFit: 'cover', width: '100%' },
@@ -141,10 +143,10 @@ const emitView = (fixture: LightboxFixture, isStyleX: boolean): string => {
         ]),
       ),
     )`
-      : `Button.button({ variant: 'outline', onClick: ClickedOpenLightbox(), ${isStyleX ? 'layoutStyle: styles.triggerButton as ComponentLayoutStyle, ' : ''}children: ['${sq(fixture.triggerLabel)}'] }, h)`
+      : `Button.button({ variant: 'outline', onClick: ClickedOpenLightbox(), children: ['${sq(fixture.triggerLabel)}'] }, h)`
   return `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Lightbox — ${sq(fixture.title)}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     ${trigger},
     Lightbox.lightbox({
       model: model.lightbox,
@@ -158,15 +160,15 @@ const emitView = (fixture: LightboxFixture, isStyleX: boolean): string => {
 const source = (
   fixture: LightboxFixture,
   _index: number,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const isGallery = fixture.kind === 'gallery'
   const imports = `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-${isStyleX ? "\nimport * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\nimport type { ComponentLayoutStyle } from '@/stylex/contracts'\n" : ''}
+${isStyleX ? "\nimport * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'\nimport type { ComponentLayoutStyle } from '@/stylex/contracts'\n" : ''}
 import * as Button from '@/${isStyleX ? 'stylex' : 'ui'}/button'
 import * as Lightbox from '@/${isStyleX ? 'stylex' : 'ui'}/lightbox'${isStyleX ? `\n\n${emitStyles}` : ''}`
   return foldkitApplication({
@@ -208,8 +210,8 @@ export const update = (
   })
 }
 
-export const lightboxExamples = (
-  renderer: 'tailwind' | 'stylex',
+const lightboxExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   lightboxFixtures.map((fixture, index) => ({
     title: fixture.title,
@@ -219,3 +221,8 @@ export const lightboxExamples = (
       : { description: fixture.description }),
     code: source(fixture, index, renderer),
   }))
+
+export const lightboxExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, lightboxExamplesFor(renderer))

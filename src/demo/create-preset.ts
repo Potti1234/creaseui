@@ -313,15 +313,66 @@ export const presetCss = (config: Config): string => {
   return `${theme}${enhancements}${style}${icons}`
 }
 
+/* Preset geometry is declared per semantic role group rather than per
+   component, so every control (not only Button/Input) follows the style.
+   Controls nested in an Input Group defer to the group's own frame. */
+const CONTROL_SLOTS = [
+  'button',
+  'input',
+  'textarea',
+  'select-trigger',
+  'native-select',
+  'input-group',
+  'toggle',
+] as const
+const SINGLE_LINE_SLOTS = CONTROL_SLOTS.filter(slot => slot !== 'textarea')
+const SURFACE_SLOTS = ['card'] as const
+const SELECTION_SLOTS = ['checkbox', 'radio-group-item', 'switch'] as const
+const ROW_SLOTS = ['item', 'sidebar-menu-button'] as const
+const CELL_SLOTS = ['table-cell'] as const
+const TAB_SLOTS = ['tabs-list', 'tabs-trigger', 'pagination-link'] as const
+const DISCLOSURE_SLOTS = ['accordion-trigger', 'navigation-menu-link'] as const
+const DAY_SLOTS = ['calendar-day'] as const
+
+const where = (slots: ReadonlyArray<string>): string =>
+  `:where(${slots
+    .map(slot => `[data-slot="${slot}"]:not([data-slot="input-group"] *)`)
+    .join(',')})`
+
+const whereSized = (slots: ReadonlyArray<string>, size: string): string =>
+  `:where(${slots
+    .map(
+      slot =>
+        `[data-slot="${slot}"][data-size="${size}"]:not([data-slot="input-group"] *)`,
+    )
+    .join(',')})`
+
+/** Mira's compact named-size scale (shadcn Mira: h-5/6/7/8). Text controls
+ *  shrink by their own `data-size`; icon buttons and toggles stay square. */
+export const MIRA_SIZES = {
+  xs: '1.25rem',
+  sm: '1.5rem',
+  default: '1.75rem',
+  lg: '2rem',
+} as const
+const SIZED_SLOTS = ['button', 'select-trigger', 'native-select'] as const
+const MIRA_GEOMETRY = [
+  `${where(['input', 'input-group'])}{height:${MIRA_SIZES.default};min-height:0}`,
+  ...Object.entries(MIRA_SIZES).map(
+    ([size, value]) =>
+      `${whereSized(SIZED_SLOTS, size)}{height:${value};min-height:0}${whereSized(['button'], size === 'default' ? 'icon' : `icon-${size}`)}{width:${value};min-width:0;height:${value};min-height:0}${whereSized(['toggle'], size)}{min-width:${value};height:${value};min-height:0}`,
+  ),
+].join('')
+
 const STYLE_RULES: Readonly<Record<string, string>> = {
   nova: '',
-  vega: ':where([data-slot="button"],[data-slot="input"],[data-slot="card"]){box-shadow:none}',
-  maia: ':where([data-slot="button"],[data-slot="input"]){border-radius:9999px}:where([data-slot="card"]){border-radius:calc(var(--radius) + 0.5rem)}',
-  lyra: ':where([data-slot="button"],[data-slot="input"],[data-slot="card"]){border-radius:0}',
-  mira: ':where([data-slot="button"],[data-slot="input"]){min-height:1.75rem;font-size:.8125rem}',
-  luma: ':where([data-slot="button"],[data-slot="input"],[data-slot="card"]){box-shadow:0 1px 3px oklch(0 0 0/.08)}',
-  sera: ':where([data-slot="button"],[data-slot="input"],[data-slot="card"]){border-width:2px}',
-  rhea: ':where([data-slot="button"],[data-slot="input"]){min-height:2.5rem}:where([data-slot="card"]){padding:.25rem}',
+  vega: `${where([...CONTROL_SLOTS, ...SELECTION_SLOTS, ...SURFACE_SLOTS])}{box-shadow:none}`,
+  maia: `${where([...SINGLE_LINE_SLOTS, ...TAB_SLOTS, ...DAY_SLOTS])}{border-radius:9999px}${where(['textarea', ...ROW_SLOTS, ...DISCLOSURE_SLOTS])}{border-radius:calc(var(--radius) + 0.25rem)}${where(SURFACE_SLOTS)}{border-radius:calc(var(--radius) + 0.5rem)}`,
+  lyra: `${where([...CONTROL_SLOTS, 'checkbox', ...ROW_SLOTS, ...TAB_SLOTS, ...DISCLOSURE_SLOTS, ...DAY_SLOTS, ...SURFACE_SLOTS])}{border-radius:0}`,
+  mira: `${MIRA_GEOMETRY}${where(CONTROL_SLOTS)}{font-size:.8125rem}${where(CELL_SLOTS)}{padding-block:.25rem}`,
+  luma: `${where([...CONTROL_SLOTS, ...SELECTION_SLOTS, ...SURFACE_SLOTS])}{box-shadow:0 1px 3px oklch(0 0 0/.08)}`,
+  sera: `${where([...CONTROL_SLOTS, ...SELECTION_SLOTS, ...SURFACE_SLOTS])}{border-width:2px}`,
+  rhea: `${where([...SINGLE_LINE_SLOTS, ...ROW_SLOTS])}{min-height:2.5rem}:where([data-slot="card"]:not([data-size="sm"])){--card-spacing:1.75rem;--card-spacing-default:1.75rem}${where(CELL_SLOTS)}{padding-block:.75rem}`,
 }
 
 const fontImport = (font: string): string => {

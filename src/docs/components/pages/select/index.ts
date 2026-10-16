@@ -28,5 +28,6 @@ export const selectPage = authoredPage({
     ],
     examples: selectExamples('tailwind'),
     stylexExamples: selectExamples('stylex'),
+    pleatExamples: selectExamples('pleat'),
   },
 })

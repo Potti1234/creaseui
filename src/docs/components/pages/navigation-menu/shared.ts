@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import {
   foldkitApplication,
   staticComponentApplication,
@@ -28,7 +29,7 @@ export const navigationMenuFixtures = [
 ] as const
 
 const staticSource = (
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
   exampleIndex: 0 | 2 | 3,
 ): string => {
   const config =
@@ -74,8 +75,10 @@ const staticSource = (
   })
 }
 
-const disclosureSource = (renderer: 'tailwind' | 'stylex'): string => {
-  const isStyleX = renderer === 'stylex'
+const disclosureSource = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
+  const isStyleX = renderer !== 'tailwind'
   return foldkitApplication({
     title: 'Navigation Menu — Disclosure',
     imports: `import { Schema as S } from 'effect'
@@ -106,7 +109,7 @@ export type Message = typeof Message.Type`,
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Navigation Menu — Disclosure',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     NavigationMenu.navigationMenu({ ariaLabel: 'Primary', children: [
       NavigationMenu.navigationMenuList({ children: [
         NavigationMenu.navigationMenuItem({ children: [NavigationMenu.navigationMenuLink({ href: '/', isActive: true, children: ['Home'] }, h)] }, h),
@@ -127,11 +130,16 @@ export type Message = typeof Message.Type`,
   })
 }
 
-export const navigationMenuExamples = (
-  renderer: 'tailwind' | 'stylex',
+const navigationMenuExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> => [
   { ...navigationMenuFixtures[0], code: staticSource(renderer, 0) },
   { ...navigationMenuFixtures[1], code: disclosureSource(renderer) },
   { ...navigationMenuFixtures[2], code: staticSource(renderer, 2) },
   { ...navigationMenuFixtures[3], code: staticSource(renderer, 3) },
 ]
+
+export const navigationMenuExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, navigationMenuExamplesFor(renderer))

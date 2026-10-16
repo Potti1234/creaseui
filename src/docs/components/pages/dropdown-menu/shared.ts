@@ -1,5 +1,8 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
+const emitShellStyles =
+  "import * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\n\nconst shellStyles = stylex.create({\n  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },\n})"
 
 export type DropdownMenuItemSpec = Readonly<{
   value: string
@@ -423,10 +426,10 @@ const allItemSpecs = (
 
 const source = (
   fixture: DropdownMenuFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const uiDir = isStyleX ? 'stylex' : 'ui'
   const specs = allItemSpecs(fixture)
   const usesIcons = specs.some(spec => spec.icon !== undefined)
@@ -534,13 +537,13 @@ ${updateExtra}
     }
   }
 }`,
-    view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => {
+    view: `${isStyleX ? emitShellStyles + '\n\n' : ''}export const view = (model: Model, h: HtmlBuilder<Message>): Document => {
   const configs: Record<Item, DropdownMenu.DropdownMenuItemConfig<Item>> = {
     ${specs.map(itemConfigSource).join(',\n    ')},
   }
   return {
     title: 'Dropdown Menu — ${fixture.title}',
-    body: h.main([h.Class('flex min-h-screen flex-col items-center justify-center gap-4 p-8')], [
+    body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(shellStyles.shell)' : "'flex min-h-screen flex-col items-center justify-center gap-4 p-8'"})], [
       DropdownMenu.dropdownMenu({
         model: model.menu,
         toParentMessage: message => GotMenuMessage({ message }),
@@ -559,11 +562,16 @@ ${updateExtra}
   })
 }
 
-export const dropdownMenuExamples = (
-  renderer: 'tailwind' | 'stylex',
+const dropdownMenuExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   dropdownMenuFixtures.map(fixture => ({
     title: fixture.title,
     description: fixture.description,
     code: source(fixture, renderer),
   }))
+
+export const dropdownMenuExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, dropdownMenuExamplesFor(renderer))

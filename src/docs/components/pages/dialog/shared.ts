@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type DialogFixtureKind =
@@ -108,6 +109,7 @@ export const dialogRtlFields = [
 ] as const
 
 const emitStyles = `const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   compact: { maxWidth: '24rem' },
   shareWidth: { maxWidth: '28rem' },
   scrollArea: { marginInline: '-1rem', maxHeight: '50vh', overflowY: 'auto', paddingInline: '1rem' },
@@ -242,11 +244,11 @@ const emitMaxWidth = (fixture: DialogFixture, isStyleX: boolean): string => {
     case 'compact':
     case 'rtl':
       return isStyleX
-        ? '      layoutStyle: styles.compact,\n'
+        ? '      layoutStyle: layoutStyle({ maxWidth: "24rem" }),\n'
         : "      class: 'sm:max-w-sm',\n"
     case 'share':
       return isStyleX
-        ? '      layoutStyle: styles.shareWidth,\n'
+        ? '      layoutStyle: layoutStyle({ maxWidth: "28rem" }),\n'
         : "      class: 'sm:max-w-md',\n"
     default:
       return ''
@@ -302,10 +304,10 @@ const sq = (value: string): string => value.replaceAll("'", "\\'")
 const dialogSource = (
   fixture: DialogFixture,
   _index: number,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const inputs = hasInputs(fixture.kind)
   const rtl = fixture.kind === 'rtl'
   return foldkitApplication({
@@ -313,7 +315,7 @@ const dialogSource = (
     imports: `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-${isStyleX ? "\nimport * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\n" : fixture.kind === 'noClose' || fixture.kind === 'scroll' ? '' : "\nimport { cn } from '@/lib/utils'\n"}
+${isStyleX ? "\nimport * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'\n" : fixture.kind === 'noClose' || fixture.kind === 'scroll' ? '' : "\nimport { cn } from '@/lib/utils'\n"}
 import * as Button from '@/${isStyleX ? 'stylex' : 'ui'}/button'
 import * as Dialog from '@/${isStyleX ? 'stylex' : 'ui'}/dialog'${inputs || fixture.kind === 'share' ? `\nimport * as Field from '@/${isStyleX ? 'stylex' : 'ui'}/field'\nimport * as Input from '@/${isStyleX ? 'stylex' : 'ui'}/input'` : ''}${isStyleX ? `\n\n${emitStyles}` : ''}`,
     model: `export const Model = S.Struct({ dialog: Dialog.Model${inputs ? ', name: S.String, username: S.String' : ''} })
@@ -358,7 +360,7 @@ export const update = (
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Dialog — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
     Button.button({
       onClick: ClickedOpen(),${fixture.triggerVariant === 'outline' ? "\n      variant: 'outline'," : ''}
       children: ['${fixture.triggerLabel}'],
@@ -378,8 +380,8 @@ ${emitMaxWidth(fixture, isStyleX)}${fixture.kind === 'noClose' ? '      showClos
   })
 }
 
-export const dialogExamples = (
-  renderer: 'tailwind' | 'stylex',
+const dialogExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   dialogFixtures.map((fixture, index) => ({
     title: fixture.title,
@@ -389,3 +391,8 @@ export const dialogExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: dialogSource(fixture, index, renderer),
   }))
+
+export const dialogExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, dialogExamplesFor(renderer))

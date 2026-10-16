@@ -118,7 +118,10 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                         variant: 'ghost',
                         size: 'icon',
                         class: 'size-8 bg-muted',
-                        children: [Icon.icon('x', {}, h)],
+                        children: [
+                          Icon.icon('x', {}, h),
+                          h.span([h.Class('sr-only')], ['Close Preferences']),
+                        ],
                       },
                       h,
                     ),
@@ -135,14 +138,14 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
             children: [
               fieldGroup(
                 {
-                  class: 'gap-[22px]',
+                  class: 'gap-5.5',
                   children: [
                     field(
                       {
                         children: [
                           fieldLabel(
                             {
-                              for: 'preferences-currency',
+                              for: 'preferences-currency-button',
                               children: ['Default Currency'],
                             },
                             h,

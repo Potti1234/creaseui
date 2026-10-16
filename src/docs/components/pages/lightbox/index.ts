@@ -31,5 +31,6 @@ export const lightboxPage = authoredPage({
     ],
     examples: lightboxExamples('tailwind'),
     stylexExamples: lightboxExamples('stylex'),
+    pleatExamples: lightboxExamples('pleat'),
   },
 })

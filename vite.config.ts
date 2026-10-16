@@ -43,8 +43,14 @@ const buildDirty = (() => {
 })()
 
 export default defineConfig(({ mode }) => {
-  const renderer = mode === 'stylex' ? 'stylex' : 'tailwind'
+  const renderer =
+    mode === 'pleat' ? 'pleat' : mode === 'stylex' ? 'stylex' : 'tailwind'
   const isStyleX = renderer === 'stylex'
+  const isPleat = renderer === 'pleat'
+  const isTailwind = renderer === 'tailwind'
+  const canonicalOrigin = isTailwind
+    ? 'https://creaseui.com/'
+    : `https://${renderer}.creaseui.com/`
   const source = (path: string) =>
     fileURLToPath(new URL(`./src/${path}`, import.meta.url))
   return {
@@ -55,7 +61,7 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [
       stylex.vite(stylexCompilerOptions),
-      ...(isStyleX ? [] : [tailwindcss()]),
+      ...(isTailwind ? [tailwindcss()] : []),
       {
         name: 'creaseui:site-entry',
         transformIndexHtml: {
@@ -66,24 +72,19 @@ export default defineConfig(({ mode }) => {
                 '<html lang="en">',
                 `<html lang="en" data-renderer="${renderer}">`,
               )
-              .replace(
-                'https://creaseui.com/',
-                isStyleX
-                  ? 'https://stylex.creaseui.com/'
-                  : 'https://creaseui.com/',
-              )
+              .replace('https://creaseui.com/', canonicalOrigin)
               .replace(
                 '/src/styles.css',
-                isStyleX ? '/src/site/stylex.css' : '/src/styles.css',
+                isTailwind ? '/src/styles.css' : `/src/site/${renderer}.css`,
               )
               .replace(
                 '/src/entry.ts',
-                isStyleX ? '/src/entry-stylex.ts' : '/src/entry.ts',
+                isTailwind ? '/src/entry.ts' : `/src/entry-${renderer}.ts`,
               )
           },
         },
         generateBundle(_options, bundle) {
-          if (!isStyleX) return
+          if (isTailwind) return
           for (const item of Object.values(bundle)) {
             if (
               item.type === 'asset' &&
@@ -142,13 +143,42 @@ export default defineConfig(({ mode }) => {
               '@/ui/typography': source('stylex/typography.ts'),
               '@/demo/blocks/index-page': source('site/blocks.stylex.ts'),
             }
-          : {}),
+          : isPleat
+            ? {
+                '@/site/skin': source('site/skin.pleat.ts'),
+                '@/site/docs-search-ui': source('site/docs-search-ui.pleat.ts'),
+                '@/site/landing-skin': source('site/landing-skin.pleat.ts'),
+                '@/site/landing-ui': source('site/landing-ui.pleat.ts'),
+                '@/site/landing-tour-skin': source(
+                  'site/landing-tour-skin.pleat.ts',
+                ),
+                '@/site/landing-tour-ui': source(
+                  'site/landing-tour-ui.pleat.ts',
+                ),
+                '@/docs/component-page': source('site/docs.pleat.ts'),
+                '@/docs/getting-started-view': source(
+                  'site/getting-started.pleat.ts',
+                ),
+                '@/ui/code': source('pleat/code.ts'),
+                '@/ui/code-block': source('pleat/code-block.ts'),
+                '@/ui/heading': source('pleat/heading.ts'),
+                '@/ui/text': source('pleat/text.ts'),
+                '@/ui/typography': source('pleat/typography.ts'),
+                '@/demo/blocks/index-page': source('site/blocks.pleat.ts'),
+              }
+            : {}),
         '@': source(''),
       },
     },
     cacheDir: `node_modules/.vite-${renderer}`,
-    server: { port: isStyleX ? 5174 : 5173, strictPort: true },
-    preview: { port: isStyleX ? 4174 : 4173, strictPort: true },
+    server: {
+      port: isTailwind ? 5173 : isStyleX ? 5174 : 5175,
+      strictPort: true,
+    },
+    preview: {
+      port: isTailwind ? 4173 : isStyleX ? 4174 : 4175,
+      strictPort: true,
+    },
     build: { outDir: `dist/${renderer}` },
   }
 })

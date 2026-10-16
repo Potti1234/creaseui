@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 // InfoTip ships no blocks under packages/cli/assets/templates/blocks — the
@@ -122,7 +123,7 @@ ${tipCall(fixture.tips[0]!, isStyleX, '    ')},
       h.label([h.Class(${labelClass})], ['Access level']),
 ${tipCall(fixture.tips[0]!, isStyleX, '      ')},
     ]),
-    Input.input({ id: 'access-level', value: '', placeholder: 'Editor', ${isStyleX ? 'layoutStyle: styles.input' : "class: 'w-56'"} }, h),
+    Input.input({ id: 'access-level', value: '', placeholder: 'Editor', ${isStyleX ? 'layoutStyle: layoutStyle({ width: "14rem" })' : "class: 'w-56'"} }, h),
   ])`
     case 'basic':
     default:
@@ -135,12 +136,13 @@ ${tipCall(fixture.tips[0]!, isStyleX, '    ')},
 
 const emitApplication = (
   fixture: InfoTipFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const base = isStyleX ? 'stylex' : 'ui'
   const stylesBlock = isStyleX
     ? `\n\nconst styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   row: { alignItems: 'center', display: 'flex', flexWrap: 'wrap', gap: '1rem' },
   inline: { alignItems: 'center', display: 'flex', gap: '0.375rem' },
   column: { display: 'flex', flexDirection: 'column', gap: '0.375rem' },
@@ -155,7 +157,7 @@ const emitApplication = (
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { taggedStruct } from 'foldkit/schema'
-${isStyleX ? "import * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\n" : ''}import * as InfoTip from '@/${base}/info-tip'${fixture.kind === 'context' ? `\nimport * as Input from '@/${base}/input'` : ''}${stylesBlock}`,
+${isStyleX ? "import * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'\n" : ''}import * as InfoTip from '@/${base}/info-tip'${fixture.kind === 'context' ? `\nimport * as Input from '@/${base}/input'` : ''}${stylesBlock}`,
     model: `export const Model = S.Struct({
   tips: S.Record(S.String, InfoTip.Model),
 })
@@ -203,15 +205,15 @@ ${fixture.tips
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Info Tip — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
 ${emitBody(fixture, isStyleX)}
   ]),
 })`,
   })
 }
 
-export const infoTipExamples = (
-  renderer: 'tailwind' | 'stylex',
+const infoTipExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   infoTipFixtures.map(fixture => ({
     title: fixture.title,
@@ -221,3 +223,8 @@ export const infoTipExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer),
   }))
+
+export const infoTipExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, infoTipExamplesFor(renderer))

@@ -44,6 +44,7 @@ export type DataTableColumn<Row> = Readonly<{
   cell: (row: Row) => Html | string
   sortValue?: (row: Row) => string | number
   isHideable?: boolean
+  align?: 'left' | 'center' | 'right'
   layoutStyle?: ComponentLayoutStyle
   /** Faceted variant: lucide icon rendered in the header menu trigger. */
   iconName?: string
@@ -119,6 +120,9 @@ const SHADOW_MD =
   'rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px'
 
 const styles = stylex.create({
+  alignLeft: { textAlign: 'left' },
+  alignCenter: { textAlign: 'center' },
+  alignRight: { textAlign: 'right' },
   cell: {
     paddingBlock: '0.75rem',
     paddingInline: '0.75rem',
@@ -172,7 +176,7 @@ const styles = stylex.create({
     paddingInline: '0.5rem',
     color: tokens.foreground,
     fontWeight: 500,
-    textAlign: 'left',
+    textAlign: 'start',
     verticalAlign: 'middle',
     height: '2.5rem',
   },
@@ -336,6 +340,15 @@ const selectionControl = <Msg>(
     h,
   )
 
+const columnAlignStyle = (align: DataTableColumn<unknown>['align']) =>
+  align === 'right'
+    ? styles.alignRight
+    : align === 'center'
+      ? styles.alignCenter
+      : align === 'left'
+        ? styles.alignLeft
+        : undefined
+
 export const dataTable = <Row, Msg>(
   props: DataTableProps<Row, Msg>,
   h: HtmlBuilder<Msg>,
@@ -388,7 +401,14 @@ export const dataTable = <Row, Msg>(
                   : 'none',
               ),
             ]),
-        h.Class(className(reset.tableHeading, styles.head, column.layoutStyle)),
+        h.Class(
+          className(
+            reset.tableHeading,
+            styles.head,
+            columnAlignStyle(column.align),
+            column.layoutStyle,
+          ),
+        ),
       ],
       column.sortValue === undefined
         ? [column.header]
@@ -503,7 +523,15 @@ export const dataTable = <Row, Msg>(
                 : []),
               ...visibleColumns.map(column =>
                 h.td(
-                  [h.Class(className(styles.cell, column.layoutStyle))],
+                  [
+                    h.Class(
+                      className(
+                        styles.cell,
+                        columnAlignStyle(column.align),
+                        column.layoutStyle,
+                      ),
+                    ),
+                  ],
                   [column.cell(row)],
                 ),
               ),
@@ -520,7 +548,6 @@ export const dataTable = <Row, Msg>(
   return h.div(
     [
       h.DataAttribute('slot', 'data-table'),
-      ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
       h.Class(className(styles.root, props.layoutStyle)),
     ],
     [
@@ -670,6 +697,7 @@ export const dataTable = <Row, Msg>(
         [
           Table.table(
             {
+              ariaLabel: props.ariaLabel,
               children: [
                 h.thead(
                   [],

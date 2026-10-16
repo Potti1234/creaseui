@@ -13,7 +13,8 @@ describe('ECharts Foldkit lifecycle adapter', () => {
   it('acquires and releases the imperative runtime through Mount', () => {
     assert.match(adapter, /Mount\.define/u)
     assert.match(adapter, /Effect\.acquireRelease/u)
-    assert.match(adapter, /echarts\.init/u)
+    assert.match(adapter, /import\('echarts\/core'\)/u)
+    assert.match(adapter, /echartsRuntime\.init\(element/u)
     assert.match(adapter, /chart\.dispose\(\)/u)
   })
 

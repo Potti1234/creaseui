@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "policyVersion": "crease-default-v1",
+  "renderer": "pleat",
+  "artifacts": [
+    {
+      "id": "crease/pleat-button",
+      "version": "0.1.0",
+      "files": [
+        {
+          "path": "src/design/button.ts",
+          "role": "renderer",
+          "rawRendering": true
+        },
+        {
+          "path": "src/design/behavior/button.ts",
+          "role": "behavior",
+          "rawRendering": true
+        }
+      ],
+      "exports": [
+        {
+          "file": "src/design/button.ts",
+          "name": "button",
+          "contract": "control.button",
+          "variants": {
+            "variant": ["default", "outline", "ghost"],
+            "size": ["default", "sm", "icon", "icon-sm"]
+          }
+        },
+        {
+          "file": "src/design/behavior/button.ts",
+          "name": "renderButton",
+          "visibility": "implementation",
+          "contract": "behavior.button"
+        }
+      ]
+    },
+    {
+      "id": "crease/pleat-stack",
+      "version": "0.1.0",
+      "files": [
+        {
+          "path": "src/design/stack.ts",
+          "role": "renderer",
+          "rawRendering": true
+        }
+      ],
+      "exports": [
+        {
+          "file": "src/design/stack.ts",
+          "name": "stack",
+          "contract": "composition.stack"
+        }
+      ]
+    },
+    {
+      "id": "crease/pleat-text",
+      "version": "0.1.0",
+      "files": [
+        {
+          "path": "src/design/text.ts",
+          "role": "renderer",
+          "rawRendering": true
+        }
+      ],
+      "exports": [
+        {
+          "file": "src/design/text.ts",
+          "name": "text",
+          "contract": "typography.text"
+        }
+      ]
+    },
+    {
+      "id": "crease/pleat-contracts",
+      "version": "0.1.0",
+      "files": [{ "path": "src/design/contracts.ts", "role": "theme" }],
+      "exports": [
+        {
+          "file": "src/design/contracts.ts",
+          "name": "layoutStyle",
+          "renderKind": "non-rendering"
+        }
+      ]
+    }
+  ]
+}

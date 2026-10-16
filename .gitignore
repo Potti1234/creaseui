@@ -7,3 +7,6 @@ dist/
 playwright-report/
 test-results/
 /output/
+/e2e/.generated/
+
+packages/lint/test/fixtures/.strict-typed-*/

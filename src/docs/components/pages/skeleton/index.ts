@@ -19,5 +19,6 @@ export const skeletonPage = authoredPage({
       'Mark the surrounding region busy and provide an accessible loading label when the wait is meaningful. Skeleton shapes themselves remain decorative.',
     examples: skeletonExamples('tailwind'),
     stylexExamples: skeletonExamples('stylex'),
+    pleatExamples: skeletonExamples('pleat'),
   },
 })

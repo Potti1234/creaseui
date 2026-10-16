@@ -11,6 +11,7 @@
   "sortPackageJson": false,
   "ignorePatterns": [
     ".registry-validation/**",
+    "packages/lint/test/fixtures/tutorial-attempt-01/**",
     "registry/icons/**",
     "registry.json",
     "src/ui/registry.json",

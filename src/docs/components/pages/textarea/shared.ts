@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type TextareaKind =
@@ -77,7 +78,7 @@ const ta = (id: string, extra: string): string =>
 
 const emitBody = (fixture: TextareaFixture, isStyleX: boolean): string => {
   const wide = isStyleX
-    ? 'layoutStyle: styles.wide'
+    ? 'layoutStyle: layoutStyle({ width: "100%", maxWidth: "20rem" })'
     : "class: 'w-full max-w-xs'"
   const stack = isStyleX ? 'className(styles.stack)' : "'grid w-full gap-2'"
   switch (fixture.kind) {
@@ -173,7 +174,9 @@ const emitImports = (fixture: TextareaFixture, isStyleX: boolean): string => {
   }
   parts.push(`import * as Textarea from '@/${base}/textarea'`)
   if (isStyleX) {
-    parts.push(`import { className } from '@/stylex/style'`)
+    parts.push(
+      `import { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'`,
+    )
   }
   return parts.join('\n')
 }
@@ -206,9 +209,9 @@ const emitInit = (fixture: TextareaFixture): string => {
 
 const emitApplication = (
   fixture: TextareaFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const stylesBlock = isStyleX
     ? `\n\nconst styles = stylex.create({\n${emitStyles(fixture)}\n})`
     : ''
@@ -236,15 +239,15 @@ export type Message = typeof Message.Type`,
 }`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Textarea — ${fixture.title}',
-  body: h.main([h.Class('flex min-h-screen items-center justify-center p-8')], [
+  body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [
 ${emitBody(fixture, isStyleX)}
   ]),
 })`,
   })
 }
 
-export const textareaExamples = (
-  renderer: 'tailwind' | 'stylex',
+const textareaExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   textareaFixtures.map(fixture => ({
     title: fixture.title,
@@ -254,3 +257,8 @@ export const textareaExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer),
   }))
+
+export const textareaExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, textareaExamplesFor(renderer))

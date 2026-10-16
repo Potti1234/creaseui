@@ -13,7 +13,8 @@ html {
    so border/input/ring colors do not follow the board preset on the Tailwind
    site. Mirror those static tokens here for parity; every other color token
    keeps resolving the preset-scoped raw vars like Tailwind's utilities do. */
-:root {
+:root,
+.light {
   --color-border: oklch(0.922 0 0);
   --color-input: oklch(0.922 0 0);
   --color-ring: oklch(0.708 0 0);

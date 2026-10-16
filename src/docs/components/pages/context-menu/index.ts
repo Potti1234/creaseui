@@ -31,5 +31,6 @@ export const contextMenuPage = authoredPage({
     ],
     examples: contextMenuExamples('tailwind'),
     stylexExamples: contextMenuExamples('stylex'),
+    pleatExamples: contextMenuExamples('pleat'),
   },
 })

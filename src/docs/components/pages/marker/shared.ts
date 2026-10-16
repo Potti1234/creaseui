@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type MarkerKind =
@@ -375,15 +376,16 @@ const emitBody = (fixture: MarkerFixture, isStyleX: boolean): string => {
 
 const emitApplication = (
   fixture: MarkerFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const stylesBlock = isStyleX ? emitStyles(fixture) : ''
   const bodyStart = isStyleX
     ? `h.main([h.Class(stylex.props(styles.page).className ?? '')], [`
-    : `h.main([h.Class('flex min-h-screen items-center justify-center p-4')], [`
+    : `h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-4'"})], [`
   const pageStyle = isStyleX
     ? `const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '1rem' },
   page: { display: 'flex', minHeight: '100vh', alignItems: 'center', justifyContent: 'center', padding: '1rem' },${
     stylesBlock === ''
       ? ''
@@ -410,8 +412,8 @@ ${stylesBlock}`
   })
 }
 
-export const markerExamples = (
-  renderer: 'tailwind' | 'stylex',
+const markerExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   markerFixtures.map(fixture => ({
     title: fixture.title,
@@ -421,3 +423,8 @@ export const markerExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer),
   }))
+
+export const markerExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, markerExamplesFor(renderer))

@@ -27,5 +27,6 @@ export const tooltipPage = authoredPage({
     ],
     examples: tooltipExamples('tailwind'),
     stylexExamples: tooltipExamples('stylex'),
+    pleatExamples: tooltipExamples('pleat'),
   },
 })

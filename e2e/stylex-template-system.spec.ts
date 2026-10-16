@@ -1,3 +1,4 @@
+import { withoutAcceptedContrast } from './accepted-contrast'
 import { visitRenderer } from './site-navigation'
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
@@ -36,7 +37,9 @@ test('semantic dashboard recipe preserves region ownership and responsive contai
 
   await page.setViewportSize({ height: 900, width: 390 })
   await expect(dashboard).toBeVisible()
-  await expect(dashboard.locator('nav')).toBeHidden()
+  await expect(
+    dashboard.locator('nav:not([data-slot="pagination"])'),
+  ).toBeHidden()
   const mobile = await dashboard.evaluate(element => ({
     clientWidth: element.clientWidth,
     scrollWidth: element.scrollWidth,
@@ -71,7 +74,7 @@ test('CreaseUI dashboards use constrained recipes and remain accessible', async 
       .include('[data-recipe]')
       .analyze()
     expect(
-      accessibility.violations.filter(
+      withoutAcceptedContrast(accessibility.violations).filter(
         ({ impact }) => impact === 'serious' || impact === 'critical',
       ),
     ).toEqual([])

@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type ItemKind =
@@ -175,7 +176,10 @@ const emitImports = (fixture: ItemFixture, isStyleX: boolean): string => {
     "import { defineMessageUnion } from 'foldkit/message'",
   ]
   if (isStyleX) {
-    parts.push('', "import * as stylex from '@stylexjs/stylex'")
+    parts.push(
+      '',
+      "import * as stylex from '@stylexjs/stylex'\nimport { layoutStyle } from '@/stylex/contracts'",
+    )
   }
   if (kindUsesAvatar(fixture.kind)) {
     parts.push(`import * as Avatar from '@/${base}/avatar'`)
@@ -679,7 +683,7 @@ const emitBody = (fixture: ItemFixture, isStyleX: boolean): string => {
                 ],
               }, h),
               Item.itemContent({
-                ${isStyleX ? 'layoutStyle: styles.duration,' : "class: 'flex-none text-center',"}
+                ${isStyleX ? 'layoutStyle: layoutStyle({ flexGrow: 0, flexShrink: 0 }),' : "class: 'flex-none text-center',"}
                 children: [
                   Item.itemDescription({ children: [song.duration] }, h),
                 ],
@@ -691,7 +695,7 @@ const emitBody = (fixture: ItemFixture, isStyleX: boolean): string => {
     ])`
     case 'group':
       return `    Item.itemGroup({
-      ${isStyleX ? 'layoutStyle: styles.group,' : "class: 'max-w-sm',"}
+      ${isStyleX ? 'layoutStyle: layoutStyle({ maxWidth: "24rem" }),' : "class: 'max-w-sm',"}
       children: people.map(person =>
         ${personItem(personAvatar, isStyleX ? '' : '', plusAction)}
       ),
@@ -763,7 +767,7 @@ const emitBody = (fixture: ItemFixture, isStyleX: boolean): string => {
     case 'dropdown': {
       const menuItem = `Item.item({
               size: 'xs',
-              ${isStyleX ? 'layoutStyle: styles.menuItem,' : "class: 'w-full p-2',"}
+              ${isStyleX ? 'layoutStyle: layoutStyle({ width: "100%" }),' : "class: 'w-full p-2',"}
               children: [
                 Item.itemMedia({
                   children: [
@@ -815,6 +819,7 @@ const emitBody = (fixture: ItemFixture, isStyleX: boolean): string => {
 const emitApplication = (fixture: ItemFixture, isStyleX: boolean): string => {
   const stylesBlock = isStyleX
     ? `const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '1rem' },
   page: { display: 'flex', minHeight: '100vh', alignItems: 'center', justifyContent: 'center', padding: '1rem' },
   ${fixture.kind === 'avatar' ? "avatarStack: { display: 'flex', gap: '-0.5rem' }," : ''}
 ${emitStyles(fixture)}
@@ -824,7 +829,7 @@ ${emitStyles(fixture)}
     : ''
   const bodyStart = isStyleX
     ? `h.main([h.Class(stylex.props(styles.page).className ?? '')], [`
-    : `h.main([h.Class('flex min-h-screen items-center justify-center p-4')], [`
+    : `h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-4'"})], [`
   return foldkitApplication({
     title: `Item — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'\n${emitImports(fixture, isStyleX)}\n\n${stylesBlock}${emitData(fixture)}`,
@@ -841,8 +846,8 @@ ${emitStyles(fixture)}
   })
 }
 
-export const itemExamples = (
-  renderer: 'tailwind' | 'stylex',
+const itemExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   itemFixtures.map(fixture => ({
     title: fixture.title,
@@ -850,5 +855,10 @@ export const itemExamples = (
       ? {}
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
-    code: emitApplication(fixture, renderer === 'stylex'),
+    code: emitApplication(fixture, renderer !== 'tailwind'),
   }))
+
+export const itemExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, itemExamplesFor(renderer))

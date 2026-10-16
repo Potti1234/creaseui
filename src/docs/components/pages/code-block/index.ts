@@ -25,5 +25,6 @@ export const codeBlockPage = authoredPage({
     ],
     examples: codeBlockExamples('tailwind'),
     stylexExamples: codeBlockExamples('stylex'),
+    pleatExamples: codeBlockExamples('pleat'),
   },
 })

@@ -1,6 +1,6 @@
 import type { HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   nativeSelectFixtures,
   nativeSelectSpecs,
@@ -11,7 +11,7 @@ interface NativeSelectPreviewShape {
   readonly value: string
 }
 
-export const nativeSelectStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const nativeSelectStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

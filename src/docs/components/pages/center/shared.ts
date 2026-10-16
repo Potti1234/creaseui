@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { staticComponentApplication } from '@/docs/components/pages/authored-page'
 
 /* Astryx Center example blocks ported 1:1. astryx Card default padding →
@@ -35,7 +36,9 @@ export const centerFixtures: Readonly<
   },
 ]
 
-const emitShowcase = (renderer: 'tailwind' | 'stylex'): string => {
+const emitShowcase = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const heading =
     renderer === 'tailwind'
       ? `h.h4([h.Class('text-sm font-semibold')], ['Centered content'])`
@@ -55,7 +58,9 @@ const emitShowcase = (renderer: 'tailwind' | 'stylex'): string => {
     )`
 }
 
-const emitHorizontal = (renderer: 'tailwind' | 'stylex'): string => {
+const emitHorizontal = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const icon = (name: string): string =>
     renderer === 'tailwind'
       ? `icon('${name}', { class: 'size-4' }, h)`
@@ -65,7 +70,9 @@ const emitHorizontal = (renderer: 'tailwind' | 'stylex'): string => {
                 ${icon(name)},
               ] }, h)`
   const cardClass =
-    renderer === 'tailwind' ? `class: 'w-[520px]'` : `layoutStyle: styles.card`
+    renderer === 'tailwind'
+      ? `class: 'w-[520px]'`
+      : `layoutStyle: layoutStyle({ width: '32.5rem' })`
   return `Card.card(
       { size: 'sm', ${cardClass}, children: [
         Card.cardContent({ children: [
@@ -88,7 +95,9 @@ const emitHorizontal = (renderer: 'tailwind' | 'stylex'): string => {
     )`
 }
 
-const emitInsideCard = (renderer: 'tailwind' | 'stylex'): string => {
+const emitInsideCard = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const inboxIcon =
     renderer === 'tailwind'
       ? `icon('inbox', { class: 'size-6 text-muted-foreground' }, h)`
@@ -102,7 +111,9 @@ const emitInsideCard = (renderer: 'tailwind' | 'stylex'): string => {
       ? `h.p([h.Class('text-xs text-muted-foreground')], ['Messages from your team will appear here.'])`
       : `h.p([h.Class(stylex.props(styles.body).className ?? '')], ['Messages from your team will appear here.'])`
   const cardClass =
-    renderer === 'tailwind' ? `class: 'w-[400px]'` : `layoutStyle: styles.card`
+    renderer === 'tailwind'
+      ? `class: 'w-[400px]'`
+      : `layoutStyle: layoutStyle({ width: '25rem' })`
   return `Card.card(
       { size: 'sm', ${cardClass}, children: [
         Card.cardContent({ children: [
@@ -124,7 +135,7 @@ const emitInsideCard = (renderer: 'tailwind' | 'stylex'): string => {
 
 const emitBody = (
   fixture: CenterFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   switch (fixture.kind) {
     case 'showcase':
@@ -164,15 +175,19 @@ const stylexStylesFor = (kind: CenterFixture['kind']): string => {
   }
   if (entries.length === 0) return ''
   return `import * as stylex from '@stylexjs/stylex'
+import { layoutStyle } from '@/stylex/contracts'
 
 const styles = stylex.create({
 ${entries.join(',\n')},
 })`
 }
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = centerFixtures[index] ?? centerFixtures[0]
-  const mod = renderer === 'stylex' ? 'stylex' : 'ui'
+  const mod = renderer !== 'tailwind' ? 'stylex' : 'ui'
   const componentImports = [
     `import * as Stack from '@/${mod}/stack'`,
     fixture.kind !== 'showcase' ? `import * as Card from '@/${mod}/card'` : '',
@@ -181,7 +196,7 @@ const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
 import { icon } from '@/lib/icon'`
       : '',
     fixture.kind === 'insideCard' ? `import { icon } from '@/lib/icon'` : '',
-    renderer === 'stylex' ? stylexStylesFor(fixture.kind) : '',
+    renderer !== 'tailwind' ? stylexStylesFor(fixture.kind) : '',
   ]
     .filter(Boolean)
     .join('\n')
@@ -195,8 +210,8 @@ import { icon } from '@/lib/icon'`
   })
 }
 
-export const centerExamples = (
-  renderer: 'tailwind' | 'stylex',
+const centerExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   centerFixtures.map((fixture, index) => ({
     title: fixture.title,
@@ -205,3 +220,8 @@ export const centerExamples = (
       : { description: fixture.description }),
     code: source(index, renderer),
   }))
+
+export const centerExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, centerExamplesFor(renderer))

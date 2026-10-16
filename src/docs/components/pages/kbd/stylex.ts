@@ -2,7 +2,7 @@ import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { HtmlBuilder } from 'foldkit/html'
 
-import type { StyleXExamplePreviewProvider } from '@/docs/components/page-definition'
+import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import type { ComponentLayoutStyle } from '@/stylex/contracts'
 import * as Button from '@/stylex/button'
 import * as ButtonGroup from '@/stylex/button-group'
@@ -145,10 +145,15 @@ const kbdSxView = <Msg>(
                       onMessageJson(
                         JSON.stringify({ _tag: 'GotTooltipAMessage', message }),
                       ),
-                    trigger: Button.button(
-                      { variant: 'outline', children: ['Save'] },
-                      h,
-                    ),
+                    renderTrigger: attributes =>
+                      Button.button(
+                        {
+                          buttonAttributes: attributes,
+                          variant: 'outline',
+                          children: ['Save'],
+                        },
+                        h,
+                      ),
                     content: h.span(
                       [h.Class(sx(styles.tooltipContent))],
                       ['Save Changes ', Kbd.kbd({ children: ['S'] }, h)],
@@ -163,10 +168,15 @@ const kbdSxView = <Msg>(
                       onMessageJson(
                         JSON.stringify({ _tag: 'GotTooltipBMessage', message }),
                       ),
-                    trigger: Button.button(
-                      { variant: 'outline', children: ['Print'] },
-                      h,
-                    ),
+                    renderTrigger: attributes =>
+                      Button.button(
+                        {
+                          buttonAttributes: attributes,
+                          variant: 'outline',
+                          children: ['Print'],
+                        },
+                        h,
+                      ),
                     content: h.span(
                       [h.Class(sx(styles.tooltipContent))],
                       [
@@ -269,7 +279,7 @@ const kbdSxView = <Msg>(
   }
 }
 
-export const kbdStyleXPreview: StyleXExamplePreviewProvider = <Msg>(
+export const kbdStyleXPreview: ExamplePreviewProvider = <Msg>(
   exampleIndex: number,
   model: unknown,
   onMessageJson: (messageJson: string) => Msg,

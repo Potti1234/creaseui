@@ -56,7 +56,7 @@ export const landingSkin = {
   footer: 'border-t',
   footerInner:
     'text-muted-foreground mx-auto flex w-full max-w-[1200px] flex-wrap items-center justify-between gap-4 px-4 py-10 text-sm md:px-8',
-  footerLinks: 'flex items-center gap-4',
+  footerLinks: 'flex flex-wrap items-center gap-4',
   footerLink: 'hover:text-foreground',
   revision: 'font-mono hover:text-foreground',
   icon: 'size-4',

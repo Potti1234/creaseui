@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type ComboboxFixture = Readonly<{
@@ -283,7 +284,13 @@ const comboboxCall = (fixture: ComboboxFixture, isStyleX: boolean): string => {
         ? `trigger: {
           content: Icon.chevronsUpDown({ class: className(styles.chevron) }, h),
           ariaLabel: 'Toggle options',
-          layoutStyle: styles.toggleButton,
+          layoutStyle: layoutStyle({
+    height: "1.5rem",
+    width: "1.5rem",
+    flexShrink: 0,
+    alignSelf: "center",
+    marginInlineEnd: "0.25rem",
+  }),
         },`
         : `trigger: {
           content: Icon.chevronsUpDown({ class: 'size-4 opacity-50' }, h),
@@ -324,12 +331,12 @@ const comboboxCall = (fixture: ComboboxFixture, isStyleX: boolean): string => {
 
 const comboboxSource = (
   fixture: ComboboxFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   if (fixture.kind === 'multiple') {
     return multipleSource(fixture, renderer)
   }
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const dir = isStyleX ? 'stylex' : 'ui'
   const isClear = fixture.kind === 'clear'
   const isAuto = fixture.kind === 'autoHighlight'
@@ -402,7 +409,7 @@ import { type Document, type HtmlBuilder } from 'foldkit/html'
 ${
   isStyleX && isPopup
     ? `import * as stylex from '@stylexjs/stylex'
-import { className } from '@/stylex/style'
+import { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'
 `
     : ''
 }import * as Combobox from '@/${dir}/combobox'${
@@ -460,9 +467,9 @@ ${itemsCode(fixture.kind)}`,
 
 const multipleSource = (
   fixture: ComboboxFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const isStyleX = renderer === 'stylex'
+  const isStyleX = renderer !== 'tailwind'
   const dir = isStyleX ? 'stylex' : 'ui'
   return foldkitApplication({
     title: `Combobox — ${fixture.title}`,
@@ -473,7 +480,7 @@ import { type Document, type HtmlBuilder } from 'foldkit/html'
 ${
   isStyleX
     ? `import * as stylex from '@stylexjs/stylex'
-import { className } from '@/stylex/style'
+import { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'
 `
     : ''
 }import * as Combobox from '@/${dir}/combobox'
@@ -599,8 +606,8 @@ export type Message = typeof Message.Type`,
   })
 }
 
-export const comboboxExamples = (
-  renderer: 'tailwind' | 'stylex',
+const comboboxExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   comboboxFixtures.map(fixture => ({
     title: fixture.title,
@@ -610,3 +617,8 @@ export const comboboxExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: comboboxSource(fixture, renderer),
   }))
+
+export const comboboxExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, comboboxExamplesFor(renderer))

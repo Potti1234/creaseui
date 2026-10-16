@@ -21,5 +21,6 @@ export const timeInputPage = authoredPage({
       'Selector fields form a labelled group. Each segment is a named button opening a Foldkit listbox with arrow keys, typeahead, Home/End, Enter, and Escape. Typed fields have associated labels; invalid and disabled states are exposed to assistive technology.',
     examples: timeInputExamples('tailwind'),
     stylexExamples: timeInputExamples('stylex'),
+    pleatExamples: timeInputExamples('pleat'),
   },
 })

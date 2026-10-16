@@ -6,6 +6,39 @@
       "type": "registry:ui",
       "title": "Accordion",
       "description": "A CreaseUI Accordion component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "accordion",
+          "contract": "control.disclosure",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "view"
+          ],
+          "publicExports": [
+            "AccordionType",
+            "Message",
+            "Model",
+            "OutMessage",
+            "accordion",
+            "init",
+            "reflect",
+            "update",
+            "view"
+          ],
+          "renderer": "tailwind",
+          "replaces": [
+            "control.disclosure"
+          ],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/accordion-state",
         "Potti1234/creaseui/crease-theme",
@@ -45,6 +78,27 @@
       "type": "registry:ui",
       "title": "Alert Dialog",
       "description": "A CreaseUI Alert Dialog component for Foldkit.",
+      "categories": [
+        "overlay"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "alert-dialog",
+          "contract": "component.alert-dialog",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "alertDialog"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/alert-dialog-behavior",
         "Potti1234/creaseui/button",
@@ -64,6 +118,31 @@
       "type": "registry:ui",
       "title": "Alert",
       "description": "A CreaseUI Alert component for Foldkit.",
+      "categories": [
+        "feedback"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "alert",
+          "contract": "component.alert",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "alert",
+            "alertDescription",
+            "alertIcon",
+            "alertTitle",
+            "alertVariants"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "dependencies": [
         "class-variance-authority@^0.7.1"
       ],
@@ -85,6 +164,27 @@
       "type": "registry:ui",
       "title": "Aspect Ratio",
       "description": "A CreaseUI Aspect Ratio component for Foldkit.",
+      "categories": [
+        "layout"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "aspect-ratio",
+          "contract": "component.aspect-ratio",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "aspectRatio"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -102,6 +202,36 @@
       "type": "registry:ui",
       "title": "Attachment",
       "description": "A CreaseUI Attachment component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "attachment",
+          "contract": "component.attachment",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "attachment",
+            "attachmentAction",
+            "attachmentActions",
+            "attachmentContent",
+            "attachmentDescription",
+            "attachmentGroup",
+            "attachmentMedia",
+            "attachmentTitle",
+            "attachmentTrigger",
+            "attachmentVariants"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "dependencies": [
         "class-variance-authority@^0.7.1"
       ],
@@ -123,6 +253,29 @@
       "type": "registry:ui",
       "title": "Avatar Group",
       "description": "A CreaseUI Avatar Group component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "avatar-group",
+          "contract": "component.avatar-group",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "avatarGroup",
+            "avatarGroupOverflow",
+            "avatarStatusDot"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -140,6 +293,41 @@
       "type": "registry:ui",
       "title": "Avatar",
       "description": "A CreaseUI Avatar component for Foldkit.",
+      "categories": [
+        "data display"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "avatar",
+          "contract": "component.avatar",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "avatar",
+            "avatarBadge",
+            "avatarFallback",
+            "avatarGroup",
+            "avatarGroupCount",
+            "avatarImage",
+            "init",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -157,6 +345,28 @@
       "type": "registry:ui",
       "title": "Badge",
       "description": "A CreaseUI Badge component for Foldkit.",
+      "categories": [
+        "data display"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "badge",
+          "contract": "component.badge",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "badge",
+            "badgeVariants"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "dependencies": [
         "class-variance-authority@^0.7.1"
       ],
@@ -177,6 +387,32 @@
       "type": "registry:ui",
       "title": "Banner",
       "description": "A CreaseUI Banner component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "banner",
+          "contract": "component.banner",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "banner",
+            "init",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/banner-behavior",
         "Potti1234/creaseui/button",
@@ -197,6 +433,27 @@
       "type": "registry:ui",
       "title": "Blockquote",
       "description": "A CreaseUI Blockquote component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "blockquote",
+          "contract": "component.blockquote",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "blockquote"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -214,6 +471,34 @@
       "type": "registry:ui",
       "title": "Breadcrumb",
       "description": "A CreaseUI Breadcrumb component for Foldkit.",
+      "categories": [
+        "navigation"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "breadcrumb",
+          "contract": "component.breadcrumb",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "breadcrumb",
+            "breadcrumbEllipsis",
+            "breadcrumbItem",
+            "breadcrumbLink",
+            "breadcrumbList",
+            "breadcrumbPage",
+            "breadcrumbSeparator",
+            "breadcrumbTrail"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/breadcrumb-behavior",
         "Potti1234/creaseui/crease-theme",
@@ -233,6 +518,31 @@
       "type": "registry:ui",
       "title": "Bubble",
       "description": "A CreaseUI Bubble component for Foldkit.",
+      "categories": [
+        "data display"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "bubble",
+          "contract": "component.bubble",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "bubble",
+            "bubbleContent",
+            "bubbleGroup",
+            "bubbleReactions",
+            "bubbleVariants"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "dependencies": [
         "class-variance-authority@^0.7.1"
       ],
@@ -253,6 +563,30 @@
       "type": "registry:ui",
       "title": "Button Group",
       "description": "A CreaseUI Button Group component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "button-group",
+          "contract": "component.button-group",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "buttonGroup",
+            "buttonGroupSeparator",
+            "buttonGroupText",
+            "buttonGroupVariants"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "dependencies": [
         "class-variance-authority@^0.7.1"
       ],
@@ -273,6 +607,31 @@
       "type": "registry:ui",
       "title": "Button",
       "description": "A CreaseUI Button component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "button",
+          "contract": "control.button",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "button",
+            "buttonLink",
+            "buttonVariants"
+          ],
+          "renderer": "tailwind",
+          "replaces": [
+            "control.button"
+          ],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "dependencies": [
         "class-variance-authority@^0.7.1"
       ],
@@ -294,6 +653,45 @@
       "type": "registry:ui",
       "title": "Calendar",
       "description": "A CreaseUI Calendar component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "calendar",
+          "contract": "component.calendar",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "calendar",
+            "calendarView",
+            "dropToDays",
+            "focusDate",
+            "init",
+            "reflectDisabledDates",
+            "reflectDisabledDaysOfWeek",
+            "reflectMaxDate",
+            "reflectMinDate",
+            "selectDate",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/calendar-range",
@@ -314,6 +712,33 @@
       "type": "registry:ui",
       "title": "Card",
       "description": "A CreaseUI Card component for Foldkit.",
+      "categories": [
+        "layout"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "card",
+          "contract": "component.card",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "card",
+            "cardAction",
+            "cardContent",
+            "cardDescription",
+            "cardFooter",
+            "cardHeader",
+            "cardTitle"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -331,6 +756,27 @@
       "type": "registry:ui",
       "title": "Carousel",
       "description": "A CreaseUI Carousel component for Foldkit.",
+      "categories": [
+        "layout"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "carousel",
+          "contract": "component.carousel",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "carousel"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "dependencies": [
         "embla-carousel@^8.6.0"
       ],
@@ -353,6 +799,29 @@
       "type": "registry:ui",
       "title": "Center",
       "description": "A CreaseUI Center component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "center",
+          "contract": "composition.center",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "center"
+          ],
+          "renderer": "tailwind",
+          "replaces": [
+            "composition.center"
+          ],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -370,6 +839,46 @@
       "type": "registry:ui",
       "title": "Chart",
       "description": "A CreaseUI Chart component for Foldkit.",
+      "categories": [
+        "data display"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "chart",
+          "contract": "component.chart",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "ChartMessage",
+            "SyncChart",
+            "areaChart",
+            "areaGradient",
+            "barChart",
+            "categoryAxis",
+            "chartContainer",
+            "chartLegend",
+            "chartTooltipContent",
+            "colorWithOpacity",
+            "compactGrid",
+            "donutChart",
+            "eChart",
+            "interactiveAreaChart",
+            "legendOptions",
+            "registerChart",
+            "shadcnLegend",
+            "shadcnTooltip",
+            "tooltipOptions",
+            "valueAxis"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/echarts-adapter",
@@ -388,6 +897,37 @@
       "type": "registry:ui",
       "title": "Chat Reasoning",
       "description": "A CreaseUI Chat Reasoning component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "chat-reasoning",
+          "contract": "component.chat-reasoning",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "chatReasoning",
+            "init",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -406,6 +946,27 @@
       "type": "registry:ui",
       "title": "Checkbox",
       "description": "A CreaseUI Checkbox component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "checkbox",
+          "contract": "component.checkbox",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "checkbox"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/checkbox-behavior",
         "Potti1234/creaseui/crease-theme",
@@ -425,6 +986,27 @@
       "type": "registry:ui",
       "title": "Circular Progress",
       "description": "A CreaseUI Circular Progress component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "circular-progress",
+          "contract": "component.circular-progress",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "circularProgress"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -442,6 +1024,34 @@
       "type": "registry:ui",
       "title": "Code Block",
       "description": "A CreaseUI Code Block component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "code-block",
+          "contract": "component.code-block",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "Message",
+            "Model",
+            "codeBlock",
+            "codeLines",
+            "flatTokensToLines",
+            "init",
+            "tokenize",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/code-block-behavior",
@@ -462,6 +1072,27 @@
       "type": "registry:ui",
       "title": "Code",
       "description": "A CreaseUI Code component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "code",
+          "contract": "component.code",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "code"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -479,6 +1110,27 @@
       "type": "registry:ui",
       "title": "Collapsible",
       "description": "A CreaseUI Collapsible component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "collapsible",
+          "contract": "component.collapsible",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "collapsible"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -496,9 +1148,47 @@
       "type": "registry:ui",
       "title": "Combobox",
       "description": "A CreaseUI Combobox component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "combobox",
+          "contract": "control.combobox",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "MultiModel",
+            "OutMessage",
+            "combobox",
+            "create",
+            "createMulti",
+            "init",
+            "multiInit",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [
+            "control.combobox"
+          ],
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/overlay-boundary-behavior",
         "Potti1234/creaseui/utils"
       ],
       "files": [
@@ -514,6 +1204,43 @@
       "type": "registry:ui",
       "title": "Command",
       "description": "A CreaseUI Command component for Foldkit.",
+      "categories": [
+        "navigation"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "command",
+          "contract": "component.command",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "command",
+            "commandEmpty",
+            "commandGroupHeading",
+            "commandPalette",
+            "commandSeparator",
+            "commandShortcut",
+            "create",
+            "init",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/command-behavior",
         "Potti1234/creaseui/crease-theme",
@@ -533,6 +1260,41 @@
       "type": "registry:ui",
       "title": "Context Menu",
       "description": "A CreaseUI Context Menu component for Foldkit.",
+      "categories": [
+        "overlay"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "context-menu",
+          "contract": "component.context-menu",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "close",
+            "contextMenu",
+            "create",
+            "init",
+            "open",
+            "openAt",
+            "selectItem",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/dropdown-menu"
@@ -571,6 +1333,27 @@
       "type": "registry:ui",
       "title": "Data Table",
       "description": "A CreaseUI Data Table component for Foldkit.",
+      "categories": [
+        "data display"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "data-table",
+          "contract": "component.data-table",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "dataTable"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
@@ -594,6 +1377,37 @@
       "type": "registry:ui",
       "title": "Date Input",
       "description": "A CreaseUI Date Input component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "date-input",
+          "contract": "component.date-input",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "dateFromISO",
+            "dateInput",
+            "dateToISO",
+            "init",
+            "inputId",
+            "reflect",
+            "reflectConstraints",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/calendar",
         "Potti1234/creaseui/crease-theme",
@@ -615,12 +1429,55 @@
       "type": "registry:ui",
       "title": "Date Picker",
       "description": "A CreaseUI Date Picker component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "date-picker",
+          "contract": "component.date-picker",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "clear",
+            "close",
+            "datePicker",
+            "focusDate",
+            "init",
+            "open",
+            "reflectDisabledDates",
+            "reflectDisabledDaysOfWeek",
+            "reflectMaxDate",
+            "reflectMinDate",
+            "selectDate",
+            "triggerId",
+            "update",
+            "updateForRtl"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/calendar",
         "Potti1234/creaseui/calendar-range",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/overlay-boundary-behavior",
         "Potti1234/creaseui/utils"
       ],
       "files": [
@@ -636,6 +1493,38 @@
       "type": "registry:ui",
       "title": "Date Range Input",
       "description": "A CreaseUI Date Range Input component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "date-range-input",
+          "contract": "component.date-range-input",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "dateFromISO",
+            "dateRangeInput",
+            "dateToISO",
+            "formatRangeDisplay",
+            "init",
+            "isPresetSelectable",
+            "reflect",
+            "reflectConstraints",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/calendar",
         "Potti1234/creaseui/crease-theme",
@@ -657,6 +1546,39 @@
       "type": "registry:ui",
       "title": "Date Time Input",
       "description": "A CreaseUI Date Time Input component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "date-time-input",
+          "contract": "component.date-time-input",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "dateFromISO",
+            "dateTimeInput",
+            "dateToISO",
+            "formatDisplayTime12h",
+            "formatDisplayTime24h",
+            "formatISOTime",
+            "init",
+            "reflect",
+            "reflectConstraints",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/calendar",
         "Potti1234/creaseui/crease-theme",
@@ -679,6 +1601,46 @@
       "type": "registry:ui",
       "title": "Dialog",
       "description": "A CreaseUI Dialog component for Foldkit.",
+      "categories": [
+        "overlay"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "dialog",
+          "contract": "overlay.dialog",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "FOOTER_CLASS",
+            "Message",
+            "Model",
+            "OutMessage",
+            "close",
+            "dialog",
+            "dialogDescription",
+            "dialogFooter",
+            "dialogHeader",
+            "dialogTitle",
+            "init",
+            "open",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [
+            "overlay.dialog"
+          ],
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -696,6 +1658,27 @@
       "type": "registry:ui",
       "title": "Direction",
       "description": "A CreaseUI Direction component for Foldkit.",
+      "categories": [
+        "overlay"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "direction",
+          "contract": "component.direction",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "direction"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme"
       ],
@@ -712,6 +1695,45 @@
       "type": "registry:ui",
       "title": "Drawer",
       "description": "A CreaseUI Drawer component for Foldkit.",
+      "categories": [
+        "overlay"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "drawer",
+          "contract": "component.drawer",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "CancelledSwipe",
+            "DraggedSwipe",
+            "EndedSwipe",
+            "GotDialogMessage",
+            "Message",
+            "Model",
+            "OutMessage",
+            "StartedSwipe",
+            "close",
+            "drawer",
+            "init",
+            "open",
+            "snapTo",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/drawer-behavior",
@@ -730,6 +1752,42 @@
       "type": "registry:ui",
       "title": "Dropdown Menu",
       "description": "A CreaseUI Dropdown Menu component for Foldkit.",
+      "categories": [
+        "overlay"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "dropdown-menu",
+          "contract": "component.dropdown-menu",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "close",
+            "create",
+            "dropdownMenu",
+            "init",
+            "open",
+            "openAt",
+            "selectItem",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/dropdown-menu-behavior",
@@ -750,6 +1808,33 @@
       "type": "registry:ui",
       "title": "Empty",
       "description": "A CreaseUI Empty component for Foldkit.",
+      "categories": [
+        "feedback"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "empty",
+          "contract": "component.empty",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "empty",
+            "emptyContent",
+            "emptyDescription",
+            "emptyHeader",
+            "emptyMedia",
+            "emptyMediaVariants",
+            "emptyTitle"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "dependencies": [
         "class-variance-authority@^0.7.1"
       ],
@@ -770,6 +1855,27 @@
       "type": "registry:ui",
       "title": "Field Status",
       "description": "A CreaseUI Field Status component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "field-status",
+          "contract": "component.field-status",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "fieldStatus"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -788,6 +1894,42 @@
       "type": "registry:ui",
       "title": "Field",
       "description": "A CreaseUI Field component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "field",
+          "contract": "control.field",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "controlField",
+            "field",
+            "fieldContent",
+            "fieldDescription",
+            "fieldError",
+            "fieldGroup",
+            "fieldLabel",
+            "fieldLegend",
+            "fieldSeparator",
+            "fieldSet",
+            "fieldSetDescriptionId",
+            "fieldSetLegendId",
+            "fieldTitle",
+            "fieldVariants"
+          ],
+          "renderer": "tailwind",
+          "replaces": [
+            "control.field"
+          ],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "dependencies": [
         "class-variance-authority@^0.7.1"
       ],
@@ -810,6 +1952,34 @@
       "type": "registry:ui",
       "title": "File Input",
       "description": "A CreaseUI File Input component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "file-input",
+          "contract": "component.file-input",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "fileInput",
+            "formatFileSize",
+            "init",
+            "update",
+            "validateFiles"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/file-input-behavior",
@@ -830,6 +2000,35 @@
       "type": "registry:ui",
       "title": "Form",
       "description": "A CreaseUI Form component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "form",
+          "contract": "composition.form",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "errorSummary",
+            "form",
+            "formControlIds",
+            "formDescription",
+            "formItem",
+            "formLabel",
+            "formMessage"
+          ],
+          "renderer": "tailwind",
+          "replaces": [
+            "composition.form"
+          ],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/field",
@@ -849,6 +2048,30 @@
       "type": "registry:ui",
       "title": "Grid",
       "description": "A CreaseUI Grid component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "grid",
+          "contract": "composition.grid",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "grid",
+            "gridSpan"
+          ],
+          "renderer": "tailwind",
+          "replaces": [
+            "composition.grid"
+          ],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -866,6 +2089,30 @@
       "type": "registry:ui",
       "title": "Heading",
       "description": "A CreaseUI Heading component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "heading",
+          "contract": "typography.heading",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "heading",
+            "headingVariants"
+          ],
+          "renderer": "tailwind",
+          "replaces": [
+            "typography.heading"
+          ],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "dependencies": [
         "class-variance-authority@^0.7.1"
       ],
@@ -887,6 +2134,47 @@
       "type": "registry:ui",
       "title": "Hover Card",
       "description": "A CreaseUI Hover Card component for Foldkit.",
+      "categories": [
+        "overlay"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "hover-card",
+          "contract": "component.hover-card",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Blurred",
+            "CompletedAnchor",
+            "CompletedWaitBeforeClosingHoverCard",
+            "CompletedWaitBeforeShowingHoverCard",
+            "Entered",
+            "Focused",
+            "Left",
+            "Message",
+            "Model",
+            "PressedEscape",
+            "PressedPointer",
+            "hoverCard",
+            "init",
+            "reflectCloseDelay",
+            "reflectShowDelay",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
@@ -906,6 +2194,29 @@
       "type": "registry:ui",
       "title": "Indicator",
       "description": "A CreaseUI Indicator component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "indicator",
+          "contract": "component.indicator",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "checkIndicator",
+            "checkboxIndicator",
+            "radioIndicator"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -924,6 +2235,37 @@
       "type": "registry:ui",
       "title": "Info Tip",
       "description": "A CreaseUI Info Tip component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "info-tip",
+          "contract": "component.info-tip",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "infoTip",
+            "init",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -943,6 +2285,34 @@
       "type": "registry:ui",
       "title": "Input Group",
       "description": "A CreaseUI Input Group component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "input-group",
+          "contract": "component.input-group",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "inputGroup",
+            "inputGroupAddon",
+            "inputGroupAddonVariants",
+            "inputGroupButton",
+            "inputGroupButtonVariants",
+            "inputGroupInput",
+            "inputGroupText",
+            "inputGroupTextarea"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "dependencies": [
         "class-variance-authority@^0.7.1"
       ],
@@ -964,6 +2334,28 @@
       "type": "registry:ui",
       "title": "Input Otp",
       "description": "A CreaseUI Input Otp component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "input-otp",
+          "contract": "component.input-otp",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "inputOtp",
+            "inputOtpSeparator"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -981,6 +2373,29 @@
       "type": "registry:ui",
       "title": "Input",
       "description": "A CreaseUI Input component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "input",
+          "contract": "control.input",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "input"
+          ],
+          "renderer": "tailwind",
+          "replaces": [
+            "control.input"
+          ],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/input-behavior",
@@ -999,6 +2414,39 @@
       "type": "registry:ui",
       "title": "Item",
       "description": "A CreaseUI Item component for Foldkit.",
+      "categories": [
+        "data display"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "item",
+          "contract": "component.item",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "item",
+            "itemActions",
+            "itemContent",
+            "itemDescription",
+            "itemFooter",
+            "itemGroup",
+            "itemGroupSeparator",
+            "itemHeader",
+            "itemMedia",
+            "itemMediaVariants",
+            "itemSeparator",
+            "itemTitle",
+            "itemVariants"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "dependencies": [
         "class-variance-authority@^0.7.1"
       ],
@@ -1019,6 +2467,28 @@
       "type": "registry:ui",
       "title": "Kbd",
       "description": "A CreaseUI Kbd component for Foldkit.",
+      "categories": [
+        "data display"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "kbd",
+          "contract": "component.kbd",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "kbd",
+            "kbdGroup"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -1036,6 +2506,29 @@
       "type": "registry:ui",
       "title": "Label",
       "description": "A CreaseUI Label component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "label",
+          "contract": "control.label",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "label"
+          ],
+          "renderer": "tailwind",
+          "replaces": [
+            "control.label"
+          ],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -1053,6 +2546,40 @@
       "type": "registry:ui",
       "title": "Lightbox",
       "description": "A CreaseUI Lightbox component for Foldkit.",
+      "categories": [
+        "overlay"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "lightbox",
+          "contract": "component.lightbox",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "KEYBOARD_PAN_STEP",
+            "Message",
+            "Model",
+            "OutMessage",
+            "close",
+            "init",
+            "lightbox",
+            "open",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -1072,6 +2599,30 @@
       "type": "registry:ui",
       "title": "Link",
       "description": "A CreaseUI Link component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "link",
+          "contract": "navigation.link",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "link",
+            "linkVariants"
+          ],
+          "renderer": "tailwind",
+          "replaces": [
+            "navigation.link"
+          ],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "dependencies": [
         "class-variance-authority@^0.7.1"
       ],
@@ -1095,6 +2646,34 @@
       "type": "registry:ui",
       "title": "List Input",
       "description": "A CreaseUI List Input component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "list-input",
+          "contract": "component.list-input",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "init",
+            "listInput",
+            "moveItem",
+            "resolveColumnTrack",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
@@ -1116,6 +2695,30 @@
       "type": "registry:ui",
       "title": "List",
       "description": "A CreaseUI List component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "list",
+          "contract": "composition.list",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "list",
+            "listItem"
+          ],
+          "renderer": "tailwind",
+          "replaces": [
+            "composition.list"
+          ],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -1133,6 +2736,38 @@
       "type": "registry:ui",
       "title": "Log Stream",
       "description": "A CreaseUI Log Stream component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "log-stream",
+          "contract": "component.log-stream",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "LogStreamLevel",
+            "Message",
+            "Model",
+            "OutMessage",
+            "init",
+            "logStream",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/message-scroller-behavior",
@@ -1151,6 +2786,28 @@
       "type": "registry:ui",
       "title": "Map Arc",
       "description": "A CreaseUI Map Arc component for Foldkit.",
+      "categories": [
+        "maps"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "map-arc",
+          "contract": "component.map-arc",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "arcCoordinates",
+            "mapArc"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/map-adapter"
@@ -1168,6 +2825,27 @@
       "type": "registry:ui",
       "title": "Map Cluster",
       "description": "A CreaseUI Map Cluster component for Foldkit.",
+      "categories": [
+        "maps"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "map-cluster",
+          "contract": "component.map-cluster",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "mapClusterLayer"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/map-adapter"
@@ -1185,6 +2863,27 @@
       "type": "registry:ui",
       "title": "Map Controls",
       "description": "A CreaseUI Map Controls component for Foldkit.",
+      "categories": [
+        "maps"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "map-controls",
+          "contract": "component.map-controls",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "mapControls"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/map",
@@ -1203,6 +2902,27 @@
       "type": "registry:ui",
       "title": "Map Geojson",
       "description": "A CreaseUI Map Geojson component for Foldkit.",
+      "categories": [
+        "maps"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "map-geojson",
+          "contract": "component.map-geojson",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "mapGeoJSON"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/map-adapter"
@@ -1220,6 +2940,29 @@
       "type": "registry:ui",
       "title": "Map Localization",
       "description": "A CreaseUI Map Localization component for Foldkit.",
+      "categories": [
+        "maps"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "map-localization",
+          "contract": "component.map-localization",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "MAP_TRANSLATIONS",
+            "localizeMapLabel",
+            "mapTranslations"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/map-adapter"
@@ -1237,6 +2980,30 @@
       "type": "registry:ui",
       "title": "Map Marker",
       "description": "A CreaseUI Map Marker component for Foldkit.",
+      "categories": [
+        "maps"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "map-marker",
+          "contract": "component.map-marker",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "mapMarker",
+            "markerContent",
+            "markerLabel",
+            "markerTooltip"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/map",
@@ -1255,6 +3022,27 @@
       "type": "registry:ui",
       "title": "Map Popup",
       "description": "A CreaseUI Map Popup component for Foldkit.",
+      "categories": [
+        "maps"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "map-popup",
+          "contract": "component.map-popup",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "mapPopup"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/map",
@@ -1273,6 +3061,27 @@
       "type": "registry:ui",
       "title": "Map Route",
       "description": "A CreaseUI Map Route component for Foldkit.",
+      "categories": [
+        "maps"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "map-route",
+          "contract": "component.map-route",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "mapRoute"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/map-adapter"
@@ -1290,6 +3099,30 @@
       "type": "registry:ui",
       "title": "Map Styles",
       "description": "A CreaseUI Map Styles component for Foldkit.",
+      "categories": [
+        "maps"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "map-styles",
+          "contract": "component.map-styles",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "MAP_PALETTES",
+            "OPENFREEMAP_STYLES",
+            "createMapStyle",
+            "readMapPalette"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/map-adapter"
@@ -1307,6 +3140,30 @@
       "type": "registry:ui",
       "title": "Map",
       "description": "A CreaseUI Map component for Foldkit.",
+      "categories": [
+        "maps"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "map",
+          "contract": "component.map",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "MapMessage",
+            "OPENFREEMAP_STYLES",
+            "map",
+            "mapSkin"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/map-adapter",
@@ -1325,6 +3182,34 @@
       "type": "registry:ui",
       "title": "Markdown",
       "description": "A CreaseUI Markdown component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "markdown",
+          "contract": "component.markdown",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "Message",
+            "Model",
+            "init",
+            "markdown",
+            "parseMarkdownBlocks",
+            "parseMarkdownInline",
+            "sanitizeMarkdownUrl",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/blockquote",
         "Potti1234/creaseui/code",
@@ -1350,6 +3235,30 @@
       "type": "registry:ui",
       "title": "Marker",
       "description": "A CreaseUI Marker component for Foldkit.",
+      "categories": [
+        "data display"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "marker",
+          "contract": "component.marker",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "marker",
+            "markerContent",
+            "markerIcon",
+            "markerVariants"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "dependencies": [
         "class-variance-authority@^0.7.1"
       ],
@@ -1370,6 +3279,38 @@
       "type": "registry:ui",
       "title": "Menubar",
       "description": "A CreaseUI Menubar component for Foldkit.",
+      "categories": [
+        "navigation"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "menubar",
+          "contract": "component.menubar",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "init",
+            "menubar",
+            "menubar",
+            "menubar",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/dropdown-menu",
@@ -1389,6 +3330,44 @@
       "type": "registry:ui",
       "title": "Message Scroller",
       "description": "A CreaseUI Message Scroller component for Foldkit.",
+      "categories": [
+        "feedback"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "message-scroller",
+          "contract": "component.message-scroller",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "CompletedMessageScrollerScrollTo",
+            "Message",
+            "Model",
+            "ObservedViewport",
+            "RequestedScroll",
+            "Scrolled",
+            "init",
+            "messageScroller",
+            "messageScrollerButton",
+            "messageScrollerContent",
+            "messageScrollerItem",
+            "messageScrollerViewport",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -1408,6 +3387,35 @@
       "type": "registry:ui",
       "title": "Message",
       "description": "A CreaseUI Message component for Foldkit.",
+      "categories": [
+        "feedback"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "message",
+          "contract": "component.message",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "message",
+            "messageActions",
+            "messageAuthor",
+            "messageAvatar",
+            "messageContent",
+            "messageFooter",
+            "messageGroup",
+            "messageHeader",
+            "messageMetadata"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -1425,6 +3433,33 @@
       "type": "registry:ui",
       "title": "Metadata List",
       "description": "A CreaseUI Metadata List component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "metadata-list",
+          "contract": "component.metadata-list",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "Message",
+            "Model",
+            "init",
+            "metadataList",
+            "metadataListItem",
+            "resolveLayout",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/metadata-list-behavior",
@@ -1443,6 +3478,40 @@
       "type": "registry:ui",
       "title": "Mobile Nav",
       "description": "A CreaseUI Mobile Nav component for Foldkit.",
+      "categories": [
+        "navigation"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "mobile-nav",
+          "contract": "component.mobile-nav",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "close",
+            "init",
+            "mobileNav",
+            "mobileNavToggle",
+            "open",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -1462,6 +3531,33 @@
       "type": "registry:ui",
       "title": "More Menu",
       "description": "A CreaseUI More Menu component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "more-menu",
+          "contract": "component.more-menu",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "flattenOptions",
+            "init",
+            "moreMenu",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
@@ -1483,6 +3579,35 @@
       "type": "registry:ui",
       "title": "Multi Selector",
       "description": "A CreaseUI Multi Selector component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "multi-selector",
+          "contract": "component.multi-selector",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "SELECT_ALL_VALUE",
+            "init",
+            "multiSelector",
+            "reflect",
+            "reflectOptions",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/checkbox",
@@ -1506,6 +3631,31 @@
       "type": "registry:ui",
       "title": "Native Select",
       "description": "A CreaseUI Native Select component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "native-select",
+          "contract": "control.native-select",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "nativeSelect",
+            "nativeSelectOptGroup",
+            "nativeSelectOption"
+          ],
+          "renderer": "tailwind",
+          "replaces": [
+            "control.native-select"
+          ],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -1524,6 +3674,33 @@
       "type": "registry:ui",
       "title": "Navigation Menu",
       "description": "A CreaseUI Navigation Menu component for Foldkit.",
+      "categories": [
+        "navigation"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "navigation-menu",
+          "contract": "navigation.nav",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "navigationMenu",
+            "navigationMenuDisclosure",
+            "navigationMenuItem",
+            "navigationMenuLink",
+            "navigationMenuList"
+          ],
+          "renderer": "tailwind",
+          "replaces": [
+            "navigation.nav"
+          ],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -1543,6 +3720,32 @@
       "type": "registry:ui",
       "title": "Number Input",
       "description": "A CreaseUI Number Input component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "number-input",
+          "contract": "component.number-input",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "init",
+            "numberInput",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -1563,6 +3766,35 @@
       "type": "registry:ui",
       "title": "Overflow List",
       "description": "A CreaseUI Overflow List component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "overflow-list",
+          "contract": "component.overflow-list",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "collapsedIndices",
+            "computeOverflow",
+            "init",
+            "overflowList",
+            "spacingToPx",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/overflow-list-behavior",
@@ -1581,6 +3813,34 @@
       "type": "registry:ui",
       "title": "Pagination",
       "description": "A CreaseUI Pagination component for Foldkit.",
+      "categories": [
+        "navigation"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "pagination",
+          "contract": "component.pagination",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "pagination",
+            "paginationContent",
+            "paginationEllipsis",
+            "paginationItem",
+            "paginationLink",
+            "paginationNext",
+            "paginationPages",
+            "paginationPrevious"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
@@ -1601,8 +3861,44 @@
       "type": "registry:ui",
       "title": "Popover",
       "description": "A CreaseUI Popover component for Foldkit.",
+      "categories": [
+        "overlay"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "popover",
+          "contract": "component.popover",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "RequestedClose",
+            "RequestedOpen",
+            "close",
+            "init",
+            "open",
+            "popover",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/overlay-boundary-behavior",
         "Potti1234/creaseui/utils"
       ],
       "files": [
@@ -1618,6 +3914,29 @@
       "type": "registry:ui",
       "title": "Progress",
       "description": "A CreaseUI Progress component for Foldkit.",
+      "categories": [
+        "feedback"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "progress",
+          "contract": "feedback.progress",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "progress"
+          ],
+          "renderer": "tailwind",
+          "replaces": [
+            "feedback.progress"
+          ],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/progress-normalization",
@@ -1636,6 +3955,31 @@
       "type": "registry:ui",
       "title": "Radio Group",
       "description": "A CreaseUI Radio Group component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "radio-group",
+          "contract": "component.radio-group",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "Message",
+            "Model",
+            "init",
+            "radioGroup",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -1655,6 +3999,41 @@
       "type": "registry:ui",
       "title": "Resizable",
       "description": "A CreaseUI Resizable component for Foldkit.",
+      "categories": [
+        "layout"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "resizable",
+          "contract": "component.resizable",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "GroupMessage",
+            "GroupModel",
+            "Message",
+            "Model",
+            "init",
+            "initGroup",
+            "resizable",
+            "resizableGroup",
+            "update",
+            "updateGroup"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -1673,6 +4052,27 @@
       "type": "registry:ui",
       "title": "Scroll Area",
       "description": "A CreaseUI Scroll Area component for Foldkit.",
+      "categories": [
+        "layout"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "scroll-area",
+          "contract": "component.scroll-area",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "scrollArea"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -1690,6 +4090,29 @@
       "type": "registry:ui",
       "title": "Section",
       "description": "A CreaseUI Section component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "section",
+          "contract": "composition.section",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "section"
+          ],
+          "renderer": "tailwind",
+          "replaces": [
+            "composition.section"
+          ],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -1707,9 +4130,42 @@
       "type": "registry:ui",
       "title": "Select",
       "description": "A CreaseUI Select component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "select",
+          "contract": "component.select",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "create",
+            "init",
+            "select",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/overlay-boundary-behavior",
         "Potti1234/creaseui/utils"
       ],
       "files": [
@@ -1725,6 +4181,28 @@
       "type": "registry:ui",
       "title": "Selectable Card",
       "description": "A CreaseUI Selectable Card component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "selectable-card",
+          "contract": "component.selectable-card",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "Message",
+            "selectableCard"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/card-pressable-behavior",
         "Potti1234/creaseui/card-surface-behavior",
@@ -1744,6 +4222,29 @@
       "type": "registry:ui",
       "title": "Separator",
       "description": "A CreaseUI Separator component for Foldkit.",
+      "categories": [
+        "layout"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "separator",
+          "contract": "composition.separator",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "separator"
+          ],
+          "renderer": "tailwind",
+          "replaces": [
+            "composition.separator"
+          ],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -1761,6 +4262,55 @@
       "type": "registry:ui",
       "title": "Sheet",
       "description": "A CreaseUI Sheet component for Foldkit.",
+      "categories": [
+        "overlay"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "sheet",
+          "contract": "component.sheet",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "HEIGHT_BUDGETS",
+            "Message",
+            "Model",
+            "OVERSCROLL_PADDING",
+            "OutMessage",
+            "SheetState",
+            "SwitcherMessage",
+            "SwitcherModel",
+            "SwitcherOutMessage",
+            "close",
+            "closeSwitcher",
+            "init",
+            "initSwitcher",
+            "isSheetDragCandidate",
+            "open",
+            "openSheet",
+            "sheet",
+            "sheetDescription",
+            "sheetFooter",
+            "sheetHeader",
+            "sheetSwitcher",
+            "sheetTitle",
+            "update",
+            "updateSwitcher"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -1780,6 +4330,50 @@
       "type": "registry:ui",
       "title": "Sidebar",
       "description": "A CreaseUI Sidebar component for Foldkit.",
+      "categories": [
+        "layout"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "sidebar",
+          "contract": "component.sidebar",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "sidebar",
+            "sidebarContent",
+            "sidebarFooter",
+            "sidebarGroup",
+            "sidebarGroupAction",
+            "sidebarGroupContent",
+            "sidebarGroupLabel",
+            "sidebarHeader",
+            "sidebarInput",
+            "sidebarInset",
+            "sidebarMenu",
+            "sidebarMenuAction",
+            "sidebarMenuBadge",
+            "sidebarMenuButton",
+            "sidebarMenuButtonVariants",
+            "sidebarMenuItem",
+            "sidebarMenuSkeleton",
+            "sidebarMenuSub",
+            "sidebarMenuSubButton",
+            "sidebarMenuSubItem",
+            "sidebarProvider",
+            "sidebarRail",
+            "sidebarSeparator",
+            "sidebarTrigger"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "dependencies": [
         "class-variance-authority@^0.7.1"
       ],
@@ -1803,6 +4397,27 @@
       "type": "registry:ui",
       "title": "Skeleton",
       "description": "A CreaseUI Skeleton component for Foldkit.",
+      "categories": [
+        "feedback"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "skeleton",
+          "contract": "component.skeleton",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "skeleton"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -1820,6 +4435,55 @@
       "type": "registry:ui",
       "title": "Slider",
       "description": "A CreaseUI Slider component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "slider",
+          "contract": "component.slider",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update",
+            "subscriptions"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "MultiMessage",
+            "MultiModel",
+            "MultiOutMessage",
+            "OutMessage",
+            "fractionOfValue",
+            "init",
+            "initMulti",
+            "multiSlider",
+            "multiThumbSubscriptions",
+            "normalizeMultiValues",
+            "rangeSlider",
+            "reflectMultiRange",
+            "reflectRange",
+            "slider",
+            "snapAndClamp",
+            "subscriptions",
+            "subscriptionsForRoot",
+            "toThumbValue",
+            "update",
+            "updateMulti",
+            "updateMultiValue"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/slider-behavior",
@@ -1838,6 +4502,27 @@
       "type": "registry:ui",
       "title": "Spinner",
       "description": "A CreaseUI Spinner component for Foldkit.",
+      "categories": [
+        "feedback"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "spinner",
+          "contract": "component.spinner",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "spinner"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -1856,6 +4541,32 @@
       "type": "registry:ui",
       "title": "Stack",
       "description": "A CreaseUI Stack component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "stack",
+          "contract": "composition.stack",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "hStack",
+            "stack",
+            "stackItem",
+            "vStack"
+          ],
+          "renderer": "tailwind",
+          "replaces": [
+            "composition.stack"
+          ],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -1873,6 +4584,27 @@
       "type": "registry:ui",
       "title": "Stat",
       "description": "A CreaseUI Stat component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "stat",
+          "contract": "component.stat",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "stat"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -1890,6 +4622,28 @@
       "type": "registry:ui",
       "title": "Status Dot",
       "description": "A CreaseUI Status Dot component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "status-dot",
+          "contract": "component.status-dot",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "statusDot",
+            "statusDotVariants"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "dependencies": [
         "class-variance-authority@^0.7.1"
       ],
@@ -1910,6 +4664,31 @@
       "type": "registry:ui",
       "title": "Stepper",
       "description": "A CreaseUI Stepper component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "stepper",
+          "contract": "component.stepper",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "Message",
+            "Model",
+            "init",
+            "stepper",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
@@ -1930,6 +4709,29 @@
       "type": "registry:ui",
       "title": "Switch",
       "description": "A CreaseUI Switch component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "switch",
+          "contract": "component.switch",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "switch",
+            "switchControl",
+            "switchIds"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/switch-behavior",
@@ -1948,6 +4750,36 @@
       "type": "registry:ui",
       "title": "Table",
       "description": "A CreaseUI Table component for Foldkit.",
+      "categories": [
+        "data display"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "table",
+          "contract": "data.table",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "table",
+            "tableBody",
+            "tableCaption",
+            "tableCell",
+            "tableFooter",
+            "tableHead",
+            "tableHeader",
+            "tableRow"
+          ],
+          "renderer": "tailwind",
+          "replaces": [
+            "data.table"
+          ],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -1965,6 +4797,39 @@
       "type": "registry:ui",
       "title": "Tabs",
       "description": "A CreaseUI Tabs component for Foldkit.",
+      "categories": [
+        "navigation"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "tabs",
+          "contract": "component.tabs",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "create",
+            "init",
+            "tabs",
+            "tabsListVariants",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "component-classes"
+        }
+      },
       "dependencies": [
         "class-variance-authority@^0.7.1"
       ],
@@ -1985,6 +4850,30 @@
       "type": "registry:ui",
       "title": "Text",
       "description": "A CreaseUI Text component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "text",
+          "contract": "typography.text",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "text",
+            "textVariants"
+          ],
+          "renderer": "tailwind",
+          "replaces": [
+            "typography.text"
+          ],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "dependencies": [
         "class-variance-authority@^0.7.1"
       ],
@@ -2005,6 +4894,29 @@
       "type": "registry:ui",
       "title": "Textarea",
       "description": "A CreaseUI Textarea component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "textarea",
+          "contract": "control.textarea",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "textarea"
+          ],
+          "renderer": "tailwind",
+          "replaces": [
+            "control.textarea"
+          ],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/textarea-behavior",
@@ -2023,6 +4935,27 @@
       "type": "registry:ui",
       "title": "Thumbnail",
       "description": "A CreaseUI Thumbnail component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "thumbnail",
+          "contract": "component.thumbnail",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "thumbnail"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -2041,6 +4974,33 @@
       "type": "registry:ui",
       "title": "Time Input",
       "description": "A CreaseUI Time Input component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "time-input",
+          "contract": "component.time-input",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "init",
+            "pickerButtonId",
+            "timeInput",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -2062,6 +5022,38 @@
       "type": "registry:ui",
       "title": "Timer",
       "description": "A CreaseUI Timer component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "timer",
+          "contract": "component.timer",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update",
+            "subscriptions"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "init",
+            "subscriptions",
+            "timer",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/astryx-text-behavior",
         "Potti1234/creaseui/crease-theme",
@@ -2080,6 +5072,42 @@
       "type": "registry:ui",
       "title": "Timestamp",
       "description": "A CreaseUI Timestamp component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "timestamp",
+          "contract": "component.timestamp",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update",
+            "subscriptions"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "formatInstant",
+            "formatRelativeTime",
+            "formatTooltipLines",
+            "init",
+            "parseValueMs",
+            "subscriptions",
+            "timestamp",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/astryx-text-behavior",
         "Potti1234/creaseui/crease-theme",
@@ -2102,6 +5130,27 @@
       "type": "registry:ui",
       "title": "Toast",
       "description": "A CreaseUI Toast component for Foldkit.",
+      "categories": [
+        "feedback"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "toast",
+          "contract": "component.toast",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "toast"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
@@ -2122,6 +5171,36 @@
       "type": "registry:ui",
       "title": "Toggle Group",
       "description": "A CreaseUI Toggle Group component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "toggle-group",
+          "contract": "component.toggle-group",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "create",
+            "init",
+            "toggleGroup",
+            "toggleGroup",
+            "toggleGroup",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/toggle",
@@ -2141,6 +5220,28 @@
       "type": "registry:ui",
       "title": "Toggle",
       "description": "A CreaseUI Toggle component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "toggle",
+          "contract": "component.toggle",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "toggle",
+            "toggleVariants"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "dependencies": [
         "class-variance-authority@^0.7.1"
       ],
@@ -2161,6 +5262,27 @@
       "type": "registry:ui",
       "title": "Token",
       "description": "A CreaseUI Token component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "token",
+          "contract": "component.token",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "token"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -2179,6 +5301,35 @@
       "type": "registry:ui",
       "title": "Tokenizer",
       "description": "A CreaseUI Tokenizer component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "tokenizer",
+          "contract": "component.tokenizer",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "CREATE_ID_PREFIX",
+            "Message",
+            "Model",
+            "OutMessage",
+            "init",
+            "reflect",
+            "reflectItems",
+            "tokenizer",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -2198,6 +5349,29 @@
       "type": "registry:ui",
       "title": "Toolbar",
       "description": "A CreaseUI Toolbar component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "toolbar",
+          "contract": "component.toolbar",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "Message",
+            "TOOLBAR_EDGE_COMP_ATTR",
+            "toolbar"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/toolbar-behavior",
@@ -2216,6 +5390,39 @@
       "type": "registry:ui",
       "title": "Tooltip",
       "description": "A CreaseUI Tooltip component for Foldkit.",
+      "categories": [
+        "overlay"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "tooltip",
+          "contract": "component.tooltip",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "init",
+            "reflectCloseDelay",
+            "reflectShowDelay",
+            "tooltip",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/tooltip-behavior",
@@ -2234,6 +5441,42 @@
       "type": "registry:ui",
       "title": "Top Nav",
       "description": "A CreaseUI Top Nav component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "top-nav",
+          "contract": "component.top-nav",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "view"
+          ],
+          "publicExports": [
+            "HEADING_MENU_KEY",
+            "Message",
+            "Model",
+            "OutMessage",
+            "dropdownMenuKey",
+            "init",
+            "isMenuOpen",
+            "menuFor",
+            "topNav",
+            "topNavItem",
+            "topNavMegaMenuFeaturedCard",
+            "topNavMegaMenuItem",
+            "update",
+            "view"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -2254,6 +5497,40 @@
       "type": "registry:ui",
       "title": "Transfer List",
       "description": "A CreaseUI Transfer List component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "transfer-list",
+          "contract": "component.transfer-list",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update",
+            "subscriptions"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "REORDER_INSTRUCTIONS",
+            "init",
+            "subscriptions",
+            "transferList",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
@@ -2274,6 +5551,40 @@
       "type": "registry:ui",
       "title": "Tree List",
       "description": "A CreaseUI Tree List component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "tree-list",
+          "contract": "component.tree-list",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "view"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "findInitialTabbableId",
+            "init",
+            "isItemExpanded",
+            "resolveKey",
+            "tabbableId",
+            "treeList",
+            "update",
+            "view",
+            "visibleItems"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -2293,6 +5604,37 @@
       "type": "registry:ui",
       "title": "Typography",
       "description": "A CreaseUI Typography component for Foldkit.",
+      "categories": [
+        "data display"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "typography",
+          "contract": "component.typography",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "typographyBlockquote",
+            "typographyH1",
+            "typographyH2",
+            "typographyH3",
+            "typographyH4",
+            "typographyInlineCode",
+            "typographyLarge",
+            "typographyLead",
+            "typographyMuted",
+            "typographyP",
+            "typographySmall"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
@@ -2310,6 +5652,27 @@
       "type": "registry:ui",
       "title": "Visually Hidden",
       "description": "A CreaseUI Visually Hidden component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "visually-hidden",
+          "contract": "component.visually-hidden",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "visuallyHidden"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"

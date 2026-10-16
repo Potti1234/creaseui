@@ -21,5 +21,6 @@ export const avatarGroupPage = authoredPage({
       'The group carries role="group" with an accessible name; each status dot is role="img" with its own label when given one.',
     examples: avatarGroupExamples('tailwind'),
     stylexExamples: avatarGroupExamples('stylex'),
+    pleatExamples: avatarGroupExamples('pleat'),
   },
 })

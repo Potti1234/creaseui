@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 import type { DropdownMenuItemSpec } from '@/docs/components/pages/dropdown-menu/shared'
 
@@ -273,10 +274,10 @@ const allItemSpecs = (
 
 const source = (
   fixture: ContextMenuFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
-  const uiDir = renderer === 'stylex' ? 'stylex' : 'ui'
+  const uiDir = renderer !== 'tailwind' ? 'stylex' : 'ui'
   const specs = allItemSpecs(fixture)
   const usesIcons = specs.some(spec => spec.icon !== undefined)
   const usesCheckbox = specs.some(spec => spec.kind === 'checkbox')
@@ -324,13 +325,14 @@ import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
 import * as ContextMenu from '@/${uiDir}/context-menu'${usesIcons ? `\nimport * as Icon from '@/lib/icon'` : ''}${
-      renderer === 'stylex'
+      renderer !== 'tailwind'
         ? `
 import * as stylex from '@stylexjs/stylex'
 
 import { className } from '@/stylex/style'
 
 const styles = stylex.create({
+  shell: { alignItems: 'center', display: 'flex', flexDirection: 'column', gap: '1rem', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   targetInner: {
     display: 'flex',
     width: '20rem',
@@ -407,12 +409,12 @@ ${[
   }
   return {
     title: 'Context Menu — ${fixture.title}',
-    body: h.main([h.Class('flex min-h-screen flex-col items-center justify-center gap-4 p-8')], [
+    body: h.main([h.Class(${renderer !== 'tailwind' ? 'className(styles.shell)' : "'flex min-h-screen flex-col items-center justify-center gap-4 p-8'"})], [
       ContextMenu.contextMenu({
         model: model.menu,
         toParentMessage: message => GotMenuMessage({ message }),
         ${
-          renderer === 'stylex'
+          renderer !== 'tailwind'
             ? `trigger: h.div([h.Class(className(styles.targetInner))], ['Right click here']),`
             : `trigger: h.div([h.Class('flex aspect-video w-80 items-center justify-center rounded-xl border border-dashed text-sm')], ['Right click here']),`
         }
@@ -434,8 +436,8 @@ ${[
   })
 }
 
-export const contextMenuExamples = (
-  renderer: 'tailwind' | 'stylex',
+const contextMenuExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   contextMenuFixtures.map(fixture => ({
     title: fixture.title,
@@ -445,3 +447,8 @@ export const contextMenuExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: source(fixture, renderer),
   }))
+
+export const contextMenuExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, contextMenuExamplesFor(renderer))

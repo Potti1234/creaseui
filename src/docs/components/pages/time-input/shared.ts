@@ -1,5 +1,8 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
+const emitShellStyles =
+  "import * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\n\nconst shellStyles = stylex.create({\n  shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },\n})"
 
 export type TimeInputFixtureEntry = Readonly<{
   id: string
@@ -166,8 +169,8 @@ export const timeInputFixtures: Readonly<
   },
 ]
 
-const ui = (renderer: 'tailwind' | 'stylex'): string =>
-  renderer === 'stylex' ? 'stylex' : 'ui'
+const ui = (renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat'): string =>
+  renderer !== 'tailwind' ? 'stylex' : 'ui'
 
 const timeInputCallSource = (
   entry: TimeInputFixtureEntry,
@@ -184,7 +187,7 @@ const timeInputCallSource = (
           h,
         )`
 
-const viewSource = (fixture: TimeInputFixture): string => {
+const viewSource = (fixture: TimeInputFixture, styled: boolean): string => {
   const entries = fixture.entries
     .map((entry, entryIndex) => timeInputCallSource(entry, String(entryIndex)))
     .join(',\n        ')
@@ -192,9 +195,9 @@ const viewSource = (fixture: TimeInputFixture): string => {
     fixture.heading === undefined
       ? ''
       : `      h.p([h.Class('text-xs text-muted-foreground')], ['${fixture.heading}']),\n      `
-  return `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+  return `${styled ? emitShellStyles + '\n\n' : ''}export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: '${fixture.title}',
-  body: h.main([h.Class('mx-auto flex min-h-screen w-full max-w-md items-center p-8')], [
+  body: h.main([h.Class(${styled ? 'className(shellStyles.shell)' : "'mx-auto flex min-h-screen w-full max-w-md items-center p-8'"})], [
     h.div(
       [h.Class('flex w-full flex-col gap-3'), h.Style({ maxWidth: '${String(fixture.maxWidth)}px' })],
       [
@@ -205,7 +208,10 @@ const viewSource = (fixture: TimeInputFixture): string => {
 })`
 }
 
-const source = (index: number, renderer: 'tailwind' | 'stylex'): string => {
+const source = (
+  index: number,
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
   const fixture = timeInputFixtures[index] ?? timeInputFixtures[0]
   return foldkitApplication({
     title: `TimeInput — ${fixture.title}`,
@@ -252,15 +258,20 @@ export type Message = typeof Message.Type`,
     }
   }
 }`,
-    view: viewSource(fixture),
+    view: viewSource(fixture, renderer !== 'tailwind'),
   })
 }
 
-export const timeInputExamples = (
-  renderer: 'tailwind' | 'stylex',
+const timeInputExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   timeInputFixtures.map((fixture, index) => ({
     title: fixture.title,
     description: fixture.description,
     code: source(index, renderer),
   }))
+
+export const timeInputExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, timeInputExamplesFor(renderer))

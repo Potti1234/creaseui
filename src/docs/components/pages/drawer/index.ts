@@ -33,5 +33,6 @@ export const drawerPage = authoredPage({
     ],
     examples: drawerExamples('tailwind'),
     stylexExamples: drawerExamples('stylex'),
+    pleatExamples: drawerExamples('pleat'),
   },
 })

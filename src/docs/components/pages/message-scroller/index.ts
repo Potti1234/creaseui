@@ -25,5 +25,6 @@ export const messageScrollerPage = authoredPage({
     ],
     examples: messageScrollerExamples('tailwind'),
     stylexExamples: messageScrollerExamples('stylex'),
+    pleatExamples: messageScrollerExamples('pleat'),
   },
 })
