@@ -18,5 +18,6 @@ export const actionBarPage = authoredPage({
       'The bar exposes a toolbar landmark with its orientation. Arrow keys move between items and Escape clears the selection.',
     examples: actionBarExamples('tailwind'),
     stylexExamples: actionBarExamples('stylex'),
+    pleatExamples: actionBarExamples('pleat'),
   },
 })

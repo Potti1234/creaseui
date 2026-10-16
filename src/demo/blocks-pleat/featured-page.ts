@@ -1,13 +1,15 @@
 import { taggedStruct } from 'foldkit/schema'
+import { defineView } from 'foldkit/submodel'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { Option, Schema as S } from 'effect'
 import type { Update } from 'foldkit'
-import { Command } from 'foldkit'
+import { Command, Subscription } from 'foldkit'
 
 import { loginArtwork } from '@/pleat/composition/login-artwork'
 import { badge } from '@/pleat/badge'
 import { button } from '@/pleat/button'
 import * as TableState from '@/lib/data-table-state'
+import { sliderSubscriptions as tablecnSliderSubscriptions } from '@/lib/data-table-state'
 import { fieldSeparator } from '@/pleat/field'
 import { input } from '@/pleat/input'
 import { icon } from '@/pleat/composition/icon'
@@ -56,6 +58,7 @@ import {
 import { appShell } from './app-shell'
 import { chartAnalyticsDashboard } from './chart-analytics-dashboard'
 import { featuredVisitorsChart } from './dashboard-echarts'
+import * as TablecnPage from './tablecn-page'
 
 type Block = Readonly<{
   description: string
@@ -74,6 +77,8 @@ export const Model = S.Struct({
   query: S.String,
   radioGroup: RadioGroup.Model,
   table: TableState.Model,
+  tablecn: TablecnPage.Model,
+  tablecnGrid: TablecnPage.Model,
 })
 export type Model = typeof Model.Type
 export const ChangedEmail = taggedStruct('ChangedBlockEmail', {
@@ -85,7 +90,9 @@ export const ChangedPassword = taggedStruct('ChangedBlockPassword', {
 export const ChangedQuery = taggedStruct('ChangedBlockQuery', {
   value: S.String,
 })
-export const ChangedKind = taggedStruct('ChangedBlockKind', { value: S.String })
+export const ChangedKind = taggedStruct('ChangedBlockKind', {
+  value: S.String,
+})
 export const ClearedCatalogSearch = taggedStruct('ClearedBlockCatalogSearch')
 export const ChangedMailFilter = taggedStruct('ChangedBlockMailFilter', {
   value: S.String,
@@ -103,6 +110,15 @@ export const GotRadioGroupMessage = taggedStruct('GotBlockRadioGroupMessage', {
 export const GotEChartMessage = taggedStruct('GotBlocksStyleXEChartMessage', {
   message: ECharts.ChartMessage,
 })
+export const GotTablecnMessage = taggedStruct('GotBlockTablecnMessage', {
+  message: TablecnPage.Message,
+})
+export const GotTablecnGridMessage = taggedStruct(
+  'GotBlockTablecnGridMessage',
+  {
+    message: TablecnPage.Message,
+  },
+)
 export const Message = S.Union([
   TableState.Message,
   GotEChartMessage,
@@ -115,6 +131,8 @@ export const Message = S.Union([
   SelectedMailThread,
   ChangedCheckoutField,
   GotRadioGroupMessage,
+  GotTablecnMessage,
+  GotTablecnGridMessage,
 ])
 export type Message = typeof Message.Type
 export const init = (): Model => ({
@@ -128,10 +146,51 @@ export const init = (): Model => ({
   query: '',
   radioGroup: RadioGroup.init({ id: 'checkout-delivery' }),
   table: TableState.init(10),
+  tablecn: TablecnPage.init(),
+  tablecnGrid: TablecnPage.init('data-grid'),
 })
 type UpdateReturn = Update.Return<Model, Message>
+
+/* Est. Hours range-slider thumb drags inside the tablecn blocks. */
+export const subscriptions = Subscription.aggregate<Model, Message>()(
+  Subscription.lift(
+    tablecnSliderSubscriptions('estimatedHours', 'featuredPlTablecnHours'),
+  )<Model, Message>({
+    toChildModel: model => model.tablecn.table,
+    toParentMessage: message => GotTablecnMessage({ message }),
+  }),
+  Subscription.lift(
+    tablecnSliderSubscriptions('estimatedHours', 'featuredPlTablecnGridHours'),
+  )<Model, Message>({
+    toChildModel: model => model.tablecnGrid.table,
+    toParentMessage: message => GotTablecnGridMessage({ message }),
+  }),
+)
+
 export const update = (model: Model, message: Message): UpdateReturn => {
   if (message._tag === 'GotBlocksStyleXEChartMessage') return { model: model }
+  if (message._tag === 'GotBlockTablecnMessage') {
+    const { model: tablecn, commands: tablecnCommands__ } = TablecnPage.update(
+      model.tablecn,
+      message.message,
+    )
+    return {
+      model: { ...model, tablecn },
+      commands: Command.mapMessages(tablecnCommands__ ?? [], childMessage =>
+        GotTablecnMessage({ message: childMessage }),
+      ),
+    }
+  }
+  if (message._tag === 'GotBlockTablecnGridMessage') {
+    const { model: tablecnGrid, commands: tablecnGridCommands__ } =
+      TablecnPage.update(model.tablecnGrid, message.message)
+    return {
+      model: { ...model, tablecnGrid },
+      commands: Command.mapMessages(tablecnGridCommands__ ?? [], childMessage =>
+        GotTablecnGridMessage({ message: childMessage }),
+      ),
+    }
+  }
   if (message._tag === 'ChangedBlockEmail')
     return { model: { ...model, email: message.value } }
   if (message._tag === 'ChangedBlockPassword')
@@ -175,7 +234,9 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       ),
     }
   }
-  return { model: { ...model, table: TableState.update(model.table, message) } }
+  return {
+    model: { ...model, table: TableState.update(model.table, message).model },
+  }
 }
 
 const metricCard = <Message>(
@@ -1101,7 +1162,34 @@ const blocks: ReadonlyArray<Block> = [
     name: 'app-shell-01',
     preview: (_model, h) => appShell(h),
   },
+  {
+    description:
+      "sadmann7/tablecn's data table with a diceui-style action bar for row multi-select.",
+    name: 'tablecn',
+    preview: (model, h) =>
+      h.submodel({
+        slotId: 'tablecn',
+        model: model.tablecn,
+        view: tablecnView,
+        toParentMessage: message => GotTablecnMessage({ message }),
+      }),
+  },
+  {
+    description: "sadmann7/tablecn's editable data grid.",
+    name: 'tablecn-grid',
+    preview: (model, h) =>
+      h.submodel({
+        slotId: 'tablecn-grid',
+        model: model.tablecnGrid,
+        view: tablecnView,
+        toParentMessage: message => GotTablecnGridMessage({ message }),
+      }),
+  },
 ]
+
+const tablecnView = defineView<TablecnPage.Model, TablecnPage.Message>(
+  TablecnPage.view,
+)
 
 export const viewBlock = (
   model: Model,

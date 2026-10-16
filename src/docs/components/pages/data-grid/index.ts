@@ -30,5 +30,6 @@ export const dataGridPage = authoredPage({
     ],
     examples: dataGridExamples('tailwind'),
     stylexExamples: dataGridExamples('stylex'),
+    pleatExamples: dataGridExamples('pleat'),
   },
 })

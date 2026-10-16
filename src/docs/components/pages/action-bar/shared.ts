@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 
 export type ActionBarVariant = 'basic' | 'positions'
@@ -55,8 +56,8 @@ const barChildrenEmit = `ActionBar.actionBarSelection(
               h,
             ),`
 
-const emitBasic = (renderer: 'tailwind' | 'stylex'): string => {
-  const sep = renderer === 'stylex' ? 'stylex' : 'ui'
+const emitBasic = (renderer: 'tailwind' | 'stylex' | 'pleat'): string => {
+  const sep = renderer === 'tailwind' ? 'ui' : 'stylex'
   return foldkitApplication({
     title: 'Action Bar — Basic',
     imports: `import { Schema as S } from 'effect'
@@ -116,8 +117,8 @@ export type Message = typeof Message.Type`,
   })
 }
 
-const emitPositions = (renderer: 'tailwind' | 'stylex'): string => {
-  const sep = renderer === 'stylex' ? 'stylex' : 'ui'
+const emitPositions = (renderer: 'tailwind' | 'stylex' | 'pleat'): string => {
+  const sep = renderer === 'tailwind' ? 'ui' : 'stylex'
   return foldkitApplication({
     title: 'Action Bar — Positions',
     imports: `import { Schema as S } from 'effect'
@@ -225,14 +226,14 @@ export type Message = typeof Message.Type`,
 
 export const emitApplication = (
   fixture: ActionBarFixture,
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat',
 ): string =>
   fixture.variant === 'positions'
     ? emitPositions(renderer)
     : emitBasic(renderer)
 
-export const actionBarExamples = (
-  renderer: 'tailwind' | 'stylex',
+const actionBarExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   actionBarFixtures.map(fixture => ({
     title: fixture.title,
@@ -242,3 +243,8 @@ export const actionBarExamples = (
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: emitApplication(fixture, renderer),
   }))
+
+export const actionBarExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, actionBarExamplesFor(renderer))

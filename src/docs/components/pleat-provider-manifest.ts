@@ -112,6 +112,8 @@ import { logStreamPleatPreview } from '@/docs/components/pages/log-stream/pleat'
 import { timerPleatPreview } from '@/docs/components/pages/timer/pleat'
 import { timestampPleatPreview } from '@/docs/components/pages/timestamp/pleat'
 import { transferListPleatPreview } from '@/docs/components/pages/transfer-list/pleat'
+import { actionBarPleatPreviewProgram } from '@/docs/components/pages/action-bar/pleat'
+import { dataGridPleatPreviewProgram } from '@/docs/components/pages/data-grid/pleat'
 import { dataTablePleatPreview } from '@/docs/components/pages/data-table/pleat'
 import { dateInputPleatPreview } from '@/docs/components/pages/date-input/pleat'
 import { datePickerPleatPreview } from '@/docs/components/pages/date-picker/pleat'
@@ -221,6 +223,8 @@ installPleatExamplePreviewProvider('calendar', calendarPleatPreview)
 installPleatExamplePreviewProvider('carousel', carouselPleatPreview)
 installPleatExamplePreviewProvider('chart', chartPleatPreview)
 installPleatExamplePreviewProvider('center', centerPleatPreview)
+installPleatPreviewView('action-bar', actionBarPleatPreviewProgram.view)
+installPleatPreviewView('data-grid', dataGridPleatPreviewProgram.view)
 installPleatExamplePreviewProvider('data-table', dataTablePleatPreview)
 installPleatExamplePreviewProvider('date-input', dateInputPleatPreview)
 installPleatExamplePreviewProvider('date-picker', datePickerPleatPreview)

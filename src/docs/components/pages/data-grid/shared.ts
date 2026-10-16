@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
 import type {
   DataGridColumn,
@@ -308,10 +309,10 @@ export const dataGridFixtures = [
 
 const source = (
   fixture: (typeof dataGridFixtures)[number],
-  renderer: 'tailwind' | 'stylex',
+  renderer: 'tailwind' | 'stylex' | 'pleat',
 ): string => {
   const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
-  const stylex = renderer === 'stylex'
+  const stylex = renderer !== 'tailwind'
   return foldkitApplication({
     title: `Data Grid — ${fixture.title}`,
     imports: `import { Schema as S } from 'effect'
@@ -348,8 +349,8 @@ export type Message = typeof Message.Type`,
   })
 }
 
-export const dataGridExamples = (
-  renderer: 'tailwind' | 'stylex',
+const dataGridExamplesFor = (
+  renderer: 'tailwind' | 'stylex' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
   dataGridFixtures.map(fixture => ({
     title: fixture.title,
@@ -357,3 +358,8 @@ export const dataGridExamples = (
     code: source(fixture, renderer),
     previewClass: 'justify-stretch',
   }))
+
+export const dataGridExamples = (
+  renderer: 'tailwind' | 'stylex' | 'pleat',
+): ReadonlyArray<DocsExample> =>
+  pleatExamples(renderer, dataGridExamplesFor(renderer))
