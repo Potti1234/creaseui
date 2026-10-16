@@ -82,6 +82,7 @@ describe('crease-theme registry item', () => {
       items: ReadonlyArray<{
         name: string
         cssVars: Record<'theme' | 'light' | 'dark', Record<string, string>>
+        css?: Record<string, Record<string, Record<string, string>>>
       }>
     }
   ).items.find(item => item.name === 'crease-theme')
@@ -108,5 +109,12 @@ describe('crease-theme registry item', () => {
         assert.ok(role in theme.cssVars[mode], `${mode} is missing --${role}`)
     for (const role of ['success', 'warning'])
       assert.equal(theme.cssVars.theme[`color-${role}`], `var(--${role})`)
+  })
+
+  it('ships the document base layer the installed components rely on', () => {
+    const base = theme?.css?.['@layer base']
+    assert.equal(base?.['*']?.['border-color'], 'var(--color-border)')
+    assert.equal(base?.body?.['background-color'], 'var(--color-background)')
+    assert.equal(base?.body?.color, 'var(--color-foreground)')
   })
 })

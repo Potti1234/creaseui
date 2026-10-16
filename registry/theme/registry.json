@@ -118,6 +118,18 @@
           "sidebar-border": "oklch(1 0 0 / 10%)",
           "sidebar-ring": "oklch(0.556 0 0)"
         }
+      },
+      "css": {
+        "@layer base": {
+          "*": {
+            "border-color": "var(--color-border)",
+            "outline-color": "color-mix(in oklab, var(--color-ring) 50%, transparent)"
+          },
+          "body": {
+            "background-color": "var(--color-background)",
+            "color": "var(--color-foreground)"
+          }
+        }
       }
     }
   ]
