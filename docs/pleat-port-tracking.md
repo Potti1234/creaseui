@@ -180,3 +180,24 @@ can nest same-slot descendants).
 - Browser-verified on tw/sx/pl: all ten pickers open under
   `#foldkit-portal-root`, selecting an option updates the value and closes
   the panel, zero pageerrors.
+
+## Action Bar, Data Grid, faceted Data Table, tablecn blocks (PR #29)
+
+- Components: `src/pleat/action-bar.ts`, `src/pleat/data-grid.ts` and the
+  faceted variant in `src/pleat/data-table.ts`, converted from StyleX with
+  `scripts/pleat/stylex-to-pleat.mjs`; behavior stays in
+  `src/lib/{action-bar,data-grid,data-table-state,tablecn-data}.ts`.
+  `data-slot` sets are identical to `src/ui` for all three files.
+- Layout props passed into components use `layoutStyle(...)` from
+  `src/pleat/contracts.ts` (no casts).
+- Docs: Pleat previews for action-bar / data-grid / data-table, registered in
+  `pleat-provider-manifest.ts`; examples rewritten to Pleat via
+  `pleatExamples`.
+- Blocks: `src/demo/blocks-pleat/tablecn-page.ts` + `tablecn-grid-view.ts`
+  wired into the Pleat featured page, with its own slider subscription ids
+  (`featuredPlTablecn*`) and child commands forwarded from `src/main.ts`.
+- Registry: `pleat-action-bar`, `pleat-data-grid` generated; stale
+  `tablecn-table-behavior` lib item (file removed in 4197469) dropped.
+- Browser: `e2e/sites/tablecn.spec.ts` checks docs pages on every site, and
+  compares tablecn/tablecn-grid headers, row counts and width against the
+  Tailwind site; row selection opens/clears the Action Bar; axe table rules.
