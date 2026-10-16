@@ -5,11 +5,14 @@ import { defineMessageUnion } from 'foldkit/message'
 
 /* F5 item-group fixture: linked, ordinary and mixed Items inside an
    ItemGroup must keep both the list structure and native link semantics. */
+type Separator = Readonly<{ separator: unknown }>
 export type ItemsKit = Readonly<{
-  itemGroup: <Msg>(
-    props: Readonly<{ children: ReadonlyArray<Html | string> }>,
+  /* Method syntax: each renderer's separator entry is its own type. */
+  itemGroup<Msg>(
+    props: Readonly<{ children: ReadonlyArray<Html | string | Separator> }>,
     h: HtmlBuilder<Msg>,
-  ) => Html
+  ): Html
+  itemGroupSeparator(): Separator
   item: <Msg>(
     props: Readonly<{
       children: ReadonlyArray<Html | string>
@@ -29,10 +32,17 @@ export type ItemsKit = Readonly<{
   ) => Html
 }>
 
-type Entry = Readonly<{ title: string; href?: string }>
+type Entry = Readonly<{ title: string; href?: string; separatorBefore?: true }>
 const GROUPS: ReadonlyArray<
   Readonly<{ id: string; entries: ReadonlyArray<Entry> }>
 > = [
+  {
+    id: 'items-separated',
+    entries: [
+      { title: 'Release notes', href: '#release-notes' },
+      { title: 'Changelog', separatorBefore: true },
+    ],
+  },
   {
     id: 'items-linked',
     entries: [
@@ -103,24 +113,27 @@ const view =
             [
               kit.itemGroup(
                 {
-                  children: entries.map(({ title, href }) =>
-                    kit.item(
-                      {
-                        variant: 'outline',
-                        ...(href === undefined ? {} : { element: 'a', href }),
-                        children: [
-                          kit.itemContent(
-                            {
-                              children: [
-                                kit.itemTitle({ children: [title] }, h),
-                              ],
-                            },
-                            h,
-                          ),
-                        ],
-                      },
-                      h,
-                    ),
+                  children: entries.flatMap(
+                    ({ title, href, separatorBefore }) => [
+                      ...(separatorBefore ? [kit.itemGroupSeparator()] : []),
+                      kit.item(
+                        {
+                          variant: 'outline',
+                          ...(href === undefined ? {} : { element: 'a', href }),
+                          children: [
+                            kit.itemContent(
+                              {
+                                children: [
+                                  kit.itemTitle({ children: [title] }, h),
+                                ],
+                              },
+                              h,
+                            ),
+                          ],
+                        },
+                        h,
+                      ),
+                    ],
                   ),
                 },
                 h,

@@ -12,7 +12,13 @@ import {
 import { checkbox } from '@/stylex/checkbox'
 import { themeScope } from '@/stylex/composition/theme'
 import { heading } from '@/stylex/heading'
-import { item, itemContent, itemGroup, itemTitle } from '@/stylex/item'
+import {
+  item,
+  itemContent,
+  itemGroup,
+  itemGroupSeparator,
+  itemTitle,
+} from '@/stylex/item'
 import { input } from '@/stylex/input'
 import { nativeSelect } from '@/stylex/native-select'
 import { datePicker } from '@/stylex/date-picker'
@@ -59,4 +65,10 @@ runSurfacesData({
 runScopeOverlay({ button, popover, themeScope, datePicker })
 runSettings({ tabs, tabsUpdate, switchControl })
 runDashboard({ stat })
-runItemGroups({ itemGroup, item, itemContent, itemTitle })
+runItemGroups({
+  itemGroup,
+  itemGroupSeparator,
+  item,
+  itemContent,
+  itemTitle,
+})

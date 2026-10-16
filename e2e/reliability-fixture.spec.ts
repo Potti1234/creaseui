@@ -356,6 +356,7 @@ test.describe('shared mixed-form fixture', () => {
         'items-linked': { items: 2, links: 2 },
         'items-ordinary': { items: 2, links: 0 },
         'items-mixed': { items: 3, links: 2 },
+        'items-separated': { items: 2, links: 1 },
       } as const
       for (const [id, counts] of Object.entries(expected)) {
         const list = page.locator(`#${id}`).getByRole('list')
@@ -365,6 +366,21 @@ test.describe('shared mixed-form fixture', () => {
           counts.links,
         )
       }
+      // A group separator is decorative and never becomes a list item.
+      const separator = await page
+        .locator('#items-separated [data-slot="item-separator"]')
+        .evaluateAll(elements =>
+          elements.map(element => ({
+            role: element.getAttribute('role'),
+            inListItem: element.closest('[role="listitem"]') !== null,
+            parentIsList:
+              element.parentElement?.getAttribute('role') === 'list',
+            height: element.getBoundingClientRect().height,
+          })),
+        )
+      expect(separator).toEqual([
+        { role: 'none', inListItem: false, parentIsList: true, height: 1 },
+      ])
       const results = await new AxeBuilder({ page })
         .include('#items')
         .withRules([

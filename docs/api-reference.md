@@ -925,7 +925,11 @@ Source: [`src/ui/item.ts`](../src/ui/item.ts)
 | `itemActions` | value | `itemActions: value` |
 | `itemHeader` | value | `itemHeader: value` |
 | `itemFooter` | value | `itemFooter: value` |
-| `itemGroup` | function | `itemGroup<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html` |
+| `ItemGroupSeparator` | type | `ItemGroupSeparator = Readonly<{ separator: ItemSeparatorProps; }>` |
+| `itemGroupSeparator` | function | `itemGroupSeparator(props: ItemSeparatorProps = {}): ItemGroupSeparator` |
+| `ItemGroupEntry` | type | `ItemGroupEntry = Html \| string \| ItemGroupSeparator` |
+| `ItemGroupProps` | type | `ItemGroupProps = Readonly<{ children: ReadonlyArray<ItemGroupEntry>; class?: string; }>` |
+| `itemGroup` | function | `itemGroup<Msg>(props: ItemGroupProps, h: HtmlBuilder<Msg>): Html` |
 | `ItemSeparatorProps` | type | `ItemSeparatorProps = Readonly<{ class?: string; }>` |
 | `itemSeparator` | function | `itemSeparator<Msg>(props: ItemSeparatorProps = {}, h: HtmlBuilder<Msg>): Html` |
 

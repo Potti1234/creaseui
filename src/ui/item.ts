@@ -166,7 +166,29 @@ export const itemFooter = slotDiv(
   'flex basis-full items-center justify-between gap-2',
 )
 
-export const itemGroup = <Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html => {
+/** Decorative separator between ItemGroup entries; never a list item. */
+export type ItemGroupSeparator = Readonly<{ separator: ItemSeparatorProps }>
+const groupSeparators = new WeakSet<object>()
+export const itemGroupSeparator = (
+  props: ItemSeparatorProps = {},
+): ItemGroupSeparator => {
+  const entry = { separator: props }
+  groupSeparators.add(entry)
+  return entry
+}
+export type ItemGroupEntry = Html | string | ItemGroupSeparator
+const isGroupSeparator = (entry: ItemGroupEntry): entry is ItemGroupSeparator =>
+  typeof entry === 'object' && entry !== null && groupSeparators.has(entry)
+
+export type ItemGroupProps = Readonly<{
+  children: ReadonlyArray<ItemGroupEntry>
+  class?: string
+}>
+
+export const itemGroup = <Msg>(
+  props: ItemGroupProps,
+  h: HtmlBuilder<Msg>,
+): Html => {
   return h.div(
     [
       h.Role('list'),
@@ -174,14 +196,16 @@ export const itemGroup = <Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html => {
       h.Class(cn('group/item-group flex flex-col', props.class)),
     ],
     [...props.children].map(child =>
-      h.div(
-        [
-          h.Role('listitem'),
-          h.DataAttribute('slot', 'item-listitem'),
-          h.Class('contents'),
-        ],
-        [child],
-      ),
+      isGroupSeparator(child)
+        ? itemSeparator(child.separator, h)
+        : h.div(
+            [
+              h.Role('listitem'),
+              h.DataAttribute('slot', 'item-listitem'),
+              h.Class('contents'),
+            ],
+            [child],
+          ),
     ),
   )
 }

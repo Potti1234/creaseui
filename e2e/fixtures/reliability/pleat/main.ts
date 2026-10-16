@@ -12,7 +12,13 @@ import {
 import { checkbox } from '@/pleat/checkbox'
 import { themeScope } from '@/pleat/composition/theme'
 import { heading } from '@/pleat/heading'
-import { item, itemContent, itemGroup, itemTitle } from '@/pleat/item'
+import {
+  item,
+  itemContent,
+  itemGroup,
+  itemGroupSeparator,
+  itemTitle,
+} from '@/pleat/item'
 import { input } from '@/pleat/input'
 import { nativeSelect } from '@/pleat/native-select'
 import { datePicker } from '@/pleat/date-picker'
@@ -59,4 +65,10 @@ runSurfacesData({
 runScopeOverlay({ button, popover, themeScope, datePicker })
 runSettings({ tabs, tabsUpdate, switchControl })
 runDashboard({ stat })
-runItemGroups({ itemGroup, item, itemContent, itemTitle })
+runItemGroups({
+  itemGroup,
+  itemGroupSeparator,
+  item,
+  itemContent,
+  itemTitle,
+})

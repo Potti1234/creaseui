@@ -2938,9 +2938,29 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "itemFooter: value"
     },
     {
+      "name": "ItemGroupSeparator",
+      "kind": "type",
+      "signature": "ItemGroupSeparator = Readonly<{ separator: ItemSeparatorProps; }>"
+    },
+    {
+      "name": "itemGroupSeparator",
+      "kind": "function",
+      "signature": "itemGroupSeparator(props: ItemSeparatorProps = {}): ItemGroupSeparator"
+    },
+    {
+      "name": "ItemGroupEntry",
+      "kind": "type",
+      "signature": "ItemGroupEntry = Html | string | ItemGroupSeparator"
+    },
+    {
+      "name": "ItemGroupProps",
+      "kind": "type",
+      "signature": "ItemGroupProps = Readonly<{ children: ReadonlyArray<ItemGroupEntry>; class?: string; }>"
+    },
+    {
       "name": "itemGroup",
       "kind": "function",
-      "signature": "itemGroup<Msg>(props: SlotProps, h: HtmlBuilder<Msg>): Html"
+      "signature": "itemGroup<Msg>(props: ItemGroupProps, h: HtmlBuilder<Msg>): Html"
     },
     {
       "name": "ItemSeparatorProps",

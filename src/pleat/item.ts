@@ -261,8 +261,26 @@ export const itemDescription = <Msg>(p: SlotProps, h: HtmlBuilder<Msg>): Html =>
 export const itemActions = slotDiv('item-actions', styles.actions)
 export const itemHeader = slotDiv('item-header', styles.header)
 export const itemFooter = slotDiv('item-footer', styles.footer)
-export type ItemGroupProps = SlotProps &
-  Readonly<{ spacing?: 'none' | 'sm' | 'md' | 'lg'; columns?: 2 | 3 | 4 }>
+/** Decorative separator between ItemGroup entries; never a list item. */
+export type ItemGroupSeparator = Readonly<{ separator: ItemSeparatorProps }>
+const groupSeparators = new WeakSet<object>()
+export const itemGroupSeparator = (
+  props: ItemSeparatorProps = {},
+): ItemGroupSeparator => {
+  const entry = { separator: props }
+  groupSeparators.add(entry)
+  return entry
+}
+export type ItemGroupEntry = Html | string | ItemGroupSeparator
+const isGroupSeparator = (entry: ItemGroupEntry): entry is ItemGroupSeparator =>
+  typeof entry === 'object' && entry !== null && groupSeparators.has(entry)
+
+export type ItemGroupProps = Omit<SlotProps, 'children'> &
+  Readonly<{
+    children: ReadonlyArray<ItemGroupEntry>
+    spacing?: 'none' | 'sm' | 'md' | 'lg'
+    columns?: 2 | 3 | 4
+  }>
 export const itemGroup = <Msg>(p: ItemGroupProps, h: HtmlBuilder<Msg>): Html =>
   h.div(
     [
@@ -282,14 +300,16 @@ export const itemGroup = <Msg>(p: ItemGroupProps, h: HtmlBuilder<Msg>): Html =>
       ),
     ],
     [...p.children].map(child =>
-      h.div(
-        [
-          h.Role('listitem'),
-          h.DataAttribute('slot', 'item-listitem'),
-          h.Class(className(styles.listItem)),
-        ],
-        [child],
-      ),
+      isGroupSeparator(child)
+        ? itemSeparator(child.separator, h)
+        : h.div(
+            [
+              h.Role('listitem'),
+              h.DataAttribute('slot', 'item-listitem'),
+              h.Class(className(styles.listItem)),
+            ],
+            [child],
+          ),
     ),
   )
 export type ItemSeparatorProps = Readonly<{
