@@ -360,6 +360,11 @@
           "type": "registry:lib",
           "target": "@lib/data-table-adapter.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/date-parse-behavior",
+        "Potti1234/creaseui/date-range-input-behavior",
+        "Potti1234/creaseui/slider-behavior"
       ]
     },
     {
@@ -980,26 +985,8 @@
         }
       ],
       "registryDependencies": [
-        "Potti1234/creaseui/data-grid-behavior"
-      ]
-    },
-    {
-      "name": "tablecn-table-behavior",
-      "type": "registry:lib",
-      "title": "Tablecn Table Behavior",
-      "description": "Shared Foldkit behavior and helpers for Tablecn Table.",
-      "files": [
-        {
-          "path": "tablecn-table.ts",
-          "type": "registry:lib",
-          "target": "@lib/tablecn-table.ts"
-        }
-      ],
-      "registryDependencies": [
-        "Potti1234/creaseui/date-parse-behavior",
-        "Potti1234/creaseui/date-range-input-behavior",
-        "Potti1234/creaseui/slider-behavior",
-        "Potti1234/creaseui/tablecn-data-behavior"
+        "Potti1234/creaseui/data-grid-behavior",
+        "Potti1234/creaseui/data-table-mechanics"
       ]
     },
     {

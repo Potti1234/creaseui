@@ -23,7 +23,7 @@
   ],
   "summary": {
     "upstreamItems": 62,
-    "registryItems": 122,
+    "registryItems": 123,
     "creaseOnlyRecipes": [
       "action-bar",
       "avatar-group",
@@ -34,6 +34,7 @@
       "circular-progress",
       "code",
       "code-block",
+      "data-grid",
       "data-table",
       "date-input",
       "date-picker",
@@ -610,6 +611,24 @@
         "src/ui/context-menu.ts",
         "src/ui/registry.json#context-menu",
         "/docs/components/context-menu"
+      ]
+    },
+    {
+      "component": "data-grid",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/data-grid.ts",
+        "src/ui/registry.json#data-grid",
+        "/docs/components/data-grid"
       ]
     },
     {

@@ -60,6 +60,33 @@
       ]
     },
     {
+      "name": "pleat-action-bar",
+      "type": "registry:lib",
+      "title": "Pleat Action Bar Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "action-bar.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/action-bar.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/action-bar-behavior",
+        "Potti1234/creaseui/crease-theme-css",
+        "Potti1234/creaseui/pleat-button",
+        "Potti1234/creaseui/pleat-complex-tokens",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens",
+        "Potti1234/creaseui/toolbar-behavior"
+      ]
+    },
+    {
       "name": "pleat-alert-dialog",
       "type": "registry:ui",
       "title": "Alert Dialog",
@@ -2073,6 +2100,33 @@
       ]
     },
     {
+      "name": "pleat-data-grid",
+      "type": "registry:lib",
+      "title": "Pleat Data Grid Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "data-grid.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/data-grid.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
+        "Potti1234/creaseui/data-grid-behavior",
+        "Potti1234/creaseui/date-parse-behavior",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-calendar",
+        "Potti1234/creaseui/pleat-composition-icon",
+        "Potti1234/creaseui/pleat-core",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens"
+      ]
+    },
+    {
       "name": "pleat-data-table",
       "type": "registry:ui",
       "title": "Data Table",
@@ -2108,15 +2162,22 @@
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/data-table-mechanics",
+        "Potti1234/creaseui/date-range-input-behavior",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-button",
+        "Potti1234/creaseui/pleat-calendar",
+        "Potti1234/creaseui/pleat-checkbox",
         "Potti1234/creaseui/pleat-complex-tokens",
+        "Potti1234/creaseui/pleat-composition-icon",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",
         "Potti1234/creaseui/pleat-input",
+        "Potti1234/creaseui/pleat-interaction-tokens",
         "Potti1234/creaseui/pleat-pagination",
         "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-select",
+        "Potti1234/creaseui/pleat-slider",
         "Potti1234/creaseui/pleat-style",
         "Potti1234/creaseui/pleat-table",
         "Potti1234/creaseui/pleat-tokens"

@@ -23,6 +23,24 @@
       "title": "Accordion"
     },
     {
+      "category": "other",
+      "component": "action-bar",
+      "description": "A CreaseUI Action Bar component for Foldkit.",
+      "exports": [
+        "actionBar",
+        "actionBarClose",
+        "actionBarGroup",
+        "actionBarItem",
+        "actionBarSelection",
+        "actionBarSeparator"
+      ],
+      "install": "npx shadcn@latest add Potti1234/creaseui/action-bar",
+      "item": "action-bar",
+      "renderer": "tailwind",
+      "state": "stateless",
+      "title": "Action Bar"
+    },
+    {
       "category": "overlay",
       "component": "alert-dialog",
       "description": "A CreaseUI Alert Dialog component for Foldkit.",
@@ -461,6 +479,17 @@
       "renderer": "tailwind",
       "state": "parent-model",
       "title": "Context Menu"
+    },
+    {
+      "category": "other",
+      "component": "data-grid",
+      "description": "A CreaseUI Data Grid component for Foldkit.",
+      "exports": ["dataGrid"],
+      "install": "npx shadcn@latest add Potti1234/creaseui/data-grid",
+      "item": "data-grid",
+      "renderer": "tailwind",
+      "state": "stateless",
+      "title": "Data Grid"
     },
     {
       "category": "data display",
@@ -2056,6 +2085,24 @@
       "renderer": "stylex",
       "state": "stateless",
       "title": "Accordion"
+    },
+    {
+      "category": "other",
+      "component": "action-bar",
+      "description": "The StyleX Action Bar component for Foldkit.",
+      "exports": [
+        "actionBar",
+        "actionBarClose",
+        "actionBarGroup",
+        "actionBarItem",
+        "actionBarSelection",
+        "actionBarSeparator"
+      ],
+      "install": "npx shadcn@latest add Potti1234/creaseui/stylex-action-bar",
+      "item": "stylex-action-bar",
+      "renderer": "stylex",
+      "state": "stateless",
+      "title": "Action Bar"
     },
     {
       "category": "overlay",
