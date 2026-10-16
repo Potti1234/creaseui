@@ -1055,8 +1055,8 @@ const fst = stylex.create({
   },
   pageSizeOption: { paddingBlock: 0 },
   c10: {
-    paddingInline: '0.5rem',
     paddingBlock: 0,
+    paddingInline: '0.5rem',
     color: tokens.foreground,
     fontWeight: 500,
     textAlign: 'left',
@@ -1066,8 +1066,8 @@ const fst = stylex.create({
     width: '2.5rem',
   },
   c12: {
-    paddingInline: '0.5rem',
     paddingBlock: 0,
+    paddingInline: '0.5rem',
     color: tokens.foreground,
     fontWeight: 500,
     textAlign: 'left',
