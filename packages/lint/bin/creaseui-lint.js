@@ -11,12 +11,14 @@ import {
   POLICY_VERSION,
   RENDERERS,
 } from '../lib/strict/contracts.js'
+import { createCssAudit, findStylesheets } from '../lib/strict/css.js'
 import { CreaseConfigError } from '../lib/strict/ownership.js'
 import { createRenderExports } from '../lib/strict/render-exports.js'
 
 const USAGE = `Usage:
   creaseui-lint init   --renderer <tailwind|stylex|pleat> --components <dir> [--root <dir>] [--manifest crease.lock.json] [--dry-run]
   creaseui-lint doctor [--config creaseui-lint.config.mjs] [--root <dir>]
+  creaseui-lint css    [--config creaseui-lint.config.mjs] [--root <dir>]
   creaseui-lint audit  --config creaseui-lint.audit.mjs [--output report.json] [--report-only]
 
 Exit codes: 0 ok, 1 findings, 2 invalid setup.`
@@ -373,6 +375,18 @@ const doctor = async values => {
     console.log(
       `note    no installed replacement for: ${missingReplacements.join(', ')} (diagnostics show install commands)`,
     )
+  const stylesheets = createCssAudit({
+    isOwned: file => strict.ownership.fileFor(file) !== undefined,
+    rootDir,
+  })
+  for (const file of findStylesheets(rootDir)) stylesheets.auditFile(file)
+  for (const finding of stylesheets.findings) {
+    if (finding.kind === 'unverifiable') incomplete += 1
+    fail(
+      `${finding.file}:${finding.line} ${finding.kind === 'unverifiable' ? 'unverifiable CSS: ' : ''}${finding.message}`,
+    )
+  }
+  console.log(`ok      ${stylesheets.files.size} stylesheets inspected`)
   if (incomplete > 0) {
     console.log(
       `coverage feature-only: ${incomplete} implementation or UI files are ignored, lose Crease rules or have unregistered rendering exports; this is not complete design-system enforcement`,
@@ -427,6 +441,25 @@ const audit = async values => {
   }
 }
 
+const css = async values => {
+  const { rootDir, strict } = await findConfigOptions(values)
+  const run = createCssAudit({
+    isOwned: file => strict.ownership.fileFor(file) !== undefined,
+    rootDir,
+  })
+  for (const file of findStylesheets(rootDir)) run.auditFile(file)
+  for (const finding of run.findings)
+    console.log(
+      `${finding.kind} ${finding.file}:${finding.line} ${finding.message}`,
+    )
+  const count = kind =>
+    run.findings.filter(finding => finding.kind === kind).length
+  console.log(
+    `css: ${run.files.size} stylesheets, ${count('violation')} violations, ${count('unverifiable')} unverifiable`,
+  )
+  return count('unverifiable') > 0 ? 2 : count('violation') > 0 ? 1 : 0
+}
+
 const main = async () => {
   const [command, ...rest] = process.argv.slice(2)
   const { values } = parseArgs({
@@ -446,6 +479,7 @@ const main = async () => {
   if (command === 'init') return init(values)
   if (command === 'doctor') return doctor(values)
   if (command === 'audit') return audit(values)
+  if (command === 'css') return css(values)
   console.error(USAGE)
   return 2
 }

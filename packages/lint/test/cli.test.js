@@ -152,5 +152,15 @@ test('doctor reports the archived tutorial as feature-only coverage', () => {
       ),
     )
   assert.doesNotMatch(result.stdout, /coverage complete/u)
+  assert.match(
+    result.stdout,
+    /src\/styles\.css:\d+ `\.product-icon` styles components from global CSS/u,
+  )
+  const css = run(directory, 'css')
+  assert.equal(css.status, 1, css.stdout + css.stderr)
+  assert.match(
+    css.stdout,
+    /css: 1 stylesheets, \d+ violations, 0 unverifiable/u,
+  )
   rmSync(directory, { force: true, recursive: true })
 })
