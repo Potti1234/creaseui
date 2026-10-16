@@ -23,7 +23,10 @@
           "file": "src/design/button.ts",
           "name": "button",
           "contract": "control.button",
-          "variants": { "variant": ["default", "outline", "ghost"] }
+          "variants": {
+            "variant": ["default", "outline", "ghost"],
+            "size": ["default", "sm", "icon", "icon-sm"]
+          }
         },
         {
           "file": "src/design/behavior/button.ts",

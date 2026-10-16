@@ -1,3 +1,5 @@
+import ts from 'typescript'
+
 import {
   FORBIDDEN_PROPS,
   HTML_ONLY_CHILDREN,
@@ -8,6 +10,9 @@ import {
   isPlacementUtility,
   isOwnedGeometryUtility,
   ownsGeometry,
+  isSquareGeometryUtility,
+  isSquareSize,
+  SQUARE_GEOMETRY_PROPERTIES,
   OWNED_GEOMETRY_PROPERTIES,
 } from './contracts.js'
 import { isAssertion, unwrap } from './resolver.js'
@@ -332,6 +337,19 @@ export const analyzeCall = ({ analysis, call, context, record, strict }) => {
             property,
             `\`${key}\` overrides the named size of ${label(record)}; use its \`size\` option.`,
           )
+        else if (SQUARE_GEOMETRY_PROPERTIES.has(key) && squareChoices === null)
+          unverifiable(
+            property,
+            `\`size\` of ${label(record)} cannot be resolved to finite choices, so \`${key}\` may distort a square icon size.`,
+          )
+        else if (
+          SQUARE_GEOMETRY_PROPERTIES.has(key) &&
+          squareChoices.length > 0
+        )
+          violation(
+            property,
+            `\`${key}\` distorts the square \`${squareChoices.join('/')}\` size of ${label(record)}; pick another named icon size.`,
+          )
         else if (!LAYOUT_PROPERTIES.has(key))
           violation(
             property,
@@ -395,7 +413,70 @@ export const analyzeCall = ({ analysis, call, context, record, strict }) => {
     )
   }
 
-  for (const [key, values] of read(props, new Set())) {
+  /** Finite string choices of a variant value, or null when open-ended. */
+  const typedChoices = node => {
+    if (!analysis.hasTypes) return null
+    try {
+      const type = analysis.checker.getTypeAtLocation(
+        analysis.services.esTreeNodeToTSNodeMap.get(node),
+      )
+      const values = []
+      for (const part of type.isUnion() ? type.types : [type])
+        if (part.isStringLiteral()) values.push(part.value)
+        else if ((part.flags & ts.TypeFlags.Undefined) !== 0)
+          values.push('default')
+        else return null
+      return values
+    } catch {
+      return null
+    }
+  }
+  const choices = (node, seen = new Set()) => {
+    node = unwrap(node)
+    if (node === null || node === undefined) return null
+    const constant = analysis.resolveString(node)
+    if (constant !== null) return [constant]
+    if (node.type === 'Identifier' && node.name === 'undefined')
+      return ['default']
+    const branches =
+      node.type === 'ConditionalExpression'
+        ? [node.consequent, node.alternate]
+        : node.type === 'LogicalExpression'
+          ? [node.left, node.right]
+          : null
+    if (branches !== null) {
+      const found = branches.map(branch => choices(branch, seen))
+      return found.includes(null) ? null : found.flat()
+    }
+    if (node.type === 'Identifier') {
+      const init = analysis.constInit(node)
+      if (init !== null && !seen.has(init)) {
+        seen.add(init)
+        const found = choices(init, seen)
+        if (found !== null) return found
+      }
+    }
+    return typedChoices(node)
+  }
+
+  const entries = read(props, new Set())
+  /* Square icon sizes selected by any branch of `size`; null when `size`
+     is open-ended on a component that has icon sizes. */
+  const sizeChoices = (() => {
+    const values = entries.get('size')
+    if (values === undefined) return ['default']
+    const found = values.map(value => choices(value))
+    return found.includes(null) ? null : found.flat()
+  })()
+  const squareChoices = !ownsGeometry(record.contract)
+    ? []
+    : sizeChoices === null
+      ? (record.variants.size ?? []).some(isSquareSize)
+        ? null
+        : []
+      : [...new Set(sizeChoices.filter(isSquareSize))]
+
+  for (const [key, values] of entries) {
     for (const value of values) {
       if (FORBIDDEN_PROPS.has(key) || isAppearanceSlot(key)) {
         violation(
@@ -430,6 +511,22 @@ export const analyzeCall = ({ analysis, call, context, record, strict }) => {
           violation(
             value,
             `\`${geometry.join(' ')}\` overrides the named size of ${label(record)}; use its \`size\` option.`,
+          )
+        const squareGeometry = tokens
+          .flatMap(token => token.trim().split(/\s+/u))
+          .filter(
+            token =>
+              isSquareGeometryUtility(token) && !geometry.includes(token),
+          )
+        if (squareGeometry.length > 0 && squareChoices === null)
+          unverifiable(
+            value,
+            `\`size\` of ${label(record)} cannot be resolved to finite choices, so \`${squareGeometry.join(' ')}\` may distort a square icon size.`,
+          )
+        else if (squareGeometry.length > 0 && squareChoices.length > 0)
+          violation(
+            value,
+            `\`${squareGeometry.join(' ')}\` distorts the square \`${squareChoices.join('/')}\` size of ${label(record)}; pick another named icon size.`,
           )
         if (appearance.length > 0)
           violation(

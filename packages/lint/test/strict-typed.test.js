@@ -243,6 +243,46 @@ const cases = {
     "import { Values } from './plain-namespace'\nexport const layout = Values.config.view",
     [],
   ],
+  'tailwind-icon-width': [
+    `${header}import { button } from '@design/button'\nexport const view = (h: HtmlBuilder<unknown>): Html => button({ children: ['X'], size: 'icon', class: 'w-3' }, h)`,
+    ['crease/component-contract'],
+  ],
+  'tailwind-icon-min-width': [
+    `${header}import { button } from '@design/button'\nexport const view = (h: HtmlBuilder<unknown>): Html => button({ children: ['X'], size: 'icon-sm', class: 'sm:min-w-8 grow' }, h)`,
+    ['crease/component-contract'],
+  ],
+  'tailwind-icon-conditional-branch': [
+    `${header}import { button } from '@design/button'\nexport const view = (wide: boolean, h: HtmlBuilder<unknown>): Html => button({ children: ['X'], size: wide ? 'sm' : 'icon', class: 'w-full' }, h)`,
+    ['crease/component-contract'],
+  ],
+  'tailwind-icon-typed-union': [
+    `${header}import { button } from '@design/button'\nexport const view = (size: 'sm' | 'icon', h: HtmlBuilder<unknown>): Html => button({ children: ['X'], size, class: 'basis-1/2' }, h)`,
+    ['crease/component-contract'],
+  ],
+  'tailwind-icon-open-size': [
+    `${header}import { button } from '@design/button'\nexport const view = (size: any, h: HtmlBuilder<unknown>): Html => button({ children: ['X'], size, class: 'w-3' }, h)`,
+    ['crease/no-unverifiable-ui'],
+  ],
+  'tailwind-icon-placement': [
+    `${header}import { button } from '@design/button'\nexport const view = (h: HtmlBuilder<unknown>): Html => button({ children: ['X'], size: 'icon', class: 'self-end ml-2' }, h)`,
+    [],
+  ],
+  'tailwind-text-size-fill': [
+    `${header}import { button } from '@design/button'\nexport const view = (wide: boolean, h: HtmlBuilder<unknown>): Html => button({ children: ['Wide'], size: wide ? 'sm' : 'default', class: 'w-full flex-1' }, h)`,
+    [],
+  ],
+  'styled-icon-layout-width': [
+    `${header}import { button } from '@design/button'\nimport { layoutStyle } from '@design/contracts'\nexport const view = (h: HtmlBuilder<unknown>): Html => button({ children: ['X'], size: 'icon', layoutStyle: layoutStyle({ width: '12px' }) }, h)`,
+    ['crease/component-contract'],
+  ],
+  'styled-icon-layout-inline-size': [
+    `${header}import { button } from '@design/button'\nimport { layoutStyle } from '@design/contracts'\nconst narrow = layoutStyle({ flexBasis: '12px', alignSelf: 'end' })\nexport const view = (h: HtmlBuilder<unknown>): Html => button({ children: ['X'], size: 'icon-sm', layoutStyle: narrow }, h)`,
+    ['crease/component-contract'],
+  ],
+  'styled-text-layout-width': [
+    `${header}import { button } from '@design/button'\nimport { layoutStyle } from '@design/contracts'\nexport const view = (h: HtmlBuilder<unknown>): Html => button({ children: ['Wide'], size: 'sm', layoutStyle: layoutStyle({ width: '100%' }) }, h)`,
+    [],
+  ],
   'tailwind-control-height-override': [
     `${header}import { button } from '@design/button'\nexport const view = (h: HtmlBuilder<unknown>): Html => button({ children: ['Squashed'], class: 'h-3' }, h)`,
     ['crease/component-contract'],

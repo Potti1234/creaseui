@@ -4,6 +4,7 @@ import type { ComponentLayoutStyle } from './contracts'
 
 export type ButtonProps = Readonly<{
   variant?: 'default' | 'outline' | 'ghost'
+  size?: 'default' | 'sm' | 'icon' | 'icon-sm'
   layoutStyle?: ComponentLayoutStyle
   children: ReadonlyArray<string | Html>
 }>

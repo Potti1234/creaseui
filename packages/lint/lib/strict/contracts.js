@@ -162,6 +162,26 @@ export const OWNED_GEOMETRY_PROPERTIES = new Set([
 export const isOwnedGeometryUtility = token =>
   /^(?:(?:min-|max-)?h|size)-/u.test(token.replace(VARIANT_PREFIX, ''))
 
+/* Icon sizes (`icon`, `icon-sm`...) are square: they own the inline size and
+   shape too, so width, basis, grow and aspect overrides break them. */
+export const isSquareSize = choice => /^icon(?:-|$)/u.test(choice)
+export const SQUARE_GEOMETRY_PROPERTIES = new Set([
+  'aspectRatio',
+  'flex',
+  'flexBasis',
+  'flexGrow',
+  'inlineSize',
+  'maxInlineSize',
+  'maxWidth',
+  'minInlineSize',
+  'minWidth',
+  'width',
+])
+export const isSquareGeometryUtility = token =>
+  /^(?:(?:min-|max-)?w-|size-|basis-|aspect-|grow$|flex-(?:1|auto)$)/u.test(
+    token.replace(VARIANT_PREFIX, ''),
+  )
+
 export const CLASS_HELPER_PACKAGES = [
   /^clsx$/u,
   /^classnames$/u,
