@@ -308,3 +308,18 @@ test('inspect finds renderer-directory installs by item, file or export name', (
   }
   rmSync(directory, { force: true, recursive: true })
 })
+
+test('init before any install says nothing is installed yet', () => {
+  const directory = mkdtempSync(path.join(tmpdir(), 'creaseui-lint-cli-'))
+  writeFileSync(
+    path.join(directory, 'components.json'),
+    JSON.stringify({ aliases: { lib: '@/lib', ui: '@/ui' } }),
+  )
+  const result = run(directory, 'init', '--renderer', 'pleat', '--dry-run')
+  assert.equal(result.status, 2)
+  assert.match(
+    result.stderr,
+    /nothing is installed yet: components\.json points ui\/lib at src\/ui, src\/lib/u,
+  )
+  rmSync(directory, { force: true, recursive: true })
+})

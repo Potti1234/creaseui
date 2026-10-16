@@ -250,14 +250,14 @@ const aliasDirectory = alias =>
    stylesheet carries the theme; the files importing it are the app's setup. */
 const installTargets = rootDir => {
   const file = path.join(rootDir, 'components.json')
-  if (!existsSync(file)) return { components: [], setup: [] }
+  if (!existsSync(file)) return { components: [], declared: [], setup: [] }
   const config = JSON.parse(readFileSync(file, 'utf8'))
-  const components = [config.aliases?.ui, config.aliases?.lib]
+  const declared = [config.aliases?.ui, config.aliases?.lib]
     .map(aliasDirectory)
-    .filter(
-      directory =>
-        directory !== undefined && existsSync(path.join(rootDir, directory)),
-    )
+    .filter(directory => directory !== undefined)
+  const components = declared.filter(directory =>
+    existsSync(path.join(rootDir, directory)),
+  )
   const stylesheet = config.tailwind?.css
   const setup =
     typeof stylesheet !== 'string'
@@ -273,7 +273,7 @@ const installTargets = rootDir => {
               path.resolve(rootDir, stylesheet),
           ),
         )
-  return { components, setup }
+  return { components, declared, setup }
 }
 
 const init = values => {
@@ -286,7 +286,9 @@ const init = values => {
   const components = values.components ?? targets.components
   if (components.length === 0)
     throw new CreaseConfigError([
-      '--components <dir> (the installed component directory) is required when components.json has no ui/lib alias',
+      targets.declared.length > 0
+        ? `nothing is installed yet: components.json points ui/lib at ${targets.declared.join(', ')}, which does not exist. Install components first (\`creaseui-lint info --catalog\` lists them), then run init`
+        : '--components <dir> (the installed component directory) is required when components.json has no ui/lib alias',
     ])
   const manifest = values.manifest ?? 'crease.lock.json'
   const tsconfig = existsSync(path.join(rootDir, 'tsconfig.json'))
