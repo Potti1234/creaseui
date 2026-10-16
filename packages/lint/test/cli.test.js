@@ -4,8 +4,10 @@ import {
   cpSync,
   existsSync,
   mkdtempSync,
+  mkdirSync,
   readFileSync,
   rmSync,
+  symlinkSync,
   writeFileSync,
 } from 'node:fs'
 import { tmpdir } from 'node:os'
@@ -76,5 +78,44 @@ test('invalid setup exits 2', () => {
   )
   assert.equal(run(directory, 'doctor').status, 2)
   assert.equal(run(directory, 'unknown').status, 2)
+  rmSync(directory, { force: true, recursive: true })
+})
+
+test('init and doctor cover public aliases of rendering exports', () => {
+  const directory = scratch()
+  /* doctor loads the generated config, which imports @creaseui/lint. */
+  mkdirSync(path.join(directory, 'node_modules/@creaseui'), { recursive: true })
+  symlinkSync(
+    fileURLToPath(new URL('..', import.meta.url)),
+    path.join(directory, 'node_modules/@creaseui/lint'),
+    'dir',
+  )
+  const button = path.join(directory, 'src/design/button.ts')
+  const lock = () =>
+    JSON.parse(readFileSync(path.join(directory, 'crease.lock.json'), 'utf8'))
+  const initArgs = ['init', '--renderer', 'pleat', '--components', 'src/design']
+  assert.equal(run(directory, ...initArgs).status, 0)
+  assert.equal(run(directory, 'doctor').status, 0)
+  writeFileSync(
+    button,
+    `${readFileSync(button, 'utf8')}export const actionAlias = button\n`,
+  )
+  writeFileSync(
+    path.join(directory, 'src/design/stack.ts'),
+    `${readFileSync(path.join(directory, 'src/design/stack.ts'), 'utf8')}import { button as base } from './button'\nexport { base as stackAction }\n`,
+  )
+  const stale = run(directory, 'doctor')
+  assert.equal(stale.status, 1, stale.stdout)
+  assert.match(stale.stdout, /`actionAlias` has no contract in the manifest/u)
+  assert.match(stale.stdout, /`stackAction` has no contract in the manifest/u)
+  rmSync(path.join(directory, 'crease.lock.json'))
+  assert.equal(run(directory, ...initArgs).status, 0)
+  const exports = lock().artifacts.flatMap(artifact => artifact.exports)
+  const named = name => exports.find(entry => entry.name === name)
+  assert.equal(named('actionAlias').contract, 'control.button')
+  assert.equal(named('stackAction').contract, 'control.button')
+  const fresh = run(directory, 'doctor')
+  assert.equal(fresh.status, 0, fresh.stdout)
+  assert.match(fresh.stdout, /0 uncovered UI modules/u)
   rmSync(directory, { force: true, recursive: true })
 })

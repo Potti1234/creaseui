@@ -12,6 +12,7 @@ import {
   RENDERERS,
 } from '../lib/strict/contracts.js'
 import { CreaseConfigError } from '../lib/strict/ownership.js'
+import { createRenderExports } from '../lib/strict/render-exports.js'
 
 const USAGE = `Usage:
   creaseui-lint init   --renderer <tailwind|stylex|pleat> --components <dir> [--root <dir>] [--manifest crease.lock.json] [--dry-run]
@@ -95,38 +96,63 @@ const exportedFunctions = file => {
 
 const rendersHtml = file => /\bHtmlBuilder\b/u.test(readFileSync(file, 'utf8'))
 
+const VARIANTS = /(?:Variants?|variants)$/u
+
+/** Typed rendering exports plus the syntactic floor, deduplicated by name. */
+const renderingExports = (renderExports, file) => {
+  const typed = renderExports.of(file) ?? []
+  const names = new Set(typed.map(entry => entry.name))
+  return [
+    ...typed,
+    ...exportedFunctions(file)
+      .filter(name => !VARIANTS.test(name) && !names.has(name))
+      .map(name => ({ name, origin: path.resolve(file), originName: name })),
+  ]
+}
+
 /** Receipt for the components installed in one directory. */
 export const buildReceipt = ({ rootDir, components, renderer }) => {
   const prefix = renderer === 'tailwind' ? '' : `${renderer}-`
   const base = path.resolve(rootDir, components)
-  const artifacts = walk(base)
-    .sort()
-    .map(file => {
-      const relative = toPosix(path.relative(rootDir, file))
-      const local = toPosix(path.relative(base, file)).replace(SOURCE, '')
-      const item = path.basename(local)
-      const behavior = local.split('/').includes('behavior')
-      const contract = behavior
-        ? `behavior.${item}`
-        : (CONTRACT_BY_ITEM.get(item) ?? `component.${item}`)
-      const raw = rendersHtml(file)
-      const role = behavior ? 'behavior' : raw ? 'renderer' : 'theme'
-      const exports = raw
-        ? exportedFunctions(file)
-            .filter(name => !/(?:Variants?|variants)$/u.test(name))
-            .map(name => ({
-              contract,
-              file: relative,
-              name,
-              ...(behavior ? { visibility: 'implementation' } : {}),
-            }))
-        : []
-      return {
-        exports,
-        files: [{ path: relative, rawRendering: raw, role }],
-        id: `crease/${prefix}${local.split('/').join('-')}`,
-      }
-    })
+  const files = walk(base).sort()
+  const describe = file => {
+    const local = toPosix(path.relative(base, file)).replace(SOURCE, '')
+    const item = path.basename(local)
+    const behavior = local.split('/').includes('behavior')
+    const contract = behavior
+      ? `behavior.${item}`
+      : (CONTRACT_BY_ITEM.get(item) ?? `component.${item}`)
+    return { behavior, contract, local }
+  }
+  const installed = new Set(files.map(file => path.resolve(file)))
+  const renderExports = createRenderExports({ files, rootDir })
+  const artifacts = files.map(file => {
+    const relative = toPosix(path.relative(rootDir, file))
+    const { behavior, contract, local } = describe(file)
+    const raw = rendersHtml(file)
+    const role = behavior ? 'behavior' : raw ? 'renderer' : 'theme'
+    /* An alias of another installed component keeps that component's
+         contract (`export const actionAlias = button`). */
+    const contractOf = origin =>
+      installed.has(origin) &&
+      origin !== path.resolve(file) &&
+      !describe(origin).behavior
+        ? describe(origin).contract
+        : contract
+    const exports = raw
+      ? renderingExports(renderExports, file).map(({ name, origin }) => ({
+          contract: contractOf(origin),
+          file: relative,
+          name,
+          ...(behavior ? { visibility: 'implementation' } : {}),
+        }))
+      : []
+    return {
+      exports,
+      files: [{ path: relative, rawRendering: raw, role }],
+      id: `crease/${prefix}${local.split('/').join('-')}`,
+    }
+  })
   return {
     artifacts,
     policyVersion: POLICY_VERSION,
@@ -255,6 +281,12 @@ const doctor = async values => {
     'no-unverifiable-ui',
   ]
   let uncovered = 0
+  const renderExports = createRenderExports({
+    files: sources.filter(
+      file => strict.ownership.fileFor(file)?.role === 'renderer',
+    ),
+    rootDir,
+  })
   for (const file of sources) {
     const relative = toPosix(path.relative(rootDir, file))
     const owned = strict.ownership.fileFor(file)
@@ -277,15 +309,27 @@ const doctor = async values => {
         fail(`${relative} (registered ${owned.role}) lost component-contract`)
       if (owned.role === 'renderer' && rendersHtml(file)) {
         const registered = strict.ownership.exportsOf(file)
-        for (const name of exportedFunctions(file).filter(
-          name => !/(?:Variants?|variants)$/u.test(name),
-        ))
-          if (registered?.get(name) === undefined) {
+        for (const { name, origin, originName } of renderingExports(
+          renderExports,
+          file,
+        )) {
+          const record = registered?.get(name)
+          if (record === undefined) {
             uncovered += 1
             fail(
               `${relative}: rendering export \`${name}\` has no contract in the manifest`,
             )
+            continue
           }
+          const aliased =
+            origin === path.resolve(file)
+              ? undefined
+              : strict.ownership.exportsOf(origin)?.get(originName)
+          if (aliased !== undefined && aliased.contract !== record.contract)
+            fail(
+              `${relative}: \`${name}\` renders ${aliased.contract} (\`${originName}\`) but is registered as ${record.contract}`,
+            )
+        }
       }
     }
     const text = readFileSync(file, 'utf8')
