@@ -34,6 +34,22 @@ implementation needs; any other raw element in that file is reported:
 { "path": "src/design/glyph.ts", "role": "renderer", "rawRendering": true, "rawElements": ["svg", "path"] }
 ```
 
+An export record may list `foundations`, the contracts it builds on
+(`"foundations": ["navigation.sidebar"]`). `doctor` resolves the calls in that
+export with the type checker and fails unless each foundation is rendered by an
+installed export with that contract, or the export is that contract's in-place
+adaptation. An unused import, a comment or a name does not count. Exports
+without `foundations` (new domain patterns such as an issue row) are not
+affected; semantic reinvention that is not declared still needs review.
+
+`creaseui-lint css` (also run by `doctor`) parses every stylesheet under `src`,
+follows local imports and applies the global CSS policy: framework and font
+imports, token definitions and bindings, and a narrow base/reset are allowed;
+selectors that reach components (classes, slots, roles, ids, pseudo states)
+fail, through `@layer`, `@media`, `@supports` and nesting. Stylesheets
+registered in the manifest are component CSS and must start from their own
+class or `data-slot`. Unparseable or unresolved input is unverifiable (exit 2).
+
 `creaseui-lint doctor` exits 2 with `coverage feature-only` when a registered
 implementation or UI module is ignored by the ESLint config, loses its Crease
 rules or has rendering exports without a manifest contract.
