@@ -146,7 +146,7 @@ const docsActionBar = (model: Model, h: HtmlBuilder<Got>): Html => {
                   ),
                   class: 'gap-1.5',
                   children: [
-                    icon('check-circle-2', { class: 'size-4' }, h),
+                    icon('circle-check', { class: 'size-4' }, h),
                     'Mark success',
                   ],
                 },

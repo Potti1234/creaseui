@@ -152,7 +152,7 @@ const docsActionBar = <Msg>(
                   ),
                   extraStyle: styles.gap,
                   children: [
-                    icon('check-circle-2', { class: 'size-4' }, h),
+                    icon('circle-check', { class: 'size-4' }, h),
                     'Mark success',
                   ],
                 },

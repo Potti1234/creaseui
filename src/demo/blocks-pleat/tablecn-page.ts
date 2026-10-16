@@ -1094,7 +1094,7 @@ const tasksActionBar = (model: Model, h: HtmlBuilder<Message>): Html => {
               enumMenu(
                 'status',
                 'Status',
-                'check-circle-2',
+                'circle-check',
                 [...taskStatuses],
                 status =>
                   GotTableMessage({
