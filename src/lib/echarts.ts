@@ -406,8 +406,8 @@ export const MountChart = Mount.define('MountChart', {
       return yield* Effect.acquireRelease(
         Effect.tryPromise({
           try: async () => {
-            const echarts = await loadECharts()
-            const chart = echarts.init(element, undefined, {
+            const echartsRuntime = await loadECharts()
+            const chart = echartsRuntime.init(element, undefined, {
               renderer: 'canvas',
             })
             let resizeFrame = 0

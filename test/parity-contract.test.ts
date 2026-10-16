@@ -76,6 +76,7 @@ describe('multidimensional component parity', () => {
       'circular-progress',
       'code',
       'code-block',
+      'data-grid',
       'data-table',
       'date-input',
       'date-picker',

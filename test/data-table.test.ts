@@ -5,13 +5,18 @@ import { describe, it } from 'node:test'
 import * as DataTable from '@/lib/data-table-state'
 import { projectDataTable } from '@/lib/data-table-adapter'
 
+const step = (
+  model: DataTable.Model,
+  message: DataTable.Message,
+): DataTable.Model => DataTable.update(model, message).model
+
 describe('data table interaction model', () => {
   it('keeps controlled selection stable by row key', () => {
-    const first = DataTable.update(
+    const first = step(
       DataTable.init(10),
       DataTable.Message.ToggledRow({ key: 'alpha', isSelected: true }),
     )
-    const selected = DataTable.update(
+    const selected = step(
       first,
       DataTable.Message.ToggledRows({
         keys: ['alpha', 'beta'],
@@ -20,26 +25,25 @@ describe('data table interaction model', () => {
     )
     assert.deepEqual(selected.selectedRowKeys, ['alpha', 'beta'])
 
-    const deselected = DataTable.update(
+    const deselected = step(
       selected,
       DataTable.Message.ToggledRows({ keys: ['alpha'], isSelected: false }),
     )
     assert.deepEqual(deselected.selectedRowKeys, ['beta'])
     assert.deepEqual(
-      DataTable.update(deselected, DataTable.Message.ClearedSelection())
-        .selectedRowKeys,
+      step(deselected, DataTable.Message.ClearedSelection()).selectedRowKeys,
       [],
     )
   })
 
   it('controls column visibility without losing other state', () => {
-    const model = DataTable.update(
+    const model = step(
       DataTable.init(10),
       DataTable.Message.ToggledColumn({ key: 'reviewer', isVisible: false }),
     )
     assert.deepEqual(model.hiddenColumnKeys, ['reviewer'])
     assert.deepEqual(
-      DataTable.update(
+      step(
         model,
         DataTable.Message.ToggledColumn({ key: 'reviewer', isVisible: true }),
       ).hiddenColumnKeys,
@@ -48,18 +52,18 @@ describe('data table interaction model', () => {
   })
 
   it('resets pagination when page size or filtering changes', () => {
-    const onLaterPage = DataTable.update(
+    const onLaterPage = step(
       DataTable.init(10),
       DataTable.Message.ChangedPage({ page: 4 }),
     )
-    const resized = DataTable.update(
+    const resized = step(
       onLaterPage,
       DataTable.Message.ChangedPageSize({ pageSize: 25 }),
     )
     assert.equal(resized.page, 0)
     assert.equal(resized.pageSize, 25)
 
-    const filtered = DataTable.update(
+    const filtered = step(
       { ...resized, page: 2 },
       DataTable.Message.Filtered({ value: 'done' }),
     )
