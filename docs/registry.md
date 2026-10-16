@@ -121,8 +121,15 @@ npx --yes shadcn@latest add Potti1234/creaseui/button#v0.1.0 --yes
 npx --yes shadcn@latest add Potti1234/creaseui/button#0123456789abcdef0123456789abcdef01234567 --yes
 ```
 
-Prefer a full commit SHA for a reproducible installation. The selected ref also
-applies while the CLI resolves Crease items referenced by that item.
+Prefer a full commit SHA for a reproducible installation. The ref pins only the
+item you name: current shadcn documentation says refs are not inherited by
+`registryDependencies`, which Crease publishes unversioned
+(`Potti1234/creaseui/crease-theme`). Pin every Crease dependency at the same
+ref yourself, theme first:
+
+```sh
+npx --yes shadcn@latest add Potti1234/creaseui/crease-theme#<sha> Potti1234/creaseui/button#<sha> --yes
+```
 
 ### Installing from a local checkout
 
