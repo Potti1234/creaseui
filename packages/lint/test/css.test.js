@@ -184,6 +184,17 @@ test('registry theme items use the same policy', () => {
     ),
   )
   for (const item of registry.items) run.auditRegistryItem(item)
+  for (const renderer of ['ui', 'stylex', 'pleat']) {
+    const components = JSON.parse(
+      readFileSync(
+        fileURLToPath(
+          new URL(`../../../src/${renderer}/registry.json`, import.meta.url),
+        ),
+        'utf8',
+      ),
+    )
+    for (const item of components.items) run.auditRegistryItem(item)
+  }
   assert.deepEqual(run.findings, [])
   run.auditRegistryItem({
     css: { '@layer components': { '.card': { padding: '4px' } } },
