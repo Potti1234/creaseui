@@ -111,3 +111,26 @@ the TypeScript checker, constant computed keys, object spreads with overwrite
 order, conditional branches and barrel re-exports. Not supported (reported as
 unverifiable rather than allowed): mutation-based flows, values from function
 returns, dynamic imports and general whole-program taint.
+
+## Enforcement changes and what lint is not
+
+`creaseui-lint scope --baseline <trusted ref>` compares the enforcement inputs
+(`crease.lock.json` ownership, raw grants, `rawElements`, contracts and
+foundations; the creaseui-lint and ESLint configs; `.eslintignore`;
+`package.json` scripts; `AGENTS.md`) against a trusted commit. A feature change
+that touches them exits 1. A reviewed design-system change reruns it with
+`--allow-enforcement-changes`, which lists the same changes for separate review;
+consumers stay free to change their own design system.
+
+The layers are different things:
+
+- **Lint and `doctor`** check the code they are given. They run inside the
+  patch, so a patch can edit them; they are not a sandbox.
+- **Agent instructions** (`AGENTS.md`, skills) steer the agent. They are not
+  enforced.
+- **Runner filesystem limits** (read-only paths, separate checkouts) are the
+  only thing that stops a process from editing files; configure them in the
+  runner if you need them.
+- **Protected integration checks** run `scope` from a CI job or branch
+  protection the patch cannot change, against the merge base. That is where a
+  feature task is actually held to its scope.

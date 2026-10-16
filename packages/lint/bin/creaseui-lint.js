@@ -13,6 +13,7 @@ import {
 } from '../lib/strict/contracts.js'
 import { createCssAudit, findStylesheets } from '../lib/strict/css.js'
 import { verifyFoundations } from '../lib/strict/foundations.js'
+import { BaselineError, enforcementChanges } from '../lib/strict/scope.js'
 import { CreaseConfigError } from '../lib/strict/ownership.js'
 import { createRenderExports } from '../lib/strict/render-exports.js'
 
@@ -20,6 +21,7 @@ const USAGE = `Usage:
   creaseui-lint init   --renderer <tailwind|stylex|pleat> --components <dir> [--root <dir>] [--manifest crease.lock.json] [--dry-run]
   creaseui-lint doctor [--config creaseui-lint.config.mjs] [--root <dir>]
   creaseui-lint css    [--config creaseui-lint.config.mjs] [--root <dir>]
+  creaseui-lint scope  --baseline <trusted git ref> [--root <dir>] [--allow-enforcement-changes]
   creaseui-lint audit  --config creaseui-lint.audit.mjs [--output report.json] [--report-only]
 
 Exit codes: 0 ok, 1 findings, 2 invalid setup.`
@@ -466,12 +468,47 @@ const css = async values => {
   return count('unverifiable') > 0 ? 2 : count('violation') > 0 ? 1 : 0
 }
 
+const scope = values => {
+  const rootDir = path.resolve(values.root ?? process.cwd())
+  if (values.baseline === undefined) {
+    console.error('scope needs --baseline <trusted git ref>')
+    return 2
+  }
+  let changes
+  try {
+    changes = enforcementChanges({ baseline: values.baseline, rootDir })
+  } catch (error) {
+    if (!(error instanceof BaselineError)) throw error
+    console.error(error.message)
+    return 2
+  }
+  const accepted = values['allow-enforcement-changes'] === true
+  for (const change of changes)
+    console.log(`${accepted ? 'system ' : 'problem'} ${change}`)
+  console.log(
+    `scope: ${changes.length} enforcement changes against ${values.baseline}`,
+  )
+  if (changes.length === 0) return 0
+  if (accepted) {
+    console.log(
+      'enforcement changes accepted as a system change; review them separately from feature work',
+    )
+    return 0
+  }
+  console.log(
+    'a feature change must not change enforcement inputs; rerun with --allow-enforcement-changes for a reviewed system change',
+  )
+  return 1
+}
+
 const main = async () => {
   const [command, ...rest] = process.argv.slice(2)
   const { values } = parseArgs({
     allowPositionals: false,
     args: rest,
     options: {
+      'allow-enforcement-changes': { type: 'boolean' },
+      baseline: { type: 'string' },
       components: { type: 'string' },
       config: { type: 'string' },
       'dry-run': { type: 'boolean' },
@@ -486,6 +523,7 @@ const main = async () => {
   if (command === 'doctor') return doctor(values)
   if (command === 'audit') return audit(values)
   if (command === 'css') return css(values)
+  if (command === 'scope') return scope(values)
   console.error(USAGE)
   return 2
 }
