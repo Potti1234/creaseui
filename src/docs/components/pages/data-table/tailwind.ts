@@ -8,7 +8,7 @@ import {
   docStatusOptions,
   docTableConfig,
   facetedDocs,
-  payments,
+  facetedPayments,
   type FacetedDocId,
   type Payment,
 } from '@/docs/components/pages/data-table/shared'
@@ -236,8 +236,8 @@ export const dataTableTailwindPreviewProgram = definePreviewProgram<Model, Got>(
     Message: Got,
     init: () => ({
       _docsPage: 'data-table',
-      table: DataTable.init(docTableConfig, payments),
-      rows: payments,
+      table: DataTable.init(docTableConfig, facetedPayments),
+      rows: facetedPayments,
     }),
     update: (model, message) => {
       if (message._tag === 'GotActionBarMount') {

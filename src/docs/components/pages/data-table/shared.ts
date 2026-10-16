@@ -9,7 +9,7 @@ export type Payment = Readonly<{
   email: string
   amount: number
 }>
-export const payments: ReadonlyArray<Payment> = [
+export const facetedPayments: ReadonlyArray<Payment> = [
   { id: '728ed52f', status: 'success', email: 'm@example.com', amount: 100 },
   { id: '489e1d42', status: 'pending', email: 'a@example.com', amount: 125 },
   { id: 'f7a4b3c2', status: 'processing', email: 's@example.com', amount: 250 },
@@ -27,6 +27,8 @@ export const payments: ReadonlyArray<Payment> = [
   { id: '72d8f4a1', status: 'failed', email: 'o@example.com', amount: 48 },
   { id: 'a9c35b76', status: 'pending', email: 'u@example.com', amount: 132 },
 ]
+
+export const payments: ReadonlyArray<Payment> = facetedPayments.slice(0, 6)
 
 export const dataTableFixtures = [
   {
@@ -331,7 +333,7 @@ const PaymentSchema = S.Struct({ id: S.String, status: S.String, email: S.String
 `
     : ''
 }
-const payments: ReadonlyArray<Payment> = ${JSON.stringify(payments, null, 2)}
+const payments: ReadonlyArray<Payment> = ${JSON.stringify(facetedPayments, null, 2)}
 
 export const Model = S.Struct({ table: DataTable.Model${needsRows ? ', rows: S.Array(PaymentSchema)' : ''} })
 export type Model = typeof Model.Type`,
