@@ -257,7 +257,7 @@ const facetedSource = (
         actionBarClose({ onClose: wrap(DataTable.Message.ClosedActionBar({})), ariaLabel: 'Clear selection', children: [icon('x', { class: 'size-4' }, h)] }, h),
       ]}, h),
       actionBarGroup({ children: [
-        actionBarItem({ onSelect: wrap(DataTable.Message.AppliedBulkValue({ columnId: 'status', value: 'success' })), ${stylex ? 'extraStyle: styles.gap' : "class: 'gap-1.5'"}, children: [icon('check-circle-2', { class: 'size-4' }, h), 'Mark success'] }, h),
+        actionBarItem({ onSelect: wrap(DataTable.Message.AppliedBulkValue({ columnId: 'status', value: 'success' })), ${stylex ? 'extraStyle: styles.gap' : "class: 'gap-1.5'"}, children: [icon('circle-check', { class: 'size-4' }, h), 'Mark success'] }, h),
         actionBarItem({ onSelect: wrap(DataTable.Message.RequestedExport({})), ${stylex ? 'extraStyle: styles.gap' : "class: 'gap-1.5'"}, children: [icon('download', { class: 'size-4' }, h), 'Export'] }, h),
         actionBarItem({ variant: 'destructive', onSelect: wrap(DataTable.Message.OpenedDeleteDialog({ ids: [...selected] })), ${stylex ? 'extraStyle: styles.gap' : "class: 'gap-1.5'"}, children: [icon('trash-2', { class: 'size-4' }, h), 'Delete'] }, h),
       ]}, h),
@@ -356,7 +356,7 @@ export type Message = typeof Message.Type`,
 
 export const init = (): Update.Return<Model, Message> => ({ model: { table: DataTable.init(config, payments)${needsRows ? ', rows: payments' : ''} } })`,
     update: updateBody,
-    view: `${stylexDecl}${actionBarHelper}const columns: ReadonlyArray<DataTable.DataTableColumn<Payment>> = [
+    view: `${stylexDecl}${actionBarHelper}const columns = (h: HtmlBuilder<Message>): ReadonlyArray<DataTable.DataTableColumn<Payment>> => [
   { key: 'status', header: 'Status', ${statusCell} get: row => row.status, sortValue: row => row.status, filterVariant: 'options', options: [
     { value: 'success', label: 'Success' },
     { value: 'pending', label: 'Pending' },
@@ -370,7 +370,7 @@ export const init = (): Update.Return<Model, Message> => ({ model: { table: Data
 export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Data Table — ${doc.title}',
   body: h.main([], [h.div([], [
-    DataTable.dataTable({ model: model.table, toParentMessage: message => GotDataTableMessage({ message }), rows: ${needsRows ? 'model.rows' : 'payments'}, columns, rowKey: row => row.id, ${propsById[id]} ariaLabel: 'Payments' }, h),
+    DataTable.dataTable({ model: model.table, toParentMessage: message => GotDataTableMessage({ message }), rows: ${needsRows ? 'model.rows' : 'payments'}, columns: columns(h), rowKey: row => row.id, ${propsById[id]} ariaLabel: 'Payments' }, h),
   ])]),
 })`,
   })

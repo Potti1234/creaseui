@@ -311,7 +311,6 @@ const source = (
   fixture: (typeof dataGridFixtures)[number],
   renderer: 'tailwind' | 'stylex' | 'pleat',
 ): string => {
-  const tag = fixture.title.replaceAll(/[^a-zA-Z0-9]/g, '')
   const stylex = renderer !== 'tailwind'
   return foldkitApplication({
     title: `Data Grid — ${fixture.title}`,
@@ -320,24 +319,19 @@ import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
-import * as DataGrid from '@/${stylex ? 'stylex' : 'ui'}/data-grid'
-import { docDataGridConfig, docPeople, type DocPerson } from './data'`,
-    model: `export const Model = S.Struct({ grid: DataGrid.Model })
+import { docDataGridConfig, docPeople } from '@/docs/components/pages/data-grid/shared'
+import * as DataGridState from '@/lib/data-grid'
+import * as DataGrid from '@/${stylex ? 'stylex' : 'ui'}/data-grid'`,
+    model: `export const Model = S.Struct({ grid: DataGridState.Model })
 export type Model = typeof Model.Type`,
-    messages: `export const GotDataGridMessage = taggedStruct('GotDataGridMessage${tag}', { message: DataGrid.Message })
-export const Message = S.Union([GotDataGridMessage])
+    messages: `export const Message = DataGridState.Message
 export type Message = typeof Message.Type`,
     init: `export const init = (): Update.Return<Model, Message> => ({
-  model: { grid: DataGrid.init(docDataGridConfig, docPeople) },
+  model: { grid: DataGridState.init(docDataGridConfig, docPeople) },
 })`,
-    update: `export const update = (model: Model, message: Message): Update.Return<Model, Message> => {
-  switch (message._tag) {
-    case 'GotDataGridMessage${tag}':
-      return {
-        model: { ...model, grid: DataGrid.update(model.grid, message.message, docDataGridConfig) },
-      }
-  }
-}`,
+    update: `export const update = (model: Model, message: Message): Update.Return<Model, Message> => ({
+  model: { ...model, grid: DataGridState.update(model.grid, message, docDataGridConfig) },
+})`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Data Grid — ${fixture.title}',
   body: h.main([], [

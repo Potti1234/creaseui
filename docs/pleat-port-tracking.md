@@ -201,3 +201,11 @@ can nest same-slot descendants).
 - Browser: `e2e/sites/tablecn.spec.ts` checks docs pages on every site, and
   compares tablecn/tablecn-grid headers, row counts and width against the
   Tailwind site; row selection opens/clears the Action Bar; axe table rules.
+- Docs examples: the Data Grid copyable app uses `@/lib/data-grid` for
+  `Model`/`Message`/`init`/`update` and the renderer's `dataGrid` view; the
+  faceted Data Table columns take `h`. All 39 Action Bar / Data Grid / Data
+  Table examples (tw/sx/pl) type-check in `test/doc-example-compilation.test.ts`.
+- Catalogs: `DataGrid` (StyleX, Pleat) and `ActionBar` (Pleat) namespace
+  exports and `STYLEX_COMPONENT_NAMES` entries; StyleX/Pleat `DataTableProps`
+  gain `directionLabel`; lg-only pagination buttons use a native
+  `lgOnly` style instead of a raw `hidden lg:flex` class.
