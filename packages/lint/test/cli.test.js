@@ -122,6 +122,33 @@ test('init and doctor cover public aliases of rendering exports', () => {
   rmSync(directory, { force: true, recursive: true })
 })
 
+test('doctor reports installed components missing from the receipt', () => {
+  const directory = scratch()
+  mkdirSync(path.join(directory, 'node_modules/@creaseui'), { recursive: true })
+  symlinkSync(
+    fileURLToPath(new URL('..', import.meta.url)),
+    path.join(directory, 'node_modules/@creaseui/lint'),
+    'dir',
+  )
+  writeFileSync(
+    path.join(directory, 'components.json'),
+    JSON.stringify({ aliases: { ui: '@/design' } }),
+  )
+  assert.equal(run(directory, 'init', '--renderer', 'pleat').status, 0)
+  assert.equal(run(directory, 'doctor').status, 0)
+  writeFileSync(
+    path.join(directory, 'src/design/badge.ts'),
+    readFileSync(path.join(directory, 'src/design/button.ts'), 'utf8'),
+  )
+  const stale = run(directory, 'doctor')
+  assert.equal(stale.status, 2, stale.stdout)
+  assert.match(
+    stale.stdout,
+    /src\/design\/badge\.ts is installed in src\/design but not registered in crease\.lock\.json/u,
+  )
+  rmSync(directory, { force: true, recursive: true })
+})
+
 test('doctor reports the archived tutorial as feature-only coverage', () => {
   const directory = mkdtempSync(path.join(tmpdir(), 'creaseui-lint-tutorial-'))
   cpSync(

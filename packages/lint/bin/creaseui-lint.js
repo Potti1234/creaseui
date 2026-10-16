@@ -357,6 +357,9 @@ const doctor = async values => {
   const { ESLint } = await import('eslint')
   const eslint = new ESLint({ cwd: rootDir, overrideConfigFile: configFile })
   const sources = walk(path.join(rootDir, 'src'))
+  const installDirs = installTargets(rootDir).components.map(directory =>
+    path.resolve(rootDir, directory),
+  )
   const ruleIds = [
     'no-raw-controls',
     'no-raw-composition',
@@ -394,6 +397,16 @@ const doctor = async values => {
       return level !== undefined && level !== 'off' && level !== 0
     }
     if (owned === undefined) {
+      const installedIn = installDirs.find(directory =>
+        path.resolve(file).startsWith(`${directory}${path.sep}`),
+      )
+      if (installedIn !== undefined && rendersHtml(file)) {
+        uncovered += 1
+        incomplete += 1
+        fail(
+          `${relative} is installed in ${toPosix(path.relative(rootDir, installedIn))} but not registered in crease.lock.json; re-run creaseui-lint init`,
+        )
+      }
       const missing = ruleIds.filter(ruleId => !active(ruleId))
       if (missing.length > 0 && rendersHtml(file)) {
         uncovered += 1
