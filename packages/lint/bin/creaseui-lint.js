@@ -12,6 +12,7 @@ import {
   RENDERERS,
 } from '../lib/strict/contracts.js'
 import { createCssAudit, findStylesheets } from '../lib/strict/css.js'
+import { verifyFoundations } from '../lib/strict/foundations.js'
 import { CreaseConfigError } from '../lib/strict/ownership.js'
 import { createRenderExports } from '../lib/strict/render-exports.js'
 
@@ -387,6 +388,11 @@ const doctor = async values => {
     )
   }
   console.log(`ok      ${stylesheets.files.size} stylesheets inspected`)
+  for (const problem of verifyFoundations({
+    ownership: strict.ownership,
+    rootDir,
+  }))
+    fail(problem)
   if (incomplete > 0) {
     console.log(
       `coverage feature-only: ${incomplete} implementation or UI files are ignored, lose Crease rules or have unregistered rendering exports; this is not complete design-system enforcement`,

@@ -216,6 +216,16 @@ export const buildOwnership = ({
       )
       return
     }
+    /* Contracts this export claims to build on; doctor verifies that each
+       one is actually rendered (see foundations.js). */
+    const foundations = record.foundations ?? []
+    if (
+      !Array.isArray(foundations) ||
+      !foundations.every(entry => typeof entry === 'string' && entry !== '')
+    ) {
+      problems.push(`${where}: foundations must be a list of contracts`)
+      return
+    }
     const byName = exports.get(key) ?? new Map()
     if (byName.has(record.name)) {
       problems.push(`${where}: export '${record.name}' is registered twice`)
@@ -225,6 +235,7 @@ export const buildOwnership = ({
       builderArgument: record.builderArgument ?? 1,
       contract: record.contract,
       file: files.get(key).path,
+      foundations,
       name: record.name,
       owner,
       propsArgument: record.propsArgument ?? 0,

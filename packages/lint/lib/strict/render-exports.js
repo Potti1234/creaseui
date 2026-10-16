@@ -27,7 +27,7 @@ const parseConfig = configPath => {
 }
 
 /** Compiler options of the tsconfig (or project reference) covering `files`. */
-const optionsFor = (rootDir, files) => {
+export const optionsFor = (rootDir, files) => {
   const configPath = ts.findConfigFile(
     rootDir,
     ts.sys.fileExists,
