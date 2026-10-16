@@ -282,3 +282,29 @@ test('--help prints usage and unknown options exit 2 with usage', () => {
   assert.match(unknown.stderr, /Unknown option '--nope'[\s\S]*Usage:/u)
   assert.doesNotMatch(unknown.stderr, /\n\s+at /u)
 })
+
+test('inspect finds renderer-directory installs by item, file or export name', () => {
+  const directory = scratch()
+  writeFileSync(
+    path.join(directory, 'components.json'),
+    JSON.stringify({ aliases: { ui: '@/design' } }),
+  )
+  mkdirSync(path.join(directory, 'src/design/pleat'))
+  writeFileSync(
+    path.join(directory, 'src/design/pleat/native-select.ts'),
+    readFileSync(path.join(directory, 'src/design/button.ts'), 'utf8'),
+  )
+  assert.equal(run(directory, 'init', '--renderer', 'pleat').status, 0)
+  const receipt = JSON.parse(
+    readFileSync(path.join(directory, 'crease.lock.json'), 'utf8'),
+  )
+  assert.ok(
+    receipt.artifacts.some(({ id }) => id === 'crease/pleat-native-select'),
+    receipt.artifacts.map(({ id }) => id).join(', '),
+  )
+  for (const name of ['native-select', 'pleat-native-select', 'button']) {
+    const result = run(directory, 'inspect', '--component', name)
+    assert.equal(result.status, 0, `${name}: ${result.stderr}`)
+  }
+  rmSync(directory, { force: true, recursive: true })
+})

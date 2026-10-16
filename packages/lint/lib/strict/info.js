@@ -50,11 +50,21 @@ export const projectInfo = ({ manifest, rootDir }) => {
   }
 }
 
+/* `native-select`, `pleat-native-select` and receipts written before the
+   id stopped repeating the renderer (`pleat-pleat-native-select`) all name
+   the same item. */
+const itemName = id =>
+  id
+    .split('/')
+    .at(-1)
+    .replace(/^(?:(?:pleat|stylex)-)+/u, '')
+
 const matches = (artifact, name) =>
   artifact.id === name ||
-  artifact.id?.split('/').at(-1) === name ||
-  artifact.id?.split('/').at(-1) === `${PREFIX.stylex}${name}` ||
-  artifact.id?.split('/').at(-1) === `${PREFIX.pleat}${name}` ||
+  (artifact.id !== undefined && itemName(artifact.id) === itemName(name)) ||
+  (artifact.files ?? []).some(
+    file => path.basename(file.path).replace(/\.[^.]+$/u, '') === name,
+  ) ||
   (artifact.exports ?? []).some(record => record.name === name)
 
 export const inspectComponent = ({ component, manifest, rootDir }) => {

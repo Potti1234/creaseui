@@ -185,7 +185,12 @@ export const buildReceipt = ({ rootDir, components, renderer, setup = [] }) => {
     return {
       exports,
       files: [{ path: relative, rawRendering: raw, role }],
-      id: `crease/${prefix}${local.split('/').join('-')}`,
+      /* shadcn installs StyleX/Pleat items under `ui/<renderer>/`; that
+         directory is already the id's renderer prefix. */
+      id: `crease/${prefix}${local
+        .replace(new RegExp(`^${renderer}/`, 'u'), '')
+        .split('/')
+        .join('-')}`,
     }
   })
   const owned = new Set(files.map(file => path.resolve(file)))
