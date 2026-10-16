@@ -256,7 +256,7 @@ export const docDataGridColumns: ReadonlyArray<DataGridColumn<DocPerson>> = [
   {
     id: 'isActive',
     header: 'Active',
-    iconName: 'check-square',
+    iconName: 'square-check',
     width: 50,
     variant: 'checkbox',
     get: row => (row.isActive === true ? 'true' : 'false'),

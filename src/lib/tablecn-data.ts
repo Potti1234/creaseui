@@ -413,7 +413,7 @@ export const personDataGridColumns: ReadonlyArray<DataGridColumn<Person>> = [
   {
     id: 'name',
     header: 'Name',
-    iconName: 'text',
+    iconName: 'text-align-start',
     width: 160,
     variant: 'text',
     get: p => p.name ?? '',
@@ -506,7 +506,7 @@ export const personDataGridColumns: ReadonlyArray<DataGridColumn<Person>> = [
   {
     id: 'isActive',
     header: 'Active',
-    iconName: 'check-square',
+    iconName: 'square-check',
     width: 90,
     variant: 'checkbox',
     get: p => (p.isActive === true ? 'true' : 'false'),
