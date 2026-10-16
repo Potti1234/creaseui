@@ -363,3 +363,37 @@ test('re-running init registers new installs without rewriting the receipt or co
   assert.equal(doctor.status, 0, doctor.stdout + doctor.stderr)
   rmSync(directory, { force: true, recursive: true })
 })
+
+test('doctor reports theme roles that installed components read but no stylesheet defines', () => {
+  const directory = scratch()
+  mkdirSync(path.join(directory, 'node_modules/@creaseui'), { recursive: true })
+  symlinkSync(
+    fileURLToPath(new URL('..', import.meta.url)),
+    path.join(directory, 'node_modules/@creaseui/lint'),
+    'dir',
+  )
+  writeFileSync(
+    path.join(directory, 'components.json'),
+    JSON.stringify({ aliases: { ui: '@/design' } }),
+  )
+  writeFileSync(
+    path.join(directory, 'src/design/tokens.ts'),
+    "export const tokens = { border: 'var(--color-border)', local: 'var(--local)' }\nexport const scope = { '--local': '1px' }\n",
+  )
+  assert.equal(run(directory, 'init', '--renderer', 'pleat').status, 0)
+  const bare = run(directory, 'doctor')
+  assert.equal(bare.status, 1, bare.stdout)
+  assert.match(
+    bare.stdout,
+    /src\/design\/tokens\.ts reads --color-border, which no stylesheet defines/u,
+  )
+  assert.doesNotMatch(bare.stdout, /--local/u)
+  writeFileSync(
+    path.join(directory, 'src/styles.css'),
+    ':root {\n  --color-border: oklch(0.9 0 0);\n}\n',
+  )
+  writeFileSync(path.join(directory, 'src/entry.ts'), "import './styles.css'\n")
+  const themed = run(directory, 'doctor')
+  assert.doesNotMatch(themed.stdout, /no stylesheet defines/u, themed.stdout)
+  rmSync(directory, { force: true, recursive: true })
+})

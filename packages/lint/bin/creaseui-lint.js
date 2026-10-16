@@ -517,6 +517,45 @@ const doctor = async values => {
     )
   }
   console.log(`ok      ${stylesheets.files.size} stylesheets inspected`)
+  /* Installed components read theme roles through `var(--role)`; a role no
+     stylesheet declares and no installed source sets falls back silently. */
+  const declared = new Set(
+    [...stylesheets.files].flatMap(entry => {
+      const file = path.resolve(
+        rootDir,
+        Array.isArray(entry) ? entry[0] : entry,
+      )
+      return existsSync(file)
+        ? [...readFileSync(file, 'utf8').matchAll(/(--[\w-]+)\s*:/gu)].map(
+            match => match[1],
+          )
+        : []
+    }),
+  )
+  const installedSources = sources
+    .filter(file => strict.ownership.fileFor(file) !== undefined)
+    .map(file => [
+      file,
+      readFileSync(file, 'utf8').replace(/\/\*[\s\S]*?\*\/|\/\/[^\n]*/gu, ''),
+    ])
+  const assigned = new Set(
+    installedSources.flatMap(([, text]) =>
+      [...text.replace(/var\(--[\w-]+/gu, ' ').matchAll(/--[\w-]*\w/gu)].map(
+        match => match[0],
+      ),
+    ),
+  )
+  for (const [file, text] of installedSources) {
+    const undefinedRoles = [
+      ...new Set(
+        [...text.matchAll(/var\((--[\w-]*\w)\s*\)/gu)].map(match => match[1]),
+      ),
+    ].filter(role => !declared.has(role) && !assigned.has(role))
+    if (undefinedRoles.length > 0)
+      fail(
+        `${toPosix(path.relative(rootDir, file))} reads ${undefinedRoles.join(', ')}, which no stylesheet defines; install the theme (crease-theme for Tailwind, crease-theme-css for StyleX and Pleat) and import it`,
+      )
+  }
   for (const problem of verifyFoundations({
     ownership: strict.ownership,
     rootDir,
