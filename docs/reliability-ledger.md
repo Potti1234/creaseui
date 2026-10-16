@@ -206,21 +206,23 @@ Source: `docs/plan/pr-28-enforcement-followup-agent-plan.md`, review
 `docs/reviews/pr-28-oct16-review.md`, archived tutorial
 `packages/lint/test/fixtures/tutorial-attempt-01` (negative fixture, unchanged).
 
-| Item                                                                                                      | Status    | Evidence                                                          |
-| --------------------------------------------------------------------------------------------------------- | --------- | ----------------------------------------------------------------- |
-| R1 namespace import then export, renamed, multi-hop, cycles                                               | Done      | `d4547d2`, `strict-typed.test.js`                                 |
-| R2 rendering exports from the type checker; aliases inherit contracts; doctor reports uncovered           | Done      | `d2d71bd`, `cli.test.js`                                          |
-| R3 icon sizes own width, basis and shape; finite size branches; unresolved sizes unverifiable             | Done      | `3666513`, `strict-typed.test.js`                                 |
-| R4 `itemGroupSeparator()`: two items plus a separator expose two list items                               | Done      | `68705c9`, `50cb6eb`, `e2e/reliability-fixture.spec.ts`           |
-| E1 ignored or rule-less implementation files are feature-only coverage (exit 2)                           | Done      | `38f74b7`, tutorial fixture in `cli.test.js`                      |
-| E1 `rawElements` narrows raw grants; registered implementations keep raw, contract and unverifiable rules | Done      | `a5c912e`, `raw-grant-*` typed tests                              |
-| E2 postcss policy for authored CSS, imports, nesting, layers, media; registry `css`/`cssVars`             | Done      | `5c16ffc`, `css.test.js`, `creaseui-lint css`                     |
-| E3 declared `foundations` must be rendered (type-checked calls)                                           | Done      | `a676a60`, `foundations.test.js`                                  |
-| E4 `creaseui-lint scope --baseline` for ownership, ignores, configs and scripts                           | Done      | `2841a13`, `scope.test.js`                                        |
-| D1 `meta.crease`, docs and categories generated for all three registries                                  | Done      | `9287112`                                                         |
-| D1 `info` / `inspect` with actionable missing-component messages                                          | Done      | `373a755`, `cli.test.js`                                          |
-| D1 dependency refs documented as not inherited                                                            | Docs only | `70f5df3`; not re-probed against the live CLI                     |
-| D1 MCP transport of `meta`/`docs`                                                                         | Open      | The 4.21.5 MCP probe drops them; `inspect` is the supported route |
-| Crease discovery skill distributed through the registry                                                   | Open      |                                                                   |
-| Clean normal-project dashboard task (Sidebar, table, charts) and a second screen                          | Open      |                                                                   |
-| `scope` wired into a protected CI job                                                                     | Open      | Command exists; needs a job the patch cannot edit                 |
+| Item                                                                                                      | Status    | Evidence                                                                                        |
+| --------------------------------------------------------------------------------------------------------- | --------- | ----------------------------------------------------------------------------------------------- |
+| R1 namespace import then export, renamed, multi-hop, cycles                                               | Done      | `d4547d2`, `strict-typed.test.js`                                                               |
+| R2 rendering exports from the type checker; aliases inherit contracts; doctor reports uncovered           | Done      | `d2d71bd`, `cli.test.js`                                                                        |
+| R3 icon sizes own width, basis and shape; finite size branches; unresolved sizes unverifiable             | Done      | `3666513`, `strict-typed.test.js`                                                               |
+| R4 `itemGroupSeparator()`: two items plus a separator expose two list items                               | Done      | `68705c9`, `50cb6eb`, `e2e/reliability-fixture.spec.ts`                                         |
+| E1 ignored or rule-less implementation files are feature-only coverage (exit 2)                           | Done      | `38f74b7`, tutorial fixture in `cli.test.js`                                                    |
+| E1 `rawElements` narrows raw grants; registered implementations keep raw, contract and unverifiable rules | Done      | `a5c912e`, `raw-grant-*` typed tests                                                            |
+| E2 postcss policy for authored CSS, imports, nesting, layers, media; registry `css`/`cssVars`             | Done      | `5c16ffc`, `css.test.js`, `creaseui-lint css`                                                   |
+| E3 declared `foundations` must be rendered (type-checked calls)                                           | Done      | `a676a60`, `foundations.test.js`                                                                |
+| E4 `creaseui-lint scope --baseline` for ownership, ignores, configs and scripts                           | Done      | `2841a13`, `scope.test.js`                                                                      |
+| D1 `meta.crease`, docs and categories generated for all three registries                                  | Done      | `9287112`, `c211c7b` (contract matches `init`; re-exported names), `test/registry-meta.test.ts` |
+| E2 registry `css`/`cssVars` of every published item audited                                               | Done      | `e04f7a2`; installed CSS lands in consumer stylesheets, which `doctor` walks                    |
+| D1 `info` / `inspect` with actionable missing-component messages                                          | Done      | `373a755`, `cli.test.js`                                                                        |
+| D1 dependency refs documented as not inherited                                                            | Docs only | `70f5df3`; not re-probed against the live CLI                                                   |
+| D1 MCP transport of `meta`/`docs`                                                                         | Open      | The 4.21.5 MCP probe drops them; `inspect` is the supported route                               |
+| Crease discovery skill distributed through the registry                                                   | Open      |                                                                                                 |
+| Fresh consumer dashboard composed from installed Sidebar, table and chart                                 | Done      | `773145d`, strict-consumer check, all three renderers                                           |
+| Second screen and an addition to an existing consumer; agent-driven discovery run                         | Open      |                                                                                                 |
+| `scope` wired into a protected CI job                                                                     | Open      | Command exists; needs a job the patch cannot edit                                               |
