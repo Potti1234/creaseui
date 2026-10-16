@@ -122,14 +122,17 @@ npx --yes shadcn@latest add Potti1234/creaseui/button#0123456789abcdef0123456789
 ```
 
 Prefer a full commit SHA for a reproducible installation. The ref pins only the
-item you name: current shadcn documentation says refs are not inherited by
-`registryDependencies`, which Crease publishes unversioned
-(`Potti1234/creaseui/crease-theme`). Pin every Crease dependency at the same
-ref yourself, theme first:
+item you name. Crease publishes `registryDependencies` unversioned
+(`Potti1234/creaseui/icons`), and shadcn resolves them against the default
+branch even when the same items are also named with a ref on the command line.
+Checked with `shadcn@latest` (4.21.x) against this repository:
+`pleat-sidebar#<sha>` and the full closure pinned at `#<sha>` both fail with
+`Registry item "pleat-complex-tokens" was not found` while that item exists only
+on the pinned commit.
 
-```sh
-npx --yes shadcn@latest add Potti1234/creaseui/crease-theme#<sha> Potti1234/creaseui/button#<sha> --yes
-```
+A ref install therefore works only when every dependency of the item also
+exists, compatibly, on `main`. For a commit whose items are not on `main` yet
+(a pull request), install from a local checkout as described below.
 
 ### Installing from a local checkout
 
