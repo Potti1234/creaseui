@@ -118,8 +118,26 @@ const tarball = execFileSync(
   { cwd: path.join(repo, 'packages/lint'), encoding: 'utf8', shell },
 ).trim()
 
-const settingsApp =
-  alias => `import type { Html, HtmlBuilder } from 'foldkit/html'
+/* Each renderer's way of placing a component in its parent. */
+const placement = {
+  tailwind: { imports: '', definitions: '', prop: "class: 'w-full max-w-md'" },
+  stylex: {
+    imports: "import * as stylex from '@stylexjs/stylex'\n",
+    definitions:
+      "\nconst styles = stylex.create({ panel: { width: '100%', maxWidth: '28rem' } })\n",
+    prop: 'layoutStyle: styles.panel',
+  },
+  pleat: {
+    imports: "import { layoutStyle } from 'ALIAS/contracts'\n",
+    definitions:
+      "\nconst panel = layoutStyle({ width: '100%', maxWidth: '28rem' })\n",
+    prop: 'layoutStyle: panel',
+  },
+}
+
+const settingsApp = (alias, renderer) => {
+  const place = placement[renderer]
+  return `${place.imports.replace('ALIAS', alias)}import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import { button } from '${alias}/button'
 import { card, cardContent, cardDescription, cardHeader, cardTitle } from '${alias}/card'
@@ -128,6 +146,7 @@ import { label } from '${alias}/label'
 import { stack } from '${alias}/stack'
 import { switchControl } from '${alias}/switch'
 
+${place.definitions}
 export type SettingsModel = Readonly<{ name: string; digest: boolean; saved: boolean }>
 export type SettingsEvents<M> = Readonly<{
   named: (value: string) => M
@@ -142,6 +161,7 @@ export const settingsView = <M>(
 ): Html =>
   card(
     {
+      ${place.prop},
       children: [
         cardHeader(
           {
@@ -179,6 +199,7 @@ export const settingsView = <M>(
     h,
   )
 `
+}
 
 const dashboardApp =
   alias => `import type { Html, HtmlBuilder } from 'foldkit/html'
@@ -562,7 +583,10 @@ ${Object.entries(pleatAliases)
     expect(label('npm install'), install.status === 0, install.stderr)
     if (install.status !== 0) continue
 
-    write(path.join(root, 'src/app/settings.ts'), settingsApp(consumer.alias))
+    write(
+      path.join(root, 'src/app/settings.ts'),
+      settingsApp(consumer.alias, consumer.renderer),
+    )
     write(path.join(root, 'src/app/dashboard.ts'), dashboardApp(consumer.alias))
     write(
       path.join(root, 'src/app/main.ts'),
