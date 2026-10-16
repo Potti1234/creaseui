@@ -6,6 +6,31 @@
       "type": "registry:ui",
       "title": "Accordion",
       "description": "The Pleat Accordion component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "accordion",
+          "contracts": [
+            "control.disclosure"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "view"
+          ],
+          "publicExports": [
+            "accordion",
+            "view"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "accordion.ts",
@@ -30,6 +55,26 @@
       "type": "registry:ui",
       "title": "Alert Dialog",
       "description": "The Pleat Alert Dialog component for Foldkit.",
+      "categories": [
+        "overlay"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "alert-dialog",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "alertDialog"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "alert-dialog.ts",
@@ -53,6 +98,30 @@
       "type": "registry:ui",
       "title": "Alert",
       "description": "The Pleat Alert component for Foldkit.",
+      "categories": [
+        "feedback"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "alert",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "alert",
+            "alertDescription",
+            "alertIcon",
+            "alertTitle",
+            "alertVariants"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "alert.ts",
@@ -74,6 +143,26 @@
       "type": "registry:ui",
       "title": "Aspect Ratio",
       "description": "The Pleat Aspect Ratio component for Foldkit.",
+      "categories": [
+        "layout"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "aspect-ratio",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "aspectRatio"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "aspect-ratio.ts",
@@ -125,6 +214,35 @@
       "type": "registry:ui",
       "title": "Attachment",
       "description": "The Pleat Attachment component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "attachment",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "attachment",
+            "attachmentAction",
+            "attachmentActions",
+            "attachmentContent",
+            "attachmentDescription",
+            "attachmentGroup",
+            "attachmentMedia",
+            "attachmentTitle",
+            "attachmentTrigger",
+            "attachmentVariants"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "attachment.ts",
@@ -150,6 +268,28 @@
       "type": "registry:ui",
       "title": "Avatar Group",
       "description": "The Pleat Avatar Group component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "avatar-group",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "avatarGroup",
+            "avatarGroupOverflow",
+            "avatarStatusDot"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "avatar-group.ts",
@@ -189,6 +329,40 @@
       "type": "registry:ui",
       "title": "Avatar",
       "description": "The Pleat Avatar component for Foldkit.",
+      "categories": [
+        "data display"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "avatar",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "avatar",
+            "avatarBadge",
+            "avatarFallback",
+            "avatarGroup",
+            "avatarGroupCount",
+            "avatarImage",
+            "init",
+            "update"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "avatar.ts",
@@ -211,6 +385,26 @@
       "type": "registry:ui",
       "title": "Badge",
       "description": "The Pleat Badge component for Foldkit.",
+      "categories": [
+        "data display"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "badge",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "badge"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "badge.ts",
@@ -232,6 +426,26 @@
       "type": "registry:ui",
       "title": "Banner",
       "description": "The Pleat Banner component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "banner",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "banner"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "banner.ts",
@@ -256,6 +470,26 @@
       "type": "registry:ui",
       "title": "Blockquote",
       "description": "The Pleat Blockquote component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "blockquote",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "blockquote"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "blockquote.ts",
@@ -276,6 +510,33 @@
       "type": "registry:ui",
       "title": "Breadcrumb",
       "description": "The Pleat Breadcrumb component for Foldkit.",
+      "categories": [
+        "navigation"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "breadcrumb",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "breadcrumb",
+            "breadcrumbEllipsis",
+            "breadcrumbItem",
+            "breadcrumbLink",
+            "breadcrumbList",
+            "breadcrumbPage",
+            "breadcrumbSeparator",
+            "breadcrumbTrail"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "breadcrumb.ts",
@@ -315,6 +576,30 @@
       "type": "registry:ui",
       "title": "Bubble",
       "description": "The Pleat Bubble component for Foldkit.",
+      "categories": [
+        "data display"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "bubble",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "bubble",
+            "bubbleContent",
+            "bubbleGroup",
+            "bubbleReactions",
+            "bubbleVariants"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "bubble.ts",
@@ -356,6 +641,29 @@
       "type": "registry:ui",
       "title": "Button Group",
       "description": "The Pleat Button Group component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "button-group",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "buttonGroup",
+            "buttonGroupSeparator",
+            "buttonGroupText",
+            "buttonGroupVariants"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "button-group.ts",
@@ -377,6 +685,30 @@
       "type": "registry:ui",
       "title": "Button",
       "description": "The Pleat Button component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "button",
+          "contracts": [
+            "control.button"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "button",
+            "buttonLink",
+            "buttonVisualStyles"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "button.ts",
@@ -418,6 +750,44 @@
       "type": "registry:ui",
       "title": "Calendar",
       "description": "The Pleat Calendar component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "calendar",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "calendar",
+            "calendarView",
+            "dropToDays",
+            "focusDate",
+            "init",
+            "reflectDisabledDates",
+            "reflectDisabledDaysOfWeek",
+            "reflectMaxDate",
+            "reflectMinDate",
+            "selectDate",
+            "update"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "calendar.ts",
@@ -457,6 +827,32 @@
       "type": "registry:ui",
       "title": "Card",
       "description": "The Pleat Card component for Foldkit.",
+      "categories": [
+        "layout"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "card",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "card",
+            "cardAction",
+            "cardContent",
+            "cardDescription",
+            "cardFooter",
+            "cardHeader",
+            "cardTitle"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "card.ts",
@@ -478,6 +874,26 @@
       "type": "registry:ui",
       "title": "Carousel",
       "description": "The Pleat Carousel component for Foldkit.",
+      "categories": [
+        "layout"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "carousel",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "carousel"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "carousel.ts",
@@ -503,6 +919,28 @@
       "type": "registry:ui",
       "title": "Center",
       "description": "The Pleat Center component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "center",
+          "contracts": [
+            "composition.center"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "center"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "center.ts",
@@ -521,6 +959,45 @@
       "type": "registry:ui",
       "title": "Chart",
       "description": "The Pleat Chart component for Foldkit.",
+      "categories": [
+        "data display"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "chart",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "ChartMessage",
+            "SyncChart",
+            "areaChart",
+            "areaGradient",
+            "barChart",
+            "categoryAxis",
+            "chartContainer",
+            "chartLegend",
+            "chartTooltipContent",
+            "colorWithOpacity",
+            "compactGrid",
+            "donutChart",
+            "eChart",
+            "interactiveAreaChart",
+            "legendOptions",
+            "registerChart",
+            "shadcnLegend",
+            "shadcnTooltip",
+            "tooltipOptions",
+            "valueAxis"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "chart.ts",
@@ -545,6 +1022,36 @@
       "type": "registry:ui",
       "title": "Chat Reasoning",
       "description": "The Pleat Chat Reasoning component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "chat-reasoning",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "chatReasoning",
+            "init",
+            "update"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "chat-reasoning.ts",
@@ -584,6 +1091,26 @@
       "type": "registry:ui",
       "title": "Checkbox",
       "description": "The Pleat Checkbox component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "checkbox",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "checkbox"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "checkbox.ts",
@@ -609,6 +1136,26 @@
       "type": "registry:ui",
       "title": "Circular Progress",
       "description": "The Pleat Circular Progress component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "circular-progress",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "circularProgress"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "circular-progress.ts",
@@ -632,6 +1179,26 @@
       "type": "registry:ui",
       "title": "Code Block",
       "description": "The Pleat Code Block component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "code-block",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "codeBlock"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "code-block.ts",
@@ -658,6 +1225,26 @@
       "type": "registry:ui",
       "title": "Code",
       "description": "The Pleat Code component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "code",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "code"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "code.ts",
@@ -679,6 +1266,26 @@
       "type": "registry:ui",
       "title": "Collapsible",
       "description": "The Pleat Collapsible component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "collapsible",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "collapsible"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "collapsible.ts",
@@ -702,6 +1309,42 @@
       "type": "registry:ui",
       "title": "Combobox",
       "description": "The Pleat Combobox component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "combobox",
+          "contracts": [
+            "control.combobox"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "MultiModel",
+            "OutMessage",
+            "combobox",
+            "create",
+            "createMulti",
+            "init",
+            "multiInit",
+            "update"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "combobox.ts",
@@ -726,6 +1369,42 @@
       "type": "registry:ui",
       "title": "Command",
       "description": "The Pleat Command component for Foldkit.",
+      "categories": [
+        "navigation"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "command",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "command",
+            "commandEmpty",
+            "commandGroupHeading",
+            "commandPalette",
+            "commandSeparator",
+            "commandShortcut",
+            "create",
+            "init",
+            "update"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "command.ts",
@@ -1174,6 +1853,7 @@
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foldkit",
         "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-style",
         "Potti1234/creaseui/pleat-tokens"
       ]
     },
@@ -1212,6 +1892,40 @@
       "type": "registry:ui",
       "title": "Context Menu",
       "description": "The Pleat Context Menu component for Foldkit.",
+      "categories": [
+        "overlay"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "context-menu",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "close",
+            "contextMenu",
+            "create",
+            "init",
+            "open",
+            "openAt",
+            "selectItem",
+            "update"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "context-menu.ts",
@@ -1246,6 +1960,26 @@
       "type": "registry:ui",
       "title": "Data Table",
       "description": "The Pleat Data Table component for Foldkit.",
+      "categories": [
+        "data display"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "data-table",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "dataTable"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "data-table.ts",
@@ -1274,6 +2008,26 @@
       "type": "registry:ui",
       "title": "Date Input",
       "description": "The Pleat Date Input component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "date-input",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "dateInput"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "date-input.ts",
@@ -1302,6 +2056,47 @@
       "type": "registry:ui",
       "title": "Date Picker",
       "description": "The Pleat Date Picker component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "date-picker",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "clear",
+            "close",
+            "datePicker",
+            "focusDate",
+            "init",
+            "open",
+            "reflectDisabledDates",
+            "reflectDisabledDaysOfWeek",
+            "reflectMaxDate",
+            "reflectMinDate",
+            "selectDate",
+            "triggerId",
+            "update",
+            "updateForRtl"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "date-picker.ts",
@@ -1327,6 +2122,26 @@
       "type": "registry:ui",
       "title": "Date Range Input",
       "description": "The Pleat Date Range Input component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "date-range-input",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "dateRangeInput"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "date-range-input.ts",
@@ -1355,6 +2170,26 @@
       "type": "registry:ui",
       "title": "Date Time Input",
       "description": "The Pleat Date Time Input component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "date-time-input",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "dateTimeInput"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "date-time-input.ts",
@@ -1384,6 +2219,45 @@
       "type": "registry:ui",
       "title": "Dialog",
       "description": "The Pleat Dialog component for Foldkit.",
+      "categories": [
+        "overlay"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "dialog",
+          "contracts": [
+            "overlay.dialog"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "FOOTER_CLASS",
+            "Message",
+            "Model",
+            "OutMessage",
+            "close",
+            "dialog",
+            "dialogDescription",
+            "dialogFooter",
+            "dialogHeader",
+            "dialogTitle",
+            "init",
+            "open",
+            "update"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "dialog.ts",
@@ -1404,6 +2278,26 @@
       "type": "registry:ui",
       "title": "Direction",
       "description": "The Pleat Direction component for Foldkit.",
+      "categories": [
+        "overlay"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "direction",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "direction"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "direction.ts",
@@ -1421,6 +2315,44 @@
       "type": "registry:ui",
       "title": "Drawer",
       "description": "The Pleat Drawer component for Foldkit.",
+      "categories": [
+        "overlay"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "drawer",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "CancelledSwipe",
+            "DraggedSwipe",
+            "EndedSwipe",
+            "GotDialogMessage",
+            "Message",
+            "Model",
+            "OutMessage",
+            "StartedSwipe",
+            "close",
+            "drawer",
+            "init",
+            "open",
+            "snapTo",
+            "update"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "drawer.ts",
@@ -1444,6 +2376,41 @@
       "type": "registry:ui",
       "title": "Dropdown Menu",
       "description": "The Pleat Dropdown Menu component for Foldkit.",
+      "categories": [
+        "overlay"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "dropdown-menu",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "close",
+            "create",
+            "dropdownMenu",
+            "init",
+            "open",
+            "openAt",
+            "selectItem",
+            "update"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "dropdown-menu.ts",
@@ -1471,6 +2438,32 @@
       "type": "registry:ui",
       "title": "Empty",
       "description": "The Pleat Empty component for Foldkit.",
+      "categories": [
+        "feedback"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "empty",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "empty",
+            "emptyContent",
+            "emptyDescription",
+            "emptyHeader",
+            "emptyMedia",
+            "emptyMediaVariants",
+            "emptyTitle"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "empty.ts",
@@ -1492,6 +2485,26 @@
       "type": "registry:ui",
       "title": "Field Status",
       "description": "The Pleat Field Status component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "field-status",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "fieldStatus"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "field-status.ts",
@@ -1528,6 +2541,41 @@
       "type": "registry:ui",
       "title": "Field",
       "description": "The Pleat Field component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "field",
+          "contracts": [
+            "control.field"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "controlField",
+            "field",
+            "fieldContent",
+            "fieldDescription",
+            "fieldError",
+            "fieldGroup",
+            "fieldLabel",
+            "fieldLegend",
+            "fieldSeparator",
+            "fieldSet",
+            "fieldSetDescriptionId",
+            "fieldSetLegendId",
+            "fieldTitle",
+            "fieldVariants"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "field.ts",
@@ -1551,6 +2599,26 @@
       "type": "registry:ui",
       "title": "File Input",
       "description": "The Pleat File Input component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "file-input",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "fileInput"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "file-input.ts",
@@ -1576,6 +2644,33 @@
       "type": "registry:ui",
       "title": "Form",
       "description": "The Pleat Form component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "form",
+          "contracts": [
+            "composition.form"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "errorSummary",
+            "form",
+            "formDescription",
+            "formItem",
+            "formLabel",
+            "formMessage"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "form.ts",
@@ -1615,6 +2710,29 @@
       "type": "registry:ui",
       "title": "Grid",
       "description": "The Pleat Grid component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "grid",
+          "contracts": [
+            "composition.grid"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "grid",
+            "gridSpan"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "grid.ts",
@@ -1633,6 +2751,28 @@
       "type": "registry:ui",
       "title": "Heading",
       "description": "The Pleat Heading component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "heading",
+          "contracts": [
+            "typography.heading"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "heading"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "heading.ts",
@@ -1654,6 +2794,46 @@
       "type": "registry:ui",
       "title": "Hover Card",
       "description": "The Pleat Hover Card component for Foldkit.",
+      "categories": [
+        "overlay"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "hover-card",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Blurred",
+            "CompletedAnchor",
+            "CompletedWaitBeforeClosingHoverCard",
+            "CompletedWaitBeforeShowingHoverCard",
+            "Entered",
+            "Focused",
+            "Left",
+            "Message",
+            "Model",
+            "PressedEscape",
+            "PressedPointer",
+            "hoverCard",
+            "init",
+            "reflectCloseDelay",
+            "reflectShowDelay",
+            "update"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "hover-card.ts",
@@ -1679,6 +2859,28 @@
       "type": "registry:ui",
       "title": "Indicator",
       "description": "The Pleat Indicator component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "indicator",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "checkIndicator",
+            "checkboxIndicator",
+            "radioIndicator"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "indicator.ts",
@@ -1702,6 +2904,36 @@
       "type": "registry:ui",
       "title": "Info Tip",
       "description": "The Pleat Info Tip component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "info-tip",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "infoTip",
+            "init",
+            "update"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "info-tip.ts",
@@ -1728,6 +2960,33 @@
       "type": "registry:ui",
       "title": "Input Group",
       "description": "The Pleat Input Group component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "input-group",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "inputGroup",
+            "inputGroupAddon",
+            "inputGroupAddonVariants",
+            "inputGroupButton",
+            "inputGroupButtonVariants",
+            "inputGroupInput",
+            "inputGroupText",
+            "inputGroupTextarea"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "input-group.ts",
@@ -1751,6 +3010,27 @@
       "type": "registry:ui",
       "title": "Input Otp",
       "description": "The Pleat Input Otp component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "input-otp",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "inputOtp",
+            "inputOtpSeparator"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "input-otp.ts",
@@ -1773,6 +3053,28 @@
       "type": "registry:ui",
       "title": "Input",
       "description": "The Pleat Input component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "input",
+          "contracts": [
+            "control.input"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "input"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "input.ts",
@@ -1830,6 +3132,38 @@
       "type": "registry:ui",
       "title": "Item",
       "description": "The Pleat Item component for Foldkit.",
+      "categories": [
+        "data display"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "item",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "item",
+            "itemActions",
+            "itemContent",
+            "itemDescription",
+            "itemFooter",
+            "itemGroup",
+            "itemGroupSeparator",
+            "itemHeader",
+            "itemMedia",
+            "itemMediaVariants",
+            "itemSeparator",
+            "itemTitle",
+            "itemVariants"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "item.ts",
@@ -1851,6 +3185,27 @@
       "type": "registry:ui",
       "title": "Kbd",
       "description": "The Pleat Kbd component for Foldkit.",
+      "categories": [
+        "data display"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "kbd",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "kbd",
+            "kbdGroup"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "kbd.ts",
@@ -1872,6 +3227,28 @@
       "type": "registry:ui",
       "title": "Label",
       "description": "The Pleat Label component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "label",
+          "contracts": [
+            "control.label"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "label"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "label.ts",
@@ -1890,6 +3267,39 @@
       "type": "registry:ui",
       "title": "Lightbox",
       "description": "The Pleat Lightbox component for Foldkit.",
+      "categories": [
+        "overlay"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "lightbox",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "KEYBOARD_PAN_STEP",
+            "Message",
+            "Model",
+            "OutMessage",
+            "close",
+            "init",
+            "lightbox",
+            "open",
+            "update"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "lightbox.ts",
@@ -1914,6 +3324,28 @@
       "type": "registry:ui",
       "title": "Link",
       "description": "The Pleat Link component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "link",
+          "contracts": [
+            "navigation.link"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "link"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "link.ts",
@@ -1939,6 +3371,26 @@
       "type": "registry:ui",
       "title": "List Input",
       "description": "The Pleat List Input component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "list-input",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "listInput"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "list-input.ts",
@@ -1965,6 +3417,29 @@
       "type": "registry:ui",
       "title": "List",
       "description": "The Pleat List component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "list",
+          "contracts": [
+            "composition.list"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "list",
+            "listItem"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "list.ts",
@@ -2020,6 +3495,37 @@
       "type": "registry:ui",
       "title": "Log Stream",
       "description": "The Pleat Log Stream component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "log-stream",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "LogStreamLevel",
+            "Message",
+            "Model",
+            "OutMessage",
+            "init",
+            "logStream",
+            "update"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "log-stream.ts",
@@ -2045,6 +3551,24 @@
       "type": "registry:ui",
       "title": "Map Arc",
       "description": "The Pleat Map Arc component for Foldkit.",
+      "categories": [
+        "maps"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "map-arc",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "map-arc.ts",
@@ -2061,6 +3585,24 @@
       "type": "registry:ui",
       "title": "Map Cluster",
       "description": "The Pleat Map Cluster component for Foldkit.",
+      "categories": [
+        "maps"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "map-cluster",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "map-cluster.ts",
@@ -2077,6 +3619,26 @@
       "type": "registry:ui",
       "title": "Map Controls",
       "description": "The Pleat Map Controls component for Foldkit.",
+      "categories": [
+        "maps"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "map-controls",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "mapControls"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "map-controls.ts",
@@ -2094,6 +3656,24 @@
       "type": "registry:ui",
       "title": "Map Geojson",
       "description": "The Pleat Map Geojson component for Foldkit.",
+      "categories": [
+        "maps"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "map-geojson",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "map-geojson.ts",
@@ -2110,6 +3690,24 @@
       "type": "registry:ui",
       "title": "Map Localization",
       "description": "The Pleat Map Localization component for Foldkit.",
+      "categories": [
+        "maps"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "map-localization",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "map-localization.ts",
@@ -2126,6 +3724,29 @@
       "type": "registry:ui",
       "title": "Map Marker",
       "description": "The Pleat Map Marker component for Foldkit.",
+      "categories": [
+        "maps"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "map-marker",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "mapMarker",
+            "markerContent",
+            "markerLabel",
+            "markerTooltip"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "map-marker.ts",
@@ -2143,6 +3764,26 @@
       "type": "registry:ui",
       "title": "Map Popup",
       "description": "The Pleat Map Popup component for Foldkit.",
+      "categories": [
+        "maps"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "map-popup",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "mapPopup"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "map-popup.ts",
@@ -2160,6 +3801,24 @@
       "type": "registry:ui",
       "title": "Map Route",
       "description": "The Pleat Map Route component for Foldkit.",
+      "categories": [
+        "maps"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "map-route",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "map-route.ts",
@@ -2176,6 +3835,24 @@
       "type": "registry:ui",
       "title": "Map Styles",
       "description": "The Pleat Map Styles component for Foldkit.",
+      "categories": [
+        "maps"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "map-styles",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "map-styles.ts",
@@ -2208,6 +3885,27 @@
       "type": "registry:ui",
       "title": "Map",
       "description": "The Pleat Map component for Foldkit.",
+      "categories": [
+        "maps"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "map",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "map",
+            "mapSkin"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "map.ts",
@@ -2232,6 +3930,26 @@
       "type": "registry:ui",
       "title": "Markdown",
       "description": "The Pleat Markdown component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "markdown",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "markdown"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "markdown.ts",
@@ -2261,6 +3979,29 @@
       "type": "registry:ui",
       "title": "Marker",
       "description": "The Pleat Marker component for Foldkit.",
+      "categories": [
+        "data display"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "marker",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "marker",
+            "markerContent",
+            "markerIcon",
+            "markerVariants"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "marker.ts",
@@ -2282,6 +4023,37 @@
       "type": "registry:ui",
       "title": "Menubar",
       "description": "The Pleat Menubar component for Foldkit.",
+      "categories": [
+        "navigation"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "menubar",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "init",
+            "menubar",
+            "menubar",
+            "menubar",
+            "update"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "menubar.ts",
@@ -2304,6 +4076,43 @@
       "type": "registry:ui",
       "title": "Message Scroller",
       "description": "The Pleat Message Scroller component for Foldkit.",
+      "categories": [
+        "feedback"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "message-scroller",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "CompletedMessageScrollerScrollTo",
+            "Message",
+            "Model",
+            "ObservedViewport",
+            "RequestedScroll",
+            "Scrolled",
+            "init",
+            "messageScroller",
+            "messageScrollerButton",
+            "messageScrollerContent",
+            "messageScrollerItem",
+            "messageScrollerViewport",
+            "update"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "message-scroller.ts",
@@ -2343,6 +4152,34 @@
       "type": "registry:ui",
       "title": "Message",
       "description": "The Pleat Message component for Foldkit.",
+      "categories": [
+        "feedback"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "message",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "message",
+            "messageActions",
+            "messageAuthor",
+            "messageAvatar",
+            "messageContent",
+            "messageFooter",
+            "messageGroup",
+            "messageHeader",
+            "messageMetadata"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "message.ts",
@@ -2364,6 +4201,27 @@
       "type": "registry:ui",
       "title": "Metadata List",
       "description": "The Pleat Metadata List component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "metadata-list",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "metadataList",
+            "metadataListItem"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "metadata-list.ts",
@@ -2386,6 +4244,39 @@
       "type": "registry:ui",
       "title": "Mobile Nav",
       "description": "The Pleat Mobile Nav component for Foldkit.",
+      "categories": [
+        "navigation"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "mobile-nav",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "close",
+            "init",
+            "mobileNav",
+            "mobileNavToggle",
+            "open",
+            "update"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "mobile-nav.ts",
@@ -2411,6 +4302,26 @@
       "type": "registry:ui",
       "title": "More Menu",
       "description": "The Pleat More Menu component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "more-menu",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "moreMenu"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "more-menu.ts",
@@ -2432,6 +4343,26 @@
       "type": "registry:ui",
       "title": "Multi Selector",
       "description": "The Pleat Multi Selector component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "multi-selector",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "multiSelector"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "multi-selector.ts",
@@ -2462,6 +4393,30 @@
       "type": "registry:ui",
       "title": "Native Select",
       "description": "The Pleat Native Select component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "native-select",
+          "contracts": [
+            "control.native-select"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "nativeSelect",
+            "nativeSelectOptGroup",
+            "nativeSelectOption"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "native-select.ts",
@@ -2485,6 +4440,32 @@
       "type": "registry:ui",
       "title": "Navigation Menu",
       "description": "The Pleat Navigation Menu component for Foldkit.",
+      "categories": [
+        "navigation"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "navigation-menu",
+          "contracts": [
+            "navigation.nav"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "navigationMenu",
+            "navigationMenuDisclosure",
+            "navigationMenuItem",
+            "navigationMenuLink",
+            "navigationMenuList"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "navigation-menu.ts",
@@ -2509,6 +4490,26 @@
       "type": "registry:ui",
       "title": "Number Input",
       "description": "The Pleat Number Input component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "number-input",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "numberInput"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "number-input.ts",
@@ -2534,6 +4535,26 @@
       "type": "registry:ui",
       "title": "Overflow List",
       "description": "The Pleat Overflow List component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "overflow-list",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "overflowList"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "overflow-list.ts",
@@ -2589,6 +4610,33 @@
       "type": "registry:ui",
       "title": "Pagination",
       "description": "The Pleat Pagination component for Foldkit.",
+      "categories": [
+        "navigation"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "pagination",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "pagination",
+            "paginationContent",
+            "paginationEllipsis",
+            "paginationItem",
+            "paginationLink",
+            "paginationNext",
+            "paginationPages",
+            "paginationPrevious"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "pagination.ts",
@@ -2612,6 +4660,40 @@
       "type": "registry:ui",
       "title": "Popover",
       "description": "The Pleat Popover component for Foldkit.",
+      "categories": [
+        "overlay"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "popover",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "RequestedClose",
+            "RequestedOpen",
+            "close",
+            "init",
+            "open",
+            "popover",
+            "update"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "popover.ts",
@@ -2636,6 +4718,28 @@
       "type": "registry:ui",
       "title": "Progress",
       "description": "The Pleat Progress component for Foldkit.",
+      "categories": [
+        "feedback"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "progress",
+          "contracts": [
+            "feedback.progress"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "progress"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "progress.ts",
@@ -2674,6 +4778,26 @@
       "type": "registry:ui",
       "title": "Radio Group",
       "description": "The Pleat Radio Group component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "radio-group",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "radioGroup"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "radio-group.ts",
@@ -2717,6 +4841,40 @@
       "type": "registry:ui",
       "title": "Resizable",
       "description": "The Pleat Resizable component for Foldkit.",
+      "categories": [
+        "layout"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "resizable",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "GroupMessage",
+            "GroupModel",
+            "Message",
+            "Model",
+            "init",
+            "initGroup",
+            "resizable",
+            "resizableGroup",
+            "update",
+            "updateGroup"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "resizable.ts",
@@ -2739,6 +4897,26 @@
       "type": "registry:ui",
       "title": "Scroll Area",
       "description": "The Pleat Scroll Area component for Foldkit.",
+      "categories": [
+        "layout"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "scroll-area",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "scrollArea"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "scroll-area.ts",
@@ -2758,6 +4936,28 @@
       "type": "registry:ui",
       "title": "Section",
       "description": "The Pleat Section component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "section",
+          "contracts": [
+            "composition.section"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "section"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "section.ts",
@@ -2777,6 +4977,37 @@
       "type": "registry:ui",
       "title": "Select",
       "description": "The Pleat Select component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "select",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "create",
+            "init",
+            "select",
+            "update"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "select.ts",
@@ -2802,6 +5033,26 @@
       "type": "registry:ui",
       "title": "Selectable Card",
       "description": "The Pleat Selectable Card component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "selectable-card",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "selectableCard"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "selectable-card.ts",
@@ -2826,6 +5077,28 @@
       "type": "registry:ui",
       "title": "Separator",
       "description": "The Pleat Separator component for Foldkit.",
+      "categories": [
+        "layout"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "separator",
+          "contracts": [
+            "composition.separator"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "separator"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "separator.ts",
@@ -2845,6 +5118,54 @@
       "type": "registry:ui",
       "title": "Sheet",
       "description": "The Pleat Sheet component for Foldkit.",
+      "categories": [
+        "overlay"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "sheet",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "HEIGHT_BUDGETS",
+            "Message",
+            "Model",
+            "OVERSCROLL_PADDING",
+            "OutMessage",
+            "SheetState",
+            "SwitcherMessage",
+            "SwitcherModel",
+            "SwitcherOutMessage",
+            "close",
+            "closeSwitcher",
+            "init",
+            "initSwitcher",
+            "isSheetDragCandidate",
+            "open",
+            "openSheet",
+            "sheet",
+            "sheetDescription",
+            "sheetFooter",
+            "sheetHeader",
+            "sheetSwitcher",
+            "sheetTitle",
+            "update",
+            "updateSwitcher"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "sheet.ts",
@@ -2886,6 +5207,50 @@
       "type": "registry:ui",
       "title": "Sidebar",
       "description": "The Pleat Sidebar component for Foldkit.",
+      "categories": [
+        "layout"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "sidebar",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "sidebar",
+            "sidebarContent",
+            "sidebarFooter",
+            "sidebarGroup",
+            "sidebarGroupAction",
+            "sidebarGroupContent",
+            "sidebarGroupLabel",
+            "sidebarHeader",
+            "sidebarInput",
+            "sidebarInset",
+            "sidebarMenu",
+            "sidebarMenuAction",
+            "sidebarMenuBadge",
+            "sidebarMenuButton",
+            "sidebarMenuButtonVariants",
+            "sidebarMenuItem",
+            "sidebarMenuLabel",
+            "sidebarMenuSkeleton",
+            "sidebarMenuSub",
+            "sidebarMenuSubButton",
+            "sidebarMenuSubItem",
+            "sidebarProvider",
+            "sidebarRail",
+            "sidebarSeparator",
+            "sidebarTrigger"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "sidebar.ts",
@@ -2912,6 +5277,26 @@
       "type": "registry:ui",
       "title": "Skeleton",
       "description": "The Pleat Skeleton component for Foldkit.",
+      "categories": [
+        "feedback"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "skeleton",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "skeleton"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "skeleton.ts",
@@ -2932,6 +5317,44 @@
       "type": "registry:ui",
       "title": "Slider",
       "description": "The Pleat Slider component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "slider",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update",
+            "subscriptions"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "fractionOfValue",
+            "init",
+            "multiSlider",
+            "rangeSlider",
+            "reflectRange",
+            "slider",
+            "snapAndClamp",
+            "subscriptions",
+            "subscriptionsForRoot",
+            "update"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "slider.ts",
@@ -2955,6 +5378,26 @@
       "type": "registry:ui",
       "title": "Spinner",
       "description": "The Pleat Spinner component for Foldkit.",
+      "categories": [
+        "feedback"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "spinner",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "spinner"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "spinner.ts",
@@ -2976,6 +5419,31 @@
       "type": "registry:ui",
       "title": "Stack",
       "description": "The Pleat Stack component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "stack",
+          "contracts": [
+            "composition.stack"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "hStack",
+            "stack",
+            "stackItem",
+            "vStack"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "stack.ts",
@@ -2995,6 +5463,26 @@
       "type": "registry:ui",
       "title": "Stat",
       "description": "The Pleat Stat component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "stat",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "stat"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "stat.ts",
@@ -3015,6 +5503,26 @@
       "type": "registry:ui",
       "title": "Status Dot",
       "description": "The Pleat Status Dot component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "status-dot",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "statusDot"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "status-dot.ts",
@@ -3036,6 +5544,26 @@
       "type": "registry:ui",
       "title": "Stepper",
       "description": "The Pleat Stepper component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "stepper",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "stepper"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "stepper.ts",
@@ -3078,6 +5606,26 @@
       "type": "registry:ui",
       "title": "Switch",
       "description": "The Pleat Switch component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "switch",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "switchControl"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "switch.ts",
@@ -3101,6 +5649,35 @@
       "type": "registry:ui",
       "title": "Table",
       "description": "The Pleat Table component for Foldkit.",
+      "categories": [
+        "data display"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "table",
+          "contracts": [
+            "data.table"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "table",
+            "tableBody",
+            "tableCaption",
+            "tableCell",
+            "tableFooter",
+            "tableHead",
+            "tableHeader",
+            "tableRow"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "table.ts",
@@ -3122,6 +5699,38 @@
       "type": "registry:ui",
       "title": "Tabs",
       "description": "The Pleat Tabs component for Foldkit.",
+      "categories": [
+        "navigation"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "tabs",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "create",
+            "init",
+            "tabs",
+            "tabsListVariants",
+            "update"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "tabs.ts",
@@ -3187,6 +5796,28 @@
       "type": "registry:ui",
       "title": "Text",
       "description": "The Pleat Text component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "text",
+          "contracts": [
+            "typography.text"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "text"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "text.ts",
@@ -3207,6 +5838,28 @@
       "type": "registry:ui",
       "title": "Textarea",
       "description": "The Pleat Textarea component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "textarea",
+          "contracts": [
+            "control.textarea"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "textarea"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "textarea.ts",
@@ -3246,6 +5899,26 @@
       "type": "registry:ui",
       "title": "Thumbnail",
       "description": "The Pleat Thumbnail component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "thumbnail",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "thumbnail"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "thumbnail.ts",
@@ -3271,6 +5944,26 @@
       "type": "registry:ui",
       "title": "Time Input",
       "description": "The Pleat Time Input component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "time-input",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "timeInput"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "time-input.ts",
@@ -3297,6 +5990,37 @@
       "type": "registry:ui",
       "title": "Timer",
       "description": "The Pleat Timer component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "timer",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update",
+            "subscriptions"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "init",
+            "subscriptions",
+            "timer",
+            "update"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "timer.ts",
@@ -3316,6 +6040,38 @@
       "type": "registry:ui",
       "title": "Timestamp",
       "description": "The Pleat Timestamp component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "timestamp",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update",
+            "subscriptions"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "init",
+            "parseValueMs",
+            "subscriptions",
+            "timestamp",
+            "update"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "timestamp.ts",
@@ -3342,6 +6098,26 @@
       "type": "registry:ui",
       "title": "Toast",
       "description": "The Pleat Toast component for Foldkit.",
+      "categories": [
+        "feedback"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "toast",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "toast"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "toast.ts",
@@ -3365,6 +6141,32 @@
       "type": "registry:ui",
       "title": "Toggle Group",
       "description": "The Pleat Toggle Group component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "toggle-group",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "update"
+          ],
+          "publicExports": [
+            "create",
+            "toggleGroup",
+            "toggleGroup",
+            "toggleGroup",
+            "update"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "toggle-group.ts",
@@ -3388,6 +6190,27 @@
       "type": "registry:ui",
       "title": "Toggle",
       "description": "The Pleat Toggle component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "toggle",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "toggle",
+            "toggleVariants"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "toggle.ts",
@@ -3409,6 +6232,26 @@
       "type": "registry:ui",
       "title": "Token",
       "description": "The Pleat Token component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "token",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "token"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "token.ts",
@@ -3433,6 +6276,26 @@
       "type": "registry:ui",
       "title": "Tokenizer",
       "description": "The Pleat Tokenizer component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "tokenizer",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "tokenizer"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "tokenizer.ts",
@@ -3475,6 +6338,26 @@
       "type": "registry:ui",
       "title": "Toolbar",
       "description": "The Pleat Toolbar component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "toolbar",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "toolbar"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "toolbar.ts",
@@ -3495,6 +6378,38 @@
       "type": "registry:ui",
       "title": "Tooltip",
       "description": "The Pleat Tooltip component for Foldkit.",
+      "categories": [
+        "overlay"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "tooltip",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "init",
+            "reflectCloseDelay",
+            "reflectShowDelay",
+            "tooltip",
+            "update"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "tooltip.ts",
@@ -3518,6 +6433,32 @@
       "type": "registry:ui",
       "title": "Top Nav",
       "description": "The Pleat Top Nav component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "top-nav",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "view"
+          ],
+          "publicExports": [
+            "topNav",
+            "topNavItem",
+            "topNavMegaMenuFeaturedCard",
+            "topNavMegaMenuItem",
+            "view"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "top-nav.ts",
@@ -3543,6 +6484,39 @@
       "type": "registry:ui",
       "title": "Transfer List",
       "description": "The Pleat Transfer List component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "transfer-list",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update",
+            "subscriptions"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "REORDER_INSTRUCTIONS",
+            "init",
+            "subscriptions",
+            "transferList",
+            "update"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "transfer-list.ts",
@@ -3583,6 +6557,29 @@
       "type": "registry:ui",
       "title": "Tree List",
       "description": "The Pleat Tree List component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "tree-list",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "view"
+          ],
+          "publicExports": [
+            "treeList",
+            "view"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "tree-list.ts",
@@ -3608,6 +6605,36 @@
       "type": "registry:ui",
       "title": "Typography",
       "description": "The Pleat Typography component for Foldkit.",
+      "categories": [
+        "data display"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "typography",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "typographyBlockquote",
+            "typographyH1",
+            "typographyH2",
+            "typographyH3",
+            "typographyH4",
+            "typographyInlineCode",
+            "typographyLarge",
+            "typographyLead",
+            "typographyMuted",
+            "typographyP",
+            "typographySmall"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "typography.ts",
@@ -3669,6 +6696,26 @@
       "type": "registry:ui",
       "title": "Visually Hidden",
       "description": "The Pleat Visually Hidden component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "visually-hidden",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "visuallyHidden"
+          ],
+          "renderer": "pleat",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "pleat"
+        }
+      },
       "files": [
         {
           "path": "visually-hidden.ts",

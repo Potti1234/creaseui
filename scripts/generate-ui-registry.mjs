@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { basename, join } from 'node:path'
 import { fileOwners, sourceDependencies } from './registry-dependencies.mjs'
+import { creaseMeta } from './registry-meta.mjs'
 
 const root = process.cwd()
 const uiDirectory = join(root, 'src', 'ui')
@@ -201,6 +202,12 @@ const items = files.map(file => {
     type: 'registry:ui',
     title: title(name),
     description: `A CreaseUI ${title(name)} component for Foldkit.`,
+    ...creaseMeta({
+      category: category(name),
+      component: name,
+      renderer: 'tailwind',
+      source: readFileSync(join(uiDirectory, file), 'utf8'),
+    }),
     ...(dependencies.length === 0 ? {} : { dependencies }),
     registryDependencies: Array.from(registryDependencies).sort(),
     files: [

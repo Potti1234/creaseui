@@ -6,6 +6,31 @@
       "type": "registry:ui",
       "title": "Accordion",
       "description": "The StyleX Accordion component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "accordion",
+          "contracts": [
+            "control.disclosure"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "view"
+          ],
+          "publicExports": [
+            "accordion",
+            "view"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "accordion.ts",
@@ -35,6 +60,26 @@
       "type": "registry:ui",
       "title": "Alert Dialog",
       "description": "The StyleX Alert Dialog component for Foldkit.",
+      "categories": [
+        "overlay"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "alert-dialog",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "alertDialog"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "alert-dialog.ts",
@@ -63,6 +108,30 @@
       "type": "registry:ui",
       "title": "Alert",
       "description": "The StyleX Alert component for Foldkit.",
+      "categories": [
+        "feedback"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "alert",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "alert",
+            "alertDescription",
+            "alertIcon",
+            "alertTitle",
+            "alertVariants"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "alert.ts",
@@ -89,6 +158,26 @@
       "type": "registry:ui",
       "title": "Aspect Ratio",
       "description": "The StyleX Aspect Ratio component for Foldkit.",
+      "categories": [
+        "layout"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "aspect-ratio",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "aspectRatio"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "aspect-ratio.ts",
@@ -147,6 +236,35 @@
       "type": "registry:ui",
       "title": "Attachment",
       "description": "The StyleX Attachment component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "attachment",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "attachment",
+            "attachmentAction",
+            "attachmentActions",
+            "attachmentContent",
+            "attachmentDescription",
+            "attachmentGroup",
+            "attachmentMedia",
+            "attachmentTitle",
+            "attachmentTrigger",
+            "attachmentVariants"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "attachment.ts",
@@ -177,6 +295,28 @@
       "type": "registry:ui",
       "title": "Avatar Group",
       "description": "The StyleX Avatar Group component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "avatar-group",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "avatarGroup",
+            "avatarGroupOverflow",
+            "avatarStatusDot"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "avatar-group.ts",
@@ -221,6 +361,40 @@
       "type": "registry:ui",
       "title": "Avatar",
       "description": "The StyleX Avatar component for Foldkit.",
+      "categories": [
+        "data display"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "avatar",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "avatar",
+            "avatarBadge",
+            "avatarFallback",
+            "avatarGroup",
+            "avatarGroupCount",
+            "avatarImage",
+            "init",
+            "update"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "avatar.ts",
@@ -248,6 +422,26 @@
       "type": "registry:ui",
       "title": "Badge",
       "description": "The StyleX Badge component for Foldkit.",
+      "categories": [
+        "data display"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "badge",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "badge"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "badge.ts",
@@ -274,6 +468,26 @@
       "type": "registry:ui",
       "title": "Banner",
       "description": "The StyleX Banner component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "banner",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "banner"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "banner.ts",
@@ -303,6 +517,26 @@
       "type": "registry:ui",
       "title": "Blockquote",
       "description": "The StyleX Blockquote component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "blockquote",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "blockquote"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "blockquote.ts",
@@ -328,6 +562,33 @@
       "type": "registry:ui",
       "title": "Breadcrumb",
       "description": "The StyleX Breadcrumb component for Foldkit.",
+      "categories": [
+        "navigation"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "breadcrumb",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "breadcrumb",
+            "breadcrumbEllipsis",
+            "breadcrumbItem",
+            "breadcrumbLink",
+            "breadcrumbList",
+            "breadcrumbPage",
+            "breadcrumbSeparator",
+            "breadcrumbTrail"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "breadcrumb.ts",
@@ -372,6 +633,30 @@
       "type": "registry:ui",
       "title": "Bubble",
       "description": "The StyleX Bubble component for Foldkit.",
+      "categories": [
+        "data display"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "bubble",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "bubble",
+            "bubbleContent",
+            "bubbleGroup",
+            "bubbleReactions",
+            "bubbleVariants"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "bubble.ts",
@@ -420,6 +705,29 @@
       "type": "registry:ui",
       "title": "Button Group",
       "description": "The StyleX Button Group component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "button-group",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "buttonGroup",
+            "buttonGroupSeparator",
+            "buttonGroupText",
+            "buttonGroupVariants"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "button-group.ts",
@@ -446,6 +754,30 @@
       "type": "registry:ui",
       "title": "Button",
       "description": "The StyleX Button component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "button",
+          "contracts": [
+            "control.button"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "button",
+            "buttonLink",
+            "buttonVisualStyles"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "button.ts",
@@ -491,6 +823,44 @@
       "type": "registry:ui",
       "title": "Calendar",
       "description": "The StyleX Calendar component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "calendar",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "calendar",
+            "calendarView",
+            "dropToDays",
+            "focusDate",
+            "init",
+            "reflectDisabledDates",
+            "reflectDisabledDaysOfWeek",
+            "reflectMaxDate",
+            "reflectMinDate",
+            "selectDate",
+            "update"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "calendar.ts",
@@ -535,6 +905,32 @@
       "type": "registry:ui",
       "title": "Card",
       "description": "The StyleX Card component for Foldkit.",
+      "categories": [
+        "layout"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "card",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "card",
+            "cardAction",
+            "cardContent",
+            "cardDescription",
+            "cardFooter",
+            "cardHeader",
+            "cardTitle"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "card.ts",
@@ -561,6 +957,26 @@
       "type": "registry:ui",
       "title": "Carousel",
       "description": "The StyleX Carousel component for Foldkit.",
+      "categories": [
+        "layout"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "carousel",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "carousel"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "carousel.ts",
@@ -589,6 +1005,28 @@
       "type": "registry:ui",
       "title": "Center",
       "description": "The StyleX Center component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "center",
+          "contracts": [
+            "composition.center"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "center"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "center.ts",
@@ -612,6 +1050,45 @@
       "type": "registry:ui",
       "title": "Chart",
       "description": "The StyleX Chart component for Foldkit.",
+      "categories": [
+        "data display"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "chart",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "ChartMessage",
+            "SyncChart",
+            "areaChart",
+            "areaGradient",
+            "barChart",
+            "categoryAxis",
+            "chartContainer",
+            "chartLegend",
+            "chartTooltipContent",
+            "colorWithOpacity",
+            "compactGrid",
+            "donutChart",
+            "eChart",
+            "interactiveAreaChart",
+            "legendOptions",
+            "registerChart",
+            "shadcnLegend",
+            "shadcnTooltip",
+            "tooltipOptions",
+            "valueAxis"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "chart.ts",
@@ -641,6 +1118,36 @@
       "type": "registry:ui",
       "title": "Chat Reasoning",
       "description": "The StyleX Chat Reasoning component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "chat-reasoning",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "chatReasoning",
+            "init",
+            "update"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "chat-reasoning.ts",
@@ -685,6 +1192,26 @@
       "type": "registry:ui",
       "title": "Checkbox",
       "description": "The StyleX Checkbox component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "checkbox",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "checkbox"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "checkbox.ts",
@@ -715,6 +1242,26 @@
       "type": "registry:ui",
       "title": "Circular Progress",
       "description": "The StyleX Circular Progress component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "circular-progress",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "circularProgress"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "circular-progress.ts",
@@ -743,6 +1290,26 @@
       "type": "registry:ui",
       "title": "Code Block",
       "description": "The StyleX Code Block component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "code-block",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "codeBlock"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "code-block.ts",
@@ -774,6 +1341,26 @@
       "type": "registry:ui",
       "title": "Code",
       "description": "The StyleX Code component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "code",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "code"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "code.ts",
@@ -800,6 +1387,26 @@
       "type": "registry:ui",
       "title": "Collapsible",
       "description": "The StyleX Collapsible component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "collapsible",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "collapsible"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "collapsible.ts",
@@ -828,6 +1435,42 @@
       "type": "registry:ui",
       "title": "Combobox",
       "description": "The StyleX Combobox component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "combobox",
+          "contracts": [
+            "control.combobox"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "MultiModel",
+            "OutMessage",
+            "combobox",
+            "create",
+            "createMulti",
+            "init",
+            "multiInit",
+            "update"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "combobox.ts",
@@ -857,6 +1500,42 @@
       "type": "registry:ui",
       "title": "Command",
       "description": "The StyleX Command component for Foldkit.",
+      "categories": [
+        "navigation"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "command",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "command",
+            "commandEmpty",
+            "commandGroupHeading",
+            "commandPalette",
+            "commandSeparator",
+            "commandShortcut",
+            "create",
+            "init",
+            "update"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "command.ts",
@@ -1378,6 +2057,40 @@
       "type": "registry:ui",
       "title": "Context Menu",
       "description": "The StyleX Context Menu component for Foldkit.",
+      "categories": [
+        "overlay"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "context-menu",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "close",
+            "contextMenu",
+            "create",
+            "init",
+            "open",
+            "openAt",
+            "selectItem",
+            "update"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "context-menu.ts",
@@ -1414,6 +2127,26 @@
       "type": "registry:ui",
       "title": "Data Table",
       "description": "The StyleX Data Table component for Foldkit.",
+      "categories": [
+        "data display"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "data-table",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "dataTable"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "data-table.ts",
@@ -1447,6 +2180,26 @@
       "type": "registry:ui",
       "title": "Date Input",
       "description": "The StyleX Date Input component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "date-input",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "dateInput"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "date-input.ts",
@@ -1480,6 +2233,47 @@
       "type": "registry:ui",
       "title": "Date Picker",
       "description": "The StyleX Date Picker component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "date-picker",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "clear",
+            "close",
+            "datePicker",
+            "focusDate",
+            "init",
+            "open",
+            "reflectDisabledDates",
+            "reflectDisabledDaysOfWeek",
+            "reflectMaxDate",
+            "reflectMinDate",
+            "selectDate",
+            "triggerId",
+            "update",
+            "updateForRtl"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "date-picker.ts",
@@ -1510,6 +2304,26 @@
       "type": "registry:ui",
       "title": "Date Range Input",
       "description": "The StyleX Date Range Input component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "date-range-input",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "dateRangeInput"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "date-range-input.ts",
@@ -1543,6 +2357,26 @@
       "type": "registry:ui",
       "title": "Date Time Input",
       "description": "The StyleX Date Time Input component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "date-time-input",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "dateTimeInput"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "date-time-input.ts",
@@ -1577,6 +2411,45 @@
       "type": "registry:ui",
       "title": "Dialog",
       "description": "The StyleX Dialog component for Foldkit.",
+      "categories": [
+        "overlay"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "dialog",
+          "contracts": [
+            "overlay.dialog"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "FOOTER_CLASS",
+            "Message",
+            "Model",
+            "OutMessage",
+            "close",
+            "dialog",
+            "dialogDescription",
+            "dialogFooter",
+            "dialogHeader",
+            "dialogTitle",
+            "init",
+            "open",
+            "update"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "dialog.ts",
@@ -1602,6 +2475,26 @@
       "type": "registry:ui",
       "title": "Direction",
       "description": "The StyleX Direction component for Foldkit.",
+      "categories": [
+        "overlay"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "direction",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "direction"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "direction.ts",
@@ -1622,6 +2515,44 @@
       "type": "registry:ui",
       "title": "Drawer",
       "description": "The StyleX Drawer component for Foldkit.",
+      "categories": [
+        "overlay"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "drawer",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "CancelledSwipe",
+            "DraggedSwipe",
+            "EndedSwipe",
+            "GotDialogMessage",
+            "Message",
+            "Model",
+            "OutMessage",
+            "StartedSwipe",
+            "close",
+            "drawer",
+            "init",
+            "open",
+            "snapTo",
+            "update"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "drawer.ts",
@@ -1650,6 +2581,41 @@
       "type": "registry:ui",
       "title": "Dropdown Menu",
       "description": "The StyleX Dropdown Menu component for Foldkit.",
+      "categories": [
+        "overlay"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "dropdown-menu",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "close",
+            "create",
+            "dropdownMenu",
+            "init",
+            "open",
+            "openAt",
+            "selectItem",
+            "update"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "dropdown-menu.ts",
@@ -1682,6 +2648,32 @@
       "type": "registry:ui",
       "title": "Empty",
       "description": "The StyleX Empty component for Foldkit.",
+      "categories": [
+        "feedback"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "empty",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "empty",
+            "emptyContent",
+            "emptyDescription",
+            "emptyHeader",
+            "emptyMedia",
+            "emptyMediaVariants",
+            "emptyTitle"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "empty.ts",
@@ -1708,6 +2700,26 @@
       "type": "registry:ui",
       "title": "Field Status",
       "description": "The StyleX Field Status component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "field-status",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "fieldStatus"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "field-status.ts",
@@ -1749,6 +2761,41 @@
       "type": "registry:ui",
       "title": "Field",
       "description": "The StyleX Field component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "field",
+          "contracts": [
+            "control.field"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "controlField",
+            "field",
+            "fieldContent",
+            "fieldDescription",
+            "fieldError",
+            "fieldGroup",
+            "fieldLabel",
+            "fieldLegend",
+            "fieldSeparator",
+            "fieldSet",
+            "fieldSetDescriptionId",
+            "fieldSetLegendId",
+            "fieldTitle",
+            "fieldVariants"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "field.ts",
@@ -1777,6 +2824,26 @@
       "type": "registry:ui",
       "title": "File Input",
       "description": "The StyleX File Input component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "file-input",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "fileInput"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "file-input.ts",
@@ -1807,6 +2874,33 @@
       "type": "registry:ui",
       "title": "Form",
       "description": "The StyleX Form component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "form",
+          "contracts": [
+            "composition.form"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "errorSummary",
+            "form",
+            "formDescription",
+            "formItem",
+            "formLabel",
+            "formMessage"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "form.ts",
@@ -1851,6 +2945,29 @@
       "type": "registry:ui",
       "title": "Grid",
       "description": "The StyleX Grid component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "grid",
+          "contracts": [
+            "composition.grid"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "grid",
+            "gridSpan"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "grid.ts",
@@ -1874,6 +2991,28 @@
       "type": "registry:ui",
       "title": "Heading",
       "description": "The StyleX Heading component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "heading",
+          "contracts": [
+            "typography.heading"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "heading"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "heading.ts",
@@ -1900,6 +3039,46 @@
       "type": "registry:ui",
       "title": "Hover Card",
       "description": "The StyleX Hover Card component for Foldkit.",
+      "categories": [
+        "overlay"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "hover-card",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Blurred",
+            "CompletedAnchor",
+            "CompletedWaitBeforeClosingHoverCard",
+            "CompletedWaitBeforeShowingHoverCard",
+            "Entered",
+            "Focused",
+            "Left",
+            "Message",
+            "Model",
+            "PressedEscape",
+            "PressedPointer",
+            "hoverCard",
+            "init",
+            "reflectCloseDelay",
+            "reflectShowDelay",
+            "update"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "hover-card.ts",
@@ -1930,6 +3109,28 @@
       "type": "registry:ui",
       "title": "Indicator",
       "description": "The StyleX Indicator component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "indicator",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "checkIndicator",
+            "checkboxIndicator",
+            "radioIndicator"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "indicator.ts",
@@ -1958,6 +3159,36 @@
       "type": "registry:ui",
       "title": "Info Tip",
       "description": "The StyleX Info Tip component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "info-tip",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "infoTip",
+            "init",
+            "update"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "info-tip.ts",
@@ -1989,6 +3220,33 @@
       "type": "registry:ui",
       "title": "Input Group",
       "description": "The StyleX Input Group component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "input-group",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "inputGroup",
+            "inputGroupAddon",
+            "inputGroupAddonVariants",
+            "inputGroupButton",
+            "inputGroupButtonVariants",
+            "inputGroupInput",
+            "inputGroupText",
+            "inputGroupTextarea"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "input-group.ts",
@@ -2017,6 +3275,27 @@
       "type": "registry:ui",
       "title": "Input Otp",
       "description": "The StyleX Input Otp component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "input-otp",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "inputOtp",
+            "inputOtpSeparator"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "input-otp.ts",
@@ -2044,6 +3323,28 @@
       "type": "registry:ui",
       "title": "Input",
       "description": "The StyleX Input component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "input",
+          "contracts": [
+            "control.input"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "input"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "input.ts",
@@ -2111,6 +3412,38 @@
       "type": "registry:ui",
       "title": "Item",
       "description": "The StyleX Item component for Foldkit.",
+      "categories": [
+        "data display"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "item",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "item",
+            "itemActions",
+            "itemContent",
+            "itemDescription",
+            "itemFooter",
+            "itemGroup",
+            "itemGroupSeparator",
+            "itemHeader",
+            "itemMedia",
+            "itemMediaVariants",
+            "itemSeparator",
+            "itemTitle",
+            "itemVariants"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "item.ts",
@@ -2137,6 +3470,27 @@
       "type": "registry:ui",
       "title": "Kbd",
       "description": "The StyleX Kbd component for Foldkit.",
+      "categories": [
+        "data display"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "kbd",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "kbd",
+            "kbdGroup"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "kbd.ts",
@@ -2163,6 +3517,28 @@
       "type": "registry:ui",
       "title": "Label",
       "description": "The StyleX Label component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "label",
+          "contracts": [
+            "control.label"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "label"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "label.ts",
@@ -2186,6 +3562,39 @@
       "type": "registry:ui",
       "title": "Lightbox",
       "description": "The StyleX Lightbox component for Foldkit.",
+      "categories": [
+        "overlay"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "lightbox",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "KEYBOARD_PAN_STEP",
+            "Message",
+            "Model",
+            "OutMessage",
+            "close",
+            "init",
+            "lightbox",
+            "open",
+            "update"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "lightbox.ts",
@@ -2215,6 +3624,28 @@
       "type": "registry:ui",
       "title": "Link",
       "description": "The StyleX Link component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "link",
+          "contracts": [
+            "navigation.link"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "link"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "link.ts",
@@ -2245,6 +3676,26 @@
       "type": "registry:ui",
       "title": "List Input",
       "description": "The StyleX List Input component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "list-input",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "listInput"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "list-input.ts",
@@ -2276,6 +3727,29 @@
       "type": "registry:ui",
       "title": "List",
       "description": "The StyleX List component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "list",
+          "contracts": [
+            "composition.list"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "list",
+            "listItem"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "list.ts",
@@ -2338,6 +3812,37 @@
       "type": "registry:ui",
       "title": "Log Stream",
       "description": "The StyleX Log Stream component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "log-stream",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "LogStreamLevel",
+            "Message",
+            "Model",
+            "OutMessage",
+            "init",
+            "logStream",
+            "update"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "log-stream.ts",
@@ -2368,6 +3873,24 @@
       "type": "registry:ui",
       "title": "Map Arc",
       "description": "The StyleX Map Arc component for Foldkit.",
+      "categories": [
+        "maps"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "map-arc",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "map-arc.ts",
@@ -2387,6 +3910,24 @@
       "type": "registry:ui",
       "title": "Map Cluster",
       "description": "The StyleX Map Cluster component for Foldkit.",
+      "categories": [
+        "maps"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "map-cluster",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "map-cluster.ts",
@@ -2406,6 +3947,26 @@
       "type": "registry:ui",
       "title": "Map Controls",
       "description": "The StyleX Map Controls component for Foldkit.",
+      "categories": [
+        "maps"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "map-controls",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "mapControls"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "map-controls.ts",
@@ -2426,6 +3987,24 @@
       "type": "registry:ui",
       "title": "Map Geojson",
       "description": "The StyleX Map Geojson component for Foldkit.",
+      "categories": [
+        "maps"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "map-geojson",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "map-geojson.ts",
@@ -2445,6 +4024,24 @@
       "type": "registry:ui",
       "title": "Map Localization",
       "description": "The StyleX Map Localization component for Foldkit.",
+      "categories": [
+        "maps"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "map-localization",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "map-localization.ts",
@@ -2464,6 +4061,29 @@
       "type": "registry:ui",
       "title": "Map Marker",
       "description": "The StyleX Map Marker component for Foldkit.",
+      "categories": [
+        "maps"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "map-marker",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "mapMarker",
+            "markerContent",
+            "markerLabel",
+            "markerTooltip"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "map-marker.ts",
@@ -2484,6 +4104,26 @@
       "type": "registry:ui",
       "title": "Map Popup",
       "description": "The StyleX Map Popup component for Foldkit.",
+      "categories": [
+        "maps"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "map-popup",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "mapPopup"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "map-popup.ts",
@@ -2504,6 +4144,24 @@
       "type": "registry:ui",
       "title": "Map Route",
       "description": "The StyleX Map Route component for Foldkit.",
+      "categories": [
+        "maps"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "map-route",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "map-route.ts",
@@ -2523,6 +4181,24 @@
       "type": "registry:ui",
       "title": "Map Styles",
       "description": "The StyleX Map Styles component for Foldkit.",
+      "categories": [
+        "maps"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "map-styles",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "map-styles.ts",
@@ -2558,6 +4234,27 @@
       "type": "registry:ui",
       "title": "Map",
       "description": "The StyleX Map component for Foldkit.",
+      "categories": [
+        "maps"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "map",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "map",
+            "mapSkin"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "map.ts",
@@ -2587,6 +4284,26 @@
       "type": "registry:ui",
       "title": "Markdown",
       "description": "The StyleX Markdown component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "markdown",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "markdown"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "markdown.ts",
@@ -2621,6 +4338,29 @@
       "type": "registry:ui",
       "title": "Marker",
       "description": "The StyleX Marker component for Foldkit.",
+      "categories": [
+        "data display"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "marker",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "marker",
+            "markerContent",
+            "markerIcon",
+            "markerVariants"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "marker.ts",
@@ -2647,6 +4387,37 @@
       "type": "registry:ui",
       "title": "Menubar",
       "description": "The StyleX Menubar component for Foldkit.",
+      "categories": [
+        "navigation"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "menubar",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "init",
+            "menubar",
+            "menubar",
+            "menubar",
+            "update"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "menubar.ts",
@@ -2674,6 +4445,43 @@
       "type": "registry:ui",
       "title": "Message Scroller",
       "description": "The StyleX Message Scroller component for Foldkit.",
+      "categories": [
+        "feedback"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "message-scroller",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "CompletedMessageScrollerScrollTo",
+            "Message",
+            "Model",
+            "ObservedViewport",
+            "RequestedScroll",
+            "Scrolled",
+            "init",
+            "messageScroller",
+            "messageScrollerButton",
+            "messageScrollerContent",
+            "messageScrollerItem",
+            "messageScrollerViewport",
+            "update"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "message-scroller.ts",
@@ -2718,6 +4526,34 @@
       "type": "registry:ui",
       "title": "Message",
       "description": "The StyleX Message component for Foldkit.",
+      "categories": [
+        "feedback"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "message",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "message",
+            "messageActions",
+            "messageAuthor",
+            "messageAvatar",
+            "messageContent",
+            "messageFooter",
+            "messageGroup",
+            "messageHeader",
+            "messageMetadata"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "message.ts",
@@ -2744,6 +4580,27 @@
       "type": "registry:ui",
       "title": "Metadata List",
       "description": "The StyleX Metadata List component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "metadata-list",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "metadataList",
+            "metadataListItem"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "metadata-list.ts",
@@ -2771,6 +4628,39 @@
       "type": "registry:ui",
       "title": "Mobile Nav",
       "description": "The StyleX Mobile Nav component for Foldkit.",
+      "categories": [
+        "navigation"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "mobile-nav",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "close",
+            "init",
+            "mobileNav",
+            "mobileNavToggle",
+            "open",
+            "update"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "mobile-nav.ts",
@@ -2801,6 +4691,26 @@
       "type": "registry:ui",
       "title": "More Menu",
       "description": "The StyleX More Menu component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "more-menu",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "moreMenu"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "more-menu.ts",
@@ -2827,6 +4737,26 @@
       "type": "registry:ui",
       "title": "Multi Selector",
       "description": "The StyleX Multi Selector component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "multi-selector",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "multiSelector"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "multi-selector.ts",
@@ -2862,6 +4792,30 @@
       "type": "registry:ui",
       "title": "Native Select",
       "description": "The StyleX Native Select component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "native-select",
+          "contracts": [
+            "control.native-select"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "nativeSelect",
+            "nativeSelectOptGroup",
+            "nativeSelectOption"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "native-select.ts",
@@ -2890,6 +4844,32 @@
       "type": "registry:ui",
       "title": "Navigation Menu",
       "description": "The StyleX Navigation Menu component for Foldkit.",
+      "categories": [
+        "navigation"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "navigation-menu",
+          "contracts": [
+            "navigation.nav"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "navigationMenu",
+            "navigationMenuDisclosure",
+            "navigationMenuItem",
+            "navigationMenuLink",
+            "navigationMenuList"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "navigation-menu.ts",
@@ -2919,6 +4899,26 @@
       "type": "registry:ui",
       "title": "Number Input",
       "description": "The StyleX Number Input component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "number-input",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "numberInput"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "number-input.ts",
@@ -2949,6 +4949,26 @@
       "type": "registry:ui",
       "title": "Overflow List",
       "description": "The StyleX Overflow List component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "overflow-list",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "overflowList"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "overflow-list.ts",
@@ -3011,6 +5031,33 @@
       "type": "registry:ui",
       "title": "Pagination",
       "description": "The StyleX Pagination component for Foldkit.",
+      "categories": [
+        "navigation"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "pagination",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "pagination",
+            "paginationContent",
+            "paginationEllipsis",
+            "paginationItem",
+            "paginationLink",
+            "paginationNext",
+            "paginationPages",
+            "paginationPrevious"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "pagination.ts",
@@ -3039,6 +5086,40 @@
       "type": "registry:ui",
       "title": "Popover",
       "description": "The StyleX Popover component for Foldkit.",
+      "categories": [
+        "overlay"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "popover",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "RequestedClose",
+            "RequestedOpen",
+            "close",
+            "init",
+            "open",
+            "popover",
+            "update"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "popover.ts",
@@ -3068,6 +5149,28 @@
       "type": "registry:ui",
       "title": "Progress",
       "description": "The StyleX Progress component for Foldkit.",
+      "categories": [
+        "feedback"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "progress",
+          "contracts": [
+            "feedback.progress"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "progress"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "progress.ts",
@@ -3111,6 +5214,26 @@
       "type": "registry:ui",
       "title": "Radio Group",
       "description": "The StyleX Radio Group component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "radio-group",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "radioGroup"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "radio-group.ts",
@@ -3160,6 +5283,40 @@
       "type": "registry:ui",
       "title": "Resizable",
       "description": "The StyleX Resizable component for Foldkit.",
+      "categories": [
+        "layout"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "resizable",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "GroupMessage",
+            "GroupModel",
+            "Message",
+            "Model",
+            "init",
+            "initGroup",
+            "resizable",
+            "resizableGroup",
+            "update",
+            "updateGroup"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "resizable.ts",
@@ -3187,6 +5344,26 @@
       "type": "registry:ui",
       "title": "Scroll Area",
       "description": "The StyleX Scroll Area component for Foldkit.",
+      "categories": [
+        "layout"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "scroll-area",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "scrollArea"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "scroll-area.ts",
@@ -3211,6 +5388,28 @@
       "type": "registry:ui",
       "title": "Section",
       "description": "The StyleX Section component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "section",
+          "contracts": [
+            "composition.section"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "section"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "section.ts",
@@ -3235,6 +5434,37 @@
       "type": "registry:ui",
       "title": "Select",
       "description": "The StyleX Select component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "select",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "create",
+            "init",
+            "select",
+            "update"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "select.ts",
@@ -3265,6 +5495,26 @@
       "type": "registry:ui",
       "title": "Selectable Card",
       "description": "The StyleX Selectable Card component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "selectable-card",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "selectableCard"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "selectable-card.ts",
@@ -3294,6 +5544,28 @@
       "type": "registry:ui",
       "title": "Separator",
       "description": "The StyleX Separator component for Foldkit.",
+      "categories": [
+        "layout"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "separator",
+          "contracts": [
+            "composition.separator"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "separator"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "separator.ts",
@@ -3318,6 +5590,54 @@
       "type": "registry:ui",
       "title": "Sheet",
       "description": "The StyleX Sheet component for Foldkit.",
+      "categories": [
+        "overlay"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "sheet",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "HEIGHT_BUDGETS",
+            "Message",
+            "Model",
+            "OVERSCROLL_PADDING",
+            "OutMessage",
+            "SheetState",
+            "SwitcherMessage",
+            "SwitcherModel",
+            "SwitcherOutMessage",
+            "close",
+            "closeSwitcher",
+            "init",
+            "initSwitcher",
+            "isSheetDragCandidate",
+            "open",
+            "openSheet",
+            "sheet",
+            "sheetDescription",
+            "sheetFooter",
+            "sheetHeader",
+            "sheetSwitcher",
+            "sheetTitle",
+            "update",
+            "updateSwitcher"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "sheet.ts",
@@ -3364,6 +5684,50 @@
       "type": "registry:ui",
       "title": "Sidebar",
       "description": "The StyleX Sidebar component for Foldkit.",
+      "categories": [
+        "layout"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "sidebar",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "sidebar",
+            "sidebarContent",
+            "sidebarFooter",
+            "sidebarGroup",
+            "sidebarGroupAction",
+            "sidebarGroupContent",
+            "sidebarGroupLabel",
+            "sidebarHeader",
+            "sidebarInput",
+            "sidebarInset",
+            "sidebarMenu",
+            "sidebarMenuAction",
+            "sidebarMenuBadge",
+            "sidebarMenuButton",
+            "sidebarMenuButtonVariants",
+            "sidebarMenuItem",
+            "sidebarMenuLabel",
+            "sidebarMenuSkeleton",
+            "sidebarMenuSub",
+            "sidebarMenuSubButton",
+            "sidebarMenuSubItem",
+            "sidebarProvider",
+            "sidebarRail",
+            "sidebarSeparator",
+            "sidebarTrigger"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "sidebar.ts",
@@ -3395,6 +5759,26 @@
       "type": "registry:ui",
       "title": "Skeleton",
       "description": "The StyleX Skeleton component for Foldkit.",
+      "categories": [
+        "feedback"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "skeleton",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "skeleton"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "skeleton.ts",
@@ -3420,6 +5804,44 @@
       "type": "registry:ui",
       "title": "Slider",
       "description": "The StyleX Slider component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "slider",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update",
+            "subscriptions"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "fractionOfValue",
+            "init",
+            "multiSlider",
+            "rangeSlider",
+            "reflectRange",
+            "slider",
+            "snapAndClamp",
+            "subscriptions",
+            "subscriptionsForRoot",
+            "update"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "slider.ts",
@@ -3448,6 +5870,26 @@
       "type": "registry:ui",
       "title": "Spinner",
       "description": "The StyleX Spinner component for Foldkit.",
+      "categories": [
+        "feedback"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "spinner",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "spinner"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "spinner.ts",
@@ -3474,6 +5916,31 @@
       "type": "registry:ui",
       "title": "Stack",
       "description": "The StyleX Stack component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "stack",
+          "contracts": [
+            "composition.stack"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "hStack",
+            "stack",
+            "stackItem",
+            "vStack"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "stack.ts",
@@ -3498,6 +5965,26 @@
       "type": "registry:ui",
       "title": "Stat",
       "description": "The StyleX Stat component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "stat",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "stat"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "stat.ts",
@@ -3523,6 +6010,26 @@
       "type": "registry:ui",
       "title": "Status Dot",
       "description": "The StyleX Status Dot component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "status-dot",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "statusDot"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "status-dot.ts",
@@ -3549,6 +6056,26 @@
       "type": "registry:ui",
       "title": "Stepper",
       "description": "The StyleX Stepper component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "stepper",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "stepper"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "stepper.ts",
@@ -3595,6 +6122,26 @@
       "type": "registry:ui",
       "title": "Switch",
       "description": "The StyleX Switch component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "switch",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "switchControl"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "switch.ts",
@@ -3623,6 +6170,35 @@
       "type": "registry:ui",
       "title": "Table",
       "description": "The StyleX Table component for Foldkit.",
+      "categories": [
+        "data display"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "table",
+          "contracts": [
+            "data.table"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "table",
+            "tableBody",
+            "tableCaption",
+            "tableCell",
+            "tableFooter",
+            "tableHead",
+            "tableHeader",
+            "tableRow"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "table.ts",
@@ -3649,6 +6225,38 @@
       "type": "registry:ui",
       "title": "Tabs",
       "description": "The StyleX Tabs component for Foldkit.",
+      "categories": [
+        "navigation"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "tabs",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "create",
+            "init",
+            "tabs",
+            "tabsListVariants",
+            "update"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "tabs.ts",
@@ -3720,6 +6328,28 @@
       "type": "registry:ui",
       "title": "Text",
       "description": "The StyleX Text component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "text",
+          "contracts": [
+            "typography.text"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "text"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "text.ts",
@@ -3745,6 +6375,28 @@
       "type": "registry:ui",
       "title": "Textarea",
       "description": "The StyleX Textarea component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "textarea",
+          "contracts": [
+            "control.textarea"
+          ],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "textarea"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "textarea.ts",
@@ -3789,6 +6441,26 @@
       "type": "registry:ui",
       "title": "Thumbnail",
       "description": "The StyleX Thumbnail component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "thumbnail",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "thumbnail"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "thumbnail.ts",
@@ -3819,6 +6491,26 @@
       "type": "registry:ui",
       "title": "Time Input",
       "description": "The StyleX Time Input component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "time-input",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "timeInput"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "time-input.ts",
@@ -3850,6 +6542,37 @@
       "type": "registry:ui",
       "title": "Timer",
       "description": "The StyleX Timer component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "timer",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update",
+            "subscriptions"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "init",
+            "subscriptions",
+            "timer",
+            "update"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "timer.ts",
@@ -3874,6 +6597,38 @@
       "type": "registry:ui",
       "title": "Timestamp",
       "description": "The StyleX Timestamp component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "timestamp",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update",
+            "subscriptions"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "init",
+            "parseValueMs",
+            "subscriptions",
+            "timestamp",
+            "update"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "timestamp.ts",
@@ -3905,6 +6660,26 @@
       "type": "registry:ui",
       "title": "Toast",
       "description": "The StyleX Toast component for Foldkit.",
+      "categories": [
+        "feedback"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "toast",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "toast"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "toast.ts",
@@ -3933,6 +6708,32 @@
       "type": "registry:ui",
       "title": "Toggle Group",
       "description": "The StyleX Toggle Group component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "toggle-group",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "update"
+          ],
+          "publicExports": [
+            "create",
+            "toggleGroup",
+            "toggleGroup",
+            "toggleGroup",
+            "update"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "toggle-group.ts",
@@ -3961,6 +6762,27 @@
       "type": "registry:ui",
       "title": "Toggle",
       "description": "The StyleX Toggle component for Foldkit.",
+      "categories": [
+        "forms"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "toggle",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "toggle",
+            "toggleVariants"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "toggle.ts",
@@ -3987,6 +6809,26 @@
       "type": "registry:ui",
       "title": "Token",
       "description": "The StyleX Token component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "token",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "token"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "token.ts",
@@ -4016,6 +6858,26 @@
       "type": "registry:ui",
       "title": "Tokenizer",
       "description": "The StyleX Tokenizer component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "tokenizer",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "tokenizer"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "tokenizer.ts",
@@ -4063,6 +6925,26 @@
       "type": "registry:ui",
       "title": "Toolbar",
       "description": "The StyleX Toolbar component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "toolbar",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "toolbar"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "toolbar.ts",
@@ -4088,6 +6970,38 @@
       "type": "registry:ui",
       "title": "Tooltip",
       "description": "The StyleX Tooltip component for Foldkit.",
+      "categories": [
+        "overlay"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "tooltip",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "init",
+            "reflectCloseDelay",
+            "reflectShowDelay",
+            "tooltip",
+            "update"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "tooltip.ts",
@@ -4116,6 +7030,32 @@
       "type": "registry:ui",
       "title": "Top Nav",
       "description": "The StyleX Top Nav component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "top-nav",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "view"
+          ],
+          "publicExports": [
+            "topNav",
+            "topNavItem",
+            "topNavMegaMenuFeaturedCard",
+            "topNavMegaMenuItem",
+            "view"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "top-nav.ts",
@@ -4146,6 +7086,39 @@
       "type": "registry:ui",
       "title": "Transfer List",
       "description": "The StyleX Transfer List component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "transfer-list",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update",
+            "subscriptions"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "REORDER_INSTRUCTIONS",
+            "init",
+            "subscriptions",
+            "transferList",
+            "update"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "transfer-list.ts",
@@ -4191,6 +7164,29 @@
       "type": "registry:ui",
       "title": "Tree List",
       "description": "The StyleX Tree List component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "tree-list",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "view"
+          ],
+          "publicExports": [
+            "treeList",
+            "view"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "tree-list.ts",
@@ -4221,6 +7217,36 @@
       "type": "registry:ui",
       "title": "Typography",
       "description": "The StyleX Typography component for Foldkit.",
+      "categories": [
+        "data display"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "typography",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "typographyBlockquote",
+            "typographyH1",
+            "typographyH2",
+            "typographyH3",
+            "typographyH4",
+            "typographyInlineCode",
+            "typographyLarge",
+            "typographyLead",
+            "typographyMuted",
+            "typographyP",
+            "typographySmall"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "typography.ts",
@@ -4289,6 +7315,26 @@
       "type": "registry:ui",
       "title": "Visually Hidden",
       "description": "The StyleX Visually Hidden component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "visually-hidden",
+          "contracts": [],
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "visuallyHidden"
+          ],
+          "renderer": "stylex",
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "stylex"
+        }
+      },
       "files": [
         {
           "path": "visually-hidden.ts",

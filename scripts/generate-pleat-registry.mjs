@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { basename, join, relative } from 'node:path'
 import { fileOwners, sourceDependencies } from './registry-dependencies.mjs'
+import { creaseMeta } from './registry-meta.mjs'
 
 const root = process.cwd()
 const directory = join(root, 'src', 'pleat')
@@ -67,6 +68,12 @@ const versionedPackages = packages =>
         : `${dependency}@${packageVersions[dependency]}`,
     )
 
+const tailwindCategories = new Map(
+  JSON.parse(
+    readFileSync(join(root, 'src', 'ui', 'registry.json'), 'utf8'),
+  ).items.map(item => [item.name, item.categories?.[0]]),
+)
+
 const items = files.map(path => {
   const name = itemName(path)
   const isComponent = publicFiles.has(path)
@@ -79,6 +86,14 @@ const items = files.map(path => {
     description: isComponent
       ? `The Pleat ${title(basename(path, '.ts'))} component for Foldkit.`
       : `A shared Pleat source module used by Crease UI components.`,
+    ...(isComponent
+      ? creaseMeta({
+          category: tailwindCategories.get(basename(path, '.ts')),
+          component: basename(path, '.ts'),
+          renderer: 'pleat',
+          source: readFileSync(join(directory, path), 'utf8'),
+        })
+      : {}),
     files: [
       {
         path,
