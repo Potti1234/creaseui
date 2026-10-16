@@ -202,7 +202,14 @@ const classValues = (analysis, node, seen = new Set()) => {
  * Findings for one contracted component call. `violation` findings belong
  * to component-contract, `unverifiable` ones to no-unverifiable-ui.
  */
-export const analyzeCall = ({ analysis, call, context, record, strict }) => {
+export const analyzeCall = ({
+  analysis,
+  call,
+  context,
+  forwarding = false,
+  record,
+  strict,
+}) => {
   const findings = []
   const violation = (node, message) =>
     findings.push({ kind: 'violation', message, node })
@@ -227,6 +234,9 @@ export const analyzeCall = ({ analysis, call, context, record, strict }) => {
   }
 
   const opaque = (node, entries) => {
+    /* An owned source passing its own props on is the owner's contract;
+       literal UI props in it are still checked. */
+    if (forwarding) return
     const fields = typedFields(node)
     const name = context.sourceCode.getText(node)
     if (fields === null) {

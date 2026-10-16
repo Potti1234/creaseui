@@ -491,6 +491,7 @@ const contractRule = (rule, kind, description) => ({
             analysis,
             call: node,
             context,
+            forwarding: raw,
             record,
             strict,
           }))
