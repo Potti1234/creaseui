@@ -302,9 +302,32 @@ const init = values => {
   })
   const writes = []
   const manifestPath = path.join(rootDir, manifest)
-  if (existsSync(manifestPath))
-    console.log(`keep    ${manifest} (already present; not overwritten)`)
-  else writes.push([manifestPath, `${JSON.stringify(receipt, null, 2)}\n`])
+  if (existsSync(manifestPath)) {
+    /* Registered artifacts are reviewed records and stay as they are; only
+       installs whose files the receipt does not know yet are appended. */
+    const current = JSON.parse(readFileSync(manifestPath, 'utf8'))
+    const registered = new Set(
+      (current.artifacts ?? []).flatMap(artifact =>
+        (artifact.files ?? []).map(file => file.path),
+      ),
+    )
+    const added = receipt.artifacts.filter(artifact =>
+      artifact.files.every(file => !registered.has(file.path)),
+    )
+    if (added.length === 0)
+      console.log(
+        `keep    ${manifest} (up to date; registered artifacts are never rewritten)`,
+      )
+    else {
+      console.log(
+        `update  ${manifest} (+${added.length}: ${added.map(artifact => artifact.id).join(', ')})`,
+      )
+      writes.push([
+        manifestPath,
+        `${JSON.stringify({ ...current, artifacts: [...(current.artifacts ?? []), ...added] }, null, 2)}\n`,
+      ])
+    }
+  } else writes.push([manifestPath, `${JSON.stringify(receipt, null, 2)}\n`])
   const existing = ESLINT_CONFIGS.find(name =>
     existsSync(path.join(rootDir, name)),
   )
@@ -315,6 +338,10 @@ const init = values => {
   })
   if (existing === undefined)
     writes.push([path.join(rootDir, 'eslint.config.js'), fragment])
+  else if (
+    /\bcreaseui\s*\(/u.test(readFileSync(path.join(rootDir, existing), 'utf8'))
+  )
+    console.log(`keep    ${existing} (already spreads creaseui())`)
   else {
     writes.push([path.join(rootDir, 'creaseui-lint.config.mjs'), fragment])
     console.log(

@@ -323,3 +323,43 @@ test('init before any install says nothing is installed yet', () => {
   )
   rmSync(directory, { force: true, recursive: true })
 })
+
+test('re-running init registers new installs without rewriting the receipt or config', () => {
+  const directory = scratch()
+  mkdirSync(path.join(directory, 'node_modules/@creaseui'), { recursive: true })
+  symlinkSync(
+    fileURLToPath(new URL('..', import.meta.url)),
+    path.join(directory, 'node_modules/@creaseui/lint'),
+    'dir',
+  )
+  writeFileSync(
+    path.join(directory, 'components.json'),
+    JSON.stringify({ aliases: { ui: '@/design' } }),
+  )
+  assert.equal(run(directory, 'init', '--renderer', 'pleat').status, 0)
+  const manifest = path.join(directory, 'crease.lock.json')
+  const reviewed = JSON.parse(readFileSync(manifest, 'utf8'))
+  reviewed.artifacts[0].reviewedNote = 'kept'
+  writeFileSync(manifest, JSON.stringify(reviewed))
+  writeFileSync(
+    path.join(directory, 'src/design/badge.ts'),
+    readFileSync(path.join(directory, 'src/design/button.ts'), 'utf8'),
+  )
+  const again = run(directory, 'init', '--renderer', 'pleat')
+  assert.equal(again.status, 0, again.stderr)
+  assert.match(
+    again.stdout,
+    /update {2}crease\.lock\.json \(\+1: crease\/pleat-badge\)/u,
+  )
+  assert.match(
+    again.stdout,
+    /keep {4}eslint\.config\.js \(already spreads creaseui\(\)\)/u,
+  )
+  assert.ok(!existsSync(path.join(directory, 'creaseui-lint.config.mjs')))
+  const updated = JSON.parse(readFileSync(manifest, 'utf8'))
+  assert.equal(updated.artifacts[0].reviewedNote, 'kept')
+  assert.equal(updated.artifacts.length, reviewed.artifacts.length + 1)
+  const doctor = run(directory, 'doctor')
+  assert.equal(doctor.status, 0, doctor.stdout + doctor.stderr)
+  rmSync(directory, { force: true, recursive: true })
+})
