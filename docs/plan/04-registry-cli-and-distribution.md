@@ -55,41 +55,40 @@ Foldkit-specific meaning so users are not forced to encode it in React-oriented 
 
 ## Registry metadata extensions
 
-Every registry item must expose generated Crease metadata:
+Every registry item must expose generated Crease metadata under the supported
+meta.crease namespace. The example describes a proposed interaction artifact;
+actual values must come from its source contract and evidence.
 
 ```json
 {
-  "crease": {
-    "kind": "interaction-submodel",
-    "stability": "stable",
-    "stateOwnership": {
-      "component": ["isOpen", "activeIndex"],
-      "parent": ["selectedValue"]
-    },
-    "requires": {
-      "commands": true,
-      "subscriptions": false,
-      "mount": false,
-      "services": []
-    },
-    "rendering": "supported",
-    "skins": ["tailwind", "stylex"],
-    "compatibility": {
-      "foldkit": "0.152.x",
-      "foldkitUi": "0.152.x"
-    },
-    "evidence": {
-      "behavior": "verified",
-      "accessibility": "verified",
-      "visual": "verified",
-      "composition": "verified"
+  "meta": {
+    "crease": {
+      "schemaVersion": 1,
+      "kind": "interaction-submodel",
+      "stateOwnership": {
+        "component": ["isOpen", "activeIndex"],
+        "parent": ["selectedValue"]
+      },
+      "requires": {
+        "commands": true,
+        "subscriptions": false,
+        "mount": false,
+        "services": []
+      }
     }
   }
 }
 ```
 
-If the shadcn registry schema cannot carry custom fields safely, publish a parallel
-generated `crease-registry.json` keyed by item name and version.
+Generate compatibility, public exports, renderer support and quality status from
+the same canonical artifact data. Do not imply verified quality through defaults.
+An aggregate index may be a generated projection; it must not become a competing
+hand-maintained contract format.
+
+The current shadcn schema already supports arbitrary item metadata. A direct CLI
+probe preserved it, while the inspected 4.21.5 MCP summary omitted it. The
+[registry discovery plan](shadcn-registry-and-foldkit-discovery-plan.md) defines the
+Foldkit project-info and inspection layer needed to expose that information.
 
 ## CLI command contract
 
