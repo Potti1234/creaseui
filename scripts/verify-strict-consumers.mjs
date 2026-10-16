@@ -577,6 +577,8 @@ ${Object.entries(pleatAliases)
       consumer.renderer,
       '--components',
       consumer.components,
+      '--components',
+      'src/lib',
     ])
     expect(
       label('init registers the installed components'),
@@ -620,7 +622,9 @@ ${Object.entries(pleatAliases)
       eslint,
       '--format',
       'json',
-      'src/app',
+      '--ignore-pattern',
+      'src/probe/**',
+      '.',
     ])
     const goodMessages =
       good.stdout.trim() === ''
@@ -633,7 +637,7 @@ ${Object.entries(pleatAliases)
           )
     expect(
       label(
-        'strict settings/dashboard apps pass with installed components only',
+        'the whole project (installed sources, setup entry and settings/dashboard apps) passes strict lint',
       ),
       good.status === 0 && goodMessages.length === 0,
       `${goodMessages.join('\n')}\n${good.stderr}`,
