@@ -202,6 +202,36 @@ const classValues = (analysis, node, seen = new Set()) => {
  * Findings for one contracted component call. `violation` findings belong
  * to component-contract, `unverifiable` ones to no-unverifiable-ui.
  */
+const STYLEX = '@stylexjs/stylex'
+
+const importOf = (analysis, identifier) => {
+  const definition = analysis.variableOf(identifier)?.defs[0]
+  return definition?.type === 'ImportBinding' &&
+    definition.parent.source.value === STYLEX
+    ? definition.node
+    : undefined
+}
+
+/** `stylex.create` (namespace or default import) or an imported `create`. */
+export const isStylexCreate = (analysis, callee) => {
+  if (callee.type === 'Identifier') {
+    const specifier = importOf(analysis, callee)
+    return (
+      specifier?.type === 'ImportSpecifier' &&
+      (specifier.imported.name ?? specifier.imported.value) === 'create'
+    )
+  }
+  return (
+    callee.type === 'MemberExpression' &&
+    !callee.computed &&
+    callee.property.type === 'Identifier' &&
+    callee.property.name === 'create' &&
+    callee.object.type === 'Identifier' &&
+    importOf(analysis, callee.object)?.type !== 'ImportSpecifier' &&
+    importOf(analysis, callee.object) !== undefined
+  )
+}
+
 export const analyzeCall = ({
   analysis,
   call,
@@ -317,6 +347,37 @@ export const analyzeCall = ({
     return entries
   }
 
+  const keyName = (key, computed) =>
+    computed
+      ? analysis.resolveString(key)
+      : key.type === 'Identifier'
+        ? key.name
+        : typeof key.value === 'string'
+          ? key.value
+          : null
+
+  /* `styles.page` where `styles = stylex.create({ page: {...} })`: the entry
+     object, null when it cannot be resolved, undefined for other members. */
+  const stylexEntry = member => {
+    if (member.object.type !== 'Identifier') return undefined
+    const init = unwrap(analysis.constInit(member.object))
+    if (
+      init?.type !== 'CallExpression' ||
+      !isStylexCreate(analysis, init.callee)
+    )
+      return undefined
+    const key = keyName(member.property, member.computed)
+    const entries = unwrap(init.arguments[0])
+    if (key === null || entries?.type !== 'ObjectExpression') return null
+    const entry = entries.properties.find(
+      property =>
+        property.type === 'Property' &&
+        keyName(property.key, property.computed) === key,
+    )
+    const value = unwrap(entry?.value)
+    return value?.type === 'ObjectExpression' ? value : null
+  }
+
   const checkLayoutCall = (callNode, seen) => {
     for (const argument of callNode.arguments) {
       const object = unwrap(argument)
@@ -414,6 +475,18 @@ export const analyzeCall = ({
           : undefined
       if (imported !== undefined && LAYOUT_CONSTRUCTORS.has(imported)) {
         checkLayoutCall(node, seen)
+        return
+      }
+    }
+    if (renderer === 'stylex' && node.type === 'MemberExpression') {
+      const entry = stylexEntry(node)
+      if (entry !== undefined) {
+        if (entry === null)
+          unverifiable(
+            node,
+            `The \`${slot}\` style \`${context.sourceCode.getText(node)}\` for ${label(record)} cannot be resolved to a stylex.create() entry.`,
+          )
+        else checkLayoutCall({ arguments: [entry] }, seen)
         return
       }
     }

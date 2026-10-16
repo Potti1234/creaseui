@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import test from 'node:test'
 import { fileURLToPath } from 'node:url'
@@ -151,6 +152,54 @@ test('styling escapes fail', () => {
         /`attributes`/u.test(message.message),
     ),
   )
+})
+
+test('StyleX apps place components with stylex.create entries', () => {
+  const manifest = JSON.parse(
+    readFileSync(path.join(root, 'crease.lock.json'), 'utf8'),
+  )
+  const stylexContext = createStrictContext({
+    rootDir: root,
+    manifest: { ...manifest, renderer: 'stylex' },
+    renderer: 'stylex',
+    tsconfig: './tsconfig.json',
+    typeInformation: 'syntactic',
+  })
+  const view = (styles, use) =>
+    lint(
+      `${HEADER}
+    import * as stylex from '@stylexjs/stylex'
+    import { stack } from '@design/stack'
+    const styles = stylex.create({ ${styles} })
+    export const view = <M>(h: HtmlBuilder<M>): Html =>
+      stack({ layoutStyle: ${use}, children: [] }, h)`,
+      'src/feature.ts',
+      stylexContext,
+    )
+  assert.deepEqual(
+    view("page: { marginInline: 'auto', maxWidth: '42rem' }", 'styles.page'),
+    [],
+  )
+  assert.deepEqual(ids(view("page: { color: 'red' }", 'styles.page')), [
+    'crease/component-contract',
+  ])
+  assert.deepEqual(
+    ids(view("page: { maxWidth: '42rem' }", "styles['missing']")),
+    ['crease/no-unverifiable-ui'],
+  )
+  const props = lint(
+    `${HEADER}
+    import * as stylex from '@stylexjs/stylex'
+    const styles = stylex.create({ page: { color: 'red' } })
+    export const attrs = stylex.props(styles.page)`,
+    'src/feature.ts',
+    stylexContext,
+  )
+  assert.deepEqual(ids(props), ['crease/no-application-styles'])
+  const pleatApp = lint(`${HEADER}
+    import * as stylex from '@stylexjs/stylex'
+    export const styles = stylex.create({ page: { maxWidth: '42rem' } })`)
+  assert.deepEqual(ids(pleatApp), ['crease/no-application-styles'])
 })
 
 test('positioning in the parent is a placement property', () => {

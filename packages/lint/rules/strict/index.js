@@ -1,6 +1,7 @@
 import {
   analyzeCall,
   createComponentIndex,
+  isStylexCreate,
 } from '../../lib/strict/component-calls.js'
 import {
   docsUrl,
@@ -325,6 +326,25 @@ export const noApplicationStyles = {
       if (member !== null && STYLE_ESCAPE_MEMBERS.has(member.name))
         report(member.node, `\`${member.name}\` authors appearance directly.`)
     }
+    /* StyleX placement: app code may call stylex.create(); component calls
+       check each entry used as a layoutStyle against the placement
+       allowlist, and stylex.props()/attrs() stay unavailable. */
+    const onlyCreatesStyles = node =>
+      context.sourceCode.getDeclaredVariables(node).every(variable =>
+        variable.references.every(reference => {
+          const { parent } = reference.identifier
+          const callee =
+            parent.type === 'MemberExpression' &&
+            parent.object === reference.identifier
+              ? parent
+              : reference.identifier
+          return (
+            callee.parent.type === 'CallExpression' &&
+            callee.parent.callee === callee &&
+            isStylexCreate(analysis, callee)
+          )
+        }),
+      )
     const handlers = {
       ImportDeclaration(node) {
         const source = node.source.value
@@ -337,6 +357,12 @@ export const noApplicationStyles = {
         }
         if (node.importKind === 'type') return
         if (node.specifiers.length > 0 && valueSpecifiers(node).length === 0)
+          return
+        if (
+          source === '@stylexjs/stylex' &&
+          strict?.renderer === 'stylex' &&
+          onlyCreatesStyles(node)
+        )
           return
         if (RENDERER_AUTHORING_PACKAGES.some(pattern => pattern.test(source)))
           report(
