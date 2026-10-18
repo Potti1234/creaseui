@@ -188,6 +188,7 @@ const styles = stylex.create({
     borderBlockEndWidth: 1,
     paddingBlock: '.5rem',
     paddingInline: '.75rem',
+    textAlign: 'left',
     verticalAlign: 'top',
   },
   tokenName: {
@@ -210,7 +211,7 @@ const classes = {
   list: className(reset.list, styles.list),
   link: className(reset.link, styles.link),
   navLink: className(reset.link, styles.navLink),
-  navActive: className(styles.navActive),
+  navActive: className(reset.link, styles.navLink, styles.navActive),
   navGroup: className(styles.navGroup),
   navLabel: className(reset.text, styles.navLabel),
   navList: className(reset.list, styles.navList),

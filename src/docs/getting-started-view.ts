@@ -16,12 +16,13 @@ const styles = {
   content: 'mx-auto flex max-w-4xl flex-col gap-12',
   breadcrumb: 'mb-4 flex flex-wrap items-center gap-2',
   lead: 'mt-4 max-w-[70ch]',
-  section: 'scroll-mt-24 space-y-4',
+  section: 'flex scroll-mt-24 flex-col gap-4',
   list: 'space-y-2 pl-5 text-sm leading-7 text-muted-foreground [&>li]:list-disc',
   link: 'text-foreground underline decoration-border underline-offset-4 hover:decoration-foreground',
   navLink:
     'block rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground',
-  navActive: 'bg-muted font-medium text-foreground hover:bg-muted',
+  navActive:
+    'block rounded-md bg-muted px-2 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-muted',
   navGroup: 'mb-6',
   navLabel: 'mb-3 px-2 text-sm font-semibold',
   navList: 'space-y-0.5',
@@ -31,7 +32,7 @@ const styles = {
   tokenTableWrapper: 'overflow-x-auto rounded-lg border',
   tokenTable: 'w-full min-w-[34rem] border-collapse',
   tokenHead: 'border-b bg-muted/40 px-3 py-2 text-left',
-  tokenCell: 'border-b px-3 py-2 align-top last:border-b-0',
+  tokenCell: 'border-b px-3 py-2 text-left align-top last:border-b-0',
   tokenName: 'whitespace-nowrap',
 } as const
 
