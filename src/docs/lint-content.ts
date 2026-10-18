@@ -118,6 +118,19 @@ export const view = <Msg>(
   return h.div(
     [h.Class(styles.layout)],
     [
+      h.details(
+        [h.Class(styles.mobile)],
+        [
+          h.summary([h.Class(styles.summary)], [text(['Browse docs'])]),
+          h.nav(
+            [
+              h.AriaLabel('Documentation navigation'),
+              h.Class(styles.mobileNavOuter),
+            ],
+            nav(),
+          ),
+        ],
+      ),
       h.aside(
         [h.Class(styles.sidebar)],
         [h.nav([h.AriaLabel('Documentation navigation')], nav())],
