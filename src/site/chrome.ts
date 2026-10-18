@@ -29,6 +29,8 @@ export const header = <Msg>(
       active:
         props.route._tag === 'GettingStarted' ||
         props.route._tag === 'Theming' ||
+        props.route._tag === 'LintRules' ||
+        props.route._tag === 'LintRule' ||
         props.route._tag === 'ComponentDocs',
     },
     {

@@ -215,7 +215,7 @@ const llms = `# crease/ui\n\n> CreaseUI provides source-owned components built o
   )
   .join('\n')}\n`
 
-const consumerDocs = ['dashboard-recipe', 'icon-inventory']
+const consumerDocs = ['dashboard-recipe', 'icon-inventory', 'lint-rules']
   .map(name => fs.readFileSync(path.join(root, `docs/${name}.md`), 'utf8'))
   .join('\n\n')
 const llmsFull = `${llms}\n## Application recipes and icon discovery\n\n${consumerDocs}\n## API inventory\n\n${components
@@ -244,7 +244,7 @@ const desired = new Map([
     llms
       .replace(
         '## Components',
-        '## Application recipes\n\n- Dashboard, users and settings: /docs/dashboard-recipe.md — install with `Potti1234/creaseui/dashboard-01`\n- Supported icons: /docs/icon-inventory.md\n\n## Components',
+        '## Application recipes\n\n- Dashboard, users and settings: /docs/dashboard-recipe.md — install with `Potti1234/creaseui/dashboard-01`\n- Supported icons: /docs/icon-inventory.md\n- Lint rules with bad and good examples: /docs/lint-rules.md (web: /docs/lint)\n\n## Components',
       )
       .replace(
         '## Primary documentation',

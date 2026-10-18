@@ -54,6 +54,8 @@ export const AppRoute = defineRouteUnion({
   Block: { blockId: S.String },
   GettingStarted: {},
   Theming: {},
+  LintRules: {},
+  LintRule: { rule: S.String },
   ComponentDocs: { component: S.String },
   NotFound: { path: S.String },
 })
@@ -125,6 +127,19 @@ const themingRouter = pipe(
   Route.mapTo(AppRoute.Theming),
 )
 
+const lintRuleRouter = pipe(
+  literal('docs'),
+  slash(literal('lint')),
+  slash(string('rule')),
+  Route.mapTo(AppRoute.LintRule),
+)
+
+const lintRulesRouter = pipe(
+  literal('docs'),
+  slash(literal('lint')),
+  Route.mapTo(AppRoute.LintRules),
+)
+
 const routeParser = Route.oneOf(
   createRouter,
   chartsRouter,
@@ -136,6 +151,8 @@ const routeParser = Route.oneOf(
   blocksStyleXRouter,
   gettingStartedRouter,
   themingRouter,
+  lintRuleRouter,
+  lintRulesRouter,
   componentDocsRouter,
   homeRouter,
 )
@@ -171,3 +188,7 @@ export const componentDocsPath = (component: string): string =>
 export const gettingStartedPath = (): string => gettingStartedRouter()
 
 export const themingPath = (): string => themingRouter()
+
+export const lintRulesPath = (): string => lintRulesRouter()
+
+export const lintRulePath = (rule: string): string => lintRuleRouter({ rule })

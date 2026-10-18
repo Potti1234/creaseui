@@ -51,6 +51,8 @@ import {
   componentDocsPath,
   gettingStartedPath,
   themingPath,
+  lintRulePath,
+  lintRulesPath,
   createPath,
   homePath,
   isChartSection,
@@ -280,7 +282,9 @@ export const update = (model: Model, message: Message): UpdateReturn =>
               ? [
                   NavigateInternal({
                     url: new URL(
-                      componentDocsPath(next.outMessage.slug),
+                      next.outMessage.slug.startsWith('lint:')
+                        ? lintRulePath(next.outMessage.slug.slice(5))
+                        : componentDocsPath(next.outMessage.slug),
                       model.currentUrl,
                     ).href,
                   }),
@@ -773,7 +777,8 @@ export const update = (model: Model, message: Message): UpdateReturn =>
         const currentPage = model.page
         if (
           currentPage._tag !== 'GettingStartedPage' &&
-          currentPage._tag !== 'ThemingPage'
+          currentPage._tag !== 'ThemingPage' &&
+          currentPage._tag !== 'LintDocsPage'
         ) {
           return { model: model }
         }
@@ -1178,6 +1183,25 @@ const chartsSectionView = (
 
 const notFoundView = Chrome.notFound
 
+const lintDocsView = (model: Model, h: HtmlBuilder<Message>): Html =>
+  model.page._tag === 'LintDocsPage'
+    ? h.keyed('div')(
+        `page-lint-${model.page.rule}`,
+        [],
+        [
+          GettingStartedPage.lintView(
+            {
+              model: model.page.codeBlock,
+              toParentMessage: message =>
+                Message.GotDocsGuideCodeBlockMessage({ message }),
+            },
+            model.page.rule,
+            h,
+          ),
+        ],
+      )
+    : h.keyed('div')('page-not-found', [], [notFoundView(lintRulesPath(), h)])
+
 /* Each page subtree is KEYED by route (and by charts section). Without keys,
    snabbdom patches the next page into the previous page's DOM in place; since
    neither submodel's model changed, the submodel boundary skips re-rendering
@@ -1377,6 +1401,8 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
               ),
             )
           : keyed('page-not-found', notFoundView(themingPath(), h)),
+      LintRules: () => lintDocsView(model, h),
+      LintRule: () => lintDocsView(model, h),
       NotFound: ({ path }) => keyed('page-not-found', notFoundView(path, h)),
     }),
   )
@@ -1393,7 +1419,9 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => {
         ? 'Get Started - crease/ui'
         : model.route._tag === 'Theming'
           ? 'Theming - crease/ui'
-          : 'crease/ui'
+          : model.route._tag === 'LintRules' || model.route._tag === 'LintRule'
+            ? 'Lint rules - crease/ui'
+            : 'crease/ui'
 
   return {
     title,

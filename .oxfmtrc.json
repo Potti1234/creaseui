@@ -17,6 +17,7 @@
     "src/ui/registry.json",
     "src/lib/icon-nodes.ts",
     "src/docs/generated-component-api.ts",
+    "src/docs/lint/generated-diagnostics.ts",
     "public/docs-index.json",
     "docs/api-reference.md",
     "docs/component-catalog.md",

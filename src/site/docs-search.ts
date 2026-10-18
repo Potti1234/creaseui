@@ -5,6 +5,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
 import { authoredPages } from '@/docs/components/pages'
+import { LINT_RULE_GROUPS } from '@/docs/lint/rules'
 import * as Icon from '@/lib/icon'
 import { CommandMenu, Dialog } from '@/site/docs-search-ui'
 import { skin } from '@/site/skin'
@@ -16,6 +17,15 @@ export const DOC_PAGES = Object.values(authoredPages)
     title: page.title,
     description: page.definition.description,
   }))
+  .concat(
+    LINT_RULE_GROUPS.flatMap(group =>
+      group.rules.map(rule => ({
+        slug: `lint:${rule.id}`,
+        title: `${rule.title} (lint)`,
+        description: rule.summary,
+      })),
+    ),
+  )
   .sort((left, right) => left.title.localeCompare(right.title, 'en'))
 
 const pagesBySlug = new Map(DOC_PAGES.map(page => [page.slug, page]))
