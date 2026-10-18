@@ -79,3 +79,9 @@ Each renderer site shows its own examples: the Tailwind site uses `class`/Tailwi
 - Pushed d12a3ef (routing + overview).
 - Generator design: reuse the `lint(code, file, context)` helper pattern from `packages/lint/test/strict.test.js` lines 1-50 (an ESLint `Linter` flat config with the `crease` plugin, the tseslint parser, `settings.creaseui` = the strict context fixture defined at the top of that test). For each documented case: lint `bad` (expect the rule id with its message, line and column) and `good` (expect no messages). Write the results to `src/docs/lint/generated-diagnostics.ts`.
 - Next session step: the rule page (task 68). Each rule has cases `{ title, bad: {tailwind, stylex, pleat}, good: {...}, preview programs }`. The bad previews render live in docs-owned source.
+- e9c9170: generator + cases (src/docs/lint/cases.ts), `npm run lint-docs:check` in `npm run check`, oxfmt ignores the generated file.
+- Rule page design: `src/docs/lint/previews.ts` holds the shared bad/good preview renderers and takes a per-renderer kit `{ button adapter, styles }`.
+  - Kits: `src/docs/lint/kit.tailwind.ts`, `src/site/lint-kit.{stylex,pleat}.ts`.
+  - `@/ui/heading`, `@/ui/typography` and `@/ui/code-block` are vite-aliased per site.
+  - `lint-content.ts` renders the cases filtered by `renderer` from `@/site/config`; diagnostics keyed by `rule/id/renderer`.
+- Written (uncommitted): previews.ts, kit.tailwind.ts, site/lint-kit.{stylex,pleat}.ts, rule page in lint-content.ts, kits passed from the 3 getting-started view files. Next: tsc, eslint, screenshots, commit.

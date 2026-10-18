@@ -3,6 +3,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import { view as docsGuideView } from '@/docs/getting-started-content'
 import { view as lintDocsView } from '@/docs/lint-content'
+import { stylexLintKit } from '@/site/lint-kit.stylex'
 import type * as CodeBlock from '@/ui/code-block'
 import { reset } from '@/stylex/reset'
 import { className } from '@/stylex/style'
@@ -234,7 +235,8 @@ export type DocsGuideCodeProps<Msg> = Readonly<{
 export const view = <Msg>(
   codeBlock: DocsGuideCodeProps<Msg>,
   h: HtmlBuilder<Msg>,
-): Html => docsGuideView('getting-started', h, classes, codeBlock)
+): Html =>
+  docsGuideView('getting-started', h, classes, codeBlock)
 
 export const themingView = <Msg>(
   codeBlock: DocsGuideCodeProps<Msg>,
@@ -245,4 +247,4 @@ export const lintView = <Msg>(
   codeBlock: DocsGuideCodeProps<Msg>,
   rule: string,
   h: HtmlBuilder<Msg>,
-): Html => lintDocsView(rule, h, classes, codeBlock)
+): Html => lintDocsView(rule, h, classes, codeBlock, stylexLintKit)
