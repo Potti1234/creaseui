@@ -7,13 +7,14 @@ import { LINT_RULE_GROUPS } from '../../src/docs/lint/rules'
 test('lint overview lists every rule in its group', async ({ page }) => {
   await page.goto('/docs/lint')
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Lint rules')
+  const main = page.locator('main')
   for (const group of LINT_RULE_GROUPS) {
     await expect(
-      page.getByText(group.label, { exact: true }).first(),
+      main.getByText(group.label, { exact: true }).first(),
     ).toBeVisible()
     for (const rule of group.rules)
       await expect(
-        page.locator(`a[href="/docs/lint/${rule.id}"]`).first(),
+        main.locator(`a[href="/docs/lint/${rule.id}"]`).first(),
       ).toBeVisible()
   }
 })
