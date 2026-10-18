@@ -6,3 +6,9 @@ export type LintDiagnostic = Readonly<{
   endLine: number
   endColumn: number
 }>
+
+export type LintCliRun = Readonly<{
+  command: string
+  exitCode: number
+  lines: ReadonlyArray<string>
+}>

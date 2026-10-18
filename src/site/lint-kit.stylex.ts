@@ -15,14 +15,7 @@ const styles = stylex.create({
     scrollMarginTop: '6rem',
   },
   caseHeader: { display: 'flex', flexDirection: 'column', gap: '.25rem' },
-  compare: {
-    display: 'grid',
-    gap: '1rem',
-    gridTemplateColumns: {
-      default: 'minmax(0, 1fr)',
-      '@media (min-width: 80rem)': 'repeat(2, minmax(0, 1fr))',
-    },
-  },
+  compare: { display: 'grid', gap: '1rem' },
   panel: {
     backgroundColor: tokens.card,
     borderColor: tokens.border,
@@ -122,6 +115,12 @@ const styles = stylex.create({
 })
 
 const layout = stylex.create({
+  restyle: {
+    alignSelf: 'flex-start',
+    backgroundColor: 'red',
+    borderRadius: 0,
+    color: 'white',
+  },
   fullWidth: { width: '100%' },
   start: { alignSelf: 'flex-start' },
   padded: { alignSelf: 'flex-start', padding: '24px' },
@@ -153,11 +152,13 @@ export const stylexLintKit: LintRendererKit = {
     button(
       {
         variant: props.variant ?? 'default',
-        layoutStyle: (props.broken === 'padding'
-          ? layout.padded
-          : props.fullWidth === true
-            ? layout.fullWidth
-            : layout.start) as ComponentLayoutStyle,
+        layoutStyle: (props.broken === 'restyle'
+          ? layout.restyle
+          : props.broken === 'padding'
+            ? layout.padded
+            : props.fullWidth === true
+              ? layout.fullWidth
+              : layout.start) as ComponentLayoutStyle,
         children: [...props.children],
       },
       h,

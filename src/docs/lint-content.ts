@@ -5,8 +5,12 @@ import type {
   DocsGuideStyles,
 } from '@/docs/getting-started-content'
 import { LINT_CASES, type LintCase } from '@/docs/lint/cases'
-import type { LintDiagnostic } from '@/docs/lint/diagnostic'
-import { LINT_DIAGNOSTICS } from '@/docs/lint/generated-diagnostics'
+import { LINT_CLI_CASES, type LintCliCase } from '@/docs/lint/cli-cases'
+import type { LintCliRun, LintDiagnostic } from '@/docs/lint/diagnostic'
+import {
+  LINT_CLI_OUTPUT,
+  LINT_DIAGNOSTICS,
+} from '@/docs/lint/generated-diagnostics'
 import { lintPreview, type LintRendererKit } from '@/docs/lint/previews'
 import { findLintRule, LINT_RULE_GROUPS } from '@/docs/lint/rules'
 import { renderer } from '@/site/config'
@@ -267,6 +271,78 @@ const rulePage = <Msg>(
         ...(kind === 'bad' ? [diagnosticsView(item)] : []),
       ],
     )
+  const terminal = (run: LintCliRun | undefined): Html =>
+    h.div(
+      [h.Class(styles.diagnostics), h.DataAttribute('lint-terminal', '')],
+      run === undefined
+        ? []
+        : [
+            h.pre(
+              [h.Class(styles.diagnosticSource)],
+              [
+                `$ ${run.command}\n${run.lines.join('\n')}\n(exit code ${run.exitCode})`,
+              ],
+            ),
+          ],
+    )
+  const cliPanel = (item: LintCliCase, kind: 'bad' | 'good'): Html => {
+    const file = kind === 'bad' ? item.bad : item.good
+    return h.div(
+      [
+        h.Class(styles.panel),
+        h.DataAttribute('lint-example', `${item.id}-${kind}`),
+      ],
+      [
+        h.div(
+          [h.Class(styles.panelHeader)],
+          [
+            label(kind),
+            kind === 'bad' ? 'What the project renders' : 'After the fix',
+          ],
+        ),
+        lintPreview(kit, `${item.check}/${item.id}`, kind, h),
+        CodeBlock.codeBlock(
+          {
+            model: codeBlock.model,
+            toParentMessage: codeBlock.toParentMessage,
+            code: file.contents,
+            title: file.path,
+            language: file.path.endsWith('.css') ? 'css' : 'ts',
+            hasCopyButton: true,
+            width: '100%',
+          },
+          h,
+        ),
+        terminal(LINT_CLI_OUTPUT[`${item.check}/${item.id}`]?.[kind]),
+      ],
+    )
+  }
+  const cliCases = LINT_CLI_CASES.filter(item => item.check === ruleId)
+  if (cliCases.length > 0)
+    return [
+      h.section(
+        [h.Id('overview'), h.Class(styles.caseBlock)],
+        [Typography.typographyMuted({ children: [summary] }, h)],
+      ),
+      ...cliCases.map(item =>
+        h.section(
+          [h.Id(item.id), h.Class(styles.caseBlock)],
+          [
+            h.div(
+              [h.Class(styles.caseHeader)],
+              [
+                Heading.heading({ level: 2, children: [item.title] }, h),
+                Typography.typographyMuted({ children: [item.description] }, h),
+              ],
+            ),
+            h.div(
+              [h.Class(styles.compare)],
+              [cliPanel(item, 'bad'), cliPanel(item, 'good')],
+            ),
+          ],
+        ),
+      ),
+    ]
   const others = [...new Set(cases.flatMap(item => item.renderers))].filter(
     other => other !== renderer,
   )

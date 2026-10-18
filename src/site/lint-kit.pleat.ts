@@ -1,4 +1,4 @@
-import { Style, When } from '@pleat/core'
+import { Style } from '@pleat/core'
 
 import type { LintRendererKit } from '@/docs/lint/previews'
 import { button } from '@/pleat/button'
@@ -20,15 +20,7 @@ const styles = {
     flexDirection: 'column',
     gap: '.25rem',
   }),
-  compare: Style.make({
-    display: 'grid',
-    gap: '1rem',
-    gridTemplateColumns: 'minmax(0, 1fr)',
-  }).pipe(
-    Style.when(When.minWidth('80rem'), {
-      gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-    }),
-  ),
+  compare: Style.make({ display: 'grid', gap: '1rem' }),
   panel: Style.make({
     backgroundColor: tokens.card,
     borderColor: tokens.border,
@@ -128,6 +120,12 @@ const styles = {
 }
 
 const layout = {
+  restyle: Style.make({
+    alignSelf: 'flex-start',
+    backgroundColor: 'red',
+    borderRadius: 0,
+    color: 'white',
+  }) as ComponentLayoutStyle,
   fullWidth: layoutStyle({ width: '100%' }),
   start: layoutStyle({ alignSelf: 'flex-start' }),
   padded: Style.make({
@@ -163,11 +161,13 @@ export const pleatLintKit: LintRendererKit = {
       {
         variant: props.variant ?? 'default',
         layoutStyle:
-          props.broken === 'padding'
-            ? layout.padded
-            : props.fullWidth === true
-              ? layout.fullWidth
-              : layout.start,
+          props.broken === 'restyle'
+            ? layout.restyle
+            : props.broken === 'padding'
+              ? layout.padded
+              : props.fullWidth === true
+                ? layout.fullWidth
+                : layout.start,
         children: [...props.children],
       },
       h,

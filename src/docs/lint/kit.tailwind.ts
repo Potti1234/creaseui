@@ -6,7 +6,7 @@ export const tailwindLintKit: LintRendererKit = {
   styles: {
     caseBlock: 'flex scroll-mt-24 flex-col gap-4',
     caseHeader: 'flex flex-col gap-1',
-    compare: 'grid gap-4 xl:grid-cols-2',
+    compare: 'grid gap-4',
     panel: 'flex min-w-0 flex-col overflow-hidden rounded-lg border bg-card',
     panelHeader:
       'flex items-center gap-2 border-b px-4 py-2 text-sm font-medium',

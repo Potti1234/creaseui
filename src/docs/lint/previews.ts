@@ -191,6 +191,54 @@ export const lintPreview = <Msg>(
         ),
       )
     }
+    case 'css/global-component-rule':
+      return one(
+        button(
+          bad
+            ? { broken: 'restyle', children: ['Save changes'] }
+            : { children: ['Save changes'] },
+          h,
+        ),
+      )
+    case 'theme/undefined-role':
+      return one(
+        h.div(
+          [
+            h.Style({
+              border: `1px solid ${bad ? 'currentColor' : 'var(--border)'}`,
+              borderRadius: 'var(--radius)',
+              padding: '1rem 1.25rem',
+            }),
+          ],
+          ['Card with a border'],
+        ),
+      )
+    case 'doctor/unregistered-component':
+      return one(
+        h.span(
+          [
+            h.Style(
+              bad
+                ? { background: '#facc15', color: '#000', padding: '2px 6px' }
+                : {
+                    background: 'var(--secondary)',
+                    borderRadius: 'var(--radius)',
+                    color: 'var(--secondary-foreground)',
+                    fontSize: '.75rem',
+                    fontWeight: '500',
+                    padding: '2px 8px',
+                  },
+            ),
+          ],
+          ['Beta'],
+        ),
+      )
+    case 'scope/loosened-config':
+      return one(
+        bad
+          ? h.button([h.Type('button')], ['Save changes'])
+          : button({ children: ['Save changes'] }, h),
+      )
     default:
       return one(muted('No preview for this case.', h))
   }
