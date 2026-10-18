@@ -1,4 +1,5 @@
 import type { Html, HtmlBuilder } from 'foldkit/html'
+import { sidebarScrollMemory } from '@/docs/sidebar-scroll'
 
 import type {
   DocsGuideCodeProps,
@@ -23,7 +24,9 @@ import {
   lintRulePath,
   lintRulesPath,
   themingPath,
+  componentDocsPath,
 } from '@/route'
+import { COMPONENT_GROUPS, toSlug } from '@/docs/component-metadata'
 
 export const view = <Msg>(
   rule: string,
@@ -58,6 +61,28 @@ export const view = <Msg>(
           ],
         ),
       ],
+    ),
+    ...COMPONENT_GROUPS.map(group =>
+      h.div(
+        [h.Class(styles.navGroup)],
+        [
+          h.div(
+            [h.Class(styles.navLabel)],
+            [
+              Text.text(
+                { type: 'label', color: 'primary', children: [group.label] },
+                h,
+              ),
+            ],
+          ),
+          h.ul(
+            [h.Class(styles.navList)],
+            group.components.map(name =>
+              h.li([], [link(componentDocsPath(toSlug(name)), name, false)]),
+            ),
+          ),
+        ],
+      ),
     ),
     ...LINT_RULE_GROUPS.map(group =>
       h.div(
@@ -135,7 +160,10 @@ export const view = <Msg>(
         ],
       ),
       h.aside(
-        [h.Class(styles.sidebar)],
+        [
+          h.Class(styles.sidebar),
+          sidebarScrollMemory(h, codeBlock.sidebarScrolled),
+        ],
         [h.nav([h.AriaLabel('Documentation navigation')], nav())],
       ),
       h.main(

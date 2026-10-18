@@ -6,7 +6,14 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as CodeFile from '@/lib/code-file'
 import * as Icon from '@/lib/icon'
 import { cn } from '@/lib/utils'
-import { componentDocsPath, gettingStartedPath, themingPath } from '@/route'
+import {
+  componentDocsPath,
+  gettingStartedPath,
+  themingPath,
+  lintRulePath,
+  lintRulesPath,
+} from '@/route'
+import { LINT_RULE_GROUPS } from '@/docs/lint/rules'
 import type { ApiEntry } from '@/docs/generated-component-api'
 import type {
   ComponentKind,
@@ -413,8 +420,50 @@ export const componentPage = <Msg>(
             ),
           ],
         ),
+        h.li(
+          [],
+          [
+            h.a(
+              [
+                h.Href(lintRulesPath()),
+                h.AriaCurrent('false'),
+                h.Class(
+                  'block rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground',
+                ),
+              ],
+              ['Lint rules'],
+            ),
+          ],
+        ),
       ],
     )
+  const lintNavGroups = () =>
+    LINT_RULE_GROUPS.map(group => ({
+      label: group.label,
+      items: group.rules.map(rule =>
+        h.li(
+          [],
+          [
+            h.a(
+              [
+                h.Href(lintRulePath(rule.id)),
+                h.Class(
+                  'block rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground',
+                ),
+              ],
+              [rule.title],
+            ),
+          ],
+        ),
+      ),
+    }))
+  const navGroups = () => [
+    ...COMPONENT_GROUPS.map(group => ({
+      label: group.label,
+      items: group.components.map(navItem),
+    })),
+    ...lintNavGroups(),
+  ]
 
   const currentIndex = COMPONENT_NAV_ORDER.findIndex(
     name => name === config.name,
@@ -473,7 +522,7 @@ export const componentPage = <Msg>(
             ],
             [
               guideNavItems(),
-              ...COMPONENT_GROUPS.map(group =>
+              ...navGroups().map(group =>
                 h.div(
                   [h.Class('mb-4')],
                   [
@@ -483,7 +532,7 @@ export const componentPage = <Msg>(
                     ),
                     h.ul(
                       [h.Class('grid grid-cols-2 gap-0.5 sm:grid-cols-3')],
-                      group.components.map(navItem),
+                      group.items,
                     ),
                   ],
                 ),
@@ -528,7 +577,7 @@ export const componentPage = <Msg>(
             [h.AriaLabel('Component navigation')],
             [
               guideNavItems(),
-              ...COMPONENT_GROUPS.map(group =>
+              ...navGroups().map(group =>
                 h.div(
                   [h.Class('mb-6')],
                   [
@@ -536,10 +585,7 @@ export const componentPage = <Msg>(
                       [h.Class('mb-3 px-2 text-sm font-semibold')],
                       [group.label],
                     ),
-                    h.ul(
-                      [h.Class('space-y-0.5')],
-                      group.components.map(navItem),
-                    ),
+                    h.ul([h.Class('space-y-0.5')], group.items),
                   ],
                 ),
               ),

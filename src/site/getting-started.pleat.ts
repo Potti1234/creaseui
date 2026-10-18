@@ -230,6 +230,7 @@ const classes = {
 export type DocsGuideCodeProps<Msg> = Readonly<{
   model: CodeBlock.Model
   toParentMessage: (message: CodeBlock.Message) => Msg
+  sidebarScrolled: Msg
 }>
 
 export const view = <Msg>(

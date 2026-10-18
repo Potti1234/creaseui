@@ -5,7 +5,14 @@ import { Mount, Subscription } from 'foldkit'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as CodeFile from '@/lib/code-file'
 import * as Icon from '@/lib/icon'
-import { componentDocsPath, gettingStartedPath, themingPath } from '@/route'
+import {
+  componentDocsPath,
+  gettingStartedPath,
+  themingPath,
+  lintRulePath,
+  lintRulesPath,
+} from '@/route'
+import { LINT_RULE_GROUPS } from '@/docs/lint/rules'
 import {
   COMPONENT_GROUPS,
   COMPONENT_NAV_ORDER,
@@ -989,8 +996,46 @@ export const componentPage = <Msg>(
             ),
           ],
         ),
+        h.li(
+          [],
+          [
+            h.a(
+              [
+                h.Href(lintRulesPath()),
+                h.AriaCurrent('false'),
+                h.Class(className(reset.link, styles.navLink)),
+              ],
+              ['Lint rules'],
+            ),
+          ],
+        ),
       ],
     )
+  const lintNavGroups = () =>
+    LINT_RULE_GROUPS.map(group => ({
+      label: group.label,
+      items: group.rules.map(rule =>
+        h.li(
+          [],
+          [
+            h.a(
+              [
+                h.Href(lintRulePath(rule.id)),
+                h.Class(className(reset.link, styles.navLink)),
+              ],
+              [rule.title],
+            ),
+          ],
+        ),
+      ),
+    }))
+  const navGroups = () => [
+    ...COMPONENT_GROUPS.map(group => ({
+      label: group.label,
+      items: group.components.map(navItem),
+    })),
+    ...lintNavGroups(),
+  ]
   const position = COMPONENT_NAV_ORDER.findIndex(name => name === config.name)
   const previous = COMPONENT_NAV_ORDER[position - 1]
   const next = COMPONENT_NAV_ORDER[position + 1]
@@ -1026,7 +1071,7 @@ export const componentPage = <Msg>(
             ],
             [
               guideNavItems(),
-              ...COMPONENT_GROUPS.map(group =>
+              ...navGroups().map(group =>
                 h.div(
                   [h.Class(className(styles.navGroup))],
                   [
@@ -1044,7 +1089,7 @@ export const componentPage = <Msg>(
                     ),
                     h.ul(
                       [h.Class(className(reset.list, styles.mobileNav))],
-                      group.components.map(navItem),
+                      group.items,
                     ),
                   ],
                 ),
@@ -1084,7 +1129,7 @@ export const componentPage = <Msg>(
             [h.AriaLabel('Component navigation')],
             [
               guideNavItems(),
-              ...COMPONENT_GROUPS.map(group =>
+              ...navGroups().map(group =>
                 h.div(
                   [h.Class(className(styles.navGroup))],
                   [
@@ -1102,7 +1147,7 @@ export const componentPage = <Msg>(
                     ),
                     h.ul(
                       [h.Class(className(reset.list, styles.navList))],
-                      group.components.map(navItem),
+                      group.items,
                     ),
                   ],
                 ),
