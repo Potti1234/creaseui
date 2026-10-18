@@ -1,4 +1,5 @@
 import type { Html, HtmlBuilder } from 'foldkit/html'
+import { sidebarScrollMemory } from '@/docs/sidebar-scroll'
 
 import type {
   DocsGuideCodeProps,
@@ -159,7 +160,10 @@ export const view = <Msg>(
         ],
       ),
       h.aside(
-        [h.Class(styles.sidebar)],
+        [
+          h.Class(styles.sidebar),
+          sidebarScrollMemory(h, codeBlock.sidebarScrolled),
+        ],
         [h.nav([h.AriaLabel('Documentation navigation')], nav())],
       ),
       h.main(

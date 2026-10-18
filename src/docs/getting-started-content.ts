@@ -1,4 +1,5 @@
 import type { Html, HtmlBuilder } from 'foldkit/html'
+import { sidebarScrollMemory } from '@/docs/sidebar-scroll'
 
 import { COMPONENT_GROUPS, toSlug } from '@/docs/component-metadata'
 import * as Code from '@/ui/code'
@@ -49,6 +50,7 @@ export type DocsGuideStyles = Readonly<{
 export type DocsGuideCodeProps<Msg> = Readonly<{
   model: CodeBlock.Model
   toParentMessage: (message: CodeBlock.Message) => Msg
+  sidebarScrolled: Msg
 }>
 
 type Guide = 'getting-started' | 'theming'
@@ -1233,7 +1235,10 @@ export const view = <Msg>(
         ],
       ),
       h.aside(
-        [h.Class(styles.sidebar)],
+        [
+          h.Class(styles.sidebar),
+          sidebarScrollMemory(h, codeBlock.sidebarScrolled),
+        ],
         [
           h.nav(
             [h.AriaLabel('Documentation navigation')],

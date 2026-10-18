@@ -167,6 +167,7 @@ export const Message = defineMessageUnion({
     message: ComponentCatalog.Message,
   },
   GotDocsGuideCodeBlockMessage: { message: CodeBlock.Message },
+  ObservedDocsSidebarScroll: {},
   GotDocsSearchMessage: { message: DocsSearch.Message },
 })
 export type Message = typeof Message.Type
@@ -773,6 +774,8 @@ export const update = (model: Model, message: Message): UpdateReturn =>
         }
       },
 
+      ObservedDocsSidebarScroll: () => ({ model: model }),
+
       GotDocsGuideCodeBlockMessage: ({ message: childMessage }) => {
         const currentPage = model.page
         if (
@@ -1194,6 +1197,7 @@ const lintDocsView = (model: Model, h: HtmlBuilder<Message>): Html =>
               model: model.page.codeBlock,
               toParentMessage: message =>
                 Message.GotDocsGuideCodeBlockMessage({ message }),
+              sidebarScrolled: Message.ObservedDocsSidebarScroll(),
             },
             model.page.rule,
             h,
@@ -1382,6 +1386,7 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
                   model: model.page.codeBlock,
                   toParentMessage: message =>
                     Message.GotDocsGuideCodeBlockMessage({ message }),
+                  sidebarScrolled: Message.ObservedDocsSidebarScroll(),
                 },
                 h,
               ),
@@ -1396,6 +1401,7 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
                   model: model.page.codeBlock,
                   toParentMessage: message =>
                     Message.GotDocsGuideCodeBlockMessage({ message }),
+                  sidebarScrolled: Message.ObservedDocsSidebarScroll(),
                 },
                 h,
               ),
