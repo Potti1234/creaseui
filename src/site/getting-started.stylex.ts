@@ -2,6 +2,7 @@ import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import { view as docsGuideView } from '@/docs/getting-started-content'
+import { view as lintDocsView } from '@/docs/lint-content'
 import type * as CodeBlock from '@/ui/code-block'
 import { reset } from '@/stylex/reset'
 import { className } from '@/stylex/style'
@@ -239,3 +240,9 @@ export const themingView = <Msg>(
   codeBlock: DocsGuideCodeProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => docsGuideView('theming', h, classes, codeBlock)
+
+export const lintView = <Msg>(
+  codeBlock: DocsGuideCodeProps<Msg>,
+  rule: string,
+  h: HtmlBuilder<Msg>,
+): Html => lintDocsView(rule, h, classes, codeBlock)

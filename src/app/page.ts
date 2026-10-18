@@ -91,6 +91,10 @@ export const GettingStarted = taggedStruct('GettingStartedPage', {
 export const Theming = taggedStruct('ThemingPage', {
   codeBlock: CodeBlock.Model,
 })
+export const LintDocs = taggedStruct('LintDocsPage', {
+  codeBlock: CodeBlock.Model,
+  rule: S.String,
+})
 export const NotFound = taggedStruct('NotFoundPage')
 
 export const Page = S.Union([
@@ -102,6 +106,7 @@ export const Page = S.Union([
   Charts,
   CatalogDocs,
   GettingStarted,
+  LintDocs,
   Theming,
   NotFound,
 ])
@@ -167,6 +172,8 @@ export const init = (route: AppRoute): Page =>
           : NotFound(),
       GettingStarted: () => GettingStarted({ codeBlock: CodeBlock.init() }),
       Theming: () => Theming({ codeBlock: CodeBlock.init() }),
+      LintRules: () => LintDocs({ codeBlock: CodeBlock.init(), rule: '' }),
+      LintRule: ({ rule }) => LintDocs({ codeBlock: CodeBlock.init(), rule }),
       NotFound: () => NotFound(),
     }),
   )
