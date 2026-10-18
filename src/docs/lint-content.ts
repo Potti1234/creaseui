@@ -23,7 +23,9 @@ import {
   lintRulePath,
   lintRulesPath,
   themingPath,
+  componentDocsPath,
 } from '@/route'
+import { COMPONENT_GROUPS, toSlug } from '@/docs/component-metadata'
 
 export const view = <Msg>(
   rule: string,
@@ -58,6 +60,28 @@ export const view = <Msg>(
           ],
         ),
       ],
+    ),
+    ...COMPONENT_GROUPS.map(group =>
+      h.div(
+        [h.Class(styles.navGroup)],
+        [
+          h.div(
+            [h.Class(styles.navLabel)],
+            [
+              Text.text(
+                { type: 'label', color: 'primary', children: [group.label] },
+                h,
+              ),
+            ],
+          ),
+          h.ul(
+            [h.Class(styles.navList)],
+            group.components.map(name =>
+              h.li([], [link(componentDocsPath(toSlug(name)), name, false)]),
+            ),
+          ),
+        ],
+      ),
     ),
     ...LINT_RULE_GROUPS.map(group =>
       h.div(

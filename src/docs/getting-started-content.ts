@@ -11,7 +11,10 @@ import {
   createPath,
   gettingStartedPath,
   themingPath,
+  lintRulePath,
+  lintRulesPath,
 } from '@/route'
+import { LINT_RULE_GROUPS } from '@/docs/lint/rules'
 import { renderer, siteOrigin } from '@/site/config'
 
 export type DocsGuideStyles = Readonly<{
@@ -742,10 +745,31 @@ export const view = <Msg>(
       [
         h.li([], [link(gettingStartedPath(), 'Get Started', isGettingStarted)]),
         h.li([], [link(themingPath(), 'Theming', !isGettingStarted)]),
+        h.li([], [link(lintRulesPath(), 'Lint rules', false)]),
       ],
     )
+  const lintLink = (id: string, title: string): Html =>
+    h.li(
+      [],
+      [
+        h.a(
+          [h.Href(lintRulePath(id)), h.Class(styles.navLink)],
+          [text([title], { color: 'inherit' })],
+        ),
+      ],
+    )
+  const navGroups = [
+    ...COMPONENT_GROUPS.map(group => ({
+      label: group.label,
+      items: group.components.map(componentLink),
+    })),
+    ...LINT_RULE_GROUPS.map(group => ({
+      label: group.label,
+      items: group.rules.map(rule => lintLink(rule.id, rule.title)),
+    })),
+  ]
   const sidebarGroups = (isMobile: boolean) =>
-    COMPONENT_GROUPS.map(group =>
+    navGroups.map(group =>
       h.div(
         [h.Class(styles.navGroup)],
         [
@@ -755,7 +779,7 @@ export const view = <Msg>(
           ),
           h.ul(
             [h.Class(isMobile ? styles.mobileNav : styles.navList)],
-            group.components.map(componentLink),
+            group.items,
           ),
         ],
       ),
