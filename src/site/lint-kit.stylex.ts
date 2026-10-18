@@ -155,6 +155,7 @@ export const stylexLintKit: LintRendererKit = {
       styles.terminal,
     ),
   },
+  primaryVars: ['--primary', tokens.primary.slice(4, -1)],
   button: (props, h) =>
     button(
       {

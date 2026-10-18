@@ -28,6 +28,7 @@ export const tailwindLintKit: LintRendererKit = {
       'rounded-md bg-muted px-3 py-2 font-mono text-xs leading-5 break-words whitespace-pre-wrap',
     note: 'rounded-lg border border-dashed px-4 py-3 text-sm text-muted-foreground',
   },
+  primaryVars: ['--primary', '--color-primary'],
   button: (props, h) =>
     button(
       {

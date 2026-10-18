@@ -33,6 +33,7 @@ export type LintDocsStyles = Readonly<{
 
 export type LintRendererKit = Readonly<{
   styles: LintDocsStyles
+  primaryVars: ReadonlyArray<string>
   button: <Msg>(props: LintButtonProps, h: HtmlBuilder<Msg>) => Html
 }>
 
@@ -242,10 +243,11 @@ export const lintPreview = <Msg>(
           ? button({ broken: 'restyle', children: ['Save changes'] }, h)
           : h.div(
               [
-                h.Style({
-                  '--color-primary': FIXED_PRIMARY,
-                  '--primary': FIXED_PRIMARY,
-                }),
+                h.Style(
+                  Object.fromEntries(
+                    kit.primaryVars.map(name => [name, FIXED_PRIMARY]),
+                  ),
+                ),
               ],
               [button({ children: ['Save changes'] }, h)],
             ),

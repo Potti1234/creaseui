@@ -163,6 +163,7 @@ export const pleatLintKit: LintRendererKit = {
       styles.terminal,
     ),
   },
+  primaryVars: ['--primary', tokens.primary.name],
   button: (props, h) =>
     button(
       {
