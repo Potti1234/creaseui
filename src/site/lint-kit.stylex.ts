@@ -112,6 +112,7 @@ const styles = stylex.create({
     paddingBlock: '.75rem',
     paddingInline: '1rem',
   },
+  terminal: { overflowWrap: 'anywhere', whiteSpace: 'pre-wrap' },
 })
 
 const layout = stylex.create({
@@ -147,6 +148,12 @@ export const stylexLintKit: LintRendererKit = {
       styles.diagnosticSource,
     ),
     note: className(reset.text, styles.note),
+    terminal: className(
+      reset.text,
+      styles.mono,
+      styles.diagnosticSource,
+      styles.terminal,
+    ),
   },
   button: (props, h) =>
     button(

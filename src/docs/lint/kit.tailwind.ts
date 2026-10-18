@@ -24,6 +24,8 @@ export const tailwindLintKit: LintRendererKit = {
     diagnosticRule: 'font-mono text-xs text-destructive',
     diagnosticSource:
       'overflow-x-auto rounded-md bg-muted px-3 py-2 font-mono text-xs leading-5 whitespace-pre',
+    terminal:
+      'rounded-md bg-muted px-3 py-2 font-mono text-xs leading-5 break-words whitespace-pre-wrap',
     note: 'rounded-lg border border-dashed px-4 py-3 text-sm text-muted-foreground',
   },
   button: (props, h) =>

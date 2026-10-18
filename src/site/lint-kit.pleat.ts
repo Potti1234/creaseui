@@ -117,6 +117,7 @@ const styles = {
     paddingBlock: '.75rem',
     paddingInline: '1rem',
   }),
+  terminal: Style.make({ overflowWrap: 'anywhere', whiteSpace: 'pre-wrap' }),
 }
 
 const layout = {
@@ -155,6 +156,12 @@ export const pleatLintKit: LintRendererKit = {
       styles.diagnosticSource,
     ),
     note: className(reset.text, styles.note),
+    terminal: className(
+      reset.text,
+      styles.mono,
+      styles.diagnosticSource,
+      styles.terminal,
+    ),
   },
   button: (props, h) =>
     button(

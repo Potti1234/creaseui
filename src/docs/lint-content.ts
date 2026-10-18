@@ -278,7 +278,7 @@ const rulePage = <Msg>(
         ? []
         : [
             h.pre(
-              [h.Class(styles.diagnosticSource)],
+              [h.Class(styles.terminal)],
               [
                 `$ ${run.command}\n${run.lines.join('\n')}\n(exit code ${run.exitCode})`,
               ],

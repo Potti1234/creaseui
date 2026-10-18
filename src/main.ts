@@ -51,6 +51,7 @@ import {
   componentDocsPath,
   gettingStartedPath,
   themingPath,
+  lintRulePath,
   lintRulesPath,
   createPath,
   homePath,
@@ -281,7 +282,9 @@ export const update = (model: Model, message: Message): UpdateReturn =>
               ? [
                   NavigateInternal({
                     url: new URL(
-                      componentDocsPath(next.outMessage.slug),
+                      next.outMessage.slug.startsWith('lint:')
+                        ? lintRulePath(next.outMessage.slug.slice(5))
+                        : componentDocsPath(next.outMessage.slug),
                       model.currentUrl,
                     ).href,
                   }),

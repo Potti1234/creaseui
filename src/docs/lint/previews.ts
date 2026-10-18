@@ -28,6 +28,7 @@ export type LintDocsStyles = Readonly<{
   diagnosticRule: string
   diagnosticSource: string
   note: string
+  terminal: string
 }>
 
 export type LintRendererKit = Readonly<{
