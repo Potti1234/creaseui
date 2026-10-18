@@ -8,7 +8,7 @@ import {
 
 import { stylexStyleResolution } from './stylex.config.js'
 
-const stylexPropLimits = {
+export const stylexPropLimits = {
   '*Color': {
     limit: ['transparent', 'currentColor'],
     reason: 'Use a semantic token from tokens.stylex.ts for colors.',
@@ -60,7 +60,7 @@ const stylexPropLimits = {
   },
 }
 
-const pleatPropLimits = Object.fromEntries(
+export const pleatPropLimits = Object.fromEntries(
   Object.entries(stylexPropLimits).map(([property, spec]) => [
     property,
     {

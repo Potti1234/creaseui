@@ -1,0 +1,183 @@
+// Runs the real Crease lint over every documented bad/good case and writes
+// the diagnostics the lint-rule docs pages display. `--check` fails when a
+// bad case stops failing, a good case reports anything, or the generated
+// file is stale.
+import {
+  cpSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs'
+import { tmpdir } from 'node:os'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+import { Linter } from 'eslint'
+import tseslint from 'typescript-eslint'
+
+import {
+  constrainedStylex,
+  createStrictContext,
+  pleat,
+  plugin,
+  stylex,
+  tailwind,
+} from '../packages/lint/index.js'
+import { pleatPropLimits, stylexPropLimits } from '../eslint.config.js'
+import { LINT_CASES } from '../src/docs/lint/cases.ts'
+import { LINT_RULE_GROUPS } from '../src/docs/lint/rules.ts'
+
+const repo = fileURLToPath(new URL('..', import.meta.url))
+const output = path.join(repo, 'src/docs/lint/generated-diagnostics.ts')
+const fixture = path.join(repo, 'packages/lint/test/fixtures/strict-app')
+const STRICT_RULES = [
+  'no-raw-controls',
+  'no-raw-composition',
+  'no-unapproved-renderer',
+  'no-application-styles',
+  'component-contract',
+  'no-unverifiable-ui',
+]
+
+const strictRoots = new Map()
+const strictRoot = renderer => {
+  const existing = strictRoots.get(renderer)
+  if (existing !== undefined) return existing
+  const root = mkdtempSync(path.join(tmpdir(), `crease-lint-docs-${renderer}-`))
+  cpSync(fixture, root, { recursive: true })
+  const lockPath = path.join(root, 'crease.lock.json')
+  const lock = JSON.parse(
+    readFileSync(lockPath, 'utf8').replaceAll(
+      'crease/pleat-',
+      `crease/${renderer}-`,
+    ),
+  )
+  writeFileSync(lockPath, JSON.stringify({ ...lock, renderer }, null, 2))
+  const context = createStrictContext({
+    rootDir: root,
+    renderer,
+    tsconfig: './tsconfig.json',
+    typeInformation: 'syntactic',
+  })
+  const entry = { root, context }
+  strictRoots.set(renderer, entry)
+  return entry
+}
+
+const parser = { parser: tseslint.parser, sourceType: 'module' }
+
+const configFor = (setup, renderer) => {
+  if (setup === 'strict') {
+    const { context } = strictRoot(renderer)
+    return [
+      {
+        files: ['**/*.ts'],
+        languageOptions: parser,
+        plugins: { crease: plugin },
+        rules: Object.fromEntries(
+          STRICT_RULES.map(rule => [`crease/${rule}`, 'error']),
+        ),
+        settings: { creaseui: context },
+      },
+    ]
+  }
+  const preset =
+    setup === 'tailwind'
+      ? tailwind({ inlineStyles: 'forbid' })
+      : setup === 'stylex'
+        ? stylex({ inlineStyles: 'forbid', propLimits: stylexPropLimits })
+        : setup === 'constrained'
+          ? constrainedStylex({ files: ['**/*.ts'] })
+          : pleat({
+              inlineStyles: 'forbid',
+              propLimits: pleatPropLimits,
+              tokenFiles: ['/foundations', '/tokens', '/theme'],
+            })
+  return [{ ...preset, files: ['**/*.ts'], languageOptions: parser }]
+}
+
+const lintCase = (lintCase, renderer, code) => {
+  const root = lintCase.setup === 'strict' ? strictRoot(renderer).root : repo
+  return new Linter({ configType: 'flat', cwd: root })
+    .verify(code, configFor(lintCase.setup, renderer), {
+      filename: path.join(root, lintCase.file),
+    })
+    .map(message => ({
+      ruleId: message.ruleId ?? 'parse',
+      message: message.message,
+      line: message.line,
+      column: message.column,
+      endLine: message.endLine ?? message.line,
+      endColumn: message.endColumn ?? message.column + 1,
+    }))
+}
+
+const ruleIdFor = rule =>
+  rule === 'no-raw-colors' || rule === 'no-arbitrary-values'
+    ? `shadcn/${rule}`
+    : `crease/${rule}`
+
+const problems = []
+const diagnostics = {}
+for (const item of LINT_CASES) {
+  for (const renderer of item.renderers) {
+    const bad = lintCase(item, renderer, item.bad)
+    const good = lintCase(item, renderer, item.good)
+    const key = `${item.rule}/${item.id}/${renderer}`
+    const expected = ruleIdFor(item.rule)
+    if (
+      !bad.some(m => m.ruleId === expected && m.message.includes(item.expect))
+    )
+      problems.push(
+        `${key}: bad case does not report ${expected} containing "${item.expect}"\n${JSON.stringify(bad, null, 2)}`,
+      )
+    if (good.length > 0)
+      problems.push(
+        `${key}: good case reports\n${JSON.stringify(good, null, 2)}`,
+      )
+    diagnostics[key] = bad
+  }
+}
+
+const CLI_SETUPS = new Set(['css', 'theme', 'doctor', 'scope'])
+for (const group of LINT_RULE_GROUPS)
+  for (const rule of group.rules)
+    if (
+      !CLI_SETUPS.has(rule.id) &&
+      !LINT_CASES.some(item => item.rule === rule.id)
+    )
+      problems.push(`${rule.id}: no documented case`)
+
+for (const { root } of strictRoots.values())
+  rmSync(root, { force: true, recursive: true })
+
+const source = `// Generated by scripts/generate-lint-docs.mjs. Do not edit.
+import type { LintDiagnostic } from '@/docs/lint/diagnostic'
+
+export const LINT_DIAGNOSTICS: Readonly<
+  Record<string, ReadonlyArray<LintDiagnostic>>
+> = ${JSON.stringify(diagnostics, null, 2)}
+`
+
+const check = process.argv.includes('--check')
+if (check) {
+  let current = ''
+  try {
+    current = readFileSync(output, 'utf8')
+  } catch {}
+  if (current !== source)
+    problems.push(
+      'src/docs/lint/generated-diagnostics.ts is stale: run npm run generate:lint-docs',
+    )
+} else {
+  writeFileSync(output, source)
+}
+
+if (problems.length > 0) {
+  console.error(problems.join('\n\n'))
+  process.exit(1)
+}
+console.log(
+  `lint docs: ${Object.keys(diagnostics).length} renderer cases ${check ? 'verified' : 'generated'}`,
+)
