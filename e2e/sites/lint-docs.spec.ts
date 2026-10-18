@@ -24,9 +24,9 @@ for (const group of LINT_RULE_GROUPS)
       const errors: string[] = []
       page.on('pageerror', error => errors.push(error.message))
       await page.goto(`/docs/lint/${rule.id}`)
-      await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-        rule.title,
-      )
+      await expect(
+        page.locator('[data-slot="heading"][data-level="1"]'),
+      ).toHaveText(rule.title)
       const cases = [
         ...LINT_CASES.filter(
           item =>

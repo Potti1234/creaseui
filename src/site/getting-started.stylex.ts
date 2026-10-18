@@ -235,8 +235,7 @@ export type DocsGuideCodeProps<Msg> = Readonly<{
 export const view = <Msg>(
   codeBlock: DocsGuideCodeProps<Msg>,
   h: HtmlBuilder<Msg>,
-): Html =>
-  docsGuideView('getting-started', h, classes, codeBlock)
+): Html => docsGuideView('getting-started', h, classes, codeBlock)
 
 export const themingView = <Msg>(
   codeBlock: DocsGuideCodeProps<Msg>,
