@@ -19,6 +19,28 @@ test('lint overview lists every rule in its group', async ({ page }) => {
   }
 })
 
+for (const path of ['/docs/components/button', '/docs/getting-started'])
+  test(`docs sidebar on ${path} lists the lint rules`, async ({ page }) => {
+    await page.goto(path)
+    const sidebar = page.locator('aside nav').first()
+    await expect(sidebar.locator('a[href="/docs/lint"]')).toBeVisible()
+    for (const group of LINT_RULE_GROUPS) {
+      await expect(
+        sidebar.getByText(group.label, { exact: true }),
+      ).toBeAttached()
+      for (const rule of group.rules)
+        await expect(
+          sidebar.locator(`a[href="/docs/lint/${rule.id}"]`),
+        ).toBeAttached()
+    }
+    const first = LINT_RULE_GROUPS[0]!.rules[0]!
+    await sidebar.locator(`a[href="/docs/lint/${first.id}"]`).click()
+    await expect(page).toHaveURL(new RegExp(`/docs/lint/${first.id}$`, 'u'))
+    await expect(
+      page.locator('[data-slot="heading"][data-level="1"]'),
+    ).toHaveText(first.title)
+  })
+
 for (const group of LINT_RULE_GROUPS)
   for (const rule of group.rules)
     test(`lint rule page ${rule.id}`, async ({ page }, info) => {
