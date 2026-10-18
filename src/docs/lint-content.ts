@@ -121,7 +121,10 @@ export const view = <Msg>(
       h.details(
         [h.Class(styles.mobile)],
         [
-          h.summary([h.Class(styles.summary)], [text(['Browse docs'])]),
+          h.summary(
+            [h.Class(styles.summary)],
+            [Typography.typographySmall({ children: ['Browse docs'] }, h)],
+          ),
           h.nav(
             [
               h.AriaLabel('Documentation navigation'),
