@@ -292,7 +292,7 @@ export default defineConfig({
     stylesheet: `/* src/styles.css */
 @import "tailwindcss";`,
     stylesheetIntro:
-      'Create the stylesheet named by tailwind.css in components.json and import it from your entry module. The first component you install writes the Crease theme variables and their Tailwind @theme mapping into this file.',
+      'Create src/styles.css (components.json points the CLI at it below) and import it from your entry module. The first component you install writes the Crease theme variables and their Tailwind @theme mapping into this file.',
     itemPrefix: '',
     installDir: '@/ui',
     installs: [
@@ -458,9 +458,10 @@ export default defineConfig({
         'src/ui/pleat/tokens.ts',
         'Pleat tokens bound to the theme CSS variables, plus the shared reset, style and contracts helpers.',
       ],
+      ['src/lib/pleat/core', 'The vendored @pleat/core sources (pleat-core).'],
       [
-        'src/lib/pleat/core, src/lib/pleat/foldkit',
-        'The vendored @pleat/core and @pleat/foldkit sources (pleat-core, pleat-foldkit).',
+        'src/lib/pleat/foldkit',
+        'The vendored @pleat/foldkit sources (pleat-foldkit).',
       ],
       [
         'src/lib/button.ts',
@@ -920,14 +921,13 @@ export const view = <Msg>(
             inlineCode('true'),
             ' because the CLI uses that flag for TypeScript output; Crease UI does not use JSX or React.',
           ]),
-          code(CONFIGURATION, 'components.json', 'json'),
           ...(GUIDE_RENDERER === 'tailwind'
             ? []
             : [
                 paragraph([
                   'The CLI requires the ',
                   inlineCode('tailwind'),
-                  ' block even though this app does not use Tailwind; it only tells the CLI where the stylesheet is. ',
+                  ' block in components.json. Nothing installs Tailwind: the block only tells the CLI where your stylesheet is. ',
                   `${rendererName} components install into a ${GUIDE_RENDERER} folder under the `,
                   inlineCode('ui'),
                   ' alias, here ',
@@ -935,6 +935,7 @@ export const view = <Msg>(
                   '.',
                 ]),
               ]),
+          code(CONFIGURATION, 'components.json', 'json'),
         ]),
         section('install-components', 'Install components', [
           paragraph([
