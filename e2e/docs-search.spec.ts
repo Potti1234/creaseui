@@ -2,6 +2,11 @@ import { expect, test } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 
 import { COMPONENTS } from '../src/docs/component-metadata'
+import { LINT_RULE_GROUPS } from '../src/docs/lint/rules'
+
+const SEARCH_ENTRIES =
+  COMPONENTS.length +
+  LINT_RULE_GROUPS.reduce((total, group) => total + group.rules.length, 0)
 
 for (const renderer of ['tailwind', 'stylex'] as const) {
   const origin = `http://127.0.0.1:${renderer === 'stylex' ? '4174' : '4173'}`
@@ -25,7 +30,7 @@ for (const renderer of ['tailwind', 'stylex'] as const) {
       name: 'Search documentation pages',
     })
     await expect(query).toBeFocused()
-    await expect(page.getByRole('option')).toHaveCount(COMPONENTS.length)
+    await expect(page.getByRole('option')).toHaveCount(SEARCH_ENTRIES)
     const list = dialog.getByRole('listbox')
     await expect
       .poll(() => list.evaluate(node => getComputedStyle(node).position))
@@ -35,7 +40,7 @@ for (const renderer of ['tailwind', 'stylex'] as const) {
     ).toHaveCount(0)
     await page.keyboard.press('Tab')
     await expect(list).toBeVisible()
-    await expect(page.getByRole('option')).toHaveCount(COMPONENTS.length)
+    await expect(page.getByRole('option')).toHaveCount(SEARCH_ENTRIES)
     await query.fill('no-such-doc-page-xyz')
     await expect(dialog.getByRole('status')).toHaveText(
       'No documentation pages found. Try another search.',
