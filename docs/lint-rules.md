@@ -487,7 +487,7 @@ Raw Pleat property values instead of semantic tokens.
 
 #### A raw color in a Pleat style
 
-A hex color does not change with the theme or dark mode; Pleat components read colors from tokens.
+A hex color does not change with the theme: in dark mode it stays dark red on a dark surface. Pleat components read colors from tokens.
 
 Renderers: pleat
 
@@ -548,7 +548,7 @@ Hard-coded colors instead of theme tokens (shadcn/no-raw-colors).
 
 #### A palette color in a component
 
-text-red-700 is a fixed palette color: it ignores the theme and stays the same in dark mode.
+text-red-700 is a fixed palette color: it ignores the theme, so in dark mode it stays dark red on a dark surface.
 
 Renderers: tailwind
 
@@ -576,7 +576,7 @@ Arbitrary Tailwind values instead of the scale (shadcn/no-arbitrary-values).
 
 #### An arbitrary size in a component
 
-w-[37px] sits off the spacing scale, so it never lines up with the components around it.
+w-[45px] sits off the spacing scale, so it is wider than the size-9 controls next to it.
 
 Renderers: tailwind
 
@@ -585,10 +585,10 @@ Bad (`src/ui/notice.ts`):
 ```ts
 import type { Html, HtmlBuilder } from 'foldkit/html'
 export const notice = <Msg>(h: HtmlBuilder<Msg>): Html =>
-  h.div([h.Class('w-[37px]')], ['!'])
+  h.div([h.Class('w-[45px]')], ['!'])
 ```
 
-- src/ui/notice.ts:3:18 `shadcn/no-arbitrary-values`: "w-[37px]" hardcodes an off-token value. Use "w-9.25" instead (same value, on the scale). See the Crease design-system lint documentation for approved exceptions.
+- src/ui/notice.ts:3:18 `shadcn/no-arbitrary-values`: "w-[45px]" hardcodes an off-token value. Use "w-11.25" instead (same value, on the scale). See the Crease design-system lint documentation for approved exceptions.
 
 Good:
 

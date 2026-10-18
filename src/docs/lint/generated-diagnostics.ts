@@ -423,7 +423,7 @@ export const LINT_DIAGNOSTICS: Readonly<
   "no-arbitrary-values/arbitrary-width/tailwind": [
     {
       "ruleId": "shadcn/no-arbitrary-values",
-      "message": "\"w-[37px]\" hardcodes an off-token value. Use \"w-9.25\" instead (same value, on the scale). See the Crease design-system lint documentation for approved exceptions.",
+      "message": "\"w-[45px]\" hardcodes an off-token value. Use \"w-11.25\" instead (same value, on the scale). See the Crease design-system lint documentation for approved exceptions.",
       "line": 3,
       "column": 18,
       "endLine": 3,

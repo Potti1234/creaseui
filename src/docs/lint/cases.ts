@@ -358,7 +358,7 @@ export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
     'pleat',
     'src/pleat/notice.ts',
     'A raw color in a Pleat style',
-    'A hex color does not change with the theme or dark mode; Pleat components read colors from tokens.',
+    'A hex color does not change with the theme: in dark mode it stays dark red on a dark surface. Pleat components read colors from tokens.',
     `import { Style } from '@pleat/core'
 
 export const styles = { root: Style.make({ color: '#b91c1c' }) }
@@ -377,7 +377,7 @@ export const styles = { root: Style.make({ color: tokens.destructive }) }
     'tailwind',
     'src/ui/notice.ts',
     'A palette color in a component',
-    'text-red-700 is a fixed palette color: it ignores the theme and stays the same in dark mode.',
+    'text-red-700 is a fixed palette color: it ignores the theme, so in dark mode it stays dark red on a dark surface.',
     `export const notice = <Msg>(h: HtmlBuilder<Msg>): Html =>
   h.div([h.Class('text-red-700')], ['Payment failed'])
 `,
@@ -393,9 +393,9 @@ export const styles = { root: Style.make({ color: tokens.destructive }) }
     'tailwind',
     'src/ui/notice.ts',
     'An arbitrary size in a component',
-    'w-[37px] sits off the spacing scale, so it never lines up with the components around it.',
+    'w-[45px] sits off the spacing scale, so it is wider than the size-9 controls next to it.',
     `export const notice = <Msg>(h: HtmlBuilder<Msg>): Html =>
-  h.div([h.Class('w-[37px]')], ['!'])
+  h.div([h.Class('w-[45px]')], ['!'])
 `,
     `export const notice = <Msg>(h: HtmlBuilder<Msg>): Html =>
   h.div([h.Class('size-9')], ['!'])

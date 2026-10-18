@@ -168,15 +168,55 @@ export const lintPreview = <Msg>(
       )
     case 'pleat-prop-limits/raw-color':
     case 'no-raw-colors/palette-class':
-      return one(
-        h.span(
-          [h.Style({ color: bad ? '#b91c1c' : DESTRUCTIVE })],
-          ['Payment failed'],
+      return h.div(
+        [
+          h.Style({
+            display: 'grid',
+            gap: '0.75rem',
+            gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+            width: '100%',
+          }),
+        ],
+        ['light', 'dark'].map(scope =>
+          h.div(
+            [
+              h.Class(scope),
+              h.Style({
+                background: 'var(--background)',
+                border: '1px solid var(--border)',
+                borderRadius: 'var(--radius)',
+                color: 'var(--foreground)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.25rem',
+                padding: '0.75rem 1rem',
+              }),
+            ],
+            [
+              h.span(
+                [
+                  h.Style({
+                    color: 'var(--muted-foreground)',
+                    fontSize: '0.75rem',
+                  }),
+                ],
+                [scope === 'dark' ? 'Dark theme' : 'Light theme'],
+              ),
+              h.span(
+                [
+                  h.Style({
+                    color: bad ? '#b91c1c' : DESTRUCTIVE,
+                    fontWeight: '500',
+                  }),
+                ],
+                ['Payment failed'],
+              ),
+            ],
+          ),
         ),
       )
     case 'no-arbitrary-values/arbitrary-width': {
-      const size = bad ? '37px' : '2.25rem'
-      return one(
+      const box = (width: string, label: string): Html =>
         h.div(
           [
             h.Style({
@@ -186,11 +226,14 @@ export const lintPreview = <Msg>(
               display: 'flex',
               height: '2.25rem',
               justifyContent: 'center',
-              width: size,
+              width,
             }),
           ],
-          ['!'],
-        ),
+          [label],
+        )
+      return h.div(
+        [h.Style({ display: 'flex', gap: '0.5rem' })],
+        [box(bad ? '45px' : '2.25rem', '!'), box('2.25rem', '?')],
       )
     }
     case 'css/global-component-rule':
