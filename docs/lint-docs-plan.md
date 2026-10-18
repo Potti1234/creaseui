@@ -85,3 +85,4 @@ Each renderer site shows its own examples: the Tailwind site uses `class`/Tailwi
   - `@/ui/heading`, `@/ui/typography` and `@/ui/code-block` are vite-aliased per site.
   - `lint-content.ts` renders the cases filtered by `renderer` from `@/site/config`; diagnostics keyed by `rule/id/renderer`.
 - Written (uncommitted): previews.ts, kit.tailwind.ts, site/lint-kit.{stylex,pleat}.ts, rule page in lint-content.ts, kits passed from the 3 getting-started view files. Next: tsc, eslint, screenshots, commit.
+- Commits: ab37dce rule pages, 9342e43 CLI pages, 74cbe68 search+e2e, next: docs/lint-rules.md + llms. Then build + test:sites lint-docs spec + full npm run check + PR.

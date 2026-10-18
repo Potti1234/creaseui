@@ -9,7 +9,7 @@ test('lint overview lists every rule in its group', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Lint rules')
   for (const group of LINT_RULE_GROUPS) {
     await expect(
-      page.getByText(group.title, { exact: true }).first(),
+      page.getByText(group.label, { exact: true }).first(),
     ).toBeVisible()
     for (const rule of group.rules)
       await expect(

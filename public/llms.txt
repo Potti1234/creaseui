@@ -17,6 +17,7 @@
 
 - Dashboard, users and settings: /docs/dashboard-recipe.md — install with `Potti1234/creaseui/dashboard-01`
 - Supported icons: /docs/icon-inventory.md
+- Lint rules with bad and good examples: /docs/lint-rules.md (web: /docs/lint)
 
 ## Components
 
