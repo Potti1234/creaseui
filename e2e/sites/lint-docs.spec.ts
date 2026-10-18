@@ -41,6 +41,37 @@ for (const path of ['/docs/components/button', '/docs/getting-started'])
     ).toHaveText(first.title)
   })
 
+test('docs sidebar keeps its scroll position on lint and guide pages', async ({
+  page,
+}) => {
+  await page.goto('/docs/components/button')
+  const sidebar = page.locator('aside').first()
+  await sidebar.evaluate(element => {
+    element.scrollTop = 3000
+  })
+  for (const href of [
+    '/docs/lint/no-raw-controls',
+    '/docs/lint/theme',
+    '/docs/getting-started',
+    '/docs/lint',
+    '/docs/components/accordion',
+  ]) {
+    await page
+      .locator(`aside a[href="${href}"]`)
+      .first()
+      .evaluate(link => (link as HTMLAnchorElement).click())
+    await expect(page).toHaveURL(new RegExp(`${href}$`, 'u'))
+    await expect
+      .poll(() =>
+        page
+          .locator('aside')
+          .first()
+          .evaluate(el => el.scrollTop),
+      )
+      .toBe(3000)
+  }
+})
+
 for (const group of LINT_RULE_GROUPS)
   for (const rule of group.rules)
     test(`lint rule page ${rule.id}`, async ({ page }, info) => {
