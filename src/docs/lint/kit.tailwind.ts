@@ -35,7 +35,7 @@ export const tailwindLintKit: LintRendererKit = {
           props.broken === 'restyle' ? 'default' : (props.variant ?? 'default'),
         class:
           props.broken === 'restyle'
-            ? 'bg-red-500 text-white hover:bg-red-500'
+            ? 'rounded-none bg-red-500 text-white hover:bg-red-500'
             : props.broken === 'padding'
               ? 'self-start p-6'
               : props.fullWidth === true

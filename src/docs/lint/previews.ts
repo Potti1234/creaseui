@@ -37,6 +37,7 @@ export type LintRendererKit = Readonly<{
 }>
 
 const DESTRUCTIVE = 'var(--destructive)'
+const FIXED_PRIMARY = 'oklch(0.577 0.245 27.325)'
 
 const heading = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
   Heading.heading({ level: 3, children: [text] }, h)
@@ -194,12 +195,17 @@ export const lintPreview = <Msg>(
     }
     case 'css/global-component-rule':
       return one(
-        button(
-          bad
-            ? { broken: 'restyle', children: ['Save changes'] }
-            : { children: ['Save changes'] },
-          h,
-        ),
+        bad
+          ? button({ broken: 'restyle', children: ['Save changes'] }, h)
+          : h.div(
+              [
+                h.Style({
+                  '--color-primary': FIXED_PRIMARY,
+                  '--primary': FIXED_PRIMARY,
+                }),
+              ],
+              [button({ children: ['Save changes'] }, h)],
+            ),
       )
     case 'theme/undefined-role':
       return one(
