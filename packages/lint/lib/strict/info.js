@@ -1,6 +1,10 @@
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 
+import ts from 'typescript'
+
+import { optionsFor } from './render-exports.js'
+
 /* Foldkit-aware project information for `creaseui-lint info` and `inspect`,
    read from the project itself: package versions, components.json aliases,
    the install receipt and the installed source. */
@@ -67,6 +71,37 @@ const matches = (artifact, name) =>
   ) ||
   (artifact.exports ?? []).some(record => record.name === name)
 
+/** Value and type exports per file, through `export *` and re-exports, as
+    the type checker sees them; undefined where a file can't be resolved. */
+const checkedExports = (rootDir, files) => {
+  const result = new Map()
+  if (files.length === 0) return result
+  try {
+    const program = ts.createProgram(files, optionsFor(rootDir, files))
+    const checker = program.getTypeChecker()
+    for (const file of files) {
+      const source = program.getSourceFile(file)
+      const symbol =
+        source === undefined ? undefined : checker.getSymbolAtLocation(source)
+      if (symbol === undefined) continue
+      const all = checker.getExportsOfModule(symbol)
+      const resolved = entry =>
+        entry.flags & ts.SymbolFlags.Alias
+          ? checker.getAliasedSymbol(entry)
+          : entry
+      result.set(file, {
+        names: all.map(entry => entry.name),
+        values: all
+          .filter(entry => resolved(entry).flags & ts.SymbolFlags.Value)
+          .map(entry => entry.name),
+      })
+    }
+  } catch {
+    /* fall back to the source text below */
+  }
+  return result
+}
+
 export const inspectComponent = ({ component, manifest, rootDir }) => {
   const receipt = readJson(manifest)
   if (receipt === undefined)
@@ -81,26 +116,37 @@ export const inspectComponent = ({ component, manifest, rootDir }) => {
     return {
       error: `${component} is not installed in this ${receipt.renderer} project. Install it with \`${install}\` and compose the installed source; if no Crease component fits, build a new domain component from installed ones instead of re-creating this one.`,
     }
+  const checked = checkedExports(
+    rootDir,
+    (artifact.files ?? [])
+      .map(file => path.resolve(rootDir, file.path))
+      .filter(file => existsSync(file) && /\.[cm]?[jt]sx?$/u.test(file)),
+  )
   const files = (artifact.files ?? []).map(file => {
     const absolute = path.join(rootDir, file.path)
     const source = existsSync(absolute) ? readFileSync(absolute, 'utf8') : null
+    const typed = checked.get(path.resolve(absolute))
     const program =
       source === null
         ? []
-        : PROGRAM.filter(name =>
-            new RegExp(
-              `^export (?:type|interface|const|function|class) ${name}\\b`,
-              'mu',
-            ).test(source),
-          )
+        : typed !== undefined
+          ? PROGRAM.filter(name => typed.names.includes(name))
+          : PROGRAM.filter(name =>
+              new RegExp(
+                `^export (?:type|interface|const|function|class) ${name}\\b`,
+                'mu',
+              ).test(source),
+            )
     const sourceExports =
       source === null
         ? []
-        : [
-            ...source.matchAll(
-              /^export (?:const|function|class|let) ([A-Za-z_$][\w$]*)/gmu,
-            ),
-          ].map(match => match[1])
+        : typed !== undefined
+          ? typed.values.filter(name => !PROGRAM.includes(name))
+          : [
+              ...source.matchAll(
+                /^export (?:const|function|class|let) ([A-Za-z_$][\w$]*)/gmu,
+              ),
+            ].map(match => match[1])
     return {
       imports:
         source === null
@@ -163,6 +209,9 @@ export const inspectComponent = ({ component, manifest, rootDir }) => {
     stateOwnership: stateful
       ? 'parent-model: keep its Model in yours, route its Message through update and render view'
       : 'stateless: call it from your view with props',
+    docs: stateful
+      ? `Stateful Foldkit component (${program.join(', ')}): embed its Model in your Model, start it from init, wrap its Message in one of yours and forward it to its update, and render it with view and your HtmlBuilder. Customize the installed source, not global CSS.`
+      : 'Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS.',
     stylingOwner: `${receipt.renderer} component source (customize the installed file, not global CSS)`,
   }
 }

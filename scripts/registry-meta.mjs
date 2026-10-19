@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
 import { CONTRACT_REPLACEMENTS } from '../packages/lint/lib/strict/contracts.js'
@@ -39,13 +39,26 @@ const exportNames = source =>
     ),
   ].sort()
 
-export const programParts = source =>
-  ['Model', 'Message', 'init', 'update', 'subscriptions', 'view'].filter(name =>
-    new RegExp(
-      `^export (?:type|interface|const|function|class) ${name}\\b`,
-      'mu',
-    ).test(source),
+/* Shared state modules a component re-exports (`export * from
+   '@/lib/sidebar-state'`) supply its program parts. */
+const reexportedSources = source =>
+  [...source.matchAll(/^export \*\s+from\s+['"]@\/lib\/([\w./-]+)['"]/gmu)]
+    .map(match => join(process.cwd(), 'src/lib', `${match[1]}.ts`))
+    .filter(file => existsSync(file))
+    .map(file => readFileSync(file, 'utf8'))
+
+export const programParts = source => {
+  const sources = [source, ...reexportedSources(source)]
+  return ['Model', 'Message', 'init', 'update', 'subscriptions', 'view'].filter(
+    name =>
+      sources.some(text =>
+        new RegExp(
+          `^export (?:type|interface|const|function|class) ${name}\\b`,
+          'mu',
+        ).test(text),
+      ),
   )
+}
 
 /* `component` is the Tailwind item name the component shares across renderers. */
 export const creaseMeta = ({ category, component, renderer, source }) => {

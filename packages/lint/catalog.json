@@ -48,7 +48,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/alert-dialog",
       "item": "alert-dialog",
       "renderer": "tailwind",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Alert Dialog"
     },
     {
@@ -284,7 +284,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/carousel",
       "item": "carousel",
       "renderer": "tailwind",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Carousel"
     },
     {
@@ -499,7 +499,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/data-table",
       "item": "data-table",
       "renderer": "tailwind",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Data Table"
     },
     {
@@ -1609,7 +1609,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/sidebar",
       "item": "sidebar",
       "renderer": "tailwind",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Sidebar"
     },
     {
@@ -1864,7 +1864,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/toast",
       "item": "toast",
       "renderer": "tailwind",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Toast"
     },
     {
@@ -2112,7 +2112,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-alert-dialog",
       "item": "stylex-alert-dialog",
       "renderer": "stylex",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Alert Dialog"
     },
     {
@@ -2348,7 +2348,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-carousel",
       "item": "stylex-carousel",
       "renderer": "stylex",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Carousel"
     },
     {
@@ -2563,7 +2563,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-data-table",
       "item": "stylex-data-table",
       "renderer": "stylex",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Data Table"
     },
     {
@@ -3674,7 +3674,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-sidebar",
       "item": "stylex-sidebar",
       "renderer": "stylex",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Sidebar"
     },
     {
@@ -3929,7 +3929,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-toast",
       "item": "stylex-toast",
       "renderer": "stylex",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Toast"
     },
     {
@@ -4177,7 +4177,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-alert-dialog",
       "item": "pleat-alert-dialog",
       "renderer": "pleat",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Alert Dialog"
     },
     {
@@ -4413,7 +4413,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-carousel",
       "item": "pleat-carousel",
       "renderer": "pleat",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Carousel"
     },
     {
@@ -4628,7 +4628,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-data-table",
       "item": "pleat-data-table",
       "renderer": "pleat",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Data Table"
     },
     {
@@ -5739,7 +5739,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-sidebar",
       "item": "pleat-sidebar",
       "renderer": "pleat",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Sidebar"
     },
     {
@@ -5994,7 +5994,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-toast",
       "item": "pleat-toast",
       "renderer": "pleat",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Toast"
     },
     {

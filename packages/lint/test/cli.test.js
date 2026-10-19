@@ -385,6 +385,41 @@ test('--help prints usage and unknown options exit 2 with usage', () => {
   assert.doesNotMatch(unknown.stderr, /\n\s+at /u)
 })
 
+test('inspect follows re-exported program parts', () => {
+  const directory = scratch()
+  writeFileSync(
+    path.join(directory, 'src/design/sidebar-state.ts'),
+    [
+      'export type Model = { open: boolean }',
+      "export type Message = { _tag: 'Toggled' }",
+      'export const init = (): Model => ({ open: true })',
+      'export const update = (model: Model, _message: Message): Model => ({ open: !model.open })',
+      '',
+    ].join('\n'),
+  )
+  writeFileSync(
+    path.join(directory, 'src/design/sidebar.ts'),
+    [
+      "import type { Html, HtmlBuilder } from 'foldkit/html'",
+      "export * from './sidebar-state'",
+      "export const sidebar = (h: HtmlBuilder<unknown>): Html => h.aside([], ['Nav'])",
+      '',
+    ].join('\n'),
+  )
+  assert.equal(
+    run(directory, 'init', '--renderer', 'pleat', '--components', 'src/design')
+      .status,
+    0,
+  )
+  const result = run(directory, 'inspect', '--component', 'sidebar', '--json')
+  assert.equal(result.status, 0, result.stdout + result.stderr)
+  const detail = JSON.parse(result.stdout)
+  assert.deepEqual(detail.program, ['Model', 'Message', 'init', 'update'])
+  assert.match(detail.stateOwnership, /^parent-model/u)
+  assert.match(detail.docs, /forward it to its update/u)
+  rmSync(directory, { force: true, recursive: true })
+})
+
 test('inspect finds renderer-directory installs by item, file or export name', () => {
   const directory = scratch()
   writeFileSync(
