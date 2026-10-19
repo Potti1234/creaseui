@@ -39,6 +39,11 @@ export const aliasShell = (items: string[]) => S({ children: items })
 // based on Sidebar
 export const fakeShell = (items: string[]) => ({ tag: 'div', children: items, base: 'sidebar' })
 export const ghostShell = (items: string[]) => sidebar({ children: items })
+const nav = (items: string[]) => sidebar({ children: items })
+export const helperShell = (items: string[]) => ({ tag: 'main', children: [nav(items)] })
+export const mappedShell = (groups: string[][]) => ({ tag: 'main', children: groups.map(items => sidebar({ children: items })) })
+export const unusedClosure = (items: string[]) => { const unused = () => sidebar({ children: items }); return { tag: 'main', children: items, unused: typeof unused } }
+export const discardedCall = (items: string[]) => { sidebar({ children: items }); return { tag: 'main', children: items } }
 `,
   )
   const shell = name => ({
@@ -77,6 +82,10 @@ export const ghostShell = (items: string[]) => sidebar({ children: items })
             'aliasShell',
             'fakeShell',
             'ghostShell',
+            'helperShell',
+            'mappedShell',
+            'unusedClosure',
+            'discardedCall',
           ].map(shell),
           files: [
             {
@@ -99,7 +108,15 @@ export const ghostShell = (items: string[]) => sidebar({ children: items })
     rootDir: root,
   })
   rmSync(root, { force: true, recursive: true })
-  assert.equal(problems.length, 2, problems.join('\n'))
+  assert.equal(problems.length, 4, problems.join('\n'))
+  for (const name of ['unusedClosure', 'discardedCall'])
+    assert.match(
+      problems.join('\n'),
+      new RegExp(
+        `\`${name}\` declares foundation navigation\\.sidebar but never renders it: the call's result does not reach the returned view`,
+        'u',
+      ),
+    )
   assert.match(
     problems.join('\n'),
     /`fakeShell` declares foundation navigation\.sidebar but never renders it/u,

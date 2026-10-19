@@ -49,6 +49,130 @@ const calleeSymbol = (checker, expression) => {
   return symbol
 }
 
+const strip = node => {
+  while (
+    node !== undefined &&
+    (ts.isParenthesizedExpression(node) ||
+      ts.isAsExpression(node) ||
+      ts.isSatisfiesExpression(node) ||
+      ts.isNonNullExpression(node))
+  )
+    node = node.expression
+  return node
+}
+
+const functionOf = declaration => {
+  if (declaration === undefined) return undefined
+  if (
+    ts.isFunctionDeclaration(declaration) ||
+    ts.isFunctionExpression(declaration) ||
+    ts.isArrowFunction(declaration)
+  )
+    return declaration
+  if (ts.isVariableDeclaration(declaration)) {
+    const initializer = strip(declaration.initializer)
+    if (
+      initializer !== undefined &&
+      (ts.isArrowFunction(initializer) || ts.isFunctionExpression(initializer))
+    )
+      return initializer
+  }
+  return undefined
+}
+
+/** Expressions a function returns, not counting nested functions. */
+const returnedOf = fn => {
+  if (fn.body === undefined) return []
+  if (!ts.isBlock(fn.body)) return [fn.body]
+  const returned = []
+  const walk = node => {
+    if (ts.isFunctionLike(node)) return
+    if (ts.isReturnStatement(node) && node.expression !== undefined)
+      returned.push(node.expression)
+    ts.forEachChild(node, walk)
+  }
+  ts.forEachChild(fn.body, walk)
+  return returned
+}
+
+/* Contracts whose calls flow into the returned view: through children,
+   props, branches, local consts, callbacks and private helpers. */
+const renderedContracts = (checker, declaration, contractOf) => {
+  const rendered = new Set()
+  const seen = new Set()
+  const declarationOf = symbol =>
+    symbol?.valueDeclaration ?? symbol?.declarations?.[0]
+  const output = (node, depth) => {
+    node = strip(node)
+    if (node === undefined || depth > 12) return
+    if (ts.isCallExpression(node)) {
+      const symbol = calleeSymbol(checker, node.expression)
+      const contract = contractOf(symbol)
+      if (contract !== undefined) rendered.add(contract)
+      else helper(declarationOf(symbol), depth)
+      for (const argument of node.arguments) output(argument, depth)
+      return
+    }
+    if (ts.isArrayLiteralExpression(node)) {
+      for (const element of node.elements)
+        output(
+          ts.isSpreadElement(element) ? element.expression : element,
+          depth,
+        )
+      return
+    }
+    if (ts.isObjectLiteralExpression(node)) {
+      for (const property of node.properties)
+        if (ts.isPropertyAssignment(property))
+          output(property.initializer, depth)
+        else if (ts.isShorthandPropertyAssignment(property))
+          output(property.name, depth)
+        else if (ts.isSpreadAssignment(property))
+          output(property.expression, depth)
+      return
+    }
+    if (ts.isConditionalExpression(node)) {
+      output(node.whenTrue, depth)
+      output(node.whenFalse, depth)
+      return
+    }
+    if (ts.isBinaryExpression(node)) {
+      output(node.left, depth)
+      output(node.right, depth)
+      return
+    }
+    if (ts.isArrowFunction(node) || ts.isFunctionExpression(node)) {
+      helper(node, depth)
+      return
+    }
+    if (ts.isIdentifier(node)) {
+      const symbol = calleeSymbol(checker, node)
+      const contract = contractOf(symbol)
+      if (contract !== undefined) {
+        rendered.add(contract)
+        return
+      }
+      const target = declarationOf(symbol)
+      if (target !== undefined && ts.isVariableDeclaration(target)) {
+        if (seen.has(target)) return
+        seen.add(target)
+        output(target.initializer, depth + 1)
+      } else helper(target, depth)
+    }
+  }
+  const helper = (target, depth) => {
+    const fn = functionOf(target)
+    if (fn === undefined || seen.has(fn)) return
+    seen.add(fn)
+    for (const returned of returnedOf(fn)) output(returned, depth + 1)
+  }
+  const fn = functionOf(declaration)
+  if (fn !== undefined) helper(fn, 0)
+  else if (ts.isVariableDeclaration(declaration))
+    output(declaration.initializer, 0)
+  return rendered
+}
+
 export const verifyFoundations = ({ ownership, rootDir }) => {
   const claims = []
   const providers = new Set()
@@ -86,27 +210,34 @@ export const verifyFoundations = ({ ownership, rootDir }) => {
         )
       continue
     }
-    const rendered = new Set()
+    const contractOf = symbol => {
+      const target = symbol?.valueDeclaration ?? symbol?.declarations?.[0]
+      return target === undefined
+        ? undefined
+        : ownership
+            .exportsOf(path.resolve(target.getSourceFile().fileName))
+            ?.get(symbol.name)?.contract
+    }
+    /* Any resolved call, rendered or not: tells a discarded call apart from
+       a missing one in the message. */
+    const called = new Set()
     const visit = node => {
       if (ts.isCallExpression(node)) {
-        const symbol = calleeSymbol(checker, node.expression)
-        const target = symbol?.valueDeclaration ?? symbol?.declarations?.[0]
-        if (target !== undefined) {
-          const owned = ownership
-            .exportsOf(path.resolve(target.getSourceFile().fileName))
-            ?.get(symbol.name)
-          if (owned?.contract !== undefined) rendered.add(owned.contract)
-        }
+        const contract = contractOf(calleeSymbol(checker, node.expression))
+        if (contract !== undefined) called.add(contract)
       }
       ts.forEachChild(node, visit)
     }
     visit(declaration)
+    const rendered = renderedContracts(checker, declaration, contractOf)
     for (const foundation of record.foundations) {
       if (foundation === record.contract || rendered.has(foundation)) continue
       problems.push(
-        providers.has(foundation)
-          ? `${where} declares foundation ${foundation} but never renders it; call the installed component (imports, comments and names do not count)`
-          : `${where} declares foundation ${foundation}, but no installed export provides it; install the component before building on it`,
+        called.has(foundation)
+          ? `${where} declares foundation ${foundation} but never renders it: the call's result does not reach the returned view (unused closures and discarded calls do not count)`
+          : providers.has(foundation)
+            ? `${where} declares foundation ${foundation} but never renders it; call the installed component (imports, comments and names do not count)`
+            : `${where} declares foundation ${foundation}, but no installed export provides it; install the component before building on it`,
       )
     }
   }
