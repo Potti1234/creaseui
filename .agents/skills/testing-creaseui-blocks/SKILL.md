@@ -274,3 +274,28 @@ Toasts die before the click→console round-trip completes. Arm a MutationObserv
   missing main or use document.body.
 - Run playwright from inside the repo dir (scripts/*.tmp.cjs) so require('playwright')
   resolves; node -e also fails outside the repo.
+
+## /create parametric editor (PR #33)
+
+- Knobs are segmented rows `[data-seg="Label"]` (Style, Icons, Menu accent, ...) —
+  click a button inside; the selected one reads `bg-white` on tailwind only, so
+  assert `data-crease-*`/`data-crease-style` on `[data-crease-board-theme]` instead.
+- The footer `<details>` "Open Preset" expands to `#create-preset-input` +
+  "Apply Preset". Typing clears `presetError`, and applying a bad code mounts
+  it — each toggles a ~28px text line, so the button's rect moves between your
+  query and your click. Re-resolve the input's and the button's
+  `getBoundingClientRect()` AFTER typing, immediately before clicking Apply.
+- `presetInput` is a controlled foldkit input — same focus-race rules apply
+  (click the input, wait ~1s, type).
+- Codes decode via `parsePresetInput`: bare `c...`/`a...`/`b...` codes,
+  `--preset X` flags, and shadcn create URLs all accepted; applied codes
+  re-encode to `c...` in the footer display. Garbage shows a red "Enter a valid
+  CreaseUI preset code, URL, or --preset flag." line.
+- The `--preset cXXX` code display is a `<div>`, not a button — no
+  click-to-copy; read it via DOM. "Copy Registry JSON" is the only copy
+  control (writes `presetRegistryJson`, verify via omnibox Ctrl+L Ctrl+V).
+- Schemes: preset tiles may carry a scheme (e.g. Brutalist→light,
+  Terminal→dark) that flips the toolbar toggle; a pasted code does NOT carry
+  scheme, so a manually-chosen scheme persists after Apply.
+- 'Nova' names both a preset tile and a Style seg option — scope selectors to
+  `[data-seg="Style"]` or the tile grid.
