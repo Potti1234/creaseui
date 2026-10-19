@@ -241,6 +241,29 @@ export const analyzeCall = ({
   strict,
 }) => {
   const findings = []
+  /* The forwarding exemption covers only values read from the wrapper's own
+     parameters (`props`, `props.class`, `const { class: c } = props`);
+     factories, constants and other locals are still checked. */
+  const ownProps = (node, seen = new Set()) => {
+    if (!forwarding) return false
+    node = unwrap(node)
+    if (node?.type === 'MemberExpression' && !node.computed)
+      return ownProps(node.object, seen)
+    if (node?.type !== 'Identifier') return false
+    const variable = analysis.variableOf(node)
+    if (variable === null || seen.has(variable) || variable.defs.length !== 1)
+      return false
+    seen.add(variable)
+    const definition = variable.defs[0]
+    if (definition.type === 'Parameter')
+      return definition.node.parent?.type !== 'CallExpression'
+    return (
+      definition.type === 'Variable' &&
+      definition.parent.kind === 'const' &&
+      definition.node.init !== null &&
+      ownProps(definition.node.init, seen)
+    )
+  }
   const violation = (node, message) =>
     findings.push({ kind: 'violation', message, node })
   const unverifiable = (node, message) =>
@@ -266,7 +289,7 @@ export const analyzeCall = ({
   const opaque = (node, entries) => {
     /* An owned source passing its own props on is the owner's contract;
        literal UI props in it are still checked. */
-    if (forwarding) return
+    if (ownProps(node)) return
     const fields = typedFields(node)
     const name = context.sourceCode.getText(node)
     if (fields === null) {
@@ -491,7 +514,7 @@ export const analyzeCall = ({
       }
     }
     /* An owned source passing its own `layoutStyle` prop on. */
-    if (forwarding && node.type === 'MemberExpression') return
+    if (ownProps(node)) return
     violation(
       node,
       `\`${slot}\` on ${label(record)} accepts only layoutStyle()/layoutWhen() placement values, not arbitrary style objects or factories.`,
@@ -578,7 +601,7 @@ export const analyzeCall = ({
         }
         const tokens = classValues(analysis, value)
         if (tokens === null) {
-          if (forwarding) continue
+          if (ownProps(value)) continue
           unverifiable(
             value,
             `The \`class\` value for ${label(record)} cannot be resolved to static placement utilities.`,

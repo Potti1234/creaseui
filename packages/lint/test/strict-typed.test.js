@@ -307,6 +307,30 @@ const cases = {
     `${header}import { button } from '@design/button'\nexport const view = (h: HtmlBuilder<unknown>): Html => button({ children: ['Close'], class: 'absolute top-2 -right-2 inset-x-0' }, h)`,
     [],
   ],
+  'tailwind-raw-forward-props': [
+    `${header}import { button, type ButtonProps } from '@design/button'\nexport const view = (props: ButtonProps, h: HtmlBuilder<unknown>): Html => button(props, h)`,
+    [],
+  ],
+  'tailwind-raw-forward-class': [
+    `${header}import { button, type ButtonProps } from '@design/button'\ntype Props = ButtonProps & { readonly class?: string }\nexport const view = (props: Props, h: HtmlBuilder<unknown>): Html => {\n  const { class: placement } = props\n  return button({ children: props.children, class: placement }, h)\n}`,
+    [],
+  ],
+  'tailwind-raw-literal': [
+    `${header}import { button, type ButtonProps } from '@design/button'\nexport const view = (h: HtmlBuilder<unknown>): Html => button({ children: ['Bad'], class: 'h-3' }, h)`,
+    ['crease/component-contract'],
+  ],
+  'tailwind-raw-factory': [
+    `${header}import { button, type ButtonProps } from '@design/button'\nconst makeProps = () => ({ children: ['Bad'], class: 'h-3' })\nexport const view = (h: HtmlBuilder<unknown>): Html => button(makeProps(), h)`,
+    ['crease/no-unverifiable-ui'],
+  ],
+  'tailwind-raw-member-constant': [
+    `${header}import { button, type ButtonProps } from '@design/button'\nconst appearance = { paint: 'h-3' }\nexport const view = (h: HtmlBuilder<unknown>): Html => button({ children: ['Bad'], class: appearance.paint }, h)`,
+    ['crease/no-unverifiable-ui'],
+  ],
+  'tailwind-raw-callback-parameter': [
+    `${header}import { button, type ButtonProps } from '@design/button'\nexport const view = (h: HtmlBuilder<unknown>): Html => h.span([], ['h-3'].map(paint => button({ children: ['Bad'], class: paint }, h)))`,
+    ['crease/no-unverifiable-ui'],
+  ],
   'tailwind-control-fixed': [
     `${header}import { button } from '@design/button'\nexport const view = (h: HtmlBuilder<unknown>): Html => button({ children: ['Pinned'], class: 'fixed top-0' }, h)`,
     ['crease/component-contract'],
@@ -389,13 +413,24 @@ before(async () => {
   /* Tailwind cases need their own manifest: the lock pins one renderer. */
   fs.cpSync(fixture, tailwindRoot, { recursive: true })
   const lock = path.join(tailwindRoot, 'crease.lock.json')
+  const tailwindManifest = JSON.parse(fs.readFileSync(lock, 'utf8'))
+  /* Owned renderers with a narrow raw grant: own-props forwarding passes,
+     anything else reaching Button is still checked (review R3). */
+  tailwindManifest.artifacts.push({
+    id: 'probe/raw-forwarding',
+    files: Object.keys(cases)
+      .filter(name => name.startsWith('tailwind-raw-'))
+      .map(name => ({
+        path: `src/probes-tailwind/${name}.ts`,
+        rawElements: ['span', 'svg', 'path'],
+        rawRendering: true,
+        role: 'renderer',
+      })),
+    exports: [],
+  })
   fs.writeFileSync(
     lock,
-    JSON.stringify(
-      { ...JSON.parse(fs.readFileSync(lock, 'utf8')), renderer: 'tailwind' },
-      null,
-      2,
-    ),
+    JSON.stringify({ ...tailwindManifest, renderer: 'tailwind' }, null, 2),
   )
   const tailwindProbes = path.join(tailwindRoot, 'src/probes-tailwind')
   fs.mkdirSync(tailwindProbes, { recursive: true })
