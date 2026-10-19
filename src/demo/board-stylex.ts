@@ -475,6 +475,154 @@ const styles = stylex.create({
     backgroundColor: boardTokens.text,
     color: boardTokens.textInverse,
   },
+  tokenGroupLabel: {
+    color: boardTokens.textSubtle,
+    fontSize: '0.625rem',
+    fontWeight: 600,
+    letterSpacing: '0.05em',
+    textTransform: 'uppercase',
+  },
+  tokenRow: {
+    borderColor: boardTokens.border,
+    borderRadius: foundationTokens.radiusMd,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    gap: '0.625rem',
+    paddingBlock: '0.5rem',
+    paddingInline: '0.625rem',
+    alignItems: 'center',
+    backgroundColor: {
+      default: boardTokens.panelField,
+      ':hover': boardTokens.hover,
+    },
+    display: 'flex',
+    textAlign: 'left',
+    width: '100%',
+  },
+  tokenRowOverridden: {
+    borderColor: boardTokens.focus,
+    backgroundColor: boardTokens.hover,
+  },
+  tokenSwatch: {
+    borderColor: boardTokens.border,
+    borderRadius: foundationTokens.radiusSm,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    flexShrink: 0,
+    height: '1.5rem',
+    width: '1.5rem',
+  },
+  tokenName: {
+    overflow: 'hidden',
+    color: boardTokens.text,
+    fontSize: '0.75rem',
+    fontWeight: 500,
+    lineHeight: '1rem',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  tokenValue: {
+    overflow: 'hidden',
+    color: boardTokens.textSubtle,
+    fontFamily:
+      'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
+    fontSize: '0.625rem',
+    lineHeight: '0.875rem',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  tokenCustomBadge: {
+    borderRadius: foundationTokens.radiusSm,
+    paddingBlock: '0.125rem',
+    paddingInline: '0.25rem',
+    backgroundColor: boardTokens.selected,
+    color: boardTokens.text,
+    flexShrink: 0,
+    fontSize: '0.5625rem',
+    fontWeight: 600,
+    textTransform: 'uppercase',
+  },
+  tokenContrastBadge: {
+    borderRadius: foundationTokens.radiusSm,
+    paddingBlock: '0.125rem',
+    paddingInline: '0.25rem',
+    flexShrink: 0,
+    fontSize: '0.5625rem',
+    fontWeight: 600,
+  },
+  tokenEditor: {
+    padding: '0.625rem',
+    borderColor: boardTokens.border,
+    borderRadius: foundationTokens.radiusMd,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    gap: '0.5rem',
+    backgroundColor: boardTokens.panelInput,
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  tokenEditorRow: {
+    gap: '0.5rem',
+    alignItems: 'center',
+    display: 'flex',
+  },
+  tokenColorInput: {
+    padding: 0,
+    borderWidth: 0,
+    backgroundColor: boardTokens.transparent,
+    cursor: interactionTokens.cursorAction,
+    flexShrink: 0,
+    height: '2rem',
+    width: '2.25rem',
+  },
+  tokenTextInput: {
+    borderColor: boardTokens.border,
+    borderRadius: foundationTokens.radiusSm,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    paddingInline: '0.5rem',
+    backgroundColor: boardTokens.panelInput,
+    color: boardTokens.text,
+    flexGrow: 1,
+    fontFamily:
+      'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
+    fontSize: '0.75rem',
+    height: '2rem',
+    minWidth: 0,
+  },
+  tokenResetButton: {
+    borderColor: boardTokens.border,
+    borderRadius: foundationTokens.radiusSm,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    paddingInline: '0.5rem',
+    backgroundColor: {
+      default: boardTokens.transparent,
+      ':hover': boardTokens.hover,
+    },
+    color: boardTokens.textMuted,
+    flexShrink: 0,
+    fontSize: '0.625rem',
+    fontWeight: 600,
+    height: '2rem',
+  },
+  tokenClearAll: {
+    borderColor: boardTokens.border,
+    borderRadius: foundationTokens.radiusSm,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    paddingBlock: '0.25rem',
+    paddingInline: '0.5rem',
+    color: boardTokens.textMuted,
+    fontSize: '0.625rem',
+    fontWeight: 600,
+  },
+  tokenHeader: {
+    gap: '0.5rem',
+    alignItems: 'center',
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
   segLabel: {
     color: boardTokens.textMuted,
     fontSize: '0.75rem',
@@ -705,8 +853,10 @@ export const Model = S.Struct({
   presetInput: S.String,
   presetError: S.NullOr(S.String),
   isPresetCopied: S.Boolean,
-  section: S.Literals(['theme', 'color', 'shape', 'type', 'motion']),
+  section: S.Literals(['theme', 'color', 'shape', 'type', 'motion', 'tokens']),
   scheme: S.Literals(['system', 'light', 'dark']),
+  tokenScheme: S.Literals(['light', 'dark']),
+  openToken: S.NullOr(S.String),
   canvas: S.Literals(['board', 'components', 'type', 'palette']),
   primitiveInspector: S.Struct({
     boxPadding: S.Literals(['responsive', 'none', 'sm', 'md', 'xl']),
@@ -798,8 +948,24 @@ export const Message = defineMessageUnion({
   },
   ChoseCreateTheme: { name: S.String },
   ChoseCreateSection: {
-    section: S.Literals(['theme', 'color', 'shape', 'type', 'motion']),
+    section: S.Literals([
+      'theme',
+      'color',
+      'shape',
+      'type',
+      'motion',
+      'tokens',
+    ]),
   },
+  ChoseCreateTokenScheme: {
+    scheme: S.Literals(['light', 'dark']),
+  },
+  ToggledCreateToken: { token: S.String },
+  ChangedCreateToken: {
+    token: S.String,
+    value: S.String,
+  },
+  ClickedResetCreateTokens: {},
   ChoseCreateScheme: { scheme: S.Literals(['system', 'light', 'dark']) },
   ChoseCreateCanvas: {
     canvas: S.Literals(['board', 'components', 'type', 'palette']),
@@ -860,6 +1026,8 @@ export const init = (): Model => ({
   isPresetCopied: false,
   section: 'theme',
   scheme: 'system',
+  tokenScheme: 'light',
+  openToken: null,
   canvas: 'board',
   primitiveInspector: {
     boxPadding: 'responsive',
@@ -1038,6 +1206,41 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           scheme: () => scheme,
         }),
       }),
+      ChoseCreateTokenScheme: ({ scheme }) => ({
+        model: modifyFields(model, {
+          tokenScheme: () => scheme,
+          openToken: () => null,
+        }),
+      }),
+      ToggledCreateToken: ({ token }) => ({
+        model: modifyFields(model, {
+          openToken: () => (model.openToken === token ? null : token),
+        }),
+      }),
+      ChangedCreateToken: ({ token, value }) => {
+        const overrides = { ...model.preset.overrides }
+        if (value === '') delete overrides[token]
+        else overrides[token] = value
+        const preset = { ...model.preset, overrides }
+        return {
+          model: modifyFields(model, {
+            preset: () => preset,
+            presetInput: () => Preset.encodePreset(preset),
+            presetError: () => null,
+          }),
+        }
+      },
+      ClickedResetCreateTokens: () => {
+        const preset = { ...model.preset, overrides: {} }
+        return {
+          model: modifyFields(model, {
+            preset: () => preset,
+            presetInput: () => Preset.encodePreset(preset),
+            presetError: () => null,
+            openToken: () => null,
+          }),
+        }
+      },
       ChoseCreateCanvas: ({ canvas }) => ({
         model: modifyFields(model, {
           canvas: () => canvas,
@@ -1618,6 +1821,204 @@ export const presetCustomizer = (
       [...children],
     )
 
+  /* tweakcn-style token editor: derived values plus per-scheme overrides. */
+  const tokenGroups: ReadonlyArray<
+    readonly [string, ReadonlyArray<Preset.OverridableToken>]
+  > = [
+    ['Primary', ['primary', 'primary-foreground']],
+    ['Secondary', ['secondary', 'secondary-foreground']],
+    ['Accent', ['accent', 'accent-foreground']],
+    ['Base', ['background', 'foreground']],
+    ['Card', ['card', 'card-foreground']],
+    ['Popover', ['popover', 'popover-foreground']],
+    ['Muted', ['muted', 'muted-foreground']],
+    ['Destructive', ['destructive', 'destructive-foreground']],
+    ['Border & Input', ['border', 'input', 'ring']],
+    ['Chart', ['chart-1', 'chart-2', 'chart-3', 'chart-4', 'chart-5']],
+    [
+      'Sidebar',
+      [
+        'sidebar',
+        'sidebar-foreground',
+        'sidebar-primary',
+        'sidebar-primary-foreground',
+        'sidebar-accent',
+        'sidebar-accent-foreground',
+      ],
+    ],
+  ]
+  const effectiveTokens = Preset.presetTokens(model.preset, model.tokenScheme)
+  const customCount = Object.keys(model.preset.overrides).length
+
+  const tokenEditor = (
+    token: string,
+    key: string,
+    value: string,
+    hex: Option.Option<string>,
+  ): Html => {
+    const setValue = (value: string): Message =>
+      Message['ChangedCreateToken']({ token: key, value })
+    return h.div(
+      [h.Class(className(styles.tokenEditor))],
+      [
+        h.div(
+          [h.Class(className(styles.tokenEditorRow))],
+          [
+            Option.isSome(hex)
+              ? h.input([
+                  h.Type('color'),
+                  h.Value(hex.value),
+                  h.AriaLabel(`${token} color`),
+                  h.OnInput(input =>
+                    setValue(
+                      Option.getOrElse(Preset.hexToToken(input), () => input),
+                    ),
+                  ),
+                  h.Class(className(reset.input, styles.tokenColorInput)),
+                ])
+              : h.span(
+                  [
+                    h.Class(className(styles.tokenSwatch)),
+                    h.Style({ background: value }),
+                  ],
+                  [],
+                ),
+            h.input([
+              h.Type('text'),
+              h.Value(Option.getOrElse(hex, () => value)),
+              h.AriaLabel(`${token} value`),
+              h.Placeholder('#rrggbb or oklch(…)'),
+              h.OnInput(input => {
+                const trimmed = input.trim()
+                const token_ = Option.getOrElse(
+                  Preset.hexToToken(trimmed),
+                  () =>
+                    /^(oklch|oklab|hsl|hsla|rgb|rgba|#)/iu.test(trimmed)
+                      ? trimmed
+                      : '',
+                )
+                return setValue(token_)
+              }),
+              h.Class(className(reset.input, styles.tokenTextInput)),
+            ]),
+            h.button(
+              [
+                h.Type('button'),
+                h.AriaLabel(`Reset ${token}`),
+                h.OnClick(setValue('')),
+                h.Class(className(reset.button, styles.tokenResetButton)),
+              ],
+              ['Reset'],
+            ),
+          ],
+        ),
+        h.p([h.Class(className(reset.text, styles.tokenValue))], [value]),
+      ],
+    )
+  }
+
+  const tokenRow = (token: Preset.OverridableToken): Html => {
+    const key = model.tokenScheme === 'dark' ? `dark:${token}` : token
+    const value = effectiveTokens[token] ?? ''
+    const overridden = key in model.preset.overrides
+    const open = model.openToken === key
+    const pair = token.endsWith('-foreground')
+      ? token.slice(0, -'-foreground'.length)
+      : null
+    const ratio =
+      pair === null
+        ? Option.none<number>()
+        : Preset.contrastRatio(value, effectiveTokens[pair] ?? '')
+    return h.div(
+      [h.DataAttribute('token', key)],
+      [
+        h.button(
+          [
+            h.Type('button'),
+            h.Id(`create-token-${key.replaceAll(':', '-')}`),
+            h.AriaExpanded(open),
+            h.OnClick(Message['ToggledCreateToken']({ token: key })),
+            h.Class(
+              className(
+                reset.button,
+                styles.tokenRow,
+                overridden && styles.tokenRowOverridden,
+              ),
+            ),
+          ],
+          [
+            h.span(
+              [
+                h.Class(className(styles.tokenSwatch)),
+                h.Style({ background: value }),
+              ],
+              [],
+            ),
+            h.span(
+              [h.Class(className(styles.section))],
+              [
+                h.span([h.Class(className(styles.tokenName))], [token]),
+                h.span([h.Class(className(styles.tokenValue))], [value]),
+              ],
+            ),
+            ...Option.match(ratio, {
+              onNone: () => [],
+              onSome: each => [
+                h.span(
+                  [
+                    h.Class(className(styles.tokenContrastBadge)),
+                    h.Style({
+                      backgroundColor:
+                        each >= 4.5
+                          ? 'rgb(52 199 89 / 0.2)'
+                          : each >= 3
+                            ? 'rgb(255 204 0 / 0.2)'
+                            : 'rgb(255 69 58 / 0.2)',
+                      color:
+                        each >= 4.5
+                          ? boardTokens.success
+                          : each >= 3
+                            ? 'rgb(255 214 10)'
+                            : boardTokens.error,
+                    }),
+                  ],
+                  [each.toFixed(1)],
+                ),
+              ],
+            }),
+            ...(overridden
+              ? [
+                  h.span(
+                    [h.Class(className(styles.tokenCustomBadge))],
+                    ['custom'],
+                  ),
+                ]
+              : []),
+          ],
+        ),
+        ...(open
+          ? [tokenEditor(token, key, value, Preset.tokenToHex(value))]
+          : []),
+      ],
+    )
+  }
+
+  const tokenSchemeTab = (scheme: Model['tokenScheme'], label: string): Html =>
+    h.button(
+      [
+        h.Type('button'),
+        h.OnClick(Message['ChoseCreateTokenScheme']({ scheme })),
+        h.Class(
+          className(
+            reset.button,
+            styles.sectionTab,
+            model.tokenScheme === scheme && styles.sectionTabActive,
+          ),
+        ),
+      ],
+      [label],
+    )
+
   const panes: Record<Model['section'], Html> = {
     theme: pane([
       h.div([h.Class(className(styles.tileGrid))], Preset.presets.map(tile)),
@@ -1660,6 +2061,38 @@ export const presetCustomizer = (
       knob('motion'),
       optionSeg('Easing', 'easing', Preset.EASINGS),
     ]),
+    tokens: pane([
+      h.div(
+        [h.Class(className(styles.tokenHeader))],
+        [
+          h.div(
+            [h.Class(className(styles.sectionTabs))],
+            [tokenSchemeTab('light', 'Light'), tokenSchemeTab('dark', 'Dark')],
+          ),
+          ...(customCount > 0
+            ? [
+                h.button(
+                  [
+                    h.Type('button'),
+                    h.OnClick(Message['ClickedResetCreateTokens']()),
+                    h.Class(className(reset.button, styles.tokenClearAll)),
+                  ],
+                  [`Clear ${customCount} custom`],
+                ),
+              ]
+            : []),
+        ],
+      ),
+      ...tokenGroups.map(([group, tokens]) =>
+        h.div(
+          [h.Class(className(styles.section))],
+          [
+            h.div([h.Class(className(styles.tokenGroupLabel))], [group]),
+            ...tokens.map(tokenRow),
+          ],
+        ),
+      ),
+    ]),
   }
 
   return h.aside(
@@ -1683,6 +2116,7 @@ export const presetCustomizer = (
               sectionTab('shape', 'Shape'),
               sectionTab('type', 'Type'),
               sectionTab('motion', 'Motion'),
+              sectionTab('tokens', 'Tokens'),
             ],
           ),
         ],
