@@ -283,6 +283,14 @@ export const sortedRows = <Row>(
   })
 }
 
+/* The rows in the order the grid shows them. Every row index in the model
+   (focus, editing, selection, context menu) points into this projection. */
+export const displayedRows = <Row>(
+  model: Model,
+  config: DataGridConfig<Row>,
+): ReadonlyArray<Row> =>
+  sortedRows(filteredRows(model, config), model.sorting, config)
+
 export const visibleColumnDefs = <Row>(
   model: Model,
   config: DataGridConfig<Row>,
@@ -299,7 +307,7 @@ const commitCell = <Row>(
   config: DataGridConfig<Row>,
 ): Model => {
   const column = columnById(config, columnId)
-  const target = filteredRows(model, config)[row]
+  const target = displayedRows(model, config)[row]
   if (column === undefined || target === undefined) return model
   const write = column.set ?? ((r: Row): Row => r)
   const snapshot = model.rows
@@ -321,7 +329,7 @@ const commitFiles = <Row>(
   config: DataGridConfig<Row>,
 ): Model => {
   const column = columnById(config, columnId)
-  const target = filteredRows(model, config)[row]
+  const target = displayedRows(model, config)[row]
   if (column?.setFiles === undefined || target === undefined) return model
   const writeFiles = column.setFiles
   const snapshot = model.rows
@@ -349,7 +357,7 @@ const moveFocus = <Row>(
   )
   const nextRow = Math.min(
     Math.max(model.focusedCell.row + dRow, 0),
-    filteredRows(model, config).length - 1,
+    displayedRows(model, config).length - 1,
   )
   return {
     ...model,
@@ -362,7 +370,69 @@ export const visibleColumns = (model: Model): Array<string> =>
 
 const emptyCell = { row: -1, column: '' }
 
+const PROJECTION_MESSAGES: ReadonlySet<Message['_tag']> = new Set([
+  'SetSorting',
+  'RemovedSort',
+  'ToggledSort',
+  'AddedFilter',
+  'RemovedFilter',
+])
+
+/* Sorting or filtering reorders the displayed rows; keep focus, the open
+   editor and the selection on the same records instead of the same indexes. */
+const reproject = <Row>(
+  before: Model,
+  after: Model,
+  config: DataGridConfig<Row>,
+): Model => {
+  const beforeKeys = displayedRows(before, config).map(config.rowKey)
+  const afterIndexes = new Map(
+    displayedRows(after, config).map((row, index) => [
+      config.rowKey(row),
+      index,
+    ]),
+  )
+  const move = (row: number): number => {
+    const key = beforeKeys[row]
+    return key === undefined ? -1 : (afterIndexes.get(key) ?? -1)
+  }
+  const cell = (current: { row: number; column: string }) => {
+    const row = move(current.row)
+    return row === -1 ? emptyCell : { row, column: current.column }
+  }
+  const editingCell = cell(after.editingCell)
+  const contextRow = move(after.contextMenu.row)
+  return {
+    ...after,
+    focusedCell: cell(after.focusedCell),
+    selectionAnchor: cell(after.selectionAnchor),
+    selectionEnd: cell(after.selectionEnd),
+    selectedRanges: [],
+    editingCell,
+    draftValue: editingCell.row === -1 ? '' : after.draftValue,
+    selectedRowIndexes: after.selectedRowIndexes
+      .map(move)
+      .filter(index => index !== -1),
+    lastSelectedRowIndex: move(after.lastSelectedRowIndex),
+    contextMenu:
+      contextRow === -1
+        ? { ...after.contextMenu, open: false, row: -1 }
+        : { ...after.contextMenu, row: contextRow },
+  }
+}
+
 export const update = <Row>(
+  model: Model,
+  message: Message,
+  config: DataGridConfig<Row>,
+): Model => {
+  const next = applyMessage(model, message, config)
+  return PROJECTION_MESSAGES.has(message._tag)
+    ? reproject(model, next, config)
+    : next
+}
+
+const applyMessage = <Row>(
   model: Model,
   message: Message,
   config: DataGridConfig<Row>,
@@ -376,7 +446,7 @@ export const update = <Row>(
         selectionEnd: { row: message.row, column: message.column },
       }
     case 'StartedEditing': {
-      const rows = filteredRows(model, config)
+      const rows = displayedRows(model, config)
       const column = columnById(config, message.column)
       /* boolean cells toggle immediately — tablecn's checkbox cell is the
          editor itself, there is no separate edit mode for it */
@@ -455,7 +525,7 @@ export const update = <Row>(
       )
     case 'ToggledCellBoolean': {
       const column = columnById(config, message.column)
-      const target = filteredRows(model, config)[message.row]
+      const target = displayedRows(model, config)[message.row]
       if (column === undefined || target === undefined) return model
       const checked = column.getBoolean?.(target) ?? false
       return commitCell(
@@ -478,7 +548,7 @@ export const update = <Row>(
     }
     case 'ToggledCellOption': {
       const column = columnById(config, message.column)
-      const target = filteredRows(model, config)[message.row]
+      const target = displayedRows(model, config)[message.row]
       if (column === undefined || target === undefined) return model
       const current = column.getOptions?.(target) ?? []
       const next = current.includes(message.option)
@@ -525,7 +595,7 @@ export const update = <Row>(
     case 'PickedCellFiles': {
       if (model.editingCell.row === -1) return model
       const column = columnById(config, model.editingCell.column)
-      const target = filteredRows(model, config)[model.editingCell.row]
+      const target = displayedRows(model, config)[model.editingCell.row]
       if (column === undefined || target === undefined) return model
       const next: Array<FileCellData> = message.files.map((file, index) => ({
         id: `${config.rowKey(target)}-upload-${String(Date.now())}-${String(index)}`,
@@ -544,7 +614,7 @@ export const update = <Row>(
     }
     case 'RemovedCellFile': {
       const column = columnById(config, message.column)
-      const target = filteredRows(model, config)[message.row]
+      const target = displayedRows(model, config)[message.row]
       if (column === undefined || target === undefined) return model
       return commitFiles(
         model,
@@ -610,7 +680,7 @@ export const update = <Row>(
       if (!message.checked) return { ...model, selectedRowIndexes: [] }
       return {
         ...model,
-        selectedRowIndexes: filteredRows(model, config).map((_, i) => i),
+        selectedRowIndexes: displayedRows(model, config).map((_, i) => i),
       }
     }
     case 'SetSorting':
@@ -708,11 +778,11 @@ export const update = <Row>(
       }
     }
     case 'AddedRow':
-      return insertRow(model, filteredRows(model, config).length, config)
+      return insertRow(model, displayedRows(model, config).length, config)
     case 'AddedRowAt':
       return insertRow(model, message.index, config)
     case 'DeletedRows': {
-      const rows = filteredRows(model, config)
+      const rows = displayedRows(model, config)
       const keys = new Set(
         message.indexes
           .map(index => rows[index])
@@ -1148,7 +1218,7 @@ const insertRow = <Row>(
   index: number,
   config: DataGridConfig<Row>,
 ): Model => {
-  const rows = filteredRows(model, config)
+  const rows = displayedRows(model, config)
   const key = `row_new_${String(Date.now())}`
   if (index >= rows.length || rows[index] === undefined) {
     /* append at end of the underlying array */
@@ -1182,7 +1252,7 @@ const deleteRow = <Row>(
   index: number,
   config: DataGridConfig<Row>,
 ): Model => {
-  const target = filteredRows(model, config)[index]
+  const target = displayedRows(model, config)[index]
   if (target === undefined) return model
   const targetKey = config.rowKey(target)
   return {
@@ -1206,7 +1276,7 @@ export const searchMatches = <Row>(
   if (query === '') return []
   const columns = visibleColumns(model)
   const matches: Array<GridMatch> = []
-  filteredRows(model, config).forEach((row, rowIndex) => {
+  displayedRows(model, config).forEach((row, rowIndex) => {
     for (const column of columns) {
       if (cellText(row, column, config).toLowerCase().includes(query)) {
         matches.push({ row: rowIndex, column })

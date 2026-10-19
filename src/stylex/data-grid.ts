@@ -1868,11 +1868,7 @@ export const dataGrid = <Row>(
 ): Html => {
   const model = props.model
   const config = props.config
-  const people = DataGrid.sortedRows(
-    DataGrid.filteredRows(model, config),
-    model.sorting,
-    config,
-  )
+  const people = DataGrid.displayedRows(model, config)
   const columns = visibleCols(model, config)
   const rowH = DataGrid.rowHeightPx(model.rowHeight)
   const totalHeight = people.length * rowH
