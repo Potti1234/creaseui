@@ -338,9 +338,19 @@ export const analyzeCall = ({
       return entries
     }
     if (node?.type === 'ConditionalExpression') {
-      for (const branch of [node.consequent, node.alternate])
-        for (const [key, values] of read(branch, seen))
+      /* A key missing from one branch may be absent, so a spread of the
+         conditional keeps the earlier value reachable. */
+      const branches = [node.consequent, node.alternate].map(branch =>
+        read(branch, seen),
+      )
+      entries.optional = new Set()
+      for (const branch of branches)
+        for (const [key, values] of branch) {
           entries.set(key, [...(entries.get(key) ?? []), ...values])
+          if (branch.optional?.has(key)) entries.optional.add(key)
+        }
+      for (const key of entries.keys())
+        if (branches.some(branch => !branch.has(key))) entries.optional.add(key)
       return entries
     }
     if (node?.type !== 'ObjectExpression') {
@@ -349,8 +359,19 @@ export const analyzeCall = ({
     }
     for (const property of node.properties) {
       if (property.type === 'SpreadElement') {
-        for (const [key, values] of read(property.argument, seen))
-          entries.set(key, values)
+        const spread = read(property.argument, seen)
+        for (const [key, values] of spread) {
+          if (!spread.optional?.has(key)) {
+            entries.optional?.delete(key)
+            entries.set(key, values)
+            continue
+          }
+          if (!entries.has(key)) {
+            entries.optional ??= new Set()
+            entries.optional.add(key)
+          }
+          entries.set(key, [...(entries.get(key) ?? []), ...values])
+        }
         continue
       }
       const key = property.computed
@@ -365,6 +386,7 @@ export const analyzeCall = ({
         )
         continue
       }
+      entries.optional?.delete(key)
       entries.set(key, [property.value])
     }
     return entries

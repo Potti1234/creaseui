@@ -263,6 +263,18 @@ const cases = {
     `${header}import { button } from '@design/button'\nexport const view = (wide: boolean, h: HtmlBuilder<unknown>): Html => button({ children: ['X'], size: wide ? 'sm' : 'icon', class: 'w-full' }, h)`,
     ['crease/component-contract'],
   ],
+  'tailwind-icon-conditional-spread': [
+    `${header}import { button } from '@design/button'\nexport const view = (compact: boolean, h: HtmlBuilder<unknown>): Html => button({ children: ['X'], size: 'icon', ...(compact ? { size: 'sm' as const } : {}), class: 'w-3' }, h)`,
+    ['crease/component-contract'],
+  ],
+  'tailwind-icon-conditional-spread-final-override': [
+    `${header}import { button } from '@design/button'\nexport const view = (compact: boolean, h: HtmlBuilder<unknown>): Html => button({ children: ['X'], ...(compact ? { size: 'icon' as const } : {}), size: 'sm', class: 'w-3' }, h)`,
+    [],
+  ],
+  'tailwind-icon-spread-overwrite': [
+    `${header}import { button } from '@design/button'\nexport const view = (h: HtmlBuilder<unknown>): Html => button({ children: ['X'], size: 'icon', ...{ size: 'sm' as const }, class: 'w-3' }, h)`,
+    [],
+  ],
   'tailwind-icon-typed-union': [
     `${header}import { button } from '@design/button'\nexport const view = (size: 'sm' | 'icon', h: HtmlBuilder<unknown>): Html => button({ children: ['X'], size, class: 'basis-1/2' }, h)`,
     ['crease/component-contract'],
