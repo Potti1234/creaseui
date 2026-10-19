@@ -608,9 +608,18 @@ const doctor = async values => {
         [...text.matchAll(/var\((--[\w-]*\w)\s*\)/gu)].map(match => match[1]),
       ),
     ].filter(role => !declared.has(role) && !assigned.has(role))
-    if (undefinedRoles.length > 0)
+    const runtime = undefinedRoles.filter(role => RUNTIME_PROPERTIES.has(role))
+    const roles = undefinedRoles.filter(role => !RUNTIME_PROPERTIES.has(role))
+    const relative = toPosix(path.relative(rootDir, file))
+    if (roles.length > 0)
       fail(
-        `${toPosix(path.relative(rootDir, file))} reads ${undefinedRoles.join(', ')}, which no stylesheet defines; install the theme (crease-theme for Tailwind, crease-theme-css for StyleX and Pleat) and import it`,
+        `${relative} reads ${roles.join(', ')}, which no stylesheet defines; install the theme (crease-theme for Tailwind, crease-theme-css for StyleX and Pleat) and import it`,
+      )
+    /* Older snapshots read component runtime properties without a fallback;
+       no theme defines those, so pointing at the theme would mislead. */
+    if (runtime.length > 0)
+      fail(
+        `${relative} reads ${runtime.join(', ')} without a fallback: runtime properties CreaseUI components set on their own elements while they render, not theme roles, so installing a theme won't define them. This source predates the fallback; re-install it from the current registry or read it as var(${runtime[0]}, <default>)`,
       )
   }
   for (const problem of verifyFoundations({
@@ -732,6 +741,12 @@ const receiptPath = values => {
     rootDir,
   }
 }
+
+/* Custom properties CreaseUI components assign at runtime (catalog.json). */
+const RUNTIME_PROPERTIES = new Set(
+  JSON.parse(readFileSync(new URL('../catalog.json', import.meta.url), 'utf8'))
+    .runtimeProperties ?? [],
+)
 
 const catalog = values => {
   const { components } = JSON.parse(

@@ -501,6 +501,44 @@ test('re-running init registers new installs without rewriting the receipt or co
   rmSync(directory, { force: true, recursive: true })
 })
 
+test('doctor tells runtime component properties apart from missing theme roles', () => {
+  const directory = scratch()
+  mkdirSync(path.join(directory, 'node_modules/@creaseui'), { recursive: true })
+  symlinkSync(
+    fileURLToPath(new URL('..', import.meta.url)),
+    path.join(directory, 'node_modules/@creaseui/lint'),
+    'junction',
+  )
+  writeFileSync(
+    path.join(directory, 'components.json'),
+    JSON.stringify({ aliases: { ui: '@/design' } }),
+  )
+  writeFileSync(
+    path.join(directory, 'src/styles.css'),
+    ':root {\n  --color-border: oklch(0.9 0 0);\n}\n',
+  )
+  writeFileSync(path.join(directory, 'src/entry.ts'), "import './styles.css'\n")
+  const tokens = path.join(directory, 'src/design/interaction-tokens.ts')
+  writeFileSync(
+    tokens,
+    "export const tokens = { border: 'var(--color-border)', release: 'calc(var(--drawer-swipe-strength) * 400ms)' }\n",
+  )
+  assert.equal(run(directory, 'init', '--renderer', 'pleat').status, 0)
+  const stale = run(directory, 'doctor')
+  assert.equal(stale.status, 1, stale.stdout)
+  assert.match(
+    stale.stdout,
+    /reads --drawer-swipe-strength without a fallback: runtime properties CreaseUI components set/u,
+  )
+  assert.doesNotMatch(stale.stdout, /no stylesheet defines/u)
+  writeFileSync(
+    tokens,
+    "export const tokens = { border: 'var(--color-border)', release: 'calc(var(--drawer-swipe-strength, 1) * 400ms)' }\n",
+  )
+  assert.doesNotMatch(run(directory, 'doctor').stdout, /drawer-swipe-strength/u)
+  rmSync(directory, { force: true, recursive: true })
+})
+
 test('doctor reports theme roles that installed components read but no stylesheet defines', () => {
   const directory = scratch()
   mkdirSync(path.join(directory, 'node_modules/@creaseui'), { recursive: true })
