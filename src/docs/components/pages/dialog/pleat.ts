@@ -53,6 +53,11 @@ const styles = {
     height: '1px',
     width: '1px',
   }),
+  invited: Style.make({
+    margin: 0,
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+  }),
   copy: Style.make({ fontSize: '0.875rem', lineHeight: '1.25rem' }),
 }
 
@@ -430,7 +435,12 @@ export const dialogPleatPreview: ExamplePreviewProvider = <Msg>(
       trigger,
       dialog,
       ...(fixture.kind === 'invite'
-        ? [h.p([], [invitedSummaryText(preview.invited)])]
+        ? [
+            h.p(
+              [h.Class(className(styles.invited))],
+              [invitedSummaryText(preview.invited)],
+            ),
+          ]
         : []),
     ],
   )

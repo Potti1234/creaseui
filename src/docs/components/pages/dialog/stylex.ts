@@ -49,6 +49,7 @@ const styles = stylex.create({
     height: '1px',
     width: '1px',
   },
+  invited: { margin: 0, fontSize: '0.875rem', lineHeight: '1.25rem' },
   copy: { fontSize: '0.875rem', lineHeight: '1.25rem' },
 })
 
@@ -426,7 +427,12 @@ export const dialogStyleXPreview: ExamplePreviewProvider = <Msg>(
       trigger,
       dialog,
       ...(fixture.kind === 'invite'
-        ? [h.p([], [invitedSummaryText(preview.invited)])]
+        ? [
+            h.p(
+              [h.Class(className(styles.invited))],
+              [invitedSummaryText(preview.invited)],
+            ),
+          ]
         : []),
     ],
   )
