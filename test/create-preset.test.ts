@@ -16,6 +16,7 @@ import {
   presetTokens,
   shufflePreset,
   tokenToHex,
+  validTokenValue,
 } from '../src/demo/create-preset.ts'
 
 describe('shadcn preset compatibility', () => {
@@ -204,5 +205,22 @@ describe('token overrides', () => {
         contrastRatio('color-mix(in oklch,red 50%,white)', 'oklch(0.985 0 0)'),
       ),
     )
+  })
+
+  it('gates hand-typed values to complete colors', () => {
+    for (const ok of [
+      '#fff',
+      '#ff0000',
+      '#ff000080',
+      'oklch(0.63 0.25 29.23)',
+      'rgb(255 0 0)',
+      'color-mix(in oklch, red 50%, blue)',
+      'var(--other)',
+    ]) {
+      assert.ok(validTokenValue(ok), ok)
+    }
+    for (const bad of ['', '#f0', '#f0000', 'oklch(0.5', 'red', 'x y;z{}']) {
+      assert.ok(!validTokenValue(bad), bad)
+    }
   })
 })
