@@ -120,6 +120,25 @@ const REQUIRED_RULES = {
   ],
 }
 
+/** Class and slot names the sources of a stylesheet's owner mention. */
+const ownerRoots = (strict, rootDir) => file => {
+  const owner = strict.ownership.fileFor(file)?.owner
+  if (owner === undefined) return undefined
+  const roots = new Set()
+  for (const record of strict.ownership.files.values()) {
+    if (record.owner !== owner || !/\.[cm]?[jt]sx?$/u.test(record.path))
+      continue
+    const source = path.resolve(rootDir, record.path)
+    if (!existsSync(source)) continue
+    for (const literal of readFileSync(source, 'utf8').matchAll(
+      /(['"`])((?:(?!\1)[^\\]|\\.)*)\1/gu,
+    ))
+      for (const token of literal[2].matchAll(/[\w-]+/gu)) roots.add(token[0])
+  }
+  /* An owner without sources (CSS-only artifact) cannot be checked. */
+  return roots.size === 0 ? undefined : roots
+}
+
 const rendersHtml = file => /\bHtmlBuilder\b/u.test(readFileSync(file, 'utf8'))
 
 const VARIANTS = /(?:Variants?|variants)$/u
@@ -540,6 +559,7 @@ const doctor = async values => {
   const stylesheets = createCssAudit({
     isOwned: file => strict.ownership.fileFor(file) !== undefined,
     rootDir,
+    rootsOf: ownerRoots(strict, rootDir),
   })
   for (const file of findStylesheets(rootDir)) stylesheets.auditFile(file)
   for (const finding of stylesheets.findings) {
@@ -657,6 +677,7 @@ const css = async values => {
   const run = createCssAudit({
     isOwned: file => strict.ownership.fileFor(file) !== undefined,
     rootDir,
+    rootsOf: ownerRoots(strict, rootDir),
   })
   for (const file of findStylesheets(rootDir)) run.auditFile(file)
   for (const finding of run.findings)

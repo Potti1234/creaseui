@@ -31,6 +31,10 @@ const audit = (files, options = {}) => {
   const run = createCssAudit({
     isOwned: file => (options.owned ?? []).includes(path.relative(root, file)),
     rootDir: root,
+    rootsOf: file =>
+      (options.owned ?? []).includes(path.relative(root, file))
+        ? options.roots
+        : undefined,
   })
   for (const file of findStylesheets(root)) run.auditFile(file)
   rmSync(root, { force: true, recursive: true })
@@ -115,6 +119,38 @@ test('base rules only accept base properties and native resets', () => {
   )
 })
 
+test('base rules check values, @apply and @scope, not only property names', () => {
+  for (const css of [
+    '@layer base { * { padding: 64px; width: 4px; background: hotpink; } }',
+    '@layer base { * { @apply p-16 w-1 bg-red-500 rounded-full; } }',
+    '@scope ([data-slot="button"]) { * { padding: 64px; background: hotpink; } }',
+    '@layer base { body { color: #ff0000; } }',
+  ])
+    assert.ok(
+      kinds(audit({ 'src/styles.css': css })).includes('violation'),
+      css,
+    )
+  assert.deepEqual(
+    audit({
+      'src/styles.css':
+        '@layer base { * { margin: 0; padding: 0; box-sizing: border-box; } html, body { height: 100%; background: var(--background); color: var(--foreground); line-height: 1.5; } }',
+    }),
+    [],
+  )
+})
+
+test('stylesheets imported from outside src are audited', () => {
+  const findings = audit({
+    'src/entry.ts': "import '../styles/product.css'\n",
+    'src/styles.css': "@import 'tailwindcss';\n",
+    'styles/product.css': '.product-icon { width: 12px; }\n',
+  })
+  assert.deepEqual(
+    findings.map(finding => [finding.file, finding.kind]),
+    [['styles/product.css', 'violation']],
+  )
+})
+
 test('imported stylesheets are followed and reported at their own path', () => {
   const findings = audit({
     'src/styles.css':
@@ -163,6 +199,33 @@ test('registered component CSS must stay inside its own scope', () => {
       ['violation'],
       css,
     )
+})
+
+test("registered component CSS may only style its owner's roots", () => {
+  const css =
+    '.chart-root { gap: 4px; } [data-slot="chart-legend"] .x { gap: 2px; }'
+  assert.deepEqual(
+    audit(
+      { 'src/chart.css': css },
+      {
+        owned: ['src/chart.css'],
+        roots: new Set(['chart-root', 'chart-legend']),
+      },
+    ),
+    [],
+  )
+  assert.deepEqual(
+    kinds(
+      audit(
+        { 'src/chart.css': `${css} .unrelated-button { padding: 64px; }` },
+        {
+          owned: ['src/chart.css'],
+          roots: new Set(['chart-root', 'chart-legend']),
+        },
+      ),
+    ),
+    ['violation'],
+  )
 })
 
 test('selector classification', () => {
