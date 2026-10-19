@@ -241,3 +241,27 @@ Source: `docs/plan/pr-28-enforcement-followup-agent-plan.md`, review
 | Discovery D-F7 `doctor` reports theme roles no stylesheet defines                                         | Done      | `069c00f`, `c401140` (`@theme` counts only in Tailwind projects), `cli.test.js`                                                          |
 | Discovery D-F8 `--help`/`-h` on every command prints usage                                                | Done      | `cli.test.js`                                                                                                                            |
 | `scope` wired into a protected CI job                                                                     | Open      | Command exists; needs a job the patch cannot edit                                                                                        |
+
+## October 19 review (2026-10-19)
+
+Source: the October 19 review of `main` (`842062f`) and the eight
+`creaseui-demo` experiment branches. The demo branches are kept as evidence and
+were not changed; every fix is in CreaseUI, its lint/audit tooling, recipes and
+tutorial guidance.
+
+| Item                                                                                              | Status | Evidence                                                                                         |
+| ------------------------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------ |
+| R1 DataGrid edits/deletes/selection target the displayed (sorted + filtered) row                  | Done   | `a66a64d`, `test/data-grid.test.ts`, `e2e/sites/data-grid-editing.spec.ts` (three sites)         |
+| R2 Enter/F2/double-click edit the current value; type-over seeds the key; unchanged commit no-op  | Done   | `a498919`, `6e254a4`                                                                             |
+| R3 forwarding exemption only for values proven to come from the wrapper's own props               | Done   | `3aa3020`, `strict-typed.test.js`                                                                |
+| R4 alias-only renderers and renamed local re-exports: init, doctor and call enforcement           | Done   | `8604850`, `cli.test.js` (negative consumer calls)                                               |
+| R5 doctor reconciles every required rule per role; scope follows imported policy and all fields   | Done   | `2c10989`, `scope.test.js`, `cli.test.js`                                                        |
+| R6 CSS audit: base values, `@apply`, `@scope`, owner roots, stylesheets imported outside `src`    | Done   | `5ea831e`, `css.test.js`                                                                         |
+| R7 conditional spreads keep earlier prop values reachable                                         | Done   | `8111512`, `strict-typed.test.js`                                                                |
+| R8 foundations count only when their output reaches the returned view                             | Done   | `866dfd3`, `foundations.test.js`                                                                 |
+| R9 `inspect` and registry meta follow re-exported program parts (Sidebar) with state guidance     | Done   | `8a65614`, `cli.test.js`; MCP `meta`/`docs` transport is still open (see above)                  |
+| R10 adaptive metric-card Grid recipe, product wrapper policy, content-fit audit                   | Done   | `16125e8`, `e2e/sites/content-fit.spec.ts`, `product-wrapper-policy.test.js`, `docs/registry.md` |
+| R11 dialog-form recipe, `crease/form-association`, `form-association` audit rule, recipe metadata | Done   | `04c6df0`, `e2e/sites/dialog-form.spec.ts`, `form-association.test.js`, `audit.test.js`          |
+| R11 static proof of submit association beyond literal ids in one module                           | Open   | Unsupported by design: nesting across modules and computed ids are left to the runtime audit     |
+| R12 junction fixture links and POSIX ownership paths for unprivileged Windows                     | Done   | `67ebaa4`; verified on Linux only, not on a Windows machine                                      |
+| Snapshot drift: runtime component properties without a fallback are not reported as theme roles   | Done   | `2c90654`, `cli.test.js`, `runtimeProperties` in `packages/lint/catalog.json`                    |
