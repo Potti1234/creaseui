@@ -670,10 +670,22 @@ const titleCase = (value: string): string =>
    it intentionally uses dark-only colors rather than theme tokens. */
 const DARK_CHROME =
   'dark bg-[#282828] text-white shadow-xl ring-1 ring-white/10'
-const CHROME_BUTTON = CHROME_BUTTON
+const CHROME_BUTTON =
+  'w-full border-white/10 bg-transparent text-white hover:bg-white/[0.06] dark:bg-transparent'
 const TINY_LABEL = 'font-mono text-[10px]'
 
 const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
+  const chromeButton = (label: string, onClick: Message): Html =>
+    Button.button(
+      {
+        class: CHROME_BUTTON,
+        children: [label],
+        onClick,
+        variant: 'outline',
+      },
+      h,
+    )
+
   const picker = (
     label: string,
     field: Preset.Field,
@@ -1028,14 +1040,9 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
                       'h-9 w-full rounded-lg border border-white/10 bg-black/20 px-3 font-mono text-xs text-white outline-none focus-visible:ring-2 focus-visible:ring-white/30',
                     ),
                   ]),
-                  Button.button(
-                    {
-                      class: CHROME_BUTTON,
-                      children: ['Apply Preset'],
-                      onClick: Message['AppliedCreatePresetInput'](),
-                      variant: 'outline',
-                    },
-                    h,
+                  chromeButton(
+                    'Apply Preset',
+                    Message['AppliedCreatePresetInput'](),
                   ),
                   ...(model.presetError === null
                     ? []
@@ -1052,24 +1059,8 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
           h.div(
             [h.Class('grid grid-cols-2 gap-2')],
             [
-              Button.button(
-                {
-                  class: CHROME_BUTTON,
-                  children: ['Shuffle'],
-                  onClick: Message['ClickedShuffleCreatePreset'](),
-                  variant: 'outline',
-                },
-                h,
-              ),
-              Button.button(
-                {
-                  class: CHROME_BUTTON,
-                  children: ['Reset'],
-                  onClick: Message['ClickedResetCreatePreset'](),
-                  variant: 'outline',
-                },
-                h,
-              ),
+              chromeButton('Shuffle', Message['ClickedShuffleCreatePreset']()),
+              chromeButton('Reset', Message['ClickedResetCreatePreset']()),
             ],
           ),
           Button.button(
