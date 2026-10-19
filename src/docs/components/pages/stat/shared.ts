@@ -141,7 +141,7 @@ const styles = stylex.create({ grid: { display: 'grid', gridTemplateColumns: 're
   const viewBody =
     fixture.layout === 'cards'
       ? `h.div(
-      [h.Class(${isStyleX ? "stylex.props(styles.grid).className ?? ''" : "'grid grid-cols-[repeat(auto-fit,minmax(min(100%,12rem),1fr))] gap-4'"})],
+      [h.Class(${isStyleX ? "stylex.props(styles.grid).className ?? ''" : "'grid gap-4 sm:grid-cols-3'"})],
       [
         ${fixture.items.map(item => cardWrap(statSource(item))).join(',\n        ')},
       ],

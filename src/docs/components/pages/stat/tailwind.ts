@@ -74,11 +74,7 @@ export const statTailwindPreviewProgram = definePreviewProgram<
     const fixture = statFixtures[index] ?? statFixtures[0]
     return fixture.layout === 'cards'
       ? h.div(
-          [
-            h.Class(
-              'grid grid-cols-[repeat(auto-fit,minmax(min(100%,12rem),1fr))] gap-4',
-            ),
-          ],
+          [h.Class('grid gap-4 sm:grid-cols-3')],
           fixture.items.map(item => inCard(item, h)),
         )
       : fixture.layout === 'row'
