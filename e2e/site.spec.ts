@@ -403,7 +403,7 @@ test('component APIs and machine-readable discovery stay available', async ({
 
 test('create preset shuffle updates executable output', async ({ page }) => {
   await page.goto('/create')
-  const token = page.getByText(/^--preset b/u)
+  const token = page.getByText(/^--preset [abc]/u)
   const before = await token.textContent()
   const board = page.locator('[data-slot="capture-target"]')
   const styleBefore = await board.getAttribute('data-crease-style')
@@ -428,14 +428,15 @@ test('Create is available on both dedicated sites', async ({ page }) => {
   await expect(page).toHaveURL(/\/create$/u)
 
   const board = page.locator('[data-slot="capture-target"]')
-  const token = page.getByText(/^--preset b/u)
+  const token = page.getByText(/^--preset [abc]/u)
   await expect(board).toBeVisible()
   await expect(token).toBeVisible()
 
   await page.getByText('Open Preset', { exact: true }).click()
   await page.getByRole('textbox', { name: 'Open preset' }).fill('b1')
   await page.getByRole('button', { name: 'Apply Preset' }).click()
-  await expect(token).toHaveText('--preset b1')
+  // Legacy codes decode and re-encode to the current format.
+  await expect(token).toHaveText(/^--preset c/u)
 
   const applied = await token.textContent()
   await page.getByRole('button', { name: 'Shuffle' }).click()
@@ -1247,7 +1248,6 @@ test('create icon selection changes the live preview shapes', async ({
     firstPreviewIcon.locator('.crease-preview-icon-tabler'),
   ).toBeHidden()
 
-  await page.getByRole('button', { name: /Icons\s+Lucide/u }).click()
   await page
     .getByRole('button', { name: 'Tabler', exact: true })
     .click({ force: true })

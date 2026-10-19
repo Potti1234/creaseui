@@ -1,19 +1,18 @@
 import { expect, type Page } from '@playwright/test'
 
-/* Under parallel load a click can land on a neighbouring option while the
-   panel settles, so retry until the trigger reports the requested style. */
+/* Style is a segmented row in the Themes pane. Under parallel load a click
+   can land on a neighbouring option while the row settles, so retry until the
+   board reports the requested style. */
 export const selectStyle = async (page: Page, style: string): Promise<void> => {
-  const trigger = page.locator('#create-style-picker-button')
+  const row = page.locator('[data-seg="Style"]')
+  const board = page
+    .locator('[data-crease-board-theme], .create-board-theme')
+    .first()
   await expect(async () => {
-    if ((await trigger.getAttribute('aria-expanded')) !== 'true')
-      await trigger.click()
-    await page
-      .locator('#create-style-picker-panel button', {
-        hasText: new RegExp(`^${style}$`, 'i'),
-      })
-      .first()
+    await row
+      .locator('button', { hasText: new RegExp(`^${style}$`, 'i') })
       .click({ timeout: 5000 })
-    await expect(trigger).toContainText(new RegExp(style, 'i'), {
+    await expect(board).toHaveAttribute('data-crease-style', style, {
       timeout: 2000,
     })
   }).toPass({ timeout: 30_000 })

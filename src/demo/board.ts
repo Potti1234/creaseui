@@ -779,7 +779,7 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
     onPick: (value: string) => Message,
   ): Html =>
     h.div(
-      [h.Class('space-y-1.5')],
+      [h.Class('space-y-1.5'), h.DataAttribute('seg', label)],
       [
         h.div([h.Class('text-xs font-medium text-white/60')], [label]),
         h.div(

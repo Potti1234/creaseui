@@ -1476,7 +1476,7 @@ export const presetCustomizer = (
     onPick: (value: string) => Message,
   ): Html =>
     h.div(
-      [h.Class(className(styles.knobRow))],
+      [h.Class(className(styles.knobRow)), h.DataAttribute('seg', label)],
       [
         h.div([h.Class(className(styles.segLabel))], [label]),
         h.div(
