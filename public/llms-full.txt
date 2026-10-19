@@ -852,6 +852,118 @@ export const view = <Msg>(h: HtmlBuilder<Msg>, isPrimary: boolean): Html =>
   button({ variant: isPrimary ? 'default' : 'outline', children: ['Save'] }, h)
 ```
 
+### Form association (`form-association`)
+
+A Button's form: reference names a Form id the module never renders.
+
+#### A footer submit that names the wrong form
+
+The dialog footer renders outside the form, so Send invite names it with form:. A typo there leaves the button submitting nothing: Enter still works, the button silently doesn't, and the input's required/type=email checks never run for it.
+
+Renderers: tailwind
+
+Bad (`src/app/invite.ts`):
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import * as Button from '@/ui/button'
+import * as Form from '@/ui/form'
+
+export const content = <Msg>(h: HtmlBuilder<Msg>, submitted: Msg, email: Html): Html =>
+  Form.form({ id: 'invite-member-form', onSubmit: submitted, children: [email] }, h)
+
+export const footer = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  Button.button({ type: 'submit', form: 'invite-form', children: ['Send invite'] }, h)
+```
+
+- src/app/invite.ts:9:41 `crease/form-association`: button() submits form 'invite-form', but the Forms this module renders have ids 'invite-member-form'. Give the Form id 'invite-form' or fix the reference; if that Form renders elsewhere, check it with the form-association audit.
+
+Good:
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import * as Button from '@/ui/button'
+import * as Form from '@/ui/form'
+
+export const content = <Msg>(h: HtmlBuilder<Msg>, submitted: Msg, email: Html): Html =>
+  Form.form({ id: 'invite-member-form', onSubmit: submitted, children: [email] }, h)
+
+export const footer = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  Button.button({ type: 'submit', form: 'invite-member-form', children: ['Send invite'] }, h)
+```
+
+#### A footer submit that names the wrong form
+
+The dialog footer renders outside the form, so Send invite names it with form:. A typo there leaves the button submitting nothing: Enter still works, the button silently doesn't, and the input's required/type=email checks never run for it.
+
+Renderers: stylex
+
+Bad (`src/app/invite.ts`):
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import * as Button from '@/stylex/button'
+import * as Form from '@/stylex/form'
+
+export const content = <Msg>(h: HtmlBuilder<Msg>, submitted: Msg, email: Html): Html =>
+  Form.form({ id: 'invite-member-form', onSubmit: submitted, children: [email] }, h)
+
+export const footer = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  Button.button({ type: 'submit', form: 'invite-form', children: ['Send invite'] }, h)
+```
+
+- src/app/invite.ts:9:41 `crease/form-association`: button() submits form 'invite-form', but the Forms this module renders have ids 'invite-member-form'. Give the Form id 'invite-form' or fix the reference; if that Form renders elsewhere, check it with the form-association audit.
+
+Good:
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import * as Button from '@/stylex/button'
+import * as Form from '@/stylex/form'
+
+export const content = <Msg>(h: HtmlBuilder<Msg>, submitted: Msg, email: Html): Html =>
+  Form.form({ id: 'invite-member-form', onSubmit: submitted, children: [email] }, h)
+
+export const footer = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  Button.button({ type: 'submit', form: 'invite-member-form', children: ['Send invite'] }, h)
+```
+
+#### A footer submit that names the wrong form
+
+The dialog footer renders outside the form, so Send invite names it with form:. A typo there leaves the button submitting nothing: Enter still works, the button silently doesn't, and the input's required/type=email checks never run for it.
+
+Renderers: pleat
+
+Bad (`src/app/invite.ts`):
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import * as Button from '@/pleat/button'
+import * as Form from '@/pleat/form'
+
+export const content = <Msg>(h: HtmlBuilder<Msg>, submitted: Msg, email: Html): Html =>
+  Form.form({ id: 'invite-member-form', onSubmit: submitted, children: [email] }, h)
+
+export const footer = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  Button.button({ type: 'submit', form: 'invite-form', children: ['Send invite'] }, h)
+```
+
+- src/app/invite.ts:9:41 `crease/form-association`: button() submits form 'invite-form', but the Forms this module renders have ids 'invite-member-form'. Give the Form id 'invite-form' or fix the reference; if that Form renders elsewhere, check it with the form-association audit.
+
+Good:
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import * as Button from '@/pleat/button'
+import * as Form from '@/pleat/form'
+
+export const content = <Msg>(h: HtmlBuilder<Msg>, submitted: Msg, email: Html): Html =>
+  Form.form({ id: 'invite-member-form', onSubmit: submitted, children: [email] }, h)
+
+export const footer = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  Button.button({ type: 'submit', form: 'invite-member-form', children: ['Send invite'] }, h)
+```
+
 ## Component-author rules
 
 ### No component restyle (`no-component-restyle`)
@@ -2064,7 +2176,7 @@ A CreaseUI Dialog component for Foldkit.
 
 Source: `src/ui/dialog.ts`
 
-Examples: Edit profile, Compact confirmation, Custom Close Button, No Close Button, Sticky Footer, Scrollable Content, RTL
+Examples: Edit profile, Compact confirmation, Custom Close Button, No Close Button, Sticky Footer, Scrollable Content, RTL, Invite member form
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)
@@ -2271,7 +2383,7 @@ A CreaseUI Grid component for Foldkit.
 
 Source: `src/ui/grid.ts`
 
-Examples: Grid, Grid — Column Spanning, Grid — Responsive Auto-Fit, Grid — Dashboard Layout, Grid — Card Gallery, GridSpan — Columns, Grid Span
+Examples: Grid, Grid — Column Spanning, Grid — Responsive Auto-Fit, Grid — Dashboard Layout, Grid — Card Gallery, GridSpan — Columns, Grid Span, Grid — Adaptive Metric Cards
 
 - `GridAlignment = 'start' | 'center' | 'end' | 'stretch'` (type)
 - `GridSpacing = 0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10` (type)

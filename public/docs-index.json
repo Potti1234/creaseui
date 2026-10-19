@@ -2720,7 +2720,8 @@
         "No Close Button",
         "Sticky Footer",
         "Scrollable Content",
-        "RTL"
+        "RTL",
+        "Invite member form"
       ],
       "api": [
         {
@@ -3566,7 +3567,8 @@
         "Grid — Dashboard Layout",
         "Grid — Card Gallery",
         "GridSpan — Columns",
-        "Grid Span"
+        "Grid Span",
+        "Grid — Adaptive Metric Cards"
       ],
       "api": [
         {
