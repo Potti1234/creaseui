@@ -475,6 +475,245 @@ const styles = {
     fontWeight: 600,
     lineHeight: '1.25rem',
   }),
+  sectionTabs: Style.make({
+    backgroundColor: boardTokens.panelField,
+    borderRadius: foundationTokens.radiusMd,
+    display: 'flex',
+    gap: '0.25rem',
+    padding: '0.25rem',
+  }),
+  sectionTab: Style.make({
+    borderRadius: foundationTokens.radiusSm,
+    color: boardTokens.textMuted,
+    fontSize: '0.6875rem',
+    fontWeight: 600,
+    paddingBlock: '0.375rem',
+    paddingInline: '0.25rem',
+    backgroundColor: boardTokens.transparent,
+    flexGrow: 1,
+    flexBasis: 0,
+    flexShrink: 1,
+  }),
+  sectionTabActive: Style.make({
+    backgroundColor: boardTokens.text,
+    color: boardTokens.textInverse,
+  }),
+  segLabel: Style.make({
+    color: boardTokens.textMuted,
+    fontSize: '0.75rem',
+    fontWeight: 500,
+  }),
+  segRow: Style.make({ display: 'flex', flexWrap: 'wrap', gap: '0.25rem' }),
+  segButton: Style.make({
+    borderRadius: foundationTokens.radiusSm,
+    fontSize: '0.75rem',
+    fontWeight: 500,
+    paddingBlock: '0.25rem',
+    paddingInline: '0.5rem',
+    color: boardTokens.textMuted,
+    backgroundColor: boardTokens.hover,
+    transitionProperty: 'color, background-color',
+  }).pipe(Style.when(When.hover, { backgroundColor: boardTokens.selected })),
+  segButtonActive: Style.make({
+    backgroundColor: boardTokens.text,
+    color: boardTokens.textInverse,
+  }),
+  knobRow: Style.make({
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.375rem',
+  }),
+  knobLabelRow: Style.make({
+    alignItems: 'baseline',
+    display: 'flex',
+    justifyContent: 'space-between',
+  }),
+  knobValue: Style.make({
+    color: boardTokens.textSubtle,
+    fontFamily:
+      'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
+    fontSize: '0.625rem',
+  }),
+  range: Style.make({ accentColor: boardTokens.text, width: '100%' }),
+  tileGrid: Style.make({
+    display: 'grid',
+    gap: '0.5rem',
+    gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+  }),
+  tile: Style.make({
+    borderColor: boardTokens.border,
+    borderRadius: foundationTokens.radiusMd,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    padding: '0.625rem',
+    alignItems: 'flex-start',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.5rem',
+    textAlign: 'left',
+    backgroundColor: boardTokens.panelField,
+    transitionProperty: 'border-color, background-color',
+    width: '100%',
+  }).pipe(Style.when(When.hover, { backgroundColor: boardTokens.hover })),
+  tileActive: Style.make({
+    backgroundColor: boardTokens.selected,
+    borderColor: boardTokens.focus,
+  }),
+  tileSwatches: Style.make({
+    alignItems: 'flex-end',
+    display: 'flex',
+    gap: '0.25rem',
+    height: '2rem',
+  }),
+  tileSwatch: Style.make({
+    borderRadius: '50%',
+    borderColor: boardTokens.border,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    height: '0.875rem',
+    width: '0.875rem',
+  }),
+  tileName: Style.make({
+    color: boardTokens.text,
+    fontSize: '0.75rem',
+    fontWeight: 500,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  }),
+  toolbar: Style.make({
+    alignItems: 'center',
+    backgroundColor: boardTokens.panel,
+    boxShadow: boardTokens.panelShadow,
+    borderRadius: boardTokens.panelRadius,
+    color: boardTokens.text,
+    display: 'flex',
+    gap: '0.5rem',
+    padding: '0.5rem',
+    position: 'fixed',
+    right: '1.25rem',
+    top: '4.75rem',
+    zIndex: 30,
+  }).pipe(Style.when(When.maxWidth('1023px'), { right: '0.75rem' })),
+  toolbarDivider: Style.make({
+    backgroundColor: boardTokens.border,
+    height: '1.25rem',
+    marginInline: '0.125rem',
+    width: 1,
+  }),
+  boardComponents: Style.make({
+    gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+    width: '120rem',
+  }).pipe(Style.when(When.minWidth('768px'), { width: '140rem' })),
+  typeCanvas: Style.make({
+    backgroundColor: tokens.background,
+    color: tokens.foreground,
+    padding: '2.5rem',
+    width: '47.5rem',
+  }),
+  typeInner: Style.make({
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '2rem',
+    marginInline: 'auto',
+    maxWidth: '32.5rem',
+  }),
+  headingGroup: Style.make({
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.25rem',
+  }),
+  h1: Style.make({
+    fontSize: '2.25rem',
+    fontWeight: 700,
+    letterSpacing: '-0.025em',
+    lineHeight: '2.5rem',
+  }),
+  h2: Style.make({
+    fontSize: '1.875rem',
+    fontWeight: 600,
+    letterSpacing: '-0.025em',
+    lineHeight: '2.25rem',
+  }),
+  h3: Style.make({
+    fontSize: '1.5rem',
+    fontWeight: 600,
+    lineHeight: '2rem',
+  }),
+  h4: Style.make({
+    fontSize: '1.25rem',
+    fontWeight: 500,
+    lineHeight: '1.75rem',
+  }),
+  bodyP: Style.make({ fontSize: '1rem', lineHeight: '1.75' }),
+  mutedP: Style.make({
+    color: tokens.mutedForeground,
+    fontSize: '0.875rem',
+    lineHeight: '1.5',
+  }),
+  blockquote: Style.make({
+    borderLeftColor: tokens.border,
+    borderLeftStyle: 'solid',
+    borderLeftWidth: 2,
+    fontStyle: 'italic',
+    paddingLeft: '1rem',
+  }),
+  listUl: Style.make({
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.25rem',
+    listStyleType: 'disc',
+    paddingLeft: '1.5rem',
+  }),
+  inlineCode: Style.make({
+    backgroundColor: tokens.muted,
+    borderRadius: foundationTokens.radiusSm,
+    fontFamily:
+      'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
+    fontSize: '0.875rem',
+    padding: '0.125rem 0.375rem',
+  }),
+  paletteCanvas: Style.make({
+    backgroundColor: tokens.background,
+    padding: '2rem',
+    width: '55rem',
+  }),
+  swatchGrid: Style.make({
+    display: 'grid',
+    gap: '0.75rem',
+    gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
+  }).pipe(
+    Style.when(When.minWidth('1920px'), {
+      gridTemplateColumns: 'repeat(6, minmax(0, 1fr))',
+    }),
+  ),
+  swatch: Style.make({
+    backgroundColor: tokens.card,
+    borderColor: tokens.border,
+    borderRadius: tokens.cardRadius,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    overflow: 'hidden',
+  }),
+  swatchColor: Style.make({ height: '4rem' }),
+  swatchMeta: Style.make({
+    borderTopColor: tokens.border,
+    borderTopStyle: 'solid',
+    borderTopWidth: 1,
+    paddingBlock: '0.375rem',
+    paddingInline: '0.5rem',
+  }),
+  swatchLabel: Style.make({
+    color: tokens.foreground,
+    fontSize: '0.75rem',
+    fontWeight: 500,
+  }),
+  swatchVar: Style.make({
+    color: tokens.mutedForeground,
+    fontFamily:
+      'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
+    fontSize: '0.625rem',
+  }),
 }
 
 export const Model = S.Struct({
@@ -499,6 +738,9 @@ export const Model = S.Struct({
   presetInput: S.String,
   presetError: S.NullOr(S.String),
   isPresetCopied: S.Boolean,
+  section: S.Literals(['theme', 'color', 'shape', 'type', 'motion']),
+  scheme: S.Literals(['system', 'light', 'dark']),
+  canvas: S.Literals(['board', 'components', 'type', 'palette']),
   primitiveInspector: S.Struct({
     boxPadding: S.Literals(['responsive', 'none', 'sm', 'md', 'xl']),
     boxSurface: S.Literals(['card', 'muted', 'section']),
@@ -509,13 +751,11 @@ export const Model = S.Struct({
   }),
   pickerPopovers: S.Struct({
     style: Popover.Model,
-    baseColor: Popover.Model,
-    theme: Popover.Model,
+    base: Popover.Model,
     chartColor: Popover.Model,
     iconLibrary: Popover.Model,
     font: Popover.Model,
     fontHeading: Popover.Model,
-    radius: Popover.Model,
     menuAccent: Popover.Model,
     menuColor: Popover.Model,
   }),
@@ -581,6 +821,23 @@ export const Message = defineMessageUnion({
     field: Preset.Field,
     value: S.String,
   },
+  ChangedCreateKnob: {
+    knob: Preset.Knob,
+    value: S.Number,
+  },
+  ChangedCreatePresetOption: {
+    field: Preset.OptionField,
+    value: S.String,
+  },
+  ChoseCreateTheme: { name: S.String },
+  ChoseCreateSection: {
+    section: S.Literals(['theme', 'color', 'shape', 'type', 'motion']),
+  },
+  ChoseCreateScheme: { scheme: S.Literals(['system', 'light', 'dark']) },
+  ChoseCreateCanvas: {
+    canvas: S.Literals(['board', 'components', 'type', 'palette']),
+  },
+  ClickedResetCreatePreset: {},
   ClickedCopyCreatePreset: {},
   ClickedShuffleCreatePreset: {},
   CompletedCopyCreatePreset: {},
@@ -634,6 +891,9 @@ export const init = (): Model => ({
   presetInput: Preset.encodePreset(Preset.DEFAULT_CONFIG),
   presetError: null,
   isPresetCopied: false,
+  section: 'theme',
+  scheme: 'system',
+  canvas: 'board',
   primitiveInspector: {
     boxPadding: 'responsive',
     boxSurface: 'muted',
@@ -644,11 +904,10 @@ export const init = (): Model => ({
   },
   pickerPopovers: {
     style: Popover.init({ id: 'create-style-picker', isAnimated: true }),
-    baseColor: Popover.init({
-      id: 'create-base-color-picker',
+    base: Popover.init({
+      id: 'create-base-picker',
       isAnimated: true,
     }),
-    theme: Popover.init({ id: 'create-theme-picker', isAnimated: true }),
     chartColor: Popover.init({
       id: 'create-chart-color-picker',
       isAnimated: true,
@@ -662,7 +921,6 @@ export const init = (): Model => ({
       id: 'create-heading-picker',
       isAnimated: true,
     }),
-    radius: Popover.init({ id: 'create-radius-picker', isAnimated: true }),
     menuAccent: Popover.init({
       id: 'create-menu-accent-picker',
       isAnimated: true,
@@ -774,8 +1032,65 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           CopyPreset({ code: Preset.presetRegistryJson(model.preset) }),
         ],
       }),
+      ChangedCreatePresetOption: ({ field, value }) => {
+        const preset = { ...model.preset, [field]: value }
+        return {
+          model: modifyFields(model, {
+            preset: () => preset,
+            presetInput: () => Preset.encodePreset(preset),
+            presetError: () => null,
+          }),
+        }
+      },
+      ChangedCreateKnob: ({ knob, value }) => {
+        const preset = {
+          ...model.preset,
+          [knob]: Preset.fit(Preset.rangeOf(knob), value),
+        }
+        return {
+          model: modifyFields(model, {
+            preset: () => preset,
+            presetInput: () => Preset.encodePreset(preset),
+            presetError: () => null,
+          }),
+        }
+      },
+      ChoseCreateTheme: ({ name }) => {
+        const preset = Preset.presets.find(each => each.name === name)
+        if (preset === undefined) return { model: model }
+        return {
+          model: modifyFields(model, {
+            preset: () => preset.config,
+            presetInput: () => Preset.encodePreset(preset.config),
+            presetError: () => null,
+            scheme: () => preset.scheme ?? 'system',
+          }),
+        }
+      },
+      ChoseCreateSection: ({ section }) => ({
+        model: modifyFields(model, {
+          section: () => section,
+        }),
+      }),
+      ChoseCreateScheme: ({ scheme }) => ({
+        model: modifyFields(model, {
+          scheme: () => scheme,
+        }),
+      }),
+      ChoseCreateCanvas: ({ canvas }) => ({
+        model: modifyFields(model, {
+          canvas: () => canvas,
+        }),
+      }),
+      ClickedResetCreatePreset: () => ({
+        model: modifyFields(model, {
+          preset: () => Preset.DEFAULT_CONFIG,
+          presetInput: () => Preset.encodePreset(Preset.DEFAULT_CONFIG),
+          presetError: () => null,
+        }),
+      }),
       ClickedShuffleCreatePreset: () => {
-        const preset = Preset.shufflePreset(model.preset)
+        const preset = Preset.shufflePreset()
         return {
           model: modifyFields(model, {
             preset: () => preset,
@@ -1182,17 +1497,225 @@ export const presetCustomizer = (
       h,
     )
 
+  const pairs = (
+    values: readonly string[],
+  ): ReadonlyArray<readonly [string, string]> =>
+    values.map(value => [value, titleCase(value)] as const)
+
+  const seg = (
+    label: string,
+    options: ReadonlyArray<readonly [string, string]>,
+    current: string,
+    onPick: (value: string) => Message,
+  ): Html =>
+    h.div(
+      [h.Class(className(styles.knobRow))],
+      [
+        h.div([h.Class(className(styles.segLabel))], [label]),
+        h.div(
+          [h.Class(className(styles.segRow))],
+          options.map(([value, optionLabel]) =>
+            h.button(
+              [
+                h.Type('button'),
+                h.OnClick(onPick(value)),
+                h.Class(
+                  className(
+                    reset.button,
+                    styles.segButton,
+                    value === current && styles.segButtonActive,
+                  ),
+                ),
+              ],
+              [optionLabel],
+            ),
+          ),
+        ),
+      ],
+    )
+
+  const fieldSeg = (
+    label: string,
+    field: Preset.Field,
+    values: readonly string[],
+  ): Html =>
+    seg(label, pairs(values), model.preset[field], value =>
+      Message['ChangedCreatePresetField']({ field, value }),
+    )
+
+  const optionSeg = (
+    label: string,
+    field: Preset.OptionField,
+    values: readonly string[],
+  ): Html =>
+    seg(label, pairs(values), model.preset[field], value =>
+      Message['ChangedCreatePresetOption']({ field, value }),
+    )
+
+  const knob = (key: Preset.Knob): Html => {
+    const range = Preset.rangeOf(key)
+    const value = model.preset[key]
+    return h.div(
+      [h.Class(className(styles.knobRow))],
+      [
+        h.div(
+          [h.Class(className(styles.knobLabelRow))],
+          [
+            h.span([h.Class(className(styles.segLabel))], [range.label]),
+            h.span(
+              [h.Class(className(styles.knobValue))],
+              [`${value}${range.unit}`],
+            ),
+          ],
+        ),
+        h.input([
+          h.Type('range'),
+          h.Min(String(range.min)),
+          h.Max(String(range.max)),
+          h.Step(String(range.step)),
+          h.Value(String(value)),
+          h.AriaLabel(range.label),
+          h.OnInput(next =>
+            Message['ChangedCreateKnob']({ knob: key, value: Number(next) }),
+          ),
+          h.Class(className(reset.input, styles.range)),
+        ]),
+      ],
+    )
+  }
+
+  const tile = (preset: Preset.Preset): Html => {
+    const config = preset.config
+    const baseH = Preset.baseHue(config)
+    return h.button(
+      [
+        h.Type('button'),
+        h.OnClick(Message['ChoseCreateTheme']({ name: preset.name })),
+        h.Title(preset.description),
+        h.Class(
+          className(
+            reset.button,
+            styles.tile,
+            Preset.sameConfig(config, model.preset) && styles.tileActive,
+          ),
+        ),
+      ],
+      [
+        h.span(
+          [h.Class(className(styles.tileSwatches))],
+          [
+            h.span(
+              [
+                h.Class(className(styles.tileSwatch)),
+                h.Style({
+                  background: `oklch(${config.surfaceLightness}% ${config.surfaceSaturation} ${baseH})`,
+                }),
+              ],
+              [],
+            ),
+            h.span(
+              [
+                h.Class(className(styles.tileSwatch)),
+                h.Style({
+                  background: `oklch(${config.lightness}% ${config.chroma} ${config.hue})`,
+                }),
+              ],
+              [],
+            ),
+          ],
+        ),
+        h.span([h.Class(className(styles.tileName))], [preset.name]),
+      ],
+    )
+  }
+
+  const sectionTab = (section: Model['section'], label: string): Html =>
+    h.button(
+      [
+        h.Type('button'),
+        h.OnClick(Message['ChoseCreateSection']({ section })),
+        h.Class(
+          className(
+            reset.button,
+            styles.sectionTab,
+            model.section === section && styles.sectionTabActive,
+          ),
+        ),
+      ],
+      [label],
+    )
+
+  const pane = (children: ReadonlyArray<Html>): Html =>
+    h.div(
+      [h.Class(className(styles.customizerBody, styles.group))],
+      [...children],
+    )
+
+  const panes: Record<Model['section'], Html> = {
+    theme: pane([
+      h.div([h.Class(className(styles.tileGrid))], Preset.presets.map(tile)),
+      fieldSeg('Style', 'style', Preset.STYLES),
+      fieldSeg('Icons', 'iconLibrary', Preset.ICON_LIBRARIES),
+    ]),
+    color: pane([
+      knob('hue'),
+      knob('chroma'),
+      knob('lightness'),
+      picker('Base', 'base', Preset.BASES, styles.markerZinc),
+      knob('surfaceSaturation'),
+      knob('surfaceLightness'),
+      knob('surfaceLightnessDark'),
+      knob('surfaceContrast'),
+      optionSeg('Hover', 'hover', Preset.HOVERS),
+      picker('Chart', 'chartColor', Preset.THEMES, styles.markerChart),
+      fieldSeg('Menu accent', 'menuAccent', Preset.MENU_ACCENTS),
+      fieldSeg('Menu color', 'menuColor', Preset.MENU_COLORS),
+    ]),
+    shape: pane([
+      knob('radius'),
+      optionSeg('Controls', 'controlShape', Preset.CONTROL_SHAPES),
+      knob('border'),
+      optionSeg('Outlines', 'outlines', Preset.OUTLINES),
+      knob('shadow'),
+      optionSeg('Shadow style', 'shadowStyle', Preset.SHADOW_STYLES),
+      optionSeg('Relief', 'relief', Preset.RELIEFS),
+    ]),
+    type: pane([
+      picker('Font', 'font', Preset.FONTS),
+      picker('Heading font', 'fontHeading', Preset.FONT_HEADINGS),
+      knob('textScale'),
+      knob('headingScale'),
+      knob('leading'),
+      knob('headingWeight'),
+      knob('tracking'),
+    ]),
+    motion: pane([
+      knob('motion'),
+      optionSeg('Easing', 'easing', Preset.EASINGS),
+    ]),
+  }
+
   return h.aside(
     [h.Class(darkThemeClass + ' ' + className(styles.customizer))],
     [
       h.div(
-        [h.Class(className(styles.customizerHeader))],
+        [h.Class(className(styles.customizerHeader, styles.group))],
         [
           h.div(
             [h.Class(className(styles.customizerHeaderInner))],
             [
-              h.h1([h.Class(className(reset.text, styles.title))], ['Menu']),
+              h.h1([h.Class(className(reset.text, styles.title))], ['Theme']),
               Icon.icon('menu', { class: className(styles.iconMenu) }, h),
+            ],
+          ),
+          h.div(
+            [h.Class(className(styles.sectionTabs))],
+            [
+              sectionTab('theme', 'Themes'),
+              sectionTab('color', 'Color'),
+              sectionTab('shape', 'Shape'),
+              sectionTab('type', 'Type'),
+              sectionTab('motion', 'Motion'),
             ],
           ),
         ],
@@ -1210,42 +1733,7 @@ export const presetCustomizer = (
                       inspector,
                       h.div([h.Class(className(styles.divider))], []),
                     ]),
-                h.div(
-                  [h.Class(className(styles.group))],
-                  [
-                    picker('Style', 'style', Preset.STYLES),
-                    picker(
-                      'Base Color',
-                      'baseColor',
-                      Preset.BASE_COLORS,
-                      styles.markerZinc,
-                    ),
-                    picker(
-                      'Theme',
-                      'theme',
-                      Preset.THEMES,
-                      styles.markerPrimary,
-                    ),
-                    picker(
-                      'Chart Color',
-                      'chartColor',
-                      Preset.THEMES,
-                      styles.markerChart,
-                    ),
-                  ],
-                ),
-                h.div([h.Class(className(styles.divider))], []),
-                h.div(
-                  [h.Class(className(styles.group))],
-                  [
-                    picker('Heading', 'fontHeading', Preset.FONT_HEADINGS),
-                    picker('Font', 'font', Preset.FONTS),
-                    picker('Icons', 'iconLibrary', Preset.ICON_LIBRARIES),
-                    picker('Radius', 'radius', Preset.RADII),
-                    picker('Menu Color', 'menuColor', Preset.MENU_COLORS),
-                    picker('Menu Accent', 'menuAccent', Preset.MENU_ACCENTS),
-                  ],
-                ),
+                panes[model.section],
               ],
             ),
           ],
@@ -1303,13 +1791,32 @@ export const presetCustomizer = (
               ),
             ],
           ),
-          h.button(
+          h.div(
             [
-              h.Type('button'),
-              h.OnClick(Message['ClickedShuffleCreatePreset']()),
-              h.Class(className(reset.button, styles.applyButton)),
+              h.Style({
+                display: 'grid',
+                gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+                gap: '0.5rem',
+              }),
             ],
-            ['Shuffle'],
+            [
+              h.button(
+                [
+                  h.Type('button'),
+                  h.OnClick(Message['ClickedShuffleCreatePreset']()),
+                  h.Class(className(reset.button, styles.applyButton)),
+                ],
+                ['Shuffle'],
+              ),
+              h.button(
+                [
+                  h.Type('button'),
+                  h.OnClick(Message['ClickedResetCreatePreset']()),
+                  h.Class(className(reset.button, styles.applyButton)),
+                ],
+                ['Reset'],
+              ),
+            ],
           ),
           h.button(
             [
@@ -1562,35 +2069,89 @@ const legacyBoardItem = (item: BoardItem, h: HtmlBuilder<Message>): Html =>
     : item
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
-  const preview = h.div(
-    [h.Class(className(styles.preview))],
-    [
-      h.div(
-        [h.Class(className(styles.previewCenter))],
-        [
+  const schemeSuffix = model.scheme === 'system' ? '' : ` ${model.scheme}`
+  const themeAttrs = (classNameValue: string) => [
+    h.Class(classNameValue + schemeSuffix),
+    h.DataAttribute('crease-board-theme', ''),
+    h.DataAttribute('crease-style', model.preset.style),
+    h.DataAttribute('icon-library', model.preset.iconLibrary),
+    h.DataAttribute('slot', 'capture-target'),
+  ]
+
+  const boardGrid = (extra?: Style.Style): Html =>
+    h.div(
+      [
+        ...themeAttrs(
+          extra === undefined
+            ? className(styles.board)
+            : className(styles.board, extra),
+        ),
+      ],
+      [
+        boardSpriteDefinitions(h),
+        ...boardColumns(model, h).map(column =>
           h.div(
             [
-              h.Class(className(styles.board)),
-              h.DataAttribute('crease-board-theme', ''),
-              h.DataAttribute('crease-style', model.preset.style),
-              h.DataAttribute('icon-library', model.preset.iconLibrary),
-              h.DataAttribute('slot', 'capture-target'),
-            ],
-            [
-              boardSpriteDefinitions(h),
-              ...boardColumns(model, h).map(column =>
-                h.div(
-                  [
-                    h.Class(
-                      className(
-                        column.span === 2 ? styles.columnWide : styles.column,
-                        styles.boardGap,
-                      ),
-                    ),
-                  ],
-                  column.items.map(item => legacyBoardItem(item, h)),
+              h.Class(
+                className(
+                  column.span === 2 ? styles.columnWide : styles.column,
+                  styles.boardGap,
                 ),
               ),
+            ],
+            column.items.map(item => legacyBoardItem(item, h)),
+          ),
+        ),
+      ],
+    )
+
+  const typeCanvas = h.div(
+    [...themeAttrs(className(styles.typeCanvas))],
+    [
+      h.div(
+        [h.Class(className(styles.typeInner))],
+        [
+          h.div(
+            [h.Class(className(styles.headingGroup))],
+            [
+              h.h1([h.Class(className(reset.text, styles.h1))], ['Heading 1']),
+              h.h2([h.Class(className(reset.text, styles.h2))], ['Heading 2']),
+              h.h3([h.Class(className(reset.text, styles.h3))], ['Heading 3']),
+              h.h4([h.Class(className(reset.text, styles.h4))], ['Heading 4']),
+            ],
+          ),
+          h.p(
+            [h.Class(className(reset.text, styles.bodyP))],
+            [
+              'Body copy sits at the text scale — the quick brown fox jumps over the lazy dog, and every paragraph underneath follows the same leading.',
+            ],
+          ),
+          h.p(
+            [h.Class(className(reset.text, styles.mutedP))],
+            [
+              'Muted text for supporting details, captions and secondary descriptions.',
+            ],
+          ),
+          h.blockquote(
+            [h.Class(className(reset.text, styles.blockquote))],
+            [
+              '\u201cA quotation block, drawn with the theme\u2019s border and ink.\u201d',
+            ],
+          ),
+          h.ul(
+            [h.Class(className(reset.list, styles.listUl))],
+            [
+              h.li([], ['First list item']),
+              h.li([], ['Second list item']),
+              h.li([], ['Third list item']),
+            ],
+          ),
+          h.p(
+            [h.Class(className(reset.text))],
+            [
+              'Inline ',
+              h.code([h.Class(className(styles.inlineCode))], ['code']),
+              ' inside a paragraph.',
             ],
           ),
         ],
@@ -1598,9 +2159,140 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
     ],
   )
 
+  const SWATCHES: ReadonlyArray<readonly [string, string]> = [
+    ['Background', '--background'],
+    ['Foreground', '--foreground'],
+    ['Card', '--card'],
+    ['Popover', '--popover'],
+    ['Primary', '--primary'],
+    ['Primary fg', '--primary-foreground'],
+    ['Secondary', '--secondary'],
+    ['Secondary fg', '--secondary-foreground'],
+    ['Muted', '--muted'],
+    ['Muted fg', '--muted-foreground'],
+    ['Accent', '--accent'],
+    ['Accent fg', '--accent-foreground'],
+    ['Border', '--border'],
+    ['Input', '--input'],
+    ['Ring', '--ring'],
+    ['Chart 1', '--chart-1'],
+    ['Chart 2', '--chart-2'],
+    ['Chart 3', '--chart-3'],
+    ['Chart 4', '--chart-4'],
+    ['Chart 5', '--chart-5'],
+    ['Sidebar', '--sidebar'],
+    ['Sidebar fg', '--sidebar-foreground'],
+    ['Sidebar accent', '--sidebar-accent'],
+    ['Sidebar accent fg', '--sidebar-accent-foreground'],
+  ]
+
+  const paletteCanvas = h.div(
+    [...themeAttrs(className(styles.paletteCanvas))],
+    [
+      h.div(
+        [h.Class(className(styles.swatchGrid))],
+        SWATCHES.map(([label, token]) =>
+          h.div(
+            [h.Class(className(styles.swatch))],
+            [
+              h.div(
+                [
+                  h.Class(className(styles.swatchColor)),
+                  h.Style({ background: `var(${token})` }),
+                ],
+                [],
+              ),
+              h.div(
+                [h.Class(className(styles.swatchMeta))],
+                [
+                  h.div(
+                    [h.Class(className(reset.text, styles.swatchLabel))],
+                    [label],
+                  ),
+                  h.div(
+                    [h.Class(className(reset.text, styles.swatchVar))],
+                    [`var(${token})`],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    ],
+  )
+
+  const canvases: Record<Model['canvas'], Html> = {
+    board: boardGrid(),
+    components: boardGrid(styles.boardComponents),
+    type: typeCanvas,
+    palette: paletteCanvas,
+  }
+
+  const toolbarSeg = <V extends string>(
+    options: ReadonlyArray<readonly [V, string]>,
+    current: V,
+    onPick: (value: V) => Message,
+  ): Html =>
+    h.div(
+      [h.Class(className(styles.sectionTabs))],
+      options.map(([value, label]) =>
+        h.button(
+          [
+            h.Type('button'),
+            h.OnClick(onPick(value)),
+            h.Class(
+              className(
+                reset.button,
+                styles.sectionTab,
+                value === current && styles.sectionTabActive,
+              ),
+            ),
+          ],
+          [label],
+        ),
+      ),
+    )
+
+  const toolbar = h.div(
+    [h.Class(darkThemeClass + ' ' + className(styles.toolbar))],
+    [
+      toolbarSeg(
+        [
+          ['board', 'Board'],
+          ['components', 'Components'],
+          ['type', 'Type'],
+          ['palette', 'Palette'],
+        ] as const,
+        model.canvas,
+        value => Message['ChoseCreateCanvas']({ canvas: value }),
+      ),
+      h.div([h.Class(className(styles.toolbarDivider))], []),
+      toolbarSeg(
+        [
+          ['system', 'Auto'],
+          ['light', 'Light'],
+          ['dark', 'Dark'],
+        ] as const,
+        model.scheme,
+        value => Message['ChoseCreateScheme']({ scheme: value }),
+      ),
+    ],
+  )
+
+  const preview = h.div(
+    [h.Class(className(styles.preview))],
+    [
+      h.div(
+        [h.Class(className(styles.previewCenter) + schemeSuffix)],
+        [canvases[model.canvas]],
+      ),
+    ],
+  )
+
   return h.main(
     [h.Class(className(styles.root))],
-    [presetThemeStyle(model, h), preview, presetCustomizer(model, h)],
+    [presetThemeStyle(model, h), toolbar, preview, presetCustomizer(model, h)],
   )
 }
 
