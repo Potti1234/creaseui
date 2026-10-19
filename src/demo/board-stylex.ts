@@ -459,15 +459,20 @@ const styles = stylex.create({
     backgroundColor: boardTokens.panelField,
     display: 'flex',
   },
+  sectionTabsGrid: {
+    padding: '0.25rem',
+    borderRadius: foundationTokens.radiusMd,
+    gap: '0.25rem',
+    backgroundColor: boardTokens.panelField,
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, 1fr)',
+  },
   sectionTab: {
     borderRadius: foundationTokens.radiusSm,
     paddingBlock: '0.375rem',
     paddingInline: '0.25rem',
     backgroundColor: boardTokens.transparent,
     color: boardTokens.textMuted,
-    flexBasis: 0,
-    flexGrow: 1,
-    flexShrink: 1,
     fontSize: '0.6875rem',
     fontWeight: 600,
   },
@@ -857,6 +862,7 @@ export const Model = S.Struct({
   scheme: S.Literals(['system', 'light', 'dark']),
   tokenScheme: S.Literals(['light', 'dark']),
   openToken: S.NullOr(S.String),
+  tokenDrafts: S.Record(S.String, S.String),
   canvas: S.Literals(['board', 'components', 'type', 'palette']),
   primitiveInspector: S.Struct({
     boxPadding: S.Literals(['responsive', 'none', 'sm', 'md', 'xl']),
@@ -1028,6 +1034,7 @@ export const init = (): Model => ({
   scheme: 'system',
   tokenScheme: 'light',
   openToken: null,
+  tokenDrafts: {},
   canvas: 'board',
   primitiveInspector: {
     boxPadding: 'responsive',
@@ -1215,16 +1222,28 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       ToggledCreateToken: ({ token }) => ({
         model: modifyFields(model, {
           openToken: () => (model.openToken === token ? null : token),
+          tokenDrafts: drafts => {
+            const { [token]: _dropped, ...rest } = drafts
+            return rest
+          },
         }),
       }),
       ChangedCreateToken: ({ token, value }) => {
+        /* Drafts hold the raw text so the input never reverts mid-typing;
+           overrides only take complete normalized values — a fragment like
+           '#f0' would otherwise land in the emitted CSS as invalid. */
         const overrides = { ...model.preset.overrides }
-        if (value === '') delete overrides[token]
-        else overrides[token] = value
+        const normalized = Option.getOrElse(
+          Preset.hexToToken(value.trim()),
+          () => value.trim(),
+        )
+        if (Preset.validTokenValue(normalized)) overrides[token] = normalized
+        else delete overrides[token]
         const preset = { ...model.preset, overrides }
         return {
           model: modifyFields(model, {
             preset: () => preset,
+            tokenDrafts: drafts => ({ ...drafts, [token]: value }),
             presetInput: () => Preset.encodePreset(preset),
             presetError: () => null,
           }),
@@ -1235,6 +1254,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
         return {
           model: modifyFields(model, {
             preset: () => preset,
+            tokenDrafts: () => ({}),
             presetInput: () => Preset.encodePreset(preset),
             presetError: () => null,
             openToken: () => null,
@@ -1858,6 +1878,7 @@ export const presetCustomizer = (
   ): Html => {
     const setValue = (value: string): Message =>
       Message['ChangedCreateToken']({ token: key, value })
+    const shown = model.tokenDrafts[key] ?? Option.getOrElse(hex, () => value)
     return h.div(
       [h.Class(className(styles.tokenEditor))],
       [
@@ -1869,11 +1890,7 @@ export const presetCustomizer = (
                   h.Type('color'),
                   h.Value(hex.value),
                   h.AriaLabel(`${token} color`),
-                  h.OnInput(input =>
-                    setValue(
-                      Option.getOrElse(Preset.hexToToken(input), () => input),
-                    ),
-                  ),
+                  h.OnInput(setValue),
                   h.Class(className(reset.input, styles.tokenColorInput)),
                 ])
               : h.span(
@@ -1885,20 +1902,10 @@ export const presetCustomizer = (
                 ),
             h.input([
               h.Type('text'),
-              h.Value(Option.getOrElse(hex, () => value)),
+              h.Value(shown),
               h.AriaLabel(`${token} value`),
               h.Placeholder('#rrggbb or oklch(…)'),
-              h.OnInput(input => {
-                const trimmed = input.trim()
-                const token_ = Option.getOrElse(
-                  Preset.hexToToken(trimmed),
-                  () =>
-                    /^(oklch|oklab|hsl|hsla|rgb|rgba|#)/iu.test(trimmed)
-                      ? trimmed
-                      : '',
-                )
-                return setValue(token_)
-              }),
+              h.OnInput(setValue),
               h.Class(className(reset.input, styles.tokenTextInput)),
             ]),
             h.button(
@@ -2109,7 +2116,7 @@ export const presetCustomizer = (
             ],
           ),
           h.div(
-            [h.Class(className(styles.sectionTabs))],
+            [h.Class(className(styles.sectionTabsGrid))],
             [
               sectionTab('theme', 'Themes'),
               sectionTab('color', 'Color'),

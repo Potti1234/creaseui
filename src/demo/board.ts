@@ -72,6 +72,7 @@ export const Model = S.Struct({
   scheme: S.Literals(['system', 'light', 'dark']),
   tokenScheme: S.Literals(['light', 'dark']),
   openToken: S.NullOr(S.String),
+  tokenDrafts: S.Record(S.String, S.String),
   canvas: S.Literals(['board', 'components', 'type', 'palette']),
   pickerPopovers: S.Struct({
     style: Popover.Model,
@@ -216,6 +217,7 @@ export const init = (): Model => ({
   scheme: 'system',
   tokenScheme: 'light',
   openToken: null,
+  tokenDrafts: {},
   canvas: 'board',
   pickerPopovers: {
     style: Popover.init({ id: 'create-style-picker', isAnimated: true }),
@@ -371,16 +373,28 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       ToggledCreateToken: ({ token }) => ({
         model: modifyFields(model, {
           openToken: () => (model.openToken === token ? null : token),
+          tokenDrafts: drafts => {
+            const { [token]: _dropped, ...rest } = drafts
+            return rest
+          },
         }),
       }),
       ChangedCreateToken: ({ token, value }) => {
+        /* Drafts hold the raw text so the input never reverts mid-typing;
+           overrides only take complete normalized values — a fragment like
+           '#f0' would otherwise land in the emitted CSS as invalid. */
         const overrides = { ...model.preset.overrides }
-        if (value === '') delete overrides[token]
-        else overrides[token] = value
+        const normalized = Option.getOrElse(
+          Preset.hexToToken(value.trim()),
+          () => value.trim(),
+        )
+        if (Preset.validTokenValue(normalized)) overrides[token] = normalized
+        else delete overrides[token]
         const preset = { ...model.preset, overrides }
         return {
           model: modifyFields(model, {
             preset: () => preset,
+            tokenDrafts: drafts => ({ ...drafts, [token]: value }),
             presetInput: () => Preset.encodePreset(preset),
             presetError: () => null,
           }),
@@ -391,6 +405,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
         return {
           model: modifyFields(model, {
             preset: () => preset,
+            tokenDrafts: () => ({}),
             presetInput: () => Preset.encodePreset(preset),
             presetError: () => null,
             openToken: () => null,
@@ -959,7 +974,7 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
         h.Type('button'),
         h.OnClick(Message['ChoseCreateSection']({ section })),
         h.Class(
-          `flex-1 rounded-md px-1 py-1.5 text-[11px] font-semibold transition-colors ${
+          `rounded-md px-1 py-1.5 text-[11px] font-semibold transition-colors ${
             model.section === section
               ? 'bg-white text-black'
               : 'text-white/60 hover:text-white'
@@ -1009,6 +1024,7 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
   ): Html => {
     const setValue = (value: string): Message =>
       Message['ChangedCreateToken']({ token: key, value })
+    const shown = model.tokenDrafts[key] ?? Option.getOrElse(hex, () => value)
     return h.div(
       [
         h.Class(
@@ -1024,11 +1040,7 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
                   h.Type('color'),
                   h.Value(hex.value),
                   h.AriaLabel(`${token} color`),
-                  h.OnInput(input =>
-                    setValue(
-                      Option.getOrElse(Preset.hexToToken(input), () => input),
-                    ),
-                  ),
+                  h.OnInput(setValue),
                   h.Class(
                     'h-8 w-9 shrink-0 cursor-pointer rounded-md border-0 bg-transparent p-0',
                   ),
@@ -1044,20 +1056,10 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
                 ),
             h.input([
               h.Type('text'),
-              h.Value(Option.getOrElse(hex, () => value)),
+              h.Value(shown),
               h.AriaLabel(`${token} value`),
               h.Placeholder('#rrggbb or oklch(…)'),
-              h.OnInput(input => {
-                const trimmed = input.trim()
-                const token_ = Option.getOrElse(
-                  Preset.hexToToken(trimmed),
-                  () =>
-                    /^(oklch|oklab|hsl|hsla|rgb|rgba|#)/iu.test(trimmed)
-                      ? trimmed
-                      : '',
-                )
-                return setValue(token_)
-              }),
+              h.OnInput(setValue),
               h.Class(
                 'h-8 min-w-0 flex-1 rounded-md border border-white/10 bg-black/20 px-2 font-mono text-xs text-white outline-none focus-visible:ring-2 focus-visible:ring-white/30',
               ),
@@ -1299,7 +1301,7 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
             ],
           ),
           h.div(
-            [h.Class('flex gap-1 rounded-lg bg-white/[0.04] p-1')],
+            [h.Class('grid grid-cols-3 gap-1 rounded-lg bg-white/[0.04] p-1')],
             [
               sectionTab('theme', 'Themes'),
               sectionTab('color', 'Color'),
