@@ -1504,5 +1504,7 @@ export const contrastRatio = (
    function-shaped color expression. Mid-typing fragments ('#f0', 'oklch(0.5')
    fail, so they never reach a --token declaration as invalid CSS. */
 export const validTokenValue = (value: string): boolean =>
-  /^#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/iu.test(value) ||
+  /* No alpha-bearing hex: a dropped keystroke could turn '#ff0000' into the
+     valid-but-transparent '#0000' and wash out the preview. */
+  /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/iu.test(value) ||
   /^[a-z][a-z-]*\((?:[^()]|\([^()]*\))*\)$/iu.test(value)

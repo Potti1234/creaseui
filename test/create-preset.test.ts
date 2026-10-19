@@ -211,7 +211,6 @@ describe('token overrides', () => {
     for (const ok of [
       '#fff',
       '#ff0000',
-      '#ff000080',
       'oklch(0.63 0.25 29.23)',
       'rgb(255 0 0)',
       'color-mix(in oklch, red 50%, blue)',
@@ -219,7 +218,16 @@ describe('token overrides', () => {
     ]) {
       assert.ok(validTokenValue(ok), ok)
     }
-    for (const bad of ['', '#f0', '#f0000', 'oklch(0.5', 'red', 'x y;z{}']) {
+    for (const bad of [
+      '',
+      '#f0',
+      '#f0000',
+      '#0000',
+      '#ff000080',
+      'oklch(0.5',
+      'red',
+      'x y;z{}',
+    ]) {
       assert.ok(!validTokenValue(bad), bad)
     }
   })
