@@ -2078,6 +2078,10 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
     h.DataAttribute('slot', 'capture-target'),
   ]
 
+  /* Columns are built once: each h.submodel call registers its slotId in
+     this boundary, so building them per grid would duplicate the ids. */
+  const columns = boardColumns(model, h)
+
   const boardGrid = (extra?: Style.Style): Html =>
     h.div(
       [
@@ -2089,7 +2093,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       ],
       [
         boardSpriteDefinitions(h),
-        ...boardColumns(model, h).map(column =>
+        ...columns.map(column =>
           h.div(
             [
               h.Class(
