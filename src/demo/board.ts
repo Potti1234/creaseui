@@ -666,6 +666,13 @@ const titleCase = (value: string): string =>
     .map(part => `${part[0]?.toUpperCase() ?? ''}${part.slice(1)}`)
     .join(' ')
 
+/* The customizer chrome is a fixed dark inspector surface in both schemes, so
+   it intentionally uses dark-only colors rather than theme tokens. */
+const DARK_CHROME =
+  'dark bg-[#282828] text-white shadow-xl ring-1 ring-white/10'
+const CHROME_BUTTON = CHROME_BUTTON
+const TINY_LABEL = 'font-mono text-[10px]'
+
 const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
   const picker = (
     label: string,
@@ -813,7 +820,7 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
               [range.label],
             ),
             h.span(
-              [h.Class('font-mono text-[10px] text-white/50')],
+              [h.Class(`${TINY_LABEL} text-white/50`)],
               [`${value}${range.unit}`],
             ),
           ],
@@ -945,7 +952,7 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
   return h.aside(
     [
       h.Class(
-        'dark fixed top-19 bottom-5 left-5 z-30 flex w-70.5 flex-col overflow-hidden rounded-2xl bg-[#282828] text-white shadow-xl ring-1 ring-white/10 max-lg:right-3 max-lg:left-3 max-lg:w-auto',
+        `${DARK_CHROME} fixed top-19 bottom-5 left-5 z-30 flex w-70.5 flex-col overflow-hidden rounded-2xl max-lg:right-3 max-lg:left-3 max-lg:w-auto`,
       ),
     ],
     [
@@ -1023,8 +1030,7 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
                   ]),
                   Button.button(
                     {
-                      class:
-                        'w-full border-white/10 bg-transparent text-white hover:bg-white/[0.06] dark:bg-transparent',
+                      class: CHROME_BUTTON,
                       children: ['Apply Preset'],
                       onClick: Message['AppliedCreatePresetInput'](),
                       variant: 'outline',
@@ -1048,8 +1054,7 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
             [
               Button.button(
                 {
-                  class:
-                    'w-full border-white/10 bg-transparent text-white hover:bg-white/[0.06] dark:bg-transparent',
+                  class: CHROME_BUTTON,
                   children: ['Shuffle'],
                   onClick: Message['ClickedShuffleCreatePreset'](),
                   variant: 'outline',
@@ -1058,8 +1063,7 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
               ),
               Button.button(
                 {
-                  class:
-                    'w-full border-white/10 bg-transparent text-white hover:bg-white/[0.06] dark:bg-transparent',
+                  class: CHROME_BUTTON,
                   children: ['Reset'],
                   onClick: Message['ClickedResetCreatePreset'](),
                   variant: 'outline',
@@ -1444,7 +1448,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                     [label],
                   ),
                   h.div(
-                    [h.Class('font-mono text-[10px] text-muted-foreground')],
+                    [h.Class(`${TINY_LABEL} text-muted-foreground`)],
                     [`var(${token})`],
                   ),
                 ],
@@ -1487,7 +1491,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
   const toolbar = h.div(
     [
       h.Class(
-        'dark fixed top-19 right-5 z-30 flex items-center gap-2 rounded-2xl bg-[#282828] p-2 text-white shadow-xl ring-1 ring-white/10 max-lg:right-3',
+        `${DARK_CHROME} fixed top-19 right-5 z-30 flex items-center gap-2 rounded-2xl p-2 max-lg:right-3`,
       ),
     ],
     [
