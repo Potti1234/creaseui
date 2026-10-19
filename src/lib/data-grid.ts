@@ -309,6 +309,7 @@ const commitCell = <Row>(
   const column = columnById(config, columnId)
   const target = displayedRows(model, config)[row]
   if (column === undefined || target === undefined) return model
+  if (cellText(target, columnId, config) === value) return model
   const write = column.set ?? ((r: Row): Row => r)
   const snapshot = model.rows
   return {
@@ -483,7 +484,12 @@ const applyMessage = <Row>(
         ...model,
         cellCalendar,
         editingCell: { row: message.row, column: message.column },
-        draftValue: message.seed,
+        /* an empty seed (Enter, F2, double-click) edits the current value;
+           type-over passes the typed key and replaces it */
+        draftValue:
+          message.seed === '' && target !== undefined
+            ? cellText(target, message.column, config)
+            : message.seed,
       }
     }
     case 'ChangedDraft':
