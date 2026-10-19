@@ -1061,7 +1061,10 @@ const buildCss = (
   const boldMenu = config.menuAccent === 'bold'
   const translucentMenu = config.menuColor.endsWith('translucent')
   const sidebar = invertedMenu ? ink : muted
-  const radiusRem = `${Number((config.radius * 0.625).toFixed(4))}rem`
+  const radiusRem =
+    config.radius === 0
+      ? '0'
+      : `${Number((config.radius * 0.625).toFixed(4))}rem`
   const heading =
     config.fontHeading === 'inherit'
       ? fontFamily(config.font)
