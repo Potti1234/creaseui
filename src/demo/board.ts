@@ -68,15 +68,16 @@ export const Model = S.Struct({
   presetInput: S.String,
   presetError: S.NullOr(S.String),
   isPresetCopied: S.Boolean,
+  section: S.Literals(['theme', 'color', 'shape', 'type', 'motion']),
+  scheme: S.Literals(['system', 'light', 'dark']),
+  canvas: S.Literals(['board', 'components', 'type', 'palette']),
   pickerPopovers: S.Struct({
     style: Popover.Model,
-    baseColor: Popover.Model,
-    theme: Popover.Model,
+    base: Popover.Model,
     chartColor: Popover.Model,
     iconLibrary: Popover.Model,
     font: Popover.Model,
     fontHeading: Popover.Model,
-    radius: Popover.Model,
     menuAccent: Popover.Model,
     menuColor: Popover.Model,
   }),
@@ -141,6 +142,23 @@ export const Message = defineMessageUnion({
     field: Preset.Field,
     value: S.String,
   },
+  ChangedCreateKnob: {
+    knob: Preset.Knob,
+    value: S.Number,
+  },
+  ChangedCreatePresetOption: {
+    field: Preset.OptionField,
+    value: S.String,
+  },
+  ChoseCreateTheme: { name: S.String },
+  ChoseCreateSection: {
+    section: S.Literals(['theme', 'color', 'shape', 'type', 'motion']),
+  },
+  ChoseCreateScheme: { scheme: S.Literals(['system', 'light', 'dark']) },
+  ChoseCreateCanvas: {
+    canvas: S.Literals(['board', 'components', 'type', 'palette']),
+  },
+  ClickedResetCreatePreset: {},
   ClickedCopyCreatePreset: {},
   ClickedShuffleCreatePreset: {},
   CompletedCopyCreatePreset: {},
@@ -176,13 +194,15 @@ export const init = (): Model => ({
   presetInput: Preset.encodePreset(Preset.DEFAULT_CONFIG),
   presetError: null,
   isPresetCopied: false,
+  section: 'theme',
+  scheme: 'system',
+  canvas: 'board',
   pickerPopovers: {
     style: Popover.init({ id: 'create-style-picker', isAnimated: true }),
-    baseColor: Popover.init({
-      id: 'create-base-color-picker',
+    base: Popover.init({
+      id: 'create-base-picker',
       isAnimated: true,
     }),
-    theme: Popover.init({ id: 'create-theme-picker', isAnimated: true }),
     chartColor: Popover.init({
       id: 'create-chart-color-picker',
       isAnimated: true,
@@ -196,7 +216,6 @@ export const init = (): Model => ({
       id: 'create-heading-picker',
       isAnimated: true,
     }),
-    radius: Popover.init({ id: 'create-radius-picker', isAnimated: true }),
     menuAccent: Popover.init({
       id: 'create-menu-accent-picker',
       isAnimated: true,
@@ -278,8 +297,65 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           CopyPreset({ code: Preset.presetRegistryJson(model.preset) }),
         ],
       }),
+      ChangedCreatePresetOption: ({ field, value }) => {
+        const preset = { ...model.preset, [field]: value }
+        return {
+          model: modifyFields(model, {
+            preset: () => preset,
+            presetInput: () => Preset.encodePreset(preset),
+            presetError: () => null,
+          }),
+        }
+      },
+      ChangedCreateKnob: ({ knob, value }) => {
+        const preset = {
+          ...model.preset,
+          [knob]: Preset.fit(Preset.rangeOf(knob), value),
+        }
+        return {
+          model: modifyFields(model, {
+            preset: () => preset,
+            presetInput: () => Preset.encodePreset(preset),
+            presetError: () => null,
+          }),
+        }
+      },
+      ChoseCreateTheme: ({ name }) => {
+        const preset = Preset.presets.find(each => each.name === name)
+        if (preset === undefined) return { model: model }
+        return {
+          model: modifyFields(model, {
+            preset: () => preset.config,
+            presetInput: () => Preset.encodePreset(preset.config),
+            presetError: () => null,
+            scheme: () => preset.scheme ?? 'system',
+          }),
+        }
+      },
+      ChoseCreateSection: ({ section }) => ({
+        model: modifyFields(model, {
+          section: () => section,
+        }),
+      }),
+      ChoseCreateScheme: ({ scheme }) => ({
+        model: modifyFields(model, {
+          scheme: () => scheme,
+        }),
+      }),
+      ChoseCreateCanvas: ({ canvas }) => ({
+        model: modifyFields(model, {
+          canvas: () => canvas,
+        }),
+      }),
+      ClickedResetCreatePreset: () => ({
+        model: modifyFields(model, {
+          preset: () => Preset.DEFAULT_CONFIG,
+          presetInput: () => Preset.encodePreset(Preset.DEFAULT_CONFIG),
+          presetError: () => null,
+        }),
+      }),
       ClickedShuffleCreatePreset: () => {
-        const preset = Preset.shufflePreset(model.preset)
+        const preset = Preset.shufflePreset()
         return {
           model: modifyFields(model, {
             preset: () => preset,
@@ -672,6 +748,200 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
       h,
     )
 
+  const pairs = (
+    values: readonly string[],
+  ): ReadonlyArray<readonly [string, string]> =>
+    values.map(value => [value, titleCase(value)] as const)
+
+  const seg = (
+    label: string,
+    options: ReadonlyArray<readonly [string, string]>,
+    current: string,
+    onPick: (value: string) => Message,
+  ): Html =>
+    h.div(
+      [h.Class('space-y-1.5')],
+      [
+        h.div([h.Class('text-xs font-medium text-white/60')], [label]),
+        h.div(
+          [h.Class('flex flex-wrap gap-1')],
+          options.map(([value, optionLabel]) =>
+            h.button(
+              [
+                h.Type('button'),
+                h.OnClick(onPick(value)),
+                h.Class(
+                  `rounded-md px-2 py-1 text-xs font-medium transition-colors ${value === current ? 'bg-white text-black' : 'bg-white/[0.06] text-white/70 hover:bg-white/[0.12] hover:text-white'}`,
+                ),
+              ],
+              [optionLabel],
+            ),
+          ),
+        ),
+      ],
+    )
+
+  const fieldSeg = (
+    label: string,
+    field: Preset.Field,
+    values: readonly string[],
+  ): Html =>
+    seg(label, pairs(values), model.preset[field], value =>
+      Message['ChangedCreatePresetField']({ field, value }),
+    )
+
+  const optionSeg = (
+    label: string,
+    field: Preset.OptionField,
+    values: readonly string[],
+  ): Html =>
+    seg(label, pairs(values), model.preset[field], value =>
+      Message['ChangedCreatePresetOption']({ field, value }),
+    )
+
+  const knob = (key: Preset.Knob): Html => {
+    const range = Preset.rangeOf(key)
+    const value = model.preset[key]
+    return h.div(
+      [h.Class('space-y-1.5')],
+      [
+        h.div(
+          [h.Class('flex items-baseline justify-between')],
+          [
+            h.span(
+              [h.Class('text-xs font-medium text-white/60')],
+              [range.label],
+            ),
+            h.span(
+              [h.Class('font-mono text-[10px] text-white/50')],
+              [`${value}${range.unit}`],
+            ),
+          ],
+        ),
+        h.input([
+          h.Type('range'),
+          h.Min(String(range.min)),
+          h.Max(String(range.max)),
+          h.Step(String(range.step)),
+          h.Value(String(value)),
+          h.AriaLabel(range.label),
+          h.OnInput(next =>
+            Message['ChangedCreateKnob']({ knob: key, value: Number(next) }),
+          ),
+          h.Class('w-full accent-white'),
+        ]),
+      ],
+    )
+  }
+
+  const tile = (preset: Preset.Preset): Html => {
+    const config = preset.config
+    const baseH = Preset.baseHue(config)
+    return h.button(
+      [
+        h.Type('button'),
+        h.OnClick(Message['ChoseCreateTheme']({ name: preset.name })),
+        h.Title(preset.description),
+        h.Class(
+          `flex flex-col gap-2 rounded-lg border p-2.5 text-left transition-colors ${
+            Preset.sameConfig(config, model.preset)
+              ? 'border-white/40 bg-white/10'
+              : 'border-white/10 bg-white/[0.03] hover:bg-white/[0.07]'
+          }`,
+        ),
+      ],
+      [
+        h.span(
+          [h.Class('flex h-8 items-end gap-1')],
+          [
+            h.span(
+              [
+                h.Class('size-3.5 rounded-full ring-1 ring-white/10'),
+                h.Style({
+                  background: `oklch(${config.surfaceLightness}% ${config.surfaceSaturation} ${baseH})`,
+                }),
+              ],
+              [],
+            ),
+            h.span(
+              [
+                h.Class('size-3.5 rounded-full ring-1 ring-white/10'),
+                h.Style({
+                  background: `oklch(${config.lightness}% ${config.chroma} ${config.hue})`,
+                }),
+              ],
+              [],
+            ),
+          ],
+        ),
+        h.span([h.Class('truncate text-xs font-medium')], [preset.name]),
+      ],
+    )
+  }
+
+  const sectionTab = (section: Model['section'], label: string): Html =>
+    h.button(
+      [
+        h.Type('button'),
+        h.OnClick(Message['ChoseCreateSection']({ section })),
+        h.Class(
+          `flex-1 rounded-md px-1 py-1.5 text-[11px] font-semibold transition-colors ${
+            model.section === section
+              ? 'bg-white text-black'
+              : 'text-white/60 hover:text-white'
+          }`,
+        ),
+      ],
+      [label],
+    )
+
+  const pane = (children: ReadonlyArray<Html>): Html =>
+    h.div([h.Class('space-y-5 p-4')], [...children])
+
+  const panes: Record<Model['section'], Html> = {
+    theme: pane([
+      h.div([h.Class('grid grid-cols-2 gap-2')], Preset.presets.map(tile)),
+      fieldSeg('Style', 'style', Preset.STYLES),
+      fieldSeg('Icons', 'iconLibrary', Preset.ICON_LIBRARIES),
+    ]),
+    color: pane([
+      knob('hue'),
+      knob('chroma'),
+      knob('lightness'),
+      picker('Base', 'base', Preset.BASES, 'bg-zinc-400'),
+      knob('surfaceSaturation'),
+      knob('surfaceLightness'),
+      knob('surfaceLightnessDark'),
+      knob('surfaceContrast'),
+      optionSeg('Hover', 'hover', Preset.HOVERS),
+      picker('Chart', 'chartColor', Preset.THEMES, 'bg-chart-1'),
+      fieldSeg('Menu accent', 'menuAccent', Preset.MENU_ACCENTS),
+      fieldSeg('Menu color', 'menuColor', Preset.MENU_COLORS),
+    ]),
+    shape: pane([
+      knob('radius'),
+      optionSeg('Controls', 'controlShape', Preset.CONTROL_SHAPES),
+      knob('border'),
+      optionSeg('Outlines', 'outlines', Preset.OUTLINES),
+      knob('shadow'),
+      optionSeg('Shadow style', 'shadowStyle', Preset.SHADOW_STYLES),
+      optionSeg('Relief', 'relief', Preset.RELIEFS),
+    ]),
+    type: pane([
+      picker('Font', 'font', Preset.FONTS),
+      picker('Heading font', 'fontHeading', Preset.FONT_HEADINGS),
+      knob('textScale'),
+      knob('headingScale'),
+      knob('leading'),
+      knob('headingWeight'),
+      knob('tracking'),
+    ]),
+    motion: pane([
+      knob('motion'),
+      optionSeg('Easing', 'easing', Preset.EASINGS),
+    ]),
+  }
+
   return h.aside(
     [
       h.Class(
@@ -680,7 +950,7 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
     ],
     [
       h.div(
-        [h.Class('border-b border-white/10 p-4')],
+        [h.Class('space-y-3 border-b border-white/10 p-4')],
         [
           h.div(
             [
@@ -689,8 +959,18 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
               ),
             ],
             [
-              h.h1([h.Class('text-sm font-semibold')], ['Menu']),
+              h.h1([h.Class('text-sm font-semibold')], ['Theme']),
               Icon.icon('menu', { class: 'size-5 text-white/80' }, h),
+            ],
+          ),
+          h.div(
+            [h.Class('flex gap-1 rounded-lg bg-white/[0.04] p-1')],
+            [
+              sectionTab('theme', 'Themes'),
+              sectionTab('color', 'Color'),
+              sectionTab('shape', 'Shape'),
+              sectionTab('type', 'Type'),
+              sectionTab('motion', 'Motion'),
             ],
           ),
         ],
@@ -698,44 +978,7 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
       ScrollArea.scrollArea<Message>(
         {
           class: 'min-h-0 flex-1',
-          children: [
-            h.div(
-              [h.Class('space-y-4 p-4')],
-              [
-                h.div(
-                  [h.Class('space-y-3')],
-                  [
-                    picker('Style', 'style', Preset.STYLES),
-                    picker(
-                      'Base Color',
-                      'baseColor',
-                      Preset.BASE_COLORS,
-                      'bg-zinc-400',
-                    ),
-                    picker('Theme', 'theme', Preset.THEMES, 'bg-primary'),
-                    picker(
-                      'Chart Color',
-                      'chartColor',
-                      Preset.THEMES,
-                      'bg-chart-1',
-                    ),
-                  ],
-                ),
-                h.div([h.Class('-mx-4 border-t border-white/10')], []),
-                h.div(
-                  [h.Class('space-y-3')],
-                  [
-                    picker('Heading', 'fontHeading', Preset.FONT_HEADINGS),
-                    picker('Font', 'font', Preset.FONTS),
-                    picker('Icons', 'iconLibrary', Preset.ICON_LIBRARIES),
-                    picker('Radius', 'radius', Preset.RADII),
-                    picker('Menu Color', 'menuColor', Preset.MENU_COLORS),
-                    picker('Menu Accent', 'menuAccent', Preset.MENU_ACCENTS),
-                  ],
-                ),
-              ],
-            ),
-          ],
+          children: [panes[model.section]],
         },
         h,
       ),
@@ -800,15 +1043,30 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
               ),
             ],
           ),
-          Button.button(
-            {
-              class:
-                'w-full border-white/10 bg-transparent text-white hover:bg-white/[0.06] dark:bg-transparent',
-              children: ['Shuffle'],
-              onClick: Message['ClickedShuffleCreatePreset'](),
-              variant: 'outline',
-            },
-            h,
+          h.div(
+            [h.Class('grid grid-cols-2 gap-2')],
+            [
+              Button.button(
+                {
+                  class:
+                    'w-full border-white/10 bg-transparent text-white hover:bg-white/[0.06] dark:bg-transparent',
+                  children: ['Shuffle'],
+                  onClick: Message['ClickedShuffleCreatePreset'](),
+                  variant: 'outline',
+                },
+                h,
+              ),
+              Button.button(
+                {
+                  class:
+                    'w-full border-white/10 bg-transparent text-white hover:bg-white/[0.06] dark:bg-transparent',
+                  children: ['Reset'],
+                  onClick: Message['ClickedResetCreatePreset'](),
+                  variant: 'outline',
+                },
+                h,
+              ),
+            ],
           ),
           Button.button(
             {
@@ -847,6 +1105,415 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
 }
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
+  const schemeSuffix = model.scheme === 'system' ? '' : ` ${model.scheme}`
+  const themeClass = `create-board-theme${schemeSuffix}`
+
+  const boardColumns: ReadonlyArray<Html> = [
+    PreviewIcon.spriteDefinitions(h),
+    h.div(
+      [
+        h.Class(
+          'flex flex-col p-1 [contain-intrinsic-size:380px_1200px] [content-visibility:auto]',
+        ),
+      ],
+      [
+        ContributionHistory.view<Message>(h),
+        EmptyDistributeTrack.view<Message>(h),
+        QrConnect.view<Message>(h),
+        DividendIncome.view<Message>(h),
+        IndexInvesting.view<Message>(h),
+        SyncingState.view<Message>(h),
+      ],
+    ),
+    h.div(
+      [
+        h.Class(
+          'flex flex-col p-1 [contain-intrinsic-size:380px_1200px] [content-visibility:auto]',
+        ),
+      ],
+      [
+        h.submodel({
+          slotId: 'payout-threshold',
+          model: model.payoutThreshold,
+          view: payoutThresholdView,
+          toParentMessage: message =>
+            Message.GotPayoutThresholdMessage({ message }),
+        }),
+        ClaimableBalance.view<Message>(h),
+        h.submodel({
+          slotId: 'preferences',
+          model: model.preferences,
+          view: preferencesView,
+          toParentMessage: message =>
+            Message.GotPreferencesMessage({ message }),
+        }),
+        SavingsProgress.view<Message>(h),
+        h.submodel({
+          slotId: 'kitchen-island',
+          model: model.kitchenIsland,
+          view: kitchenIslandView,
+          toParentMessage: message =>
+            Message.GotKitchenIslandMessage({ message }),
+        }),
+      ],
+    ),
+    h.div(
+      [
+        h.Class(
+          'col-span-2 flex flex-col p-1 [contain-intrinsic-size:760px_1200px] [content-visibility:auto]',
+        ),
+      ],
+      [
+        h.submodel({
+          slotId: 'savings-targets',
+          model: model.savingsTargets,
+          view: savingsTargetsView,
+          toParentMessage: message =>
+            Message.GotSavingsTargetsMessage({ message }),
+        }),
+        h.submodel({
+          slotId: 'recent-transactions',
+          model: model.recentTransactions,
+          view: recentTransactionsView,
+          toParentMessage: message =>
+            Message.GotRecentTransactionsMessage({ message }),
+        }),
+        h.div(
+          [h.Class('grid grid-cols-2 items-start gap-(--gap)')],
+          [
+            h.div(
+              [h.Class('flex flex-col gap-(--gap)')],
+              [
+                SidebarNav.view<Message>(h),
+                h.submodel({
+                  slotId: 'faq',
+                  model: model.faq,
+                  view: faqView,
+                  toParentMessage: message =>
+                    Message.GotFaqMessage({ message }),
+                }),
+              ],
+            ),
+            h.div(
+              [h.Class('flex flex-col gap-(--gap)')],
+              [
+                h.submodel({
+                  slotId: 'payments',
+                  model: model.payments,
+                  view: paymentsView,
+                  toParentMessage: message =>
+                    Message.GotPaymentsMessage({ message }),
+                }),
+                FrontDoor.view<Message>(h),
+              ],
+            ),
+          ],
+        ),
+        h.submodel({
+          slotId: 'release-catalog',
+          model: model.releaseCatalog,
+          view: releaseCatalogView,
+          toParentMessage: message =>
+            Message.GotReleaseCatalogMessage({ message }),
+        }),
+      ],
+    ),
+    h.div(
+      [
+        h.Class(
+          'flex flex-col p-1 [contain-intrinsic-size:380px_1200px] [content-visibility:auto]',
+        ),
+      ],
+      [
+        h.submodel({
+          slotId: 'account-access',
+          model: model.accountAccess,
+          view: accountAccessView,
+          toParentMessage: message =>
+            Message.GotAccountAccessMessage({ message }),
+        }),
+        CardOverview.view<Message>(h),
+        h.submodel({
+          slotId: 'transfer-funds',
+          model: model.transferFunds,
+          view: transferFundsView,
+          toParentMessage: message =>
+            Message.GotTransferFundsMessage({ message }),
+        }),
+        CoverArt.view<Message>(h),
+        LoadingCard.view<Message>(h),
+      ],
+    ),
+    h.div(
+      [
+        h.Class(
+          'flex flex-col p-1 [contain-intrinsic-size:380px_1200px] [content-visibility:auto]',
+        ),
+      ],
+      [
+        h.submodel({
+          slotId: 'receiving-method',
+          model: model.receivingMethod,
+          view: receivingMethodView,
+          toParentMessage: message =>
+            Message.GotReceivingMethodMessage({ message }),
+        }),
+        PowerUsage.view<Message>(h),
+        EmptyConnectBank.view<Message>(h),
+        h.submodel({
+          slotId: 'upcoming-payments',
+          model: model.upcomingPayments,
+          view: upcomingPaymentsView,
+          toParentMessage: message =>
+            Message.GotUpcomingPaymentsMessage({ message }),
+        }),
+        h.submodel({
+          slotId: 'roller-shades',
+          model: model.rollerShades,
+          view: rollerShadesView,
+          toParentMessage: message =>
+            Message.GotRollerShadesMessage({ message }),
+        }),
+      ],
+    ),
+    h.div(
+      [
+        h.Class(
+          'flex flex-col p-1 [contain-intrinsic-size:380px_1200px] [content-visibility:auto]',
+        ),
+      ],
+      [
+        h.submodel({
+          slotId: 'stock-performance',
+          model: model.stockPerformance,
+          view: stockPerformanceView,
+          toParentMessage: message =>
+            Message.GotStockPerformanceMessage({ message }),
+        }),
+        EmptyExploreCatalog.view<Message>(h),
+        h.submodel({
+          slotId: 'new-milestone',
+          model: model.newMilestone,
+          view: newMilestoneView,
+          toParentMessage: message =>
+            Message.GotNewMilestoneMessage({ message }),
+        }),
+        h.submodel({
+          slotId: 'social-links',
+          model: model.socialLinks,
+          view: socialLinksView,
+          toParentMessage: message =>
+            Message.GotSocialLinksMessage({ message }),
+        }),
+        h.submodel({
+          slotId: 'notification-settings',
+          model: model.notificationSettings,
+          view: notificationSettingsView,
+          toParentMessage: message =>
+            Message.GotNotificationSettingsMessage({ message }),
+        }),
+      ],
+    ),
+  ]
+
+  const themedGrid = (columnsClass: string): Html =>
+    h.div(
+      [
+        h.Class(
+          `${themeClass} grid ${columnsClass} items-start gap-(--gap) bg-muted p-(--gap) dark:bg-background *:[div]:gap-(--gap)`,
+        ),
+        h.DataAttribute('crease-style', model.preset.style),
+        h.DataAttribute('icon-library', model.preset.iconLibrary),
+        h.DataAttribute('slot', 'capture-target'),
+      ],
+      [...boardColumns],
+    )
+
+  const typeCanvas = h.div(
+    [h.Class(`${themeClass} w-190 bg-background p-10 text-foreground`)],
+    [
+      h.div(
+        [h.Class('mx-auto max-w-130 space-y-8')],
+        [
+          h.div(
+            [h.Class('space-y-1')],
+            [
+              h.h1(
+                [h.Class('text-4xl font-bold tracking-tight')],
+                ['Heading 1'],
+              ),
+              h.h2(
+                [h.Class('text-3xl font-semibold tracking-tight')],
+                ['Heading 2'],
+              ),
+              h.h3([h.Class('text-2xl font-semibold')], ['Heading 3']),
+              h.h4([h.Class('text-xl font-medium')], ['Heading 4']),
+            ],
+          ),
+          h.p(
+            [h.Class('text-base leading-7')],
+            [
+              'Body copy sits at the text scale — the quick brown fox jumps over the lazy dog, and every paragraph underneath follows the same leading.',
+            ],
+          ),
+          h.p(
+            [h.Class('text-sm leading-6 text-muted-foreground')],
+            [
+              'Muted text for supporting details, captions and secondary descriptions.',
+            ],
+          ),
+          h.blockquote(
+            [h.Class('border-l-2 border-border pl-4 italic')],
+            [
+              '\u201cA quotation block, drawn with the theme\u2019s border and ink.\u201d',
+            ],
+          ),
+          h.ul(
+            [h.Class('list-disc space-y-1 pl-6')],
+            [
+              h.li([], ['First list item']),
+              h.li([], ['Second list item']),
+              h.li([], ['Third list item']),
+            ],
+          ),
+          h.p(
+            [],
+            [
+              'Inline ',
+              h.code(
+                [h.Class('rounded bg-muted px-1.5 py-0.5 font-mono text-sm')],
+                ['code'],
+              ),
+              ' inside a paragraph.',
+            ],
+          ),
+        ],
+      ),
+    ],
+  )
+
+  const SWATCHES: ReadonlyArray<readonly [string, string]> = [
+    ['Background', '--background'],
+    ['Foreground', '--foreground'],
+    ['Card', '--card'],
+    ['Popover', '--popover'],
+    ['Primary', '--primary'],
+    ['Primary fg', '--primary-foreground'],
+    ['Secondary', '--secondary'],
+    ['Secondary fg', '--secondary-foreground'],
+    ['Muted', '--muted'],
+    ['Muted fg', '--muted-foreground'],
+    ['Accent', '--accent'],
+    ['Accent fg', '--accent-foreground'],
+    ['Border', '--border'],
+    ['Input', '--input'],
+    ['Ring', '--ring'],
+    ['Chart 1', '--chart-1'],
+    ['Chart 2', '--chart-2'],
+    ['Chart 3', '--chart-3'],
+    ['Chart 4', '--chart-4'],
+    ['Chart 5', '--chart-5'],
+    ['Sidebar', '--sidebar'],
+    ['Sidebar fg', '--sidebar-foreground'],
+    ['Sidebar accent', '--sidebar-accent'],
+    ['Sidebar accent fg', '--sidebar-accent-foreground'],
+  ]
+
+  const paletteCanvas = h.div(
+    [h.Class(`${themeClass} w-220 bg-background p-8`)],
+    [
+      h.div(
+        [h.Class('grid grid-cols-4 gap-3 3xl:grid-cols-6')],
+        SWATCHES.map(([label, token]) =>
+          h.div(
+            [
+              h.Class(
+                'overflow-hidden rounded-lg border border-border bg-card',
+              ),
+            ],
+            [
+              h.div(
+                [h.Class('h-16'), h.Style({ background: `var(${token})` })],
+                [],
+              ),
+              h.div(
+                [h.Class('border-t border-border px-2 py-1.5')],
+                [
+                  h.div(
+                    [h.Class('text-xs font-medium text-foreground')],
+                    [label],
+                  ),
+                  h.div(
+                    [h.Class('font-mono text-[10px] text-muted-foreground')],
+                    [`var(${token})`],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    ],
+  )
+
+  const canvases: Record<Model['canvas'], Html> = {
+    board: themedGrid('w-600 grid-cols-7 md:w-750'),
+    components: themedGrid('w-480 grid-cols-3 md:w-560'),
+    type: typeCanvas,
+    palette: paletteCanvas,
+  }
+
+  const toolbarSeg = <V extends string>(
+    options: ReadonlyArray<readonly [V, string]>,
+    current: V,
+    onPick: (value: V) => Message,
+  ): Html =>
+    h.div(
+      [h.Class('flex gap-0.5 rounded-lg bg-white/[0.04] p-1')],
+      options.map(([value, label]) =>
+        h.button(
+          [
+            h.Type('button'),
+            h.OnClick(onPick(value)),
+            h.Class(
+              `rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${value === current ? 'bg-white text-black' : 'text-white/60 hover:text-white'}`,
+            ),
+          ],
+          [label],
+        ),
+      ),
+    )
+
+  const toolbar = h.div(
+    [
+      h.Class(
+        'dark fixed top-19 right-5 z-30 flex items-center gap-2 rounded-2xl bg-[#282828] p-2 text-white shadow-xl ring-1 ring-white/10 max-lg:right-3',
+      ),
+    ],
+    [
+      toolbarSeg(
+        [
+          ['board', 'Board'],
+          ['components', 'Components'],
+          ['type', 'Type'],
+          ['palette', 'Palette'],
+        ],
+        model.canvas,
+        value => Message['ChoseCreateCanvas']({ canvas: value }),
+      ),
+      h.div([h.Class('mx-0.5 h-5 w-px bg-white/10')], []),
+      toolbarSeg(
+        [
+          ['system', 'Auto'],
+          ['light', 'Light'],
+          ['dark', 'Dark'],
+        ],
+        model.scheme,
+        value => Message['ChoseCreateScheme']({ scheme: value }),
+      ),
+    ],
+  )
+
   const preview = h.div(
     [
       h.Class(
@@ -855,226 +1522,8 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
     ],
     [
       h.div(
-        [h.Class('flex w-full min-w-max justify-center')],
-        [
-          h.div(
-            [
-              h.Class(
-                'create-board-theme grid w-600 grid-cols-7 items-start gap-(--gap) bg-muted p-(--gap) md:w-750 dark:bg-background *:[div]:gap-(--gap)',
-              ),
-              h.DataAttribute('crease-style', model.preset.style),
-              h.DataAttribute('icon-library', model.preset.iconLibrary),
-              h.DataAttribute('slot', 'capture-target'),
-            ],
-            [
-              PreviewIcon.spriteDefinitions(h),
-              h.div(
-                [
-                  h.Class(
-                    'flex flex-col p-1 [contain-intrinsic-size:380px_1200px] [content-visibility:auto]',
-                  ),
-                ],
-                [
-                  ContributionHistory.view<Message>(h),
-                  EmptyDistributeTrack.view<Message>(h),
-                  QrConnect.view<Message>(h),
-                  DividendIncome.view<Message>(h),
-                  IndexInvesting.view<Message>(h),
-                  SyncingState.view<Message>(h),
-                ],
-              ),
-              h.div(
-                [
-                  h.Class(
-                    'flex flex-col p-1 [contain-intrinsic-size:380px_1200px] [content-visibility:auto]',
-                  ),
-                ],
-                [
-                  h.submodel({
-                    slotId: 'payout-threshold',
-                    model: model.payoutThreshold,
-                    view: payoutThresholdView,
-                    toParentMessage: message =>
-                      Message.GotPayoutThresholdMessage({ message }),
-                  }),
-                  ClaimableBalance.view<Message>(h),
-                  h.submodel({
-                    slotId: 'preferences',
-                    model: model.preferences,
-                    view: preferencesView,
-                    toParentMessage: message =>
-                      Message.GotPreferencesMessage({ message }),
-                  }),
-                  SavingsProgress.view<Message>(h),
-                  h.submodel({
-                    slotId: 'kitchen-island',
-                    model: model.kitchenIsland,
-                    view: kitchenIslandView,
-                    toParentMessage: message =>
-                      Message.GotKitchenIslandMessage({ message }),
-                  }),
-                ],
-              ),
-              h.div(
-                [
-                  h.Class(
-                    'col-span-2 flex flex-col p-1 [contain-intrinsic-size:760px_1200px] [content-visibility:auto]',
-                  ),
-                ],
-                [
-                  h.submodel({
-                    slotId: 'savings-targets',
-                    model: model.savingsTargets,
-                    view: savingsTargetsView,
-                    toParentMessage: message =>
-                      Message.GotSavingsTargetsMessage({ message }),
-                  }),
-                  h.submodel({
-                    slotId: 'recent-transactions',
-                    model: model.recentTransactions,
-                    view: recentTransactionsView,
-                    toParentMessage: message =>
-                      Message.GotRecentTransactionsMessage({ message }),
-                  }),
-                  h.div(
-                    [h.Class('grid grid-cols-2 items-start gap-(--gap)')],
-                    [
-                      h.div(
-                        [h.Class('flex flex-col gap-(--gap)')],
-                        [
-                          SidebarNav.view<Message>(h),
-                          h.submodel({
-                            slotId: 'faq',
-                            model: model.faq,
-                            view: faqView,
-                            toParentMessage: message =>
-                              Message.GotFaqMessage({ message }),
-                          }),
-                        ],
-                      ),
-                      h.div(
-                        [h.Class('flex flex-col gap-(--gap)')],
-                        [
-                          h.submodel({
-                            slotId: 'payments',
-                            model: model.payments,
-                            view: paymentsView,
-                            toParentMessage: message =>
-                              Message.GotPaymentsMessage({ message }),
-                          }),
-                          FrontDoor.view<Message>(h),
-                        ],
-                      ),
-                    ],
-                  ),
-                  h.submodel({
-                    slotId: 'release-catalog',
-                    model: model.releaseCatalog,
-                    view: releaseCatalogView,
-                    toParentMessage: message =>
-                      Message.GotReleaseCatalogMessage({ message }),
-                  }),
-                ],
-              ),
-              h.div(
-                [
-                  h.Class(
-                    'flex flex-col p-1 [contain-intrinsic-size:380px_1200px] [content-visibility:auto]',
-                  ),
-                ],
-                [
-                  h.submodel({
-                    slotId: 'account-access',
-                    model: model.accountAccess,
-                    view: accountAccessView,
-                    toParentMessage: message =>
-                      Message.GotAccountAccessMessage({ message }),
-                  }),
-                  CardOverview.view<Message>(h),
-                  h.submodel({
-                    slotId: 'transfer-funds',
-                    model: model.transferFunds,
-                    view: transferFundsView,
-                    toParentMessage: message =>
-                      Message.GotTransferFundsMessage({ message }),
-                  }),
-                  CoverArt.view<Message>(h),
-                  LoadingCard.view<Message>(h),
-                ],
-              ),
-              h.div(
-                [
-                  h.Class(
-                    'flex flex-col p-1 [contain-intrinsic-size:380px_1200px] [content-visibility:auto]',
-                  ),
-                ],
-                [
-                  h.submodel({
-                    slotId: 'receiving-method',
-                    model: model.receivingMethod,
-                    view: receivingMethodView,
-                    toParentMessage: message =>
-                      Message.GotReceivingMethodMessage({ message }),
-                  }),
-                  PowerUsage.view<Message>(h),
-                  EmptyConnectBank.view<Message>(h),
-                  h.submodel({
-                    slotId: 'upcoming-payments',
-                    model: model.upcomingPayments,
-                    view: upcomingPaymentsView,
-                    toParentMessage: message =>
-                      Message.GotUpcomingPaymentsMessage({ message }),
-                  }),
-                  h.submodel({
-                    slotId: 'roller-shades',
-                    model: model.rollerShades,
-                    view: rollerShadesView,
-                    toParentMessage: message =>
-                      Message.GotRollerShadesMessage({ message }),
-                  }),
-                ],
-              ),
-              h.div(
-                [
-                  h.Class(
-                    'flex flex-col p-1 [contain-intrinsic-size:380px_1200px] [content-visibility:auto]',
-                  ),
-                ],
-                [
-                  h.submodel({
-                    slotId: 'stock-performance',
-                    model: model.stockPerformance,
-                    view: stockPerformanceView,
-                    toParentMessage: message =>
-                      Message.GotStockPerformanceMessage({ message }),
-                  }),
-                  EmptyExploreCatalog.view<Message>(h),
-                  h.submodel({
-                    slotId: 'new-milestone',
-                    model: model.newMilestone,
-                    view: newMilestoneView,
-                    toParentMessage: message =>
-                      Message.GotNewMilestoneMessage({ message }),
-                  }),
-                  h.submodel({
-                    slotId: 'social-links',
-                    model: model.socialLinks,
-                    view: socialLinksView,
-                    toParentMessage: message =>
-                      Message.GotSocialLinksMessage({ message }),
-                  }),
-                  h.submodel({
-                    slotId: 'notification-settings',
-                    model: model.notificationSettings,
-                    view: notificationSettingsView,
-                    toParentMessage: message =>
-                      Message.GotNotificationSettingsMessage({ message }),
-                  }),
-                ],
-              ),
-            ],
-          ),
-        ],
+        [h.Class(`flex w-full min-w-max justify-center${schemeSuffix}`)],
+        [canvases[model.canvas]],
       ),
     ],
   )
@@ -1083,6 +1532,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
     [h.Class('relative min-h-[calc(100vh-3.5rem)]')],
     [
       h.style([], [Preset.presetCss(model.preset)]),
+      toolbar,
       preview,
       customizer(model, h),
     ],
