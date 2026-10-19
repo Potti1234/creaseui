@@ -159,12 +159,15 @@ export const buildReceipt = ({ rootDir, components, renderer, setup = [] }) => {
     const relative = toPosix(path.relative(rootDir, file))
     const { behavior, contract, local } = describe(file)
     const raw = rendersHtml(file)
+    /* Alias-only modules (`export const action = button`) render without
+       naming HtmlBuilder; they are renderers but get no raw-element grant. */
+    const renders = raw || (renderExports.of(file) ?? []).length > 0
     const role =
-      raw && supportOf(file) !== undefined
+      renders && supportOf(file) !== undefined
         ? 'renderer'
         : behavior
           ? 'behavior'
-          : raw
+          : renders
             ? 'renderer'
             : 'theme'
     /* An alias of another installed component keeps that component's
@@ -175,7 +178,7 @@ export const buildReceipt = ({ rootDir, components, renderer, setup = [] }) => {
       !describe(origin).behavior
         ? describe(origin).contract
         : contract
-    const exports = raw
+    const exports = renders
       ? renderingExports(renderExports, file).map(({ name, origin }) => ({
           contract: contractOf(origin),
           file: relative,
@@ -443,7 +446,10 @@ const doctor = async values => {
         )
       }
       const missing = ruleIds.filter(ruleId => !active(ruleId))
-      if (missing.length > 0 && rendersHtml(file)) {
+      if (
+        missing.length > 0 &&
+        (rendersHtml(file) || (renderExports.of(file) ?? []).length > 0)
+      ) {
         uncovered += 1
         incomplete += 1
         fail(
@@ -455,7 +461,10 @@ const doctor = async values => {
         incomplete += 1
         fail(`${relative} (registered ${owned.role}) lost component-contract`)
       }
-      if (owned.role === 'renderer' && rendersHtml(file)) {
+      if (
+        owned.role === 'renderer' &&
+        (rendersHtml(file) || (renderExports.of(file) ?? []).length > 0)
+      ) {
         const registered = strict.ownership.exportsOf(file)
         for (const { name, origin, originName } of renderingExports(
           renderExports,

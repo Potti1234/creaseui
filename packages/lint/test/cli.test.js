@@ -15,6 +15,10 @@ import path from 'node:path'
 import test from 'node:test'
 import { fileURLToPath } from 'node:url'
 
+import { ESLint } from 'eslint'
+
+import { creaseui } from '../creaseui.js'
+
 const bin = fileURLToPath(new URL('../bin/creaseui-lint.js', import.meta.url))
 const fixture = fileURLToPath(
   new URL('./fixtures/strict-app/', import.meta.url),
@@ -119,6 +123,70 @@ test('init and doctor cover public aliases of rendering exports', () => {
   assert.equal(fresh.status, 0, fresh.stdout)
   assert.match(fresh.stdout, /0 uncovered UI modules/u)
   assert.match(fresh.stdout, /coverage complete/u)
+  rmSync(directory, { force: true, recursive: true })
+})
+
+test('alias-only renderers and renamed re-exports are covered and enforced', async () => {
+  const directory = scratch()
+  mkdirSync(path.join(directory, 'node_modules/@creaseui'), { recursive: true })
+  symlinkSync(
+    fileURLToPath(new URL('..', import.meta.url)),
+    path.join(directory, 'node_modules/@creaseui/lint'),
+    'dir',
+  )
+  /* No HtmlBuilder text: only the type checker sees that this renders. */
+  writeFileSync(
+    path.join(directory, 'src/design/actions.ts'),
+    "import { button } from './button'\nexport const aliasOnly = button\n",
+  )
+  writeFileSync(
+    path.join(directory, 'src/design/stack.ts'),
+    `${readFileSync(path.join(directory, 'src/design/stack.ts'), 'utf8')}import { button as base } from './button'\nexport { base as stackAction }\n`,
+  )
+  const initArgs = ['init', '--renderer', 'pleat', '--components', 'src/design']
+  assert.equal(run(directory, ...initArgs).status, 0)
+  const receipt = JSON.parse(
+    readFileSync(path.join(directory, 'crease.lock.json'), 'utf8'),
+  )
+  const actions = receipt.artifacts.find(artifact =>
+    artifact.files.some(file => file.path === 'src/design/actions.ts'),
+  )
+  assert.deepEqual(actions.files, [
+    { path: 'src/design/actions.ts', rawRendering: false, role: 'renderer' },
+  ])
+  assert.deepEqual(
+    actions.exports.map(entry => [entry.name, entry.contract]),
+    [['aliasOnly', 'control.button']],
+  )
+  const doctor = run(directory, 'doctor')
+  assert.equal(doctor.status, 0, doctor.stdout)
+  assert.match(doctor.stdout, /coverage complete/u)
+
+  writeFileSync(
+    path.join(directory, 'src/consumer.ts'),
+    [
+      "import type { Html, HtmlBuilder } from 'foldkit/html'",
+      "import { aliasOnly } from './design/actions'",
+      "import { stackAction } from './design/stack'",
+      "export const a = (h: HtmlBuilder<unknown>): Html => aliasOnly({ children: ['A'], class: 'text-red-500' }, h)",
+      "export const b = (h: HtmlBuilder<unknown>): Html => stackAction({ children: ['B'], class: 'text-red-500' }, h)",
+      "export const c = (h: HtmlBuilder<unknown>): Html => stackAction({ children: ['C'], variant: 'outline' }, h)",
+      '',
+    ].join('\n'),
+  )
+  const [result] = await new ESLint({
+    cwd: directory,
+    overrideConfig: creaseui({
+      files: ['src/consumer.ts'],
+      renderer: 'pleat',
+      rootDir: directory,
+    }),
+    overrideConfigFile: true,
+  }).lintFiles(['src/consumer.ts'])
+  const lines = result.messages
+    .filter(message => message.ruleId === 'crease/component-contract')
+    .map(message => message.line)
+  assert.deepEqual(lines, [4, 5], JSON.stringify(result.messages, null, 2))
   rmSync(directory, { force: true, recursive: true })
 })
 
